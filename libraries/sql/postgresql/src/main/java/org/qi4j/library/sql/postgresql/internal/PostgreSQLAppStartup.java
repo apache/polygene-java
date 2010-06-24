@@ -314,15 +314,18 @@ public class PostgreSQLAppStartup implements SQLAppStartup
    {
       for (PropertyDescriptor pDesc : entityDesc.state().properties())
       {
-         this.processPropertyTypeForQNames( //
-               pDesc, //
-               qNameInfos, //
-               newQNames, //
-               vDescriptors, //
-               usedVCClassNames, //
-               enumValues, //
-               setQNameTableNameToNull //
-               );
+          if (!pDesc.isComputed() /* TODO or is queryable */)
+          {
+              this.processPropertyTypeForQNames( //
+                  pDesc, //
+                  qNameInfos, //
+                  newQNames, //
+                  vDescriptors, //
+                  usedVCClassNames, //
+                  enumValues, //
+                  setQNameTableNameToNull //
+                  );
+          }
       }
 
    }

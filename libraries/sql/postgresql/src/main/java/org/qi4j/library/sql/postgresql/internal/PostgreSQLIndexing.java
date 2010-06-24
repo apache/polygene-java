@@ -70,100 +70,118 @@ public class PostgreSQLIndexing implements SQLIndexing
 
    @This private PostgreSQLTypeHelper _sqlTypeHelper;
 
-   @Override
-   public void indexEntities(Iterable<EntityState> changedStates, Connection connection) throws SQLException
-   {
-      Boolean wasAutoCommit = connection.getAutoCommit();
-      connection.setAutoCommit(false);
-      connection.setReadOnly( false );
-      PreparedStatement insertToEntityTablePS = null;
-      PreparedStatement updateEntityTablePS = null;
-      PreparedStatement removeEntityPS = null;
-      PreparedStatement queryEntityPKPS = null;
-      PreparedStatement insertToPropertyQNamesPS = null;
-      PreparedStatement clearQNamesPS = null;
-      Map<QualifiedName, PreparedStatement> qNameInsertPSs = new HashMap<QualifiedName, PreparedStatement>();
+    @Override
+    public void indexEntities( Iterable<EntityState> changedStates, Connection connection )
+        throws SQLException
+    {
+        Boolean wasAutoCommit = connection.getAutoCommit();
+        connection.setAutoCommit( false );
+        connection.setReadOnly( false );
+        PreparedStatement insertToEntityTablePS = null;
+        PreparedStatement updateEntityTablePS = null;
+        PreparedStatement removeEntityPS = null;
+        PreparedStatement queryEntityPKPS = null;
+        PreparedStatement insertToPropertyQNamesPS = null;
+        PreparedStatement clearQNamesPS = null;
+        Map<QualifiedName, PreparedStatement> qNameInsertPSs = new HashMap<QualifiedName, PreparedStatement>();
 
-      try
-      {
-         insertToEntityTablePS = connection.prepareStatement(String.format(SQLs.SIX_VALUE_INSERT, this._state.schemaName().get(), ENTITY_TABLE_NAME));
-         updateEntityTablePS = connection.prepareStatement(String.format(SQLs.UPDATE_ENTITY_TABLE, this._state.schemaName().get()));
-         queryEntityPKPS = connection.prepareStatement( String.format( SQLs.QUERY_ENTITY_PK_BY_IDENTITY, this._state.schemaName().get() ) );
-         removeEntityPS = connection.prepareStatement(String.format(SQLs.DELETE_FROM_ENTITY_TABLE, this._state.schemaName().get()));
-         insertToPropertyQNamesPS = connection.prepareStatement( String.format( SQLs.TWO_VALUE_INSERT, this._state.schemaName( ).get( ), SQLs.ALL_QNAMES_TABLE_NAME ) );
-         clearQNamesPS = connection.prepareStatement( String.format( SQLs.CLEAR_ENTITY_DATA, this._state.schemaName( ).get( ), SQLs.ALL_QNAMES_TABLE_NAME ) );
-         Map<Long, EntityState> statesByPK = new HashMap<Long, EntityState>();
-         Map<Long, Integer> qNamePKs = new HashMap<Long, Integer>( );
+        try
+        {
+            insertToEntityTablePS = connection.prepareStatement( String.format( SQLs.SIX_VALUE_INSERT, this._state
+                .schemaName().get(), ENTITY_TABLE_NAME ) );
+            updateEntityTablePS = connection.prepareStatement( String.format( SQLs.UPDATE_ENTITY_TABLE, this._state
+                .schemaName().get() ) );
+            queryEntityPKPS = connection.prepareStatement( String.format( SQLs.QUERY_ENTITY_PK_BY_IDENTITY, this._state
+                .schemaName().get() ) );
+            removeEntityPS = connection.prepareStatement( String.format( SQLs.DELETE_FROM_ENTITY_TABLE, this._state
+                .schemaName().get() ) );
+            insertToPropertyQNamesPS = connection.prepareStatement( String.format( SQLs.TWO_VALUE_INSERT, this._state
+                .schemaName().get(), SQLs.ALL_QNAMES_TABLE_NAME ) );
+            clearQNamesPS = connection.prepareStatement( String.format( SQLs.CLEAR_ENTITY_DATA, this._state
+                .schemaName().get(), SQLs.ALL_QNAMES_TABLE_NAME ) );
+            Map<Long, EntityState> statesByPK = new HashMap<Long, EntityState>();
+            Map<Long, Integer> qNamePKs = new HashMap<Long, Integer>();
 
-         for (EntityState eState : changedStates)
-         {
-            EntityStatus status = eState.status();
-            Long pk = null;
-            if (status.equals(EntityStatus.NEW))
+            for( EntityState eState : changedStates )
             {
-               pk = this.insertEntityInfoAndProperties(connection, qNameInsertPSs, insertToPropertyQNamesPS, insertToEntityTablePS, eState, qNamePKs);
+                if( eState.entityDescriptor().entityType().queryable() )
+                {
+                    EntityStatus status = eState.status();
+                    Long pk = null;
+                    if( status.equals( EntityStatus.NEW ) )
+                    {
+                        pk = this.insertEntityInfoAndProperties( connection, qNameInsertPSs, insertToPropertyQNamesPS,
+                            insertToEntityTablePS, eState, qNamePKs );
+                    }
+                    else if( status.equals( EntityStatus.UPDATED ) )
+                    {
+                        pk = this.updateEntityInfoAndProperties( connection, qNameInsertPSs, insertToPropertyQNamesPS,
+                            clearQNamesPS, queryEntityPKPS, updateEntityTablePS, insertToEntityTablePS, eState,
+                            qNamePKs );
+                    }
+                    else if( status.equals( EntityStatus.REMOVED ) )
+                    {
+                        this.removeEntity( eState, removeEntityPS );
+                    }
+                    else
+                    {
+                        // TODO possibly handle LOADED state somehow
+                        // throw new UnsupportedOperationException("Did not understand what to do with state [id = " +
+                        // eState.identity().identity() + ", status = " + status + "].");
+                    }
+
+                    if( pk != null )
+                    {
+                        statesByPK.put( pk, eState );
+                    }
+                }
             }
-            else if (status.equals(EntityStatus.UPDATED))
+
+            removeEntityPS.executeBatch();
+            insertToEntityTablePS.executeBatch();
+            updateEntityTablePS.executeBatch();
+            clearQNamesPS.executeBatch();
+
+            for( Map.Entry<Long, EntityState> entry : statesByPK.entrySet() )
             {
-               pk = this.updateEntityInfoAndProperties(connection, qNameInsertPSs, insertToPropertyQNamesPS, clearQNamesPS, queryEntityPKPS, updateEntityTablePS, insertToEntityTablePS, eState, qNamePKs);
+                EntityState eState = entry.getValue();
+                if( eState.entityDescriptor().entityType().queryable() )
+                {
+                    Long pk = entry.getKey();
+                    EntityStatus status = eState.status();
+                    if( status.equals( EntityStatus.NEW ) || status.equals( EntityStatus.UPDATED ) )
+                    {
+                        this.insertAssoAndManyAssoQNames( qNameInsertPSs, insertToPropertyQNamesPS, eState, qNamePKs
+                            .get( pk ), pk );
+                    }
+                }
             }
-            else if (status.equals(EntityStatus.REMOVED))
+
+            insertToPropertyQNamesPS.executeBatch();
+
+            for( PreparedStatement ps : qNameInsertPSs.values() )
             {
-               this.removeEntity(eState, removeEntityPS);
+                ps.executeBatch();
             }
-            else
+
+            connection.commit();
+
+        }
+        finally
+        {
+            connection.setAutoCommit( wasAutoCommit );
+            SQLUtil.closeQuietly( insertToEntityTablePS );
+            SQLUtil.closeQuietly( updateEntityTablePS );
+            SQLUtil.closeQuietly( removeEntityPS );
+            SQLUtil.closeQuietly( insertToPropertyQNamesPS );
+            SQLUtil.closeQuietly( clearQNamesPS );
+            for( PreparedStatement ps : qNameInsertPSs.values() )
             {
-                // TODO possibly handle LOADED state somehow
-               //throw new UnsupportedOperationException("Did not understand what to do with state [id = " + eState.identity().identity() + ", status = " + status + "].");
+                SQLUtil.closeQuietly( ps );
             }
 
-            if (pk != null)
-            {
-               statesByPK.put(pk, eState);
-            }
-         }
-
-         removeEntityPS.executeBatch();
-         insertToEntityTablePS.executeBatch();
-         updateEntityTablePS.executeBatch();
-         clearQNamesPS.executeBatch();
-
-         for (Map.Entry<Long, EntityState> entry : statesByPK.entrySet())
-         {
-            EntityState eState = entry.getValue();
-            Long pk = entry.getKey();
-            EntityStatus status = eState.status();
-            if (status.equals(EntityStatus.NEW) || status.equals(EntityStatus.UPDATED))
-            {
-               this.insertAssoAndManyAssoQNames(qNameInsertPSs, insertToPropertyQNamesPS, eState, qNamePKs.get( pk ), pk);
-            }
-         }
-
-         insertToPropertyQNamesPS.executeBatch( );
-
-         for (PreparedStatement ps : qNameInsertPSs.values())
-         {
-            ps.executeBatch();
-         }
-
-         connection.commit();
-
-      }
-      finally
-      {
-         connection.setAutoCommit( wasAutoCommit );
-         SQLUtil.closeQuietly( insertToEntityTablePS );
-         SQLUtil.closeQuietly( updateEntityTablePS );
-         SQLUtil.closeQuietly( removeEntityPS );
-         SQLUtil.closeQuietly( insertToPropertyQNamesPS );
-         SQLUtil.closeQuietly( clearQNamesPS );
-         for (PreparedStatement ps : qNameInsertPSs.values() )
-         {
-             SQLUtil.closeQuietly( ps );
-         }
-
-      }
-   }
+        }
+    }
 
    private void syncQNamesInsertPSs(Connection connection, Map<QualifiedName, PreparedStatement> qNameInsertPSs, Set<QualifiedName> qNames) throws SQLException
    {
@@ -605,11 +623,13 @@ public class PostgreSQLIndexing implements SQLIndexing
       }
 
       ps.setLong(1, entityPK);
-      if (this._state.entityTypeInfos().get().get(state.entityDescriptor().type().getName()) == null)
+      String entityType = state.entityDescriptor().type().getName();
+      if (this._state.entityTypeInfos().get().get(entityType) == null)
       {
-          throw new RuntimeException( "Perkele: " + this._state.entityTypeInfos().get() + ", " + state.entityDescriptor().type().getName() + "." );
+          throw new InternalError("Tried to get entity : " + entityType + ", but only aware of the following entities: " + this._state.entityTypeInfos().get());
       }
-      ps.setInt(2, this._state.entityTypeInfos().get().get(state.entityDescriptor().type().getName()).getEntityTypePK());
+
+      ps.setInt(2, this._state.entityTypeInfos().get().get(entityType).getEntityTypePK());
       ps.setString(3, state.identity().identity());
       ps.setTimestamp(4, new Timestamp(state.lastModified()));
       ps.setString(5, state.version());
