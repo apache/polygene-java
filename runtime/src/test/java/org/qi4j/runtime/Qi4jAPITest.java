@@ -14,31 +14,17 @@
 
 package org.qi4j.runtime;
 
-import org.hamcrest.CoreMatchers;
 import org.junit.Test;
-import org.qi4j.api.common.Optional;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.TransientComposite;
-import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.entity.association.AbstractAssociation;
-import org.qi4j.api.entity.association.Association;
-import org.qi4j.api.entity.association.EntityStateHolder;
-import org.qi4j.api.entity.association.ManyAssociation;
-import org.qi4j.api.property.Property;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.spi.entity.EntityDescriptor;
-import org.qi4j.spi.entity.EntityStateDescriptor;
-import org.qi4j.spi.entity.association.AssociationDescriptor;
-import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
-
-import static org.junit.Assert.assertThat;
 
 /**
  * JAVADOC
