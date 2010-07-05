@@ -60,13 +60,13 @@ public class SQLs
 
    public static final String USED_CLASSES_TABLE_CLASS_NAME_COLUMN_NAME = "class_name";
 
-   public static final String USED_CLASSES_TABLE_CLASS_NAME_COLUMN_DATA_TYPE = "VARCHAR(1024)";
+   public static final String USED_CLASSES_TABLE_CLASS_NAME_COLUMN_DATA_TYPE = "TEXT";
 
    public static final String USED_QNAMES_TABLE_NAME = "used_qnames";
 
    public static final String USED_QNAMES_TABLE_QNAME_COLUMN_NAME = "qname";
 
-   public static final String USED_QNAMES_TABLE_QNAME_COLUMN_DATA_TYPE = "VARCHAR(10240)";
+   public static final String USED_QNAMES_TABLE_QNAME_COLUMN_DATA_TYPE = "TEXT";
 
    public static final String USED_QNAMES_TABLE_TABLE_NAME_COLUMN_NAME = "table_name";
 
@@ -78,7 +78,7 @@ public class SQLs
 
    public static final String ENTITY_TYPES_TABLE_TYPE_NAME_COLUMN_NAME = "entity_type_name";
 
-   public static final String ENTITY_TYPES_TABLE_TYPE_NAME_COLUMN_DATA_TYPE = "VARCHAR(1024)";
+   public static final String ENTITY_TYPES_TABLE_TYPE_NAME_COLUMN_DATA_TYPE = "TEXT";
 
    public static final String ENTITY_TYPES_TABLE_NAME = "entity_types";
 
@@ -90,7 +90,7 @@ public class SQLs
 
    public static final String ENTITY_TABLE_IDENTITY_COLUMN_NAME = "entity_identity";
 
-   public static final String ENTITY_TABLE_IDENTITY_COLUMN_DATA_TYPE = "VARCHAR(1024)";
+   public static final String ENTITY_TABLE_IDENTITY_COLUMN_DATA_TYPE = "TEXT";
 
    public static final String ENTITY_TABLE_MODIFIED_COLUMN_NAME = "modified";
 
@@ -98,17 +98,17 @@ public class SQLs
 
    public static final String ENTITY_TABLE_VERSION_COLUMN_NAME = "entity_version";
 
-   public static final String ENTITY_TABLE_VERSION_COLUMN_DATA_TYPE = "VARCHAR(1024)";
+   public static final String ENTITY_TABLE_VERSION_COLUMN_DATA_TYPE = "TEXT";
 
    public static final String ENTITY_TABLE_APPLICATION_VERSION_COLUMN_NAME = "application_version";
 
-   public static final String ENTITY_TABLE_APPLICATION_VERSION_COLUMN_DATATYPE = "VARCHAR(256)";
+   public static final String ENTITY_TABLE_APPLICATION_VERSION_COLUMN_DATATYPE = "TEXT";
 
    public static final String APP_VERSION_TABLE_NAME = "app_version";
 
    public static final String APP_VERSION_PK_COLUMN_NAME = "app_version";
 
-   public static final String APP_VERSION_PK_COLUMN_DATA_TYPE = "VARCHAR(1024)";
+   public static final String APP_VERSION_PK_COLUMN_DATA_TYPE = "TEXT";
 
    public static final String ENUM_LOOKUP_TABLE_NAME = "enum_lookup";
 
@@ -118,7 +118,7 @@ public class SQLs
 
    public static final String ENUM_LOOKUP_TABLE_ENUM_VALUE_NAME = "enum_value";
 
-   public static final String ENUM_LOOKUP_TABLE_ENUM_VALUE_DATA_TYPE = "VARCHAR(1024)";
+   public static final String ENUM_LOOKUP_TABLE_ENUM_VALUE_DATA_TYPE = "TEXT";
 
    public static final String UPDATE_ENTITY_TABLE = //
       "UPDATE " + "%s" + "." + ENTITY_TABLE_NAME + "\n" + //

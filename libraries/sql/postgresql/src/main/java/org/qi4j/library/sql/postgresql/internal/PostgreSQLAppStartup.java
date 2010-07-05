@@ -130,7 +130,7 @@ public class PostgreSQLAppStartup implements SQLAppStartup
       this._creationTypeStrings.put(Double.class, "DOUBLE PRECISION");
       this._creationTypeStrings.put(Date.class, "TIMESTAMP WITH TIME ZONE");
       this._creationTypeStrings.put(Character.class, "INTEGER");
-      this._creationTypeStrings.put(String.class, "VARCHAR(1024)");
+      this._creationTypeStrings.put(String.class, "TEXT");
       this._creationTypeStrings.put(BigInteger.class, "NUMERIC(50, 0)");
       this._creationTypeStrings.put(BigDecimal.class, "NUMERIC(50, 50)");
 
