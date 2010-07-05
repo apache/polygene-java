@@ -294,14 +294,12 @@ public final class MixinModel
         );
 
         // Add all implemented interfaces
-        if( Modifier.isAbstract( mixinClass.getModifiers() ) )
-        {
-            Set<Class> classes = Classes.interfacesOf( mixinClass );
-            classes.remove( Activatable.class );
-            classes.remove( Initializable.class );
-            classes.remove( Lifecycle.class );
-            thisDependencies.addAll( classes );
-        }
+        Set<Class> classes = Classes.interfacesOf( mixinClass );
+        classes.remove( Activatable.class );
+        classes.remove( Initializable.class );
+        classes.remove( Lifecycle.class );
+        classes.remove( InvocationHandler.class );
+        thisDependencies.addAll( classes );
     }
 
     public void activate( Object mixin )

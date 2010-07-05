@@ -173,5 +173,10 @@ public final class ServiceReferenceInstance<T>
         {
             return serviceModel.toString();
         }
+
+        public Module module()
+        {
+            return module;
+        }
     }
 }

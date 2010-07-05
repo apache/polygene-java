@@ -16,6 +16,7 @@ package org.qi4j.runtime.composite;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -98,10 +99,6 @@ public final class CompositeMethodsModel
                     {
                         Method realMethod = aClass.getMethod( method.getName(), method.getParameterTypes() );
                         compositeMethod = methods.get( realMethod );
-                        HashMap<Method, CompositeMethodModel> newMethods = new MethodKeyMap<CompositeMethodModel>();
-                        newMethods.putAll( methods );
-                        newMethods.put( method, compositeMethod ); // Map mixin method to interface method
-                        methods = newMethods; // Replace old map
                         break;
                     }
                     catch (NoSuchMethodException e)
@@ -110,10 +107,6 @@ public final class CompositeMethodsModel
                     catch (SecurityException e)
                     {
                     }
-                }
-                if( compositeMethod != null )
-                {
-                    return compositeMethod.invoke( proxy, args, mixins, moduleInstance );
                 }
             }
 //            return mixins.invokeObject( proxy, args, method );

@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.PassivationException;
 
@@ -29,25 +30,31 @@ public final class Activator
     private LinkedList<Activatable> active = new LinkedList<Activatable>();
 
     public void activate( List<? extends Activatable> activatables )
-        throws Exception
+            throws Exception
     {
         try
         {
-            for( Activatable activatable : activatables )
+            for (Activatable activatable : activatables)
             {
                 activate( activatable );
             }
         }
-        catch( Exception e )
+        catch (Exception e)
         {
             // Passivate actives
             passivate();
             throw e;
         }
+        catch (Throwable e)
+        {
+            // Passivate actives
+            passivate();
+            throw new IllegalStateException( e );
+        }
     }
 
     public void activate( Activatable activatable )
-        throws Exception
+            throws Exception
     {
         if( !active.contains( activatable ) )
         {
@@ -57,10 +64,10 @@ public final class Activator
     }
 
     public void passivate()
-        throws Exception
+            throws Exception
     {
         ArrayList<Exception> exceptions = new ArrayList<Exception>();
-        while( !active.isEmpty() )
+        while (!active.isEmpty())
         {
             passivate( exceptions );
         }
@@ -82,13 +89,12 @@ public final class Activator
         {
             activatable.passivate();
         }
-        catch( Exception e )
+        catch (Exception e)
         {
             if( e instanceof PassivationException )
             {
                 exceptions.addAll( Arrays.asList( ( (PassivationException) e ).causes() ) );
-            }
-            else
+            } else
             {
                 exceptions.add( e );
             }
