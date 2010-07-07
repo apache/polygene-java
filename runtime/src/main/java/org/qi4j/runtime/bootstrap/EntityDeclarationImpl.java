@@ -43,6 +43,7 @@ public final class EntityDeclarationImpl
     private List<Class<?>> concerns = new ArrayList<Class<?>>();
     private List<Class<?>> sideEffects = new ArrayList<Class<?>>();
     private List<Class<?>> mixins = new ArrayList<Class<?>>();
+    private List<Class<?>> roles = new ArrayList<Class<?>>();
 
     public EntityDeclarationImpl( Class<? extends EntityComposite>... compositeTypes )
     {
@@ -79,6 +80,12 @@ public final class EntityDeclarationImpl
         return this;
     }
 
+    public EntityDeclaration withRoles( Class<?>... roles )
+    {
+        this.roles.addAll( Arrays.asList( roles ) );
+        return this;
+    }
+
     void addEntities( List<EntityModel> entities,
                       PropertyDeclarations propertyDecs,
                       AssociationDeclarations associationDecs,
@@ -102,7 +109,9 @@ public final class EntityDeclarationImpl
                         manyAssociationDecs,
                         concernsDeclaration,
                         sideEffects,
-                        mixins, helper );
+                        mixins,
+                        roles,
+                        helper );
                 entities.add( compositeModel );
             }
             catch (Exception e)

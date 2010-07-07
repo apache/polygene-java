@@ -35,4 +35,6 @@ public interface TransientDeclaration
     TransientDeclaration withSideEffects( Class<?>... sideEffects );
 
     TransientDeclaration withMixins( Class<?>... mixins );
+
+    TransientDeclaration withRoles( Class<?>... roles );
 }

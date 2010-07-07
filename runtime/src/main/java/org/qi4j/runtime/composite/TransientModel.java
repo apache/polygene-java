@@ -47,14 +47,16 @@ public class TransientModel
                                            final MetaInfo metaInfo,
                                            final PropertyDeclarations propertyDeclarations,
                                            final Iterable<Class<?>> assemblyConcerns,
-                                           final Iterable<Class<?>> sideEffects, List<Class<?>> mixins,
+                                           final Iterable<Class<?>> sideEffects,
+                                           final List<Class<?>> mixins,
+                                           final List<Class<?>> roles,
                                            AssemblyHelper helper )
     {
         ConstraintsModel constraintsModel = new ConstraintsModel( compositeType );
         boolean immutable = metaInfo.get( Immutable.class ) != null;
         PropertiesModel propertiesModel = new PropertiesModel( constraintsModel, propertyDeclarations, immutable );
         StateModel stateModel = new StateModel( propertiesModel );
-        MixinsModel mixinsModel = new MixinsModel( compositeType, mixins );
+        MixinsModel mixinsModel = new MixinsModel( compositeType, roles, mixins );
 
         List<ConcernDeclaration> concerns = new ArrayList<ConcernDeclaration>();
         ConcernsDeclaration.concernDeclarations( assemblyConcerns, concerns );
@@ -67,18 +69,18 @@ public class TransientModel
         stateModel.addStateFor( compositeMethodsModel.methods(), compositeType );
 
         return new TransientModel(
-                compositeType, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
+                compositeType, roles, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
     }
 
     protected TransientModel( final Class<? extends Composite> compositeType,
-                              final Visibility visibility,
+                              List<Class<?>> roles, final Visibility visibility,
                               final MetaInfo metaInfo,
                               final MixinsModel mixinsModel,
                               final StateModel stateModel,
                               final CompositeMethodsModel compositeMethodsModel
     )
     {
-        super( compositeType, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
+        super( compositeType, roles, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
     }
 
     public void visitModel( ModelVisitor modelVisitor )

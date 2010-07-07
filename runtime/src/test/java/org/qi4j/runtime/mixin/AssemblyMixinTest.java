@@ -16,9 +16,13 @@ package org.qi4j.runtime.mixin;
 
 import org.junit.Test;
 import org.qi4j.api.composite.TransientComposite;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.test.EntityTestAssembler;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
@@ -26,23 +30,47 @@ import static org.junit.Assert.*;
 /**
  * Test of declaring mixin in assembly
  */
-public class ModuleMixinTest
-    extends AbstractQi4jTest
+public class AssemblyMixinTest
+        extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
+            throws AssemblyException
     {
+        new EntityTestAssembler().assemble( module );
+
         module.addTransients( FooComposite.class ).withMixins( CustomFooMixin.class );
+
+        module.addEntities( FooEntity.class ).withMixins( FooMixin.class );
     }
 
     @Test
-    public void testModuleMixins()
+    public void testAssemblyMixins()
     {
         assertThat( "Custom mixin has executed", transientBuilderFactory.newTransient( Foo.class ).test( "Foo", 42 ), equalTo( "Foo/42" ) );
     }
 
+    @Test
+    public void testAssemblyMixinsEntity() throws UnitOfWorkCompletionException
+    {
+        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        FooEntity entity = uow.newEntity( FooEntity.class, "123" );
+        uow.complete();
+
+        uow = unitOfWorkFactory.newUnitOfWork();
+        Foo foo = uow.get( Foo.class, "123" );
+
+        try
+        {
+            assertThat( "Custom mixin has executed", foo.test( "Foo", 42 ), equalTo( "Foo 42" ) );
+        } finally
+        {
+            uow.discard();
+        }
+
+    }
+
     public interface FooComposite
-        extends TransientComposite, Foo
+            extends TransientComposite, Foo
     {
     }
 
@@ -52,7 +80,7 @@ public class ModuleMixinTest
     }
 
     public static class FooMixin
-        implements Foo
+            implements Foo
     {
         public String test( String foo, int bar )
         {
@@ -61,11 +89,17 @@ public class ModuleMixinTest
     }
 
     public static class CustomFooMixin
-        implements Foo
+            implements Foo
     {
         public String test( String foo, int bar )
         {
             return foo + "/" + bar;
         }
+    }
+
+    public interface FooEntity
+            extends EntityComposite, Foo
+    {
+
     }
 }

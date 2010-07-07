@@ -34,4 +34,6 @@ public interface ValueDeclaration
     ValueDeclaration withSideEffects( Class<?>... sideEffects );
 
     ValueDeclaration withMixins( Class<?>... mixins );
+
+    ValueDeclaration withRoles( Class<?>... roles );
 }

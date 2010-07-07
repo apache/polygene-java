@@ -24,6 +24,7 @@ import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.PropertyDeclarations;
+import org.qi4j.bootstrap.TransientDeclaration;
 import org.qi4j.bootstrap.ValueDeclaration;
 import org.qi4j.runtime.value.ValueModel;
 
@@ -37,6 +38,7 @@ public final class ValueDeclarationImpl
     private List<Class<?>> concerns = new ArrayList<Class<?>>();
     private List<Class<?>> sideEffects = new ArrayList<Class<?>>();
     private List<Class<?>> mixins = new ArrayList<Class<?>>();
+    private List<Class<?>> roles = new ArrayList<Class<?>>();
     private MetaInfo metaInfo = new MetaInfo();
     private Visibility visibility = Visibility.module;
 
@@ -75,6 +77,12 @@ public final class ValueDeclarationImpl
         return this;
     }
 
+    public ValueDeclaration withRoles( Class<?>... roles )
+    {
+        this.roles.addAll( Arrays.asList( roles ) );
+        return this;
+    }
+
     void addValues( List<ValueModel> values, PropertyDeclarations propertyDecs, AssemblyHelper helper )
     {
         for (Class<? extends ValueComposite> compositeType : compositeTypes)
@@ -87,7 +95,9 @@ public final class ValueDeclarationImpl
                         propertyDecs,
                         concerns,
                         sideEffects,
-                        mixins, helper );
+                        mixins,
+                        roles,
+                        helper );
                 values.add( valueModel );
             }
             catch (Exception e)

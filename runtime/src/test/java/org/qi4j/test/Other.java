@@ -14,6 +14,8 @@
 
 package org.qi4j.test;
 
+import java.util.List;
+
 /**
  * JAVADOC
  */
@@ -30,4 +32,6 @@ public interface Other
             throws Exception1, Exception2;
 
     public long unwrapResult();
+
+    public void generic( List<String> list );
 }

@@ -74,6 +74,7 @@ public final class ServiceModel
                                          final List<Class<?>> assemblyConcerns,
                                          final List<Class<?>> sideEffects,
                                          final List<Class<?>> mixins,
+                                         final List<Class<?>> roles,
                                          final String moduleName,
                                          final String identity,
                                          final boolean instantiateOnStartup,
@@ -84,7 +85,7 @@ public final class ServiceModel
         boolean immutable = metaInfo.get( Immutable.class ) != null;
         PropertiesModel propertiesModel = new PropertiesModel( constraintsModel, propertyDeclarations, immutable );
         StateModel stateModel = new StateModel( propertiesModel );
-        MixinsModel mixinsModel = new MixinsModel( compositeType, mixins );
+        MixinsModel mixinsModel = new MixinsModel( compositeType, roles, mixins );
 
         List<ConcernDeclaration> concerns = new ArrayList<ConcernDeclaration>();
         ConcernsDeclaration.concernDeclarations( assemblyConcerns, concerns );
@@ -96,7 +97,7 @@ public final class ServiceModel
         stateModel.addStateFor( compositeMethodsModel.methods(), compositeType );
 
         return new ServiceModel(
-                compositeType, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel, moduleName, identity, instantiateOnStartup );
+                compositeType, roles, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel, moduleName, identity, instantiateOnStartup );
     }
 
     private final String identity;
@@ -105,6 +106,7 @@ public final class ServiceModel
     private final Class configurationType;
 
     public ServiceModel( Class<? extends Composite> compositeType,
+                         List<Class<?>> roles,
                          Visibility visibility,
                          MetaInfo metaInfo,
                          MixinsModel mixinsModel,
@@ -115,7 +117,7 @@ public final class ServiceModel
                          boolean instantiateOnStartup
     )
     {
-        super( compositeType, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
+        super( compositeType, roles, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
 
         this.identity = identity;
         this.instantiateOnStartup = instantiateOnStartup;

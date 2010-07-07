@@ -15,6 +15,7 @@
 package org.qi4j.runtime.value;
 
 import java.util.List;
+
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.value.Value;
 import org.qi4j.api.value.ValueComposite;
@@ -28,11 +29,11 @@ import org.qi4j.runtime.injection.InjectionContext;
  * Model for mixins in ValueComposites
  */
 public final class ValueMixinsModel
-    extends AbstractMixinsModel
+        extends AbstractMixinsModel
 {
-    public ValueMixinsModel( Class<? extends ValueComposite> compositeType, List<Class<?>> assemblyMixins )
+    public ValueMixinsModel( Class<? extends ValueComposite> compositeType, List<Class<?>> assemblyMixins, List<Class<?>> assemblyRoles )
     {
-        super( compositeType, assemblyMixins );
+        super( compositeType, assemblyRoles, assemblyMixins );
         mixins.add( new MixinDeclaration( ValueMixin.class, Value.class ) );
     }
 
@@ -40,9 +41,9 @@ public final class ValueMixinsModel
     {
         int i = 0;
         InjectionContext injectionContext = new InjectionContext( compositeInstance, UsesInstance.EMPTY_USES, state );
-        for( MixinModel mixinModel : mixinModels )
+        for (MixinModel mixinModel : mixinModels)
         {
-            mixins[ i++ ] = mixinModel.newInstance( injectionContext );
+            mixins[i++] = mixinModel.newInstance( injectionContext );
         }
     }
 }

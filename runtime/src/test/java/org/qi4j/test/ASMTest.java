@@ -14,16 +14,17 @@
 
 package org.qi4j.test;
 
-import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.objectweb.asm.*;
 import org.objectweb.asm.util.ASMifierClassVisitor;
 import org.qi4j.runtime.composite.FragmentClassLoader;
+import org.qi4j.runtime.composite.QI256Test;
 import org.qi4j.spi.composite.CompositeInvoker;
 
 import java.io.PrintWriter;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
 
 import static org.objectweb.asm.Opcodes.*;
 
@@ -46,7 +47,7 @@ public void createClass()
     {
         byte[] asm = generateClass();
 
-        byte[] cl = FragmentClassLoader.generateClass( SomeMixin.class.getName() + "_Stub", SomeMixin.class );
+        byte[] cl = FragmentClassLoader.generateClass( QI256Test.TestTransient.TestTransientMixin.class.getName() + "_Stub", QI256Test.TestTransient.TestTransientMixin.class );
 
         ClassReader cr = new ClassReader( cl );
         cr.accept( new ASMifierClassVisitor( new PrintWriter( System.out, true ) ),
@@ -59,9 +60,9 @@ public void createClass()
         FragmentClassLoader classLoader = new FragmentClassLoader( SomeMixin.class.getClassLoader() );
 
         Class clazz = classLoader.loadClass( SomeMixin.class.getName() + "_Stub" );
-        clazz = classLoader.loadClass( SomeMixin.class.getName() + "_Stub" );
 
-//        Class clazz = SomeMixin_Stubx.class;
+
+        //       Class clazz = SomeMixin_Stubx.class;
 
         final Other other = new Other()
         {
@@ -87,6 +88,11 @@ public void createClass()
             {
                 return 0;
             }
+
+            public void generic( List<String> list )
+            {
+                list.add( "Hello World" );
+            }
         };
 
         final Some instance = (Some) clazz.getConstructor().newInstance();
@@ -95,21 +101,35 @@ public void createClass()
         {
             public Object invokeComposite( Method method, Object[] args ) throws Throwable
             {
-                if( method.getDeclaringClass().isInstance( instance ) )
+                Method fakeMethod = null;
+                try
                 {
-                    Method fakeMethod = instance.getClass().getMethod( "_" + method.getName(), method.getParameterTypes() );
+                    fakeMethod = instance.getClass().getMethod( "_" + method.getName(), method.getParameterTypes() );
 
-                    return fakeMethod.invoke( instance, args );
-                } else
+                    try
+                    {
+                        return fakeMethod.invoke( instance, args );
+                    } catch (InvocationTargetException e)
+                    {
+                        throw e.getCause();
+                    }
+                } catch (NoSuchMethodException e)
                 {
-                    return method.invoke( other, args );
+                    try
+                    {
+                        return method.invoke( other, args );
+                    } catch (InvocationTargetException ex)
+                    {
+                        throw ex.getCause();
+                    }
                 }
+
             }
         };
 
         clazz.getField( "_instance" ).set( instance, invoker );
 
-//        System.out.println( instance.some() );
+        System.out.println( instance.some() );
 
         System.out.println( instance.testConcern() );
     }

@@ -16,10 +16,7 @@ package org.qi4j.runtime.composite;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.MissingMethodException;
@@ -57,7 +54,11 @@ public final class CompositeMethodsModel
         this.concernsModel = concernsModel;
         this.sideEffectsModel = sideEffectsModel;
         this.mixinsModel = mixinsModel;
-        implementMixinType( type, helper );
+
+        for (Class mixinType : mixinsModel.roles())
+        {
+            implementMixinType( mixinType, helper );
+        }
     }
 
     // Binding

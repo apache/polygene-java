@@ -56,13 +56,14 @@ public final class ValueModel
                                        final List<Class<?>> assemblyConcerns,
                                        final List<Class<?>> sideEffects,
                                        final List<Class<?>> mixins,
+                                       final List<Class<?>> roles,
                                        AssemblyHelper helper )
     {
         ConstraintsModel constraintsModel = new ConstraintsModel( compositeType );
         ValuePropertiesModel propertiesModel = new ValuePropertiesModel( constraintsModel, propertyDeclarations );
 
         ValueStateModel stateModel = new ValueStateModel( propertiesModel );
-        ValueMixinsModel mixinsModel = new ValueMixinsModel( compositeType, mixins );
+        ValueMixinsModel mixinsModel = new ValueMixinsModel( compositeType, roles, mixins );
 
         List<ConcernDeclaration> concerns = new ArrayList<ConcernDeclaration>();
         ConcernsDeclaration.concernDeclarations( assemblyConcerns, concerns );
@@ -77,10 +78,11 @@ public final class ValueModel
         ValueCompositeType valueType = (ValueCompositeType) ValueTypeFactory.instance()
                 .newValueType( compositeType, compositeType, compositeType );
 
-        return new ValueModel( compositeType, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel, valueType );
+        return new ValueModel( compositeType, roles, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel, valueType );
     }
 
     private ValueModel( final Class<? extends ValueComposite> compositeType,
+                        final List<Class<?>> roles,
                         final Visibility visibility,
                         final MetaInfo metaInfo,
                         final ValueMixinsModel mixinsModel,
@@ -89,7 +91,7 @@ public final class ValueModel
                         ValueCompositeType valueType
     )
     {
-        super( compositeType, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
+        super( compositeType, roles, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
 
         this.valueType = valueType;
     }

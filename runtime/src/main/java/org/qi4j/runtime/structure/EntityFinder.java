@@ -16,6 +16,7 @@ package org.qi4j.runtime.structure;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.qi4j.api.common.Visibility;
 import org.qi4j.runtime.entity.EntityModel;
 
@@ -23,7 +24,7 @@ import org.qi4j.runtime.entity.EntityModel;
  * JAVADOC
  */
 class EntityFinder
-    implements ModuleVisitor
+        implements ModuleVisitor
 {
     private final Class mixinType;
     private final List<ModuleInstance> modules;
@@ -53,10 +54,9 @@ class EntityFinder
                         modules.add( moduleInstance );
                         models.add( entityModel );
                     }
-                }
-                else
+                } else
                 {
-                    if( mixinType.isAssignableFrom( entityModel.type() ) && entityModel.visibility() == visibility )
+                    if( entityModel.hasRole( mixinType ) && entityModel.visibility() == visibility )
                     {
                         modules.add( moduleInstance );
                         models.add( entityModel );
@@ -86,7 +86,7 @@ class EntityFinder
     List<Class<?>> ambigousTypes()
     {
         List<Class<?>> ambiguousTypes = new ArrayList<Class<?>>();
-        for( EntityModel model : models )
+        for (EntityModel model : models)
         {
             ambiguousTypes.add( model.type() );
         }

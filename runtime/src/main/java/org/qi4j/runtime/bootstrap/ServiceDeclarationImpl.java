@@ -24,6 +24,7 @@ import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.bootstrap.ServiceDeclaration;
+import org.qi4j.bootstrap.TransientDeclaration;
 import org.qi4j.runtime.service.ServiceModel;
 
 /**
@@ -36,6 +37,7 @@ public final class ServiceDeclarationImpl
     private List<Class<?>> concerns = new ArrayList<Class<?>>();
     private List<Class<?>> sideEffects = new ArrayList<Class<?>>();
     private List<Class<?>> mixins = new ArrayList<Class<?>>();
+    private List<Class<?>> roles = new ArrayList<Class<?>>();
     private ModuleAssemblyImpl moduleAssembly;
     private String identity;
     private boolean instantiateOnStartup = false;
@@ -92,6 +94,12 @@ public final class ServiceDeclarationImpl
         return this;
     }
 
+    public ServiceDeclaration withRoles( Class<?>... roles )
+    {
+        this.roles.addAll( Arrays.asList( roles ) );
+        return this;
+    }
+
     void addServices( List<ServiceModel> serviceModels, AssemblyHelper helper )
     {
         for (Class<? extends ServiceComposite> serviceType : serviceTypes)
@@ -110,6 +118,7 @@ public final class ServiceDeclarationImpl
                         concerns,
                         sideEffects,
                         mixins,
+                        roles,
                         moduleAssembly.name(),
                         id,
                         instantiateOnStartup, helper );

@@ -91,7 +91,7 @@ public final class EntityModel
                                         ConcernsDeclaration concernsDeclaration,
                                         Iterable<Class<?>> sideEffects,
                                         List<Class<?>> mixins,
-                                        AssemblyHelper helper )
+                                        List<Class<?>> roles, AssemblyHelper helper )
     {
         ConstraintsModel constraintsModel = new ConstraintsModel( type );
         boolean immutable = metaInfo.get( Immutable.class ) != null;
@@ -99,7 +99,7 @@ public final class EntityModel
         EntityAssociationsModel associationsModel = new EntityAssociationsModel( constraintsModel, associationDecs );
         EntityManyAssociationsModel manyAssociationsModel = new EntityManyAssociationsModel( constraintsModel, manyAssociationDecs );
         EntityStateModel stateModel = new EntityStateModel( entityPropertiesModel, associationsModel, manyAssociationsModel );
-        EntityMixinsModel mixinsModel = new EntityMixinsModel( type, mixins );
+        EntityMixinsModel mixinsModel = new EntityMixinsModel( type, roles, mixins );
         SideEffectsDeclaration sideEffectsModel = new SideEffectsDeclaration( type, sideEffects );
         CompositeMethodsModel compositeMethodsModel = new CompositeMethodsModel( type,
                 constraintsModel,
@@ -109,6 +109,7 @@ public final class EntityModel
         stateModel.addStateFor( compositeMethodsModel.methods(), type );
 
         return new EntityModel( type,
+                roles,
                 visibility,
                 metaInfo,
                 mixinsModel,
@@ -120,6 +121,7 @@ public final class EntityModel
     private EntityType entityType;
 
     private EntityModel( Class<? extends EntityComposite> type,
+                         List<Class<?>> roles,
                          Visibility visibility,
                          MetaInfo info,
                          EntityMixinsModel mixinsModel,
@@ -127,7 +129,7 @@ public final class EntityModel
                          CompositeMethodsModel compositeMethodsModel
     )
     {
-        super( type, visibility, info, mixinsModel, stateModel, compositeMethodsModel );
+        super( type, roles, visibility, info, mixinsModel, stateModel, compositeMethodsModel );
 
         final Queryable queryable = type.getAnnotation( Queryable.class );
         this.queryable = queryable == null || queryable.value();
@@ -147,6 +149,11 @@ public final class EntityModel
     public EntityType entityType()
     {
         return entityType;
+    }
+
+    public boolean hasRole( Class roleType )
+    {
+        return roleType.isAssignableFrom( proxyClass );
     }
 
     public boolean hasMixinType( Class<?> mixinType )

@@ -17,15 +17,7 @@ package org.qi4j.runtime.composite;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.mixin.Mixins;
@@ -56,16 +48,21 @@ public abstract class AbstractMixinsModel
 
     private final Map<Class, Integer> mixinIndex = new HashMap<Class, Integer>();
     private final Set<Class> mixinTypes = new HashSet<Class>();
+    private final Set<Class> roles = new HashSet<Class>();
 
-    public AbstractMixinsModel( Class<? extends Composite> compositeType, List<Class<?>> assemblyMixins )
+    public AbstractMixinsModel( Class<? extends Composite> compositeType, List<Class<?>> assemblyRoles, List<Class<?>> assemblyMixins )
     {
         this.compositeType = compositeType;
+        roles.add( compositeType );
 
         // Add assembly mixins
         for (Class<?> assemblyMixin : assemblyMixins)
         {
             this.mixins.add( new MixinDeclaration( assemblyMixin, Assembler.class ) );
         }
+
+        // Add additional roles
+        roles.addAll( assemblyRoles );
 
         // Find mixin declarations
         this.mixins.add( new MixinDeclaration( CompositeMixin.class, Composite.class ) );
@@ -79,6 +76,17 @@ public abstract class AbstractMixinsModel
     }
 
     // Model
+
+    /**
+     * Return all implemented interfaces of the composite, including the composite type and
+     * the additional roles declared in the assembly.
+     *
+     * @return
+     */
+    public Set<Class> roles()
+    {
+        return roles;
+    }
 
     public Iterable<Class> mixinTypes()
     {
@@ -157,7 +165,10 @@ public abstract class AbstractMixinsModel
     {
         for (MixinDeclaration mixin : mixins)
         {
-            if( !mixin.isGeneric() && mixin.appliesTo( method, compositeType ) )
+            // Check if mixin implements the method. If so, check if the mixin is generic or if the filter passes
+            // If a mixin is both generic AND non-generic at the same time, then the filter applies to the generic side only
+            if( method.getDeclaringClass().isAssignableFrom( mixin.mixinClass() ) &&
+                    ( mixin.isGeneric() || mixin.appliesTo( method, compositeType ) ) )
             {
                 Class mixinClass = mixin.mixinClass();
                 return mixinClass;

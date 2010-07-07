@@ -142,7 +142,7 @@ public class FragmentClassLoader
             }
         }
 
-        // Unimplemented methods
+        // Overloaded and unimplemented methods
         if( hasProxyMethods )
         {
             Method[] methods = baseClass.getMethods();
@@ -156,10 +156,10 @@ public class FragmentClassLoader
                     String methodName = method.getName();
                     String desc = org.objectweb.asm.commons.Method.getMethod( method ).getDescriptor();
 
+                    String[] exceptions = null;
                     {
                         Label endLabel = null; // Use this if return type is void
 
-                        String[] exceptions = null;
                         if( method.getExceptionTypes().length > 0 )
                         {
                             exceptions = new String[method.getExceptionTypes().length];
@@ -183,8 +183,10 @@ public class FragmentClassLoader
                             exceptionLabels.add( ld ); // Reuse this further down for the catch
                         }
 
-                        Label lx = new Label();
-                        mv.visitTryCatchBlock( l0, l1, lx, "java/lang/Throwable" );
+                        Label lruntime = new Label();
+                        mv.visitTryCatchBlock( l0, l1, lruntime, "java/lang/RuntimeException" );
+                        Label lerror = new Label();
+                        mv.visitTryCatchBlock( l0, l1, lerror, "java/lang/Throwable" );
 
                         mv.visitLabel( l0 );
                         mv.visitVarInsn( ALOAD, 0 );
@@ -240,14 +242,18 @@ public class FragmentClassLoader
                             mv.visitInsn( ATHROW );
                         }
 
-                        // UndeclaredThrowableException catch-all
-                        mv.visitLabel( lx );
+                        // RuntimeException and Error catch-all
+                        mv.visitLabel( lruntime );
+                        mv.visitFrame( Opcodes.F_SAME1, 0, null, 1, new Object[]{"java/lang/RuntimeException"} );
+                        mv.visitVarInsn( ASTORE, stackIdx );
+                        mv.visitVarInsn( ALOAD, stackIdx );
+                        mv.visitInsn( ATHROW );
+
+                        mv.visitLabel( lerror );
                         mv.visitFrame( Opcodes.F_SAME1, 0, null, 1, new Object[]{"java/lang/Throwable"} );
                         mv.visitVarInsn( ASTORE, stackIdx );
-                        mv.visitTypeInsn( NEW, "java/lang/reflect/UndeclaredThrowableException" );
-                        mv.visitInsn( DUP );
                         mv.visitVarInsn( ALOAD, stackIdx );
-                        mv.visitMethodInsn( INVOKESPECIAL, "java/lang/reflect/UndeclaredThrowableException", "<init>", "(Ljava/lang/Throwable;)V" );
+                        mv.visitTypeInsn( CHECKCAST, "java/lang/Error" );
                         mv.visitInsn( ATHROW );
 
                         // Return type = void
@@ -265,7 +271,7 @@ public class FragmentClassLoader
                     if( !Modifier.isAbstract( method.getModifiers() ) )
                     {
                         // Add method with _ as prefix
-                        mv = cw.visitMethod( ACC_PUBLIC, "_" + method.getName(), desc, null, null );
+                        mv = cw.visitMethod( ACC_PUBLIC, "_" + method.getName(), desc, null, exceptions );
                         Label l1 = new Label();
                         mv.visitCode();
                         mv.visitVarInsn( ALOAD, 0 );
@@ -311,6 +317,7 @@ public class FragmentClassLoader
                 {
                     if( isOverloaded( method, baseClass ) )
                     {
+                        method.setAccessible( true );
                         Class methodClass;
                         if( Modifier.isAbstract( method.getModifiers() ) )
                             methodClass = method.getDeclaringClass();
@@ -426,7 +433,8 @@ public class FragmentClassLoader
         {
             try
             {
-                aClass.getMethod( method.getName(), method.getParameterTypes() );
+                Method m = aClass.getMethod( method.getName(), method.getParameterTypes() );
+                m.setAccessible( true );
                 return true;
             } catch (NoSuchMethodException e)
             {

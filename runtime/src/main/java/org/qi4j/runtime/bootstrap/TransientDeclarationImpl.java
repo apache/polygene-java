@@ -25,6 +25,7 @@ import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.EntityDeclaration;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.bootstrap.TransientDeclaration;
 import org.qi4j.runtime.composite.TransientModel;
@@ -39,6 +40,7 @@ public final class TransientDeclarationImpl
     private List<Class<?>> concerns = new ArrayList<Class<?>>();
     private List<Class<?>> sideEffects = new ArrayList<Class<?>>();
     private List<Class<?>> mixins = new ArrayList<Class<?>>();
+    private List<Class<?>> roles = new ArrayList<Class<?>>();
     private MetaInfo metaInfo = new MetaInfo();
     private Visibility visibility = Visibility.module;
 
@@ -78,6 +80,12 @@ public final class TransientDeclarationImpl
         return this;
     }
 
+    public TransientDeclaration withRoles( Class<?>... roles )
+    {
+        this.roles.addAll( Arrays.asList( roles ) );
+        return this;
+    }
+
     void addComposites( List<TransientModel> aTransients, PropertyDeclarations propertyDeclarations, AssemblyHelper helper )
     {
         for (Class<? extends TransientComposite> compositeType : compositeTypes)
@@ -89,7 +97,7 @@ public final class TransientDeclarationImpl
                 TransientModel transientModel = TransientModel.newModel( compositeType,
                         visibility,
                         compositeMetaInfo,
-                        propertyDeclarations, concerns, sideEffects, mixins, helper );
+                        propertyDeclarations, concerns, sideEffects, mixins, roles, helper );
                 aTransients.add( transientModel );
             }
             catch (Exception e)

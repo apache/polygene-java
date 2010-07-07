@@ -26,13 +26,56 @@ import org.qi4j.api.common.Visibility;
  */
 public interface EntityDeclaration
 {
+    /**
+     * Set additional metainfo for this entity declaration.
+     *
+     * @param info metainfo that can be retrieved from the EntityDescriptor.
+     * @return
+     */
     EntityDeclaration setMetaInfo( Object info );
 
+    /**
+     * Set visibility for declared entities.
+     *
+     * @param visibility
+     * @return
+     */
     EntityDeclaration visibleIn( Visibility visibility );
 
+    /**
+     * Declare additional concerns for these entities.
+     *
+     * @param concerns
+     * @return
+     */
     EntityDeclaration withConcerns( Class<?>... concerns );
 
+    /**
+     * Declare additional side-effects for these entitites.
+     *
+     * @param sideEffects
+     * @return
+     */
     EntityDeclaration withSideEffects( Class<?>... sideEffects );
 
+    /**
+     * Declare additional mixins for these entities.
+     * <p/>
+     * This can be useful to override any default mixins from the entity interface.
+     *
+     * @param mixins
+     * @return
+     */
     EntityDeclaration withMixins( Class<?>... mixins );
+
+    /**
+     * Declare additional role interfaces for these declared interfaces.
+     * <p/>
+     * This can be useful to add roles that the entities should implement, but
+     * which you do not want to include in the entity interface itself.
+     *
+     * @param roleInterfaces list of role interfaces to add
+     * @return
+     */
+    EntityDeclaration withRoles( Class<?>... roleInterfaces );
 }

@@ -16,6 +16,7 @@ package org.qi4j.runtime.composite;
 
 import java.io.Serializable;
 import java.util.List;
+
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.runtime.injection.InjectionContext;
@@ -25,12 +26,12 @@ import org.qi4j.spi.composite.CompositeInstance;
  * Model for Composite mixins
  */
 public final class MixinsModel
-    extends AbstractMixinsModel
-    implements Serializable
+        extends AbstractMixinsModel
+        implements Serializable
 {
-    public MixinsModel( Class<? extends Composite> compositeType, List<Class<?>> assemblyMixins )
+    public MixinsModel( Class<? extends Composite> compositeType, List<Class<?>> assemblyRoles, List<Class<?>> assemblyMixins )
     {
-        super( compositeType, assemblyMixins );
+        super( compositeType, assemblyRoles, assemblyMixins );
     }
 
     // Context
@@ -39,9 +40,9 @@ public final class MixinsModel
     {
         int i = 0;
         InjectionContext injectionContext = new InjectionContext( compositeInstance, uses, state );
-        for( MixinModel mixinModel : mixinModels )
+        for (MixinModel mixinModel : mixinModels)
         {
-            mixins[ i++ ] = mixinModel.newInstance( injectionContext );
+            mixins[i++] = mixinModel.newInstance( injectionContext );
         }
     }
 }
