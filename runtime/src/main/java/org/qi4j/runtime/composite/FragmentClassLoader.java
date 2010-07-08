@@ -39,6 +39,18 @@ import static org.qi4j.api.util.Classes.interfacesWithMethods;
 public class FragmentClassLoader
         extends ClassLoader
 {
+    private static int jdkVersion = Opcodes.V1_5;
+
+    static
+    {
+        String jdkString = System.getProperty( "java.specification.version" );
+
+        if( jdkString.equals( "1.6" ) )
+            jdkVersion = Opcodes.V1_6;
+        else if( jdkString.equals( "1.7" ) )
+            jdkVersion = Opcodes.V1_7;
+    }
+
     public FragmentClassLoader( ClassLoader parent )
     {
         super( parent );
@@ -95,7 +107,7 @@ public class FragmentClassLoader
         AnnotationVisitor av0;
 
         // Class definition start
-        cw.visit( V1_6, ACC_PUBLIC + ACC_SUPER, classSlash, null, baseClassSlash, null );
+        cw.visit( jdkVersion, ACC_PUBLIC + ACC_SUPER, classSlash, null, baseClassSlash, null );
 
         // Composite reference
         {
