@@ -33,6 +33,7 @@ import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.unitofwork.EntityCompositeAlreadyExistsException;
+import org.qi4j.api.util.Classes;
 import org.qi4j.bootstrap.AssociationDeclarations;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.bootstrap.ManyAssociationDeclarations;
@@ -131,7 +132,7 @@ public final class EntityModel
     {
         super( type, roles, visibility, info, mixinsModel, stateModel, compositeMethodsModel );
 
-        final Queryable queryable = type.getAnnotation( Queryable.class );
+        final Queryable queryable = Classes.getAnnotationOfTypeOrAnyOfSuperTypes( type, Queryable.class );
         this.queryable = queryable == null || queryable.value();
     }
 

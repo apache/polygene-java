@@ -14,6 +14,7 @@
 
 package org.qi4j.api.util;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.*;
 
@@ -200,6 +201,21 @@ public final class Classes
         {
             throw new IllegalArgumentException( "Don't know how to deal with type:" + type );
         }
+    }
+
+    public static <AnnotationType extends Annotation> AnnotationType getAnnotationOfTypeOrAnyOfSuperTypes( Class<?> type, Class<AnnotationType> annotationClass )
+    {
+        AnnotationType result = null;
+        for (Class<?> clazz : typesOf( type ))
+        {
+            result = clazz.getAnnotation( annotationClass );
+            if( result != null )
+            {
+                break;
+            }
+        }
+
+        return result;
     }
 
     public static Class<?> getRawClass( final Type genericType )

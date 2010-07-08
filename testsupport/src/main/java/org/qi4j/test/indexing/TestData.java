@@ -19,6 +19,7 @@ package org.qi4j.test.indexing;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
@@ -46,7 +47,7 @@ import org.qi4j.test.indexing.model.entities.MaleEntity;
 class TestData
 {
     static void populate( SingletonAssembler assembler )
-        throws UnitOfWorkCompletionException
+            throws UnitOfWorkCompletionException
     {
         UnitOfWork unitOfWork = assembler.unitOfWorkFactory().newUnitOfWork();
         ValueBuilderFactory valueBuilderFactory = assembler.valueBuilderFactory();
@@ -220,7 +221,7 @@ class TestData
             Cat felix = catBuilder.instance();
             felix.name().set( "Felix" );
             felix = catBuilder.newInstance();
-            NameableAssert.trace( felix );
+            //NameableAssert.trace( felix );
         }
 
         unitOfWork.complete();

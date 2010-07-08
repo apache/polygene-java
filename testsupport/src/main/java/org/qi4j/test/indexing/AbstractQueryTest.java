@@ -203,7 +203,7 @@ public abstract class AbstractQueryTest
                 query,
                 "Joe Doe", "Ann Doe", "Jack Doe",
                 "Penang", "Kuala Lumpur",
-                "Cooking", "Gaming", "Programming", "Cars", "Felix"
+                "Cooking", "Gaming", "Programming", "Cars"
         );
         System.out.println( "*** script03: " + query );
     }
@@ -403,11 +403,11 @@ public abstract class AbstractQueryTest
         Query<Nameable> query = qb.newQuery( unitOfWork );
         query.orderBy( orderBy( nameable.name() ) );
         query.firstResult( 3 );
-        query.maxResults( 3 );
+        query.maxResults( 2 );
         System.out.println( "*** script17: " + query );
         verifyOrderedResults(
                 query,
-                "Felix", "Gaming", "Jack Doe"
+                "Gaming", "Jack Doe"
         );
     }
 
@@ -423,7 +423,7 @@ public abstract class AbstractQueryTest
         System.out.println( "*** script18: " + query );
         verifyOrderedResults(
                 query,
-                "Ann Doe", "Cars", "Cooking", "Felix", "Gaming", "Jack Doe", "Joe Doe", "Kuala Lumpur", "Penang", "Programming"
+                "Ann Doe", "Cars", "Cooking", "Gaming", "Jack Doe", "Joe Doe", "Kuala Lumpur", "Penang", "Programming"
         );
     }
 
@@ -441,7 +441,7 @@ public abstract class AbstractQueryTest
         System.out.println( "*** script19: " + query );
         verifyOrderedResults(
                 query,
-                "Felix", "Gaming", "Jack Doe", "Joe Doe", "Kuala Lumpur", "Penang", "Programming"
+                "Gaming", "Jack Doe", "Joe Doe", "Kuala Lumpur", "Penang", "Programming"
         );
     }
 
