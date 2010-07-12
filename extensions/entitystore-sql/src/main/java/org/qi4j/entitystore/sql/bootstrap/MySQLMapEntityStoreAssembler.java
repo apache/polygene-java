@@ -13,8 +13,8 @@
  */
 package org.qi4j.entitystore.sql.bootstrap;
 
-import org.qi4j.entitystore.sql.map.database.DatabaseMySQLMixin;
-import org.qi4j.entitystore.sql.map.database.DatabaseMapService;
+import org.qi4j.entitystore.sql.map.DatabaseMySQLMixin;
+import org.qi4j.entitystore.sql.map.DatabaseMapService;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;

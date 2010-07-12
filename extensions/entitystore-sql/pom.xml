@@ -14,28 +14,44 @@
     <version>1.2-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
+    <properties>
+        <version.qi4j>${project.version}</version.qi4j>
+    </properties>
+
     <dependencies>
+
         <dependency>
-            <groupId>org.qi4j.core</groupId>
-            <artifactId>qi4j-core-api</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.6.0</version>
         </dependency>
-        <dependency>
-            <groupId>org.qi4j.core</groupId>
-            <artifactId>qi4j-core-spi</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.qi4j.library</groupId>
-            <artifactId>qi4j-lib-locking</artifactId>
-            <version>${project.version}</version>
-        </dependency>
+
+        <!-- Qi4j Core -->
         <dependency>
             <groupId>org.qi4j.core</groupId>
             <artifactId>qi4j-core-bootstrap</artifactId>
-            <version>${project.version}</version>
+            <version>${version.qi4j}</version>
         </dependency>
 
+        <!-- Qi4j Libraries -->
+        <dependency>
+            <groupId>org.qi4j.library</groupId>
+            <artifactId>qi4j-lib-locking</artifactId>
+            <version>${version.qi4j}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.qi4j.library</groupId>
+            <artifactId>qi4j-lib-sql-api</artifactId>
+            <version>${version.qi4j}</version>
+        </dependency>
+
+        <!-- Unit tests -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>0.9.21</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.apache.derby</groupId>
             <artifactId>derbyclient</artifactId>
@@ -51,7 +67,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.12</version>
+            <version>5.1.13</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -60,38 +76,31 @@
             <version>8.4-701.jdbc4</version>
             <scope>test</scope>
         </dependency>
+        <!--dependency>
+            <groupId>org.glassfish.extras</groupId>
+            <artifactId>glassfish-embedded-all</artifactId>
+            <version>3.1-b08</version>
+            <scope>test</scope>
+        </dependency-->
         <dependency>
             <groupId>org.qi4j.core</groupId>
             <artifactId>qi4j-core-runtime</artifactId>
+            <version>${version.qi4j}</version>
             <scope>test</scope>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.qi4j.tests</groupId>
             <artifactId>qi4j-tests-performance</artifactId>
+            <version>${version.qi4j}</version>
             <scope>test</scope>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.qi4j.core</groupId>
             <artifactId>qi4j-core-testsupport</artifactId>
             <scope>test</scope>
-            <version>${project.version}</version>
+            <version>${version.qi4j}</version>
         </dependency>
 
-
-        <dependency>
-            <groupId>org.glassfish.extras</groupId>
-            <artifactId>glassfish-embedded-all</artifactId>
-            <version>3.0.1</version>
-            <scope>test</scope>
-        </dependency>
-        
-        <dependency>
-        	<groupId>org.qi4j.library</groupId>
-        	<artifactId>qi4j-lib-sql-api</artifactId>
-        	<version>${project.version}</version>
-        </dependency>
     </dependencies>
     <repositories>
         <repository>

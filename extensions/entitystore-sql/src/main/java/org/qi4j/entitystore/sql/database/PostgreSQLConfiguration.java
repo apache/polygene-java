@@ -11,8 +11,6 @@
  * limitations under the License.
  *
  */
-
-
 package org.qi4j.entitystore.sql.database;
 
 import org.qi4j.library.sql.common.SQLConfiguration;
@@ -21,7 +19,7 @@ import org.qi4j.library.sql.common.SQLConfiguration;
  *
  * @author Stanislav Muhametsin
  */
-public interface PostgreSQLConfiguration extends SQLConfiguration
+public interface PostgreSQLConfiguration
+        extends SQLConfiguration
 {
-
 }

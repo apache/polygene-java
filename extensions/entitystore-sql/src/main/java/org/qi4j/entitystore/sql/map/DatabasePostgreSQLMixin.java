@@ -11,20 +11,20 @@
  * limitations under the License.
  *
  */
-package org.qi4j.entitystore.sql.map.database;
+package org.qi4j.entitystore.sql.map;
 
+import org.qi4j.entitystore.sql.map.AbstractDatabaseMapService;
 import java.sql.ResultSet;
 import java.io.Reader;
-
-import org.qi4j.entitystore.sql.util.SQLESUtil;
 
 import java.sql.PreparedStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
+
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.injection.scope.This;
-
-import static org.qi4j.entitystore.sql.util.SQLESUtil.*;
+import static org.qi4j.entitystore.sql.database.SQLs.*;
+import static org.qi4j.entitystore.sql.map.SQLESUtil.*;
 import static org.qi4j.library.sql.common.SQLUtil.*;
 
 public abstract class DatabasePostgreSQLMixin
@@ -33,7 +33,7 @@ public abstract class DatabasePostgreSQLMixin
 
     private static final long serialVersionUID = 1L;
 
-    private static final String CREATE_MAP_TABLE_SQL = "CREATE TABLE " + TABLE_NAME + " (" + IDENTITY_COLUMN + " CHAR(128) PRIMARY KEY, " + STATE_COLUMN + " VARCHAR(1048576))";
+    private static final String CREATE_MAP_TABLE_SQL = "CREATE TABLE " + TABLE_NAME + " (" + ENTITY_IDENTITY_COLUMN_NAME + " CHAR(128) PRIMARY KEY, " + ENTITY_STATE_COLUMN_NAME + " VARCHAR(1048576))";
 
     public DatabasePostgreSQLMixin( @This Configuration<DatabaseConfiguration> cfg )
     {
@@ -66,7 +66,7 @@ public abstract class DatabasePostgreSQLMixin
     public Reader getEntityValue( ResultSet resultSet )
             throws SQLException
     {
-        return resultSet.getCharacterStream( SQLESUtil.STATE_COLUMN );
+        return resultSet.getCharacterStream( ENTITY_STATE_COLUMN_NAME );
     }
 
 }

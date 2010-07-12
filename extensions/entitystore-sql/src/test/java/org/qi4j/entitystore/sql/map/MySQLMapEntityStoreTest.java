@@ -11,8 +11,9 @@
  * limitations under the License.
  *
  */
-package org.qi4j.entitystore.sql;
+package org.qi4j.entitystore.sql.map;
 
+import org.qi4j.entitystore.sql.bootstrap.MySQLMapEntityStoreAssembler;
 import org.junit.After;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -21,12 +22,10 @@ import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
-import org.qi4j.entitystore.sql.bootstrap.PostgreSQLMapEntityStoreAssembler;
-import org.qi4j.entitystore.sql.map.database.DatabaseConfiguration;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
 
 @Ignore // Needs external setup
-public class PostgreSQLMapEntityStoreTest
+public class MySQLMapEntityStoreTest
         extends AbstractEntityStoreTest
 {
 
@@ -36,7 +35,7 @@ public class PostgreSQLMapEntityStoreTest
             throws AssemblyException
     {
         super.assemble( module );
-        new PostgreSQLMapEntityStoreAssembler().assemble( module );
+        new MySQLMapEntityStoreAssembler().assemble( module );
         ModuleAssembly config = module.layerAssembly().moduleAssembly( "config" );
         config.addServices( MemoryEntityStoreService.class );
         config.addEntities( DatabaseConfiguration.class ).visibleIn( Visibility.layer );

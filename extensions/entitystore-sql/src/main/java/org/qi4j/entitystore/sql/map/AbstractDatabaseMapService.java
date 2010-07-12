@@ -11,9 +11,8 @@
  * limitations under the License.
  *
  */
-package org.qi4j.entitystore.sql.map.database;
+package org.qi4j.entitystore.sql.map;
 
-import org.qi4j.entitystore.sql.util.SQLESUtil;
 
 import java.sql.PreparedStatement;
 import org.qi4j.api.configuration.Configuration;
@@ -21,7 +20,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.DriverManager;
 
-import static org.qi4j.entitystore.sql.util.SQLESUtil.*;
+import static org.qi4j.entitystore.sql.map.SQLESUtil.*;
 
 public abstract class AbstractDatabaseMapService
         implements DatabaseMapService

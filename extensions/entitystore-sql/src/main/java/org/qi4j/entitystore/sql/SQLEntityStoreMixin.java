@@ -111,7 +111,6 @@ public abstract class SQLEntityStoreMixin
     public void passivate()
         throws Exception
     {
-        // NOOP (maybe add closing connection if application is in RELEASE mode ? )
         this._database.stopDatabase();
     }
 

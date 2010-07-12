@@ -11,33 +11,27 @@
  * limitations under the License.
  *
  */
-package org.qi4j.entitystore.sql.util;
+package org.qi4j.entitystore.sql.map;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+
 import org.qi4j.api.configuration.Configuration;
-import org.qi4j.entitystore.sql.map.database.DatabaseConfiguration;
+import static org.qi4j.entitystore.sql.database.SQLs.*;
+import org.qi4j.entitystore.sql.map.DatabaseConfiguration;
 
 public class SQLESUtil
 {
 
-    public static final String TABLE_NAME = "QI4J_DATA";
+    public static final String SELECT_ALL_STATES_SQL = "SELECT " + ENTITY_STATE_COLUMN_NAME + " FROM " + TABLE_NAME;
 
-    public static final String IDENTITY_COLUMN = "QI_IDENTITY";
+    public static final String SELECT_STATE_SQL = SELECT_ALL_STATES_SQL + " WHERE " + ENTITY_IDENTITY_COLUMN_NAME + "=?";
 
-    public static final String STATE_COLUMN = "QI_STATE";
+    public static final String INSERT_STATE_SQL = "INSERT INTO " + TABLE_NAME + " (" + ENTITY_IDENTITY_COLUMN_NAME + ", " + ENTITY_STATE_COLUMN_NAME + ") VALUES (?, ?)";
 
-    public static final String SELECT_ALL_STATES_SQL = "SELECT " + STATE_COLUMN + " FROM " + TABLE_NAME;
+    public static final String UPDATE_STATE_SQL = "UPDATE " + TABLE_NAME + " SET " + ENTITY_STATE_COLUMN_NAME + "=? WHERE " + ENTITY_IDENTITY_COLUMN_NAME + "=?";
 
-    public static final String SELECT_STATE_SQL = "SELECT " + STATE_COLUMN + " FROM " + TABLE_NAME + " WHERE " + IDENTITY_COLUMN + "=?";
-
-    public static final String INSERT_STATE_SQL = "INSERT INTO " + TABLE_NAME + " (" + IDENTITY_COLUMN + ", " + STATE_COLUMN + ") VALUES (?, ?)";
-
-    public static final String UPDATE_STATE_SQL = "UPDATE " + TABLE_NAME + " SET " + STATE_COLUMN + "=? WHERE " + IDENTITY_COLUMN + "=?";
-
-    public static final String REMOVE_STATE_SQL = "DELETE FROM " + TABLE_NAME + " WHERE " + IDENTITY_COLUMN + "=?";
+    public static final String REMOVE_STATE_SQL = "DELETE FROM " + TABLE_NAME + " WHERE " + ENTITY_IDENTITY_COLUMN_NAME + "=?";
 
     public static DatabaseConfiguration ensureConfiguration( Configuration<DatabaseConfiguration> cfg )
     {

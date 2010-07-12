@@ -11,8 +11,9 @@
  * limitations under the License.
  *
  */
-package org.qi4j.entitystore.sql;
+package org.qi4j.entitystore.sql.map;
 
+import org.qi4j.entitystore.sql.bootstrap.MySQLMapEntityStoreAssembler;
 import java.io.File;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -20,22 +21,20 @@ import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.sql.bootstrap.PostgreSQLMapEntityStoreAssembler;
-import org.qi4j.entitystore.sql.map.database.DatabaseConfiguration;
 import org.qi4j.test.EntityTestAssembler;
 import org.qi4j.test.entity.performance.AbstractEntityStorePerformanceTest;
 
 /**
- * Performance test for PostgreSQLEntityStoreComposite
+ * Performance test for MySQLEntityStoreComposite
  */
 @Ignore // Too long and needs external setup
-public class PostgreSQLMapEntityStorePerformanceTest
+public class MySQLMapEntityStorePerformanceTest
         extends AbstractEntityStorePerformanceTest
 {
 
-    public PostgreSQLMapEntityStorePerformanceTest()
+    public MySQLMapEntityStorePerformanceTest()
     {
-        super( "PostgreSQLEntityStore", createAssembler() );
+        super( "MySQLEntityStore", createAssembler() );
     }
 
     private static Assembler createAssembler()
@@ -46,7 +45,7 @@ public class PostgreSQLMapEntityStorePerformanceTest
             public void assemble( ModuleAssembly module )
                     throws AssemblyException
             {
-                new PostgreSQLMapEntityStoreAssembler( Visibility.application ).assemble( module );
+                new MySQLMapEntityStoreAssembler( Visibility.application ).assemble( module );
                 ModuleAssembly configModule = module.layerAssembly().moduleAssembly( "Config" );
                 configModule.addEntities( DatabaseConfiguration.class ).visibleIn( Visibility.layer );
                 new EntityTestAssembler( Visibility.module ).assemble( configModule );

@@ -11,26 +11,15 @@
  * limitations under the License.
  *
  */
-package org.qi4j.entitystore.sql.map.database;
+package org.qi4j.entitystore.sql.database;
 
-import org.qi4j.api.common.Optional;
-import org.qi4j.api.configuration.ConfigurationComposite;
-import org.qi4j.api.property.Property;
+import org.qi4j.library.sql.common.SQLConfiguration;
 
-public interface DatabaseConfiguration
-        extends ConfigurationComposite
+/**
+ * @author Stanislav Muhametsin
+ * @author Paul Merlin
+ */
+public interface DerbySQLConfiguration
+        extends SQLConfiguration
 {
-
-    Property<String> driver();
-
-    Property<String> connectionURL();
-
-    Property<String> dbName();
-
-    @Optional
-    Property<String> user();
-
-    @Optional
-    Property<String> password();
-
 }

@@ -11,46 +11,43 @@
  * limitations under the License.
  *
  */
-package org.qi4j.entitystore.sql.map.database;
+package org.qi4j.entitystore.sql.map;
 
+import org.qi4j.entitystore.sql.map.AbstractDatabaseMapService;
 import java.io.StringReader;
 import java.io.Reader;
-import java.sql.ResultSet;
-
-import org.qi4j.entitystore.sql.util.SQLESUtil;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.injection.scope.This;
-
-import static org.qi4j.entitystore.sql.util.SQLESUtil.*;
+import static org.qi4j.entitystore.sql.database.SQLs.*;
+import static org.qi4j.entitystore.sql.map.SQLESUtil.*;
 import static org.qi4j.library.sql.common.SQLUtil.*;
 
-public abstract class DatabaseDerbyMixin
+public abstract class DatabaseMySQLMixin
         extends AbstractDatabaseMapService
 {
 
     private static final long serialVersionUID = 1L;
 
-    private static final String CREATE_MAP_TABLE_SQL = "CREATE TABLE " + TABLE_NAME + " (" + IDENTITY_COLUMN + " CHAR(128) PRIMARY KEY, " + STATE_COLUMN + " CLOB)";
+    private static final String CREATE_MAP_TABLE_SQL = "CREATE TABLE " + TABLE_NAME + " (" + ENTITY_IDENTITY_COLUMN_NAME + " CHAR(128) PRIMARY KEY, " + ENTITY_STATE_COLUMN_NAME + " LONGTEXT)";
 
-    public DatabaseDerbyMixin( @This Configuration<DatabaseConfiguration> cfg )
+    public DatabaseMySQLMixin( @This Configuration<DatabaseConfiguration> cfg )
     {
         super( cfg );
     }
 
-    protected synchronized void initDatabase()
+    @Override
+    protected void initDatabase()
     {
         Connection connection = null;
         PreparedStatement createMapTable = null;
         try {
-            connection = DriverManager.getConnection( buildConnectionString( cfg ) + ";create=true",
-                                                      ensureConfiguration( cfg ).user().get(),
-                                                      ensureConfiguration( cfg ).password().get() );
-            connection.setAutoCommit( false );
+            connection = openConnection();
             if ( needSchemaCreation( connection ) ) {
                 createMapTable = connection.prepareStatement( CREATE_MAP_TABLE_SQL );
                 createMapTable.executeUpdate();
@@ -67,19 +64,10 @@ public abstract class DatabaseDerbyMixin
         }
     }
 
-    @Override
-    protected void shutdownDatabase()
-            throws SQLException
-    {
-        DriverManager.getConnection( buildConnectionString( cfg ) + ";shudtown=true",
-                                     ensureConfiguration( cfg ).user().get(),
-                                     ensureConfiguration( cfg ).password().get() ).close();
-    }
-
     public Reader getEntityValue( ResultSet resultSet )
             throws SQLException
     {
-        return new StringReader( resultSet.getString( SQLESUtil.STATE_COLUMN ) );
+        return new StringReader( resultSet.getString( ENTITY_STATE_COLUMN_NAME ) );
     }
 
 }

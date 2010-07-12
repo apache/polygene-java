@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, Stanislav Muhametsin. All Rights Reserved.
+ * Copyright (c) 2010, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,35 +19,33 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.sql.SQLEntityStoreService;
 import org.qi4j.entitystore.sql.database.DatabaseSQLServiceStatementsMixin;
-import org.qi4j.entitystore.sql.database.PostgreSQLDatabaseSQLServiceMixin;
 import org.qi4j.entitystore.sql.database.DatabaseSQLService.DatabaseSQLServiceComposite;
 import org.qi4j.entitystore.sql.database.DatabaseSQLServiceCoreMixin;
 import org.qi4j.entitystore.sql.database.DatabaseSQLServiceSpi;
 import org.qi4j.entitystore.sql.database.DatabaseSQLStringsBuilder;
+import org.qi4j.entitystore.sql.database.MySQLDatabaseSQLServiceMixin;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 
 /**
  * @author Stanislav Muhametsin
  * @author Paul Merlin
  */
-public class PostgreSQLEntityStoreAssembler
+public class MySQLEntityStoreAssembler
         implements Assembler
 {
 
-    public static final Visibility DEFAULT_VISIBILITY = Visibility.module;
-
-    public static final String SERVICE_NAME = "entitystore_postgresql";
+    public static final String SERVICE_NAME = "entitystore_mysql";
 
     private final Visibility _visibility;
 
-    public PostgreSQLEntityStoreAssembler()
+    public MySQLEntityStoreAssembler()
     {
-        this( DEFAULT_VISIBILITY );
+        this( Visibility.module );
     }
 
-    public PostgreSQLEntityStoreAssembler( Visibility visibility )
+    public MySQLEntityStoreAssembler( Visibility _visibility )
     {
-        this._visibility = visibility;
+        this._visibility = _visibility;
     }
 
     @SuppressWarnings( "unchecked" )
@@ -62,7 +60,7 @@ public class PostgreSQLEntityStoreAssembler
                             DatabaseSQLServiceSpi.CommonMixin.class,
                             DatabaseSQLStringsBuilder.CommonMixin.class,
                             DatabaseSQLServiceStatementsMixin.class,
-                            PostgreSQLDatabaseSQLServiceMixin.class ).
+                            MySQLDatabaseSQLServiceMixin.class ).
                 identifiedBy( SERVICE_NAME ).
                 visibleIn( Visibility.module );
 

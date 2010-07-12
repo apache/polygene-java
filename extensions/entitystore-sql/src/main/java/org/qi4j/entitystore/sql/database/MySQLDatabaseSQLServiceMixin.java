@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, Stanislav Muhametsin. All Rights Reserved.
+ * Copyright (c) 2010, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  */
 package org.qi4j.entitystore.sql.database;
 
+import java.io.StringReader;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -28,22 +29,16 @@ import org.slf4j.LoggerFactory;
  * @author Stanislav Muhametsin
  * @author Paul Merlin
  */
-public abstract class PostgreSQLDatabaseSQLServiceMixin
-        implements DatabaseSQLServiceSpi, DatabaseSQLStringsBuilder, DatabaseSQLService
+public abstract class MySQLDatabaseSQLServiceMixin
+        implements DatabaseSQLService, DatabaseSQLStringsBuilder, DatabaseSQLServiceSpi
 {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger( PostgreSQLDatabaseSQLServiceMixin.class );
+    private static final Logger LOGGER = LoggerFactory.getLogger( MySQLDatabaseSQLServiceMixin.class );
 
-    private static final String ENTITY_PK_COLUMN_DATA_TYPE = "BIGINT";
-
-    private static final String ENTITY_IDENTITY_COLUMN_DATA_TYPE = "TEXT";
-
-    private static final String ENTITY_STATE_COLUMN_DATA_TYPE = "TEXT";
-
-    private static final String CREATE_TABLE_SQL = "CREATE TABLE %s." + TABLE_NAME + "(" + "\n" + //
-            ENTITY_PK_COLUMN_NAME + " " + ENTITY_PK_COLUMN_DATA_TYPE + " NOT NULL PRIMARY KEY," + "\n" + //
-            ENTITY_IDENTITY_COLUMN_NAME + " " + ENTITY_IDENTITY_COLUMN_DATA_TYPE + " NOT NULL UNIQUE," + "\n" + //
-            ENTITY_STATE_COLUMN_NAME + " " + ENTITY_STATE_COLUMN_DATA_TYPE + " NOT NULL)";
+    private static final String CREATE_TABLE_SQL = "CREATE TABLE %s." + TABLE_NAME + " ("
+            + ENTITY_PK_COLUMN_NAME + " BIGINT PRIMARY KEY, "
+            + ENTITY_IDENTITY_COLUMN_NAME + " VARCHAR(256) NOT NULL UNIQUE, "
+            + ENTITY_STATE_COLUMN_NAME + " LONGTEXT NOT NULL)";
 
     @This
     protected DatabaseSQLServiceSpi _spi;
@@ -54,11 +49,11 @@ public abstract class PostgreSQLDatabaseSQLServiceMixin
     {
         ResultSet rs = null;
         try {
-            rs = connection.getMetaData().getTables( null, this._spi.getCurrentSchemaName(), SQLs.TABLE_NAME, new String[]{ "TABLE" } );
+            String tableNameForQuery = SQLs.TABLE_NAME.toUpperCase();
+            rs = connection.getMetaData().getTables( null, null, tableNameForQuery, new String[]{ "TABLE" } );
             boolean tableExists = rs.next();
-            LOGGER.trace( "Found table {}? {}", SQLs.TABLE_NAME, tableExists );
+            LOGGER.trace( "Found table {}? {}", tableNameForQuery, tableExists );
             return tableExists;
-
         } finally {
             SQLUtil.closeQuietly( rs );
         }
@@ -75,7 +70,7 @@ public abstract class PostgreSQLDatabaseSQLServiceMixin
     public EntityValueResult getEntityValue( ResultSet rs )
             throws SQLException
     {
-        return new EntityValueResult( rs.getCharacterStream( 2 ), rs.getLong( 1 ) );
+        return new EntityValueResult( new StringReader( rs.getString( 2 ) ), rs.getLong( 1 ) );
     }
 
 }

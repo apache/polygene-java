@@ -11,7 +11,6 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.entitystore.sql;
 
 import java.sql.Connection;
@@ -19,6 +18,7 @@ import java.sql.DriverManager;
 import java.sql.Statement;
 
 import org.junit.Ignore;
+
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
@@ -31,10 +31,9 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.entitystore.sql.bootstrap.PostgreSQLEntityStoreAssembler;
 import org.qi4j.entitystore.sql.database.PostgreSQLConfiguration;
-import org.qi4j.entitystore.sql.database.PostgreSQLDatabaseSQLServiceMixin;
+import org.qi4j.entitystore.sql.database.SQLs;
 import org.qi4j.library.sql.common.SQLUtil;
 import org.qi4j.spi.structure.ApplicationSPI;
-import org.qi4j.test.EntityTestAssembler;
 import org.qi4j.test.entity.performance.AbstractEntityStorePerformanceTest;
 
 /**
@@ -42,7 +41,8 @@ import org.qi4j.test.entity.performance.AbstractEntityStorePerformanceTest;
  * @author Stanislav Muhametsin
  */
 @Ignore // ES Performance tests seem to be pretty broken at the moment. At least if I want to delete test data after running tests, and also by not waiting for Runnables to finish running.
-public class PostgreSQLEntityStorePerformanceTest extends AbstractEntityStorePerformanceTest
+public class PostgreSQLEntityStorePerformanceTest
+        extends AbstractEntityStorePerformanceTest
 {
 
     public PostgreSQLEntityStorePerformanceTest()
@@ -55,14 +55,14 @@ public class PostgreSQLEntityStorePerformanceTest extends AbstractEntityStorePer
         return new Assembler()
         {
 
+            @SuppressWarnings( "unchecked" )
             public void assemble( ModuleAssembly module )
-                throws AssemblyException
+                    throws AssemblyException
             {
                 new PostgreSQLEntityStoreAssembler().assemble( module );
                 ModuleAssembly configModule = module.layerAssembly().moduleAssembly( "config" );
                 configModule.addServices( MemoryEntityStoreService.class );
                 configModule.addEntities( PostgreSQLConfiguration.class ).visibleIn( Visibility.layer );
-                new EntityTestAssembler( Visibility.module ).assemble( configModule );
             }
 
         };
@@ -70,18 +70,14 @@ public class PostgreSQLEntityStorePerformanceTest extends AbstractEntityStorePer
 
     @Override
     protected void cleanUp()
-        throws Exception
+            throws Exception
     {
-        try
-        {
+        try {
             super.cleanUp();
-        }
-        finally
-        {
+        } finally {
 
             Energy4Java qi4j = new Energy4Java();
-            Assembler[][][] assemblers = new Assembler[][][]
-            {
+            Assembler[][][] assemblers = new Assembler[][][]{
                 {
                     {
                         createAssembler()
@@ -93,35 +89,26 @@ public class PostgreSQLEntityStorePerformanceTest extends AbstractEntityStorePer
             } );
             application.activate();
 
-            Module moduleInstance = application.findModule( "Layer 1", "Module 1" );
+            Module moduleInstance = application.findModule( "Layer 1", "config" );
             UnitOfWorkFactory uowf = moduleInstance.unitOfWorkFactory();
             UnitOfWork uow = uowf.newUnitOfWork();
-            try
-            {
-                PostgreSQLConfiguration config = uow.get( PostgreSQLConfiguration.class,
-                    PostgreSQLEntityStoreAssembler.SERVICE_NAME );
+            try {
+                PostgreSQLConfiguration config = uow.get( PostgreSQLConfiguration.class, PostgreSQLEntityStoreAssembler.SERVICE_NAME );
                 Connection connection = DriverManager.getConnection( config.connectionString().get() );
                 String schemaName = config.schemaName().get();
-                if( schemaName == null )
-                {
-                    schemaName = PostgreSQLDatabaseSQLServiceMixin.DEFAULT_SCHEMA_NAME;
+                if ( schemaName == null ) {
+                    schemaName = SQLs.DEFAULT_SCHEMA_NAME;
                 }
 
                 Statement stmt = null;
-                try
-                {
+                try {
                     stmt = connection.createStatement();
-                    stmt.execute( String.format( "DELETE FROM %s." + PostgreSQLDatabaseSQLServiceMixin.TABLE_NAME,
-                        schemaName ) );
+                    stmt.execute( String.format( "DELETE FROM %s." + SQLs.TABLE_NAME, schemaName ) );
                     connection.commit();
-                }
-                finally
-                {
+                } finally {
                     SQLUtil.closeQuietly( stmt );
                 }
-            }
-            finally
-            {
+            } finally {
                 uow.discard();
             }
         }

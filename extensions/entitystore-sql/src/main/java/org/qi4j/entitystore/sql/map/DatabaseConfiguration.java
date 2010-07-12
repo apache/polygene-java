@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, Stanislav Muhametsin. All Rights Reserved.
+ * Copyright (c) 2010, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,30 +11,26 @@
  * limitations under the License.
  *
  */
-package org.qi4j.entitystore.sql.database;
-
-import java.sql.Connection;
+package org.qi4j.entitystore.sql.map;
 
 import org.qi4j.api.common.Optional;
+import org.qi4j.api.configuration.ConfigurationComposite;
 import org.qi4j.api.property.Property;
 
-/**
- *
- * @author Stanislav Muhametsin
- */
-public interface DatabaseSQLServiceState
+public interface DatabaseConfiguration
+        extends ConfigurationComposite
 {
 
-    @Optional
-    public Property<Long> nextEntityPK();
+    Property<String> driver();
+
+    Property<String> connectionURL();
+
+    Property<String> dbName();
 
     @Optional
-    public Property<Object> pkLock();
+    Property<String> user();
 
     @Optional
-    public Property<Connection> connection();
-
-    @Optional
-    public Property<String> schemaName();
+    Property<String> password();
 
 }

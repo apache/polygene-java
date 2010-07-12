@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, Stanislav Muhametsin. All Rights Reserved.
+ * Copyright (c) 2010, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,25 +17,24 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
 
-import org.junit.Ignore;
+import org.apache.derby.iapi.services.io.FileUtil;
 
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
-import org.qi4j.entitystore.sql.bootstrap.PostgreSQLEntityStoreAssembler;
-import org.qi4j.entitystore.sql.database.PostgreSQLConfiguration;
+import org.qi4j.entitystore.sql.bootstrap.DerbySQLEntityStoreAssembler;
+import org.qi4j.entitystore.sql.database.DerbySQLConfiguration;
 import org.qi4j.entitystore.sql.database.SQLs;
 import org.qi4j.library.sql.common.SQLUtil;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
 
 /**
- *
  * @author Stanislav Muhametsin
+ * @author Paul Merlin
  */
-@Ignore
-public class PostgreSQLEntityStoreTest
+public class DerbySQLEntityStoreTest
         extends AbstractEntityStoreTest
 {
 
@@ -45,20 +44,19 @@ public class PostgreSQLEntityStoreTest
             throws AssemblyException
     {
         super.assemble( module );
-        new PostgreSQLEntityStoreAssembler().assemble( module );
+        new DerbySQLEntityStoreAssembler().assemble( module );
         ModuleAssembly config = module.layerAssembly().moduleAssembly( "config" );
         config.addServices( MemoryEntityStoreService.class );
-        config.addEntities( PostgreSQLConfiguration.class ).visibleIn( Visibility.layer );
+        config.addEntities( DerbySQLConfiguration.class ).visibleIn( Visibility.layer );
     }
 
     @Override
     public void tearDown()
             throws Exception
     {
-
         UnitOfWork uow = this.unitOfWorkFactory.newUnitOfWork();
         try {
-            PostgreSQLConfiguration config = uow.get( PostgreSQLConfiguration.class, PostgreSQLEntityStoreAssembler.SERVICE_NAME );
+            DerbySQLConfiguration config = uow.get( DerbySQLConfiguration.class, DerbySQLEntityStoreAssembler.SERVICE_NAME );
             Connection connection = DriverManager.getConnection( config.connectionString().get() );
             String schemaName = config.schemaName().get();
             if ( schemaName == null ) {
@@ -73,6 +71,16 @@ public class PostgreSQLEntityStoreTest
             } finally {
                 SQLUtil.closeQuietly( stmt );
             }
+
+            String str = config.connectionString().get();
+            StringBuilder connectionString = new StringBuilder( str );
+            if ( !str.contains( ";" ) ) {
+                connectionString.append( ";" );
+            }
+            connectionString.append( "shutdown=true" );
+
+            FileUtil.removeDirectory( "target/qi4j-data" );
+
         } finally {
             uow.discard();
             super.tearDown();
