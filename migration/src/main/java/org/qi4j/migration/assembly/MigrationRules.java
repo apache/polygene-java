@@ -94,7 +94,7 @@ public class MigrationRules<T extends AbstractMigrationRule>
         if( versionChanges.get( toVersion ) == null )
         {
             List<String> toVersions = new ArrayList<String>( versionChanges.keySet() );
-            Collections.sort( toVersions );
+            Collections.sort( toVersions, Collections.reverseOrder() );
             for( String version : toVersions )
             {
                 if( version.compareTo( toVersion ) <= 0 )

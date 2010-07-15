@@ -87,8 +87,9 @@ public class ReindexerMixin
 
         public void reindex( EntityStore store )
         {
-            store.visitEntityStates( this, module );
+            EntityStoreUnitOfWork uow = store.visitEntityStates( this, module );
             reindexState();
+            uow.applyChanges().commit(); // Apply any change caused by the reindex, such as migrated data
         }
 
         public void visitEntityState( EntityState entityState )

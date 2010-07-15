@@ -99,7 +99,12 @@ public interface MigrationService
             {
                 for( EntityMigrationRule matchedRule : matchedRules )
                 {
-                    changed = matchedRule.upgrade( state, stateStore, migrator ) || changed;
+                    boolean ruleExecuted = matchedRule.upgrade( state, stateStore, migrator );
+
+                    if (ruleExecuted && log.isLoggable( Level.FINE ))
+                        log.fine( matchedRule.toString() );
+
+                    changed = ruleExecuted || changed;
                 }
             }
 
@@ -136,6 +141,7 @@ public interface MigrationService
                         {
                             rule.upgrade( store, this );
                             executedRules.add( rule );
+                            log.fine( rule.toString() );
                         }
 
                         log.info( "Migrated to " + version );
