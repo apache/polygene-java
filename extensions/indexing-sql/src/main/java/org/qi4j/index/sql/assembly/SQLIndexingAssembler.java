@@ -60,7 +60,6 @@ public class SQLIndexingAssembler implements Assembler
       this._serviceName = serviceName;
    }
    
-   @Override
    public void assemble(ModuleAssembly module) throws AssemblyException
    {
       module.addServices(SQLIndexingEngineService.class).identifiedBy(this._serviceName).visibleIn(this._esVisiblity);

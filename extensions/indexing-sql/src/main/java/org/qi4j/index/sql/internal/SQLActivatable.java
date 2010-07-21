@@ -32,7 +32,6 @@ public class SQLActivatable implements Activatable
    
    @This private SQLJDBCState _state;
    
-   @Override
    public void activate() throws Exception
    {
       Connection connection = this._startup.createConnection();
@@ -40,7 +39,6 @@ public class SQLActivatable implements Activatable
       this._startup.initConnection(connection);
    }
    
-   @Override
    public void passivate() throws Exception
    {
       // Nothing to do.

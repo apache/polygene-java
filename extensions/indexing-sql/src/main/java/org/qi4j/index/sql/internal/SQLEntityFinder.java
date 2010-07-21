@@ -52,7 +52,6 @@ public class SQLEntityFinder implements EntityFinder
       ReturnType doIt() throws SQLException;
    }
 
-   @Override
    public long countEntities(String resultType, BooleanExpression whereClause) throws EntityFinderException
    {
 
@@ -63,7 +62,6 @@ public class SQLEntityFinder implements EntityFinder
       return this.performQuery(new DoQuery<Long>()
       {
 
-         @Override
          public Long doIt() throws SQLException
          {
             PreparedStatement ps = null;
@@ -84,7 +82,6 @@ public class SQLEntityFinder implements EntityFinder
       });
    }
 
-   @Override
    public Iterable<EntityReference> findEntities(String resultType, BooleanExpression whereClause, OrderBy[] orderBySegments, final Integer firstResult, final Integer maxResults) throws EntityFinderException
    {
       // TODO what is Qi4j's policy on negative firstResult and/or maxResults? JDBC has its own way of interpreting these values - does it match with Qi4j's way?
@@ -97,7 +94,6 @@ public class SQLEntityFinder implements EntityFinder
 
          result = this.performQuery(new DoQuery<Iterable<EntityReference>>()
          {
-            @Override
             public Iterable<EntityReference> doIt() throws SQLException
             {
                PreparedStatement ps = null;
@@ -139,7 +135,6 @@ public class SQLEntityFinder implements EntityFinder
       return result;
    }
 
-   @Override
    public EntityReference findEntity(String resultType, BooleanExpression whereClause) throws EntityFinderException
    {
       final List<Object> values = new ArrayList<Object>();
@@ -148,7 +143,6 @@ public class SQLEntityFinder implements EntityFinder
 
       return this.performQuery(new DoQuery<EntityReference>()
       {
-         @Override
          public EntityReference doIt() throws SQLException
          {
             PreparedStatement ps = null;

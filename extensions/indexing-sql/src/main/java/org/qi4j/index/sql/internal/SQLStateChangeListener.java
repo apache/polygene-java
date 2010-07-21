@@ -16,13 +16,11 @@
 package org.qi4j.index.sql.internal;
 
 import java.sql.SQLException;
-import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.unitofwork.UnitOfWorkException;
-import org.qi4j.index.sql.SQLIndexingEngineService;
 import org.qi4j.library.sql.api.SQLIndexing;
 import org.qi4j.library.sql.common.SQLUtil;
 import org.qi4j.spi.entity.EntityState;
@@ -39,7 +37,6 @@ public abstract class SQLStateChangeListener implements StateChangeListener
 
    @Service private SQLIndexing _indexing;
 
-   @Override
    public void notifyChanges(Iterable<EntityState> changedStates)
    {
       try
