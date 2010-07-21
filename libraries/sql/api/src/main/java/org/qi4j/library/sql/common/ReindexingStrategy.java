@@ -48,7 +48,6 @@ public interface ReindexingStrategy
     */
    public abstract class AlwaysNeed implements ReindexingStrategy
    {
-      @Override
       public Boolean reindexingNeeded(String dbAppVersion, String currentAppVersion)
       {
          return true;
@@ -62,7 +61,6 @@ public interface ReindexingStrategy
     */
    public abstract class NeverNeed implements ReindexingStrategy
    {
-      @Override
       public Boolean reindexingNeeded(String dbAppVersion, String currentAppVersion)
       {
          return false;
@@ -77,7 +75,6 @@ public interface ReindexingStrategy
     */
    public abstract class NeedOnChange implements ReindexingStrategy
    {
-      @Override
       public Boolean reindexingNeeded(String dbAppVersion, String currentAppVersion)
       {
          return !dbAppVersion.equals(currentAppVersion);

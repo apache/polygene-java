@@ -17,7 +17,6 @@ package org.qi4j.library.sql.postgresql.internal;
 
 import static org.qi4j.library.sql.postgresql.internal.SQLs.*;
 
-import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
@@ -42,7 +41,6 @@ import java.util.logging.Logger;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.Identity;
-import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
@@ -139,7 +137,6 @@ public class PostgreSQLAppStartup implements SQLAppStartup
             String.class, //
             new SQLTypeCustomizer()
             {
-               @Override
                public String customizeType(Type propertyType, SQLTypeInfo sqlTypeInfo)
                {
                   return "VARCHAR(" + sqlTypeInfo.maxLength() + ")";
@@ -150,7 +147,6 @@ public class PostgreSQLAppStartup implements SQLAppStartup
             BigInteger.class, //
             new SQLTypeCustomizer()
             {
-               @Override
                public String customizeType(Type propertyType, SQLTypeInfo sqlTypeInfo)
                {
                   return "NUMERIC(" + sqlTypeInfo.maxLength() + ", 0)";
@@ -161,7 +157,6 @@ public class PostgreSQLAppStartup implements SQLAppStartup
             BigDecimal.class, //
             new SQLTypeCustomizer()
             {
-               @Override
                public String customizeType(Type propertyType, SQLTypeInfo sqlTypeInfo)
                {
                   return "NUMERIC(" + sqlTypeInfo.maxLength() + ", " + sqlTypeInfo.scale() + ")";
@@ -170,7 +165,6 @@ public class PostgreSQLAppStartup implements SQLAppStartup
             );
    }
 
-   @Override
    public Connection createConnection() throws SQLException
    {
       this.initTypes();
@@ -183,7 +177,6 @@ public class PostgreSQLAppStartup implements SQLAppStartup
       return connection;
    }
 
-   @Override
    public void initConnection(Connection connection) throws SQLException
    {
       String schemaName = this._configuration.configuration().schemaName().get();

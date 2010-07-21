@@ -216,62 +216,50 @@ public final class GenericDatabaseExplorer
     public static abstract class DatabaseProcessorAdapter implements DatabaseProcessor
     {
 
-        @Override
         public void beginProcessColumnInfo( String schemaName, String tableName, ColumnInfo colInfo, ForeignKeyInfo fkInfo )
         {
         }
 
-        @Override
         public void beginProcessColumns( String schemaName, String tableName, String tableRemarks )
         {
         }
 
-        @Override
         public void beginProcessRowInfo( String schemaName, String tableName, Object[] rowContents )
         {
         }
 
-        @Override
         public void beginProcessRows( String schemaName, String tableName, String tableRemarks )
         {
         }
 
-        @Override
         public void beginProcessSchemaInfo( String schemaName )
         {
         }
 
-        @Override
         public void beginProcessTableInfo( String schemaName, String tableName, String remarks )
         {
         }
 
-        @Override
         public void endProcessColumnInfo( String schemaName, String tableName, ColumnInfo colInfo, ForeignKeyInfo fkInfo )
         {
         }
 
-        @Override
         public void endProcessColumns( String schemaName, String tableName, String tableRemarks )
         {
         }
 
-        @Override
         public void endProcessRowInfo( String schemaName, String tableName, Object[] rowContents )
         {
         }
 
-        @Override
         public void endProcessRows( String schemaName, String tableName, String tableRemarks )
         {
         }
 
-        @Override
         public void endProcessSchemaInfo( String schemaName )
         {
         }
 
-        @Override
         public void endProcessTableInfo( String schemaName, String tableName, String remarks )
         {
         }

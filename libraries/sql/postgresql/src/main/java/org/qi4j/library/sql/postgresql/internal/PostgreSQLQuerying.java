@@ -220,19 +220,16 @@ public class PostgreSQLQuerying implements SQLQuerying
 
     }
 
-    @Override
     public Integer getResultSetType( Integer firstResult, Integer maxResults )
     {
         return ResultSet.TYPE_FORWARD_ONLY;
     }
 
-    @Override
     public Boolean isFirstResultSettingSupported()
     {
         return true;
     }
 
-    @Override
     public String constructQuery( String resultType, //
         BooleanExpression whereClause, //
         OrderBy[] orderBySegments, //
@@ -392,7 +389,6 @@ public class PostgreSQLQuerying implements SQLQuerying
             new WhereClauseProcessor( )
             {
 
-                @Override
                 public void processWhereClause( StringBuilder where, StringBuilder fromClause, StringBuilder groupBy, StringBuilder having, StringBuilder afterWhere, String joinStyle, Integer firstTableIndex, Integer lastTableIndex )
                 {
                     where.append(String.format(
@@ -422,7 +418,6 @@ public class PostgreSQLQuerying implements SQLQuerying
             new WhereClauseProcessor( )
             {
 
-                @Override
                 public void processWhereClause( StringBuilder where, StringBuilder fromClause, StringBuilder groupBy, StringBuilder having, StringBuilder afterWhere, String joinStyle, Integer firstTableIndex, Integer lastTableIndex )
                 {
                     QualifiedName qName = QualifiedName.fromClass( predicate.propertyReference( ).propertyDeclaringType( ), predicate
@@ -477,7 +472,6 @@ public class PostgreSQLQuerying implements SQLQuerying
             new WhereClauseProcessor( )
             {
 
-                @Override
                 public void processWhereClause( StringBuilder where, StringBuilder fromClause, StringBuilder groupBy, StringBuilder having, StringBuilder afterWhere, String joinStyle, Integer firstTableIndex, Integer lastTableIndex )
                 {
                     where.append(TABLE_NAME_PREFIX + lastTableIndex + "." + SQLs.ENTITY_TABLE_IDENTITY_COLUMN_NAME + " " +
@@ -511,7 +505,6 @@ public class PostgreSQLQuerying implements SQLQuerying
             new WhereClauseProcessor( )
             {
 
-                @Override
                 public void processWhereClause( StringBuilder where, StringBuilder fromClause, StringBuilder groupBy, StringBuilder having, StringBuilder afterWhere, String joinStyle, Integer firstTableIndex, Integer lastTableIndex )
                 {
                     QNameInfo info = _state.qNameInfos( ).get( ).get(
@@ -550,7 +543,6 @@ public class PostgreSQLQuerying implements SQLQuerying
             new WhereClauseProcessor( )
             {
 
-                @Override
                 public void processWhereClause( StringBuilder where, StringBuilder fromClause, StringBuilder groupBy, StringBuilder having, StringBuilder afterWhere, String joinStyle, Integer firstTableIndex, Integer lastTableIndex )
                 {
                     String result = "";
@@ -584,7 +576,6 @@ public class PostgreSQLQuerying implements SQLQuerying
             new WhereClauseProcessor( )
             {
 
-                @Override
                 public void processWhereClause( StringBuilder where, StringBuilder fromClause, StringBuilder groupBy, StringBuilder having, StringBuilder afterWhere, String joinStyle, Integer firstTableIndex, Integer lastTableIndex )
                 {
                     where.append(TABLE_NAME_PREFIX + lastTableIndex + "." + SQLs.QNAME_TABLE_COLLECTION_PATH_COLUMN_NAME + " ~ '" +
@@ -651,7 +642,6 @@ public class PostgreSQLQuerying implements SQLQuerying
             new WhereClauseProcessor( )
             {
 
-                @Override
                 public void processWhereClause( StringBuilder where, StringBuilder fromClause, StringBuilder groupBy, StringBuilder having, StringBuilder afterWhere, String joinStyle, Integer firstTableIndex, Integer lastTableIndex )
                 {
                     Collection<?> collection = (Collection<?>)((SingleValueExpression<?>)predicate.valueExpression( )).value( );
@@ -1123,7 +1113,6 @@ public class PostgreSQLQuerying implements SQLQuerying
             ((ValueComposite)value).state( ).visitProperties( new StateVisitor( )
             {
 
-                @Override
                 public void visitProperty( QualifiedName name, Object propertyValue )
                 {
 

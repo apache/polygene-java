@@ -12,17 +12,6 @@
   <packaging>bundle</packaging>
   
   <description>API to use for SQL indexing, hiding away vendor-specific SQL code and optimizations.</description>
-  <build>
-   <plugins>
-     <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
-        </configuration>
-      </plugin>
-   </plugins>
-  </build>
   <dependencies>
   	<dependency>
   		<groupId>org.qi4j.core</groupId>
@@ -40,7 +29,7 @@
       <plugin>
         <artifactId>maven-pmd-plugin</artifactId>
         <configuration>
-          <targetJdk>1.6</targetJdk>
+          <targetJdk>1.5</targetJdk>
           <sourceEncoding>utf-8</sourceEncoding>
           <minimumTokens>100</minimumTokens>
         </configuration>

@@ -49,7 +49,6 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
-import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.spi.value.ValueDescriptor;
 
@@ -70,7 +69,6 @@ public class PostgreSQLIndexing implements SQLIndexing
 
    @This private PostgreSQLTypeHelper _sqlTypeHelper;
 
-    @Override
     public void indexEntities( Iterable<EntityState> changedStates, Connection connection )
         throws SQLException
     {

@@ -62,7 +62,6 @@ public class PostgreSQLAssembler implements Assembler
         this._serviceName = serviceName;
     }
 
-    @Override
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
         module.addServices( PostgreSQLService.class ).identifiedBy( this._serviceName ).visibleIn( this._esVisiblity ).instantiateOnStartup( );

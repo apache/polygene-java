@@ -52,85 +52,71 @@ public interface SQLEntityState extends EntityState
             this._entityPK = pk;
         }
 
-        @Override
         public Long getEntityPK()
         {
             return this._entityPK;
         }
 
-        @Override
         public DefaultEntityState getDefaultEntityState()
         {
             return this._state;
         }
 
-        @Override
         public EntityDescriptor entityDescriptor()
         {
             return this._state.entityDescriptor();
         }
 
-        @Override
         public EntityReference getAssociation( QualifiedName stateName )
         {
             return this._state.getAssociation( stateName );
         }
 
-        @Override
         public ManyAssociationState getManyAssociation( QualifiedName stateName )
         {
             return this._state.getManyAssociation( stateName );
         }
 
-        @Override
         public Object getProperty( QualifiedName stateName )
         {
             return this._state.getProperty( stateName );
         }
 
-        @Override
         public EntityReference identity()
         {
             return this._state.identity();
         }
 
-        @Override
         public boolean isOfType( TypeName type )
         {
             return this._state.isOfType( type );
         }
 
-        @Override
         public long lastModified()
         {
             return this._state.lastModified();
         }
 
-        @Override
         public void remove()
         {
             this._state.remove();
         }
 
-        @Override
         public void setAssociation( QualifiedName stateName, EntityReference newEntity )
         {
             this._state.setAssociation( stateName, newEntity );
         }
 
-        @Override
         public void setProperty( QualifiedName stateName, Object json )
         {
             this._state.setProperty( stateName, json );
         }
 
-        @Override
         public EntityStatus status()
         {
             return this._state.status();
         }
 
-        @Override
         public String version()
         {
             return this._state.version();

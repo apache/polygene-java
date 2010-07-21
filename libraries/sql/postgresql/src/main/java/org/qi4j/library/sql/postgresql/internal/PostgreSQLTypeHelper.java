@@ -78,7 +78,6 @@ public interface PostgreSQLTypeHelper
          return primitive;
       }
       
-      @Override
       public void addPrimitiveToPS(PreparedStatement ps, Integer index, Object primitive, Type primitiveType) throws SQLException
       {
          primitive = processJavaPrimitiveBeforeUsingInStatement(primitive);
@@ -86,7 +85,6 @@ public interface PostgreSQLTypeHelper
          ps.setObject(index, primitive, sqlType);
       }
       
-      @Override
       public Integer getSQLType(Object primitive)
       {
          primitive = processJavaPrimitiveBeforeUsingInStatement(primitive);
