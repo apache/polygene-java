@@ -27,7 +27,6 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.entitystore.map.MapEntityStore;
 import org.qi4j.entitystore.sql.map.DatabaseMapService;
-import org.qi4j.entitystore.sql.map.SQLESUtil;
 import org.qi4j.library.sql.common.SQLUtil;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entitystore.EntityNotFoundException;
@@ -44,14 +43,12 @@ public class SQLMapEntityStoreMixin
     public void activate()
             throws Exception
     {
-        System.out.println( "SQLMapEntityStoreMixin: activate" );
         dbService.startDatabase();
     }
 
     public void passivate()
             throws Exception
     {
-        System.out.println( "SQLMapEntityStoreMixin: passivate" );
         dbService.stopDatabase();
     }
 
