@@ -169,10 +169,13 @@ public interface RdfIndexingService
         )
             throws RepositoryException
         {
-            final URI entityURI = stateSerializer.createEntityURI( getValueFactory(), entityState.identity() );
-            Graph graph = new GraphImpl();
-            stateSerializer.serialize( entityState, false, graph );
-            connection.add( graph, entityURI );
+            if( entityState.entityDescriptor().entityType().queryable() )
+            {
+                final URI entityURI = stateSerializer.createEntityURI( getValueFactory(), entityState.identity() );
+                Graph graph = new GraphImpl();
+                stateSerializer.serialize( entityState, false, graph );
+                connection.add( graph, entityURI );
+            }
         }
 
         private void indexEntityType( final EntityType entityType,
@@ -180,12 +183,15 @@ public interface RdfIndexingService
         )
             throws RepositoryException
         {
-            final URI compositeURI = getValueFactory().createURI( entityType.uri() );
-            // remove composite type if already present
-            connection.clear( compositeURI );
+            if( entityType.queryable() )
+            {
+                final URI compositeURI = getValueFactory().createURI( entityType.uri() );
+                // remove composite type if already present
+                connection.clear( compositeURI );
 
-            Iterable<Statement> statements = typeSerializer.serialize( entityType );
-            connection.add( statements, compositeURI );
+                Iterable<Statement> statements = typeSerializer.serialize( entityType );
+                connection.add( statements, compositeURI );
+            }
         }
 
         private ValueFactory getValueFactory()
