@@ -202,7 +202,7 @@ public abstract class AbstractNamedQueryTest
             query,
             "Joe Doe", "Ann Doe", "Jack Doe",
             "Penang", "Kuala Lumpur",
-            "Cooking", "Gaming", "Programming", "Cars", "Felix"
+            "Cooking", "Gaming", "Programming", "Cars"
         );
     }
 
@@ -341,7 +341,7 @@ public abstract class AbstractNamedQueryTest
         System.out.println( "*** script17: " + query );
         verifyOrderedResults(
             query,
-            "Felix", "Gaming", "Jack Doe"
+            "Gaming", "Jack Doe", "Joe Doe"
         );
     }
 
@@ -355,7 +355,7 @@ public abstract class AbstractNamedQueryTest
         System.out.println( "*** script18: " + query );
         verifyOrderedResults(
             query,
-            "Ann Doe", "Cars", "Cooking", "Felix", "Gaming", "Jack Doe", "Joe Doe", "Kuala Lumpur", "Penang", "Programming"
+            "Ann Doe", "Cars", "Cooking", "Gaming", "Jack Doe", "Joe Doe", "Kuala Lumpur", "Penang", "Programming"
         );
     }
 
@@ -369,7 +369,7 @@ public abstract class AbstractNamedQueryTest
         System.out.println( "*** script19: " + query );
         verifyOrderedResults(
             query,
-            "Felix", "Gaming", "Jack Doe", "Joe Doe", "Kuala Lumpur", "Penang", "Programming"
+            "Gaming", "Jack Doe", "Joe Doe", "Kuala Lumpur", "Penang", "Programming"
         );
     }
 
