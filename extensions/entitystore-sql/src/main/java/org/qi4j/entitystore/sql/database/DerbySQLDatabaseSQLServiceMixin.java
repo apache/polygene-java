@@ -43,7 +43,7 @@ public abstract class DerbySQLDatabaseSQLServiceMixin
             + ENTITY_STATE_COLUMN_NAME + " VARCHAR(32000) NOT NULL)";
 
     @This
-    protected DatabaseSQLServiceSpi _spi;
+    protected DatabaseSQLServiceSpi spi;
 
     @Override
     public boolean tableExists( Connection connection )
@@ -64,7 +64,7 @@ public abstract class DerbySQLDatabaseSQLServiceMixin
     @Override
     public String[] buildSQLForTableCreation()
     {
-        String[] sql = new String[]{ String.format( CREATE_TABLE_SQL, this._spi.getCurrentSchemaName() ) };
+        String[] sql = new String[]{ String.format( CREATE_TABLE_SQL, this.spi.getCurrentSchemaName() ) };
         LOGGER.trace( "SQL for table creation: {}", sql );
         return sql;
     }

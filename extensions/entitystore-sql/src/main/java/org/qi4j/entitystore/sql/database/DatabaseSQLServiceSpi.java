@@ -56,10 +56,10 @@ public interface DatabaseSQLServiceSpi
         private static final Logger LOGGER = LoggerFactory.getLogger( DatabaseSQLServiceSpi.class );
 
         @This
-        private Configuration<SQLConfiguration> _configuration;
+        private Configuration<SQLConfiguration> configuration;
 
         @This
-        private DatabaseSQLServiceState _state;
+        private DatabaseSQLServiceState state;
 
         public boolean schemaExists( Connection connection )
                 throws SQLException
@@ -85,7 +85,7 @@ public interface DatabaseSQLServiceSpi
         public String getConfiguredSchemaName( Connection connection )
                 throws SQLException
         {
-            String result = this._configuration.configuration().schemaName().get();
+            String result = this.configuration.configuration().schemaName().get();
             if ( result == null ) {
                 result = SQLs.DEFAULT_SCHEMA_NAME;
             }
@@ -94,13 +94,13 @@ public interface DatabaseSQLServiceSpi
 
         public String getCurrentSchemaName()
         {
-            return this._state.schemaName().get();
+            return this.state.schemaName().get();
         }
 
         public Connection createConnection()
                 throws SQLException
         {
-            return DriverManager.getConnection( _configuration.configuration().connectionString().get() );
+            return DriverManager.getConnection( configuration.configuration().connectionString().get() );
         }
 
         public long readNextEntityPK( Connection connection )

@@ -37,14 +37,14 @@ public interface DatabaseSQLService
     public final class EntityValueResult
     {
 
-        private final Reader _reader;
+        private final Reader reader;
 
-        private final Long _entityPK;
+        private final Long entityPK;
 
         public EntityValueResult( Reader reader, Long entityPK )
         {
-            this._reader = reader;
-            this._entityPK = entityPK;
+            this.reader = reader;
+            this.entityPK = entityPK;
         }
 
         /**
@@ -52,7 +52,7 @@ public interface DatabaseSQLService
          */
         public Long getEntityPK()
         {
-            return this._entityPK;
+            return entityPK;
         }
 
         /**
@@ -60,7 +60,7 @@ public interface DatabaseSQLService
          */
         public Reader getReader()
         {
-            return this._reader;
+            return reader;
         }
 
     }

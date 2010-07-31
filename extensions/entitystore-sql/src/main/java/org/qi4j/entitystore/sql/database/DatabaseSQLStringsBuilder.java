@@ -47,11 +47,11 @@ public interface DatabaseSQLStringsBuilder
         private static final Logger LOGGER = LoggerFactory.getLogger( DatabaseSQLStringsBuilder.class );
 
         @This
-        private DatabaseSQLServiceSpi _spi;
+        private DatabaseSQLServiceSpi spi;
 
         public String[] buildSQLForSchemaCreation()
         {
-            String[] sql = new String[]{ String.format( SQLs.CREATE_SCHEMA_SQL, this._spi.getCurrentSchemaName() ) };
+            String[] sql = new String[]{ String.format( SQLs.CREATE_SCHEMA_SQL, this.spi.getCurrentSchemaName() ) };
             LOGGER.trace( "SQL for schema creation: {}", sql );
             return sql;
         }
@@ -66,35 +66,35 @@ public interface DatabaseSQLStringsBuilder
 
         public String buildSQLForSelectAllEntitiesStatement()
         {
-            String sql = String.format( SQLs.SELECT_ALL_ENTITIES_SQL, this._spi.getCurrentSchemaName() );
+            String sql = String.format( SQLs.SELECT_ALL_ENTITIES_SQL, this.spi.getCurrentSchemaName() );
             LOGGER.trace( "SQL for select all entities: {}", sql );
             return sql;
         }
 
         public String buildSQLForSelectEntityStatement()
         {
-            String sql = String.format( SQLs.SELECT_ENTITY_SQL, this._spi.getCurrentSchemaName() );
+            String sql = String.format( SQLs.SELECT_ENTITY_SQL, this.spi.getCurrentSchemaName() );
             LOGGER.trace( "SQL for select entity: {}", sql );
             return sql;
         }
 
         public String buildSQLForInsertEntityStatement()
         {
-            String sql = String.format( SQLs.INSERT_ENTITY_SQL, this._spi.getCurrentSchemaName() );
+            String sql = String.format( SQLs.INSERT_ENTITY_SQL, this.spi.getCurrentSchemaName() );
             LOGGER.trace( "SQL for insert entity: {}", sql );
             return sql;
         }
 
         public String buildSQLForUpdateEntityStatement()
         {
-            String sql = String.format( SQLs.UPDATE_ENTITY_SQL, this._spi.getCurrentSchemaName() );
+            String sql = String.format( SQLs.UPDATE_ENTITY_SQL, this.spi.getCurrentSchemaName() );
             LOGGER.trace( "SQL for update entity: {}", sql );
             return sql;
         }
 
         public String buildSQLForRemoveEntityStatement()
         {
-            String sql = String.format( SQLs.REMOVE_ENTITY_SQL, this._spi.getCurrentSchemaName() );
+            String sql = String.format( SQLs.REMOVE_ENTITY_SQL, this.spi.getCurrentSchemaName() );
             LOGGER.trace( "SQL for remove entity: {}", sql );
             return sql;
         }

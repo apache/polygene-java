@@ -46,7 +46,7 @@ public abstract class PostgreSQLDatabaseSQLServiceMixin
             ENTITY_STATE_COLUMN_NAME + " " + ENTITY_STATE_COLUMN_DATA_TYPE + " NOT NULL)";
 
     @This
-    protected DatabaseSQLServiceSpi _spi;
+    protected DatabaseSQLServiceSpi spi;
 
     @Override
     public boolean tableExists( Connection connection )
@@ -54,7 +54,7 @@ public abstract class PostgreSQLDatabaseSQLServiceMixin
     {
         ResultSet rs = null;
         try {
-            rs = connection.getMetaData().getTables( null, this._spi.getCurrentSchemaName(), SQLs.TABLE_NAME, new String[]{ "TABLE" } );
+            rs = connection.getMetaData().getTables( null, this.spi.getCurrentSchemaName(), SQLs.TABLE_NAME, new String[]{ "TABLE" } );
             boolean tableExists = rs.next();
             LOGGER.trace( "Found table {}? {}", SQLs.TABLE_NAME, tableExists );
             return tableExists;
@@ -67,7 +67,7 @@ public abstract class PostgreSQLDatabaseSQLServiceMixin
     @Override
     public String[] buildSQLForTableCreation()
     {
-        String[] sql = new String[]{ String.format( CREATE_TABLE_SQL, this._spi.getCurrentSchemaName() ) };
+        String[] sql = new String[]{ String.format( CREATE_TABLE_SQL, this.spi.getCurrentSchemaName() ) };
         LOGGER.trace( "SQL for table creation: {}", sql );
         return sql;
     }

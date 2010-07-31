@@ -16,12 +16,14 @@ package org.qi4j.entitystore.sql.database;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Application.Mode;
 import org.qi4j.library.sql.common.SQLUtil;
 import org.qi4j.spi.entitystore.EntityStoreException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,39 +38,39 @@ public abstract class DatabaseSQLServiceCoreMixin
     private static final Logger LOGGER = LoggerFactory.getLogger( DatabaseSQLServiceCoreMixin.class );
 
     @This
-    private DatabaseSQLServiceState _state;
+    private DatabaseSQLServiceState state;
 
     @Structure
-    private Application _application;
+    private Application application;
 
     @This
-    protected DatabaseSQLServiceSpi _spi;
+    protected DatabaseSQLServiceSpi spi;
 
     @This
-    private DatabaseSQLStringsBuilder _sqlStrings;
+    private DatabaseSQLStringsBuilder sqlStrings;
 
     public Connection getConnection()
             throws SQLException
     {
-        return this._state.connection().get();
+        return state.connection().get();
     }
 
     public void startDatabase()
             throws Exception
     {
-        Connection connection = this._spi.createConnection();
-        this._state.connection().set( connection );
-        String schema = this._spi.getConfiguredSchemaName( connection );
+        Connection connection = spi.createConnection();
+        state.connection().set( connection );
+        String schema = spi.getConfiguredSchemaName( connection );
         if ( schema == null ) {
             throw new EntityStoreException( "Schema name must not be null." );
         } else {
-            this._state.schemaName().set( schema );
+            state.schemaName().set( schema );
 
-            if ( !this._spi.schemaExists( connection ) ) {
+            if ( !spi.schemaExists( connection ) ) {
                 Statement stmt = null;
                 try {
                     stmt = connection.createStatement();
-                    for ( String sql : this._sqlStrings.buildSQLForSchemaCreation() ) {
+                    for ( String sql : sqlStrings.buildSQLForSchemaCreation() ) {
                         stmt.execute( sql );
                     }
                 } finally {
@@ -77,14 +79,14 @@ public abstract class DatabaseSQLServiceCoreMixin
                 LOGGER.trace( "Schema {} created", schema );
             }
 
-            if ( !this._spi.tableExists( connection ) ) {
+            if ( !spi.tableExists( connection ) ) {
                 Statement stmt = null;
                 try {
                     stmt = connection.createStatement();
-                    for ( String sql : this._sqlStrings.buildSQLForTableCreation() ) {
+                    for ( String sql : sqlStrings.buildSQLForTableCreation() ) {
                         stmt.execute( sql );
                     }
-                    for ( String sql : this._sqlStrings.buildSQLForIndexCreation() ) {
+                    for ( String sql : sqlStrings.buildSQLForIndexCreation() ) {
                         stmt.execute( sql );
                     }
                 } finally {
@@ -95,9 +97,9 @@ public abstract class DatabaseSQLServiceCoreMixin
 
             connection.setAutoCommit( false );
 
-            this._state.pkLock().set( new Object() );
-            synchronized ( this._state.pkLock().get() ) {
-                this._state.nextEntityPK().set( this._spi.readNextEntityPK( connection ) );
+            state.pkLock().set( new Object() );
+            synchronized ( state.pkLock().get() ) {
+                state.nextEntityPK().set( spi.readNextEntityPK( connection ) );
             }
 
         }
@@ -107,22 +109,21 @@ public abstract class DatabaseSQLServiceCoreMixin
     public void stopDatabase()
             throws Exception
     {
-        if ( Mode.production == this._application.mode() && getConnection() != null ) {
+        if ( Mode.production == application.mode() && getConnection() != null ) {
             SQLUtil.closeQuietly( getConnection() );
         }
     }
 
     public Long newPKForEntity()
     {
-        if ( this._state.pkLock().get() == null || this._state.nextEntityPK().get() == null ) {
+        if ( state.pkLock().get() == null || state.nextEntityPK().get() == null ) {
             throw new EntityStoreException( "New PK asked for entity, but database service has not been initialized properly." );
         }
 
-        synchronized ( this._state.pkLock().get() ) {
-            Long result = this._state.nextEntityPK().get();
+        synchronized ( state.pkLock().get() ) {
+            Long result = state.nextEntityPK().get();
             Long next = result + 1;
-            this._state.nextEntityPK().set( next );
-
+            state.nextEntityPK().set( next );
             return result;
         }
     }

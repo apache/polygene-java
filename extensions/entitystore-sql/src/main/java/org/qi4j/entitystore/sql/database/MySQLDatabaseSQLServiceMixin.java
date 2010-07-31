@@ -41,7 +41,7 @@ public abstract class MySQLDatabaseSQLServiceMixin
             + ENTITY_STATE_COLUMN_NAME + " LONGTEXT NOT NULL)";
 
     @This
-    protected DatabaseSQLServiceSpi _spi;
+    protected DatabaseSQLServiceSpi spi;
 
     @Override
     public boolean tableExists( Connection connection )
@@ -62,7 +62,7 @@ public abstract class MySQLDatabaseSQLServiceMixin
     @Override
     public String[] buildSQLForTableCreation()
     {
-        String[] sql = new String[]{ String.format( CREATE_TABLE_SQL, this._spi.getCurrentSchemaName() ) };
+        String[] sql = new String[]{ String.format( CREATE_TABLE_SQL, this.spi.getCurrentSchemaName() ) };
         LOGGER.trace( "SQL for table creation: {}", sql );
         return sql;
     }

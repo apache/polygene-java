@@ -29,7 +29,7 @@ public abstract class DatabaseSQLServiceStatementsMixin
 {
 
     @This
-    private DatabaseSQLStringsBuilder _sqlStrings;
+    private DatabaseSQLStringsBuilder sqlStrings;
 
     //
     // Used by the EntityStore, will probably remain the same even if we support several sql servers
@@ -37,31 +37,31 @@ public abstract class DatabaseSQLServiceStatementsMixin
     public PreparedStatement prepareGetAllEntitiesStatement( Connection connection )
             throws SQLException
     {
-        return connection.prepareStatement( _sqlStrings.buildSQLForSelectAllEntitiesStatement() );
+        return connection.prepareStatement( sqlStrings.buildSQLForSelectAllEntitiesStatement() );
     }
 
     public PreparedStatement prepareGetEntityStatement( Connection connection )
             throws SQLException
     {
-        return connection.prepareStatement( _sqlStrings.buildSQLForSelectEntityStatement() );
+        return connection.prepareStatement( sqlStrings.buildSQLForSelectEntityStatement() );
     }
 
     public PreparedStatement prepareInsertEntityStatement( Connection connection )
             throws SQLException
     {
-        return connection.prepareStatement( _sqlStrings.buildSQLForInsertEntityStatement() );
+        return connection.prepareStatement( sqlStrings.buildSQLForInsertEntityStatement() );
     }
 
     public PreparedStatement prepareRemoveEntityStatement( Connection connection )
             throws SQLException
     {
-        return connection.prepareStatement( _sqlStrings.buildSQLForRemoveEntityStatement() );
+        return connection.prepareStatement( sqlStrings.buildSQLForRemoveEntityStatement() );
     }
 
     public PreparedStatement prepareUpdateEntityStatement( Connection connection )
             throws SQLException
     {
-        return connection.prepareStatement( _sqlStrings.buildSQLForUpdateEntityStatement() );
+        return connection.prepareStatement( sqlStrings.buildSQLForUpdateEntityStatement() );
     }
 
     //
