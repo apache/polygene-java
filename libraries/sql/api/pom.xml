@@ -11,6 +11,10 @@
   <version>1.2-SNAPSHOT</version>
   <packaging>bundle</packaging>
   
+  <properties>
+  <version.sqldsl>0.1.1</version.sqldsl>
+  </properties>
+  
   <description>API to use for SQL indexing, hiding away vendor-specific SQL code and optimizations.</description>
   <dependencies>
   	<dependency>
@@ -21,6 +25,13 @@
   	<dependency>
   		<groupId>org.qi4j.core</groupId>
   		<artifactId>qi4j-core-api</artifactId>
+  		<scope>compile</scope>
+  	</dependency>
+  	<dependency>
+  		<groupId>com.octo.java-sql-dsl</groupId>
+  		<artifactId>java-sql-dsl</artifactId>
+  		<version>${version.sqldsl}</version>
+  		<type>jar</type>
   		<scope>compile</scope>
   	</dependency>
   </dependencies>
