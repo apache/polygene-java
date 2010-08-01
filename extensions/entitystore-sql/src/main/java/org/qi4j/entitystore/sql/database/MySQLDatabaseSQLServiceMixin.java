@@ -37,6 +37,7 @@ public abstract class MySQLDatabaseSQLServiceMixin
 
     private static final String CREATE_TABLE_SQL = "CREATE TABLE %s." + TABLE_NAME + " ("
             + ENTITY_PK_COLUMN_NAME + " BIGINT PRIMARY KEY, "
+            + ENTITY_OPTIMISTIC_LOCK_COLUMN_NAME + " BIGINT NOT NULL, "
             + ENTITY_IDENTITY_COLUMN_NAME + " VARCHAR(256) NOT NULL UNIQUE, "
             + ENTITY_STATE_COLUMN_NAME + " LONGTEXT NOT NULL)";
 
@@ -62,7 +63,7 @@ public abstract class MySQLDatabaseSQLServiceMixin
     @Override
     public String[] buildSQLForTableCreation()
     {
-        String[] sql = new String[]{ String.format( CREATE_TABLE_SQL, this.spi.getCurrentSchemaName() ) };
+        String[] sql = new String[]{ String.format( CREATE_TABLE_SQL, spi.getCurrentSchemaName() ) };
         LOGGER.trace( "SQL for table creation: {}", sql );
         return sql;
     }
@@ -70,7 +71,9 @@ public abstract class MySQLDatabaseSQLServiceMixin
     public EntityValueResult getEntityValue( ResultSet rs )
             throws SQLException
     {
-        return new EntityValueResult( new StringReader( rs.getString( 2 ) ), rs.getLong( 1 ) );
+        return new EntityValueResult( rs.getLong( SQLs.ENTITY_PK_COLUMN_NAME ),
+                                      rs.getLong( SQLs.ENTITY_OPTIMISTIC_LOCK_COLUMN_NAME ),
+                                      new StringReader( rs.getString( SQLs.ENTITY_STATE_COLUMN_NAME ) ) );
     }
 
 }

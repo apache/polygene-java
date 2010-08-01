@@ -93,11 +93,13 @@ public abstract class DatabaseSQLServiceStatementsMixin
         ps.setLong( 1, entityPK );
     }
 
-    public void populateUpdateEntityStatement( PreparedStatement ps, Long entityPK, EntityReference ref, String entity )
+    public void populateUpdateEntityStatement( PreparedStatement ps, Long entityPK, Long entityOptimisticLock, EntityReference ref, String entity )
             throws SQLException
     {
-        ps.setString( 1, entity );
-        ps.setLong( 2, entityPK );
+        ps.setLong( 1, entityOptimisticLock + 1 );
+        ps.setString( 2, entity );
+        ps.setLong( 3, entityPK );
+        ps.setLong( 4, entityOptimisticLock );
     }
 
 }

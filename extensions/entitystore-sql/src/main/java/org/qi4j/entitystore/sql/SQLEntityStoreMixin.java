@@ -14,6 +14,7 @@
 package org.qi4j.entitystore.sql;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -32,6 +33,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.json.JSONWriter;
+
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityReference;
@@ -69,8 +71,8 @@ import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.property.PropertyTypeDescriptor;
 import org.qi4j.spi.structure.ModuleSPI;
-import org.slf4j.Logger;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -146,7 +148,8 @@ public abstract class SQLEntityStoreMixin
                             writeEntityState( defState, writer, version );
                             writer.flush();
                             if ( EntityStatus.UPDATED.equals( status ) ) {
-                                database.populateUpdateEntityStatement( updatePS, entityPK, defState.identity(), writer.toString() );
+                                Long entityOptimisticLock = ( ( SQLEntityState ) state ).getEntityOptimisticLock();
+                                database.populateUpdateEntityStatement( updatePS, entityPK, entityOptimisticLock, defState.identity(), writer.toString() );
                                 updatePS.addBatch();
                             } else if ( EntityStatus.NEW.equals( status ) ) {
                                 database.populateInsertEntityStatement( insertPS, entityPK, defState.identity(), writer.toString() );
@@ -163,12 +166,16 @@ public abstract class SQLEntityStoreMixin
 
                 } catch ( SQLException sqle ) {
                     SQLUtil.rollbackQuietly( connection );
-//                    SQLException e = sqle;
-//                    while (e != null)
-//                    {
-//                        e.printStackTrace();
-//                        e = e.getNextException();
-//                    }
+                    if ( LOGGER.isDebugEnabled() ) {
+                        StringWriter sb = new StringWriter();
+                        sb.append( "SQLException during commit, logging nested exceptions before throwing EntityStoreException:\n" );
+                        SQLException e = sqle;
+                        while ( e != null ) {
+                            e.printStackTrace( new PrintWriter( sb, true ) );
+                            e = e.getNextException();
+                        }
+                        LOGGER.debug( sb.toString() );
+                    }
                     throw new EntityStoreException( sqle );
                 } catch ( RuntimeException re ) {
                     SQLUtil.rollbackQuietly( connection );
@@ -187,17 +194,22 @@ public abstract class SQLEntityStoreMixin
         };
     }
 
-    public EntityState getEntityState( EntityStoreUnitOfWork unitOfWork, EntityReference identity )
+    public EntityState getEntityState( EntityStoreUnitOfWork unitOfWork, EntityReference entityRef )
     {
-        EntityValueResult valueResult = this.getValue( identity );
-        return new DefaultSQLEntityState( this.readEntityState( ( DefaultEntityStoreUnitOfWork ) unitOfWork, valueResult.getReader() ), valueResult.getEntityPK() );
+        EntityValueResult valueResult = getValue( entityRef );
+        return new DefaultSQLEntityState( readEntityState( ( DefaultEntityStoreUnitOfWork ) unitOfWork,
+                                                           valueResult.getReader() ),
+                                          valueResult.getEntityPK(),
+                                          valueResult.getEntityOptimisticLock() );
     }
 
-    public EntityState newEntityState( EntityStoreUnitOfWork unitOfWork, EntityReference identity,
-                                       EntityDescriptor entityDescriptor )
+    public EntityState newEntityState( EntityStoreUnitOfWork unitOfWork, EntityReference entityRef, EntityDescriptor entityDescriptor )
     {
-        return new DefaultSQLEntityState( new DefaultEntityState( ( DefaultEntityStoreUnitOfWork ) unitOfWork, identity,
-                                                                  entityDescriptor ), this.database.newPKForEntity() );
+        return new DefaultSQLEntityState( new DefaultEntityState( ( DefaultEntityStoreUnitOfWork ) unitOfWork,
+                                                                  entityRef,
+                                                                  entityDescriptor ),
+                                          database.newPKForEntity(),
+                                          null );
     }
 
     public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSPI module )
@@ -348,15 +360,15 @@ public abstract class SQLEntityStoreMixin
     protected EntityValueResult getValue( EntityReference ref )
     {
         try {
-            Connection connection = this.database.getConnection();
-            PreparedStatement ps = this.database.prepareGetEntityStatement( connection );
-            this.database.populateGetEntityStatement( ps, ref );
+            Connection connection = database.getConnection();
+            PreparedStatement ps = database.prepareGetEntityStatement( connection );
+            database.populateGetEntityStatement( ps, ref );
             ResultSet rs = ps.executeQuery();
             if ( !rs.next() ) {
                 throw new EntityNotFoundException( ref );
             }
 
-            EntityValueResult result = this.database.getEntityValue( rs );
+            EntityValueResult result = database.getEntityValue( rs );
 
             SQLUtil.closeQuietly( rs );
             SQLUtil.closeQuietly( ps );

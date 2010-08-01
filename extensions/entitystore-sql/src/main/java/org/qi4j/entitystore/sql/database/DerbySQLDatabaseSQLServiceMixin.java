@@ -39,6 +39,7 @@ public abstract class DerbySQLDatabaseSQLServiceMixin
             // For when indexing and store are synchronized and we'll be able to let the database generate the PKs
             // + ENTITY_PK_COLUMN_NAME + " BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY, "
             + ENTITY_PK_COLUMN_NAME + " BIGINT PRIMARY KEY, "
+            + ENTITY_OPTIMISTIC_LOCK_COLUMN_NAME + " BIGINT NOT NULL, "
             + ENTITY_IDENTITY_COLUMN_NAME + " VARCHAR(256) NOT NULL UNIQUE, "
             + ENTITY_STATE_COLUMN_NAME + " VARCHAR(32000) NOT NULL)";
 
@@ -72,7 +73,9 @@ public abstract class DerbySQLDatabaseSQLServiceMixin
     public EntityValueResult getEntityValue( ResultSet rs )
             throws SQLException
     {
-        return new EntityValueResult( new StringReader( rs.getString( 2 ) ), rs.getLong( 1 ) );
+        return new EntityValueResult( rs.getLong( SQLs.ENTITY_PK_COLUMN_NAME ),
+                                      rs.getLong( SQLs.ENTITY_OPTIMISTIC_LOCK_COLUMN_NAME ),
+                                      new StringReader( rs.getString( SQLs.ENTITY_STATE_COLUMN_NAME ) ) );
     }
 
 }

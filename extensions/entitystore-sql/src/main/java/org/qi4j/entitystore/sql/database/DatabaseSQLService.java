@@ -37,14 +37,17 @@ public interface DatabaseSQLService
     public final class EntityValueResult
     {
 
-        private final Reader reader;
-
         private final Long entityPK;
 
-        public EntityValueResult( Reader reader, Long entityPK )
+        private final Long entityOptimisticLock;
+
+        private final Reader reader;
+
+        public EntityValueResult( Long entityPK, Long entityOptimisticLock, Reader reader )
         {
-            this.reader = reader;
             this.entityPK = entityPK;
+            this.entityOptimisticLock = entityOptimisticLock;
+            this.reader = reader;
         }
 
         /**
@@ -53,6 +56,14 @@ public interface DatabaseSQLService
         public Long getEntityPK()
         {
             return entityPK;
+        }
+
+        /**
+         * @return the entityOptimisticLock
+         */
+        public Long getEntityOptimisticLock()
+        {
+            return entityOptimisticLock;
         }
 
         /**
@@ -98,7 +109,7 @@ public interface DatabaseSQLService
     void populateInsertEntityStatement( PreparedStatement ps, Long entityPK, EntityReference ref, String entity )
             throws SQLException;
 
-    void populateUpdateEntityStatement( PreparedStatement ps, Long entityPK, EntityReference ref, String entity )
+    void populateUpdateEntityStatement( PreparedStatement ps, Long entityPK, Long entityOptimisticLock, EntityReference ref, String entity )
             throws SQLException;
 
     void populateRemoveEntityStatement( PreparedStatement ps, Long entityPK, EntityReference ref )

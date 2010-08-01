@@ -42,6 +42,7 @@ public abstract class PostgreSQLDatabaseSQLServiceMixin
 
     private static final String CREATE_TABLE_SQL = "CREATE TABLE %s." + TABLE_NAME + "(" + "\n" + //
             ENTITY_PK_COLUMN_NAME + " " + ENTITY_PK_COLUMN_DATA_TYPE + " NOT NULL PRIMARY KEY," + "\n" + //
+            ENTITY_OPTIMISTIC_LOCK_COLUMN_NAME + " BIGINT NOT NULL, " + //
             ENTITY_IDENTITY_COLUMN_NAME + " " + ENTITY_IDENTITY_COLUMN_DATA_TYPE + " NOT NULL UNIQUE," + "\n" + //
             ENTITY_STATE_COLUMN_NAME + " " + ENTITY_STATE_COLUMN_DATA_TYPE + " NOT NULL)";
 
@@ -75,7 +76,9 @@ public abstract class PostgreSQLDatabaseSQLServiceMixin
     public EntityValueResult getEntityValue( ResultSet rs )
             throws SQLException
     {
-        return new EntityValueResult( rs.getCharacterStream( 2 ), rs.getLong( 1 ) );
+        return new EntityValueResult( rs.getLong( SQLs.ENTITY_PK_COLUMN_NAME ),
+                                      rs.getLong( SQLs.ENTITY_OPTIMISTIC_LOCK_COLUMN_NAME ),
+                                      rs.getCharacterStream( SQLs.ENTITY_STATE_COLUMN_NAME ) );
     }
 
 }
