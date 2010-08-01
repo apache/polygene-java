@@ -11,13 +11,12 @@
  * limitations under the License.
  *
  */
-
-
 package org.qi4j.library.sql.api;
 
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.util.NullArgumentException;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
@@ -29,116 +28,129 @@ import org.qi4j.spi.entitystore.helpers.DefaultEntityState;
  *
  * @author Stanislav Muhametsin
  */
-public interface SQLEntityState extends EntityState
+public interface SQLEntityState
+        extends EntityState
 {
 
     public Long getEntityPK();
 
+    public Long getEntityOptimisticLock();
+
     public DefaultEntityState getDefaultEntityState();
 
-    public final class DefaultSQLEntityState implements SQLEntityState
+    public final class DefaultSQLEntityState
+            implements SQLEntityState
     {
-        private final DefaultEntityState _state;
 
-        private final long _entityPK;
+        private final DefaultEntityState state;
 
-        public DefaultSQLEntityState(DefaultEntityState state, long pk)
+        private final Long entityPK;
+
+        private final Long entityOptimisticLock;
+
+        public DefaultSQLEntityState( DefaultEntityState state, Long entityPK, Long entityOptimisticLock )
         {
-            if (state == null)
-            {
-                throw new IllegalArgumentException( "Entity state must not be null." );
-            }
-            this._state = state;
-            this._entityPK = pk;
+            NullArgumentException.validateNotNull( "Entity state", state );
+            NullArgumentException.validateNotNull( "Entity PK", entityPK );
+            this.state = state;
+            this.entityPK = entityPK;
+            this.entityOptimisticLock = entityOptimisticLock;
         }
 
         public Long getEntityPK()
         {
-            return this._entityPK;
+            return entityPK;
+        }
+
+        public Long getEntityOptimisticLock()
+        {
+            return entityOptimisticLock;
         }
 
         public DefaultEntityState getDefaultEntityState()
         {
-            return this._state;
+            return state;
         }
 
         public EntityDescriptor entityDescriptor()
         {
-            return this._state.entityDescriptor();
+            return state.entityDescriptor();
         }
 
         public EntityReference getAssociation( QualifiedName stateName )
         {
-            return this._state.getAssociation( stateName );
+            return state.getAssociation( stateName );
         }
 
         public ManyAssociationState getManyAssociation( QualifiedName stateName )
         {
-            return this._state.getManyAssociation( stateName );
+            return state.getManyAssociation( stateName );
         }
 
         public Object getProperty( QualifiedName stateName )
         {
-            return this._state.getProperty( stateName );
+            return state.getProperty( stateName );
         }
 
         public EntityReference identity()
         {
-            return this._state.identity();
+            return state.identity();
         }
 
         public boolean isOfType( TypeName type )
         {
-            return this._state.isOfType( type );
+            return state.isOfType( type );
         }
 
         public long lastModified()
         {
-            return this._state.lastModified();
+            return state.lastModified();
         }
 
         public void remove()
         {
-            this._state.remove();
+            state.remove();
         }
 
         public void setAssociation( QualifiedName stateName, EntityReference newEntity )
         {
-            this._state.setAssociation( stateName, newEntity );
+            state.setAssociation( stateName, newEntity );
         }
 
         public void setProperty( QualifiedName stateName, Object json )
         {
-            this._state.setProperty( stateName, json );
+            state.setProperty( stateName, json );
         }
 
         public EntityStatus status()
         {
-            return this._state.status();
+            return state.status();
         }
 
         public String version()
         {
-            return this._state.version();
+            return state.version();
         }
 
         @Override
+        @SuppressWarnings( "EqualsWhichDoesntCheckParameterClass" )
         public boolean equals( Object obj )
         {
-            return this._state.equals( obj );
+            return state.equals( obj );
         }
 
         @Override
         public int hashCode()
         {
-            return this._state.hashCode();
+            return state.hashCode();
         }
 
         @Override
         public String toString()
         {
-            return this._state.toString();
+            return state.toString();
         }
 
     }
+
 }
