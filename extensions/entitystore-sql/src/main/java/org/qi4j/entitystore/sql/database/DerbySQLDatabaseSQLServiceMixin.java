@@ -46,7 +46,6 @@ public abstract class DerbySQLDatabaseSQLServiceMixin
     @This
     protected DatabaseSQLServiceSpi spi;
 
-    @Override
     public boolean tableExists( Connection connection )
             throws SQLException
     {
@@ -62,7 +61,6 @@ public abstract class DerbySQLDatabaseSQLServiceMixin
         }
     }
 
-    @Override
     public String[] buildSQLForTableCreation()
     {
         String[] sql = new String[]{ String.format( CREATE_TABLE_SQL, this.spi.getCurrentSchemaName() ) };

@@ -44,7 +44,6 @@ public abstract class MySQLDatabaseSQLServiceMixin
     @This
     protected DatabaseSQLServiceSpi spi;
 
-    @Override
     public boolean tableExists( Connection connection )
             throws SQLException
     {
@@ -60,7 +59,6 @@ public abstract class MySQLDatabaseSQLServiceMixin
         }
     }
 
-    @Override
     public String[] buildSQLForTableCreation()
     {
         String[] sql = new String[]{ String.format( CREATE_TABLE_SQL, spi.getCurrentSchemaName() ) };

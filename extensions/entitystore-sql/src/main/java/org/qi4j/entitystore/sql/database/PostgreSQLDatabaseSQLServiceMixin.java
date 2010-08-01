@@ -49,7 +49,6 @@ public abstract class PostgreSQLDatabaseSQLServiceMixin
     @This
     protected DatabaseSQLServiceSpi spi;
 
-    @Override
     public boolean tableExists( Connection connection )
             throws SQLException
     {
@@ -65,7 +64,6 @@ public abstract class PostgreSQLDatabaseSQLServiceMixin
         }
     }
 
-    @Override
     public String[] buildSQLForTableCreation()
     {
         String[] sql = new String[]{ String.format( CREATE_TABLE_SQL, this.spi.getCurrentSchemaName() ) };
