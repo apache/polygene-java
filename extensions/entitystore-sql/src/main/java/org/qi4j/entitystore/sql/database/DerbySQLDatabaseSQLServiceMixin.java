@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
  * @author Stanislav Muhametsin
  * @author Paul Merlin
  */
+@SuppressWarnings( "ProtectedField" )
 public abstract class DerbySQLDatabaseSQLServiceMixin
         implements DatabaseSQLService, DatabaseSQLStringsBuilder, DatabaseSQLServiceSpi
 {
@@ -36,12 +37,12 @@ public abstract class DerbySQLDatabaseSQLServiceMixin
     private static final Logger LOGGER = LoggerFactory.getLogger( DerbySQLDatabaseSQLServiceMixin.class );
 
     private static final String CREATE_TABLE_SQL = "CREATE TABLE %s." + TABLE_NAME + " ("
-            // For when indexing and store are synchronized and we'll be able to let the database generate the PKs
-            // + ENTITY_PK_COLUMN_NAME + " BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY, "
-            + ENTITY_PK_COLUMN_NAME + " BIGINT PRIMARY KEY, "
-            + ENTITY_OPTIMISTIC_LOCK_COLUMN_NAME + " BIGINT NOT NULL, "
-            + ENTITY_IDENTITY_COLUMN_NAME + " VARCHAR(256) NOT NULL UNIQUE, "
-            + ENTITY_STATE_COLUMN_NAME + " VARCHAR(32000) NOT NULL)";
+                                                   // For when indexing and store are synchronized and we'll be able to let the database generate the PKs
+                                                   // + ENTITY_PK_COLUMN_NAME + " BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY, "
+                                                   + ENTITY_PK_COLUMN_NAME + " BIGINT PRIMARY KEY, "
+                                                   + ENTITY_OPTIMISTIC_LOCK_COLUMN_NAME + " BIGINT NOT NULL, "
+                                                   + ENTITY_IDENTITY_COLUMN_NAME + " VARCHAR(256) NOT NULL UNIQUE, "
+                                                   + ENTITY_STATE_COLUMN_NAME + " VARCHAR(32000) NOT NULL)";
 
     @This
     protected DatabaseSQLServiceSpi spi;

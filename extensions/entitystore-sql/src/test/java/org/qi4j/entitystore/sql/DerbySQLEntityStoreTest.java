@@ -25,8 +25,8 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.entitystore.sql.bootstrap.DerbySQLEntityStoreAssembler;
-import org.qi4j.entitystore.sql.database.DerbySQLConfiguration;
 import org.qi4j.entitystore.sql.database.SQLs;
+import org.qi4j.library.sql.common.SQLConfiguration;
 import org.qi4j.library.sql.common.SQLUtil;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
 
@@ -44,10 +44,12 @@ public class DerbySQLEntityStoreTest
             throws AssemblyException
     {
         super.assemble( module );
+
         new DerbySQLEntityStoreAssembler().assemble( module );
+
         ModuleAssembly config = module.layerAssembly().moduleAssembly( "config" );
         config.addServices( MemoryEntityStoreService.class );
-        config.addEntities( DerbySQLConfiguration.class ).visibleIn( Visibility.layer );
+        config.addEntities( SQLConfiguration.class ).visibleIn( Visibility.layer );
     }
 
     @Override
@@ -56,7 +58,7 @@ public class DerbySQLEntityStoreTest
     {
         UnitOfWork uow = this.unitOfWorkFactory.newUnitOfWork();
         try {
-            DerbySQLConfiguration config = uow.get( DerbySQLConfiguration.class, DerbySQLEntityStoreAssembler.SERVICE_NAME );
+            SQLConfiguration config = uow.get( SQLConfiguration.class, DerbySQLEntityStoreAssembler.DATASOURCE_SERVICE_NAME );
             Connection connection = DriverManager.getConnection( config.connectionString().get() );
             String schemaName = config.schemaName().get();
             if ( schemaName == null ) {

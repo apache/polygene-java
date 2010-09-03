@@ -108,16 +108,15 @@ public abstract class SQLEntityStoreMixin
     public void activate()
             throws Exception
     {
-        this.uuid = UUID.randomUUID().toString() + "-";
-        this.count = 0;
-
-        this.database.startDatabase();
+        uuid = UUID.randomUUID().toString() + "-";
+        count = 0;
+        database.startDatabase();
     }
 
     public void passivate()
             throws Exception
     {
-        this.database.stopDatabase();
+        database.stopDatabase();
     }
 
     public StateCommitter applyChanges( final Iterable<EntityState> states, final String version )
@@ -184,6 +183,7 @@ public abstract class SQLEntityStoreMixin
                     SQLUtil.closeQuietly( insertPS );
                     SQLUtil.closeQuietly( updatePS );
                     SQLUtil.closeQuietly( removePS );
+                    SQLUtil.closeQuietly( connection );
                 }
             }
 
@@ -214,7 +214,7 @@ public abstract class SQLEntityStoreMixin
 
     public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSPI module )
     {
-        return new DefaultEntityStoreUnitOfWork( this.entityStoreSPI, this.newUnitOfWorkId(), module );
+        return new DefaultEntityStoreUnitOfWork( entityStoreSPI, newUnitOfWorkId(), module );
     }
 
     public EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor visitor, ModuleSPI module )
@@ -223,28 +223,30 @@ public abstract class SQLEntityStoreMixin
         PreparedStatement ps = null;
         ResultSet rs = null;
         final DefaultEntityStoreUnitOfWork uow =
-                new DefaultEntityStoreUnitOfWork( this.entityStoreSPI, newUnitOfWorkId(), module );
+                                           new DefaultEntityStoreUnitOfWork( entityStoreSPI, newUnitOfWorkId(), module );
         try {
-            connection = this.database.getConnection();
-            ps = this.database.prepareGetAllEntitiesStatement( connection );
-            this.database.populateGetAllEntitiesStatement( ps );
+            connection = database.getConnection();
+            ps = database.prepareGetAllEntitiesStatement( connection );
+            database.populateGetAllEntitiesStatement( ps );
             rs = ps.executeQuery();
             while ( rs.next() ) {
-                visitor.visitEntityState( this.readEntityState( uow, this.database.getEntityValue( rs ).getReader() ) );
+                visitor.visitEntityState( readEntityState( uow, database.getEntityValue( rs ).getReader() ) );
             }
         } catch ( SQLException sqle ) {
             throw new EntityStoreException( sqle );
         } finally {
             SQLUtil.closeQuietly( rs );
             SQLUtil.closeQuietly( ps );
+            SQLUtil.closeQuietly( connection );
         }
 
         return uow;
     }
 
+    @SuppressWarnings( "ValueOfIncrementOrDecrementUsed" )
     protected String newUnitOfWorkId()
     {
-        return this.uuid + Integer.toHexString( this.count++ );
+        return uuid + Integer.toHexString( count++ );
     }
 
     protected DefaultEntityState readEntityState( DefaultEntityStoreUnitOfWork unitOfWork, Reader entityState )
@@ -261,12 +263,12 @@ public abstract class SQLEntityStoreMixin
 
             // Check if version is correct
             String currentAppVersion = jsonObject.optString( MapEntityStore.JSONKeys.application_version.name(), "0.0" );
-            if ( !currentAppVersion.equals( this.application.version() ) ) {
-                if ( this.migration != null ) {
-                    this.migration.migrate( jsonObject, this.application.version(), this );
+            if ( !currentAppVersion.equals( application.version() ) ) {
+                if ( migration != null ) {
+                    migration.migrate( jsonObject, application.version(), this );
                 } else {
                     // Do nothing - set version to be correct
-                    jsonObject.put( MapEntityStore.JSONKeys.application_version.name(), this.application.version() );
+                    jsonObject.put( MapEntityStore.JSONKeys.application_version.name(), application.version() );
                 }
 
                 LOGGER.trace( "Updated version nr on {} from {} to {}",
@@ -299,8 +301,7 @@ public abstract class SQLEntityStoreMixin
                 if ( jsonValue == JSONObject.NULL ) {
                     properties.put( propertyDescriptor.qualifiedName(), null );
                 } else {
-                    Object value = ( ( PropertyTypeDescriptor ) propertyDescriptor ).propertyType().type().fromJSON(
-                            jsonValue, module );
+                    Object value = ( ( PropertyTypeDescriptor ) propertyDescriptor ).propertyType().type().fromJSON( jsonValue, module );
                     properties.put( propertyDescriptor.qualifiedName(), value );
                 }
             }
@@ -346,7 +347,7 @@ public abstract class SQLEntityStoreMixin
     public JSONObject getState( String id )
             throws IOException
     {
-        Reader reader = this.getValue( EntityReference.parseEntityReference( id ) ).getReader();
+        Reader reader = getValue( EntityReference.parseEntityReference( id ) ).getReader();
         JSONObject jsonObject;
         try {
             jsonObject = new JSONObject( new JSONTokener( reader ) );
@@ -359,23 +360,27 @@ public abstract class SQLEntityStoreMixin
 
     protected EntityValueResult getValue( EntityReference ref )
     {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
         try {
-            Connection connection = database.getConnection();
-            PreparedStatement ps = database.prepareGetEntityStatement( connection );
+            connection = database.getConnection();
+            ps = database.prepareGetEntityStatement( connection );
             database.populateGetEntityStatement( ps, ref );
-            ResultSet rs = ps.executeQuery();
+            rs = ps.executeQuery();
             if ( !rs.next() ) {
                 throw new EntityNotFoundException( ref );
             }
 
             EntityValueResult result = database.getEntityValue( rs );
 
-            SQLUtil.closeQuietly( rs );
-            SQLUtil.closeQuietly( ps );
-
             return result;
         } catch ( SQLException sqle ) {
             throw new EntityStoreException( "Unable to get Entity " + ref, sqle );
+        } finally {
+            SQLUtil.closeQuietly( rs );
+            SQLUtil.closeQuietly( ps );
+            SQLUtil.closeQuietly( connection );
         }
     }
 
@@ -386,7 +391,7 @@ public abstract class SQLEntityStoreMixin
             JSONWriter json = new JSONWriter( writer );
             JSONWriter properties = json.object().
                     key( "identity" ).value( state.identity().identity() ).
-                    key( "application_version" ).value( this.application.version() ).
+                    key( "application_version" ).value( application.version() ).
                     key( "type" ).value( state.entityDescriptor().entityType().type().name() ).
                     key( "version" ).value( version ).
                     key( "modified" ).value( state.lastModified() ).

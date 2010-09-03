@@ -14,14 +14,13 @@
 package org.qi4j.entitystore.sql.database;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import org.qi4j.api.configuration.Configuration;
+
 import org.qi4j.api.injection.scope.This;
-import org.qi4j.library.sql.common.SQLConfiguration;
 import org.qi4j.library.sql.common.SQLUtil;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,28 +34,20 @@ public interface DatabaseSQLServiceSpi
     boolean schemaExists( Connection connection )
             throws SQLException;
 
-    String getConfiguredSchemaName( Connection connection )
-            throws SQLException;
-
     String getCurrentSchemaName();
 
     boolean tableExists( Connection connection )
             throws SQLException;
 
-    Connection createConnection()
-            throws SQLException;
-
     long readNextEntityPK( Connection connection )
             throws SQLException;
 
+    @SuppressWarnings( "PublicInnerClass" )
     public abstract class CommonMixin
             implements DatabaseSQLServiceSpi
     {
 
         private static final Logger LOGGER = LoggerFactory.getLogger( DatabaseSQLServiceSpi.class );
-
-        @This
-        private Configuration<SQLConfiguration> configuration;
 
         @This
         private DatabaseSQLServiceState state;
@@ -82,25 +73,9 @@ public interface DatabaseSQLServiceSpi
             }
         }
 
-        public String getConfiguredSchemaName( Connection connection )
-                throws SQLException
-        {
-            String result = this.configuration.configuration().schemaName().get();
-            if ( result == null ) {
-                result = SQLs.DEFAULT_SCHEMA_NAME;
-            }
-            return result;
-        }
-
         public String getCurrentSchemaName()
         {
             return this.state.schemaName().get();
-        }
-
-        public Connection createConnection()
-                throws SQLException
-        {
-            return DriverManager.getConnection( configuration.configuration().connectionString().get() );
         }
 
         public long readNextEntityPK( Connection connection )

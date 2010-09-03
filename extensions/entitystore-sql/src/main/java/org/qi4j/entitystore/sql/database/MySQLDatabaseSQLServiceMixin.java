@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
  * @author Stanislav Muhametsin
  * @author Paul Merlin
  */
+@SuppressWarnings( "ProtectedField" )
 public abstract class MySQLDatabaseSQLServiceMixin
         implements DatabaseSQLService, DatabaseSQLStringsBuilder, DatabaseSQLServiceSpi
 {
@@ -36,10 +37,10 @@ public abstract class MySQLDatabaseSQLServiceMixin
     private static final Logger LOGGER = LoggerFactory.getLogger( MySQLDatabaseSQLServiceMixin.class );
 
     private static final String CREATE_TABLE_SQL = "CREATE TABLE %s." + TABLE_NAME + " ("
-            + ENTITY_PK_COLUMN_NAME + " BIGINT PRIMARY KEY, "
-            + ENTITY_OPTIMISTIC_LOCK_COLUMN_NAME + " BIGINT NOT NULL, "
-            + ENTITY_IDENTITY_COLUMN_NAME + " VARCHAR(256) NOT NULL UNIQUE, "
-            + ENTITY_STATE_COLUMN_NAME + " LONGTEXT NOT NULL)";
+                                                   + ENTITY_PK_COLUMN_NAME + " BIGINT PRIMARY KEY, "
+                                                   + ENTITY_OPTIMISTIC_LOCK_COLUMN_NAME + " BIGINT NOT NULL, "
+                                                   + ENTITY_IDENTITY_COLUMN_NAME + " VARCHAR(256) NOT NULL UNIQUE, "
+                                                   + ENTITY_STATE_COLUMN_NAME + " LONGTEXT NOT NULL)";
 
     @This
     protected DatabaseSQLServiceSpi spi;

@@ -25,14 +25,27 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.entitystore.sql.bootstrap.PostgreSQLEntityStoreAssembler;
-import org.qi4j.entitystore.sql.database.PostgreSQLConfiguration;
 import org.qi4j.entitystore.sql.database.SQLs;
+import org.qi4j.library.sql.common.SQLConfiguration;
 import org.qi4j.library.sql.common.SQLUtil;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
 
 /**
+ * WARN This test is deactivated on purpose, please do not commit it activated.
+ *
+ * To run it you need to have a user & database set up in postgresql. Here are two snippets to create and drop the
+ * needed test environment.
+ *
+ * Use 'password' as password for the jdbc_test_login user.
+ *
+ * createuser -A -D -P -E -W jdbc_test_login
+ * createdb -O jdbc_test_login -W jdbc_test_db
+ *
+ * dropdb -W jdbc_test_db
+ * dropuser -W jdbc_test_login
  *
  * @author Stanislav Muhametsin
+ * @author Paul Merlin
  */
 @Ignore
 public class PostgreSQLEntityStoreTest
@@ -45,10 +58,12 @@ public class PostgreSQLEntityStoreTest
             throws AssemblyException
     {
         super.assemble( module );
+
         new PostgreSQLEntityStoreAssembler().assemble( module );
+
         ModuleAssembly config = module.layerAssembly().moduleAssembly( "config" );
         config.addServices( MemoryEntityStoreService.class );
-        config.addEntities( PostgreSQLConfiguration.class ).visibleIn( Visibility.layer );
+        config.addEntities( SQLConfiguration.class ).visibleIn( Visibility.layer );
     }
 
     @Override
@@ -58,7 +73,7 @@ public class PostgreSQLEntityStoreTest
 
         UnitOfWork uow = this.unitOfWorkFactory.newUnitOfWork();
         try {
-            PostgreSQLConfiguration config = uow.get( PostgreSQLConfiguration.class, PostgreSQLEntityStoreAssembler.SERVICE_NAME );
+            SQLConfiguration config = uow.get( SQLConfiguration.class, PostgreSQLEntityStoreAssembler.DATASOURCE_SERVICE_NAME );
             Connection connection = DriverManager.getConnection( config.connectionString().get() );
             String schemaName = config.schemaName().get();
             if ( schemaName == null ) {

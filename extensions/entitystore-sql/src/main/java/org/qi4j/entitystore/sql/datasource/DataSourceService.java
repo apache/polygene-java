@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, Stanislav Muhametsin. All Rights Reserved.
+ * Copyright (c) 2010, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,15 +11,19 @@
  * limitations under the License.
  *
  */
-package org.qi4j.entitystore.sql.database;
+package org.qi4j.entitystore.sql.datasource;
 
-import org.qi4j.library.sql.common.SQLConfiguration;
+import javax.sql.DataSource;
 
 /**
- *
  * @author Stanislav Muhametsin
+ * @author Paul Merlin
  */
-public interface PostgreSQLConfiguration
-        extends SQLConfiguration
+public interface DataSourceService
 {
+
+    DataSource getDataSource();
+
+    String getConfiguredShemaName();
+
 }

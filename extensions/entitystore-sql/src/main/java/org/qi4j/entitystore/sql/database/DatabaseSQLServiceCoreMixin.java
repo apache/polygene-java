@@ -13,9 +13,11 @@
  */
 package org.qi4j.entitystore.sql.database;
 
+import org.qi4j.entitystore.sql.datasource.DataSourceService;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import org.qi4j.api.injection.scope.Service;
 
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
@@ -31,17 +33,21 @@ import org.slf4j.LoggerFactory;
  * @author Stanislav Muhametsin
  * @author Paul Merlin
  */
+@SuppressWarnings( "ProtectedField" )
 public abstract class DatabaseSQLServiceCoreMixin
         implements DatabaseSQLService
 {
 
     private static final Logger LOGGER = LoggerFactory.getLogger( DatabaseSQLServiceCoreMixin.class );
 
-    @This
-    private DatabaseSQLServiceState state;
-
     @Structure
     private Application application;
+
+    @Service
+    private DataSourceService dataSourceService;
+
+    @This
+    private DatabaseSQLServiceState state;
 
     @This
     protected DatabaseSQLServiceSpi spi;
@@ -52,15 +58,14 @@ public abstract class DatabaseSQLServiceCoreMixin
     public Connection getConnection()
             throws SQLException
     {
-        return state.connection().get();
+        return dataSourceService.getDataSource().getConnection();
     }
 
     public void startDatabase()
             throws Exception
     {
-        Connection connection = spi.createConnection();
-        state.connection().set( connection );
-        String schema = spi.getConfiguredSchemaName( connection );
+        Connection connection = getConnection();
+        String schema = dataSourceService.getConfiguredShemaName();
         if ( schema == null ) {
             throw new EntityStoreException( "Schema name must not be null." );
         } else {
@@ -104,13 +109,15 @@ public abstract class DatabaseSQLServiceCoreMixin
 
         }
 
+        SQLUtil.closeQuietly( connection );
+
     }
 
     public void stopDatabase()
             throws Exception
     {
-        if ( Mode.production == application.mode() && getConnection() != null ) {
-            SQLUtil.closeQuietly( getConnection() );
+        if ( Mode.production == application.mode() ) {
+            // NOOP
         }
     }
 
@@ -119,7 +126,6 @@ public abstract class DatabaseSQLServiceCoreMixin
         if ( state.pkLock().get() == null || state.nextEntityPK().get() == null ) {
             throw new EntityStoreException( "New PK asked for entity, but database service has not been initialized properly." );
         }
-
         synchronized ( state.pkLock().get() ) {
             Long result = state.nextEntityPK().get();
             Long next = result + 1;

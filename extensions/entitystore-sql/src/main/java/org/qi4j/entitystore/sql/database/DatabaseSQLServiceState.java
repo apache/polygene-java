@@ -13,14 +13,12 @@
  */
 package org.qi4j.entitystore.sql.database;
 
-import java.sql.Connection;
-
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.property.Property;
 
 /**
- *
  * @author Stanislav Muhametsin
+ * @author Paul Merlin
  */
 public interface DatabaseSQLServiceState
 {
@@ -30,9 +28,6 @@ public interface DatabaseSQLServiceState
 
     @Optional
     public Property<Object> pkLock();
-
-    @Optional
-    public Property<Connection> connection();
 
     @Optional
     public Property<String> schemaName();

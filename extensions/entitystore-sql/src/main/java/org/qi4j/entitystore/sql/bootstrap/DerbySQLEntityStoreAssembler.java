@@ -14,58 +14,67 @@
 package org.qi4j.entitystore.sql.bootstrap;
 
 import org.qi4j.api.common.Visibility;
-import org.qi4j.bootstrap.Assembler;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.sql.SQLEntityStoreService;
-import org.qi4j.entitystore.sql.database.DatabaseSQLServiceStatementsMixin;
-import org.qi4j.entitystore.sql.database.DatabaseSQLService.DatabaseSQLServiceComposite;
-import org.qi4j.entitystore.sql.database.DatabaseSQLServiceCoreMixin;
-import org.qi4j.entitystore.sql.database.DatabaseSQLServiceSpi;
-import org.qi4j.entitystore.sql.database.DatabaseSQLStringsBuilder;
+import org.qi4j.entitystore.sql.datasource.DataSourceService;
 import org.qi4j.entitystore.sql.database.DerbySQLDatabaseSQLServiceMixin;
-import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 
 /**
  * @author Stanislav Muhametsin
  * @author Paul Merlin
  */
 public class DerbySQLEntityStoreAssembler
-        implements Assembler
+        extends AbstractSQLEntityStoreAssembler
 {
 
-    public static final String SERVICE_NAME = "entitystore_derby";
+    public static final String ENTITYSTORE_SERVICE_NAME = "entitystore-derby";
 
-    private final Visibility _visibility;
+    public static final String DATASOURCE_SERVICE_NAME = "datasource-derby";
 
     public DerbySQLEntityStoreAssembler()
     {
-        this( Visibility.module );
+        super();
     }
 
-    public DerbySQLEntityStoreAssembler( Visibility _visibility )
+    public DerbySQLEntityStoreAssembler( Visibility visibility )
     {
-        this._visibility = _visibility;
+        super( visibility );
     }
 
-    @SuppressWarnings( "unchecked" )
-    public void assemble( ModuleAssembly module )
-            throws AssemblyException
+    public DerbySQLEntityStoreAssembler( DataSourceService importedDataSourceService )
     {
-        module.addServices( SQLEntityStoreService.class ).
-                visibleIn( this._visibility );
+        super( importedDataSourceService );
+    }
 
-        module.addServices( DatabaseSQLServiceComposite.class ).
-                withMixins( DatabaseSQLServiceCoreMixin.class,
-                            DatabaseSQLServiceSpi.CommonMixin.class,
-                            DatabaseSQLStringsBuilder.CommonMixin.class,
-                            DatabaseSQLServiceStatementsMixin.class,
-                            DerbySQLDatabaseSQLServiceMixin.class ).
-                identifiedBy( SERVICE_NAME ).
-                visibleIn( Visibility.module );
+    public DerbySQLEntityStoreAssembler( Visibility visibility, DataSourceService importedDataSourceService )
+    {
+        super( visibility, importedDataSourceService );
+    }
 
-        module.addServices( UuidIdentityGeneratorService.class ).
-                visibleIn( this._visibility );
+    public DerbySQLEntityStoreAssembler( Class<?>... dataSourceServiceMixins )
+    {
+        super( dataSourceServiceMixins );
+    }
+
+    public DerbySQLEntityStoreAssembler( Visibility visibility, Class<?>... dataSourceServiceMixins )
+    {
+        super( visibility, dataSourceServiceMixins );
+    }
+
+    @Override
+    protected String getEntityStoreServiceName()
+    {
+        return ENTITYSTORE_SERVICE_NAME;
+    }
+
+    @Override
+    protected String getDataSourceServiceName()
+    {
+        return DATASOURCE_SERVICE_NAME;
+    }
+
+    @Override
+    protected Class<?> getDatabaseSQLServiceSpecializationMixin()
+    {
+        return DerbySQLDatabaseSQLServiceMixin.class;
     }
 
 }

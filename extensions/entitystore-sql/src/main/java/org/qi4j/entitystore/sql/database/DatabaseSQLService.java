@@ -26,6 +26,7 @@ import org.qi4j.api.service.ServiceComposite;
  * @author Stanislav Muhametsin
  * @author Paul Merlin
  */
+@SuppressWarnings( "PublicInnerClass" )
 public interface DatabaseSQLService
 {
 

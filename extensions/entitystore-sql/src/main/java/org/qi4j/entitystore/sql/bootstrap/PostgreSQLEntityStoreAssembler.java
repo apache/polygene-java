@@ -14,60 +14,67 @@
 package org.qi4j.entitystore.sql.bootstrap;
 
 import org.qi4j.api.common.Visibility;
-import org.qi4j.bootstrap.Assembler;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.sql.SQLEntityStoreService;
-import org.qi4j.entitystore.sql.database.DatabaseSQLServiceStatementsMixin;
 import org.qi4j.entitystore.sql.database.PostgreSQLDatabaseSQLServiceMixin;
-import org.qi4j.entitystore.sql.database.DatabaseSQLService.DatabaseSQLServiceComposite;
-import org.qi4j.entitystore.sql.database.DatabaseSQLServiceCoreMixin;
-import org.qi4j.entitystore.sql.database.DatabaseSQLServiceSpi;
-import org.qi4j.entitystore.sql.database.DatabaseSQLStringsBuilder;
-import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
+import org.qi4j.entitystore.sql.datasource.DataSourceService;
 
 /**
  * @author Stanislav Muhametsin
  * @author Paul Merlin
  */
 public class PostgreSQLEntityStoreAssembler
-        implements Assembler
+        extends AbstractSQLEntityStoreAssembler
 {
 
-    public static final Visibility DEFAULT_VISIBILITY = Visibility.module;
+    public static final String ENTITYSTORE_SERVICE_NAME = "entitystore-postgresql";
 
-    public static final String SERVICE_NAME = "entitystore_postgresql";
-
-    private final Visibility _visibility;
+    public static final String DATASOURCE_SERVICE_NAME = "datasource-postgresql";
 
     public PostgreSQLEntityStoreAssembler()
     {
-        this( DEFAULT_VISIBILITY );
+        super();
     }
 
     public PostgreSQLEntityStoreAssembler( Visibility visibility )
     {
-        this._visibility = visibility;
+        super( visibility );
     }
 
-    @SuppressWarnings( "unchecked" )
-    public void assemble( ModuleAssembly module )
-            throws AssemblyException
+    public PostgreSQLEntityStoreAssembler( DataSourceService importedDataSourceService )
     {
-        module.addServices( SQLEntityStoreService.class ).
-                visibleIn( this._visibility );
+        super( importedDataSourceService );
+    }
 
-        module.addServices( DatabaseSQLServiceComposite.class ).
-                withMixins( DatabaseSQLServiceCoreMixin.class,
-                            DatabaseSQLServiceSpi.CommonMixin.class,
-                            DatabaseSQLStringsBuilder.CommonMixin.class,
-                            DatabaseSQLServiceStatementsMixin.class,
-                            PostgreSQLDatabaseSQLServiceMixin.class ).
-                identifiedBy( SERVICE_NAME ).
-                visibleIn( Visibility.module );
+    public PostgreSQLEntityStoreAssembler( Visibility visibility, DataSourceService importedDataSourceService )
+    {
+        super( visibility, importedDataSourceService );
+    }
 
-        module.addServices( UuidIdentityGeneratorService.class ).
-                visibleIn( this._visibility );
+    public PostgreSQLEntityStoreAssembler( Class<?>... dataSourceServiceMixins )
+    {
+        super( dataSourceServiceMixins );
+    }
+
+    public PostgreSQLEntityStoreAssembler( Visibility visibility, Class<?>... dataSourceServiceMixins )
+    {
+        super( visibility, dataSourceServiceMixins );
+    }
+
+    @Override
+    protected String getEntityStoreServiceName()
+    {
+        return ENTITYSTORE_SERVICE_NAME;
+    }
+
+    @Override
+    protected String getDataSourceServiceName()
+    {
+        return DATASOURCE_SERVICE_NAME;
+    }
+
+    @Override
+    protected Class<?> getDatabaseSQLServiceSpecializationMixin()
+    {
+        return PostgreSQLDatabaseSQLServiceMixin.class;
     }
 
 }

@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
  * @author Stanislav Muhametsin
  * @author Paul Merlin
  */
+@SuppressWarnings( "ProtectedField" )
 public abstract class PostgreSQLDatabaseSQLServiceMixin
         implements DatabaseSQLServiceSpi, DatabaseSQLStringsBuilder, DatabaseSQLService
 {
@@ -40,11 +41,11 @@ public abstract class PostgreSQLDatabaseSQLServiceMixin
 
     private static final String ENTITY_STATE_COLUMN_DATA_TYPE = "TEXT";
 
-    private static final String CREATE_TABLE_SQL = "CREATE TABLE %s." + TABLE_NAME + "(" + "\n" + //
-            ENTITY_PK_COLUMN_NAME + " " + ENTITY_PK_COLUMN_DATA_TYPE + " NOT NULL PRIMARY KEY," + "\n" + //
-            ENTITY_OPTIMISTIC_LOCK_COLUMN_NAME + " BIGINT NOT NULL, " + //
-            ENTITY_IDENTITY_COLUMN_NAME + " " + ENTITY_IDENTITY_COLUMN_DATA_TYPE + " NOT NULL UNIQUE," + "\n" + //
-            ENTITY_STATE_COLUMN_NAME + " " + ENTITY_STATE_COLUMN_DATA_TYPE + " NOT NULL)";
+    private static final String CREATE_TABLE_SQL = "CREATE TABLE %s." + TABLE_NAME + "(" + "\n"
+                                                   + ENTITY_PK_COLUMN_NAME + " " + ENTITY_PK_COLUMN_DATA_TYPE + " NOT NULL PRIMARY KEY," + "\n"
+                                                   + ENTITY_OPTIMISTIC_LOCK_COLUMN_NAME + " BIGINT NOT NULL, "
+                                                   + ENTITY_IDENTITY_COLUMN_NAME + " " + ENTITY_IDENTITY_COLUMN_DATA_TYPE + " NOT NULL UNIQUE," + "\n"
+                                                   + ENTITY_STATE_COLUMN_NAME + " " + ENTITY_STATE_COLUMN_DATA_TYPE + " NOT NULL)";
 
     @This
     protected DatabaseSQLServiceSpi spi;

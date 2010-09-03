@@ -30,17 +30,24 @@ import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.entitystore.sql.bootstrap.PostgreSQLEntityStoreAssembler;
-import org.qi4j.entitystore.sql.database.PostgreSQLConfiguration;
 import org.qi4j.entitystore.sql.database.SQLs;
+import org.qi4j.library.sql.common.SQLConfiguration;
 import org.qi4j.library.sql.common.SQLUtil;
 import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.test.entity.performance.AbstractEntityStorePerformanceTest;
 
 /**
+ * WARN This test is deactivated on purpose, please do not commit it activated.
  *
+ * To run it see {@link PostgreSQLEntityStoreTest}.
+ *
+ * FIXME ES Performance tests seem to be pretty broken at the moment. At least if I want to delete test data after
+ * running tests, and also by not waiting for Runnables to finish running.
+ * 
  * @author Stanislav Muhametsin
+ * @author Paul Merlin
  */
-@Ignore // ES Performance tests seem to be pretty broken at the moment. At least if I want to delete test data after running tests, and also by not waiting for Runnables to finish running.
+@Ignore
 public class PostgreSQLEntityStorePerformanceTest
         extends AbstractEntityStorePerformanceTest
 {
@@ -62,7 +69,7 @@ public class PostgreSQLEntityStorePerformanceTest
                 new PostgreSQLEntityStoreAssembler().assemble( module );
                 ModuleAssembly configModule = module.layerAssembly().moduleAssembly( "config" );
                 configModule.addServices( MemoryEntityStoreService.class );
-                configModule.addEntities( PostgreSQLConfiguration.class ).visibleIn( Visibility.layer );
+                configModule.addEntities( SQLConfiguration.class ).visibleIn( Visibility.layer );
             }
 
         };
@@ -93,7 +100,7 @@ public class PostgreSQLEntityStorePerformanceTest
             UnitOfWorkFactory uowf = moduleInstance.unitOfWorkFactory();
             UnitOfWork uow = uowf.newUnitOfWork();
             try {
-                PostgreSQLConfiguration config = uow.get( PostgreSQLConfiguration.class, PostgreSQLEntityStoreAssembler.SERVICE_NAME );
+                SQLConfiguration config = uow.get( SQLConfiguration.class, PostgreSQLEntityStoreAssembler.DATASOURCE_SERVICE_NAME );
                 Connection connection = DriverManager.getConnection( config.connectionString().get() );
                 String schemaName = config.schemaName().get();
                 if ( schemaName == null ) {

@@ -11,15 +11,16 @@
  * limitations under the License.
  *
  */
-package org.qi4j.entitystore.sql.database;
+package org.qi4j.entitystore.sql.datasource;
 
-import org.qi4j.library.sql.common.SQLConfiguration;
+import org.qi4j.api.service.Activatable;
+import org.qi4j.api.service.ServiceComposite;
 
 /**
  * @author Stanislav Muhametsin
  * @author Paul Merlin
  */
-public interface MySQLConfiguration
-        extends SQLConfiguration
+public interface DataSourceServiceComposite
+        extends DataSourceService, Activatable, ServiceComposite
 {
 }

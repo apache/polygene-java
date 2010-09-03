@@ -11,15 +11,24 @@
  * limitations under the License.
  *
  */
-package org.qi4j.entitystore.sql.database;
-
-import org.qi4j.library.sql.common.SQLConfiguration;
+package org.qi4j.entitystore.sql.datasource;
 
 /**
  * @author Stanislav Muhametsin
  * @author Paul Merlin
  */
-public interface DerbySQLConfiguration
-        extends SQLConfiguration
+public abstract class AbstractImportedDataSourceService
+        implements DataSourceService
 {
+
+    public void activate()
+            throws Exception
+    {
+    }
+
+    public void passivate()
+            throws Exception
+    {
+    }
+
 }

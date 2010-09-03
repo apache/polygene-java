@@ -14,70 +14,80 @@
 package org.qi4j.entitystore.sql;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.Statement;
+import java.sql.SQLException;
+import javax.sql.DataSource;
 
-import org.junit.Ignore;
+import org.apache.commons.dbcp.BasicDataSource;
+
+import org.junit.Test;
 
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
-import org.qi4j.entitystore.sql.bootstrap.MySQLEntityStoreAssembler;
+import org.qi4j.entitystore.sql.datasource.DataSourceService;
 import org.qi4j.entitystore.sql.database.SQLs;
 import org.qi4j.library.sql.common.SQLConfiguration;
 import org.qi4j.library.sql.common.SQLUtil;
-import org.qi4j.test.entity.AbstractEntityStoreTest;
+import org.qi4j.test.AbstractQi4jTest;
 
 /**
  * @author Stanislav Muhametsin
  * @author Paul Merlin
  */
-@Ignore // DO NOT WORK AS MYSQL DON'T SUPPORT SCHEMAS ...
-public class MySQLEntityStoreTest
-        extends AbstractEntityStoreTest
+public class ImportedDataSourceServiceTest
+        extends AbstractQi4jTest
 {
 
-    @Override
+    private static final String CONNECTION_STRING = "jdbc:derby:target/qi4jdata;create=true";
+
+    @SuppressWarnings( "PublicInnerClass" )
+    public static class ImportableDataSourceService
+            implements DataSourceService
+    {
+
+        private final BasicDataSource dataSource = new BasicDataSource();
+
+        public ImportableDataSourceService()
+        {
+            dataSource.setUrl( CONNECTION_STRING );
+        }
+
+        @Override
+        public DataSource getDataSource()
+        {
+            return dataSource;
+        }
+
+        public String getConfiguredShemaName()
+        {
+            return SQLs.DEFAULT_SCHEMA_NAME;
+        }
+
+    }
+
     @SuppressWarnings( "unchecked" )
     public void assemble( ModuleAssembly module )
             throws AssemblyException
     {
-        super.assemble( module );
-
-        new MySQLEntityStoreAssembler().assemble( module );
+        module.importServices( DataSourceService.class ).setMetaInfo( new ImportableDataSourceService() );
 
         ModuleAssembly config = module.layerAssembly().moduleAssembly( "config" );
         config.addServices( MemoryEntityStoreService.class );
         config.addEntities( SQLConfiguration.class ).visibleIn( Visibility.layer );
     }
 
-    @Override
-    public void tearDown()
-            throws Exception
+    @Test
+    public void test()
+            throws SQLException
     {
-        UnitOfWork uow = this.unitOfWorkFactory.newUnitOfWork();
+        DataSourceService dsService = serviceLocator.<DataSourceService>findService( DataSourceService.class ).get();
+        Connection connection = null;
         try {
-            SQLConfiguration config = uow.get( SQLConfiguration.class, MySQLEntityStoreAssembler.DATASOURCE_SERVICE_NAME );
-            Connection connection = DriverManager.getConnection( config.connectionString().get() );
-            String schemaName = config.schemaName().get();
-            if ( schemaName == null ) {
-                schemaName = SQLs.DEFAULT_SCHEMA_NAME;
-            }
-
-            Statement stmt = null;
-            try {
-                stmt = connection.createStatement();
-                stmt.execute( String.format( "DELETE FROM %s." + SQLs.TABLE_NAME, schemaName ) );
-                connection.commit();
-            } finally {
-                SQLUtil.closeQuietly( stmt );
-            }
-
-        } finally {
-            uow.discard();
-            super.tearDown();
+            connection = dsService.getDataSource().getConnection();
+        } catch ( SQLException ex ) {
+            SQLUtil.closeQuietly( connection );
+            throw ex;
         }
     }
 

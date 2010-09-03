@@ -11,7 +11,6 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.entitystore.sql;
 
 import org.qi4j.api.concern.Concerns;
@@ -24,13 +23,11 @@ import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.entitystore.StateChangeNotificationConcern;
 
 /**
- *
  * @author Stanislav Muhametsin
  */
 @Concerns( { StateChangeNotificationConcern.class, ConcurrentModificationCheckConcern.class } )
 @Mixins( { SQLEntityStoreMixin.class } )
 public interface SQLEntityStoreService
-    extends EntityStore, EntityStateVersions, ServiceComposite, Activatable
+        extends EntityStore, EntityStateVersions, ServiceComposite, Activatable
 {
-
 }

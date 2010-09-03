@@ -26,6 +26,15 @@
             <version>1.6.0</version>
         </dependency>
 
+        <!-- DataSource -->
+        <dependency>
+            <groupId>commons-dbcp</groupId>
+            <artifactId>commons-dbcp</artifactId>
+            <version>1.4</version>
+            <optional>true</optional>
+        </dependency>
+
+
         <!-- Qi4j Core -->
         <dependency>
             <groupId>org.qi4j.core</groupId>
@@ -76,12 +85,6 @@
             <version>8.4-701.jdbc4</version>
             <scope>test</scope>
         </dependency>
-        <!--dependency>
-            <groupId>org.glassfish.extras</groupId>
-            <artifactId>glassfish-embedded-all</artifactId>
-            <version>3.1-b08</version>
-            <scope>test</scope>
-        </dependency-->
         <dependency>
             <groupId>org.qi4j.core</groupId>
             <artifactId>qi4j-core-runtime</artifactId>

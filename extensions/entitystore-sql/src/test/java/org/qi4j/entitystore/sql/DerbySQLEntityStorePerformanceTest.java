@@ -23,7 +23,7 @@ import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.sql.bootstrap.DerbySQLEntityStoreAssembler;
-import org.qi4j.entitystore.sql.database.DerbySQLConfiguration;
+import org.qi4j.library.sql.common.SQLConfiguration;
 import org.qi4j.test.EntityTestAssembler;
 import org.qi4j.test.entity.performance.AbstractEntityStorePerformanceTest;
 
@@ -50,8 +50,9 @@ public class DerbySQLEntityStorePerformanceTest
                     throws AssemblyException
             {
                 new DerbySQLEntityStoreAssembler( Visibility.application ).assemble( module );
+
                 ModuleAssembly configModule = module.layerAssembly().moduleAssembly( "Config" );
-                configModule.addEntities( DerbySQLConfiguration.class ).visibleIn( Visibility.layer );
+                configModule.addEntities( SQLConfiguration.class ).visibleIn( Visibility.layer );
                 new EntityTestAssembler( Visibility.module ).assemble( configModule );
             }
 
