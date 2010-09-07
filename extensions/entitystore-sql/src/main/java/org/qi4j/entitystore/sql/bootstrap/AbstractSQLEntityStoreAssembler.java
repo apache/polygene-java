@@ -50,6 +50,7 @@ import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
         this( DEFAULT_VISIBILITY );
     }
 
+    @SuppressWarnings( "unchecked" )
     public AbstractSQLEntityStoreAssembler( Visibility visibility )
     {
         NullArgumentException.validateNotNull( "Visibility", visibility );
@@ -72,12 +73,12 @@ import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
         this.dataSourceServiceMixins = null;
     }
 
-    public AbstractSQLEntityStoreAssembler( Class<?>... dataSourceServiceMixins )
+    public AbstractSQLEntityStoreAssembler( Class<? extends DataSourceService>... dataSourceServiceMixins )
     {
         this( DEFAULT_VISIBILITY, dataSourceServiceMixins );
     }
 
-    public AbstractSQLEntityStoreAssembler( Visibility visibility, Class<?>... dataSourceServiceMixins )
+    public AbstractSQLEntityStoreAssembler( Visibility visibility, Class<? extends DataSourceService>... dataSourceServiceMixins )
     {
         NullArgumentException.validateNotNull( "Visibility", visibility );
         NullArgumentException.validateNotNull( "DataSourceService Mixins", dataSourceServiceMixins );

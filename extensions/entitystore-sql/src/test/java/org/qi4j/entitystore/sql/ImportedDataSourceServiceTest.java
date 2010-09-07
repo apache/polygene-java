@@ -15,7 +15,6 @@ package org.qi4j.entitystore.sql;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import javax.sql.DataSource;
 
 import org.apache.commons.dbcp.BasicDataSource;
 
@@ -25,8 +24,8 @@ import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
+import org.qi4j.entitystore.sql.bootstrap.ImportableDataSourceService;
 import org.qi4j.entitystore.sql.datasource.DataSourceService;
-import org.qi4j.entitystore.sql.database.SQLs;
 import org.qi4j.library.sql.common.SQLConfiguration;
 import org.qi4j.library.sql.common.SQLUtil;
 import org.qi4j.test.AbstractQi4jTest;
@@ -41,36 +40,13 @@ public class ImportedDataSourceServiceTest
 
     private static final String CONNECTION_STRING = "jdbc:derby:target/qi4jdata;create=true";
 
-    @SuppressWarnings( "PublicInnerClass" )
-    public static class ImportableDataSourceService
-            implements DataSourceService
-    {
-
-        private final BasicDataSource dataSource = new BasicDataSource();
-
-        public ImportableDataSourceService()
-        {
-            dataSource.setUrl( CONNECTION_STRING );
-        }
-
-        @Override
-        public DataSource getDataSource()
-        {
-            return dataSource;
-        }
-
-        public String getConfiguredShemaName()
-        {
-            return SQLs.DEFAULT_SCHEMA_NAME;
-        }
-
-    }
-
     @SuppressWarnings( "unchecked" )
     public void assemble( ModuleAssembly module )
             throws AssemblyException
     {
-        module.importServices( DataSourceService.class ).setMetaInfo( new ImportableDataSourceService() );
+        BasicDataSource dataSource = new BasicDataSource();
+        dataSource.setUrl( CONNECTION_STRING );
+        module.importServices( DataSourceService.class ).setMetaInfo( new ImportableDataSourceService( dataSource ) );
 
         ModuleAssembly config = module.layerAssembly().moduleAssembly( "config" );
         config.addServices( MemoryEntityStoreService.class );

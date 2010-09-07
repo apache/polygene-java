@@ -49,12 +49,12 @@ public class MySQLEntityStoreAssembler
         super( visibility, importedDataSourceService );
     }
 
-    public MySQLEntityStoreAssembler( Class<?>... dataSourceServiceMixins )
+    public MySQLEntityStoreAssembler( Class<? extends DataSourceService>... dataSourceServiceMixins )
     {
         super( dataSourceServiceMixins );
     }
 
-    public MySQLEntityStoreAssembler( Visibility visibility, Class<?>... dataSourceServiceMixins )
+    public MySQLEntityStoreAssembler( Visibility visibility, Class<? extends DataSourceService>... dataSourceServiceMixins )
     {
         super( visibility, dataSourceServiceMixins );
     }

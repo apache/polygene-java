@@ -49,12 +49,12 @@ public class PostgreSQLEntityStoreAssembler
         super( visibility, importedDataSourceService );
     }
 
-    public PostgreSQLEntityStoreAssembler( Class<?>... dataSourceServiceMixins )
+    public PostgreSQLEntityStoreAssembler( Class<? extends DataSourceService>... dataSourceServiceMixins )
     {
         super( dataSourceServiceMixins );
     }
 
-    public PostgreSQLEntityStoreAssembler( Visibility visibility, Class<?>... dataSourceServiceMixins )
+    public PostgreSQLEntityStoreAssembler( Visibility visibility, Class<? extends DataSourceService>... dataSourceServiceMixins )
     {
         super( visibility, dataSourceServiceMixins );
     }

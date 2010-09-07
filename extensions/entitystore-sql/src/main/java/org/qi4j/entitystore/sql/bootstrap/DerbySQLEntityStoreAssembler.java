@@ -49,12 +49,12 @@ public class DerbySQLEntityStoreAssembler
         super( visibility, importedDataSourceService );
     }
 
-    public DerbySQLEntityStoreAssembler( Class<?>... dataSourceServiceMixins )
+    public DerbySQLEntityStoreAssembler( Class<? extends DataSourceService>... dataSourceServiceMixins )
     {
         super( dataSourceServiceMixins );
     }
 
-    public DerbySQLEntityStoreAssembler( Visibility visibility, Class<?>... dataSourceServiceMixins )
+    public DerbySQLEntityStoreAssembler( Visibility visibility, Class<? extends DataSourceService>... dataSourceServiceMixins )
     {
         super( visibility, dataSourceServiceMixins );
     }
