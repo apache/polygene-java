@@ -20,13 +20,11 @@ import org.apache.commons.dbcp.BasicDataSource;
 
 import org.junit.Test;
 
-import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
+import org.qi4j.entitystore.sql.bootstrap.DerbySQLEntityStoreAssembler;
 import org.qi4j.entitystore.sql.bootstrap.ImportableDataSourceService;
 import org.qi4j.entitystore.sql.datasource.DataSourceService;
-import org.qi4j.library.sql.common.SQLConfiguration;
 import org.qi4j.library.sql.common.SQLUtil;
 import org.qi4j.test.AbstractQi4jTest;
 
@@ -46,11 +44,7 @@ public class ImportedDataSourceServiceTest
     {
         BasicDataSource dataSource = new BasicDataSource();
         dataSource.setUrl( CONNECTION_STRING );
-        module.importServices( DataSourceService.class ).setMetaInfo( new ImportableDataSourceService( dataSource ) );
-
-        ModuleAssembly config = module.layerAssembly().moduleAssembly( "config" );
-        config.addServices( MemoryEntityStoreService.class );
-        config.addEntities( SQLConfiguration.class ).visibleIn( Visibility.layer );
+        new DerbySQLEntityStoreAssembler( new ImportableDataSourceService( dataSource ) ).assemble( module );
     }
 
     @Test

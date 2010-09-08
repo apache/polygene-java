@@ -67,7 +67,6 @@ import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
     public AbstractSQLEntityStoreAssembler( Visibility visibility, DataSourceService importedDataSourceService )
     {
         NullArgumentException.validateNotNull( "Visibility", visibility );
-        NullArgumentException.validateNotNull( "Imported DataSourceService", importedDataSourceService );
         this.visibility = visibility;
         this.importedDataSourceService = importedDataSourceService;
         this.dataSourceServiceMixins = null;
@@ -101,7 +100,9 @@ import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
         if ( importedDataSourceService != null ) {
 
             // Imported DataSourceService
-            module.importServices( DataSourceService.class ).setMetaInfo( importedDataSourceService );
+            module.importServices( DataSourceService.class ).
+                    identifiedBy( getDataSourceServiceName() ).
+                    setMetaInfo( importedDataSourceService );
 
         } else if ( dataSourceServiceMixins != null && dataSourceServiceMixins.length > 0 ) {
 
@@ -111,6 +112,8 @@ import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
                     identifiedBy( getDataSourceServiceName() ).
                     instantiateOnStartup();
 
+        } else {
+            throw new IllegalStateException( "Unable to assemble SQLEntityStore, no importable DataSourceService nor DataSourceServiceMixin provided" );
         }
 
         module.addServices( SQLEntityStoreService.class ).
