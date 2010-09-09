@@ -22,12 +22,20 @@ import java.lang.annotation.Target;
 
 /**
  * Annotation to denote that something is optional.
- *
+ * <ul>
+ * <li>
  * If applied to a method parameter, then the value is allowed to be null. Default
  * is that method parameters have to be non-null.
- *
+ * </li>
+ * <li>
  * If applied to a Property declaration, then the value may be null after construction of
  * the instance, or may be set to null at a later time.
+ * </li>
+ * <li>
+ * If applied to an injected member field, it is allowed tha none get injected. For instance, an <code>&#64;Optional
+ * &#64;Service</code> would allow a service to not have been declared and the field will be null.
+ * </li>
+ * </ul>
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.PARAMETER, ElementType.METHOD, ElementType.FIELD } )
