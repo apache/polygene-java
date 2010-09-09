@@ -18,13 +18,37 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 
 /**
- * Implementations of this interface can be specified in the AppliesTo.
- * An instance of the provided class will be used to test if the modifier or mixin
- * should be applied to the method or not.
+ * Implementations of this interface can be specified in the &#64;AppliesTo.
+ * <p>
+ * AppliesTo filters are one of the driving technologies in Qi4j. They allow you to apply fragments (Mixins,
+ * Concerns, SideEffects), often generic ones, depending on the context that they are evaluated under. This
+ * mechanism is heavily used internally in Qi4j to achieve many other features.
+ * </p>
+ * <p>
+ * The starting point is the basic use of AppliesToFilter, where the &#64;AppliesTo annotation is given an
+ * AppliesToFilter implementation as an argument, for instance at a Mixin implementation. For instance;
+ * <pre></code>
+ * &#64;AppliesTo( MyAppliesToFilter.class )
+ * public class SomeMixin
+ *     implements InvocationHandler
+ * {
+ *
+ * }
+ * </code></pre>
+ * In the case above, the generic mixin will only be applied to the methods that that is defined by the
+ * AppliesToFilter. This is the primary way to define limits on the application of generic fragments, since
+ * especially mixins are rarely applied to all methods.
+ * </p>
  */
-public interface AppliesToFilter
-    extends Serializable
+public interface AppliesToFilter extends Serializable
 {
+    /** This is an internal AppliesToFilter which is assigned if no other AppliesToFilters are found for a given
+     * fragment.
+     * <p>
+     * There is no reason for user code to use this AppliesToFilter directly, and should be perceived as an
+     * internal class in Qi4j.
+     * </p>
+     */
     AppliesToFilter ALWAYS = new AppliesToFilter()
     {
         public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> fragmentClass )
@@ -34,8 +58,7 @@ public interface AppliesToFilter
     };
 
     /**
-     * Check if the Fragment should be applied or not. Can be used
-     * with Mixins, Concerns, SideEffects.
+     * Check if the Fragment should be applied or not. Will be call when applied to Mixins, Concerns, SideEffects.
      *
      * @param method        method that is invoked
      * @param mixin         mixin implementation for the method
