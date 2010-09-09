@@ -24,6 +24,7 @@
   <!-- This POM is ONLY to initiate the modules to be built. -->
   <modules>
     <module>reindexer</module>
+    <module>entitystore-file</module>
     <module>entitystore-gae</module>
     <module>entitystore-jdbm</module>
     <module>entitystore-neo4j</module>
