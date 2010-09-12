@@ -17,12 +17,17 @@
 package org.qi4j.entitystore.jdbm;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Properties;
 import java.util.concurrent.locks.ReadWriteLock;
 import jdbm.RecordManager;
@@ -46,14 +51,15 @@ import org.qi4j.entitystore.map.MapEntityStore;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entitystore.EntityStoreException;
-import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
+import org.qi4j.spi.entitystore.ExportSupport;
+import org.qi4j.spi.entitystore.ImportSupport;
 import org.qi4j.spi.service.ServiceDescriptor;
 
 /**
  * JDBM implementation of SerializationStore
  */
 public class JdbmEntityStoreMixin
-    implements Activatable, MapEntityStore, DatabaseExport, DatabaseImport
+    implements Activatable, MapEntityStore, ExportSupport, ImportSupport
 {
     @This
     private ReadWriteLock lock;
@@ -231,7 +237,7 @@ public class JdbmEntityStoreMixin
         }
     }
 
-    public void exportTo( Writer out )
+    public void exportTo( PrintWriter out )
         throws IOException
     {
         TupleBrowser browser = index.browse();
@@ -246,15 +252,22 @@ public class JdbmEntityStoreMixin
         }
     }
 
-    public void importFrom( Reader in )
+    public ImportResult importFrom( Reader in )
         throws IOException
     {
+        int successful = 0;
+        int counter = 0;
+        final ArrayList<Exception> exceptions = new ArrayList<Exception>();
         BufferedReader reader = new BufferedReader( in );
         String object;
-        try
+        while( ( object = reader.readLine() ) != null )
         {
-            while( ( object = reader.readLine() ) != null )
+            try
             {
+                if( ( counter++ % 1000 ) == 0 )
+                {
+                    recordManager.commit();
+                }
                 String id = object.substring( "{\"identity\":\"".length() );
                 id = id.substring( 0, id.indexOf( '"' ) );
                 Long stateIndex = getStateIndex( id );
@@ -270,19 +283,55 @@ public class JdbmEntityStoreMixin
                     byte[] stateArray = object.getBytes( "UTF-8" );
                     recordManager.update( stateIndex, stateArray, serializer );
                 }
+                successful++;
             }
-            recordManager.commit();
+            catch( IOException ex )
+            {
+                exceptions.add( ex );
+            }
+            catch( RuntimeException ex )
+            {
+                exceptions.add( ex );
+            }
         }
-        catch( IOException ex )
+        recordManager.commit();
+        return createReport( successful, exceptions );
+    }
+
+    private ImportResult createReport( int successful, final ArrayList<Exception> exceptions )
+        throws UnsupportedEncodingException
+    {
+        final String[] failures = new String[exceptions.size()];
+        int i = 0;
+        for( Exception e : exceptions )
         {
-            recordManager.rollback();
-            throw ex;
+            failures[ i++ ] = formatException( e );
         }
-        catch( Exception ex )
+        final int successes = successful;
+        return new ImportResult()
         {
-            recordManager.rollback();
-            throw (IOException) new IOException( "Could not import data" ).initCause( ex );
-        }
+            public long numberOfSuccessfulImports()
+            {
+                return successes;
+            }
+
+            public String[] failureReports()
+            {
+                return exceptions.toArray( failures );
+            }
+        };
+    }
+
+    private String formatException( Exception e )
+        throws UnsupportedEncodingException
+    {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream( 1000 );
+        PrintStream ps = new PrintStream( baos );
+        e.printStackTrace( ps );
+        ps.flush();
+        String result = baos.toString( "UTF-8" );
+        ps.close();
+        return result;
     }
 
     private Properties getProperties( JdbmConfiguration config )
