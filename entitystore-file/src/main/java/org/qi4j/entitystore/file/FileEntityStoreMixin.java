@@ -19,10 +19,13 @@ package org.qi4j.entitystore.file;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Reader;
@@ -60,20 +63,82 @@ public class FileEntityStoreMixin
     private ServiceDescriptor descriptor;
 
     private File dataDirectory;
-    private File rootDirectory;
+    private int slices;
 
     @SuppressWarnings( { "ResultOfMethodCallIgnored" } )
     public void activate()
         throws Exception
     {
-        String pathname = config.configuration().directory().get();
-        if( pathname == null )
+        String pathName = config.configuration().directory().get();
+        if( pathName == null )
         {
-            pathname = System.getProperty( "user.dir" ) + "/qi4j/filestore/";
+            pathName = System.getProperty( "user.dir" ) + "/qi4j/filestore/";
         }
-        rootDirectory = new File( pathname ).getAbsoluteFile();
+        File rootDirectory = new File( pathName ).getAbsoluteFile();
         dataDirectory = new File( rootDirectory, "data" );
-        dataDirectory.mkdirs();
+        if( !dataDirectory.exists() )
+        {
+            dataDirectory.mkdirs();
+        }
+        File slicesFile = new File( dataDirectory, "slices" );
+        if( slicesFile.exists() )
+        {
+            slices = readIntegerInFile( slicesFile );
+        }
+        if( slices < 1 )
+        {
+            slices = config.configuration().slices().get();
+            writeIntegerToFile( slicesFile, slices );
+        }
+    }
+
+    private void writeIntegerToFile( File file, int value )
+        throws IOException
+    {
+        FileWriter fw = null;
+        BufferedWriter bw = null;
+        try
+        {
+            fw = new FileWriter( file );
+            bw = new BufferedWriter( fw );
+            bw.write( "" + value );
+            bw.flush();
+        }
+        finally
+        {
+            if( bw != null )
+            {
+                bw.close();
+            }
+            if( fw != null )
+            {
+                fw.close();
+            }
+        }
+    }
+
+    private int readIntegerInFile( File file )
+        throws IOException
+    {
+        FileReader fis = null;
+        BufferedReader br = null;
+        try
+        {
+            fis = new FileReader( file );
+            br = new BufferedReader( fis );
+            return Integer.parseInt( br.readLine() );
+        }
+        finally
+        {
+            if( br != null )
+            {
+                br.close();
+            }
+            if( fis != null )
+            {
+                fis.close();
+            }
+        }
     }
 
     public void passivate()
@@ -243,7 +308,9 @@ public class FileEntityStoreMixin
 
     private File getDataFile( String identity )
     {
-        return new File( dataDirectory, identity + ".json" );
+        String slice = "" + ( identity.hashCode() % slices );
+        File sliceDirectory = new File( dataDirectory, slice );
+        return new File( sliceDirectory, identity + ".json" );
     }
 
     private File getDataFile( EntityReference ref )
