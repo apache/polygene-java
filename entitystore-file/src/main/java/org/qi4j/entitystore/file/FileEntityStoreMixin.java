@@ -62,8 +62,6 @@ public class FileEntityStoreMixin
     private File dataDirectory;
     private File rootDirectory;
 
-    // Activatable implementation
-
     @SuppressWarnings( { "ResultOfMethodCallIgnored" } )
     public void activate()
         throws Exception
