@@ -20,6 +20,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import javax.swing.Icon;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.qi4j.api.common.AppliesTo;
 import org.qi4j.api.composite.TransientBuilder;
@@ -34,9 +35,13 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  * Tests for properties
  */
+@Ignore( "This is an incorrect test case. The Property fragment support is not well defined at the moment, so until" +
+         "more work is finalized on exactly what should be supported, this is ignored not to be forgotten.")
 public class PropertyTest
     extends AbstractQi4jTest
 {
@@ -64,7 +69,7 @@ public class PropertyTest
         }
 
         company.name().set( "Jayway" );
-
+        assertEquals( "JAYWAY", company.name().get() );
         System.out.println( "Name is:" + company.name().get() );
     }
 
