@@ -27,6 +27,8 @@ import org.qi4j.library.locking.LockingAbstractComposite;
 import org.qi4j.spi.entitystore.ConcurrentModificationCheckConcern;
 import org.qi4j.spi.entitystore.EntityStateVersions;
 import org.qi4j.spi.entitystore.EntityStore;
+import org.qi4j.spi.entitystore.ExportSupport;
+import org.qi4j.spi.entitystore.ImportSupport;
 import org.qi4j.spi.entitystore.StateChangeNotificationConcern;
 
 /**
@@ -39,8 +41,8 @@ public interface JdbmEntityStoreService
     extends EntityStore,
             EntityStateVersions,
             StateStore,
-            DatabaseExport,
-            DatabaseImport,
+            ExportSupport,
+            ImportSupport,
             ServiceComposite,
             Activatable,
             LockingAbstractComposite,

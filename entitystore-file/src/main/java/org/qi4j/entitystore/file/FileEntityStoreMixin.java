@@ -87,7 +87,15 @@ public class FileEntityStoreMixin
         }
         if( slices < 1 )
         {
-            slices = config.configuration().slices().get();
+            Integer slicesConf = config.configuration().slices().get();
+            if( slicesConf == null )
+            {
+                slices = 10;
+            }
+            else
+            {
+                slices = slicesConf;
+            }
             writeIntegerToFile( slicesFile, slices );
         }
     }
@@ -308,8 +316,12 @@ public class FileEntityStoreMixin
 
     private File getDataFile( String identity )
     {
-        String slice = "" + ( identity.hashCode() % slices );
+        String slice = "" + ( Math.abs( identity.hashCode() ) % slices );
         File sliceDirectory = new File( dataDirectory, slice );
+        if( !sliceDirectory.exists() )
+        {
+            sliceDirectory.mkdirs();
+        }
         return new File( sliceDirectory, identity + ".json" );
     }
 
@@ -367,7 +379,7 @@ public class FileEntityStoreMixin
         {
             fos = new FileOutputStream( dataFile, false );
             bos = new BufferedOutputStream( fos );
-            bos.write( stateArray );
+            bos.write(stateArray);
         }
         finally
         {

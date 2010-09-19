@@ -10,6 +10,7 @@ qi4j.data.db
 qi4j.data.lg
 *.iws
 *.ipr
+entitystore-file/qi4j-entitystore-file.iml
 entitystore-hazelcast/qi4j-entitystore-hazelcast.iml
 entitystore-jdbm/qi4j-entitystore-jdbm.iml
 entitystore-neo4j/qi4j-entitystore-neo4j.iml

@@ -44,14 +44,6 @@ public class FileEntityStoreTest
         config.addServices( MemoryEntityStoreService.class );
     }
 
-    @Test
-    @Override
-    public void givenConcurrentUnitOfWorksWhenUoWCompletesThenCheckConcurrentModification()
-        throws UnitOfWorkCompletionException
-    {
-        super.givenConcurrentUnitOfWorksWhenUoWCompletesThenCheckConcurrentModification();
-    }
-
     @Override
     @After
     public void tearDown()
