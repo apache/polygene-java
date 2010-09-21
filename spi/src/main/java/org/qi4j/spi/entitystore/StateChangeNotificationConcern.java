@@ -28,9 +28,9 @@ public abstract class StateChangeNotificationConcern
     @Service
     Iterable<StateChangeListener> listeners;
 
-    public StateCommitter applyChanges( final Iterable<EntityState> state, String version, long l )
+    public StateCommitter applyChanges( final Iterable<EntityState> state, String version, long lastModified )
     {
-        final StateCommitter committer = next.applyChanges( state, version, System.currentTimeMillis() );
+        final StateCommitter committer = next.applyChanges( state, version, lastModified );
         return new StateCommitter()
         {
             public void commit()
