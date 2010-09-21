@@ -92,6 +92,7 @@ public class NeoEntityStoreUnitOfWork
         }
         node = neo.createNode();
         node.setProperty( NeoEntityState.VERSION, 0l );
+        node.setProperty( NeoEntityState.MODIFIED, System.currentTimeMillis() );
         node.createRelationshipTo( typeNode, RelTypes.IS_OF_TYPE );
         node.setProperty( NeoEntityState.ENTITY_ID, anIdentity.identity() );
         indexService.index( node, ENTITY_STATE_ID, anIdentity.identity() );

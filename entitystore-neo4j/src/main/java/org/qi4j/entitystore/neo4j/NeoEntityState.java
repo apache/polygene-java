@@ -26,6 +26,7 @@ public class NeoEntityState
 {
     static final String ENTITY_ID = "entity_id";
     static final String VERSION = "version";
+    static final String MODIFIED = "modified";
 
     private final Node underlyingNode;
     private final NeoEntityStoreUnitOfWork uow;
@@ -48,6 +49,7 @@ public class NeoEntityState
             status = EntityStatus.UPDATED;
             Long version = (Long) underlyingNode.getProperty( VERSION );
             underlyingNode.setProperty( VERSION, version + 1 );
+            underlyingNode.setProperty( MODIFIED, System.currentTimeMillis() );
         }
     }
 
@@ -297,7 +299,8 @@ public class NeoEntityState
 
     public long lastModified()
     {
-        return System.currentTimeMillis();
+        long modified = (Long) underlyingNode.getProperty( MODIFIED );
+        return modified;
     }
 
     public EntityStatus status()
