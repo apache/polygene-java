@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009, Rickard …berg. All Rights Reserved.
+ * Copyright (c) 2009, Rickard Ã–berg. All Rights Reserved.
  * Copyright (c) 2010, Niclas Hedhman. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,27 +27,27 @@ public interface ImportSupport
      * Import data from the Reader, with one line per object, in JSON format.
      *
      * @param in reader
-     *
-     * @throws java.io.IOException if there is an underlying I/O problem.
-     *
      * @return The number of entities that has been
+     * @throws java.io.IOException if there is an underlying I/O problem.
      */
     ImportResult importFrom( Reader in )
-        throws IOException;
+            throws IOException;
 
-    
+
     public interface ImportResult
     {
-        /** Returns the number of successfully imported entities.
+        /**
+         * Returns the number of successfully imported entities.
          *
          * @return the number of successfully imported entities.
          */
         long numberOfSuccessfulImports();
 
-        /** Returns an array of problems in human readable form.
+        /**
+         * Returns an array of problems in human readable form.
          *
          * @return An array of descriptive messages, one for each failing line in the import, or an empty array
-         * if no problems were found.
+         *         if no problems were found.
          */
         String[] failureReports();
     }

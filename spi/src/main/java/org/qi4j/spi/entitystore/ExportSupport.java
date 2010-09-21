@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009, Rickard …berg. All Rights Reserved.
+ * Copyright (c) 2009, Rickard Ã–berg. All Rights Reserved.
  * Copyright (c) 2010, Niclas Hedhman. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +21,7 @@ import java.io.Writer;
 
 /**
  * Exports the entities in an EntityStore, using the JSON format.
- * <p>
+ * <p/>
  * The output should be in JSON format, each entity independent of the others and separated by a newline.
  */
 public interface ExportSupport
@@ -32,5 +32,5 @@ public interface ExportSupport
      * @param out The print writer to where the output will be written to.
      */
     void exportTo( PrintWriter out )
-        throws IOException;
+            throws IOException;
 }
