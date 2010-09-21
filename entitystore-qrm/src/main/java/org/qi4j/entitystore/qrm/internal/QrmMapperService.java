@@ -165,7 +165,7 @@ public interface QrmMapperService
                                            null );
         }
 
-        public boolean newEntity( Class mappedClazz, DefaultEntityState state, String version )
+        public boolean newEntity( Class mappedClazz, DefaultEntityState state, String version, long lastModified )
         {
             EntityDescriptor desc = state.entityDescriptor();
 
@@ -182,11 +182,9 @@ public interface QrmMapperService
 
             dbState.put( mapping.identity().name(), state.identity().identity() );
 
-            Date now = new Date();
+            dbState.put( mapping.createdOn().name(), new Date(lastModified) );
 
-            dbState.put( mapping.createdOn().name(), now );
-
-            dbState.put( mapping.updatedOn().name(), now );
+            dbState.put( mapping.updatedOn().name(), new Date(lastModified) );
 
             Session session = sessoinFactory.getCurrentSession();
 
@@ -230,7 +228,7 @@ public interface QrmMapperService
             return true;
         }
 
-        public boolean updEntity( Class mappedClazz, DefaultEntityState state, String version )
+        public boolean updEntity( Class mappedClazz, DefaultEntityState state, String version, long lastModified )
         {
             EntityReference identity = state.identity();
 
@@ -256,9 +254,7 @@ public interface QrmMapperService
 
             dbState.put( mapping.identity().name(), state.identity().identity() );
 
-            Date now = new Date();
-
-            dbState.put( mapping.updatedOn().name(), now );
+            dbState.put( mapping.updatedOn().name(), new Date(lastModified) );
 
             session.save( entityName, dbState );
 

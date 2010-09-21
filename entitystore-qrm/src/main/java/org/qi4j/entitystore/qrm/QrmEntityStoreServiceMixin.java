@@ -126,7 +126,7 @@ public class QrmEntityStoreServiceMixin
         return result;
     }
 
-    public StateCommitter applyChanges( final Iterable<EntityState> entityStates, final String version )
+    public StateCommitter applyChanges( final Iterable<EntityState> entityStates, final String version, final long lastModified )
     {
         return new StateCommitter()
         {
@@ -150,7 +150,7 @@ public class QrmEntityStoreServiceMixin
 
                     if( state.status() == EntityStatus.NEW )
                     {
-                        mapper.newEntity( mappedClazz, state, version );
+                        mapper.newEntity( mappedClazz, state, version, lastModified );
                     }
                     else if( state.status() == EntityStatus.REMOVED )
                     {
@@ -158,7 +158,7 @@ public class QrmEntityStoreServiceMixin
                     }
                     else if( state.status() == EntityStatus.UPDATED )
                     {
-                        mapper.updEntity( mappedClazz, state, version );
+                        mapper.updEntity( mappedClazz, state, version, lastModified );
                     }
                 }
             }

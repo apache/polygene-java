@@ -35,9 +35,9 @@ public interface QrmMapper
 
     EntityState get( DefaultEntityStoreUnitOfWork unitOfWork, Class mappedClazz, EntityReference identity );
 
-    boolean newEntity( Class mappedClazz, DefaultEntityState state, String version );
+    boolean newEntity( Class mappedClazz, DefaultEntityState state, String version, long lastModified );
 
     boolean delEntity( Class mappedClazz, DefaultEntityState state, String version );
 
-    boolean updEntity( Class mappedClazz, DefaultEntityState state, String version );
+    boolean updEntity( Class mappedClazz, DefaultEntityState state, String version, long lastModified );
 }

@@ -398,7 +398,7 @@ public class PreferencesEntityStoreMixin
         }
     }
 
-    public StateCommitter applyChanges( final Iterable<EntityState> state, final String version )
+    public StateCommitter applyChanges( final Iterable<EntityState> state, final String version, final long lastModified )
     {
         return new StateCommitter()
         {
@@ -414,12 +414,12 @@ public class PreferencesEntityStoreMixin
                             if( state.status().equals( EntityStatus.NEW ) )
                             {
                                 Preferences entityPrefs = root.node( state.identity().identity() );
-                                writeEntityState( state, entityPrefs, version );
+                                writeEntityState( state, entityPrefs, version, lastModified );
                             }
                             else if( state.status().equals( EntityStatus.UPDATED ) )
                             {
                                 Preferences entityPrefs = root.node( state.identity().identity() );
-                                writeEntityState( state, entityPrefs, version );
+                                writeEntityState( state, entityPrefs, version, lastModified );
                             }
                             else if( state.status().equals( EntityStatus.REMOVED ) )
                             {
@@ -441,7 +441,7 @@ public class PreferencesEntityStoreMixin
         };
     }
 
-    protected void writeEntityState( DefaultEntityState state, Preferences entityPrefs, String identity )
+    protected void writeEntityState( DefaultEntityState state, Preferences entityPrefs, String identity, long lastModified )
         throws EntityStoreException
     {
         try
@@ -450,7 +450,7 @@ public class PreferencesEntityStoreMixin
             EntityType entityType = state.entityDescriptor().entityType();
             entityPrefs.put( "type", state.entityDescriptor().entityType().type().name() );
             entityPrefs.put( "version", identity );
-            entityPrefs.putLong( "modified", state.lastModified() );
+            entityPrefs.putLong( "modified", lastModified );
 
             // Properties
             Preferences propsPrefs = entityPrefs.node( "properties" );
