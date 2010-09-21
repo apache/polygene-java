@@ -38,6 +38,7 @@ Import-Package: org.objectweb.asm, \
                 org.qi4j.api.query, \
                 org.qi4j.api.query.grammar, \
                 org.qi4j.api.service, \
+                org.qi4j.api.selection, \
                 org.qi4j.api.sideeffect, \
                 org.qi4j.api.sideeffect.internal, \
                 org.qi4j.api.structure, \

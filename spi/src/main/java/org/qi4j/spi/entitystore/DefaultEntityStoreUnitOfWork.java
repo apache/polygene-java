@@ -71,7 +71,7 @@ public final class DefaultEntityStoreUnitOfWork
     public StateCommitter applyChanges()
             throws EntityStoreException
     {
-        return entityStoreSPI.applyChanges( states, identity );
+        return entityStoreSPI.applyChanges( states, identity, System.currentTimeMillis() );
     }
 
     public void discard()

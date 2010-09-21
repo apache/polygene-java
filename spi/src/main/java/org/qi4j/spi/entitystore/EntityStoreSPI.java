@@ -29,5 +29,5 @@ public interface EntityStoreSPI
 
     EntityState getEntityState( EntityStoreUnitOfWork unitOfWork, EntityReference identity );
 
-    StateCommitter applyChanges( Iterable<EntityState> state, String version );
+    StateCommitter applyChanges( Iterable<EntityState> state, String version, long l );
 }
