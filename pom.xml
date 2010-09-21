@@ -35,6 +35,8 @@
     <module>uid</module>
     <module>struts2</module>
     <module>spring</module>
+    <module>servlet</module>
+    <module>shiro</module>
   </modules>
 
   <developers>
@@ -155,6 +157,13 @@
       <organization />
       <email>taowen@gmail.com</email>
       <timezone>UTC+8</timezone>
+    </developer>
+    <developer>
+      <id>paul@nosphere.org</id>
+      <name>Paul Merlin</name>
+      <organization />
+      <email>paul@nosphere.org</email>
+      <timezone>CET</timezone>
     </developer>
   </developers>
 

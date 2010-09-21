@@ -57,4 +57,5 @@ thread/target/
 transaction/target/
 uid/target/
 validation/target/
-
+servlet/target/
+shiro/target/
