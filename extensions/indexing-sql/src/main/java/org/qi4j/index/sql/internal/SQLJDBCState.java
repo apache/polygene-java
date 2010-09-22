@@ -12,21 +12,18 @@
  *
  */
 
-
 package org.qi4j.index.sql.internal;
 
 import java.sql.Connection;
-
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.property.Property;
 
 /**
- *
  * @author Stanislav Muhametsin
  */
 public interface SQLJDBCState
 {
-   @Optional
-   Property<Connection> connection();
-   
+    @Optional
+    Property<Connection> connection();
+
 }

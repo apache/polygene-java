@@ -12,12 +12,10 @@
  *
  */
 
-
 package org.qi4j.index.sql.internal;
 
 import java.sql.SQLException;
 import java.util.logging.Logger;
-
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.unitofwork.UnitOfWorkException;
@@ -27,38 +25,42 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entitystore.StateChangeListener;
 
 /**
- *
  * @author Stanislav Muhametsin
  */
-public abstract class SQLStateChangeListener implements StateChangeListener
+public abstract class SQLStateChangeListener
+    implements StateChangeListener
 {
 
-   @This private SQLJDBCState _jdbcState;
+    @This
+    private SQLJDBCState _jdbcState;
 
-   @Service private SQLIndexing _indexing;
+    @Service
+    private SQLIndexing _indexing;
 
-   public void notifyChanges(Iterable<EntityState> changedStates)
-   {
-      try
-      {
-         this._indexing.indexEntities(changedStates, this._jdbcState.connection().get());
-      } catch (SQLException sqle)
-      {
-          SQLUtil.rollbackQuietly( this._jdbcState.connection().get() );
-         Logger.getLogger(this.getClass().getName()).severe("Error when indexing entities:\n" + sqle);
-         SQLException e = sqle;
-         while (e != null)
-         {
-             e.printStackTrace( );
-             e = e.getNextException( );
-         }
+    public void notifyChanges( Iterable<EntityState> changedStates )
+    {
+        try
+        {
+            this._indexing.indexEntities( changedStates, this._jdbcState.connection().get() );
+        }
+        catch( SQLException sqle )
+        {
+            SQLUtil.rollbackQuietly( this._jdbcState.connection().get() );
+            Logger.getLogger( this.getClass().getName() ).severe( "Error when indexing entities:\n" + sqle );
+            SQLException e = sqle;
+            while( e != null )
+            {
+                e.printStackTrace();
+                e = e.getNextException();
+            }
 
-         // TODO is UoWException right one for this?
-         throw new UnitOfWorkException(sqle);
-      } catch (RuntimeException re)
-      {
-          SQLUtil.rollbackQuietly( this._jdbcState.connection().get() );
-          throw re;
-      }
-   }
+            // TODO is UoWException right one for this?
+            throw new UnitOfWorkException( sqle );
+        }
+        catch( RuntimeException re )
+        {
+            SQLUtil.rollbackQuietly( this._jdbcState.connection().get() );
+            throw re;
+        }
+    }
 }

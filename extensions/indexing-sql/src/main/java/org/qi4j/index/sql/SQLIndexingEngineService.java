@@ -12,7 +12,6 @@
  *
  */
 
-
 package org.qi4j.index.sql;
 
 import org.qi4j.api.mixin.Mixins;
@@ -25,23 +24,21 @@ import org.qi4j.spi.entitystore.StateChangeListener;
 import org.qi4j.spi.query.EntityFinder;
 
 /**
- *
  * This is actual service responsible of managing indexing and queries and creating database structure.
- * 
+ * <p/>
  * The reason why all these componenets are in one single service is that they all require some data about
  * the database structure. Rather than exposing all of that data publicly to be available via another service,
  * it is stored in a state-style private mixin. Thus all the database-related data is available only to this
  * service, and no one else.
- * 
- * @author Stanislav Muhametsin
  *
+ * @author Stanislav Muhametsin
  */
-@Mixins({
-   SQLEntityFinder.class,
-   SQLActivatable.class,
-   SQLStateChangeListener.class
-})
+@Mixins( {
+    SQLEntityFinder.class,
+    SQLActivatable.class,
+    SQLStateChangeListener.class
+} )
 public interface SQLIndexingEngineService extends StateChangeListener, EntityFinder, Activatable, ServiceComposite
 {
-   
+
 }

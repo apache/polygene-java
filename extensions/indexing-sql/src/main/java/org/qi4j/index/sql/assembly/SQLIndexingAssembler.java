@@ -12,7 +12,6 @@
  *
  */
 
-
 package org.qi4j.index.sql.assembly;
 
 import org.qi4j.api.common.Visibility;
@@ -28,41 +27,46 @@ import org.qi4j.index.sql.SQLIndexingEngineService;
  */
 public class SQLIndexingAssembler implements Assembler
 {
-   
-   /**
-    * The default name for the service.
-    */
-   public static final String DEFAULT_SERVICE_NAME = "sql_indexing";
-   
-   /**
-    * The default visibility for the service.
-    */
-   public static final Visibility DEFAULT_VISIBILTY = Visibility.application;
 
-   
-   private Visibility _esVisiblity;
-   
-   private String _serviceName;
-   
-   public SQLIndexingAssembler()
-   {
-      this(DEFAULT_VISIBILTY);
-   }
-   
-   public SQLIndexingAssembler(Visibility entityStoreVisibility)
-   {
-      this(entityStoreVisibility, DEFAULT_SERVICE_NAME);
-   }
-   
-   public SQLIndexingAssembler(Visibility entityStoreVisibility, String serviceName)
-   {
-      this._esVisiblity = entityStoreVisibility;
-      this._serviceName = serviceName;
-   }
-   
-   public void assemble(ModuleAssembly module) throws AssemblyException
-   {
-      module.addServices(SQLIndexingEngineService.class).identifiedBy(this._serviceName).visibleIn(this._esVisiblity);
-   }
-   
+    /**
+     * The default name for the service.
+     */
+    public static final String DEFAULT_SERVICE_NAME = "sql_indexing";
+
+    /**
+     * The default visibility for the service.
+     * <p>
+     * Assumption is that the entity stores utilizing the indexing service will sit in the same layer, but
+     * often in separate modules.
+     * </p>
+     */
+    public static final Visibility DEFAULT_VISIBILTY = Visibility.layer;
+
+    private Visibility _esVisiblity;
+
+    private String _serviceName;
+
+    public SQLIndexingAssembler()
+    {
+        this( DEFAULT_VISIBILTY );
+    }
+
+    public SQLIndexingAssembler( Visibility visibility )
+    {
+        this( visibility, DEFAULT_SERVICE_NAME );
+    }
+
+    public SQLIndexingAssembler( Visibility entityStoreVisibility, String serviceName )
+    {
+        this._esVisiblity = entityStoreVisibility;
+        this._serviceName = serviceName;
+    }
+
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
+    {
+        module.addServices( SQLIndexingEngineService.class ).identifiedBy( this._serviceName ).visibleIn(
+            this._esVisiblity );
+    }
+
 }
