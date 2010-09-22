@@ -14,6 +14,7 @@ import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.injection.InjectionScope;
 import org.qi4j.api.injection.scope.Invocation;
 import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceReference;
@@ -212,8 +213,8 @@ public class AppliesToOrConditionQI241Test
         @Invocation
         private SecondAnnotation second;
 
-        @Service
-        private SomeServiceCompositeWithTwoAnnotations someServiceComposite;
+        @This
+        private SomeService someServiceComposite;
 
         public Object invoke( Object proxy, Method method, Object[] args )
             throws Throwable
