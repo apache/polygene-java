@@ -11,18 +11,18 @@
  * limitations under the License.
  *
  */
-package org.qi4j.entitystore.sql.bootstrap;
+package org.qi4j.entitystore.sql.assembly;
 
 import org.qi4j.api.common.Visibility;
-import org.qi4j.entitystore.sql.database.MySQLDatabaseSQLServiceMixin;
-import org.qi4j.entitystore.sql.datasource.DataSourceService;
+import org.qi4j.entitystore.sql.internal.database.MySQLDatabaseSQLServiceMixin;
+import org.qi4j.entitystore.sql.internal.datasource.DataSourceService;
 
 /**
  * @author Stanislav Muhametsin
  * @author Paul Merlin
  */
 public class MySQLEntityStoreAssembler
-        extends AbstractSQLEntityStoreAssembler
+    extends AbstractSQLEntityStoreAssembler
 {
 
     public static final String ENTITYSTORE_SERVICE_NAME = "entitystore-mysql";

@@ -11,23 +11,23 @@
  * limitations under the License.
  *
  */
-package org.qi4j.entitystore.sql.datasource;
+package org.qi4j.entitystore.sql.internal.datasource;
 
 /**
  * @author Stanislav Muhametsin
  * @author Paul Merlin
  */
 public abstract class AbstractImportedDataSourceService
-        implements DataSourceService
+    implements DataSourceService
 {
 
     public void activate()
-            throws Exception
+        throws Exception
     {
     }
 
     public void passivate()
-            throws Exception
+        throws Exception
     {
     }
 

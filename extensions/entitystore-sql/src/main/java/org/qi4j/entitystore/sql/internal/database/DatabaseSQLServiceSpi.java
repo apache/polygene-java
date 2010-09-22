@@ -11,16 +11,14 @@
  * limitations under the License.
  *
  */
-package org.qi4j.entitystore.sql.database;
+package org.qi4j.entitystore.sql.internal.database;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.library.sql.common.SQLUtil;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,19 +30,19 @@ public interface DatabaseSQLServiceSpi
 {
 
     boolean schemaExists( Connection connection )
-            throws SQLException;
+        throws SQLException;
 
     String getCurrentSchemaName();
 
     boolean tableExists( Connection connection )
-            throws SQLException;
+        throws SQLException;
 
     long readNextEntityPK( Connection connection )
-            throws SQLException;
+        throws SQLException;
 
     @SuppressWarnings( "PublicInnerClass" )
     public abstract class CommonMixin
-            implements DatabaseSQLServiceSpi
+        implements DatabaseSQLServiceSpi
     {
 
         private static final Logger LOGGER = LoggerFactory.getLogger( DatabaseSQLServiceSpi.class );
@@ -53,22 +51,26 @@ public interface DatabaseSQLServiceSpi
         private DatabaseSQLServiceState state;
 
         public boolean schemaExists( Connection connection )
-                throws SQLException
+            throws SQLException
         {
             ResultSet rs = null;
-            try {
+            try
+            {
                 Boolean schemaFound = false;
                 rs = connection.getMetaData().getSchemas();
                 String schemaName = this.getCurrentSchemaName();
 
-                while ( rs.next() && !schemaFound ) {
+                while( rs.next() && !schemaFound )
+                {
                     String eachResult = rs.getString( 1 );
                     LOGGER.trace( "Schema candidate: {}", eachResult );
                     schemaFound = eachResult.equalsIgnoreCase( schemaName );
                 }
                 LOGGER.trace( "Schema {} found? {}", schemaName, schemaFound );
                 return schemaFound;
-            } finally {
+            }
+            finally
+            {
                 SQLUtil.closeQuietly( rs );
             }
         }
@@ -79,21 +81,26 @@ public interface DatabaseSQLServiceSpi
         }
 
         public long readNextEntityPK( Connection connection )
-                throws SQLException
+            throws SQLException
         {
             Statement stmt = null;
             ResultSet rs = null;
             long result = 0L;
-            try {
+            try
+            {
                 stmt = connection.createStatement();
                 rs = stmt.executeQuery( String.format( SQLs.READ_NEXT_ENTITY_PK_SQL, this.getCurrentSchemaName() ) );
-                if ( rs.next() ) {
+                if( rs.next() )
+                {
                     Long count = rs.getLong( 1 );
-                    if ( count > 0 ) {
+                    if( count > 0 )
+                    {
                         result = rs.getLong( 2 ) + 1;
                     }
                 }
-            } finally {
+            }
+            finally
+            {
                 SQLUtil.closeQuietly( rs );
                 SQLUtil.closeQuietly( stmt );
             }

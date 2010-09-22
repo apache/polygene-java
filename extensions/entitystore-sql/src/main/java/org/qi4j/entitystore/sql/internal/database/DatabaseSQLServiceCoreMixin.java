@@ -11,21 +11,19 @@
  * limitations under the License.
  *
  */
-package org.qi4j.entitystore.sql.database;
+package org.qi4j.entitystore.sql.internal.database;
 
-import org.qi4j.entitystore.sql.datasource.DataSourceService;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import org.qi4j.api.injection.scope.Service;
-
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Application.Mode;
+import org.qi4j.entitystore.sql.internal.datasource.DataSourceService;
 import org.qi4j.library.sql.common.SQLUtil;
 import org.qi4j.spi.entitystore.EntityStoreException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +33,7 @@ import org.slf4j.LoggerFactory;
  */
 @SuppressWarnings( "ProtectedField" )
 public abstract class DatabaseSQLServiceCoreMixin
-        implements DatabaseSQLService
+    implements DatabaseSQLService
 {
 
     private static final Logger LOGGER = LoggerFactory.getLogger( DatabaseSQLServiceCoreMixin.class );
@@ -56,45 +54,59 @@ public abstract class DatabaseSQLServiceCoreMixin
     private DatabaseSQLStringsBuilder sqlStrings;
 
     public Connection getConnection()
-            throws SQLException
+        throws SQLException
     {
         return dataSourceService.getDataSource().getConnection();
     }
 
     public void startDatabase()
-            throws Exception
+        throws Exception
     {
         Connection connection = getConnection();
         String schema = dataSourceService.getConfiguredShemaName();
-        if ( schema == null ) {
+        if( schema == null )
+        {
             throw new EntityStoreException( "Schema name must not be null." );
-        } else {
+        }
+        else
+        {
             state.schemaName().set( schema );
 
-            if ( !spi.schemaExists( connection ) ) {
+            if( !spi.schemaExists( connection ) )
+            {
                 Statement stmt = null;
-                try {
+                try
+                {
                     stmt = connection.createStatement();
-                    for ( String sql : sqlStrings.buildSQLForSchemaCreation() ) {
+                    for( String sql : sqlStrings.buildSQLForSchemaCreation() )
+                    {
                         stmt.execute( sql );
                     }
-                } finally {
+                }
+                finally
+                {
                     SQLUtil.closeQuietly( stmt );
                 }
                 LOGGER.trace( "Schema {} created", schema );
             }
 
-            if ( !spi.tableExists( connection ) ) {
+            if( !spi.tableExists( connection ) )
+            {
                 Statement stmt = null;
-                try {
+                try
+                {
                     stmt = connection.createStatement();
-                    for ( String sql : sqlStrings.buildSQLForTableCreation() ) {
+                    for( String sql : sqlStrings.buildSQLForTableCreation() )
+                    {
                         stmt.execute( sql );
                     }
-                    for ( String sql : sqlStrings.buildSQLForIndexCreation() ) {
+                    for( String sql : sqlStrings.buildSQLForIndexCreation() )
+                    {
                         stmt.execute( sql );
                     }
-                } finally {
+                }
+                finally
+                {
                     SQLUtil.closeQuietly( stmt );
                 }
                 LOGGER.trace( "Table {} created", SQLs.TABLE_NAME );
@@ -103,7 +115,8 @@ public abstract class DatabaseSQLServiceCoreMixin
             connection.setAutoCommit( false );
 
             state.pkLock().set( new Object() );
-            synchronized ( state.pkLock().get() ) {
+            synchronized( state.pkLock().get() )
+            {
                 state.nextEntityPK().set( spi.readNextEntityPK( connection ) );
             }
 
@@ -114,19 +127,23 @@ public abstract class DatabaseSQLServiceCoreMixin
     }
 
     public void stopDatabase()
-            throws Exception
+        throws Exception
     {
-        if ( Mode.production == application.mode() ) {
+        if( Mode.production == application.mode() )
+        {
             // NOOP
         }
     }
 
     public Long newPKForEntity()
     {
-        if ( state.pkLock().get() == null || state.nextEntityPK().get() == null ) {
-            throw new EntityStoreException( "New PK asked for entity, but database service has not been initialized properly." );
+        if( state.pkLock().get() == null || state.nextEntityPK().get() == null )
+        {
+            throw new EntityStoreException(
+                "New PK asked for entity, but database service has not been initialized properly." );
         }
-        synchronized ( state.pkLock().get() ) {
+        synchronized( state.pkLock().get() )
+        {
             Long result = state.nextEntityPK().get();
             Long next = result + 1;
             state.nextEntityPK().set( next );

@@ -27,13 +27,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.json.JSONWriter;
-
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityReference;
@@ -48,8 +46,8 @@ import org.qi4j.entitystore.map.MapEntityStore;
 import org.qi4j.entitystore.map.MapEntityStoreMixin;
 import org.qi4j.entitystore.map.Migration;
 import org.qi4j.entitystore.map.StateStore;
-import org.qi4j.entitystore.sql.database.DatabaseSQLService;
-import org.qi4j.entitystore.sql.database.DatabaseSQLService.EntityValueResult;
+import org.qi4j.entitystore.sql.internal.database.DatabaseSQLService;
+import org.qi4j.entitystore.sql.internal.database.DatabaseSQLService.EntityValueResult;
 import org.qi4j.library.sql.api.SQLEntityState;
 import org.qi4j.library.sql.api.SQLEntityState.DefaultSQLEntityState;
 import org.qi4j.library.sql.common.SQLUtil;
@@ -71,7 +69,6 @@ import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.property.PropertyTypeDescriptor;
 import org.qi4j.spi.structure.ModuleSPI;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,7 +80,7 @@ import org.slf4j.LoggerFactory;
  * @author Stanislav Muhametsin
  */
 public abstract class SQLEntityStoreMixin
-        implements EntityStore, EntityStoreSPI, StateStore, Activatable
+    implements EntityStore, EntityStoreSPI, StateStore, Activatable
 {
 
     private static final Logger LOGGER = LoggerFactory.getLogger( SQLEntityStoreMixin.class );
@@ -106,7 +103,7 @@ public abstract class SQLEntityStoreMixin
     private Integer count;
 
     public void activate()
-            throws Exception
+        throws Exception
     {
         uuid = UUID.randomUUID().toString() + "-";
         count = 0;
@@ -114,7 +111,7 @@ public abstract class SQLEntityStoreMixin
     }
 
     public void passivate()
-            throws Exception
+        throws Exception
     {
         database.stopDatabase();
     }
@@ -130,28 +127,38 @@ public abstract class SQLEntityStoreMixin
                 PreparedStatement insertPS = null;
                 PreparedStatement updatePS = null;
                 PreparedStatement removePS = null;
-                try {
+                try
+                {
                     connection = database.getConnection();
                     insertPS = database.prepareInsertEntityStatement( connection );
                     updatePS = database.prepareUpdateEntityStatement( connection );
                     removePS = database.prepareRemoveEntityStatement( connection );
-                    for ( EntityState state : states ) {
+                    for( EntityState state : states )
+                    {
                         EntityStatus status = state.status();
-                        DefaultEntityState defState = ( ( SQLEntityState ) state ).getDefaultEntityState();
-                        Long entityPK = ( ( SQLEntityState ) state ).getEntityPK();
-                        if ( EntityStatus.REMOVED.equals( status ) ) {
+                        DefaultEntityState defState = ( (SQLEntityState) state ).getDefaultEntityState();
+                        Long entityPK = ( (SQLEntityState) state ).getEntityPK();
+                        if( EntityStatus.REMOVED.equals( status ) )
+                        {
                             database.populateRemoveEntityStatement( removePS, entityPK, state.identity() );
                             removePS.addBatch();
-                        } else {
+                        }
+                        else
+                        {
                             StringWriter writer = new StringWriter();
                             writeEntityState( defState, writer, version );
                             writer.flush();
-                            if ( EntityStatus.UPDATED.equals( status ) ) {
-                                Long entityOptimisticLock = ( ( SQLEntityState ) state ).getEntityOptimisticLock();
-                                database.populateUpdateEntityStatement( updatePS, entityPK, entityOptimisticLock, defState.identity(), writer.toString() );
+                            if( EntityStatus.UPDATED.equals( status ) )
+                            {
+                                Long entityOptimisticLock = ( (SQLEntityState) state ).getEntityOptimisticLock();
+                                database.populateUpdateEntityStatement( updatePS, entityPK, entityOptimisticLock,
+                                                                        defState.identity(), writer.toString() );
                                 updatePS.addBatch();
-                            } else if ( EntityStatus.NEW.equals( status ) ) {
-                                database.populateInsertEntityStatement( insertPS, entityPK, defState.identity(), writer.toString() );
+                            }
+                            else if( EntityStatus.NEW.equals( status ) )
+                            {
+                                database.populateInsertEntityStatement( insertPS, entityPK, defState.identity(),
+                                                                        writer.toString() );
                                 insertPS.addBatch();
                             }
                         }
@@ -163,23 +170,32 @@ public abstract class SQLEntityStoreMixin
 
                     connection.commit();
 
-                } catch ( SQLException sqle ) {
+                }
+                catch( SQLException sqle )
+                {
                     SQLUtil.rollbackQuietly( connection );
-                    if ( LOGGER.isDebugEnabled() ) {
+                    if( LOGGER.isDebugEnabled() )
+                    {
                         StringWriter sb = new StringWriter();
-                        sb.append( "SQLException during commit, logging nested exceptions before throwing EntityStoreException:\n" );
+                        sb.append(
+                            "SQLException during commit, logging nested exceptions before throwing EntityStoreException:\n" );
                         SQLException e = sqle;
-                        while ( e != null ) {
+                        while( e != null )
+                        {
                             e.printStackTrace( new PrintWriter( sb, true ) );
                             e = e.getNextException();
                         }
                         LOGGER.debug( sb.toString() );
                     }
                     throw new EntityStoreException( sqle );
-                } catch ( RuntimeException re ) {
+                }
+                catch( RuntimeException re )
+                {
                     SQLUtil.rollbackQuietly( connection );
                     throw new EntityStoreException( re );
-                } finally {
+                }
+                finally
+                {
                     SQLUtil.closeQuietly( insertPS );
                     SQLUtil.closeQuietly( updatePS );
                     SQLUtil.closeQuietly( removePS );
@@ -197,7 +213,7 @@ public abstract class SQLEntityStoreMixin
     public EntityState getEntityState( EntityStoreUnitOfWork unitOfWork, EntityReference entityRef )
     {
         EntityValueResult valueResult = getValue( entityRef );
-        return new DefaultSQLEntityState( readEntityState( ( DefaultEntityStoreUnitOfWork ) unitOfWork,
+        return new DefaultSQLEntityState( readEntityState( (DefaultEntityStoreUnitOfWork) unitOfWork,
                                                            valueResult.getReader() ),
                                           valueResult.getEntityPK(),
                                           valueResult.getEntityOptimisticLock() );
@@ -205,7 +221,7 @@ public abstract class SQLEntityStoreMixin
 
     public EntityState newEntityState( EntityStoreUnitOfWork unitOfWork, EntityReference entityRef, EntityDescriptor entityDescriptor )
     {
-        return new DefaultSQLEntityState( new DefaultEntityState( ( DefaultEntityStoreUnitOfWork ) unitOfWork,
+        return new DefaultSQLEntityState( new DefaultEntityState( (DefaultEntityStoreUnitOfWork) unitOfWork,
                                                                   entityRef,
                                                                   entityDescriptor ),
                                           database.newPKForEntity(),
@@ -223,18 +239,24 @@ public abstract class SQLEntityStoreMixin
         PreparedStatement ps = null;
         ResultSet rs = null;
         final DefaultEntityStoreUnitOfWork uow =
-                                           new DefaultEntityStoreUnitOfWork( entityStoreSPI, newUnitOfWorkId(), module );
-        try {
+            new DefaultEntityStoreUnitOfWork( entityStoreSPI, newUnitOfWorkId(), module );
+        try
+        {
             connection = database.getConnection();
             ps = database.prepareGetAllEntitiesStatement( connection );
             database.populateGetAllEntitiesStatement( ps );
             rs = ps.executeQuery();
-            while ( rs.next() ) {
+            while( rs.next() )
+            {
                 visitor.visitEntityState( readEntityState( uow, database.getEntityValue( rs ).getReader() ) );
             }
-        } catch ( SQLException sqle ) {
+        }
+        catch( SQLException sqle )
+        {
             throw new EntityStoreException( sqle );
-        } finally {
+        }
+        finally
+        {
             SQLUtil.closeQuietly( rs );
             SQLUtil.closeQuietly( ps );
             SQLUtil.closeQuietly( connection );
@@ -250,9 +272,10 @@ public abstract class SQLEntityStoreMixin
     }
 
     protected DefaultEntityState readEntityState( DefaultEntityStoreUnitOfWork unitOfWork, Reader entityState )
-            throws EntityStoreException
+        throws EntityStoreException
     {
-        try {
+        try
+        {
             ModuleSPI module = unitOfWork.module();
             JSONObject jsonObject = new JSONObject( new JSONTokener( entityState ) );
             EntityStatus status = EntityStatus.LOADED;
@@ -262,11 +285,16 @@ public abstract class SQLEntityStoreMixin
             String identity = jsonObject.getString( "identity" );
 
             // Check if version is correct
-            String currentAppVersion = jsonObject.optString( MapEntityStore.JSONKeys.application_version.name(), "0.0" );
-            if ( !currentAppVersion.equals( application.version() ) ) {
-                if ( migration != null ) {
+            String currentAppVersion = jsonObject.optString( MapEntityStore.JSONKeys.application_version.name(),
+                                                             "0.0" );
+            if( !currentAppVersion.equals( application.version() ) )
+            {
+                if( migration != null )
+                {
                     migration.migrate( jsonObject, application.version(), this );
-                } else {
+                }
+                else
+                {
                     // Do nothing - set version to be correct
                     jsonObject.put( MapEntityStore.JSONKeys.application_version.name(), application.version() );
                 }
@@ -281,39 +309,53 @@ public abstract class SQLEntityStoreMixin
             String type = jsonObject.getString( "type" );
 
             EntityDescriptor entityDescriptor = module.entityDescriptor( type );
-            if ( entityDescriptor == null ) {
+            if( entityDescriptor == null )
+            {
                 throw new EntityTypeNotFoundException( type );
             }
 
             Map<QualifiedName, Object> properties = new HashMap<QualifiedName, Object>();
             JSONObject props = jsonObject.getJSONObject( "properties" );
-            for ( PropertyDescriptor propertyDescriptor : entityDescriptor.state().properties() ) {
+            for( PropertyDescriptor propertyDescriptor : entityDescriptor.state().properties() )
+            {
                 Object jsonValue;
-                try {
+                try
+                {
                     jsonValue = props.get( propertyDescriptor.qualifiedName().name() );
-                } catch ( JSONException e ) {
+                }
+                catch( JSONException e )
+                {
                     // Value not found, default it
                     Object initialValue = propertyDescriptor.initialValue();
                     properties.put( propertyDescriptor.qualifiedName(), initialValue );
                     status = EntityStatus.UPDATED;
                     continue;
                 }
-                if ( jsonValue == JSONObject.NULL ) {
+                if( jsonValue == JSONObject.NULL )
+                {
                     properties.put( propertyDescriptor.qualifiedName(), null );
-                } else {
-                    Object value = ( ( PropertyTypeDescriptor ) propertyDescriptor ).propertyType().type().fromJSON( jsonValue, module );
+                }
+                else
+                {
+                    Object value = ( (PropertyTypeDescriptor) propertyDescriptor ).propertyType().type().fromJSON(
+                        jsonValue, module );
                     properties.put( propertyDescriptor.qualifiedName(), value );
                 }
             }
 
             Map<QualifiedName, EntityReference> associations = new HashMap<QualifiedName, EntityReference>();
             JSONObject assocs = jsonObject.getJSONObject( "associations" );
-            for ( AssociationDescriptor associationType : entityDescriptor.state().associations() ) {
-                try {
+            for( AssociationDescriptor associationType : entityDescriptor.state().associations() )
+            {
+                try
+                {
                     Object jsonValue = assocs.get( associationType.qualifiedName().name() );
-                    EntityReference value = jsonValue == JSONObject.NULL ? null : EntityReference.parseEntityReference( ( String ) jsonValue );
+                    EntityReference value = jsonValue == JSONObject.NULL ? null : EntityReference.parseEntityReference(
+                        (String) jsonValue );
                     associations.put( associationType.qualifiedName(), value );
-                } catch ( JSONException e ) {
+                }
+                catch( JSONException e )
+                {
                     // Association not found, default it to null
                     associations.put( associationType.qualifiedName(), null );
                     status = EntityStatus.UPDATED;
@@ -322,36 +364,49 @@ public abstract class SQLEntityStoreMixin
 
             JSONObject manyAssocs = jsonObject.getJSONObject( "manyassociations" );
             Map<QualifiedName, List<EntityReference>> manyAssociations = new HashMap<QualifiedName, List<EntityReference>>();
-            for ( ManyAssociationDescriptor manyAssociationType : entityDescriptor.state().manyAssociations() ) {
+            for( ManyAssociationDescriptor manyAssociationType : entityDescriptor.state().manyAssociations() )
+            {
                 List<EntityReference> references = new ArrayList<EntityReference>();
-                try {
+                try
+                {
                     JSONArray jsonValues = manyAssocs.getJSONArray( manyAssociationType.qualifiedName().name() );
-                    for ( int i = 0; i < jsonValues.length(); i++ ) {
+                    for( int i = 0; i < jsonValues.length(); i++ )
+                    {
                         Object jsonValue = jsonValues.getString( i );
-                        EntityReference value = jsonValue == JSONObject.NULL ? null : EntityReference.parseEntityReference( ( String ) jsonValue );
+                        EntityReference value = jsonValue == JSONObject.NULL ? null : EntityReference.parseEntityReference(
+                            (String) jsonValue );
                         references.add( value );
                     }
                     manyAssociations.put( manyAssociationType.qualifiedName(), references );
-                } catch ( JSONException e ) {
+                }
+                catch( JSONException e )
+                {
                     // ManyAssociation not found, default to empty one
                     manyAssociations.put( manyAssociationType.qualifiedName(), references );
                 }
             }
 
-            return new DefaultEntityState( unitOfWork, version, modified, EntityReference.parseEntityReference( identity ), status, entityDescriptor, properties, associations, manyAssociations );
-        } catch ( JSONException e ) {
+            return new DefaultEntityState( unitOfWork, version, modified,
+                                           EntityReference.parseEntityReference( identity ), status, entityDescriptor,
+                                           properties, associations, manyAssociations );
+        }
+        catch( JSONException e )
+        {
             throw new EntityStoreException( e );
         }
     }
 
     public JSONObject getState( String id )
-            throws IOException
+        throws IOException
     {
         Reader reader = getValue( EntityReference.parseEntityReference( id ) ).getReader();
         JSONObject jsonObject;
-        try {
+        try
+        {
             jsonObject = new JSONObject( new JSONTokener( reader ) );
-        } catch ( JSONException e ) {
+        }
+        catch( JSONException e )
+        {
             throw new IOException( e );
         }
         reader.close();
@@ -363,21 +418,27 @@ public abstract class SQLEntityStoreMixin
         Connection connection = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        try {
+        try
+        {
             connection = database.getConnection();
             ps = database.prepareGetEntityStatement( connection );
             database.populateGetEntityStatement( ps, ref );
             rs = ps.executeQuery();
-            if ( !rs.next() ) {
+            if( !rs.next() )
+            {
                 throw new EntityNotFoundException( ref );
             }
 
             EntityValueResult result = database.getEntityValue( rs );
 
             return result;
-        } catch ( SQLException sqle ) {
+        }
+        catch( SQLException sqle )
+        {
             throw new EntityStoreException( "Unable to get Entity " + ref, sqle );
-        } finally {
+        }
+        finally
+        {
             SQLUtil.closeQuietly( rs );
             SQLUtil.closeQuietly( ps );
             SQLUtil.closeQuietly( connection );
@@ -385,45 +446,55 @@ public abstract class SQLEntityStoreMixin
     }
 
     protected void writeEntityState( DefaultEntityState state, Writer writer, String version )
-            throws EntityStoreException
+        throws EntityStoreException
     {
-        try {
+        try
+        {
             JSONWriter json = new JSONWriter( writer );
             JSONWriter properties = json.object().
-                    key( "identity" ).value( state.identity().identity() ).
-                    key( "application_version" ).value( application.version() ).
-                    key( "type" ).value( state.entityDescriptor().entityType().type().name() ).
-                    key( "version" ).value( version ).
-                    key( "modified" ).value( state.lastModified() ).
-                    key( "properties" ).object();
+                key( "identity" ).value( state.identity().identity() ).
+                key( "application_version" ).value( application.version() ).
+                key( "type" ).value( state.entityDescriptor().entityType().type().name() ).
+                key( "version" ).value( version ).
+                key( "modified" ).value( state.lastModified() ).
+                key( "properties" ).object();
             EntityType entityType = state.entityDescriptor().entityType();
-            for ( PropertyType propertyType : entityType.properties() ) {
+            for( PropertyType propertyType : entityType.properties() )
+            {
                 Object value = state.properties().get( propertyType.qualifiedName() );
                 json.key( propertyType.qualifiedName().name() );
-                if ( value == null ) {
+                if( value == null )
+                {
                     json.value( null );
-                } else {
+                }
+                else
+                {
                     propertyType.type().toJSON( value, json );
                 }
             }
 
             JSONWriter associations = properties.endObject().key( "associations" ).object();
-            for ( Map.Entry<QualifiedName, EntityReference> stateNameEntityReferenceEntry : state.associations().entrySet() ) {
+            for( Map.Entry<QualifiedName, EntityReference> stateNameEntityReferenceEntry : state.associations().entrySet() )
+            {
                 EntityReference value = stateNameEntityReferenceEntry.getValue();
                 associations.key( stateNameEntityReferenceEntry.getKey().name() ).
-                        value( value != null ? value.identity() : null );
+                    value( value != null ? value.identity() : null );
             }
 
             JSONWriter manyAssociations = associations.endObject().key( "manyassociations" ).object();
-            for ( Map.Entry<QualifiedName, List<EntityReference>> stateNameListEntry : state.manyAssociations().entrySet() ) {
+            for( Map.Entry<QualifiedName, List<EntityReference>> stateNameListEntry : state.manyAssociations().entrySet() )
+            {
                 JSONWriter assocs = manyAssociations.key( stateNameListEntry.getKey().name() ).array();
-                for ( EntityReference entityReference : stateNameListEntry.getValue() ) {
+                for( EntityReference entityReference : stateNameListEntry.getValue() )
+                {
                     assocs.value( entityReference.identity() );
                 }
                 assocs.endArray();
             }
             manyAssociations.endObject().endObject();
-        } catch ( JSONException e ) {
+        }
+        catch( JSONException e )
+        {
             throw new EntityStoreException( "Could not store EntityState", e );
         }
     }

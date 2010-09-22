@@ -22,7 +22,7 @@ import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.sql.bootstrap.DerbySQLEntityStoreAssembler;
+import org.qi4j.entitystore.sql.assembly.DerbySQLEntityStoreAssembler;
 import org.qi4j.library.sql.common.SQLConfiguration;
 import org.qi4j.test.EntityTestAssembler;
 import org.qi4j.test.entity.performance.AbstractEntityStorePerformanceTest;

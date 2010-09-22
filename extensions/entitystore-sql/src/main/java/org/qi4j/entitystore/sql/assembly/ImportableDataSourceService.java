@@ -11,19 +11,18 @@
  * limitations under the License.
  *
  */
-package org.qi4j.entitystore.sql.bootstrap;
+package org.qi4j.entitystore.sql.assembly;
 
 import javax.sql.DataSource;
-
-import org.qi4j.entitystore.sql.database.SQLs;
-import org.qi4j.entitystore.sql.datasource.DataSourceService;
+import org.qi4j.entitystore.sql.internal.database.SQLs;
+import org.qi4j.entitystore.sql.internal.datasource.DataSourceService;
 
 /**
  * @author Stanislav Muhametsin
  * @author Paul Merlin
  */
 public class ImportableDataSourceService
-        implements DataSourceService
+    implements DataSourceService
 {
 
     private final DataSource dataSource;

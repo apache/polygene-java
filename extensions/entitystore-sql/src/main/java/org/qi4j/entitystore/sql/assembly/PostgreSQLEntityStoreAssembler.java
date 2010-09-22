@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, Paul Merlin. All Rights Reserved.
+ * Copyright (c) 2010, Stanislav Muhametsin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,50 +11,50 @@
  * limitations under the License.
  *
  */
-package org.qi4j.entitystore.sql.bootstrap;
+package org.qi4j.entitystore.sql.assembly;
 
 import org.qi4j.api.common.Visibility;
-import org.qi4j.entitystore.sql.datasource.DataSourceService;
-import org.qi4j.entitystore.sql.database.DerbySQLDatabaseSQLServiceMixin;
+import org.qi4j.entitystore.sql.internal.database.PostgreSQLDatabaseSQLServiceMixin;
+import org.qi4j.entitystore.sql.internal.datasource.DataSourceService;
 
 /**
  * @author Stanislav Muhametsin
  * @author Paul Merlin
  */
-public class DerbySQLEntityStoreAssembler
-        extends AbstractSQLEntityStoreAssembler
+public class PostgreSQLEntityStoreAssembler
+    extends AbstractSQLEntityStoreAssembler
 {
 
-    public static final String ENTITYSTORE_SERVICE_NAME = "entitystore-derby";
+    public static final String ENTITYSTORE_SERVICE_NAME = "entitystore-postgresql";
 
-    public static final String DATASOURCE_SERVICE_NAME = "datasource-derby";
+    public static final String DATASOURCE_SERVICE_NAME = "datasource-postgresql";
 
-    public DerbySQLEntityStoreAssembler()
+    public PostgreSQLEntityStoreAssembler()
     {
         super();
     }
 
-    public DerbySQLEntityStoreAssembler( Visibility visibility )
+    public PostgreSQLEntityStoreAssembler( Visibility visibility )
     {
         super( visibility );
     }
 
-    public DerbySQLEntityStoreAssembler( DataSourceService importedDataSourceService )
+    public PostgreSQLEntityStoreAssembler( DataSourceService importedDataSourceService )
     {
         super( importedDataSourceService );
     }
 
-    public DerbySQLEntityStoreAssembler( Visibility visibility, DataSourceService importedDataSourceService )
+    public PostgreSQLEntityStoreAssembler( Visibility visibility, DataSourceService importedDataSourceService )
     {
         super( visibility, importedDataSourceService );
     }
 
-    public DerbySQLEntityStoreAssembler( Class<? extends DataSourceService>... dataSourceServiceMixins )
+    public PostgreSQLEntityStoreAssembler( Class<? extends DataSourceService>... dataSourceServiceMixins )
     {
         super( dataSourceServiceMixins );
     }
 
-    public DerbySQLEntityStoreAssembler( Visibility visibility, Class<? extends DataSourceService>... dataSourceServiceMixins )
+    public PostgreSQLEntityStoreAssembler( Visibility visibility, Class<? extends DataSourceService>... dataSourceServiceMixins )
     {
         super( visibility, dataSourceServiceMixins );
     }
@@ -74,7 +74,7 @@ public class DerbySQLEntityStoreAssembler
     @Override
     protected Class<?> getDatabaseSQLServiceSpecializationMixin()
     {
-        return DerbySQLDatabaseSQLServiceMixin.class;
+        return PostgreSQLDatabaseSQLServiceMixin.class;
     }
 
 }

@@ -11,10 +11,9 @@
  * limitations under the License.
  *
  */
-package org.qi4j.entitystore.sql.database;
+package org.qi4j.entitystore.sql.internal.database;
 
 import org.qi4j.api.injection.scope.This;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +41,7 @@ public interface DatabaseSQLStringsBuilder
     String buildSQLForRemoveEntityStatement();
 
     abstract class CommonMixin
-            implements DatabaseSQLStringsBuilder
+        implements DatabaseSQLStringsBuilder
     {
 
         private static final Logger LOGGER = LoggerFactory.getLogger( DatabaseSQLStringsBuilder.class );
@@ -60,7 +59,7 @@ public interface DatabaseSQLStringsBuilder
         public String[] buildSQLForIndexCreation()
         {
             // TODO
-            String[] sql = new String[]{};
+            String[] sql = new String[]{ };
             LOGGER.trace( "SQL for index creation: {}", sql );
             return sql;
         }

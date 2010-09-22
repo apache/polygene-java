@@ -11,13 +11,12 @@
  * limitations under the License.
  *
  */
-package org.qi4j.entitystore.sql.datasource;
+package org.qi4j.entitystore.sql.internal.datasource;
 
 import org.apache.commons.dbcp.BasicDataSource;
-
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.injection.scope.This;
-import org.qi4j.entitystore.sql.database.SQLs;
+import org.qi4j.entitystore.sql.internal.database.SQLs;
 import org.qi4j.library.sql.common.SQLConfiguration;
 
 /**
@@ -25,7 +24,7 @@ import org.qi4j.library.sql.common.SQLConfiguration;
  * @author Paul Merlin
  */
 public abstract class DBCPBasicDataSourceServiceMixin
-        implements DataSourceServiceComposite
+    implements DataSourceServiceComposite
 {
 
     @This
@@ -41,14 +40,15 @@ public abstract class DBCPBasicDataSourceServiceMixin
     public String getConfiguredShemaName()
     {
         String result = this.configuration.configuration().schemaName().get();
-        if ( result == null ) {
+        if( result == null )
+        {
             result = SQLs.DEFAULT_SCHEMA_NAME;
         }
         return result;
     }
 
     public void activate()
-            throws Exception
+        throws Exception
     {
         System.out.println( "ACTIVATE" );
         dataSource = new BasicDataSource();
@@ -56,7 +56,7 @@ public abstract class DBCPBasicDataSourceServiceMixin
     }
 
     public void passivate()
-            throws Exception
+        throws Exception
     {
         System.out.println( "PASSIVATE" );
         dataSource.close();

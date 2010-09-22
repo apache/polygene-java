@@ -11,19 +11,22 @@
  * limitations under the License.
  *
  */
-package org.qi4j.entitystore.sql.database;
+package org.qi4j.entitystore.sql.internal.database;
 
 import java.io.StringReader;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import org.qi4j.api.injection.scope.This;
-import static org.qi4j.entitystore.sql.database.SQLs.*;
 import org.qi4j.library.sql.common.SQLUtil;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.qi4j.entitystore.sql.internal.database.SQLs.ENTITY_IDENTITY_COLUMN_NAME;
+import static org.qi4j.entitystore.sql.internal.database.SQLs.ENTITY_OPTIMISTIC_LOCK_COLUMN_NAME;
+import static org.qi4j.entitystore.sql.internal.database.SQLs.ENTITY_PK_COLUMN_NAME;
+import static org.qi4j.entitystore.sql.internal.database.SQLs.ENTITY_STATE_COLUMN_NAME;
+import static org.qi4j.entitystore.sql.internal.database.SQLs.TABLE_NAME;
 
 /**
  * @author Stanislav Muhametsin
@@ -31,7 +34,7 @@ import org.slf4j.LoggerFactory;
  */
 @SuppressWarnings( "ProtectedField" )
 public abstract class DerbySQLDatabaseSQLServiceMixin
-        implements DatabaseSQLService, DatabaseSQLStringsBuilder, DatabaseSQLServiceSpi
+    implements DatabaseSQLService, DatabaseSQLStringsBuilder, DatabaseSQLServiceSpi
 {
 
     private static final Logger LOGGER = LoggerFactory.getLogger( DerbySQLDatabaseSQLServiceMixin.class );
@@ -48,16 +51,19 @@ public abstract class DerbySQLDatabaseSQLServiceMixin
     protected DatabaseSQLServiceSpi spi;
 
     public boolean tableExists( Connection connection )
-            throws SQLException
+        throws SQLException
     {
         ResultSet rs = null;
-        try {
+        try
+        {
             String tableNameForQuery = SQLs.TABLE_NAME.toUpperCase();
             rs = connection.getMetaData().getTables( null, null, tableNameForQuery, new String[]{ "TABLE" } );
             boolean tableExists = rs.next();
             LOGGER.trace( "Found table {}? {}", tableNameForQuery, tableExists );
             return tableExists;
-        } finally {
+        }
+        finally
+        {
             SQLUtil.closeQuietly( rs );
         }
     }
@@ -70,7 +76,7 @@ public abstract class DerbySQLDatabaseSQLServiceMixin
     }
 
     public EntityValueResult getEntityValue( ResultSet rs )
-            throws SQLException
+        throws SQLException
     {
         return new EntityValueResult( rs.getLong( SQLs.ENTITY_PK_COLUMN_NAME ),
                                       rs.getLong( SQLs.ENTITY_OPTIMISTIC_LOCK_COLUMN_NAME ),

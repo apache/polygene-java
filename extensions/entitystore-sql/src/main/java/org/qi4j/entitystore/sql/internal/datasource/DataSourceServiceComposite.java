@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.entitystore.sql.datasource;
+package org.qi4j.entitystore.sql.internal.datasource;
 
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
@@ -21,6 +21,6 @@ import org.qi4j.api.service.ServiceComposite;
  * @author Paul Merlin
  */
 public interface DataSourceServiceComposite
-        extends DataSourceService, Activatable, ServiceComposite
+    extends DataSourceService, Activatable, ServiceComposite
 {
 }

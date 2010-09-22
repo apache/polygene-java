@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.entitystore.sql.bootstrap;
+package org.qi4j.entitystore.sql.assembly;
 
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.util.NullArgumentException;
@@ -19,14 +19,14 @@ import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.sql.SQLEntityStoreService;
-import org.qi4j.entitystore.sql.database.DatabaseSQLService.DatabaseSQLServiceComposite;
-import org.qi4j.entitystore.sql.database.DatabaseSQLServiceCoreMixin;
-import org.qi4j.entitystore.sql.database.DatabaseSQLServiceSpi;
-import org.qi4j.entitystore.sql.database.DatabaseSQLServiceStatementsMixin;
-import org.qi4j.entitystore.sql.database.DatabaseSQLStringsBuilder;
-import org.qi4j.entitystore.sql.datasource.DBCPBasicDataSourceServiceMixin;
-import org.qi4j.entitystore.sql.datasource.DataSourceService;
-import org.qi4j.entitystore.sql.datasource.DataSourceServiceComposite;
+import org.qi4j.entitystore.sql.internal.database.DatabaseSQLService.DatabaseSQLServiceComposite;
+import org.qi4j.entitystore.sql.internal.database.DatabaseSQLServiceCoreMixin;
+import org.qi4j.entitystore.sql.internal.database.DatabaseSQLServiceSpi;
+import org.qi4j.entitystore.sql.internal.database.DatabaseSQLServiceStatementsMixin;
+import org.qi4j.entitystore.sql.internal.database.DatabaseSQLStringsBuilder;
+import org.qi4j.entitystore.sql.internal.datasource.DBCPBasicDataSourceServiceMixin;
+import org.qi4j.entitystore.sql.internal.datasource.DataSourceService;
+import org.qi4j.entitystore.sql.internal.datasource.DataSourceServiceComposite;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 
 /**
@@ -34,7 +34,7 @@ import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
  * @author Paul Merlin
  */
 /* package */ abstract class AbstractSQLEntityStoreAssembler
-        implements Assembler
+    implements Assembler
 {
 
     private static final Visibility DEFAULT_VISIBILITY = Visibility.module;
@@ -94,42 +94,48 @@ import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 
     @SuppressWarnings( "unchecked" )
     public final void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
 
-        if ( importedDataSourceService != null ) {
+        if( importedDataSourceService != null )
+        {
 
             // Imported DataSourceService
             module.importServices( DataSourceService.class ).
-                    identifiedBy( getDataSourceServiceName() ).
-                    setMetaInfo( importedDataSourceService );
+                identifiedBy( getDataSourceServiceName() ).
+                setMetaInfo( importedDataSourceService );
 
-        } else if ( dataSourceServiceMixins != null && dataSourceServiceMixins.length > 0 ) {
+        }
+        else if( dataSourceServiceMixins != null && dataSourceServiceMixins.length > 0 )
+        {
 
             // Parametrized DataSourceService
             module.addServices( DataSourceServiceComposite.class ).
-                    withMixins( dataSourceServiceMixins ).
-                    identifiedBy( getDataSourceServiceName() ).
-                    instantiateOnStartup();
+                withMixins( dataSourceServiceMixins ).
+                identifiedBy( getDataSourceServiceName() ).
+                instantiateOnStartup();
 
-        } else {
-            throw new IllegalStateException( "Unable to assemble SQLEntityStore, no importable DataSourceService nor DataSourceServiceMixin provided" );
+        }
+        else
+        {
+            throw new IllegalStateException(
+                "Unable to assemble SQLEntityStore, no importable DataSourceService nor DataSourceServiceMixin provided" );
         }
 
         module.addServices( SQLEntityStoreService.class ).
-                visibleIn( this.visibility );
+            visibleIn( this.visibility );
 
         module.addServices( DatabaseSQLServiceComposite.class ).
-                withMixins( DatabaseSQLServiceCoreMixin.class,
-                            DatabaseSQLServiceSpi.CommonMixin.class,
-                            DatabaseSQLStringsBuilder.CommonMixin.class,
-                            DatabaseSQLServiceStatementsMixin.class,
-                            getDatabaseSQLServiceSpecializationMixin() ).
-                identifiedBy( getEntityStoreServiceName() ).
-                visibleIn( Visibility.module );
+            withMixins( DatabaseSQLServiceCoreMixin.class,
+                        DatabaseSQLServiceSpi.CommonMixin.class,
+                        DatabaseSQLStringsBuilder.CommonMixin.class,
+                        DatabaseSQLServiceStatementsMixin.class,
+                        getDatabaseSQLServiceSpecializationMixin() ).
+            identifiedBy( getEntityStoreServiceName() ).
+            visibleIn( Visibility.module );
 
         module.addServices( UuidIdentityGeneratorService.class ).
-                visibleIn( this.visibility );
+            visibleIn( this.visibility );
     }
 
 }

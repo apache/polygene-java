@@ -11,14 +11,13 @@
  * limitations under the License.
  *
  */
-package org.qi4j.entitystore.sql.database;
+package org.qi4j.entitystore.sql.internal.database;
 
 import java.io.Reader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.service.ServiceComposite;
 
@@ -31,7 +30,7 @@ public interface DatabaseSQLService
 {
 
     public interface DatabaseSQLServiceComposite
-            extends DatabaseSQLService, ServiceComposite
+        extends DatabaseSQLService, ServiceComposite
     {
     }
 
@@ -78,46 +77,46 @@ public interface DatabaseSQLService
     }
 
     void startDatabase()
-            throws Exception;
+        throws Exception;
 
     void stopDatabase()
-            throws Exception;
+        throws Exception;
 
     Connection getConnection()
-            throws SQLException;
+        throws SQLException;
 
     PreparedStatement prepareGetEntityStatement( Connection connection )
-            throws SQLException;
+        throws SQLException;
 
     PreparedStatement prepareGetAllEntitiesStatement( Connection connection )
-            throws SQLException;
+        throws SQLException;
 
     PreparedStatement prepareInsertEntityStatement( Connection connection )
-            throws SQLException;
+        throws SQLException;
 
     PreparedStatement prepareUpdateEntityStatement( Connection connection )
-            throws SQLException;
+        throws SQLException;
 
     PreparedStatement prepareRemoveEntityStatement( Connection connection )
-            throws SQLException;
+        throws SQLException;
 
     void populateGetEntityStatement( PreparedStatement ps, EntityReference ref )
-            throws SQLException;
+        throws SQLException;
 
     void populateGetAllEntitiesStatement( PreparedStatement ps )
-            throws SQLException;
+        throws SQLException;
 
     void populateInsertEntityStatement( PreparedStatement ps, Long entityPK, EntityReference ref, String entity )
-            throws SQLException;
+        throws SQLException;
 
     void populateUpdateEntityStatement( PreparedStatement ps, Long entityPK, Long entityOptimisticLock, EntityReference ref, String entity )
-            throws SQLException;
+        throws SQLException;
 
     void populateRemoveEntityStatement( PreparedStatement ps, Long entityPK, EntityReference ref )
-            throws SQLException;
+        throws SQLException;
 
     EntityValueResult getEntityValue( ResultSet rs )
-            throws SQLException;
+        throws SQLException;
 
     Long newPKForEntity();
 

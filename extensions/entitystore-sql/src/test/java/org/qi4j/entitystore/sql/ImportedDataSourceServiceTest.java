@@ -22,9 +22,9 @@ import org.junit.Test;
 
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.sql.bootstrap.DerbySQLEntityStoreAssembler;
-import org.qi4j.entitystore.sql.bootstrap.ImportableDataSourceService;
-import org.qi4j.entitystore.sql.datasource.DataSourceService;
+import org.qi4j.entitystore.sql.assembly.DerbySQLEntityStoreAssembler;
+import org.qi4j.entitystore.sql.assembly.ImportableDataSourceService;
+import org.qi4j.entitystore.sql.internal.datasource.DataSourceService;
 import org.qi4j.library.sql.common.SQLUtil;
 import org.qi4j.test.AbstractQi4jTest;
 

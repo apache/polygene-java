@@ -13,6 +13,6 @@
 
     <logger name="org.qi4j.entitystore.sql" level="trace"/>
     <!-- Put this one to trace level to see all SQL strings -->
-    <logger name="org.qi4j.entitystore.sql.database.DatabaseSQLStringsBuilder" level="debug"/>
+    <logger name="org.qi4j.entitystore.sql.internal.database.DatabaseSQLStringsBuilder" level="debug"/>
 
 </configuration>
