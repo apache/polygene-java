@@ -48,30 +48,6 @@
             <artifactId>qi4j-core-bootstrap</artifactId>
         </dependency>
 
-        <!-- test -->
-        <dependency>
-            <groupId>org.qi4j.core</groupId>
-            <artifactId>qi4j-core-testsupport</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.qi4j.core</groupId>
-            <artifactId>qi4j-core-runtime</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.qi4j.extension</groupId>
-            <artifactId>qi4j-indexing-rdf</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>0.9.15</version>
-            <scope>test</scope>
-        </dependency>
-
         <!-- Optional dependencies for servlets - START -->
 
         <!-- compile -->
@@ -92,26 +68,6 @@
             <artifactId>servlet-api</artifactId>
             <scope>provided</scope>
             <optional>true</optional>
-        </dependency>
-
-        <!-- test -->
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-server</artifactId>
-            <version>7.0.1.v20091125</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-servlet</artifactId>
-            <version>7.0.1.v20091125</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.1-alpha1</version>
-            <scope>test</scope>
         </dependency>
 
         <!-- Optional dependencies for servlets - END -->
