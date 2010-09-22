@@ -10,18 +10,18 @@ import org.qi4j.api.common.ConstructionException;
 public class AppliesToFactory
 {
 
-    public AppliesToFilter createAppliesToFilter( Class<?> modifierClass )
+    public AppliesToFilter createAppliesToFilter( Class<?> fragmentClass )
     {
         AppliesToFilter result = null;
-        if( !InvocationHandler.class.isAssignableFrom( modifierClass ) )
+        if( !InvocationHandler.class.isAssignableFrom( fragmentClass ) )
         {
             result = new TypedFragmentAppliesToFilter();
-            if( Modifier.isAbstract( modifierClass.getModifiers() ) )
+            if( Modifier.isAbstract( fragmentClass.getModifiers() ) )
             {
                 result = new AndAppliesToFilter( result, new ImplementsMethodAppliesToFilter() );
             }
         }
-        result = applyAppliesTo( result, modifierClass );
+        result = applyAppliesTo( result, fragmentClass );
         if( result == null )
         {
             return AppliesToFilter.ALWAYS;
