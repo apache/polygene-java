@@ -20,7 +20,7 @@ import java.io.Serializable;
  * JAVADOC
  */
 public final class ConcernDeclaration
-    extends AbstractModifierDeclaration
+    extends FragmentDeclaration
     implements Serializable
 {
     public ConcernDeclaration( Class concernClass, Class declaredIn )

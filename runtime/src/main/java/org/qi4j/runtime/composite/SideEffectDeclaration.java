@@ -20,7 +20,7 @@ import java.io.Serializable;
  * JAVADOC
  */
 public final class SideEffectDeclaration
-    extends AbstractModifierDeclaration
+    extends FragmentDeclaration
     implements Serializable
 {
     public SideEffectDeclaration( Class sideEffectClass, Class declaredIn )
