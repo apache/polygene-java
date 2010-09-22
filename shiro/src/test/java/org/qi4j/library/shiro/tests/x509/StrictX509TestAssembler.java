@@ -26,7 +26,6 @@ import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
-import org.qi4j.index.rdf.assembly.RdfMemoryStoreAssembler;
 import org.qi4j.library.shiro.ShiroAssembler;
 import org.qi4j.library.shiro.domain.permissions.PermissionsDomainAssembler;
 import org.qi4j.library.shiro.domain.x509.X509DomainAssembler;
@@ -52,7 +51,6 @@ public class StrictX509TestAssembler
 
         // EntityStore & co
         module.addServices( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class );
-        new RdfMemoryStoreAssembler( null, Visibility.module, Visibility.module ).assemble( module );
 
         // Test Fixtures
         module.addServices( X509Fixtures.class ).instantiateOnStartup();

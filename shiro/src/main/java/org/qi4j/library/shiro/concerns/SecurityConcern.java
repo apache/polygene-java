@@ -46,24 +46,29 @@ import org.slf4j.LoggerFactory;
               RequiresRoles.class,
               RequiresUser.class } )
 public class SecurityConcern
-        extends ConcernOf<InvocationHandler>
-        implements InvocationHandler
+    extends ConcernOf<InvocationHandler>
+    implements InvocationHandler
 {
 
     private static final Logger LOGGER = LoggerFactory.getLogger( SecurityConcern.class );
+
     @Invocation
     private RequiresAuthentication requiresAuthentication;
+
     @Invocation
     private RequiresGuest requiresGuest;
+
     @Invocation
     private RequiresPermissions requiresPermissions;
+
     @Invocation
     private RequiresRoles requiresRoles;
+
     @Invocation
     private RequiresUser requiresUser;
 
     public Object invoke( Object proxy, Method method, Object[] args )
-            throws Throwable
+        throws Throwable
     {
         Subject subject = SecurityUtils.getSubject();
         handleRequiresGuest( subject );
@@ -76,66 +81,88 @@ public class SecurityConcern
 
     private void handleRequiresGuest( Subject subject )
     {
-        if ( requiresGuest != null ) {
+        if( requiresGuest != null )
+        {
             LOGGER.debug( "SecurityConcern::RequiresGuest" );
-            if ( subject.getPrincipal() != null ) {
-                throw new UnauthenticatedException( "Attempting to perform a guest-only operation.  The current Subject is "
-                        + "not a guest (they have been authenticated or remembered from a previous login).  Access "
-                        + "denied." );
+            if( subject.getPrincipal() != null )
+            {
+                throw new UnauthenticatedException(
+                    "Attempting to perform a guest-only operation.  The current Subject is "
+                    + "not a guest (they have been authenticated or remembered from a previous login).  Access "
+                    + "denied." );
 
             }
-        } else {
+        }
+        else
+        {
             LOGGER.debug( "SecurityConcern::RequiresGuest: not concerned" );
         }
     }
 
     private void handleRequiresUser( Subject subject )
     {
-        if ( requiresUser != null ) {
+        if( requiresUser != null )
+        {
             LOGGER.debug( "SecurityConcern::RequiresUser" );
-            if ( subject.getPrincipal() == null ) {
-                throw new UnauthenticatedException( "Attempting to perform a user-only operation.  The current Subject is "
-                        + "not a user (they haven't been authenticated or remembered from a previous login).  "
-                        + "Access denied." );
+            if( subject.getPrincipal() == null )
+            {
+                throw new UnauthenticatedException(
+                    "Attempting to perform a user-only operation.  The current Subject is "
+                    + "not a user (they haven't been authenticated or remembered from a previous login).  "
+                    + "Access denied." );
             }
-        } else {
+        }
+        else
+        {
             LOGGER.debug( "SecurityConcern::RequiresUser: not concerned" );
         }
     }
 
     private void handleRequiresAuthentication( Subject subject )
     {
-        if ( requiresAuthentication != null ) {
+        if( requiresAuthentication != null )
+        {
             LOGGER.debug( "SecurityConcern::RequiresAuthentication" );
-            if ( !subject.isAuthenticated() ) {
+            if( !subject.isAuthenticated() )
+            {
                 throw new UnauthenticatedException( "The current Subject is not authenticated.  Access denied." );
             }
-        } else {
+        }
+        else
+        {
             LOGGER.debug( "SecurityConcern::RequiresAuthentication: not concerned" );
         }
     }
 
     private void handleRequiresRoles( Subject subject )
     {
-        if ( requiresRoles != null ) {
+        if( requiresRoles != null )
+        {
             LOGGER.debug( "SecurityConcern::RequiresRoles" );
             String roleId = requiresRoles.value();
             String[] roles = roleId.split( "," );
-            if ( roles.length == 1 ) {
-                if ( !subject.hasRole( roles[0] ) ) {
+            if( roles.length == 1 )
+            {
+                if( !subject.hasRole( roles[ 0 ] ) )
+                {
                     String msg = "Calling Subject does not have required role [" + roleId + "].  "
-                            + "MethodInvocation denied.";
-                    throw new UnauthorizedException( msg );
-                }
-            } else {
-                Set<String> rolesSet = new LinkedHashSet<String>( Arrays.asList( roles ) );
-                if ( !subject.hasAllRoles( rolesSet ) ) {
-                    String msg = "Calling Subject does not have required roles [" + roleId + "].  "
-                            + "MethodInvocation denied.";
+                                 + "MethodInvocation denied.";
                     throw new UnauthorizedException( msg );
                 }
             }
-        } else {
+            else
+            {
+                Set<String> rolesSet = new LinkedHashSet<String>( Arrays.asList( roles ) );
+                if( !subject.hasAllRoles( rolesSet ) )
+                {
+                    String msg = "Calling Subject does not have required roles [" + roleId + "].  "
+                                 + "MethodInvocation denied.";
+                    throw new UnauthorizedException( msg );
+                }
+            }
+        }
+        else
+        {
             LOGGER.debug( "SecurityConcern::RequiresRoles: not concerned" );
         }
 
@@ -143,27 +170,35 @@ public class SecurityConcern
 
     private void handleRequiresPermissions( Subject subject )
     {
-        if ( requiresPermissions != null ) {
+        if( requiresPermissions != null )
+        {
             LOGGER.debug( "SecurityConcern::RequiresPermissions" );
             String permsString = requiresPermissions.value();
             Set<String> permissions = PermissionUtils.toPermissionStrings( permsString );
-            if ( permissions.size() == 1 ) {
-                if ( !subject.isPermitted( permissions.iterator().next() ) ) {
+            if( permissions.size() == 1 )
+            {
+                if( !subject.isPermitted( permissions.iterator().next() ) )
+                {
                     String msg = "Calling Subject does not have required permission [" + permsString + "].  "
-                            + "Method invocation denied.";
+                                 + "Method invocation denied.";
                     throw new UnauthorizedException( msg );
                 }
-            } else {
-                String[] permStrings = new String[ permissions.size() ];
+            }
+            else
+            {
+                String[] permStrings = new String[permissions.size()];
                 permStrings = permissions.toArray( permStrings );
-                if ( !subject.isPermittedAll( permStrings ) ) {
+                if( !subject.isPermittedAll( permStrings ) )
+                {
                     String msg = "Calling Subject does not have required permissions [" + permsString + "].  "
-                            + "Method invocation denied.";
+                                 + "Method invocation denied.";
                     throw new UnauthorizedException( msg );
                 }
 
             }
-        } else {
+        }
+        else
+        {
             LOGGER.debug( "SecurityConcern::RequiresPermissions: not concerned" );
         }
 
