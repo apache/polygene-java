@@ -45,6 +45,7 @@ public class ASMTest
 public void createClass()
             throws Exception
     {
+/*
         byte[] asm = generateClass();
 
         byte[] cl = FragmentClassLoader.generateClass( QI256Test.TestTransient.TestTransientMixin.class.getName() + "_Stub", QI256Test.TestTransient.TestTransientMixin.class );
@@ -53,6 +54,7 @@ public void createClass()
         cr.accept( new ASMifierClassVisitor( new PrintWriter( System.out, true ) ),
                 ASMifierClassVisitor.getDefaultAttributes(),
                 0 );
+*/
 
 
         //       Assert.assertArrayEquals( asm, cl );
