@@ -78,6 +78,6 @@ public class AppliesToFactory
                 return new AndAppliesToFilter( existing, appliesToAnnotation );
             }
         }
-        return null;
+        return existing;
     }
 }
