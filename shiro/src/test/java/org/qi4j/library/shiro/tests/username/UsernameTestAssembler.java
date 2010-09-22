@@ -22,11 +22,11 @@
 package org.qi4j.library.shiro.tests.username;
 
 import org.qi4j.library.shiro.tests.SecuredService;
-import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
+import org.qi4j.index.rdf.assembly.RdfMemoryStoreAssembler;
 import org.qi4j.library.shiro.ShiroAssembler;
 import org.qi4j.library.shiro.domain.permissions.PermissionsDomainAssembler;
 import org.qi4j.library.shiro.domain.securehash.SecureHashDomainAssembler;
@@ -36,6 +36,7 @@ public class UsernameTestAssembler
         implements Assembler
 {
 
+    @SuppressWarnings( "unchecked" )
     public void assemble( ModuleAssembly module )
             throws AssemblyException
     {
@@ -51,6 +52,7 @@ public class UsernameTestAssembler
 
         // EntityStore & co
         module.addServices( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class );
+        new RdfMemoryStoreAssembler().assemble( module );
 
         // Test Fixtures
         module.addServices( UsernameFixtures.class ).instantiateOnStartup();

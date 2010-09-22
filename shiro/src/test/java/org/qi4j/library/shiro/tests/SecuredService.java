@@ -4,15 +4,13 @@ import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.library.shiro.concerns.RequiresPermissions;
-import org.qi4j.library.shiro.concerns.RequiresPermissionsConcern;
 import org.qi4j.library.shiro.concerns.RequiresRoles;
-import org.qi4j.library.shiro.concerns.RequiresRolesConcern;
 import org.qi4j.library.shiro.concerns.RequiresUser;
-import org.qi4j.library.shiro.concerns.RequiresUserConcern;
+import org.qi4j.library.shiro.concerns.SecurityConcern;
 import org.qi4j.library.shiro.tests.username.UsernameFixtures;
 
 @Mixins( value = SecuredService.Mixin.class )
-@Concerns( value = { RequiresUserConcern.class, RequiresPermissionsConcern.class, RequiresRolesConcern.class } )
+@Concerns( SecurityConcern.class )
 public interface SecuredService
         extends ServiceComposite
 {
