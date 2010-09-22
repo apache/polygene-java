@@ -24,8 +24,11 @@ package org.qi4j.library.shiro.domain.x509;
 import java.io.IOException;
 import java.io.StringReader;
 import java.security.cert.X509Certificate;
+
 import org.bouncycastle.openssl.PEMReader;
+
 import org.joda.time.DateTime;
+
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;

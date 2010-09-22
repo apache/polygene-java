@@ -14,65 +14,20 @@
     <artifactId>qi4j-lib-shiro</artifactId>
     <version>1.2-SNAPSHOT</version>
 
-    <name>Qi4j Library - Shiro</name>
-    <packaging>bundle</packaging>
+    <name>Qi4j Library - Apache Shiro</name>
+    <packaging>pom</packaging>
 
     <properties>
-        <shiro.version>1.0.0-incubating</shiro.version>
+        <version.shiro>1.0.0-incubating</version.shiro>
+        <version.bouncy>1.45</version.bouncy>
+        <version.jodatime>1.6</version.jodatime>
     </properties>
 
-    <dependencies>
+    <modules>
+        <module>core</module>
+        <module>web</module>
+    </modules>
 
-        <!-- compile -->
-        <dependency>
-            <groupId>org.apache.shiro</groupId>
-            <artifactId>shiro-core</artifactId>
-            <version>${shiro.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk16</artifactId>
-            <version>1.45</version>
-        </dependency>
-        <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
-            <version>1.6</version>
-        </dependency>
-        <dependency>
-            <groupId>org.qi4j.core</groupId>
-            <artifactId>qi4j-core-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.qi4j.core</groupId>
-            <artifactId>qi4j-core-bootstrap</artifactId>
-        </dependency>
-
-        <!-- Optional dependencies for servlets - START -->
-
-        <!-- compile -->
-        <dependency>
-            <groupId>org.apache.shiro</groupId>
-            <artifactId>shiro-web</artifactId>
-            <version>${shiro.version}</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.qi4j.library</groupId>
-            <artifactId>qi4j-lib-servlet</artifactId>
-            <version>${project.version}</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <scope>provided</scope>
-            <optional>true</optional>
-        </dependency>
-
-        <!-- Optional dependencies for servlets - END -->
-
-    </dependencies>
     <repositories>
         <repository>
             <id>apache-snapshots</id>
@@ -83,4 +38,5 @@
             <url>http://repository.ops4j.org/mvn-snapshots</url>
         </repository>
     </repositories>
+
 </project>

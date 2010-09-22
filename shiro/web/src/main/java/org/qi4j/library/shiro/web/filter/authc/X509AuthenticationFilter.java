@@ -24,8 +24,10 @@ package org.qi4j.library.shiro.web.filter.authc;
 import java.security.cert.X509Certificate;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.web.filter.authc.AuthenticatingFilter;
+
 import org.qi4j.library.shiro.authc.X509AuthenticationToken;
 
 public class X509AuthenticationFilter

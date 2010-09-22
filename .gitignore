@@ -59,3 +59,5 @@ uid/target/
 validation/target/
 servlet/target/
 shiro/target/
+shiro/core/target/
+shiro/web/target/
