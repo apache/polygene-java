@@ -35,6 +35,7 @@
     <module>entitystore-sql</module>
     <module>migration</module>
     <module>indexing-rdf</module>
+    <module>indexing-sql</module>
   </modules>
 
   <developers>
@@ -153,6 +154,13 @@
       <organization />
       <email>paul@nosphere.org</email>
       <timezone>CET</timezone>
+    </developer>
+    <developer>
+      <id>stanislav.muhametsin@tut.fi</id>
+      <name>Stanislav Muhametsin</name>
+      <organization />
+      <email>stanislav.muhametsin@tut.fi</email>
+      <timezone>UTC+2</timezone>
     </developer>
   </developers>
 
