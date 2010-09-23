@@ -32,6 +32,7 @@
     <module>entitystore-rest</module>
     <module>entitystore-qrm</module>
     <module>entitystore-hazelcast</module>
+    <module>entitystore-sql</module>
     <module>migration</module>
     <module>indexing-rdf</module>
   </modules>
