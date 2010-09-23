@@ -37,6 +37,7 @@
     <module>spring</module>
     <module>servlet</module>
     <module>shiro</module>
+    <module>sql</module>
   </modules>
 
   <developers>
@@ -164,6 +165,13 @@
       <organization />
       <email>paul@nosphere.org</email>
       <timezone>CET</timezone>
+    </developer>
+    <developer>
+      <id>stanislav.muhametsin@tut.fi</id>
+      <name>Stanislav Muhametsin</name>
+      <organization />
+      <email>stanislav.muhametsin@tut.fi</email>
+      <timezone>UTC+2</timezone>
     </developer>
   </developers>
 
