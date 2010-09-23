@@ -29,6 +29,8 @@ entitystore-neo4j/target
 entitystore-preferences/target
 entitystore-qrm/target
 entitystore-rest/target
+entitystore-sql/target
+entitystore-sql/derby.log
 indexing-rdf/target
 indexing-sql/target
 migration/target
