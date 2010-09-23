@@ -61,3 +61,6 @@ servlet/target/
 shiro/target/
 shiro/core/target/
 shiro/web/target/
+sql/target
+sql/api/target
+sql/postgresql/target
