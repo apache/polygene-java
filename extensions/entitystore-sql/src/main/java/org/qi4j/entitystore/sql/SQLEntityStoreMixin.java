@@ -116,8 +116,7 @@ public abstract class SQLEntityStoreMixin
         database.stopDatabase();
     }
 
-    // FIXME apply lastModified on all changed entities
-    public StateCommitter applyChanges( final Iterable<EntityState> states, final String version, long lastModified )
+    public StateCommitter applyChanges( final Iterable<EntityState> states, final String version, final long lastModified )
     {
         return new StateCommitter()
         {
@@ -147,11 +146,11 @@ public abstract class SQLEntityStoreMixin
                             if ( EntityStatus.UPDATED.equals( status ) ) {
                                 Long entityOptimisticLock = ( ( SQLEntityState ) state ).getEntityOptimisticLock();
                                 database.populateUpdateEntityStatement( updatePS, entityPK, entityOptimisticLock,
-                                                                        defState.identity(), writer.toString() );
+                                                                        defState.identity(), writer.toString(), lastModified );
                                 updatePS.addBatch();
                             } else if ( EntityStatus.NEW.equals( status ) ) {
                                 database.populateInsertEntityStatement( insertPS, entityPK, defState.identity(),
-                                                                        writer.toString() );
+                                                                        writer.toString(), lastModified );
                                 insertPS.addBatch();
                             }
                         }

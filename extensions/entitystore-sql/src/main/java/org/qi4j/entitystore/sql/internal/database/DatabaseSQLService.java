@@ -106,10 +106,10 @@ public interface DatabaseSQLService
     void populateGetAllEntitiesStatement( PreparedStatement ps )
         throws SQLException;
 
-    void populateInsertEntityStatement( PreparedStatement ps, Long entityPK, EntityReference ref, String entity )
+    void populateInsertEntityStatement( PreparedStatement ps, Long entityPK, EntityReference ref, String entity, Long lastModified )
         throws SQLException;
 
-    void populateUpdateEntityStatement( PreparedStatement ps, Long entityPK, Long entityOptimisticLock, EntityReference ref, String entity )
+    void populateUpdateEntityStatement( PreparedStatement ps, Long entityPK, Long entityOptimisticLock, EntityReference ref, String entity, Long lastModified )
         throws SQLException;
 
     void populateRemoveEntityStatement( PreparedStatement ps, Long entityPK, EntityReference ref )

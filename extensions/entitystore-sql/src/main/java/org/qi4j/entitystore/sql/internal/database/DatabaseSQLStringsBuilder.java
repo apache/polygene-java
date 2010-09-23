@@ -40,8 +40,9 @@ public interface DatabaseSQLStringsBuilder
 
     String buildSQLForRemoveEntityStatement();
 
+    @SuppressWarnings( "PublicInnerClass" )
     abstract class CommonMixin
-        implements DatabaseSQLStringsBuilder
+            implements DatabaseSQLStringsBuilder
     {
 
         private static final Logger LOGGER = LoggerFactory.getLogger( DatabaseSQLStringsBuilder.class );
@@ -59,7 +60,7 @@ public interface DatabaseSQLStringsBuilder
         public String[] buildSQLForIndexCreation()
         {
             // TODO
-            String[] sql = new String[]{ };
+            String[] sql = new String[]{};
             LOGGER.trace( "SQL for index creation: {}", sql );
             return sql;
         }
