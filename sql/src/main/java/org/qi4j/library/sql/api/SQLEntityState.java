@@ -38,6 +38,7 @@ public interface SQLEntityState
 
     public DefaultEntityState getDefaultEntityState();
 
+    @SuppressWarnings( "PublicInnerClass" )
     public final class DefaultSQLEntityState
             implements SQLEntityState
     {
