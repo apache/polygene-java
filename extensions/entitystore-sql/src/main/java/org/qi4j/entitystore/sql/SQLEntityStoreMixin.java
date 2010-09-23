@@ -116,6 +116,7 @@ public abstract class SQLEntityStoreMixin
         database.stopDatabase();
     }
 
+    // FIXME apply lastModified on all changed entities
     public StateCommitter applyChanges( final Iterable<EntityState> states, final String version, long lastModified )
     {
         return new StateCommitter()
