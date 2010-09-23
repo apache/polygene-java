@@ -10,7 +10,7 @@
     </parent>
     <groupId>org.qi4j.extension</groupId>
     <artifactId>qi4j-entitystore-sql</artifactId>
-    <name>Qi4j Extension - EntityStore - SQL</name>
+    <name>Qi4j Extension - SQL Store</name>
     <version>1.2-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
@@ -54,62 +54,6 @@
             <version>${version.qi4j}</version>
         </dependency>
 
-        <!-- Unit tests -->
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>0.9.21</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.derby</groupId>
-            <artifactId>derbyclient</artifactId>
-            <version>10.6.1.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.derby</groupId>
-            <artifactId>derby</artifactId>
-            <version>10.6.1.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.13</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>8.4-701.jdbc4</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.qi4j.core</groupId>
-            <artifactId>qi4j-core-runtime</artifactId>
-            <version>${version.qi4j}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.qi4j.tests</groupId>
-            <artifactId>qi4j-tests-performance</artifactId>
-            <version>${version.qi4j}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.qi4j.core</groupId>
-            <artifactId>qi4j-core-testsupport</artifactId>
-            <scope>test</scope>
-            <version>${version.qi4j}</version>
-        </dependency>
-
     </dependencies>
-    <repositories>
-        <repository>
-            <id>glassfish</id>
-            <name>glassfish</name>
-            <url>http://download.java.net/maven/glassfish/</url>
-        </repository>
-    </repositories>
+   
 </project>
