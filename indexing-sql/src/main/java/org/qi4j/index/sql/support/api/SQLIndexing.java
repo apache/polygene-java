@@ -12,36 +12,27 @@
  *
  */
 
-package org.qi4j.index.sql.internal;
+
+package org.qi4j.index.sql.support.api;
 
 import java.sql.Connection;
-import org.qi4j.api.injection.scope.Service;
-import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.service.Activatable;
-import org.qi4j.index.sql.support.api.SQLAppStartup;
+import java.sql.SQLException;
+
+import org.qi4j.spi.entity.EntityState;
 
 /**
+ * This is the interface used by SQL-Indexing whenever
+ *
  * @author Stanislav Muhametsin
  */
-public class SQLActivatable implements Activatable
+public interface SQLIndexing
 {
-    @Service
-    private SQLAppStartup _startup;
-
-    @This
-    private SQLJDBCState _state;
-
-    public void activate()
-        throws Exception
-    {
-        Connection connection = this._startup.createConnection();
-        this._state.connection().set( connection );
-        this._startup.initConnection( connection );
-    }
-
-    public void passivate()
-        throws Exception
-    {
-        // Nothing to do.
-    }
+   /**
+    * This method is called when states need to be indexed.
+    * @param changedStates The states which changed.
+    * @param connection Connection to RDBMS.
+    * @throws SQLException If SQL.
+    */
+   void indexEntities(Iterable<EntityState> changedStates, Connection connection) throws SQLException;
+   
 }

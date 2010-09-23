@@ -1,0 +1,15 @@
+These instructions are for preparing your out-of-box PoistgreSQL installation so it would be usable with PostgreSQL indexing of Qi4j.
+
+1. Creating login role and database
+1.1. Using pgAdmin, connect to PostgreSQL database, and create database you intend to use to store Qi4j entity data, and login role for Qi4j application to use when it connects to database.
+1.1. Update these values into your .properties file, if necessary.
+
+2. Adding ltree as type
+2.1. Using pgAdmin, connect to PostgreSQL database, and navigate to database which is intended to be used for Qi4j. (Click on it)
+2.2. Executing arbitary SQL queries should be possible, click that button (button with SQL text on it, next to trash bin).
+2.3. This will open new window, erase any text which pgAdmin generates there for you.
+2.4. Then navigate to your PostgreSQL installation directory, then into 'share', and then into 'contrib'. Open file 'ltree.sql' in your favorite text editor.
+2.5. Select all text, copy it, and paste to SQL query window which you opened in stage 2.2.
+2.6. If you know what you are doing, you may change the line 'SET search_path = public;' to make search_path be 'pg_catalog', or name of schema that Qi4j application will use ('qi4j' by default). It's ok to leave it to 'public' though.
+2.7. Hit F5 or go Query -> Execute Query to execute the SQL. It should print some notices into output window but no errors nor warnings should be present.
+2.8. Ltree type should be now installed to your PostgreSQL installation.

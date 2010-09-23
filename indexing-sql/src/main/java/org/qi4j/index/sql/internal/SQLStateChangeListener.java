@@ -19,7 +19,7 @@ import java.util.logging.Logger;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.unitofwork.UnitOfWorkException;
-import org.qi4j.library.sql.api.SQLIndexing;
+import org.qi4j.index.sql.support.api.SQLIndexing;
 import org.qi4j.library.sql.common.SQLUtil;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entitystore.StateChangeListener;

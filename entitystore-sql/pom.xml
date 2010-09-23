@@ -50,7 +50,7 @@
         </dependency>
         <dependency>
             <groupId>org.qi4j.library</groupId>
-            <artifactId>qi4j-lib-sql-api</artifactId>
+            <artifactId>qi4j-lib-sql</artifactId>
             <version>${version.qi4j}</version>
         </dependency>
 
