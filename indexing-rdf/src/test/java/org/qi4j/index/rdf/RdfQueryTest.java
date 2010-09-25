@@ -18,6 +18,8 @@
  */
 package org.qi4j.index.rdf;
 
+import org.junit.After;
+import org.junit.Ignore;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -29,14 +31,14 @@ import org.qi4j.library.rdf.repository.NativeConfiguration;
 import org.qi4j.library.rdf.repository.NativeRepositoryService;
 import org.qi4j.test.indexing.AbstractQueryTest;
 
-public class RdfQueryTest
-    extends AbstractQueryTest
+public class RdfQueryTest extends AbstractQueryTest
 {
 
     @Override
-    protected void setupTest( ModuleAssembly module )
+    public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
+        super.assemble( module );
         module.addServices( NativeRepositoryService.class, RdfQueryParserFactory.class );
         module.addServices( RdfIndexingEngineService.class );
         module.addObjects( EntityStateSerializer.class, EntityTypeSerializer.class );
@@ -47,7 +49,9 @@ public class RdfQueryTest
     }
 
     @Override
-    protected void tearDownTest()
+    @After
+    public void tearDown()
+        throws Exception
     {
         java.io.File data = null;
         if( unitOfWork != null )
@@ -60,6 +64,7 @@ public class RdfQueryTest
         {
             remove( data );
         }
+        super.tearDown();
     }
 
     private void remove( java.io.File data )

@@ -24,17 +24,17 @@ import org.qi4j.library.rdf.entity.EntityTypeSerializer;
 import org.qi4j.library.rdf.repository.MemoryRepositoryService;
 import org.qi4j.test.indexing.AbstractEntityFinderTest;
 
-public class RdfEntityFinderTest
-    extends AbstractEntityFinderTest
+public class RdfEntityFinderTest extends AbstractEntityFinderTest
 {
     @Override
-    protected void setupTest( ModuleAssembly module )
+    public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
+        super.assemble( module );
         module.addObjects( EntityStateSerializer.class, EntityTypeSerializer.class );
         module.addServices( RdfIndexingEngineService.class );
         module.addServices( MemoryRepositoryService.class ).identifiedBy( "rdf-indexing" );
-//                module.addServices( NativeRdfRepositoryService.class ).identifiedBy( "rdf-indexing" );
-//                module.addComposites( NativeRdfConfiguration.class );
+        // module.addServices( NativeRdfRepositoryService.class ).identifiedBy( "rdf-indexing" );
+        // module.addComposites( NativeRdfConfiguration.class );
     }
 }

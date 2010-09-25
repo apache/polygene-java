@@ -28,8 +28,7 @@ import org.qi4j.spi.query.NamedQueries;
 import org.qi4j.spi.query.NamedQueryDescriptor;
 import org.qi4j.test.indexing.AbstractNamedQueryTest;
 
-public class RdfNamedQueryTest
-    extends AbstractNamedQueryTest
+public class RdfNamedQueryTest extends AbstractNamedQueryTest
 {
     @Override
     protected String[] queryStrings()
@@ -45,339 +44,219 @@ public class RdfNamedQueryTest
     }
 
     @Override
-    protected void setupTest( ModuleAssembly module, NamedQueries namedQueries )
+    public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
+        super.assemble( module );
         module.addServices( MemoryRepositoryService.class, RdfQueryParserFactory.class );
-        module.addServices( RdfIndexingEngineService.class ).setMetaInfo( namedQueries );
         module.addObjects( EntityStateSerializer.class, EntityTypeSerializer.class );
     }
 
     @Override
-    protected void tearDownTest()
+    protected void assembleNamedQueries( ModuleAssembly module, NamedQueries queries )
+        throws AssemblyException
     {
+        module.addServices( RdfIndexingEngineService.class ).setMetaInfo( queries );
     }
 
     private static String[] queryStrings =
-        {
-            "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n" +
-            "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n" +
-            "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" +
-            "SELECT DISTINCT ?entityType ?identity\n" +
-            "WHERE {\n" +
-            "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.indexing.model.Person>. \n" +
-            "?entity rdf:type ?entityType. \n" +
-            "?entity ns0:identity ?identity. \n" +
-            "\n" +
-            "}", //script01
+    {
+        "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n"
+            + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
+            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?entityType ?identity\n"
+            + "WHERE {\n" + "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.indexing.model.Person>. \n"
+            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?identity. \n" + "\n" + "}", // script01
 
-            "PREFIX ns1: <urn:qi4j:type:org.qi4j.test.indexing.model.Nameable#> \n" +
-            "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n" +
-            "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n" +
-            "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" +
-            "SELECT DISTINCT ?entityType ?identity\n" +
-            "WHERE {\n" +
-            "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.indexing.model.Domain>. \n" +
-            "?entity rdf:type ?entityType. \n" +
-            "?entity ns0:identity ?identity. \n" +
-            "?entity ns1:name ?v0. \n" +
-            "FILTER (?v0 = \"Gaming\")\n" +
-            "}", //script02
+        "PREFIX ns1: <urn:qi4j:type:org.qi4j.test.indexing.model.Nameable#> \n"
+            + "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n"
+            + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
+            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?entityType ?identity\n"
+            + "WHERE {\n" + "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.indexing.model.Domain>. \n"
+            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?identity. \n" + "?entity ns1:name ?v0. \n"
+            + "FILTER (?v0 = \"Gaming\")\n" + "}", // script02
 
-            "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n" +
-            "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n" +
-            "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" +
-            "SELECT DISTINCT ?entityType ?identity\n" +
-            "WHERE {\n" +
-            "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.indexing.model.Nameable>. \n" +
-            "?entity rdf:type ?entityType. \n" +
-            "?entity ns0:identity ?identity. \n" +
-            "\n" +
-            "}", //script03
+        "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n"
+            + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
+            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?entityType ?identity\n"
+            + "WHERE {\n" + "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.indexing.model.Nameable>. \n"
+            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?identity. \n" + "\n" + "}", // script03
 
-            "PREFIX ns1: <urn:qi4j:type:org.qi4j.test.indexing.model.Person#> \n" +
-            "PREFIX ns2: <urn:qi4j:type:org.qi4j.test.indexing.model.Nameable#> \n" +
-            "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n" +
-            "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n" +
-            "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" +
-            "SELECT DISTINCT ?entityType ?identity\n" +
-            "WHERE {\n" +
-            "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.indexing.model.Person>. \n" +
-            "?entity rdf:type ?entityType. \n" +
-            "?entity ns0:identity ?identity. \n" +
-            "?entity ns1:placeOfBirth ?v0. \n" +
-            "?v0 ns2:name ?v1. \n" +
-            "FILTER (?v1 = \"Kuala Lumpur\")\n" +
-            "}", //script04
+        "PREFIX ns1: <urn:qi4j:type:org.qi4j.test.indexing.model.Person#> \n"
+            + "PREFIX ns2: <urn:qi4j:type:org.qi4j.test.indexing.model.Nameable#> \n"
+            + "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n"
+            + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
+            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?entityType ?identity\n"
+            + "WHERE {\n" + "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.indexing.model.Person>. \n"
+            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?identity. \n"
+            + "?entity ns1:placeOfBirth ?v0. \n" + "?v0 ns2:name ?v1. \n" + "FILTER (?v1 = \"Kuala Lumpur\")\n" + "}", // script04
 
-            "PREFIX ns1: <urn:qi4j:type:org.qi4j.test.indexing.model.Person#> \n" +
-            "PREFIX ns2: <urn:qi4j:type:org.qi4j.test.indexing.model.Nameable#> \n" +
-            "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n" +
-            "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n" +
-            "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" +
-            "SELECT DISTINCT ?entityType ?identity\n" +
-            "WHERE {\n" +
-            "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.indexing.model.Person>. \n" +
-            "?entity rdf:type ?entityType. \n" +
-            "?entity ns0:identity ?identity. \n" +
-            "?entity ns1:mother ?v0. \n" +
-            "?v0 ns1:placeOfBirth ?v1. \n" +
-            "?v1 ns2:name ?v2. \n" +
-            "FILTER (?v2 = \"Kuala Lumpur\")\n" +
-            "}", //script05
+        "PREFIX ns1: <urn:qi4j:type:org.qi4j.test.indexing.model.Person#> \n"
+            + "PREFIX ns2: <urn:qi4j:type:org.qi4j.test.indexing.model.Nameable#> \n"
+            + "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n"
+            + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
+            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?entityType ?identity\n"
+            + "WHERE {\n" + "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.indexing.model.Person>. \n"
+            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?identity. \n" + "?entity ns1:mother ?v0. \n"
+            + "?v0 ns1:placeOfBirth ?v1. \n" + "?v1 ns2:name ?v2. \n" + "FILTER (?v2 = \"Kuala Lumpur\")\n" + "}", // script05
 
-            "PREFIX ns1: <urn:qi4j:type:org.qi4j.test.indexing.model.Person#> \n" +
-            "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n" +
-            "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n" +
-            "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" +
-            "SELECT DISTINCT ?entityType ?identity\n" +
-            "WHERE {\n" +
-            "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.indexing.model.Person>. \n" +
-            "?entity rdf:type ?entityType. \n" +
-            "?entity ns0:identity ?identity. \n" +
-            "?entity ns1:yearOfBirth ?v0. \n" +
-            "FILTER (?v0 >= \"1973\")\n" +
-            "}", //script06
+        "PREFIX ns1: <urn:qi4j:type:org.qi4j.test.indexing.model.Person#> \n"
+            + "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n"
+            + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
+            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?entityType ?identity\n"
+            + "WHERE {\n" + "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.indexing.model.Person>. \n"
+            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?identity. \n"
+            + "?entity ns1:yearOfBirth ?v0. \n" + "FILTER (?v0 >= \"1973\")\n" + "}", // script06
 
-            "PREFIX ns1: <urn:qi4j:type:org.qi4j.test.indexing.model.Person#> \n" +
-            "PREFIX ns2: <urn:qi4j:type:org.qi4j.test.indexing.model.Nameable#> \n" +
-            "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n" +
-            "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n" +
-            "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" +
-            "SELECT DISTINCT ?entityType ?identity\n" +
-            "WHERE {\n" +
-            "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.indexing.model.Nameable>. \n" +
-            "?entity rdf:type ?entityType. \n" +
-            "?entity ns0:identity ?identity. \n" +
-            "?entity ns1:yearOfBirth ?v0. \n" +
-            "?entity ns1:placeOfBirth ?v1. \n" +
-            "?v1 ns2:name ?v2. \n" +
-            "FILTER ((?v0 >= \"1900\") && (?v2 = \"Penang\"))\n" +
-            "}", //script07
+        "PREFIX ns1: <urn:qi4j:type:org.qi4j.test.indexing.model.Person#> \n"
+            + "PREFIX ns2: <urn:qi4j:type:org.qi4j.test.indexing.model.Nameable#> \n"
+            + "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n"
+            + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
+            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?entityType ?identity\n"
+            + "WHERE {\n" + "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.indexing.model.Nameable>. \n"
+            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?identity. \n"
+            + "?entity ns1:yearOfBirth ?v0. \n" + "?entity ns1:placeOfBirth ?v1. \n" + "?v1 ns2:name ?v2. \n"
+            + "FILTER ((?v0 >= \"1900\") && (?v2 = \"Penang\"))\n" + "}", // script07
 
-            "PREFIX ns1: <urn:qi4j:type:org.qi4j.test.indexing.model.Person#> \n" +
-            "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n" +
-            "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n" +
-            "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" +
-            "SELECT DISTINCT ?entityType ?identity\n" +
-            "WHERE {\n" +
-            "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.indexing.model.Person>. \n" +
-            "?entity rdf:type ?entityType. \n" +
-            "?entity ns0:identity ?identity. \n" +
-            "?entity ns1:yearOfBirth ?v0. \n" +
-            "FILTER ((?v0 = \"1970\") || (?v0 = \"1975\"))\n" +
-            "}", //script08
+        "PREFIX ns1: <urn:qi4j:type:org.qi4j.test.indexing.model.Person#> \n"
+            + "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n"
+            + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
+            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?entityType ?identity\n"
+            + "WHERE {\n" + "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.indexing.model.Person>. \n"
+            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?identity. \n"
+            + "?entity ns1:yearOfBirth ?v0. \n" + "FILTER ((?v0 = \"1970\") || (?v0 = \"1975\"))\n" + "}", // script08
 
-            "PREFIX ns1: <urn:qi4j:type:org.qi4j.test.indexing.model.Person#> \n" +
-            "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n" +
-            "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n" +
-            "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" +
-            "SELECT DISTINCT ?entityType ?identity\n" +
-            "WHERE {\n" +
-            "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.indexing.model.Female>. \n" +
-            "?entity rdf:type ?entityType. \n" +
-            "?entity ns0:identity ?identity. \n" +
-            "?entity ns1:yearOfBirth ?v0. \n" +
-            "FILTER ((?v0 = \"1970\") || (?v0 = \"1975\"))\n" +
-            "}", //script09
+        "PREFIX ns1: <urn:qi4j:type:org.qi4j.test.indexing.model.Person#> \n"
+            + "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n"
+            + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
+            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?entityType ?identity\n"
+            + "WHERE {\n" + "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.indexing.model.Female>. \n"
+            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?identity. \n"
+            + "?entity ns1:yearOfBirth ?v0. \n" + "FILTER ((?v0 = \"1970\") || (?v0 = \"1975\"))\n" + "}", // script09
 
-            "PREFIX ns1: <urn:qi4j:type:org.qi4j.test.indexing.model.Person#> \n" +
-            "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n" +
-            "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n" +
-            "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" +
-            "SELECT DISTINCT ?entityType ?identity\n" +
-            "WHERE {\n" +
-            "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.indexing.model.Person>. \n" +
-            "?entity rdf:type ?entityType. \n" +
-            "?entity ns0:identity ?identity. \n" +
-            "?entity ns1:yearOfBirth ?v0. \n" +
-            "FILTER (!(?v0 = \"1975\"))\n" +
-            "}", //script10
+        "PREFIX ns1: <urn:qi4j:type:org.qi4j.test.indexing.model.Person#> \n"
+            + "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n"
+            + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
+            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?entityType ?identity\n"
+            + "WHERE {\n" + "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.indexing.model.Person>. \n"
+            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?identity. \n"
+            + "?entity ns1:yearOfBirth ?v0. \n" + "FILTER (!(?v0 = \"1975\"))\n" + "}", // script10
 
-            "PREFIX ns1: <urn:qi4j:type:org.qi4j.test.indexing.model.Person#> \n" +
-            "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n" +
-            "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n" +
-            "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" +
-            "SELECT DISTINCT ?entityType ?identity\n" +
-            "WHERE {\n" +
-            "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.indexing.model.Person>. \n" +
-            "?entity rdf:type ?entityType. \n" +
-            "?entity ns0:identity ?identity. \n" +
-            "OPTIONAL {?entity ns1:email ?v0}. \n" +
-            "FILTER (bound(?v0))\n" +
-            "}", //script11
+        "PREFIX ns1: <urn:qi4j:type:org.qi4j.test.indexing.model.Person#> \n"
+            + "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n"
+            + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
+            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?entityType ?identity\n"
+            + "WHERE {\n" + "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.indexing.model.Person>. \n"
+            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?identity. \n"
+            + "OPTIONAL {?entity ns1:email ?v0}. \n" + "FILTER (bound(?v0))\n" + "}", // script11
 
-            "PREFIX ns1: <urn:qi4j:type:org.qi4j.test.indexing.model.Person#> \n" +
-            "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n" +
-            "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n" +
-            "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" +
-            "SELECT DISTINCT ?entityType ?identity\n" +
-            "WHERE {\n" +
-            "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.indexing.model.Person>. \n" +
-            "?entity rdf:type ?entityType. \n" +
-            "?entity ns0:identity ?identity. \n" +
-            "OPTIONAL {?entity ns1:email ?v0}. \n" +
-            "FILTER (! bound(?v0))\n" +
-            "}", //script12
+        "PREFIX ns1: <urn:qi4j:type:org.qi4j.test.indexing.model.Person#> \n"
+            + "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n"
+            + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
+            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?entityType ?identity\n"
+            + "WHERE {\n" + "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.indexing.model.Person>. \n"
+            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?identity. \n"
+            + "OPTIONAL {?entity ns1:email ?v0}. \n" + "FILTER (! bound(?v0))\n" + "}", // script12
 
-            "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n" +
-            "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n" +
-            "PREFIX ns1: <urn:qi4j:type:org.qi4j.test.indexing.model.Male#> \n" +
-            "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" +
-            "SELECT DISTINCT ?entityType ?identity\n" +
-            "WHERE {\n" +
-            "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.indexing.model.Person>. \n" +
-            "?entity rdf:type ?entityType. \n" +
-            "?entity ns0:identity ?identity. \n" +
-            "OPTIONAL {?entity ns1:wife ?v0}. \n" +
-            "FILTER (bound(?v0))\n" +
-            "}", //script13
+        "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n"
+            + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
+            + "PREFIX ns1: <urn:qi4j:type:org.qi4j.test.indexing.model.Male#> \n"
+            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?entityType ?identity\n"
+            + "WHERE {\n" + "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.indexing.model.Person>. \n"
+            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?identity. \n"
+            + "OPTIONAL {?entity ns1:wife ?v0}. \n" + "FILTER (bound(?v0))\n" + "}", // script13
 
-            "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n" +
-            "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n" +
-            "PREFIX ns1: <urn:qi4j:type:org.qi4j.test.indexing.model.Male#> \n" +
-            "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" +
-            "SELECT DISTINCT ?entityType ?identity\n" +
-            "WHERE {\n" +
-            "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.indexing.model.Male>. \n" +
-            "?entity rdf:type ?entityType. \n" +
-            "?entity ns0:identity ?identity. \n" +
-            "OPTIONAL {?entity ns1:wife ?v0}. \n" +
-            "FILTER (! bound(?v0))\n" +
-            "}", //script14
+        "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n"
+            + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
+            + "PREFIX ns1: <urn:qi4j:type:org.qi4j.test.indexing.model.Male#> \n"
+            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?entityType ?identity\n"
+            + "WHERE {\n" + "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.indexing.model.Male>. \n"
+            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?identity. \n"
+            + "OPTIONAL {?entity ns1:wife ?v0}. \n" + "FILTER (! bound(?v0))\n" + "}", // script14
 
-            "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n" +
-            "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n" +
-            "PREFIX ns1: <urn:qi4j:type:org.qi4j.test.indexing.model.Male#> \n" +
-            "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" +
-            "SELECT DISTINCT ?entityType ?identity\n" +
-            "WHERE {\n" +
-            "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.indexing.model.Person>. \n" +
-            "?entity rdf:type ?entityType. \n" +
-            "?entity ns0:identity ?identity. \n" +
-            "OPTIONAL {?entity ns1:wife ?v0}. \n" +
-            "FILTER (! bound(?v0))\n" +
-            "}", //script15
+        "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n"
+            + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
+            + "PREFIX ns1: <urn:qi4j:type:org.qi4j.test.indexing.model.Male#> \n"
+            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?entityType ?identity\n"
+            + "WHERE {\n" + "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.indexing.model.Person>. \n"
+            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?identity. \n"
+            + "OPTIONAL {?entity ns1:wife ?v0}. \n" + "FILTER (! bound(?v0))\n" + "}", // script15
 
-            "PREFIX ns1: <urn:qi4j:type:org.qi4j.test.indexing.model.Nameable#> \n" +
-            "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n" +
-            "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n" +
-            "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" +
-            "SELECT DISTINCT ?entityType ?identity\n" +
-            "WHERE {\n" +
-            "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.indexing.model.Nameable>. \n" +
-            "?entity rdf:type ?entityType. \n" +
-            "?entity ns0:identity ?identity. \n" +
-            "?entity ns1:name ?v0. \n" +
-            "\n" +
-            "} ORDER BY DESC (?v0)", //script16
+        "PREFIX ns1: <urn:qi4j:type:org.qi4j.test.indexing.model.Nameable#> \n"
+            + "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n"
+            + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
+            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?entityType ?identity\n"
+            + "WHERE {\n" + "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.indexing.model.Nameable>. \n"
+            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?identity. \n" + "?entity ns1:name ?v0. \n"
+            + "\n" + "} ORDER BY DESC (?v0)", // script16
 
-            "PREFIX ns1: <urn:qi4j:type:org.qi4j.test.indexing.model.Nameable#> \n" +
-            "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n" +
-            "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n" +
-            "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" +
-            "SELECT DISTINCT ?entityType ?identity\n" +
-            "WHERE {\n" +
-            "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.indexing.model.Nameable>. \n" +
-            "?entity rdf:type ?entityType. \n" +
-            "?entity ns0:identity ?identity. \n" +
-            "?entity ns1:name ?v0. \n" +
-            "\n" +
-            "}  ORDER BY DESC (?v0)", //script17
+        "PREFIX ns1: <urn:qi4j:type:org.qi4j.test.indexing.model.Nameable#> \n"
+            + "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n"
+            + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
+            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?entityType ?identity\n"
+            + "WHERE {\n" + "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.indexing.model.Nameable>. \n"
+            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?identity. \n" + "?entity ns1:name ?v0. \n"
+            + "\n" + "}  ORDER BY DESC (?v0)", // script17
 
-            "PREFIX ns1: <urn:qi4j:type:org.qi4j.test.indexing.model.Nameable#> \n" +
-            "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n" +
-            "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n" +
-            "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" +
-            "SELECT DISTINCT ?entityType ?identity\n" +
-            "WHERE {\n" +
-            "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.indexing.model.Nameable>. \n" +
-            "?entity rdf:type ?entityType. \n" +
-            "?entity ns0:identity ?identity. \n" +
-            "?entity ns1:name ?v0. \n" +
-            "\n" +
-            "}\n" +
-            "ORDER BY ASC(?v0)", //script18
+        "PREFIX ns1: <urn:qi4j:type:org.qi4j.test.indexing.model.Nameable#> \n"
+            + "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n"
+            + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
+            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?entityType ?identity\n"
+            + "WHERE {\n" + "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.indexing.model.Nameable>. \n"
+            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?identity. \n" + "?entity ns1:name ?v0. \n"
+            + "\n" + "}\n" + "ORDER BY ASC(?v0)", // script18
 
-            "PREFIX ns1: <urn:qi4j:type:org.qi4j.test.indexing.model.Nameable#> \n" +
-            "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n" +
-            "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n" +
-            "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" +
-            "SELECT DISTINCT ?entityType ?identity\n" +
-            "WHERE {\n" +
-            "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.indexing.model.Nameable>. \n" +
-            "?entity rdf:type ?entityType. \n" +
-            "?entity ns0:identity ?identity. \n" +
-            "?entity ns1:name ?v0. \n" +
-            "FILTER (?v0 > \"D\")\n" +
-            "} ORDER BY ASC(?v0)", //script19
+        "PREFIX ns1: <urn:qi4j:type:org.qi4j.test.indexing.model.Nameable#> \n"
+            + "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n"
+            + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
+            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?entityType ?identity\n"
+            + "WHERE {\n" + "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.indexing.model.Nameable>. \n"
+            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?identity. \n" + "?entity ns1:name ?v0. \n"
+            + "FILTER (?v0 > \"D\")\n" + "} ORDER BY ASC(?v0)", // script19
 
-            "PREFIX ns1: <urn:qi4j:type:org.qi4j.test.indexing.model.Person#> \n" +
-            "PREFIX ns2: <urn:qi4j:type:org.qi4j.test.indexing.model.Nameable#> \n" +
-            "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n" +
-            "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n" +
-            "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" +
-            "SELECT DISTINCT ?entityType ?identity\n" +
-            "WHERE {\n" +
-            "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.indexing.model.Person>. \n" +
-            "?entity rdf:type ?entityType. \n" +
-            "?entity ns0:identity ?identity. \n" +
-            "?entity ns1:yearOfBirth ?v0. \n" +
-            "?entity ns2:name ?v1. \n" +
-            "FILTER (?v0 > \"1973\")\n" +
-            "}\n" +
-            "ORDER BY ASC(?v0)", //script20
+        "PREFIX ns1: <urn:qi4j:type:org.qi4j.test.indexing.model.Person#> \n"
+            + "PREFIX ns2: <urn:qi4j:type:org.qi4j.test.indexing.model.Nameable#> \n"
+            + "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n"
+            + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
+            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?entityType ?identity\n"
+            + "WHERE {\n" + "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.indexing.model.Person>. \n"
+            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?identity. \n"
+            + "?entity ns1:yearOfBirth ?v0. \n" + "?entity ns2:name ?v1. \n" + "FILTER (?v0 > \"1973\")\n" + "}\n"
+            + "ORDER BY ASC(?v0)", // script20
 
-            "PREFIX ns1: <urn:qi4j:type:org.qi4j.test.indexing.model.Person#> \n" +
-            "PREFIX ns2: <urn:qi4j:type:org.qi4j.test.indexing.model.Nameable#> \n" +
-            "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n" +
-            "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n" +
-            "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" +
-            "SELECT DISTINCT ?entityType ?identity\n" +
-            "WHERE {\n" +
-            "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.indexing.model.Person>. \n" +
-            "?entity rdf:type ?entityType. \n" +
-            "?entity ns0:identity ?identity. \n" +
-            "?entity ns1:placeOfBirth ?v0. \n" +
-            "?v0 ns2:name ?v1. \n" +
-            "?entity ns1:yearOfBirth ?v2. \n" +
-            "\n" +
-            "}  ORDER BY DESC(?v1) DESC(?v2)", //script21
+        "PREFIX ns1: <urn:qi4j:type:org.qi4j.test.indexing.model.Person#> \n"
+            + "PREFIX ns2: <urn:qi4j:type:org.qi4j.test.indexing.model.Nameable#> \n"
+            + "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n"
+            + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
+            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?entityType ?identity\n"
+            + "WHERE {\n" + "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.indexing.model.Person>. \n"
+            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?identity. \n"
+            + "?entity ns1:placeOfBirth ?v0. \n" + "?v0 ns2:name ?v1. \n" + "?entity ns1:yearOfBirth ?v2. \n" + "\n"
+            + "}  ORDER BY DESC(?v1) DESC(?v2)", // script21
 
-            "PREFIX ns1: <urn:qi4j:type:org.qi4j.test.indexing.model.Nameable#> \n" +
-            "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n" +
-            "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n" +
-            "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" +
-            "SELECT DISTINCT ?entityType ?identity\n" +
-            "WHERE {\n" +
-            "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.indexing.model.Nameable>. \n" +
-            "?entity rdf:type ?entityType. \n" +
-            "?entity ns0:identity ?identity. \n" +
-            "?entity ns1:name ?v0. \n" +
-            "FILTER regex(?v0,\"J.*Doe\")\n" +
-            "}", //script22
+        "PREFIX ns1: <urn:qi4j:type:org.qi4j.test.indexing.model.Nameable#> \n"
+            + "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n"
+            + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
+            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?entityType ?identity\n"
+            + "WHERE {\n" + "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.indexing.model.Nameable>. \n"
+            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?identity. \n" + "?entity ns1:name ?v0. \n"
+            + "FILTER regex(?v0,\"J.*Doe\")\n" + "}", // script22
 
-            "", //script23
+        "", // script23
 
-            "PREFIX ns1: <urn:qi4j:type:org.qi4j.test.indexing.model.Nameable#> \n" +
-            "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n" +
-            "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n" +
-            "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" +
-            "SELECT DISTINCT ?entityType ?identity\n" +
-            "WHERE {\n" +
-            "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.indexing.model.Domain>. \n" +
-            "?entity rdf:type ?entityType. \n" +
-            "?entity ns0:identity ?identity. \n" +
-            "?entity ns1:name ?v0. \n" +
-            "FILTER (?v0 = \"Gaming\")\n" +
-            "}", //script24
+        "PREFIX ns1: <urn:qi4j:type:org.qi4j.test.indexing.model.Nameable#> \n"
+            + "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n"
+            + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
+            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?entityType ?identity\n"
+            + "WHERE {\n" + "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.indexing.model.Domain>. \n"
+            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?identity. \n" + "?entity ns1:name ?v0. \n"
+            + "FILTER (?v0 = \"Gaming\")\n" + "}", // script24
 
-            "", //script25
-            "", //script26
-            "", //script27
-            "", //script28
-            "", //script29
-            "", //script30
-            ""  //script31
-        };
+        "", // script25
+        "", // script26
+        "", // script27
+        "", // script28
+        "", // script29
+        "", // script30
+        "" // script31
+    };
 }
