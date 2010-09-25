@@ -21,11 +21,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.qi4j.api.entity.EntityBuilder;
+import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
-import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.test.indexing.model.Account;
 import org.qi4j.test.indexing.model.Address;
 import org.qi4j.test.indexing.model.Cat;
@@ -46,11 +46,11 @@ import org.qi4j.test.indexing.model.entities.MaleEntity;
  */
 class TestData
 {
-    static void populate( SingletonAssembler assembler )
-            throws UnitOfWorkCompletionException
+    static void populate( Module module )
+        throws UnitOfWorkCompletionException
     {
-        UnitOfWork unitOfWork = assembler.unitOfWorkFactory().newUnitOfWork();
-        ValueBuilderFactory valueBuilderFactory = assembler.valueBuilderFactory();
+        UnitOfWork unitOfWork = module.unitOfWorkFactory().newUnitOfWork();
+        ValueBuilderFactory valueBuilderFactory = module.valueBuilderFactory();
 
         NameableAssert.clear();
         Domain gaming;
@@ -221,7 +221,7 @@ class TestData
             Cat felix = catBuilder.instance();
             felix.name().set( "Felix" );
             felix = catBuilder.newInstance();
-            //NameableAssert.trace( felix );
+            // NameableAssert.trace( felix );
         }
 
         unitOfWork.complete();
