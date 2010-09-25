@@ -43,21 +43,21 @@ import org.slf4j.LoggerFactory;
 
 /**
  * We set the Qi4j Application as attribute on the ServletContext so they it is bound to the webapp lifecycle.
- *
+ * 
  * Servlet specification states:
- *
- *      In cases where the container is distributed over many virtual machines, a Web application will have an
- *      instance of the ServletContext for each JVM.
- *
- *      Context attributes are local to the JVM in which they were created. This prevents ServletContext attributes
- *      from being a shared memory store in a distributed container. When information needs to be shared between
- *      servlets running in a distributed environment, the information should be placed into a session, stored in a
- *      database, or set in an Enterprise JavaBeans component.
- *
+ * 
+ * In cases where the container is distributed over many virtual machines, a Web application will have an instance of
+ * the ServletContext for each JVM.
+ * 
+ * Context attributes are local to the JVM in which they were created. This prevents ServletContext attributes from
+ * being a shared memory store in a distributed container. When information needs to be shared between servlets running
+ * in a distributed environment, the information should be placed into a session, stored in a database, or set in an
+ * Enterprise JavaBeans component.
+ * 
  * @author Paul Merlin <paul@nosphere.org>
  */
 public abstract class AbstractQi4jServletBootstrap
-        implements ServletContextListener, ApplicationAssembler
+    implements ServletContextListener, ApplicationAssembler
 {
 
     private static final Logger LOGGER = LoggerFactory.getLogger( AbstractQi4jServletBootstrap.class );
@@ -68,19 +68,20 @@ public abstract class AbstractQi4jServletBootstrap
     // Qi4j Application
     protected ApplicationModelSPI applicationModel;
     protected ApplicationSPI application;
-//    protected ApplicationDetailDescriptor descriptor;
 
-    @Override
+    // protected ApplicationDetailDescriptor descriptor;
+
     public final void contextInitialized( ServletContextEvent sce )
     {
-        try {
+        try
+        {
 
             ServletContext context = sce.getServletContext();
 
             LOGGER.debug( "Assembling Application" );
             qi4j = new Energy4Java();
             applicationModel = qi4j.newApplicationModel( this );
-//            descriptor = ApplicationDetailDescriptorBuilder.createApplicationDetailDescriptor( applicationModel );
+            // descriptor = ApplicationDetailDescriptorBuilder.createApplicationDetailDescriptor( applicationModel );
 
             LOGGER.debug( "Instanciating and activating Application" );
             application = applicationModel.newInstance( qi4j.spi() );
@@ -93,15 +94,22 @@ public abstract class AbstractQi4jServletBootstrap
             LOGGER.debug( "Storing Application in ServletContext" );
             context.setAttribute( Qi4jServletSupport.APP_IN_CTX, application );
 
-        } catch ( Exception ex ) {
-            if ( application != null ) {
-                try {
+        }
+        catch( Exception ex )
+        {
+            if( application != null )
+            {
+                try
+                {
                     application.passivate();
-                } catch ( Exception ex1 ) {
+                }
+                catch( Exception ex1 )
+                {
                     LOGGER.warn( "Application not null and could not passivate it.", ex1 );
                 }
             }
-            throw new InvalidApplicationException( "Unexpected error during ServletContext initialization, see previous log for errors.", ex );
+            throw new InvalidApplicationException(
+                "Unexpected error during ServletContext initialization, see previous log for errors.", ex );
         }
     }
 
@@ -113,34 +121,37 @@ public abstract class AbstractQi4jServletBootstrap
     {
     }
 
-    @Override
     public final void contextDestroyed( ServletContextEvent sce )
     {
-        try {
-            if ( application != null ) {
-//                for ( LayerDetailDescriptor eachLayer : descriptor.layers() ) {
-//                    for ( ModuleDetailDescriptor eachModule : eachLayer.modules() ) {
-//                        String layerName = eachLayer.descriptor().name();
-//                        String moduleName = eachModule.descriptor().name();
-//                        LOGGER.debug( "ContextDestroyed UOWF check in: Application > " + layerName + " > " + moduleName );
-//                        Module module = application.findModule( layerName, moduleName );
-//                        UnitOfWorkFactory eachUowf = module.unitOfWorkFactory();
-//                        if ( eachUowf != null && eachUowf.currentUnitOfWork() != null ) {
-//                            UnitOfWork current;
-//                            while ( ( current = eachUowf.currentUnitOfWork() ) != null ) {
-//                                if ( current.isOpen() ) {
-//                                    current.discard();
-//                                } else {
-//                                    throw new InternalError( "I have seen a case where a UoW is on the stack, but not opened." );
-//                                }
-//                            }
-//                            new Exception( "UnitOfWork not properly cleaned up" ).printStackTrace();
-//                        }
-//                    }
-//                }
+        try
+        {
+            if( application != null )
+            {
+                // for ( LayerDetailDescriptor eachLayer : descriptor.layers() ) {
+                // for ( ModuleDetailDescriptor eachModule : eachLayer.modules() ) {
+                // String layerName = eachLayer.descriptor().name();
+                // String moduleName = eachModule.descriptor().name();
+                // LOGGER.debug( "ContextDestroyed UOWF check in: Application > " + layerName + " > " + moduleName );
+                // Module module = application.findModule( layerName, moduleName );
+                // UnitOfWorkFactory eachUowf = module.unitOfWorkFactory();
+                // if ( eachUowf != null && eachUowf.currentUnitOfWork() != null ) {
+                // UnitOfWork current;
+                // while ( ( current = eachUowf.currentUnitOfWork() ) != null ) {
+                // if ( current.isOpen() ) {
+                // current.discard();
+                // } else {
+                // throw new InternalError( "I have seen a case where a UoW is on the stack, but not opened." );
+                // }
+                // }
+                // new Exception( "UnitOfWork not properly cleaned up" ).printStackTrace();
+                // }
+                // }
+                // }
                 application.passivate();
             }
-        } catch ( Exception ex ) {
+        }
+        catch( Exception ex )
+        {
             LOGGER.warn( "Unable to passivate Qi4j Application.", ex );
         }
     }
