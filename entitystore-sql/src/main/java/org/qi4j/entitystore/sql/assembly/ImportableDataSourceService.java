@@ -32,7 +32,6 @@ public class ImportableDataSourceService
         this.dataSource = dataSource;
     }
 
-    @Override
     public DataSource getDataSource()
     {
         return dataSource;
