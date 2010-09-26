@@ -106,14 +106,14 @@ public class RdfQueryParserImpl
         ) );
     }
 
-    public String getQuery( final String resultType,
+    public String getQuery( final Class<?> resultType,
                             final BooleanExpression whereClause,
                             final OrderBy[] orderBySegments,
                             final Integer firstResult,
                             final Integer maxResults
     )
     {
-        triples.addDefaultTriples( resultType );
+        triples.addDefaultTriples( resultType.getName() );
 
         // and collect namespaces
         final String filter = processFilter( whereClause, true );

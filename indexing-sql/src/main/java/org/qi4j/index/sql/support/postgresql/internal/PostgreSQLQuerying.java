@@ -230,7 +230,7 @@ public class PostgreSQLQuerying implements SQLQuerying
         return true;
     }
 
-    public String constructQuery( String resultType, //
+    public String constructQuery( Class<?> resultType, //
         BooleanExpression whereClause, //
         OrderBy[] orderBySegments, //
         Integer firstResult, //
@@ -982,13 +982,12 @@ public class PostgreSQLQuerying implements SQLQuerying
         return index;
     }
 
-    private List<Integer> getEntityTypeIDs( String entityType ) throws ClassNotFoundException
+    private List<Integer> getEntityTypeIDs( Class<?> entityType )
     {
-        Class<?> entityClass = ( ( ModuleSPI ) this._module ).classLoader( ).loadClass( entityType );
         List<Integer> result = new ArrayList<Integer>( );
         for ( Map.Entry<String, EntityTypeInfo> entry : this._state.entityTypeInfos( ).get( ).entrySet( ) )
         {
-            if ( entityClass.isAssignableFrom( entry.getValue( ).getEntityDescriptor( ).type( ) ) )
+            if ( entityType.isAssignableFrom( entry.getValue( ).getEntityDescriptor( ).type( ) ) )
             {
                 result.add( entry.getValue( ).getEntityTypePK( ) );
             }
@@ -997,17 +996,10 @@ public class PostgreSQLQuerying implements SQLQuerying
         return result;
     }
 
-    private String getConcreteEntityTypesList( String entityType ) throws EntityFinderException
+    private String getConcreteEntityTypesList( Class<?> entityType ) throws EntityFinderException
     {
         List<Integer> typeIDs = null;
-        try
-        {
             typeIDs = this.getEntityTypeIDs( entityType );
-        }
-        catch ( ClassNotFoundException cnfe )
-        {
-            throw new EntityFinderException( cnfe );
-        }
         StringBuilder result = new StringBuilder( );
         Iterator<Integer> iter = typeIDs.iterator( );
         while ( iter.hasNext( ) )

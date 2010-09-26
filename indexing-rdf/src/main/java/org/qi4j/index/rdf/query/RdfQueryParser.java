@@ -23,7 +23,7 @@ import org.qi4j.api.query.grammar.OrderBy;
 
 public interface RdfQueryParser
 {
-    String getQuery( String resultType,
+    String getQuery( Class<?> resultType,
                      BooleanExpression whereClause,
                      OrderBy[] orderBySegments,
                      Integer firstResult,
