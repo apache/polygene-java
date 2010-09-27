@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.logging.Logger;
 
+import org.lwdci.api.context.EmptyExecutionArgs;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.Identity;
@@ -52,13 +53,14 @@ import org.qi4j.api.query.grammar.MatchesPredicate;
 import org.qi4j.api.query.grammar.Negation;
 import org.qi4j.api.query.grammar.NotEqualsPredicate;
 import org.qi4j.api.query.grammar.OrderBy;
+import org.qi4j.api.query.grammar.OrderBy.Order;
 import org.qi4j.api.query.grammar.Predicate;
 import org.qi4j.api.query.grammar.PropertyIsNotNullPredicate;
 import org.qi4j.api.query.grammar.PropertyIsNullPredicate;
 import org.qi4j.api.query.grammar.PropertyNullPredicate;
 import org.qi4j.api.query.grammar.PropertyReference;
 import org.qi4j.api.query.grammar.SingleValueExpression;
-import org.qi4j.api.query.grammar.OrderBy.Order;
+import org.qi4j.api.service.Activatable;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.value.ValueComposite;
@@ -66,13 +68,44 @@ import org.qi4j.index.sql.support.api.SQLQuerying;
 import org.qi4j.index.sql.support.common.EntityTypeInfo;
 import org.qi4j.index.sql.support.common.QNameInfo;
 import org.qi4j.spi.query.EntityFinderException;
-import org.qi4j.spi.structure.ModuleSPI;
+import org.sql.generation.api.grammar.builders.BooleanBuilder;
+import org.sql.generation.api.grammar.builders.GroupByBuilder;
+import org.sql.generation.api.grammar.builders.InBuilder;
+import org.sql.generation.api.grammar.builders.QueryBuilder;
+import org.sql.generation.api.grammar.builders.QuerySpecificationBuilder;
+import org.sql.generation.api.grammar.builders.TableReferenceBuilder;
+import org.sql.generation.api.grammar.builders.pgsql.PgSQLQuerySpecificationBuilder;
+import org.sql.generation.api.grammar.common.NonBooleanExpression;
+import org.sql.generation.api.grammar.common.SetQuantifier;
+import org.sql.generation.api.grammar.factories.BooleanFactory;
+import org.sql.generation.api.grammar.factories.ColumnsFactory;
+import org.sql.generation.api.grammar.factories.LiteralFactory;
+import org.sql.generation.api.grammar.factories.QueryFactory;
+import org.sql.generation.api.grammar.factories.TableReferenceFactory;
+import org.sql.generation.api.grammar.factories.pgsql.PgSQLQueryFactory;
+import org.sql.generation.api.grammar.literals.LiteralExpression;
+import org.sql.generation.api.grammar.query.ColumnReference;
+import org.sql.generation.api.grammar.query.ColumnReferenceByName;
+import org.sql.generation.api.grammar.query.ColumnReferences;
+import org.sql.generation.api.grammar.query.ColumnReferences.ColumnReferenceInfo;
+import org.sql.generation.api.grammar.query.Ordering;
+import org.sql.generation.api.grammar.query.QueryExpression;
+import org.sql.generation.api.grammar.query.QuerySpecification;
+import org.sql.generation.api.grammar.query.TableReferenceByName;
+import org.sql.generation.api.grammar.query.joins.JoinType;
+import org.sql.generation.api.transformation.SQLTransformation;
+import org.sql.generation.api.transformation.SQLTransformationContextCreationArgs;
+import org.sql.generation.api.transformation.SQLTransformationProvider;
+import org.sql.generation.api.vendor.PostgreSQLVendor;
+import org.sql.generation.api.vendor.SQLVendor;
+import org.sql.generation.api.vendor.SQLVendorProvider;
 
 /**
- *
+ * 
  * @author Stanislav Muhametsin
  */
-public class PostgreSQLQuerying implements SQLQuerying
+public class PostgreSQLQuerying
+    implements SQLQuerying, Activatable
 {
 
     @This
@@ -87,74 +120,161 @@ public class PostgreSQLQuerying implements SQLQuerying
     @Structure
     private Module _module;
 
-    private static Map<Class<? extends Predicate>, String> _sqlOperators;
+    public static interface SQLBooleanCreator
+    {
+        public org.sql.generation.api.grammar.booleans.BooleanExpression getExpression( BooleanFactory factory,
+            NonBooleanExpression left, NonBooleanExpression right );
+    }
 
-    private static Map<Class<? extends Predicate>, String> _joinStyles;
+    private static Map<Class<? extends Predicate>, SQLBooleanCreator> _sqlOperators;
 
-    private static Map<Class<? extends Predicate>, String> _negatedJoinStyles;
+    private static Map<Class<? extends Predicate>, JoinType> _joinStyles;
+
+    private static Map<Class<? extends Predicate>, JoinType> _negatedJoinStyles;
 
     private static final String TABLE_NAME_PREFIX = "t";
 
-    private static final Logger _log = Logger.getLogger( PostgreSQLQuerying.class.getName( ) );
+    private static final Logger _log = Logger.getLogger( PostgreSQLQuerying.class.getName() );
 
     static
     {
-        _sqlOperators = new HashMap<Class<? extends Predicate>, String>( );
-        _sqlOperators.put( EqualsPredicate.class, "=" );
-        _sqlOperators.put( GreaterOrEqualPredicate.class, ">=" );
-        _sqlOperators.put( GreaterThanPredicate.class, ">" );
-        _sqlOperators.put( LessOrEqualPredicate.class, "<=" );
-        _sqlOperators.put( LessThanPredicate.class, "<" );
-        _sqlOperators.put( NotEqualsPredicate.class, "<>" );
-        _sqlOperators.put( ManyAssociationContainsPredicate.class, "=" );
-        _sqlOperators.put( MatchesPredicate.class, "~" );
-        _sqlOperators.put( ContainsPredicate.class, "=" );
-        _sqlOperators.put( ContainsAllPredicate.class, "=" );
+        _sqlOperators = new HashMap<Class<? extends Predicate>, SQLBooleanCreator>();
+        _sqlOperators.put( EqualsPredicate.class, new SQLBooleanCreator()
+        {
 
-        _joinStyles = new HashMap<Class<? extends Predicate>, String>( );
-        _joinStyles.put( EqualsPredicate.class, "JOIN" );
-        _joinStyles.put( GreaterOrEqualPredicate.class, "JOIN" );
-        _joinStyles.put( GreaterThanPredicate.class, "JOIN" );
-        _joinStyles.put( LessOrEqualPredicate.class, "JOIN" );
-        _joinStyles.put( LessThanPredicate.class, "JOIN" );
-        _joinStyles.put( NotEqualsPredicate.class, "JOIN" );
-        _joinStyles.put( PropertyIsNullPredicate.class, "LEFT JOIN" );
-        _joinStyles.put( PropertyIsNotNullPredicate.class, "JOIN" );
-        _joinStyles.put( AssociationIsNullPredicate.class, "LEFT JOIN" );
-        _joinStyles.put( AssociationIsNotNullPredicate.class, "JOIN" );
-        _joinStyles.put( ManyAssociationContainsPredicate.class, "JOIN" );
-        _joinStyles.put( MatchesPredicate.class, "JOIN" );
-        _joinStyles.put( ContainsPredicate.class, "JOIN" );
-        _joinStyles.put( ContainsAllPredicate.class, "JOIN" );
+            public org.sql.generation.api.grammar.booleans.BooleanExpression getExpression( BooleanFactory factory,
+                NonBooleanExpression left, NonBooleanExpression right )
+            {
+                return factory.eq( left, right );
+            }
+        } );
+        _sqlOperators.put( GreaterOrEqualPredicate.class, new SQLBooleanCreator()
+        {
 
-        _negatedJoinStyles = new HashMap<Class<? extends Predicate>, String>( );
-        _negatedJoinStyles.put( EqualsPredicate.class, "LEFT JOIN" );
-        _negatedJoinStyles.put( GreaterOrEqualPredicate.class, "LEFT JOIN" );
-        _negatedJoinStyles.put( GreaterThanPredicate.class, "LEFT JOIN" );
-        _negatedJoinStyles.put( LessOrEqualPredicate.class, "LEFT JOIN" );
-        _negatedJoinStyles.put( LessThanPredicate.class, "LEFT JOIN" );
-        _negatedJoinStyles.put( NotEqualsPredicate.class, "JOIN" );
-        _negatedJoinStyles.put( PropertyIsNullPredicate.class, "JOIN" );
-        _negatedJoinStyles.put( PropertyIsNotNullPredicate.class, "LEFT JOIN" );
-        _negatedJoinStyles.put( AssociationIsNullPredicate.class, "JOIN" );
-        _negatedJoinStyles.put( AssociationIsNotNullPredicate.class, "LEFT JOIN" );
-        _negatedJoinStyles.put( ManyAssociationContainsPredicate.class, "JOIN" );
-        _negatedJoinStyles.put( MatchesPredicate.class, "LEFT JOIN" );
-        _negatedJoinStyles.put( ContainsPredicate.class, "LEFT JOIN" );
-        _negatedJoinStyles.put( ContainsAllPredicate.class, "LEFT JOIN" );
+            public org.sql.generation.api.grammar.booleans.BooleanExpression getExpression( BooleanFactory factory,
+                NonBooleanExpression left, NonBooleanExpression right )
+            {
+                return factory.geq( left, right );
+            }
+        } );
+        _sqlOperators.put( GreaterThanPredicate.class, new SQLBooleanCreator()
+        {
+
+            public org.sql.generation.api.grammar.booleans.BooleanExpression getExpression( BooleanFactory factory,
+                NonBooleanExpression left, NonBooleanExpression right )
+            {
+                return factory.gt( left, right );
+            }
+        } );
+        _sqlOperators.put( LessOrEqualPredicate.class, new SQLBooleanCreator()
+        {
+
+            public org.sql.generation.api.grammar.booleans.BooleanExpression getExpression( BooleanFactory factory,
+                NonBooleanExpression left, NonBooleanExpression right )
+            {
+                return factory.leq( left, right );
+            }
+        } );
+        _sqlOperators.put( LessThanPredicate.class, new SQLBooleanCreator()
+        {
+
+            public org.sql.generation.api.grammar.booleans.BooleanExpression getExpression( BooleanFactory factory,
+                NonBooleanExpression left, NonBooleanExpression right )
+            {
+                return factory.lt( left, right );
+            }
+        } );
+        _sqlOperators.put( NotEqualsPredicate.class, new SQLBooleanCreator()
+        {
+
+            public org.sql.generation.api.grammar.booleans.BooleanExpression getExpression( BooleanFactory factory,
+                NonBooleanExpression left, NonBooleanExpression right )
+            {
+                return factory.neq( left, right );
+            }
+        } );
+        _sqlOperators.put( ManyAssociationContainsPredicate.class, new SQLBooleanCreator()
+        {
+
+            public org.sql.generation.api.grammar.booleans.BooleanExpression getExpression( BooleanFactory factory,
+                NonBooleanExpression left, NonBooleanExpression right )
+            {
+                return factory.eq( left, right );
+            }
+        } );
+        _sqlOperators.put( MatchesPredicate.class, new SQLBooleanCreator()
+        {
+
+            public org.sql.generation.api.grammar.booleans.BooleanExpression getExpression( BooleanFactory factory,
+                NonBooleanExpression left, NonBooleanExpression right )
+            {
+                return factory.matches( left, right );
+            }
+        } );
+        _sqlOperators.put( ContainsPredicate.class, new SQLBooleanCreator()
+        {
+
+            public org.sql.generation.api.grammar.booleans.BooleanExpression getExpression( BooleanFactory factory,
+                NonBooleanExpression left, NonBooleanExpression right )
+            {
+                return factory.eq( left, right );
+            }
+        } );
+        _sqlOperators.put( ContainsAllPredicate.class, new SQLBooleanCreator()
+        {
+
+            public org.sql.generation.api.grammar.booleans.BooleanExpression getExpression( BooleanFactory factory,
+                NonBooleanExpression left, NonBooleanExpression right )
+            {
+                return factory.eq( left, right );
+            }
+        } );
+
+        _joinStyles = new HashMap<Class<? extends Predicate>, JoinType>();
+        _joinStyles.put( EqualsPredicate.class, JoinType.INNER );
+        _joinStyles.put( GreaterOrEqualPredicate.class, JoinType.INNER );
+        _joinStyles.put( GreaterThanPredicate.class, JoinType.INNER );
+        _joinStyles.put( LessOrEqualPredicate.class, JoinType.INNER );
+        _joinStyles.put( LessThanPredicate.class, JoinType.INNER );
+        _joinStyles.put( NotEqualsPredicate.class, JoinType.INNER );
+        _joinStyles.put( PropertyIsNullPredicate.class, JoinType.LEFT_OUTER );
+        _joinStyles.put( PropertyIsNotNullPredicate.class, JoinType.INNER );
+        _joinStyles.put( AssociationIsNullPredicate.class, JoinType.LEFT_OUTER );
+        _joinStyles.put( AssociationIsNotNullPredicate.class, JoinType.INNER );
+        _joinStyles.put( ManyAssociationContainsPredicate.class, JoinType.INNER );
+        _joinStyles.put( MatchesPredicate.class, JoinType.INNER );
+        _joinStyles.put( ContainsPredicate.class, JoinType.INNER );
+        _joinStyles.put( ContainsAllPredicate.class, JoinType.INNER );
+
+        _negatedJoinStyles = new HashMap<Class<? extends Predicate>, JoinType>();
+        _negatedJoinStyles.put( EqualsPredicate.class, JoinType.LEFT_OUTER );
+        _negatedJoinStyles.put( GreaterOrEqualPredicate.class, JoinType.LEFT_OUTER );
+        _negatedJoinStyles.put( GreaterThanPredicate.class, JoinType.LEFT_OUTER );
+        _negatedJoinStyles.put( LessOrEqualPredicate.class, JoinType.LEFT_OUTER );
+        _negatedJoinStyles.put( LessThanPredicate.class, JoinType.LEFT_OUTER );
+        _negatedJoinStyles.put( NotEqualsPredicate.class, JoinType.INNER );
+        _negatedJoinStyles.put( PropertyIsNullPredicate.class, JoinType.INNER );
+        _negatedJoinStyles.put( PropertyIsNotNullPredicate.class, JoinType.LEFT_OUTER );
+        _negatedJoinStyles.put( AssociationIsNullPredicate.class, JoinType.INNER );
+        _negatedJoinStyles.put( AssociationIsNotNullPredicate.class, JoinType.LEFT_OUTER );
+        _negatedJoinStyles.put( ManyAssociationContainsPredicate.class, JoinType.INNER );
+        _negatedJoinStyles.put( MatchesPredicate.class, JoinType.LEFT_OUTER );
+        _negatedJoinStyles.put( ContainsPredicate.class, JoinType.LEFT_OUTER );
+        _negatedJoinStyles.put( ContainsAllPredicate.class, JoinType.LEFT_OUTER );
     }
 
     private interface WhereClauseProcessor
     {
 
-        public void processWhereClause( StringBuilder where, StringBuilder fromClause, StringBuilder groupBy, StringBuilder having, StringBuilder afterWhere, String joinStyle, Integer firstTableIndex, Integer lastTableIndex );
+        public void processWhereClause( QuerySpecificationBuilder builder, BooleanBuilder afterWhere,
+            JoinType joinStyle, Integer firstTableIndex, Integer lastTableIndex );
     }
 
     private static class ModifiableInt
     {
         private int _int;
 
-        public ModifiableInt(Integer integer)
+        public ModifiableInt( Integer integer )
         {
             this._int = integer;
         }
@@ -164,13 +284,13 @@ public class PostgreSQLQuerying implements SQLQuerying
             return this._int;
         }
 
-        public void setInt(int integer)
+        public void setInt( int integer )
         {
             this._int = integer;
         }
 
         @Override
-        public String toString( )
+        public String toString()
         {
             return Integer.toString( this._int );
         }
@@ -186,7 +306,8 @@ public class PostgreSQLQuerying implements SQLQuerying
 
         private Integer _targetTableIndex;
 
-        public QNameJoin(QualifiedName sourceQName, QualifiedName targetQName, Integer sourceTableIndex, Integer targetTableIndex)
+        public QNameJoin( QualifiedName sourceQName, QualifiedName targetQName, Integer sourceTableIndex,
+            Integer targetTableIndex )
         {
             this._sourceQName = sourceQName;
             this._targetQName = targetQName;
@@ -194,29 +315,37 @@ public class PostgreSQLQuerying implements SQLQuerying
             this._targetTableIndex = targetTableIndex;
         }
 
-
-        public QualifiedName getSourceQName( )
+        public QualifiedName getSourceQName()
         {
             return this._sourceQName;
         }
 
-
-        public QualifiedName getTargetQName( )
+        public QualifiedName getTargetQName()
         {
             return this._targetQName;
         }
 
-
-        public Integer getSourceTableIndex( )
+        public Integer getSourceTableIndex()
         {
             return this._sourceTableIndex;
         }
 
-
-        public Integer getTargetTableIndex( )
+        public Integer getTargetTableIndex()
         {
             return this._targetTableIndex;
         }
+
+    }
+
+    public void activate()
+        throws Exception
+    {
+        this._state.sqlVendor().set( SQLVendorProvider.createVendor( PostgreSQLVendor.class ) );
+    }
+
+    public void passivate()
+        throws Exception
+    {
 
     }
 
@@ -238,192 +367,257 @@ public class PostgreSQLQuerying implements SQLQuerying
         List<Object> values, //
         List<Integer> valueSQLTypes, //
         Boolean countOnly //
-    ) throws EntityFinderException
+    )
+        throws EntityFinderException
     {
-        String select = countOnly ? "COUNT(%s)" : "%s";
-        String entityTypeCondition = this.createTypeCondition( TABLE_NAME_PREFIX + "0", this.getConcreteEntityTypesList( resultType ) );
-        String processedWhere = this.processBooleanExpression( whereClause, false, entityTypeCondition, values, valueSQLTypes );
+        SQLVendor vendor = this._state.sqlVendor().get();
 
-        StringBuilder fromClause = new StringBuilder( );
-        StringBuilder orderByClause = new StringBuilder( );
-        if ( orderBySegments != null )
+        QueryFactory q = vendor.getQueryFactory();
+        TableReferenceFactory t = vendor.getFromFactory();
+        LiteralFactory l = vendor.getLiteralFactory();
+        ColumnsFactory c = vendor.getColumnsFactory();
+
+        ColumnReference mainColumn = c.colName( TABLE_NAME_PREFIX + "0", SQLs.ENTITY_TABLE_IDENTITY_COLUMN_NAME );
+        if( countOnly )
         {
-            this.processOrderBySegments( orderBySegments, fromClause, orderByClause );
+            mainColumn = c.colExp( l.func( "COUNT", l.l( mainColumn ) ) );
         }
 
-        StringBuilder offset = new StringBuilder();
-        if (firstResult != null && firstResult > 0)
-        {
-            offset.append( "OFFSET " + firstResult );
-        }
-        StringBuilder limit = new StringBuilder();
-        if (maxResults != null && maxResults > 0)
-        {
-            limit.append( "LIMIT " + maxResults );
-            if (orderByClause.length() == 0)
-            {
-                orderByClause.append( "ORDER BY " + TABLE_NAME_PREFIX + "0." + SQLs.ENTITY_TABLE_IDENTITY_COLUMN_NAME );
-            }
-        }
+        QueryBuilder innerBuilder = this.processBooleanExpression( whereClause, false, vendor,
+            this.createTypeCondition( resultType, vendor ), values, valueSQLTypes );
 
-        String result = //
-            "SELECT " + String.format( select, TABLE_NAME_PREFIX + "0." + SQLs.ENTITY_TABLE_IDENTITY_COLUMN_NAME ) + "\n" + /**/
-            "FROM (" + processedWhere + ") AS " + TABLE_NAME_PREFIX + "0" + "\n" + /**/
-            fromClause.toString( ) + "\n" + /**/
-            orderByClause.toString( ) + "\n" + //
-            limit.toString() + "\n" + //
-            offset.toString() + "\n" //
-        ;
+        QuerySpecificationBuilder mainQuery = q.querySpecificationBuilder();
+        mainQuery.getSelect().addUnnamedColumns( mainColumn );
+        mainQuery.getFrom().addTableReferences(
+            t.tableBuilder( t.table( q.createQuery( innerBuilder.createExpression() ),
+                t.tableAlias( TABLE_NAME_PREFIX + "0" ) ) ) );
+
+        this.processOrderBySegments( orderBySegments, vendor, mainQuery );
+
+        QueryExpression finalMainQuery = this.finalizeQuery( vendor, mainQuery, resultType, whereClause,
+            orderBySegments, firstResult, maxResults, values, valueSQLTypes, countOnly );
+
+        SQLTransformation transform = SQLTransformationProvider.getTransformation();
+        String result = transform.createContext( new SQLTransformationContextCreationArgs( vendor, finalMainQuery ) )
+            .interaction( EmptyExecutionArgs.EMPTY_ARGS );
 
         _log.info( "SQL query:\n" + result );
         return result;
     }
 
-    private String processBooleanExpression( BooleanExpression expression, Boolean negationActive, String entityTypeCondition, List<Object> values, List<Integer> valueSQLTypes )
+    protected org.sql.generation.api.grammar.booleans.BooleanExpression createTypeCondition( Class<?> resultType,
+        SQLVendor vendor )
     {
-        String result = "";
-        if ( expression != null )
+        BooleanFactory b = vendor.getBooleanFactory();
+        LiteralFactory l = vendor.getLiteralFactory();
+        ColumnsFactory c = vendor.getColumnsFactory();
+
+        List<Integer> typeIDs = this.getEntityTypeIDs( resultType );
+        InBuilder in = b
+            .inBuilder( l.l( c.colName( TABLE_NAME_PREFIX + "0", SQLs.ENTITY_TYPES_TABLE_PK_COLUMN_NAME ) ) );
+        for( Integer i : typeIDs )
         {
-            if ( expression instanceof Conjunction )
+            in.addValues( l.n( i ) );
+        }
+
+        return in.createExpression();
+    }
+
+    protected QueryExpression finalizeQuery( //
+        SQLVendor sqlVendor, QuerySpecificationBuilder specBuilder, //
+        Class<?> resultType, //
+        BooleanExpression whereClause, //
+        OrderBy[] orderBySegments, //
+        Integer firstResult, //
+        Integer maxResults, //
+        List<Object> values, //
+        List<Integer> valueSQLTypes, //
+        Boolean countOnly )
+    {
+        PgSQLQuerySpecificationBuilder builder = (PgSQLQuerySpecificationBuilder) specBuilder;
+        PostgreSQLVendor vendor = (PostgreSQLVendor) sqlVendor;
+        Boolean needOffset = firstResult != null && firstResult > 0;
+        Boolean needLimit = maxResults != null && maxResults > 0;
+
+        PgSQLQueryFactory q = vendor.getQueryFactory();
+        LiteralFactory l = vendor.getLiteralFactory();
+
+        if( needOffset )
+        {
+            builder.offset( q.offset( firstResult ) );
+        }
+        if( needLimit )
+        {
+            builder.limit( q.limit( maxResults ) );
+        }
+
+        if( builder.getOrderBy().getSortSpecs().isEmpty() && (needOffset || needLimit) )
+        {
+            // No ORDER BY specified, but we need it anyway since offset or limit was used
+            // Solution: sort by the only column that we select, in ascending order.
+            builder.getOrderBy().addSortSpecs(
+                q.sortSpec( l.l( builder.getSelect().getColumns().iterator().next().getReference() ),
+                    Ordering.ASCENDING ) );
+        }
+
+        return q.createQuery( builder.createExpression() );
+    }
+
+    private QueryBuilder processBooleanExpression( //
+        BooleanExpression expression,//
+        Boolean negationActive,//
+        SQLVendor vendor,//
+        org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition, //
+        List<Object> values, List<Integer> valueSQLTypes )
+    {
+        QueryBuilder result = null;
+        if( expression != null )
+        {
+            if( expression instanceof Conjunction )
             {
-                Conjunction conjunction = ( Conjunction ) expression;
-                String left = this.processBooleanExpression( conjunction.leftSideExpression( ), negationActive, entityTypeCondition, values, valueSQLTypes );
-                String right = this.processBooleanExpression( conjunction.rightSideExpression( ), negationActive, entityTypeCondition, values, valueSQLTypes );
-                if ( left == "" )
-                {
-                    result = right;
-                }
-                else if ( right == "" )
-                {
-                    result = left;
-                }
-                else
-                {
-                    result = String.format( "(%s)\nINTERSECT\n(%s)", left, right );
-                }
+                Conjunction conjunction = (Conjunction) expression;
+                result = this.processBooleanExpression( conjunction.leftSideExpression(), negationActive, vendor,
+                    entityTypeCondition, values, valueSQLTypes ).intersect(
+                    this.processBooleanExpression( conjunction.rightSideExpression(), negationActive, vendor,
+                        entityTypeCondition, values, valueSQLTypes ).createExpression() );
             }
-            else if ( expression instanceof Disjunction )
+            else if( expression instanceof Disjunction )
             {
-                Disjunction disjunction = ( Disjunction ) expression;
-                String left = this.processBooleanExpression( disjunction.leftSideExpression( ), negationActive, entityTypeCondition, values, valueSQLTypes );
-                String right = this.processBooleanExpression( disjunction.rightSideExpression( ), negationActive, entityTypeCondition, values, valueSQLTypes );
-                if ( left == "" )
-                {
-                    result = right;
-                }
-                else if ( right == "" )
-                {
-                    result = left;
-                }
-                else
-                {
-                    result = String.format( "(%s)\nUNION\n(%s)", left, right );
-                }
+                Disjunction disjunction = (Disjunction) expression;
+                result = this.processBooleanExpression( disjunction.leftSideExpression(), negationActive, vendor,
+                    entityTypeCondition, values, valueSQLTypes ).union(
+                    this.processBooleanExpression( disjunction.rightSideExpression(), negationActive, vendor,
+                        entityTypeCondition, values, valueSQLTypes ).createExpression() );
             }
-            else if ( expression instanceof Negation )
+            else if( expression instanceof Negation )
             {
-                result = this.processBooleanExpression( ( ( Negation ) expression ).expression( ), !negationActive, entityTypeCondition, values, valueSQLTypes );
+                result = this.processBooleanExpression( ((Negation) expression).expression(), !negationActive, vendor,
+                    entityTypeCondition, values, valueSQLTypes );
             }
-            else if ( expression instanceof MatchesPredicate )
+            else if( expression instanceof MatchesPredicate )
             {
-                result = this.processMatchesPredicate( ( MatchesPredicate ) expression, negationActive, entityTypeCondition, values, valueSQLTypes );
+                result = this.processMatchesPredicate( (MatchesPredicate) expression, negationActive, vendor,
+                    entityTypeCondition, values, valueSQLTypes );
             }
-            else if ( expression instanceof ComparisonPredicate<?> )
+            else if( expression instanceof ComparisonPredicate<?> )
             {
-                result = this.processComparisonPredicate( ( ComparisonPredicate<?> ) expression, negationActive, entityTypeCondition, values, valueSQLTypes );
+                result = this.processComparisonPredicate( (ComparisonPredicate<?>) expression, negationActive, vendor,
+                    entityTypeCondition, values, valueSQLTypes );
             }
-            else if ( expression instanceof ManyAssociationContainsPredicate<?> )
+            else if( expression instanceof ManyAssociationContainsPredicate<?> )
             {
                 result = this.processManyAssociationContainsPredicate(
-                    ( ManyAssociationContainsPredicate<?> ) expression,
-                    negationActive,
-                    entityTypeCondition,
-                    values,
-                    valueSQLTypes );
+                    (ManyAssociationContainsPredicate<?>) expression, negationActive, vendor, entityTypeCondition,
+                    values, valueSQLTypes );
             }
-            else if ( expression instanceof PropertyNullPredicate<?> )
+            else if( expression instanceof PropertyNullPredicate<?> )
             {
-                result = this.processPropertyNullPredicate( ( PropertyNullPredicate<?> ) expression, negationActive, entityTypeCondition );
+                result = this.processPropertyNullPredicate( (PropertyNullPredicate<?>) expression, negationActive,
+                    vendor, entityTypeCondition );
             }
-            else if ( expression instanceof AssociationNullPredicate )
+            else if( expression instanceof AssociationNullPredicate )
             {
-                result = this.processAssociationNullPredicate( ( AssociationNullPredicate ) expression, negationActive, entityTypeCondition );
+                result = this.processAssociationNullPredicate( (AssociationNullPredicate) expression, negationActive,
+                    vendor, entityTypeCondition );
             }
-            else if ( expression instanceof ContainsPredicate<?, ?> )
+            else if( expression instanceof ContainsPredicate<?, ?> )
             {
-                result = this.processContainsPredicate( ( ContainsPredicate<?, ?> ) expression, negationActive, entityTypeCondition, values, valueSQLTypes );
+                result = this.processContainsPredicate( (ContainsPredicate<?, ?>) expression, negationActive, vendor,
+                    entityTypeCondition, values, valueSQLTypes );
             }
-            else if ( expression instanceof ContainsAllPredicate<?, ?> )
+            else if( expression instanceof ContainsAllPredicate<?, ?> )
             {
-                result = this.processContainsAllPredicate( ( ContainsAllPredicate<?, ?> ) expression, negationActive, entityTypeCondition, values, valueSQLTypes );
+                result = this.processContainsAllPredicate( (ContainsAllPredicate<?, ?>) expression, negationActive,
+                    vendor, entityTypeCondition, values, valueSQLTypes );
             }
             else
             {
                 throw new UnsupportedOperationException( "Expression " + expression + " is not supported" );
             }
-        } else
+        }
+        else
         {
-            StringBuilder selectBuilda = new StringBuilder();
-            this.getSelectClauseForPredicate( TABLE_NAME_PREFIX + "0", selectBuilda );
-            result = selectBuilda.toString( ) + "FROM " + this._state.schemaName( ).get( ) + "." + SQLs.ENTITY_TABLE_NAME + " AS " + TABLE_NAME_PREFIX + "0" + "\n" + /**/
-                "WHERE " + entityTypeCondition;
+            QueryFactory q = vendor.getQueryFactory();
+
+            result = q.queryBuilder( this.selectAllEntitiesOfCorrectType( vendor, entityTypeCondition )
+                .createExpression() );
         }
 
         return result;
     }
 
-    private String processMatchesPredicate(
-        final MatchesPredicate predicate,
-        final Boolean negationActive,
-        String entityTypeCondition,
-        final List<Object> values,
-        final List<Integer> valueSQLTypes )
+    protected QuerySpecificationBuilder selectAllEntitiesOfCorrectType( SQLVendor vendor,
+        org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition )
     {
-        return this.constructQueryForPredicate( //
+        TableReferenceFactory t = vendor.getFromFactory();
+
+        String tableAlias = TABLE_NAME_PREFIX + "0";
+        QuerySpecificationBuilder query = this.getSelectClauseForPredicate( vendor, tableAlias );
+        query.getFrom().addTableReferences(
+            t.tableBuilder( t.table( t.tableName( this._state.schemaName().get(), SQLs.ENTITY_TABLE_NAME ),
+                t.tableAlias( tableAlias ) ) ) );
+        query.getWhere().reset( entityTypeCondition );
+
+        return query;
+    }
+
+    private QueryBuilder processMatchesPredicate( final MatchesPredicate predicate, final Boolean negationActive,
+        final SQLVendor vendor, org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition,
+        final List<Object> values, final List<Integer> valueSQLTypes )
+    {
+        return this.singleQuery( //
             predicate, //
-            predicate.propertyReference( ), //
+            predicate.propertyReference(), //
             null, //
             null, //
             negationActive, //
+            vendor, //
             entityTypeCondition, //
-            new WhereClauseProcessor( )
+            new WhereClauseProcessor()
             {
 
-                public void processWhereClause( StringBuilder where, StringBuilder fromClause, StringBuilder groupBy, StringBuilder having, StringBuilder afterWhere, String joinStyle, Integer firstTableIndex, Integer lastTableIndex )
+                public void processWhereClause( QuerySpecificationBuilder builder, BooleanBuilder afterWhere,
+                    JoinType joinStyle, Integer firstTableIndex, Integer lastTableIndex )
                 {
-                    where.append(String.format(
-                        TABLE_NAME_PREFIX + lastTableIndex + "." + SQLs.QNAME_TABLE_VALUE_COLUMN_NAME + " %s ?",
-                        getOperator( predicate ) ));
-                    values.add( translateJavaRegexpToPGSQLRegexp( ( ( SingleValueExpression<String> ) predicate.valueExpression( ) ).value( ) ) );
+                    LiteralFactory l = vendor.getLiteralFactory();
+                    ColumnsFactory c = vendor.getColumnsFactory();
+
+                    builder.getWhere().reset(
+                        vendor.getBooleanFactory().matches(
+                            l.l( c.colName( TABLE_NAME_PREFIX + lastTableIndex, SQLs.QNAME_TABLE_VALUE_COLUMN_NAME ) ),
+                            l.param() ) );
+
+                    values.add( translateJavaRegexpToPGSQLRegexp( ((SingleValueExpression<String>) predicate
+                        .valueExpression()).value() ) );
                     valueSQLTypes.add( Types.VARCHAR );
                 }
             } //
             );
     }
 
-    private String processComparisonPredicate(
-        final ComparisonPredicate<?> predicate,
-        final Boolean negationActive,
-        String entityTypeCondition,
-        final List<Object> values,
+    private QueryBuilder processComparisonPredicate( final ComparisonPredicate<?> predicate,
+        final Boolean negationActive, final SQLVendor vendor,
+        org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition, final List<Object> values,
         final List<Integer> valueSQLTypes )
     {
-        return this.constructQueryForPredicate( //
+        return this.singleQuery( //
             predicate, //
-            predicate.propertyReference( ), //
+            predicate.propertyReference(), //
             null, //
             null, //
             negationActive, //
+            vendor, //
             entityTypeCondition, //
-            new WhereClauseProcessor( )
+            new WhereClauseProcessor()
             {
 
-                public void processWhereClause( StringBuilder where, StringBuilder fromClause, StringBuilder groupBy, StringBuilder having, StringBuilder afterWhere, String joinStyle, Integer firstTableIndex, Integer lastTableIndex )
+                public void processWhereClause( QuerySpecificationBuilder builder, BooleanBuilder afterWhere,
+                    JoinType joinStyle, Integer firstTableIndex, Integer lastTableIndex )
                 {
-                    QualifiedName qName = QualifiedName.fromClass( predicate.propertyReference( ).propertyDeclaringType( ), predicate
-                        .propertyReference( ).propertyName( ) );
+                    QualifiedName qName = QualifiedName.fromClass( predicate.propertyReference()
+                        .propertyDeclaringType(), predicate.propertyReference().propertyName() );
                     String columnName = null;
-                    if ( qName.type( ).equals( Identity.class.getName( ) ) )
+                    if( qName.type().equals( Identity.class.getName() ) )
                     {
                         columnName = SQLs.ENTITY_TABLE_IDENTITY_COLUMN_NAME;
                     }
@@ -431,60 +625,57 @@ public class PostgreSQLQuerying implements SQLQuerying
                     {
                         columnName = SQLs.QNAME_TABLE_VALUE_COLUMN_NAME;
                     }
-                    Object value = ( ( SingleValueExpression<?> ) predicate.valueExpression( ) ).value( );
-                    modifyFromClauseAndWhereClauseToGetValue(
-                        qName,
-                        value,
-                        predicate,
-                        negationActive,
-                        lastTableIndex,
-                        new ModifiableInt( lastTableIndex ),
-                        columnName,
-                        SQLs.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME,
-                        where,
-                        afterWhere,
-                        fromClause,
-                        groupBy,
-                        having,
-                        new ArrayList<QNameJoin>( ),
-                        values,
-                        valueSQLTypes
-                        );
+                    Object value = ((SingleValueExpression<?>) predicate.valueExpression()).value();
+                    modifyFromClauseAndWhereClauseToGetValue( qName, value, predicate, negationActive, lastTableIndex,
+                        new ModifiableInt( lastTableIndex ), columnName,
+                        SQLs.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME, vendor, builder.getWhere(), afterWhere,
+                        builder.getFrom().getTableReferences().iterator().next(), builder.getGroupBy(),
+                        builder.getHaving(), new ArrayList<QNameJoin>(), values, valueSQLTypes );
                 }
+
             } //
             );
     }
 
-    private String processManyAssociationContainsPredicate(
-        final ManyAssociationContainsPredicate<?> predicate,
-        final Boolean negationActive,
-        String entityTypeCondition,
-        final List<Object> values,
+    private QueryBuilder processManyAssociationContainsPredicate( final ManyAssociationContainsPredicate<?> predicate,
+        final Boolean negationActive, final SQLVendor vendor,
+        org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition, final List<Object> values,
         final List<Integer> valueSQLTypes )
     {
-        return this.constructQueryForPredicate( //
+        return this.singleQuery( //
             predicate, //
             null, //
-            predicate.associationReference( ), //
+            predicate.associationReference(), //
             true, //
             negationActive, //
+            vendor, //
             entityTypeCondition, //
-            new WhereClauseProcessor( )
+            new WhereClauseProcessor()
             {
 
-                public void processWhereClause( StringBuilder where, StringBuilder fromClause, StringBuilder groupBy, StringBuilder having, StringBuilder afterWhere, String joinStyle, Integer firstTableIndex, Integer lastTableIndex )
+                public void processWhereClause( QuerySpecificationBuilder builder, BooleanBuilder afterWhere,
+                    JoinType joinStyle, Integer firstTableIndex, Integer lastTableIndex )
                 {
-                    where.append(TABLE_NAME_PREFIX + lastTableIndex + "." + SQLs.ENTITY_TABLE_IDENTITY_COLUMN_NAME + " " +
-                        getOperator( predicate ) + " ? " + "\n"); //
-                    Object value = ( ( SingleValueExpression<?> ) predicate.valueExpression( ) ).value( );
+                    LiteralFactory l = vendor.getLiteralFactory();
+                    ColumnsFactory c = vendor.getColumnsFactory();
+                    BooleanFactory b = vendor.getBooleanFactory();
+
+                    builder.getWhere().reset(
+                        getOperator( predicate )
+                            .getExpression(
+                                b,
+                                l.l( c.colName( TABLE_NAME_PREFIX + lastTableIndex,
+                                    SQLs.ENTITY_TABLE_IDENTITY_COLUMN_NAME ) ), l.param() ) );
+
+                    Object value = ((SingleValueExpression<?>) predicate.valueExpression()).value();
                     // TODO Is it really certain that this value is always instance of EntityComposite?
-                    if ( value instanceof EntityComposite )
+                    if( value instanceof EntityComposite )
                     {
-                        value = _uowf.currentUnitOfWork( ).get( ( EntityComposite ) value ).identity( ).get( );
+                        value = _uowf.currentUnitOfWork().get( (EntityComposite) value ).identity().get();
                     }
                     else
                     {
-                        value = value.toString( );
+                        value = value.toString();
                     }
                     values.add( value );
                     valueSQLTypes.add( Types.VARCHAR );
@@ -493,446 +684,519 @@ public class PostgreSQLQuerying implements SQLQuerying
             );
     }
 
-    private String processPropertyNullPredicate( final PropertyNullPredicate<?> predicate, final Boolean negationActive, String entityTypeCondition)
+    private QueryBuilder processPropertyNullPredicate( final PropertyNullPredicate<?> predicate,
+        final Boolean negationActive, final SQLVendor vendor,
+        org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition )
     {
-        return this.constructQueryForPredicate( //
+        return this.singleQuery( //
             predicate, //
-            predicate.propertyReference( ), //
+            predicate.propertyReference(), //
             null, //
             null, //
             negationActive, //
+            vendor, //
             entityTypeCondition, //
-            new WhereClauseProcessor( )
+            new WhereClauseProcessor()
             {
 
-                public void processWhereClause( StringBuilder where, StringBuilder fromClause, StringBuilder groupBy, StringBuilder having, StringBuilder afterWhere, String joinStyle, Integer firstTableIndex, Integer lastTableIndex )
+                public void processWhereClause( QuerySpecificationBuilder builder, BooleanBuilder afterWhere,
+                    JoinType joinStyle, Integer firstTableIndex, Integer lastTableIndex )
                 {
-                    QNameInfo info = _state.qNameInfos( ).get( ).get(
-                        QualifiedName.fromClass( predicate.propertyReference( ).propertyDeclaringType( ), predicate.propertyReference( )
-                            .propertyName( ) ) );
-                    String colName = null;
-                    if ( info.getCollectionDepth( ) > 0 )
+                    if( (predicate instanceof PropertyIsNullPredicate<?> && !negationActive)
+                        || (predicate instanceof PropertyIsNotNullPredicate<?> && negationActive) )
                     {
-                        colName = SQLs.ALL_QNAMES_TABLE_PK_COLUMN_NAME;
-                    }
-                    else
-                    {
-                        colName = SQLs.QNAME_TABLE_VALUE_COLUMN_NAME;
-                    }
+                        LiteralFactory l = vendor.getLiteralFactory();
+                        ColumnsFactory c = vendor.getColumnsFactory();
+                        BooleanFactory b = vendor.getBooleanFactory();
 
-                    if ((predicate instanceof PropertyIsNullPredicate<?> && !negationActive)
-                        || (predicate instanceof PropertyIsNotNullPredicate<?> && negationActive))
-                    {
+                        QNameInfo info = _state
+                            .qNameInfos()
+                            .get()
+                            .get(
+                                QualifiedName.fromClass( predicate.propertyReference().propertyDeclaringType(),
+                                    predicate.propertyReference().propertyName() ) );
+                        String colName = null;
+                        if( info.getCollectionDepth() > 0 )
+                        {
+                            colName = SQLs.ALL_QNAMES_TABLE_PK_COLUMN_NAME;
+                        }
+                        else
+                        {
+                            colName = SQLs.QNAME_TABLE_VALUE_COLUMN_NAME;
+                        }
                         // Last table column might be null because of left joins
-                        where.append( TABLE_NAME_PREFIX + lastTableIndex + "." + colName + " IS NULL" + "\n");
+                        builder.getWhere().reset(
+                            b.isNull( l.l( c.colName( TABLE_NAME_PREFIX + lastTableIndex, colName ) ) ) );
                     }
                 }
+
             } //
             );
     }
 
-    private String processAssociationNullPredicate( final AssociationNullPredicate predicate, final Boolean negationActive, String entityTypeCondition )
+    private QueryBuilder processAssociationNullPredicate( final AssociationNullPredicate predicate,
+        final Boolean negationActive, final SQLVendor vendor,
+        org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition )
     {
-        return this.constructQueryForPredicate( //
+        return this.singleQuery( //
             predicate, //
             null, //
-            predicate.associationReference( ), //
+            predicate.associationReference(), //
             false, //
             negationActive, //
+            vendor, //
             entityTypeCondition, //
-            new WhereClauseProcessor( )
+            new WhereClauseProcessor()
             {
 
-                public void processWhereClause( StringBuilder where, StringBuilder fromClause, StringBuilder groupBy, StringBuilder having, StringBuilder afterWhere, String joinStyle, Integer firstTableIndex, Integer lastTableIndex )
+                public void processWhereClause( QuerySpecificationBuilder builder, BooleanBuilder afterWhere,
+                    JoinType joinStyle, Integer firstTableIndex, Integer lastTableIndex )
                 {
-                    String result = "";
-                    if ((predicate instanceof AssociationIsNullPredicate && !negationActive)
-                        || (predicate instanceof AssociationIsNotNullPredicate && negationActive))
+                    if( (predicate instanceof AssociationIsNullPredicate && !negationActive)
+                        || (predicate instanceof AssociationIsNotNullPredicate && negationActive) )
                     {
+                        LiteralFactory l = vendor.getLiteralFactory();
+                        ColumnsFactory c = vendor.getColumnsFactory();
+                        BooleanFactory b = vendor.getBooleanFactory();
+
                         // Last table column might be null because of left joins
-                        where.append(TABLE_NAME_PREFIX + lastTableIndex + "." + SQLs.QNAME_TABLE_VALUE_COLUMN_NAME + " IS NULL" + "\n"); //
+                        builder.getWhere().reset(
+                            b.isNull( l.l( c.colName( TABLE_NAME_PREFIX + lastTableIndex,
+                                SQLs.QNAME_TABLE_VALUE_COLUMN_NAME ) ) ) );
                     }
                 }
+
             } //
             );
     }
 
-    private String processContainsPredicate(
-        final ContainsPredicate<?, ? extends Collection<?>> predicate,
-        final Boolean negationActive,
-        String entityTypeCondition,
-        final List<Object> values,
+    private QueryBuilder processContainsPredicate( final ContainsPredicate<?, ? extends Collection<?>> predicate,
+        final Boolean negationActive, final SQLVendor vendor,
+        org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition, final List<Object> values,
         final List<Integer> valueSQLTypes )
     {
         // Path: Top.* (star without braces), value = value
-        // ASSUMING value is NOT collection (ie, find all entities, which collection property has value x as leaf item, no matter collection depth)
-        String contains = this.constructQueryForPredicate( //
+        // ASSUMING value is NOT collection (ie, find all entities, which collection property has value x as leaf item,
+        // no matter collection depth)
+        QuerySpecification contains = this.constructQueryForPredicate( //
             predicate, //
-            predicate.propertyReference( ), //
+            predicate.propertyReference(), //
             null, //
             null, //
             false, //
+            vendor, //
             entityTypeCondition, //
-            new WhereClauseProcessor( )
+            new WhereClauseProcessor()
             {
-
-                public void processWhereClause( StringBuilder where, StringBuilder fromClause, StringBuilder groupBy, StringBuilder having, StringBuilder afterWhere, String joinStyle, Integer firstTableIndex, Integer lastTableIndex )
+                public void processWhereClause( QuerySpecificationBuilder builder, BooleanBuilder afterWhere,
+                    JoinType joinStyle, Integer firstTableIndex, Integer lastTableIndex )
                 {
-                    where.append(TABLE_NAME_PREFIX + lastTableIndex + "." + SQLs.QNAME_TABLE_COLLECTION_PATH_COLUMN_NAME + " ~ '" +
-                        SQLs.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME + ".*{1,}' AND (");
-                    Object value = ((SingleValueExpression<?>)predicate.valueExpression( )).value( );
-                    if (value instanceof Collection<?>)
+                    BooleanFactory b = vendor.getBooleanFactory();
+                    LiteralFactory l = vendor.getLiteralFactory();
+                    ColumnsFactory c = vendor.getColumnsFactory();
+
+                    builder.getWhere().reset(
+                        b.matches( l.l( c.colName( TABLE_NAME_PREFIX + lastTableIndex,
+                            SQLs.QNAME_TABLE_COLLECTION_PATH_COLUMN_NAME ) ), l
+                            .l( SQLs.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME + ".*{1,}" ) ) );
+                    // where.append( TABLE_NAME_PREFIX + lastTableIndex + "."
+                    // + SQLs.QNAME_TABLE_COLLECTION_PATH_COLUMN_NAME + " ~ '"
+                    // + SQLs.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME + ".*{1,}' AND (" );
+                    Object value = ((SingleValueExpression<?>) predicate.valueExpression()).value();
+                    if( value instanceof Collection<?> )
                     {
-                        throw new IllegalArgumentException( "ContainsPredicate may have only either primitive or value composite as value." );
+                        throw new IllegalArgumentException(
+                            "ContainsPredicate may have only either primitive or value composite as value." );
                     }
-                    StringBuilder condition = new StringBuilder( );
-                    modifyFromClauseAndWhereClauseToGetValue(
-                        QualifiedName.fromClass( predicate.propertyReference( ).propertyDeclaringType( ), predicate.propertyReference( ).propertyName( ) ),
-                        value,
-                        predicate,
-                        false,
-                        lastTableIndex,
-                        new ModifiableInt( lastTableIndex ),
-                        SQLs.QNAME_TABLE_VALUE_COLUMN_NAME,
-                        SQLs.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME,
-                        condition,
-                        afterWhere,
-                        fromClause,
-                        groupBy,
-                        having,
-                        new ArrayList<QNameJoin>( ),
-                        values,
-                        valueSQLTypes
-                        );
-                    where.append(condition);
-                    where.append(")");
+                    BooleanBuilder condition = b.booleanBuilder();
+                    modifyFromClauseAndWhereClauseToGetValue( QualifiedName.fromClass( predicate.propertyReference()
+                        .propertyDeclaringType(), predicate.propertyReference().propertyName() ), value, predicate,
+                        false, lastTableIndex, new ModifiableInt( lastTableIndex ), SQLs.QNAME_TABLE_VALUE_COLUMN_NAME,
+                        SQLs.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME, vendor, condition, afterWhere, builder
+                            .getFrom().getTableReferences().iterator().next(), builder.getGroupBy(), builder
+                            .getHaving(), new ArrayList<QNameJoin>(), values, valueSQLTypes );
+                    builder.getWhere().and( condition.createExpression() );
+                    // where.append( ")" );
                 }
             } //
             );
 
-        if (negationActive)
-        {
-            StringBuilder builda = new StringBuilder( );
-            this.getSelectClauseForPredicate( TABLE_NAME_PREFIX + 0, builda );
-            builda.append( "FROM " + this._state.schemaName( ).get() + "." + SQLs.ENTITY_TABLE_NAME + " " + TABLE_NAME_PREFIX + 0 + "\n" +
-                "WHERE " + entityTypeCondition + "\n"
-                );
-            contains = builda.toString( ) + "EXCEPT" + "\n" + contains;
-        }
-
-        return contains;
+        return this.finalizeContainsQuery( vendor, contains, entityTypeCondition, negationActive );
     }
 
-    private String processContainsAllPredicate(
-        final ContainsAllPredicate<?, ? extends Collection<?>> predicate,
-        final Boolean negationActive,
-        String entityTypeCondition,
-        final List<Object> values,
-        final List<Integer> valueSQLTypes )
+    protected QueryBuilder finalizeContainsQuery( SQLVendor vendor, QuerySpecification contains,
+        org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition, Boolean negationActive )
     {
-        // has all leaf items in specified collection
+        QueryFactory q = vendor.getQueryFactory();
+        QueryBuilder result = null;
 
-        String contains =  this.constructQueryForPredicate( //
-            predicate, //
-            predicate.propertyReference( ), //
-            null, //
-            null, //
-            false, //
-            entityTypeCondition, //
-            new WhereClauseProcessor( )
-            {
-
-                public void processWhereClause( StringBuilder where, StringBuilder fromClause, StringBuilder groupBy, StringBuilder having, StringBuilder afterWhere, String joinStyle, Integer firstTableIndex, Integer lastTableIndex )
-                {
-                    Collection<?> collection = (Collection<?>)((SingleValueExpression<?>)predicate.valueExpression( )).value( );
-                    List<QNameJoin> joins = new ArrayList<QNameJoin>( );
-                    for (Object value : collection)
-                    {
-                        if (value instanceof Collection<?>)
-                        {
-                            throw new IllegalArgumentException( "ContainsAllPredicate may not have nested collections as value." );
-                        }
-                        if (where.length( ) > 0)
-                        {
-                            where.append(" OR ");
-                        }
-                        where.append( "(" + TABLE_NAME_PREFIX + lastTableIndex + "." + SQLs.QNAME_TABLE_COLLECTION_PATH_COLUMN_NAME + " ~ '" +
-                            SQLs.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME + ".*{1,}' AND (");
-                        StringBuilder conditionForItem = new StringBuilder( );
-                        modifyFromClauseAndWhereClauseToGetValue(
-                            QualifiedName.fromClass( predicate.propertyReference( ).propertyDeclaringType( ), predicate.propertyReference( ).propertyName( ) ),
-                            value,
-                            predicate,
-                            false,
-                            lastTableIndex,
-                            new ModifiableInt( lastTableIndex ),
-                            SQLs.QNAME_TABLE_VALUE_COLUMN_NAME,
-                            SQLs.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME,
-                            conditionForItem,
-                            afterWhere,
-                            fromClause,
-                            groupBy,
-                            having,
-                            joins,
-                            values,
-                            valueSQLTypes
-                            );
-                        where.append(conditionForItem);
-                        where.append( " ))" + "\n");
-                    }
-
-//                    if (groupBy.length( ) > 0)
-//                    {
-//                        groupBy.append( ", " );
-//                    }
-                    if (having.length( ) > 0)
-                    {
-                        having.append( " AND " );
-                    }
-//                    groupBy.append( TABLE_NAME_PREFIX + lastTableIndex + "." + SQLs.QNAME_TABLE_VALUE_COLUMN_NAME);
-                    having.append("COUNT(" + TABLE_NAME_PREFIX + lastTableIndex + "." + SQLs.QNAME_TABLE_VALUE_COLUMN_NAME + ") >= " + collection.size( ));
-
-                }
-            } //
-            );
-        if (negationActive)
+        if( negationActive )
         {
-            StringBuilder builda = new StringBuilder( );
-            this.getSelectClauseForPredicate( TABLE_NAME_PREFIX + 0, builda );
-            builda.append( "FROM " + this._state.schemaName( ).get() + "." + SQLs.ENTITY_TABLE_NAME + " " + TABLE_NAME_PREFIX + 0 + "\n" +
-                "WHERE " + entityTypeCondition + "\n"
-                );
-            contains = builda.toString( ) + "EXCEPT" + "\n" + contains;
-        }
-
-        return contains;
-    }
-
-    private String constructQueryForPredicate(
-        Predicate predicate,
-        PropertyReference<?> propRef,
-        AssociationReference assoRef,
-        Boolean includeLastAssoPathTable,
-        Boolean negationActive,
-        String entityTypeCondition,
-        WhereClauseProcessor whereClauseGenerator )
-    {
-        StringBuilder builder = new StringBuilder( );
-        Integer startingIndex = 0;
-        this.getSelectClauseForPredicate( TABLE_NAME_PREFIX + startingIndex, builder );
-        builder.append( "FROM " + this._state.schemaName( ).get( ) + "." + SQLs.ENTITY_TABLE_NAME + " " + TABLE_NAME_PREFIX + startingIndex + "\n" );
-        Integer lastTableIndex = null;
-        String joinStyle = this.getTableJoinStyle( predicate, negationActive );
-        if ( propRef == null )
-        {
-            lastTableIndex = this.traverseAssociationPath(
-                assoRef,
-                builder,
-                startingIndex,
-                joinStyle,
-                includeLastAssoPathTable );
-        }
-        else if ( assoRef == null )
-        {
-            lastTableIndex = this.traversePropertyPath( propRef, builder, startingIndex, joinStyle );
+            result = q.queryBuilder(
+                this.selectAllEntitiesOfCorrectType( vendor, entityTypeCondition ).createExpression() ).except(
+                contains );
         }
         else
         {
-            throw new InternalError( "Can not have both property reference and association reference (non-)nulls [propRef=" + propRef + ", assoRef=" +
-                assoRef + ", predicate=" + predicate + "]." );
-        }
-        StringBuilder groupBy = new StringBuilder( );
-        StringBuilder having = new StringBuilder( );
-        StringBuilder afterWhere = new StringBuilder( );
-        StringBuilder where = new StringBuilder( );
-        whereClauseGenerator.processWhereClause( where, builder, groupBy, having, afterWhere, joinStyle, startingIndex, lastTableIndex );
-        builder.append("WHERE ").append(entityTypeCondition + "\n");
-        if ( where.length( ) > 0 )
-        {
-            builder.append( "AND ");
-            if (negationActive)
-            {
-                builder.append("NOT ");
-            }
-            builder.append("(").append( where ).append( ")" + "\n" );
-            builder.append(afterWhere);
-        }
-        if (having.length( ) > 0)
-        {
-            builder.append("GROUP BY " + (groupBy.length() > 0 ? (groupBy + ", ") : "") + TABLE_NAME_PREFIX + startingIndex + "." + SQLs.ENTITY_TABLE_PK_COLUMN_NAME + ", " + TABLE_NAME_PREFIX + startingIndex + "." + SQLs.ENTITY_TABLE_IDENTITY_COLUMN_NAME + "\n");
-        }
-        if (having.length( ) > 0)
-        {
-            builder.append("HAVING " + having + "\n");
-        }
-        return builder.toString( );
-    }
-
-    private String getOperator( Predicate predicate )
-    {
-        return this.findFromLookupTables( _sqlOperators, null, predicate, false );
-    }
-
-    private String getTableJoinStyle( Predicate predicate, Boolean negationActive )
-    {
-        return this.findFromLookupTables( _joinStyles, _negatedJoinStyles, predicate, negationActive );
-    }
-
-    private String findFromLookupTables(
-        Map<Class<? extends Predicate>, String> normal,
-        Map<Class<? extends Predicate>, String> negated,
-        Predicate predicate,
-        Boolean negationActive )
-    {
-        Class<? extends Predicate> predicateClass = predicate.getClass( );
-        String result = null;
-        Set<Map.Entry<Class<? extends Predicate>, String>> entries = negationActive ? negated.entrySet( ) : normal.entrySet( );
-        for ( Map.Entry<Class<? extends Predicate>, String> entry : entries )
-        {
-            if ( entry.getKey( ).isAssignableFrom( predicateClass ) )
-            {
-                result = entry.getValue( );
-                break;
-            }
-        }
-
-        if ( result == null )
-        {
-            throw new UnsupportedOperationException( "Predicate [" + predicateClass.getName( ) + "] is not supported" );
+            result = q.queryBuilder( contains );
         }
 
         return result;
     }
 
-    private void getSelectClauseForPredicate( String tableAlias, StringBuilder builder )
+    private QueryBuilder processContainsAllPredicate( final ContainsAllPredicate<?, ? extends Collection<?>> predicate,
+        final Boolean negationActive, final SQLVendor vendor,
+        org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition, final List<Object> values,
+        final List<Integer> valueSQLTypes )
     {
-        builder.append( "SELECT DISTINCT " + tableAlias + "." + SQLs.ENTITY_TABLE_PK_COLUMN_NAME + ", " + tableAlias + "." + SQLs.ENTITY_TABLE_IDENTITY_COLUMN_NAME + "\n" );
+        // has all leaf items in specified collection
+
+        QuerySpecification contains = this.constructQueryForPredicate( //
+            predicate, //
+            predicate.propertyReference(), //
+            null, //
+            null, //
+            false, //
+            vendor, //
+            entityTypeCondition, //
+            new WhereClauseProcessor()
+            {
+
+                public void processWhereClause( QuerySpecificationBuilder builder, BooleanBuilder afterWhere,
+                    JoinType joinStyle, Integer firstTableIndex, Integer lastTableIndex )
+                {
+                    BooleanFactory b = vendor.getBooleanFactory();
+                    LiteralFactory l = vendor.getLiteralFactory();
+                    ColumnsFactory c = vendor.getColumnsFactory();
+
+                    Collection<?> collection = (Collection<?>) ((SingleValueExpression<?>) predicate.valueExpression())
+                        .value();
+                    List<QNameJoin> joins = new ArrayList<QNameJoin>();
+                    for( Object value : collection )
+                    {
+                        if( value instanceof Collection<?> )
+                        {
+                            throw new IllegalArgumentException(
+                                "ContainsAllPredicate may not have nested collections as value." );
+                        }
+                        // if( where.length() > 0 )
+                        // {
+                        // where.append( " OR " );
+                        // }
+                        // where.append( "(" + TABLE_NAME_PREFIX + lastTableIndex + "."
+                        // + SQLs.QNAME_TABLE_COLLECTION_PATH_COLUMN_NAME + " ~ '"
+                        // + SQLs.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME + ".*{1,}' AND (" );
+                        BooleanBuilder conditionForItem = b.booleanBuilder( b.matches( l.l( c.colName(
+                            TABLE_NAME_PREFIX + lastTableIndex, SQLs.QNAME_TABLE_COLLECTION_PATH_COLUMN_NAME ) ), l
+                            .l( SQLs.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME + ".*{1,}" ) ) );
+                        modifyFromClauseAndWhereClauseToGetValue(
+                            QualifiedName.fromClass( predicate.propertyReference().propertyDeclaringType(), predicate
+                                .propertyReference().propertyName() ), value, predicate, false, lastTableIndex,
+                            new ModifiableInt( lastTableIndex ), SQLs.QNAME_TABLE_VALUE_COLUMN_NAME,
+                            SQLs.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME, vendor, conditionForItem, afterWhere,
+                            builder.getFrom().getTableReferences().iterator().next(), builder.getGroupBy(), builder
+                                .getHaving(), joins, values, valueSQLTypes );
+                        builder.getWhere().or( conditionForItem.createExpression() );
+                        // where.append( conditionForItem );
+                        // where.append( " ))" + "\n" );
+                    }
+
+                    // if( having.length() > 0 )
+                    // {
+                    // having.append( " AND " );
+                    // }
+                    builder.getHaving().and(
+                        b.geq(
+                            l.func( "COUNT", l.l( c.colName( TABLE_NAME_PREFIX + lastTableIndex,
+                                SQLs.QNAME_TABLE_VALUE_COLUMN_NAME ) ) ), l.n( collection.size() ) ) );
+                    // having.append( "COUNT(" + TABLE_NAME_PREFIX + lastTableIndex + "."
+                    // + SQLs.QNAME_TABLE_VALUE_COLUMN_NAME + ") >= " + collection.size() );
+                }
+
+            } //
+            );
+
+        return this.finalizeContainsQuery( vendor, contains, entityTypeCondition, negationActive );
     }
 
-    private String createTypeCondition( String tableAlias, String entityTypeIDs )
+    private QueryBuilder singleQuery( //
+        Predicate predicate, //
+        PropertyReference<?> propRef, //
+        AssociationReference assoRef, //
+        Boolean includeLastAssoPathTable, //
+        Boolean negationActive, //
+        SQLVendor vendor, //
+        org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition, //
+        WhereClauseProcessor whereClauseGenerator//
+    )
     {
-        return tableAlias + "." + SQLs.ENTITY_TYPES_TABLE_PK_COLUMN_NAME + " IN (" + entityTypeIDs + ")";
+        return vendor.getQueryFactory().queryBuilder(
+            this.constructQueryForPredicate( predicate, propRef, assoRef, includeLastAssoPathTable, negationActive,
+                vendor, entityTypeCondition, whereClauseGenerator ) );
+    }
+
+    private QuerySpecification constructQueryForPredicate( //
+        Predicate predicate, //
+        PropertyReference<?> propRef, //
+        AssociationReference assoRef, //
+        Boolean includeLastAssoPathTable, //
+        Boolean negationActive, //
+        SQLVendor vendor, //
+        org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition, //
+        WhereClauseProcessor whereClauseGenerator//
+    )
+    {
+        Integer startingIndex = 0;
+        TableReferenceFactory t = vendor.getFromFactory();
+
+        QuerySpecificationBuilder builder = this
+            .getSelectClauseForPredicate( vendor, TABLE_NAME_PREFIX + startingIndex );
+        TableReferenceBuilder from = t.tableBuilder( t.table(
+            t.tableName( this._state.schemaName().get(), SQLs.ENTITY_TABLE_NAME ),
+            t.tableAlias( TABLE_NAME_PREFIX + startingIndex ) ) );
+
+        Integer lastTableIndex = null;
+        JoinType joinStyle = this.getTableJoinStyle( predicate, negationActive );
+        if( propRef == null )
+        {
+            lastTableIndex = this.traverseAssociationPath( assoRef, startingIndex, vendor, from, joinStyle,
+                includeLastAssoPathTable );
+        }
+        else if( assoRef == null )
+        {
+            lastTableIndex = this.traversePropertyPath( propRef, startingIndex, vendor, from, joinStyle );
+        }
+        else
+        {
+            throw new InternalError(
+                "Can not have both property reference and association reference (non-)nulls [propRef=" + propRef
+                    + ", assoRef=" + assoRef + ", predicate=" + predicate + "]." );
+        }
+
+        builder.getFrom().addTableReferences( from );
+
+        BooleanBuilder afterWhere = vendor.getBooleanFactory().booleanBuilder();
+        whereClauseGenerator.processWhereClause( builder, afterWhere, joinStyle, startingIndex, lastTableIndex );
+
+        BooleanBuilder where = builder.getWhere();
+        if( negationActive )
+        {
+            where.not();
+        }
+        where.and( afterWhere.createExpression() );
+
+        where.and( entityTypeCondition );
+
+        if( builder.getHaving().createExpression() != org.sql.generation.api.grammar.booleans.Predicate.EmptyPredicate.INSTANCE )
+        {
+            // Having was added, and it most likely doesn't have selected columns
+            QueryFactory q = vendor.getQueryFactory();
+            LiteralFactory l = vendor.getLiteralFactory();
+
+            Iterator<ColumnReferenceInfo> iter = builder.getSelect().getColumns().iterator();
+            ColumnReference first = iter.next().getReference();
+            ColumnReference second = iter.next().getReference();
+
+            builder.getGroupBy().addGroupingElements( q.groupingElement( l.l( first ) ),
+                q.groupingElement( l.l( second ) ) );
+        }
+
+        return builder.createExpression();
+    }
+
+    private SQLBooleanCreator getOperator( Predicate predicate )
+    {
+        return this.findFromLookupTables( _sqlOperators, null, predicate, false );
+    }
+
+    private JoinType getTableJoinStyle( Predicate predicate, Boolean negationActive )
+    {
+        return this.findFromLookupTables( _joinStyles, _negatedJoinStyles, predicate, negationActive );
+    }
+
+    private <ReturnType> ReturnType findFromLookupTables( Map<Class<? extends Predicate>, ReturnType> normal,
+        Map<Class<? extends Predicate>, ReturnType> negated, Predicate predicate, Boolean negationActive )
+    {
+        Class<? extends Predicate> predicateClass = predicate.getClass();
+        ReturnType result = null;
+        Set<Map.Entry<Class<? extends Predicate>, ReturnType>> entries = negationActive ? negated.entrySet() : normal
+            .entrySet();
+        for( Map.Entry<Class<? extends Predicate>, ReturnType> entry : entries )
+        {
+            if( entry.getKey().isAssignableFrom( predicateClass ) )
+            {
+                result = entry.getValue();
+                break;
+            }
+        }
+
+        if( result == null )
+        {
+            throw new UnsupportedOperationException( "Predicate [" + predicateClass.getName() + "] is not supported" );
+        }
+
+        return result;
+    }
+
+    private QuerySpecificationBuilder getSelectClauseForPredicate( SQLVendor vendor, String tableAlias )
+    {
+        QueryFactory q = vendor.getQueryFactory();
+        ColumnsFactory c = vendor.getColumnsFactory();
+        QuerySpecificationBuilder result = q.querySpecificationBuilder();
+        result
+            .getSelect()
+            .setSetQuantifier( SetQuantifier.DISTINCT )
+            .addUnnamedColumns( c.colName( tableAlias, SQLs.ENTITY_TABLE_PK_COLUMN_NAME ),
+                c.colName( tableAlias, SQLs.ENTITY_TABLE_IDENTITY_COLUMN_NAME ) );
+
+        return result;
     }
 
     private String translateJavaRegexpToPGSQLRegexp( String javaRegexp )
     {
         // TODO
-        // Yo dawg, I heard you like regular expressions, so we made a regexp about your regexp so you can match while you match!
+        // Yo dawg, I heard you like regular expressions, so we made a regexp about your regexp so you can match while
+        // you match!
         // Meaning, probably best way to translate java regexp into pg-sql regexp is by... regexp.
         return javaRegexp;
     }
 
-    private void processOrderBySegments( OrderBy[] orderBy, StringBuilder fromClause, StringBuilder orderByClause )
+    private void processOrderBySegments( OrderBy[] orderBy, SQLVendor vendor, QuerySpecificationBuilder builder )
     {
-        QNameInfo[] qNames = new QNameInfo[orderBy.length];
-        Integer[] tableIndices = new Integer[orderBy.length];
-        String[] columnNames = new String[orderBy.length];
-
-        Integer tableIndex = 0;
-        for ( Integer idx = 0 ; idx < orderBy.length ; ++idx )
+        if( orderBy != null )
         {
-            if ( orderBy[idx] != null )
-            {
-                PropertyReference<?> ref = orderBy[idx].propertyReference( );
-                QualifiedName qName = QualifiedName.fromClass( ref.propertyDeclaringType( ), ref.propertyName( ) );
-                QNameInfo info = this._state.qNameInfos( ).get( ).get( qName );
-                qNames[idx] = info;
-                if ( info == null )
-                {
-                    throw new InternalError( "No qName info found for qName [" + qName + "]." );
-                }
-                tableIndex = this.traversePropertyPath( ref, fromClause, tableIndex, "LEFT JOIN" );
-                Class<?> declaringType = ref.propertyDeclaringType( );
-                if ( Identity.class.equals( declaringType ) )
-                {
-                    columnNames[idx] = SQLs.ENTITY_TABLE_IDENTITY_COLUMN_NAME;
-                    tableIndices[idx] = tableIndex - 1;
-                }
-                else
-                {
-                    columnNames[idx] = SQLs.QNAME_TABLE_VALUE_COLUMN_NAME;
-                    tableIndices[idx] = tableIndex;
-                }
-            }
-        }
+            QNameInfo[] qNames = new QNameInfo[orderBy.length];
 
-        if ( fromClause.length( ) > 0 )
-        {
-            orderByClause.append( "ORDER BY " );
-            Boolean atLeastOneOBProcessed = false;
-            for ( Integer idx = 0 ; idx < orderBy.length ; ++idx )
+            QueryFactory q = vendor.getQueryFactory();
+            LiteralFactory l = vendor.getLiteralFactory();
+            ColumnsFactory c = vendor.getColumnsFactory();
+
+            Integer tableIndex = 0;
+            for( Integer idx = 0; idx < orderBy.length; ++idx )
             {
-                OrderBy ob = orderBy[idx];
-                if ( ob != null )
+                if( orderBy[idx] != null )
                 {
-                    if ( atLeastOneOBProcessed )
+                    PropertyReference<?> ref = orderBy[idx].propertyReference();
+                    QualifiedName qName = QualifiedName.fromClass( ref.propertyDeclaringType(), ref.propertyName() );
+                    QNameInfo info = this._state.qNameInfos().get().get( qName );
+                    qNames[idx] = info;
+                    if( info == null )
                     {
-                        orderByClause.append( ", " );
+                        throw new InternalError( "No qName info found for qName [" + qName + "]." );
                     }
-                    tableIndex = tableIndices[idx];
-                    String columnName = columnNames[idx];
-                    Order order = ob.order( );
-                    String orderStr = order.equals( Order.ASCENDING ) ? "ASC" : "DESC";
-                    orderByClause.append( TABLE_NAME_PREFIX + tableIndex + "." + columnName + " " + orderStr );
-                    atLeastOneOBProcessed = true;
+                    tableIndex = this.traversePropertyPath( ref, tableIndex, vendor, builder.getFrom()
+                        .getTableReferences().iterator().next(), JoinType.LEFT_OUTER );
+                    Class<?> declaringType = ref.propertyDeclaringType();
+                    String colName = null;
+                    Integer tableIdx = null;
+                    if( Identity.class.equals( declaringType ) )
+                    {
+                        colName = SQLs.ENTITY_TABLE_IDENTITY_COLUMN_NAME;
+                        tableIdx = tableIndex - 1;
+                    }
+                    else
+                    {
+                        colName = SQLs.QNAME_TABLE_VALUE_COLUMN_NAME;
+                        tableIdx = tableIndex;
+                    }
+                    Ordering ordering = Ordering.ASCENDING;
+                    if( orderBy[idx].order() == Order.DESCENDING )
+                    {
+                        ordering = Ordering.DESCENDING;
+                    }
+                    builder.getOrderBy().addSortSpecs(
+                        q.sortSpec( l.l( c.colName( TABLE_NAME_PREFIX + tableIdx, colName ) ), ordering ) );
                 }
             }
         }
 
     }
 
-    private Integer traversePropertyPath( PropertyReference<?> reference, StringBuilder builder, Integer index, String joinStyle )
+    private Integer traversePropertyPath( PropertyReference<?> reference, Integer index, SQLVendor vendor,
+        TableReferenceBuilder builder, JoinType joinStyle )
     {
 
-        Stack<QualifiedName> qNameStack = new Stack<QualifiedName>( );
-        Stack<PropertyReference<?>> refStack = new Stack<PropertyReference<?>>( );
+        Stack<QualifiedName> qNameStack = new Stack<QualifiedName>();
+        Stack<PropertyReference<?>> refStack = new Stack<PropertyReference<?>>();
 
-        while ( reference != null )
+        while( reference != null )
         {
-            qNameStack.add( QualifiedName.fromClass( reference.propertyDeclaringType( ), reference.propertyName( ) ) );
+            qNameStack.add( QualifiedName.fromClass( reference.propertyDeclaringType(), reference.propertyName() ) );
             refStack.add( reference );
-            if ( reference.traversedProperty( ) == null && reference.traversedAssociation( ) != null )
+            if( reference.traversedProperty() == null && reference.traversedAssociation() != null )
             {
-                index = this.traverseAssociationPath( reference.traversedAssociation( ), builder, index, joinStyle, true );
+                index = this.traverseAssociationPath( reference.traversedAssociation(), index, vendor, builder,
+                    joinStyle, true );
             }
 
-            reference = reference.traversedProperty( );
+            reference = reference.traversedProperty();
         }
 
         PropertyReference<?> prevRef = null;
-        String schemaName = this._state.schemaName( ).get( );
-        while ( !qNameStack.isEmpty( ) )
+        String schemaName = this._state.schemaName().get();
+        TableReferenceFactory t = vendor.getFromFactory();
+        BooleanFactory b = vendor.getBooleanFactory();
+        LiteralFactory l = vendor.getLiteralFactory();
+        ColumnsFactory c = vendor.getColumnsFactory();
+
+        while( !qNameStack.isEmpty() )
         {
-            QualifiedName qName = qNameStack.pop( );
-            PropertyReference<?> ref = refStack.pop( );
-            if ( !qName.type( ).equals( Identity.class.getName( ) ) )
+            QualifiedName qName = qNameStack.pop();
+            PropertyReference<?> ref = refStack.pop();
+            if( !qName.type().equals( Identity.class.getName() ) )
             {
-                QNameInfo info = this._state.qNameInfos( ).get( ).get( qName );
-                if ( info == null )
+                QNameInfo info = this._state.qNameInfos().get().get( qName );
+                if( info == null )
                 {
                     throw new InternalError( "No qName info found for qName [" + qName + "]." );
                 }
 
-                if ( prevRef == null )
+                String prevTableAlias = TABLE_NAME_PREFIX + index;
+                String nextTableAlias = TABLE_NAME_PREFIX + (index + 1);
+                TableReferenceByName nextTable = t.table( t.tableName( schemaName, info.getTableName() ),
+                    t.tableAlias( nextTableAlias ) );
+                // @formatter:off
+                if( prevRef == null )
                 {
-                    builder.append( //
-//                        joinStyle + " " + schemaName + "." + SQLs.PROPERTY_QNAMES_TABLE_NAME + " " + TABLE_NAME_PREFIX + (index + 1) + "\n" + /**/
-//                        "ON (" + TABLE_NAME_PREFIX + index + "." + SQLs.ENTITY_TABLE_PK_COLUMN_NAME + " = " + TABLE_NAME_PREFIX + ( index + 1 ) +
-//                        "." + SQLs.ENTITY_TABLE_PK_COLUMN_NAME + ")" + "\n" + /**/
-                        joinStyle + " " + schemaName + "." + info.getTableName( ) + " " + TABLE_NAME_PREFIX + ( index + 1 ) + " " + /**/
-                        "ON (" + TABLE_NAME_PREFIX + index + "." + SQLs.ENTITY_TABLE_PK_COLUMN_NAME + " = " + TABLE_NAME_PREFIX + ( index + 1 ) +
-                        "." + SQLs.ENTITY_TABLE_PK_COLUMN_NAME + " AND " + TABLE_NAME_PREFIX + ( index + 1 ) + "." + SQLs.QNAME_TABLE_PARENT_QNAME_COLUMN_NAME + " IS NULL" + ")" + "\n" /**/
+                    builder.addQualifiedJoin(
+                        joinStyle,
+                        nextTable,
+                        t.jc(
+                            b.booleanBuilder(
+                                b.eq(
+                                    l.l( c.colName( prevTableAlias, SQLs.ENTITY_TABLE_PK_COLUMN_NAME ) ),
+                                    l.l( c.colName( nextTableAlias, SQLs.ENTITY_TABLE_PK_COLUMN_NAME ) )
+                                    )
+                                )
+                            .and(
+                                    b.isNull( l.l( c.colName( nextTableAlias, SQLs.QNAME_TABLE_PARENT_QNAME_COLUMN_NAME ) ) )
+                                )
+                            .createExpression()
+                            )
                         );
                 }
                 else
                 {
-                    builder.append( //
-                        joinStyle + " " + this._state.schemaName( ).get( ) + "." + info.getTableName( ) + " " + TABLE_NAME_PREFIX + ( index + 1 ) + " " + /**/
-                            "ON (" + TABLE_NAME_PREFIX + index + "." + SQLs.ALL_QNAMES_TABLE_PK_COLUMN_NAME + " = " + TABLE_NAME_PREFIX + ( index + 1 ) +
-                            "." + SQLs.QNAME_TABLE_PARENT_QNAME_COLUMN_NAME + " AND " + TABLE_NAME_PREFIX + index + "." + SQLs.ENTITY_TABLE_PK_COLUMN_NAME +
-                            " = " + TABLE_NAME_PREFIX + (index + 1) + "." + SQLs.ENTITY_TABLE_PK_COLUMN_NAME + ")\n" /**/
+                    builder.addQualifiedJoin(
+                        joinStyle,
+                        nextTable,
+                        t.jc(
+                            b.booleanBuilder(
+                                b.eq(
+                                    l.l( c.colName( prevTableAlias, SQLs.ALL_QNAMES_TABLE_PK_COLUMN_NAME ) ),
+                                    l.l( c.colName( nextTableAlias, SQLs.QNAME_TABLE_PARENT_QNAME_COLUMN_NAME ) ) )
+                                )
+                            .and(
+                                b.eq(
+                                    l.l( c.colName( prevTableAlias, SQLs.ENTITY_TABLE_PK_COLUMN_NAME ) ),
+                                    l.l( c.colName( nextTableAlias, SQLs.ENTITY_TABLE_PK_COLUMN_NAME ) )
+                                    )
+                                )
+                            .createExpression()
+                            )
                         );
                 }
+                // @formatter:on
                 ++index;
                 prevRef = ref;
             }
@@ -941,42 +1205,56 @@ public class PostgreSQLQuerying implements SQLQuerying
         return index;
     }
 
-    private Integer traverseAssociationPath(
-        AssociationReference reference,
-        StringBuilder builder,
-        Integer index,
-        String joinStyle,
-        Boolean includeLastTable )
+    private Integer traverseAssociationPath( AssociationReference reference, Integer index, SQLVendor vendor,
+        TableReferenceBuilder builder, JoinType joinStyle, Boolean includeLastTable )
     {
-        Stack<QualifiedName> qNameStack = new Stack<QualifiedName>( );
-        while ( reference != null )
+        Stack<QualifiedName> qNameStack = new Stack<QualifiedName>();
+        TableReferenceFactory t = vendor.getFromFactory();
+        BooleanFactory b = vendor.getBooleanFactory();
+        LiteralFactory l = vendor.getLiteralFactory();
+        ColumnsFactory c = vendor.getColumnsFactory();
+        String schemaName = this._state.schemaName().get();
+
+        while( reference != null )
         {
-            qNameStack.add( QualifiedName.fromClass( reference.associationDeclaringType( ), reference.associationName( ) ) );
-            reference = reference.traversedAssociation( );
+            qNameStack
+                .add( QualifiedName.fromClass( reference.associationDeclaringType(), reference.associationName() ) );
+            reference = reference.traversedAssociation();
         }
-        while ( !qNameStack.isEmpty( ) )
+        while( !qNameStack.isEmpty() )
         {
-            QualifiedName qName = qNameStack.pop( );
-            QNameInfo info = this._state.qNameInfos( ).get( ).get( qName );
-            if ( info == null )
+            QualifiedName qName = qNameStack.pop();
+            QNameInfo info = this._state.qNameInfos().get().get( qName );
+            if( info == null )
             {
                 throw new InternalError( "No qName info found for qName [" + qName + "]." );
             }
-            builder.append( //
-                joinStyle + " " + this._state.schemaName( ).get( ) + "." + info.getTableName( ) + " " + TABLE_NAME_PREFIX + ( index + 1 ) + " " + /**/
-                "ON " + TABLE_NAME_PREFIX + index + "." + SQLs.ENTITY_TABLE_PK_COLUMN_NAME + " = " + TABLE_NAME_PREFIX + ( index + 1 ) + "." +
-                SQLs.ENTITY_TABLE_PK_COLUMN_NAME + "\n" /**/
-                );
+            // @formatter:off
+            builder.addQualifiedJoin(
+                joinStyle,
+                t.table( t.tableName( schemaName, info.getTableName() ), t.tableAlias( TABLE_NAME_PREFIX
+                    + (index + 1) ) ),
+                t.jc(
+                    b.eq(
+                        l.l( c.colName( TABLE_NAME_PREFIX + index, SQLs.ENTITY_TABLE_PK_COLUMN_NAME ) ),
+                        l.l( c.colName( TABLE_NAME_PREFIX + (index + 1), SQLs.ENTITY_TABLE_PK_COLUMN_NAME ) ) )
+                    ) );
             ++index;
-            if ( !qNameStack.isEmpty( ) || includeLastTable )
+            if( includeLastTable || !qNameStack.isEmpty() )
             {
-                builder.append( //
-                    joinStyle + " " + this._state.schemaName( ).get( ) + "." + SQLs.ENTITY_TABLE_NAME + " " + TABLE_NAME_PREFIX + ( index + 1 ) + " " + /**/
-                    "ON " + TABLE_NAME_PREFIX + index + "." + SQLs.QNAME_TABLE_VALUE_COLUMN_NAME + " = " + TABLE_NAME_PREFIX + ( index + 1 ) +
-                    "." + SQLs.ENTITY_TABLE_PK_COLUMN_NAME + "\n" /**/
+                builder.addQualifiedJoin(
+                    joinStyle,
+                    t.table( t.tableName( schemaName, SQLs.ENTITY_TABLE_NAME ), t.tableAlias( TABLE_NAME_PREFIX + (index + 1) ) ),
+                    t.jc(
+                        b.eq(
+                            l.l( c.colName( TABLE_NAME_PREFIX + index, SQLs.QNAME_TABLE_VALUE_COLUMN_NAME ) ),
+                            l.l( c.colName( TABLE_NAME_PREFIX + (index + 1), SQLs.ENTITY_TABLE_PK_COLUMN_NAME ) )
+                            )
+                        )
                     );
                 ++index;
             }
+            // @formatter:on
         }
 
         return index;
@@ -984,179 +1262,221 @@ public class PostgreSQLQuerying implements SQLQuerying
 
     private List<Integer> getEntityTypeIDs( Class<?> entityType )
     {
-        List<Integer> result = new ArrayList<Integer>( );
-        for ( Map.Entry<String, EntityTypeInfo> entry : this._state.entityTypeInfos( ).get( ).entrySet( ) )
+        List<Integer> result = new ArrayList<Integer>();
+        for( Map.Entry<String, EntityTypeInfo> entry : this._state.entityTypeInfos().get().entrySet() )
         {
-            if ( entityType.isAssignableFrom( entry.getValue( ).getEntityDescriptor( ).type( ) ) )
+            if( entityType.isAssignableFrom( entry.getValue().getEntityDescriptor().type() ) )
             {
-                result.add( entry.getValue( ).getEntityTypePK( ) );
+                result.add( entry.getValue().getEntityTypePK() );
             }
         }
 
         return result;
     }
 
-    private String getConcreteEntityTypesList( Class<?> entityType ) throws EntityFinderException
-    {
-        List<Integer> typeIDs = null;
-            typeIDs = this.getEntityTypeIDs( entityType );
-        StringBuilder result = new StringBuilder( );
-        Iterator<Integer> iter = typeIDs.iterator( );
-        while ( iter.hasNext( ) )
-        {
-            result.append( iter.next( ) );
-            if ( iter.hasNext( ) )
-            {
-                result.append( ", " );
-            }
-        }
-
-        return result.toString( );
-    }
-
     // TODO currently tableJoinStyle is not used
-    private Integer modifyFromClauseAndWhereClauseToGetValue(
-        final QualifiedName qName,
-        Object value,
-        final Predicate predicate,
-        final Boolean negationActive,
-        final Integer currentTableIndex,
-        final ModifiableInt maxTableIndex,
-        final String columnName,
-        final String collectionPath,
-        final StringBuilder whereClause,
-        final StringBuilder afterWhere,
-        final StringBuilder fromClause,
-        final StringBuilder groupBy,
-        final StringBuilder having,
-        final List<QNameJoin> qNameJoins,
-        final List<Object> values,
-        final List<Integer> valueSQLTypes
-        )
+    private Integer modifyFromClauseAndWhereClauseToGetValue( final QualifiedName qName, Object value,
+        final Predicate predicate, final Boolean negationActive, final Integer currentTableIndex,
+        final ModifiableInt maxTableIndex, final String columnName, final String collectionPath,
+        final SQLVendor vendor, final BooleanBuilder whereClause, final BooleanBuilder afterWhere,
+        final TableReferenceBuilder fromClause, final GroupByBuilder groupBy, final BooleanBuilder having,
+        final List<QNameJoin> qNameJoins, final List<Object> values, final List<Integer> valueSQLTypes )
     {
-        final String schemaName = this._state.schemaName( ).get( );
+        final String schemaName = this._state.schemaName().get();
         Integer result = 1;
-        if (value instanceof Collection<?>)
+
+        final BooleanFactory b = vendor.getBooleanFactory();
+        final LiteralFactory l = vendor.getLiteralFactory();
+        final ColumnsFactory c = vendor.getColumnsFactory();
+        final QueryFactory q = vendor.getQueryFactory();
+        final TableReferenceFactory t = vendor.getFromFactory();
+
+        if( value instanceof Collection<?> )
         {
             // Collection
             Integer collectionIndex = 0;
             Boolean collectionIsSet = value instanceof Set<?>;
             Boolean topLevel = collectionPath.equals( SQLs.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME );
-            String collCol = TABLE_NAME_PREFIX + currentTableIndex + "." + SQLs.QNAME_TABLE_COLLECTION_PATH_COLUMN_NAME;
-            if (topLevel)
+            String collTable = TABLE_NAME_PREFIX + currentTableIndex;
+            String collCol = SQLs.QNAME_TABLE_COLLECTION_PATH_COLUMN_NAME;
+            LiteralExpression collColExp = l.l( c.colName( collTable, collCol ) );
+
+            BooleanBuilder collectionCondition = b.booleanBuilder();
+
+            if( topLevel )
             {
-                if (whereClause.length( ) > 0)
+                // if( whereClause.length() > 0 )
+                // {
+                // whereClause.append( "AND" + " " );
+                // }
+                // whereClause.append( "(" );
+                if( negationActive )
                 {
-                    whereClause.append("AND" + " ");
-                }
-                whereClause.append("(");
-                if (negationActive)
-                {
-                    afterWhere.append( " AND (" + collCol + " <> '" + SQLs.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME + "' OR " + collCol + " IS NULL)" + "\n" );
+
+                    afterWhere.and( b
+                        .booleanBuilder( b.neq( collColExp, l.l( SQLs.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME ) ) )
+                        .or( b.isNull( collColExp ) ).createExpression() );
+                    // afterWhere.append( " AND (" + collCol + " <> '" + SQLs.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME
+                    // + "' OR " + collCol + " IS NULL)" + "\n" );
                 }
             }
+
             Integer totalItemsProcessed = 0;
-            for (Object item : (Collection<?>)value)
+            for( Object item : (Collection<?>) value )
             {
-                String path = collectionPath + SQLs.QNAME_TABLE_COLLECTION_PATH_SEPARATOR + (collectionIsSet ? "*{1,}" : collectionIndex);
+                String path = collectionPath + SQLs.QNAME_TABLE_COLLECTION_PATH_SEPARATOR
+                    + (collectionIsSet ? "*{1,}" : collectionIndex);
                 Boolean isCollection = (item instanceof Collection<?>);
-                if (!isCollection)
+                BooleanBuilder newWhere = b.booleanBuilder();
+                if( !isCollection )
                 {
-                    whereClause.append( "(" + collCol +  " ~ '" + path + "'"); // + (negationActive ? " OR " + collCol + " IS NULL": "") + ")" + "\n");
+                    newWhere.reset( b.matches( collColExp, l.l( path ) ) );
+                    // whereClause.append( "(" + collCol + " ~ '" + path + "'" );
                 }
-                totalItemsProcessed = totalItemsProcessed + modifyFromClauseAndWhereClauseToGetValue( qName, item, predicate, negationActive, currentTableIndex, maxTableIndex, columnName, path, whereClause, afterWhere, fromClause, groupBy, having, qNameJoins, values, valueSQLTypes );
-                if (!isCollection)
-                {
-                    whereClause.append( ")" );
-                }
+                totalItemsProcessed = totalItemsProcessed
+                    + modifyFromClauseAndWhereClauseToGetValue( qName, item, predicate, negationActive,
+                        currentTableIndex, maxTableIndex, columnName, path, vendor, newWhere, afterWhere, fromClause,
+                        groupBy, having, qNameJoins, values, valueSQLTypes );
+                // if( !isCollection )
+                // {
+                // whereClause.or
+                // }
                 ++collectionIndex;
-                if (collectionIndex < ((Collection<?>)value).size( ))
-                {
-                    whereClause.append (" OR ");
-                }
+                // if( collectionIndex < ((Collection<?>) value).size() )
+                // {
+                // whereClause.append( " OR " );
+                collectionCondition.or( newWhere.createExpression() );
+                // }
             }
             result = totalItemsProcessed;
 
-            if (topLevel)
+            if( topLevel )
             {
-                if (totalItemsProcessed == 0)
+                if( totalItemsProcessed == 0 )
                 {
-                    whereClause.append( collCol + "IS NOT NULL AND " + collCol + " = " + SQLs.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME);
+                    collectionCondition.and( b.isNotNull( collColExp ) ).and(
+                        b.eq( collColExp, l.d( SQLs.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME ) ) );
+                    // whereClause.append( collCol + "IS NOT NULL AND " + collCol + " = "
+                    // + SQLs.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME );
                 }
-                whereClause.append( ")" + "\n" );
-                if (totalItemsProcessed > 0 && !negationActive)
+                // whereClause.append( ")" + "\n" );
+                else if( !negationActive )
                 {
-                    if (groupBy.length( ) > 0)
-                    {
-                        groupBy.append(", ");
-                    }
-                    if (having.length( ) > 0)
-                    {
-                        having.append( " AND " );
-                    }
-                    groupBy.append( TABLE_NAME_PREFIX + currentTableIndex + "." + SQLs.ENTITY_TABLE_PK_COLUMN_NAME );
-                    having.append( "COUNT(" + TABLE_NAME_PREFIX + currentTableIndex + "." + SQLs.QNAME_TABLE_VALUE_COLUMN_NAME + ") = " + totalItemsProcessed );
+                    // if( groupBy.length() > 0 )
+                    // {
+                    // groupBy.append( ", " );
+                    // }
+                    // if( having.length() > 0 )
+                    // {
+                    // having.append( " AND " );
+                    // }
+                    groupBy.addGroupingElements( q.groupingElement( l.l( c.colName( TABLE_NAME_PREFIX
+                        + currentTableIndex, SQLs.ENTITY_TABLE_PK_COLUMN_NAME ) ) ) );
+                    having.and( b.eq(
+                        l.func( "COUNT", l.l( c.colName( TABLE_NAME_PREFIX + currentTableIndex,
+                            SQLs.QNAME_TABLE_VALUE_COLUMN_NAME ) ) ), l.n( totalItemsProcessed ) ) );
+                    // groupBy.append( TABLE_NAME_PREFIX + currentTableIndex + "." + SQLs.ENTITY_TABLE_PK_COLUMN_NAME );
+                    // having.append( "COUNT(" + TABLE_NAME_PREFIX + currentTableIndex + "."
+                    // + SQLs.QNAME_TABLE_VALUE_COLUMN_NAME + ") = " + totalItemsProcessed );
                 }
             }
 
-        } else if (value instanceof ValueComposite)
+            whereClause.and( collectionCondition.createExpression() );
+
+        }
+        else if( value instanceof ValueComposite )
         {
             // Visit all properties with recursion and make joins as necessary
-            ((ValueComposite)value).state( ).visitProperties( new StateVisitor( )
+            ((ValueComposite) value).state().visitProperties( new StateVisitor()
             {
+
+
+
 
                 public void visitProperty( QualifiedName name, Object propertyValue )
                 {
 
                     Boolean qNameJoinDone = false;
-                    Integer sourceIndex = maxTableIndex.getInt( );
+                    Integer sourceIndex = maxTableIndex.getInt();
                     Integer targetIndex = sourceIndex + 1;
-                    for (QNameJoin join : qNameJoins)
+                    for( QNameJoin join : qNameJoins )
                     {
-                        if (join.getSourceQName( ).equals( qName ))
+                        if( join.getSourceQName().equals( qName ) )
                         {
-                            sourceIndex = join.getSourceTableIndex( );
-                            if (join.getTargetQName( ).equals( name ))
+                            sourceIndex = join.getSourceTableIndex();
+                            if( join.getTargetQName().equals( name ) )
                             {
                                 // This join has already been done once
                                 qNameJoinDone = true;
-                                targetIndex = join.getTargetTableIndex( );
+                                targetIndex = join.getTargetTableIndex();
                                 break;
                             }
                         }
                     }
 
-                    if (!qNameJoinDone)
+                    if( !qNameJoinDone )
                     {
-                        QNameInfo info = _state.qNameInfos( ).get( ).get( name );
-                        fromClause.append("LEFT JOIN" + " " + schemaName + "." + info.getTableName( ) + " " + TABLE_NAME_PREFIX + targetIndex + /**/
-                            " ON (" + TABLE_NAME_PREFIX + sourceIndex + "." + SQLs.ALL_QNAMES_TABLE_PK_COLUMN_NAME + " = " + TABLE_NAME_PREFIX + targetIndex +
-                            "." + SQLs.QNAME_TABLE_PARENT_QNAME_COLUMN_NAME + " AND " + TABLE_NAME_PREFIX + sourceIndex + "." + SQLs.ENTITY_TABLE_PK_COLUMN_NAME +
-                            " = " + TABLE_NAME_PREFIX + targetIndex + "." + SQLs.ENTITY_TABLE_PK_COLUMN_NAME + ")" + "\n"
+                        // @formatter:off
+                        QNameInfo info = _state.qNameInfos().get().get( name );
+                        String prevTableName = TABLE_NAME_PREFIX + sourceIndex;
+                        String nextTableName = TABLE_NAME_PREFIX + targetIndex;
+                        fromClause.addQualifiedJoin(
+                            JoinType.LEFT_OUTER,
+                            t.table( t.tableName( schemaName, info.getTableName() ), t.tableAlias( TABLE_NAME_PREFIX + targetIndex ) ),
+                            t.jc(
+                                b.booleanBuilder(b.eq(
+                                    l.l( c.colName( prevTableName, SQLs.ALL_QNAMES_TABLE_PK_COLUMN_NAME ) ),
+                                    l.l( c.colName( nextTableName, SQLs.QNAME_TABLE_PARENT_QNAME_COLUMN_NAME ) )
+                                    ) )
+                                .and(b.eq(
+                                    l.l( c.colName( prevTableName, SQLs.ENTITY_TABLE_PK_COLUMN_NAME ) ),
+                                    l.l( c.colName( nextTableName, SQLs.ENTITY_TABLE_PK_COLUMN_NAME ) )
+                                    ) ).createExpression()
+                                )
                             );
+                        // @formatter:on
+                        // fromClause.append( "LEFT JOIN" + " " + schemaName + "." + info.getTableName() + " "
+                        // + TABLE_NAME_PREFIX + targetIndex + /**/
+                        // " ON (" + TABLE_NAME_PREFIX + sourceIndex + "." + SQLs.ALL_QNAMES_TABLE_PK_COLUMN_NAME
+                        // + " = " + TABLE_NAME_PREFIX + targetIndex + "." + SQLs.QNAME_TABLE_PARENT_QNAME_COLUMN_NAME
+                        // + " AND " + TABLE_NAME_PREFIX + sourceIndex + "." + SQLs.ENTITY_TABLE_PK_COLUMN_NAME
+                        // + " = " + TABLE_NAME_PREFIX + targetIndex + "." + SQLs.ENTITY_TABLE_PK_COLUMN_NAME + ")"
+                        // + "\n" );
 
                         qNameJoins.add( new QNameJoin( qName, name, sourceIndex, targetIndex ) );
-                        maxTableIndex.setInt( maxTableIndex.getInt( ) + 1 );
+                        maxTableIndex.setInt( maxTableIndex.getInt() + 1 );
                     }
-                    modifyFromClauseAndWhereClauseToGetValue( name, propertyValue, predicate, negationActive, targetIndex, maxTableIndex, columnName, collectionPath, whereClause, afterWhere, fromClause, groupBy, having, qNameJoins, values, valueSQLTypes );
+                    modifyFromClauseAndWhereClauseToGetValue( name, propertyValue, predicate, negationActive,
+                        targetIndex, maxTableIndex, columnName, collectionPath, vendor, whereClause, afterWhere,
+                        fromClause, groupBy, having, qNameJoins, values, valueSQLTypes );
                 }
-            });
+            } );
 
-        } else
+        }
+        else
         {
             // Primitive
-            String valueCol = TABLE_NAME_PREFIX + currentTableIndex + "." + columnName;
-            if (value == null)
+            ColumnReferenceByName valueCol = c.colName( TABLE_NAME_PREFIX + currentTableIndex, columnName );
+            if( value == null )
             {
-                this.appendToWhereClause( whereClause, valueCol + " IS " + /* (negationActive ? "NOT " : "") +*/ "NULL", "AND" );
-            } else
+                whereClause.and( b.isNull( l.l( valueCol ) ) );
+                // this.appendToWhereClause( whereClause,
+                // valueCol + " IS " + /* (negationActive ? "NOT " : "") + */"NULL", "AND" );
+            }
+            else
             {
                 Object dbValue = value;
-                if (Enum.class.isAssignableFrom( value.getClass( ) ))
+                if( Enum.class.isAssignableFrom( value.getClass() ) )
                 {
-                    dbValue = this._state.enumPKs( ).get( ).get( value.getClass( ).getName( ) );
+                    dbValue = this._state.enumPKs().get().get( value.getClass().getName() );
                 }
-                this.appendToWhereClause( whereClause, "(" + valueCol + " IS NOT NULL AND " + valueCol + " " + getOperator( predicate ) + " ?)" /* + (valueMayBeNull ? " OR " + valueCol + " IS NULL" : "") + ")"*/, "AND");
+                whereClause.and( b.and( b.isNotNull( l.l( valueCol ) ),
+                    getOperator( predicate ).getExpression( b, l.l( valueCol ), l.param() ) ) );
+                // this.appendToWhereClause( whereClause, "(" + valueCol + " IS NOT NULL AND " + valueCol + " "
+                // + getOperator( predicate ) + " ?)" /*
+                // * + ( valueMayBeNull ? " OR " + valueCol + " IS NULL" : "") +
+                // * ")"
+                // */, "AND" );
                 values.add( dbValue );
                 valueSQLTypes.add( _typeHelper.getSQLType( value ) );
                 _log.info( TABLE_NAME_PREFIX + currentTableIndex + "." + columnName + " is " + dbValue );
@@ -1166,14 +1486,15 @@ public class PostgreSQLQuerying implements SQLQuerying
         return result;
     }
 
-    private void appendToWhereClause(StringBuilder clause, String content, String joiner)
+    private void appendToWhereClause( StringBuilder clause, String content, String joiner )
     {
-        if (clause.length( ) == 0)
+        if( clause.length() == 0 )
         {
-            clause.append( content + "\n");
-        } else
+            clause.append( content + "\n" );
+        }
+        else
         {
-            clause.append( joiner + " " + content + "\n");
+            clause.append( joiner + " " + content + "\n" );
         }
     }
 
