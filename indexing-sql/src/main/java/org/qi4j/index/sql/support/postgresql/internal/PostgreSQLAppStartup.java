@@ -54,6 +54,7 @@ import org.qi4j.index.sql.support.common.ReindexingStrategy;
 import org.qi4j.library.sql.common.SQLUtil;
 import org.qi4j.index.sql.support.common.QNameInfo.QNameType;
 import org.qi4j.index.sql.support.postgresql.PostgreSQLConfiguration;
+import org.qi4j.index.sql.support.skeletons.SQLDBState;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
@@ -78,7 +79,7 @@ public class PostgreSQLAppStartup implements SQLAppStartup
    private Application _app;
 
    @This
-   private PostgreSQLDBState _state;
+   private SQLDBState _state;
 
    @This
    private Configuration<PostgreSQLConfiguration> _configuration;

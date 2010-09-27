@@ -28,6 +28,7 @@ import org.qi4j.index.sql.support.common.GenericDatabaseExplorer;
 import org.qi4j.index.sql.support.common.GenericDatabaseExplorer.ColumnInfo;
 import org.qi4j.index.sql.support.common.GenericDatabaseExplorer.DatabaseProcessor;
 import org.qi4j.index.sql.support.common.GenericDatabaseExplorer.ForeignKeyInfo;
+import org.qi4j.index.sql.support.skeletons.SQLDBState;
 import org.qi4j.spi.query.IndexExporter;
 
 /**
@@ -37,7 +38,7 @@ import org.qi4j.spi.query.IndexExporter;
 public class PostgreSQLIndexExporter implements IndexExporter
 {
 
-   @This private PostgreSQLDBState _state;
+   @This private SQLDBState _state;
 
    private static final String SEPARATOR = "-----------------------------------------------";
 

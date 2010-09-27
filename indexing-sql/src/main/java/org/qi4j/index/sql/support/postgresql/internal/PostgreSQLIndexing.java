@@ -44,6 +44,7 @@ import org.qi4j.index.sql.support.api.SQLIndexing;
 import org.qi4j.index.sql.support.common.QNameInfo;
 import org.qi4j.library.sql.common.SQLUtil;
 import org.qi4j.index.sql.support.common.QNameInfo.QNameType;
+import org.qi4j.index.sql.support.skeletons.SQLDBState;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
@@ -65,7 +66,7 @@ public class PostgreSQLIndexing implements SQLIndexing
    private Qi4jSPI _qi4SPI;
 
    @This
-   private PostgreSQLDBState _state;
+   private SQLDBState _state;
 
    @This private PostgreSQLTypeHelper _sqlTypeHelper;
 

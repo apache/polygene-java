@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.index.sql.support.postgresql.internal;
+package org.qi4j.index.sql.support.skeletons;
 
 import java.sql.Connection;
 import java.sql.Types;
@@ -33,7 +33,7 @@ import org.sql.generation.api.vendor.SQLVendor;
  * 
  * @author Stanislav Muhametsin
  */
-public interface PostgreSQLDBState
+public interface SQLDBState
 {
     /**
      * The schema name where all the required tables are located.
