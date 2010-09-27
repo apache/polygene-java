@@ -12,7 +12,6 @@
  *
  */
 
-
 package org.qi4j.index.sql.support.postgresql;
 
 import org.qi4j.api.mixin.Mixins;
@@ -28,25 +27,26 @@ import org.qi4j.index.sql.support.postgresql.internal.PostgreSQLTypeHelper.SQLTy
 import org.qi4j.spi.query.IndexExporter;
 
 /**
-*
-* This is actual service responsible of managing indexing and queries and creating database structure.
-* 
-* The reason why all these components are in one single service is that they all require some data about
-* the database structure. Rather than exposing all of that data publicly to be available via another service,
-* it is stored in a state-style private mixin. Thus all the database-related data is available only to this
-* service, and no one else.
-* 
-* @author Stanislav Muhametsin
-*
-*/
-@Mixins({
-   PostgreSQLAppStartup.class,
-   PostgreSQLIndexing.class,
-   PostgreSQLQuerying.class,
-   SQLTypeHelperMixin.class,
-   PostgreSQLIndexExporter.class
-})
-public interface PostgreSQLService extends SQLAppStartup, SQLIndexing, SQLQuerying, IndexExporter, ServiceComposite
+ * 
+ * This is actual service responsible of managing indexing and queries and creating database structure.
+ * 
+ * The reason why all these components are in one single service is that they all require some data about the database
+ * structure. Rather than exposing all of that data publicly to be available via another service, it is stored in a
+ * state-style private mixin. Thus all the database-related data is available only to this service, and no one else.
+ * 
+ * @author Stanislav Muhametsin
+ * 
+ */
+@Mixins(
 {
-   
+    PostgreSQLAppStartup.class,//
+    PostgreSQLIndexing.class,//
+    PostgreSQLQuerying.class,//
+    SQLTypeHelperMixin.class,//
+    PostgreSQLIndexExporter.class
+})
+public interface PostgreSQLService
+    extends SQLAppStartup, SQLIndexing, SQLQuerying, IndexExporter, ServiceComposite
+{
+
 }

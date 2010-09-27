@@ -25,7 +25,6 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.logging.Logger;
 
-import org.lwdci.api.context.EmptyExecutionArgs;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.Identity;
@@ -88,9 +87,6 @@ import org.sql.generation.api.grammar.query.QueryExpression;
 import org.sql.generation.api.grammar.query.QuerySpecification;
 import org.sql.generation.api.grammar.query.TableReferenceByName;
 import org.sql.generation.api.grammar.query.joins.JoinType;
-import org.sql.generation.api.transformation.SQLTransformation;
-import org.sql.generation.api.transformation.SQLTransformationContextCreationArgs;
-import org.sql.generation.api.transformation.SQLTransformationProvider;
 import org.sql.generation.api.vendor.SQLVendor;
 
 /**
@@ -351,7 +347,7 @@ public abstract class AbstractSQLQuerying
         SQLVendor vendor = this._state.sqlVendor().get();
 
         QueryFactory q = vendor.getQueryFactory();
-        TableReferenceFactory t = vendor.getFromFactory();
+        TableReferenceFactory t = vendor.getTableReferenceFactory();
         LiteralFactory l = vendor.getLiteralFactory();
         ColumnsFactory c = vendor.getColumnsFactory();
 
@@ -375,9 +371,7 @@ public abstract class AbstractSQLQuerying
         QueryExpression finalMainQuery = this.finalizeQuery( vendor, mainQuery, resultType, whereClause,
             orderBySegments, firstResult, maxResults, values, valueSQLTypes, countOnly );
 
-        SQLTransformation transform = SQLTransformationProvider.getTransformation();
-        String result = transform.createContext( new SQLTransformationContextCreationArgs( vendor, finalMainQuery ) )
-            .interaction( EmptyExecutionArgs.EMPTY_ARGS );
+        String result = finalMainQuery.toString( vendor );
 
         _log.info( "SQL query:\n" + result );
         return result;
@@ -411,7 +405,7 @@ public abstract class AbstractSQLQuerying
         List<Integer> valueSQLTypes, //
         Boolean countOnly );
 
-    private QueryBuilder processBooleanExpression( //
+    protected QueryBuilder processBooleanExpression( //
         BooleanExpression expression,//
         Boolean negationActive,//
         SQLVendor vendor,//
@@ -497,10 +491,10 @@ public abstract class AbstractSQLQuerying
     protected QuerySpecificationBuilder selectAllEntitiesOfCorrectType( SQLVendor vendor,
         org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition )
     {
-        TableReferenceFactory t = vendor.getFromFactory();
+        TableReferenceFactory t = vendor.getTableReferenceFactory();
 
         String tableAlias = TABLE_NAME_PREFIX + "0";
-        QuerySpecificationBuilder query = this.getSelectClauseForPredicate( vendor, tableAlias );
+        QuerySpecificationBuilder query = this.getBuilderForPredicate( vendor, tableAlias );
         query.getFrom().addTableReferences(
             t.tableBuilder( t.table( t.tableName( this._state.schemaName().get(), SQLs.ENTITY_TABLE_NAME ),
                 t.tableAlias( tableAlias ) ) ) );
@@ -509,7 +503,7 @@ public abstract class AbstractSQLQuerying
         return query;
     }
 
-    private QueryBuilder processMatchesPredicate( final MatchesPredicate predicate, final Boolean negationActive,
+    protected QueryBuilder processMatchesPredicate( final MatchesPredicate predicate, final Boolean negationActive,
         final SQLVendor vendor, org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition,
         final List<Object> values, final List<Integer> valueSQLTypes )
     {
@@ -543,7 +537,7 @@ public abstract class AbstractSQLQuerying
             );
     }
 
-    private QueryBuilder processComparisonPredicate( final ComparisonPredicate<?> predicate,
+    protected QueryBuilder processComparisonPredicate( final ComparisonPredicate<?> predicate,
         final Boolean negationActive, final SQLVendor vendor,
         org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition, final List<Object> values,
         final List<Integer> valueSQLTypes )
@@ -585,8 +579,8 @@ public abstract class AbstractSQLQuerying
             );
     }
 
-    private QueryBuilder processManyAssociationContainsPredicate( final ManyAssociationContainsPredicate<?> predicate,
-        final Boolean negationActive, final SQLVendor vendor,
+    protected QueryBuilder processManyAssociationContainsPredicate(
+        final ManyAssociationContainsPredicate<?> predicate, final Boolean negationActive, final SQLVendor vendor,
         org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition, final List<Object> values,
         final List<Integer> valueSQLTypes )
     {
@@ -630,7 +624,7 @@ public abstract class AbstractSQLQuerying
             );
     }
 
-    private QueryBuilder processPropertyNullPredicate( final PropertyNullPredicate<?> predicate,
+    protected QueryBuilder processPropertyNullPredicate( final PropertyNullPredicate<?> predicate,
         final Boolean negationActive, final SQLVendor vendor,
         org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition )
     {
@@ -678,7 +672,7 @@ public abstract class AbstractSQLQuerying
         );
     }
 
-    private QueryBuilder processAssociationNullPredicate( final AssociationNullPredicate predicate,
+    protected QueryBuilder processAssociationNullPredicate( final AssociationNullPredicate predicate,
         final Boolean negationActive, final SQLVendor vendor,
         org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition )
     {
@@ -713,7 +707,7 @@ public abstract class AbstractSQLQuerying
             );
     }
 
-    private QueryBuilder processContainsPredicate( final ContainsPredicate<?, ? extends Collection<?>> predicate,
+    protected QueryBuilder processContainsPredicate( final ContainsPredicate<?, ? extends Collection<?>> predicate,
         final Boolean negationActive, final SQLVendor vendor,
         org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition, final List<Object> values,
         final List<Integer> valueSQLTypes )
@@ -784,10 +778,10 @@ public abstract class AbstractSQLQuerying
         return result;
     }
 
-    private QueryBuilder processContainsAllPredicate( final ContainsAllPredicate<?, ? extends Collection<?>> predicate,
-        final Boolean negationActive, final SQLVendor vendor,
-        org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition, final List<Object> values,
-        final List<Integer> valueSQLTypes )
+    protected QueryBuilder processContainsAllPredicate(
+        final ContainsAllPredicate<?, ? extends Collection<?>> predicate, final Boolean negationActive,
+        final SQLVendor vendor, org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition,
+        final List<Object> values, final List<Integer> valueSQLTypes )
     {
         // has all leaf items in specified collection
 
@@ -847,7 +841,7 @@ public abstract class AbstractSQLQuerying
         return this.finalizeContainsQuery( vendor, contains, entityTypeCondition, negationActive );
     }
 
-    private QueryBuilder singleQuery( //
+    protected QueryBuilder singleQuery( //
         Predicate predicate, //
         PropertyReference<?> propRef, //
         AssociationReference assoRef, //
@@ -863,7 +857,7 @@ public abstract class AbstractSQLQuerying
                 vendor, entityTypeCondition, whereClauseGenerator ) );
     }
 
-    private QuerySpecification constructQueryForPredicate( //
+    protected QuerySpecification constructQueryForPredicate( //
         Predicate predicate, //
         PropertyReference<?> propRef, //
         AssociationReference assoRef, //
@@ -875,10 +869,9 @@ public abstract class AbstractSQLQuerying
     )
     {
         Integer startingIndex = 0;
-        TableReferenceFactory t = vendor.getFromFactory();
+        TableReferenceFactory t = vendor.getTableReferenceFactory();
 
-        QuerySpecificationBuilder builder = this
-            .getSelectClauseForPredicate( vendor, TABLE_NAME_PREFIX + startingIndex );
+        QuerySpecificationBuilder builder = this.getBuilderForPredicate( vendor, TABLE_NAME_PREFIX + startingIndex );
         TableReferenceBuilder from = t.tableBuilder( t.table(
             t.tableName( this._state.schemaName().get(), SQLs.ENTITY_TABLE_NAME ),
             t.tableAlias( TABLE_NAME_PREFIX + startingIndex ) ) );
@@ -887,12 +880,13 @@ public abstract class AbstractSQLQuerying
         JoinType joinStyle = this.getTableJoinStyle( predicate, negationActive );
         if( propRef == null )
         {
-            lastTableIndex = this.traverseAssociationPath( assoRef, startingIndex, vendor, from, joinStyle,
-                includeLastAssoPathTable );
+            lastTableIndex = this.traverseAssociationPath( assoRef, startingIndex, startingIndex + 1, vendor, from,
+                joinStyle, includeLastAssoPathTable );
         }
         else if( assoRef == null )
         {
-            lastTableIndex = this.traversePropertyPath( propRef, startingIndex, vendor, from, joinStyle );
+            lastTableIndex = this.traversePropertyPath( propRef, startingIndex, startingIndex + 1, vendor, from,
+                joinStyle );
         }
         else
         {
@@ -920,17 +914,17 @@ public abstract class AbstractSQLQuerying
         return builder.createExpression();
     }
 
-    private SQLBooleanCreator getOperator( Predicate predicate )
+    protected SQLBooleanCreator getOperator( Predicate predicate )
     {
         return this.findFromLookupTables( _sqlOperators, null, predicate, false );
     }
 
-    private JoinType getTableJoinStyle( Predicate predicate, Boolean negationActive )
+    protected JoinType getTableJoinStyle( Predicate predicate, Boolean negationActive )
     {
         return this.findFromLookupTables( _joinStyles, _negatedJoinStyles, predicate, negationActive );
     }
 
-    private <ReturnType> ReturnType findFromLookupTables( Map<Class<? extends Predicate>, ReturnType> normal,
+    protected <ReturnType> ReturnType findFromLookupTables( Map<Class<? extends Predicate>, ReturnType> normal,
         Map<Class<? extends Predicate>, ReturnType> negated, Predicate predicate, Boolean negationActive )
     {
         Class<? extends Predicate> predicateClass = predicate.getClass();
@@ -954,7 +948,7 @@ public abstract class AbstractSQLQuerying
         return result;
     }
 
-    private QuerySpecificationBuilder getSelectClauseForPredicate( SQLVendor vendor, String tableAlias )
+    protected QuerySpecificationBuilder getBuilderForPredicate( SQLVendor vendor, String tableAlias )
     {
         QueryFactory q = vendor.getQueryFactory();
         ColumnsFactory c = vendor.getColumnsFactory();
@@ -968,7 +962,7 @@ public abstract class AbstractSQLQuerying
         return result;
     }
 
-    private String translateJavaRegexpToPGSQLRegexp( String javaRegexp )
+    protected String translateJavaRegexpToPGSQLRegexp( String javaRegexp )
     {
         // TODO
         // Yo dawg, I heard you like regular expressions, so we made a regexp about your regexp so you can match while
@@ -977,7 +971,7 @@ public abstract class AbstractSQLQuerying
         return javaRegexp;
     }
 
-    private void processOrderBySegments( OrderBy[] orderBy, SQLVendor vendor, QuerySpecificationBuilder builder )
+    protected void processOrderBySegments( OrderBy[] orderBy, SQLVendor vendor, QuerySpecificationBuilder builder )
     {
         if( orderBy != null )
         {
@@ -999,7 +993,7 @@ public abstract class AbstractSQLQuerying
                     {
                         throw new InternalError( "No qName info found for qName [" + qName + "]." );
                     }
-                    tableIndex = this.traversePropertyPath( ref, tableIndex, vendor, builder.getFrom()
+                    tableIndex = this.traversePropertyPath( ref, 0, tableIndex + 1, vendor, builder.getFrom()
                         .getTableReferences().iterator().next(), JoinType.LEFT_OUTER );
                     Class<?> declaringType = ref.propertyDeclaringType();
                     String colName = null;
@@ -1027,8 +1021,8 @@ public abstract class AbstractSQLQuerying
 
     }
 
-    private Integer traversePropertyPath( PropertyReference<?> reference, Integer index, SQLVendor vendor,
-        TableReferenceBuilder builder, JoinType joinStyle )
+    protected Integer traversePropertyPath( PropertyReference<?> reference, Integer lastTableIndex,
+        Integer nextAvailableIndex, SQLVendor vendor, TableReferenceBuilder builder, JoinType joinStyle )
     {
 
         Stack<QualifiedName> qNameStack = new Stack<QualifiedName>();
@@ -1040,8 +1034,13 @@ public abstract class AbstractSQLQuerying
             refStack.add( reference );
             if( reference.traversedProperty() == null && reference.traversedAssociation() != null )
             {
-                index = this.traverseAssociationPath( reference.traversedAssociation(), index, vendor, builder,
-                    joinStyle, true );
+                Integer lastAssoTableIndex = this.traverseAssociationPath( reference.traversedAssociation(),
+                    lastTableIndex, nextAvailableIndex, vendor, builder, joinStyle, true );
+                if( lastAssoTableIndex > lastTableIndex )
+                {
+                    lastTableIndex = lastAssoTableIndex;
+                    nextAvailableIndex = lastTableIndex + 1;
+                }
             }
 
             reference = reference.traversedProperty();
@@ -1049,7 +1048,7 @@ public abstract class AbstractSQLQuerying
 
         PropertyReference<?> prevRef = null;
         String schemaName = this._state.schemaName().get();
-        TableReferenceFactory t = vendor.getFromFactory();
+        TableReferenceFactory t = vendor.getTableReferenceFactory();
         BooleanFactory b = vendor.getBooleanFactory();
         ColumnsFactory c = vendor.getColumnsFactory();
 
@@ -1065,8 +1064,8 @@ public abstract class AbstractSQLQuerying
                     throw new InternalError( "No qName info found for qName [" + qName + "]." );
                 }
 
-                String prevTableAlias = TABLE_NAME_PREFIX + index;
-                String nextTableAlias = TABLE_NAME_PREFIX + (index + 1);
+                String prevTableAlias = TABLE_NAME_PREFIX + lastTableIndex;
+                String nextTableAlias = TABLE_NAME_PREFIX + nextAvailableIndex;
                 TableReferenceByName nextTable = t.table( t.tableName( schemaName, info.getTableName() ),
                     t.tableAlias( nextTableAlias ) );
                 // @formatter:off
@@ -1111,19 +1110,21 @@ public abstract class AbstractSQLQuerying
                         );
                 }
                 // @formatter:on
-                ++index;
+                lastTableIndex = nextAvailableIndex;
+                ++nextAvailableIndex;
                 prevRef = ref;
             }
         }
 
-        return index;
+        return lastTableIndex;
     }
 
-    private Integer traverseAssociationPath( AssociationReference reference, Integer index, SQLVendor vendor,
-        TableReferenceBuilder builder, JoinType joinStyle, Boolean includeLastTable )
+    protected Integer traverseAssociationPath( AssociationReference reference, Integer lastTableIndex,
+        Integer nextAvailableIndex, SQLVendor vendor, TableReferenceBuilder builder, JoinType joinStyle,
+        Boolean includeLastTable )
     {
         Stack<QualifiedName> qNameStack = new Stack<QualifiedName>();
-        TableReferenceFactory t = vendor.getFromFactory();
+        TableReferenceFactory t = vendor.getTableReferenceFactory();
         BooleanFactory b = vendor.getBooleanFactory();
         ColumnsFactory c = vendor.getColumnsFactory();
         String schemaName = this._state.schemaName().get();
@@ -1146,34 +1147,36 @@ public abstract class AbstractSQLQuerying
             builder.addQualifiedJoin(
                 joinStyle,
                 t.table( t.tableName( schemaName, info.getTableName() ), t.tableAlias( TABLE_NAME_PREFIX
-                    + (index + 1) ) ),
+                    + nextAvailableIndex ) ),
                 t.jc(
                     b.eq(
-                        c.colName( TABLE_NAME_PREFIX + index, SQLs.ENTITY_TABLE_PK_COLUMN_NAME ),
-                        c.colName( TABLE_NAME_PREFIX + (index + 1), SQLs.ENTITY_TABLE_PK_COLUMN_NAME ) )
+                        c.colName( TABLE_NAME_PREFIX + lastTableIndex, SQLs.ENTITY_TABLE_PK_COLUMN_NAME ),
+                        c.colName( TABLE_NAME_PREFIX + nextAvailableIndex, SQLs.ENTITY_TABLE_PK_COLUMN_NAME ) )
                     ) );
-            ++index;
+            lastTableIndex = nextAvailableIndex;
+            ++nextAvailableIndex;
             if( includeLastTable || !qNameStack.isEmpty() )
             {
                 builder.addQualifiedJoin(
                     joinStyle,
-                    t.table( t.tableName( schemaName, SQLs.ENTITY_TABLE_NAME ), t.tableAlias( TABLE_NAME_PREFIX + (index + 1) ) ),
+                    t.table( t.tableName( schemaName, SQLs.ENTITY_TABLE_NAME ), t.tableAlias( TABLE_NAME_PREFIX + nextAvailableIndex ) ),
                     t.jc(
                         b.eq(
-                            c.colName( TABLE_NAME_PREFIX + index, SQLs.QNAME_TABLE_VALUE_COLUMN_NAME ),
-                            c.colName( TABLE_NAME_PREFIX + (index + 1), SQLs.ENTITY_TABLE_PK_COLUMN_NAME )
+                            c.colName( TABLE_NAME_PREFIX + lastTableIndex, SQLs.QNAME_TABLE_VALUE_COLUMN_NAME ),
+                            c.colName( TABLE_NAME_PREFIX + nextAvailableIndex, SQLs.ENTITY_TABLE_PK_COLUMN_NAME )
                             )
                         )
                     );
-                ++index;
+                lastTableIndex = nextAvailableIndex;
+                ++nextAvailableIndex;
             }
             // @formatter:on
         }
 
-        return index;
+        return lastTableIndex;
     }
 
-    private List<Integer> getEntityTypeIDs( Class<?> entityType )
+    protected List<Integer> getEntityTypeIDs( Class<?> entityType )
     {
         List<Integer> result = new ArrayList<Integer>();
         for( Map.Entry<String, EntityTypeInfo> entry : this._state.entityTypeInfos().get().entrySet() )
@@ -1187,8 +1190,8 @@ public abstract class AbstractSQLQuerying
         return result;
     }
 
-    // TODO currently tableJoinStyle is not used
-    private Integer modifyFromClauseAndWhereClauseToGetValue( final QualifiedName qName, Object value,
+    // TODO refactor this monster of a method to something more understandable
+    protected Integer modifyFromClauseAndWhereClauseToGetValue( final QualifiedName qName, Object value,
         final Predicate predicate, final Boolean negationActive, final Integer currentTableIndex,
         final ModifiableInt maxTableIndex, final String columnName, final String collectionPath,
         final SQLVendor vendor, final BooleanBuilder whereClause, final BooleanBuilder afterWhere,
@@ -1202,7 +1205,7 @@ public abstract class AbstractSQLQuerying
         final LiteralFactory l = vendor.getLiteralFactory();
         final ColumnsFactory c = vendor.getColumnsFactory();
         final QueryFactory q = vendor.getQueryFactory();
-        final TableReferenceFactory t = vendor.getFromFactory();
+        final TableReferenceFactory t = vendor.getTableReferenceFactory();
 
         if( value instanceof Collection<?> )
         {

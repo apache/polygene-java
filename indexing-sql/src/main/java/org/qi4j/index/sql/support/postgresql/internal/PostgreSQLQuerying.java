@@ -16,42 +16,22 @@ package org.qi4j.index.sql.support.postgresql.internal;
 
 import java.util.List;
 
-import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.query.grammar.BooleanExpression;
 import org.qi4j.api.query.grammar.OrderBy;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.index.sql.support.skeletons.AbstractSQLQuerying;
-import org.qi4j.index.sql.support.skeletons.SQLDBState;
 import org.sql.generation.api.grammar.builders.query.QuerySpecificationBuilder;
 import org.sql.generation.api.grammar.builders.query.pgsql.PgSQLQuerySpecificationBuilder;
 import org.sql.generation.api.grammar.factories.pgsql.PgSQLQueryFactory;
 import org.sql.generation.api.grammar.query.QueryExpression;
 import org.sql.generation.api.vendor.PostgreSQLVendor;
 import org.sql.generation.api.vendor.SQLVendor;
-import org.sql.generation.api.vendor.SQLVendorProvider;
 
 /**
  * 
  * @author Stanislav Muhametsin
  */
 public class PostgreSQLQuerying extends AbstractSQLQuerying
-    implements Activatable
 {
-
-    @This
-    private SQLDBState _state;
-
-    public void activate()
-        throws Exception
-    {
-        this._state.sqlVendor().set( SQLVendorProvider.createVendor( PostgreSQLVendor.class ) );
-    }
-
-    public void passivate()
-        throws Exception
-    {
-
-    }
 
     @Override
     protected QueryExpression finalizeQuery( //

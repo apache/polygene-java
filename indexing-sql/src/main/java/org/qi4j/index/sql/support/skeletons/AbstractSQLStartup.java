@@ -12,16 +12,34 @@
  *
  */
 
-package org.qi4j.index.sql.support.postgresql.internal;
+package org.qi4j.index.sql.support.skeletons;
 
-import org.qi4j.index.sql.support.skeletons.AbstractSQLIndexing;
+import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.service.Activatable;
+import org.qi4j.index.sql.support.api.SQLAppStartup;
+import org.sql.generation.api.vendor.SQLVendor;
 
 /**
  * 
  * @author Stanislav Muhametsin
  */
-public class PostgreSQLIndexing extends AbstractSQLIndexing
+public abstract class AbstractSQLStartup
+    implements SQLAppStartup, Activatable
 {
+    @This
+    private SQLDBState _state;
 
-    // Nothing to do, since standard queries handle all the stuff by themselves.
+    public void activate()
+        throws Exception
+    {
+        this._state.sqlVendor().set( this.instantiateVendor() );
+    }
+
+    public void passivate()
+        throws Exception
+    {
+    }
+
+    protected abstract SQLVendor instantiateVendor()
+        throws Exception;
 }
