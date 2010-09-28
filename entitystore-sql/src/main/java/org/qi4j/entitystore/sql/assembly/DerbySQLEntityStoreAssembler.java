@@ -15,14 +15,13 @@ package org.qi4j.entitystore.sql.assembly;
 
 import org.qi4j.api.common.Visibility;
 import org.qi4j.entitystore.sql.internal.database.DerbySQLDatabaseSQLServiceMixin;
-import org.qi4j.entitystore.sql.internal.datasource.DataSourceService;
+import org.qi4j.library.sql.ds.assembly.DataSourceAssembler;
 
 /**
  * @author Stanislav Muhametsin
  * @author Paul Merlin
  */
-public class DerbySQLEntityStoreAssembler
-    extends AbstractSQLEntityStoreAssembler
+public class DerbySQLEntityStoreAssembler extends AbstractSQLEntityStoreAssembler
 {
 
     public static final String ENTITYSTORE_SERVICE_NAME = "entitystore-derby";
@@ -31,44 +30,28 @@ public class DerbySQLEntityStoreAssembler
 
     public DerbySQLEntityStoreAssembler()
     {
-        super();
+        super( new DataSourceAssembler().setDataSourceServiceName( DATASOURCE_SERVICE_NAME ) );
     }
 
     public DerbySQLEntityStoreAssembler( Visibility visibility )
     {
-        super( visibility );
+        super( visibility, new DataSourceAssembler().setDataSourceServiceName( DATASOURCE_SERVICE_NAME ) );
     }
 
-    public DerbySQLEntityStoreAssembler( DataSourceService importedDataSourceService )
+    public DerbySQLEntityStoreAssembler( DataSourceAssembler assembler )
     {
-        super( importedDataSourceService );
+        super( assembler );
     }
 
-    public DerbySQLEntityStoreAssembler( Visibility visibility, DataSourceService importedDataSourceService )
+    public DerbySQLEntityStoreAssembler( Visibility visibility, DataSourceAssembler assembler )
     {
-        super( visibility, importedDataSourceService );
-    }
-
-    public DerbySQLEntityStoreAssembler( Class<? extends DataSourceService>... dataSourceServiceMixins )
-    {
-        super( dataSourceServiceMixins );
-    }
-
-    public DerbySQLEntityStoreAssembler( Visibility visibility, Class<? extends DataSourceService>... dataSourceServiceMixins )
-    {
-        super( visibility, dataSourceServiceMixins );
+        super( visibility, assembler );
     }
 
     @Override
     protected String getEntityStoreServiceName()
     {
         return ENTITYSTORE_SERVICE_NAME;
-    }
-
-    @Override
-    protected String getDataSourceServiceName()
-    {
-        return DATASOURCE_SERVICE_NAME;
     }
 
     @Override

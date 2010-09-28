@@ -18,6 +18,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.service.ServiceComposite;
 

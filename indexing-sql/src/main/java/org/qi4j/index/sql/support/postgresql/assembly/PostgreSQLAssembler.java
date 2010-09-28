@@ -15,56 +15,72 @@
 package org.qi4j.index.sql.support.postgresql.assembly;
 
 import org.qi4j.api.common.Visibility;
-import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.index.reindexer.ReindexerService;
 import org.qi4j.index.sql.support.postgresql.PostgreSQLService;
+import org.qi4j.library.sql.common.AbstractSQLAssembler;
+import org.qi4j.library.sql.ds.assembly.DataSourceAssembler;
 
 /**
  * This is the assembler class to use when PostgreSQL is database for SQL Indexing in your application.
- *
+ * 
  * @author Stanislav Muhametsin
  */
-public class PostgreSQLAssembler implements Assembler
+public class PostgreSQLAssembler extends AbstractSQLAssembler
 {
 
     /**
      * The default name for the service.
      */
-    public static final String DEFAULT_SERVICE_NAME = "pgsql_lib";
+    public static final String INDEXING_SERVICE_NAME = "indexing_pgsql";
+
+    public static final String DATASOURCE_SERVICE_NAME = "datasource_pgsql_indexing";
 
     /**
      * The default visibility for the service.
      */
-    public static final Visibility DEFAULT_VISIBILTY = Visibility.application;
-
-    private Visibility _esVisiblity;
+    public static final Visibility DEFAULT_VISIBILITY = Visibility.application;
 
     private String _serviceName;
 
-    public PostgreSQLAssembler( )
+    public PostgreSQLAssembler()
     {
-        this(
-            DEFAULT_VISIBILTY );
+        this( DEFAULT_VISIBILITY, new DataSourceAssembler().setDataSourceServiceName( DATASOURCE_SERVICE_NAME ) );
     }
 
-    public PostgreSQLAssembler( Visibility entityStoreVisibility )
+    public PostgreSQLAssembler( Visibility visibility )
     {
-        this(
-            entityStoreVisibility,
-            DEFAULT_SERVICE_NAME );
+        this( visibility, new DataSourceAssembler().setDataSourceServiceName( DATASOURCE_SERVICE_NAME ) );
     }
 
-    public PostgreSQLAssembler( Visibility entityStoreVisibility, String serviceName )
+    public PostgreSQLAssembler( DataSourceAssembler assembler )
     {
-        this._esVisiblity = entityStoreVisibility;
+        this( DEFAULT_VISIBILITY, assembler );
+    }
+
+    public PostgreSQLAssembler( Visibility visibility, DataSourceAssembler assembler )
+    {
+        super( visibility, assembler );
+    }
+
+    public PostgreSQLAssembler setServiceName( String serviceName )
+    {
         this._serviceName = serviceName;
+        return this;
     }
 
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    @Override
+    protected void doAssemble( ModuleAssembly module )
+        throws AssemblyException
     {
-        module.addServices( PostgreSQLService.class ).identifiedBy( this._serviceName ).visibleIn( this._esVisiblity ).instantiateOnStartup( );
+        if( this._serviceName == null )
+        {
+            this._serviceName = INDEXING_SERVICE_NAME;
+        }
+
+        module.addServices( PostgreSQLService.class ).identifiedBy( this._serviceName )
+            .visibleIn( this.getVisibility() ).instantiateOnStartup();
 
         module.addServices( ReindexerService.class );
     }

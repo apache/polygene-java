@@ -14,8 +14,8 @@
 
 package org.qi4j.index.sql.support.postgresql;
 
-import org.qi4j.library.sql.common.SQLConfiguration;
 import org.qi4j.index.sql.support.postgresql.internal.PostgreSQLAppStartup;
+import org.qi4j.library.sql.common.SQLConfiguration;
 
 /**
  * This class represents a configuration to entitystore using PostgreSQL RDBMS through JDBC. Schema name defaults to Defaults to {@value PostgreSQLAppStartup#DEFAULT_SCHEMA_NAME}.

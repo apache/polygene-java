@@ -14,8 +14,6 @@
 package org.qi4j.entitystore.sql.assembly;
 
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.util.NullArgumentException;
-import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.sql.SQLEntityStoreService;
@@ -24,118 +22,58 @@ import org.qi4j.entitystore.sql.internal.database.DatabaseSQLServiceCoreMixin;
 import org.qi4j.entitystore.sql.internal.database.DatabaseSQLServiceSpi;
 import org.qi4j.entitystore.sql.internal.database.DatabaseSQLServiceStatementsMixin;
 import org.qi4j.entitystore.sql.internal.database.DatabaseSQLStringsBuilder;
-import org.qi4j.entitystore.sql.internal.datasource.DBCPBasicDataSourceServiceMixin;
-import org.qi4j.entitystore.sql.internal.datasource.DataSourceService;
-import org.qi4j.entitystore.sql.internal.datasource.DataSourceServiceComposite;
+import org.qi4j.library.sql.common.AbstractSQLAssembler;
+import org.qi4j.library.sql.ds.assembly.DataSourceAssembler;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 
 /**
  * @author Stanislav Muhametsin
  * @author Paul Merlin
  */
-/* package */ abstract class AbstractSQLEntityStoreAssembler
-    implements Assembler
+/* package */abstract class AbstractSQLEntityStoreAssembler extends AbstractSQLAssembler
 {
 
     private static final Visibility DEFAULT_VISIBILITY = Visibility.module;
 
-    private final Visibility visibility;
-
-    private final DataSourceService importedDataSourceService;
-
-    private final Class<?>[] dataSourceServiceMixins;
-
     public AbstractSQLEntityStoreAssembler()
     {
-        this( DEFAULT_VISIBILITY );
+        this( DEFAULT_VISIBILITY, new DataSourceAssembler() );
     }
 
-    @SuppressWarnings( "unchecked" )
     public AbstractSQLEntityStoreAssembler( Visibility visibility )
     {
-        NullArgumentException.validateNotNull( "Visibility", visibility );
-        this.visibility = visibility;
-        this.importedDataSourceService = null;
-        this.dataSourceServiceMixins = new Class<?>[]{ DBCPBasicDataSourceServiceMixin.class };
+        this( visibility, new DataSourceAssembler() );
     }
 
-    public AbstractSQLEntityStoreAssembler( DataSourceService importedDataSourceService )
+    public AbstractSQLEntityStoreAssembler( DataSourceAssembler assembler )
     {
-        this( DEFAULT_VISIBILITY, importedDataSourceService );
+        this( DEFAULT_VISIBILITY, assembler );
     }
 
-    public AbstractSQLEntityStoreAssembler( Visibility visibility, DataSourceService importedDataSourceService )
+    public AbstractSQLEntityStoreAssembler( Visibility visibility, DataSourceAssembler assembler )
     {
-        NullArgumentException.validateNotNull( "Visibility", visibility );
-        this.visibility = visibility;
-        this.importedDataSourceService = importedDataSourceService;
-        this.dataSourceServiceMixins = null;
-    }
-
-    public AbstractSQLEntityStoreAssembler( Class<? extends DataSourceService>... dataSourceServiceMixins )
-    {
-        this( DEFAULT_VISIBILITY, dataSourceServiceMixins );
-    }
-
-    public AbstractSQLEntityStoreAssembler( Visibility visibility, Class<? extends DataSourceService>... dataSourceServiceMixins )
-    {
-        NullArgumentException.validateNotNull( "Visibility", visibility );
-        NullArgumentException.validateNotNull( "DataSourceService Mixins", dataSourceServiceMixins );
-        this.visibility = visibility;
-        this.importedDataSourceService = null;
-        this.dataSourceServiceMixins = dataSourceServiceMixins;
+        super( visibility, assembler );
     }
 
     protected abstract String getEntityStoreServiceName();
 
-    protected abstract String getDataSourceServiceName();
-
     protected abstract Class<?> getDatabaseSQLServiceSpecializationMixin();
 
-    @SuppressWarnings( "unchecked" )
-    public final void assemble( ModuleAssembly module )
+    @SuppressWarnings("unchecked")
+    public final void doAssemble( ModuleAssembly module )
         throws AssemblyException
     {
 
-        if( importedDataSourceService != null )
-        {
+        module.addServices( SQLEntityStoreService.class ).visibleIn( this.getVisibility() );
 
-            // Imported DataSourceService
-            module.importServices( DataSourceService.class ).
-                identifiedBy( getDataSourceServiceName() ).
-                setMetaInfo( importedDataSourceService );
+        module
+            .addServices( DatabaseSQLServiceComposite.class )
+            .withMixins( DatabaseSQLServiceCoreMixin.class, DatabaseSQLServiceSpi.CommonMixin.class,
+                DatabaseSQLStringsBuilder.CommonMixin.class, DatabaseSQLServiceStatementsMixin.class,
+                getDatabaseSQLServiceSpecializationMixin() ).identifiedBy( getEntityStoreServiceName() )
+            .visibleIn( Visibility.module );
 
-        }
-        else if( dataSourceServiceMixins != null && dataSourceServiceMixins.length > 0 )
-        {
-
-            // Parametrized DataSourceService
-            module.addServices( DataSourceServiceComposite.class ).
-                withMixins( dataSourceServiceMixins ).
-                identifiedBy( getDataSourceServiceName() ).
-                instantiateOnStartup();
-
-        }
-        else
-        {
-            throw new IllegalStateException(
-                "Unable to assemble SQLEntityStore, no importable DataSourceService nor DataSourceServiceMixin provided" );
-        }
-
-        module.addServices( SQLEntityStoreService.class ).
-            visibleIn( this.visibility );
-
-        module.addServices( DatabaseSQLServiceComposite.class ).
-            withMixins( DatabaseSQLServiceCoreMixin.class,
-                        DatabaseSQLServiceSpi.CommonMixin.class,
-                        DatabaseSQLStringsBuilder.CommonMixin.class,
-                        DatabaseSQLServiceStatementsMixin.class,
-                        getDatabaseSQLServiceSpecializationMixin() ).
-            identifiedBy( getEntityStoreServiceName() ).
-            visibleIn( Visibility.module );
-
-        module.addServices( UuidIdentityGeneratorService.class ).
-            visibleIn( this.visibility );
+        module.addServices( UuidIdentityGeneratorService.class ).visibleIn( this.getVisibility() );
     }
 
 }

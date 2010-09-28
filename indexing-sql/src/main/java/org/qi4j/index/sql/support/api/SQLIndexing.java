@@ -12,27 +12,27 @@
  *
  */
 
-
 package org.qi4j.index.sql.support.api;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 
 import org.qi4j.spi.entity.EntityState;
 
 /**
  * This is the interface used by SQL-Indexing whenever
- *
+ * 
  * @author Stanislav Muhametsin
  */
 public interface SQLIndexing
 {
-   /**
-    * This method is called when states need to be indexed.
-    * @param changedStates The states which changed.
-    * @param connection Connection to RDBMS.
-    * @throws SQLException If SQL.
-    */
-   void indexEntities(Iterable<EntityState> changedStates, Connection connection) throws SQLException;
-   
+    /**
+     * This method is called when states need to be indexed.
+     * 
+     * @param changedStates The states which changed.
+     * @param connection Connection to RDBMS.
+     * @throws SQLException If SQL.
+     */
+    void indexEntities( Iterable<EntityState> changedStates )
+        throws SQLException;
+
 }

@@ -14,29 +14,23 @@
 
 package org.qi4j.index.sql.internal;
 
-import java.sql.Connection;
 import org.qi4j.api.injection.scope.Service;
-import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.index.sql.support.api.SQLAppStartup;
 
 /**
  * @author Stanislav Muhametsin
  */
-public class SQLActivatable implements Activatable
+public class SQLActivatable
+    implements Activatable
 {
     @Service
     private SQLAppStartup _startup;
 
-    @This
-    private SQLJDBCState _state;
-
     public void activate()
         throws Exception
     {
-        Connection connection = this._startup.createConnection();
-        this._state.connection().set( connection );
-        this._startup.initConnection( connection );
+        this._startup.initConnection();
     }
 
     public void passivate()

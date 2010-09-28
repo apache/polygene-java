@@ -13,14 +13,19 @@
  */
 package org.qi4j.entitystore.sql.internal.database;
 
+import static org.qi4j.entitystore.sql.internal.database.SQLs.ENTITY_IDENTITY_COLUMN_NAME;
+import static org.qi4j.entitystore.sql.internal.database.SQLs.ENTITY_LAST_MODIFIED_COLUMN_NAME;
+import static org.qi4j.entitystore.sql.internal.database.SQLs.ENTITY_OPTIMISTIC_LOCK_COLUMN_NAME;
+import static org.qi4j.entitystore.sql.internal.database.SQLs.ENTITY_PK_COLUMN_NAME;
+import static org.qi4j.entitystore.sql.internal.database.SQLs.ENTITY_STATE_COLUMN_NAME;
+import static org.qi4j.entitystore.sql.internal.database.SQLs.TABLE_NAME;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.qi4j.api.injection.scope.This;
-import static org.qi4j.entitystore.sql.internal.database.SQLs.*;
 import org.qi4j.library.sql.common.SQLUtil;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

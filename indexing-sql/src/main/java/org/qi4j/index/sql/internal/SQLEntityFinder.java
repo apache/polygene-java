@@ -23,11 +23,11 @@ import java.util.List;
 
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
-import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.query.grammar.BooleanExpression;
 import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.index.sql.support.api.SQLQuerying;
 import org.qi4j.library.sql.common.SQLUtil;
+import org.qi4j.library.sql.ds.DataSourceService;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
 
@@ -40,8 +40,8 @@ public class SQLEntityFinder
     @Service
     private SQLQuerying parser;
 
-    @This
-    private SQLJDBCState state;
+    @Service
+    private DataSourceService _dataSource;
 
     /**
      * Helper interface to perform some SQL query. Using this simplifies the structure of some of the methods.
@@ -200,7 +200,7 @@ public class SQLEntityFinder
         Integer resultSetType, Integer resultSetHoldability )
         throws SQLException
     {
-        PreparedStatement ps = this.state.connection().get()
+        PreparedStatement ps = this._dataSource.getDataSource().getConnection()
             .prepareStatement( query, resultSetType, ResultSet.CONCUR_READ_ONLY, resultSetHoldability );
         if( values.size() != valueSQLTypes.size() )
         {
@@ -222,9 +222,10 @@ public class SQLEntityFinder
         throws EntityFinderException
     {
         ReturnType result = null;
-        Connection connection = this.state.connection().get();
+        Connection connection = null;
         try
         {
+            connection = this._dataSource.getDataSource().getConnection();
             connection.setReadOnly( true );
 
             result = doQuery.doIt();

@@ -16,13 +16,17 @@ package org.qi4j.entitystore.sql.internal.database;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Application.Mode;
-import org.qi4j.entitystore.sql.internal.datasource.DataSourceService;
+import org.qi4j.api.util.NullArgumentException;
+import org.qi4j.library.sql.common.SQLConfiguration;
 import org.qi4j.library.sql.common.SQLUtil;
+import org.qi4j.library.sql.ds.DataSourceService;
 import org.qi4j.spi.entitystore.EntityStoreException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +35,7 @@ import org.slf4j.LoggerFactory;
  * @author Stanislav Muhametsin
  * @author Paul Merlin
  */
-@SuppressWarnings( "ProtectedField" )
+@SuppressWarnings("ProtectedField")
 public abstract class DatabaseSQLServiceCoreMixin
     implements DatabaseSQLService
 {
@@ -53,17 +57,31 @@ public abstract class DatabaseSQLServiceCoreMixin
     @This
     private DatabaseSQLStringsBuilder sqlStrings;
 
+    @This
+    private Configuration<SQLConfiguration> configuration;
+
     public Connection getConnection()
         throws SQLException
     {
         return dataSourceService.getDataSource().getConnection();
     }
 
+    protected String getConfiguredShemaName( String defaultSchemaName )
+    {
+        String result = this.configuration.configuration().schemaName().get();
+        if( result == null )
+        {
+            NullArgumentException.validateNotNull( "default schema name", defaultSchemaName );
+            result = defaultSchemaName;
+        }
+        return result;
+    }
+
     public void startDatabase()
         throws Exception
     {
         Connection connection = getConnection();
-        String schema = dataSourceService.getConfiguredShemaName();
+        String schema = this.getConfiguredShemaName( SQLs.DEFAULT_SCHEMA_NAME );
         if( schema == null )
         {
             throw new EntityStoreException( "Schema name must not be null." );

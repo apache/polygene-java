@@ -14,7 +14,50 @@
 
 package org.qi4j.index.sql.support.postgresql.internal;
 
-import static org.qi4j.index.sql.support.postgresql.internal.SQLs.*;
+import static org.qi4j.index.sql.support.postgresql.internal.SQLs.ALL_QNAMES_TABLE_NAME;
+import static org.qi4j.index.sql.support.postgresql.internal.SQLs.ALL_QNAMES_TABLE_PK_COLUMN_DATA_TYPE;
+import static org.qi4j.index.sql.support.postgresql.internal.SQLs.ALL_QNAMES_TABLE_PK_COLUMN_NAME;
+import static org.qi4j.index.sql.support.postgresql.internal.SQLs.APP_VERSION_PK_COLUMN_DATA_TYPE;
+import static org.qi4j.index.sql.support.postgresql.internal.SQLs.APP_VERSION_PK_COLUMN_NAME;
+import static org.qi4j.index.sql.support.postgresql.internal.SQLs.APP_VERSION_TABLE_NAME;
+import static org.qi4j.index.sql.support.postgresql.internal.SQLs.ENTITY_TABLE_APPLICATION_VERSION_COLUMN_DATATYPE;
+import static org.qi4j.index.sql.support.postgresql.internal.SQLs.ENTITY_TABLE_APPLICATION_VERSION_COLUMN_NAME;
+import static org.qi4j.index.sql.support.postgresql.internal.SQLs.ENTITY_TABLE_IDENTITY_COLUMN_DATA_TYPE;
+import static org.qi4j.index.sql.support.postgresql.internal.SQLs.ENTITY_TABLE_IDENTITY_COLUMN_NAME;
+import static org.qi4j.index.sql.support.postgresql.internal.SQLs.ENTITY_TABLE_MODIFIED_COLUMN_DATA_TYPE;
+import static org.qi4j.index.sql.support.postgresql.internal.SQLs.ENTITY_TABLE_MODIFIED_COLUMN_NAME;
+import static org.qi4j.index.sql.support.postgresql.internal.SQLs.ENTITY_TABLE_NAME;
+import static org.qi4j.index.sql.support.postgresql.internal.SQLs.ENTITY_TABLE_PK_COLUMN_DATA_TYPE;
+import static org.qi4j.index.sql.support.postgresql.internal.SQLs.ENTITY_TABLE_PK_COLUMN_NAME;
+import static org.qi4j.index.sql.support.postgresql.internal.SQLs.ENTITY_TABLE_VERSION_COLUMN_DATA_TYPE;
+import static org.qi4j.index.sql.support.postgresql.internal.SQLs.ENTITY_TABLE_VERSION_COLUMN_NAME;
+import static org.qi4j.index.sql.support.postgresql.internal.SQLs.ENTITY_TYPES_TABLE_NAME;
+import static org.qi4j.index.sql.support.postgresql.internal.SQLs.ENTITY_TYPES_TABLE_PK_COLUMN_DATA_TYPE;
+import static org.qi4j.index.sql.support.postgresql.internal.SQLs.ENTITY_TYPES_TABLE_PK_COLUMN_NAME;
+import static org.qi4j.index.sql.support.postgresql.internal.SQLs.ENTITY_TYPES_TABLE_TYPE_NAME_COLUMN_DATA_TYPE;
+import static org.qi4j.index.sql.support.postgresql.internal.SQLs.ENTITY_TYPES_TABLE_TYPE_NAME_COLUMN_NAME;
+import static org.qi4j.index.sql.support.postgresql.internal.SQLs.ENUM_LOOKUP_TABLE_ENUM_VALUE_DATA_TYPE;
+import static org.qi4j.index.sql.support.postgresql.internal.SQLs.ENUM_LOOKUP_TABLE_ENUM_VALUE_NAME;
+import static org.qi4j.index.sql.support.postgresql.internal.SQLs.ENUM_LOOKUP_TABLE_NAME;
+import static org.qi4j.index.sql.support.postgresql.internal.SQLs.ENUM_LOOKUP_TABLE_PK_COLUMN_DATA_TYPE;
+import static org.qi4j.index.sql.support.postgresql.internal.SQLs.ENUM_LOOKUP_TABLE_PK_COLUMN_NAME;
+import static org.qi4j.index.sql.support.postgresql.internal.SQLs.QNAME_TABLE_ASSOCIATION_INDEX_COLUMN_DATA_TYPE;
+import static org.qi4j.index.sql.support.postgresql.internal.SQLs.QNAME_TABLE_ASSOCIATION_INDEX_COLUMN_NAME;
+import static org.qi4j.index.sql.support.postgresql.internal.SQLs.QNAME_TABLE_COLLECTION_PATH_COLUMN_DATA_TYPE;
+import static org.qi4j.index.sql.support.postgresql.internal.SQLs.QNAME_TABLE_COLLECTION_PATH_COLUMN_NAME;
+import static org.qi4j.index.sql.support.postgresql.internal.SQLs.QNAME_TABLE_NAME_PREFIX;
+import static org.qi4j.index.sql.support.postgresql.internal.SQLs.QNAME_TABLE_PARENT_QNAME_COLUMN_NAME;
+import static org.qi4j.index.sql.support.postgresql.internal.SQLs.QNAME_TABLE_VALUE_COLUMN_NAME;
+import static org.qi4j.index.sql.support.postgresql.internal.SQLs.USED_CLASSES_TABLE_CLASS_NAME_COLUMN_DATA_TYPE;
+import static org.qi4j.index.sql.support.postgresql.internal.SQLs.USED_CLASSES_TABLE_CLASS_NAME_COLUMN_NAME;
+import static org.qi4j.index.sql.support.postgresql.internal.SQLs.USED_CLASSES_TABLE_NAME;
+import static org.qi4j.index.sql.support.postgresql.internal.SQLs.USED_CLASSES_TABLE_PK_COLUMN_DATA_TYPE;
+import static org.qi4j.index.sql.support.postgresql.internal.SQLs.USED_CLASSES_TABLE_PK_COLUMN_NAME;
+import static org.qi4j.index.sql.support.postgresql.internal.SQLs.USED_QNAMES_TABLE_NAME;
+import static org.qi4j.index.sql.support.postgresql.internal.SQLs.USED_QNAMES_TABLE_QNAME_COLUMN_DATA_TYPE;
+import static org.qi4j.index.sql.support.postgresql.internal.SQLs.USED_QNAMES_TABLE_QNAME_COLUMN_NAME;
+import static org.qi4j.index.sql.support.postgresql.internal.SQLs.USED_QNAMES_TABLE_TABLE_NAME_COLUMN_DATA_TYPE;
+import static org.qi4j.index.sql.support.postgresql.internal.SQLs.USED_QNAMES_TABLE_TABLE_NAME_COLUMN_NAME;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -22,7 +65,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -36,6 +78,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.configuration.Configuration;
@@ -43,19 +86,18 @@ import org.qi4j.api.entity.Identity;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.structure.Application;
 import org.qi4j.index.reindexer.Reindexer;
-import org.qi4j.index.sql.support.api.SQLAppStartup;
 import org.qi4j.index.sql.support.api.SQLTypeInfo;
 import org.qi4j.index.sql.support.common.EntityTypeInfo;
 import org.qi4j.index.sql.support.common.QNameInfo;
-import org.qi4j.index.sql.support.common.ReindexingStrategy;
-import org.qi4j.library.sql.common.SQLUtil;
 import org.qi4j.index.sql.support.common.QNameInfo.QNameType;
+import org.qi4j.index.sql.support.common.ReindexingStrategy;
 import org.qi4j.index.sql.support.postgresql.PostgreSQLConfiguration;
 import org.qi4j.index.sql.support.skeletons.AbstractSQLStartup;
 import org.qi4j.index.sql.support.skeletons.SQLDBState;
+import org.qi4j.library.sql.common.SQLUtil;
+import org.qi4j.library.sql.ds.DataSourceService;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
@@ -94,6 +136,9 @@ public class PostgreSQLAppStartup extends AbstractSQLStartup
 
     @Service
     private Reindexer _reindexer;
+
+    @Service
+    private DataSourceService _dataSource;
 
     private Map<Class<?>, String> _creationTypeStrings;
 
@@ -180,23 +225,15 @@ public class PostgreSQLAppStartup extends AbstractSQLStartup
         return SQLVendorProvider.createVendor( PostgreSQLVendor.class );
     }
 
-    public Connection createConnection()
+    public void initConnection()
         throws SQLException
     {
         this.initTypes();
 
-        Connection connection = DriverManager.getConnection( this._configuration.configuration().connectionString()
-            .get() );
-        this._state.connection().set( connection );
+        Connection connection = this._dataSource.getDataSource().getConnection();
 
         connection.setAutoCommit( false );
 
-        return connection;
-    }
-
-    public void initConnection( Connection connection )
-        throws SQLException
-    {
         String schemaName = this._configuration.configuration().schemaName().get();
         if( schemaName == null )
         {
@@ -204,7 +241,7 @@ public class PostgreSQLAppStartup extends AbstractSQLStartup
         }
         else
         {
-            // TODO check that schema name does not contain any nastyness such as sql injections etc
+            this.checkSchemaName( schemaName );
         }
 
         this._state.schemaName().set( schemaName );
@@ -226,6 +263,15 @@ public class PostgreSQLAppStartup extends AbstractSQLStartup
             connection.setAutoCommit( wasAutoCommit );
         }
 
+    }
+
+    protected void checkSchemaName( String schemaName )
+    {
+        // By default, we accept alphanumeric strings with underscores in them
+        if( !Pattern.matches( "^\\p{L}(\\_|\\p{L}|\\p{N})*$", schemaName ) )
+        {
+            throw new IllegalStateException( "Illegal schema name: " + schemaName + "." );
+        }
     }
 
     private void constructApplicationInfo( final Map<String, EntityDescriptor> entityDescriptors,
@@ -404,7 +450,7 @@ public class PostgreSQLAppStartup extends AbstractSQLStartup
     private Boolean syncDB()
         throws SQLException
     {
-        Connection connection = this._state.connection().get();
+        Connection connection = this._dataSource.getDataSource().getConnection();
         String schemaName = this._state.schemaName().get();
         ResultSet rs = connection.getMetaData().getSchemas();
 
@@ -455,7 +501,7 @@ public class PostgreSQLAppStartup extends AbstractSQLStartup
         Boolean result = true;
         if( schemaExists )
         {
-            Connection connection = this._state.connection().get();
+            Connection connection = this._dataSource.getDataSource().getConnection();
             String schemaName = this._state.schemaName().get();
             Statement stmt = connection.createStatement();
             try
@@ -504,7 +550,7 @@ public class PostgreSQLAppStartup extends AbstractSQLStartup
     private void clearSchema()
         throws SQLException
     {
-        Connection connection = this._state.connection().get();
+        Connection connection = this._dataSource.getDataSource().getConnection();
         String schemaName = this._state.schemaName().get();
         DatabaseMetaData metaData = connection.getMetaData();
 
@@ -556,7 +602,7 @@ public class PostgreSQLAppStartup extends AbstractSQLStartup
     private void createSchema( Boolean schemaFound )
         throws SQLException
     {
-        Connection connection = this._state.connection().get();
+        Connection connection = this._dataSource.getDataSource().getConnection();
         String schemaName = this._state.schemaName().get();
 
         Statement stmt = connection.createStatement();
@@ -772,7 +818,7 @@ public class PostgreSQLAppStartup extends AbstractSQLStartup
     {
 
         String schemaName = this._state.schemaName().get();
-        Connection connection = this._state.connection().get();
+        Connection connection = this._dataSource.getDataSource().getConnection();
         Statement stmt = connection.createStatement();
         try
         {
@@ -826,48 +872,6 @@ public class PostgreSQLAppStartup extends AbstractSQLStartup
                 }
                 this._state.enumPKs().get().put( enumName, (int) pk );
             }
-
-            // rs = stmt.executeQuery(String.format(SQLs.ONE_VALUE_SELECT, "MAX(" + SQLs.ALL_QNAMES_TABLE_PK_COLUMN_NAME
-            // + ")", schemaName, SQLs.PROPERTY_QNAMES_TABLE_NAME));
-            // pk = 0;
-            // if (rs.next( ))
-            // {
-            // Object max = rs.getObject( 1 );
-            // if (max != null)
-            // {
-            // pk = rs.getLong( 1 ) + 1;
-            // }
-            // }
-            // this._state.tablePKs( ).get( ).put( SQLs.PROPERTY_QNAMES_TABLE_NAME, pk );
-            //
-            // rs = stmt.executeQuery(String.format(SQLs.TWO_VALUE_SELECT, SQLs.USED_QNAMES_TABLE_QNAME_COLUMN_NAME,
-            // SQLs.USED_QNAMES_TABLE_TABLE_NAME_COLUMN_NAME, schemaName, SQLs.USED_QNAMES_TABLE_NAME));
-            // Statement stmt2 = connection.createStatement();
-            // try
-            // {
-            // while (rs.next())
-            // {
-            // String qNameName = rs.getString(1);
-            // String qNameTableName = rs.getString(2);
-            // QNameInfo info = this._state.qNameInfos().get().get(QualifiedName.fromQN(qNameName));
-            // info.setTableName(qNameTableName);
-            // if (!info.getQNameType( ).equals( QNameType.PROPERTY ))
-            // {
-            // pk = 0;
-            // ResultSet rs2 = stmt2.executeQuery(String.format(SQLs.ONE_VALUE_SELECT, "MAX(" +
-            // SQLs.ALL_QNAMES_TABLE_PK_COLUMN_NAME + ")", schemaName, qNameTableName));
-            // if (rs2.next())
-            // {
-            // pk = rs2.getLong(1);
-            // }
-            // this._state.tablePKs().get().put(qNameTableName, pk + 1);
-            // }
-            // }
-            // }
-            // finally
-            // {
-            // stmt2.close();
-            // }
         }
         finally
         {
@@ -880,7 +884,7 @@ public class PostgreSQLAppStartup extends AbstractSQLStartup
         Set<String> allEnums )
         throws SQLException
     {
-        Connection connection = this._state.connection().get();
+        Connection connection = this._dataSource.getDataSource().getConnection();
         String schemaName = this._state.schemaName().get();
 
         PreparedStatement ps = connection.prepareStatement( String.format( SQLs.TWO_VALUE_INSERT, this._state
@@ -1142,7 +1146,7 @@ public class PostgreSQLAppStartup extends AbstractSQLStartup
         // ltree module provides specific datatype for such path, which may be indexed in order to greatly improve
         // performance
 
-        Connection connection = this._state.connection().get();
+        Connection connection = this._dataSource.getDataSource().getConnection();
         Statement stmt = connection.createStatement();
         try
         {

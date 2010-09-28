@@ -17,6 +17,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.library.sql.common.SQLUtil;
 import org.slf4j.Logger;

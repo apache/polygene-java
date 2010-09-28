@@ -33,6 +33,7 @@ import java.util.Set;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.Identity;
+import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.property.StateHolder;
@@ -45,6 +46,7 @@ import org.qi4j.index.sql.support.postgresql.internal.PostgreSQLTypeHelper;
 import org.qi4j.index.sql.support.postgresql.internal.SQLs;
 import org.qi4j.library.sql.api.SQLEntityState;
 import org.qi4j.library.sql.common.SQLUtil;
+import org.qi4j.library.sql.ds.DataSourceService;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
@@ -97,9 +99,13 @@ public class AbstractSQLIndexing
     @This
     private PostgreSQLTypeHelper _sqlTypeHelper;
 
-    public void indexEntities( Iterable<EntityState> changedStates, Connection connection )
+    @Service
+    private DataSourceService _dataSource;
+
+    public void indexEntities( Iterable<EntityState> changedStates )
         throws SQLException
     {
+        Connection connection = this._dataSource.getDataSource().getConnection();
         Boolean wasAutoCommit = connection.getAutoCommit();
         connection.setAutoCommit( false );
         connection.setReadOnly( false );

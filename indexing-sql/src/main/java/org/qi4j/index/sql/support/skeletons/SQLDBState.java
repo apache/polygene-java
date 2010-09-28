@@ -14,7 +14,6 @@
 
 package org.qi4j.index.sql.support.skeletons;
 
-import java.sql.Connection;
 import java.sql.Types;
 import java.util.Map;
 import java.util.Set;
@@ -22,6 +21,7 @@ import java.util.Set;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.property.Property;
+import org.qi4j.index.sql.support.api.SQLIndexing;
 import org.qi4j.index.sql.support.common.EntityTypeInfo;
 import org.qi4j.index.sql.support.common.QNameInfo;
 import org.sql.generation.api.vendor.SQLVendor;
@@ -87,14 +87,6 @@ public interface SQLDBState
      */
     @Optional
     Property<Map<String, EntityTypeInfo>> entityTypeInfos();
-
-    /**
-     * The connection to the database.
-     * 
-     * @return The connection to the database.
-     */
-    @Optional
-    Property<Connection> connection();
 
     /**
      * A mapping between java type and the ones in {@link Types}. The class of java type is the key.

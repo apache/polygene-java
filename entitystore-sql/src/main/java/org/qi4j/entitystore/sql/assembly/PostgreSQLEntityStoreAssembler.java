@@ -15,14 +15,14 @@ package org.qi4j.entitystore.sql.assembly;
 
 import org.qi4j.api.common.Visibility;
 import org.qi4j.entitystore.sql.internal.database.PostgreSQLDatabaseSQLServiceMixin;
-import org.qi4j.entitystore.sql.internal.datasource.DataSourceService;
+import org.qi4j.library.sql.ds.PGSQLDataSourceServiceMixin;
+import org.qi4j.library.sql.ds.assembly.DataSourceAssembler;
 
 /**
  * @author Stanislav Muhametsin
  * @author Paul Merlin
  */
-public class PostgreSQLEntityStoreAssembler
-    extends AbstractSQLEntityStoreAssembler
+public class PostgreSQLEntityStoreAssembler extends AbstractSQLEntityStoreAssembler
 {
 
     public static final String ENTITYSTORE_SERVICE_NAME = "entitystore-postgresql";
@@ -31,44 +31,29 @@ public class PostgreSQLEntityStoreAssembler
 
     public PostgreSQLEntityStoreAssembler()
     {
-        super();
+        super( new DataSourceAssembler().setDataSourceServiceName( DATASOURCE_SERVICE_NAME ) );
     }
 
     public PostgreSQLEntityStoreAssembler( Visibility visibility )
     {
-        super( visibility );
+        super( visibility, new DataSourceAssembler( PGSQLDataSourceServiceMixin.class )
+            .setDataSourceServiceName( DATASOURCE_SERVICE_NAME ) );
     }
 
-    public PostgreSQLEntityStoreAssembler( DataSourceService importedDataSourceService )
+    public PostgreSQLEntityStoreAssembler( DataSourceAssembler assembler )
     {
-        super( importedDataSourceService );
+        super( assembler );
     }
 
-    public PostgreSQLEntityStoreAssembler( Visibility visibility, DataSourceService importedDataSourceService )
+    public PostgreSQLEntityStoreAssembler( Visibility visibility, DataSourceAssembler assembler )
     {
-        super( visibility, importedDataSourceService );
-    }
-
-    public PostgreSQLEntityStoreAssembler( Class<? extends DataSourceService>... dataSourceServiceMixins )
-    {
-        super( dataSourceServiceMixins );
-    }
-
-    public PostgreSQLEntityStoreAssembler( Visibility visibility, Class<? extends DataSourceService>... dataSourceServiceMixins )
-    {
-        super( visibility, dataSourceServiceMixins );
+        super( visibility, assembler );
     }
 
     @Override
     protected String getEntityStoreServiceName()
     {
         return ENTITYSTORE_SERVICE_NAME;
-    }
-
-    @Override
-    protected String getDataSourceServiceName()
-    {
-        return DATASOURCE_SERVICE_NAME;
     }
 
     @Override
