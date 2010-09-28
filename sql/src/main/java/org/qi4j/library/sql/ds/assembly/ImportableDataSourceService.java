@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, Stanislav Muhametsin. All Rights Reserved.
+ * Copyright (c) 2010, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,27 +11,35 @@
  * limitations under the License.
  *
  */
+package org.qi4j.library.sql.ds.assembly;
 
-package org.qi4j.library.sql.common;
+import javax.sql.DataSource;
 
-import org.qi4j.api.common.Optional;
-import org.qi4j.api.property.Property;
-import org.qi4j.library.sql.ds.DataSourceConfiguration;
 import org.qi4j.library.sql.ds.DataSourceService;
 
 /**
- * Typical configuration for service, which uses data source (through {@link DataSourceService} ) as connection to SQL
- * database, and given schema name as schema to create tables in.
- * 
  * @author Stanislav Muhametsin
+ * @author Paul Merlin
  */
-public interface SQLConfiguration
-    extends DataSourceConfiguration
+public class ImportableDataSourceService
+    implements DataSourceService
 {
 
-    /**
-     * The schema name to use to create/find tables.
-     */
-    @Optional
-    Property<String> schemaName();
+    private final DataSource dataSource;
+
+    public ImportableDataSourceService( DataSource dataSource )
+    {
+        this.dataSource = dataSource;
+    }
+
+    public DataSource getDataSource()
+    {
+        return dataSource;
+    }
+
+    public String getConfiguredShemaName( String defaultSchemaName )
+    {
+        return defaultSchemaName;
+    }
+
 }

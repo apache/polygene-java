@@ -20,49 +20,67 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.qi4j.api.entity.Queryable;
+import org.qi4j.api.service.ServiceFinder;
+import org.qi4j.library.sql.ds.DataSourceService;
 
 public class SQLUtil
 {
 
     public static void closeQuietly( ResultSet resultSet )
     {
-        if ( resultSet != null ) {
-            try {
+        if( resultSet != null )
+        {
+            try
+            {
                 resultSet.close();
-            } catch ( SQLException ignored ) {
+            }
+            catch( SQLException ignored )
+            {
             }
         }
     }
 
     public static void closeQuietly( Statement select )
     {
-        if ( select != null ) {
-            try {
+        if( select != null )
+        {
+            try
+            {
                 select.close();
-            } catch ( SQLException ignored ) {
+            }
+            catch( SQLException ignored )
+            {
             }
         }
     }
 
     public static void closeQuietly( Connection connection )
     {
-        if ( connection != null ) {
-            try {
+        if( connection != null )
+        {
+            try
+            {
                 connection.close();
-            } catch ( SQLException ignored ) {
+            }
+            catch( SQLException ignored )
+            {
             }
         }
     }
 
     public static void rollbackQuietly( Connection connection )
     {
-        if ( connection != null ) {
-            try {
-                if (!connection.getAutoCommit())
+        if( connection != null )
+        {
+            try
+            {
+                if( !connection.getAutoCommit() )
                 {
                     connection.rollback();
                 }
-            } catch ( SQLException ignored ) {
+            }
+            catch( SQLException ignored )
+            {
             }
         }
     }
@@ -71,9 +89,16 @@ public class SQLUtil
     {
     }
 
-    public static boolean isQueryable(Method accessor)
+    public static boolean isQueryable( Method accessor )
     {
         Queryable q = accessor.getAnnotation( Queryable.class );
         return q == null || q.value();
+    }
+
+    public static Connection getConnection( ServiceFinder finder )
+        throws SQLException
+    {
+        return ((DataSourceService) finder.findService( DataSourceService.class ).get()).getDataSource()
+            .getConnection();
     }
 }

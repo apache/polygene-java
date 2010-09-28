@@ -12,26 +12,36 @@
  *
  */
 
-package org.qi4j.library.sql.common;
+package org.qi4j.library.sql.ds;
 
 import org.qi4j.api.common.Optional;
+import org.qi4j.api.configuration.ConfigurationComposite;
 import org.qi4j.api.property.Property;
-import org.qi4j.library.sql.ds.DataSourceConfiguration;
-import org.qi4j.library.sql.ds.DataSourceService;
 
 /**
- * Typical configuration for service, which uses data source (through {@link DataSourceService} ) as connection to SQL
- * database, and given schema name as schema to create tables in.
  * 
  * @author Stanislav Muhametsin
+ * @author Paul Merlin
  */
-public interface SQLConfiguration
-    extends DataSourceConfiguration
+public interface DataSourceConfiguration
+    extends ConfigurationComposite
 {
 
-    /**
-     * The schema name to use to create/find tables.
-     */
     @Optional
-    Property<String> schemaName();
+    public Property<String> server();
+
+    @Optional
+    public Property<Integer> port();
+
+    @Optional
+    public Property<String> database();
+
+    @Optional
+    public Property<String> user();
+
+    @Optional
+    public Property<String> password();
+
+    @Optional
+    public Property<String> additionalInfo();
 }
