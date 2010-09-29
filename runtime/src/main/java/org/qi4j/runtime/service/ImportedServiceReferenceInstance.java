@@ -56,8 +56,14 @@ public final class ImportedServiceReferenceInstance<T>
 
     public boolean isActive()
     {
-        getInstance();
-        return serviceInstance.isActive();
+        try
+        {
+            getInstance();
+            return serviceInstance.isActive();
+        } catch (ServiceImporterException e)
+        {
+            return false;
+        }
     }
 
     public Module module()
