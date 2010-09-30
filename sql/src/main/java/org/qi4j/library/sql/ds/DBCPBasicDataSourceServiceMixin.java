@@ -26,7 +26,7 @@ public abstract class DBCPBasicDataSourceServiceMixin
 {
 
     @This
-    private Configuration<DataSourceConfiguration> configuration;
+    private Configuration<DBCPDataSourceConfiguration> configuration;
 
     private BasicDataSource dataSource;
 
@@ -40,7 +40,7 @@ public abstract class DBCPBasicDataSourceServiceMixin
     {
         System.out.println( "ACTIVATE" );
         dataSource = new BasicDataSource();
-        dataSource.setUrl( configuration.configuration().additionalInfo().get() );
+        dataSource.setUrl( configuration.configuration().url().get() );
     }
 
     public void passivate()

@@ -31,14 +31,14 @@ public class PGSQLDataSourceServiceMixin
 {
 
     @This
-    private Configuration<DataSourceConfiguration> _configuration;
+    private Configuration<PGDataSourceConfiguration> _configuration;
 
     private PGPoolingDataSource _dataSource;
 
     public void activate()
         throws Exception
     {
-        DataSourceConfiguration config = this._configuration.configuration();
+        PGDataSourceConfiguration config = this._configuration.configuration();
 
         this._dataSource = new PGPoolingDataSource();
 
