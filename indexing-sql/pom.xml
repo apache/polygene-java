@@ -15,7 +15,7 @@
     <name>Qi4j Extension - SQL Indexing</name>
 
     <properties>
-        <version.sql-generator>0.6-SNAPSHOT</version.sql-generator>
+        <version.sql-generator>0.1-SNAPSHOT</version.sql-generator>
     </properties>
 
     <reporting>

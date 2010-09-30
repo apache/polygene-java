@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.index.sql.support.postgresql.internal;
+package org.qi4j.index.sql.support.postgresql;
 
 import org.qi4j.index.sql.support.skeletons.AbstractSQLIndexing;
 

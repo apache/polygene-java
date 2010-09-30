@@ -19,11 +19,7 @@ import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.index.sql.support.api.SQLAppStartup;
 import org.qi4j.index.sql.support.api.SQLIndexing;
 import org.qi4j.index.sql.support.api.SQLQuerying;
-import org.qi4j.index.sql.support.postgresql.internal.PostgreSQLAppStartup;
-import org.qi4j.index.sql.support.postgresql.internal.PostgreSQLIndexExporter;
-import org.qi4j.index.sql.support.postgresql.internal.PostgreSQLIndexing;
-import org.qi4j.index.sql.support.postgresql.internal.PostgreSQLQuerying;
-import org.qi4j.index.sql.support.postgresql.internal.PostgreSQLTypeHelper.SQLTypeHelperMixin;
+import org.qi4j.index.sql.support.postgresql.PostgreSQLTypeHelper.SQLTypeHelperMixin;
 import org.qi4j.spi.query.IndexExporter;
 
 /**

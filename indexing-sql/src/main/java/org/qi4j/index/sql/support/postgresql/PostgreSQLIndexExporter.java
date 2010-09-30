@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.index.sql.support.postgresql.internal;
+package org.qi4j.index.sql.support.postgresql;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -168,7 +168,7 @@ public class PostgreSQLIndexExporter
                             out.write( "<value index=\"" + x + "\" >" + rowContents[x] + "</value>" + "\n" );
                         }
                     }
-                } );
+                }, this._state.sqlVendor().get() );
         }
         catch( SQLException sqle )
         {
@@ -288,7 +288,7 @@ public class PostgreSQLIndexExporter
                     {
 
                     }
-                } );
+                }, this._state.sqlVendor().get() );
         }
         catch( SQLException sqle )
         {

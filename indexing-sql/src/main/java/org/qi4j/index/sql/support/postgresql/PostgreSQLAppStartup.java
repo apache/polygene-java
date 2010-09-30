@@ -12,52 +12,52 @@
  *
  */
 
-package org.qi4j.index.sql.support.postgresql.internal;
+package org.qi4j.index.sql.support.postgresql;
 
-import static org.qi4j.index.sql.support.postgresql.internal.SQLs.ALL_QNAMES_TABLE_NAME;
-import static org.qi4j.index.sql.support.postgresql.internal.SQLs.ALL_QNAMES_TABLE_PK_COLUMN_DATA_TYPE;
-import static org.qi4j.index.sql.support.postgresql.internal.SQLs.ALL_QNAMES_TABLE_PK_COLUMN_NAME;
-import static org.qi4j.index.sql.support.postgresql.internal.SQLs.APP_VERSION_PK_COLUMN_DATA_TYPE;
-import static org.qi4j.index.sql.support.postgresql.internal.SQLs.APP_VERSION_PK_COLUMN_NAME;
-import static org.qi4j.index.sql.support.postgresql.internal.SQLs.APP_VERSION_TABLE_NAME;
-import static org.qi4j.index.sql.support.postgresql.internal.SQLs.ENTITY_TABLE_APPLICATION_VERSION_COLUMN_DATATYPE;
-import static org.qi4j.index.sql.support.postgresql.internal.SQLs.ENTITY_TABLE_APPLICATION_VERSION_COLUMN_NAME;
-import static org.qi4j.index.sql.support.postgresql.internal.SQLs.ENTITY_TABLE_IDENTITY_COLUMN_DATA_TYPE;
-import static org.qi4j.index.sql.support.postgresql.internal.SQLs.ENTITY_TABLE_IDENTITY_COLUMN_NAME;
-import static org.qi4j.index.sql.support.postgresql.internal.SQLs.ENTITY_TABLE_MODIFIED_COLUMN_DATA_TYPE;
-import static org.qi4j.index.sql.support.postgresql.internal.SQLs.ENTITY_TABLE_MODIFIED_COLUMN_NAME;
-import static org.qi4j.index.sql.support.postgresql.internal.SQLs.ENTITY_TABLE_NAME;
-import static org.qi4j.index.sql.support.postgresql.internal.SQLs.ENTITY_TABLE_PK_COLUMN_DATA_TYPE;
-import static org.qi4j.index.sql.support.postgresql.internal.SQLs.ENTITY_TABLE_PK_COLUMN_NAME;
-import static org.qi4j.index.sql.support.postgresql.internal.SQLs.ENTITY_TABLE_VERSION_COLUMN_DATA_TYPE;
-import static org.qi4j.index.sql.support.postgresql.internal.SQLs.ENTITY_TABLE_VERSION_COLUMN_NAME;
-import static org.qi4j.index.sql.support.postgresql.internal.SQLs.ENTITY_TYPES_TABLE_NAME;
-import static org.qi4j.index.sql.support.postgresql.internal.SQLs.ENTITY_TYPES_TABLE_PK_COLUMN_DATA_TYPE;
-import static org.qi4j.index.sql.support.postgresql.internal.SQLs.ENTITY_TYPES_TABLE_PK_COLUMN_NAME;
-import static org.qi4j.index.sql.support.postgresql.internal.SQLs.ENTITY_TYPES_TABLE_TYPE_NAME_COLUMN_DATA_TYPE;
-import static org.qi4j.index.sql.support.postgresql.internal.SQLs.ENTITY_TYPES_TABLE_TYPE_NAME_COLUMN_NAME;
-import static org.qi4j.index.sql.support.postgresql.internal.SQLs.ENUM_LOOKUP_TABLE_ENUM_VALUE_DATA_TYPE;
-import static org.qi4j.index.sql.support.postgresql.internal.SQLs.ENUM_LOOKUP_TABLE_ENUM_VALUE_NAME;
-import static org.qi4j.index.sql.support.postgresql.internal.SQLs.ENUM_LOOKUP_TABLE_NAME;
-import static org.qi4j.index.sql.support.postgresql.internal.SQLs.ENUM_LOOKUP_TABLE_PK_COLUMN_DATA_TYPE;
-import static org.qi4j.index.sql.support.postgresql.internal.SQLs.ENUM_LOOKUP_TABLE_PK_COLUMN_NAME;
-import static org.qi4j.index.sql.support.postgresql.internal.SQLs.QNAME_TABLE_ASSOCIATION_INDEX_COLUMN_DATA_TYPE;
-import static org.qi4j.index.sql.support.postgresql.internal.SQLs.QNAME_TABLE_ASSOCIATION_INDEX_COLUMN_NAME;
-import static org.qi4j.index.sql.support.postgresql.internal.SQLs.QNAME_TABLE_COLLECTION_PATH_COLUMN_DATA_TYPE;
-import static org.qi4j.index.sql.support.postgresql.internal.SQLs.QNAME_TABLE_COLLECTION_PATH_COLUMN_NAME;
-import static org.qi4j.index.sql.support.postgresql.internal.SQLs.QNAME_TABLE_NAME_PREFIX;
-import static org.qi4j.index.sql.support.postgresql.internal.SQLs.QNAME_TABLE_PARENT_QNAME_COLUMN_NAME;
-import static org.qi4j.index.sql.support.postgresql.internal.SQLs.QNAME_TABLE_VALUE_COLUMN_NAME;
-import static org.qi4j.index.sql.support.postgresql.internal.SQLs.USED_CLASSES_TABLE_CLASS_NAME_COLUMN_DATA_TYPE;
-import static org.qi4j.index.sql.support.postgresql.internal.SQLs.USED_CLASSES_TABLE_CLASS_NAME_COLUMN_NAME;
-import static org.qi4j.index.sql.support.postgresql.internal.SQLs.USED_CLASSES_TABLE_NAME;
-import static org.qi4j.index.sql.support.postgresql.internal.SQLs.USED_CLASSES_TABLE_PK_COLUMN_DATA_TYPE;
-import static org.qi4j.index.sql.support.postgresql.internal.SQLs.USED_CLASSES_TABLE_PK_COLUMN_NAME;
-import static org.qi4j.index.sql.support.postgresql.internal.SQLs.USED_QNAMES_TABLE_NAME;
-import static org.qi4j.index.sql.support.postgresql.internal.SQLs.USED_QNAMES_TABLE_QNAME_COLUMN_DATA_TYPE;
-import static org.qi4j.index.sql.support.postgresql.internal.SQLs.USED_QNAMES_TABLE_QNAME_COLUMN_NAME;
-import static org.qi4j.index.sql.support.postgresql.internal.SQLs.USED_QNAMES_TABLE_TABLE_NAME_COLUMN_DATA_TYPE;
-import static org.qi4j.index.sql.support.postgresql.internal.SQLs.USED_QNAMES_TABLE_TABLE_NAME_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ALL_QNAMES_TABLE_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ALL_QNAMES_TABLE_PK_COLUMN_DATA_TYPE;
+import static org.qi4j.index.sql.support.common.DBNames.ALL_QNAMES_TABLE_PK_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.APP_VERSION_PK_COLUMN_DATA_TYPE;
+import static org.qi4j.index.sql.support.common.DBNames.APP_VERSION_PK_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.APP_VERSION_TABLE_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_APPLICATION_VERSION_COLUMN_DATATYPE;
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_APPLICATION_VERSION_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_IDENTITY_COLUMN_DATA_TYPE;
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_IDENTITY_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_MODIFIED_COLUMN_DATA_TYPE;
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_MODIFIED_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_PK_COLUMN_DATA_TYPE;
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_PK_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_VERSION_COLUMN_DATA_TYPE;
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_VERSION_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TYPES_TABLE_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TYPES_TABLE_PK_COLUMN_DATA_TYPE;
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TYPES_TABLE_PK_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TYPES_TABLE_TYPE_NAME_COLUMN_DATA_TYPE;
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TYPES_TABLE_TYPE_NAME_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENUM_LOOKUP_TABLE_ENUM_VALUE_DATA_TYPE;
+import static org.qi4j.index.sql.support.common.DBNames.ENUM_LOOKUP_TABLE_ENUM_VALUE_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENUM_LOOKUP_TABLE_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENUM_LOOKUP_TABLE_PK_COLUMN_DATA_TYPE;
+import static org.qi4j.index.sql.support.common.DBNames.ENUM_LOOKUP_TABLE_PK_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.QNAME_TABLE_ASSOCIATION_INDEX_COLUMN_DATA_TYPE;
+import static org.qi4j.index.sql.support.common.DBNames.QNAME_TABLE_ASSOCIATION_INDEX_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.QNAME_TABLE_COLLECTION_PATH_COLUMN_DATA_TYPE;
+import static org.qi4j.index.sql.support.common.DBNames.QNAME_TABLE_COLLECTION_PATH_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.QNAME_TABLE_NAME_PREFIX;
+import static org.qi4j.index.sql.support.common.DBNames.QNAME_TABLE_PARENT_QNAME_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.QNAME_TABLE_VALUE_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.USED_CLASSES_TABLE_CLASS_NAME_COLUMN_DATA_TYPE;
+import static org.qi4j.index.sql.support.common.DBNames.USED_CLASSES_TABLE_CLASS_NAME_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.USED_CLASSES_TABLE_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.USED_CLASSES_TABLE_PK_COLUMN_DATA_TYPE;
+import static org.qi4j.index.sql.support.common.DBNames.USED_CLASSES_TABLE_PK_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.USED_QNAMES_TABLE_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.USED_QNAMES_TABLE_QNAME_COLUMN_DATA_TYPE;
+import static org.qi4j.index.sql.support.common.DBNames.USED_QNAMES_TABLE_QNAME_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.USED_QNAMES_TABLE_TABLE_NAME_COLUMN_DATA_TYPE;
+import static org.qi4j.index.sql.support.common.DBNames.USED_QNAMES_TABLE_TABLE_NAME_COLUMN_NAME;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -89,13 +89,14 @@ import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.structure.Application;
 import org.qi4j.index.reindexer.Reindexer;
 import org.qi4j.index.sql.support.api.SQLTypeInfo;
+import org.qi4j.index.sql.support.common.DBNames;
 import org.qi4j.index.sql.support.common.EntityTypeInfo;
 import org.qi4j.index.sql.support.common.QNameInfo;
 import org.qi4j.index.sql.support.common.QNameInfo.QNameType;
 import org.qi4j.index.sql.support.common.ReindexingStrategy;
-import org.qi4j.index.sql.support.postgresql.PostgreSQLConfiguration;
 import org.qi4j.index.sql.support.skeletons.AbstractSQLStartup;
 import org.qi4j.index.sql.support.skeletons.SQLDBState;
+import org.qi4j.library.sql.common.SQLConfiguration;
 import org.qi4j.library.sql.common.SQLUtil;
 import org.qi4j.library.sql.ds.DataSourceService;
 import org.qi4j.spi.entity.EntityDescriptor;
@@ -129,7 +130,7 @@ public class PostgreSQLAppStartup extends AbstractSQLStartup
     private SQLDBState _state;
 
     @This
-    private Configuration<PostgreSQLConfiguration> _configuration;
+    private Configuration<SQLConfiguration> _configuration;
 
     @Service
     private ReindexingStrategy _reindexingStrategy;
@@ -568,7 +569,7 @@ public class PostgreSQLAppStartup extends AbstractSQLStartup
 
             for( Integer x = 0; x < this._state.qNameInfos().get().size(); ++x )
             {
-                this.dropTablesIfExist( metaData, schemaName, SQLs.QNAME_TABLE_NAME_PREFIX + x, stmt );
+                this.dropTablesIfExist( metaData, schemaName, DBNames.QNAME_TABLE_NAME_PREFIX + x, stmt );
             }
 
         }
@@ -794,7 +795,7 @@ public class PostgreSQLAppStartup extends AbstractSQLStartup
         PKType result = defaultPK;
         try
         {
-            rs = stmt.executeQuery( String.format( SQLs.TWO_VALUE_SELECT, "COUNT(" + columnName + ")", "MAX("
+            rs = stmt.executeQuery( String.format( DBNames.TWO_VALUE_SELECT, "COUNT(" + columnName + ")", "MAX("
                 + columnName + ") + 1", schemaName, tableName ) );
             if( rs.next() )
             {
@@ -823,11 +824,11 @@ public class PostgreSQLAppStartup extends AbstractSQLStartup
         try
         {
             Map<String, Long> pks = this._state.tablePKs().get();
-            pks.put( ENTITY_TABLE_NAME, this.getNextPK( Long.class, stmt, schemaName, SQLs.ENTITY_TABLE_PK_COLUMN_NAME,
-                SQLs.ENTITY_TABLE_NAME, 0L ) );
-            ResultSet rs = stmt.executeQuery( String.format( SQLs.TWO_VALUE_SELECT,
-                SQLs.ENTITY_TYPES_TABLE_PK_COLUMN_NAME, SQLs.ENTITY_TYPES_TABLE_TYPE_NAME_COLUMN_NAME, schemaName,
-                SQLs.ENTITY_TYPES_TABLE_NAME ) );
+            pks.put( ENTITY_TABLE_NAME, this.getNextPK( Long.class, stmt, schemaName, DBNames.ENTITY_TABLE_PK_COLUMN_NAME,
+                DBNames.ENTITY_TABLE_NAME, 0L ) );
+            ResultSet rs = stmt.executeQuery( String.format( DBNames.TWO_VALUE_SELECT,
+                DBNames.ENTITY_TYPES_TABLE_PK_COLUMN_NAME, DBNames.ENTITY_TYPES_TABLE_TYPE_NAME_COLUMN_NAME, schemaName,
+                DBNames.ENTITY_TYPES_TABLE_NAME ) );
 
             long pk = 0L;
             while( rs.next() )
@@ -845,8 +846,8 @@ public class PostgreSQLAppStartup extends AbstractSQLStartup
                 }
             }
 
-            rs = stmt.executeQuery( String.format( SQLs.TWO_VALUE_SELECT, SQLs.USED_CLASSES_TABLE_PK_COLUMN_NAME,
-                SQLs.USED_CLASSES_TABLE_CLASS_NAME_COLUMN_NAME, schemaName, SQLs.USED_CLASSES_TABLE_NAME ) );
+            rs = stmt.executeQuery( String.format( DBNames.TWO_VALUE_SELECT, DBNames.USED_CLASSES_TABLE_PK_COLUMN_NAME,
+                DBNames.USED_CLASSES_TABLE_CLASS_NAME_COLUMN_NAME, schemaName, DBNames.USED_CLASSES_TABLE_NAME ) );
             while( rs.next() )
             {
                 pk = rs.getInt( 1 );
@@ -859,8 +860,8 @@ public class PostgreSQLAppStartup extends AbstractSQLStartup
                 this._state.usedClassesPKs().get().put( className, (int) pk );
             }
 
-            rs = stmt.executeQuery( String.format( SQLs.TWO_VALUE_SELECT, SQLs.ENUM_LOOKUP_TABLE_PK_COLUMN_NAME,
-                SQLs.ENUM_LOOKUP_TABLE_ENUM_VALUE_NAME, schemaName, SQLs.ENUM_LOOKUP_TABLE_NAME ) );
+            rs = stmt.executeQuery( String.format( DBNames.TWO_VALUE_SELECT, DBNames.ENUM_LOOKUP_TABLE_PK_COLUMN_NAME,
+                DBNames.ENUM_LOOKUP_TABLE_ENUM_VALUE_NAME, schemaName, DBNames.ENUM_LOOKUP_TABLE_NAME ) );
             while( rs.next() )
             {
                 pk = rs.getInt( 1 );
@@ -887,7 +888,7 @@ public class PostgreSQLAppStartup extends AbstractSQLStartup
         Connection connection = this._dataSource.getDataSource().getConnection();
         String schemaName = this._state.schemaName().get();
 
-        PreparedStatement ps = connection.prepareStatement( String.format( SQLs.TWO_VALUE_INSERT, this._state
+        PreparedStatement ps = connection.prepareStatement( String.format( DBNames.TWO_VALUE_INSERT, this._state
             .schemaName().get(), ENTITY_TYPES_TABLE_NAME ) );
         try
         {
@@ -907,7 +908,7 @@ public class PostgreSQLAppStartup extends AbstractSQLStartup
             ps.close();
         }
 
-        ps = connection.prepareStatement( String.format( SQLs.TWO_VALUE_INSERT, this._state.schemaName().get(),
+        ps = connection.prepareStatement( String.format( DBNames.TWO_VALUE_INSERT, this._state.schemaName().get(),
             USED_CLASSES_TABLE_NAME ) );
         try
         {
@@ -926,7 +927,7 @@ public class PostgreSQLAppStartup extends AbstractSQLStartup
             ps.close();
         }
 
-        ps = connection.prepareStatement( String.format( SQLs.TWO_VALUE_INSERT, this._state.schemaName().get(),
+        ps = connection.prepareStatement( String.format( DBNames.TWO_VALUE_INSERT, this._state.schemaName().get(),
             ENUM_LOOKUP_TABLE_NAME ) );
         try
         {
@@ -946,7 +947,7 @@ public class PostgreSQLAppStartup extends AbstractSQLStartup
         }
 
         Statement stmt = connection.createStatement();
-        ps = connection.prepareStatement( String.format( SQLs.TWO_VALUE_INSERT, schemaName, USED_QNAMES_TABLE_NAME ) );
+        ps = connection.prepareStatement( String.format( DBNames.TWO_VALUE_INSERT, schemaName, USED_QNAMES_TABLE_NAME ) );
         try
         {
             for( QNameInfo qNameInfo : this._state.qNameInfos().get().values() )
@@ -961,7 +962,7 @@ public class PostgreSQLAppStartup extends AbstractSQLStartup
                         ALL_QNAMES_TABLE_PK_COLUMN_NAME + " " + ALL_QNAMES_TABLE_PK_COLUMN_DATA_TYPE + " NOT NULL,"
                         + "\n"
                         + //
-                        SQLs.ENTITY_TABLE_PK_COLUMN_NAME + " " + SQLs.ENTITY_TABLE_PK_COLUMN_DATA_TYPE + " NOT NULL,"
+                        DBNames.ENTITY_TABLE_PK_COLUMN_NAME + " " + DBNames.ENTITY_TABLE_PK_COLUMN_DATA_TYPE + " NOT NULL,"
                         + "\n" //
                     );
 

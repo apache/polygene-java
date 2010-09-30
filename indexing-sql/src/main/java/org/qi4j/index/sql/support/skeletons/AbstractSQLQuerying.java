@@ -61,10 +61,10 @@ import org.qi4j.api.query.grammar.SingleValueExpression;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.index.sql.support.api.SQLQuerying;
+import org.qi4j.index.sql.support.common.DBNames;
 import org.qi4j.index.sql.support.common.EntityTypeInfo;
 import org.qi4j.index.sql.support.common.QNameInfo;
-import org.qi4j.index.sql.support.postgresql.internal.PostgreSQLTypeHelper;
-import org.qi4j.index.sql.support.postgresql.internal.SQLs;
+import org.qi4j.index.sql.support.postgresql.PostgreSQLTypeHelper;
 import org.qi4j.spi.query.EntityFinderException;
 import org.sql.generation.api.grammar.builders.BooleanBuilder;
 import org.sql.generation.api.grammar.builders.InBuilder;
@@ -351,7 +351,7 @@ public abstract class AbstractSQLQuerying
         LiteralFactory l = vendor.getLiteralFactory();
         ColumnsFactory c = vendor.getColumnsFactory();
 
-        ColumnReference mainColumn = c.colName( TABLE_NAME_PREFIX + "0", SQLs.ENTITY_TABLE_IDENTITY_COLUMN_NAME );
+        ColumnReference mainColumn = c.colName( TABLE_NAME_PREFIX + "0", DBNames.ENTITY_TABLE_IDENTITY_COLUMN_NAME );
         if( countOnly )
         {
             mainColumn = c.colExp( l.func( SQLFunctions.COUNT, mainColumn ) );
@@ -371,7 +371,7 @@ public abstract class AbstractSQLQuerying
         QueryExpression finalMainQuery = this.finalizeQuery( vendor, mainQuery, resultType, whereClause,
             orderBySegments, firstResult, maxResults, values, valueSQLTypes, countOnly );
 
-        String result = finalMainQuery.toString( vendor );
+        String result = vendor.toString( finalMainQuery );
 
         _log.info( "SQL query:\n" + result );
         return result;
@@ -385,7 +385,7 @@ public abstract class AbstractSQLQuerying
         ColumnsFactory c = vendor.getColumnsFactory();
 
         List<Integer> typeIDs = this.getEntityTypeIDs( resultType );
-        InBuilder in = b.inBuilder( c.colName( TABLE_NAME_PREFIX + "0", SQLs.ENTITY_TYPES_TABLE_PK_COLUMN_NAME ) );
+        InBuilder in = b.inBuilder( c.colName( TABLE_NAME_PREFIX + "0", DBNames.ENTITY_TYPES_TABLE_PK_COLUMN_NAME ) );
         for( Integer i : typeIDs )
         {
             in.addValues( l.n( i ) );
@@ -496,7 +496,7 @@ public abstract class AbstractSQLQuerying
         String tableAlias = TABLE_NAME_PREFIX + "0";
         QuerySpecificationBuilder query = this.getBuilderForPredicate( vendor, tableAlias );
         query.getFrom().addTableReferences(
-            t.tableBuilder( t.table( t.tableName( this._state.schemaName().get(), SQLs.ENTITY_TABLE_NAME ),
+            t.tableBuilder( t.table( t.tableName( this._state.schemaName().get(), DBNames.ENTITY_TABLE_NAME ),
                 t.tableAlias( tableAlias ) ) ) );
         query.getWhere().reset( entityTypeCondition );
 
@@ -526,7 +526,7 @@ public abstract class AbstractSQLQuerying
 
                     builder.getWhere().reset(
                         vendor.getBooleanFactory().regexp(
-                            c.colName( TABLE_NAME_PREFIX + lastTableIndex, SQLs.QNAME_TABLE_VALUE_COLUMN_NAME ),
+                            c.colName( TABLE_NAME_PREFIX + lastTableIndex, DBNames.QNAME_TABLE_VALUE_COLUMN_NAME ),
                             l.param() ) );
 
                     values.add( translateJavaRegexpToPGSQLRegexp( ((SingleValueExpression<String>) predicate
@@ -561,16 +561,16 @@ public abstract class AbstractSQLQuerying
                     String columnName = null;
                     if( qName.type().equals( Identity.class.getName() ) )
                     {
-                        columnName = SQLs.ENTITY_TABLE_IDENTITY_COLUMN_NAME;
+                        columnName = DBNames.ENTITY_TABLE_IDENTITY_COLUMN_NAME;
                     }
                     else
                     {
-                        columnName = SQLs.QNAME_TABLE_VALUE_COLUMN_NAME;
+                        columnName = DBNames.QNAME_TABLE_VALUE_COLUMN_NAME;
                     }
                     Object value = ((SingleValueExpression<?>) predicate.valueExpression()).value();
                     modifyFromClauseAndWhereClauseToGetValue( qName, value, predicate, negationActive, lastTableIndex,
                         new ModifiableInt( lastTableIndex ), columnName,
-                        SQLs.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME, vendor, builder.getWhere(), afterWhere,
+                        DBNames.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME, vendor, builder.getWhere(), afterWhere,
                         builder.getFrom().getTableReferences().iterator().next(), builder.getGroupBy(),
                         builder.getHaving(), new ArrayList<QNameJoin>(), values, valueSQLTypes );
                 }
@@ -604,7 +604,7 @@ public abstract class AbstractSQLQuerying
 
                     builder.getWhere().reset(
                         getOperator( predicate ).getExpression( b,
-                            c.colName( TABLE_NAME_PREFIX + lastTableIndex, SQLs.ENTITY_TABLE_IDENTITY_COLUMN_NAME ),
+                            c.colName( TABLE_NAME_PREFIX + lastTableIndex, DBNames.ENTITY_TABLE_IDENTITY_COLUMN_NAME ),
                             l.param() ) );
 
                     Object value = ((SingleValueExpression<?>) predicate.valueExpression()).value();
@@ -657,11 +657,11 @@ public abstract class AbstractSQLQuerying
                         String colName = null;
                         if( info.getCollectionDepth() > 0 )
                         {
-                            colName = SQLs.ALL_QNAMES_TABLE_PK_COLUMN_NAME;
+                            colName = DBNames.ALL_QNAMES_TABLE_PK_COLUMN_NAME;
                         }
                         else
                         {
-                            colName = SQLs.QNAME_TABLE_VALUE_COLUMN_NAME;
+                            colName = DBNames.QNAME_TABLE_VALUE_COLUMN_NAME;
                         }
                         // Last table column might be null because of left joins
                         builder.getWhere().reset( b.isNull( c.colName( TABLE_NAME_PREFIX + lastTableIndex, colName ) ) );
@@ -699,7 +699,7 @@ public abstract class AbstractSQLQuerying
                         // Last table column might be null because of left joins
                         builder.getWhere().reset(
                             b.isNull( c
-                                .colName( TABLE_NAME_PREFIX + lastTableIndex, SQLs.QNAME_TABLE_VALUE_COLUMN_NAME ) ) );
+                                .colName( TABLE_NAME_PREFIX + lastTableIndex, DBNames.QNAME_TABLE_VALUE_COLUMN_NAME ) ) );
                     }
                 }
 
@@ -734,8 +734,8 @@ public abstract class AbstractSQLQuerying
 
                     builder.getWhere().reset(
                         b.regexp( c.colName( TABLE_NAME_PREFIX + lastTableIndex,
-                            SQLs.QNAME_TABLE_COLLECTION_PATH_COLUMN_NAME ), l
-                            .s( SQLs.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME + ".*{1,}" ) ) );
+                            DBNames.QNAME_TABLE_COLLECTION_PATH_COLUMN_NAME ), l
+                            .s( DBNames.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME + ".*{1,}" ) ) );
 
                     Object value = ((SingleValueExpression<?>) predicate.valueExpression()).value();
                     if( value instanceof Collection<?> )
@@ -746,8 +746,8 @@ public abstract class AbstractSQLQuerying
                     BooleanBuilder condition = b.booleanBuilder();
                     modifyFromClauseAndWhereClauseToGetValue( QualifiedName.fromClass( predicate.propertyReference()
                         .propertyDeclaringType(), predicate.propertyReference().propertyName() ), value, predicate,
-                        false, lastTableIndex, new ModifiableInt( lastTableIndex ), SQLs.QNAME_TABLE_VALUE_COLUMN_NAME,
-                        SQLs.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME, vendor, condition, afterWhere, builder
+                        false, lastTableIndex, new ModifiableInt( lastTableIndex ), DBNames.QNAME_TABLE_VALUE_COLUMN_NAME,
+                        DBNames.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME, vendor, condition, afterWhere, builder
                             .getFrom().getTableReferences().iterator().next(), builder.getGroupBy(), builder
                             .getHaving(), new ArrayList<QNameJoin>(), values, valueSQLTypes );
                     builder.getWhere().and( condition.createExpression() );
@@ -815,13 +815,13 @@ public abstract class AbstractSQLQuerying
                         }
 
                         BooleanBuilder conditionForItem = b.booleanBuilder( b.regexp( c.colName( TABLE_NAME_PREFIX
-                            + lastTableIndex, SQLs.QNAME_TABLE_COLLECTION_PATH_COLUMN_NAME ), l
-                            .s( SQLs.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME + ".*{1,}" ) ) );
+                            + lastTableIndex, DBNames.QNAME_TABLE_COLLECTION_PATH_COLUMN_NAME ), l
+                            .s( DBNames.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME + ".*{1,}" ) ) );
                         modifyFromClauseAndWhereClauseToGetValue(
                             QualifiedName.fromClass( predicate.propertyReference().propertyDeclaringType(), predicate
                                 .propertyReference().propertyName() ), value, predicate, false, lastTableIndex,
-                            new ModifiableInt( lastTableIndex ), SQLs.QNAME_TABLE_VALUE_COLUMN_NAME,
-                            SQLs.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME, vendor, conditionForItem, afterWhere,
+                            new ModifiableInt( lastTableIndex ), DBNames.QNAME_TABLE_VALUE_COLUMN_NAME,
+                            DBNames.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME, vendor, conditionForItem, afterWhere,
                             builder.getFrom().getTableReferences().iterator().next(), builder.getGroupBy(), builder
                                 .getHaving(), joins, values, valueSQLTypes );
                         builder.getWhere().or( conditionForItem.createExpression() );
@@ -831,7 +831,7 @@ public abstract class AbstractSQLQuerying
                     builder.getHaving().and(
                         b.geq(
                             l.func( "COUNT",
-                                c.colName( TABLE_NAME_PREFIX + lastTableIndex, SQLs.QNAME_TABLE_VALUE_COLUMN_NAME ) ),
+                                c.colName( TABLE_NAME_PREFIX + lastTableIndex, DBNames.QNAME_TABLE_VALUE_COLUMN_NAME ) ),
                             l.n( collection.size() ) ) );
                 }
 
@@ -873,7 +873,7 @@ public abstract class AbstractSQLQuerying
 
         QuerySpecificationBuilder builder = this.getBuilderForPredicate( vendor, TABLE_NAME_PREFIX + startingIndex );
         TableReferenceBuilder from = t.tableBuilder( t.table(
-            t.tableName( this._state.schemaName().get(), SQLs.ENTITY_TABLE_NAME ),
+            t.tableName( this._state.schemaName().get(), DBNames.ENTITY_TABLE_NAME ),
             t.tableAlias( TABLE_NAME_PREFIX + startingIndex ) ) );
 
         Integer lastTableIndex = null;
@@ -956,8 +956,8 @@ public abstract class AbstractSQLQuerying
         result
             .getSelect()
             .setSetQuantifier( SetQuantifier.DISTINCT )
-            .addUnnamedColumns( c.colName( tableAlias, SQLs.ENTITY_TABLE_PK_COLUMN_NAME ),
-                c.colName( tableAlias, SQLs.ENTITY_TABLE_IDENTITY_COLUMN_NAME ) );
+            .addUnnamedColumns( c.colName( tableAlias, DBNames.ENTITY_TABLE_PK_COLUMN_NAME ),
+                c.colName( tableAlias, DBNames.ENTITY_TABLE_IDENTITY_COLUMN_NAME ) );
 
         return result;
     }
@@ -1000,12 +1000,12 @@ public abstract class AbstractSQLQuerying
                     Integer tableIdx = null;
                     if( Identity.class.equals( declaringType ) )
                     {
-                        colName = SQLs.ENTITY_TABLE_IDENTITY_COLUMN_NAME;
+                        colName = DBNames.ENTITY_TABLE_IDENTITY_COLUMN_NAME;
                         tableIdx = tableIndex - 1;
                     }
                     else
                     {
-                        colName = SQLs.QNAME_TABLE_VALUE_COLUMN_NAME;
+                        colName = DBNames.QNAME_TABLE_VALUE_COLUMN_NAME;
                         tableIdx = tableIndex;
                     }
                     Ordering ordering = Ordering.ASCENDING;
@@ -1077,12 +1077,12 @@ public abstract class AbstractSQLQuerying
                         t.jc(
                             b.booleanBuilder(
                                 b.eq(
-                                    c.colName( prevTableAlias, SQLs.ENTITY_TABLE_PK_COLUMN_NAME ),
-                                    c.colName( nextTableAlias, SQLs.ENTITY_TABLE_PK_COLUMN_NAME )
+                                    c.colName( prevTableAlias, DBNames.ENTITY_TABLE_PK_COLUMN_NAME ),
+                                    c.colName( nextTableAlias, DBNames.ENTITY_TABLE_PK_COLUMN_NAME )
                                     )
                                 )
                             .and(
-                                    b.isNull( c.colName( nextTableAlias, SQLs.QNAME_TABLE_PARENT_QNAME_COLUMN_NAME ) )
+                                    b.isNull( c.colName( nextTableAlias, DBNames.QNAME_TABLE_PARENT_QNAME_COLUMN_NAME ) )
                                 )
                             .createExpression()
                             )
@@ -1096,13 +1096,13 @@ public abstract class AbstractSQLQuerying
                         t.jc(
                             b.booleanBuilder(
                                 b.eq(
-                                    c.colName( prevTableAlias, SQLs.ALL_QNAMES_TABLE_PK_COLUMN_NAME ),
-                                    c.colName( nextTableAlias, SQLs.QNAME_TABLE_PARENT_QNAME_COLUMN_NAME ) )
+                                    c.colName( prevTableAlias, DBNames.ALL_QNAMES_TABLE_PK_COLUMN_NAME ),
+                                    c.colName( nextTableAlias, DBNames.QNAME_TABLE_PARENT_QNAME_COLUMN_NAME ) )
                                 )
                             .and(
                                 b.eq(
-                                    c.colName( prevTableAlias, SQLs.ENTITY_TABLE_PK_COLUMN_NAME ),
-                                    c.colName( nextTableAlias, SQLs.ENTITY_TABLE_PK_COLUMN_NAME )
+                                    c.colName( prevTableAlias, DBNames.ENTITY_TABLE_PK_COLUMN_NAME ),
+                                    c.colName( nextTableAlias, DBNames.ENTITY_TABLE_PK_COLUMN_NAME )
                                     )
                                 )
                             .createExpression()
@@ -1150,8 +1150,8 @@ public abstract class AbstractSQLQuerying
                     + nextAvailableIndex ) ),
                 t.jc(
                     b.eq(
-                        c.colName( TABLE_NAME_PREFIX + lastTableIndex, SQLs.ENTITY_TABLE_PK_COLUMN_NAME ),
-                        c.colName( TABLE_NAME_PREFIX + nextAvailableIndex, SQLs.ENTITY_TABLE_PK_COLUMN_NAME ) )
+                        c.colName( TABLE_NAME_PREFIX + lastTableIndex, DBNames.ENTITY_TABLE_PK_COLUMN_NAME ),
+                        c.colName( TABLE_NAME_PREFIX + nextAvailableIndex, DBNames.ENTITY_TABLE_PK_COLUMN_NAME ) )
                     ) );
             lastTableIndex = nextAvailableIndex;
             ++nextAvailableIndex;
@@ -1159,11 +1159,11 @@ public abstract class AbstractSQLQuerying
             {
                 builder.addQualifiedJoin(
                     joinStyle,
-                    t.table( t.tableName( schemaName, SQLs.ENTITY_TABLE_NAME ), t.tableAlias( TABLE_NAME_PREFIX + nextAvailableIndex ) ),
+                    t.table( t.tableName( schemaName, DBNames.ENTITY_TABLE_NAME ), t.tableAlias( TABLE_NAME_PREFIX + nextAvailableIndex ) ),
                     t.jc(
                         b.eq(
-                            c.colName( TABLE_NAME_PREFIX + lastTableIndex, SQLs.QNAME_TABLE_VALUE_COLUMN_NAME ),
-                            c.colName( TABLE_NAME_PREFIX + nextAvailableIndex, SQLs.ENTITY_TABLE_PK_COLUMN_NAME )
+                            c.colName( TABLE_NAME_PREFIX + lastTableIndex, DBNames.QNAME_TABLE_VALUE_COLUMN_NAME ),
+                            c.colName( TABLE_NAME_PREFIX + nextAvailableIndex, DBNames.ENTITY_TABLE_PK_COLUMN_NAME )
                             )
                         )
                     );
@@ -1212,9 +1212,9 @@ public abstract class AbstractSQLQuerying
             // Collection
             Integer collectionIndex = 0;
             Boolean collectionIsSet = value instanceof Set<?>;
-            Boolean topLevel = collectionPath.equals( SQLs.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME );
+            Boolean topLevel = collectionPath.equals( DBNames.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME );
             String collTable = TABLE_NAME_PREFIX + currentTableIndex;
-            String collCol = SQLs.QNAME_TABLE_COLLECTION_PATH_COLUMN_NAME;
+            String collCol = DBNames.QNAME_TABLE_COLLECTION_PATH_COLUMN_NAME;
             ColumnReferenceByName collColExp = c.colName( collTable, collCol );
 
             BooleanBuilder collectionCondition = b.booleanBuilder();
@@ -1222,14 +1222,14 @@ public abstract class AbstractSQLQuerying
             if( topLevel && negationActive )
             {
                 afterWhere.and( b
-                    .booleanBuilder( b.neq( collColExp, l.s( SQLs.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME ) ) )
+                    .booleanBuilder( b.neq( collColExp, l.s( DBNames.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME ) ) )
                     .or( b.isNull( collColExp ) ).createExpression() );
             }
 
             Integer totalItemsProcessed = 0;
             for( Object item : (Collection<?>) value )
             {
-                String path = collectionPath + SQLs.QNAME_TABLE_COLLECTION_PATH_SEPARATOR
+                String path = collectionPath + DBNames.QNAME_TABLE_COLLECTION_PATH_SEPARATOR
                     + (collectionIsSet ? "*{1,}" : collectionIndex);
                 Boolean isCollection = (item instanceof Collection<?>);
                 BooleanBuilder newWhere = b.booleanBuilder();
@@ -1252,15 +1252,15 @@ public abstract class AbstractSQLQuerying
                 if( totalItemsProcessed == 0 )
                 {
                     collectionCondition.and( b.isNotNull( collColExp ) ).and(
-                        b.eq( collColExp, l.d( SQLs.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME ) ) );
+                        b.eq( collColExp, l.d( DBNames.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME ) ) );
                 }
                 else if( !negationActive )
                 {
                     groupBy.addGroupingElements( q.groupingElement( c.colName( TABLE_NAME_PREFIX + currentTableIndex,
-                        SQLs.ENTITY_TABLE_PK_COLUMN_NAME ) ) );
+                        DBNames.ENTITY_TABLE_PK_COLUMN_NAME ) ) );
                     having.and( b.eq(
                         l.func( SQLFunctions.COUNT,
-                            c.colName( TABLE_NAME_PREFIX + currentTableIndex, SQLs.QNAME_TABLE_VALUE_COLUMN_NAME ) ),
+                            c.colName( TABLE_NAME_PREFIX + currentTableIndex, DBNames.QNAME_TABLE_VALUE_COLUMN_NAME ) ),
                         l.n( totalItemsProcessed ) ) );
 
                 }
@@ -1307,12 +1307,12 @@ public abstract class AbstractSQLQuerying
                             t.table( t.tableName( schemaName, info.getTableName() ), t.tableAlias( TABLE_NAME_PREFIX + targetIndex ) ),
                             t.jc(
                                 b.booleanBuilder(b.eq(
-                                    c.colName( prevTableName, SQLs.ALL_QNAMES_TABLE_PK_COLUMN_NAME ),
-                                    c.colName( nextTableName, SQLs.QNAME_TABLE_PARENT_QNAME_COLUMN_NAME )
+                                    c.colName( prevTableName, DBNames.ALL_QNAMES_TABLE_PK_COLUMN_NAME ),
+                                    c.colName( nextTableName, DBNames.QNAME_TABLE_PARENT_QNAME_COLUMN_NAME )
                                     ) )
                                 .and(b.eq(
-                                    c.colName( prevTableName, SQLs.ENTITY_TABLE_PK_COLUMN_NAME ),
-                                    c.colName( nextTableName, SQLs.ENTITY_TABLE_PK_COLUMN_NAME )
+                                    c.colName( prevTableName, DBNames.ENTITY_TABLE_PK_COLUMN_NAME ),
+                                    c.colName( nextTableName, DBNames.ENTITY_TABLE_PK_COLUMN_NAME )
                                     ) ).createExpression()
                                 )
                             );

@@ -14,7 +14,7 @@
 
 package org.qi4j.index.sql.support.skeletons;
 
-import static org.qi4j.index.sql.support.postgresql.internal.SQLs.ENTITY_TABLE_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_NAME;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -40,10 +40,10 @@ import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.index.sql.support.api.SQLIndexing;
+import org.qi4j.index.sql.support.common.DBNames;
 import org.qi4j.index.sql.support.common.QNameInfo;
 import org.qi4j.index.sql.support.common.QNameInfo.QNameType;
-import org.qi4j.index.sql.support.postgresql.internal.PostgreSQLTypeHelper;
-import org.qi4j.index.sql.support.postgresql.internal.SQLs;
+import org.qi4j.index.sql.support.postgresql.PostgreSQLTypeHelper;
 import org.qi4j.library.sql.api.SQLEntityState;
 import org.qi4j.library.sql.common.SQLUtil;
 import org.qi4j.library.sql.ds.DataSourceService;
@@ -122,18 +122,18 @@ public class AbstractSQLIndexing
         try
         {
             // TODO cache all queries.
-            insertToEntityTablePS = connection.prepareStatement( this.createInsertStatement( schemaName,
-                ENTITY_TABLE_NAME, AMOUNT_OF_COLUMNS_IN_ENTITY_TABLE, vendor ).toString( vendor ) );
-            updateEntityTablePS = connection.prepareStatement( this.createUpdateEntityTableStatement( schemaName,
-                vendor ).toString( vendor ) );
-            queryEntityPKPS = connection.prepareStatement( this.createQueryEntityPkByIdentityStatement( schemaName,
-                vendor ).toString( vendor ) );
-            removeEntityPS = connection.prepareStatement( this
-                .createDeleteFromEntityTableStatement( schemaName, vendor ).toString( vendor ) );
-            insertToPropertyQNamesPS = connection.prepareStatement( this.createInsertStatement( schemaName,
-                SQLs.ALL_QNAMES_TABLE_NAME, AMOUNT_OF_COLUMNS_IN_ALL_QNAMES_TABLE, vendor ).toString( vendor ) );
-            clearQNamesPS = connection.prepareStatement( this.createClearEntityDataStatement( schemaName, vendor )
-                .toString( vendor ) );
+            insertToEntityTablePS = connection.prepareStatement( vendor.toString( this.createInsertStatement(
+                schemaName, ENTITY_TABLE_NAME, AMOUNT_OF_COLUMNS_IN_ENTITY_TABLE, vendor ) ) );
+            updateEntityTablePS = connection.prepareStatement( vendor.toString( this.createUpdateEntityTableStatement(
+                schemaName, vendor ) ) );
+            queryEntityPKPS = connection.prepareStatement( vendor.toString( this
+                .createQueryEntityPkByIdentityStatement( schemaName, vendor ) ) );
+            removeEntityPS = connection.prepareStatement( vendor.toString( this.createDeleteFromEntityTableStatement(
+                schemaName, vendor ) ) );
+            insertToPropertyQNamesPS = connection.prepareStatement( vendor.toString( this.createInsertStatement(
+                schemaName, DBNames.ALL_QNAMES_TABLE_NAME, AMOUNT_OF_COLUMNS_IN_ALL_QNAMES_TABLE, vendor ) ) );
+            clearQNamesPS = connection.prepareStatement( vendor.toString( this.createClearEntityDataStatement(
+                schemaName, vendor ) ) );
 
             Map<Long, EntityState> statesByPK = new HashMap<Long, EntityState>();
             Map<Long, Integer> qNamePKs = new HashMap<Long, Integer>();
@@ -255,12 +255,12 @@ public class AbstractSQLIndexing
         UpdateSourceByExpression paramSource = m.updateSourceByExp( l.param() );
         UpdateBySearchBuilder builder = m.updateBySearch();
         builder
-            .setTargetTable( m.createTargetTable( t.tableName( schemaName, SQLs.ENTITY_TABLE_NAME ) ) )
-            .addSetClauses( m.setClause( SQLs.ENTITY_TABLE_IDENTITY_COLUMN_NAME, paramSource ),
-                m.setClause( SQLs.ENTITY_TABLE_MODIFIED_COLUMN_NAME, paramSource ),
-                m.setClause( SQLs.ENTITY_TABLE_VERSION_COLUMN_NAME, paramSource ),
-                m.setClause( SQLs.ENTITY_TABLE_APPLICATION_VERSION_COLUMN_NAME, paramSource ) ).getWhereBuilder()
-            .reset( b.eq( c.colName( SQLs.ENTITY_TABLE_PK_COLUMN_NAME ), l.param() ) );
+            .setTargetTable( m.createTargetTable( t.tableName( schemaName, DBNames.ENTITY_TABLE_NAME ) ) )
+            .addSetClauses( m.setClause( DBNames.ENTITY_TABLE_IDENTITY_COLUMN_NAME, paramSource ),
+                m.setClause( DBNames.ENTITY_TABLE_MODIFIED_COLUMN_NAME, paramSource ),
+                m.setClause( DBNames.ENTITY_TABLE_VERSION_COLUMN_NAME, paramSource ),
+                m.setClause( DBNames.ENTITY_TABLE_APPLICATION_VERSION_COLUMN_NAME, paramSource ) ).getWhereBuilder()
+            .reset( b.eq( c.colName( DBNames.ENTITY_TABLE_PK_COLUMN_NAME ), l.param() ) );
 
         return builder.createExpression();
 
@@ -279,10 +279,10 @@ public class AbstractSQLIndexing
         // "WHERE " + ENTITY_TABLE_IDENTITY_COLUMN_NAME + " = ?" + "\n" + //
         // ";" //
         QuerySpecificationBuilder query = q.querySpecificationBuilder();
-        query.getSelect().addUnnamedColumns( c.colName( SQLs.ENTITY_TABLE_PK_COLUMN_NAME ) );
+        query.getSelect().addUnnamedColumns( c.colName( DBNames.ENTITY_TABLE_PK_COLUMN_NAME ) );
         query.getFrom().addTableReferences(
-            t.tableBuilder( t.table( t.tableName( schemaName, SQLs.ENTITY_TABLE_NAME ) ) ) );
-        query.getWhere().reset( b.eq( c.colName( SQLs.ENTITY_TABLE_IDENTITY_COLUMN_NAME ), l.param() ) );
+            t.tableBuilder( t.table( t.tableName( schemaName, DBNames.ENTITY_TABLE_NAME ) ) ) );
+        query.getWhere().reset( b.eq( c.colName( DBNames.ENTITY_TABLE_IDENTITY_COLUMN_NAME ), l.param() ) );
 
         return q.createQuery( query.createExpression() );
 
@@ -290,14 +290,14 @@ public class AbstractSQLIndexing
 
     protected DeleteStatement createDeleteFromEntityTableStatement( String schemaName, SQLVendor vendor )
     {
-        return this.createDeleteFromTableStatement( schemaName, SQLs.ENTITY_TABLE_NAME,
-            SQLs.ENTITY_TABLE_IDENTITY_COLUMN_NAME, vendor );
+        return this.createDeleteFromTableStatement( schemaName, DBNames.ENTITY_TABLE_NAME,
+            DBNames.ENTITY_TABLE_IDENTITY_COLUMN_NAME, vendor );
     }
 
     protected DeleteStatement createClearEntityDataStatement( String schemaName, SQLVendor vendor )
     {
-        return this.createDeleteFromTableStatement( schemaName, SQLs.ALL_QNAMES_TABLE_NAME,
-            SQLs.ENTITY_TABLE_PK_COLUMN_NAME, vendor );
+        return this.createDeleteFromTableStatement( schemaName, DBNames.ALL_QNAMES_TABLE_NAME,
+            DBNames.ENTITY_TABLE_PK_COLUMN_NAME, vendor );
     }
 
     protected DeleteStatement createDeleteFromTableStatement( String schemaName, String tableName, String columnName,
@@ -359,10 +359,10 @@ public class AbstractSQLIndexing
         {
             qBuilder.getSelect().addUnnamedColumns( c.colExp( l.param() ) );
         }
-        qBuilder.getSelect().addUnnamedColumns( c.colName( SQLs.ENTITY_TABLE_PK_COLUMN_NAME ) );
+        qBuilder.getSelect().addUnnamedColumns( c.colName( DBNames.ENTITY_TABLE_PK_COLUMN_NAME ) );
         qBuilder.getFrom().addTableReferences(
-            t.tableBuilder( t.table( t.tableName( schemaName, SQLs.ENTITY_TABLE_NAME ) ) ) );
-        qBuilder.getWhere().reset( b.eq( c.colName( SQLs.ENTITY_TABLE_IDENTITY_COLUMN_NAME ), l.param() ) );
+            t.tableBuilder( t.table( t.tableName( schemaName, DBNames.ENTITY_TABLE_NAME ) ) ) );
+        qBuilder.getWhere().reset( b.eq( c.colName( DBNames.ENTITY_TABLE_IDENTITY_COLUMN_NAME ), l.param() ) );
 
         return m.insert().setTableName( t.tableName( schemaName, qNameInfo.getTableName() ) )
             .setColumnSource( m.columnSourceByQuery( q.createQuery( qBuilder.createExpression() ) ) )
@@ -407,23 +407,23 @@ public class AbstractSQLIndexing
         throws SQLException
     {
         SQLVendor vendor = this._state.sqlVendor().get();
-        return connection.prepareStatement( this.createPropertyInsert( qNameInfo, vendor ).toString( vendor ) );
+        return connection.prepareStatement( vendor.toString( this.createPropertyInsert( qNameInfo, vendor ) ) );
     }
 
     private PreparedStatement createInsertAssociationPS( Connection connection, QNameInfo qNameInfo )
         throws SQLException
     {
         SQLVendor vendor = this._state.sqlVendor().get();
-        return connection.prepareStatement( this.createAssoInsert( qNameInfo, vendor, AMOUNT_OF_COLUMNS_IN_ASSO_TABLE )
-            .toString( vendor ) );
+        return connection.prepareStatement( vendor.toString( this.createAssoInsert( qNameInfo, vendor,
+            AMOUNT_OF_COLUMNS_IN_ASSO_TABLE ) ) );
     }
 
     private PreparedStatement createInsertManyAssociationPS( Connection connection, QNameInfo qNameInfo )
         throws SQLException
     {
         SQLVendor vendor = this._state.sqlVendor().get();
-        return connection.prepareStatement( this.createAssoInsert( qNameInfo, vendor,
-            AMOUNT_OF_COLUMNS_IN_MANY_ASSO_TABLE ).toString( vendor ) );
+        return connection.prepareStatement( vendor.toString( this.createAssoInsert( qNameInfo, vendor,
+            AMOUNT_OF_COLUMNS_IN_MANY_ASSO_TABLE ) ) );
     }
 
     private void clearAllEntitysQNames( PreparedStatement clearPropertiesPS, Long pk )
@@ -571,7 +571,7 @@ public class AbstractSQLIndexing
         propertyPK = this.storeCollectionInfo( insertAllQNamesPS, propertyPK, entityPK, parentQNameID, ps, info );
 
         propertyPK = this.storeCollectionItems( qNameInsertPSs, property, insertAllQNamesPS,
-            SQLs.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME, ps, info.getTableName(), propertyPK, entityPK,
+            DBNames.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME, ps, info.getTableName(), propertyPK, entityPK,
             parentQNameID, info.getFinalType(), info.isFinalTypePrimitive() );
 
         return propertyPK;
@@ -588,7 +588,7 @@ public class AbstractSQLIndexing
         ps.setInt( 1, propertyPK );
         ps.setLong( 2, entityPK );
         ps.setObject( 3, parentQNameID, Types.BIGINT );
-        ps.setString( 4, SQLs.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME );
+        ps.setString( 4, DBNames.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME );
         if( info.isFinalTypePrimitive() )
         {
             this.storePrimitiveUsingPS( ps, 5, null, info.getFinalType() );
@@ -611,7 +611,7 @@ public class AbstractSQLIndexing
         Integer index = 0;
         for( Object o : collection )
         {
-            String itemPath = path + SQLs.QNAME_TABLE_COLLECTION_PATH_SEPARATOR + index;
+            String itemPath = path + DBNames.QNAME_TABLE_COLLECTION_PATH_SEPARATOR + index;
             if( o instanceof Collection<?> )
             {
                 propertyPK = this.storeCollectionItems( qNameInsertPSs, (Collection<?>) o, insertAllQNamesPS, itemPath,

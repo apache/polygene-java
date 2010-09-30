@@ -12,15 +12,15 @@
  *
  */
 
-package org.qi4j.index.sql.support.postgresql.internal;
+package org.qi4j.index.sql.support.common;
 
 /**
- * This is helper class to contain all of most of the SQL constants used throughout the SQL Indexing.
+ * This is helper class to contain all the SQL constants used throughout the SQL Indexing.
  * 
  * @author Stanislav Muhametsin
  * 
  */
-public class SQLs
+public class DBNames
 {
 
     public static final String QNAME_TABLE_NAME_PREFIX = "qname_";
@@ -115,6 +115,7 @@ public class SQLs
 
     public static final String ENUM_LOOKUP_TABLE_ENUM_VALUE_DATA_TYPE = "TEXT";
 
+    // These will disappear once the startup-aspect will start using SQL generation framework.
     public static final String ONE_VALUE_SELECT = //
     "SELECT %s" + "\n" + //
         "FROM  %s.%s" + "\n" //
