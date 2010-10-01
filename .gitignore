@@ -12,6 +12,7 @@ qi4j.data.lg
 *.ipr
 entitystore-file/qi4j-entitystore-file.iml
 entitystore-hazelcast/qi4j-entitystore-hazelcast.iml
+entitystore-sql/qi4j-entitystore-sql.iml
 entitystore-jdbm/qi4j-entitystore-jdbm.iml
 entitystore-neo4j/qi4j-entitystore-neo4j.iml
 entitystore-preferences/qi4j-entitystore-preferences.iml
