@@ -17,7 +17,6 @@ package org.qi4j.runtime.value;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Logger;
 import org.junit.Test;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.UseDefaults;
@@ -28,6 +27,7 @@ import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
+import org.slf4j.LoggerFactory;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
@@ -79,8 +79,8 @@ public class ValueTypeSerializationTest
 
         String json = some.toJSON();
 
-        Logger.getLogger( getClass().getName() ).info( some.string().get() );
-        Logger.getLogger( getClass().getName() ).info( json );
+        LoggerFactory.getLogger( getClass() ).info( some.string().get() );
+        LoggerFactory.getLogger( getClass() ).info( json );
 
         SomeValue some2 = valueBuilderFactory.newValueFromJSON( SomeValue.class, json );
 

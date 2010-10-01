@@ -20,6 +20,7 @@ Export-Package: org.qi4j.api;version=${pom.version}, \
                 org.qi4j.api.property;version=${pom.version}, \
                 org.qi4j.api.query;version=${pom.version}, \
                 org.qi4j.api.query.grammar;version=${pom.version}, \
+                org.qi4j.api.selection;version=${pom.version}, \
                 org.qi4j.api.service;version=${pom.version}, \
                 org.qi4j.api.sideeffect;version=${pom.version}, \
                 org.qi4j.api.sideeffect.internal;version=${pom.version}, \

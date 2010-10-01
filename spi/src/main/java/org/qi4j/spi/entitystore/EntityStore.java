@@ -16,7 +16,6 @@
  */
 package org.qi4j.spi.entitystore;
 
-import org.qi4j.api.structure.Module;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.structure.ModuleSPI;
@@ -28,10 +27,15 @@ public interface EntityStore
 {
     EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSPI module );
 
-    EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor visitor, ModuleSPI module );
+    <ThrowableType extends Exception> EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor<ThrowableType> visitor, ModuleSPI module )
+        throws ThrowableType;
 
-    interface EntityStateVisitor
+
+    // Visitors are allowed to throw Exceptions to abort the traversal
+    // If the visitor is not expected to throw any exceptions, then specify RuntimeException
+    interface EntityStateVisitor<ThrowableType extends Exception>
     {
-        void visitEntityState( EntityState entityState );
+        void visitEntityState( EntityState entityState )
+            throws ThrowableType;
     }
 }

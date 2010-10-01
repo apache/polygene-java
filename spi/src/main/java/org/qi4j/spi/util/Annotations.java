@@ -32,6 +32,18 @@ import org.qi4j.api.util.Classes;
  */
 public final class Annotations
 {
+    public static void visitAnnotations( Annotation[] annotations, AnnotationSpecification specification, AnnotationVisitor visitor)
+    {
+        for( Annotation annotation : annotations )
+        {
+            if( specification == null || specification.valid( annotation ))
+            {
+                if (!visitor.visitAnnotation( annotation ))
+                    return;
+            }
+        }
+    }
+
     public static Annotation getInjectionAnnotation( Annotation[] parameterAnnotation )
     {
         for( Annotation annotation : parameterAnnotation )
@@ -136,5 +148,49 @@ public final class Annotations
         Annotation[] annotations = annotationList.toArray( new Annotation[annotationList.size()] );
 
         return annotations;
+    }
+
+    public interface AnnotationVisitor
+    {
+        public boolean visitAnnotation(Annotation annotation);
+    }
+
+    public static class AnnotationCollection
+        implements AnnotationVisitor
+    {
+        List<Annotation> annotations = new ArrayList<Annotation>();
+
+        public boolean visitAnnotation( Annotation annotation )
+        {
+            annotations.add( annotation );
+
+            return true;
+        }
+
+        public List<Annotation> toList()
+        {
+            return annotations;
+        }
+    }
+
+    public interface AnnotationSpecification
+    {
+        boolean valid(Annotation annotation);
+    }
+
+    public static class AnnotationWithMarker
+        implements AnnotationSpecification
+    {
+        private final Class<? extends Annotation> annotationClass;
+
+        public AnnotationWithMarker( Class<? extends Annotation> annotationClass )
+        {
+            this.annotationClass = annotationClass;
+        }
+
+        public boolean valid( Annotation annotation )
+        {
+            return annotation.annotationType().getAnnotation( annotationClass ) != null;
+        }
     }
 }
