@@ -42,6 +42,7 @@ public class VoldemortTest extends AbstractEntityStoreTest
     public void setUp()
         throws Exception
     {
+        Thread.sleep(200);
         File voldemortHome1 = setupVoldemortHome();
         startServer( voldemortHome1, "node0.properties" );
         File voldemortHome2 = setupVoldemortHome();
@@ -73,7 +74,7 @@ public class VoldemortTest extends AbstractEntityStoreTest
     {
         File tmp = File.createTempFile( "qi4j", "" );
         File dir = tmp.getParentFile();
-        File voldemortHome = new File( dir, "qi4j-voldemort" + new Random().nextInt( 1000 ) );
+        File voldemortHome = new File( dir, "qi4j-voldemort" + new Random().nextInt( 10000 ) );
         boolean created = voldemortHome.mkdir();
         File configDir = new File( voldemortHome, "config" );
         created = configDir.mkdir();

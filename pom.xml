@@ -587,7 +587,7 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
-                <version>1.6.1</version>
+                <version>${version.slf4j}</version>
             </dependency>
 
 
@@ -595,7 +595,7 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-simple</artifactId>
-                <version>1.6.1</version>
+                <version>${version.slf4j}</version>
                 <scope>test</scope>
             </dependency>
 

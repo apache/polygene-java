@@ -76,6 +76,14 @@ jdom-1.1.jar			xercesImpl-2.9.1.jar
             <version>0.81</version>
         </dependency>
         <dependency>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jetty</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jetty-util</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.google</groupId>
             <artifactId>google-collect</artifactId>
             <version>1.0</version>
@@ -103,7 +111,7 @@ jdom-1.1.jar			xercesImpl-2.9.1.jar
         <dependency>
             <groupId>org.mortbay.jetty</groupId>
             <artifactId>jetty</artifactId>
-            <version>6.1.18</version>
+            <version>6.1.22</version>
         </dependency>
         <dependency>
             <groupId>org.mortbay.jetty</groupId>
@@ -118,7 +126,7 @@ jdom-1.1.jar			xercesImpl-2.9.1.jar
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
-            <version>1.5.6</version>
+            <version>${version.slf4j}</version>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>

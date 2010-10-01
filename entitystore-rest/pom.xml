@@ -83,9 +83,7 @@
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-simple</artifactId>
-      <version>1.5.6</version>
-      <scope>provided</scope>
+      <artifactId>slf4j-api</artifactId>
     </dependency>
 
     <!-- Test scope -->
