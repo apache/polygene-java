@@ -11,8 +11,9 @@ Apache License ver 2.0 http://www.apache.org/licenses
 Below follows a list of binary dependencies and their licenses;
 ----------------------------------------------------------------
 
-This module uses cglib (Code Generation Library), licensed under
-the Apache License ver 1.1. See licenses/cglib.license
+This module uses cglib (Code Generation Library), developed at
+http://cglib.sourceforge.net/ licensed under
+the Apache License ver 2.0. See LICENSE
 
 This module uses ASM, Copyright (c) 2000-2005 INRIA, France Telecom,
 All rights reserved. See licenses/asm.license
@@ -27,18 +28,15 @@ This module uses software from QOS.ch (http://slf4j.org) licensed under
 the X11 license, Copyright (c) 2004-2007 QOS.ch. See licenses/slf4j.license
 
 This module uses Apache Log4J, software developed at The Apache Software
-Foundation (http://www.apache.org/). See licenses/log4j.license
+Foundation (http://www.apache.org/). See LICENSE
 
 This module uses Apache Commons HttpClient, software developed at The Apache
-Software Foundation (http://www.apache.org/).
-See licenses/commons-httpclient.license
+Software Foundation (http://www.apache.org/). See LICENSE
 
 This module uses Apache Commons Codec, software developed at The Apache
-Software Foundation (http://www.apache.org/).
-See licenses/commons-codec.license
+Software Foundation (http://www.apache.org/). See LICENSE
 
 This module uses Apache Commons Logging, software developed at The Apache
-Software Foundation (http://www.apache.org/).
-See licenses/commons-logging.license
+Software Foundation (http://www.apache.org/). See LICENSE
 
 END OF NOTICE
