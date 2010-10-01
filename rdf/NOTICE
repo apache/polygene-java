@@ -1,4 +1,4 @@
-Qi4j Library - Logging
+Qi4j Library - RDF
 Copyright 2007-2008, The Qi4j Development Team of individuals.
 
 See http://www.qi4j.org/contributors.html for list of of individuals.
@@ -11,7 +11,13 @@ Apache License ver 2.0 http://www.apache.org/licenses
 Below follows a list of binary dependencies and their licenses;
 ----------------------------------------------------------------
 
-<NONE>
+This module uses OpenRDF Sesame developed by Aduna Software.
+Copyright Aduna (http://www.aduna-software.com/) © 2001-2007
+See licenses/openrdf.license
+
+
+This module uses SLF4J, developed at slf4j.org under MIT License.
+See licenses/slf4j.license
 
 
 END OF NOTICE

@@ -36,10 +36,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-    <repositories>
-        <repository>
-            <id>ops4j-snapshots</id>
-            <url>http://repository.ops4j.org/mvn-snapshots</url>
-        </repository>
-    </repositories>
 </project>
