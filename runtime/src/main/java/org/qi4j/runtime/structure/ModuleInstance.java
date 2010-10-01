@@ -20,9 +20,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import java.util.concurrent.ConcurrentHashMap;
-
 import org.json.JSONException;
 import org.json.JSONTokener;
+import org.qi4j.api.Qi4j;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.AmbiguousTypeException;
@@ -71,13 +71,17 @@ import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.object.ObjectDescriptor;
 import org.qi4j.spi.structure.ModuleSPI;
 import org.qi4j.spi.value.ValueDescriptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * JAVADOC
+ * Instance of a Qi4j Module. Contains the various composites for this Module.
  */
 public class ModuleInstance
         implements Module, ModuleSPI, Activatable
 {
+    private static final Logger logger = LoggerFactory.getLogger( Qi4j.class );
+
     private final ModuleModel moduleModel;
     private final LayerInstance layerInstance;
     private final CompositesInstance composites;
@@ -179,7 +183,7 @@ public class ModuleInstance
 
     public EntityDescriptor entityDescriptor( String name )
     {
-        EntityFinder finder = null;
+        EntityFinder finder;
         try
         {
             finder = findEntityModel( classLoader().loadClass( name ) );
@@ -197,7 +201,7 @@ public class ModuleInstance
 
     public TransientDescriptor transientDescriptor( String name )
     {
-        CompositeFinder finder = null;
+        CompositeFinder finder;
         try
         {
             finder = findTransientModel( classLoader().loadClass( name ) );
@@ -211,7 +215,7 @@ public class ModuleInstance
 
     public ValueDescriptor valueDescriptor( String name )
     {
-        ValueFinder finder = null;
+        ValueFinder finder;
         try
         {
             finder = findValueModel( classLoader().loadClass( name ) );
@@ -273,14 +277,17 @@ public class ModuleInstance
     public void activate()
             throws Exception
     {
-        entities.activate();
         services.activate();
+
+        logger.debug( "Module "+name()+" activated" );
     }
 
     public void passivate()
             throws Exception
     {
         services.passivate();
+
+        logger.debug( "Module "+name()+" passivated" );
     }
 
     @Override

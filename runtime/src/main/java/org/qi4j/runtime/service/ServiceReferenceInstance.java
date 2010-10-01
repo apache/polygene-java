@@ -25,6 +25,7 @@ import org.qi4j.api.structure.Module;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.service.ServiceDescriptor;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of ServiceReference. This manages the actual instance of the service
@@ -89,8 +90,7 @@ public final class ServiceReferenceInstance<T>
     {
         if( instance != null )
         {
-//            Logger disabled, as the framework itself shouldn't emit that much information, and the calls are fairly expensive.
-//            Logger.getLogger( getClass().getName() ).info( "Passivating service for " + serviceModel.identity() + " " + this.hashCode() );
+            LoggerFactory.getLogger( getClass() ).debug( "Passivating service " + serviceModel.identity() );
             activator.passivate();
             instance = null;
         }
@@ -106,8 +106,7 @@ public final class ServiceReferenceInstance<T>
             {
                 if( instance == null )
                 {
-//                    Logger disabled, as the framework itself shouldn't emit that much information, and the calls are fairly expensive.            
-//                    Logger.getLogger( getClass().getName() ).info( "Activating service for " + serviceModel.identity() + " " + this.hashCode() );
+                    LoggerFactory.getLogger( getClass() ).debug( "Activating service " + serviceModel.identity() );
                     instance = serviceModel.newInstance( module );
 
                     try

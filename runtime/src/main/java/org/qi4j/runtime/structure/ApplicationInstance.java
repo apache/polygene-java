@@ -15,6 +15,7 @@
 package org.qi4j.runtime.structure;
 
 import java.util.List;
+import org.qi4j.api.Qi4j;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Layer;
 import org.qi4j.api.structure.Module;
@@ -22,13 +23,17 @@ import org.qi4j.runtime.service.Activator;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.spi.structure.DescriptorVisitor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * JAVADOC
+ * Instance of a Qi4j application. Contains a list of layers which are managed by this application
  */
 public class ApplicationInstance
     implements Application, ApplicationSPI
 {
+    private static final Logger logger = LoggerFactory.getLogger( Qi4j.class );
+
     private final ApplicationModel model;
     private final Qi4jSPI runtime;
     private final List<LayerInstance> layerInstances;
@@ -107,12 +112,16 @@ public class ApplicationInstance
         throws Exception
     {
         layerActivator.activate( layerInstances );
+
+        logger.debug( "Application "+name()+" activated" );
     }
 
     public void passivate()
         throws Exception
     {
         layerActivator.passivate();
+
+        logger.debug("Application "+name()+" passivated");
     }
 
     public void visitDescriptor( DescriptorVisitor visitor )

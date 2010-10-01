@@ -16,18 +16,23 @@ package org.qi4j.runtime.structure;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.qi4j.api.Qi4j;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.structure.Layer;
 import org.qi4j.api.structure.Module;
 import org.qi4j.runtime.service.Activator;
 import org.qi4j.spi.structure.LayerSPI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * JAVADOC
+ * Instance of a Qi4j application layer. Contains a list of modules which are managed by this layer.
  */
 public class LayerInstance
     implements Layer, LayerSPI
 {
+    private static final Logger logger = LoggerFactory.getLogger( Qi4j.class );
+
     private final LayerModel model;
     private final ApplicationInstance applicationInstance;
     private final List<ModuleInstance> moduleInstances;
@@ -99,6 +104,8 @@ public class LayerInstance
         throws Exception
     {
         moduleActivator.activate( moduleInstances );
+
+        logger.debug( "Layer "+name()+" activated" );
     }
 
     public boolean visitModules( ModuleVisitor visitor, Visibility visibility )
@@ -131,6 +138,8 @@ public class LayerInstance
         throws Exception
     {
         moduleActivator.passivate();
+
+        logger.debug( "Layer "+name()+" passivated" );
     }
 
     @Override

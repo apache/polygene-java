@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,6 +41,7 @@ import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.property.PropertyTypeDescriptor;
 import org.qi4j.spi.structure.ModuleSPI;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of EntityStore that works with an implementation of MapEntityStore. Implement
@@ -150,26 +149,21 @@ public class MapEntityStoreMixin
         };
     }
 
-    public EntityStoreUnitOfWork visitEntityStates( final EntityStateVisitor visitor, ModuleSPI moduleInstance )
+    public <ThrowableType extends Exception> EntityStoreUnitOfWork visitEntityStates( final EntityStateVisitor<ThrowableType> visitor, ModuleSPI moduleInstance )
+        throws ThrowableType
     {
         // TODO This can be used for reading state, but not for modifying (e.g. removing all entities)
         final DefaultEntityStoreUnitOfWork uow =
                 new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), moduleInstance );
 
-        mapEntityStore.visitMap( new MapEntityStore.MapEntityStoreVisitor()
+        mapEntityStore.visitMap( new MapEntityStore.MapEntityStoreVisitor<ThrowableType>()
         {
             public void visitEntity( Reader entityState )
+                throws ThrowableType
             {
-                try
-                {
-                    EntityState entity = readEntityState( uow, entityState );
-                    visitor.visitEntityState( entity );
-                    uow.registerEntityState( entity );
-                }
-                catch (Exception e)
-                {
-                    Logger.getLogger( MapEntityStoreMixin.class.getName() ).log( Level.SEVERE, "visitEntityStates", e );
-                }
+                EntityState entity = readEntityState( uow, entityState );
+                visitor.visitEntityState( entity );
+                uow.registerEntityState( entity );
             }
         } );
         return uow;
@@ -261,8 +255,8 @@ public class MapEntityStoreMixin
                     jsonObject.put( MapEntityStore.JSONKeys.application_version.name(), application.version() );
                 }
 
-                Logger.getLogger( MapEntityStoreMixin.class.getName() )
-                        .info( "Updated version nr on " + identity + " from " + currentAppVersion + " to " + application.version() );
+                LoggerFactory.getLogger( MapEntityStoreMixin.class)
+                        .debug( "Updated version nr on " + identity + " from " + currentAppVersion + " to " + application.version() );
 
                 // State changed
                 status = EntityStatus.UPDATED;
