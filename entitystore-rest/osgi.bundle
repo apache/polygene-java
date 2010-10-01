@@ -83,6 +83,7 @@ Import-Package: \
                 org.restlet.routing, \
                 org.restlet.service, \
                 org.restlet.util, \
+                org.slf4j.impl,\
                 org.xml.sax, \
                 org.xml.sax.helpers, \
                 org.w3c.dom, \
