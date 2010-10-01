@@ -75,7 +75,7 @@ public class DebuggingTest
             assertEquals( message, "Hello!" );
             EntityStore es = (EntityStore) serviceLocator.findService( EntityStore.class ).get();
             final String[] result = new String[1];
-            es.visitEntityStates( new EntityStore.EntityStateVisitor()
+            es.visitEntityStates( new EntityStore.EntityStateVisitor<RuntimeException>()
             {
                 public void visitEntityState( EntityState entityState )
                 {
