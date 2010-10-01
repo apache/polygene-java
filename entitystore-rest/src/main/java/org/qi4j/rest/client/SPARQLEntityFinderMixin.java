@@ -70,9 +70,8 @@ public class SPARQLEntityFinderMixin
     {
     }
 
-    public Iterable<EntityReference> findEntities( String resultType, BooleanExpression whereClause,
-                                                   OrderBy[] orderBySegments, Integer firstResult, Integer maxResults
-    )
+    public Iterable<EntityReference> findEntities( Class<?> resultType, BooleanExpression whereClause,
+        OrderBy[] orderBySegments, Integer firstResult, Integer maxResults )
         throws EntityFinderException
     {
         CollectingQualifiedIdentityResultCallback callback = new CollectingQualifiedIdentityResultCallback();
@@ -80,7 +79,7 @@ public class SPARQLEntityFinderMixin
         return callback.getEntities();
     }
 
-    public EntityReference findEntity( String resultType, BooleanExpression whereClause )
+    public EntityReference findEntity( Class<?> resultType, BooleanExpression whereClause )
         throws EntityFinderException
     {
         final SingleQualifiedIdentityResultCallback callback = new SingleQualifiedIdentityResultCallback();
@@ -88,19 +87,14 @@ public class SPARQLEntityFinderMixin
         return callback.getQualifiedIdentity();
     }
 
-    public long countEntities( String resultType, BooleanExpression whereClause )
+    public long countEntities( Class<?> resultType, BooleanExpression whereClause )
         throws EntityFinderException
     {
         return performQuery( resultType, whereClause, null, null, null, null );
     }
 
-    public int performQuery( String resultType,
-                             BooleanExpression whereClause,
-                             OrderBy[] orderBySegments,
-                             Integer firstResult,
-                             Integer maxResults,
-                             QualifiedIdentityResultCallback callback
-    )
+    public int performQuery( Class<?> resultType, BooleanExpression whereClause, OrderBy[] orderBySegments,
+        Integer firstResult, Integer maxResults, QualifiedIdentityResultCallback callback )
         throws EntityFinderException
     {
         try
@@ -134,8 +128,7 @@ public class SPARQLEntityFinderMixin
         }
     }
 
-    private static class EntityResultXMLReaderAdapter
-        extends XMLReaderAdapter
+    private static class EntityResultXMLReaderAdapter extends XMLReaderAdapter
     {
         private String element;
         private String id;

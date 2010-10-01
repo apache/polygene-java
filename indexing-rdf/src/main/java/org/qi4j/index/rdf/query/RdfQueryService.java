@@ -54,7 +54,7 @@ public interface RdfQueryService
         @This
         TupleQueryExecutor tupleExecutor;
 
-        public Iterable<EntityReference> findEntities( String resultType,
+        public Iterable<EntityReference> findEntities( Class<?> resultType,
                                                        BooleanExpression whereClause,
                                                        OrderBy[] orderBySegments,
                                                        Integer firstResult,
@@ -69,7 +69,7 @@ public interface RdfQueryService
             return collectingCallback.getEntities();
         }
 
-        public EntityReference findEntity( String resultType, BooleanExpression whereClause )
+        public EntityReference findEntity( Class<?> resultType, BooleanExpression whereClause )
             throws EntityFinderException
         {
             final SingleQualifiedIdentityResultCallback singleCallback = new SingleQualifiedIdentityResultCallback();
@@ -79,7 +79,7 @@ public interface RdfQueryService
             return singleCallback.getQualifiedIdentity();
         }
 
-        public long countEntities( String resultType, BooleanExpression whereClause )
+        public long countEntities( Class<?> resultType, BooleanExpression whereClause )
             throws EntityFinderException
         {
             RdfQueryParser rdfQueryParser = queryParserFactory.newQueryParser( language );

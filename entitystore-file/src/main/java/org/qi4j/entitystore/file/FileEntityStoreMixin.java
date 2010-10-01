@@ -257,7 +257,8 @@ public class FileEntityStoreMixin
         }
     }
 
-    public void visitMap( MapEntityStoreVisitor visitor )
+    public <ThrowableType extends Exception> void visitMap( MapEntityStoreVisitor<ThrowableType> visitor )
+        throws ThrowableType
     {
         try
         {

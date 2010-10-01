@@ -19,12 +19,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import org.json.JSONArray;
@@ -63,6 +59,8 @@ import org.qi4j.spi.property.PropertyTypeDescriptor;
 import org.qi4j.spi.property.ValueType;
 import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.spi.structure.ModuleSPI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of EntityStore that is backed by the Preferences API.
@@ -91,7 +89,7 @@ public class PreferencesEntityStoreMixin
         throws Exception
     {
         root = getApplicationRoot();
-        logger = Logger.getLogger( PreferencesEntityStoreService.class.getName() );
+        logger = LoggerFactory.getLogger( PreferencesEntityStoreService.class.getName() );
         logger.info( "Preferences store:" + root.absolutePath() );
         uuid = UUID.randomUUID().toString() + "-";
 
@@ -110,7 +108,7 @@ public class PreferencesEntityStoreMixin
                     }
                 } catch (BackingStoreException e)
                 {
-                    logger.log( Level.WARNING, "Could not reload preferences", e );
+                    logger.warn( "Could not reload preferences", e );
                 }
             }
         }, 0, 60, TimeUnit.SECONDS);
@@ -148,7 +146,8 @@ public class PreferencesEntityStoreMixin
         return new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), module );
     }
 
-    public EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor visitor, ModuleSPI moduleInstance )
+    public <ThrowableType extends Exception> EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor<ThrowableType> visitor, ModuleSPI moduleInstance )
+        throws ThrowableType
     {
         final DefaultEntityStoreUnitOfWork uow = new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), moduleInstance );
 

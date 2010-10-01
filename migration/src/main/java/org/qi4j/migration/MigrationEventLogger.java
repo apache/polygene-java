@@ -15,7 +15,8 @@
 package org.qi4j.migration;
 
 import java.util.Arrays;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * MigrationEvents implementation that logs the events.
@@ -23,7 +24,7 @@ import java.util.logging.Logger;
 public class MigrationEventLogger
     implements MigrationEvents
 {
-    protected Logger logger = Logger.getLogger( getClass().getName() );
+    protected Logger logger = LoggerFactory.getLogger( getClass().getName() );
 
     public void propertyAdded( String entity, String name, String value )
     {

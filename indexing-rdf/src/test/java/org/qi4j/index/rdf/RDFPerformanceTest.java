@@ -18,11 +18,18 @@ package org.qi4j.index.rdf;
  * JAVADOC
  */
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.query.Query;
+import org.qi4j.api.query.QueryExpressions;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
@@ -36,10 +43,6 @@ import org.qi4j.test.EntityTestAssembler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 public class RDFPerformanceTest extends AbstractQi4jTest
 {
     private static Logger _log = LoggerFactory.getLogger( RDFPerformanceTest.class );
@@ -48,6 +51,8 @@ public class RDFPerformanceTest extends AbstractQi4jTest
     {
         @UseDefaults
         Property<String> someProperty();
+
+        ManyAssociation<ExampleEntity> manyAssoc();
     }
 
     public void assemble( ModuleAssembly module ) throws AssemblyException
@@ -55,7 +60,7 @@ public class RDFPerformanceTest extends AbstractQi4jTest
         PreferenceEntityStoreAssembler pAss = new PreferenceEntityStoreAssembler( Visibility.module );
         ModuleAssembly prefModule = module.layerAssembly().moduleAssembly( "PrefModule" );
         prefModule.addEntities( NativeConfiguration.class ).visibleIn( Visibility.application );
-        prefModule.forMixin( NativeConfiguration.class ).declareDefaults().tripleIndexes().set( "cspo,spoc" );
+        prefModule.forMixin( NativeConfiguration.class ).declareDefaults().tripleIndexes().set( "spoc,cspo" );
         pAss.assemble( prefModule );
 
         module.addEntities( ExampleEntity.class );
@@ -72,9 +77,21 @@ public class RDFPerformanceTest extends AbstractQi4jTest
     {
         List<ExampleEntity> result = new ArrayList<ExampleEntity>( howMany );
 
+        List<ExampleEntity> entities = new ArrayList<ExampleEntity>();
         for (Integer x = 0; x < howMany; ++x)
         {
-            result.add( this.unitOfWorkFactory.currentUnitOfWork().newEntity( ExampleEntity.class ) );
+            ExampleEntity exampleEntity = this.unitOfWorkFactory.currentUnitOfWork().newEntity( ExampleEntity.class, "entity" + x );
+
+            for (ExampleEntity entity : entities)
+            {
+                exampleEntity.manyAssoc().add( entity );
+            }
+
+            entities.add( exampleEntity );
+            if (entities.size() > 10)
+                entities.remove( 0 );
+
+            result.add( exampleEntity );
         }
 
         return result;
@@ -142,7 +159,21 @@ public class RDFPerformanceTest extends AbstractQi4jTest
         creatingUOW.complete();
         _log.info( "Time to complete creation uow (ms): " + (System.currentTimeMillis() - startingTime) );
 
-        List<ExampleEntity> entityList = this.doList( howMany );
+
+        List<ExampleEntity> entityList = null;
+        entityList = this.doList( howMany );
+
+        startingTime = System.currentTimeMillis();
+        UnitOfWork uow = this.unitOfWorkFactory.newUnitOfWork();
+        for (int i = 0; i < 1000; i++)
+        {
+            Query<ExampleEntity> query = this.queryBuilderFactory.newQueryBuilder( ExampleEntity.class ).
+                    where( QueryExpressions.contains( QueryExpressions.templateFor( ExampleEntity.class ).manyAssoc(), uow.get( ExampleEntity.class, "entity50" ) ) ).newQuery( uow );
+            System.out.println(query.count());
+        }
+
+        long endTest = System.currentTimeMillis();
+        _log.info( "Time to query " + howMany + " entities (ms): " + (endTest - startingTime) );
 
         UnitOfWork deletingUOW = this.unitOfWorkFactory.newUnitOfWork();
         startingTime = System.currentTimeMillis();
@@ -153,7 +184,7 @@ public class RDFPerformanceTest extends AbstractQi4jTest
         startingTime = System.currentTimeMillis();
         deletingUOW.complete();
 
-        long endTest = System.currentTimeMillis();
+        endTest = System.currentTimeMillis();
 
         _log.info( "time to complete deletion uow (ms): " + (endTest - startingTime) );
 
@@ -184,25 +215,29 @@ public class RDFPerformanceTest extends AbstractQi4jTest
         indexerExporter.exportReadableToStream( System.out );
     }
 
-    //   @Test
+    @Ignore
+    @Test
     public void performanceTest1000() throws Exception
     {
         this.performTest( 1000 );
     }
 
-    //   @Test
+    @Ignore
+    @Test
     public void performanceTest5000() throws Exception
     {
         this.performTest( 5000 );
     }
 
-    //   @Test
+    @Ignore
+    @Test
     public void performanceTest10000() throws Exception
     {
         this.performTest( 10000 );
     }
 
-    //   @Test
+    @Ignore
+    @Test
     public void performanceTest100000() throws Exception
     {
         this.performTest( 100000 );

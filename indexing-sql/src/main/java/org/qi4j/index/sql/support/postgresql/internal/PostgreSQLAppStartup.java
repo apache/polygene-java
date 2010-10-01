@@ -36,7 +36,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.configuration.Configuration;
@@ -61,6 +60,8 @@ import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.spi.structure.DescriptorVisitor;
 import org.qi4j.spi.value.ValueDescriptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -93,7 +94,7 @@ public class PostgreSQLAppStartup implements SQLAppStartup
 
    public static final String DEFAULT_SCHEMA_NAME = "qi4j";
 
-   private static final Logger _log = Logger.getLogger(PostgreSQLAppStartup.class.getName());
+   private static final Logger _log = LoggerFactory.getLogger(PostgreSQLAppStartup.class);
 
    private void initTypes()
    {

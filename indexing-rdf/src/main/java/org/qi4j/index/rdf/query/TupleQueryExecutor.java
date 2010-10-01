@@ -31,7 +31,6 @@ import org.qi4j.api.common.Optional;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.util.Classes;
 import org.qi4j.spi.query.EntityFinderException;
 
 @Mixins( TupleQueryExecutor.TupleQueryExecutorMixin.class )
@@ -57,7 +56,7 @@ public interface TupleQueryExecutor
                 {
 
                     TupleQuery tupleQuery = connection.prepareTupleQuery( language, query );
-
+                    tupleQuery.setIncludeInferred( false );
                     result = tupleQuery.evaluate();
                     long row = 0;
                     while( result.hasNext() )
@@ -124,9 +123,7 @@ public interface TupleQueryExecutor
                 return true;
             }
 
-            final Value entityClass = bindingSet.getValue( "entityType" );
             final String identity = identifier.stringValue();
-            final String entityType = Classes.toClassName( entityClass.stringValue() );
 
             final EntityReference entityReference = new EntityReference( identity );
             return callback.processRow( row, entityReference );

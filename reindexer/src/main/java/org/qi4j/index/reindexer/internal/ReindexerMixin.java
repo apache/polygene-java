@@ -18,6 +18,7 @@
 
 package org.qi4j.index.reindexer.internal;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.configuration.Configuration;
@@ -74,7 +75,7 @@ public class ReindexerMixin
     }
 
     private class ReindexerVisitor
-        implements EntityStore.EntityStateVisitor
+        implements EntityStore.EntityStateVisitor<RuntimeException>
     {
         private int loadValue;
         private ArrayList<EntityState> states;
@@ -87,6 +88,7 @@ public class ReindexerMixin
 
         public void reindex( EntityStore store )
         {
+
             EntityStoreUnitOfWork uow = store.visitEntityStates( this, module );
             reindexState();
             uow.applyChanges().commit(); // Apply any change caused by the reindex, such as migrated data
