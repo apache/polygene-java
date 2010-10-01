@@ -26,7 +26,7 @@ import org.qi4j.spi.structure.DescriptorVisitor;
 import org.qi4j.spi.structure.LayerDescriptor;
 import org.qi4j.spi.structure.ModuleDescriptor;
 
-final class ServiceLocator extends DescriptorVisitor
+final class ServiceLocator extends DescriptorVisitor<RuntimeException>
 {
     private final String serviceId;
     private String moduleName;
