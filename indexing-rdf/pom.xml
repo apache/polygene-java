@@ -16,7 +16,7 @@
   <name>Qi4j Extension - RDF Indexing</name>
 
   <properties>
-    <version.openrdf>2.3.0</version.openrdf>
+    <version.openrdf>2.3.1</version.openrdf>
   </properties>
 
   <dependencies>

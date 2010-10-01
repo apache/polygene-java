@@ -24,8 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
-import java.util.logging.Logger;
-
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.Identity;
@@ -52,13 +50,13 @@ import org.qi4j.api.query.grammar.MatchesPredicate;
 import org.qi4j.api.query.grammar.Negation;
 import org.qi4j.api.query.grammar.NotEqualsPredicate;
 import org.qi4j.api.query.grammar.OrderBy;
+import org.qi4j.api.query.grammar.OrderBy.Order;
 import org.qi4j.api.query.grammar.Predicate;
 import org.qi4j.api.query.grammar.PropertyIsNotNullPredicate;
 import org.qi4j.api.query.grammar.PropertyIsNullPredicate;
 import org.qi4j.api.query.grammar.PropertyNullPredicate;
 import org.qi4j.api.query.grammar.PropertyReference;
 import org.qi4j.api.query.grammar.SingleValueExpression;
-import org.qi4j.api.query.grammar.OrderBy.Order;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.value.ValueComposite;
@@ -66,7 +64,8 @@ import org.qi4j.index.sql.support.api.SQLQuerying;
 import org.qi4j.index.sql.support.common.EntityTypeInfo;
 import org.qi4j.index.sql.support.common.QNameInfo;
 import org.qi4j.spi.query.EntityFinderException;
-import org.qi4j.spi.structure.ModuleSPI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -95,7 +94,7 @@ public class PostgreSQLQuerying implements SQLQuerying
 
     private static final String TABLE_NAME_PREFIX = "t";
 
-    private static final Logger _log = Logger.getLogger( PostgreSQLQuerying.class.getName( ) );
+    private static final Logger _log = LoggerFactory.getLogger( PostgreSQLQuerying.class.getName( ) );
 
     static
     {
@@ -254,12 +253,12 @@ public class PostgreSQLQuerying implements SQLQuerying
         StringBuilder offset = new StringBuilder();
         if (firstResult != null && firstResult > 0)
         {
-            offset.append( "OFFSET " + firstResult );
+            offset.append( "OFFSET " ).append( firstResult );
         }
         StringBuilder limit = new StringBuilder();
         if (maxResults != null && maxResults > 0)
         {
-            limit.append( "LIMIT " + maxResults );
+            limit.append( "LIMIT " ).append( maxResults );
             if (orderByClause.length() == 0)
             {
                 orderByClause.append( "ORDER BY " + TABLE_NAME_PREFIX + "0." + SQLs.ENTITY_TABLE_IDENTITY_COLUMN_NAME );
@@ -281,7 +280,7 @@ public class PostgreSQLQuerying implements SQLQuerying
 
     private String processBooleanExpression( BooleanExpression expression, Boolean negationActive, String entityTypeCondition, List<Object> values, List<Integer> valueSQLTypes )
     {
-        String result = "";
+        String result;
         if ( expression != null )
         {
             if ( expression instanceof Conjunction )
@@ -289,11 +288,11 @@ public class PostgreSQLQuerying implements SQLQuerying
                 Conjunction conjunction = ( Conjunction ) expression;
                 String left = this.processBooleanExpression( conjunction.leftSideExpression( ), negationActive, entityTypeCondition, values, valueSQLTypes );
                 String right = this.processBooleanExpression( conjunction.rightSideExpression( ), negationActive, entityTypeCondition, values, valueSQLTypes );
-                if ( left == "" )
+                if ( left.equals( "" ) )
                 {
                     result = right;
                 }
-                else if ( right == "" )
+                else if ( right.equals( "" ) )
                 {
                     result = left;
                 }
@@ -307,11 +306,11 @@ public class PostgreSQLQuerying implements SQLQuerying
                 Disjunction disjunction = ( Disjunction ) expression;
                 String left = this.processBooleanExpression( disjunction.leftSideExpression( ), negationActive, entityTypeCondition, values, valueSQLTypes );
                 String right = this.processBooleanExpression( disjunction.rightSideExpression( ), negationActive, entityTypeCondition, values, valueSQLTypes );
-                if ( left == "" )
+                if ( left.equals( "" ) )
                 {
                     result = right;
                 }
-                else if ( right == "" )
+                else if ( right.equals( "" ) )
                 {
                     result = left;
                 }
@@ -422,7 +421,7 @@ public class PostgreSQLQuerying implements SQLQuerying
                 {
                     QualifiedName qName = QualifiedName.fromClass( predicate.propertyReference( ).propertyDeclaringType( ), predicate
                         .propertyReference( ).propertyName( ) );
-                    String columnName = null;
+                    String columnName;
                     if ( qName.type( ).equals( Identity.class.getName( ) ) )
                     {
                         columnName = SQLs.ENTITY_TABLE_IDENTITY_COLUMN_NAME;
@@ -474,8 +473,11 @@ public class PostgreSQLQuerying implements SQLQuerying
 
                 public void processWhereClause( StringBuilder where, StringBuilder fromClause, StringBuilder groupBy, StringBuilder having, StringBuilder afterWhere, String joinStyle, Integer firstTableIndex, Integer lastTableIndex )
                 {
-                    where.append(TABLE_NAME_PREFIX + lastTableIndex + "." + SQLs.ENTITY_TABLE_IDENTITY_COLUMN_NAME + " " +
-                        getOperator( predicate ) + " ? " + "\n"); //
+                    where.append( TABLE_NAME_PREFIX )
+                        .append( lastTableIndex )
+                        .append( "." + SQLs.ENTITY_TABLE_IDENTITY_COLUMN_NAME + " " )
+                        .append( getOperator( predicate ) )
+                        .append( " ? " + "\n" ); //
                     Object value = ( ( SingleValueExpression<?> ) predicate.valueExpression( ) ).value( );
                     // TODO Is it really certain that this value is always instance of EntityComposite?
                     if ( value instanceof EntityComposite )
@@ -510,7 +512,7 @@ public class PostgreSQLQuerying implements SQLQuerying
                     QNameInfo info = _state.qNameInfos( ).get( ).get(
                         QualifiedName.fromClass( predicate.propertyReference( ).propertyDeclaringType( ), predicate.propertyReference( )
                             .propertyName( ) ) );
-                    String colName = null;
+                    String colName;
                     if ( info.getCollectionDepth( ) > 0 )
                     {
                         colName = SQLs.ALL_QNAMES_TABLE_PK_COLUMN_NAME;
@@ -545,7 +547,6 @@ public class PostgreSQLQuerying implements SQLQuerying
 
                 public void processWhereClause( StringBuilder where, StringBuilder fromClause, StringBuilder groupBy, StringBuilder having, StringBuilder afterWhere, String joinStyle, Integer firstTableIndex, Integer lastTableIndex )
                 {
-                    String result = "";
                     if ((predicate instanceof AssociationIsNullPredicate && !negationActive)
                         || (predicate instanceof AssociationIsNotNullPredicate && negationActive))
                     {

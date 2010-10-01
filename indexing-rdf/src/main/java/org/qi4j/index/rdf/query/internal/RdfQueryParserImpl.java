@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
-import java.util.logging.Logger;
 import org.json.JSONException;
 import org.json.JSONStringer;
 import org.qi4j.api.common.QualifiedName;
@@ -64,6 +63,7 @@ import org.qi4j.runtime.types.SerializableType;
 import org.qi4j.runtime.types.ValueTypeFactory;
 import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.property.ValueType;
+import org.slf4j.LoggerFactory;
 
 import static java.lang.String.*;
 
@@ -113,11 +113,13 @@ public class RdfQueryParserImpl
                             final Integer maxResults
     )
     {
-        triples.addDefaultTriples( resultType.getName() );
-
         // and collect namespaces
         final String filter = processFilter( whereClause, true );
         final String orderBy = processOrderBy( orderBySegments );
+
+       // Add type+identity triples last. This makes queries faster since the query engine can reduce the number of triples
+       // to check faster
+       triples.addDefaultTriples( resultType.getName() );
 
         StringBuilder query = new StringBuilder();
 
@@ -125,7 +127,7 @@ public class RdfQueryParserImpl
         {
             query.append( format( "PREFIX %s: <%s> %n", namespaces.getNamespacePrefix( namespace ), namespace ) );
         }
-        query.append( "SELECT DISTINCT ?entityType ?identity\n" );
+        query.append( "SELECT DISTINCT ?identity\n" );
         if( triples.hasTriples() )
         {
             query.append( "WHERE {\n" );
@@ -165,7 +167,7 @@ public class RdfQueryParserImpl
             query.append( "\nLIMIT " ).append( maxResults );
         }
 
-        Logger.getLogger( getClass().getName() ).info( "Query:\n" + query );
+        LoggerFactory.getLogger( getClass()).debug( "Query:\n" + query );
         return query.toString();
     }
 
