@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.qi4j</groupId>
@@ -6,7 +8,7 @@
   <name>Qi4j Library (Build POM)</name>
   <version>1.2-SNAPSHOT</version>
   <packaging>pom</packaging>
-  
+
 
   <inceptionYear>2007</inceptionYear>
   <url>http://www.qi4j.org/</url>
@@ -99,7 +101,7 @@
     <developer>
       <id>mesirii</id>
       <name>Michael Hunger</name>
-      <organization />
+      <organization/>
       <email>qi4j@jexp.de</email>
       <timezone>CET</timezone>
     </developer>
@@ -127,14 +129,14 @@
     <developer>
       <id>ragaller</id>
       <name>Georg Ragaller</name>
-      <organization />
+      <organization/>
       <email>qi4j@dev.ragaller.org</email>
       <timezone>CET</timezone>
     </developer>
     <developer>
       <id>rwallace</id>
       <name>Richard Wallace</name>
-      <organization />
+      <organization/>
       <email>rwallace@thewallacepack.net</email>
       <timezone>UTC-7</timezone>
     </developer>
@@ -155,21 +157,21 @@
     <developer>
       <id>taowen</id>
       <name>Tao Wen</name>
-      <organization />
+      <organization/>
       <email>taowen@gmail.com</email>
       <timezone>UTC+8</timezone>
     </developer>
     <developer>
       <id>paul@nosphere.org</id>
       <name>Paul Merlin</name>
-      <organization />
+      <organization/>
       <email>paul@nosphere.org</email>
       <timezone>CET</timezone>
     </developer>
     <developer>
       <id>stanislav.muhametsin@tut.fi</id>
       <name>Stanislav Muhametsin</name>
-      <organization />
+      <organization/>
       <email>stanislav.muhametsin@tut.fi</email>
       <timezone>UTC+2</timezone>
     </developer>
@@ -444,11 +446,15 @@
     <repository>
       <id>ops4j.releases.deploy</id>
       <url>http://repository.ops4j.org/maven2</url>
-      <releases><enabled>true</enabled></releases>
-      <snapshots><enabled>false</enabled></snapshots>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
     </repository>
   </repositories>
-  
+
   <distributionManagement>
     <repository>
       <id>ops4j.releases.deploy</id>
@@ -570,6 +576,18 @@
         <version>6.1.22</version>
       </dependency>
 
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>1.6.1</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-simple</artifactId>
+        <version>1.6.1</version>
+        <scope>test</scope>
+      </dependency>
 
       <!-- Test Dependencies -->
       <dependency>
