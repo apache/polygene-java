@@ -113,13 +113,13 @@ public class RdfQueryParserImpl
                             final Integer maxResults
     )
     {
+        // Add type+identity triples last. This makes queries faster since the query engine can reduce the number of triples
+        // to check faster
+        triples.addDefaultTriples( resultType.getName() );
+
         // and collect namespaces
         final String filter = processFilter( whereClause, true );
         final String orderBy = processOrderBy( orderBySegments );
-
-       // Add type+identity triples last. This makes queries faster since the query engine can reduce the number of triples
-       // to check faster
-       triples.addDefaultTriples( resultType.getName() );
 
         StringBuilder query = new StringBuilder();
 
@@ -131,6 +131,7 @@ public class RdfQueryParserImpl
         if( triples.hasTriples() )
         {
             query.append( "WHERE {\n" );
+            StringBuilder optional = new StringBuilder();
             for( Triples.Triple triple : triples )
             {
                 final String subject = triple.getSubject();
@@ -139,14 +140,19 @@ public class RdfQueryParserImpl
 
                 if( triple.isOptional() )
                 {
-                    query.append( format( "OPTIONAL {%s %s %s}. ", subject, predicate, value ) );
+                    optional.append( format( "OPTIONAL {%s %s %s}. ", subject, predicate, value ) );
+                    optional.append( '\n' );
                 }
                 else
                 {
                     query.append( format( "%s %s %s. ", subject, predicate, value ) );
+                    query.append( '\n' );
                 }
-                query.append( '\n' );
             }
+
+            // Add OPTIONAL statements last
+            if (optional.length() > 0)
+                query.append( optional.toString() );
 
             if( filter.length() > 0 )
             {

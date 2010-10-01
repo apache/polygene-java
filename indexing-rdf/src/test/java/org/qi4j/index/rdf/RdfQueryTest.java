@@ -18,7 +18,10 @@
  */
 package org.qi4j.index.rdf;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.AssemblyException;
@@ -33,6 +36,13 @@ import org.qi4j.test.indexing.AbstractQueryTest;
 
 public class RdfQueryTest extends AbstractQueryTest
 {
+
+    @Before
+    public void log4j()
+    {
+        // Set this to DEBUG to see generated queries
+        Logger.getRootLogger().setLevel( Level.INFO );
+    }
 
     @Override
     public void assemble( ModuleAssembly module )

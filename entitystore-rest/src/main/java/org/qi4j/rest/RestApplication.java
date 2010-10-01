@@ -92,11 +92,9 @@ public class RestApplication
      * Creates a root Restlet that will receive all incoming calls.
      */
     @Override
-    public synchronized Restlet createRoot()
+    public synchronized Restlet createInboundRoot()
     {
         Router router = new Router( getContext() );
-
-        router.attach( "/service", Qi4jServiceResource.class );
 
         router.attach( "/entity", createFinder( EntitiesResource.class ) );
         router.attach( "/entity/{identity}", createFinder( EntityResource.class ) );

@@ -95,7 +95,8 @@ public class HazelcastEntityStoreMixin
         } );
     }
 
-    public void visitMap( MapEntityStoreVisitor visitor )
+    public <ThrowableType extends Exception> void visitMap( MapEntityStoreVisitor<ThrowableType> visitor )
+        throws ThrowableType
     {
         for( Map.Entry<String, String> eachEntry : stringMap.entrySet() )
         {
