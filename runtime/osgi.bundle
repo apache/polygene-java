@@ -67,6 +67,7 @@ Import-Package: org.objectweb.asm, \
                 org.qi4j.spi.util, \
                 org.qi4j.spi.entitystore, \
                 org.qi4j.spi.value, \
+                org.slf4j, \
                 org.xml.sax, \
                 org.xml.sax.helpers
 

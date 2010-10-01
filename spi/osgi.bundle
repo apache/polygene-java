@@ -22,6 +22,7 @@ Import-Package: org.qi4j.api, \
                 org.qi4j.api.usecase, \
                 org.qi4j.api.util, \
                 org.qi4j.api.value, \
+                org.slf4j, \
                 org.xml.sax, \
                 org.xml.sax.helpers
 
