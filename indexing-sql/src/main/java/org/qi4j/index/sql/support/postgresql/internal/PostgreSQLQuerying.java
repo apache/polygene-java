@@ -1103,7 +1103,7 @@ public class PostgreSQLQuerying implements SQLQuerying
         } else if (value instanceof ValueComposite)
         {
             // Visit all properties with recursion and make joins as necessary
-            ((ValueComposite)value).state( ).visitProperties( new StateVisitor( )
+            ((ValueComposite)value).state( ).visitProperties( new StateVisitor<RuntimeException>( )
             {
 
                 public void visitProperty( QualifiedName name, Object propertyValue )

@@ -214,7 +214,7 @@ public class PostgreSQLAppStartup implements SQLAppStartup
    {
       final List<ValueDescriptor> valueDescriptors = new ArrayList<ValueDescriptor>();
       ApplicationSPI appSPI = (ApplicationSPI)this._app;
-      appSPI.visitDescriptor(new DescriptorVisitor()
+      appSPI.visitDescriptor(new DescriptorVisitor<RuntimeException>()
       {
          @Override
          public void visit(EntityDescriptor entityDescriptor)

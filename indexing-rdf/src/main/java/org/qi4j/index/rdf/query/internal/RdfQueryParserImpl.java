@@ -314,7 +314,7 @@ public class RdfQueryParserImpl
             ValueComposite valueComposite = (ValueComposite) value;
             StateHolder state = valueComposite.state();
             final Map<QualifiedName, Object> values = new HashMap<QualifiedName, Object>();
-            state.visitProperties( new StateHolder.StateVisitor()
+            state.visitProperties( new StateHolder.StateVisitor<RuntimeException>()
             {
                 public void visitProperty( QualifiedName name, Object value )
                 {

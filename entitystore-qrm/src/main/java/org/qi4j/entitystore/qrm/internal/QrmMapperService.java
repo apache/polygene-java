@@ -269,7 +269,7 @@ public interface QrmMapperService
         {
             final List<Class> types = cfg.types();
 
-            app.visitDescriptor( new DescriptorVisitor()
+            app.visitDescriptor( new DescriptorVisitor<RuntimeException>()
             {
                 public void visit( EntityDescriptor entityDescriptor )
                 {
