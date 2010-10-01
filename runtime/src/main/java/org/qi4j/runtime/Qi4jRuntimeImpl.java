@@ -249,24 +249,10 @@ public final class Qi4jRuntimeImpl
     }
 
     // SPI
-
     public TransientDescriptor getTransientDescriptor( TransientComposite composite )
     {
         TransientInstance transientInstance = getCompositeInstance( composite );
         return (TransientDescriptor) transientInstance.compositeModel();
-    }
-
-    class CompositeFinder
-            implements ModuleVisitor
-    {
-        Class type;
-        TransientModel model;
-
-        public boolean visitModule( ModuleInstance moduleInstance, ModuleModel moduleModel, Visibility visibility )
-        {
-            model = moduleModel.composites().getCompositeModelFor( type, visibility );
-            return model == null;
-        }
     }
 
     public StateHolder getState( TransientComposite composite )
@@ -281,7 +267,7 @@ public final class Qi4jRuntimeImpl
     }
 
     class EntityFinder
-            implements ModuleVisitor
+            implements ModuleVisitor<RuntimeException>
     {
         Class type;
         EntityModel model;
@@ -309,19 +295,6 @@ public final class Qi4jRuntimeImpl
         return (ValueDescriptor) valueInstance.compositeModel();
     }
 
-    class ValueFinder
-            implements ModuleVisitor
-    {
-        Class type;
-        ValueModel model;
-
-        public boolean visitModule( ModuleInstance moduleInstance, ModuleModel moduleModel, Visibility visibility )
-        {
-            model = moduleModel.values().getValueModelFor( type, visibility );
-            return model == null;
-        }
-    }
-
     public StateHolder getState( ValueComposite composite )
     {
         return ValueInstance.getValueInstance( composite ).state();
@@ -336,19 +309,6 @@ public final class Qi4jRuntimeImpl
         } else
         {
             return null;
-        }
-    }
-
-    class ObjectFinder
-            implements ModuleVisitor
-    {
-        Class type;
-        ObjectModel model;
-
-        public boolean visitModule( ModuleInstance moduleInstance, ModuleModel moduleModel, Visibility visibility )
-        {
-            model = moduleModel.objects().getObjectModelFor( type, visibility );
-            return model == null;
         }
     }
 }

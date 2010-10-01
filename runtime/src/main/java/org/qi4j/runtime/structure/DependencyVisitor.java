@@ -21,8 +21,8 @@ import org.qi4j.runtime.injection.InjectedParametersModel;
 /**
  * JAVADOC
  */
-public abstract class DependencyVisitor
-    extends ModelVisitor
+public abstract class DependencyVisitor<ThrowableType extends Exception>
+    extends ModelVisitor<ThrowableType>
 {
     private final Specification<DependencyModel> specification;
 
@@ -33,6 +33,7 @@ public abstract class DependencyVisitor
 
     @Override
     public void visit( InjectedParametersModel injectedParametersModel )
+        throws ThrowableType
     {
         for( DependencyModel dependency : injectedParametersModel.filter( specification ) )
         {
@@ -42,6 +43,7 @@ public abstract class DependencyVisitor
 
     @Override
     public void visit( InjectedFieldModel injectedFieldModel )
+        throws ThrowableType
     {
         for( DependencyModel dependency : injectedFieldModel.filter( specification ) )
         {
@@ -49,5 +51,6 @@ public abstract class DependencyVisitor
         }
     }
 
-    public abstract void visitDependency( DependencyModel dependencyModel );
+    public abstract void visitDependency( DependencyModel dependencyModel )
+        throws ThrowableType;
 }

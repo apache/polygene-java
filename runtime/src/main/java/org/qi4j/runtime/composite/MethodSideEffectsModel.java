@@ -102,7 +102,8 @@ public final class MethodSideEffectsModel
         return new MethodSideEffectsInstance( sideEffects, result, proxyHandler, invoker );
     }
 
-    public void visitModel( ModelVisitor modelVisitor )
+    public <ThrowableType extends Exception> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
+        throws ThrowableType
     {
         modelVisitor.visit( this );
         for (MethodSideEffectModel methodSideEffectModel : sideEffectModels)

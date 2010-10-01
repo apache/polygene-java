@@ -147,7 +147,8 @@ public final class ServiceModel
         return configurationType;
     }
 
-    public void visitModel( ModelVisitor modelVisitor )
+    public <ThrowableType extends Exception> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
+        throws ThrowableType
     {
         modelVisitor.visit( this );
 
@@ -303,7 +304,7 @@ public final class ServiceModel
     public Class calculateConfigurationType()
     {
         final List<DependencyModel> dependencyModels = new ArrayList<DependencyModel>();
-        visitModel( new DependencyVisitor( new DependencyModel.ScopeSpecification( This.class ) )
+        visitModel( new DependencyVisitor<RuntimeException>( new DependencyModel.ScopeSpecification( This.class ) )
         {
             @Override
             public void visitDependency( DependencyModel dependencyModel )

@@ -104,7 +104,8 @@ public final class MixinModel
         return InvocationHandler.class.isAssignableFrom( mixinClass );
     }
 
-    public void visitModel( ModelVisitor modelVisitor )
+    public <ThrowableType extends Exception> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
+        throws ThrowableType
     {
         modelVisitor.visit( this );
 
@@ -210,7 +211,7 @@ public final class MixinModel
     {
         final Set<Class> thisDependencies = new HashSet<Class>();
         visitModel(
-                new DependencyVisitor( new DependencyModel.ScopeSpecification( This.class ) )
+                new DependencyVisitor<RuntimeException>( new DependencyModel.ScopeSpecification( This.class ) )
                 {
                     public void visitDependency( DependencyModel dependencyModel )
                     {
@@ -284,7 +285,7 @@ public final class MixinModel
     {
         // Add all @This injections
         visitModel(
-                new DependencyVisitor( new DependencyModel.ScopeSpecification( This.class ) )
+                new DependencyVisitor<RuntimeException>( new DependencyModel.ScopeSpecification( This.class ) )
                 {
                     public void visitDependency( DependencyModel dependencyModel )
                     {

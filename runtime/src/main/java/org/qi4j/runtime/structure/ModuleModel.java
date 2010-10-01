@@ -114,7 +114,8 @@ public class ModuleModel
         return classLoader;
     }
 
-    public void visitModel( ModelVisitor modelVisitor )
+    public <ThrowableType extends Exception> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
+        throws ThrowableType
     {
         modelVisitor.visit( this );
 
@@ -126,7 +127,8 @@ public class ModuleModel
         valuesModel.visitModel( modelVisitor );
     }
 
-    public void visitModules( ModuleVisitor visitor )
+    public <ThrowableType extends Exception> void visitModules( ModuleVisitor<ThrowableType> visitor )
+        throws ThrowableType
     {
         // Visit this module
         if( !visitor.visitModule( null, this, Visibility.module ) )
@@ -209,7 +211,7 @@ public class ModuleModel
     }
 
     static class ClassFinder
-        implements ModuleVisitor
+        implements ModuleVisitor<RuntimeException>
     {
         public String type;
         public Class clazz;

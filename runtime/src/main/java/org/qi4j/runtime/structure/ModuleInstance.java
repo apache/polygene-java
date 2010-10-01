@@ -45,7 +45,6 @@ import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.value.NoSuchValueException;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
-import org.qi4j.runtime.composite.CompositesInstance;
 import org.qi4j.runtime.composite.CompositesModel;
 import org.qi4j.runtime.composite.TransientBuilderInstance;
 import org.qi4j.runtime.composite.TransientModel;
@@ -54,7 +53,6 @@ import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.object.ObjectBuilderInstance;
 import org.qi4j.runtime.object.ObjectModel;
-import org.qi4j.runtime.object.ObjectsInstance;
 import org.qi4j.runtime.object.ObjectsModel;
 import org.qi4j.runtime.query.QueryBuilderFactoryImpl;
 import org.qi4j.runtime.service.ImportedServicesInstance;
@@ -64,7 +62,6 @@ import org.qi4j.runtime.service.ServicesModel;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.runtime.value.ValueBuilderInstance;
 import org.qi4j.runtime.value.ValueModel;
-import org.qi4j.runtime.value.ValuesInstance;
 import org.qi4j.runtime.value.ValuesModel;
 import org.qi4j.spi.composite.TransientDescriptor;
 import org.qi4j.spi.entity.EntityDescriptor;
@@ -84,10 +81,7 @@ public class ModuleInstance
 
     private final ModuleModel moduleModel;
     private final LayerInstance layerInstance;
-    private final CompositesInstance composites;
     private final EntitiesInstance entities;
-    private final ObjectsInstance objects;
-    private final ValuesInstance values;
     private final ServicesInstance services;
     private final ImportedServicesInstance importedServices;
 
@@ -111,10 +105,7 @@ public class ModuleInstance
     {
         this.moduleModel = moduleModel;
         this.layerInstance = layerInstance;
-        composites = new CompositesInstance( compositesModel, this );
         entities = new EntitiesInstance( entitiesModel, this );
-        objects = new ObjectsInstance( objectsModel, this );
-        values = new ValuesInstance( valuesModel );
         services = servicesModel.newInstance( this );
         importedServices = importedServicesModel.newInstance( this );
 
@@ -151,24 +142,9 @@ public class ModuleInstance
         return layerInstance;
     }
 
-    public CompositesInstance composites()
-    {
-        return composites;
-    }
-
     public EntitiesInstance entities()
     {
         return entities;
-    }
-
-    public ObjectsInstance objects()
-    {
-        return objects;
-    }
-
-    public ValuesInstance values()
-    {
-        return values;
     }
 
     public ServicesInstance services()
@@ -262,7 +238,8 @@ public class ModuleInstance
         return moduleModel.classLoader();
     }
 
-    public void visitModules( ModuleVisitor visitor )
+    public <ThrowableType extends Exception> void visitModules( ModuleVisitor<ThrowableType> visitor )
+        throws ThrowableType
     {
         // Visit this module
         if( !visitor.visitModule( this, moduleModel, Visibility.module ) )
@@ -378,7 +355,7 @@ public class ModuleInstance
     }
 
     private abstract class TypeFinder<T extends ObjectDescriptor>
-            implements ModuleVisitor
+            implements ModuleVisitor<RuntimeException>
     {
         public Class type;
 
@@ -656,7 +633,7 @@ public class ModuleInstance
     }
 
     class ServiceReferenceFinder<T>
-            implements ModuleVisitor
+            implements ModuleVisitor<RuntimeException>
     {
         public Type type;
         public ServiceReference<T> service;
@@ -670,7 +647,7 @@ public class ModuleInstance
     }
 
     class ServiceReferencesFinder<T>
-            implements ModuleVisitor
+            implements ModuleVisitor<RuntimeException>
     {
         public Type type;
         public List<ServiceReference<T>> services = new ArrayList<ServiceReference<T>>();

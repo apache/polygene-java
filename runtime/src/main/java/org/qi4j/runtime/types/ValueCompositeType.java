@@ -81,7 +81,7 @@ public final class ValueCompositeType
         ValueComposite valueComposite = (ValueComposite) value;
         StateHolder state = valueComposite.state();
         final Map<QualifiedName, Object> values = new HashMap<QualifiedName, Object>();
-        state.visitProperties( new StateHolder.StateVisitor()
+        state.visitProperties( new StateHolder.StateVisitor<RuntimeException>()
         {
             public void visitProperty( QualifiedName name, Object value )
             {
@@ -128,7 +128,7 @@ public final class ValueCompositeType
         ValueComposite valueComposite = (ValueComposite) value;
         StateHolder state = valueComposite.state();
         final Map<QualifiedName, Object> values = new HashMap<QualifiedName, Object>();
-        state.visitProperties( new StateHolder.StateVisitor()
+        state.visitProperties( new StateHolder.StateVisitor<RuntimeException>()
         {
             public void visitProperty( QualifiedName name, Object value )
             {
@@ -235,7 +235,8 @@ public final class ValueCompositeType
                     return null;
                 }
 
-                public void visitProperties( StateVisitor visitor )
+                public <ThrowableType extends Exception> void visitProperties( StateVisitor<ThrowableType> visitor )
+                    throws ThrowableType
                 {
                     for (Map.Entry<QualifiedName, Object> qualifiedNameObjectEntry : values.entrySet())
                     {

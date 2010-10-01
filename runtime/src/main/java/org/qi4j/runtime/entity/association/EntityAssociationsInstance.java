@@ -63,7 +63,8 @@ public final class EntityAssociationsInstance
         model.checkConstraints( this );
     }
 
-    public void visitAssociations( EntityStateHolder.EntityStateVisitor visitor )
+    public <ThrowableType extends Exception> void visitAssociations( EntityStateHolder.EntityStateVisitor<ThrowableType> visitor )
+        throws ThrowableType
     {
         for( AssociationDescriptor associationDescriptor : model.associations() )
         {

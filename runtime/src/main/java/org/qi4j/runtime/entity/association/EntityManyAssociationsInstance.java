@@ -66,7 +66,8 @@ public final class EntityManyAssociationsInstance
         model.checkConstraints( this );
     }
 
-    public void visitManyAssociations( EntityStateHolder.EntityStateVisitor visitor )
+    public <ThrowableType extends Exception> void visitManyAssociations( EntityStateHolder.EntityStateVisitor<ThrowableType> visitor )
+        throws ThrowableType
     {
         for( ManyAssociationDescriptor manyAssociationDescriptor : model.manyAssociations() )
         {

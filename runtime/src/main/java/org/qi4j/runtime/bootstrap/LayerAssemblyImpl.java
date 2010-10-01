@@ -31,7 +31,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 /**
  * Assembly of a Layer. From here you can create more ModuleAssemblies for
  * the Layer that is being assembled. It is also here that you define
- * what other Layers this Layer is using by calling {@link LayerAssemblyImpl#uses(org.qi4j.bootstrap.LayerAssembly[])} .
+ * what other Layers this Layer is using by calling {@link org.qi4j.runtime.bootstrap.LayerAssemblyImpl#uses()}.
  */
 public final class LayerAssemblyImpl
     implements LayerAssembly, Serializable
@@ -91,8 +91,8 @@ public final class LayerAssemblyImpl
         return this;
     }
 
-    public void visit( AssemblyVisitor visitor )
-        throws AssemblyException
+    public <ThrowableType extends Exception> void visit( AssemblyVisitor<ThrowableType> visitor )
+        throws ThrowableType
     {
         visitor.visitLayer( this );
         for( ModuleAssemblyImpl moduleAssembly : moduleAssemblies.values() )

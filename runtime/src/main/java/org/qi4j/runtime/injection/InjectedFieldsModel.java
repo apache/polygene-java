@@ -50,12 +50,13 @@ public final class InjectedFieldsModel
     private void addModel( Class fragmentClass, Field field, Annotation injectionAnnotation )
     {
         boolean optional = DependencyModel.isOptional( injectionAnnotation, field.getAnnotations() );
-        DependencyModel dependencyModel = new DependencyModel( injectionAnnotation, field.getGenericType(), fragmentClass, optional );
+        DependencyModel dependencyModel = new DependencyModel( injectionAnnotation, field.getGenericType(), fragmentClass, optional, field.getAnnotations() );
         InjectedFieldModel injectedFieldModel = new InjectedFieldModel( field, dependencyModel );
         this.fields.add( injectedFieldModel );
     }
 
-    public void visitModel( ModelVisitor modelVisitor )
+    public <ThrowableType extends Exception> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
+        throws ThrowableType
     {
         for( InjectedFieldModel field : fields )
         {

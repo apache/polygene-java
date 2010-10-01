@@ -37,89 +37,110 @@ import org.qi4j.spi.value.ValueDescriptor;
  * Extend and override this class in order to introspect a Qi4j model.
  * Call {@link ApplicationSPI#visitDescriptor(DescriptorVisitor)} to use.
  */
-public class DescriptorVisitor
+public class DescriptorVisitor<ThrowableType extends Exception>
 {
     public void visit( ApplicationDescriptor applicationDescriptor )
+        throws ThrowableType
     {
     }
 
     public void visit( LayerDescriptor layerDescriptor )
+        throws ThrowableType
     {
     }
 
     public void visit( ModuleDescriptor moduleDescriptor )
+        throws ThrowableType
     {
     }
 
     public void visit( TransientDescriptor transientDescriptor )
+        throws ThrowableType
     {
     }
 
     public void visit( EntityDescriptor entityDescriptor )
+        throws ThrowableType
     {
     }
 
     public void visit( ServiceDescriptor serviceDescriptor )
+        throws ThrowableType
     {
     }
 
     public void visit( ImportedServiceDescriptor importedServiceDescriptor )
+        throws ThrowableType
     {
     }
 
     public void visit( ObjectDescriptor objectDescriptor )
+        throws ThrowableType
     {
     }
 
     public void visit( ValueDescriptor valueDescriptor )
+        throws ThrowableType
     {
     }
 
     public void visit( CompositeMethodDescriptor compositeMethodDescriptor )
+        throws ThrowableType
     {
     }
 
     public void visit( MethodConstraintsDescriptor methodConstraintsDescriptor )
+        throws ThrowableType
     {
     }
 
     public void visit( ConstraintDescriptor constraintDescriptor )
+        throws ThrowableType
     {
     }
 
     public void visit( MethodConcernsDescriptor methodConcernsDescriptor )
+        throws ThrowableType
     {
     }
 
     public void visit( MethodConcernDescriptor methodConcernDescriptor )
+        throws ThrowableType
     {
     }
 
     public void visit( MethodSideEffectsDescriptor methodSideEffectsDescriptor )
+        throws ThrowableType
     {
     }
 
     public void visit( MethodSideEffectDescriptor methodSideEffectDescriptor )
+        throws ThrowableType
     {
     }
 
     public void visit( ConstructorDescriptor constructorDescriptor )
+        throws ThrowableType
     {
     }
 
     public void visit( InjectedParametersDescriptor injectedParametersDescriptor )
+        throws ThrowableType
     {
     }
 
     public void visit( InjectedFieldDescriptor injectedFieldDescriptor )
+        throws ThrowableType
     {
     }
 
     public void visit( InjectedMethodDescriptor injectedMethodDescriptor )
+        throws ThrowableType
     {
     }
 
     public void visit( MixinDescriptor mixinDescriptor )
+        throws ThrowableType
     {
     }
 }

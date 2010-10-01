@@ -128,7 +128,8 @@ public abstract class AbstractCompositeModel
         return (Class<? extends Composite>) Proxy.getProxyClass( proxyClassloader, interfaces );
     }
 
-    public abstract void visitModel( ModelVisitor modelVisitor );
+    public abstract <ThrowableType extends Exception> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
+        throws ThrowableType;
 
     // Context
 

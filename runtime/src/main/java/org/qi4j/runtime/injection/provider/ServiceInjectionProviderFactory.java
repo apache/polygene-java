@@ -15,6 +15,7 @@
 package org.qi4j.runtime.injection.provider;
 
 import java.io.Serializable;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -24,7 +25,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.selection.Qualifier;
+import org.qi4j.api.selection.QualifierSelector;
 import org.qi4j.api.service.ServiceReference;
+import org.qi4j.api.service.ServiceSelector;
 import org.qi4j.bootstrap.InvalidInjectionException;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectionContext;
@@ -36,6 +40,7 @@ import org.qi4j.runtime.service.ServiceModel;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleModel;
 import org.qi4j.runtime.structure.ModuleVisitor;
+import org.qi4j.spi.util.Annotations;
 
 public final class ServiceInjectionProviderFactory
     implements InjectionProviderFactory, Serializable
@@ -43,6 +48,38 @@ public final class ServiceInjectionProviderFactory
     public InjectionProvider newInjectionProvider( Resolution resolution, DependencyModel dependencyModel )
         throws InvalidInjectionException
     {
+        final ServiceSelector.Selector[] selector = new ServiceSelector.Selector[1];
+        try
+        {
+            Annotations.visitAnnotations( dependencyModel.annotations(),
+                    new Annotations.AnnotationWithMarker( Qualifier.class),
+                    new Annotations.AnnotationVisitor<Exception>()
+                    {
+                        public boolean visitAnnotation( Annotation annotation )
+                        {
+                            Qualifier qualifier = annotation.annotationType().getAnnotation( Qualifier.class );
+                            try
+                            {
+                                QualifierSelector qualifierSelector = qualifier.value().newInstance();
+
+                                selector[0] = qualifierSelector.select( annotation );
+                            } catch (InstantiationException e)
+                            {
+                                e.printStackTrace();
+                            } catch (IllegalAccessException e)
+                            {
+                                e.printStackTrace();
+                            }
+
+                            return false;
+                        }
+                    });
+        }
+        catch( Exception e )
+        {
+            throw new InvalidInjectionException( "Could not instantiate qualifier selector", e );
+        }
+
         if( dependencyModel.rawInjectionType().equals( Iterable.class ) )
         {
             if( dependencyModel.injectionClass().equals( ServiceReference.class ) )
@@ -99,7 +136,7 @@ public final class ServiceInjectionProviderFactory
                 return null;
             }
 
-            return new ServiceProvider( serviceFinder );
+            return new ServiceProvider( serviceFinder, selector[0] );
         }
     }
 
@@ -280,10 +317,12 @@ public final class ServiceInjectionProviderFactory
         implements InjectionProvider, ServiceInjector, Serializable
     {
         private final ServiceFinder serviceFinder;
+        private final ServiceSelector.Selector selector;
 
-        private ServiceProvider( ServiceFinder serviceFinder )
+        private ServiceProvider( ServiceFinder serviceFinder, ServiceSelector.Selector selector )
         {
             this.serviceFinder = serviceFinder;
+            this.selector = selector;
         }
 
         public synchronized Object provideInjection( InjectionContext context )
@@ -328,7 +367,7 @@ public final class ServiceInjectionProviderFactory
     }
 
     static class ServiceFinder
-        implements ModuleVisitor
+        implements ModuleVisitor<RuntimeException>
     {
         public Type serviceType;
 
@@ -359,7 +398,7 @@ public final class ServiceInjectionProviderFactory
     }
 
     static class ServicesFinder
-        implements ModuleVisitor, Serializable
+        implements ModuleVisitor<RuntimeException>, Serializable
     {
         public Type serviceType;
 
@@ -407,7 +446,7 @@ public final class ServiceInjectionProviderFactory
     }
 
     static class ModuleMapper
-        implements ModuleVisitor
+        implements ModuleVisitor<RuntimeException>
     {
         public Map<ModuleModel, ModuleInstance> modules = new HashMap<ModuleModel, ModuleInstance>();
 

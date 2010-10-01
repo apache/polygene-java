@@ -24,7 +24,7 @@ import org.qi4j.runtime.entity.EntityModel;
  * JAVADOC
  */
 class EntityFinder
-        implements ModuleVisitor
+        implements ModuleVisitor<RuntimeException>
 {
     private final Class mixinType;
     private final List<ModuleInstance> modules;
@@ -42,7 +42,7 @@ class EntityFinder
                                 final Visibility visibility
     )
     {
-        moduleModel.entities().visitModel( new ModelVisitor()
+        moduleModel.entities().visitModel( new ModelVisitor<RuntimeException>()
         {
             @Override
             public void visit( EntityModel entityModel )

@@ -18,6 +18,8 @@ import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.composite.InvalidValueCompositeException;
 import org.qi4j.api.concern.internal.ConcernFor;
 import org.qi4j.api.injection.scope.Invocation;
@@ -43,9 +45,11 @@ public final class InjectionProviderFactoryStrategy
 {
     private final Map<Class<? extends Annotation>, InjectionProviderFactory> generalProviderFactories = new HashMap<Class<? extends Annotation>, InjectionProviderFactory>();
     private final Map<Class<? extends Annotation>, InjectionProviderFactory> valuesProviderFactories = new HashMap<Class<? extends Annotation>, InjectionProviderFactory>();
+    private MetaInfo metaInfo;
 
-    public InjectionProviderFactoryStrategy()
+    public InjectionProviderFactoryStrategy( MetaInfo metaInfo )
     {
+        this.metaInfo = metaInfo;
         valuesProviderFactories.put( This.class, new ThisInjectionProviderFactory() );
         ModifiesInjectionProviderFactory modifiesInjectionProviderFactory = new ModifiesInjectionProviderFactory();
         valuesProviderFactories.put( ConcernFor.class, modifiesInjectionProviderFactory );
@@ -66,7 +70,11 @@ public final class InjectionProviderFactoryStrategy
         InjectionProviderFactory factory2 = valuesProviderFactories.get( injectionAnnotationType );
         if( factory1 == null && factory2 == null )
         {
-            throw new InvalidInjectionException( "Unknown injection annotation @" + injectionAnnotationType.getSimpleName() );
+            InjectionProviderFactory factory = metaInfo.get( InjectionProviderFactory.class );
+            if (factory != null)
+                return factory.newInjectionProvider( resolution, dependencyModel );
+            else
+                throw new InvalidInjectionException( "Unknown injection annotation @" + injectionAnnotationType.getSimpleName() );
         }
         ObjectDescriptor composite = resolution.object();
         Class<?> compositeType = composite.type();

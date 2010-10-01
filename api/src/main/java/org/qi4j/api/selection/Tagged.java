@@ -18,7 +18,7 @@ package org.qi4j.api.selection;
  * JAVADOC
  */
 @Qualifier( TaggedSelector.class )
-    @interface Tagged
+public @interface Tagged
 {
     public abstract String[] value();
 }

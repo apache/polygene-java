@@ -40,10 +40,12 @@ public interface StateHolder
      */
     <T> Property<T> getProperty( QualifiedName name );
 
-    void visitProperties( StateVisitor visitor );
+    <ThrowableType extends Exception> void visitProperties( StateVisitor<ThrowableType> visitor )
+        throws ThrowableType;
 
-    public interface StateVisitor
+    public interface StateVisitor<ThrowableType extends Exception>
     {
-        void visitProperty( QualifiedName name, Object value );
+        void visitProperty( QualifiedName name, Object value )
+            throws ThrowableType;
     }
 }

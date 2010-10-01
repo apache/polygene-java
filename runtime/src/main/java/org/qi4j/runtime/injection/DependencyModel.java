@@ -24,6 +24,7 @@ import java.util.Collections;
 
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.Optional;
+import org.qi4j.api.service.ServiceSelector;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.bootstrap.InvalidInjectionException;
 import org.qi4j.runtime.injection.provider.CachingInjectionProviderDecorator;
@@ -42,7 +43,7 @@ import static org.qi4j.spi.util.CollectionUtils.*;
  * move all the extraction code to a TypeUtils class
  */
 public final class DependencyModel
-        implements Binder, DependencyDescriptor, Serializable
+        implements Binder, DependencyDescriptor
 {
     public static boolean isOptional( Annotation injectionAnnotation, Annotation[] annotations )
     {
@@ -77,16 +78,18 @@ public final class DependencyModel
     private final Class<?> rawInjectionClass;
     private final Class<?> injectionClass;
     private final boolean optional;
+    private final Annotation[] annotations;
 
     // Binding
     private InjectionProvider injectionProvider;
 
-    public DependencyModel( Annotation injectionAnnotation, Type genericType, Class<?> injectedClass, boolean optional )
+    public DependencyModel( Annotation injectionAnnotation, Type genericType, Class<?> injectedClass, boolean optional, Annotation[] annotations )
     {
         this.injectionAnnotation = injectionAnnotation;
         this.injectedClass = injectedClass;
         this.injectionType = genericType;
         this.optional = optional;
+        this.annotations = annotations;
         this.rawInjectionClass = mapPrimitiveTypes( extractRawInjectionClass( injectedClass, injectionType ) );
         this.injectionClass = extractInjectionClass( injectionType );
     }
@@ -247,23 +250,10 @@ public final class DependencyModel
         return optional;
     }
 
-    public Iterable<String> injectedServices()
+    public Annotation[] annotations()
     {
-        Iterable<String> services = Collections.emptyList();
-
-        if( injectionProvider instanceof CachingInjectionProviderDecorator )
-        {
-            InjectionProvider decoratedProvider = ( (CachingInjectionProviderDecorator) injectionProvider ).decoratedProvider();
-            if( decoratedProvider instanceof ServiceInjectionProviderFactory.ServiceInjector )
-            {
-                services = ( (ServiceInjectionProviderFactory.ServiceInjector) decoratedProvider ).injectedServices();
-            }
-        }
-
-        return services;
+        return annotations;
     }
-
-    // Binding
 
     public void bind( Resolution resolution )
             throws BindingException

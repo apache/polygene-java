@@ -83,7 +83,8 @@ public class TransientModel
         super( compositeType, roles, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
     }
 
-    public void visitModel( ModelVisitor modelVisitor )
+    public <ThrowableType extends Exception> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
+        throws ThrowableType
     {
         modelVisitor.visit( this );
 

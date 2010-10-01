@@ -19,7 +19,7 @@ import org.qi4j.api.service.ServiceSelector;
 /**
  * JAVADOC
  */
-final class TaggedSelector
+public final class TaggedSelector
     implements QualifierSelector<Tagged>
 {
     public <T> ServiceSelector.Selector select( Tagged tagged )

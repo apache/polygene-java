@@ -20,32 +20,32 @@ package org.qi4j.bootstrap;
  * <p/>
  * This can be used to, for example, add metadata to all entities, add concerns on composites, or similar.
  */
-public interface AssemblyVisitor
+public interface AssemblyVisitor<ThrowableType extends Exception>
 {
     public void visitApplication( ApplicationAssembly assembly )
-        throws AssemblyException;
+        throws ThrowableType;
 
     public void visitLayer( LayerAssembly assembly )
-        throws AssemblyException;
+        throws ThrowableType;
 
     public void visitModule( ModuleAssembly assembly )
-        throws AssemblyException;
+        throws ThrowableType;
 
     public void visitComposite( TransientDeclaration declaration )
-        throws AssemblyException;
+        throws ThrowableType;
 
     public void visitEntity( EntityDeclaration declaration )
-        throws AssemblyException;
+        throws ThrowableType;
 
     public void visitService( ServiceDeclaration declaration )
-        throws AssemblyException;
+        throws ThrowableType;
 
     public void visitImportedService( ImportedServiceDeclaration declaration )
-        throws AssemblyException;
+        throws ThrowableType;
 
     public void visitValue( ValueDeclaration declaration )
-        throws AssemblyException;
+        throws ThrowableType;
 
     public void visitObject( ObjectDeclaration declaration )
-        throws AssemblyException;
+        throws ThrowableType;
 }

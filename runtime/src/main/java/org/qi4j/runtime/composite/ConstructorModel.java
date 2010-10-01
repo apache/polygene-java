@@ -78,7 +78,8 @@ public final class ConstructorModel
         return constructor;
     }
 
-    public void visitModel( ModelVisitor modelVisitor )
+    public <ThrowableType extends Exception> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
+        throws ThrowableType
     {
         modelVisitor.visit( this );
         parameters.visitModel( modelVisitor );

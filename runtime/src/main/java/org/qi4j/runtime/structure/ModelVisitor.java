@@ -34,91 +34,114 @@ import org.qi4j.runtime.service.ServiceModel;
 import org.qi4j.runtime.value.ValueModel;
 
 /**
- * JAVADOC
+ * Visitor interface for traversing the internal model. You can specify an exception
+ * that you want to be able to throw from the visit methods to abort the traversal. Use
+ * RuntimeException if you don't have any other specific exception you want to throw.
  */
-public class ModelVisitor
+public class ModelVisitor<ThrowableType extends Exception>
 {
     public void visit( ApplicationModel applicationModel )
+        throws ThrowableType
     {
     }
 
     public void visit( LayerModel layerModel )
+        throws ThrowableType
     {
     }
 
     public void visit( ModuleModel moduleModel )
+        throws ThrowableType
     {
     }
 
     public void visit( TransientModel transientModel )
+        throws ThrowableType
     {
     }
 
     public void visit( ValueModel valueModel )
+        throws ThrowableType
     {
     }
 
     public void visit( CompositeMethodModel compositeMethodModel )
+        throws ThrowableType
     {
     }
 
     public void visit( MethodConstraintsModel methodConstraintsModel )
+        throws ThrowableType
     {
     }
 
     public void visit( AbstractConstraintModel constraintModel )
+        throws ThrowableType
     {
     }
 
     public void visit( MethodConcernsModel methodConcernsModel )
+        throws ThrowableType
     {
     }
 
     public void visit( MethodConcernModel methodConcernModel )
+        throws ThrowableType
     {
     }
 
     public void visit( MethodSideEffectsModel methodSideEffectsModel )
+        throws ThrowableType
     {
     }
 
     public void visit( MethodSideEffectModel methodSideEffectModel )
+        throws ThrowableType
     {
     }
 
     public void visit( ConstructorModel constructorModel )
+        throws ThrowableType
     {
     }
 
     public void visit( InjectedParametersModel injectedParametersModel )
+        throws ThrowableType
     {
     }
 
     public void visit( InjectedFieldModel injectedFieldModel )
+        throws ThrowableType
     {
     }
 
     public void visit( InjectedMethodModel injectedMethodModel )
+        throws ThrowableType
     {
     }
 
     public void visit( MixinModel mixinModel )
+        throws ThrowableType
     {
     }
 
     public void visit( EntityModel entityModel )
+        throws ThrowableType
     {
     }
 
     public void visit( ServiceModel serviceModel )
+        throws ThrowableType
     {
     }
 
     public void visit( ImportedServiceModel serviceModel )
+        throws ThrowableType
     {
     }
 
     public void visit( ObjectModel objectModel )
+        throws ThrowableType
     {
     }
 }

@@ -56,7 +56,7 @@ public final class ApplicationModel
         this.mode = mode;
         this.metaInfo = metaInfo;
         this.layers = layers;
-        ipf = new InjectionProviderFactoryStrategy();
+        ipf = new InjectionProviderFactoryStrategy(metaInfo);
     }
 
     public String name()
@@ -84,7 +84,8 @@ public final class ApplicationModel
         return "urn:qi4j:model:application:" + name;
     }
 
-    public void visitModel( ModelVisitor modelVisitor )
+    public <ThrowableType extends Exception> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
+        throws ThrowableType
     {
         modelVisitor.visit( this );
 
@@ -108,9 +109,10 @@ public final class ApplicationModel
 
     // SPI
 
-    public void visitDescriptor( DescriptorVisitor visitor )
+    public <ThrowableType extends Exception> void visitDescriptor( DescriptorVisitor<ThrowableType> visitor )
+        throws ThrowableType
     {
-        visitModel( new DescriptorModelVisitor( visitor ) );
+        visitModel( new DescriptorModelVisitor<ThrowableType>( visitor ) );
     }
 
     public ApplicationInstance newInstance( Qi4jSPI runtime )

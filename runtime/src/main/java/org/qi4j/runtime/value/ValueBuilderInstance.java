@@ -57,7 +57,7 @@ public final class ValueBuilderInstance<T>
     public ValueBuilder<T> withState( StateHolder state )
     {
         final StateHolder valueState = getState();
-        state.visitProperties( new StateHolder.StateVisitor()
+        state.visitProperties( new StateHolder.StateVisitor<RuntimeException>()
         {
             public void visitProperty( QualifiedName name, Object value )
             {

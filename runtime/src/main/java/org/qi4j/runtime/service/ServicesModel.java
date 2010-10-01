@@ -60,7 +60,8 @@ public class ServicesModel
         return new ServicesInstance( this, serviceReferences );
     }
 
-    public void visitModel( ModelVisitor modelVisitor )
+    public <ThrowableType extends Exception> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
+        throws ThrowableType
     {
         for( ServiceModel serviceModel : serviceModels )
         {

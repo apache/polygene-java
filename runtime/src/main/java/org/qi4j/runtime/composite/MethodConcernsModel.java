@@ -103,7 +103,8 @@ public final class MethodConcernsModel
         return new MethodConcernsInstance( nextConcern, mixinInvocationHandler, proxyHandler );
     }
 
-    public void visitModel( ModelVisitor modelVisitor )
+    public <ThrowableType extends Exception> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
+        throws ThrowableType
     {
         modelVisitor.visit( this );
         for (MethodConcernModel methodConcernModel : concernsForMethod)

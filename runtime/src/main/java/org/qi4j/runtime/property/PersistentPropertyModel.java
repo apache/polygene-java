@@ -143,24 +143,4 @@ public abstract class PersistentPropertyModel
             throw new IllegalStateException( "Could not deserialize JSON value:" + value, e );
         }
     }
-
-    class ValueFinder
-        implements ModuleVisitor
-    {
-        public Class type;
-        public ValueModel model;
-        public ModuleInstance module;
-
-        public boolean visitModule( ModuleInstance moduleInstance, ModuleModel moduleModel, Visibility visibility )
-        {
-
-            model = moduleModel.values().getValueModelFor( type, visibility );
-            if( model != null )
-            {
-                module = moduleInstance;
-            }
-
-            return model == null;
-        }
-    }
 }

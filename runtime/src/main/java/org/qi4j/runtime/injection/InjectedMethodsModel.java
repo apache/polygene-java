@@ -57,7 +57,7 @@ public final class InjectedMethodsModel
                     Type type = genericParameterTypes[ i ];
 
                     boolean optional = DependencyModel.isOptional( injectionAnnotation, parameterAnnotations[ i ] );
-                    DependencyModel dependencyModel = new DependencyModel( injectionAnnotation, type, fragmentClass, optional );
+                    DependencyModel dependencyModel = new DependencyModel( injectionAnnotation, type, fragmentClass, optional, parameterAnnotations[i] );
                     parametersModel.addDependency( dependencyModel );
                 }
                 InjectedMethodModel methodModel = new InjectedMethodModel( method, parametersModel );
@@ -87,7 +87,8 @@ public final class InjectedMethodsModel
         }
     }
 
-    public void visitModel( ModelVisitor modelVisitor )
+    public <ThrowableType extends Exception> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
+        throws ThrowableType
     {
         for( InjectedMethodModel methodModel : methodModels )
         {

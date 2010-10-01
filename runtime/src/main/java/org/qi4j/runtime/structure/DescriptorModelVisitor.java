@@ -38,12 +38,12 @@ import org.qi4j.spi.structure.DescriptorVisitor;
 /**
  * Adapter of modelvisitor for the SPI descriptors
  */
-public class DescriptorModelVisitor
-    extends ModelVisitor
+public class DescriptorModelVisitor<ThrowableType extends Exception>
+    extends ModelVisitor<ThrowableType>
 {
-    private DescriptorVisitor visitor;
+    private DescriptorVisitor<ThrowableType> visitor;
 
-    public DescriptorModelVisitor( DescriptorVisitor visitor )
+    public DescriptorModelVisitor( DescriptorVisitor<ThrowableType> visitor )
     {
         super();
         this.visitor = visitor;
@@ -51,125 +51,146 @@ public class DescriptorModelVisitor
 
     @Override
     public void visit( ApplicationModel applicationModel )
+        throws ThrowableType
     {
         visitor.visit( applicationModel );
     }
 
     @Override
     public void visit( LayerModel layerModel )
+        throws ThrowableType
     {
         visitor.visit( layerModel );
     }
 
     @Override
     public void visit( ModuleModel moduleModel )
+        throws ThrowableType
     {
         visitor.visit( moduleModel );
     }
 
     @Override
     public void visit( TransientModel transientModel )
+        throws ThrowableType
     {
         visitor.visit( transientModel );
     }
 
     @Override
     public void visit( EntityModel entityModel )
+        throws ThrowableType
     {
         visitor.visit( entityModel );
     }
 
     @Override
     public void visit( ValueModel valueModel )
+        throws ThrowableType
     {
         visitor.visit( valueModel );
     }
 
     @Override
     public void visit( ServiceModel serviceModel )
+        throws ThrowableType
     {
         visitor.visit( (ServiceDescriptor) serviceModel );
     }
 
     @Override
     public void visit( ImportedServiceModel serviceModel )
+        throws ThrowableType
     {
         visitor.visit( serviceModel );
     }
 
     @Override
     public void visit( ObjectModel objectModel )
+        throws ThrowableType
     {
         visitor.visit( objectModel );
     }
 
     @Override
     public void visit( CompositeMethodModel compositeMethodModel )
+        throws ThrowableType
     {
         visitor.visit( compositeMethodModel );
     }
 
     @Override
     public void visit( MethodConstraintsModel methodConstraintsModel )
+        throws ThrowableType
     {
         visitor.visit( methodConstraintsModel );
     }
 
     @Override
     public void visit( AbstractConstraintModel constraintModel )
+        throws ThrowableType
     {
         visitor.visit( constraintModel );
     }
 
     @Override
     public void visit( MethodConcernsModel methodConcernsModel )
+        throws ThrowableType
     {
         visitor.visit( methodConcernsModel );
     }
 
     @Override
     public void visit( MethodConcernModel methodConcernModel )
+        throws ThrowableType
     {
         visitor.visit( methodConcernModel );
     }
 
     public void visit( MethodSideEffectsModel methodSideEffectsModel )
+        throws ThrowableType
     {
         visitor.visit( methodSideEffectsModel );
     }
 
     @Override
     public void visit( MethodSideEffectModel methodSideEffectModel )
+        throws ThrowableType
     {
         visitor.visit( methodSideEffectModel );
     }
 
     @Override
     public void visit( ConstructorModel constructorModel )
+        throws ThrowableType
     {
         visitor.visit( constructorModel );
     }
 
     @Override
     public void visit( InjectedParametersModel injectedParametersModel )
+        throws ThrowableType
     {
         visitor.visit( injectedParametersModel );
     }
 
     @Override
     public void visit( InjectedFieldModel injectedFieldModel )
+        throws ThrowableType
     {
         visitor.visit( injectedFieldModel );
     }
 
     @Override
     public void visit( InjectedMethodModel injectedMethodModel )
+        throws ThrowableType
     {
         visitor.visit( injectedMethodModel );
     }
 
     @Override
     public void visit( MixinModel mixinModel )
+        throws ThrowableType
     {
         visitor.visit( mixinModel );
     }

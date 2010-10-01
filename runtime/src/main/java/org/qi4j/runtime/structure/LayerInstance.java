@@ -108,7 +108,8 @@ public class LayerInstance
         logger.debug( "Layer "+name()+" activated" );
     }
 
-    public boolean visitModules( ModuleVisitor visitor, Visibility visibility )
+    public <ThrowableType extends Exception> boolean visitModules( ModuleVisitor<ThrowableType> visitor, Visibility visibility )
+        throws ThrowableType
     {
         // Visit modules in this layer
         for( ModuleInstance moduleInstance : moduleInstances )

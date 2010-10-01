@@ -219,7 +219,8 @@ public final class CompositeMethodModel
         return annotations;
     }
 
-    public void visitModel( ModelVisitor modelVisitor )
+    public <ThrowableType extends Exception> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
+        throws ThrowableType
     {
         modelVisitor.visit( this );
 
@@ -239,7 +240,7 @@ public final class CompositeMethodModel
     public void addThisInjections( final Set<Class> thisDependencies )
     {
         visitModel(
-                new DependencyVisitor( new DependencyModel.ScopeSpecification( This.class ) )
+                new DependencyVisitor<RuntimeException>( new DependencyModel.ScopeSpecification( This.class ) )
                 {
                     public void visitDependency( DependencyModel dependencyModel )
                     {

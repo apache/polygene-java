@@ -20,7 +20,7 @@ import org.qi4j.api.service.ServiceSelector;
 /**
  * JAVADOC
  */
-interface QualifierSelector<QUALIFIER extends Annotation>
+public interface QualifierSelector<QUALIFIER extends Annotation>
 {
     public <T> ServiceSelector.Selector select( QUALIFIER qualifier );
 }

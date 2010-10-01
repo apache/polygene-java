@@ -23,5 +23,6 @@ import org.qi4j.api.structure.Application;
 public interface ApplicationSPI
     extends Application, Activatable
 {
-    void visitDescriptor( DescriptorVisitor visitor );
+    <ThrowableType extends Exception> void visitDescriptor( DescriptorVisitor<ThrowableType> visitor )
+        throws ThrowableType;
 }

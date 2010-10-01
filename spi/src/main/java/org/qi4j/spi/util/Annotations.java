@@ -32,7 +32,8 @@ import org.qi4j.api.util.Classes;
  */
 public final class Annotations
 {
-    public static void visitAnnotations( Annotation[] annotations, AnnotationSpecification specification, AnnotationVisitor visitor)
+    public static <ThrowableType extends Exception> void visitAnnotations( Annotation[] annotations, AnnotationSpecification specification, AnnotationVisitor<ThrowableType> visitor)
+        throws ThrowableType
     {
         for( Annotation annotation : annotations )
         {
@@ -150,9 +151,10 @@ public final class Annotations
         return annotations;
     }
 
-    public interface AnnotationVisitor
+    public interface AnnotationVisitor<ThrowableType extends Exception>
     {
-        public boolean visitAnnotation(Annotation annotation);
+        public boolean visitAnnotation(Annotation annotation)
+            throws ThrowableType;
     }
 
     public static class AnnotationCollection

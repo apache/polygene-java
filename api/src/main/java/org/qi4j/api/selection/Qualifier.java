@@ -17,7 +17,7 @@ package org.qi4j.api.selection;
 /**
  * JAVADOC
  */
-@interface Qualifier
+public @interface Qualifier
 {
     public abstract Class<? extends QualifierSelector> value();
 }

@@ -24,7 +24,7 @@ import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
 
 /**
- * JAVADOC
+ * Model of entities in a particular Module.
  */
 public class EntitiesModel
     implements Binder, Serializable
@@ -36,7 +36,8 @@ public class EntitiesModel
         this.entityModels = entityModels;
     }
 
-    public void visitModel( ModelVisitor modelVisitor )
+    public <ThrowableType extends Exception> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
+        throws ThrowableType
     {
         for( EntityModel entityModel : entityModels )
         {

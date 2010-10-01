@@ -93,14 +93,15 @@ public final class ConstructorsModel
 
             boolean optional = DependencyModel.isOptional( injectionAnnotation, parameterAnnotations[idx] );
 
-            DependencyModel dependencyModel = new DependencyModel( injectionAnnotation, type, fragmentClass, optional );
+            DependencyModel dependencyModel = new DependencyModel( injectionAnnotation, type, fragmentClass, optional, parameterAnnotations[idx] );
             parameters.addDependency( dependencyModel );
             idx++;
         }
         return new ConstructorModel( realConstructor, parameters );
     }
 
-    public void visitModel( ModelVisitor modelVisitor )
+    public <ThrowableType extends Exception> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
+        throws ThrowableType
     {
         if( boundConstructors != null )
         {

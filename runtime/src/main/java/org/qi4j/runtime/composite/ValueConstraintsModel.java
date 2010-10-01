@@ -50,7 +50,8 @@ public final class ValueConstraintsModel
         return !optional;
     }
 
-    public void visitModel( ModelVisitor modelVisitor )
+    public <ThrowableType extends Exception> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
+        throws ThrowableType
     {
         for( AbstractConstraintModel constraintModel : constraintModels )
         {

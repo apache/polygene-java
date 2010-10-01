@@ -21,17 +21,20 @@ import org.qi4j.api.structure.Module;
 /**
  * JAVADOC
  */
-public class InstanceVisitor
+public class InstanceVisitor<ThrowableType extends Exception>
 {
     public void visit( Application application )
+        throws ThrowableType
     {
     }
 
     public void visit( Layer layer )
+        throws ThrowableType
     {
     }
 
     public void visit( Module module )
+        throws ThrowableType
     {
     }
 }

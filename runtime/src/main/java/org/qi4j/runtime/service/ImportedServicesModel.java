@@ -48,7 +48,8 @@ public class ImportedServicesModel
         return new ImportedServicesInstance( this, serviceReferences );
     }
 
-    public void visitModel( ModelVisitor modelVisitor )
+    public <ThrowableType extends Exception> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
+        throws ThrowableType
     {
         for( ImportedServiceModel importedServiceModel : importedServiceModels )
         {

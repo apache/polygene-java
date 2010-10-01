@@ -33,5 +33,5 @@ public interface DependencyDescriptor
 
     boolean optional();
 
-    Iterable<String> injectedServices();
+    Annotation[] annotations();
 }
