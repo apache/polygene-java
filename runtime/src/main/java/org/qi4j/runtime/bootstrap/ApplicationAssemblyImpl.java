@@ -83,7 +83,7 @@ public final class ApplicationAssemblyImpl
         return this;
     }
 
-    public <ThrowableType extends Exception> void visit( AssemblyVisitor<ThrowableType> visitor )
+    public <ThrowableType extends Throwable> void visit( AssemblyVisitor<ThrowableType> visitor )
         throws ThrowableType
     {
         visitor.visitApplication( this );

@@ -27,13 +27,13 @@ public interface EntityStore
 {
     EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSPI module );
 
-    <ThrowableType extends Exception> EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor<ThrowableType> visitor, ModuleSPI module )
+    <ThrowableType extends Throwable> EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor<ThrowableType> visitor, ModuleSPI module )
         throws ThrowableType;
 
 
     // Visitors are allowed to throw Exceptions to abort the traversal
     // If the visitor is not expected to throw any exceptions, then specify RuntimeException
-    interface EntityStateVisitor<ThrowableType extends Exception>
+    interface EntityStateVisitor<ThrowableType extends Throwable>
     {
         void visitEntityState( EntityState entityState )
             throws ThrowableType;

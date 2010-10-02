@@ -149,7 +149,7 @@ public final class EntityStateModel
             return entityManyAssociationsInstance.manyAssociationFor( accessor );
         }
 
-        public <ThrowableType extends Exception> void visitState( EntityStateVisitor<ThrowableType> visitor )
+        public <ThrowableType extends Throwable> void visitState( EntityStateVisitor<ThrowableType> visitor )
             throws ThrowableType
         {
             visitProperties( visitor );
@@ -158,7 +158,7 @@ public final class EntityStateModel
             entityManyAssociationsInstance.visitManyAssociations( visitor );
         }
 
-        public <ThrowableType extends Exception> void visitProperties( StateVisitor<ThrowableType> visitor )
+        public <ThrowableType extends Throwable> void visitProperties( StateVisitor<ThrowableType> visitor )
             throws ThrowableType
         {
             entityPropertiesInstance.visitProperties( visitor );

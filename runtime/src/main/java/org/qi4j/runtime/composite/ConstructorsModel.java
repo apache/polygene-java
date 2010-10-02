@@ -100,7 +100,7 @@ public final class ConstructorsModel
         return new ConstructorModel( realConstructor, parameters );
     }
 
-    public <ThrowableType extends Exception> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
+    public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
         throws ThrowableType
     {
         if( boundConstructors != null )

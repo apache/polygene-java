@@ -80,7 +80,7 @@ public class EntityPropertiesInstance
     }
 
     @Override
-    public <ThrowableType extends Exception> void visitProperties( StateVisitor<ThrowableType> visitor )
+    public <ThrowableType extends Throwable> void visitProperties( StateVisitor<ThrowableType> visitor )
         throws ThrowableType
     {
         for( EntityPropertyModel propertyModel : model.properties() )

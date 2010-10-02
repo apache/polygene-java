@@ -44,10 +44,10 @@ public interface MapEntityStore
     Reader get( EntityReference entityReference )
         throws EntityStoreException;
 
-    <ThrowableType extends Exception> void visitMap( MapEntityStoreVisitor<ThrowableType> visitor )
+    <ThrowableType extends Throwable> void visitMap( MapEntityStoreVisitor<ThrowableType> visitor )
         throws ThrowableType;
 
-    interface MapEntityStoreVisitor<ThrowableType extends Exception>
+    interface MapEntityStoreVisitor<ThrowableType extends Throwable>
     {
         void visitEntity( Reader entityState )
             throws ThrowableType;

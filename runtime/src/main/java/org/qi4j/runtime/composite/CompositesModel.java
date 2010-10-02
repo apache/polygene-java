@@ -37,7 +37,7 @@ public class CompositesModel
         this.compositeModels = compositeModels;
     }
 
-    public <ThrowableType extends Exception> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
+    public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
         throws ThrowableType
     {
         for( TransientModel transientModel : compositeModels )

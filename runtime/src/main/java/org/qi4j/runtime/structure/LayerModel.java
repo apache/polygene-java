@@ -65,7 +65,7 @@ public final class LayerModel
         return usedLayersModel;
     }
 
-    public <ThrowableType extends Exception> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
+    public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
         throws ThrowableType
     {
         modelVisitor.visit( this );
@@ -153,7 +153,7 @@ public final class LayerModel
         return name;
     }
 
-    public <ThrowableType extends Exception> boolean visitModules( ModuleVisitor<ThrowableType> visitor, Visibility visibility )
+    public <ThrowableType extends Throwable> boolean visitModules( ModuleVisitor<ThrowableType> visitor, Visibility visibility )
         throws ThrowableType
     {
         // Visit modules in this layer

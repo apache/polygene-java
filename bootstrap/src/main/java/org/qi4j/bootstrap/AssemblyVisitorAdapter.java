@@ -18,7 +18,7 @@ package org.qi4j.bootstrap;
  * Base class for assembly visitors. Subclass and override
  * the particular methods you are interested in.
  */
-public class AssemblyVisitorAdapter<ThrowableType extends Exception>
+public class AssemblyVisitorAdapter<ThrowableType extends Throwable>
     implements AssemblyVisitor<ThrowableType>
 {
     public void visitApplication( ApplicationAssembly assembly )

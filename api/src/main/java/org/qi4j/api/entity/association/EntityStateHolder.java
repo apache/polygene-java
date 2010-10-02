@@ -45,10 +45,10 @@ public interface EntityStateHolder
      */
     <T> ManyAssociation<T> getManyAssociation( Method manyassociationMethod );
 
-    <ThrowableType extends Exception> void visitState( EntityStateVisitor<ThrowableType> visitor )
+    <ThrowableType extends Throwable> void visitState( EntityStateVisitor<ThrowableType> visitor )
         throws ThrowableType;
 
-    public interface EntityStateVisitor<ThrowableType extends Exception>
+    public interface EntityStateVisitor<ThrowableType extends Throwable>
         extends StateVisitor<ThrowableType>
     {
         void visitAssociation( QualifiedName name, Object association )

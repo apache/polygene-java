@@ -84,7 +84,7 @@ public final class ApplicationModel
         return "urn:qi4j:model:application:" + name;
     }
 
-    public <ThrowableType extends Exception> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
+    public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
         throws ThrowableType
     {
         modelVisitor.visit( this );
@@ -109,7 +109,7 @@ public final class ApplicationModel
 
     // SPI
 
-    public <ThrowableType extends Exception> void visitDescriptor( DescriptorVisitor<ThrowableType> visitor )
+    public <ThrowableType extends Throwable> void visitDescriptor( DescriptorVisitor<ThrowableType> visitor )
         throws ThrowableType
     {
         visitModel( new DescriptorModelVisitor<ThrowableType>( visitor ) );

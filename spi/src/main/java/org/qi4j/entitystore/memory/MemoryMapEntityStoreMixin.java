@@ -55,7 +55,7 @@ public class MemoryMapEntityStoreMixin
         changes.visitMap( new MemoryMapChanger() );
     }
 
-    public <ThrowableType extends Exception> void visitMap( MapEntityStoreVisitor<ThrowableType> visitor )
+    public <ThrowableType extends Throwable> void visitMap( MapEntityStoreVisitor<ThrowableType> visitor )
         throws ThrowableType
     {
         for( String state : store.values() )

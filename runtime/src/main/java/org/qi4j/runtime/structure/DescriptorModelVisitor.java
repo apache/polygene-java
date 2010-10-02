@@ -38,7 +38,7 @@ import org.qi4j.spi.structure.DescriptorVisitor;
 /**
  * Adapter of modelvisitor for the SPI descriptors
  */
-public class DescriptorModelVisitor<ThrowableType extends Exception>
+public class DescriptorModelVisitor<ThrowableType extends Throwable>
     extends ModelVisitor<ThrowableType>
 {
     private DescriptorVisitor<ThrowableType> visitor;

@@ -238,7 +238,7 @@ public class ModuleInstance
         return moduleModel.classLoader();
     }
 
-    public <ThrowableType extends Exception> void visitModules( ModuleVisitor<ThrowableType> visitor )
+    public <ThrowableType extends Throwable> void visitModules( ModuleVisitor<ThrowableType> visitor )
         throws ThrowableType
     {
         // Visit this module

@@ -124,13 +124,13 @@ public class ApplicationInstance
         logger.debug("Application "+name()+" passivated");
     }
 
-    public <ThrowableType extends Exception> void visitDescriptor( DescriptorVisitor<ThrowableType> visitor )
+    public <ThrowableType extends Throwable> void visitDescriptor( DescriptorVisitor<ThrowableType> visitor )
         throws ThrowableType
     {
         model.visitDescriptor( visitor );
     }
 
-    public <ThrowableType extends Exception> void visitInstance( InstanceVisitor<ThrowableType> visitor )
+    public <ThrowableType extends Throwable> void visitInstance( InstanceVisitor<ThrowableType> visitor )
         throws ThrowableType
     {
         visitor.visit( this );

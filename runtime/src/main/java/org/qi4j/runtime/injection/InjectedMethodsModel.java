@@ -87,7 +87,7 @@ public final class InjectedMethodsModel
         }
     }
 
-    public <ThrowableType extends Exception> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
+    public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
         throws ThrowableType
     {
         for( InjectedMethodModel methodModel : methodModels )

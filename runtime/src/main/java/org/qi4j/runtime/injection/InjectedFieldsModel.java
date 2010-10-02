@@ -55,7 +55,7 @@ public final class InjectedFieldsModel
         this.fields.add( injectedFieldModel );
     }
 
-    public <ThrowableType extends Exception> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
+    public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
         throws ThrowableType
     {
         for( InjectedFieldModel field : fields )

@@ -36,7 +36,7 @@ public final class ValuesModel
         this.valueModels = valueModels;
     }
 
-    public <ThrowableType extends Exception> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
+    public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
         throws ThrowableType
     {
         for( ValueModel valueModel : valueModels )

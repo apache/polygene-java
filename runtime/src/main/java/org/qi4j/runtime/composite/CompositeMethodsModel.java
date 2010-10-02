@@ -188,7 +188,7 @@ public final class CompositeMethodsModel
         return methods.keySet();
     }
 
-    public <ThrowableType extends Exception> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
+    public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
         throws ThrowableType
     {
         for (CompositeMethodModel compositeMethodModel : methods.values())

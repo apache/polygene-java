@@ -50,7 +50,7 @@ public class PropertiesInstance
         return null; // indicate with null that it has not been found.
     }
 
-    public <ThrowableType extends Exception> void visitProperties( StateVisitor<ThrowableType> visitor )
+    public <ThrowableType extends Throwable> void visitProperties( StateVisitor<ThrowableType> visitor )
         throws ThrowableType
     {
         for( Property<?> property : properties.values() )

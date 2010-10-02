@@ -237,7 +237,7 @@ public abstract class AbstractMixinsModel
         }
     }
 
-    public <ThrowableType extends Exception> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
+    public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
         throws ThrowableType
     {
         for( MixinModel mixinModel : mixinModels )

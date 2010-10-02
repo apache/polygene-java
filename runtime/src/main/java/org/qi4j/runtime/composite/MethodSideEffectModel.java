@@ -32,7 +32,7 @@ public final class MethodSideEffectModel
     }
 
     @Override
-    public <ThrowableType extends Exception> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
+    public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
         throws ThrowableType
     {
         modelVisitor.visit( this );

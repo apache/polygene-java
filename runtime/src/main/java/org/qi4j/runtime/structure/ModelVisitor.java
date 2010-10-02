@@ -38,7 +38,7 @@ import org.qi4j.runtime.value.ValueModel;
  * that you want to be able to throw from the visit methods to abort the traversal. Use
  * RuntimeException if you don't have any other specific exception you want to throw.
  */
-public class ModelVisitor<ThrowableType extends Exception>
+public class ModelVisitor<ThrowableType extends Throwable>
 {
     public void visit( ApplicationModel applicationModel )
         throws ThrowableType

@@ -36,7 +36,7 @@ public class ObjectsModel
         this.objectModels = objectModels;
     }
 
-    public <ThrowableType extends Exception> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
+    public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
         throws ThrowableType
     {
         for( ObjectModel objectModel : objectModels )

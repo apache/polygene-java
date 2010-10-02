@@ -29,7 +29,7 @@ public final class UsedLayersInstance
         this.usedLayerInstances = usedLayerInstances;
     }
 
-    public <ThrowableType extends Exception> boolean visitModules( ModuleVisitor<ThrowableType> visitor )
+    public <ThrowableType extends Throwable> boolean visitModules( ModuleVisitor<ThrowableType> visitor )
         throws ThrowableType
     {
         for( LayerInstance usedLayerInstance : usedLayerInstances )
