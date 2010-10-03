@@ -15,25 +15,25 @@
 package org.qi4j.api.service.qualifier;
 
 /**
- * Filter services based on tags. Tags can be set using the ServiceTags meta-info, like so:
- * module.addService(MyService.class).setMetaInfo(ServiceTags.tags("onetag","twotag"));
+ * Filter services based on identity. Identity can be set during assembly, like so:
+ * module.addService(MyService.class).identifiedBy("myservice1");
  *
  * and then at an injection point you can do this:
  *
- * @Service @Tagged("onetag") MyService service;
- * to get only a service tagged with MyService. If several match only the first match is used.
+ * @Service @IdentifiedBy("myservice1") MyService service;
+ * to get only a service identified "myservice1".
  */
-@Qualifier( Tagged.TaggedQualifier.class )
-public @interface Tagged
+@Qualifier( IdentifiedBy.IdentifiedByQualifier.class )
+public @interface IdentifiedBy
 {
-    public abstract String[] value();
+    public abstract String value();
 
-    public final class TaggedQualifier
-        implements AnnotationQualifier<Tagged>
+    public final class IdentifiedByQualifier
+        implements AnnotationQualifier<IdentifiedBy>
     {
-        public <T> ServiceQualifier qualifier( Tagged tagged )
+        public <T> ServiceQualifier qualifier( IdentifiedBy identifiedBy )
         {
-            return ServiceQualifier.withTags( tagged.value() );
+            return ServiceQualifier.withId( identifiedBy.value() );
         }
     }
 }
