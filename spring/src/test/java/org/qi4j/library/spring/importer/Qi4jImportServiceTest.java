@@ -18,14 +18,15 @@ package org.qi4j.library.spring.importer;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.qi4j.api.service.qualifier.ServiceQualifier.*;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.service.ServiceReference;
-import static org.qi4j.api.service.ServiceSelector.service;
-import static org.qi4j.api.service.ServiceSelector.withId;
+import org.qi4j.api.service.qualifier.ServiceQualifier;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
@@ -77,7 +78,7 @@ public final class Qi4jImportServiceTest
 
         assembler.objectBuilderFactory().newObjectBuilder( Qi4jImportServiceTest.class ).injectTo( this );
 
-        CommentService service = service( services, withId( "commentService2" ) );
+        CommentService service = firstService( withId( "commentService2" ), services );
         assertThat( "service with correct id has been selected", service.comment( "pizza" ), equalTo( "pizza is good." ) );
     }
 
@@ -98,7 +99,7 @@ public final class Qi4jImportServiceTest
 
         assembler.objectBuilderFactory().newObjectBuilder( Qi4jImportServiceTest.class ).injectTo( this );
 
-        CommentService foundService = service( finder.<CommentService>findServices( CommentService.class ), withId( "commentService2" ) );
+        CommentService foundService = ServiceQualifier.firstService( withId( "commentService2" ), finder.<CommentService>findServices( CommentService.class ));
         assertThat( "service with correct id has been selected", foundService.comment( "pizza" ), equalTo( "pizza is good." ) );
     }
 }
