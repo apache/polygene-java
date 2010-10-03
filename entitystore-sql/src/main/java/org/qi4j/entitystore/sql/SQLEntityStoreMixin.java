@@ -217,7 +217,7 @@ public abstract class SQLEntityStoreMixin
         return new DefaultEntityStoreUnitOfWork( entityStoreSPI, newUnitOfWorkId(), module );
     }
 
-    public <ThrowableType extends Exception> EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor<ThrowableType> visitor, ModuleSPI module )
+    public <ThrowableType extends Throwable> EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor<ThrowableType> visitor, ModuleSPI module )
         throws ThrowableType
     {
         Connection connection = null;

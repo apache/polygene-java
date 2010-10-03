@@ -142,7 +142,7 @@ public class GaeEntityStoreMixin
         }
     }
 
-    public <ThrowableType extends Exception> void visitMap( MapEntityStoreVisitor<ThrowableType> visitor )
+    public <ThrowableType extends Throwable> void visitMap( MapEntityStoreVisitor<ThrowableType> visitor )
         throws ThrowableType
     {
         Query query = new Query();

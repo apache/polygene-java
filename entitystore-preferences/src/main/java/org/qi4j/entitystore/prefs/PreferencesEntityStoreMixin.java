@@ -146,7 +146,7 @@ public class PreferencesEntityStoreMixin
         return new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), module );
     }
 
-    public <ThrowableType extends Exception> EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor<ThrowableType> visitor, ModuleSPI moduleInstance )
+    public <ThrowableType extends Throwable> EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor<ThrowableType> visitor, ModuleSPI moduleInstance )
         throws ThrowableType
     {
         final DefaultEntityStoreUnitOfWork uow = new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), moduleInstance );

@@ -22,6 +22,7 @@ import javax.management.MBeanInfo;
 import javax.management.MBeanNotificationInfo;
 import javax.management.MBeanOperationInfo;
 import javax.management.MBeanServer;
+import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import org.qi4j.api.configuration.ConfigurationComposite;
 import org.qi4j.api.injection.scope.Service;
@@ -62,27 +63,21 @@ public interface JMXConfigurationService
         {
             final UnitOfWork uow = uowf.newUnitOfWork();
 
-            app.visitDescriptor( new DescriptorVisitor()
+            app.visitDescriptor( new DescriptorVisitor<Exception>()
             {
                 @Override
                 public void visit( ServiceDescriptor serviceDescriptor )
+                    throws Exception
                 {
                     String identity = serviceDescriptor.identity();
                     Class config = serviceDescriptor.configurationType();
                     if( config != null )
                     {
                         // Register MBean for Service Configuration
-                        try
-                        {
-                            ConfigurationComposite configuration = (ConfigurationComposite) uow.get( config, identity );
-                            MBeanInfo mbeanInfo = new MBeanInfo( serviceDescriptor.type().toString(), "", attributes( configuration ), new MBeanConstructorInfo[0], new MBeanOperationInfo[0], new MBeanNotificationInfo[0] );
-                            mbeanServer.registerMBean( new EntityMBean( configuration, mbeanInfo ), new ObjectName( "Configuration:service=" + configuration
-                                .identity() ) );
-                        }
-                        catch( Exception e )
-                        {
-                            e.printStackTrace();
-                        }
+                        ConfigurationComposite configuration = (ConfigurationComposite) uow.get( config, identity );
+                        MBeanInfo mbeanInfo = new MBeanInfo( serviceDescriptor.type().toString(), "", attributes( configuration ), new MBeanConstructorInfo[0], new MBeanOperationInfo[0], new MBeanNotificationInfo[0] );
+                        mbeanServer.registerMBean( new EntityMBean( configuration, mbeanInfo ), new ObjectName( "Configuration:service=" + configuration
+                            .identity() ) );
                     }
                 }
             } );

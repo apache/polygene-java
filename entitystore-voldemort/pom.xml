@@ -84,8 +84,8 @@ jdom-1.1.jar			xercesImpl-2.9.1.jar
             <artifactId>jetty-util</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.google</groupId>
-            <artifactId>google-collect</artifactId>
+            <groupId>com.google.collections</groupId>
+            <artifactId>google-collections</artifactId>
             <version>1.0</version>
         </dependency>
         <dependency>

@@ -11,6 +11,22 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.qi4j.core:qi4j-core-testsupport:1.2-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: voldemort:voldemort:0.81" level="project" />
+    <orderEntry type="library" name="Maven: org.mortbay.jetty:jetty-util:6.1.18" level="project" />
+    <orderEntry type="library" name="Maven: com.google:google-collect:1.0" level="project" />
+    <orderEntry type="library" name="Maven: org.jdom:jdom:1.1" level="project" />
+    <orderEntry type="library" name="Maven: com.sleepycat:je:4.0.103" level="project" />
+    <orderEntry type="library" name="Maven: commons-io:commons-io:1.4" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.velocity:velocity:1.6.2" level="project" />
+    <orderEntry type="library" name="Maven: commons-collections:commons-collections:3.2.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: commons-lang:commons-lang:2.4" level="project" />
+    <orderEntry type="library" name="Maven: oro:oro:2.0.8" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-log4j12:1.6.1" level="project" />
+    <orderEntry type="library" name="Maven: log4j:log4j:1.2.15" level="project" />
+    <orderEntry type="library" name="Maven: javax.mail:mail:1.4" level="project" />
+    <orderEntry type="library" name="Maven: javax.activation:activation:1.1" level="project" />
+    <orderEntry type="library" name="Maven: javax.jms:jms:1.1" level="project" />
     <orderEntry type="library" name="Maven: org.qi4j.core:qi4j-core-spi:1.2-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: org.qi4j.core:qi4j-core-api:1.2-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.6.1" level="project" />
@@ -20,13 +36,13 @@
     <orderEntry type="library" scope="TEST" name="Maven: asm:asm:3.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: asm:asm-commons:3.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: asm:asm-tree:3.2" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.qi4j.core:qi4j-core-testsupport:1.2-SNAPSHOT" level="project" />
+    <orderEntry type="module" module-name="qi4j-core-testsupport" scope="TEST" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.4" level="project" />
     <orderEntry type="library" name="Maven: voldemort:voldemort:0.81" level="project" />
     <orderEntry type="library" name="Maven: org.mortbay.jetty:jetty:6.1.22" level="project" />
     <orderEntry type="library" name="Maven: org.mortbay.jetty:jetty-util:6.1.18" level="project" />
     <orderEntry type="library" name="Maven: org.mortbay.jetty:servlet-api:2.5-20081211" level="project" />
-    <orderEntry type="library" name="Maven: com.google:google-collect:1.0" level="project" />
+    <orderEntry type="library" name="Maven: com.google.collections:google-collections:1.0" level="project" />
     <orderEntry type="library" name="Maven: org.jdom:jdom:1.1" level="project" />
     <orderEntry type="library" name="Maven: com.sleepycat:je:4.0.103" level="project" />
     <orderEntry type="library" name="Maven: commons-io:commons-io:1.4" level="project" />
