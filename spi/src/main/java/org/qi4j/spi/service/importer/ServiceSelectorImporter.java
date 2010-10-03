@@ -22,15 +22,15 @@ import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.api.service.ServiceImporterException;
 import org.qi4j.api.service.ServiceReference;
-import org.qi4j.api.service.ServiceSelector;
+import org.qi4j.api.service.qualifier.ServiceQualifier;
 
 /**
  * If several services are available with a given type, and you want to constrain
  * the current module to use a specific one, then use this importer. Specify a
- * ServiceSelector.Selector criteria as meta-info for the service, which will be applied
+ * ServiceQualifier.Selector criteria as meta-info for the service, which will be applied
  * to the list of available services, and the first match will be chosen.
  *
- * This importer will avoid selecting itself, as could be possible if the ServiceSelector.first()
+ * This importer will avoid selecting itself, as could be possible if the ServiceQualifier.first()
  * filter is used.
  */
 public final class ServiceSelectorImporter
@@ -42,13 +42,13 @@ public final class ServiceSelectorImporter
     public Object importService( ImportedServiceDescriptor serviceDescriptor )
         throws ServiceImporterException
     {
-        ServiceSelector.Selector selector = serviceDescriptor.metaInfo( ServiceSelector.Selector.class );
+        ServiceQualifier selector = serviceDescriptor.metaInfo( ServiceQualifier.class );
         Class serviceType = serviceDescriptor.type();
         Iterable<ServiceReference<Object>> services = locator.findServices( serviceType );
         List<ServiceReference<Object>> filteredServices = new ArrayList<ServiceReference<Object>>();
         for( ServiceReference<Object> service : services )
         {
-            ServiceSelector.Selector selector1 = service.metaInfo( ServiceSelector.Selector.class );
+            ServiceQualifier selector1 = service.metaInfo( ServiceQualifier.class );
             if( selector1 != null && selector1 == selector )
             {
                 continue;
@@ -56,7 +56,7 @@ public final class ServiceSelectorImporter
 
             filteredServices.add( service );
         }
-        return ServiceSelector.service( filteredServices, selector );
+        return ServiceQualifier.firstService( selector, filteredServices );
     }
 
     public boolean isActive( Object instance )

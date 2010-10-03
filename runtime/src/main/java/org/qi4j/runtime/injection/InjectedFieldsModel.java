@@ -19,6 +19,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import org.qi4j.api.injection.InjectionScope;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
@@ -39,7 +40,7 @@ public final class InjectedFieldsModel
     {
         for( Field field : fieldsOf( fragmentClass ) )
         {
-            Annotation injectionAnnotation = getInjectionAnnotation( field.getAnnotations() );
+            Annotation injectionAnnotation = first( hasAnnotation( InjectionScope.class), field.getAnnotations() );
             if( injectionAnnotation != null )
             {
                 addModel( fragmentClass, field, injectionAnnotation );

@@ -65,8 +65,8 @@ public final class EntityManyAssociationsModel
         {
             if( ManyAssociation.class.isAssignableFrom( method.getReturnType() ) )
             {
-                Annotation[] annotations = Annotations.getMethodAndTypeAnnotations( method );
-                boolean optional = Annotations.getAnnotationOfType( annotations, Optional.class ) != null;
+                Iterable<Annotation> annotations = Annotations.getMethodAndTypeAnnotations( method );
+                boolean optional = Annotations.first( Annotations.isType(Optional.class ), annotations) != null;
 
                 // Constraints for entities in ManyAssociation
                 ValueConstraintsModel valueConstraintsModel = constraints.constraintsFor( annotations, GenericAssociationInfo.getAssociationType( method ), method.getName(), optional );

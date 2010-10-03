@@ -15,12 +15,17 @@
 package org.qi4j.runtime.injection;
 
 import java.io.Serializable;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import org.junit.Test;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.object.ObjectBuilderFactory;
+import org.qi4j.api.service.qualifier.AnnotationQualifier;
+import org.qi4j.api.service.qualifier.ServiceQualifier;
+import org.qi4j.api.service.qualifier.Qualifier;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceImporterException;
 import org.qi4j.api.service.ServiceReference;
@@ -67,6 +72,7 @@ public class ServiceInjectionTest
         assertEquals( "XX", user.testIterable() );
         assertEquals( "FooX", user.testServiceReference() );
         assertEquals( "FooXBarX", user.testIterableServiceReferences() );
+        assertEquals( "Bar", user.testQualifier() );
     }
 
     @Test
@@ -166,6 +172,12 @@ public class ServiceInjectionTest
         @Service
         Iterable<ServiceReference<MyService>> serviceRefs;
 
+        @Service @Named("Bar")
+        ServiceReference<MyService> qualifiedService;
+
+        @Service @Named("Bar")
+        Iterable<ServiceReference<MyService>> qualifiedServiceRefs;
+
         @Optional
         @Service
         MyServiceMixin optionalService12;
@@ -207,6 +219,45 @@ public class ServiceInjectionTest
                 str += serviceReference.get().doStuff();
             }
             return str;
+        }
+        
+        public String testQualifier()
+        {
+            return qualifiedService.metaInfo( ServiceName.class ).getName();
+        }
+
+        public String testQualifiedServices()
+        {
+            String str = "";
+            for( ServiceReference<MyService> qualifiedServiceRef : qualifiedServiceRefs )
+            {
+                str += qualifiedServiceRef.metaInfo( ServiceName.class ).getName();
+            }
+            return str;
+        }
+    }
+
+    @Qualifier( NamedSelector.class )
+    @Retention( RetentionPolicy.RUNTIME)
+    public @interface Named
+    {
+        public abstract String value();
+    }
+
+    public static final class NamedSelector
+        implements AnnotationQualifier<Named>
+    {
+        public <T> ServiceQualifier qualifier( final Named named )
+        {
+            return new ServiceQualifier()
+            {
+                @Override
+                public boolean qualifies( ServiceReference<?> service )
+                {
+                    ServiceName serviceName = service.metaInfo( ServiceName.class );
+                    return ( serviceName != null && serviceName.getName().equals(named.value() ));
+                }
+            };
         }
     }
 

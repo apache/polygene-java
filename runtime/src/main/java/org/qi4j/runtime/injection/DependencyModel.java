@@ -13,7 +13,6 @@
  */
 package org.qi4j.runtime.injection;
 
-import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -24,12 +23,9 @@ import java.util.Collections;
 
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.Optional;
-import org.qi4j.api.service.ServiceSelector;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.bootstrap.InvalidInjectionException;
-import org.qi4j.runtime.injection.provider.CachingInjectionProviderDecorator;
 import org.qi4j.runtime.injection.provider.InjectionProviderException;
-import org.qi4j.runtime.injection.provider.ServiceInjectionProviderFactory;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.structure.Specification;
@@ -47,7 +43,7 @@ public final class DependencyModel
 {
     public static boolean isOptional( Annotation injectionAnnotation, Annotation[] annotations )
     {
-        if( Annotations.getAnnotationOfType( annotations, Optional.class ) != null )
+        if( Annotations.first( Annotations.isType(Optional.class ), annotations) != null )
         {
             return true;
         }

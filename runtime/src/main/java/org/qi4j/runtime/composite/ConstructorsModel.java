@@ -15,6 +15,7 @@
 package org.qi4j.runtime.composite;
 
 import org.qi4j.api.common.ConstructionException;
+import org.qi4j.api.injection.InjectionScope;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectedParametersModel;
@@ -33,6 +34,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import static org.qi4j.spi.util.Annotations.*;
 
 /**
  * JAVADOC
@@ -85,7 +88,7 @@ public final class ConstructorsModel
         Annotation[][] parameterAnnotations = injectedConstructor.getParameterAnnotations();
         for (Type type : injectedConstructor.getGenericParameterTypes())
         {
-            final Annotation injectionAnnotation = Annotations.getInjectionAnnotation( parameterAnnotations[idx] );
+            final Annotation injectionAnnotation = first( hasAnnotation( InjectionScope.class), parameterAnnotations[idx] );
             if( injectionAnnotation == null )
             {
                 return null; // invalid constructor parameter

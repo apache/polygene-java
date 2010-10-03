@@ -12,15 +12,14 @@
  *
  */
 
-package org.qi4j.api.selection;
+package org.qi4j.api.service.qualifier;
 
 import java.lang.annotation.Annotation;
-import org.qi4j.api.service.ServiceSelector;
 
 /**
  * JAVADOC
  */
-public interface QualifierSelector<QUALIFIER extends Annotation>
+public interface AnnotationQualifier<QUALIFIER extends Annotation>
 {
-    public <T> ServiceSelector.Selector select( QUALIFIER qualifier );
+    public <T> ServiceQualifier qualifier( QUALIFIER qualifier );
 }

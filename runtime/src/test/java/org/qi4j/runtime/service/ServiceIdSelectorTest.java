@@ -21,13 +21,14 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceReference;
+import org.qi4j.api.service.qualifier.ServiceQualifier;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
-import static org.qi4j.api.service.ServiceSelector.*;
+import static org.qi4j.api.service.qualifier.ServiceQualifier.*;
 
 /**
  * JAVADOC
@@ -63,7 +64,7 @@ public class ServiceIdSelectorTest
 
         public ServiceConsumer( @Uses String serviceId, @Service Iterable<ServiceReference<TestService>> serviceRefs )
         {
-            service = service( serviceRefs, withId( serviceId ) );
+            service = firstService( withId(serviceId), serviceRefs );
         }
 
         public TestService getService()

@@ -12,18 +12,13 @@
  *
  */
 
-package org.qi4j.api.selection;
-
-import org.qi4j.api.service.ServiceSelector;
+package org.qi4j.api.service.qualifier;
 
 /**
  * JAVADOC
  */
-public final class TaggedSelector
-    implements QualifierSelector<Tagged>
+@Qualifier( TaggedSelector.class )
+public @interface Tagged
 {
-    public <T> ServiceSelector.Selector select( Tagged tagged )
-    {
-        return ServiceSelector.withTags( tagged.value() );
-    }
+    public abstract String[] value();
 }

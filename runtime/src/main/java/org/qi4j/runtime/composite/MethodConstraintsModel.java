@@ -23,6 +23,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.qi4j.api.common.Optional;
@@ -31,6 +32,8 @@ import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.spi.constraint.MethodConstraintsDescriptor;
 import org.qi4j.spi.util.Annotations;
 import org.qi4j.spi.util.SerializationUtil;
+
+import static org.qi4j.spi.util.Annotations.*;
 
 /**
  * JAVADOC
@@ -74,11 +77,11 @@ public final class MethodConstraintsModel
         {
             Annotation[] parameterAnnotation = parameterAnnotations[i];
 
-            Name nameAnnotation = Annotations.getAnnotationOfType( parameterAnnotation, Name.class );
+            Name nameAnnotation = first( isType(Name.class ),parameterAnnotation );
             String name = nameAnnotation == null ? "param" + ( i + 1 ) : nameAnnotation.value();
 
-            boolean optional = Annotations.getAnnotationOfType( parameterAnnotation, Optional.class ) != null;
-            ValueConstraintsModel parameterConstraintsModel = constraintsModel.constraintsFor( parameterAnnotation, parameterTypes[i], name, optional );
+            boolean optional = first( isType(Optional.class ), parameterAnnotation) != null;
+            ValueConstraintsModel parameterConstraintsModel = constraintsModel.constraintsFor( Arrays.asList(parameterAnnotation), parameterTypes[i], name, optional );
             if( parameterConstraintsModel.isConstrained() )
             {
                 constrained = true;

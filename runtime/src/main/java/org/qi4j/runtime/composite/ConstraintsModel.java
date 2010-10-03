@@ -18,13 +18,14 @@ import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import org.qi4j.api.common.InvalidApplicationException;
-import org.qi4j.api.constraint.Constraint;
-import org.qi4j.api.constraint.ConstraintImplementationNotFoundException;
-import org.qi4j.api.constraint.Constraints;
+import org.qi4j.api.constraint.*;
+import org.qi4j.spi.util.Annotations;
 
+import static java.util.Arrays.asList;
 import static org.qi4j.api.util.Classes.*;
 import static org.qi4j.spi.util.Annotations.*;
 
@@ -49,7 +50,7 @@ public final class ConstraintsModel
         }
     }
 
-    public ValueConstraintsModel constraintsFor( Annotation[] constraintAnnotations,
+    public ValueConstraintsModel constraintsFor( Iterable<Annotation> constraintAnnotations,
                                                  Type valueType,
                                                  String name,
                                                  boolean optional
@@ -57,14 +58,8 @@ public final class ConstraintsModel
     {
         List<AbstractConstraintModel> constraintModels = new ArrayList<AbstractConstraintModel>();
         nextConstraint:
-        for( Annotation constraintAnnotation : constraintAnnotations )
+        for( Annotation constraintAnnotation : filter( hasAnnotation(org.qi4j.api.constraint.ConstraintDeclaration.class ), constraintAnnotations) )
         {
-            // Is this a constraint annotation
-            if( !isConstraintAnnotation( constraintAnnotation ) )
-            {
-                continue;
-            }
-
             // Check composite declarations first
             Class<? extends Annotation> annotationType = constraintAnnotation.annotationType();
             for( ConstraintDeclaration constraint : constraints )
@@ -94,9 +89,9 @@ public final class ConstraintsModel
             // No implementation found!
 
             // Check if if it's a composite constraints
-            if( isCompositeConstraintAnnotation( constraintAnnotation ) )
+            if( hasValid( hasAnnotation( org.qi4j.api.constraint.ConstraintDeclaration.class ), asList( constraintAnnotation.annotationType().getAnnotations())))
             {
-                ValueConstraintsModel valueConstraintsModel = constraintsFor( constraintAnnotation.annotationType().getAnnotations(), valueType, name, optional );
+                ValueConstraintsModel valueConstraintsModel = constraintsFor( asList( constraintAnnotation.annotationType().getAnnotations()), valueType, name, optional );
                 CompositeConstraintModel compositeConstraintModel = new CompositeConstraintModel( constraintAnnotation, valueConstraintsModel );
                 constraintModels.add( compositeConstraintModel );
                 continue nextConstraint;

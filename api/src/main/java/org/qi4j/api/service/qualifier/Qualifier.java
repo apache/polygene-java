@@ -12,13 +12,16 @@
  *
  */
 
-package org.qi4j.api.selection;
+package org.qi4j.api.service.qualifier;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
  * JAVADOC
  */
-@Qualifier( TaggedSelector.class )
-public @interface Tagged
+@Retention( RetentionPolicy.RUNTIME)
+public @interface Qualifier
 {
-    public abstract String[] value();
+    public abstract Class<? extends AnnotationQualifier> value();
 }
