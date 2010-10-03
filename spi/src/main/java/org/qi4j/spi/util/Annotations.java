@@ -15,17 +15,13 @@
 package org.qi4j.spi.util;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import org.qi4j.api.constraint.ConstraintDeclaration;
-import org.qi4j.api.injection.InjectionScope;
 import org.qi4j.api.util.Classes;
 
 /**
@@ -33,26 +29,6 @@ import org.qi4j.api.util.Classes;
  */
 public final class Annotations
 {
-    public static <ThrowableType extends Throwable, Result> Result visitAnnotations( Annotation[] annotations,
-                                                                                     AnnotationSpecification specification,
-                                                                                     AnnotationVisitor<ThrowableType, Result> visitor
-    )
-        throws ThrowableType
-    {
-        for( Annotation annotation : annotations )
-        {
-            if( specification == null || specification.valid( annotation ) )
-            {
-                if( !visitor.visitAnnotation( annotation ) )
-                {
-                    return visitor.getResult();
-                }
-            }
-        }
-
-        return visitor.getResult();
-    }
-
     public static <A extends Annotation> Iterable<A> filter(AnnotationSpecification specification, Iterable<? extends Annotation> iterable)
     {
         return (Iterable<A>) new FilterIterable(iterable, specification);
@@ -141,19 +117,6 @@ public final class Annotations
         Annotation[] annotations = annotationList.toArray( new Annotation[annotationList.size()] );
 
         return Arrays.asList( annotations);
-    }
-
-    public static abstract class AnnotationVisitor<ThrowableType extends Throwable, Result>
-    {
-        protected Result result;
-
-        public abstract boolean visitAnnotation( Annotation annotation )
-            throws ThrowableType;
-
-        public Result getResult()
-        {
-            return result;
-        }
     }
 
     public interface AnnotationSpecification
