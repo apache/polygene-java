@@ -22,7 +22,8 @@ Import-Package: org.json, \
                 org.qi4j.spi.property, \
                 org.qi4j.spi.service, \
                 org.qi4j.spi.structure, \
-                org.qi4j.spi.uuid
+                org.qi4j.spi.uuid, \
+                org.slf4j
 
 
 Export-Package: org.qi4j.entitystore.prefs

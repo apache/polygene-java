@@ -16,8 +16,6 @@ package org.qi4j.migration;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,18 +28,16 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.structure.Application;
-import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-import org.qi4j.api.usecase.Usecase;
-import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.entitystore.map.MapEntityStore;
 import org.qi4j.entitystore.map.Migration;
 import org.qi4j.entitystore.map.StateStore;
 import org.qi4j.migration.assembly.EntityMigrationRule;
 import org.qi4j.migration.assembly.MigrationBuilder;
 import org.qi4j.migration.assembly.MigrationRule;
-import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entitystore.EntityStore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Migration service. This is used by MapEntityStore EntityStore implementations to
@@ -101,8 +97,8 @@ public interface MigrationService
                 {
                     boolean ruleExecuted = matchedRule.upgrade( state, stateStore, migrator );
 
-                    if (ruleExecuted && log.isLoggable( Level.FINE ))
-                        log.fine( matchedRule.toString() );
+                    if (ruleExecuted && log.isDebugEnabled())
+                        log.debug( matchedRule.toString() );
 
                     changed = ruleExecuted || changed;
                 }
@@ -123,7 +119,7 @@ public interface MigrationService
         {
             builder = composite.metaInfo( MigrationBuilder.class );
 
-            log = Logger.getLogger( MigrationService.class.getName() );
+            log = LoggerFactory.getLogger( MigrationService.class );
 
             String version = app.version();
             String lastVersion = config.configuration().lastStartupVersion().get();
@@ -141,7 +137,7 @@ public interface MigrationService
                         {
                             rule.upgrade( store, this );
                             executedRules.add( rule );
-                            log.fine( rule.toString() );
+                            log.debug( rule.toString() );
                         }
 
                         log.info( "Migrated to " + version );
@@ -152,7 +148,7 @@ public interface MigrationService
                 }
                 catch( Exception e )
                 {
-                    log.log( Level.SEVERE, "Upgrade failed", e );
+                    log.error( "Upgrade failed", e );
 
                     // Downgrade the migrated rules
                     for( MigrationRule executedRule : executedRules )

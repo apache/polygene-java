@@ -96,7 +96,7 @@ public class SPARQLResource
             Form form;
             if( getRequest().getMethod().equals( Method.POST ) )
             {
-                form = getRequest().getEntityAsForm();
+                form = new Form(getRequest().getEntity());
             }
             else
             {
@@ -156,7 +156,7 @@ public class SPARQLResource
                                 }
                                 catch( RepositoryException e )
                                 {
-                                    throw (IOException) new IOException().initCause( e );
+                                    // Ignore
                                 }
                             }
                         }
@@ -186,7 +186,7 @@ public class SPARQLResource
                                 }
                                 catch( RepositoryException e )
                                 {
-                                    throw (IOException) new IOException().initCause( e );
+                                    // Ignore
                                 }
                             }
                         }
@@ -216,7 +216,7 @@ public class SPARQLResource
                                 }
                                 catch( RepositoryException e )
                                 {
-                                    throw (IOException) new IOException().initCause( e );
+                                    // Ignore
                                 }
                             }
                         }
@@ -270,7 +270,7 @@ public class SPARQLResource
     {
         Form form = getRequest().getResourceRef().getQueryAsForm();
 
-        Query result = null;
+        Query result;
 
 // default query language is SPARQL
         QueryLanguage queryLn = QueryLanguage.SPARQL;

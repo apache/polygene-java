@@ -65,7 +65,8 @@ public class GaeEntityStoreMixin
         return new GaeEntityStoreUnitOfWork( datastoreService, generateId(), module );
     }
 
-    public EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor visitor, ModuleSPI module )
+    public <ThrowableType extends Throwable> EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor<ThrowableType> visitor, ModuleSPI module )
+        throws ThrowableType
     {
         GaeEntityStoreUnitOfWork euow = new GaeEntityStoreUnitOfWork( datastoreService, generateId(), module );
         Query query = new Query();

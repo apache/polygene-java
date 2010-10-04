@@ -59,7 +59,8 @@ public class NeoEntityStoreMixin
         return new NeoEntityStoreUnitOfWork( neo, indexService, newUnitOfWorkId(), module );
     }
 
-    public EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor visitor, ModuleSPI module )
+    public <ThrowableType extends Throwable> EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor<ThrowableType> visitor, ModuleSPI module )
+        throws ThrowableType
     {
         NeoEntityStoreUnitOfWork uow = new NeoEntityStoreUnitOfWork( neo, indexService, newUnitOfWorkId(), module );
 

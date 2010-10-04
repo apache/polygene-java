@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
-import java.util.logging.Logger;
 
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityComposite;
@@ -66,6 +65,8 @@ import org.qi4j.index.sql.support.common.EntityTypeInfo;
 import org.qi4j.index.sql.support.common.QNameInfo;
 import org.qi4j.index.sql.support.postgresql.PostgreSQLTypeHelper;
 import org.qi4j.spi.query.EntityFinderException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sql.generation.api.grammar.builders.BooleanBuilder;
 import org.sql.generation.api.grammar.builders.InBuilder;
 import org.sql.generation.api.grammar.builders.query.GroupByBuilder;
@@ -120,7 +121,7 @@ public abstract class AbstractSQLQuerying
 
     private static final String TABLE_NAME_PREFIX = "t";
 
-    private static final Logger _log = Logger.getLogger( AbstractSQLQuerying.class.getName() );
+    private static final Logger _log = LoggerFactory.getLogger( AbstractSQLQuerying.class.getName() );
 
     static
     {

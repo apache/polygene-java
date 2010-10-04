@@ -203,6 +203,10 @@ public class AbstractSQLIndexing
             connection.commit();
 
         }
+        catch( Throwable t )
+        {
+            SQLUtil.rollbackQuietly( connection );
+        }
         finally
         {
             connection.setAutoCommit( wasAutoCommit );

@@ -14,7 +14,9 @@ Import-Package: org.qi4j.api.entity, org.json, \
                 org.qi4j.api.property, \
                 org.qi4j.api.structure, \
                 org.qi4j.api.unitofwork, \
-                org.qi4j.spi.entitystore
+                org.qi4j.spi.entitystore, \
+                org.slf4j, \
+                org.slf4j.impl
 
 Embed-Dependency: \
     *;scope=compile|runtime;groupId=!org.qi4j.*|org.restlet|com.noelios.*

@@ -12,12 +12,14 @@ qi4j.data.lg
 *.ipr
 entitystore-file/qi4j-entitystore-file.iml
 entitystore-hazelcast/qi4j-entitystore-hazelcast.iml
+entitystore-sql/qi4j-entitystore-sql.iml
 entitystore-jdbm/qi4j-entitystore-jdbm.iml
 entitystore-neo4j/qi4j-entitystore-neo4j.iml
 entitystore-preferences/qi4j-entitystore-preferences.iml
 entitystore-qrm/qi4j-entitystore-qrm.iml
 entitystore-rest/qi4j-entitystore-rest.iml
 entitystore-gae/qi4j-entitystore-gae.iml
+entitystore-voldemort/qi4j-entitystore-voldemort.iml
 indexing-rdf/qi4j-indexing-rdf.iml
 indexing-sql/qi4j-indexing-sql.iml
 migration/qi4j-migration.iml
