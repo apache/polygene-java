@@ -16,7 +16,6 @@
  */
 package org.qi4j.library.struts2;
 
-import java.util.logging.Logger;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -27,11 +26,13 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.Energy4Java;
 import static org.qi4j.library.struts2.Constants.*;
 import org.qi4j.spi.structure.ApplicationSPI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class Qi4jApplicationBootstrapListener
     implements ServletContextListener
 {
-    private static final Logger LOG = Logger.getLogger( Qi4jApplicationBootstrapListener.class.getName() );
+    private static final Logger LOG = LoggerFactory.getLogger( Qi4jApplicationBootstrapListener.class );
 
     private ApplicationSPI application;
 

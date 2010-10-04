@@ -1,4 +1,4 @@
-Qi4j Library - Logging
+Qi4j Library - Struts Convention Plugin
 Copyright 2007-2008, The Qi4j Development Team of individuals.
 
 See http://www.qi4j.org/contributors.html for list of of individuals.
@@ -11,7 +11,8 @@ Apache License ver 2.0 http://www.apache.org/licenses
 Below follows a list of binary dependencies and their licenses;
 ----------------------------------------------------------------
 
-<NONE>
+This module uses Apache Struts, developed at Apache Software Foundation
+(http://struts.apache.org), under Apache License 2.0. See LICENSE.
 
 
 END OF NOTICE

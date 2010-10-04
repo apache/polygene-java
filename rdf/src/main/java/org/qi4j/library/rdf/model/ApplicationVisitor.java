@@ -29,7 +29,7 @@ import org.qi4j.spi.structure.ModuleDescriptor;
 /**
  * JAVADOC
  */
-class ApplicationVisitor extends DescriptorVisitor
+class ApplicationVisitor extends DescriptorVisitor<RuntimeException>
 {
     private SerializerContext context;
 

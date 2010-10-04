@@ -32,7 +32,6 @@ public class Qi4jServlet
         extends HttpServlet
 {
 
-    private static final long serialVersionUID = 1L;
     protected Application application;
 
     public Qi4jServlet()

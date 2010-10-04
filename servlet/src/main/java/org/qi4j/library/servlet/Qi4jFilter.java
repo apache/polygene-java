@@ -33,7 +33,6 @@ public abstract class Qi4jFilter
         implements Filter
 {
 
-    private static final long serialVersionUID = 1L;
     protected Application application;
 
     public void init( FilterConfig filterConfig )
