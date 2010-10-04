@@ -2,6 +2,8 @@ package org.qi4j.entitystore.map;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.UUID;
 import org.json.JSONException;
@@ -16,6 +18,9 @@ import org.qi4j.api.service.Activatable;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.api.usecase.Usecase;
+import org.qi4j.spi.cache.Cache;
+import org.qi4j.spi.cache.CachePool;
+import org.qi4j.spi.cache.NullCache;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
@@ -35,10 +40,11 @@ import org.slf4j.LoggerFactory;
  * See {@link org.qi4j.entitystore.memory.MemoryMapEntityStoreMixin} for reference.
  */
 public class JSONMapEntityStoreMixin
-        implements EntityStore, EntityStoreSPI, StateStore, Activatable
+    implements EntityStore, EntityStoreSPI, StateStore, Activatable
 {
     @This
     private MapEntityStore mapEntityStore;
+    
     @This
     private EntityStoreSPI entityStoreSpi;
 
@@ -49,18 +55,39 @@ public class JSONMapEntityStoreMixin
     @Service
     private Migration migration;
 
+    @Optional
+    @Service
+    private CachePool caching;
+    private Cache<String> cache;
+
     protected String uuid;
     private int count;
 
+    public JSONMapEntityStoreMixin()
+    {
+    }
+
     public void activate()
-            throws Exception
+        throws Exception
     {
         uuid = UUID.randomUUID().toString() + "-";
+        if( caching != null )
+        {
+            cache = caching.fetchCache( uuid, String.class );
+        }
+        else
+        {
+            cache = new NullCache<String>();
+        }
     }
 
     public void passivate()
-            throws Exception
+        throws Exception
     {
+        if( caching != null )
+        {
+            caching.returnCache( cache );
+        }
     }
 
     // EntityStore
@@ -91,7 +118,7 @@ public class JSONMapEntityStoreMixin
 
             return new JSONEntityState( (DefaultEntityStoreUnitOfWork) unitOfWork, identity, entityDescriptor, state );
         }
-        catch (JSONException e)
+        catch( JSONException e )
         {
             throw new EntityStoreException( e );
         }
@@ -99,14 +126,22 @@ public class JSONMapEntityStoreMixin
 
     public synchronized EntityState getEntityState( EntityStoreUnitOfWork unitOfWork, EntityReference identity )
     {
+        Reader in = null;
+        String data = cache.get( identity.identity() );
+        if( data != null )
+        {
+            in = new StringReader( data );
+        }
         // Get state
-        Reader in = mapEntityStore.get( identity );
-
+        if( in == null )
+        {
+            in = mapEntityStore.get( identity );
+        }
         return readEntityState( (DefaultEntityStoreUnitOfWork) unitOfWork, in );
     }
 
     public StateCommitter applyChanges( final Iterable<EntityState> state, final String version, final long lastModified )
-            throws EntityStoreException
+        throws EntityStoreException
     {
         return new StateCommitter()
         {
@@ -117,30 +152,37 @@ public class JSONMapEntityStoreMixin
                     mapEntityStore.applyChanges( new MapEntityStore.MapChanges()
                     {
                         public void visitMap( MapEntityStore.MapChanger changer )
-                                throws IOException
+                            throws IOException
                         {
-                            for (EntityState entityState : state)
+                            for( EntityState entityState : state )
                             {
                                 JSONEntityState state = (JSONEntityState) entityState;
                                 if( state.status().equals( EntityStatus.NEW ) )
                                 {
-                                    Writer writer = changer.newEntity( state.identity(), state.entityDescriptor().entityType() );
+                                    Writer writer = changer.newEntity( state.identity(),
+                                                                       state.entityDescriptor().entityType() );
                                     writeEntityState( state, writer, version, lastModified );
                                     writer.close();
-                                } else if( state.status().equals( EntityStatus.UPDATED ) )
+                                    updateCache( state, version, lastModified );
+                                }
+                                else if( state.status().equals( EntityStatus.UPDATED ) )
                                 {
-                                    Writer writer = changer.updateEntity( state.identity(), state.entityDescriptor().entityType() );
+                                    Writer writer = changer.updateEntity( state.identity(),
+                                                                          state.entityDescriptor().entityType() );
                                     writeEntityState( state, writer, version, lastModified );
                                     writer.close();
-                                } else if( state.status().equals( EntityStatus.REMOVED ) )
+                                    updateCache( state, version, lastModified );
+                                }
+                                else if( state.status().equals( EntityStatus.REMOVED ) )
                                 {
                                     changer.removeEntity( state.identity(), state.entityDescriptor().entityType() );
+                                    cache.remove( state.identity().identity() );
                                 }
                             }
                         }
                     } );
                 }
-                catch (IOException e)
+                catch( IOException e )
                 {
                     throw new EntityStoreException( e );
                 }
@@ -157,7 +199,7 @@ public class JSONMapEntityStoreMixin
     {
         // TODO This can be used for reading state, but not for modifying (e.g. removing all entities)
         final DefaultEntityStoreUnitOfWork uow =
-                new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), moduleInstance );
+            new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), moduleInstance );
 
         mapEntityStore.visitMap( new MapEntityStore.MapEntityStoreVisitor<ThrowableType>()
         {
@@ -179,7 +221,7 @@ public class JSONMapEntityStoreMixin
     }
 
     protected void writeEntityState( JSONEntityState state, Writer writer, String identity, long lastModified )
-            throws EntityStoreException
+        throws EntityStoreException
     {
         try
         {
@@ -188,14 +230,14 @@ public class JSONMapEntityStoreMixin
             jsonState.put( "modified", lastModified );
             writer.append( jsonState.toString() );
         }
-        catch (Exception e)
+        catch( Exception e )
         {
             throw new EntityStoreException( "Could not store EntityState", e );
         }
     }
 
     protected EntityState readEntityState( DefaultEntityStoreUnitOfWork unitOfWork, Reader entityState )
-            throws EntityStoreException
+        throws EntityStoreException
     {
         try
         {
@@ -208,20 +250,23 @@ public class JSONMapEntityStoreMixin
             String identity = jsonObject.getString( "identity" );
 
             // Check if version is correct
-            String currentAppVersion = jsonObject.optString( MapEntityStore.JSONKeys.application_version.name(), "0.0" );
+            String currentAppVersion = jsonObject.optString( MapEntityStore.JSONKeys.application_version.name(),
+                                                             "0.0" );
             if( !currentAppVersion.equals( application.version() ) )
             {
                 if( migration != null )
                 {
                     migration.migrate( jsonObject, application.version(), this );
-                } else
+                }
+                else
                 {
                     // Do nothing - set version to be correct
                     jsonObject.put( MapEntityStore.JSONKeys.application_version.name(), application.version() );
                 }
 
-                LoggerFactory.getLogger( getClass())
-                        .debug( "Updated version nr on " + identity + " from " + currentAppVersion + " to " + application.version() );
+                LoggerFactory.getLogger( getClass() )
+                    .debug(
+                        "Updated version nr on " + identity + " from " + currentAppVersion + " to " + application.version() );
 
                 // State changed
                 status = EntityStatus.UPDATED;
@@ -236,22 +281,22 @@ public class JSONMapEntityStoreMixin
             }
 
             return new JSONEntityState( unitOfWork,
-                    version,
-                    modified,
-                    EntityReference.parseEntityReference( identity ),
-                    status,
-                    entityDescriptor,
-                    jsonObject
+                                        version,
+                                        modified,
+                                        EntityReference.parseEntityReference( identity ),
+                                        status,
+                                        entityDescriptor,
+                                        jsonObject
             );
         }
-        catch (JSONException e)
+        catch( JSONException e )
         {
             throw new EntityStoreException( e );
         }
     }
 
     public JSONObject getState( String id )
-            throws IOException
+        throws IOException
     {
         Reader reader = mapEntityStore.get( EntityReference.parseEntityReference( id ) );
         JSONObject jsonObject;
@@ -259,11 +304,21 @@ public class JSONMapEntityStoreMixin
         {
             jsonObject = new JSONObject( new JSONTokener( reader ) );
         }
-        catch (JSONException e)
+        catch( JSONException e )
         {
             throw (IOException) new IOException().initCause( e );
         }
         reader.close();
         return jsonObject;
     }
+
+    private void updateCache( JSONEntityState state, String version, long lastModified )
+        throws IOException
+    {
+        StringWriter sw = new StringWriter();
+        writeEntityState( state, sw, version, lastModified );
+        sw.close();
+        cache.put( state.identity().identity(), sw.toString() );
+    }
+
 }
