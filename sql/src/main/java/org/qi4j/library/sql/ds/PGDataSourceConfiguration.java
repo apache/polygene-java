@@ -42,6 +42,4 @@ public interface PGDataSourceConfiguration
     @Optional
     public Property<String> password();
 
-    @Optional
-    public Property<String> additionalInfo();
 }
