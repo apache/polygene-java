@@ -698,8 +698,8 @@ public abstract class AbstractSQLQuerying
 
                         // Last table column might be null because of left joins
                         builder.getWhere().reset(
-                            b.isNull( c
-                                .colName( TABLE_NAME_PREFIX + lastTableIndex, DBNames.QNAME_TABLE_VALUE_COLUMN_NAME ) ) );
+                            b.isNull( c.colName( TABLE_NAME_PREFIX + lastTableIndex,
+                                DBNames.QNAME_TABLE_VALUE_COLUMN_NAME ) ) );
                     }
                 }
 
@@ -746,10 +746,10 @@ public abstract class AbstractSQLQuerying
                     BooleanBuilder condition = b.booleanBuilder();
                     modifyFromClauseAndWhereClauseToGetValue( QualifiedName.fromClass( predicate.propertyReference()
                         .propertyDeclaringType(), predicate.propertyReference().propertyName() ), value, predicate,
-                        false, lastTableIndex, new ModifiableInt( lastTableIndex ), DBNames.QNAME_TABLE_VALUE_COLUMN_NAME,
-                        DBNames.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME, vendor, condition, afterWhere, builder
-                            .getFrom().getTableReferences().iterator().next(), builder.getGroupBy(), builder
-                            .getHaving(), new ArrayList<QNameJoin>(), values, valueSQLTypes );
+                        false, lastTableIndex, new ModifiableInt( lastTableIndex ),
+                        DBNames.QNAME_TABLE_VALUE_COLUMN_NAME, DBNames.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME,
+                        vendor, condition, afterWhere, builder.getFrom().getTableReferences().iterator().next(),
+                        builder.getGroupBy(), builder.getHaving(), new ArrayList<QNameJoin>(), values, valueSQLTypes );
                     builder.getWhere().and( condition.createExpression() );
                 }
             } //
@@ -828,11 +828,11 @@ public abstract class AbstractSQLQuerying
 
                     }
 
-                    builder.getHaving().and(
-                        b.geq(
-                            l.func( "COUNT",
-                                c.colName( TABLE_NAME_PREFIX + lastTableIndex, DBNames.QNAME_TABLE_VALUE_COLUMN_NAME ) ),
-                            l.n( collection.size() ) ) );
+                    builder.getHaving()
+                        .and(
+                            b.geq(
+                                l.func( "COUNT", c.colName( TABLE_NAME_PREFIX + lastTableIndex,
+                                    DBNames.QNAME_TABLE_VALUE_COLUMN_NAME ) ), l.n( collection.size() ) ) );
                 }
 
             } //
@@ -909,7 +909,7 @@ public abstract class AbstractSQLQuerying
 
         where.and( entityTypeCondition );
 
-        builder.trimGroupBy( vendor.getQueryFactory() );
+        builder.trimGroupBy();
 
         return builder.createExpression();
     }
@@ -1252,16 +1252,16 @@ public abstract class AbstractSQLQuerying
                 if( totalItemsProcessed == 0 )
                 {
                     collectionCondition.and( b.isNotNull( collColExp ) ).and(
-                        b.eq( collColExp, l.d( DBNames.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME ) ) );
+                        b.eq( collColExp, l.l( DBNames.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME ) ) );
                 }
                 else if( !negationActive )
                 {
                     groupBy.addGroupingElements( q.groupingElement( c.colName( TABLE_NAME_PREFIX + currentTableIndex,
                         DBNames.ENTITY_TABLE_PK_COLUMN_NAME ) ) );
-                    having.and( b.eq(
-                        l.func( SQLFunctions.COUNT,
-                            c.colName( TABLE_NAME_PREFIX + currentTableIndex, DBNames.QNAME_TABLE_VALUE_COLUMN_NAME ) ),
-                        l.n( totalItemsProcessed ) ) );
+                    having
+                        .and( b.eq(
+                            l.func( SQLFunctions.COUNT, c.colName( TABLE_NAME_PREFIX + currentTableIndex,
+                                DBNames.QNAME_TABLE_VALUE_COLUMN_NAME ) ), l.n( totalItemsProcessed ) ) );
 
                 }
             }
@@ -1273,7 +1273,7 @@ public abstract class AbstractSQLQuerying
         {
             // Visit all properties with recursion and make joins as necessary
             // @formatter:off
-            ((ValueComposite) value).state().visitProperties( new StateVisitor()
+            ((ValueComposite) value).state().visitProperties( new StateVisitor<RuntimeException>()
             {
                 public void visitProperty( QualifiedName name, Object propertyValue )
                 {

@@ -61,7 +61,7 @@ public class PostgreSQLQuerying extends AbstractSQLQuerying
             builder.limit( q.limit( maxResults ) );
         }
 
-        builder.setOrderByToFirstColumnIfOffsetOrLimit( q );
+        builder.setOrderByToFirstColumnIfOffsetOrLimit();
 
         return q.createQuery( builder.createExpression() );
     }

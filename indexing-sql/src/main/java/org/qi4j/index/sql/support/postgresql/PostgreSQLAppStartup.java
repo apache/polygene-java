@@ -281,7 +281,7 @@ public class PostgreSQLAppStartup extends AbstractSQLStartup
     {
         final List<ValueDescriptor> valueDescriptors = new ArrayList<ValueDescriptor>();
         ApplicationSPI appSPI = (ApplicationSPI) this._app;
-        appSPI.visitDescriptor( new DescriptorVisitor()
+        appSPI.visitDescriptor( new DescriptorVisitor<RuntimeException>()
         {
             @Override
             public void visit( EntityDescriptor entityDescriptor )
@@ -824,11 +824,11 @@ public class PostgreSQLAppStartup extends AbstractSQLStartup
         try
         {
             Map<String, Long> pks = this._state.tablePKs().get();
-            pks.put( ENTITY_TABLE_NAME, this.getNextPK( Long.class, stmt, schemaName, DBNames.ENTITY_TABLE_PK_COLUMN_NAME,
-                DBNames.ENTITY_TABLE_NAME, 0L ) );
+            pks.put( ENTITY_TABLE_NAME, this.getNextPK( Long.class, stmt, schemaName,
+                DBNames.ENTITY_TABLE_PK_COLUMN_NAME, DBNames.ENTITY_TABLE_NAME, 0L ) );
             ResultSet rs = stmt.executeQuery( String.format( DBNames.TWO_VALUE_SELECT,
-                DBNames.ENTITY_TYPES_TABLE_PK_COLUMN_NAME, DBNames.ENTITY_TYPES_TABLE_TYPE_NAME_COLUMN_NAME, schemaName,
-                DBNames.ENTITY_TYPES_TABLE_NAME ) );
+                DBNames.ENTITY_TYPES_TABLE_PK_COLUMN_NAME, DBNames.ENTITY_TYPES_TABLE_TYPE_NAME_COLUMN_NAME,
+                schemaName, DBNames.ENTITY_TYPES_TABLE_NAME ) );
 
             long pk = 0L;
             while( rs.next() )
@@ -947,7 +947,8 @@ public class PostgreSQLAppStartup extends AbstractSQLStartup
         }
 
         Statement stmt = connection.createStatement();
-        ps = connection.prepareStatement( String.format( DBNames.TWO_VALUE_INSERT, schemaName, USED_QNAMES_TABLE_NAME ) );
+        ps = connection
+            .prepareStatement( String.format( DBNames.TWO_VALUE_INSERT, schemaName, USED_QNAMES_TABLE_NAME ) );
         try
         {
             for( QNameInfo qNameInfo : this._state.qNameInfos().get().values() )
@@ -962,8 +963,8 @@ public class PostgreSQLAppStartup extends AbstractSQLStartup
                         ALL_QNAMES_TABLE_PK_COLUMN_NAME + " " + ALL_QNAMES_TABLE_PK_COLUMN_DATA_TYPE + " NOT NULL,"
                         + "\n"
                         + //
-                        DBNames.ENTITY_TABLE_PK_COLUMN_NAME + " " + DBNames.ENTITY_TABLE_PK_COLUMN_DATA_TYPE + " NOT NULL,"
-                        + "\n" //
+                        DBNames.ENTITY_TABLE_PK_COLUMN_NAME + " " + DBNames.ENTITY_TABLE_PK_COLUMN_DATA_TYPE
+                        + " NOT NULL," + "\n" //
                     );
 
                 if( type.equals( QNameType.PROPERTY ) )
