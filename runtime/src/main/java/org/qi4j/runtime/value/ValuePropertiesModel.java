@@ -41,8 +41,8 @@ public final class ValuePropertiesModel
 
     protected ValuePropertyModel newPropertyModel( Method method, Class compositeType )
     {
-        Annotation[] annotations = Annotations.getMethodAndTypeAnnotations( method );
-        boolean optional = Annotations.getAnnotationOfType( annotations, Optional.class ) != null;
+        Iterable<Annotation> annotations = Annotations.getMethodAndTypeAnnotations( method );
+        boolean optional = Annotations.first( Annotations.isType(Optional.class ), annotations) != null;
         ValueConstraintsModel valueConstraintsModel = constraints.constraintsFor( annotations, GenericPropertyInfo.getPropertyType( method ), method.getName(), optional );
         ValueConstraintsInstance valueConstraintsInstance = null;
         if( valueConstraintsModel.isConstrained() )

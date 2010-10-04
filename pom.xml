@@ -404,17 +404,6 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>cglib</groupId>
-        <artifactId>cglib-nodep</artifactId>
-        <version>${version.cglib}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jmock</groupId>
-        <artifactId>jmock</artifactId>
-        <version>2.4.0</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
         <groupId>org.easymock</groupId>
         <artifactId>easymock</artifactId>
         <version>2.3</version>

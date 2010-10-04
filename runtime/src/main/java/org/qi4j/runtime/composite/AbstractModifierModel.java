@@ -69,7 +69,7 @@ public abstract class AbstractModifierModel
         return InvocationHandler.class.isAssignableFrom( modifierClass );
     }
 
-    public <ThrowableType extends Exception> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
+    public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
         throws ThrowableType
     {
         constructorsModel.visitModel( modelVisitor );

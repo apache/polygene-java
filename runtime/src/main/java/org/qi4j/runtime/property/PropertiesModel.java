@@ -26,6 +26,8 @@ import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.composite.ValueConstraintsModel;
 import org.qi4j.spi.util.Annotations;
 
+import static org.qi4j.spi.util.Annotations.*;
+
 /**
  * Model for properties in Transient Composites
  */
@@ -39,8 +41,8 @@ public final class PropertiesModel
 
     protected PropertyModel newPropertyModel( Method method, Class compositeType )
     {
-        Annotation[] annotations = Annotations.getMethodAndTypeAnnotations( method );
-        boolean optional = Annotations.getAnnotationOfType( annotations, Optional.class ) != null;
+        Iterable<Annotation> annotations = getMethodAndTypeAnnotations( method );
+        boolean optional = first( isType(Optional.class ), annotations) != null;
         ValueConstraintsModel valueConstraintsModel = constraints.constraintsFor( annotations, GenericPropertyInfo.getPropertyType( method ), method.getName(), optional );
         ValueConstraintsInstance valueConstraintsInstance = null;
         if( valueConstraintsModel.isConstrained() )

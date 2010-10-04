@@ -20,11 +20,14 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import org.qi4j.api.injection.InjectionScope;
 import org.qi4j.api.util.Classes;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.spi.util.Annotations;
+
+import static org.qi4j.spi.util.Annotations.*;
 
 /**
  * JAVADOC
@@ -48,7 +51,7 @@ public final class InjectedMethodsModel
                 final Type[] genericParameterTypes = method.getGenericParameterTypes();
                 for( int i = 0; i < parameterAnnotations.length; i++ )
                 {
-                    Annotation injectionAnnotation = Annotations.getInjectionAnnotation( parameterAnnotations[ i ] );
+                    Annotation injectionAnnotation = first( hasAnnotation( InjectionScope.class), parameterAnnotations[ i ] );
                     if( injectionAnnotation == null )
                     {
                         continue nextMethod;
@@ -87,7 +90,7 @@ public final class InjectedMethodsModel
         }
     }
 
-    public <ThrowableType extends Exception> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
+    public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
         throws ThrowableType
     {
         for( InjectedMethodModel methodModel : methodModels )

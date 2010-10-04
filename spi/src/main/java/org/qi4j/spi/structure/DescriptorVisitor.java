@@ -37,7 +37,7 @@ import org.qi4j.spi.value.ValueDescriptor;
  * Extend and override this class in order to introspect a Qi4j model.
  * Call {@link ApplicationSPI#visitDescriptor(DescriptorVisitor)} to use.
  */
-public class DescriptorVisitor<ThrowableType extends Exception>
+public class DescriptorVisitor<ThrowableType extends Throwable>
 {
     public void visit( ApplicationDescriptor applicationDescriptor )
         throws ThrowableType

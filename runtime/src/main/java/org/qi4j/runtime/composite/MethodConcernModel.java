@@ -31,7 +31,7 @@ public final class MethodConcernModel
         super( concernClass, instantiationClass );
     }
 
-    public <ThrowableType extends Exception> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
+    public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
         throws ThrowableType
     {
         modelVisitor.visit( this );

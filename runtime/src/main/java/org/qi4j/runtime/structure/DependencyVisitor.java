@@ -21,7 +21,7 @@ import org.qi4j.runtime.injection.InjectedParametersModel;
 /**
  * JAVADOC
  */
-public abstract class DependencyVisitor<ThrowableType extends Exception>
+public abstract class DependencyVisitor<ThrowableType extends Throwable>
     extends ModelVisitor<ThrowableType>
 {
     private final Specification<DependencyModel> specification;

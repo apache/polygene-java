@@ -235,7 +235,7 @@ public final class ValueCompositeType
                     return null;
                 }
 
-                public <ThrowableType extends Exception> void visitProperties( StateVisitor<ThrowableType> visitor )
+                public <ThrowableType extends Throwable> void visitProperties( StateVisitor<ThrowableType> visitor )
                     throws ThrowableType
                 {
                     for (Map.Entry<QualifiedName, Object> qualifiedNameObjectEntry : values.entrySet())

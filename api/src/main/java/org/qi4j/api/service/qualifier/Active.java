@@ -12,18 +12,25 @@
  *
  */
 
-package org.qi4j.api.selection;
-
-import org.qi4j.api.service.ServiceSelector;
+package org.qi4j.api.service.qualifier;
 
 /**
- * JAVADOC
+ * Filter services based on identity. Identity can be set during assembly, like so:
+ * module.addService(MyService.class).identifiedBy("myservice1");
+ *
+ * and then at an injection point you can do this:
+ * @Service @IdentifiedBy("myservice1") MyService service;
+ * to get only a service identified "myservice1".
  */
-public final class TaggedSelector
-    implements QualifierSelector<Tagged>
+@Qualifier( Active.ActiveQualifier.class )
+public @interface Active
 {
-    public <T> ServiceSelector.Selector select( Tagged tagged )
+    public final class ActiveQualifier
+        implements AnnotationQualifier<Active>
     {
-        return ServiceSelector.withTags( tagged.value() );
+        public <T> ServiceQualifier qualifier( Active active )
+        {
+            return ServiceQualifier.whereActive();
+        }
     }
 }

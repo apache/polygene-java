@@ -114,7 +114,7 @@ public class ModuleModel
         return classLoader;
     }
 
-    public <ThrowableType extends Exception> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
+    public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
         throws ThrowableType
     {
         modelVisitor.visit( this );
@@ -127,7 +127,7 @@ public class ModuleModel
         valuesModel.visitModel( modelVisitor );
     }
 
-    public <ThrowableType extends Exception> void visitModules( ModuleVisitor<ThrowableType> visitor )
+    public <ThrowableType extends Throwable> void visitModules( ModuleVisitor<ThrowableType> visitor )
         throws ThrowableType
     {
         // Visit this module

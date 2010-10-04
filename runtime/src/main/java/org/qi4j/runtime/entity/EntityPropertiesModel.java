@@ -32,6 +32,8 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.util.Annotations;
 
+import static org.qi4j.spi.util.Annotations.*;
+
 /**
  * Model for Properties in Entities
  */
@@ -63,8 +65,8 @@ public final class EntityPropertiesModel
 
     protected EntityPropertyModel newPropertyModel( Method method, Class compositeType )
     {
-        Annotation[] annotations = Annotations.getMethodAndTypeAnnotations( method );
-        boolean optional = Annotations.getAnnotationOfType( annotations, Optional.class ) != null;
+        Iterable<Annotation> annotations = getMethodAndTypeAnnotations( method );
+        boolean optional = first( isType(Optional.class ), annotations) != null;
         ValueConstraintsModel valueConstraintsModel = constraints.constraintsFor( annotations, GenericPropertyInfo.getPropertyType( method ), method.getName(), optional );
         ValueConstraintsInstance valueConstraintsInstance = null;
         if( valueConstraintsModel.isConstrained() )

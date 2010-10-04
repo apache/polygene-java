@@ -83,6 +83,6 @@ public interface ApplicationAssembly
 
     ApplicationAssembly setMetaInfo( Object info );
 
-    <ThrowableType extends Exception> void visit( AssemblyVisitor<ThrowableType> visitor )
+    <ThrowableType extends Throwable> void visit( AssemblyVisitor<ThrowableType> visitor )
         throws ThrowableType;
 }

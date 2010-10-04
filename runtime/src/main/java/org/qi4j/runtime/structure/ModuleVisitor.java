@@ -20,7 +20,7 @@ import org.qi4j.api.common.Visibility;
  * Implement this interface to allow traversal of all "visible" Modules from the point of view of a single
  * Module. This is useful for all algorithms wishing to use the visibility rules of structure.
  */
-public interface ModuleVisitor<ThrowableType extends Exception>
+public interface ModuleVisitor<ThrowableType extends Throwable>
 {
     /**
      * Visit a module.

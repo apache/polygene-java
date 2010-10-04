@@ -21,7 +21,7 @@ import org.qi4j.spi.Qi4jSPI;
  */
 public interface ApplicationModelSPI
 {
-    <ThrowableType extends Exception> void visitDescriptor( DescriptorVisitor<ThrowableType> visitor )
+    <ThrowableType extends Throwable> void visitDescriptor( DescriptorVisitor<ThrowableType> visitor )
         throws ThrowableType;
 
     ApplicationSPI newInstance( Qi4jSPI runtime );

@@ -17,7 +17,7 @@ package org.qi4j.runtime.service;
 import org.junit.Test;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.injection.scope.Service;
-import org.qi4j.api.service.ServiceSelector;
+import org.qi4j.api.service.qualifier.ServiceQualifier;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.spi.service.importer.ServiceSelectorImporter;
@@ -45,7 +45,7 @@ public class InstanceImporterTest
             .visibleIn( Visibility.module );
         serviceModule.importServices( TestInterface.class )
             .importedBy( ServiceSelectorImporter.class )
-            .setMetaInfo( ServiceSelector.withId( TestInterface.class.getSimpleName() ) )
+            .setMetaInfo( ServiceQualifier.withId( TestInterface.class.getSimpleName() ) )
             .visibleIn( layer );
         module.addObjects( InstanceImporterTest.class );
     }

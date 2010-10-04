@@ -19,7 +19,7 @@ import org.qi4j.api.common.Visibility;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.api.service.ServiceSelector;
+import org.qi4j.api.service.qualifier.ServiceQualifier;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
@@ -64,7 +64,7 @@ public class ServiceSelectorImporterTest
 
                 module.importServices( TestService.class )
                     .importedBy( ServiceSelectorImporter.class )
-                    .setMetaInfo( ServiceSelector.withId( TestServiceComposite2.class.getSimpleName() ) );
+                    .setMetaInfo( ServiceQualifier.withId( TestServiceComposite2.class.getSimpleName() ) );
 
                 ModuleAssembly module2 = module.layerAssembly().moduleAssembly( "Other module" );
                 module2.addServices( TestServiceComposite2.class, TestServiceComposite2.class )
@@ -89,7 +89,7 @@ public class ServiceSelectorImporterTest
 
                 module.importServices( TestService.class )
                     .importedBy( ServiceSelectorImporter.class )
-                    .setMetaInfo( ServiceSelector.first() );
+                    .setMetaInfo( ServiceQualifier.withId("TestServiceComposite2_1" ));
 
                 ModuleAssembly module2 = module.layerAssembly().moduleAssembly( "Other module" );
                 module2.addServices( TestServiceComposite2.class, TestServiceComposite2.class )

@@ -63,7 +63,7 @@ public final class UsedLayersModel
         return new UsedLayersInstance( usedLayerInstances );
     }
 
-    public <ThrowableType extends Exception> boolean visitModules( ModuleVisitor<ThrowableType> visitor )
+    public <ThrowableType extends Throwable> boolean visitModules( ModuleVisitor<ThrowableType> visitor )
         throws ThrowableType
     {
         for( LayerModel usedLayerModel : usedLayers )

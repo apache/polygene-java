@@ -57,6 +57,6 @@ public interface ModuleAssembly
 
     <T> MixinDeclaration<T> forMixin( Class<T> mixinType );
 
-    public <ThrowableType extends Exception> void visit( AssemblyVisitor<ThrowableType> visitor )
+    public <ThrowableType extends Throwable> void visit( AssemblyVisitor<ThrowableType> visitor )
         throws ThrowableType;
 }

@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.api.service;
+package org.qi4j.api.service.qualifier;
 
 import java.io.Serializable;
 

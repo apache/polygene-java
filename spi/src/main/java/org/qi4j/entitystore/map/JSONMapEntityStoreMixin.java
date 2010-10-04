@@ -194,7 +194,7 @@ public class JSONMapEntityStoreMixin
         };
     }
 
-    public <ThrowableType extends Exception> EntityStoreUnitOfWork visitEntityStates( final EntityStateVisitor<ThrowableType> visitor, ModuleSPI moduleInstance )
+    public <ThrowableType extends Throwable> EntityStoreUnitOfWork visitEntityStates( final EntityStateVisitor<ThrowableType> visitor, ModuleSPI moduleInstance )
         throws ThrowableType
     {
         // TODO This can be used for reading state, but not for modifying (e.g. removing all entities)

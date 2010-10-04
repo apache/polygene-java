@@ -15,16 +15,13 @@
 package org.qi4j.spi.util;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import org.qi4j.api.constraint.ConstraintDeclaration;
-import org.qi4j.api.injection.InjectionScope;
 import org.qi4j.api.util.Classes;
 
 /**
@@ -32,101 +29,72 @@ import org.qi4j.api.util.Classes;
  */
 public final class Annotations
 {
-    public static <ThrowableType extends Exception> void visitAnnotations( Annotation[] annotations, AnnotationSpecification specification, AnnotationVisitor<ThrowableType> visitor)
-        throws ThrowableType
+    public static <A extends Annotation> Iterable<A> filter(AnnotationSpecification specification, Iterable<? extends Annotation> iterable)
     {
-        for( Annotation annotation : annotations )
-        {
-            if( specification == null || specification.valid( annotation ))
-            {
-                if (!visitor.visitAnnotation( annotation ))
-                    return;
-            }
-        }
+        return (Iterable<A>) new FilterIterable(iterable, specification);
     }
 
-    public static Annotation getInjectionAnnotation( Annotation[] parameterAnnotation )
+    public static <A extends Annotation> A first(Iterable<? extends Annotation> iterable)
     {
-        for( Annotation annotation : parameterAnnotation )
+        Iterator<? extends Annotation> iter = iterable.iterator();
+        if (iter.hasNext())
+            return (A) iter.next();
+        else
+            return null;
+    }
+
+    public static <A extends Annotation> A first(AnnotationSpecification specification, Iterable<? extends Annotation> iterable)
+    {
+        for( Annotation annotation : iterable )
         {
-            if( isDependencyAnnotation( annotation ) )
-            {
-                return annotation;
-            }
+            if (specification.valid( annotation ))
+                return (A) annotation;
         }
+
         return null;
     }
 
-    public static <T extends Annotation> T getAnnotationOfType( Annotation[] annotations, Class<T> annotationType )
+    public static <A extends Annotation> A first(AnnotationSpecification specification, Annotation... annotations)
     {
         for( Annotation annotation : annotations )
         {
-            if( annotationType.equals( annotation.annotationType() ) )
-            {
-                return annotationType.cast( annotation );
-            }
+            if (specification.valid( annotation ))
+                return (A) annotation;
         }
+
         return null;
     }
 
-    public static boolean isDependencyAnnotation( Annotation annotation )
+    public static AnnotationSpecification hasAnnotation( final Class<? extends Annotation> annotationType)
     {
-        return annotation.annotationType().getAnnotation( InjectionScope.class ) != null;
-    }
-
-    public static boolean isConstraintAnnotation( Annotation annotation )
-    {
-        return annotation.annotationType().getAnnotation( ConstraintDeclaration.class ) != null;
-    }
-
-    public static boolean isCompositeConstraintAnnotation( Annotation annotation )
-    {
-        for( Annotation annotation1 : annotation.annotationType().getAnnotations() )
+        return new AnnotationSpecification()
         {
-            if( isConstraintAnnotation( annotation1 ) )
+            public boolean valid( Annotation annotation )
             {
+                return annotation.annotationType().getAnnotation( annotationType ) != null;
+            }
+        };
+    }
+
+    public static boolean hasValid(AnnotationSpecification specification, Iterable<? extends Annotation> annotations)
+    {
+        for( Annotation annotation : annotations )
+        {
+            if (specification.valid( annotation ))
                 return true;
-            }
         }
         return false;
     }
 
-    public static Set<Field> fieldsWithAnnotation( Set<Field> fields, Class<? extends Annotation> annotationType )
+    public static AnnotationSpecification isType( final Class<? extends Annotation> annotationType)
     {
-        Set<Field> newFields = new HashSet<Field>();
-        for( Field field : fields )
+        return new AnnotationSpecification()
         {
-            Annotation[] annotations = field.getAnnotations();
-            for( Annotation annotation : annotations )
+            public boolean valid( Annotation annotation )
             {
-                if( isOfAnnotationType( annotation, annotationType ) )
-                {
-                    newFields.add( field );
-                    break;
-                }
+                return annotation.annotationType().equals(annotationType);
             }
-        }
-
-        return newFields;
-    }
-
-    private static boolean isOfAnnotationType( Annotation annotation, Class<? extends Annotation> annotationType )
-    {
-        if( annotationType.equals( annotation.getClass() ) )
-        {
-            return true;
-        }
-
-        // Check annotations of this annotation
-        for( Annotation annotation1 : annotation.annotationType().getAnnotations() )
-        {
-            if( isOfAnnotationType( annotation1, annotationType ) )
-            {
-                return true;
-            }
-        }
-
-        return false;
+        };
     }
 
     public static <T extends Annotation> T getAnnotation( Type type, Class<T> annotationType )
@@ -138,7 +106,7 @@ public final class Annotations
         return annotationType.cast( ( (Class<?>) type ).getAnnotation( annotationType ) );
     }
 
-    public static Annotation[] getMethodAndTypeAnnotations( Method method )
+    public static Iterable<Annotation> getMethodAndTypeAnnotations( Method method )
     {
         List<Annotation> annotationList = new ArrayList<Annotation>( Arrays.asList( method.getAnnotations() ) );
         Set<Class> interfaces = Classes.interfacesOf( method.getReturnType() );
@@ -148,51 +116,96 @@ public final class Annotations
         }
         Annotation[] annotations = annotationList.toArray( new Annotation[annotationList.size()] );
 
-        return annotations;
-    }
-
-    public interface AnnotationVisitor<ThrowableType extends Exception>
-    {
-        public boolean visitAnnotation(Annotation annotation)
-            throws ThrowableType;
-    }
-
-    public static class AnnotationCollection
-        implements AnnotationVisitor
-    {
-        List<Annotation> annotations = new ArrayList<Annotation>();
-
-        public boolean visitAnnotation( Annotation annotation )
-        {
-            annotations.add( annotation );
-
-            return true;
-        }
-
-        public List<Annotation> toList()
-        {
-            return annotations;
-        }
+        return Arrays.asList( annotations);
     }
 
     public interface AnnotationSpecification
     {
-        boolean valid(Annotation annotation);
+        boolean valid( Annotation annotation );
     }
 
-    public static class AnnotationWithMarker
-        implements AnnotationSpecification
+    public static class FilterIterable
+        implements Iterable<Annotation>
     {
-        private final Class<? extends Annotation> annotationClass;
+        private Iterable<? extends Annotation> iterable;
+        private AnnotationSpecification specification;
 
-        public AnnotationWithMarker( Class<? extends Annotation> annotationClass )
+        public FilterIterable( Iterable<? extends Annotation> iterable, AnnotationSpecification specification )
         {
-            this.annotationClass = annotationClass;
+            this.iterable = iterable;
+            this.specification = specification;
         }
 
-        public boolean valid( Annotation annotation )
+        public Iterator<Annotation> iterator()
         {
-            return annotation.annotationType().getAnnotation( annotationClass ) != null;
+            return new FilterIterator( iterable.iterator(), specification );
+        }
+
+        static class FilterIterator
+            implements Iterator<Annotation>
+        {
+            private Iterator<? extends Annotation> iterator;
+            private AnnotationSpecification specification;
+            private Annotation currentValue;
+            boolean finished = false;
+            boolean nextConsumed = true;
+
+            public FilterIterator( Iterator<? extends Annotation> iterator, AnnotationSpecification specification )
+            {
+                this.specification = specification;
+                this.iterator = iterator;
+            }
+
+            public boolean moveToNextValid()
+            {
+                boolean found = false;
+                while( !found && iterator.hasNext() )
+                {
+                    Annotation currentValue = iterator.next();
+                    if( specification.valid( ( currentValue ) ))
+                    {
+                        found = true;
+                        this.currentValue = currentValue;
+                        nextConsumed = false;
+                    }
+                }
+                if( !found )
+                {
+                    finished = true;
+                }
+                return found;
+            }
+
+            public Annotation next()
+            {
+                if( !nextConsumed )
+                {
+                    nextConsumed = true;
+                    return currentValue;
+                }
+                else
+                {
+                    if( !finished )
+                    {
+                        if( moveToNextValid() )
+                        {
+                            nextConsumed = true;
+                            return currentValue;
+                        }
+                    }
+                }
+                return null;
+            }
+
+            public boolean hasNext()
+            {
+                return !finished &&
+                       ( !nextConsumed || moveToNextValid() );
+            }
+
+            public void remove()
+            {
+            }
         }
     }
 }
