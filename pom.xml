@@ -25,20 +25,21 @@
 
     <!-- This POM is ONLY to initiate the modules to be built. -->
     <modules>
-        <module>reindexer</module>
+        <module>cache-ehcache</module>
         <module>entitystore-file</module>
         <module>entitystore-gae</module>
         <module>entitystore-jdbm</module>
+        <module>entitystore-hazelcast</module>
         <module>entitystore-neo4j</module>
         <module>entitystore-preferences</module>
-        <module>entitystore-rest</module>
         <module>entitystore-qrm</module>
-        <module>entitystore-hazelcast</module>
+        <module>entitystore-rest</module>
         <module>entitystore-sql</module>
         <module>entitystore-voldemort</module>
-        <module>migration</module>
         <module>indexing-rdf</module>
         <module>indexing-sql</module>
+        <module>migration</module>
+        <module>reindexer</module>
     </modules>
 
     <developers>

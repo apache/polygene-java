@@ -49,7 +49,7 @@
             <artifactId>qi4j-core-testsupport</artifactId>
             <scope>test</scope>
         </dependency>
-        
+
         <!-- Distributed artifacts in Voldemort. May include runtime dependencies in certain configurations,
              or resolved transitively by Maven and the other dependencies, such as Jetty.
              
