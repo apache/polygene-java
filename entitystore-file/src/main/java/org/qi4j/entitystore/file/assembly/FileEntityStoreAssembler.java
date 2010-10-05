@@ -15,21 +15,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.entitystore.prefs;
+package org.qi4j.entitystore.file.assembly;
 
-import java.util.prefs.Preferences;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.entitystore.file.FileEntityStoreService;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 
-public class PreferenceEntityStoreAssembler
+public class FileEntityStoreAssembler
     implements Assembler
 {
     private Visibility visibility;
 
-    public PreferenceEntityStoreAssembler( Visibility visibility )
+    public FileEntityStoreAssembler( Visibility visibility )
     {
         this.visibility = visibility;
     }
@@ -37,15 +37,7 @@ public class PreferenceEntityStoreAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        String applicationName = module.layerAssembly().applicationAssembly().name();
-
-        Preferences root = Preferences.userRoot();
-        Preferences node = root.node( applicationName );
-        PreferencesEntityStoreInfo info = new PreferencesEntityStoreInfo( node );
-        module.addServices( PreferencesEntityStoreService.class )
-            .setMetaInfo( info )
-            .visibleIn( visibility )
-            .instantiateOnStartup();
+        module.addServices( FileEntityStoreService.class ).visibleIn( visibility );
         module.addServices( UuidIdentityGeneratorService.class ).visibleIn( visibility );
     }
 }

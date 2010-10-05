@@ -1,9 +1,11 @@
-package org.qi4j.entitystore.hazelcast;
+package org.qi4j.entitystore.hazelcast.assembly;
 
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.entitystore.hazelcast.HazelcastConfiguration;
+import org.qi4j.entitystore.hazelcast.HazelcastEntityStoreService;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 

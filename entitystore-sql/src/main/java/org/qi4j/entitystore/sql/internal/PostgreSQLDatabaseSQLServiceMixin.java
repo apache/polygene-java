@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2010, Stanislav Muhametsin. All Rights Reserved.
+ * Copyright (c) 2010, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,14 +12,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.entitystore.sql.internal.database;
-
-import static org.qi4j.entitystore.sql.internal.database.SQLs.ENTITY_IDENTITY_COLUMN_NAME;
-import static org.qi4j.entitystore.sql.internal.database.SQLs.ENTITY_LAST_MODIFIED_COLUMN_NAME;
-import static org.qi4j.entitystore.sql.internal.database.SQLs.ENTITY_OPTIMISTIC_LOCK_COLUMN_NAME;
-import static org.qi4j.entitystore.sql.internal.database.SQLs.ENTITY_PK_COLUMN_NAME;
-import static org.qi4j.entitystore.sql.internal.database.SQLs.ENTITY_STATE_COLUMN_NAME;
-import static org.qi4j.entitystore.sql.internal.database.SQLs.TABLE_NAME;
+package org.qi4j.entitystore.sql.internal;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -29,10 +23,6 @@ import org.qi4j.library.sql.common.SQLUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @author Stanislav Muhametsin
- * @author Paul Merlin
- */
 @SuppressWarnings( "ProtectedField" )
 public abstract class PostgreSQLDatabaseSQLServiceMixin
         implements DatabaseSQLServiceSpi, DatabaseSQLStringsBuilder, DatabaseSQLService
@@ -46,12 +36,12 @@ public abstract class PostgreSQLDatabaseSQLServiceMixin
 
     private static final String ENTITY_STATE_COLUMN_DATA_TYPE = "TEXT";
 
-    private static final String CREATE_TABLE_SQL = "CREATE TABLE %s." + TABLE_NAME + " ("
-                                                   + ENTITY_PK_COLUMN_NAME + " " + ENTITY_PK_COLUMN_DATA_TYPE + " NOT NULL PRIMARY KEY, "
-                                                   + ENTITY_OPTIMISTIC_LOCK_COLUMN_NAME + " BIGINT NOT NULL, "
-                                                   + ENTITY_IDENTITY_COLUMN_NAME + " " + ENTITY_IDENTITY_COLUMN_DATA_TYPE + " NOT NULL UNIQUE, "
-                                                   + ENTITY_STATE_COLUMN_NAME + " " + ENTITY_STATE_COLUMN_DATA_TYPE + " NOT NULL, "
-                                                   + ENTITY_LAST_MODIFIED_COLUMN_NAME + " BIGINT NOT NULL)";
+    private static final String CREATE_TABLE_SQL = "CREATE TABLE %s." + SQLs.TABLE_NAME + " ("
+                                                   + SQLs.ENTITY_PK_COLUMN_NAME + " " + ENTITY_PK_COLUMN_DATA_TYPE + " NOT NULL PRIMARY KEY, "
+                                                   + SQLs.ENTITY_OPTIMISTIC_LOCK_COLUMN_NAME + " BIGINT NOT NULL, "
+                                                   + SQLs.ENTITY_IDENTITY_COLUMN_NAME + " " + ENTITY_IDENTITY_COLUMN_DATA_TYPE + " NOT NULL UNIQUE, "
+                                                   + SQLs.ENTITY_STATE_COLUMN_NAME + " " + ENTITY_STATE_COLUMN_DATA_TYPE + " NOT NULL, "
+                                                   + SQLs.ENTITY_LAST_MODIFIED_COLUMN_NAME + " BIGINT NOT NULL)";
 
     @This
     protected DatabaseSQLServiceSpi spi;

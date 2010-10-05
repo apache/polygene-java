@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2010, Stanislav Muhametsin. All Rights Reserved.
+ * Copyright (c) 2010, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,20 +18,16 @@ import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.sql.SQLEntityStoreService;
-import org.qi4j.entitystore.sql.internal.database.DatabaseSQLService.DatabaseSQLServiceComposite;
-import org.qi4j.entitystore.sql.internal.database.DatabaseSQLServiceCoreMixin;
-import org.qi4j.entitystore.sql.internal.database.DatabaseSQLServiceSpi;
-import org.qi4j.entitystore.sql.internal.database.DatabaseSQLServiceStatementsMixin;
-import org.qi4j.entitystore.sql.internal.database.DatabaseSQLStringsBuilder;
+import org.qi4j.entitystore.sql.internal.DatabaseSQLService.DatabaseSQLServiceComposite;
+import org.qi4j.entitystore.sql.internal.DatabaseSQLServiceCoreMixin;
+import org.qi4j.entitystore.sql.internal.DatabaseSQLServiceSpi;
+import org.qi4j.entitystore.sql.internal.DatabaseSQLServiceStatementsMixin;
+import org.qi4j.entitystore.sql.internal.DatabaseSQLStringsBuilder;
 import org.qi4j.library.sql.common.AbstractSQLAssembler;
 import org.qi4j.library.sql.ds.assembly.DataSourceAssembler;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 
-/**
- * @author Stanislav Muhametsin
- * @author Paul Merlin
- */
-/* package */abstract class AbstractSQLEntityStoreAssembler extends AbstractSQLAssembler
+abstract class AbstractSQLEntityStoreAssembler extends AbstractSQLAssembler
 {
 
     private static final Visibility DEFAULT_VISIBILITY = Visibility.module;

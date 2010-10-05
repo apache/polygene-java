@@ -30,6 +30,7 @@ import java.util.Random;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.entitystore.voldemort.assembly.VoldemortAssembler;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
 import voldemort.server.VoldemortConfig;
 import voldemort.server.VoldemortServer;

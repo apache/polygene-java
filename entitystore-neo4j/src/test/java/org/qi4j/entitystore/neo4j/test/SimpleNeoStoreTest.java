@@ -1,7 +1,6 @@
 package org.qi4j.entitystore.neo4j.test;
 
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;

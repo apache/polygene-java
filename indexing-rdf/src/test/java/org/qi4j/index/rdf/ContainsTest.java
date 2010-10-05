@@ -15,7 +15,7 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.prefs.PreferenceEntityStoreAssembler;
+import org.qi4j.entitystore.prefs.assembly.PreferenceEntityStoreAssembler;
 import org.qi4j.index.rdf.ContainsAllTest.ExampleEntity;
 import org.qi4j.index.rdf.ContainsAllTest.ExampleValue;
 import org.qi4j.index.rdf.ContainsAllTest.ExampleValue2;

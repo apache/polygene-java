@@ -80,7 +80,8 @@ public class NeoEntityStoreMixin
         return uow;
     }
 
-    public StateCommitter applyChanges( Iterable<EntityState> state, String version, long lastModified )
+    public StateCommitter applyChanges( EntityStoreUnitOfWork unitofwork, Iterable<EntityState> state,
+                                        String version, long lastModified )
     {
         for( EntityState firstState : state )
         {

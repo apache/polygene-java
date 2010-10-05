@@ -29,7 +29,6 @@ public interface SQLAppStartup
      * This method is called when connection may be safely initialized - for example, possibly (re-)building database
      * structure.
      * 
-     * @param connection Connection to initialize.
      * @throws SQLException If SQL.
      */
     void initConnection()

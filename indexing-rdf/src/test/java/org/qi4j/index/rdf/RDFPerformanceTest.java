@@ -34,7 +34,7 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.prefs.PreferenceEntityStoreAssembler;
+import org.qi4j.entitystore.prefs.assembly.PreferenceEntityStoreAssembler;
 import org.qi4j.index.rdf.assembly.RdfNativeSesameStoreAssembler;
 import org.qi4j.library.rdf.repository.NativeConfiguration;
 import org.qi4j.spi.query.IndexExporter;

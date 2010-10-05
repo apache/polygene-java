@@ -1,5 +1,5 @@
 /*
- * Copyright 2008 Niclas Hedhman.
+ * Copyright (c) 2010 Niclas Hedhman <niclas@hedhman.org>.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -15,20 +15,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.entitystore.file;
+
+package org.qi4j.entitystore.voldemort.assembly;
 
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.entitystore.memory.MemoryEntityStoreService;
+import org.qi4j.entitystore.voldemort.VoldemortConfiguration;
+import org.qi4j.entitystore.voldemort.VoldemortEntityStoreService;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 
-public class FileEntityStoreAssembler
+public class VoldemortAssembler
     implements Assembler
 {
     private Visibility visibility;
 
-    public FileEntityStoreAssembler( Visibility visibility )
+    public VoldemortAssembler( Visibility visibility )
     {
         this.visibility = visibility;
     }
@@ -36,7 +40,12 @@ public class FileEntityStoreAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices( FileEntityStoreService.class ).visibleIn( visibility );
+        module.addServices( VoldemortEntityStoreService.class ).visibleIn( visibility ).instantiateOnStartup();
         module.addServices( UuidIdentityGeneratorService.class ).visibleIn( visibility );
+        // FIXME Remove from here and update documentation accordingly
+        ModuleAssembly config = module.layerAssembly().moduleAssembly( "config" );
+        config.addEntities( VoldemortConfiguration.class ).visibleIn( Visibility.layer );
+        config.addServices( MemoryEntityStoreService.class );
+
     }
 }

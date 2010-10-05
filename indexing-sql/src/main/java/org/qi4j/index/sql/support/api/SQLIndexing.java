@@ -29,7 +29,6 @@ public interface SQLIndexing
      * This method is called when states need to be indexed.
      * 
      * @param changedStates The states which changed.
-     * @param connection Connection to RDBMS.
      * @throws SQLException If SQL.
      */
     void indexEntities( Iterable<EntityState> changedStates )

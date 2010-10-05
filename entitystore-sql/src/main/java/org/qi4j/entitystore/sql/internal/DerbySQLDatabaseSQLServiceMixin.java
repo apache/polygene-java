@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2010, Stanislav Muhametsin. All Rights Reserved.
  * Copyright (c) 2010, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -11,14 +12,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.entitystore.sql.internal.database;
-
-import static org.qi4j.entitystore.sql.internal.database.SQLs.ENTITY_IDENTITY_COLUMN_NAME;
-import static org.qi4j.entitystore.sql.internal.database.SQLs.ENTITY_LAST_MODIFIED_COLUMN_NAME;
-import static org.qi4j.entitystore.sql.internal.database.SQLs.ENTITY_OPTIMISTIC_LOCK_COLUMN_NAME;
-import static org.qi4j.entitystore.sql.internal.database.SQLs.ENTITY_PK_COLUMN_NAME;
-import static org.qi4j.entitystore.sql.internal.database.SQLs.ENTITY_STATE_COLUMN_NAME;
-import static org.qi4j.entitystore.sql.internal.database.SQLs.TABLE_NAME;
+package org.qi4j.entitystore.sql.internal;
 
 import java.io.StringReader;
 import java.sql.Connection;
@@ -30,10 +24,6 @@ import org.qi4j.library.sql.common.SQLUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @author Stanislav Muhametsin
- * @author Paul Merlin
- */
 @SuppressWarnings( "ProtectedField" )
 public abstract class DerbySQLDatabaseSQLServiceMixin
         implements DatabaseSQLService, DatabaseSQLStringsBuilder, DatabaseSQLServiceSpi
@@ -41,14 +31,14 @@ public abstract class DerbySQLDatabaseSQLServiceMixin
 
     private static final Logger LOGGER = LoggerFactory.getLogger( DerbySQLDatabaseSQLServiceMixin.class );
 
-    private static final String CREATE_TABLE_SQL = "CREATE TABLE %s." + TABLE_NAME + " ("
+    private static final String CREATE_TABLE_SQL = "CREATE TABLE %s." + SQLs.TABLE_NAME + " ("
                                                    // For when indexing and store are synchronized and we'll be able to let the database generate the PKs
                                                    // + ENTITY_PK_COLUMN_NAME + " BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY, "
-                                                   + ENTITY_PK_COLUMN_NAME + " BIGINT PRIMARY KEY, "
-                                                   + ENTITY_OPTIMISTIC_LOCK_COLUMN_NAME + " BIGINT NOT NULL, "
-                                                   + ENTITY_IDENTITY_COLUMN_NAME + " VARCHAR(256) NOT NULL UNIQUE, "
-                                                   + ENTITY_STATE_COLUMN_NAME + " VARCHAR(32000) NOT NULL, "
-                                                   + ENTITY_LAST_MODIFIED_COLUMN_NAME + " BIGINT NOT NULL)";
+                                                   + SQLs.ENTITY_PK_COLUMN_NAME + " BIGINT PRIMARY KEY, "
+                                                   + SQLs.ENTITY_OPTIMISTIC_LOCK_COLUMN_NAME + " BIGINT NOT NULL, "
+                                                   + SQLs.ENTITY_IDENTITY_COLUMN_NAME + " VARCHAR(256) NOT NULL UNIQUE, "
+                                                   + SQLs.ENTITY_STATE_COLUMN_NAME + " VARCHAR(32000) NOT NULL, "
+                                                   + SQLs.ENTITY_LAST_MODIFIED_COLUMN_NAME + " BIGINT NOT NULL)";
 
     @This
     protected DatabaseSQLServiceSpi spi;

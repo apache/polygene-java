@@ -82,7 +82,7 @@ public class RESTEntityStoreServiceMixin
 
     public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSPI module )
     {
-        return new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), module );
+        return new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), module, usecase );
     }
 
     public EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor visitor, ModuleSPI moduleInstance )
@@ -163,7 +163,8 @@ public class RESTEntityStoreServiceMixin
         return null;
     }
 
-    public StateCommitter applyChanges( Iterable<EntityState> state, String identity, long lastModified )
+    public StateCommitter applyChanges( EntityStoreUnitOfWork unitofwork, Iterable<EntityState> state,
+                                        String identity, long lastModified )
     {
 /*
         Reference ref = entityStoreUrl.clone();

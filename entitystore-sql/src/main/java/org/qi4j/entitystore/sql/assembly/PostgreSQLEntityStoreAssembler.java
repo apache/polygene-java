@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2010, Stanislav Muhametsin. All Rights Reserved.
+ * Copyright (c) 2010, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +15,10 @@
 package org.qi4j.entitystore.sql.assembly;
 
 import org.qi4j.api.common.Visibility;
-import org.qi4j.entitystore.sql.internal.database.PostgreSQLDatabaseSQLServiceMixin;
+import org.qi4j.entitystore.sql.internal.PostgreSQLDatabaseSQLServiceMixin;
 import org.qi4j.library.sql.ds.PGSQLDataSourceServiceMixin;
 import org.qi4j.library.sql.ds.assembly.DataSourceAssembler;
 
-/**
- * @author Stanislav Muhametsin
- * @author Paul Merlin
- */
 public class PostgreSQLEntityStoreAssembler extends AbstractSQLEntityStoreAssembler
 {
 

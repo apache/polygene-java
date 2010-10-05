@@ -17,6 +17,7 @@
 package org.qi4j.entitystore.qrm;
 
 import java.util.UUID;
+import org.qi4j.api.cache.CacheOptions;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.entity.IdentityGenerator;
@@ -27,6 +28,7 @@ import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.api.usecase.Usecase;
+import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
@@ -95,23 +97,24 @@ public class QrmEntityStoreServiceMixin
     {
         System.err.println( "EntityStoreUnitOfWork newUnitOfWork ... was called." );
 
-        return new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), module );
+        return new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), module, usecase );
     }
 
-    public EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor visitor, ModuleSPI module )
+    public EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor visitor,
+                                                    ModuleSPI module )
     {
         System.err.println( "visit entity states called." );
 
-        final DefaultEntityStoreUnitOfWork uow = new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), module );
-
-        return uow;
+        UsecaseBuilder builder = UsecaseBuilder.buildUsecase( "qi4j.entitystore.qrm.visit" );
+        Usecase visitUsecase = builder.with( CacheOptions.NEVER ).newUsecase();
+        return new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), module, visitUsecase );
     }
 
     public EntityState getEntityState( EntityStoreUnitOfWork unitOfWork, EntityReference identity )
     {
         String strIdentity = identity.identity();
 
-        Class mappedClazz = null;
+        Class mappedClazz;
         try
         {
             mappedClazz = Class.forName( strIdentity.substring( 0, strIdentity.indexOf( ":" ) ) );
@@ -121,12 +124,11 @@ public class QrmEntityStoreServiceMixin
             throw new EntityTypeNotFoundException( identity.identity() );
         }
 
-        EntityState result = mapper.get( (DefaultEntityStoreUnitOfWork) unitOfWork, mappedClazz, identity );
-
-        return result;
+        return mapper.get( (DefaultEntityStoreUnitOfWork) unitOfWork, mappedClazz, identity );
     }
 
-    public StateCommitter applyChanges( final Iterable<EntityState> entityStates, final String version, final long lastModified )
+    public StateCommitter applyChanges( EntityStoreUnitOfWork unitofwork, final Iterable<EntityState> entityStates,
+                                        final String version, final long lastModified )
     {
         return new StateCommitter()
         {
@@ -138,7 +140,7 @@ public class QrmEntityStoreServiceMixin
 
                     String strIdentity = state.identity().identity();
 
-                    Class mappedClazz = null;
+                    Class mappedClazz;
                     try
                     {
                         mappedClazz = Class.forName( strIdentity.substring( 0, strIdentity.indexOf( ":" ) ) );

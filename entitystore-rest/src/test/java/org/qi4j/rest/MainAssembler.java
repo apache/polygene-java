@@ -14,12 +14,8 @@
 
 package org.qi4j.rest;
 
-import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.*;
-import org.qi4j.index.rdf.RdfIndexingEngineService;
-import org.qi4j.index.rdf.assembly.RdfMemoryStoreAssembler;
 import org.qi4j.library.http.JettyServiceAssembler;
-import org.qi4j.library.rdf.repository.MemoryRepositoryService;
 import org.qi4j.rest.assembly.RestAssembler;
 
 /**

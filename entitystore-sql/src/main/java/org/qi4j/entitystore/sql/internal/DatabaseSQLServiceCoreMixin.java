@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2010, Stanislav Muhametsin. All Rights Reserved.
  * Copyright (c) 2010, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -11,7 +12,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.entitystore.sql.internal.database;
+package org.qi4j.entitystore.sql.internal;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -31,10 +32,6 @@ import org.qi4j.spi.entitystore.EntityStoreException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @author Stanislav Muhametsin
- * @author Paul Merlin
- */
 @SuppressWarnings("ProtectedField")
 public abstract class DatabaseSQLServiceCoreMixin
     implements DatabaseSQLService

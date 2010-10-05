@@ -28,6 +28,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
 import org.json.JSONTokener;
+import org.qi4j.api.cache.CacheOptions;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Structure;
@@ -38,6 +39,7 @@ import org.qi4j.api.structure.Application;
 import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.usecase.Usecase;
+import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
@@ -94,24 +96,25 @@ public class PreferencesEntityStoreMixin
         uuid = UUID.randomUUID().toString() + "-";
 
         // Reload underlying store every 60 seconds
-        reloadExecutor = new ScheduledThreadPoolExecutor(1);
-		reloadExecutor.setExecuteExistingDelayedTasksAfterShutdownPolicy(false);
+        reloadExecutor = new ScheduledThreadPoolExecutor( 1 );
+        reloadExecutor.setExecuteExistingDelayedTasksAfterShutdownPolicy( false );
         reloadExecutor.scheduleAtFixedRate( new Runnable()
         {
             public void run()
             {
                 try
                 {
-                    synchronized (root)
+                    synchronized( root )
                     {
                         root.sync();
                     }
-                } catch (BackingStoreException e)
+                }
+                catch( BackingStoreException e )
                 {
                     logger.warn( "Could not reload preferences", e );
                 }
             }
-        }, 0, 60, TimeUnit.SECONDS);
+        }, 0, 60, TimeUnit.SECONDS );
     }
 
     private Preferences getApplicationRoot()
@@ -138,18 +141,22 @@ public class PreferencesEntityStoreMixin
         throws Exception
     {
         reloadExecutor.shutdown();
-        reloadExecutor.awaitTermination(10, TimeUnit.SECONDS);
+        reloadExecutor.awaitTermination( 10, TimeUnit.SECONDS );
     }
 
     public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSPI module )
     {
-        return new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), module );
+        return new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), module, usecase );
     }
 
     public <ThrowableType extends Throwable> EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor<ThrowableType> visitor, ModuleSPI moduleInstance )
         throws ThrowableType
     {
-        final DefaultEntityStoreUnitOfWork uow = new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), moduleInstance );
+        UsecaseBuilder builder = UsecaseBuilder.buildUsecase( "qi4j.entitystore.preferences.visit" );
+        Usecase visitUsecase = builder.with( CacheOptions.NEVER ).newUsecase();
+        final DefaultEntityStoreUnitOfWork uow = new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(),
+                                                                                   moduleInstance, visitUsecase
+        );
 
         try
         {
@@ -219,47 +226,47 @@ public class PreferencesEntityStoreMixin
                     {
                         if( propertyType.type().name().equals( "java.lang.Long" ) )
                         {
-                           properties.put( propertyDescriptor.qualifiedName(),
-                                this.getNumber( propsPrefs, propertyDescriptor, new NumberParser<Long>()
-                                {
-                                    public Long parse( String str )
-                                    {
-                                        return Long.parseLong( str );
-                                    }
-                                }));
+                            properties.put( propertyDescriptor.qualifiedName(),
+                                            this.getNumber( propsPrefs, propertyDescriptor, new NumberParser<Long>()
+                                            {
+                                                public Long parse( String str )
+                                                {
+                                                    return Long.parseLong( str );
+                                                }
+                                            } ) );
                         }
                         else if( propertyType.type().name().equals( "java.lang.Integer" ) )
                         {
-                           properties.put( propertyDescriptor.qualifiedName(),
-                                 this.getNumber( propsPrefs, propertyDescriptor, new NumberParser<Integer>()
-                                 {
-                                     public Integer parse( String str )
-                                     {
-                                         return Integer.parseInt( str );
-                                     }
-                                 }));
+                            properties.put( propertyDescriptor.qualifiedName(),
+                                            this.getNumber( propsPrefs, propertyDescriptor, new NumberParser<Integer>()
+                                            {
+                                                public Integer parse( String str )
+                                                {
+                                                    return Integer.parseInt( str );
+                                                }
+                                            } ) );
                         }
                         else if( propertyType.type().name().equals( "java.lang.Double" ) )
                         {
-                           properties.put( propertyDescriptor.qualifiedName(),
-                                 this.getNumber( propsPrefs, propertyDescriptor, new NumberParser<Double>()
-                                 {
-                                     public Double parse( String str )
-                                     {
-                                         return Double.parseDouble( str );
-                                     }
-                                 }));
+                            properties.put( propertyDescriptor.qualifiedName(),
+                                            this.getNumber( propsPrefs, propertyDescriptor, new NumberParser<Double>()
+                                            {
+                                                public Double parse( String str )
+                                                {
+                                                    return Double.parseDouble( str );
+                                                }
+                                            } ) );
                         }
                         else if( propertyType.type().name().equals( "java.lang.Float" ) )
                         {
-                           properties.put( propertyDescriptor.qualifiedName(),
-                                 this.getNumber( propsPrefs, propertyDescriptor, new NumberParser<Float>()
-                                 {
-                                     public Float parse( String str )
-                                     {
-                                         return Float.parseFloat( str );
-                                     }
-                                 }));
+                            properties.put( propertyDescriptor.qualifiedName(),
+                                            this.getNumber( propsPrefs, propertyDescriptor, new NumberParser<Float>()
+                                            {
+                                                public Float parse( String str )
+                                                {
+                                                    return Float.parseFloat( str );
+                                                }
+                                            } ) );
                         }
                         else
                         {
@@ -283,8 +290,10 @@ public class PreferencesEntityStoreMixin
                     }
                     else if( propertyType.isBoolean() )
                     {
-                        properties.put( propertyDescriptor.qualifiedName(), propsPrefs.getBoolean( propertyDescriptor.qualifiedName().name(), (Boolean) propertyDescriptor
-                            .initialValue() ) );
+                        properties.put( propertyDescriptor.qualifiedName(),
+                                        propsPrefs.getBoolean( propertyDescriptor.qualifiedName().name(),
+                                                               (Boolean) propertyDescriptor
+                                                                   .initialValue() ) );
                     }
                     else if( propertyType.isValue() )
                     {
@@ -303,8 +312,9 @@ public class PreferencesEntityStoreMixin
                     }
                     else if( propertyType.isString() )
                     {
-                        String json = propsPrefs.get( propertyDescriptor.qualifiedName().name(), (String) propertyDescriptor
-                            .initialValue() );
+                        String json = propsPrefs.get( propertyDescriptor.qualifiedName().name(),
+                                                      (String) propertyDescriptor
+                                                          .initialValue() );
                         if( json == null )
                         {
                             properties.put( propertyDescriptor.qualifiedName(), null );
@@ -344,7 +354,8 @@ public class PreferencesEntityStoreMixin
                 for( AssociationDescriptor associationType : entityDescriptor.state().associations() )
                 {
                     String associatedEntity = assocs.get( associationType.qualifiedName().name(), null );
-                    EntityReference value = associatedEntity == null ? null : EntityReference.parseEntityReference( associatedEntity );
+                    EntityReference value = associatedEntity == null ? null : EntityReference.parseEntityReference(
+                        associatedEntity );
                     associations.put( associationType.qualifiedName(), value );
                 }
             }
@@ -397,7 +408,7 @@ public class PreferencesEntityStoreMixin
         }
     }
 
-    public StateCommitter applyChanges( final Iterable<EntityState> state, final String version, final long lastModified )
+    public StateCommitter applyChanges( EntityStoreUnitOfWork unitofwork, final Iterable<EntityState> state, final String version, final long lastModified )
     {
         return new StateCommitter()
         {
@@ -405,7 +416,7 @@ public class PreferencesEntityStoreMixin
             {
                 try
                 {
-                    synchronized(root)
+                    synchronized( root )
                     {
                         for( EntityState entityState : state )
                         {
@@ -580,22 +591,22 @@ public class PreferencesEntityStoreMixin
     {
         return uuid + Integer.toHexString( count++ );
     }
-    
+
     private interface NumberParser<T>
     {
-       T parse( String str );
+        T parse( String str );
     }
-    
+
     private <T> T getNumber( Preferences prefs, PropertyTypeDescriptor pDesc, NumberParser<T> parser )
     {
-       Object initialValue = pDesc.initialValue();
-       String str = prefs.get( pDesc.qualifiedName().name(), initialValue == null ? null : initialValue.toString() );
-       T result = null;
-       if ( str != null )
-       {
-          result = parser.parse( str );
-       }
-       return result;
+        Object initialValue = pDesc.initialValue();
+        String str = prefs.get( pDesc.qualifiedName().name(), initialValue == null ? null : initialValue.toString() );
+        T result = null;
+        if( str != null )
+        {
+            result = parser.parse( str );
+        }
+        return result;
     }
 
 }
