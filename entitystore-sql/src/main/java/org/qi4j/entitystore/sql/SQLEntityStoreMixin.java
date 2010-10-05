@@ -80,7 +80,7 @@ import org.slf4j.LoggerFactory;
  * "AbstractJSONEntityStoreMixin".
  *
  */
-public abstract class SQLEntityStoreMixin
+public class SQLEntityStoreMixin
     implements EntityStore, EntityStoreSPI, StateStore, Activatable
 {
 
@@ -117,7 +117,8 @@ public abstract class SQLEntityStoreMixin
         database.stopDatabase();
     }
 
-    public StateCommitter applyChanges( final Iterable<EntityState> states, final String version, final long lastModified )
+    public StateCommitter applyChanges( EntityStoreUnitOfWork unitofwork, final Iterable<EntityState> states,
+                                        final String version, final long lastModified )
     {
         return new StateCommitter()
         {

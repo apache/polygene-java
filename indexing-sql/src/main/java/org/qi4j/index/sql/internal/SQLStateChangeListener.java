@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Stanislav Muhametsin
  */
-public abstract class SQLStateChangeListener
+public class SQLStateChangeListener
     implements StateChangeListener
 {
     @Service
