@@ -14,4 +14,6 @@ public interface Cache<T>
     T remove( String key );
 
     void put( String key, T value );
+
+    boolean exists( String key );
 }

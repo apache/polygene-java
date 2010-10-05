@@ -16,4 +16,9 @@ public final class NullCache<T>
     public void put( String key, T value )
     {
     }
+
+    public boolean exists( String key )
+    {
+        return false;
+    }
 }

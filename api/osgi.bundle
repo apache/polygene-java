@@ -5,6 +5,7 @@ Ignore-Package: com_cenqua_clover
 Private-Package:
 
 Export-Package: org.qi4j.api;version=${pom.version}, \
+                org.qi4j.api.cache;version=${pom.version}, \
                 org.qi4j.api.common;version=${pom.version}, \
                 org.qi4j.api.composite;version=${pom.version}, \
                 org.qi4j.api.concern;version=${pom.version}, \

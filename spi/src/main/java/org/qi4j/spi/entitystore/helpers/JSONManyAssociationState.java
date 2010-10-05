@@ -70,7 +70,7 @@ public final class JSONManyAssociationState
             {
                 return false;
             }
-
+            entityState.cloneStateIfGlobalStateLoaded();
             references.insert( idx, entityReference.identity() );
             entityState.markUpdated();
             return true;
@@ -89,6 +89,7 @@ public final class JSONManyAssociationState
             {
                 if( references.get( i ).equals( entityReference.identity() ) )
                 {
+                    entityState.cloneStateIfGlobalStateLoaded();
                     references.remove( i );
                     entityState.markUpdated();
                     return true;
@@ -141,6 +142,7 @@ public final class JSONManyAssociationState
 
             public void remove()
             {
+                throw new UnsupportedOperationException( "remove() is not supported on ManyAssociation iterators." );
             }
         };
     }

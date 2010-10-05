@@ -17,7 +17,6 @@
 package org.qi4j.spi.entitystore.helpers;
 
 import java.io.Serializable;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,23 +31,37 @@ import org.qi4j.spi.entitystore.DefaultEntityStoreUnitOfWork;
 import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.spi.property.PropertyTypeDescriptor;
+import org.qi4j.spi.structure.ModuleSPI;
 
 /**
  * Standard implementation of EntityState.
  */
 public final class JSONEntityState
-        implements EntityState, Serializable
+    implements EntityState, Serializable
 {
+    public static final String JSON_KEY_PROPERTIES = "properties";
+    public static final String JSON_KEY_ASSOCIATIONS = "associations";
+    public static final String JSON_KEY_MANYASSOCIATIONS = "manyassociations";
+    public static final String JSON_KEY_IDENTITY = "identity";
+    public static final String JSON_KEY_APPLICATION_VERSION = "application_version";
+    public static final String JSON_KEY_TYPE = "type";
+    public static final String JSON_KEY_VERSION = "version";
+    public static final String JSON_KEY_MODIFIED = "modified";
+    private static final String[] EMPTY_NAMES = new String[0];
+    private static final String[] CLONE_NAMES = { JSON_KEY_IDENTITY,
+                                                  JSON_KEY_APPLICATION_VERSION,
+                                                  JSON_KEY_TYPE,
+                                                  JSON_KEY_VERSION,
+                                                  JSON_KEY_MODIFIED };
+
     protected DefaultEntityStoreUnitOfWork unitOfWork;
-
     protected EntityStatus status;
-
     protected String version;
+
     protected long lastModified;
     private final EntityReference identity;
     private final EntityDescriptor entityDescriptor;
-
-    protected final JSONObject state;
+    protected JSONObject state;
 
     public JSONEntityState( DefaultEntityStoreUnitOfWork unitOfWork,
                             EntityReference identity,
@@ -57,11 +70,11 @@ public final class JSONEntityState
     )
     {
         this( unitOfWork, "",
-                System.currentTimeMillis(),
-                identity,
-                EntityStatus.NEW,
-                entityDescriptor,
-                initialState );
+              System.currentTimeMillis(),
+              identity,
+              EntityStatus.NEW,
+              entityDescriptor,
+              initialState );
     }
 
     public JSONEntityState( DefaultEntityStoreUnitOfWork unitOfWork,
@@ -103,21 +116,19 @@ public final class JSONEntityState
     {
         try
         {
-            Object jsonValue = state.getJSONObject( "properties" ).opt( stateName.name() );
-            if( jsonValue == null || jsonValue == JSONObject.NULL )
+            Object json = state.getJSONObject( JSON_KEY_PROPERTIES ).opt( stateName.name() );
+            if( json == null || json == JSONObject.NULL )
             {
                 return null;
-            } else
+            }
+            else
             {
-                PropertyDescriptor propertyDescriptor = entityDescriptor.state()
-                        .getPropertyByQualifiedName( stateName );
-                Object value = ( (PropertyTypeDescriptor) propertyDescriptor ).propertyType()
-                        .type()
-                        .fromJSON( jsonValue, unitOfWork.module() );
-                return value;
+                ModuleSPI module = unitOfWork.module();
+                PropertyDescriptor descriptor = entityDescriptor.state().getPropertyByQualifiedName( stateName );
+                return ( (PropertyTypeDescriptor) descriptor ).propertyType().type().fromJSON( json, module );
             }
         }
-        catch (JSONException e)
+        catch( JSONException e )
         {
             throw new EntityStoreException( e );
         }
@@ -131,35 +142,47 @@ public final class JSONEntityState
             if( newValue == null )
             {
                 jsonValue = JSONObject.NULL;
-            } else
+            }
+            else
             {
                 PropertyTypeDescriptor propertyDescriptor = entityDescriptor.state()
-                        .getPropertyByQualifiedName( stateName );
+                    .getPropertyByQualifiedName( stateName );
                 jsonValue = propertyDescriptor.propertyType().type().toJSON( newValue );
             }
-            state.getJSONObject( "properties" ).put( stateName.name(), jsonValue );
+            cloneStateIfGlobalStateLoaded();
+            state.getJSONObject( JSON_KEY_PROPERTIES ).put( stateName.name(), jsonValue );
             markUpdated();
         }
-        catch (JSONException e)
+        catch( JSONException e )
         {
             throw new EntityStoreException( e );
         }
+    }
+
+    private JSONObject cloneJSON( JSONObject jsonObject )
+        throws JSONException
+    {
+        String[] names = JSONObject.getNames( jsonObject );
+        if( names == null )
+            names = EMPTY_NAMES;
+        return new JSONObject( jsonObject, names );
     }
 
     public EntityReference getAssociation( QualifiedName stateName )
     {
         try
         {
-            Object jsonValue = state.getJSONObject( "associations" ).opt( stateName.name() );
+            Object jsonValue = state.getJSONObject( JSON_KEY_ASSOCIATIONS ).opt( stateName.name() );
             if( jsonValue == null )
             {
                 return null;
             }
 
-            EntityReference value = jsonValue == JSONObject.NULL ? null : EntityReference.parseEntityReference( (String) jsonValue );
+            EntityReference value = jsonValue == JSONObject.NULL ? null : EntityReference.parseEntityReference(
+                (String) jsonValue );
             return value;
         }
-        catch (JSONException e)
+        catch( JSONException e )
         {
             throw new EntityStoreException( e );
         }
@@ -169,11 +192,12 @@ public final class JSONEntityState
     {
         try
         {
-            state.getJSONObject( "associations" )
-                    .put( stateName.name(), newEntity == null ? null : newEntity.identity() );
+            cloneStateIfGlobalStateLoaded();
+            state.getJSONObject( JSON_KEY_ASSOCIATIONS )
+                .put( stateName.name(), newEntity == null ? null : newEntity.identity() );
             markUpdated();
         }
-        catch (JSONException e)
+        catch( JSONException e )
         {
             throw new EntityStoreException( e );
         }
@@ -183,7 +207,7 @@ public final class JSONEntityState
     {
         try
         {
-            JSONObject manyAssociations = state.getJSONObject( "manyassociations" );
+            JSONObject manyAssociations = state.getJSONObject( JSON_KEY_MANYASSOCIATIONS );
             JSONArray jsonValues = manyAssociations.optJSONArray( stateName.name() );
             if( jsonValues == null )
             {
@@ -192,7 +216,7 @@ public final class JSONEntityState
             }
             return new JSONManyAssociationState( this, jsonValues );
         }
-        catch (JSONException e)
+        catch( JSONException e )
         {
             throw new EntityStoreException( e );
         }
@@ -234,6 +258,35 @@ public final class JSONEntityState
         if( status == EntityStatus.LOADED )
         {
             status = EntityStatus.UPDATED;
+        }
+    }
+
+    boolean isStateNotCloned()
+    {
+        return status == EntityStatus.LOADED;
+    }
+
+    void cloneStateIfGlobalStateLoaded()
+    {
+        if( isStateNotCloned() )
+        {
+            return;
+        }
+
+        try
+        {
+            JSONObject newProperties = cloneJSON( state.getJSONObject( JSON_KEY_PROPERTIES ) );
+            JSONObject newAssoc = cloneJSON( state.getJSONObject( JSON_KEY_ASSOCIATIONS ) );
+            JSONObject newManyAssoc = cloneJSON( state.getJSONObject( JSON_KEY_MANYASSOCIATIONS ) );
+            JSONObject stateClone = new JSONObject( state, CLONE_NAMES );
+            stateClone.put( JSON_KEY_PROPERTIES, newProperties );
+            stateClone.put( JSON_KEY_ASSOCIATIONS, newAssoc );
+            stateClone.put( JSON_KEY_MANYASSOCIATIONS, newManyAssoc );
+            state = stateClone;
+        }
+        catch( JSONException e )
+        {
+            throw new EntityStoreException( e );
         }
     }
 }

@@ -2,8 +2,6 @@ package org.qi4j.entitystore.map;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,6 +13,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.json.JSONWriter;
+import org.qi4j.api.cache.CacheOptions;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityReference;
@@ -25,9 +24,7 @@ import org.qi4j.api.service.Activatable;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.api.usecase.Usecase;
-import org.qi4j.spi.cache.Cache;
-import org.qi4j.spi.cache.CachePool;
-import org.qi4j.spi.cache.NullCache;
+import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
@@ -57,6 +54,7 @@ public class MapEntityStoreMixin
 {
     @This
     private MapEntityStore mapEntityStore;
+
     @This
     private EntityStoreSPI entityStoreSpi;
 
@@ -67,10 +65,6 @@ public class MapEntityStoreMixin
     @Service
     private Migration migration;
 
-    @Optional @Service
-    private CachePool caching;
-    private Cache<String> cache;
-
     protected String uuid;
     private int count;
 
@@ -78,28 +72,18 @@ public class MapEntityStoreMixin
         throws Exception
     {
         uuid = UUID.randomUUID().toString() + "-";
-        if( caching != null )
-        {
-            cache = caching.fetchCache( uuid, String.class );
-        }
-        else
-        {
-            cache = new NullCache<String>();
-        }
     }
 
     public void passivate()
         throws Exception
     {
-        if( caching != null )
-            caching.returnCache( cache );
     }
 
     // EntityStore
 
     public EntityStoreUnitOfWork newUnitOfWork( Usecase usecaseMetaInfo, ModuleSPI module )
     {
-        return new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), module );
+        return new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), module, usecaseMetaInfo );
     }
 
     // EntityStoreSPI
@@ -112,23 +96,15 @@ public class MapEntityStoreMixin
         return new DefaultEntityState( (DefaultEntityStoreUnitOfWork) unitOfWork, identity, entityDescriptor );
     }
 
-    public synchronized EntityState getEntityState( EntityStoreUnitOfWork unitOfWork, EntityReference identity )
+    public synchronized EntityState getEntityState( EntityStoreUnitOfWork unitofwork, EntityReference identity )
     {
-        Reader in = null;
-        String data = cache.get( identity.identity() );
-        if( data != null )
-        {
-            in = new StringReader( data );
-        }
-        // Get state
-        if( in == null )
-        {
-            in = mapEntityStore.get( identity );
-        }
-        return readEntityState( (DefaultEntityStoreUnitOfWork) unitOfWork, in );
+        DefaultEntityStoreUnitOfWork unitOfWork = (DefaultEntityStoreUnitOfWork) unitofwork;
+        Reader in = mapEntityStore.get( identity );
+        return readEntityState( unitOfWork, in );
     }
 
-    public StateCommitter applyChanges( final Iterable<EntityState> state, final String version, final long lastModified )
+    public StateCommitter applyChanges( final EntityStoreUnitOfWork unitofwork, final Iterable<EntityState> state,
+                                        final String version, final long lastModified )
         throws EntityStoreException
     {
         return new StateCommitter()
@@ -151,7 +127,6 @@ public class MapEntityStoreMixin
                                                                        state.entityDescriptor().entityType() );
                                     writeEntityState( state, writer, version, lastModified );
                                     writer.close();
-                                    updateCache( state, version, lastModified );
                                 }
                                 else if( state.status().equals( EntityStatus.UPDATED ) )
                                 {
@@ -159,12 +134,10 @@ public class MapEntityStoreMixin
                                                                           state.entityDescriptor().entityType() );
                                     writeEntityState( state, writer, version, lastModified );
                                     writer.close();
-                                    updateCache( state, version, lastModified );
                                 }
                                 else if( state.status().equals( EntityStatus.REMOVED ) )
                                 {
                                     changer.removeEntity( state.identity(), state.entityDescriptor().entityType() );
-                                    cache.remove( state.identity().identity() );
                                 }
                             }
                         }
@@ -186,8 +159,14 @@ public class MapEntityStoreMixin
         throws ThrowableType
     {
         // TODO This can be used for reading state, but not for modifying (e.g. removing all entities)
+
+        Usecase usecase = UsecaseBuilder
+            .buildUsecase( "qi4j.entitystore.visit" )
+            .with( CacheOptions.NEVER )
+            .newUsecase();
+
         final DefaultEntityStoreUnitOfWork uow =
-            new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), moduleInstance );
+            new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), moduleInstance, usecase );
 
         mapEntityStore.visitMap( new MapEntityStore.MapEntityStoreVisitor<ThrowableType>()
         {
@@ -412,14 +391,5 @@ public class MapEntityStoreMixin
         }
         reader.close();
         return jsonObject;
-    }
-
-    private void updateCache( DefaultEntityState state, String version, long lastModified )
-        throws IOException
-    {
-        StringWriter sw = new StringWriter();
-        writeEntityState( state, sw, version, lastModified );
-        sw.close();
-        cache.put( state.identity().identity(), sw.toString() );
     }
 }

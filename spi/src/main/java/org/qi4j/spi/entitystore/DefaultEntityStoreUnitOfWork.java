@@ -15,9 +15,8 @@
 package org.qi4j.spi.entitystore;
 
 import java.util.LinkedList;
-
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.api.structure.Module;
+import org.qi4j.api.usecase.Usecase;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.structure.ModuleSPI;
@@ -26,18 +25,20 @@ import org.qi4j.spi.structure.ModuleSPI;
  * JAVADOC
  */
 public final class DefaultEntityStoreUnitOfWork
-        implements EntityStoreUnitOfWork
+    implements EntityStoreUnitOfWork
 {
     private EntityStoreSPI entityStoreSPI;
     private String identity;
     private ModuleSPI module;
     private LinkedList<EntityState> states = new LinkedList<EntityState>();
+    private Usecase usecase;
 
-    public DefaultEntityStoreUnitOfWork( EntityStoreSPI entityStoreSPI, String identity, ModuleSPI module )
+    public DefaultEntityStoreUnitOfWork( EntityStoreSPI entityStoreSPI, String identity, ModuleSPI module, Usecase usecase )
     {
         this.entityStoreSPI = entityStoreSPI;
         this.identity = identity;
         this.module = module;
+        this.usecase = usecase;
     }
 
     public String identity()
@@ -53,7 +54,7 @@ public final class DefaultEntityStoreUnitOfWork
     // EntityStore
 
     public EntityState newEntityState( EntityReference anIdentity, EntityDescriptor descriptor )
-            throws EntityStoreException
+        throws EntityStoreException
     {
         EntityState state = entityStoreSPI.newEntityState( this, anIdentity, descriptor );
         states.add( state );
@@ -61,7 +62,7 @@ public final class DefaultEntityStoreUnitOfWork
     }
 
     public EntityState getEntityState( EntityReference anIdentity )
-            throws EntityStoreException, EntityNotFoundException
+        throws EntityStoreException, EntityNotFoundException
     {
         EntityState entityState = entityStoreSPI.getEntityState( this, anIdentity );
         states.add( entityState );
@@ -69,9 +70,9 @@ public final class DefaultEntityStoreUnitOfWork
     }
 
     public StateCommitter applyChanges()
-            throws EntityStoreException
+        throws EntityStoreException
     {
-        return entityStoreSPI.applyChanges( states, identity, System.currentTimeMillis() );
+        return entityStoreSPI.applyChanges( this, states, identity, System.currentTimeMillis() );
     }
 
     public void discard()
@@ -81,5 +82,10 @@ public final class DefaultEntityStoreUnitOfWork
     public void registerEntityState( EntityState state )
     {
         states.add( state );
+    }
+
+    public Usecase usecase()
+    {
+        return usecase;
     }
 }
