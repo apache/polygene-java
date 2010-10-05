@@ -35,4 +35,5 @@ Import-Package: org.qi4j.api.common, \
                 jdbm.recman
                 
 
-Export-Package: org.qi4j.entitystore.jdbm
+Export-Package: org.qi4j.entitystore.jdbm;version=${pom.version}, \
+                org.qi4j.entitystore.jdbm.assembly;version=${pom.version}

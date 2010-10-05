@@ -1,0 +1,35 @@
+Bundle-Activator:
+
+Private-Package: org.qi4j.entitystore.qrm.dbInitializer, \
+                 org.qi4j.entitystore.qrm.internal
+                
+
+Ignore-Package: com_cenqua_clover
+
+Import-Package: com.ibatis.sqlmap.client, \
+                com.ibatis.common.jdbc, \
+                org.apache.commons.logging, \
+                org.hibernate, \
+                org.hibernate.cfg, \
+                org.hibernate.classic, \
+                org.qi4j.api.cache, \
+                org.qi4j.api.common, \
+                org.qi4j.api.configuration, \
+                org.qi4j.api.entity, \
+                org.qi4j.api.injection.scope, \
+                org.qi4j.api.mixin, \
+                org.qi4j.api.property, \
+                org.qi4j.api.service, \
+                org.qi4j.api.unitofwork, \
+                org.qi4j.api.usecase, \
+                org.qi4j.api.util, \
+                org.qi4j.spi.entity, \
+                org.qi4j.spi.entity.association, \
+                org.qi4j.spi.entitystore, \
+                org.qi4j.spi.entitystore.helpers, \
+                org.qi4j.spi.property, \
+                org.qi4j.spi.service, \
+                org.qi4j.spi.structure
+
+Export-Package: org.qi4j.entitystore.qrm;version=${pom.version}, \
+                org.qi4j.entitystore.qrm.assembly;version=${pom.version}

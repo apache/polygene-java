@@ -1,9 +1,11 @@
 
-Export-Package: org.qi4j.index.rdf,
-                org.qi4j.index.rdf.assembly,
-                org.qi4j.index.rdf.http,
-                org.qi4j.index.rdf.indexing,
-                org.qi4j.index.rdf.query
+Private-Package: org.qi4j.index.rdf.query.internal
+
+Export-Package: org.qi4j.index.rdf;version=${pom.version}, \
+                org.qi4j.index.rdf.assembly;version=${pom.version}, \
+                org.qi4j.index.rdf.indexing;version=${pom.version}, \
+                org.qi4j.index.rdf.query;version=${pom.version}       
+
 
 
 Import-Package: org.apache.commons.logging, \

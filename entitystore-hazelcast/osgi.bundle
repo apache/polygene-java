@@ -4,7 +4,8 @@ Private-Package:
 
 Ignore-Package: com_cenqua_clover
 
-Import-Package: org.qi4j.api.common, \
+Import-Package: com.hazelcast.core, \
+                org.qi4j.api.common, \
                 org.qi4j.api.concern, \
                 org.qi4j.api.configuration, \
                 org.qi4j.api.entity, \
@@ -14,13 +15,12 @@ Import-Package: org.qi4j.api.common, \
                 org.qi4j.api.service, \
                 org.qi4j.bootstrap, \
                 org.qi4j.entitystore.map, \
-                org.qi4j.library.constraints.annotation, \
+                org.qi4j.entitystore.memory, \
                 org.qi4j.library.locking, \
                 org.qi4j.spi.entity, \
                 org.qi4j.spi.entitystore, \
-                org.qi4j.spi.service, \
                 org.qi4j.spi.uuid
 
 
-Export-Package: org.qi4j.entitystore.file;version=${pom.version}, \
-                org.qi4j.entitystore.file.assembly;version=${pom.version}
+Export-Package: org.qi4j.entitystore.hazelcast;version=${pom.version}, \
+                org.qi4j.entitystore.hazelcast.assembly;version=${pom.version}

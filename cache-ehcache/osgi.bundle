@@ -1,0 +1,21 @@
+Bundle-Activator:
+
+Private-Package:
+
+Ignore-Package: com_cenqua_clover
+
+Import-Package: net.sf.ehcache, \
+                net.sf.ehcache.config, \
+                org.qi4j.api.cache, \
+                org.qi4j.api.common, \
+                org.qi4j.api.configuration, \
+                org.qi4j.api.injection.scope, \
+                org.qi4j.api.mixin, \
+                org.qi4j.api.property, \
+                org.qi4j.api.service, \
+                org.qi4j.api.util, \
+                org.qi4j.bootstrap, \
+                org.qi4j.spi.cache
+
+Export-Package: org.qi4j.cache.ehcache;version=${pom.version}, \
+                org.qi4j.cache.ehcache.assembly;version=${pom.version}

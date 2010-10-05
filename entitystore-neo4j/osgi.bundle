@@ -12,6 +12,7 @@ Import-Package: javax.transaction,\
                 org.apache.lucene.store, \
                 org.apache.lucene.util, \
                 org.json, \
+                org.qi4j.api.cache, \
                 org.qi4j.api.composite, \
                 org.qi4j.api.common, \
                 org.qi4j.api.configuration, \
@@ -40,6 +41,7 @@ Import-Package: javax.transaction,\
                 org.w3c.dom, \
                 org.xml.sax
 
-Export-Package: org.qi4j.entitystore.neo4j
+Export-Package: org.qi4j.entitystore.neo4j;version=${pom.version}, \
+                org.qi4j.entitystore.neo4j.assembly;version=${pom.version}
 
 Embed-Dependency: *;groupId=org.neo4j

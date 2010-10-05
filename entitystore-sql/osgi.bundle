@@ -1,30 +1,38 @@
 Bundle-Activator:
 
-Private-Package:
+Private-Package: org.qi4j.entitystore.sql.internal
 
 Ignore-Package: com_cenqua_clover
 
-Import-Package: org.json, \
-                org.qi4j.api.common, \
+Import-Package: javax.sql, \
+                org.json, \
                 org.qi4j.api.cache, \
+                org.qi4j.api.common, \
                 org.qi4j.api.concern, \
+                org.qi4j.api.configuration, \
                 org.qi4j.api.entity, \
                 org.qi4j.api.injection.scope, \
                 org.qi4j.api.mixin, \
+                org.qi4j.api.property, \
                 org.qi4j.api.service, \
                 org.qi4j.api.structure, \
                 org.qi4j.api.unitofwork, \
                 org.qi4j.api.usecase, \
+                org.qi4j.api.util, \
                 org.qi4j.bootstrap, \
+                org.qi4j.entitystore.map, \
+                org.qi4j.library.sql.api, \
+                org.qi4j.library.sql.common, \
+                org.qi4j.library.sql.ds, \
+                org.qi4j.library.sql.ds.assembly, \
                 org.qi4j.spi.entity, \
                 org.qi4j.spi.entity.association, \
                 org.qi4j.spi.entitystore, \
                 org.qi4j.spi.entitystore.helpers, \
                 org.qi4j.spi.property, \
-                org.qi4j.spi.service, \
                 org.qi4j.spi.structure, \
                 org.qi4j.spi.uuid, \
                 org.slf4j
 
-Export-Package: org.qi4j.entitystore.prefs;version=${pom.version}, \
-                org.qi4j.entitystore.prefs.assembly;version=${pom.version}
+Export-Package: org.qi4j.entitystore.sql;version=${pom.version}, \
+                org.qi4j.entitystore.sql.assembly;version=${pom.version}

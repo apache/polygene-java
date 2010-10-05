@@ -1,0 +1,50 @@
+Bundle-Activator:
+
+Private-Package: org.qi4j.index.sql.support.skeleton
+
+
+Ignore-Package: com_cenqua_clover
+
+
+Import-Package: javax.sql, \
+                org.qi4j.api.common, \
+                org.qi4j.api.configuration, \
+                org.qi4j.api.entity, \
+                org.qi4j.api.injection.scope, \
+                org.qi4j.api.mixin, \
+                org.qi4j.api.property, \
+                org.qi4j.api.query.grammar, \
+                org.qi4j.api.service, \
+                org.qi4j.api.structure, \
+                org.qi4j.bootstrap, \
+                org.qi4j.index.reindexer, \
+                org.qi4j.index.sql.internal, \
+                org.qi4j.index.sql.support.skeletons, \
+                org.qi4j.library.sql.common, \
+                org.qi4j.library.sql.ds, \
+                org.qi4j.library.sql.ds.assembly, \
+                org.qi4j.spi.composite, \
+                org.qi4j.spi.entity, \
+                org.qi4j.spi.entity.association, \
+                org.qi4j.spi.entitystore, \
+                org.qi4j.spi.property, \
+                org.qi4j.spi.query, \
+                org.qi4j.spi.structure, \
+                org.qi4j.spi.value, \
+                org.slf4j, \
+                org.sql.generation.api.grammar.builders.query, \
+                org.sql.generation.api.grammar.builders.query.pgsql, \
+                org.sql.generation.api.grammar.common, \
+                org.sql.generation.api.grammar.factories, \
+                org.sql.generation.api.grammar.factories.pgsql, \
+                org.sql.generation.api.grammar.query, \
+                org.sql.generation.api.grammar.query.pgsql, \
+                org.sql.generation.api.vendor
+
+
+Export-Package: org.qi4j.index.sql;version=${pom.version}, \
+                org.qi4j.index.sql.assembly;version=${pom.version}, \
+                org.qi4j.index.sql.support.api;version=${pom.version}, \
+                org.qi4j.index.sql.support.common;version=${pom.version}, \
+                org.qi4j.index.sql.support.postgresql;version=${pom.version}, \
+                org.qi4j.index.sql.support.postgresql.assembly;version=${pom.version}

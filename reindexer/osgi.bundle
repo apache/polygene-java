@@ -1,26 +1,22 @@
 Bundle-Activator:
 
-Private-Package:
+Private-Package: org.qi4j.index.reindexer.internal
 
 Ignore-Package: com_cenqua_clover
 
+
 Import-Package: org.qi4j.api.common, \
-                org.qi4j.api.concern, \
                 org.qi4j.api.configuration, \
                 org.qi4j.api.entity, \
                 org.qi4j.api.injection.scope, \
                 org.qi4j.api.mixin, \
                 org.qi4j.api.property, \
                 org.qi4j.api.service, \
-                org.qi4j.bootstrap, \
-                org.qi4j.entitystore.map, \
-                org.qi4j.library.constraints.annotation, \
-                org.qi4j.library.locking, \
                 org.qi4j.spi.entity, \
                 org.qi4j.spi.entitystore, \
                 org.qi4j.spi.service, \
-                org.qi4j.spi.uuid
+                org.qi4j.spi.structure
 
 
-Export-Package: org.qi4j.entitystore.file;version=${pom.version}, \
-                org.qi4j.entitystore.file.assembly;version=${pom.version}
+Export-Package: org.qi4j.index.reindexer;version=${pom.version}, \
+                org.qi4j.index.reindexer.assembly;version=${pom.version}
