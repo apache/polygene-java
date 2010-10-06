@@ -21,6 +21,7 @@ import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.property.Property;
 import org.qi4j.spi.util.MethodKeyMap;
 
 /**
@@ -112,18 +113,27 @@ public final class MetaInfoDeclaration
             methodInfos.put( method, methodInfo );
             metaInfo = null; // reset
             final Class<?> returnType = method.getReturnType();
-            return Proxy.newProxyInstance( returnType.getClassLoader(), new Class[]{ returnType }, new InvocationHandler()
+            try
             {
-                public Object invoke( Object o, Method method, Object[] objects )
-                    throws Throwable
-                {
-                    if( method.getName().equals( "set" ) )
-                    {
-                        methodInfo.initialValue = objects[ 0 ];
-                    }
-                    return null;
-                }
-            } );
+                return Proxy.newProxyInstance( returnType.getClassLoader(), new Class[]{ returnType },
+                                               new InvocationHandler()
+                                               {
+                                                   public Object invoke( Object o, Method method, Object[] objects )
+                                                       throws Throwable
+                                                   {
+                                                       if( method.getName().equals( "set" ) )
+                                                       {
+                                                           methodInfo.initialValue = objects[ 0 ];
+                                                       }
+                                                       return null;
+                                                   }
+                                               } );
+            }
+            catch( IllegalArgumentException e )
+            {
+                throw new IllegalArgumentException(
+                    "Only methods with " + Property.class.getName() + " as return type can have declareDefaults()" );
+            }
         }
 
         public MethodInfo matches( Method accessor )
@@ -155,7 +165,8 @@ public final class MetaInfoDeclaration
 
         public T declareDefaults()
         {
-            return mixinType.cast( Proxy.newProxyInstance( mixinType.getClassLoader(), new Class[]{ mixinType }, this ) );
+            return mixinType.cast(
+                Proxy.newProxyInstance( mixinType.getClassLoader(), new Class[]{ mixinType }, this ) );
         }
 
         public MixinDeclaration<T> setMetaInfo( Object info )
