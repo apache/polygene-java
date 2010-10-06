@@ -80,4 +80,10 @@ public class PropertiesInstance
     {
         return properties.hashCode();
     }
+
+    @Override
+    public String toString()
+    {
+        return "properties=" + properties;
+    }
 }
