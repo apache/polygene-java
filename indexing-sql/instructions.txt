@@ -1,4 +1,4 @@
-These instructions are for preparing your out-of-box PoistgreSQL installation so it would be usable with PostgreSQL indexing of Qi4j.
+These instructions are for preparing your out-of-box PostgreSQL installation so it would be usable with PostgreSQL indexing of Qi4j.
 
 1. Creating login role and database
 1.1. Using pgAdmin, connect to PostgreSQL database, and create database you intend to use to store Qi4j entity data, and login role for Qi4j application to use when it connects to database.
