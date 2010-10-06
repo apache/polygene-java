@@ -35,6 +35,8 @@ import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.structure.ApplicationModelSPI;
 import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.spi.structure.ModuleSPI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Base class for Composite tests.
@@ -57,6 +59,8 @@ public abstract class AbstractQi4jTest
     protected ServiceFinder serviceLocator;
 
     protected ModuleSPI moduleInstance;
+
+    private Logger _log;
 
     @Before
     public void setUp()
@@ -108,10 +112,11 @@ public abstract class AbstractQi4jTest
 
     /**
      * This method is called when there was an AssemblyException in the creation of the Qi4j application model.
-     * <p>Override this method to catch valid failures to place into test suites.
-     *
+     * <p>
+     * Override this method to catch valid failures to place into test suites.
+     * 
      * @param exception the exception thrown.
-     *
+     * 
      * @throws AssemblyException The default implementation of this method will simply re-throw the exception.
      */
     protected void assemblyException( AssemblyException exception )
@@ -132,7 +137,7 @@ public abstract class AbstractQi4jTest
         if( unitOfWorkFactory != null && unitOfWorkFactory.currentUnitOfWork() != null )
         {
             UnitOfWork current;
-            while( ( current = unitOfWorkFactory.currentUnitOfWork() ) != null )
+            while( (current = unitOfWorkFactory.currentUnitOfWork()) != null )
             {
                 if( current.isOpen() )
                 {
@@ -151,5 +156,15 @@ public abstract class AbstractQi4jTest
         {
             application.passivate();
         }
+    }
+
+    protected Logger getLog()
+    {
+        if( this._log == null )
+        {
+            this._log = LoggerFactory.getLogger( this.getClass() );
+        }
+
+        return this._log;
     }
 }
