@@ -9,6 +9,7 @@ Import-Package: org.ops4j.pax.swissbox.core, \
                 org.qi4j.api.common, \
                 org.qi4j.api.composite, \
                 org.qi4j.api.object, \
+                org.qi4j.api.property, \
                 org.qi4j.api.query, \
                 org.qi4j.api.service, \
                 org.qi4j.api.structure, \
