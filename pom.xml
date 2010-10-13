@@ -79,6 +79,12 @@
       <email>qi4j@jexp.de</email>
       <timezone>CET</timezone>
     </developer>
+    <developer>
+      <id>stas.dev+qi4j@gmail.com</id>
+      <name>Stanislav Muhametsin</name>
+      <email>stas.dev+qi4j@gmail.com</email>
+      <timezone>UTC+2</timezone>
+    </developer>
   </developers>
 
   <build>
