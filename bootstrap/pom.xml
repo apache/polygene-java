@@ -11,7 +11,6 @@
 
     <groupId>org.qi4j.core</groupId>
     <artifactId>qi4j-core-bootstrap</artifactId>
-    <version>1.2-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <name>Qi4j Core - Bootstrap</name>
     <description>
@@ -29,7 +28,7 @@
         <dependency>
             <groupId>org.qi4j.core</groupId>
             <artifactId>qi4j-core-spi</artifactId>
-            <version>1.2-SNAPSHOT</version>
+            <version>${pom.version}</version>
         </dependency>
     </dependencies>
 

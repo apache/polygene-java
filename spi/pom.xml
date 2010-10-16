@@ -8,7 +8,6 @@
   <groupId>org.qi4j.core</groupId>
   <artifactId>qi4j-core-spi</artifactId>
   <name>Qi4j Core - SPI</name>
-  <version>1.2-SNAPSHOT</version>
   <packaging>bundle</packaging>
 
   <description>
@@ -20,7 +19,7 @@
     <dependency>
       <groupId>org.qi4j.core</groupId>
       <artifactId>qi4j-core-api</artifactId>
-      <version>1.2-SNAPSHOT</version>
+      <version>${pom.version}</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>

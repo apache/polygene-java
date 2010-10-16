@@ -10,7 +10,6 @@
 
   <groupId>org.qi4j.core</groupId>
   <artifactId>qi4j-core-runtime</artifactId>
-  <version>1.2-SNAPSHOT</version>
   <packaging>bundle</packaging>
   <name>Qi4j Core - Runtime</name>
 
@@ -23,17 +22,17 @@
     <dependency>
       <groupId>org.qi4j.core</groupId>
       <artifactId>qi4j-core-api</artifactId>
-      <version>1.2-SNAPSHOT</version>
+      <version>${pom.version}</version>
     </dependency>
     <dependency>
       <groupId>org.qi4j.core</groupId>
       <artifactId>qi4j-core-spi</artifactId>
-      <version>1.2-SNAPSHOT</version>
+      <version>${pom.version}</version>
     </dependency>
     <dependency>
       <groupId>org.qi4j.core</groupId>
       <artifactId>qi4j-core-bootstrap</artifactId>
-      <version>1.2-SNAPSHOT</version>
+      <version>${pom.version}</version>
     </dependency>
 
     <dependency>
