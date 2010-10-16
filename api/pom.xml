@@ -9,7 +9,6 @@
   <artifactId>qi4j-core-api</artifactId>
   <packaging>bundle</packaging>
   <name>Qi4j Core - API</name>
-  <version>1.3-SNAPSHOT</version>
   <description>
     The Qi4j Core API is the classes and interfaces that your regular Qi4j application will depend on.
   </description>
