@@ -2,608 +2,633 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.qi4j</groupId>
-  <artifactId>qi4j-library</artifactId>
-  <name>Qi4j Library (Build POM)</name>
-  <version>1.2-SNAPSHOT</version>
-  <packaging>pom</packaging>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.qi4j</groupId>
+    <artifactId>qi4j-library</artifactId>
+    <name>Qi4j Library (Build POM)</name>
+    <version>1.2-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
 
-  <inceptionYear>2007</inceptionYear>
-  <url>http://www.qi4j.org/</url>
+    <inceptionYear>2007</inceptionYear>
+    <url>http://www.qi4j.org/</url>
 
-  <scm>
-    <url>http://dscm.ops4j.org/git/gitweb.cgi?p=qi4j-libraries.git;a=summary</url>
-    <connection>scm:git:git://dscm.ops4j.org/qi4j-libraries.git</connection>
-    <developerConnection>scm:git:git@dscm.ops4j.org:qi4j-libraries.git</developerConnection>
-  </scm>
+    <scm>
+        <url>http://dscm.ops4j.org/git/gitweb.cgi?p=qi4j-libraries.git;a=summary</url>
+        <connection>scm:git:git://dscm.ops4j.org/qi4j-libraries.git</connection>
+        <developerConnection>scm:git:git@dscm.ops4j.org:qi4j-libraries.git</developerConnection>
+    </scm>
 
-  <properties>
-    <scmVersion>1.2</scmVersion>
-    <version.qi4j-core>1.2-SNAPSHOT</version.qi4j-core>
-    <version.jetty>6.1.21</version.jetty>
-  </properties>
+    <properties>
+        <scmVersion>1.2</scmVersion>
+        <version.qi4j-core>1.2-SNAPSHOT</version.qi4j-core>
+        <version.jetty>6.1.21</version.jetty>
+    </properties>
 
-  <modules>
-    <module>auth</module>
-    <module>cache</module>
-    <module>constraints</module>
-    <module>http</module>
-    <module>locking</module>
-    <module>logging</module>
-    <module>rdf</module>
-    <module>scripting</module>
-    <module>uid</module>
-    <module>struts2</module>
-    <module>spring</module>
-    <module>servlet</module>
-    <module>shiro</module>
-    <module>sql</module>
-  </modules>
+    <modules>
+        <module>auth</module>
+        <module>cache</module>
+        <module>constraints</module>
+        <module>http</module>
+        <module>locking</module>
+        <module>logging</module>
+        <module>rdf</module>
+        <module>scripting</module>
+        <module>uid</module>
+        <module>struts2</module>
+        <module>spring</module>
+        <module>servlet</module>
+        <module>shiro</module>
+        <module>sql</module>
+    </modules>
 
-  <developers>
-    <developer>
-      <id>niclas@hedhman.org</id>
-      <name>Niclas Hedhman</name>
-      <email>niclas@hedhman.org</email>
-      <organization>CodeDragons</organization>
-      <organizationUrl>http://www.codedragons.com</organizationUrl>
-      <roles>
-        <role>Developer</role>
-        <role>Release Manager</role>
-      </roles>
-      <timezone>UTC+8</timezone>
-    </developer>
-    <developer>
-      <id>rickardoberg</id>
-      <name>Rickard Öberg</name>
-      <email>rickardoberg@gmail.com</email>
-      <organization>Jayway</organization>
-      <organizationUrl>http://www.jayway.se</organizationUrl>
-      <roles>
-        <role>Developer</role>
-        <role>Innovator</role>
-      </roles>
-      <timezone>UTC+8</timezone>
-    </developer>
-    <developer>
-      <id>edward.yakop@gmail.com</id>
-      <name>Edward Yakop</name>
-      <email>efy@codedragons.com</email>
-      <url>http://www.codedragons.com</url>
-      <organization>CodeDragons</organization>
-      <organizationUrl>http://www.codedragons.com</organizationUrl>
-      <roles>
-        <role>Developer</role>
-      </roles>
-      <timezone>UTC+8</timezone>
-    </developer>
-    <developer>
-      <id>adreghiciu@gmail.com</id>
-      <name>Alin Dreghiciu</name>
-      <email>adreghiciu@codedragons.com</email>
-      <url>http://www.codedragons.com</url>
-      <organization>CodeDragons</organization>
-      <organizationUrl>http://www.codedragons.com</organizationUrl>
-      <roles>
-        <role>Developer</role>
-      </roles>
-      <timezone>UTC+2</timezone>
-    </developer>
-    <developer>
-      <id>boon</id>
-      <name>Lan Boon Ping</name>
-      <organization>CodeDragons</organization>
-      <email>boonping81@gmail.com</email>
-      <timezone>UTC+8</timezone>
-    </developer>
-    <developer>
-      <id>mesirii</id>
-      <name>Michael Hunger</name>
-      <organization/>
-      <email>qi4j@jexp.de</email>
-      <timezone>CET</timezone>
-    </developer>
-    <developer>
-      <id>muhdkamil</id>
-      <name>Muhd Kamil bin Mohd Baki</name>
-      <organization>CodeDragons</organization>
-      <email>kamil@codedragons.com</email>
-      <timezone>UTC+8</timezone>
-    </developer>
-    <developer>
-      <id>ops4j@leangen.net</id>
-      <name>David Leangen</name>
-      <organization>Bioscene</organization>
-      <email>ops4j@leangen.net</email>
-      <timezone>UTC+9</timezone>
-    </developer>
-    <developer>
-      <id>peter@neubauer.se</id>
-      <name>Peter Neubauer</name>
-      <organization>CodeDragons</organization>
-      <email>peter@neubauer.se</email>
-      <timezone>CET</timezone>
-    </developer>
-    <developer>
-      <id>ragaller</id>
-      <name>Georg Ragaller</name>
-      <organization/>
-      <email>qi4j@dev.ragaller.org</email>
-      <timezone>CET</timezone>
-    </developer>
-    <developer>
-      <id>rwallace</id>
-      <name>Richard Wallace</name>
-      <organization/>
-      <email>rwallace@thewallacepack.net</email>
-      <timezone>UTC-7</timezone>
-    </developer>
-    <developer>
-      <id>siannyhalim@gmail.com</id>
-      <name>Sianny Halim</name>
-      <organization>CodeDragons</organization>
-      <email>siannyhalim@gmail.com</email>
-      <timezone>UTC+8</timezone>
-    </developer>
-    <developer>
-      <id>sonny.gill@jayway.net</id>
-      <name>Sonny Gill</name>
-      <organization>CodeDragons</organization>
-      <email>sonny.public@gmail.com</email>
-      <timezone>UTC+8</timezone>
-    </developer>
-    <developer>
-      <id>taowen</id>
-      <name>Tao Wen</name>
-      <organization/>
-      <email>taowen@gmail.com</email>
-      <timezone>UTC+8</timezone>
-    </developer>
-    <developer>
-      <id>paul@nosphere.org</id>
-      <name>Paul Merlin</name>
-      <organization/>
-      <email>paul@nosphere.org</email>
-      <timezone>CET</timezone>
-    </developer>
-    <developer>
-      <id>stas.dev+qi4j@gmail.com</id>
-      <name>Stanislav Muhametsin</name>
-      <organization/>
-      <email>stas.dev+qi4j@gmail.com</email>
-      <timezone>UTC+2</timezone>
-    </developer>
-  </developers>
+    <developers>
+        <developer>
+            <id>niclas@hedhman.org</id>
+            <name>Niclas Hedhman</name>
+            <email>niclas@hedhman.org</email>
+            <organization>CodeDragons</organization>
+            <organizationUrl>http://www.codedragons.com</organizationUrl>
+            <roles>
+                <role>Developer</role>
+                <role>Release Manager</role>
+            </roles>
+            <timezone>UTC+8</timezone>
+        </developer>
+        <developer>
+            <id>rickardoberg</id>
+            <name>Rickard Öberg</name>
+            <email>rickardoberg@gmail.com</email>
+            <organization>Jayway</organization>
+            <organizationUrl>http://www.jayway.se</organizationUrl>
+            <roles>
+                <role>Developer</role>
+                <role>Innovator</role>
+            </roles>
+            <timezone>UTC+8</timezone>
+        </developer>
+        <developer>
+            <id>edward.yakop@gmail.com</id>
+            <name>Edward Yakop</name>
+            <email>efy@codedragons.com</email>
+            <url>http://www.codedragons.com</url>
+            <organization>CodeDragons</organization>
+            <organizationUrl>http://www.codedragons.com</organizationUrl>
+            <roles>
+                <role>Developer</role>
+            </roles>
+            <timezone>UTC+8</timezone>
+        </developer>
+        <developer>
+            <id>adreghiciu@gmail.com</id>
+            <name>Alin Dreghiciu</name>
+            <email>adreghiciu@codedragons.com</email>
+            <url>http://www.codedragons.com</url>
+            <organization>CodeDragons</organization>
+            <organizationUrl>http://www.codedragons.com</organizationUrl>
+            <roles>
+                <role>Developer</role>
+            </roles>
+            <timezone>UTC+2</timezone>
+        </developer>
+        <developer>
+            <id>boon</id>
+            <name>Lan Boon Ping</name>
+            <organization>CodeDragons</organization>
+            <email>boonping81@gmail.com</email>
+            <timezone>UTC+8</timezone>
+        </developer>
+        <developer>
+            <id>mesirii</id>
+            <name>Michael Hunger</name>
+            <organization/>
+            <email>qi4j@jexp.de</email>
+            <timezone>CET</timezone>
+        </developer>
+        <developer>
+            <id>muhdkamil</id>
+            <name>Muhd Kamil bin Mohd Baki</name>
+            <organization>CodeDragons</organization>
+            <email>kamil@codedragons.com</email>
+            <timezone>UTC+8</timezone>
+        </developer>
+        <developer>
+            <id>ops4j@leangen.net</id>
+            <name>David Leangen</name>
+            <organization>Bioscene</organization>
+            <email>ops4j@leangen.net</email>
+            <timezone>UTC+9</timezone>
+        </developer>
+        <developer>
+            <id>peter@neubauer.se</id>
+            <name>Peter Neubauer</name>
+            <organization>CodeDragons</organization>
+            <email>peter@neubauer.se</email>
+            <timezone>CET</timezone>
+        </developer>
+        <developer>
+            <id>ragaller</id>
+            <name>Georg Ragaller</name>
+            <organization/>
+            <email>qi4j@dev.ragaller.org</email>
+            <timezone>CET</timezone>
+        </developer>
+        <developer>
+            <id>rwallace</id>
+            <name>Richard Wallace</name>
+            <organization/>
+            <email>rwallace@thewallacepack.net</email>
+            <timezone>UTC-7</timezone>
+        </developer>
+        <developer>
+            <id>siannyhalim@gmail.com</id>
+            <name>Sianny Halim</name>
+            <organization>CodeDragons</organization>
+            <email>siannyhalim@gmail.com</email>
+            <timezone>UTC+8</timezone>
+        </developer>
+        <developer>
+            <id>sonny.gill@jayway.net</id>
+            <name>Sonny Gill</name>
+            <organization>CodeDragons</organization>
+            <email>sonny.public@gmail.com</email>
+            <timezone>UTC+8</timezone>
+        </developer>
+        <developer>
+            <id>taowen</id>
+            <name>Tao Wen</name>
+            <organization/>
+            <email>taowen@gmail.com</email>
+            <timezone>UTC+8</timezone>
+        </developer>
+        <developer>
+            <id>paul@nosphere.org</id>
+            <name>Paul Merlin</name>
+            <organization/>
+            <email>paul@nosphere.org</email>
+            <timezone>CET</timezone>
+        </developer>
+        <developer>
+            <id>stas.dev+qi4j@gmail.com</id>
+            <name>Stanislav Muhametsin</name>
+            <organization/>
+            <email>stas.dev+qi4j@gmail.com</email>
+            <timezone>UTC+2</timezone>
+        </developer>
+    </developers>
 
-  <build>
-    <extensions>
-      <extension>
-        <groupId>org.apache.maven.wagon</groupId>
-        <artifactId>wagon-ssh-external</artifactId>
-        <version>1.0-beta-6</version>
-      </extension>
-    </extensions>
+    <build>
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ssh-external</artifactId>
+                <version>1.0-beta-6</version>
+            </extension>
+        </extensions>
 
-    <plugins>
+        <plugins>
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-enforcer-plugin</artifactId>
-        <version>1.0-beta-1</version>
-        <executions>
-          <execution>
-            <id>enforce-plugin-versions</id>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
-            <configuration>
-              <rules>
-                <requirePluginVersions>
-                  <message>Best Practice is to always define plugin versions!</message>
-                  <banLatest>true</banLatest>
-                  <banRelease>true</banRelease>
-                  <banSnapshots>true</banSnapshots>
-                  <phases>clean,deploy,site</phases>
-                  <additionalPlugins>
-                    <additionalPlugin>org.apache.maven.plugins:maven-reactor-plugin</additionalPlugin>
-                  </additionalPlugins>
-                </requirePluginVersions>
-              </rules>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>1.0-beta-1</version>
+                <executions>
+                    <execution>
+                        <id>enforce-plugin-versions</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requirePluginVersions>
+                                    <message>Best Practice is to always define plugin versions!</message>
+                                    <banLatest>true</banLatest>
+                                    <banRelease>true</banRelease>
+                                    <banSnapshots>true</banSnapshots>
+                                    <phases>clean,deploy,site</phases>
+                                    <additionalPlugins>
+                                        <additionalPlugin>org.apache.maven.plugins:maven-reactor-plugin
+                                        </additionalPlugin>
+                                    </additionalPlugins>
+                                </requirePluginVersions>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>attach-sources</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>1.5</source>
-          <target>1.5</target>
-        </configuration>
-      </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.5</source>
+                    <target>1.5</target>
+                </configuration>
+            </plugin>
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
+            <!-- This plugin checks that we are JDK1.5 compatible, even though we are using JDK1.6 to compile. -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>animal-sniffer-maven-plugin</artifactId>
+                <version>1.6</version>
+                <configuration>
+                    <signature>
+                        <groupId>org.codehaus.mojo.signature</groupId>
+                        <artifactId>java15</artifactId>
+                        <version>1.0</version>
+                    </signature>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>check-java-1.5-compat</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.qi4j</groupId>
+                        <artifactId>qi4j-buildtools</artifactId>
+                        <version>${version.qi4j-core}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>2.0.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-DocURL>${pom.url}</Bundle-DocURL>
+                        <_include>-osgi.bundle</_include>
+                    </instructions>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-scm-plugin</artifactId>
+                <version>${scmVersion}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.scm</groupId>
+                        <artifactId>maven-scm-provider-gitexe</artifactId>
+                        <version>${scmVersion}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.scm</groupId>
+                        <artifactId>maven-scm-api</artifactId>
+                        <version>${scmVersion}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.codehaus.plexus</groupId>
+                        <artifactId>plexus-utils</artifactId>
+                        <version>1.5.6</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.apache.maven.scm</groupId>
+                        <artifactId>maven-scm-provider-gitexe</artifactId>
+                        <version>${scmVersion}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <forkMode>once</forkMode>
+                    <includes>
+                        <include>**/*Test.java</include>
+                        <include>**/*TestCase.java</include>
+                    </includes>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>com.atlassian.maven.plugins</groupId>
+                <artifactId>maven-clover2-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.4.1</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+
+        </plugins>
+
+        <pluginManagement>
+
+            <plugins>
+
+                <plugin>
+                    <groupId>com.atlassian.maven.plugins</groupId>
+                    <artifactId>maven-clover2-plugin</artifactId>
+                    <version>2.6.3</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>2.4</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>2.5</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.4.3</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-reactor-plugin</artifactId>
+                    <version>1.0</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>2.0.4</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>2.3.2</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-install-plugin</artifactId>
+                    <version>2.2</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>2.0-beta-9</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>2.0-beta-7</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <version>2.4</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>2.3</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>2.2</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <version>1.0-alpha-4</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>2.5</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-project-info-reports-plugin</artifactId>
+                    <version>2.1.2</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-report-plugin</artifactId>
+                    <version>2.5</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-pmd-plugin</artifactId>
+                    <version>2.4</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+    </build>
+
+    <repositories>
+        <repository>
+            <id>ops4j.releases.deploy</id>
+            <url>http://repository.ops4j.org/maven2</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <distributionManagement>
+        <repository>
+            <id>ops4j.releases.deploy</id>
+            <url>scpexe://repository.ops4j.org/var/http/repository.ops4j.org/maven2</url>
+        </repository>
+        <snapshotRepository>
+            <id>ops4j.snapshots.deploy</id>
+            <url>scpexe://repository.ops4j.org/var/http/repository.ops4j.org/mvn-snapshots</url>
+        </snapshotRepository>
+        <site>
+            <id>ops4j.website.deploy</id>
+            <url>scpexe://www2.qi4j.org/home/www/www2.qi4j.org/projects/qi4j/library</url>
+        </site>
+    </distributionManagement>
+
+    <licenses>
+        <license>
+            <name>Apache License v2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+            <distribution>repo</distribution>
+            <comments>Copyrights retained by each developer.</comments>
+        </license>
+    </licenses>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <minmemory>128m</minmemory>
+                    <maxmemory>512</maxmemory>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <configuration>
+                    <targetJdk>1.5</targetJdk>
+                    <sourceEncoding>utf-8</sourceEncoding>
+                    <minimumTokens>100</minimumTokens>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <configuration>
+                    <configLocation>qi4j-checkstyle.xml</configLocation>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jxr-plugin</artifactId>
+                <version>2.0</version>
+                <configuration>
+                    <aggregate>true</aggregate>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <version>2.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <configuration>
+                    <aggregate>true</aggregate>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
+
+    <dependencyManagement>
         <dependencies>
-          <dependency>
-            <groupId>org.qi4j</groupId>
-            <artifactId>qi4j-buildtools</artifactId>
-            <version>${version.qi4j-core}</version>
-          </dependency>
+            <dependency>
+                <groupId>org.qi4j.core</groupId>
+                <artifactId>qi4j-core-api</artifactId>
+                <version>${version.qi4j-core}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.qi4j.core</groupId>
+                <artifactId>qi4j-core-bootstrap</artifactId>
+                <version>${version.qi4j-core}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.qi4j.core</groupId>
+                <artifactId>qi4j-core-spi</artifactId>
+                <version>${version.qi4j-core}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.qi4j.core</groupId>
+                <artifactId>qi4j-core-runtime</artifactId>
+                <version>${version.qi4j-core}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.qi4j.core</groupId>
+                <artifactId>qi4j-core-testsupport</artifactId>
+                <version>${version.qi4j-core}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>servlet-api</artifactId>
+                <version>2.4</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>jetty</artifactId>
+                <version>6.1.22</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>jetty-util</artifactId>
+                <version>6.1.22</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>1.6.1</version>
+            </dependency>
+
+            <!-- Test Dependencies -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
+                <version>1.6.1</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.4</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.easymock</groupId>
+                <artifactId>easymock</artifactId>
+                <version>2.5.2</version>
+                <scope>test</scope>
+            </dependency>
+
         </dependencies>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <version>2.0.0</version>
-        <extensions>true</extensions>
-        <configuration>
-          <instructions>
-            <Bundle-DocURL>${pom.url}</Bundle-DocURL>
-            <_include>-osgi.bundle</_include>
-          </instructions>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-scm-plugin</artifactId>
-        <version>${scmVersion}</version>
-        <dependencies>
-          <dependency>
-            <groupId>org.apache.maven.scm</groupId>
-            <artifactId>maven-scm-provider-gitexe</artifactId>
-            <version>${scmVersion}</version>
-          </dependency>
-        </dependencies>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-release-plugin</artifactId>
-        <dependencies>
-          <dependency>
-            <groupId>org.apache.maven.scm</groupId>
-            <artifactId>maven-scm-api</artifactId>
-            <version>${scmVersion}</version>
-          </dependency>
-          <dependency>
-            <groupId>org.codehaus.plexus</groupId>
-            <artifactId>plexus-utils</artifactId>
-            <version>1.5.6</version>
-          </dependency>
-          <dependency>
-            <groupId>org.apache.maven.scm</groupId>
-            <artifactId>maven-scm-provider-gitexe</artifactId>
-            <version>${scmVersion}</version>
-          </dependency>
-        </dependencies>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <forkMode>once</forkMode>
-          <includes>
-            <include>**/*Test.java</include>
-            <include>**/*TestCase.java</include>
-          </includes>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>com.atlassian.maven.plugins</groupId>
-        <artifactId>maven-clover2-plugin</artifactId>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-resources-plugin</artifactId>
-        <version>2.4.1</version>
-        <configuration>
-          <encoding>UTF-8</encoding>
-        </configuration>
-      </plugin>
-
-    </plugins>
-
-    <pluginManagement>
-
-      <plugins>
-
-        <plugin>
-          <groupId>com.atlassian.maven.plugins</groupId>
-          <artifactId>maven-clover2-plugin</artifactId>
-          <version>2.6.3</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-clean-plugin</artifactId>
-          <version>2.4</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-deploy-plugin</artifactId>
-          <version>2.5</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.4.3</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-reactor-plugin</artifactId>
-          <version>1.0</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-source-plugin</artifactId>
-          <version>2.0.4</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>2.0.2</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-install-plugin</artifactId>
-          <version>2.2</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-release-plugin</artifactId>
-          <version>2.0-beta-9</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-site-plugin</artifactId>
-          <version>2.0-beta-7</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-checkstyle-plugin</artifactId>
-          <version>2.4</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-resources-plugin</artifactId>
-          <version>2.3</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-jar-plugin</artifactId>
-          <version>2.2</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-gpg-plugin</artifactId>
-          <version>1.0-alpha-4</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-javadoc-plugin</artifactId>
-          <version>2.5</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-project-info-reports-plugin</artifactId>
-          <version>2.1.2</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-report-plugin</artifactId>
-          <version>2.5</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-pmd-plugin</artifactId>
-          <version>2.4</version>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-
-  </build>
-
-  <repositories>
-    <repository>
-      <id>ops4j.releases.deploy</id>
-      <url>http://repository.ops4j.org/maven2</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
-
-  <distributionManagement>
-    <repository>
-      <id>ops4j.releases.deploy</id>
-      <url>scpexe://repository.ops4j.org/var/http/repository.ops4j.org/maven2</url>
-    </repository>
-    <snapshotRepository>
-      <id>ops4j.snapshots.deploy</id>
-      <url>scpexe://repository.ops4j.org/var/http/repository.ops4j.org/mvn-snapshots</url>
-    </snapshotRepository>
-    <site>
-      <id>ops4j.website.deploy</id>
-      <url>scpexe://www2.qi4j.org/home/www/www2.qi4j.org/projects/qi4j/library</url>
-    </site>
-  </distributionManagement>
-
-  <licenses>
-    <license>
-      <name>Apache License v2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
-      <distribution>repo</distribution>
-      <comments>Copyrights retained by each developer.</comments>
-    </license>
-  </licenses>
-
-  <reporting>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <configuration>
-          <minmemory>128m</minmemory>
-          <maxmemory>512</maxmemory>
-        </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-pmd-plugin</artifactId>
-        <configuration>
-          <targetJdk>1.5</targetJdk>
-          <sourceEncoding>utf-8</sourceEncoding>
-          <minimumTokens>100</minimumTokens>
-        </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-project-info-reports-plugin</artifactId>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <configuration>
-          <configLocation>qi4j-checkstyle.xml</configLocation>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jxr-plugin</artifactId>
-        <version>2.0</version>
-        <configuration>
-          <aggregate>true</aggregate>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>cobertura-maven-plugin</artifactId>
-        <version>2.1</version>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-report-plugin</artifactId>
-        <configuration>
-          <aggregate>true</aggregate>
-        </configuration>
-      </plugin>
-    </plugins>
-  </reporting>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.qi4j.core</groupId>
-        <artifactId>qi4j-core-api</artifactId>
-        <version>${version.qi4j-core}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.qi4j.core</groupId>
-        <artifactId>qi4j-core-bootstrap</artifactId>
-        <version>${version.qi4j-core}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.qi4j.core</groupId>
-        <artifactId>qi4j-core-spi</artifactId>
-        <version>${version.qi4j-core}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.qi4j.core</groupId>
-        <artifactId>qi4j-core-runtime</artifactId>
-        <version>${version.qi4j-core}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.qi4j.core</groupId>
-        <artifactId>qi4j-core-testsupport</artifactId>
-        <version>${version.qi4j-core}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>javax.servlet</groupId>
-        <artifactId>servlet-api</artifactId>
-        <version>2.4</version>
-      </dependency>
-      <dependency>
-        <groupId>org.mortbay.jetty</groupId>
-        <artifactId>jetty</artifactId>
-        <version>6.1.22</version>
-      </dependency>
-      <dependency>
-        <groupId>org.mortbay.jetty</groupId>
-        <artifactId>jetty-util</artifactId>
-        <version>6.1.22</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-api</artifactId>
-        <version>1.6.1</version>
-      </dependency>
-
-      <!-- Test Dependencies -->
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-simple</artifactId>
-        <version>1.6.1</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>4.4</version>
-        <scope>test</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.easymock</groupId>
-        <artifactId>easymock</artifactId>
-        <version>2.5.2</version>
-        <scope>test</scope>
-      </dependency>
-
-    </dependencies>
-  </dependencyManagement>
+    </dependencyManagement>
 
 </project>
