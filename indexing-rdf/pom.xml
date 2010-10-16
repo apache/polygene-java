@@ -17,7 +17,7 @@
     <name>Qi4j Extension - RDF Indexing</name>
 
     <properties>
-        <version.openrdf>2.3.1</version.openrdf>
+        <version.openrdf>2.3.2</version.openrdf>
     </properties>
 
     <dependencies>
@@ -103,4 +103,14 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>aduna</id>
+            <url>http://repo.aduna-software.org/maven2/releases/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 </project>

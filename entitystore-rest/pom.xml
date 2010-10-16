@@ -14,7 +14,7 @@
 
     <properties>
         <version.restlet>2.0.0</version.restlet>
-        <version.openrdf>2.3.0</version.openrdf>
+        <version.openrdf>2.3.2</version.openrdf>
     </properties>
 
     <dependencies>
@@ -127,6 +127,13 @@
             <id>maven-restlet</id>
             <name>Public online Restlet repository</name>
             <url>http://maven.restlet.org</url>
+        </repository>
+        <repository>
+            <id>aduna</id>
+            <url>http://repo.aduna-software.org/maven2/releases/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
     </repositories>
 </project>

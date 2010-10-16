@@ -11,8 +11,8 @@
     <url>http://www.qi4j.org/</url>
 
     <properties>
-        <version.qi4j-core>1.2-SNAPSHOT</version.qi4j-core>
-        <version.qi4j-libraries>1.2-SNAPSHOT</version.qi4j-libraries>
+        <version.qi4j-core>1.2</version.qi4j-core>
+        <version.qi4j-libraries>1.2</version.qi4j-libraries>
         <version.slf4j>1.6.1</version.slf4j>
         <scmVersion>1.2</scmVersion>
     </properties>
@@ -472,10 +472,6 @@
         <repository>
             <id>java.net</id>
             <url>http://download.java.net/maven/2</url>
-        </repository>
-        <repository>
-            <id>aduna</id>
-            <url>http://repo.aduna-software.org/maven2/releases/</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
