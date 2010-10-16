@@ -21,7 +21,7 @@
 
     <properties>
         <scmVersion>1.2</scmVersion>
-        <version.qi4j-core>1.2-SNAPSHOT</version.qi4j-core>
+        <version.qi4j-core>1.2</version.qi4j-core>
         <version.jetty>6.1.21</version.jetty>
     </properties>
 
