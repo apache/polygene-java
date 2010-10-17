@@ -9,7 +9,6 @@
     <groupId>org.qi4j.extension</groupId>
     <artifactId>qi4j-entitystore-jdbm</artifactId>
     <name>Qi4j Extension - JDBM Store</name>
-    <version>1.2-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
     <dependencies>

@@ -10,6 +10,7 @@
     <artifactId>qi4j-entitystore-hazelcast</artifactId>
     <packaging>bundle</packaging>
     <name>Qi4j Extension - Hazelcast Store</name>
+    
     <dependencies>
         <dependency>
             <groupId>org.qi4j.core</groupId>

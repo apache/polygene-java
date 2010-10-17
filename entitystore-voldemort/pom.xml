@@ -9,11 +9,10 @@
     <groupId>org.qi4j.extension</groupId>
     <artifactId>qi4j-entitystore-voldemort</artifactId>
     <name>Qi4j Extension - Entity Store - Project Voldemort</name>
-    <version>1.2-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
     <properties>
-        <version.qi4j-tests>1.2-SNAPSHOT</version.qi4j-tests>
+        <version.qi4j-tests>1.2</version.qi4j-tests>
     </properties>
 
     <licenses>

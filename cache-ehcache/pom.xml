@@ -11,8 +11,7 @@
     </parent>
 
     <groupId>org.qi4j</groupId>
-    <artifactId>cache-ehcache</artifactId>
-    <version>1.2-SNAPSHOT</version>
+    <artifactId>qi4j-cache-ehcache</artifactId>
     <name>Qi4j Extension - Ehcache Cache</name>
     <packaging>bundle</packaging>
 

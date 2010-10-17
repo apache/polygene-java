@@ -26,7 +26,6 @@ limitations under the License.
     <groupId>org.qi4j.extension</groupId>
     <artifactId>qi4j-entitystore-neo4j</artifactId>
     <name>Qi4j Extension - Neo4j Store</name>
-    <version>1.2-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <licenses>
         <license>
@@ -48,6 +47,7 @@ limitations under the License.
         <name>Neo Technology</name>
         <url>http://neotechnology.com</url>
     </organization>
+
     <developers>
         <developer>
             <id>tobias</id>

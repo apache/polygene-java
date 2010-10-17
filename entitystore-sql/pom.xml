@@ -10,12 +10,7 @@
     <groupId>org.qi4j.extension</groupId>
     <artifactId>qi4j-entitystore-sql</artifactId>
     <name>Qi4j Extension - SQL Store</name>
-    <version>1.2-SNAPSHOT</version>
     <packaging>bundle</packaging>
-
-    <properties>
-        <version.qi4j>${project.version}</version.qi4j>
-    </properties>
 
     <dependencies>
 
@@ -31,21 +26,19 @@
         <dependency>
             <groupId>org.qi4j.core</groupId>
             <artifactId>qi4j-core-bootstrap</artifactId>
-            <version>${version.qi4j}</version>
         </dependency>
 
         <!-- Qi4j Libraries -->
         <dependency>
             <groupId>org.qi4j.library</groupId>
             <artifactId>qi4j-lib-locking</artifactId>
-            <version>${version.qi4j}</version>
+            <version>${version.qi4j-libraries}</version>
         </dependency>
         <dependency>
             <groupId>org.qi4j.library</groupId>
             <artifactId>qi4j-lib-sql</artifactId>
-            <version>${version.qi4j}</version>
+            <version>${version.qi4j-libraries}</version>
         </dependency>
-
     </dependencies>
 
 </project>

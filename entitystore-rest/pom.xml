@@ -9,12 +9,11 @@
     <groupId>org.qi4j.extension</groupId>
     <artifactId>qi4j-entitystore-rest</artifactId>
     <name>Qi4j Extension - REST Interface</name>
-    <version>1.2-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
     <properties>
         <version.restlet>2.0.0</version.restlet>
-        <version.openrdf>2.3.2</version.openrdf>
+        <version.openrdf>2.3.0</version.openrdf>
     </properties>
 
     <dependencies>
