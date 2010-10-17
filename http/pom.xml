@@ -9,7 +9,6 @@
     <groupId>org.qi4j.library</groupId>
     <artifactId>qi4j-lib-http</artifactId>
     <name>Qi4j Library - Http Service</name>
-    <version>1.2-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
     <dependencies>
@@ -29,7 +28,7 @@
         <dependency>
             <groupId>org.qi4j.library</groupId>
             <artifactId>qi4j-lib-constraints</artifactId>
-            <version>1.2-SNAPSHOT</version>
+            <version>${pom.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mortbay.jetty</groupId>

@@ -17,6 +17,8 @@ under Apache License 2.0. See LICENSE file.
 
 This module uses BouncyCastle, developed at http://www.bouncycastle.org/
 under a permissive license. See licenses/bouncycastle.license
+BouncyCastle usage may have additional export restrictions in USA and
+possibly other countries.
 
 
 This module uses Apache Shiro, software developed at Apache Software
