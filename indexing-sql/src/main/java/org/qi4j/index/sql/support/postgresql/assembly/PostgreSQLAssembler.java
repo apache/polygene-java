@@ -14,6 +14,8 @@
 
 package org.qi4j.index.sql.support.postgresql.assembly;
 
+import java.io.IOException;
+
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -21,6 +23,8 @@ import org.qi4j.index.reindexer.ReindexerService;
 import org.qi4j.index.sql.support.postgresql.PostgreSQLService;
 import org.qi4j.library.sql.common.AbstractSQLAssembler;
 import org.qi4j.library.sql.ds.assembly.DataSourceAssembler;
+import org.sql.generation.api.vendor.PostgreSQLVendor;
+import org.sql.generation.api.vendor.SQLVendorProvider;
 
 /**
  * This is the assembler class to use when PostgreSQL is database for SQL Indexing in your application.
@@ -79,8 +83,16 @@ public class PostgreSQLAssembler extends AbstractSQLAssembler
             this._serviceName = INDEXING_SERVICE_NAME;
         }
 
-        module.addServices( PostgreSQLService.class ).identifiedBy( this._serviceName )
-            .visibleIn( this.getVisibility() ).instantiateOnStartup();
+        try
+        {
+            module.addServices( PostgreSQLService.class ).identifiedBy( this._serviceName )
+                .visibleIn( this.getVisibility() ).instantiateOnStartup()
+                .setMetaInfo( SQLVendorProvider.createVendor( PostgreSQLVendor.class ) );
+        }
+        catch( IOException ioe )
+        {
+            throw new AssemblyException( ioe );
+        }
 
         module.addServices( ReindexerService.class );
     }
