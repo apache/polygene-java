@@ -10,8 +10,8 @@
     <url>http://www.qi4j.org/</url>
 
     <properties>
-    	<version.qi4j-core>1.2-SNAPSHOT</version.qi4j-core>
-    	<version.qi4j-libraries>1.2-SNAPSHOT</version.qi4j-libraries>
+    	<version.qi4j-core>1.3-SNAPSHOT</version.qi4j-core>
+    	<version.qi4j-libraries>1.3-SNAPSHOT</version.qi4j-libraries>
     	<version.slf4j>1.6.1</version.slf4j>
         <scmVersion>1.2</scmVersion>
     </properties>
@@ -34,7 +34,7 @@
         <module>entitystore-qrm</module>
         <module>entitystore-rest</module>
         <module>entitystore-sql</module>
-        <module>entitystore-voldemort</module>
+        <!-- <module>entitystore-voldemort</module> -->
         <module>indexing-rdf</module>
         <module>indexing-sql</module>
         <module>migration</module>

@@ -37,6 +37,8 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.service.Activatable;
+import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.index.sql.support.api.SQLIndexing;
@@ -76,7 +78,7 @@ import org.sql.generation.api.vendor.SQLVendor;
  * @author Stanislav Muhametsin
  */
 public class AbstractSQLIndexing
-    implements SQLIndexing
+    implements SQLIndexing, Activatable
 {
 
     public static final Integer AMOUNT_OF_COLUMNS_IN_ENTITY_TABLE = 6;
@@ -99,6 +101,22 @@ public class AbstractSQLIndexing
     @This
     private PostgreSQLTypeHelper _sqlTypeHelper;
 
+    @This
+    private ServiceComposite _meAsService;
+
+    private SQLVendor _vendor;
+
+    public void activate()
+        throws Exception
+    {
+        this._vendor = this._meAsService.metaInfo( SQLVendor.class );
+    }
+
+    public void passivate()
+        throws Exception
+    {
+    }
+
     @Service
     private DataSourceService _dataSource;
 
@@ -117,7 +135,7 @@ public class AbstractSQLIndexing
         PreparedStatement clearQNamesPS = null;
         Map<QualifiedName, PreparedStatement> qNameInsertPSs = new HashMap<QualifiedName, PreparedStatement>();
         String schemaName = this._state.schemaName().get();
-        SQLVendor vendor = this._state.sqlVendor().get();
+        SQLVendor vendor = this._vendor;
 
         try
         {
@@ -203,9 +221,10 @@ public class AbstractSQLIndexing
             connection.commit();
 
         }
-        catch( Throwable t )
+        catch( SQLException sqle )
         {
             SQLUtil.rollbackQuietly( connection );
+            throw sqle;
         }
         finally
         {
@@ -410,14 +429,14 @@ public class AbstractSQLIndexing
     private PreparedStatement createInsertPropertyPS( Connection connection, QNameInfo qNameInfo )
         throws SQLException
     {
-        SQLVendor vendor = this._state.sqlVendor().get();
+        SQLVendor vendor = this._vendor;
         return connection.prepareStatement( vendor.toString( this.createPropertyInsert( qNameInfo, vendor ) ) );
     }
 
     private PreparedStatement createInsertAssociationPS( Connection connection, QNameInfo qNameInfo )
         throws SQLException
     {
-        SQLVendor vendor = this._state.sqlVendor().get();
+        SQLVendor vendor = this._vendor;
         return connection.prepareStatement( vendor.toString( this.createAssoInsert( qNameInfo, vendor,
             AMOUNT_OF_COLUMNS_IN_ASSO_TABLE ) ) );
     }
@@ -425,7 +444,7 @@ public class AbstractSQLIndexing
     private PreparedStatement createInsertManyAssociationPS( Connection connection, QNameInfo qNameInfo )
         throws SQLException
     {
-        SQLVendor vendor = this._state.sqlVendor().get();
+        SQLVendor vendor = this._vendor;
         return connection.prepareStatement( vendor.toString( this.createAssoInsert( qNameInfo, vendor,
             AMOUNT_OF_COLUMNS_IN_MANY_ASSO_TABLE ) ) );
     }

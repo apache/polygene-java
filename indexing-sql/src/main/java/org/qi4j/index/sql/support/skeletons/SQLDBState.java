@@ -99,6 +99,4 @@ public interface SQLDBState
     @Optional
     Property<Map<String, Integer>> enumPKs();
 
-    @Optional
-    Property<SQLVendor> sqlVendor();
 }

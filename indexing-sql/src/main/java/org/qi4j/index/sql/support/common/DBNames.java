@@ -29,13 +29,9 @@ public class DBNames
 
     public static final String QNAME_TABLE_ASSOCIATION_INDEX_COLUMN_NAME = "asso_index";
 
-    public static final String QNAME_TABLE_ASSOCIATION_INDEX_COLUMN_DATA_TYPE = "INTEGER";
-
     public static final String QNAME_TABLE_PARENT_QNAME_COLUMN_NAME = "parent_qname";
 
     public static final String QNAME_TABLE_COLLECTION_PATH_COLUMN_NAME = "collection_path";
-
-    public static final String QNAME_TABLE_COLLECTION_PATH_COLUMN_DATA_TYPE = "ltree";
 
     public static final String QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME = "Top";
 
@@ -45,35 +41,21 @@ public class DBNames
 
     public static final String ALL_QNAMES_TABLE_PK_COLUMN_NAME = "qname_id";
 
-    public static final String ALL_QNAMES_TABLE_PK_COLUMN_DATA_TYPE = "INTEGER";
-
     public static final String USED_CLASSES_TABLE_NAME = "used_classes";
 
     public static final String USED_CLASSES_TABLE_PK_COLUMN_NAME = "used_class_id";
 
-    public static final String USED_CLASSES_TABLE_PK_COLUMN_DATA_TYPE = "INTEGER";
-
     public static final String USED_CLASSES_TABLE_CLASS_NAME_COLUMN_NAME = "class_name";
-
-    public static final String USED_CLASSES_TABLE_CLASS_NAME_COLUMN_DATA_TYPE = "TEXT";
 
     public static final String USED_QNAMES_TABLE_NAME = "used_qnames";
 
     public static final String USED_QNAMES_TABLE_QNAME_COLUMN_NAME = "qname";
 
-    public static final String USED_QNAMES_TABLE_QNAME_COLUMN_DATA_TYPE = "TEXT";
-
     public static final String USED_QNAMES_TABLE_TABLE_NAME_COLUMN_NAME = "table_name";
-
-    public static final String USED_QNAMES_TABLE_TABLE_NAME_COLUMN_DATA_TYPE = "VARCHAR(512)";
 
     public static final String ENTITY_TYPES_TABLE_PK_COLUMN_NAME = "entity_type_id";
 
-    public static final String ENTITY_TYPES_TABLE_PK_COLUMN_DATA_TYPE = "INTEGER";
-
     public static final String ENTITY_TYPES_TABLE_TYPE_NAME_COLUMN_NAME = "entity_type_name";
-
-    public static final String ENTITY_TYPES_TABLE_TYPE_NAME_COLUMN_DATA_TYPE = "TEXT";
 
     public static final String ENTITY_TYPES_TABLE_NAME = "entity_types";
 
@@ -81,54 +63,22 @@ public class DBNames
 
     public static final String ENTITY_TABLE_PK_COLUMN_NAME = "entity_pk";
 
-    public static final String ENTITY_TABLE_PK_COLUMN_DATA_TYPE = "BIGINT";
-
     public static final String ENTITY_TABLE_IDENTITY_COLUMN_NAME = "entity_identity";
-
-    public static final String ENTITY_TABLE_IDENTITY_COLUMN_DATA_TYPE = "TEXT";
 
     public static final String ENTITY_TABLE_MODIFIED_COLUMN_NAME = "modified";
 
-    public static final String ENTITY_TABLE_MODIFIED_COLUMN_DATA_TYPE = "TIMESTAMP WITH TIME ZONE";
-
     public static final String ENTITY_TABLE_VERSION_COLUMN_NAME = "entity_version";
 
-    public static final String ENTITY_TABLE_VERSION_COLUMN_DATA_TYPE = "TEXT";
-
     public static final String ENTITY_TABLE_APPLICATION_VERSION_COLUMN_NAME = "application_version";
-
-    public static final String ENTITY_TABLE_APPLICATION_VERSION_COLUMN_DATATYPE = "TEXT";
 
     public static final String APP_VERSION_TABLE_NAME = "app_version";
 
     public static final String APP_VERSION_PK_COLUMN_NAME = "app_version";
 
-    public static final String APP_VERSION_PK_COLUMN_DATA_TYPE = "TEXT";
-
     public static final String ENUM_LOOKUP_TABLE_NAME = "enum_lookup";
 
     public static final String ENUM_LOOKUP_TABLE_PK_COLUMN_NAME = "enum_id";
 
-    public static final String ENUM_LOOKUP_TABLE_PK_COLUMN_DATA_TYPE = "INTEGER";
-
     public static final String ENUM_LOOKUP_TABLE_ENUM_VALUE_NAME = "enum_value";
 
-    public static final String ENUM_LOOKUP_TABLE_ENUM_VALUE_DATA_TYPE = "TEXT";
-
-    // These will disappear once the startup-aspect will start using SQL generation framework.
-    public static final String ONE_VALUE_SELECT = //
-    "SELECT %s" + "\n" + //
-        "FROM  %s.%s" + "\n" //
-    ;
-
-    public static final String TWO_VALUE_SELECT = //
-    "SELECT %s, %s" + "\n" + //
-        "FROM  %s.%s" + "\n" //
-    ;
-
-    public static final String TWO_VALUE_INSERT = //
-    "INSERT INTO " + "%s" + "." + "%s" + " VALUES(" + "\n" + //
-        "?, ?" + "\n" + //
-        ");" //
-    ;
 }

@@ -11,7 +11,7 @@
     <name>Qi4j Extension - SQL Indexing</name>
 
     <properties>
-        <version.sql-generator>0.2-SNAPSHOT</version.sql-generator>
+    	<version.sql-generator>0.2</version.sql-generator>
     </properties>
 
     <reporting>
@@ -59,6 +59,26 @@
             <artifactId>java-sql-generator-api</artifactId>
             <version>${version.sql-generator}</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+        	<groupId>org.qi4j.core</groupId>
+        	<artifactId>qi4j-core-testsupport</artifactId>
+        	<version>${version.qi4j-core}</version>
+        	<type>jar</type>
+        	<scope>test</scope>
+        </dependency>
+        <dependency>
+        	<groupId>org.qi4j.core</groupId>
+        	<artifactId>qi4j-core-runtime</artifactId>
+        	<version>${version.qi4j-core}</version>
+        	<scope>test</scope>
+        </dependency>
+        <dependency>
+        	<groupId>org.java-sql-generator.implementation</groupId>
+        	<artifactId>java-sql-generator-implementation</artifactId>
+        	<version>${version.sql-generator}</version>
+        	<type>jar</type>
+        	<scope>test</scope>
         </dependency>
     </dependencies>
 </project>

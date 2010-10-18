@@ -1,12 +1,13 @@
 Bundle-Activator:
 
-Private-Package: org.qi4j.index.sql.support.skeleton
+Private-Package: org.qi4j.index.sql.support.skeletons
 
 
 Ignore-Package: com_cenqua_clover
 
 
 Import-Package: javax.sql, \
+                org.qi4j.spi, \
                 org.qi4j.api.common, \
                 org.qi4j.api.configuration, \
                 org.qi4j.api.entity, \
@@ -16,10 +17,13 @@ Import-Package: javax.sql, \
                 org.qi4j.api.query.grammar, \
                 org.qi4j.api.service, \
                 org.qi4j.api.structure, \
+                org.qi4j.api.unitofwork, \
+                org.qi4j.api.value, \
                 org.qi4j.bootstrap, \
                 org.qi4j.index.reindexer, \
                 org.qi4j.index.sql.internal, \
                 org.qi4j.index.sql.support.skeletons, \
+                org.qi4j.library.sql.api, \
                 org.qi4j.library.sql.common, \
                 org.qi4j.library.sql.ds, \
                 org.qi4j.library.sql.ds.assembly, \
@@ -39,7 +43,20 @@ Import-Package: javax.sql, \
                 org.sql.generation.api.grammar.factories.pgsql, \
                 org.sql.generation.api.grammar.query, \
                 org.sql.generation.api.grammar.query.pgsql, \
-                org.sql.generation.api.vendor
+                org.sql.generation.api.vendor, \
+                org.sql.generation.api.grammar.builders.definition, \
+                org.sql.generation.api.grammar.common.datatypes, \
+                org.sql.generation.api.grammar.common.datatypes.pgsql, \
+                org.sql.generation.api.grammar.definition.table, \
+                org.sql.generation.api.grammar.definition.table.pgsql, \
+                org.sql.generation.api.grammar.manipulation, \
+                org.sql.generation.api.grammar.manipulation.pgsql, \
+                org.sql.generation.api.grammar.booleans, \
+                org.sql.generation.api.grammar.builders.booleans, \
+                org.sql.generation.api.grammar.builders.modification, \
+                org.sql.generation.api.grammar.literals, \
+                org.sql.generation.api.grammar.modification, \
+                org.sql.generation.api.grammar.query.joins
 
 
 Export-Package: org.qi4j.index.sql;version=${pom.version}, \

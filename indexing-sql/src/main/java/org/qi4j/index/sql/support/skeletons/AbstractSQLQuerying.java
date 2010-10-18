@@ -57,6 +57,8 @@ import org.qi4j.api.query.grammar.PropertyIsNullPredicate;
 import org.qi4j.api.query.grammar.PropertyNullPredicate;
 import org.qi4j.api.query.grammar.PropertyReference;
 import org.qi4j.api.query.grammar.SingleValueExpression;
+import org.qi4j.api.service.Activatable;
+import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.index.sql.support.api.SQLQuerying;
@@ -95,7 +97,7 @@ import org.sql.generation.api.vendor.SQLVendor;
  * @author Stanislav Muhametsin
  */
 public abstract class AbstractSQLQuerying
-    implements SQLQuerying
+    implements SQLQuerying, Activatable
 {
 
     @This
@@ -334,6 +336,23 @@ public abstract class AbstractSQLQuerying
         return true;
     }
 
+    private SQLVendor _vendor;
+
+    @This
+    private ServiceComposite _meAsService;
+
+    public void activate()
+        throws Exception
+    {
+        this._vendor = this._meAsService.metaInfo( SQLVendor.class );
+    }
+
+    public void passivate()
+        throws Exception
+    {
+
+    }
+
     public String constructQuery( Class<?> resultType, //
         BooleanExpression whereClause, //
         OrderBy[] orderBySegments, //
@@ -345,7 +364,7 @@ public abstract class AbstractSQLQuerying
     )
         throws EntityFinderException
     {
-        SQLVendor vendor = this._state.sqlVendor().get();
+        SQLVendor vendor = this._vendor;
 
         QueryFactory q = vendor.getQueryFactory();
         TableReferenceFactory t = vendor.getTableReferenceFactory();

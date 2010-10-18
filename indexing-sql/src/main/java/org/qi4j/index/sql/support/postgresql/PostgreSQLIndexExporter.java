@@ -24,6 +24,8 @@ import java.util.Map;
 
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.service.Activatable;
+import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.index.sql.support.common.GenericDatabaseExplorer;
 import org.qi4j.index.sql.support.common.GenericDatabaseExplorer.ColumnInfo;
 import org.qi4j.index.sql.support.common.GenericDatabaseExplorer.DatabaseProcessor;
@@ -31,20 +33,37 @@ import org.qi4j.index.sql.support.common.GenericDatabaseExplorer.ForeignKeyInfo;
 import org.qi4j.index.sql.support.skeletons.SQLDBState;
 import org.qi4j.library.sql.ds.DataSourceService;
 import org.qi4j.spi.query.IndexExporter;
+import org.sql.generation.api.vendor.SQLVendor;
 
 /**
  * 
  * @author Stanislav Muhametsin
  */
 public class PostgreSQLIndexExporter
-    implements IndexExporter
+    implements IndexExporter, Activatable
 {
 
     @This
     private SQLDBState _state;
 
+    @This
+    private ServiceComposite _meAsService;
+
+    private SQLVendor _vendor;
+
     @Service
     private DataSourceService _dataSource;
+
+    public void activate()
+        throws Exception
+    {
+        this._vendor = this._meAsService.metaInfo( SQLVendor.class );
+    }
+
+    public void passivate()
+        throws Exception
+    {
+    }
 
     private static final String SEPARATOR = "-----------------------------------------------";
 
@@ -168,7 +187,7 @@ public class PostgreSQLIndexExporter
                             out.write( "<value index=\"" + x + "\" >" + rowContents[x] + "</value>" + "\n" );
                         }
                     }
-                }, this._state.sqlVendor().get() );
+                }, this._vendor );
         }
         catch( SQLException sqle )
         {
@@ -288,7 +307,7 @@ public class PostgreSQLIndexExporter
                     {
 
                     }
-                }, this._state.sqlVendor().get() );
+                }, this._vendor );
         }
         catch( SQLException sqle )
         {

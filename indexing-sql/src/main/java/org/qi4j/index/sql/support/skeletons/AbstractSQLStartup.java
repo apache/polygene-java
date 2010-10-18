@@ -121,8 +121,6 @@ public abstract class AbstractSQLStartup
 
     private SQLVendor _vendor;
 
-    private Map<Class<?>, String> _creationTypeStrings;
-
     private Map<Class<?>, SQLTypeCustomizer> _customizableTypes;
 
     private Map<Class<?>, SQLDataType> _primitiveTypes;
@@ -131,10 +129,9 @@ public abstract class AbstractSQLStartup
         throws Exception
     {
         this._vendor = this._myselfAsService.metaInfo( SQLVendor.class );
-
+        this.setVendor( this._vendor );
         this.initTypes();
-
-        this.modifyPrimitiveTypes( this._primitiveTypes );
+        this.modifyPrimitiveTypes( this._primitiveTypes, this._state.javaTypes2SQLTypes().get() );
     }
 
     public void passivate()
@@ -186,7 +183,8 @@ public abstract class AbstractSQLStartup
     {
 
         DataTypeFactory dt = this._vendor.getDataTypeFactory();
-        Map<Class<?>, Integer> primitiveTypes = new HashMap<Class<?>, Integer>();
+
+        this._primitiveTypes = new HashMap<Class<?>, SQLDataType>();
         this._primitiveTypes.put( Boolean.class, dt.sqlBoolean() );
         this._primitiveTypes.put( Byte.class, dt.smallInt() );
         this._primitiveTypes.put( Short.class, dt.smallInt() );
@@ -200,26 +198,20 @@ public abstract class AbstractSQLStartup
         this._primitiveTypes.put( BigInteger.class, dt.decimal() );
         this._primitiveTypes.put( BigDecimal.class, dt.decimal() );
 
-        this._state.javaTypes2SQLTypes().set( primitiveTypes );
-
-        // TODO make use of Qi4j's MinLength/MaxLength -styled constraints
-        // TODO some of the sizes of the values are quite improvised. Maybe allow user
-        // some control over it, for example via annotations?
-        // Like to lib-sql-api add annotation @SQLType(String) which would specify custom
-        // sql type
-        this._creationTypeStrings = new HashMap<Class<?>, String>();
-        this._creationTypeStrings.put( Boolean.class, "BOOLEAN" );
-        this._creationTypeStrings.put( Byte.class, "SMALLINT" );
-        this._creationTypeStrings.put( Short.class, "INTEGER" );
-        this._creationTypeStrings.put( Integer.class, "INTEGER" );
-        this._creationTypeStrings.put( Long.class, "BIGINT" );
-        this._creationTypeStrings.put( Float.class, "REAL" );
-        this._creationTypeStrings.put( Double.class, "DOUBLE PRECISION" );
-        this._creationTypeStrings.put( Date.class, "TIMESTAMP WITH TIME ZONE" );
-        this._creationTypeStrings.put( Character.class, "INTEGER" );
-        this._creationTypeStrings.put( String.class, "TEXT" );
-        this._creationTypeStrings.put( BigInteger.class, "NUMERIC(50, 0)" );
-        this._creationTypeStrings.put( BigDecimal.class, "NUMERIC(50, 50)" );
+        Map<Class<?>, Integer> jdbcTypes = new HashMap<Class<?>, Integer>();
+        jdbcTypes.put( Boolean.class, Types.BOOLEAN );
+        jdbcTypes.put( Byte.class, Types.SMALLINT );
+        jdbcTypes.put( Short.class, Types.SMALLINT );
+        jdbcTypes.put( Integer.class, Types.INTEGER );
+        jdbcTypes.put( Long.class, Types.BIGINT );
+        jdbcTypes.put( Float.class, Types.REAL );
+        jdbcTypes.put( Double.class, Types.DOUBLE );
+        jdbcTypes.put( Date.class, Types.TIMESTAMP );
+        jdbcTypes.put( Character.class, Types.INTEGER );
+        jdbcTypes.put( String.class, Types.VARCHAR );
+        jdbcTypes.put( BigInteger.class, Types.NUMERIC );
+        jdbcTypes.put( BigDecimal.class, Types.NUMERIC );
+        this._state.javaTypes2SQLTypes().set( jdbcTypes );
 
         this._customizableTypes = new HashMap<Class<?>, SQLTypeCustomizer>();
         this._customizableTypes.put( //
@@ -874,8 +866,13 @@ public abstract class AbstractSQLStartup
                             .createExpression(), ConstraintCharacteristics.INITIALLY_DEFERRED_DEFERRABLE
                             )
                     );
+
+                stmt.execute( this._vendor.toString( d.createTableDefinitionBuilder()
+                    .setTableName( t.tableName( schemaName, qNameInfo.getTableName() ) )
+                    .setTableContentsSource( builder.createExpression() )
+                    .createExpression()
+                    ) );
                 
-                stmt.execute( builder.toString() );
 //                stmt.execute( "COMMENT ON TABLE " + schemaName + "." + qNameInfo.getTableName() + " IS '"
 //                    + qNameInfo.getQName() + "'" );
 
@@ -958,7 +955,8 @@ public abstract class AbstractSQLStartup
             builder
                 .addTableElement( d.createTableConstraintDefinition( d.createForeignKeyConstraintBuilder()
                     .addSourceColumns( QNAME_TABLE_VALUE_COLUMN_NAME )
-                    .setTargetTableName( t.tableName( this._state.schemaName().get(), valueRefTablePKColumnName ) )
+                    .setTargetTableName( t.tableName( this._state.schemaName().get(), valueRefTableName ) )
+                    .addTargetColumns( valueRefTablePKColumnName )
                     .setOnUpdate( ReferentialAction.CASCADE )
                     .setOnDelete( ReferentialAction.RESTRICT )
                     .createExpression(), ConstraintCharacteristics.NOT_DEFERRABLE
@@ -975,8 +973,17 @@ public abstract class AbstractSQLStartup
         PKType result = defaultPK;
         try
         {
-            rs = stmt.executeQuery( String.format( DBNames.TWO_VALUE_SELECT, "COUNT(" + columnName + ")", "MAX("
-                + columnName + ") + 1", schemaName, tableName ) );
+            SQLVendor vendor = this._vendor;
+            QueryFactory q = vendor.getQueryFactory();
+            // Let's cheat a bit on SQL functions, so we won't need to use heavy query builder.
+            rs = stmt.executeQuery(
+                vendor.toString(
+                    q.simpleQueryBuilder()
+                        .select( "COUNT(" + columnName + ")", "MAX(" + columnName + ") + 1" )
+                        .from( vendor.getTableReferenceFactory().tableName( schemaName, tableName ) )
+                        .createExpression()
+                    )
+                );
             if( rs.next() )
             {
                 Long count = rs.getLong( 1 );
@@ -1262,8 +1269,10 @@ public abstract class AbstractSQLStartup
         Statement stmt )
         throws SQLException;
 
-    protected abstract void modifyPrimitiveTypes( Map<Class<?>, SQLDataType> primitiveTypes );
+    protected abstract void modifyPrimitiveTypes( Map<Class<?>, SQLDataType> primitiveTypes, Map<Class<?>, Integer> jdbcTypes );
     
     protected abstract SQLDataType getCollectionPathDataType();
+    
+    protected abstract void setVendor(SQLVendor vendor);
 
 }
