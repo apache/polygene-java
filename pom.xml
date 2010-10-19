@@ -34,7 +34,7 @@
         <module>entitystore-qrm</module>
         <module>entitystore-rest</module>
         <module>entitystore-sql</module>
-        <!-- <module>entitystore-voldemort</module> -->
+        <module>entitystore-voldemort</module>
         <module>indexing-rdf</module>
         <module>indexing-sql</module>
         <module>migration</module>
