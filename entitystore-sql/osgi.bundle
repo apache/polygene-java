@@ -32,7 +32,22 @@ Import-Package: javax.sql, \
                 org.qi4j.spi.property, \
                 org.qi4j.spi.structure, \
                 org.qi4j.spi.uuid, \
-                org.slf4j
+                org.slf4j, \
+                org.sql.generation.api.grammar.booleans, \
+                org.sql.generation.api.grammar.builders.booleans, \
+                org.sql.generation.api.grammar.builders.definition, \
+                org.sql.generation.api.grammar.builders.modification, \
+                org.sql.generation.api.grammar.builders.query, \
+                org.sql.generation.api.grammar.common, \
+                org.sql.generation.api.grammar.common.datatypes, \
+                org.sql.generation.api.grammar.common.datatypes.pgsql, \
+                org.sql.generation.api.grammar.definition.table, \
+                org.sql.generation.api.grammar.factories, \
+                org.sql.generation.api.grammar.factories.pgsql, \
+                org.sql.generation.api.grammar.literals, \
+                org.sql.generation.api.grammar.modification, \
+                org.sql.generation.api.grammar.query, \
+                org.sql.generation.api.vendor
 
 Export-Package: org.qi4j.entitystore.sql;version=${pom.version}, \
                 org.qi4j.entitystore.sql.assembly;version=${pom.version}

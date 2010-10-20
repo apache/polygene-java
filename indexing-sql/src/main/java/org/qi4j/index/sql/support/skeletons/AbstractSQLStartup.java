@@ -976,6 +976,7 @@ public abstract class AbstractSQLStartup
             SQLVendor vendor = this._vendor;
             QueryFactory q = vendor.getQueryFactory();
             // Let's cheat a bit on SQL functions, so we won't need to use heavy query builder.
+            // Also, currently there are no arithmetic statements
             rs = stmt.executeQuery(
                 vendor.toString(
                     q.simpleQueryBuilder()

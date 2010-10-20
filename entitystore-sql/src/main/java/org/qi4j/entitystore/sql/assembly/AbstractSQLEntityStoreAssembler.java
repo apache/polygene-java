@@ -14,6 +14,8 @@
  */
 package org.qi4j.entitystore.sql.assembly;
 
+import java.io.IOException;
+
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -26,6 +28,8 @@ import org.qi4j.entitystore.sql.internal.DatabaseSQLStringsBuilder;
 import org.qi4j.library.sql.common.AbstractSQLAssembler;
 import org.qi4j.library.sql.ds.assembly.DataSourceAssembler;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
+import org.sql.generation.api.vendor.SQLVendor;
+import org.sql.generation.api.vendor.SQLVendorProvider;
 
 abstract class AbstractSQLEntityStoreAssembler extends AbstractSQLAssembler
 {
@@ -56,6 +60,17 @@ abstract class AbstractSQLEntityStoreAssembler extends AbstractSQLAssembler
 
     protected abstract Class<?> getDatabaseSQLServiceSpecializationMixin();
 
+    protected Class<?> getDatabaseStringBuilderMixin()
+    {
+        return DatabaseSQLStringsBuilder.CommonMixin.class;
+    }
+
+    protected SQLVendor getSQLVendor()
+        throws IOException
+    {
+        return SQLVendorProvider.createVendor( SQLVendor.class );
+    }
+
     @SuppressWarnings("unchecked")
     public final void doAssemble( ModuleAssembly module )
         throws AssemblyException
@@ -63,13 +78,19 @@ abstract class AbstractSQLEntityStoreAssembler extends AbstractSQLAssembler
 
         module.addServices( SQLEntityStoreService.class ).visibleIn( this.getVisibility() );
 
-        module
-            .addServices( DatabaseSQLServiceComposite.class )
-            .withMixins( DatabaseSQLServiceCoreMixin.class, DatabaseSQLServiceSpi.CommonMixin.class,
-                DatabaseSQLStringsBuilder.CommonMixin.class, DatabaseSQLServiceStatementsMixin.class,
-                getDatabaseSQLServiceSpecializationMixin() ).identifiedBy( getEntityStoreServiceName() )
-            .visibleIn( Visibility.module );
-
+        try
+        {
+            module
+                .addServices( DatabaseSQLServiceComposite.class )
+                .withMixins( DatabaseSQLServiceCoreMixin.class, DatabaseSQLServiceSpi.CommonMixin.class,
+                    getDatabaseStringBuilderMixin(), DatabaseSQLServiceStatementsMixin.class,
+                    getDatabaseSQLServiceSpecializationMixin() ).identifiedBy( getEntityStoreServiceName() )
+                .visibleIn( Visibility.module ).setMetaInfo( this.getSQLVendor() );
+        }
+        catch( IOException ioe )
+        {
+            throw new AssemblyException( ioe );
+        }
         module.addServices( UuidIdentityGeneratorService.class ).visibleIn( this.getVisibility() );
     }
 

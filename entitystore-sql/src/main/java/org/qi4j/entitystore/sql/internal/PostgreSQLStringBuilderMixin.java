@@ -12,33 +12,28 @@
  *
  */
 
-package org.qi4j.index.sql.internal;
+package org.qi4j.entitystore.sql.internal;
 
-import org.qi4j.api.injection.scope.Service;
-import org.qi4j.api.service.Activatable;
-import org.qi4j.index.sql.support.api.SQLAppStartup;
+import org.qi4j.entitystore.sql.internal.DatabaseSQLStringsBuilder.CommonMixin;
+import org.sql.generation.api.grammar.common.datatypes.SQLDataType;
+import org.sql.generation.api.vendor.PostgreSQLVendor;
 
 /**
  * 
- * TODO probably should get rid of this?
- * 
  * @author Stanislav Muhametsin
  */
-public class SQLActivatable
-    implements Activatable
+public class PostgreSQLStringBuilderMixin extends CommonMixin
 {
-    @Service
-    private SQLAppStartup _startup;
 
-    public void activate()
-        throws Exception
+    @Override
+    protected SQLDataType getIDType()
     {
-        this._startup.initConnection();
+        return ((PostgreSQLVendor) this.getVendor()).getDataTypeFactory().text();
     }
 
-    public void passivate()
-        throws Exception
+    @Override
+    protected SQLDataType getStateType()
     {
-        // Nothing to do.
+        return ((PostgreSQLVendor) this.getVendor()).getDataTypeFactory().text();
     }
 }

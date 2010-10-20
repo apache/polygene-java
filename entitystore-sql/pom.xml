@@ -10,6 +10,10 @@
     <name>Qi4j Extension - SQL Store</name>
     <packaging>bundle</packaging>
 
+    <properties>
+      <version.sql-generator>0.2</version.sql-generator>
+    </properties>
+    
     <dependencies>
 
         <dependency>
@@ -36,6 +40,12 @@
             <groupId>org.qi4j.library</groupId>
             <artifactId>qi4j-lib-sql</artifactId>
             <version>${version.qi4j-libraries}</version>
+        </dependency>
+        <dependency>
+        	<groupId>org.java-sql-generator.api</groupId>
+        	<artifactId>java-sql-generator-api</artifactId>
+        	<version>${version.sql-generator}</version>
+        	<scope>compile</scope>
         </dependency>
     </dependencies>
 

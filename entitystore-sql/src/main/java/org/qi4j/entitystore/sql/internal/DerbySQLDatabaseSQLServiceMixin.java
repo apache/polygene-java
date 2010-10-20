@@ -24,53 +24,43 @@ import org.qi4j.library.sql.common.SQLUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@SuppressWarnings( "ProtectedField" )
+@SuppressWarnings("ProtectedField")
 public abstract class DerbySQLDatabaseSQLServiceMixin
-        implements DatabaseSQLService, DatabaseSQLStringsBuilder, DatabaseSQLServiceSpi
+    implements DatabaseSQLService, DatabaseSQLStringsBuilder, DatabaseSQLServiceSpi
 {
 
     private static final Logger LOGGER = LoggerFactory.getLogger( DerbySQLDatabaseSQLServiceMixin.class );
-
-    private static final String CREATE_TABLE_SQL = "CREATE TABLE %s." + SQLs.TABLE_NAME + " ("
-                                                   // For when indexing and store are synchronized and we'll be able to let the database generate the PKs
-                                                   // + ENTITY_PK_COLUMN_NAME + " BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY, "
-                                                   + SQLs.ENTITY_PK_COLUMN_NAME + " BIGINT PRIMARY KEY, "
-                                                   + SQLs.ENTITY_OPTIMISTIC_LOCK_COLUMN_NAME + " BIGINT NOT NULL, "
-                                                   + SQLs.ENTITY_IDENTITY_COLUMN_NAME + " VARCHAR(256) NOT NULL UNIQUE, "
-                                                   + SQLs.ENTITY_STATE_COLUMN_NAME + " VARCHAR(32000) NOT NULL, "
-                                                   + SQLs.ENTITY_LAST_MODIFIED_COLUMN_NAME + " BIGINT NOT NULL)";
 
     @This
     protected DatabaseSQLServiceSpi spi;
 
     public boolean tableExists( Connection connection )
-            throws SQLException
+        throws SQLException
     {
         ResultSet rs = null;
-        try {
+        try
+        {
             String tableNameForQuery = SQLs.TABLE_NAME.toUpperCase();
-            rs = connection.getMetaData().getTables( null, null, tableNameForQuery, new String[]{ "TABLE" } );
+            rs = connection.getMetaData().getTables( null, null, tableNameForQuery, new String[]
+            {
+                "TABLE"
+            } );
             boolean tableExists = rs.next();
             LOGGER.trace( "Found table {}? {}", tableNameForQuery, tableExists );
             return tableExists;
-        } finally {
+        }
+        finally
+        {
             SQLUtil.closeQuietly( rs );
         }
     }
 
-    public String[] buildSQLForTableCreation()
-    {
-        String[] sql = new String[]{ String.format( CREATE_TABLE_SQL, this.spi.getCurrentSchemaName() ) };
-        LOGGER.trace( "SQL for table creation: {}", sql );
-        return sql;
-    }
-
     public EntityValueResult getEntityValue( ResultSet rs )
-            throws SQLException
+        throws SQLException
     {
         return new EntityValueResult( rs.getLong( SQLs.ENTITY_PK_COLUMN_NAME ),
-                                      rs.getLong( SQLs.ENTITY_OPTIMISTIC_LOCK_COLUMN_NAME ),
-                                      new StringReader( rs.getString( SQLs.ENTITY_STATE_COLUMN_NAME ) ) );
+            rs.getLong( SQLs.ENTITY_OPTIMISTIC_LOCK_COLUMN_NAME ), new StringReader(
+                rs.getString( SQLs.ENTITY_STATE_COLUMN_NAME ) ) );
     }
 
 }

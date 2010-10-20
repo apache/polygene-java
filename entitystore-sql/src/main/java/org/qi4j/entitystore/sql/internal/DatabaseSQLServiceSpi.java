@@ -23,6 +23,9 @@ import org.qi4j.api.injection.scope.This;
 import org.qi4j.library.sql.common.SQLUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sql.generation.api.grammar.factories.QueryFactory;
+import org.sql.generation.api.grammar.factories.TableReferenceFactory;
+import org.sql.generation.api.vendor.SQLVendor;
 
 public interface DatabaseSQLServiceSpi
 {
@@ -38,7 +41,7 @@ public interface DatabaseSQLServiceSpi
     long readNextEntityPK( Connection connection )
         throws SQLException;
 
-    @SuppressWarnings( "PublicInnerClass" )
+    @SuppressWarnings("PublicInnerClass")
     public abstract class CommonMixin
         implements DatabaseSQLServiceSpi
     {
@@ -87,7 +90,22 @@ public interface DatabaseSQLServiceSpi
             try
             {
                 stmt = connection.createStatement();
-                rs = stmt.executeQuery( String.format( SQLs.READ_NEXT_ENTITY_PK_SQL, this.getCurrentSchemaName() ) );
+                SQLVendor vendor = this.state.vendor().get();
+                QueryFactory q = vendor.getQueryFactory();
+                TableReferenceFactory t = vendor.getTableReferenceFactory();
+
+                // Cheat a little on SQL functions
+                // @formatter:off
+                rs = stmt.executeQuery( 
+                    vendor.toString(
+                        q.simpleQueryBuilder()
+                            .select( "COUNT(" + SQLs.ENTITY_PK_COLUMN_NAME + ")", "MAX(" + SQLs.ENTITY_PK_COLUMN_NAME + ")" )
+                            .from( t.tableName( this.state.schemaName().get(), SQLs.TABLE_NAME ) )
+                            .createExpression()
+                        )
+                    );
+                // @formatter:on
+
                 if( rs.next() )
                 {
                     Long count = rs.getLong( 1 );

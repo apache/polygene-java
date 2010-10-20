@@ -22,6 +22,7 @@ import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Application.Mode;
 import org.qi4j.api.util.NullArgumentException;
@@ -31,6 +32,7 @@ import org.qi4j.library.sql.ds.DataSourceService;
 import org.qi4j.spi.entitystore.EntityStoreException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sql.generation.api.vendor.SQLVendor;
 
 @SuppressWarnings("ProtectedField")
 public abstract class DatabaseSQLServiceCoreMixin
@@ -53,6 +55,9 @@ public abstract class DatabaseSQLServiceCoreMixin
 
     @This
     private DatabaseSQLStringsBuilder sqlStrings;
+
+    @This
+    private ServiceComposite _meAsService;
 
     @This
     private Configuration<SQLConfiguration> configuration;
@@ -86,6 +91,9 @@ public abstract class DatabaseSQLServiceCoreMixin
         else
         {
             state.schemaName().set( schema );
+            state.vendor().set( this._meAsService.metaInfo( SQLVendor.class ) );
+
+            this.sqlStrings.init();
 
             if( !spi.schemaExists( connection ) )
             {

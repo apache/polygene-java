@@ -14,10 +14,16 @@
  */
 package org.qi4j.entitystore.sql.assembly;
 
+import java.io.IOException;
+
 import org.qi4j.api.common.Visibility;
 import org.qi4j.entitystore.sql.internal.PostgreSQLDatabaseSQLServiceMixin;
+import org.qi4j.entitystore.sql.internal.PostgreSQLStringBuilderMixin;
 import org.qi4j.library.sql.ds.PGSQLDataSourceServiceMixin;
 import org.qi4j.library.sql.ds.assembly.DataSourceAssembler;
+import org.sql.generation.api.vendor.PostgreSQLVendor;
+import org.sql.generation.api.vendor.SQLVendor;
+import org.sql.generation.api.vendor.SQLVendorProvider;
 
 public class PostgreSQLEntityStoreAssembler extends AbstractSQLEntityStoreAssembler
 {
@@ -57,6 +63,19 @@ public class PostgreSQLEntityStoreAssembler extends AbstractSQLEntityStoreAssemb
     protected Class<?> getDatabaseSQLServiceSpecializationMixin()
     {
         return PostgreSQLDatabaseSQLServiceMixin.class;
+    }
+
+    @Override
+    protected Class<?> getDatabaseStringBuilderMixin()
+    {
+        return PostgreSQLStringBuilderMixin.class;
+    }
+
+    @Override
+    protected SQLVendor getSQLVendor()
+        throws IOException
+    {
+        return SQLVendorProvider.createVendor( PostgreSQLVendor.class );
     }
 
 }
