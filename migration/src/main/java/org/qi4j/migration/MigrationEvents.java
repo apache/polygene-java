@@ -14,28 +14,30 @@
 
 package org.qi4j.migration;
 
+import org.qi4j.api.common.QualifiedName;
+
 /**
  * Implement this as a service to receive events from the Migration process.
  */
 public interface MigrationEvents
 {
-    void propertyAdded( String entity, String name, String value );
+    void propertyAdded( String entity, QualifiedName name, String value );
 
-    void propertyRemoved( String entity, String name );
+    void propertyRemoved( String entity, QualifiedName name );
 
-    void propertyRenamed( String entity, String from, String to );
+    void propertyRenamed( String entity, QualifiedName from, QualifiedName to );
 
-    void associationAdded( String entity, String name, String defaultReference );
+    void associationAdded( String entity, QualifiedName name, String defaultReference );
 
-    void associationRemoved( String entity, String name );
+    void associationRemoved( String entity, QualifiedName name );
 
-    void associationRenamed( String entity, String from, String to );
+    void associationRenamed( String entity, QualifiedName from, QualifiedName to );
 
-    void manyAssociationAdded( String entity, String name, String... defaultReferences );
+    void manyAssociationAdded( String entity, QualifiedName name, String... defaultReferences );
 
-    void manyAssociationRemoved( String entity, String name );
+    void manyAssociationRemoved( String entity, QualifiedName name );
 
-    void manyAssociationRenamed( String entity, String from, String to );
+    void manyAssociationRenamed( String entity, QualifiedName from, QualifiedName to );
 
     void entityTypeChanged( String entity, String newEntityType );
 }

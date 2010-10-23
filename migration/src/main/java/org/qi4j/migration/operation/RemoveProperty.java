@@ -16,21 +16,21 @@ package org.qi4j.migration.operation;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.entitystore.map.StateStore;
 import org.qi4j.migration.Migrator;
 import org.qi4j.migration.assembly.EntityMigrationOperation;
 
 /**
- * Remove a property. Downgrading this operation will reset
- * the property to the default value.
+ * Remove a property. Downgrading this operation will reset the property to the default value.
  */
 public class RemoveProperty
     implements EntityMigrationOperation
 {
-    private String property;
+    private QualifiedName property;
     private String defaultValue;
 
-    public RemoveProperty( String property, String defaultValue )
+    public RemoveProperty( QualifiedName property, String defaultValue )
     {
         this.property = property;
         this.defaultValue = defaultValue;

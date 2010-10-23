@@ -19,6 +19,7 @@ import org.hamcrest.CoreMatchers;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
@@ -39,8 +40,7 @@ import static org.junit.Assert.*;
 /**
  * JAVADOC
  */
-public class MigrationTest
-    extends AbstractQi4jTest
+public class MigrationTest extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException
@@ -50,35 +50,42 @@ public class MigrationTest
         module.addObjects( MigrationEventLogger.class );
         module.importServices( MigrationEventLogger.class ).importedBy( NewObjectImporter.class );
 
-        module.addEntities( TestEntity1_0.class,
-                            TestEntity1_1.class,
-                            TestEntity2_0.class,
-                            org.qi4j.migration.moved.TestEntity2_0.class );
+        module.addEntities(
+            TestEntity1_0.class,
+            TestEntity1_1.class,
+            TestEntity2_0.class,
+            org.qi4j.migration.moved.TestEntity2_0.class );
 
+        // When adding renaming rules, we have to remember that we renamed entity, so any properties which have old
+        // entity type as their declaring type have been renamed into new entity type!
+
+        // @formatter:off
         MigrationBuilder migration = new MigrationBuilder( "1.0" );
-        migration.
-            toVersion( "1.1" ).
-            renameEntity( TestEntity1_0.class.getName(), TestEntity1_1.class.getName() ).
-            atStartup( new CustomFixOperation( "Fix for 1.1" ) ).
-            forEntities( TestEntity1_1.class.getName() ).
-            renameProperty( "foo", "newFoo" ).
-            renameManyAssociation( "fooManyAssoc", "newFooManyAssoc" ).
-            renameAssociation( "fooAssoc", "newFooAssoc" ).
-            end().
-            toVersion( "2.0" ).
-            renameEntity( TestEntity1_1.class.getName(), TestEntity2_0.class.getName() ).
-            atStartup( new CustomFixOperation( "Fix for 2.0, 1" ) ).
-            atStartup( new CustomFixOperation( "Fix for 2.0, 2" ) ).
-            forEntities( TestEntity2_0.class.getName() ).
-            addProperty( "bar", "Some value" ).
-            removeProperty( "newFoo", "Some value" ).
-            custom( new CustomBarOperation() ).
-            end().
-            toVersion( "3.0" ).
-            renamePackage( "org.qi4j.migration", "org.qi4j.migration.moved" ).
-            withEntities( "TestEntity2_0" ).
-            end();
+        migration
+            .toVersion( "1.1" )
+            .renameEntity( TestEntity1_0.class.getName(), TestEntity1_1.class.getName() )
+            .atStartup( new CustomFixOperation( "Fix for 1.1" ) )
+            .forEntities( TestEntity1_1.class.getName() )
+            .renameProperty( QualifiedName.fromClass( TestEntity1_1.class, "foo" ),
+                QualifiedName.fromClass( TestEntity1_1.class, "newFoo" ) )
+            .renameManyAssociation( QualifiedName.fromClass( TestEntity1_1.class, "fooManyAssoc" ),
+                QualifiedName.fromClass( TestEntity1_1.class, "newFooManyAssoc" ) )
+            .renameAssociation( QualifiedName.fromClass( TestEntity1_1.class, "fooAssoc" ),
+                QualifiedName.fromClass( TestEntity1_1.class, "newFooAssoc" ) )
+            .end()
+            .toVersion( "2.0" )
+            .renameEntity( TestEntity1_1.class.getName(), TestEntity2_0.class.getName() )
+            .atStartup( new CustomFixOperation( "Fix for 2.0, 1" ) )
+            .atStartup( new CustomFixOperation( "Fix for 2.0, 2" ) )
+            .forEntities( TestEntity2_0.class.getName() )
+            .addProperty( QualifiedName.fromClass( TestEntity2_0.class, "bar" ), "Some value" )
+            .removeProperty( QualifiedName.fromClass( TestEntity1_1.class, "newFoo" ), "Some value" )
+            .custom( new CustomBarOperation() ).end().toVersion( "3.0" )
+            .renamePackage( "org.qi4j.migration", "org.qi4j.migration.moved" )
+            .withEntities( "TestEntity2_0" )
+            .end();
 
+        // @formatter:on
         module.addServices( MigrationService.class ).setMetaInfo( migration );
         module.addEntities( MigrationConfiguration.class );
         module.forMixin( MigrationConfiguration.class ).declareDefaults().lastStartupVersion().set( "1.0" );
@@ -86,7 +93,8 @@ public class MigrationTest
 
     @Test
     public void testMigration()
-        throws UnitOfWorkCompletionException, IOException
+        throws UnitOfWorkCompletionException,
+        IOException
     {
         // Set up version 1
         String id;
@@ -160,8 +168,10 @@ public class MigrationTest
                 UnitOfWork uow = v2_0.unitOfWorkFactory().newUnitOfWork();
                 TestEntity2_0 entity = uow.get( TestEntity2_0.class, id );
                 assertThat( "Property has been created", entity.bar().get(), CoreMatchers.equalTo( "Some value" ) );
-                assertThat( "Custom Property has been created", entity.customBar().get(), CoreMatchers.equalTo( "Hello Some value" ) );
-                assertThat( "ManyAssociation has been renamed", entity.newFooManyAssoc().count(), CoreMatchers.equalTo( 1 ) );
+                assertThat( "Custom Property has been created", entity.customBar().get(),
+                    CoreMatchers.equalTo( "Hello Some value" ) );
+                assertThat( "ManyAssociation has been renamed", entity.newFooManyAssoc().count(),
+                    CoreMatchers.equalTo( 1 ) );
                 assertThat( "Association has been renamed", entity.newFooAssoc().get(), CoreMatchers.equalTo( entity ) );
                 uow.complete();
             }
@@ -186,7 +196,8 @@ public class MigrationTest
             {
                 testData.importData( data_v1 );
                 UnitOfWork uow = v3_0.unitOfWorkFactory().newUnitOfWork();
-                org.qi4j.migration.moved.TestEntity2_0 entity = uow.get( org.qi4j.migration.moved.TestEntity2_0.class, id );
+                org.qi4j.migration.moved.TestEntity2_0 entity = uow.get( org.qi4j.migration.moved.TestEntity2_0.class,
+                    id );
                 uow.complete();
             }
         }
@@ -200,13 +211,14 @@ public class MigrationTest
         {
             JSONObject properties = (JSONObject) state.get( MapEntityStore.JSONKeys.properties.name() );
 
-            return migrator.addProperty( state, "customBar", "Hello " + properties.getString( "bar" ) );
+            return migrator.addProperty( state, QualifiedName.fromClass( TestEntity2_0.class, "customBar" ), "Hello "
+                + properties.getString( QualifiedName.fromClass( TestEntity2_0.class, "bar" ).toString() ) );
         }
 
         public boolean downgrade( JSONObject state, StateStore stateStore, Migrator migrator )
             throws JSONException
         {
-            return migrator.removeProperty( state, "customBar" );
+            return migrator.removeProperty( state, QualifiedName.fromClass( TestEntity2_0.class, "customBar" ) );
         }
     }
 

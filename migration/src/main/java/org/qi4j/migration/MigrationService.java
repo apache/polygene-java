@@ -16,9 +16,11 @@ package org.qi4j.migration;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.injection.scope.Service;
@@ -40,17 +42,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Migration service. This is used by MapEntityStore EntityStore implementations to
- * migrate JSON state for Entities. To use it register the service so that the EntityStore
- * can access it, and then create MigrationRules during the assembly of your application,
- * which is registered as metainfo for this service.
- *
- * The rules invoke operations, which in turn invoke the Migrator interface to perform the actual
- * migration. If the Migrator accepts a migration command the change is performed, and an event
- * is triggered. These events can be received by implementing the MigrationEvents interface in a service
- * that is visible by this MigrationService.
+ * Migration service. This is used by MapEntityStore EntityStore implementations to migrate JSON state for Entities. To
+ * use it register the service so that the EntityStore can access it, and then create MigrationRules during the assembly
+ * of your application, which is registered as metainfo for this service.
+ * 
+ * The rules invoke operations, which in turn invoke the Migrator interface to perform the actual migration. If the
+ * Migrator accepts a migration command the change is performed, and an event is triggered. These events can be received
+ * by implementing the MigrationEvents interface in a service that is visible by this MigrationService.
  */
-@Mixins( MigrationService.MigrationMixin.class )
+@Mixins(MigrationService.MigrationMixin.class)
 public interface MigrationService
     extends Migration, Activatable, ServiceComposite
 {
@@ -97,7 +97,7 @@ public interface MigrationService
                 {
                     boolean ruleExecuted = matchedRule.upgrade( state, stateStore, migrator );
 
-                    if (ruleExecuted && log.isDebugEnabled())
+                    if( ruleExecuted && log.isDebugEnabled() )
                         log.debug( matchedRule.toString() );
 
                     changed = ruleExecuted || changed;
@@ -108,7 +108,8 @@ public interface MigrationService
 
             if( changed )
             {
-                log.info( "Migrated " + state.getString( MapEntityStore.JSONKeys.identity.name() ) + " from " + fromVersion + " to " + toVersion );
+                log.info( "Migrated " + state.getString( MapEntityStore.JSONKeys.identity.name() ) + " from "
+                    + fromVersion + " to " + toVersion );
             }
 
             return changed;
@@ -166,9 +167,10 @@ public interface MigrationService
 
         // Migrator implementation
 
-        public boolean addProperty( JSONObject state, String name, String defaultValue )
+        public boolean addProperty( JSONObject state, QualifiedName qName, String defaultValue )
             throws JSONException
         {
+            String name = qName.toString();
             JSONObject properties = (JSONObject) state.get( MapEntityStore.JSONKeys.properties.name() );
             if( !properties.has( name ) )
             {
@@ -183,7 +185,8 @@ public interface MigrationService
 
                 for( MigrationEvents migrationEvent : migrationEvents )
                 {
-                    migrationEvent.propertyAdded( state.getString( MapEntityStore.JSONKeys.identity.name() ), name, defaultValue );
+                    migrationEvent.propertyAdded( state.getString( MapEntityStore.JSONKeys.identity.name() ), qName,
+                        defaultValue );
                 }
 
                 return true;
@@ -194,16 +197,17 @@ public interface MigrationService
             }
         }
 
-        public boolean removeProperty( JSONObject state, String name )
+        public boolean removeProperty( JSONObject state, QualifiedName qName )
             throws JSONException
         {
+            String name = qName.toString();
             JSONObject properties = (JSONObject) state.get( MapEntityStore.JSONKeys.properties.name() );
             if( properties.has( name ) )
             {
                 properties.remove( name );
                 for( MigrationEvents migrationEvent : migrationEvents )
                 {
-                    migrationEvent.propertyRemoved( state.getString( MapEntityStore.JSONKeys.identity.name() ), name );
+                    migrationEvent.propertyRemoved( state.getString( MapEntityStore.JSONKeys.identity.name() ), qName );
                 }
 
                 return true;
@@ -214,9 +218,11 @@ public interface MigrationService
             }
         }
 
-        public boolean renameProperty( JSONObject state, String from, String to )
+        public boolean renameProperty( JSONObject state, QualifiedName qFrom, QualifiedName qTo )
             throws JSONException
         {
+            String from = qFrom.toString();
+            String to = qTo.toString();
             JSONObject properties = (JSONObject) state.get( MapEntityStore.JSONKeys.properties.name() );
             if( properties.has( from ) )
             {
@@ -224,7 +230,8 @@ public interface MigrationService
                 properties.put( to, value );
                 for( MigrationEvents migrationEvent : migrationEvents )
                 {
-                    migrationEvent.propertyRenamed( state.getString( MapEntityStore.JSONKeys.identity.name() ), from, to );
+                    migrationEvent.propertyRenamed( state.getString( MapEntityStore.JSONKeys.identity.name() ), qFrom,
+                        qTo );
                 }
 
                 return true;
@@ -235,9 +242,10 @@ public interface MigrationService
             }
         }
 
-        public boolean addAssociation( JSONObject state, String name, String defaultReference )
+        public boolean addAssociation( JSONObject state, QualifiedName qName, String defaultReference )
             throws JSONException
         {
+            String name = qName.toString();
             JSONObject associations = (JSONObject) state.get( MapEntityStore.JSONKeys.associations.name() );
             if( !associations.has( name ) )
             {
@@ -252,7 +260,8 @@ public interface MigrationService
 
                 for( MigrationEvents migrationEvent : migrationEvents )
                 {
-                    migrationEvent.associationAdded( state.getString( MapEntityStore.JSONKeys.identity.name() ), name, defaultReference );
+                    migrationEvent.associationAdded( state.getString( MapEntityStore.JSONKeys.identity.name() ), qName,
+                        defaultReference );
                 }
 
                 return true;
@@ -263,16 +272,18 @@ public interface MigrationService
             }
         }
 
-        public boolean removeAssociation( JSONObject state, String name )
+        public boolean removeAssociation( JSONObject state, QualifiedName qName )
             throws JSONException
         {
+            String name = qName.toString();
             JSONObject associations = (JSONObject) state.get( MapEntityStore.JSONKeys.associations.name() );
             if( associations.has( name ) )
             {
                 associations.remove( name );
                 for( MigrationEvents migrationEvent : migrationEvents )
                 {
-                    migrationEvent.associationRemoved( state.getString( MapEntityStore.JSONKeys.identity.name() ), name );
+                    migrationEvent.associationRemoved( state.getString( MapEntityStore.JSONKeys.identity.name() ),
+                        qName );
                 }
 
                 return true;
@@ -283,9 +294,11 @@ public interface MigrationService
             }
         }
 
-        public boolean renameAssociation( JSONObject state, String from, String to )
+        public boolean renameAssociation( JSONObject state, QualifiedName qFrom, QualifiedName qTo )
             throws JSONException
         {
+            String from = qFrom.toString();
+            String to = qTo.toString();
             JSONObject associations = (JSONObject) state.get( MapEntityStore.JSONKeys.associations.name() );
             if( associations.has( from ) )
             {
@@ -294,7 +307,8 @@ public interface MigrationService
 
                 for( MigrationEvents migrationEvent : migrationEvents )
                 {
-                    migrationEvent.associationRenamed( state.getString( MapEntityStore.JSONKeys.identity.name() ), from, to );
+                    migrationEvent.associationRenamed( state.getString( MapEntityStore.JSONKeys.identity.name() ),
+                        qFrom, qTo );
                 }
 
                 return true;
@@ -305,9 +319,10 @@ public interface MigrationService
             }
         }
 
-        public boolean addManyAssociation( JSONObject state, String name, String... defaultReferences )
+        public boolean addManyAssociation( JSONObject state, QualifiedName qName, String... defaultReferences )
             throws JSONException
         {
+            String name = qName.toString();
             JSONObject manyAssociations = (JSONObject) state.get( MapEntityStore.JSONKeys.manyassociations.name() );
             if( !manyAssociations.has( name ) )
             {
@@ -320,7 +335,8 @@ public interface MigrationService
 
                 for( MigrationEvents migrationEvent : migrationEvents )
                 {
-                    migrationEvent.manyAssociationAdded( state.getString( MapEntityStore.JSONKeys.identity.name() ), name, defaultReferences );
+                    migrationEvent.manyAssociationAdded( state.getString( MapEntityStore.JSONKeys.identity.name() ),
+                        qName, defaultReferences );
                 }
 
                 return true;
@@ -331,16 +347,18 @@ public interface MigrationService
             }
         }
 
-        public boolean removeManyAssociation( JSONObject state, String name )
+        public boolean removeManyAssociation( JSONObject state, QualifiedName qName )
             throws JSONException
         {
+            String name = qName.toString();
             JSONObject manyAssociations = (JSONObject) state.get( MapEntityStore.JSONKeys.manyassociations.name() );
             if( manyAssociations.has( name ) )
             {
                 manyAssociations.remove( name );
                 for( MigrationEvents migrationEvent : migrationEvents )
                 {
-                    migrationEvent.manyAssociationRemoved( state.getString( MapEntityStore.JSONKeys.identity.name() ), name );
+                    migrationEvent.manyAssociationRemoved( state.getString( MapEntityStore.JSONKeys.identity.name() ),
+                        qName );
                 }
 
                 return true;
@@ -351,9 +369,11 @@ public interface MigrationService
             }
         }
 
-        public boolean renameManyAssociation( JSONObject state, String from, String to )
+        public boolean renameManyAssociation( JSONObject state, QualifiedName qFrom, QualifiedName qTo )
             throws JSONException
         {
+            String from = qFrom.toString();
+            String to = qTo.toString();
             JSONObject manyAssociations = (JSONObject) state.get( MapEntityStore.JSONKeys.manyassociations.name() );
             if( manyAssociations.has( from ) )
             {
@@ -362,7 +382,8 @@ public interface MigrationService
 
                 for( MigrationEvents migrationEvent : migrationEvents )
                 {
-                    migrationEvent.manyAssociationRenamed( state.getString( MapEntityStore.JSONKeys.identity.name() ), from, to );
+                    migrationEvent.manyAssociationRenamed( state.getString( MapEntityStore.JSONKeys.identity.name() ),
+                        qFrom, qTo );
                 }
 
                 return true;
@@ -376,11 +397,37 @@ public interface MigrationService
         public void changeEntityType( JSONObject state, String newEntityType )
             throws JSONException
         {
+            String oldEntityType = state.getString( MapEntityStore.JSONKeys.type.name() );
             state.put( MapEntityStore.JSONKeys.type.name(), newEntityType );
+
+            // Need to change also all class names of qualified names
+            this.changeTypesOfQNames( state.getJSONObject( MapEntityStore.JSONKeys.properties.name() ), oldEntityType,
+                newEntityType );
+            this.changeTypesOfQNames( state.getJSONObject( MapEntityStore.JSONKeys.associations.name() ),
+                oldEntityType, newEntityType );
+            this.changeTypesOfQNames( state.getJSONObject( MapEntityStore.JSONKeys.manyassociations.name() ),
+                oldEntityType, newEntityType );
 
             for( MigrationEvents migrationEvent : migrationEvents )
             {
-                migrationEvent.entityTypeChanged( state.getString( MapEntityStore.JSONKeys.identity.name() ), newEntityType );
+                migrationEvent.entityTypeChanged( state.getString( MapEntityStore.JSONKeys.identity.name() ),
+                    newEntityType );
+            }
+        }
+
+        private void changeTypesOfQNames( JSONObject mapping, String oldEntityType, String newEntityType )
+            throws JSONException
+        {
+            for( String qNameName : JSONObject.getNames( mapping ) )
+            {
+                QualifiedName oldQName = QualifiedName.fromQN( qNameName );
+                if( oldQName.type().equals( oldEntityType ) )
+                {
+                    Object value = mapping.get( qNameName );
+                    mapping.remove( qNameName );
+                    QualifiedName newQName = QualifiedName.fromName( newEntityType, oldQName.name() );
+                    mapping.put( newQName.toString(), value );
+                }
             }
         }
     }
