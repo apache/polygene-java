@@ -7,6 +7,7 @@
     </parent>
     <groupId>org.qi4j.library</groupId>
     <artifactId>qi4j-lib-constraints</artifactId>
+    <name>Qi4j Library - Constraints</name>
     <packaging>bundle</packaging>
 
     <dependencies>
