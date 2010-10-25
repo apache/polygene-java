@@ -14,6 +14,9 @@
 
 package org.qi4j.api.service.qualifier;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 /**
  * Filter services based on whether they are active or not.
  *
@@ -21,6 +24,7 @@ package org.qi4j.api.service.qualifier;
  * @Service @Active MyService service;
  * to get only a service that is currently active.
  */
+@Retention( RetentionPolicy.RUNTIME)
 @Qualifier( Active.ActiveQualifier.class )
 public @interface Active
 {

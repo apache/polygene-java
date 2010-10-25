@@ -24,6 +24,7 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.api.service.qualifier.AnnotationQualifier;
+import org.qi4j.api.service.qualifier.IdentifiedBy;
 import org.qi4j.api.service.qualifier.ServiceQualifier;
 import org.qi4j.api.service.qualifier.Qualifier;
 import org.qi4j.api.service.ServiceComposite;
@@ -53,8 +54,8 @@ public class ServiceInjectionTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.addServices( MyServiceComposite.class ).setMetaInfo( new ServiceName( "Foo" ) );
-                module.addServices( MyServiceComposite.class ).setMetaInfo( new ServiceName( "Bar" ) );
+                module.addServices( MyServiceComposite.class ).identifiedBy( "Foo" ).setMetaInfo( new ServiceName( "Foo" ) );
+                module.addServices( MyServiceComposite.class ).identifiedBy( "Bar" ).setMetaInfo( new ServiceName( "Bar" ) );
                 module.addObjects( ServiceUser.class );
             }
         };
@@ -68,7 +69,7 @@ public class ServiceInjectionTest
         ServiceUser user = builderFactory.newObject( ServiceUser.class );
 
         assertEquals( "X", user.testSingle() );
-        assertEquals( "MyServiceComposite", user.testIdentity() );
+        assertEquals( "Foo", user.testIdentity() );
         assertEquals( "XX", user.testIterable() );
         assertEquals( "FooX", user.testServiceReference() );
         assertEquals( "FooXBarX", user.testIterableServiceReferences() );
@@ -83,15 +84,15 @@ public class ServiceInjectionTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.addServices( MyServiceComposite.class ).setMetaInfo( new ServiceName( "Foo" ) );
+                module.addServices( MyServiceComposite.class ).identifiedBy( "Foo" ).setMetaInfo( new ServiceName( "Foo" ) );
                 module.addObjects( ServiceUser.class );
 
                 ModuleAssembly module2 = module.layerAssembly().moduleAssembly( "Other module" );
                 ServiceDeclaration service2Decl = module2.addServices( MyServiceComposite.class );
-                service2Decl.setMetaInfo( new ServiceName( "Bar" ) ).visibleIn( layer );
+                service2Decl.identifiedBy( "Bar" ).setMetaInfo( new ServiceName( "Bar" ) ).visibleIn( layer );
 
                 ServiceDeclaration service3Decl = module2.addServices( MyServiceComposite.class );
-                service3Decl.setMetaInfo( new ServiceName( "Boo" ) );
+                service3Decl.identifiedBy( "Boo" ).setMetaInfo( new ServiceName( "Boo" ) );
             }
         };
 
@@ -106,7 +107,7 @@ public class ServiceInjectionTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.addServices( MyServiceComposite.class ).setMetaInfo( new ServiceName( "Foo" ) );
+                module.addServices( MyServiceComposite.class ).identifiedBy( "Foo" ).setMetaInfo( new ServiceName( "Foo" ) );
                 LayerAssembly layerAssembly = module.layerAssembly();
                 module.addObjects( ServiceUser.class );
 
@@ -117,7 +118,7 @@ public class ServiceInjectionTest
                 ModuleAssembly module2 = layer2Assembly.moduleAssembly( "Other module" );
 
                 ServiceDeclaration service2Decl = module2.addServices( MyServiceComposite.class );
-                service2Decl.setMetaInfo( new ServiceName( "Bar" ) ).visibleIn( application );
+                service2Decl.identifiedBy( "Bar" ).setMetaInfo( new ServiceName( "Bar" ) ).visibleIn( application );
             }
         };
 
@@ -172,10 +173,10 @@ public class ServiceInjectionTest
         @Service
         Iterable<ServiceReference<MyService>> serviceRefs;
 
-        @Service @Named("Bar")
+        @Service @IdentifiedBy("Bar")
         ServiceReference<MyService> qualifiedService;
 
-        @Service @Named("Bar")
+        @Service @IdentifiedBy("Bar")
         Iterable<ServiceReference<MyService>> qualifiedServiceRefs;
 
         @Optional

@@ -14,6 +14,9 @@
 
 package org.qi4j.api.service.qualifier;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 /**
  * Filter services based on tags. Tags can be set using the ServiceTags meta-info, like so:
  * module.addService(MyService.class).setMetaInfo(ServiceTags.tags("onetag","twotag"));
@@ -23,6 +26,7 @@ package org.qi4j.api.service.qualifier;
  * @Service @Tagged("onetag") MyService service;
  * to get only a service tagged with MyService. If several match only the first match is used.
  */
+@Retention( RetentionPolicy.RUNTIME)
 @Qualifier( Tagged.TaggedQualifier.class )
 public @interface Tagged
 {
