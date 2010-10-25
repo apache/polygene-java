@@ -15,12 +15,11 @@
 package org.qi4j.api.service.qualifier;
 
 /**
- * Filter services based on identity. Identity can be set during assembly, like so:
- * module.addService(MyService.class).identifiedBy("myservice1");
+ * Filter services based on whether they are active or not.
  *
- * and then at an injection point you can do this:
- * @Service @IdentifiedBy("myservice1") MyService service;
- * to get only a service identified "myservice1".
+ * At an injection point you can do this:
+ * @Service @Active MyService service;
+ * to get only a service that is currently active.
  */
 @Qualifier( Active.ActiveQualifier.class )
 public @interface Active
