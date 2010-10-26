@@ -3,14 +3,14 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
  * implied.
- * 
+ *
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
@@ -48,10 +48,11 @@ public final class JSONEntityState
     public static final String JSON_KEY_VERSION = "version";
     public static final String JSON_KEY_MODIFIED = "modified";
     private static final String[] EMPTY_NAMES = new String[0];
-    private static final String[] CLONE_NAMES =
-    {
-        JSON_KEY_IDENTITY, JSON_KEY_APPLICATION_VERSION, JSON_KEY_TYPE, JSON_KEY_VERSION, JSON_KEY_MODIFIED
-    };
+    private static final String[] CLONE_NAMES = { JSON_KEY_IDENTITY,
+                                                  JSON_KEY_APPLICATION_VERSION,
+                                                  JSON_KEY_TYPE,
+                                                  JSON_KEY_VERSION,
+                                                  JSON_KEY_MODIFIED };
 
     protected DefaultEntityStoreUnitOfWork unitOfWork;
     protected EntityStatus status;
@@ -62,14 +63,28 @@ public final class JSONEntityState
     private final EntityDescriptor entityDescriptor;
     protected JSONObject state;
 
-    public JSONEntityState( DefaultEntityStoreUnitOfWork unitOfWork, EntityReference identity,
-        EntityDescriptor entityDescriptor, JSONObject initialState )
+    public JSONEntityState( DefaultEntityStoreUnitOfWork unitOfWork,
+                            EntityReference identity,
+                            EntityDescriptor entityDescriptor,
+                            JSONObject initialState
+    )
     {
-        this( unitOfWork, "", System.currentTimeMillis(), identity, EntityStatus.NEW, entityDescriptor, initialState );
+        this( unitOfWork, "",
+              System.currentTimeMillis(),
+              identity,
+              EntityStatus.NEW,
+              entityDescriptor,
+              initialState );
     }
 
-    public JSONEntityState( DefaultEntityStoreUnitOfWork unitOfWork, String version, long lastModified,
-        EntityReference identity, EntityStatus status, EntityDescriptor entityDescriptor, JSONObject state )
+    public JSONEntityState( DefaultEntityStoreUnitOfWork unitOfWork,
+                            String version,
+                            long lastModified,
+                            EntityReference identity,
+                            EntityStatus status,
+                            EntityDescriptor entityDescriptor,
+                            JSONObject state
+    )
     {
         this.unitOfWork = unitOfWork;
         this.version = version;
@@ -101,7 +116,7 @@ public final class JSONEntityState
     {
         try
         {
-            Object json = state.getJSONObject( JSON_KEY_PROPERTIES ).opt( stateName.toString() );
+            Object json = state.getJSONObject( JSON_KEY_PROPERTIES ).opt( stateName.name() );
             if( json == null || json == JSONObject.NULL )
             {
                 return null;
@@ -110,7 +125,7 @@ public final class JSONEntityState
             {
                 ModuleSPI module = unitOfWork.module();
                 PropertyDescriptor descriptor = entityDescriptor.state().getPropertyByQualifiedName( stateName );
-                return ((PropertyTypeDescriptor) descriptor).propertyType().type().fromJSON( json, module );
+                return ( (PropertyTypeDescriptor) descriptor ).propertyType().type().fromJSON( json, module );
             }
         }
         catch( JSONException e )
@@ -130,12 +145,12 @@ public final class JSONEntityState
             }
             else
             {
-                PropertyTypeDescriptor propertyDescriptor = entityDescriptor.state().getPropertyByQualifiedName(
-                    stateName );
+                PropertyTypeDescriptor propertyDescriptor = entityDescriptor.state()
+                    .getPropertyByQualifiedName( stateName );
                 jsonValue = propertyDescriptor.propertyType().type().toJSON( newValue );
             }
             cloneStateIfGlobalStateLoaded();
-            state.getJSONObject( JSON_KEY_PROPERTIES ).put( stateName.toString(), jsonValue );
+            state.getJSONObject( JSON_KEY_PROPERTIES ).put( stateName.name(), jsonValue );
             markUpdated();
         }
         catch( JSONException e )
@@ -157,14 +172,14 @@ public final class JSONEntityState
     {
         try
         {
-            Object jsonValue = state.getJSONObject( JSON_KEY_ASSOCIATIONS ).opt( stateName.toString() );
+            Object jsonValue = state.getJSONObject( JSON_KEY_ASSOCIATIONS ).opt( stateName.name() );
             if( jsonValue == null )
             {
                 return null;
             }
 
-            EntityReference value = jsonValue == JSONObject.NULL ? null : EntityReference
-                .parseEntityReference( (String) jsonValue );
+            EntityReference value = jsonValue == JSONObject.NULL ? null : EntityReference.parseEntityReference(
+                (String) jsonValue );
             return value;
         }
         catch( JSONException e )
@@ -178,8 +193,8 @@ public final class JSONEntityState
         try
         {
             cloneStateIfGlobalStateLoaded();
-            state.getJSONObject( JSON_KEY_ASSOCIATIONS ).put( stateName.toString(),
-                newEntity == null ? null : newEntity.identity() );
+            state.getJSONObject( JSON_KEY_ASSOCIATIONS )
+                .put( stateName.name(), newEntity == null ? null : newEntity.identity() );
             markUpdated();
         }
         catch( JSONException e )
@@ -193,11 +208,11 @@ public final class JSONEntityState
         try
         {
             JSONObject manyAssociations = state.getJSONObject( JSON_KEY_MANYASSOCIATIONS );
-            JSONArray jsonValues = manyAssociations.optJSONArray( stateName.toString() );
+            JSONArray jsonValues = manyAssociations.optJSONArray( stateName.name() );
             if( jsonValues == null )
             {
                 jsonValues = new JSONArray();
-                manyAssociations.put( stateName.toString(), jsonValues );
+                manyAssociations.put( stateName.name(), jsonValues );
             }
             return new JSONManyAssociationState( this, jsonValues );
         }
