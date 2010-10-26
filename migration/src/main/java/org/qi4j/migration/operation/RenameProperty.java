@@ -16,7 +16,6 @@ package org.qi4j.migration.operation;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.qi4j.api.common.QualifiedName;
 import org.qi4j.entitystore.map.StateStore;
 import org.qi4j.migration.Migrator;
 import org.qi4j.migration.assembly.EntityMigrationOperation;
@@ -27,10 +26,10 @@ import org.qi4j.migration.assembly.EntityMigrationOperation;
 public class RenameProperty
     implements EntityMigrationOperation
 {
-    QualifiedName fromProperty;
-    QualifiedName toProperty;
+    String fromProperty;
+    String toProperty;
 
-    public RenameProperty( QualifiedName fromProperty, QualifiedName toProperty )
+    public RenameProperty( String fromProperty, String toProperty )
     {
         this.fromProperty = fromProperty;
         this.toProperty = toProperty;

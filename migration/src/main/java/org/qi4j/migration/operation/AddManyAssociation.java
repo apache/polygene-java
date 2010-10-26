@@ -15,10 +15,8 @@
 package org.qi4j.migration.operation;
 
 import java.util.Arrays;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.qi4j.api.common.QualifiedName;
 import org.qi4j.entitystore.map.StateStore;
 import org.qi4j.migration.Migrator;
 import org.qi4j.migration.assembly.EntityMigrationOperation;
@@ -29,10 +27,10 @@ import org.qi4j.migration.assembly.EntityMigrationOperation;
 public class AddManyAssociation
     implements EntityMigrationOperation
 {
-    private QualifiedName association;
+    private String association;
     private String[] defaultReferences;
 
-    public AddManyAssociation( QualifiedName association, String... defaultReferences )
+    public AddManyAssociation( String association, String... defaultReferences )
     {
         this.association = association;
         this.defaultReferences = defaultReferences;
