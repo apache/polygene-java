@@ -1,26 +1,16 @@
 package org.qi4j.api.composite;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Array;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.util.Classes;
 import org.qi4j.api.util.DateFunctions;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.*;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.*;
 
 /**
  * Transfer properties to Composite properties
@@ -45,6 +35,7 @@ public final class PropertyMapper
         STRATEGY.put( Boolean.class, new BooleanMapper() );
         STRATEGY.put( BigDecimal.class, new BigDecimalMapper() );
         STRATEGY.put( BigInteger.class, new BigIntegerMapper() );
+        STRATEGY.put( Enum.class, new EnumMapper() );
         STRATEGY.put( Array.class, new ArrayMapper() );
         STRATEGY.put( Map.class, new MapMapper() );
         STRATEGY.put( List.class, new ListMapper() );
@@ -56,39 +47,38 @@ public final class PropertyMapper
      *
      * @param props     properties object
      * @param composite the composite instance
-     *
      * @throws IllegalArgumentException if properties could not be transferred to composite
      */
     public static void map( Properties props, Composite composite )
-        throws IllegalArgumentException
+            throws IllegalArgumentException
     {
-        for( Map.Entry<Object, Object> objectObjectEntry : props.entrySet() )
+        for (Map.Entry<Object, Object> objectObjectEntry : props.entrySet())
         {
             try
             {
                 Method propertyMethod = composite.getClass()
-                    .getInterfaces()[ 0 ].getMethod( objectObjectEntry.getKey().toString() );
+                        .getInterfaces()[0].getMethod( objectObjectEntry.getKey().toString() );
                 propertyMethod.setAccessible( true );
                 Object value = objectObjectEntry.getValue();
                 Type propertyType = GenericPropertyInfo.getPropertyType( propertyMethod );
 
                 value = mapToType( propertyType, value.toString() );
 
-                @SuppressWarnings( "unchecked" )
+                @SuppressWarnings("unchecked")
                 Property<Object> property = (Property<Object>) propertyMethod.invoke( composite );
                 property.set( value );
             }
-            catch( NoSuchMethodException e )
+            catch (NoSuchMethodException e)
             {
                 throw new IllegalArgumentException( "Could not find any property named " + objectObjectEntry.getKey() );
             }
-            catch( IllegalAccessException e )
+            catch (IllegalAccessException e)
             {
                 //noinspection ThrowableInstanceNeverThrown
                 throw (IllegalArgumentException) new IllegalArgumentException( "Could not populate property named " + objectObjectEntry
-                    .getKey() ).initCause( e );
+                        .getKey() ).initCause( e );
             }
-            catch( InvocationTargetException e )
+            catch (InvocationTargetException e)
             {
                 //noinspection ThrowableInstanceNeverThrown
                 String message = "Could not populate property named " + objectObjectEntry.getKey();
@@ -103,51 +93,51 @@ public final class PropertyMapper
     {
         final String stringValue = value.toString();
         MappingStrategy strategy;
-        if( propertyType instanceof Class )
+        if (propertyType instanceof Class)
         {
             Class type = (Class) propertyType;
-            if( type.isArray() )
+            if (type.isArray())
             {
                 strategy = STRATEGY.get( Array.class );
-            }
-            else
+            } else if (Enum.class.isAssignableFrom( Classes.getRawClass( propertyType ) ))
+            {
+                strategy = STRATEGY.get( Enum.class );
+            } else
             {
                 strategy = STRATEGY.get( type );
             }
-        }
-        else if( propertyType instanceof ParameterizedType )
+        } else if (propertyType instanceof ParameterizedType)
         {
-            ParameterizedType type = ( (ParameterizedType) propertyType );
+            ParameterizedType type = ((ParameterizedType) propertyType);
 
-            if( type.getRawType() instanceof Class )
+            if (type.getRawType() instanceof Class)
             {
                 Class clazz = (Class) type.getRawType();
-                if( List.class.isAssignableFrom( clazz ) )
+                if (List.class.isAssignableFrom( clazz ))
                 {
                     strategy = STRATEGY.get( List.class );
-                }
-                else if( Set.class.isAssignableFrom( clazz ) )
+                } else if (Set.class.isAssignableFrom( clazz ))
                 {
                     strategy = STRATEGY.get( Set.class );
-                }
-                else if( Map.class.isAssignableFrom( clazz ) )
+                } else if (Map.class.isAssignableFrom( clazz ))
                 {
                     strategy = STRATEGY.get( Map.class );
-                }
-                else
+                } else
                 {
-                    throw new IllegalArgumentException( propertyType.getClass() + " is not supported." );
+                    throw new IllegalArgumentException( propertyType + " is not supported." );
                 }
-            }
-            else
+            } else
             {
-                throw new IllegalArgumentException( propertyType.getClass() + " is not supported." );
+                throw new IllegalArgumentException( propertyType + " is not supported." );
             }
-        }
-        else
+        } else
         {
-            throw new IllegalArgumentException( propertyType.getClass() + " is not supported." );
+            throw new IllegalArgumentException( propertyType + " is not supported." );
         }
+
+        if (strategy == null)
+            throw new IllegalArgumentException( propertyType + " is not supported." );
+
         return strategy.map( propertyType, stringValue );
     }
 
@@ -157,14 +147,13 @@ public final class PropertyMapper
      *
      * @param propertyInputStream properties input stream
      * @param composite           the instance
-     *
      * @throws IOException if the stream could not be read
      */
 
     public static void map( InputStream propertyInputStream, Composite composite )
-        throws IOException
+            throws IOException
     {
-        if( propertyInputStream != null )
+        if (propertyInputStream != null)
         {
             Properties configProps = new Properties();
             try
@@ -183,7 +172,6 @@ public final class PropertyMapper
      * Create Properties object which is backed by the given Composite.
      *
      * @param composite the instance
-     *
      * @return properties instance
      */
     public static Properties getProperties( final Composite composite )
@@ -201,15 +189,15 @@ public final class PropertyMapper
                     Property<?> property = (Property<?>) propertyMethod.invoke( composite );
                     return property.get();
                 }
-                catch( NoSuchMethodException e )
+                catch (NoSuchMethodException e)
                 {
                     return null;
                 }
-                catch( IllegalAccessException e )
+                catch (IllegalAccessException e)
                 {
                     return null;
                 }
-                catch( InvocationTargetException e )
+                catch (InvocationTargetException e)
                 {
                     return null;
                 }
@@ -225,15 +213,15 @@ public final class PropertyMapper
                     Method propertyMethod = composite.getClass().getMethod( o.toString(), Object.class );
                     propertyMethod.invoke( composite, o1 );
                 }
-                catch( NoSuchMethodException e )
+                catch (NoSuchMethodException e)
                 {
                     e.printStackTrace();
                 }
-                catch( IllegalAccessException e )
+                catch (IllegalAccessException e)
                 {
                     e.printStackTrace();
                 }
-                catch( InvocationTargetException e )
+                catch (InvocationTargetException e)
                 {
                     e.printStackTrace();
                 }
@@ -248,20 +236,20 @@ public final class PropertyMapper
         char[] data = valueString.toCharArray();
 
         int oldPos = 0;
-        for( int pos = 0; pos < data.length; pos++ )
+        for (int pos = 0; pos < data.length; pos++)
         {
-            char ch = data[ pos ];
-            if( ch == '\"' )
+            char ch = data[pos];
+            if (ch == '\"')
             {
                 pos = resolveQuotes( valueString, callback, data, pos, '\"' );
                 oldPos = pos;
             }
-            if( ch == '\'' )
+            if (ch == '\'')
             {
                 pos = resolveQuotes( valueString, callback, data, pos, '\'' );
                 oldPos = pos;
             }
-            if( ch == ',' || ( mapSyntax && ch == ':' ) )
+            if (ch == ',' || (mapSyntax && ch == ':'))
             {
                 String token = new String( data, oldPos, pos - oldPos );
                 callback.token( token );
@@ -279,26 +267,25 @@ public final class PropertyMapper
     )
     {
         boolean found = false;
-        for( int j = pos + 1; j < data.length; j++ )
+        for (int j = pos + 1; j < data.length; j++)
         {
-            if( !found )
+            if (!found)
             {
-                if( data[ j ] == quote )
+                if (data[j] == quote)
                 {
                     String token = new String( data, pos + 1, j - pos - 1 );
                     callback.token( token );
                     found = true;
                 }
-            }
-            else
+            } else
             {
-                if( data[ j ] == ',' )
+                if (data[j] == ',')
                 {
                     return j + 1;
                 }
             }
         }
-        if( !found )
+        if (!found)
         {
             throw new IllegalArgumentException( "String is not quoted correctly: " + valueString );
         }
@@ -316,7 +303,7 @@ public final class PropertyMapper
     }
 
     private static class StringMapper
-        implements MappingStrategy
+            implements MappingStrategy
     {
         public Object map( Type type, String value )
         {
@@ -325,7 +312,7 @@ public final class PropertyMapper
     }
 
     private static class IntegerMapper
-        implements MappingStrategy
+            implements MappingStrategy
     {
         public Object map( Type type, String value )
         {
@@ -334,7 +321,7 @@ public final class PropertyMapper
     }
 
     private static class FloatMapper
-        implements MappingStrategy
+            implements MappingStrategy
     {
         public Object map( Type type, String value )
         {
@@ -343,7 +330,7 @@ public final class PropertyMapper
     }
 
     private static class DoubleMapper
-        implements MappingStrategy
+            implements MappingStrategy
     {
         public Object map( Type type, String value )
         {
@@ -352,7 +339,7 @@ public final class PropertyMapper
     }
 
     private static class LongMapper
-        implements MappingStrategy
+            implements MappingStrategy
     {
         public Object map( Type type, String value )
         {
@@ -361,7 +348,7 @@ public final class PropertyMapper
     }
 
     private static class ShortMapper
-        implements MappingStrategy
+            implements MappingStrategy
     {
         public Object map( Type type, String value )
         {
@@ -370,7 +357,7 @@ public final class PropertyMapper
     }
 
     private static class ByteMapper
-        implements MappingStrategy
+            implements MappingStrategy
     {
         public Object map( Type type, String value )
         {
@@ -379,7 +366,7 @@ public final class PropertyMapper
     }
 
     private static class CharMapper
-        implements MappingStrategy
+            implements MappingStrategy
     {
         public Object map( Type type, String value )
         {
@@ -388,7 +375,7 @@ public final class PropertyMapper
     }
 
     private static class BigDecimalMapper
-        implements MappingStrategy
+            implements MappingStrategy
     {
         public Object map( Type type, String value )
         {
@@ -397,7 +384,7 @@ public final class PropertyMapper
     }
 
     private static class BigIntegerMapper
-        implements MappingStrategy
+            implements MappingStrategy
     {
         public Object map( Type type, String value )
         {
@@ -405,8 +392,17 @@ public final class PropertyMapper
         }
     }
 
+    private static class EnumMapper
+            implements MappingStrategy
+    {
+        public Object map( Type type, String value )
+        {
+            return Enum.valueOf( (Class<Enum>) type, value );
+        }
+    }
+
     private static class DateMapper
-        implements MappingStrategy
+            implements MappingStrategy
     {
         public Object map( Type type, String value )
         {
@@ -415,11 +411,11 @@ public final class PropertyMapper
     }
 
     private static class ArrayMapper
-        implements MappingStrategy
+            implements MappingStrategy
     {
         public Object map( Type type, String value )
         {
-            final Class arrayType = ( (Class) type ).getComponentType();
+            final Class arrayType = ((Class) type).getComponentType();
             final ArrayList result = new ArrayList();
             tokenize( value, false, new TokenizerCallback()
             {
@@ -433,7 +429,7 @@ public final class PropertyMapper
     }
 
     private static class BooleanMapper
-        implements MappingStrategy
+            implements MappingStrategy
     {
         public Object map( Type type, String value )
         {
@@ -442,11 +438,11 @@ public final class PropertyMapper
     }
 
     private static class ListMapper
-        implements MappingStrategy
+            implements MappingStrategy
     {
         public Object map( Type type, String value )
         {
-            final Type dataType = ( (ParameterizedType) type ).getActualTypeArguments()[ 0 ];
+            final Type dataType = ((ParameterizedType) type).getActualTypeArguments()[0];
             final Collection result = new ArrayList();
             tokenize( value, false, new TokenizerCallback()
             {
@@ -460,11 +456,11 @@ public final class PropertyMapper
     }
 
     private static class SetMapper
-        implements MappingStrategy
+            implements MappingStrategy
     {
         public Object map( Type type, String value )
         {
-            final Type dataType = ( (ParameterizedType) type ).getActualTypeArguments()[ 0 ];
+            final Type dataType = ((ParameterizedType) type).getActualTypeArguments()[0];
             final Collection result = new HashSet();
             tokenize( value, false, new TokenizerCallback()
             {
@@ -478,13 +474,13 @@ public final class PropertyMapper
     }
 
     private static class MapMapper
-        implements MappingStrategy
+            implements MappingStrategy
     {
         public Object map( Type generictype, String value )
         {
             ParameterizedType type = (ParameterizedType) generictype;
-            final Type keyType = type.getActualTypeArguments()[ 0 ];
-            final Type valueType = type.getActualTypeArguments()[ 0 ];
+            final Type keyType = type.getActualTypeArguments()[0];
+            final Type valueType = type.getActualTypeArguments()[0];
             final Map result = new HashMap();
             tokenize( value, true, new TokenizerCallback()
             {
@@ -493,12 +489,11 @@ public final class PropertyMapper
 
                 public void token( String token )
                 {
-                    if( keyArrivingNext )
+                    if (keyArrivingNext)
                     {
                         key = token;
                         keyArrivingNext = false;
-                    }
-                    else
+                    } else
                     {
                         result.put( mapToType( keyType, key ), mapToType( valueType, token ) );
                         keyArrivingNext = true;

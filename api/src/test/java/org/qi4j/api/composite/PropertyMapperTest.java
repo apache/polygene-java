@@ -18,6 +18,8 @@
 
 package org.qi4j.api.composite;
 
+import org.junit.Test;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -26,9 +28,9 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class PropertyMapperTest
 {
@@ -110,6 +112,15 @@ public class PropertyMapperTest
         assertEquals( new BigInteger( "20", 16 ), mapToType( BigInteger.class, "32" ) );
         assertEquals( new BigInteger( "1234567891011" ), mapToType( BigInteger.class, "1234567891011" ) );
         assertEquals( BigInteger.class, mapToType( BigInteger.class, "5" ).getClass() );
+    }
+
+    @Test
+    public void testMappingOfEnum()
+        throws Exception
+    {
+        assertEquals( TestEnum.FIRST, mapToType( TestEnum.class, "FIRST" ) );
+        assertEquals( TestEnum.SECOND, mapToType( TestEnum.class, "SECOND" ) );
+        assertEquals( TestEnum.class, mapToType( TestEnum.class, "SECOND" ).getClass() );
     }
 
     @Test
@@ -218,5 +229,11 @@ public class PropertyMapperTest
         Set<String> set();
 
         Map<String, String> map();
+    }
+
+    enum TestEnum
+    {
+        FIRST,
+        SECOND
     }
 }
