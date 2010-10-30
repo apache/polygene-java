@@ -18,7 +18,6 @@ import org.objectweb.asm.*;
 import org.qi4j.api.entity.Lifecycle;
 import org.qi4j.api.mixin.Initializable;
 import org.qi4j.api.service.Activatable;
-import org.qi4j.api.util.Classes;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;

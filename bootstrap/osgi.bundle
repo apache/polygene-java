@@ -2,9 +2,7 @@ Ignore-Package: com_cenqua_clover
 
 Private-Package: org.qi4j.bootstrap.internal
 
-Import-Package: org.ops4j.pax.swissbox.core, \
-                org.ops4j.pax.swissbox.extender, \
-                org.osgi.framework;version="[1,2)", \
+Import-Package: org.osgi.framework;version="[1,2)", \
                 org.qi4j.api, \
                 org.qi4j.api.common, \
                 org.qi4j.api.composite, \

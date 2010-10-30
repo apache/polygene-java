@@ -47,7 +47,6 @@ Import-Package: org.objectweb.asm, \
                 org.qi4j.api.util, \
                 org.qi4j.api.value, \
                 org.qi4j.bootstrap, \
-                org.qi4j.bootstrap.spi, \
                 org.qi4j.spi, \
                 org.qi4j.spi.composite, \
                 org.qi4j.spi.concern, \
@@ -59,7 +58,6 @@ Import-Package: org.objectweb.asm, \
                 org.qi4j.spi.object, \
                 org.qi4j.spi.property, \
                 org.qi4j.spi.query, \
-                org.qi4j.spi.query.named, \
                 org.qi4j.spi.service, \
                 org.qi4j.spi.service.importer, \
                 org.qi4j.spi.sideeffect, \
@@ -67,7 +65,7 @@ Import-Package: org.objectweb.asm, \
                 org.qi4j.spi.util, \
                 org.qi4j.spi.entitystore, \
                 org.qi4j.spi.value, \
-                org.slf4j, \
+                org.slf4j;version="[1.5,2.0)", \
                 org.xml.sax, \
                 org.xml.sax.helpers
 

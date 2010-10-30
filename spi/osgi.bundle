@@ -24,7 +24,7 @@ Import-Package: org.qi4j.api, \
                 org.qi4j.api.usecase, \
                 org.qi4j.api.util, \
                 org.qi4j.api.value, \
-                org.slf4j, \
+                org.slf4j;version="[1.5,2.0)", \
                 org.xml.sax, \
                 org.xml.sax.helpers
 

@@ -21,7 +21,7 @@
     </modules>
 
     <properties>
-        <version.asm>3.2</version.asm>
+        <version.asm>3.3</version.asm>
         <scmVersion>1.2</scmVersion>
     </properties>
 
