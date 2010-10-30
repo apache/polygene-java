@@ -45,7 +45,6 @@
         	<groupId>org.java-sql-generator.api</groupId>
         	<artifactId>java-sql-generator-api</artifactId>
         	<version>${version.sql-generator}</version>
-        	<scope>compile</scope>
         </dependency>
     </dependencies>
 

@@ -10,10 +10,6 @@
     <name>Qi4j Extension - Entity Store - Project Voldemort</name>
     <packaging>bundle</packaging>
 
-    <properties>
-        <version.qi4j-tests>1.2</version.qi4j-tests>
-    </properties>
-
     <licenses>
         <license>
             <name>Apache License ver 2.0</name>

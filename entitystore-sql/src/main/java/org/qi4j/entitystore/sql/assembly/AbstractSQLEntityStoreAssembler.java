@@ -19,7 +19,9 @@ import java.io.IOException;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.bootstrap.ServiceDeclaration;
 import org.qi4j.entitystore.sql.SQLEntityStoreService;
+import org.qi4j.entitystore.sql.internal.DatabaseSQLService;
 import org.qi4j.entitystore.sql.internal.DatabaseSQLService.DatabaseSQLServiceComposite;
 import org.qi4j.entitystore.sql.internal.DatabaseSQLServiceCoreMixin;
 import org.qi4j.entitystore.sql.internal.DatabaseSQLServiceSpi;
@@ -80,12 +82,17 @@ abstract class AbstractSQLEntityStoreAssembler extends AbstractSQLAssembler
 
         try
         {
+            SQLVendor sqlVendor = this.getSQLVendor();
+            if( sqlVendor == null )
+            {
+                throw new AssemblyException("SQL Vendor could not be determined." );
+            }
             module
                 .addServices( DatabaseSQLServiceComposite.class )
                 .withMixins( DatabaseSQLServiceCoreMixin.class, DatabaseSQLServiceSpi.CommonMixin.class,
-                    getDatabaseStringBuilderMixin(), DatabaseSQLServiceStatementsMixin.class,
-                    getDatabaseSQLServiceSpecializationMixin() ).identifiedBy( getEntityStoreServiceName() )
-                .visibleIn( Visibility.module ).setMetaInfo( this.getSQLVendor() );
+                             getDatabaseStringBuilderMixin(), DatabaseSQLServiceStatementsMixin.class,
+                             getDatabaseSQLServiceSpecializationMixin() ).identifiedBy( getEntityStoreServiceName() )
+                .visibleIn( Visibility.module ).setMetaInfo( sqlVendor );
         }
         catch( IOException ioe )
         {

@@ -15,8 +15,6 @@
 package org.qi4j.entitystore.sql.internal;
 
 import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.service.Activatable;
-import org.qi4j.api.service.ServiceComposite;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sql.generation.api.grammar.builders.modification.DeleteBySearchBuilder;

@@ -57,7 +57,7 @@ public abstract class DatabaseSQLServiceCoreMixin
     private DatabaseSQLStringsBuilder sqlStrings;
 
     @This
-    private ServiceComposite _meAsService;
+    private ServiceComposite meAsService;
 
     @This
     private Configuration<SQLConfiguration> configuration;
@@ -68,7 +68,7 @@ public abstract class DatabaseSQLServiceCoreMixin
         return dataSourceService.getDataSource().getConnection();
     }
 
-    protected String getConfiguredShemaName( String defaultSchemaName )
+    protected String getConfiguredSchemaName( String defaultSchemaName )
     {
         String result = this.configuration.configuration().schemaName().get();
         if( result == null )
@@ -83,7 +83,7 @@ public abstract class DatabaseSQLServiceCoreMixin
         throws Exception
     {
         Connection connection = getConnection();
-        String schema = this.getConfiguredShemaName( SQLs.DEFAULT_SCHEMA_NAME );
+        String schema = this.getConfiguredSchemaName( SQLs.DEFAULT_SCHEMA_NAME );
         if( schema == null )
         {
             throw new EntityStoreException( "Schema name must not be null." );
@@ -91,7 +91,7 @@ public abstract class DatabaseSQLServiceCoreMixin
         else
         {
             state.schemaName().set( schema );
-            state.vendor().set( this._meAsService.metaInfo( SQLVendor.class ) );
+            state.vendor().set( this.meAsService.metaInfo( SQLVendor.class ) );
 
             this.sqlStrings.init();
 
