@@ -14,14 +14,15 @@
 
 package org.qi4j.entitystore.qrm.test;
 
-import java.lang.reflect.Type;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.property.Property;
+
+import java.lang.reflect.Type;
 
 public class TestProperty<T>
     implements Property<T>
 {
-    private final T value;
+    private T value;
     private final QualifiedName name;
 
     public TestProperty( T value, QualifiedName name )
@@ -38,7 +39,7 @@ public class TestProperty<T>
     public void set( T newValue )
         throws IllegalArgumentException
     {
-        set( newValue );
+        this.value = newValue;
     }
 
     public T _()
