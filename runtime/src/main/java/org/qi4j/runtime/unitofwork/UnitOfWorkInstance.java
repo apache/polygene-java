@@ -16,13 +16,6 @@
  */
 package org.qi4j.runtime.unitofwork;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Stack;
-
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.composite.AmbiguousTypeException;
@@ -47,6 +40,12 @@ import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 import org.qi4j.spi.entitystore.StateCommitter;
 import org.qi4j.spi.structure.ModuleSPI;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Stack;
 
 import static org.qi4j.api.unitofwork.UnitOfWorkCallback.UnitOfWorkStatus.*;
 
@@ -414,7 +413,7 @@ public final class UnitOfWorkInstance
                 protected void execute( EntityInstance instance )
                         throws Exception
                 {
-                    if( instance.<Object>proxy() instanceof UnitOfWorkCallback )
+                    if( instance.<Object>proxy() instanceof UnitOfWorkCallback && !instance.status().equals(EntityStatus.REMOVED))
                     {
                         UnitOfWorkCallback callback = UnitOfWorkCallback.class.cast( instance.proxy() );
                         callback.beforeCompletion();
@@ -459,7 +458,7 @@ public final class UnitOfWorkInstance
                 protected void execute( EntityInstance instance )
                         throws Exception
                 {
-                    if( instance.<Object>proxy() instanceof UnitOfWorkCallback )
+                    if( instance.<Object>proxy() instanceof UnitOfWorkCallback && !instance.status().equals(EntityStatus.REMOVED) )
                     {
                         UnitOfWorkCallback callback = UnitOfWorkCallback.class.cast( instance.proxy() );
                         callback.afterCompletion( status );
