@@ -152,6 +152,29 @@ public class Outputs
     }
 
     /**
+     * Do nothing.
+     *
+     * @param <T>
+     * @return
+     */
+    public static <T, ReceiverThrowableType extends Throwable> Output<T,ReceiverThrowableType> noop()
+    {
+        return new Output<T, ReceiverThrowableType>()
+        {
+            public <SenderThrowableType extends Throwable> void receiveFrom( final Sender<T, SenderThrowableType> sender ) throws ReceiverThrowableType, SenderThrowableType
+            {
+                sender.sendTo( new Receiver<T, ReceiverThrowableType>()
+                {
+                    public void receive(T item ) throws ReceiverThrowableType
+                    {
+                        // Do nothing
+                    }
+                } );
+            }
+        };
+    }
+
+    /**
      * Write strings to System.out.println.
      *
      * @return

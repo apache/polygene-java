@@ -264,7 +264,7 @@ public class Transforms
 
         public T map( T item )
         {
-            logger.info( format.format( item.toString()));
+            logger.info( format.format( new String[]{item.toString()}));
             return item;
         }
     }

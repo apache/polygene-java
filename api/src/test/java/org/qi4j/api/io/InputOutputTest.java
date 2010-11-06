@@ -47,6 +47,14 @@ public class InputOutputTest
     }
 
     @Test
+    public void testLog() throws IOException
+    {
+        File source = new File( getClass().getResource( "/iotest.txt" ).getFile() );
+
+        Inputs.text( source ).transferTo( Transforms.map( new Transforms.Log<String>( LoggerFactory.getLogger( getClass() ), "Line: {0}"), Outputs.<String, RuntimeException>noop()));
+    }
+
+    @Test
     public void testTextInputsOutputs() throws IOException
     {
         File tempFile = File.createTempFile( "test", ".txt" );
@@ -137,8 +145,8 @@ public class InputOutputTest
             }
         };
 
-        input.transferTo( Transforms.log( LoggerFactory.getLogger( getClass() ), "Line: {0}",
-                Outputs.systemOut() ) );
+        input.transferTo( Transforms.map( new Transforms.Log<String>( LoggerFactory.getLogger( getClass() ), "Line: {0}"),
+                Outputs.systemOut() ));
     }
 
     public Output<String, IOException> writerOutput( final Writer writer )
