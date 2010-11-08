@@ -18,12 +18,12 @@
 
 package org.qi4j.logging;
 
-import static org.junit.Assert.*;
-import org.junit.Test;
 import org.junit.Ignore;
+import org.junit.Test;
 import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.io.Outputs;
+import org.qi4j.api.io.Transforms;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.mixin.NoopMixin;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
 import org.qi4j.api.unitofwork.UnitOfWork;
@@ -38,9 +38,10 @@ import org.qi4j.logging.debug.service.DebugServiceConfiguration;
 import org.qi4j.logging.debug.service.DebuggingServiceComposite;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entitystore.EntityStore;
-import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
+
+import static org.junit.Assert.*;
 
 public class DebuggingTest
     extends AbstractQi4jTest
@@ -75,17 +76,20 @@ public class DebuggingTest
             assertEquals( message, "Hello!" );
             EntityStore es = (EntityStore) serviceLocator.findService( EntityStore.class ).get();
             final String[] result = new String[1];
-            es.visitEntityStates( new EntityStore.EntityStateVisitor<RuntimeException>()
+            es.entityStates( moduleInstance ).transferTo( Transforms.map( new Transforms.Function<EntityState, EntityState>()
             {
-                public void visitEntityState( EntityState entityState )
+                public EntityState map( EntityState entityState )
                 {
                     if( ServiceDebugRecordEntity.class.getName()
                         .equals( entityState.entityDescriptor().entityType().type().name() ) )
                     {
                         result[ 0 ] = entityState.identity().identity();
                     }
+
+                    return entityState;
                 }
-            }, moduleInstance );
+            },Outputs.<EntityState, RuntimeException>noop() ));
+
             ServiceDebugRecordEntity debugEntry = uow.get( ServiceDebugRecordEntity.class, result[ 0 ] );
             String mess = debugEntry.message().get();
             System.out.println( mess );
