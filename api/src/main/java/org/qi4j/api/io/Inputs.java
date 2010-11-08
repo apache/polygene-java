@@ -15,8 +15,10 @@
 package org.qi4j.api.io;
 
 import java.io.*;
+import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.zip.GZIPInputStream;
 
 /**
  * Common inputs
@@ -24,7 +26,9 @@ import java.nio.channels.FileChannel;
 public class Inputs
 {
     /**
-     * Read lines from a textfile
+     * Read lines from a textfile.
+     *
+     * If the filename ends with .gz, then the data is automatically unzipped when read.
      *
      * @param source textfile with lines separated by \n character
      * @return Input that provides lines from the textfiles as strings
@@ -35,7 +39,56 @@ public class Inputs
         {
             public <ReceiverThrowableType extends Throwable> void transferTo( Output<String, ReceiverThrowableType> output ) throws IOException, ReceiverThrowableType
             {
-                final BufferedReader reader = new BufferedReader( new InputStreamReader( new FileInputStream( source ), "UTF-8" ) );
+                InputStream stream = new FileInputStream( source );
+
+                // If file is gzipped, unzip it automatically
+                if (source.getName().endsWith( ".gz" ))
+                    stream = new GZIPInputStream(stream);
+
+                final BufferedReader reader = new BufferedReader( new InputStreamReader( stream, "UTF-8" ) );
+
+                try
+                {
+                    output.receiveFrom( new Sender<String, IOException>()
+                    {
+                        public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<String, ReceiverThrowableType> receiver ) throws ReceiverThrowableType, IOException
+                        {
+                            String line;
+                            while ((line = reader.readLine()) != null)
+                            {
+                                receiver.receive( line );
+                            }
+                        }
+                    } );
+                } finally
+                {
+                    reader.close();
+                }
+            }
+        };
+    }
+
+    /**
+     * Read lines from a textfile at a given URL.
+     *
+     * If the filename ends with .gz, then the data is automatically unzipped when read.
+     *
+     * @param source textfile with lines separated by \n character
+     * @return Input that provides lines from the textfiles as strings
+     */
+    public static Input<String, IOException> text( final URL source )
+    {
+        return new Input<String, IOException>()
+        {
+            public <ReceiverThrowableType extends Throwable> void transferTo( Output<String, ReceiverThrowableType> output ) throws IOException, ReceiverThrowableType
+            {
+                InputStream stream = source.openStream();
+
+                // If file is gzipped, unzip it automatically
+                if (source.getPath().endsWith( ".gz" ))
+                    stream = new GZIPInputStream(stream);
+
+                final BufferedReader reader = new BufferedReader( new InputStreamReader( stream, "UTF-8" ) );
 
                 try
                 {

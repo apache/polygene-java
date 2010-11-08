@@ -20,7 +20,7 @@ package org.qi4j.api.io;
 public interface Output<T, ReceiverThrowableType extends Throwable>
 {
     /**
-     * This initiates a receive from an Input. Implementations should open any resources to be written to
+     * This initiates a transfer from an Input. Implementations should open any resources to be written to
      * and then call sender.sendTo() when it is ready to receive data. When sendTo() returns the resource should be
      * closed properly. Make sure to handle any exceptions from sendTo.
      *

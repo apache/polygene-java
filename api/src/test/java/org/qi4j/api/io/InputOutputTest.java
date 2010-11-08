@@ -20,6 +20,7 @@ import org.junit.Test;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.net.URL;
 import java.rmi.RemoteException;
 
 /**
@@ -28,10 +29,46 @@ import java.rmi.RemoteException;
 public class InputOutputTest
 {
     @Test
+    public void testCopyFileNoAPI() throws IOException
+    {
+        File source = new File( getClass().getResource( "/iotest.txt" ).getFile() );
+        File destination = File.createTempFile( "test", ".txt" );
+        destination.deleteOnExit();
+
+        BufferedReader reader = new BufferedReader(new FileReader(source));
+        long count = 0;
+        try
+        {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(destination));
+            try
+            {
+                String line = null;
+                while ((line = reader.readLine()) != null)
+                {
+                    count++;
+                    writer.append( line ).append( '\n' );
+                }
+                writer.close();
+            } catch (IOException e)
+            {
+                writer.close();
+                destination.delete();
+            }
+
+        } finally
+        {
+            reader.close();
+        }
+        System.out.println(count);
+    }
+
+    @Test
     public void testInputOutput() throws IOException
     {
-        Inputs.text( new File( getClass().getResource( "/iotest.txt" ).getFile() ) ).
-                transferTo( Outputs.systemOut() );
+        URL source = getClass().getResource( "/iotest.txt" );
+        File destination = File.createTempFile( "test",".txt" );
+        destination.deleteOnExit();
+        Inputs.text( source ).transferTo( Outputs.text(destination) );
     }
 
     @Test

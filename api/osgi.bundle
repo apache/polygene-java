@@ -1,4 +1,4 @@
-Import-Package:
+Import-Package: org.slf4j;
 
 Ignore-Package: com_cenqua_clover
 
@@ -16,6 +16,7 @@ Export-Package: org.qi4j.api;version=${pom.version}, \
                 org.qi4j.api.entity.association;version=${pom.version}, \
                 org.qi4j.api.injection;version=${pom.version}, \
                 org.qi4j.api.injection.scope;version=${pom.version}, \
+                org.qi4j.api.io;version=${pom.version}, \
                 org.qi4j.api.mixin;version=${pom.version}, \
                 org.qi4j.api.object;version=${pom.version}, \
                 org.qi4j.api.property;version=${pom.version}, \

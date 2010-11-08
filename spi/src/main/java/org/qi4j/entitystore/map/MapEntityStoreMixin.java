@@ -1,18 +1,6 @@
 package org.qi4j.entitystore.map;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
-import org.json.JSONWriter;
+import org.json.*;
 import org.qi4j.api.cache.CacheOptions;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.QualifiedName;
@@ -20,6 +8,11 @@ import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.injection.scope.Uses;
+import org.qi4j.api.io.Input;
+import org.qi4j.api.io.Output;
+import org.qi4j.api.io.Receiver;
+import org.qi4j.api.io.Sender;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
@@ -31,18 +24,20 @@ import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
-import org.qi4j.spi.entitystore.DefaultEntityStoreUnitOfWork;
-import org.qi4j.spi.entitystore.EntityStore;
-import org.qi4j.spi.entitystore.EntityStoreException;
-import org.qi4j.spi.entitystore.EntityStoreSPI;
-import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
-import org.qi4j.spi.entitystore.StateCommitter;
+import org.qi4j.spi.entitystore.*;
 import org.qi4j.spi.entitystore.helpers.DefaultEntityState;
 import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.property.PropertyTypeDescriptor;
+import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.spi.structure.ModuleSPI;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
+import java.util.*;
 
 /**
  * Implementation of EntityStore that works with an implementation of MapEntityStore. Implement
@@ -65,13 +60,20 @@ public class MapEntityStoreMixin
     @Service
     private Migration migration;
 
+    @Uses
+    private ServiceDescriptor descriptor;
+
     protected String uuid;
     private int count;
+
+    private Logger logger;
 
     public void activate()
         throws Exception
     {
         uuid = UUID.randomUUID().toString() + "-";
+
+        logger = LoggerFactory.getLogger( descriptor.identity() );
     }
 
     public void passivate()
@@ -155,30 +157,89 @@ public class MapEntityStoreMixin
         };
     }
 
-    public <ThrowableType extends Throwable> EntityStoreUnitOfWork visitEntityStates( final EntityStateVisitor<ThrowableType> visitor, ModuleSPI moduleInstance )
-        throws ThrowableType
+    public Input<EntityState, EntityStoreException> entityStates( final ModuleSPI module )
     {
-        // TODO This can be used for reading state, but not for modifying (e.g. removing all entities)
-
-        Usecase usecase = UsecaseBuilder
-            .buildUsecase( "qi4j.entitystore.visit" )
-            .with( CacheOptions.NEVER )
-            .newUsecase();
-
-        final DefaultEntityStoreUnitOfWork uow =
-            new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), moduleInstance, usecase );
-
-        mapEntityStore.visitMap( new MapEntityStore.MapEntityStoreVisitor<ThrowableType>()
+        return new Input<EntityState, EntityStoreException>()
         {
-            public void visitEntity( Reader entityState )
-                throws ThrowableType
+            public <ReceiverThrowableType extends Throwable> void transferTo( Output<EntityState, ReceiverThrowableType> output ) throws EntityStoreException, ReceiverThrowableType
             {
-                EntityState entity = readEntityState( uow, entityState );
-                visitor.visitEntityState( entity );
-                uow.registerEntityState( entity );
+                output.receiveFrom( new Sender<EntityState, EntityStoreException>()
+                {
+                    public <ReceiverThrowableType extends Throwable> void sendTo( final Receiver<EntityState, ReceiverThrowableType> receiver ) throws ReceiverThrowableType, EntityStoreException
+                    {
+                        Usecase usecase = UsecaseBuilder
+                            .buildUsecase( "qi4j.entitystore.entitystates" )
+                            .with( CacheOptions.NEVER )
+                            .newUsecase();
+
+                        final DefaultEntityStoreUnitOfWork uow =
+                            new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), module, usecase );
+
+                        final List<EntityState> migrated = new ArrayList<EntityState>();
+
+                        try
+                        {
+                            mapEntityStore.entityStates().transferTo( new Output<Reader, ReceiverThrowableType>()
+                            {
+                                public <SenderThrowableType extends Throwable> void receiveFrom( Sender<Reader, SenderThrowableType> sender ) throws ReceiverThrowableType, SenderThrowableType
+                                {
+                                    sender.sendTo( new Receiver<Reader, ReceiverThrowableType>()
+                                    {
+                                        public void receive( Reader item ) throws ReceiverThrowableType
+                                        {
+                                            final EntityState entity = readEntityState( uow, item );
+                                            if (entity.status() == EntityStatus.UPDATED)
+                                            {
+                                                migrated.add( entity );
+
+                                                // Synch back 100 at a time
+                                                if (migrated.size() > 100)
+                                                    synchMigratedEntities( migrated );
+                                            }
+                                            receiver.receive( entity );
+                                        }
+                                    });
+
+                                    // Synch any remaining migrated entities
+                                    if (!migrated.isEmpty())
+                                        synchMigratedEntities( migrated );
+                                }
+                            });
+
+                        } catch (IOException e)
+                        {
+                            throw new EntityStoreException(e);
+                        }
+                    }
+                });
             }
-        } );
-        return uow;
+        };
+    }
+
+    private void synchMigratedEntities( final List<EntityState> migratedEntities)
+    {
+        try
+        {
+            mapEntityStore.applyChanges( new MapEntityStore.MapChanges()
+            {
+                public void visitMap( MapEntityStore.MapChanger changer )
+                    throws IOException
+                {
+                    for (EntityState migratedEntity : migratedEntities)
+                    {
+                        DefaultEntityState state = (DefaultEntityState) migratedEntity;
+                        Writer writer = changer.updateEntity( state.identity(),
+                                                              state.entityDescriptor().entityType() );
+                        writeEntityState( state, writer, state.version(), state.lastModified() );
+                        writer.close();
+                    }
+                }
+            } );
+            migratedEntities.clear();
+        } catch (IOException e)
+        {
+            logger.warn( "Could not store migrated entites", e );
+        }
     }
 
     protected String newUnitOfWorkId()

@@ -1,28 +1,29 @@
 package org.qi4j.entitystore.memory;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.util.HashMap;
-import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.io.Input;
+import org.qi4j.api.io.Output;
+import org.qi4j.api.io.Receiver;
+import org.qi4j.api.io.Sender;
 import org.qi4j.entitystore.map.MapEntityStore;
 import org.qi4j.spi.entity.EntityType;
+import org.qi4j.spi.entitystore.BackupRestore;
 import org.qi4j.spi.entitystore.EntityAlreadyExistsException;
 import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entitystore.EntityStoreException;
+
+import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * In-memory implementation of MapEntityStore.
  */
 public class MemoryMapEntityStoreMixin
-    implements MapEntityStore, TestData
+    implements MapEntityStore, BackupRestore
 {
     private final Map<EntityReference, String> store;
 
@@ -55,45 +56,79 @@ public class MemoryMapEntityStoreMixin
         changes.visitMap( new MemoryMapChanger() );
     }
 
-    public <ThrowableType extends Throwable> void visitMap( MapEntityStoreVisitor<ThrowableType> visitor )
-        throws ThrowableType
+    public Input<Reader, IOException> entityStates()
     {
-        for( String state : store.values() )
+        return new Input<Reader, IOException>()
         {
-            visitor.visitEntity( new StringReader( state ) );
-        }
-    }
-
-    public String exportData()
-    {
-        StringBuilder export = new StringBuilder();
-        for( String entity : store.values() )
-        {
-            export.append( entity ).append( '\n' );
-        }
-
-        return export.toString();
-    }
-
-    public void importData( String data )
-        throws IOException
-    {
-        try
-        {
-            BufferedReader reader = new BufferedReader( new StringReader( data ) );
-            String line;
-            while( ( line = reader.readLine() ) != null )
+            public <ReceiverThrowableType extends Throwable> void transferTo( Output<Reader, ReceiverThrowableType> output ) throws IOException, ReceiverThrowableType
             {
-                JSONTokener tokener = new JSONTokener( line );
-                JSONObject entity = (JSONObject) tokener.nextValue();
-                String id = entity.getString( JSONKeys.identity.name() );
-                store.put( new EntityReference( id ), line );
+                output.receiveFrom( new Sender<Reader, IOException>()
+                {
+                    public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<Reader, ReceiverThrowableType> receiver ) throws ReceiverThrowableType, IOException
+                    {
+                        for( String state : store.values() )
+                        {
+                            receiver.receive( new StringReader( state ) );
+                        }
+                    }
+                });
             }
-        }
-        catch( JSONException e )
+        };
+    }
+
+    public Input<String, IOException> backup()
+    {
+        return new Input<String, IOException>()
         {
-            throw (IOException) new IOException( "Could not import data" ).initCause( e );
-        }
+            public <ReceiverThrowableType extends Throwable> void transferTo( Output<String, ReceiverThrowableType> output ) throws IOException, ReceiverThrowableType
+            {
+                output.receiveFrom( new Sender<String, IOException>()
+                {
+                    public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<String, ReceiverThrowableType> receiver ) throws ReceiverThrowableType, IOException
+                    {
+                        for (String state : store.values())
+                        {
+                            receiver.receive( state );
+                        }
+                    }
+                });
+            }
+        };
+    }
+
+    public Output<String, IOException> restore()
+    {
+        return new Output<String, IOException>()
+        {
+            public <SenderThrowableType extends Throwable> void receiveFrom( Sender<String, SenderThrowableType> sender ) throws IOException, SenderThrowableType
+            {
+                store.clear();
+
+                try
+                {
+                    sender.sendTo( new Receiver<String, IOException>()
+                    {
+                        public void receive( String item ) throws IOException
+                        {
+                            try
+                            {
+                                JSONTokener tokener = new JSONTokener( item );
+                                JSONObject entity = (JSONObject) tokener.nextValue();
+                                String id = entity.getString( JSONKeys.identity.name() );
+                                store.put( new EntityReference( id ), item );
+                            } catch (JSONException e)
+                            {
+                                throw new IOException(e);
+                            }
+                        }
+                    });
+                } catch (IOException e)
+                {
+                    store.clear();
+                    throw e;
+                }
+            }
+        };
     }
 
     private class MemoryMapChanger

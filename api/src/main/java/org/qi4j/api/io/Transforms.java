@@ -176,7 +176,7 @@ public class Transforms
      *
      * @param <T>
      */
-    interface Specification<T>
+    public interface Specification<T>
     {
         /**
          * Test whether an item matches the given specification
@@ -191,7 +191,7 @@ public class Transforms
      * @param <From>
      * @param <To>
      */
-    interface Function<From, To>
+    public interface Function<From, To>
     {
         /**
          * Map a single item from one type to another

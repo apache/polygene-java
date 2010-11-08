@@ -17,6 +17,7 @@ package org.qi4j.api.io;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * Utility methods for creating standard Outputs
@@ -26,6 +27,8 @@ public class Outputs
     /**
      * Write lines to a text file. Separate each line with a newline ("\n" character). If the writing or sending fails,
      * the file is deleted.
+     * <p/>
+     * If the filename ends with .gz, then the data is automatically GZipped.
      *
      * @param file the file to save the text to
      * @return an Output for storing text in a file
@@ -36,7 +39,13 @@ public class Outputs
         {
             public <SenderThrowableType extends Throwable> void receiveFrom( final Sender<String, SenderThrowableType> sender ) throws IOException, SenderThrowableType
             {
-                final BufferedWriter writer = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( file ), "UTF-8" ) );
+                OutputStream stream = new FileOutputStream( file );
+
+                // If file should be gzipped, do that automatically
+                if (file.getName().endsWith( ".gz" ))
+                    stream = new GZIPOutputStream( stream );
+
+                final BufferedWriter writer = new BufferedWriter( new OutputStreamWriter( stream, "UTF-8" ) );
 
                 try
                 {
@@ -152,24 +161,37 @@ public class Outputs
     }
 
     /**
-     * Do nothing.
+     * Do nothing. Use this if you have all logic in filters and/or specifications
      *
      * @param <T>
      * @return
      */
-    public static <T, ReceiverThrowableType extends Throwable> Output<T,ReceiverThrowableType> noop()
+    public static <T, ReceiverThrowableType extends Throwable> Output<T, ReceiverThrowableType> noop()
+    {
+        return withReceiver( new Receiver<T, ReceiverThrowableType>()
+        {
+            public void receive( T item ) throws ReceiverThrowableType
+            {
+                // Do nothing
+            }
+        } );
+    }
+
+    /**
+     * Use given receiver as Output. Use this if there is no need to create a "transaction" for each transfer, and no need
+     * to do batch writes or similar.
+     *
+     * @param <T>
+     * @param receiver receiver for this Output
+     * @return
+     */
+    public static <T, ReceiverThrowableType extends Throwable> Output<T, ReceiverThrowableType> withReceiver( final Receiver<T, ReceiverThrowableType> receiver )
     {
         return new Output<T, ReceiverThrowableType>()
         {
             public <SenderThrowableType extends Throwable> void receiveFrom( final Sender<T, SenderThrowableType> sender ) throws ReceiverThrowableType, SenderThrowableType
             {
-                sender.sendTo( new Receiver<T, ReceiverThrowableType>()
-                {
-                    public void receive(T item ) throws ReceiverThrowableType
-                    {
-                        // Do nothing
-                    }
-                } );
+                sender.sendTo( receiver );
             }
         };
     }

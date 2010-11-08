@@ -14,13 +14,15 @@
 
 package org.qi4j.entitystore.map;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.io.Input;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entitystore.EntityStoreException;
+
+import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
 
 /**
  * JAVADOC
@@ -44,14 +46,7 @@ public interface MapEntityStore
     Reader get( EntityReference entityReference )
         throws EntityStoreException;
 
-    <ThrowableType extends Throwable> void visitMap( MapEntityStoreVisitor<ThrowableType> visitor )
-        throws ThrowableType;
-
-    interface MapEntityStoreVisitor<ThrowableType extends Throwable>
-    {
-        void visitEntity( Reader entityState )
-            throws ThrowableType;
-    }
+    Input<Reader, IOException> entityStates();
 
     void applyChanges( MapChanges changes )
         throws IOException;

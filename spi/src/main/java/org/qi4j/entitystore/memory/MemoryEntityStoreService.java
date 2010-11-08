@@ -19,10 +19,7 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.entitystore.map.JSONMapEntityStoreMixin;
 import org.qi4j.entitystore.map.StateStore;
-import org.qi4j.spi.entitystore.ConcurrentModificationCheckConcern;
-import org.qi4j.spi.entitystore.EntityStateVersions;
-import org.qi4j.spi.entitystore.EntityStore;
-import org.qi4j.spi.entitystore.StateChangeNotificationConcern;
+import org.qi4j.spi.entitystore.*;
 
 /**
  * In-memory EntityStore service. Useful for testing
@@ -31,6 +28,6 @@ import org.qi4j.spi.entitystore.StateChangeNotificationConcern;
 @Concerns( { StateChangeNotificationConcern.class, ConcurrentModificationCheckConcern.class } )
 @Mixins( { JSONMapEntityStoreMixin.class, MemoryMapEntityStoreMixin.class } )
 public interface MemoryEntityStoreService
-    extends EntityStore, EntityStateVersions, TestData, StateStore, ServiceComposite
+    extends EntityStore, EntityStateVersions, BackupRestore, StateStore, ServiceComposite
 {
 }
