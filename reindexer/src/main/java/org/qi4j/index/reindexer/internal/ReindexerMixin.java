@@ -18,7 +18,6 @@
 
 package org.qi4j.index.reindexer.internal;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.configuration.Configuration;
@@ -26,12 +25,14 @@ import org.qi4j.api.entity.Identity;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.io.Output;
+import org.qi4j.api.io.Receiver;
+import org.qi4j.api.io.Sender;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.index.reindexer.Reindexer;
 import org.qi4j.index.reindexer.ReindexerConfiguration;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entitystore.EntityStore;
-import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 import org.qi4j.spi.entitystore.StateChangeListener;
 import org.qi4j.spi.structure.ModuleSPI;
 
@@ -71,16 +72,16 @@ public class ReindexerMixin
         {
             loadValue = 50;
         }
-        new ReindexerVisitor( loadValue ).reindex( store );
+        new ReindexerOutput( loadValue ).reindex( store );
     }
 
-    private class ReindexerVisitor
-        implements EntityStore.EntityStateVisitor<RuntimeException>
+    private class ReindexerOutput
+        implements Output<EntityState, RuntimeException>, Receiver<EntityState, RuntimeException>
     {
         private int loadValue;
         private ArrayList<EntityState> states;
 
-        public ReindexerVisitor( Integer loadValue )
+        public ReindexerOutput( Integer loadValue )
         {
             this.loadValue = loadValue;
             states = new ArrayList<EntityState>();
@@ -89,16 +90,23 @@ public class ReindexerMixin
         public void reindex( EntityStore store )
         {
 
-            EntityStoreUnitOfWork uow = store.visitEntityStates( this, module );
+            store.entityStates( module ).transferTo( this);
             reindexState();
-            uow.applyChanges().commit(); // Apply any change caused by the reindex, such as migrated data
         }
 
-        public void visitEntityState( EntityState entityState )
+        public <SenderThrowableType extends Throwable> void receiveFrom( Sender<EntityState, SenderThrowableType> sender )
+            throws RuntimeException, SenderThrowableType
         {
-            // Mark dirty
-            entityState.setProperty( identityQN, entityState.identity().identity() );
-            states.add( entityState );
+            sender.sendTo( this );
+            reindexState();
+        }
+
+        public void receive( EntityState item )
+            throws RuntimeException
+        {
+            item.setProperty( identityQN, item.identity().identity() );
+            states.add( item );
+
             if( states.size() > loadValue )
             {
                 reindexState();

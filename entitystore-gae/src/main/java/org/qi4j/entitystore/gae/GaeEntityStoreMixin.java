@@ -25,10 +25,15 @@ import com.google.appengine.api.datastore.QueryResultIterable;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.entity.IdentityGenerator;
 import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.io.Input;
+import org.qi4j.api.io.Output;
+import org.qi4j.api.io.Receiver;
+import org.qi4j.api.io.Sender;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entitystore.EntityStore;
+import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 import org.qi4j.spi.structure.ModuleSPI;
 
@@ -65,21 +70,34 @@ public class GaeEntityStoreMixin
         return new GaeEntityStoreUnitOfWork( datastoreService, generateId(), module );
     }
 
-    public <ThrowableType extends Throwable> EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor<ThrowableType> visitor, ModuleSPI module )
-        throws ThrowableType
+    public Input<EntityState, EntityStoreException> entityStates( final ModuleSPI module )
     {
-        GaeEntityStoreUnitOfWork euow = new GaeEntityStoreUnitOfWork( datastoreService, generateId(), module );
-        Query query = new Query();
-        PreparedQuery q = datastoreService.prepare( query );
-        QueryResultIterable<Entity> iterable = q.asQueryResultIterable();
-        for( Entity entity : iterable )
+        return new Input<EntityState, EntityStoreException>()
         {
-            EntityState entityState = new GaeEntityState( euow, entity, module );
-            visitor.visitEntityState( entityState );
-        }
-        return euow;
-    }
+            public <ReceiverThrowableType extends Throwable> void transferTo( Output<EntityState, ReceiverThrowableType> output )
+                throws EntityStoreException, ReceiverThrowableType
+            {
+                final GaeEntityStoreUnitOfWork euow = new GaeEntityStoreUnitOfWork( datastoreService, generateId(), module );
+                Query query = new Query();
+                PreparedQuery q = datastoreService.prepare( query );
+                final QueryResultIterable<Entity> iterable = q.asQueryResultIterable();
 
+                output.receiveFrom( new Sender<EntityState, EntityStoreException>()
+                {
+                    public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<EntityState, ReceiverThrowableType> receiver )
+                        throws ReceiverThrowableType, EntityStoreException
+                    {
+                        for( Entity entity : iterable )
+                        {
+                            EntityState entityState = new GaeEntityState( euow, entity, module );
+                            receiver.receive( entityState );
+                        }
+                    }
+                });
+            }
+        };
+    }
+    
     private String generateId()
     {
         return uuid + counter++;

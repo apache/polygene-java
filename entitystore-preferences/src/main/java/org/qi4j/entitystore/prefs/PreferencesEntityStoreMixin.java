@@ -34,6 +34,10 @@ import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
+import org.qi4j.api.io.Input;
+import org.qi4j.api.io.Output;
+import org.qi4j.api.io.Receiver;
+import org.qi4j.api.io.Sender;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
@@ -149,30 +153,41 @@ public class PreferencesEntityStoreMixin
         return new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), module, usecase );
     }
 
-    public <ThrowableType extends Throwable> EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor<ThrowableType> visitor, ModuleSPI moduleInstance )
-        throws ThrowableType
+    public Input<EntityState, EntityStoreException> entityStates( final ModuleSPI module )
     {
-        UsecaseBuilder builder = UsecaseBuilder.buildUsecase( "qi4j.entitystore.preferences.visit" );
-        Usecase visitUsecase = builder.with( CacheOptions.NEVER ).newUsecase();
-        final DefaultEntityStoreUnitOfWork uow = new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(),
-                                                                                   moduleInstance, visitUsecase
-        );
-
-        try
+        return new Input<EntityState, EntityStoreException>()
         {
-            String[] identities = root.childrenNames();
-            for( String identity : identities )
+            public <ReceiverThrowableType extends Throwable> void transferTo( Output<EntityState, ReceiverThrowableType> output )
+                throws EntityStoreException, ReceiverThrowableType
             {
-                EntityState entityState = uow.getEntityState( EntityReference.parseEntityReference( identity ) );
-                visitor.visitEntityState( entityState );
-            }
-        }
-        catch( BackingStoreException e )
-        {
-            throw new EntityStoreException( e );
-        }
+                output.receiveFrom( new Sender<EntityState, EntityStoreException>()
+                {
+                    public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<EntityState, ReceiverThrowableType> receiver )
+                        throws ReceiverThrowableType, EntityStoreException
+                    {
+                        UsecaseBuilder builder = UsecaseBuilder.buildUsecase( "qi4j.entitystore.preferences.visit" );
+                        Usecase visitUsecase = builder.with( CacheOptions.NEVER ).newUsecase();
+                        final DefaultEntityStoreUnitOfWork uow = new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(),
+                                                                                                   module, visitUsecase
+                        );
 
-        return uow;
+                        try
+                        {
+                            String[] identities = root.childrenNames();
+                            for( String identity : identities )
+                            {
+                                EntityState entityState = uow.getEntityState( EntityReference.parseEntityReference( identity ) );
+                                receiver.receive( entityState );
+                            }
+                        }
+                        catch( BackingStoreException e )
+                        {
+                            throw new EntityStoreException( e );
+                        }
+                    }
+                });
+            }
+        };
     }
 
     public EntityState newEntityState( EntityStoreUnitOfWork unitOfWork,

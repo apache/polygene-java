@@ -14,11 +14,17 @@
 
 package org.qi4j.migration;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.StringReader;
 import org.hamcrest.CoreMatchers;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
+import org.qi4j.api.io.Input;
+import org.qi4j.api.io.Output;
+import org.qi4j.api.io.Receiver;
+import org.qi4j.api.io.Sender;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
@@ -26,10 +32,10 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.entitystore.map.MapEntityStore;
 import org.qi4j.entitystore.map.StateStore;
-import org.qi4j.entitystore.memory.TestData;
 import org.qi4j.migration.assembly.EntityMigrationOperation;
 import org.qi4j.migration.assembly.MigrationBuilder;
 import org.qi4j.migration.assembly.MigrationOperation;
+import org.qi4j.spi.entitystore.BackupRestore;
 import org.qi4j.spi.service.importer.NewObjectImporter;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
@@ -90,7 +96,7 @@ public class MigrationTest
     {
         // Set up version 1
         String id;
-        String data_v1;
+        StringInputOutput data_v1 = new StringInputOutput();
         {
             SingletonAssembler v1 = new SingletonAssembler()
             {
@@ -110,12 +116,15 @@ public class MigrationTest
             id = entity.identity().get();
             uow.complete();
 
-            TestData testData = (TestData) v1.module().serviceFinder().findService( TestData.class ).get();
-            data_v1 = testData.exportData();
+            BackupRestore backupRestore = (BackupRestore) v1.module()
+                .serviceFinder()
+                .findService( BackupRestore.class )
+                .get();
+            backupRestore.backup().transferTo(data_v1);
         }
 
         // Set up version 1.1
-        String data_v1_1;
+        StringInputOutput data_v1_1 = new StringInputOutput();
         {
             SingletonAssembler v1_1 = new SingletonAssembler()
             {
@@ -127,8 +136,8 @@ public class MigrationTest
                 }
             };
 
-            TestData testData = (TestData) v1_1.serviceFinder().findService( TestData.class ).get();
-            testData.importData( data_v1 );
+            BackupRestore testData = (BackupRestore) v1_1.serviceFinder().findService( BackupRestore.class ).get();
+            data_v1.transferTo( testData.restore());
 
             UnitOfWork uow = v1_1.unitOfWorkFactory().newUnitOfWork();
             TestEntity1_1 entity = uow.get( TestEntity1_1.class, id );
@@ -137,7 +146,7 @@ public class MigrationTest
             assertThat( "Association has been renamed", entity.newFooAssoc().get(), CoreMatchers.equalTo( entity ) );
             uow.complete();
 
-            data_v1_1 = testData.exportData();
+            testData.backup().transferTo( data_v1_1 );
         }
 
         // Set up version 2.0
@@ -152,11 +161,11 @@ public class MigrationTest
                 }
             };
 
-            TestData testData = (TestData) v2_0.serviceFinder().findService( TestData.class ).get();
+            BackupRestore testData = (BackupRestore) v2_0.serviceFinder().findService( BackupRestore.class ).get();
 
             // Test migration from 1.0 -> 2.0
             {
-                testData.importData( data_v1 );
+                data_v1.transferTo( testData.restore());
                 UnitOfWork uow = v2_0.unitOfWorkFactory().newUnitOfWork();
                 TestEntity2_0 entity = uow.get( TestEntity2_0.class, id );
                 assertThat( "Property has been created", entity.bar().get(), CoreMatchers.equalTo( "Some value" ) );
@@ -179,12 +188,12 @@ public class MigrationTest
                 }
             };
 
-            TestData testData = (TestData) v3_0.serviceFinder().findService( TestData.class ).get();
-            testData.importData( data_v1_1 );
+            BackupRestore testData = (BackupRestore) v3_0.serviceFinder().findService( BackupRestore.class ).get();
+            data_v1_1.transferTo( testData.restore() );
 
             // Test migration from 1.0 -> 3.0
             {
-                testData.importData( data_v1 );
+                data_v1.transferTo( testData.restore() );
                 UnitOfWork uow = v3_0.unitOfWorkFactory().newUnitOfWork();
                 org.qi4j.migration.moved.TestEntity2_0 entity = uow.get( org.qi4j.migration.moved.TestEntity2_0.class, id );
                 uow.complete();
@@ -230,6 +239,55 @@ public class MigrationTest
             throws IOException
         {
             System.out.println( msg );
+        }
+    }
+
+    private static class StringInputOutput
+        implements Output<String, IOException>, Input<String, IOException>
+    {
+        final StringBuilder builder = new StringBuilder();
+
+        public <SenderThrowableType extends Throwable> void receiveFrom
+            ( Sender<String, SenderThrowableType> sender )
+            throws IOException, SenderThrowableType
+        {
+            sender.sendTo( new Receiver<String, IOException>()
+            {
+                public void receive( String item )
+                    throws IOException
+                {
+                    builder.append( item ).append( "\n" );
+                }
+            } );
+        }
+
+        public <ReceiverThrowableType extends Throwable> void transferTo( Output<String, ReceiverThrowableType> output )
+            throws IOException, ReceiverThrowableType
+        {
+            output.receiveFrom( new Sender<String, IOException>()
+            {
+                public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<String, ReceiverThrowableType> receiver )
+                    throws ReceiverThrowableType, IOException
+                {
+                    BufferedReader reader = new BufferedReader(new StringReader(builder.toString()));
+                    String line;
+                    try
+                    {
+                        while ((line = reader.readLine()) != null)
+                            receiver.receive( line );
+                    }
+                    finally
+                    {
+                        reader.close();
+                    }
+                }
+            });
+        }
+
+        @Override
+        public String toString()
+        {
+            return builder.toString();
         }
     }
 }

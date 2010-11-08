@@ -17,7 +17,6 @@
 package org.qi4j.entitystore.qrm;
 
 import java.util.UUID;
-import org.qi4j.api.cache.CacheOptions;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.entity.IdentityGenerator;
@@ -25,15 +24,17 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
+import org.qi4j.api.io.Input;
+import org.qi4j.api.io.Output;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.api.usecase.Usecase;
-import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entitystore.DefaultEntityStoreUnitOfWork;
 import org.qi4j.spi.entitystore.EntityStore;
+import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.EntityStoreSPI;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 import org.qi4j.spi.entitystore.StateCommitter;
@@ -100,14 +101,16 @@ public class QrmEntityStoreServiceMixin
         return new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), module, usecase );
     }
 
-    public EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor visitor,
-                                                    ModuleSPI module )
+    public Input<EntityState, EntityStoreException> entityStates( ModuleSPI module )
     {
-        System.err.println( "visit entity states called." );
-
-        UsecaseBuilder builder = UsecaseBuilder.buildUsecase( "qi4j.entitystore.qrm.visit" );
-        Usecase visitUsecase = builder.with( CacheOptions.NEVER ).newUsecase();
-        return new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), module, visitUsecase );
+        return new Input<EntityState,  EntityStoreException>()
+        {
+            public <ReceiverThrowableType extends Throwable> void transferTo( Output<EntityState, ReceiverThrowableType> entityStateReceiverThrowableTypeOutput )
+                throws EntityStoreException, ReceiverThrowableType
+            {
+                // Not yet implemented
+            }
+        };
     }
 
     public EntityState getEntityState( EntityStoreUnitOfWork unitOfWork, EntityReference identity )

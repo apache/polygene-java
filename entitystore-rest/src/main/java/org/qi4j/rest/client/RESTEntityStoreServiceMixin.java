@@ -23,6 +23,8 @@ import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
+import org.qi4j.api.io.Input;
+import org.qi4j.api.io.Output;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.library.rdf.entity.EntityStateParser;
@@ -85,9 +87,16 @@ public class RESTEntityStoreServiceMixin
         return new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), module, usecase );
     }
 
-    public EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor visitor, ModuleSPI moduleInstance )
+    public Input<EntityState, EntityStoreException> entityStates( ModuleSPI module )
     {
-        return null;
+        return new Input<EntityState, EntityStoreException>()
+        {
+            public <ReceiverThrowableType extends Throwable> void transferTo( Output<EntityState, ReceiverThrowableType> entityStateReceiverThrowableTypeOutput )
+                throws EntityStoreException, ReceiverThrowableType
+            {
+                // Not yet implemented
+            }
+        };
     }
 
     public EntityState newEntityState( EntityStoreUnitOfWork unitOfWork,
@@ -204,12 +213,6 @@ public class RESTEntityStoreServiceMixin
             {
             }
         };
-    }
-
-    public EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor visitor )
-    {
-        // TODO Iterate over all EntityStates
-        return null;
     }
 
     private String newUnitOfWorkId()

@@ -16,9 +16,12 @@
  */
 package org.qi4j.entitystore.qrm;
 
+import org.qi4j.api.io.Input;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.usecase.Usecase;
+import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entitystore.EntityStore;
+import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 import org.qi4j.spi.structure.ModuleSPI;
 
@@ -34,9 +37,9 @@ public class QrmSqlEntityStore
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor visitor, ModuleSPI moduleInstance )
+    public Input<EntityState, EntityStoreException> entityStates( ModuleSPI module )
     {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     public void activate()

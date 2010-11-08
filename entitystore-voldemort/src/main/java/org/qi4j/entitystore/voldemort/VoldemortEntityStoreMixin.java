@@ -29,6 +29,8 @@ import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
+import org.qi4j.api.io.Input;
+import org.qi4j.api.io.Output;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.entitystore.map.MapEntityStore;
 import org.qi4j.spi.entity.EntityType;
@@ -344,8 +346,15 @@ public class VoldemortEntityStoreMixin
         }
     }
 
-    public void visitMap( MapEntityStoreVisitor visitor )
+    public Input<Reader, IOException> entityStates()
     {
-        // TODO: Can't get hold of all entities, unless storing all the keys separately, which is enormously expensive
+        return new Input<Reader, IOException>()
+        {
+            public <ReceiverThrowableType extends Throwable> void transferTo( Output<Reader, ReceiverThrowableType> output )
+                throws IOException, ReceiverThrowableType
+            {
+                // TODO: Can't get hold of all entities, unless storing all the keys separately, which is enormously expensive
+            }
+        };
     }
 }
