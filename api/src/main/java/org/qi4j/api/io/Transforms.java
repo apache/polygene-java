@@ -131,47 +131,6 @@ public class Transforms
     }
 
     /**
-     * Combine many Input into one single Input. When a transfer is initiated from it all items from all inputs will be transferred
-     * to the given Output.
-     *
-     * @param inputs
-     * @param <T>
-     * @param <SenderThrowableType>
-     * @return
-     */
-    public static <T,SenderThrowableType extends Throwable> Input<T, SenderThrowableType> combine(final Input<T, SenderThrowableType>... inputs)
-    {
-        return new Input<T, SenderThrowableType>()
-        {
-            public <ReceiverThrowableType extends Throwable> void transferTo( Output<T, ReceiverThrowableType> output ) throws SenderThrowableType, ReceiverThrowableType
-            {
-                output.receiveFrom( new Sender<T, SenderThrowableType>()
-                {
-                    public <ReceiverThrowableType extends Throwable> void sendTo( final Receiver<T, ReceiverThrowableType> receiver ) throws ReceiverThrowableType, SenderThrowableType
-                    {
-                        for (Input<T, SenderThrowableType> input : inputs)
-                        {
-                            input.transferTo(new Output<T, ReceiverThrowableType>()
-                            {
-                                public <SenderThrowableType extends Throwable> void receiveFrom( Sender<T, SenderThrowableType> sender ) throws ReceiverThrowableType, SenderThrowableType
-                                {
-                                    sender.sendTo( new Receiver<T, ReceiverThrowableType>()
-                                    {
-                                        public void receive( T item ) throws ReceiverThrowableType
-                                        {
-                                            receiver.receive( item );
-                                        }
-                                    });
-                                }
-                            });
-                        }
-                    }
-                });
-            }
-        };
-    }
-
-    /**
      * Generic specification interface.
      *
      * @param <T>

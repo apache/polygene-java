@@ -23,6 +23,8 @@ import java.io.*;
 import java.net.URL;
 import java.rmi.RemoteException;
 
+import static java.util.Arrays.asList;
+
 /**
  * Test Input/Output
  */
@@ -121,7 +123,7 @@ public class InputOutputTest
         tempFile.deleteOnExit();
         File sourceFile = new File( getClass().getResource( "/iotest.txt" ).getFile() );
         Transforms.Counter<String> stringCounter = new Transforms.Counter<String>();
-        Transforms.combine( Inputs.text( sourceFile ), Inputs.text( sourceFile ) ).transferTo(
+        Inputs.combine( asList(Inputs.text( sourceFile ), Inputs.text( sourceFile )) ).transferTo(
                 Transforms.map( stringCounter,
                         Transforms.map( new Transforms.Function<String, String>()
                         {
