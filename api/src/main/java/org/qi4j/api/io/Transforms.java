@@ -18,6 +18,8 @@ import org.slf4j.Logger;
 
 import java.nio.charset.Charset;
 import java.text.MessageFormat;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
 
 /**
  * Utility class for I/O transforms
@@ -33,7 +35,7 @@ public class Transforms
      * @param <ReceiverThrowableType>
      * @return
      */
-    public static <T,ReceiverThrowableType extends Throwable> Output<T, ReceiverThrowableType> filter( final Specification<T> specification, final Output<T, ReceiverThrowableType> output)
+    public static <T, ReceiverThrowableType extends Throwable> Output<T, ReceiverThrowableType> filter( final Specification<T> specification, final Output<T, ReceiverThrowableType> output )
     {
         return new Output<T, ReceiverThrowableType>()
         {
@@ -50,10 +52,10 @@ public class Transforms
                                 if (specification.test( item ))
                                     receiver.receive( item );
                             }
-                        });
+                        } );
 
                     }
-                });
+                } );
             }
         };
     }
@@ -68,7 +70,7 @@ public class Transforms
      * @param <ReceiverThrowableType>
      * @return
      */
-    public static <From,To,ReceiverThrowableType extends Throwable> Output<From, ReceiverThrowableType> map( final Function<From,To> function, final Output<To, ReceiverThrowableType> output)
+    public static <From, To, ReceiverThrowableType extends Throwable> Output<From, ReceiverThrowableType> map( final Function<From, To> function, final Output<To, ReceiverThrowableType> output )
     {
         return new Output<From, ReceiverThrowableType>()
         {
@@ -82,12 +84,12 @@ public class Transforms
                         {
                             public void receive( From item ) throws ReceiverThrowableType
                             {
-                                receiver.receive( function.map(item ));
+                                receiver.receive( function.map( item ) );
                             }
-                        });
+                        } );
 
                     }
-                });
+                } );
             }
         };
     }
@@ -103,7 +105,7 @@ public class Transforms
      * @param <ReceiverThrowableType>
      * @return
      */
-    public static <T,ReceiverThrowableType extends Throwable> Output<T, ReceiverThrowableType> filteredMap( final Specification<T> specification, final Function<T,T> function, final Output<T, ReceiverThrowableType> output)
+    public static <T, ReceiverThrowableType extends Throwable> Output<T, ReceiverThrowableType> filteredMap( final Specification<T> specification, final Function<T, T> function, final Output<T, ReceiverThrowableType> output )
     {
         return new Output<T, ReceiverThrowableType>()
         {
@@ -118,14 +120,100 @@ public class Transforms
                             public void receive( T item ) throws ReceiverThrowableType
                             {
                                 if (specification.test( item ))
-                                    receiver.receive( function.map(item ));
+                                    receiver.receive( function.map( item ) );
                                 else
                                     receiver.receive( item );
                             }
-                        });
+                        } );
 
                     }
-                });
+                } );
+            }
+        };
+    }
+
+    /**
+     * Wrapper for Outputs that uses a lock whenever a transfer is instantiated. Typically a read-lock would be used on the sending side and a write-lock
+     * would be used on the receiving side. Inputs can use this as well to create a wrapper on the send side when transferTo is invoked.
+     *
+     * @param lock                    the lock to be used for transfers
+     * @param output                  output to be wrapped
+     * @param <T>
+     * @param <ReceiverThrowableType>
+     * @return Output wrapper that uses the given lock during transfers.
+     */
+    public static <T, ReceiverThrowableType extends Throwable> Output<T, ReceiverThrowableType> lock( final Lock lock, final Output<T, ReceiverThrowableType> output )
+    {
+        return new Output<T, ReceiverThrowableType>()
+        {
+            public <SenderThrowableType extends Throwable> void receiveFrom( final Sender<T, SenderThrowableType> sender ) throws ReceiverThrowableType, SenderThrowableType
+            {
+                /**
+                 * Fix for this bug:
+                 * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6822370
+                 */
+                while (true)
+                {
+                    try
+                    {
+                        lock.tryLock( 1000, TimeUnit.MILLISECONDS );
+                        break;
+                    } catch (InterruptedException e)
+                    {
+                        // Try again
+                    }
+                }
+
+                try
+                {
+                    output.receiveFrom( sender );
+                } finally
+                {
+                    lock.unlock();
+                }
+            }
+        };
+    }
+
+    /**
+     * Wrapper for Outputs that uses a lock whenever a transfer is instantiated. Typically a read-lock would be used on the sending side and a write-lock
+     * would be used on the receiving side.
+     *
+     * @param lock                    the lock to be used for transfers
+     * @param input                  input to be wrapped
+     * @param <T>
+     * @param <SenderThrowableType>
+     * @return Input wrapper that uses the given lock during transfers.
+     */
+    public static <T, SenderThrowableType extends Throwable> Input<T, SenderThrowableType> lock( final Lock lock, final Input<T, SenderThrowableType> input )
+    {
+        return new Input<T, SenderThrowableType>()
+        {
+            public <ReceiverThrowableType extends Throwable> void transferTo( Output<T, ReceiverThrowableType> output ) throws SenderThrowableType, ReceiverThrowableType
+            {
+                /**
+                 * Fix for this bug:
+                 * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6822370
+                 */
+                while (true)
+                {
+                    try
+                    {
+                        lock.tryLock( 1000, TimeUnit.MILLISECONDS );
+                        break;
+                    } catch (InterruptedException e)
+                    {
+                        // Try again
+                    }
+                }
+
+                try
+                {
+                    input.transferTo( output );
+                } finally
+                {
+                    lock.unlock();
+                }
             }
         };
     }
@@ -139,14 +227,16 @@ public class Transforms
     {
         /**
          * Test whether an item matches the given specification
+         *
          * @param item the item to be tested
          * @return true if the item matches, false otherwise
          */
-        boolean test(T item);
+        boolean test( T item );
     }
 
     /**
      * Generic function interface to map from one type to another
+     *
      * @param <From>
      * @param <To>
      */
@@ -158,7 +248,7 @@ public class Transforms
          * @param from the input item
          * @return the mapped item
          */
-        To map(From from);
+        To map( From from );
     }
 
     /**
@@ -167,7 +257,7 @@ public class Transforms
      * @param <T>
      */
     public static class Counter<T>
-        implements Function<T,T>
+            implements Function<T, T>
     {
         private long count = 0;
 
@@ -188,7 +278,7 @@ public class Transforms
      * Convert strings to bytes using the given CharSet
      */
     public static class String2Bytes
-        implements Function<String,byte[]>
+            implements Function<String, byte[]>
     {
         private Charset charSet;
 
@@ -210,7 +300,7 @@ public class Transforms
      * @param <T>
      */
     public static class Log<T>
-        implements Function<T,T>
+            implements Function<T, T>
     {
         private Logger logger;
         private MessageFormat format;
@@ -218,12 +308,12 @@ public class Transforms
         public Log( Logger logger, String format )
         {
             this.logger = logger;
-            this.format = new MessageFormat(format);
+            this.format = new MessageFormat( format );
         }
 
         public T map( T item )
         {
-            logger.info( format.format( new String[]{item.toString()}));
+            logger.info( format.format( new String[]{item.toString()} ) );
             return item;
         }
     }

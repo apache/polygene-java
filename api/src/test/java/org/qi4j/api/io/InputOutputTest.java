@@ -22,8 +22,12 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.net.URL;
 import java.rmi.RemoteException;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static java.util.Arrays.asList;
+import static org.qi4j.api.io.Inputs.text;
+import static org.qi4j.api.io.Transforms.lock;
 
 /**
  * Test Input/Output
@@ -70,7 +74,7 @@ public class InputOutputTest
         URL source = getClass().getResource( "/iotest.txt" );
         File destination = File.createTempFile( "test",".txt" );
         destination.deleteOnExit();
-        Inputs.text( source ).transferTo( Outputs.text(destination) );
+        text( source ).transferTo( Outputs.text(destination) );
     }
 
     @Test
@@ -90,7 +94,7 @@ public class InputOutputTest
     {
         File source = new File( getClass().getResource( "/iotest.txt" ).getFile() );
 
-        Inputs.text( source ).transferTo( Transforms.map( new Transforms.Log<String>( LoggerFactory.getLogger( getClass() ), "Line: {0}"), Outputs.<String, RuntimeException>noop()));
+        text( source ).transferTo( Transforms.map( new Transforms.Log<String>( LoggerFactory.getLogger( getClass() ), "Line: {0}"), Outputs.<String, RuntimeException>noop()));
     }
 
     @Test
@@ -100,7 +104,7 @@ public class InputOutputTest
         tempFile.deleteOnExit();
         File sourceFile = new File( getClass().getResource( "/iotest.txt" ).getFile() );
         Transforms.Counter<String> stringCounter = new Transforms.Counter<String>();
-        Inputs.text( sourceFile ).transferTo(
+        text( sourceFile ).transferTo(
                 Transforms.map( stringCounter,
                         Transforms.map( new Transforms.Function<String, String>()
                         {
@@ -123,7 +127,7 @@ public class InputOutputTest
         tempFile.deleteOnExit();
         File sourceFile = new File( getClass().getResource( "/iotest.txt" ).getFile() );
         Transforms.Counter<String> stringCounter = new Transforms.Counter<String>();
-        Inputs.combine( asList(Inputs.text( sourceFile ), Inputs.text( sourceFile )) ).transferTo(
+        Inputs.combine( asList( text( sourceFile ), text( sourceFile )) ).transferTo(
                 Transforms.map( stringCounter,
                         Transforms.map( new Transforms.Function<String, String>()
                         {
@@ -143,7 +147,7 @@ public class InputOutputTest
     public void testInputOutputOutputException() throws IOException
     {
 
-        Inputs.text( new File(getClass().getResource( "/iotest.txt" ).getFile()) ).
+        text( new File(getClass().getResource( "/iotest.txt" ).getFile()) ).
                 transferTo( writerOutput( new Writer()
                 {
                     @Override
@@ -186,6 +190,19 @@ public class InputOutputTest
 
         input.transferTo( Transforms.map( new Transforms.Log<String>( LoggerFactory.getLogger( getClass() ), "Line: {0}"),
                 Outputs.systemOut() ));
+    }
+
+    @Test
+    public void testLock() throws IOException
+    {
+        Lock inputLock = new ReentrantLock();
+        Lock outputLock = new ReentrantLock();
+
+        URL source = getClass().getResource( "/iotest.txt" );
+        File destination = File.createTempFile( "test",".txt" );
+        destination.deleteOnExit();
+        lock( inputLock, text( source )).transferTo( lock( outputLock, Outputs.text(destination) ));
+
     }
 
     public Output<String, IOException> writerOutput( final Writer writer )
