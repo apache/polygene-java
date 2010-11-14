@@ -24,7 +24,7 @@ Import-Package: org.json, \
                 org.qi4j.spi.service, \
                 org.qi4j.spi.structure, \
                 org.qi4j.spi.uuid, \
-                org.slf4j
+                org.slf4j;version="[1.5,2.0)"
 
 Export-Package: org.qi4j.entitystore.prefs;version=${pom.version}, \
                 org.qi4j.entitystore.prefs.assembly;version=${pom.version}
