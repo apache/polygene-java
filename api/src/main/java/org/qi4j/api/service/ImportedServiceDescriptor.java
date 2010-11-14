@@ -21,7 +21,7 @@ import org.qi4j.api.common.Visibility;
  */
 public interface ImportedServiceDescriptor
 {
-    Class<? extends ServiceComposite> type();
+    Class type();
 
     Class<? extends ServiceImporter> serviceImporter();
 

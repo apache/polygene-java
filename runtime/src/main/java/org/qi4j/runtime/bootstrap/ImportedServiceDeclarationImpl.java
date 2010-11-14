@@ -72,7 +72,7 @@ public final class ImportedServiceDeclarationImpl
 
     void addServices( List<ImportedServiceModel> serviceModels )
     {
-        for( Class<? extends ServiceComposite> serviceType : serviceTypes )
+        for( Class serviceType : serviceTypes )
         {
             try
             {
