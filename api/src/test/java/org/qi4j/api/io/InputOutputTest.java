@@ -37,7 +37,7 @@ public class InputOutputTest
     @Test
     public void testCopyFileNoAPI() throws IOException
     {
-        File source = new File( getClass().getResource( "/iotest.txt" ).getFile() );
+        File source = getSourceFile();
         File destination = File.createTempFile( "test", ".txt" );
         destination.deleteOnExit();
 
@@ -80,7 +80,7 @@ public class InputOutputTest
     @Test
     public void testCopyFile() throws IOException
     {
-        File source = new File( getClass().getResource( "/iotest.txt" ).getFile() );
+        File source = getSourceFile();
         File tempFile = File.createTempFile( "test", ".txt" );
         tempFile.deleteOnExit();
 
@@ -92,7 +92,7 @@ public class InputOutputTest
     @Test
     public void testLog() throws IOException
     {
-        File source = new File( getClass().getResource( "/iotest.txt" ).getFile() );
+        File source = getSourceFile();
 
         text( source ).transferTo( Transforms.map( new Transforms.Log<String>( LoggerFactory.getLogger( getClass() ), "Line: {0}"), Outputs.<String, RuntimeException>noop()));
     }
@@ -102,7 +102,7 @@ public class InputOutputTest
     {
         File tempFile = File.createTempFile( "test", ".txt" );
         tempFile.deleteOnExit();
-        File sourceFile = new File( getClass().getResource( "/iotest.txt" ).getFile() );
+        File sourceFile = getSourceFile();
         Transforms.Counter<String> stringCounter = new Transforms.Counter<String>();
         text( sourceFile ).transferTo(
                 Transforms.map( stringCounter,
@@ -125,7 +125,7 @@ public class InputOutputTest
     {
         File tempFile = File.createTempFile( "test", ".txt" );
         tempFile.deleteOnExit();
-        File sourceFile = new File( getClass().getResource( "/iotest.txt" ).getFile() );
+        File sourceFile = getSourceFile();
         Transforms.Counter<String> stringCounter = new Transforms.Counter<String>();
         Inputs.combine( asList( text( sourceFile ), text( sourceFile )) ).transferTo(
                 Transforms.map( stringCounter,
@@ -240,5 +240,11 @@ public class InputOutputTest
                 }
             }
         };
+    }
+
+    private File getSourceFile()
+    {
+        String path = getClass().getResource( "/iotest.txt" ).getFile();
+        return new File( path.replaceAll( "%20", " " ) );
     }
 }
