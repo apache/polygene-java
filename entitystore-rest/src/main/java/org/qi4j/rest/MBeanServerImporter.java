@@ -45,4 +45,9 @@ public class MBeanServerImporter
     {
         return true;
     }
+
+    public boolean isAvailable( Object instance )
+    {
+        return true;
+    }
 }
