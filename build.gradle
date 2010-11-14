@@ -1,0 +1,258 @@
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+defaultTasks 'build'
+
+allprojects {
+
+
+  repositories {
+    mavenCentral()
+    mavenRepo name: 'ops4j-repo', urls: "http://repository.ops4j.org/maven2/"
+  }
+}
+
+ideaProject {
+  javaVersion = "1.6"
+  withXml { provider ->
+    def node = provider.asNode()
+    def vcsConfig = node.component.find { it.'@name' == 'VcsDirectoryMappings' }
+    vcsConfig.mapping[ 0 ].'@vcs' = 'Git'
+  }
+}
+
+ideaModule {
+}
+
+// build a map of the dependency artifacts to use.  Allows centralized definition of the version of artifacts to
+// use.  In that respect it serves a role similar to <dependencyManagement> in Maven
+slf4jVersion = '1.5.8'
+asmVersion = '3.3'
+libraries = [
+        // Ant
+        ant: 'org.apache.ant:ant:1.8.1',
+
+        // ASM
+        asm: 'asm:asm:' + asmVersion,
+        asm_util: 'asm:asm-util:' + asmVersion,
+        asm_commons: 'asm:asm-commons:' + asmVersion,
+
+        // logging
+        slf4j_api: 'org.slf4j:slf4j-api:' + slf4jVersion,
+        slf4j_simple: 'org.slf4j:slf4j-simple:' + slf4jVersion,
+        jcl_slf4j: 'org.slf4j:jcl-over-slf4j:' + slf4jVersion,
+        jcl_api: 'commons-logging:commons-logging-api:99.0-does-not-exist',  //ensure it is never used.
+        jcl: 'commons-logging:commons-logging:99.0-does-not-exist',  // ensure it is never used.
+
+        // testing
+        junit: 'junit:junit:4.8.1',
+        easymock: 'org.easymock:easymock:3.0',
+        testng: 'org.testng:testng:5.8:jdk15',
+]
+
+
+subprojects { subProject ->
+  apply plugin: 'idea'
+  apply plugin: 'eclipse'
+
+
+  // minimize changes, at least for now (gradle uses 'build' by default)..
+  buildDir = "target"
+
+
+  group = 'org.qi4j.core'
+  gradle.taskGraph.whenReady { graph ->
+
+    if( !graph.hasTask('release') )
+    {
+      if( graph.hasTask('snapshot') )
+      version = System.currentTimeMillis();
+      else
+        version = 'dev'
+    }
+    else if( !project.hasProperty('version') )
+    {
+      throw new GradleException('Please specify a version when doing a release')
+    }
+  }
+  apply plugin: 'java'
+  apply plugin: 'maven' // for install task as well as deploy dependencies
+//      apply plugin: org.hibernate.build.gradle.upload.UploadManager
+
+  configurations {
+    provided {
+      // todo : need to make sure these are non-exported
+      description = 'Non-exported compile-time dependencies.'
+    }
+    deployerJars {
+      description = 'Jars needed for doing deployment to repo'
+    }
+  }
+
+  // appropriately inject the common dependencies into each sub-project
+  dependencies {
+    compile(libraries.slf4j_api)
+    testCompile(libraries.junit)
+    testRuntime(libraries.slf4j_simple)
+    testRuntime(libraries.jcl_slf4j)
+    deployerJars "org.apache.maven.wagon:wagon-http:1.0-beta-6"
+  }
+
+  sourceSets {
+    main {
+      compileClasspath += configurations.provided
+    }
+  }
+
+  manifest.mainAttributes(
+          provider: 'gradle',
+          'Implementation-Url': 'http://www.qi4j.org',
+          'Implementation-Version': version,
+          'Implementation-Vendor': 'Qi4j Community',
+          'Implementation-Vendor-Id': 'org.qi4j'
+  )
+
+  test {
+    maxHeapSize = "1024m"
+  }
+
+  processTestResources.doLast({
+    copy {
+      from(sourceSets.test.java.srcDirs) {
+        include '**/*.properties'
+        include '**/*.xml'
+      }
+      into sourceSets.test.classesDir
+    }
+  })
+
+  assemble.doLast({ install })
+  uploadArchives.dependsOn install
+
+  targetCompatibility = "1.6"
+  sourceCompatibility = "1.6"
+
+  ideaModule {
+    // treat our "provided" configuration dependencies as "Compile" scope dependencies in IntelliJ
+    scopes.COMPILE.plus.add(configurations.provided)
+    // Use explicitly separate compilation output directories for Gradle and IntelliJ
+    File baseDirectory = new File(subProject.buildDir, "idea/classes")
+    outputDir = new File(baseDirectory, "main")
+    testOutputDir = new File(baseDirectory, "test")
+    whenConfigured { module ->
+      module.dependencies*.exported = true
+    }
+  }
+  eclipseClasspath {
+    plusConfigurations.add(configurations.provided)
+  }
+
+  // elements used to customize the generated POM used during upload
+  def pomConfig = {
+    url 'http://www.qi4j.org'
+    organization {
+      name 'Qi4j Community'
+      url 'http://www.qi4j.org'
+    }
+    issueManagement {
+      system 'jira'
+      url 'http://issues.ops4j.org/browse/QI'
+    }
+    scm {
+      url "http://github.com/Qi4j/qi4j-core"
+      connection "scm:git:http://github.com/Qi4j/qi4j-core.git"
+      developerConnection "scm:git:git@github.com:Qi4j/qi4j-core.git"
+    }
+    licenses {
+      license {
+        name 'Apache License version 2.0'
+        url 'http://www.apache.org/licenses/LICENSE-2.0'
+        comments 'This build file is licensed under LGPL from Hibernate Core project.'
+        distribution 'repo'
+      }
+    }
+    developers {
+      developer {
+        id 'niclas@hedhman.org'
+        name 'Niclas Hedhman'
+        email 'niclas@codedragons.com'
+        url 'http://www.codedragons.com'
+        organization 'CodeDragons'
+        organizationUrl 'http://www.codedragons.com</organizationUrl'
+        timezone 'UTC+8'
+      }
+      developer {
+        id 'rickardoberg'
+        name 'Rickard …berg'
+        email 'rickard.oberg@jayway.se'
+        url 'http://www.jayway.se'
+        organization 'Jayway'
+        organizationUrl 'http://www.jayway.se'
+        timezone 'UTC+1'
+      }
+      developer {
+        id 'edward.yakop@gmail.com'
+        name 'Edward Yakop'
+        email 'efy@codedragons.com'
+        url 'http://www.codedragons.com'
+        organization 'CodeDragons'
+        organizationUrl 'http://www.codedragons.com'
+        timezone 'UTC+8'
+      }
+      developer {
+        id 'adreghiciu@gmail.com'
+        name 'Alin Dreghiciu'
+        email 'adreghiciu@codedragons.com'
+        url 'http://www.codedragons.com'
+        organization 'CodeDragons'
+        organizationUrl 'http://www.codedragons.com'
+        timezone 'UTC+2'
+      }
+      developer {
+        id 'mesirii'
+        name 'Michael Hunger'
+        email 'qi4j@jexp.de'
+        timezone 'CET'
+      }
+    }
+  }
+
+  configure(install.repositories.mavenInstaller) {
+    pom.project pomConfig
+  }
+
+  uploadArchives {
+    repositories.mavenDeployer {
+      name = 'jbossDeployer'
+      configuration = configurations.deployerJars
+      pom.project pomConfig
+      repository(url: "https://repository.ops4j.org/maven2/")
+      snapshotRepository(url: "https://repository.ops4j.org/mvn-snapshots/")
+    }
+  }
+
+  task sourcesJar(type: Jar, dependsOn: compileJava) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+  }
+
+  artifacts {
+    archives sourcesJar
+  }
+
+  uploadArchives.dependsOn sourcesJar
+
+}
+
+dependsOnChildren()
+
+// This is a task that generates the gradlew scripts, allowing users to run gradle without having gradle installed
+// on their system.
+// This task should be run by "build master" and the resulting ouput committed to source control.  Its outputs include:
+//  1) /gradlew which is the *NIX shell script for executing builds
+//  2) /gradlew.bat which is the windows bat script for for executing builds
+//  3) /wrapper which is a directory named by the "jarPath" config which contains other needed files.
+task wrapper(type: Wrapper) {
+  gradleVersion = '0.9-rc-1'
+  jarPath = 'wrapper'
+}

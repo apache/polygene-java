@@ -1,0 +1,9 @@
+
+apply plugin: 'java'
+
+
+dependencies {
+    compile( project( ':api' ) )
+    compile( project( ':spi' ) )
+  testCompile( libraries.junit )
+}

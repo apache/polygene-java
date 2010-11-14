@@ -1,0 +1,18 @@
+apply plugin: 'java'
+
+
+dependencies {
+  compile(project(':api'))
+  compile(project(':spi'))
+  compile(project(':bootstrap'))
+  compile(project(':testsupport'))
+  compile(libraries.slf4j_api)
+  compile(libraries.asm)
+  compile(libraries.asm_util)
+  compile(libraries.asm_commons)
+
+  testRuntime(libraries.slf4j_simple)
+  testCompile(libraries.junit)
+  testCompile(libraries.easymock)
+
+}

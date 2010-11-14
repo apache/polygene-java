@@ -1,0 +1,10 @@
+apply plugin: 'java'
+
+
+dependencies {
+  compile(project(':api'))
+  compile(project(':spi'))
+  compile(project(':bootstrap'))
+  compile(libraries.junit)
+
+}
