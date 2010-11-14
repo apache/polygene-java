@@ -1,6 +1,0 @@
-
-Qi4j is now hosted on GitHub.
-
-This repository is now stale and out of date. Last update was on 14th Nov 2010.
-
-https://github.com/organizations/Qi4j
