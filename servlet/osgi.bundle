@@ -1,0 +1,21 @@
+
+Bundle-Activator:
+
+Private-Package:
+
+Import-Package: javax.servlet;version="[2.3,3.0)", \
+                javax.servlet.http;version="[2.3,3.0)", \
+                org.qi4j.api, \
+                org.qi4j.api.common, \
+                org.qi4j.api.structure, \
+                org.qi4j.bootstrap, \
+                org.qi4j.library.servlet, \
+                org.qi4j.library.servletlifecycle, \
+                org.qi4j.spi, \
+                org.qi4j.spi.structure, \
+                org.slf4j;version="[1.5,2.0]"
+
+Export-Package: org.qi4j.library.servlet.lifecycle, \
+                org.qi4j.library.servlet
+
+Ignore-Package: com_cenqua_clover

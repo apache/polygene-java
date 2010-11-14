@@ -6,7 +6,7 @@ Export-Package: org.qi4j.library.rdf;version="${pom.version}", \
 
 Import-Package: org.qi4j.*, \
                 org.json, \
-                org.slf4j;version="1.3", \
+                org.slf4j;version="[1.3,2.0)", \
                 org.w3c.dom, \
                 org.xml.sax, \
                 org.xml.sax.helpers, \

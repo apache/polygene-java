@@ -8,8 +8,9 @@ Export-Package:  org.qi4j.library.http;version="${pom.version}"
 
 Import-Package: javax.servlet, \
                 javax.servlet.http, \
-                org.mortbay.jetty, \
-                org.mortbay.jetty.servlet, \
+                org.mortbay.jetty;version="5.0,8.0)", \
+                org.mortbay.jetty.servlet;version="5.0,8.0)", \
+                org.slf4j;version="[1.5,2.0)",\
                 org.qi4j.api.common, \
                 org.qi4j.api.configuration, \
                 org.qi4j.api.injection.scope, \
