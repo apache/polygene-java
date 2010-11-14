@@ -32,4 +32,6 @@ public interface ServiceImporter
         throws ServiceImporterException;
 
     boolean isActive( Object instance );
+
+    boolean isAvailable( Object instance );
 }

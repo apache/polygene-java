@@ -14,18 +14,17 @@
 
 package org.qi4j.runtime.service;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-
 import org.qi4j.api.service.Activatable;
-import org.qi4j.api.service.ServiceException;
 import org.qi4j.api.service.ServiceImporterException;
 import org.qi4j.api.service.ServiceReference;
+import org.qi4j.api.service.ServiceUnavailableException;
 import org.qi4j.api.structure.Module;
 import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.service.ServiceDescriptor;
 import org.slf4j.LoggerFactory;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 
 /**
  * Implementation of ServiceReference. This manages the actual instance of the service
@@ -71,6 +70,11 @@ public final class ServiceReferenceInstance<T>
         return instance != null;
     }
 
+    public boolean isAvailable()
+    {
+        return getInstance().isAvailable();
+    }
+
     public Module module()
     {
         return module;
@@ -96,7 +100,7 @@ public final class ServiceReferenceInstance<T>
         }
     }
 
-    private CompositeInstance getInstance()
+    private ServiceInstance getInstance()
             throws ServiceImporterException
     {
         // DCL that works with Java 1.5 volatile semantics
@@ -116,7 +120,7 @@ public final class ServiceReferenceInstance<T>
                     catch (Exception e)
                     {
                         instance = null;
-                        throw new ServiceException( "Could not activate service " + serviceModel.identity(), e );
+                        throw new ServiceUnavailableException( "Could not activate service " + serviceModel.identity(), e );
                     }
                 }
             }
@@ -162,8 +166,15 @@ public final class ServiceReferenceInstance<T>
                 }
             }
 
-            CompositeInstance instance = getInstance();
+            ServiceInstance instance = getInstance();
 
+/*
+            if (!instance.isAvailable())
+            {
+                throw new ServiceUnavailableException("Service is currently not available");
+            }
+
+*/
             return instance.invoke( object, method, objects );
         }
 

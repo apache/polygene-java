@@ -17,10 +17,15 @@
  */
 package org.qi4j.api.service;
 
-public class ServiceException
+public class ServiceUnavailableException
     extends RuntimeException
 {
-    public ServiceException( String message, Throwable cause )
+    public ServiceUnavailableException( String message)
+    {
+        super( message );
+    }
+
+    public ServiceUnavailableException( String message, Throwable cause )
     {
         super( message, cause );
     }

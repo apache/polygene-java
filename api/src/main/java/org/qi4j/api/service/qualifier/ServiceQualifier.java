@@ -14,8 +14,9 @@
 
 package org.qi4j.api.service.qualifier;
 
-import java.util.Iterator;
 import org.qi4j.api.service.ServiceReference;
+
+import java.util.Iterator;
 
 /**
  * This class helps you select a particular service
@@ -94,6 +95,18 @@ public abstract class ServiceQualifier
             public boolean qualifies( ServiceReference<?> service )
             {
                 return service.isActive();
+            }
+        };
+    }
+
+    public static ServiceQualifier whereAvailable()
+    {
+        return new ServiceQualifier()
+        {
+            @Override
+            public boolean qualifies( ServiceReference<?> service )
+            {
+                return service.isAvailable();
             }
         };
     }

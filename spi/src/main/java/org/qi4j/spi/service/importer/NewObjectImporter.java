@@ -39,4 +39,9 @@ public final class NewObjectImporter
     {
         return true;
     }
+
+    public boolean isAvailable( Object instance )
+    {
+        return true;
+    }
 }

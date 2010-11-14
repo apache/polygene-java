@@ -62,4 +62,9 @@ public final class InstanceImporter
     {
         return true;
     }
+
+    public boolean isAvailable( Object instance )
+    {
+        return true;
+    }
 }

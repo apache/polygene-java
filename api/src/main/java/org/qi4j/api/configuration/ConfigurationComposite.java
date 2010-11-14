@@ -18,7 +18,10 @@ import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.Queryable;
 
 /**
- * All Configuration composites should
+ * Services that want to be configurable should have a ConfigurationComposite that contains all the settings.
+ * They are treated as EntityComposites, and are therefore stored in an EntityStore. There will be one instance
+ * per service instance that uses each ConfigurationComposite, and the identity of the entity is the same as that
+ * of the service.
  */
 @Queryable( false )
 public interface ConfigurationComposite

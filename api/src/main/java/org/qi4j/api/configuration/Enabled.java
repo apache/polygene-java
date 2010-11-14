@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2010, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,21 +12,17 @@
  *
  */
 
-package org.qi4j.api.service;
+package org.qi4j.api.configuration;
+
+import org.qi4j.api.common.UseDefaults;
+import org.qi4j.api.property.Property;
 
 /**
- * From a ServiceReference you can access and modify metadata about a service.
- * You can also access the actual service through get(), that can then be invoked.
+ * Common configuration for setting whether a service is enabled or not. A disabled service
+ * is not considered to be available. Let your own ConfigurationComposite extend this interface to use.
  */
-public interface ServiceReference<T>
+public interface Enabled
 {
-    String identity();
-
-    <T> T metaInfo( Class<T> infoType );
-
-    T get();
-
-    boolean isActive();
-
-    boolean isAvailable();
+    @UseDefaults
+    Property<Boolean> enabled();
 }

@@ -46,4 +46,9 @@ public final class ImportedServiceInstance<T>
     {
         return importer.isActive( instance );
     }
+
+    public boolean isAvailable()
+    {
+        return importer.isAvailable( instance );
+    }
 }
