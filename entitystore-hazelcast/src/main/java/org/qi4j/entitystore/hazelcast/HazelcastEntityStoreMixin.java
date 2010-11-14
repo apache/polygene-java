@@ -10,6 +10,10 @@ import java.util.Map;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.io.Input;
+import org.qi4j.api.io.Output;
+import org.qi4j.api.io.Receiver;
+import org.qi4j.api.io.Sender;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.entitystore.map.MapEntityStore;
 import org.qi4j.spi.entity.EntityType;
@@ -95,12 +99,25 @@ public class HazelcastEntityStoreMixin
         } );
     }
 
-    public <ThrowableType extends Throwable> void visitMap( MapEntityStoreVisitor<ThrowableType> visitor )
-        throws ThrowableType
+    public Input<Reader, IOException> entityStates()
     {
-        for( Map.Entry<String, String> eachEntry : stringMap.entrySet() )
+        return new Input<Reader, IOException>()
         {
-            visitor.visitEntity( new StringReader( eachEntry.getValue() ) );
-        }
+            public <ReceiverThrowableType extends Throwable> void transferTo( Output<Reader, ReceiverThrowableType> output )
+                throws IOException, ReceiverThrowableType
+            {
+                output.receiveFrom( new Sender<Reader, IOException>()
+                {
+                    public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<Reader, ReceiverThrowableType> receiver )
+                        throws ReceiverThrowableType, IOException
+                    {
+                        for( Map.Entry<String, String> eachEntry : stringMap.entrySet() )
+                        {
+                            receiver.receive( new StringReader( eachEntry.getValue() ) );
+                        }
+                    }
+                });
+            }
+        };
     }
 }

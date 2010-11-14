@@ -27,31 +27,32 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.ArrayList;
 import java.util.concurrent.locks.ReadWriteLock;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
+import org.qi4j.api.io.Input;
+import org.qi4j.api.io.Output;
+import org.qi4j.api.io.Receiver;
+import org.qi4j.api.io.Sender;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.entitystore.map.MapEntityStore;
 import org.qi4j.spi.entity.EntityType;
+import org.qi4j.spi.entitystore.BackupRestore;
 import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entitystore.EntityStoreException;
-import org.qi4j.spi.entitystore.ExportSupport;
-import org.qi4j.spi.entitystore.ImportSupport;
 import org.qi4j.spi.service.ServiceDescriptor;
 
 /**
  * JDBM implementation of SerializationStore
  */
 public class FileEntityStoreMixin
-    implements Activatable, MapEntityStore, ExportSupport, ImportSupport
+    implements Activatable, MapEntityStore, BackupRestore
 {
     @This
     private ReadWriteLock lock;
@@ -257,62 +258,78 @@ public class FileEntityStoreMixin
         }
     }
 
-    public <ThrowableType extends Throwable> void visitMap( MapEntityStoreVisitor<ThrowableType> visitor )
-        throws ThrowableType
+    public Input<String, IOException> backup()
     {
-        try
+        return new Input<String, IOException>()
         {
-            for( File dataFile : dataDirectory.listFiles() )
+            public <ReceiverThrowableType extends Throwable> void transferTo( Output<String, ReceiverThrowableType> output )
+                throws IOException, ReceiverThrowableType
             {
-                byte[] serializedState = fetch( dataFile );
-                visitor.visitEntity( new StringReader( new String( serializedState, "UTF-8" ) ) );
+                output.receiveFrom( new Sender<String, IOException>()
+                {
+                    public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<String, ReceiverThrowableType> receiver )
+                        throws ReceiverThrowableType, IOException
+                    {
+                        for( File sliceDirectory : dataDirectory.listFiles() )
+                        {
+                            for( File file : sliceDirectory.listFiles() )
+                            {
+                                byte[] stateArray = fetch( file );
+                                receiver.receive( new String( stateArray, "UTF-8" ) );
+                            }
+                        }
+                    }
+                });
             }
-        }
-        catch( IOException e )
-        {
-            throw new EntityStoreException( e );
-        }
+        };
     }
 
-    public void exportTo( PrintWriter out )
-        throws IOException
+    public Output<String, IOException> restore()
     {
-        for( File dataFile : dataDirectory.listFiles() )
+        return new Output<String, IOException>()
         {
-            byte[] stateArray = fetch( dataFile );
-            out.println( new String( stateArray, "UTF-8" ) );
-        }
+            public <SenderThrowableType extends Throwable> void receiveFrom( Sender<String, SenderThrowableType> sender )
+                throws IOException, SenderThrowableType
+            {
+                sender.sendTo( new Receiver<String, IOException>()
+                {
+                    public void receive( String item )
+                        throws IOException
+                    {
+                        String id = item.substring( "{\"identity\":\"".length() );
+                        id = id.substring( 0, id.indexOf( '"' ) );
+                        byte[] stateArray = item.getBytes( "UTF-8" );
+                        store( getDataFile( id ), stateArray );
+                    }
+                });
+            }
+        };
     }
 
-    public ImportResult importFrom( Reader in )
-        throws IOException
+    public Input<Reader, IOException> entityStates()
     {
-        long success = 0;
-        ArrayList<String> errors = new ArrayList<String>();
-        BufferedReader reader = new BufferedReader( in );
-        String object;
-        while( ( object = reader.readLine() ) != null )
+        return new Input<Reader, IOException>()
         {
-            try
+            public <ReceiverThrowableType extends Throwable> void transferTo( Output<Reader, ReceiverThrowableType> output )
+                throws IOException, ReceiverThrowableType
             {
-                String id = object.substring( "{\"identity\":\"".length() );
-                id = id.substring( 0, id.indexOf( '"' ) );
-                byte[] stateArray = object.getBytes( "UTF-8" );
-                store( getDataFile( id ), stateArray );
-                success++;
+                output.receiveFrom( new Sender<Reader, IOException>()
+                {
+                    public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<Reader, ReceiverThrowableType> receiver )
+                        throws ReceiverThrowableType, IOException
+                    {
+                        for( File sliceDirectory : dataDirectory.listFiles() )
+                        {
+                            for( File file : sliceDirectory.listFiles() )
+                            {
+                                byte[] serializedState = fetch( file );
+                                receiver.receive( new StringReader( new String( serializedState, "UTF-8" ) ) );
+                            }
+                        }
+                    }
+                });
             }
-            catch( Exception e )
-            {
-                StringWriter sw = new StringWriter();
-                PrintWriter pw = new PrintWriter( sw, true );
-                e.printStackTrace( pw );
-                pw.flush();
-                errors.add( sw.getBuffer().toString() );
-                pw.close();
-            }
-        }
-        String[] reports = new String[errors.size()];
-        return new FileImportResult( success, errors.toArray( reports ) );
+        };
     }
 
     private File getDataFile( String identity )
@@ -406,28 +423,6 @@ public class FileEntityStoreMixin
                     // ignore??
                 }
             }
-        }
-    }
-
-    private static class FileImportResult implements ImportResult
-    {
-        private final long successes;
-        private final String[] reports;
-
-        public FileImportResult( long successes, String[] reports )
-        {
-            this.reports = reports;
-            this.successes = successes;
-        }
-
-        public long numberOfSuccessfulImports()
-        {
-            return successes;
-        }
-
-        public String[] failureReports()
-        {
-            return reports;
         }
     }
 }

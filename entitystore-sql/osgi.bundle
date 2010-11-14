@@ -12,6 +12,7 @@ Import-Package: javax.sql, \
                 org.qi4j.api.configuration, \
                 org.qi4j.api.entity, \
                 org.qi4j.api.injection.scope, \
+                org.qi4j.api.io, \
                 org.qi4j.api.mixin, \
                 org.qi4j.api.property, \
                 org.qi4j.api.service, \

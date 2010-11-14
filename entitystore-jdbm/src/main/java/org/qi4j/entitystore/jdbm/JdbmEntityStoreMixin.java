@@ -16,18 +16,12 @@
  */
 package org.qi4j.entitystore.jdbm;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 import java.io.Writer;
-import java.util.ArrayList;
 import java.util.Properties;
 import java.util.concurrent.locks.ReadWriteLock;
 import jdbm.RecordManager;
@@ -46,24 +40,26 @@ import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
+import org.qi4j.api.io.Input;
+import org.qi4j.api.io.Output;
+import org.qi4j.api.io.Receiver;
+import org.qi4j.api.io.Sender;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.entitystore.map.MapEntityStore;
+import org.qi4j.library.locking.ReadLock;
+import org.qi4j.library.locking.WriteLock;
 import org.qi4j.spi.entity.EntityType;
+import org.qi4j.spi.entitystore.BackupRestore;
 import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entitystore.EntityStoreException;
-import org.qi4j.spi.entitystore.ExportSupport;
-import org.qi4j.spi.entitystore.ImportSupport;
 import org.qi4j.spi.service.ServiceDescriptor;
 
 /**
  * JDBM implementation of SerializationStore
  */
 public class JdbmEntityStoreMixin
-    implements Activatable, MapEntityStore, ExportSupport, ImportSupport
+    implements Activatable, MapEntityStore, BackupRestore
 {
-    @This
-    private ReadWriteLock lock;
-
     @This
     private Configuration<JdbmConfiguration> config;
 
@@ -74,23 +70,16 @@ public class JdbmEntityStoreMixin
     private BTree index;
     private Serializer serializer;
 
+    @This
+    ReadWriteLock lock;
+
     // Activatable implementation
 
     @SuppressWarnings( { "ResultOfMethodCallIgnored" } )
     public void activate()
         throws Exception
     {
-        String pathname = config.configuration().file().get();
-        if( pathname == null )
-        {
-            pathname = System.getProperty( "user.dir" ) + "/qi4j/jdbmstore.data";
-        }
-        File dataFile = new File( pathname );
-        File directory = dataFile.getAbsoluteFile().getParentFile();
-        directory.mkdirs();
-        String name = dataFile.getAbsolutePath();
-        Properties properties = getProperties( config.configuration() );
-        initialize( name, properties );
+        initialize();
     }
 
     public void passivate()
@@ -99,6 +88,7 @@ public class JdbmEntityStoreMixin
         recordManager.close();
     }
 
+    @ReadLock
     public Reader get( EntityReference entityReference )
         throws EntityStoreException
     {
@@ -126,6 +116,7 @@ public class JdbmEntityStoreMixin
         }
     }
 
+    @WriteLock
     public void applyChanges( MapChanges changes )
         throws IOException
     {
@@ -208,135 +199,206 @@ public class JdbmEntityStoreMixin
         }
     }
 
-    public <ThrowableType extends Throwable> void visitMap( MapEntityStoreVisitor<ThrowableType> visitor )
-        throws ThrowableType
+    public Input<Reader, IOException> entityStates()
     {
-        try
+        return new Input<Reader, IOException>()
         {
-            final TupleBrowser browser = index.browse();
-            final Tuple tuple = new Tuple();
-
-            while( browser.getNext( tuple ) )
+            public <ReceiverThrowableType extends Throwable> void transferTo( Output<Reader, ReceiverThrowableType> output )
+                throws IOException, ReceiverThrowableType
             {
-                String id = new String( (byte[]) tuple.getKey(), "UTF-8" );
+                lock.readLock().lock();
 
-                Long stateIndex = getStateIndex( id );
-
-                if( stateIndex == null )
+                try
                 {
-                    throw new EntityNotFoundException( new EntityReference( id ) );
+                    output.receiveFrom( new Sender<Reader, IOException>()
+                    {
+                        public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<Reader, ReceiverThrowableType> receiver )
+                            throws ReceiverThrowableType, IOException
+                        {
+                            final TupleBrowser browser = index.browse();
+                            final Tuple tuple = new Tuple();
+
+                            while( browser.getNext( tuple ) )
+                            {
+                                String id = new String( (byte[]) tuple.getKey(), "UTF-8" );
+
+                                Long stateIndex = getStateIndex( id );
+
+                                if( stateIndex == null )
+                                {
+                                    continue;
+                                } // Skip this one
+
+                                byte[] serializedState = (byte[]) recordManager.fetch( stateIndex, serializer );
+
+                                receiver.receive( new StringReader( new String( serializedState, "UTF-8" ) ) );
+                            }
+                        }
+                    } );
                 }
-
-                byte[] serializedState = (byte[]) recordManager.fetch( stateIndex, serializer );
-
-                visitor.visitEntity( new StringReader( new String( serializedState, "UTF-8" ) ) );
-            }
-        }
-        catch( IOException e )
-        {
-            throw new EntityStoreException( e );
-        }
-    }
-
-    public void exportTo( PrintWriter out )
-        throws IOException
-    {
-        TupleBrowser browser = index.browse();
-        Tuple tuple = new Tuple();
-        while( browser.getNext( tuple ) )
-        {
-            Long stateIndex = (Long) tuple.getValue();
-            byte[] bytes = (byte[]) recordManager.fetch( stateIndex, serializer );
-            String value = new String( bytes, "UTF-8" );
-            out.write( value );
-            out.write( '\n' );
-        }
-    }
-
-    public ImportResult importFrom( Reader in )
-        throws IOException
-    {
-        int successful = 0;
-        int counter = 0;
-        final ArrayList<Exception> exceptions = new ArrayList<Exception>();
-        BufferedReader reader = new BufferedReader( in );
-        String object;
-        while( ( object = reader.readLine() ) != null )
-        {
-            try
-            {
-                if( ( counter++ % 1000 ) == 0 )
+                finally
                 {
-                    recordManager.commit();
+                    lock.readLock().unlock();
                 }
-                String id = object.substring( "{\"identity\":\"".length() );
-                id = id.substring( 0, id.indexOf( '"' ) );
-                Long stateIndex = getStateIndex( id );
-                if( stateIndex == null )
-                {
-                    // Insert
-                    byte[] stateArray = object.getBytes( "UTF-8" );
-                    stateIndex = recordManager.insert( stateArray, serializer );
-                    index.insert( id.getBytes( "UTF-8" ), stateIndex, false );
-                }
-                else
-                {
-                    byte[] stateArray = object.getBytes( "UTF-8" );
-                    recordManager.update( stateIndex, stateArray, serializer );
-                }
-                successful++;
-            }
-            catch( IOException ex )
-            {
-                exceptions.add( ex );
-            }
-            catch( RuntimeException ex )
-            {
-                exceptions.add( ex );
-            }
-        }
-        recordManager.commit();
-        return createReport( successful, exceptions );
-    }
-
-    private ImportResult createReport( int successful, final ArrayList<Exception> exceptions )
-        throws UnsupportedEncodingException
-    {
-        final String[] failures = new String[exceptions.size()];
-        int i = 0;
-        for( Exception e : exceptions )
-        {
-            failures[ i++ ] = formatException( e );
-        }
-        final int successes = successful;
-        return new ImportResult()
-        {
-            public long numberOfSuccessfulImports()
-            {
-                return successes;
-            }
-
-            public String[] failureReports()
-            {
-                return exceptions.toArray( failures );
             }
         };
     }
 
-    private String formatException( Exception e )
-        throws UnsupportedEncodingException
+    public Input<String, IOException> backup()
     {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream( 1000 );
-        PrintStream ps = new PrintStream( baos );
-        e.printStackTrace( ps );
-        ps.flush();
-        String result = baos.toString( "UTF-8" );
-        ps.close();
-        return result;
+        return new Input<String, IOException>()
+        {
+            public <ReceiverThrowableType extends Throwable> void transferTo( Output<String, ReceiverThrowableType> output )
+                throws IOException, ReceiverThrowableType
+            {
+                lock.readLock().lock();
+
+                try
+                {
+                    output.receiveFrom( new Sender<String, IOException>()
+                    {
+                        public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<String, ReceiverThrowableType> receiver )
+                            throws ReceiverThrowableType, IOException
+                        {
+                            final TupleBrowser browser = index.browse();
+                            final Tuple tuple = new Tuple();
+
+                            while( browser.getNext( tuple ) )
+                            {
+                                String id = new String( (byte[]) tuple.getKey(), "UTF-8" );
+
+                                Long stateIndex = getStateIndex( id );
+
+                                if( stateIndex == null )
+                                {
+                                    continue;
+                                } // Skip this one
+
+                                byte[] serializedState = (byte[]) recordManager.fetch( stateIndex, serializer );
+
+                                receiver.receive( new String( serializedState, "UTF-8" ) );
+                            }
+                        }
+                    } );
+                }
+                finally
+                {
+                    lock.readLock().unlock();
+                }
+            }
+        };
     }
 
-    private Properties getProperties( JdbmConfiguration config )
+    public Output<String, IOException> restore()
     {
+        return new Output<String, IOException>()
+        {
+            public <SenderThrowableType extends Throwable> void receiveFrom( Sender<String, SenderThrowableType> sender )
+                throws IOException, SenderThrowableType
+            {
+                // Create temporary store
+                File tempDatabase = File.createTempFile( "restorejdbm", ".data" );
+                final RecordManager recordManager = RecordManagerFactory.createRecordManager( tempDatabase.getAbsolutePath(), new Properties() );
+                ByteArrayComparator comparator = new ByteArrayComparator();
+                final BTree index = BTree.createInstance( recordManager, comparator, serializer, new LongSerializer(), 16 );
+                recordManager.setNamedObject( "index", index.getRecid() );
+                recordManager.commit();
+
+                try
+                {
+                    sender.sendTo( new Receiver<String, IOException>()
+                    {
+                        int counter = 0;
+
+                        public void receive( String item )
+                            throws IOException
+                        {
+                            // Commit one batch
+                            if( ( counter++ % 1000 ) == 0 )
+                            {
+                                recordManager.commit();
+                            }
+
+                            String id = item.substring( "{\"identity\":\"".length() );
+                            id = id.substring( 0, id.indexOf( '"' ) );
+
+                            // Insert
+                            byte[] stateArray = item.getBytes( "UTF-8" );
+                            long stateIndex = recordManager.insert( stateArray, serializer );
+                            index.insert( id.getBytes( "UTF-8" ), stateIndex, false );
+                        }
+                    } );
+                }
+                catch( IOException e )
+                {
+                    recordManager.close();
+                    tempDatabase.delete();
+                    throw e;
+                }
+                catch( Throwable senderThrowableType )
+                {
+                    recordManager.close();
+                    tempDatabase.delete();
+                    throw (SenderThrowableType) senderThrowableType;
+                }
+
+                // Import went ok - continue
+                recordManager.commit();
+
+                lock.writeLock().lock();
+                try
+                {
+                    // Replace old database with new
+                    JdbmEntityStoreMixin.this.recordManager.close();
+
+                    boolean deletedOldDatabase = true;
+                    File dbFile = new File( getDatabaseName() + ".db" );
+                    File lgFile = new File( getDatabaseName() + ".lg" );
+                    deletedOldDatabase &= dbFile.delete();
+                    deletedOldDatabase &= lgFile.delete();
+                    if( !deletedOldDatabase )
+                    {
+                        throw new IOException( "Could not remove old database" );
+                    }
+
+                    boolean renamedTempDatabase = true;
+                    renamedTempDatabase &= new File( tempDatabase.getAbsolutePath() + ".db" ).renameTo( dbFile );
+                    renamedTempDatabase &= new File( tempDatabase.getAbsolutePath() + ".lg" ).renameTo( lgFile );
+
+                    if( !renamedTempDatabase )
+                    {
+                        throw new IOException( "Could not replace database with temp database" );
+                    }
+
+                    // Start up again
+                    initialize();
+                }
+                finally
+                {
+                    lock.writeLock().unlock();
+                }
+            }
+        };
+    }
+
+    private String getDatabaseName()
+    {
+        String pathname = config.configuration().file().get();
+        if( pathname == null )
+        {
+            pathname = System.getProperty( "user.dir" ) + "/qi4j/jdbmstore.data";
+        }
+        File dataFile = new File( pathname );
+        File directory = dataFile.getAbsoluteFile().getParentFile();
+        directory.mkdirs();
+        String name = dataFile.getAbsolutePath();
+        return name;
+    }
+
+    private Properties getProperties()
+    {
+        JdbmConfiguration config = this.config.configuration();
+
         Properties properties = new Properties();
 
         properties.put( RecordManagerOptions.AUTO_COMMIT, config.autoCommit().get().toString() );
@@ -351,9 +413,12 @@ public class JdbmEntityStoreMixin
         return (Long) index.find( identity.getBytes( "UTF-8" ) );
     }
 
-    private void initialize( String name, Properties properties )
+    private void initialize()
         throws IOException
     {
+        String name = getDatabaseName();
+        Properties properties = getProperties();
+
         recordManager = RecordManagerFactory.createRecordManager( name, properties );
         serializer = new ByteArraySerializer();
         recordManager = new CacheRecordManager( recordManager, new MRU( 1000 ) );

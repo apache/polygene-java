@@ -11,12 +11,17 @@ import org.neo4j.util.index.LuceneIndexService;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.io.Input;
+import org.qi4j.api.io.Output;
+import org.qi4j.api.io.Receiver;
+import org.qi4j.api.io.Sender;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entitystore.EntityStore;
+import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.EntityStoreSPI;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 import org.qi4j.spi.entitystore.StateCommitter;
@@ -59,25 +64,44 @@ public class NeoEntityStoreMixin
         return new NeoEntityStoreUnitOfWork( neo, indexService, newUnitOfWorkId(), module );
     }
 
-    public <ThrowableType extends Throwable> EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor<ThrowableType> visitor, ModuleSPI module )
-        throws ThrowableType
+    public Input<EntityState, EntityStoreException> entityStates( final ModuleSPI module )
     {
-        NeoEntityStoreUnitOfWork uow = new NeoEntityStoreUnitOfWork( neo, indexService, newUnitOfWorkId(), module );
-
-        Iterable<Relationship> relationships =
-            neo.getReferenceNode().getRelationships( RelTypes.ENTITY_TYPE_REF, Direction.OUTGOING );
-
-        for( Relationship entityTypeRel : relationships )
+        return new Input<EntityState, EntityStoreException>()
         {
-            Node entityType = entityTypeRel.getEndNode();
-            for( Relationship entityRel : entityType.getRelationships( RelTypes.IS_OF_TYPE, Direction.INCOMING ) )
+            public <ReceiverThrowableType extends Throwable> void transferTo( Output<EntityState, ReceiverThrowableType> output )
+                throws EntityStoreException, ReceiverThrowableType
             {
-                Node entityNode = entityRel.getStartNode();
-                NeoEntityState entityState = new NeoEntityState( uow, entityNode, EntityStatus.LOADED );
-                visitor.visitEntityState( entityState );
+                output.receiveFrom( new Sender<EntityState, EntityStoreException>()
+                {
+                    public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<EntityState, ReceiverThrowableType> receiver )
+                        throws ReceiverThrowableType, EntityStoreException
+                    {
+                        NeoEntityStoreUnitOfWork uow = new NeoEntityStoreUnitOfWork( neo, indexService, newUnitOfWorkId(), module );
+
+                        try
+                        {
+                            Iterable<Relationship> relationships =
+                                neo.getReferenceNode().getRelationships( RelTypes.ENTITY_TYPE_REF, Direction.OUTGOING );
+
+                            for( Relationship entityTypeRel : relationships )
+                            {
+                                Node entityType = entityTypeRel.getEndNode();
+                                for( Relationship entityRel : entityType.getRelationships( RelTypes.IS_OF_TYPE, Direction.INCOMING ) )
+                                {
+                                    Node entityNode = entityRel.getStartNode();
+                                    NeoEntityState entityState = new NeoEntityState( uow, entityNode, EntityStatus.LOADED );
+                                    receiver.receive( entityState );
+                                }
+                            }
+                        }
+                        finally
+                        {
+                            uow.discard();
+                        }
+                    }
+                });
             }
-        }
-        return uow;
+        };
     }
 
     public StateCommitter applyChanges( EntityStoreUnitOfWork unitofwork, Iterable<EntityState> state,

@@ -10,6 +10,7 @@ Import-Package: org.json, \
                 org.qi4j.api.concern, \
                 org.qi4j.api.entity, \
                 org.qi4j.api.injection.scope, \
+                org.qi4j.api.io, \
                 org.qi4j.api.mixin, \
                 org.qi4j.api.service, \
                 org.qi4j.api.structure, \

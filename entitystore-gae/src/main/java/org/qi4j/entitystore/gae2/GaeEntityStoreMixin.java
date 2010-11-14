@@ -40,6 +40,10 @@ import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
+import org.qi4j.api.io.Input;
+import org.qi4j.api.io.Output;
+import org.qi4j.api.io.Receiver;
+import org.qi4j.api.io.Sender;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.entitystore.map.MapEntityStore;
 import org.qi4j.spi.entity.EntityType;
@@ -142,17 +146,31 @@ public class GaeEntityStoreMixin
         }
     }
 
-    public <ThrowableType extends Throwable> void visitMap( MapEntityStoreVisitor<ThrowableType> visitor )
-        throws ThrowableType
+    public Input<Reader, IOException> entityStates()
     {
-        Query query = new Query();
-        PreparedQuery preparedQuery = datastore.prepare( query );
-        QueryResultIterable<Entity> iterable = preparedQuery.asQueryResultIterable();
-        for( Entity entity : iterable )
+        return new Input<Reader, IOException>()
         {
-            Text serializedState = (Text) entity.getProperty( "value" );
-            visitor.visitEntity( new StringReader( serializedState.getValue() ) );
-        }
+            public <ReceiverThrowableType extends Throwable> void transferTo( Output<Reader, ReceiverThrowableType> output )
+                throws IOException, ReceiverThrowableType
+            {
+                Query query = new Query();
+                PreparedQuery preparedQuery = datastore.prepare( query );
+                final QueryResultIterable<Entity> iterable = preparedQuery.asQueryResultIterable();
+
+                output.receiveFrom( new Sender<Reader, IOException>()
+                {
+                    public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<Reader, ReceiverThrowableType> receiver )
+                        throws ReceiverThrowableType, IOException
+                    {
+                        for( Entity entity : iterable )
+                        {
+                            Text serializedState = (Text) entity.getProperty( "value" );
+                            receiver.receive( new StringReader( serializedState.getValue() ) );
+                        }
+                    }
+                });
+            }
+        };
     }
 
     private class GaeMapChanger

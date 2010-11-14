@@ -39,6 +39,10 @@ import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.io.Input;
+import org.qi4j.api.io.Output;
+import org.qi4j.api.io.Receiver;
+import org.qi4j.api.io.Sender;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
@@ -236,40 +240,51 @@ public class SQLEntityStoreMixin
         return new DefaultEntityStoreUnitOfWork( entityStoreSPI, newUnitOfWorkId(), module, usecase );
     }
 
-    public <ThrowableType extends Throwable> EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor<ThrowableType> visitor,
-                                                                                      ModuleSPI module )
-        throws ThrowableType
+    public Input<EntityState, EntityStoreException> entityStates( final ModuleSPI module )
     {
-        Connection connection = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        UsecaseBuilder builder = UsecaseBuilder.buildUsecase( "qi4j.entitystore.sql.visit" );
-        Usecase usecase = builder.with( CacheOptions.NEVER ).newUsecase();
-        final DefaultEntityStoreUnitOfWork uow = new DefaultEntityStoreUnitOfWork( entityStoreSPI, newUnitOfWorkId(),
-                                                                                   module, usecase );
-        try
+        return new Input<EntityState, EntityStoreException>()
         {
-            connection = database.getConnection();
-            ps = database.prepareGetAllEntitiesStatement( connection );
-            database.populateGetAllEntitiesStatement( ps );
-            rs = ps.executeQuery();
-            while( rs.next() )
+            public <ReceiverThrowableType extends Throwable> void transferTo( Output<EntityState, ReceiverThrowableType> output )
+                throws EntityStoreException, ReceiverThrowableType
             {
-                visitor.visitEntityState( readEntityState( uow, database.getEntityValue( rs ).getReader() ) );
-            }
-        }
-        catch( SQLException sqle )
-        {
-            throw new EntityStoreException( sqle );
-        }
-        finally
-        {
-            SQLUtil.closeQuietly( rs );
-            SQLUtil.closeQuietly( ps );
-            SQLUtil.closeQuietly( connection );
-        }
+                output.receiveFrom( new Sender<EntityState, EntityStoreException>()
+                {
+                    public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<EntityState, ReceiverThrowableType> receiver )
+                        throws ReceiverThrowableType, EntityStoreException
+                    {
+                        Connection connection = null;
+                        PreparedStatement ps = null;
+                        ResultSet rs = null;
+                        UsecaseBuilder builder = UsecaseBuilder.buildUsecase( "qi4j.entitystore.sql.visit" );
+                        Usecase usecase = builder.with( CacheOptions.NEVER ).newUsecase();
+                        final DefaultEntityStoreUnitOfWork uow = new DefaultEntityStoreUnitOfWork( entityStoreSPI, newUnitOfWorkId(),
+                                                                                                   module, usecase );
+                        try
+                        {
+                            connection = database.getConnection();
+                            ps = database.prepareGetAllEntitiesStatement( connection );
+                            database.populateGetAllEntitiesStatement( ps );
+                            rs = ps.executeQuery();
+                            while( rs.next() )
+                            {
+                                receiver.receive( readEntityState( uow, database.getEntityValue( rs ).getReader() ) );
+                            }
+                        }
+                        catch( SQLException sqle )
+                        {
+                            throw new EntityStoreException( sqle );
+                        }
+                        finally
+                        {
+                            SQLUtil.closeQuietly( rs );
+                            SQLUtil.closeQuietly( ps );
+                            SQLUtil.closeQuietly( connection );
+                        }
 
-        return uow;
+                    }
+                });
+            }
+        };
     }
 
     @SuppressWarnings( "ValueOfIncrementOrDecrementUsed" )

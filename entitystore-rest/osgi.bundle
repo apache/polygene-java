@@ -43,6 +43,7 @@ Import-Package: \
                 org.qi4j.api.entity, \
                 org.qi4j.api.entity.association, \
                 org.qi4j.api.injection.scope, \
+                org.qi4j.api.io, \
                 org.qi4j.api.mixin, \
                 org.qi4j.api.object, \
                 org.qi4j.api.property, \

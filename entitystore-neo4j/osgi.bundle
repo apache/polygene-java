@@ -20,6 +20,7 @@ Import-Package: javax.transaction,\
                 org.qi4j.api.entity.association, \
                 org.qi4j.api.mixin, \
                 org.qi4j.api.injection.scope, \
+                org.qi4j.api.io, \
                 org.qi4j.api.property, \
                 org.qi4j.api.service, \
                 org.qi4j.api.structure, \
