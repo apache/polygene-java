@@ -27,6 +27,7 @@
         <module>cache</module>
         <module>constraints</module>
         <module>http</module>
+        <module>jmx</module>
         <module>locking</module>
         <module>logging</module>
         <module>rdf</module>

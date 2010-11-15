@@ -1,0 +1,21 @@
+Private-Package:
+
+Export-Package:  org.qi4j.library.jmx;version="${pom.version}"
+
+Import-Package: javax.management, \
+                org.qi4j.api.common, \
+                org.qi4j.api.configuration, \
+                org.qi4j.api.entity, \
+                org.qi4j.api.entity.association, \
+                org.qi4j.api.injection.scope, \
+                org.qi4j.api.mixin, \
+                org.qi4j.api.property, \
+                org.qi4j.api.service, \
+                org.qi4j.api.structure, \
+                org.qi4j.api.unitofwork, \
+                org.qi4j.bootstrap, \
+                org.qi4j.spi, \
+                org.qi4j.spi.entity, \
+                org.qi4j.spi.property, \
+                org.qi4j.spi.service, \
+                org.qi4j.spi.structure

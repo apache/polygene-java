@@ -52,4 +52,9 @@ public class SpringImporter
     {
         return true;
     }
+
+    public boolean isAvailable( Object instance )
+    {
+        return true;
+    }
 }
