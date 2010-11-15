@@ -26,7 +26,7 @@ import org.qi4j.api.structure.Module;
  * service importer.
  */
 public final class ImportedServiceReferenceInstance<T>
-        implements ServiceReference<T>
+    implements ServiceReference<T>
 {
     private volatile ImportedServiceInstance<T> serviceInstance;
     private T instance;
@@ -60,7 +60,22 @@ public final class ImportedServiceReferenceInstance<T>
         {
             getInstance();
             return serviceInstance.isActive();
-        } catch (ServiceImporterException e)
+        }
+        catch( ServiceImporterException e )
+        {
+            return false;
+        }
+    }
+
+    public boolean isAvailable()
+    {
+        try
+        {
+            getInstance();
+
+            return serviceInstance.isAvailable();
+        }
+        catch( ServiceImporterException e )
         {
             return false;
         }
@@ -72,12 +87,12 @@ public final class ImportedServiceReferenceInstance<T>
     }
 
     private T getInstance()
-            throws ServiceImporterException
+        throws ServiceImporterException
     {
         // DCL that works with Java 1.5 volatile semantics
         if( serviceInstance == null )
         {
-            synchronized (this)
+            synchronized( this )
             {
                 if( serviceInstance == null )
                 {
