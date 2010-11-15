@@ -30,14 +30,13 @@ import org.qi4j.test.EntityTestAssembler;
 
 /**
  * Start a simple server so that it can be accessed through JMX remotely.
+ * Run this with -Dcom.sun.management.jmxremote so that the JVM starts the MBeanServer
  */
 public class JMXTest
 {
     public static void main( String[] args )
         throws InterruptedException
     {
-        System.setProperty( "com.sun.management.jmxremote", "true" );
-
         SingletonAssembler assembler = new SingletonAssembler()
         {
             public void assemble( ModuleAssembly module )
