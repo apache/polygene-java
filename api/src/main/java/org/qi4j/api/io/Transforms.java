@@ -199,13 +199,17 @@ public class Transforms
                  * Fix for this bug:
                  * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6822370
                  */
-                while (true)
+                while(true)
                 {
                     try
                     {
-                        lock.tryLock( 1000, TimeUnit.MILLISECONDS );
-                        break;
-                    } catch (InterruptedException e)
+                        while( !(lock.tryLock() || lock.tryLock( 1000, TimeUnit.MILLISECONDS )) )
+                        {
+                            // On timeout, try again
+                        }
+                        break; // Finally got a lock
+                    }
+                    catch( InterruptedException e )
                     {
                         // Try again
                     }
