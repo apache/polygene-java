@@ -35,6 +35,8 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.entitystore.StateChangeListener;
 import org.qi4j.spi.structure.ModuleSPI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ReindexerMixin
     implements Reindexer
@@ -63,6 +65,8 @@ public class ReindexerMixin
     @Structure
     private ModuleSPI module;
 
+    private Logger logger = LoggerFactory.getLogger( Reindexer.class );
+
     public void reindex()
     {
         configuration.refresh();
@@ -78,6 +82,7 @@ public class ReindexerMixin
     private class ReindexerOutput
         implements Output<EntityState, RuntimeException>, Receiver<EntityState, RuntimeException>
     {
+        private int count;
         private int loadValue;
         private ArrayList<EntityState> states;
 
@@ -104,10 +109,11 @@ public class ReindexerMixin
         public void receive( EntityState item )
             throws RuntimeException
         {
+            count++;
             item.setProperty( identityQN, item.identity().identity() );
             states.add( item );
 
-            if( states.size() > loadValue )
+            if( states.size() >= loadValue )
             {
                 reindexState();
             }
@@ -120,6 +126,7 @@ public class ReindexerMixin
                 listener.get().notifyChanges( states );
             }
             states.clear();
+            logger.debug( "Reindexed "+count+" entities" );
         }
     }
 }

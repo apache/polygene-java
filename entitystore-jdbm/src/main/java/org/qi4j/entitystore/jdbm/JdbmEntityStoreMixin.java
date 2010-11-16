@@ -206,7 +206,7 @@ public class JdbmEntityStoreMixin
             public <ReceiverThrowableType extends Throwable> void transferTo( Output<Reader, ReceiverThrowableType> output )
                 throws IOException, ReceiverThrowableType
             {
-                lock.readLock().lock();
+                lock.writeLock().lock();
 
                 try
                 {
@@ -238,7 +238,7 @@ public class JdbmEntityStoreMixin
                 }
                 finally
                 {
-                    lock.readLock().unlock();
+                    lock.writeLock().unlock();
                 }
             }
         };

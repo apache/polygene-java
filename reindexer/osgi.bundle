@@ -16,7 +16,8 @@ Import-Package: org.qi4j.api.common, \
                 org.qi4j.spi.entity, \
                 org.qi4j.spi.entitystore, \
                 org.qi4j.spi.service, \
-                org.qi4j.spi.structure
+                org.qi4j.spi.structure, \
+                org.slf4j
 
 
 Export-Package: org.qi4j.index.reindexer;version=${pom.version}, \
