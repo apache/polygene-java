@@ -3,6 +3,7 @@ package org.qi4j.library.locking;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import org.qi4j.api.common.AppliesTo;
 import org.qi4j.api.concern.ConcernOf;
@@ -23,33 +24,47 @@ public class ReadLockConcern
     public Object invoke( Object o, Method method, Object[] objects )
         throws Throwable
     {
-        lock();
+        Lock readLock = lock.readLock();
+        lock( readLock );
         try
         {
             return next.invoke( o, method, objects );
         }
         finally
         {
-            lock.readLock().unlock();
+            try
+            {
+                lock.readLock().unlock();
+            }
+            catch( Exception e )
+            {
+                e.printStackTrace();
+            }
         }
     }
 
     /**
      * Fix for this bug:
      * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6822370
+     *
+     * @param readLock
      */
-    protected void lock()
+    protected void lock( Lock readLock )
     {
-       while (true)
-       {
-          try
-          {
-             lock.readLock().tryLock( 1000, TimeUnit.MILLISECONDS );
-             break;
-          } catch (InterruptedException e)
-          {
-             // Try again
-          }
-       }
+        while(true)
+        {
+            try
+            {
+                while( !readLock.tryLock( 1000, TimeUnit.MILLISECONDS ) )
+                {
+                    // On timeout, try again
+                }
+                return; // Finally got a lock
+            }
+            catch( InterruptedException e )
+            {
+                // Try again
+            }
+        }
     }
 }
