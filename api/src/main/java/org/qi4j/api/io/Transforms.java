@@ -160,12 +160,20 @@ public class Transforms
                         {
                             // On timeout, try again
                         }
-                        return; // Finally got a lock
+                        break; // Finally got a lock
                     }
                     catch( InterruptedException e )
                     {
                         // Try again
                     }
+                }
+
+                try
+                {
+                    output.receiveFrom( sender );
+                } finally
+                {
+                    lock.unlock();
                 }
             }
         };
