@@ -54,7 +54,7 @@ public class WriteLockConcern
         {
             try
             {
-                while( !lock.tryLock( 1000, TimeUnit.MILLISECONDS ) )
+                while( !(lock.tryLock() || lock.tryLock( 1000, TimeUnit.MILLISECONDS )) )
                 {
                     // On timeout, try again
                 }

@@ -47,15 +47,15 @@ public class ReadLockConcern
      * Fix for this bug:
      * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6822370
      *
-     * @param readLock
+     * @param lock
      */
-    protected void lock( Lock readLock )
+    protected void lock( Lock lock )
     {
         while(true)
         {
             try
             {
-                while( !readLock.tryLock( 1000, TimeUnit.MILLISECONDS ) )
+                while( !(lock.tryLock() || lock.tryLock( 1000, TimeUnit.MILLISECONDS )) )
                 {
                     // On timeout, try again
                 }
