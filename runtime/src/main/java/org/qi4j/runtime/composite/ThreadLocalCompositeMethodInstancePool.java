@@ -18,7 +18,7 @@ package org.qi4j.runtime.composite;
  * Method instance pool that keeps a linked list per thread.
  */
 public final class ThreadLocalCompositeMethodInstancePool
-    implements CompositeMethodInstancePool
+    implements InstancePool<CompositeMethodInstance>
 {
     private ThreadLocal<CompositeMethodInstance> first = new ThreadLocal<CompositeMethodInstance>();
 

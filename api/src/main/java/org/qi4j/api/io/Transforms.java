@@ -14,6 +14,8 @@
 
 package org.qi4j.api.io;
 
+import org.qi4j.api.util.Function;
+import org.qi4j.api.util.Specification;
 import org.slf4j.Logger;
 
 import java.nio.charset.Charset;
@@ -227,39 +229,6 @@ public class Transforms
     }
 
     /**
-     * Generic specification interface.
-     *
-     * @param <T>
-     */
-    public interface Specification<T>
-    {
-        /**
-         * Test whether an item matches the given specification
-         *
-         * @param item the item to be tested
-         * @return true if the item matches, false otherwise
-         */
-        boolean test( T item );
-    }
-
-    /**
-     * Generic function interface to map from one type to another
-     *
-     * @param <From>
-     * @param <To>
-     */
-    public interface Function<From, To>
-    {
-        /**
-         * Map a single item from one type to another
-         *
-         * @param from the input item
-         * @return the mapped item
-         */
-        To map( From from );
-    }
-
-    /**
      * Count the number of items in the transfer.
      *
      * @param <T>
@@ -323,6 +292,36 @@ public class Transforms
         {
             logger.info( format.format( new String[]{item.toString()} ) );
             return item;
+        }
+    }
+
+    /**
+     * Track progress of transfer by emitting a log message in given intervals
+     *
+     * @param <T> type of items to be transferred
+     */
+    public static class ProgressLog<T>
+        implements Function<T, T>
+    {
+        private Counter<T> counter;
+        private Log<String> log;
+        private final long interval;
+
+        public ProgressLog(Logger logger, String format, long interval)
+        {
+            this.interval = interval;
+            log = new Log<String>(logger, format);
+            counter = new Counter<T>();
+        }
+
+        public T map( T t )
+        {
+            counter.map(t);
+
+            if (counter.count % interval == 0)
+                log.map( counter.count+"" );
+
+            return t;
         }
     }
 }

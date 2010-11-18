@@ -16,6 +16,7 @@ package org.qi4j.runtime.composite;
 
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.injection.InjectionScope;
+import org.qi4j.api.util.Annotations;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectedParametersModel;
@@ -24,7 +25,6 @@ import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.spi.composite.AbstractCompositeDescriptor;
-import org.qi4j.spi.util.Annotations;
 
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
@@ -35,7 +35,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import static org.qi4j.spi.util.Annotations.*;
+import static org.qi4j.api.util.Iterables.*;
 
 /**
  * JAVADOC
@@ -61,7 +61,7 @@ public final class ConstructorsModel
             {
                 Constructor injectionConstructor = injectionClass.getConstructor( constructor.getParameterTypes() );
                 ConstructorModel constructorModel = newConstructorModel( this.fragmentClass, constructor, injectionConstructor );
-                if( constructorModel != null )
+                if (constructorModel != null)
                 {
                     constructorModels.add( constructorModel );
                 }
@@ -88,8 +88,8 @@ public final class ConstructorsModel
         Annotation[][] parameterAnnotations = injectedConstructor.getParameterAnnotations();
         for (Type type : injectedConstructor.getGenericParameterTypes())
         {
-            final Annotation injectionAnnotation = first( hasAnnotation( InjectionScope.class), parameterAnnotations[idx] );
-            if( injectionAnnotation == null )
+            final Annotation injectionAnnotation = first( filter( Annotations.hasAnnotation( InjectionScope.class ), iterable( parameterAnnotations[idx] ) ) );
+            if (injectionAnnotation == null)
             {
                 return null; // invalid constructor parameter
             }
@@ -104,9 +104,9 @@ public final class ConstructorsModel
     }
 
     public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
-        throws ThrowableType
+            throws ThrowableType
     {
-        if( boundConstructors != null )
+        if (boundConstructors != null)
         {
             for (ConstructorModel constructorModel : boundConstructors)
             {
@@ -141,10 +141,10 @@ public final class ConstructorsModel
             }
         }
 
-        if( boundConstructors.size() == 0 )
+        if (boundConstructors.size() == 0)
         {
             StringBuilder messageBuilder = new StringBuilder( "Found no constructor that could be bound: " );
-            if( resolution.object() instanceof AbstractCompositeDescriptor )
+            if (resolution.object() instanceof AbstractCompositeDescriptor)
             {
                 messageBuilder.append( fragmentClass.getName() )
                         .append( " in " )
@@ -154,7 +154,7 @@ public final class ConstructorsModel
                 messageBuilder.append( resolution.object().toString() );
             }
 
-            if( messageBuilder.indexOf( "$" ) >= 0 )
+            if (messageBuilder.indexOf( "$" ) >= 0)
             {
                 messageBuilder.append( "\nNon-static inner classes can not be used." );
             }
@@ -197,7 +197,7 @@ public final class ConstructorsModel
     private Annotation[][] getConstrucxtorAnnotations( Class fragmentClass, Constructor constructor )
     {
         Annotation[][] parameterAnnotations;
-        if( fragmentClass.getName().endsWith( "_Stub" ) )
+        if (fragmentClass.getName().endsWith( "_Stub" ))
         {
             try
             {

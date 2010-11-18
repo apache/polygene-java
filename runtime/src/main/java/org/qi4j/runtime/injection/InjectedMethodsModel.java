@@ -14,20 +14,21 @@
 
 package org.qi4j.runtime.injection;
 
+import org.qi4j.api.injection.InjectionScope;
+import org.qi4j.api.util.Classes;
+import org.qi4j.bootstrap.BindingException;
+import org.qi4j.runtime.model.Resolution;
+import org.qi4j.runtime.structure.ModelVisitor;
+
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import org.qi4j.api.injection.InjectionScope;
-import org.qi4j.api.util.Classes;
-import org.qi4j.bootstrap.BindingException;
-import org.qi4j.runtime.model.Resolution;
-import org.qi4j.runtime.structure.ModelVisitor;
-import org.qi4j.spi.util.Annotations;
 
-import static org.qi4j.spi.util.Annotations.*;
+import static org.qi4j.api.util.Annotations.hasAnnotation;
+import static org.qi4j.api.util.Iterables.*;
 
 /**
  * JAVADOC
@@ -51,7 +52,7 @@ public final class InjectedMethodsModel
                 final Type[] genericParameterTypes = method.getGenericParameterTypes();
                 for( int i = 0; i < parameterAnnotations.length; i++ )
                 {
-                    Annotation injectionAnnotation = first( hasAnnotation( InjectionScope.class), parameterAnnotations[ i ] );
+                    Annotation injectionAnnotation = first( filter(hasAnnotation( InjectionScope.class), iterable( parameterAnnotations[ i ]) ));
                     if( injectionAnnotation == null )
                     {
                         continue nextMethod;

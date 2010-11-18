@@ -15,7 +15,7 @@
 package org.qi4j.spi.structure;
 
 import org.qi4j.api.service.ImportedServiceDescriptor;
-import org.qi4j.spi.composite.CompositeMethodDescriptor;
+import org.qi4j.spi.composite.MethodDescriptor;
 import org.qi4j.spi.composite.ConstructorDescriptor;
 import org.qi4j.spi.composite.InjectedFieldDescriptor;
 import org.qi4j.spi.composite.InjectedMethodDescriptor;
@@ -84,7 +84,7 @@ public class DescriptorVisitor<ThrowableType extends Throwable>
     {
     }
 
-    public void visit( CompositeMethodDescriptor compositeMethodDescriptor )
+    public void visit( MethodDescriptor methodDescriptor )
         throws ThrowableType
     {
     }

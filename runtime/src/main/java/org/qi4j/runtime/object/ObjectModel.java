@@ -14,8 +14,6 @@
 
 package org.qi4j.runtime.object;
 
-import java.io.Serializable;
-
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
@@ -30,6 +28,8 @@ import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.spi.object.ObjectDescriptor;
+
+import java.io.Serializable;
 
 /**
  * JAVADOC
@@ -74,7 +74,7 @@ public final class ObjectModel
     }
 
     public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
-        throws ThrowableType
+            throws ThrowableType
     {
         modelVisitor.visit( this );
 
@@ -106,11 +106,11 @@ public final class ObjectModel
             throw new ConstructionException( "Could not instantiate " + objectType.getName(), e );
         }
 
-        if( instance instanceof Initializable )
+        if (instance instanceof Initializable)
         {
             try
             {
-                ( (Initializable) instance ).initialize();
+                ((Initializable) instance).initialize();
             }
             catch (InitializationException e)
             {

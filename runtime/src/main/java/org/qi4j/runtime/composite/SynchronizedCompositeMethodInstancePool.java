@@ -20,7 +20,7 @@ package org.qi4j.runtime.composite;
  * manner.
  */
 public final class SynchronizedCompositeMethodInstancePool
-    implements CompositeMethodInstancePool
+    implements InstancePool<CompositeMethodInstance>
 {
     private CompositeMethodInstance first = null;
 

@@ -14,6 +14,18 @@
 
 package org.qi4j.runtime.composite;
 
+import org.qi4j.api.common.ConstructionException;
+import org.qi4j.api.injection.scope.This;
+import org.qi4j.bootstrap.BindingException;
+import org.qi4j.runtime.injection.DependencyModel;
+import org.qi4j.runtime.model.Binder;
+import org.qi4j.runtime.model.Resolution;
+import org.qi4j.runtime.structure.DependencyVisitor;
+import org.qi4j.runtime.structure.ModelVisitor;
+import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.spi.composite.MethodDescriptor;
+import org.qi4j.spi.util.SerializationUtil;
+
 import java.io.IOException;
 import java.io.NotSerializableException;
 import java.io.ObjectInputStream;
@@ -28,23 +40,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import org.qi4j.api.common.ConstructionException;
-import org.qi4j.api.injection.scope.This;
-import org.qi4j.bootstrap.BindingException;
-import org.qi4j.runtime.injection.DependencyModel;
-import org.qi4j.runtime.model.Binder;
-import org.qi4j.runtime.model.Resolution;
-import org.qi4j.runtime.structure.DependencyVisitor;
-import org.qi4j.runtime.structure.ModelVisitor;
-import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.spi.composite.CompositeMethodDescriptor;
-import org.qi4j.spi.util.SerializationUtil;
-
 /**
  * JAVADOC
  */
 public final class CompositeMethodModel
-        implements Binder, CompositeMethodDescriptor, Serializable
+        implements Binder, MethodDescriptor, Serializable
 {
     // Model
     private Method method;
@@ -57,8 +57,8 @@ public final class CompositeMethodModel
 
     // Context
     private SynchronizedCompositeMethodInstancePool instancePool;
-    //    private final CompositeMethodInstancePool instancePool = new AtomicCompositeMethodInstancePool();
-    //    private final CompositeMethodInstancePool instancePool = new ThreadLocalCompositeMethodInstancePool();
+    //    private final InstancePool instancePool = new AtomicInstancePool();
+    //    private final InstancePool instancePool = new ThreadLocalCompositeMethodInstancePool();
     private MethodConstraintsInstance methodConstraintsInstance;
 
     private void writeObject( ObjectOutputStream out )

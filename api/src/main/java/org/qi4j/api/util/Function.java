@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2010, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,17 +12,21 @@
  *
  */
 
-package org.qi4j.spi.composite;
-
-import java.lang.reflect.Method;
-import org.qi4j.spi.mixin.MixinDescriptor;
+package org.qi4j.api.util;
 
 /**
- * JAVADOC
+ * Generic function interface to map from one type to another
+ *
+ * @param <From>
+ * @param <To>
  */
-public interface CompositeMethodDescriptor
+public interface Function<From, To>
 {
-    Method method();
-
-    MixinDescriptor mixin();
+    /**
+     * Map a single item from one type to another
+     *
+     * @param from the input item
+     * @return the mapped item
+     */
+    To map( From from );
 }

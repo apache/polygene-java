@@ -21,8 +21,8 @@ import java.util.concurrent.atomic.AtomicReference;
  * to ensure that instances are acquired and returned in a thread-safe
  * manner.
  */
-public final class AtomicCompositeMethodInstancePool
-    implements CompositeMethodInstancePool
+public final class AtomicInstancePool
+    implements InstancePool<CompositeMethodInstance>
 {
     private final AtomicReference<CompositeMethodInstance> first = new AtomicReference<CompositeMethodInstance>();
 

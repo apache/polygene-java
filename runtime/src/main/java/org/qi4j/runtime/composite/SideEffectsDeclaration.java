@@ -26,7 +26,7 @@ import java.util.Map;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.sideeffect.SideEffects;
 import org.qi4j.runtime.bootstrap.AssemblyHelper;
-import org.qi4j.spi.util.Annotations;
+import org.qi4j.api.util.Annotations;
 import org.qi4j.spi.util.MethodKeyMap;
 
 import static java.util.Collections.*;

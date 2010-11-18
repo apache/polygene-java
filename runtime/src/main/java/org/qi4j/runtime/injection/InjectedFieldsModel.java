@@ -14,19 +14,21 @@
 
 package org.qi4j.runtime.injection;
 
-import java.io.Serializable;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
 import org.qi4j.api.injection.InjectionScope;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.structure.ModelVisitor;
 
-import static org.qi4j.api.util.Classes.*;
-import static org.qi4j.spi.util.Annotations.*;
+import java.io.Serializable;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.qi4j.api.util.Annotations.hasAnnotation;
+import static org.qi4j.api.util.Classes.fieldsOf;
+import static org.qi4j.api.util.Iterables.*;
 
 /**
  * JAVADOC
@@ -40,7 +42,7 @@ public final class InjectedFieldsModel
     {
         for( Field field : fieldsOf( fragmentClass ) )
         {
-            Annotation injectionAnnotation = first( hasAnnotation( InjectionScope.class), field.getAnnotations() );
+            Annotation injectionAnnotation = first( filter( hasAnnotation( InjectionScope.class), iterable(field.getAnnotations()) ));
             if( injectionAnnotation != null )
             {
                 addModel( fragmentClass, field, injectionAnnotation );

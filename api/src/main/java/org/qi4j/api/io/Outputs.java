@@ -17,6 +17,7 @@ package org.qi4j.api.io;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.Collection;
 import java.util.zip.GZIPOutputStream;
 
 /**
@@ -166,11 +167,11 @@ public class Outputs
      * @param <T>
      * @return
      */
-    public static <T, ReceiverThrowableType extends Throwable> Output<T, ReceiverThrowableType> noop()
+    public static <T> Output<T, RuntimeException> noop()
     {
-        return withReceiver( new Receiver<T, ReceiverThrowableType>()
+        return withReceiver( new Receiver<T, RuntimeException>()
         {
-            public void receive( T item ) throws ReceiverThrowableType
+            public void receive( T item ) throws RuntimeException
             {
                 // Do nothing
             }
@@ -212,6 +213,26 @@ public class Outputs
                     public void receive( String item ) throws IOException
                     {
                         System.out.println( item );
+                    }
+                } );
+            }
+        };
+    }
+
+    /**
+     * Add items to a collection
+     */
+    public static <T> Output<T, IOException> collection( final Collection<T> collection)
+    {
+        return new Output<T, IOException>()
+        {
+            public <SenderThrowableType extends Throwable> void receiveFrom( final Sender<T, SenderThrowableType> sender ) throws IOException, SenderThrowableType
+            {
+                sender.sendTo( new Receiver<T, IOException>()
+                {
+                    public void receive( T item ) throws IOException
+                    {
+                        collection.add(item);
                     }
                 } );
             }

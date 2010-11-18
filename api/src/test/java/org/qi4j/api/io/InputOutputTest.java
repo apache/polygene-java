@@ -17,17 +17,20 @@ package org.qi4j.api.io;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
+import org.qi4j.api.util.Function;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.URL;
 import java.rmi.RemoteException;
+import java.util.Arrays;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static java.util.Arrays.asList;
 import static org.qi4j.api.io.Inputs.text;
 import static org.qi4j.api.io.Transforms.lock;
+import static org.qi4j.api.util.Iterables.iterable;
 
 /**
  * Test Input/Output
@@ -94,7 +97,18 @@ public class InputOutputTest
     {
         File source = getSourceFile();
 
-        text( source ).transferTo( Transforms.map( new Transforms.Log<String>( LoggerFactory.getLogger( getClass() ), "Line: {0}"), Outputs.<String, RuntimeException>noop()));
+        text( source ).transferTo( Transforms.map( new Transforms.Log<String>( LoggerFactory.getLogger( getClass() ), "Line: {0}"), Outputs.<String>noop()));
+    }
+
+    @Test
+    public void testProgressLog() throws Throwable
+    {
+        Integer[] data = new Integer[105];
+        Arrays.fill( data, 42 );
+
+        Inputs.iterable( iterable(data )).transferTo(
+                Transforms.map(new Transforms.ProgressLog<Integer>(LoggerFactory.getLogger( InputOutputTest.class), "Data transferred: {0}", 10 ),
+                        Outputs.<Integer>noop() ));
     }
 
     @Test
@@ -106,7 +120,7 @@ public class InputOutputTest
         Transforms.Counter<String> stringCounter = new Transforms.Counter<String>();
         text( sourceFile ).transferTo(
                 Transforms.map( stringCounter,
-                        Transforms.map( new Transforms.Function<String, String>()
+                        Transforms.map( new Function<String, String>()
                         {
                             public String map( String s )
                             {
@@ -129,7 +143,7 @@ public class InputOutputTest
         Transforms.Counter<String> stringCounter = new Transforms.Counter<String>();
         Inputs.combine( asList( text( sourceFile ), text( sourceFile )) ).transferTo(
                 Transforms.map( stringCounter,
-                        Transforms.map( new Transforms.Function<String, String>()
+                        Transforms.map( new Function<String, String>()
                         {
                             public String map( String s )
                             {

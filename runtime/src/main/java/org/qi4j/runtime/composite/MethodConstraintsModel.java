@@ -14,11 +14,14 @@
 
 package org.qi4j.runtime.composite;
 
-import java.io.IOException;
-import java.io.NotSerializableException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import org.qi4j.api.common.Optional;
+import org.qi4j.api.constraint.Name;
+import org.qi4j.api.util.Iterables;
+import org.qi4j.runtime.structure.ModelVisitor;
+import org.qi4j.spi.constraint.MethodConstraintsDescriptor;
+import org.qi4j.spi.util.SerializationUtil;
+
+import java.io.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -26,14 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.qi4j.api.common.Optional;
-import org.qi4j.api.constraint.Name;
-import org.qi4j.runtime.structure.ModelVisitor;
-import org.qi4j.spi.constraint.MethodConstraintsDescriptor;
-import org.qi4j.spi.util.Annotations;
-import org.qi4j.spi.util.SerializationUtil;
-
-import static org.qi4j.spi.util.Annotations.*;
+import static org.qi4j.api.util.Annotations.isType;
 
 /**
  * JAVADOC
@@ -77,24 +73,24 @@ public final class MethodConstraintsModel
         {
             Annotation[] parameterAnnotation = parameterAnnotations[i];
 
-            Name nameAnnotation = first( isType(Name.class ),parameterAnnotation );
-            String name = nameAnnotation == null ? "param" + ( i + 1 ) : nameAnnotation.value();
+            Name nameAnnotation = (Name) Iterables.first( Iterables.filter( isType( Name.class ), Iterables.iterable( parameterAnnotation ) ) );
+            String name = nameAnnotation == null ? "param" + (i + 1) : nameAnnotation.value();
 
-            boolean optional = first( isType(Optional.class ), parameterAnnotation) != null;
-            ValueConstraintsModel parameterConstraintsModel = constraintsModel.constraintsFor( Arrays.asList(parameterAnnotation), parameterTypes[i], name, optional );
-            if( parameterConstraintsModel.isConstrained() )
+            boolean optional = Iterables.first( Iterables.filter( isType( Optional.class ), Iterables.iterable( parameterAnnotation ) ) ) != null;
+            ValueConstraintsModel parameterConstraintsModel = constraintsModel.constraintsFor( Arrays.asList( parameterAnnotation ), parameterTypes[i], name, optional );
+            if (parameterConstraintsModel.isConstrained())
             {
                 constrained = true;
             }
 
-            if( parameterConstraintModels == null )
+            if (parameterConstraintModels == null)
             {
                 parameterConstraintModels = new ArrayList<ValueConstraintsModel>();
             }
             parameterConstraintModels.add( parameterConstraintsModel );
         }
 
-        if( !constrained )
+        if (!constrained)
         {
             parameterConstraintModels = null; // No constraints for this method
         }
@@ -111,10 +107,10 @@ public final class MethodConstraintsModel
     }
 
     public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
-        throws ThrowableType
+            throws ThrowableType
     {
         modelVisitor.visit( this );
-        if( parameterConstraintModels == null )
+        if (parameterConstraintModels == null)
         {
             return;
         }

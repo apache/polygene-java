@@ -13,16 +13,9 @@
  */
 package org.qi4j.runtime.injection;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
-import java.lang.reflect.WildcardType;
-import java.util.Collections;
-
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.Optional;
+import org.qi4j.api.util.Iterables;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.bootstrap.InvalidInjectionException;
 import org.qi4j.runtime.injection.provider.InjectionProviderException;
@@ -30,9 +23,14 @@ import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.structure.Specification;
 import org.qi4j.spi.composite.DependencyDescriptor;
-import org.qi4j.spi.util.Annotations;
 
-import static org.qi4j.spi.util.CollectionUtils.*;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.*;
+import java.util.Collections;
+
+import static org.qi4j.api.util.Annotations.isType;
+import static org.qi4j.api.util.Iterables.iterable;
+import static org.qi4j.spi.util.CollectionUtils.firstElementOrNull;
 
 /**
  * JAVADOC
@@ -43,7 +41,7 @@ public final class DependencyModel
 {
     public static boolean isOptional( Annotation injectionAnnotation, Annotation[] annotations )
     {
-        if( Annotations.first( Annotations.isType(Optional.class ), annotations) != null )
+        if( Iterables.matchesAny( isType(Optional.class ), iterable(annotations)))
         {
             return true;
         }

@@ -14,17 +14,12 @@
 
 package org.qi4j.runtime.entity.association;
 
-import java.io.Serializable;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.GenericAssociationInfo;
+import org.qi4j.api.util.Annotations;
 import org.qi4j.bootstrap.AssociationDeclarations;
 import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
@@ -33,10 +28,20 @@ import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.AssociationType;
-import org.qi4j.spi.util.Annotations;
 import org.qi4j.spi.util.MethodKeyMap;
 import org.qi4j.spi.util.MethodSet;
 import org.qi4j.spi.util.MethodValueMap;
+
+import java.io.Serializable;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
+
+import static org.qi4j.api.util.Annotations.isType;
+import static org.qi4j.api.util.Iterables.filter;
+import static org.qi4j.api.util.Iterables.first;
 
 /**
  * JAVADOC
@@ -64,7 +69,7 @@ public final class EntityAssociationsModel
             if( Association.class.isAssignableFrom( method.getReturnType() ) )
             {
                 Iterable<Annotation> annotations = Annotations.getMethodAndTypeAnnotations( method );
-                boolean optional = Annotations.first( Annotations.isType(Optional.class ), annotations) != null;
+                boolean optional = first( filter( isType(Optional.class ), annotations)) != null;
 
                 // Constraints for Association references
                 ValueConstraintsModel valueConstraintsModel = constraints.constraintsFor( annotations, GenericAssociationInfo.getAssociationType( method ), method.getName(), optional );

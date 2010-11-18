@@ -191,4 +191,24 @@ public class Inputs
             }
         };
     }
+
+    public static <T> Input<T, RuntimeException> iterable(final Iterable<T> iterable)
+    {
+        return new Input<T, RuntimeException>()
+        {
+            public <ReceiverThrowableType extends Throwable> void transferTo( Output<T, ReceiverThrowableType> output ) throws ReceiverThrowableType, RuntimeException
+            {
+                output.receiveFrom( new Sender<T, RuntimeException>()
+                {
+                    public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<T, ReceiverThrowableType> receiver ) throws ReceiverThrowableType, RuntimeException
+                    {
+                        for (T item : iterable)
+                        {
+                            receiver.receive( item );
+                        }
+                    }
+                });
+            }
+        };
+    }
 }
