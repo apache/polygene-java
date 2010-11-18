@@ -93,6 +93,18 @@ public class InputOutputTest
     }
 
     @Test
+    public void testCopyFileStreams() throws IOException
+    {
+        File source = getSourceFile();
+        File tempFile = File.createTempFile( "test", ".txt" );
+        tempFile.deleteOnExit();
+
+        Inputs.byteBuffer( new FileInputStream(source), 1024 ).transferTo( Outputs.byteBuffer(tempFile ));
+
+        Assert.assertThat( tempFile.length(), CoreMatchers.equalTo( source.length() ) );
+    }
+
+    @Test
     public void testLog() throws IOException
     {
         File source = getSourceFile();

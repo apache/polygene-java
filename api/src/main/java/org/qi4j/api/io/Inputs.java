@@ -152,6 +152,43 @@ public class Inputs
     }
 
     /**
+     * Read an inputstream using ByteBuffer of a given size.
+     *
+     * @param source
+     * @param bufferSize
+     * @return
+     */
+    public static Input<ByteBuffer, IOException> byteBuffer( final InputStream source, final int bufferSize )
+    {
+        return new Input<ByteBuffer, IOException>()
+        {
+            public <ReceiverThrowableType extends Throwable> void transferTo( Output<ByteBuffer, ReceiverThrowableType> output ) throws IOException, ReceiverThrowableType
+            {
+                try
+                {
+                    output.receiveFrom( new Sender<ByteBuffer, IOException>()
+                    {
+                        public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<ByteBuffer, ReceiverThrowableType> receiver ) throws ReceiverThrowableType, IOException
+                        {
+                            byte[] buffer = new byte[bufferSize];
+
+                            int len;
+                            while ((len = source.read( buffer )) != -1)
+                            {
+                                ByteBuffer byteBuffer = ByteBuffer.wrap( buffer, 0, len );
+                                receiver.receive( byteBuffer );
+                            }
+                        }
+                    } );
+                } finally
+                {
+                    source.close();
+                }
+            }
+        };
+    }
+
+    /**
      * Combine many Input into one single Input. When a transfer is initiated from it all items from all inputs will be transferred
      * to the given Output.
      *
