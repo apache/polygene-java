@@ -99,7 +99,7 @@ public class InputOutputTest
         File tempFile = File.createTempFile( "test", ".txt" );
         tempFile.deleteOnExit();
 
-        Inputs.byteBuffer( new FileInputStream(source), 1024 ).transferTo( Outputs.byteBuffer(tempFile ));
+        Inputs.byteBuffer( new FileInputStream(source), 1024 ).transferTo( Outputs.byteBuffer(new FileOutputStream(tempFile) ));
 
         Assert.assertThat( tempFile.length(), CoreMatchers.equalTo( source.length() ) );
     }

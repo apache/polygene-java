@@ -119,6 +119,42 @@ public class Outputs
     }
 
     /**
+     * Write ByteBuffer data to an OutputStream.
+     *
+     * @param stream
+     * @param <T>
+     * @return
+     */
+    public static <T> Output<ByteBuffer, IOException> byteBuffer( final OutputStream stream)
+    {
+        return new Output<ByteBuffer, IOException>()
+        {
+            public <SenderThrowableType extends Throwable> void receiveFrom( final Sender<ByteBuffer, SenderThrowableType> sender ) throws IOException, SenderThrowableType
+            {
+                try
+                {
+                    sender.sendTo( new Receiver<ByteBuffer, IOException>()
+                    {
+                        public void receive( ByteBuffer item ) throws IOException
+                        {
+                            if (item.hasArray())
+                                stream.write( item.array(), item.arrayOffset(), item.limit( ));
+                            else
+                            {
+                                for (int i = 0; i < item.limit(); i++)
+                                    stream.write(item.get(i));
+                            }
+                        }
+                    } );
+                } finally
+                {
+                    stream.close();
+                }
+            }
+        };
+    }
+
+    /**
      * Write byte array data to a file. If the writing or sending of data fails the file will be deleted.
      *
      * @param file
