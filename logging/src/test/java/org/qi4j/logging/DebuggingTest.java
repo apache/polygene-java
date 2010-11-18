@@ -28,6 +28,7 @@ import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
+import org.qi4j.api.util.Function;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
@@ -76,7 +77,7 @@ public class DebuggingTest
             assertEquals( message, "Hello!" );
             EntityStore es = (EntityStore) serviceLocator.findService( EntityStore.class ).get();
             final String[] result = new String[1];
-            es.entityStates( moduleInstance ).transferTo( Transforms.map( new Transforms.Function<EntityState, EntityState>()
+            es.entityStates( moduleInstance ).transferTo( Transforms.map( new Function<EntityState, EntityState>()
             {
                 public EntityState map( EntityState entityState )
                 {
@@ -88,7 +89,7 @@ public class DebuggingTest
 
                     return entityState;
                 }
-            },Outputs.<EntityState, RuntimeException>noop() ));
+            },Outputs.<EntityState>noop() ));
 
             ServiceDebugRecordEntity debugEntry = uow.get( ServiceDebugRecordEntity.class, result[ 0 ] );
             String mess = debugEntry.message().get();
