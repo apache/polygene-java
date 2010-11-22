@@ -38,7 +38,6 @@ public abstract class DBCPBasicDataSourceServiceMixin
     public void activate()
         throws Exception
     {
-        System.out.println( "ACTIVATE" );
         dataSource = new BasicDataSource();
         dataSource.setUrl( configuration.configuration().url().get() );
     }
@@ -46,7 +45,6 @@ public abstract class DBCPBasicDataSourceServiceMixin
     public void passivate()
         throws Exception
     {
-        System.out.println( "PASSIVATE" );
         dataSource.close();
     }
 
