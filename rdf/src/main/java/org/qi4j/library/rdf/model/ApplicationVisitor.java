@@ -14,10 +14,9 @@
 
 package org.qi4j.library.rdf.model;
 
-import org.qi4j.api.util.Classes;
 import org.qi4j.library.rdf.Qi4jRdf;
 import org.qi4j.library.rdf.serializer.SerializerContext;
-import org.qi4j.spi.composite.CompositeMethodDescriptor;
+import org.qi4j.spi.composite.MethodDescriptor;
 import org.qi4j.spi.composite.TransientDescriptor;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.object.ObjectDescriptor;
@@ -88,11 +87,10 @@ class ApplicationVisitor extends DescriptorVisitor<RuntimeException>
         context.addRelationship( moduleUri, Qi4jRdf.RELATIONSHIP_OBJECT, compositeUri );
     }
 
-    @Override public void visit( CompositeMethodDescriptor compositeMethodDescriptor )
+    @Override public void visit( MethodDescriptor compositeMethodDescriptor )
     {
         String compositeMethodUri = context.createCompositeMethodUri( compositeUri, compositeMethodDescriptor.method() );
         context.addType( compositeMethodUri, Qi4jRdf.TYPE_METHOD );
         context.addRelationship( compositeUri, Qi4jRdf.RELATIONSHIP_METHOD, compositeMethodUri );
-        context.addStatement( compositeMethodUri, Qi4jRdf.RELATIONSHIP_MIXIN, Classes.toURI( compositeMethodDescriptor.mixin().mixinClass() ) );
     }
 }
