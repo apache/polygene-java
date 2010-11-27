@@ -14,7 +14,13 @@
 
 package org.qi4j.api.util;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
+import org.qi4j.api.specification.Specification;
 
 /**
  * Utility methods for working with Iterables
@@ -23,7 +29,7 @@ public class Iterables
 {
     public static <T> void addAll( Collection<T> collection, Iterable<T> iterable )
     {
-        for (T item : iterable)
+        for( T item : iterable )
         {
             collection.add( item );
         }
@@ -33,7 +39,7 @@ public class Iterables
     {
         long c = 0;
         Iterator<?> iterator = iterable.iterator();
-        while (iterator.hasNext())
+        while( iterator.hasNext() )
         {
             iterator.next();
             c++;
@@ -49,18 +55,24 @@ public class Iterables
     public static <X> X first( Iterable<X> i )
     {
         Iterator<X> iter = i.iterator();
-        if (iter.hasNext())
+        if( iter.hasNext() )
+        {
             return iter.next();
+        }
         else
+        {
             return null;
+        }
     }
 
-    public static <T> boolean matchesAny(Specification<T> specification, Iterable<T> iterable)
+    public static <T> boolean matchesAny( Specification<T> specification, Iterable<T> iterable )
     {
         for( T item : iterable )
         {
-            if (specification.test( item ))
+            if( specification.satisfiedBy( item ) )
+            {
                 return true;
+            }
         }
         return false;
     }
@@ -83,7 +95,7 @@ public class Iterables
     public static <T> Iterable<T> iterable( Enumeration<T> enumeration )
     {
         List<T> list = new ArrayList<T>();
-        while (enumeration.hasMoreElements())
+        while( enumeration.hasMoreElements() )
         {
             T item = enumeration.nextElement();
             list.add( item );
@@ -92,13 +104,13 @@ public class Iterables
         return list;
     }
 
-    public static <T> Iterable<T> iterable( T... items)
+    public static <T> Iterable<T> iterable( T... items )
     {
         return Arrays.asList( items );
     }
 
     private static class MapIterable<FROM, TO>
-            implements Iterable<TO>
+        implements Iterable<TO>
     {
         private final Iterable<FROM> from;
         private final Function<FROM, TO> function;
@@ -115,7 +127,7 @@ public class Iterables
         }
 
         static class MapIterator<FROM, TO>
-                implements Iterator<TO>
+            implements Iterator<TO>
         {
             private final Iterator<FROM> fromIterator;
             private final Function<FROM, TO> function;
@@ -179,17 +191,17 @@ public class Iterables
             public boolean moveToNextValid()
             {
                 boolean found = false;
-                while (!found && iterator.hasNext())
+                while( !found && iterator.hasNext() )
                 {
                     T currentValue = iterator.next();
-                    if (specification.test( currentValue ))
+                    if( specification.satisfiedBy( currentValue ) )
                     {
                         found = true;
                         this.currentValue = currentValue;
                         nextConsumed = false;
                     }
                 }
-                if (!found)
+                if( !found )
                 {
                     finished = true;
                 }
@@ -198,15 +210,16 @@ public class Iterables
 
             public T next()
             {
-                if (!nextConsumed)
+                if( !nextConsumed )
                 {
                     nextConsumed = true;
                     return currentValue;
-                } else
+                }
+                else
                 {
-                    if (!finished)
+                    if( !finished )
                     {
-                        if (moveToNextValid())
+                        if( moveToNextValid() )
                         {
                             nextConsumed = true;
                             return currentValue;
@@ -219,7 +232,7 @@ public class Iterables
             public boolean hasNext()
             {
                 return !finished &&
-                        (!nextConsumed || moveToNextValid());
+                       ( !nextConsumed || moveToNextValid() );
             }
 
             public void remove()
@@ -255,19 +268,20 @@ public class Iterables
 
             public boolean hasNext()
             {
-                if (currentIterator == null)
+                if( currentIterator == null )
                 {
-                    if (iterator.hasNext())
+                    if( iterator.hasNext() )
                     {
                         currentIterator = iterator.next().iterator();
-                    } else
+                    }
+                    else
                     {
                         return false;
                     }
                 }
 
-                while (!currentIterator.hasNext() &&
-                        iterator.hasNext())
+                while( !currentIterator.hasNext() &&
+                       iterator.hasNext() )
                 {
                     currentIterator = iterator.next().iterator();
                 }
@@ -282,8 +296,10 @@ public class Iterables
 
             public void remove()
             {
-                if (currentIterator == null)
+                if( currentIterator == null )
+                {
                     throw new IllegalStateException();
+                }
 
                 currentIterator.remove();
             }

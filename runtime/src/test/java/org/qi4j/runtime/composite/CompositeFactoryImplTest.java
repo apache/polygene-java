@@ -26,7 +26,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
 public class CompositeFactoryImplTest
     extends AbstractQi4jTest
@@ -48,8 +48,9 @@ public class CompositeFactoryImplTest
             Class aClass = FirstComposite.class;
             TransientBuilder builder = transientBuilderFactory.newTransientBuilder( aClass );
             builder.newInstance();
-            fail( "CompositeBuilderFactory.newInstance() should return MixinTypeNotAvailableException when creating a new instance for "
-                  + aClass.getName() );
+            fail(
+                "CompositeBuilderFactory.newInstance() should return MixinTypeNotAvailableException when creating a new instance for "
+                + aClass.getName() );
         }
         catch( NoSuchCompositeException e )
         {
@@ -63,9 +64,10 @@ public class CompositeFactoryImplTest
     {
         try
         {
-            TransientBuilder<SecondComposite> builder = transientBuilderFactory.newTransientBuilder( SecondComposite.class );
+            TransientBuilder<SecondComposite> builder = transientBuilderFactory.newTransientBuilder(
+                SecondComposite.class );
             SecondComposite composition9 = builder.newInstance();
-            composition9.setValue( "test value" );
+            composition9.setValue( "satisfiedBy value" );
         }
         catch( Exception e )
         {

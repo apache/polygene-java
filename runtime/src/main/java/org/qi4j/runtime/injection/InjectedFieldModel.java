@@ -21,15 +21,16 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Collection;
+import org.qi4j.api.specification.Specification;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.bootstrap.InjectionException;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.structure.ModelVisitor;
-import org.qi4j.runtime.structure.Specification;
 import org.qi4j.spi.composite.InjectedFieldDescriptor;
 import org.qi4j.spi.util.SerializationUtil;
 
-import static java.util.Collections.*;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singleton;
 
 /**
  * JAVADOC
@@ -114,7 +115,7 @@ public final class InjectedFieldModel
 
     public Collection<DependencyModel> filter( Specification<DependencyModel> specification )
     {
-        if( specification.matches( dependencyModel ) )
+        if( specification.satisfiedBy( dependencyModel ) )
         {
             return singleton( dependencyModel );
         }

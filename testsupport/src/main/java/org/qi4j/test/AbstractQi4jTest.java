@@ -112,11 +112,10 @@ public abstract class AbstractQi4jTest
 
     /**
      * This method is called when there was an AssemblyException in the creation of the Qi4j application model.
-     * <p>
-     * Override this method to catch valid failures to place into test suites.
-     * 
+     * <p/>
+     * Override this method to catch valid failures to place into satisfiedBy suites.
+     *
      * @param exception the exception thrown.
-     * 
      * @throws AssemblyException The default implementation of this method will simply re-throw the exception.
      */
     protected void assemblyException( AssemblyException exception )
@@ -137,7 +136,7 @@ public abstract class AbstractQi4jTest
         if( unitOfWorkFactory != null && unitOfWorkFactory.currentUnitOfWork() != null )
         {
             UnitOfWork current;
-            while( (current = unitOfWorkFactory.currentUnitOfWork()) != null )
+            while( ( current = unitOfWorkFactory.currentUnitOfWork() ) != null )
             {
                 if( current.isOpen() )
                 {

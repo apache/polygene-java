@@ -14,14 +14,13 @@
 
 package org.qi4j.api.io;
 
-import org.qi4j.api.util.Function;
-import org.qi4j.api.util.Specification;
-import org.slf4j.Logger;
-
 import java.nio.charset.Charset;
 import java.text.MessageFormat;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
+import org.qi4j.api.specification.Specification;
+import org.qi4j.api.util.Function;
+import org.slf4j.Logger;
 
 /**
  * Utility class for I/O transforms
@@ -41,18 +40,23 @@ public class Transforms
     {
         return new Output<T, ReceiverThrowableType>()
         {
-            public <SenderThrowableType extends Throwable> void receiveFrom( final Sender<T, SenderThrowableType> sender ) throws ReceiverThrowableType, SenderThrowableType
+            public <SenderThrowableType extends Throwable> void receiveFrom( final Sender<T, SenderThrowableType> sender )
+                throws ReceiverThrowableType, SenderThrowableType
             {
                 output.receiveFrom( new Sender<T, SenderThrowableType>()
                 {
-                    public <ReceiverThrowableType extends Throwable> void sendTo( final Receiver<T, ReceiverThrowableType> receiver ) throws ReceiverThrowableType, SenderThrowableType
+                    public <ReceiverThrowableType extends Throwable> void sendTo( final Receiver<T, ReceiverThrowableType> receiver )
+                        throws ReceiverThrowableType, SenderThrowableType
                     {
                         sender.sendTo( new Receiver<T, ReceiverThrowableType>()
                         {
-                            public void receive( T item ) throws ReceiverThrowableType
+                            public void receive( T item )
+                                throws ReceiverThrowableType
                             {
-                                if (specification.test( item ))
+                                if( specification.satisfiedBy( item ) )
+                                {
                                     receiver.receive( item );
+                                }
                             }
                         } );
 
@@ -76,15 +80,18 @@ public class Transforms
     {
         return new Output<From, ReceiverThrowableType>()
         {
-            public <SenderThrowableType extends Throwable> void receiveFrom( final Sender<From, SenderThrowableType> sender ) throws ReceiverThrowableType, SenderThrowableType
+            public <SenderThrowableType extends Throwable> void receiveFrom( final Sender<From, SenderThrowableType> sender )
+                throws ReceiverThrowableType, SenderThrowableType
             {
                 output.receiveFrom( new Sender<To, SenderThrowableType>()
                 {
-                    public <ReceiverThrowableType extends Throwable> void sendTo( final Receiver<To, ReceiverThrowableType> receiver ) throws ReceiverThrowableType, SenderThrowableType
+                    public <ReceiverThrowableType extends Throwable> void sendTo( final Receiver<To, ReceiverThrowableType> receiver )
+                        throws ReceiverThrowableType, SenderThrowableType
                     {
                         sender.sendTo( new Receiver<From, ReceiverThrowableType>()
                         {
-                            public void receive( From item ) throws ReceiverThrowableType
+                            public void receive( From item )
+                                throws ReceiverThrowableType
                             {
                                 receiver.receive( function.map( item ) );
                             }
@@ -111,20 +118,27 @@ public class Transforms
     {
         return new Output<T, ReceiverThrowableType>()
         {
-            public <SenderThrowableType extends Throwable> void receiveFrom( final Sender<T, SenderThrowableType> sender ) throws ReceiverThrowableType, SenderThrowableType
+            public <SenderThrowableType extends Throwable> void receiveFrom( final Sender<T, SenderThrowableType> sender )
+                throws ReceiverThrowableType, SenderThrowableType
             {
                 output.receiveFrom( new Sender<T, SenderThrowableType>()
                 {
-                    public <ReceiverThrowableType extends Throwable> void sendTo( final Receiver<T, ReceiverThrowableType> receiver ) throws ReceiverThrowableType, SenderThrowableType
+                    public <ReceiverThrowableType extends Throwable> void sendTo( final Receiver<T, ReceiverThrowableType> receiver )
+                        throws ReceiverThrowableType, SenderThrowableType
                     {
                         sender.sendTo( new Receiver<T, ReceiverThrowableType>()
                         {
-                            public void receive( T item ) throws ReceiverThrowableType
+                            public void receive( T item )
+                                throws ReceiverThrowableType
                             {
-                                if (specification.test( item ))
+                                if( specification.satisfiedBy( item ) )
+                                {
                                     receiver.receive( function.map( item ) );
+                                }
                                 else
+                                {
                                     receiver.receive( item );
+                                }
                             }
                         } );
 
@@ -148,13 +162,14 @@ public class Transforms
     {
         return new Output<T, ReceiverThrowableType>()
         {
-            public <SenderThrowableType extends Throwable> void receiveFrom( final Sender<T, SenderThrowableType> sender ) throws ReceiverThrowableType, SenderThrowableType
+            public <SenderThrowableType extends Throwable> void receiveFrom( final Sender<T, SenderThrowableType> sender )
+                throws ReceiverThrowableType, SenderThrowableType
             {
                 /**
                  * Fix for this bug:
                  * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6822370
                  */
-                while(true)
+                while( true )
                 {
                     try
                     {
@@ -173,7 +188,8 @@ public class Transforms
                 try
                 {
                     output.receiveFrom( sender );
-                } finally
+                }
+                finally
                 {
                     lock.unlock();
                 }
@@ -185,8 +201,8 @@ public class Transforms
      * Wrapper for Outputs that uses a lock whenever a transfer is instantiated. Typically a read-lock would be used on the sending side and a write-lock
      * would be used on the receiving side.
      *
-     * @param lock                    the lock to be used for transfers
-     * @param input                  input to be wrapped
+     * @param lock                  the lock to be used for transfers
+     * @param input                 input to be wrapped
      * @param <T>
      * @param <SenderThrowableType>
      * @return Input wrapper that uses the given lock during transfers.
@@ -195,17 +211,18 @@ public class Transforms
     {
         return new Input<T, SenderThrowableType>()
         {
-            public <ReceiverThrowableType extends Throwable> void transferTo( Output<T, ReceiverThrowableType> output ) throws SenderThrowableType, ReceiverThrowableType
+            public <ReceiverThrowableType extends Throwable> void transferTo( Output<T, ReceiverThrowableType> output )
+                throws SenderThrowableType, ReceiverThrowableType
             {
                 /**
                  * Fix for this bug:
                  * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6822370
                  */
-                while(true)
+                while( true )
                 {
                     try
                     {
-                        while( !(lock.tryLock() || lock.tryLock( 1000, TimeUnit.MILLISECONDS )) )
+                        while( !( lock.tryLock() || lock.tryLock( 1000, TimeUnit.MILLISECONDS ) ) )
                         {
                             // On timeout, try again
                         }
@@ -220,7 +237,8 @@ public class Transforms
                 try
                 {
                     input.transferTo( output );
-                } finally
+                }
+                finally
                 {
                     lock.unlock();
                 }
@@ -234,7 +252,7 @@ public class Transforms
      * @param <T>
      */
     public static class Counter<T>
-            implements Function<T, T>
+        implements Function<T, T>
     {
         private long count = 0;
 
@@ -255,7 +273,7 @@ public class Transforms
      * Convert strings to bytes using the given CharSet
      */
     public static class String2Bytes
-            implements Function<String, byte[]>
+        implements Function<String, byte[]>
     {
         private Charset charSet;
 
@@ -277,7 +295,7 @@ public class Transforms
      * @param <T>
      */
     public static class Log<T>
-            implements Function<T, T>
+        implements Function<T, T>
     {
         private Logger logger;
         private MessageFormat format;
@@ -290,7 +308,7 @@ public class Transforms
 
         public T map( T item )
         {
-            logger.info( format.format( new String[]{item.toString()} ) );
+            logger.info( format.format( new String[]{ item.toString() } ) );
             return item;
         }
     }
@@ -307,19 +325,21 @@ public class Transforms
         private Log<String> log;
         private final long interval;
 
-        public ProgressLog(Logger logger, String format, long interval)
+        public ProgressLog( Logger logger, String format, long interval )
         {
             this.interval = interval;
-            log = new Log<String>(logger, format);
+            log = new Log<String>( logger, format );
             counter = new Counter<T>();
         }
 
         public T map( T t )
         {
-            counter.map(t);
+            counter.map( t );
 
-            if (counter.count % interval == 0)
-                log.map( counter.count+"" );
+            if( counter.count % interval == 0 )
+            {
+                log.map( counter.count + "" );
+            }
 
             return t;
         }

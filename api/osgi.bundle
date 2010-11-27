@@ -26,6 +26,7 @@ Export-Package: org.qi4j.api;version=${pom.version}, \
                 org.qi4j.api.service.qualifier;version=${pom.version}, \
                 org.qi4j.api.sideeffect;version=${pom.version}, \
                 org.qi4j.api.sideeffect.internal;version=${pom.version}, \
+                org.qi4j.api.specification;version=${pom.version}, \
                 org.qi4j.api.structure;version=${pom.version}, \
                 org.qi4j.api.unitofwork;version=${pom.version}, \
                 org.qi4j.api.usecase;version=${pom.version}, \

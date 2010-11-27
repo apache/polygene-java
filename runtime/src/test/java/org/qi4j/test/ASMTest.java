@@ -14,19 +14,58 @@
 
 package org.qi4j.test;
 
-import org.junit.Test;
-import org.objectweb.asm.*;
-import org.objectweb.asm.util.ASMifierClassVisitor;
-import org.qi4j.runtime.composite.FragmentClassLoader;
-import org.qi4j.runtime.composite.QI256Test;
-import org.qi4j.spi.composite.CompositeInvoker;
-
-import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
+import org.junit.Test;
+import org.objectweb.asm.AnnotationVisitor;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.FieldVisitor;
+import org.objectweb.asm.Label;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
+import org.objectweb.asm.util.ASMifierClassVisitor;
+import org.qi4j.runtime.composite.FragmentClassLoader;
+import org.qi4j.spi.composite.CompositeInvoker;
 
-import static org.objectweb.asm.Opcodes.*;
+import static org.objectweb.asm.Opcodes.AASTORE;
+import static org.objectweb.asm.Opcodes.ACC_PRIVATE;
+import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
+import static org.objectweb.asm.Opcodes.ACC_STATIC;
+import static org.objectweb.asm.Opcodes.ACC_SUPER;
+import static org.objectweb.asm.Opcodes.ACONST_NULL;
+import static org.objectweb.asm.Opcodes.ALOAD;
+import static org.objectweb.asm.Opcodes.ANEWARRAY;
+import static org.objectweb.asm.Opcodes.ARETURN;
+import static org.objectweb.asm.Opcodes.ASTORE;
+import static org.objectweb.asm.Opcodes.ATHROW;
+import static org.objectweb.asm.Opcodes.BIPUSH;
+import static org.objectweb.asm.Opcodes.CHECKCAST;
+import static org.objectweb.asm.Opcodes.DLOAD;
+import static org.objectweb.asm.Opcodes.DUP;
+import static org.objectweb.asm.Opcodes.FLOAD;
+import static org.objectweb.asm.Opcodes.GETFIELD;
+import static org.objectweb.asm.Opcodes.GETSTATIC;
+import static org.objectweb.asm.Opcodes.GOTO;
+import static org.objectweb.asm.Opcodes.ICONST_0;
+import static org.objectweb.asm.Opcodes.ICONST_1;
+import static org.objectweb.asm.Opcodes.ICONST_2;
+import static org.objectweb.asm.Opcodes.ICONST_3;
+import static org.objectweb.asm.Opcodes.ICONST_4;
+import static org.objectweb.asm.Opcodes.ICONST_5;
+import static org.objectweb.asm.Opcodes.ILOAD;
+import static org.objectweb.asm.Opcodes.INVOKEINTERFACE;
+import static org.objectweb.asm.Opcodes.INVOKESPECIAL;
+import static org.objectweb.asm.Opcodes.INVOKESTATIC;
+import static org.objectweb.asm.Opcodes.INVOKEVIRTUAL;
+import static org.objectweb.asm.Opcodes.IRETURN;
+import static org.objectweb.asm.Opcodes.LLOAD;
+import static org.objectweb.asm.Opcodes.NEW;
+import static org.objectweb.asm.Opcodes.POP;
+import static org.objectweb.asm.Opcodes.PUTSTATIC;
+import static org.objectweb.asm.Opcodes.RETURN;
+import static org.objectweb.asm.Opcodes.V1_6;
 
 /**
  * JAVADOC
@@ -35,15 +74,15 @@ public class ASMTest
 {
     @Test
     public void generateASM()
-            throws Exception
+        throws Exception
     {
-        ASMifierClassVisitor.main( new String[]{SomeMixin_Stubx.class.getName()} );
+        ASMifierClassVisitor.main( new String[]{ SomeMixin_Stubx.class.getName() } );
     }
 
     @Test
 //    @Ignore
 public void createClass()
-            throws Exception
+        throws Exception
     {
 /*
         byte[] asm = generateClass();
@@ -56,13 +95,11 @@ public void createClass()
                 0 );
 */
 
-
         //       Assert.assertArrayEquals( asm, cl );
 
         FragmentClassLoader classLoader = new FragmentClassLoader( SomeMixin.class.getClassLoader() );
 
         Class clazz = classLoader.loadClass( SomeMixin.class.getName() + "_Stub" );
-
 
         //       Class clazz = SomeMixin_Stubx.class;
 
@@ -82,7 +119,8 @@ public void createClass()
             {
             }
 
-            public void multiEx( String bar ) throws Exception1, Exception2
+            public void multiEx( String bar )
+                throws Exception1, Exception2
             {
             }
 
@@ -101,7 +139,8 @@ public void createClass()
 
         CompositeInvoker invoker = new CompositeInvoker()
         {
-            public Object invokeComposite( Method method, Object[] args ) throws Throwable
+            public Object invokeComposite( Method method, Object[] args )
+                throws Throwable
             {
                 Method fakeMethod = null;
                 try
@@ -111,16 +150,19 @@ public void createClass()
                     try
                     {
                         return fakeMethod.invoke( instance, args );
-                    } catch (InvocationTargetException e)
+                    }
+                    catch( InvocationTargetException e )
                     {
                         throw e.getCause();
                     }
-                } catch (NoSuchMethodException e)
+                }
+                catch( NoSuchMethodException e )
                 {
                     try
                     {
                         return method.invoke( other, args );
-                    } catch (InvocationTargetException ex)
+                    }
+                    catch( InvocationTargetException ex )
                     {
                         throw ex.getCause();
                     }
@@ -145,7 +187,8 @@ public void createClass()
         MethodVisitor mv;
         AnnotationVisitor av0;
 
-        cw.visit( V1_6, ACC_PUBLIC + ACC_SUPER, "org/qi4j/test/SomeMixin_Stub", null, "org/qi4j/test/SomeMixin", null );
+        cw.visit( V1_6, ACC_PUBLIC + ACC_SUPER, "org/qi4j/satisfiedBy/SomeMixin_Stub", null,
+                  "org/qi4j/satisfiedBy/SomeMixin", null );
 
         {
             fv = cw.visitField( ACC_PUBLIC, "_instance", "Lorg/qi4j/spi/composite/CompositeInvoker;", null, null );
@@ -175,7 +218,7 @@ public void createClass()
             mv = cw.visitMethod( ACC_PUBLIC, "<init>", "()V", null, null );
             mv.visitCode();
             mv.visitVarInsn( ALOAD, 0 );
-            mv.visitMethodInsn( INVOKESPECIAL, "org/qi4j/test/SomeMixin", "<init>", "()V" );
+            mv.visitMethodInsn( INVOKESPECIAL, "org/qi4j/satisfiedBy/SomeMixin", "<init>", "()V" );
             mv.visitInsn( RETURN );
             mv.visitMaxs( 1, 1 );
             mv.visitEnd();
@@ -185,7 +228,7 @@ public void createClass()
             mv.visitCode();
             mv.visitVarInsn( ALOAD, 0 );
             mv.visitVarInsn( ALOAD, 1 );
-            mv.visitMethodInsn( INVOKESPECIAL, "org/qi4j/test/SomeMixin", "<init>", "(Ljava/lang/String;)V" );
+            mv.visitMethodInsn( INVOKESPECIAL, "org/qi4j/satisfiedBy/SomeMixin", "<init>", "(Ljava/lang/String;)V" );
             mv.visitInsn( RETURN );
             mv.visitMaxs( 2, 2 );
             mv.visitEnd();
@@ -199,26 +242,30 @@ public void createClass()
             mv.visitTryCatchBlock( l0, l1, l2, "java/lang/Throwable" );
             mv.visitLabel( l0 );
             mv.visitVarInsn( ALOAD, 0 );
-            mv.visitFieldInsn( GETFIELD, "org/qi4j/test/SomeMixin_Stub", "_instance", "Lorg/qi4j/spi/composite/CompositeInvoker;" );
-            mv.visitFieldInsn( GETSTATIC, "org/qi4j/test/SomeMixin_Stub", "m1", "Ljava/lang/reflect/Method;" );
+            mv.visitFieldInsn( GETFIELD, "org/qi4j/satisfiedBy/SomeMixin_Stub", "_instance",
+                               "Lorg/qi4j/spi/composite/CompositeInvoker;" );
+            mv.visitFieldInsn( GETSTATIC, "org/qi4j/satisfiedBy/SomeMixin_Stub", "m1", "Ljava/lang/reflect/Method;" );
             mv.visitInsn( ACONST_NULL );
-            mv.visitMethodInsn( INVOKEINTERFACE, "org/qi4j/spi/composite/CompositeInvoker", "invokeComposite", "(Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;" );
+            mv.visitMethodInsn( INVOKEINTERFACE, "org/qi4j/spi/composite/CompositeInvoker", "invokeComposite",
+                                "(Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;" );
             mv.visitTypeInsn( CHECKCAST, "java/lang/String" );
             mv.visitLabel( l1 );
             mv.visitInsn( ARETURN );
             mv.visitLabel( l2 );
-            mv.visitFrame( Opcodes.F_SAME1, 0, null, 1, new Object[]{"java/lang/Throwable"} );
+            mv.visitFrame( Opcodes.F_SAME1, 0, null, 1, new Object[]{ "java/lang/Throwable" } );
             mv.visitVarInsn( ASTORE, 1 );
             mv.visitTypeInsn( NEW, "java/lang/reflect/UndeclaredThrowableException" );
             mv.visitInsn( DUP );
             mv.visitVarInsn( ALOAD, 1 );
-            mv.visitMethodInsn( INVOKESPECIAL, "java/lang/reflect/UndeclaredThrowableException", "<init>", "(Ljava/lang/Throwable;)V" );
+            mv.visitMethodInsn( INVOKESPECIAL, "java/lang/reflect/UndeclaredThrowableException", "<init>",
+                                "(Ljava/lang/Throwable;)V" );
             mv.visitInsn( ATHROW );
             mv.visitMaxs( 3, 2 );
             mv.visitEnd();
         }
         {
-            mv = cw.visitMethod( ACC_PUBLIC, "foo", "(Ljava/lang/String;I)Ljava/lang/String;", null, new String[]{"java/lang/IllegalArgumentException"} );
+            mv = cw.visitMethod( ACC_PUBLIC, "foo", "(Ljava/lang/String;I)Ljava/lang/String;", null,
+                                 new String[]{ "java/lang/IllegalArgumentException" } );
             mv.visitCode();
             Label l0 = new Label();
             Label l1 = new Label();
@@ -228,8 +275,9 @@ public void createClass()
             mv.visitTryCatchBlock( l0, l1, l3, "java/lang/Throwable" );
             mv.visitLabel( l0 );
             mv.visitVarInsn( ALOAD, 0 );
-            mv.visitFieldInsn( GETFIELD, "org/qi4j/test/SomeMixin_Stub", "_instance", "Lorg/qi4j/spi/composite/CompositeInvoker;" );
-            mv.visitFieldInsn( GETSTATIC, "org/qi4j/test/SomeMixin_Stub", "m2", "Ljava/lang/reflect/Method;" );
+            mv.visitFieldInsn( GETFIELD, "org/qi4j/satisfiedBy/SomeMixin_Stub", "_instance",
+                               "Lorg/qi4j/spi/composite/CompositeInvoker;" );
+            mv.visitFieldInsn( GETSTATIC, "org/qi4j/satisfiedBy/SomeMixin_Stub", "m2", "Ljava/lang/reflect/Method;" );
             mv.visitInsn( ICONST_2 );
             mv.visitTypeInsn( ANEWARRAY, "java/lang/Object" );
             mv.visitInsn( DUP );
@@ -241,22 +289,24 @@ public void createClass()
             mv.visitVarInsn( ILOAD, 2 );
             mv.visitMethodInsn( INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;" );
             mv.visitInsn( AASTORE );
-            mv.visitMethodInsn( INVOKEINTERFACE, "org/qi4j/spi/composite/CompositeInvoker", "invokeComposite", "(Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;" );
+            mv.visitMethodInsn( INVOKEINTERFACE, "org/qi4j/spi/composite/CompositeInvoker", "invokeComposite",
+                                "(Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;" );
             mv.visitTypeInsn( CHECKCAST, "java/lang/String" );
             mv.visitLabel( l1 );
             mv.visitInsn( ARETURN );
             mv.visitLabel( l2 );
-            mv.visitFrame( Opcodes.F_SAME1, 0, null, 1, new Object[]{"java/lang/IllegalArgumentException"} );
+            mv.visitFrame( Opcodes.F_SAME1, 0, null, 1, new Object[]{ "java/lang/IllegalArgumentException" } );
             mv.visitVarInsn( ASTORE, 3 );
             mv.visitVarInsn( ALOAD, 3 );
             mv.visitInsn( ATHROW );
             mv.visitLabel( l3 );
-            mv.visitFrame( Opcodes.F_SAME1, 0, null, 1, new Object[]{"java/lang/Throwable"} );
+            mv.visitFrame( Opcodes.F_SAME1, 0, null, 1, new Object[]{ "java/lang/Throwable" } );
             mv.visitVarInsn( ASTORE, 3 );
             mv.visitTypeInsn( NEW, "java/lang/reflect/UndeclaredThrowableException" );
             mv.visitInsn( DUP );
             mv.visitVarInsn( ALOAD, 3 );
-            mv.visitMethodInsn( INVOKESPECIAL, "java/lang/reflect/UndeclaredThrowableException", "<init>", "(Ljava/lang/Throwable;)V" );
+            mv.visitMethodInsn( INVOKESPECIAL, "java/lang/reflect/UndeclaredThrowableException", "<init>",
+                                "(Ljava/lang/Throwable;)V" );
             mv.visitInsn( ATHROW );
             mv.visitMaxs( 6, 4 );
             mv.visitEnd();
@@ -270,8 +320,9 @@ public void createClass()
             mv.visitTryCatchBlock( l0, l1, l2, "java/lang/Throwable" );
             mv.visitLabel( l0 );
             mv.visitVarInsn( ALOAD, 0 );
-            mv.visitFieldInsn( GETFIELD, "org/qi4j/test/SomeMixin_Stub", "_instance", "Lorg/qi4j/spi/composite/CompositeInvoker;" );
-            mv.visitFieldInsn( GETSTATIC, "org/qi4j/test/SomeMixin_Stub", "m3", "Ljava/lang/reflect/Method;" );
+            mv.visitFieldInsn( GETFIELD, "org/qi4j/satisfiedBy/SomeMixin_Stub", "_instance",
+                               "Lorg/qi4j/spi/composite/CompositeInvoker;" );
+            mv.visitFieldInsn( GETSTATIC, "org/qi4j/satisfiedBy/SomeMixin_Stub", "m3", "Ljava/lang/reflect/Method;" );
             mv.visitIntInsn( BIPUSH, 11 );
             mv.visitTypeInsn( ANEWARRAY, "java/lang/Object" );
             mv.visitInsn( DUP );
@@ -326,18 +377,20 @@ public void createClass()
             mv.visitIntInsn( BIPUSH, 10 );
             mv.visitVarInsn( ALOAD, 13 );
             mv.visitInsn( AASTORE );
-            mv.visitMethodInsn( INVOKEINTERFACE, "org/qi4j/spi/composite/CompositeInvoker", "invokeComposite", "(Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;" );
+            mv.visitMethodInsn( INVOKEINTERFACE, "org/qi4j/spi/composite/CompositeInvoker", "invokeComposite",
+                                "(Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;" );
             mv.visitInsn( POP );
             mv.visitLabel( l1 );
             Label l3 = new Label();
             mv.visitJumpInsn( GOTO, l3 );
             mv.visitLabel( l2 );
-            mv.visitFrame( Opcodes.F_SAME1, 0, null, 1, new Object[]{"java/lang/Throwable"} );
+            mv.visitFrame( Opcodes.F_SAME1, 0, null, 1, new Object[]{ "java/lang/Throwable" } );
             mv.visitVarInsn( ASTORE, 14 );
             mv.visitTypeInsn( NEW, "java/lang/reflect/UndeclaredThrowableException" );
             mv.visitInsn( DUP );
             mv.visitVarInsn( ALOAD, 14 );
-            mv.visitMethodInsn( INVOKESPECIAL, "java/lang/reflect/UndeclaredThrowableException", "<init>", "(Ljava/lang/Throwable;)V" );
+            mv.visitMethodInsn( INVOKESPECIAL, "java/lang/reflect/UndeclaredThrowableException", "<init>",
+                                "(Ljava/lang/Throwable;)V" );
             mv.visitInsn( ATHROW );
             mv.visitLabel( l3 );
             mv.visitFrame( Opcodes.F_SAME, 0, null, 0, null );
@@ -346,48 +399,52 @@ public void createClass()
             mv.visitEnd();
         }
         {
-            mv = cw.visitMethod( ACC_PUBLIC, "multiEx", "(Ljava/lang/String;)V", null, new String[]{"org/qi4j/test/Exception1", "org/qi4j/test/Exception2"} );
+            mv = cw.visitMethod( ACC_PUBLIC, "multiEx", "(Ljava/lang/String;)V", null,
+                                 new String[]{ "org/qi4j/satisfiedBy/Exception1", "org/qi4j/satisfiedBy/Exception2" } );
             mv.visitCode();
             Label l0 = new Label();
             Label l1 = new Label();
             Label l2 = new Label();
-            mv.visitTryCatchBlock( l0, l1, l2, "org/qi4j/test/Exception1" );
+            mv.visitTryCatchBlock( l0, l1, l2, "org/qi4j/satisfiedBy/Exception1" );
             Label l3 = new Label();
-            mv.visitTryCatchBlock( l0, l1, l3, "org/qi4j/test/Exception2" );
+            mv.visitTryCatchBlock( l0, l1, l3, "org/qi4j/satisfiedBy/Exception2" );
             Label l4 = new Label();
             mv.visitTryCatchBlock( l0, l1, l4, "java/lang/Throwable" );
             mv.visitLabel( l0 );
             mv.visitVarInsn( ALOAD, 0 );
-            mv.visitFieldInsn( GETFIELD, "org/qi4j/test/SomeMixin_Stub", "_instance", "Lorg/qi4j/spi/composite/CompositeInvoker;" );
-            mv.visitFieldInsn( GETSTATIC, "org/qi4j/test/SomeMixin_Stub", "m4", "Ljava/lang/reflect/Method;" );
+            mv.visitFieldInsn( GETFIELD, "org/qi4j/satisfiedBy/SomeMixin_Stub", "_instance",
+                               "Lorg/qi4j/spi/composite/CompositeInvoker;" );
+            mv.visitFieldInsn( GETSTATIC, "org/qi4j/satisfiedBy/SomeMixin_Stub", "m4", "Ljava/lang/reflect/Method;" );
             mv.visitInsn( ICONST_1 );
             mv.visitTypeInsn( ANEWARRAY, "java/lang/Object" );
             mv.visitInsn( DUP );
             mv.visitInsn( ICONST_0 );
             mv.visitVarInsn( ALOAD, 1 );
             mv.visitInsn( AASTORE );
-            mv.visitMethodInsn( INVOKEINTERFACE, "org/qi4j/spi/composite/CompositeInvoker", "invokeComposite", "(Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;" );
+            mv.visitMethodInsn( INVOKEINTERFACE, "org/qi4j/spi/composite/CompositeInvoker", "invokeComposite",
+                                "(Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;" );
             mv.visitInsn( POP );
             mv.visitLabel( l1 );
             Label l5 = new Label();
             mv.visitJumpInsn( GOTO, l5 );
             mv.visitLabel( l2 );
-            mv.visitFrame( Opcodes.F_SAME1, 0, null, 1, new Object[]{"org/qi4j/test/Exception1"} );
+            mv.visitFrame( Opcodes.F_SAME1, 0, null, 1, new Object[]{ "org/qi4j/satisfiedBy/Exception1" } );
             mv.visitVarInsn( ASTORE, 2 );
             mv.visitVarInsn( ALOAD, 2 );
             mv.visitInsn( ATHROW );
             mv.visitLabel( l3 );
-            mv.visitFrame( Opcodes.F_SAME1, 0, null, 1, new Object[]{"org/qi4j/test/Exception2"} );
+            mv.visitFrame( Opcodes.F_SAME1, 0, null, 1, new Object[]{ "org/qi4j/satisfiedBy/Exception2" } );
             mv.visitVarInsn( ASTORE, 2 );
             mv.visitVarInsn( ALOAD, 2 );
             mv.visitInsn( ATHROW );
             mv.visitLabel( l4 );
-            mv.visitFrame( Opcodes.F_SAME1, 0, null, 1, new Object[]{"java/lang/Throwable"} );
+            mv.visitFrame( Opcodes.F_SAME1, 0, null, 1, new Object[]{ "java/lang/Throwable" } );
             mv.visitVarInsn( ASTORE, 2 );
             mv.visitTypeInsn( NEW, "java/lang/reflect/UndeclaredThrowableException" );
             mv.visitInsn( DUP );
             mv.visitVarInsn( ALOAD, 2 );
-            mv.visitMethodInsn( INVOKESPECIAL, "java/lang/reflect/UndeclaredThrowableException", "<init>", "(Ljava/lang/Throwable;)V" );
+            mv.visitMethodInsn( INVOKESPECIAL, "java/lang/reflect/UndeclaredThrowableException", "<init>",
+                                "(Ljava/lang/Throwable;)V" );
             mv.visitInsn( ATHROW );
             mv.visitLabel( l5 );
             mv.visitFrame( Opcodes.F_SAME, 0, null, 0, null );
@@ -404,21 +461,24 @@ public void createClass()
             mv.visitTryCatchBlock( l0, l1, l2, "java/lang/Throwable" );
             mv.visitLabel( l0 );
             mv.visitVarInsn( ALOAD, 0 );
-            mv.visitFieldInsn( GETFIELD, "org/qi4j/test/SomeMixin_Stub", "_instance", "Lorg/qi4j/spi/composite/CompositeInvoker;" );
-            mv.visitFieldInsn( GETSTATIC, "org/qi4j/test/SomeMixin_Stub", "m5", "Ljava/lang/reflect/Method;" );
+            mv.visitFieldInsn( GETFIELD, "org/qi4j/satisfiedBy/SomeMixin_Stub", "_instance",
+                               "Lorg/qi4j/spi/composite/CompositeInvoker;" );
+            mv.visitFieldInsn( GETSTATIC, "org/qi4j/satisfiedBy/SomeMixin_Stub", "m5", "Ljava/lang/reflect/Method;" );
             mv.visitInsn( ACONST_NULL );
-            mv.visitMethodInsn( INVOKEINTERFACE, "org/qi4j/spi/composite/CompositeInvoker", "invokeComposite", "(Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;" );
+            mv.visitMethodInsn( INVOKEINTERFACE, "org/qi4j/spi/composite/CompositeInvoker", "invokeComposite",
+                                "(Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;" );
             mv.visitTypeInsn( CHECKCAST, "java/lang/Integer" );
             mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Integer", "intValue", "()I" );
             mv.visitLabel( l1 );
             mv.visitInsn( IRETURN );
             mv.visitLabel( l2 );
-            mv.visitFrame( Opcodes.F_SAME1, 0, null, 1, new Object[]{"java/lang/Throwable"} );
+            mv.visitFrame( Opcodes.F_SAME1, 0, null, 1, new Object[]{ "java/lang/Throwable" } );
             mv.visitVarInsn( ASTORE, 1 );
             mv.visitTypeInsn( NEW, "java/lang/reflect/UndeclaredThrowableException" );
             mv.visitInsn( DUP );
             mv.visitVarInsn( ALOAD, 1 );
-            mv.visitMethodInsn( INVOKESPECIAL, "java/lang/reflect/UndeclaredThrowableException", "<init>", "(Ljava/lang/Throwable;)V" );
+            mv.visitMethodInsn( INVOKESPECIAL, "java/lang/reflect/UndeclaredThrowableException", "<init>",
+                                "(Ljava/lang/Throwable;)V" );
             mv.visitInsn( ATHROW );
             mv.visitMaxs( 3, 2 );
             mv.visitEnd();
@@ -431,13 +491,14 @@ public void createClass()
             Label l2 = new Label();
             mv.visitTryCatchBlock( l0, l1, l2, "java/lang/NoSuchMethodException" );
             mv.visitLabel( l0 );
-            mv.visitLdcInsn( Type.getType( "Lorg/qi4j/test/Other;" ) );
+            mv.visitLdcInsn( Type.getType( "Lorg/qi4j/satisfiedBy/Other;" ) );
             mv.visitLdcInsn( "other" );
             mv.visitInsn( ICONST_0 );
             mv.visitTypeInsn( ANEWARRAY, "java/lang/Class" );
-            mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Class", "getMethod", "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;" );
-            mv.visitFieldInsn( PUTSTATIC, "org/qi4j/test/SomeMixin_Stub", "m1", "Ljava/lang/reflect/Method;" );
-            mv.visitLdcInsn( Type.getType( "Lorg/qi4j/test/Other;" ) );
+            mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Class", "getMethod",
+                                "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;" );
+            mv.visitFieldInsn( PUTSTATIC, "org/qi4j/satisfiedBy/SomeMixin_Stub", "m1", "Ljava/lang/reflect/Method;" );
+            mv.visitLdcInsn( Type.getType( "Lorg/qi4j/satisfiedBy/Other;" ) );
             mv.visitLdcInsn( "foo" );
             mv.visitInsn( ICONST_2 );
             mv.visitTypeInsn( ANEWARRAY, "java/lang/Class" );
@@ -449,9 +510,10 @@ public void createClass()
             mv.visitInsn( ICONST_1 );
             mv.visitFieldInsn( GETSTATIC, "java/lang/Integer", "TYPE", "Ljava/lang/Class;" );
             mv.visitInsn( AASTORE );
-            mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Class", "getMethod", "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;" );
-            mv.visitFieldInsn( PUTSTATIC, "org/qi4j/test/SomeMixin_Stub", "m2", "Ljava/lang/reflect/Method;" );
-            mv.visitLdcInsn( Type.getType( "Lorg/qi4j/test/Other;" ) );
+            mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Class", "getMethod",
+                                "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;" );
+            mv.visitFieldInsn( PUTSTATIC, "org/qi4j/satisfiedBy/SomeMixin_Stub", "m2", "Ljava/lang/reflect/Method;" );
+            mv.visitLdcInsn( Type.getType( "Lorg/qi4j/satisfiedBy/Other;" ) );
             mv.visitLdcInsn( "bar" );
             mv.visitIntInsn( BIPUSH, 11 );
             mv.visitTypeInsn( ANEWARRAY, "java/lang/Class" );
@@ -499,9 +561,10 @@ public void createClass()
             mv.visitIntInsn( BIPUSH, 10 );
             mv.visitLdcInsn( Type.getType( "[I" ) );
             mv.visitInsn( AASTORE );
-            mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Class", "getMethod", "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;" );
-            mv.visitFieldInsn( PUTSTATIC, "org/qi4j/test/SomeMixin_Stub", "m3", "Ljava/lang/reflect/Method;" );
-            mv.visitLdcInsn( Type.getType( "Lorg/qi4j/test/Other;" ) );
+            mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Class", "getMethod",
+                                "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;" );
+            mv.visitFieldInsn( PUTSTATIC, "org/qi4j/satisfiedBy/SomeMixin_Stub", "m3", "Ljava/lang/reflect/Method;" );
+            mv.visitLdcInsn( Type.getType( "Lorg/qi4j/satisfiedBy/Other;" ) );
             mv.visitLdcInsn( "multiEx" );
             mv.visitInsn( ICONST_1 );
             mv.visitTypeInsn( ANEWARRAY, "java/lang/Class" );
@@ -509,19 +572,21 @@ public void createClass()
             mv.visitInsn( ICONST_0 );
             mv.visitLdcInsn( Type.getType( "Ljava/lang/String;" ) );
             mv.visitInsn( AASTORE );
-            mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Class", "getMethod", "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;" );
-            mv.visitFieldInsn( PUTSTATIC, "org/qi4j/test/SomeMixin_Stub", "m4", "Ljava/lang/reflect/Method;" );
-            mv.visitLdcInsn( Type.getType( "Lorg/qi4j/test/Other;" ) );
+            mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Class", "getMethod",
+                                "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;" );
+            mv.visitFieldInsn( PUTSTATIC, "org/qi4j/satisfiedBy/SomeMixin_Stub", "m4", "Ljava/lang/reflect/Method;" );
+            mv.visitLdcInsn( Type.getType( "Lorg/qi4j/satisfiedBy/Other;" ) );
             mv.visitLdcInsn( "unwrapResult" );
             mv.visitInsn( ICONST_0 );
             mv.visitTypeInsn( ANEWARRAY, "java/lang/Class" );
-            mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Class", "getMethod", "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;" );
-            mv.visitFieldInsn( PUTSTATIC, "org/qi4j/test/SomeMixin_Stub", "m5", "Ljava/lang/reflect/Method;" );
+            mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Class", "getMethod",
+                                "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;" );
+            mv.visitFieldInsn( PUTSTATIC, "org/qi4j/satisfiedBy/SomeMixin_Stub", "m5", "Ljava/lang/reflect/Method;" );
             mv.visitLabel( l1 );
             Label l3 = new Label();
             mv.visitJumpInsn( GOTO, l3 );
             mv.visitLabel( l2 );
-            mv.visitFrame( Opcodes.F_SAME1, 0, null, 1, new Object[]{"java/lang/NoSuchMethodException"} );
+            mv.visitFrame( Opcodes.F_SAME1, 0, null, 1, new Object[]{ "java/lang/NoSuchMethodException" } );
             mv.visitVarInsn( ASTORE, 0 );
             mv.visitVarInsn( ALOAD, 0 );
             mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/NoSuchMethodException", "printStackTrace", "()V" );

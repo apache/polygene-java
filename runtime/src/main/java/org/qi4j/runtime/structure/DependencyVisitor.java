@@ -14,6 +14,7 @@
 
 package org.qi4j.runtime.structure;
 
+import org.qi4j.api.specification.Specification;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectedFieldModel;
 import org.qi4j.runtime.injection.InjectedParametersModel;
@@ -37,7 +38,10 @@ public abstract class DependencyVisitor<ThrowableType extends Throwable>
     {
         for( DependencyModel dependency : injectedParametersModel.filter( specification ) )
         {
-            visitDependency( dependency );
+            if( specification.satisfiedBy( dependency ) )
+            {
+                visitDependency( dependency );
+            }
         }
     }
 

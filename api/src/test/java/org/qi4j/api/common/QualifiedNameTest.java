@@ -3,20 +3,22 @@ package org.qi4j.api.common;
 import org.junit.Test;
 import org.qi4j.api.util.NullArgumentException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class QualifiedNameTest
 {
     @Test
     public void testQualifiedNameWithDollar()
     {
-        assertEquals( "Name containing dollar is modified", "Test-Test", new QualifiedName( TypeName.nameOf( "Test$Test" ), "test" ).type() );
+        assertEquals( "Name containing dollar is modified", "Test-Test",
+                      new QualifiedName( TypeName.nameOf( "Test$Test" ), "satisfiedBy" ).type() );
     }
 
     @Test
     public void testQualifiedNameFromQNWithDollar()
     {
-        assertEquals( "Name containing dollar is cleaned up", "Test-Test", QualifiedName.fromQN( "Test$Test:test" ).type() );
+        assertEquals( "Name containing dollar is cleaned up", "Test-Test",
+                      QualifiedName.fromQN( "Test$Test:satisfiedBy" ).type() );
     }
 
     @Test( expected = NullArgumentException.class )
@@ -28,7 +30,7 @@ public class QualifiedNameTest
     @Test( expected = NullArgumentException.class )
     public void nonNullArguments2()
     {
-        new QualifiedName( null, "test" );
+        new QualifiedName( null, "satisfiedBy" );
     }
 
     @Test( expected = NullArgumentException.class )
@@ -52,7 +54,7 @@ public class QualifiedNameTest
     @Test( expected = NullArgumentException.class )
     public void nonNullArguments6()
     {
-        QualifiedName.fromClass( null, "test" );
+        QualifiedName.fromClass( null, "satisfiedBy" );
     }
 
     @Test( expected = NullArgumentException.class )
