@@ -23,7 +23,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Test if the stacktrace is cleaned up properly.
@@ -66,19 +66,12 @@ public class CleanStackTraceTest
 
             String separator = System.getProperty( "line.separator" );
             String correctTrace = "java.lang.RuntimeException" + separator +
-                                  "\tat org.qi4j.satisfiedBy.composite.CleanStackTraceTest$DoStuffMixin.doStuff(CleanStackTraceTest.java:98)" + separator +
-                                  "\tat org.qi4j.satisfiedBy.composite.CleanStackTraceTest$TestComposite.doStuff(Unknown Source)" + separator +
-                                  "\tat org.qi4j.satisfiedBy.composite.CleanStackTraceTest.cleanStackTraceOnApplicationException(CleanStackTraceTest.java:60)";
+                                  "\tat org.qi4j.test.composite.CleanStackTraceTest$DoStuffMixin.doStuff(CleanStackTraceTest.java:91)" + separator +
+                                  "\tat org.qi4j.test.composite.CleanStackTraceTest$TestComposite.doStuff(Unknown Source)" + separator +
+                                  "\tat org.qi4j.test.composite.CleanStackTraceTest.cleanStackTraceOnApplicationException(CleanStackTraceTest.java:60)";
             String actual = actualTrace.toString();
-            boolean isStartWith = actual.startsWith( correctTrace );
-//            for( int i = 0; i < correctTrace.length(); i++ )
-//            {
-//                assertEquals( "Char pos: " + i,
-//                              new String( new char[] { correctTrace.charAt( i )} ) + ":" +  Integer.toHexString( correctTrace.charAt( i ) ),
-//                              new String( new char[] { actual.charAt( i )} ) + ":" +  Integer.toHexString( actual.charAt( i ) )
-//                );
-//            }
-            assertTrue( "Trace should have been:\n" + correctTrace + "\nbut was:\n" + actualTrace, isStartWith );
+            actual = actual.substring( 0, correctTrace.length() );
+            assertEquals( correctTrace, actual );
         }
     }
 
