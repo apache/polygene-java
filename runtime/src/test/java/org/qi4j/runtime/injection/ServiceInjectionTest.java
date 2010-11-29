@@ -14,31 +14,28 @@
 
 package org.qi4j.runtime.injection;
 
-import java.io.Serializable;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import org.junit.Test;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.object.ObjectBuilderFactory;
-import org.qi4j.api.service.qualifier.AnnotationQualifier;
-import org.qi4j.api.service.qualifier.IdentifiedBy;
-import org.qi4j.api.service.qualifier.ServiceQualifier;
-import org.qi4j.api.service.qualifier.Qualifier;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceImporterException;
 import org.qi4j.api.service.ServiceReference;
-import org.qi4j.bootstrap.ApplicationAssembly;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.LayerAssembly;
-import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.bootstrap.ServiceDeclaration;
-import org.qi4j.bootstrap.SingletonAssembler;
+import org.qi4j.api.service.qualifier.AnnotationQualifier;
+import org.qi4j.api.service.qualifier.IdentifiedBy;
+import org.qi4j.api.service.qualifier.Qualifier;
+import org.qi4j.api.specification.Specification;
+import org.qi4j.bootstrap.*;
 
-import static junit.framework.Assert.*;
-import static org.qi4j.api.common.Visibility.*;
+import java.io.Serializable;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+import static junit.framework.Assert.assertEquals;
+import static org.qi4j.api.common.Visibility.application;
+import static org.qi4j.api.common.Visibility.layer;
 
 /**
  * Test the @Service injection annotation
@@ -248,12 +245,11 @@ public class ServiceInjectionTest
     public static final class NamedSelector
         implements AnnotationQualifier<Named>
     {
-        public <T> ServiceQualifier qualifier( final Named named )
+        public <T> Specification<ServiceReference<?>> qualifier( final Named named )
         {
-            return new ServiceQualifier()
+            return new Specification<ServiceReference<?>>()
             {
-                @Override
-                public boolean qualifies( ServiceReference<?> service )
+                public boolean satisfiedBy( ServiceReference<?> service )
                 {
                     ServiceName serviceName = service.metaInfo( ServiceName.class );
                     return ( serviceName != null && serviceName.getName().equals(named.value() ));

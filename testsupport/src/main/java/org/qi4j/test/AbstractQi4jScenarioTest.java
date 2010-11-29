@@ -14,8 +14,8 @@
 
 package org.qi4j.test;
 
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.composite.TransientBuilderFactory;
 import org.qi4j.api.object.ObjectBuilderFactory;
@@ -25,12 +25,7 @@ import org.qi4j.api.structure.Application;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.value.ValueBuilderFactory;
-import org.qi4j.bootstrap.ApplicationAssembler;
-import org.qi4j.bootstrap.ApplicationAssembly;
-import org.qi4j.bootstrap.ApplicationAssemblyFactory;
-import org.qi4j.bootstrap.Assembler;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.Energy4Java;
+import org.qi4j.bootstrap.*;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.structure.ApplicationModelSPI;
 import org.qi4j.spi.structure.ApplicationSPI;
@@ -39,31 +34,33 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Base class for Composite tests.
+ * Base class for Qi4j scenario tests. This will create one Qi4j application per class instead of per test.
  */
-public abstract class AbstractQi4jTest
+public abstract class AbstractQi4jScenarioTest
     implements Assembler
 {
-    protected Qi4j api;
-    protected Qi4jSPI spi;
+    static protected Qi4j api;
+    static protected Qi4jSPI spi;
 
-    protected Energy4Java qi4j;
-    protected ApplicationModelSPI applicationModel;
-    protected ApplicationSPI application;
+    static protected Energy4Java qi4j;
+    static protected ApplicationModelSPI applicationModel;
+    static protected ApplicationSPI application;
 
-    protected TransientBuilderFactory transientBuilderFactory;
-    protected ObjectBuilderFactory objectBuilderFactory;
-    protected ValueBuilderFactory valueBuilderFactory;
-    protected UnitOfWorkFactory unitOfWorkFactory;
-    protected QueryBuilderFactory queryBuilderFactory;
-    protected ServiceFinder serviceLocator;
+    static protected TransientBuilderFactory transientBuilderFactory;
+    static protected ObjectBuilderFactory objectBuilderFactory;
+    static protected ValueBuilderFactory valueBuilderFactory;
+    static protected UnitOfWorkFactory unitOfWorkFactory;
+    static protected QueryBuilderFactory queryBuilderFactory;
+    static protected ServiceFinder serviceLocator;
 
-    protected ModuleSPI moduleInstance;
+    static protected ModuleSPI moduleInstance;
 
-    private Logger log;
+    static protected Assembler assembler; // Initialize this in static block of subclass
 
-    @Before
-    public void setUp()
+    static private Logger log;
+
+    @BeforeClass
+    public static void setUp()
         throws Exception
     {
         qi4j = new Energy4Java();
@@ -88,15 +85,17 @@ public abstract class AbstractQi4jTest
         serviceLocator = moduleInstance.serviceFinder();
     }
 
-    protected ApplicationModelSPI newApplication()
+    static protected ApplicationModelSPI newApplication()
         throws AssemblyException
     {
+        final Assembler asm = assembler;
+
         ApplicationAssembler assembler = new ApplicationAssembler()
         {
             public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
                 throws AssemblyException
             {
-                return applicationFactory.newApplicationAssembly( AbstractQi4jTest.this );
+                return applicationFactory.newApplicationAssembly( asm );
             }
         };
         try
@@ -116,20 +115,20 @@ public abstract class AbstractQi4jTest
      * Override this method to catch valid failures to place into satisfiedBy suites.
      *
      * @param exception the exception thrown.
-     * @throws AssemblyException The default implementation of this method will simply re-throw the exception.
+     * @throws org.qi4j.bootstrap.AssemblyException The default implementation of this method will simply re-throw the exception.
      */
-    protected void assemblyException( AssemblyException exception )
+    static protected void assemblyException( AssemblyException exception )
         throws AssemblyException
     {
         throw exception;
     }
 
-    protected void initApplication( Application app )
+    static protected void initApplication( Application app )
         throws Exception
     {
     }
 
-    @After
+    @AfterClass
     public void tearDown()
         throws Exception
     {

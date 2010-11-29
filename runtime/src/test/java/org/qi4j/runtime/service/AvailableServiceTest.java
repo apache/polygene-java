@@ -23,7 +23,7 @@ import org.qi4j.api.configuration.Enabled;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.AvailableService;
+import org.qi4j.api.service.Availability;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.service.qualifier.Available;
@@ -113,7 +113,7 @@ public class AvailableServiceTest
     // This service has to be asked for availability
     @Mixins(TestMixin1.class)
     public interface TestServiceComposite1
-            extends TestService, AvailableService, ServiceComposite
+            extends TestService, Availability, ServiceComposite
     {
     }
 
@@ -135,7 +135,7 @@ public class AvailableServiceTest
     }
 
     public static class TestMixin1
-            implements TestService, AvailableService
+            implements TestService, Availability
     {
         public String test()
         {

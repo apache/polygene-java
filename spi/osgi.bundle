@@ -20,6 +20,7 @@ Import-Package: org.qi4j.api, \
                 org.qi4j.api.service, \
                 org.qi4j.api.service.qualifier, \
                 org.qi4j.api.sideeffect, \
+                org.qi4j.api.specification, \
                 org.qi4j.api.structure, \
                 org.qi4j.api.unitofwork, \
                 org.qi4j.api.usecase, \

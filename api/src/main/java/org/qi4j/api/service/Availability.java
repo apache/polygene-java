@@ -20,7 +20,7 @@ package org.qi4j.api.service;
  * by clients through the ServiceReference of the service. Services that do not
  * implement this are always considered to be available.
  */
-public interface AvailableService
+public interface Availability
 {
     /**
      * Implementations should return true if the underlying service is currently available for use.

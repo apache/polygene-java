@@ -18,7 +18,7 @@ import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.configuration.Enabled;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.service.Activatable;
-import org.qi4j.api.service.AvailableService;
+import org.qi4j.api.service.Availability;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.runtime.composite.TransientInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
@@ -48,7 +48,7 @@ public class ServiceInstance
     {
         super( compositeModel, moduleInstance, mixins, state );
 
-        implementsServiceAvailable = AvailableService.class.isAssignableFrom( type() );
+        implementsServiceAvailable = Availability.class.isAssignableFrom( type() );
         hasEnabledConfiguration = compositeModel.configurationType() != null && Enabled.class.isAssignableFrom( compositeModel.configurationType());
     }
 
@@ -71,6 +71,6 @@ public class ServiceInstance
             return false;
 
         // Ask service if it's available
-        return !implementsServiceAvailable || ((AvailableService) proxy()).isAvailable();
+        return !implementsServiceAvailable || ((Availability) proxy()).isAvailable();
     }
 }

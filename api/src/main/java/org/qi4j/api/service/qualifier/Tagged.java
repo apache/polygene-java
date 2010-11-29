@@ -14,6 +14,9 @@
 
 package org.qi4j.api.service.qualifier;
 
+import org.qi4j.api.service.ServiceReference;
+import org.qi4j.api.specification.Specification;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
@@ -35,7 +38,7 @@ public @interface Tagged
     public final class TaggedQualifier
         implements AnnotationQualifier<Tagged>
     {
-        public <T> ServiceQualifier qualifier( Tagged tagged )
+        public <T> Specification<ServiceReference<?>> qualifier( Tagged tagged )
         {
             return ServiceQualifier.withTags( tagged.value() );
         }
