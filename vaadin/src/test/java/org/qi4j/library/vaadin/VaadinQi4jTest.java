@@ -43,7 +43,7 @@ public class VaadinQi4jTest
         ma.addServices( MemoryEntityStoreService.class );
 
         JettyConfiguration config = ma.forMixin( JettyConfiguration.class ).declareDefaults();
-        config.port().set( 8080 );
+        config.port().set( 8041 );
         config.resourcePath().set( "/tmp" );
 
         addServlets( serve( "/mortals/*" ).with( Qi4jVaadinApplicationServletService.class ) ).to( ma );
@@ -57,7 +57,7 @@ public class VaadinQi4jTest
     public void test()
             throws InterruptedException, IOException
     {
-        String url = "http://localhost:8080/mortals";
+        String url = "http://localhost:8041/mortals";
         String expected = "You have to enable javascript in your browser to use an application built with Vaadin.";
 
         String got = "";
@@ -69,7 +69,7 @@ public class VaadinQi4jTest
 
         assertTrue( got.contains( expected ) );
 
-        // Uncomment this, run the test and go to http://localhost:8080/mortals to see it working :)
+        // Uncomment this, run the test and go to http://localhost:8041/mortals to see it working :)
         // Thread.sleep( Integer.MAX_VALUE );
     }
 
