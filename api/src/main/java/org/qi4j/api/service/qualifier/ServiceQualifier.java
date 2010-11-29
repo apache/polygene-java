@@ -15,8 +15,7 @@
 package org.qi4j.api.service.qualifier;
 
 import org.qi4j.api.service.ServiceReference;
-
-import java.util.Iterator;
+import org.qi4j.api.specification.Specification;
 
 /**
  * This class helps you select a particular service
@@ -32,23 +31,11 @@ import java.util.Iterator;
  */
 public abstract class ServiceQualifier
 {
-    public static <T> ServiceReference<T> first( ServiceQualifier qualifier, Iterable<ServiceReference<T>> services )
+    public static <T> T firstService( Specification<ServiceReference<?>> qualifier, Iterable<ServiceReference<T>> services )
     {
         for( ServiceReference<T> service : services )
         {
-            if( qualifier.qualifies( service ) )
-            {
-                return service;
-            }
-        }
-        return null;
-    }
-
-    public static <T> T firstService( ServiceQualifier qualifier, Iterable<ServiceReference<T>> services )
-    {
-        for( ServiceReference<T> service : services )
-        {
-            if( qualifier.qualifies( service ) )
+            if( qualifier.satisfiedBy( service ))
             {
                 return service.get();
             }
@@ -56,30 +43,22 @@ public abstract class ServiceQualifier
         return null;
     }
 
-    public static <T> Iterable<ServiceReference<T>> filter( ServiceQualifier qualifier,
-                                                            Iterable<ServiceReference<T>> services)
+    public static Specification<ServiceReference<?>> withId( final String anId )
     {
-        return new QualifierFilterIterable<T>( qualifier, services );
-    }
-
-    public static ServiceQualifier withId( final String anId )
-    {
-        return new ServiceQualifier()
+        return new Specification<ServiceReference<?>>()
         {
-            @Override
-            public boolean qualifies( ServiceReference<?> service )
+            public boolean satisfiedBy( ServiceReference<?> service )
             {
                 return service.identity().equals( anId );
             }
         };
     }
 
-    public static ServiceQualifier whereMetaInfoIs( final Object metaInfo )
+    public static Specification<ServiceReference<?>> whereMetaInfoIs( final Object metaInfo )
     {
-        return new ServiceQualifier()
+        return new Specification<ServiceReference<?>>()
         {
-            @Override
-            public boolean qualifies( ServiceReference<?> service )
+            public boolean satisfiedBy( ServiceReference<?> service )
             {
                 Object metaObject = service.metaInfo( metaInfo.getClass() );
                 return metaObject != null && metaInfo.equals( metaObject );
@@ -87,36 +66,33 @@ public abstract class ServiceQualifier
         };
     }
 
-    public static ServiceQualifier whereActive()
+    public static Specification<ServiceReference<?>> whereActive()
     {
-        return new ServiceQualifier()
+        return new Specification<ServiceReference<?>>()
         {
-            @Override
-            public boolean qualifies( ServiceReference<?> service )
+            public boolean satisfiedBy( ServiceReference<?> service )
             {
                 return service.isActive();
             }
         };
     }
 
-    public static ServiceQualifier whereAvailable()
+    public static Specification<ServiceReference<?>> whereAvailable()
     {
-        return new ServiceQualifier()
+        return new Specification<ServiceReference<?>>()
         {
-            @Override
-            public boolean qualifies( ServiceReference<?> service )
+            public boolean satisfiedBy( ServiceReference<?> service )
             {
                 return service.isAvailable();
             }
         };
     }
 
-    public static ServiceQualifier withTags( final String... tags )
+    public static Specification<ServiceReference<?>> withTags( final String... tags )
     {
-        return new ServiceQualifier()
+        return new Specification<ServiceReference<?>>()
         {
-            @Override
-            public boolean qualifies( ServiceReference<?> service )
+            public boolean satisfiedBy( ServiceReference<?> service )
             {
                 ServiceTags serviceTags = service.metaInfo( ServiceTags.class );
 
@@ -126,89 +102,4 @@ public abstract class ServiceQualifier
     }
 
     public abstract boolean qualifies( ServiceReference<?> service );
-
-    private static class QualifierFilterIterable<T>
-        implements Iterable<ServiceReference<T>>
-    {
-        private final ServiceQualifier qualifier;
-        private final Iterable<ServiceReference<T>> services;
-
-        public QualifierFilterIterable( ServiceQualifier qualifier, Iterable<ServiceReference<T>> services )
-        {
-            this.qualifier = qualifier;
-            this.services = services;
-        }
-
-        public Iterator<ServiceReference<T>> iterator()
-        {
-            return new QualifierFilterIterator<T>(qualifier, services.iterator());
-        }
-    }
-
-    private static class QualifierFilterIterator<T>
-        implements Iterator<ServiceReference<T>>
-    {
-        private Iterator<ServiceReference<T>> iterator;
-        private ServiceReference<T> currentValue;
-        private boolean finished = false;
-        private boolean nextConsumed = true;
-        private final ServiceQualifier qualifier;
-
-        public QualifierFilterIterator( ServiceQualifier qualifier, Iterator<ServiceReference<T>> iterator)
-        {
-            this.qualifier = qualifier;
-            this.iterator = iterator;
-        }
-
-        public boolean moveToNextValid()
-        {
-            boolean found = false;
-            while( !found && iterator.hasNext() )
-            {
-                ServiceReference<T> currentValue = iterator.next();
-                if( qualifier.qualifies( currentValue ) )
-                {
-                    found = true;
-                    this.currentValue = currentValue;
-                    nextConsumed = false;
-                }
-            }
-            if( !found )
-            {
-                finished = true;
-            }
-            return found;
-        }
-
-        public ServiceReference<T> next()
-        {
-            if( !nextConsumed )
-            {
-                nextConsumed = true;
-                return currentValue;
-            }
-            else
-            {
-                if( !finished )
-                {
-                    if( moveToNextValid() )
-                    {
-                        nextConsumed = true;
-                        return currentValue;
-                    }
-                }
-            }
-            return null;
-        }
-
-        public boolean hasNext()
-        {
-            return !finished &&
-                   ( !nextConsumed || moveToNextValid() );
-        }
-
-        public void remove()
-        {
-        }
-    }
 }

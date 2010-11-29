@@ -14,6 +14,9 @@
 
 package org.qi4j.api.service.qualifier;
 
+import org.qi4j.api.service.ServiceReference;
+import org.qi4j.api.specification.Specification;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
@@ -31,7 +34,7 @@ public @interface Available
     public final class AvailableQualifier
         implements AnnotationQualifier<Available>
     {
-        public <T> ServiceQualifier qualifier( Available active )
+        public <T> Specification<ServiceReference<?>> qualifier( Available active )
         {
             return ServiceQualifier.whereAvailable();
         }

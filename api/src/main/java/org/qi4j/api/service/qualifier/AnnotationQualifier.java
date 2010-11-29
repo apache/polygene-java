@@ -14,12 +14,15 @@
 
 package org.qi4j.api.service.qualifier;
 
+import org.qi4j.api.service.ServiceReference;
+import org.qi4j.api.specification.Specification;
+
 import java.lang.annotation.Annotation;
 
 /**
- * JAVADOC
+ * Constructs a Specification for a given qualifier annotation
  */
 public interface AnnotationQualifier<QUALIFIER extends Annotation>
 {
-    public <T> ServiceQualifier qualifier( QUALIFIER qualifier );
+    public <T> Specification<ServiceReference<?>> qualifier( QUALIFIER qualifier );
 }
