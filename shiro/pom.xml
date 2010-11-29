@@ -12,7 +12,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <version.shiro>1.0.0-incubating</version.shiro>
+        <version.shiro>1.1.0</version.shiro>
         <version.bouncy>1.45</version.bouncy>
         <version.jodatime>1.6</version.jodatime>
     </properties>
