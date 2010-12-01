@@ -12,10 +12,10 @@
  *
  */
 
-package org.qi4j.api.util;
+package org.qi4j.api.specification;
 
 /**
- * Common generic specifications
+ * Common generic specification expressions
  */
 public class Specifications
 {
@@ -23,7 +23,7 @@ public class Specifications
     {
         return new Specification<T>()
         {
-            public boolean test( T instance )
+            public boolean satisfiedBy( T instance )
             {
                 return true;
             }
@@ -34,9 +34,9 @@ public class Specifications
     {
         return new Specification<T>()
         {
-            public boolean test( T instance )
+            public boolean satisfiedBy( T instance )
             {
-                return !specification.test( instance );
+                return !specification.satisfiedBy( instance );
             }
         };
     }
@@ -45,12 +45,14 @@ public class Specifications
     {
         return new Specification<T>()
         {
-            public boolean test( T instance )
+            public boolean satisfiedBy( T instance )
             {
-                for (Specification<T> specification : specifications)
+                for( Specification<T> specification : specifications )
                 {
-                    if (!specification.test( instance ))
+                    if( !specification.satisfiedBy( instance ) )
+                    {
                         return false;
+                    }
                 }
 
                 return true;
@@ -62,16 +64,19 @@ public class Specifications
     {
         return new Specification<T>()
         {
-            public boolean test( T instance )
+            public boolean satisfiedBy( T instance )
             {
-                for (Specification<T> specification : specifications)
+                for( Specification<T> specification : specifications )
                 {
-                    if (specification.test( instance ))
+                    if( specification.satisfiedBy( instance ) )
+                    {
                         return true;
+                    }
                 }
 
                 return false;
             }
         };
     }
+
 }

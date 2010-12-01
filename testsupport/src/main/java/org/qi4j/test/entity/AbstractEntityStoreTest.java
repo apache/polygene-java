@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,14 +29,16 @@ import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 /**
- * Abstract test with tests for the EntityStore interface.
+ * Abstract satisfiedBy with tests for the EntityStore interface.
  */
 public abstract class AbstractEntityStoreTest
-        extends AbstractQi4jTest
+    extends AbstractQi4jTest
 {
     @Service
     private EntityStore store;
@@ -46,7 +47,7 @@ public abstract class AbstractEntityStoreTest
     private Module module;
 
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
         module.addServices( UuidIdentityGeneratorService.class );
         module.addEntities( TestEntity.class );
@@ -63,13 +64,13 @@ public abstract class AbstractEntityStoreTest
     @Override
     @After
     public void tearDown()
-            throws Exception
+        throws Exception
     {
         super.tearDown();
     }
 
     protected TestEntity createEntity( UnitOfWork unitOfWork )
-            throws UnitOfWorkCompletionException
+        throws UnitOfWorkCompletionException
     {
         // Create entity
         EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class );
@@ -112,7 +113,7 @@ public abstract class AbstractEntityStoreTest
 
     @Test
     public void whenNewEntityThenCanFindEntityAndCorrectValues()
-            throws Exception
+        throws Exception
     {
         UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
         try
@@ -129,38 +130,38 @@ public abstract class AbstractEntityStoreTest
             assertThat( "property 'unsetName' has correct value", instance.unsetName().get(), equalTo( null ) );
 
             assertThat( "property has correct value", instance.valueProperty()
-                    .get()
-                    .valueProperty()
-                    .get()
-                    .stringValue().get(), equalTo( "Bar" ) );
+                .get()
+                .valueProperty()
+                .get()
+                .stringValue().get(), equalTo( "Bar" ) );
             assertThat( "property has correct value", instance.valueProperty()
-                    .get()
-                    .listProperty()
-                    .get().get( 0 ), equalTo( "Foo" ) );
+                .get()
+                .listProperty()
+                .get().get( 0 ), equalTo( "Foo" ) );
             assertThat( "property has correct value", instance.valueProperty()
-                    .get()
-                    .valueProperty()
-                    .get()
-                    .anotherValue()
-                    .get()
-                    .bling().get(), equalTo( "BlinkLjus" ) );
+                .get()
+                .valueProperty()
+                .get()
+                .anotherValue()
+                .get()
+                .bling().get(), equalTo( "BlinkLjus" ) );
             assertThat( "property has correct value", instance.valueProperty()
-                    .get()
-                    .tjabbaProperty()
-                    .get()
-                    .bling().get(), equalTo( "Brakfis" ) );
+                .get()
+                .tjabbaProperty()
+                .get()
+                .bling().get(), equalTo( "Brakfis" ) );
             Map<String, String> mapValue = new HashMap<String, String>();
             mapValue.put( "foo", "bar" );
             assertThat( "property has correct value", instance.valueProperty()
-                    .get()
-                    .serializableProperty().get(), equalTo( mapValue ) );
+                .get()
+                .serializableProperty().get(), equalTo( mapValue ) );
 
             assertThat( "association has correct value", instance.association().get(), equalTo( instance ) );
             assertThat( "manyAssociation has correct value", instance.manyAssociation()
-                    .iterator().next(), equalTo( instance ) );
+                .iterator().next(), equalTo( instance ) );
             unitOfWork.discard();
         }
-        catch (Exception e)
+        catch( Exception e )
         {
             unitOfWork.discard();
             throw e;
@@ -169,7 +170,7 @@ public abstract class AbstractEntityStoreTest
 
     @Test
     public void whenRemovedEntityThenCannotFindEntity()
-            throws Exception
+        throws Exception
     {
         UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
         TestEntity newInstance = createEntity( unitOfWork );
@@ -189,7 +190,7 @@ public abstract class AbstractEntityStoreTest
             unitOfWork.get( TestEntity.class, identity );
             fail( "Should not be able to find entity" );
         }
-        catch (NoSuchEntityException e)
+        catch( NoSuchEntityException e )
         {
             // Ok!
         }
@@ -201,7 +202,7 @@ public abstract class AbstractEntityStoreTest
 
     @Test
     public void givenEntityIsNotModifiedWhenUnitOfWorkCompletesThenDontStoreState()
-            throws UnitOfWorkCompletionException
+        throws UnitOfWorkCompletionException
     {
         TestEntity testEntity;
         String version;
@@ -234,7 +235,7 @@ public abstract class AbstractEntityStoreTest
 
     @Test
     public void givenPropertyIsModifiedWhenUnitOfWorkCompletesThenStoreState()
-            throws UnitOfWorkCompletionException
+        throws UnitOfWorkCompletionException
     {
         TestEntity testEntity;
         String version;
@@ -268,7 +269,7 @@ public abstract class AbstractEntityStoreTest
 
     @Test
     public void givenManyAssociationIsModifiedWhenUnitOfWorkCompletesThenStoreState()
-            throws UnitOfWorkCompletionException
+        throws UnitOfWorkCompletionException
     {
         TestEntity testEntity;
         String version;
@@ -302,7 +303,7 @@ public abstract class AbstractEntityStoreTest
 
     @Test
     public void givenConcurrentUnitOfWorksWhenUoWCompletesThenCheckConcurrentModification()
-            throws UnitOfWorkCompletionException
+        throws UnitOfWorkCompletionException
     {
         TestEntity testEntity;
         {
@@ -346,7 +347,7 @@ public abstract class AbstractEntityStoreTest
                 unitOfWork1.complete();
                 fail( "Should have thrown concurrent modification exception" );
             }
-            catch (ConcurrentEntityModificationException e)
+            catch( ConcurrentEntityModificationException e )
             {
                 unitOfWork1.discard();
             }
@@ -357,13 +358,14 @@ public abstract class AbstractEntityStoreTest
             unitOfWork1 = unitOfWorkFactory.newUnitOfWork();
             testEntity1 = unitOfWork1.get( testEntity );
             assertThat( "property name has not been set", testEntity1.name().get(), equalTo( "B" ) );
-            assertThat( "version is incorrect", spi.getEntityState( testEntity1 ).version(), not( equalTo( version ) ) );
+            assertThat( "version is incorrect", spi.getEntityState( testEntity1 ).version(),
+                        not( equalTo( version ) ) );
             unitOfWork1.discard();
         }
     }
 
     public interface TestEntity
-            extends EntityComposite
+        extends EntityComposite
     {
         @UseDefaults
         Property<Integer> intValue();
@@ -402,7 +404,7 @@ public abstract class AbstractEntityStoreTest
     }
 
     public interface TjabbaValue
-            extends Tjabba, ValueComposite
+        extends Tjabba, ValueComposite
     {
 
     }
@@ -413,7 +415,7 @@ public abstract class AbstractEntityStoreTest
     }
 
     public interface TestValue
-            extends ValueComposite
+        extends ValueComposite
     {
         @UseDefaults
         Property<String> stringProperty();
@@ -438,7 +440,7 @@ public abstract class AbstractEntityStoreTest
     }
 
     public interface TestValue2
-            extends ValueComposite
+        extends ValueComposite
     {
         Property<String> stringValue();
 

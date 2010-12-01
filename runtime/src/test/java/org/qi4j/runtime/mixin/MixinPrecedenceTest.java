@@ -23,11 +23,12 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 /**
- * Test mixin declaration precedence test
+ * Test mixin declaration precedence satisfiedBy
  */
 public class MixinPrecedenceTest
     extends AbstractQi4jTest

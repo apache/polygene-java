@@ -17,6 +17,7 @@ package org.qi4j.api.util;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import org.qi4j.api.specification.Specification;
 
 import static org.qi4j.api.util.Classes.interfacesOf;
 import static org.qi4j.api.util.Iterables.flatten;
@@ -32,7 +33,7 @@ public final class Annotations
     {
         return new Specification<Annotation>()
         {
-            public boolean test( Annotation annotation )
+            public boolean satisfiedBy( Annotation annotation )
             {
                 return annotation.annotationType().getAnnotation( annotationType ) != null;
             }
@@ -43,7 +44,7 @@ public final class Annotations
     {
         return new Specification<Annotation>()
         {
-            public boolean test( Annotation annotation )
+            public boolean satisfiedBy( Annotation annotation )
             {
                 return annotation.annotationType().equals( annotationType );
             }
@@ -52,22 +53,22 @@ public final class Annotations
 
     public static <T extends Annotation> T getAnnotation( Type type, Class<T> annotationType )
     {
-        if (!(type instanceof Class))
+        if( !( type instanceof Class ) )
         {
             return null;
         }
-        return annotationType.cast( ((Class<?>) type).getAnnotation( annotationType ) );
+        return annotationType.cast( ( (Class<?>) type ).getAnnotation( annotationType ) );
     }
 
     public static Iterable<Annotation> getMethodAndTypeAnnotations( Method method )
     {
         return flatten( iterable( method.getAnnotations() ),
-                flatten( map( new Function<Class, Iterable<Annotation>>()
-                {
-                    public Iterable<Annotation> map( Class aClass )
-                    {
-                        return iterable( aClass.getAnnotations() );
-                    }
-                }, interfacesOf( method.getReturnType() ) ) ));
+                        flatten( map( new Function<Class, Iterable<Annotation>>()
+                        {
+                            public Iterable<Annotation> map( Class aClass )
+                            {
+                                return iterable( aClass.getAnnotations() );
+                            }
+                        }, interfacesOf( method.getReturnType() ) ) ) );
     }
 }

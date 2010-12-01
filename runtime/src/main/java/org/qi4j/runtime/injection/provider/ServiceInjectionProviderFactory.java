@@ -17,7 +17,7 @@ package org.qi4j.runtime.injection.provider;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.service.qualifier.Qualifier;
-import org.qi4j.api.service.qualifier.ServiceQualifier;
+import org.qi4j.api.specification.Specification;
 import org.qi4j.bootstrap.InvalidInjectionException;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectionContext;
@@ -46,7 +46,7 @@ public final class ServiceInjectionProviderFactory
         throws InvalidInjectionException
     {
         Annotation qualifierAnnotation = first( filter(hasAnnotation( Qualifier.class ), iterable(dependencyModel.annotations()) ));
-        ServiceQualifier serviceQualifier = null;
+        Specification<ServiceReference<?>> serviceQualifier = null;
         if( qualifierAnnotation != null )
         {
             Qualifier qualifier = qualifierAnnotation.annotationType().getAnnotation( Qualifier.class );
@@ -160,7 +160,7 @@ public final class ServiceInjectionProviderFactory
             super( serviceFinder );
         }
 
-        private IterableServiceReferenceProvider( ServicesFinder servicesFinder, ServiceQualifier serviceQualifier )
+        private IterableServiceReferenceProvider( ServicesFinder servicesFinder, Specification<ServiceReference<?>> serviceQualifier )
         {
             super( servicesFinder, serviceQualifier );
         }
@@ -180,7 +180,7 @@ public final class ServiceInjectionProviderFactory
             super( serviceFinder );
         }
 
-        private IterableServiceProvider( ServicesFinder servicesFinder, ServiceQualifier serviceQualifier )
+        private IterableServiceProvider( ServicesFinder servicesFinder, Specification<ServiceReference<?>> serviceQualifier )
         {
             super( servicesFinder, serviceQualifier );
         }
@@ -223,7 +223,7 @@ public final class ServiceInjectionProviderFactory
             super( serviceFinder );
         }
 
-        ServiceReferenceProvider( ServicesFinder servicesFinder, ServiceQualifier serviceQualifier )
+        ServiceReferenceProvider( ServicesFinder servicesFinder, Specification<ServiceReference<?>> serviceQualifier )
         {
             super( servicesFinder, serviceQualifier );
         }
@@ -243,7 +243,7 @@ public final class ServiceInjectionProviderFactory
             super( serviceFinder );
         }
 
-        ServiceProvider( ServicesFinder servicesFinder, ServiceQualifier selector )
+        ServiceProvider( ServicesFinder servicesFinder, Specification<ServiceReference<?>> selector )
         {
             super( servicesFinder, selector );
         }
@@ -269,14 +269,14 @@ public final class ServiceInjectionProviderFactory
     {
         private ServiceFinder serviceFinder;
         private ServicesFinder servicesFinder;
-        private ServiceQualifier serviceQualifier;
+        private Specification<ServiceReference<?>> serviceQualifier;
 
         protected ServiceInjectionProvider( ServiceFinder serviceFinder )
         {
             this.serviceFinder = serviceFinder;
         }
 
-        protected ServiceInjectionProvider( ServicesFinder servicesFinder, ServiceQualifier serviceQualifier )
+        protected ServiceInjectionProvider( ServicesFinder servicesFinder, Specification<ServiceReference<?>> serviceQualifier )
         {
             this.servicesFinder = servicesFinder;
             this.serviceQualifier = serviceQualifier;
@@ -317,7 +317,7 @@ public final class ServiceInjectionProviderFactory
                     {
                         ServiceReference<Object> serviceRef = moduleInstance.services()
                             .getServiceWithIdentity( identity );
-                        if( serviceQualifier.qualifies( serviceRef ) )
+                        if( serviceQualifier.satisfiedBy( serviceRef ) )
                         {
                             return serviceRef;
                         }
@@ -330,7 +330,7 @@ public final class ServiceInjectionProviderFactory
                     {
                         ServiceReference<Object> serviceRef = moduleInstance.importedServices()
                             .getServiceWithIdentity( identity );
-                        if( serviceQualifier.qualifies( serviceRef ) )
+                        if( serviceQualifier.satisfiedBy( serviceRef ) )
                         {
                             return serviceRef;
                         }
@@ -359,7 +359,7 @@ public final class ServiceInjectionProviderFactory
                         {
                             ServiceReference<Object> serviceRef = moduleInstance.services()
                                 .getServiceWithIdentity( identity );
-                            if( serviceQualifier == null || serviceQualifier.qualifies( serviceRef ) )
+                            if( serviceQualifier == null || serviceQualifier.satisfiedBy( serviceRef ) )
                             {
                                 serviceReferences.add( serviceRef );
                             }
@@ -372,7 +372,7 @@ public final class ServiceInjectionProviderFactory
                         {
                             ServiceReference<Object> serviceRef = moduleInstance.importedServices()
                                 .getServiceWithIdentity( identity );
-                            if( serviceQualifier == null || serviceQualifier.qualifies( serviceRef ) )
+                            if( serviceQualifier == null || serviceQualifier.satisfiedBy( serviceRef ) )
                             {
                                 serviceReferences.add( serviceRef );
                             }

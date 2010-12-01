@@ -14,6 +14,9 @@
 
 package org.qi4j.api.service.qualifier;
 
+import org.qi4j.api.service.ServiceReference;
+import org.qi4j.api.specification.Specification;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
@@ -35,7 +38,7 @@ public @interface IdentifiedBy
     public final class IdentifiedByQualifier
         implements AnnotationQualifier<IdentifiedBy>
     {
-        public <T> ServiceQualifier qualifier( IdentifiedBy identifiedBy )
+        public <T> Specification<ServiceReference<?>> qualifier( IdentifiedBy identifiedBy )
         {
             return ServiceQualifier.withId( identifiedBy.value() );
         }

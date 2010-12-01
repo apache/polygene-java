@@ -17,6 +17,7 @@ package org.qi4j.spi.service.importer;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.service.*;
 import org.qi4j.api.service.qualifier.ServiceQualifier;
+import org.qi4j.api.specification.Specification;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,7 @@ import java.util.List;
 /**
  * If several services are available with a given type, and you want to constrain
  * the current module to use a specific one, then use this importer. Specify a
- * ServiceQualifier.Selector criteria as meta-info for the service, which will be applied
+ * Specification&lt;ServiceReference&lt;T&gt;&gt; criteria as meta-info for the service, which will be applied
  * to the list of available services, and the first match will be chosen.
  *
  * This importer will avoid selecting itself, as could be possible if the ServiceQualifier.first()
@@ -39,7 +40,7 @@ public final class ServiceSelectorImporter
     public Object importService( ImportedServiceDescriptor serviceDescriptor )
         throws ServiceImporterException
     {
-        ServiceQualifier selector = serviceDescriptor.metaInfo( ServiceQualifier.class );
+        Specification<ServiceReference<?>> selector = serviceDescriptor.metaInfo( Specification.class );
         Class serviceType = serviceDescriptor.type();
         Iterable<ServiceReference<Object>> services = locator.findServices( serviceType );
         List<ServiceReference<Object>> filteredServices = new ArrayList<ServiceReference<Object>>();
@@ -63,6 +64,6 @@ public final class ServiceSelectorImporter
 
     public boolean isAvailable( Object instance )
     {
-        return !(instance instanceof AvailableService) || ((AvailableService) instance).isAvailable();
+        return !(instance instanceof Availability) || ((Availability) instance).isAvailable();
     }
 }

@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.api.util;
+package org.qi4j.api.specification;
 
 /**
  * Generic specification interface.
@@ -27,5 +27,5 @@ public interface Specification<T>
      * @param item the item to be tested
      * @return true if the item matches, false otherwise
      */
-    boolean test( T item );
+    boolean satisfiedBy( T item );
 }

@@ -1,22 +1,10 @@
 
-apply plugin: 'java'
-
 dependencies {
-    compile( libraries.asm )
-    compile( libraries.slf4j_api )
-    testCompile( libraries.ant )
-    testCompile( libraries.junit )
-    testRuntime( libraries.slf4j_simple )
-    testRuntime( libraries.asm ) {
-        transitive = true
-    }
-}
-
-sourceSets {
-  test {
-    // resources inherently exclude sources
-    resources {
-      setSrcDirs(['src/test/java', 'src/test/resources'])
-    }
+  compile(libraries.slf4j_api)
+  testCompile(libraries.ant)
+  testCompile(libraries.junit)
+  testRuntime(libraries.slf4j_simple)
+  testRuntime(libraries.asm) {
+    transitive = true
   }
 }

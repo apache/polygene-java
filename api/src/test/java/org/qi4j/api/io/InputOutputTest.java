@@ -14,18 +14,25 @@
 
 package org.qi4j.api.io;
 
-import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
-import org.junit.Test;
-import org.qi4j.api.util.Function;
-import org.slf4j.LoggerFactory;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.Arrays;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import org.hamcrest.CoreMatchers;
+import org.junit.Assert;
+import org.junit.Test;
+import org.qi4j.api.util.Function;
+import org.slf4j.LoggerFactory;
 
 import static java.util.Arrays.asList;
 import static org.qi4j.api.io.Inputs.text;
@@ -38,175 +45,196 @@ import static org.qi4j.api.util.Iterables.iterable;
 public class InputOutputTest
 {
     @Test
-    public void testCopyFileNoAPI() throws IOException
+    public void testCopyFileNoAPI()
+        throws IOException
     {
         File source = getSourceFile();
-        File destination = File.createTempFile( "test", ".txt" );
+        File destination = File.createTempFile( "satisfiedBy", ".txt" );
         destination.deleteOnExit();
 
-        BufferedReader reader = new BufferedReader(new FileReader(source));
+        BufferedReader reader = new BufferedReader( new FileReader( source ) );
         long count = 0;
         try
         {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(destination));
+            BufferedWriter writer = new BufferedWriter( new FileWriter( destination ) );
             try
             {
                 String line = null;
-                while ((line = reader.readLine()) != null)
+                while( ( line = reader.readLine() ) != null )
                 {
                     count++;
                     writer.append( line ).append( '\n' );
                 }
                 writer.close();
-            } catch (IOException e)
+            }
+            catch( IOException e )
             {
                 writer.close();
                 destination.delete();
             }
 
-        } finally
+        }
+        finally
         {
             reader.close();
         }
-        System.out.println(count);
+        System.out.println( count );
     }
 
     @Test
-    public void testInputOutput() throws IOException
+    public void testInputOutput()
+        throws IOException
     {
         URL source = getClass().getResource( "/iotest.txt" );
-        File destination = File.createTempFile( "test",".txt" );
+        File destination = File.createTempFile( "satisfiedBy", ".txt" );
         destination.deleteOnExit();
-        text( source ).transferTo( Outputs.text(destination) );
+        text( source ).transferTo( Outputs.text( destination ) );
     }
 
     @Test
-    public void testCopyFile() throws IOException
+    public void testCopyFile()
+        throws IOException
     {
         File source = getSourceFile();
-        File tempFile = File.createTempFile( "test", ".txt" );
+        File tempFile = File.createTempFile( "satisfiedBy", ".txt" );
         tempFile.deleteOnExit();
 
-        Inputs.byteBuffer( source, 1024 ).transferTo( Outputs.byteBuffer(tempFile ));
+        Inputs.byteBuffer( source, 1024 ).transferTo( Outputs.byteBuffer( tempFile ) );
 
         Assert.assertThat( tempFile.length(), CoreMatchers.equalTo( source.length() ) );
     }
 
     @Test
-    public void testCopyFileStreams() throws IOException
+    public void testCopyFileStreams()
+        throws IOException
     {
         File source = getSourceFile();
-        File tempFile = File.createTempFile( "test", ".txt" );
+        File tempFile = File.createTempFile( "satisfiedBy", ".txt" );
         tempFile.deleteOnExit();
 
-        Inputs.byteBuffer( new FileInputStream(source), 1024 ).transferTo( Outputs.byteBuffer(new FileOutputStream(tempFile) ));
+        Inputs.byteBuffer( new FileInputStream( source ), 1024 ).transferTo(
+            Outputs.byteBuffer( new FileOutputStream( tempFile ) ) );
 
         Assert.assertThat( tempFile.length(), CoreMatchers.equalTo( source.length() ) );
     }
 
     @Test
-    public void testLog() throws IOException
+    public void testLog()
+        throws IOException
     {
         File source = getSourceFile();
 
-        text( source ).transferTo( Transforms.map( new Transforms.Log<String>( LoggerFactory.getLogger( getClass() ), "Line: {0}"), Outputs.<String>noop()));
+        text( source ).transferTo(
+            Transforms.map( new Transforms.Log<String>( LoggerFactory.getLogger( getClass() ), "Line: {0}" ),
+                            Outputs.<String>noop() ) );
     }
 
     @Test
-    public void testProgressLog() throws Throwable
+    public void testProgressLog()
+        throws Throwable
     {
         Integer[] data = new Integer[105];
         Arrays.fill( data, 42 );
 
-        Inputs.iterable( iterable(data )).transferTo(
-                Transforms.map(new Transforms.ProgressLog<Integer>(LoggerFactory.getLogger( InputOutputTest.class), "Data transferred: {0}", 10 ),
-                        Outputs.<Integer>noop() ));
+        Inputs.iterable( iterable( data ) ).transferTo(
+            Transforms.map( new Transforms.ProgressLog<Integer>( LoggerFactory.getLogger( InputOutputTest.class ),
+                                                                 "Data transferred: {0}", 10 ),
+                            Outputs.<Integer>noop() ) );
     }
 
     @Test
-    public void testTextInputsOutputs() throws IOException
+    public void testTextInputsOutputs()
+        throws IOException
     {
-        File tempFile = File.createTempFile( "test", ".txt" );
+        File tempFile = File.createTempFile( "satisfiedBy", ".txt" );
         tempFile.deleteOnExit();
         File sourceFile = getSourceFile();
         Transforms.Counter<String> stringCounter = new Transforms.Counter<String>();
         text( sourceFile ).transferTo(
-                Transforms.map( stringCounter,
-                        Transforms.map( new Function<String, String>()
-                        {
-                            public String map( String s )
+            Transforms.map( stringCounter,
+                            Transforms.map( new Function<String, String>()
                             {
-                                System.out.println( s );
-                                return s;
-                            }
-                        },
-                                Outputs.text( tempFile ) ) ) );
+                                public String map( String s )
+                                {
+                                    System.out.println( s );
+                                    return s;
+                                }
+                            },
+                                            Outputs.text( tempFile ) ) ) );
 
         Assert.assertThat( tempFile.length(), CoreMatchers.equalTo( sourceFile.length() ) );
         Assert.assertThat( stringCounter.getCount(), CoreMatchers.equalTo( 4L ) );
     }
 
     @Test
-    public void testCombineInputs() throws IOException
+    public void testCombineInputs()
+        throws IOException
     {
-        File tempFile = File.createTempFile( "test", ".txt" );
+        File tempFile = File.createTempFile( "satisfiedBy", ".txt" );
         tempFile.deleteOnExit();
         File sourceFile = getSourceFile();
         Transforms.Counter<String> stringCounter = new Transforms.Counter<String>();
-        Inputs.combine( asList( text( sourceFile ), text( sourceFile )) ).transferTo(
-                Transforms.map( stringCounter,
-                        Transforms.map( new Function<String, String>()
-                        {
-                            public String map( String s )
+        Inputs.combine( asList( text( sourceFile ), text( sourceFile ) ) ).transferTo(
+            Transforms.map( stringCounter,
+                            Transforms.map( new Function<String, String>()
                             {
-                                System.out.println( s );
-                                return s;
-                            }
-                        },
-                                Outputs.text( tempFile ) ) ) );
+                                public String map( String s )
+                                {
+                                    System.out.println( s );
+                                    return s;
+                                }
+                            },
+                                            Outputs.text( tempFile ) ) ) );
 
         Assert.assertThat( tempFile.length(), CoreMatchers.equalTo( sourceFile.length() * 2 ) );
         Assert.assertThat( stringCounter.getCount(), CoreMatchers.equalTo( 8L ) );
     }
 
-    @Test(expected = IOException.class)
-    public void testInputOutputOutputException() throws IOException
+    @Test( expected = IOException.class )
+    public void testInputOutputOutputException()
+        throws IOException
     {
 
-        text( new File(getClass().getResource( "/iotest.txt" ).getFile()) ).
-                transferTo( writerOutput( new Writer()
+        text( new File( getClass().getResource( "/iotest.txt" ).getFile() ) ).
+            transferTo( writerOutput( new Writer()
+            {
+                @Override
+                public void write( char[] cbuf, int off, int len )
+                    throws IOException
                 {
-                    @Override
-                    public void write( char[] cbuf, int off, int len ) throws IOException
-                    {
-                        throw new IOException();
-                    }
+                    throw new IOException();
+                }
 
-                    @Override
-                    public void flush() throws IOException
-                    {
-                        throw new IOException();
-                    }
+                @Override
+                public void flush()
+                    throws IOException
+                {
+                    throw new IOException();
+                }
 
-                    @Override
-                    public void close() throws IOException
-                    {
-                        throw new IOException();
-                    }
-                } ) );
+                @Override
+                public void close()
+                    throws IOException
+                {
+                    throw new IOException();
+                }
+            } ) );
     }
 
-    @Test(expected = RemoteException.class)
-    public void testInputOutputInputException() throws IOException
+    @Test( expected = RemoteException.class )
+    public void testInputOutputInputException()
+        throws IOException
     {
 
         Input<String, RemoteException> input = new Input<String, RemoteException>()
         {
-            public <OutputThrowableType extends Throwable> void transferTo( Output<String, OutputThrowableType> output ) throws RemoteException, OutputThrowableType
+            public <OutputThrowableType extends Throwable> void transferTo( Output<String, OutputThrowableType> output )
+                throws RemoteException, OutputThrowableType
             {
                 output.receiveFrom( new Sender<String, RemoteException>()
                 {
-                    public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<String, ReceiverThrowableType> stringReceiverThrowableTypeReceiver ) throws ReceiverThrowableType, RemoteException
+                    public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<String, ReceiverThrowableType> stringReceiverThrowableTypeReceiver )
+                        throws ReceiverThrowableType, RemoteException
                     {
                         throw new RemoteException();
                     }
@@ -214,20 +242,22 @@ public class InputOutputTest
             }
         };
 
-        input.transferTo( Transforms.map( new Transforms.Log<String>( LoggerFactory.getLogger( getClass() ), "Line: {0}"),
-                Outputs.systemOut() ));
+        input.transferTo(
+            Transforms.map( new Transforms.Log<String>( LoggerFactory.getLogger( getClass() ), "Line: {0}" ),
+                            Outputs.systemOut() ) );
     }
 
     @Test
-    public void testLock() throws IOException
+    public void testLock()
+        throws IOException
     {
         Lock inputLock = new ReentrantLock();
         Lock outputLock = new ReentrantLock();
 
         URL source = getClass().getResource( "/iotest.txt" );
-        File destination = File.createTempFile( "test",".txt" );
+        File destination = File.createTempFile( "satisfiedBy", ".txt" );
         destination.deleteOnExit();
-        lock( inputLock, text( source )).transferTo( lock( outputLock, Outputs.text(destination) ));
+        lock( inputLock, text( source ) ).transferTo( lock( outputLock, Outputs.text( destination ) ) );
 
     }
 
@@ -236,7 +266,7 @@ public class InputOutputTest
         return new Output<String, IOException>()
         {
             public <SenderThrowableType extends Throwable> void receiveFrom( Sender<String, SenderThrowableType> sender )
-                    throws IOException, SenderThrowableType
+                throws IOException, SenderThrowableType
             {
                 // Here we initiate the transfer
                 System.out.println( "Open output" );
@@ -245,7 +275,8 @@ public class InputOutputTest
                 {
                     sender.sendTo( new Receiver<String, IOException>()
                     {
-                        public void receive( String item ) throws IOException
+                        public void receive( String item )
+                            throws IOException
                         {
                             System.out.println( "Receive input" );
 
@@ -258,7 +289,8 @@ public class InputOutputTest
                     writer.write( builder.toString() );
                     writer.flush();
                     System.out.println( "Output written" );
-                } catch (IOException e)
+                }
+                catch( IOException e )
                 {
                     // If transfer failed, potentially rollback writes
                     System.out.println( "Input failed" );

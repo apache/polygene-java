@@ -40,8 +40,9 @@ import static org.junit.Assert.assertEquals;
 /**
  * Tests for properties
  */
-@Ignore( "This is an incorrect test case. The Property fragment support is not well defined at the moment, so until" +
-         "more work is finalized on exactly what should be supported, this is ignored not to be forgotten.")
+@Ignore(
+    "This is an incorrect satisfiedBy case. The Property fragment support is not well defined at the moment, so until" +
+    "more work is finalized on exactly what should be supported, this is ignored not to be forgotten." )
 public class PropertyTest
     extends AbstractQi4jTest
 {
@@ -52,7 +53,8 @@ public class PropertyTest
         module.addTransients( Company.class );
         module.forMixin( Nameable.class )
             .setMetaInfo( new DisplayInfo( "Name", "Name of something", "The name" ) )  // Add UI info
-            .setMetaInfo( new RdfInfo( "label", "http://www.w3.org/1999/02/22-rdf-syntax-ns#" ) )  // Add persistence info
+            .setMetaInfo(
+                new RdfInfo( "label", "http://www.w3.org/1999/02/22-rdf-syntax-ns#" ) )  // Add persistence info
             .declareDefaults()
             .name()  // Select accessor
             .set( "Hello World" ); // Set default value

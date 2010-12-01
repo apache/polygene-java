@@ -23,12 +23,12 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Test if the stacktrace is cleaned up properly.
- *
- * NOTE: This test MUST NOT be inside package org.qi4j.runtime, or it will fail.
+ * <p/>
+ * NOTE: This satisfiedBy MUST NOT be inside package org.qi4j.runtime, or it will fail.
  */
 public class CleanStackTraceTest
     extends AbstractQi4jTest
@@ -46,7 +46,7 @@ public class CleanStackTraceTest
     @Test
     public void cleanStackTraceOnApplicationException()
     {
-        // Don't run the test if compacttrace is set to anything else but proxy
+        // Don't run the satisfiedBy if compacttrace is set to anything else but proxy
         String compactTracePropertyValue = System.getProperty( "qi4j.compacttrace" );
         if( compactTracePropertyValue != null && !"proxy".equals( compactTracePropertyValue ) )
         {
@@ -66,19 +66,12 @@ public class CleanStackTraceTest
 
             String separator = System.getProperty( "line.separator" );
             String correctTrace = "java.lang.RuntimeException" + separator +
-                                  "\tat org.qi4j.test.composite.CleanStackTraceTest$DoStuffMixin.doStuff(CleanStackTraceTest.java:98)" + separator +
+                                  "\tat org.qi4j.test.composite.CleanStackTraceTest$DoStuffMixin.doStuff(CleanStackTraceTest.java:91)" + separator +
                                   "\tat org.qi4j.test.composite.CleanStackTraceTest$TestComposite.doStuff(Unknown Source)" + separator +
                                   "\tat org.qi4j.test.composite.CleanStackTraceTest.cleanStackTraceOnApplicationException(CleanStackTraceTest.java:60)";
             String actual = actualTrace.toString();
-            boolean isStartWith = actual.startsWith( correctTrace );
-//            for( int i = 0; i < correctTrace.length(); i++ )
-//            {
-//                assertEquals( "Char pos: " + i,
-//                              new String( new char[] { correctTrace.charAt( i )} ) + ":" +  Integer.toHexString( correctTrace.charAt( i ) ),
-//                              new String( new char[] { actual.charAt( i )} ) + ":" +  Integer.toHexString( actual.charAt( i ) )
-//                );
-//            }
-            assertTrue( "Trace should have been:\n" + correctTrace + "\nbut was:\n" + actualTrace, isStartWith );
+            actual = actual.substring( 0, correctTrace.length() );
+            assertEquals( correctTrace, actual );
         }
     }
 
