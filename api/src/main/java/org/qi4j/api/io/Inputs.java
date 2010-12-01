@@ -26,7 +26,7 @@ import java.util.zip.GZIPInputStream;
 public class Inputs
 {
     /**
-     * Read lines from a textfile.
+     * Read lines from a UTF-8 encoded textfile.
      *
      * If the filename ends with .gz, then the data is automatically unzipped when read.
      *
@@ -34,6 +34,20 @@ public class Inputs
      * @return Input that provides lines from the textfiles as strings
      */
     public static Input<String, IOException> text( final File source )
+    {
+        return text(source, "UTF-8");
+    }
+
+    /**
+     * Read lines from a textfile with the given encoding.
+     *
+     * If the filename ends with .gz, then the data is automatically unzipped when read.
+     *
+     * @param source textfile with lines separated by \n character
+     * @param encoding encoding of file, e.g. "UTF-8"
+     * @return Input that provides lines from the textfiles as strings
+     */
+    public static Input<String, IOException> text( final File source, final String encoding )
     {
         return new Input<String, IOException>()
         {
@@ -45,7 +59,7 @@ public class Inputs
                 if (source.getName().endsWith( ".gz" ))
                     stream = new GZIPInputStream(stream);
 
-                final BufferedReader reader = new BufferedReader( new InputStreamReader( stream, "UTF-8" ) );
+                final BufferedReader reader = new BufferedReader( new InputStreamReader( stream, encoding ) );
 
                 try
                 {

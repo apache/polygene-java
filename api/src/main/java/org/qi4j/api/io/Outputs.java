@@ -26,7 +26,7 @@ import java.util.zip.GZIPOutputStream;
 public class Outputs
 {
     /**
-     * Write lines to a text file. Separate each line with a newline ("\n" character). If the writing or sending fails,
+     * Write lines to a text file with UTF-8 encoding. Separate each line with a newline ("\n" character). If the writing or sending fails,
      * the file is deleted.
      * <p/>
      * If the filename ends with .gz, then the data is automatically GZipped.
@@ -35,6 +35,20 @@ public class Outputs
      * @return an Output for storing text in a file
      */
     public static Output<String, IOException> text( final File file )
+    {
+        return text(file, "UTF-8");
+    }
+
+    /**
+     * Write lines to a text file. Separate each line with a newline ("\n" character). If the writing or sending fails,
+     * the file is deleted.
+     * <p/>
+     * If the filename ends with .gz, then the data is automatically GZipped.
+     *
+     * @param file the file to save the text to
+     * @return an Output for storing text in a file
+     */
+    public static Output<String, IOException> text( final File file, final String encoding )
     {
         return new Output<String, IOException>()
         {
@@ -46,7 +60,7 @@ public class Outputs
                 if (file.getName().endsWith( ".gz" ))
                     stream = new GZIPOutputStream( stream );
 
-                final BufferedWriter writer = new BufferedWriter( new OutputStreamWriter( stream, "UTF-8" ) );
+                final BufferedWriter writer = new BufferedWriter( new OutputStreamWriter( stream, encoding ) );
 
                 try
                 {
