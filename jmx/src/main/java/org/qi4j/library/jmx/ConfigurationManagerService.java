@@ -14,27 +14,6 @@
 
 package org.qi4j.library.jmx;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.management.Attribute;
-import javax.management.AttributeList;
-import javax.management.AttributeNotFoundException;
-import javax.management.DynamicMBean;
-import javax.management.InstanceAlreadyExistsException;
-import javax.management.InvalidAttributeValueException;
-import javax.management.MBeanAttributeInfo;
-import javax.management.MBeanException;
-import javax.management.MBeanInfo;
-import javax.management.MBeanOperationInfo;
-import javax.management.MBeanParameterInfo;
-import javax.management.MBeanRegistrationException;
-import javax.management.MBeanServer;
-import javax.management.MalformedObjectNameException;
-import javax.management.NotCompliantMBeanException;
-import javax.management.ObjectName;
-import javax.management.ReflectionException;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.Entity;
@@ -54,6 +33,11 @@ import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.spi.structure.ModuleSPI;
+
+import javax.management.*;
+import javax.management.modelmbean.DescriptorSupport;
+import java.lang.reflect.Field;
+import java.util.*;
 
 /**
  * Expose ConfigurationComposites through JMX. Allow configurations to be edited, and the services to be restarted.
@@ -107,11 +91,32 @@ public interface ConfigurationManagerService
                         {
                             String propertyName = propertyType.qualifiedName().name();
                             String type = propertyType.type().type().name();
+
+                            Descriptor attrDescriptor = new DescriptorSupport();
+                            attrDescriptor.setField( "name",  propertyName);
+                            attrDescriptor.setField( "descriptorType",  "attribute");
+
                             if( propertyType.type().isEnum() )
                             {
                                 type = String.class.getName();
+
+                                // Try to add legal values
+                                try
+                                {
+                                    Set<String> legalValues = new LinkedHashSet();
+                                    Class<?> enumType = getClass().getClassLoader().loadClass( propertyType.type().type().name() );
+                                    for (Field field : enumType.getFields())
+                                    {
+                                        legalValues.add( field.getName() );
+                                    }
+                                    attrDescriptor.setField( "legalValues",  legalValues);
+                                } catch (ClassNotFoundException e)
+                                {
+                                    // Ignore
+                                    e.printStackTrace();
+                                }
                             }
-                            attributes.add( new MBeanAttributeInfo( propertyName, type, propertyName, true, true, type.equals( "java.lang.Boolean" ) ) );
+                            attributes.add( new MBeanAttributeInfo( propertyName, type, propertyName, true, true, type.equals( "java.lang.Boolean" ), attrDescriptor ) );
                             properties.put( propertyName, propertyType.qualifiedName() );
                         }
                     }

@@ -48,6 +48,7 @@ public class JMXTest
 
                 module.addServices( TestService.class ).instantiateOnStartup();
                 module.addEntities( TestConfiguration.class );
+                module.addServices(ApplicationManagerService.class).instantiateOnStartup();
             }
         };
 
@@ -92,5 +93,13 @@ public class JMXTest
     {
         @UseDefaults
         Property<String> stringConfig();
+
+        @UseDefaults
+        Property<TestEnum> enumConfig();
+    }
+
+    enum TestEnum
+    {
+        Value1,Value2,Value3
     }
 }
