@@ -4,6 +4,8 @@ Export-Package:  org.qi4j.library.jmx;version="${pom.version}"
 
 Import-Package: javax.management, \
                 javax.management.modelmbean, \
+                javax.management.remote, \
+                javax.security.auth, \
                 org.qi4j.api.common, \
                 org.qi4j.api.configuration, \
                 org.qi4j.api.entity, \
@@ -22,4 +24,5 @@ Import-Package: javax.management, \
                 org.qi4j.spi.entity, \
                 org.qi4j.spi.property, \
                 org.qi4j.spi.service, \
-                org.qi4j.spi.structure
+                org.qi4j.spi.structure, \
+                org.slf4j
