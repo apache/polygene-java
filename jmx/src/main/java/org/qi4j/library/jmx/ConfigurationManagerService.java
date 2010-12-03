@@ -28,6 +28,7 @@ import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+import org.qi4j.api.util.Iterables;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.property.PropertyType;
@@ -130,7 +131,15 @@ public interface ConfigurationManagerService
                     MBeanInfo mbeanInfo = new MBeanInfo( serviceClass, name, attributes.toArray( new MBeanAttributeInfo[attributes
                         .size()] ), null, operations.toArray( new MBeanOperationInfo[operations.size()] ), null );
                     Object mbean = new ConfigurableService( configurableService, mbeanInfo, name, properties );
-                    ObjectName configurableServiceName = new ObjectName( "Configuration:name=" + name );
+                    ObjectName configurableServiceName;
+                    ObjectName serviceName = Iterables.first( server.queryNames( new ObjectName("*:*,service="+name), null));
+                    if (serviceName != null)
+                    {
+                       configurableServiceName = new ObjectName(serviceName.toString()+",name=Configuration");
+                    } else
+                       configurableServiceName = new ObjectName( "Configuration:name=" + name );
+
+
                     server.registerMBean( mbean, configurableServiceName );
                     configurationNames.add( configurableServiceName );
                 }

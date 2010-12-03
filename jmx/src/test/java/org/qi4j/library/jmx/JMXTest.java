@@ -58,7 +58,6 @@ public class JMXTest
 
                 module.addServices( TestService.class ).instantiateOnStartup();
                 module.addEntities( TestConfiguration.class );
-                module.addServices(ApplicationManagerService.class).instantiateOnStartup();
             }
         };
 
