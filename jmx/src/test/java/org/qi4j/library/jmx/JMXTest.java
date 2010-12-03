@@ -58,6 +58,10 @@ public class JMXTest
 
                 module.addServices( TestService.class ).instantiateOnStartup();
                 module.addEntities( TestConfiguration.class );
+
+                module.addServices( JMXConnectorService.class ).instantiateOnStartup();
+                module.addEntities( JMXConnectorConfiguration.class );
+                module.forMixin( JMXConnectorConfiguration.class ).declareDefaults().port().set( 1099 );
             }
         };
 
