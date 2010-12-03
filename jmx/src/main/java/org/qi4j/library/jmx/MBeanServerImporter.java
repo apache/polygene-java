@@ -21,7 +21,7 @@ import org.qi4j.api.service.ServiceImporterException;
 import java.lang.management.ManagementFactory;
 
 /**
- * Importer for the MBeanServer of the JVM. Either use the first server that can be located, or create a new one.
+ * Importer for the platform MBeanServer of the JVM.
  */
 public class MBeanServerImporter
     implements ServiceImporter

@@ -37,7 +37,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * JAVADOC
+ * Expose the Qi4j app as a "tree" of MBeans.
+ *
+ * Other services should reuse the object names and create
+ * nodes under the ones created here. For example:
+ * MyApp:layer=Application,Module=MyModule,service=MyService
+ * is exported by this service, so another exporter showing some aspect related to this service should
+ * use this as base for the ObjectName, and add their own properties. Example:
+ * MyApp:layer=Application,Module=MyModule,service=MyService,name=Configuration
+ *
+ * Use the following snippet to find the ObjectName of a service with a given identity:
+ * ObjectName serviceName = Iterables.first( server.queryNames( new ObjectName("*:*,service="+name), null));
  */
 @Mixins(ApplicationManagerService.Mixin.class)
 public interface ApplicationManagerService
