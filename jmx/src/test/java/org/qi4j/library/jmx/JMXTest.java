@@ -37,6 +37,16 @@ public class JMXTest
     public static void main( String[] args )
         throws InterruptedException
     {
+/*
+        Logger logger = Logger.getLogger( "" );
+        logger.setLevel( Level.FINE );
+        Logger.getLogger("sun.rmi").setLevel( Level.WARNING );
+
+        ConsoleHandler consoleHandler = new ConsoleHandler();
+        consoleHandler.setLevel( Level.FINE );
+        logger.addHandler( consoleHandler );
+*/
+
         SingletonAssembler assembler = new SingletonAssembler()
         {
             public void assemble( ModuleAssembly module )

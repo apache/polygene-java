@@ -50,10 +50,17 @@ public class ModelMBeanBuilder
         stateDesc.setField( "descriptorType", "attribute" );
         stateDesc.setField( "displayName", displayName );
         if (getMethod != null)
+        {
             stateDesc.setField( "getMethod", getMethod );
 
+            operation( getMethod, description, type, ModelMBeanOperationInfo.INFO );
+        }
+
         if (setMethod != null)
+        {
             stateDesc.setField( "setMethod", setMethod );
+            operation( setMethod, description, type, ModelMBeanOperationInfo.INFO, new MBeanParameterInfo("Value", type, description) );
+        }
 
         ModelMBeanAttributeInfo attributeInfo = new ModelMBeanAttributeInfo(
                 name,
