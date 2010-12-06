@@ -47,7 +47,7 @@ import java.util.List;
  * MyApp:layer=Application,Module=MyModule,service=MyService,name=Configuration
  *
  * Use the following snippet to find the ObjectName of a service with a given identity:
- * ObjectName serviceName = Iterables.first( server.queryNames( new ObjectName("*:*,service="+name), null));
+ * ObjectName serviceName = Iterables.first( server.queryNames( new ObjectName(applicationName+":*,service="+name), null));
  */
 @Mixins(ApplicationManagerService.Mixin.class)
 public interface ApplicationManagerService
@@ -128,7 +128,7 @@ public interface ApplicationManagerService
                 @Override
                 public void visit( ImportedServiceDescriptor importedServiceDescriptor ) throws Exception
                 {
-                    ObjectName objectName = new ObjectName( application.name()+":layer="+layer.name()+",module="+module.name()+",class=ImportedService,importedservice="+importedServiceDescriptor.identity() );
+                    ObjectName objectName = new ObjectName( application.name()+":layer="+layer.name()+",module="+module.name()+",class=Imported service,importedservice="+importedServiceDescriptor.identity() );
                     RequiredModelMBean mbean = new ModelMBeanBuilder( objectName, importedServiceDescriptor.identity(), ImportedServiceBean.class.getName()).
                             attribute( "Id", "Service id", String.class.getName(), "Id of service", "getId", null ).
                             attribute( "Visibility", "Service visibility", String.class.getName(), "Visibility of service", "getVisibility", null ).

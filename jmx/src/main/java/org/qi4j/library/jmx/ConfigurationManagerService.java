@@ -26,6 +26,7 @@ import org.qi4j.api.property.Property;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceReference;
+import org.qi4j.api.structure.Application;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.util.Iterables;
@@ -55,6 +56,9 @@ public interface ConfigurationManagerService
 
         @Service
         MBeanServer server;
+
+        @Structure
+        Application application;
 
         @Structure
         Qi4jSPI spi;
@@ -132,7 +136,7 @@ public interface ConfigurationManagerService
                         .size()] ), null, operations.toArray( new MBeanOperationInfo[operations.size()] ), null );
                     Object mbean = new ConfigurableService( configurableService, mbeanInfo, name, properties );
                     ObjectName configurableServiceName;
-                    ObjectName serviceName = Iterables.first( server.queryNames( new ObjectName("*:*,service="+name), null));
+                    ObjectName serviceName = Iterables.first( server.queryNames( new ObjectName(application.name()+":*,service="+name), null));
                     if (serviceName != null)
                     {
                        configurableServiceName = new ObjectName(serviceName.toString()+",name=Configuration");
