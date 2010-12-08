@@ -30,14 +30,15 @@
         <module>jmx</module>
         <module>locking</module>
         <module>logging</module>
+        <module>osgi</module>
         <module>rdf</module>
         <module>scripting</module>
-        <module>uid</module>
         <module>struts2</module>
         <module>spring</module>
         <module>servlet</module>
         <module>shiro</module>
         <module>sql</module>
+        <module>uid</module>
         <module>vaadin</module>
     </modules>
 
