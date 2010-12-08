@@ -27,7 +27,6 @@ import org.qi4j.api.property.PropertyMixin;
  */
 @Mixins( { PropertyMixin.class } )
 public interface Composite
-    extends Serializable
 {
     <T> T metaInfo( Class<T> infoType );
 
