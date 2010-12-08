@@ -14,6 +14,7 @@ Import-Package: org.osgi.framework;version="[1,2)", \
                 org.qi4j.api.unitofwork, \
                 org.qi4j.api.util, \
                 org.qi4j.api.value, \
+                org.qi4j.bootstrap;version="[${pom.version},2.0)", \
                 org.qi4j.spi, \
                 org.qi4j.spi.entity, \
                 org.qi4j.spi.service.importer, \
