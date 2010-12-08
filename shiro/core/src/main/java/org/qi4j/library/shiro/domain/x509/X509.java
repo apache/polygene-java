@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.security.cert.X509Certificate;
 
+import org.apache.shiro.crypto.CryptoException;
 import org.bouncycastle.openssl.PEMReader;
 
 import org.joda.time.DateTime;
@@ -32,7 +33,6 @@ import org.joda.time.DateTime;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
-import org.qi4j.library.shiro.CryptoException;
 
 @Mixins( X509.Mixin.class )
 public interface X509

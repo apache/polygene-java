@@ -21,6 +21,7 @@ Import-Package: \
                 org.apache.shiro.authc.credential;version="[${pom.version},2)", \
                 org.apache.shiro.authz;version="[${pom.version},2)", \
                 org.apache.shiro.codec;version="[${pom.version},2)", \
+                org.apache.shiro.crypto;version="[${pom.version},2)", \
                 org.apache.shiro.crypto.hash;version="[${pom.version},2)", \
                 org.apache.shiro.mgt;version="[${pom.version},2)", \
                 org.apache.shiro.realm;version="[${pom.version},2)", \
