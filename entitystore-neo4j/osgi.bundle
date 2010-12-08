@@ -3,7 +3,7 @@ Ignore-Package: com_cenqua_clover, sun.misc
 Import-Package: javax.transaction,\
                 javax.transaction.xa, \
                 javax.xml.parsers, \
-                org.neo4j.commons.iterator, \
+                org.neo4j.commons.iterator;version="[0.9,2)", \
                 org.apache.lucene.analysis, \
                 org.apache.lucene.document, \
                 org.apache.lucene.index, \
@@ -12,33 +12,33 @@ Import-Package: javax.transaction,\
                 org.apache.lucene.store, \
                 org.apache.lucene.util, \
                 org.json, \
-                org.qi4j.api.cache, \
-                org.qi4j.api.composite, \
-                org.qi4j.api.common, \
-                org.qi4j.api.configuration, \
-                org.qi4j.api.entity, \
-                org.qi4j.api.entity.association, \
-                org.qi4j.api.mixin, \
-                org.qi4j.api.injection.scope, \
-                org.qi4j.api.io, \
-                org.qi4j.api.property, \
-                org.qi4j.api.service, \
-                org.qi4j.api.structure, \
-                org.qi4j.api.usecase, \
-                org.qi4j.bootstrap, \
-                org.qi4j.entity, \
-                org.qi4j.entity.association, \
-                org.qi4j.entitystore.memory, \
-                org.qi4j.library.constraints.annotation, \
-                org.qi4j.spi.composite, \
-                org.qi4j.spi.entity, \
-                org.qi4j.spi.entity.association, \
-                org.qi4j.spi.entitystore.helpers, \
-                org.qi4j.spi.entitystore, \
-                org.qi4j.spi.property, \
-                org.qi4j.spi.structure, \
-                org.qi4j.spi.uuid, \
-                org.qi4j.spi.value, \
+                org.qi4j.api.cache;version="[${pom.version},2)", \
+                org.qi4j.api.composite;version="[${pom.version},2)", \
+                org.qi4j.api.common;version="[${pom.version},2)", \
+                org.qi4j.api.configuration;version="[${pom.version},2)", \
+                org.qi4j.api.entity;version="[${pom.version},2)", \
+                org.qi4j.api.entity.association;version="[${pom.version},2)", \
+                org.qi4j.api.mixin;version="[${pom.version},2)", \
+                org.qi4j.api.injection.scope;version="[${pom.version},2)", \
+                org.qi4j.api.io;version="[${pom.version},2)", \
+                org.qi4j.api.property;version="[${pom.version},2)", \
+                org.qi4j.api.service;version="[${pom.version},2)", \
+                org.qi4j.api.structure;version="[${pom.version},2)", \
+                org.qi4j.api.usecase;version="[${pom.version},2)", \
+                org.qi4j.bootstrap;version="[${pom.version},2)", \
+                org.qi4j.entity;version="[${pom.version},2)", \
+                org.qi4j.entity.association;version="[${pom.version},2)", \
+                org.qi4j.entitystore.memory;version="[${pom.version},2)", \
+                org.qi4j.library.constraints.annotation;version="[${pom.version},2)", \
+                org.qi4j.spi.composite;version="[${pom.version},2)", \
+                org.qi4j.spi.entity;version="[${pom.version},2)", \
+                org.qi4j.spi.entity.association;version="[${pom.version},2)", \
+                org.qi4j.spi.entitystore.helpers;version="[${pom.version},2)", \
+                org.qi4j.spi.entitystore;version="[${pom.version},2)", \
+                org.qi4j.spi.property;version="[${pom.version},2)", \
+                org.qi4j.spi.structure;version="[${pom.version},2)", \
+                org.qi4j.spi.uuid;version="[${pom.version},2)", \
+                org.qi4j.spi.value;version="[${pom.version},2)", \
                 org.w3c.dom, \
                 org.xml.sax
 

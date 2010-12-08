@@ -26,45 +26,46 @@ Import-Package: org.apache.commons.logging, \
                 net.sf.cglib.asm.util, \
                 org.codehaus.aspectwerkz.hook, \
                 org.json, \
-                org.qi4j.api.common, \
-                org.qi4j.api.composite, \
-                org.qi4j.api.configuration, \
-                org.qi4j.api.constraint, \
-                org.qi4j.api.entity, \
-                org.qi4j.api.entity.association, \
-                org.qi4j.api.injection.scope, \
-                org.qi4j.api.mixin, \
-                org.qi4j.api.property, \
-                org.qi4j.api.query.grammar, \
-                org.qi4j.api.service, \
-                org.qi4j.api.structure, \
-                org.qi4j.api.usecase, \
-                org.qi4j.api.util, \
-                org.qi4j.api.value, \
-                org.qi4j.bootstrap, \
-                org.qi4j.runtime.types, \
-                org.qi4j.spi.composite, \
-                org.qi4j.spi.entity, \
-                org.qi4j.spi.entity.association, \
-                org.qi4j.spi.entitystore, \
-                org.qi4j.spi.mixin, \
-                org.qi4j.spi.object, \
-                org.qi4j.spi.property, \
-                org.qi4j.spi.query, \
-                org.qi4j.spi.structure, \
-                org.qi4j.spi.unitofwork, \
-                org.qi4j.spi.unitofwork.event, \
-                org.qi4j.spi.value, \
-                org.qi4j.library.rdf.entity, \
-                org.qi4j.library.rdf.repository, \
-                org.slf4j, \
-                org.openrdf.model, \
-                org.openrdf.model.impl, \
-                org.openrdf.query, \
-                org.openrdf.repository, \
-                org.openrdf.repository.http, \
-                org.openrdf.rio, \
-                org.openrdf.rio.rdfxml.util, \
+                org.osgi.framework, \
+                org.qi4j.api.common;version="[${pom.version},2)", \
+                org.qi4j.api.composite;version="[${pom.version},2)", \
+                org.qi4j.api.configuration;version="[${pom.version},2)", \
+                org.qi4j.api.constraint;version="[${pom.version},2)", \
+                org.qi4j.api.entity;version="[${pom.version},2)", \
+                org.qi4j.api.entity.association;version="[${pom.version},2)", \
+                org.qi4j.api.injection.scope;version="[${pom.version},2)", \
+                org.qi4j.api.mixin;version="[${pom.version},2)", \
+                org.qi4j.api.property;version="[${pom.version},2)", \
+                org.qi4j.api.query.grammar;version="[${pom.version},2)", \
+                org.qi4j.api.service;version="[${pom.version},2)", \
+                org.qi4j.api.structure;version="[${pom.version},2)", \
+                org.qi4j.api.usecase;version="[${pom.version},2)", \
+                org.qi4j.api.util;version="[${pom.version},2)", \
+                org.qi4j.api.value;version="[${pom.version},2)", \
+                org.qi4j.bootstrap;version="[${pom.version},2)", \
+                org.qi4j.runtime.types;version="[${pom.version},2)", \
+                org.qi4j.spi.composite;version="[${pom.version},2)", \
+                org.qi4j.spi.entity;version="[${pom.version},2)", \
+                org.qi4j.spi.entity.association;version="[${pom.version},2)", \
+                org.qi4j.spi.entitystore;version="[${pom.version},2)", \
+                org.qi4j.spi.mixin;version="[${pom.version},2)", \
+                org.qi4j.spi.object;version="[${pom.version},2)", \
+                org.qi4j.spi.property;version="[${pom.version},2)", \
+                org.qi4j.spi.query;version="[${pom.version},2)", \
+                org.qi4j.spi.structure;version="[${pom.version},2)", \
+                org.qi4j.spi.unitofwork;version="[${pom.version},2)", \
+                org.qi4j.spi.unitofwork.event;version="[${pom.version},2)", \
+                org.qi4j.spi.value;version="[${pom.version},2)", \
+                org.qi4j.library.rdf.entity;version="[${pom.version},2)", \
+                org.qi4j.library.rdf.repository;version="[${pom.version},2)", \
+                org.slf4j;version="[1.5,2)", \
+                org.openrdf.model;version="[2,3)", \
+                org.openrdf.model.impl;version="[2,3)", \
+                org.openrdf.query;version="[2,3)", \
+                org.openrdf.repository;version="[2,3)", \
+                org.openrdf.repository.http;version="[2,3)", \
+                org.openrdf.rio;version="[2,3)", \
+                org.openrdf.rio.rdfxml.util;version="[2,3)", \
                 org.w3c.dom, \
                 org.xml.sax, \
                 org.xml.sax.helpers
@@ -116,6 +117,5 @@ Ignore-Package: clover.com.lowagie.text.xml, \
                 org.junit, \
                 org.ops4j.pax.swissbox.core, \
                 org.ops4j.pax.swissbox.extender, \
-                org.osgi.framework, \
                 org.testng.internal.annotations, \
                 sun.misc

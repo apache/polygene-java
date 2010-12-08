@@ -4,36 +4,36 @@ Private-Package:
 
 Ignore-Package: com_cenqua_clover
 
-Import-Package: org.qi4j.api.common, \
-                org.qi4j.api.composite, \
-                org.qi4j.api.concern, \
-                org.qi4j.api.configuration, \
-                org.qi4j.api.entity, \
-                org.qi4j.api.injection.scope, \
-                org.qi4j.api.io, \
-                org.qi4j.api.mixin, \
-                org.qi4j.api.property, \
-                org.qi4j.api.service, \
-                org.qi4j.api.sideeffect, \
-                org.qi4j.api.structure, \
-                org.qi4j.api.usecase, \
-                org.qi4j.api.util, \
-                org.qi4j.bootstrap, \
-                org.qi4j.entitystore.map, \
-                org.qi4j.entitystore.memory, \
-                org.qi4j.library.locking, \
-                org.qi4j.spi, \
-                org.qi4j.spi.composite, \
-                org.qi4j.spi.entity, \
-                org.qi4j.spi.entitystore.helpers, \
-                org.qi4j.spi.entitystore, \
-                org.qi4j.spi.query, \
-                org.qi4j.spi.service, \
-                org.qi4j.spi.uuid, \
-                jdbm, \
-                jdbm.btree, \
-                jdbm.helper, \
-                jdbm.recman
+Import-Package: org.qi4j.api.common;version="[${pom.version},2)", \
+                org.qi4j.api.composite;version="[${pom.version},2)", \
+                org.qi4j.api.concern;version="[${pom.version},2)", \
+                org.qi4j.api.configuration;version="[${pom.version},2)", \
+                org.qi4j.api.entity;version="[${pom.version},2)", \
+                org.qi4j.api.injection.scope;version="[${pom.version},2)", \
+                org.qi4j.api.io;version="[${pom.version},2)", \
+                org.qi4j.api.mixin;version="[${pom.version},2)", \
+                org.qi4j.api.property;version="[${pom.version},2)", \
+                org.qi4j.api.service;version="[${pom.version},2)", \
+                org.qi4j.api.sideeffect;version="[${pom.version},2)", \
+                org.qi4j.api.structure;version="[${pom.version},2)", \
+                org.qi4j.api.usecase;version="[${pom.version},2)", \
+                org.qi4j.api.util;version="[${pom.version},2)", \
+                org.qi4j.bootstrap;version="[${pom.version},2)", \
+                org.qi4j.entitystore.map;version="[${pom.version},2)", \
+                org.qi4j.entitystore.memory;version="[${pom.version},2)", \
+                org.qi4j.library.locking;version="[${pom.version},2)", \
+                org.qi4j.spi;version="[${pom.version},2)", \
+                org.qi4j.spi.composite;version="[${pom.version},2)", \
+                org.qi4j.spi.entity;version="[${pom.version},2)", \
+                org.qi4j.spi.entitystore.helpers;version="[${pom.version},2)", \
+                org.qi4j.spi.entitystore;version="[${pom.version},2)", \
+                org.qi4j.spi.query;version="[${pom.version},2)", \
+                org.qi4j.spi.service;version="[${pom.version},2)", \
+                org.qi4j.spi.uuid;version="[${pom.version},2)", \
+                jdbm;version="[1,2)", \
+                jdbm.btree;version="[1,2)", \
+                jdbm.helper;version="[1,2)", \
+                jdbm.recman;version="[1,2)"
                 
 
 Export-Package: org.qi4j.entitystore.jdbm;version=${pom.version}, \
