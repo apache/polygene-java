@@ -65,7 +65,10 @@ public class AssemblyHelper
                     instantiationClasses.put( fragmentClass, instantiationClass );
                 } catch (ClassNotFoundException e)
                 {
-                    throw new ConstructionException( "Could not generate mixin subclass", e );
+                    throw new ConstructionException( "Could not generate mixin subclass " + fragmentClass.getName(), e );
+                } catch( VerifyError e )
+                {
+                    throw new ConstructionException( "Could not generate mixin subclass " + fragmentClass.getName(), e );
                 }
             }
         }
