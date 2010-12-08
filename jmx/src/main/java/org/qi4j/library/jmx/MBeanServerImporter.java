@@ -14,15 +14,14 @@
 
 package org.qi4j.library.jmx;
 
-import java.util.List;
-import javax.management.MBeanServer;
-import javax.management.MBeanServerFactory;
 import org.qi4j.api.service.ImportedServiceDescriptor;
 import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.api.service.ServiceImporterException;
 
+import java.lang.management.ManagementFactory;
+
 /**
- * Importer for the MBeanServer of the JVM. Either use the first server that can be located, or create a new one.
+ * Importer for the platform MBeanServer of the JVM.
  */
 public class MBeanServerImporter
     implements ServiceImporter
@@ -30,15 +29,7 @@ public class MBeanServerImporter
     public Object importService( ImportedServiceDescriptor serviceDescriptor )
         throws ServiceImporterException
     {
-        List<MBeanServer> mbeanServers = MBeanServerFactory.findMBeanServer( null );
-        if( mbeanServers.size() > 0 )
-        {
-            return mbeanServers.get( 0 );
-        }
-        else
-        {
-            return MBeanServerFactory.createMBeanServer("DefaultDomain");
-        }
+        return ManagementFactory.getPlatformMBeanServer();
     }
 
     public boolean isActive( Object instance )

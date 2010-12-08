@@ -37,6 +37,16 @@ public class JMXTest
     public static void main( String[] args )
         throws InterruptedException
     {
+/*
+        Logger logger = Logger.getLogger( "" );
+        logger.setLevel( Level.FINE );
+        Logger.getLogger("sun.rmi").setLevel( Level.WARNING );
+
+        ConsoleHandler consoleHandler = new ConsoleHandler();
+        consoleHandler.setLevel( Level.FINE );
+        logger.addHandler( consoleHandler );
+*/
+
         SingletonAssembler assembler = new SingletonAssembler()
         {
             public void assemble( ModuleAssembly module )
@@ -48,6 +58,10 @@ public class JMXTest
 
                 module.addServices( TestService.class ).instantiateOnStartup();
                 module.addEntities( TestConfiguration.class );
+
+                module.addServices( JMXConnectorService.class ).instantiateOnStartup();
+                module.addEntities( JMXConnectorConfiguration.class );
+                module.forMixin( JMXConnectorConfiguration.class ).declareDefaults().port().set( 1099 );
             }
         };
 
@@ -92,5 +106,13 @@ public class JMXTest
     {
         @UseDefaults
         Property<String> stringConfig();
+
+        @UseDefaults
+        Property<TestEnum> enumConfig();
+    }
+
+    enum TestEnum
+    {
+        Value1,Value2,Value3
     }
 }

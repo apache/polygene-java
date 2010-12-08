@@ -14,24 +14,28 @@
 
 package org.qi4j.library.jmx;
 
-import org.qi4j.bootstrap.Assembler;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.ModuleAssembly;
-
-import javax.management.MBeanServer;
+import org.qi4j.api.common.Optional;
+import org.qi4j.api.common.UseDefaults;
+import org.qi4j.api.configuration.ConfigurationComposite;
+import org.qi4j.api.configuration.Enabled;
+import org.qi4j.api.property.Property;
 
 /**
- * Register JMX helpers in a module.
+ * Configuration for JMXConnector. Username+password is optional.
  */
-public class JMXAssembler
-    implements Assembler
+public interface JMXConnectorConfiguration
+        extends ConfigurationComposite, Enabled
 {
-    public void assemble( ModuleAssembly module )
-        throws AssemblyException
-    {
-        module.importServices( MBeanServer.class ).importedBy( MBeanServerImporter.class );
-        module.addServices( ApplicationManagerService.class ).instantiateOnStartup();
-        module.addServices( ConfigurationManagerService.class ).instantiateOnStartup();
+    @UseDefaults
+    Property<Boolean> enabled();
 
-    }
+    // Set this to 1099 as default in assembly
+    @UseDefaults
+    Property<Integer> port();
+
+    @Optional
+    Property<String> username();
+
+    @Optional
+    Property<String> password();
 }
