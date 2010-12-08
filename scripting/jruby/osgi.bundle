@@ -3,22 +3,22 @@ Bundle-Activator:
 
 Private-Package:
 
-Import-Package: org.qi4j.scripting.common, \
-                org.qi4j.api.common, \
-                org.qi4j.api.common, \
-                org.qi4j.api.composite, \
-                org.qi4j.api.injection.scope, \
-                org.qi4j.api.property, \
+Import-Package: org.qi4j.scripting.common;version="[${pom.version},2)", \
+                org.qi4j.api.common;version="[${pom.version},2)", \
+                org.qi4j.api.common;version="[${pom.version},2)", \
+                org.qi4j.api.composite;version="[${pom.version},2)", \
+                org.qi4j.api.injection.scope;version="[${pom.version},2)", \
+                org.qi4j.api.property;version="[${pom.version},2)", \
                 javax.swing, \
                 javax.swing.border, \
                 javax.swing.plaf.basic, \
                 javax.swing.text, \
-                org.jruby, \
-                org.jruby.exceptions, \
-                org.jruby.internal.runtime.methods, \
-                org.jruby.javasupport, \
-                org.jruby.runtime, \
-                org.jruby.runtime.builtin \
+                org.jruby;version="[1.5,1.6)", \
+                org.jruby.exceptions;version="[1.5,2)", \
+                org.jruby.internal.runtime.methods;version="[1.5,2)", \
+                org.jruby.javasupport;version="[1.5,2)", \
+                org.jruby.runtime;version="[1.5,2)", \
+                org.jruby.runtime.builtin;version="[1.5,2)" \
 
 Export-Package: org.qi4j.scripting.jruby
 

@@ -5,7 +5,7 @@ Private-Package:
 
 Ignore-Package: com_cenqua_clover
 
-Import-Package: org.qi4j.api.mixin
+Import-Package: org.qi4j.api.mixin;version="[${pom.version},2)"
                 
 
 Export-Package: org.qi4j.scripting.common

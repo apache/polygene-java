@@ -4,8 +4,25 @@ Export-Package: org.qi4j.library.rdf;version="${pom.version}", \
                 org.qi4j.library.rdf.model;version="${pom.version}"
                 org.qi4j.library.rdf.repository;version="${pom.version}"
 
-Import-Package: org.qi4j.*, \
-                org.json, \
+Import-Package: org.json, \
+                org.qi4j.api.common;version="[${pom.version},2)", \
+                org.qi4j.api.configuration;version="[${pom.version},2)", \
+                org.qi4j.api.entity;version="[${pom.version},2)", \
+                org.qi4j.api.injection.scope;version="[${pom.version},2)", \
+                org.qi4j.api.mixin;version="[${pom.version},2)", \
+                org.qi4j.api.property;version="[${pom.version},2)", \
+                org.qi4j.api.service;version="[${pom.version},2)", \
+                org.qi4j.api.structure;version="[${pom.version},2)", \
+                org.qi4j.api.unitofwork;version="[${pom.version},2)", \
+                org.qi4j.api.util;version="[${pom.version},2)", \
+                org.qi4j.api.value;version="[${pom.version},2)", \
+                org.qi4j.library.constraints.annotation;version="[${pom.version},2)", \
+                org.qi4j.spi.composite;version="[${pom.version},2)", \
+                org.qi4j.spi.entity;version="[${pom.version},2)", \
+                org.qi4j.spi.entity.association;version="[${pom.version},2)", \
+                org.qi4j.spi.object;version="[${pom.version},2)", \
+                org.qi4j.spi.property;version="[${pom.version},2)", \
+                org.qi4j.spi.structure;version="[${pom.version},2)", \
                 org.slf4j;version="[1.3,2.0)", \
                 org.w3c.dom, \
                 org.xml.sax, \

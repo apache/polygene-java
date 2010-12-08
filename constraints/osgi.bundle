@@ -7,4 +7,4 @@ Ignore-Package: com_cenqua_clover
 Export-Package:  org.qi4j.library.constraints;version="${pom.version}", \
                  org.qi4j.library.constraints.annotation;version="${pom.version}"
 
-Import-Package: org.qi4j.api.constraint
+Import-Package: org.qi4j.api.constraint;version="[${pom.version},2)"

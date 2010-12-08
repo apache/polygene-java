@@ -5,17 +5,17 @@ Private-Package:
 
 Import-Package: javax.servlet;version="[2.3,3.0)", \
                 javax.servlet.http;version="[2.3,3.0)", \
-                org.qi4j.api, \
-                org.qi4j.api.common, \
-                org.qi4j.api.structure, \
-                org.qi4j.bootstrap, \
-                org.qi4j.library.servlet, \
-                org.qi4j.library.servletlifecycle, \
-                org.qi4j.spi, \
-                org.qi4j.spi.structure, \
+                org.qi4j.api;version="[${pom.version},2)", \
+                org.qi4j.api.common;version="[${pom.version},2)", \
+                org.qi4j.api.structure;version="[${pom.version},2)", \
+                org.qi4j.bootstrap;version="[${pom.version},2)", \
+                org.qi4j.library.servlet;version="[${pom.version},2)", \
+                org.qi4j.library.servletlifecycle;version="[${pom.version},2)", \
+                org.qi4j.spi;version="[${pom.version},2)", \
+                org.qi4j.spi.structure;version="[${pom.version},2)", \
                 org.slf4j;version="[1.5,2.0]"
 
-Export-Package: org.qi4j.library.servlet.lifecycle, \
-                org.qi4j.library.servlet
+Export-Package: org.qi4j.library.servlet.lifecycle;version=${pom.version}, \
+                org.qi4j.library.servlet;version={pom.version}
 
 Ignore-Package: com_cenqua_clover

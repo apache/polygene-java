@@ -1,0 +1,26 @@
+
+Private-Package: \
+
+
+Import-Package: \
+                javax.sql, \
+                org.apache.commons.dbcp, \
+                org.postgresql.ds, \
+                org.qi4j.api.common, \
+                org.qi4j.api.configuration, \
+                org.qi4j.api.entity, \
+                org.qi4j.api.injection.scope, \
+                org.qi4j.api.property, \
+                org.qi4j.api.service, \
+                org.qi4j.api.util, \
+                org.qi4j.bootstrap, \
+                org.qi4j.spi.entity, \
+                org.qi4j.spi.entitystore.helpers
+
+Export-Package: \
+                org.qi4j.library.sql.api;version=${pom.version}, \
+                org.qi4j.library.sql.common;version=${pom.version}, \
+                org.qi4j.library.sql.ds;version=${pom.version}, \
+                org.qi4j.library.sql.ds.assembly;version=${pom.version}, \
+
+

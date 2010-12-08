@@ -1,0 +1,57 @@
+
+Private-Package:
+
+
+
+Export-Package: org.qi4j.library.shiro;version=${pom.version}, \
+                org.qi4j.library.shiro.authc;version=${pom.version}, \
+                org.qi4j.library.shiro.bootstrap;version=${pom.version}, \
+                org.qi4j.library.shiro.concerns;version=${pom.version}, \
+                org.qi4j.library.shiro.crypto;version=${pom.version}, \
+                org.qi4j.library.shiro.domain.permissions;version=${pom.version}, \
+                org.qi4j.library.shiro.domain.securehash;version=${pom.version}, \
+                org.qi4j.library.shiro.domain.x509;version=${pom.version}, \
+                org.qi4j.library.shiro.realms;version=${pom.version}, \
+
+
+Import-Package: \
+                javax.security.auth.x500;version="[${pom.version},2)", \
+                org.apache.shiro;version="[${pom.version},2)", \
+                org.apache.shiro.authc;version="[${pom.version},2)", \
+                org.apache.shiro.authc.credential;version="[${pom.version},2)", \
+                org.apache.shiro.authz;version="[${pom.version},2)", \
+                org.apache.shiro.codec;version="[${pom.version},2)", \
+                org.apache.shiro.crypto.hash;version="[${pom.version},2)", \
+                org.apache.shiro.mgt;version="[${pom.version},2)", \
+                org.apache.shiro.realm;version="[${pom.version},2)", \
+                org.apache.shiro.subject;version="[${pom.version},2)", \
+                org.apache.shiro.util;version="[${pom.version},2)", \
+                org.bouncycastle.jce.provider;version="[${pom.version},2)", \
+                org.bouncycastle.openssl;version="[${pom.version},2)", \
+                org.bouncycastle.util;version="[${pom.version},2)", \
+                org.bouncycastle.x509;version="[${pom.version},2)", \
+                org.joda.time;version="[${pom.version},2)", \
+                org.qi4j.api.common;version="[${pom.version},2)", \
+                org.qi4j.api.concern;version="[${pom.version},2)", \
+                org.qi4j.api.entity;version="[${pom.version},2)", \
+                org.qi4j.api.entity.association;version="[${pom.version},2)", \
+                org.qi4j.api.injection;version="[${pom.version},2)", \
+                org.qi4j.api.injection.scope;version="[${pom.version},2)", \
+                org.qi4j.api.mixin;version="[${pom.version},2)", \
+                org.qi4j.api.object;version="[${pom.version},2)", \
+                org.qi4j.api.property;version="[${pom.version},2)", \
+                org.qi4j.api.service;version="[${pom.version},2)", \
+                org.qi4j.api.structure;version="[${pom.version},2)", \
+                org.qi4j.api.unitofwork;version="[${pom.version},2)", \
+                org.qi4j.api.value;version="[${pom.version},2)", \
+                org.qi4j.bootstrap;version="[${pom.version},2)", \
+                org.qi4j.library.shiro;version="[${pom.version},2)", \
+                org.qi4j.library.shiro.authc;version="[${pom.version},2)", \
+                org.qi4j.library.shiro.bootstrap;version="[${pom.version},2)", \
+                org.qi4j.library.shiro.concerns;version="[${pom.version},2)", \
+                org.qi4j.library.shiro.crypto;version="[${pom.version},2)", \
+                org.qi4j.library.shiro.domain.permissions;version="[${pom.version},2)", \
+                org.qi4j.library.shiro.domain.securehash;version="[${pom.version},2)", \
+                org.qi4j.library.shiro.domain.x509;version="[${pom.version},2)", \
+                org.qi4j.library.shiro.realms;version="[${pom.version},2)", \
+                org.slf4j;version="[1.5,2)"

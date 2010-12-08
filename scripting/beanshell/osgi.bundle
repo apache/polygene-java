@@ -6,11 +6,11 @@ Private-Package:
 Import-Package: org.qi4j.scripting.common, \
                 bsh, \
                 bsh.classpath, \
-                org.qi4j.api.common, \
-                org.qi4j.api.composite, \
-                org.qi4j.api.injection.scope, \
-                org.qi4j.api.structure, \
-                org.qi4j.api.unitofwork
+                org.qi4j.api.common;version="[${pom.version},2)", \
+                org.qi4j.api.composite;version="[${pom.version},2)", \
+                org.qi4j.api.injection.scope;version="[${pom.version},2)", \
+                org.qi4j.api.structure;version="[${pom.version},2)", \
+                org.qi4j.api.unitofwork;version="[${pom.version},2)"
 
 
 Ignore-Package: clover.com.lowagie.text.xml, \

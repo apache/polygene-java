@@ -23,9 +23,9 @@ Import-Package: org.qi4j.scripting.common, \
                 javax.xml.transform, \
                 javax.xml.transform.dom, \
                 javax.xml.transform.stream, \
-                org.qi4j.api.composite, \
-                org.qi4j.api.injection.scope, \
-                org.qi4j.api.common, \
+                org.qi4j.api.composite;version="[${pom.version},2)", \
+                org.qi4j.api.injection.scope;version="[${pom.version},2)", \
+                org.qi4j.api.common;version="[${pom.version},2)", \
                 org.w3c.dom, \
                 org.xml.sax, \
                 org.xml.sax.ext, \

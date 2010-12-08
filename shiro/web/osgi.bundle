@@ -1,0 +1,22 @@
+
+Import-Package: \
+                javax.servlet, \
+                org.apache.shiro.authc;version="[1.1,2)", \
+                org.apache.shiro.config;version="[1.1,2)", \
+                org.apache.shiro.realm;version="[1.1,2)", \
+                org.apache.shiro.web.config;version="[1.1,2)", \
+                org.apache.shiro.web.filter.authc;version="[1.1,2)", \
+                org.apache.shiro.web.filter.mgt;version="[1.1,2)", \
+                org.apache.shiro.web.mgt;version="[1.1,2)", \
+                org.apache.shiro.web.servlet;version="[1.1,2)", \
+                org.json, \
+                org.qi4j.api.object;version="[${pom.version},2)", \
+                org.qi4j.api.structure;version="[${pom.version},2)", \
+                org.qi4j.api.util;version="[${pom.version},2)", \
+                org.qi4j.library.servlet;version=${pom.version}, \
+                org.qi4j.library.shiro.authc;version=${pom.version}
+
+Private-Package:
+
+Export-Package: org.qi4j.library.shiro.web.servlet;version=${pom.version}, \
+                org.qi4j.library.shiro.web.filter.authc;version=${pom.version}

@@ -11,13 +11,13 @@ Import-Package: javax.servlet, \
                 org.mortbay.jetty;version="5.0,8.0)", \
                 org.mortbay.jetty.servlet;version="5.0,8.0)", \
                 org.slf4j;version="[1.5,2.0)",\
-                org.qi4j.api.common, \
-                org.qi4j.api.configuration, \
-                org.qi4j.api.injection.scope, \
-                org.qi4j.api.mixin, \
-                org.qi4j.api.property, \
-                org.qi4j.api.service, \
-                org.qi4j.api.unitofwork, \
-                org.qi4j.bootstrap, \
-                org.qi4j.library.constraints.annotation, \
-                org.qi4j.spi.service
+                org.qi4j.api.common;version="[${pom.version},2)", \
+                org.qi4j.api.configuration;version="[${pom.version},2)", \
+                org.qi4j.api.injection.scope;version="[${pom.version},2)", \
+                org.qi4j.api.mixin;version="[${pom.version},2)", \
+                org.qi4j.api.property;version="[${pom.version},2)", \
+                org.qi4j.api.service;version="[${pom.version},2)", \
+                org.qi4j.api.unitofwork;version="[${pom.version},2)", \
+                org.qi4j.bootstrap;version="[${pom.version},2)", \
+                org.qi4j.library.constraints.annotation;version="[${pom.version},2)", \
+                org.qi4j.spi.service;version="[${pom.version},2)"

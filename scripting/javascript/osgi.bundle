@@ -3,10 +3,10 @@ Bundle-Activator:
 
 Private-Package:
 
-Import-Package: org.qi4j.scripting.common, \
-                org.qi4j.api.common, \
-                org.qi4j.api.composite, \
-                org.qi4j.api.injection.scope, \
+Import-Package: org.qi4j.scripting.common;version="[${pom.version},2)", \
+                org.qi4j.api.common;version="[${pom.version},2)", \
+                org.qi4j.api.composite;version="[${pom.version},2)", \
+                org.qi4j.api.injection.scope;version="[${pom.version},2)", \
                 javax.swing, \
                 javax.swing.border, \
                 javax.swing.event, \
