@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.qi4j.library.shiro.crypto;
+package org.qi4j.library.shiro;
 
 import org.apache.shiro.ShiroException;
 
