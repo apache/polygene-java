@@ -35,7 +35,7 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-import org.qi4j.library.shiro.crypto.CryptoException;
+import org.qi4j.library.shiro.CryptoException;
 
 @Mixins( X509Factory.Mixin.class )
 public interface X509Factory

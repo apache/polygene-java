@@ -32,7 +32,7 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
-import org.qi4j.library.shiro.crypto.CryptoException;
+import org.qi4j.library.shiro.CryptoException;
 import org.qi4j.library.shiro.crypto.HashFactory;
 
 @Mixins( SecureHashFactory.Mixin.class )
