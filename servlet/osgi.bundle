@@ -16,6 +16,6 @@ Import-Package: javax.servlet;version="[2.3,3.0)", \
                 org.slf4j;version="[1.5,2.0]"
 
 Export-Package: org.qi4j.library.servlet.lifecycle;version=${pom.version}, \
-                org.qi4j.library.servlet;version={pom.version}
+                org.qi4j.library.servlet;version=${pom.version}
 
 Ignore-Package: com_cenqua_clover
