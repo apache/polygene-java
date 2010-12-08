@@ -1,7 +1,7 @@
 
 Ignore-Package: com_cenqua_clover
 
-Import-Package:
+Import-Package: \
                 org.json, \
                 org.qi4j.api;version="[${pom.version},2.0]", \
                 org.qi4j.api.cache;version="[${pom.version},2.0]", \

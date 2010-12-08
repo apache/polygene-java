@@ -60,4 +60,6 @@ Import-Package: org.qi4j.api;version="[${pom.version},2.0]", \
                 org.qi4j.api.unitofwork;version="[${pom.version},2.0]", \
                 org.qi4j.api.usecase;version="[${pom.version},2.0]", \
                 org.qi4j.api.util;version="[${pom.version},2.0]", \
-                org.qi4j.api.value;version="[${pom.version},2.0]"
+                org.qi4j.api.value;version="[${pom.version},2.0]", \
+                org.slf4j;version="[1.5,2)"
+

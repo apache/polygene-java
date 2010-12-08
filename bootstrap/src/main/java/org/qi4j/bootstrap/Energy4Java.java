@@ -19,7 +19,6 @@
 package org.qi4j.bootstrap;
 
 import java.io.IOException;
-import org.qi4j.bootstrap.internal.ServiceLoader;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.structure.ApplicationModelSPI;
 import org.qi4j.spi.structure.ApplicationSPI;
@@ -33,28 +32,16 @@ import org.qi4j.spi.structure.ApplicationSPI;
  */
 public final class Energy4Java
 {
-    private static ServiceLoader serviceLoader;
-
     private Qi4jRuntime runtime;
 
-    static
+    public Energy4Java( ServiceLoader serviceLoader )
     {
-        serviceLoader = new ServiceLoader();
-    }
-
-    public static ServiceLoader getServiceLoader()
-    {
-        return serviceLoader;
-    }
-
-    public static void setServiceLoader( ServiceLoader aServiceLoader )
-    {
-        serviceLoader = aServiceLoader;
+        this( findQi4jRuntime( serviceLoader ) );
     }
 
     public Energy4Java()
     {
-        this( findQi4jRuntime() );
+        this( findQi4jRuntime( new ServiceLoader.StandaloneApplicationServiceLoader() ) );
     }
 
     public Energy4Java( Qi4jRuntime runtime )
@@ -82,13 +69,13 @@ public final class Energy4Java
         return runtime.spi();
     }
 
-    private static Qi4jRuntime findQi4jRuntime()
+    private static Qi4jRuntime findQi4jRuntime( ServiceLoader serviceLoader )
         throws BootstrapException
     {
 
         try
         {
-            final Qi4jRuntime runtime = serviceLoader.firstProvider( Qi4jRuntime.class );
+            Qi4jRuntime runtime = serviceLoader.findFirstService( Qi4jRuntime.class );
             if( runtime != null )
             {
                 return runtime;
@@ -99,10 +86,5 @@ public final class Energy4Java
         {
             throw new BootstrapException( "Unable to load a Qi4j runtime provider.", e );
         }
-    }
-
-    public static void notifyRuntimeShutdown()
-    {
-        // TODO What????
     }
 }

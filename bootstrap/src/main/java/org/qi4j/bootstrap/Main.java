@@ -17,8 +17,8 @@ package org.qi4j.bootstrap;
 import org.qi4j.spi.structure.ApplicationSPI;
 
 /**
- * This class can be used as the application class. Ensure that the ApplicationAssembler
- * is available on the classpath, and that it has been specified using the ServiceLoader
+ * This class can be used as the application class. Ensure that the ApplicationAssembler(s)
+ * is(/are) available on the classpath, and that it (those) uses the ServiceLoader
  * concept. This essentially means that you have to create a text file named:
  * "META-INF/services/org.qi4j.bootstrap.ApplicationAssembler"
  * and in it place on one line the class name of your assembler. This will allow this class
@@ -31,8 +31,8 @@ public class Main
     {
         Energy4Java energy4Java = new Energy4Java();
 
-        Iterable<ApplicationAssembler> assemblers = Energy4Java.getServiceLoader()
-            .providers( ApplicationAssembler.class );
+        Iterable<ApplicationAssembler> assemblers = new ServiceLoader.StandaloneApplicationServiceLoader()
+            .findAllServices( ApplicationAssembler.class );
         for( ApplicationAssembler assembler : assemblers )
         {
             ApplicationSPI application = energy4Java.newApplication( assembler );
