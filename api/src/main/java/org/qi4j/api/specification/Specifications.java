@@ -79,4 +79,19 @@ public class Specifications
         };
     }
 
+    public static <T> Specification<T> in( final T... allowed)
+    {
+       return new Specification<T>()
+       {
+          public boolean satisfiedBy( T item )
+          {
+             for (T allow : allowed)
+             {
+                if (allow.equals( item ))
+                   return true;
+             }
+             return false;
+          }
+       };
+    }
 }
