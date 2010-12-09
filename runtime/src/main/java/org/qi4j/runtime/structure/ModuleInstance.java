@@ -42,6 +42,7 @@ import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.usecase.Usecase;
+import org.qi4j.api.util.NullArgumentException;
 import org.qi4j.api.value.NoSuchValueException;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
@@ -420,6 +421,7 @@ public class ModuleInstance
         public <T> TransientBuilder<T> newTransientBuilder( Class<T> mixinType )
                 throws NoSuchCompositeException
         {
+            NullArgumentException.validateNotNull( "mixinType", mixinType );
             CompositeFinder finder = findTransientModel( mixinType );
 
             if( finder.model == null )
@@ -433,6 +435,7 @@ public class ModuleInstance
         public <T> T newTransient( final Class<T> mixinType )
                 throws NoSuchCompositeException, ConstructionException
         {
+            NullArgumentException.validateNotNull( "mixinType", mixinType );
             CompositeFinder finder = findTransientModel( mixinType );
 
             if( finder.model == null )
@@ -458,31 +461,33 @@ public class ModuleInstance
     private class ObjectBuilderFactoryInstance
             implements ObjectBuilderFactory
     {
-        public <T> ObjectBuilder<T> newObjectBuilder( Class<T> type )
+        public <T> ObjectBuilder<T> newObjectBuilder( Class<T> mixinType )
                 throws NoSuchObjectException
         {
-            ObjectFinder finder = findObjectModel( type );
+            NullArgumentException.validateNotNull( "mixinType", mixinType );
+            ObjectFinder finder = findObjectModel( mixinType );
 
             if( finder.model == null )
             {
-                throw new NoSuchObjectException( type.getName(), name() );
+                throw new NoSuchObjectException( mixinType.getName(), name() );
             }
             InjectionContext injectionContext = new InjectionContext( finder.module, UsesInstance.EMPTY_USES );
             return new ObjectBuilderInstance<T>( injectionContext, finder.model );
         }
 
-        public <T> T newObject( Class<T> type )
+        public <T> T newObject( Class<T> mixinType )
                 throws NoSuchObjectException
         {
-            ObjectFinder finder = findObjectModel( type );
+            NullArgumentException.validateNotNull( "mixinType", mixinType );
+            ObjectFinder finder = findObjectModel( mixinType );
 
             if( finder.model == null )
             {
-                throw new NoSuchObjectException( type.getName(), name() );
+                throw new NoSuchObjectException( mixinType.getName(), name() );
             }
 
             InjectionContext injectionContext = new InjectionContext( finder.module, UsesInstance.EMPTY_USES );
-            return type.cast( finder.model.newInstance( injectionContext ) );
+            return mixinType.cast( finder.model.newInstance( injectionContext ) );
         }
     }
 
@@ -498,42 +503,45 @@ public class ModuleInstance
     private class ValueBuilderFactoryInstance
             implements ValueBuilderFactory
     {
-        public <T> ValueBuilder<T> newValueBuilder( Class<T> valueType )
+        public <T> ValueBuilder<T> newValueBuilder( Class<T> mixinType )
                 throws NoSuchValueException
         {
-            ValueFinder finder = findValueModel( valueType );
+            NullArgumentException.validateNotNull( "mixinType", mixinType );
+            ValueFinder finder = findValueModel( mixinType );
 
             if( finder.model == null )
             {
-                throw new NoSuchValueException( valueType.getName(), name() );
+                throw new NoSuchValueException( mixinType.getName(), name() );
             }
 
             return new ValueBuilderInstance<T>( finder.module, finder.model );
         }
 
-        public <T> T newValue( Class<T> valueType )
+        public <T> T newValue( Class<T> mixinType )
                 throws NoSuchValueException, ConstructionException
         {
-            ValueFinder finder = findValueModel( valueType );
+            NullArgumentException.validateNotNull( "mixinType", mixinType );
+            ValueFinder finder = findValueModel( mixinType );
 
             if( finder.model == null )
             {
-                throw new NoSuchValueException( valueType.getName(), name() );
+                throw new NoSuchValueException( mixinType.getName(), name() );
             }
 
             StateHolder initialState = finder.model.newInitialState();
             finder.model.checkConstraints( initialState );
-            return valueType.cast( finder.model.newValueInstance( finder.module, initialState ).proxy() );
+            return mixinType.cast( finder.model.newValueInstance( finder.module, initialState ).proxy() );
         }
 
-        public <T> T newValueFromJSON( Class<T> valueType, String jsonValue )
+        public <T> T newValueFromJSON( Class<T> mixinType, String jsonValue )
                 throws NoSuchValueException, ConstructionException
         {
-            ValueFinder finder = findValueModel( valueType );
+            NullArgumentException.validateNotNull( "mixinType", mixinType );
+            ValueFinder finder = findValueModel( mixinType );
 
             if( finder.model == null )
             {
-                throw new NoSuchValueException( valueType.getName(), name() );
+                throw new NoSuchValueException( mixinType.getName(), name() );
             }
 
             try

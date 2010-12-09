@@ -15,7 +15,9 @@
 package org.qi4j.runtime.transients;
 
 import org.junit.Test;
+import org.qi4j.api.composite.NoSuchCompositeException;
 import org.qi4j.api.composite.TransientComposite;
+import org.qi4j.api.util.NullArgumentException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
@@ -27,11 +29,11 @@ public class TransientBuilderFactoryTest
 {
 
     /**
-     * Tests that an object builder cannot be created for an unregistered object.
+     * Tests that an transient builder cannot be created for an unregistered object.
      *
      * @throws Exception expected
      */
-    @Test( expected = Exception.class )
+    @Test( expected = NoSuchCompositeException.class )
     public void newBuilderForUnregisteredComposite()
         throws Exception
     {
@@ -43,6 +45,44 @@ public class TransientBuilderFactoryTest
             }
         };
         assembler.transientBuilderFactory().newTransientBuilder( AnyComposite.class );
+    }
+
+    /**
+     * Tests that an transient builder cannot be created for a 'null' type.
+     *
+     * @throws Exception expected
+     */
+    @Test( expected = NullArgumentException.class )
+    public void newBuilderForNullType()
+        throws Exception
+    {
+        SingletonAssembler assembler = new SingletonAssembler()
+        {
+            public void assemble( ModuleAssembly module )
+                throws AssemblyException
+            {
+            }
+        };
+        assembler.transientBuilderFactory().newTransientBuilder( null );
+    }
+
+    /**
+     * Tests that a transient composite instance cannot be created for a 'null' type.
+     *
+     * @throws Exception expected
+     */
+    @Test( expected = NullArgumentException.class )
+    public void newInstanceForNullType()
+        throws Exception
+    {
+        SingletonAssembler assembler = new SingletonAssembler()
+        {
+            public void assemble( ModuleAssembly module )
+                throws AssemblyException
+            {
+            }
+        };
+        assembler.transientBuilderFactory().newTransient( null );
     }
 
     /**

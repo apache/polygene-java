@@ -1,31 +1,55 @@
 
 Ignore-Package: com_cenqua_clover
 
-Import-Package: org.qi4j.api, \
-                org.qi4j.api.cache, \
-                org.qi4j.api.common, \
-                org.qi4j.api.composite, \
-                org.qi4j.api.concern, \
-                org.qi4j.api.constraint, \
-                org.qi4j.api.entity, \
-                org.qi4j.api.entity.association, \
-                org.qi4j.api.injection, \
-                org.qi4j.api.injection.scope, \
-                org.qi4j.api.io, \
-                org.qi4j.api.mixin, \
-                org.qi4j.api.object, \
-                org.qi4j.api.property, \
-                org.qi4j.api.query, \
-                org.qi4j.api.query.grammar, \
-                org.qi4j.api.service, \
-                org.qi4j.api.service.qualifier, \
-                org.qi4j.api.sideeffect, \
-                org.qi4j.api.specification, \
-                org.qi4j.api.structure, \
-                org.qi4j.api.unitofwork, \
-                org.qi4j.api.usecase, \
-                org.qi4j.api.util, \
-                org.qi4j.api.value, \
+Import-Package: \
+                org.json, \
+                org.qi4j.api;version="[${pom.version},2.0]", \
+                org.qi4j.api.cache;version="[${pom.version},2.0]", \
+                org.qi4j.api.common;version="[${pom.version},2.0]", \
+                org.qi4j.api.composite;version="[${pom.version},2.0]", \
+                org.qi4j.api.concern;version="[${pom.version},2.0]", \
+                org.qi4j.api.constraint;version="[${pom.version},2.0]", \
+                org.qi4j.api.entity;version="[${pom.version},2.0]", \
+                org.qi4j.api.entity.association;version="[${pom.version},2.0]", \
+                org.qi4j.api.injection;version="[${pom.version},2.0]", \
+                org.qi4j.api.injection.scope;version="[${pom.version},2.0]", \
+                org.qi4j.api.io;version="[${pom.version},2.0]", \
+                org.qi4j.api.mixin;version="[${pom.version},2.0]", \
+                org.qi4j.api.object;version="[${pom.version},2.0]", \
+                org.qi4j.api.property;version="[${pom.version},2.0]", \
+                org.qi4j.api.query;version="[${pom.version},2.0]", \
+                org.qi4j.api.query.grammar;version="[${pom.version},2.0]", \
+                org.qi4j.api.service;version="[${pom.version},2.0]", \
+                org.qi4j.api.service.qualifier;version="[${pom.version},2.0]", \
+                org.qi4j.api.sideeffect;version="[${pom.version},2.0]", \
+                org.qi4j.api.specification;version="[${pom.version},2.0]", \
+                org.qi4j.api.structure;version="[${pom.version},2.0]", \
+                org.qi4j.api.unitofwork;version="[${pom.version},2.0]", \
+                org.qi4j.api.usecase;version="[${pom.version},2.0]", \
+                org.qi4j.api.util;version="[${pom.version},2.0]", \
+                org.qi4j.api.value;version="[${pom.version},2.0]", \
+                org.qi4j.entitystore.memory;version="[${pom.version},2.0]", \
+                org.qi4j.entitystore.map;version="[${pom.version},2.0]", \
+                org.qi4j.spi;version="[${pom.version},2.0]", \
+                org.qi4j.spi.cache;version="[${pom.version},2.0]", \
+                org.qi4j.spi.composite;version="[${pom.version},2.0]", \
+                org.qi4j.spi.concern;version="[${pom.version},2.0]", \
+                org.qi4j.spi.constraint;version="[${pom.version},2.0]", \
+                org.qi4j.spi.entity;version="[${pom.version},2.0]", \
+                org.qi4j.spi.entity.association;version="[${pom.version},2.0]", \
+                org.qi4j.spi.entitystore.helpers;version="[${pom.version},2.0]", \
+                org.qi4j.spi.entitystore;version="[${pom.version},2.0]", \
+                org.qi4j.spi.mixin;version="[${pom.version},2.0]", \
+                org.qi4j.spi.object;version="[${pom.version},2.0]", \
+                org.qi4j.spi.property;version="[${pom.version},2.0]", \
+                org.qi4j.spi.query;version="[${pom.version},2.0]", \
+                org.qi4j.spi.service;version="[${pom.version},2.0]", \
+                org.qi4j.spi.service.importer;version="[${pom.version},2.0]", \
+                org.qi4j.spi.sideeffect;version="[${pom.version},2.0]", \
+                org.qi4j.spi.structure;version="[${pom.version},2.0]", \
+                org.qi4j.spi.uuid;version="[${pom.version},2.0]", \
+                org.qi4j.spi.util;version="[${pom.version},2.0]", \
+                org.qi4j.spi.value;version="[${pom.version},2.0]", \
                 org.slf4j;version="[1.5,2.0)", \
                 org.xml.sax, \
                 org.xml.sax.helpers
@@ -55,4 +79,4 @@ Export-Package: org.json, \
                 org.qi4j.entitystore.memory;version=${pom.version}, \
                 org.qi4j.entitystore.map;version=${pom.version}
 
-Private-Package: org.qi4j.spi.util
+Private-Package:

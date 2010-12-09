@@ -20,11 +20,14 @@ package org.qi4j.runtime.instantiation;
 import org.junit.Assert;
 import org.junit.Test;
 import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.util.NullArgumentException;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
+
+import static org.junit.Assert.fail;
 
 public class ValueInstantiationTests
     extends AbstractQi4jTest
@@ -34,6 +37,44 @@ public class ValueInstantiationTests
         throws AssemblyException
     {
         module.addValues( MyValue.class );
+    }
+
+    @Test
+    public void whenTryingToCreateValueFromNullTypeThenExpectNullArgumentException()
+        throws Exception
+    {
+        // valueBuilderFactory.newValueBuilder()
+        try
+        {
+            valueBuilderFactory.newValueBuilder( null );
+            fail("NullArgumentException was expected.");
+        } catch( NullArgumentException e )
+        {
+            // expected
+        }
+
+
+        // valueBuilderFactory.newValue();
+        try
+        {
+            valueBuilderFactory.newValue( null );
+            fail("NullArgumentException was expected.");
+        } catch( NullArgumentException e )
+        {
+            // expected
+        }
+
+
+        //valueBuilderFactory.newValueFromJSON();
+        try
+        {
+            valueBuilderFactory.newValueFromJSON( null, "abc:123" );
+            ValueBuilder<My> builder = valueBuilderFactory.newValueBuilder( null );
+            fail("NullArgumentException was expected.");
+        } catch( NullArgumentException e )
+        {
+            // expected
+        }
     }
 
     @Test

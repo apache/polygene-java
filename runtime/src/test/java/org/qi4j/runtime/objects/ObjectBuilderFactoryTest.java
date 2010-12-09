@@ -21,6 +21,7 @@ import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.object.NoSuchObjectException;
 import org.qi4j.api.object.ObjectBuilder;
 import org.qi4j.api.structure.Module;
+import org.qi4j.api.util.NullArgumentException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
@@ -51,6 +52,45 @@ public class ObjectBuilderFactoryTest
         };
         assembler.objectBuilderFactory().newObjectBuilder( AnyObject.class );
     }
+
+    /**
+     * Tests that an object builder cannot be created for a 'null' type.
+     *
+     * @throws Exception expected
+     */
+    @Test( expected = NullArgumentException.class )
+    public void newBuilderForNullType()
+        throws Exception
+    {
+        SingletonAssembler assembler = new SingletonAssembler()
+        {
+            public void assemble( ModuleAssembly module )
+                throws AssemblyException
+            {
+            }
+        };
+        assembler.objectBuilderFactory().newObjectBuilder( null );
+    }
+
+    /**
+     * Tests that an object builder cannot be created for a 'null' type.
+     *
+     * @throws Exception expected
+     */
+    @Test( expected = NullArgumentException.class )
+    public void newObjectInstanceForNullType()
+        throws Exception
+    {
+        SingletonAssembler assembler = new SingletonAssembler()
+        {
+            public void assemble( ModuleAssembly module )
+                throws AssemblyException
+            {
+            }
+        };
+        assembler.objectBuilderFactory().newObject( null );
+    }
+
 
     /**
      * Tests that an object builder can be created for an registered object.
