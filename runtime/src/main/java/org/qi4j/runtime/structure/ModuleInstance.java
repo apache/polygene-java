@@ -160,48 +160,58 @@ public class ModuleInstance
 
     public EntityDescriptor entityDescriptor( String name )
     {
-        EntityFinder finder;
         try
         {
-            finder = findEntityModel( classLoader().loadClass( name ) );
+            EntityFinder finder = findEntityModel( classLoader().loadClass( name ) );
+            if( finder.noModelExist() )
+            {
+                return null;
+            }
+            return finder.getFoundModel();
         }
         catch (ClassNotFoundException e)
         {
             return null;
         }
-        if( finder.noModelExist() )
+    }
+
+    public ObjectDescriptor objectDescriptor( String typeName )
+    {
+        try
+        {
+            ObjectFinder finder = findObjectModel( classLoader().loadClass( typeName ) );
+            return finder.model;
+        }
+        catch (ClassNotFoundException e)
         {
             return null;
         }
-        return finder.getFoundModel();
     }
 
     public TransientDescriptor transientDescriptor( String name )
     {
-        CompositeFinder finder;
         try
         {
-            finder = findTransientModel( classLoader().loadClass( name ) );
+            CompositeFinder finder = findTransientModel( classLoader().loadClass( name ) );
+            return finder.model;
         }
         catch (ClassNotFoundException e)
         {
             return null;
         }
-        return finder.model;
     }
 
     public ValueDescriptor valueDescriptor( String name )
     {
-        ValueFinder finder;
         try
         {
-            finder = findValueModel( classLoader().loadClass( name ) );
+            ValueFinder finder = findValueModel( classLoader().loadClass( name ) );
+            return finder.model;
         }
         catch (ClassNotFoundException e)
         {
             return null;
         }
-        return finder.model;
     }
 
     public TransientBuilderFactory transientBuilderFactory()

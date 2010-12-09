@@ -17,6 +17,7 @@ package org.qi4j.spi.structure;
 import org.qi4j.api.structure.Module;
 import org.qi4j.spi.composite.TransientDescriptor;
 import org.qi4j.spi.entity.EntityDescriptor;
+import org.qi4j.spi.object.ObjectDescriptor;
 import org.qi4j.spi.value.ValueDescriptor;
 
 /**
@@ -29,7 +30,7 @@ public interface ModuleSPI
 
     EntityDescriptor entityDescriptor( String typeName );
 
-//    ObjectDescriptor objectDescriptor( String typeName );
+    ObjectDescriptor objectDescriptor( String typeName );
 
     ValueDescriptor valueDescriptor( String typeName );
 }
