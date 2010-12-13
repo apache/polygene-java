@@ -40,6 +40,7 @@
         <module>sql</module>
         <module>uid</module>
         <module>vaadin</module>
+        <module>circuitbreaker</module>
     </modules>
 
     <developers>
