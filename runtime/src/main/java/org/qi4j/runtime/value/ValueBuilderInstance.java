@@ -21,7 +21,6 @@ import org.qi4j.api.property.Property;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueComposite;
-import org.qi4j.runtime.composite.AbstractStateModel;
 import org.qi4j.runtime.structure.ModuleInstance;
 
 /**
