@@ -13,6 +13,13 @@
  */
 package org.qi4j.api.unitofwork;
 
+import java.lang.annotation.Documented;
+import static java.lang.annotation.ElementType.METHOD;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import java.lang.annotation.Target;
+
 /**
  * Annotation to denote the unit of work discard policy.
  * By default, discard is applied on any method that has {@link UnitOfWorkPropagation} and any exception is thrown.
@@ -45,6 +52,10 @@ package org.qi4j.api.unitofwork;
  * The unit of work will be discarded iff {@code MyBusinessException} exceptions or its subclass is thrown from within
  * {@code myBusinessMethod} method.
  */
+@Retention( RUNTIME )
+@Target( METHOD )
+@Inherited
+@Documented
 public @interface UnitOfWorkDiscardOn
 {
     Class<? extends Throwable>[] value() default { Throwable.class };

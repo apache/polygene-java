@@ -14,25 +14,18 @@
 
 package org.qi4j.api.io;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
-import java.net.URL;
-import java.rmi.RemoteException;
-import java.util.Arrays;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 import org.qi4j.api.util.Function;
 import org.slf4j.LoggerFactory;
+
+import java.io.*;
+import java.net.URL;
+import java.rmi.RemoteException;
+import java.util.Arrays;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static java.util.Arrays.asList;
 import static org.qi4j.api.io.Inputs.text;
@@ -49,7 +42,7 @@ public class InputOutputTest
         throws IOException
     {
         File source = getSourceFile();
-        File destination = File.createTempFile( "satisfiedBy", ".txt" );
+        File destination = File.createTempFile( "test", ".txt" );
         destination.deleteOnExit();
 
         BufferedReader reader = new BufferedReader( new FileReader( source ) );
@@ -86,7 +79,7 @@ public class InputOutputTest
         throws IOException
     {
         URL source = getClass().getResource( "/iotest.txt" );
-        File destination = File.createTempFile( "satisfiedBy", ".txt" );
+        File destination = File.createTempFile( "test", ".txt" );
         destination.deleteOnExit();
         text( source ).transferTo( Outputs.text( destination ) );
     }
@@ -96,7 +89,7 @@ public class InputOutputTest
         throws IOException
     {
         File source = getSourceFile();
-        File tempFile = File.createTempFile( "satisfiedBy", ".txt" );
+        File tempFile = File.createTempFile( "test", ".txt" );
         tempFile.deleteOnExit();
 
         Inputs.byteBuffer( source, 1024 ).transferTo( Outputs.byteBuffer( tempFile ) );
@@ -105,11 +98,23 @@ public class InputOutputTest
     }
 
     @Test
+    public void testCopyURL()
+        throws IOException
+    {
+        File tempFile = File.createTempFile( "test", ".txt" );
+        tempFile.deleteOnExit();
+
+        Inputs.text( new URL("http://www.qi4j.org") ).transferTo( Outputs.text( tempFile ) );
+
+// Uncomment to check output        Inputs.text( tempFile ).transferTo( Outputs.systemOut() );
+    }
+
+    @Test
     public void testCopyFileStreams()
         throws IOException
     {
         File source = getSourceFile();
-        File tempFile = File.createTempFile( "satisfiedBy", ".txt" );
+        File tempFile = File.createTempFile( "test", ".txt" );
         tempFile.deleteOnExit();
 
         Inputs.byteBuffer( new FileInputStream( source ), 1024 ).transferTo(
@@ -146,7 +151,7 @@ public class InputOutputTest
     public void testTextInputsOutputs()
         throws IOException
     {
-        File tempFile = File.createTempFile( "satisfiedBy", ".txt" );
+        File tempFile = File.createTempFile( "test", ".txt" );
         tempFile.deleteOnExit();
         File sourceFile = getSourceFile();
         Transforms.Counter<String> stringCounter = new Transforms.Counter<String>();
@@ -170,7 +175,7 @@ public class InputOutputTest
     public void testCombineInputs()
         throws IOException
     {
-        File tempFile = File.createTempFile( "satisfiedBy", ".txt" );
+        File tempFile = File.createTempFile( "test", ".txt" );
         tempFile.deleteOnExit();
         File sourceFile = getSourceFile();
         Transforms.Counter<String> stringCounter = new Transforms.Counter<String>();
@@ -255,7 +260,7 @@ public class InputOutputTest
         Lock outputLock = new ReentrantLock();
 
         URL source = getClass().getResource( "/iotest.txt" );
-        File destination = File.createTempFile( "satisfiedBy", ".txt" );
+        File destination = File.createTempFile( "test", ".txt" );
         destination.deleteOnExit();
         lock( inputLock, text( source ) ).transferTo( lock( outputLock, Outputs.text( destination ) ) );
 

@@ -16,6 +16,7 @@ package org.qi4j.api.io;
 
 import java.io.*;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.zip.GZIPInputStream;
@@ -85,7 +86,9 @@ public class Inputs
     /**
      * Read lines from a textfile at a given URL.
      *
-     * If the filename ends with .gz, then the data is automatically unzipped when read.
+     * If the content support gzip encoding, then the data is automatically unzipped when read.
+     *
+     * The charset in the content-type of the URL will be used for parsing. Default is UTF-8.
      *
      * @param source textfile with lines separated by \n character
      * @return Input that provides lines from the textfiles as strings
@@ -96,13 +99,22 @@ public class Inputs
         {
             public <ReceiverThrowableType extends Throwable> void transferTo( Output<String, ReceiverThrowableType> output ) throws IOException, ReceiverThrowableType
             {
-                InputStream stream = source.openStream();
+                URLConnection urlConnection = source.openConnection();
+                urlConnection.setRequestProperty( "Accept-Encoding", "gzip" );
+                InputStream stream = urlConnection.getInputStream();
 
                 // If file is gzipped, unzip it automatically
-                if (source.getPath().endsWith( ".gz" ))
+                if ("gzip".equals(urlConnection.getContentEncoding()))
                     stream = new GZIPInputStream(stream);
 
-                final BufferedReader reader = new BufferedReader( new InputStreamReader( stream, "UTF-8" ) );
+                // Figure out charset given content-type
+                String contentType = urlConnection.getContentType();
+                String charSet = "UTF-8";
+                if (contentType.indexOf( "charset=" ) != -1)
+                {
+                    charSet = contentType.substring( contentType.indexOf("charset=")+"charset=".length() );
+                }
+                final BufferedReader reader = new BufferedReader( new InputStreamReader( stream, charSet ) );
 
                 try
                 {
