@@ -19,6 +19,8 @@ import java.lang.reflect.Method;
 import java.util.Set;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.constraint.ConstraintViolationException;
+import org.qi4j.api.property.Property;
+import org.qi4j.spi.property.PropertyDoesNotExistException;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.model.Binder;
@@ -97,12 +99,6 @@ public abstract class AbstractStateModel<T extends AbstractPropertiesModel>
     {
         PropertiesInstance stateInstance = (PropertiesInstance) state;
         propertiesModel.checkConstraints( stateInstance );
-    }
-
-    public void setProperty( QualifiedName name, Object value, StateHolder valueState )
-    {
-        AbstractPropertyModel model = propertiesModel.getPropertyByQualifiedName( name );
-        valueState.getProperty( model.accessor() ).set( value );
     }
 
     public void setComputedProperties( StateHolder state, CompositeInstance compositeInstance )
