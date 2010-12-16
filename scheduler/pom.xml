@@ -1,0 +1,64 @@
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.qi4j</groupId>
+        <artifactId>qi4j-library</artifactId>
+        <version>1.3-SNAPSHOT</version>
+    </parent>
+    <groupId>org.qi4j.library</groupId>
+    <artifactId>qi4j-lib-scheduler</artifactId>
+    <packaging>bundle</packaging>
+    <name>Qi4j Library - Scheduler</name>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <version.qi4j>1.3-SNAPSHOT</version.qi4j>
+        <enforcer.skip>true</enforcer.skip>
+    </properties>
+    <dependencies>
+        
+        <dependency>
+            <groupId>org.codeartisans</groupId>
+            <artifactId>sked</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.qi4j.library</groupId>
+            <artifactId>qi4j-lib-constraints</artifactId>
+            <version>${version.qi4j}</version>
+        </dependency>
+
+
+        <!-- Tests -->
+        <dependency>
+            <groupId>org.qi4j.core</groupId>
+            <artifactId>qi4j-core-runtime</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>0.9.26</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.qi4j.extension</groupId>
+            <artifactId>qi4j-indexing-rdf</artifactId>
+            <version>${version.qi4j}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.qi4j.core</groupId>
+            <artifactId>qi4j-core-testsupport</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        
+    </dependencies>
+
+</project>

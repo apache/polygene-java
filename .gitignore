@@ -63,3 +63,4 @@ shiro/core/target/
 shiro/web/target/
 sql/target
 vaadin/target
+scheduler/target
