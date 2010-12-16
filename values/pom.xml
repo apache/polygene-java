@@ -10,7 +10,7 @@
         <version>1.3-SNAPSHOT</version>
     </parent>
 
-    <groupId>org.qi4j</groupId>
+    <groupId>org.qi4j.library</groupId>
     <artifactId>qi4j-lib-values</artifactId>
     <version>1.3-SNAPSHOT</version>
 

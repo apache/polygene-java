@@ -26,6 +26,7 @@
         <module>auth</module>
         <module>cache</module>
         <module>constraints</module>
+        <module>cxf</module>
         <module>http</module>
         <module>jmx</module>
         <module>locking</module>
@@ -40,6 +41,7 @@
         <module>sql</module>
         <module>uid</module>
         <module>vaadin</module>
+        <module>values</module>
     </modules>
 
     <developers>
