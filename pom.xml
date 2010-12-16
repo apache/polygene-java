@@ -25,6 +25,7 @@
     <modules>
         <module>auth</module>
         <module>cache</module>
+        <module>circuitbreaker</module>
         <module>constraints</module>
         <module>http</module>
         <module>jmx</module>
@@ -40,7 +41,6 @@
         <module>sql</module>
         <module>uid</module>
         <module>vaadin</module>
-        <module>circuitbreaker</module>
     </modules>
 
     <developers>
