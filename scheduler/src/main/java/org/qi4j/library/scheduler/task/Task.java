@@ -13,10 +13,18 @@
  */
 package org.qi4j.library.scheduler.task;
 
-/**
- * @author Paul Merlin
- */
+import java.util.List;
+
+import org.qi4j.api.common.UseDefaults;
+import org.qi4j.api.property.Property;
+
 public interface Task
-        extends TaskState, Runnable
+        extends Runnable
 {
+
+    Property<String> name();
+
+    @UseDefaults
+    Property<List<String>> tags();
+
 }

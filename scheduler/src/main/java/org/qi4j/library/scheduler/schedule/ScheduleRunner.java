@@ -123,36 +123,4 @@ public class ScheduleRunner
         }
     }
 
-    public void oldrun()
-    {
-        try {
-
-            UnitOfWork uow = uowf.newUnitOfWork();
-            ScheduleEntity schedule = uow.get( ScheduleEntity.class, scheduleIdentity );
-
-            schedule.task().get().run();
-
-            schedule.running().set( false );
-
-            if ( timelineRecorder != null ) {
-                timelineRecorder.recordSuccess( schedule.task().get() );
-            }
-
-            uow.complete();
-
-        } catch ( Throwable ex ) {
-            LOGGER.error( "Unable to complete task: {}", ex.getMessage(), ex );
-            if ( timelineRecorder != null ) {
-                try {
-                    UnitOfWork uow = uowf.newUnitOfWork();
-                    ScheduleEntity schedule = uow.get( ScheduleEntity.class, scheduleIdentity );
-                    timelineRecorder.recordFailure( schedule.task().get(), ex );
-                    uow.complete();
-                } catch ( UnitOfWorkCompletionException ignored ) {
-                    LOGGER.error( "Unable to record failure of task: {}", ignored.getMessage(), ignored );
-                }
-            }
-        }
-    }
-
 }

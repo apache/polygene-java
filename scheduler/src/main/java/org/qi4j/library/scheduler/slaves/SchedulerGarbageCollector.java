@@ -25,9 +25,7 @@ import org.qi4j.library.scheduler.schedule.ScheduleEntity;
 import org.qi4j.library.scheduler.schedule.ScheduleRepository;
 
 /**
- * This one is for pruning non-"persistent accross jvm runs" Schedules and unused CronExpressions.
- *
- * @author Paul Merlin
+ * This one is for continuously pruning non-used and non-"persistent accross jvm runs" Schedules.
  */
 public class SchedulerGarbageCollector
         extends AbstractRhythmedSchedulerSlave

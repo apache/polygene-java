@@ -13,53 +13,36 @@
  */
 package org.qi4j.library.scheduler.schedule;
 
-import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.mixin.Mixins;
-
 import org.codeartisans.sked.crontab.schedule.CronSchedule;
 
-/**
- * Behavior of a Schedule.
- *
- * A Schedule computes its next run based on its cron expression.
- * Cron expression syntax is documented in {@link CronExpressionConstraint}
- * 
- * @author Paul Merlin
- */
-@Mixins( ScheduleBehavior.Mixin.class )
-public interface ScheduleBehavior
+import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
+
+public abstract class ScheduleEntityMixin
+        implements ScheduleEntity
 {
 
-    void setAsRunning();
+    @This
+    private ScheduleEntity me;
 
-    /**
-     * @return Next run or null.
-     */
-    Long computeNextRun();
-
-    class Mixin
-            implements ScheduleBehavior
+    public void beforeCompletion()
+            throws UnitOfWorkCompletionException
     {
-
-        @This
-        private ScheduleState state;
-
-        public void setAsRunning()
-        {
-            state.running().set( true );
-        }
-
-        public Long computeNextRun()
-        {
-            String cronExpression = state.cronExpression().get();
+        if ( !me.running().get() ) {
+            // Compute it even if it's not null, cronExpression could have been changed
+            String cronExpression = me.cronExpression().get();
             long now = System.currentTimeMillis();
             Long nextRun = new CronSchedule( cronExpression ).firstRunAfter( now );
             if ( nextRun < now ) {
-                return null;
+                me.nextRun().set( null );
             }
-            return nextRun;
+            me.nextRun().set( nextRun );
         }
+    }
 
+    public void afterCompletion( UnitOfWorkStatus status )
+    {
+        // NOOP
     }
 
 }

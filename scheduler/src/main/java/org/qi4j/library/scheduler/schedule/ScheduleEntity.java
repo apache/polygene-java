@@ -13,15 +13,35 @@
  */
 package org.qi4j.library.scheduler.schedule;
 
+import org.qi4j.api.common.Optional;
+import org.qi4j.api.common.UseDefaults;
+
 import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.property.Property;
 import org.qi4j.api.unitofwork.UnitOfWorkCallback;
 
+import org.qi4j.library.scheduler.task.Task;
+
 /**
- * @author Paul Merlin
+ * A Schedule computes its next run based on its cron expression.
+ * Cron expression syntax is documented in {@link CronExpressionConstraint}
  */
-@Mixins( ScheduleUnitOfWorkCallback.class )
+@Mixins( { ScheduleMixin.class, ScheduleEntityMixin.class } )
 public interface ScheduleEntity
         extends Schedule, UnitOfWorkCallback, EntityComposite
 {
+
+
+    Association<Task> task();
+
+    Property<Long> start();
+
+    @Optional
+    Property<Long> nextRun();
+
+    @UseDefaults
+    Property<Boolean> running();
+
 }

@@ -18,7 +18,7 @@ import java.util.Date;
 import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.unitofwork.UnitOfWorkConcern;
 import org.qi4j.api.unitofwork.UnitOfWorkPropagation;
-import org.qi4j.api.unitofwork.UnitOfWorkPropagation.Propagation;
+import static org.qi4j.api.unitofwork.UnitOfWorkPropagation.Propagation.MANDATORY;
 
 import org.qi4j.library.scheduler.constraints.CronExpression;
 import org.qi4j.library.scheduler.schedule.Schedule;
@@ -26,6 +26,7 @@ import org.qi4j.library.scheduler.task.Task;
 
 /**
  * To make a Schedule durable, set it's durable property to true once its scheduled.
+ * Durable Schedules that have no future run are removed by SchedulerGarbageCollector.
  *
  * @author Paul Merlin
  */
@@ -33,13 +34,16 @@ import org.qi4j.library.scheduler.task.Task;
 public interface Scheduler
 {
 
-    @UnitOfWorkPropagation( Propagation.MANDATORY )
+    @UnitOfWorkPropagation( MANDATORY )
+    Schedule scheduleOnce( Task task, long initialDelay );
+
+    @UnitOfWorkPropagation( MANDATORY )
     Schedule shedule( Task task, @CronExpression String cronExpression );
 
-    @UnitOfWorkPropagation( Propagation.MANDATORY )
+    @UnitOfWorkPropagation( MANDATORY )
     Schedule shedule( Task task, @CronExpression String cronExpression, long initialDelay );
 
-    @UnitOfWorkPropagation( Propagation.MANDATORY )
+    @UnitOfWorkPropagation( MANDATORY )
     Schedule shedule( Task task, @CronExpression String cronExpression, Date start );
 
 }

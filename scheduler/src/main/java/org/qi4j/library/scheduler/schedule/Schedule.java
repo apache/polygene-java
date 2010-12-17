@@ -13,10 +13,36 @@
  */
 package org.qi4j.library.scheduler.schedule;
 
-/**
- * @author Paul Merlin
- */
+import org.qi4j.api.common.UseDefaults;
+import org.qi4j.api.entity.Queryable;
+import org.qi4j.api.property.Property;
+
+import org.qi4j.library.scheduler.constraints.CronExpression;
+
 public interface Schedule
-        extends ScheduleState, ScheduleBehavior
 {
+
+    /**
+     * @return  True if the associated Task is currently running, false otherwise
+     */
+    boolean isTaskRunning();
+
+    /**
+     * @return The cron expression that will be used on UoW completion to compute next run
+     */
+    @Queryable( false )
+    @CronExpression
+    Property<String> cronExpression();
+
+    /**
+     * Denote the Schedule durability.
+     *
+     * On shutdown and on startup, non durable Schedules are pruned.
+     * Non durable Schedules with a cron expression with no next run are pruned by SchedulerGarbageCollector.
+     *
+     * @return True if this Schedule will survice a JVM restart, false otherwise
+     */
+    @UseDefaults
+    Property<Boolean> durable();
+
 }

@@ -11,22 +11,20 @@
  * limitations under the License.
  *
  */
-package org.qi4j.library.scheduler.task;
+package org.qi4j.library.scheduler.schedule;
 
-import java.util.List;
+import org.qi4j.api.injection.scope.This;
 
-import org.qi4j.api.common.UseDefaults;
-import org.qi4j.api.property.Property;
-
-/**
- * @author Paul Merlin
- */
-public interface TaskState
+public abstract class ScheduleMixin
+        implements Schedule
 {
 
-    Property<String> name();
+    @This
+    private ScheduleEntity me;
 
-    @UseDefaults
-    Property<List<String>> tags();
+    public boolean isTaskRunning()
+    {
+        return me.running().get();
+    }
 
 }

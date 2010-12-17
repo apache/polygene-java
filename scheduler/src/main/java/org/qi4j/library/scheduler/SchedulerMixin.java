@@ -31,6 +31,11 @@ public class SchedulerMixin
     @Service
     private ScheduleFactory scheduleFactory;
 
+    public Schedule scheduleOnce( Task task, long initialDelay )
+    {
+        throw new UnsupportedOperationException( "Not supported yet." );
+    }
+
     public Schedule shedule( Task task, String cronExpression )
     {
         return scheduleFactory.newSchedule( task, cronExpression, System.currentTimeMillis() );
