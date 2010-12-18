@@ -14,6 +14,14 @@
 
 package org.qi4j.runtime.composite;
 
+import java.io.Serializable;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.entity.Lifecycle;
@@ -37,20 +45,12 @@ import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.composite.InvalidCompositeException;
 import org.qi4j.spi.mixin.MixinDescriptor;
 
-import java.io.Serializable;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.*;
-
 /**
  * JAVADOC
  */
 public final class MixinModel
-        implements Binder, MixinDescriptor, Serializable
+    implements Binder, MixinDescriptor, Serializable
 {
-//    private final static Map<Class, Class> enhancedClasses = Collections.synchronizedMap( new WeakHashMap<Class, Class>() );
-
     private final Class mixinClass;
     private final Class instantiationClass;
     private final ConstructorsModel constructorsModel;
@@ -59,7 +59,6 @@ public final class MixinModel
     private final ConcernsDeclaration concernsDeclaration;
     private final SideEffectsDeclaration sideEffectsDeclaration;
     private final Set<Class> thisMixinTypes;
-//    public MethodInterceptor mixinInvoker;
 
     public MixinModel( Class declaredMixinClass, Class instantiationClass )
     {
@@ -117,7 +116,7 @@ public final class MixinModel
     // Binding
 
     public void bind( Resolution context )
-            throws BindingException
+        throws BindingException
     {
         constructorsModel.bind( context );
         injectedFieldsModel.bind( context );
@@ -140,29 +139,24 @@ public final class MixinModel
         {
             mixin = constructorsModel.newInstance( injectionContext );
 
-            if( instantiationClass.getName().endsWith( "_Stub" ) )
+            if( FragmentClassLoader.isGenerated( instantiationClass ) )
             {
                 try
                 {
-                    instantiationClass.getDeclaredField( "_instance" ).set( mixin, injectionContext.compositeInstance() );
-                } catch (IllegalAccessException e)
+                    instantiationClass.getDeclaredField( "_instance" ).set( mixin,
+                                                                            injectionContext.compositeInstance() );
+                }
+                catch( IllegalAccessException e )
                 {
                     e.printStackTrace();
-                } catch (NoSuchFieldException e)
+                }
+                catch( NoSuchFieldException e )
                 {
                     e.printStackTrace();
                 }
             }
-/*
-            if( mixin instanceof Factory )
-            {
-                ( (Factory) mixin ).setCallbacks( new Callback[]{
-                        new ThisCompositeInvoker( compositeInstance ),
-                        NoOp.INSTANCE} );
-            }
-*/
         }
-        catch (InvalidCompositeException e)
+        catch( InvalidCompositeException e )
         {
             e.setMixinClass( mixinClass );
             throw e;
@@ -173,26 +167,9 @@ public final class MixinModel
         {
             try
             {
-/*
-                if( mixin instanceof Factory )
-                {
-                    Callback callback = ( (Factory) mixin ).getCallback( 0 );
-                    ( (Factory) mixin ).setCallback( 0, mixinInvoker );
-                    try
-                    {
-                        ( (Initializable) mixin ).initialize();
-                    }
-                    finally
-                    {
-                        ( (Factory) mixin ).setCallback( 0, callback );
-                    }
-                } else
-*/
-                {
-                    ( (Initializable) mixin ).initialize();
-                }
+                ( (Initializable) mixin ).initialize();
             }
-            catch (InitializationException e)
+            catch( InitializationException e )
             {
                 Class<? extends Composite> compositeType = compositeInstance.type();
                 String message = "Unable to initialize " + mixinClass + " in composite " + compositeType;
@@ -211,18 +188,19 @@ public final class MixinModel
     {
         final Set<Class> thisDependencies = new HashSet<Class>();
         visitModel(
-                new DependencyVisitor<RuntimeException>( new DependencyModel.ScopeSpecification( This.class ) )
+            new DependencyVisitor<RuntimeException>( new DependencyModel.ScopeSpecification( This.class ) )
+            {
+                public void visitDependency( DependencyModel dependencyModel )
                 {
-                    public void visitDependency( DependencyModel dependencyModel )
-                    {
-                        thisDependencies.add( dependencyModel.rawInjectionType() );
-                    }
+                    thisDependencies.add( dependencyModel.rawInjectionType() );
                 }
+            }
         );
         if( thisDependencies.isEmpty() )
         {
             return Collections.emptySet();
-        } else
+        }
+        else
         {
             return thisDependencies;
         }
@@ -231,37 +209,13 @@ public final class MixinModel
     protected FragmentInvocationHandler newInvocationHandler( Method method )
     {
         if( InvocationHandler.class.isAssignableFrom( mixinClass )
-                && !method.getDeclaringClass().isAssignableFrom( mixinClass ) )
+            && !method.getDeclaringClass().isAssignableFrom( mixinClass ) )
         {
             return new GenericFragmentInvocationHandler();
-        } else
+        }
+        else
         {
-            /*if( Factory.class.isAssignableFrom( constructorsModel.getFragmentClass() ) )
-            {
-                Signature sig = ReflectUtils.getSignature( method );
-                MethodProxy methodProxy = MethodProxy.find( constructorsModel.getFragmentClass(), sig );
-                if( methodProxy == null )
-                {
-                    try
-                    {
-                        Method implMethod = mixinClass.getMethod( method.getName(), method.getParameterTypes() );
-                        sig = ReflectUtils.getSignature( implMethod );
-                        methodProxy = MethodProxy.find( constructorsModel.getFragmentClass(), sig );
-                        if( methodProxy == null )
-                        {
-                            throw new InvalidMixinException( mixinClass, method );
-                        }
-                    }
-                    catch (NoSuchMethodException e)
-                    {
-                        throw new InvalidMixinException( mixinClass, method );
-                    }
-                }
-                return new TypedMixinInvocationHandler( methodProxy );
-            } else */
-            {
-                return new TypedModifierInvocationHandler();
-            }
+            return new TypedModifierInvocationHandler();
         }
     }
 
@@ -285,13 +239,13 @@ public final class MixinModel
     {
         // Add all @This injections
         visitModel(
-                new DependencyVisitor<RuntimeException>( new DependencyModel.ScopeSpecification( This.class ) )
+            new DependencyVisitor<RuntimeException>( new DependencyModel.ScopeSpecification( This.class ) )
+            {
+                public void visitDependency( DependencyModel dependencyModel )
                 {
-                    public void visitDependency( DependencyModel dependencyModel )
-                    {
-                        thisDependencies.add( dependencyModel.rawInjectionType() );
-                    }
+                    thisDependencies.add( dependencyModel.rawInjectionType() );
                 }
+            }
         );
 
         // Add all implemented interfaces
@@ -304,130 +258,20 @@ public final class MixinModel
     }
 
     public void activate( Object mixin )
-            throws Exception
+        throws Exception
     {
         if( mixin instanceof Activatable )
         {
-/*
-            Callback callback = ( (Factory) mixin ).getCallback( 0 );
-            ( (Factory) mixin ).setCallback( 0, mixinInvoker );
-*/
-            try
-            {
-                ( (Activatable) mixin ).activate();
-            }
-            finally
-            {
-//                ( (Factory) mixin ).setCallback( 0, callback );
-            }
+            ( (Activatable) mixin ).activate();
         }
     }
 
     public void passivate( Object mixin )
-            throws Exception
+        throws Exception
     {
         if( mixin instanceof Activatable )
         {
-/*
-            Callback callback = ( (Factory) mixin ).getCallback( 0 );
-            ( (Factory) mixin ).setCallback( 0, mixinInvoker );
-*/
-            try
-            {
-                ( (Activatable) mixin ).passivate();
-            }
-            finally
-            {
-//                ( (Factory) mixin ).setCallback( 0, callback );
-            }
+            ( (Activatable) mixin ).passivate();
         }
     }
-
-    private Class instantiationClass( Class fragmentClass )
-    {
-        Class instantiationClass = fragmentClass;
-        if( !InvocationHandler.class.isAssignableFrom( fragmentClass ) )
-        {
-            if( Modifier.isAbstract( fragmentClass.getModifiers() ) )
-            {
-                try
-                {
-                    FragmentClassLoader jClassLoader = new FragmentClassLoader( fragmentClass.getClassLoader() );
-                    instantiationClass = jClassLoader.loadClass( fragmentClass.getName() + "_Stub" );
-                } catch (ClassNotFoundException e)
-                {
-                    throw new ConstructionException( "Could not generate mixin subclass", e );
-                }
-            }
-/*
-            }
-            instantiationClass = enhancedClasses.get( fragmentClass );
-            if( instantiationClass == null )
-            {
-                Enhancer enhancer = createEnhancer( fragmentClass );
-                instantiationClass = enhancer.createClass();
-                enhancedClasses.put( fragmentClass, instantiationClass );
-            }
-*/
-        }
-        return instantiationClass;
-    }
-/*
-    private Enhancer createEnhancer( final Class fragmentClass )
-    {
-        Enhancer enhancer = new Enhancer();
-        enhancer.setUseCache( false );
-        enhancer.setSuperclass( fragmentClass );
-        // TODO: make this configurable?
-        ClassLoader loader = new BridgeClassLoader( fragmentClass.getClassLoader() );
-//        ClassLoader loader = fragmentClass.getClassLoader();
-        enhancer.setClassLoader( loader );
-        enhancer.setCallbackTypes( new Class[]{ThisCompositeInvoker.class, NoOp.class} );
-        enhancer.setCallbackFilter( new CallbackFilter()
-        {
-            public int accept( Method method )
-            {
-                if( Lifecycle.class.isAssignableFrom( method.getDeclaringClass() )
-                        && ( "create".equals( method.getName() )
-                        || "remove".equals( method.getName() )
-                )
-                        && method.getParameterTypes().length == 0
-                        )
-                {
-                    return 1; // Lifecycle methods must not be proxied.
-                }
-                if( method.isSynthetic() )
-                {
-                    return 1;
-                }
-                if( !Modifier.isPublic( method.getModifiers() ) )
-                {
-                    return 1; // Only proxy publich methods
-                } else if( Modifier.isFinal( method.getModifiers() ) )
-                {
-                    return 1; // Skip final methods
-                }
-
-                if( injectedMethodsModel.isInjected( method ) )
-                {
-                    return 1;
-                }
-
-                for (Class aClass : Classes.interfacesOf( fragmentClass ))
-                {
-                    try
-                    {
-                        aClass.getMethod( method.getName(), method.getParameterTypes() );
-                        return 0; // This method comes from an interface - try invoking the proxy
-                    }
-                    catch (NoSuchMethodException e)
-                    {
-                    }
-                }
-
-                return 1;
-            }
-        } );
-        return enhancer;
-    }*/
 }

@@ -14,19 +14,61 @@
 
 package org.qi4j.runtime.composite;
 
-import org.objectweb.asm.*;
-import org.qi4j.api.entity.Lifecycle;
-import org.qi4j.api.mixin.Initializable;
-import org.qi4j.api.service.Activatable;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import org.objectweb.asm.AnnotationVisitor;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.FieldVisitor;
+import org.objectweb.asm.Label;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
+import org.qi4j.api.entity.Lifecycle;
+import org.qi4j.api.mixin.Initializable;
+import org.qi4j.api.service.Activatable;
 
-import static org.objectweb.asm.Opcodes.*;
+import static org.objectweb.asm.Opcodes.AASTORE;
+import static org.objectweb.asm.Opcodes.ACC_PRIVATE;
+import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
+import static org.objectweb.asm.Opcodes.ACC_STATIC;
+import static org.objectweb.asm.Opcodes.ACC_SUPER;
+import static org.objectweb.asm.Opcodes.ACONST_NULL;
+import static org.objectweb.asm.Opcodes.ALOAD;
+import static org.objectweb.asm.Opcodes.ANEWARRAY;
+import static org.objectweb.asm.Opcodes.ARETURN;
+import static org.objectweb.asm.Opcodes.ASTORE;
+import static org.objectweb.asm.Opcodes.ATHROW;
+import static org.objectweb.asm.Opcodes.BIPUSH;
+import static org.objectweb.asm.Opcodes.CHECKCAST;
+import static org.objectweb.asm.Opcodes.DLOAD;
+import static org.objectweb.asm.Opcodes.DRETURN;
+import static org.objectweb.asm.Opcodes.DUP;
+import static org.objectweb.asm.Opcodes.FLOAD;
+import static org.objectweb.asm.Opcodes.FRETURN;
+import static org.objectweb.asm.Opcodes.GETFIELD;
+import static org.objectweb.asm.Opcodes.GETSTATIC;
+import static org.objectweb.asm.Opcodes.GOTO;
+import static org.objectweb.asm.Opcodes.ICONST_0;
+import static org.objectweb.asm.Opcodes.ICONST_1;
+import static org.objectweb.asm.Opcodes.ICONST_2;
+import static org.objectweb.asm.Opcodes.ICONST_3;
+import static org.objectweb.asm.Opcodes.ICONST_4;
+import static org.objectweb.asm.Opcodes.ICONST_5;
+import static org.objectweb.asm.Opcodes.ILOAD;
+import static org.objectweb.asm.Opcodes.INVOKEINTERFACE;
+import static org.objectweb.asm.Opcodes.INVOKESPECIAL;
+import static org.objectweb.asm.Opcodes.INVOKESTATIC;
+import static org.objectweb.asm.Opcodes.INVOKEVIRTUAL;
+import static org.objectweb.asm.Opcodes.IRETURN;
+import static org.objectweb.asm.Opcodes.LLOAD;
+import static org.objectweb.asm.Opcodes.LRETURN;
+import static org.objectweb.asm.Opcodes.POP;
+import static org.objectweb.asm.Opcodes.PUTSTATIC;
+import static org.objectweb.asm.Opcodes.RETURN;
 import static org.objectweb.asm.Type.getInternalName;
 import static org.qi4j.api.util.Classes.interfacesOf;
 import static org.qi4j.api.util.Classes.interfacesWithMethods;
@@ -36,18 +78,23 @@ import static org.qi4j.api.util.Classes.interfacesWithMethods;
  * and which delegates those calls to a given composite invoker.
  */
 public class FragmentClassLoader
-        extends ClassLoader
+    extends ClassLoader
 {
     private static int jdkVersion = Opcodes.V1_5;
+    public static final String GENERATED_POSTFIX = "_Stub";
 
     static
     {
         String jdkString = System.getProperty( "java.specification.version" );
 
         if( jdkString.equals( "1.6" ) )
+        {
             jdkVersion = Opcodes.V1_6;
+        }
         else if( jdkString.equals( "1.7" ) )
+        {
             jdkVersion = Opcodes.V1_7;
+        }
     }
 
     public FragmentClassLoader( ClassLoader parent )
@@ -56,19 +103,20 @@ public class FragmentClassLoader
     }
 
     protected Class findClass( String name )
-            throws ClassNotFoundException
+        throws ClassNotFoundException
     {
-        if( name.endsWith( "_Stub" ) )
+        if( name.endsWith( GENERATED_POSTFIX ) )
         {
             Class baseClass = null;
             String baseName = name.substring( 0, name.length() - 5 );
             try
             {
                 baseClass = loadClass( baseName );
-            } catch (ClassNotFoundException e)
+            }
+            catch( ClassNotFoundException e )
             {
                 // Try replacing the last _ with $
-                while (true)
+                while( true )
                 {
                     int idx = baseName.lastIndexOf( "_" );
                     if( idx != -1 )
@@ -78,12 +126,16 @@ public class FragmentClassLoader
                         {
                             baseClass = loadClass( baseName );
                             break;
-                        } catch (ClassNotFoundException e1)
+                        }
+                        catch( ClassNotFoundException e1 )
                         {
                             // Try again
                         }
-                    } else
+                    }
+                    else
+                    {
                         throw e;
+                    }
                 }
             }
 
@@ -95,7 +147,8 @@ public class FragmentClassLoader
         return getClass().getClassLoader().loadClass( name );
     }
 
-    public static byte[] generateClass( String name, Class baseClass ) throws ClassNotFoundException
+    public static byte[] generateClass( String name, Class baseClass )
+        throws ClassNotFoundException
     {
         String classSlash = name.replace( '.', '/' );
         String baseClassSlash = getInternalName( baseClass );
@@ -118,11 +171,12 @@ public class FragmentClassLoader
         boolean hasProxyMethods = false;
         {
             int idx = 1;
-            for (Method method : baseClass.getMethods())
+            for( Method method : baseClass.getMethods() )
             {
                 if( isOverloaded( method, baseClass ) )
                 {
-                    fv = cw.visitField( ACC_PRIVATE + ACC_STATIC, "m" + idx++, "Ljava/lang/reflect/Method;", null, null );
+                    fv = cw.visitField( ACC_PRIVATE + ACC_STATIC, "m" + idx++, "Ljava/lang/reflect/Method;", null,
+                                        null );
                     fv.visitEnd();
                     hasProxyMethods = true;
                 }
@@ -130,7 +184,7 @@ public class FragmentClassLoader
         }
 
         // Constructors
-        for (Constructor constructor : baseClass.getDeclaredConstructors())
+        for( Constructor constructor : baseClass.getDeclaredConstructors() )
         {
             if( Modifier.isPublic( constructor.getModifiers() ) || Modifier.isProtected( constructor.getModifiers() ) )
             {
@@ -140,7 +194,7 @@ public class FragmentClassLoader
                 mv.visitVarInsn( ALOAD, 0 );
 
                 int idx = 1;
-                for (Class aClass : constructor.getParameterTypes())
+                for( Class aClass : constructor.getParameterTypes() )
                 {
                     // TODO Handle other types than objects (?)
                     mv.visitVarInsn( ALOAD, idx++ );
@@ -159,7 +213,7 @@ public class FragmentClassLoader
             Method[] methods = baseClass.getMethods();
             int idx = 0;
             List<Label> exceptionLabels = new ArrayList<Label>();
-            for (Method method : methods)
+            for( Method method : methods )
             {
                 if( isOverloaded( method, baseClass ) )
                 {
@@ -173,11 +227,11 @@ public class FragmentClassLoader
 
                         if( method.getExceptionTypes().length > 0 )
                         {
-                            exceptions = new String[method.getExceptionTypes().length];
-                            for (int i = 0; i < method.getExceptionTypes().length; i++)
+                            exceptions = new String[ method.getExceptionTypes().length ];
+                            for( int i = 0; i < method.getExceptionTypes().length; i++ )
                             {
-                                Class<?> aClass = method.getExceptionTypes()[i];
-                                exceptions[i] = getInternalName( aClass );
+                                Class<?> aClass = method.getExceptionTypes()[ i ];
+                                exceptions[ i ] = getInternalName( aClass );
                             }
                         }
 
@@ -187,7 +241,7 @@ public class FragmentClassLoader
                         Label l1 = new Label();
 
                         exceptionLabels.clear();
-                        for (Class<?> declaredException : method.getExceptionTypes())
+                        for( Class<?> declaredException : method.getExceptionTypes() )
                         {
                             Label ld = new Label();
                             mv.visitTryCatchBlock( l0, l1, ld, getInternalName( declaredException ) );
@@ -201,7 +255,8 @@ public class FragmentClassLoader
 
                         mv.visitLabel( l0 );
                         mv.visitVarInsn( ALOAD, 0 );
-                        mv.visitFieldInsn( GETFIELD, classSlash, "_instance", "Lorg/qi4j/spi/composite/CompositeInvoker;" );
+                        mv.visitFieldInsn( GETFIELD, classSlash, "_instance",
+                                           "Lorg/qi4j/spi/composite/CompositeInvoker;" );
                         mv.visitFieldInsn( GETSTATIC, classSlash, "m" + idx, "Ljava/lang/reflect/Method;" );
 
                         int paramCount = method.getParameterTypes().length;
@@ -210,12 +265,13 @@ public class FragmentClassLoader
                         {
                             // Send in null as parameter
                             mv.visitInsn( ACONST_NULL );
-                        } else
+                        }
+                        else
                         {
                             insn( mv, paramCount );
                             mv.visitTypeInsn( ANEWARRAY, "java/lang/Object" );
                             int pidx = 0;
-                            for (Class<?> aClass : method.getParameterTypes())
+                            for( Class<?> aClass : method.getParameterTypes() )
                             {
                                 mv.visitInsn( DUP );
                                 insn( mv, pidx++ );
@@ -225,13 +281,16 @@ public class FragmentClassLoader
                         }
 
                         // Call method
-                        mv.visitMethodInsn( INVOKEINTERFACE, "org/qi4j/spi/composite/CompositeInvoker", "invokeComposite", "(Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;" );
+                        mv.visitMethodInsn( INVOKEINTERFACE, "org/qi4j/spi/composite/CompositeInvoker",
+                                            "invokeComposite",
+                                            "(Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;" );
 
                         // Return value
                         if( !method.getReturnType().equals( Void.TYPE ) )
                         {
                             unwrapResult( mv, method.getReturnType(), l1 );
-                        } else
+                        }
+                        else
                         {
                             mv.visitInsn( POP );
                             mv.visitLabel( l1 );
@@ -244,10 +303,10 @@ public class FragmentClassLoader
 
                         // Declared exceptions
                         int exceptionIdx = 0;
-                        for (Class<?> aClass : method.getExceptionTypes())
+                        for( Class<?> aClass : method.getExceptionTypes() )
                         {
                             mv.visitLabel( exceptionLabels.get( exceptionIdx++ ) );
-                            mv.visitFrame( Opcodes.F_SAME1, 0, null, 1, new Object[]{getInternalName( aClass )} );
+                            mv.visitFrame( Opcodes.F_SAME1, 0, null, 1, new Object[]{ getInternalName( aClass ) } );
                             mv.visitVarInsn( ASTORE, stackIdx );
                             mv.visitVarInsn( ALOAD, stackIdx );
                             mv.visitInsn( ATHROW );
@@ -255,13 +314,13 @@ public class FragmentClassLoader
 
                         // RuntimeException and Error catch-all
                         mv.visitLabel( lruntime );
-                        mv.visitFrame( Opcodes.F_SAME1, 0, null, 1, new Object[]{"java/lang/RuntimeException"} );
+                        mv.visitFrame( Opcodes.F_SAME1, 0, null, 1, new Object[]{ "java/lang/RuntimeException" } );
                         mv.visitVarInsn( ASTORE, stackIdx );
                         mv.visitVarInsn( ALOAD, stackIdx );
                         mv.visitInsn( ATHROW );
 
                         mv.visitLabel( lerror );
-                        mv.visitFrame( Opcodes.F_SAME1, 0, null, 1, new Object[]{"java/lang/Throwable"} );
+                        mv.visitFrame( Opcodes.F_SAME1, 0, null, 1, new Object[]{ "java/lang/Throwable" } );
                         mv.visitVarInsn( ASTORE, stackIdx );
                         mv.visitVarInsn( ALOAD, stackIdx );
                         mv.visitTypeInsn( CHECKCAST, "java/lang/Error" );
@@ -283,13 +342,12 @@ public class FragmentClassLoader
                     {
                         // Add method with _ as prefix
                         mv = cw.visitMethod( ACC_PUBLIC, "_" + method.getName(), desc, null, exceptions );
-                        Label l1 = new Label();
                         mv.visitCode();
                         mv.visitVarInsn( ALOAD, 0 );
 
                         // Parameters
                         int stackIdx = 1;
-                        for (Class<?> aClass : method.getParameterTypes())
+                        for( Class<?> aClass : method.getParameterTypes() )
                         {
                             stackIdx = loadParameter( mv, aClass, stackIdx ) + 1;
                         }
@@ -300,8 +358,9 @@ public class FragmentClassLoader
                         // Return value
                         if( !method.getReturnType().equals( Void.TYPE ) )
                         {
-                            returnResult( mv, method.getReturnType(), l1 );
-                        } else
+                            returnResult( mv, method.getReturnType() );
+                        }
+                        else
                         {
                             mv.visitInsn( RETURN );
                         }
@@ -324,20 +383,24 @@ public class FragmentClassLoader
 
                 // Lookup methods and store in static variables
                 int midx = 0;
-                for (Method method : methods)
+                for( Method method : methods )
                 {
                     if( isOverloaded( method, baseClass ) )
                     {
                         method.setAccessible( true );
                         Class methodClass;
                         if( Modifier.isAbstract( method.getModifiers() ) )
+                        {
                             methodClass = method.getDeclaringClass();
+                        }
                         else
                         {
                             try
                             {
-                                methodClass = getInterfaceMethodDeclaration( method, baseClass ); // Overridden method lookup
-                            } catch (NoSuchMethodException e)
+                                methodClass = getInterfaceMethodDeclaration( method,
+                                                                             baseClass ); // Overridden method lookup
+                            }
+                            catch( NoSuchMethodException e )
                             {
                                 throw new ClassNotFoundException( name, e );
                             }
@@ -351,7 +414,7 @@ public class FragmentClassLoader
                         mv.visitTypeInsn( ANEWARRAY, "java/lang/Class" );
 
                         int pidx = 0;
-                        for (Class<?> aClass : method.getParameterTypes())
+                        for( Class<?> aClass : method.getParameterTypes() )
                         {
                             mv.visitInsn( DUP );
                             insn( mv, pidx++ );
@@ -359,7 +422,8 @@ public class FragmentClassLoader
                             mv.visitInsn( AASTORE );
                         }
 
-                        mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Class", "getMethod", "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;" );
+                        mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Class", "getMethod",
+                                            "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;" );
                         mv.visitFieldInsn( PUTSTATIC, classSlash, "m" + midx, "Ljava/lang/reflect/Method;" );
                     }
                 }
@@ -368,7 +432,7 @@ public class FragmentClassLoader
                 Label l3 = new Label();
                 mv.visitJumpInsn( GOTO, l3 );
                 mv.visitLabel( l2 );
-                mv.visitFrame( Opcodes.F_SAME1, 0, null, 1, new Object[]{"java/lang/NoSuchMethodException"} );
+                mv.visitFrame( Opcodes.F_SAME1, 0, null, 1, new Object[]{ "java/lang/NoSuchMethodException" } );
                 mv.visitVarInsn( ASTORE, 0 );
                 mv.visitVarInsn( ALOAD, 0 );
                 mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/NoSuchMethodException", "printStackTrace", "()V" );
@@ -388,18 +452,29 @@ public class FragmentClassLoader
     private static boolean isOverloaded( Method method, Class baseClass )
     {
         if( Modifier.isAbstract( method.getModifiers() ) )
+        {
             return true; // Implement all abstract methods
+        }
 
         if( Modifier.isFinal( method.getModifiers() ) )
+        {
             return false; // Cannot override final methods
+        }
 
         if( isInterfaceMethod( method, baseClass ) )
         {
-            if( isDeclaredIn( method, Activatable.class, baseClass ) || isDeclaredIn( method, Initializable.class, baseClass ) || isDeclaredIn( method, Lifecycle.class, baseClass ) )
+            if( isDeclaredIn( method, Activatable.class, baseClass )
+                || isDeclaredIn( method, Initializable.class, baseClass )
+                || isDeclaredIn( method, Lifecycle.class, baseClass ) )
+            {
                 return false; // Skip methods in Qi4j-internal interfaces
+            }
             else
+            {
                 return true;
-        } else
+            }
+        }
+        else
         {
             return false;
         }
@@ -408,28 +483,33 @@ public class FragmentClassLoader
     private static boolean isDeclaredIn( Method method, Class clazz, Class baseClass )
     {
         if( !clazz.isAssignableFrom( baseClass ) )
+        {
             return false;
+        }
 
         try
         {
             clazz.getMethod( method.getName(), method.getParameterTypes() );
             return true;
-        } catch (NoSuchMethodException e)
+        }
+        catch( NoSuchMethodException e )
         {
             return false;
         }
     }
 
-    private static Class getInterfaceMethodDeclaration( Method method, Class clazz ) throws NoSuchMethodException
+    private static Class getInterfaceMethodDeclaration( Method method, Class clazz )
+        throws NoSuchMethodException
     {
         Set<Class> interfaces = interfacesOf( clazz );
-        for (Class anInterface : interfaces)
+        for( Class anInterface : interfaces )
         {
             try
             {
                 anInterface.getMethod( method.getName(), method.getParameterTypes() );
                 return anInterface;
-            } catch (NoSuchMethodException e)
+            }
+            catch( NoSuchMethodException e )
             {
                 // Try next
             }
@@ -440,14 +520,15 @@ public class FragmentClassLoader
 
     private static boolean isInterfaceMethod( Method method, Class baseClass )
     {
-        for (Class aClass : interfacesWithMethods( interfacesOf( baseClass ) ))
+        for( Class aClass : interfacesWithMethods( interfacesOf( baseClass ) ) )
         {
             try
             {
                 Method m = aClass.getMethod( method.getName(), method.getParameterTypes() );
                 m.setAccessible( true );
                 return true;
-            } catch (NoSuchMethodException e)
+            }
+            catch( NoSuchMethodException e )
             {
                 // Ignore
             }
@@ -460,28 +541,36 @@ public class FragmentClassLoader
         if( aClass.equals( Integer.TYPE ) )
         {
             mv.visitFieldInsn( GETSTATIC, "java/lang/Integer", "TYPE", "Ljava/lang/Class;" );
-        } else if( aClass.equals( Long.TYPE ) )
+        }
+        else if( aClass.equals( Long.TYPE ) )
         {
             mv.visitFieldInsn( GETSTATIC, "java/lang/Long", "TYPE", "Ljava/lang/Class;" );
-        } else if( aClass.equals( Short.TYPE ) )
+        }
+        else if( aClass.equals( Short.TYPE ) )
         {
             mv.visitFieldInsn( GETSTATIC, "java/lang/Short", "TYPE", "Ljava/lang/Class;" );
-        } else if( aClass.equals( Byte.TYPE ) )
+        }
+        else if( aClass.equals( Byte.TYPE ) )
         {
             mv.visitFieldInsn( GETSTATIC, "java/lang/Byte", "TYPE", "Ljava/lang/Class;" );
-        } else if( aClass.equals( Double.TYPE ) )
+        }
+        else if( aClass.equals( Double.TYPE ) )
         {
             mv.visitFieldInsn( GETSTATIC, "java/lang/Double", "TYPE", "Ljava/lang/Class;" );
-        } else if( aClass.equals( Float.TYPE ) )
+        }
+        else if( aClass.equals( Float.TYPE ) )
         {
             mv.visitFieldInsn( GETSTATIC, "java/lang/Float", "TYPE", "Ljava/lang/Class;" );
-        } else if( aClass.equals( Boolean.TYPE ) )
+        }
+        else if( aClass.equals( Boolean.TYPE ) )
         {
             mv.visitFieldInsn( GETSTATIC, "java/lang/Boolean", "TYPE", "Ljava/lang/Class;" );
-        } else if( aClass.equals( Character.TYPE ) )
+        }
+        else if( aClass.equals( Character.TYPE ) )
         {
             mv.visitFieldInsn( GETSTATIC, "java/lang/Character", "TYPE", "Ljava/lang/Class;" );
-        } else
+        }
+        else
         {
             mv.visitLdcInsn( Type.getType( aClass ) );
         }
@@ -493,37 +582,45 @@ public class FragmentClassLoader
         {
             mv.visitVarInsn( ILOAD, idx );
             mv.visitMethodInsn( INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;" );
-        } else if( aClass.equals( Long.TYPE ) )
+        }
+        else if( aClass.equals( Long.TYPE ) )
         {
             mv.visitVarInsn( LLOAD, idx );
             mv.visitMethodInsn( INVOKESTATIC, "java/lang/Long", "valueOf", "(J)Ljava/lang/Long;" );
             idx++; // Extra jump
-        } else if( aClass.equals( Short.TYPE ) )
+        }
+        else if( aClass.equals( Short.TYPE ) )
         {
             mv.visitVarInsn( ILOAD, idx );
             mv.visitMethodInsn( INVOKESTATIC, "java/lang/Short", "valueOf", "(S)Ljava/lang/Short;" );
-        } else if( aClass.equals( Byte.TYPE ) )
+        }
+        else if( aClass.equals( Byte.TYPE ) )
         {
             mv.visitVarInsn( ILOAD, idx );
             mv.visitMethodInsn( INVOKESTATIC, "java/lang/Byte", "valueOf", "(B)Ljava/lang/Byte;" );
-        } else if( aClass.equals( Double.TYPE ) )
+        }
+        else if( aClass.equals( Double.TYPE ) )
         {
             mv.visitVarInsn( DLOAD, idx );
             idx++; // Extra jump
             mv.visitMethodInsn( INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;" );
-        } else if( aClass.equals( Float.TYPE ) )
+        }
+        else if( aClass.equals( Float.TYPE ) )
         {
             mv.visitVarInsn( FLOAD, idx );
             mv.visitMethodInsn( INVOKESTATIC, "java/lang/Float", "valueOf", "(F)Ljava/lang/Float;" );
-        } else if( aClass.equals( Boolean.TYPE ) )
+        }
+        else if( aClass.equals( Boolean.TYPE ) )
         {
             mv.visitVarInsn( ILOAD, idx );
             mv.visitMethodInsn( INVOKESTATIC, "java/lang/Boolean", "valueOf", "(Z)Ljava/lang/Boolean;" );
-        } else if( aClass.equals( Character.TYPE ) )
+        }
+        else if( aClass.equals( Character.TYPE ) )
         {
             mv.visitVarInsn( ILOAD, idx );
             mv.visitMethodInsn( INVOKESTATIC, "java/lang/Character", "valueOf", "(C)Ljava/lang/Character;" );
-        } else
+        }
+        else
         {
             mv.visitVarInsn( ALOAD, idx );
         }
@@ -539,49 +636,57 @@ public class FragmentClassLoader
             mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Integer", "intValue", "()I" );
             mv.visitLabel( label );
             mv.visitInsn( IRETURN );
-        } else if( aClass.equals( Long.TYPE ) )
+        }
+        else if( aClass.equals( Long.TYPE ) )
         {
             mv.visitTypeInsn( CHECKCAST, "java/lang/Long" );
             mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Long", "longValue", "()J" );
             mv.visitLabel( label );
             mv.visitInsn( LRETURN );
-        } else if( aClass.equals( Short.TYPE ) )
+        }
+        else if( aClass.equals( Short.TYPE ) )
         {
             mv.visitTypeInsn( CHECKCAST, "java/lang/Short" );
             mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Short", "shortValue", "()S" );
             mv.visitLabel( label );
             mv.visitInsn( IRETURN );
-        } else if( aClass.equals( Byte.TYPE ) )
+        }
+        else if( aClass.equals( Byte.TYPE ) )
         {
             mv.visitTypeInsn( CHECKCAST, "java/lang/Byte" );
             mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Byte", "byteValue", "()B" );
             mv.visitLabel( label );
             mv.visitInsn( IRETURN );
-        } else if( aClass.equals( Double.TYPE ) )
+        }
+        else if( aClass.equals( Double.TYPE ) )
         {
             mv.visitTypeInsn( CHECKCAST, "java/lang/Double" );
             mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Double", "doubleValue", "()D" );
             mv.visitLabel( label );
             mv.visitInsn( DRETURN );
-        } else if( aClass.equals( Float.TYPE ) )
+        }
+        else if( aClass.equals( Float.TYPE ) )
         {
             mv.visitTypeInsn( CHECKCAST, "java/lang/Float" );
             mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Float", "floatValue", "()F" );
             mv.visitLabel( label );
             mv.visitInsn( FRETURN );
-        } else if( aClass.equals( Boolean.TYPE ) )
+        }
+        else if( aClass.equals( Boolean.TYPE ) )
         {
             mv.visitTypeInsn( CHECKCAST, "java/lang/Boolean" );
             mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Boolean", "booleanValue", "()Z" );
             mv.visitLabel( label );
             mv.visitInsn( IRETURN );
-        } else if( aClass.equals( Character.TYPE ) )
+        }
+        else if( aClass.equals( Character.TYPE ) )
         {
             mv.visitTypeInsn( CHECKCAST, "java/lang/Character" );
             mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Character", "charValue", "()C" );
             mv.visitLabel( label );
             mv.visitInsn( IRETURN );
-        } else
+        }
+        else
         {
             mv.visitTypeInsn( CHECKCAST, getInternalName( aClass ) );
             mv.visitLabel( label );
@@ -594,30 +699,38 @@ public class FragmentClassLoader
         if( aClass.equals( Integer.TYPE ) )
         {
             mv.visitVarInsn( ILOAD, idx );
-        } else if( aClass.equals( Long.TYPE ) )
+        }
+        else if( aClass.equals( Long.TYPE ) )
         {
             mv.visitVarInsn( LLOAD, idx );
             idx++; // Extra jump
-        } else if( aClass.equals( Short.TYPE ) )
+        }
+        else if( aClass.equals( Short.TYPE ) )
         {
             mv.visitVarInsn( ILOAD, idx );
-        } else if( aClass.equals( Byte.TYPE ) )
+        }
+        else if( aClass.equals( Byte.TYPE ) )
         {
             mv.visitVarInsn( ILOAD, idx );
-        } else if( aClass.equals( Double.TYPE ) )
+        }
+        else if( aClass.equals( Double.TYPE ) )
         {
             mv.visitVarInsn( DLOAD, idx );
             idx++; // Extra jump
-        } else if( aClass.equals( Float.TYPE ) )
+        }
+        else if( aClass.equals( Float.TYPE ) )
         {
             mv.visitVarInsn( FLOAD, idx );
-        } else if( aClass.equals( Boolean.TYPE ) )
+        }
+        else if( aClass.equals( Boolean.TYPE ) )
         {
             mv.visitVarInsn( ILOAD, idx );
-        } else if( aClass.equals( Character.TYPE ) )
+        }
+        else if( aClass.equals( Character.TYPE ) )
         {
             mv.visitVarInsn( ILOAD, idx );
-        } else
+        }
+        else
         {
             mv.visitVarInsn( ALOAD, idx );
         }
@@ -625,33 +738,41 @@ public class FragmentClassLoader
         return idx;
     }
 
-    private static void returnResult( MethodVisitor mv, Class<?> aClass, Label label )
+    private static void returnResult( MethodVisitor mv, Class<?> aClass )
     {
         if( aClass.equals( Integer.TYPE ) )
         {
             mv.visitInsn( IRETURN );
-        } else if( aClass.equals( Long.TYPE ) )
+        }
+        else if( aClass.equals( Long.TYPE ) )
         {
             mv.visitInsn( LRETURN );
-        } else if( aClass.equals( Short.TYPE ) )
+        }
+        else if( aClass.equals( Short.TYPE ) )
         {
             mv.visitInsn( IRETURN );
-        } else if( aClass.equals( Byte.TYPE ) )
+        }
+        else if( aClass.equals( Byte.TYPE ) )
         {
             mv.visitInsn( IRETURN );
-        } else if( aClass.equals( Double.TYPE ) )
+        }
+        else if( aClass.equals( Double.TYPE ) )
         {
             mv.visitInsn( DRETURN );
-        } else if( aClass.equals( Float.TYPE ) )
+        }
+        else if( aClass.equals( Float.TYPE ) )
         {
             mv.visitInsn( FRETURN );
-        } else if( aClass.equals( Boolean.TYPE ) )
+        }
+        else if( aClass.equals( Boolean.TYPE ) )
         {
             mv.visitInsn( IRETURN );
-        } else if( aClass.equals( Character.TYPE ) )
+        }
+        else if( aClass.equals( Character.TYPE ) )
         {
             mv.visitInsn( IRETURN );
-        } else
+        }
+        else
         {
             mv.visitTypeInsn( CHECKCAST, getInternalName( aClass ) );
             mv.visitInsn( ARETURN );
@@ -660,7 +781,7 @@ public class FragmentClassLoader
 
     private static void insn( MethodVisitor mv, int length )
     {
-        switch (length)
+        switch( length )
         {
             case 0:
                 mv.visitInsn( ICONST_0 );
@@ -683,5 +804,26 @@ public class FragmentClassLoader
             default:
                 mv.visitIntInsn( BIPUSH, length );
         }
+    }
+
+    public static boolean isGenerated( Class clazz )
+    {
+        return clazz.getName().endsWith( GENERATED_POSTFIX );
+    }
+
+    public static boolean isGenerated( Object object )
+    {
+        return object.getClass().getName().endsWith( GENERATED_POSTFIX );
+    }
+
+    public Class loadFragmentClass( Class fragmentClass )
+        throws ClassNotFoundException
+    {
+        return loadClass( fragmentClass.getName().replace( '$', '_' ) + GENERATED_POSTFIX );
+    }
+
+    public static Class getSourceClass( Class fragmentClass )
+    {
+        return fragmentClass.getName().endsWith( GENERATED_POSTFIX ) ? fragmentClass.getSuperclass() : fragmentClass;
     }
 }

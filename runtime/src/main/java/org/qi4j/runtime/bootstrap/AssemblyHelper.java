@@ -14,16 +14,14 @@
 
 package org.qi4j.runtime.bootstrap;
 
-import org.qi4j.api.common.ConstructionException;
-import org.qi4j.api.injection.scope.Invocation;
-import org.qi4j.runtime.composite.*;
-import org.qi4j.runtime.injection.DependencyModel;
-import org.qi4j.runtime.structure.DependencyVisitor;
-
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
+import org.qi4j.api.common.ConstructionException;
+import org.qi4j.runtime.composite.FragmentClassLoader;
+import org.qi4j.runtime.composite.MethodConcernModel;
+import org.qi4j.runtime.composite.MethodSideEffectModel;
+import org.qi4j.runtime.composite.MixinModel;
 
 /**
  * This helper is used when building the application model. It keeps track
@@ -32,7 +30,7 @@ import java.util.Map;
 public class AssemblyHelper
 {
     Map<Class, Class> instantiationClasses = new HashMap<Class, Class>();
-    Map<ClassLoader, ClassLoader> modifierClassLoaders = new HashMap<ClassLoader, ClassLoader>();
+    Map<ClassLoader, FragmentClassLoader> modifierClassLoaders = new HashMap<ClassLoader, FragmentClassLoader>();
 
     public MixinModel getMixinModel( Class mixinClass )
     {
@@ -60,32 +58,32 @@ public class AssemblyHelper
             {
                 try
                 {
-                    ClassLoader jClassLoader = getModifierClassLoader( fragmentClass.getClassLoader() );
-                    instantiationClass = jClassLoader.loadClass( fragmentClass.getName().replace( '$', '_' ) + "_Stub" );
+                    FragmentClassLoader fragmentLoader = getModifierClassLoader( fragmentClass.getClassLoader() );
+                    instantiationClass = fragmentLoader.loadFragmentClass( fragmentClass );
                     instantiationClasses.put( fragmentClass, instantiationClass );
-                } catch (ClassNotFoundException e)
+                }
+                catch( ClassNotFoundException e )
                 {
-                    throw new ConstructionException( "Could not generate mixin subclass " + fragmentClass.getName(), e );
-                } catch( VerifyError e )
+                    throw new ConstructionException( "Could not generate mixin subclass " + fragmentClass.getName(),
+                                                     e );
+                }
+                catch( VerifyError e )
                 {
-                    throw new ConstructionException( "Could not generate mixin subclass " + fragmentClass.getName(), e );
+                    throw new ConstructionException( "Could not generate mixin subclass " + fragmentClass.getName(),
+                                                     e );
                 }
             }
         }
         return instantiationClass;
     }
 
-    private ClassLoader getModifierClassLoader( ClassLoader classLoader )
+    private FragmentClassLoader getModifierClassLoader( ClassLoader classLoader )
     {
-        ClassLoader cl = modifierClassLoaders.get( classLoader );
+        FragmentClassLoader cl = modifierClassLoaders.get( classLoader );
         if( cl == null )
         {
             cl = new FragmentClassLoader( classLoader );
             modifierClassLoaders.put( classLoader, cl );
-//            System.out.println( "Created classloader for " + classLoader );
-        } else
-        {
-//            System.out.println( "Reused classloader for " + classLoader );
         }
         return cl;
     }

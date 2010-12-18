@@ -14,6 +14,10 @@
 
 package org.qi4j.runtime.composite;
 
+import java.io.Serializable;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.injection.InjectedFieldsModel;
@@ -24,15 +28,6 @@ import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 
-import java.io.Serializable;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Proxy;
-import java.util.Collections;
-import java.util.Map;
-import java.util.WeakHashMap;
-
 import static org.qi4j.api.util.Classes.interfacesOf;
 import static org.qi4j.api.util.Classes.toClassArray;
 
@@ -40,7 +35,7 @@ import static org.qi4j.api.util.Classes.toClassArray;
  * JAVADOC
  */
 public abstract class AbstractModifierModel
-        implements Binder, Serializable
+    implements Binder, Serializable
 {
     private final Class modifierClass;
 
@@ -80,7 +75,7 @@ public abstract class AbstractModifierModel
     // Binding
 
     public void bind( Resolution context )
-            throws BindingException
+        throws BindingException
     {
         constructorsModel.bind( context );
         injectedFieldsModel.bind( context );
@@ -100,12 +95,16 @@ public abstract class AbstractModifierModel
 
         try
         {
-            if( modifier.getClass().getName().endsWith( "_Stub" ) )
+            if( FragmentClassLoader.isGenerated( modifier ) )
+            {
                 modifier.getClass().getField( "_instance" ).set( modifier, proxyHandler );
-        } catch (IllegalAccessException e)
+            }
+        }
+        catch( IllegalAccessException e )
         {
             e.printStackTrace();
-        } catch (NoSuchFieldException e)
+        }
+        catch( NoSuchFieldException e )
         {
             e.printStackTrace();
         }
@@ -116,7 +115,8 @@ public abstract class AbstractModifierModel
         if( isGeneric() )
         {
             return (InvocationHandler) modifier;
-        } else
+        }
+        else
         {
             try
             {
@@ -125,7 +125,8 @@ public abstract class AbstractModifierModel
                 handler.setFragment( modifier );
                 handler.setMethod( invocationMethod );
                 return handler;
-            } catch (NoSuchMethodException e)
+            }
+            catch( NoSuchMethodException e )
             {
                 throw new ConstructionException( "Could not find modifier method", e );
             }
@@ -137,7 +138,8 @@ public abstract class AbstractModifierModel
         if( isGeneric() )
         {
             return next;
-        } else
+        }
+        else
         {
             return Proxy.newProxyInstance( modifierClass.getClassLoader(), nextInterfaces, next );
         }
