@@ -13,6 +13,8 @@
  */
 package org.qi4j.library.scheduler;
 
+import static org.qi4j.api.common.Visibility.module;
+
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
@@ -31,9 +33,10 @@ import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.index.rdf.assembly.RdfMemoryStoreAssembler;
+
 import org.qi4j.library.scheduler.bootstrap.SchedulerAssembler;
-import org.qi4j.library.scheduler.bootstrap.TimelineAssembler;
 import org.qi4j.library.scheduler.task.Task;
+
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
 
@@ -51,13 +54,11 @@ public class SchedulerTest
     public void assemble( ModuleAssembly testAssembly )
             throws AssemblyException
     {
-        new SchedulerAssembler().assemble( testAssembly );
-        testAssembly.addEntities( SchedulerConfiguration.class );
-        SchedulerConfiguration config = testAssembly.forMixin( SchedulerConfiguration.class ).declareDefaults();
-        config.pulseRhythmSeconds().set( PULSE_RHYTHM_SECS );
-        config.garbageCollectorRhythmSeconds().set( GC_RHYTHM_SECS );
-
-        new TimelineAssembler().assemble( testAssembly );
+        new SchedulerAssembler().visibleIn( module ).
+                withConfigAssembly( testAssembly ).
+                withPulseRhythm( PULSE_RHYTHM_SECS ).
+                withGarbageCollectorRhythm( GC_RHYTHM_SECS ).
+                assemble( testAssembly );
 
         testAssembly.addEntities( FooTask.class );
 
