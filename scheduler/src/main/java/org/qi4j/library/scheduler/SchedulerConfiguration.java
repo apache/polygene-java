@@ -18,9 +18,6 @@ import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.configuration.ConfigurationComposite;
 import org.qi4j.api.property.Property;
 
-/**
- * @author Paul Merlin
- */
 public interface SchedulerConfiguration
         extends ConfigurationComposite
 {

@@ -13,9 +13,6 @@
  */
 package org.qi4j.library.scheduler.timeline;
 
-/**
- * @author Paul Merlin
- */
 public enum SchedulerEvent
 {
 

@@ -17,9 +17,6 @@ import org.codeartisans.sked.crontab.schedule.CronSchedule;
 
 import org.qi4j.api.constraint.Constraint;
 
-/**
- * @author Paul Merlin
- */
 public class CronExpressionConstraint
         implements Constraint<CronExpression, String>
 {

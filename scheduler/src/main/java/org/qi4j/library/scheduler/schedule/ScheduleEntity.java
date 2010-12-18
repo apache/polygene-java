@@ -33,7 +33,6 @@ public interface ScheduleEntity
         extends Schedule, UnitOfWorkCallback, EntityComposite
 {
 
-
     Association<Task> task();
 
     Property<Long> start();
@@ -43,5 +42,7 @@ public interface ScheduleEntity
 
     @UseDefaults
     Property<Boolean> running();
+
+    Long firstRunAfter( Long start );
 
 }

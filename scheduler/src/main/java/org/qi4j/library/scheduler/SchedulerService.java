@@ -17,9 +17,6 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
 
-/**
- * @author Paul Merlin
- */
 @Mixins( { SchedulerActivation.class, SchedulerMixin.class } )
 public interface SchedulerService
         extends Scheduler, Activatable, ServiceComposite

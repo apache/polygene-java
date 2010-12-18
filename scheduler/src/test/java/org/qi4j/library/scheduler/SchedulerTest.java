@@ -13,7 +13,6 @@
  */
 package org.qi4j.library.scheduler;
 
-import org.qi4j.library.scheduler.bootstrap.SchedulerAssembler;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
@@ -32,25 +31,21 @@ import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.index.rdf.assembly.RdfMemoryStoreAssembler;
+import org.qi4j.library.scheduler.bootstrap.SchedulerAssembler;
 import org.qi4j.library.scheduler.bootstrap.TimelineAssembler;
+import org.qi4j.library.scheduler.task.Task;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
-
-import org.qi4j.library.scheduler.task.Task;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @author Paul Merlin
- */
 public class SchedulerTest
         extends AbstractQi4jTest
 {
 
     private static final Logger LOGGER = LoggerFactory.getLogger( SchedulerTest.class );
     private static final Integer PULSE_RHYTHM_SECS = Integer.valueOf( 5 );
-    private static final Integer PULSE_RHYTHM_MILLIS = Integer.valueOf( PULSE_RHYTHM_SECS * 1000 );
     private static final Integer GC_RHYTHM_SECS = Integer.valueOf( 30 );
 
     public void assemble( ModuleAssembly testAssembly )

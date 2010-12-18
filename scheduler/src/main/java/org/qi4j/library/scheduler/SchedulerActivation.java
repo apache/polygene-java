@@ -33,9 +33,6 @@ import org.qi4j.library.scheduler.slaves.SchedulerWorkQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @author Paul Merlin
- */
 public class SchedulerActivation
         implements Activatable
 {

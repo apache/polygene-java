@@ -24,8 +24,6 @@ import org.qi4j.library.scheduler.timeline.TimelineService;
 
 /**
  * TODO Handle Visibility
- * 
- * @author Paul Merlin
  */
 public class TimelineAssembler
         implements Assembler

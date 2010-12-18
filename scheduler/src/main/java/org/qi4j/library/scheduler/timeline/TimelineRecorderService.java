@@ -26,9 +26,6 @@ import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 
 import org.qi4j.library.scheduler.task.Task;
 
-/**
- * @author Paul Merlin
- */
 @Mixins( TimelineRecorderService.Mixin.class )
 public interface TimelineRecorderService
         extends ServiceComposite

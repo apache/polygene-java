@@ -15,9 +15,6 @@ package org.qi4j.library.scheduler.timeline;
 
 import org.qi4j.api.value.ValueComposite;
 
-/**
- * @author Paul Merlin
- */
 public interface TimelineRecordValue
         extends TimelineRecord, ValueComposite
 {

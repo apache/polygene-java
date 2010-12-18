@@ -13,12 +13,13 @@
  */
 package org.qi4j.library.scheduler;
 
+import static org.qi4j.api.unitofwork.UnitOfWorkPropagation.Propagation.MANDATORY;
+
 import java.util.Date;
 
 import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.unitofwork.UnitOfWorkConcern;
 import org.qi4j.api.unitofwork.UnitOfWorkPropagation;
-import static org.qi4j.api.unitofwork.UnitOfWorkPropagation.Propagation.MANDATORY;
 
 import org.qi4j.library.scheduler.constraints.CronExpression;
 import org.qi4j.library.scheduler.schedule.Schedule;
@@ -27,8 +28,6 @@ import org.qi4j.library.scheduler.task.Task;
 /**
  * To make a Schedule durable, set it's durable property to true once its scheduled.
  * Durable Schedules that have no future run are removed by SchedulerGarbageCollector.
- *
- * @author Paul Merlin
  */
 @Concerns( UnitOfWorkConcern.class )
 public interface Scheduler

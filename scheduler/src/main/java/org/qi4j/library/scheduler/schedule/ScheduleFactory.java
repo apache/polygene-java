@@ -21,9 +21,6 @@ import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 
 import org.qi4j.library.scheduler.task.Task;
 
-/**
- * @author Paul Merlin
- */
 @Mixins( ScheduleFactory.Mixin.class )
 public interface ScheduleFactory
         extends ServiceComposite

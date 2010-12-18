@@ -28,9 +28,6 @@ import org.qi4j.library.scheduler.timeline.TimelineRecorderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @author Paul Merlin
- */
 public class ScheduleRunner
         implements Runnable
 {

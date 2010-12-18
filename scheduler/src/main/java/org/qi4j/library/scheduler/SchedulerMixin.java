@@ -21,9 +21,6 @@ import org.qi4j.library.scheduler.schedule.Schedule;
 import org.qi4j.library.scheduler.schedule.ScheduleFactory;
 import org.qi4j.library.scheduler.task.Task;
 
-/**
- * @author Paul Merlin
- */
 public class SchedulerMixin
         implements Scheduler
 {

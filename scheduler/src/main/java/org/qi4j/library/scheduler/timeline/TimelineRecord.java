@@ -17,25 +17,46 @@ import java.util.List;
 
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.entity.Queryable;
+import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.Property;
 
-/**
- * @author Paul Merlin
- */
+@Mixins( TimelineRecord.Mixin.class )
 public interface TimelineRecord
+        extends Comparable<TimelineRecord>
 {
 
+    @Immutable
     Property<Long> timestamp();
 
-    Property<SchedulerEvent> event();
-
+    @Immutable
     Property<String> taskName();
 
+    @Immutable
     @UseDefaults
     Property<List<String>> taskTags();
 
+    @Immutable
+    Property<SchedulerEvent> event();
+
+    @Immutable
     @Queryable( false )
     @UseDefaults
     Property<String> details();
+
+    abstract class Mixin
+            implements Comparable<TimelineRecord>
+    {
+
+        @This
+        private TimelineRecord me;
+
+        public int compareTo( TimelineRecord o )
+        {
+            return me.timestamp().get().compareTo( o.timestamp().get() );
+        }
+
+    }
 
 }

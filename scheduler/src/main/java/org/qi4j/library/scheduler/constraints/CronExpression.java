@@ -21,9 +21,6 @@ import org.qi4j.api.constraint.Constraints;
 import org.qi4j.library.constraints.annotation.InstanceOf;
 import org.qi4j.library.constraints.annotation.NotEmpty;
 
-/**
- * @author Paul Merlin
- */
 @ConstraintDeclaration
 @Retention( RetentionPolicy.RUNTIME )
 @NotEmpty

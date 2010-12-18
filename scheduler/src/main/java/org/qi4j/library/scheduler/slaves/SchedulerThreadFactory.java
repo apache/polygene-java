@@ -16,9 +16,6 @@ package org.qi4j.library.scheduler.slaves;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
-/**
- * @author Paul Merlin
- */
 class SchedulerThreadFactory
         implements ThreadFactory
 {

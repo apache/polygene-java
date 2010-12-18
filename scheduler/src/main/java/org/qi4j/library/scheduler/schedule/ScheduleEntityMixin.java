@@ -25,18 +25,17 @@ public abstract class ScheduleEntityMixin
     @This
     private ScheduleEntity me;
 
+    public Long firstRunAfter( Long start )
+    {
+        Long firstRun = new CronSchedule( me.cronExpression().get() ).firstRunAfter( start );
+        return firstRun >= start ? firstRun : null; // FIXME CronExpression return -1 where it should return null, fix it there
+    }
+
     public void beforeCompletion()
             throws UnitOfWorkCompletionException
     {
         if ( !me.running().get() ) {
-            // Compute it even if it's not null, cronExpression could have been changed
-            String cronExpression = me.cronExpression().get();
-            long now = System.currentTimeMillis();
-            Long nextRun = new CronSchedule( cronExpression ).firstRunAfter( now );
-            if ( nextRun < now ) {
-                me.nextRun().set( null );
-            }
-            me.nextRun().set( nextRun );
+            me.nextRun().set( firstRunAfter( System.currentTimeMillis() ) );
         }
     }
 

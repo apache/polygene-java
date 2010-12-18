@@ -13,18 +13,16 @@
  */
 package org.qi4j.library.scheduler.schedule;
 
+import static org.qi4j.api.query.QueryExpressions.*;
+
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryBuilderFactory;
-import static org.qi4j.api.query.QueryExpressions.*;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 
-/**
- * @author Paul Merlin
- */
 @Mixins( ScheduleRepository.Mixin.class )
 public interface ScheduleRepository
         extends ServiceComposite
@@ -68,7 +66,7 @@ public interface ScheduleRepository
             builder = builder.where( and( eq( template.running(), false ),
                                           ge( template.nextRun(), from ),
                                           lt( template.nextRun(), to ) ) );
-            return builder.newQuery( uowf.currentUnitOfWork() );
+            return builder.newQuery( uowf.currentUnitOfWork() ).orderBy( orderBy( template.nextRun() ) );
         }
 
         public Query<ScheduleEntity> findNotDurableWithoutNextRun()

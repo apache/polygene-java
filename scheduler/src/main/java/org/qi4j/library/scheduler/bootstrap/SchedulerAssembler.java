@@ -27,9 +27,6 @@ import org.qi4j.library.scheduler.slaves.SchedulerGarbageCollector;
 import org.qi4j.library.scheduler.slaves.SchedulerPulse;
 import org.qi4j.library.scheduler.slaves.SchedulerWorkQueue;
 
-/**
- * @author Paul Merlin
- */
 public class SchedulerAssembler
         implements Assembler
 {

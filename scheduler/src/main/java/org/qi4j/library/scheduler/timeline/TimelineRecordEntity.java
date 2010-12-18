@@ -15,9 +15,6 @@ package org.qi4j.library.scheduler.timeline;
 
 import org.qi4j.api.entity.EntityComposite;
 
-/**
- * @author Paul Merlin
- */
 public interface TimelineRecordEntity
         extends TimelineRecord, EntityComposite
 {

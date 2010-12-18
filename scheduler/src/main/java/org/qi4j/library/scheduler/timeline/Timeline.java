@@ -15,9 +15,6 @@ package org.qi4j.library.scheduler.timeline;
 
 import java.util.Date;
 
-/**
- * @author Paul Merlin
- */
 public interface Timeline
 {
 
@@ -25,8 +22,8 @@ public interface Timeline
 
     Iterable<TimelineRecord> getNextRecords( int maxResults );
 
-    Iterable<TimelineRecord> getRecords( long from, long to );
-
     Iterable<TimelineRecord> getRecords( Date from, Date to );
+
+    Iterable<TimelineRecord> getRecords( long from, long to );
 
 }

@@ -29,8 +29,6 @@ import org.qi4j.library.scheduler.schedule.ScheduleRepository;
 
 /**
  * Heartbeat of the Scheduler, load runnable Tasks and enqueue them in the work queue.
- * 
- * @author Paul Merlin
  */
 public class SchedulerPulse
         extends AbstractRhythmedSchedulerSlave
