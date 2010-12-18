@@ -15,9 +15,12 @@
 
 package org.qi4j.runtime.service;
 
+import java.lang.reflect.Method;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.mixin.Initializable;
+import org.qi4j.api.mixin.InitializationException;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.service.Activatable;
@@ -29,7 +32,6 @@ import org.qi4j.test.AbstractQi4jTest;
 
 import static org.junit.Assert.assertEquals;
 
-@Ignore
 public class ComplexActivatableTest extends AbstractQi4jTest
 {
 
@@ -54,6 +56,7 @@ public class ComplexActivatableTest extends AbstractQi4jTest
         Property<String> greeting();
 
         Property<String> recepient();
+
     }
 
     public abstract static class DomainType
@@ -66,7 +69,7 @@ public class ComplexActivatableTest extends AbstractQi4jTest
     }
 
     public static class ActivationMixin
-        implements Activatable
+        implements Activatable, Initializable
     {
         @This
         private SuperType me;
@@ -80,6 +83,12 @@ public class ComplexActivatableTest extends AbstractQi4jTest
         public void passivate()
             throws Exception
         {
+        }
+
+        public void initialize()
+            throws InitializationException
+        {
+            me.recepient().set( "World" );
         }
     }
 }

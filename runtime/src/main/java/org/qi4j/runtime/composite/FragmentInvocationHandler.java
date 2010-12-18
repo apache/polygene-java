@@ -18,7 +18,7 @@ import java.lang.reflect.Method;
  * JAVADOC
  */
 abstract class FragmentInvocationHandler
-    implements InvocationHandler
+        implements InvocationHandler
 {
     private static final String COMPACT_TRACE = "qi4j.compacttrace";
 
@@ -52,21 +52,20 @@ abstract class FragmentInvocationHandler
         StackTraceElement[] trace = throwable.getStackTrace();
 
         // Check if exception originated within Qi4j or JDK - if so then skip compaction
-        if( !isApplicationClass( trace[ 0 ].getClassName() ) )
+        if( !isApplicationClass( trace[0].getClassName() ) )
         {
             return throwable;
         }
 
         int count = 0;
-        for( int i = 0; i < trace.length; i++ )
+        for (int i = 0; i < trace.length; i++)
         {
-            StackTraceElement stackTraceElement = trace[ i ];
+            StackTraceElement stackTraceElement = trace[i];
             if( !isApplicationClass( stackTraceElement.getClassName() ) )
             {
-                trace[ i ] = null;
+                trace[i] = null;
                 count++;
-            }
-            else
+            } else
             {
                 boolean classOrigin = stackTraceElement.getClassName().equals( proxy.getClass().getSimpleName() );
                 boolean methodOrigin = stackTraceElement.getMethodName().equals( method.getName() );
@@ -74,9 +73,8 @@ abstract class FragmentInvocationHandler
                 {
                     // Stop removing if the originating method call has been located in the stack.
                     // For 'semi' and 'extensive' compaction, we don't and do the entire stack instead.
-                    trace[ i ] = new StackTraceElement( proxy.getClass()
-                                                            .getInterfaces()[ 0 ].getName(), method.getName(), null,
-                                                        -1 );
+                    trace[i] = new StackTraceElement( proxy.getClass()
+                            .getInterfaces()[0].getName(), method.getName(), null, -1 );
                     break; // Stop compacting this trace
                 }
             }
@@ -84,12 +82,12 @@ abstract class FragmentInvocationHandler
 
         // Create new trace array
         int idx = 0;
-        StackTraceElement[] newTrace = new StackTraceElement[ trace.length - count ];
-        for( StackTraceElement stackTraceElement : trace )
+        StackTraceElement[] newTrace = new StackTraceElement[trace.length - count];
+        for (StackTraceElement stackTraceElement : trace)
         {
             if( stackTraceElement != null )
             {
-                newTrace[ idx++ ] = stackTraceElement;
+                newTrace[idx++] = stackTraceElement;
             }
         }
         throwable.setStackTrace( newTrace );
@@ -110,13 +108,13 @@ abstract class FragmentInvocationHandler
             return !isJdkInternals( className );
         }
         return !( className.endsWith( FragmentClassLoader.GENERATED_POSTFIX ) ||
-                  className.startsWith( "org.qi4j.runtime" ) ||
-                  isJdkInternals( className ) );
+                className.startsWith( "org.qi4j.runtime" ) ||
+                isJdkInternals( className ) );
     }
 
     private boolean isJdkInternals( String className )
     {
         return className.startsWith( "java.lang.reflect" ) ||
-               className.startsWith( "sun.reflect" );
+                className.startsWith( "sun.reflect" );
     }
 }

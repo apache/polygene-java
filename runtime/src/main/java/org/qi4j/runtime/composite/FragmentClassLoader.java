@@ -66,6 +66,7 @@ import static org.objectweb.asm.Opcodes.INVOKEVIRTUAL;
 import static org.objectweb.asm.Opcodes.IRETURN;
 import static org.objectweb.asm.Opcodes.LLOAD;
 import static org.objectweb.asm.Opcodes.LRETURN;
+import static org.objectweb.asm.Opcodes.NOP;
 import static org.objectweb.asm.Opcodes.POP;
 import static org.objectweb.asm.Opcodes.PUTSTATIC;
 import static org.objectweb.asm.Opcodes.RETURN;
@@ -223,119 +224,125 @@ public class FragmentClassLoader
 
                     String[] exceptions = null;
                     {
-                        Label endLabel = null; // Use this if return type is void
-
-                        if( method.getExceptionTypes().length > 0 )
-                        {
-                            exceptions = new String[ method.getExceptionTypes().length ];
-                            for( int i = 0; i < method.getExceptionTypes().length; i++ )
-                            {
-                                Class<?> aClass = method.getExceptionTypes()[ i ];
-                                exceptions[ i ] = getInternalName( aClass );
-                            }
-                        }
-
                         mv = cw.visitMethod( ACC_PUBLIC, methodName, desc, null, exceptions );
-                        mv.visitCode();
-                        Label l0 = new Label();
-                        Label l1 = new Label();
-
-                        exceptionLabels.clear();
-                        for( Class<?> declaredException : method.getExceptionTypes() )
+                        if( isInternalQi4jMethod( method, baseClass ) )
                         {
-                            Label ld = new Label();
-                            mv.visitTryCatchBlock( l0, l1, ld, getInternalName( declaredException ) );
-                            exceptionLabels.add( ld ); // Reuse this further down for the catch
-                        }
-
-                        Label lruntime = new Label();
-                        mv.visitTryCatchBlock( l0, l1, lruntime, "java/lang/RuntimeException" );
-                        Label lerror = new Label();
-                        mv.visitTryCatchBlock( l0, l1, lerror, "java/lang/Throwable" );
-
-                        mv.visitLabel( l0 );
-                        mv.visitVarInsn( ALOAD, 0 );
-                        mv.visitFieldInsn( GETFIELD, classSlash, "_instance",
-                                           "Lorg/qi4j/spi/composite/CompositeInvoker;" );
-                        mv.visitFieldInsn( GETSTATIC, classSlash, "m" + idx, "Ljava/lang/reflect/Method;" );
-
-                        int paramCount = method.getParameterTypes().length;
-                        int stackIdx = 0;
-                        if( paramCount == 0 )
-                        {
-                            // Send in null as parameter
-                            mv.visitInsn( ACONST_NULL );
+                            // generate a NoOp method...
+                            mv.visitInsn( RETURN );
                         }
                         else
                         {
-                            insn( mv, paramCount );
-                            mv.visitTypeInsn( ANEWARRAY, "java/lang/Object" );
-                            int pidx = 0;
-                            for( Class<?> aClass : method.getParameterTypes() )
+                            Label endLabel = null; // Use this if return type is void
+                            if( method.getExceptionTypes().length > 0 )
                             {
-                                mv.visitInsn( DUP );
-                                insn( mv, pidx++ );
-                                stackIdx = wrapParameter( mv, aClass, stackIdx + 1 );
-                                mv.visitInsn( AASTORE );
+                                exceptions = new String[ method.getExceptionTypes().length ];
+                                for( int i = 0; i < method.getExceptionTypes().length; i++ )
+                                {
+                                    Class<?> aClass = method.getExceptionTypes()[ i ];
+                                    exceptions[ i ] = getInternalName( aClass );
+                                }
                             }
-                        }
+                            mv.visitCode();
+                            Label l0 = new Label();
+                            Label l1 = new Label();
 
-                        // Call method
-                        mv.visitMethodInsn( INVOKEINTERFACE, "org/qi4j/spi/composite/CompositeInvoker",
-                                            "invokeComposite",
-                                            "(Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;" );
+                            exceptionLabels.clear();
+                            for( Class<?> declaredException : method.getExceptionTypes() )
+                            {
+                                Label ld = new Label();
+                                mv.visitTryCatchBlock( l0, l1, ld, getInternalName( declaredException ) );
+                                exceptionLabels.add( ld ); // Reuse this further down for the catch
+                            }
 
-                        // Return value
-                        if( !method.getReturnType().equals( Void.TYPE ) )
-                        {
-                            unwrapResult( mv, method.getReturnType(), l1 );
-                        }
-                        else
-                        {
-                            mv.visitInsn( POP );
-                            mv.visitLabel( l1 );
-                            endLabel = new Label();
-                            mv.visitJumpInsn( GOTO, endLabel );
-                        }
+                            Label lruntime = new Label();
+                            mv.visitTryCatchBlock( l0, l1, lruntime, "java/lang/RuntimeException" );
+                            Label lerror = new Label();
+                            mv.visitTryCatchBlock( l0, l1, lerror, "java/lang/Throwable" );
 
-                        // Increase stack to beyond method args
-                        stackIdx++;
+                            mv.visitLabel( l0 );
+                            mv.visitVarInsn( ALOAD, 0 );
+                            mv.visitFieldInsn( GETFIELD, classSlash, "_instance",
+                                               "Lorg/qi4j/spi/composite/CompositeInvoker;" );
+                            mv.visitFieldInsn( GETSTATIC, classSlash, "m" + idx, "Ljava/lang/reflect/Method;" );
 
-                        // Declared exceptions
-                        int exceptionIdx = 0;
-                        for( Class<?> aClass : method.getExceptionTypes() )
-                        {
-                            mv.visitLabel( exceptionLabels.get( exceptionIdx++ ) );
-                            mv.visitFrame( Opcodes.F_SAME1, 0, null, 1, new Object[]{ getInternalName( aClass ) } );
+                            int paramCount = method.getParameterTypes().length;
+                            int stackIdx = 0;
+                            if( paramCount == 0 )
+                            {
+                                // Send in null as parameter
+                                mv.visitInsn( ACONST_NULL );
+                            }
+                            else
+                            {
+                                insn( mv, paramCount );
+                                mv.visitTypeInsn( ANEWARRAY, "java/lang/Object" );
+                                int pidx = 0;
+                                for( Class<?> aClass : method.getParameterTypes() )
+                                {
+                                    mv.visitInsn( DUP );
+                                    insn( mv, pidx++ );
+                                    stackIdx = wrapParameter( mv, aClass, stackIdx + 1 );
+                                    mv.visitInsn( AASTORE );
+                                }
+                            }
+
+                            // Call method
+                            mv.visitMethodInsn( INVOKEINTERFACE, "org/qi4j/spi/composite/CompositeInvoker",
+                                                "invokeComposite",
+                                                "(Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;" );
+
+                            // Return value
+                            if( !method.getReturnType().equals( Void.TYPE ) )
+                            {
+                                unwrapResult( mv, method.getReturnType(), l1 );
+                            }
+                            else
+                            {
+                                mv.visitInsn( POP );
+                                mv.visitLabel( l1 );
+                                endLabel = new Label();
+                                mv.visitJumpInsn( GOTO, endLabel );
+                            }
+
+                            // Increase stack to beyond method args
+                            stackIdx++;
+
+                            // Declared exceptions
+                            int exceptionIdx = 0;
+                            for( Class<?> aClass : method.getExceptionTypes() )
+                            {
+                                mv.visitLabel( exceptionLabels.get( exceptionIdx++ ) );
+                                mv.visitFrame( Opcodes.F_SAME1, 0, null, 1, new Object[]{ getInternalName( aClass ) } );
+                                mv.visitVarInsn( ASTORE, stackIdx );
+                                mv.visitVarInsn( ALOAD, stackIdx );
+                                mv.visitInsn( ATHROW );
+                            }
+
+                            // RuntimeException and Error catch-all
+                            mv.visitLabel( lruntime );
+                            mv.visitFrame( Opcodes.F_SAME1, 0, null, 1, new Object[]{ "java/lang/RuntimeException" } );
                             mv.visitVarInsn( ASTORE, stackIdx );
                             mv.visitVarInsn( ALOAD, stackIdx );
                             mv.visitInsn( ATHROW );
+
+                            mv.visitLabel( lerror );
+                            mv.visitFrame( Opcodes.F_SAME1, 0, null, 1, new Object[]{ "java/lang/Throwable" } );
+                            mv.visitVarInsn( ASTORE, stackIdx );
+                            mv.visitVarInsn( ALOAD, stackIdx );
+                            mv.visitTypeInsn( CHECKCAST, "java/lang/Error" );
+                            mv.visitInsn( ATHROW );
+
+                            // Return type = void
+                            if( endLabel != null )
+                            {
+                                mv.visitLabel( endLabel );
+                                mv.visitFrame( Opcodes.F_SAME, 0, null, 0, null );
+                                mv.visitInsn( RETURN );
+                            }
+
+                            mv.visitMaxs( 0, 0 );
+                            mv.visitEnd();
                         }
-
-                        // RuntimeException and Error catch-all
-                        mv.visitLabel( lruntime );
-                        mv.visitFrame( Opcodes.F_SAME1, 0, null, 1, new Object[]{ "java/lang/RuntimeException" } );
-                        mv.visitVarInsn( ASTORE, stackIdx );
-                        mv.visitVarInsn( ALOAD, stackIdx );
-                        mv.visitInsn( ATHROW );
-
-                        mv.visitLabel( lerror );
-                        mv.visitFrame( Opcodes.F_SAME1, 0, null, 1, new Object[]{ "java/lang/Throwable" } );
-                        mv.visitVarInsn( ASTORE, stackIdx );
-                        mv.visitVarInsn( ALOAD, stackIdx );
-                        mv.visitTypeInsn( CHECKCAST, "java/lang/Error" );
-                        mv.visitInsn( ATHROW );
-
-                        // Return type = void
-                        if( endLabel != null )
-                        {
-                            mv.visitLabel( endLabel );
-                            mv.visitFrame( Opcodes.F_SAME, 0, null, 0, null );
-                            mv.visitInsn( RETURN );
-                        }
-
-                        mv.visitMaxs( 0, 0 );
-                        mv.visitEnd();
                     }
 
                     if( !Modifier.isAbstract( method.getModifiers() ) )
@@ -463,9 +470,7 @@ public class FragmentClassLoader
 
         if( isInterfaceMethod( method, baseClass ) )
         {
-            if( isDeclaredIn( method, Activatable.class, baseClass )
-                || isDeclaredIn( method, Initializable.class, baseClass )
-                || isDeclaredIn( method, Lifecycle.class, baseClass ) )
+            if( isInternalQi4jMethod( method, baseClass ) )
             {
                 return false; // Skip methods in Qi4j-internal interfaces
             }
@@ -478,6 +483,13 @@ public class FragmentClassLoader
         {
             return false;
         }
+    }
+
+    private static boolean isInternalQi4jMethod( Method method, Class baseClass )
+    {
+        return isDeclaredIn( method, Activatable.class, baseClass )
+               || isDeclaredIn( method, Initializable.class, baseClass )
+               || isDeclaredIn( method, Lifecycle.class, baseClass );
     }
 
     private static boolean isDeclaredIn( Method method, Class clazz, Class baseClass )
