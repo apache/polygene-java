@@ -38,7 +38,7 @@ public interface TimelineRecord
     Property<List<String>> taskTags();
 
     @Immutable
-    Property<SchedulerEvent> event();
+    Property<TimelineRecordStep> step();
 
     @Immutable
     @Queryable( false )

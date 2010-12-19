@@ -11,12 +11,14 @@
  * limitations under the License.
  *
  */
-package org.qi4j.library.scheduler.timeline;
+package org.qi4j.library.scheduler;
 
-public enum SchedulerEvent
+public interface Constants
 {
 
-    TASK_RUN_SUCCESS,
-    TASK_RUN_FAILURE,
-    TASK_RUN_FUTURE;
+    Integer PULSE_RHYTHM_SECS = Integer.valueOf( 10 );
+    Integer GC_RHYTHM_SECS = Integer.valueOf( 42 );
+    String FOO = "foo";
+    String BAR = "bar";
+    String BAZAR = "bazar";
 }

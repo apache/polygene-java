@@ -14,6 +14,9 @@
 package org.qi4j.library.scheduler.timeline;
 
 import static org.qi4j.api.query.QueryExpressions.*;
+import static org.qi4j.api.query.grammar.OrderBy.Order.*;
+
+import static org.qi4j.library.scheduler.timeline.TimelineRecordStep.FUTURE;
 
 import java.util.Date;
 import java.util.SortedSet;
@@ -25,7 +28,6 @@ import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.api.query.grammar.OrderBy;
-import org.qi4j.api.query.grammar.OrderBy.Order;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.util.Iterables;
@@ -55,7 +57,7 @@ public interface TimelineService
         {
             QueryBuilder<TimelineRecord> builder = qbf.newQueryBuilder( TimelineRecord.class );
             return builder.newQuery( uowf.currentUnitOfWork() ).
-                    orderBy( orderBy( templateFor( TimelineRecord.class ).timestamp(), Order.ASCENDING ) ).
+                    orderBy( orderBy( templateFor( TimelineRecord.class ).timestamp(), DESCENDING ) ).
                     maxResults( maxResults );
         }
 
@@ -129,7 +131,7 @@ public interface TimelineService
             TimelineRecordValue record = recordBuilder.prototype();
 
             record.timestamp().set( timestamp );
-            record.event().set( SchedulerEvent.TASK_RUN_FUTURE );
+            record.step().set( FUTURE );
 
             Task task = schedule.task().get();
             record.taskName().set( task.name().get() );

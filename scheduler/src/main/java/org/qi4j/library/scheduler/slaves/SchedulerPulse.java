@@ -39,7 +39,7 @@ public class SchedulerPulse
     @Service
     private ScheduleRepository scheduleRepository;
     private final SchedulerWorkQueue workQueue;
-    private long lastRun = -1;
+    private long lastCycleEnd = -1;
 
     public SchedulerPulse( @Uses Long rhythm, @Uses SchedulerWorkQueue workQueue )
     {
@@ -48,17 +48,23 @@ public class SchedulerPulse
     }
 
     @Override
+    protected void onRun()
+    {
+        lastCycleEnd = System.currentTimeMillis();
+    }
+
+    @Override
     void cycle()
             throws UnitOfWorkCompletionException
     {
-        long now = System.currentTimeMillis();
-        if ( lastRun == -1 ) {
-            lastRun = now - 1;
+        if ( lastCycleEnd == -1 ) {
+            throw new InternalError( "onRun has not been called, this must be a bug" );
         }
+        long cycleEnd = System.currentTimeMillis() + 1;
 
         UnitOfWork uow = uowf.newUnitOfWork();
 
-        Query<ScheduleEntity> toRun = scheduleRepository.findRunnables( lastRun + 1, now + rhythm );
+        Query<ScheduleEntity> toRun = scheduleRepository.findRunnables( lastCycleEnd + 1, cycleEnd );
         Collection<String> schedulesIdentities = new ArrayList<String>();
         for ( ScheduleEntity eachSchedule : toRun ) {
             schedulesIdentities.add( eachSchedule.identity().get() );
@@ -67,11 +73,12 @@ public class SchedulerPulse
 
         uow.complete();
 
+        
         for ( String eachScheduleIdentity : schedulesIdentities ) {
             workQueue.enqueue( eachScheduleIdentity );
         }
 
-        lastRun = now;
+        lastCycleEnd = cycleEnd;
     }
 
 }

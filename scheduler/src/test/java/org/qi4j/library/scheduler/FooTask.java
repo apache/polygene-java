@@ -11,40 +11,45 @@
  * limitations under the License.
  *
  */
-package org.qi4j.library.scheduler.schedule;
+package org.qi4j.library.scheduler;
 
 import org.qi4j.api.common.Optional;
-import org.qi4j.api.common.UseDefaults;
-
 import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.entity.association.Association;
+import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
-import org.qi4j.api.unitofwork.UnitOfWorkCallback;
 
 import org.qi4j.library.scheduler.task.Task;
 
-/**
- * A Schedule computes its next run based on its cron expression.
- * Cron expression syntax is documented in {@link CronExpressionConstraint}
- *
- * TODO Add Scheduler identity here and in queries so in an application with several Scheduler they don't share Schedules
- */
-@Mixins( { ScheduleMixin.class, ScheduleEntityMixin.class } )
-public interface ScheduleEntity
-        extends Schedule, UnitOfWorkCallback, EntityComposite
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+@Mixins( value = FooTask.Mixin.class )
+public interface FooTask
+        extends Task, EntityComposite
 {
 
-    Association<Task> task();
-
-    Property<Long> start();
+    Property<String> input();
 
     @Optional
-    Property<Long> nextRun();
+    Property<String> output();
 
-    @UseDefaults
-    Property<Boolean> running();
+    public static abstract class Mixin
+            implements Runnable
+    {
 
-    Long firstRunAfter( Long start );
+        private static final Logger LOGGER = LoggerFactory.getLogger( FooTask.class );
+        @This
+        private FooTask me;
+
+        public void run()
+        {
+            LOGGER.info( "FooTaskEntity.run({})", me.input().get() );
+            if ( me.input().get().equals( Constants.BAZAR ) ) {
+                me.output().set( Constants.BAR );
+            }
+        }
+
+    }
 
 }

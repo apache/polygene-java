@@ -11,22 +11,13 @@
  * limitations under the License.
  *
  */
-package org.qi4j.library.scheduler.constraints;
+package org.qi4j.library.scheduler.timeline;
 
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
-import java.lang.annotation.Retention;
-
-import org.qi4j.api.constraint.ConstraintDeclaration;
-import org.qi4j.api.constraint.Constraints;
-import org.qi4j.library.constraints.annotation.InstanceOf;
-import org.qi4j.library.constraints.annotation.NotEmpty;
-
-@ConstraintDeclaration
-@Retention( RUNTIME )
-@NotEmpty
-@InstanceOf( String.class )
-@Constraints( CronExpressionConstraint.class )
-public @interface CronExpression
+public enum TimelineRecordStep
 {
+
+    RUNNING,
+    SUCCESS,
+    FAILURE,
+    FUTURE;
 }

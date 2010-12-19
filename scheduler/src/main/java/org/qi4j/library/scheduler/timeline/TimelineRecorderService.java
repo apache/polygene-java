@@ -13,6 +13,9 @@
  */
 package org.qi4j.library.scheduler.timeline;
 
+import static org.qi4j.library.scheduler.timeline.TimelineRecordStep.SUCCESS;
+import static org.qi4j.library.scheduler.timeline.TimelineRecordStep.FAILURE;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -57,7 +60,7 @@ public interface TimelineRecorderService
             EntityBuilder<TimelineRecordEntity> builder = uow.newEntityBuilder( TimelineRecordEntity.class );
             TimelineRecordEntity record = builder.instance();
             record.timestamp().set( System.currentTimeMillis() );
-            record.event().set( SchedulerEvent.TASK_RUN_SUCCESS );
+            record.step().set( SUCCESS );
             record.taskName().set( task.name().get() );
             record.taskTags().set( task.tags().get() );
             return builder.newInstance();
@@ -76,7 +79,7 @@ public interface TimelineRecorderService
             EntityBuilder<TimelineRecordEntity> builder = uow.newEntityBuilder( TimelineRecordEntity.class );
             TimelineRecordEntity record = builder.instance();
             record.timestamp().set( System.currentTimeMillis() );
-            record.event().set( SchedulerEvent.TASK_RUN_FAILURE );
+            record.step().set( FAILURE );
             record.taskName().set( task.name().get() );
             record.taskTags().set( task.tags().get() );
             record.details().set( details );

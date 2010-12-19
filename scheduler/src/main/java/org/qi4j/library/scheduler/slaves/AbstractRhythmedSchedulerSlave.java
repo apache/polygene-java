@@ -55,6 +55,7 @@ abstract class AbstractRhythmedSchedulerSlave
     @SuppressWarnings( "SleepWhileHoldingLock" )
     public void run()
     {
+        onRun();
         long initialDelay = rhythm - System.currentTimeMillis() % rhythm;
         LOGGER.debug( "{} will initialy wait {}ms to be synched with epoch", name, initialDelay );
 
@@ -90,5 +91,9 @@ abstract class AbstractRhythmedSchedulerSlave
 
     abstract void cycle()
             throws UnitOfWorkCompletionException;
+
+    protected void onRun()
+    {
+    }
 
 }

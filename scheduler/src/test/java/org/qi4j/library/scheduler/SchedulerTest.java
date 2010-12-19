@@ -15,84 +15,42 @@ package org.qi4j.library.scheduler;
 
 import static org.qi4j.api.common.Visibility.module;
 
+import static org.junit.Assert.*;
+
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
-import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import org.qi4j.api.common.Optional;
-import org.qi4j.api.entity.EntityBuilder;
-import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.property.Property;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
+import org.qi4j.api.util.Iterables;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.index.rdf.assembly.RdfMemoryStoreAssembler;
 
 import org.qi4j.library.scheduler.bootstrap.SchedulerAssembler;
-import org.qi4j.library.scheduler.task.Task;
-
-import org.qi4j.test.AbstractQi4jTest;
-import org.qi4j.test.EntityTestAssembler;
+import org.qi4j.library.scheduler.schedule.Schedule;
+import org.qi4j.library.scheduler.timeline.Timeline;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SchedulerTest
-        extends AbstractQi4jTest
+        extends AbstractSchedulerTest
 {
 
     private static final Logger LOGGER = LoggerFactory.getLogger( SchedulerTest.class );
-    private static final Integer PULSE_RHYTHM_SECS = Integer.valueOf( 5 );
-    private static final Integer GC_RHYTHM_SECS = Integer.valueOf( 30 );
 
-    public void assemble( ModuleAssembly testAssembly )
+    public void onAssembly( ModuleAssembly testAssembly )
             throws AssemblyException
     {
         new SchedulerAssembler().visibleIn( module ).
                 withConfigAssembly( testAssembly ).
-                withPulseRhythm( PULSE_RHYTHM_SECS ).
-                withGarbageCollectorRhythm( GC_RHYTHM_SECS ).
+                withPulseRhythm( Constants.PULSE_RHYTHM_SECS ).
+                withGarbageCollectorRhythm( Constants.GC_RHYTHM_SECS ).
+                withTimeline().
                 assemble( testAssembly );
-
-        testAssembly.addEntities( FooTask.class );
-
-        new EntityTestAssembler().assemble( testAssembly );
-        new RdfMemoryStoreAssembler().assemble( testAssembly );
-    }
-
-    @Mixins( FooTask.Mixin.class )
-    static interface FooTask
-            extends Task, EntityComposite
-    {
-
-        Property<String> input();
-
-        @Optional
-        Property<String> output();
-
-        static abstract class Mixin
-                implements Runnable
-        {
-
-            @This
-            private FooTask me;
-
-            public void run()
-            {
-                LOGGER.info( "FooTaskEntity.run({})", me.input().get() );
-                if ( me.input().get().equals( "bazar" ) ) {
-                    me.output().set( "bar" );
-                }
-            }
-
-        }
-
     }
 
     @Test
@@ -101,7 +59,7 @@ public class SchedulerTest
             throws UnitOfWorkCompletionException, InterruptedException
     {
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
-        FooTask task = createFooTask( uow, "FooTaskName", "bazar" );
+        FooTask task = createFooTask( uow, "TestTask", Constants.BAZAR );
 
         String taskId = task.identity().get();
         task.run();
@@ -110,7 +68,7 @@ public class SchedulerTest
         uow = unitOfWorkFactory.newUnitOfWork();
         task = uow.get( FooTask.class, taskId );
         task.run();
-        Assert.assertEquals( "bar", task.output().get() );
+        assertEquals( Constants.BAR, task.output().get() );
 
         Thread.sleep( 10 * 1000 );
         uow.complete();
@@ -118,41 +76,45 @@ public class SchedulerTest
 
     @Test
     public void testMinutely()
-            throws InterruptedException, UnitOfWorkCompletionException
+            throws InterruptedException, UnitOfWorkCompletionException, Exception
     {
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
 
         Scheduler scheduler = serviceLocator.<Scheduler>findService( Scheduler.class ).get();
         DateTime start = new DateTime();
 
-        FooTask task = createFooTask( uow, "FooTaskName", "bazar" );
+        FooTask task = createFooTask( uow, "TestMinutely", Constants.BAZAR );
         String taskIdentity = task.identity().get();
 
         DateTime expectedRun = start.withMillisOfSecond( 0 ).withSecondOfMinute( 0 ).plusMinutes( 1 );
-        scheduler.shedule( task, "@minutely" );
+        Schedule schedule = scheduler.shedule( task, "@minutely" );
+        schedule.durable().set( Boolean.TRUE );
 
         uow.complete();
 
-        LOGGER.info( "Task scheduled on {}, expected to be run at {}", start.getMillis(), expectedRun.getMillis() );
+        LOGGER.info( "Task scheduled on {} to be run at {}", start.getMillis(), expectedRun.getMillis() );
 
-        Thread.sleep( new Interval( start, expectedRun ).toDurationMillis() + 1000 ); // waiting a little more
+        Thread.sleep( new Interval( start, expectedRun ).toDurationMillis() + 15000 ); // waiting a little more
 
         uow = unitOfWorkFactory.newUnitOfWork();
 
         task = uow.get( FooTask.class, taskIdentity );
-        Assert.assertNotNull( task );
-        Assert.assertEquals( "bar", task.output().get() );
+        assertNotNull( task );
+        assertEquals( Constants.BAR, task.output().get() );
+
+        Timeline timeline = serviceLocator.<Timeline>findService( Timeline.class ).get();
+        DateTime now = new DateTime();
+
+        // Queries returning past records
+        assertEquals( 1, Iterables.count( timeline.getLastRecords( 5 ) ) );
+        assertEquals( 1, Iterables.count( timeline.getRecords( start.getMillis(), now.getMillis() ) ) );
+
+        // Queries returning future records
+        // assertEquals( 5, Iterables.count( timeline.getNextRecords( 5 ) ) );
+        // assertEquals( 5, Iterables.count( timeline.getRecords( now.getMillis(), now.plusMinutes( 5 ).getMillis() ) ) );
+        // assertEquals( 6, Iterables.count( timeline.getRecords( start.getMillis(), now.plusMinutes( 5 ).getMillis() ) ) );
 
         uow.complete();
-    }
-
-    private FooTask createFooTask( UnitOfWork uow, String name, String input )
-    {
-        EntityBuilder<FooTask> builder = uow.newEntityBuilder( FooTask.class );
-        FooTask task = builder.instance();
-        task.name().set( name );
-        task.input().set( input );
-        return builder.newInstance();
     }
 
 }
