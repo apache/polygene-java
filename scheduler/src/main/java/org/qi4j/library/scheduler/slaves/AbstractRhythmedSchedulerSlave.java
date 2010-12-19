@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
  * of the previous cycle when fetching runnable Tasks.
  *
  * What happens when a slave is locked?
- *  TODO Provide a configurable timeout and simply kill/miss the task issueing an error log.
+ *  TODO Provide a configurable timeout and simply kill/miss the slave issueing an error log.
  */
 @SuppressWarnings( "ProtectedField" )
 abstract class AbstractRhythmedSchedulerSlave

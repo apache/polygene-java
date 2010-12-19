@@ -19,9 +19,9 @@ import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+
 import org.qi4j.library.scheduler.SchedulerConfiguration;
 import org.qi4j.library.scheduler.SchedulerService;
-
 import org.qi4j.library.scheduler.schedule.ScheduleEntity;
 import org.qi4j.library.scheduler.schedule.ScheduleFactory;
 import org.qi4j.library.scheduler.schedule.ScheduleRepository;
@@ -134,16 +134,21 @@ public class SchedulerAssembler
         }
     }
 
-    // FIXME Timeline assembly do not take care of visibility
     private void assembleTimeline( ModuleAssembly assembly )
             throws AssemblyException
     {
-        assembly.addValues( TimelineRecordValue.class );
+        // Internal
+        assembly.addServices( TimelineRecorderService.class ).
+                visibleIn( module );
 
-        assembly.addEntities( TimelineRecordEntity.class );
+        // Exposed
+        assembly.addValues( TimelineRecordValue.class ).
+                visibleIn( visibility );
+        assembly.addEntities( TimelineRecordEntity.class ).
+                visibleIn( visibility );
+        assembly.addServices( TimelineService.class ).
+                visibleIn( visibility );
 
-        assembly.addServices( TimelineService.class,
-                              TimelineRecorderService.class );
     }
 
 }
