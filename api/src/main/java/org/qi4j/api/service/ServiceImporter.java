@@ -17,7 +17,7 @@ package org.qi4j.api.service;
 /**
  * Import a service from some external source.
  */
-public interface ServiceImporter
+public interface ServiceImporter<T>
 {
     /**
      * Imports an instance of the service type described in the service descriptor.
@@ -28,7 +28,7 @@ public interface ServiceImporter
      *
      * @throws ServiceImporterException if import failed.
      */
-    Object importService( ImportedServiceDescriptor serviceDescriptor )
+    T importService( ImportedServiceDescriptor serviceDescriptor )
         throws ServiceImporterException;
 
     /**
@@ -37,7 +37,7 @@ public interface ServiceImporter
      * @param instance the instance to be checked
      * @return true if the service is active, false if not
      */
-    boolean isActive( Object instance );
+    boolean isActive( T instance );
 
     /**
      * Ask if the service is available or not.
@@ -45,5 +45,5 @@ public interface ServiceImporter
      * @param instance the instance to be checked
      * @return true if the service is available, false if not
      */
-    boolean isAvailable( Object instance );
+    boolean isAvailable( T instance );
 }

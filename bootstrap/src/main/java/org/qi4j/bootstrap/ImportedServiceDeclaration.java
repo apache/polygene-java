@@ -22,6 +22,7 @@ import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.spi.service.importer.InstanceImporter;
 import org.qi4j.spi.service.importer.NewObjectImporter;
+import org.qi4j.spi.service.importer.ServiceInstanceImporter;
 import org.qi4j.spi.service.importer.ServiceSelectorImporter;
 
 /**
@@ -30,9 +31,11 @@ import org.qi4j.spi.service.importer.ServiceSelectorImporter;
  */
 public interface ImportedServiceDeclaration
 {
+    // Convenience constants for common service importers
     public static final Class<? extends ServiceImporter> INSTANCE = InstanceImporter.class;
     public static final Class<? extends ServiceImporter> NEW_OBJECT = NewObjectImporter.class;
-    public static final Class<? extends ServiceImporter> SERVICE = ServiceSelectorImporter.class;
+    public static final Class<? extends ServiceImporter> SERVICE_SELECTOR = ServiceSelectorImporter.class;
+    public static final Class<? extends ServiceImporter> SERVICE_IMPORTER = ServiceInstanceImporter.class;
 
     ImportedServiceDeclaration visibleIn( Visibility visibility );
 

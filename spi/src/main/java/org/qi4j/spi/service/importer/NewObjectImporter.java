@@ -23,24 +23,24 @@ import org.qi4j.api.service.ServiceImporterException;
 /**
  * JAVADOC
  */
-public final class NewObjectImporter
-    implements ServiceImporter
+public final class NewObjectImporter<T>
+    implements ServiceImporter<T>
 {
     @Structure
     private ObjectBuilderFactory obf;
 
-    public Object importService( ImportedServiceDescriptor serviceDescriptor )
+    public T importService( ImportedServiceDescriptor serviceDescriptor )
         throws ServiceImporterException
     {
-        return obf.newObject( serviceDescriptor.type() );
+        return (T) obf.newObject( serviceDescriptor.type() );
     }
 
-    public boolean isActive( Object instance )
+    public boolean isActive( T instance )
     {
         return true;
     }
 
-    public boolean isAvailable( Object instance )
+    public boolean isAvailable( T instance )
     {
         return true;
     }

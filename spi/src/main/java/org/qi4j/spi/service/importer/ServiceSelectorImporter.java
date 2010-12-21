@@ -31,20 +31,20 @@ import java.util.List;
  * This importer will avoid selecting itself, as could be possible if the ServiceQualifier.first()
  * filter is used.
  */
-public final class ServiceSelectorImporter
-    implements ServiceImporter
+public final class ServiceSelectorImporter<T>
+    implements ServiceImporter<T>
 {
     @Structure
     private ServiceFinder locator;
 
-    public Object importService( ImportedServiceDescriptor serviceDescriptor )
+    public T importService( ImportedServiceDescriptor serviceDescriptor )
         throws ServiceImporterException
     {
         Specification<ServiceReference<?>> selector = serviceDescriptor.metaInfo( Specification.class );
         Class serviceType = serviceDescriptor.type();
-        Iterable<ServiceReference<Object>> services = locator.findServices( serviceType );
-        List<ServiceReference<Object>> filteredServices = new ArrayList<ServiceReference<Object>>();
-        for( ServiceReference<Object> service : services )
+        Iterable<ServiceReference<T>> services = locator.findServices( serviceType );
+        List<ServiceReference<T>> filteredServices = new ArrayList<ServiceReference<T>>();
+        for( ServiceReference<T> service : services )
         {
             ServiceQualifier selector1 = service.metaInfo( ServiceQualifier.class );
             if( selector1 != null && selector1 == selector )
@@ -57,12 +57,12 @@ public final class ServiceSelectorImporter
         return ServiceQualifier.firstService( selector, filteredServices );
     }
 
-    public boolean isActive( Object instance )
+    public boolean isActive( T instance )
     {
         return true;
     }
 
-    public boolean isAvailable( Object instance )
+    public boolean isAvailable( T instance )
     {
         return !(instance instanceof Availability) || ((Availability) instance).isAvailable();
     }
