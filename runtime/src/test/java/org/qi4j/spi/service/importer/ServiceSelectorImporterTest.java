@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.runtime.service;
+package org.qi4j.spi.service.importer;
 
 import org.junit.Test;
 import org.qi4j.api.common.Visibility;
@@ -23,10 +23,10 @@ import org.qi4j.api.service.qualifier.ServiceQualifier;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
-import org.qi4j.spi.service.importer.ServiceSelectorImporter;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
+import static org.qi4j.bootstrap.ImportedServiceDeclaration.SERVICE_SELECTOR;
 
 /**
  * Test of service selector importer
@@ -63,7 +63,7 @@ public class ServiceSelectorImporterTest
                 module.addObjects( ServiceConsumer.class );
 
                 module.importServices( TestService.class )
-                    .importedBy( ServiceSelectorImporter.class )
+                    .importedBy( SERVICE_SELECTOR )
                     .setMetaInfo( ServiceQualifier.withId( TestServiceComposite2.class.getSimpleName() ) );
 
                 ModuleAssembly module2 = module.layerAssembly().moduleAssembly( "Other module" );
@@ -88,7 +88,7 @@ public class ServiceSelectorImporterTest
                 module.addObjects( ServiceConsumer.class );
 
                 module.importServices( TestService.class )
-                    .importedBy( ServiceSelectorImporter.class )
+                    .importedBy( SERVICE_SELECTOR )
                     .setMetaInfo( ServiceQualifier.withId("TestServiceComposite2_1" ));
 
                 ModuleAssembly module2 = module.layerAssembly().moduleAssembly( "Other module" );
