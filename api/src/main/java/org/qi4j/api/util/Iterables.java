@@ -14,34 +14,30 @@
 
 package org.qi4j.api.util;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.List;
 import org.qi4j.api.specification.Specification;
 
+import java.util.*;
+
 /**
- * Utility methods for working with Iterables
+ * Utility methods for working with Iterables. See test for examples of how to use.
  */
 public class Iterables
 {
-    public static <T> void addAll( Collection<T> collection, Iterable<T> iterable )
+    public static <T> Collection<T> addAll( Collection<T> collection, Iterable<T> iterable )
     {
         for( T item : iterable )
         {
             collection.add( item );
         }
+
+        return collection;
     }
 
     public static long count( Iterable<?> iterable )
     {
         long c = 0;
-        Iterator<?> iterator = iterable.iterator();
-        while( iterator.hasNext() )
+        for (Object item : iterable)
         {
-            iterator.next();
             c++;
         }
         return c;
