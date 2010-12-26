@@ -14,7 +14,33 @@
 
 package org.qi4j.index.sql.support.skeletons;
 
-import static org.qi4j.index.sql.support.common.DBNames.*;
+import static org.qi4j.index.sql.support.common.DBNames.ALL_QNAMES_TABLE_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ALL_QNAMES_TABLE_PK_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.APP_VERSION_PK_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.APP_VERSION_TABLE_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_APPLICATION_VERSION_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_IDENTITY_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_MODIFIED_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_PK_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_VERSION_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TYPES_TABLE_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TYPES_TABLE_PK_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TYPES_TABLE_TYPE_NAME_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENUM_LOOKUP_TABLE_ENUM_VALUE_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENUM_LOOKUP_TABLE_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENUM_LOOKUP_TABLE_PK_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.QNAME_TABLE_ASSOCIATION_INDEX_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.QNAME_TABLE_COLLECTION_PATH_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.QNAME_TABLE_NAME_PREFIX;
+import static org.qi4j.index.sql.support.common.DBNames.QNAME_TABLE_PARENT_QNAME_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.QNAME_TABLE_VALUE_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.USED_CLASSES_TABLE_CLASS_NAME_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.USED_CLASSES_TABLE_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.USED_CLASSES_TABLE_PK_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.USED_QNAMES_TABLE_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.USED_QNAMES_TABLE_QNAME_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.USED_QNAMES_TABLE_TABLE_NAME_COLUMN_NAME;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -51,9 +77,8 @@ import org.qi4j.index.sql.support.api.SQLTypeInfo;
 import org.qi4j.index.sql.support.common.DBNames;
 import org.qi4j.index.sql.support.common.EntityTypeInfo;
 import org.qi4j.index.sql.support.common.QNameInfo;
-import org.qi4j.index.sql.support.common.ReindexingStrategy;
 import org.qi4j.index.sql.support.common.QNameInfo.QNameType;
-import org.qi4j.index.sql.support.postgresql.PostgreSQLAppStartup;
+import org.qi4j.index.sql.support.common.ReindexingStrategy;
 import org.qi4j.library.sql.common.SQLConfiguration;
 import org.qi4j.library.sql.common.SQLUtil;
 import org.qi4j.library.sql.ds.DataSourceService;
@@ -71,14 +96,13 @@ import org.sql.generation.api.grammar.common.datatypes.SQLDataType;
 import org.sql.generation.api.grammar.definition.table.ConstraintCharacteristics;
 import org.sql.generation.api.grammar.definition.table.ReferentialAction;
 import org.sql.generation.api.grammar.definition.table.UniqueSpecification;
-import org.sql.generation.api.grammar.factories.ColumnsFactory;
 import org.sql.generation.api.grammar.factories.DataTypeFactory;
 import org.sql.generation.api.grammar.factories.DefinitionFactory;
 import org.sql.generation.api.grammar.factories.LiteralFactory;
-import org.sql.generation.api.grammar.factories.ManipulationFactory;
 import org.sql.generation.api.grammar.factories.ModificationFactory;
 import org.sql.generation.api.grammar.factories.QueryFactory;
 import org.sql.generation.api.grammar.factories.TableReferenceFactory;
+import org.sql.generation.api.grammar.modification.DeleteBySearch;
 import org.sql.generation.api.grammar.query.QueryExpression;
 import org.sql.generation.api.vendor.SQLVendor;
 
@@ -293,7 +317,7 @@ public abstract class AbstractSQLStartup
 
             if( reindexingRequired )
             {
-                this.performReindex();
+                this.performReindex( connection );
             }
         }
 
@@ -432,7 +456,7 @@ public abstract class AbstractSQLStartup
                         .get()
                         .put(
                             ENTITY_TABLE_NAME,
-                            this.getNextPK( Long.class, stmt, schemaName, ENTITY_TABLE_PK_COLUMN_NAME,
+                            this.getNextPK( stmt, schemaName, ENTITY_TABLE_PK_COLUMN_NAME,
                                 ENTITY_TABLE_NAME, 0L ) );
                 }
             }
@@ -556,10 +580,24 @@ public abstract class AbstractSQLStartup
         // @formatter:on
     }
 
-    private void performReindex()
+    private void performReindex( Connection connection )
         throws SQLException
     {
         _log.info( "Performing reindexing..." );
+        // @formatter:off
+        // First delete all entity data
+        DeleteBySearch clearEntityData = this._vendor.getModificationFactory().deleteBySearch()
+            .setTargetTable(
+                this._vendor.getModificationFactory().createTargetTable(
+                    this._vendor.getTableReferenceFactory().tableName(
+                        this._state.schemaName().get(),
+                        ENTITY_TABLE_NAME
+                     )
+                 )
+             ).createExpression();
+        connection.prepareStatement( this._vendor.toString( clearEntityData ) ).execute();
+        // @formatter:on
+
         this._reindexer.reindex();
         _log.info( "Reindexing complete." );
     }
@@ -580,7 +618,7 @@ public abstract class AbstractSQLStartup
         {
             // @formatter:off
             Map<String, Long> pks = this._state.tablePKs().get();
-            pks.put( ENTITY_TABLE_NAME, this.getNextPK( Long.class, stmt, schemaName,
+            pks.put( ENTITY_TABLE_NAME, this.getNextPK( stmt, schemaName,
                 DBNames.ENTITY_TABLE_PK_COLUMN_NAME, DBNames.ENTITY_TABLE_NAME, 0L ) );
 
             q.simpleQueryBuilder()
@@ -965,12 +1003,12 @@ public abstract class AbstractSQLStartup
 
     }
 
-    protected <PKType> PKType getNextPK( Class<PKType> pkClass, Statement stmt, String schemaName, String columnName,
-        String tableName, PKType defaultPK )
+    protected  Long getNextPK( Statement stmt, String schemaName, String columnName,
+        String tableName, Long defaultPK )
         throws SQLException
     {
         ResultSet rs = null;
-        PKType result = defaultPK;
+        Long result = defaultPK;
         try
         {
             SQLVendor vendor = this._vendor;
@@ -990,7 +1028,7 @@ public abstract class AbstractSQLStartup
                 Long count = rs.getLong( 1 );
                 if( count > 0 )
                 {
-                    result = pkClass.cast( rs.getObject( 2 ) );
+                    result = rs.getLong( 2 );
                 }
             }
         }
