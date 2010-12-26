@@ -61,6 +61,7 @@ Import-Package: javax.sql, \
 
 Export-Package: org.qi4j.index.sql;version=${pom.version}, \
                 org.qi4j.index.sql.assembly;version=${pom.version}, \
+                org.qi4j.index.sql.internal;version=${pom.version}, \
                 org.qi4j.index.sql.support.api;version=${pom.version}, \
                 org.qi4j.index.sql.support.common;version=${pom.version}, \
                 org.qi4j.index.sql.support.postgresql;version=${pom.version}, \
