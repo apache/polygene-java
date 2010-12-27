@@ -166,8 +166,6 @@ public abstract class AbstractSQLStartup
     public void initConnection()
         throws SQLException
     {
-        this.initTypes();
-
         Connection connection = this._dataSource.getDataSource().getConnection();
 
         connection.setAutoCommit( false );
