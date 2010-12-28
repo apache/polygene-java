@@ -4,9 +4,8 @@ apply plugin: 'java'
 apply plugin: 'project-report'
 
 defaultTasks 'build'
-def group = 'org.qi4j.core'
-
 allprojects {
+  group = 'org.qi4j.library'
   repositories {
    mavenCentral()
    mavenRepo name: 'local', urls: "file:///" + System.properties['user.home'].replaceAll('\\\\','/') +'/.gradle/repository/'
@@ -82,7 +81,7 @@ subprojects { subProject ->
   apply plugin: 'idea'
   apply plugin: 'java'
   apply plugin: 'osgi'
-
+  
   jar {
     baseName = 'qi4j-core-' + subProject.name
     manifest {
@@ -92,7 +91,7 @@ subprojects { subProject ->
       description = 'Qi4j is a platform for Composite Oriented Programming'
       name = group + "." + subProject.name  // default name if forgotten in sub-project.
       vendor = 'Qi4j Community, http://www.qi4j.org'
-      symbolicName = group + "." + subProject.name
+      symbolicName = subProject.group + "." + subProject.name
       instruction '-debug', 'true'
     }
   }

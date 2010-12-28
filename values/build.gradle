@@ -13,9 +13,10 @@ dependencies {
 
 jar {
   manifest {
-    name = "Qi4j Core API"
-    instruction 'Export-Package', group + '.' + name
-
-    instruction 'Import-Package', ''
+    description = "Qi4j Values Library has various generic services to manipulate Qi4j ValueComposites, such as converting an Entity to a Value."
+    name = "Qi4j Library - Values"
+    instruction 'Export-Package', symbolicName +';version=' + version
+    instruction 'Private-Package', symbolicName + '.internal'
+    instruction 'Import-Package', '*'
   }
 }

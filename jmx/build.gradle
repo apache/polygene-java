@@ -11,9 +11,10 @@ dependencies {
 
 jar {
   manifest {
-    name = "Qi4j Core API"
-    instruction 'Export-Package', group + '.' + name
-
-    instruction 'Import-Package', ''
+    description = "Qi4j JMX Library provides Java Management Extension (JMX) integration for Qi4j applications."
+    name = "Qi4j Library - JMX"
+    instruction 'Export-Package', symbolicName +';version=' + version
+    instruction 'Private-Package', symbolicName + '.internal'
+    instruction 'Import-Package', '*'
   }
 }

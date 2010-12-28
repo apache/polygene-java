@@ -18,9 +18,12 @@ dependencies {
 
 jar {
   manifest {
-    name = "Qi4j Core API"
-    instruction 'Export-Package', group + '.' + name
-
-    instruction 'Import-Package', ''
+    description = "Qi4j Servlet Library provides integration of Qi4j into web applications."
+    name = "Qi4j Library - Servlet"
+    instruction 'Export-Package', 
+				symbolicName +';version=' + version,
+				symbolicName + '.lifecycle;version=' + version
+    instruction 'Private-Package', symbolicName + '.internal'
+    instruction 'Import-Package', '*'
   }
 }

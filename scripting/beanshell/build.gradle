@@ -20,9 +20,10 @@ dependencies {
 
 jar {
   manifest {
-    name = "Qi4j Core API"
-    instruction 'Export-Package', group + '.' + name
-
-    instruction 'Import-Package', ''
+    symbolicName = 'org.qi4j.scripting.beanshell'
+    description = "Qi4j BeanShell Library allows for Mixins to be implemented in BeanShell (Java) scripts instead of directly in compiled Java."
+    name = "Qi4j Library - Scripting - BeanShell"
+    instruction 'Export-Package', 'org.qi4j.scripting.beanshell;version=' + version
+    instruction 'Import-Package', '*'
   }
 }

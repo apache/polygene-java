@@ -1,22 +1,14 @@
 springVersion='2.5.6'
 
-libraries.putAll ( 
-[
-    spring_beans: 'org.springframework:spring-beans:' + springVersion,
-    spring_context: 'org.springframework:spring-context:' + springVersion,
-    spring_test: 'org.springframework:spring-test:' + springVersion
-]
-)
-
 dependencies {
   compile(libraries.qi4j_core_api)
   compile(libraries.qi4j_core_spi)
   compile(libraries.qi4j_core_bootstrap)
   compile(libraries.slf4j_api)
-  compile(libraries.spring_beans)
-  compile(libraries.spring_context)
+  compile('org.springframework:spring-beans:' + springVersion)
+  compile('org.springframework:spring-context:' + springVersion)
   testCompile(libraries.junit)
-  testCompile(libraries.spring_test)
+  testCompile('org.springframework:spring-test:' + springVersion)
   testRuntime(libraries.slf4j_simple)
   testRuntime(libraries.asm)
   testRuntime(libraries.asm_commons)
@@ -26,9 +18,12 @@ dependencies {
 
 jar {
   manifest {
-    name = "Qi4j Core API"
-    instruction 'Export-Package', group + '.' + name
-
-    instruction 'Import-Package', ''
+    description = "Qi4j Spring Library allows for tight integration of Spring Framework and Qi4j applications."
+    name = "Qi4j Library - Spring"
+    instruction 'Export-Package', 
+				symbolicName +'.bootstrap;version=' + version,
+				symbolicName +'.importer;version=' + version
+    instruction 'Private-Package', symbolicName + '.bootstrap.internal'
+    instruction 'Import-Package', '*'
   }
 }

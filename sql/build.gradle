@@ -20,9 +20,14 @@ dependencies {
 
 jar {
   manifest {
-    name = "Qi4j Core API"
-    instruction 'Export-Package', group + '.' + name
-
-    instruction 'Import-Package', ''
+    description = "Qi4j SQL Library provides SQL support."
+    name = "Qi4j Library - SQL"
+    instruction 'Export-Package', 
+				symbolicName +'.api;version=' + version,
+				symbolicName +'.common;version=' + version,
+				symbolicName +'.ds;version=' + version,
+				symbolicName +'.ds.assembly;version=' + version
+    instruction 'Private-Package', symbolicName + '.internal'
+    instruction 'Import-Package', '*'
   }
 }

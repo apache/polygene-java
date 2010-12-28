@@ -17,9 +17,10 @@ dependencies {
 
 jar {
   manifest {
-    name = "Qi4j Core API"
-    instruction 'Export-Package', group + '.' + name
-
-    instruction 'Import-Package', ''
+    symbolicName = 'org.qi4j.scripting.groovy'
+    description = "Qi4j Groovy Library allows for Mixins to be implemented in Groovy scripts instead of directly in compiled Java."
+    name = "Qi4j Library - Scripting - Groovy"
+    instruction 'Export-Package', 'org.qi4j.scripting.groovy;version=' + version
+    instruction 'Import-Package', '*'
   }
 }

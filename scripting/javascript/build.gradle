@@ -17,9 +17,10 @@ dependencies {
 
 jar {
   manifest {
-    name = "Qi4j Core API"
-    instruction 'Export-Package', group + '.' + name
-
-    instruction 'Import-Package', ''
+    symbolicName = 'org.qi4j.scripting.javascript'
+    description = "Qi4j JavaScript Library allows for Mixins to be implemented in JavaScript instead of directly in compiled Java."
+    name = "Qi4j Library - Scripting - JavaScript"
+    instruction 'Export-Package', 'org.qi4j.scripting.javascript;version=' + version
+    instruction 'Import-Package', '*'
   }
 }

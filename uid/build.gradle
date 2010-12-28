@@ -13,9 +13,14 @@ dependencies {
 
 jar {
   manifest {
-    name = "Qi4j Core API"
-    instruction 'Export-Package', group + '.' + name
-
-    instruction 'Import-Package', ''
+    description = "Qi4j UID Library contains various Identity generation services."
+    name = "Qi4j Library - UID"
+    instruction 'Export-Package', 
+				symbolicName +'.sequence;version=' + version,
+				symbolicName +'.sequence.assembly;version=' + version,
+				symbolicName +'.uuid;version=' + version,
+				symbolicName +'.uuid.assembly;version=' + version
+    instruction 'Private-Package', symbolicName + '.internal'
+    instruction 'Import-Package', '*'
   }
 }

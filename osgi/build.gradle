@@ -15,9 +15,10 @@ dependencies {
 
 jar {
   manifest {
-    name = "Qi4j Core API"
-    instruction 'Export-Package', group + '.' + name
-
-    instruction 'Import-Package', ''
+    description = "Qi4j OSGi Library provides integration of OSGi and Qi4j, so that services in each system can be shared."
+    name = "Qi4j Library - OSGi Integration"
+    instruction 'Export-Package', symbolicName +';version=' + version
+    instruction 'Private-Package', symbolicName + '.internal'
+    instruction 'Import-Package', '*'
   }
 }

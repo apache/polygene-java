@@ -13,9 +13,11 @@ dependencies {
 
 jar {
   manifest {
-    name = "Qi4j Core API"
-    instruction 'Export-Package', group + '.' + name
-
-    instruction 'Import-Package', ''
+    description = "Qi4j Constraint Library provides common set of constraints."
+    name = "Qi4j Library - Constraints"
+    instruction 'Export-Package', symbolicName +';version=' + version,
+				'org.qi4j.library.constraints.annotation;version=' + version
+    instruction 'Private-Package', symbolicName + '.internal'
+    instruction 'Import-Package', '*'
   }
 }

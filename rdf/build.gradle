@@ -1,34 +1,22 @@
 rdfVersion='2.3.0'
 
-libraries.putAll( [
-            sesame_model: 'org.openrdf.sesame:sesame-model:' + rdfVersion,
-            sesame_rio_n3: 'org.openrdf.sesame:sesame-rio-n3:' + rdfVersion,
-            sesame_rio_rdfxml: 'org.openrdf.sesame:sesame-rio-rdfxml:' + rdfVersion,
-            sesame_runtime: 'org.openrdf.sesame:sesame-runtime:' + rdfVersion,
-            sesame_sail_memory: 'org.openrdf.sesame:sesame-sail-memory:' + rdfVersion,
-            sesame_sail_nativerdf: 'org.openrdf.sesame:sesame-sail-nativerdf:' + rdfVersion,
-            sesame_sail_rdbms: 'org.openrdf.sesame:sesame-sail-rdbms:' + rdfVersion,
-            sesame_repo_http: 'org.openrdf.sesame:sesame-repository-http:' + rdfVersion,
-            sesame_repo_dataset: 'org.openrdf.sesame:sesame-repository-dataset:' + rdfVersion
-] )
-
 repositories {
   mavenRepo name: 'aduna-repo', urls: "http://repo.aduna-software.org/maven2/releases/"
 }
  
 dependencies {
-  compile( project(':constraints'))
+  compile(project(':constraints'))
   compile(libraries.qi4j_core_api)
   compile(libraries.qi4j_core_spi)
   compile(libraries.slf4j_api)
-  compile(libraries.sesame_model)
-  compile(libraries.sesame_rio_n3)
-  compile(libraries.sesame_rio_rdfxml)
-  compile(libraries.sesame_repo_http)
-  compile(libraries.sesame_repo_dataset)
-  compile(libraries.sesame_sail_memory)
-  compile(libraries.sesame_sail_nativerdf)
-  compile(libraries.sesame_sail_rdbms)
+  compile('org.openrdf.sesame:sesame-model:' + rdfVersion)
+  compile('org.openrdf.sesame:sesame-repository-dataset:' + rdfVersion)
+  compile('org.openrdf.sesame:sesame-repository-http:' + rdfVersion)
+  compile('org.openrdf.sesame:sesame-rio-n3:' + rdfVersion)
+  compile('org.openrdf.sesame:sesame-rio-rdfxml:' + rdfVersion)
+  compile('org.openrdf.sesame:sesame-sail-memory:' + rdfVersion)
+  compile('org.openrdf.sesame:sesame-sail-nativerdf:' + rdfVersion)
+  compile('org.openrdf.sesame:sesame-sail-rdbms:' + rdfVersion)
   testCompile(libraries.junit)
   testRuntime(libraries.asm)
   testRuntime(libraries.asm_commons)
@@ -39,9 +27,15 @@ dependencies {
 
 jar {
   manifest {
-    name = "Qi4j Core API"
-    instruction 'Export-Package', group + '.' + name
-
-    instruction 'Import-Package', ''
+    description = "Qi4j RDF Library provides commonalities of various RDF based services in Qi4j, such as RDF Indexing."
+    name = "Qi4j Library - RDF"
+    instruction 'Export-Package', 
+				symbolicName +';version=' + version,
+				symbolicName +'.entity;version=' + version,
+				symbolicName +'.model;version=' + version,
+				symbolicName +'.repository;version=' + version,
+				symbolicName +'.serializer;version=' + version
+    instruction 'Private-Package', symbolicName + '.internal'
+    instruction 'Import-Package', '*'
   }
 }

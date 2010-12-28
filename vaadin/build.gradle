@@ -19,9 +19,10 @@ dependencies {
 
 jar {
   manifest {
-    name = "Qi4j Core API"
-    instruction 'Export-Package', group + '.' + name
-
-    instruction 'Import-Package', ''
+    description = "Qi4j Vaadin Library integrates the Vaadin web framework with Qi4j applications."
+    name = "Qi4j Library - Vaadin"
+    instruction 'Export-Package', symbolicName +';version=' + version
+    instruction 'Private-Package', symbolicName + '.internal'
+    instruction 'Import-Package', '*'
   }
 }

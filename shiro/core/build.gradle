@@ -16,9 +16,20 @@ dependencies {
 
 jar {
   manifest {
-    name = "Qi4j Core API"
-    instruction 'Export-Package', group + '.' + name
-
-    instruction 'Import-Package', ''
+    symbolicName = 'org.qi4j.library.shiro'
+    description = "Qi4j Shiro Library integrates Apache Shiro security framework into Qi4j."
+    name = "Qi4j Library - Shiro"
+    instruction 'Export-Package', 
+				symbolicName +';version=' + version,
+				symbolicName +'.authc;version=' + version,
+				symbolicName +'.bootstrap;version=' + version,
+				symbolicName +'.concerns;version=' + version,
+				symbolicName +'.crypto;version=' + version,
+				symbolicName +'.domain.permissions;version=' + version,
+				symbolicName +'.domain.securehash;version=' + version,
+				symbolicName +'.domain.x509;version=' + version,
+				symbolicName +'.realms;version=' + version
+    instruction 'Private-Package', symbolicName + '.internal'
+    instruction 'Import-Package', '*'
   }
 }

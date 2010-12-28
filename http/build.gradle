@@ -1,20 +1,13 @@
 servletVersion = '2.5'
 jettyVersion = '6.1.21'
 
-libraries.putAll( [
-        // CXF
-        servlet_api: 'javax.servlet:servler-api:' + servletVersion,
-		jetty: 'org.mortbay.jetty:jetty:' + jettyVersion,
-		jetty_util: 'org.mortbay.jetty:jetty-util:' + jettyVersion,
-] )
-
 dependencies {
   compile( project( ":constraints" ))
   compile(libraries.qi4j_core_api)
   compile(libraries.qi4j_core_spi)
   compile(libraries.slf4j_api)
-  compile(libraries.jetty)
-  compile(libraries.jetty_util)
+  compile('org.mortbay.jetty:jetty:' + jettyVersion)
+  compile('org.mortbay.jetty:jetty-util:' + jettyVersion)
   testCompile(libraries.junit)
   testRuntime(libraries.asm)
   testRuntime(libraries.asm_commons)
@@ -25,9 +18,10 @@ dependencies {
 
 jar {
   manifest {
-    name = "Qi4j Core API"
-    instruction 'Export-Package', group + '.' + name
-
-    instruction 'Import-Package', ''
+    description = "Qi4j Http Library provides embedded Jetty for Qi4j application use."
+    name = "Qi4j Library - Http"
+    instruction 'Export-Package', symbolicName +';version=' + version
+    instruction 'Private-Package', symbolicName + '.internal'
+    instruction 'Import-Package', '*'
   }
 }
