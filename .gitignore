@@ -6,6 +6,10 @@
 *.iws
 *.ipr
 *.iml
+.gradle
+build/
+*/build/
+*/*/build/
 scripting/target/
 struts2/target/
 swing/target/

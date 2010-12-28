@@ -1,0 +1,20 @@
+dependencies {
+  compile( project( ':constraints' ))
+  compile(libraries.qi4j_core_api)
+  compile(libraries.qi4j_core_bootstrap)
+  compile(libraries.slf4j_api)
+  testCompile(libraries.qi4j_core_spi)
+  testCompile(libraries.junit)
+  testRuntime(libraries.slf4j_simple)
+  testCompile(libraries.qi4j_core_testsupport)
+  testRuntime(libraries.qi4j_core_runtime)
+}
+
+jar {
+  manifest {
+    name = "Qi4j Core API"
+    instruction 'Export-Package', group + '.' + name
+
+    instruction 'Import-Package', ''
+  }
+}

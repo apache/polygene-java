@@ -1,0 +1,57 @@
+cxfVersion = '2.3.1'
+wsdl4jVersion = '1.6.2'
+woodstoxVersion = '4.1.0'
+xmlSchemaVersion = '1.4.7'
+
+libraries.putAll( [
+        // CXF
+        cxf_api: 'org.apache.cxf:cxf-api:' + cxfVersion,
+        cxf_common_utilities: 'org.apache.cxf:cxf-common-utilities:' + cxfVersion,
+        cxf_rt_core: 'org.apache.cxf:cxf-rt-core:' + cxfVersion,
+        cxf_rt_bindings_soap: 'org.apache.cxf:cxf-rt-bindings-soap:' + cxfVersion,
+        cxf_rt_frontend_jaxws: 'org.apache.cxf:cxf-rt-frontend-jaxws:' + cxfVersion,
+        cxf_rt_databinding_aegis: 'org.apache.cxf:cxf-rt-databinding-aegis:' + cxfVersion,
+        cxf_rt_transports_local: 'org.apache.cxf:cxf-rt-transports-local:' + cxfVersion,
+        wsdl4j: 'wsdl4j:wsdl4j:' + wsdl4jVersion,
+        woodstox_core_asl: 'org.codehaus.woodstox:woodstox-core-asl:' + woodstoxVersion,
+        xmlschema: 'org.apache.ws.commons.schema:XmlSchema:' + xmlSchemaVersion,
+
+		// Other
+		httpComponents: 'org.apache.httpcomponents:httpclient:4.1-alpha1'
+
+] )
+
+dependencies {
+  compile(libraries.qi4j_core_api)
+  compile(libraries.qi4j_core_spi)
+  compile(libraries.qi4j_core_bootstrap)
+  compile(libraries.slf4j_api)
+  compile(libraries.cxf_api)
+  compile(libraries.cxf_common_utilities)
+  compile(libraries.cxf_rt_core)
+  compile(libraries.cxf_rt_bindings_soap)
+  compile(libraries.cxf_rt_frontend_jaxws)
+  compile(libraries.cxf_rt_databinding_aegis)
+  compile(libraries.cxf_rt_transports_local)
+  compile(libraries.wsdl4j)
+  compile(libraries.woodstox_core_asl)
+  compile(libraries.xmlschema)
+  compile(libraries.osgi_core)
+  compile(libraries.osgi_compendium)
+  testCompile(libraries.httpComponents)
+  testCompile(libraries.junit)
+  testRuntime(libraries.asm)
+  testRuntime(libraries.asm_commons)
+  testRuntime(libraries.slf4j_simple)
+  testCompile(libraries.qi4j_core_testsupport)
+  testRuntime(libraries.qi4j_core_runtime)
+}
+
+jar {
+  manifest {
+    name = "Qi4j Core API"
+    instruction 'Export-Package', group + '.' + name
+
+    instruction 'Import-Package', ''
+  }
+}

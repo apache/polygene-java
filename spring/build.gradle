@@ -1,0 +1,34 @@
+springVersion='2.5.6'
+
+libraries.putAll ( 
+[
+    spring_beans: 'org.springframework:spring-beans:' + springVersion,
+    spring_context: 'org.springframework:spring-context:' + springVersion,
+    spring_test: 'org.springframework:spring-test:' + springVersion
+]
+)
+
+dependencies {
+  compile(libraries.qi4j_core_api)
+  compile(libraries.qi4j_core_spi)
+  compile(libraries.qi4j_core_bootstrap)
+  compile(libraries.slf4j_api)
+  compile(libraries.spring_beans)
+  compile(libraries.spring_context)
+  testCompile(libraries.junit)
+  testCompile(libraries.spring_test)
+  testRuntime(libraries.slf4j_simple)
+  testRuntime(libraries.asm)
+  testRuntime(libraries.asm_commons)
+  testCompile(libraries.qi4j_core_testsupport)
+  testRuntime(libraries.qi4j_core_runtime)
+}
+
+jar {
+  manifest {
+    name = "Qi4j Core API"
+    instruction 'Export-Package', group + '.' + name
+
+    instruction 'Import-Package', ''
+  }
+}
