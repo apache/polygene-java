@@ -15,9 +15,11 @@ dependencies {
 
 jar {
   manifest {
-    name = "Qi4j Core API"
-    instruction 'Export-Package', group + '.' + name
-
-    instruction 'Import-Package', ''
+    symbolicName = 'org.qi4j.library.struts2.convention'
+    description = "Qi4j Struts Library allows integration of Qi4j into Struts2 applications."
+    name = "Qi4j Library - Struts2 - Convention"
+    instruction 'Export-Package', symbolicName +';version=' + version
+    instruction 'Private-Package', symbolicName + '.internal'
+    instruction 'Import-Package', '*'
   }
 }
