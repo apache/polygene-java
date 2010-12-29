@@ -2,12 +2,12 @@ package org.qi4j.entitystore.neo4j;
 
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.neo4j.api.core.Direction;
-import org.neo4j.api.core.EmbeddedNeo;
-import org.neo4j.api.core.Node;
-import org.neo4j.api.core.Relationship;
-import org.neo4j.util.index.IndexService;
-import org.neo4j.util.index.LuceneIndexService;
+import org.neo4j.graphdb.Direction;
+import org.neo4j.kernel.EmbeddedGraphDatabase;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Relationship;
+import org.neo4j.index.IndexService;
+import org.neo4j.index.lucene.LuceneIndexService;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.This;
@@ -33,7 +33,7 @@ public class NeoEntityStoreMixin
     @This
     private Configuration<NeoConfiguration> config;
 
-    private EmbeddedNeo neo;
+    private EmbeddedGraphDatabase neo;
     private IndexService indexService;
 
     private AtomicInteger count = new AtomicInteger( 0 );
@@ -47,7 +47,7 @@ public class NeoEntityStoreMixin
         {
             path = "target/neodb";
         }
-        neo = new EmbeddedNeo( path );
+        neo = new EmbeddedGraphDatabase( path );
         indexService = new LuceneIndexService( neo );
         uuid = UUID.randomUUID().toString() + "-";
     }

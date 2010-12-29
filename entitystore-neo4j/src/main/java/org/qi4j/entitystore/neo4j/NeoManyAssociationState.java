@@ -3,9 +3,9 @@ package org.qi4j.entitystore.neo4j;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import org.neo4j.api.core.Direction;
-import org.neo4j.api.core.Node;
-import org.neo4j.api.core.Relationship;
+import org.neo4j.graphdb.Direction;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Relationship;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.spi.entity.ManyAssociationState;
 
