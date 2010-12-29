@@ -5,6 +5,8 @@ target/
 .idea/dictionaries/*
 .idea/inspectionProfiles/*
 .idea/libraries/*
+*/build/
+build/
 derby.log
 qi4j.data.db
 qi4j.data.lg

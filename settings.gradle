@@ -1,0 +1,28 @@
+include 'cache-ehcache', 
+	'entitystore-file', 
+	'entitystore-gae', 
+	'entitystore-hazelcast', 
+	'entitystore-jdbm', 
+	'entitystore-neo4j', 
+	'entitystore-preferences', 
+	'entitystore-qrm', 
+	'entitystore-rest', 
+	'entitystore-sql', 
+	'entitystore-voldemort', 
+	'indexing-rdf', 
+	'indexing-sql', 
+	'migration',
+	'reindexer'
+
+rootProject.children.each { project ->
+	validateChildren(project)
+}
+
+def validateChildren( descr )
+{
+    descr.children.each { childProject ->
+		validateChildren( childProject )
+	}
+    assert descr.projectDir.isDirectory()
+    assert descr.buildFile.isFile()
+}

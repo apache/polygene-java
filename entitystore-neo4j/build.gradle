@@ -1,0 +1,28 @@
+neoVersion = '1.2.M05'
+neoIndexVersion='1.2-1.2.M05'
+
+dependencies {
+  compile(libraries.qi4j_core_api)
+  compile(libraries.qi4j_core_spi)
+  compile(libraries.slf4j_api)
+  compile('org.neo4j:neo4j:' + neoVersion)
+  compile('org.neo4j:neo4j-index:' + neoIndexVersion)
+  testCompile(libraries.qi4j_core_bootstrap)
+  testCompile(libraries.junit)
+  testRuntime(libraries.slf4j_simple)
+  testCompile(libraries.qi4j_core_testsupport)
+  testRuntime(libraries.qi4j_core_runtime)
+  testRuntime(libraries.asm)
+  testRuntime(libraries.asm_commons)
+}
+
+jar {
+  manifest {
+    symbolicName='org.qi4j.entitystore.neo4j'
+    description = "Qi4j Neo4j EntityStore Extension"
+    name = "Qi4j Extension - EntityStore - Neo4j"
+    instruction 'Export-Package', symbolicName +';version=' + version
+    instruction 'Private-Package', symbolicName + '.internal'
+    instruction 'Import-Package', '*'
+  }
+}

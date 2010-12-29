@@ -1,0 +1,51 @@
+
+voldemortVersion = '0.81'
+googleCollectionsVersion = '1.0'
+sleepycatVersion='4.0.103'
+log4jVersion='1.2.16'
+jettyVersion='6.1.22'
+
+repositories {
+  mavenRepo name: 'clojars-repo', urls: 'http://clojars.org/repo'
+  mavenRepo name: 'oracle-repo', urls: 'http://download.oracle.com/maven'
+}
+
+dependencies {
+  compile(libraries.qi4j_core_api)
+  compile(libraries.qi4j_core_spi)
+  compile(libraries.qi4j_core_bootstrap)
+  compile(libraries.qi4j_lib_locking)
+  compile(libraries.slf4j_api)
+  compile('voldemort:voldemort:' + voldemortVersion )
+  compile('com.google.collections:google-collections:' + googleCollectionsVersion )
+  testRuntime('com.sleepycat:je:' + sleepycatVersion )
+  testRuntime('log4j:log4j:' + log4jVersion )
+  testRuntime('org.jdom:jdom:1.1' )
+  testRuntime('org.apache.velocity:velocity:1.6.2' )
+  testRuntime('commons-codec:commons-codec:1.3' )
+  testRuntime('commons-dbcp:commons-dbcp:1.2.2' )
+  testRuntime('commons-io:commons-io:1.4' )
+  testRuntime('commons-lang:commons-lang:2.4' )
+  testRuntime('org.mortbay.jetty:jetty:' + jettyVersion )
+  testRuntime('org.mortbay.jetty:jetty-util:' + jettyVersion )
+  testCompile(libraries.qi4j_core_bootstrap)
+  testCompile(libraries.junit)
+  testRuntime(libraries.slf4j_simple)
+  testCompile(libraries.qi4j_core_testsupport)
+  testRuntime(libraries.qi4j_core_runtime)
+  testRuntime(libraries.asm)
+  testRuntime(libraries.asm_commons)
+}
+
+jar {
+  manifest {
+    symbolicName='org.qi4j.entitystore.voldemort'
+    description = "Qi4j Voldemort EntityStore Extension"
+    name = "Qi4j Extension - EntityStore - Voldemort"
+    instruction 'Export-Package', 
+				symbolicName +';version=' + version,
+				symbolicName +'.assembly;version=' + version
+    instruction 'Private-Package', symbolicName + '.internal'
+    instruction 'Import-Package', '*'
+  }
+}
