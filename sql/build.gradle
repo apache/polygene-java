@@ -1,16 +1,12 @@
 
-libraries.putAll( 
-[
-	commons_dbcp: 'commons-dbcp:commons-dbcp:1.4',
-	postgresql: 'postgresql:postgresql:8.4-701.jdbc4'
-])
+postgresqlVersion='8.4-701.jdbc4'
 
 dependencies {
   compile(libraries.qi4j_core_api)
   compile(libraries.qi4j_core_spi)
   compile(libraries.qi4j_core_bootstrap)
-  compile(libraries.commons_dbcp)
-  compile(libraries.postgresql)
+  compile('commons-dbcp:commons-dbcp:1.4')
+  compile('postgresql:postgresql:' + postgresqlVersion)
   compile(libraries.slf4j_api)
   testCompile(libraries.junit)
   testRuntime(libraries.slf4j_simple)

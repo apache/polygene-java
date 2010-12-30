@@ -1,5 +1,3 @@
-rdfVersion='2.3.0'
-
 repositories {
   mavenRepo name: 'aduna-repo', urls: "http://repo.aduna-software.org/maven2/releases/"
 }
