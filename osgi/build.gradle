@@ -1,6 +1,7 @@
 dependencies {
   compile(libraries.qi4j_core_api)
   compile(libraries.osgi_core)
+  compile(libraries.osgi_compendium)
   compile(libraries.slf4j_api)
   testCompile(libraries.qi4j_core_bootstrap)
   testCompile(libraries.mockito)
