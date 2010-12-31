@@ -17,6 +17,7 @@ import static org.qi4j.api.query.QueryExpressions.*;
 import static org.qi4j.api.query.grammar.OrderBy.Order.*;
 
 import static org.qi4j.library.scheduler.timeline.TimelineRecordStep.FUTURE;
+import static org.qi4j.library.scheduler.timeline.TimelineRecordStep.RUNNING;
 
 import java.util.Date;
 import java.util.SortedSet;
@@ -34,8 +35,12 @@ import org.qi4j.api.util.Iterables;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
 
+import org.qi4j.library.scheduler.Scheduler;
 import org.qi4j.library.scheduler.schedule.ScheduleEntity;
 import org.qi4j.library.scheduler.task.Task;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Mixins( TimelineService.Mixin.class )
 public interface TimelineService
@@ -46,6 +51,7 @@ public interface TimelineService
             implements Timeline
     {
 
+        private static final Logger LOGGER = LoggerFactory.getLogger( Scheduler.class );
         @Structure
         private UnitOfWorkFactory uowf;
         @Structure
@@ -80,6 +86,7 @@ public interface TimelineService
             long now = System.currentTimeMillis();
             if ( from > now ) {
                 // Future runs only
+                LOGGER.trace( "TimelineService.getRecords( {}, {} ) Future runs only", from, to );
                 return future( from, to );
             }
             QueryBuilder<TimelineRecord> builder = qbf.newQueryBuilder( TimelineRecord.class );
@@ -91,7 +98,10 @@ public interface TimelineService
 
             if ( to >= now ) {
                 // Mixed past records and future runs
+                LOGGER.trace( "TimelineService.getRecords( {}, {} ) Mixed past records and future runs", from, to );
                 return Iterables.flatten( pastRecords, future( now, to ) );
+            } else {
+                LOGGER.trace( "TimelineService.getRecords( {}, {} ) Past records only", from, to );
             }
 
             return pastRecords;
@@ -131,7 +141,7 @@ public interface TimelineService
             TimelineRecordValue record = recordBuilder.prototype();
 
             record.timestamp().set( timestamp );
-            record.step().set( FUTURE );
+            record.step().set( schedule.running().get() ? RUNNING : FUTURE );
 
             Task task = schedule.task().get();
             record.taskName().set( task.name().get() );
@@ -139,7 +149,7 @@ public interface TimelineService
 
             StringBuilder details = new StringBuilder();
             details.append( schedule.durable().get() ? "Durable " : "Non durable " ).
-                    append( "Schedule with cron expression: " ).
+                    append( "Schedule " ).
                     append( schedule.cronExpression().get() );
             record.details().set( details.toString() );
 

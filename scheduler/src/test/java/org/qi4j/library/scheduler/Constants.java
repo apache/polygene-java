@@ -17,7 +17,7 @@ public interface Constants
 {
 
     Integer PULSE_RHYTHM_SECS = Integer.valueOf( 10 );
-    Integer GC_RHYTHM_SECS = Integer.valueOf( 42 );
+    Integer GC_RHYTHM_SECS = Integer.valueOf( 4200 );
     String FOO = "foo";
     String BAR = "bar";
     String BAZAR = "bazar";

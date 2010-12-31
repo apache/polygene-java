@@ -42,7 +42,7 @@ public class SchedulerTest
 
     private static final Logger LOGGER = LoggerFactory.getLogger( SchedulerTest.class );
 
-    public void onAssembly( ModuleAssembly testAssembly )
+    protected void onAssembly( ModuleAssembly testAssembly )
             throws AssemblyException
     {
         new SchedulerAssembler().visibleIn( module ).
@@ -88,7 +88,7 @@ public class SchedulerTest
 
         DateTime expectedRun = start.withMillisOfSecond( 0 ).withSecondOfMinute( 0 ).plusMinutes( 1 );
         Schedule schedule = scheduler.shedule( task, "@minutely" );
-        schedule.durable().set( Boolean.TRUE );
+        schedule.durable().set( Boolean.TRUE ); // FIXME Unit tested Schedule do not need to be durable
 
         uow.complete();
 
@@ -111,7 +111,7 @@ public class SchedulerTest
 
         // Queries returning future records
         // assertEquals( 5, Iterables.count( timeline.getNextRecords( 5 ) ) );
-        // assertEquals( 5, Iterables.count( timeline.getRecords( now.getMillis(), now.plusMinutes( 5 ).getMillis() ) ) );
+        assertEquals( 5, Iterables.count( timeline.getRecords( now.getMillis() + 100, now.plusMinutes( 5 ).getMillis() ) ) );
         // assertEquals( 6, Iterables.count( timeline.getRecords( start.getMillis(), now.plusMinutes( 5 ).getMillis() ) ) );
 
         uow.complete();

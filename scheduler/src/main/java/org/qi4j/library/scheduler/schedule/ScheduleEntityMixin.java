@@ -18,24 +18,40 @@ import org.codeartisans.sked.crontab.schedule.CronSchedule;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 
+import org.qi4j.library.scheduler.Scheduler;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public abstract class ScheduleEntityMixin
         implements ScheduleEntity
 {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger( Scheduler.class );
     @This
     private ScheduleEntity me;
 
     public Long firstRunAfter( Long start )
     {
         Long firstRun = new CronSchedule( me.cronExpression().get() ).firstRunAfter( start );
-        return firstRun >= start ? firstRun : null; // FIXME CronExpression return -1 where it should return null, fix it there
+        LOGGER.trace( "Schedule.firstRunAfter({}) CronSchedule result is {}", start, firstRun );
+        return firstRun >= start ? firstRun : null; // FIXME This check prevents a bug in CronSchedule, remove once fixed there
     }
 
     public void beforeCompletion()
             throws UnitOfWorkCompletionException
     {
         if ( !me.running().get() ) {
-            me.nextRun().set( firstRunAfter( System.currentTimeMillis() ) );
+
+            Long nextRun = firstRunAfter( System.currentTimeMillis() );
+            LOGGER.trace( "Schedule.beforeUoWCompletion() Not running, nextRun was {} and will be {}",
+                          me.nextRun().get(), nextRun );
+
+            me.nextRun().set( nextRun );
+
+        } else if ( LOGGER.isTraceEnabled() ) {
+
+            LOGGER.trace( "Schedule.beforeUoWCompletion() Running, nextRun is {}", me.nextRun().get() );
         }
     }
 
