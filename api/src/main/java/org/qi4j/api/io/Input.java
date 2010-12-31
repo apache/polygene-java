@@ -15,7 +15,9 @@
 package org.qi4j.api.io;
 
 /**
- * Input source of data. Invoke transferTo to send data from this input to given output. transferTo can be invoked
+ * Input source of data.
+ * <p/>
+ * Invoke transferTo to send data from this input to given output. transferTo can be invoked
  * as many times as you want.
  */
 public interface Input<T, SenderThrowableType extends Throwable>

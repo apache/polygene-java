@@ -26,8 +26,8 @@ public interface Output<T, ReceiverThrowableType extends Throwable>
      *
      * @param sender the sender of data to this output
      * @param <SenderThrowableType> the exception that sendTo can throw
-     * @throws ReceiverThrowableType the exception that this output can throw from receiveItem()
      * @throws SenderThrowableType the exception that the sender can throw
+     * @throws ReceiverThrowableType the exception that this output can throw from receiveItem()
      */
     <SenderThrowableType extends Throwable> void receiveFrom(Sender<T, SenderThrowableType> sender)
             throws ReceiverThrowableType, SenderThrowableType;

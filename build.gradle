@@ -1,33 +1,33 @@
 apply plugin: 'eclipse'
 apply plugin: 'idea'
-
+apply plugin: 'java'
+apply plugin: 'project-report'
 
 defaultTasks 'build'
-
+def group = 'org.qi4j.core'
 
 allprojects {
-
   repositories {
     mavenCentral()
     mavenRepo name: 'ops4j-repo', urls: "http://repository.ops4j.org/maven2/"
   }
+  targetCompatibility = "1.6"
+  sourceCompatibility = "1.6"
+
+  if (System.properties.containsKey('version')) {
+    version = System.properties['version']
+  }
+  else {
+    version = '0.0.0'
+  }
+
+  println "Building " + name + ", revision " + version
 }
 
-group = 'org.qi4j.core'
-gradle.taskGraph.whenReady { graph ->
-
-  if( !graph.hasTask('release') )
-  {
-    if( graph.hasTask('snapshot') )
-    version = System.currentTimeMillis();
-    else
-      version = 'dev'
-  }
-  else if( !project.hasProperty('version') )
-  {
-    throw new GradleException('Please specify a version when doing a release')
-  }
-}
+def testProperties = [
+        'proxySet': System.properties['proxySet'],
+        'proxyHost': System.properties['proxyHost'],
+        'proxyPort': System.properties['proxyPort']]
 
 // build a map of the dependency artifacts to use.  Allows centralized definition of the version of artifacts to
 // use.  In that respect it serves a role similar to <dependencyManagement> in Maven
@@ -62,17 +62,43 @@ subprojects { subProject ->
   apply plugin: 'eclipse'
   apply plugin: 'idea'
   apply plugin: 'java'
+  apply plugin: 'osgi'
 
-  // minimize changes, at least for now (gradle uses 'build' by default)..
-  buildDir = "target"
+  jar {
+    baseName = 'qi4j-core-' + subProject.name
+    manifest {
+      version = subProject.version
+      license = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+      docURL = 'http://www.qi4j.org'
+      description = 'Qi4j is a platform for Composite Oriented Programming'
+      name = group + "." + subProject.name  // default name if forgotten in sub-project.
+      vendor = 'Qi4j Community, http://www.qi4j.org'
+      symbolicName = group + "." + subProject.name
+      instruction '-debug', 'true'
+    }
+  }
 
   test {
     maxHeapSize = "1024m"
+    systemProperties = testProperties
   }
 
-  targetCompatibility = "1.6"
-  sourceCompatibility = "1.6"
-
+  configurations {
+    archives.extendsFrom compile
+  }
+  repositories {
+    flatDir(name: 'fileRepo', dirs: System.properties['user.home'] + '/.gradle/repository/org/qi4j/core/' + 'qi4j-core-' + name + '/' + version + '/')
+  }
+  uploadArchives {
+    uploadDescriptor = true
+    repositories {
+      add project.repositories.fileRepo
+    }
+  }
+  uploadArchives << {
+    if (System.properties['version'] == null)
+      throw new GradleException("'version' must be given as a system property to perform a release.")
+  }
   ideaModule {
     // Use explicitly separate compilation output directories for Gradle and IntelliJ
     File baseDirectory = new File(subProject.buildDir, "idea/classes")
@@ -85,6 +111,8 @@ subprojects { subProject ->
 
   dependsOnChildren()
 
+}
+
 //
 // This is a task that generates the gradlew scripts, allowing users to run gradle without having gradle installed
 // on their system.
@@ -92,8 +120,7 @@ subprojects { subProject ->
 //  1) /gradlew which is the *NIX shell script for executing builds
 //  2) /gradlew.bat which is the windows bat script for for executing builds
 //  3) /wrapper which is a directory named by the "jarPath" config which contains other needed files.
-  task wrapper(type: Wrapper) {
-    gradleVersion = '0.9-rc-1'
-    jarPath = 'wrapper'
-  }
+task wrapper(type: Wrapper) {
+  gradleVersion = '0.9'
+  jarPath = 'wrapper'
 }
