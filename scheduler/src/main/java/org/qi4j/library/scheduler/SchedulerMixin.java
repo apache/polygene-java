@@ -13,6 +13,7 @@
  */
 package org.qi4j.library.scheduler;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import org.qi4j.api.injection.scope.Service;
@@ -28,9 +29,28 @@ public class SchedulerMixin
     @Service
     private ScheduleFactory scheduleFactory;
 
-    public Schedule scheduleOnce( Task task, long initialDelay )
+    public Schedule scheduleOnce( Task task, int initialSecondsDelay )
     {
-        throw new UnsupportedOperationException( "Not supported yet." );
+        long start = System.currentTimeMillis();
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis( start );
+        int startSecond = cal.get( Calendar.SECOND );
+        if ( cal.get( Calendar.MILLISECOND ) >= 500 ) {
+            // If the current second is half passed, increment
+            startSecond++;
+        }
+        cal.set( Calendar.SECOND, startSecond + initialSecondsDelay );
+
+        StringBuilder cronEx = new StringBuilder();
+        cronEx.append( cal.get( Calendar.SECOND ) ).append( " " );
+        cronEx.append( cal.get( Calendar.MINUTE ) ).append( " " );
+        cronEx.append( cal.get( Calendar.HOUR_OF_DAY ) ).append( " " );
+        cronEx.append( cal.get( Calendar.DAY_OF_MONTH ) ).append( " " );
+        cronEx.append( cal.get( Calendar.MONTH + 1 ) ).append( " * " );
+        cronEx.append( cal.get( Calendar.YEAR ) );
+
+        return scheduleFactory.newSchedule( task, cronEx.toString(), start );
     }
 
     public Schedule shedule( Task task, String cronExpression )

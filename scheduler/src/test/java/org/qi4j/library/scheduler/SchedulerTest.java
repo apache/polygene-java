@@ -20,7 +20,6 @@ import static org.junit.Assert.*;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import org.qi4j.api.unitofwork.UnitOfWork;
@@ -54,7 +53,6 @@ public class SchedulerTest
     }
 
     @Test
-    @Ignore
     public void testTask()
             throws UnitOfWorkCompletionException, InterruptedException
     {
@@ -88,7 +86,6 @@ public class SchedulerTest
 
         DateTime expectedRun = start.withMillisOfSecond( 0 ).withSecondOfMinute( 0 ).plusMinutes( 1 );
         Schedule schedule = scheduler.shedule( task, "@minutely" );
-        schedule.durable().set( Boolean.TRUE ); // FIXME Unit tested Schedule do not need to be durable
 
         uow.complete();
 
@@ -113,6 +110,32 @@ public class SchedulerTest
         // assertEquals( 5, Iterables.count( timeline.getNextRecords( 5 ) ) );
         assertEquals( 5, Iterables.count( timeline.getRecords( now.getMillis() + 100, now.plusMinutes( 5 ).getMillis() ) ) );
         // assertEquals( 6, Iterables.count( timeline.getRecords( start.getMillis(), now.plusMinutes( 5 ).getMillis() ) ) );
+
+        uow.complete();
+    }
+
+    @Test
+    public void testOnce()
+            throws UnitOfWorkCompletionException, InterruptedException
+    {
+        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+
+        Scheduler scheduler = serviceLocator.<Scheduler>findService( Scheduler.class ).get();
+
+        FooTask task = createFooTask( uow, "TestOnce", Constants.BAZAR );
+        String taskIdentity = task.identity().get();
+
+        Schedule schedule = scheduler.scheduleOnce( task, 10 );
+
+        uow.complete();
+
+        Thread.sleep( 20000 );
+
+        uow = unitOfWorkFactory.newUnitOfWork();
+
+        task = uow.get( FooTask.class, taskIdentity );
+        assertNotNull( task );
+        assertEquals( Constants.BAR, task.output().get() );
 
         uow.complete();
     }

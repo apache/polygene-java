@@ -34,7 +34,7 @@ public interface Scheduler
 {
 
     @UnitOfWorkPropagation( MANDATORY )
-    Schedule scheduleOnce( Task task, long initialDelay );
+    Schedule scheduleOnce( Task task, int initialSecondsDelay );
 
     @UnitOfWorkPropagation( MANDATORY )
     Schedule shedule( Task task, @CronExpression String cronExpression );
