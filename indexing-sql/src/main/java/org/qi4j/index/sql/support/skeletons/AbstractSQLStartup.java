@@ -1063,7 +1063,6 @@ public abstract class AbstractSQLStartup
                     } catch (SQLException sqle)
                     {
                         // Sometimes meta data claims table exists, even when it really doesn't exist
-                        result = false;
                     }
 
                     if (rs != null)
