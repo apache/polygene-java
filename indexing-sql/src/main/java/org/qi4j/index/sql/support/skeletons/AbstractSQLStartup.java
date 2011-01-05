@@ -1052,32 +1052,34 @@ public abstract class AbstractSQLStartup
             Statement stmt = connection.createStatement();
             try
             {
-                ResultSet rs = connection.getMetaData().getTables( null, schemaName, APP_VERSION_TABLE_NAME,
-                    new String[]
-                    {
-                        "TABLE"
-                    } );
-                if( rs.next() )
-                {
-                    SQLUtil.closeQuietly( rs );
-                    QueryExpression getAppVersionQuery = this._vendor.getQueryFactory().simpleQueryBuilder()
+                QueryExpression getAppVersionQuery = this._vendor.getQueryFactory().simpleQueryBuilder()
                         .select( APP_VERSION_PK_COLUMN_NAME )
                         .from( this._vendor.getTableReferenceFactory().tableName( schemaName, APP_VERSION_TABLE_NAME ) )
                         .createExpression();
-                    rs = stmt.executeQuery( this._vendor.toString( getAppVersionQuery ) );
-
-                    result = !rs.next();
-
-                    if( !result )
+                    ResultSet rs = null;
+                    try
                     {
+                        rs = stmt.executeQuery( this._vendor.toString( getAppVersionQuery ) );
+                    } catch (SQLException sqle)
+                    {
+                        // Sometimes meta data claims table exists, even when it really doesn't exist
+                        result = false;
+                    }
 
-                        String dbAppVersion = rs.getString( 1 );
-                        if( this._reindexingStrategy != null )
+                    if (rs != null)
+                    {
+                        result = !rs.next();
+
+                        if( !result )
                         {
-                            result = this._reindexingStrategy.reindexingNeeded( dbAppVersion, this._app.version() );
+
+                            String dbAppVersion = rs.getString( 1 );
+                            if( this._reindexingStrategy != null )
+                            {
+                                result = this._reindexingStrategy.reindexingNeeded( dbAppVersion, this._app.version() );
+                            }
                         }
                     }
-                }
 
             }
             finally
