@@ -102,6 +102,8 @@ import org.sql.generation.api.grammar.factories.LiteralFactory;
 import org.sql.generation.api.grammar.factories.ModificationFactory;
 import org.sql.generation.api.grammar.factories.QueryFactory;
 import org.sql.generation.api.grammar.factories.TableReferenceFactory;
+import org.sql.generation.api.grammar.manipulation.DropBehaviour;
+import org.sql.generation.api.grammar.manipulation.ObjectType;
 import org.sql.generation.api.grammar.modification.DeleteBySearch;
 import org.sql.generation.api.grammar.query.QueryExpression;
 import org.sql.generation.api.vendor.SQLVendor;
@@ -166,8 +168,6 @@ public abstract class AbstractSQLStartup
     public void initConnection()
         throws SQLException
     {
-        this.initTypes();
-
         Connection connection = this._dataSource.getDataSource().getConnection();
 
         connection.setAutoCommit( false );
@@ -1052,32 +1052,33 @@ public abstract class AbstractSQLStartup
             Statement stmt = connection.createStatement();
             try
             {
-                ResultSet rs = connection.getMetaData().getTables( null, schemaName, APP_VERSION_TABLE_NAME,
-                    new String[]
-                    {
-                        "TABLE"
-                    } );
-                if( rs.next() )
-                {
-                    SQLUtil.closeQuietly( rs );
-                    QueryExpression getAppVersionQuery = this._vendor.getQueryFactory().simpleQueryBuilder()
+                QueryExpression getAppVersionQuery = this._vendor.getQueryFactory().simpleQueryBuilder()
                         .select( APP_VERSION_PK_COLUMN_NAME )
                         .from( this._vendor.getTableReferenceFactory().tableName( schemaName, APP_VERSION_TABLE_NAME ) )
                         .createExpression();
-                    rs = stmt.executeQuery( this._vendor.toString( getAppVersionQuery ) );
-
-                    result = !rs.next();
-
-                    if( !result )
+                    ResultSet rs = null;
+                    try
                     {
+                        rs = stmt.executeQuery( this._vendor.toString( getAppVersionQuery ) );
+                    } catch (SQLException sqle)
+                    {
+                        // Sometimes meta data claims table exists, even when it really doesn't exist
+                    }
 
-                        String dbAppVersion = rs.getString( 1 );
-                        if( this._reindexingStrategy != null )
+                    if (rs != null)
+                    {
+                        result = !rs.next();
+
+                        if( !result )
                         {
-                            result = this._reindexingStrategy.reindexingNeeded( dbAppVersion, this._app.version() );
+
+                            String dbAppVersion = rs.getString( 1 );
+                            if( this._reindexingStrategy != null )
+                            {
+                                result = this._reindexingStrategy.reindexingNeeded( dbAppVersion, this._app.version() );
+                            }
                         }
                     }
-                }
 
             }
             finally
@@ -1115,9 +1116,10 @@ public abstract class AbstractSQLStartup
             this.dropTablesIfExist( metaData, schemaName, USED_CLASSES_TABLE_NAME, stmt );
             this.dropTablesIfExist( metaData, schemaName, USED_QNAMES_TABLE_NAME, stmt );
 
-            for( Integer x = 0; x < this._state.qNameInfos().get().size(); ++x )
+            Integer x = 0;
+            while (this.dropTablesIfExist( metaData, schemaName, DBNames.QNAME_TABLE_NAME_PREFIX + x, stmt ))
             {
-                this.dropTablesIfExist( metaData, schemaName, DBNames.QNAME_TABLE_NAME_PREFIX + x, stmt );
+                ++x;
             }
 
         }
@@ -1304,9 +1306,23 @@ public abstract class AbstractSQLStartup
     protected abstract void testRequiredCapabilities()
         throws SQLException;
 
-    protected abstract void dropTablesIfExist( DatabaseMetaData metaData, String schemaName, String tableName,
-        Statement stmt )
-        throws SQLException;
+    protected boolean dropTablesIfExist( DatabaseMetaData metaData, String schemaName, String tableName, Statement stmt )
+        throws SQLException
+    {
+        boolean result = false;
+        try
+        {
+            stmt.execute( this._vendor.toString( this._vendor.getManipulationFactory()
+                .createDropTableOrViewStatement(
+                   this._vendor.getTableReferenceFactory().tableName( schemaName, tableName ), ObjectType.TABLE, DropBehaviour.CASCADE
+                   ) ) );
+            result = true;
+        } catch (SQLException sqle)
+        {
+            // Ignore
+        }
+        return result;
+    }
 
     protected abstract void modifyPrimitiveTypes( Map<Class<?>, SQLDataType> primitiveTypes, Map<Class<?>, Integer> jdbcTypes );
     
