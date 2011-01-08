@@ -1,33 +1,53 @@
-apply plugin: 'eclipse'
-apply plugin: 'idea'
-apply plugin: 'java'
-apply plugin: 'project-report'
-
-defaultTasks 'build'
-def group = 'org.qi4j.core'
-
 allprojects {
+  apply plugin: 'eclipse'
+  apply plugin: 'idea'
+  apply plugin: 'maven'
+  apply plugin: 'java'
+  apply plugin: 'project-report'
+
+  defaultTasks 'build'
+  group = 'org.qi4j.core'
+
   repositories {
     mavenCentral()
     mavenRepo name: 'ops4j-repo', urls: "http://repository.ops4j.org/maven2/"
   }
+
   targetCompatibility = "1.6"
   sourceCompatibility = "1.6"
 
-  if (System.properties.containsKey('version')) {
-    version = System.properties['version']
+  if( System.properties.containsKey('version') )
+  {
+    version = System.properties[ 'version' ]
   }
-  else {
-    version = '0.0.0'
+  else
+  {
+    version = 'DEV'
+  }
+
+  configurations {
+    deployerJars
+  }
+
+  dependencies {
+    deployerJars "org.apache.maven.wagon:wagon-ssh:1.0-beta-2"
+  }
+
+  uploadArchives {
+    repositories.mavenDeployer {
+      name = 'sshDeployer' // optional
+      configuration = configurations.deployerJars
+      repository(url: "scp://repository.ops4j.org/home/www/repository.ops4j.org/maven2")
+    }
   }
 
   println "Building " + name + ", revision " + version
 }
 
 def testProperties = [
-        'proxySet': System.properties['proxySet'],
-        'proxyHost': System.properties['proxyHost'],
-        'proxyPort': System.properties['proxyPort']]
+        'proxySet': System.properties[ 'proxySet' ],
+        'proxyHost': System.properties[ 'proxyHost' ],
+        'proxyPort': System.properties[ 'proxyPort' ]]
 
 // build a map of the dependency artifacts to use.  Allows centralized definition of the version of artifacts to
 // use.  In that respect it serves a role similar to <dependencyManagement> in Maven
@@ -59,11 +79,11 @@ libraries = [
 
 subprojects { subProject ->
 
-  apply plugin: 'eclipse'
-  apply plugin: 'idea'
-  apply plugin: 'java'
   apply plugin: 'osgi'
+  apply plugin: VersionClass
+  apply plugin: 'code-quality'
 
+  checkstyleConfigFileName = rootProject.projectDir.absolutePath + '/etc/qi4j-checkstyle.xml'
   jar {
     baseName = 'qi4j-core-' + subProject.name
     manifest {
@@ -87,21 +107,16 @@ subprojects { subProject ->
     archives.extendsFrom compile
   }
   repositories {
-    flatDir(name: 'fileRepo', dirs: System.properties['user.home'] + '/.gradle/repository/org/qi4j/core/' + 'qi4j-core-' + name + '/' + version + '/')
+    flatDir(name: 'fileRepo', dirs: System.properties[ 'user.home' ] + '/.gradle/repository/org/qi4j/core/' + 'qi4j-core-' + name + '/' + version + '/')
   }
-  uploadArchives {
-    uploadDescriptor = true
-    repositories {
-      add project.repositories.fileRepo
-    }
-  }
+
   uploadArchives << {
-    if (System.properties['version'] == null)
-      throw new GradleException("'version' must be given as a system property to perform a release.")
+    if( System.properties[ 'version' ] == null )
+    throw new GradleException("'version' must be given as a system property to perform a release.")
   }
   ideaModule {
     // Use explicitly separate compilation output directories for Gradle and IntelliJ
-    File baseDirectory = new File(subProject.buildDir, "idea/classes")
+    File baseDirectory = new File(subProject.buildDir, "build/idea-classes")
     outputDir = new File(baseDirectory, "main")
     testOutputDir = new File(baseDirectory, "test")
     whenConfigured { module ->
@@ -111,6 +126,90 @@ subprojects { subProject ->
 
   dependsOnChildren()
 
+}
+
+
+task javadocs(type: Javadoc) {
+  def apiSources = subprojects.findAll({ project -> project.name != 'runtime' })
+  println apiSources
+  source apiSources.collect { project ->
+      project.sourceSets.main.allJava
+  }
+  destinationDir = new File(buildDir, 'javadoc')
+  // Might need a classpath
+  classpath = files(apiSources.collect { project ->
+          project.sourceSets.main.compileClasspath
+  })
+}
+
+
+def pomConfig = {
+  url 'http://www.qi4j.org'
+  organization {
+    name 'Qi4j Community'
+    url 'http://www.qi4j.org'
+  }
+  issueManagement {
+    system 'jira'
+    url 'http://issues.ops4j.org/browse/QI'
+  }
+  scm {
+    url "http://github.com/Qi4j/qi4j-core"
+    connection "scm:git:http://github.com/Qi4j/qi4j-core.git"
+    developerConnection "scm:git:git@github.com:Qi4j/qi4j-core.git"
+  }
+  licenses {
+    license {
+      name 'Apache License version 2.0'
+      url 'http://www.apache.org/licenses/LICENSE-2.0'
+      comments 'This build file is licensed under LGPL from Hibernate Core project.'
+      distribution 'repo'
+    }
+  }
+  developers {
+    developer {
+      id 'niclas@hedhman.org'
+      name 'Niclas Hedhman'
+      email 'niclas@codedragons.com'
+      url 'http://www.codedragons.com'
+      organization 'CodeDragons'
+      organizationUrl 'http://www.codedragons.com</organizationUrl'
+      timezone 'UTC+8'
+    }
+    developer {
+      id 'rickardoberg'
+      name 'Rickard …berg'
+      email 'rickard.oberg@jayway.se'
+      url 'http://www.jayway.se'
+      organization 'Jayway'
+      organizationUrl 'http://www.jayway.se'
+      timezone 'UTC+1'
+    }
+    developer {
+      id 'edward.yakop@gmail.com'
+      name 'Edward Yakop'
+      email 'efy@codedragons.com'
+      url 'http://www.codedragons.com'
+      organization 'CodeDragons'
+      organizationUrl 'http://www.codedragons.com'
+      timezone 'UTC+8'
+    }
+    developer {
+      id 'adreghiciu@gmail.com'
+      name 'Alin Dreghiciu'
+      email 'adreghiciu@codedragons.com'
+      url 'http://www.codedragons.com'
+      organization 'CodeDragons'
+      organizationUrl 'http://www.codedragons.com'
+      timezone 'UTC+2'
+    }
+    developer {
+      id 'mesirii'
+      name 'Michael Hunger'
+      email 'qi4j@jexp.de'
+      timezone 'CET'
+    }
+  }
 }
 
 //
@@ -124,3 +223,4 @@ task wrapper(type: Wrapper) {
   gradleVersion = '0.9'
   jarPath = 'wrapper'
 }
+

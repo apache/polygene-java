@@ -1,7 +1,10 @@
-include "api", "spi", "testsupport", "bootstrap", "runtime"
+include "api",
+        "spi",
+        "testsupport",
+        "bootstrap",
+        "runtime"
 
 rootProject.children.each { project ->
-    project.buildFileName = "${project.name}.gradle"
     assert project.projectDir.isDirectory()
     assert project.buildFile.isFile()
 }
