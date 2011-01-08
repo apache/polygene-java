@@ -118,10 +118,12 @@ public interface Configuration<T>
      */
     void save();
 
-    /** Implementation of Configuration.
+    /**
+     * Implementation of Configuration.
      * <p>
      * This is effectively an internal class in Qi4j and should never be used directly by user code.
      * </p>
+     *
      * @param <T>
      */
     public class ConfigurationMixin<T>

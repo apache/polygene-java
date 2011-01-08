@@ -25,6 +25,7 @@ public interface Specification<T>
      * Test whether an item matches the given specification
      *
      * @param item the item to be tested
+     *
      * @return true if the item matches, false otherwise
      */
     boolean satisfiedBy( T item );

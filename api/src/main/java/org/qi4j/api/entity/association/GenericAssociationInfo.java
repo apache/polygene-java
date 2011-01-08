@@ -78,12 +78,14 @@ public final class GenericAssociationInfo
 
     public GenericAssociationInfo( Method accessor, MetaInfo metainfo )
     {
-        this( metainfo, metainfo.get( Immutable.class ) != null, metainfo.get( Aggregated.class ) != null, QualifiedName.fromMethod( accessor ), getAssociationType( accessor.getGenericReturnType() ) );
+        this( metainfo, metainfo.get( Immutable.class ) != null, metainfo.get( Aggregated.class ) != null, QualifiedName
+            .fromMethod( accessor ), getAssociationType( accessor.getGenericReturnType() ) );
     }
 
     public GenericAssociationInfo( Method accessor, MetaInfo metainfo, boolean immutable )
     {
-        this( metainfo, immutable, metainfo.get( Aggregated.class ) != null, QualifiedName.fromMethod( accessor ), getAssociationType( accessor.getGenericReturnType() ) );
+        this( metainfo, immutable, metainfo.get( Aggregated.class ) != null, QualifiedName.fromMethod( accessor ), getAssociationType( accessor
+                                                                                                                                           .getGenericReturnType() ) );
     }
 
     public <T> T metaInfo( Class<T> infoType )

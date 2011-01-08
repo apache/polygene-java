@@ -19,10 +19,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import org.qi4j.api.specification.Specification;
 
-import static org.qi4j.api.util.Classes.interfacesOf;
-import static org.qi4j.api.util.Iterables.flatten;
-import static org.qi4j.api.util.Iterables.iterable;
-import static org.qi4j.api.util.Iterables.map;
+import static org.qi4j.api.util.Classes.*;
+import static org.qi4j.api.util.Iterables.*;
 
 /**
  * Useful methods for handling Annotations.

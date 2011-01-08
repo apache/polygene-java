@@ -34,9 +34,12 @@ public class Transforms
      * @param output
      * @param <T>
      * @param <ReceiverThrowableType>
+     *
      * @return
      */
-    public static <T, ReceiverThrowableType extends Throwable> Output<T, ReceiverThrowableType> filter( final Specification<T> specification, final Output<T, ReceiverThrowableType> output )
+    public static <T, ReceiverThrowableType extends Throwable> Output<T, ReceiverThrowableType> filter( final Specification<T> specification,
+                                                                                                        final Output<T, ReceiverThrowableType> output
+    )
     {
         return new Output<T, ReceiverThrowableType>()
         {
@@ -59,7 +62,6 @@ public class Transforms
                                 }
                             }
                         } );
-
                     }
                 } );
             }
@@ -74,9 +76,12 @@ public class Transforms
      * @param <From>
      * @param <To>
      * @param <ReceiverThrowableType>
+     *
      * @return
      */
-    public static <From, To, ReceiverThrowableType extends Throwable> Output<From, ReceiverThrowableType> map( final Function<From, To> function, final Output<To, ReceiverThrowableType> output )
+    public static <From, To, ReceiverThrowableType extends Throwable> Output<From, ReceiverThrowableType> map( final Function<From, To> function,
+                                                                                                               final Output<To, ReceiverThrowableType> output
+    )
     {
         return new Output<From, ReceiverThrowableType>()
         {
@@ -96,7 +101,6 @@ public class Transforms
                                 receiver.receive( function.map( item ) );
                             }
                         } );
-
                     }
                 } );
             }
@@ -112,9 +116,13 @@ public class Transforms
      * @param output
      * @param <T>
      * @param <ReceiverThrowableType>
+     *
      * @return
      */
-    public static <T, ReceiverThrowableType extends Throwable> Output<T, ReceiverThrowableType> filteredMap( final Specification<T> specification, final Function<T, T> function, final Output<T, ReceiverThrowableType> output )
+    public static <T, ReceiverThrowableType extends Throwable> Output<T, ReceiverThrowableType> filteredMap( final Specification<T> specification,
+                                                                                                             final Function<T, T> function,
+                                                                                                             final Output<T, ReceiverThrowableType> output
+    )
     {
         return new Output<T, ReceiverThrowableType>()
         {
@@ -141,7 +149,6 @@ public class Transforms
                                 }
                             }
                         } );
-
                     }
                 } );
             }
@@ -156,9 +163,12 @@ public class Transforms
      * @param output                  output to be wrapped
      * @param <T>
      * @param <ReceiverThrowableType>
+     *
      * @return Output wrapper that uses the given lock during transfers.
      */
-    public static <T, ReceiverThrowableType extends Throwable> Output<T, ReceiverThrowableType> lock( final Lock lock, final Output<T, ReceiverThrowableType> output )
+    public static <T, ReceiverThrowableType extends Throwable> Output<T, ReceiverThrowableType> lock( final Lock lock,
+                                                                                                      final Output<T, ReceiverThrowableType> output
+    )
     {
         return new Output<T, ReceiverThrowableType>()
         {
@@ -205,9 +215,12 @@ public class Transforms
      * @param input                 input to be wrapped
      * @param <T>
      * @param <SenderThrowableType>
+     *
      * @return Input wrapper that uses the given lock during transfers.
      */
-    public static <T, SenderThrowableType extends Throwable> Input<T, SenderThrowableType> lock( final Lock lock, final Input<T, SenderThrowableType> input )
+    public static <T, SenderThrowableType extends Throwable> Input<T, SenderThrowableType> lock( final Lock lock,
+                                                                                                 final Input<T, SenderThrowableType> input
+    )
     {
         return new Input<T, SenderThrowableType>()
         {

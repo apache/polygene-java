@@ -31,11 +31,13 @@ import org.qi4j.api.specification.Specification;
  */
 public abstract class ServiceQualifier
 {
-    public static <T> T firstService( Specification<ServiceReference<?>> qualifier, Iterable<ServiceReference<T>> services )
+    public static <T> T firstService( Specification<ServiceReference<?>> qualifier,
+                                      Iterable<ServiceReference<T>> services
+    )
     {
         for( ServiceReference<T> service : services )
         {
-            if( qualifier.satisfiedBy( service ))
+            if( qualifier.satisfiedBy( service ) )
             {
                 return service.get();
             }

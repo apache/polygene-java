@@ -35,6 +35,7 @@ public interface ServiceImporter<T>
      * Ask if the underlying service is currently active or not.
      *
      * @param instance the instance to be checked
+     *
      * @return true if the service is active, false if not
      */
     boolean isActive( T instance );
@@ -43,6 +44,7 @@ public interface ServiceImporter<T>
      * Ask if the service is available or not.
      *
      * @param instance the instance to be checked
+     *
      * @return true if the service is available, false if not
      */
     boolean isAvailable( T instance );

@@ -14,25 +14,25 @@
 
 package org.qi4j.api.util;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.List;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 import org.qi4j.api.specification.Specification;
 import org.qi4j.api.specification.Specifications;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.*;
 
 /**
  * Test of Iterables utility methods
  */
 public class IterablesTest
 {
-    List<String> numbers = Arrays.asList( "1","2","3" );
+    private List<String> numbers = Arrays.asList( "1", "2", "3" );
 
     @Test
     public void testAddAll()
@@ -43,69 +43,76 @@ public class IterablesTest
     @Test
     public void testCount()
     {
-        Assert.assertThat(Iterables.count( numbers ), equalTo( 3L ));
+        Assert.assertThat( Iterables.count( numbers ), equalTo( 3L ) );
     }
 
     @Test
     public void testFilter()
     {
-        Assert.assertThat(Iterables.first( Iterables.filter( new Specification<String>()
+        Assert.assertThat( Iterables.first( Iterables.filter( new Specification<String>()
         {
             public boolean satisfiedBy( String item )
             {
                 return item.equals( "2" );
             }
-        }, numbers )), equalTo( "2" ));
+        }, numbers ) ), equalTo( "2" ) );
     }
 
     @Test
     public void testFirst()
     {
-        Assert.assertThat( Iterables.first(numbers), equalTo("1") );
-        Assert.assertThat( Iterables.first( Collections.<Object>emptyList()), CoreMatchers.<Object>nullValue() );
+        Assert.assertThat( Iterables.first( numbers ), equalTo( "1" ) );
+        Assert.assertThat( Iterables.first( Collections.<Object>emptyList() ), CoreMatchers.<Object>nullValue() );
     }
 
     @Test
     public void testMatchesAny()
     {
-        Assert.assertThat( Iterables.matchesAny( Specifications.in( "2" ), numbers), equalTo( true ) );
-        Assert.assertThat( Iterables.matchesAny( Specifications.in( "4" ), numbers), equalTo( false ) );
+        Assert.assertThat( Iterables.matchesAny( Specifications.in( "2" ), numbers ), equalTo( true ) );
+        Assert.assertThat( Iterables.matchesAny( Specifications.in( "4" ), numbers ), equalTo( false ) );
     }
 
     @Test
     public void testFlatten()
     {
-        Assert.assertThat( Iterables.addAll( new ArrayList<String>(), Iterables.flatten( numbers, numbers )).toString(), equalTo("[1, 2, 3, 1, 2, 3]") );
+        Assert.assertThat( Iterables.addAll( new ArrayList<String>(), Iterables.flatten( numbers, numbers ) )
+                               .toString(), equalTo( "[1, 2, 3, 1, 2, 3]" ) );
     }
 
     @Test
     public void testFlattenIterables()
     {
-        Assert.assertThat( Iterables.addAll(new ArrayList<String>(), Iterables.flatten( Iterables.iterable( numbers, (Iterable<String>)numbers ) )).toString(), equalTo( "[1, 2, 3, 1, 2, 3]" ) );
+        Iterable<Iterable<String>> iterable = Iterables.iterable( numbers, (Iterable<String>) numbers );
+        Assert.assertThat( Iterables.addAll( new ArrayList<String>(),
+                                             Iterables.flatten( iterable ) )
+                               .toString(), equalTo( "[1, 2, 3, 1, 2, 3]" ) );
     }
 
     @Test
     public void testMap()
     {
-        Assert.assertThat( Iterables.addAll(new ArrayList<String>(), Iterables.map( new Function<String, String>()
+        Assert.assertThat( Iterables.addAll( new ArrayList<String>(), Iterables.map( new Function<String, String>()
         {
             public String map( String s )
             {
-                return s+s;
+                return s + s;
             }
-        }, numbers)).toString(), equalTo( "[11, 22, 33]" ) );
+        }, numbers ) ).toString(), equalTo( "[11, 22, 33]" ) );
     }
 
     @Test
     public void testIterableEnumeration()
     {
 
-        Assert.assertThat( Iterables.addAll( new ArrayList<String>(), Iterables.iterable( Collections.enumeration( numbers ) ) ).toString(), equalTo( "[1, 2, 3]" ));
+        Enumeration<String> enumeration = Collections.enumeration( numbers );
+        Assert.assertThat( Iterables.addAll( new ArrayList<String>(), Iterables.iterable( enumeration ) )
+                               .toString(), equalTo( "[1, 2, 3]" ) );
     }
 
     @Test
     public void testIterableVarArg()
     {
-        Assert.assertThat( Iterables.addAll( new ArrayList<String>(), Iterables.iterable( "1","2","3" )).toString(), equalTo( "[1, 2, 3]" ));
+        Assert.assertThat( Iterables.addAll( new ArrayList<String>(), Iterables.iterable( "1", "2", "3" ) )
+                               .toString(), equalTo( "[1, 2, 3]" ) );
     }
 }

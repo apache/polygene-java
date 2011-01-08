@@ -8,7 +8,7 @@ package org.qi4j.api.cache;
 public final class CacheOptions
 {
     public static final CacheOptions ALWAYS = new CacheOptions( true, true, true );
-    public static final CacheOptions NEVER = new CacheOptions( false,false,false);
+    public static final CacheOptions NEVER = new CacheOptions( false, false, false );
 
     private boolean cacheOnRead;
     private boolean cacheOnWrite;
@@ -66,5 +66,4 @@ public final class CacheOptions
     {
         return cacheOnNew;
     }
-
 }

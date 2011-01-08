@@ -22,6 +22,6 @@ package org.qi4j.api.io;
  */
 public interface Input<T, SenderThrowableType extends Throwable>
 {
-    <ReceiverThrowableType extends Throwable> void transferTo( Output<T,ReceiverThrowableType> output )
+    <ReceiverThrowableType extends Throwable> void transferTo( Output<T, ReceiverThrowableType> output )
         throws SenderThrowableType, ReceiverThrowableType;
 }

@@ -40,9 +40,11 @@ import java.lang.reflect.Method;
  * especially mixins are rarely applied to all methods.
  * </p>
  */
-public interface AppliesToFilter extends Serializable
+public interface AppliesToFilter
+    extends Serializable
 {
-    /** This is an internal AppliesToFilter which is assigned if no other AppliesToFilters are found for a given
+    /**
+     * This is an internal AppliesToFilter which is assigned if no other AppliesToFilters are found for a given
      * fragment.
      * <p>
      * There is no reason for user code to use this AppliesToFilter directly, and should be perceived as an

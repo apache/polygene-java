@@ -26,9 +26,10 @@ public interface Sender<T, SenderThrowableType extends Throwable>
      *
      * @param receiver
      * @param <ReceiverThrowableType>
+     *
      * @throws ReceiverThrowableType
      * @throws SenderThrowableType
      */
-    <ReceiverThrowableType extends Throwable> void sendTo(Receiver<T, ReceiverThrowableType> receiver)
+    <ReceiverThrowableType extends Throwable> void sendTo( Receiver<T, ReceiverThrowableType> receiver )
         throws ReceiverThrowableType, SenderThrowableType;
 }

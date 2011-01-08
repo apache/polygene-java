@@ -14,11 +14,10 @@
 
 package org.qi4j.api.service.qualifier;
 
-import org.qi4j.api.service.ServiceReference;
-import org.qi4j.api.specification.Specification;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import org.qi4j.api.service.ServiceReference;
+import org.qi4j.api.specification.Specification;
 
 /**
  * Filter services based on identity. Identity can be set during assembly, like so:
@@ -29,7 +28,7 @@ import java.lang.annotation.RetentionPolicy;
  * @Service @IdentifiedBy("myservice1") MyService service;
  * to get only a service identified "myservice1".
  */
-@Retention( RetentionPolicy.RUNTIME)
+@Retention( RetentionPolicy.RUNTIME )
 @Qualifier( IdentifiedBy.IdentifiedByQualifier.class )
 public @interface IdentifiedBy
 {

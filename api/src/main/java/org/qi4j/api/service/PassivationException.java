@@ -29,7 +29,7 @@ public class PassivationException
 
     public PassivationException( List<Exception> exceptions )
     {
-        causes = new Exception[exceptions.size()];
+        causes = new Exception[ exceptions.size() ];
         exceptions.toArray( causes );
     }
 

@@ -15,10 +15,23 @@
 package org.qi4j.api.util;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.*;
-import java.util.*;
+import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import static java.util.Arrays.asList;
+import static java.util.Arrays.*;
 
 /**
  * Class-related utility methods
@@ -31,6 +44,7 @@ public final class Classes
      * is included twice in the list.
      *
      * @param type to extract interfaces from
+     *
      * @return set of interfaces of given type
      */
     public static Set<Class> interfacesOf( Type type )
@@ -41,7 +55,7 @@ public final class Classes
         if( type instanceof Class )
         {
             Class current = (Class) type;
-            while (current != null)
+            while( current != null )
             {
                 addInterfaces( current, interfaces );
                 current = current.getSuperclass();
@@ -57,6 +71,7 @@ public final class Classes
      * is included twice in the list.
      *
      * @param type to extract interfaces from
+     *
      * @return set of interfaces of given type
      */
     public static Set<Type> genericInterfacesOf( Type type )
@@ -67,7 +82,7 @@ public final class Classes
         if( type instanceof Class )
         {
             Class current = (Class) type;
-            while (current != null)
+            while( current != null )
             {
                 addGenericInterfaces( current, interfaces );
                 current = current.getSuperclass();
@@ -80,7 +95,7 @@ public final class Classes
     public static Set<Class> interfacesWithMethods( Set<Class> interfaces )
     {
         Set<Class> newSet = new LinkedHashSet<Class>();
-        for (Class type : interfaces)
+        for( Class type : interfaces )
         {
             if( type.isInterface() && type.getDeclaredMethods().length > 0 )
             {
@@ -99,7 +114,7 @@ public final class Classes
         if( type instanceof Class )
         {
             Class current = (Class) type;
-            while (current != null)
+            while( current != null )
             {
                 types.add( current );
                 current = current.getSuperclass();
@@ -117,7 +132,7 @@ public final class Classes
         if( type instanceof Class )
         {
             Class current = (Class) type;
-            while (current != null)
+            while( current != null )
             {
                 addInterfaces( current, types );
                 types.add( current );
@@ -130,11 +145,11 @@ public final class Classes
 
     public static Class[] toClassArray( Set<Class> types )
     {
-        Class[] array = new Class[types.size()];
+        Class[] array = new Class[ types.size() ];
         int idx = 0;
-        for (Class type : types)
+        for( Class type : types )
         {
-            array[idx++] = type;
+            array[ idx++ ] = type;
         }
 
         return array;
@@ -143,11 +158,11 @@ public final class Classes
     public static Type actualTypeOf( Type type )
     {
         Set<Class> types = interfacesOf( type );
-        for (Type type1 : types)
+        for( Type type1 : types )
         {
             if( type1 instanceof ParameterizedType )
             {
-                return ( (ParameterizedType) type1 ).getActualTypeArguments()[0];
+                return ( (ParameterizedType) type1 ).getActualTypeArguments()[ 0 ];
             }
         }
         return null;
@@ -158,13 +173,14 @@ public final class Classes
         if( type instanceof Class )
         {
             return ( (Class) type ).getSimpleName();
-        } else if( type instanceof ParameterizedType )
+        }
+        else if( type instanceof ParameterizedType )
         {
             ParameterizedType pt = (ParameterizedType) type;
             String str = getSimpleGenericName( pt.getRawType() );
             str += "<";
             String args = "";
-            for (Type typeArgument : pt.getActualTypeArguments())
+            for( Type typeArgument : pt.getActualTypeArguments() )
             {
                 if( args.length() != 0 )
                 {
@@ -175,19 +191,22 @@ public final class Classes
             str += args;
             str += ">";
             return str;
-        } else if( type instanceof GenericArrayType )
+        }
+        else if( type instanceof GenericArrayType )
         {
             GenericArrayType gat = (GenericArrayType) type;
             return getSimpleGenericName( gat.getGenericComponentType() ) + "[]";
-        } else if( type instanceof TypeVariable )
+        }
+        else if( type instanceof TypeVariable )
         {
             TypeVariable tv = (TypeVariable) type;
             return tv.getName();
-        } else if( type instanceof WildcardType )
+        }
+        else if( type instanceof WildcardType )
         {
             WildcardType wt = (WildcardType) type;
             String args = "";
-            for (Type typeArgument : wt.getUpperBounds())
+            for( Type typeArgument : wt.getUpperBounds() )
             {
                 if( args.length() != 0 )
                 {
@@ -197,16 +216,19 @@ public final class Classes
             }
 
             return "? extends " + args;
-        } else
+        }
+        else
         {
             throw new IllegalArgumentException( "Don't know how to deal with type:" + type );
         }
     }
 
-    public static <AnnotationType extends Annotation> AnnotationType getAnnotationOfTypeOrAnyOfSuperTypes( Class<?> type, Class<AnnotationType> annotationClass )
+    public static <AnnotationType extends Annotation> AnnotationType getAnnotationOfTypeOrAnyOfSuperTypes( Class<?> type,
+                                                                                                           Class<AnnotationType> annotationClass
+    )
     {
         AnnotationType result = null;
-        for (Class<?> clazz : typesOf( type ))
+        for( Class<?> clazz : typesOf( type ) )
         {
             result = clazz.getAnnotation( annotationClass );
             if( result != null )
@@ -224,16 +246,20 @@ public final class Classes
         if( genericType instanceof Class )
         {
             return (Class<?>) genericType;
-        } else if( genericType instanceof ParameterizedType )
+        }
+        else if( genericType instanceof ParameterizedType )
         {
             return (Class<?>) ( (ParameterizedType) genericType ).getRawType();
-        } else if( genericType instanceof TypeVariable )
+        }
+        else if( genericType instanceof TypeVariable )
         {
             return (Class<?>) ( (TypeVariable) genericType ).getGenericDeclaration();
-        } else if( genericType instanceof WildcardType )
+        }
+        else if( genericType instanceof WildcardType )
         {
-            return (Class<?>) ( (WildcardType) genericType ).getUpperBounds()[0];
-        } else if( genericType instanceof GenericArrayType )
+            return (Class<?>) ( (WildcardType) genericType ).getUpperBounds()[ 0 ];
+        }
+        else if( genericType instanceof GenericArrayType )
         {
             Object temp = Array.newInstance( (Class<?>) ( (GenericArrayType) genericType ).getGenericComponentType(), 0 );
             return temp.getClass();
@@ -297,7 +323,8 @@ public final class Classes
             {
                 final ParameterizedType parameterizedType = (ParameterizedType) type;
                 addInterfaces( parameterizedType.getRawType(), interfaces );
-            } else if( type instanceof Class )
+            }
+            else if( type instanceof Class )
             {
                 Class clazz = (Class) type;
 
@@ -307,7 +334,7 @@ public final class Classes
                 }
 
                 Type[] subTypes = clazz.getGenericInterfaces();
-                for (Type subType : subTypes)
+                for( Type subType : subTypes )
                 {
                     addInterfaces( subType, interfaces );
                 }
@@ -322,7 +349,8 @@ public final class Classes
             if( type instanceof ParameterizedType )
             {
                 interfaces.add( type );
-            } else if( type instanceof Class )
+            }
+            else if( type instanceof Class )
             {
                 Class clazz = (Class) type;
 
@@ -332,7 +360,7 @@ public final class Classes
                 }
 
                 Type[] subTypes = clazz.getGenericInterfaces();
-                for (Type subType : subTypes)
+                for( Type subType : subTypes )
                 {
                     addGenericInterfaces( subType, interfaces );
                 }
@@ -347,13 +375,16 @@ public final class Classes
      * @param name
      * @param declaringClass
      * @param topClass
+     *
      * @return
      */
     public static Type resolveTypeVariable( TypeVariable name, Class declaringClass, Class topClass )
     {
         Type type = resolveTypeVariable( name, declaringClass, new HashMap<TypeVariable, Type>(), topClass );
         if( type == null )
+        {
             type = Object.class;
+        }
         return type;
     }
 
@@ -366,7 +397,7 @@ public final class Classes
         if( current.equals( declaringClass ) )
         {
             Type resolvedType = name;
-            while (resolvedType instanceof TypeVariable)
+            while( resolvedType instanceof TypeVariable )
             {
                 resolvedType = mappings.get( resolvedType );
             }
@@ -374,19 +405,20 @@ public final class Classes
         }
 
         List<Type> types = new ArrayList<Type>();
-        for (Type type : current.getGenericInterfaces())
+        for( Type type : current.getGenericInterfaces() )
         {
             Set<Type> interfaces = Classes.genericInterfacesOf( type );
-            for (Type anInterface : interfaces)
+            for( Type anInterface : interfaces )
             {
                 if( !types.contains( anInterface ) )
+                {
                     types.add( anInterface );
+                }
             }
             types.add( type );
-
         }
 
-        for (Type type : types)
+        for( Type type : types )
         {
             Class subClass;
             if( type instanceof ParameterizedType )
@@ -395,14 +427,15 @@ public final class Classes
                 Type[] args = pt.getActualTypeArguments();
                 Class clazz = (Class) pt.getRawType();
                 TypeVariable[] vars = clazz.getTypeParameters();
-                for (int i = 0; i < vars.length; i++)
+                for( int i = 0; i < vars.length; i++ )
                 {
-                    TypeVariable var = vars[i];
-                    Type mappedType = args[i];
+                    TypeVariable var = vars[ i ];
+                    Type mappedType = args[ i ];
                     mappings.put( var, mappedType );
                 }
                 subClass = (Class) pt.getRawType();
-            } else
+            }
+            else
             {
                 subClass = (Class) type;
             }
@@ -421,11 +454,13 @@ public final class Classes
      * Get URI for a class.
      *
      * @param clazz class
+     *
      * @return URI
+     *
      * @throws NullPointerException if clazz is null
      */
     public static String toURI( final Class clazz )
-            throws NullPointerException
+        throws NullPointerException
     {
         return toURI( clazz.getName() );
     }
@@ -439,11 +474,13 @@ public final class Classes
      * URI urn:qi4j:com.example.Foo-Bar
      *
      * @param className class name
+     *
      * @return URI
+     *
      * @throws NullPointerException if className is null
      */
     public static String toURI( String className )
-            throws NullPointerException
+        throws NullPointerException
     {
         className = normalizeClassToURI( className );
         return "urn:qi4j:type:" + className;
@@ -453,11 +490,13 @@ public final class Classes
      * Get class name from a URI
      *
      * @param uri URI
+     *
      * @return class name
+     *
      * @throws NullPointerException if uri is null
      */
     public static String toClassName( String uri )
-            throws NullPointerException
+        throws NullPointerException
     {
         uri = uri.substring( "urn:qi4j:type:".length() );
         uri = denormalizeURIToClass( uri );

@@ -14,9 +14,13 @@
 
 package org.qi4j.api.util;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
 import org.qi4j.api.specification.Specification;
-
-import java.util.*;
 
 /**
  * Utility methods for working with Iterables. See test for examples of how to use.
@@ -36,7 +40,7 @@ public class Iterables
     public static long count( Iterable<?> iterable )
     {
         long c = 0;
-        for (Object item : iterable)
+        for( Object item : iterable )
         {
             c++;
         }
@@ -151,7 +155,8 @@ public class Iterables
         }
     }
 
-    private static class FilterIterable<T> implements Iterable<T>
+    private static class FilterIterable<T>
+        implements Iterable<T>
     {
         private Iterable<T> iterable;
 
@@ -168,7 +173,8 @@ public class Iterables
             return new FilterIterator<T>( iterable.iterator(), specification );
         }
 
-        static class FilterIterator<T> implements Iterator<T>
+        static class FilterIterator<T>
+            implements Iterator<T>
         {
             private Iterator<T> iterator;
 
@@ -237,7 +243,8 @@ public class Iterables
         }
     }
 
-    private static class FlattenIterable<T> implements Iterable<T>
+    private static class FlattenIterable<T>
+        implements Iterable<T>
     {
         private Iterable<Iterable<T>> iterable;
 
@@ -251,7 +258,8 @@ public class Iterables
             return new FlattenIterator<T>( iterable.iterator() );
         }
 
-        static class FlattenIterator<T> implements Iterator<T>
+        static class FlattenIterator<T>
+            implements Iterator<T>
         {
             private Iterator<Iterable<T>> iterator;
             private Iterator<T> currentIterator;

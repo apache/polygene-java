@@ -20,7 +20,7 @@ import java.lang.annotation.RetentionPolicy;
 /**
  * JAVADOC
  */
-@Retention( RetentionPolicy.RUNTIME)
+@Retention( RetentionPolicy.RUNTIME )
 public @interface Qualifier
 {
     public abstract Class<? extends AnnotationQualifier> value();

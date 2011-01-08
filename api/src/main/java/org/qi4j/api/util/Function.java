@@ -26,6 +26,7 @@ public interface Function<From, To>
      * Map a single item from one type to another
      *
      * @param from the input item
+     *
      * @return the mapped item
      */
     To map( From from );

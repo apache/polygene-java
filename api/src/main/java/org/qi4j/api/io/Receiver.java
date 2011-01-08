@@ -24,8 +24,9 @@ public interface Receiver<T, ReceiverThrowableType extends Throwable>
      * and optionally throw an exception if it fails.
      *
      * @param item
+     *
      * @throws ReceiverThrowableType
      */
-    void receive(T item)
+    void receive( T item )
         throws ReceiverThrowableType;
 }

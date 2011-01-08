@@ -17,7 +17,7 @@ package org.qi4j.api.specification;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.*;
 
 /**
  * JAVADOC
@@ -33,31 +33,32 @@ public class SpecificationsTest
     @Test
     public void testNot()
     {
-        Assert.assertThat( Specifications.not( Specifications.<Object>TRUE() ).satisfiedBy( new Object() ), equalTo( false ) );
+        Assert.assertThat( Specifications.not( Specifications.<Object>TRUE() )
+                               .satisfiedBy( new Object() ), equalTo( false ) );
     }
 
     @Test
     public void testAnd()
     {
         Specification<Object> trueSpec = Specifications.<Object>TRUE();
-        Specification<Object> falseSpec = Specifications.not(Specifications.<Object>TRUE());
+        Specification<Object> falseSpec = Specifications.not( Specifications.<Object>TRUE() );
 
-        Assert.assertThat( Specifications.and(falseSpec, falseSpec).satisfiedBy( new Object() ), equalTo( false ) );
-        Assert.assertThat( Specifications.and(trueSpec, falseSpec).satisfiedBy( new Object() ), equalTo( false ) );
-        Assert.assertThat( Specifications.and(falseSpec, trueSpec).satisfiedBy( new Object() ), equalTo( false ) );
-        Assert.assertThat( Specifications.and(trueSpec, trueSpec).satisfiedBy( new Object() ), equalTo( true ) );
+        Assert.assertThat( Specifications.and( falseSpec, falseSpec ).satisfiedBy( new Object() ), equalTo( false ) );
+        Assert.assertThat( Specifications.and( trueSpec, falseSpec ).satisfiedBy( new Object() ), equalTo( false ) );
+        Assert.assertThat( Specifications.and( falseSpec, trueSpec ).satisfiedBy( new Object() ), equalTo( false ) );
+        Assert.assertThat( Specifications.and( trueSpec, trueSpec ).satisfiedBy( new Object() ), equalTo( true ) );
     }
 
     @Test
     public void testOr()
     {
         Specification<Object> trueSpec = Specifications.<Object>TRUE();
-        Specification<Object> falseSpec = Specifications.not(Specifications.<Object>TRUE());
+        Specification<Object> falseSpec = Specifications.not( Specifications.<Object>TRUE() );
 
-        Assert.assertThat( Specifications.or(falseSpec, falseSpec).satisfiedBy( new Object() ), equalTo( false ) );
-        Assert.assertThat( Specifications.or(trueSpec, falseSpec).satisfiedBy( new Object() ), equalTo( true ) );
-        Assert.assertThat( Specifications.or(falseSpec, trueSpec).satisfiedBy( new Object() ), equalTo( true ) );
-        Assert.assertThat( Specifications.or(trueSpec, trueSpec).satisfiedBy( new Object() ), equalTo( true ) );
+        Assert.assertThat( Specifications.or( falseSpec, falseSpec ).satisfiedBy( new Object() ), equalTo( false ) );
+        Assert.assertThat( Specifications.or( trueSpec, falseSpec ).satisfiedBy( new Object() ), equalTo( true ) );
+        Assert.assertThat( Specifications.or( falseSpec, trueSpec ).satisfiedBy( new Object() ), equalTo( true ) );
+        Assert.assertThat( Specifications.or( trueSpec, trueSpec ).satisfiedBy( new Object() ), equalTo( true ) );
     }
 
     @Test

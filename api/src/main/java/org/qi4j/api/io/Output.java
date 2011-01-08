@@ -15,7 +15,7 @@
 package org.qi4j.api.io;
 
 /**
- * Output for data. 
+ * Output for data.
  */
 public interface Output<T, ReceiverThrowableType extends Throwable>
 {
@@ -24,11 +24,12 @@ public interface Output<T, ReceiverThrowableType extends Throwable>
      * and then call sender.sendTo() when it is ready to receive data. When sendTo() returns the resource should be
      * closed properly. Make sure to handle any exceptions from sendTo.
      *
-     * @param sender the sender of data to this output
+     * @param sender                the sender of data to this output
      * @param <SenderThrowableType> the exception that sendTo can throw
-     * @throws SenderThrowableType the exception that the sender can throw
+     *
+     * @throws SenderThrowableType   the exception that the sender can throw
      * @throws ReceiverThrowableType the exception that this output can throw from receiveItem()
      */
-    <SenderThrowableType extends Throwable> void receiveFrom(Sender<T, SenderThrowableType> sender)
-            throws ReceiverThrowableType, SenderThrowableType;
+    <SenderThrowableType extends Throwable> void receiveFrom( Sender<T, SenderThrowableType> sender )
+        throws ReceiverThrowableType, SenderThrowableType;
 }
