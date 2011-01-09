@@ -8,6 +8,8 @@ Export-Package: org.qi4j.library.osgi;version="${pom.version}"
 
 Import-Package: \
                 org.osgi.framework;version="[1.0,2.0)", \
+                org.osgi.util.tracker;version="[1.0,2.0)", \
+                org.qi4j.api.service.qualifier;version="[${pom.version},2)", \
                 org.qi4j.api.injection.scope;version="[${pom.version},2)", \
                 org.qi4j.api.mixin;version="[${pom.version},2)", \
                 org.qi4j.api.property;version="[${pom.version},2)", \
