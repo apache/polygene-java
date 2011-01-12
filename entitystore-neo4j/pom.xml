@@ -66,19 +66,13 @@ limitations under the License.
         </dependency>
         <dependency>
             <groupId>org.neo4j</groupId>
-            <artifactId>index-util</artifactId>
-            <version>0.9</version>
+            <artifactId>neo4j-index</artifactId>
+            <version>1.2-1.2.M06</version>
         </dependency>
         <dependency>
             <groupId>org.neo4j</groupId>
-            <artifactId>neo</artifactId>
-            <version>1.0-b11</version>
-        </dependency>
-        <dependency>
-            <groupId>org.neo4j</groupId>
-            <artifactId>shell</artifactId>
-            <version>1.0-b11</version>
-            <scope>provided</scope>
+            <artifactId>neo4j</artifactId>
+            <version>1.2.M06</version>
         </dependency>
         <dependency>
             <groupId>org.qi4j.core</groupId>
@@ -109,10 +103,4 @@ limitations under the License.
             <scope>test</scope>
         </dependency>
     </dependencies>
-    <repositories>
-        <repository>
-            <id>neo4j-public-repository</id>
-            <url>http://m2.neo4j.org</url>
-        </repository>
-    </repositories>
  </project>
