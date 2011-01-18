@@ -1,0 +1,26 @@
+dependencies {
+  compile( project(':jmx' ) )
+  compile(libraries.qi4j_core_api)
+  compile(libraries.qi4j_core_spi)
+  compile(libraries.slf4j_api)
+  testCompile(libraries.junit)
+  testRuntime(libraries.slf4j_simple)
+  testCompile(libraries.qi4j_core_testsupport)
+  testRuntime(libraries.qi4j_core_runtime)
+}
+
+jar {
+  manifest {
+    description = "Qi4j Cache Library provides caching framework for methods."
+    name = "Qi4j Library - Cache"
+    instruction 'Export-Package', symbolicName +';version=' + version
+    instruction 'Private-Package', symbolicName + '.internal'
+    instruction 'Import-Package', symbolicName + ';version="[' + version +',2.0)"',
+				'javax.security.auth',
+                'org.qi4j.api.common;version="['+version+',2)"',
+                'org.qi4j.api.concern;version="['+version+',2)"',
+                'org.qi4j.api.injection.scope;version="['+version+',2)"',
+                'org.qi4j.api.mixin;version="['+version+',2)"',
+                'org.qi4j.api.sideeffect;version="['+version+',2)"'
+  }
+}

@@ -1,0 +1,20 @@
+dependencies {
+  compile(libraries.qi4j_core_api)
+  compile(libraries.qi4j_core_spi)
+  compile(libraries.qi4j_core_bootstrap)
+  compile(libraries.slf4j_api)
+  testCompile(libraries.junit)
+  testRuntime(libraries.slf4j_simple)
+  testCompile(libraries.qi4j_core_testsupport)
+  testRuntime(libraries.qi4j_core_runtime)
+}
+
+jar {
+  manifest {
+    description = "Qi4j JMX Library provides Java Management Extension (JMX) integration for Qi4j applications."
+    name = "Qi4j Library - JMX"
+    instruction 'Export-Package', symbolicName +';version=' + version
+    instruction 'Private-Package', symbolicName + '.internal'
+    instruction 'Import-Package', '*'
+  }
+}

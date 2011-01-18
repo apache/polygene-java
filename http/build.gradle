@@ -1,0 +1,27 @@
+servletVersion = '2.5'
+jettyVersion = '6.1.21'
+
+dependencies {
+  compile( project( ":constraints" ))
+  compile(libraries.qi4j_core_api)
+  compile(libraries.qi4j_core_spi)
+  compile(libraries.slf4j_api)
+  compile('org.mortbay.jetty:jetty:' + jettyVersion)
+  compile('org.mortbay.jetty:jetty-util:' + jettyVersion)
+  testCompile(libraries.junit)
+  testRuntime(libraries.asm)
+  testRuntime(libraries.asm_commons)
+  testRuntime(libraries.slf4j_simple)
+  testCompile(libraries.qi4j_core_testsupport)
+  testRuntime(libraries.qi4j_core_runtime)
+}
+
+jar {
+  manifest {
+    description = "Qi4j Http Library provides embedded Jetty for Qi4j application use."
+    name = "Qi4j Library - Http"
+    instruction 'Export-Package', symbolicName +';version=' + version
+    instruction 'Private-Package', symbolicName + '.internal'
+    instruction 'Import-Package', '*'
+  }
+}

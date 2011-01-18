@@ -1,0 +1,22 @@
+dependencies {
+  compile(libraries.qi4j_core_api)
+  compile(libraries.slf4j_api)
+  testCompile(libraries.qi4j_core_bootstrap)
+  testCompile(libraries.junit)
+  testRuntime(libraries.slf4j_simple)
+  testCompile(libraries.qi4j_core_testsupport)
+  testRuntime(libraries.qi4j_core_spi)
+  testRuntime(libraries.qi4j_core_runtime)
+  testRuntime(libraries.asm)
+  testRuntime(libraries.asm_commons)
+}
+
+jar {
+  manifest {
+    description = "Qi4j Locking Library provides lock management for methods."
+    name = "Qi4j Library - Locking"
+    instruction 'Export-Package', symbolicName +';version=' + version
+    instruction 'Private-Package', symbolicName + '.internal'
+    instruction 'Import-Package', '*'
+  }
+}

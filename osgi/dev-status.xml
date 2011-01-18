@@ -5,7 +5,11 @@
     <!--none,early,beta,stable,mature-->
     <documentation>none</documentation>
     <!-- none, brief, good, complete -->
+<<<<<<< HEAD
     <unittests>none</unittests>
+=======
+    <unittests>some</unittests>
+>>>>>>> OSGi_integration
     <!-- none, some, good, complete -->
   </status>
   <licenses>

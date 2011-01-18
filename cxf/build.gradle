@@ -1,0 +1,40 @@
+cxfVersion = '2.3.1'
+wsdl4jVersion = '1.6.2'
+woodstoxVersion = '4.1.0'
+xmlSchemaVersion = '1.4.7'
+
+dependencies {
+  compile(libraries.qi4j_core_api)
+  compile(libraries.qi4j_core_spi)
+  compile(libraries.qi4j_core_bootstrap)
+  compile(libraries.slf4j_api)
+  compile('org.apache.cxf:cxf-api:' + cxfVersion)
+  compile('org.apache.cxf:cxf-common-utilities:' + cxfVersion)
+  compile('org.apache.cxf:cxf-rt-core:' + cxfVersion)
+  compile('org.apache.cxf:cxf-rt-bindings-soap:' + cxfVersion)
+  compile('org.apache.cxf:cxf-rt-frontend-jaxws:' + cxfVersion)
+  compile('org.apache.cxf:cxf-rt-databinding-aegis:' + cxfVersion)
+  compile('org.apache.cxf:cxf-rt-transports-local:' + cxfVersion)
+  compile('wsdl4j:wsdl4j:' + wsdl4jVersion)
+  compile('org.codehaus.woodstox:woodstox-core-asl:' + woodstoxVersion)
+  compile('org.apache.ws.commons.schema:XmlSchema:' + xmlSchemaVersion)
+  compile(libraries.osgi_core)
+  compile(libraries.osgi_compendium)
+  testCompile('org.apache.httpcomponents:httpclient:4.1-alpha1')
+  testCompile(libraries.junit)
+  testRuntime(libraries.asm)
+  testRuntime(libraries.asm_commons)
+  testRuntime(libraries.slf4j_simple)
+  testCompile(libraries.qi4j_core_testsupport)
+  testRuntime(libraries.qi4j_core_runtime)
+}
+
+jar {
+  manifest {
+    description = "Qi4j CXF Library integrates Apache CXF with Qi4j."
+    name = "Qi4j Library - CXF"
+    instruction 'Export-Package', symbolicName +';version=' + version
+    instruction 'Private-Package', symbolicName + '.internal'
+    instruction 'Import-Package', '*'
+  }
+}

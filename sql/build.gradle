@@ -1,0 +1,29 @@
+
+postgresqlVersion='8.4-701.jdbc4'
+
+dependencies {
+  compile(libraries.qi4j_core_api)
+  compile(libraries.qi4j_core_spi)
+  compile(libraries.qi4j_core_bootstrap)
+  compile('commons-dbcp:commons-dbcp:1.4')
+  compile('postgresql:postgresql:' + postgresqlVersion)
+  compile(libraries.slf4j_api)
+  testCompile(libraries.junit)
+  testRuntime(libraries.slf4j_simple)
+  testCompile(libraries.qi4j_core_testsupport)
+  testRuntime(libraries.qi4j_core_runtime)
+}
+
+jar {
+  manifest {
+    description = "Qi4j SQL Library provides SQL support."
+    name = "Qi4j Library - SQL"
+    instruction 'Export-Package', 
+				symbolicName +'.api;version=' + version,
+				symbolicName +'.common;version=' + version,
+				symbolicName +'.ds;version=' + version,
+				symbolicName +'.ds.assembly;version=' + version
+    instruction 'Private-Package', symbolicName + '.internal'
+    instruction 'Import-Package', '*'
+  }
+}
