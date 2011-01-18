@@ -26,6 +26,7 @@
         <module>auth</module>
         <module>cache</module>
         <module>constraints</module>
+        <module>eventsourcing</module>
         <module>http</module>
         <module>jmx</module>
         <module>locking</module>
