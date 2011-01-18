@@ -74,7 +74,7 @@ public class JdbmEventStoreServiceTest
             TestEntity entity = uow.newEntity( TestEntity.class );
             uow.complete();
 
-            int count = 1000;
+            int count = 10;
             for (int i = 0; i < count; i++)
             {
                 uow = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "Change description" ));
