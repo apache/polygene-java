@@ -51,7 +51,7 @@ public abstract class AbstractEventStoreMixin
 
     protected Logger logger;
     protected ValueType domainEventType;
-    protected ValueType transactionEventsType;
+    protected ValueType eventsType;
 
     protected Lock lock = new ReentrantLock();
 
@@ -67,7 +67,7 @@ public abstract class AbstractEventStoreMixin
         logger = LoggerFactory.getLogger( identity.identity().get() );
 
         domainEventType = module.valueDescriptor( DomainEventValue.class.getName() ).valueType();
-        transactionEventsType = module.valueDescriptor( UnitOfWorkDomainEventsValue.class.getName() ).valueType();
+        eventsType = module.valueDescriptor( UnitOfWorkDomainEventsValue.class.getName() ).valueType();
 
         transactionNotifier = Executors.newSingleThreadExecutor();
     }
