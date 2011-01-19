@@ -64,6 +64,7 @@ public class DomainEventTest
     @Test
     public void testDomainEvent() throws UnitOfWorkCompletionException, IOException
     {
+        // Set principal for the UoW
         Principal administratorPrincipal = new Principal()
         {
             public String getName()
@@ -71,6 +72,8 @@ public class DomainEventTest
                 return "administrator";
             }
         };
+
+        // Perform UoW with usecase defined
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "Change description" ));
         uow.metaInfo().set( administratorPrincipal );
 
@@ -78,6 +81,7 @@ public class DomainEventTest
         entity.changedDescription( "New description" );
         uow.complete();
 
+        // Print events
         EventSource source = (EventSource) serviceLocator.findService( EventSource.class ).get();
 
         source.events( 0, Long.MAX_VALUE ).transferTo( Transforms.map( new Function<UnitOfWorkDomainEventsValue, String>()
