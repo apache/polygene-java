@@ -58,8 +58,6 @@ public interface JdbmEventStoreService
         private BTree index;
         private Serializer serializer;
         private File dataFile;
-        private File databaseFile;
-        private File logFile;
 
         private long currentCount;
 
@@ -68,8 +66,6 @@ public interface JdbmEventStoreService
             super.activate();
 
             dataFile = new File( fileConfig.dataDirectory(), identity.identity() + "/events" );
-            databaseFile = new File( fileConfig.dataDirectory(), identity.identity() + "/events.db" );
-            logFile = new File( fileConfig.dataDirectory(), identity.identity() + "/events.lg" );
             File directory = dataFile.getAbsoluteFile().getParentFile();
             directory.mkdirs();
             String name = dataFile.getAbsolutePath();

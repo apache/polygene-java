@@ -64,17 +64,18 @@ public class DomainEventTest
     @Test
     public void testDomainEvent() throws UnitOfWorkCompletionException, IOException
     {
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "Change description" ));
-        uow.metaInfo().set( new Principal()
+        Principal administratorPrincipal = new Principal()
         {
             public String getName()
             {
                 return "administrator";
             }
-        });
+        };
+        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "Change description" ));
+        uow.metaInfo().set( administratorPrincipal );
 
         TestEntity entity = uow.newEntity( TestEntity.class );
-        entity.changeDescription( "New description" );
+        entity.changedDescription( "New description" );
         uow.complete();
 
         EventSource source = (EventSource) serviceLocator.findService( EventSource.class ).get();
@@ -96,12 +97,12 @@ public class DomainEventTest
         Property<String> description();
 
         @DomainEvent
-        void changeDescription(String newName);
+        void changedDescription( String newName );
 
         abstract class Mixin
             implements TestEntity
         {
-            public void changeDescription( String newName )
+            public void changedDescription( String newName )
             {
                 description().set( newName );
             }
