@@ -14,6 +14,7 @@
 
 package org.qi4j.library.eventsourcing.domain.rest.server;
 
+import org.junit.Ignore;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.injection.scope.Service;
@@ -47,17 +48,15 @@ import java.security.Principal;
 import static org.qi4j.api.service.qualifier.ServiceTags.tags;
 
 /**
- * JAVADOC
+ * Start simple web server that exposes the Restlet resource. Test through browser.
  */
+@Ignore
 public class DomainEventSourceResourceTest
 {
     public static void main( String[] args ) throws Exception
     {
         Component component = new Component();
         component.getServers().add( Protocol.HTTP, 8080 );
-        component.getClients().add( Protocol.CLAP );
-        component.getClients().add( Protocol.FILE );
-        component.getClients().add( Protocol.HTTP );
 
         SingletonAssembler assembler = new SingletonAssembler()
         {
@@ -146,6 +145,7 @@ public class DomainEventSourceResourceTest
         }
     }
 
+    // Used to create more events
     public static class PingResource
         extends Restlet
     {
