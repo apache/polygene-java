@@ -52,9 +52,12 @@ import java.util.List;
 public class DomainEventSourceResource
         extends Restlet
 {
-    @Service
-    @Tagged("domain")
     EventSource source;
+
+    public DomainEventSourceResource( @Service @Tagged("domain") EventSource source )
+    {
+        this.source = source;
+    }
 
     @Override
     public void handle( Request request, Response response )
