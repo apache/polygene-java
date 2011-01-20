@@ -23,16 +23,15 @@ import org.qi4j.library.eventsourcing.domain.api.UnitOfWorkDomainEventsValue;
 import java.io.IOException;
 
 /**
- * An EventSource is a source of events. Events are grouped in the UnitOfWorks in which they were created.
+ * An EventSource is a source of events. Events are grouped in the UnitOfWork in which they were created.
  */
 public interface EventSource
 {
     /**
-     * Get list of UnitOfWorkDomainEventsValue after the given id. To get the first events, use -1 as afterId parameter, as the first id
-     * will be 0.
+     * Get list of UnitOfWorkDomainEventsValue after the given offset. To get the first set of events, use 0 as offset parameter to get events from the start.
      * <p/>
      *
-     * @param afterId timestamp of transactions
+     * @param offset where in the list of events to start
      * @param limit maximum number of events returned
      */
     Input<UnitOfWorkDomainEventsValue, IOException> events( long offset, long limit );

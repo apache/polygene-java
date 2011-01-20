@@ -30,6 +30,7 @@
         <module>fileconfig</module>
         <module>eventsourcing</module>
         <module>eventsourcing-jdbm</module>
+        <module>eventsourcing-rest</module>
         <module>cxf</module>
         <module>http</module>
         <module>jmx</module>

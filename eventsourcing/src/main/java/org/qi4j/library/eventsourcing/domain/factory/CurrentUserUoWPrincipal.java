@@ -21,7 +21,7 @@ import org.qi4j.library.eventsourcing.domain.spi.CurrentUser;
 import java.security.Principal;
 
 /**
- * JAVADOC
+ * CurrentUser implementation that gets a Principal object from the meta-info of the current UnitOfWork. Default to "unknown".
  */
 public class CurrentUserUoWPrincipal
     implements CurrentUser

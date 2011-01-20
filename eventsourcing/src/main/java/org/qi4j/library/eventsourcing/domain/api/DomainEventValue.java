@@ -26,10 +26,7 @@ import org.qi4j.api.value.ValueComposite;
  * <p/>
  * @DomainEvent
  * void someName(SomeParam param, AnotherParam param2);
- * <p/>
- * The "event" argument should be invoked with null, as it will be created during
- * the method call. If it is not null, then the method call is a replay of previously
- * created events.
+ *
  */
 public interface DomainEventValue
         extends ValueComposite

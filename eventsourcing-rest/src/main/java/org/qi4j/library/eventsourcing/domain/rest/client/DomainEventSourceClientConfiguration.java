@@ -12,23 +12,20 @@
  *
  */
 
-package org.qi4j.library.eventsourcing.domain.api;
+package org.qi4j.library.eventsourcing.domain.rest.client;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import org.qi4j.api.configuration.ConfigurationComposite;
+import org.qi4j.api.configuration.Enabled;
+import org.qi4j.api.property.Property;
 
 /**
- * Annotate methods that should trigger domain events with this annotation. Example:
- * @DomainEvent
- * void changedDescription(String newDescription);
- *
- * Event methods may only change state. They may not fail or thrown exceptions. The name of the
- * method should be in past tense, as in something HAS already occurred, and the method is merely
- * reacting to it.
+ * JAVADOC
  */
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-public @interface DomainEvent
+public interface DomainEventSourceClientConfiguration
+    extends ConfigurationComposite, Enabled
 {
+    Property<String> lastId();
+    Property<Long> lastPublished();
+    Property<String> url();
+    Property<Integer> sleep();
 }

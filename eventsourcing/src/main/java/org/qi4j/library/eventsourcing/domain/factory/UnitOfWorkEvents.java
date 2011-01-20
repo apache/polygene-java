@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * List of eventValues for the current UnitOfWork. This will be updated by the DomainEventFactory.
  */
-public class UnitOfWorkEvents
+class UnitOfWorkEvents
 {
     private List<DomainEventValue> eventValues = new ArrayList<DomainEventValue>();
 

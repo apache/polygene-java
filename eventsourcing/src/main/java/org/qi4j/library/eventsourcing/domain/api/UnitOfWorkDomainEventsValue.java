@@ -35,7 +35,7 @@ import java.util.List;
 public interface UnitOfWorkDomainEventsValue
         extends ValueComposite
 {
-    // Version of the application
+    // Version of the application that created these events
     Property<String> version();
 
     // Usecase name
@@ -44,7 +44,7 @@ public interface UnitOfWorkDomainEventsValue
     // When the event occurred
     Property<Long> timestamp();
 
-    // Who performed the event
+    // Who performed the event. Taken from CurrentUser service.
     @Optional
     Property<String> user();
 
