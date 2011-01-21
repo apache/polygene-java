@@ -1,6 +1,6 @@
 package org.qi4j.entitystore.neo4j;
 
-import org.neo4j.api.core.RelationshipType;
+import org.neo4j.graphdb.RelationshipType;
 
 enum RelTypes
     implements RelationshipType

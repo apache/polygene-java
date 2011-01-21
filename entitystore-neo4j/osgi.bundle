@@ -3,6 +3,18 @@ Ignore-Package: com_cenqua_clover, sun.misc
 Import-Package: javax.transaction,\
                 javax.transaction.xa, \
                 javax.xml.parsers, \
+                org.apache.lucene.analysis.tokenattributes, \
+                org.neo4j.graphdb, \
+                org.neo4j.helpers.collection, \
+                org.neo4j.kernel, \
+                org.neo4j.kernel.impl.batchinsert, \
+                org.neo4j.kernel.impl.cache, \
+                org.neo4j.kernel.impl.transaction, \
+                org.neo4j.kernel.impl.transaction.xaframework, \
+                org.neo4j.kernel.impl.util, \
+                org.neo4j.shell, \
+                org.neo4j.shell.kernel, \
+                org.neo4j.shell.kernel.apps, \
                 org.neo4j.commons.iterator;version="[0.9,2)", \
                 org.apache.lucene.analysis, \
                 org.apache.lucene.document, \

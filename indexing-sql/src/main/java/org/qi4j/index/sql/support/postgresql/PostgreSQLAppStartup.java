@@ -61,29 +61,29 @@ public class PostgreSQLAppStartup extends AbstractSQLStartup
         this._vendor = this._myselfAsService.metaInfo( PostgreSQLVendor.class );
     }
 
-    @Override
-    protected void dropTablesIfExist( DatabaseMetaData metaData, String schemaName, String tableName, Statement stmt )
-        throws SQLException
-    {
-        ResultSet rs = metaData.getTables( null, schemaName, tableName, new String[]
-        {
-            "TABLE"
-        } );
-        try
-        {
-            while( rs.next() )
-            {
-                stmt.execute( this._vendor.toString( this._vendor.getManipulationFactory()
-                    .createDropTableOrViewStatement(
-                        this._vendor.getTableReferenceFactory().tableName( schemaName, tableName ), ObjectType.TABLE,
-                        DropBehaviour.CASCADE, true ) ) );
-            }
-        }
-        finally
-        {
-            rs.close();
-        }
-    }
+    //    @Override
+    //    protected void dropTablesIfExist( DatabaseMetaData metaData, String schemaName, String tableName, Statement stmt )
+    //        throws SQLException
+    //    {
+    //        ResultSet rs = metaData.getTables( null, schemaName, tableName, new String[]
+    //        {
+    //            "TABLE"
+    //        } );
+    //        try
+    //        {
+    //            while( rs.next() )
+    //            {
+    //                stmt.execute( this._vendor.toString( this._vendor.getManipulationFactory()
+    //                    .createDropTableOrViewStatement(
+    //                        this._vendor.getTableReferenceFactory().tableName( schemaName, tableName ), ObjectType.TABLE,
+    //                        DropBehaviour.CASCADE, true ) ) );
+    //            }
+    //        }
+    //        finally
+    //        {
+    //            rs.close();
+    //        }
+    //    }
 
     @Override
     protected void testRequiredCapabilities()

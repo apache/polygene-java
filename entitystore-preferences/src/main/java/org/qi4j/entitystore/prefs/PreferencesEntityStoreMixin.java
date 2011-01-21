@@ -14,15 +14,6 @@
 
 package org.qi4j.entitystore.prefs;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.prefs.BackingStoreException;
-import java.util.prefs.Preferences;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -67,6 +58,16 @@ import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.spi.structure.ModuleSPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 
 /**
  * Implementation of EntityStore that is backed by the Preferences API.
@@ -305,10 +306,10 @@ public class PreferencesEntityStoreMixin
                     }
                     else if( propertyType.isBoolean() )
                     {
-                        properties.put( propertyDescriptor.qualifiedName(),
+                       Boolean initialValue = (Boolean) propertyDescriptor.initialValue();
+                       properties.put( propertyDescriptor.qualifiedName(),
                                         propsPrefs.getBoolean( propertyDescriptor.qualifiedName().name(),
-                                                               (Boolean) propertyDescriptor
-                                                                   .initialValue() ) );
+                                              initialValue == null ? false : initialValue) );
                     }
                     else if( propertyType.isValue() )
                     {

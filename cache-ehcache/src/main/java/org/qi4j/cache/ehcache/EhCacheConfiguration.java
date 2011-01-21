@@ -4,7 +4,6 @@ import java.util.List;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.configuration.ConfigurationComposite;
 import org.qi4j.api.property.Property;
-import sun.misc.JavaSecurityProtectionDomainAccess;
 
 public interface EhCacheConfiguration extends ConfigurationComposite
 {

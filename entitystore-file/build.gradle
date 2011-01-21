@@ -1,0 +1,28 @@
+dependencies {
+  compile(libraries.qi4j_core_api)
+  compile(libraries.qi4j_core_spi)
+  compile(libraries.qi4j_core_bootstrap)
+  compile(libraries.qi4j_lib_constraints)
+  compile(libraries.qi4j_lib_locking)
+  compile(libraries.slf4j_api)
+  testCompile(libraries.qi4j_core_bootstrap)
+  testCompile(libraries.junit)
+  testRuntime(libraries.slf4j_simple)
+  testCompile(libraries.qi4j_core_testsupport)
+  testRuntime(libraries.qi4j_core_runtime)
+  testRuntime(libraries.asm)
+  testRuntime(libraries.asm_commons)
+}
+
+jar {
+  manifest {
+    symbolicName = 'org.qi4j.entitystore.file'
+    description = "Qi4j File system EntityStore Extension"
+    name = "Qi4j Extension - EntityStore - File system"
+    instruction 'Export-Package', 
+				symbolicName +';version=' + version,
+				symbolicName +'2;version=' + version
+    instruction 'Private-Package', symbolicName + '.internal'
+    instruction 'Import-Package', '*'
+  }
+}

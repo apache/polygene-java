@@ -2,9 +2,9 @@ package org.qi4j.entitystore.neo4j;
 
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
-import org.neo4j.api.core.EmbeddedNeo;
-import org.neo4j.api.core.Node;
-import org.neo4j.util.index.IndexService;
+import org.neo4j.kernel.EmbeddedGraphDatabase;
+import org.neo4j.graphdb.Node;
+import org.neo4j.index.IndexService;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.structure.Module;
 import org.qi4j.spi.entity.EntityDescriptor;
@@ -24,7 +24,7 @@ public class NeoEntityStoreUnitOfWork
     static final String ENTITY_STATE_ID = "entity_state_id";
     static final String ENTITY_TYPE = "entity_type";
 
-    private final EmbeddedNeo neo;
+    private final EmbeddedGraphDatabase neo;
     private final IndexService indexService;
     private final TransactionManager tm;
 
@@ -32,7 +32,7 @@ public class NeoEntityStoreUnitOfWork
     private final String identity;
     private final Module module;
 
-    NeoEntityStoreUnitOfWork( EmbeddedNeo neo, IndexService indexService,
+    NeoEntityStoreUnitOfWork( EmbeddedGraphDatabase neo, IndexService indexService,
                               String identity, Module module
     )
     {
@@ -168,7 +168,7 @@ public class NeoEntityStoreUnitOfWork
         }
     }
 
-    EmbeddedNeo getNeo()
+    EmbeddedGraphDatabase getNeo()
     {
         return neo;
     }

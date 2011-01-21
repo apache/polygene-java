@@ -158,11 +158,11 @@ public class EhCachePoolMixin
         {
             cc.maxElementsOnDisk( maxElementsOnDisk );
         }
-        Boolean loggingEnabled = conf.loggingEnabled().get();
-        if( loggingEnabled != null )
-        {
-            cc.loggingEnabled( loggingEnabled );
-        }
+//        Boolean loggingEnabled = conf.loggingEnabled().get();
+//        if( loggingEnabled != null )
+//        {
+//            cc.loggingEnabled( loggingEnabled );
+//        }
         Boolean eternal = conf.eternal().get();
         if( eternal != null )
         {
