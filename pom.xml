@@ -568,6 +568,11 @@
             </dependency>
             <dependency>
                 <groupId>org.qi4j.library</groupId>
+                <artifactId>qi4j-lib-fileconfig</artifactId>
+                <version>${version.qi4j-libraries}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.qi4j.library</groupId>
                 <artifactId>qi4j-lib-locking</artifactId>
                 <version>${version.qi4j-libraries}</version>
             </dependency>
