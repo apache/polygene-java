@@ -14,7 +14,11 @@
 
 package org.qi4j.index.solr;
 
+import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.common.SolrDocument;
+import org.apache.solr.common.SolrDocumentList;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.entity.EntityComposite;
@@ -28,6 +32,9 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.fileconfig.FileConfiguration;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.*;
 
@@ -49,29 +56,46 @@ public class SolrQueryServiceTest
       module.addEntities( TestEntity.class );
    }
 
-   @Test
-   public void testIndexQuery() throws UnitOfWorkCompletionException
+   @Before
+   public void index() throws UnitOfWorkCompletionException
    {
       // Create and index an entity
-      {
-         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
-         TestEntity test = uow.newEntity( TestEntity.class );
-         test.name().set( "Hello World" );
-         uow.complete();
-      }
+      UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+      TestEntity test = uow.newEntity( TestEntity.class );
+      test.name().set( "Hello World" );
+      uow.complete();
+   }
 
+   @Test
+   public void testQuery() throws UnitOfWorkCompletionException
+   {
       // Search for it
+      UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+      Query<TestEntity> query = queryBuilderFactory.newNamedQuery( TestEntity.class, uow, "search");
+      query.setVariable( "query", "hello" );
+
+      TestEntity test = query.find();
+      Assert.assertThat( test.name().get(), equalTo( "Hello World" ) );
+
+      uow.discard();
+
+   }
+
+   @Test
+   public void testSearch() throws UnitOfWorkCompletionException, SolrServerException
+   {
+      // Search for it using search interface
+      SolrSearch search = (SolrSearch) serviceLocator.findService( SolrSearch.class ).get();
+
+      SolrDocumentList results = search.search( "hello" );
+
+      List<String> lookAhead = new ArrayList<String>(  );
+      for (SolrDocument result : results)
       {
-         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
-         Query<TestEntity> query = queryBuilderFactory.newNamedQuery( TestEntity.class, uow, "search");
-         query.setVariable( "query", "hello" );
-
-         TestEntity test = query.find();
-         Assert.assertThat( test.name().get(), equalTo( "Hello World" ) );
-
-         uow.discard();
+         lookAhead.add( result.getFieldValue( "name" ).toString() );
       }
 
+      Assert.assertThat( lookAhead.toString(), equalTo( "[Hello World]" ) );
    }
 
    public interface TestEntity
