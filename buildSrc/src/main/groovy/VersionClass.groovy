@@ -28,19 +28,20 @@ class VersionClass implements Plugin<Project>  {
  */
 public interface BuildVersion
 {
-    /** the version of the project from the gradle build.gradle file. */
-    String version = \""""+project.version+"""\";
+    /** The version of the project from the gradle build.gradle file. */
+    String VERSION = \"""" + project.version + """\";
 
-    /** the name of the project from the gradle build.gradle file. */
-    String name = \""""+project.name+"""\";
+    /** The name of the project from the gradle build.gradle file. */
+    String NAME = \"""" + project.name + """\";
 
-    /** the group of the project from the gradle build.gradle file. */
-    String group = \""""+project.group+"""\";
+    /** The group of the project from the gradle build.gradle file. */
+    String GROUP = \"""" + project.group + """\";
 
-    /** the date this file was generated, usually the last date that the project was modified. */
-    String date = \""""+now+"""\";
+    /** The date this file was generated, usually the last date that the project was modified. */
+    String DATE = \""""+now+"""\";
 
-    String detailedVersion = group+":"+name+":"+version+" "+date;
+    /** The full details of the version, including the build date. */
+    String DETAILED_VERSION = GROUP + ":" + NAME + ":" + VERSION + " " + DATE;
 }\n
 """)
             f.close()

@@ -83,8 +83,25 @@ subprojects { subProject ->
   apply plugin: VersionClass
   apply plugin: 'code-quality'
 
-  checkstyleConfigFileName = rootProject.projectDir.absolutePath + '/etc/qi4j-checkstyle.xml'
+  group = "org.qi4j.core"
+
+  checkstyleMain {
+    configFile = new File( rootProject.projectDir.absolutePath, '/etc/qi4j-checkstyle.xml' )
+    ignoreFailures = true
+  }
+
+  checkstyleTest {
+    configFile = new File( rootProject.projectDir.absolutePath, '/etc/qi4j-checkstyle.xml' )
+    ignoreFailures = true
+  }
+
+  checkstyleVersion {
+    configFile = new File( rootProject.projectDir.absolutePath, '/etc/qi4j-checkstyle.xml' )
+    ignoreFailures = true
+  }
+
   jar {
+    group = subProject.group
     baseName = 'qi4j-core-' + subProject.name
     manifest {
       version = subProject.version
@@ -128,6 +145,12 @@ subprojects { subProject ->
 
 }
 
+
+task dist(type: Zip) {
+    into('libs') {
+        from configurations.runtime
+    }
+}
 
 task javadocs(type: Javadoc) {
   def apiSources = subprojects.findAll({ project -> project.name != 'runtime' })

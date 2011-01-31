@@ -60,45 +60,49 @@ public final class StructureInjectionProviderFactory
         public Object provideInjection( InjectionContext context )
             throws InjectionProviderException
         {
-            Type type = dependencyModel.injectionType();
-
-            if( type.equals( TransientBuilderFactory.class ) )
+            Type type1 = dependencyModel.injectionType();
+            if( !(type1 instanceof Class) )
+            {
+                throw new InjectionProviderException( "Type [" + type1 + "] can not be injected from the @Structure injection scope: " + context );
+            }
+            Class clazz = (Class) type1;
+            if( clazz.equals( TransientBuilderFactory.class ) )
             {
                 return context.moduleInstance().transientBuilderFactory();
             }
-            else if( type.equals( ObjectBuilderFactory.class ) )
+            else if( clazz.equals( ObjectBuilderFactory.class ) )
             {
                 return context.moduleInstance().objectBuilderFactory();
             }
-            else if( type.equals( ValueBuilderFactory.class ) )
+            else if( clazz.equals( ValueBuilderFactory.class ) )
             {
                 return context.moduleInstance().valueBuilderFactory();
             }
-            else if( type.equals( UnitOfWorkFactory.class ) )
+            else if( clazz.equals( UnitOfWorkFactory.class ) )
             {
                 return context.moduleInstance().unitOfWorkFactory();
             }
-            else if( type.equals( QueryBuilderFactory.class ) )
+            else if( clazz.equals( QueryBuilderFactory.class ) )
             {
                 return context.moduleInstance().queryBuilderFactory();
             }
-            else if( type.equals( ServiceFinder.class ) )
+            else if( clazz.equals( ServiceFinder.class ) )
             {
                 return context.moduleInstance().serviceFinder();
             }
-            else if( Module.class.isAssignableFrom( (Class<?>) type ) )
+            else if( Module.class.isAssignableFrom( clazz ) )
             {
                 return context.moduleInstance();
             }
-            else if( Layer.class.isAssignableFrom( (Class<?>) type ) )
+            else if( Layer.class.isAssignableFrom( clazz ) )
             {
                 return context.moduleInstance().layerInstance();
             }
-            else if( Application.class.isAssignableFrom( (Class<?>) type ) )
+            else if( Application.class.isAssignableFrom( clazz ) )
             {
                 return context.moduleInstance().layerInstance().applicationInstance();
             }
-            else if( Qi4j.class.isAssignableFrom( (Class<?>) type ) )
+            else if( Qi4j.class.isAssignableFrom( clazz ) )
             {
                 return context.moduleInstance().layerInstance().applicationInstance().runtime();
             }
