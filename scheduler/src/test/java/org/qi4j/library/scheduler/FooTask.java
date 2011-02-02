@@ -26,7 +26,8 @@ import org.slf4j.LoggerFactory;
 
 @Mixins( value = FooTask.Mixin.class )
 public interface FooTask
-        extends Task, EntityComposite
+        extends Task,
+                EntityComposite
 {
 
     Property<String> input();
@@ -46,7 +47,11 @@ public interface FooTask
         {
             LOGGER.info( "FooTaskEntity.run({})", me.input().get() );
             if ( me.input().get().equals( Constants.BAZAR ) ) {
-                me.output().set( Constants.BAR );
+                if ( me.output().get() == null ) {
+                    me.output().set( Constants.BAR );
+                } else {
+                    me.output().set( me.output().get() + Constants.BAR );
+                }
             }
         }
 

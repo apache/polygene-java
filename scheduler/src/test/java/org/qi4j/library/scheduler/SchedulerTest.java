@@ -19,6 +19,7 @@ import static org.junit.Assert.*;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
+import org.junit.Ignore;
 
 import org.junit.Test;
 
@@ -54,7 +55,8 @@ public class SchedulerTest
 
     @Test
     public void testTask()
-            throws UnitOfWorkCompletionException, InterruptedException
+            throws UnitOfWorkCompletionException,
+                   InterruptedException
     {
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         FooTask task = createFooTask( uow, "TestTask", Constants.BAZAR );
@@ -65,7 +67,6 @@ public class SchedulerTest
 
         uow = unitOfWorkFactory.newUnitOfWork();
         task = uow.get( FooTask.class, taskId );
-        task.run();
         assertEquals( Constants.BAR, task.output().get() );
 
         Thread.sleep( 10 * 1000 );
@@ -74,7 +75,9 @@ public class SchedulerTest
 
     @Test
     public void testMinutely()
-            throws InterruptedException, UnitOfWorkCompletionException, Exception
+            throws InterruptedException,
+                   UnitOfWorkCompletionException,
+                   Exception
     {
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
 
@@ -85,7 +88,7 @@ public class SchedulerTest
         String taskIdentity = task.identity().get();
 
         DateTime expectedRun = start.withMillisOfSecond( 0 ).withSecondOfMinute( 0 ).plusMinutes( 1 );
-        Schedule schedule = scheduler.shedule( task, "@minutely" );
+        scheduler.shedule( task, "@minutely" );
 
         uow.complete();
 
@@ -107,7 +110,7 @@ public class SchedulerTest
         assertEquals( 1, Iterables.count( timeline.getRecords( start.getMillis(), now.getMillis() ) ) );
 
         // Queries returning future records
-        // assertEquals( 5, Iterables.count( timeline.getNextRecords( 5 ) ) );
+        assertEquals( 5, Iterables.count( timeline.getNextRecords( 5 ) ) );
         assertEquals( 5, Iterables.count( timeline.getRecords( now.getMillis() + 100, now.plusMinutes( 5 ).getMillis() ) ) );
         // assertEquals( 6, Iterables.count( timeline.getRecords( start.getMillis(), now.plusMinutes( 5 ).getMillis() ) ) );
 
@@ -115,8 +118,10 @@ public class SchedulerTest
     }
 
     @Test
+    @Ignore
     public void testOnce()
-            throws UnitOfWorkCompletionException, InterruptedException
+            throws UnitOfWorkCompletionException,
+                   InterruptedException
     {
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
 
@@ -125,7 +130,7 @@ public class SchedulerTest
         FooTask task = createFooTask( uow, "TestOnce", Constants.BAZAR );
         String taskIdentity = task.identity().get();
 
-        Schedule schedule = scheduler.scheduleOnce( task, 10 );
+        scheduler.scheduleOnce( task, 10 );
 
         uow.complete();
 

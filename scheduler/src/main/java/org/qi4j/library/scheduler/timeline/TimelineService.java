@@ -19,7 +19,11 @@ import static org.qi4j.api.query.grammar.OrderBy.Order.*;
 import static org.qi4j.library.scheduler.timeline.TimelineRecordStep.FUTURE;
 import static org.qi4j.library.scheduler.timeline.TimelineRecordStep.RUNNING;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -44,7 +48,8 @@ import org.slf4j.LoggerFactory;
 
 @Mixins( TimelineService.Mixin.class )
 public interface TimelineService
-        extends Timeline, ServiceComposite
+        extends Timeline,
+                ServiceComposite
 {
 
     abstract class Mixin
@@ -69,8 +74,49 @@ public interface TimelineService
 
         public Iterable<TimelineRecord> getNextRecords( int maxResults )
         {
-            // TODO Compute from runnings + cron expression resolution
-            throw new UnsupportedOperationException( "Not supported yet." );
+            ScheduleEntity template = templateFor( ScheduleEntity.class );
+            OrderBy orderByNextRun = orderBy( template.nextRun() );
+
+            QueryBuilder<ScheduleEntity> queryBuilder = qbf.newQueryBuilder( ScheduleEntity.class );
+            queryBuilder = queryBuilder.where( ge( template.nextRun(), System.currentTimeMillis() ) );
+            Query<ScheduleEntity> query = queryBuilder.newQuery( uowf.currentUnitOfWork() );
+            query = query.orderBy( orderByNextRun ).maxResults( maxResults );
+
+            if ( query.count() == 0 ) {
+                return Collections.emptySet();
+            }
+
+            List<ScheduleEntity> queryAsList = new ArrayList<ScheduleEntity>();
+            SortedSet<TimelineRecord> futureRuns = new TreeSet<TimelineRecord>();
+
+            for ( ScheduleEntity eachSchedule : query ) {
+                TimelineRecord record = buildRecordValue( eachSchedule, eachSchedule.nextRun().get() );
+                queryAsList.add( eachSchedule );
+                futureRuns.add( record );
+            }
+
+            boolean alreadyFilled = futureRuns.size() == maxResults;
+            long alreadyFilledMax = futureRuns.last().timestamp().get();
+
+            for ( ScheduleEntity eachSchedule : queryAsList ) {
+                Long nextRun = eachSchedule.firstRunAfter( eachSchedule.nextRun().get() );
+                while ( nextRun != null && ( ( alreadyFilled && nextRun < alreadyFilledMax ) || futureRuns.size() < maxResults ) ) {
+                    TimelineRecord record = buildRecordValue( eachSchedule, nextRun );
+                    futureRuns.add( record );
+                    nextRun = eachSchedule.firstRunAfter( nextRun );
+                }
+            }
+
+            // Build final result in a list so that the order is kept
+            List<TimelineRecord> result = new ArrayList<TimelineRecord>();
+            Iterator<TimelineRecord> it = futureRuns.iterator();
+            for ( int idx = 0; idx < maxResults; idx++ ) {
+                if ( !it.hasNext() ) {
+                    break;
+                }
+                result.add( it.next() );
+            }
+            return result;
         }
 
         public Iterable<TimelineRecord> getRecords( Date from, Date to )
