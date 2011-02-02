@@ -15,13 +15,13 @@
 package org.qi4j.runtime.composite;
 
 import java.io.Serializable;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
@@ -35,7 +35,7 @@ import org.qi4j.runtime.structure.ModuleInstance;
  * JAVADOC
  */
 public abstract class AbstractCompositeModel
-        implements Binder, Serializable
+    implements Binder, Serializable
 {
     protected final AbstractMixinsModel mixinsModel;
     protected final CompositeMethodsModel compositeMethodsModel;
@@ -109,14 +109,16 @@ public abstract class AbstractCompositeModel
         return compositeMethodsModel;
     }
 
-    @SuppressWarnings("unchecked")
-    private Class<? extends Composite> createProxyClass( Class<? extends Composite> compositeType, List<Class<?>> roles )
+    @SuppressWarnings( "unchecked" )
+    private Class<? extends Composite> createProxyClass( Class<? extends Composite> compositeType,
+                                                         List<Class<?>> roles
+    )
     {
         ClassLoader proxyClassloader = compositeType.getClassLoader();
 
         Set<Class> proxyInterfaces = new HashSet<Class>();
         proxyInterfaces.add( compositeType );
-        for (Class aClass : roles)
+        for( Class aClass : roles )
         {
             if( !aClass.isAssignableFrom( compositeType ) )
             {
@@ -124,7 +126,7 @@ public abstract class AbstractCompositeModel
             }
         }
 
-        Class[] interfaces = proxyInterfaces.toArray( new Class[proxyInterfaces.size()] );
+        Class[] interfaces = proxyInterfaces.toArray( new Class[ proxyInterfaces.size() ] );
         return (Class<? extends Composite>) Proxy.getProxyClass( proxyClassloader, interfaces );
     }
 
@@ -139,7 +141,7 @@ public abstract class AbstractCompositeModel
                                 Object[] args,
                                 ModuleInstance moduleInstance
     )
-            throws Throwable
+        throws Throwable
     {
         return compositeMethodsModel.invoke( mixins, proxy, method, args, moduleInstance );
     }
@@ -150,14 +152,16 @@ public abstract class AbstractCompositeModel
     }
 
     public Composite newProxy( InvocationHandler invocationHandler )
-            throws ConstructionException
+        throws ConstructionException
     {
         // Instantiate proxy for given composite interface
         try
         {
-            return Composite.class.cast( proxyClass.getConstructor( InvocationHandler.class ).newInstance( invocationHandler ) );
+            Constructor<? extends Composite> constructor = proxyClass.getConstructor( InvocationHandler.class );
+            constructor.setAccessible( true );
+            return Composite.class.cast( constructor.newInstance( invocationHandler ) );
         }
-        catch (Exception e)
+        catch( Exception e )
         {
             throw new ConstructionException( e );
         }
@@ -166,7 +170,7 @@ public abstract class AbstractCompositeModel
     public <T> T newProxy( InvocationHandler invocationHandler, Class<T> mixinType )
     {
         // Instantiate proxy for given mixin interface
-        return mixinType.cast( Proxy.newProxyInstance( mixinType.getClassLoader(), new Class[]{mixinType}, invocationHandler ) );
+        return mixinType.cast( Proxy.newProxyInstance( mixinType.getClassLoader(), new Class[]{ mixinType }, invocationHandler ) );
     }
 
     public StateHolder newBuilderState()
