@@ -42,18 +42,16 @@ public final class StructureInjectionProviderFactory
     public InjectionProvider newInjectionProvider( Resolution resolution, DependencyModel dependencyModel )
         throws InvalidInjectionException
     {
-        return new StructureInjectionProvider( resolution, dependencyModel );
+        return new StructureInjectionProvider( dependencyModel );
     }
 
     private static class StructureInjectionProvider
         implements InjectionProvider, Serializable
     {
-        final Resolution resolution;
         private final DependencyModel dependencyModel;
 
-        private StructureInjectionProvider( Resolution resolution, DependencyModel dependencyModel )
+        private StructureInjectionProvider( DependencyModel dependencyModel )
         {
-            this.resolution = resolution;
             this.dependencyModel = dependencyModel;
         }
 
