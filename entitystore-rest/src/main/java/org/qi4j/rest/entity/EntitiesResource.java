@@ -13,11 +13,6 @@
  */
 package org.qi4j.rest.entity;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.Writer;
-import java.util.Arrays;
-import java.util.List;
 import org.qi4j.api.entity.Entity;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
@@ -40,6 +35,12 @@ import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Writer;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Listing of all Entities.
@@ -175,7 +176,7 @@ public class EntitiesResource extends ServerResource
                     for( EntityReference entity : query )
                     {
                         out.println( "<li><a href=\""
-                            + getRequest().getResourceRef().clone().addSegment( "/" + entity.identity() + ".html" )
+                            + getRequest().getResourceRef().clone().addSegment( entity.identity() + ".html" )
                             + "\">" + entity.identity() + "</a></li>" );
                     }
                     out.println( "</ul></body></html>" );
