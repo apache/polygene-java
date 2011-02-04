@@ -32,6 +32,49 @@ import static java.util.Arrays.*;
 
 /**
  * Used to declare and access meta-info.
+ * <p>
+ * <strong>This is effectively an internal class and should not be used directly.</strong>
+ * </p>
+ * <p>
+ * MetaInfo can be set on composites during the assembly phase, a.k.a the bootstrap
+ * process. MetaInfo is any additional data that one wishes to associate at the 'class level' instead of instance
+ * level of a composite declaration.
+ * </p>
+ * <p>
+ * To set the MetaInfo on a Composite, call the {@code setMetaInfo()} methods on the various composite declaration
+ * types, such as;
+ * </p>
+ * <code><pre>
+ * public void assemble( ModuleAssembly module )
+ *     throws AssemblyException
+ * {
+ *     Map<String,String> properties = ...;
+ *     module.addServices( MyService.class ).setMetaInfo( properties );
+ * }
+ * </pre></code>
+ * <p>
+ * which can later be retrieved by calling the {@code metaInfo()} method on the composite itself. For the example
+ * above that would be;
+ * </p>
+ * <code><pre>
+ * &#64;Mixins(MyServiceMixin.class)
+ * public interface MyService extends ServiceComposite
+ * {
+ *
+ * }
+ *
+ * public abstract class MyServiceMixin
+ *     implements MyService
+ * {
+ *     private Properties props;
+ *
+ *     public MyServiceMixin()
+ *     {
+ *         props = metaInfo( Map.class );
+ *     }
+ * }
+ * </pre></code>
+ * <p>
  */
 public final class MetaInfo
     implements Serializable

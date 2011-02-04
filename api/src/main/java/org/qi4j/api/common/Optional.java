@@ -36,6 +36,24 @@ import java.lang.annotation.Target;
  * &#64;Service</code> would allow a service to not have been declared and the field will be null.
  * </li>
  * </ul>
+ * <p>
+ * Optionality is not the default in Qi4j, and if injections, property values and parameters in methods are not
+ * non-null, the Qi4j runtime will throw an {@link org.qi4j.api.constraint.ConstraintViolationException}, indicating
+ * which field/property/parameter in which composite and mixin the problem has been detected.
+ * </p>
+ * <p>
+ * Example;
+ * </p>
+ * <pre><code>
+ * &#64;Optional &#64;Service
+ * MyService service;   // If no MyService instance is declared and visible to this service injection point
+ *                      // the 'service' field will be null.
+ *
+ * &#64;Service
+ * YourService other;   // If no YourService instance is declared and visible to this service injection point
+ *                      // the Qi4j runtime will throw a ConstraintViolationException.
+ *
+ * </code></pre>
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.PARAMETER, ElementType.METHOD, ElementType.FIELD } )
