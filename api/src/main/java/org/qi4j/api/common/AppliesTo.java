@@ -23,74 +23,71 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Fragments that implement InvocationHandler and which should only
- * be applied to methods that have a particular annotation or
- * implement a known interface should use this annotation.
+ * Fragments that implement InvocationHandler and which should only be applied to methods that have a particular
+ * annotation or implement a known interface should use this annotation.
  * <p>
- * Example:
+ * &#64;AppliesTo can specify one of;
+ * <ul>
+ * <li>An annotation,</li>
+ * <li>An interface,</li>
+ * <li>An AppliesToFilter implementation.</li>
+ * </ul>
+ * </p>
+ * <p>
+ * Example with annotation:
  * </p>
  * <pre><code>
- * &#64;AppliesTo( Sessional.class )
- * public class SessionModifier
- * implements InvocationHandler
+ *
+ * &#64;AppliesTo( Sessional.class )   // Tells Qi4j to apply this concern on methods with &#64;Sessional annotation
+ * public class SessionConcern extends GenericConcern
  * {
- *     public Object invoke( Object proxy,
- *                           Method method,
- *                           Object[] args )
+ *     public Object invoke( Object proxy, Method method, Object[] args )
  *         throws Throwable
  *     {
  *         ... do session stuff ...
  *     }
  * }
+ *
  * &#64;Retention( RetentionPolicy.RUNTIME )
  * &#64;Target( ElementType.METHOD )
  * &#64;Documented
- * &#64;Inherited public @interface Sessional
+ * &#64;Inherited
+ * public @interface Sessional
  * {
  * }
  *
- * public class MyStateMixin
- *     implements SessionState
+ * public class MyMixin
+ *     implements My
  * {
- *     private State state;
- *
- *     &#64;Sessional public void setSomeState( State state )
+ *     &#64;Sessional
+ *     public void doSomethingSessional()
  *     {
- *         this.state = state;
+ *        // ... do your logic wrapped in a session
  *     }
  *
- *     &#64;Sessional public State getSomeState()
+ *     public void doSomethingWithoutSession()
  *     {
- *         return this.state;
- *     }
- *
- *     public void setStateService( StateService service )
- *     {
- *         this.service = service;
- *     }
- *
- *     public StateService getStateService()
- *     {
- *         return this.service;
+ *        // ... do stuff that are not wrapped in session.
  *     }
  * }
  *
- * public interface SessionState
+ * public interface My
  * {
- *     State getSomeState();
- *     void setSomeState( State state );
+ *     void doSomethingSessional();
+ *
+ *     void doSomethingWithoutSession();
  * }
  *
- * &#64;Concerns( SessionModifier.class )
- * &#64;Mixins( MyStateMixin.class )
- * public interface MyComposite extends TransientComposite, SessionState
+ * &#64;Concerns( SessionConcern.class )
+ * &#64;Mixins( MyMixin.class )
+ * public interface MyComposite extends My, TransientComposite
  * {}
  * </code></pre>
  * <p>
- * The setStateService and getStateService methods do not have the
- * &#64;Sessional annotation, therefore the SessionModifier will
+ * The doSomethingWithoutSession method do not have the &#64;Sessional annotation, therefore the SessionConcern will
  * not be placed into the call sequence of these methods, and
- * vice-versa.
+ * vice-versa. The &#64;Sessional annotation can be placed either on the interface method or the implementation
+ * method, depending on whether it is a contract or implementation detail.
  * </p>
  */
 @Retention( RetentionPolicy.RUNTIME )

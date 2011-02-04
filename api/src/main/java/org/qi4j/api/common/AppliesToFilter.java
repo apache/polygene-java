@@ -14,7 +14,6 @@
 
 package org.qi4j.api.common;
 
-import java.io.Serializable;
 import java.lang.reflect.Method;
 
 /**
@@ -26,13 +25,22 @@ import java.lang.reflect.Method;
  * </p>
  * <p>
  * The starting point is the basic use of AppliesToFilter, where the &#64;AppliesTo annotation is given an
- * AppliesToFilter implementation as an argument, for instance at a Mixin implementation. For instance;
+ * AppliesToFilter implementation as an argument, for instance at a Mixin implementation;
  * <pre></code>
  * &#64;AppliesTo( MyAppliesToFilter.class )
  * public class SomeMixin
  *     implements InvocationHandler
  * {
  *
+ * }
+ *
+ * public class MyAppliesToFilter
+ *     implements AppliesToFilter
+ * {
+ *     public boolean appliesTo( Method method, Class&lt;?&gt; mixin, Class&lt;?&gt; compositeType, Class&lt;?&gt; fragmentClass )
+ *     {
+ *         return method.getName().startsWith( "my" );
+ *     }
  * }
  * </code></pre>
  * In the case above, the generic mixin will only be applied to the methods that that is defined by the
@@ -41,7 +49,6 @@ import java.lang.reflect.Method;
  * </p>
  */
 public interface AppliesToFilter
-    extends Serializable
 {
     /**
      * This is an internal AppliesToFilter which is assigned if no other AppliesToFilters are found for a given

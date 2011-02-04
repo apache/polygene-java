@@ -13,9 +13,28 @@
  */
 package org.qi4j.api.common;
 
+/**
+ * Visibility is a core concept in the Qi4j structure system. It defines the locale of composites and objects, i.e.
+ * how far they can be 'seen' and therefor be used.
+ * <p>
+ * When a Composite or Object is declared in the assembly phase, and no visibility is set, only other
+ * composites/objects within the same module can use that declaration. For a declared composite/object to be usable
+ * from other modules a higher visibility must be set, either that the Composite/Object can be used by others within
+ * the same Layer, or even to be used by those in the layer above.
+ * </p>
+ */
 public enum Visibility
 {
-    module,     // Artifact is visible only in the declaring module (default)
-    layer,      // Artifact is visible to all modules in the same layer
-    application // Artifact is visible to other modules in the same layer and any modules in extending layers
+    /**
+     * Artifact is visible only in the declaring module (default)
+     */
+    module,
+    /**
+     * Artifact is visible to all modules in the same layer
+     */
+    layer,
+    /**
+     * Artifact is visible to other modules in the same layer and any modules in extending layers
+     */
+    application
 }

@@ -18,11 +18,11 @@ package org.qi4j.api.common;
  * Thrown when a Fragment or object could not be instantiated.
  * This includes, but not be limited to;
  * <ul>
- *   <li>private constructor.</li>
- *   <li>abstract class for Constraints.</li>
- *   <li>interface instead of a class.</li>
- *   <li>useful constructor missing.</li>
- *   <li>exception thrown in the constructor.</li>
+ * <li>private constructor.</li>
+ * <li>abstract class for Constraints.</li>
+ * <li>interface instead of a class.</li>
+ * <li>useful constructor missing.</li>
+ * <li>exception thrown in the constructor.</li>
  * </ul>
  * <p>
  * See the nested exception for additional details.

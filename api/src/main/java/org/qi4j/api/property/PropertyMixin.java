@@ -38,7 +38,7 @@ public final class PropertyMixin
     }
 
     public static class PropertyFilter
-        implements AppliesToFilter, Serializable
+        implements AppliesToFilter
     {
         public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> modifierClass )
         {

@@ -40,6 +40,9 @@ import org.qi4j.api.util.NullArgumentException;
  * string representation, via the offical and formal {@link #toString()} method, the {@code type} is normalized, i.e.
  * any dollar characters ($) in the name are replaced by dashes (-), to make them URI friendly.
  * </p>
+ * <p>
+ * QualifiedName instances are immutable, implements {@link #hashCode()} and {@link #equals(Object)} as a value
+ * object and can safely be used as keys in {@link java.util.Map}.
  */
 public final class QualifiedName
     implements Comparable<QualifiedName>, Serializable
@@ -99,14 +102,16 @@ public final class QualifiedName
         return new QualifiedName( TypeName.nameOf( type ), name );
     }
 
-    /** Creates a QualifiedName from the external string format of QualifiedName.
+    /**
+     * Creates a QualifiedName from the external string format of QualifiedName.
      * <p>
      * This factory method is the reverse of {@link QualifiedName#toString() }  method, and creates a new QualifiedName
      * instance from the string representation of the QualifiedName.
      * </p>
      *
      * @param qualifiedName The QualifiedName external string representation to be converted back into a QualifiedName
-     * instance.
+     *                      instance.
+     *
      * @return The QualifiedName instance represented by the {@code qualifiedName} argument.
      *
      * @throws IllegalArgumentException If the {@code qualifiedName} argument has wrong format.
@@ -132,7 +137,8 @@ public final class QualifiedName
         this.name = name;
     }
 
-    /** Returns the normalized string of the type part of the QualifiedName.
+    /**
+     * Returns the normalized string of the type part of the QualifiedName.
      *
      * <p>
      * The normalized type name means that all dollar ($) characters have been replaced by dashes (-).
@@ -151,6 +157,7 @@ public final class QualifiedName
      * The TypeName instance represents the type from which the QualifiedName originates, typically the Class of the
      * Property method.
      * </p>
+     *
      * @return the internal {@link TypeName} instance of the QualifiedName.
      */
     public TypeName typeName()
@@ -158,7 +165,8 @@ public final class QualifiedName
         return typeName;
     }
 
-    /** Returns the name component of the QualifiedName.
+    /**
+     * Returns the name component of the QualifiedName.
      *
      * @return the name component of the QualifiedName.
      */
@@ -175,6 +183,7 @@ public final class QualifiedName
      * <p>
      *
      * @return the URI of the QualifiedName.
+     *
      * @see #toNamespace()
      */
     public String toURI()
@@ -182,7 +191,8 @@ public final class QualifiedName
         return toNamespace() + name;
     }
 
-    /** Return the URI of the {@link TypeName} component of the QualifiedName.
+    /**
+     * Return the URI of the {@link TypeName} component of the QualifiedName.
      * <p>
      * The URI of the {@link TypeName} component is in the form of;
      * </p>
@@ -210,6 +220,7 @@ public final class QualifiedName
      * <p>
      * This returns the {@link org.qi4j.api.common.TypeName#toString()} followed by the {@code name} component.
      * </p>
+     *
      * @return the formal and official, long-term stable, external string representation of a QualifiedName.
      */
     @Override
