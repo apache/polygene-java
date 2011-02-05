@@ -33,15 +33,45 @@ import org.qi4j.library.scheduler.task.Task;
 public interface Scheduler
 {
 
+    /**
+     * Schedule a Task to be run after a given initial delay in seconds.
+     * 
+     * @param task                  Task to be scheduled once
+     * @param initialSecondsDelay   Initial delay the Task will be run after, in seconds
+     * @return                      The newly created Schedule
+     */
     @UnitOfWorkPropagation( MANDATORY )
     Schedule scheduleOnce( Task task, int initialSecondsDelay );
 
+    /**
+     * Schedule a Task using a CronExpression.
+     * 
+     * @param task                  Task to be scheduled once
+     * @param cronExpression        CronExpression for creating the Schedule for the given Task
+     * @return                      The newly created Schedule
+     */
     @UnitOfWorkPropagation( MANDATORY )
     Schedule shedule( Task task, @CronExpression String cronExpression );
 
+    /**
+     * Schedule a Task using a CronExpression with a given initial delay in milliseconds.
+     *
+     * @param task                  Task to be scheduled once
+     * @param cronExpression        CronExpression for creating the Schedule for the given Task
+     * @param initialDelay          Initial delay the Schedule will be active after, in milliseconds
+     * @return                      The newly created Schedule
+     */
     @UnitOfWorkPropagation( MANDATORY )
     Schedule shedule( Task task, @CronExpression String cronExpression, long initialDelay );
 
+    /**
+     * Schedule a Task using a CronExpression starting at a given date.
+     *
+     * @param task                  Task to be scheduled once
+     * @param cronExpression        CronExpression for creating the Schedule for the given Task
+     * @param start                 Date from which the Schedule will become active
+     * @return                      The newly created Schedule
+     */
     @UnitOfWorkPropagation( MANDATORY )
     Schedule shedule( Task task, @CronExpression String cronExpression, Date start );
 

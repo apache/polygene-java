@@ -50,6 +50,12 @@ public class SchedulerAssembler
         return this;
     }
 
+    /**
+     * Set the ModuleAssembly to use for Configuration entities.
+     *
+     * @param configAssembly    ModuleAssembly to use for Configuration entities
+     * @return                  SchedulerAssembler
+     */
     public SchedulerAssembler withConfigAssembly( ModuleAssembly configAssembly )
     {
         this.configAssembly = configAssembly;
@@ -57,7 +63,10 @@ public class SchedulerAssembler
     }
 
     /**
+     * Set the pulse rhythm.
+     * 
      * @param pulseRhythm   Scheduler pulse rhythm in seconds
+     * @return                  SchedulerAssembler
      */
     public SchedulerAssembler withPulseRhythm( Integer pulseRhythm )
     {
@@ -66,7 +75,10 @@ public class SchedulerAssembler
     }
 
     /**
+     * Set the garbage collector rhythm.
+     *
      * @param garbageCollectorRhythm    Scheduler garbage collector rhythm in seconds
+     * @return                  SchedulerAssembler
      */
     public SchedulerAssembler withGarbageCollectorRhythm( Integer garbageCollectorRhythm )
     {
@@ -74,6 +86,11 @@ public class SchedulerAssembler
         return this;
     }
 
+    /**
+     * Activate the assembly of Timeline related services.
+     * 
+     * @return                  SchedulerAssembler
+     */
     public SchedulerAssembler withTimeline()
     {
         timeline = true;

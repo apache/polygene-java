@@ -15,15 +15,36 @@ package org.qi4j.library.scheduler.timeline;
 
 import java.util.Date;
 
+/**
+ * Timeline allowing to browse in past and future Task runs.
+ */
 public interface Timeline
 {
 
+    /**
+     * @param maxResults    Maximum number of TimelineRecord to compute
+     * @return              Last past records
+     */
     Iterable<TimelineRecord> getLastRecords( int maxResults );
 
+    /**
+     * @param maxResults    Maximum number of TimelineRecord to compute
+     * @return              Next running or future records
+     */
     Iterable<TimelineRecord> getNextRecords( int maxResults );
 
+    /**
+     * @param from          Lower limit
+     * @param to            Upper limit
+     * @return              Records between the given dates
+     */
     Iterable<TimelineRecord> getRecords( Date from, Date to );
 
+    /**
+     * @param from          Lower limit
+     * @param to            Upper limit
+     * @return              Records between the given dates
+     */
     Iterable<TimelineRecord> getRecords( long from, long to );
 
 }

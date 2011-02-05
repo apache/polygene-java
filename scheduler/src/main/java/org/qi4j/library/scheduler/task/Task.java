@@ -18,6 +18,9 @@ import java.util.List;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.property.Property;
 
+/**
+ * Compose an Entity using this type to be able to Schedule it.
+ */
 public interface Task
         extends Runnable
 {
