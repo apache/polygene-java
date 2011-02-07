@@ -10,11 +10,11 @@
 set -e
 
 mvn clean test 
-echo "x" > target/num-repeats
+echo "x "`date` > target/num-repeats
 
 while ( true ) ; do
 	mvn test
-	echo "x" >> target/num-repeats
+	echo "x "`date` >> target/num-repeats
 done
 
 exit 0

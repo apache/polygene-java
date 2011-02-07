@@ -110,7 +110,9 @@ public class SchedulerTest
         // Queries returning future records
         assertEquals( 5, Iterables.count( timeline.getNextRecords( 5 ) ) );
         assertEquals( 5, Iterables.count( timeline.getRecords( now.getMillis() + 100, now.plusMinutes( 5 ).getMillis() ) ) );
-        // assertEquals( 6, Iterables.count( timeline.getRecords( start.getMillis(), now.plusMinutes( 5 ).getMillis() ) ) );
+
+        // Queries returning mixed past and future records
+        assertEquals( 6, Iterables.count( timeline.getRecords( start.getMillis(), now.plusMinutes( 5 ).getMillis() ) ) );
 
         uow.complete();
     }
