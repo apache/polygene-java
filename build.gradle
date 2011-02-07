@@ -11,19 +11,11 @@ allprojects {
   repositories {
     mavenCentral()
     mavenRepo name: 'ops4j-repo', urls: "http://repository.ops4j.org/maven2/"
+    mavenRepo name: 'local', urls: "file:///" + System.properties[ 'user.home' ].replaceAll('\\\\', '/') + '/.gradle/repository/'
   }
-
   targetCompatibility = "1.6"
   sourceCompatibility = "1.6"
-
-  if( System.properties.containsKey('version') )
-  {
-    version = System.properties[ 'version' ]
-  }
-  else
-  {
-    version = 'DEV'
-  }
+  version = System.properties.version ?: "0"
 
   configurations {
     deployerJars
@@ -41,7 +33,7 @@ allprojects {
     }
   }
 
-  println "Building " + name + ", revision " + version
+  println "Building $name, revision $version"
 }
 
 def testProperties = [
@@ -59,14 +51,14 @@ libraries = [
         ant: 'org.apache.ant:ant:1.8.1',
 
         // ASM
-        asm: 'asm:asm:' + asmVersion,
-        asm_util: 'asm:asm-util:' + asmVersion,
-        asm_commons: 'asm:asm-commons:' + asmVersion,
+        asm: "asm:asm:$asmVersion",
+        asm_util: "asm:asm-util:$asmVersion",
+        asm_commons: "asm:asm-commons:$asmVersion",
 
         // logging
-        slf4j_api: 'org.slf4j:slf4j-api:' + slf4jVersion,
-        slf4j_simple: 'org.slf4j:slf4j-simple:' + slf4jVersion,
-        jcl_slf4j: 'org.slf4j:jcl-over-slf4j:' + slf4jVersion,
+        slf4j_api: "org.slf4j:slf4j-api:$slf4jVersion",
+        slf4j_simple: "org.slf4j:slf4j-simple:$slf4jVersion",
+        jcl_slf4j: "org.slf4j:jcl-over-slf4j:$slf4jVersion",
         jcl_api: 'commons-logging:commons-logging-api:99.0-does-not-exist',  //ensure it is never used.
         jcl: 'commons-logging:commons-logging:99.0-does-not-exist',  // ensure it is never used.
 
@@ -102,15 +94,15 @@ subprojects { subProject ->
 
   jar {
     group = subProject.group
-    baseName = 'qi4j-core-' + subProject.name
+    baseName = "qi4j-core-${subProject.name}"
     manifest {
       version = subProject.version
       license = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
       docURL = 'http://www.qi4j.org'
       description = 'Qi4j is a platform for Composite Oriented Programming'
-      name = group + "." + subProject.name  // default name if forgotten in sub-project.
+      name = "$group.${subProject.name}"  // default name if forgotten in sub-project.
       vendor = 'Qi4j Community, http://www.qi4j.org'
-      symbolicName = group + "." + subProject.name
+      symbolicName = "$group.${subProject.name}"
       instruction '-debug', 'true'
     }
   }
@@ -132,10 +124,6 @@ subprojects { subProject ->
     throw new GradleException("'version' must be given as a system property to perform a release.")
   }
   ideaModule {
-    // Use explicitly separate compilation output directories for Gradle and IntelliJ
-    File baseDirectory = new File(subProject.buildDir, "build/idea-classes")
-    outputDir = new File(baseDirectory, "main")
-    testOutputDir = new File(baseDirectory, "test")
     whenConfigured { module ->
       module.dependencies*.exported = true
     }
@@ -145,20 +133,12 @@ subprojects { subProject ->
 
 }
 
-
-task dist(type: Zip) {
-    into('libs') {
-        from configurations.runtime
-    }
-}
-
 task javadocs(type: Javadoc) {
   def apiSources = subprojects.findAll({ project -> project.name != 'runtime' })
-  println apiSources
   source apiSources.collect { project ->
       project.sourceSets.main.allJava
   }
-  destinationDir = new File(buildDir, 'javadoc')
+  destinationDir = new File("$buildDir", 'javadoc')
   // Might need a classpath
   classpath = files(apiSources.collect { project ->
           project.sourceSets.main.compileClasspath
