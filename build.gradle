@@ -72,7 +72,7 @@ libraries = [
 subprojects { subProject ->
 
   apply plugin: 'osgi'
-  apply plugin: VersionClass
+  // apply plugin: VersionClass
   apply plugin: 'code-quality'
 
   group = "org.qi4j.core"
