@@ -19,7 +19,6 @@ import static org.junit.Assert.*;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
-import org.junit.Ignore;
 
 import org.junit.Test;
 
@@ -30,7 +29,6 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 
 import org.qi4j.library.scheduler.bootstrap.SchedulerAssembler;
-import org.qi4j.library.scheduler.schedule.Schedule;
 import org.qi4j.library.scheduler.timeline.Timeline;
 
 import org.slf4j.Logger;
@@ -56,7 +54,7 @@ public class SchedulerTest
     @Test
     public void testTask()
             throws UnitOfWorkCompletionException,
-                   InterruptedException
+            InterruptedException
     {
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         FooTask task = createFooTask( uow, "TestTask", Constants.BAZAR );
@@ -76,8 +74,8 @@ public class SchedulerTest
     @Test
     public void testMinutely()
             throws InterruptedException,
-                   UnitOfWorkCompletionException,
-                   Exception
+            UnitOfWorkCompletionException,
+            Exception
     {
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
 
@@ -118,10 +116,9 @@ public class SchedulerTest
     }
 
     @Test
-    @Ignore
     public void testOnce()
             throws UnitOfWorkCompletionException,
-                   InterruptedException
+            InterruptedException
     {
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
 

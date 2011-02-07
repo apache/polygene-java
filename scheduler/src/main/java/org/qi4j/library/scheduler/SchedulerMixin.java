@@ -13,8 +13,10 @@
  */
 package org.qi4j.library.scheduler;
 
-import java.util.Calendar;
 import java.util.Date;
+
+import org.codeartisans.sked.crontab.schedule.CronSchedule;
+import org.codeartisans.sked.crontab.schedule.CronScheduleFactoryImpl;
 
 import org.qi4j.api.injection.scope.Service;
 
@@ -31,26 +33,8 @@ public class SchedulerMixin
 
     public Schedule scheduleOnce( Task task, int initialSecondsDelay )
     {
-        long start = System.currentTimeMillis();
-
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis( start );
-        int startSecond = cal.get( Calendar.SECOND );
-        if ( cal.get( Calendar.MILLISECOND ) >= 500 ) {
-            // If the current second is half passed, increment
-            startSecond++;
-        }
-        cal.set( Calendar.SECOND, startSecond + initialSecondsDelay );
-
-        StringBuilder cronEx = new StringBuilder();
-        cronEx.append( cal.get( Calendar.SECOND ) ).append( " " );
-        cronEx.append( cal.get( Calendar.MINUTE ) ).append( " " );
-        cronEx.append( cal.get( Calendar.HOUR_OF_DAY ) ).append( " " );
-        cronEx.append( cal.get( Calendar.DAY_OF_MONTH ) ).append( " " );
-        cronEx.append( cal.get( Calendar.MONTH + 1 ) ).append( " * " );
-        cronEx.append( cal.get( Calendar.YEAR ) );
-
-        return scheduleFactory.newSchedule( task, cronEx.toString(), start );
+        CronSchedule cronEx = new CronScheduleFactoryImpl().newNowInstance( initialSecondsDelay );
+        return scheduleFactory.newSchedule( task, cronEx.toString(), System.currentTimeMillis() );
     }
 
     public Schedule shedule( Task task, String cronExpression )
