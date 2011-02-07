@@ -87,10 +87,10 @@ subprojects { subProject ->
     ignoreFailures = true
   }
 
-  checkstyleVersion {
-    configFile = new File( rootProject.projectDir.absolutePath, '/etc/qi4j-checkstyle.xml' )
-    ignoreFailures = true
-  }
+//  checkstyleVersion {
+//    configFile = new File( rootProject.projectDir.absolutePath, '/etc/qi4j-checkstyle.xml' )
+//    ignoreFailures = true
+//  }
 
   jar {
     group = subProject.group
