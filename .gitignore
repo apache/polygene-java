@@ -1,9 +1,6 @@
-**/target/
+target/
 .gitignore
 .idea/
-.idea/*
-.idea/**
-**/build/
 build/
 derby.log
 qi4j.data.db
@@ -11,4 +8,4 @@ qi4j.data.lg
 *.iws
 *.ipr
 *.iml
-**/*.iml
+out/
