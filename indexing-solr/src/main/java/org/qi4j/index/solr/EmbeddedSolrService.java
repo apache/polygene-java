@@ -5,7 +5,6 @@ import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
 import org.apache.solr.core.CoreContainer;
 import org.apache.solr.core.SolrConfig;
 import org.apache.solr.core.SolrCore;
-import org.apache.solr.schema.DateField;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.Activatable;
@@ -64,10 +63,6 @@ public interface EmbeddedSolrService extends Activatable, ServiceComposite
          Field instanceField = SolrCore.class.getDeclaredField( "instance" );
          instanceField.setAccessible( true );
          instanceField.set( null, null );
-
-         Field dateField = DateField.class.getDeclaredField( "ThreadLocalDateFormat" );
-         dateField.setAccessible( true );
-         dateField.set( null, null );
 
          SolrConfig.config = null;
       }
