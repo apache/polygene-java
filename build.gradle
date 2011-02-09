@@ -13,6 +13,9 @@ jmockVersion = '2.5.1'
 mockitoVersion = '1.8.5'
 easyMockVersion = '3.0'
 
+targetCompatibility = "1.6"
+sourceCompatibility = "1.6"
+version = System.properties.version ?: "0"
 
 allprojects {
   apply plugin: 'eclipse'
@@ -22,15 +25,13 @@ allprojects {
   apply plugin: 'project-report'
 
   defaultTasks 'build'
+  idea.javaVersion = '1.6'
 
   repositories {
     mavenCentral()
     mavenRepo name: 'ops4j-repo', urls: "http://repository.ops4j.org/maven2/"
     mavenRepo name: 'local', urls: "file:///" + System.properties[ 'user.home' ].replaceAll('\\\\', '/') + '/.gradle/repository/'
   }
-  targetCompatibility = "1.6"
-  sourceCompatibility = "1.6"
-  version = System.properties.version ?: "0"
 
   configurations {
     deployerJars
