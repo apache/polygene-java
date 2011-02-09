@@ -1,3 +1,274 @@
+// Versions of Dependencies;
+slf4jVersion = '1.5.8'
+asmVersion = '3.3'
+osgiVersion = '4.2.0'
+servletVersion = '2.5'
+rdfVersion = '2.3.2'
+restletVersion = '2.0.4'
+jdbmVersion = '1.0'
+antVersion = '1.8.1'
+junitVersion = '4.8.1'
+testNgVersion = '5.8'
+jmockVersion = '2.5.1'
+mockitoVersion = '1.8.5'
+easyMockVersion = '3.0'
+
+
+allprojects {
+  apply plugin: 'eclipse'
+  apply plugin: 'idea'
+  apply plugin: 'maven'
+  apply plugin: 'java'
+  apply plugin: 'project-report'
+
+  defaultTasks 'build'
+
+  repositories {
+    mavenCentral()
+    mavenRepo name: 'ops4j-repo', urls: "http://repository.ops4j.org/maven2/"
+    mavenRepo name: 'local', urls: "file:///" + System.properties[ 'user.home' ].replaceAll('\\\\', '/') + '/.gradle/repository/'
+  }
+  targetCompatibility = "1.6"
+  sourceCompatibility = "1.6"
+  version = System.properties.version ?: "0"
+
+  configurations {
+    deployerJars
+  }
+
+  dependencies {
+    deployerJars "org.apache.maven.wagon:wagon-ssh:1.0-beta-2"
+  }
+
+  uploadArchives {
+    repositories.mavenDeployer {
+      name = 'sshDeployer' // optional
+      configuration = configurations.deployerJars
+      repository(url: "scp://repository.ops4j.org/home/www/repository.ops4j.org/maven2")
+    }
+  }
+}
+
+def testProperties = [
+        'proxySet': System.properties[ 'proxySet' ],
+        'proxyHost': System.properties[ 'proxyHost' ],
+        'proxyPort': System.properties[ 'proxyPort' ]]
+
+// build a map of the dependency artifacts to use.  Allows centralized definition of the version of artifacts to
+// use.  In that respect it serves a role similar to <dependencyManagement> in Maven
+
+libraries = [
+        // Ant
+        ant: "org.apache.ant:ant:$antVersion",
+
+        // ASM
+        asm: "asm:asm:$asmVersion",
+        asm_util: "asm:asm-util:$asmVersion",
+        asm_commons: "asm:asm-commons:$asmVersion",
+
+        // OSGi
+        osgi_core: "org.osgi:org.osgi.core:$osgiVersion",
+        osgi_compendium: "org.osgi:org.osgi.compendium:$osgiVersion",
+        osgi_enterprise: "org.osgi:org.osgi.enterprise:$osgiVersion",
+
+        // logging
+        slf4j_api: "org.slf4j:slf4j-api:$slf4jVersion",
+        slf4j_simple: "org.slf4j:slf4j-simple:$slf4jVersion",
+        jcl_slf4j: "org.slf4j:jcl-over-slf4j:$slf4jVersion",
+        jcl_api: 'commons-logging:commons-logging-api:99.0-does-not-exist',  //ensure it is never used.
+        jcl: 'commons-logging:commons-logging:99.0-does-not-exist',  // ensure it is never used.
+
+        // testing
+        junit: "junit:junit:$junitVersion",
+        easymock: "org.easymock:easymock:$easyMockVersion",
+        mockito: "org.mockito:mockito-core:$mockitoVersion",
+        jmock: "org.jmock:jmock:$jmockVersion",
+        testng: "org.testng:testng:$testNgVersion:jdk15"
+]
+
+
+subprojects { subProject ->
+
+  print "$subProject  ->  "
+  if( group.startsWith('qi4j-sdk.core') )
+  {
+    baseName = "qi4j-core-${subProject.name}"
+    group = 'org.qi4j.core'
+  }
+  else if( group.startsWith('qi4j-sdk.libraries') )
+  {
+    baseName = "qi4j-lib" + (group - 'qi4j-sdk.libraries').replace('.', '-') + "-${subProject.name}"
+    group = 'org.qi4j.library' + (group - 'qi4j-sdk.libraries')
+  }
+  else if( group.startsWith('qi4j-sdk.extensions') )
+  {
+    baseName = "qi4j-ext" + (group - 'qi4j-sdk.extensions').replace('.', '-') + "-${subProject.name}"
+    group = 'org.qi4j.extension' + (group - 'qi4j-sdk.extensions')
+  }
+  else
+  {
+    baseName = "qi4j-${subProject.name}"
+    group = 'org.qi4j'
+  }
+  print "group:$group,"
+  print " name:${subProject.name},"
+  print " artifact:$baseName,"
+  println " version:$version"
+
+  checkIfBuildDirFile = new File(subProject.projectDir.absolutePath + "/src/main/java")
+  if( checkIfBuildDirFile.isDirectory() )
+  {
+    apply plugin: 'osgi'
+    apply plugin: VersionClass
+    apply plugin: 'code-quality'
+
+    if( subProject.name == "runtime" && subProject.group == "org.qi4j.core" )
+    {
+      checkstyleMain {
+        configFile = new File(rootProject.projectDir.absolutePath, '/etc/qi4j-runtime-checkstyle.xml')
+        ignoreFailures = true
+      }
+    }
+    else
+    {
+      checkstyleMain {
+        configFile = new File(rootProject.projectDir.absolutePath, '/etc/qi4j-api-checkstyle.xml')
+        ignoreFailures = true
+      }
+    }
+    checkstyleTest {
+      configFile = new File(rootProject.projectDir.absolutePath, '/etc/qi4j-tests-checkstyle.xml')
+      ignoreFailures = true
+    }
+
+    checkstyleVersion {
+      configFile = new File(rootProject.projectDir.absolutePath, '/etc/qi4j-tests-checkstyle.xml')
+      ignoreFailures = true
+    }
+
+    jar {
+      group = subProject.group
+      baseName = subProject.baseName
+      manifest {
+        version = subProject.version
+        license = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+        docURL = 'http://www.qi4j.org'
+        description = 'Qi4j is a platform for Composite Oriented Programming'
+        name = "$group.${subProject.name}"  // default name if forgotten in sub-project.
+        vendor = 'Qi4j Community, http://www.qi4j.org'
+        symbolicName = "$group.${subProject.name}"
+        instruction '-debug', 'true'
+      }
+    }
+
+    test {
+      maxHeapSize = "1024m"
+      systemProperties = testProperties
+    }
+
+    configurations {
+      archives.extendsFrom compile
+    }
+  }
+  repositories {
+    flatDir(name: 'fileRepo', dirs: System.properties[ 'user.home' ] + '/.gradle/repository/org/qi4j/core/' + 'qi4j-core-' + name + '/' + version + '/')
+  }
+
+
+  uploadArchives.doFirst {
+    if( System.properties[ 'version' ] == null )
+    throw new GradleException("'version' must be given as a system property to perform a release.")
+  }
+
+  ideaModule {
+    whenConfigured { module ->
+      module.dependencies*.exported = true
+    }
+  }
+  dependsOnChildren()
+}
+
+task javadocs(type: Javadoc) {
+  def apiSources = subprojects.findAll({ project -> project.name != 'runtime' })
+  source apiSources.collect { project ->
+    project.sourceSets.main.allJava
+  }
+  destinationDir = new File("$buildDir", 'javadoc')
+  // Might need a classpath
+  classpath = files(apiSources.collect { project ->
+    project.sourceSets.main.compileClasspath
+  })
+}
+
+
+def pomConfig = {
+  url 'http://www.qi4j.org'
+  organization {
+    name 'Qi4j Community'
+    url 'http://www.qi4j.org'
+  }
+  issueManagement {
+    system 'jira'
+    url 'http://issues.ops4j.org/browse/QI'
+  }
+  scm {
+    url "http://github.com/Qi4j/qi4j-core"
+    connection "scm:git:http://github.com/Qi4j/qi4j-core.git"
+    developerConnection "scm:git:git@github.com:Qi4j/qi4j-core.git"
+  }
+  licenses {
+    license {
+      name 'Apache License version 2.0'
+      url 'http://www.apache.org/licenses/LICENSE-2.0'
+      comments 'This build file is licensed under LGPL from Hibernate Core project.'
+      distribution 'repo'
+    }
+  }
+  developers {
+    developer {
+      id 'niclas@hedhman.org'
+      name 'Niclas Hedhman'
+      email 'niclas@codedragons.com'
+      url 'http://www.codedragons.com'
+      organization 'CodeDragons'
+      organizationUrl 'http://www.codedragons.com</organizationUrl'
+      timezone 'UTC+8'
+    }
+    developer {
+      id 'rickardoberg'
+      name 'Rickard …berg'
+      email 'rickard.oberg@jayway.se'
+      url 'http://www.jayway.se'
+      organization 'Jayway'
+      organizationUrl 'http://www.jayway.se'
+      timezone 'UTC+1'
+    }
+    developer {
+      id 'edward.yakop@gmail.com'
+      name 'Edward Yakop'
+      email 'efy@codedragons.com'
+      url 'http://www.codedragons.com'
+      organization 'CodeDragons'
+      organizationUrl 'http://www.codedragons.com'
+      timezone 'UTC+8'
+    }
+    developer {
+      id 'adreghiciu@gmail.com'
+      name 'Alin Dreghiciu'
+      email 'adreghiciu@codedragons.com'
+      url 'http://www.codedragons.com'
+      organization 'CodeDragons'
+      organizationUrl 'http://www.codedragons.com'
+      timezone 'UTC+2'
+    }
+    developer {
+      id 'mesirii'
+      name 'Michael Hunger'
+      email 'qi4j@jexp.de'
+      timezone 'CET'
+    }
+  }
+}
 
 //
 // This is a task that generates the gradlew scripts, allowing users to run gradle without having gradle installed
@@ -10,4 +281,3 @@ task wrapper(type: Wrapper) {
   gradleVersion = '0.9'
   jarPath = 'wrapper'
 }
-
