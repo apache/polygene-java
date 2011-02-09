@@ -73,7 +73,7 @@ public class SchedulerPulse
 
         uow.complete();
 
-        
+
         for ( String eachScheduleIdentity : schedulesIdentities ) {
             workQueue.enqueue( eachScheduleIdentity );
         }

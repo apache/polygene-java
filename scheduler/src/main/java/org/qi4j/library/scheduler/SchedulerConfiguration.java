@@ -23,31 +23,31 @@ public interface SchedulerConfiguration
 {
 
     /**
-     * @return Number of worker threads, defaults to the number of available cores.
+     * @return Number of worker threads, optinal and defaults to the number of available cores.
      */
     @Optional
     Property<Integer> workersCount();
 
     /**
-     * @return Size of the queue to use for holding tasks before they are run. Defaults to 10.
+     * @return Size of the queue to use for holding tasks before they are run, optional and defaults to 10.
      */
     @Optional
     Property<Integer> workQueueSize();
 
     /**
-     * @return SchedulerPulse rythm in seconds, default to 60.
+     * @return SchedulerPulse rythm in seconds, optional and default to 60.
      */
     @Optional
     Property<Integer> pulseRhythmSeconds();
 
     /**
-     * @return SchedulerGarbageCollector rythm in seconds, default to 60.
+     * @return SchedulerGarbageCollector rythm in seconds, optional and default to 60.
      */
     @Optional
     Property<Integer> garbageCollectorRhythmSeconds();
 
     /**
-     * @return If the scheduler must stop without waiting for running tasks.
+     * @return If the scheduler must stop without waiting for running tasks, optional and defaults to false.
      */
     @UseDefaults
     Property<Boolean> stopViolently();

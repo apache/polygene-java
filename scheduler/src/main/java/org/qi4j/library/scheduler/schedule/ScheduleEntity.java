@@ -27,8 +27,6 @@ import org.qi4j.library.scheduler.task.Task;
 /**
  * A Schedule computes its next run based on its cron expression.
  * Cron expression syntax is documented in {@link CronExpressionConstraint}
- *
- * TODO Add Scheduler identity here and in queries so in an application with several Scheduler they don't share Schedules
  */
 @Mixins( { ScheduleMixin.class, ScheduleEntityMixin.class } )
 public interface ScheduleEntity

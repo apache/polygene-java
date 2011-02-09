@@ -45,7 +45,7 @@ public class ScheduleRunner
         this.scheduleIdentity = scheduleIdentity;
     }
 
-    // TODO Watch this code, see if we can do better, maybe leverage @UnitOfWorkRetry when it will be done
+    // WARN Watch this code, see if we can do better, maybe leverage @UnitOfWorkRetry when it will be done
     public void run()
     {
         boolean taskRan = false;

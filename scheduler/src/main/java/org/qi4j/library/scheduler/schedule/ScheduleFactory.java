@@ -14,11 +14,13 @@
 package org.qi4j.library.scheduler.schedule;
 
 import org.qi4j.api.entity.EntityBuilder;
+import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 
+import org.qi4j.library.scheduler.SchedulerService;
 import org.qi4j.library.scheduler.task.Task;
 
 @Mixins( ScheduleFactory.Mixin.class )
@@ -34,11 +36,14 @@ public interface ScheduleFactory
 
         @Structure
         private UnitOfWorkFactory uowf;
+        @Service
+        private SchedulerService scheduler;
 
         public ScheduleEntity newSchedule( Task task, String cronExpression, long start )
         {
             EntityBuilder<ScheduleEntity> builder = uowf.currentUnitOfWork().newEntityBuilder( ScheduleEntity.class );
             ScheduleEntity schedule = builder.instance();
+            schedule.schedulerIdentity().set( scheduler.identity().get() );
             schedule.task().set( task );
             schedule.cronExpression().set( cronExpression );
             schedule.start().set( start );

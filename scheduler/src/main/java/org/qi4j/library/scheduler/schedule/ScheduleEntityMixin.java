@@ -35,7 +35,7 @@ public abstract class ScheduleEntityMixin
     {
         Long firstRun = new CronSchedule( me.cronExpression().get() ).firstRunAfter( start );
         LOGGER.trace( "Schedule.firstRunAfter({}) CronSchedule result is {}", start, firstRun );
-        return firstRun >= start ? firstRun : null; // FIXME This check prevents a bug in CronSchedule, remove once fixed there
+        return firstRun;
     }
 
     public void beforeCompletion()

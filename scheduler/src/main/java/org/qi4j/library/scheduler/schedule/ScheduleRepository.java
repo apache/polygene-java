@@ -15,13 +15,17 @@ package org.qi4j.library.scheduler.schedule;
 
 import static org.qi4j.api.query.QueryExpressions.*;
 
+import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryBuilderFactory;
+import org.qi4j.api.query.grammar.EqualsPredicate;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+
+import org.qi4j.library.scheduler.SchedulerService;
 
 @Mixins( ScheduleRepository.Mixin.class )
 public interface ScheduleRepository
@@ -44,18 +48,24 @@ public interface ScheduleRepository
         private UnitOfWorkFactory uowf;
         @Structure
         private QueryBuilderFactory qbf;
+        @Service
+        private SchedulerService scheduler;
 
         public Query<ScheduleEntity> findNotDurable()
         {
             QueryBuilder<ScheduleEntity> builder = qbf.newQueryBuilder( ScheduleEntity.class );
-            builder = builder.where( eq( templateFor( ScheduleEntity.class ).durable(), false ) );
+            ScheduleEntity template = templateFor( ScheduleEntity.class );
+            builder = builder.where( and( eqSchedulerIdentity( template ),
+                                          eq( template.durable(), false ) ) );
             return builder.newQuery( uowf.currentUnitOfWork() );
         }
 
         public Query<ScheduleEntity> findRunning()
         {
             QueryBuilder<ScheduleEntity> builder = qbf.newQueryBuilder( ScheduleEntity.class );
-            builder = builder.where( eq( templateFor( ScheduleEntity.class ).running(), true ) );
+            ScheduleEntity template = templateFor( ScheduleEntity.class );
+            builder = builder.where( and( eqSchedulerIdentity( template ),
+                                          eq( template.running(), true ) ) );
             return builder.newQuery( uowf.currentUnitOfWork() );
         }
 
@@ -63,7 +73,8 @@ public interface ScheduleRepository
         {
             QueryBuilder<ScheduleEntity> builder = qbf.newQueryBuilder( ScheduleEntity.class );
             ScheduleEntity template = templateFor( ScheduleEntity.class );
-            builder = builder.where( and( eq( template.running(), false ),
+            builder = builder.where( and( eqSchedulerIdentity( template ),
+                                          eq( template.running(), false ),
                                           ge( template.nextRun(), from ),
                                           lt( template.nextRun(), to ) ) );
             return builder.newQuery( uowf.currentUnitOfWork() ).orderBy( orderBy( template.nextRun() ) );
@@ -73,9 +84,15 @@ public interface ScheduleRepository
         {
             QueryBuilder<ScheduleEntity> builder = qbf.newQueryBuilder( ScheduleEntity.class );
             ScheduleEntity template = templateFor( ScheduleEntity.class );
-            builder = builder.where( and( eq( template.durable(), false ),
+            builder = builder.where( and( eqSchedulerIdentity( template ),
+                                          eq( template.durable(), false ),
                                           isNull( template.nextRun() ) ) );
             return builder.newQuery( uowf.currentUnitOfWork() );
+        }
+
+        private EqualsPredicate<String> eqSchedulerIdentity( ScheduleEntity template )
+        {
+            return eq( template.schedulerIdentity(), scheduler.identity().get() );
         }
 
     }

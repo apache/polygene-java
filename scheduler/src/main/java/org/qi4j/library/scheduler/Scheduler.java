@@ -26,6 +26,8 @@ import org.qi4j.library.scheduler.schedule.Schedule;
 import org.qi4j.library.scheduler.task.Task;
 
 /**
+ * Scheduler.
+ *
  * To make a Schedule durable, set it's durable property to true once its scheduled.
  * Durable Schedules that have no future run are removed by SchedulerGarbageCollector.
  */

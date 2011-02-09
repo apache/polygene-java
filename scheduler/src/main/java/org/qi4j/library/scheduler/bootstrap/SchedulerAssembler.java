@@ -34,6 +34,13 @@ import org.qi4j.library.scheduler.timeline.TimelineRecordValue;
 import org.qi4j.library.scheduler.timeline.TimelineRecorderService;
 import org.qi4j.library.scheduler.timeline.TimelineService;
 
+/**
+ * Assembler for Scheduler.
+ *
+ * Use this Assembler to add the Scheduler service to your application.
+ * This Assembler provide a fluent api to programmatically configure configuration defaults and
+ * activate the Timeline service assembly that allow to browse in past and future Task runs.
+ */
 public class SchedulerAssembler
         implements Assembler
 {

@@ -28,6 +28,9 @@ public interface TimelineRecord
 {
 
     @Immutable
+    Property<String> schedulerIdentity();
+
+    @Immutable
     Property<Long> timestamp();
 
     @Immutable

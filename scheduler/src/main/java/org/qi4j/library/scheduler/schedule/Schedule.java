@@ -15,6 +15,7 @@ package org.qi4j.library.scheduler.schedule;
 
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.entity.Queryable;
+import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.Property;
 
 import org.qi4j.library.scheduler.constraints.CronExpression;
@@ -24,6 +25,12 @@ import org.qi4j.library.scheduler.constraints.CronExpression;
  */
 public interface Schedule
 {
+
+    /**
+     * @return Identity of the Scheduler used to create this Schedule, immutable.
+     */
+    @Immutable
+    Property<String> schedulerIdentity();
 
     /**
      * @return  True if the associated Task is currently running, false otherwise
@@ -43,7 +50,7 @@ public interface Schedule
      * On shutdown and on startup, non durable Schedules are pruned.
      * Non durable Schedules with a cron expression with no next run are pruned by SchedulerGarbageCollector.
      *
-     * @return True if this Schedule will survice a JVM restart, false otherwise
+     * @return True if this Schedule will survice an Application restart, false otherwise
      */
     @UseDefaults
     Property<Boolean> durable();

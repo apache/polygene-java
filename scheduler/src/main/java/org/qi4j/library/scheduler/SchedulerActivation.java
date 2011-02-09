@@ -162,10 +162,15 @@ public class SchedulerActivation
     private void stopPulse( Boolean stopViolently )
     {
         pulse.suicideAfterCurrentCycle();
-        pulseThread.interrupt();
-
-        // TODO wait for running tasks !
-
+        if ( stopViolently ) {
+            pulseThread.interrupt();
+        } else {
+            try {
+                pulseThread.join();
+            } catch ( InterruptedException ex ) {
+                LOGGER.warn( "Pulse was interrupted while waiting for running tasks" );
+            }
+        }
         pulse = null;
         pulseThread = null;
     }

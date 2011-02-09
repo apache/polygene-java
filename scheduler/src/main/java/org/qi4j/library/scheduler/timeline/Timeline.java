@@ -16,7 +16,7 @@ package org.qi4j.library.scheduler.timeline;
 import java.util.Date;
 
 /**
- * Timeline allowing to browse in past and future Task runs.
+ * Timeline allow to browse in past and future Task runs.
  */
 public interface Timeline
 {

@@ -21,11 +21,13 @@ import java.io.StringWriter;
 import java.io.Writer;
 
 import org.qi4j.api.entity.EntityBuilder;
+import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+import org.qi4j.library.scheduler.SchedulerService;
 
 import org.qi4j.library.scheduler.task.Task;
 
@@ -53,12 +55,15 @@ public interface TimelineRecorderService
 
         @Structure
         private UnitOfWorkFactory uowf;
+        @Service
+        private SchedulerService scheduler;
 
         public TimelineRecord recordSuccess( Task task )
         {
             UnitOfWork uow = uowf.currentUnitOfWork();
             EntityBuilder<TimelineRecordEntity> builder = uow.newEntityBuilder( TimelineRecordEntity.class );
             TimelineRecordEntity record = builder.instance();
+            record.schedulerIdentity().set( scheduler.identity().get() );
             record.timestamp().set( System.currentTimeMillis() );
             record.step().set( SUCCESS );
             record.taskName().set( task.name().get() );
@@ -78,6 +83,7 @@ public interface TimelineRecorderService
             UnitOfWork uow = uowf.currentUnitOfWork();
             EntityBuilder<TimelineRecordEntity> builder = uow.newEntityBuilder( TimelineRecordEntity.class );
             TimelineRecordEntity record = builder.instance();
+            record.schedulerIdentity().set( scheduler.identity().get() );
             record.timestamp().set( System.currentTimeMillis() );
             record.step().set( FAILURE );
             record.taskName().set( task.name().get() );
