@@ -17,28 +17,33 @@ import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.structure.Application;
+import org.qi4j.api.unitofwork.UnitOfWork;
 
+import org.qi4j.library.scheduler.Scheduler;
 import org.qi4j.library.scheduler.constraints.CronExpression;
+import org.qi4j.library.scheduler.slaves.SchedulerGarbageCollector;
+import org.qi4j.library.scheduler.task.Task;
 
 /**
- * Represent the scheduling of a Task.
+ * Represent the scheduling of a {@link Task}.
  */
 public interface Schedule
 {
 
     /**
-     * @return Identity of the Scheduler used to create this Schedule, immutable.
+     * @return Identity of the {@link Scheduler} used to create this Schedule, immutable.
      */
     @Immutable
     Property<String> schedulerIdentity();
 
     /**
-     * @return  True if the associated Task is currently running, false otherwise
+     * @return  True if the associated {@link Task} is currently running, false otherwise
      */
     boolean isTaskRunning();
 
     /**
-     * @return The cron expression that will be used on UoW completion to compute next run
+     * @return The cron expression that will be used on {@link UnitOfWork} completion to compute next run
      */
     @Queryable( false )
     @CronExpression
@@ -48,9 +53,9 @@ public interface Schedule
      * Denote the Schedule durability.
      *
      * On shutdown and on startup, non durable Schedules are pruned.
-     * Non durable Schedules with a cron expression with no next run are pruned by SchedulerGarbageCollector.
+     * Non durable Schedules with a cron expression with no next run are pruned by {@link SchedulerGarbageCollector}
      *
-     * @return True if this Schedule will survice an Application restart, false otherwise
+     * @return True if this Schedule will survice a Qi4j {@link Application} restart, false otherwise
      */
     @UseDefaults
     Property<Boolean> durable();

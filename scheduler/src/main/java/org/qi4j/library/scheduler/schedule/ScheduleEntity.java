@@ -22,11 +22,13 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.unitofwork.UnitOfWorkCallback;
 
+import org.qi4j.library.scheduler.constraints.CronExpressionConstraint;
 import org.qi4j.library.scheduler.task.Task;
 
 /**
  * A Schedule computes its next run based on its cron expression.
- * Cron expression syntax is documented in {@link CronExpressionConstraint}
+ * 
+ * Cron expression syntax is documented in {@link CronExpressionConstraint}.
  */
 @Mixins( { ScheduleMixin.class, ScheduleEntityMixin.class } )
 public interface ScheduleEntity

@@ -39,7 +39,7 @@ public class SchedulerWorkQueue
     {
         executor = new ThreadPoolExecutor( workersCount, workersCount,
                                            0, TimeUnit.MILLISECONDS,
-                                           new LinkedBlockingQueue( workQueueSize ),
+                                           new LinkedBlockingQueue<Runnable>( workQueueSize ),
                                            new SchedulerThreadFactory( schedulerIdentity ) );
         executor.prestartAllCoreThreads();
     }

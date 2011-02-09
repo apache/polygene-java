@@ -33,6 +33,9 @@ import org.qi4j.library.scheduler.slaves.SchedulerWorkQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Handle the {@link Scheduler} activation and passivation.
+ */
 public class SchedulerActivation
         implements Activatable
 {

@@ -21,6 +21,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Behavior common to {@link SchedulerPulse} and {@link SchedulerGarbageCollector}.
+ * 
  * A rhythmed slave run at a given rhythm.
  * A rhythmed slave starts after a delay depending on the rhythm.
  * Rhythmed slaves triggered on clock synchronized systems with the same rhythm are in sync.

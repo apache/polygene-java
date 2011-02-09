@@ -23,11 +23,15 @@ import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 
 import org.qi4j.library.scheduler.Scheduler;
 import org.qi4j.library.scheduler.task.Task;
+import org.qi4j.library.scheduler.timeline.TimelineRecord;
 import org.qi4j.library.scheduler.timeline.TimelineRecorderService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Handle {@link Task}'s {@link UnitOfWork} and {@link TimelineRecord}s creation.
+ */
 public class ScheduleRunner
         implements Runnable
 {

@@ -18,6 +18,11 @@ import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.configuration.ConfigurationComposite;
 import org.qi4j.api.property.Property;
 
+/**
+ * Configuration for the {@link Scheduler}.
+ *
+ * Every property has a default value, you can use a {@link Scheduler} without providing any.
+ */
 public interface SchedulerConfiguration
         extends ConfigurationComposite
 {

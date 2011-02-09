@@ -22,20 +22,40 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.Property;
 
+import org.qi4j.library.scheduler.Scheduler;
+import org.qi4j.library.scheduler.task.Task;
+
+/**
+ * Record in {@link Scheduler}'s {@link Timeline}.
+ *
+ * {@link TimelineRecord}s are {@link Comparable} regarding their {@link TimelineRecord#timestamp()}.
+ */
 @Mixins( TimelineRecord.Mixin.class )
 public interface TimelineRecord
         extends Comparable<TimelineRecord>
 {
 
+    /**
+     * @return  Identity of the associated {@link Scheduler}
+     */
     @Immutable
     Property<String> schedulerIdentity();
 
+    /**
+     * @return  Timestamp of this record
+     */
     @Immutable
     Property<Long> timestamp();
 
+    /**
+     * @return  Name of the associated {@link Task}
+     */
     @Immutable
     Property<String> taskName();
 
+    /**
+     * @return  Tags of the associated {@link Task}
+     */
     @Immutable
     @UseDefaults
     Property<List<String>> taskTags();
@@ -43,6 +63,9 @@ public interface TimelineRecord
     @Immutable
     Property<TimelineRecordStep> step();
 
+    /**
+     * @return  Details text of this record
+     */
     @Immutable
     @Queryable( false )
     @UseDefaults

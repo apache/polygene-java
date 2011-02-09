@@ -17,9 +17,36 @@ import java.util.List;
 
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.unitofwork.UnitOfWork;
+
+import org.qi4j.library.scheduler.schedule.ScheduleRunner;
+import org.qi4j.library.scheduler.slaves.SchedulerWorkQueue;
 
 /**
  * Compose an Entity using this type to be able to Schedule it.
+ *
+ * A Task is wrapped in a {@link ScheduleRunner} before being run by {@link SchedulerWorkQueue}.
+ * {@link ScheduleRunner} wrap a {@link UnitOfWork} around the {@link Task#run()} invocation.
+ *
+ * Here is a simple example:
+ * <pre>
+ *  interface MyTaskEntity
+ *      extends Task, EntityComposite
+ *  {
+ *      Property<String> customState();
+ *      Association<AnotherEntity> anotherEntity();
+ *  }
+ *
+ *  abstract class MyTaskMixin
+ *      implements Runnable
+ *  {
+ *      @This MyTaskEntity me;
+ *      public void run()
+ *      {
+ *          me.customState().set( me.anotherEntity().get().doSomeStuff( me.customState().get() ) );
+ *      }
+ *  }
+ * </pre>
  */
 public interface Task
         extends Runnable

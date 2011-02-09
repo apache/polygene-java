@@ -18,18 +18,28 @@ import static org.qi4j.api.unitofwork.UnitOfWorkPropagation.Propagation.MANDATOR
 import java.util.Date;
 
 import org.qi4j.api.concern.Concerns;
+import org.qi4j.api.structure.Application;
 import org.qi4j.api.unitofwork.UnitOfWorkConcern;
 import org.qi4j.api.unitofwork.UnitOfWorkPropagation;
 
+import org.qi4j.library.scheduler.bootstrap.SchedulerAssembler;
 import org.qi4j.library.scheduler.constraints.CronExpression;
 import org.qi4j.library.scheduler.schedule.Schedule;
+import org.qi4j.library.scheduler.slaves.SchedulerGarbageCollector;
 import org.qi4j.library.scheduler.task.Task;
+import org.qi4j.library.scheduler.timeline.Timeline;
 
 /**
  * Scheduler.
  *
- * To make a Schedule durable, set it's durable property to true once its scheduled.
- * Durable Schedules that have no future run are removed by SchedulerGarbageCollector.
+ * This is the only interface you should use in your application for scheduling tasks.
+ * 
+ * See {@link SchedulerConfiguration} for configuration properties.
+ * See in {@link SchedulerAssembler} how to assemble a {@link Scheduler} and optional {@link Timeline}.
+ *
+ * By default, a {@link Schedule} is not durable. In other words, it do not survive an {@link Application} restart.
+ * To make a {@link Schedule} durable, set it's durable property to true once its scheduled.
+ * Durable {@link Schedule}s that have no future run are removed by {@link SchedulerGarbageCollector}.
  */
 @Concerns( UnitOfWorkConcern.class )
 public interface Scheduler

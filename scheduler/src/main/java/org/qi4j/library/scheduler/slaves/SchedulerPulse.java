@@ -24,11 +24,13 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 
+import org.qi4j.library.scheduler.Scheduler;
 import org.qi4j.library.scheduler.schedule.ScheduleEntity;
 import org.qi4j.library.scheduler.schedule.ScheduleRepository;
+import org.qi4j.library.scheduler.task.Task;
 
 /**
- * Heartbeat of the Scheduler, load runnable Tasks and enqueue them in the work queue.
+ * Heartbeat of the {@link Scheduler}, load runnable {@link Task}s and enqueue them in the {@link SchedulerWorkQueue}.
  */
 public class SchedulerPulse
         extends AbstractRhythmedSchedulerSlave

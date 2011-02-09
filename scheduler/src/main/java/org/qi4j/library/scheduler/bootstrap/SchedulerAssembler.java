@@ -40,6 +40,17 @@ import org.qi4j.library.scheduler.timeline.TimelineService;
  * Use this Assembler to add the Scheduler service to your application.
  * This Assembler provide a fluent api to programmatically configure configuration defaults and
  * activate the Timeline service assembly that allow to browse in past and future Task runs.
+ *
+ * Here is a full example:
+ * <pre>
+ *      new SchedulerAssembler().
+ *              visibleIn( Visibility.layer ).
+ *              withConfigAssembly( configModuleAssembly ).
+ *              withPulseRhythm( 60 ).
+ *              withGarbageCollectorRhythm( 600 ).
+ *              withTimeline().
+ *              assemble( testAssembly );
+ * </pre>
  */
 public class SchedulerAssembler
         implements Assembler

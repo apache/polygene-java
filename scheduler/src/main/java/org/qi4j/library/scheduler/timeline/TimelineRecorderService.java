@@ -27,10 +27,14 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-import org.qi4j.library.scheduler.SchedulerService;
 
+import org.qi4j.library.scheduler.SchedulerService;
+import org.qi4j.library.scheduler.schedule.ScheduleRunner;
 import org.qi4j.library.scheduler.task.Task;
 
+/**
+ * Used by {@link ScheduleRunner} to record {@link Task} runs.
+ */
 @Mixins( TimelineRecorderService.Mixin.class )
 public interface TimelineRecorderService
         extends ServiceComposite
@@ -43,6 +47,10 @@ public interface TimelineRecorderService
     TimelineRecord recordSuccess( Task task );
 
     /**
+     * Record a {@link Task} failure.
+     *
+     * Use the cause stacktrace as record details.
+     *
      * @param task  Failed Task
      * @param cause Failure cause
      * @return      TimelineRecord
