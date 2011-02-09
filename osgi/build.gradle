@@ -1,17 +1,17 @@
 dependencies {
-  compile(libraries.qi4j_core_api)
+  compile(project(":core:api"))
   compile(libraries.osgi_core)
   compile(libraries.osgi_compendium)
   compile(libraries.slf4j_api)
-  testCompile(libraries.qi4j_core_bootstrap)
   testCompile(libraries.mockito)
   testCompile(libraries.junit)
-  testRuntime(libraries.slf4j_simple)
-  testCompile(libraries.qi4j_core_testsupport)
-  testRuntime(libraries.qi4j_core_runtime)
-  testRuntime(libraries.qi4j_core_spi)
+  testCompile(project(":core:bootstrap"))
+  testCompile(project(":core:testsupport"))
+  testRuntime(project(":core:spi"))
+  testRuntime(project(":core:runtime"))
   testRuntime(libraries.asm)
   testRuntime(libraries.asm_commons)
+  testRuntime(libraries.slf4j_simple)
 }
 
 jar {

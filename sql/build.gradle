@@ -2,16 +2,16 @@
 postgresqlVersion='8.4-701.jdbc4'
 
 dependencies {
-  compile(libraries.qi4j_core_api)
-  compile(libraries.qi4j_core_spi)
-  compile(libraries.qi4j_core_bootstrap)
+  compile(project(":core:api"))
+  compile(project(":core:spi"))
+  compile(project(":core:bootstrap"))
   compile('commons-dbcp:commons-dbcp:1.4')
   compile('postgresql:postgresql:' + postgresqlVersion)
   compile(libraries.slf4j_api)
   testCompile(libraries.junit)
+  testCompile(project(":core:testsupport"))
+  testCompile(project(":core:runtime"))
   testRuntime(libraries.slf4j_simple)
-  testCompile(libraries.qi4j_core_testsupport)
-  testRuntime(libraries.qi4j_core_runtime)
 }
 
 jar {

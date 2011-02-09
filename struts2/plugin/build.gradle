@@ -1,18 +1,18 @@
 
 dependencies {
-  compile(libraries.qi4j_core_api)
-  compile(libraries.qi4j_core_spi)
-  compile(libraries.qi4j_core_bootstrap)
+  compile(project(":core:api"))
+  compile(project(":core:spi"))
+  compile(project(":core:bootstrap"))
   compile(libraries.slf4j_api)
   compile('org.apache.struts:struts2-core:' + strutsVersion)
   compile('javax.servlet:servlet-api:' + servletVersion)
   testCompile(libraries.junit)
+  testCompile(project(":core:testsupport"))
+  testRuntime(project(":core:spi"))
+  testRuntime(project(":core:runtime"))
   testRuntime(libraries.asm)
   testRuntime(libraries.asm_commons)
-  testRuntime(libraries.qi4j_core_spi)
   testRuntime(libraries.slf4j_simple)
-  testCompile(libraries.qi4j_core_testsupport)
-  testRuntime(libraries.qi4j_core_runtime)
 }
 
 jar {
