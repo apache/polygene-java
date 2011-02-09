@@ -1,8 +1,8 @@
 
 dependencies {
-  compile(project(':api'))
-  compile(project(':spi'))
-  compile(project(':bootstrap'))
+  compile(project(':core:api'))
+  compile(project(':core:spi'))
+  compile(project(':core:bootstrap'))
   compile(libraries.junit)
 
 }

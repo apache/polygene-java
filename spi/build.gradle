@@ -1,5 +1,5 @@
 dependencies {
-  compile(project(':api'))
+  compile(project(':core:api'))
   testCompile(libraries.junit)
 
 }

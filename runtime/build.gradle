@@ -1,8 +1,8 @@
 dependencies {
-  compile(project(':api'))
-  compile(project(':spi'))
-  compile(project(':bootstrap'))
-  compile(project(':testsupport'))
+  compile(project(':core:api'))
+  compile(project(':core:spi'))
+  compile(project(':core:bootstrap'))
+  compile(project(':core:testsupport'))
   compile(libraries.slf4j_api)
   compile(libraries.asm)
   compile(libraries.asm_util)
