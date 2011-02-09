@@ -1,16 +1,16 @@
 dependencies {
-  compile(libraries.qi4j_core_api)
-  compile(libraries.qi4j_core_spi)
+  compile(project(":core:api"))
+  compile(project(":core:spi"))
   compile(libraries.slf4j_api)
-  testCompile(libraries.qi4j_core_bootstrap)
   testCompile(libraries.junit)
-  testCompile(project(':entitystore-jdbm'))
-  testCompile(project(':indexing-rdf'))
-  testRuntime(libraries.slf4j_simple)
-  testCompile(libraries.qi4j_core_testsupport)
-  testRuntime(libraries.qi4j_core_runtime)
+  testCompile(project(":core:bootstrap"))
+  testCompile(project(':extensions:entitystore-jdbm'))
+  testCompile(project(':extensions:indexing-rdf'))
+  testCompile(project(":core:testsupport"))
+  testRuntime(project(":core:runtime"))
   testRuntime(libraries.asm)
   testRuntime(libraries.asm_commons)
+  testRuntime(libraries.slf4j_simple)
 }
 
 jar {

@@ -1,0 +1,35 @@
+solrVersion="1.4.1"
+
+dependencies {
+  compile(project(":core:api"))
+  compile(project(":core:spi"))
+  compile(project(":core:bootstrap"))
+  compile(project(":libraries:fileconfig"))
+  compile(project(":libraries:rdf"))
+  compile(libraries.slf4j_api)
+  compile("org.apache.solr:solr-core:$solrVersion")
+  compile("org.apache.solr:solr-solrj:$solrVersion")
+  testCompile(libraries.junit)
+  testCompile(project(":core:testsupport"))
+  testRuntime(project(":core:runtime"))
+  testRuntime("javax.servlet:servlet-api:$servletVersion")
+  testRuntime(libraries.asm)
+  testRuntime(libraries.asm_commons)
+  testRuntime(libraries.slf4j_simple)
+}
+
+jar {
+  manifest {
+    symbolicName='org.qi4j.index.rdf'
+    description = "Qi4j RDF Indexing Extension"
+    name = "Qi4j Extension - Indexing - RDF"
+    instruction 'Export-Package', 
+				symbolicName +';version=' + version,
+				symbolicName +'.query;version=' + version,
+				symbolicName +'.indexing;version=' + version,
+				symbolicName +'.assembly;version=' + version,
+				symbolicName +';version=' + version
+    instruction 'Private-Package', symbolicName + '.query.internal'
+    instruction 'Import-Package', '*'
+  }
+}

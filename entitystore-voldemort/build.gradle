@@ -11,10 +11,10 @@ repositories {
 }
 
 dependencies {
-  compile(libraries.qi4j_core_api)
-  compile(libraries.qi4j_core_spi)
-  compile(libraries.qi4j_core_bootstrap)
-  compile(libraries.qi4j_lib_locking)
+  compile(project(":core:api"))
+  compile(project(":core:spi"))
+  compile(project(":core:bootstrap"))
+  compile(project(":libraries:locking"))
   compile(libraries.slf4j_api)
   compile('voldemort:voldemort:' + voldemortVersion )
   compile('com.google.collections:google-collections:' + googleCollectionsVersion )
@@ -28,13 +28,12 @@ dependencies {
   testRuntime('commons-lang:commons-lang:2.4' )
   testRuntime('org.mortbay.jetty:jetty:' + jettyVersion )
   testRuntime('org.mortbay.jetty:jetty-util:' + jettyVersion )
-  testCompile(libraries.qi4j_core_bootstrap)
   testCompile(libraries.junit)
-  testRuntime(libraries.slf4j_simple)
-  testCompile(libraries.qi4j_core_testsupport)
-  testRuntime(libraries.qi4j_core_runtime)
+  testCompile(project(":core:testsupport"))
+  testRuntime(project(":core:runtime"))
   testRuntime(libraries.asm)
   testRuntime(libraries.asm_commons)
+  testRuntime(libraries.slf4j_simple)
 }
 
 jar {

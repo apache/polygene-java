@@ -5,10 +5,10 @@ repositories {
 }
 
 dependencies {
-  compile(libraries.qi4j_core_api)
-  compile(libraries.qi4j_core_spi)
-  compile('org.qi4j.library:qi4j-lib-rdf:' + qi4jVersion)
-  compile(project(':indexing-rdf'))
+  compile(project(":core:api"))
+  compile(project(":core:api"))
+  compile(project(":libraries:rdf"))
+  compile(project(':extensions:indexing-rdf'))
   compile(libraries.slf4j_api)
   compile('org.openrdf.sesame:sesame-queryresultio-sparqlxml:' + rdfVersion)
   compile('org.openrdf.sesame:sesame-queryresultio-sparqljson:' + rdfVersion)
@@ -17,14 +17,14 @@ dependencies {
   compile('org.restlet.jee:org.restlet.ext.servlet:' + restletVersion)
   compile('org.restlet.jee:org.restlet.ext.xml:' + restletVersion)
   compile('javax.servlet:servlet-api:' + servletVersion)
-  testCompile('org.qi4j.library:qi4j-lib-http:' + qi4jVersion)
-  testCompile(libraries.qi4j_core_bootstrap)
+  testCompile(project(":libraries:http"))
+  testCompile(project(":core:bootstrap"))
+  testCompile(project(":core:testsupport"))
   testCompile(libraries.junit)
-  testRuntime(libraries.slf4j_simple)
-  testCompile(libraries.qi4j_core_testsupport)
-  testRuntime(libraries.qi4j_core_runtime)
+  testRuntime(project(":core:runtime"))
   testRuntime(libraries.asm)
   testRuntime(libraries.asm_commons)
+  testRuntime(libraries.slf4j_simple)
 }
 
 jar {
