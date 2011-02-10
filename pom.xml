@@ -38,6 +38,7 @@
         <module>logging</module>
         <module>osgi</module>
         <module>rdf</module>
+        <module>scheduler</module>
         <module>scripting</module>
         <module>struts2</module>
         <module>spring</module>
