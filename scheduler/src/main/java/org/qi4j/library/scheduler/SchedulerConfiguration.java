@@ -28,7 +28,7 @@ public interface SchedulerConfiguration
 {
 
     /**
-     * @return Number of worker threads, optinal and defaults to the number of available cores.
+     * @return Number of worker threads, optional and defaults to the number of available cores.
      */
     @Optional
     Property<Integer> workersCount();
@@ -46,7 +46,7 @@ public interface SchedulerConfiguration
     Property<Integer> pulseRhythmSeconds();
 
     /**
-     * @return SchedulerGarbageCollector rythm in seconds, optional and default to 60.
+     * @return SchedulerGarbageCollector rythm in seconds, optional and default to 600.
      */
     @Optional
     Property<Integer> garbageCollectorRhythmSeconds();

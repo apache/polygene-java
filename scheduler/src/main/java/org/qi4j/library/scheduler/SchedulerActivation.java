@@ -42,7 +42,7 @@ public class SchedulerActivation
 
     private static final Logger LOGGER = LoggerFactory.getLogger( Scheduler.class );
     private static final int DEFAULT_PULSE_RHYTHM = 60;
-    private static final int DEFAULT_GC_RHYTHM = 60;
+    private static final int DEFAULT_GC_RHYTHM = 600;
     private static final int DEFAULT_WORKERS_COUNT = Runtime.getRuntime().availableProcessors();
     private static final int DEFAULT_WORKQUEUE_SIZE = 10;
     @Structure
