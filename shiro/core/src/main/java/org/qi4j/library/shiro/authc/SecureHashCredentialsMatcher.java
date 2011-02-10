@@ -17,6 +17,7 @@ import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
+import org.qi4j.library.shiro.Shiro;
 import org.qi4j.library.shiro.crypto.HashFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +26,7 @@ public final class SecureHashCredentialsMatcher
         implements CredentialsMatcher
 {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger( SecureHashCredentialsMatcher.class );
+    private static final Logger LOGGER = LoggerFactory.getLogger( Shiro.LOGGER_NAME );
 
     public boolean doCredentialsMatch( AuthenticationToken token, AuthenticationInfo info )
     {

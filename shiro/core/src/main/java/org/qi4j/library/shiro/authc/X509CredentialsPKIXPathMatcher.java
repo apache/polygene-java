@@ -24,6 +24,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.x509.CertPathReviewerException;
 import org.bouncycastle.x509.ExtendedPKIXBuilderParameters;
 import org.bouncycastle.x509.PKIXCertPathReviewer;
+import org.qi4j.library.shiro.Shiro;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +40,7 @@ public class X509CredentialsPKIXPathMatcher
         implements CredentialsMatcher
 {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger( X509CredentialsPKIXPathMatcher.class );
+    private static final Logger LOGGER = LoggerFactory.getLogger( Shiro.LOGGER_NAME );
 
     public boolean doCredentialsMatch( AuthenticationToken token, AuthenticationInfo info )
     {

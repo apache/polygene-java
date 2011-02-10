@@ -25,6 +25,7 @@ import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+import org.qi4j.library.shiro.Shiro;
 import org.qi4j.library.shiro.domain.permissions.Permission;
 import org.qi4j.library.shiro.domain.permissions.Role;
 import org.qi4j.library.shiro.domain.permissions.RoleAssignee;
@@ -38,7 +39,7 @@ public abstract class AbstractQi4jRealm
         implements RealmActivator
 {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger( AbstractQi4jRealm.class );
+    private static final Logger LOGGER = LoggerFactory.getLogger( Shiro.LOGGER_NAME );
     @Structure
     protected UnitOfWorkFactory uowf;
 

@@ -29,6 +29,7 @@ import org.qi4j.api.common.AppliesTo;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.concern.ConcernOf;
 import org.qi4j.api.injection.scope.Invocation;
+import org.qi4j.library.shiro.Shiro;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +44,7 @@ public class SecurityConcern
         implements InvocationHandler
 {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger( SecurityConcern.class );
+    private static final Logger LOGGER = LoggerFactory.getLogger( Shiro.LOGGER_NAME );
     @Optional
     @Invocation
     private RequiresAuthentication requiresAuthentication;

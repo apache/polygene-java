@@ -21,6 +21,7 @@ import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
+import org.qi4j.library.shiro.Shiro;
 import org.qi4j.library.shiro.authc.X509AuthenticationInfo;
 import org.qi4j.library.shiro.authc.X509AuthenticationToken;
 import org.qi4j.library.shiro.authc.X509CredentialsPKIXPathMatcher;
@@ -32,7 +33,7 @@ public abstract class AbstractX509Qi4jRealm
         extends AbstractQi4jRealm
 {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger( AbstractX509Qi4jRealm.class );
+    private static final Logger LOGGER = LoggerFactory.getLogger( Shiro.LOGGER_NAME );
 
     public AbstractX509Qi4jRealm()
     {
