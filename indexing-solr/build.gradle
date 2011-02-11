@@ -1,4 +1,3 @@
-solrVersion="1.4.1"
 
 dependencies {
   compile(project(":core:api"))
