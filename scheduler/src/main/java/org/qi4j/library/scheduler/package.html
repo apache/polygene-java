@@ -1,0 +1,125 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+    <head>
+        <title>Qi4j Library - Scheduler</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+    <body>
+
+        <h2>Qi4j Library - Scheduler</h2>
+
+        <h3>Logging</h3>
+        <p>The SLF4J Logger used by this library is named "org.qi4j.library.scheduler".</p>
+
+        <h3>Assembly</h3>
+        <p>Use {@link SchedulerAssembler} to add the {@link Scheduler} service to your {@link Application}. This
+            Assembler provide a fluent api to programmatically configure configuration defaults and activate the
+            {@link Timeline} service assembly that allow to browse in past and future {@link Task} runs.</p>
+        <p>Here is a full example:</p>
+        <pre>
+        new SchedulerAssembler().
+              visibleIn( Visibility.layer ).
+              withConfigAssembly( configModuleAssembly ).
+              withPulseRhythm( 60 ).
+              withGarbageCollectorRhythm( 600 ).
+              withTimeline().
+              assemble( moduleAssembly );
+        </pre>
+        <p>See {@link SchedulerConfiguration} for configuration properties details, the values show above are the defaults.</p>
+
+        <h3>Writing Tasks</h3>
+        <p>To write a schedulable Task, compose an EntityComposite using {@link Task} to be able to schedule it.</p>
+        <p>A Task is wrapped in a {@link ScheduleRunner} before being run by {@link SchedulerWorkQueue}.
+            {@link ScheduleRunner} wrap a {@link UnitOfWork} around the {@link Task#run()} invocation.</p>
+        <p>Here is a simple example:</p>
+        <pre>
+        interface MyTaskEntity
+            extends Task, EntityComposite
+        {
+            Property&lt;String&gt; customState();
+            Association&lt;AnotherEntity&gt; anotherEntity();
+        }
+
+        abstract class MyTaskMixin
+            implements Runnable
+        {
+            @This MyTaskEntity me;
+            public void run()
+            {
+                me.customState().set( me.anotherEntity().get().doSomeStuff( me.customState().get() ) );
+            }
+        }
+        </pre>
+        <p>{@link Task}s have a mandatory name property and an optional tags property. Theses properties get copied in
+            each {@link TimelineRecord}s recorder when the Timeline feature is activated.</p>
+
+        <h3>Scheduling Tasks</h3>
+        <p>{@link Task}s are scheduled using the {@Sheduler} service. This creates a {@link Schedule} associated to
+            the {@link Task} that allows you to know if it is running, to change it's cron expression and set it's
+            durability.</p>
+        <p>By default, a {@link Schedule} is not durable. In other words, it do not survive an {@link Application}
+            restart. To make a {@link Schedule} durable, set it's durable property to true once its scheduled. Durable
+            {@link Schedule}s that have no future run are removed by {@link SchedulerGarbageCollector}.</p>
+        <br/>
+        <p>There are two ways to schedule a {@link Task} using the {@link Scheduler} service: once or with a cron
+            expression.</p>
+
+        <h4>Scheduling once</h4>
+        <p>This is the easiest way to run a background {@link Task} once after a given initial delay in seconds</p>
+        <pre>
+        @Service Scheduler scheduler;
+        public void function() {
+            MyTaskEntity myTask = ...;
+            Schedule schedule = scheduler.scheduleOnce( myTask, 10 ); // myTask will be run in 10 seconds from now
+        }
+        </pre>
+        <p>Note that there is no point in making such a {@link Schedule} durable because it won't be run repeatedly.</p>
+
+        <h4>Scheduling using a cron expression</h4>
+        <p>Cron expressions handling is based on the <a href="https://github.com/eskatos/sked">sked</a> project.</p>
+        <p>Here is an exceprt from it's javadoc:</p>
+        <blockquote>
+            <p>Cron expression parsing is based on the GNU crontab manpage that can be found here:
+                <a href="http://unixhelp.ed.ac.uk/CGI/man-cgi?crontab+5">http://unixhelp.ed.ac.uk/CGI/man-cgi?crontab+5</a>.</p>
+            <p>The following extensions are used:</p>
+            <ul>
+                <li>a mandatory field is added at the begining: seconds.</li>
+                <li>a special string is added: @minutely</li>
+                <li>a special character is added: ? to choose between dayOfMonth and dayOfWeek</li>
+            </ul>
+            <p>The ? special char has the same behavior as in the Quartz Scheduler expression. The wikipedia page
+                <a href="http://en.wikipedia.org/wiki/CRON_expression">http://en.wikipedia.org/wiki/CRON_expression</a>
+                explains Quartz Scheduler expression, not simple cron expressions. You'll find there about the ? special
+                char and maybe that some other extensions you would like to use are missing in this project.</p>
+        </blockquote>
+        <p>To sum up, cron expressions used here have a precision of one second. The following special strings can be used:</p>
+        <ul>
+            <li>@minutely</li>
+            <li>@hourly</li>
+            <li>@midnight or @daily</li>
+            <li>@weekly</li>
+            <li>@monthly</li>
+            <li>@annualy or @yearly</li>
+        </ul>
+
+        <h4>Things to know</h4>
+        <ul>
+            <li>The pulse rhythm configuration sets the pace of the {@link Scheduler} heartbeat. If you run several
+                schedulers in the same application with the same pulse rhythm they will be synchronous. Plus, if you run
+                several schedulers in several applications in different computers with the same pulse rhythm they will
+                be synchronous if the computers clocks are synchronous.</li>
+            <li>Remember that the pulse rhythm dictate the precision of the scheduler, by default it is set at 60
+                seconds and allow to schedule with a minutely precision, if you want to go seconds, change it
+                accordingly.</li>
+            <li>Thanks to the {@link UnitOfWork} handling in Qi4j, you can split the work done in your {@link Task}s in
+                several {@link UnitOfWork}s, the one around the {@link Task#run()} invocation will then be paused.</li>
+        </ul>
+
+        <h3>Observing the Timeline</h3>
+        <p>{@link Timeline} allow to browse in past and future Task runs. This feature is available only if you activate
+            the {@link Timeline} assembly in the {@link SchedulerAssembler}, see above.</p>
+        <p>Once activated, {@link ScheduleRunner}s record {@link Task} success and failures. Then, the {@link Timeline}
+            service allow to browse in past (recorded) and in anticipated (future) Task runs.</p>
+        
+    </body>
+</html>
