@@ -5,6 +5,7 @@ osgiVersion = '4.2.0'
 servletVersion = '2.5'
 rdfVersion = '2.3.2'
 restletVersion = '2.0.4'
+solrVersion="1.4.1"
 jdbmVersion = '1.0'
 antVersion = '1.8.1'
 junitVersion = '4.8.1'
@@ -15,7 +16,6 @@ easyMockVersion = '3.0'
 
 targetCompatibility = "1.6"
 sourceCompatibility = "1.6"
-version = System.properties.version ?: "0"
 
 allprojects {
   apply plugin: 'eclipse'
@@ -25,6 +25,7 @@ allprojects {
   apply plugin: 'project-report'
 
   defaultTasks 'build'
+  version = System.properties.version ?: "0"
   idea.javaVersion = '1.6'
 
   repositories {
