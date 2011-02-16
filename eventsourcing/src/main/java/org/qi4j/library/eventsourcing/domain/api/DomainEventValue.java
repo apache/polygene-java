@@ -41,6 +41,5 @@ public interface DomainEventValue
     Property<String> name();
 
     // Method parameters as JSON
-
     Property<String> parameters();
 }

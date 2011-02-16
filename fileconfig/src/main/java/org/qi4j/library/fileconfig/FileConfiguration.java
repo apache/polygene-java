@@ -30,9 +30,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.text.MessageFormat;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Service for accessing application-specific directories. These will default to
@@ -43,203 +46,252 @@ import java.util.ResourceBundle;
  */
 @Mixins(FileConfiguration.Mixin.class)
 public interface FileConfiguration
-      extends ServiceComposite, Activatable
+        extends ServiceComposite, Activatable
 {
-   public enum OS
-   {
-      windows, unix, mac
-   }
+    public enum OS
+    {
+        windows, unix, mac
+    }
 
-   OS os();
+    OS os();
 
-   File user();
+    File user();
 
-   File configurationDirectory();
+    File configurationDirectory();
 
-   File dataDirectory();
+    File dataDirectory();
 
-   File temporaryDirectory();
+    File temporaryDirectory();
 
-   File cacheDirectory();
+    File cacheDirectory();
 
-   File logDirectory();
+    File logDirectory();
 
-   interface Data
-   {
-      Property<OS> os();
+    interface Data
+    {
+        Property<OS> os();
 
-      Property<String> application();
+        Property<String> application();
 
-      Property<File> user();
+        Property<File> user();
 
-      Property<File> configuration();
+        Property<File> configuration();
 
-      Property<File> data();
+        Property<File> data();
 
-      Property<File> temporary();
+        Property<File> temporary();
 
-      Property<File> cache();
+        Property<File> cache();
 
-      Property<File> log();
-   }
+        Property<File> log();
+    }
 
-   abstract class Mixin
-         implements FileConfiguration, Activatable
-   {
-      final Logger logger = LoggerFactory.getLogger( getClass().getName() );
+    abstract class Mixin
+            implements FileConfiguration, Activatable
+    {
+        final Logger logger = LoggerFactory.getLogger( getClass().getName() );
 
-      @This
-      Data data;
+        @This
+        Data data;
 
-      @Uses
-      ServiceDescriptor descriptor;
+        @Uses
+        ServiceDescriptor descriptor;
 
-      @Structure
-      Application app;
+        @Structure
+        Application app;
 
-      public void activate() throws Exception
-      {
-         OS os = detectOS();
+        public void activate() throws Exception
+        {
+            OS os = detectOS();
 
-         data.os().set( os );
-         logger.info( "Operating system:" + os.name() );
+            data.os().set( os );
+            logger.info( "Operating system:" + os.name() );
 
-         // Get user directory
-         String user = System.getenv( "USERPROFILE" ); // On Windows we use this instead of user.home
-         if (user == null)
-            user = System.getProperty( "user.home" );
+            // Get bundle with application name and configured directories
+            ResourceBundle bundle = ResourceBundle.getBundle( FileConfiguration.class.getName(), new Locale( os.name() ) );
 
-         data.user().set(new File(user));
+            Map arguments = getArguments(os);
 
-         // Get bundle with application name and configured directories
-         ResourceBundle bundle = ResourceBundle.getBundle( FileConfiguration.class.getName(), new Locale( os.name() ) );
+            data.configuration().set( new File( format( bundle.getString( "configuration" ), arguments ) ) );
+            data.data().set( new File( format( bundle.getString( "data" ), arguments ) ) );
+            data.temporary().set( new File( format( bundle.getString( "temporary" ), arguments ) ) );
+            data.cache().set( new File( format( bundle.getString( "cache" ), arguments ) ) );
+            data.log().set( new File( format( bundle.getString( "log" ), arguments ) ) );
 
-         // Set application name. This is taken from the Qi4j application but can be overriden by a system property
-         String application = System.getProperty( "application", app.name() );
+            autoCreateDirectories();
 
-         if (!app.mode().equals(Application.Mode.production))
-            application += "-"+app.mode().name();
+            testCleanup();
+        }
 
-         data.application().set( application );
+        private Map getArguments( OS os )
+        {
+            // Get user directory
+            String user = System.getenv( "USERPROFILE" ); // On Windows we use this instead of user.home
+            if (user == null)
+                user = System.getProperty( "user.home" );
 
-         // Temp dir
-         String temp = System.getProperty( "java.io.tmpdir" );
+            data.user().set( new File( user ) );
 
-         // Arguments available to use in directory specifications
-         String[] args = new String[]{application, user, os.name(), temp};
+            // Set application name. This is taken from the Qi4j application but can be overriden by a system property
+            String application = System.getProperty( "application", app.name() );
 
-         data.configuration().set( new File( MessageFormat.format( bundle.getString( "configuration" ), args ) ) );
-         data.data().set( new File( MessageFormat.format( bundle.getString( "data" ), args ) ) );
-         data.temporary().set( new File( MessageFormat.format( bundle.getString( "temporary" ), args ) ) );
-         data.cache().set( new File( MessageFormat.format( bundle.getString( "cache" ), args ) ) );
-         data.log().set( new File( MessageFormat.format( bundle.getString( "log" ), args ) ) );
+            if (!app.mode().equals( Application.Mode.production ))
+                application += "-" + app.mode().name();
 
-         autoCreateDirectories();
+            data.application().set( application );
 
-         testCleanup();
-      }
+            // Temp dir
+            String temp = System.getProperty( "java.io.tmpdir" );
+            if (temp.endsWith( "/" ))
+                temp = temp.substring( 0, temp.length()-1 );
 
-      public void passivate() throws Exception
-      {
-         testCleanup();
-      }
+            // Arguments available to use in directory specifications
+            Map arguments = new HashMap<String, String>();
+            arguments.put( "application", application );
+            arguments.put( "user", user );
+            arguments.put( "os", os );
+            arguments.put( "temp", temp );
 
-      public OS os()
-      {
-         return data.os().get();
-      }
-
-      public File user()
-      {
-          return data.user().get();
-      }
-
-      public File configurationDirectory()
-      {
-         return data.configuration().get();
-      }
-
-      public File dataDirectory()
-      {
-         return data.data().get();
-      }
-
-      public File temporaryDirectory()
-      {
-         return data.temporary().get();
-      }
-
-      public File cacheDirectory()
-      {
-         return data.cache().get();
-      }
-
-      public File logDirectory()
-      {
-         return data.log().get();
-      }
-
-      private void testCleanup()
-      {
-         if (app.mode().equals( Application.Mode.test ) || app.mode().equals(Application.Mode.development))
-         {
-            // Delete test data
-            delete( configurationDirectory() );
-            delete( dataDirectory() );
-            delete( temporaryDirectory() );
-            delete( cacheDirectory() );
-            delete( logDirectory() );
-         }
-      }
-
-
-      private boolean delete( File file )
-      {
-         if (!file.exists())
-            return true;
-
-         if (file.isFile())
-         {
-            return file.delete();
-         } else
-         {
-            for (File childFile : file.listFiles())
+            // Add environment variables
+            for (Map.Entry<String, String> envVariable : System.getenv().entrySet())
             {
-               if (!delete( childFile ))
-                  return false;
+                arguments.put( "environment."+envVariable.getKey(), envVariable.getValue() );
+            }
+            // Add system properties
+            for (Map.Entry<Object, Object> envVariable : System.getProperties().entrySet())
+            {
+                arguments.put( "system."+envVariable.getKey(), envVariable.getValue() );
             }
 
-            return file.delete();
-         }
-      }
+            return arguments;
+        }
 
-      private OS detectOS()
-      {
-         String osName = System.getProperty( "os.name" ).toLowerCase();
-         OS os;
-         if (osName.indexOf( "win" ) != -1)
-            os = OS.windows;
-         else if (osName.indexOf( "mac" ) != -1)
-            os = OS.mac;
-         else
-            os = OS.unix;
-         return os;
-      }
+        public void passivate() throws Exception
+        {
+            testCleanup();
+        }
 
-      private void autoCreateDirectories()
-      {
-         // Create directories
-         if (!configurationDirectory().exists() && !configurationDirectory().mkdirs())
-            throw new IllegalStateException( "Could not create configuration directory(" + configurationDirectory() + ")" );
-         if (!dataDirectory().exists() && !dataDirectory().mkdirs())
-            throw new IllegalStateException( "Could not create data directory(" + dataDirectory() + ")" );
-         if (!temporaryDirectory().exists() && !temporaryDirectory().mkdirs())
-            throw new IllegalStateException( "Could not create temporary directory(" + temporaryDirectory() + ")" );
-         if (!cacheDirectory().exists() && !cacheDirectory().mkdirs())
-            throw new IllegalStateException( "Could not create cache directory(" + cacheDirectory() + ")" );
-         if (!logDirectory().exists() && !logDirectory().mkdirs())
-            throw new IllegalStateException( "Could not create log directory(" + logDirectory() + ")" );
-      }
+        public OS os()
+        {
+            return data.os().get();
+        }
 
-   }
+        public File user()
+        {
+            return data.user().get();
+        }
+
+        public File configurationDirectory()
+        {
+            return data.configuration().get();
+        }
+
+        public File dataDirectory()
+        {
+            return data.data().get();
+        }
+
+        public File temporaryDirectory()
+        {
+            return data.temporary().get();
+        }
+
+        public File cacheDirectory()
+        {
+            return data.cache().get();
+        }
+
+        public File logDirectory()
+        {
+            return data.log().get();
+        }
+
+        private void testCleanup()
+        {
+            if (app.mode().equals( Application.Mode.test ) || app.mode().equals( Application.Mode.development ))
+            {
+                // Delete test data
+                delete( configurationDirectory() );
+                delete( dataDirectory() );
+                delete( temporaryDirectory() );
+                delete( cacheDirectory() );
+                delete( logDirectory() );
+            }
+        }
+
+
+        private boolean delete( File file )
+        {
+            if (!file.exists())
+                return true;
+
+            if (file.isFile())
+            {
+                return file.delete();
+            } else
+            {
+                for (File childFile : file.listFiles())
+                {
+                    if (!delete( childFile ))
+                        return false;
+                }
+
+                return file.delete();
+            }
+        }
+
+        private OS detectOS()
+        {
+            String osName = System.getProperty( "os.name" ).toLowerCase();
+            OS os;
+            if (osName.indexOf( "win" ) != -1)
+                os = OS.windows;
+            else if (osName.indexOf( "mac" ) != -1)
+                os = OS.mac;
+            else
+                os = OS.unix;
+            return os;
+        }
+
+        private void autoCreateDirectories()
+        {
+            // Create directories
+            if (!configurationDirectory().exists() && !configurationDirectory().mkdirs())
+                throw new IllegalStateException( "Could not create configuration directory(" + configurationDirectory() + ")" );
+            if (!dataDirectory().exists() && !dataDirectory().mkdirs())
+                throw new IllegalStateException( "Could not create data directory(" + dataDirectory() + ")" );
+            if (!temporaryDirectory().exists() && !temporaryDirectory().mkdirs())
+                throw new IllegalStateException( "Could not create temporary directory(" + temporaryDirectory() + ")" );
+            if (!cacheDirectory().exists() && !cacheDirectory().mkdirs())
+                throw new IllegalStateException( "Could not create cache directory(" + cacheDirectory() + ")" );
+            if (!logDirectory().exists() && !logDirectory().mkdirs())
+                throw new IllegalStateException( "Could not create log directory(" + logDirectory() + ")" );
+        }
+
+        private String format( String configuration, Map arguments )
+        {
+            Pattern paramPattern = Pattern.compile( "\\{(.*?)\\}" );
+
+            Matcher matcher = paramPattern.matcher( configuration );
+
+            StringBuffer buffer = new StringBuffer();
+            int lastEnd = 0;
+            while (matcher.find())
+            {
+                buffer.append( configuration.substring( lastEnd, matcher.start() ) );
+                lastEnd = matcher.end();
+
+                String var = matcher.group(1);
+                Object value = arguments.get( var );
+
+                if (value != null)
+                    buffer.append( format(value.toString(), arguments) );
+                else
+                    throw new IllegalArgumentException( "Illegal file configuration parameter:"+var );
+            }
+            buffer.append( configuration.substring( lastEnd ) );
+
+            return buffer.toString();
+        }
+    }
 }
