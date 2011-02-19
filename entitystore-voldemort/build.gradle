@@ -1,10 +1,4 @@
 
-voldemortVersion = '0.81'
-googleCollectionsVersion = '1.0'
-sleepycatVersion='4.0.103'
-log4jVersion='1.2.16'
-jettyVersion='6.1.22'
-
 repositories {
   mavenRepo name: 'clojars-repo', urls: 'http://clojars.org/repo'
   mavenRepo name: 'oracle-repo', urls: 'http://download.oracle.com/maven'

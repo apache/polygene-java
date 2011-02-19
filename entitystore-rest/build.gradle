@@ -16,7 +16,7 @@ dependencies {
   compile('org.restlet.jee:org.restlet.ext.atom:' + restletVersion)
   compile('org.restlet.jee:org.restlet.ext.servlet:' + restletVersion)
   compile('org.restlet.jee:org.restlet.ext.xml:' + restletVersion)
-  compile('javax.servlet:servlet-api:' + servletVersion)
+  compile("javax.servlet:servlet-api:$servletVersion")
   testCompile(project(":libraries:http"))
   testCompile(project(":core:bootstrap"))
   testCompile(project(":core:testsupport"))
