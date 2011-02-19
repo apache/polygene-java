@@ -1,0 +1,100 @@
+
+repositories {
+  mavenRepo id: 'maven2-repository.dev.java.net', name: "Java.net Repository for Maven", urls: "http://download.java.net/maven/2"
+}
+
+dependencies {
+  compile(project(":core:api"))
+  compile(project(":core:bootstrap"))
+  compile(project(":libraries:constraints"))
+  compile(project(":extensions:indexing-rdf"))
+  compile(project(":libraries:rdf"))
+  compile(project(":libraries:spring"))
+  compile(project(":tools:envisage"))
+  compile(libraries.slf4j_api)
+
+  compile "org.springframework:spring-webmvc:$springVersion"
+  compile "org.springframework:spring-orm:$springVersion"
+  compile "org.springframework:spring-jdbc:$springVersion"
+  compile "org.springframework:spring-aop:$springVersion"
+  compile "org.springframework:spring-jms:$springVersion"
+
+  compile "org.hibernate:hibernate:3.2.5.ga"
+  compile "org.hibernate:hibernate-annotations:3.3.0.ga"
+  compile "org.hibernate:hibernate-commons-annotations:3.3.0.ga"
+
+  compile "commons-lang:commons-lang:2.4"
+  compile "commons-io:commons-io:1.4"
+  compile "commons-dbcp:commons-dbcp:1.2.2"
+
+  compile "hsqldb:hsqldb:1.8.0.7"
+  compile "javax.jms:jms:1.1"
+  compile "javax.servlet:servlet-api:2.5"
+  compile "javax.servlet:jstl:1.1.2"
+  compile "taglibs:standard:1.1.2"
+  compile "org.slf4j:slf4j-simple:$slf4jVersion"
+  compile "javax.jws:jsr181-api:1.0-MR1"
+
+  compile( "commons-logging:commons-logging:1.1" ) {
+    exclude module: 'avalon-framework:avalon-framework'
+    exclude module: 'logkit:logkit'
+  }
+
+  compile( "org.apache.activemq:activemq-core:5.3.0" ) {
+    exclude module: 'org.apache.activemq:activeio-core'
+    exclude module: 'javax.xml:jaxb-api'
+  }
+
+  compile( "org.jvnet.jax-ws-commons.spring:jaxws-spring:1.8" ) {
+    exclude module: 'streambuffer'
+    exclude module: 'spring'
+    exclude module: 'stax-ex'
+    exclude module: 'activation'
+  }
+
+  runtime "opensymphony:sitemesh:2.4.1"
+  runtime "com.sun.xml.ws:jaxws-rt:2.2"
+  runtime "com.sun.istack:istack-commons-runtime:2.2"
+
+  runtime( "org.jvnet.staxex:stax-ex:1.2" ) {
+    exclude module: 'activation'
+  }
+
+  runtime( "com.sun.xml.stream.buffer:streambuffer:0.8" ) {
+    exclude module: 'activation'
+  }
+
+  testCompile(libraries.junit)
+  testCompile(libraries.easymock)
+  testCompile(project(":core:testsupport"))
+  testCompile "org.springframework:spring-test:$springVersion"
+
+  testRuntime(libraries.asm)
+  testRuntime(libraries.asm_commons)
+  testRuntime(libraries.slf4j_simple)
+  testRuntime(project(":core:spi"))
+  testRuntime(project(":core:runtime"))
+}
+
+jar {
+  manifest {
+    description = "Conversion of the DDDsample project on SourceForge, converted to Qi4j."
+    name = "Qi4j Sample - DDD Sample, take 1"
+    instruction 'Export-Package', symbolicName +';version=' + version
+    instruction 'Private-Package', symbolicName + '.internal'
+    instruction 'Import-Package', symbolicName + ';version="[' + version +',2.0)"',
+				'javax.security.auth',
+                'org.qi4j.api.common;version="['+version+',2)"',
+                'org.qi4j.api.composite;version="['+version+',2)"',
+                'org.qi4j.api.concern;version="['+version+',2)"',
+                'org.qi4j.api.entity;version="['+version+',2)"',
+                'org.qi4j.api.entity.association;version="['+version+',2)"',
+                'org.qi4j.api.injection;version="['+version+',2)"',
+                'org.qi4j.api.injection.scope;version="['+version+',2)"',
+                'org.qi4j.api.mixin;version="['+version+',2)"',
+                'org.qi4j.api.property;version="['+version+',2)"',
+                'org.qi4j.api.service;version="['+version+',2)"',
+                'org.qi4j.api.unitofwork;version="['+version+',2)"',
+                'org.qi4j.api.value;version="['+version+',2)"'
+  }
+}

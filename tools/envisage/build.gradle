@@ -1,0 +1,48 @@
+dependencies {
+  compile(project(":core:api"))
+  compile(project(":core:bootstrap"))
+  compile(project(":libraries:logging"))
+  compile(project(":libraries:rdf"))
+  compile(project(":extensions:indexing-rdf"))
+  compile(libraries.slf4j_api)
+  testCompile(libraries.junit)
+  testRuntime(libraries.asm)
+  testRuntime(libraries.asm_commons)
+  testRuntime(libraries.slf4j_simple)
+  testCompile(project(":core:testsupport"))
+  testRuntime(project(":core:spi"))
+  testRuntime(project(":core:runtime"))
+
+  compile "org.prefuse:prefuse:20071021" /* {
+     Exclusion needed;
+      <exclusion>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-core</artifactId>
+      </exclusion>
+  } */
+  compile "com.jgoodies:looks:2.2.2"
+  compile "org.apache.pdfbox:pdfbox:0.8.0-incubating"
+}
+
+jar {
+  manifest {
+    description = "Visualizer of an Qi4j Application Structure."
+    name = "Qi4j Envisage"
+    instruction 'Export-Package', symbolicName +';version=' + version
+    instruction 'Private-Package', symbolicName + '.internal'
+    instruction 'Import-Package', symbolicName + ';version="[' + version +',2.0)"',
+				'javax.security.auth',
+                'org.qi4j.api.common;version="['+version+',2)"',
+                'org.qi4j.api.composite;version="['+version+',2)"',
+                'org.qi4j.api.concern;version="['+version+',2)"',
+                'org.qi4j.api.entity;version="['+version+',2)"',
+                'org.qi4j.api.entity.association;version="['+version+',2)"',
+                'org.qi4j.api.injection;version="['+version+',2)"',
+                'org.qi4j.api.injection.scope;version="['+version+',2)"',
+                'org.qi4j.api.mixin;version="['+version+',2)"',
+                'org.qi4j.api.property;version="['+version+',2)"',
+                'org.qi4j.api.service;version="['+version+',2)"',
+                'org.qi4j.api.unitofwork;version="['+version+',2)"',
+                'org.qi4j.api.value;version="['+version+',2)"'
+  }
+}

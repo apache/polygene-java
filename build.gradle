@@ -1,12 +1,24 @@
 // Versions of Dependencies;
-slf4jVersion = '1.5.8'
 asmVersion = '3.3'
+bouncyVersion='1.45'
+googleCollectionsVersion = '1.0'
+jdbmVersion = '1.0'
+jettyVersion='6.1.22'
+jodaTimeVersion='1.6.2'
+log4jVersion='1.2.16'
 osgiVersion = '4.2.0'
-servletVersion = '2.5'
 rdfVersion = '2.3.2'
 restletVersion = '2.0.4'
-solrVersion="1.4.1"
-jdbmVersion = '1.0'
+servletVersion = '2.5'
+shiroVersion='1.1.0'
+sleepycatVersion='4.0.103'
+slf4jVersion = '1.5.8'
+solrVersion = "1.4.1"
+springVersion = '2.5.6'
+strutsVersion = '2.1.8.1'
+vaadinVersion='6.4.8'
+voldemortVersion = '0.81'
+
 antVersion = '1.8.1'
 junitVersion = '4.8.1'
 testNgVersion = '5.8'
@@ -14,8 +26,6 @@ jmockVersion = '2.5.1'
 mockitoVersion = '1.8.5'
 easyMockVersion = '3.0'
 
-targetCompatibility = "1.6"
-sourceCompatibility = "1.6"
 
 allprojects {
   apply plugin: 'eclipse'
@@ -26,6 +36,8 @@ allprojects {
 
   defaultTasks 'build'
   version = System.properties.version ?: "0"
+  targetCompatibility = "1.6"
+  sourceCompatibility = "1.6"
   idea.javaVersion = '1.6'
 
   repositories {
@@ -106,6 +118,21 @@ subprojects { subProject ->
   {
     baseName = "qi4j-ext" + (group - 'qi4j-sdk.extensions').replace('.', '-') + "-${subProject.name}"
     group = 'org.qi4j.extension' + (group - 'qi4j-sdk.extensions')
+  }
+  else if( group.startsWith('qi4j-sdk.samples') )
+  {
+    baseName = "qi4j-sample-${subProject.name}"
+    group = 'org.qi4j.sample'
+  }
+  else if( group.startsWith('qi4j-sdk.tools') )
+  {
+    baseName = "qi4j-tool-${subProject.name}"
+    group = 'org.qi4j.tool'
+  }
+  else if( group.startsWith('qi4j-sdk.tutorials') )
+  {
+    baseName = "qi4j-tutorial-${subProject.name}"
+    group = 'org.qi4j.tutorial'
   }
   else
   {
@@ -202,75 +229,244 @@ task javadocs(type: Javadoc) {
   })
 }
 
-
-def pomConfig = {
-  url 'http://www.qi4j.org'
-  organization {
-    name 'Qi4j Community'
+pom {
+  project {
     url 'http://www.qi4j.org'
-  }
-  issueManagement {
-    system 'jira'
-    url 'http://issues.ops4j.org/browse/QI'
-  }
-  scm {
-    url "http://github.com/Qi4j/qi4j-core"
-    connection "scm:git:http://github.com/Qi4j/qi4j-core.git"
-    developerConnection "scm:git:git@github.com:Qi4j/qi4j-core.git"
-  }
-  licenses {
-    license {
-      name 'Apache License version 2.0'
-      url 'http://www.apache.org/licenses/LICENSE-2.0'
-      comments 'This build file is licensed under LGPL from Hibernate Core project.'
-      distribution 'repo'
+    organization {
+      name 'Qi4j Community'
+      url 'http://www.qi4j.org'
+    }
+    inceptionYear '2007'
+    issueManagement {
+      system 'jira'
+      url 'http://issues.ops4j.org/browse/QI'
+    }
+    scm {
+      url "http://github.com/Qi4j/qi4j-core"
+      connection "scm:git:http://github.com/Qi4j/qi4j-core.git"
+      developerConnection "scm:git:git@github.com:Qi4j/qi4j-core.git"
+    }
+    licenses {
+      license {
+        name 'Apache License version 2.0'
+        url 'http://www.apache.org/licenses/LICENSE-2.0'
+        comments 'This build file is licensed under LGPL from Hibernate Core project.'
+        distribution 'repo'
+      }
+    }
+    developers {
+      developer {
+        id 'niclas@hedhman.org'
+        name 'Niclas Hedhman'
+        email 'niclas@codedragons.com'
+        roles {
+          role 'Core Team'
+        }
+        url 'http://www.codedragons.com'
+        organization 'CodeDragons'
+        organizationUrl 'http://www.qi4j.org'
+        timezone 'UTC+8'
+      }
+      developer {
+        id 'rickardoberg'
+        name 'Rickard …berg'
+        email 'rickard.oberg@jayway.se'
+        roles {
+          role 'Core Team'
+        }
+        url 'http://www.jayway.se'
+        organization 'Jayway'
+        organizationUrl 'http://www.jayway.se'
+        timezone 'UTC+1'
+      }
+      developer {
+        id 'edward.yakop@gmail.com'
+        name 'Edward Yakop'
+        email 'efy@codedragons.com'
+        roles {
+          role 'Core Team'
+        }
+        url 'http://www.codedragons.com'
+        organization 'CodeDragons'
+        organizationUrl 'http://www.qi4j.org'
+        timezone 'UTC+8'
+      }
+      developer {
+        id 'adreghiciu@gmail.com'
+        name 'Alin Dreghiciu'
+        email 'adreghiciu@codedragons.com'
+        roles {
+          role 'Core Team'
+        }
+        url 'http://www.codedragons.com'
+        organization 'CodeDragons'
+        organizationUrl 'http://www.qi4j.org'
+        timezone 'UTC+2'
+      }
+      developer {
+        id 'mesirii'
+        name 'Michael Hunger'
+        email 'qi4j@jexp.de'
+        roles {
+          role 'Core Team'
+        }
+        timezone 'CET'
+      }
+
+      developer {
+        id "muhdkamil"
+        name "Muhd Kamil bin Mohd Baki"
+        organization "CodeDragons"
+        email "kamil@codedragons.com"
+        roles {
+          role 'Platform Team'
+        }
+        timezone "UTC+8"
+      }
+
+      developer {
+        id "ops4j@leangen.net"
+        name "David Leangen"
+        organization "Bioscene"
+        email "ops4j@leangen.net"
+        roles {
+          role 'Platform Team'
+        }
+        timezone "UTC+9"
+      }
+
+      developer {
+        id "sonny.gill@jayway.net"
+        name "Sonny Gill"
+        organization "CodeDragons"
+        email "sonny.public@gmail.com"
+        roles {
+          role 'Community Team'
+        }
+        timezone "UTC+8"
+      }
+
+      developer {
+        id "taowen"
+        name "Tao Wen"
+        organization ""
+        email "taowen@gmail.com"
+        roles {
+          role 'Community Team'
+        }
+        timezone "UTC+8"
+      }
+
+      developer {
+        id "thobe"
+        name "Tobias Ivarsson"
+        email "tobias@neotechnology.com"
+        url "http://www.neotechnology.com"
+        organization "NeoTechnology"
+        organizationUrl "http://www.neotechnology.com"
+        roles {
+          role "Platform Team"
+        }
+        timezone "CET"
+      }
+
+      developer {
+        id "boon"
+        name "Lan Boon Ping"
+        organization "CodeDragons"
+        email "boonping81@gmail.com"
+        roles {
+          role 'Platform Team'
+        }
+        timezone "UTC+8"
+      }
+
+      developer {
+        id "jan.kronquist@gmail.com"
+        name "Jan Kronquist"
+        email "jan.kronquist@gmail.com"
+        organization "Jayway"
+        roles {
+          role 'Platform Team'
+        }
+        timezone "CET"
+      }
+
+      developer {
+        id "nmwael"
+        name "Nino Saturnino Martinez Vazquez Wael"
+        roles {
+          role 'Platform Team'
+        }
+        timezone "CET"
+      }
+
+      developer {
+        id "peter@neubauer.se"
+        name "Peter Neubauer"
+        organization "CodeDragons"
+        email "peter@neubauer.se"
+        roles {
+          role 'Platform Team'
+        }
+        timezone "CET"
+      }
+
+      developer {
+        id "rwallace"
+        name "Richard Wallace"
+        organization ""
+        email "rwallace@thewallacepack.net"
+        roles {
+          role 'Platform Team'
+        }
+        timezone "UTC-7"
+      }
+
+      developer {
+        id "siannyhalim@gmail.com"
+        name "Sianny Halim"
+        organization "CodeDragons"
+        email "siannyhalim@gmail.com"
+        roles {
+          role 'Platform Team'
+        }
+        timezone "UTC+8"
+      }
+
+      developer {
+        id "paul@nosphere.org"
+        name "Paul Merlin"
+        email "paul@nosphere.org"
+        roles {
+          role 'Platform Team'
+        }
+        timezone "CET"
+      }
+
+      developer {
+        id "stas.dev+qi4j@gmail.com"
+        name "Stanislav Muhametsin"
+        email "stas.dev+qi4j@gmail.com"
+        roles {
+          role 'Platform Team'
+        }
+        timezone "UTC+2"
+      }
+
+      developer {
+        id "tonny"
+        name "Tonny Kohar"
+        roles {
+          role "Community Team"
+        }
+        email "tonny.kohar@gmail.com"
+        timezone "UTC+7"
+      }
+
     }
   }
-  developers {
-    developer {
-      id 'niclas@hedhman.org'
-      name 'Niclas Hedhman'
-      email 'niclas@codedragons.com'
-      url 'http://www.codedragons.com'
-      organization 'CodeDragons'
-      organizationUrl 'http://www.codedragons.com</organizationUrl'
-      timezone 'UTC+8'
-    }
-    developer {
-      id 'rickardoberg'
-      name 'Rickard …berg'
-      email 'rickard.oberg@jayway.se'
-      url 'http://www.jayway.se'
-      organization 'Jayway'
-      organizationUrl 'http://www.jayway.se'
-      timezone 'UTC+1'
-    }
-    developer {
-      id 'edward.yakop@gmail.com'
-      name 'Edward Yakop'
-      email 'efy@codedragons.com'
-      url 'http://www.codedragons.com'
-      organization 'CodeDragons'
-      organizationUrl 'http://www.codedragons.com'
-      timezone 'UTC+8'
-    }
-    developer {
-      id 'adreghiciu@gmail.com'
-      name 'Alin Dreghiciu'
-      email 'adreghiciu@codedragons.com'
-      url 'http://www.codedragons.com'
-      organization 'CodeDragons'
-      organizationUrl 'http://www.codedragons.com'
-      timezone 'UTC+2'
-    }
-    developer {
-      id 'mesirii'
-      name 'Michael Hunger'
-      email 'qi4j@jexp.de'
-      timezone 'CET'
-    }
-  }
-}
+}.writeTo("$buildDir/pom.xml")
 
 //
 // This is a task that generates the gradlew scripts, allowing users to run gradle without having gradle installed
