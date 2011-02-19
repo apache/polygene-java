@@ -5,8 +5,8 @@ dependencies {
   compile(project(":core:spi"))
   compile(project(":core:bootstrap"))
   compile(libraries.slf4j_api)
-  compile('org.apache.shiro:shiro-web:' + shiroVersion)
-  compile('javax.servlet:servlet-api:' + servletVersion)
+  compile("org.apache.shiro:shiro-web:$shiroVersion")
+  compile("javax.servlet:servlet-api:$servletVersion")
   testCompile(libraries.junit)
   testCompile(project(":core:testsupport"))
   testRuntime(project(":core:runtime"))
@@ -21,9 +21,9 @@ jar {
     description = "Qi4j Shiro Library integrates Apache Shiro security framework into Qi4j. This bundle provides Servlet support."
     name = "Qi4j Library - Shiro Web"
     instruction 'Export-Package', 
-				symbolicName +'.filter.authc;version=' + version,
-				symbolicName +'.servlet;version=' + version
-    instruction 'Private-Package', symbolicName + '.internal'
+				"${symbolicName}.filter.authc;version=$version",
+				"${symbolicName}.servlet;version=$version"
+    instruction 'Private-Package', "${symbolicName}.internal"
     instruction 'Import-Package', '*'
   }
 }

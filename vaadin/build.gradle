@@ -1,5 +1,3 @@
-servletVersion='2.5'
-vaadinVersion='6.4.8'
 
 dependencies {
   compile(project(":core:api"))

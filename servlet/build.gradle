@@ -1,14 +1,9 @@
-servletVersion= '2.5'
-
-libraries.putAll( [
-    servlet_api: 'javax.servlet:servlet-api:' + servletVersion
-])
 
 dependencies {
   compile(project(":core:api"))
   compile(project(":core:spi"))
   compile(project(":core:bootstrap"))
-  compile(libraries.servlet_api)
+  compile("javax.servlet:servlet-api:$servletVersion")
   compile(libraries.slf4j_api)
   testCompile(libraries.junit)
   testCompile(project(":core:testsupport"))
@@ -21,9 +16,9 @@ jar {
     description = "Qi4j Servlet Library provides integration of Qi4j into web applications."
     name = "Qi4j Library - Servlet"
     instruction 'Export-Package', 
-				symbolicName +';version=' + version,
-				symbolicName + '.lifecycle;version=' + version
-    instruction 'Private-Package', symbolicName + '.internal'
+				"$symbolicName;version=$version",
+				"${symbolicName}.lifecycle;version=$version"
+    instruction 'Private-Package', "${symbolicName}.internal"
     instruction 'Import-Package', '*'
   }
 }

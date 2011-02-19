@@ -1,2 +1,0 @@
-strutsVersion = '2.1.8.1'
-servletVersion = '2.4'  // Must be same as in Struts Core.
