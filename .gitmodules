@@ -7,15 +7,3 @@
 [submodule "extensions"]
 	path = extensions
 	url = git@github.com:Qi4j/qi4j-extensions.git
-[submodule "tools"]
-	path = tools
-	url = git@github.com:Qi4j/qi4j-tools.git
-[submodule "tutorials"]
-	path = tutorials
-	url = git@github.com:Qi4j/qi4j-tutorials.git
-[submodule "samples"]
-	path = samples
-	url = git@github.com:Qi4j/qi4j-samples.git
-[submodule "ide"]
-	path = ide
-	url = git@github.com:Qi4j/qi4j-ide.git
