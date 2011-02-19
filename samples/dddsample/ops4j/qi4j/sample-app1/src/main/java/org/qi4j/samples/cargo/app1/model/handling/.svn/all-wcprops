@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 125
+/repos/ops4j/!svn/ver/17095/laboratory/users/niclas/qi4j/sample-app1/src/main/java/org/qi4j/samples/cargo/app1/model/handling
+END
+HandlingEvent.java
+K 25
+svn:wc:ra_dav:version-url
+V 144
+/repos/ops4j/!svn/ver/17095/laboratory/users/niclas/qi4j/sample-app1/src/main/java/org/qi4j/samples/cargo/app1/model/handling/HandlingEvent.java
+END
+HandlingHistory.java
+K 25
+svn:wc:ra_dav:version-url
+V 146
+/repos/ops4j/!svn/ver/17095/laboratory/users/niclas/qi4j/sample-app1/src/main/java/org/qi4j/samples/cargo/app1/model/handling/HandlingHistory.java
+END
+UnknownLocationException.java
+K 25
+svn:wc:ra_dav:version-url
+V 155
+/repos/ops4j/!svn/ver/17095/laboratory/users/niclas/qi4j/sample-app1/src/main/java/org/qi4j/samples/cargo/app1/model/handling/UnknownLocationException.java
+END
+UnknownVoyageException.java
+K 25
+svn:wc:ra_dav:version-url
+V 153
+/repos/ops4j/!svn/ver/17095/laboratory/users/niclas/qi4j/sample-app1/src/main/java/org/qi4j/samples/cargo/app1/model/handling/UnknownVoyageException.java
+END
+UnknownCargoException.java
+K 25
+svn:wc:ra_dav:version-url
+V 152
+/repos/ops4j/!svn/ver/17095/laboratory/users/niclas/qi4j/sample-app1/src/main/java/org/qi4j/samples/cargo/app1/model/handling/UnknownCargoException.java
+END
+CannotCreateHandlingEventException.java
+K 25
+svn:wc:ra_dav:version-url
+V 165
+/repos/ops4j/!svn/ver/17095/laboratory/users/niclas/qi4j/sample-app1/src/main/java/org/qi4j/samples/cargo/app1/model/handling/CannotCreateHandlingEventException.java
+END

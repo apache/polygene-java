@@ -1,0 +1,40 @@
+<!DOCTYPE struts PUBLIC
+  "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+  "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+  <constant name="struts.configuration.classpath.disableActionScanning" value="true"/>
+  <constant name="struts.configuration.classpath.defaultParentPackage" value="example-base"/>
+
+  <package name="example-base" extends="struts-default">
+    <interceptors>
+      <interceptor name="constraintViolation" class="org.qi4j.library.struts2.ConstraintViolationInterceptor"/>
+      <interceptor name="unitOfWork" class="org.qi4j.library.struts2.UnitOfWorkInterceptor"/>
+
+      <interceptor-stack name="exampleStack">
+        <interceptor-ref name="exception"/>
+        <interceptor-ref name="params"/>
+        <interceptor-ref name="servletConfig"/>
+        <interceptor-ref name="unitOfWork"/>
+        <interceptor-ref name="prepare"/>
+        <interceptor-ref name="i18n"/>
+        <interceptor-ref name="debugging"/>
+        <interceptor-ref name="profiling"/>
+        <interceptor-ref name="checkbox"/>
+        <interceptor-ref name="staticParams"/>
+        <interceptor-ref name="params"/>
+        <interceptor-ref name="conversionError"/>
+        <interceptor-ref name="constraintViolation"/>
+        <interceptor-ref name="validation">
+          <param name="excludeMethods">input,back,cancel,browse</param>
+        </interceptor-ref>
+        <interceptor-ref name="workflow">
+          <param name="excludeMethods">input,back,cancel,browse</param>
+        </interceptor-ref>
+      </interceptor-stack>
+    </interceptors>
+
+    <default-interceptor-ref name="exampleStack"/>
+
+    <default-action-ref name="index"/>
+  </package>
+</struts>

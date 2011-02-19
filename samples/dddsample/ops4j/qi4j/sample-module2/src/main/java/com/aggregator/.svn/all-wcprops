@@ -1,0 +1,71 @@
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/repos/ops4j/!svn/ver/17095/laboratory/users/niclas/qi4j/sample-module2/src/main/java/com/aggregator
+END
+SubmitReport.java
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/repos/ops4j/!svn/ver/17095/laboratory/users/niclas/qi4j/sample-module2/src/main/java/com/aggregator/SubmitReport.java
+END
+HandlingReport.java
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/repos/ops4j/!svn/ver/17095/laboratory/users/niclas/qi4j/sample-module2/src/main/java/com/aggregator/HandlingReport.java
+END
+HandlingReportService.java
+K 25
+svn:wc:ra_dav:version-url
+V 127
+/repos/ops4j/!svn/ver/17095/laboratory/users/niclas/qi4j/sample-module2/src/main/java/com/aggregator/HandlingReportService.java
+END
+HandlingReportServiceService.java
+K 25
+svn:wc:ra_dav:version-url
+V 134
+/repos/ops4j/!svn/ver/17095/laboratory/users/niclas/qi4j/sample-module2/src/main/java/com/aggregator/HandlingReportServiceService.java
+END
+package-info.java
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/repos/ops4j/!svn/ver/17095/laboratory/users/niclas/qi4j/sample-module2/src/main/java/com/aggregator/package-info.java
+END
+HandlingReportService.wsdl
+K 25
+svn:wc:ra_dav:version-url
+V 127
+/repos/ops4j/!svn/ver/17095/laboratory/users/niclas/qi4j/sample-module2/src/main/java/com/aggregator/HandlingReportService.wsdl
+END
+HandlingReportErrors_Exception.java
+K 25
+svn:wc:ra_dav:version-url
+V 136
+/repos/ops4j/!svn/ver/17095/laboratory/users/niclas/qi4j/sample-module2/src/main/java/com/aggregator/HandlingReportErrors_Exception.java
+END
+HandlingReportErrors.java
+K 25
+svn:wc:ra_dav:version-url
+V 126
+/repos/ops4j/!svn/ver/17095/laboratory/users/niclas/qi4j/sample-module2/src/main/java/com/aggregator/HandlingReportErrors.java
+END
+ObjectFactory.java
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/repos/ops4j/!svn/ver/17095/laboratory/users/niclas/qi4j/sample-module2/src/main/java/com/aggregator/ObjectFactory.java
+END
+SubmitReportResponse.java
+K 25
+svn:wc:ra_dav:version-url
+V 126
+/repos/ops4j/!svn/ver/17095/laboratory/users/niclas/qi4j/sample-module2/src/main/java/com/aggregator/SubmitReportResponse.java
+END
+package.html
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/repos/ops4j/!svn/ver/17095/laboratory/users/niclas/qi4j/sample-module2/src/main/java/com/aggregator/package.html
+END

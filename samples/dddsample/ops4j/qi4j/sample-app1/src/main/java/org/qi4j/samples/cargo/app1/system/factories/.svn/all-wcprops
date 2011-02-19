@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 127
+/repos/ops4j/!svn/ver/17095/laboratory/users/niclas/qi4j/sample-app1/src/main/java/org/qi4j/samples/cargo/app1/system/factories
+END
+LegFactory.java
+K 25
+svn:wc:ra_dav:version-url
+V 143
+/repos/ops4j/!svn/ver/17095/laboratory/users/niclas/qi4j/sample-app1/src/main/java/org/qi4j/samples/cargo/app1/system/factories/LegFactory.java
+END
+CargoFactory.java
+K 25
+svn:wc:ra_dav:version-url
+V 145
+/repos/ops4j/!svn/ver/17095/laboratory/users/niclas/qi4j/sample-app1/src/main/java/org/qi4j/samples/cargo/app1/system/factories/CargoFactory.java
+END
+RouteSpecificationFactory.java
+K 25
+svn:wc:ra_dav:version-url
+V 158
+/repos/ops4j/!svn/ver/17095/laboratory/users/niclas/qi4j/sample-app1/src/main/java/org/qi4j/samples/cargo/app1/system/factories/RouteSpecificationFactory.java
+END
+HandlingActivityFactory.java
+K 25
+svn:wc:ra_dav:version-url
+V 156
+/repos/ops4j/!svn/ver/17095/laboratory/users/niclas/qi4j/sample-app1/src/main/java/org/qi4j/samples/cargo/app1/system/factories/HandlingActivityFactory.java
+END
+DeliveryFactory.java
+K 25
+svn:wc:ra_dav:version-url
+V 148
+/repos/ops4j/!svn/ver/17095/laboratory/users/niclas/qi4j/sample-app1/src/main/java/org/qi4j/samples/cargo/app1/system/factories/DeliveryFactory.java
+END
+HandlingEventFactory.java
+K 25
+svn:wc:ra_dav:version-url
+V 153
+/repos/ops4j/!svn/ver/17095/laboratory/users/niclas/qi4j/sample-app1/src/main/java/org/qi4j/samples/cargo/app1/system/factories/HandlingEventFactory.java
+END

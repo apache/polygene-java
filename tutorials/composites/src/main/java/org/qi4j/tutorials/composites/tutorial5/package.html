@@ -1,0 +1,38 @@
+<body>
+<h1>Tutorial 5 - Constraints</h1>
+
+In this tutorial we will look at how to use Constraints. When we pass parameters to
+methods in regular Java code the only restriction we can make is to denote a type.
+Any other constraints on the input value, such as whether the parameter is optional, integer ranges,
+string regular expressions, and so on, cannot be expressed, and so we have to put this into Javadoc, and
+then manually add these checks in the implementation class.
+<p/>
+In Qi4j there is the option to use Constraints, which are further restrictions on the parameters.
+This is implemented by having an annotation that describes what the Constraint does, and then
+an implementation class that checks whether a specific value fulfills the Constraint or not.
+<p/>
+There are a number of pre-written constraints in Qi4j which you can use. The null check of the original
+HelloWorld version is already handled by default since Qi4j considers method parameters to be mandatory if not
+explicitly marked with the @Optional annotation. So, instead of doing that check we will add
+other checks that are useful to make, such as ensuring that the passed in string is not empty.
+<p/>
+The only thing you have to do is add the annotation @NotEmpty to the method parameters you want to
+constrain in this way. The annotation has a default implementation declared in it by using the @Constraints
+annotation. You can either just use this, which is the common case, or override it by declaring your
+own @Constraints annotation in the TransientComposite type.
+<p/>
+You can add as many Constraint annotations you want to a parameter. All of them will be checked whenever a method is
+called.
+<p/>
+Steps for this tutorial:
+<ol>
+    <li>Add @NotEmpty to the state parameters.</li>
+</ol>
+<p><em>Note:</em><br/>
+    The previous steps had a dependency to the <code>qi4j-core-api</code> only. The constraints
+    you've used in this step, introduce a new dependency to the <code>qi4j-lib-constraints</code>
+    library, where all the constraint related classes reside. So update your classpath settings
+    accordingly.
+</p>
+</body>
+        

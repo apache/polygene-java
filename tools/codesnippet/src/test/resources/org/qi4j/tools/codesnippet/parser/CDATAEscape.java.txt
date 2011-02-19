@@ -1,0 +1,7 @@
+package org.qi4j.tools.codesnippet.parser;
+
+public class CDATAEscape
+{
+    public static final String CDATA_START = "<![CDATA[";
+    public static final String CDATA_END = "]]>";
+}

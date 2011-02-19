@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/repos/ops4j/!svn/ver/17095/laboratory/users/niclas/qi4j/sample-app1/src/main/java/org/qi4j/samples/cargo/app1/assembly
+END
+CargoModuleAssembler.java
+K 25
+svn:wc:ra_dav:version-url
+V 145
+/repos/ops4j/!svn/ver/17095/laboratory/users/niclas/qi4j/sample-app1/src/main/java/org/qi4j/samples/cargo/app1/assembly/CargoModuleAssembler.java
+END
+HandlingModuleAssembler.java
+K 25
+svn:wc:ra_dav:version-url
+V 148
+/repos/ops4j/!svn/ver/17095/laboratory/users/niclas/qi4j/sample-app1/src/main/java/org/qi4j/samples/cargo/app1/assembly/HandlingModuleAssembler.java
+END
+Activator.java
+K 25
+svn:wc:ra_dav:version-url
+V 134
+/repos/ops4j/!svn/ver/17095/laboratory/users/niclas/qi4j/sample-app1/src/main/java/org/qi4j/samples/cargo/app1/assembly/Activator.java
+END
+LocationModuleAssembler.java
+K 25
+svn:wc:ra_dav:version-url
+V 148
+/repos/ops4j/!svn/ver/17095/laboratory/users/niclas/qi4j/sample-app1/src/main/java/org/qi4j/samples/cargo/app1/assembly/LocationModuleAssembler.java
+END
+VoyageModuleAssembler.java
+K 25
+svn:wc:ra_dav:version-url
+V 146
+/repos/ops4j/!svn/ver/17095/laboratory/users/niclas/qi4j/sample-app1/src/main/java/org/qi4j/samples/cargo/app1/assembly/VoyageModuleAssembler.java
+END

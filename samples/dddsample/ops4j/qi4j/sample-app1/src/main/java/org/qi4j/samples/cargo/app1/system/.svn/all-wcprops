@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/repos/ops4j/!svn/ver/17095/laboratory/users/niclas/qi4j/sample-app1/src/main/java/org/qi4j/samples/cargo/app1/system
+END
+FutureDate.java
+K 25
+svn:wc:ra_dav:version-url
+V 133
+/repos/ops4j/!svn/ver/17095/laboratory/users/niclas/qi4j/sample-app1/src/main/java/org/qi4j/samples/cargo/app1/system/FutureDate.java
+END
+UnLocode.java
+K 25
+svn:wc:ra_dav:version-url
+V 131
+/repos/ops4j/!svn/ver/17095/laboratory/users/niclas/qi4j/sample-app1/src/main/java/org/qi4j/samples/cargo/app1/system/UnLocode.java
+END
+UpperCaseOnly.java
+K 25
+svn:wc:ra_dav:version-url
+V 136
+/repos/ops4j/!svn/ver/17095/laboratory/users/niclas/qi4j/sample-app1/src/main/java/org/qi4j/samples/cargo/app1/system/UpperCaseOnly.java
+END
+UpperCaseConstraint.java
+K 25
+svn:wc:ra_dav:version-url
+V 142
+/repos/ops4j/!svn/ver/17095/laboratory/users/niclas/qi4j/sample-app1/src/main/java/org/qi4j/samples/cargo/app1/system/UpperCaseConstraint.java
+END
+FutureDateConstraint.java
+K 25
+svn:wc:ra_dav:version-url
+V 143
+/repos/ops4j/!svn/ver/17095/laboratory/users/niclas/qi4j/sample-app1/src/main/java/org/qi4j/samples/cargo/app1/system/FutureDateConstraint.java
+END
+UnLocodeConstraint.java
+K 25
+svn:wc:ra_dav:version-url
+V 141
+/repos/ops4j/!svn/ver/17095/laboratory/users/niclas/qi4j/sample-app1/src/main/java/org/qi4j/samples/cargo/app1/system/UnLocodeConstraint.java
+END

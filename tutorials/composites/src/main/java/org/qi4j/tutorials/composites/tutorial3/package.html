@@ -1,0 +1,20 @@
+<body>
+<h1>Tutorial 3 - Mixins</h1>
+
+In this tutorial we refactor the Mixin from the previous steps into two, one which serves
+the behaviour interface and one which serves the state interface. This makes it possible to
+reuse the interfaces independently and also makes it easier to exchange one interface implementation
+with another. This also allows us to specify the new Mixins as default implementations of
+the interfaces by adding @Mixins annotations on them.
+<p/>
+Steps for this tutorial:
+<ol>
+    <li>Refactor the Mixin into one which implement the behaviour interface and one which implements the state
+        interface. Use the @This injection annotation to allow the behaviour to access the state.
+    </li>
+    <li>Add a @Mixins annotations on the behaviour and state interfaces which declare the Mixins as default
+        implementations.
+    </li>
+    <li>Remove the @Mixins annotation from the TransientComposite interface.</li>
+</ol>
+</body>

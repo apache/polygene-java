@@ -1,0 +1,113 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.qi4j.sample</groupId>
+    <artifactId>qi4j-samples</artifactId>
+    <version>1.3-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>qi4j-struts2-example</artifactId>
+  <version>1.3-SNAPSHOT</version>
+  <packaging>war</packaging>
+  <name>Qi4j Sample - Struts Example</name>
+
+  <build>
+    <finalName>qi4j-struts2-example</finalName>
+    <plugins>
+      <plugin>
+        <groupId>org.mortbay.jetty</groupId>
+        <artifactId>maven-jetty-plugin</artifactId>
+        <version>${version.jetty}</version>
+        <configuration>
+          <scanIntervalSeconds>10</scanIntervalSeconds>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.qi4j.library</groupId>
+      <artifactId>qi4j-struts2-plugin</artifactId>
+      <version>${version.qi4j-lib}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.qi4j.library</groupId>
+      <artifactId>qi4j-struts2-codebehind-plugin</artifactId>
+      <version>${version.qi4j-lib}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.qi4j.extension</groupId>
+      <artifactId>qi4j-indexing-rdf</artifactId>
+      <version>${version.qi4j-ext}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.qi4j.library</groupId>
+      <artifactId>qi4j-lib-constraints</artifactId>
+      <version>${version.qi4j-lib}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.qi4j.library</groupId>
+      <artifactId>qi4j-lib-rdf</artifactId>
+      <version>${version.qi4j-lib}</version>
+    </dependency>
+
+    <!-- Struts2 -->
+    <dependency>
+      <groupId>org.apache.struts</groupId>
+      <artifactId>struts2-sitemesh-plugin</artifactId>
+      <version>${version.struts2}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.struts</groupId>
+      <artifactId>struts2-codebehind-plugin</artifactId>
+      <version>${version.struts2}</version>
+    </dependency>
+
+    <!-- Jetty -->
+    <dependency>
+      <groupId>org.mortbay.jetty</groupId>
+      <artifactId>jetty</artifactId>
+      <version>${version.jetty}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mortbay.jetty</groupId>
+      <artifactId>jetty-util</artifactId>
+      <version>${version.jetty}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mortbay.jetty</groupId>
+      <artifactId>jsp-2.1-jetty</artifactId>
+      <version>${version.jetty}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Dwr -->
+    <dependency>
+      <groupId>org.directwebremoting</groupId>
+      <artifactId>dwr</artifactId>
+      <version>2.0.3</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>1.5.6</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Test -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${version.junit}</version>
+    </dependency>
+  </dependencies>
+</project>

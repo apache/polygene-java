@@ -1,0 +1,26 @@
+<body>
+<h1>Step 2 - Activatable</h1>
+
+<p>
+    Services can be "<i>activated</i>" and "<i>passivated</i>". Applicaitons can be notified of this occurring
+    by Qi4j runtime calling the two methods <code>activate</code> and <code>passivate</code> of the
+    <code>Activatable</code> interface implemented by any number of Mixin implementations. That means that unlike
+    other methods in a composite all mixins implementing the method will be called.
+</p>
+
+<p>
+    To showcase how this works, we refactor the code to create a number of copies of the books, to be lend out
+    upon call to the <code>borrowBook</code> method, which will return null if no copy is available. The book
+    copies are created in the <code>activate</code> method.
+</p>
+
+<p>
+    Steps to do.
+<ol>
+    <li>Make LibraryMixin implement the <code>org.qi4j.api.service.Activatable</code> interface.</li>
+    <li>In the <code>activate</code> method, create a couple of books of each title and store each copy in a
+        <code>HashMap&lt;String,ArrayList&lt;Book&gt;&gt;</code>.
+    </li>
+</ol>
+</p>
+</body>
