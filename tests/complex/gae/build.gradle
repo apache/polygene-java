@@ -1,0 +1,37 @@
+dependencies {
+  compile(project(":core:api"))
+  compile(project(":core:bootstrap"))
+  compile(project(":extensions:entitystore-gae"))
+  compile("javax.servlet:servlet-api:$servletVersion")
+  compile(libraries.slf4j_api)
+  compile(libraries.junit)
+  testRuntime(libraries.asm)
+  testRuntime(libraries.asm_commons)
+  testRuntime(libraries.slf4j_simple)
+  compile(project(":core:testsupport"))
+  testRuntime(project(":core:spi"))
+  testRuntime(project(":core:runtime"))
+}
+
+jar {
+  manifest {
+    description = "Tests for Qi4j Google AppEngine Extension."
+    name = "Qi4j Tests - Google App Engine EntityStore"
+    instruction 'Export-Package', symbolicName +';version=' + version
+    instruction 'Private-Package', symbolicName + '.internal'
+    instruction 'Import-Package', symbolicName + ';version="[' + version +',2.0)"',
+				'javax.security.auth',
+                'org.qi4j.api.common;version="['+version+',2)"',
+                'org.qi4j.api.composite;version="['+version+',2)"',
+                'org.qi4j.api.concern;version="['+version+',2)"',
+                'org.qi4j.api.entity;version="['+version+',2)"',
+                'org.qi4j.api.entity.association;version="['+version+',2)"',
+                'org.qi4j.api.injection;version="['+version+',2)"',
+                'org.qi4j.api.injection.scope;version="['+version+',2)"',
+                'org.qi4j.api.mixin;version="['+version+',2)"',
+                'org.qi4j.api.property;version="['+version+',2)"',
+                'org.qi4j.api.service;version="['+version+',2)"',
+                'org.qi4j.api.unitofwork;version="['+version+',2)"',
+                'org.qi4j.api.value;version="['+version+',2)"'
+  }
+}
