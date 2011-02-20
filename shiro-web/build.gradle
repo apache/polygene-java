@@ -1,5 +1,5 @@
 dependencies {
-  compile( project( ':libraries:shiro:core' ) )
+  compile( project( ':libraries:shiro-core' ) )
   compile( project( ':libraries:servlet' ) )
   compile(project(":core:api"))
   compile(project(":core:spi"))

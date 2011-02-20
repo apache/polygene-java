@@ -1,5 +1,5 @@
 dependencies {
-  compile( project( ':libraries:struts2:plugin' ) )
+  compile( project( ':libraries:struts2-plugin' ) )
   compile(project(":core:api"))
   compile(project(":core:bootstrap"))
   compile(libraries.slf4j_api)
