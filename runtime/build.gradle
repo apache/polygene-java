@@ -3,6 +3,7 @@ dependencies {
   compile(project(':core:spi'))
   compile(project(':core:bootstrap'))
   compile(project(':core:testsupport'))
+  testCompile(project(':libraries:constraints'))
   compile(libraries.slf4j_api)
   compile(libraries.asm)
   compile(libraries.asm_util)
