@@ -12,7 +12,7 @@ restletVersion = '2.0.4'
 servletVersion = '2.5'
 shiroVersion='1.1.0'
 sleepycatVersion='4.0.103'
-slf4jVersion = '1.5.8'
+slf4jVersion = '1.6.1'
 solrVersion = "1.4.1"
 springVersion = '2.5.6'
 strutsVersion = '2.1.8.1'
@@ -26,6 +26,8 @@ jmockVersion = '2.5.1'
 mockitoVersion = '1.8.5'
 easyMockVersion = '3.0'
 
+targetCompatibility = "1.6"
+sourceCompatibility = "1.6"
 
 allprojects {
   apply plugin: 'eclipse'
@@ -36,8 +38,6 @@ allprojects {
 
   defaultTasks 'build'
   version = System.properties.version ?: "0"
-  targetCompatibility = "1.6"
-  sourceCompatibility = "1.6"
   idea.javaVersion = '1.6'
 
   repositories {
@@ -134,6 +134,11 @@ subprojects { subProject ->
     baseName = "qi4j-tutorial-${subProject.name}"
     group = 'org.qi4j.tutorial'
   }
+  else if( group.startsWith('qi4j-sdk.tests') )
+  {
+    baseName = "qi4j-tests-${subProject.name}"
+    group = 'org.qi4j.tests'
+  }
   else
   {
     baseName = "qi4j-${subProject.name}"
@@ -144,8 +149,9 @@ subprojects { subProject ->
   print " artifact:$baseName,"
   println " version:$version"
 
-  checkIfBuildDirFile = new File(subProject.projectDir.absolutePath + "/src/main/java")
-  if( checkIfBuildDirFile.isDirectory() )
+  javaDir = new File(subProject.projectDir.absolutePath + "/src/main/java")
+  testDir = new File(subProject.projectDir.absolutePath + "/src/test/java")
+  if( javaDir.isDirectory() || testDir.isDirectory() )
   {
     apply plugin: 'osgi'
     apply plugin: VersionClass
