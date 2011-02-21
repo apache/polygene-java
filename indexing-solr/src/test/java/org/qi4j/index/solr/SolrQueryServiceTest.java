@@ -14,6 +14,8 @@
 
 package org.qi4j.index.solr;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
@@ -33,75 +35,76 @@ import org.qi4j.library.fileconfig.FileConfiguration;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.hamcrest.CoreMatchers.*;
 
 /**
  * JAVADOC
  */
 public class SolrQueryServiceTest
-   extends AbstractQi4jTest
+    extends AbstractQi4jTest
 {
-   public void assemble( ModuleAssembly module ) throws AssemblyException
-   {
-      module.layerAssembly().applicationAssembly().setMode( Application.Mode.test );
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
+    {
+        module.layerAssembly().applicationAssembly().setMode( Application.Mode.test );
 
-      module.addServices( FileConfiguration.class ).instantiateOnStartup();
+        module.addServices( FileConfiguration.class ).instantiateOnStartup();
 
-      new EntityTestAssembler(  ).assemble( module );
-      new SolrAssembler().assemble( module );
+        new EntityTestAssembler().assemble( module );
+        new SolrAssembler().assemble( module );
 
-      module.addEntities( TestEntity.class );
-   }
+        module.addEntities( TestEntity.class );
+    }
 
-   @Before
-   public void index() throws UnitOfWorkCompletionException
-   {
-      // Create and index an entity
-      UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
-      TestEntity test = uow.newEntity( TestEntity.class );
-      test.name().set( "Hello World" );
-      uow.complete();
-   }
+    @Before
+    public void index()
+        throws UnitOfWorkCompletionException, InterruptedException
+    {
+        // Create and index an entity
+        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        TestEntity test = uow.newEntity( TestEntity.class );
+        test.name().set( "Hello World" );
+        uow.complete();
+        Thread.sleep( 40 );
+    }
 
-   @Test
-   public void testQuery() throws UnitOfWorkCompletionException
-   {
-      // Search for it
-      UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
-      Query<TestEntity> query = queryBuilderFactory.newNamedQuery( TestEntity.class, uow, "search");
-      query.setVariable( "query", "hello" );
+    @Test
+    public void testQuery()
+        throws UnitOfWorkCompletionException
+    {
+        // Search for it
+        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        Query<TestEntity> query = queryBuilderFactory.newNamedQuery( TestEntity.class, uow, "search" );
+        query.setVariable( "query", "hello" );
 
-      TestEntity test = query.find();
-      Assert.assertThat( test.name().get(), equalTo( "Hello World" ) );
+        TestEntity test = query.find();
+        Assert.assertThat( test.name().get(), equalTo( "Hello World" ) );
 
-      uow.discard();
+        uow.discard();
+    }
 
-   }
+    @Test
+    public void testSearch()
+        throws UnitOfWorkCompletionException, SolrServerException
+    {
+        // Search for it using search interface
+        SolrSearch search = (SolrSearch) serviceLocator.findService( SolrSearch.class ).get();
 
-   @Test
-   public void testSearch() throws UnitOfWorkCompletionException, SolrServerException
-   {
-      // Search for it using search interface
-      SolrSearch search = (SolrSearch) serviceLocator.findService( SolrSearch.class ).get();
+        SolrDocumentList results = search.search( "hello" );
 
-      SolrDocumentList results = search.search( "hello" );
+        List<String> lookAhead = new ArrayList<String>();
+        for( SolrDocument result : results )
+        {
+            lookAhead.add( result.getFieldValue( "name" ).toString() );
+        }
 
-      List<String> lookAhead = new ArrayList<String>(  );
-      for (SolrDocument result : results)
-      {
-         lookAhead.add( result.getFieldValue( "name" ).toString() );
-      }
+        Assert.assertThat( lookAhead.toString(), equalTo( "[Hello World]" ) );
+    }
 
-      Assert.assertThat( lookAhead.toString(), equalTo( "[Hello World]" ) );
-   }
-
-   public interface TestEntity
-      extends EntityComposite
-   {
-      @UseDefaults
-      Property<String> name();
-   }
+    public interface TestEntity
+        extends EntityComposite
+    {
+        @UseDefaults
+        Property<String> name();
+    }
 }
