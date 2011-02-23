@@ -132,7 +132,7 @@ public class ReindexerTest
     private static boolean deleteEntitiesData()
     {
         boolean success = true;
-        File esDir = new File( "target/qi4j-entities" );
+        File esDir = new File( "build/testdata/qi4j-entities" );
         if ( esDir.exists() ) {
             success = FileUtil.deltree( esDir );
         }
@@ -142,7 +142,7 @@ public class ReindexerTest
     private static boolean deleteIndexData()
     {
         boolean success = true;
-        File rdfDir = new File( "target/qi4j-index" );
+        File rdfDir = new File( "build/testdata/qi4j-index" );
         if ( rdfDir.exists() ) {
             success = FileUtil.deltree( rdfDir );
         }
