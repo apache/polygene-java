@@ -1,22 +1,25 @@
+apply plugin: 'java'
+apply plugin: 'project-report'
+
 // Versions of Dependencies;
 asmVersion = '3.3'
-bouncyVersion='1.45'
+bouncyVersion = '1.45'
 googleCollectionsVersion = '1.0'
 jdbmVersion = '1.0'
-jettyVersion='6.1.22'
-jodaTimeVersion='1.6.2'
-log4jVersion='1.2.16'
+jettyVersion = '6.1.22'
+jodaTimeVersion = '1.6.2'
+log4jVersion = '1.2.16'
 osgiVersion = '4.2.0'
 rdfVersion = '2.3.2'
 restletVersion = '2.0.4'
 servletVersion = '2.5'
-shiroVersion='1.1.0'
-sleepycatVersion='4.0.103'
+shiroVersion = '1.1.0'
+sleepycatVersion = '4.0.103'
 slf4jVersion = '1.6.1'
 solrVersion = "1.4.1"
 springVersion = '2.5.6'
 strutsVersion = '2.1.8.1'
-vaadinVersion='6.4.8'
+vaadinVersion = '6.4.8'
 voldemortVersion = '0.81'
 
 antVersion = '1.8.1'
@@ -29,6 +32,8 @@ easyMockVersion = '3.0'
 targetCompatibility = "1.6"
 sourceCompatibility = "1.6"
 
+testFailures = false
+
 allprojects {
   apply plugin: 'eclipse'
   apply plugin: 'idea'
@@ -39,11 +44,18 @@ allprojects {
   defaultTasks 'build'
   version = System.properties.version ?: "0"
   idea.javaVersion = '1.6'
+  [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
   repositories {
     mavenCentral()
     mavenRepo name: 'ops4j-repo', urls: "http://repository.ops4j.org/maven2/"
-    mavenRepo name: 'local', urls: "file:///" + System.properties[ 'user.home' ].replaceAll('\\\\', '/') + '/.gradle/repository/'
+  }
+
+  dependencies {
+    testCompile('org.apache.ant:ant:1.8.1')
+    testCompile('junit:junit:4.8.1')
+    testRuntime('net.sourceforge.cobertura:cobertura:1.9.3')
+    testRuntime("asm:asm:$asmVersion", "asm:asm-util:$asmVersion", "asm:asm-commons:$asmVersion")
   }
 
   configurations {
@@ -61,12 +73,13 @@ allprojects {
       repository(url: "scp://repository.ops4j.org/home/www/repository.ops4j.org/maven2")
     }
   }
+  dependsOnChildren()
 }
 
 def testProperties = [
-        'proxySet': System.properties[ 'proxySet' ],
-        'proxyHost': System.properties[ 'proxyHost' ],
-        'proxyPort': System.properties[ 'proxyPort' ]]
+        'proxySet': System.properties['proxySet'],
+        'proxyHost': System.properties['proxyHost'],
+        'proxyPort': System.properties['proxyPort']]
 
 // build a map of the dependency artifacts to use.  Allows centralized definition of the version of artifacts to
 // use.  In that respect it serves a role similar to <dependencyManagement> in Maven
@@ -104,43 +117,35 @@ libraries = [
 subprojects { subProject ->
 
   print "$subProject  ->  "
-  if( group.startsWith('qi4j-sdk.core') )
-  {
+  if (group.startsWith('qi4j-sdk.core')) {
     baseName = "qi4j-core-${subProject.name}"
     group = 'org.qi4j.core'
   }
-  else if( group.startsWith('qi4j-sdk.libraries') )
-  {
+  else if (group.startsWith('qi4j-sdk.libraries')) {
     baseName = "qi4j-lib" + (group - 'qi4j-sdk.libraries').replace('.', '-') + "-${subProject.name}"
     group = 'org.qi4j.library' + (group - 'qi4j-sdk.libraries')
   }
-  else if( group.startsWith('qi4j-sdk.extensions') )
-  {
+  else if (group.startsWith('qi4j-sdk.extensions')) {
     baseName = "qi4j-ext" + (group - 'qi4j-sdk.extensions').replace('.', '-') + "-${subProject.name}"
     group = 'org.qi4j.extension' + (group - 'qi4j-sdk.extensions')
   }
-  else if( group.startsWith('qi4j-sdk.samples') )
-  {
+  else if (group.startsWith('qi4j-sdk.samples')) {
     baseName = "qi4j-sample-${subProject.name}"
     group = 'org.qi4j.sample'
   }
-  else if( group.startsWith('qi4j-sdk.tools') )
-  {
+  else if (group.startsWith('qi4j-sdk.tools')) {
     baseName = "qi4j-tool-${subProject.name}"
     group = 'org.qi4j.tool'
   }
-  else if( group.startsWith('qi4j-sdk.tutorials') )
-  {
+  else if (group.startsWith('qi4j-sdk.tutorials')) {
     baseName = "qi4j-tutorial-${subProject.name}"
     group = 'org.qi4j.tutorial'
   }
-  else if( group.startsWith('qi4j-sdk.tests') )
-  {
+  else if (group.startsWith('qi4j-sdk.tests')) {
     baseName = "qi4j-tests-${subProject.name}"
     group = 'org.qi4j.tests'
   }
-  else
-  {
+  else {
     baseName = "qi4j-${subProject.name}"
     group = 'org.qi4j'
   }
@@ -151,33 +156,31 @@ subprojects { subProject ->
 
   javaDir = new File(subProject.projectDir.absolutePath + "/src/main/java")
   testDir = new File(subProject.projectDir.absolutePath + "/src/test/java")
-  if( javaDir.isDirectory() || testDir.isDirectory() )
-  {
+
+  if (javaDir.isDirectory() || testDir.isDirectory()) {
     apply plugin: 'osgi'
     apply plugin: VersionClass
     apply plugin: 'code-quality'
 
-    if( subProject.name == "runtime" && subProject.group == "org.qi4j.core" )
-    {
+    if (subProject.name == "runtime" && subProject.group == "org.qi4j.core") {
       checkstyleMain {
-        configFile = new File(rootProject.projectDir.absolutePath, '/etc/qi4j-runtime-checkstyle.xml')
+        configFile = new File("$rootProject.projectDir.absolutePath/etc/qi4j-runtime-checkstyle.xml")
         ignoreFailures = true
       }
     }
-    else
-    {
+    else {
       checkstyleMain {
-        configFile = new File(rootProject.projectDir.absolutePath, '/etc/qi4j-api-checkstyle.xml')
+        configFile = new File("$rootProject.projectDir.absolutePath/etc/qi4j-api-checkstyle.xml")
         ignoreFailures = true
       }
     }
     checkstyleTest {
-      configFile = new File(rootProject.projectDir.absolutePath, '/etc/qi4j-tests-checkstyle.xml')
+      configFile = new File("$rootProject.projectDir.absolutePath/etc/qi4j-tests-checkstyle.xml")
       ignoreFailures = true
     }
 
     checkstyleVersion {
-      configFile = new File(rootProject.projectDir.absolutePath, '/etc/qi4j-tests-checkstyle.xml')
+      configFile = new File("$rootProject.projectDir.absolutePath/etc/qi4j-tests-checkstyle.xml")
       ignoreFailures = true
     }
 
@@ -196,23 +199,72 @@ subprojects { subProject ->
       }
     }
 
+    def cobSerFile = "${project.buildDir}/coverage/cobertura.ser"
+    def srcOriginal = "${sourceSets.main.classesDir}"
+    def srcCopy = "${srcOriginal}-copy"
+
+    test.doFirst {
+      ant {
+        // delete data file for cobertura, otherwise coverage would be added
+        delete(file: cobSerFile, failonerror: false)
+        // delete copy of original classes
+        delete(dir: srcCopy, failonerror: false)
+        // import cobertura task, so it is available in the script
+        taskdef(resource: 'tasks.properties', classpath: configurations.testRuntime.asPath)
+        // create copy (backup) of original class files
+        copy(todir: srcCopy) {
+          fileset(dir: srcOriginal)
+        }
+        // instrument the relevant classes in-place
+        'cobertura-instrument'(datafile: cobSerFile) {
+          fileset(dir: srcOriginal,
+                  includes: "org/qi4j/**/*.class",
+                  excludes: "**/*Test.class")
+        }
+      }
+    }
+
+    test.doLast {
+      if (new File(srcCopy).exists()) {
+        def gradleProject = project
+        def rootCobSerFile = "${rootProject.buildDir}/coverage/cobertura.ser"
+
+        // replace instrumented classes with backup copy again
+        ant {
+          delete(file: srcOriginal)
+          move(file: srcCopy, tofile: srcOriginal)
+
+          taskdef(name: 'coberturaMerge',
+                  classname: 'net.sourceforge.cobertura.ant.MergeTask',
+                  classpath: configurations.testRuntime.asPath)
+
+          coberturaMerge(datafile: rootCobSerFile) {
+
+            if (file("${gradleProject.buildDir}/coverage/cobertura.ser").exists()) {
+
+              fileset(dir: gradleProject.buildDir, includes: 'coverage/cobertura.ser')
+            }
+          }
+        }
+      }
+    }
+
     test {
       maxHeapSize = "1024m"
       systemProperties = testProperties
-    }
-
-    configurations {
-      archives.extendsFrom compile
+      systemProperties["net.sourceforge.cobertura.datafile"] = cobSerFile
+      ignoreFailures = true
+      afterSuite { descriptor, result ->
+        if( result.testCount != result.successfulTestCount ) {
+          rootProject.testFailures = true
+        }
+      }
     }
   }
-  repositories {
-    flatDir(name: 'fileRepo', dirs: System.properties[ 'user.home' ] + '/.gradle/repository/org/qi4j/core/' + 'qi4j-core-' + name + '/' + version + '/')
-  }
-
 
   uploadArchives.doFirst {
-    if( System.properties[ 'version' ] == null )
-    throw new GradleException("'version' must be given as a system property to perform a release.")
+    if (System.properties['version'] == null)
+      throw new GradleException("'version' must be given as a system property to perform a release.")
   }
 
   ideaModule {
@@ -220,7 +272,44 @@ subprojects { subProject ->
       module.dependencies*.exported = true
     }
   }
-  dependsOnChildren()
+}
+
+build.doLast() {
+//task genReport {
+  def cobSerFile = "${project.buildDir}/coverage/cobertura.ser"
+  println childProjects
+  ant {
+    taskdef(name: 'coberturaReport',
+            classname: 'net.sourceforge.cobertura.ant.ReportTask',
+            classpath: configurations.testRuntime.asPath)
+
+    // create cobertura report
+    coberturaReport(destdir: buildDirName + "/reports/cobertura", format: 'html', datafile: cobSerFile) {
+      allprojects.each { module ->
+        if (rootProject != module) {
+          println module
+          if (file("$module.projectDir.absolutePath/src/main/java").exists()) {
+            fileset(dir: "$module.projectDir.absolutePath/src/main/java") {
+              include(name: '**/*.java')
+            }
+          }
+        }
+      }
+    }
+
+    // create Junit report
+    def junitReportDir = buildDirName + "/reports/junit"
+    mkdir(dir: junitReportDir)
+    mkdir(dir: buildDirName + "/test-results")
+    'junitreport'(todir: junitReportDir) {
+      report(format: 'frames', todir: junitReportDir)
+      allprojects.each { module ->
+        fileset(dir: "$module.buildDir/test-results") {
+          include(name: "TEST-*.xml")
+        }
+      }
+    }
+  }
 }
 
 task javadocs(type: Javadoc) {
@@ -275,7 +364,7 @@ pom {
       }
       developer {
         id 'rickardoberg'
-        name 'Rickard …berg'
+        name 'Rickard ï¿½berg'
         email 'rickard.oberg@jayway.se'
         roles {
           role 'Core Team'
@@ -482,6 +571,6 @@ pom {
 //  2) /gradlew.bat which is the windows bat script for for executing builds
 //  3) /wrapper which is a directory named by the "jarPath" config which contains other needed files.
 task wrapper(type: Wrapper) {
-  gradleVersion = '0.9'
+  gradleVersion = '0.9.2'
   jarPath = 'wrapper'
 }
