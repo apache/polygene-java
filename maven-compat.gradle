@@ -1,6 +1,5 @@
 allprojects {
   apply plugin: 'maven'
-
   pom {
     project {
       url 'http://www.qi4j.org'
@@ -41,7 +40,7 @@ allprojects {
         }
         developer {
           id 'rickardoberg'
-          name 'Rickard …berg'
+          name 'Rickard ?berg'
           email 'rickard.oberg@jayway.se'
           roles {
             role 'Core Team'
