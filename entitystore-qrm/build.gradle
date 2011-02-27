@@ -1,22 +1,22 @@
 derbyVersion='10.5.3.0_1'
 
 dependencies {
-  compile(project(":core:api"))
-  compile(project(":core:spi"))
+  compile(project(":org.qi4j.core:org.qi4j.core.api"))
+  compile(project(":org.qi4j.core:org.qi4j.core.spi"))
   compile(libraries.slf4j_api)
   compile('org.apache.ibatis:ibatis-sqlmap:2.3.0')
   compile('org.hibernate:hibernate:3.2.7.ga')
   compile('commons-logging:commons-logging:1.1')
   runtime('javax.transaction:jta:1.1')
-  testCompile(project(":core:bootstrap"))
+  testCompile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
   testCompile('org.apache.derby:derby:' + derbyVersion)
   testCompile('org.apache.derby:derbyclient:' + derbyVersion)
   testCompile('org.apache.derby:derbynet:' + derbyVersion)
   testCompile(libraries.junit)
   testCompile(libraries.jmock)
   testRuntime(libraries.slf4j_simple)
-  testCompile(project(":core:testsupport"))
-  testRuntime(project(":core:runtime"))
+  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
+  testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
   testRuntime(libraries.asm)
   testRuntime(libraries.asm_commons)
 }
