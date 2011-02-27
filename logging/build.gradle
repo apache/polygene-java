@@ -1,12 +1,12 @@
 dependencies {
-  compile(project(":core:api"))
-  compile(project(":core:bootstrap"))
-  compile( project( ':libraries:constraints' ))
+  compile(project(":org.qi4j.core:org.qi4j.core.api"))
+  compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
+  compile( project( ':org.qi4j.libraries:org.qi4j.library.constraints' ))
   compile(libraries.slf4j_api)
   testCompile(libraries.junit)
-  testCompile(project(":core:spi"))
-  testCompile(project(":core:testsupport"))
-  testRuntime(project(":core:runtime"))
+  testCompile(project(":org.qi4j.core:org.qi4j.core.spi"))
+  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
+  testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
   testRuntime(libraries.slf4j_simple)
 }
 

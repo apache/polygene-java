@@ -4,9 +4,9 @@ woodstoxVersion = '4.1.0'
 xmlSchemaVersion = '1.4.7'
 
 dependencies {
-  compile(project(":core:api"))
-  compile(project(":core:spi"))
-  compile(project(":core:bootstrap"))
+  compile(project(":org.qi4j.core:org.qi4j.core.api"))
+  compile(project(":org.qi4j.core:org.qi4j.core.spi"))
+  compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
   compile(libraries.slf4j_api)
   compile('org.apache.cxf:cxf-api:' + cxfVersion)
   compile('org.apache.cxf:cxf-common-utilities:' + cxfVersion)
@@ -25,8 +25,8 @@ dependencies {
   testRuntime(libraries.asm)
   testRuntime(libraries.asm_commons)
   testRuntime(libraries.slf4j_simple)
-  testCompile(project(":core:testsupport"))
-  testRuntime(project(":core:runtime"))
+  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
+  testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
 }
 
 jar {
