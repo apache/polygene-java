@@ -16,8 +16,9 @@ package org.qi4j.runtime.composite;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.util.*;
-
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.MissingMethodException;
 import org.qi4j.bootstrap.BindingException;
@@ -32,7 +33,7 @@ import org.qi4j.spi.util.MethodKeyMap;
  * Model for Composite methods. This includes both private and public methods.
  */
 public final class CompositeMethodsModel
-        implements Binder, Serializable
+    implements Binder, Serializable
 {
     private HashMap<Method, CompositeMethodModel> methods;
     private final Class<? extends Composite> type;
@@ -46,7 +47,8 @@ public final class CompositeMethodsModel
                                   ConcernsDeclaration concernsModel,
                                   SideEffectsDeclaration sideEffectsModel,
                                   AbstractMixinsModel mixinsModel,
-                                  AssemblyHelper helper )
+                                  AssemblyHelper helper
+    )
     {
         methods = new MethodKeyMap<CompositeMethodModel>();
         this.type = type;
@@ -55,7 +57,7 @@ public final class CompositeMethodsModel
         this.sideEffectsModel = sideEffectsModel;
         this.mixinsModel = mixinsModel;
 
-        for (Class mixinType : mixinsModel.roles())
+        for( Class mixinType : mixinsModel.roles() )
         {
             implementMixinType( mixinType, helper );
         }
@@ -64,9 +66,9 @@ public final class CompositeMethodsModel
     // Binding
 
     public void bind( Resolution resolution )
-            throws BindingException
+        throws BindingException
     {
-        for (CompositeMethodModel compositeMethodComposite : methods.values())
+        for( CompositeMethodModel compositeMethodComposite : methods.values() )
         {
             compositeMethodComposite.bind( resolution );
         }
@@ -80,7 +82,7 @@ public final class CompositeMethodsModel
                           Object[] args,
                           ModuleInstance moduleInstance
     )
-            throws Throwable
+        throws Throwable
     {
         CompositeMethodModel compositeMethod = methods.get( method );
 
@@ -94,7 +96,7 @@ public final class CompositeMethodsModel
             if( !method.getDeclaringClass().isInterface() )
             {
                 Iterable<Class> types = mixinsModel.mixinTypes();
-                for (Class aClass : types)
+                for( Class aClass : types )
                 {
                     try
                     {
@@ -102,17 +104,18 @@ public final class CompositeMethodsModel
                         compositeMethod = methods.get( realMethod );
                         break;
                     }
-                    catch (NoSuchMethodException e)
+                    catch( NoSuchMethodException e )
                     {
                     }
-                    catch (SecurityException e)
+                    catch( SecurityException e )
                     {
                     }
                 }
             }
 //            return mixins.invokeObject( proxy, args, method );
             throw new MissingMethodException( "Method '" + method + "' is not present in composite " + type.getName(), method );
-        } else
+        }
+        else
         {
             return compositeMethod.invoke( proxy, args, mixins, moduleInstance );
         }
@@ -121,7 +124,7 @@ public final class CompositeMethodsModel
     public void implementMixinType( Class mixinType, AssemblyHelper helper )
     {
         final Set<Class> thisDependencies = new HashSet<Class>();
-        for (Method method : mixinType.getMethods())
+        for( Method method : mixinType.getMethods() )
         {
             if( methods.get( method ) == null )
             {
@@ -137,7 +140,7 @@ public final class CompositeMethodsModel
                     MethodSideEffectsModel methodSideEffectsModel2 = sideEffectsModel.sideEffectsFor( mixinMethod, type, helper );
                     methodSideEffectsModel1 = methodSideEffectsModel1.combineWith( methodSideEffectsModel2 );
                 }
-                catch (NoSuchMethodException e)
+                catch( NoSuchMethodException e )
                 {
                     // Ignore...
                 }
@@ -156,15 +159,19 @@ public final class CompositeMethodsModel
                 method.setAccessible( true );
 
                 if( !methodConcernsModel1.hasConcerns() )
+                {
                     methodConcernsModel1 = null; // Don't store reference to something meaningless
+                }
                 if( !methodSideEffectsModel1.hasSideEffects() )
+                {
                     methodSideEffectsModel1 = null; // Same here
+                }
 
                 CompositeMethodModel methodComposite = new CompositeMethodModel( method,
-                        new MethodConstraintsModel( method, constraintsModel ),
-                        methodConcernsModel1,
-                        methodSideEffectsModel1,
-                        mixinsModel );
+                                                                                 new MethodConstraintsModel( method, constraintsModel ),
+                                                                                 methodConcernsModel1,
+                                                                                 methodSideEffectsModel1,
+                                                                                 mixinsModel );
 
                 // Implement @This references
                 methodComposite.addThisInjections( thisDependencies );
@@ -177,7 +184,7 @@ public final class CompositeMethodsModel
         mixinsModel.addMixinType( mixinType );
 
         // Implement all @This dependencies that were found
-        for (Class thisDependency : thisDependencies)
+        for( Class thisDependency : thisDependencies )
         {
             implementMixinType( thisDependency, helper );
         }
@@ -191,7 +198,7 @@ public final class CompositeMethodsModel
     public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
         throws ThrowableType
     {
-        for (CompositeMethodModel compositeMethodModel : methods.values())
+        for( CompositeMethodModel compositeMethodModel : methods.values() )
         {
             compositeMethodModel.visitModel( modelVisitor );
         }

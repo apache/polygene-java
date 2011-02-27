@@ -15,10 +15,9 @@
 
 package org.qi4j.spi.entitystore;
 
+import java.io.IOException;
 import org.qi4j.api.io.Input;
 import org.qi4j.api.io.Output;
-
-import java.io.IOException;
 
 /**
  * Allow backups and restores of data in an EntityStore to be made
@@ -27,12 +26,13 @@ public interface BackupRestore
 {
     /**
      * Input that allows data from the entity store to be backed up.
+     *
      * @return
      */
-   Input<String, IOException> backup();
+    Input<String, IOException> backup();
 
     /**
      * Output that allows data to be restored from a backup.
      */
-   Output<String, IOException> restore();
+    Output<String, IOException> restore();
 }

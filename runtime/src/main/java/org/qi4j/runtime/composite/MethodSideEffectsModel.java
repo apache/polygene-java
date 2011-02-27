@@ -24,7 +24,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.bootstrap.AssemblyHelper;
 import org.qi4j.runtime.model.Binder;
@@ -38,20 +37,20 @@ import org.qi4j.spi.util.SerializationUtil;
  * JAVADOC
  */
 public final class MethodSideEffectsModel
-        implements Binder, MethodSideEffectsDescriptor, Serializable
+    implements Binder, MethodSideEffectsDescriptor, Serializable
 {
     private Method method;
     private List<MethodSideEffectModel> sideEffectModels = null;
 
     private void writeObject( ObjectOutputStream out )
-            throws IOException
+        throws IOException
     {
         try
         {
             SerializationUtil.writeMethod( out, method );
             out.writeObject( sideEffectModels );
         }
-        catch (NotSerializableException e)
+        catch( NotSerializableException e )
         {
             System.err.println( "NotSerializable in " + getClass() );
             throw e;
@@ -59,7 +58,7 @@ public final class MethodSideEffectsModel
     }
 
     private void readObject( ObjectInputStream in )
-            throws IOException, ClassNotFoundException
+        throws IOException, ClassNotFoundException
     {
         method = SerializationUtil.readMethod( in );
         sideEffectModels = (List<MethodSideEffectModel>) in.readObject();
@@ -79,9 +78,9 @@ public final class MethodSideEffectsModel
     // Binding
 
     public void bind( Resolution resolution )
-            throws BindingException
+        throws BindingException
     {
-        for (MethodSideEffectModel methodSideEffectModel : sideEffectModels)
+        for( MethodSideEffectModel methodSideEffectModel : sideEffectModels )
         {
             methodSideEffectModel.bind( resolution );
         }
@@ -94,7 +93,7 @@ public final class MethodSideEffectsModel
         ProxyReferenceInvocationHandler proxyHandler = new ProxyReferenceInvocationHandler();
         SideEffectInvocationHandlerResult result = new SideEffectInvocationHandlerResult();
         List<InvocationHandler> sideEffects = new ArrayList<InvocationHandler>( sideEffectModels.size() );
-        for (MethodSideEffectModel sideEffectModel : sideEffectModels)
+        for( MethodSideEffectModel sideEffectModel : sideEffectModels )
         {
             InvocationHandler sideEffect = sideEffectModel.newInstance( moduleInstance, result, proxyHandler, method );
             sideEffects.add( sideEffect );
@@ -106,7 +105,7 @@ public final class MethodSideEffectsModel
         throws ThrowableType
     {
         modelVisitor.visit( this );
-        for (MethodSideEffectModel methodSideEffectModel : sideEffectModels)
+        for( MethodSideEffectModel methodSideEffectModel : sideEffectModels )
         {
             methodSideEffectModel.visitModel( modelVisitor );
         }
@@ -117,22 +116,26 @@ public final class MethodSideEffectsModel
         if( mixinMethodSideEffectsModel.sideEffectModels.size() > 0 )
         {
             List<MethodSideEffectModel> combinedModels = new ArrayList<MethodSideEffectModel>( sideEffectModels.size() + mixinMethodSideEffectsModel
-                    .sideEffectModels
-                    .size() );
+                .sideEffectModels
+                .size() );
             combinedModels.addAll( sideEffectModels );
             combinedModels.removeAll( mixinMethodSideEffectsModel.sideEffectModels );
             combinedModels.addAll( mixinMethodSideEffectsModel.sideEffectModels );
             return new MethodSideEffectsModel( method, combinedModels );
-        } else
+        }
+        else
         {
             return this;
         }
     }
 
-    static MethodSideEffectsModel createForMethod( Method method, Collection<Class> sideEffectClasses, AssemblyHelper helper )
+    static MethodSideEffectsModel createForMethod( Method method,
+                                                   Collection<Class> sideEffectClasses,
+                                                   AssemblyHelper helper
+    )
     {
         List<MethodSideEffectModel> sideEffects = new ArrayList<MethodSideEffectModel>();
-        for (Class sideEffectClass : sideEffectClasses)
+        for( Class sideEffectClass : sideEffectClasses )
         {
             sideEffects.add( helper.getSideEffectModel( sideEffectClass ) );
         }

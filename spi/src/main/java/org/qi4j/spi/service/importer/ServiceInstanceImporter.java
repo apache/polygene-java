@@ -19,7 +19,11 @@ package org.qi4j.spi.service.importer;
  */
 
 import org.qi4j.api.injection.scope.Structure;
-import org.qi4j.api.service.*;
+import org.qi4j.api.service.ImportedServiceDescriptor;
+import org.qi4j.api.service.ServiceFinder;
+import org.qi4j.api.service.ServiceImporter;
+import org.qi4j.api.service.ServiceImporterException;
+import org.qi4j.api.service.ServiceReference;
 
 /**
  * Use a registered service that implements ServiceImporter to do the actual
@@ -29,49 +33,52 @@ import org.qi4j.api.service.*;
  * module.importServices(OtherService.class).importedBy(ServiceInstanceImporter.class).setMetaInfo("someid");
  */
 public class ServiceInstanceImporter<T>
-   implements ServiceImporter<T>
+    implements ServiceImporter<T>
 {
-   @Structure
-   ServiceFinder finder;
+    @Structure
+    ServiceFinder finder;
 
-   ServiceImporter<T> service;
+    ServiceImporter<T> service;
 
-   String serviceId;
+    String serviceId;
 
-   public T importService( ImportedServiceDescriptor importedServiceDescriptor ) throws ServiceImporterException
-   {
-      serviceId = importedServiceDescriptor.metaInfo( String.class );
+    public T importService( ImportedServiceDescriptor importedServiceDescriptor )
+        throws ServiceImporterException
+    {
+        serviceId = importedServiceDescriptor.metaInfo( String.class );
 
-      return getServiceImporter().importService( importedServiceDescriptor );
-   }
+        return getServiceImporter().importService( importedServiceDescriptor );
+    }
 
-   public boolean isActive( T o )
-   {
-      return getServiceImporter().isActive( o );
-   }
+    public boolean isActive( T o )
+    {
+        return getServiceImporter().isActive( o );
+    }
 
-   public boolean isAvailable( T instance )
-   {
-      return getServiceImporter().isAvailable( instance );
-   }
+    public boolean isAvailable( T instance )
+    {
+        return getServiceImporter().isAvailable( instance );
+    }
 
-   private ServiceImporter<T> getServiceImporter()
-   {
-      if (service == null)
-      {
-         for (ServiceReference<ServiceImporter> reference : finder.<ServiceImporter>findServices( ServiceImporter.class ))
-         {
-            if (reference.identity().equals( serviceId ))
+    private ServiceImporter<T> getServiceImporter()
+    {
+        if( service == null )
+        {
+            for( ServiceReference<ServiceImporter> reference : finder.<ServiceImporter>findServices( ServiceImporter.class ) )
             {
-               service = reference.get();
-               break;
+                if( reference.identity().equals( serviceId ) )
+                {
+                    service = reference.get();
+                    break;
+                }
             }
-         }
-      }
+        }
 
-      if (service == null)
-         throw new ServiceImporterException("No service importer with id '"+ serviceId +"' was found");
+        if( service == null )
+        {
+            throw new ServiceImporterException( "No service importer with id '" + serviceId + "' was found" );
+        }
 
-      return service;
-   }
+        return service;
+    }
 }

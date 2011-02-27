@@ -30,6 +30,7 @@ public interface ModuleVisitor<ThrowableType extends Throwable>
      * @param visibility     visibility level for current module visitation
      *
      * @return true if traversal should continue, false if traversal should stop
+     *
      * @throws ThrowableType thrown if traversal went wrong
      */
     boolean visitModule( ModuleInstance moduleInstance, ModuleModel moduleModel, Visibility visibility )

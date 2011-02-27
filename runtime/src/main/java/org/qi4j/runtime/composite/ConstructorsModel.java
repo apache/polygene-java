@@ -34,9 +34,7 @@ import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.spi.composite.AbstractCompositeDescriptor;
 
-import static org.qi4j.api.util.Iterables.filter;
-import static org.qi4j.api.util.Iterables.first;
-import static org.qi4j.api.util.Iterables.iterable;
+import static org.qi4j.api.util.Iterables.*;
 
 /**
  * JAVADOC

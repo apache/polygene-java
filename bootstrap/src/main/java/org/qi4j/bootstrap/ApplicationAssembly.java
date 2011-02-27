@@ -30,6 +30,7 @@ public interface ApplicationAssembly
      * Create a new layer assembly
      *
      * @param name of the new layer
+     *
      * @return a LayerAssembly instance
      */
     LayerAssembly layerAssembly( String name );
@@ -52,6 +53,7 @@ public interface ApplicationAssembly
      * Set the name of the application
      *
      * @param name of the application
+     *
      * @return the assembly
      */
     ApplicationAssembly setName( String name );
@@ -61,6 +63,7 @@ public interface ApplicationAssembly
      * most likely will follow the Dewey format, i.e. x.y.z.
      *
      * @param version of the application
+     *
      * @return the assembly
      */
     ApplicationAssembly setVersion( String version );
@@ -73,6 +76,7 @@ public interface ApplicationAssembly
      * and they may assemble the application differentlly depending on this setting.
      *
      * @param mode the application mode
+     *
      * @return the current application mode
      */
     ApplicationAssembly setMode( Application.Mode mode );

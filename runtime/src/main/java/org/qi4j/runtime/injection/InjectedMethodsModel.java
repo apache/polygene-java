@@ -14,20 +14,19 @@
 
 package org.qi4j.runtime.injection;
 
-import org.qi4j.api.injection.InjectionScope;
-import org.qi4j.api.util.Classes;
-import org.qi4j.bootstrap.BindingException;
-import org.qi4j.runtime.model.Resolution;
-import org.qi4j.runtime.structure.ModelVisitor;
-
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import org.qi4j.api.injection.InjectionScope;
+import org.qi4j.api.util.Classes;
+import org.qi4j.bootstrap.BindingException;
+import org.qi4j.runtime.model.Resolution;
+import org.qi4j.runtime.structure.ModelVisitor;
 
-import static org.qi4j.api.util.Annotations.hasAnnotation;
+import static org.qi4j.api.util.Annotations.*;
 import static org.qi4j.api.util.Iterables.*;
 
 /**
@@ -52,7 +51,7 @@ public final class InjectedMethodsModel
                 final Type[] genericParameterTypes = method.getGenericParameterTypes();
                 for( int i = 0; i < parameterAnnotations.length; i++ )
                 {
-                    Annotation injectionAnnotation = first( filter(hasAnnotation( InjectionScope.class), iterable( parameterAnnotations[ i ]) ));
+                    Annotation injectionAnnotation = first( filter( hasAnnotation( InjectionScope.class ), iterable( parameterAnnotations[ i ] ) ) );
                     if( injectionAnnotation == null )
                     {
                         continue nextMethod;
@@ -61,7 +60,7 @@ public final class InjectedMethodsModel
                     Type type = genericParameterTypes[ i ];
 
                     boolean optional = DependencyModel.isOptional( injectionAnnotation, parameterAnnotations[ i ] );
-                    DependencyModel dependencyModel = new DependencyModel( injectionAnnotation, type, fragmentClass, optional, parameterAnnotations[i] );
+                    DependencyModel dependencyModel = new DependencyModel( injectionAnnotation, type, fragmentClass, optional, parameterAnnotations[ i ] );
                     parametersModel.addDependency( dependencyModel );
                 }
                 InjectedMethodModel methodModel = new InjectedMethodModel( method, parametersModel );

@@ -29,8 +29,7 @@ import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.spi.composite.InjectedFieldDescriptor;
 import org.qi4j.spi.util.SerializationUtil;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singleton;
+import static java.util.Collections.*;
 
 /**
  * JAVADOC

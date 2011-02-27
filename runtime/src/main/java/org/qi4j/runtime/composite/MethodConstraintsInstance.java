@@ -79,7 +79,8 @@ public final class MethodConstraintsInstance
             {
                 throw new ConstraintViolationException( (Composite) ( (CompositeInstance) instance ).proxy(), method, violations );
             }
-            throw new ConstraintViolationException( instance.toString(), instance.getClass().getName(), method, violations );
+            throw new ConstraintViolationException( instance.toString(), instance.getClass()
+                .getName(), method, violations );
         }
     }
 }

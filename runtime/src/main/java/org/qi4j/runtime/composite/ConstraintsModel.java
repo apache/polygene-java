@@ -14,28 +14,27 @@
 
 package org.qi4j.runtime.composite;
 
-import org.qi4j.api.common.InvalidApplicationException;
-import org.qi4j.api.constraint.Constraint;
-import org.qi4j.api.constraint.ConstraintImplementationNotFoundException;
-import org.qi4j.api.constraint.Constraints;
-import org.qi4j.api.util.Iterables;
-
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import org.qi4j.api.common.InvalidApplicationException;
+import org.qi4j.api.constraint.Constraint;
+import org.qi4j.api.constraint.ConstraintImplementationNotFoundException;
+import org.qi4j.api.constraint.Constraints;
+import org.qi4j.api.util.Iterables;
 
-import static java.util.Arrays.asList;
-import static org.qi4j.api.util.Annotations.hasAnnotation;
-import static org.qi4j.api.util.Classes.genericInterfacesOf;
+import static java.util.Arrays.*;
+import static org.qi4j.api.util.Annotations.*;
+import static org.qi4j.api.util.Classes.*;
 
 /**
  * JAVADOC
  */
 public final class ConstraintsModel
-        implements Serializable
+    implements Serializable
 {
     private final List<ConstraintDeclaration> constraints = new ArrayList<ConstraintDeclaration>();
     private final Class declaringType;
@@ -46,7 +45,7 @@ public final class ConstraintsModel
         // Find constraint declarations
         Set<Type> interfaces = genericInterfacesOf( declaringType );
 
-        for (Type anInterface : interfaces)
+        for( Type anInterface : interfaces )
         {
             addConstraintDeclarations( anInterface );
         }
@@ -60,13 +59,13 @@ public final class ConstraintsModel
     {
         List<AbstractConstraintModel> constraintModels = new ArrayList<AbstractConstraintModel>();
         nextConstraint:
-        for (Annotation constraintAnnotation : Iterables.filter( hasAnnotation( org.qi4j.api.constraint.ConstraintDeclaration.class ), constraintAnnotations ))
+        for( Annotation constraintAnnotation : Iterables.filter( hasAnnotation( org.qi4j.api.constraint.ConstraintDeclaration.class ), constraintAnnotations ) )
         {
             // Check composite declarations first
             Class<? extends Annotation> annotationType = constraintAnnotation.annotationType();
-            for (ConstraintDeclaration constraint : constraints)
+            for( ConstraintDeclaration constraint : constraints )
             {
-                if (constraint.appliesTo( annotationType, valueType ))
+                if( constraint.appliesTo( annotationType, valueType ) )
                 {
                     constraintModels.add( new ConstraintModel( constraintAnnotation, constraint.constraintClass() ) );
                     continue nextConstraint;
@@ -75,12 +74,13 @@ public final class ConstraintsModel
 
             // Check the annotation itself
             Constraints constraints = annotationType.getAnnotation( Constraints.class );
-            if (constraints != null)
+            if( constraints != null )
             {
-                for (Class<? extends Constraint<?, ?>> constraintClass : constraints.value())
+                for( Class<? extends Constraint<?, ?>> constraintClass : constraints.value() )
                 {
-                    ConstraintDeclaration declaration = new ConstraintDeclaration( constraintClass, constraintAnnotation.annotationType() );
-                    if (declaration.appliesTo( annotationType, valueType ))
+                    ConstraintDeclaration declaration = new ConstraintDeclaration( constraintClass, constraintAnnotation
+                        .annotationType() );
+                    if( declaration.appliesTo( annotationType, valueType ) )
                     {
                         constraintModels.add( new ConstraintModel( constraintAnnotation, declaration.constraintClass() ) );
                         continue nextConstraint;
@@ -91,9 +91,12 @@ public final class ConstraintsModel
             // No implementation found!
 
             // Check if if it's a composite constraints
-            if (Iterables.matchesAny( hasAnnotation( org.qi4j.api.constraint.ConstraintDeclaration.class ), asList( constraintAnnotation.annotationType().getAnnotations() ) ))
+            if( Iterables.matchesAny( hasAnnotation( org.qi4j.api.constraint.ConstraintDeclaration.class ), asList( constraintAnnotation
+                                                                                                                        .annotationType()
+                                                                                                                        .getAnnotations() ) ) )
             {
-                ValueConstraintsModel valueConstraintsModel = constraintsFor( asList( constraintAnnotation.annotationType().getAnnotations() ), valueType, name, optional );
+                ValueConstraintsModel valueConstraintsModel = constraintsFor( asList( constraintAnnotation.annotationType()
+                                                                                          .getAnnotations() ), valueType, name, optional );
                 CompositeConstraintModel compositeConstraintModel = new CompositeConstraintModel( constraintAnnotation, valueConstraintsModel );
                 constraintModels.add( compositeConstraintModel );
                 continue nextConstraint;
@@ -107,23 +110,23 @@ public final class ConstraintsModel
 
     private void addConstraintDeclarations( Type type )
     {
-        if (type instanceof Class)
+        if( type instanceof Class )
         {
             Class<?> clazz = (Class<?>) type;
             try
             {
                 Constraints annotation = clazz.getAnnotation( Constraints.class );
 
-                if (annotation != null)
+                if( annotation != null )
                 {
                     Class<? extends Constraint<?, ?>>[] constraintClasses = annotation.value();
-                    for (Class<? extends Constraint<?, ?>> constraintClass : constraintClasses)
+                    for( Class<? extends Constraint<?, ?>> constraintClass : constraintClasses )
                     {
                         constraints.add( new ConstraintDeclaration( constraintClass, type ) );
                     }
                 }
             }
-            catch (Exception e)
+            catch( Exception e )
             {
                 throw new InvalidApplicationException( "Could not get Constraints for type " + clazz.getName(), e );
             }

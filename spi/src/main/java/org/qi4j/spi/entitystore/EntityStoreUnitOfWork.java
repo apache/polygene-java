@@ -33,26 +33,30 @@ public interface EntityStoreUnitOfWork
      *
      * @param anIdentity       the identity of the entity
      * @param entityDescriptor entity descriptor
+     *
      * @return The new entity state.
+     *
      * @throws EntityStoreException Thrown if creational fails.
      */
     EntityState newEntityState( EntityReference anIdentity, EntityDescriptor entityDescriptor )
-            throws EntityStoreException;
+        throws EntityStoreException;
 
     /**
      * Get the EntityState for a given identity. Throws {@link EntityNotFoundException}
      * if the entity with given {@code anIdentity} is not found.
      *
      * @param anIdentity The entity identity. This argument must not be {@code null}.
+     *
      * @return Entity state given the composite descriptor and identity.
+     *
      * @throws EntityStoreException    thrown if retrieval failed.
      * @throws EntityNotFoundException if requested entity does not exist
      */
     EntityState getEntityState( EntityReference anIdentity )
-            throws EntityStoreException, EntityNotFoundException;
+        throws EntityStoreException, EntityNotFoundException;
 
     StateCommitter applyChanges()
-            throws EntityStoreException;
+        throws EntityStoreException;
 
     void discard();
 }

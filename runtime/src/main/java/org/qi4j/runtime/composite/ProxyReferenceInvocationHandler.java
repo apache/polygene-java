@@ -14,16 +14,15 @@
  */
 package org.qi4j.runtime.composite;
 
-import org.qi4j.spi.composite.CompositeInvoker;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.UndeclaredThrowableException;
+import org.qi4j.spi.composite.CompositeInvoker;
 
 public final class ProxyReferenceInvocationHandler
-        implements InvocationHandler, CompositeInvoker
+    implements InvocationHandler, CompositeInvoker
 {
     private Object proxy;
 
@@ -42,36 +41,37 @@ public final class ProxyReferenceInvocationHandler
         proxy = null;
     }
 
-    public Object invokeComposite( Method method, Object[] args ) throws Throwable
+    public Object invokeComposite( Method method, Object[] args )
+        throws Throwable
     {
         try
         {
             InvocationHandler invocationHandler = Proxy.getInvocationHandler( this.proxy );
             return invocationHandler.invoke( this.proxy, method, args );
         }
-        catch (InvocationTargetException e)
+        catch( InvocationTargetException e )
         {
             throw e.getTargetException();
         }
-        catch (UndeclaredThrowableException e)
+        catch( UndeclaredThrowableException e )
         {
             throw e.getUndeclaredThrowable();
         }
     }
 
     public Object invoke( Object proxy, Method method, Object[] args )
-            throws Throwable
+        throws Throwable
     {
         try
         {
             InvocationHandler invocationHandler = Proxy.getInvocationHandler( this.proxy );
             return invocationHandler.invoke( this.proxy, method, args );
         }
-        catch (InvocationTargetException e)
+        catch( InvocationTargetException e )
         {
             throw e.getTargetException();
         }
-        catch (UndeclaredThrowableException e)
+        catch( UndeclaredThrowableException e )
         {
             throw e.getUndeclaredThrowable();
         }

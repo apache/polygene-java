@@ -14,13 +14,17 @@
 
 package org.qi4j.spi.service.importer;
 
-import org.qi4j.api.injection.scope.Structure;
-import org.qi4j.api.service.*;
-import org.qi4j.api.service.qualifier.ServiceQualifier;
-import org.qi4j.api.specification.Specification;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.service.Availability;
+import org.qi4j.api.service.ImportedServiceDescriptor;
+import org.qi4j.api.service.ServiceFinder;
+import org.qi4j.api.service.ServiceImporter;
+import org.qi4j.api.service.ServiceImporterException;
+import org.qi4j.api.service.ServiceReference;
+import org.qi4j.api.service.qualifier.ServiceQualifier;
+import org.qi4j.api.specification.Specification;
 
 /**
  * If several services are available with a given type, and you want to constrain
@@ -64,6 +68,6 @@ public final class ServiceSelectorImporter<T>
 
     public boolean isAvailable( T instance )
     {
-        return !(instance instanceof Availability) || ((Availability) instance).isAvailable();
+        return !( instance instanceof Availability ) || ( (Availability) instance ).isAvailable();
     }
 }

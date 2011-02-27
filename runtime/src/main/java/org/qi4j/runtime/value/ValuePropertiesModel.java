@@ -14,6 +14,9 @@
 
 package org.qi4j.runtime.value;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.List;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.property.GenericPropertyInfo;
@@ -25,13 +28,8 @@ import org.qi4j.runtime.composite.ValueConstraintsModel;
 import org.qi4j.runtime.property.AbstractPropertiesModel;
 import org.qi4j.spi.property.PropertyType;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.util.List;
-
-import static org.qi4j.api.util.Annotations.isType;
-import static org.qi4j.api.util.Iterables.filter;
-import static org.qi4j.api.util.Iterables.first;
+import static org.qi4j.api.util.Annotations.*;
+import static org.qi4j.api.util.Iterables.*;
 
 /**
  * Properties model for values
@@ -47,8 +45,9 @@ public final class ValuePropertiesModel
     protected ValuePropertyModel newPropertyModel( Method method, Class compositeType )
     {
         Iterable<Annotation> annotations = Annotations.getMethodAndTypeAnnotations( method );
-        boolean optional = first( filter( isType(Optional.class ), annotations)) != null;
-        ValueConstraintsModel valueConstraintsModel = constraints.constraintsFor( annotations, GenericPropertyInfo.getPropertyType( method ), method.getName(), optional );
+        boolean optional = first( filter( isType( Optional.class ), annotations ) ) != null;
+        ValueConstraintsModel valueConstraintsModel = constraints.constraintsFor( annotations, GenericPropertyInfo.getPropertyType( method ), method
+            .getName(), optional );
         ValueConstraintsInstance valueConstraintsInstance = null;
         if( valueConstraintsModel.isConstrained() )
         {

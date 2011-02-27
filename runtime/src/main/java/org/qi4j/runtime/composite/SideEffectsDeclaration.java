@@ -22,11 +22,10 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.sideeffect.SideEffects;
-import org.qi4j.runtime.bootstrap.AssemblyHelper;
 import org.qi4j.api.util.Annotations;
+import org.qi4j.runtime.bootstrap.AssemblyHelper;
 import org.qi4j.spi.util.MethodKeyMap;
 
 import static java.util.Collections.*;
@@ -36,7 +35,7 @@ import static org.qi4j.api.util.Classes.*;
  * JAVADOC
  */
 public final class SideEffectsDeclaration
-        implements Serializable
+    implements Serializable
 {
     private final List<SideEffectDeclaration> sideEffectDeclarations = new ArrayList<SideEffectDeclaration>();
     private final Map<Method, MethodSideEffectsModel> methodSideEffects = new MethodKeyMap<MethodSideEffectsModel>();
@@ -45,13 +44,13 @@ public final class SideEffectsDeclaration
     {
         Collection<Type> types = asSideEffectsTargetTypes( type );
 
-        for (Type aType : types)
+        for( Type aType : types )
         {
             addSideEffectDeclaration( aType );
         }
 
         // Add sideeffects from assembly
-        for (Class<?> sideEffect : sideEffects)
+        for( Class<?> sideEffect : sideEffects )
         {
             this.sideEffectDeclarations.add( new SideEffectDeclaration( sideEffect, null ) );
         }
@@ -63,7 +62,8 @@ public final class SideEffectsDeclaration
         if( type.isInterface() )
         {
             return genericInterfacesOf( type );
-        } else
+        }
+        else
         {
             return singleton( (Type) type );
         }
@@ -71,7 +71,10 @@ public final class SideEffectsDeclaration
 
     // Model
 
-    public MethodSideEffectsModel sideEffectsFor( Method method, Class<? extends Composite> compositeType, AssemblyHelper helper )
+    public MethodSideEffectsModel sideEffectsFor( Method method,
+                                                  Class<? extends Composite> compositeType,
+                                                  AssemblyHelper helper
+    )
     {
         if( methodSideEffects.containsKey( method ) )
         {
@@ -88,7 +91,7 @@ public final class SideEffectsDeclaration
     {
         Collection<Class> result = new LinkedHashSet<Class>( sideEffectDeclarations.size() );
 
-        for (SideEffectDeclaration sideEffectDeclaration : sideEffectDeclarations)
+        for( SideEffectDeclaration sideEffectDeclaration : sideEffectDeclarations )
         {
             if( sideEffectDeclaration.appliesTo( method, compositeType ) )
             {
@@ -107,7 +110,7 @@ public final class SideEffectsDeclaration
             if( annotation != null )
             {
                 Class[] sideEffectClasses = annotation.value();
-                for (Class sideEffectClass : sideEffectClasses)
+                for( Class sideEffectClass : sideEffectClasses )
                 {
                     sideEffectDeclarations.add( new SideEffectDeclaration( sideEffectClass, clazz ) );
                 }

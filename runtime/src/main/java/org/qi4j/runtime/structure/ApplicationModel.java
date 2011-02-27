@@ -56,7 +56,7 @@ public final class ApplicationModel
         this.mode = mode;
         this.metaInfo = metaInfo;
         this.layers = layers;
-        ipf = new InjectionProviderFactoryStrategy(metaInfo);
+        ipf = new InjectionProviderFactoryStrategy( metaInfo );
     }
 
     public String name()

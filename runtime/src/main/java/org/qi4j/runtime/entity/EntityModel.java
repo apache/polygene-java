@@ -19,7 +19,6 @@ import java.lang.reflect.Method;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.QualifiedName;
@@ -66,8 +65,8 @@ import org.qi4j.spi.property.PropertyTypeDescriptor;
  * JAVADOC
  */
 public final class EntityModel
-        extends AbstractCompositeModel
-        implements EntityDescriptor
+    extends AbstractCompositeModel
+    implements EntityDescriptor
 {
     private static final Method IDENTITY_METHOD;
 
@@ -77,7 +76,7 @@ public final class EntityModel
         {
             IDENTITY_METHOD = Identity.class.getMethod( "identity" );
         }
-        catch (NoSuchMethodException e)
+        catch( NoSuchMethodException e )
         {
             throw new InternalError( "Qi4j Core Runtime codebase is corrupted. Contact Qi4j team: ModuleUnitOfWork" );
         }
@@ -92,7 +91,8 @@ public final class EntityModel
                                         ConcernsDeclaration concernsDeclaration,
                                         Iterable<Class<?>> sideEffects,
                                         List<Class<?>> mixins,
-                                        List<Class<?>> roles, AssemblyHelper helper )
+                                        List<Class<?>> roles, AssemblyHelper helper
+    )
     {
         ConstraintsModel constraintsModel = new ConstraintsModel( type );
         boolean immutable = metaInfo.get( Immutable.class ) != null;
@@ -103,19 +103,19 @@ public final class EntityModel
         EntityMixinsModel mixinsModel = new EntityMixinsModel( type, roles, mixins );
         SideEffectsDeclaration sideEffectsModel = new SideEffectsDeclaration( type, sideEffects );
         CompositeMethodsModel compositeMethodsModel = new CompositeMethodsModel( type,
-                constraintsModel,
-                concernsDeclaration,
-                sideEffectsModel,
-                mixinsModel, helper );
+                                                                                 constraintsModel,
+                                                                                 concernsDeclaration,
+                                                                                 sideEffectsModel,
+                                                                                 mixinsModel, helper );
         stateModel.addStateFor( compositeMethodsModel.methods(), type );
 
         return new EntityModel( type,
-                roles,
-                visibility,
-                metaInfo,
-                mixinsModel,
-                stateModel,
-                compositeMethodsModel );
+                                roles,
+                                visibility,
+                                metaInfo,
+                                mixinsModel,
+                                stateModel,
+                                compositeMethodsModel );
     }
 
     private final boolean queryable;
@@ -172,18 +172,18 @@ public final class EntityModel
     }
 
     public void bind( Resolution resolution )
-            throws BindingException
+        throws BindingException
     {
         Set<String> mixinTypes = new LinkedHashSet<String>();
-        for (Class mixinType : mixinsModel.mixinTypes())
+        for( Class mixinType : mixinsModel.mixinTypes() )
         {
             mixinTypes.add( mixinType.getName() );
         }
 
         EntityStateModel entityStateModel = (EntityStateModel) stateModel;
         entityType = new EntityType(
-                TypeName.nameOf( type() ), queryable,
-                mixinTypes, entityStateModel.propertyTypes(), entityStateModel.associationTypes(), entityStateModel.manyAssociationTypes()
+            TypeName.nameOf( type() ), queryable,
+            mixinTypes, entityStateModel.propertyTypes(), entityStateModel.associationTypes(), entityStateModel.manyAssociationTypes()
         );
 
         resolution = new Resolution( resolution.application(), resolution.layer(), resolution.module(), this, null, null );
@@ -222,16 +222,17 @@ public final class EntityModel
         // Instantiate proxy for given composite interface
         try
         {
-            return EntityComposite.class.cast( proxyClass.getConstructor( InvocationHandler.class ).newInstance( invocationHandler ) );
+            return EntityComposite.class.cast( proxyClass.getConstructor( InvocationHandler.class )
+                                                   .newInstance( invocationHandler ) );
         }
-        catch (Exception e)
+        catch( Exception e )
         {
             throw new ConstructionException( e );
         }
     }
 
     public EntityState newEntityState( EntityStoreUnitOfWork store, EntityReference identity )
-            throws ConstraintViolationException, EntityStoreException
+        throws ConstraintViolationException, EntityStoreException
     {
         try
         {
@@ -244,11 +245,11 @@ public final class EntityModel
 
             return entityState;
         }
-        catch (EntityAlreadyExistsException e)
+        catch( EntityAlreadyExistsException e )
         {
             throw new EntityCompositeAlreadyExistsException( identity );
         }
-        catch (EntityStoreException e)
+        catch( EntityStoreException e )
         {
             throw new ConstructionException( "Could not create new entity in store", e );
         }
@@ -265,16 +266,17 @@ public final class EntityModel
         {
             // Set new properties to default value
             Set<PersistentPropertyModel> entityProperties = state().properties();
-            for (PersistentPropertyModel propertyDescriptor : entityProperties)
+            for( PersistentPropertyModel propertyDescriptor : entityProperties )
             {
-                entityState.setProperty( propertyDescriptor.propertyType().qualifiedName(), propertyDescriptor.initialValue() );
+                entityState.setProperty( propertyDescriptor.propertyType()
+                                             .qualifiedName(), propertyDescriptor.initialValue() );
             }
         }
 
         {
             // Set new manyAssociations to null
             Set<AssociationDescriptor> entityAssociations = state().associations();
-            for (AssociationDescriptor associationDescriptor : entityAssociations)
+            for( AssociationDescriptor associationDescriptor : entityAssociations )
             {
                 entityState.setAssociation( associationDescriptor.associationType().qualifiedName(), null );
             }
@@ -283,7 +285,7 @@ public final class EntityModel
         {
             // Set new many-manyAssociations to empty
             Set<ManyAssociationDescriptor> entityAssociations = state().manyAssociations();
-            for (ManyAssociationDescriptor associationDescriptor : entityAssociations)
+            for( ManyAssociationDescriptor associationDescriptor : entityAssociations )
             {
                 entityState.getManyAssociation( associationDescriptor.manyAssociationType().qualifiedName() );
             }

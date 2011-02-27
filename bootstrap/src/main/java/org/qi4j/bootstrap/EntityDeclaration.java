@@ -30,6 +30,7 @@ public interface EntityDeclaration
      * Set additional metainfo for this entity declaration.
      *
      * @param info metainfo that can be retrieved from the EntityDescriptor.
+     *
      * @return
      */
     EntityDeclaration setMetaInfo( Object info );
@@ -38,6 +39,7 @@ public interface EntityDeclaration
      * Set visibility for declared entities.
      *
      * @param visibility
+     *
      * @return
      */
     EntityDeclaration visibleIn( Visibility visibility );
@@ -46,6 +48,7 @@ public interface EntityDeclaration
      * Declare additional concerns for these entities.
      *
      * @param concerns
+     *
      * @return
      */
     EntityDeclaration withConcerns( Class<?>... concerns );
@@ -54,6 +57,7 @@ public interface EntityDeclaration
      * Declare additional side-effects for these entitites.
      *
      * @param sideEffects
+     *
      * @return
      */
     EntityDeclaration withSideEffects( Class<?>... sideEffects );
@@ -64,6 +68,7 @@ public interface EntityDeclaration
      * This can be useful to override any default mixins from the entity interface.
      *
      * @param mixins
+     *
      * @return
      */
     EntityDeclaration withMixins( Class<?>... mixins );
@@ -75,6 +80,7 @@ public interface EntityDeclaration
      * which you do not want to include in the entity interface itself.
      *
      * @param roleInterfaces list of role interfaces to add
+     *
      * @return
      */
     EntityDeclaration withRoles( Class<?>... roleInterfaces );

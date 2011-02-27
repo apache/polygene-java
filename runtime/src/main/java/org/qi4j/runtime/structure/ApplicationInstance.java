@@ -113,7 +113,7 @@ public class ApplicationInstance
     {
         layerActivator.activate( layerInstances );
 
-        logger.debug( "Application "+name()+" activated" );
+        logger.debug( "Application " + name() + " activated" );
     }
 
     public void passivate()
@@ -121,7 +121,7 @@ public class ApplicationInstance
     {
         layerActivator.passivate();
 
-        logger.debug("Application "+name()+" passivated");
+        logger.debug( "Application " + name() + " passivated" );
     }
 
     public <ThrowableType extends Throwable> void visitDescriptor( DescriptorVisitor<ThrowableType> visitor )

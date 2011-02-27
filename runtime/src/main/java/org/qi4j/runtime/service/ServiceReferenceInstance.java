@@ -14,6 +14,8 @@
 
 package org.qi4j.runtime.service;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceImporterException;
 import org.qi4j.api.service.ServiceReference;
@@ -23,9 +25,6 @@ import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.service.ServiceDescriptor;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-
 /**
  * Implementation of ServiceReference. This manages the actual instance of the service
  * and implements the invocation of the Activatable interface on the service.
@@ -34,7 +33,7 @@ import java.lang.reflect.Method;
  * that the instance can be passivated even though a client is holding on to a service proxy.
  */
 public final class ServiceReferenceInstance<T>
-        implements ServiceReference<T>, Activatable
+    implements ServiceReference<T>, Activatable
 {
     private volatile ServiceInstance instance;
     private final T serviceProxy;
@@ -81,7 +80,7 @@ public final class ServiceReferenceInstance<T>
     }
 
     public void activate()
-            throws Exception
+        throws Exception
     {
         if( serviceModel.isInstantiateOnStartup() )
         {
@@ -90,7 +89,7 @@ public final class ServiceReferenceInstance<T>
     }
 
     public void passivate()
-            throws Exception
+        throws Exception
     {
         if( instance != null )
         {
@@ -101,12 +100,12 @@ public final class ServiceReferenceInstance<T>
     }
 
     private ServiceInstance getInstance()
-            throws ServiceImporterException
+        throws ServiceImporterException
     {
         // DCL that works with Java 1.5 volatile semantics
         if( instance == null )
         {
-            synchronized (this)
+            synchronized( this )
             {
                 if( instance == null )
                 {
@@ -117,7 +116,7 @@ public final class ServiceReferenceInstance<T>
                     {
                         activator.activate( instance );
                     }
-                    catch (Exception e)
+                    catch( Exception e )
                     {
                         instance = null;
                         throw new ServiceUnavailableException( "Could not activate service " + serviceModel.identity(), e );
@@ -146,21 +145,23 @@ public final class ServiceReferenceInstance<T>
     }
 
     public final class ServiceInvocationHandler
-            implements InvocationHandler
+        implements InvocationHandler
     {
         public Object invoke( Object object, Method method, Object[] objects )
-                throws Throwable
+            throws Throwable
         {
             if( method.getDeclaringClass().equals( Object.class ) )
             {
                 if( method.getName().equals( "toString" ) )
                 {
                     return serviceModel.toString();
-                } else if( method.getName().equals( "equals" ) )
+                }
+                else if( method.getName().equals( "equals" ) )
                 {
-                    Object obj = objects[0];
+                    Object obj = objects[ 0 ];
                     return obj == object;
-                } else if( method.getName().equals( "hashCode" ) )
+                }
+                else if( method.getName().equals( "hashCode" ) )
                 {
                     return serviceModel.toString().hashCode();
                 }

@@ -18,13 +18,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.PropertyDeclarations;
-import org.qi4j.bootstrap.TransientDeclaration;
 import org.qi4j.bootstrap.ValueDeclaration;
 import org.qi4j.runtime.value.ValueModel;
 
@@ -32,7 +30,7 @@ import org.qi4j.runtime.value.ValueModel;
  * Declaration of a ValueComposite. Created by {@link org.qi4j.bootstrap.ModuleAssembly#addValues(Class[])}.
  */
 public final class ValueDeclarationImpl
-        implements ValueDeclaration, Serializable
+    implements ValueDeclaration, Serializable
 {
     private Class<? extends ValueComposite>[] compositeTypes;
     private List<Class<?>> concerns = new ArrayList<Class<?>>();
@@ -85,22 +83,22 @@ public final class ValueDeclarationImpl
 
     void addValues( List<ValueModel> values, PropertyDeclarations propertyDecs, AssemblyHelper helper )
     {
-        for (Class<? extends ValueComposite> compositeType : compositeTypes)
+        for( Class<? extends ValueComposite> compositeType : compositeTypes )
         {
             try
             {
                 ValueModel valueModel = ValueModel.newModel( compositeType,
-                        visibility,
-                        new MetaInfo( metaInfo ).withAnnotations( compositeType ),
-                        propertyDecs,
-                        concerns,
-                        sideEffects,
-                        mixins,
-                        roles,
-                        helper );
+                                                             visibility,
+                                                             new MetaInfo( metaInfo ).withAnnotations( compositeType ),
+                                                             propertyDecs,
+                                                             concerns,
+                                                             sideEffects,
+                                                             mixins,
+                                                             roles,
+                                                             helper );
                 values.add( valueModel );
             }
-            catch (Exception e)
+            catch( Exception e )
             {
                 throw new InvalidApplicationException( "Could not register " + compositeType.getName(), e );
             }

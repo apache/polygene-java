@@ -1,8 +1,8 @@
 
 dependencies {
-  compile(project(':core:api'))
-  compile(project(':core:spi'))
-  compile(project(':core:bootstrap'))
+  compile(project(':org.qi4j.core:org.qi4j.core.api'))
+  compile(project(':org.qi4j.core:org.qi4j.core.spi'))
+  compile(project(':org.qi4j.core:org.qi4j.core.bootstrap'))
   compile(libraries.junit)
 
 }

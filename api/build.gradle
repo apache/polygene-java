@@ -3,9 +3,9 @@ dependencies {
   compile(libraries.slf4j_api)
   testCompile(libraries.ant)
   testCompile(libraries.junit)
-  testCompile(project(':libraries:constraints'))
-  testCompile(project(':core:testsupport'))
-  testRuntime(project(':core:runtime'))
+  testCompile(project(':org.qi4j.libraries:org.qi4j.library.constraints'))
+  testCompile(project(':org.qi4j.core:org.qi4j.core.testsupport'))
+  testRuntime(project(':org.qi4j.core:org.qi4j.core.runtime'))
   testRuntime(libraries.slf4j_simple)
   testRuntime(libraries.asm)
 }

@@ -18,7 +18,6 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.qi4j.api.entity.Entity;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.Lifecycle;
@@ -36,12 +35,15 @@ import org.qi4j.spi.composite.CompositeInstance;
  * JAVADOC
  */
 public final class EntityMixinsModel
-        extends AbstractMixinsModel
-        implements Serializable
+    extends AbstractMixinsModel
+    implements Serializable
 {
     List<Integer> lifecycleMixins;
 
-    public EntityMixinsModel( Class<? extends EntityComposite> compositeType, List<Class<?>> assemblyRoles, List<Class<?>> assemblyMixins )
+    public EntityMixinsModel( Class<? extends EntityComposite> compositeType,
+                              List<Class<?>> assemblyRoles,
+                              List<Class<?>> assemblyMixins
+    )
     {
         super( compositeType, assemblyRoles, assemblyMixins );
         mixins.add( new MixinDeclaration( EntityMixin.class, Entity.class ) );
@@ -49,12 +51,12 @@ public final class EntityMixinsModel
 
     @Override
     public void bind( Resolution resolution )
-            throws BindingException
+        throws BindingException
     {
         super.bind( resolution );
 
         // Find what mixins implement Lifecycle
-        for (int i = 0; i < mixinModels.size(); i++)
+        for( int i = 0; i < mixinModels.size(); i++ )
         {
             MixinModel mixinModel = mixinModels.get( i );
             if( Lifecycle.class.isAssignableFrom( mixinModel.mixinClass() ) )
@@ -74,7 +76,7 @@ public final class EntityMixinsModel
         MixinModel model = methodImplementation.get( method );
         InjectionContext injectionContext = new InjectionContext( entityInstance, UsesInstance.EMPTY_USES, state );
         Object mixin = model.newInstance( injectionContext );
-        mixins[methodIndex.get( method )] = mixin;
+        mixins[ methodIndex.get( method ) ] = mixin;
         return mixin;
     }
 
@@ -83,9 +85,9 @@ public final class EntityMixinsModel
         if( lifecycleMixins != null )
         {
             InjectionContext injectionContext = new InjectionContext( instance, UsesInstance.EMPTY_USES, state );
-            for (Integer lifecycleMixin : lifecycleMixins)
+            for( Integer lifecycleMixin : lifecycleMixins )
             {
-                Lifecycle lifecycle = (Lifecycle) mixins[lifecycleMixin];
+                Lifecycle lifecycle = (Lifecycle) mixins[ lifecycleMixin ];
 
                 if( lifecycle == null )
                 {
@@ -95,7 +97,8 @@ public final class EntityMixinsModel
                 if( create )
                 {
                     lifecycle.create();
-                } else
+                }
+                else
                 {
                     lifecycle.remove();
                 }

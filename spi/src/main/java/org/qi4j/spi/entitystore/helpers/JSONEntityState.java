@@ -47,12 +47,14 @@ public final class JSONEntityState
     public static final String JSON_KEY_TYPE = "type";
     public static final String JSON_KEY_VERSION = "version";
     public static final String JSON_KEY_MODIFIED = "modified";
-    private static final String[] EMPTY_NAMES = new String[0];
-    private static final String[] CLONE_NAMES = { JSON_KEY_IDENTITY,
-                                                  JSON_KEY_APPLICATION_VERSION,
-                                                  JSON_KEY_TYPE,
-                                                  JSON_KEY_VERSION,
-                                                  JSON_KEY_MODIFIED };
+    private static final String[] EMPTY_NAMES = new String[ 0 ];
+    private static final String[] CLONE_NAMES = {
+        JSON_KEY_IDENTITY,
+        JSON_KEY_APPLICATION_VERSION,
+        JSON_KEY_TYPE,
+        JSON_KEY_VERSION,
+        JSON_KEY_MODIFIED
+    };
 
     protected DefaultEntityStoreUnitOfWork unitOfWork;
     protected EntityStatus status;
@@ -164,7 +166,9 @@ public final class JSONEntityState
     {
         String[] names = JSONObject.getNames( jsonObject );
         if( names == null )
+        {
             names = EMPTY_NAMES;
+        }
         return new JSONObject( jsonObject, names );
     }
 

@@ -14,6 +14,12 @@
 
 package org.qi4j.runtime.entity.association;
 
+import java.io.Serializable;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.QualifiedName;
@@ -32,16 +38,8 @@ import org.qi4j.spi.util.MethodKeyMap;
 import org.qi4j.spi.util.MethodSet;
 import org.qi4j.spi.util.MethodValueMap;
 
-import java.io.Serializable;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
-
-import static org.qi4j.api.util.Annotations.isType;
-import static org.qi4j.api.util.Iterables.filter;
-import static org.qi4j.api.util.Iterables.first;
+import static org.qi4j.api.util.Annotations.*;
+import static org.qi4j.api.util.Iterables.*;
 
 /**
  * JAVADOC
@@ -71,10 +69,11 @@ public final class EntityManyAssociationsModel
             if( ManyAssociation.class.isAssignableFrom( method.getReturnType() ) )
             {
                 Iterable<Annotation> annotations = Annotations.getMethodAndTypeAnnotations( method );
-                boolean optional = first( filter( isType(Optional.class ), annotations)) != null;
+                boolean optional = first( filter( isType( Optional.class ), annotations ) ) != null;
 
                 // Constraints for entities in ManyAssociation
-                ValueConstraintsModel valueConstraintsModel = constraints.constraintsFor( annotations, GenericAssociationInfo.getAssociationType( method ), method.getName(), optional );
+                ValueConstraintsModel valueConstraintsModel = constraints.constraintsFor( annotations, GenericAssociationInfo
+                    .getAssociationType( method ), method.getName(), optional );
                 ValueConstraintsInstance valueConstraintsInstance = null;
                 if( valueConstraintsModel.isConstrained() )
                 {

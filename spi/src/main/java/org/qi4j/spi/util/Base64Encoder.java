@@ -87,7 +87,7 @@ public final class Base64Encoder
         {
             throw new IllegalArgumentException( "Cannot encode null" );
         }
-        byte[] eData = new byte[( ( dData.length + 2 ) / 3 ) * 4];
+        byte[] eData = new byte[ ( ( dData.length + 2 ) / 3 ) * 4 ];
 
         int eIndex = 0;
         for( int i = 0; i < dData.length; i += 3 )
@@ -131,7 +131,7 @@ public final class Base64Encoder
 
             if( pad > 0 && !includePadding )
             {
-                byte[] neweData = new byte[eData.length - pad];
+                byte[] neweData = new byte[ eData.length - pad ];
                 System.arraycopy( eData, 0, neweData, 0, eIndex - pad );
                 eData = neweData;
             }
@@ -140,7 +140,7 @@ public final class Base64Encoder
         return eData;
     }
 
-    private final static int[] CODES = new int[256];
+    private final static int[] CODES = new int[ 256 ];
 
     static
     {
@@ -192,7 +192,7 @@ public final class Base64Encoder
             break;
         }
 
-        byte[] dData = new byte[dLength];
+        byte[] dData = new byte[ dLength ];
         int dIndex = 0;
         for( int i = 0; i < eData.length; i += 4 )
         {

@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.entity.EntityReference;
@@ -35,7 +34,7 @@ import org.qi4j.spi.entitystore.DefaultEntityStoreUnitOfWork;
  * Standard implementation of EntityState.
  */
 public final class DefaultEntityState
-        implements EntityState, Serializable
+    implements EntityState, Serializable
 {
     protected DefaultEntityStoreUnitOfWork unitOfWork;
 
@@ -56,13 +55,13 @@ public final class DefaultEntityState
     )
     {
         this( unitOfWork, "",
-                System.currentTimeMillis(),
-                identity,
-                EntityStatus.NEW,
-                entityDescriptor,
-                new HashMap<QualifiedName, Object>(),
-                new HashMap<QualifiedName, EntityReference>(),
-                new HashMap<QualifiedName, List<EntityReference>>() );
+              System.currentTimeMillis(),
+              identity,
+              EntityStatus.NEW,
+              entityDescriptor,
+              new HashMap<QualifiedName, Object>(),
+              new HashMap<QualifiedName, EntityReference>(),
+              new HashMap<QualifiedName, List<EntityReference>>() );
     }
 
     public DefaultEntityState( DefaultEntityStoreUnitOfWork unitOfWork,
@@ -141,21 +140,21 @@ public final class DefaultEntityState
     {
         // Copy properties
         entityState.properties.clear();
-        for (Map.Entry<QualifiedName, Object> stateNameStringEntry : properties.entrySet())
+        for( Map.Entry<QualifiedName, Object> stateNameStringEntry : properties.entrySet() )
         {
             entityState.properties.put( stateNameStringEntry.getKey(), stateNameStringEntry.getValue() );
         }
 
         // Copy associations
         entityState.associations.clear();
-        for (Map.Entry<QualifiedName, EntityReference> stateNameStringEntry : associations.entrySet())
+        for( Map.Entry<QualifiedName, EntityReference> stateNameStringEntry : associations.entrySet() )
         {
             entityState.associations.put( stateNameStringEntry.getKey(), stateNameStringEntry.getValue() );
         }
 
         // Copy many-associations
         entityState.manyAssociations.clear();
-        for (Map.Entry<QualifiedName, List<EntityReference>> stateNameStringEntry : manyAssociations.entrySet())
+        for( Map.Entry<QualifiedName, List<EntityReference>> stateNameStringEntry : manyAssociations.entrySet() )
         {
             entityState.manyAssociations.put( stateNameStringEntry.getKey(), stateNameStringEntry.getValue() );
         }
@@ -204,9 +203,9 @@ public final class DefaultEntityState
     public String toString()
     {
         return identity + "(" +
-                properties.size() + " properties, " +
-                associations.size() + " associations, " +
-                manyAssociations.size() + " many-associations)";
+               properties.size() + " properties, " +
+               associations.size() + " associations, " +
+               manyAssociations.size() + " many-associations)";
     }
 
     public void markUpdated()

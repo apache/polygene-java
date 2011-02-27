@@ -23,7 +23,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.common.Visibility;
@@ -65,8 +64,8 @@ import org.qi4j.spi.service.ServiceDescriptor;
  * JAVADOC
  */
 public final class ServiceModel
-        extends AbstractCompositeModel
-        implements ServiceDescriptor, Serializable
+    extends AbstractCompositeModel
+    implements ServiceDescriptor, Serializable
 {
     public static ServiceModel newModel( final Class<? extends ServiceComposite> compositeType,
                                          final Visibility visibility,
@@ -78,7 +77,8 @@ public final class ServiceModel
                                          final String moduleName,
                                          final String identity,
                                          final boolean instantiateOnStartup,
-                                         AssemblyHelper helper )
+                                         AssemblyHelper helper
+    )
     {
         PropertyDeclarations propertyDeclarations = new MetaInfoDeclaration();
         ConstraintsModel constraintsModel = new ConstraintsModel( compositeType );
@@ -93,11 +93,11 @@ public final class ServiceModel
         ConcernsDeclaration concernsModel = new ConcernsDeclaration( concerns );
         SideEffectsDeclaration sideEffectsModel = new SideEffectsDeclaration( compositeType, sideEffects );
         CompositeMethodsModel compositeMethodsModel =
-                new CompositeMethodsModel( compositeType, constraintsModel, concernsModel, sideEffectsModel, mixinsModel, helper );
+            new CompositeMethodsModel( compositeType, constraintsModel, concernsModel, sideEffectsModel, mixinsModel, helper );
         stateModel.addStateFor( compositeMethodsModel.methods(), compositeType );
 
         return new ServiceModel(
-                compositeType, roles, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel, moduleName, identity, instantiateOnStartup );
+            compositeType, roles, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel, moduleName, identity, instantiateOnStartup );
     }
 
     private final String identity;
@@ -159,7 +159,7 @@ public final class ServiceModel
     // Binding
 
     public void bind( Resolution resolution )
-            throws BindingException
+        throws BindingException
     {
         resolution = new Resolution( resolution.application(), resolution.layer(), resolution.module(), this, null, null );
         compositeMethodsModel.bind( resolution );
@@ -180,26 +180,27 @@ public final class ServiceModel
             // Plain class check
             Class serviceClass = (Class) serviceType;
             return serviceClass.isAssignableFrom( type() );
-        } else if( serviceType instanceof ParameterizedType )
+        }
+        else if( serviceType instanceof ParameterizedType )
         {
             // Parameterized type check. This is useful for example Wrapper<Foo> usages
             ParameterizedType paramType = (ParameterizedType) serviceType;
             Class rawClass = (Class) paramType.getRawType();
             Set<Type> types = Classes.genericInterfacesOf( type() );
-            for (Type type1 : types)
+            for( Type type1 : types )
             {
                 if( type1 instanceof ParameterizedType && rawClass.isAssignableFrom( Classes.getRawClass( type1 ) ) )
                 {
                     // Check params
                     Type[] actualTypes = paramType.getActualTypeArguments();
                     Type[] actualServiceTypes = ( (ParameterizedType) type1 ).getActualTypeArguments();
-                    for (int i = 0; i < actualTypes.length; i++)
+                    for( int i = 0; i < actualTypes.length; i++ )
                     {
-                        Type actualType = actualTypes[i];
+                        Type actualType = actualTypes[ i ];
                         if( actualType instanceof Class )
                         {
                             Class actualClass = (Class) actualType;
-                            Class actualServiceType = (Class) actualServiceTypes[i];
+                            Class actualServiceType = (Class) actualServiceTypes[ i ];
                             if( !actualClass.isAssignableFrom( actualServiceType ) )
                             {
                                 return false;
@@ -225,11 +226,13 @@ public final class ServiceModel
             public <T> Property<T> getProperty( final Method propertyMethod )
             {
                 if( QualifiedName.fromMethod( propertyMethod )
-                        .equals( QualifiedName.fromClass( Identity.class, "identity" ) ) )
+                    .equals( QualifiedName.fromClass( Identity.class, "identity" ) ) )
                 {
-                    PropertyModel propertyDescriptor = (PropertyModel) stateModel.getPropertyByQualifiedName( QualifiedName.fromMethod( propertyMethod ) );
+                    PropertyModel propertyDescriptor = (PropertyModel) stateModel.getPropertyByQualifiedName( QualifiedName
+                                                                                                                  .fromMethod( propertyMethod ) );
                     return propertyDescriptor.newInstance( identity );
-                } else
+                }
+                else
                 {
                     // State is set to defaults
                     return new ComputedPropertyInstance<T>( new GenericPropertyInfo( propertyMethod ) )
@@ -265,11 +268,11 @@ public final class ServiceModel
         {
             // Instantiate all mixins
             ( (MixinsModel) mixinsModel ).newMixins( compositeInstance,
-                    UsesInstance.EMPTY_USES.use( this ),
-                    stateHolder,
-                    mixins );
+                                                     UsesInstance.EMPTY_USES.use( this ),
+                                                     stateHolder,
+                                                     mixins );
         }
-        catch (InvalidCompositeException e)
+        catch( InvalidCompositeException e )
         {
             e.setFailingCompositeType( type() );
             e.setMessage( "Invalid Cyclic Mixin usage dependency" );
@@ -284,14 +287,15 @@ public final class ServiceModel
         if( type().isInterface() )
         {
             return Composite.class.cast( Proxy.newProxyInstance( type().getClassLoader(),
-                    new Class[]{type()},
-                    serviceInvocationHandler ) );
-        } else
+                                                                 new Class[]{ type() },
+                                                                 serviceInvocationHandler ) );
+        }
+        else
         {
             Class[] interfaces = type().getInterfaces();
             return Composite.class.cast( Proxy.newProxyInstance( type().getClassLoader(),
-                    interfaces,
-                    serviceInvocationHandler ) );
+                                                                 interfaces,
+                                                                 serviceInvocationHandler ) );
         }
     }
 
@@ -314,14 +318,15 @@ public final class ServiceModel
         } );
 
         Class injectionClass = null;
-        for (DependencyModel dependencyModel : dependencyModels)
+        for( DependencyModel dependencyModel : dependencyModels )
         {
             if( dependencyModel.rawInjectionType().equals( Configuration.class ) )
             {
                 if( injectionClass == null )
                 {
                     injectionClass = dependencyModel.injectionClass();
-                } else
+                }
+                else
                 {
                     if( injectionClass.isAssignableFrom( dependencyModel.injectionClass() ) )
                     {
@@ -334,13 +339,13 @@ public final class ServiceModel
     }
 
     public void activate( Object[] mixins )
-            throws Exception
+        throws Exception
     {
         mixinsModel.activate( mixins );
     }
 
     public void passivate( Object[] mixins )
-            throws Exception
+        throws Exception
     {
         mixinsModel.passivate( mixins );
     }

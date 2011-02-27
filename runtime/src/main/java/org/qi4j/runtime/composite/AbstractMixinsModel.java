@@ -57,7 +57,10 @@ public abstract class AbstractMixinsModel
     private final Set<Class> mixinTypes = new HashSet<Class>();
     private final Set<Class> roles = new HashSet<Class>();
 
-    public AbstractMixinsModel( Class<? extends Composite> compositeType, List<Class<?>> assemblyRoles, List<Class<?>> assemblyMixins )
+    public AbstractMixinsModel( Class<? extends Composite> compositeType,
+                                List<Class<?>> assemblyRoles,
+                                List<Class<?>> assemblyMixins
+    )
     {
         this.compositeType = compositeType;
         roles.add( compositeType );
@@ -277,7 +280,7 @@ public abstract class AbstractMixinsModel
 
     public Object[] newMixinHolder()
     {
-        return new Object[mixinIndex.size()];
+        return new Object[ mixinIndex.size() ];
     }
 
     public Object getMixin( Object[] mixins, Method method )

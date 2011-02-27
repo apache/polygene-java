@@ -14,6 +14,17 @@
 
 package org.qi4j.runtime.composite;
 
+import java.io.IOException;
+import java.io.NotSerializableException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.constraint.Name;
 import org.qi4j.api.util.Iterables;
@@ -21,34 +32,26 @@ import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.spi.constraint.MethodConstraintsDescriptor;
 import org.qi4j.spi.util.SerializationUtil;
 
-import java.io.*;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import static org.qi4j.api.util.Annotations.isType;
+import static org.qi4j.api.util.Annotations.*;
 
 /**
  * JAVADOC
  */
 public final class MethodConstraintsModel
-        implements MethodConstraintsDescriptor, Serializable
+    implements MethodConstraintsDescriptor, Serializable
 {
     private List<ValueConstraintsModel> parameterConstraintModels;
     private Method method;
 
     private void writeObject( ObjectOutputStream out )
-            throws IOException
+        throws IOException
     {
         try
         {
             SerializationUtil.writeMethod( out, method );
             out.writeObject( parameterConstraintModels );
         }
-        catch (NotSerializableException e)
+        catch( NotSerializableException e )
         {
             System.err.println( "NotSerializable in " + getClass() );
             throw e;
@@ -56,7 +59,7 @@ public final class MethodConstraintsModel
     }
 
     private void readObject( ObjectInputStream in )
-            throws IOException, ClassNotFoundException
+        throws IOException, ClassNotFoundException
     {
         method = SerializationUtil.readMethod( in );
         parameterConstraintModels = (List<ValueConstraintsModel>) in.readObject();
@@ -69,28 +72,28 @@ public final class MethodConstraintsModel
         Annotation[][] parameterAnnotations = method.getParameterAnnotations();
         Type[] parameterTypes = method.getGenericParameterTypes();
         boolean constrained = false;
-        for (int i = 0; i < parameterAnnotations.length; i++)
+        for( int i = 0; i < parameterAnnotations.length; i++ )
         {
-            Annotation[] parameterAnnotation = parameterAnnotations[i];
+            Annotation[] parameterAnnotation = parameterAnnotations[ i ];
 
             Name nameAnnotation = (Name) Iterables.first( Iterables.filter( isType( Name.class ), Iterables.iterable( parameterAnnotation ) ) );
-            String name = nameAnnotation == null ? "param" + (i + 1) : nameAnnotation.value();
+            String name = nameAnnotation == null ? "param" + ( i + 1 ) : nameAnnotation.value();
 
             boolean optional = Iterables.first( Iterables.filter( isType( Optional.class ), Iterables.iterable( parameterAnnotation ) ) ) != null;
-            ValueConstraintsModel parameterConstraintsModel = constraintsModel.constraintsFor( Arrays.asList( parameterAnnotation ), parameterTypes[i], name, optional );
-            if (parameterConstraintsModel.isConstrained())
+            ValueConstraintsModel parameterConstraintsModel = constraintsModel.constraintsFor( Arrays.asList( parameterAnnotation ), parameterTypes[ i ], name, optional );
+            if( parameterConstraintsModel.isConstrained() )
             {
                 constrained = true;
             }
 
-            if (parameterConstraintModels == null)
+            if( parameterConstraintModels == null )
             {
                 parameterConstraintModels = new ArrayList<ValueConstraintsModel>();
             }
             parameterConstraintModels.add( parameterConstraintsModel );
         }
 
-        if (!constrained)
+        if( !constrained )
         {
             parameterConstraintModels = null; // No constraints for this method
         }
@@ -107,15 +110,15 @@ public final class MethodConstraintsModel
     }
 
     public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
-            throws ThrowableType
+        throws ThrowableType
     {
         modelVisitor.visit( this );
-        if (parameterConstraintModels == null)
+        if( parameterConstraintModels == null )
         {
             return;
         }
 
-        for (ValueConstraintsModel parameterConstraintModel : parameterConstraintModels)
+        for( ValueConstraintsModel parameterConstraintModel : parameterConstraintModels )
         {
             parameterConstraintModel.visitModel( modelVisitor );
         }

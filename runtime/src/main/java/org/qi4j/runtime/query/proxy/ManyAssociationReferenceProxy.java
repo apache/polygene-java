@@ -19,7 +19,6 @@ package org.qi4j.runtime.query.proxy;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-
 import org.qi4j.api.query.QueryExpressionException;
 import org.qi4j.api.query.grammar.AssociationReference;
 import org.qi4j.runtime.query.grammar.impl.ManyAssociationReferenceImpl;
@@ -27,7 +26,7 @@ import org.qi4j.runtime.query.grammar.impl.ManyAssociationReferenceImpl;
 import static java.lang.reflect.Proxy.*;
 
 public class ManyAssociationReferenceProxy
-        implements InvocationHandler
+    implements InvocationHandler
 {
     private Object anyproxy;
     public ManyAssociationReferenceImpl associationReference;
@@ -60,11 +59,11 @@ public class ManyAssociationReferenceProxy
         Class<?> associationClass = (Class<?>) associationType;
         ClassLoader loader = associationClass.getClassLoader();
         MixinTypeProxy mixinTypeProxy = new MixinTypeProxy( associationClass, associationReference );
-        anyproxy = newProxyInstance( loader, new Class[]{associationClass}, mixinTypeProxy );
+        anyproxy = newProxyInstance( loader, new Class[]{ associationClass }, mixinTypeProxy );
     }
 
     public Object invoke( Object proxy, Method method, Object[] args )
-            throws Throwable
+        throws Throwable
     {
         if( method.getDeclaringClass().equals( AssociationReference.class ) )
         {
@@ -79,7 +78,7 @@ public class ManyAssociationReferenceProxy
         throw new QueryExpressionException( "No methods can be used" );
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings( "unchecked" )
     public Object getAnyProxy()
     {
         return anyproxy;

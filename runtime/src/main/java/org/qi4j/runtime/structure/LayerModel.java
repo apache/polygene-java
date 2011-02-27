@@ -153,7 +153,9 @@ public final class LayerModel
         return name;
     }
 
-    public <ThrowableType extends Throwable> boolean visitModules( ModuleVisitor<ThrowableType> visitor, Visibility visibility )
+    public <ThrowableType extends Throwable> boolean visitModules( ModuleVisitor<ThrowableType> visitor,
+                                                                   Visibility visibility
+    )
         throws ThrowableType
     {
         // Visit modules in this layer

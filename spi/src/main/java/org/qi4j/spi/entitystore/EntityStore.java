@@ -28,5 +28,5 @@ public interface EntityStore
 {
     EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSPI module );
 
-    Input<EntityState, EntityStoreException> entityStates(ModuleSPI module);
+    Input<EntityState, EntityStoreException> entityStates( ModuleSPI module );
 }

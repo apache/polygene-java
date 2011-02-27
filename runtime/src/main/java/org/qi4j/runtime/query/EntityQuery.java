@@ -31,7 +31,8 @@ import org.qi4j.spi.query.EntityFinderException;
 /**
  * Default implementation of {@link Query}.
  */
-final class EntityQuery<T> extends AbstractQuery<T>
+final class EntityQuery<T>
+    extends AbstractQuery<T>
 {
     private static final long serialVersionUID = 1L;
 
@@ -46,14 +47,15 @@ final class EntityQuery<T> extends AbstractQuery<T>
 
     /**
      * Constructor.
-     * 
+     *
      * @param unitOfWorkInstance parent unit of work; cannot be null
-     * @param entityFinder entity finder to be used to locate entities; cannot be null
-     * @param resultType type of queried entities; cannot be null
-     * @param whereClause where clause
+     * @param entityFinder       entity finder to be used to locate entities; cannot be null
+     * @param resultType         type of queried entities; cannot be null
+     * @param whereClause        where clause
      */
     EntityQuery( final UnitOfWork unitOfWorkInstance, final EntityFinder entityFinder, final Class<T> resultType,
-        final BooleanExpression whereClause )
+                 final BooleanExpression whereClause
+    )
     {
         super( resultType, whereClause );
         this.unitOfWorkInstance = unitOfWorkInstance;
@@ -97,7 +99,8 @@ final class EntityQuery<T> extends AbstractQuery<T>
         try
         {
             final Iterator<EntityReference> foundEntities = entityFinder.findEntities( resultType, whereClause,
-                orderBySegments, firstResult, maxResults ).iterator();
+                                                                                       orderBySegments, firstResult, maxResults )
+                .iterator();
 
             return new Iterator<T>()
             {
@@ -151,6 +154,6 @@ final class EntityQuery<T> extends AbstractQuery<T>
     @Override
     public String toString()
     {
-        return "Find all " + resultType.getName() + (whereClause != null ? " where " + whereClause.toString() : "");
+        return "Find all " + resultType.getName() + ( whereClause != null ? " where " + whereClause.toString() : "" );
     }
 }

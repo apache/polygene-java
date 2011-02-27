@@ -16,7 +16,6 @@ package org.qi4j.runtime.unitofwork;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.entity.EntityReference;
@@ -29,7 +28,7 @@ import org.qi4j.spi.entity.ManyAssociationState;
  * JAVADOC
  */
 public final class BuilderEntityState
-        implements EntityState
+    implements EntityState
 {
     private final EntityDescriptor entityType;
     private EntityReference reference;
@@ -114,19 +113,19 @@ public final class BuilderEntityState
 
     public void copyTo( EntityState newEntityState )
     {
-        for (Map.Entry<QualifiedName, Object> stateNameStringEntry : properties.entrySet())
+        for( Map.Entry<QualifiedName, Object> stateNameStringEntry : properties.entrySet() )
         {
             newEntityState.setProperty( stateNameStringEntry.getKey(), stateNameStringEntry.getValue() );
         }
-        for (Map.Entry<QualifiedName, EntityReference> stateNameEntityReferenceEntry : associations.entrySet())
+        for( Map.Entry<QualifiedName, EntityReference> stateNameEntityReferenceEntry : associations.entrySet() )
         {
             newEntityState.setAssociation( stateNameEntityReferenceEntry.getKey(), stateNameEntityReferenceEntry.getValue() );
         }
-        for (Map.Entry<QualifiedName, ManyAssociationState> stateNameManyAssociationStateEntry : manyAssociations.entrySet())
+        for( Map.Entry<QualifiedName, ManyAssociationState> stateNameManyAssociationStateEntry : manyAssociations.entrySet() )
         {
             ManyAssociationState manyAssoc = newEntityState.getManyAssociation( stateNameManyAssociationStateEntry.getKey() );
             int idx = 0;
-            for (EntityReference entityReference : stateNameManyAssociationStateEntry.getValue())
+            for( EntityReference entityReference : stateNameManyAssociationStateEntry.getValue() )
             {
                 manyAssoc.add( idx, entityReference );
             }

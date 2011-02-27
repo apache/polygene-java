@@ -18,7 +18,6 @@ import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.composite.InvalidValueCompositeException;
 import org.qi4j.api.concern.internal.ConcernFor;
@@ -71,10 +70,14 @@ public final class InjectionProviderFactoryStrategy
         if( factory1 == null && factory2 == null )
         {
             InjectionProviderFactory factory = metaInfo.get( InjectionProviderFactory.class );
-            if (factory != null)
+            if( factory != null )
+            {
                 return factory.newInjectionProvider( resolution, dependencyModel );
+            }
             else
+            {
                 throw new InvalidInjectionException( "Unknown injection annotation @" + injectionAnnotationType.getSimpleName() );
+            }
         }
         ObjectDescriptor composite = resolution.object();
         Class<?> compositeType = composite.type();

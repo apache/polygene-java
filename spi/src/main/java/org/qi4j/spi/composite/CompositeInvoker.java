@@ -23,5 +23,5 @@ import java.lang.reflect.Method;
 public interface CompositeInvoker
 {
     Object invokeComposite( Method method, Object[] args )
-            throws Throwable;
+        throws Throwable;
 }

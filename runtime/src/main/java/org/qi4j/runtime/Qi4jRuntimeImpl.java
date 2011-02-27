@@ -61,8 +61,8 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.spi.value.ValueDescriptor;
 
-import static java.lang.reflect.Proxy.getInvocationHandler;
-import static org.qi4j.runtime.composite.TransientInstance.getCompositeInstance;
+import static java.lang.reflect.Proxy.*;
+import static org.qi4j.runtime.composite.TransientInstance.*;
 
 /**
  * Incarnation of Qi4j.

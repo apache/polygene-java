@@ -224,7 +224,10 @@ public final class MixinModel
         return concernsDeclaration.concernsFor( method, type, helper );
     }
 
-    public MethodSideEffectsModel sideEffectsFor( Method method, Class<? extends Composite> type, AssemblyHelper helper )
+    public MethodSideEffectsModel sideEffectsFor( Method method,
+                                                  Class<? extends Composite> type,
+                                                  AssemblyHelper helper
+    )
     {
         return sideEffectsDeclaration.sideEffectsFor( method, type, helper );
     }

@@ -14,6 +14,7 @@
 
 package org.qi4j.runtime.service;
 
+import java.lang.reflect.Proxy;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.configuration.Enabled;
 import org.qi4j.api.property.StateHolder;
@@ -22,8 +23,6 @@ import org.qi4j.api.service.Availability;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.runtime.composite.TransientInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
-
-import java.lang.reflect.Proxy;
 
 /**
  * JAVADOC
@@ -49,7 +48,8 @@ public class ServiceInstance
         super( compositeModel, moduleInstance, mixins, state );
 
         implementsServiceAvailable = Availability.class.isAssignableFrom( type() );
-        hasEnabledConfiguration = compositeModel.configurationType() != null && Enabled.class.isAssignableFrom( compositeModel.configurationType());
+        hasEnabledConfiguration = compositeModel.configurationType() != null && Enabled.class.isAssignableFrom( compositeModel
+                                                                                                                    .configurationType() );
     }
 
     public void activate()
@@ -67,10 +67,12 @@ public class ServiceInstance
     public boolean isAvailable()
     {
         // Check Enabled in configuration first
-        if (hasEnabledConfiguration && !((Configuration<Enabled>)proxy()).configuration().enabled().get())
+        if( hasEnabledConfiguration && !( (Configuration<Enabled>) proxy() ).configuration().enabled().get() )
+        {
             return false;
+        }
 
         // Ask service if it's available
-        return !implementsServiceAvailable || ((Availability) proxy()).isAvailable();
+        return !implementsServiceAvailable || ( (Availability) proxy() ).isAvailable();
     }
 }

@@ -33,7 +33,11 @@ public final class DefaultEntityStoreUnitOfWork
     private LinkedList<EntityState> states = new LinkedList<EntityState>();
     private Usecase usecase;
 
-    public DefaultEntityStoreUnitOfWork( EntityStoreSPI entityStoreSPI, String identity, ModuleSPI module, Usecase usecase )
+    public DefaultEntityStoreUnitOfWork( EntityStoreSPI entityStoreSPI,
+                                         String identity,
+                                         ModuleSPI module,
+                                         Usecase usecase
+    )
     {
         this.entityStoreSPI = entityStoreSPI;
         this.identity = identity;

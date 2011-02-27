@@ -15,6 +15,10 @@
 
 package org.qi4j.runtime.entity;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.HashSet;
+import java.util.Set;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
@@ -37,16 +41,11 @@ import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.util.HashSet;
-import java.util.Set;
-
 /**
  * Entity instance
  */
 public final class EntityInstance
-        implements CompositeInstance, MixinsInstance
+    implements CompositeInstance, MixinsInstance
 {
     public static EntityInstance getEntityInstance( EntityComposite composite )
     {
@@ -79,7 +78,7 @@ public final class EntityInstance
     }
 
     public Object invoke( Object proxy, Method method, Object[] args )
-            throws Throwable
+        throws Throwable
     {
         return entityModel.invoke( this, this.proxy, method, args, moduleInstance );
     }
@@ -105,7 +104,7 @@ public final class EntityInstance
     }
 
     public Object invokeComposite( Method method, Object[] args )
-            throws Throwable
+        throws Throwable
     {
         return entityModel.invoke( this, proxy, method, args, moduleInstance );
     }
@@ -156,7 +155,7 @@ public final class EntityInstance
     }
 
     public Object invoke( Object composite, Object[] params, CompositeMethodInstance methodInstance )
-            throws Throwable
+        throws Throwable
     {
         if( mixins == null )
         {
@@ -174,7 +173,7 @@ public final class EntityInstance
     }
 
     public Object invokeObject( Object proxy, Object[] args, Method method )
-            throws Throwable
+        throws Throwable
     {
         return method.invoke( this, args );
     }
@@ -209,7 +208,7 @@ public final class EntityInstance
             Identity other = ( (Identity) o );
             return other != null && other.identity().get().equals( identity.identity() );
         }
-        catch (ClassCastException e)
+        catch( ClassCastException e )
         {
             return false;
         }
@@ -222,7 +221,7 @@ public final class EntityInstance
     }
 
     public void remove( UnitOfWork unitOfWork )
-            throws LifecycleException
+        throws LifecycleException
     {
         invokeRemove();
 
@@ -258,7 +257,7 @@ public final class EntityInstance
         EntityStateDescriptor stateDescriptor = entityModel.state();
         Set<Object> aggregatedEntities = new HashSet<Object>();
         Set<AssociationDescriptor> associations = stateDescriptor.associations();
-        for (AssociationDescriptor association : associations)
+        for( AssociationDescriptor association : associations )
         {
             if( association.isAggregated() )
             {
@@ -271,12 +270,12 @@ public final class EntityInstance
             }
         }
         Set<ManyAssociationDescriptor> manyAssociations = stateDescriptor.manyAssociations();
-        for (ManyAssociationDescriptor association : manyAssociations)
+        for( ManyAssociationDescriptor association : manyAssociations )
         {
             if( association.isAggregated() )
             {
                 ManyAssociation manyAssoc = state.getManyAssociation( association.accessor() );
-                for (Object entity : manyAssoc)
+                for( Object entity : manyAssoc )
                 {
                     aggregatedEntities.add( entity );
                 }
@@ -284,7 +283,7 @@ public final class EntityInstance
         }
 
         // Remove aggregated Entities
-        for (Object aggregatedEntity : aggregatedEntities)
+        for( Object aggregatedEntity : aggregatedEntities )
         {
             unitOfWork.remove( aggregatedEntity );
         }
@@ -295,9 +294,12 @@ public final class EntityInstance
         try
         {
             state.checkConstraints();
-        } catch (ConstraintViolationException e)
+        }
+        catch( ConstraintViolationException e )
         {
-            throw new ConstraintViolationException( identity.identity(), entityModel.entityType().type().name(), e.mixinTypeName(), e.methodName(), e.constraintViolations() );
+            throw new ConstraintViolationException( identity.identity(), entityModel.entityType()
+                .type()
+                .name(), e.mixinTypeName(), e.methodName(), e.constraintViolations() );
         }
     }
 

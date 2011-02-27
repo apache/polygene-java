@@ -105,10 +105,12 @@ public class LayerInstance
     {
         moduleActivator.activate( moduleInstances );
 
-        logger.debug( "Layer "+name()+" activated" );
+        logger.debug( "Layer " + name() + " activated" );
     }
 
-    public <ThrowableType extends Throwable> boolean visitModules( ModuleVisitor<ThrowableType> visitor, Visibility visibility )
+    public <ThrowableType extends Throwable> boolean visitModules( ModuleVisitor<ThrowableType> visitor,
+                                                                   Visibility visibility
+    )
         throws ThrowableType
     {
         // Visit modules in this layer
@@ -140,7 +142,7 @@ public class LayerInstance
     {
         moduleActivator.passivate();
 
-        logger.debug( "Layer "+name()+" passivated" );
+        logger.debug( "Layer " + name() + " passivated" );
     }
 
     @Override

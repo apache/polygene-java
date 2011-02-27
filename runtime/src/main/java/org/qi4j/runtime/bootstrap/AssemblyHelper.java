@@ -61,10 +61,12 @@ public class AssemblyHelper
                     FragmentClassLoader fragmentLoader = getModifierClassLoader( fragmentClass.getClassLoader() );
                     instantiationClass = fragmentLoader.loadFragmentClass( fragmentClass );
                     instantiationClasses.put( fragmentClass, instantiationClass );
-                } catch (ClassNotFoundException e)
+                }
+                catch( ClassNotFoundException e )
                 {
                     throw new ConstructionException( "Could not generate mixin subclass " + fragmentClass.getName(), e );
-                } catch( VerifyError e )
+                }
+                catch( VerifyError e )
                 {
                     throw new ConstructionException( "Could not generate mixin subclass " + fragmentClass.getName(), e );
                 }

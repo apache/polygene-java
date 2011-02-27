@@ -71,7 +71,8 @@ public final class EntityManyAssociationsInstance
     {
         for( ManyAssociationDescriptor manyAssociationDescriptor : model.manyAssociations() )
         {
-            visitor.visitManyAssociation( manyAssociationDescriptor.qualifiedName(), manyAssociationFor( manyAssociationDescriptor.accessor() ) );
+            visitor.visitManyAssociation( manyAssociationDescriptor.qualifiedName(), manyAssociationFor( manyAssociationDescriptor
+                                                                                                             .accessor() ) );
         }
     }
 }

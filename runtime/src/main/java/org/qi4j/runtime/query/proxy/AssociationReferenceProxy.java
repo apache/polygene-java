@@ -21,7 +21,6 @@ package org.qi4j.runtime.query.proxy;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-
 import org.qi4j.api.query.QueryExpressionException;
 import org.qi4j.api.query.grammar.AssociationReference;
 import org.qi4j.runtime.query.grammar.impl.AssociationReferenceImpl;
@@ -32,7 +31,7 @@ import static java.lang.reflect.Proxy.*;
  * JAVADOC Add JavaDoc
  */
 public final class AssociationReferenceProxy
-        implements InvocationHandler
+    implements InvocationHandler
 {
 
     /**
@@ -67,7 +66,7 @@ public final class AssociationReferenceProxy
                           final Method method,
                           final Object[] args
     )
-            throws Throwable
+        throws Throwable
     {
         if( method.getDeclaringClass().equals( AssociationReference.class ) )
         {
@@ -79,9 +78,9 @@ public final class AssociationReferenceProxy
             Type associationType = associationReference.associationType();
             Class<?> associationClass = (Class<?>) associationType;
             return newProxyInstance(
-                    associationClass.getClassLoader(),
-                    new Class[]{associationClass},
-                    new MixinTypeProxy( associationClass, associationReference )
+                associationClass.getClassLoader(),
+                new Class[]{ associationClass },
+                new MixinTypeProxy( associationClass, associationReference )
             );
         }
         if( "toString".equals( method.getName() ) )

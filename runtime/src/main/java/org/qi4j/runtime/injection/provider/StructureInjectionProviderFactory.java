@@ -59,7 +59,7 @@ public final class StructureInjectionProviderFactory
             throws InjectionProviderException
         {
             Type type1 = dependencyModel.injectionType();
-            if( !(type1 instanceof Class) )
+            if( !( type1 instanceof Class ) )
             {
                 throw new InjectionProviderException( "Type [" + type1 + "] can not be injected from the @Structure injection scope: " + context );
             }

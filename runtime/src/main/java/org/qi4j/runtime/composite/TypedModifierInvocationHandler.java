@@ -13,17 +13,16 @@ package org.qi4j.runtime.composite;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
 import org.qi4j.spi.composite.InvalidCompositeException;
 
 /**
  * JAVADOC
  */
 public final class TypedModifierInvocationHandler
-        extends FragmentInvocationHandler
+    extends FragmentInvocationHandler
 {
     public Object invoke( Object proxy, Method method, Object[] args )
-            throws Throwable
+        throws Throwable
     {
         try
         {
@@ -37,11 +36,11 @@ public final class TypedModifierInvocationHandler
 
             return this.method.invoke( fragment, args );
         }
-        catch (InvocationTargetException e)
+        catch( InvocationTargetException e )
         {
             throw cleanStackTrace( e.getTargetException(), proxy, method );
         }
-        catch (Throwable e)
+        catch( Throwable e )
         {
             if( fragment == null )
             {

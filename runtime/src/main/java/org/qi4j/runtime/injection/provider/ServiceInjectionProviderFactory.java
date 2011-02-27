@@ -14,6 +14,16 @@
 
 package org.qi4j.runtime.injection.provider;
 
+import java.io.Serializable;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.service.qualifier.Qualifier;
@@ -30,13 +40,7 @@ import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleModel;
 import org.qi4j.runtime.structure.ModuleVisitor;
 
-import java.io.Serializable;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.*;
-
-import static org.qi4j.api.util.Annotations.hasAnnotation;
+import static org.qi4j.api.util.Annotations.*;
 import static org.qi4j.api.util.Iterables.*;
 
 public final class ServiceInjectionProviderFactory
@@ -45,7 +49,7 @@ public final class ServiceInjectionProviderFactory
     public InjectionProvider newInjectionProvider( Resolution resolution, DependencyModel dependencyModel )
         throws InvalidInjectionException
     {
-        Annotation qualifierAnnotation = first( filter(hasAnnotation( Qualifier.class ), iterable(dependencyModel.annotations()) ));
+        Annotation qualifierAnnotation = first( filter( hasAnnotation( Qualifier.class ), iterable( dependencyModel.annotations() ) ) );
         Specification<ServiceReference<?>> serviceQualifier = null;
         if( qualifierAnnotation != null )
         {
@@ -160,7 +164,9 @@ public final class ServiceInjectionProviderFactory
             super( serviceFinder );
         }
 
-        private IterableServiceReferenceProvider( ServicesFinder servicesFinder, Specification<ServiceReference<?>> serviceQualifier )
+        private IterableServiceReferenceProvider( ServicesFinder servicesFinder,
+                                                  Specification<ServiceReference<?>> serviceQualifier
+        )
         {
             super( servicesFinder, serviceQualifier );
         }
@@ -180,7 +186,9 @@ public final class ServiceInjectionProviderFactory
             super( serviceFinder );
         }
 
-        private IterableServiceProvider( ServicesFinder servicesFinder, Specification<ServiceReference<?>> serviceQualifier )
+        private IterableServiceProvider( ServicesFinder servicesFinder,
+                                         Specification<ServiceReference<?>> serviceQualifier
+        )
         {
             super( servicesFinder, serviceQualifier );
         }
@@ -276,7 +284,9 @@ public final class ServiceInjectionProviderFactory
             this.serviceFinder = serviceFinder;
         }
 
-        protected ServiceInjectionProvider( ServicesFinder servicesFinder, Specification<ServiceReference<?>> serviceQualifier )
+        protected ServiceInjectionProvider( ServicesFinder servicesFinder,
+                                            Specification<ServiceReference<?>> serviceQualifier
+        )
         {
             this.servicesFinder = servicesFinder;
             this.serviceQualifier = serviceQualifier;
@@ -365,7 +375,8 @@ public final class ServiceInjectionProviderFactory
                             }
                         }
                     }
-                    for( Map.Entry<ModuleModel, List<String>> entry : servicesFinder.importedServiceIdentities.entrySet() )
+                    for( Map.Entry<ModuleModel, List<String>> entry : servicesFinder.importedServiceIdentities
+                        .entrySet() )
                     {
                         ModuleInstance moduleInstance = mapper.modules.get( entry.getKey() );
                         for( String identity : entry.getValue() )
@@ -382,7 +393,6 @@ public final class ServiceInjectionProviderFactory
                     return serviceReferences.iterator();
                 }
             };
-
         }
     }
 

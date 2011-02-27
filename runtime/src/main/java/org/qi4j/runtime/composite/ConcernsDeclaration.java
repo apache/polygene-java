@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.concern.Concerns;
 import org.qi4j.runtime.bootstrap.AssemblyHelper;
@@ -34,14 +33,14 @@ import static org.qi4j.api.util.Classes.*;
  * JAVADOC
  */
 public final class ConcernsDeclaration
-        implements Serializable
+    implements Serializable
 {
     public static void concernDeclarations( Class type, List<ConcernDeclaration> concerns )
     {
         // Find concern declarations
         Set<Type> types = ( type.isInterface() ? genericInterfacesOf( type ) : Collections.singleton( (Type) type ) );
 
-        for (Type aType : types)
+        for( Type aType : types )
         {
             addConcernDeclarations( aType, concerns );
         }
@@ -50,7 +49,7 @@ public final class ConcernsDeclaration
     public static void concernDeclarations( Iterable<Class<?>> concernclasses, List<ConcernDeclaration> concerns )
     {
         // Add concerns from assembly
-        for (Class<?> concern : concernclasses)
+        for( Class<?> concern : concernclasses )
         {
             concerns.add( new ConcernDeclaration( concern, null ) );
         }
@@ -65,7 +64,7 @@ public final class ConcernsDeclaration
             if( annotation != null )
             {
                 Class[] concernClasses = annotation.value();
-                for (Class concernClass : concernClasses)
+                for( Class concernClass : concernClasses )
                 {
                     concerns.add( new ConcernDeclaration( concernClass, clazz ) );
                 }
@@ -88,7 +87,7 @@ public final class ConcernsDeclaration
         if( !methodConcernsModels.containsKey( method ) )
         {
             List<MethodConcernModel> concernsForMethod = new ArrayList<MethodConcernModel>();
-            for (ConcernDeclaration concern : concerns)
+            for( ConcernDeclaration concern : concerns )
             {
                 if( concern.appliesTo( method, type ) )
                 {
@@ -100,7 +99,8 @@ public final class ConcernsDeclaration
             MethodConcernsModel methodConcerns = new MethodConcernsModel( method, concernsForMethod );
             methodConcernsModels.put( method, methodConcerns );
             return methodConcerns;
-        } else
+        }
+        else
         {
             return methodConcernsModels.get( method );
         }

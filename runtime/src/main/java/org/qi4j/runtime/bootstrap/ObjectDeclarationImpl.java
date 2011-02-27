@@ -17,7 +17,6 @@ package org.qi4j.runtime.bootstrap;
 import java.io.Serializable;
 import java.lang.reflect.Modifier;
 import java.util.List;
-
 import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
@@ -29,7 +28,7 @@ import org.qi4j.runtime.object.ObjectModel;
  * Declaration of an Object. Created by {@link org.qi4j.runtime.bootstrap.ModuleAssemblyImpl#addObjects(Class[])}.
  */
 public final class ObjectDeclarationImpl
-        implements ObjectDeclaration, Serializable
+    implements ObjectDeclaration, Serializable
 {
     private Iterable<Class> objectTypes;
     private MetaInfo metaInfo = new MetaInfo();
@@ -37,11 +36,11 @@ public final class ObjectDeclarationImpl
 
     public ObjectDeclarationImpl( Iterable<Class> classes )
     {
-        for (Class clazz : classes)
+        for( Class clazz : classes )
         {
             // best try to find out if the class is a concrete class
             if( clazz.isEnum() ||
-                    ( !Composite.class.isAssignableFrom( clazz ) && Modifier.isAbstract( clazz.getModifiers() ) ) )
+                ( !Composite.class.isAssignableFrom( clazz ) && Modifier.isAbstract( clazz.getModifiers() ) ) )
             {
                 throw new IllegalArgumentException( "Declared objects must be concrete classes: " + clazz );
             }
@@ -56,7 +55,7 @@ public final class ObjectDeclarationImpl
     }
 
     public ObjectDeclaration visibleIn( Visibility visibility )
-            throws IllegalStateException
+        throws IllegalStateException
     {
         this.visibility = visibility;
         return this;
@@ -64,19 +63,17 @@ public final class ObjectDeclarationImpl
 
     public void addObjects( List<ObjectModel> objectModels )
     {
-        for (Class objectType : objectTypes)
+        for( Class objectType : objectTypes )
         {
             try
             {
                 ObjectModel objectModel = new ObjectModel( objectType, visibility, metaInfo );
                 objectModels.add( objectModel );
             }
-            catch (Throwable e)
+            catch( Throwable e )
             {
                 throw new InvalidApplicationException( "Could not register " + objectType.getName(), e );
             }
         }
     }
-
-
 }

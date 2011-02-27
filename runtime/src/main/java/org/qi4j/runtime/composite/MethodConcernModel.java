@@ -15,7 +15,6 @@
 package org.qi4j.runtime.composite;
 
 import java.io.Serializable;
-
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.spi.concern.MethodConcernDescriptor;
 
@@ -23,8 +22,8 @@ import org.qi4j.spi.concern.MethodConcernDescriptor;
  * JAVADOC
  */
 public final class MethodConcernModel
-        extends AbstractModifierModel
-        implements MethodConcernDescriptor, Serializable
+    extends AbstractModifierModel
+    implements MethodConcernDescriptor, Serializable
 {
     public MethodConcernModel( Class concernClass, Class instantiationClass )
     {

@@ -16,7 +16,6 @@ package org.qi4j.runtime.structure;
 
 import java.util.Collections;
 import java.util.List;
-
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.composite.AmbiguousTypeException;
@@ -47,7 +46,7 @@ import static org.qi4j.api.entity.EntityReference.*;
  * JAVADOC
  */
 public class ModuleUnitOfWork
-        implements UnitOfWork
+    implements UnitOfWork
 {
     private static final QualifiedName IDENTITY_STATE_NAME;
 
@@ -57,7 +56,7 @@ public class ModuleUnitOfWork
         {
             IDENTITY_STATE_NAME = QualifiedName.fromMethod( Identity.class.getMethod( "identity" ) );
         }
-        catch (NoSuchMethodException e)
+        catch( NoSuchMethodException e )
         {
             throw new InternalError( "Qi4j Core Runtime codebase is corrupted. Contact Qi4j team: ModuleUnitOfWork" );
         }
@@ -98,13 +97,13 @@ public class ModuleUnitOfWork
     }
 
     public <T> T newEntity( Class<T> type )
-            throws EntityTypeNotFoundException, LifecycleException
+        throws EntityTypeNotFoundException, LifecycleException
     {
         return newEntity( type, null );
     }
 
     public <T> T newEntity( Class<T> type, String identity )
-            throws EntityTypeNotFoundException, LifecycleException
+        throws EntityTypeNotFoundException, LifecycleException
     {
         EntityFinder finder = moduleInstance.findEntityModel( type );
 
@@ -132,7 +131,7 @@ public class ModuleUnitOfWork
         EntityStore entityStore = entityModuleInstance.entities().entityStore();
 
         EntityState entityState = entityModel.newEntityState( uow.getEntityStoreUnitOfWork( entityStore, module() ),
-                parseEntityReference( identity ) );
+                                                              parseEntityReference( identity ) );
 
         // Init state
         entityModel.initState( entityState );
@@ -151,13 +150,13 @@ public class ModuleUnitOfWork
     }
 
     public <T> EntityBuilder<T> newEntityBuilder( Class<T> type )
-            throws EntityTypeNotFoundException
+        throws EntityTypeNotFoundException
     {
         return newEntityBuilder( type, null );
     }
 
     public <T> EntityBuilder<T> newEntityBuilder( Class<T> type, String identity )
-            throws EntityTypeNotFoundException
+        throws EntityTypeNotFoundException
     {
         EntityFinder finder = moduleInstance.findEntityModel( type );
 
@@ -188,23 +187,25 @@ public class ModuleUnitOfWork
         if( identity != null )
         {
             builder = new EntityBuilderInstance<T>( entityModuleInstance,
-                    entityModel,
-                    this,
-                    uow.getEntityStoreUnitOfWork( entityStore, moduleInstance ),
-                    identity );
-        } else
+                                                    entityModel,
+                                                    this,
+                                                    uow.getEntityStoreUnitOfWork( entityStore, moduleInstance ),
+                                                    identity );
+        }
+        else
         {
             builder = new EntityBuilderInstance<T>( moduleInstance,
-                    entityModel,
-                    this,
-                    uow.getEntityStoreUnitOfWork( entityModuleInstance.entities().entityStore(), moduleInstance ),
-                    identity );
+                                                    entityModel,
+                                                    this,
+                                                    uow.getEntityStoreUnitOfWork( entityModuleInstance.entities()
+                                                                                      .entityStore(), moduleInstance ),
+                                                    identity );
         }
         return builder;
     }
 
     public <T> T get( Class<T> type, String identity )
-            throws EntityTypeNotFoundException, NoSuchEntityException
+        throws EntityTypeNotFoundException, NoSuchEntityException
     {
         EntityFinder finder = moduleInstance.findEntityModel( type );
 
@@ -217,7 +218,7 @@ public class ModuleUnitOfWork
     }
 
     public <T> T get( T entity )
-            throws EntityTypeNotFoundException
+        throws EntityTypeNotFoundException
     {
         EntityComposite entityComposite = (EntityComposite) entity;
         EntityInstance compositeInstance = EntityInstance.getEntityInstance( entityComposite );
@@ -228,7 +229,7 @@ public class ModuleUnitOfWork
     }
 
     public void remove( Object entity )
-            throws LifecycleException
+        throws LifecycleException
     {
         uow.checkOpen();
 
@@ -240,17 +241,19 @@ public class ModuleUnitOfWork
         {
             compositeInstance.remove( this );
             uow.remove( compositeInstance.identity() );
-        } else if( compositeInstance.status() == EntityStatus.LOADED || compositeInstance.status() == EntityStatus.UPDATED )
+        }
+        else if( compositeInstance.status() == EntityStatus.LOADED || compositeInstance.status() == EntityStatus.UPDATED )
         {
             compositeInstance.remove( this );
-        } else
+        }
+        else
         {
             throw new NoSuchEntityException( compositeInstance.identity() );
         }
     }
 
     public void complete()
-            throws UnitOfWorkCompletionException, ConcurrentEntityModificationException
+        throws UnitOfWorkCompletionException, ConcurrentEntityModificationException
     {
         uow.complete();
     }

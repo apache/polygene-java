@@ -1,9 +1,11 @@
 <html>
 <body>
 <h2>Cache API/SPI</h2>
+
 <p>
-The Cache API/SPI is an extension point for Entity Store caching.
+    The Cache API/SPI is an extension point for Entity Store caching.
 </p>
+
 <p>
     The API part is only to allow caching options to be passed to the underlying extension in a uniform and standard
     way. CacheOptions are to be passed as meta info on the optional Cache extension that is specified during assembly
@@ -12,8 +14,8 @@ The Cache API/SPI is an extension point for Entity Store caching.
 <pre><code>
     public void assemble( ModuleAssembly module )
     {
-        CacheOptions options = new CacheOptions( true, true, false );
-        module.addServices( EhCacheService.class ).setMetaInfo( options );
+    CacheOptions options = new CacheOptions( true, true, false );
+    module.addServices( EhCacheService.class ).setMetaInfo( options );
     }
 </code></pre>
 <p>

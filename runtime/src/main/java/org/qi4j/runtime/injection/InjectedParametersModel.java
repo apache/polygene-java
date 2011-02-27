@@ -58,7 +58,7 @@ public final class InjectedParametersModel
 
     public Object[] newParametersInstance( InjectionContext context )
     {
-        Object[] parametersInstance = new Object[parameterDependencies.size()];
+        Object[] parametersInstance = new Object[ parameterDependencies.size() ];
 
         // Inject parameterDependencies
         for( int j = 0; j < parameterDependencies.size(); j++ )

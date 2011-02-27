@@ -31,9 +31,9 @@ import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.spi.composite.DependencyDescriptor;
 
-import static org.qi4j.api.util.Annotations.isType;
-import static org.qi4j.api.util.Iterables.iterable;
-import static org.qi4j.spi.util.CollectionUtils.firstElementOrNull;
+import static org.qi4j.api.util.Annotations.*;
+import static org.qi4j.api.util.Iterables.*;
+import static org.qi4j.spi.util.CollectionUtils.*;
 
 /**
  * JAVADOC
@@ -80,7 +80,12 @@ public final class DependencyModel
     // Binding
     private InjectionProvider injectionProvider;
 
-    public DependencyModel( Annotation injectionAnnotation, Type genericType, Class<?> injectedClass, boolean optional, Annotation[] annotations )
+    public DependencyModel( Annotation injectionAnnotation,
+                            Type genericType,
+                            Class<?> injectedClass,
+                            boolean optional,
+                            Annotation[] annotations
+    )
     {
         this.injectionAnnotation = injectionAnnotation;
         this.injectedClass = injectedClass;

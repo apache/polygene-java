@@ -23,7 +23,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
-
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.query.NotQueryableException;
@@ -37,7 +36,7 @@ import org.qi4j.spi.composite.CompositeInstance;
  * Default {@link org.qi4j.api.query.grammar.PropertyReference} implementation.
  */
 public final class PropertyReferenceImpl<T>
-        implements PropertyReference<T>
+    implements PropertyReference<T>
 {
 
     /**
@@ -72,14 +71,14 @@ public final class PropertyReferenceImpl<T>
      * @param traversedAssociation traversed association
      * @param traversedProperty    traversed property
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings( "unchecked" )
     public PropertyReferenceImpl( final Method accessor,
                                   final AssociationReference traversedAssociation,
                                   final PropertyReference traversedProperty
     )
     {
         if( traversedAssociation != null
-                && traversedProperty != null )
+            && traversedProperty != null )
         {
             throw new IllegalArgumentException( "Only one of association or property can be set" );
         }
@@ -169,7 +168,8 @@ public final class PropertyReferenceImpl<T>
         if( traversedAssociation() != null )
         {
             actual = traversedAssociation().eval( target );
-        } else if( traversedProperty() != null )
+        }
+        else if( traversedProperty() != null )
         {
             actual = traversedProperty().eval( target );
         }
@@ -178,9 +178,9 @@ public final class PropertyReferenceImpl<T>
             try
             {
                 CompositeInstance handler = (CompositeInstance) Proxy.getInvocationHandler( actual );
-                return (Property) handler.invokeComposite( propertyAccessor(), new Object[0] );
+                return (Property) handler.invokeComposite( propertyAccessor(), new Object[ 0 ] );
             }
-            catch (Throwable e)
+            catch( Throwable e )
             {
                 return null;
             }
@@ -192,11 +192,11 @@ public final class PropertyReferenceImpl<T>
     public String toString()
     {
         return new StringBuilder()
-                .append( traversedAssociation == null ? "" : traversedAssociation.toString() + "." )
-                .append( traversedProperty == null ? "" : traversedProperty.toString() + "." )
-                .append( declaringType.getSimpleName() )
-                .append( ":" )
-                .append( name )
-                .toString();
+            .append( traversedAssociation == null ? "" : traversedAssociation.toString() + "." )
+            .append( traversedProperty == null ? "" : traversedProperty.toString() + "." )
+            .append( declaringType.getSimpleName() )
+            .append( ":" )
+            .append( name )
+            .toString();
     }
 }

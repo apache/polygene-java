@@ -9,7 +9,6 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-
 public interface ServiceLoader
 {
     <T> T findFirstService( Class<T> neededType )
@@ -18,13 +17,12 @@ public interface ServiceLoader
     <T> Iterable<T> findAllServices( Class<T> neededType )
         throws IOException;
 
-
     /**
      * The default implementation of ServiceLoader mechanism uses the Service Mechanism from Java2, which
      * looks for text files inside the META-INF/services/ directory in all visible jars on the classpath,
      * i.e. {@code classloader.getResources( "/META-INF/services/" + type.getName() ) }, where type is the
      * Class of requested type. The text file is expected to comprise of a single line, with the fully qualified
-     * class name of the implementation, which should reside in the same jar file (but not required). 
+     * class name of the implementation, which should reside in the same jar file (but not required).
      */
     public final class StandaloneApplicationServiceLoader
         implements ServiceLoader
@@ -108,7 +106,8 @@ public interface ServiceLoader
         private <T> void processProvider( LinkedList<T> result,
                                           ClassLoader classLoader,
                                           String providerClassName,
-                                          Class<T> neededType)
+                                          Class<T> neededType
+        )
         {
             Class<T> provider = loadProvider( classLoader, providerClassName, neededType );
             if( provider == null )
@@ -135,7 +134,8 @@ public interface ServiceLoader
             }
             catch( ClassCastException ex )
             {
-                System.err.println( "Class " + providerClassName + " was not of " + neededType.getName() + " subtype." );
+                System.err
+                    .println( "Class " + providerClassName + " was not of " + neededType.getName() + " subtype." );
             }
             catch( ClassNotFoundException ex )
             {

@@ -15,7 +15,6 @@
 package org.qi4j.runtime.composite;
 
 import java.io.Serializable;
-
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.spi.sideeffect.MethodSideEffectDescriptor;
 
@@ -23,8 +22,8 @@ import org.qi4j.spi.sideeffect.MethodSideEffectDescriptor;
  * JAVADOC
  */
 public final class MethodSideEffectModel
-        extends AbstractModifierModel
-        implements MethodSideEffectDescriptor, Serializable
+    extends AbstractModifierModel
+    implements MethodSideEffectDescriptor, Serializable
 {
     public MethodSideEffectModel( Class sideEffectClass, Class instantiationClass )
     {

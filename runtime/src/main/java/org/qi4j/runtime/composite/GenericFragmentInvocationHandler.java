@@ -19,22 +19,22 @@ import java.lang.reflect.Method;
  * JAVADOC
  */
 public final class GenericFragmentInvocationHandler
-        extends FragmentInvocationHandler
+    extends FragmentInvocationHandler
 {
     // InvocationHandler implementation ------------------------------
 
     public Object invoke( Object proxy, Method method, Object[] args )
-            throws Throwable
+        throws Throwable
     {
         try
         {
             return ( (InvocationHandler) fragment ).invoke( proxy, method, args );
         }
-        catch (InvocationTargetException throwable)
+        catch( InvocationTargetException throwable )
         {
             throw cleanStackTrace( throwable.getTargetException(), proxy, method );
         }
-        catch (Throwable throwable)
+        catch( Throwable throwable )
         {
             throw cleanStackTrace( throwable, proxy, method );
         }

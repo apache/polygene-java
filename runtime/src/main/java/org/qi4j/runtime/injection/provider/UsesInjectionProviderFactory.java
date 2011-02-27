@@ -1,7 +1,6 @@
 package org.qi4j.runtime.injection.provider;
 
 import java.io.Serializable;
-
 import org.qi4j.api.composite.TransientBuilder;
 import org.qi4j.api.object.ObjectBuilder;
 import org.qi4j.api.property.StateHolder;
@@ -20,20 +19,20 @@ import org.qi4j.runtime.structure.ModuleInstance;
  * JAVADOC
  */
 public final class UsesInjectionProviderFactory
-        implements InjectionProviderFactory, Serializable
+    implements InjectionProviderFactory, Serializable
 {
     public UsesInjectionProviderFactory()
     {
     }
 
     public InjectionProvider newInjectionProvider( Resolution resolution, DependencyModel dependencyModel )
-            throws InvalidInjectionException
+        throws InvalidInjectionException
     {
         return new UsesInjectionProvider( dependencyModel );
     }
 
     private class UsesInjectionProvider
-            implements InjectionProvider, Serializable
+        implements InjectionProvider, Serializable
     {
         private final DependencyModel dependency;
 
@@ -42,16 +41,16 @@ public final class UsesInjectionProviderFactory
             this.dependency = dependency;
         }
 
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings( "unchecked" )
         public Object provideInjection( InjectionContext context )
-                throws InjectionProviderException
+            throws InjectionProviderException
         {
             UsesInstance uses = context.uses();
 
             Class injectionType = dependency.rawInjectionType();
             Object usesObject = null;
             if( !Iterable.class.equals( injectionType ) && !ObjectBuilder.class.equals( injectionType ) && !TransientBuilder.class
-                    .equals( injectionType ) )
+                .equals( injectionType ) )
             {
                 usesObject = uses.useForType( injectionType );
             }
@@ -68,14 +67,16 @@ public final class UsesInjectionProviderFactory
                     if( Iterable.class.equals( injectionType ) || TransientBuilder.class.equals( injectionType ) )
                     {
                         usesObject = new TransientBuilderInstance( compositeFinder.module, compositeFinder.model, uses );
-                    } else
+                    }
+                    else
                     {
                         StateHolder stateHolder = context.state();
                         compositeFinder.model.state().checkConstraints( stateHolder );
                         usesObject = compositeFinder.model
-                                .newCompositeInstance( compositeFinder.module, uses, stateHolder );
+                            .newCompositeInstance( compositeFinder.module, uses, stateHolder );
                     }
-                } else
+                }
+                else
                 {
                     ModuleInstance.ObjectFinder objectFinder = moduleInstance.findObjectModel( dependency.injectionClass() );
                     if( objectFinder.model != null )
@@ -83,14 +84,18 @@ public final class UsesInjectionProviderFactory
                         if( Iterable.class.equals( injectionType ) || ObjectBuilder.class.equals( injectionType ) )
                         {
                             usesObject = new ObjectBuilderInstance( context, objectFinder.model );
-                        } else
+                        }
+                        else
                         {
                             try
                             {
                                 usesObject = objectFinder.model.newInstance( context );
-                            } catch (Exception e)
+                            }
+                            catch( Exception e )
                             {
-                                throw new InjectionProviderException( "Could not instantiate object of class " + dependency.injectionClass().getName(), e );
+                                throw new InjectionProviderException( "Could not instantiate object of class " + dependency
+                                    .injectionClass()
+                                    .getName(), e );
                             }
                         }
                     }
@@ -102,7 +107,8 @@ public final class UsesInjectionProviderFactory
                 }
 
                 return usesObject;
-            } else
+            }
+            else
             {
                 return usesObject;
             }

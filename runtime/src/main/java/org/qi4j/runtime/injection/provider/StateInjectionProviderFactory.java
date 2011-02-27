@@ -180,7 +180,8 @@ public final class StateInjectionProviderFactory
         public Object provideInjection( InjectionContext context )
             throws InjectionProviderException
         {
-            AbstractAssociation abstractAssociation = ( (EntityStateHolder) context.state() ).getAssociation( associationDescriptor.accessor() );
+            AbstractAssociation abstractAssociation = ( (EntityStateHolder) context.state() ).getAssociation( associationDescriptor
+                                                                                                                  .accessor() );
             if( abstractAssociation != null )
             {
                 return abstractAssociation;
@@ -205,7 +206,8 @@ public final class StateInjectionProviderFactory
         public Object provideInjection( InjectionContext context )
             throws InjectionProviderException
         {
-            ManyAssociation abstractAssociation = ( (EntityStateHolder) context.state() ).getManyAssociation( manyAssociationDescriptor.accessor() );
+            ManyAssociation abstractAssociation = ( (EntityStateHolder) context.state() ).getManyAssociation( manyAssociationDescriptor
+                                                                                                                  .accessor() );
             if( abstractAssociation != null )
             {
                 return abstractAssociation;

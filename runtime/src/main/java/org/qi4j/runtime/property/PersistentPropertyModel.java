@@ -19,17 +19,13 @@ import org.json.JSONException;
 import org.json.JSONStringer;
 import org.json.JSONTokener;
 import org.qi4j.api.common.MetaInfo;
-import org.qi4j.api.common.Visibility;
 import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.PropertyInfo;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.runtime.structure.ModuleModel;
-import org.qi4j.runtime.structure.ModuleVisitor;
 import org.qi4j.runtime.types.PropertyTypeImpl;
 import org.qi4j.runtime.types.ValueTypeFactory;
-import org.qi4j.runtime.value.ValueModel;
 import org.qi4j.spi.property.PropertyTypeDescriptor;
 import org.qi4j.spi.property.ValueType;
 
