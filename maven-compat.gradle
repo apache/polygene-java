@@ -1,6 +1,8 @@
 allprojects {
   apply plugin: 'maven'
+
   pom {
+
     project {
       url 'http://www.qi4j.org'
       organization {
@@ -13,16 +15,14 @@ allprojects {
         url 'http://issues.ops4j.org/browse/QI'
       }
       scm {
-        url "http://github.com/Qi4j/qi4j-core"
-        connection "scm:git:http://github.com/Qi4j/qi4j-core.git"
-        developerConnection "scm:git:git@github.com:Qi4j/qi4j-core.git"
+        url "http://github.com/Qi4j/qi4j-sdk"
+        connection "scm:git:http://github.com/Qi4j/qi4j-sdk.git"
+        developerConnection "scm:git:git@github.com:Qi4j/qi4j-sdk.git"
       }
       licenses {
         license {
           name 'Apache License version 2.0'
           url 'http://www.apache.org/licenses/LICENSE-2.0'
-          comments 'This build file is licensed under LGPL from Hibernate Core project.'
-          distribution 'repo'
         }
       }
       developers {
@@ -40,7 +40,7 @@ allprojects {
         }
         developer {
           id 'rickardoberg'
-          name 'Rickard ?berg'
+          name 'Rickard \u00F6berg'
           email 'rickard.oberg@jayway.se'
           roles {
             role 'Core Team'

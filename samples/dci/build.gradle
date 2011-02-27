@@ -1,16 +1,16 @@
 dependencies {
-  compile(project(":core:api"))
-  compile(project(":core:bootstrap"))
-  compile(project(":core:spi"))
-  compile(project(":core:runtime"))  /* TODO: Get rid of this dependency */
-  compile(project(":libraries:constraints"))
+  compile(project(":org.qi4j.core:org.qi4j.core.api"))
+  compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
+  compile(project(":org.qi4j.core:org.qi4j.core.spi"))
+  compile(project(":org.qi4j.core:org.qi4j.core.runtime"))  /* TODO: Get rid of this dependency */
+  compile(project(":org.qi4j.libraries:org.qi4j.library.constraints"))
   compile(libraries.slf4j_api)
   testCompile(libraries.junit)
   testCompile(libraries.easymock)
   testRuntime(libraries.asm)
   testRuntime(libraries.asm_commons)
   testRuntime(libraries.slf4j_simple)
-  testCompile(project(":core:testsupport"))
+  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
 }
 
 jar {

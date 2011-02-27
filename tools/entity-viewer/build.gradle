@@ -1,15 +1,15 @@
 dependencies {
-  compile(project(":core:api"))
-  compile(project(":core:bootstrap"))
-  compile(project(":tools:envisage"))
+  compile(project(":org.qi4j.core:org.qi4j.core.api"))
+  compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
+  compile(project(":org.qi4j.tools:org.qi4j.tool.envisage"))
   compile(libraries.slf4j_api)
   testCompile(libraries.junit)
   testRuntime(libraries.asm)
   testRuntime(libraries.asm_commons)
   testRuntime(libraries.slf4j_simple)
-  testCompile(project(":core:testsupport"))
-  testRuntime(project(":core:spi"))
-  testRuntime(project(":core:runtime"))
+  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
+  testRuntime(project(":org.qi4j.core:org.qi4j.core.spi"))
+  testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
 }
 
 jar {

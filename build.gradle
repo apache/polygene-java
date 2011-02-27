@@ -1,5 +1,9 @@
+title = "Qi4j SDK"
+description = "Qi4j™ is a framework for domain centric application development, including evolved concepts from AOP, DI and DDD."
+
 apply plugin: 'java'
 apply from: 'maven-compat.gradle'
+apply from: 'xslt.gradle'
 apply plugin: 'project-report'
 
 // Versions of Dependencies;
@@ -42,6 +46,12 @@ allprojects {
   apply plugin: 'code-quality'
   apply plugin: 'project-report'
 
+  group = name.substring(0,name.lastIndexOf('.'))
+  print "$project  ->  "
+  print "group:$project.group,"
+  print " name:${project.name},"
+  println " version:$version"
+
   defaultTasks 'build'
   version = System.properties.version ?: "0"
   idea.javaVersion = '1.6'
@@ -67,104 +77,8 @@ allprojects {
     deployerJars "org.apache.maven.wagon:wagon-ssh:1.0-beta-2"
   }
 
-  uploadArchives {
-    repositories.mavenDeployer {
-      name = 'sshDeployer' // optional
-      configuration = configurations.deployerJars
-      repository(url: "scp://repository.ops4j.org/home/www/repository.ops4j.org/maven2")
-    }
-  }
-  dependsOnChildren()
-}
-
-def testProperties = [
-        'proxySet': System.properties[ 'proxySet' ],
-        'proxyHost': System.properties[ 'proxyHost' ],
-        'proxyPort': System.properties[ 'proxyPort' ]]
-
-// build a map of the dependency artifacts to use.  Allows centralized definition of the version of artifacts to
-// use.  In that respect it serves a role similar to <dependencyManagement> in Maven
-
-libraries = [
-        // Ant
-        ant: "org.apache.ant:ant:$antVersion",
-
-        // ASM
-        asm: "asm:asm:$asmVersion",
-        asm_util: "asm:asm-util:$asmVersion",
-        asm_commons: "asm:asm-commons:$asmVersion",
-
-        // OSGi
-        osgi_core: "org.osgi:org.osgi.core:$osgiVersion",
-        osgi_compendium: "org.osgi:org.osgi.compendium:$osgiVersion",
-        osgi_enterprise: "org.osgi:org.osgi.enterprise:$osgiVersion",
-
-        // logging
-        slf4j_api: "org.slf4j:slf4j-api:$slf4jVersion",
-        slf4j_simple: "org.slf4j:slf4j-simple:$slf4jVersion",
-        jcl_slf4j: "org.slf4j:jcl-over-slf4j:$slf4jVersion",
-        jcl_api: 'commons-logging:commons-logging-api:99.0-does-not-exist',  //ensure it is never used.
-        jcl: 'commons-logging:commons-logging:99.0-does-not-exist',  // ensure it is never used.
-
-        // testing
-        junit: "junit:junit:$junitVersion",
-        easymock: "org.easymock:easymock:$easyMockVersion",
-        mockito: "org.mockito:mockito-core:$mockitoVersion",
-        jmock: "org.jmock:jmock:$jmockVersion",
-        testng: "org.testng:testng:$testNgVersion:jdk15"
-]
-
-
-subprojects { subProject ->
-
-  print "$subProject  ->  "
-  if( group.startsWith('qi4j-sdk.core') )
-  {
-    baseName = "qi4j-core-${subProject.name}"
-    group = 'org.qi4j.core'
-  }
-  else if( group.startsWith('qi4j-sdk.libraries') )
-  {
-    baseName = "qi4j-lib" + (group - 'qi4j-sdk.libraries').replace('.', '-') + "-${subProject.name}"
-    group = 'org.qi4j.library' + (group - 'qi4j-sdk.libraries')
-  }
-  else if( group.startsWith('qi4j-sdk.extensions') )
-  {
-    baseName = "qi4j-ext" + (group - 'qi4j-sdk.extensions').replace('.', '-') + "-${subProject.name}"
-    group = 'org.qi4j.extension' + (group - 'qi4j-sdk.extensions')
-  }
-  else if( group.startsWith('qi4j-sdk.samples') )
-  {
-    baseName = "qi4j-sample-${subProject.name}"
-    group = 'org.qi4j.sample'
-  }
-  else if( group.startsWith('qi4j-sdk.tools') )
-  {
-    baseName = "qi4j-tool-${subProject.name}"
-    group = 'org.qi4j.tool'
-  }
-  else if( group.startsWith('qi4j-sdk.tutorials') )
-  {
-    baseName = "qi4j-tutorial-${subProject.name}"
-    group = 'org.qi4j.tutorial'
-  }
-  else if( group.startsWith('qi4j-sdk.tests') )
-  {
-    baseName = "qi4j-tests-${subProject.name}"
-    group = 'org.qi4j.tests'
-  }
-  else
-  {
-    baseName = "qi4j-${subProject.name}"
-    group = 'org.qi4j'
-  }
-  print "group:$group,"
-  print " name:${subProject.name},"
-  print " artifact:$baseName,"
-  println " version:$version"
-
-  javaDir = new File(subProject.projectDir.absolutePath + "/src/main/java")
-  testDir = new File(subProject.projectDir.absolutePath + "/src/test/java")
+  javaDir = new File("$projectDir/src/main/java")
+  testDir = new File("$projectDir/src/test/java")
 
   if( javaDir.isDirectory() || testDir.isDirectory() )
   {
@@ -172,7 +86,7 @@ subprojects { subProject ->
     apply plugin: VersionClass
     apply plugin: 'code-quality'
 
-    if( subProject.name == "runtime" && subProject.group == "org.qi4j.core" )
+    if( name == "org.qi4j.core.runtime" )
     {
       checkstyleMain {
         configFile = new File("$rootProject.projectDir.absolutePath/etc/qi4j-runtime-checkstyle.xml")
@@ -197,16 +111,12 @@ subprojects { subProject ->
     }
 
     jar {
-      group = subProject.group
-      baseName = subProject.baseName
       manifest {
-        version = subProject.version
+        symbolicName = project.name
         license = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
         docURL = 'http://www.qi4j.org'
         description = 'Qi4j is a platform for Composite Oriented Programming'
-        name = "$group.${subProject.name}"  // default name if forgotten in sub-project.
         vendor = 'Qi4j Community, http://www.qi4j.org'
-        symbolicName = "$group.${subProject.name}"
         instruction '-debug', 'true'
       }
     }
@@ -263,6 +173,11 @@ subprojects { subProject ->
       }
     }
 
+    def testProperties = [
+            'proxySet': System.properties[ 'proxySet' ],
+            'proxyHost': System.properties[ 'proxyHost' ],
+            'proxyPort': System.properties[ 'proxyPort' ]]
+
     test {
       maxHeapSize = "1024m"
       systemProperties = testProperties
@@ -275,11 +190,36 @@ subprojects { subProject ->
         }
       }
     }
+
+    // Create checkstyle report
+    task checkstyleReport(type: Xslt, dependsOn: check) {
+      source project.checkstyleResultsDir
+      include '*.xml'
+      destDir = project.checkstyleResultsDir
+      extension = 'html'
+      stylesheetFile = file('etc/checkstyle-frames.xsl')
+    }
+
   }
+
 
   uploadArchives.doFirst {
     if( System.properties[ 'version' ] == null )
+    {
       throw new GradleException("'version' must be given as a system property to perform a release.")
+    }
+  }
+
+  uploadArchives {
+    repositories.mavenDeployer {
+      configuration = configurations.deployerJars
+      repository(url: "file://localhost/$rootProject.buildDir/repository/")
+    }
+//    repositories.mavenDeployer {
+//           name = 'sshDeployer' // optional
+//           configuration = configurations.archives
+//           repository(url: "scp://repository.ops4j.org/maven2")
+//       }
   }
 
   ideaModule {
@@ -287,7 +227,42 @@ subprojects { subProject ->
       module.dependencies*.exported = true
     }
   }
+
+
+  dependsOnChildren()
 }
+
+// build a map of the dependency artifacts to use.  Allows centralized definition of the version of artifacts to
+// use.  In that respect it serves a role similar to <dependencyManagement> in Maven
+
+libraries = [
+        // Ant
+        ant: "org.apache.ant:ant:$antVersion",
+
+        // ASM
+        asm: "asm:asm:$asmVersion",
+        asm_util: "asm:asm-util:$asmVersion",
+        asm_commons: "asm:asm-commons:$asmVersion",
+
+        // OSGi
+        osgi_core: "org.osgi:org.osgi.core:$osgiVersion",
+        osgi_compendium: "org.osgi:org.osgi.compendium:$osgiVersion",
+        osgi_enterprise: "org.osgi:org.osgi.enterprise:$osgiVersion",
+
+        // logging
+        slf4j_api: "org.slf4j:slf4j-api:$slf4jVersion",
+        slf4j_simple: "org.slf4j:slf4j-simple:$slf4jVersion",
+        jcl_slf4j: "org.slf4j:jcl-over-slf4j:$slf4jVersion",
+        jcl_api: 'commons-logging:commons-logging-api:99.0-does-not-exist',  //ensure it is never used.
+        jcl: 'commons-logging:commons-logging:99.0-does-not-exist',  // ensure it is never used.
+
+        // testing
+        junit: "junit:junit:$junitVersion",
+        easymock: "org.easymock:easymock:$easyMockVersion",
+        mockito: "org.mockito:mockito-core:$mockitoVersion",
+        jmock: "org.jmock:jmock:$jmockVersion",
+        testng: "org.testng:testng:$testNgVersion:jdk15"
+]
 
 build.doLast() {
 //task genReport {
@@ -330,15 +305,98 @@ build.doLast() {
 }
 
 task javadocs(type: Javadoc) {
+  options.docFilesSubDirs = true
+  title = "${rootProject.title} ${version}"
   def apiSources = subprojects.findAll({ project -> project.name != 'runtime' })
   source apiSources.collect { project ->
     project.sourceSets.main.allJava
   }
-  destinationDir = new File("$buildDir", 'javadoc')
+  destinationDir = new File("$buildDir/javadocs")
   // Might need a classpath
   classpath = files(apiSources.collect { project ->
     project.sourceSets.main.compileClasspath
   })
+  options.links("http://java.sun.com/j2se/1.6.0/docs/api")
+  options.group(["Core API": ["org.qi4j.core.api.*"],
+                "Core SPI": ["org.qi4j.core.spi.*"],
+                "Core Bootstrap": ["org.qi4j.core.bootstrap.*"]
+                ])
+}
+
+srcDistImage = copySpec {
+  from '.'
+  exclude '**/build/'     // build output
+  exclude '**/.git/'      // git directories
+  exclude '**/.git*'      // git files
+  exclude '**/.gradle/'   // gradle management files
+  into "$rootProject.name-$version/src/"
+}
+
+task zipSources(type: Zip) {
+  with srcDistImage
+  classifier = 'src'
+}
+
+task tarSources(type: Tar) {
+  with srcDistImage
+  classifier = 'src'
+}
+
+binDistImage = copySpec {
+  exclude '**/build/'     // build output
+  exclude '**/.git/'      // git directories
+  exclude '**/.git*'      // git files
+  exclude '**/.gradle/'   // gradle management files
+  into('docs') {
+    from "$buildDir/docs"
+  }
+  into('docs/reports') {
+    from 'build/reports'
+  }
+  into('javadocs') {
+    from "$buildDir/javadocs"
+  }
+  allprojects.each { project ->
+    if( project.group == 'org.qi4j.core' )
+    {
+      from project.configurations.runtime
+      into('libs/core')
+    }
+    else if( project.group == 'org.qi4j.library' )
+    {
+      from project.configurations.runtime
+      into("libs/libraries/$project.name")
+    }
+    else if( project.group == 'org.qi4j.extension' )
+    {
+      from project.configurations.runtime
+      into("libs/extensions/$project.name")
+    }
+  }
+  into('samples') {
+    from 'samples'
+  }
+  into('tutorials') {
+    from 'tutorials'
+  }
+}
+
+task zipBinaries(type: Zip) {
+  classifier = 'bin'
+  with binDistImage
+  into "$rootProject.name-$version"
+}
+
+task tarBinaries(type: Tar)
+
+task uploadDists(dependsOn: ['zipSources', 'tarSources', 'zipBinaries', 'tarBinaries']) {
+
+}
+
+task release {
+  description = 'Builds, tests and uploads the release artifacts'
+  group = 'release'
+  dependsOn uploadDists
 }
 
 //

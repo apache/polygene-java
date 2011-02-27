@@ -135,7 +135,7 @@ if $cygwin ; then
     esac
 fi
 
-"$JAVACMD" $JAVA_OPTS $GRADLE_OPTS \
+"$JAVACMD" $JAVA_OPTS $GRADLE_OPTS -XX:MaxPermSize=128M -XX:+CMSClassUnloadingEnabled \
         -classpath "$CLASSPATH" \
         -Dorg.gradle.wrapper.properties="$WRAPPER_PROPERTIES" \
         $STARTER_MAIN_CLASS \
