@@ -210,11 +210,11 @@ allprojects {
       configuration = configurations.deployerJars
       repository(url: "file://localhost/$rootProject.buildDir/repository/")
     }
-//    repositories.mavenDeployer {
-//           name = 'sshDeployer' // optional
-//           configuration = configurations.archives
-//           repository(url: "scp://repository.ops4j.org/maven2")
-//       }
+    repositories.mavenDeployer {
+      name = 'sshDeployer' // optional
+      configuration = configurations.depoyerJars
+      repository(url: "scp://repository.ops4j.org/maven2")
+    }
   }
 
   ideaModule {
