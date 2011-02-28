@@ -237,5 +237,5 @@ allprojects {
 
       }
     }
-  }.writeTo("$buildDir/maven2/pom.xml")
+  }
 }

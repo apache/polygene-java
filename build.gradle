@@ -3,7 +3,6 @@ description = "Qi4j™ is a framework for domain centric application development
 
 apply plugin: 'java'
 apply from: 'maven-compat.gradle'
-apply from: 'xslt.gradle'
 apply plugin: 'project-report'
 
 // Versions of Dependencies;
@@ -46,12 +45,7 @@ allprojects {
   apply plugin: 'code-quality'
   apply plugin: 'project-report'
 
-  group = name.substring(0,name.lastIndexOf('.'))
-  print "$project  ->  "
-  print "group:$project.group,"
-  print " name:${project.name},"
-  println " version:$version"
-
+  group = name.substring(0, name.lastIndexOf('.'))
   defaultTasks 'build'
   version = System.properties.version ?: "0"
   idea.javaVersion = '1.6'
@@ -63,7 +57,8 @@ allprojects {
   }
 
   dependencies {
-    testCompile('org.apache.ant:ant:1.8.1')
+    testCompile("org.apache.ant:ant:$antVersion")
+    testCompile("org.apache.ant:ant-junit:$antVersion")
     testCompile('junit:junit:4.8.1')
     testRuntime('net.sourceforge.cobertura:cobertura:1.9.3')
     testRuntime("asm:asm:$asmVersion", "asm:asm-util:$asmVersion", "asm:asm-commons:$asmVersion")
@@ -192,13 +187,13 @@ allprojects {
     }
 
     // Create checkstyle report
-    task checkstyleReport(type: Xslt, dependsOn: check) {
-      source project.checkstyleResultsDir
-      include '*.xml'
-      destDir = project.checkstyleResultsDir
-      extension = 'html'
-      stylesheetFile = file('etc/checkstyle-frames.xsl')
-    }
+//    task checkstyleReport(type: Xslt, dependsOn: check) {
+//      source project.checkstyleResultsDir
+//      include '*.xml'
+//      destDir = project.checkstyleResultsDir
+//      extension = 'html'
+//      stylesheetFile = file('etc/checkstyle-frames.xsl')
+//    }
 
   }
 
@@ -264,10 +259,9 @@ libraries = [
         testng: "org.testng:testng:$testNgVersion:jdk15"
 ]
 
-build.doLast() {
+test.doLast() {
 //task genReport {
   def cobSerFile = "${project.buildDir}/coverage/cobertura.ser"
-  println childProjects
   ant {
     taskdef(name: 'coberturaReport',
             classname: 'net.sourceforge.cobertura.ant.ReportTask',
@@ -278,7 +272,6 @@ build.doLast() {
       allprojects.each { module ->
         if( rootProject != module )
         {
-          println module
           if( file("$module.projectDir.absolutePath/src/main/java").exists() )
           {
             fileset(dir: "$module.projectDir.absolutePath/src/main/java") {
@@ -289,11 +282,15 @@ build.doLast() {
       }
     }
 
+    taskdef(name: 'junitreport',
+            classname: 'org.apache.tools.ant.taskdefs.optional.junit.XMLResultAggregator',
+            classpath: configurations.testRuntime.asPath)
+
     // create Junit report
     def junitReportDir = buildDirName + "/reports/junit"
     mkdir(dir: junitReportDir)
     mkdir(dir: buildDirName + "/test-results")
-    'junitreport'(todir: junitReportDir) {
+    junitreport(todir: junitReportDir) {
       report(format: 'frames', todir: junitReportDir)
       allprojects.each { module ->
         fileset(dir: "$module.buildDir/test-results") {
@@ -301,101 +298,131 @@ build.doLast() {
         }
       }
     }
+
   }
 }
 
 task javadocs(type: Javadoc) {
-  options.docFilesSubDirs = true
-  title = "${rootProject.title} ${version}"
-  def apiSources = subprojects.findAll({ project -> project.name != 'runtime' })
-  source apiSources.collect { project ->
-    project.sourceSets.main.allJava
+
+  doLast {
+    options.docFilesSubDirs = true
+    title = "${rootProject.title} ${version}"
+    def apiSources = subprojects.findAll({ project -> project.name != 'runtime' })
+    source apiSources.collect { project ->
+      project.sourceSets.main.allJava
+    }
+    destinationDir = new File("$buildDir/javadocs")
+    // Might need a classpath
+    classpath = files(apiSources.collect { project ->
+      project.sourceSets.main.compileClasspath
+    })
+    options.links("http://java.sun.com/j2se/1.6.0/docs/api")
+    options.group(["Core API": ["org.qi4j.core.api.*"],
+                  "Core SPI": ["org.qi4j.core.spi.*"],
+                  "Core Bootstrap": ["org.qi4j.core.bootstrap.*"]
+                  ])
   }
-  destinationDir = new File("$buildDir/javadocs")
-  // Might need a classpath
-  classpath = files(apiSources.collect { project ->
-    project.sourceSets.main.compileClasspath
-  })
-  options.links("http://java.sun.com/j2se/1.6.0/docs/api")
-  options.group(["Core API": ["org.qi4j.core.api.*"],
-                "Core SPI": ["org.qi4j.core.spi.*"],
-                "Core Bootstrap": ["org.qi4j.core.bootstrap.*"]
-                ])
 }
 
-srcDistImage = copySpec {
-  from '.'
-  exclude '**/build/'     // build output
-  exclude '**/.git/'      // git directories
-  exclude '**/.git*'      // git files
-  exclude '**/.gradle/'   // gradle management files
-  into "$rootProject.name-$version/src/"
+task distLayout {
+  srcDistImage = copySpec {
+    from '.'
+    exclude '**/build/'     // build output
+    exclude '**/.git/'      // git directories
+    exclude '**/.git*'      // git files
+    exclude '**/.gradle/'   // gradle management files
+    into "qi4j-sdk-$version/src/"
+  }
+
+
+  docsImage = copySpec {
+    into("docs")
+    from "$buildDir/docs"
+  }
+  reportsImage = copySpec {
+    into("docs/reports")
+    from "$buildDir/reports"
+  }
+  javadocsImage = copySpec {
+    into("javadocs")
+    from "$buildDir/javadocs"
+  }
+  libsImage = copySpec {
+    allprojects.each { project ->
+      if( project.group == 'org.qi4j.core' )
+      {
+        from project.configurations.runtime
+        into("libs/core")
+      }
+      else if( project.group == 'org.qi4j.library' )
+      {
+        from project.configurations.runtime
+        into("libs/libraries/$project.name")
+      }
+      else if( project.group == 'org.qi4j.extension' )
+      {
+        from project.configurations.runtime
+        into("libs/extensions/$project.name")
+      }
+    }
+  }
+  samplesImage = copySpec {
+    into("samples")
+    from "$projectDir/samples"
+  }
+  tutorialsImage = copySpec {
+    into("tutorials")
+    from "$projectDir/tutorials"
+  }
+  binDistImage = copySpec {
+    into "qi4j-sdk-$version"
+    with docsImage
+    with reportsImage
+    with javadocsImage
+    with libsImage
+    with samplesImage
+    with tutorialsImage
+  }
 }
 
 task zipSources(type: Zip) {
-  with srcDistImage
+  with distLayout.srcDistImage
   classifier = 'src'
 }
 
 task tarSources(type: Tar) {
-  with srcDistImage
+  with distLayout.srcDistImage
   classifier = 'src'
 }
 
-binDistImage = copySpec {
-  exclude '**/build/'     // build output
-  exclude '**/.git/'      // git directories
-  exclude '**/.git*'      // git files
-  exclude '**/.gradle/'   // gradle management files
-  into('docs') {
-    from "$buildDir/docs"
-  }
-  into('docs/reports') {
-    from 'build/reports'
-  }
-  into('javadocs') {
-    from "$buildDir/javadocs"
-  }
-  allprojects.each { project ->
-    if( project.group == 'org.qi4j.core' )
-    {
-      from project.configurations.runtime
-      into('libs/core')
-    }
-    else if( project.group == 'org.qi4j.library' )
-    {
-      from project.configurations.runtime
-      into("libs/libraries/$project.name")
-    }
-    else if( project.group == 'org.qi4j.extension' )
-    {
-      from project.configurations.runtime
-      into("libs/extensions/$project.name")
-    }
-  }
-  into('samples') {
-    from 'samples'
-  }
-  into('tutorials') {
-    from 'tutorials'
-  }
-}
-
-task zipBinaries(type: Zip) {
+task zipBinaries(type: Zip, dependsOn: ['javadocs', 'test', 'distLayout']) {
   classifier = 'bin'
-  with binDistImage
-  into "$rootProject.name-$version"
+  with distLayout.binDistImage
 }
 
-task tarBinaries(type: Tar)
+task tarBinaries(type: Tar, dependsOn: ['javadocs', 'test', 'distLayout']) {
+  classifier = 'bin'
+  with distLayout.binDistImage
+}
 
-task uploadDists(dependsOn: ['zipSources', 'tarSources', 'zipBinaries', 'tarBinaries']) {
-
+task uploadDists() {
+  dependsOn zipSources
+  dependsOn tarSources
+  dependsOn zipBinaries
+  dependsOn tarBinaries
+  // TODO: Upload SDK ZIP and TAR to repository??
 }
 
 task release {
   description = 'Builds, tests and uploads the release artifacts'
   group = 'release'
+  doFirst {
+    if( System.properties[ 'version' ] == null )
+    {
+      throw new GradleException("'version' must be given as a system property to perform a release.")
+    }
+  }
+  dependsOn allprojects*.uploadArchives
   dependsOn uploadDists
 }
 
@@ -407,6 +434,6 @@ task release {
 //  2) /gradlew.bat which is the windows bat script for for executing builds
 //  3) /wrapper which is a directory named by the "jarPath" config which contains other needed files.
 task wrapper(type: Wrapper) {
-  gradleVersion = '0.9.2'
+  gradleVersion = '1.0-milestone-1'
   jarPath = 'wrapper'
 }
