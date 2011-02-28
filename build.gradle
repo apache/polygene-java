@@ -212,7 +212,7 @@ allprojects {
     }
     repositories.mavenDeployer {
       name = 'sshDeployer' // optional
-      configuration = configurations.depoyerJars
+      configuration = configurations.deployerJars
       repository(url: "scp://repository.ops4j.org/maven2")
     }
   }
