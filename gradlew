@@ -8,7 +8,7 @@
 
 # Uncomment those lines to set JVM options. GRADLE_OPTS and JAVA_OPTS can be used together.
 # GRADLE_OPTS="$GRADLE_OPTS -Xmx512"
-JAVA_OPTS="$JAVA_OPTS -Xmx512M"
+JAVA_OPTS="$JAVA_OPTS -Xmx1024m -Xms1024m -XX:MaxPermSize=512m"
 
 GRADLE_APP_NAME=Gradle
 
@@ -134,6 +134,12 @@ if $cygwin ; then
         (9) set -- "$args0" "$args1" "$args2" "$args3" "$args4" "$args5" "$args6" "$args7" "$args8" ;;
     esac
 fi
+
+echo "$JAVACMD" $JAVA_OPTS $GRADLE_OPTS \
+        -classpath "$CLASSPATH" \
+        -Dorg.gradle.wrapper.properties="$WRAPPER_PROPERTIES" \
+        $STARTER_MAIN_CLASS \
+        "$@"
 
 "$JAVACMD" $JAVA_OPTS $GRADLE_OPTS \
         -classpath "$CLASSPATH" \
