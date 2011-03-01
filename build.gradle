@@ -34,6 +34,10 @@ sourceCompatibility = "1.6"
 
 testFailures = false
 
+groovycMain_mx = "512m"
+groovycMain_permSize = "64m"
+groovycMain_maxPermSize="128m"
+
 allprojects {
   apply plugin: 'eclipse'
   apply plugin: 'idea'
@@ -42,7 +46,7 @@ allprojects {
   apply plugin: 'project-report'
 
   defaultTasks 'build'
-  version = System.properties.version ?: "0"
+  version = System.properties.version ?: "1.3-SNAPSHOT"
   idea.javaVersion = '1.6'
   [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
