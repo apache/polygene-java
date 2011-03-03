@@ -66,6 +66,8 @@ allprojects {
 
   configurations {
     deployerJars
+    provided
+    compile.extendsFrom provided
   }
 
   dependencies {
