@@ -59,7 +59,6 @@ jar {
             'org.qi4j.api.query.grammar;version="[' + version + ',2.0]"',
             'org.qi4j.api.service;version="[' + version + ',2.0]"',
             'org.qi4j.api.service.qualifier;version="[' + version + ',2.0]"',
-            'org.qi4j.api.specification;version="[' + version + ',2.0]"',
             'org.qi4j.api.sideeffect;version="[' + version + ',2.0]"',
             'org.qi4j.api.sideeffect.internal;version="[' + version + ',2.0]"',
             'org.qi4j.api.specification;version="[' + version + ',2.0]"',
