@@ -36,7 +36,7 @@ class VersionClass implements Plugin<Project>
       def outFile = new File(generatedSrcDir, outFilename)
       outFile.getParentFile().mkdirs()
       def f = new FileWriter(outFile)
-      f.write('package  ' + project.group + "." + project.name.replace('-', '_') + ';\n')
+      f.write('package ' + project.name.replace('-', '_') + ';\n')
       f.write("""
 /**
  * Simple class for storing the version derived from the gradle build.gradle file.
