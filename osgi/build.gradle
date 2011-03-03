@@ -21,5 +21,6 @@ jar {
     instruction 'Export-Package', symbolicName +';version=' + version
     instruction 'Private-Package', symbolicName + '.internal'
     instruction 'Import-Package', '*'
+    instruction 'Fragment-Host', 'org.qi4j.core.runtime'
   }
 }
