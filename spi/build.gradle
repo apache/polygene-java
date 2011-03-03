@@ -6,6 +6,7 @@ dependencies {
 
 jar {
   manifest {
+    name = "Qi4j Core Runtime"
     instruction 'Import-Package',
             'org.json',
             'org.qi4j.api;version="[' + version + ', 2.0]"',

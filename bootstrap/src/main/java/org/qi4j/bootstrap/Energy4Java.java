@@ -1,5 +1,5 @@
 /*
- * Copyright 2008 Niclas Hedhman. All rights Reserved.
+ * Copyright 2008-2011 Niclas Hedhman. All rights Reserved.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -18,7 +18,6 @@
 
 package org.qi4j.bootstrap;
 
-import java.io.IOException;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.structure.ApplicationModelSPI;
 import org.qi4j.spi.structure.ApplicationSPI;
@@ -34,18 +33,22 @@ public final class Energy4Java
 {
     private Qi4jRuntime runtime;
 
-    public Energy4Java( ServiceLoader serviceLoader )
+    public Energy4Java( RuntimeFactory runtimeFactory )
     {
-        this( findQi4jRuntime( serviceLoader ) );
+        this( runtimeFactory.createRuntime() );
     }
 
     public Energy4Java()
     {
-        this( findQi4jRuntime( new ServiceLoader.StandaloneApplicationServiceLoader() ) );
+        this( new RuntimeFactory.StandaloneApplicationRuntimeFactory().createRuntime() );
     }
 
     public Energy4Java( Qi4jRuntime runtime )
     {
+        if( runtime == null )
+        {
+            throw new BootstrapException( "Can not create Qi4j without a Qi4j Runtime." );
+        }
         this.runtime = runtime;
     }
 
@@ -67,24 +70,5 @@ public final class Energy4Java
     public Qi4jSPI spi()
     {
         return runtime.spi();
-    }
-
-    private static Qi4jRuntime findQi4jRuntime( ServiceLoader serviceLoader )
-        throws BootstrapException
-    {
-
-        try
-        {
-            Qi4jRuntime runtime = serviceLoader.findFirstService( Qi4jRuntime.class );
-            if( runtime != null )
-            {
-                return runtime;
-            }
-            throw new BootstrapException( "No Qi4j runtime providers found." );
-        }
-        catch( IOException e )
-        {
-            throw new BootstrapException( "Unable to load a Qi4j runtime provider.", e );
-        }
     }
 }
