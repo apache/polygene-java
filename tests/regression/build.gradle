@@ -1,17 +1,17 @@
 dependencies {
-  compile(project(":core:api"))
-  compile(project(":core:bootstrap"))
+  compile(project(":org.qi4j.core:org.qi4j.core.api"))
+  compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
   compile(libraries.slf4j_api)
   compile(libraries.junit)
   runtime(libraries.asm)
   runtime(libraries.asm_commons)
   runtime(libraries.slf4j_simple)
-  compile(project(":core:testsupport"))
-  compile(project(":libraries:logging"))
-  compile(project(":extensions:indexing-rdf"))
-  compile(project(":extensions:entitystore-jdbm"))
-  runtime(project(":core:spi"))
-  runtime(project(":core:runtime"))
+  compile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
+  compile(project(":org.qi4j.libraries:org.qi4j.library.logging"))
+  compile(project(":org.qi4j.extensions:org.qi4j.extension.indexing-rdf"))
+  compile(project(":org.qi4j.extensions:org.qi4j.extension.entitystore-jdbm"))
+  runtime(project(":org.qi4j.core:org.qi4j.core.spi"))
+  runtime(project(":org.qi4j.core:org.qi4j.core.runtime"))
 }
 
 task regression( type: JavaExec, dependsOn: "classes") {

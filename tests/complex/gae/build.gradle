@@ -1,16 +1,16 @@
 dependencies {
-  compile(project(":core:api"))
-  compile(project(":core:bootstrap"))
-  compile(project(":extensions:entitystore-gae"))
+  compile(project(":org.qi4j.core:org.qi4j.core.api"))
+  compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
+  compile(project(":org.qi4j.extensions:org.qi4j.extension.entitystore-gae"))
   compile("javax.servlet:servlet-api:$servletVersion")
   compile(libraries.slf4j_api)
   compile(libraries.junit)
   testRuntime(libraries.asm)
   testRuntime(libraries.asm_commons)
   testRuntime(libraries.slf4j_simple)
-  compile(project(":core:testsupport"))
-  testRuntime(project(":core:spi"))
-  testRuntime(project(":core:runtime"))
+  compile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
+  testRuntime(project(":org.qi4j.core:org.qi4j.core.spi"))
+  testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
 }
 
 jar {

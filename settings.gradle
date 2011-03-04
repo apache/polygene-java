@@ -1,3 +1,4 @@
+rootProject.name="org.qi4j"
 include "core:api",
         "core:spi",
         "core:testsupport",
@@ -56,23 +57,43 @@ include "core:api",
         'samples:rental',
         'samples:struts2Hello',
 //        'tools:codesnippet',   // TODO: JavaCC plugin found for Gradle requires Javacc to be installed on system. Need better solution.
-        'tools:entity-viewer',
-        'tools:envisage',
-        'tutorials:cargo',
-        'tutorials:composites',
-        'tutorials:introduction:twominutes',
+'tools:entity-viewer',
+'tools:envisage',
+'tutorials:cargo',
+'tutorials:composites',
+'tutorials:introduction:twominutes',
 //        'tutorials:introduction:tenminutes',
 //        'tutorials:introduction:thirtyminutes',
 //        'tutorials:introduction:twohours',
-        'tutorials:services',
-        'tests:complex:gae',
-        'tests:regression',
-        'tests:performance:entitystores'
+'tutorials:services',
+'tests:complex:gae',
+'tests:regression',
+'tests:performance:entitystores'
 
+validateProject(rootProject,"")
 
-rootProject.children.each { project ->
-  println project
+def validateProject(project,parentName)
+{
   assert project.projectDir.isDirectory()
-  assert project.buildFile.isFile()
+  if( new File("$project.projectDir/src/main/java").exists() )
+  {
+    assert project.buildFile.isFile()
+  }
+  if( parentName == 'org.qi4j.libraries')
+  {
+    parentName = 'org.qi4j.library'
+  }
+  if( parentName.endsWith('s'))
+  {
+    parentName = parentName.substring(0,parentName.length()-1)
+  }
+  if( parentName.length() > 0)
+  {
+    project.name = parentName + "." + project.name
+  }
+  println "Project: " + project.name
+  project.children.each { child ->
+    validateProject(child,project.name)
+  }
 }
 
