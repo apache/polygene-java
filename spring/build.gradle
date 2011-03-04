@@ -1,3 +1,6 @@
+description = "Qi4j Spring Library allows for tight integration of Spring Framework and Qi4j applications."
+
+jar { manifest { name = "Qi4j Library - Spring" }}
 
 dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.api"))
@@ -13,16 +16,4 @@ dependencies {
   testRuntime(libraries.asm)
   testRuntime(libraries.asm_commons)
   testRuntime(libraries.slf4j_simple)
-}
-
-jar {
-  manifest {
-    description = "Qi4j Spring Library allows for tight integration of Spring Framework and Qi4j applications."
-    name = "Qi4j Library - Spring"
-    instruction 'Export-Package', 
-				symbolicName +'.bootstrap;version=' + version,
-				symbolicName +'.importer;version=' + version
-    instruction 'Private-Package', symbolicName + '.bootstrap.internal'
-    instruction 'Import-Package', '*'
-  }
 }

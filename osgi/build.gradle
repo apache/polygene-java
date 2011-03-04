@@ -1,3 +1,7 @@
+description = "Qi4j OSGi Library provides integration of OSGi and Qi4j, so that services in each system can be shared."
+
+jar { manifest { name = "Qi4j Library - OSGi Integration" }}
+
 dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.api"))
   compile(libraries.osgi_core)
@@ -12,15 +16,4 @@ dependencies {
   testRuntime(libraries.asm)
   testRuntime(libraries.asm_commons)
   testRuntime(libraries.slf4j_simple)
-}
-
-jar {
-  manifest {
-    description = "Qi4j OSGi Library provides integration of OSGi and Qi4j, so that services in each system can be shared."
-    name = "Qi4j Library - OSGi Integration"
-    instruction 'Export-Package', symbolicName +';version=' + version
-    instruction 'Private-Package', symbolicName + '.internal'
-    instruction 'Import-Package', '*'
-    instruction 'Fragment-Host', 'org.qi4j.core.runtime'
-  }
 }

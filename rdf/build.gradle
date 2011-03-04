@@ -1,39 +1,28 @@
+description = "Qi4j RDF Library provides commonalities of various RDF based services in Qi4j, such as RDF Indexing."
+
+jar { manifest { name = "Qi4j Library - RDF" }}
+
 repositories {
   mavenRepo name: 'aduna-repo', urls: "http://repo.aduna-software.org/maven2/releases/"
 }
- 
+
 dependencies {
   compile(project(':org.qi4j.libraries:org.qi4j.library.constraints'))
   compile(project(":org.qi4j.core:org.qi4j.core.api"))
   compile(project(":org.qi4j.core:org.qi4j.core.spi"))
   compile(libraries.slf4j_api)
-  compile('org.openrdf.sesame:sesame-model:' + rdfVersion)
-  compile('org.openrdf.sesame:sesame-repository-dataset:' + rdfVersion)
-  compile('org.openrdf.sesame:sesame-repository-http:' + rdfVersion)
-  compile('org.openrdf.sesame:sesame-rio-n3:' + rdfVersion)
-  compile('org.openrdf.sesame:sesame-rio-rdfxml:' + rdfVersion)
-  compile('org.openrdf.sesame:sesame-sail-memory:' + rdfVersion)
-  compile('org.openrdf.sesame:sesame-sail-nativerdf:' + rdfVersion)
-  compile('org.openrdf.sesame:sesame-sail-rdbms:' + rdfVersion)
+  compile("org.openrdf.sesame:sesame-model:$rdfVersion")
+  compile("org.openrdf.sesame:sesame-repository-dataset:$rdfVersion")
+  compile("org.openrdf.sesame:sesame-repository-http:$rdfVersion")
+  compile("org.openrdf.sesame:sesame-rio-n3:$rdfVersion")
+  compile("org.openrdf.sesame:sesame-rio-rdfxml:$rdfVersion")
+  compile("org.openrdf.sesame:sesame-sail-memory:$rdfVersion")
+  compile("org.openrdf.sesame:sesame-sail-nativerdf:$rdfVersion")
+  compile("org.openrdf.sesame:sesame-sail-rdbms:$rdfVersion")
   testCompile(libraries.junit)
   testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
   testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
   testRuntime(libraries.asm)
   testRuntime(libraries.asm_commons)
   testRuntime(libraries.slf4j_simple)
-}
-
-jar {
-  manifest {
-    description = "Qi4j RDF Library provides commonalities of various RDF based services in Qi4j, such as RDF Indexing."
-    name = "Qi4j Library - RDF"
-    instruction 'Export-Package', 
-				symbolicName +';version=' + version,
-				symbolicName +'.entity;version=' + version,
-				symbolicName +'.model;version=' + version,
-				symbolicName +'.repository;version=' + version,
-				symbolicName +'.serializer;version=' + version
-    instruction 'Private-Package', symbolicName + '.internal'
-    instruction 'Import-Package', '*'
-  }
 }

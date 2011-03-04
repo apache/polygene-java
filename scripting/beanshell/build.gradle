@@ -1,3 +1,7 @@
+description = "Qi4j BeanShell Library allows for Mixins to be implemented in BeanShell (Java) scripts instead of directly in compiled Java."
+
+jar { manifest { name = "Qi4j Library - Scripting - BeanShell" }}
+
 beanshellVersion = '2.0b4'
 
 dependencies {
@@ -16,14 +20,4 @@ dependencies {
   testRuntime(libraries.asm)
   testRuntime(libraries.asm_commons)
   testRuntime(libraries.slf4j_simple)
-}
-
-jar {
-  manifest {
-    symbolicName = 'org.qi4j.scripting.beanshell'
-    description = "Qi4j BeanShell Library allows for Mixins to be implemented in BeanShell (Java) scripts instead of directly in compiled Java."
-    name = "Qi4j Library - Scripting - BeanShell"
-    instruction 'Export-Package', 'org.qi4j.scripting.beanshell;version=' + version
-    instruction 'Import-Package', '*'
-  }
 }

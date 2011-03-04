@@ -1,3 +1,7 @@
+description = "Qi4j CXF Library integrates Apache CXF with Qi4j."
+
+jar { manifest { name = "Qi4j Library - CXF" }}
+
 cxfVersion = '2.3.1'
 wsdl4jVersion = '1.6.2'
 woodstoxVersion = '4.1.0'
@@ -27,14 +31,4 @@ dependencies {
   testRuntime(libraries.slf4j_simple)
   testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
   testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
-}
-
-jar {
-  manifest {
-    description = "Qi4j CXF Library integrates Apache CXF with Qi4j."
-    name = "Qi4j Library - CXF"
-    instruction 'Export-Package', symbolicName +';version=' + version
-    instruction 'Private-Package', symbolicName + '.internal'
-    instruction 'Import-Package', '*'
-  }
 }

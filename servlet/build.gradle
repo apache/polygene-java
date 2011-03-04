@@ -1,3 +1,6 @@
+description = "Qi4j Servlet Library provides integration of Qi4j into web applications."
+
+jar { manifest { name = "Qi4j Library - Servlet" }}
 
 dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.api"))
@@ -9,16 +12,4 @@ dependencies {
   testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
   testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
   testRuntime(libraries.slf4j_simple)
-}
-
-jar {
-  manifest {
-    description = "Qi4j Servlet Library provides integration of Qi4j into web applications."
-    name = "Qi4j Library - Servlet"
-    instruction 'Export-Package', 
-				"$symbolicName;version=$version",
-				"${symbolicName}.lifecycle;version=$version"
-    instruction 'Private-Package', "${symbolicName}.internal"
-    instruction 'Import-Package', '*'
-  }
 }

@@ -1,3 +1,7 @@
+description = "Qi4j Common Scripting Library contains common classes across scripting implementations."
+
+jar { manifest { name = "Qi4j Library - Scripting - Common" }}
+
 dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.api"))
   compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
@@ -9,14 +13,4 @@ dependencies {
   testRuntime(libraries.asm)
   testRuntime(libraries.asm_commons)
   testRuntime(libraries.slf4j_simple)
-}
-
-jar {
-  manifest {
-    symbolicName = 'org.qi4j.scripting.common'
-    description = "Qi4j Common Scripting Library contains common classes across scripting implementations."
-    name = "Qi4j Library - Scripting - Commong"
-    instruction 'Export-Package', 'org.qi4j.scripting.common;version=' + version
-    instruction 'Import-Package', '*'
-  }
 }

@@ -1,3 +1,6 @@
+description = "Qi4j Struts Library allows integration of Qi4j into Struts2 applications."
+
+jar { manifest { name = "Qi4j Library - Struts2" }}
 
 dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.api"))
@@ -13,23 +16,4 @@ dependencies {
   testRuntime(libraries.asm)
   testRuntime(libraries.asm_commons)
   testRuntime(libraries.slf4j_simple)
-}
-
-jar {
-  manifest {
-    symbolicName = 'org.qi4j.library.struts2'
-    description = "Qi4j Struts Library allows integration of Qi4j into Struts2 applications."
-    name = "Qi4j Library - Struts2"
-    instruction 'Export-Package', 
-				symbolicName +';version=' + version,
-				symbolicName +'.support;version=' + version,
-				symbolicName +'.support.add;version=' + version,
-				symbolicName +'.support.edit;version=' + version,
-				symbolicName +'.support.list;version=' + version,
-				symbolicName +'.support.view;version=' + version,
-				symbolicName +'.util;version=' + version,
-				symbolicName +'.bootstrap;version=' + version
-    instruction 'Private-Package', symbolicName + '.internal'
-    instruction 'Import-Package', '*'
-  }
 }

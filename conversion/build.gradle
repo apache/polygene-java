@@ -1,3 +1,7 @@
+description = "Qi4j Values Library has various generic services to manipulate Qi4j ValueComposites, such as converting an Entity to a Value."
+
+jar { manifest { name = "Qi4j Library - Values" }}
+
 dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.api"))
   compile(project(":org.qi4j.core:org.qi4j.core.spi"))
@@ -9,14 +13,4 @@ dependencies {
   testRuntime(libraries.asm)
   testRuntime(libraries.asm_commons)
   testRuntime(libraries.slf4j_simple)
-}
-
-jar {
-  manifest {
-    description = "Qi4j Values Library has various generic services to manipulate Qi4j ValueComposites, such as converting an Entity to a Value."
-    name = "Qi4j Library - Values"
-    instruction 'Export-Package', symbolicName +';version=' + version
-    instruction 'Private-Package', symbolicName + '.internal'
-    instruction 'Import-Package', '*'
-  }
 }

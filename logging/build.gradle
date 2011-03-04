@@ -1,3 +1,7 @@
+description = "Qi4j Logging Library provides an advanced logging framework which separates trace, debug and log systems."
+
+jar { manifest { name = "Qi4j Library - Logging" }}
+
 dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.api"))
   compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
@@ -8,26 +12,4 @@ dependencies {
   testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
   testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
   testRuntime(libraries.slf4j_simple)
-}
-
-jar {
-  manifest {
-    description = "Qi4j Logging Library provides an advanced logging framework which separates trace, debug and log systems."
-    name = "Qi4j Library - Logging"
-    instruction 'Export-Package', 
-				'org.qi4j.logging.debug;version=' + version,
-				'org.qi4j.logging.debug.records;version=' + version,
-				'org.qi4j.logging.debug.service;version=' + version,
-				'org.qi4j.logging.log;version=' + version,
-				'org.qi4j.logging.log.assemblies;version=' + version,
-				'org.qi4j.logging.log.records;version=' + version,
-				'org.qi4j.logging.log.service;version=' + version,
-				'org.qi4j.logging.trace;version=' + version,
-				'org.qi4j.logging.trace.assemblies;version=' + version,
-				'org.qi4j.logging.trace.records;version=' + version,
-				'org.qi4j.logging.trace.service;version=' + version,
-				'org.qi4j.logging.view;version=' + version
-    
-    instruction 'Import-Package', '*'
-  }
 }
