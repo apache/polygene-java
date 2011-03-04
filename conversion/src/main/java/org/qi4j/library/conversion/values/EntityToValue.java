@@ -1,4 +1,4 @@
-package org.qi4j.library.values;
+package org.qi4j.library.conversion.values;
 
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.composite.NoSuchCompositeException;

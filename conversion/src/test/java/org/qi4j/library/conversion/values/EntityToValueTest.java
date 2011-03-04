@@ -1,4 +1,4 @@
-package org.qi4j.library.values;
+package org.qi4j.library.conversion.values;
 
 import org.junit.Test;
 import org.qi4j.api.common.Optional;

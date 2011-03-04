@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.qi4j.library.values;
+package org.qi4j.library.conversion.values;
 
 import java.lang.annotation.*;
 
