@@ -237,6 +237,5 @@ class TestData
             unitOfWork.discard();
             throw re;
         }
-
     }
 }

@@ -36,23 +36,23 @@ import org.qi4j.test.EntityTestAssembler;
 import java.util.concurrent.Callable;
 
 public class UnitOfWorkFactoryTest
-        extends AbstractQi4jTest
+    extends AbstractQi4jTest
 {
 
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
         module.addEntities( AccountComposite.class,
-                OrderComposite.class,
-                ProductEntity.class,
-                CustomerComposite.class );
+                            OrderComposite.class,
+                            ProductEntity.class,
+                            CustomerComposite.class );
 
         new EntityTestAssembler().assemble( module );
     }
 
     @Test
     public void testUnitOfWork()
-            throws Exception
+        throws Exception
     {
         UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
 
@@ -69,9 +69,9 @@ public class UnitOfWorkFactoryTest
         unitOfWork.complete();
     }
 
-    @Mixins({AccountMixin.class})
+    @Mixins( { AccountMixin.class } )
     public interface AccountComposite
-            extends Account, EntityComposite
+        extends Account, EntityComposite
     {
     }
 
@@ -85,7 +85,7 @@ public class UnitOfWorkFactoryTest
     }
 
     public static abstract class AccountMixin
-            implements Account
+        implements Account
     {
         public void add( int amount )
         {
@@ -106,7 +106,7 @@ public class UnitOfWorkFactoryTest
     }
 
     public interface CustomerComposite
-            extends Customer, EntityComposite
+        extends Customer, EntityComposite
     {
     }
 
@@ -116,12 +116,12 @@ public class UnitOfWorkFactoryTest
     }
 
     public interface LineItemComposite
-            extends LineItem, EntityComposite
+        extends LineItem, EntityComposite
     {
     }
 
     public interface Name
-            extends Property<String>
+        extends Property<String>
     {
     }
 
@@ -133,7 +133,7 @@ public class UnitOfWorkFactoryTest
     }
 
     public interface OrderComposite
-            extends Order, EntityComposite
+        extends Order, EntityComposite
     {
     }
 
@@ -147,13 +147,13 @@ public class UnitOfWorkFactoryTest
     }
 
     public interface ProductEntity
-            extends Product, EntityComposite
+        extends Product, EntityComposite
     {
     }
 }
 
 class UnitOfWorkTemplate
-        implements Callable, Runnable
+    implements Callable, Runnable
 {
     private UnitOfWorkFactory factory;
     private Callable callable;
@@ -171,7 +171,7 @@ class UnitOfWorkTemplate
         callable = new Callable()
         {
             public Object call()
-                    throws Exception
+                throws Exception
             {
                 runnable.run();
                 return null;
@@ -180,7 +180,7 @@ class UnitOfWorkTemplate
     }
 
     public Object call()
-            throws Exception
+        throws Exception
     {
         UnitOfWork unitOfWork = factory.newUnitOfWork();
         try
@@ -189,7 +189,7 @@ class UnitOfWorkTemplate
             unitOfWork.complete();
             return result;
         }
-        catch (Exception e)
+        catch( Exception e )
         {
             unitOfWork.discard();
             throw e;
@@ -202,7 +202,7 @@ class UnitOfWorkTemplate
         {
             call();
         }
-        catch (Exception e)
+        catch( Exception e )
         {
             e.printStackTrace();
         }

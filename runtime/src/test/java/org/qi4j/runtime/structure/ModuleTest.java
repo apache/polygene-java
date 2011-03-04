@@ -49,30 +49,35 @@ public class ModuleTest
                 throws AssemblyException
             {
                 return applicationFactory.newApplicationAssembly( new Assembler[][][]
-                    {
-                        {
-                            {
-                                new Assembler()
-                                {
-                                    public void assemble( ModuleAssembly module )
-                                        throws AssemblyException
-                                    {
-                                        module.addTransients( TestComposite1.class );
-                                    }
-                                }
-                            },
-                            {
-                                new Assembler()
-                                {
-                                    public void assemble( ModuleAssembly module )
-                                        throws AssemblyException
-                                    {
-                                        module.addTransients( TestComposite2.class ).visibleIn( Visibility.layer );
-                                    }
-                                }
-                            }
-                        }
-                    } );
+                                                                      {
+                                                                          {
+                                                                              {
+                                                                                  new Assembler()
+                                                                                  {
+                                                                                      public void assemble(
+                                                                                          ModuleAssembly module
+                                                                                      )
+                                                                                          throws AssemblyException
+                                                                                      {
+                                                                                          module.addTransients( TestComposite1.class );
+                                                                                      }
+                                                                                  }
+                                                                              },
+                                                                              {
+                                                                                  new Assembler()
+                                                                                  {
+                                                                                      public void assemble(
+                                                                                          ModuleAssembly module
+                                                                                      )
+                                                                                          throws AssemblyException
+                                                                                      {
+                                                                                          module.addTransients( TestComposite2.class )
+                                                                                              .visibleIn( Visibility.layer );
+                                                                                      }
+                                                                                  }
+                                                                              }
+                                                                          }
+                                                                      } );
             }
         } );
     }

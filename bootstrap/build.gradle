@@ -1,33 +1,8 @@
+
+jar { manifest { name = "Qi4j Core Bootstrap"}}
+
 dependencies {
   compile(project(':org.qi4j.core:org.qi4j.core.api'))
   compile(project(':org.qi4j.core:org.qi4j.core.spi'))
   testCompile(libraries.junit)
-}
-
-jar {
-  manifest {
-    name = "Qi4j Core Bootstrap"
-    instruction 'Import-Package',
-            'org.osgi.framework;version="[1,2)"',
-            'org.qi4j.api;version="[' + version + ',2.0)"',
-            'org.qi4j.api.common;version="[' + version + ',2.0)"',
-            'org.qi4j.api.composite;version="[' + version + ',2.0)"',
-            'org.qi4j.api.object;version="[' + version + ',2.0)"',
-            'org.qi4j.api.property;version="[' + version + ',2.0)"',
-            'org.qi4j.api.query;version="[' + version + ',2.0)"',
-            'org.qi4j.api.service;version="[' + version + ',2.0)"',
-            'org.qi4j.api.structure;version="[' + version + ',2.0)"',
-            'org.qi4j.api.unitofwork;version="[' + version + ',2.0)"',
-            'org.qi4j.api.util;version="[' + version + ',2.0)"',
-            'org.qi4j.api.value;version="[' + version + ',2.0)"',
-            'org.qi4j.bootstrap;version="[' + version + ',2.0)"',
-            'org.qi4j.spi;version="[' + version + ',2.0)"',
-            'org.qi4j.spi.entity;version="[' + version + ',2.0)"',
-            'org.qi4j.spi.service.importer;version="[' + version + ',2.0)"',
-            'org.qi4j.spi.structure;version="[' + version + ',2.0)"',
-            'org.qi4j.spi.util;version="[' + version + ',2.0)"'
-
-    instruction 'Export-Package',
-            'org.qi4j.bootstrap;version=' + version
-  }
 }

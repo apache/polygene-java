@@ -37,10 +37,10 @@ import static org.junit.Assert.assertThat;
  * Tests for @Optional
  */
 public class OptionalTest
-        extends AbstractQi4jTest
+    extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
         module.addTransients( TestComposite.class );
         module.addTransients( TestComposite2.class );
@@ -56,7 +56,7 @@ public class OptionalTest
         instance.doStuff( "Hello WOrld", "Hello World" );
     }
 
-    @Test(expected = ConstraintViolationException.class)
+    @Test( expected = ConstraintViolationException.class )
     public void givenOptionalMethodWhenMandatoryMissingThenException()
     {
         TestComposite instance = transientBuilderFactory.newTransient( TestComposite.class );
@@ -87,7 +87,7 @@ public class OptionalTest
         TestComposite2 testComposite2 = builder.newInstance();
     }
 
-    @Test(expected = ConstraintViolationException.class)
+    @Test( expected = ConstraintViolationException.class )
     public void givenMandatoryPropertyWhenMandatoryMissingThenException()
     {
         TransientBuilder<TestComposite2> builder = transientBuilderFactory.newTransientBuilder( TestComposite2.class );
@@ -96,7 +96,7 @@ public class OptionalTest
 
     @Test
     public void givenOptionalAssociationWhenOptionalMissingThenNoException()
-            throws Exception
+        throws Exception
     {
         UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
         try
@@ -109,7 +109,7 @@ public class OptionalTest
 
             unitOfWork.complete();
         }
-        catch (Exception e)
+        catch( Exception e )
         {
             unitOfWork.discard();
             throw e;
@@ -118,7 +118,7 @@ public class OptionalTest
 
     @Test
     public void givenOptionalAssociationWhenOptionalSetThenNoException()
-            throws Exception
+        throws Exception
     {
         UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
         try
@@ -132,16 +132,16 @@ public class OptionalTest
 
             unitOfWork.complete();
         }
-        catch (Exception e)
+        catch( Exception e )
         {
             unitOfWork.discard();
             throw e;
         }
     }
 
-    @Test(expected = ConstraintViolationException.class)
+    @Test( expected = ConstraintViolationException.class )
     public void givenMandatoryAssociationWhenMandatoryMissingThenException()
-            throws Exception
+        throws Exception
     {
         UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
         try
@@ -154,21 +154,21 @@ public class OptionalTest
 
             unitOfWork.complete();
         }
-        catch (Exception e)
+        catch( Exception e )
         {
             unitOfWork.discard();
             throw e;
         }
     }
 
-    @Mixins(TestComposite.TestMixin.class)
+    @Mixins( TestComposite.TestMixin.class )
     public interface TestComposite
-            extends TransientComposite
+        extends TransientComposite
     {
         void doStuff( @Optional String optional, String mandatory );
 
         abstract class TestMixin
-                implements TestComposite
+            implements TestComposite
         {
             public void doStuff( @Optional String optional, String mandatory )
             {
@@ -178,7 +178,7 @@ public class OptionalTest
     }
 
     public interface TestComposite2
-            extends TransientComposite
+        extends TransientComposite
     {
         @Optional
         Property<String> optionalProperty();
@@ -187,7 +187,7 @@ public class OptionalTest
     }
 
     public interface TestComposite3
-            extends EntityComposite
+        extends EntityComposite
     {
         @Optional
         Association<TestComposite4> optionalAssociation();
@@ -196,7 +196,7 @@ public class OptionalTest
     }
 
     public interface TestComposite4
-            extends EntityComposite
+        extends EntityComposite
     {
     }
 }

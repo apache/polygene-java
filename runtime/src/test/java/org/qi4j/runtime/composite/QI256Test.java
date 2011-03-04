@@ -24,10 +24,12 @@ import org.qi4j.test.AbstractQi4jTest;
 /**
  * JAVADOC
  */
-public class QI256Test extends AbstractQi4jTest
+public class QI256Test
+    extends AbstractQi4jTest
 {
 
-    public static class TestException extends RuntimeException
+    public static class TestException
+        extends RuntimeException
     {
         public TestException()
         {
@@ -35,8 +37,9 @@ public class QI256Test extends AbstractQi4jTest
         }
     }
 
-    @Mixins({TestTransient.TestTransientMixin.class})
-    public static interface TestTransient extends TransientComposite
+    @Mixins( { TestTransient.TestTransientMixin.class } )
+    public static interface TestTransient
+        extends TransientComposite
     {
         public void declaredMethodThatThrowsCustomException();
 
@@ -68,7 +71,8 @@ public class QI256Test extends AbstractQi4jTest
 
         public void invokeUndeclaredPublicMethodThatThrowsBuiltinException();
 
-        public abstract class TestTransientMixin implements TestTransient
+        public abstract class TestTransientMixin
+            implements TestTransient
         {
             public void declaredMethodThatThrowsCustomException()
             {
@@ -125,7 +129,6 @@ public class QI256Test extends AbstractQi4jTest
                 throw new RuntimeException();
             }
 
-
             public void invokeDeclaredPublicMethodThatThrowsBuiltinException()
             {
                 this.declaredMethodThatThrowsBuiltinException();
@@ -151,7 +154,8 @@ public class QI256Test extends AbstractQi4jTest
                 try
                 {
                     throw clazz.newInstance();
-                } catch (Throwable t)
+                }
+                catch( Throwable t )
                 {
                     if( clazz.isInstance( t ) )
                     {
@@ -166,7 +170,8 @@ public class QI256Test extends AbstractQi4jTest
                 try
                 {
                     throw clazz.newInstance();
-                } catch (Throwable t)
+                }
+                catch( Throwable t )
                 {
                     if( clazz.isInstance( t ) )
                     {
@@ -181,7 +186,8 @@ public class QI256Test extends AbstractQi4jTest
                 try
                 {
                     throw clazz.newInstance();
-                } catch (Throwable t)
+                }
+                catch( Throwable t )
                 {
                     if( clazz.isInstance( t ) )
                     {
@@ -194,100 +200,139 @@ public class QI256Test extends AbstractQi4jTest
     }
 
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
         module.addTransients( TestTransient.class );
     }
 
-    @Test(expected = TestException.class)
-    public void invokeCustomExceptionThrowingMethod() throws Throwable
+    @Test( expected = TestException.class )
+    public void invokeCustomExceptionThrowingMethod()
+        throws Throwable
     {
         this.transientBuilderFactory.newTransient( TestTransient.class ).declaredMethodThatThrowsCustomException();
     }
 
-    @Test(expected = TestException.class)
-    public void invokeDeclaredPublicMethodWhichInvokesCustomExceptionThrowingMethod() throws Throwable
+    @Test( expected = TestException.class )
+    public void invokeDeclaredPublicMethodWhichInvokesCustomExceptionThrowingMethod()
+        throws Throwable
     {
-        this.transientBuilderFactory.newTransient( TestTransient.class ).invokeDeclaredPublicMethodThatThrowsCustomException();
+        this.transientBuilderFactory
+            .newTransient( TestTransient.class )
+            .invokeDeclaredPublicMethodThatThrowsCustomException();
     }
 
-    @Test(expected = TestException.class)
-    public void invokeUndeclaredPublicMethodWhichInvokesCustomExceptionThrowingMethod() throws Throwable
+    @Test( expected = TestException.class )
+    public void invokeUndeclaredPublicMethodWhichInvokesCustomExceptionThrowingMethod()
+        throws Throwable
     {
-        this.transientBuilderFactory.newTransient( TestTransient.class ).invokeUndeclaredPublicMethodThatThrowsCustomException();
+        this.transientBuilderFactory
+            .newTransient( TestTransient.class )
+            .invokeUndeclaredPublicMethodThatThrowsCustomException();
     }
 
-    @Test(expected = TestException.class)
-    public void invokePrivateMethodWhichInvokesCustomExceptionThrowingMethod() throws Throwable
+    @Test( expected = TestException.class )
+    public void invokePrivateMethodWhichInvokesCustomExceptionThrowingMethod()
+        throws Throwable
     {
         this.transientBuilderFactory.newTransient( TestTransient.class ).invokePrivateMethodThatThrowsCustomException();
     }
 
-    @Test(expected = TestException.class)
-    public void invokeProtectedMethodWhichInvokesCustomExceptionThrowingMethod() throws Throwable
+    @Test( expected = TestException.class )
+    public void invokeProtectedMethodWhichInvokesCustomExceptionThrowingMethod()
+        throws Throwable
     {
-        this.transientBuilderFactory.newTransient( TestTransient.class ).invokeProtectedMethodThatThrowsCustomException();
+        this.transientBuilderFactory
+            .newTransient( TestTransient.class )
+            .invokeProtectedMethodThatThrowsCustomException();
     }
 
-
-    @Test(expected = IllegalArgumentException.class)
-    public void invokeBuiltinInheritedExceptionThrowingMethod() throws Throwable
+    @Test( expected = IllegalArgumentException.class )
+    public void invokeBuiltinInheritedExceptionThrowingMethod()
+        throws Throwable
     {
-        this.transientBuilderFactory.newTransient( TestTransient.class ).declaredMethodThatThrowsBuiltinInheritedException();
+        this.transientBuilderFactory
+            .newTransient( TestTransient.class )
+            .declaredMethodThatThrowsBuiltinInheritedException();
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void invokeDeclaredPublicMethodWhichInvokesBuiltinInheritedExceptionThrowingMethod() throws Throwable
+    @Test( expected = IllegalArgumentException.class )
+    public void invokeDeclaredPublicMethodWhichInvokesBuiltinInheritedExceptionThrowingMethod()
+        throws Throwable
     {
-        this.transientBuilderFactory.newTransient( TestTransient.class ).invokeDeclaredPublicMethodThatThrowsBuiltinInheritedException();
+        this.transientBuilderFactory
+            .newTransient( TestTransient.class )
+            .invokeDeclaredPublicMethodThatThrowsBuiltinInheritedException();
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void invokeUndeclaredPublicMethodWhichInvokesBuiltinInheritedExceptionThrowingMethod() throws Throwable
+    @Test( expected = IllegalArgumentException.class )
+    public void invokeUndeclaredPublicMethodWhichInvokesBuiltinInheritedExceptionThrowingMethod()
+        throws Throwable
     {
-        this.transientBuilderFactory.newTransient( TestTransient.class ).invokeUndeclaredPublicMethodThatThrowsBuiltinInheritedException();
+        this.transientBuilderFactory
+            .newTransient( TestTransient.class )
+            .invokeUndeclaredPublicMethodThatThrowsBuiltinInheritedException();
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void invokePrivateMethodWhichInvokesBuiltinInheritedExceptionThrowingMethod() throws Throwable
+    @Test( expected = IllegalArgumentException.class )
+    public void invokePrivateMethodWhichInvokesBuiltinInheritedExceptionThrowingMethod()
+        throws Throwable
     {
-        this.transientBuilderFactory.newTransient( TestTransient.class ).invokePrivateMethodThatThrowsBuiltinInheritedException();
+        this.transientBuilderFactory
+            .newTransient( TestTransient.class )
+            .invokePrivateMethodThatThrowsBuiltinInheritedException();
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void invokeProtectedMethodWhichInvokesBuiltinInheritedExceptionThrowingMethod() throws Throwable
+    @Test( expected = IllegalArgumentException.class )
+    public void invokeProtectedMethodWhichInvokesBuiltinInheritedExceptionThrowingMethod()
+        throws Throwable
     {
-        this.transientBuilderFactory.newTransient( TestTransient.class ).invokeProtectedMethodThatThrowsBuiltinInheritedException();
+        this.transientBuilderFactory
+            .newTransient( TestTransient.class )
+            .invokeProtectedMethodThatThrowsBuiltinInheritedException();
     }
 
-
-    @Test(expected = RuntimeException.class)
-    public void invokeBuiltinExceptionThrowingMethod() throws Throwable
+    @Test( expected = RuntimeException.class )
+    public void invokeBuiltinExceptionThrowingMethod()
+        throws Throwable
     {
-        this.transientBuilderFactory.newTransient( TestTransient.class ).declaredMethodThatThrowsBuiltinInheritedException();
+        this.transientBuilderFactory
+            .newTransient( TestTransient.class )
+            .declaredMethodThatThrowsBuiltinInheritedException();
     }
 
-    @Test(expected = RuntimeException.class)
-    public void invokeDeclaredPublicMethodWhichInvokesBuiltinExceptionThrowingMethod() throws Throwable
+    @Test( expected = RuntimeException.class )
+    public void invokeDeclaredPublicMethodWhichInvokesBuiltinExceptionThrowingMethod()
+        throws Throwable
     {
-        this.transientBuilderFactory.newTransient( TestTransient.class ).invokeDeclaredPublicMethodThatThrowsBuiltinInheritedException();
+        this.transientBuilderFactory
+            .newTransient( TestTransient.class )
+            .invokeDeclaredPublicMethodThatThrowsBuiltinInheritedException();
     }
 
-    @Test(expected = RuntimeException.class)
-    public void invokeUndeclaredPublicMethodWhichInvokesBuiltinExceptionThrowingMethod() throws Throwable
+    @Test( expected = RuntimeException.class )
+    public void invokeUndeclaredPublicMethodWhichInvokesBuiltinExceptionThrowingMethod()
+        throws Throwable
     {
-        this.transientBuilderFactory.newTransient( TestTransient.class ).invokeUndeclaredPublicMethodThatThrowsBuiltinInheritedException();
+        this.transientBuilderFactory
+            .newTransient( TestTransient.class )
+            .invokeUndeclaredPublicMethodThatThrowsBuiltinInheritedException();
     }
 
-    @Test(expected = RuntimeException.class)
-    public void invokePrivateMethodWhichInvokesBuiltinExceptionThrowingMethod() throws Throwable
+    @Test( expected = RuntimeException.class )
+    public void invokePrivateMethodWhichInvokesBuiltinExceptionThrowingMethod()
+        throws Throwable
     {
-        this.transientBuilderFactory.newTransient( TestTransient.class ).invokePrivateMethodThatThrowsBuiltinInheritedException();
+        this.transientBuilderFactory
+            .newTransient( TestTransient.class )
+            .invokePrivateMethodThatThrowsBuiltinInheritedException();
     }
 
-    @Test(expected = RuntimeException.class)
-    public void invokeProtectedMethodWhichInvokesBuiltinExceptionThrowingMethod() throws Throwable
+    @Test( expected = RuntimeException.class )
+    public void invokeProtectedMethodWhichInvokesBuiltinExceptionThrowingMethod()
+        throws Throwable
     {
-        this.transientBuilderFactory.newTransient( TestTransient.class ).invokeProtectedMethodThatThrowsBuiltinInheritedException();
+        this.transientBuilderFactory
+            .newTransient( TestTransient.class )
+            .invokeProtectedMethodThatThrowsBuiltinInheritedException();
     }
 }

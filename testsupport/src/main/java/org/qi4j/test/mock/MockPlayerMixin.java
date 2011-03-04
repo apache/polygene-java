@@ -45,7 +45,7 @@ public class MockPlayerMixin
      * Finds a registered mock that can handle the method invocation and delegate to it. If there is no such mock throws
      * IllegalStateException.
      *
-     * @see java.lang.reflect.InvocationHandler#invoke(Object,java.lang.reflect.Method,Object[])
+     * @see java.lang.reflect.InvocationHandler#invoke(Object, java.lang.reflect.Method, Object[])
      */
     public Object invoke( final Object proxy, final Method method, final Object[] args )
         throws Throwable

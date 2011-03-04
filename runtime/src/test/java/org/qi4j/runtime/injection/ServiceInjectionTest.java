@@ -51,8 +51,12 @@ public class ServiceInjectionTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.addServices( MyServiceComposite.class ).identifiedBy( "Foo" ).setMetaInfo( new ServiceName( "Foo" ) );
-                module.addServices( MyServiceComposite.class ).identifiedBy( "Bar" ).setMetaInfo( new ServiceName( "Bar" ) );
+                module.addServices( MyServiceComposite.class )
+                    .identifiedBy( "Foo" )
+                    .setMetaInfo( new ServiceName( "Foo" ) );
+                module.addServices( MyServiceComposite.class )
+                    .identifiedBy( "Bar" )
+                    .setMetaInfo( new ServiceName( "Bar" ) );
                 module.addObjects( ServiceUser.class );
             }
         };
@@ -81,7 +85,9 @@ public class ServiceInjectionTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.addServices( MyServiceComposite.class ).identifiedBy( "Foo" ).setMetaInfo( new ServiceName( "Foo" ) );
+                module.addServices( MyServiceComposite.class )
+                    .identifiedBy( "Foo" )
+                    .setMetaInfo( new ServiceName( "Foo" ) );
                 module.addObjects( ServiceUser.class );
 
                 ModuleAssembly module2 = module.layerAssembly().moduleAssembly( "Other module" );
@@ -104,7 +110,9 @@ public class ServiceInjectionTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.addServices( MyServiceComposite.class ).identifiedBy( "Foo" ).setMetaInfo( new ServiceName( "Foo" ) );
+                module.addServices( MyServiceComposite.class )
+                    .identifiedBy( "Foo" )
+                    .setMetaInfo( new ServiceName( "Foo" ) );
                 LayerAssembly layerAssembly = module.layerAssembly();
                 module.addObjects( ServiceUser.class );
 
@@ -170,10 +178,12 @@ public class ServiceInjectionTest
         @Service
         Iterable<ServiceReference<MyService>> serviceRefs;
 
-        @Service @IdentifiedBy("Bar")
+        @Service
+        @IdentifiedBy( "Bar" )
         ServiceReference<MyService> qualifiedService;
 
-        @Service @IdentifiedBy("Bar")
+        @Service
+        @IdentifiedBy( "Bar" )
         Iterable<ServiceReference<MyService>> qualifiedServiceRefs;
 
         @Optional
@@ -218,7 +228,7 @@ public class ServiceInjectionTest
             }
             return str;
         }
-        
+
         public String testQualifier()
         {
             return qualifiedService.metaInfo( ServiceName.class ).getName();
@@ -236,7 +246,7 @@ public class ServiceInjectionTest
     }
 
     @Qualifier( NamedSelector.class )
-    @Retention( RetentionPolicy.RUNTIME)
+    @Retention( RetentionPolicy.RUNTIME )
     public @interface Named
     {
         public abstract String value();
@@ -252,7 +262,7 @@ public class ServiceInjectionTest
                 public boolean satisfiedBy( ServiceReference<?> service )
                 {
                     ServiceName serviceName = service.metaInfo( ServiceName.class );
-                    return ( serviceName != null && serviceName.getName().equals(named.value() ));
+                    return ( serviceName != null && serviceName.getName().equals( named.value() ) );
                 }
             };
         }

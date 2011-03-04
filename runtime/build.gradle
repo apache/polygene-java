@@ -1,3 +1,6 @@
+
+jar { manifest { name = "Qi4j Core Runtime"}}
+
 dependencies {
   provided libraries.osgi_core
 
@@ -18,87 +21,3 @@ dependencies {
   testRuntime libraries.slf4j_simple
 }
 
-jar {
-  manifest {
-    name = "Qi4j Core Runtime"
-    instruction 'Private-Package',
-            'org.qi4j.runtime;version=' + version,
-            'org.qi4j.runtime.bootstrap;version=' + version,
-            'org.qi4j.runtime.composite;version=' + version,
-            'org.qi4j.runtime.entity;version=' + version,
-            'org.qi4j.runtime.entity.association;version=' + version,
-            'org.qi4j.runtime.injection;version=' + version,
-            'org.qi4j.runtime.injection.provider;version=' + version,
-            'org.qi4j.runtime.model;version=' + version,
-            'org.qi4j.runtime.object;version=' + version,
-            'org.qi4j.runtime.property;version=' + version,
-            'org.qi4j.runtime.query;version=' + version,
-            'org.qi4j.runtime.query.grammar.impl;version=' + version,
-            'org.qi4j.runtime.query.proxy;version=' + version,
-            'org.qi4j.runtime.service;version=' + version,
-            'org.qi4j.runtime.structure;version=' + version,
-            'org.qi4j.runtime.types;version=' + version,
-            'org.qi4j.runtime.unitofwork;version=' + version,
-            'org.qi4j.runtime.value;version=' + version
-
-    instruction 'Import-Package',
-            'org.objectweb.asm',
-            'org.objectweb.asm.commons',
-            'org.json',
-            'org.qi4j.api;version="[' + version + ',2.0]"',
-            'org.qi4j.api.common;version="[' + version + ',2.0]"',
-            'org.qi4j.api.composite;version="[' + version + ',2.0]"',
-            'org.qi4j.api.concern;version="[' + version + ',2.0]"',
-            'org.qi4j.api.concern.internal;version="[' + version + ',2.0]"',
-            'org.qi4j.api.configuration;version="[' + version + ',2.0]"',
-            'org.qi4j.api.constraint;version="[' + version + ',2.0]"',
-            'org.qi4j.api.entity;version="[' + version + ',2.0]"',
-            'org.qi4j.api.entity.association;version="[' + version + ',2.0]"',
-            'org.qi4j.api.injection;version="[' + version + ',2.0]"',
-            'org.qi4j.api.injection.scope;version="[' + version + ',2.0]"',
-            'org.qi4j.api.mixin;version="[' + version + ',2.0]"',
-            'org.qi4j.api.object;version="[' + version + ',2.0]"',
-            'org.qi4j.api.property;version="[' + version + ',2.0]"',
-            'org.qi4j.api.query;version="[' + version + ',2.0]"',
-            'org.qi4j.api.query.grammar;version="[' + version + ',2.0]"',
-            'org.qi4j.api.service;version="[' + version + ',2.0]"',
-            'org.qi4j.api.service.qualifier;version="[' + version + ',2.0]"',
-            'org.qi4j.api.sideeffect;version="[' + version + ',2.0]"',
-            'org.qi4j.api.sideeffect.internal;version="[' + version + ',2.0]"',
-            'org.qi4j.api.specification;version="[' + version + ',2.0]"',
-            'org.qi4j.api.structure;version="[' + version + ',2.0]"',
-            'org.qi4j.api.unitofwork;version="[' + version + ',2.0]"',
-            'org.qi4j.api.usecase;version="[' + version + ',2.0]"',
-            'org.qi4j.api.util;version="[' + version + ',2.0]"',
-            'org.qi4j.api.value;version="[' + version + ',2.0]"',
-            'org.qi4j.bootstrap;version="[' + version + ',2.0]"',
-            'org.qi4j.spi;version="[' + version + ',2.0]"',
-            'org.qi4j.spi.composite;version="[' + version + ',2.0]"',
-            'org.qi4j.spi.concern;version="[' + version + ',2.0]"',
-            'org.qi4j.spi.constraint;version="[' + version + ',2.0]"',
-            'org.qi4j.spi.entity;version="[' + version + ',2.0]"',
-            'org.qi4j.spi.entity.association;version="[' + version + ',2.0]"',
-            'org.qi4j.spi.entitystore.helpers;version="[' + version + ',2.0]"',
-            'org.qi4j.spi.mixin;version="[' + version + ',2.0]"',
-            'org.qi4j.spi.object;version="[' + version + ',2.0]"',
-            'org.qi4j.spi.property;version="[' + version + ',2.0]"',
-            'org.qi4j.spi.query;version="[' + version + ',2.0]"',
-            'org.qi4j.spi.service;version="[' + version + ',2.0]"',
-            'org.qi4j.spi.service.importer;version="[' + version + ',2.0]"',
-            'org.qi4j.spi.sideeffect;version="[' + version + ',2.0]"',
-            'org.qi4j.spi.structure;version="[' + version + ',2.0]"',
-            'org.qi4j.spi.util;version="[' + version + ',2.0]"',
-            'org.qi4j.spi.entitystore;version="[' + version + ',2.0]"',
-            'org.qi4j.spi.value;version="[' + version + ',2.0]"',
-            'org.slf4j;version="[1.5,2.0)"',
-            'org.xml.sax',
-            'org.xml.sax.helpers'
-
-    instruction 'Ignore-Package',
-            'org.apache.tools.ant',
-            'org.apache.tools.ant.types',
-            'org.codehaus.aspectwerkz.hook',
-            'com_cenqua_clover'
-
-  }
-}

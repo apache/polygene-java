@@ -153,7 +153,8 @@ public class JSONMapEntityStoreMixin
     }
 
     public StateCommitter applyChanges( final EntityStoreUnitOfWork unitOfWork, final Iterable<EntityState> state,
-                                        final String version, final long lastModified )
+                                        final String version, final long lastModified
+    )
         throws EntityStoreException
     {
         return new StateCommitter()
@@ -224,11 +225,13 @@ public class JSONMapEntityStoreMixin
     {
         return new Input<EntityState, EntityStoreException>()
         {
-            public <ReceiverThrowableType extends Throwable> void transferTo( Output<EntityState, ReceiverThrowableType> output ) throws EntityStoreException, ReceiverThrowableType
+            public <ReceiverThrowableType extends Throwable> void transferTo( Output<EntityState, ReceiverThrowableType> output )
+                throws EntityStoreException, ReceiverThrowableType
             {
                 output.receiveFrom( new Sender<EntityState, EntityStoreException>()
                 {
-                    public <ReceiverThrowableType extends Throwable> void sendTo( final Receiver<EntityState, ReceiverThrowableType> receiver ) throws ReceiverThrowableType, EntityStoreException
+                    public <ReceiverThrowableType extends Throwable> void sendTo( final Receiver<EntityState, ReceiverThrowableType> receiver )
+                        throws ReceiverThrowableType, EntityStoreException
                     {
                         Usecase usecase = UsecaseBuilder
                             .buildUsecase( "qi4j.entitystore.entitystates" )
@@ -244,42 +247,48 @@ public class JSONMapEntityStoreMixin
                         {
                             mapEntityStore.entityStates().transferTo( new Output<Reader, ReceiverThrowableType>()
                             {
-                                public <SenderThrowableType extends Throwable> void receiveFrom( Sender<Reader, SenderThrowableType> sender ) throws ReceiverThrowableType, SenderThrowableType
+                                public <SenderThrowableType extends Throwable> void receiveFrom( Sender<Reader, SenderThrowableType> sender )
+                                    throws ReceiverThrowableType, SenderThrowableType
                                 {
                                     sender.sendTo( new Receiver<Reader, ReceiverThrowableType>()
                                     {
-                                        public void receive( Reader item ) throws ReceiverThrowableType
+                                        public void receive( Reader item )
+                                            throws ReceiverThrowableType
                                         {
                                             final EntityState entity = readEntityState( uow, item );
-                                            if (entity.status() == EntityStatus.UPDATED)
+                                            if( entity.status() == EntityStatus.UPDATED )
                                             {
                                                 migrated.add( entity );
 
                                                 // Synch back 100 at a time
-                                                if (migrated.size() > 100)
+                                                if( migrated.size() > 100 )
+                                                {
                                                     synchMigratedEntities( migrated );
+                                                }
                                             }
                                             receiver.receive( entity );
                                         }
-                                    });
+                                    } );
 
                                     // Synch any remaining migrated entities
-                                    if (!migrated.isEmpty())
+                                    if( !migrated.isEmpty() )
+                                    {
                                         synchMigratedEntities( migrated );
+                                    }
                                 }
-                            });
-
-                        } catch (IOException e)
+                            } );
+                        }
+                        catch( IOException e )
                         {
-                            throw new EntityStoreException(e);
+                            throw new EntityStoreException( e );
                         }
                     }
-                });
+                } );
             }
         };
     }
 
-    private void synchMigratedEntities( final List<EntityState> migratedEntities)
+    private void synchMigratedEntities( final List<EntityState> migratedEntities )
     {
         try
         {
@@ -288,7 +297,7 @@ public class JSONMapEntityStoreMixin
                 public void visitMap( MapEntityStore.MapChanger changer )
                     throws IOException
                 {
-                    for (EntityState migratedEntity : migratedEntities)
+                    for( EntityState migratedEntity : migratedEntities )
                     {
                         JSONEntityState state = (JSONEntityState) migratedEntity;
                         Writer writer = changer.updateEntity( state.identity(),
@@ -299,7 +308,8 @@ public class JSONMapEntityStoreMixin
                 }
             } );
             migratedEntities.clear();
-        } catch (IOException e)
+        }
+        catch( IOException e )
         {
             logger.warn( "Could not store migrated entites", e );
         }
@@ -427,5 +437,4 @@ public class JSONMapEntityStoreMixin
         CacheOptions cacheOptions = ( unitOfWork ).usecase().metaInfo( CacheOptions.class );
         return cacheOptions == null || cacheOptions.cacheOnRead();
     }
-
 }

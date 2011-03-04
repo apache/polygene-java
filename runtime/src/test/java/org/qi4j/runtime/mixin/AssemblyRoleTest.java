@@ -32,10 +32,10 @@ import static org.junit.Assert.assertThat;
  * Test of declaring role in assembly
  */
 public class AssemblyRoleTest
-        extends AbstractQi4jTest
+    extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
         new EntityTestAssembler().assemble( module );
 
@@ -60,7 +60,8 @@ public class AssemblyRoleTest
     }
 
     @Test
-    public void testAssemblyMixinsEntity() throws UnitOfWorkCompletionException
+    public void testAssemblyMixinsEntity()
+        throws UnitOfWorkCompletionException
     {
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         FooEntity entity = uow.newEntity( FooEntity.class, "123" );
@@ -72,31 +73,31 @@ public class AssemblyRoleTest
         try
         {
             assertThat( "Default mixin has executed", foo.test( "Foo", 42 ), equalTo( "Foo 42" ) );
-        } finally
+        }
+        finally
         {
             uow.discard();
         }
-
     }
 
     public interface FooComposite
-            extends TransientComposite
+        extends TransientComposite
     {
     }
 
     public interface FooComposite2
-            extends TransientComposite
+        extends TransientComposite
     {
     }
 
-    @Mixins(FooMixin.class)
+    @Mixins( FooMixin.class )
     public interface Foo
     {
         String test( String foo, int bar );
     }
 
     public static class FooMixin
-            implements Foo
+        implements Foo
     {
         public String test( String foo, int bar )
         {
@@ -105,7 +106,7 @@ public class AssemblyRoleTest
     }
 
     public static class CustomFooMixin
-            implements Foo
+        implements Foo
     {
         public String test( String foo, int bar )
         {
@@ -114,7 +115,7 @@ public class AssemblyRoleTest
     }
 
     public interface FooEntity
-            extends EntityComposite
+        extends EntityComposite
     {
 
     }

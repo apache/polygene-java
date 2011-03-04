@@ -9,7 +9,7 @@ public class MockPlayerConcern
     implements InvocationHandler
 {
     /**
-     * @see java.lang.reflect.InvocationHandler#invoke(Object,java.lang.reflect.Method,Object[])
+     * @see java.lang.reflect.InvocationHandler#invoke(Object, java.lang.reflect.Method, Object[])
      */
     public Object invoke( final Object proxy, final Method method, final Object[] args )
         throws Throwable

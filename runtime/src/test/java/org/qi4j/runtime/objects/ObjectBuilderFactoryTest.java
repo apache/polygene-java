@@ -91,7 +91,6 @@ public class ObjectBuilderFactoryTest
         assembler.objectBuilderFactory().newObject( null );
     }
 
-
     /**
      * Tests that an object builder can be created for an registered object.
      */

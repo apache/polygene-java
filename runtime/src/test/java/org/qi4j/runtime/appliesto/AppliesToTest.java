@@ -35,17 +35,17 @@ import org.qi4j.test.AbstractQi4jTest;
  * Test of the @AppliesTo annotation
  */
 public class AppliesToTest
-        extends AbstractQi4jTest
+    extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
         module.addTransients( SomeComposite.class );
     }
 
     @Test
     public void givenAnAppliesToWhenNoAnnotationExpectNoConcernInInvocationStack()
-            throws Exception
+        throws Exception
     {
         Some some = transientBuilderFactory.newTransient( Some.class );
         Assert.assertEquals( ",", some.doStuff1() );
@@ -53,7 +53,7 @@ public class AppliesToTest
 
     @Test
     public void givenAnAppliesToWhenAnnotationIsOnMixinTypeExpectConcernInInvocationStack()
-            throws Exception
+        throws Exception
     {
         Some some = transientBuilderFactory.newTransient( Some.class );
         Assert.assertEquals( ",,..", some.doStuff2() );
@@ -61,7 +61,7 @@ public class AppliesToTest
 
     @Test
     public void givenAnAppliesToWhenAnnotationIsOnMixinImplementationExpectConcernInInvocationStack()
-            throws Exception
+        throws Exception
     {
         Some some = transientBuilderFactory.newTransient( Some.class );
         Assert.assertEquals( ",", some.doStuff1() );
@@ -69,10 +69,10 @@ public class AppliesToTest
         Assert.assertEquals( ",,,", some.doStuff3() );
     }
 
-    @Concerns(MyConcern.class)
-    @Mixins(SomeMixin.class)
+    @Concerns( MyConcern.class )
+    @Mixins( SomeMixin.class )
     private interface SomeComposite
-            extends Some, TransientComposite
+        extends Some, TransientComposite
     {
     }
 
@@ -86,10 +86,10 @@ public class AppliesToTest
         String doStuff3();
     }
 
-    @AppliesTo(Foo.class)
+    @AppliesTo( Foo.class )
     public static class MyConcern
-            extends ConcernOf<Some>
-            implements Some
+        extends ConcernOf<Some>
+        implements Some
     {
 
         public String doStuff1()
@@ -109,7 +109,7 @@ public class AppliesToTest
     }
 
     public static class SomeMixin
-            implements Some
+        implements Some
     {
 
         public String doStuff1()
@@ -129,7 +129,7 @@ public class AppliesToTest
         }
     }
 
-    @Retention(RetentionPolicy.RUNTIME)
+    @Retention( RetentionPolicy.RUNTIME )
     private @interface Foo
     {
     }

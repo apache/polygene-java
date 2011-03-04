@@ -110,7 +110,7 @@ public class JSONWriter
     {
         this.comma = false;
         this.mode = 'i';
-        this.stack = new JSONObject[maxdepth];
+        this.stack = new JSONObject[ maxdepth ];
         this.top = 0;
         this.writer = w;
     }

@@ -34,10 +34,10 @@ import org.qi4j.test.indexing.model.entities.FemaleEntity;
 import org.qi4j.test.indexing.model.entities.MaleEntity;
 
 /**
- * 
  * @author Stanislav Muhametsin
  */
-public class AbstractAnyQueryTest extends AbstractQi4jTest
+public class AbstractAnyQueryTest
+    extends AbstractQi4jTest
 {
     protected UnitOfWork unitOfWork;
 
@@ -45,7 +45,7 @@ public class AbstractAnyQueryTest extends AbstractQi4jTest
         throws AssemblyException
     {
         // @formatter:off
-        module.addEntities( 
+        module.addEntities(
             MaleEntity.class,
             FemaleEntity.class,
             CityEntity.class,

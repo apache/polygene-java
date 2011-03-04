@@ -29,7 +29,7 @@ public class UnresolvableMockResolver
     /**
      * Does not match any method invocation. Always returns null.
      *
-     * @see MockResolver#getInvocationHandler(Object,java.lang.reflect.Method,Object[])
+     * @see MockResolver#getInvocationHandler(Object, java.lang.reflect.Method, Object[])
      */
     public InvocationHandler getInvocationHandler( final Object proxy, final Method method, final Object[] args )
     {

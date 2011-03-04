@@ -129,7 +129,6 @@ public class AppliesToOrConditionQI241Test
          * Only for assertion purpose.
          */
         boolean concernHasBeenPlayed();
-
     }
 
     public static abstract class SomeBaseMixin
@@ -230,7 +229,5 @@ public class AppliesToOrConditionQI241Test
             someServiceComposite.playConcern();
             return next.invoke( proxy, method, args );
         }
-
     }
-
 }

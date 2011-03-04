@@ -30,10 +30,10 @@ import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**
- * 
  * @author Stanislav Muhametsin
  */
-public class QI273Test extends AbstractQi4jTest
+public class QI273Test
+    extends AbstractQi4jTest
 {
 
     public static interface RoleA
@@ -46,7 +46,7 @@ public class QI273Test extends AbstractQi4jTest
         public Property<String> theProperty();
     }
 
-    @Mixins(SomeDomainEntityMixin.class)
+    @Mixins( SomeDomainEntityMixin.class )
     public static interface SomeDomainEntity
         extends EntityComposite
     {
@@ -99,5 +99,4 @@ public class QI273Test extends AbstractQi4jTest
         uow.complete();
 */
     }
-
 }

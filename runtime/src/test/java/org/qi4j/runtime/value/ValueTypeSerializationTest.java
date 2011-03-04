@@ -70,9 +70,9 @@ public class ValueTypeSerializationTest
         proto.number().set( 42L );
         proto.date().set( new Date() );
         proto.entityReference().set( EntityReference.parseEntityReference( "12345" ) );
-        proto.stringIntMap().get().put("foo", 42);
-        proto.stringIntMap().get().put("bar", 67);
-        proto.stringValueMap().get().put("foo", valueBuilder.newInstance());
+        proto.stringIntMap().get().put( "foo", 42 );
+        proto.stringIntMap().get().put( "bar", 67 );
+        proto.stringValueMap().get().put( "foo", valueBuilder.newInstance() );
         proto.another().set( valueBuilder.newInstance() );
         proto.serializable().set( new SerializableObject() );
         proto.foo().set( valueBuilderFactory.newValue( FooValue.class ) );
@@ -153,10 +153,10 @@ public class ValueTypeSerializationTest
         Property<List<String>> stringList();
 
         @UseDefaults
-        Property<Map<String,Integer>> stringIntMap();
+        Property<Map<String, Integer>> stringIntMap();
 
         @UseDefaults
-        Property<Map<String,AnotherValue>> stringValueMap();
+        Property<Map<String, AnotherValue>> stringValueMap();
 
         @Optional
         Property<AnotherValue> another();
