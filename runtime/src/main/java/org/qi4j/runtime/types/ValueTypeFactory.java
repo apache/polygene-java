@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.property.GenericPropertyInfo;
@@ -45,124 +46,141 @@ public class ValueTypeFactory
         return instance;
     }
 
-    public ValueType newValueType( Type type, Class declaringClass, Class compositeType )
+    public ValueType newValueType(Type type, Class declaringClass, Class compositeType)
     {
-        return newValueType( null, type, declaringClass, compositeType );
+        return newValueType(null, type, declaringClass, compositeType);
     }
 
-    private ValueType newValueType( Map<Type, ValueType> typeMap, Type type, Class declaringClass, Class compositeType )
+    private ValueType newValueType(Map<Type, ValueType> typeMap, Type type, Class declaringClass, Class compositeType)
     {
         ValueType valueType = null;
-        if( CollectionType.isCollection( type ) )
+        if (CollectionType.isCollection(type))
         {
-            if( type instanceof ParameterizedType )
+            if (type instanceof ParameterizedType)
             {
                 ParameterizedType pt = (ParameterizedType) type;
-                Type collectionType = pt.getActualTypeArguments()[ 0 ];
-                if( collectionType instanceof TypeVariable )
+                Type collectionType = pt.getActualTypeArguments()[0];
+                if (collectionType instanceof TypeVariable)
                 {
                     TypeVariable collectionTypeVariable = (TypeVariable) collectionType;
-                    collectionType = Classes.resolveTypeVariable( collectionTypeVariable, declaringClass, compositeType );
+                    collectionType = Classes.resolveTypeVariable(collectionTypeVariable, declaringClass, compositeType);
                 }
-                ValueType collectedType = newValueType( typeMap, collectionType, declaringClass, compositeType );
-                valueType = new CollectionType( nameOf( type ), collectedType );
-            }
-            else
+                ValueType collectedType = newValueType(typeMap, collectionType, declaringClass, compositeType);
+                valueType = new CollectionType(nameOf(type), collectedType);
+            } else
             {
-                valueType = new CollectionType( nameOf( type ), newValueType( typeMap, Object.class, declaringClass, compositeType ) );
+                valueType = new CollectionType(nameOf(type), newValueType(typeMap, Object.class, declaringClass, compositeType));
             }
-        }
-        else if( ValueCompositeType.isValueComposite( type ) )
+        } else if (MapType.isMap(type))
         {
-            if( typeMap != null )
+            if (type instanceof ParameterizedType)
             {
-                valueType = typeMap.get( type );
+                ParameterizedType pt = (ParameterizedType) type;
+                Type keyType = pt.getActualTypeArguments()[0];
+                if (keyType instanceof TypeVariable)
+                {
+                    TypeVariable keyTypeVariable = (TypeVariable) keyType;
+                    keyType = Classes.resolveTypeVariable(keyTypeVariable, declaringClass, compositeType);
+                }
+                ValueType keyedType = newValueType(typeMap, keyType, declaringClass, compositeType);
+
+                Type valType = pt.getActualTypeArguments()[1];
+                if (valType instanceof TypeVariable)
+                {
+                    TypeVariable valueTypeVariable = (TypeVariable) valType;
+                    valType = Classes.resolveTypeVariable(valueTypeVariable, declaringClass, compositeType);
+                }
+                ValueType valuedType = newValueType(typeMap, valType, declaringClass, compositeType);
+
+
+                valueType = new MapType(nameOf(type), keyedType, valuedType);
+            } else
+            {
+                valueType = new MapType(nameOf(type), newValueType(typeMap, Object.class, declaringClass, compositeType), newValueType(typeMap, Object.class, declaringClass, compositeType));
+            }
+        } else if (ValueCompositeType.isValueComposite(type))
+        {
+            if (typeMap != null)
+            {
+                valueType = typeMap.get(type);
             }
 
-            if( valueType == null )
+            if (valueType == null)
             {
-                Class valueTypeClass = Classes.getRawClass( type );
+                Class valueTypeClass = Classes.getRawClass(type);
 
                 List<PropertyType> types = new ArrayList<PropertyType>();
-                valueType = new ValueCompositeType( nameOf( valueTypeClass ), types );
-                if( typeMap == null )
+                valueType = new ValueCompositeType(nameOf(valueTypeClass), types);
+                if (typeMap == null)
                 {
                     typeMap = new HashMap<Type, ValueType>();
                 }
-                typeMap.put( type, valueType );
+                typeMap.put(type, valueType);
 
-                addProperties( typeMap, valueTypeClass, compositeType, types );
+                addProperties(typeMap, valueTypeClass, compositeType, types);
 
-                Collections.sort( types ); // Sort by property name
+                Collections.sort(types); // Sort by property name
             }
-        }
-        else if( EnumType.isEnum( type ) )
+        } else if (EnumType.isEnum(type))
         {
-            valueType = new EnumType( nameOf( type ) );
-        }
-        else if( StringType.isString( type ) )
+            valueType = new EnumType(nameOf(type));
+        } else if (StringType.isString(type))
         {
             valueType = new StringType();
-        }
-        else if( NumberType.isNumber( type ) )
+        } else if (NumberType.isNumber(type))
         {
-            valueType = new NumberType( nameOf( type ) );
-        }
-        else if( BooleanType.isBoolean( type ) )
+            valueType = new NumberType(nameOf(type));
+        } else if (BooleanType.isBoolean(type))
         {
             valueType = new BooleanType();
-        }
-        else if( DateType.isDate( type ) )
+        } else if (DateType.isDate(type))
         {
             valueType = new DateType();
-        }
-        else if( EntityReferenceType.isEntityReference( type ) )
+        } else if (EntityReferenceType.isEntityReference(type))
         {
-            valueType = new EntityReferenceType( nameOf( type ) );
-        }
-        else
+            valueType = new EntityReferenceType(nameOf(type));
+        } else
         {
             // TODO: shouldn't we check that the type is a Serializable?
-            valueType = new SerializableType( nameOf( type ) );
+            valueType = new SerializableType(nameOf(type));
         }
 
         return valueType;
     }
 
-    private void addProperties( Map<Type, ValueType> typeMap,
-                                Class valueTypeClass,
-                                Class compositeType,
-                                List<PropertyType> types
+    private void addProperties(Map<Type, ValueType> typeMap,
+                               Class valueTypeClass,
+                               Class compositeType,
+                               List<PropertyType> types
     )
     {
-        for( Method method : valueTypeClass.getDeclaredMethods() )
+        for (Method method : valueTypeClass.getDeclaredMethods())
         {
-            Type propType = GenericPropertyInfo.getPropertyType( method );
-            if( propType != null )
+            Type propType = GenericPropertyInfo.getPropertyType(method);
+            if (propType != null)
             {
-                Queryable queryableAnnotation = method.getAnnotation( Queryable.class );
+                Queryable queryableAnnotation = method.getAnnotation(Queryable.class);
                 boolean queryable = queryableAnnotation == null || queryableAnnotation.value();
-                ValueType propValueType = newValueType( typeMap, propType, valueTypeClass, compositeType );
-                PropertyTypeImpl propertyType = new PropertyTypeImpl( QualifiedName.fromMethod( method ), propValueType, queryable, PropertyTypeImpl.PropertyTypeEnum.IMMUTABLE );
-                types.add( propertyType );
+                ValueType propValueType = newValueType(typeMap, propType, valueTypeClass, compositeType);
+                PropertyTypeImpl propertyType = new PropertyTypeImpl(QualifiedName.fromMethod(method), propValueType, queryable, PropertyTypeImpl.PropertyTypeEnum.IMMUTABLE);
+                types.add(propertyType);
             }
         }
 
         // Add methods from subinterface
-        for( Type subType : valueTypeClass.getGenericInterfaces() )
+        for (Type subType : valueTypeClass.getGenericInterfaces())
         {
             // Handles generic type variables
             Class subClass;
-            if( subType instanceof ParameterizedType )
+            if (subType instanceof ParameterizedType)
             {
-                subClass = (Class) ( (ParameterizedType) subType ).getRawType();
-            }
-            else
+                subClass = (Class) ((ParameterizedType) subType).getRawType();
+            } else
             {
                 subClass = (Class) subType;
             }
 
-            addProperties( typeMap, subClass, valueTypeClass, types );
+            addProperties(typeMap, subClass, valueTypeClass, types);
         }
     }
 }
