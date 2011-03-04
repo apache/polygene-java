@@ -17,6 +17,8 @@ package org.qi4j.runtime.value;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+
 import org.junit.Test;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.UseDefaults;
@@ -33,7 +35,7 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 /**
- * Tests for ValueComposites
+ * Tests for ValueType serialization and deserialization
  */
 public class ValueTypeSerializationTest
     extends AbstractQi4jTest
@@ -68,6 +70,9 @@ public class ValueTypeSerializationTest
         proto.number().set( 42L );
         proto.date().set( new Date() );
         proto.entityReference().set( EntityReference.parseEntityReference( "12345" ) );
+        proto.stringIntMap().get().put("foo", 42);
+        proto.stringIntMap().get().put("bar", 67);
+        proto.stringValueMap().get().put("foo", valueBuilder.newInstance());
         proto.another().set( valueBuilder.newInstance() );
         proto.serializable().set( new SerializableObject() );
         proto.foo().set( valueBuilderFactory.newValue( FooValue.class ) );
@@ -77,11 +82,13 @@ public class ValueTypeSerializationTest
         proto.explicit().set( "foobar" );
         SomeValue some = builder.newInstance();
 
+        // Serialize
         String json = some.toJSON();
 
         LoggerFactory.getLogger( getClass() ).info( some.string().get() );
         LoggerFactory.getLogger( getClass() ).info( json );
 
+        // Deserialize
         SomeValue some2 = valueBuilderFactory.newValueFromJSON( SomeValue.class, json );
 
         // Test date formats
@@ -144,6 +151,12 @@ public class ValueTypeSerializationTest
 
         @UseDefaults
         Property<List<String>> stringList();
+
+        @UseDefaults
+        Property<Map<String,Integer>> stringIntMap();
+
+        @UseDefaults
+        Property<Map<String,AnotherValue>> stringValueMap();
 
         @Optional
         Property<AnotherValue> another();
