@@ -1,3 +1,8 @@
+
+description = "Qi4j SQL EntityStore Extension"
+
+jar { manifest { name = "Qi4j Extension - EntityStore - SQL" }}
+
 javasqlgeneratorVersion='0.2'
 
 dependencies {
@@ -14,16 +19,4 @@ dependencies {
   testRuntime(libraries.asm)
   testRuntime(libraries.asm_commons)
   testRuntime(libraries.slf4j_simple)
-}
-
-jar {
-  manifest {
-    symbolicName = 'org.qi4j.entitystore.sql'
-    description = "Qi4j SQL EntityStore Extension"
-    name = "Qi4j Extension - EntityStore - SQL"
-    instruction 'Export-Package', 
-			symbolicName +';version=' + version
-    instruction 'Private-Package', symbolicName + '.internal'
-    instruction 'Import-Package', '*'
-  }
 }

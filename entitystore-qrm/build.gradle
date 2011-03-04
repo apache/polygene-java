@@ -1,17 +1,20 @@
-derbyVersion='10.5.3.0_1'
+
+description = "Qi4j QRM EntityStore Extension"
+
+jar { manifest { name = "Qi4j Extension - EntityStore - QRM" }}
 
 dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.api"))
   compile(project(":org.qi4j.core:org.qi4j.core.spi"))
   compile(libraries.slf4j_api)
-  compile('org.apache.ibatis:ibatis-sqlmap:2.3.0')
-  compile('org.hibernate:hibernate:3.2.7.ga')
-  compile('commons-logging:commons-logging:1.1')
+  compile("org.apache.ibatis:ibatis-sqlmap:$ibatisVersion")
+  compile("org.hibernate:hibernate:$hibernateVersion")
+  compile("commons-logging:commons-logging:$jclVersion")
   runtime('javax.transaction:jta:1.1')
   testCompile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
-  testCompile('org.apache.derby:derby:' + derbyVersion)
-  testCompile('org.apache.derby:derbyclient:' + derbyVersion)
-  testCompile('org.apache.derby:derbynet:' + derbyVersion)
+  testCompile("org.apache.derby:derby:$derbyVersion")
+  testCompile("org.apache.derby:derbyclient:$derbyVersion")
+  testCompile("org.apache.derby:derbynet:$derbyVersion")
   testCompile(libraries.junit)
   testCompile(libraries.jmock)
   testRuntime(libraries.slf4j_simple)
@@ -21,15 +24,3 @@ dependencies {
   testRuntime(libraries.asm_commons)
 }
 
-jar {
-  manifest {
-    symbolicName='org.qi4j.entitystore.qrm'
-    description = "Qi4j QRM EntityStore Extension"
-    name = "Qi4j Extension - EntityStore - QRM"
-    instruction 'Export-Package', symbolicName +';version=' + version
-    instruction 'Private-Package', 
-				symbolicName + '.internal',
-				symbolicName + '.dbInitializer'	
-    instruction 'Import-Package', '*'
-  }
-}

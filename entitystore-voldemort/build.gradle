@@ -1,3 +1,6 @@
+description = "Qi4j Voldemort EntityStore Extension"
+
+jar { manifest { name = "Qi4j Extension - EntityStore - Voldemort" }}
 
 repositories {
   mavenRepo name: 'clojars-repo', urls: 'http://clojars.org/repo'
@@ -30,15 +33,3 @@ dependencies {
   testRuntime(libraries.slf4j_simple)
 }
 
-jar {
-  manifest {
-    symbolicName='org.qi4j.entitystore.voldemort'
-    description = "Qi4j Voldemort EntityStore Extension"
-    name = "Qi4j Extension - EntityStore - Voldemort"
-    instruction 'Export-Package', 
-				symbolicName +';version=' + version,
-				symbolicName +'.assembly;version=' + version
-    instruction 'Private-Package', symbolicName + '.internal'
-    instruction 'Import-Package', '*'
-  }
-}

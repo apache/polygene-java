@@ -1,5 +1,11 @@
+
+description = "Qi4j SQL Indexing Extension"
+
+jar {manifest {name = "Qi4j Extension - Indexing - SQL"}}
+
 javasqlgeneratorVersion='0.2'
-postgresqlVersion='8.4-701.jdbc4' 
+postgresqlVersion='8.4-701.jdbc4'
+
 dependencies {
   compile(project(':org.qi4j.extensions:org.qi4j.extension.reindexer'))
   compile(project(":org.qi4j.core:org.qi4j.core.api"))
@@ -16,15 +22,4 @@ dependencies {
   testRuntime(libraries.slf4j_simple)
   testRuntime("postgresql:postgresql:$postgresqlVersion")
   testRuntime("org.java-sql-generator.implementation:java-sql-generator-implementation:$javasqlgeneratorVersion")
-}
-
-jar {
-  manifest {
-    symbolicName='org.qi4j.indexing.sql'
-    description = "Qi4j SQL Indexing Extension"
-    name = "Qi4j Extension - Indexing - SQL"
-    instruction 'Export-Package', symbolicName +';version=' + version
-    instruction 'Private-Package', symbolicName + '.internal'
-    instruction 'Import-Package', '*'
-  }
 }

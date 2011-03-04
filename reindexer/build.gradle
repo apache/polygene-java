@@ -1,3 +1,6 @@
+
+jar { manifest { description = "Qi4j Reindexer Extension" }}
+
 dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.api"))
   compile(project(":org.qi4j.core:org.qi4j.core.spi"))
@@ -11,15 +14,4 @@ dependencies {
   testRuntime(libraries.asm)
   testRuntime(libraries.asm_commons)
   testRuntime(libraries.slf4j_simple)
-}
-
-jar {
-  manifest {
-    symbolicName='org.qi4j.index.reindexer'
-    description = "Qi4j Reindexer Extension"
-    name = "Qi4j Extension - Reindexer"
-    instruction 'Export-Package', symbolicName +';version=' + version
-    instruction 'Private-Package', symbolicName + '.internal'
-    instruction 'Import-Package', '*'
-  }
 }

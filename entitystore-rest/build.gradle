@@ -1,6 +1,9 @@
+description = "Qi4j ReST EntityStore Extension"
+
+jar { manifest { name = "Qi4j Extension - EntityStore - ReST" }}
 
 repositories {
-   mavenRepo name: 'restlet-repo', urls: 'http://maven.restlet.org'
+  mavenRepo name: 'restlet-repo', urls: 'http://maven.restlet.org'
   mavenRepo name: 'aduna-repo', urls: "http://repo.aduna-software.org/maven2/releases/"
 }
 
@@ -27,13 +30,3 @@ dependencies {
   testRuntime(libraries.slf4j_simple)
 }
 
-jar {
-  manifest {
-    symbolicName = 'org.qi4j.entitystore.rest'
-    description = "Qi4j ReST EntityStore Extension"
-    name = "Qi4j Extension - EntityStore - ReST"
-    instruction 'Export-Package', symbolicName +';version=' + version
-    instruction 'Private-Package', symbolicName + '.internal'
-    instruction 'Import-Package', '*'
-  }
-}
