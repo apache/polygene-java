@@ -8,7 +8,11 @@ apply plugin: 'project-report'
 // Versions of Dependencies;
 asmVersion = '3.3'
 bouncyVersion = '1.45'
+derbyVersion='10.7.1.1'
 googleCollectionsVersion = '1.0'
+hibernateVersion="3.2.7.ga"
+ibatisVersion="2.3.0"
+jclVersion='1.1'
 jdbmVersion = '1.0'
 jettyVersion = '6.1.22'
 jodaTimeVersion = '1.6.2'
@@ -113,10 +117,9 @@ allprojects {
 
     jar {
       manifest {
-        symbolicName = project.name
         license = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
         docURL = 'http://www.qi4j.org'
-        description = 'Qi4j is a platform for Composite Oriented Programming'
+        description = project.description ?: 'Qi4j is a platform for Composite Oriented Programming'
         vendor = 'Qi4j Community, http://www.qi4j.org'
         instruction '-debug', 'true'
       }

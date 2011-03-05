@@ -1,3 +1,7 @@
+description = "Qi4j Regression Tests are added by community members who find bugs and typically reported via Jira issues. These tests are not run as part of the normal build, but is accessible from './gradlew regression' to allow builds to still work."
+
+jar { manifest { name = "Qi4j Tests - Regression" }}
+
 dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.api"))
   compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
@@ -12,35 +16,4 @@ dependencies {
   compile(project(":org.qi4j.extensions:org.qi4j.extension.entitystore-jdbm"))
   runtime(project(":org.qi4j.core:org.qi4j.core.spi"))
   runtime(project(":org.qi4j.core:org.qi4j.core.runtime"))
-}
-
-task regression( type: JavaExec, dependsOn: "classes") {
-  println "Regression Tests"
-
-  classpath configurations.compile, sourceSets.main.classes
-  main = "org.junit.runner.JUnitCore"
-
-}
-
-jar {
-  manifest {
-    description = "Qi4j Regression Tests are added by community members who find bugs and typically reported via Jira issues. These tests are not run as part of the normal build, but is accessible from './gradlew regression' to allow builds to still work."
-    name = "Qi4j Tests - Regression"
-    instruction 'Export-Package', symbolicName +';version=' + version
-    instruction 'Private-Package', symbolicName + '.internal'
-    instruction 'Import-Package', symbolicName + ';version="[' + version +',2.0)"',
-				'javax.security.auth',
-                'org.qi4j.api.common;version="['+version+',2)"',
-                'org.qi4j.api.composite;version="['+version+',2)"',
-                'org.qi4j.api.concern;version="['+version+',2)"',
-                'org.qi4j.api.entity;version="['+version+',2)"',
-                'org.qi4j.api.entity.association;version="['+version+',2)"',
-                'org.qi4j.api.injection;version="['+version+',2)"',
-                'org.qi4j.api.injection.scope;version="['+version+',2)"',
-                'org.qi4j.api.mixin;version="['+version+',2)"',
-                'org.qi4j.api.property;version="['+version+',2)"',
-                'org.qi4j.api.service;version="['+version+',2)"',
-                'org.qi4j.api.unitofwork;version="['+version+',2)"',
-                'org.qi4j.api.value;version="['+version+',2)"'
-  }
 }

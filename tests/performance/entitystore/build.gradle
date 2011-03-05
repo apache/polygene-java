@@ -1,3 +1,7 @@
+description = "Qi4j Performance Test Suite for Entity Stores."
+
+jar { manifest { name = "Qi4j Performance Test - EntityStores" }}
+
 dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.api"))
   compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
@@ -8,29 +12,8 @@ dependencies {
   testRuntime(libraries.slf4j_simple)
   testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
   testCompile(project(":org.qi4j.extensions:org.qi4j.extension.entitystore-jdbm"))
+  testCompile(project(":org.qi4j.extensions:org.qi4j.extension.entitystore-sql"))
+  testCompile("org.apache.derby:derby:$derbyVersion")
   testRuntime(project(":org.qi4j.core:org.qi4j.core.spi"))
   testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
-}
-
-jar {
-  manifest {
-    description = "Qi4j Performance Test Suite for Entity Stores."
-    name = "Qi4j Performance Test - EntityStores"
-    instruction 'Export-Package', symbolicName +';version=' + version
-    instruction 'Private-Package', symbolicName + '.internal'
-    instruction 'Import-Package', symbolicName + ';version="[' + version +',2.0)"',
-				'javax.security.auth',
-                'org.qi4j.api.common;version="['+version+',2)"',
-                'org.qi4j.api.composite;version="['+version+',2)"',
-                'org.qi4j.api.concern;version="['+version+',2)"',
-                'org.qi4j.api.entity;version="['+version+',2)"',
-                'org.qi4j.api.entity.association;version="['+version+',2)"',
-                'org.qi4j.api.injection;version="['+version+',2)"',
-                'org.qi4j.api.injection.scope;version="['+version+',2)"',
-                'org.qi4j.api.mixin;version="['+version+',2)"',
-                'org.qi4j.api.property;version="['+version+',2)"',
-                'org.qi4j.api.service;version="['+version+',2)"',
-                'org.qi4j.api.unitofwork;version="['+version+',2)"',
-                'org.qi4j.api.value;version="['+version+',2)"'
-  }
 }

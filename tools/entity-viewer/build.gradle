@@ -1,3 +1,7 @@
+description = "A viewer of entities in the Entity Stores."
+
+jar { manifest { name = "Qi4j Entity Viewer" }}
+
 dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.api"))
   compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
@@ -10,27 +14,4 @@ dependencies {
   testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
   testRuntime(project(":org.qi4j.core:org.qi4j.core.spi"))
   testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
-}
-
-jar {
-  manifest {
-    description = "A viewer of entities in the Entity Stores."
-    name = "Qi4j Entity Viewer"
-    instruction 'Export-Package', symbolicName +';version=' + version
-    instruction 'Private-Package', symbolicName + '.internal'
-    instruction 'Import-Package', symbolicName + ';version="[' + version +',2.0)"',
-				'javax.security.auth',
-                'org.qi4j.api.common;version="['+version+',2)"',
-                'org.qi4j.api.composite;version="['+version+',2)"',
-                'org.qi4j.api.concern;version="['+version+',2)"',
-                'org.qi4j.api.entity;version="['+version+',2)"',
-                'org.qi4j.api.entity.association;version="['+version+',2)"',
-                'org.qi4j.api.injection;version="['+version+',2)"',
-                'org.qi4j.api.injection.scope;version="['+version+',2)"',
-                'org.qi4j.api.mixin;version="['+version+',2)"',
-                'org.qi4j.api.property;version="['+version+',2)"',
-                'org.qi4j.api.service;version="['+version+',2)"',
-                'org.qi4j.api.unitofwork;version="['+version+',2)"',
-                'org.qi4j.api.value;version="['+version+',2)"'
-  }
 }

@@ -4,7 +4,7 @@ import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.library.values.EntityToValueService;
+import org.qi4j.library.conversion.values.EntityToValueService;
 
 public class DomainSupportModuleAssembler
     implements Assembler

@@ -7,3 +7,6 @@ Also see each file for additional information of Copyright claims.
 Qi4j is a community aggregated works under Copyright law.
 All parts of the original works at Qi4j is licensed under the
 Apache License ver 2.0 http://www.apache.org/licenses
+
+See NOTICE files in core/, libraries/ and extensions/ for further
+notices.

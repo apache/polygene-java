@@ -1,8 +1,12 @@
+description = "Conversion of the DDDsample project on SourceForge, converted to Qi4j."
+
+jar { manifest { name = "Qi4j Sample - DDD Sample, take 2" }}
+
 dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.api"))
   compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
   compile(project(":org.qi4j.libraries:org.qi4j.library.cxf"))
-  compile(project(":org.qi4j.libraries:org.qi4j.library.values"))
+  compile(project(":org.qi4j.libraries:org.qi4j.library.conversion"))
   compile(libraries.slf4j_api)
   testCompile(libraries.junit)
   testRuntime(libraries.asm)
@@ -11,27 +15,4 @@ dependencies {
   testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
   testRuntime(project(":org.qi4j.core:org.qi4j.core.spi"))
   testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
-}
-
-jar {
-  manifest {
-    description = "Conversion of the DDDsample project on SourceForge, converted to Qi4j."
-    name = "Qi4j Sample - DDD Sample, take 2"
-    instruction 'Export-Package', symbolicName +';version=' + version
-    instruction 'Private-Package', symbolicName + '.internal'
-    instruction 'Import-Package', symbolicName + ';version="[' + version +',2.0)"',
-				'javax.security.auth',
-                'org.qi4j.api.common;version="['+version+',2)"',
-                'org.qi4j.api.composite;version="['+version+',2)"',
-                'org.qi4j.api.concern;version="['+version+',2)"',
-                'org.qi4j.api.entity;version="['+version+',2)"',
-                'org.qi4j.api.entity.association;version="['+version+',2)"',
-                'org.qi4j.api.injection;version="['+version+',2)"',
-                'org.qi4j.api.injection.scope;version="['+version+',2)"',
-                'org.qi4j.api.mixin;version="['+version+',2)"',
-                'org.qi4j.api.property;version="['+version+',2)"',
-                'org.qi4j.api.service;version="['+version+',2)"',
-                'org.qi4j.api.unitofwork;version="['+version+',2)"',
-                'org.qi4j.api.value;version="['+version+',2)"'
-  }
 }
