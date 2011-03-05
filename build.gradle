@@ -46,6 +46,21 @@ groovycMain_mx = "512m"
 groovycMain_permSize = "64m"
 groovycMain_maxPermSize = "128m"
 
+// Define the modules that should be included in the official distribution.
+//
+// Currently we set this to 'beta' or better, but should be increased in subsequent releases.
+def betaOrBetter = subprojects.findAll({ project ->
+  def devStatusFile = new File(project.projectDir, "dev-status.xml")
+  if( !devStatusFile.exists() )
+  {
+    return false
+  }
+  def module = new XmlSlurper().parse(devStatusFile)
+  def status = module.status.codebase.text()
+  status != 'none' && status != 'early'
+})
+
+
 allprojects {
   apply plugin: 'eclipse'
   apply plugin: 'idea'
@@ -327,10 +342,10 @@ task javadocs(type: Javadoc) {
 
   options.docFilesSubDirs = true
   title = "${rootProject.title} ${version}"
-  def apiSources = subprojects.findAll({ project ->
+  def apiSources = betaOrBetter.findAll({ project ->
     println "Eval: " + project
     (project.name.startsWith('org.qi4j.core') &&
-    !project.name.startsWith('org.qi4j.core.runtime')) ||
+     !project.name.startsWith('org.qi4j.core.runtime')) ||
     project.name.startsWith('org.qi4j.library') ||
     project.name.startsWith('org.qi4j.extension')
   })
@@ -379,7 +394,7 @@ task distLayout {
     from "$buildDir/javadocs"
   }
   libsImage = copySpec {
-    allprojects.each { project ->
+    betaOrBetter.collect { project ->
       if( project.group == 'org.qi4j.core' )
       {
         from project.configurations.runtime
