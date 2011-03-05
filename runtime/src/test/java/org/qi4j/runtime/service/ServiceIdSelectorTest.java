@@ -64,7 +64,7 @@ public class ServiceIdSelectorTest
 
         public ServiceConsumer( @Uses String serviceId, @Service Iterable<ServiceReference<TestService>> serviceRefs )
         {
-            service = firstService( withId(serviceId), serviceRefs );
+            service = firstService( withId( serviceId ), serviceRefs );
         }
 
         public TestService getService()

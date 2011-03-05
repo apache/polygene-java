@@ -46,7 +46,7 @@ public class ObjectConcernTest
         object.doStuff();
     }
 
-    @Concerns(LogConcern.class)
+    @Concerns( LogConcern.class )
     public static class TestObject
     {
         public void doStuff()
@@ -60,7 +60,7 @@ public class ObjectConcernTest
         public Object invoke( Object proxy, Method method, Object[] args )
             throws Throwable
         {
-            System.out.println("Invoked "+method.getName()+" on "+proxy);
+            System.out.println( "Invoked " + method.getName() + " on " + proxy );
 
             return next.invoke( proxy, method, args );
         }

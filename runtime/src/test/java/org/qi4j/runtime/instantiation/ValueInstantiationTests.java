@@ -47,31 +47,32 @@ public class ValueInstantiationTests
         try
         {
             valueBuilderFactory.newValueBuilder( null );
-            fail("NullArgumentException was expected.");
-        } catch( NullArgumentException e )
+            fail( "NullArgumentException was expected." );
+        }
+        catch( NullArgumentException e )
         {
             // expected
         }
-
 
         // valueBuilderFactory.newValue();
         try
         {
             valueBuilderFactory.newValue( null );
-            fail("NullArgumentException was expected.");
-        } catch( NullArgumentException e )
+            fail( "NullArgumentException was expected." );
+        }
+        catch( NullArgumentException e )
         {
             // expected
         }
-
 
         //valueBuilderFactory.newValueFromJSON();
         try
         {
             valueBuilderFactory.newValueFromJSON( null, "abc:123" );
             ValueBuilder<My> builder = valueBuilderFactory.newValueBuilder( null );
-            fail("NullArgumentException was expected.");
-        } catch( NullArgumentException e )
+            fail( "NullArgumentException was expected." );
+        }
+        catch( NullArgumentException e )
         {
             // expected
         }

@@ -116,6 +116,7 @@ public abstract class AbstractQi4jTest
      * Override this method to catch valid failures to place into satisfiedBy suites.
      *
      * @param exception the exception thrown.
+     *
      * @throws AssemblyException The default implementation of this method will simply re-throw the exception.
      */
     protected void assemblyException( AssemblyException exception )

@@ -47,7 +47,8 @@ public class ConfigurationTest
         objectBuilderFactory.newObjectBuilder( ConfigurationTest.class ).injectTo( this );
 
         UnitOfWork unit = unitOfWorkFactory.newUnitOfWork();
-        EntityBuilder<HelloWorldConfiguration> entityBuilder = unit.newEntityBuilder( HelloWorldConfiguration.class, service.identity() );
+        EntityBuilder<HelloWorldConfiguration> entityBuilder = unit.newEntityBuilder( HelloWorldConfiguration.class, service
+            .identity() );
         HelloWorldConfiguration config = entityBuilder.instance();
         config.phrase().set( "Hey" );
         config.name().set( "Universe" );
@@ -76,7 +77,8 @@ public class ConfigurationTest
 
         {
             UnitOfWork unit = unitOfWorkFactory.newUnitOfWork();
-            EntityBuilder<HelloWorldConfiguration> entityBuilder = unit.newEntityBuilder( HelloWorldConfiguration.class, service.identity() );
+            EntityBuilder<HelloWorldConfiguration> entityBuilder = unit.newEntityBuilder( HelloWorldConfiguration.class, service
+                .identity() );
             config = entityBuilder.instance();
             config.phrase().set( "Hello" );
             config.name().set( "World" );

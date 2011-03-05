@@ -34,15 +34,16 @@ import org.qi4j.test.AbstractQi4jTest;
 public class ServiceInstanceImporterTest
     extends AbstractQi4jTest
 {
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
         module.importServices( TestService.class ).
-                identifiedBy( "test" ).
-                setMetaInfo( "testimporter" ).
-                importedBy( ImportedServiceDeclaration.SERVICE_IMPORTER );
+            identifiedBy( "test" ).
+            setMetaInfo( "testimporter" ).
+            importedBy( ImportedServiceDeclaration.SERVICE_IMPORTER );
         module.addServices( TestImporterService.class ).identifiedBy( "testimporter" );
 
-        module.addObjects( ServiceInstanceImporterTest.class);
+        module.addObjects( ServiceInstanceImporterTest.class );
     }
 
     @Service
@@ -53,7 +54,7 @@ public class ServiceInstanceImporterTest
     {
         objectBuilderFactory.newObjectBuilder( ServiceInstanceImporterTest.class ).injectTo( this );
 
-        Assert.assertThat(service.helloWorld(), CoreMatchers.equalTo( "Hello World" ));
+        Assert.assertThat( service.helloWorld(), CoreMatchers.equalTo( "Hello World" ) );
     }
 
     public static class TestService
@@ -64,14 +65,15 @@ public class ServiceInstanceImporterTest
         }
     }
 
-    @Mixins(TestImporterService.Mixin.class)
+    @Mixins( TestImporterService.Mixin.class )
     interface TestImporterService
         extends ServiceComposite, ServiceImporter<TestService>
     {
         class Mixin
             implements ServiceImporter<TestService>
         {
-            public TestService importService( ImportedServiceDescriptor serviceDescriptor ) throws ServiceImporterException
+            public TestService importService( ImportedServiceDescriptor serviceDescriptor )
+                throws ServiceImporterException
             {
                 return new TestService();
             }

@@ -24,12 +24,23 @@ public interface Other
     public String other();
 
     public String foo( String bar, int blah )
-            throws IllegalArgumentException;
+        throws IllegalArgumentException;
 
-    public void bar( double doub, boolean bool, float fl, char ch, int integer, long lg, short sh, byte b, Double doubObj, Object[] objArr, int[] intArr );
+    public void bar( double doub,
+                     boolean bool,
+                     float fl,
+                     char ch,
+                     int integer,
+                     long lg,
+                     short sh,
+                     byte b,
+                     Double doubObj,
+                     Object[] objArr,
+                     int[] intArr
+    );
 
     public void multiEx( String bar )
-            throws Exception1, Exception2;
+        throws Exception1, Exception2;
 
     public long unwrapResult();
 

@@ -18,6 +18,6 @@ package org.qi4j.test;
  * JAVADOC
  */
 public class Exception1
-        extends Exception
+    extends Exception
 {
 }

@@ -46,13 +46,14 @@ public class AvailableServiceTest
         SingletonAssembler assembler = new SingletonAssembler()
         {
             public void assemble( ModuleAssembly module )
-                    throws AssemblyException
+                throws AssemblyException
             {
-                module.addServices( TestServiceComposite1.class);
+                module.addServices( TestServiceComposite1.class );
             }
         };
 
-        ServiceReference<TestServiceComposite1> serviceRef = assembler.serviceFinder().findService( TestServiceComposite1.class );
+        ServiceReference<TestServiceComposite1> serviceRef = assembler.serviceFinder()
+            .findService( TestServiceComposite1.class );
 
         assertThat( "service is available", serviceRef.isAvailable(), equalTo( true ) );
     }
@@ -63,7 +64,7 @@ public class AvailableServiceTest
         SingletonAssembler assembler = new SingletonAssembler()
         {
             public void assemble( ModuleAssembly module )
-                    throws AssemblyException
+                throws AssemblyException
             {
                 module.addServices( TestServiceComposite2.class );
                 module.addEntities( TestServiceConfiguration.class );
@@ -72,7 +73,8 @@ public class AvailableServiceTest
             }
         };
 
-        ServiceReference<TestServiceComposite2> serviceRef = assembler.serviceFinder().findService( TestServiceComposite2.class );
+        ServiceReference<TestServiceComposite2> serviceRef = assembler.serviceFinder()
+            .findService( TestServiceComposite2.class );
 
         assertThat( "service is unavailable", serviceRef.isAvailable(), equalTo( false ) );
 
@@ -88,7 +90,7 @@ public class AvailableServiceTest
         SingletonAssembler assembler = new SingletonAssembler()
         {
             public void assemble( ModuleAssembly module )
-                    throws AssemblyException
+                throws AssemblyException
             {
                 module.addObjects( TestObject.class );
                 module.addServices( TestServiceComposite2.class );
@@ -102,7 +104,8 @@ public class AvailableServiceTest
 
         assertThat( "service is unavailable", object.getService(), CoreMatchers.<Object>nullValue() );
 
-        ServiceReference<TestServiceComposite2> serviceRef = assembler.serviceFinder().findService( TestServiceComposite2.class );
+        ServiceReference<TestServiceComposite2> serviceRef = assembler.serviceFinder()
+            .findService( TestServiceComposite2.class );
         serviceRef.get().configuration().enabled().set( true );
         serviceRef.get().save();
 
@@ -111,21 +114,21 @@ public class AvailableServiceTest
     }
 
     // This service has to be asked for availability
-    @Mixins(TestMixin1.class)
+    @Mixins( TestMixin1.class )
     public interface TestServiceComposite1
-            extends TestService, Availability, ServiceComposite
+        extends TestService, Availability, ServiceComposite
     {
     }
 
     // This service has availability set through configuration
-    @Mixins(TestMixin2.class)
+    @Mixins( TestMixin2.class )
     public interface TestServiceComposite2
-            extends TestService, Configuration<TestServiceConfiguration>, ServiceComposite
+        extends TestService, Configuration<TestServiceConfiguration>, ServiceComposite
     {
     }
 
     public interface TestServiceConfiguration
-            extends Enabled, ConfigurationComposite
+        extends Enabled, ConfigurationComposite
     {
     }
 
@@ -135,7 +138,7 @@ public class AvailableServiceTest
     }
 
     public static class TestMixin1
-            implements TestService, Availability
+        implements TestService, Availability
     {
         public String test()
         {
@@ -149,7 +152,7 @@ public class AvailableServiceTest
     }
 
     public static class TestMixin2
-            implements TestService
+        implements TestService
     {
         @This
         Configuration<TestServiceConfiguration> config;
@@ -164,7 +167,8 @@ public class AvailableServiceTest
     {
         @Service
         @Optional
-        @Available TestService service;
+        @Available
+        TestService service;
 
         public TestService getService()
         {

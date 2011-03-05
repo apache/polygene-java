@@ -32,10 +32,10 @@ import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
 
 public class RemovalTest
-        extends AbstractQi4jTest
+    extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
         module.addEntities( TestEntity.class );
 
@@ -46,7 +46,7 @@ public class RemovalTest
 
     @Test
     public void givenEntityIsCreatedAndUnitOfWorkIsNotCompletedWhenEntityIsRemoveThenSuccessfulRemoval()
-            throws Exception
+        throws Exception
     {
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         EntityBuilder<TestEntity> builder = uow.newEntityBuilder( TestEntity.class, "123" );
@@ -58,7 +58,7 @@ public class RemovalTest
 
     @Test
     public void givenStandardPidRegulatorWhenNoChangeInInputExpectOutputToGoTowardsMinimum()
-            throws Exception
+        throws Exception
     {
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         PidRegulator regulator = null;
@@ -83,14 +83,14 @@ public class RemovalTest
     }
 
     public interface TestEntity
-            extends EntityComposite
+        extends EntityComposite
     {
         @Optional
         Property<String> test();
     }
 
     private PidRegulator createPidRegulator( UnitOfWork uow )
-            throws UnitOfWorkCompletionException
+        throws UnitOfWorkCompletionException
     {
         EntityBuilder<PidRegulator> builder = uow.newEntityBuilder( PidRegulator.class );
         PidRegulator prototype = builder.instance();
@@ -107,7 +107,7 @@ public class RemovalTest
 
     //    @Mixins( { PidRegulatorAlgorithmMixin.class } )
     public interface PidRegulator
-            extends PidParameters, EntityComposite
+        extends PidParameters, EntityComposite
     {
     }
 

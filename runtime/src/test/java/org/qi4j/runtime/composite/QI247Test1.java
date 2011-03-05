@@ -12,7 +12,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class QI247Test1 extends AbstractQi4jTest
+public class QI247Test1
+    extends AbstractQi4jTest
 {
 
     public void assemble( ModuleAssembly module )
@@ -46,7 +47,7 @@ public class QI247Test1 extends AbstractQi4jTest
     @Test
     public void testWithMixinToString()
     {
-        ObjectMethods withMixin = transientBuilderFactory.newTransient(ObjectMethods.class );
+        ObjectMethods withMixin = transientBuilderFactory.newTransient( ObjectMethods.class );
         checkToString( withMixin );
     }
 
@@ -60,29 +61,29 @@ public class QI247Test1 extends AbstractQi4jTest
     @Test
     public void testWithMixinSelfEquals()
     {
-        ObjectMethods withMixin = transientBuilderFactory.newTransient(ObjectMethods.class );
+        ObjectMethods withMixin = transientBuilderFactory.newTransient( ObjectMethods.class );
         checkSelfEquals( withMixin );
     }
 
     @Test
     public void testWithMixinSelfEquals2()
     {
-        ObjectMethods withMixin = transientBuilderFactory.newTransient(ObjectMethods.class );
+        ObjectMethods withMixin = transientBuilderFactory.newTransient( ObjectMethods.class );
         assertTrue( withMixin.equals( withMixin ) );
     }
 
     @Test
     public void testWithMixinSelfSame()
     {
-        ObjectMethods withMixin = transientBuilderFactory.newTransient(ObjectMethods.class );
+        ObjectMethods withMixin = transientBuilderFactory.newTransient( ObjectMethods.class );
         assertSame( withMixin, withMixin );
     }
 
     @Test
     public void testWithMixinTwoNotEqual()
     {
-        ObjectMethods first = transientBuilderFactory.newTransient(ObjectMethods.class );
-        ObjectMethods second = transientBuilderFactory.newTransient(ObjectMethods.class );
+        ObjectMethods first = transientBuilderFactory.newTransient( ObjectMethods.class );
+        ObjectMethods second = transientBuilderFactory.newTransient( ObjectMethods.class );
         checkTwoNotEqual( first, second );
     }
 
@@ -114,10 +115,10 @@ public class QI247Test1 extends AbstractQi4jTest
         {
         }
     }
-    
+
     @Mixins( ObjectMethodsMixin.class )
-    public interface TransientWithMixin extends TransientComposite, ObjectMethods
+    public interface TransientWithMixin
+        extends TransientComposite, ObjectMethods
     {
     }
-
 }

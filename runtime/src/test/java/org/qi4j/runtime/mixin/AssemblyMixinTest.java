@@ -31,10 +31,10 @@ import static org.junit.Assert.*;
  * Test of declaring mixin in assembly
  */
 public class AssemblyMixinTest
-        extends AbstractQi4jTest
+    extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
         new EntityTestAssembler().assemble( module );
 
@@ -46,11 +46,13 @@ public class AssemblyMixinTest
     @Test
     public void testAssemblyMixins()
     {
-        assertThat( "Custom mixin has executed", transientBuilderFactory.newTransient( Foo.class ).test( "Foo", 42 ), equalTo( "Foo/42" ) );
+        assertThat( "Custom mixin has executed", transientBuilderFactory.newTransient( Foo.class )
+            .test( "Foo", 42 ), equalTo( "Foo/42" ) );
     }
 
     @Test
-    public void testAssemblyMixinsEntity() throws UnitOfWorkCompletionException
+    public void testAssemblyMixinsEntity()
+        throws UnitOfWorkCompletionException
     {
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         FooEntity entity = uow.newEntity( FooEntity.class, "123" );
@@ -62,15 +64,15 @@ public class AssemblyMixinTest
         try
         {
             assertThat( "Custom mixin has executed", foo.test( "Foo", 42 ), equalTo( "Foo 42" ) );
-        } finally
+        }
+        finally
         {
             uow.discard();
         }
-
     }
 
     public interface FooComposite
-            extends TransientComposite, Foo
+        extends TransientComposite, Foo
     {
     }
 
@@ -80,7 +82,7 @@ public class AssemblyMixinTest
     }
 
     public static class FooMixin
-            implements Foo
+        implements Foo
     {
         public String test( String foo, int bar )
         {
@@ -89,7 +91,7 @@ public class AssemblyMixinTest
     }
 
     public static class CustomFooMixin
-            implements Foo
+        implements Foo
     {
         public String test( String foo, int bar )
         {
@@ -98,7 +100,7 @@ public class AssemblyMixinTest
     }
 
     public interface FooEntity
-            extends EntityComposite, Foo
+        extends EntityComposite, Foo
     {
 
     }

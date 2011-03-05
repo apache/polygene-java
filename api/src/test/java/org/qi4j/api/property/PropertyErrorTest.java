@@ -33,18 +33,18 @@ import org.qi4j.test.AbstractQi4jTest;
  * Error messages for Properties
  */
 public class PropertyErrorTest
-        extends AbstractQi4jTest
+    extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
         module.addServices( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class );
         module.addEntities( PersonEntity.class );
     }
 
-    @Test(expected = ConstraintViolationException.class)
+    @Test( expected = ConstraintViolationException.class )
     public void givenEntityWithNonOptionPropertyWhenInstantiatedThenException()
-            throws Exception
+        throws Exception
     {
         UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
         try
@@ -53,7 +53,7 @@ public class PropertyErrorTest
 
             unitOfWork.complete();
         }
-        catch (Exception e)
+        catch( Exception e )
         {
             unitOfWork.discard();
             throw e;
@@ -61,7 +61,7 @@ public class PropertyErrorTest
     }
 
     interface PersonEntity
-            extends EntityComposite
+        extends EntityComposite
     {
         Property<String> foo();
     }

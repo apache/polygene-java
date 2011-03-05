@@ -20,7 +20,7 @@ import java.util.ArrayList;
  * JAVADOC
  */
 public abstract class SomeMixin
-        implements Some, Other, World
+    implements Some, Other, World
 {
 
     protected SomeMixin()
@@ -32,11 +32,12 @@ public abstract class SomeMixin
 
     }
 
-    public String some() throws Exception2, Exception1
+    public String some()
+        throws Exception2, Exception1
     {
         multiEx( "foo" );
         unwrapResult();
-        bar( 1.0, true, 1.0F, 'x', 0, 0L, (short) 0, (byte) 3, new Double( 4F ), new Object[0], new int[0] );
+        bar( 1.0, true, 1.0F, 'x', 0, 0L, (short) 0, (byte) 3, new Double( 4F ), new Object[ 0 ], new int[ 0 ] );
         generic( new ArrayList() );
 
         return "Hello " + other() + foo( "Test", 0 );

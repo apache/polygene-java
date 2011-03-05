@@ -47,7 +47,8 @@ import org.qi4j.test.indexing.model.URL;
 /**
  * @author Stanislav Muhametsin
  */
-public abstract class AbstractComplexQueryTest extends AbstractAnyQueryTest
+public abstract class AbstractComplexQueryTest
+    extends AbstractAnyQueryTest
 {
 
     private static final String ANN = "Ann Doe";
@@ -87,7 +88,7 @@ public abstract class AbstractComplexQueryTest extends AbstractAnyQueryTest
         throws IOException
     {
         ServiceFinder serviceFinder = this.serviceLocator;
-        IndexExporter indexerExporter = serviceFinder.<IndexExporter> findService( IndexExporter.class ).get();
+        IndexExporter indexerExporter = serviceFinder.<IndexExporter>findService( IndexExporter.class ).get();
         indexerExporter.exportReadableToStream( System.out );
     }
 
@@ -313,7 +314,6 @@ public abstract class AbstractComplexQueryTest extends AbstractAnyQueryTest
         Query<Person> query = qb.newQuery( unitOfWork );
         System.out.println( "*** script10: " + query );
         verifyUnorderedResults( query, JACK );
-
     }
 
     @Test

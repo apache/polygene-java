@@ -87,7 +87,8 @@ public class InvocationInjectionTest
         public void doStuff()
         {
             Assert.assertThat( "interface has been injected", foo.value(), CoreMatchers.equalTo( "1" ) );
-            Assert.assertThat( "annotations have been injected", ae.getAnnotation( Foo.class ).value(), CoreMatchers.equalTo( "1" ) );
+            Assert.assertThat( "annotations have been injected", ae.getAnnotation( Foo.class )
+                .value(), CoreMatchers.equalTo( "1" ) );
             Assert.assertThat( "Method has been injected", method.getName(), CoreMatchers.equalTo( "doStuff" ) );
             next.doStuff();
         }
@@ -95,7 +96,8 @@ public class InvocationInjectionTest
         public void doStuff2()
         {
             Assert.assertThat( "mixin has been injected", foo.value(), CoreMatchers.equalTo( "2" ) );
-            Assert.assertThat( "annotations have been injected", ae.getAnnotation( Foo.class ).value(), CoreMatchers.equalTo( "2" ) );
+            Assert.assertThat( "annotations have been injected", ae.getAnnotation( Foo.class )
+                .value(), CoreMatchers.equalTo( "2" ) );
             Assert.assertThat( "Method has been injected", method.getName(), CoreMatchers.equalTo( "doStuff2" ) );
             next.doStuff2();
         }
@@ -103,7 +105,8 @@ public class InvocationInjectionTest
         public void doStuff3()
         {
             Assert.assertThat( "mixin has overridden interface", foo.value(), CoreMatchers.equalTo( "3" ) );
-            Assert.assertThat( "annotations have been injected", ae.getAnnotation( Foo.class ).value(), CoreMatchers.equalTo( "3" ) );
+            Assert.assertThat( "annotations have been injected", ae.getAnnotation( Foo.class )
+                .value(), CoreMatchers.equalTo( "3" ) );
             Assert.assertThat( "Method has been injected", method.getName(), CoreMatchers.equalTo( "doStuff3" ) );
             next.doStuff3();
         }
