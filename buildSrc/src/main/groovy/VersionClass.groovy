@@ -32,7 +32,12 @@ class VersionClass implements Plugin<Project>
 
     def makeVersionClassTask = project.task('makeVersionClass') << {
       def now = new Date()
-      def outFilename = "java/" + project.group.replace('.', '/') + "/" + project.name + "/BuildVersion.java"
+      def tmpGroup = project.group
+      if( tmpGroup.startsWith("org.qi4j.core"))
+      {
+        tmpGroup = tmpGroup - ".core"
+      }
+      def outFilename = "java/" + tmpGroup.replace('.', '/') + "/" + project.name + "/BuildVersion.java"
       def outFile = new File(generatedSrcDir, outFilename)
       outFile.getParentFile().mkdirs()
       def f = new FileWriter(outFile)

@@ -52,6 +52,9 @@ allprojects {
   apply plugin: 'java'
   apply plugin: 'code-quality'
   apply plugin: 'project-report'
+//  apply plugin: Xslt
+
+  project.Xslt = Xslt.class
 
   group = name.substring(0, name.lastIndexOf('.'))
   defaultTasks 'build'
@@ -206,13 +209,13 @@ allprojects {
     }
 
     // Create checkstyle report
-//    task checkstyleReport(type: Xslt, dependsOn: check) {
-//      source project.checkstyleResultsDir
-//      include '*.xml'
-//      destDir = project.checkstyleResultsDir
-//      extension = 'html'
-//      stylesheetFile = file('etc/checkstyle-frames.xsl')
-//    }
+    task checkstyleReport(type: Xslt, dependsOn: check) {
+      source project.checkstyleResultsDir
+      include '*.xml'
+      destDir = file("build/reports/checkstyle/")
+      extension = 'html'
+      stylesheetFile = file("$rootProject.projectDir/etc/checkstyle-noframes.xsl")
+    }
 
   }
 
@@ -322,24 +325,34 @@ test.doLast() {
 
 task javadocs(type: Javadoc) {
 
-  doLast {
-    options.docFilesSubDirs = true
-    title = "${rootProject.title} ${version}"
-    def apiSources = subprojects.findAll({ project -> project.name != 'runtime' })
-    source apiSources.collect { project ->
-      project.sourceSets.main.allJava
-    }
-    destinationDir = new File("$buildDir/javadocs")
-    // Might need a classpath
-    classpath = files(apiSources.collect { project ->
-      project.sourceSets.main.compileClasspath
-    })
-    options.links("http://java.sun.com/j2se/1.6.0/docs/api")
-    options.group(["Core API": ["org.qi4j.core.api.*"],
-                  "Core SPI": ["org.qi4j.core.spi.*"],
-                  "Core Bootstrap": ["org.qi4j.core.bootstrap.*"]
-                  ])
+  options.docFilesSubDirs = true
+  title = "${rootProject.title} ${version}"
+  def apiSources = subprojects.findAll({ project ->
+    println "Eval: " + project
+    (project.name.startsWith('org.qi4j.core') &&
+    !project.name.startsWith('org.qi4j.core.runtime')) ||
+    project.name.startsWith('org.qi4j.library') ||
+    project.name.startsWith('org.qi4j.extension')
+  })
+  source apiSources.collect { project ->
+    println "Found: " + project.name
+    project.sourceSets.main.allJava
   }
+  destinationDir = new File("$buildDir/javadocs")
+  // Might need a classpath
+  classpath = files(apiSources.collect { project ->
+    project.sourceSets.main.compileClasspath
+  })
+  options.links("http://java.sun.com/j2se/1.6.0/docs/api")
+  options.group(["Core API": ["org.qi4j.api", "org.qi4j.api.*"],
+                "Core Bootstrap": ["org.qi4j.bootstrap"],
+                "Core SPI": ["org.qi4j.spi", "org.qi4j.spi.*"],
+                "Libraries": ["org.qi4j.library.*", "org.qi4j.logging", "org.qi4j.logging.*", "org.qi4j.scripting.*"],
+                "Extensions": ["org.qi4j.entitystore.*", "org.qi4j.index.*", "org.qi4j.cache.*", "org.qi4j.migration", "org.qi4j.migration.*"],
+                "Test Support": ["org.qi4j.test", "org.qi4j.test.*"],
+
+                ])
+
 }
 
 task distLayout {

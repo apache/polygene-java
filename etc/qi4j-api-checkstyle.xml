@@ -129,11 +129,13 @@
       <property name="separated" value="true"/>
       <property name="caseSensitive" value="false"/>
     </module>
-    <module name="JavadocMethod"/>
-    <module name="JavadocType"/>
-    <module name="JavadocVariable">
-      <property name="scope" value="package"/>
-    </module>
+
+    <!--TODO Removing this until Javadoc effort has picked up -->
+    <!--<module name="JavadocMethod"/>-->
+    <!--<module name="JavadocType"/>-->
+    <!--<module name="JavadocVariable">-->
+      <!--<property name="scope" value="package"/>-->
+    <!--</module>-->
     <module name="ConstantName">
       <property name="format" value="^[A-Z0-9_$]*$"/>
     </module>

@@ -9,7 +9,8 @@
   <property name="severity" value="warning"/>
   <module name="NewlineAtEndOfFile"/>
   <module name="Translation"/>
-  <module name="JavadocPackage"/>
+  <!--TODO Removing this until Javadoc effort has picked up -->
+  <!--<module name="JavadocPackage"/>-->
   <module name="TreeWalker">
     <module name="MutableException"/>
 
@@ -129,7 +130,8 @@
       <property name="separated" value="true"/>
       <property name="caseSensitive" value="false"/>
     </module>
-    <module name="JavadocType"/>
+    <!--TODO Removing this until Javadoc effort has picked up -->
+    <!--<module name="JavadocType"/>-->
     <module name="ConstantName">
       <property name="format" value="^[A-Z0-9_$]*$"/>
     </module>
