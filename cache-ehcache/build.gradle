@@ -1,7 +1,8 @@
-ehcacheVersion = '2.1.1'
-
 description = "Qi4j Ehcache Cache Extension"
+
 jar { manifest { name = "Qi4j Extension: EhCache"}}
+
+ehcacheVersion = '2.1.1'
 
 dependencies {
   compile(project(':org.qi4j.core:org.qi4j.core.api'))
