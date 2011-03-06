@@ -1,0 +1,66 @@
+
+// Versions of Dependencies;
+asmVersion = '3.3'
+bouncyVersion = '1.45'
+derbyVersion = '10.7.1.1'
+googleCollectionsVersion = '1.0'
+hibernateVersion = "3.2.7.ga"
+ibatisVersion = "2.3.0"
+jclVersion = '1.1'
+jdbmVersion = '1.0'
+jettyVersion = '6.1.22'
+jodaTimeVersion = '1.6.2'
+log4jVersion = '1.2.16'
+osgiVersion = '4.2.0'
+rdfVersion = '2.3.2'
+restletVersion = '2.0.4'
+servletVersion = '2.5'
+shiroVersion = '1.1.0'
+sleepycatVersion = '4.0.103'
+slf4jVersion = '1.6.1'
+solrVersion = "1.4.1"
+springVersion = '2.5.6'
+strutsVersion = '2.1.8.1'
+vaadinVersion = '6.4.8'
+voldemortVersion = '0.81'
+
+antVersion = '1.8.1'
+junitVersion = '4.8.1'
+testNgVersion = '5.8'
+jmockVersion = '2.5.1'
+mockitoVersion = '1.8.5'
+easyMockVersion = '3.0'
+
+
+// build a map of the dependency artifacts to use.  Allows centralized definition of the version of artifacts to
+// use.  In that respect it serves a role similar to <dependencyManagement> in Maven
+
+libraries = [
+        // Ant
+        ant: "org.apache.ant:ant:$antVersion",
+
+        // ASM
+        asm: "asm:asm:$asmVersion",
+        asm_util: "asm:asm-util:$asmVersion",
+        asm_commons: "asm:asm-commons:$asmVersion",
+
+        // OSGi
+        osgi_core: "org.osgi:org.osgi.core:$osgiVersion",
+        osgi_compendium: "org.osgi:org.osgi.compendium:$osgiVersion",
+        osgi_enterprise: "org.osgi:org.osgi.enterprise:$osgiVersion",
+
+        // logging
+        slf4j_api: "org.slf4j:slf4j-api:$slf4jVersion",
+        slf4j_simple: "org.slf4j:slf4j-simple:$slf4jVersion",
+        jcl_slf4j: "org.slf4j:jcl-over-slf4j:$slf4jVersion",
+        jcl_api: 'commons-logging:commons-logging-api:99.0-does-not-exist',  //ensure it is never used.
+        jcl: 'commons-logging:commons-logging:99.0-does-not-exist',  // ensure it is never used.
+
+        // testing
+        junit: "junit:junit:$junitVersion",
+        easymock: "org.easymock:easymock:$easyMockVersion",
+        mockito: "org.mockito:mockito-core:$mockitoVersion",
+        jmock: "org.jmock:jmock:$jmockVersion",
+        testng: "org.testng:testng:$testNgVersion:jdk15"
+]
+

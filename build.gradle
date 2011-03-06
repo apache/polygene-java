@@ -4,38 +4,7 @@ description = "Qi4j™ is a framework for domain centric application development
 apply plugin: 'java'
 apply from: 'maven-compat.gradle'
 apply plugin: 'project-report'
-
-// Versions of Dependencies;
-asmVersion = '3.3'
-bouncyVersion = '1.45'
-derbyVersion = '10.7.1.1'
-googleCollectionsVersion = '1.0'
-hibernateVersion = "3.2.7.ga"
-ibatisVersion = "2.3.0"
-jclVersion = '1.1'
-jdbmVersion = '1.0'
-jettyVersion = '6.1.22'
-jodaTimeVersion = '1.6.2'
-log4jVersion = '1.2.16'
-osgiVersion = '4.2.0'
-rdfVersion = '2.3.2'
-restletVersion = '2.0.4'
-servletVersion = '2.5'
-shiroVersion = '1.1.0'
-sleepycatVersion = '4.0.103'
-slf4jVersion = '1.6.1'
-solrVersion = "1.4.1"
-springVersion = '2.5.6'
-strutsVersion = '2.1.8.1'
-vaadinVersion = '6.4.8'
-voldemortVersion = '0.81'
-
-antVersion = '1.8.1'
-junitVersion = '4.8.1'
-testNgVersion = '5.8'
-jmockVersion = '2.5.1'
-mockitoVersion = '1.8.5'
-easyMockVersion = '3.0'
+apply from: 'libraries.gradle'
 
 targetCompatibility = "1.6"
 sourceCompatibility = "1.6"
@@ -45,7 +14,6 @@ testFailures = false
 groovycMain_mx = "512m"
 groovycMain_permSize = "64m"
 groovycMain_maxPermSize = "128m"
-
 
 // Collect the modules that fulfills the Release Criteria.
 project.releaseSpec = new ModuleReleaseSpecification()
@@ -57,7 +25,6 @@ allprojects {
   apply plugin: 'java'
   apply plugin: 'code-quality'
   apply plugin: 'project-report'
-//  apply plugin: Xslt
 
   project.Xslt = Xslt.class
 
@@ -231,11 +198,9 @@ allprojects {
     }
   }
 
+  uploadArchives.onlyIf { releaseApprovedProjects.contains(project)}
   uploadArchives {
-    repositories.mavenDeployer {
-      configuration = configurations.deployerJars
-      repository(url: "file://localhost/$rootProject.buildDir/repository/")
-    }
+    dependsOn check
     repositories.mavenDeployer {
       name = 'sshDeployer' // optional
       configuration = configurations.deployerJars
@@ -252,38 +217,6 @@ allprojects {
 
   dependsOnChildren()
 }
-
-// build a map of the dependency artifacts to use.  Allows centralized definition of the version of artifacts to
-// use.  In that respect it serves a role similar to <dependencyManagement> in Maven
-
-libraries = [
-        // Ant
-        ant: "org.apache.ant:ant:$antVersion",
-
-        // ASM
-        asm: "asm:asm:$asmVersion",
-        asm_util: "asm:asm-util:$asmVersion",
-        asm_commons: "asm:asm-commons:$asmVersion",
-
-        // OSGi
-        osgi_core: "org.osgi:org.osgi.core:$osgiVersion",
-        osgi_compendium: "org.osgi:org.osgi.compendium:$osgiVersion",
-        osgi_enterprise: "org.osgi:org.osgi.enterprise:$osgiVersion",
-
-        // logging
-        slf4j_api: "org.slf4j:slf4j-api:$slf4jVersion",
-        slf4j_simple: "org.slf4j:slf4j-simple:$slf4jVersion",
-        jcl_slf4j: "org.slf4j:jcl-over-slf4j:$slf4jVersion",
-        jcl_api: 'commons-logging:commons-logging-api:99.0-does-not-exist',  //ensure it is never used.
-        jcl: 'commons-logging:commons-logging:99.0-does-not-exist',  // ensure it is never used.
-
-        // testing
-        junit: "junit:junit:$junitVersion",
-        easymock: "org.easymock:easymock:$easyMockVersion",
-        mockito: "org.mockito:mockito-core:$mockitoVersion",
-        jmock: "org.jmock:jmock:$jmockVersion",
-        testng: "org.testng:testng:$testNgVersion:jdk15"
-]
 
 test.doLast() {
 //task genReport {
@@ -333,14 +266,12 @@ task javadocs(type: Javadoc) {
   options.docFilesSubDirs = true
   title = "${rootProject.title} ${version}"
   def apiSources = releaseApprovedProjects.findAll({ project ->
-    println "Eval: " + project
     (project.name.startsWith('org.qi4j.core') &&
      !project.name.startsWith('org.qi4j.core.runtime')) ||
     project.name.startsWith('org.qi4j.library') ||
     project.name.startsWith('org.qi4j.extension')
   })
   source apiSources.collect { project ->
-    println "Found: " + project.name
     project.sourceSets.main.allJava
   }
   destinationDir = new File("$buildDir/javadocs")
@@ -424,31 +355,29 @@ task distLayout {
 }
 
 task zipSources(type: Zip) {
+  baseName='qi4j-sdk'
   with distLayout.srcDistImage
   classifier = 'src'
 }
 
 task tarSources(type: Tar) {
+  baseName='qi4j-sdk'
   with distLayout.srcDistImage
+  compression = Compression.GZIP
   classifier = 'src'
 }
 
-task zipBinaries(type: Zip, dependsOn: ['javadocs', 'test', 'distLayout']) {
+task zipBinaries(type: Zip, dependsOn: [javadocs, test, distLayout, uploadDefault]) {
+  baseName='qi4j-sdk'
   classifier = 'bin'
   with distLayout.binDistImage
 }
 
-task tarBinaries(type: Tar, dependsOn: ['javadocs', 'test', 'distLayout']) {
+task tarBinaries(type: Tar, dependsOn: [javadocs, test, distLayout, uploadDefault]) {
+  baseName='qi4j-sdk'
   classifier = 'bin'
+  compression = Compression.GZIP
   with distLayout.binDistImage
-}
-
-task uploadDists() {
-  dependsOn zipSources
-  dependsOn tarSources
-  dependsOn zipBinaries
-  dependsOn tarBinaries
-  // TODO: Upload SDK ZIP and TAR to repository??
 }
 
 task release {
@@ -461,7 +390,10 @@ task release {
     }
   }
   dependsOn allprojects*.uploadArchives
-  dependsOn uploadDists
+  dependsOn tarBinaries
+  dependsOn zipBinaries
+  dependsOn tarSources
+  dependsOn zipSources
 }
 
 //
