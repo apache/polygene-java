@@ -50,7 +50,7 @@ public final class ServiceSelectorImporter<T>
         List<ServiceReference<T>> filteredServices = new ArrayList<ServiceReference<T>>();
         for( ServiceReference<T> service : services )
         {
-            ServiceQualifier selector1 = service.metaInfo( ServiceQualifier.class );
+            Specification selector1 = service.metaInfo( Specification.class );
             if( selector1 != null && selector1 == selector )
             {
                 continue;
