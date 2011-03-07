@@ -364,6 +364,7 @@ public abstract class AbstractNamedQueryTest extends AbstractAnyQueryTest
         throws EntityFinderException
     {
         final Query<Domain> query = this.queryBuilderFactory.newNamedQuery( Domain.class, unitOfWork, "script24" );
+        query.setVariable("domain", "Gaming");
         System.out.println( "*** script24: " + query );
         assertThat( query.find().name().get(), is( equalTo( "Gaming" ) ) );
     }
