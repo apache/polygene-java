@@ -79,7 +79,15 @@ public final class QueryBuilderFactoryImpl
         {
             throw new MissingIndexingSystemException();
         }
+
+        NamedEntityFinder finder = serviceReference.get();
+        if( finder == null )
+        {
+            throw new MissingIndexingSystemException();
+        }
+
+
         NamedQueryDescriptor query = serviceReference.metaInfo( NamedQueries.class ).getQuery( name );
-        return new NamedQueryImpl<T>( serviceReference.get(), unitOfWork, query, resultType );
+        return new NamedQueryImpl<T>( finder, unitOfWork, query, resultType );
     }
 }

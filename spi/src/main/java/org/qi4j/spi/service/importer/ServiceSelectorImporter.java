@@ -58,7 +58,10 @@ public final class ServiceSelectorImporter<T>
 
             filteredServices.add( service );
         }
-        return ServiceQualifier.firstService( selector, filteredServices );
+        T service = ServiceQualifier.firstService( selector, filteredServices );
+        if (service == null)
+            throw new ServiceImporterException("Could not find any service to import that matches the given specification for "+serviceDescriptor.identity());
+        return service;
     }
 
     public boolean isActive( T instance )
