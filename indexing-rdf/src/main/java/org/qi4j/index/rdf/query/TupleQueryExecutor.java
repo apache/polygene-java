@@ -33,10 +33,12 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.spi.query.EntityFinderException;
 
+import java.util.Map;
+
 @Mixins( TupleQueryExecutor.TupleQueryExecutorMixin.class )
 public interface TupleQueryExecutor
 {
-    long performTupleQuery( QueryLanguage language, String query, @Optional QualifiedIdentityResultCallback callback )
+    long performTupleQuery( QueryLanguage language, String query, @Optional Map<String, Value> bindings, @Optional QualifiedIdentityResultCallback callback )
         throws EntityFinderException;
 
     class TupleQueryExecutorMixin
@@ -45,7 +47,7 @@ public interface TupleQueryExecutor
         @Service
         private Repository repository;
 
-        public long performTupleQuery( QueryLanguage language, String query, QualifiedIdentityResultCallback callback )
+        public long performTupleQuery( QueryLanguage language, String query, Map<String, Value> bindings, QualifiedIdentityResultCallback callback )
             throws EntityFinderException
         {
             try
@@ -56,6 +58,14 @@ public interface TupleQueryExecutor
                 {
 
                     TupleQuery tupleQuery = connection.prepareTupleQuery( language, query );
+
+                    if (bindings != null)
+                    {
+                        for (Map.Entry<String, Value> stringValueEntry : bindings.entrySet())
+                        {
+                            tupleQuery.setBinding(stringValueEntry.getKey(), stringValueEntry.getValue());
+                        }
+                    }
                     tupleQuery.setIncludeInferred( false );
                     result = tupleQuery.evaluate();
                     long row = 0;

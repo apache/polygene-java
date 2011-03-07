@@ -21,6 +21,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.openrdf.query.QueryLanguage;
 import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.spi.query.NamedQueryDescriptor;
@@ -32,6 +35,7 @@ public class NamedSparqlDescriptor
 
     private String query;
     private String name;
+    private List<String> variableNames = new ArrayList<String>();
 
     public NamedSparqlDescriptor( String name, String query )
     {
@@ -49,6 +53,14 @@ public class NamedSparqlDescriptor
         }
         this.name = name;
         this.query = query;
+
+        Matcher variableMatcher = Pattern.compile("\\?([\\p{Alpha}]*)").matcher(query);
+        while (variableMatcher.find())
+        {
+            String variableName = variableMatcher.group(1);
+            if (!variableNames.contains(variableName))
+                variableNames.add(variableName);
+        }
     }
 
     public String name()
@@ -78,7 +90,7 @@ public class NamedSparqlDescriptor
 
     public List<String> variableNames()
     {
-        return EMPTY_LIST;
+        return variableNames;
     }
 
     private String range( Integer firstResult, Integer maxResults )
