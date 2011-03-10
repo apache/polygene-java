@@ -30,10 +30,10 @@ import org.qi4j.test.EntityTestAssembler;
  * JAVADOC
  */
 public class Qi4jAPITest
-        extends AbstractQi4jTest
+    extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
         new EntityTestAssembler().assemble( module );
         module.transients( TestTransient.class );
@@ -44,7 +44,7 @@ public class Qi4jAPITest
 
     @Test
     public void testGetModuleOfComposite()
-            throws Exception
+        throws Exception
     {
         UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
         TestEntity testEntity = unitOfWork.newEntity( TestEntity.class );
@@ -61,22 +61,22 @@ public class Qi4jAPITest
     }
 
     public interface TestTransient
-            extends TransientComposite
+        extends TransientComposite
     {
     }
 
     public interface TestEntity
-            extends EntityComposite
+        extends EntityComposite
     {
     }
 
     public interface TestValue
-            extends ValueComposite
+        extends ValueComposite
     {
     }
 
     public interface TestService
-            extends ServiceComposite
+        extends ServiceComposite
     {
     }
 }

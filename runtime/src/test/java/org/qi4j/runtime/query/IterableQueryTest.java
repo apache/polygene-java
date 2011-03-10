@@ -69,12 +69,12 @@ public class IterableQueryTest
             public void assemble( ModuleAssembly module )
                     throws AssemblyException
             {
-                module.entities(
-                    MaleEntity.class,
-                    FemaleEntity.class,
-                    CityEntity.class,
-                    DomainEntity.class,
-                    PetEntity.class
+                module.addEntities(
+                        MaleEntity.class,
+                        FemaleEntity.class,
+                        CityEntity.class,
+                        DomainEntity.class,
+                        PetEntity.class
                 );
                 module.values( ContactsValue.class, ContactValue.class );
                 new EntityTestAssembler().assemble( module );

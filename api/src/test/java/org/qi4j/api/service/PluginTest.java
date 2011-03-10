@@ -63,19 +63,19 @@ public class PluginTest
             throws AssemblyException
         {
             return applicationFactory.newApplicationAssembly( new Assembler[][][]
-                {
-                    {
-                        {
-                            new PluginAssembler(),
-                            new UIAssembler(),
-                        }
-                    },
-                    {
-                        {
-                            new ServiceAssembler()
-                        }
-                    }
-                } );
+                                                                  {
+                                                                      {
+                                                                          {
+                                                                              new PluginAssembler(),
+                                                                              new UIAssembler(),
+                                                                          }
+                                                                      },
+                                                                      {
+                                                                          {
+                                                                              new ServiceAssembler()
+                                                                          }
+                                                                      }
+                                                                  } );
         }
     }
 
@@ -284,7 +284,8 @@ public class PluginTest
         public Object importService( final ImportedServiceDescriptor serviceDescriptor )
             throws ServiceImporterException
         {
-            return Proxy.newProxyInstance( serviceDescriptor.type().getClassLoader(), new Class[]{ serviceDescriptor.type() }, new InvocationHandler()
+            return Proxy.newProxyInstance( serviceDescriptor.type()
+                                               .getClassLoader(), new Class[]{ serviceDescriptor.type() }, new InvocationHandler()
             {
                 public Object invoke( Object proxy, Method method, Object[] args )
                     throws Throwable

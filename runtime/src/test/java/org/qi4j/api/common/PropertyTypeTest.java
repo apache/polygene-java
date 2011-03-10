@@ -151,6 +151,5 @@ public class PropertyTypeTest
         {
             return value.trim().length() > 0;
         }
-
     }
 }

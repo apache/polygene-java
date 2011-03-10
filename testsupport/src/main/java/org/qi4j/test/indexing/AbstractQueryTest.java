@@ -62,7 +62,8 @@ import org.qi4j.test.indexing.model.Nameable;
 import org.qi4j.test.indexing.model.Person;
 import org.qi4j.test.indexing.model.QueryParam;
 
-public abstract class AbstractQueryTest extends AbstractAnyQueryTest
+public abstract class AbstractQueryTest
+    extends AbstractAnyQueryTest
 {
 
     @Test
@@ -70,7 +71,7 @@ public abstract class AbstractQueryTest extends AbstractAnyQueryTest
         throws IOException
     {
         ServiceFinder serviceFinder = this.serviceLocator;
-        IndexExporter indexerExporter = serviceFinder.<IndexExporter> findService( IndexExporter.class ).get();
+        IndexExporter indexerExporter = serviceFinder.<IndexExporter>findService( IndexExporter.class ).get();
         indexerExporter.exportReadableToStream( System.out );
     }
 
@@ -130,7 +131,7 @@ public abstract class AbstractQueryTest extends AbstractAnyQueryTest
         QueryBuilder<Nameable> qb = this.queryBuilderFactory.newQueryBuilder( Nameable.class );
         Query<Nameable> query = qb.newQuery( unitOfWork );
         verifyUnorderedResults( query, "Joe Doe", "Ann Doe", "Jack Doe", "Penang", "Kuala Lumpur", "Cooking", "Gaming",
-            "Programming", "Cars" );
+                                "Programming", "Cars" );
         System.out.println( "*** script03: " + query );
     }
 
@@ -312,7 +313,7 @@ public abstract class AbstractQueryTest extends AbstractAnyQueryTest
         query.orderBy( orderBy( nameable.name() ) );
         System.out.println( "*** script18: " + query );
         verifyOrderedResults( query, "Ann Doe", "Cars", "Cooking", "Gaming", "Jack Doe", "Joe Doe", "Kuala Lumpur",
-            "Penang", "Programming" );
+                              "Penang", "Programming" );
     }
 
     @Test
@@ -366,7 +367,7 @@ public abstract class AbstractQueryTest extends AbstractAnyQueryTest
         verifyUnorderedResults( query, "Jack Doe", "Joe Doe" );
     }
 
-    @Ignore("Skip this one for now. It sporadically fails sometimes.")
+    @Ignore( "Skip this one for now. It sporadically fails sometimes." )
     @Test
     public void script23()
         throws EntityFinderException
@@ -390,13 +391,13 @@ public abstract class AbstractQueryTest extends AbstractAnyQueryTest
         assertThat( query.find().name().get(), is( equalTo( "Gaming" ) ) );
     }
 
-    @Test(expected = NotQueryableException.class)
+    @Test( expected = NotQueryableException.class )
     public void script25()
     {
         this.queryBuilderFactory.newQueryBuilder( File.class );
     }
 
-    @Test(expected = NotQueryableException.class)
+    @Test( expected = NotQueryableException.class )
     public void script26()
     {
         QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
@@ -404,7 +405,7 @@ public abstract class AbstractQueryTest extends AbstractAnyQueryTest
         qb.where( eq( person.personalWebsite().get().file().get().value(), "some/path" ) );
     }
 
-    @Test(expected = NotQueryableException.class)
+    @Test( expected = NotQueryableException.class )
     public void script27()
     {
         QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
@@ -412,7 +413,7 @@ public abstract class AbstractQueryTest extends AbstractAnyQueryTest
         qb.where( eq( person.personalWebsite().get().host().get().value(), "www.qi4j.org" ) );
     }
 
-    @Test(expected = NotQueryableException.class)
+    @Test( expected = NotQueryableException.class )
     public void script28()
     {
         QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
@@ -421,7 +422,7 @@ public abstract class AbstractQueryTest extends AbstractAnyQueryTest
     }
 
     @Test
-    @Ignore("Wait until indexing of complex values is implemented")
+    @Ignore( "Wait until indexing of complex values is implemented" )
     public void script29()
     {
         QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
@@ -433,7 +434,7 @@ public abstract class AbstractQueryTest extends AbstractAnyQueryTest
     }
 
     @Test
-    @Ignore("Wait till 1.1?")
+    @Ignore( "Wait till 1.1?" )
     public void script30()
     {
         QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
@@ -446,7 +447,7 @@ public abstract class AbstractQueryTest extends AbstractAnyQueryTest
     }
 
     @Test
-    @Ignore("Wait till 1.1?")
+    @Ignore( "Wait till 1.1?" )
     public void script31()
     {
         QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
@@ -458,7 +459,7 @@ public abstract class AbstractQueryTest extends AbstractAnyQueryTest
     }
 
     @Test
-    @Ignore("Wait for QI-58")
+    @Ignore( "Wait for QI-58" )
     public void script32()
     {
         QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );

@@ -87,6 +87,7 @@ public final class JSONTokener
      *
      * @param c A character between '0' and '9' or between 'A' and 'F' or
      *          between 'a' and 'f'.
+     *
      * @return An int between 0 and 15, or -1 if c was not a hex digit.
      */
     public static int dehexchar( char c )
@@ -166,7 +167,9 @@ public final class JSONTokener
      * character.
      *
      * @param c The character to match.
+     *
      * @return The character.
+     *
      * @throws JSONException if the character does not match.
      */
     public char next( char c )
@@ -185,7 +188,9 @@ public final class JSONTokener
      * Get the next n characters.
      *
      * @param n The number of characters to take.
+     *
      * @return A string of n characters.
+     *
      * @throws JSONException Substring bounds error if there are not
      *                       n characters remaining in the source string.
      */
@@ -197,7 +202,7 @@ public final class JSONTokener
             return "";
         }
 
-        char[] buffer = new char[n];
+        char[] buffer = new char[ n ];
         int pos = 0;
 
         if( this.useLastChar )
@@ -234,6 +239,7 @@ public final class JSONTokener
      * Get the next char in the string, skipping whitespace.
      *
      * @return A character, or 0 if there are no more characters.
+     *
      * @throws JSONException
      */
     public char nextClean()
@@ -258,7 +264,9 @@ public final class JSONTokener
      * @param quote The quoting character, either
      *              <code>"</code>&nbsp;<small>(double quote)</small> or
      *              <code>'</code>&nbsp;<small>(single quote)</small>.
+     *
      * @return A String.
+     *
      * @throws JSONException Unterminated string.
      */
     public String nextString( char quote )
@@ -271,48 +279,48 @@ public final class JSONTokener
             c = next();
             switch( c )
             {
-                case 0:
-                case '\n':
-                case '\r':
-                    throw syntaxError( "Unterminated string" );
+            case 0:
+            case '\n':
+            case '\r':
+                throw syntaxError( "Unterminated string" );
+            case '\\':
+                c = next();
+                switch( c )
+                {
+                case 'b':
+                    sb.append( '\b' );
+                    break;
+                case 't':
+                    sb.append( '\t' );
+                    break;
+                case 'n':
+                    sb.append( '\n' );
+                    break;
+                case 'f':
+                    sb.append( '\f' );
+                    break;
+                case 'r':
+                    sb.append( '\r' );
+                    break;
+                case 'u':
+                    sb.append( (char) Integer.parseInt( next( 4 ), 16 ) );
+                    break;
+                case '"':
+                case '\'':
                 case '\\':
-                    c = next();
-                    switch( c )
-                    {
-                        case 'b':
-                            sb.append( '\b' );
-                            break;
-                        case 't':
-                            sb.append( '\t' );
-                            break;
-                        case 'n':
-                            sb.append( '\n' );
-                            break;
-                        case 'f':
-                            sb.append( '\f' );
-                            break;
-                        case 'r':
-                            sb.append( '\r' );
-                            break;
-                        case 'u':
-                            sb.append( (char) Integer.parseInt( next( 4 ), 16 ) );
-                            break;
-                        case '"':
-                        case '\'':
-                        case '\\':
-                        case '/':
-                            sb.append( c );
-                            break;
-                        default:
-                            throw syntaxError( "Illegal escape." );
-                    }
+                case '/':
+                    sb.append( c );
                     break;
                 default:
-                    if( c == quote )
-                    {
-                        return sb.toString();
-                    }
-                    sb.append( c );
+                    throw syntaxError( "Illegal escape." );
+                }
+                break;
+            default:
+                if( c == quote )
+                {
+                    return sb.toString();
+                }
+                sb.append( c );
             }
         }
     }
@@ -322,6 +330,7 @@ public final class JSONTokener
      * end of line, whichever comes first.
      *
      * @param d A delimiter character.
+     *
      * @return A string.
      */
     public String nextTo( char d )
@@ -348,6 +357,7 @@ public final class JSONTokener
      * characters or the end of line, whichever comes first.
      *
      * @param delimiters A set of delimiter characters.
+     *
      * @return A string, trimmed.
      */
     public String nextTo( String delimiters )
@@ -376,6 +386,7 @@ public final class JSONTokener
      * JSONArray, JSONObject, Long, or String, or the JSONObject.NULL object.
      *
      * @return An object.
+     *
      * @throws JSONException If syntax error.
      */
     public Object nextValue()
@@ -386,16 +397,16 @@ public final class JSONTokener
 
         switch( c )
         {
-            case '"':
-            case '\'':
-                return nextString( c );
-            case '{':
-                back();
-                return new JSONObject( this );
-            case '[':
-            case '(':
-                back();
-                return new JSONArray( this );
+        case '"':
+        case '\'':
+            return nextString( c );
+        case '{':
+            back();
+            return new JSONObject( this );
+        case '[':
+        case '(':
+            back();
+            return new JSONArray( this );
         }
 
         /*
@@ -428,6 +439,7 @@ public final class JSONTokener
      * If the requested character is not found, no characters are skipped.
      *
      * @param to A character to skip to.
+     *
      * @return The requested character, or zero if the requested character
      *         is not found.
      */
@@ -464,6 +476,7 @@ public final class JSONTokener
      * Make a JSONException to signal a syntax error.
      *
      * @param message The error message.
+     *
      * @return A JSONException object, suitable for throwing
      */
     public JSONException syntaxError( String message )

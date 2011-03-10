@@ -23,7 +23,7 @@ import java.util.List;
  * JAVADOC
  */
 public class SomeMixin_Stubx
-        extends SomeMixin
+    extends SomeMixin
 {
     public CompositeInvoker _instance;
 
@@ -44,25 +44,25 @@ public class SomeMixin_Stubx
             m1 = Other.class.getMethod( "other" );
             m2 = Other.class.getMethod( "foo", String.class, Integer.TYPE );
             m3 = Other.class.getMethod( "bar",
-                    Double.TYPE,
-                    Boolean.TYPE,
-                    Float.TYPE,
-                    Character.TYPE,
-                    Integer.TYPE,
-                    Long.TYPE,
-                    Short.TYPE,
-                    Byte.TYPE,
-                    Double.class,
-                    Object[].class,
-                    int[].class );
+                                        Double.TYPE,
+                                        Boolean.TYPE,
+                                        Float.TYPE,
+                                        Character.TYPE,
+                                        Integer.TYPE,
+                                        Long.TYPE,
+                                        Short.TYPE,
+                                        Byte.TYPE,
+                                        Double.class,
+                                        Object[].class,
+                                        int[].class );
             m4 = Other.class.getMethod( "multiEx", String.class );
             m5 = Other.class.getMethod( "unwrapResult" );
             m6 = Other.class.getMethod( "generic", List.class );
 
             m7 = Some.class.getMethod( "testConcern" );
             m8 = World.class.getMethod( "someMethod", String.class, Double.TYPE, Integer.TYPE );
-
-        } catch (Throwable e)
+        }
+        catch( Throwable e )
         {
             e.printStackTrace();
         }
@@ -83,62 +83,85 @@ public class SomeMixin_Stubx
         try
         {
             return (String) _instance.invokeComposite( m1, null );
-        } catch (RuntimeException runtime)
+        }
+        catch( RuntimeException runtime )
         {
             throw runtime;
-        } catch (Throwable error)
+        }
+        catch( Throwable error )
         {
             throw (Error) error;
         }
     }
 
     public String foo( String bar, int x )
-            throws IllegalArgumentException
+        throws IllegalArgumentException
     {
         try
         {
-            return (String) _instance.invokeComposite( m2, new Object[]{bar, x} );
-        } catch (IllegalArgumentException ex)
+            return (String) _instance.invokeComposite( m2, new Object[]{ bar, x } );
+        }
+        catch( IllegalArgumentException ex )
         {
             throw ex;
-        } catch (RuntimeException runtime)
+        }
+        catch( RuntimeException runtime )
         {
             throw runtime;
-        } catch (Throwable error)
+        }
+        catch( Throwable error )
         {
             throw (Error) error;
         }
     }
 
-    public void bar( double doub, boolean bool, float fl, char ch, int integer, long lg, short sh, byte b, Double doubObj, Object[] objArr, int[] intArr )
+    public void bar( double doub,
+                     boolean bool,
+                     float fl,
+                     char ch,
+                     int integer,
+                     long lg,
+                     short sh,
+                     byte b,
+                     Double doubObj,
+                     Object[] objArr,
+                     int[] intArr
+    )
     {
         try
         {
-            _instance.invokeComposite( m3, new Object[]{doub, bool, fl, ch, integer, lg, sh, b, doubObj, objArr, intArr} );
-        } catch (RuntimeException runtime)
+            _instance.invokeComposite( m3, new Object[]{ doub, bool, fl, ch, integer, lg, sh, b, doubObj, objArr, intArr } );
+        }
+        catch( RuntimeException runtime )
         {
             throw runtime;
-        } catch (Throwable error)
+        }
+        catch( Throwable error )
         {
             throw (Error) error;
         }
     }
 
-    public void multiEx( String bar ) throws Exception1, Exception2
+    public void multiEx( String bar )
+        throws Exception1, Exception2
     {
         try
         {
-            _instance.invokeComposite( m4, new Object[]{bar} );
-        } catch (Exception1 throwable)
+            _instance.invokeComposite( m4, new Object[]{ bar } );
+        }
+        catch( Exception1 throwable )
         {
             throw throwable;
-        } catch (Exception2 throwable)
+        }
+        catch( Exception2 throwable )
         {
             throw throwable;
-        } catch (RuntimeException runtime)
+        }
+        catch( RuntimeException runtime )
         {
             throw runtime;
-        } catch (Throwable error)
+        }
+        catch( Throwable error )
         {
             throw (Error) error;
         }
@@ -149,10 +172,12 @@ public class SomeMixin_Stubx
         try
         {
             return (Long) _instance.invokeComposite( m5, null );
-        } catch (RuntimeException runtime)
+        }
+        catch( RuntimeException runtime )
         {
             throw runtime;
-        } catch (Throwable error)
+        }
+        catch( Throwable error )
         {
             throw (Error) error;
         }
@@ -162,11 +187,13 @@ public class SomeMixin_Stubx
     {
         try
         {
-            _instance.invokeComposite( m6, new Object[]{list} );
-        } catch (RuntimeException runtime)
+            _instance.invokeComposite( m6, new Object[]{ list } );
+        }
+        catch( RuntimeException runtime )
         {
             throw runtime;
-        } catch (Throwable error)
+        }
+        catch( Throwable error )
         {
             throw (Error) error;
         }
@@ -177,10 +204,12 @@ public class SomeMixin_Stubx
         try
         {
             return (String) _instance.invokeComposite( m7, null );
-        } catch (RuntimeException runtime)
+        }
+        catch( RuntimeException runtime )
         {
             throw runtime;
-        } catch (Throwable error)
+        }
+        catch( Throwable error )
         {
             throw (Error) error;
         }
@@ -196,11 +225,13 @@ public class SomeMixin_Stubx
     {
         try
         {
-            return (String) _instance.invokeComposite( m8, new Object[]{foo, x, y} );
-        } catch (RuntimeException runtime)
+            return (String) _instance.invokeComposite( m8, new Object[]{ foo, x, y } );
+        }
+        catch( RuntimeException runtime )
         {
             throw runtime;
-        } catch (Throwable error)
+        }
+        catch( Throwable error )
         {
             throw (Error) error;
         }

@@ -35,17 +35,17 @@ import org.qi4j.test.AbstractQi4jTest;
  * Test of the AppliesToFilter
  */
 public class AppliesToFilterTest
-        extends AbstractQi4jTest
+    extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
         module.transients( SomeComposite.class );
     }
 
     @Test
     public void givenAnAppliesToFilterWhenAppliedThenFilterMethods()
-            throws Exception
+        throws Exception
     {
         Some some = transientBuilderFactory.newTransient( Some.class );
         Assert.assertEquals( ",", some.doStuff1() );
@@ -53,10 +53,10 @@ public class AppliesToFilterTest
         Assert.assertEquals( ",,,", some.doStuff3() );
     }
 
-    @Concerns(MyConcern.class)
-    @Mixins(SomeMixin.class)
+    @Concerns( MyConcern.class )
+    @Mixins( SomeMixin.class )
     private interface SomeComposite
-            extends Some, TransientComposite
+        extends Some, TransientComposite
     {
     }
 
@@ -69,12 +69,12 @@ public class AppliesToFilterTest
         String doStuff3();
     }
 
-    @AppliesTo(TestFilter.class)
+    @AppliesTo( TestFilter.class )
     public static class MyConcern
-            extends GenericConcern
+        extends GenericConcern
     {
         public Object invoke( Object proxy, Method method, Object[] args )
-                throws Throwable
+            throws Throwable
         {
             String str = (String) next.invoke( proxy, method, args );
             return str + "..";
@@ -82,7 +82,7 @@ public class AppliesToFilterTest
     }
 
     public static class SomeMixin
-            implements Some
+        implements Some
     {
 
         public String doStuff1()
@@ -102,7 +102,7 @@ public class AppliesToFilterTest
     }
 
     public static class TestFilter
-            implements AppliesToFilter
+        implements AppliesToFilter
     {
         public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> fragmentClass )
         {

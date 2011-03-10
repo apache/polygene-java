@@ -14,7 +14,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class QI247Test2 extends AbstractQi4jTest
+public class QI247Test2
+    extends AbstractQi4jTest
 {
 
     public void assemble( ModuleAssembly module )
@@ -132,7 +133,8 @@ public class QI247Test2 extends AbstractQi4jTest
     }
 
     @Mixins( ObjectMethodsHandler.class )
-    public interface TransientWithHandler extends TransientComposite, ObjectMethods
+    public interface TransientWithHandler
+        extends TransientComposite, ObjectMethods
     {
     }
 }

@@ -25,14 +25,15 @@ import org.qi4j.bootstrap.ModuleAssembly;
  * JAVADOC
  */
 public class ObjectBuilderTest
-        extends AbstractQi4jTest
+    extends AbstractQi4jTest
 {
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
         module.objects( A.class, B.class, C.class );
     }
 
-    @Test(expected = ConstructionException.class)
+    @Test( expected = ConstructionException.class )
     public void testMissingUses()
     {
         objectBuilderFactory.newObjectBuilder( A.class ).newInstance();

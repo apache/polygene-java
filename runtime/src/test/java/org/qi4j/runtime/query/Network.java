@@ -49,7 +49,7 @@ class Network
     private static List<Nameable> nameables;
 
     static void populate( final UnitOfWork uow, ValueBuilderFactory vbf )
-            throws UnitOfWorkCompletionException
+        throws UnitOfWorkCompletionException
     {
         domains = new ArrayList<Domain>();
         persons = new ArrayList<Person>();
@@ -193,7 +193,7 @@ class Network
 
     private static <T> void refresh( UnitOfWork uow, List<T> list )
     {
-        for (int i = 0; i < list.size(); i++)
+        for( int i = 0; i < list.size(); i++ )
         {
             T entity = list.get( i );
             list.set( i, uow.get( entity ) );

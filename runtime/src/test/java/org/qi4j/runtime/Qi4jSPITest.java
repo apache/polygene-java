@@ -40,10 +40,10 @@ import static org.junit.Assert.*;
  * JAVADOC
  */
 public class Qi4jSPITest
-        extends AbstractQi4jTest
+    extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
         new EntityTestAssembler().assemble( module );
         module.entities( TestEntity.class, TestEntity2.class );
@@ -51,7 +51,7 @@ public class Qi4jSPITest
 
     @Test
     public void givenEntityWhenGettingStateThenGetCorrectState()
-            throws Exception
+        throws Exception
     {
         UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
         TestEntity testEntity;
@@ -67,7 +67,7 @@ public class Qi4jSPITest
 
             unitOfWork.complete();
         }
-        catch (Exception e)
+        catch( Exception e )
         {
             unitOfWork.discard();
             throw e;
@@ -80,7 +80,7 @@ public class Qi4jSPITest
             validateState( spi.getState( testEntity ), spi.getEntityDescriptor( testEntity ) );
             uow.complete();
         }
-        catch (Exception e)
+        catch( Exception e )
         {
             uow.discard();
             throw e;
@@ -89,14 +89,14 @@ public class Qi4jSPITest
 
     private void validateState( EntityStateHolder state, EntityDescriptor entityDescriptor )
     {
-        for (PropertyDescriptor propertyDescriptor : entityDescriptor.state().properties())
+        for( PropertyDescriptor propertyDescriptor : entityDescriptor.state().properties() )
         {
             Property<?> prop = state.getProperty( propertyDescriptor.accessor() );
             assertThat( "Properties could be listed", prop, CoreMatchers.notNullValue() );
         }
 
         EntityStateDescriptor descriptor = (EntityStateDescriptor) entityDescriptor.state();
-        for (AssociationDescriptor associationDescriptor : descriptor.associations())
+        for( AssociationDescriptor associationDescriptor : descriptor.associations() )
         {
             AbstractAssociation assoc = state.getAssociation( associationDescriptor.accessor() );
             assertThat( "Assocs could be listed", assoc, CoreMatchers.notNullValue() );
@@ -104,7 +104,7 @@ public class Qi4jSPITest
     }
 
     public interface TestEntity
-            extends EntityComposite
+        extends EntityComposite
     {
         @Optional
         Property<String> property();
@@ -116,7 +116,7 @@ public class Qi4jSPITest
     }
 
     public interface TestEntity2
-            extends EntityComposite
+        extends EntityComposite
     {
         @Optional
         Property<String> property();

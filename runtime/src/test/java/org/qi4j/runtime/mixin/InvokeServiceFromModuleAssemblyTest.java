@@ -27,14 +27,14 @@ import static org.junit.Assert.fail;
 /**
  * @author Stanislav Muhametsin
  */
-public class InvokeServiceFromModuleAssemblyTest extends AbstractQi4jTest
+public class InvokeServiceFromModuleAssemblyTest
+    extends AbstractQi4jTest
 {
     @Mixins( NoopMixin.class )
     public interface TestService
         extends ServiceComposite
     {
         public void voidMethod();
-
     }
 
     public void assemble( ModuleAssembly module )

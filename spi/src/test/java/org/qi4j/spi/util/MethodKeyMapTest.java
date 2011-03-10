@@ -62,8 +62,8 @@ public class MethodKeyMapTest
         Method method2 = getMethod( StringBuffer.class, "append", Integer.TYPE );
         Method method3 = getMethod( StringBuffer.class, "append", Object.class );
         Method method4 = getMethod( StringBuffer.class, "append", Character.TYPE );
-        Method method5 = getMethod( StringBuffer.class, "append", ( new char[0] ).getClass() );
-        Method method6 = getMethod( StringBuffer.class, "append", ( new char[0] ).getClass(), Integer.TYPE, Integer.TYPE );
+        Method method5 = getMethod( StringBuffer.class, "append", ( new char[ 0 ] ).getClass() );
+        Method method6 = getMethod( StringBuffer.class, "append", ( new char[ 0 ] ).getClass(), Integer.TYPE, Integer.TYPE );
         Method method7 = getMethod( StringBuffer.class, "append", Long.TYPE );
         Method method8 = getMethod( StringBuffer.class, "append", Double.TYPE );
         map.put( method1, 1 );

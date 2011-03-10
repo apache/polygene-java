@@ -67,7 +67,8 @@ import org.qi4j.test.indexing.model.entities.DomainEntity;
 import org.qi4j.test.indexing.model.entities.FemaleEntity;
 import org.qi4j.test.indexing.model.entities.MaleEntity;
 
-public abstract class AbstractNamedQueryTest extends AbstractAnyQueryTest
+public abstract class AbstractNamedQueryTest
+    extends AbstractAnyQueryTest
 {
 
     @Override
@@ -81,9 +82,9 @@ public abstract class AbstractNamedQueryTest extends AbstractAnyQueryTest
         for( int i = 0; i < query.length; i++ )
         {
             String queryName = String.format( "script%02d", i + 1 );
-            if( query[i].length() != 0 )
+            if( query[ i ].length() != 0 )
             {
-                NamedQueryDescriptor descriptor = createNamedQueryDescriptor( queryName, query[i] );
+                NamedQueryDescriptor descriptor = createNamedQueryDescriptor( queryName, query[ i ] );
                 namedQueries.addQuery( descriptor );
             }
         }
@@ -102,7 +103,7 @@ public abstract class AbstractNamedQueryTest extends AbstractAnyQueryTest
         throws IOException
     {
         ServiceFinder serviceFinder = this.serviceLocator;
-        IndexExporter indexerExporter = serviceFinder.<IndexExporter> findService( IndexExporter.class ).get();
+        IndexExporter indexerExporter = serviceFinder.<IndexExporter>findService( IndexExporter.class ).get();
         indexerExporter.exportReadableToStream( System.out );
     }
 
@@ -159,7 +160,7 @@ public abstract class AbstractNamedQueryTest extends AbstractAnyQueryTest
         final Query<Nameable> query = this.queryBuilderFactory.newNamedQuery( Nameable.class, unitOfWork, "script03" );
         System.out.println( "*** script03: " + query );
         verifyUnorderedResults( query, "Joe Doe", "Ann Doe", "Jack Doe", "Penang", "Kuala Lumpur", "Cooking", "Gaming",
-            "Programming", "Cars" );
+                                "Programming", "Cars" );
     }
 
     @Test
@@ -304,7 +305,7 @@ public abstract class AbstractNamedQueryTest extends AbstractAnyQueryTest
         query.orderBy( orderBy( nameable.name() ) );
         System.out.println( "*** script18: " + query );
         verifyOrderedResults( query, "Ann Doe", "Cars", "Cooking", "Gaming", "Jack Doe", "Joe Doe", "Kuala Lumpur",
-            "Penang", "Programming" );
+                              "Penang", "Programming" );
     }
 
     @Test
@@ -349,7 +350,7 @@ public abstract class AbstractNamedQueryTest extends AbstractAnyQueryTest
         verifyUnorderedResults( query, "Jack Doe", "Joe Doe" );
     }
 
-    @Ignore("Skip this one for now. It sporadically fails sometimes.")
+    @Ignore( "Skip this one for now. It sporadically fails sometimes." )
     @Test
     public void script23()
         throws EntityFinderException
@@ -370,7 +371,7 @@ public abstract class AbstractNamedQueryTest extends AbstractAnyQueryTest
     }
 
     @Test
-    @Ignore("Wait until indexing of complex values is implemented")
+    @Ignore( "Wait until indexing of complex values is implemented" )
     public void script29()
     {
         final Query<Person> query = this.queryBuilderFactory.newNamedQuery( Person.class, unitOfWork, "script29" );
@@ -379,7 +380,7 @@ public abstract class AbstractNamedQueryTest extends AbstractAnyQueryTest
     }
 
     @Test
-    @Ignore("Wait till 1.1?")
+    @Ignore( "Wait till 1.1?" )
     public void script30()
     {
         final Query<Nameable> query = this.queryBuilderFactory.newNamedQuery( Nameable.class, unitOfWork, "script30" );
@@ -388,7 +389,7 @@ public abstract class AbstractNamedQueryTest extends AbstractAnyQueryTest
     }
 
     @Test
-    @Ignore("Wait till 1.1?")
+    @Ignore( "Wait till 1.1?" )
     public void script31()
     {
         final Query<Person> query = this.queryBuilderFactory.newNamedQuery( Person.class, unitOfWork, "script31" );

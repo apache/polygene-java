@@ -83,7 +83,7 @@ public class MockResolverProxy
     /**
      * Delegates to current mock resolver delegate.
      *
-     * @see MockResolver#getInvocationHandler(Object,java.lang.reflect.Method,Object[])
+     * @see MockResolver#getInvocationHandler(Object, java.lang.reflect.Method, Object[])
      */
     public InvocationHandler getInvocationHandler( final Object proxy, final Method method, final Object[] args )
     {

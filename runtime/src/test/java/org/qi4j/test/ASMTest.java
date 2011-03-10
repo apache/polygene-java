@@ -81,7 +81,7 @@ public class ASMTest
 
     @Test
 //    @Ignore
-public void createClass()
+    public void createClass()
         throws Exception
     {
 /*
@@ -115,7 +115,18 @@ public void createClass()
                 return "bar:" + bar;
             }
 
-            public void bar( double doub, boolean bool, float fl, char ch, int integer, long lg, short sh, byte b, Double doubObj, Object[] objArr, int[] intArr )
+            public void bar( double doub,
+                             boolean bool,
+                             float fl,
+                             char ch,
+                             int integer,
+                             long lg,
+                             short sh,
+                             byte b,
+                             Double doubObj,
+                             Object[] objArr,
+                             int[] intArr
+            )
             {
             }
 
@@ -167,7 +178,6 @@ public void createClass()
                         throw ex.getCause();
                     }
                 }
-
             }
         };
 

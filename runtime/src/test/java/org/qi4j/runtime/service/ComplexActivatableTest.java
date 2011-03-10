@@ -30,7 +30,8 @@ import org.qi4j.test.AbstractQi4jTest;
 
 import static org.junit.Assert.assertEquals;
 
-public class ComplexActivatableTest extends AbstractQi4jTest
+public class ComplexActivatableTest
+    extends AbstractQi4jTest
 {
 
     public void assemble( ModuleAssembly module )
@@ -47,14 +48,14 @@ public class ComplexActivatableTest extends AbstractQi4jTest
     }
 
     @Mixins( { DomainType.class, ActivationMixin.class } )
-    public interface SuperType extends Activatable, ServiceComposite
+    public interface SuperType
+        extends Activatable, ServiceComposite
     {
         String sayHello();
 
         Property<String> greeting();
 
         Property<String> recepient();
-
     }
 
     public abstract static class DomainType

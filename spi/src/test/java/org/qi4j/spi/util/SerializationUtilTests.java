@@ -51,7 +51,7 @@ public class SerializationUtilTests
     {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream( baos );
-        Constructor cons1 = String.class.getConstructor( ( new char[0] ).getClass() );
+        Constructor cons1 = String.class.getConstructor( ( new char[ 0 ] ).getClass() );
         SerializationUtil.writeConstructor( oos, cons1 );
         oos.flush();
         ByteArrayInputStream bais = new ByteArrayInputStream( baos.toByteArray() );

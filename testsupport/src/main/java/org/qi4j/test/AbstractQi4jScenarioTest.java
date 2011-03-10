@@ -115,7 +115,9 @@ public abstract class AbstractQi4jScenarioTest
      * Override this method to catch valid failures to place into satisfiedBy suites.
      *
      * @param exception the exception thrown.
-     * @throws org.qi4j.bootstrap.AssemblyException The default implementation of this method will simply re-throw the exception.
+     *
+     * @throws org.qi4j.bootstrap.AssemblyException
+     *          The default implementation of this method will simply re-throw the exception.
      */
     static protected void assemblyException( AssemblyException exception )
         throws AssemblyException

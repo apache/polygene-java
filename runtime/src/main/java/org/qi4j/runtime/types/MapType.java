@@ -35,20 +35,20 @@ import java.util.*;
  * Map type. This handles instances of Map
  */
 public final class MapType
-        extends AbstractValueType
+    extends AbstractValueType
 {
     private ValueType keyType;
     private ValueType valueType;
 
-    public static boolean isMap(Type type)
+    public static boolean isMap( Type type )
     {
-        Class cl = Classes.getRawClass(type);
-        return cl.equals(Map.class);
+        Class cl = Classes.getRawClass( type );
+        return cl.equals( Map.class );
     }
 
-    public MapType(TypeName type, ValueType keyType, ValueType valueType)
+    public MapType( TypeName type, ValueType keyType, ValueType valueType )
     {
-        super(type);
+        super( type );
         this.keyType = keyType;
         this.valueType = valueType;
     }
@@ -69,82 +69,84 @@ public final class MapType
         return type() + "<" + keyType + "," + valueType + ">";
     }
 
-    public void toJSON(Object value, JSONWriter json)
-            throws JSONException
+    public void toJSON( Object value, JSONWriter json )
+        throws JSONException
     {
         json.array();
 
         Map map = (Map) value;
         Set<java.util.Map.Entry> set = map.entrySet();
-        for (Map.Entry<Object, Object> entry : set)
+        for( Map.Entry<Object, Object> entry : set )
         {
             json.object();
-            json.key("key");
-            keyType.toJSON(entry.getKey(), json);
-            json.key("value");
-            valueType.toJSON(entry.getValue(), json);
+            json.key( "key" );
+            keyType.toJSON( entry.getKey(), json );
+            json.key( "value" );
+            valueType.toJSON( entry.getValue(), json );
             json.endObject();
         }
 
         json.endArray();
     }
 
-    public Object toJSON(Object value)
-            throws JSONException
+    public Object toJSON( Object value )
+        throws JSONException
     {
         JSONArray array = new JSONArray();
 
         Map map = (Map) value;
         Set<java.util.Map.Entry> set = map.entrySet();
-        for (Map.Entry<Object, Object> entry : set)
+        for( Map.Entry<Object, Object> entry : set )
         {
             JSONObject entryJson = new JSONObject();
-            entryJson.put("key", keyType.toJSON(entry.getKey()));
-            entryJson.put("value", valueType.toJSON(entry.getValue()));
-            array.put(entryJson);
+            entryJson.put( "key", keyType.toJSON( entry.getKey() ) );
+            entryJson.put( "value", valueType.toJSON( entry.getValue() ) );
+            array.put( entryJson );
         }
 
         return array;
     }
 
-    public Object fromJSON(Object json, Module module)
-            throws JSONException
+    public Object fromJSON( Object json, Module module )
+        throws JSONException
     {
-        if (json instanceof String)
+        if( json instanceof String )
         {
             try
             {
                 // Legacy handling of serialized maps
                 String serializedString = (String) json;
-                byte[] bytes = serializedString.getBytes("UTF-8");
-                bytes = Base64Encoder.decode(bytes);
-                ByteArrayInputStream bin = new ByteArrayInputStream(bytes);
-                ObjectInputStream oin = new ObjectInputStream(bin);
+                byte[] bytes = serializedString.getBytes( "UTF-8" );
+                bytes = Base64Encoder.decode( bytes );
+                ByteArrayInputStream bin = new ByteArrayInputStream( bytes );
+                ObjectInputStream oin = new ObjectInputStream( bin );
                 Object result = oin.readObject();
                 oin.close();
 
                 return result;
-            } catch (IOException e)
-            {
-                throw new IllegalStateException("Could not deserialize value", e);
-            } catch (ClassNotFoundException e)
-            {
-                throw new IllegalStateException("Could not find class for serialized value", e);
             }
-
-        } else
+            catch( IOException e )
+            {
+                throw new IllegalStateException( "Could not deserialize value", e );
+            }
+            catch( ClassNotFoundException e )
+            {
+                throw new IllegalStateException( "Could not find class for serialized value", e );
+            }
+        }
+        else
         {
             // New array-based handling
             JSONArray array = (JSONArray) json;
 
-            Map<Object, Object> map = (Map<Object, Object>) DefaultValues.getDefaultValue(Map.class);
+            Map<Object, Object> map = (Map<Object, Object>) DefaultValues.getDefaultValue( Map.class );
 
-            for (int i = 0; i < array.length(); i++)
+            for( int i = 0; i < array.length(); i++ )
             {
-                JSONObject entry = array.getJSONObject(i);
-                Object key = keyType.fromJSON(entry.get("key"), module);
-                Object value = valueType.fromJSON(entry.get("value"), module);
-                map.put(key, value);
+                JSONObject entry = array.getJSONObject( i );
+                Object key = keyType.fromJSON( entry.get( "key" ), module );
+                Object value = valueType.fromJSON( entry.get( "value" ), module );
+                map.put( key, value );
             }
 
             return map;

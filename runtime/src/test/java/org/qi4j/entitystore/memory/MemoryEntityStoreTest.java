@@ -27,11 +27,11 @@ import static org.qi4j.bootstrap.ImportedServiceDeclaration.NEW_OBJECT;
  * Test of MemoryEntityStoreService
  */
 public class MemoryEntityStoreTest
-        extends AbstractEntityStoreTest
+    extends AbstractEntityStoreTest
 {
     @Override
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
         super.assemble( module );
 
@@ -41,11 +41,11 @@ public class MemoryEntityStoreTest
     }
 
     static public class StatePrinter
-            implements StateChangeListener
+        implements StateChangeListener
     {
         public void notifyChanges( Iterable<EntityState> changedStates )
         {
-            for (EntityState changedState : changedStates)
+            for( EntityState changedState : changedStates )
             {
                 System.out.println( changedState.status().name() + ":" + changedState.identity() );
             }
