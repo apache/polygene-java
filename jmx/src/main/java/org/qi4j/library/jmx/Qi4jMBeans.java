@@ -32,8 +32,8 @@ public class Qi4jMBeans
         {
             public boolean satisfiedBy( ObjectName item )
             {
-                return item.getKeyPropertyList().size() == 4;
+                return item.getKeyPropertyList().size() == 5;
             }
-        }, server.queryNames( new ObjectName( applicationName + ":*,service=" + serviceId ), null ) ) );
+        }, server.queryNames( new ObjectName( "Qi4j:application="+applicationName + ",*,service=" + serviceId ), null ) ) );
     }
 }
