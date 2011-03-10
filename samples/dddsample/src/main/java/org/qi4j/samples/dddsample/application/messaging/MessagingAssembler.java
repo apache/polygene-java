@@ -31,7 +31,7 @@ public final class MessagingAssembler
     public final void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices(
+        module.services(
             DummyDomainEventNotifierService.class
         ).visibleIn( application );
     }

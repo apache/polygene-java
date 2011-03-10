@@ -31,13 +31,13 @@ public class SwingBindingAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addObjects( StateModel.class, StateInvocationHandler.class, BoundProperty.class );
+        module.objects( StateModel.class, StateInvocationHandler.class, BoundProperty.class );
         addStringToTextFieldAdapter( module );
     }
 
     protected void addStringToTextFieldAdapter( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices( StringToTextFieldAdapterService.class );
+        module.services( StringToTextFieldAdapterService.class );
     }
 }

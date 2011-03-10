@@ -56,10 +56,10 @@ public abstract class AbstractIssueTest
     public final void assemble( ModuleAssembly aModuleAssembly )
         throws AssemblyException
     {
-        aModuleAssembly.addEntities( AccountComposite.class );
-        aModuleAssembly.addServices( MemoryEntityStoreService.class,
-                                     UuidIdentityGeneratorService.class,
-                                     MemoryRepositoryService.class );
+        aModuleAssembly.entities( AccountComposite.class );
+        aModuleAssembly.services( MemoryEntityStoreService.class,
+                                  UuidIdentityGeneratorService.class,
+                                  MemoryRepositoryService.class );
         onAssemble( aModuleAssembly );
     }
 

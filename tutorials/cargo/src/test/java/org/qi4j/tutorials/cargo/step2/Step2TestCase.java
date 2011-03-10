@@ -88,7 +88,7 @@ public class Step2TestCase
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addTransients( VoyageComposite.class, CargoComposite.class, ShippingServiceComposite.class );
+        module.transients( VoyageComposite.class, CargoComposite.class, ShippingServiceComposite.class );
     }
 
     private Cargo newCargo( double size )

@@ -57,14 +57,14 @@ public class TransferMoneyTest
             {
                 module.layerAssembly().applicationAssembly().setMetaInfo( new ContextInjectionProviderFactory() );
 
-                module.addEntities(
-                        CheckingAccountRolemap.class,
-                        SavingsAccountRolemap.class,
-                        CreditorRolemap.class );
+                module.entities(
+                    CheckingAccountRolemap.class,
+                    SavingsAccountRolemap.class,
+                    CreditorRolemap.class );
 
-                module.addServices(
-                        MemoryEntityStoreService.class,
-                        UuidIdentityGeneratorService.class );
+                module.services(
+                    MemoryEntityStoreService.class,
+                    UuidIdentityGeneratorService.class );
             }
         };
 

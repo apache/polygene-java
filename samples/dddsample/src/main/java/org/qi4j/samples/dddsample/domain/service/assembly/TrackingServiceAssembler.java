@@ -34,7 +34,7 @@ public final class TrackingServiceAssembler
     public final void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices( TrackingService.class )
+        module.services( TrackingService.class )
             .identifiedBy( "trackingService" )
             .visibleIn( application );
     }

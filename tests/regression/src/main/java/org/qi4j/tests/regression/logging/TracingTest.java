@@ -50,15 +50,15 @@ public class TracingTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices( SomeService.class ).instantiateOnStartup();
-        module.addServices( SomeService2.class ).instantiateOnStartup();
+        module.services( SomeService.class ).instantiateOnStartup();
+        module.services( SomeService2.class ).instantiateOnStartup();
         new TracingAssembler().assemble( module );
-        module.addServices( MemoryEntityStoreService.class );
+        module.services( MemoryEntityStoreService.class );
         new RdfMemoryStoreAssembler().assemble( module );
-        module.addServices( UuidIdentityGeneratorService.class );
-        module.addEntities( CompositeTraceRecordEntity.class );
-        module.addEntities( EntityTraceRecordEntity.class );
-        module.addEntities( ServiceTraceRecordEntity.class );
+        module.services( UuidIdentityGeneratorService.class );
+        module.entities( CompositeTraceRecordEntity.class );
+        module.entities( EntityTraceRecordEntity.class );
+        module.entities( ServiceTraceRecordEntity.class );
     }
 
     @Test

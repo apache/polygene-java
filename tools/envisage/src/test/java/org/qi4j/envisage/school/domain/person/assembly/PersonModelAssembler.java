@@ -30,10 +30,10 @@ public final class PersonModelAssembler
     public final void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addEntities( PersonEntity.class )
+        module.entities( PersonEntity.class )
             .visibleIn( layer );
 
-        module.addServices( SamplePersonInitialData.class )
+        module.services( SamplePersonInitialData.class )
             .visibleIn( application )
             .instantiateOnStartup();
     }

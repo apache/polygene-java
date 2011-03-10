@@ -33,7 +33,7 @@ public class IssueTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addTransients( ValueHolder.class );
+        module.transients( ValueHolder.class );
     }
 
     @Test

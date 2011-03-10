@@ -47,27 +47,27 @@ public final class CargoModelAssembler
     public final void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addTransients(
+        module.transients(
             RouteSpecificationComposite.class
         );
 
-        module.addEntities(
+        module.entities(
             CargoEntity.class,
             LegEntity.class,
             ItineraryEntity.class
         ).visibleIn( application );
 
-        module.addServices(
+        module.services(
             ExternalRoutingService.class,
             CargoRepositoryService.class,
             BookingService.class
         ).visibleIn( application );
 
-        module.importServices( GraphTraversalServiceImpl.class ).importedBy( SpringImporter.class );
+        module.importedServices( GraphTraversalServiceImpl.class ).importedBy( SpringImporter.class );
 
         if( loadSampleData )
         {
-            module.addServices( SampleCargoDataBootstrapService.class )
+            module.services( SampleCargoDataBootstrapService.class )
                 .visibleIn( layer )
                 .instantiateOnStartup();
         }

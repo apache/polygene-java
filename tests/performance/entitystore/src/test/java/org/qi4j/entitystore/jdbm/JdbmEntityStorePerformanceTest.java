@@ -46,7 +46,7 @@ public class JdbmEntityStorePerformanceTest
             {
                 new JdbmEntityStoreAssembler( Visibility.application ).assemble( module );
                 ModuleAssembly configModule = module.layerAssembly().moduleAssembly( "Config" );
-                configModule.addEntities( JdbmConfiguration.class ).visibleIn( Visibility.layer );
+                configModule.entities( JdbmConfiguration.class ).visibleIn( Visibility.layer );
                 new EntityTestAssembler( Visibility.module ).assemble( configModule );
             }
         };

@@ -37,7 +37,7 @@ public class ConcernsOnPropertyTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addTransients( CarComposite.class );
+        module.transients( CarComposite.class );
     }
 
     @Test

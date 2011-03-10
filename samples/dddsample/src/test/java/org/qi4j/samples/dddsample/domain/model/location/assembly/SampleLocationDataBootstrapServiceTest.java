@@ -43,7 +43,7 @@ public final class SampleLocationDataBootstrapServiceTest
         throws AssemblyException
     {
         new LocationModelAssembler( true ).assemble( module );
-        module.addServices(
+        module.services(
             MemoryEntityStoreService.class,
             UuidIdentityGeneratorService.class
         );

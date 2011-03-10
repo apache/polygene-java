@@ -44,19 +44,19 @@ public final class LocationModelAssembler
     public final void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addEntities( LocationEntity.class )
+        module.entities( LocationEntity.class )
 //            .visibleIn( layer );
             .visibleIn( application );
 
-        module.addServices( LocationRepositoryService.class )
+        module.services( LocationRepositoryService.class )
             .visibleIn( application )
             .instantiateOnStartup();
 
-        module.addServices( LocationFactoryService.class );
+        module.services( LocationFactoryService.class );
 
         if( loadSampleData )
         {
-            module.addServices( SampleLocationDataBootstrapService.class )
+            module.services( SampleLocationDataBootstrapService.class )
                 .visibleIn( layer )
                 .instantiateOnStartup();
         }

@@ -32,7 +32,7 @@ public class PersistenceConfigAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices(
+        module.services(
             UuidIdentityGeneratorService.class,
             MemoryEntityStoreService.class
         ).visibleIn( layer ).instantiateOnStartup();

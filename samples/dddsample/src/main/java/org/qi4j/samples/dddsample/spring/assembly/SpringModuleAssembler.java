@@ -30,7 +30,7 @@ public final class SpringModuleAssembler
     public final void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices( OpenUnitOfWorkInViewService.class )
+        module.services( OpenUnitOfWorkInViewService.class )
             .identifiedBy( "openUnitOfWorkInViewInterceptor" );
     }
 }

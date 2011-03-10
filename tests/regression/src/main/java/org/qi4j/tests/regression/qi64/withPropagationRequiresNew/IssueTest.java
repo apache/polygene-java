@@ -84,6 +84,6 @@ public class IssueTest
     protected final void onAssemble( ModuleAssembly aModuleAssembly )
         throws AssemblyException
     {
-        aModuleAssembly.addServices( AccountServiceComposite.class );
+        aModuleAssembly.services( AccountServiceComposite.class );
     }
 }

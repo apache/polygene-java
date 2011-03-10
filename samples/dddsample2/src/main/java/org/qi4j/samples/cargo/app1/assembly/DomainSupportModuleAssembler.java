@@ -12,6 +12,6 @@ public class DomainSupportModuleAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices( EntityToValueService.class ).visibleIn( Visibility.layer );
+        module.services( EntityToValueService.class ).visibleIn( Visibility.layer );
     }
 }

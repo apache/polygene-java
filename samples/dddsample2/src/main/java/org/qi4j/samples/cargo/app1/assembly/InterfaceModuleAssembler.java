@@ -12,7 +12,7 @@ public class InterfaceModuleAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices( BookingServiceFacade.class ).instantiateOnStartup();
+        module.services( BookingServiceFacade.class ).instantiateOnStartup();
         new CxfAssembler().assemble( module );
     }
 }

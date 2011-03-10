@@ -14,7 +14,7 @@ public class IssueTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addTransients( SampleComposite.class );
+        module.transients( SampleComposite.class );
     }
 
     @Test( expected = ConstraintViolationException.class )

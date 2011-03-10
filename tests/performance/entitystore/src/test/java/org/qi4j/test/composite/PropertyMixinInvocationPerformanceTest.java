@@ -36,8 +36,8 @@ public class PropertyMixinInvocationPerformanceTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addTransients( SimpleComposite.class );
-        module.addTransients( SimpleComposite2.class );
+        module.transients( SimpleComposite.class );
+        module.transients( SimpleComposite2.class );
     }
 
     @Test

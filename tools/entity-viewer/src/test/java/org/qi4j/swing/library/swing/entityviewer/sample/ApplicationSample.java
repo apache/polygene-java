@@ -39,8 +39,8 @@ public class ApplicationSample
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addEntities( CarEntity.class );
-        module.addEntities( AnimalEntity.class );
+        module.entities( CarEntity.class );
+        module.entities( AnimalEntity.class );
         new RdfMemoryStoreAssembler().assemble( module );
         new EntityTestAssembler().assemble( module );
     }

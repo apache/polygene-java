@@ -32,7 +32,7 @@ public class AdminAssembler
     public void assemble( ModuleAssembly aModule )
         throws AssemblyException
     {
-        aModule.addTransients(
+        aModule.transients(
             ListSchoolsPageComposite.class,
             ListUserPageComposite.class,
             UserDetailPageComposite.class

@@ -42,8 +42,8 @@ public class ServiceInvocationPerformanceTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.addServices( ServiceInvocationPerformanceTest.MyServiceComposite.class );
-                module.addObjects( ServiceInvocationPerformanceTest.class );
+                module.services( ServiceInvocationPerformanceTest.MyServiceComposite.class );
+                module.objects( ServiceInvocationPerformanceTest.class );
             }
         };
 

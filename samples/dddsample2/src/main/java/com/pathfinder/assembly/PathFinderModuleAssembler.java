@@ -16,7 +16,7 @@ public class PathFinderModuleAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.importServices( GraphTraversalService.class ).importedBy( GraphTraversalServiceImport.class );
+        module.importedServices( GraphTraversalService.class ).importedBy( GraphTraversalServiceImport.class );
     }
 
     public static class GraphTraversalServiceImport

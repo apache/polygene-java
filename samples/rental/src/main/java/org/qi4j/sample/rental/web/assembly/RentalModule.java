@@ -39,13 +39,13 @@ public class RentalModule
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addEntities( Booking.class, Car.class, Customer.class, CarCategory.class ).visibleIn( application );
-        module.addValues( Address.class, Period.class );
-        module.addEntities( RentalShop.class ).visibleIn( application );
+        module.entities( Booking.class, Car.class, Customer.class, CarCategory.class ).visibleIn( application );
+        module.values( Address.class, Period.class );
+        module.entities( RentalShop.class ).visibleIn( application );
 
         if( module.layerAssembly().applicationAssembly().mode().equals( Application.Mode.development ) )
         {
-            module.addTransients( InitialData.class ).visibleIn( application );
+            module.transients( InitialData.class ).visibleIn( application );
         }
     }
 }

@@ -32,9 +32,9 @@ public class HandlingModuleAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addEntities( HandlingEvent.class ).visibleIn( Visibility.module );
-        module.addValues( HandlingHistory.class ).visibleIn( Visibility.module );
-        module.addServices(
+        module.entities( HandlingEvent.class ).visibleIn( Visibility.module );
+        module.values( HandlingHistory.class ).visibleIn( Visibility.module );
+        module.services(
             HandlingEventFactory.class,
             HandlingEventRepository.class
         ).visibleIn( Visibility.layer );

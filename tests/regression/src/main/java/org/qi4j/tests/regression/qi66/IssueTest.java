@@ -85,10 +85,10 @@ public class IssueTest
     public final void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addEntities( AccountComposite.class );
+        module.entities( AccountComposite.class );
         new EntityTestAssembler().assemble( module );
-        module.addServices( RdfQueryService.class, RdfQueryParserFactory.class,
-                            MemoryRepositoryService.class );
-        module.addObjects( EntityStateSerializer.class, EntityTypeSerializer.class );
+        module.services( RdfQueryService.class, RdfQueryParserFactory.class,
+                         MemoryRepositoryService.class );
+        module.objects( EntityStateSerializer.class, EntityTypeSerializer.class );
     }
 }

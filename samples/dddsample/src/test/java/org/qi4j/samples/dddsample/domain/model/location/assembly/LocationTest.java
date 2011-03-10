@@ -42,7 +42,7 @@ public class LocationTest
         throws AssemblyException
     {
         new LocationModelAssembler().assemble( module );
-        module.addServices(
+        module.services(
             MemoryEntityStoreService.class,
             UuidIdentityGeneratorService.class
         );

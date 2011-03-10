@@ -33,11 +33,11 @@ public class UnitTests extends AbstractEntityStoreTest
     {
         super.assemble( module );
         System.out.println( "Registering GAE services." );
-        module.addServices( GaeEntityStoreService.class );
+        module.services( GaeEntityStoreService.class );
 
         ModuleAssembly configModule = module.layerAssembly().moduleAssembly( "config" );
-        configModule.addEntities( GaeEntityStoreConfiguration.class ).visibleIn( Visibility.layer );
-        configModule.addServices( MemoryEntityStoreService.class );
+        configModule.entities( GaeEntityStoreConfiguration.class ).visibleIn( Visibility.layer );
+        configModule.services( MemoryEntityStoreService.class );
 
     }
 }

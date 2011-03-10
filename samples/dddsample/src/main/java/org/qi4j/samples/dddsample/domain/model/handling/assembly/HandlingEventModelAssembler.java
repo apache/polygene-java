@@ -44,18 +44,18 @@ public final class HandlingEventModelAssembler
     public final void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addEntities( HandlingEventEntity.class )
+        module.entities( HandlingEventEntity.class )
 //            .visibleIn( layer );
             .visibleIn( application );
 
-        module.addServices(
+        module.services(
             HandlingEventFactoryService.class,
             HandlingEventRepositoryService.class
         ).visibleIn( application );
 
         if( loadSampleData )
         {
-            module.addServices( SampleHandlingEventDataBootstrapService.class )
+            module.services( SampleHandlingEventDataBootstrapService.class )
                 .visibleIn( layer )
                 .instantiateOnStartup();
         }

@@ -33,11 +33,11 @@ public class PagesModule
         throws AssemblyException
     {
         PageMetaInfo mainpageMeta = new PageMetaInfo( "main" );
-        module.addServices( MainPage.class ).setMetaInfo( mainpageMeta );
+        module.services( MainPage.class ).setMetaInfo( mainpageMeta );
 
         PageMetaInfo bookingpageMeta = new PageMetaInfo( "booking" );
-        module.addServices( BookingPage.class ).setMetaInfo( bookingpageMeta );
+        module.services( BookingPage.class ).setMetaInfo( bookingpageMeta );
 
-        module.addServices( UrlService.class );
+        module.services( UrlService.class );
     }
 }

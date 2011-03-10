@@ -57,15 +57,15 @@ public class CargoXmlTest extends VorticityMessagingTest {
 
     @Override
     protected void assemble(final ModuleAssembly module) throws AssemblyException {
-        module.addEntities(Cargo.class, LocationEntity.class, Voyage.class);
-        module.addValues(Delivery.class, Itinerary.class, Leg.class, TrackingId.class, RouteSpecification.class,
-                HandlingActivity.class, CarrierMovement.class, Schedule.class, VoyageNumber.class,
-                CargoValue.class);
-        module.addServices(LocationRepository.class,
-                VoyageRepository.class,
-                DeliveryFactory.class,
-                HandlingActivityFactory.class,
-                HandlingEventRepository.class
+        module.entities( Cargo.class, LocationEntity.class, Voyage.class );
+        module.values( Delivery.class, Itinerary.class, Leg.class, TrackingId.class, RouteSpecification.class,
+                       HandlingActivity.class, CarrierMovement.class, Schedule.class, VoyageNumber.class,
+                       CargoValue.class );
+        module.services( LocationRepository.class,
+                         VoyageRepository.class,
+                         DeliveryFactory.class,
+                         HandlingActivityFactory.class,
+                         HandlingEventRepository.class
 
         ).instantiateOnStartup();
     }

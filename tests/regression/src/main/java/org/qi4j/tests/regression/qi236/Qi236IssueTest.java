@@ -41,8 +41,8 @@ public class Qi236IssueTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addEntities( FlatEntity.class, WoupsEntity.class );
-        module.addServices( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class );
+        module.entities( FlatEntity.class, WoupsEntity.class );
+        module.services( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class );
         new RdfMemoryStoreAssembler().assemble( module );
     }
 

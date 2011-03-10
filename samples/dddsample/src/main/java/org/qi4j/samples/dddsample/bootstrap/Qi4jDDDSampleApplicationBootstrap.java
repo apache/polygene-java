@@ -89,17 +89,17 @@ public class Qi4jDDDSampleApplicationBootstrap
         ModuleAssembly module = infrastructureLayer.moduleAssembly( MODULE_PERSISTENCE );
 
         // Indexing
-        module.addObjects( EntityStateSerializer.class, EntityTypeSerializer.class );
-        module.addServices( MemoryRepositoryService.class )
+        module.objects( EntityStateSerializer.class, EntityTypeSerializer.class );
+        module.services( MemoryRepositoryService.class )
             .identifiedBy( "rdf-repository" )
             .instantiateOnStartup();
 
-        module.addServices( RdfIndexingEngineService.class )
+        module.services( RdfIndexingEngineService.class )
             .visibleIn( application )
             .instantiateOnStartup();
 
         // Entity store
-        module.addServices( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class )
+        module.services( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class )
             .visibleIn( application )
             .instantiateOnStartup();
 

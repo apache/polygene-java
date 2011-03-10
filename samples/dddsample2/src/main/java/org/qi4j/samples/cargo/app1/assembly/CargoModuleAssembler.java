@@ -41,16 +41,16 @@ public class CargoModuleAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addEntities( Cargo.class ).visibleIn( Visibility.module );
+        module.entities( Cargo.class ).visibleIn( Visibility.module );
 
-        module.addValues( RouteSpecification.class ).visibleIn( Visibility.module );
+        module.values( RouteSpecification.class ).visibleIn( Visibility.module );
 
-        module.addServices( RouteSpecificationFactory.class,
-                            CargoFactory.class,
-                            CargoRepository.class ).visibleIn( Visibility.application );
+        module.services( RouteSpecificationFactory.class,
+                         CargoFactory.class,
+                         CargoRepository.class ).visibleIn( Visibility.application );
 
 
-        module.addValues(
+        module.values(
             TrackingId.class,
             HandlingActivity.class,
             Delivery.class,
@@ -58,10 +58,10 @@ public class CargoModuleAssembler
             Leg.class
         ).visibleIn( Visibility.module );
 
-        module.addServices( LegFactory.class ).visibleIn( Visibility.layer );
+        module.services( LegFactory.class ).visibleIn( Visibility.layer );
 
 
-        module.addServices(
+        module.services(
             HandlingActivityFactory.class,
             DeliveryFactory.class
         ).visibleIn( Visibility.module );

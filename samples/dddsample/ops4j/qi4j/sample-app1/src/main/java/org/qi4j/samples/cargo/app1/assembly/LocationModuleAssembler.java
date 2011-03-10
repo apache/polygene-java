@@ -27,7 +27,7 @@ public class LocationModuleAssembler
 
     public void assemble(ModuleAssembly module)
             throws AssemblyException {
-        module.addEntities(LocationEntity.class);
-        module.addServices(LocationRepository.class);
+        module.entities( LocationEntity.class );
+        module.services( LocationRepository.class );
     }
 }

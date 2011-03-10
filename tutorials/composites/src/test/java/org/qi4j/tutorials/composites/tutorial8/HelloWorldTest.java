@@ -24,7 +24,7 @@ public class HelloWorldTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.addTransients( HelloWorldComposite.class );
+                module.transients( HelloWorldComposite.class );
             }
         };
         TransientBuilderFactory builderFactory = assembly.transientBuilderFactory();

@@ -40,9 +40,9 @@ public class Qi230IssueTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices( Some.class ).withMixins( NoopMixin.class ).withConcerns( OtherConcern.class );
-//        module.addServices( Some.class );
-        module.addServices( Result.class );
+        module.services( Some.class ).withMixins( NoopMixin.class ).withConcerns( OtherConcern.class );
+//        module.services( Some.class );
+        module.services( Result.class );
     }
 
     @Test

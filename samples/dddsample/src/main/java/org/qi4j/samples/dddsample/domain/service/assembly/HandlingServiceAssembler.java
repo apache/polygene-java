@@ -34,7 +34,7 @@ public final class HandlingServiceAssembler
     public final void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices(
+        module.services(
             HandlingEventService.class
         ).visibleIn( application );
     }

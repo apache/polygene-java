@@ -30,7 +30,7 @@ public class TransientTest1 extends AbstractQi4jTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addTransients( TransientWithMixin.class );
+        module.transients( TransientWithMixin.class );
     }
 
     private void checkToString( ObjectMethods withMixin )

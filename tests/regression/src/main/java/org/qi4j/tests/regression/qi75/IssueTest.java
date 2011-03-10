@@ -19,8 +19,8 @@ public class IssueTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addTransients( TestComposite.class ).setMetaInfo( "Foo" );
-        module.addEntities( TestEntity.class ).setMetaInfo( "Bar" );
+        module.transients( TestComposite.class ).setMetaInfo( "Foo" );
+        module.entities( TestEntity.class ).setMetaInfo( "Bar" );
         new EntityTestAssembler().assemble( module );
     }
 
