@@ -1,4 +1,7 @@
+description = "Qi4j Hazelcast EntityStore Extension"
 hazelcastVersion = '1.8.5'
+
+jar { manifest { name = "Qi4j Extension - EntityStore - Hazelcast" }}
 
 dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.api"))
@@ -15,15 +18,3 @@ dependencies {
   testRuntime(libraries.asm_commons)
 }
 
-jar {
-  manifest {
-    symbolicName = 'org.qi4j.entitystore.hazelcast'
-    description = "Qi4j Hazelcast EntityStore Extension"
-    name = "Qi4j Extension - EntityStore - Hazelcast"
-    instruction 'Export-Package', 
-				symbolicName +';version=' + version,
-				symbolicName +'.assembly;version=' + version
-    instruction 'Private-Package', symbolicName + '.internal'
-    instruction 'Import-Package', '*'
-  }
-}

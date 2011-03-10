@@ -53,13 +53,13 @@ public class MigrationTest
     {
         new EntityTestAssembler().assemble( module );
 
-        module.addObjects( MigrationEventLogger.class );
-        module.importServices( MigrationEventLogger.class ).importedBy( NewObjectImporter.class );
+        module.objects( MigrationEventLogger.class );
+        module.importedServices( MigrationEventLogger.class ).importedBy( NewObjectImporter.class );
 
-        module.addEntities( TestEntity1_0.class,
-                            TestEntity1_1.class,
-                            TestEntity2_0.class,
-                            org.qi4j.migration.moved.TestEntity2_0.class );
+        module.entities( TestEntity1_0.class,
+                         TestEntity1_1.class,
+                         TestEntity2_0.class,
+                         org.qi4j.migration.moved.TestEntity2_0.class );
 
         MigrationBuilder migration = new MigrationBuilder( "1.0" );
         migration.
@@ -85,8 +85,8 @@ public class MigrationTest
             withEntities( "TestEntity2_0" ).
             end();
 
-        module.addServices( MigrationService.class ).setMetaInfo( migration );
-        module.addEntities( MigrationConfiguration.class );
+        module.services( MigrationService.class ).setMetaInfo( migration );
+        module.entities( MigrationConfiguration.class );
         module.forMixin( MigrationConfiguration.class ).declareDefaults().lastStartupVersion().set( "1.0" );
     }
 

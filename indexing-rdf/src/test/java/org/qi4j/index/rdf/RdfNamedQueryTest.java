@@ -48,15 +48,15 @@ public class RdfNamedQueryTest extends AbstractNamedQueryTest
         throws AssemblyException
     {
         super.assemble( module );
-        module.addServices( MemoryRepositoryService.class, RdfQueryParserFactory.class );
-        module.addObjects( EntityStateSerializer.class, EntityTypeSerializer.class );
+        module.services( MemoryRepositoryService.class, RdfQueryParserFactory.class );
+        module.objects( EntityStateSerializer.class, EntityTypeSerializer.class );
     }
 
     @Override
     protected void assembleNamedQueries( ModuleAssembly module, NamedQueries queries )
         throws AssemblyException
     {
-        module.addServices( RdfIndexingEngineService.class ).setMetaInfo( queries );
+        module.services( RdfIndexingEngineService.class ).setMetaInfo( queries );
     }
 
     private static String[] queryStrings =

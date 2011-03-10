@@ -19,9 +19,7 @@ import java.io.IOException;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.bootstrap.ServiceDeclaration;
 import org.qi4j.entitystore.sql.SQLEntityStoreService;
-import org.qi4j.entitystore.sql.internal.DatabaseSQLService;
 import org.qi4j.entitystore.sql.internal.DatabaseSQLService.DatabaseSQLServiceComposite;
 import org.qi4j.entitystore.sql.internal.DatabaseSQLServiceCoreMixin;
 import org.qi4j.entitystore.sql.internal.DatabaseSQLServiceSpi;
@@ -78,7 +76,7 @@ abstract class AbstractSQLEntityStoreAssembler extends AbstractSQLAssembler
         throws AssemblyException
     {
 
-        module.addServices( SQLEntityStoreService.class ).visibleIn( this.getVisibility() );
+        module.services( SQLEntityStoreService.class ).visibleIn( this.getVisibility() );
 
         try
         {
@@ -88,7 +86,7 @@ abstract class AbstractSQLEntityStoreAssembler extends AbstractSQLAssembler
                 throw new AssemblyException("SQL Vendor could not be determined." );
             }
             module
-                .addServices( DatabaseSQLServiceComposite.class )
+                .services( DatabaseSQLServiceComposite.class )
                 .withMixins( DatabaseSQLServiceCoreMixin.class, DatabaseSQLServiceSpi.CommonMixin.class,
                              getDatabaseStringBuilderMixin(), DatabaseSQLServiceStatementsMixin.class,
                              getDatabaseSQLServiceSpecializationMixin() ).identifiedBy( getEntityStoreServiceName() )
@@ -98,7 +96,7 @@ abstract class AbstractSQLEntityStoreAssembler extends AbstractSQLAssembler
         {
             throw new AssemblyException( ioe );
         }
-        module.addServices( UuidIdentityGeneratorService.class ).visibleIn( this.getVisibility() );
+        module.services( UuidIdentityGeneratorService.class ).visibleIn( this.getVisibility() );
     }
 
 }

@@ -37,11 +37,11 @@ public class JdbmEntityStoreTest
         throws AssemblyException
     {
         super.assemble( module );
-        module.addServices( JdbmEntityStoreService.class, UuidIdentityGeneratorService.class );
+        module.services( JdbmEntityStoreService.class, UuidIdentityGeneratorService.class );
 
         ModuleAssembly config = module.layerAssembly().moduleAssembly( "config" );
-        config.addEntities( JdbmConfiguration.class ).visibleIn( Visibility.layer );
-        config.addServices( MemoryEntityStoreService.class );
+        config.entities( JdbmConfiguration.class ).visibleIn( Visibility.layer );
+        config.services( MemoryEntityStoreService.class );
     }
 
     @Test

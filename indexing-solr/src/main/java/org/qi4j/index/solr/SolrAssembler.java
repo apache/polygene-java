@@ -32,17 +32,17 @@ public class SolrAssembler
 {
    public void assemble( ModuleAssembly module ) throws AssemblyException
    {
-      module.addServices( EmbeddedSolrService.class ).identifiedBy( "solr" ).instantiateOnStartup();
+      module.services( EmbeddedSolrService.class ).identifiedBy( "solr" ).instantiateOnStartup();
 
       NamedQueries namedQueries = new NamedQueries();
       NamedQueryDescriptor queryDescriptor = new NamedSolrDescriptor( "search", "" );
       namedQueries.addQuery( queryDescriptor );
-      module.addServices( SolrQueryService.class ).
+      module.services( SolrQueryService.class ).
             setMetaInfo( tags( "solr","search" ) ).
             setMetaInfo( namedQueries ).
             identifiedBy( "solrquery" ).
             visibleIn( Visibility.application );
 
-      module.addObjects( EntityStateSerializer.class );
+      module.objects( EntityStateSerializer.class );
    }
 }

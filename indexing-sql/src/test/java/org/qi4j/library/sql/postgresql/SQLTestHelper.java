@@ -69,9 +69,9 @@ public class SQLTestHelper
     {
         ModuleAssembly configModule = mainModule.layerAssembly().moduleAssembly( CONFIG_MODULE_NAME );
         configModule
-            .addEntities( PGDataSourceConfiguration.class, SQLConfiguration.class, ReindexerConfiguration.class )
+            .entities( PGDataSourceConfiguration.class, SQLConfiguration.class, ReindexerConfiguration.class )
             .visibleIn( Visibility.application );
-        configModule.addServices( MemoryEntityStoreService.class );
+        configModule.services( MemoryEntityStoreService.class );
 
         PostgreSQLAssembler pgAss = new PostgreSQLAssembler( Visibility.module, new DataSourceAssembler(
             PGSQLDataSourceServiceMixin.class ).setDataSourceServiceName( PostgreSQLAssembler.DATASOURCE_SERVICE_NAME ) )
@@ -82,10 +82,10 @@ public class SQLTestHelper
         ass.assemble( mainModule );
 
         // Always re-index because of possible different app structure of multiple tests.
-        mainModule.addServices( ReindexingStrategy.ReindexingStrategyService.class ).withMixins(
+        mainModule.services( ReindexingStrategy.ReindexingStrategyService.class ).withMixins(
             ReindexingStrategy.AlwaysNeed.class );
 
-        mainModule.addServices( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class ).visibleIn(
+        mainModule.services( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class ).visibleIn(
             Visibility.application );
     }
 

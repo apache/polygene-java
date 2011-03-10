@@ -18,12 +18,12 @@ public class SimpleNeoStoreTest
         module.layerAssembly().applicationAssembly().setName( "SimpleNeoTest" );
 
         super.assemble( module );
-        module.addServices( NeoEntityStoreService.class );
+        module.services( NeoEntityStoreService.class );
 
         ModuleAssembly configModule = module.layerAssembly().moduleAssembly( "config" );
-        configModule.addEntities( NeoConfiguration.class ).visibleIn( Visibility.layer );
-        configModule.addServices( MemoryEntityStoreService.class );
-        configModule.addServices( UuidIdentityGeneratorService.class );
+        configModule.entities( NeoConfiguration.class ).visibleIn( Visibility.layer );
+        configModule.services( MemoryEntityStoreService.class );
+        configModule.services( UuidIdentityGeneratorService.class );
     }
 
     @Override

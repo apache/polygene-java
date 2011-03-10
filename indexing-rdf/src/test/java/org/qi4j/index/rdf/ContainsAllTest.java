@@ -64,11 +64,11 @@ public class ContainsAllTest
     {
         PreferenceEntityStoreAssembler pAss = new PreferenceEntityStoreAssembler( Visibility.module );
         ModuleAssembly prefModule = module.layerAssembly().moduleAssembly( "PrefModule" );
-        prefModule.addEntities( NativeConfiguration.class ).visibleIn( Visibility.application );
+        prefModule.entities( NativeConfiguration.class ).visibleIn( Visibility.application );
         pAss.assemble( prefModule );
 
-        module.addEntities( ExampleEntity.class );
-        module.addValues( ExampleValue.class, ExampleValue2.class );
+        module.entities( ExampleEntity.class );
+        module.values( ExampleValue.class, ExampleValue2.class );
 
         EntityTestAssembler testAss = new EntityTestAssembler();
         testAss.assemble( module );

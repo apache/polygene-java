@@ -37,7 +37,7 @@ public class FileEntityStoreAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices( FileEntityStoreService.class ).visibleIn( visibility );
-        module.addServices( UuidIdentityGeneratorService.class ).visibleIn( visibility );
+        module.services( FileEntityStoreService.class ).visibleIn( visibility );
+        module.services( UuidIdentityGeneratorService.class ).visibleIn( visibility );
     }
 }

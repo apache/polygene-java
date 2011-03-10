@@ -85,7 +85,7 @@ public class PostgreSQLAssembler extends AbstractSQLAssembler
 
         try
         {
-            module.addServices( PostgreSQLService.class ).identifiedBy( this._serviceName )
+            module.services( PostgreSQLService.class ).identifiedBy( this._serviceName )
                 .visibleIn( this.getVisibility() ).instantiateOnStartup()
                 .setMetaInfo( SQLVendorProvider.createVendor( PostgreSQLVendor.class ) );
         }
@@ -94,7 +94,7 @@ public class PostgreSQLAssembler extends AbstractSQLAssembler
             throw new AssemblyException( ioe );
         }
 
-        module.addServices( ReindexerService.class );
+        module.services( ReindexerService.class );
     }
 
 }

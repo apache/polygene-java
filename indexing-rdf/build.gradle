@@ -1,3 +1,6 @@
+description = "Qi4j RDF Indexing Extension"
+
+jar { manifest { name = "Qi4j Extension - Indexing - RDF" } }
 
 repositories {
   mavenRepo name: 'aduna-repo', urls: "http://repo.aduna-software.org/maven2/releases/"
@@ -33,18 +36,3 @@ dependencies {
   testRuntime(libraries.asm_commons)
 }
 
-jar {
-  manifest {
-    symbolicName='org.qi4j.index.rdf'
-    description = "Qi4j RDF Indexing Extension"
-    name = "Qi4j Extension - Indexing - RDF"
-    instruction 'Export-Package', 
-				symbolicName +';version=' + version,
-				symbolicName +'.query;version=' + version,
-				symbolicName +'.indexing;version=' + version,
-				symbolicName +'.assembly;version=' + version,
-				symbolicName +';version=' + version
-    instruction 'Private-Package', symbolicName + '.query.internal'
-    instruction 'Import-Package', '*'
-  }
-}

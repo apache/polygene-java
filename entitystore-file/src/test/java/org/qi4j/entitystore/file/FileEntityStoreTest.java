@@ -18,9 +18,7 @@ package org.qi4j.entitystore.file;
 
 import java.io.File;
 import org.junit.After;
-import org.junit.Test;
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
@@ -37,11 +35,11 @@ public class FileEntityStoreTest
         throws AssemblyException
     {
         super.assemble( module );
-        module.addServices( FileEntityStoreService.class, UuidIdentityGeneratorService.class );
+        module.services( FileEntityStoreService.class, UuidIdentityGeneratorService.class );
 
         ModuleAssembly config = module.layerAssembly().moduleAssembly( "config" );
-        config.addEntities( FileEntityStoreConfiguration.class ).visibleIn( Visibility.layer );
-        config.addServices( MemoryEntityStoreService.class );
+        config.entities( FileEntityStoreConfiguration.class ).visibleIn( Visibility.layer );
+        config.services( MemoryEntityStoreService.class );
     }
 
     @Override

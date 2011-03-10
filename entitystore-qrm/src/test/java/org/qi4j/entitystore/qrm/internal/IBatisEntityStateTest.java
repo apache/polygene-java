@@ -61,7 +61,7 @@ public final class IBatisEntityStateTest
     public final void assemble( final ModuleAssembly module )
         throws AssemblyException
     {
-        module.addEntities( PersonComposite.class );
+        module.entities( PersonComposite.class );
 
         module.forMixin( HasFirstName.class ).declareDefaults().firstName().set( DEFAULT_FIRST_NAME );
         module.forMixin( HasLastName.class ).declareDefaults().lastName().set( DEFAULT_LAST_NAME );

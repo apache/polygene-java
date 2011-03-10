@@ -59,11 +59,11 @@ public class RDFPerformanceTest extends AbstractQi4jTest
     {
         PreferenceEntityStoreAssembler pAss = new PreferenceEntityStoreAssembler( Visibility.module );
         ModuleAssembly prefModule = module.layerAssembly().moduleAssembly( "PrefModule" );
-        prefModule.addEntities( NativeConfiguration.class ).visibleIn( Visibility.application );
+        prefModule.entities( NativeConfiguration.class ).visibleIn( Visibility.application );
         prefModule.forMixin( NativeConfiguration.class ).declareDefaults().tripleIndexes().set( "spoc,cspo" );
         pAss.assemble( prefModule );
 
-        module.addEntities( ExampleEntity.class );
+        module.entities( ExampleEntity.class );
 
         EntityTestAssembler testAss = new EntityTestAssembler();
         testAss.assemble( module );

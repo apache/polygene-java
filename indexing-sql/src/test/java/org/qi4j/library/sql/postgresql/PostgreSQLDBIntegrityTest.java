@@ -18,8 +18,6 @@ import java.sql.Connection;
 
 import junit.framework.Assert;
 
-import org.junit.Assume;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.entity.EntityComposite;
@@ -58,7 +56,7 @@ public class PostgreSQLDBIntegrityTest extends AbstractQi4jTest
         throws AssemblyException
     {
         SQLTestHelper.assembleWithMemoryEntityStore( module );
-        module.addEntities( TestEntity.class );
+        module.entities( TestEntity.class );
     }
 
     @Override

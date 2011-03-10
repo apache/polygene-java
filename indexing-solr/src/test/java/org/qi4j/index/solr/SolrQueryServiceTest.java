@@ -48,12 +48,12 @@ public class SolrQueryServiceTest
     {
         module.layerAssembly().applicationAssembly().setMode( Application.Mode.test );
 
-        module.addServices( FileConfiguration.class ).instantiateOnStartup();
+        module.services( FileConfiguration.class ).instantiateOnStartup();
 
         new EntityTestAssembler().assemble( module );
         new SolrAssembler().assemble( module );
 
-        module.addEntities( TestEntity.class );
+        module.entities( TestEntity.class );
     }
 
     @Before
