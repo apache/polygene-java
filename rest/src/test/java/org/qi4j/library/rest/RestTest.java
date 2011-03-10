@@ -77,11 +77,11 @@ public class RestTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addObjects( RestTester.class );
-        module.addEntities( PersonEntity.class );
-        module.addServices( RestServerComposite.class ).instantiateOnStartup();
-        module.addServices( MemoryEntityStoreService.class ).identifiedBy( "store" );
-        module.addServices( UuidIdentityGeneratorService.class );
+        module.objects( RestTester.class );
+        module.entities( PersonEntity.class );
+        module.services( RestServerComposite.class ).instantiateOnStartup();
+        module.services( MemoryEntityStoreService.class ).identifiedBy( "store" );
+        module.services( UuidIdentityGeneratorService.class );
     }
 
     @Override

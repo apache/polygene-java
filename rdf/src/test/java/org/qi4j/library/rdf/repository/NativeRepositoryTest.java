@@ -37,10 +37,10 @@ public class NativeRepositoryTest
 
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        module.addServices( MemoryEntityStoreService.class);
-        module.addServices( NativeRepositoryService.class ).instantiateOnStartup();
-        module.addEntities( NativeConfiguration.class );
-        module.addObjects( getClass() );
+        module.services( MemoryEntityStoreService.class );
+        module.services( NativeRepositoryService.class ).instantiateOnStartup();
+        module.entities( NativeConfiguration.class );
+        module.objects( getClass() );
     }
 
     @Test

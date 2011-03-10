@@ -28,7 +28,7 @@ public class RestletApplicationAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addObjects( RestApplication.class ).visibleIn( Visibility.application );
-        module.addObjects( Qi4jFinder.class );
+        module.objects( RestApplication.class ).visibleIn( Visibility.application );
+        module.objects( Qi4jFinder.class );
     }
 }

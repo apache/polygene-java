@@ -29,7 +29,7 @@ public abstract class AbstractSchedulerTest
     public final void assemble( ModuleAssembly assembly )
             throws AssemblyException
     {
-        assembly.addEntities( FooTask.class );
+        assembly.entities( FooTask.class );
 
         new EntityTestAssembler().assemble( assembly );
         new RdfMemoryStoreAssembler().assemble( assembly );

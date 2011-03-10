@@ -25,7 +25,7 @@ public class OSGiServiceTest extends AbstractQi4jTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices( MyService.class ).setMetaInfo( bundleContext ).instantiateOnStartup();
+        module.services( MyService.class ).setMetaInfo( bundleContext ).instantiateOnStartup();
     }
 
     @Test

@@ -24,8 +24,8 @@ public final class SecureHashDomainAssembler
     public void assemble( ModuleAssembly module )
             throws AssemblyException
     {
-        module.addValues( SecureHash.class );
-        module.addServices( SecureHashFactory.class );
+        module.values( SecureHash.class );
+        module.services( SecureHashFactory.class );
     }
 
 }

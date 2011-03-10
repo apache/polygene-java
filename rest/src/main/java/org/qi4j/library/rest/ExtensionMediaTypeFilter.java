@@ -15,6 +15,7 @@
 package org.qi4j.library.rest;
 
 import java.util.Collections;
+import java.util.List;
 import org.restlet.Context;
 import org.restlet.Request;
 import org.restlet.Response;
@@ -50,6 +51,10 @@ public class ExtensionMediaTypeFilter
     @Override
     protected int beforeHandle( Request request, Response response )
     {
+        List<String> segments = request.getResourceRef().getSegments();
+        if (segments.get( segments.size()-1 ).equals(""))
+          return Filter.CONTINUE;
+
         String extensions = request.getResourceRef().getExtensions();
         if( extensions != null )
         {

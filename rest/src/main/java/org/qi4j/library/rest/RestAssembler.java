@@ -36,11 +36,11 @@ public class RestAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addObjects( RestApplication.class ).visibleIn( visibility );
-        module.addObjects( Qi4jFinder.class,
-                           EntitiesResource.class,
-                           EntityResource.class,
-                           IndexResource.class,
-                           SPARQLResource.class );
+        module.objects( RestApplication.class ).visibleIn( visibility );
+        module.objects( Qi4jFinder.class,
+                        EntitiesResource.class,
+                        EntityResource.class,
+                        IndexResource.class,
+                        SPARQLResource.class );
     }
 }

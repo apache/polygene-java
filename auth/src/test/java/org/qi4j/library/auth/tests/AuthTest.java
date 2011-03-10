@@ -47,14 +47,14 @@ public class AuthTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addEntities( User.class,
-                            Group.class,
-                            Role.class,
-                            NamedPermission.class,
-                            RoleAssignment.class,
-                            SecuredRoom.class );
-        module.addValues( AuthorizationContextValue.class );
-        module.addServices( AuthorizationService.class );
+        module.entities( User.class,
+                         Group.class,
+                         Role.class,
+                         NamedPermission.class,
+                         RoleAssignment.class,
+                         SecuredRoom.class );
+        module.values( AuthorizationContextValue.class );
+        module.services( AuthorizationService.class );
 
         new EntityTestAssembler().assemble( module );
     }

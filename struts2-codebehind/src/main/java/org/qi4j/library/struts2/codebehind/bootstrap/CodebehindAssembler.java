@@ -12,6 +12,6 @@ public class CodebehindAssembler
     public void assemble( ModuleAssembly aModule )
         throws AssemblyException
     {
-        aModule.addObjects( Qi4jCodebehindPackageProvider.class );
+        aModule.objects( Qi4jCodebehindPackageProvider.class );
     }
 }

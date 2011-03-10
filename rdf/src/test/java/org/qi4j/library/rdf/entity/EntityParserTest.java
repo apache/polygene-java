@@ -52,9 +52,9 @@ public class EntityParserTest
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
         new EntityTestAssembler().assemble( module );
-        module.addEntities( TestEntity.class );
-        module.addValues( TestValue.class, Test2Value.class );
-        module.addObjects( EntityStateSerializer.class, EntityStateParser.class, EntityParserTest.class );
+        module.entities( TestEntity.class );
+        module.values( TestValue.class, Test2Value.class );
+        module.objects( EntityStateSerializer.class, EntityStateParser.class, EntityParserTest.class );
     }
 
     @Override @Before public void setUp() throws Exception

@@ -25,7 +25,7 @@ public class ShiroAssembler
     public void assemble( ModuleAssembly module )
             throws AssemblyException
     {
-        module.addServices( ShiroLifecycleService.class ).instantiateOnStartup();
+        module.services( ShiroLifecycleService.class ).instantiateOnStartup();
     }
 
 }

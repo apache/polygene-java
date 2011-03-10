@@ -41,9 +41,9 @@ public class UsernameTestAssembler
             throws AssemblyException
     {
         // Domain & Custom Realm
-        module.addEntities( UserEntity.class );
-        module.addServices( SecuredService.class );
-        module.addObjects( UsernamePasswordRealm.class ); // Indirectly implements RealmActivator, used by the ShiroLifecycleService
+        module.entities( UserEntity.class );
+        module.services( SecuredService.class );
+        module.objects( UsernamePasswordRealm.class ); // Indirectly implements RealmActivator, used by the ShiroLifecycleService
 
         // Shiro Domain & Lifecycle
         new PermissionsDomainAssembler().assemble( module );
@@ -51,11 +51,11 @@ public class UsernameTestAssembler
         new ShiroAssembler().assemble( module );
 
         // EntityStore & co
-        module.addServices( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class );
+        module.services( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class );
         new RdfMemoryStoreAssembler().assemble( module );
 
         // Test Fixtures
-        module.addServices( UsernameFixtures.class ).instantiateOnStartup();
+        module.services( UsernameFixtures.class ).instantiateOnStartup();
     }
 
 }

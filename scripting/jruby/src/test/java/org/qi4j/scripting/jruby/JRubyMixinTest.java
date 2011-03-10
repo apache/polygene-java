@@ -25,10 +25,10 @@ public class JRubyMixinTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addTransients( JRubyComposite.class );
+        module.transients( JRubyComposite.class );
 
         Ruby ruby = Ruby.newInstance();
-        module.importServices( Ruby.class ).importedBy( InstanceImporter.class ).setMetaInfo( ruby );
+        module.importedServices( Ruby.class ).importedBy( InstanceImporter.class ).setMetaInfo( ruby );
     }
 
     @Test

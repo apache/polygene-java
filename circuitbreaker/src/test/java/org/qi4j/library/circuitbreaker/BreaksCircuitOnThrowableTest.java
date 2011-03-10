@@ -38,7 +38,7 @@ public class BreaksCircuitOnThrowableTest
 
    public void assemble( ModuleAssembly module ) throws AssemblyException
    {
-      module.addServices( TestService.class ).setMetaInfo( new CircuitBreaker() );
+      module.services( TestService.class ).setMetaInfo( new CircuitBreaker() );
    }
 
    @Test

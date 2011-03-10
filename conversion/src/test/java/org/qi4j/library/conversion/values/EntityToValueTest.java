@@ -32,13 +32,13 @@ public class EntityToValueTest extends AbstractQi4jTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices( EntityToValueService.class );
-        module.addServices( MemoryEntityStoreService.class );
-        module.addEntities( PersonEntity.class );
-        module.addValues( PersonValue.class );
-        module.addValues( PersonValue2.class );
-        module.addValues( PersonValue3.class );
-        module.addValues( PersonValue4.class );
+        module.services( EntityToValueService.class );
+        module.services( MemoryEntityStoreService.class );
+        module.entities( PersonEntity.class );
+        module.values( PersonValue.class );
+        module.values( PersonValue2.class );
+        module.values( PersonValue3.class );
+        module.values( PersonValue4.class );
     }
 
     @Test

@@ -53,8 +53,8 @@ public class ActionConfiguration
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addObjects( objectTypes.toArray( new Class[]{ } ) ).visibleIn( Visibility.module );
-        module.addTransients( (Class<? extends TransientComposite>[]) compositeTypes.toArray( new Class[]{ } ) )
+        module.objects( objectTypes.toArray( new Class[]{ } ) ).visibleIn( Visibility.module );
+        module.transients( (Class<? extends TransientComposite>[]) compositeTypes.toArray( new Class[]{ } ) )
             .visibleIn( Visibility.module );
     }
 }

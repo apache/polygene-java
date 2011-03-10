@@ -27,6 +27,6 @@ public class TransientSequencingAssembler
 {
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        module.addServices( TransientSequencingService.class );
+        module.services( TransientSequencingService.class );
     }
 }

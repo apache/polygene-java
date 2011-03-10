@@ -30,7 +30,7 @@ class RDFAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addObjects( EntityStateSerializer.class ).visibleIn( Visibility.application );
-        module.addObjects( EntityTypeSerializer.class ).visibleIn( Visibility.application );
+        module.objects( EntityStateSerializer.class ).visibleIn( Visibility.application );
+        module.objects( EntityTypeSerializer.class ).visibleIn( Visibility.application );
     }
 }

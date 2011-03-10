@@ -56,7 +56,7 @@ public final class Servlets
         {
             for( ServletDeclaration servletDeclaration : servletDeclarations )
             {
-                module.addServices( servletDeclaration.servlet() )
+                module.services( servletDeclaration.servlet() )
                     .setMetaInfo( servletDeclaration.servletInfo() )
                     .instantiateOnStartup()
                     .visibleIn( layer );
@@ -122,7 +122,7 @@ public final class Servlets
         {
             for( FilterAssembler filterAssembler : filterAssemblers )
             {
-                module.addServices( filterAssembler.filter() ).setMetaInfo(
+                module.services( filterAssembler.filter() ).setMetaInfo(
                     filterAssembler.filterInfo() ).instantiateOnStartup()
                     .visibleIn( layer );
             }

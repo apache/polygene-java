@@ -35,8 +35,8 @@ public class DividendsMain
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.addServices( ProjectedDividendsService.class ).instantiateOnStartup();
-                module.addValues( DivStream.class, DivPoint.class );
+                module.services( ProjectedDividendsService.class ).instantiateOnStartup();
+                module.values( DivStream.class, DivPoint.class );
                 new CxfAssembler().assemble( module );
             }
         };

@@ -23,7 +23,7 @@ public class JavaScriptMixinTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addTransients( JavaScriptComposite.class );
+        module.transients( JavaScriptComposite.class );
     }
 
     @Test

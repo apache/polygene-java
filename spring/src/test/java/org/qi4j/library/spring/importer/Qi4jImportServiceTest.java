@@ -50,7 +50,7 @@ public final class Qi4jImportServiceTest
         {
             public void assemble( ModuleAssembly module ) throws AssemblyException
             {
-                module.addObjects( Qi4jImportServiceTest.class );
+                module.objects( Qi4jImportServiceTest.class );
 
                 new SpringImporterAssembler( appContext ).assemble( module );
             }
@@ -70,7 +70,7 @@ public final class Qi4jImportServiceTest
         {
             public void assemble( ModuleAssembly module ) throws AssemblyException
             {
-                module.addObjects( Qi4jImportServiceTest.class );
+                module.objects( Qi4jImportServiceTest.class );
 
                 new SpringImporterAssembler( appContext ).assemble( module );
             }
@@ -91,7 +91,7 @@ public final class Qi4jImportServiceTest
         {
             public void assemble( ModuleAssembly module ) throws AssemblyException
             {
-                module.addObjects( Qi4jImportServiceTest.class );
+                module.objects( Qi4jImportServiceTest.class );
 
                 new SpringImporterAssembler( appContext ).assemble( module );
             }

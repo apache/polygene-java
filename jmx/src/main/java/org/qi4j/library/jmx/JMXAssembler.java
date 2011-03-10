@@ -29,9 +29,9 @@ public class JMXAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.importServices( MBeanServer.class ).importedBy( MBeanServerImporter.class );
-        module.addServices( ApplicationManagerService.class ).instantiateOnStartup();
-        module.addServices( ConfigurationManagerService.class ).instantiateOnStartup();
+        module.importedServices( MBeanServer.class ).importedBy( MBeanServerImporter.class );
+        module.services( ApplicationManagerService.class ).instantiateOnStartup();
+        module.services( ConfigurationManagerService.class ).instantiateOnStartup();
 
     }
 }

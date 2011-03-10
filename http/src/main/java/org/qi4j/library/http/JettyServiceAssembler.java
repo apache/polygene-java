@@ -27,7 +27,7 @@ public final class JettyServiceAssembler
     public final void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addEntities( JettyConfiguration.class ).visibleIn( Visibility.layer );
-        module.addServices( JettyService.class ).instantiateOnStartup();
+        module.entities( JettyConfiguration.class ).visibleIn( Visibility.layer );
+        module.services( JettyService.class ).instantiateOnStartup();
     }
 }

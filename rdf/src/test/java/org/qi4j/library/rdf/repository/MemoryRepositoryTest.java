@@ -36,8 +36,8 @@ public class MemoryRepositoryTest
 
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        module.addServices( MemoryRepositoryService.class ).instantiateOnStartup();
-        module.addObjects( getClass() );
+        module.services( MemoryRepositoryService.class ).instantiateOnStartup();
+        module.objects( getClass() );
     }
 
     @Test

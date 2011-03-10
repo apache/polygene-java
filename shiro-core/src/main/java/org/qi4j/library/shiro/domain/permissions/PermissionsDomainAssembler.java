@@ -24,11 +24,11 @@ public class PermissionsDomainAssembler
     public void assemble( ModuleAssembly module )
             throws AssemblyException
     {
-        module.addEntities( Permission.class,
-                            Role.class,
-                            RoleAssignment.class );
-        module.addServices( PermissionFactory.class,
-                            RoleFactory.class );
+        module.entities( Permission.class,
+                         Role.class,
+                         RoleAssignment.class );
+        module.services( PermissionFactory.class,
+                         RoleFactory.class );
     }
 
 }

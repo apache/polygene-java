@@ -29,6 +29,6 @@ class MemoryEntityStoreServiceAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices( MemoryEntityStoreService.class ).visibleIn( Visibility.application );
+        module.services( MemoryEntityStoreService.class ).visibleIn( Visibility.application );
     }
 }

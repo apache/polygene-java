@@ -33,15 +33,15 @@ public class DomainAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices(
+        module.services(
             MemoryEntityStoreService.class,
             UuidIdentityGeneratorService.class,
             RdfIndexingEngineService.class
         ).visibleIn( application );
-        module.addServices( MemoryRepositoryService.class ).identifiedBy( "rdf-indexing" ).visibleIn( layer );
+        module.services( MemoryRepositoryService.class ).identifiedBy( "rdf-indexing" ).visibleIn( layer );
 
-        module.addEntities( TestEntity.class, TestRole.class, TestEntity2.class ).visibleIn( application );
-        module.addValues( TestValue.class ).visibleIn( application );
-        module.addServices( DummyDataService.class ).instantiateOnStartup();
+        module.entities( TestEntity.class, TestRole.class, TestEntity2.class ).visibleIn( application );
+        module.values( TestValue.class ).visibleIn( application );
+        module.services( DummyDataService.class ).instantiateOnStartup();
     }
 }

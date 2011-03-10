@@ -24,7 +24,7 @@ public class BeanShellMixinTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addTransients( BeanShellComposite.class );
+        module.transients( BeanShellComposite.class );
     }
 
     @Test

@@ -39,7 +39,7 @@ public final class JettyServiceTest extends AbstractQi4jTest
         throws AssemblyException
     {
         new ApplicationName( "Jetty test" ).assemble( aModule );
-        aModule.addServices( MemoryEntityStoreService.class );
+        aModule.services( MemoryEntityStoreService.class );
         new JettyServiceAssembler().assemble( aModule );
 
         // Hello world servlet related assembly
