@@ -54,7 +54,7 @@ public class CompositeDescriptorTest
     public final void assemble( ModuleAssembly aModule )
         throws AssemblyException
     {
-        aModule.addTransients( AddressComposite.class );
+        aModule.transients( AddressComposite.class );
     }
 
     private static interface AddressComposite

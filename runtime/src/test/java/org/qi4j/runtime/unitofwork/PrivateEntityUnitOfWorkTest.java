@@ -71,7 +71,7 @@ public class PrivateEntityUnitOfWorkTest
                                             public void assemble( ModuleAssembly module )
                                                     throws AssemblyException
                                             {
-                                                module.addObjects( PrivateEntityUnitOfWorkTest.class );
+                                                module.objects( PrivateEntityUnitOfWorkTest.class );
                                             }
                                         }
                                 }
@@ -83,9 +83,9 @@ public class PrivateEntityUnitOfWorkTest
                                             public void assemble( ModuleAssembly module )
                                                     throws AssemblyException
                                             {
-                                                module.addEntities( ProductEntity.class );
-                                                module.addEntities( ProductCatalogEntity.class ).visibleIn( application );
-                                                module.addValues( ProductInfo.class );
+                                                module.entities( ProductEntity.class );
+                                                module.entities( ProductCatalogEntity.class ).visibleIn( application );
+                                                module.values( ProductInfo.class );
                                                 new EntityTestAssembler().assemble( module );
                                             }
                                         }

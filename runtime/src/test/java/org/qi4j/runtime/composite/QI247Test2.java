@@ -20,7 +20,7 @@ public class QI247Test2 extends AbstractQi4jTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addTransients( TransientWithHandler.class );
+        module.transients( TransientWithHandler.class );
     }
 
     private void checkToString( ObjectMethods instance )

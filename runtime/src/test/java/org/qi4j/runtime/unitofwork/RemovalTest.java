@@ -37,8 +37,8 @@ public class RemovalTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices( MemoryEntityStoreService.class );
-        module.addEntities( Abc.class );
+        module.services( MemoryEntityStoreService.class );
+        module.entities( Abc.class );
     }
 
     @Test

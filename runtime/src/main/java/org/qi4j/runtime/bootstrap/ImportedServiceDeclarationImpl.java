@@ -25,98 +25,51 @@ import org.qi4j.runtime.service.ImportedServiceModel;
 import org.qi4j.spi.service.importer.InstanceImporter;
 
 /**
- * Declaration of an imported Service. Created by {@link ModuleAssemblyImpl#importServices(Class[])}.
+ * Declaration of an imported Service.
  */
 public final class ImportedServiceDeclarationImpl
     implements ImportedServiceDeclaration, Serializable
 {
-    private Class<? extends ServiceImporter> serviceProvider = InstanceImporter.class;
-    private Iterable<Class> serviceTypes;
-    private ModuleAssemblyImpl moduleAssembly;
-    private String identity;
-    private MetaInfo metaInfo = new MetaInfo();
-    private Visibility visibility = Visibility.module;
+    private Iterable<ImportedServiceAssemblyImpl> assemblies;
 
-    public ImportedServiceDeclarationImpl( Iterable<Class> serviceTypes,
-                                           ModuleAssemblyImpl moduleAssembly
-    )
+    public ImportedServiceDeclarationImpl( Iterable<ImportedServiceAssemblyImpl> assemblies)
     {
-        this.serviceTypes = serviceTypes;
-        this.moduleAssembly = moduleAssembly;
+        this.assemblies = assemblies;
     }
 
     public ImportedServiceDeclaration visibleIn( Visibility visibility )
     {
-        this.visibility = visibility;
+        for( ImportedServiceAssemblyImpl assembly : assemblies )
+        {
+            assembly.visibility = visibility;
+        }
         return this;
     }
 
     public ImportedServiceDeclaration importedBy( Class<? extends ServiceImporter> sip )
     {
-        serviceProvider = sip;
+        for( ImportedServiceAssemblyImpl assembly : assemblies )
+        {
+            assembly.serviceProvider = sip;
+        }
         return this;
     }
 
     public ImportedServiceDeclaration identifiedBy( String identity )
     {
-        this.identity = identity;
+        for( ImportedServiceAssemblyImpl assembly : assemblies )
+        {
+            assembly.identity = identity;
+        }
         return this;
     }
 
     public ImportedServiceDeclaration setMetaInfo( Object serviceAttribute )
     {
-        metaInfo.set( serviceAttribute );
+        for( ImportedServiceAssemblyImpl assembly : assemblies )
+        {
+            assembly.metaInfo.set( serviceAttribute );
+        }
         return this;
-    }
-
-    void addServices( List<ImportedServiceModel> serviceModels )
-    {
-        for( Class serviceType : serviceTypes )
-        {
-            try
-            {
-                String id = identity;
-                if( id == null )
-                {
-                    id = generateId( serviceModels, serviceType );
-                }
-
-                ImportedServiceModel serviceModel = new ImportedServiceModel( serviceType,
-                                                                              visibility,
-                                                                              serviceProvider,
-                                                                              id,
-                                                                              new MetaInfo( metaInfo ).withAnnotations( serviceType ),
-                                                                              moduleAssembly.name() );
-                serviceModels.add( serviceModel );
-            }
-            catch( Exception e )
-            {
-                throw new InvalidApplicationException( "Could not register " + serviceType.getName(), e );
-            }
-        }
-    }
-
-    private String generateId( List<ImportedServiceModel> serviceModels, Class serviceType )
-    {
-        // Find identity that is not yet used
-        int idx = 0;
-        String id = serviceType.getSimpleName();
-        boolean invalid;
-        do
-        {
-            invalid = false;
-            for( ImportedServiceModel serviceModel : serviceModels )
-            {
-                if( serviceModel.identity().equals( id ) )
-                {
-                    idx++;
-                    id = serviceType.getSimpleName() + "_" + idx;
-                    invalid = true;
-                    break;
-                }
-            }
-        }
-        while( invalid );
-        return id;
     }
 }

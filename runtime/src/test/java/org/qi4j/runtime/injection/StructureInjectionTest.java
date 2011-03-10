@@ -41,7 +41,7 @@ public class StructureInjectionTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addTransients( StructureInjectionComposite.class );
+        module.transients( StructureInjectionComposite.class );
     }
 
     /**

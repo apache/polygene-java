@@ -36,8 +36,8 @@ public class InitializableTest
     public void assemble( ModuleAssembly module )
             throws AssemblyException
     {
-        module.addObjects( TestObject.class );
-        module.addTransients( TestComposite.class );
+        module.objects( TestObject.class );
+        module.transients( TestComposite.class );
     }
 
     @Test

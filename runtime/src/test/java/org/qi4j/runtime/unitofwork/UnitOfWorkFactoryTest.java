@@ -26,7 +26,6 @@ import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -42,10 +41,10 @@ public class UnitOfWorkFactoryTest
     public void assemble( ModuleAssembly module )
             throws AssemblyException
     {
-        module.addEntities( AccountComposite.class,
-                OrderComposite.class,
-                ProductEntity.class,
-                CustomerComposite.class );
+        module.entities( AccountComposite.class,
+                         OrderComposite.class,
+                         ProductEntity.class,
+                         CustomerComposite.class );
 
         new EntityTestAssembler().assemble( module );
     }

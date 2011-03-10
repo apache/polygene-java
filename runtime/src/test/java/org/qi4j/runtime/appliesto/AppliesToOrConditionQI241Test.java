@@ -13,7 +13,6 @@ import org.qi4j.api.concern.ConcernOf;
 import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.injection.InjectionScope;
 import org.qi4j.api.injection.scope.Invocation;
-import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
@@ -32,9 +31,9 @@ public class AppliesToOrConditionQI241Test
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices( SomeServiceCompositeWithTwoAnnotations.class );
-        module.addServices( SomeServiceCompositeWithFirstAnnotation.class );
-        module.addServices( SomeServiceCompositeWithSecondAnnotation.class );
+        module.services( SomeServiceCompositeWithTwoAnnotations.class );
+        module.services( SomeServiceCompositeWithFirstAnnotation.class );
+        module.services( SomeServiceCompositeWithSecondAnnotation.class );
     }
 
     @Test

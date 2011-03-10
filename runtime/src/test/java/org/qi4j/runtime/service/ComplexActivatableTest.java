@@ -15,8 +15,6 @@
 
 package org.qi4j.runtime.service;
 
-import java.lang.reflect.Method;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Initializable;
@@ -38,7 +36,7 @@ public class ComplexActivatableTest extends AbstractQi4jTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices( SuperType.class ).instantiateOnStartup();
+        module.services( SuperType.class ).instantiateOnStartup();
     }
 
     @Test

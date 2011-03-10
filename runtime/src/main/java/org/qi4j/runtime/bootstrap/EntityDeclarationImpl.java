@@ -15,109 +15,74 @@
 package org.qi4j.runtime.bootstrap;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import org.qi4j.api.common.InvalidApplicationException;
-import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.bootstrap.AssociationDeclarations;
 import org.qi4j.bootstrap.EntityDeclaration;
-import org.qi4j.bootstrap.ManyAssociationDeclarations;
-import org.qi4j.bootstrap.PropertyDeclarations;
-import org.qi4j.runtime.composite.ConcernDeclaration;
-import org.qi4j.runtime.composite.ConcernsDeclaration;
-import org.qi4j.runtime.entity.EntityModel;
 
 /**
- * Declaration of a Composite. Created by {@link org.qi4j.bootstrap.ModuleAssembly#addTransients(Class[])}.
+ * Declaration of a Composite. Created by {@link org.qi4j.bootstrap.ModuleAssembly#transients(Class[])}.
  */
 public final class EntityDeclarationImpl
     implements EntityDeclaration, Serializable
 {
-    private Class<? extends EntityComposite>[] compositeTypes;
-    private MetaInfo metaInfo = new MetaInfo();
-    private Visibility visibility = Visibility.module;
-    private List<Class<?>> concerns = new ArrayList<Class<?>>();
-    private List<Class<?>> sideEffects = new ArrayList<Class<?>>();
-    private List<Class<?>> mixins = new ArrayList<Class<?>>();
-    private List<Class<?>> roles = new ArrayList<Class<?>>();
+    private Iterable<EntityAssemblyImpl> entities;
 
-    public EntityDeclarationImpl( Class<? extends EntityComposite>... compositeTypes )
+    public EntityDeclarationImpl( Iterable<EntityAssemblyImpl> entities)
     {
-        this.compositeTypes = compositeTypes;
+        this.entities = entities;
     }
 
     public EntityDeclaration setMetaInfo( Object info )
     {
-        metaInfo.set( info );
+        for( EntityAssemblyImpl entity : entities )
+        {
+            entity.metaInfo.set( info );
+        }
         return this;
     }
 
     public EntityDeclaration visibleIn( Visibility visibility )
     {
-        this.visibility = visibility;
+        for( EntityAssemblyImpl entity : entities )
+        {
+            entity.visibility = visibility;
+        }
         return this;
     }
 
     public EntityDeclaration withConcerns( Class<?>... concerns )
     {
-        this.concerns.addAll( Arrays.asList( concerns ) );
+        for( EntityAssemblyImpl entity : entities )
+        {
+            entity.concerns.addAll( Arrays.asList( concerns ) );
+        }
         return this;
     }
 
     public EntityDeclaration withSideEffects( Class<?>... sideEffects )
     {
-        this.sideEffects.addAll( Arrays.asList( sideEffects ) );
+        for( EntityAssemblyImpl entity : entities )
+        {
+            entity.sideEffects.addAll( Arrays.asList( sideEffects ) );
+        }
         return this;
     }
 
     public EntityDeclaration withMixins( Class<?>... mixins )
     {
-        this.mixins.addAll( Arrays.asList( mixins ) );
+        for( EntityAssemblyImpl entity : entities )
+        {
+            entity.mixins.addAll( Arrays.asList( mixins ) );
+        }
         return this;
     }
 
     public EntityDeclaration withRoles( Class<?>... roles )
     {
-        this.roles.addAll( Arrays.asList( roles ) );
-        return this;
-    }
-
-    void addEntities( List<EntityModel> entities,
-                      PropertyDeclarations propertyDecs,
-                      AssociationDeclarations associationDecs,
-                      ManyAssociationDeclarations manyAssociationDecs,
-                      AssemblyHelper helper
-    )
-    {
-        for( Class<? extends EntityComposite> compositeType : compositeTypes )
+        for( EntityAssemblyImpl entity : entities )
         {
-            try
-            {
-                List<ConcernDeclaration> concernDeclarations = new ArrayList<ConcernDeclaration>();
-                ConcernsDeclaration.concernDeclarations( concerns, concernDeclarations );
-                ConcernsDeclaration.concernDeclarations( compositeType, concernDeclarations );
-                ConcernsDeclaration concernsDeclaration = new ConcernsDeclaration( concernDeclarations );
-
-                EntityModel compositeModel = EntityModel.newModel( compositeType,
-                                                                   visibility,
-                                                                   new MetaInfo( metaInfo ).withAnnotations( compositeType ),
-                                                                   propertyDecs,
-                                                                   associationDecs,
-                                                                   manyAssociationDecs,
-                                                                   concernsDeclaration,
-                                                                   sideEffects,
-                                                                   mixins,
-                                                                   roles,
-                                                                   helper );
-                entities.add( compositeModel );
-            }
-            catch( Exception e )
-            {
-                throw new InvalidApplicationException( "Could not register " + compositeType.getName(), e );
-            }
+            entity.roles.addAll( Arrays.asList( roles ) );
         }
+        return this;
     }
 }

@@ -42,11 +42,11 @@ public class OptionalTest
     public void assemble( ModuleAssembly module )
             throws AssemblyException
     {
-        module.addTransients( TestComposite.class );
-        module.addTransients( TestComposite2.class );
-        module.addEntities( TestComposite3.class, TestComposite4.class );
-        module.addServices( MemoryEntityStoreService.class );
-        module.addServices( UuidIdentityGeneratorService.class );
+        module.transients( TestComposite.class );
+        module.transients( TestComposite2.class );
+        module.entities( TestComposite3.class, TestComposite4.class );
+        module.services( MemoryEntityStoreService.class );
+        module.services( UuidIdentityGeneratorService.class );
     }
 
     @Test

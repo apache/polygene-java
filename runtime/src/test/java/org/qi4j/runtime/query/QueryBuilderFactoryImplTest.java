@@ -43,7 +43,7 @@ public class QueryBuilderFactoryImplTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addTransients( TestComposite.class );
+        module.transients( TestComposite.class );
     }
 
     @Before

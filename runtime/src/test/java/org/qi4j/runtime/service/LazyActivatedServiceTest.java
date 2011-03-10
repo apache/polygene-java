@@ -43,8 +43,8 @@ public class LazyActivatedServiceTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.addObjects( LazyActivatedServiceTest.class );
-                module.addServices( LazyActivatedServiceTest.ActivatableComposite.class );
+                module.objects( LazyActivatedServiceTest.class );
+                module.services( LazyActivatedServiceTest.ActivatableComposite.class );
             }
         };
 

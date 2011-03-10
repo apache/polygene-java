@@ -22,7 +22,7 @@ import org.qi4j.api.common.Visibility;
 
 /**
  * Fluent API for declaring entities. Instances
- * of this API are acquired by calling {@link ModuleAssembly#addEntities(Class[])}.
+ * of this API are acquired by calling {@link ModuleAssembly#entities(Class[])}.
  */
 public interface EntityDeclaration
 {

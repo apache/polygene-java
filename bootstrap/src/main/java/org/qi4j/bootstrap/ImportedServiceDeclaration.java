@@ -27,7 +27,7 @@ import org.qi4j.spi.service.importer.ServiceSelectorImporter;
 
 /**
  * Fluent API for declaring imported services. Instances
- * of this API are acquired by calling {@link ModuleAssembly#importServices(Class[])}.
+ * of this API are acquired by calling {@link ModuleAssembly#importedServices(Class[])}.
  */
 public interface ImportedServiceDeclaration
 {

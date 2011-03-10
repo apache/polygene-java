@@ -55,8 +55,8 @@ public class MixinVisibilityTest
                              throws AssemblyException
                          {
                              module.setName( "Module A" );
-                             module.addTransients( B1Composite.class );
-                             module.addObjects( ObjectA.class );
+                             module.transients( B1Composite.class );
+                             module.objects( ObjectA.class );
                          }
                      }
                   }
@@ -88,8 +88,8 @@ public class MixinVisibilityTest
                              throws AssemblyException
                          {
                              module.setName( "Module A" );
-                             module.addTransients( B1Composite.class, B2Composite.class );
-                             module.addObjects( ObjectA.class );
+                             module.transients( B1Composite.class, B2Composite.class );
+                             module.objects( ObjectA.class );
                          }
                      }
                   }
@@ -121,7 +121,7 @@ public class MixinVisibilityTest
                               throws AssemblyException
                           {
                               module.setName( "Module A" );
-                              module.addObjects( ObjectA.class );
+                              module.objects( ObjectA.class );
                           }
                       }
                   },
@@ -132,7 +132,7 @@ public class MixinVisibilityTest
                               throws AssemblyException
                           {
                               module.setName( "Module B" );
-                              module.addTransients( B1Composite.class );
+                              module.transients( B1Composite.class );
                           }
                       }
                   }
@@ -164,7 +164,7 @@ public class MixinVisibilityTest
                               throws AssemblyException
                           {
                               module.setName( "Module A" );
-                              module.addObjects( ObjectA.class );
+                              module.objects( ObjectA.class );
                           }
                       }
                   },
@@ -175,7 +175,7 @@ public class MixinVisibilityTest
                               throws AssemblyException
                           {
                               module.setName( "Module B" );
-                              module.addTransients( B1Composite.class ).visibleIn( Visibility.layer );
+                              module.transients( B1Composite.class ).visibleIn( Visibility.layer );
                           }
                       }
                   }
@@ -207,7 +207,7 @@ public class MixinVisibilityTest
                               throws AssemblyException
                           {
                               module.setName( "Module A" );
-                              module.addObjects( ObjectA.class );
+                              module.objects( ObjectA.class );
                           }
                       }
                   },
@@ -218,7 +218,7 @@ public class MixinVisibilityTest
                               throws AssemblyException
                           {
                               module.setName( "Module B" );
-                              module.addTransients( B1Composite.class, B2Composite.class )
+                              module.transients( B1Composite.class, B2Composite.class )
                                   .visibleIn( Visibility.layer );
                           }
                       }
@@ -251,7 +251,7 @@ public class MixinVisibilityTest
                             throws AssemblyException
                         {
                             module.setName( "Module A" );
-                            module.addObjects( ObjectA.class );
+                            module.objects( ObjectA.class );
                         }
                     }
                   },
@@ -262,7 +262,7 @@ public class MixinVisibilityTest
                             throws AssemblyException
                         {
                             module.setName( "Module B" );
-                            module.addTransients( B1Composite.class ).visibleIn( Visibility.layer );
+                            module.transients( B1Composite.class ).visibleIn( Visibility.layer );
                         }
                     }
                   },
@@ -273,7 +273,7 @@ public class MixinVisibilityTest
                             throws AssemblyException
                         {
                             module.setName( "Module C" );
-                            module.addTransients( B2Composite.class ).visibleIn( Visibility.layer );
+                            module.transients( B2Composite.class ).visibleIn( Visibility.layer );
                         }
                     }
                   }
@@ -307,7 +307,7 @@ public class MixinVisibilityTest
                               throws AssemblyException
                           {
                               module.setName( "Module A" );
-                              module.addObjects( ObjectA.class );
+                              module.objects( ObjectA.class );
                           }
                       }
                   }
@@ -320,7 +320,7 @@ public class MixinVisibilityTest
                               throws AssemblyException
                           {
                               module.setName( "Module B" );
-                              module.addTransients( B1Composite.class ).visibleIn( Visibility.layer );
+                              module.transients( B1Composite.class ).visibleIn( Visibility.layer );
                           }
                       }
                   }
@@ -352,7 +352,7 @@ public class MixinVisibilityTest
                               throws AssemblyException
                           {
                               module.setName( "Module A" );
-                              module.addObjects( ObjectA.class );
+                              module.objects( ObjectA.class );
                           }
                       }
                   }
@@ -365,7 +365,7 @@ public class MixinVisibilityTest
                               throws AssemblyException
                           {
                               module.setName( "Module B" );
-                              module.addTransients( B1Composite.class ).visibleIn( Visibility.application );
+                              module.transients( B1Composite.class ).visibleIn( Visibility.application );
                           }
                       }
                   }
@@ -389,7 +389,7 @@ public class MixinVisibilityTest
             throws AssemblyException
         {
             module.setName( "Module B" );
-            module.addTransients( B1Composite.class ).visibleIn( Visibility.module );
+            module.transients( B1Composite.class ).visibleIn( Visibility.module );
         }
     }
 

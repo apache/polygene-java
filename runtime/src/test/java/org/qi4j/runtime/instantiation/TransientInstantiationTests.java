@@ -32,7 +32,7 @@ public class TransientInstantiationTests
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addTransients( MyTransient.class );
+        module.transients( MyTransient.class );
     }
 
     @Test

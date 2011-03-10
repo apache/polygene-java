@@ -41,9 +41,9 @@ public class ServiceSelectorImporterTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.addObjects( ServiceConsumer.class );
-                module.addServices( TestServiceComposite1.class,
-                                    TestServiceComposite2.class );
+                module.objects( ServiceConsumer.class );
+                module.services( TestServiceComposite1.class,
+                                 TestServiceComposite2.class );
             }
         };
 
@@ -60,14 +60,14 @@ public class ServiceSelectorImporterTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.addObjects( ServiceConsumer.class );
+                module.objects( ServiceConsumer.class );
 
-                module.importServices( TestService.class )
+                module.importedServices( TestService.class )
                     .importedBy( SERVICE_SELECTOR )
                     .setMetaInfo( ServiceQualifier.withId( TestServiceComposite2.class.getSimpleName() ) );
 
                 ModuleAssembly module2 = module.layerAssembly().moduleAssembly( "Other module" );
-                module2.addServices( TestServiceComposite2.class, TestServiceComposite2.class )
+                module2.services( TestServiceComposite2.class, TestServiceComposite2.class )
                     .visibleIn( Visibility.layer );
             }
         };
@@ -85,14 +85,14 @@ public class ServiceSelectorImporterTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.addObjects( ServiceConsumer.class );
+                module.objects( ServiceConsumer.class );
 
-                module.importServices( TestService.class )
+                module.importedServices( TestService.class )
                     .importedBy( SERVICE_SELECTOR )
                     .setMetaInfo( ServiceQualifier.withId("TestServiceComposite2_1" ));
 
                 ModuleAssembly module2 = module.layerAssembly().moduleAssembly( "Other module" );
-                module2.addServices( TestServiceComposite2.class, TestServiceComposite2.class )
+                module2.services( TestServiceComposite2.class, TestServiceComposite2.class )
                     .visibleIn( Visibility.layer );
             }
         };

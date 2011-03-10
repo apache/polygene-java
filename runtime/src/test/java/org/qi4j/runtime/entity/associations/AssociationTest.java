@@ -38,9 +38,9 @@ public class AssociationTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class );
-        module.addEntities( AssociationTest.Person.class,
-                            AssociationTest.Company.class );
+        module.services( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class );
+        module.entities( AssociationTest.Person.class,
+                         AssociationTest.Company.class );
         module.forMixin( Employer.class )
             .setMetaInfo( new DisplayInfo( "Employees", "Employees in the company", "Employees", null ) )
             .declareDefaults()

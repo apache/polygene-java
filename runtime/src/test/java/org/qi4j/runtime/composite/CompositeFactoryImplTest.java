@@ -35,7 +35,7 @@ public class CompositeFactoryImplTest
         throws AssemblyException
     {
         // This is required to instantiate [SecondComposite] composite in [testNewComposition9]
-        module.addTransients( SecondComposite.class );
+        module.transients( SecondComposite.class );
     }
 
     @SuppressWarnings( "unchecked" )

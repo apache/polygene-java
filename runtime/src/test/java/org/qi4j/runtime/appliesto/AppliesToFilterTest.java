@@ -40,7 +40,7 @@ public class AppliesToFilterTest
     public void assemble( ModuleAssembly module )
             throws AssemblyException
     {
-        module.addTransients( SomeComposite.class );
+        module.transients( SomeComposite.class );
     }
 
     @Test

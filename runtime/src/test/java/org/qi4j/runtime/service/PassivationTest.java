@@ -43,8 +43,8 @@ public class PassivationTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.addServices( SuccessDataService.class );
-                module.addServices( SuccessDataService.class );
+                module.services( SuccessDataService.class );
+                module.services( SuccessDataService.class );
             }
         };
 
@@ -67,19 +67,19 @@ public class PassivationTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.addServices( SuccessDataService.class );
-                module.addServices( SuccessDataService.class );
-                module.addServices( SuccessDataService.class );
-                module.addServices( FailingDataService.class );
-                module.addServices( SuccessDataService.class );
-                module.addServices( SuccessDataService.class );
-                module.addServices( FailingDataService.class );
-                module.addServices( SuccessDataService.class );
-                module.addServices( SuccessDataService.class );
-                module.addServices( FailingDataService.class );
-                module.addServices( SuccessDataService.class );
-                module.addServices( SuccessDataService.class );
-                module.addServices( FailingDataService.class );
+                module.services( SuccessDataService.class );
+                module.services( SuccessDataService.class );
+                module.services( SuccessDataService.class );
+                module.services( FailingDataService.class );
+                module.services( SuccessDataService.class );
+                module.services( SuccessDataService.class );
+                module.services( FailingDataService.class );
+                module.services( SuccessDataService.class );
+                module.services( SuccessDataService.class );
+                module.services( FailingDataService.class );
+                module.services( SuccessDataService.class );
+                module.services( SuccessDataService.class );
+                module.services( FailingDataService.class );
             }
         };
 
@@ -124,7 +124,7 @@ public class PassivationTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.addServices( FailingDataService.class );
+                module.services( FailingDataService.class );
             }
         };
 
@@ -153,8 +153,8 @@ public class PassivationTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.addServices( FailingDataService.class );
-                module.addServices( FailingDataService.class );
+                module.services( FailingDataService.class );
+                module.services( FailingDataService.class );
             }
         };
 

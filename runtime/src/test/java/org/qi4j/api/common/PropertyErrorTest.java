@@ -34,8 +34,8 @@ public class PropertyErrorTest
     public void assemble( ModuleAssembly module )
             throws AssemblyException
     {
-        module.addServices( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class );
-        module.addEntities( PersonEntity.class );
+        module.services( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class );
+        module.entities( PersonEntity.class );
     }
 
     @Test(expected = ConstraintViolationException.class)

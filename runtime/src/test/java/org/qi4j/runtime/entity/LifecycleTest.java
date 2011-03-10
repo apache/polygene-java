@@ -43,7 +43,7 @@ public class LifecycleTest
         throws AssemblyException
     {
         new EntityTestAssembler().assemble( module );
-        module.addEntities( TestEntity.class );
+        module.entities( TestEntity.class );
     }
 
     @Test

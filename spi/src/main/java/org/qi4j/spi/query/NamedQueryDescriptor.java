@@ -48,7 +48,7 @@ import org.qi4j.api.query.grammar.OrderBy;
  *
  * namedQueries.addQuery( queryName, queryDescriptor );
  *
- * module.addServices( RdfIndexerExporterComposite.class ).setMetaInfo( namedQueries );
+ * module.services( RdfIndexerExporterComposite.class ).setMetaInfo( namedQueries );
  *
  * </pre></code>
  */

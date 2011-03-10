@@ -44,8 +44,8 @@ public class ConstraintsTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addTransients( MyOneComposite.class );
-        module.addTransients( MyOneComposite2.class );
+        module.transients( MyOneComposite.class );
+        module.transients( MyOneComposite2.class );
     }
 
     @Test

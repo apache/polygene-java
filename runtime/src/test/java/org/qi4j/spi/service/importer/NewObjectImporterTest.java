@@ -31,11 +31,11 @@ public class NewObjectImporterTest
 {
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        module.importServices( TestService.class ).
+        module.importedServices( TestService.class ).
                 identifiedBy( "test" ).
                 importedBy( ImportedServiceDeclaration.NEW_OBJECT );
 
-        module.addObjects( TestService.class, NewObjectImporterTest.class);
+        module.objects( TestService.class, NewObjectImporterTest.class );
     }
 
     @Service

@@ -42,7 +42,7 @@ public class InvokeServiceFromModuleAssemblyTest extends AbstractQi4jTest
     {
         try
         {
-            module.addServices( TestService.class );
+            module.services( TestService.class );
             module.forMixin( TestService.class ).declareDefaults().voidMethod();
             fail( "It is not allowed to declareDefaults on methods not returning Property." );
         }

@@ -36,7 +36,7 @@ public class StateParameterInjectionTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addTransients( PropertyParameterInjectionComposite.class );
+        module.transients( PropertyParameterInjectionComposite.class );
     }
 
     /**

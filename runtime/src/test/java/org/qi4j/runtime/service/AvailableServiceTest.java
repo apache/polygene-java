@@ -48,7 +48,7 @@ public class AvailableServiceTest
             public void assemble( ModuleAssembly module )
                     throws AssemblyException
             {
-                module.addServices( TestServiceComposite1.class);
+                module.services( TestServiceComposite1.class );
             }
         };
 
@@ -65,8 +65,8 @@ public class AvailableServiceTest
             public void assemble( ModuleAssembly module )
                     throws AssemblyException
             {
-                module.addServices( TestServiceComposite2.class );
-                module.addEntities( TestServiceConfiguration.class );
+                module.services( TestServiceComposite2.class );
+                module.entities( TestServiceConfiguration.class );
 
                 new EntityTestAssembler().assemble( module );
             }
@@ -90,9 +90,9 @@ public class AvailableServiceTest
             public void assemble( ModuleAssembly module )
                     throws AssemblyException
             {
-                module.addObjects( TestObject.class );
-                module.addServices( TestServiceComposite2.class );
-                module.addEntities( TestServiceConfiguration.class );
+                module.objects( TestObject.class );
+                module.services( TestServiceComposite2.class );
+                module.entities( TestServiceConfiguration.class );
 
                 new EntityTestAssembler().assemble( module );
             }

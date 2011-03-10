@@ -35,7 +35,7 @@ public class PrivateMixinTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addTransients( SpeakComposite.class );
+        module.transients( SpeakComposite.class );
     }
 
     /**

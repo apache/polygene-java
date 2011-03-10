@@ -37,9 +37,9 @@ public class PropertyTypeTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class );
-        module.addEntities( PersonEntity.class );
-        module.addTransients( PersonComposite.class );
+        module.services( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class );
+        module.entities( PersonEntity.class );
+        module.transients( PersonComposite.class );
     }
 
     @Test

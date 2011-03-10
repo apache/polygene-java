@@ -37,7 +37,7 @@ public class ModuleSideEffectTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addTransients( FooComposite.class ).withSideEffects( TraceSideEffect.class );
+        module.transients( FooComposite.class ).withSideEffects( TraceSideEffect.class );
     }
 
     @Test

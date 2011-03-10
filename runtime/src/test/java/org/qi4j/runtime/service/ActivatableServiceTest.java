@@ -20,8 +20,10 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceReference;
+import org.qi4j.api.specification.Specification;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.bootstrap.ServiceAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 
 import static org.junit.Assert.*;
@@ -45,8 +47,17 @@ public class ActivatableServiceTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.addObjects( ActivatableServiceTest.class );
-                module.addServices( ActivatableComposite.class ).instantiateOnStartup();
+                module.objects( ActivatableServiceTest.class );
+                module.services( ActivatableComposite.class );
+
+                module.services( new Specification<ServiceAssembly>()
+                {
+                    @Override
+                    public boolean satisfiedBy( ServiceAssembly item )
+                    {
+                        return Activatable.class.isAssignableFrom( item.type() );
+                    }
+                } ).instantiateOnStartup();
             }
         };
 

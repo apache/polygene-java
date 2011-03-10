@@ -36,7 +36,7 @@ public class ValueInstantiationTests
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addValues( MyValue.class );
+        module.values( MyValue.class );
     }
 
     @Test

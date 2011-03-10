@@ -44,7 +44,7 @@ public class ValueTypeSerializationTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addValues( SomeValue.class, AnotherValue.class, FooValue.class, CustomFooValue.class );
+        module.values( SomeValue.class, AnotherValue.class, FooValue.class, CustomFooValue.class );
         //, SpecificCollection.class, SpecificValue.class, GenericValue.class);
     }
 

@@ -67,7 +67,7 @@ public class PrivateCompositeVisibilityTest
             throws AssemblyException
         {
             module.setName( "Module A" );
-            module.addObjects( ObjectA.class );
+            module.objects( ObjectA.class );
         }
     }
 
@@ -78,7 +78,7 @@ public class PrivateCompositeVisibilityTest
             throws AssemblyException
         {
             module.setName( "Module B" );
-            module.addTransients( CompositeB.class ).visibleIn( Visibility.module );
+            module.transients( CompositeB.class ).visibleIn( Visibility.module );
         }
     }
 

@@ -34,7 +34,7 @@ public class Qi228Test
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices( SomeLogicService.class );
+        module.services( SomeLogicService.class );
     }
 
     @Test

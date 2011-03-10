@@ -14,11 +14,7 @@
 
 package org.qi4j.api.common;
 
-import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
-
 import org.junit.Test;
-import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.bootstrap.AssemblyException;
@@ -32,7 +28,7 @@ public class ObjectBuilderTest
 {
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        module.addObjects( A.class, B.class, C.class );
+        module.objects( A.class, B.class, C.class );
     }
 
     @Test(expected = ConstructionException.class)

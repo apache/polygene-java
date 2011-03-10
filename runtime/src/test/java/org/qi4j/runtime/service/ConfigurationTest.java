@@ -34,10 +34,10 @@ public class ConfigurationTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addObjects( this.getClass() );
-        module.addEntities( HelloWorldConfiguration.class );
-        module.addServices( HelloWorldService.class ).identifiedBy( "HelloWorldService" );
-        module.addServices( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class );
+        module.objects( this.getClass() );
+        module.entities( HelloWorldConfiguration.class );
+        module.services( HelloWorldService.class ).identifiedBy( "HelloWorldService" );
+        module.services( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class );
     }
 
     @Test

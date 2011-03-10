@@ -103,7 +103,7 @@ public class ObjectBuilderFactoryTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.addObjects( AnyObject.class );
+                module.objects( AnyObject.class );
             }
         };
         assembler.objectBuilderFactory().newObjectBuilder( AnyObject.class );
@@ -120,7 +120,7 @@ public class ObjectBuilderFactoryTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.addObjects( AnyObject.class );
+                module.objects( AnyObject.class );
             }
         };
         assembler.objectBuilderFactory().newObject( AnyObject.class );
@@ -134,7 +134,7 @@ public class ObjectBuilderFactoryTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.addObjects( ManyConstructorObject.class );
+                module.objects( ManyConstructorObject.class );
             }
         };
 

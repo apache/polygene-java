@@ -196,7 +196,7 @@ public class QI256Test extends AbstractQi4jTest
     public void assemble( ModuleAssembly module )
             throws AssemblyException
     {
-        module.addTransients( TestTransient.class );
+        module.transients( TestTransient.class );
     }
 
     @Test(expected = TestException.class)

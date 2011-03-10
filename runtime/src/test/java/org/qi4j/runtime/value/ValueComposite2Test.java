@@ -44,8 +44,8 @@ public class ValueComposite2Test
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.addValues( SomeValue.class );
-                module.addServices( DummyService.class );
+                module.values( SomeValue.class );
+                module.services( DummyService.class );
             }
         };
         ValueBuilder<Some> builder = app.valueBuilderFactory().newValueBuilder( Some.class );
@@ -64,7 +64,7 @@ public class ValueComposite2Test
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.addValues( SomeValue2.class );
+                module.values( SomeValue2.class );
             }
         };
     }

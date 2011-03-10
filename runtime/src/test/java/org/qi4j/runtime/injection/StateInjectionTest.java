@@ -38,7 +38,7 @@ public class StateInjectionTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addTransients( StateInjectionTest.PropertyFieldInjectionComposite.class );
+        module.transients( StateInjectionTest.PropertyFieldInjectionComposite.class );
     }
 
     /**

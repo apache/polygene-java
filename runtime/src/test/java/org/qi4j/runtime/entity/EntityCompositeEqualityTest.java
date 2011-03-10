@@ -62,10 +62,10 @@ public class EntityCompositeEqualityTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices( UuidIdentityGeneratorService.class, MemoryEntityStoreService.class )
+        module.services( UuidIdentityGeneratorService.class, MemoryEntityStoreService.class )
             .visibleIn( Visibility.layer );
-        module.addObjects( EntityCompositeEqualityTest.class );
-        module.addEntities( MyComposite.class );
+        module.objects( EntityCompositeEqualityTest.class );
+        module.entities( MyComposite.class );
     }
 
     private static interface MyComposite

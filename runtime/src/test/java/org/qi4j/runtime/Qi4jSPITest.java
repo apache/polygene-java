@@ -46,7 +46,7 @@ public class Qi4jSPITest
             throws AssemblyException
     {
         new EntityTestAssembler().assemble( module );
-        module.addEntities( TestEntity.class, TestEntity2.class );
+        module.entities( TestEntity.class, TestEntity2.class );
     }
 
     @Test

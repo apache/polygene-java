@@ -33,7 +33,7 @@ public class UsesInjectionTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addObjects( InjectionTarget.class, ToBeInjected.class );
+        module.objects( InjectionTarget.class, ToBeInjected.class );
     }
 
     @Test

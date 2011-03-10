@@ -37,9 +37,9 @@ public class MixinPrecedenceTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addTransients( TestComposite1.class,
-                              TestComposite2.class,
-                              TestComposite3.class );
+        module.transients( TestComposite1.class,
+                           TestComposite2.class,
+                           TestComposite3.class );
     }
 
     @Test

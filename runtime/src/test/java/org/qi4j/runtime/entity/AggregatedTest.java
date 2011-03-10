@@ -40,11 +40,11 @@ public class AggregatedTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addEntities( CompanyEntity.class, EmployeeEntity.class, PersonEntity.class );
+        module.entities( CompanyEntity.class, EmployeeEntity.class, PersonEntity.class );
 
-        module.addServices( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class );
+        module.services( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class );
 
-        module.addObjects( getClass() );
+        module.objects( getClass() );
     }
 
     @Test

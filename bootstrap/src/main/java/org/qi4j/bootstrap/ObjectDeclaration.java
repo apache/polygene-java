@@ -22,7 +22,7 @@ import org.qi4j.api.common.Visibility;
 
 /**
  * Fluent API for declaring objects.Instances
- * of this API are acquired by calling {@link ModuleAssembly#addObjects(Class[])}.
+ * of this API are acquired by calling {@link ModuleAssembly#objects(Class[])}.
  */
 public interface ObjectDeclaration
 {

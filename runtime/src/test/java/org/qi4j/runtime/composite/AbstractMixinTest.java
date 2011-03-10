@@ -40,7 +40,7 @@ public class AbstractMixinTest
         throws AssemblyException
     {
         System.setProperty( "qi4j.compacttrace", "off" );
-        module.addTransients( TestComposite.class );
+        module.transients( TestComposite.class );
     }
 
     @Test

@@ -39,14 +39,14 @@ public class InstanceImporterTest
         throws AssemblyException
     {
         ModuleAssembly serviceModule = module.layerAssembly().moduleAssembly( "Service module" );
-        serviceModule.importServices( TestInterface.class )
+        serviceModule.importedServices( TestInterface.class )
             .setMetaInfo( new TestService() )
             .visibleIn( Visibility.module );
-        serviceModule.importServices( TestInterface.class )
+        serviceModule.importedServices( TestInterface.class )
             .importedBy( ServiceSelectorImporter.class )
             .setMetaInfo( ServiceQualifier.withId( TestInterface.class.getSimpleName() ) )
             .visibleIn( layer );
-        module.addObjects( InstanceImporterTest.class );
+        module.objects( InstanceImporterTest.class );
     }
 
     @Test

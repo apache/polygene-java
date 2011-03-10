@@ -65,7 +65,7 @@ public class ContextCompositeTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addTransients( MyCompositeContext.class );
+        module.transients( MyCompositeContext.class );
     }
 
     public static interface MyCompositeContext

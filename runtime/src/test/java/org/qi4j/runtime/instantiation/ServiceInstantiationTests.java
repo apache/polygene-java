@@ -38,9 +38,9 @@ public class ServiceInstantiationTests
     public void assemble( ModuleAssembly module )
             throws AssemblyException
     {
-        module.addEntities( MyConfigurationEntity.class );
-        module.addServices( MyService.class );
-        module.addServices( MemoryEntityStoreService.class );
+        module.entities( MyConfigurationEntity.class );
+        module.services( MyService.class );
+        module.services( MemoryEntityStoreService.class );
     }
 
     @Test

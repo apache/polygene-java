@@ -19,7 +19,6 @@
 package org.qi4j.api.common;
 
 import org.junit.Test;
-import org.qi4j.api.common.Optional;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.property.Property;
@@ -37,11 +36,11 @@ public class RemovalTest
     public void assemble( ModuleAssembly module )
             throws AssemblyException
     {
-        module.addEntities( TestEntity.class );
+        module.entities( TestEntity.class );
 
-        module.addEntities( PidRegulator.class );
-        module.addServices( MemoryEntityStoreService.class );
-        module.addServices( UuidIdentityGeneratorService.class );
+        module.entities( PidRegulator.class );
+        module.services( MemoryEntityStoreService.class );
+        module.services( UuidIdentityGeneratorService.class );
     }
 
     @Test

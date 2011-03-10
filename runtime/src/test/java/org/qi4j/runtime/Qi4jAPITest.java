@@ -36,10 +36,10 @@ public class Qi4jAPITest
             throws AssemblyException
     {
         new EntityTestAssembler().assemble( module );
-        module.addTransients( TestTransient.class );
-        module.addEntities( TestEntity.class );
-        module.addValues( TestValue.class );
-        module.addServices( TestService.class );
+        module.transients( TestTransient.class );
+        module.entities( TestEntity.class );
+        module.values( TestValue.class );
+        module.services( TestService.class );
     }
 
     @Test

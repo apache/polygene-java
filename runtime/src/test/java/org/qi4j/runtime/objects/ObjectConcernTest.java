@@ -37,7 +37,7 @@ public class ObjectConcernTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.addObjects( TestObject.class );
+                module.objects( TestObject.class );
             }
         };
 

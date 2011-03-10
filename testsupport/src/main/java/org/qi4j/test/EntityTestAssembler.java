@@ -42,7 +42,7 @@ public class EntityTestAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices( MemoryEntityStoreService.class ).visibleIn( visibility );
-        module.addServices( UuidIdentityGeneratorService.class ).visibleIn( Visibility.application );
+        module.services( MemoryEntityStoreService.class ).visibleIn( visibility );
+        module.services( UuidIdentityGeneratorService.class ).visibleIn( Visibility.application );
     }
 }

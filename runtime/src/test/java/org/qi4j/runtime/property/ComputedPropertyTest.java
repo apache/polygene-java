@@ -39,7 +39,7 @@ public class ComputedPropertyTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addTransients( StorableComposite.class );
+        module.transients( StorableComposite.class );
         module.forMixin( Storable.class ).declareDefaults().depth().set( 0.0 );
         module.forMixin( Storable.class ).declareDefaults().width().set( 0.0 );
         module.forMixin( Storable.class ).declareDefaults().height().set( 0.0 );

@@ -39,7 +39,7 @@ public class EagerServiceInstantiationTest
         throws AssemblyException
     {
         testInfo = new TestInfo();
-        module.addServices( MyService.class ).setMetaInfo( testInfo ).instantiateOnStartup();
+        module.services( MyService.class ).setMetaInfo( testInfo ).instantiateOnStartup();
     }
 
     @Test

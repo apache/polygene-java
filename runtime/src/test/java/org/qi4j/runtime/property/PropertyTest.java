@@ -50,7 +50,7 @@ public class PropertyTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addTransients( Company.class );
+        module.transients( Company.class );
         module.forMixin( Nameable.class )
             .setMetaInfo( new DisplayInfo( "Name", "Name of something", "The name" ) )  // Add UI info
             .setMetaInfo(

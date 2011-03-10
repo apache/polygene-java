@@ -35,11 +35,11 @@ public class RemovalTest
     public void assemble( ModuleAssembly module )
             throws AssemblyException
     {
-        module.addEntities( TestEntity.class );
+        module.entities( TestEntity.class );
 
-        module.addEntities( PidRegulator.class );
-        module.addServices( MemoryEntityStoreService.class );
-        module.addServices( UuidIdentityGeneratorService.class );
+        module.entities( PidRegulator.class );
+        module.services( MemoryEntityStoreService.class );
+        module.services( UuidIdentityGeneratorService.class );
     }
 
     @Test

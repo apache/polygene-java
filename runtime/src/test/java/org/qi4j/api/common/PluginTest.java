@@ -79,8 +79,8 @@ public class PluginTest
         public void assemble( ModuleAssembly module )
             throws AssemblyException
         {
-            module.addServices( PluginTesterService.class ).instantiateOnStartup();
-            module.importServices( Plugin.class )
+            module.services( PluginTesterService.class ).instantiateOnStartup();
+            module.importedServices( Plugin.class )
                 .importedBy( ServiceFinderImporter.class )
                 .visibleIn( Visibility.layer );
         }
@@ -141,7 +141,7 @@ public class PluginTest
         public void assemble( ModuleAssembly module )
             throws AssemblyException
         {
-            module.addServices( HelloWorldService.class ).visibleIn( Visibility.application );
+            module.services( HelloWorldService.class ).visibleIn( Visibility.application );
         }
     }
 
@@ -176,7 +176,7 @@ public class PluginTest
         public void assemble( ModuleAssembly module )
             throws AssemblyException
         {
-            module.addServices( PluginsService.class ).instantiateOnStartup();
+            module.services( PluginsService.class ).instantiateOnStartup();
         }
     }
 
@@ -259,7 +259,7 @@ public class PluginTest
                     }
 
                     // Import host services
-                    module.importServices( HelloWorld.class )
+                    module.importedServices( HelloWorld.class )
                         .importedBy( ServiceFinderImporter.class )
                         .setMetaInfo( finder )
                         .visibleIn( Visibility.layer );
@@ -321,7 +321,7 @@ public class PluginTest
         public void assemble( ModuleAssembly module )
             throws AssemblyException
         {
-            module.addServices( SimonSaysPlugin.class ).visibleIn( Visibility.layer );
+            module.services( SimonSaysPlugin.class ).visibleIn( Visibility.layer );
         }
     }
 

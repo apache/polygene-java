@@ -44,10 +44,10 @@ public class ValueInjectionDeserializationTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addEntities( Niclas.class );
-        module.addValues( SomeValue.class );
-        module.addServices( DummyService.class );
-        module.addServices( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class );
+        module.entities( Niclas.class );
+        module.values( SomeValue.class );
+        module.services( DummyService.class );
+        module.services( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class );
     }
 
     @Test

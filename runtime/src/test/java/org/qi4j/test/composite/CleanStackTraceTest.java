@@ -37,7 +37,7 @@ public class CleanStackTraceTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addTransients( CleanStackTraceTest.TestComposite.class );
+        module.transients( CleanStackTraceTest.TestComposite.class );
     }
 
     /**

@@ -36,7 +36,7 @@ public class CompositeMixinTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addTransients( TestComposite.class );
+        module.transients( TestComposite.class );
     }
 
     @Test

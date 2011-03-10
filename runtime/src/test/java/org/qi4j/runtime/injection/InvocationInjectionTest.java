@@ -45,7 +45,7 @@ public class InvocationInjectionTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.addTransients( MyComposite.class );
+                module.transients( MyComposite.class );
             }
         };
 

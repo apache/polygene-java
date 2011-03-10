@@ -49,7 +49,7 @@ import static java.util.Arrays.*;
  *     throws AssemblyException
  * {
  *     Map<String,String> properties = ...;
- *     module.addServices( MyService.class ).setMetaInfo( properties );
+ *     module.services( MyService.class ).setMetaInfo( properties );
  * }
  * </pre></code>
  * <p>

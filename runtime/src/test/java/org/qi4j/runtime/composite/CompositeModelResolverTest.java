@@ -39,7 +39,7 @@ public class CompositeModelResolverTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.addTransients( TestComposite1.class );
+                module.transients( TestComposite1.class );
             }
         }.transientBuilderFactory();
 

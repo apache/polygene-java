@@ -51,9 +51,9 @@ public class ServiceInjectionTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.addServices( MyServiceComposite.class ).identifiedBy( "Foo" ).setMetaInfo( new ServiceName( "Foo" ) );
-                module.addServices( MyServiceComposite.class ).identifiedBy( "Bar" ).setMetaInfo( new ServiceName( "Bar" ) );
-                module.addObjects( ServiceUser.class );
+                module.services( MyServiceComposite.class ).identifiedBy( "Foo" ).setMetaInfo( new ServiceName( "Foo" ) );
+                module.services( MyServiceComposite.class ).identifiedBy( "Bar" ).setMetaInfo( new ServiceName( "Bar" ) );
+                module.objects( ServiceUser.class );
             }
         };
 
@@ -81,14 +81,14 @@ public class ServiceInjectionTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.addServices( MyServiceComposite.class ).identifiedBy( "Foo" ).setMetaInfo( new ServiceName( "Foo" ) );
-                module.addObjects( ServiceUser.class );
+                module.services( MyServiceComposite.class ).identifiedBy( "Foo" ).setMetaInfo( new ServiceName( "Foo" ) );
+                module.objects( ServiceUser.class );
 
                 ModuleAssembly module2 = module.layerAssembly().moduleAssembly( "Other module" );
-                ServiceDeclaration service2Decl = module2.addServices( MyServiceComposite.class );
+                ServiceDeclaration service2Decl = module2.services( MyServiceComposite.class );
                 service2Decl.identifiedBy( "Bar" ).setMetaInfo( new ServiceName( "Bar" ) ).visibleIn( layer );
 
-                ServiceDeclaration service3Decl = module2.addServices( MyServiceComposite.class );
+                ServiceDeclaration service3Decl = module2.services( MyServiceComposite.class );
                 service3Decl.identifiedBy( "Boo" ).setMetaInfo( new ServiceName( "Boo" ) );
             }
         };
@@ -104,9 +104,9 @@ public class ServiceInjectionTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.addServices( MyServiceComposite.class ).identifiedBy( "Foo" ).setMetaInfo( new ServiceName( "Foo" ) );
+                module.services( MyServiceComposite.class ).identifiedBy( "Foo" ).setMetaInfo( new ServiceName( "Foo" ) );
                 LayerAssembly layerAssembly = module.layerAssembly();
-                module.addObjects( ServiceUser.class );
+                module.objects( ServiceUser.class );
 
                 ApplicationAssembly applicationAssembly = layerAssembly.applicationAssembly();
                 LayerAssembly layer2Assembly = applicationAssembly.layerAssembly( "Other layer" );
@@ -114,7 +114,7 @@ public class ServiceInjectionTest
 
                 ModuleAssembly module2 = layer2Assembly.moduleAssembly( "Other module" );
 
-                ServiceDeclaration service2Decl = module2.addServices( MyServiceComposite.class );
+                ServiceDeclaration service2Decl = module2.services( MyServiceComposite.class );
                 service2Decl.identifiedBy( "Bar" ).setMetaInfo( new ServiceName( "Bar" ) ).visibleIn( application );
             }
         };
@@ -131,7 +131,7 @@ public class ServiceInjectionTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.addObjects( ServiceUser.class );
+                module.objects( ServiceUser.class );
             }
         };
     }

@@ -49,10 +49,10 @@ public abstract class AbstractEntityStoreTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices( UuidIdentityGeneratorService.class );
-        module.addEntities( TestEntity.class );
-        module.addValues( TestValue.class, TestValue2.class, TjabbaValue.class );
-        module.addObjects( getClass() );
+        module.services( UuidIdentityGeneratorService.class );
+        module.entities( TestEntity.class );
+        module.values( TestValue.class, TestValue2.class, TjabbaValue.class );
+        module.objects( getClass() );
     }
 
     @Before

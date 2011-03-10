@@ -16,30 +16,37 @@ package org.qi4j.runtime.bootstrap;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.service.DuplicateServiceIdentityException;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceImporter;
+import org.qi4j.api.specification.Specification;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.AssemblyVisitor;
+import org.qi4j.bootstrap.EntityAssembly;
 import org.qi4j.bootstrap.EntityDeclaration;
+import org.qi4j.bootstrap.ImportedServiceAssembly;
 import org.qi4j.bootstrap.ImportedServiceDeclaration;
 import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.bootstrap.MetaInfoDeclaration;
 import org.qi4j.bootstrap.MixinDeclaration;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.bootstrap.ObjectAssembly;
 import org.qi4j.bootstrap.ObjectDeclaration;
+import org.qi4j.bootstrap.ServiceAssembly;
 import org.qi4j.bootstrap.ServiceDeclaration;
+import org.qi4j.bootstrap.TransientAssembly;
 import org.qi4j.bootstrap.TransientDeclaration;
+import org.qi4j.bootstrap.ValueAssembly;
 import org.qi4j.bootstrap.ValueDeclaration;
 import org.qi4j.runtime.composite.CompositesModel;
 import org.qi4j.runtime.composite.TransientModel;
@@ -55,6 +62,8 @@ import org.qi4j.runtime.structure.ModuleModel;
 import org.qi4j.runtime.value.ValueModel;
 import org.qi4j.runtime.value.ValuesModel;
 
+import static org.qi4j.api.util.Iterables.iterable;
+
 /**
  * Assembly of a Module. This is where you register all objects, Composites,
  * Services. Each "add" method returns a declaration that you can use to add
@@ -63,17 +72,19 @@ import org.qi4j.runtime.value.ValuesModel;
  * call.
  */
 public final class ModuleAssemblyImpl
-    implements ModuleAssembly, Serializable
+    implements ModuleAssembly
 {
     private LayerAssembly layerAssembly;
     private String name;
     private MetaInfo metaInfo = new MetaInfo();
-    private final List<TransientDeclarationImpl> compositeDeclarations = new ArrayList<TransientDeclarationImpl>();
-    private final List<EntityDeclarationImpl> entityDeclarations = new ArrayList<EntityDeclarationImpl>();
-    private final List<ValueDeclarationImpl> valueDeclarations = new ArrayList<ValueDeclarationImpl>();
-    private final List<ObjectDeclarationImpl> objectDeclarations = new ArrayList<ObjectDeclarationImpl>();
-    private final List<ServiceDeclarationImpl> serviceDeclarations = new ArrayList<ServiceDeclarationImpl>();
-    private final List<ImportedServiceDeclarationImpl> importedServiceDeclarations = new ArrayList<ImportedServiceDeclarationImpl>();
+
+    private final Map<Class<? extends ServiceComposite>, ServiceAssemblyImpl> serviceAssemblies = new LinkedHashMap<Class<? extends ServiceComposite>, ServiceAssemblyImpl>(  );
+    private final Map<Class<?>, ImportedServiceAssemblyImpl> importedServiceAssemblies = new LinkedHashMap<Class<?>, ImportedServiceAssemblyImpl>(  );
+    private final Map<Class<? extends EntityComposite>, EntityAssemblyImpl> entityAssemblies = new LinkedHashMap<Class<? extends EntityComposite>, EntityAssemblyImpl>(  );
+    private final Map<Class<? extends ValueComposite>, ValueAssemblyImpl> valueAssemblies = new LinkedHashMap<Class<? extends ValueComposite>, ValueAssemblyImpl>(  );
+    private final Map<Class<? extends TransientComposite>, TransientAssemblyImpl> transientAssemblies = new LinkedHashMap<Class<? extends TransientComposite>, TransientAssemblyImpl>(  );
+    private final Map<Class<?>, ObjectAssemblyImpl> objectAssemblies = new LinkedHashMap<Class<?>, ObjectAssemblyImpl>(  );
+
     private final MetaInfoDeclaration metaInfoDeclaration = new MetaInfoDeclaration();
 
     public ModuleAssemblyImpl( LayerAssembly layerAssembly, String name )
@@ -104,95 +115,219 @@ public final class ModuleAssemblyImpl
         return this;
     }
 
+    @Deprecated
     public ValueDeclaration addValues( Class<? extends ValueComposite>... compositeTypes )
     {
-        ValueDeclarationImpl valueDeclaration = new ValueDeclarationImpl( compositeTypes );
-        valueDeclarations.add( valueDeclaration );
-        return valueDeclaration;
+        return values( compositeTypes );
+    }
+
+    public ValueDeclaration values( Class<? extends ValueComposite>... compositeTypes )
+    {
+        List<ValueAssemblyImpl> assemblies = new ArrayList<ValueAssemblyImpl>(  );
+
+        for( Class valueType : compositeTypes )
+        {
+            if (valueAssemblies.containsKey(valueType))
+                assemblies.add( valueAssemblies.get(valueType) );
+            else
+            {
+                ValueAssemblyImpl valueAssembly = new ValueAssemblyImpl( valueType );
+                valueAssemblies.put(valueType, valueAssembly);
+                assemblies.add(valueAssembly);
+            }
+        }
+
+        return new ValueDeclarationImpl( assemblies );
+    }
+
+    @Override
+    public ValueDeclaration values( Specification<ValueAssembly> specification )
+    {
+        List<ValueAssemblyImpl> assemblies = new ArrayList<ValueAssemblyImpl>(  );
+        for( ValueAssemblyImpl transientAssembly : valueAssemblies.values() )
+        {
+            if (specification.satisfiedBy( transientAssembly ))
+                assemblies.add(transientAssembly);
+        }
+
+        return new ValueDeclarationImpl( assemblies );
     }
 
     public TransientDeclaration addTransients( Class<? extends TransientComposite>... compositeTypes )
-        throws AssemblyException
     {
-        for( Class<? extends TransientComposite> compositeType : compositeTypes )
+        return transients( compositeTypes );
+    }
+
+    public TransientDeclaration transients( Class<? extends TransientComposite>... compositeTypes )
+    {
+        List<TransientAssemblyImpl> assemblies = new ArrayList<TransientAssemblyImpl>(  );
+
+        for( Class valueType : compositeTypes )
         {
-            // May not register ServiceComposites
-            if( ServiceComposite.class.isAssignableFrom( compositeType ) )
+            if (transientAssemblies.containsKey(valueType))
+                assemblies.add( transientAssemblies.get(valueType) );
+            else
             {
-                throw new AssemblyException( "May not register ServiceComposites as a Composite:" + compositeType.getName() );
-            }
-            else if( EntityComposite.class.isAssignableFrom( compositeType ) )
-            {
-                throw new AssemblyException( "May not register EntityComposites as a Composite:" + compositeType.getName() );
-            }
-            else if( ValueComposite.class.isAssignableFrom( compositeType ) )
-            {
-                throw new AssemblyException( "May not register ValueComposites as a Composite:" + compositeType.getName() );
+                TransientAssemblyImpl transientAssembly = new TransientAssemblyImpl( valueType );
+                transientAssemblies.put(valueType, transientAssembly);
+                assemblies.add(transientAssembly);
             }
         }
 
-        TransientDeclarationImpl compositeDeclaration = new TransientDeclarationImpl( compositeTypes );
-        compositeDeclarations.add( compositeDeclaration );
-        return compositeDeclaration;
+        return new TransientDeclarationImpl( assemblies );
+
+    }
+
+    public TransientDeclaration transients(Specification<TransientAssembly> specification)
+    {
+        List<TransientAssemblyImpl> assemblies = new ArrayList<TransientAssemblyImpl>(  );
+        for( TransientAssemblyImpl transientAssembly : transientAssemblies.values() )
+        {
+            if (specification.satisfiedBy( transientAssembly ))
+                assemblies.add(transientAssembly);
+        }
+
+        return new TransientDeclarationImpl( assemblies );
     }
 
     public EntityDeclaration addEntities( Class<? extends EntityComposite>... compositeTypes )
-        throws AssemblyException
     {
-        EntityDeclarationImpl entityDeclaration = new EntityDeclarationImpl( compositeTypes );
-        entityDeclarations.add( entityDeclaration );
-        return entityDeclaration;
+        return entities(compositeTypes);
+    }
+
+    public EntityDeclaration entities( Class<? extends EntityComposite>... compositeTypes )
+    {
+        List<EntityAssemblyImpl> assemblies = new ArrayList<EntityAssemblyImpl>(  );
+
+        for( Class entityType : compositeTypes )
+        {
+            if (entityAssemblies.containsKey(entityType))
+                assemblies.add( entityAssemblies.get(entityType) );
+            else
+            {
+                EntityAssemblyImpl entityAssembly = new EntityAssemblyImpl( entityType );
+                entityAssemblies.put(entityType, entityAssembly);
+                assemblies.add(entityAssembly);
+            }
+        }
+
+        return new EntityDeclarationImpl( assemblies );
+    }
+
+    public EntityDeclaration entities(Specification<EntityAssembly> specification)
+    {
+        List<EntityAssemblyImpl> assemblies = new ArrayList<EntityAssemblyImpl>(  );
+        for( EntityAssemblyImpl entityAssembly : entityAssemblies.values() )
+        {
+            if (specification.satisfiedBy( entityAssembly ))
+                assemblies.add(entityAssembly);
+        }
+
+        return new EntityDeclarationImpl( assemblies );
     }
 
     public ObjectDeclaration addObjects( Class... objectTypes )
-        throws AssemblyException
     {
+        return objects(objectTypes);
+    }
+
+    public ObjectDeclaration objects( Class... objectTypes )
+    {
+        List<ObjectAssemblyImpl> assemblies = new ArrayList<ObjectAssemblyImpl>(  );
+
         for( Class objectType : objectTypes )
         {
-            if( objectType.isPrimitive() )
+            if (objectAssemblies.containsKey(objectType))
+                assemblies.add( objectAssemblies.get(objectType) );
+            else
             {
-                throw new AssemblyException( "May not register primitives as objects" );
-            }
-            if( objectType.isInterface() )
-            {
-                throw new AssemblyException( "May not register interfaces as objects" );
+                ObjectAssemblyImpl objectAssembly = new ObjectAssemblyImpl( objectType );
+                objectAssemblies.put(objectType, objectAssembly);
+                assemblies.add(objectAssembly);
             }
         }
 
-        ObjectDeclarationImpl objectDeclaration = new ObjectDeclarationImpl( Arrays.asList( objectTypes ) );
-        objectDeclarations.add( objectDeclaration );
-        return objectDeclaration;
+        return new ObjectDeclarationImpl( assemblies );
     }
 
-    public ServiceDeclaration addServices( Class<? extends ServiceComposite>... serviceTypes )
-        throws AssemblyException
+    public ObjectDeclaration objects(Specification<ObjectAssembly> specification)
     {
+        List<ObjectAssemblyImpl> assemblies = new ArrayList<ObjectAssemblyImpl>(  );
+        for( ObjectAssemblyImpl objectAssembly : objectAssemblies.values() )
+        {
+            if (specification.satisfiedBy( objectAssembly ))
+                assemblies.add(objectAssembly);
+        }
+
+        return new ObjectDeclarationImpl( assemblies );
+    }
+
+    @Override
+    public ServiceDeclaration addServices( Class<? extends ServiceComposite>... serviceTypes )
+    {
+        return services( serviceTypes );
+    }
+
+    public ServiceDeclaration services( Class<? extends ServiceComposite>... serviceTypes )
+    {
+        List<ServiceAssemblyImpl> assemblies = new ArrayList<ServiceAssemblyImpl>(  );
+
         for( Class serviceType : serviceTypes )
         {
-            if( !serviceType.isInterface() )
+            if (serviceAssemblies.containsKey(serviceType))
+                assemblies.add( serviceAssemblies.get(serviceType) );
+            else
             {
-                throw new AssemblyException( "May not register classes as service types" );
-            }
-
-            if( Composite.class.isAssignableFrom( serviceType ) && !ServiceComposite.class.isAssignableFrom( serviceType ) )
-            {
-                throw new AssemblyException( "May not register Composites which are not ServiceComposites" );
+                ServiceAssemblyImpl serviceAssembly = new ServiceAssemblyImpl( serviceType, this );
+                serviceAssemblies.put(serviceType, serviceAssembly);
+                assemblies.add(serviceAssembly);
             }
         }
 
-        List<Class<? extends ServiceComposite>> classes = Arrays.asList( serviceTypes );
-        ServiceDeclarationImpl serviceDeclaration = new ServiceDeclarationImpl( classes, this );
-        serviceDeclarations.add( serviceDeclaration );
-        return serviceDeclaration;
+        return new ServiceDeclarationImpl( assemblies );
     }
 
-    public ImportedServiceDeclaration importServices( Class... serviceTypes )
-        throws AssemblyException
+    public ServiceDeclaration services(Specification<ServiceAssembly> specification)
     {
-        List<Class> classes = Arrays.asList( serviceTypes );
-        ImportedServiceDeclarationImpl serviceDeclaration = new ImportedServiceDeclarationImpl( classes, this );
-        importedServiceDeclarations.add( serviceDeclaration );
-        return serviceDeclaration;
+        List<ServiceAssemblyImpl> assemblies = new ArrayList<ServiceAssemblyImpl>(  );
+        for( ServiceAssemblyImpl serviceAssembly : serviceAssemblies.values() )
+        {
+            if (specification.satisfiedBy( serviceAssembly ))
+                assemblies.add(serviceAssembly);
+        }
+
+        return new ServiceDeclarationImpl( assemblies );
+    }
+
+    public ImportedServiceDeclaration importedServices( Class... serviceTypes )
+    {
+        List<ImportedServiceAssemblyImpl> assemblies = new ArrayList<ImportedServiceAssemblyImpl>(  );
+
+        for( Class serviceType : serviceTypes )
+        {
+            if (importedServiceAssemblies.containsKey( serviceType ))
+                assemblies.add( importedServiceAssemblies.get(serviceType) );
+            else
+            {
+                ImportedServiceAssemblyImpl serviceAssembly = new ImportedServiceAssemblyImpl( serviceType, this );
+                importedServiceAssemblies.put(serviceType, serviceAssembly);
+                assemblies.add(serviceAssembly);
+            }
+        }
+
+        return new ImportedServiceDeclarationImpl( assemblies );
+    }
+
+    public ImportedServiceDeclaration importedServices(Specification<ImportedServiceAssembly> specification)
+    {
+        List<ImportedServiceAssemblyImpl> assemblies = new ArrayList<ImportedServiceAssemblyImpl>(  );
+        for( ImportedServiceAssemblyImpl objectAssembly : importedServiceAssemblies.values() )
+        {
+            if (specification.satisfiedBy( objectAssembly ))
+                assemblies.add(objectAssembly);
+        }
+
+        return new ImportedServiceDeclarationImpl( assemblies );
     }
 
     public <T> MixinDeclaration<T> forMixin( Class<T> mixinType )
@@ -205,34 +340,34 @@ public final class ModuleAssemblyImpl
     {
         visitor.visitModule( this );
 
-        for( TransientDeclarationImpl compositeDeclaration : compositeDeclarations )
+        for( TransientAssemblyImpl compositeDeclaration : transientAssemblies.values() )
         {
-            visitor.visitComposite( compositeDeclaration );
+            visitor.visitComposite( new TransientDeclarationImpl(iterable(compositeDeclaration )));
         }
 
-        for( EntityDeclarationImpl entityDeclaration : entityDeclarations )
+        for( EntityAssemblyImpl entityDeclaration : entityAssemblies.values() )
         {
-            visitor.visitEntity( entityDeclaration );
+            visitor.visitEntity( new EntityDeclarationImpl( iterable( entityDeclaration )) );
         }
 
-        for( ObjectDeclarationImpl objectDeclaration : objectDeclarations )
+        for( ObjectAssemblyImpl objectDeclaration : objectAssemblies.values() )
         {
-            visitor.visitObject( objectDeclaration );
+            visitor.visitObject( new ObjectDeclarationImpl(iterable(objectDeclaration )));
         }
 
-        for( ServiceDeclarationImpl serviceDeclaration : serviceDeclarations )
+        for( ServiceAssemblyImpl serviceDeclaration : serviceAssemblies.values() )
         {
-            visitor.visitService( serviceDeclaration );
+            visitor.visitService( new ServiceDeclarationImpl(iterable(serviceDeclaration)) );
         }
 
-        for( ImportedServiceDeclarationImpl importedServiceDeclaration : importedServiceDeclarations )
+        for( ImportedServiceAssemblyImpl importedServiceDeclaration : importedServiceAssemblies.values() )
         {
-            visitor.visitImportedService( importedServiceDeclaration );
+            visitor.visitImportedService( new ImportedServiceDeclarationImpl(iterable(importedServiceDeclaration)) );
         }
 
-        for( ValueDeclarationImpl valueDeclaration : valueDeclarations )
+        for( ValueAssemblyImpl valueDeclaration : valueAssemblies.values() )
         {
-            visitor.visitValue( valueDeclaration );
+            visitor.visitValue( new ValueDeclarationImpl(iterable(valueDeclaration) ));
         }
     }
 
@@ -259,34 +394,34 @@ public final class ModuleAssemblyImpl
                                                    new ServicesModel( serviceModels ),
                                                    new ImportedServicesModel( importedServiceModels ) );
 
-        for( TransientDeclarationImpl compositeDeclaration : compositeDeclarations )
+        for( TransientAssemblyImpl compositeDeclaration : transientAssemblies.values() )
         {
-            compositeDeclaration.addComposites( transientModels, metaInfoDeclaration, helper );
+            compositeDeclaration.addTransients( transientModels, metaInfoDeclaration, helper );
         }
 
-        for( ValueDeclarationImpl valueDeclaration : valueDeclarations )
+        for( ValueAssemblyImpl valueDeclaration : valueAssemblies.values() )
         {
-            valueDeclaration.addValues( valueModels, metaInfoDeclaration, helper );
+            valueDeclaration.addValueModel( valueModels, metaInfoDeclaration, helper );
         }
 
-        for( EntityDeclarationImpl entityDeclaration : entityDeclarations )
+        for( EntityAssemblyImpl entityDeclaration : entityAssemblies.values() )
         {
-            entityDeclaration.addEntities( entityModels, metaInfoDeclaration, metaInfoDeclaration, metaInfoDeclaration, helper );
+            entityDeclaration.addEntityModel( entityModels, metaInfoDeclaration, metaInfoDeclaration, metaInfoDeclaration, helper );
         }
 
-        for( ObjectDeclarationImpl objectDeclaration : objectDeclarations )
+        for( ObjectAssemblyImpl objectDeclaration : objectAssemblies.values() )
         {
-            objectDeclaration.addObjects( objectModels );
+            objectDeclaration.addObjectModel( objectModels );
         }
 
-        for( ServiceDeclarationImpl serviceDeclaration : serviceDeclarations )
+        for( ServiceAssemblyImpl serviceDeclaration : serviceAssemblies.values() )
         {
-            serviceDeclaration.addServices( serviceModels, helper );
+            serviceDeclaration.addServiceModel( serviceModels, helper );
         }
 
-        for( ImportedServiceDeclarationImpl importedServiceDeclaration : importedServiceDeclarations )
+        for( ImportedServiceAssemblyImpl importedServiceDeclaration : importedServiceAssemblies.values() )
         {
-            importedServiceDeclaration.addServices( importedServiceModels );
+            importedServiceDeclaration.addImportedServiceModel( importedServiceModels );
         }
 
         // Check for duplicate service identities

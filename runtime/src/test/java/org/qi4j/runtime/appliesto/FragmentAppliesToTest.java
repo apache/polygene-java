@@ -45,7 +45,7 @@ public class FragmentAppliesToTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addTransients( Composite1.class );
+        module.transients( Composite1.class );
     }
 
     @Test

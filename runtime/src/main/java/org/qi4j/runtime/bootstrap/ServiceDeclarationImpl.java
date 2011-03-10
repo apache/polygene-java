@@ -15,141 +15,92 @@
 package org.qi4j.runtime.bootstrap;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import org.qi4j.api.common.InvalidApplicationException;
-import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.bootstrap.ServiceDeclaration;
-import org.qi4j.runtime.service.ServiceModel;
 
 /**
- * Declaration of a Service. Created by {@link org.qi4j.runtime.bootstrap.ModuleAssemblyImpl#addServices(Class[])}.
+ * Declaration of a Service. Created by {@link org.qi4j.runtime.bootstrap.ModuleAssemblyImpl#services(Class[])}.
  */
 public final class ServiceDeclarationImpl
     implements ServiceDeclaration, Serializable
 {
-    private Iterable<Class<? extends ServiceComposite>> serviceTypes;
-    private List<Class<?>> concerns = new ArrayList<Class<?>>();
-    private List<Class<?>> sideEffects = new ArrayList<Class<?>>();
-    private List<Class<?>> mixins = new ArrayList<Class<?>>();
-    private List<Class<?>> roles = new ArrayList<Class<?>>();
-    private ModuleAssemblyImpl moduleAssembly;
-    private String identity;
-    private boolean instantiateOnStartup = false;
-    private MetaInfo metaInfo = new MetaInfo();
-    private Visibility visibility = Visibility.module;
+    private Iterable<ServiceAssemblyImpl> serviceAssemblies;
 
-    public ServiceDeclarationImpl( Iterable<Class<? extends ServiceComposite>> serviceTypes,
-                                   ModuleAssemblyImpl moduleAssembly
-    )
+    public ServiceDeclarationImpl( Iterable<ServiceAssemblyImpl> serviceAssemblies )
     {
-        this.serviceTypes = serviceTypes;
-        this.moduleAssembly = moduleAssembly;
+        this.serviceAssemblies = serviceAssemblies;
     }
 
     public ServiceDeclaration visibleIn( Visibility visibility )
     {
-        this.visibility = visibility;
+        for( ServiceAssemblyImpl serviceAssembly : serviceAssemblies )
+        {
+            serviceAssembly.visibility = visibility;
+        }
         return this;
     }
 
     public ServiceDeclaration identifiedBy( String identity )
     {
-        this.identity = identity;
+        for( ServiceAssemblyImpl serviceAssembly : serviceAssemblies )
+        {
+            serviceAssembly.identity = identity;
+        }
         return this;
     }
 
     public ServiceDeclaration instantiateOnStartup()
     {
-        instantiateOnStartup = true;
+        for( ServiceAssemblyImpl serviceAssembly : serviceAssemblies )
+        {
+            serviceAssembly.instantiateOnStartup = true;
+        }
         return this;
     }
 
     public ServiceDeclaration setMetaInfo( Object serviceAttribute )
     {
-        metaInfo.set( serviceAttribute );
+        for( ServiceAssemblyImpl serviceAssembly : serviceAssemblies )
+        {
+            serviceAssembly.metaInfo.set( serviceAttribute );
+        }
         return this;
     }
 
     public ServiceDeclaration withConcerns( Class<?>... concerns )
     {
-        this.concerns.addAll( Arrays.asList( concerns ) );
+        for( ServiceAssemblyImpl serviceAssembly : serviceAssemblies )
+        {
+            serviceAssembly.concerns.addAll( Arrays.asList( concerns ) );
+        }
         return this;
     }
 
     public ServiceDeclaration withSideEffects( Class<?>... sideEffects )
     {
-        this.sideEffects.addAll( Arrays.asList( sideEffects ) );
+        for( ServiceAssemblyImpl serviceAssembly : serviceAssemblies )
+        {
+            serviceAssembly.sideEffects.addAll( Arrays.asList( sideEffects ) );
+        }
         return this;
     }
 
     public ServiceDeclaration withMixins( Class<?>... mixins )
     {
-        this.mixins.addAll( Arrays.asList( mixins ) );
+        for( ServiceAssemblyImpl serviceAssembly : serviceAssemblies )
+        {
+            serviceAssembly.mixins.addAll( Arrays.asList( mixins ) );
+        }
         return this;
     }
 
     public ServiceDeclaration withRoles( Class<?>... roles )
     {
-        this.roles.addAll( Arrays.asList( roles ) );
+        for( ServiceAssemblyImpl serviceAssembly : serviceAssemblies )
+        {
+            serviceAssembly.roles.addAll( Arrays.asList( roles ) );
+        }
         return this;
-    }
-
-    void addServices( List<ServiceModel> serviceModels, AssemblyHelper helper )
-    {
-        for( Class<? extends ServiceComposite> serviceType : serviceTypes )
-        {
-            try
-            {
-                String id = identity;
-                if( id == null )
-                {
-                    id = generateId( serviceModels, serviceType );
-                }
-
-                ServiceModel serviceModel = ServiceModel.newModel( serviceType,
-                                                                   visibility,
-                                                                   metaInfo,
-                                                                   concerns,
-                                                                   sideEffects,
-                                                                   mixins,
-                                                                   roles,
-                                                                   moduleAssembly.name(),
-                                                                   id,
-                                                                   instantiateOnStartup, helper );
-                serviceModels.add( serviceModel );
-            }
-            catch( Exception e )
-            {
-                throw new InvalidApplicationException( "Could not register " + serviceType.getName(), e );
-            }
-        }
-    }
-
-    private String generateId( List<ServiceModel> serviceModels, Class serviceType )
-    {
-        // Find identity that is not yet used
-        int idx = 0;
-        String id = serviceType.getSimpleName();
-        boolean invalid;
-        do
-        {
-            invalid = false;
-            for( ServiceModel serviceModel : serviceModels )
-            {
-                if( serviceModel.identity().equals( id ) )
-                {
-                    idx++;
-                    id = serviceType.getSimpleName() + "_" + idx;
-                    invalid = true;
-                    break;
-                }
-            }
-        }
-        while( invalid );
-        return id;
     }
 }

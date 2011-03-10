@@ -45,14 +45,14 @@ public class AbstractAnyQueryTest extends AbstractQi4jTest
         throws AssemblyException
     {
         // @formatter:off
-        module.addEntities( 
+        module.entities(
             MaleEntity.class,
             FemaleEntity.class,
             CityEntity.class,
             DomainEntity.class,
             AccountEntity.class,
             CatEntity.class );
-        module.addValues(
+        module.values(
             URL.class,
             Address.class,
             Protocol.class,

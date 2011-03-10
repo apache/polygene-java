@@ -38,7 +38,7 @@ public class UsesGenericListTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addTransients( TestCase.class );
+        module.transients( TestCase.class );
     }
 
     @Test

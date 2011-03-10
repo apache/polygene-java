@@ -21,6 +21,7 @@ package org.qi4j.bootstrap;
 import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.specification.Specification;
 import org.qi4j.api.value.ValueComposite;
 
 /**
@@ -37,23 +38,44 @@ public interface ModuleAssembly
 
     String name();
 
-    TransientDeclaration addTransients( Class<? extends TransientComposite>... compositeTypes )
-        throws AssemblyException;
+    @Deprecated
+    TransientDeclaration addTransients( Class<? extends TransientComposite>... compositeTypes );
 
-    ValueDeclaration addValues( Class<? extends ValueComposite>... compositeTypes )
-        throws AssemblyException;
+    TransientDeclaration transients( Class<? extends TransientComposite>... compositeTypes );
 
-    EntityDeclaration addEntities( Class<? extends EntityComposite>... compositeTypes )
-        throws AssemblyException;
+    TransientDeclaration transients( Specification<TransientAssembly> specification);
 
-    ObjectDeclaration addObjects( Class... objectTypes )
-        throws AssemblyException;
+    @Deprecated
+    ValueDeclaration addValues( Class<? extends ValueComposite>... compositeTypes );
 
-    ServiceDeclaration addServices( Class<? extends ServiceComposite>... serviceTypes )
-        throws AssemblyException;
+    ValueDeclaration values( Class<? extends ValueComposite>... compositeTypes );
 
-    ImportedServiceDeclaration importServices( Class... serviceTypes )
-        throws AssemblyException;
+    ValueDeclaration values( Specification<ValueAssembly> specification);
+
+    @Deprecated
+    EntityDeclaration addEntities( Class<? extends EntityComposite>... compositeTypes );
+
+    EntityDeclaration entities( Class<? extends EntityComposite>... compositeTypes );
+
+    EntityDeclaration entities(Specification<EntityAssembly> specification);
+
+    @Deprecated
+    ObjectDeclaration addObjects( Class... objectTypes );
+
+    ObjectDeclaration objects( Class... objectTypes );
+
+    ObjectDeclaration objects(Specification<ObjectAssembly> specification);
+
+    @Deprecated
+    ServiceDeclaration addServices( Class<? extends ServiceComposite>... serviceTypes );
+
+    ServiceDeclaration services( Class<? extends ServiceComposite>... serviceTypes );
+
+    ServiceDeclaration services( Specification<ServiceAssembly> specification);
+
+    ImportedServiceDeclaration importedServices( Class... serviceTypes );
+
+    ImportedServiceDeclaration importedServices(Specification<ImportedServiceAssembly> specification);
 
     <T> MixinDeclaration<T> forMixin( Class<T> mixinType );
 

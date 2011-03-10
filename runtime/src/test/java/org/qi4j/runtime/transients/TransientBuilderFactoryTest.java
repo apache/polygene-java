@@ -96,7 +96,7 @@ public class TransientBuilderFactoryTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.addTransients( AnyComposite.class );
+                module.transients( AnyComposite.class );
             }
         };
         assembler.transientBuilderFactory().newTransientBuilder( AnyComposite.class );
@@ -113,7 +113,7 @@ public class TransientBuilderFactoryTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.addTransients( AnyComposite.class );
+                module.transients( AnyComposite.class );
             }
         };
         assembler.transientBuilderFactory().newTransientBuilder( AnyComposite.class );

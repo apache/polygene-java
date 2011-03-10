@@ -39,10 +39,10 @@ public class AssemblyRoleTest
     {
         new EntityTestAssembler().assemble( module );
 
-        module.addTransients( FooComposite.class ).withRoles( Foo.class );
-        module.addTransients( FooComposite2.class ).withRoles( Foo.class ).withMixins( CustomFooMixin.class );
+        module.transients( FooComposite.class ).withRoles( Foo.class );
+        module.transients( FooComposite2.class ).withRoles( Foo.class ).withMixins( CustomFooMixin.class );
 
-        module.addEntities( FooEntity.class ).withRoles( Foo.class );
+        module.entities( FooEntity.class ).withRoles( Foo.class );
     }
 
     @Test

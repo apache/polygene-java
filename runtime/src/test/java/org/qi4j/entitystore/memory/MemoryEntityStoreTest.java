@@ -15,11 +15,9 @@
 package org.qi4j.entitystore.memory;
 
 import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.ImportedServiceDeclaration;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entitystore.StateChangeListener;
-import org.qi4j.spi.service.importer.NewObjectImporter;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
 
@@ -37,9 +35,9 @@ public class MemoryEntityStoreTest
     {
         super.assemble( module );
 
-        module.addServices( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class );
-        module.importServices( StatePrinter.class ).importedBy( NEW_OBJECT );
-        module.addObjects( StatePrinter.class );
+        module.services( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class );
+        module.importedServices( StatePrinter.class ).importedBy( NEW_OBJECT );
+        module.objects( StatePrinter.class );
     }
 
     static public class StatePrinter

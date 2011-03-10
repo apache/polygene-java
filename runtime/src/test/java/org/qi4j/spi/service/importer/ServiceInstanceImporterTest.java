@@ -36,13 +36,13 @@ public class ServiceInstanceImporterTest
 {
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        module.importServices( TestService.class ).
+        module.importedServices( TestService.class ).
                 identifiedBy( "test" ).
                 setMetaInfo( "testimporter" ).
                 importedBy( ImportedServiceDeclaration.SERVICE_IMPORTER );
-        module.addServices( TestImporterService.class ).identifiedBy( "testimporter" );
+        module.services( TestImporterService.class ).identifiedBy( "testimporter" );
 
-        module.addObjects( ServiceInstanceImporterTest.class);
+        module.objects( ServiceInstanceImporterTest.class );
     }
 
     @Service

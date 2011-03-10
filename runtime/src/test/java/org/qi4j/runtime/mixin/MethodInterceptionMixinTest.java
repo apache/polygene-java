@@ -41,7 +41,7 @@ public class MethodInterceptionMixinTest
     public void assemble( ModuleAssembly module )
             throws AssemblyException
     {
-        module.addServices( SomeService.class );
+        module.services( SomeService.class );
     }
 
     @Test

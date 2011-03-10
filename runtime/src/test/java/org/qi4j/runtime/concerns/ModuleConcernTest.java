@@ -40,7 +40,7 @@ public class ModuleConcernTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addTransients( FooComposite.class );
+        module.transients( FooComposite.class );
 
         module.layerAssembly().applicationAssembly().visit( new AssemblyVisitorAdapter<RuntimeException>()
         {

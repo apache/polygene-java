@@ -108,8 +108,8 @@ public final class ImmutablePropertyTest
     public final void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addTransients( LocationComposite.class );
-        module.addEntities( LocationEntity.class );
+        module.transients( LocationComposite.class );
+        module.entities( LocationEntity.class );
         new EntityTestAssembler().assemble( module );
     }
 

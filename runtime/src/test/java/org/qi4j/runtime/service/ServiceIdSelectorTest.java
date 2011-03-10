@@ -21,7 +21,6 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceReference;
-import org.qi4j.api.service.qualifier.ServiceQualifier;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
@@ -43,9 +42,9 @@ public class ServiceIdSelectorTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.addObjects( ServiceConsumer.class );
-                module.addServices( TestServiceComposite1.class,
-                                    TestServiceComposite2.class );
+                module.objects( ServiceConsumer.class );
+                module.services( TestServiceComposite1.class,
+                                 TestServiceComposite2.class );
             }
         };
 

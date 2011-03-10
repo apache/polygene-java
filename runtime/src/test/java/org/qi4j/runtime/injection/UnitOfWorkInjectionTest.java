@@ -38,8 +38,8 @@ public class UnitOfWorkInjectionTest
     public void assemble( ModuleAssembly module )
             throws AssemblyException
     {
-        module.addEntities( TrialEntity.class );
-        module.addServices( MemoryEntityStoreService.class );
+        module.entities( TrialEntity.class );
+        module.services( MemoryEntityStoreService.class );
     }
 
     @Test

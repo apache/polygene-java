@@ -33,7 +33,7 @@ public class UsesGraphTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addObjects( A.class, B.class, C.class, D.class );
+        module.objects( A.class, B.class, C.class, D.class );
     }
 
     @Test

@@ -57,7 +57,7 @@ public class ModuleTest
                                     public void assemble( ModuleAssembly module )
                                         throws AssemblyException
                                     {
-                                        module.addTransients( TestComposite1.class );
+                                        module.transients( TestComposite1.class );
                                     }
                                 }
                             },
@@ -67,7 +67,7 @@ public class ModuleTest
                                     public void assemble( ModuleAssembly module )
                                         throws AssemblyException
                                     {
-                                        module.addTransients( TestComposite2.class ).visibleIn( Visibility.layer );
+                                        module.transients( TestComposite2.class ).visibleIn( Visibility.layer );
                                     }
                                 }
                             }

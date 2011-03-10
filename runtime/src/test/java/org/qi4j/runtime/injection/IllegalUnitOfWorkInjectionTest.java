@@ -38,8 +38,8 @@ public class IllegalUnitOfWorkInjectionTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addTransients( TrialTransient.class );
-        module.addServices( MemoryEntityStoreService.class );
+        module.transients( TrialTransient.class );
+        module.services( MemoryEntityStoreService.class );
     }
 
     @Override

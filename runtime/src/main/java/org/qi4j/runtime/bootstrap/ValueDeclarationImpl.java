@@ -27,81 +27,69 @@ import org.qi4j.bootstrap.ValueDeclaration;
 import org.qi4j.runtime.value.ValueModel;
 
 /**
- * Declaration of a ValueComposite. Created by {@link org.qi4j.bootstrap.ModuleAssembly#addValues(Class[])}.
+ * Declaration of a ValueComposite.
  */
 public final class ValueDeclarationImpl
-    implements ValueDeclaration, Serializable
+    implements ValueDeclaration
 {
-    private Class<? extends ValueComposite>[] compositeTypes;
-    private List<Class<?>> concerns = new ArrayList<Class<?>>();
-    private List<Class<?>> sideEffects = new ArrayList<Class<?>>();
-    private List<Class<?>> mixins = new ArrayList<Class<?>>();
-    private List<Class<?>> roles = new ArrayList<Class<?>>();
-    private MetaInfo metaInfo = new MetaInfo();
-    private Visibility visibility = Visibility.module;
+    private Iterable<ValueAssemblyImpl> assemblies;
 
-    public ValueDeclarationImpl( Class<? extends ValueComposite>... compositeTypes )
+    public ValueDeclarationImpl( Iterable<ValueAssemblyImpl> assemblies)
     {
-        this.compositeTypes = compositeTypes;
+        this.assemblies = assemblies;
     }
 
     public ValueDeclaration setMetaInfo( Object info )
     {
-        metaInfo.set( info );
+        for( ValueAssemblyImpl assembly : assemblies )
+        {
+            assembly.metaInfo.set( info );
+        }
         return this;
     }
 
     public ValueDeclaration visibleIn( Visibility visibility )
     {
-        this.visibility = visibility;
+        for( ValueAssemblyImpl assembly : assemblies )
+        {
+            assembly.visibility = visibility;
+        }
         return this;
     }
 
     public ValueDeclaration withConcerns( Class<?>... concerns )
     {
-        this.concerns.addAll( Arrays.asList( concerns ) );
+        for( ValueAssemblyImpl assembly : assemblies )
+        {
+            assembly.concerns.addAll( Arrays.asList( concerns ) );
+        }
         return this;
     }
 
     public ValueDeclaration withSideEffects( Class<?>... sideEffects )
     {
-        this.sideEffects.addAll( Arrays.asList( sideEffects ) );
+        for( ValueAssemblyImpl assembly : assemblies )
+        {
+            assembly.sideEffects.addAll( Arrays.asList( sideEffects ) );
+        }
         return this;
     }
 
     public ValueDeclaration withMixins( Class<?>... mixins )
     {
-        this.mixins.addAll( Arrays.asList( mixins ) );
+        for( ValueAssemblyImpl assembly : assemblies )
+        {
+            assembly.mixins.addAll( Arrays.asList( mixins ) );
+        }
         return this;
     }
 
     public ValueDeclaration withRoles( Class<?>... roles )
     {
-        this.roles.addAll( Arrays.asList( roles ) );
-        return this;
-    }
-
-    void addValues( List<ValueModel> values, PropertyDeclarations propertyDecs, AssemblyHelper helper )
-    {
-        for( Class<? extends ValueComposite> compositeType : compositeTypes )
+        for( ValueAssemblyImpl assembly : assemblies )
         {
-            try
-            {
-                ValueModel valueModel = ValueModel.newModel( compositeType,
-                                                             visibility,
-                                                             new MetaInfo( metaInfo ).withAnnotations( compositeType ),
-                                                             propertyDecs,
-                                                             concerns,
-                                                             sideEffects,
-                                                             mixins,
-                                                             roles,
-                                                             helper );
-                values.add( valueModel );
-            }
-            catch( Exception e )
-            {
-                throw new InvalidApplicationException( "Could not register " + compositeType.getName(), e );
-            }
+            assembly.roles.addAll( Arrays.asList( roles ) );
         }
+        return this;
     }
 }

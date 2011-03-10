@@ -43,9 +43,9 @@ public class AssociationDecoratorTest
     public void assemble( ModuleAssembly module )
             throws AssemblyException
     {
-        module.addTransients( Employees.class, Boss.class );
-        module.addEntities( CompanyEntity.class, Person.class );
-        module.addServices( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class );
+        module.transients( Employees.class, Boss.class );
+        module.entities( CompanyEntity.class, Person.class );
+        module.services( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class );
     }
 
     @Test

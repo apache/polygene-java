@@ -14,15 +14,11 @@
 
 package org.qi4j.runtime.entity;
 
-import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
-import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
@@ -77,8 +73,8 @@ public class QI273Test extends AbstractQi4jTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class );
-        module.addEntities( SomeDomainEntity.class );
+        module.services( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class );
+        module.entities( SomeDomainEntity.class );
     }
 
     @Test

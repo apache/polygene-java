@@ -38,9 +38,9 @@ public class AssemblyMixinTest
     {
         new EntityTestAssembler().assemble( module );
 
-        module.addTransients( FooComposite.class ).withMixins( CustomFooMixin.class );
+        module.transients( FooComposite.class ).withMixins( CustomFooMixin.class );
 
-        module.addEntities( FooEntity.class ).withMixins( FooMixin.class );
+        module.entities( FooEntity.class ).withMixins( FooMixin.class );
     }
 
     @Test

@@ -36,8 +36,8 @@ public class UnitOfWorkCallbackEntityTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addEntities( TestCase.class );
-        module.addServices( UuidIdentityGeneratorService.class, MemoryEntityStoreService.class );
+        module.entities( TestCase.class );
+        module.services( UuidIdentityGeneratorService.class, MemoryEntityStoreService.class );
     }
 
     @Test

@@ -50,8 +50,8 @@ public class EntityTypeTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addEntities( Rst.class );
-        module.addServices( MemoryEntityStoreService.class );
+        module.entities( Rst.class );
+        module.services( MemoryEntityStoreService.class );
     }
 
     public interface Abc

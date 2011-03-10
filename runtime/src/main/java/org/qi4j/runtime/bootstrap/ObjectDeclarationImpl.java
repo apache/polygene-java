@@ -14,66 +14,38 @@
 
 package org.qi4j.runtime.bootstrap;
 
-import java.io.Serializable;
-import java.lang.reflect.Modifier;
-import java.util.List;
-import org.qi4j.api.common.InvalidApplicationException;
-import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.composite.Composite;
 import org.qi4j.bootstrap.ObjectDeclaration;
-import org.qi4j.runtime.object.ObjectModel;
 
 /**
- * Declaration of an Object. Created by {@link org.qi4j.runtime.bootstrap.ModuleAssemblyImpl#addObjects(Class[])}.
+ * Declaration of an Object. Created by {@link org.qi4j.runtime.bootstrap.ModuleAssemblyImpl#objects(Class[])}.
  */
 public final class ObjectDeclarationImpl
-    implements ObjectDeclaration, Serializable
+    implements ObjectDeclaration
 {
-    private Iterable<Class> objectTypes;
-    private MetaInfo metaInfo = new MetaInfo();
-    private Visibility visibility = Visibility.module;
+    private Iterable<ObjectAssemblyImpl> assemblies;
 
-    public ObjectDeclarationImpl( Iterable<Class> classes )
+    public ObjectDeclarationImpl( Iterable<ObjectAssemblyImpl> assemblies )
     {
-        for( Class clazz : classes )
-        {
-            // best try to find out if the class is a concrete class
-            if( clazz.isEnum() ||
-                ( !Composite.class.isAssignableFrom( clazz ) && Modifier.isAbstract( clazz.getModifiers() ) ) )
-            {
-                throw new IllegalArgumentException( "Declared objects must be concrete classes: " + clazz );
-            }
-        }
-        this.objectTypes = classes;
+        this.assemblies = assemblies;
     }
 
     public ObjectDeclaration setMetaInfo( Object info )
     {
-        metaInfo.set( info );
+        for( ObjectAssemblyImpl assembly : assemblies )
+        {
+            assembly.metaInfo.set( info );
+        }
         return this;
     }
 
     public ObjectDeclaration visibleIn( Visibility visibility )
         throws IllegalStateException
     {
-        this.visibility = visibility;
-        return this;
-    }
-
-    public void addObjects( List<ObjectModel> objectModels )
-    {
-        for( Class objectType : objectTypes )
+        for( ObjectAssemblyImpl assembly : assemblies )
         {
-            try
-            {
-                ObjectModel objectModel = new ObjectModel( objectType, visibility, metaInfo );
-                objectModels.add( objectModel );
-            }
-            catch( Throwable e )
-            {
-                throw new InvalidApplicationException( "Could not register " + objectType.getName(), e );
-            }
+            assembly.visibility = visibility;
         }
+        return this;
     }
 }

@@ -22,7 +22,7 @@ import org.qi4j.api.common.Visibility;
 
 /**
  * Fluent API for declaring services hosted in Qi4j. Instances
- * of this API are acquired by calling {@link ModuleAssembly#addServices(Class[])}.
+ * of this API are acquired by calling {@link ModuleAssembly#services(Class[])}.
  */
 public interface ServiceDeclaration
 {
