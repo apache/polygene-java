@@ -3,7 +3,8 @@ package org.qi4j.cache.ehcache;
 import net.sf.ehcache.Element;
 import org.qi4j.spi.cache.Cache;
 
-public class EhCacheImpl<T> implements Cache<T>
+public class EhCacheImpl<T>
+    implements Cache<T>
 {
     private int refCount;
     private final net.sf.ehcache.Cache backingCache;
@@ -21,7 +22,9 @@ public class EhCacheImpl<T> implements Cache<T>
     {
         Element element = backingCache.get( key );
         if( element == null )
+        {
             return null;
+        }
         return valueType.cast( element.getValue() );
     }
 

@@ -5,6 +5,7 @@ import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.spi.cache.CachePool;
 
 @Mixins( EhCachePoolMixin.class )
-public interface EhCachePoolService extends CachePool, ServiceComposite
+public interface EhCachePoolService
+    extends CachePool, ServiceComposite
 {
 }
