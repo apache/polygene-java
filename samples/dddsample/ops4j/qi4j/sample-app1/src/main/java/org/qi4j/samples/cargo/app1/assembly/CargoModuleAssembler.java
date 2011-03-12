@@ -35,19 +35,19 @@ public class CargoModuleAssembler
 
     public void assemble(ModuleAssembly module) 
             throws AssemblyException {
-        module.addEntities(Cargo.class).visibleIn(Visibility.application);
-        module.addValues(RouteSpecification.class).visibleIn(Visibility.application);
-        module.addValues(
-                TrackingId.class,
-                HandlingActivity.class,
-                Delivery.class,
-                Itinerary.class,
-                Leg.class
+        module.entities( Cargo.class ).visibleIn(Visibility.application);
+        module.values( RouteSpecification.class ).visibleIn(Visibility.application);
+        module.values(
+            TrackingId.class,
+            HandlingActivity.class,
+            Delivery.class,
+            Itinerary.class,
+            Leg.class
         ).visibleIn(Visibility.module);
 
-        module.addServices(
-                HandlingActivityFactory.class,
-                DeliveryFactory.class
+        module.services(
+            HandlingActivityFactory.class,
+            DeliveryFactory.class
         ).visibleIn(Visibility.module);
     }
 }

@@ -37,7 +37,7 @@ public class ObjectCreationPerformanceTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.addObjects( AnyObject.class );
+                module.objects( AnyObject.class );
             }
         };
         ObjectBuilderFactory objectBuilderFactory = assembler.objectBuilderFactory();

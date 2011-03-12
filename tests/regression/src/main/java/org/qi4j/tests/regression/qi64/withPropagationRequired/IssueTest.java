@@ -86,6 +86,6 @@ public final class IssueTest
     public final void onAssemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices( AccountServiceComposite.class );
+        module.services( AccountServiceComposite.class );
     }
 }

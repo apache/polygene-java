@@ -38,11 +38,11 @@ public class LibraryTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices( LibraryService.class );
-        module.addValues( Book.class );
-        module.addObjects( Consumer.class );
-        module.addEntities( LibraryConfiguration.class );
-        module.addServices( MemoryEntityStoreService.class );
-        module.addServices( UuidIdentityGeneratorService.class );
+        module.services( LibraryService.class );
+        module.values( Book.class );
+        module.objects( Consumer.class );
+        module.entities( LibraryConfiguration.class );
+        module.services( MemoryEntityStoreService.class );
+        module.services( UuidIdentityGeneratorService.class );
     }
 }

@@ -35,9 +35,9 @@ public class PersistenceAssembler
     public final void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addObjects( EntityStateSerializer.class, EntityTypeSerializer.class );
+        module.objects( EntityStateSerializer.class, EntityTypeSerializer.class );
 
-        module.addServices(
+        module.services(
             UuidIdentityGeneratorService.class,
             MemoryEntityStoreService.class,
 

@@ -22,7 +22,6 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.gae.GaeEntityStoreService;
 import org.qi4j.entitystore.gae.GaeIdGeneratorService;
-import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
 
 public class UnitTests extends AbstractEntityStoreTest
@@ -32,6 +31,6 @@ public class UnitTests extends AbstractEntityStoreTest
     {
         super.assemble( module );
         System.out.println( "Registering GAE services." );
-        module.addServices( GaeEntityStoreService.class, GaeIdGeneratorService.class  );
+        module.services( GaeEntityStoreService.class, GaeIdGeneratorService.class );
     }
 }

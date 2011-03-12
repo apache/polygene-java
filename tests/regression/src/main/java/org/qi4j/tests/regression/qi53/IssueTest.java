@@ -21,7 +21,7 @@ public class IssueTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addTransients( CostPerUnitComposite.class );
+        module.transients( CostPerUnitComposite.class );
     }
 
     @Test

@@ -31,8 +31,8 @@ implements Assembler {
 
     public void assemble(ModuleAssembly module)
             throws AssemblyException {
-        module.addEntities(Voyage.class);
-        module.addValues(Schedule.class, VoyageNumber.class, CarrierMovement.class );
-        module.addServices(VoyageRepository.class).visibleIn(Visibility.layer);
+        module.entities( Voyage.class );
+        module.values( Schedule.class, VoyageNumber.class, CarrierMovement.class );
+        module.services( VoyageRepository.class ).visibleIn(Visibility.layer);
     }
 }

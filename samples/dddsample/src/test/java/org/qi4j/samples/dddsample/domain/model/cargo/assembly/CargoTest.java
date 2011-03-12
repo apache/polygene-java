@@ -406,7 +406,7 @@ public class CargoTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices(
+        module.services(
             MemoryEntityStoreService.class,
             UuidIdentityGeneratorService.class
         );

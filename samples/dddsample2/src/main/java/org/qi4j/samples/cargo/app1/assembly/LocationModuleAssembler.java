@@ -30,7 +30,7 @@ public class LocationModuleAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addEntities( LocationEntity.class );
-        module.addServices( LocationRepository.class ).visibleIn( Visibility.application );
+        module.entities( LocationEntity.class );
+        module.services( LocationRepository.class ).visibleIn( Visibility.application );
     }
 }

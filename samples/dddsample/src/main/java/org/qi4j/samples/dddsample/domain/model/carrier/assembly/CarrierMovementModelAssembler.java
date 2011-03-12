@@ -44,16 +44,16 @@ public final class CarrierMovementModelAssembler
     public final void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addEntities( CarrierMovementEntity.class )
+        module.entities( CarrierMovementEntity.class )
 //            .visibleIn( layer );
             .visibleIn( application );
 
-        module.addServices( CarrierMovementRepositoryService.class )
+        module.services( CarrierMovementRepositoryService.class )
             .visibleIn( application );
 
         if( loadSampleData )
         {
-            module.addServices( SampleCarierMovementDataBootstrapService.class )
+            module.services( SampleCarierMovementDataBootstrapService.class )
                 .visibleIn( layer )
                 .instantiateOnStartup();
         }

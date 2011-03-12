@@ -66,14 +66,14 @@ public class ExampleBootstrapListener
                         new Struts2PluginAssembler( actionConfiguration ).assemble( aModule );
                         new CodebehindAssembler().assemble( aModule );
 
-                        aModule.addEntities( Item.class );
-                        aModule.addServices(
+                        aModule.entities( Item.class );
+                        aModule.services(
                             MemoryEntityStoreService.class,
                             UuidIdentityGeneratorService.class,
                             MemoryRepositoryService.class,
                             RdfIndexingEngineService.class
                         );
-                        aModule.addObjects( EntityStateSerializer.class );
+                        aModule.objects( EntityStateSerializer.class );
                     }
                 } );
             }

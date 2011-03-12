@@ -20,7 +20,7 @@ public class IssueTest
     public void assemble( ModuleAssembly aModule )
         throws AssemblyException
     {
-        aModule.addEntities( Item.class, ItemType.class );
+        aModule.entities( Item.class, ItemType.class );
         new EntityTestAssembler().assemble( aModule );
     }
 

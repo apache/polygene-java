@@ -47,7 +47,7 @@ public class IssueTest
         throws AssemblyException
     {
         new EntityTestAssembler().assemble( module );
-        module.addEntities( Owner.class );
+        module.entities( Owner.class );
     }
 
     @After

@@ -29,13 +29,13 @@ public final class SchoolModelAssembler
     public final void assemble( ModuleAssembly aModule )
         throws AssemblyException
     {
-        aModule.addEntities(
+        aModule.entities(
             StudentEntity.class,
             SchoolEntity.class,
             SubjectEntity.class
         ).visibleIn( layer );
 
-        aModule.addServices( SchoolRepositoryService.class )
+        aModule.services( SchoolRepositoryService.class )
             .visibleIn( application );
     }
 }

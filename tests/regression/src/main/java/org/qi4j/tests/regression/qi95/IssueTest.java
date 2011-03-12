@@ -253,7 +253,7 @@ public class IssueTest
                 public void assemble( ModuleAssembly module )
                     throws AssemblyException
                 {
-                    module.addEntities(
+                    module.entities(
                         ItemTypeEntity.class
                     );
                 }
@@ -271,13 +271,13 @@ public class IssueTest
             {
                 new EntityTestAssembler( Visibility.module ).assemble( module );
 
-                module.addEntities( NativeConfiguration.class ).visibleIn( Visibility.application );
+                module.entities( NativeConfiguration.class ).visibleIn( Visibility.application );
                 module.forMixin( NativeConfiguration.class )
                     .declareDefaults()
                     .dataDirectory()
                     .set( rdfDirectory().getAbsolutePath() );
 
-                module.addEntities( JdbmConfiguration.class ).visibleIn( Visibility.application );
+                module.entities( JdbmConfiguration.class ).visibleIn( Visibility.application );
                 module.forMixin( JdbmConfiguration.class )
                     .declareDefaults()
                     .file()

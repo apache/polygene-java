@@ -43,7 +43,7 @@ public class Qi173IssueTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addEntities( CarEntity.class );
+        module.entities( CarEntity.class );
         new RdfMemoryStoreAssembler().assemble( module );
         new EntityTestAssembler().assemble( module );
     }

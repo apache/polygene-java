@@ -40,9 +40,9 @@ public class MemoryEntityStorePerformanceTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.addServices( MemoryEntityStoreService.class );
-//                module.addServices( MemoryEntityStoreService2.class );
-                module.addServices( UuidIdentityGeneratorService.class );
+                module.services( MemoryEntityStoreService.class );
+//                module.services( MemoryEntityStoreService2.class );
+                module.services( UuidIdentityGeneratorService.class );
             }
         };
     }

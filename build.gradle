@@ -30,7 +30,7 @@ allprojects {
 
   group = name.substring(0, name.lastIndexOf('.'))
   defaultTasks 'build'
-  version = System.properties.version ?: "1.3-SNAPSHOT"
+  version = System.properties.version ?: "0"
   idea.javaVersion = '1.6'
   [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 

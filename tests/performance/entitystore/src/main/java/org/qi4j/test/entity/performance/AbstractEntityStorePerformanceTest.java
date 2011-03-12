@@ -46,7 +46,7 @@ public abstract class AbstractEntityStorePerformanceTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.addEntities( SimpleProduct.class );
+                module.entities( SimpleProduct.class );
             }
         };
         createQi4jRuntime( assembler );
@@ -71,7 +71,7 @@ public abstract class AbstractEntityStorePerformanceTest
                 public void assemble( ModuleAssembly module )
                     throws AssemblyException
                 {
-                    module.addEntities( SimpleProduct.class );
+                    module.entities( SimpleProduct.class );
                 }
             };
             createQi4jRuntime( assembler );
@@ -126,7 +126,7 @@ public abstract class AbstractEntityStorePerformanceTest
                 public void assemble( ModuleAssembly module )
                     throws AssemblyException
                 {
-                    module.addEntities( SimpleProduct.class );
+                    module.entities( SimpleProduct.class );
                 }
             };
             createQi4jRuntime( assembler );
@@ -182,7 +182,7 @@ public abstract class AbstractEntityStorePerformanceTest
                 public void assemble( ModuleAssembly module )
                     throws AssemblyException
                 {
-                    module.addEntities( ComplexProduct.class );
+                    module.entities( ComplexProduct.class );
                 }
             };
             createQi4jRuntime( assembler );
@@ -232,7 +232,7 @@ public abstract class AbstractEntityStorePerformanceTest
                 public void assemble( ModuleAssembly module )
                     throws AssemblyException
                 {
-                    module.addEntities( ComplexProduct.class );
+                    module.entities( ComplexProduct.class );
                 }
             };
             createQi4jRuntime( assembler );
@@ -288,7 +288,7 @@ public abstract class AbstractEntityStorePerformanceTest
                 public void assemble( ModuleAssembly module )
                     throws AssemblyException
                 {
-                    module.addEntities( ComplexProduct.class );
+                    module.entities( ComplexProduct.class );
                 }
             };
             createQi4jRuntime( assembler );

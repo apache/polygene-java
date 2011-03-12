@@ -32,7 +32,7 @@ public final class RemotingAssembler
     public final void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices( BookingFacadeService.class )
+        module.services( BookingFacadeService.class )
             .identifiedBy( "bookingServiceFacade" )
             .visibleIn( application );
     }

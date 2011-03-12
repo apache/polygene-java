@@ -54,7 +54,7 @@ public class SequencingConcernTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.addTransients( ShippingServiceTestComposite.class );
+                module.transients( ShippingServiceTestComposite.class );
             }
         };
         ShippingService shippingService = createMock( ShippingService.class );
@@ -89,7 +89,7 @@ public class SequencingConcernTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.addTransients( ShippingServiceTestComposite.class );
+                module.transients( ShippingServiceTestComposite.class );
             }
         };
         ShippingService shippingService = createMock( ShippingService.class );

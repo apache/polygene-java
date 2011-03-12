@@ -43,9 +43,9 @@ public class CompositeCreationPerformanceTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.addTransients( AnyComposite.class );
-                module.addObjects( AnyObject.class );
-                module.addValues( AnyValue.class );
+                module.transients( AnyComposite.class );
+                module.objects( AnyObject.class );
+                module.values( AnyValue.class );
             }
         };
         int loops = 2;

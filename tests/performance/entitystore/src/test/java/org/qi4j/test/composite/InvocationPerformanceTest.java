@@ -38,9 +38,9 @@ public class InvocationPerformanceTest
     public void assemble( ModuleAssembly module )
             throws AssemblyException
     {
-        module.addTransients( SimpleComposite.class );
-        module.addTransients( SimpleWithTypedConcernComposite.class );
-        module.addTransients( SimpleWithGenericConcernComposite.class );
+        module.transients( SimpleComposite.class );
+        module.transients( SimpleWithTypedConcernComposite.class );
+        module.transients( SimpleWithGenericConcernComposite.class );
     }
 
     @Test

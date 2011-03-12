@@ -17,7 +17,7 @@ public class IssueTest
     public void assemble( ModuleAssembly module )
             throws AssemblyException
     {
-        module.addTransients( TestComposite.class );
+        module.transients( TestComposite.class );
     }
 
     @Test(expected = IllegalArgumentException.class)

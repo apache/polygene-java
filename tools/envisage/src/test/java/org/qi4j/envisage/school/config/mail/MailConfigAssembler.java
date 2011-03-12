@@ -28,6 +28,6 @@ public class MailConfigAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addEntities( MailConfiguration.class );
+        module.entities( MailConfiguration.class );
     }
 }

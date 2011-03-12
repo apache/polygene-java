@@ -50,7 +50,7 @@ public class DerbySQLEntityStorePerformanceTest extends AbstractEntityStorePerfo
                 new DerbySQLEntityStoreAssembler( Visibility.application ).assemble( module );
 
                 ModuleAssembly configModule = module.layerAssembly().moduleAssembly( "Config" );
-                configModule.addEntities( DBCPDataSourceConfiguration.class, SQLConfiguration.class ).visibleIn(
+                configModule.entities( DBCPDataSourceConfiguration.class, SQLConfiguration.class ).visibleIn(
                     Visibility.layer );
                 new EntityTestAssembler( Visibility.module ).assemble( configModule );
             }

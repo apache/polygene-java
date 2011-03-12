@@ -35,7 +35,7 @@ public class IssueTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addEntities( TestCase.class );
+        module.entities( TestCase.class );
         new EntityTestAssembler().assemble( module );
     }
 

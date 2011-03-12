@@ -11,6 +11,6 @@ public class ConfigurationModule
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices( MemoryEntityStoreService.class );
+        module.services( MemoryEntityStoreService.class );
     }
 }

@@ -28,11 +28,11 @@ public class MailServiceAssembler
     public void assemble( ModuleAssembly assembly )
         throws AssemblyException
     {
-        assembly.addValues(
+        assembly.values(
             MailValue.class
         ).visibleIn( application );
 
-        assembly.addServices(
+        assembly.services(
             MailServiceComposite.class
         ).visibleIn( application );
     }

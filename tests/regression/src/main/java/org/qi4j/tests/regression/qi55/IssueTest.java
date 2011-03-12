@@ -14,7 +14,7 @@ public class IssueTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addObjects( AClass.class );
+        module.objects( AClass.class );
     }
 
     @Test

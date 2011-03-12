@@ -14,7 +14,7 @@ public class Main
             public void assemble( ModuleAssembly assembly )
                 throws AssemblyException
             {
-                assembly.addTransients( PoliticianComposite.class );
+                assembly.transients( PoliticianComposite.class );
             }
         };
         TransientBuilderFactory factory =
