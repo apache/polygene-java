@@ -20,7 +20,6 @@ package org.qi4j.library.uid.uuid;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
-import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.mixin.Mixins;
@@ -34,7 +33,7 @@ public class UuidServiceTest extends AbstractQi4jTest
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
         new UuidServiceAssembler().assemble(module);
-        module.addTransients( UnderTestComposite.class );
+        module.transients( UnderTestComposite.class );
     }
 
     @Test

@@ -28,7 +28,7 @@ public class PersistingSequencingAssembler
 {
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        module.addServices( PersistingSequencingService.class );
-        module.addEntities( SequenceEntity.class );
+        module.services( PersistingSequencingService.class );
+        module.entities( SequenceEntity.class );
     }
 }

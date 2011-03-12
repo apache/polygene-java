@@ -30,8 +30,8 @@ public class LoggingAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices( LoggingServiceComposite.class );
-        module.addTransients( LogTypes.class );
+        module.services( LoggingServiceComposite.class );
+        module.transients( LogTypes.class );
         module.forMixin( LogTypes.class ).declareDefaults().info().set( "INFO" );
         module.forMixin( LogTypes.class ).declareDefaults().warning().set( "WARNING" );
         module.forMixin( LogTypes.class ).declareDefaults().error().set( "ERROR" );

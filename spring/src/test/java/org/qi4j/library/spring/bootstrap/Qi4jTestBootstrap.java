@@ -42,9 +42,9 @@ public final class Qi4jTestBootstrap
     {
         LayerAssembly layerAssembly = applicationAssembly.layerAssembly( LAYER );
         ModuleAssembly moduleAssembly = layerAssembly.moduleAssembly( MODULE );
-        moduleAssembly.addServices( CommentServiceComposite.class ).identifiedBy( COMMENT_SERVICE_ID );
+        moduleAssembly.services( CommentServiceComposite.class ).identifiedBy( COMMENT_SERVICE_ID );
         // inject Spring bean as a service
-        moduleAssembly.importServices( TextProcessingService.class ).setMetaInfo(
+        moduleAssembly.importedServices( TextProcessingService.class ).setMetaInfo(
                 this.applicationContext.getBean( TO_UPPERCASE_SERVICE_ID ) );
     }
 

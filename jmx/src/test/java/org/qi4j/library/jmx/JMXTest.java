@@ -56,11 +56,11 @@ public class JMXTest
 
                 new EntityTestAssembler().assemble( module );
 
-                module.addServices( TestService.class ).instantiateOnStartup();
-                module.addEntities( TestConfiguration.class );
+                module.services( TestService.class ).instantiateOnStartup();
+                module.entities( TestConfiguration.class );
 
-                module.addServices( JMXConnectorService.class ).instantiateOnStartup();
-                module.addEntities( JMXConnectorConfiguration.class );
+                module.services( JMXConnectorService.class ).instantiateOnStartup();
+                module.entities( JMXConnectorConfiguration.class );
                 module.forMixin( JMXConnectorConfiguration.class ).declareDefaults().port().set( 1099 );
             }
         };

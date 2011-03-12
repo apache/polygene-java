@@ -41,9 +41,9 @@ public class StrictX509TestAssembler
             throws AssemblyException
     {
         // Domain & Custom Realm
-        module.addEntities( UserEntity.class );
-        module.addServices( SecuredService.class );
-        module.addObjects( StrictX509Realm.class ); // Indirectly implements RealmActivator, used by the ShiroLifecycleService
+        module.entities( UserEntity.class );
+        module.services( SecuredService.class );
+        module.objects( StrictX509Realm.class ); // Indirectly implements RealmActivator, used by the ShiroLifecycleService
 
         // Shiro Domain & Lifecycle
         new PermissionsDomainAssembler().assemble( module );
@@ -51,11 +51,11 @@ public class StrictX509TestAssembler
         new ShiroAssembler().assemble( module );
 
         // EntityStore & co
-        module.addServices( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class );
+        module.services( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class );
         new RdfMemoryStoreAssembler().assemble( module );
 
         // Test Fixtures
-        module.addServices( X509Fixtures.class ).instantiateOnStartup();
+        module.services( X509Fixtures.class ).instantiateOnStartup();
     }
 
 }

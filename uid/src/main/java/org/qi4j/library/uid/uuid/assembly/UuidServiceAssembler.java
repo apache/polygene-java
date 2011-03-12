@@ -28,6 +28,6 @@ public class UuidServiceAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices( UuidServiceComposite.class );
+        module.services( UuidServiceComposite.class );
     }
 }

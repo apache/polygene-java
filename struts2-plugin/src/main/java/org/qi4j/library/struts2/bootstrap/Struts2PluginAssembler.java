@@ -37,8 +37,8 @@ public class Struts2PluginAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addObjects( UnitOfWorkInterceptor.class ).visibleIn( Visibility.module );
-        module.addServices( ActionService.class )
+        module.objects( UnitOfWorkInterceptor.class ).visibleIn( Visibility.module );
+        module.services( ActionService.class )
             .setMetaInfo( actionConfiguration )
             .visibleIn( Visibility.module );
         actionConfiguration.assemble( module );

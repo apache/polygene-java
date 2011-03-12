@@ -34,7 +34,7 @@ public class PersistingSequencingTest extends AbstractQi4jTest
     {
         new PersistingSequencingAssembler().assemble( module );
         new EntityTestAssembler().assemble( module );
-        module.addTransients( UnderTestComposite.class );
+        module.transients( UnderTestComposite.class );
     }
 
     @Test

@@ -18,7 +18,7 @@ import java.lang.reflect.Method;
  * The FallbackStrategy is declared on the {@link OSGiServiceImporter} service declaration, like;
  * <code><pre>
  *     FallbackStrategy strategy = new MyStrategy();
- *     module.addServices( OSGiServiceImporter.class )
+ *     module.services( OSGiServiceImporter.class )
  *         .identifiedBy( "osgi" )
  *         .setMetaInfo( bundleContext )
  *         .setMetaInfo( strategy );

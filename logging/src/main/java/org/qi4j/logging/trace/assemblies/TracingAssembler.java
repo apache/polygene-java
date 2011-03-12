@@ -32,9 +32,9 @@ public class TracingAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices( StandardTraceServiceComposite.class ).visibleIn( Visibility.application );
-        module.addEntities( TraceServiceConfiguration.class );
-        module.addTransients( LogTypes.class );
+        module.services( StandardTraceServiceComposite.class ).visibleIn( Visibility.application );
+        module.entities( TraceServiceConfiguration.class );
+        module.transients( LogTypes.class );
         module.forMixin(  LogTypes.class ).declareDefaults().info().set( "INFO" );
         module.forMixin( LogTypes.class ).declareDefaults().warning().set( "WARNING" );
         module.forMixin( LogTypes.class ).declareDefaults().error().set( "ERROR" );

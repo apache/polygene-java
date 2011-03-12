@@ -131,25 +131,25 @@ public class SchedulerAssembler
     private void assembleInternals( ModuleAssembly assembly )
             throws AssemblyException
     {
-        assembly.addObjects( SchedulerPulse.class,
-                             SchedulerGarbageCollector.class,
-                             SchedulerWorkQueue.class,
-                             ScheduleRunner.class ).
+        assembly.objects( SchedulerPulse.class,
+                          SchedulerGarbageCollector.class,
+                          SchedulerWorkQueue.class,
+                          ScheduleRunner.class ).
                 visibleIn( module );
 
-        assembly.addServices( ScheduleFactory.class,
-                              ScheduleRepository.class ).
+        assembly.services( ScheduleFactory.class,
+                           ScheduleRepository.class ).
                 visibleIn( module );
     }
 
     private void assembleExposed( ModuleAssembly assembly )
             throws AssemblyException
     {
-        assembly.addServices( SchedulerService.class ).
+        assembly.services( SchedulerService.class ).
                 visibleIn( visibility ).
                 instantiateOnStartup();
 
-        assembly.addEntities( ScheduleEntity.class ).
+        assembly.entities( ScheduleEntity.class ).
                 visibleIn( visibility );
 
     }
@@ -157,7 +157,7 @@ public class SchedulerAssembler
     private void assembleConfig( ModuleAssembly configAssembly )
             throws AssemblyException
     {
-        configAssembly.addEntities( SchedulerConfiguration.class );
+        configAssembly.entities( SchedulerConfiguration.class );
         if ( pulseRhythm != null || garbageCollectorRhythm != null ) {
             SchedulerConfiguration config = configAssembly.forMixin( SchedulerConfiguration.class ).declareDefaults();
             if ( pulseRhythm != null ) {
@@ -173,15 +173,15 @@ public class SchedulerAssembler
             throws AssemblyException
     {
         // Internal
-        assembly.addServices( TimelineRecorderService.class ).
+        assembly.services( TimelineRecorderService.class ).
                 visibleIn( module );
 
         // Exposed
-        assembly.addValues( TimelineRecordValue.class ).
+        assembly.values( TimelineRecordValue.class ).
                 visibleIn( visibility );
-        assembly.addEntities( TimelineRecordEntity.class ).
+        assembly.entities( TimelineRecordEntity.class ).
                 visibleIn( visibility );
-        assembly.addServices( TimelineService.class ).
+        assembly.services( TimelineService.class ).
                 visibleIn( visibility );
 
     }

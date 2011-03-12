@@ -50,12 +50,12 @@ public class DebuggingTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices( DebuggingServiceComposite.class );
-        module.addServices( MemoryEntityStoreService.class );
-        module.addServices( SomeService.class ).withMixins( Debug.class ).withConcerns( DebugConcern.class );
-        module.addEntities( DebugServiceConfiguration.class );
-        module.addEntities( ServiceDebugRecordEntity.class );
-        module.addServices( UuidIdentityGeneratorService.class );
+        module.services( DebuggingServiceComposite.class );
+        module.services( MemoryEntityStoreService.class );
+        module.services( SomeService.class ).withMixins( Debug.class ).withConcerns( DebugConcern.class );
+        module.entities( DebugServiceConfiguration.class );
+        module.entities( ServiceDebugRecordEntity.class );
+        module.services( UuidIdentityGeneratorService.class );
     }
 
     @Test

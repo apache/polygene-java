@@ -98,7 +98,7 @@ public class DataSourceAssembler
         {
 
             // Imported DataSourceService
-            module.importServices( DataSourceService.class ).identifiedBy( getDataSourceServiceName() )
+            module.importedServices( DataSourceService.class ).identifiedBy( getDataSourceServiceName() )
                 .visibleIn( this.visibility ).setMetaInfo( importedDataSourceService );
 
         }
@@ -106,7 +106,7 @@ public class DataSourceAssembler
         {
 
             // Parametrized DataSourceService
-            module.addServices( DataSourceServiceComposite.class ).withMixins( dataSourceServiceMixins )
+            module.services( DataSourceServiceComposite.class ).withMixins( dataSourceServiceMixins )
                 .visibleIn( this.visibility ).identifiedBy( getDataSourceServiceName() ).instantiateOnStartup();
 
         }

@@ -64,15 +64,15 @@ public class DomainEventSourceResourceTest
             {
                 new EntityTestAssembler().assemble( module );
 
-                module.addValues( DomainEventValue.class, UnitOfWorkDomainEventsValue.class );
-                module.addServices( MemoryEventStoreService.class ).setMetaInfo( tags( "domain" ) );
-                module.addServices( DomainEventFactoryService.class );
-                module.importServices( CurrentUserUoWPrincipal.class ).importedBy( ImportedServiceDeclaration.NEW_OBJECT );
-                module.addObjects( CurrentUserUoWPrincipal.class );
+                module.values( DomainEventValue.class, UnitOfWorkDomainEventsValue.class );
+                module.services( MemoryEventStoreService.class ).setMetaInfo( tags( "domain" ) );
+                module.services( DomainEventFactoryService.class );
+                module.importedServices( CurrentUserUoWPrincipal.class ).importedBy( ImportedServiceDeclaration.NEW_OBJECT );
+                module.objects( CurrentUserUoWPrincipal.class );
 
-                module.addObjects( DomainEventSourceResource.class, PingResource.class );
+                module.objects( DomainEventSourceResource.class, PingResource.class );
 
-                module.addEntities( TestEntity.class ).withConcerns( DomainEventCreationConcern.class );
+                module.entities( TestEntity.class ).withConcerns( DomainEventCreationConcern.class );
             }
         };
 

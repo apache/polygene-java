@@ -49,10 +49,10 @@ public class EntityTypeSerializerTest
 
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        module.addServices( MemoryEntityStoreService.class);
-        module.addEntities( TestEntity.class );
-        module.addValues( TestValue.class, Test2Value.class );
-        module.addObjects( EntityTypeSerializer.class, EntityTypeSerializerTest.class );
+        module.services( MemoryEntityStoreService.class );
+        module.entities( TestEntity.class );
+        module.values( TestValue.class, Test2Value.class );
+        module.objects( EntityTypeSerializer.class, EntityTypeSerializerTest.class );
     }
 
     @Override @Before

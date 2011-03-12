@@ -62,7 +62,7 @@ public class SpringImporterAssembler
         {
             Class serviceType = context.getType( name );
             module.
-                importServices( serviceType ).
+                importedServices( serviceType ).
                 importedBy( SpringImporter.class ).
                 identifiedBy( name ).
                 setMetaInfo( context ).

@@ -27,7 +27,7 @@ public class ConstraintTest extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        module.addTransients( TestCaseComposite.class );
+        module.transients( TestCaseComposite.class );
     }
 
     @Test( expected = ConstraintViolationException.class )

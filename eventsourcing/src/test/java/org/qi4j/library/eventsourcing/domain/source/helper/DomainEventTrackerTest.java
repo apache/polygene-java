@@ -58,16 +58,16 @@ public class DomainEventTrackerTest
     {
         new EntityTestAssembler(  ).assemble( module );
 
-        module.addValues( DomainEventValue.class, UnitOfWorkDomainEventsValue.class );
-        module.addServices( MemoryEventStoreService.class );
-        module.addServices( DomainEventFactoryService.class );
-        module.importServices( CurrentUserUoWPrincipal.class).importedBy( ImportedServiceDeclaration.NEW_OBJECT );
-        module.addObjects( CurrentUserUoWPrincipal.class );
+        module.values( DomainEventValue.class, UnitOfWorkDomainEventsValue.class );
+        module.services( MemoryEventStoreService.class );
+        module.services( DomainEventFactoryService.class );
+        module.importedServices( CurrentUserUoWPrincipal.class ).importedBy( ImportedServiceDeclaration.NEW_OBJECT );
+        module.objects( CurrentUserUoWPrincipal.class );
 
-        module.addEntities( TestEntity.class ).withConcerns( DomainEventCreationConcern.class );
+        module.entities( TestEntity.class ).withConcerns( DomainEventCreationConcern.class );
 
-        module.addServices( EventLoggingService.class ).instantiateOnStartup();
-        module.addEntities( DomainEventTrackerConfiguration.class );
+        module.services( EventLoggingService.class ).instantiateOnStartup();
+        module.entities( DomainEventTrackerConfiguration.class );
     }
 
     @Test

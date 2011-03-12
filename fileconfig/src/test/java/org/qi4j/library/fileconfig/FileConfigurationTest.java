@@ -33,7 +33,7 @@ public class FileConfigurationTest
         {
             public void assemble( ModuleAssembly module ) throws AssemblyException
             {
-                module.addServices( FileConfiguration.class );
+                module.services( FileConfiguration.class );
             }
         };
 

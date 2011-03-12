@@ -41,10 +41,10 @@ import java.util.List;
  *
  * Other services should reuse the object names and create
  * nodes under the ones created here. For example:
- * MyApp:layer=Application,Module=MyModule,class=Service,service=MyService
+ * Qi4j:application=MyApp,layer=Application,module=MyModule,class=Service,service=MyService
  * is exported by this service, so another exporter showing some aspect related to this service should
  * use this as base for the ObjectName, and add their own properties. Example:
- * MyApp:layer=Application,Module=MyModule,class=Service,service=MyService,name=Configuration
+ * Qi4j:application=MyApp,layer=Application,module=MyModule,class=Service,service=MyService,name=Configuration
  *
  * Use the following snippet to find the ObjectName of a service with a given identity:
  * ObjectName serviceName = Qi4jMBeans.findService(mbeanServer, applicationName, serviceId);
@@ -82,7 +82,7 @@ public interface ApplicationManagerService
                     layer = (LayerSPI) application.findLayer( layerDescriptor.name() );
 
                     LayerBean layerBean = new LayerBean(layer, layerDescriptor);
-                    ObjectName objectName = new ObjectName( application.name()+":layer="+layer.name() );
+                    ObjectName objectName = new ObjectName( "Qi4j:application="+application.name()+",layer="+layer.name() );
                     RequiredModelMBean mbean = new ModelMBeanBuilder( objectName, layerDescriptor.name(), LayerBean.class.getName()).
                             attribute( "uses", "Layer usages", String.class.getName(), "Other layers that this layer uses", "getUses", null ).
                             operation( "restart", "Restart layer", String.class.getName(), MBeanOperationInfo.ACTION_INFO ).
@@ -98,7 +98,7 @@ public interface ApplicationManagerService
                 public void visit( ModuleDescriptor moduleDescriptor ) throws Exception
                 {
                     module = (ModuleSPI) application.findModule( layer.name(), moduleDescriptor.name() );
-                    ObjectName objectName = new ObjectName( application.name()+":layer="+layer.name()+",module="+moduleDescriptor.name() );
+                    ObjectName objectName = new ObjectName( "Qi4j:application="+application.name()+",layer="+layer.name()+",module="+moduleDescriptor.name() );
                     RequiredModelMBean mbean = new ModelMBeanBuilder( objectName, moduleDescriptor.name(), moduleDescriptor.getClass().getName()).
                             attribute( "name", "Module name", String.class.getName(), "Name of module", "name", null ).
                             newModelMBean();
@@ -112,7 +112,7 @@ public interface ApplicationManagerService
                 @Override
                 public void visit( ServiceDescriptor serviceDescriptor ) throws Exception
                 {
-                    ObjectName objectName = new ObjectName( application.name()+":layer="+layer.name()+",module="+module.name()+",class=Service,service="+serviceDescriptor.identity() );
+                    ObjectName objectName = new ObjectName( "Qi4j:application="+application.name()+",layer="+layer.name()+",module="+module.name()+",class=Service,service="+serviceDescriptor.identity() );
                     RequiredModelMBean mbean = new ModelMBeanBuilder( objectName, serviceDescriptor.identity(), ServiceBean.class.getName()).
                             attribute( "Id", "Service id", String.class.getName(), "Id of service", "getId", null ).
                             attribute( "Visibility", "Service visibility", String.class.getName(), "Visibility of service", "getVisibility", null ).
@@ -128,7 +128,7 @@ public interface ApplicationManagerService
                 @Override
                 public void visit( ImportedServiceDescriptor importedServiceDescriptor ) throws Exception
                 {
-                    ObjectName objectName = new ObjectName( application.name()+":layer="+layer.name()+",module="+module.name()+",class=Imported service,importedservice="+importedServiceDescriptor.identity() );
+                    ObjectName objectName = new ObjectName( "Qi4j:application="+application.name()+",layer="+layer.name()+",module="+module.name()+",class=Imported service,importedservice="+importedServiceDescriptor.identity() );
                     RequiredModelMBean mbean = new ModelMBeanBuilder( objectName, importedServiceDescriptor.identity(), ImportedServiceBean.class.getName()).
                             attribute( "Id", "Service id", String.class.getName(), "Id of service", "getId", null ).
                             attribute( "Visibility", "Service visibility", String.class.getName(), "Visibility of service", "getVisibility", null ).
@@ -143,7 +143,7 @@ public interface ApplicationManagerService
                 @Override
                 public void visit( EntityDescriptor entityDescriptor ) throws Exception
                 {
-                    ObjectName objectName = new ObjectName( application.name()+":layer="+layer.name()+",module="+module.name()+",class=Entity,entity="+entityDescriptor.entityType().type().name() );
+                    ObjectName objectName = new ObjectName( "Qi4j:application="+application.name()+",layer="+layer.name()+",module="+module.name()+",class=Entity,entity="+entityDescriptor.entityType().type().name() );
                     RequiredModelMBean mbean = new ModelMBeanBuilder( objectName, entityDescriptor.entityType().type().name(), EntityBean.class.getName()).
                             attribute( "Type", "Entity type", String.class.getName(), "Type of entity", "getType", null ).
                             newModelMBean();

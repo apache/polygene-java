@@ -57,14 +57,14 @@ public class JdbmEventStoreServiceTest
 
             new EntityTestAssembler(  ).assemble( module );
 
-            module.addValues( DomainEventValue.class, UnitOfWorkDomainEventsValue.class );
-            module.addServices( FileConfiguration.class );
-            module.addServices( JdbmEventStoreService.class );
-            module.addServices( DomainEventFactoryService.class );
-            module.importServices( CurrentUserUoWPrincipal.class).importedBy( ImportedServiceDeclaration.NEW_OBJECT );
-            module.addObjects( CurrentUserUoWPrincipal.class );
+            module.values( DomainEventValue.class, UnitOfWorkDomainEventsValue.class );
+            module.services( FileConfiguration.class );
+            module.services( JdbmEventStoreService.class );
+            module.services( DomainEventFactoryService.class );
+            module.importedServices( CurrentUserUoWPrincipal.class ).importedBy( ImportedServiceDeclaration.NEW_OBJECT );
+            module.objects( CurrentUserUoWPrincipal.class );
 
-            module.addEntities( TestEntity.class ).withConcerns(DomainEventCreationConcern.class);
+            module.entities( TestEntity.class ).withConcerns(DomainEventCreationConcern.class);
         }
 
         @Test

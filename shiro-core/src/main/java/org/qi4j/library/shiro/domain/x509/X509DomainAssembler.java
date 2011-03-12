@@ -25,8 +25,8 @@ public class X509DomainAssembler
     public void assemble( ModuleAssembly module )
             throws AssemblyException
     {
-        module.addEntities( X509Light.class );
-        module.addServices( X509LightFactory.class );
+        module.entities( X509Light.class );
+        module.services( X509LightFactory.class );
     }
 
 }

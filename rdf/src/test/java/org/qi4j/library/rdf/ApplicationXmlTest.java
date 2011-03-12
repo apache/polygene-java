@@ -50,7 +50,7 @@ public class ApplicationXmlTest extends AbstractQi4jTest
     {
         LayerAssembly layerAssembly = module.layerAssembly();
         layerAssembly.applicationAssembly().setName( "testapp" );
-        module.addTransients( TestComposite.class );
+        module.transients( TestComposite.class );
     }
 
     @Test

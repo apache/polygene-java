@@ -28,6 +28,6 @@ public class CxfAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addObjects( Qi4jTypeCreator.class, ValueCompositeCxfType.class );
+        module.objects( Qi4jTypeCreator.class, ValueCompositeCxfType.class );
     }
 }

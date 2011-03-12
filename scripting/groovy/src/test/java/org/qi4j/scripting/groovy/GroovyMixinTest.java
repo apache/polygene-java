@@ -23,7 +23,7 @@ public class GroovyMixinTest extends AbstractQi4jTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addTransients( GroovyComposite.class );
+        module.transients( GroovyComposite.class );
     }
 
     @Test

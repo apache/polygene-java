@@ -40,7 +40,7 @@ public class VaadinQi4jTest
             throws AssemblyException
     {
         new JettyServiceAssembler().assemble( ma );
-        ma.addServices( MemoryEntityStoreService.class );
+        ma.services( MemoryEntityStoreService.class );
 
         JettyConfiguration config = ma.forMixin( JettyConfiguration.class ).declareDefaults();
         config.port().set( 8041 );
@@ -48,8 +48,8 @@ public class VaadinQi4jTest
 
         addServlets( serve( "/mortals/*" ).with( Qi4jVaadinApplicationServletService.class ) ).to( ma );
 
-        ma.addServices( GreetService.class );
-        ma.addObjects( MyVaadinApplication.class );
+        ma.services( GreetService.class );
+        ma.objects( MyVaadinApplication.class );
 
     }
 
