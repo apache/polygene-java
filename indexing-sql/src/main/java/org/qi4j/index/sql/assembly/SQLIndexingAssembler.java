@@ -65,7 +65,7 @@ public class SQLIndexingAssembler implements Assembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices( SQLIndexingEngineService.class ).identifiedBy( this._serviceName ).visibleIn(
+        module.services( SQLIndexingEngineService.class ).identifiedBy( this._serviceName ).visibleIn(
             this._esVisiblity );
     }
 

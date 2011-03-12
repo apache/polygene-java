@@ -31,10 +31,10 @@ public class RdfEntityFinderTest extends AbstractEntityFinderTest
         throws AssemblyException
     {
         super.assemble( module );
-        module.addObjects( EntityStateSerializer.class, EntityTypeSerializer.class );
-        module.addServices( RdfIndexingEngineService.class );
-        module.addServices( MemoryRepositoryService.class ).identifiedBy( "rdf-indexing" );
-        // module.addServices( NativeRdfRepositoryService.class ).identifiedBy( "rdf-indexing" );
+        module.objects( EntityStateSerializer.class, EntityTypeSerializer.class );
+        module.services( RdfIndexingEngineService.class );
+        module.services( MemoryRepositoryService.class ).identifiedBy( "rdf-indexing" );
+        // module.services( NativeRdfRepositoryService.class ).identifiedBy( "rdf-indexing" );
         // module.addComposites( NativeRdfConfiguration.class );
     }
 }

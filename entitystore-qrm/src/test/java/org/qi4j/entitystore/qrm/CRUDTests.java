@@ -65,12 +65,12 @@ public class CRUDTests
             }
         };
 
-        module.addServices( QrmMapperService.class );
-        module.addServices( QrmEntityStoreService.class )
+        module.services( QrmMapperService.class );
+        module.services( QrmEntityStoreService.class )
             .setMetaInfo( desc )
             .visibleIn( Visibility.application )
             .instantiateOnStartup();
-        module.addEntities( AccountComposite.class );
+        module.entities( AccountComposite.class );
     }
 
     @Test

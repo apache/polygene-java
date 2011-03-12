@@ -16,7 +16,6 @@ package org.qi4j.entitystore.sql;
 import java.sql.Connection;
 import java.sql.Statement;
 import org.apache.derby.iapi.services.io.FileUtil;
-import org.junit.Assert;
 import org.junit.Assume;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.unitofwork.UnitOfWork;
@@ -55,8 +54,8 @@ public class DerbySQLEntityStoreTest extends AbstractEntityStoreTest
         }
 
         ModuleAssembly config = module.layerAssembly().moduleAssembly( "config" );
-        config.addServices( MemoryEntityStoreService.class );
-        config.addEntities( DBCPDataSourceConfiguration.class, SQLConfiguration.class ).visibleIn( Visibility.layer );
+        config.services( MemoryEntityStoreService.class );
+        config.entities( DBCPDataSourceConfiguration.class, SQLConfiguration.class ).visibleIn( Visibility.layer );
     }
 
     @Override

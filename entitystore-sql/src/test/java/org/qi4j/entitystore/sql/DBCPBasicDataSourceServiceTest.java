@@ -41,12 +41,12 @@ public class DBCPBasicDataSourceServiceTest extends AbstractQi4jTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices( DataSourceServiceComposite.class ).withMixins( DBCPBasicDataSourceServiceMixin.class )
+        module.services( DataSourceServiceComposite.class ).withMixins( DBCPBasicDataSourceServiceMixin.class )
             .identifiedBy( DerbySQLEntityStoreAssembler.DATASOURCE_SERVICE_NAME ).instantiateOnStartup();
 
         ModuleAssembly config = module.layerAssembly().moduleAssembly( "config" );
-        config.addServices( MemoryEntityStoreService.class );
-        config.addEntities( DBCPDataSourceConfiguration.class, SQLConfiguration.class ).visibleIn( Visibility.layer );
+        config.services( MemoryEntityStoreService.class );
+        config.entities( DBCPDataSourceConfiguration.class, SQLConfiguration.class ).visibleIn( Visibility.layer );
     }
 
     @Test

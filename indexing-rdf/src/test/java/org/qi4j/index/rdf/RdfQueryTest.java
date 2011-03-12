@@ -40,13 +40,13 @@ public class RdfQueryTest extends AbstractQueryTest
         throws AssemblyException
     {
         super.assemble( module );
-        module.addServices( NativeRepositoryService.class, RdfQueryParserFactory.class );
-        module.addServices( RdfIndexingEngineService.class );
-        module.addObjects( EntityStateSerializer.class, EntityTypeSerializer.class );
+        module.services( NativeRepositoryService.class, RdfQueryParserFactory.class );
+        module.services( RdfIndexingEngineService.class );
+        module.objects( EntityStateSerializer.class, EntityTypeSerializer.class );
 
         ModuleAssembly config = module.layerAssembly().moduleAssembly( "Config" );
-        config.addEntities( NativeConfiguration.class ).visibleIn( Visibility.layer );
-        config.addServices( MemoryEntityStoreService.class );
+        config.entities( NativeConfiguration.class ).visibleIn( Visibility.layer );
+        config.services( MemoryEntityStoreService.class );
     }
 
     @Override

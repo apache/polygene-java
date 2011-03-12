@@ -191,13 +191,13 @@ public final class IBatisEntityStoreTest
     public final void assemble( final ModuleAssembly module )
         throws AssemblyException
     {
-        module.addEntities( PersonComposite.class, AccountComposite.class );
-        module.addServices( UuidIdentityGeneratorService.class );
-        module.addServices( QrmSqlEntityStoreService.class );
+        module.entities( PersonComposite.class, AccountComposite.class );
+        module.services( UuidIdentityGeneratorService.class );
+        module.services( QrmSqlEntityStoreService.class );
 
         final ModuleAssembly config = module.layerAssembly().moduleAssembly( "config" );
-        config.addEntities( QrmSqlConfiguration.class ).visibleIn( Visibility.layer );
-        config.addServices( MemoryEntityStoreService.class );
+        config.entities( QrmSqlConfiguration.class ).visibleIn( Visibility.layer );
+        config.services( MemoryEntityStoreService.class );
         config.forMixin( QrmSqlConfiguration.class )
             .declareDefaults()
             .sqlMapConfigURL()

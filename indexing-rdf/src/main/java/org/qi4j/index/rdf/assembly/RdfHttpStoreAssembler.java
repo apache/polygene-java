@@ -58,15 +58,15 @@ public class RdfHttpStoreAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices( HttpRepositoryService.class )
+        module.services( HttpRepositoryService.class )
             .visibleIn( repositoryVisibility )
             .instantiateOnStartup()
             .identifiedBy( "rdf-indexing" );
-        module.addServices( RdfIndexingEngineService.class )
+        module.services( RdfIndexingEngineService.class )
             .visibleIn( indexingVisibility )
             .setMetaInfo( namedQueries )
             .instantiateOnStartup();
-        module.addServices( RdfQueryParserFactory.class ).visibleIn( indexingVisibility );
-        module.addObjects( EntityStateSerializer.class, EntityTypeSerializer.class );
+        module.services( RdfQueryParserFactory.class ).visibleIn( indexingVisibility );
+        module.objects( EntityStateSerializer.class, EntityTypeSerializer.class );
     }
 }

@@ -40,12 +40,12 @@ public class VoldemortAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices( VoldemortEntityStoreService.class ).visibleIn( visibility ).instantiateOnStartup();
-        module.addServices( UuidIdentityGeneratorService.class ).visibleIn( visibility );
+        module.services( VoldemortEntityStoreService.class ).visibleIn( visibility ).instantiateOnStartup();
+        module.services( UuidIdentityGeneratorService.class ).visibleIn( visibility );
         // FIXME Remove from here and update documentation accordingly
         ModuleAssembly config = module.layerAssembly().moduleAssembly( "config" );
-        config.addEntities( VoldemortConfiguration.class ).visibleIn( Visibility.layer );
-        config.addServices( MemoryEntityStoreService.class );
+        config.entities( VoldemortConfiguration.class ).visibleIn( Visibility.layer );
+        config.services( MemoryEntityStoreService.class );
 
     }
 }

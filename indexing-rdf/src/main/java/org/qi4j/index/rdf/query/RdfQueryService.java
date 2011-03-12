@@ -17,7 +17,11 @@
  */
 package org.qi4j.index.rdf.query;
 
+import java.util.HashMap;
 import java.util.Map;
+
+import org.openrdf.model.Value;
+import org.openrdf.model.impl.ValueFactoryImpl;
 import org.openrdf.query.QueryLanguage;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
@@ -65,7 +69,7 @@ public interface RdfQueryService
             CollectingQualifiedIdentityResultCallback collectingCallback = new CollectingQualifiedIdentityResultCallback();
             RdfQueryParser rdfQueryParser = queryParserFactory.newQueryParser( language );
             String query = rdfQueryParser.getQuery( resultType, whereClause, orderBySegments, firstResult, maxResults );
-            tupleExecutor.performTupleQuery( language, query, collectingCallback );
+            tupleExecutor.performTupleQuery( language, query, null, collectingCallback );
             return collectingCallback.getEntities();
         }
 
@@ -75,7 +79,7 @@ public interface RdfQueryService
             final SingleQualifiedIdentityResultCallback singleCallback = new SingleQualifiedIdentityResultCallback();
             RdfQueryParser rdfQueryParser = queryParserFactory.newQueryParser( language );
             String query = rdfQueryParser.getQuery( resultType, whereClause, null, null, null );
-            tupleExecutor.performTupleQuery( language, query, singleCallback );
+            tupleExecutor.performTupleQuery( language, query, null, singleCallback );
             return singleCallback.getQualifiedIdentity();
         }
 
@@ -84,7 +88,7 @@ public interface RdfQueryService
         {
             RdfQueryParser rdfQueryParser = queryParserFactory.newQueryParser( language );
             String query = rdfQueryParser.getQuery( resultType, whereClause, null, null, null );
-            return tupleExecutor.performTupleQuery( language, query, null );
+            return tupleExecutor.performTupleQuery( language, query, null, null );
         }
     }
 
@@ -106,10 +110,12 @@ public interface RdfQueryService
         )
             throws EntityFinderException
         {
+            Map<String, Value> bindings = getBindings(variables);
+
             QueryLanguage queryLanguage = QueryLanguage.valueOf( descriptor.language() );
             String query = descriptor.compose( variables, orderBySegments, firstResult, maxResults );
             CollectingQualifiedIdentityResultCallback callback = new CollectingQualifiedIdentityResultCallback();
-            tupleExecutor.performTupleQuery( queryLanguage, query, callback );
+            tupleExecutor.performTupleQuery( queryLanguage, query, bindings, callback );
             return callback.getEntities();
         }
 
@@ -119,23 +125,38 @@ public interface RdfQueryService
         )
             throws EntityFinderException
         {
+            Map<String, Value> bindings = getBindings(variables);
+
             QueryLanguage queryLanguage = QueryLanguage.valueOf( descriptor.language() );
             String query = descriptor.compose( variables, null, null, 1 );
             SingleQualifiedIdentityResultCallback callback = new SingleQualifiedIdentityResultCallback();
-            tupleExecutor.performTupleQuery( queryLanguage, query, callback );
+            tupleExecutor.performTupleQuery( queryLanguage, query, bindings, callback );
             return callback.getQualifiedIdentity();
         }
 
         public long countEntities( NamedQueryDescriptor descriptor, String resultType, Map<String, Object> variables )
             throws EntityFinderException
         {
+            Map<String, Value> bindings = getBindings(variables);
+
             QueryLanguage queryLanguage = QueryLanguage.valueOf( descriptor.language() );
-            return tupleExecutor.performTupleQuery( queryLanguage, descriptor.compose( null, null, null, null ), null );
+            return tupleExecutor.performTupleQuery( queryLanguage, descriptor.compose( null, null, null, null ), bindings, null );
         }
 
         public String showQuery( NamedQueryDescriptor descriptor )
         {
             return descriptor.compose( null, null, null, null );
+        }
+
+        private Map<String, Value> getBindings(Map<String, Object> variables)
+        {
+            Map<String, Value> bindings = new HashMap<String, Value>();
+            for (Map.Entry<String, Object> stringObjectEntry : variables.entrySet())
+            {
+                if (!stringObjectEntry.getValue().getClass().equals(Object.class))
+                    bindings.put(stringObjectEntry.getKey(), ValueFactoryImpl.getInstance().createLiteral(stringObjectEntry.getValue().toString()));
+            }
+            return bindings;
         }
     }
 }

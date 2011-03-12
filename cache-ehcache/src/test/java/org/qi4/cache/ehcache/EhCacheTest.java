@@ -31,8 +31,8 @@ public class EhCacheTest extends AbstractQi4jTest
     {
         new EhCacheAssembler( Visibility.module ).assemble( module );
         ModuleAssembly confModule = module.layerAssembly().moduleAssembly( "confModule" );
-        confModule.addServices( MemoryEntityStoreService.class ).visibleIn( Visibility.layer );
-        confModule.addServices( UuidIdentityGeneratorService.class );
+        confModule.services( MemoryEntityStoreService.class ).visibleIn( Visibility.layer );
+        confModule.services( UuidIdentityGeneratorService.class );
     }
 
     @Override

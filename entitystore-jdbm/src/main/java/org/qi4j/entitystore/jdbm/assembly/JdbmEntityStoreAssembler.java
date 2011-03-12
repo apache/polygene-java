@@ -37,7 +37,7 @@ public class JdbmEntityStoreAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices( JdbmEntityStoreService.class ).visibleIn( visibility );
-        module.addServices( UuidIdentityGeneratorService.class ).visibleIn( visibility );
+        module.services( JdbmEntityStoreService.class ).visibleIn( visibility );
+        module.services( UuidIdentityGeneratorService.class ).visibleIn( visibility );
     }
 }

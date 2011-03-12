@@ -59,15 +59,15 @@ public class ReindexerTest
         new RdfNativeSesameStoreAssembler().assemble( module );
 
         // Reindexer
-        module.addServices( ReindexerService.class );
+        module.services( ReindexerService.class );
 
         // Configuration
         ModuleAssembly config = module.layerAssembly().moduleAssembly( "config" );
-        config.addServices( MemoryEntityStoreService.class );
-        config.addEntities( JdbmConfiguration.class, NativeConfiguration.class, ReindexerConfiguration.class ).visibleIn( Visibility.layer );
+        config.services( MemoryEntityStoreService.class );
+        config.entities( JdbmConfiguration.class, NativeConfiguration.class, ReindexerConfiguration.class ).visibleIn( Visibility.layer );
 
         // Test entity
-        module.addEntities( MyEntity.class );
+        module.entities( MyEntity.class );
 
     }
 

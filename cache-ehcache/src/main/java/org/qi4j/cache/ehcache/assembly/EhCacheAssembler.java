@@ -20,7 +20,7 @@ public class EhCacheAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices( EhCachePoolService.class ).visibleIn( visibility );
-        module.addEntities( EhCacheConfiguration.class );
+        module.services( EhCachePoolService.class ).visibleIn( visibility );
+        module.entities( EhCacheConfiguration.class );
     }
 }
