@@ -367,13 +367,13 @@ task tarSources(type: Tar) {
   classifier = 'src'
 }
 
-task zipBinaries(type: Zip, dependsOn: [javadocs, test, distLayout, uploadDefault]) {
+task zipBinaries(type: Zip, dependsOn: [javadocs, test, distLayout]) {
   baseName='qi4j-sdk'
   classifier = 'bin'
   with distLayout.binDistImage
 }
 
-task tarBinaries(type: Tar, dependsOn: [javadocs, test, distLayout, uploadDefault]) {
+task tarBinaries(type: Tar, dependsOn: [javadocs, test, distLayout]) {
   baseName='qi4j-sdk'
   classifier = 'bin'
   compression = Compression.GZIP
