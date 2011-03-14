@@ -51,9 +51,9 @@ public class JdbmEventStoreServiceTest
     {
         public void assemble( ModuleAssembly module ) throws AssemblyException
         {
-            module.layerAssembly().applicationAssembly().setMode( Application.Mode.test );
+            module.layer().application().setMode( Application.Mode.test );
 
-            module.layerAssembly().applicationAssembly().setName( "JDBMEventStoreTest" );
+            module.layer().application().setName( "JDBMEventStoreTest" );
 
             new EntityTestAssembler(  ).assemble( module );
 

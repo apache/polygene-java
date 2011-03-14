@@ -48,8 +48,8 @@ public class ApplicationXmlTest extends AbstractQi4jTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        LayerAssembly layerAssembly = module.layerAssembly();
-        layerAssembly.applicationAssembly().setName( "testapp" );
+        LayerAssembly layerAssembly = module.layer();
+        layerAssembly.application().setName( "testapp" );
         module.transients( TestComposite.class );
     }
 

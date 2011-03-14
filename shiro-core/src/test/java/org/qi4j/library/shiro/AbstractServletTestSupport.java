@@ -71,7 +71,7 @@ public abstract class AbstractServletTestSupport
                     throws AssemblyException
             {
                 ApplicationAssembly app = applicationFactory.newApplicationAssembly();
-                ModuleAssembly module = app.layerAssembly( TEST_LAYER ).moduleAssembly( TEST_MODULE );
+                ModuleAssembly module = app.layer( TEST_LAYER ).module( TEST_MODULE );
 
                 AbstractServletTestSupport.this.assemble( module );
 

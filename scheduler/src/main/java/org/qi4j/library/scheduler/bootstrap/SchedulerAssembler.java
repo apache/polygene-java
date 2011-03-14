@@ -49,7 +49,7 @@ import org.qi4j.library.scheduler.timeline.TimelineService;
  *              withPulseRhythm( 60 ).
  *              withGarbageCollectorRhythm( 600 ).
  *              withTimeline().
- *              assemble( moduleAssembly );
+ *              assemble( module );
  * </pre>
  */
 public class SchedulerAssembler
