@@ -84,7 +84,7 @@ public class ServiceInjectionTest
                 module.services( MyServiceComposite.class ).identifiedBy( "Foo" ).setMetaInfo( new ServiceName( "Foo" ) );
                 module.objects( ServiceUser.class );
 
-                ModuleAssembly module2 = module.layerAssembly().moduleAssembly( "Other module" );
+                ModuleAssembly module2 = module.layer().module( "Other module" );
                 ServiceDeclaration service2Decl = module2.services( MyServiceComposite.class );
                 service2Decl.identifiedBy( "Bar" ).setMetaInfo( new ServiceName( "Bar" ) ).visibleIn( layer );
 
@@ -105,14 +105,14 @@ public class ServiceInjectionTest
                 throws AssemblyException
             {
                 module.services( MyServiceComposite.class ).identifiedBy( "Foo" ).setMetaInfo( new ServiceName( "Foo" ) );
-                LayerAssembly layerAssembly = module.layerAssembly();
+                LayerAssembly layerAssembly = module.layer();
                 module.objects( ServiceUser.class );
 
-                ApplicationAssembly applicationAssembly = layerAssembly.applicationAssembly();
-                LayerAssembly layer2Assembly = applicationAssembly.layerAssembly( "Other layer" );
+                ApplicationAssembly applicationAssembly = layerAssembly.application();
+                LayerAssembly layer2Assembly = applicationAssembly.layer( "Other layer" );
                 layerAssembly.uses( layer2Assembly );
 
-                ModuleAssembly module2 = layer2Assembly.moduleAssembly( "Other module" );
+                ModuleAssembly module2 = layer2Assembly.module( "Other module" );
 
                 ServiceDeclaration service2Decl = module2.services( MyServiceComposite.class );
                 service2Decl.identifiedBy( "Bar" ).setMetaInfo( new ServiceName( "Bar" ) ).visibleIn( application );

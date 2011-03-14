@@ -51,7 +51,7 @@ public final class LayerAssemblyImpl
         uses = new LinkedHashSet<LayerAssembly>();
     }
 
-    public ModuleAssembly moduleAssembly( String name )
+    public ModuleAssembly module( String name )
     {
         if( name != null )
         {
@@ -66,7 +66,7 @@ public final class LayerAssemblyImpl
         return moduleAssembly;
     }
 
-    public ApplicationAssembly applicationAssembly()
+    public ApplicationAssembly application()
     {
         return applicationAssembly;
     }

@@ -18,11 +18,14 @@
 
 package org.qi4j.bootstrap;
 
+/**
+ * Fluid API for declaring a layer in an application. This is obtained by calling {@link ApplicationAssembly#layer(String)}.
+ */
 public interface LayerAssembly
 {
-    ModuleAssembly moduleAssembly( String name );
+    ModuleAssembly module( String name );
 
-    ApplicationAssembly applicationAssembly();
+    ApplicationAssembly application();
 
     String name();
 

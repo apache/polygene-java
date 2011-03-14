@@ -49,7 +49,7 @@ public class ApplicationModeTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.layerAssembly().applicationAssembly().setMode( Application.Mode.test );
+                module.layer().application().setMode( Application.Mode.test );
             }
         }.application().mode();
 
@@ -64,7 +64,7 @@ public class ApplicationModeTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.layerAssembly().applicationAssembly().setMode( Application.Mode.staging );
+                module.layer().application().setMode( Application.Mode.staging );
             }
         }.application().mode();
 
@@ -79,7 +79,7 @@ public class ApplicationModeTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.layerAssembly().applicationAssembly().setMode( Application.Mode.development );
+                module.layer().application().setMode( Application.Mode.development );
             }
         }.application().mode();
 
@@ -94,7 +94,7 @@ public class ApplicationModeTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.layerAssembly().applicationAssembly().setMode( Application.Mode.production );
+                module.layer().application().setMode( Application.Mode.production );
             }
         }.application().mode();
 

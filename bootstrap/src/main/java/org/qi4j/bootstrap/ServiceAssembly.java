@@ -3,9 +3,9 @@ package org.qi4j.bootstrap;
 import org.qi4j.api.service.ServiceComposite;
 
 /**
- * TODO
+ * This represents the assembly information of a single ServiceComposite in a Module.
  */
 public interface ServiceAssembly
+    extends TypeAssembly<ServiceComposite>
 {
-    Class<? extends ServiceComposite> type();
 }

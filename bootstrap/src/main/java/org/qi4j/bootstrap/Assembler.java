@@ -30,8 +30,8 @@ public interface Assembler
      * artifacts.
      * <p/>
      * An Assembler may create new Modules by calling
-     * {@link org.qi4j.bootstrap.ModuleAssembly#layerAssembly()} and
-     * then {@link LayerAssembly#newModuleAssembly(String)}.
+     * {@link org.qi4j.bootstrap.ModuleAssembly#layer()} and
+     * then {@link LayerAssembly#module(String)} (String)}.
      * This allows an Assembler to bootstrap an entire Layer with
      * more Modules.
      *

@@ -66,7 +66,7 @@ public class ServiceSelectorImporterTest
                     .importedBy( SERVICE_SELECTOR )
                     .setMetaInfo( ServiceQualifier.withId( TestServiceComposite2.class.getSimpleName() ) );
 
-                ModuleAssembly module2 = module.layerAssembly().moduleAssembly( "Other module" );
+                ModuleAssembly module2 = module.layer().module( "Other module" );
                 module2.services( TestServiceComposite2.class, TestServiceComposite2.class )
                     .visibleIn( Visibility.layer );
             }
@@ -91,7 +91,7 @@ public class ServiceSelectorImporterTest
                     .importedBy( SERVICE_SELECTOR )
                     .setMetaInfo( ServiceQualifier.withId( "TestServiceComposite2_1" ) );
 
-                ModuleAssembly module2 = module.layerAssembly().moduleAssembly( "Other module" );
+                ModuleAssembly module2 = module.layer().module( "Other module" );
                 module2.services( TestServiceComposite2.class, TestServiceComposite2.class )
                     .visibleIn( Visibility.layer );
             }

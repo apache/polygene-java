@@ -14,7 +14,6 @@
 
 package org.qi4j.bootstrap;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -25,7 +24,7 @@ import java.util.Collection;
  * Makes it easy to collect and compose assemblers into bigger assemblers.
  */
 public final class AssemblerCollection
-    implements Assembler, Serializable
+    implements Assembler
 {
     Collection<Assembler> assemblers;
 

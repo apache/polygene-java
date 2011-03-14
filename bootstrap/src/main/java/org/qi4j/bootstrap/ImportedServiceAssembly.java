@@ -1,11 +1,9 @@
 package org.qi4j.bootstrap;
 
-import org.qi4j.api.entity.EntityComposite;
-
 /**
- * TODO
+ * This represents the assembly information of a single imported service in a Module.
  */
 public interface ImportedServiceAssembly
+    extends TypeAssembly<Object>
 {
-    Class<? extends EntityComposite> type();
 }

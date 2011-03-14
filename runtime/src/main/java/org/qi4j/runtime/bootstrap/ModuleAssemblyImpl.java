@@ -93,7 +93,7 @@ public final class ModuleAssemblyImpl
         this.name = name;
     }
 
-    public LayerAssembly layerAssembly()
+    public LayerAssembly layer()
     {
         return layerAssembly;
     }
@@ -141,7 +141,7 @@ public final class ModuleAssemblyImpl
     }
 
     @Override
-    public ValueDeclaration values( Specification<ValueAssembly> specification )
+    public ValueDeclaration values( Specification<? super ValueAssembly> specification )
     {
         List<ValueAssemblyImpl> assemblies = new ArrayList<ValueAssemblyImpl>(  );
         for( ValueAssemblyImpl transientAssembly : valueAssemblies.values() )
@@ -178,7 +178,7 @@ public final class ModuleAssemblyImpl
 
     }
 
-    public TransientDeclaration transients(Specification<TransientAssembly> specification)
+    public TransientDeclaration transients(Specification<? super TransientAssembly> specification)
     {
         List<TransientAssemblyImpl> assemblies = new ArrayList<TransientAssemblyImpl>(  );
         for( TransientAssemblyImpl transientAssembly : transientAssemblies.values() )
@@ -214,7 +214,7 @@ public final class ModuleAssemblyImpl
         return new EntityDeclarationImpl( assemblies );
     }
 
-    public EntityDeclaration entities(Specification<EntityAssembly> specification)
+    public EntityDeclaration entities(Specification<? super EntityAssembly> specification)
     {
         List<EntityAssemblyImpl> assemblies = new ArrayList<EntityAssemblyImpl>(  );
         for( EntityAssemblyImpl entityAssembly : entityAssemblies.values() )
@@ -250,7 +250,7 @@ public final class ModuleAssemblyImpl
         return new ObjectDeclarationImpl( assemblies );
     }
 
-    public ObjectDeclaration objects(Specification<ObjectAssembly> specification)
+    public ObjectDeclaration objects(Specification<? super ObjectAssembly> specification)
     {
         List<ObjectAssemblyImpl> assemblies = new ArrayList<ObjectAssemblyImpl>(  );
         for( ObjectAssemblyImpl objectAssembly : objectAssemblies.values() )
@@ -287,7 +287,7 @@ public final class ModuleAssemblyImpl
         return new ServiceDeclarationImpl( assemblies );
     }
 
-    public ServiceDeclaration services(Specification<ServiceAssembly> specification)
+    public ServiceDeclaration services(Specification<? super ServiceAssembly> specification)
     {
         List<ServiceAssemblyImpl> assemblies = new ArrayList<ServiceAssemblyImpl>(  );
         for( ServiceAssemblyImpl serviceAssembly : serviceAssemblies.values() )
@@ -318,7 +318,7 @@ public final class ModuleAssemblyImpl
         return new ImportedServiceDeclarationImpl( assemblies );
     }
 
-    public ImportedServiceDeclaration importedServices(Specification<ImportedServiceAssembly> specification)
+    public ImportedServiceDeclaration importedServices(Specification<? super ImportedServiceAssembly> specification)
     {
         List<ImportedServiceAssemblyImpl> assemblies = new ArrayList<ImportedServiceAssemblyImpl>(  );
         for( ImportedServiceAssemblyImpl objectAssembly : importedServiceAssemblies.values() )

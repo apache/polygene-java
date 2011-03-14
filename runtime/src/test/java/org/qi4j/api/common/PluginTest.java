@@ -246,14 +246,14 @@ public class PluginTest
                     new LayerName( "Plugin layer" ).assemble( module );
                     new ModuleName( "Plugin module" ).assemble( module );
 
-                    LayerAssembly layer = module.layerAssembly();
+                    LayerAssembly layer = module.layer();
 
                     // In a real case you would "detect" the plugins somehow. Here the plugin assembler is hardcoded
                     List<Assembler> pluginAssemblers = Collections.<Assembler>singletonList( new SimonAssembler() );
 
                     for( int i = 0; i < pluginAssemblers.size(); i++ )
                     {
-                        ModuleAssembly pluginModule = layer.moduleAssembly( "Plugin " + ( i + 1 ) );
+                        ModuleAssembly pluginModule = layer.module( "Plugin " + ( i + 1 ) );
                         Assembler assembler = pluginAssemblers.get( i );
                         assembler.assemble( pluginModule );
                     }

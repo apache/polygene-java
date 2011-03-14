@@ -43,11 +43,11 @@ public final class ApplicationAssemblyFactoryImpl
         for( int layer = assemblers.length - 1; layer >= 0; layer-- )
         {
             // Create Layer
-            LayerAssembly layerAssembly = applicationAssembly.layerAssembly( "Layer " + ( layer + 1 ) );
+            LayerAssembly layerAssembly = applicationAssembly.layer( "Layer " + ( layer + 1 ) );
             for( int module = 0; module < assemblers[ layer ].length; module++ )
             {
                 // Create Module
-                ModuleAssembly moduleAssembly = layerAssembly.moduleAssembly( "Module " + ( module + 1 ) );
+                ModuleAssembly moduleAssembly = layerAssembly.module( "Module " + ( module + 1 ) );
                 for( int assembly = 0; assembly < assemblers[ layer ][ module ].length; assembly++ )
                 {
                     // Register Assembler

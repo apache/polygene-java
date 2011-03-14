@@ -33,7 +33,7 @@ public interface ApplicationAssembly
      *
      * @return a LayerAssembly instance
      */
-    LayerAssembly layerAssembly( String name );
+    LayerAssembly layer( String name );
 
     /**
      * Get the currently set name of the application

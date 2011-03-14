@@ -43,7 +43,7 @@ public final class ApplicationAssemblyImpl
         mode = Application.Mode.valueOf( System.getProperty( "mode", "production" ) );
     }
 
-    public LayerAssembly layerAssembly( String name )
+    public LayerAssembly layer( String name )
     {
         if( name != null )
         {

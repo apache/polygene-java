@@ -42,7 +42,7 @@ public class ModuleConcernTest
     {
         module.transients( FooComposite.class );
 
-        module.layerAssembly().applicationAssembly().visit( new AssemblyVisitorAdapter<RuntimeException>()
+        module.layer().application().visit( new AssemblyVisitorAdapter<RuntimeException>()
         {
             @Override
             public void visitComposite( TransientDeclaration declaration )

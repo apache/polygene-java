@@ -46,7 +46,7 @@ public final class ImportedServiceAssemblyImpl
     }
 
     @Override
-    public Class<? extends EntityComposite> type()
+    public Class<?> type()
     {
         return serviceType;
     }

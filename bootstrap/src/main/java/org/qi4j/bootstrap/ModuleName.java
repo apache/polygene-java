@@ -14,13 +14,11 @@
 
 package org.qi4j.bootstrap;
 
-import java.io.Serializable;
-
 /**
  * Set the name of the module
  */
 public final class ModuleName
-    implements Assembler, Serializable
+    implements Assembler
 {
     private String name;
 

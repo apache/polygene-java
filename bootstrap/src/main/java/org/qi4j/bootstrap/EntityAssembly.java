@@ -3,9 +3,9 @@ package org.qi4j.bootstrap;
 import org.qi4j.api.entity.EntityComposite;
 
 /**
- * TODO
+ * This represents the assembly information of a single EntityComposite in a Module.
  */
 public interface EntityAssembly
+    extends TypeAssembly<EntityComposite>
 {
-    Class<? extends EntityComposite> type();
 }

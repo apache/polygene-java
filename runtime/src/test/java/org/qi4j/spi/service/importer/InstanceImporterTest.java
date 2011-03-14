@@ -38,7 +38,7 @@ public class InstanceImporterTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        ModuleAssembly serviceModule = module.layerAssembly().moduleAssembly( "Service module" );
+        ModuleAssembly serviceModule = module.layer().module( "Service module" );
         serviceModule.importedServices( TestInterface.class )
             .setMetaInfo( new TestService() )
             .visibleIn( Visibility.module );

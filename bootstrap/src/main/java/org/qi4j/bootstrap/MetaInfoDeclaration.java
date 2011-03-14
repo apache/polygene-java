@@ -14,7 +14,6 @@
 
 package org.qi4j.bootstrap;
 
-import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -28,7 +27,7 @@ import org.qi4j.spi.util.MethodKeyMap;
  * Declaration of a Property or Association.
  */
 public final class MetaInfoDeclaration
-    implements PropertyDeclarations, AssociationDeclarations, ManyAssociationDeclarations, Serializable
+    implements PropertyDeclarations, AssociationDeclarations, ManyAssociationDeclarations
 {
     Map<Class<?>, InfoHolder<?>> mixinPropertyDeclarations = new HashMap<Class<?>, InfoHolder<?>>();
 
@@ -82,10 +81,9 @@ public final class MetaInfoDeclaration
     }
 
     private static class InfoHolder<T>
-        implements InvocationHandler, PropertyDeclarations, MixinDeclaration<T>, Serializable
+        implements InvocationHandler, PropertyDeclarations, MixinDeclaration<T>
     {
         private final static class MethodInfo
-            implements Serializable
         {
             Object initialValue;
             MetaInfo metaInfo;

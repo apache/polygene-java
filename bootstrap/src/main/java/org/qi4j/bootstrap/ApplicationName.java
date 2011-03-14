@@ -14,13 +14,11 @@
 
 package org.qi4j.bootstrap;
 
-import java.io.Serializable;
-
 /**
  * Set the name of the application
  */
 public final class ApplicationName
-    implements Assembler, Serializable
+    implements Assembler
 {
     private String name;
 
@@ -32,6 +30,6 @@ public final class ApplicationName
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.layerAssembly().applicationAssembly().setName( name );
+        module.layer().application().setName( name );
     }
 }

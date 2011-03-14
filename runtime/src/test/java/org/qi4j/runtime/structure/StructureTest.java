@@ -43,13 +43,13 @@ public class StructureTest
             {
                 ApplicationAssembly applicationAssembly = applicationFactory.newApplicationAssembly();
                 // Application Layer
-                LayerAssembly applicationLayer = applicationAssembly.layerAssembly( "Application" );
-                ModuleAssembly applicationModule = applicationLayer.moduleAssembly( "Application" );
+                LayerAssembly applicationLayer = applicationAssembly.layer( "Application" );
+                ModuleAssembly applicationModule = applicationLayer.module( "Application" );
                 new DomainApplicationAssembler().assemble( applicationModule );
 
                 // View Layer
-                LayerAssembly viewLayer = applicationAssembly.layerAssembly( "View" );
-                ModuleAssembly viewModule = viewLayer.moduleAssembly( "View" );
+                LayerAssembly viewLayer = applicationAssembly.layer( "View" );
+                ModuleAssembly viewModule = viewLayer.module( "View" );
                 new ViewAssembler().assemble( viewModule );
                 viewLayer.uses( applicationLayer );
                 return applicationAssembly;
