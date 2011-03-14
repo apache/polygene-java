@@ -40,12 +40,12 @@ public class RentalApplicationAssembler
     {
         ApplicationAssembly assembly = applicationFactory.newApplicationAssembly();
         assembly.setMode( mode );
-        LayerAssembly webLayer = assembly.layerAssembly( "WebLayer" );
-        new PagesModule().assemble( webLayer.moduleAssembly( "PagesModule" ) );
-        LayerAssembly domainLayer = assembly.layerAssembly( "DomainLayer" );
-        new RentalModule().assemble( domainLayer.moduleAssembly( "RentalModule" ) );
-        LayerAssembly infraLayer = assembly.layerAssembly( "InfraLayer" );
-        new StorageModule().assemble( infraLayer.moduleAssembly( "StorageModule" ) );
+        LayerAssembly webLayer = assembly.layer( "WebLayer" );
+        new PagesModule().assemble( webLayer.module( "PagesModule" ) );
+        LayerAssembly domainLayer = assembly.layer( "DomainLayer" );
+        new RentalModule().assemble( domainLayer.module( "RentalModule" ) );
+        LayerAssembly infraLayer = assembly.layer( "InfraLayer" );
+        new StorageModule().assemble( infraLayer.module( "StorageModule" ) );
 
         webLayer.uses( domainLayer );
         domainLayer.uses( infraLayer );

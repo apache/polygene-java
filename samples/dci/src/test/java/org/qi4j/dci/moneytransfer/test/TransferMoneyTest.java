@@ -55,7 +55,7 @@ public class TransferMoneyTest
         {
             public void assemble( ModuleAssembly module ) throws AssemblyException
             {
-                module.layerAssembly().applicationAssembly().setMetaInfo( new ContextInjectionProviderFactory() );
+                module.layer().application().setMetaInfo( new ContextInjectionProviderFactory() );
 
                 module.entities(
                     CheckingAccountRolemap.class,

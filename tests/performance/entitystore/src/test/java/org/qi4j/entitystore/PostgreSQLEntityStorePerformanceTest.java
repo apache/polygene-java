@@ -65,7 +65,7 @@ public class PostgreSQLEntityStorePerformanceTest extends AbstractEntityStorePer
                 throws AssemblyException
             {
                 new PostgreSQLEntityStoreAssembler().assemble( module );
-                ModuleAssembly configModule = module.layerAssembly().moduleAssembly( "config" );
+                ModuleAssembly configModule = module.layer().module( "config" );
                 configModule.services( MemoryEntityStoreService.class );
                 configModule.entities( PGDataSourceConfiguration.class, SQLConfiguration.class ).visibleIn(
                     Visibility.layer );

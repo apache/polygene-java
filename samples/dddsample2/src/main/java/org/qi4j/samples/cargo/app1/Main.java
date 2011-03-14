@@ -35,38 +35,38 @@ public class Main
             {
                 ApplicationAssembly assembly = applicationFactory.newApplicationAssembly();
                 assembly.setName( "Shipping Sample" );
-                LayerAssembly interfaceLayer = assembly.layerAssembly( "Interface Layer" );
-                LayerAssembly applicationLayer = assembly.layerAssembly( "Application Layer" );
-                LayerAssembly domainLayer = assembly.layerAssembly( "Domain Layer" );
-                LayerAssembly infraLayer = assembly.layerAssembly( "Infrastructure Layer" );
-                LayerAssembly configurationLayer = assembly.layerAssembly( "Configuration Layer" );
+                LayerAssembly interfaceLayer = assembly.layer( "Interface Layer" );
+                LayerAssembly applicationLayer = assembly.layer( "Application Layer" );
+                LayerAssembly domainLayer = assembly.layer( "Domain Layer" );
+                LayerAssembly infraLayer = assembly.layer( "Infrastructure Layer" );
+                LayerAssembly configurationLayer = assembly.layer( "Configuration Layer" );
                 interfaceLayer.uses( applicationLayer );
                 applicationLayer.uses( domainLayer );
                 domainLayer.uses( infraLayer );
                 infraLayer.uses( configurationLayer );
 
-                ModuleAssembly cxfModule = applicationLayer.moduleAssembly( "Web Service Module" );
+                ModuleAssembly cxfModule = applicationLayer.module( "Web Service Module" );
                 new InterfaceModuleAssembler().assemble( cxfModule );
-                ModuleAssembly supportModule = applicationLayer.moduleAssembly( "Domain Support Module" );
+                ModuleAssembly supportModule = applicationLayer.module( "Domain Support Module" );
                 new DomainSupportModuleAssembler().assemble( supportModule );
 
-                ModuleAssembly cargoModule = domainLayer.moduleAssembly( "Cargo Module" );
+                ModuleAssembly cargoModule = domainLayer.module( "Cargo Module" );
                 new CargoModuleAssembler().assemble( cargoModule );
-                ModuleAssembly handlingModule = domainLayer.moduleAssembly( "Handling Module" );
+                ModuleAssembly handlingModule = domainLayer.module( "Handling Module" );
                 new HandlingModuleAssembler().assemble( handlingModule );
-                ModuleAssembly locationModule = domainLayer.moduleAssembly( "Location Module" );
+                ModuleAssembly locationModule = domainLayer.module( "Location Module" );
                 new LocationModuleAssembler().assemble( locationModule );
-                ModuleAssembly voyageModule = domainLayer.moduleAssembly( "Voyage Module" );
+                ModuleAssembly voyageModule = domainLayer.module( "Voyage Module" );
                 new VoyageModuleAssembler().assemble( voyageModule );
 
-                ModuleAssembly externalRoutingModule = domainLayer.moduleAssembly( "External Routing Service Module" );
+                ModuleAssembly externalRoutingModule = domainLayer.module( "External Routing Service Module" );
                 new RoutingServiceModuleAssembler().assemble( externalRoutingModule );
                 new PathFinderModuleAssembler().assemble( externalRoutingModule );
 
-                ModuleAssembly persistenceModule = infraLayer.moduleAssembly( "Persistence Module" );
+                ModuleAssembly persistenceModule = infraLayer.module( "Persistence Module" );
                 new PersistenceModule().assemble( persistenceModule );
 
-                ModuleAssembly configurationModule = domainLayer.moduleAssembly( "Configuration Module" );
+                ModuleAssembly configurationModule = domainLayer.module( "Configuration Module" );
                 new ConfigurationModule().assemble( configurationModule );
                 return assembly;
             }

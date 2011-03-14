@@ -45,7 +45,7 @@ public class JdbmEntityStorePerformanceTest
                 throws AssemblyException
             {
                 new JdbmEntityStoreAssembler( Visibility.application ).assemble( module );
-                ModuleAssembly configModule = module.layerAssembly().moduleAssembly( "Config" );
+                ModuleAssembly configModule = module.layer().module( "Config" );
                 configModule.entities( JdbmConfiguration.class ).visibleIn( Visibility.layer );
                 new EntityTestAssembler( Visibility.module ).assemble( configModule );
             }

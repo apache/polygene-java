@@ -45,10 +45,10 @@ public class IssueTest
             {
                 ApplicationAssembly assembly = applicationFactory.newApplicationAssembly();
 
-                LayerAssembly domainLayer = assembly.layerAssembly( null );
+                LayerAssembly domainLayer = assembly.layer( null );
                 domainLayer.setName( "Domain" );
 
-                LayerAssembly infrastructureLayer = assembly.layerAssembly( null );
+                LayerAssembly infrastructureLayer = assembly.layer( null );
                 infrastructureLayer.setName( "Infrastructure" );
 
                 domainLayer.uses( infrastructureLayer );

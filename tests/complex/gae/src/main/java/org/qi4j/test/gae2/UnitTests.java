@@ -35,7 +35,7 @@ public class UnitTests extends AbstractEntityStoreTest
         System.out.println( "Registering GAE services." );
         module.services( GaeEntityStoreService.class );
 
-        ModuleAssembly configModule = module.layerAssembly().moduleAssembly( "config" );
+        ModuleAssembly configModule = module.layer().module( "config" );
         configModule.entities( GaeEntityStoreConfiguration.class ).visibleIn( Visibility.layer );
         configModule.services( MemoryEntityStoreService.class );
 

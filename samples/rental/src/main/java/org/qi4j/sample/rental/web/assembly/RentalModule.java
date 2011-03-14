@@ -43,7 +43,7 @@ public class RentalModule
         module.values( Address.class, Period.class );
         module.entities( RentalShop.class ).visibleIn( application );
 
-        if( module.layerAssembly().applicationAssembly().mode().equals( Application.Mode.development ) )
+        if( module.layer().application().mode().equals( Application.Mode.development ) )
         {
             module.transients( InitialData.class ).visibleIn( application );
         }

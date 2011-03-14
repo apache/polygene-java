@@ -167,10 +167,10 @@ public class IssueTest
             {
                 ApplicationAssembly applicationAssembly = applicationFactory.newApplicationAssembly();
 
-                LayerAssembly configLayer = applicationAssembly.layerAssembly( "Config" );
+                LayerAssembly configLayer = applicationAssembly.layer( "Config" );
                 configModule.buildModuleAssembly( configLayer, "Configuration" );
 
-                LayerAssembly infrastructureLayer = applicationAssembly.layerAssembly( "Infrastructure" );
+                LayerAssembly infrastructureLayer = applicationAssembly.layer( "Infrastructure" );
                 infrastructureLayer.uses( configLayer );
 
                 queryServiceModuleBuilder.buildModuleAssembly( infrastructureLayer, "Query Service" );
@@ -246,7 +246,7 @@ public class IssueTest
         public LayerAssembly buildLayerAssembly( ApplicationAssembly appAssembly )
             throws AssemblyException
         {
-            LayerAssembly domainLayer = appAssembly.layerAssembly( "Domain" );
+            LayerAssembly domainLayer = appAssembly.layer( "Domain" );
             addModule( domainLayer, "Domain", new Assembler()
             {
                 @SuppressWarnings( "unchecked" )
@@ -302,7 +302,7 @@ public class IssueTest
     private ModuleAssembly addModule( LayerAssembly layerAssembly, String name, Assembler assembler )
         throws AssemblyException
     {
-        ModuleAssembly moduleAssembly = layerAssembly.moduleAssembly( name );
+        ModuleAssembly moduleAssembly = layerAssembly.module( name );
         assembler.assemble( moduleAssembly );
         return moduleAssembly;
     }

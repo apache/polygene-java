@@ -83,10 +83,10 @@ public class Qi4jDDDSampleApplicationBootstrap
     private LayerAssembly createInfrastructureLayer( ApplicationAssembly applicationAssembly )
         throws AssemblyException
     {
-        LayerAssembly infrastructureLayer = applicationAssembly.layerAssembly( LAYER_INFRASTRUCTURE );
+        LayerAssembly infrastructureLayer = applicationAssembly.layer( LAYER_INFRASTRUCTURE );
 
         // Persistence module
-        ModuleAssembly module = infrastructureLayer.moduleAssembly( MODULE_PERSISTENCE );
+        ModuleAssembly module = infrastructureLayer.module( MODULE_PERSISTENCE );
 
         // Indexing
         module.objects( EntityStateSerializer.class, EntityTypeSerializer.class );
@@ -109,25 +109,25 @@ public class Qi4jDDDSampleApplicationBootstrap
     private LayerAssembly createDomainLayer( ApplicationAssembly applicationAssembly )
         throws AssemblyException
     {
-        LayerAssembly modelLayer = applicationAssembly.layerAssembly( LAYER_DOMAIN );
+        LayerAssembly modelLayer = applicationAssembly.layer( LAYER_DOMAIN );
 
-        ModuleAssembly locationModule = modelLayer.moduleAssembly( MODULE_LOCATION );
+        ModuleAssembly locationModule = modelLayer.module( MODULE_LOCATION );
         new LocationModelAssembler( LOAD_SAMPLE_DATA ).assemble( locationModule );
 
-        ModuleAssembly cargoModule = modelLayer.moduleAssembly( MODULE_CARGO );
+        ModuleAssembly cargoModule = modelLayer.module( MODULE_CARGO );
         new CargoModelAssembler( LOAD_SAMPLE_DATA ).assemble( cargoModule );
 
-        ModuleAssembly carrierModule = modelLayer.moduleAssembly( MODULE_CARRIER );
+        ModuleAssembly carrierModule = modelLayer.module( MODULE_CARRIER );
         new CarrierMovementModelAssembler( LOAD_SAMPLE_DATA ).assemble( carrierModule );
 
-        ModuleAssembly handlingModule = modelLayer.moduleAssembly( MODULE_HANDLING );
+        ModuleAssembly handlingModule = modelLayer.module( MODULE_HANDLING );
         new HandlingEventModelAssembler( LOAD_SAMPLE_DATA ).assemble( handlingModule );
         new HandlingServiceAssembler().assemble( handlingModule );
 
-        ModuleAssembly trackingModule = modelLayer.moduleAssembly( MODULE_TRACKING );
+        ModuleAssembly trackingModule = modelLayer.module( MODULE_TRACKING );
         new TrackingServiceAssembler().assemble( trackingModule );
 
-        ModuleAssembly messagingModule = modelLayer.moduleAssembly( MODULE_MESSAGING );
+        ModuleAssembly messagingModule = modelLayer.module( MODULE_MESSAGING );
         new MessagingAssembler().assemble( messagingModule );
 
         return modelLayer;
@@ -136,12 +136,12 @@ public class Qi4jDDDSampleApplicationBootstrap
     private LayerAssembly createApplicationLayer( ApplicationAssembly applicationAssembly )
         throws AssemblyException
     {
-        LayerAssembly applicationLayer = applicationAssembly.layerAssembly( LAYER_APPLICATION );
+        LayerAssembly applicationLayer = applicationAssembly.layer( LAYER_APPLICATION );
 
-        ModuleAssembly remotingModule = applicationLayer.moduleAssembly( MODULE_REMOTING );
+        ModuleAssembly remotingModule = applicationLayer.module( MODULE_REMOTING );
         new RemotingAssembler().assemble( remotingModule );
 
-        ModuleAssembly springModule = applicationLayer.moduleAssembly( MODULE_SPRING );
+        ModuleAssembly springModule = applicationLayer.module( MODULE_SPRING );
         new SpringModuleAssembler().assemble( springModule );
 
         return applicationLayer;

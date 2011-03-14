@@ -55,12 +55,12 @@ public class SchoolAssembler
     private LayerAssembly createInfrastructureLayer( ApplicationAssembly appAssembly )
         throws AssemblyException
     {
-        LayerAssembly layerInfrastructure = appAssembly.layerAssembly( "Infrastructure" );
+        LayerAssembly layerInfrastructure = appAssembly.layer( "Infrastructure" );
 
-        ModuleAssembly moduleMail = layerInfrastructure.moduleAssembly( "Mail" );
+        ModuleAssembly moduleMail = layerInfrastructure.module( "Mail" );
         new MailServiceAssembler().assemble( moduleMail );
 
-        ModuleAssembly modulePersistence = layerInfrastructure.moduleAssembly( "Persistence" );
+        ModuleAssembly modulePersistence = layerInfrastructure.module( "Persistence" );
         new PersistenceAssembler().assemble( modulePersistence );
 
         return layerInfrastructure;
@@ -69,9 +69,9 @@ public class SchoolAssembler
     private LayerAssembly createConfigLayer( ApplicationAssembly appAssembly )
         throws AssemblyException
     {
-        LayerAssembly layerConfig = appAssembly.layerAssembly( "configuration" );
+        LayerAssembly layerConfig = appAssembly.layer( "configuration" );
 
-        ModuleAssembly persistenceConfig = layerConfig.moduleAssembly( "persistence" );
+        ModuleAssembly persistenceConfig = layerConfig.module( "persistence" );
         new PersistenceConfigAssembler().assemble( persistenceConfig );
         return layerConfig;
     }
@@ -79,12 +79,12 @@ public class SchoolAssembler
     private LayerAssembly createDomainLayer( ApplicationAssembly appAssembly )
         throws AssemblyException
     {
-        LayerAssembly layerDomain = appAssembly.layerAssembly( "domain" );
+        LayerAssembly layerDomain = appAssembly.layer( "domain" );
 
-        ModuleAssembly modulePerson = layerDomain.moduleAssembly( "person" );
+        ModuleAssembly modulePerson = layerDomain.module( "person" );
         new PersonModelAssembler().assemble( modulePerson );
 
-        ModuleAssembly moduleSchool = layerDomain.moduleAssembly( "school" );
+        ModuleAssembly moduleSchool = layerDomain.module( "school" );
         new SchoolModelAssembler().assemble( moduleSchool );
 
         return layerDomain;
@@ -93,10 +93,10 @@ public class SchoolAssembler
     private LayerAssembly createUILayer( ApplicationAssembly appAssembly )
         throws AssemblyException
     {
-        LayerAssembly layerUI = appAssembly.layerAssembly( "UI" );
+        LayerAssembly layerUI = appAssembly.layer( "UI" );
 
         // Add admin
-        ModuleAssembly moduleAdmin = layerUI.moduleAssembly( "admin" );
+        ModuleAssembly moduleAdmin = layerUI.module( "admin" );
         new AdminAssembler().assemble( moduleAdmin );
 
         return layerUI;
