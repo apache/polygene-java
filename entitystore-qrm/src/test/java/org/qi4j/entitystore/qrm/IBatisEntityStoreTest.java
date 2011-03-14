@@ -195,7 +195,7 @@ public final class IBatisEntityStoreTest
         module.services( UuidIdentityGeneratorService.class );
         module.services( QrmSqlEntityStoreService.class );
 
-        final ModuleAssembly config = module.layerAssembly().moduleAssembly( "config" );
+        final ModuleAssembly config = module.layer().module( "config" );
         config.entities( QrmSqlConfiguration.class ).visibleIn( Visibility.layer );
         config.services( MemoryEntityStoreService.class );
         config.forMixin( QrmSqlConfiguration.class )

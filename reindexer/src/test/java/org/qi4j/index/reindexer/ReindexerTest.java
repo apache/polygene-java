@@ -62,7 +62,7 @@ public class ReindexerTest
         module.services( ReindexerService.class );
 
         // Configuration
-        ModuleAssembly config = module.layerAssembly().moduleAssembly( "config" );
+        ModuleAssembly config = module.layer().module( "config" );
         config.services( MemoryEntityStoreService.class );
         config.entities( JdbmConfiguration.class, NativeConfiguration.class, ReindexerConfiguration.class ).visibleIn( Visibility.layer );
 

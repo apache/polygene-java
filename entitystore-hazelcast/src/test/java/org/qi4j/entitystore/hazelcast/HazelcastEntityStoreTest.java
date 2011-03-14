@@ -23,7 +23,7 @@ public class HazelcastEntityStoreTest
     {
         super.assemble( module );
         module.services( HazelcastEntityStoreService.class, UuidIdentityGeneratorService.class );
-        ModuleAssembly config = module.layerAssembly().moduleAssembly( "config" );
+        ModuleAssembly config = module.layer().module( "config" );
         config.entities( HazelcastConfiguration.class ).visibleIn( Visibility.layer );
         config.services( MemoryEntityStoreService.class );
     }

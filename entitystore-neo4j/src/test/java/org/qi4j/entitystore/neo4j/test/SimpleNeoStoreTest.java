@@ -15,12 +15,12 @@ public class SimpleNeoStoreTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.layerAssembly().applicationAssembly().setName( "SimpleNeoTest" );
+        module.layer().application().setName( "SimpleNeoTest" );
 
         super.assemble( module );
         module.services( NeoEntityStoreService.class );
 
-        ModuleAssembly configModule = module.layerAssembly().moduleAssembly( "config" );
+        ModuleAssembly configModule = module.layer().module( "config" );
         configModule.entities( NeoConfiguration.class ).visibleIn( Visibility.layer );
         configModule.services( MemoryEntityStoreService.class );
         configModule.services( UuidIdentityGeneratorService.class );

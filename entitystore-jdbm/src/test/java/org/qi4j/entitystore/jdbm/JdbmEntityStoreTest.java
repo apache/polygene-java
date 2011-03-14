@@ -39,7 +39,7 @@ public class JdbmEntityStoreTest
         super.assemble( module );
         module.services( JdbmEntityStoreService.class, UuidIdentityGeneratorService.class );
 
-        ModuleAssembly config = module.layerAssembly().moduleAssembly( "config" );
+        ModuleAssembly config = module.layer().module( "config" );
         config.entities( JdbmConfiguration.class ).visibleIn( Visibility.layer );
         config.services( MemoryEntityStoreService.class );
     }

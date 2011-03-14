@@ -46,7 +46,7 @@ public class MySQLEntityStoreTest extends AbstractEntityStoreTest
 
         new MySQLEntityStoreAssembler().assemble( module );
 
-        ModuleAssembly config = module.layerAssembly().moduleAssembly( "config" );
+        ModuleAssembly config = module.layer().module( "config" );
         config.services( MemoryEntityStoreService.class );
         config.entities( SQLConfiguration.class ).visibleIn( Visibility.layer );
     }

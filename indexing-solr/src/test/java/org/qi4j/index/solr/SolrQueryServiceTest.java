@@ -46,7 +46,7 @@ public class SolrQueryServiceTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.layerAssembly().applicationAssembly().setMode( Application.Mode.test );
+        module.layer().application().setMode( Application.Mode.test );
 
         module.services( FileConfiguration.class ).instantiateOnStartup();
 

@@ -44,7 +44,7 @@ public class RdfQueryTest extends AbstractQueryTest
         module.services( RdfIndexingEngineService.class );
         module.objects( EntityStateSerializer.class, EntityTypeSerializer.class );
 
-        ModuleAssembly config = module.layerAssembly().moduleAssembly( "Config" );
+        ModuleAssembly config = module.layer().module( "Config" );
         config.entities( NativeConfiguration.class ).visibleIn( Visibility.layer );
         config.services( MemoryEntityStoreService.class );
     }

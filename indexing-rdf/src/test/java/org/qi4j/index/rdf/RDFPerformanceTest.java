@@ -58,7 +58,7 @@ public class RDFPerformanceTest extends AbstractQi4jTest
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
         PreferenceEntityStoreAssembler pAss = new PreferenceEntityStoreAssembler( Visibility.module );
-        ModuleAssembly prefModule = module.layerAssembly().moduleAssembly( "PrefModule" );
+        ModuleAssembly prefModule = module.layer().module( "PrefModule" );
         prefModule.entities( NativeConfiguration.class ).visibleIn( Visibility.application );
         prefModule.forMixin( NativeConfiguration.class ).declareDefaults().tripleIndexes().set( "spoc,cspo" );
         pAss.assemble( prefModule );

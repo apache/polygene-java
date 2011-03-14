@@ -63,7 +63,7 @@ public class ContainsAllTest
         throws AssemblyException
     {
         PreferenceEntityStoreAssembler pAss = new PreferenceEntityStoreAssembler( Visibility.module );
-        ModuleAssembly prefModule = module.layerAssembly().moduleAssembly( "PrefModule" );
+        ModuleAssembly prefModule = module.layer().module( "PrefModule" );
         prefModule.entities( NativeConfiguration.class ).visibleIn( Visibility.application );
         pAss.assemble( prefModule );
 

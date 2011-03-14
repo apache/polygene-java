@@ -43,7 +43,7 @@ public class VoldemortAssembler
         module.services( VoldemortEntityStoreService.class ).visibleIn( visibility ).instantiateOnStartup();
         module.services( UuidIdentityGeneratorService.class ).visibleIn( visibility );
         // FIXME Remove from here and update documentation accordingly
-        ModuleAssembly config = module.layerAssembly().moduleAssembly( "config" );
+        ModuleAssembly config = module.layer().module( "config" );
         config.entities( VoldemortConfiguration.class ).visibleIn( Visibility.layer );
         config.services( MemoryEntityStoreService.class );
 

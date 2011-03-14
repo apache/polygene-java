@@ -67,7 +67,7 @@ public class SQLTestHelper
     protected static void doCommonAssembling( ModuleAssembly mainModule )
         throws AssemblyException
     {
-        ModuleAssembly configModule = mainModule.layerAssembly().moduleAssembly( CONFIG_MODULE_NAME );
+        ModuleAssembly configModule = mainModule.layer().module( CONFIG_MODULE_NAME );
         configModule
             .entities( PGDataSourceConfiguration.class, SQLConfiguration.class, ReindexerConfiguration.class )
             .visibleIn( Visibility.application );

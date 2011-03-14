@@ -30,7 +30,7 @@ public class EhCacheTest extends AbstractQi4jTest
         throws AssemblyException
     {
         new EhCacheAssembler( Visibility.module ).assemble( module );
-        ModuleAssembly confModule = module.layerAssembly().moduleAssembly( "confModule" );
+        ModuleAssembly confModule = module.layer().module( "confModule" );
         confModule.services( MemoryEntityStoreService.class ).visibleIn( Visibility.layer );
         confModule.services( UuidIdentityGeneratorService.class );
     }

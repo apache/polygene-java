@@ -44,7 +44,7 @@ public class DBCPBasicDataSourceServiceTest extends AbstractQi4jTest
         module.services( DataSourceServiceComposite.class ).withMixins( DBCPBasicDataSourceServiceMixin.class )
             .identifiedBy( DerbySQLEntityStoreAssembler.DATASOURCE_SERVICE_NAME ).instantiateOnStartup();
 
-        ModuleAssembly config = module.layerAssembly().moduleAssembly( "config" );
+        ModuleAssembly config = module.layer().module( "config" );
         config.services( MemoryEntityStoreService.class );
         config.entities( DBCPDataSourceConfiguration.class, SQLConfiguration.class ).visibleIn( Visibility.layer );
     }

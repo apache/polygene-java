@@ -104,7 +104,7 @@ public class MigrationTest
                     throws AssemblyException
                 {
                     MigrationTest.this.assemble( module );
-                    module.layerAssembly().applicationAssembly().setVersion( "1.0" );
+                    module.layer().application().setVersion( "1.0" );
                 }
             };
 
@@ -132,7 +132,7 @@ public class MigrationTest
                     throws AssemblyException
                 {
                     MigrationTest.this.assemble( module );
-                    module.layerAssembly().applicationAssembly().setVersion( "1.1" );
+                    module.layer().application().setVersion( "1.1" );
                 }
             };
 
@@ -157,7 +157,7 @@ public class MigrationTest
                     throws AssemblyException
                 {
                     MigrationTest.this.assemble( module );
-                    module.layerAssembly().applicationAssembly().setVersion( "2.0" );
+                    module.layer().application().setVersion( "2.0" );
                 }
             };
 
@@ -184,7 +184,7 @@ public class MigrationTest
                     throws AssemblyException
                 {
                     MigrationTest.this.assemble( module );
-                    module.layerAssembly().applicationAssembly().setVersion( "3.0" );
+                    module.layer().application().setVersion( "3.0" );
                 }
             };
 

@@ -57,7 +57,7 @@ public class PostgreSQLEntityStoreTest extends AbstractEntityStoreTest
 
         new PostgreSQLEntityStoreAssembler().assemble( module );
 
-        ModuleAssembly config = module.layerAssembly().moduleAssembly( "config" );
+        ModuleAssembly config = module.layer().module( "config" );
         config.services( MemoryEntityStoreService.class );
         config.entities( PGDataSourceConfiguration.class, SQLConfiguration.class ).visibleIn( Visibility.layer );
     }

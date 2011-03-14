@@ -53,7 +53,7 @@ public class DerbySQLEntityStoreTest extends AbstractEntityStoreTest
             Assume.assumeNoException( e );
         }
 
-        ModuleAssembly config = module.layerAssembly().moduleAssembly( "config" );
+        ModuleAssembly config = module.layer().module( "config" );
         config.services( MemoryEntityStoreService.class );
         config.entities( DBCPDataSourceConfiguration.class, SQLConfiguration.class ).visibleIn( Visibility.layer );
     }

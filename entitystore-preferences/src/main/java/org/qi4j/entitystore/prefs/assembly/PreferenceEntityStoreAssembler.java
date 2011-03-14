@@ -39,7 +39,7 @@ public class PreferenceEntityStoreAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        String applicationName = module.layerAssembly().applicationAssembly().name();
+        String applicationName = module.layer().application().name();
 
         Preferences root = Preferences.userRoot();
         Preferences node = root.node( applicationName );

@@ -37,7 +37,7 @@ public class FileEntityStoreTest
         super.assemble( module );
         module.services( FileEntityStoreService.class, UuidIdentityGeneratorService.class );
 
-        ModuleAssembly config = module.layerAssembly().moduleAssembly( "config" );
+        ModuleAssembly config = module.layer().module( "config" );
         config.entities( FileEntityStoreConfiguration.class ).visibleIn( Visibility.layer );
         config.services( MemoryEntityStoreService.class );
     }
