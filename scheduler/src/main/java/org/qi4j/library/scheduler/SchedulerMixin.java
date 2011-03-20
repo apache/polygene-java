@@ -37,17 +37,17 @@ public class SchedulerMixin
         return scheduleFactory.newSchedule( task, cronEx.toString(), System.currentTimeMillis() );
     }
 
-    public Schedule shedule( Task task, String cronExpression )
+    public Schedule schedule( Task task, String cronExpression )
     {
         return scheduleFactory.newSchedule( task, cronExpression, System.currentTimeMillis() );
     }
 
-    public Schedule shedule( Task task, String cronExpression, long initialDelay )
+    public Schedule schedule( Task task, String cronExpression, long initialDelay )
     {
         return scheduleFactory.newSchedule( task, cronExpression, System.currentTimeMillis() + initialDelay );
     }
 
-    public Schedule shedule( Task task, String cronExpression, Date start )
+    public Schedule schedule( Task task, String cronExpression, Date start )
     {
         return scheduleFactory.newSchedule( task, cronExpression, start.getTime() );
     }

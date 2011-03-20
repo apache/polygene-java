@@ -86,7 +86,7 @@ public class SchedulerTest
         String taskIdentity = task.identity().get();
 
         DateTime expectedRun = start.withMillisOfSecond( 0 ).withSecondOfMinute( 0 ).plusMinutes( 1 );
-        scheduler.shedule( task, "@minutely" );
+        scheduler.schedule( task, "@minutely" );
 
         uow.complete();
 

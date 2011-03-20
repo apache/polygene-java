@@ -63,7 +63,7 @@ public interface Scheduler
      * @return                      The newly created Schedule
      */
     @UnitOfWorkPropagation( MANDATORY )
-    Schedule shedule( Task task, @CronExpression String cronExpression );
+    Schedule schedule( Task task, @CronExpression String cronExpression );
 
     /**
      * Schedule a Task using a CronExpression with a given initial delay in milliseconds.
@@ -74,7 +74,7 @@ public interface Scheduler
      * @return                      The newly created Schedule
      */
     @UnitOfWorkPropagation( MANDATORY )
-    Schedule shedule( Task task, @CronExpression String cronExpression, long initialDelay );
+    Schedule schedule( Task task, @CronExpression String cronExpression, long initialDelay );
 
     /**
      * Schedule a Task using a CronExpression starting at a given date.
@@ -85,6 +85,6 @@ public interface Scheduler
      * @return                      The newly created Schedule
      */
     @UnitOfWorkPropagation( MANDATORY )
-    Schedule shedule( Task task, @CronExpression String cronExpression, Date start );
+    Schedule schedule( Task task, @CronExpression String cronExpression, Date start );
 
 }
