@@ -89,9 +89,37 @@ public class UnitOfWorkConcern
     {
         try
         {
-            Object result = next.invoke( proxy, method, args );
-            currentUnitOfWork.complete();
-            return result;
+            UnitOfWorkRetry retryAnnot = method.getAnnotation( UnitOfWorkRetry.class );
+            int maxTries = 0;
+            long delayFactor=0;
+            long initialDelay=0;
+            if( retryAnnot != null )
+            {
+                maxTries = retryAnnot.retries();
+                initialDelay = retryAnnot.initialDelay();
+                delayFactor = retryAnnot.delayFactory();
+            }
+            int retry = 0;
+            while( true )
+            {
+                Object result = next.invoke( proxy, method, args );
+                try
+                {
+                    currentUnitOfWork.complete();
+                    return result;
+                }
+                catch( ConcurrentEntityModificationException e )
+                {
+                    if( retry >= maxTries )
+                    {
+                        throw e;
+                    }
+                    uowf.currentUnitOfWork().discard();
+                    Thread.sleep( initialDelay + retry * delayFactor );
+                    retry++;
+                    uowf.newUnitOfWork();
+                }
+            }
         }
         catch( Throwable throwable )
         {
