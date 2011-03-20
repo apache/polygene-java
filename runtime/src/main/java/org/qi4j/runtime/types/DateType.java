@@ -44,7 +44,6 @@ public final class DateType
         throws JSONException
     {
         Date date = (Date) value;
-
         json.value( DateFunctions.toUtcString( date ) );
     }
 
@@ -52,7 +51,6 @@ public final class DateType
         throws JSONException
     {
         Date date = (Date) value;
-
         return DateFunctions.toUtcString( date );
     }
 

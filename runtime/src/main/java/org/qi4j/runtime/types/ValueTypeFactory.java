@@ -144,6 +144,14 @@ public class ValueTypeFactory
         {
             valueType = new DateType();
         }
+        else if( DateTimeType.isDate( type ) )
+        {
+            valueType = new DateTimeType();
+        }
+        else if( LocalDateType.isDate( type ) )
+        {
+            valueType = new LocalDateType();
+        }
         else if( EntityReferenceType.isEntityReference( type ) )
         {
             valueType = new EntityReferenceType( nameOf( type ) );
