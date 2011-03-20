@@ -144,13 +144,13 @@ public class ValueTypeFactory
         {
             valueType = new DateType();
         }
-        else if( DateTimeType.isDate( type ) )
+        else if( JodaDateTimeType.isDate( type ) )
         {
-            valueType = new DateTimeType();
+            valueType = new JodaDateTimeType();
         }
-        else if( LocalDateType.isDate( type ) )
+        else if( JodaLocalDateType.isDate( type ) )
         {
-            valueType = new LocalDateType();
+            valueType = new JodaLocalDateType();
         }
         else if( EntityReferenceType.isEntityReference( type ) )
         {
