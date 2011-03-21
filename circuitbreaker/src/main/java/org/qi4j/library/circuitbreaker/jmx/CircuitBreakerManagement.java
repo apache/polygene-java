@@ -91,7 +91,7 @@ public interface CircuitBreakerManagement
             }
          }
 
-         CircuitBreakerJMX bean = new CircuitBreakerJMX(circuitBreaker);
+         CircuitBreakerJMX bean = new CircuitBreakerJMX(circuitBreaker, mbeanObjectName);
 
          try
          {

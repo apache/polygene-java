@@ -16,23 +16,44 @@
 
 package org.qi4j.library.circuitbreaker.jmx;
 
+import javax.management.MBeanNotificationInfo;
+import javax.management.Notification;
+import javax.management.NotificationBroadcasterSupport;
+import javax.management.ObjectName;
+
 import org.qi4j.library.circuitbreaker.CircuitBreaker;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
 import java.text.DateFormat;
 import java.util.Date;
 
 /**
-* MBean for circuit breakers
-*/
+ * MBean for circuit breakers
+ */
 public class CircuitBreakerJMX
-   implements org.qi4j.library.circuitbreaker.jmx.CircuitBreakerJMXMBean
+        extends NotificationBroadcasterSupport
+        implements org.qi4j.library.circuitbreaker.jmx.CircuitBreakerJMXMBean
 {
    CircuitBreaker circuitBreaker;
 
-   public CircuitBreakerJMX( CircuitBreaker circuitBreaker )
+   public CircuitBreakerJMX(CircuitBreaker circuitBreaker, final ObjectName mbeanObjectName)
    {
+      super(new MBeanNotificationInfo(new String[]{"serviceLevel", "status"}, Notification.class.getName(), "Circuit breaker notifications"));
+
       this.circuitBreaker = circuitBreaker;
+      circuitBreaker.addPropertyChangeListener(new PropertyChangeListener()
+      {
+         long sequenceNr = System.currentTimeMillis();
+
+         @Override
+         public void propertyChange(PropertyChangeEvent evt)
+         {
+            Notification notification = new Notification(evt.getPropertyName(), mbeanObjectName, sequenceNr++, System.currentTimeMillis(), evt.getNewValue().toString());
+            sendNotification(notification);
+         }
+      });
    }
 
    public String getStatus()
@@ -55,7 +76,7 @@ public class CircuitBreakerJMX
       return circuitBreaker.getLastThrowable() == null ? "" : errorMessage(circuitBreaker.getLastThrowable());
    }
 
-   private String errorMessage( Throwable throwable )
+   private String errorMessage(Throwable throwable)
    {
       String message = throwable.getMessage();
       if (message == null)
@@ -63,7 +84,7 @@ public class CircuitBreakerJMX
 
       if (throwable.getCause() != null)
       {
-         return message + ":" + errorMessage( throwable.getCause() );
+         return message + ":" + errorMessage(throwable.getCause());
       } else
          return message;
    }
@@ -71,13 +92,13 @@ public class CircuitBreakerJMX
    public String getTrippedOn()
    {
       Date trippedOn = circuitBreaker.getTrippedOn();
-      return trippedOn == null ? "" : DateFormat.getDateTimeInstance().format( trippedOn );
+      return trippedOn == null ? "" : DateFormat.getDateTimeInstance().format(trippedOn);
    }
 
    public String getEnableOn()
    {
       Date trippedOn = circuitBreaker.getEnableOn();
-      return trippedOn == null ? "" : DateFormat.getDateTimeInstance().format( trippedOn );
+      return trippedOn == null ? "" : DateFormat.getDateTimeInstance().format(trippedOn);
    }
 
    public String turnOn()
@@ -88,7 +109,7 @@ public class CircuitBreakerJMX
          return "Circuit breaker has been turned on";
       } catch (PropertyVetoException e)
       {
-         return "Could not turn on circuit breaker:"+getLastErrorMessage();
+         return "Could not turn on circuit breaker:" + getLastErrorMessage();
       }
    }
 
