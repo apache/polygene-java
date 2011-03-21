@@ -52,7 +52,7 @@ public class EnvisageSample
         //createTestData3();
 
         new Envisage().run( applicationModel );
-        Thread.sleep( 1113000 );
+//        Thread.sleep( 1113000 );
     }
 
     public void assemble( ModuleAssembly module )
