@@ -103,7 +103,6 @@ allprojects {
     task sourceJar(type: Jar) {
       classifier = "sources"
       from sourceSets.main.allSource
-      into configurations.archives
     }
 
     artifacts {
