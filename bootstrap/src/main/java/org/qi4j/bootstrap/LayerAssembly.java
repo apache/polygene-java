@@ -18,11 +18,20 @@
 
 package org.qi4j.bootstrap;
 
+import org.qi4j.api.specification.Specification;
+
 /**
  * Fluid API for declaring a layer in an application. This is obtained by calling {@link ApplicationAssembly#layer(String)}.
  */
 public interface LayerAssembly
 {
+    /**
+     * Get an assembly for a particular Module. If this is called many times with the same name, then the same module
+     * is affected.
+     *
+     * @param name
+     * @return
+     */
     ModuleAssembly module( String name );
 
     ApplicationAssembly application();
@@ -37,4 +46,58 @@ public interface LayerAssembly
 
     <ThrowableType extends Throwable> void visit( AssemblyVisitor<ThrowableType> visitor )
         throws ThrowableType;
+
+    /**
+     * Given a Specification for EntityAssembly's, returns a EntityDeclaration that can
+     * be used to work with all of the assemblies in this Layer matched by the specification.
+     *
+     * @param specification
+     * @return
+     */
+    EntityDeclaration entities(Specification<? super EntityAssembly> specification);
+
+    /**
+     * Given a Specification for ServiceAssembly's, returns a ServiceDeclaration that can
+     * be used to work with all of the assemblies in this Layer matched by the specification.
+     *
+     * @param specification
+     * @return
+     */
+    ServiceDeclaration services( Specification<? super ServiceAssembly> specification);
+
+    /**
+     * Given a Specification for TransientAssembly's, returns a TransientDeclaration that can
+     * be used to work with all of the assemblies in this Layer matched by the specification.
+     *
+     * @param specification
+     * @return
+     */
+    TransientDeclaration transients( Specification<? super TransientAssembly> specification);
+
+    /**
+     * Given a Specification for ValueAssembly's, returns a ValueDeclaration that can
+     * be used to work with all of the assemblies in this Layer matched by the specification.
+     *
+     * @param specification
+     * @return
+     */
+    ValueDeclaration values( Specification<? super ValueAssembly> specification);
+
+    /**
+     * Given a Specification for ObjectAssembly's, returns a ObjectDeclaration that can
+     * be used to work with all of the assemblies in this Layer matched by the specification.
+     *
+     * @param specification
+     * @return
+     */
+    ObjectDeclaration objects(Specification<? super ObjectAssembly> specification);
+
+    /**
+     * Given a Specification for ImportedServiceAssembly's, returns a ImportedServiceDeclaration that can
+     * be used to work with all of the assemblies in this Layer matched by the specification.
+     *
+     * @param specification
+     * @return
+     */
+    ImportedServiceDeclaration importedServices(Specification<? super ImportedServiceAssembly> specification);
 }

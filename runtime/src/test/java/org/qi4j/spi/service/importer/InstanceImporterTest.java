@@ -41,11 +41,7 @@ public class InstanceImporterTest
         ModuleAssembly serviceModule = module.layer().module( "Service module" );
         serviceModule.importedServices( TestInterface.class )
             .setMetaInfo( new TestService() )
-            .visibleIn( Visibility.module );
-        serviceModule.importedServices( TestInterface.class )
-            .importedBy( ServiceSelectorImporter.class )
-            .setMetaInfo( ServiceQualifier.withId( TestInterface.class.getSimpleName() ) )
-            .visibleIn( layer );
+            .visibleIn( Visibility.layer );
         module.objects( InstanceImporterTest.class );
     }
 

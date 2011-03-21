@@ -309,12 +309,12 @@ public final class DependencyModel
                 ex = ex.getCause();
             }
 
-            String message = "InjectionProvider unable to resolve @" + rawInjectionClass.getName();
+            String message = "InjectionProvider unable to resolve @" + injectionAnnotation.annotationType().getSimpleName()+" "+injectionType.toString();
             throw new ConstructionException( message, ex );
         }
         if( injectedValue == null && !optional )
         {
-            String message = "Non-optional @" + rawInjectionClass.getName() + " was null in " + injectedClass.getName();
+            String message = "Non-optional @" + injectionAnnotation.annotationType().getSimpleName()+" "+injectionType.toString() + " was null in " + injectedClass.getName();
             throw new ConstructionException( message );
         }
         return getInjectedValue( injectedValue );

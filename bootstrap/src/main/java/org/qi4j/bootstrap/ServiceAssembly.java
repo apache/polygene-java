@@ -8,4 +8,5 @@ import org.qi4j.api.service.ServiceComposite;
 public interface ServiceAssembly
     extends TypeAssembly<ServiceComposite>
 {
+   String identity();
 }

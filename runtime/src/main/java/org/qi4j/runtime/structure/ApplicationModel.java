@@ -14,7 +14,6 @@
 
 package org.qi4j.runtime.structure;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +34,7 @@ import org.qi4j.spi.structure.DescriptorVisitor;
  * JAVADOC
  */
 public final class ApplicationModel
-    implements ApplicationModelSPI, ApplicationDescriptor, Serializable
+    implements ApplicationModelSPI, ApplicationDescriptor
 {
     private final String name;
     private final String version;
@@ -77,11 +76,6 @@ public final class ApplicationModel
     public <T> T metaInfo( Class<T> infoType )
     {
         return metaInfo.get( infoType );
-    }
-
-    public String toURI()
-    {
-        return "urn:qi4j:model:application:" + name;
     }
 
     public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )

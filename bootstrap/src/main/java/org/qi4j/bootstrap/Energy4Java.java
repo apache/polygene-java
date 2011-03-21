@@ -56,6 +56,10 @@ public final class Energy4Java
         throws AssemblyException
     {
         ApplicationAssembly assembly = assembler.assemble( runtime.applicationAssemblyFactory() );
+
+        if (assembly == null)
+            throw new AssemblyException( "Application assembler did not retun any ApplicationAssembly" );
+
         ApplicationModelFactory modelFactory = runtime.applicationModelFactory();
         return modelFactory.newApplicationModel( assembly );
     }

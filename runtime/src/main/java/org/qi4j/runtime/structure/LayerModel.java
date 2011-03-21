@@ -14,7 +14,6 @@
 
 package org.qi4j.runtime.structure;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.api.common.MetaInfo;
@@ -30,7 +29,7 @@ import org.qi4j.spi.structure.LayerDescriptor;
  * JAVADOC
  */
 public final class LayerModel
-    implements Binder, LayerDescriptor, Serializable
+    implements Binder, LayerDescriptor
 {
     // Model
     private final String name;

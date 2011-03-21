@@ -92,7 +92,7 @@ public class ServiceSelectorImporterTest
                     .setMetaInfo( ServiceQualifier.withId( "TestServiceComposite2_1" ) );
 
                 ModuleAssembly module2 = module.layer().module( "Other module" );
-                module2.services( TestServiceComposite2.class, TestServiceComposite2.class )
+                module2.addServices( TestServiceComposite2.class, TestServiceComposite2.class )
                     .visibleIn( Visibility.layer );
             }
         };

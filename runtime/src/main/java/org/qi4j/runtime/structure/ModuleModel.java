@@ -15,7 +15,6 @@
 package org.qi4j.runtime.structure;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.qi4j.api.common.MetaInfo;
@@ -34,7 +33,7 @@ import org.qi4j.spi.structure.ModuleDescriptor;
  * JAVADOC
  */
 public class ModuleModel
-    implements Binder, ModuleDescriptor, Serializable
+    implements Binder, ModuleDescriptor
 {
     private LayerModel layerModel;
     private final CompositesModel compositesModel;

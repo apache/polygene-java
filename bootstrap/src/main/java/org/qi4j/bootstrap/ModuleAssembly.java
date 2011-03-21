@@ -27,158 +27,166 @@ import org.qi4j.api.value.ValueComposite;
 /**
  * The ModuleAssembly is used to register any information about
  * what the module should contain, such as composites, entities and services.
- *
+ * <p/>
  * Use the methods and the fluent API's to declare how the module should be constructed.
  */
 public interface ModuleAssembly
 {
-    /**
-     * Access the layer assembly for this module.
-     *
-     * @return
-     */
-    LayerAssembly layer();
+   /**
+    * Access the layer assembly for this module.
+    *
+    * @return
+    */
+   LayerAssembly layer();
 
-    /**
-     * Set the name of this module.
-     *
-     * @param name
-     * @return
-     */
-    ModuleAssembly setName( String name );
+   /**
+    * Set the name of this module.
+    *
+    * @param name
+    * @return
+    */
+   ModuleAssembly setName(String name);
 
-    /**
-     * Access the currently set name for this module.
-     *
-     * @return
-     */
-    String name();
+   /**
+    * Access the currently set name for this module.
+    *
+    * @return
+    */
+   String name();
 
-    @Deprecated
-    TransientDeclaration addTransients( Class<? extends TransientComposite>... compositeTypes );
+   @Deprecated
+   TransientDeclaration addTransients(Class<? extends TransientComposite>... compositeTypes);
 
-    /**
-     * Declare a list of TransientComposites for this Module. Use the TransientDeclaration that is returned to
-     * declare further settings. Note that the TransientDeclaration works on all of the types specified.
-     *
-     * @param compositeTypes
-     * @return
-     */
-    TransientDeclaration transients( Class<? extends TransientComposite>... compositeTypes );
+   /**
+    * Declare a list of TransientComposites for this Module. Use the TransientDeclaration that is returned to
+    * declare further settings. Note that the TransientDeclaration works on all of the types specified.
+    *
+    * @param compositeTypes
+    * @return
+    */
+   TransientDeclaration transients(Class<? extends TransientComposite>... compositeTypes);
 
-    /**
-     * Given a Specification for TransientAssembly's, returns a TransientDeclaration that can
-     * be used to work with all of the assemblies matched by the specification.
-     *
-     * @param specification
-     * @return
-     */
-    TransientDeclaration transients( Specification<? super TransientAssembly> specification);
+   /**
+    * Given a Specification for TransientAssembly's, returns a TransientDeclaration that can
+    * be used to work with all of the assemblies matched by the specification.
+    *
+    * @param specification
+    * @return
+    */
+   TransientDeclaration transients(Specification<? super TransientAssembly> specification);
 
-    @Deprecated
-    ValueDeclaration addValues( Class<? extends ValueComposite>... compositeTypes );
+   @Deprecated
+   ValueDeclaration addValues(Class<? extends ValueComposite>... compositeTypes);
 
-    /**
-     * Declare a list of ValueComposites for this Module. Use the ValueDeclaration that is returned to
-     * declare further settings. Note that the ValueDeclaration works on all of the types specified.
-     *
-     * @param compositeTypes
-     * @return
-     */
-    ValueDeclaration values( Class<? extends ValueComposite>... compositeTypes );
+   /**
+    * Declare a list of ValueComposites for this Module. Use the ValueDeclaration that is returned to
+    * declare further settings. Note that the ValueDeclaration works on all of the types specified.
+    *
+    * @param compositeTypes
+    * @return
+    */
+   ValueDeclaration values(Class<? extends ValueComposite>... compositeTypes);
 
-    /**
-     * Given a Specification for ValueAssembly's, returns a ValueDeclaration that can
-     * be used to work with all of the assemblies matched by the specification.
-     *
-     * @param specification
-     * @return
-     */
-    ValueDeclaration values( Specification<? super ValueAssembly> specification);
+   /**
+    * Given a Specification for ValueAssembly's, returns a ValueDeclaration that can
+    * be used to work with all of the assemblies matched by the specification.
+    *
+    * @param specification
+    * @return
+    */
+   ValueDeclaration values(Specification<? super ValueAssembly> specification);
 
-    @Deprecated
-    EntityDeclaration addEntities( Class<? extends EntityComposite>... compositeTypes );
+   @Deprecated
+   EntityDeclaration addEntities(Class<? extends EntityComposite>... compositeTypes);
 
-    /**
-     * Declare a list of EntityComposites for this Module. Use the EntityDeclaration that is returned to
-     * declare further settings. Note that the EntityDeclaration works on all of the types specified.
-     *
-     * @param compositeTypes
-     * @return
-     */
-    EntityDeclaration entities( Class<? extends EntityComposite>... compositeTypes );
+   /**
+    * Declare a list of EntityComposites for this Module. Use the EntityDeclaration that is returned to
+    * declare further settings. Note that the EntityDeclaration works on all of the types specified.
+    *
+    * @param compositeTypes
+    * @return
+    */
+   EntityDeclaration entities(Class<? extends EntityComposite>... compositeTypes);
 
-    /**
-     * Given a Specification for EntityAssembly's, returns a EntityDeclaration that can
-     * be used to work with all of the assemblies matched by the specification.
-     *
-     * @param specification
-     * @return
-     */
-    EntityDeclaration entities(Specification<? super EntityAssembly> specification);
+   /**
+    * Given a Specification for EntityAssembly's, returns a EntityDeclaration that can
+    * be used to work with all of the assemblies matched by the specification.
+    *
+    * @param specification
+    * @return
+    */
+   EntityDeclaration entities(Specification<? super EntityAssembly> specification);
 
-    @Deprecated
-    ObjectDeclaration addObjects( Class... objectTypes );
+   @Deprecated
+   ObjectDeclaration addObjects(Class<?>... objectTypes);
 
-    /**
-     * Declare a list of object classes for this Module. Use the ObjectDeclaration that is returned to
-     * declare further settings. Note that the ObjectDeclaration works on all of the types specified.
-     *
-     * @param objectTypes
-     * @return
-     */
-    ObjectDeclaration objects( Class... objectTypes );
+   /**
+    * Declare a list of object classes for this Module. Use the ObjectDeclaration that is returned to
+    * declare further settings. Note that the ObjectDeclaration works on all of the types specified.
+    *
+    * @param objectTypes
+    * @return
+    */
+   ObjectDeclaration objects(Class<?>... objectTypes);
 
-    /**
-     * Given a Specification for ObjectAssembly's, returns a ObjectDeclaration that can
-     * be used to work with all of the assemblies matched by the specification.
-     *
-     * @param specification
-     * @return
-     */
-    ObjectDeclaration objects(Specification<? super ObjectAssembly> specification);
+   /**
+    * Given a Specification for ObjectAssembly's, returns a ObjectDeclaration that can
+    * be used to work with all of the assemblies matched by the specification.
+    *
+    * @param specification
+    * @return
+    */
+   ObjectDeclaration objects(Specification<? super ObjectAssembly> specification);
 
-    @Deprecated
-    ServiceDeclaration addServices( Class<? extends ServiceComposite>... serviceTypes );
+   /**
+    * Create a list of ServiceComposites for this Module. Use the ServiceDeclaration that is returned to
+    * declare further settings. This will always create new assemblies for the specified types, instead
+    * of potentially working on already declared types like the services(...) method.
+    *
+    *
+    * @param serviceTypes
+    * @return
+    */
+   ServiceDeclaration addServices(Class<? extends ServiceComposite>... serviceTypes);
 
-    /**
-     * Declare a list of ServiceComposites for this Module. Use the ServiceDeclaration that is returned to
-     * declare further settings. Note that the ServiceDeclaration works on all of the types specified.
-     *
-     * @param serviceTypes
-     * @return
-     */
-    ServiceDeclaration services( Class<? extends ServiceComposite>... serviceTypes );
+   /**
+    * Declare a list of ServiceComposites for this Module. Use the ServiceDeclaration that is returned to
+    * declare further settings. Note that the ServiceDeclaration works on all of the types specified.
+    *
+    * @param serviceTypes
+    * @return
+    */
+   ServiceDeclaration services(Class<? extends ServiceComposite>... serviceTypes);
 
-    /**
-     * Given a Specification for ServiceAssembly's, returns a ServiceDeclaration that can
-     * be used to work with all of the assemblies matched by the specification.
-     *
-     * @param specification
-     * @return
-     */
-    ServiceDeclaration services( Specification<? super ServiceAssembly> specification);
+   /**
+    * Given a Specification for ServiceAssembly's, returns a ServiceDeclaration that can
+    * be used to work with all of the assemblies matched by the specification.
+    *
+    * @param specification
+    * @return
+    */
+   ServiceDeclaration services(Specification<? super ServiceAssembly> specification);
 
-    /**
-     * Declare a list of imported services for this Module. Use the ImportedServiceDeclaration that is returned to
-     * declare further settings. Note that the ImportedServiceDeclaration works on all of the types specified.
-     *
-     * @param serviceTypes
-     * @return
-     */
-    ImportedServiceDeclaration importedServices( Class... serviceTypes );
+   /**
+    * Declare a list of imported services for this Module. Use the ImportedServiceDeclaration that is returned to
+    * declare further settings. Note that the ImportedServiceDeclaration works on all of the types specified.
+    *
+    * @param serviceTypes
+    * @return
+    */
+   ImportedServiceDeclaration importedServices(Class... serviceTypes);
 
-    /**
-     * Given a Specification for ImportedServiceAssembly's, returns a ImportedServiceDeclaration that can
-     * be used to work with all of the assemblies matched by the specification.
-     *
-     * @param specification
-     * @return
-     */
-    ImportedServiceDeclaration importedServices(Specification<? super ImportedServiceAssembly> specification);
+   /**
+    * Given a Specification for ImportedServiceAssembly's, returns a ImportedServiceDeclaration that can
+    * be used to work with all of the assemblies matched by the specification.
+    *
+    * @param specification
+    * @return
+    */
+   ImportedServiceDeclaration importedServices(Specification<? super ImportedServiceAssembly> specification);
 
-    <T> MixinDeclaration<T> forMixin( Class<T> mixinType );
+   <T> MixinDeclaration<T> forMixin(Class<T> mixinType);
 
-    public <ThrowableType extends Throwable> void visit( AssemblyVisitor<ThrowableType> visitor )
-        throws ThrowableType;
+   public <ThrowableType extends Throwable> void visit(AssemblyVisitor<ThrowableType> visitor)
+           throws ThrowableType;
 }

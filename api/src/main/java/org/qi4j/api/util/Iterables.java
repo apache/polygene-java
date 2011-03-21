@@ -27,7 +27,7 @@ import org.qi4j.api.specification.Specification;
  */
 public class Iterables
 {
-    public static <T> Collection<T> addAll( Collection<T> collection, Iterable<T> iterable )
+    public static <T> Collection<T> addAll( Collection<T> collection, Iterable<? extends T> iterable )
     {
         for( T item : iterable )
         {
@@ -47,14 +47,14 @@ public class Iterables
         return c;
     }
 
-    public static <X> Iterable<X> filter( Specification<X> specification, Iterable<X> i )
+    public static <X> Iterable<X> filter( Specification<? super X> specification, Iterable<X> i )
     {
         return new FilterIterable<X>( i, specification );
     }
 
-    public static <X> X first( Iterable<X> i )
+    public static <X> X first( Iterable<? extends X> i )
     {
-        Iterator<X> iter = i.iterator();
+        Iterator<? extends X> iter = i.iterator();
         if( iter.hasNext() )
         {
             return iter.next();
@@ -65,7 +65,7 @@ public class Iterables
         }
     }
 
-    public static <T> boolean matchesAny( Specification<T> specification, Iterable<T> iterable )
+    public static <T> boolean matchesAny( Specification<? super T> specification, Iterable<T> iterable )
     {
         for( T item : iterable )
         {
@@ -87,7 +87,7 @@ public class Iterables
         return new FlattenIterable<X>( multiIterator );
     }
 
-    public static <FROM, TO> Iterable<TO> map( Function<FROM, TO> function, Iterable<FROM> from )
+    public static <FROM, TO> Iterable<TO> map( Function<? super FROM, TO> function, Iterable<FROM> from )
     {
         return new MapIterable<FROM, TO>( from, function );
     }
@@ -113,9 +113,9 @@ public class Iterables
         implements Iterable<TO>
     {
         private final Iterable<FROM> from;
-        private final Function<FROM, TO> function;
+        private final Function<? super FROM, TO> function;
 
-        public MapIterable( Iterable<FROM> from, Function<FROM, TO> function )
+        public MapIterable( Iterable<FROM> from, Function<? super FROM, TO> function )
         {
             this.from = from;
             this.function = function;
@@ -130,9 +130,9 @@ public class Iterables
             implements Iterator<TO>
         {
             private final Iterator<FROM> fromIterator;
-            private final Function<FROM, TO> function;
+            private final Function<? super FROM, TO> function;
 
-            public MapIterator( Iterator<FROM> fromIterator, Function<FROM, TO> function )
+            public MapIterator( Iterator<FROM> fromIterator, Function<? super FROM, TO> function )
             {
                 this.fromIterator = fromIterator;
                 this.function = function;
@@ -160,9 +160,9 @@ public class Iterables
     {
         private Iterable<T> iterable;
 
-        private Specification<T> specification;
+        private Specification<? super T> specification;
 
-        public FilterIterable( Iterable<T> iterable, Specification<T> specification )
+        public FilterIterable( Iterable<T> iterable, Specification<? super T> specification )
         {
             this.iterable = iterable;
             this.specification = specification;
@@ -178,13 +178,13 @@ public class Iterables
         {
             private Iterator<T> iterator;
 
-            private Specification<T> specification;
+            private Specification<? super T> specification;
 
             private T currentValue;
             boolean finished = false;
             boolean nextConsumed = true;
 
-            public FilterIterator( Iterator<T> iterator, Specification<T> specification )
+            public FilterIterator( Iterator<T> iterator, Specification<? super T> specification )
             {
                 this.specification = specification;
                 this.iterator = iterator;

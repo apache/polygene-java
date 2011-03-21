@@ -14,7 +14,6 @@
 
 package org.qi4j.runtime.structure;
 
-import java.io.Serializable;
 import java.util.List;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.AmbiguousTypeException;
@@ -25,7 +24,7 @@ import org.qi4j.spi.structure.UsedLayersDescriptor;
  * JAVADOC
  */
 public final class UsedLayersModel
-    implements UsedLayersDescriptor, Serializable
+    implements UsedLayersDescriptor
 {
     private final List<LayerModel> usedLayers;
 

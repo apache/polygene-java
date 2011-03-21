@@ -56,7 +56,13 @@ public final class ServiceAssemblyImpl
         return serviceType;
     }
 
-    void addServiceModel( List<ServiceModel> serviceModels, AssemblyHelper helper )
+   @Override
+   public String identity()
+   {
+      return identity;
+   }
+
+   void addServiceModel( List<ServiceModel> serviceModels, AssemblyHelper helper )
     {
         try
         {
