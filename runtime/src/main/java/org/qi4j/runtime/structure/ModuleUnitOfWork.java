@@ -19,6 +19,7 @@ import java.util.List;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.composite.AmbiguousTypeException;
+import org.qi4j.api.composite.NoSuchCompositeException;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.Identity;
@@ -179,9 +180,12 @@ public class ModuleUnitOfWork
         if( identity == null )
         {
             IdentityGenerator idGen = entityModuleInstance.entities().identityGenerator();
+            if( idGen == null )
+            {
+                throw new NoSuchCompositeException(IdentityGenerator.class.getName(), entityModuleInstance.name() );
+            }
             identity = idGen.generate( entityModel.type() );
         }
-
         EntityBuilder<T> builder;
 
         if( identity != null )
