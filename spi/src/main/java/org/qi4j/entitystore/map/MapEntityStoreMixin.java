@@ -162,14 +162,14 @@ public class MapEntityStoreMixin
     {
         return new Input<EntityState, EntityStoreException>()
         {
-            public <ReceiverThrowableType extends Throwable> void transferTo( Output<EntityState, ReceiverThrowableType> output )
-                throws EntityStoreException, ReceiverThrowableType
-            {
+           @Override
+           public <ReceiverThrowableType extends Throwable> void transferTo(Output<? super EntityState, ReceiverThrowableType> output) throws EntityStoreException, ReceiverThrowableType
+           {
                 output.receiveFrom( new Sender<EntityState, EntityStoreException>()
                 {
-                    public <ReceiverThrowableType extends Throwable> void sendTo( final Receiver<EntityState, ReceiverThrowableType> receiver )
-                        throws ReceiverThrowableType, EntityStoreException
-                    {
+                   @Override
+                   public <ReceiverThrowableType extends Throwable> void sendTo(final Receiver<? super EntityState, ReceiverThrowableType> receiver) throws ReceiverThrowableType, EntityStoreException
+                   {
                         Usecase usecase = UsecaseBuilder
                             .buildUsecase( "qi4j.entitystore.entitystates" )
                             .with( CacheOptions.NEVER )
@@ -184,9 +184,9 @@ public class MapEntityStoreMixin
                         {
                             mapEntityStore.entityStates().transferTo( new Output<Reader, ReceiverThrowableType>()
                             {
-                                public <SenderThrowableType extends Throwable> void receiveFrom( Sender<Reader, SenderThrowableType> sender )
-                                    throws ReceiverThrowableType, SenderThrowableType
-                                {
+                               @Override
+                               public <SenderThrowableType extends Throwable> void receiveFrom(Sender<? extends Reader, SenderThrowableType> sender) throws ReceiverThrowableType, SenderThrowableType
+                               {
                                     sender.sendTo( new Receiver<Reader, ReceiverThrowableType>()
                                     {
                                         public void receive( Reader item )

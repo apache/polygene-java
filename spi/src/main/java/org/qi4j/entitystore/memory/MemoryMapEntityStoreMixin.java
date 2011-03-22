@@ -60,14 +60,14 @@ public class MemoryMapEntityStoreMixin
     {
         return new Input<Reader, IOException>()
         {
-            public <ReceiverThrowableType extends Throwable> void transferTo( Output<Reader, ReceiverThrowableType> output )
-                throws IOException, ReceiverThrowableType
-            {
+           @Override
+           public <ReceiverThrowableType extends Throwable> void transferTo(Output<? super Reader, ReceiverThrowableType> output) throws IOException, ReceiverThrowableType
+           {
                 output.receiveFrom( new Sender<Reader, IOException>()
                 {
-                    public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<Reader, ReceiverThrowableType> receiver )
-                        throws ReceiverThrowableType, IOException
-                    {
+                   @Override
+                   public <ReceiverThrowableType extends Throwable> void sendTo(Receiver<? super Reader, ReceiverThrowableType> receiver) throws ReceiverThrowableType, IOException
+                   {
                         for( String state : store.values() )
                         {
                             receiver.receive( new StringReader( state ) );
@@ -82,14 +82,14 @@ public class MemoryMapEntityStoreMixin
     {
         return new Input<String, IOException>()
         {
-            public <ReceiverThrowableType extends Throwable> void transferTo( Output<String, ReceiverThrowableType> output )
-                throws IOException, ReceiverThrowableType
-            {
+           @Override
+           public <ReceiverThrowableType extends Throwable> void transferTo(Output<? super String, ReceiverThrowableType> output) throws IOException, ReceiverThrowableType
+           {
                 output.receiveFrom( new Sender<String, IOException>()
                 {
-                    public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<String, ReceiverThrowableType> receiver )
-                        throws ReceiverThrowableType, IOException
-                    {
+                   @Override
+                   public <ReceiverThrowableType extends Throwable> void sendTo(Receiver<? super String, ReceiverThrowableType> receiver) throws ReceiverThrowableType, IOException
+                   {
                         for( String state : store.values() )
                         {
                             receiver.receive( state );
@@ -104,9 +104,9 @@ public class MemoryMapEntityStoreMixin
     {
         return new Output<String, IOException>()
         {
-            public <SenderThrowableType extends Throwable> void receiveFrom( Sender<String, SenderThrowableType> sender )
-                throws IOException, SenderThrowableType
-            {
+           @Override
+           public <SenderThrowableType extends Throwable> void receiveFrom(Sender<? extends String, SenderThrowableType> sender) throws IOException, SenderThrowableType
+           {
                 store.clear();
 
                 try

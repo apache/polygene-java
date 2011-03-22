@@ -30,6 +30,6 @@ public interface Output<T, ReceiverThrowableType extends Throwable>
      * @throws SenderThrowableType   the exception that the sender can throw
      * @throws ReceiverThrowableType the exception that this output can throw from receiveItem()
      */
-    <SenderThrowableType extends Throwable> void receiveFrom( Sender<T, SenderThrowableType> sender )
+    <SenderThrowableType extends Throwable> void receiveFrom( Sender<? extends T, SenderThrowableType> sender )
         throws ReceiverThrowableType, SenderThrowableType;
 }

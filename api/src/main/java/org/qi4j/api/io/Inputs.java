@@ -59,9 +59,9 @@ public class Inputs
     {
         return new Input<String, IOException>()
         {
-            public <ReceiverThrowableType extends Throwable> void transferTo( Output<String, ReceiverThrowableType> output )
-                throws IOException, ReceiverThrowableType
-            {
+           @Override
+           public <ReceiverThrowableType extends Throwable> void transferTo(Output<? super String, ReceiverThrowableType> output) throws IOException, ReceiverThrowableType
+           {
                 InputStream stream = new FileInputStream( source );
 
                 // If file is gzipped, unzip it automatically
@@ -76,9 +76,9 @@ public class Inputs
                 {
                     output.receiveFrom( new Sender<String, IOException>()
                     {
-                        public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<String, ReceiverThrowableType> receiver )
-                            throws ReceiverThrowableType, IOException
-                        {
+                       @Override
+                       public <ReceiverThrowableType extends Throwable> void sendTo(Receiver<? super String, ReceiverThrowableType> receiver) throws ReceiverThrowableType, IOException
+                       {
                             String line;
                             while( ( line = reader.readLine() ) != null )
                             {
@@ -110,9 +110,9 @@ public class Inputs
     {
         return new Input<String, IOException>()
         {
-            public <ReceiverThrowableType extends Throwable> void transferTo( Output<String, ReceiverThrowableType> output )
-                throws IOException, ReceiverThrowableType
-            {
+           @Override
+           public <ReceiverThrowableType extends Throwable> void transferTo(Output<? super String, ReceiverThrowableType> output) throws IOException, ReceiverThrowableType
+           {
                 URLConnection urlConnection = source.openConnection();
                 urlConnection.setRequestProperty( "Accept-Encoding", "gzip" );
                 InputStream stream = urlConnection.getInputStream();
@@ -136,9 +136,9 @@ public class Inputs
                 {
                     output.receiveFrom( new Sender<String, IOException>()
                     {
-                        public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<String, ReceiverThrowableType> receiver )
-                            throws ReceiverThrowableType, IOException
-                        {
+                       @Override
+                       public <ReceiverThrowableType extends Throwable> void sendTo(Receiver<? super String, ReceiverThrowableType> receiver) throws ReceiverThrowableType, IOException
+                       {
                             String line;
                             while( ( line = reader.readLine() ) != null )
                             {
@@ -167,9 +167,9 @@ public class Inputs
     {
         return new Input<ByteBuffer, IOException>()
         {
-            public <ReceiverThrowableType extends Throwable> void transferTo( Output<ByteBuffer, ReceiverThrowableType> output )
-                throws IOException, ReceiverThrowableType
-            {
+           @Override
+           public <ReceiverThrowableType extends Throwable> void transferTo(Output<? super ByteBuffer, ReceiverThrowableType> output) throws IOException, ReceiverThrowableType
+           {
                 final FileInputStream stream = new FileInputStream( source );
                 final FileChannel fci = stream.getChannel();
 
@@ -179,9 +179,9 @@ public class Inputs
                 {
                     output.receiveFrom( new Sender<ByteBuffer, IOException>()
                     {
-                        public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<ByteBuffer, ReceiverThrowableType> receiver )
-                            throws ReceiverThrowableType, IOException
-                        {
+                       @Override
+                       public <ReceiverThrowableType extends Throwable> void sendTo(Receiver<? super ByteBuffer, ReceiverThrowableType> receiver) throws ReceiverThrowableType, IOException
+                       {
                             while( fci.read( buffer ) != -1 )
                             {
                                 buffer.flip();
@@ -211,16 +211,16 @@ public class Inputs
     {
         return new Input<ByteBuffer, IOException>()
         {
-            public <ReceiverThrowableType extends Throwable> void transferTo( Output<ByteBuffer, ReceiverThrowableType> output )
-                throws IOException, ReceiverThrowableType
-            {
+           @Override
+           public <ReceiverThrowableType extends Throwable> void transferTo(Output<? super ByteBuffer, ReceiverThrowableType> output) throws IOException, ReceiverThrowableType
+           {
                 try
                 {
                     output.receiveFrom( new Sender<ByteBuffer, IOException>()
                     {
-                        public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<ByteBuffer, ReceiverThrowableType> receiver )
-                            throws ReceiverThrowableType, IOException
-                        {
+                       @Override
+                       public <ReceiverThrowableType extends Throwable> void sendTo(Receiver<? super ByteBuffer, ReceiverThrowableType> receiver) throws ReceiverThrowableType, IOException
+                       {
                             byte[] buffer = new byte[ bufferSize ];
 
                             int len;
@@ -254,21 +254,21 @@ public class Inputs
     {
         return new Input<T, SenderThrowableType>()
         {
-            public <ReceiverThrowableType extends Throwable> void transferTo( Output<T, ReceiverThrowableType> output )
-                throws SenderThrowableType, ReceiverThrowableType
-            {
+           @Override
+           public <ReceiverThrowableType extends Throwable> void transferTo(Output<? super T, ReceiverThrowableType> output) throws SenderThrowableType, ReceiverThrowableType
+           {
                 output.receiveFrom( new Sender<T, SenderThrowableType>()
                 {
-                    public <ReceiverThrowableType extends Throwable> void sendTo( final Receiver<T, ReceiverThrowableType> receiver )
-                        throws ReceiverThrowableType, SenderThrowableType
-                    {
+                   @Override
+                   public <ReceiverThrowableType extends Throwable> void sendTo(final Receiver<? super T, ReceiverThrowableType> receiver) throws ReceiverThrowableType, SenderThrowableType
+                   {
                         for( Input<T, SenderThrowableType> input : inputs )
                         {
                             input.transferTo( new Output<T, ReceiverThrowableType>()
                             {
-                                public <SenderThrowableType extends Throwable> void receiveFrom( Sender<T, SenderThrowableType> sender )
-                                    throws ReceiverThrowableType, SenderThrowableType
-                                {
+                               @Override
+                               public <SenderThrowableType extends Throwable> void receiveFrom(Sender<? extends T, SenderThrowableType> sender) throws ReceiverThrowableType, SenderThrowableType
+                               {
                                     sender.sendTo( new Receiver<T, ReceiverThrowableType>()
                                     {
                                         public void receive( T item )
@@ -290,14 +290,14 @@ public class Inputs
     {
         return new Input<T, RuntimeException>()
         {
-            public <ReceiverThrowableType extends Throwable> void transferTo( Output<T, ReceiverThrowableType> output )
-                throws ReceiverThrowableType, RuntimeException
-            {
+           @Override
+           public <ReceiverThrowableType extends Throwable> void transferTo(Output<? super T, ReceiverThrowableType> output) throws RuntimeException, ReceiverThrowableType
+           {
                 output.receiveFrom( new Sender<T, RuntimeException>()
                 {
-                    public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<T, ReceiverThrowableType> receiver )
-                        throws ReceiverThrowableType, RuntimeException
-                    {
+                   @Override
+                   public <ReceiverThrowableType extends Throwable> void sendTo(Receiver<? super T, ReceiverThrowableType> receiver) throws ReceiverThrowableType, RuntimeException
+                   {
                         for( T item : iterable )
                         {
                             receiver.receive( item );

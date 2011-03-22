@@ -60,9 +60,9 @@ public class Outputs
     {
         return new Output<String, IOException>()
         {
-            public <SenderThrowableType extends Throwable> void receiveFrom( final Sender<String, SenderThrowableType> sender )
-                throws IOException, SenderThrowableType
-            {
+           @Override
+           public <SenderThrowableType extends Throwable> void receiveFrom(Sender<? extends String, SenderThrowableType> sender) throws IOException, SenderThrowableType
+           {
                 OutputStream stream = new FileOutputStream( file );
 
                 // If file should be gzipped, do that automatically
@@ -115,9 +115,9 @@ public class Outputs
     {
         return new Output<ByteBuffer, IOException>()
         {
-            public <SenderThrowableType extends Throwable> void receiveFrom( final Sender<ByteBuffer, SenderThrowableType> sender )
-                throws IOException, SenderThrowableType
-            {
+           @Override
+           public <SenderThrowableType extends Throwable> void receiveFrom(Sender<? extends ByteBuffer, SenderThrowableType> sender) throws IOException, SenderThrowableType
+           {
                 FileOutputStream stream = new FileOutputStream( file );
                 final FileChannel fco = stream.getChannel();
 
@@ -163,9 +163,9 @@ public class Outputs
     {
         return new Output<ByteBuffer, IOException>()
         {
-            public <SenderThrowableType extends Throwable> void receiveFrom( final Sender<ByteBuffer, SenderThrowableType> sender )
-                throws IOException, SenderThrowableType
-            {
+           @Override
+           public <SenderThrowableType extends Throwable> void receiveFrom(Sender<? extends ByteBuffer, SenderThrowableType> sender) throws IOException, SenderThrowableType
+           {
                 try
                 {
                     sender.sendTo( new Receiver<ByteBuffer, IOException>()
@@ -208,9 +208,9 @@ public class Outputs
     {
         return new Output<byte[], IOException>()
         {
-            public <SenderThrowableType extends Throwable> void receiveFrom( final Sender<byte[], SenderThrowableType> sender )
-                throws IOException, SenderThrowableType
-            {
+           @Override
+           public <SenderThrowableType extends Throwable> void receiveFrom(Sender<? extends byte[], SenderThrowableType> sender) throws IOException, SenderThrowableType
+           {
                 final OutputStream stream = new BufferedOutputStream( new FileOutputStream( file ), bufferSize );
 
                 try
@@ -275,30 +275,29 @@ public class Outputs
     {
         return new Output<T, ReceiverThrowableType>()
         {
-            public <SenderThrowableType extends Throwable> void receiveFrom( final Sender<T, SenderThrowableType> sender )
-                throws ReceiverThrowableType, SenderThrowableType
-            {
+           @Override
+           public <SenderThrowableType extends Throwable> void receiveFrom(Sender<? extends T, SenderThrowableType> sender) throws ReceiverThrowableType, SenderThrowableType
+           {
                 sender.sendTo( receiver );
             }
         };
     }
 
     /**
-     * Write strings to System.out.println.
+     * Write objects to System.out.println.
      *
      * @return
      */
-    public static Output<String, IOException> systemOut()
+    public static Output<Object, RuntimeException> systemOut()
     {
-        return new Output<String, IOException>()
+        return new Output<Object, RuntimeException>()
         {
-            public <SenderThrowableType extends Throwable> void receiveFrom( final Sender<String, SenderThrowableType> sender )
-                throws IOException, SenderThrowableType
-            {
-                sender.sendTo( new Receiver<String, IOException>()
+           @Override
+           public <SenderThrowableType extends Throwable> void receiveFrom(Sender<? extends Object, SenderThrowableType> sender) throws RuntimeException, SenderThrowableType
+           {
+                sender.sendTo( new Receiver<Object, RuntimeException>()
                 {
-                    public void receive( String item )
-                        throws IOException
+                    public void receive( Object item )
                     {
                         System.out.println( item );
                     }
@@ -310,17 +309,17 @@ public class Outputs
     /**
      * Add items to a collection
      */
-    public static <T> Output<T, IOException> collection( final Collection<T> collection )
+    public static <T> Output<T, RuntimeException> collection( final Collection<T> collection )
     {
-        return new Output<T, IOException>()
+        return new Output<T, RuntimeException>()
         {
-            public <SenderThrowableType extends Throwable> void receiveFrom( final Sender<T, SenderThrowableType> sender )
-                throws IOException, SenderThrowableType
-            {
-                sender.sendTo( new Receiver<T, IOException>()
+           @Override
+           public <SenderThrowableType extends Throwable> void receiveFrom(Sender<? extends T, SenderThrowableType> sender) throws RuntimeException, SenderThrowableType
+           {
+                sender.sendTo( new Receiver<T, RuntimeException>()
                 {
                     public void receive( T item )
-                        throws IOException
+                        throws RuntimeException
                     {
                         collection.add( item );
                     }
