@@ -116,6 +116,7 @@ public interface ApplicationManagerService
                     RequiredModelMBean mbean = new ModelMBeanBuilder( objectName, serviceDescriptor.identity(), ServiceBean.class.getName()).
                             attribute( "Id", "Service id", String.class.getName(), "Id of service", "getId", null ).
                             attribute( "Visibility", "Service visibility", String.class.getName(), "Visibility of service", "getVisibility", null ).
+                            attribute( "Type", "Service type", String.class.getName(), "Type of service", "getType", null ).
                             operation( "restart", "Restart service", String.class.getName(), ModelMBeanOperationInfo.ACTION_INFO).
                             newModelMBean();
 
@@ -132,9 +133,10 @@ public interface ApplicationManagerService
                     RequiredModelMBean mbean = new ModelMBeanBuilder( objectName, importedServiceDescriptor.identity(), ImportedServiceBean.class.getName()).
                             attribute( "Id", "Service id", String.class.getName(), "Id of service", "getId", null ).
                             attribute( "Visibility", "Service visibility", String.class.getName(), "Visibility of service", "getVisibility", null ).
+                            attribute( "Type", "Service type", String.class.getName(), "Type of imported service", "getType", null ).
                             newModelMBean();
 
-                    mbean.setManagedResource( new ImportedServiceBean(importedServiceDescriptor, module), "ObjectReference" );
+                    mbean.setManagedResource( new ImportedServiceBean(importedServiceDescriptor), "ObjectReference" );
 
                     server.registerMBean( mbean, objectName );
                     mbeans.add( objectName );
@@ -225,6 +227,11 @@ public interface ApplicationManagerService
             return serviceDescriptor.visibility().name();
         }
 
+        public String getType()
+        {
+            return serviceDescriptor.type().getName();
+        }
+
         public String restart()
         {
             Iterable services = module.serviceFinder().findServices( Activatable.class );
@@ -248,12 +255,10 @@ public interface ApplicationManagerService
     public static class ImportedServiceBean
     {
         private final ImportedServiceDescriptor serviceDescriptor;
-        private final Module module;
 
-        public ImportedServiceBean( ImportedServiceDescriptor serviceDescriptor, Module module )
+        public ImportedServiceBean( ImportedServiceDescriptor serviceDescriptor)
         {
             this.serviceDescriptor = serviceDescriptor;
-            this.module = module;
         }
 
         public String getId()
@@ -264,6 +269,11 @@ public interface ApplicationManagerService
         public String getVisibility()
         {
             return serviceDescriptor.visibility().name();
+        }
+
+        public String getType()
+        {
+            return serviceDescriptor.type().getName();
         }
     }
 

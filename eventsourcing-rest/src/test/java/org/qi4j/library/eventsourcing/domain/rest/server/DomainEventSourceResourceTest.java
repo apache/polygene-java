@@ -45,8 +45,6 @@ import org.restlet.resource.ResourceException;
 
 import java.security.Principal;
 
-import static org.qi4j.api.service.qualifier.ServiceTags.tags;
-
 /**
  * Start simple web server that exposes the Restlet resource. Test through browser.
  */
@@ -65,7 +63,7 @@ public class DomainEventSourceResourceTest
                 new EntityTestAssembler().assemble( module );
 
                 module.values( DomainEventValue.class, UnitOfWorkDomainEventsValue.class );
-                module.services( MemoryEventStoreService.class ).setMetaInfo( tags( "domain" ) );
+                module.services( MemoryEventStoreService.class ).taggedWith( "domain" );
                 module.services( DomainEventFactoryService.class );
                 module.importedServices( CurrentUserUoWPrincipal.class ).importedBy( ImportedServiceDeclaration.NEW_OBJECT );
                 module.objects( CurrentUserUoWPrincipal.class );
