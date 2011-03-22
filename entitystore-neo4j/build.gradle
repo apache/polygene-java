@@ -9,6 +9,7 @@ jar { manifest { name = "Qi4j Extension - EntityStore - Neo4j" }}
 dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.api"))
   compile(project(":org.qi4j.core:org.qi4j.core.spi"))
+  compile(project(":org.qi4j.libraries:org.qi4j.library.fileconfig"))
   compile(libraries.slf4j_api)
   compile("org.neo4j:neo4j:$neoVersion")
   compile("org.neo4j:neo4j-index:$neoIndexVersion")

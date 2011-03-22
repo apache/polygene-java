@@ -9,23 +9,23 @@ import org.qi4j.api.property.Property;
  * Configuration for the JdbmEntityStoreService
  */
 public interface JdbmConfiguration
-    extends ConfigurationComposite
+        extends ConfigurationComposite
 {
-    /**
-     * The file where the JDBM data will be stored
-     *
-     * Default: System.getProperty( "user.dir" ) + "/qi4j/jdbmstore.data";
-     *
-     * @return path to data file relative to current path
-     */
-    @Optional
-    Property<String> file();
+   /**
+    * The file where the JDBM data will be stored
+    * <p/>
+    * Default: System.getProperty( "user.dir" ) + "/qi4j/jdbmstore.data";
+    *
+    * @return path to data file relative to current path
+    */
+   @Optional
+   Property<String> file();
 
-    // JDBM RecordManager options
+   // JDBM RecordManager options
 
-    @UseDefaults
-    Property<Boolean> autoCommit();
+   @UseDefaults
+   Property<Boolean> autoCommit();
 
-    @UseDefaults
-    Property<Boolean> disableTransactions();
+   @UseDefaults
+   Property<Boolean> disableTransactions();
 }

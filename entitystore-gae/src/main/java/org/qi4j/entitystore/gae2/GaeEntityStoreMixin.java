@@ -18,28 +18,10 @@
 
 package org.qi4j.entitystore.gae2;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceConfig;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.QueryResultIterable;
-import com.google.appengine.api.datastore.ReadPolicy;
-import com.google.appengine.api.datastore.Text;
-import com.google.appengine.api.datastore.Transaction;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.util.concurrent.locks.ReadWriteLock;
+import com.google.appengine.api.datastore.*;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.io.Input;
 import org.qi4j.api.io.Output;
 import org.qi4j.api.io.Receiver;
@@ -49,185 +31,181 @@ import org.qi4j.entitystore.map.MapEntityStore;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entitystore.EntityStoreException;
-import org.qi4j.spi.service.ServiceDescriptor;
 
-import static com.google.appengine.api.datastore.DatastoreServiceConfig.Builder.*;
+import java.io.*;
+import java.util.concurrent.locks.ReadWriteLock;
+
+import static com.google.appengine.api.datastore.DatastoreServiceConfig.Builder.withReadPolicy;
 
 public class GaeEntityStoreMixin
-    implements Activatable, MapEntityStore
+        implements Activatable, MapEntityStore
 {
-    @This
-    private ReadWriteLock lock;
+   @This
+   private ReadWriteLock lock;
 
-    @This
-    private Configuration<GaeEntityStoreConfiguration> config;
+   @This
+   private Configuration<GaeEntityStoreConfiguration> config;
 
-    @Uses
-    private ServiceDescriptor descriptor;
+   private DatastoreService datastore;
+   private String entityKind;
 
-    private DatastoreService datastore;
-    private String entityKind;
+   public void activate()
+           throws Exception
+   {
+      GaeEntityStoreConfiguration conf = config.configuration();
+      // eventually consistent reads with a 5 second deadline
+      DatastoreServiceConfig configuration =
+              withReadPolicy(new ReadPolicy(ReadPolicy.Consistency.valueOf(conf.readPolicy().get().toUpperCase())))
+                      .deadline(conf.deadline().get());
+      datastore = DatastoreServiceFactory.getDatastoreService(configuration);
+      entityKind = conf.entityKind().get();
+      System.out.println("\nActivating Google App Engine Store" +
+              "\n----------------------------------" +
+              "\n      Read Policy: " + conf.readPolicy().get() +
+              "\n         Deadline: " + conf.deadline().get() +
+              "\n      Entity Kind: " + entityKind +
+              "\n        Datastore: " + datastore +
+              "\n    Configuration: " + configuration +
+              "\n"
+      );
+   }
 
-    public void activate()
-        throws Exception
-    {
-        GaeEntityStoreConfiguration conf = config.configuration();
-        // eventually consistent reads with a 5 second deadline
-        DatastoreServiceConfig configuration =
-            withReadPolicy( new ReadPolicy( ReadPolicy.Consistency.valueOf( conf.readPolicy().get().toUpperCase() ) ) )
-                .deadline( conf.deadline().get() );
-        datastore = DatastoreServiceFactory.getDatastoreService( configuration );
-        entityKind = conf.entityKind().get();
-        System.out.println( "\nActivating Google App Engine Store" +
-                            "\n----------------------------------" +
-                            "\n      Read Policy: " + conf.readPolicy().get() +
-                            "\n         Deadline: " + conf.deadline().get() +
-                            "\n      Entity Kind: " + entityKind +
-                            "\n        Datastore: " + datastore +
-                            "\n    Configuration: " + configuration +
-                            "\n"
-        );
-    }
+   public void passivate()
+           throws Exception
+   {
+      // TODO; How to shutdown gracefully?
+   }
 
-    public void passivate()
-        throws Exception
-    {
-        // TODO; How to shutdown gracefully?
-    }
+   public Reader get(EntityReference ref)
+           throws EntityStoreException
+   {
 
-    public Reader get( EntityReference ref )
-        throws EntityStoreException
-    {
+      try
+      {
+         Key key = KeyFactory.createKey(entityKind, ref.toURI());
+         Entity entity = datastore.get(key);
+         Text serializedState = (Text) entity.getProperty("value");
+         if (serializedState == null)
+         {
+            throw new EntityNotFoundException(ref);
+         }
+         return new StringReader(serializedState.getValue());
+      } catch (com.google.appengine.api.datastore.EntityNotFoundException e)
+      {
+         e.printStackTrace();
+         throw new EntityNotFoundException(ref);
+      }
+   }
 
-        try
-        {
-            Key key = KeyFactory.createKey( entityKind, ref.toURI() );
-            Entity entity = datastore.get( key );
-            Text serializedState = (Text) entity.getProperty( "value" );
-            if( serializedState == null )
+   public void applyChanges(MapChanges changes)
+           throws IOException
+
+   {
+      final Transaction transaction = datastore.beginTransaction();
+      try
+      {
+         changes.visitMap(new GaeMapChanger(transaction));
+         transaction.commit();
+      } catch (RuntimeException e)
+      {
+         if (transaction.isActive())
+         {
+            transaction.rollback();
+         }
+         if (e instanceof EntityStoreException)
+         {
+            throw (EntityStoreException) e;
+         } else
+         {
+            IOException exception = new IOException();
+            exception.initCause(e);
+            throw exception;
+         }
+      }
+   }
+
+   public Input<Reader, IOException> entityStates()
+   {
+      return new Input<Reader, IOException>()
+      {
+         @Override
+         public <ReceiverThrowableType extends Throwable> void transferTo(Output<? super Reader, ReceiverThrowableType> output) throws IOException, ReceiverThrowableType
+         {
+            Query query = new Query();
+            PreparedQuery preparedQuery = datastore.prepare(query);
+            final QueryResultIterable<Entity> iterable = preparedQuery.asQueryResultIterable();
+
+            output.receiveFrom(new Sender<Reader, IOException>()
             {
-                throw new EntityNotFoundException( ref );
-            }
-            return new StringReader( serializedState.getValue() );
-        }
-        catch( com.google.appengine.api.datastore.EntityNotFoundException e )
-        {
-            e.printStackTrace();
-            throw new EntityNotFoundException( ref );
-        }
-    }
+               @Override
+               public <ReceiverThrowableType extends Throwable> void sendTo(Receiver<? super Reader, ReceiverThrowableType> receiver) throws ReceiverThrowableType, IOException
+               {
+                  for (Entity entity : iterable)
+                  {
+                     Text serializedState = (Text) entity.getProperty("value");
+                     receiver.receive(new StringReader(serializedState.getValue()));
+                  }
+               }
+            });
+         }
+      };
+   }
 
-    public void applyChanges( MapChanges changes )
-        throws IOException
+   private class GaeMapChanger
+           implements MapChanger
+   {
+      private final Transaction transaction;
 
-    {
-        final Transaction transaction = datastore.beginTransaction();
-        try
-        {
-            changes.visitMap( new GaeMapChanger( transaction ) );
-            transaction.commit();
-        }
-        catch( RuntimeException e )
-        {
-            if( transaction.isActive() )
-            {
-                transaction.rollback();
-            }
-            if( e instanceof EntityStoreException )
-            {
-                throw (EntityStoreException) e;
-            }
-            else
-            {
-                IOException exception = new IOException();
-                exception.initCause( e );
-                throw exception;
-            }
-        }
-    }
+      public GaeMapChanger(Transaction transaction)
+      {
+         this.transaction = transaction;
+      }
 
-    public Input<Reader, IOException> entityStates()
-    {
-        return new Input<Reader, IOException>()
-        {
-            public <ReceiverThrowableType extends Throwable> void transferTo( Output<Reader, ReceiverThrowableType> output )
-                throws IOException, ReceiverThrowableType
-            {
-                Query query = new Query();
-                PreparedQuery preparedQuery = datastore.prepare( query );
-                final QueryResultIterable<Entity> iterable = preparedQuery.asQueryResultIterable();
-
-                output.receiveFrom( new Sender<Reader, IOException>()
-                {
-                    public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<Reader, ReceiverThrowableType> receiver )
-                        throws ReceiverThrowableType, IOException
-                    {
-                        for( Entity entity : iterable )
-                        {
-                            Text serializedState = (Text) entity.getProperty( "value" );
-                            receiver.receive( new StringReader( serializedState.getValue() ) );
-                        }
-                    }
-                });
-            }
-        };
-    }
-
-    private class GaeMapChanger
-        implements MapChanger
-    {
-        private final Transaction transaction;
-
-        public GaeMapChanger( Transaction transaction )
-        {
-            this.transaction = transaction;
-        }
-
-        public Writer newEntity( final EntityReference ref, final EntityType entityType )
-        {
-            return new StringWriter( 1000 )
-            {
-                @Override
-                public void close()
+      public Writer newEntity(final EntityReference ref, final EntityType entityType)
+      {
+         return new StringWriter(1000)
+         {
+            @Override
+            public void close()
                     throws IOException
-                {
-                    super.close();
-                    Key key = KeyFactory.createKey( entityKind, ref.toURI() );
-                    Entity entity = new Entity( key );
-                    Text value = new Text( toString() );
-                    entity.setUnindexedProperty( "value", value );
-                    entity.setProperty( "ref", ref.identity() );
-                    entity.setProperty( "type", entityType.uri() );
-                    datastore.put( transaction, entity );
-                }
-            };
-        }
-
-        public Writer updateEntity( final EntityReference ref, final EntityType entityType )
-        {
-            return new StringWriter( 1000 )
             {
-                @Override
-                public void close()
-                    throws IOException
-                {
-                    super.close();
-                    Key key = KeyFactory.createKey( entityKind, ref.toURI() );
-                    Entity entity = new Entity( key );
-                    Text value = new Text( toString() );
-                    entity.setUnindexedProperty( "value", value );
-                    entity.setProperty( "ref", ref.identity() );
-                    entity.setProperty( "type", entityType.uri() );
-                    datastore.put( transaction, entity );
-                }
-            };
-        }
+               super.close();
+               Key key = KeyFactory.createKey(entityKind, ref.toURI());
+               Entity entity = new Entity(key);
+               Text value = new Text(toString());
+               entity.setUnindexedProperty("value", value);
+               entity.setProperty("ref", ref.identity());
+               entity.setProperty("type", entityType.uri());
+               datastore.put(transaction, entity);
+            }
+         };
+      }
 
-        public void removeEntity( EntityReference ref, EntityType entityType )
-            throws EntityNotFoundException
-        {
-            Key key = KeyFactory.createKey( entityKind, ref.toURI() );
-            datastore.delete( transaction, key );
-        }
-    }
+      public Writer updateEntity(final EntityReference ref, final EntityType entityType)
+      {
+         return new StringWriter(1000)
+         {
+            @Override
+            public void close()
+                    throws IOException
+            {
+               super.close();
+               Key key = KeyFactory.createKey(entityKind, ref.toURI());
+               Entity entity = new Entity(key);
+               Text value = new Text(toString());
+               entity.setUnindexedProperty("value", value);
+               entity.setProperty("ref", ref.identity());
+               entity.setProperty("type", entityType.uri());
+               datastore.put(transaction, entity);
+            }
+         };
+      }
+
+      public void removeEntity(EntityReference ref, EntityType entityType)
+              throws EntityNotFoundException
+      {
+         Key key = KeyFactory.createKey(entityKind, ref.toURI());
+         datastore.delete(transaction, key);
+      }
+   }
 }

@@ -19,6 +19,7 @@
 package org.qi4j.index.reindexer.internal;
 
 import java.util.ArrayList;
+
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.Identity;
@@ -39,94 +40,93 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ReindexerMixin
-    implements Reindexer
+        implements Reindexer
 {
-    private static QualifiedName identityQN;
+   private static QualifiedName identityQN;
 
-    static
-    {
-        try
-        {
-            identityQN = QualifiedName.fromMethod( Identity.class.getMethod( "identity" ) );
-        }
-        catch( NoSuchMethodException e )
-        {
-            throw new InternalError( "Qi4j Core Runtime codebase is corrupted. Contact Qi4j team: ReindexerMixin" );
-        }
-    }
+   static
+   {
+      try
+      {
+         identityQN = QualifiedName.fromMethod(Identity.class.getMethod("identity"));
+      } catch (NoSuchMethodException e)
+      {
+         throw new InternalError("Qi4j Core Runtime codebase is corrupted. Contact Qi4j team: ReindexerMixin");
+      }
+   }
 
-    @This
-    private Configuration<ReindexerConfiguration> configuration;
+   @This
+   private Configuration<ReindexerConfiguration> configuration;
 
-    @Service
-    private EntityStore store;
-    @Service
-    private Iterable<ServiceReference<StateChangeListener>> listeners;
-    @Structure
-    private ModuleSPI module;
+   @Service
+   private EntityStore store;
+   @Service
+   private Iterable<ServiceReference<StateChangeListener>> listeners;
+   @Structure
+   private ModuleSPI module;
 
-    private Logger logger = LoggerFactory.getLogger( Reindexer.class );
+   private Logger logger = LoggerFactory.getLogger(Reindexer.class);
 
-    public void reindex()
-    {
-        configuration.refresh();
-        ReindexerConfiguration conf = configuration.configuration();
-        Integer loadValue = conf.loadValue().get();
-        if( loadValue == null )
-        {
-            loadValue = 50;
-        }
-        new ReindexerOutput( loadValue ).reindex( store );
-    }
+   public void reindex()
+   {
+      configuration.refresh();
+      ReindexerConfiguration conf = configuration.configuration();
+      Integer loadValue = conf.loadValue().get();
+      if (loadValue == null)
+      {
+         loadValue = 50;
+      }
+      new ReindexerOutput(loadValue).reindex(store);
+   }
 
-    private class ReindexerOutput
-        implements Output<EntityState, RuntimeException>, Receiver<EntityState, RuntimeException>
-    {
-        private int count;
-        private int loadValue;
-        private ArrayList<EntityState> states;
+   private class ReindexerOutput
+           implements Output<EntityState, RuntimeException>, Receiver<EntityState, RuntimeException>
+   {
+      private int count;
+      private int loadValue;
+      private ArrayList<EntityState> states;
 
-        public ReindexerOutput( Integer loadValue )
-        {
-            this.loadValue = loadValue;
-            states = new ArrayList<EntityState>();
-        }
+      public ReindexerOutput(Integer loadValue)
+      {
+         this.loadValue = loadValue;
+         states = new ArrayList<EntityState>();
+      }
 
-        public void reindex( EntityStore store )
-        {
+      public void reindex(EntityStore store)
+      {
 
-            store.entityStates( module ).transferTo( this);
+         store.entityStates(module).transferTo(this);
+         reindexState();
+      }
+
+      @Override
+      public <SenderThrowableType extends Throwable> void receiveFrom(Sender<? extends EntityState, SenderThrowableType> sender) throws RuntimeException, SenderThrowableType
+      {
+         sender.sendTo(this);
+         reindexState();
+      }
+
+      public void receive(EntityState item)
+              throws RuntimeException
+      {
+         count++;
+         item.setProperty(identityQN, item.identity().identity());
+         states.add(item);
+
+         if (states.size() >= loadValue)
+         {
             reindexState();
-        }
+         }
+      }
 
-        public <SenderThrowableType extends Throwable> void receiveFrom( Sender<EntityState, SenderThrowableType> sender )
-            throws RuntimeException, SenderThrowableType
-        {
-            sender.sendTo( this );
-            reindexState();
-        }
-
-        public void receive( EntityState item )
-            throws RuntimeException
-        {
-            count++;
-            item.setProperty( identityQN, item.identity().identity() );
-            states.add( item );
-
-            if( states.size() >= loadValue )
-            {
-                reindexState();
-            }
-        }
-
-        public void reindexState()
-        {
-            for( ServiceReference<StateChangeListener> listener : listeners )
-            {
-                listener.get().notifyChanges( states );
-            }
-            states.clear();
-            logger.debug( "Reindexed "+count+" entities" );
-        }
-    }
+      public void reindexState()
+      {
+         for (ServiceReference<StateChangeListener> listener : listeners)
+         {
+            listener.get().notifyChanges(states);
+         }
+         states.clear();
+         logger.debug("Reindexed " + count + " entities");
+      }
+   }
 }

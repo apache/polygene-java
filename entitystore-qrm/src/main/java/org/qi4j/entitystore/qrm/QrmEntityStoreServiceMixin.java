@@ -105,9 +105,9 @@ public class QrmEntityStoreServiceMixin
     {
         return new Input<EntityState,  EntityStoreException>()
         {
-            public <ReceiverThrowableType extends Throwable> void transferTo( Output<EntityState, ReceiverThrowableType> entityStateReceiverThrowableTypeOutput )
-                throws EntityStoreException, ReceiverThrowableType
-            {
+           @Override
+           public <ReceiverThrowableType extends Throwable> void transferTo(Output<? super EntityState, ReceiverThrowableType> receiverThrowableTypeOutput) throws EntityStoreException, ReceiverThrowableType
+           {
                 // Not yet implemented
             }
         };

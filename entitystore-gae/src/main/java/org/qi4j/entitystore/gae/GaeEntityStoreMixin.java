@@ -41,65 +41,65 @@ import org.qi4j.spi.structure.ModuleSPI;
  * GAE implementation of SerializationStore
  */
 public class GaeEntityStoreMixin
-    implements Activatable, EntityStore
+        implements Activatable, EntityStore
 {
-    private DatastoreService datastoreService;
-    private String uuid;
-    private long counter;
+   private DatastoreService datastoreService;
+   private String uuid;
+   private long counter;
 
-    public GaeEntityStoreMixin( @Service IdentityGenerator uuid )
-    {
-        System.out.println( "Initializing GAE EntityStore." );
-        this.uuid = uuid.generate( Identity.class ) + ":";
-        counter = 0L;
-    }
+   public GaeEntityStoreMixin(@Service IdentityGenerator uuid)
+   {
+      System.out.println("Initializing GAE EntityStore.");
+      this.uuid = uuid.generate(Identity.class) + ":";
+      counter = 0L;
+   }
 
-    public void activate()
-        throws Exception
-    {
-        datastoreService = DatastoreServiceFactory.getDatastoreService();
-    }
+   public void activate()
+           throws Exception
+   {
+      datastoreService = DatastoreServiceFactory.getDatastoreService();
+   }
 
-    public void passivate()
-        throws Exception
-    {
-    }
+   public void passivate()
+           throws Exception
+   {
+   }
 
-    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSPI module )
-    {
-        return new GaeEntityStoreUnitOfWork( datastoreService, generateId(), module );
-    }
+   public EntityStoreUnitOfWork newUnitOfWork(Usecase usecase, ModuleSPI module)
+   {
+      return new GaeEntityStoreUnitOfWork(datastoreService, generateId(), module);
+   }
 
-    public Input<EntityState, EntityStoreException> entityStates( final ModuleSPI module )
-    {
-        return new Input<EntityState, EntityStoreException>()
-        {
-            public <ReceiverThrowableType extends Throwable> void transferTo( Output<EntityState, ReceiverThrowableType> output )
-                throws EntityStoreException, ReceiverThrowableType
+   public Input<EntityState, EntityStoreException> entityStates(final ModuleSPI module)
+   {
+      return new Input<EntityState, EntityStoreException>()
+      {
+         @Override
+         public <ReceiverThrowableType extends Throwable> void transferTo(Output<? super EntityState, ReceiverThrowableType> output) throws EntityStoreException, ReceiverThrowableType
+         {
+            final GaeEntityStoreUnitOfWork euow = new GaeEntityStoreUnitOfWork(datastoreService, generateId(), module);
+            Query query = new Query();
+            PreparedQuery q = datastoreService.prepare(query);
+            final QueryResultIterable<Entity> iterable = q.asQueryResultIterable();
+
+            output.receiveFrom(new Sender<EntityState, EntityStoreException>()
             {
-                final GaeEntityStoreUnitOfWork euow = new GaeEntityStoreUnitOfWork( datastoreService, generateId(), module );
-                Query query = new Query();
-                PreparedQuery q = datastoreService.prepare( query );
-                final QueryResultIterable<Entity> iterable = q.asQueryResultIterable();
+               @Override
+               public <ReceiverThrowableType extends Throwable> void sendTo(Receiver<? super EntityState, ReceiverThrowableType> receiver) throws ReceiverThrowableType, EntityStoreException
+               {
+                  for (Entity entity : iterable)
+                  {
+                     EntityState entityState = new GaeEntityState(euow, entity, module);
+                     receiver.receive(entityState);
+                  }
+               }
+            });
+         }
+      };
+   }
 
-                output.receiveFrom( new Sender<EntityState, EntityStoreException>()
-                {
-                    public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<EntityState, ReceiverThrowableType> receiver )
-                        throws ReceiverThrowableType, EntityStoreException
-                    {
-                        for( Entity entity : iterable )
-                        {
-                            EntityState entityState = new GaeEntityState( euow, entity, module );
-                            receiver.receive( entityState );
-                        }
-                    }
-                });
-            }
-        };
-    }
-    
-    private String generateId()
-    {
-        return uuid + counter++;
-    }
+   private String generateId()
+   {
+      return uuid + counter++;
+   }
 }

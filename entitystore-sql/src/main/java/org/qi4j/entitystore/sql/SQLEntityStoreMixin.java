@@ -244,14 +244,14 @@ public class SQLEntityStoreMixin
     {
         return new Input<EntityState, EntityStoreException>()
         {
-            public <ReceiverThrowableType extends Throwable> void transferTo( Output<EntityState, ReceiverThrowableType> output )
-                throws EntityStoreException, ReceiverThrowableType
-            {
+           @Override
+           public <ReceiverThrowableType extends Throwable> void transferTo(Output<? super EntityState, ReceiverThrowableType> output) throws EntityStoreException, ReceiverThrowableType
+           {
                 output.receiveFrom( new Sender<EntityState, EntityStoreException>()
                 {
-                    public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<EntityState, ReceiverThrowableType> receiver )
-                        throws ReceiverThrowableType, EntityStoreException
-                    {
+                   @Override
+                   public <ReceiverThrowableType extends Throwable> void sendTo(Receiver<? super EntityState, ReceiverThrowableType> receiver) throws ReceiverThrowableType, EntityStoreException
+                   {
                         Connection connection = null;
                         PreparedStatement ps = null;
                         ResultSet rs = null;

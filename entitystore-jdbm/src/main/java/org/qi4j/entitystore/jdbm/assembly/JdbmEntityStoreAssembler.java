@@ -25,19 +25,19 @@ import org.qi4j.entitystore.jdbm.JdbmEntityStoreService;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 
 public class JdbmEntityStoreAssembler
-    implements Assembler
+        implements Assembler
 {
-    private Visibility visibility;
+   private Visibility visibility;
 
-    public JdbmEntityStoreAssembler( Visibility visibility )
-    {
-        this.visibility = visibility;
-    }
+   public JdbmEntityStoreAssembler(Visibility visibility)
+   {
+      this.visibility = visibility;
+   }
 
-    public void assemble( ModuleAssembly module )
-        throws AssemblyException
-    {
-        module.services( JdbmEntityStoreService.class ).visibleIn( visibility );
-        module.services( UuidIdentityGeneratorService.class ).visibleIn( visibility );
-    }
+   public void assemble(ModuleAssembly module)
+           throws AssemblyException
+   {
+      module.services(JdbmEntityStoreService.class).visibleIn(visibility);
+      module.services(UuidIdentityGeneratorService.class).visibleIn(visibility);
+   }
 }

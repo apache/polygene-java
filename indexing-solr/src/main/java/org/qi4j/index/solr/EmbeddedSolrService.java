@@ -6,10 +6,12 @@ import org.apache.solr.core.CoreContainer;
 import org.apache.solr.core.SolrConfig;
 import org.apache.solr.core.SolrCore;
 import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.library.fileconfig.FileConfiguration;
+import org.qi4j.spi.service.ServiceDescriptor;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -29,6 +31,9 @@ public interface EmbeddedSolrService extends Activatable, ServiceComposite
       public CoreContainer coreContainer;
       public EmbeddedSolrServer server;
 
+      @Uses
+      ServiceDescriptor descriptor;
+
       private SolrCore core;
 
       public void activate() throws Exception
@@ -38,9 +43,8 @@ public interface EmbeddedSolrService extends Activatable, ServiceComposite
 
          try
          {
-            File directory = new File( fileConfig.dataDirectory() + "/solr" );
+            File directory = new File( fileConfig.dataDirectory(), descriptor.identity() );
             directory.mkdir();
-
 
             System.setProperty( "solr.solr.home", directory.getAbsolutePath() );
 
