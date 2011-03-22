@@ -95,8 +95,9 @@ public class ApplicationTransactionTracker<ReceiverThrowableType extends Throwab
     {
         return new Output<TransactionApplicationEvents, ReceiverThrowableType>()
         {
-            public <SenderThrowableType extends Throwable> void receiveFrom( final Sender<TransactionApplicationEvents, SenderThrowableType> sender ) throws ReceiverThrowableType, SenderThrowableType
-            {
+           @Override
+           public <SenderThrowableType extends Throwable> void receiveFrom(final Sender<? extends TransactionApplicationEvents, SenderThrowableType> sender) throws ReceiverThrowableType, SenderThrowableType
+           {
                 if (!upToSpeed)
                 {
                     // The tracker has not handled successfully all transactions before,
@@ -119,8 +120,9 @@ public class ApplicationTransactionTracker<ReceiverThrowableType extends Throwab
                 {
                     output.receiveFrom( new Sender<TransactionApplicationEvents, SenderThrowableType>()
                     {
-                        public <ReceiverThrowableType extends Throwable> void sendTo( final Receiver<TransactionApplicationEvents, ReceiverThrowableType> receiver ) throws ReceiverThrowableType, SenderThrowableType
-                        {
+                       @Override
+                       public <ReceiverThrowableType extends Throwable> void sendTo(final Receiver<? super TransactionApplicationEvents, ReceiverThrowableType> receiver) throws ReceiverThrowableType, SenderThrowableType
+                       {
                             sender.sendTo( new Receiver<TransactionApplicationEvents, ReceiverThrowableType>()
                             {
                                 public void receive( TransactionApplicationEvents item ) throws ReceiverThrowableType

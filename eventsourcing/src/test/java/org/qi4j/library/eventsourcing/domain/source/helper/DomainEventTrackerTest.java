@@ -20,6 +20,7 @@ import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.io.Output;
 import org.qi4j.api.io.Outputs;
 import org.qi4j.api.io.Transforms;
 import org.qi4j.api.mixin.Mixins;
@@ -137,13 +138,14 @@ public class DomainEventTrackerTest
             {
                 config.configuration().enabled().set( true );
 
-                tracker = new DomainEventTracker(eventStream, eventSource, config, Transforms.map( new Function<UnitOfWorkDomainEventsValue, String>()
-                {
-                    public String map( UnitOfWorkDomainEventsValue unitOfWorkDomainEventsValue )
-                    {
-                        return unitOfWorkDomainEventsValue.toJSON();
-                    }
-                }, Outputs.systemOut()));
+               Output<UnitOfWorkDomainEventsValue,RuntimeException> map = Transforms.map(new Function<UnitOfWorkDomainEventsValue, String>()
+               {
+                  public String map(UnitOfWorkDomainEventsValue unitOfWorkDomainEventsValue)
+                  {
+                     return unitOfWorkDomainEventsValue.toJSON();
+                  }
+               }, Outputs.systemOut());
+               tracker = new DomainEventTracker(eventStream, eventSource, config, map);
 
                 tracker.start();
             }

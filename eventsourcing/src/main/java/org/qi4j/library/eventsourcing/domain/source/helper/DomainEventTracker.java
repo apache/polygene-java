@@ -43,7 +43,7 @@ public class DomainEventTracker
         implements Runnable, UnitOfWorkEventsListener
 {
     private Configuration<? extends DomainEventTrackerConfiguration> configuration;
-    private final Output<UnitOfWorkDomainEventsValue, IOException> output;
+    private final Output<UnitOfWorkDomainEventsValue, ? extends Throwable> output;
     private EventStream stream;
     private EventSource source;
     private boolean started = false;
@@ -51,7 +51,7 @@ public class DomainEventTracker
 
     public DomainEventTracker( EventStream stream, EventSource source,
                                Configuration<? extends DomainEventTrackerConfiguration> configuration,
-                               Output<UnitOfWorkDomainEventsValue, IOException> output )
+                               Output<UnitOfWorkDomainEventsValue, ? extends Throwable> output )
     {
         this.stream = stream;
         this.configuration = configuration;

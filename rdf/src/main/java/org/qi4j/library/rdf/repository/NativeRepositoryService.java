@@ -13,14 +13,15 @@
  */
 package org.qi4j.library.rdf.repository;
 
-import java.io.File;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.nativerdf.NativeStore;
+import org.qi4j.api.common.Optional;
 import org.qi4j.api.configuration.Configuration;
+import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
@@ -28,140 +29,151 @@ import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+import org.qi4j.library.fileconfig.FileConfiguration;
 
-@Mixins( { NativeRepositoryService.NativeRepositoryMixin.class } )
+import java.io.File;
+
+@Mixins({NativeRepositoryService.NativeRepositoryMixin.class})
 public interface NativeRepositoryService extends Repository, ServiceComposite, Activatable
 {
-    public static class NativeRepositoryMixin
-        implements Repository, ResetableRepository, Activatable
-    {
-        @This
-        private Configuration<NativeConfiguration> configuration;
+   public static class NativeRepositoryMixin
+           implements Repository, ResetableRepository, Activatable
+   {
+      @Optional
+      @Service
+      FileConfiguration fileConfiguration;
 
-        @Structure
-        private UnitOfWorkFactory uowf;
-        
-        private SailRepository repo;
-        private boolean isNotInitialized;
+      @This
+      private Configuration<NativeConfiguration> configuration;
 
-        public NativeRepositoryMixin()
-        {
-            isNotInitialized = true;
-            repo = new SailRepository( new NativeStore() );
-        }
+      @Structure
+      private UnitOfWorkFactory uowf;
 
-        public void activate()
-            throws UnitOfWorkCompletionException, RepositoryException
-        {
-            String dataDir = configuration.configuration().dataDirectory().get();
-            if( dataDir == null || "".equals( dataDir ) )
+      private SailRepository repo;
+      private boolean isNotInitialized;
+
+      public NativeRepositoryMixin()
+      {
+         isNotInitialized = true;
+         repo = new SailRepository(new NativeStore());
+      }
+
+      public void activate()
+              throws UnitOfWorkCompletionException, RepositoryException
+      {
+         String dataDir = configuration.configuration().dataDirectory().get();
+         if (dataDir == null || "".equals(dataDir))
+         {
+            if (fileConfiguration != null)
             {
-                String id = configuration.configuration().identity().get();
-                if( id == null || "".equals( id ) )
-                {
-                    dataDir = "./rdf/repositories/qi4j";
-                }
-                else
-                {
-                    dataDir = "./rdf/repositories/" + id;
-                }
-                configuration.configuration().dataDirectory().set( dataDir );
-                configuration.save();
-            }
-            initializeRepository( new File( dataDir ) );
-        }
-
-        public void passivate()
-            throws Exception
-        {
-            repo.shutDown();
-        }
-
-        public void setDataDir( File dataDir )
-        {
-            repo.setDataDir( dataDir );
-        }
-
-        public File getDataDir()
-        {
-            return repo.getDataDir();
-        }
-
-        public void initialize()
-            throws RepositoryException
-        {
-            repo.initialize();
-        }
-
-        public void shutDown()
-            throws RepositoryException
-        {
-        }
-
-        public boolean isWritable()
-            throws RepositoryException
-        {
-            return repo.isWritable();
-        }
-
-        public RepositoryConnection getConnection()
-            throws RepositoryException
-        {
-            if( isNotInitialized )
+               dataDir = new File(fileConfiguration.dataDirectory(), configuration.configuration().identity().get()).getAbsolutePath();
+            } else
             {
-                return null;
+               String id = configuration.configuration().identity().get();
+               if (id == null || "".equals(id))
+               {
+                  dataDir = "./rdf/repositories/qi4j";
+               } else
+               {
+                  dataDir = "./rdf/repositories/" + id;
+               }
             }
-            return repo.getConnection();
-        }
+            configuration.configuration().dataDirectory().set(dataDir);
+            configuration.save();
+         }
+         initializeRepository(new File(dataDir));
+      }
 
-        public ValueFactory getValueFactory()
-        {
-            return repo.getValueFactory();
-        }
+      public void passivate()
+              throws Exception
+      {
+         repo.shutDown();
+      }
 
-        public void discardEntireRepository()
-            throws RepositoryException
-        {
-            File dataDir = repo.getDataDir();
-            repo.shutDown();
-            delete( dataDir );
-            initializeRepository( dataDir );
-        }
+      public void setDataDir(File dataDir)
+      {
+         repo.setDataDir(dataDir);
+      }
 
-        private void delete( File dataDir )
-        {
-            File[] children = dataDir.listFiles();
-            for( File child : children )
+      public File getDataDir()
+      {
+         return repo.getDataDir();
+      }
+
+      public void initialize()
+              throws RepositoryException
+      {
+         repo.initialize();
+      }
+
+      public void shutDown()
+              throws RepositoryException
+      {
+      }
+
+      public boolean isWritable()
+              throws RepositoryException
+      {
+         return repo.isWritable();
+      }
+
+      public RepositoryConnection getConnection()
+              throws RepositoryException
+      {
+         if (isNotInitialized)
+         {
+            return null;
+         }
+         return repo.getConnection();
+      }
+
+      public ValueFactory getValueFactory()
+      {
+         return repo.getValueFactory();
+      }
+
+      public void discardEntireRepository()
+              throws RepositoryException
+      {
+         File dataDir = repo.getDataDir();
+         repo.shutDown();
+         delete(dataDir);
+         initializeRepository(dataDir);
+      }
+
+      private void delete(File dataDir)
+      {
+         File[] children = dataDir.listFiles();
+         for (File child : children)
+         {
+            if (child.isDirectory())
             {
-                if( child.isDirectory() )
-                {
-                    delete( child );
-                }
-                else
-                {
-                    //noinspection ResultOfMethodCallIgnored
-                    child.delete();
-                }
-            }
-        }
-
-        private void initializeRepository( File dataDir )
-            throws RepositoryException
-        {
-            String tripleIndexes = configuration.configuration().tripleIndexes().get();
-            if( tripleIndexes == null )
+               delete(child);
+            } else
             {
-                tripleIndexes = "";
-                configuration.configuration().tripleIndexes().set( tripleIndexes );
+               //noinspection ResultOfMethodCallIgnored
+               child.delete();
             }
-            boolean forceSync = configuration.configuration().forceSync().get();
+         }
+      }
 
-            NativeStore store = (NativeStore) repo.getSail();
-            store.setDataDir( dataDir );
-            store.setTripleIndexes( tripleIndexes );
-            store.setForceSync( forceSync );
-            repo.initialize();
-            isNotInitialized = false;
-        }
-    }
+      private void initializeRepository(File dataDir)
+              throws RepositoryException
+      {
+         String tripleIndexes = configuration.configuration().tripleIndexes().get();
+         if (tripleIndexes == null)
+         {
+            tripleIndexes = "";
+            configuration.configuration().tripleIndexes().set(tripleIndexes);
+         }
+         boolean forceSync = configuration.configuration().forceSync().get();
+
+         NativeStore store = (NativeStore) repo.getSail();
+         store.setDataDir(dataDir);
+         store.setTripleIndexes(tripleIndexes);
+         store.setForceSync(forceSync);
+         repo.initialize();
+         isNotInitialized = false;
+      }
+   }
 }

@@ -24,34 +24,36 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
+import org.qi4j.library.fileconfig.FileConfiguration;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**
  * JAVADOC
  */
 public class NativeRepositoryTest
-    extends AbstractQi4jTest
+        extends AbstractQi4jTest
 {
-    @Service
-    Repository repository;
+   @Service
+   Repository repository;
 
-    public void assemble( ModuleAssembly module ) throws AssemblyException
-    {
-        module.services( MemoryEntityStoreService.class );
-        module.services( NativeRepositoryService.class ).instantiateOnStartup();
-        module.entities( NativeConfiguration.class );
-        module.objects( getClass() );
-    }
+   public void assemble(ModuleAssembly module) throws AssemblyException
+   {
+      module.services(MemoryEntityStoreService.class);
+      module.services(FileConfiguration.class).instantiateOnStartup();
+      module.services(NativeRepositoryService.class).instantiateOnStartup();
+      module.entities(NativeConfiguration.class);
+      module.objects(getClass());
+   }
 
-    @Test
-    public void testNativeRepository() throws RepositoryException
-    {
-        objectBuilderFactory.newObjectBuilder( NativeRepositoryTest.class ).injectTo( this );
+   @Test
+   public void testNativeRepository() throws RepositoryException
+   {
+      objectBuilderFactory.newObjectBuilder(NativeRepositoryTest.class).injectTo(this);
 
-        RepositoryConnection conn = repository.getConnection();
+      RepositoryConnection conn = repository.getConnection();
 
-        Assert.assertThat( "repository is open", conn.isOpen(), CoreMatchers.equalTo( true ) );
+      Assert.assertThat("repository is open", conn.isOpen(), CoreMatchers.equalTo(true));
 
-        conn.close();
-    }
+      conn.close();
+   }
 }

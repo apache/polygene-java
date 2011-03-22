@@ -85,8 +85,9 @@ public interface JdbmEventStoreService
         {
             return Transforms.lock( JdbmEventStoreMixin.this.lock, new Output<String, IOException>()
             {
-                public <SenderThrowableType extends Throwable> void receiveFrom( Sender<String, SenderThrowableType> sender ) throws IOException, SenderThrowableType
-                {
+               @Override
+               public <SenderThrowableType extends Throwable> void receiveFrom(Sender<? extends String, SenderThrowableType> sender) throws IOException, SenderThrowableType
+               {
                     try
                     {
                         sender.sendTo( new Receiver<String, IOException>()
@@ -132,12 +133,14 @@ public interface JdbmEventStoreService
         {
             return new Input<UnitOfWorkDomainEventsValue, IOException>()
             {
-                public <ReceiverThrowableType extends Throwable> void transferTo( Output<UnitOfWorkDomainEventsValue, ReceiverThrowableType> output ) throws IOException, ReceiverThrowableType
-                {
+               @Override
+               public <ReceiverThrowableType extends Throwable> void transferTo(Output<? super UnitOfWorkDomainEventsValue, ReceiverThrowableType> output) throws IOException, ReceiverThrowableType
+               {
                     output.receiveFrom( new Sender<UnitOfWorkDomainEventsValue, IOException>()
                     {
-                        public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<UnitOfWorkDomainEventsValue, ReceiverThrowableType> receiver ) throws ReceiverThrowableType, IOException
-                        {
+                       @Override
+                       public <ReceiverThrowableType extends Throwable> void sendTo(Receiver<? super UnitOfWorkDomainEventsValue, ReceiverThrowableType> receiver) throws ReceiverThrowableType, IOException
+                       {
                             // Lock datastore first
                             lock();
 

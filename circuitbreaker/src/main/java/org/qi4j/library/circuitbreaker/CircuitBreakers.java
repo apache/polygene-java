@@ -29,11 +29,13 @@ public class CircuitBreakers
    {
       return new Output<Item, ReceiverThrowable>()
       {
-         public <SenderThrowableType extends Throwable> void receiveFrom( final Sender<Item, SenderThrowableType> sender ) throws ReceiverThrowable, SenderThrowableType
+         @Override
+         public <SenderThrowableType extends Throwable> void receiveFrom(final Sender<? extends Item, SenderThrowableType> sender) throws ReceiverThrowable, SenderThrowableType
          {
             output.receiveFrom( new Sender<Item, SenderThrowableType>()
             {
-               public <ReceiverThrowableType extends Throwable> void sendTo( final Receiver<Item, ReceiverThrowableType> receiver ) throws ReceiverThrowableType, SenderThrowableType
+               @Override
+               public <ReceiverThrowableType extends Throwable> void sendTo(final Receiver<? super Item, ReceiverThrowableType> receiver) throws ReceiverThrowableType, SenderThrowableType
                {
                   // Check breaker first
                   if (!breaker.isOn())
