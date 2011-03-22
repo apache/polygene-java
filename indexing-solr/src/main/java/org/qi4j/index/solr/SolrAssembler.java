@@ -38,7 +38,7 @@ public class SolrAssembler
       NamedQueryDescriptor queryDescriptor = new NamedSolrDescriptor( "search", "" );
       namedQueries.addQuery( queryDescriptor );
       module.services( SolrQueryService.class ).
-            setMetaInfo( tags( "solr","search" ) ).
+            taggedWith( "solr","search" ).
             setMetaInfo( namedQueries ).
             identifiedBy( "solrquery" ).
             visibleIn( Visibility.application );

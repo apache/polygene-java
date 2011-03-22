@@ -21,7 +21,6 @@ import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.io.Input;
 import org.qi4j.api.io.Output;
 import org.qi4j.api.io.Receiver;
@@ -33,13 +32,11 @@ import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entitystore.BackupRestore;
 import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entitystore.EntityStoreException;
-import org.qi4j.spi.service.ServiceDescriptor;
 
 import java.io.*;
-import java.util.concurrent.locks.ReadWriteLock;
 
 /**
- * JDBM implementation of SerializationStore
+ * JDBM implementation of MapEntityStore
  */
 public class FileEntityStoreMixin
         implements Activatable, MapEntityStore, BackupRestore
