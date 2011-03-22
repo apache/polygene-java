@@ -19,10 +19,14 @@ import java.util.List;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.AmbiguousTypeException;
+import org.qi4j.api.specification.Specification;
+import org.qi4j.api.util.Function;
+import org.qi4j.api.util.Iterables;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.composite.TransientModel;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
+import org.qi4j.runtime.service.ServiceModel;
 import org.qi4j.spi.structure.LayerDescriptor;
 
 /**
@@ -88,51 +92,6 @@ public final class LayerModel
     }
 
     // Context
-
-    public TransientModel findCompositeFor( Class mixinType, Visibility visibility )
-    {
-        // Check this layer
-        TransientModel foundModel = null;
-        for( ModuleModel model : modules )
-        {
-            TransientModel transientModel = model.composites().getCompositeModelFor( mixinType, visibility );
-            if( transientModel != null )
-            {
-                if( foundModel != null )
-                {
-                    throw new AmbiguousTypeException( mixinType, foundModel.type(), transientModel.type() );
-                }
-                else
-                {
-                    foundModel = transientModel;
-                }
-            }
-        }
-
-        if( foundModel != null )
-        {
-            return foundModel;
-        }
-
-        if( visibility == Visibility.layer )
-        {
-            // Check application scope
-            foundModel = findCompositeFor( mixinType, Visibility.application );
-            if( foundModel != null )
-            {
-                return foundModel;
-            }
-            else
-            {
-                return usedLayersModel.findCompositeFor( mixinType );
-            }
-        }
-        else
-        {
-            return null;
-        }
-    }
-
     public LayerInstance newInstance( ApplicationInstance applicationInstance, UsedLayersInstance usedLayerInstance )
     {
         List<ModuleInstance> moduleInstances = new ArrayList<ModuleInstance>();

@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.runtime.structure;
+package org.qi4j.runtime.entity;
 
 import java.util.List;
 import org.qi4j.api.common.Visibility;
@@ -21,6 +21,7 @@ import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
+import org.qi4j.runtime.structure.ModelVisitor;
 
 /**
  * Model of entities in a particular Module.
@@ -59,7 +60,7 @@ public class EntitiesModel
         EntityModel foundModel = null;
         for( EntityModel entityModel : entityModels )
         {
-            if( mixinType.isAssignableFrom( entityModel.type() ) && entityModel.visibility() == visibility )
+            if( mixinType.isAssignableFrom( entityModel.type() ) && entityModel.visibility().ordinal() >= visibility.ordinal() )
             {
                 if( foundModel != null )
                 {

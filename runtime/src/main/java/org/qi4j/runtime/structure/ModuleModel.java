@@ -14,13 +14,13 @@
 
 package org.qi4j.runtime.structure;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.BindingException;
-import org.qi4j.runtime.composite.CompositesModel;
+import org.qi4j.runtime.composite.TransientsModel;
+import org.qi4j.runtime.entity.EntitiesModel;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.object.ObjectsModel;
@@ -36,7 +36,7 @@ public class ModuleModel
     implements Binder, ModuleDescriptor
 {
     private LayerModel layerModel;
-    private final CompositesModel compositesModel;
+    private final TransientsModel transientsModel;
     private final EntitiesModel entitiesModel;
     private final ObjectsModel objectsModel;
     private final ValuesModel valuesModel;
@@ -48,7 +48,7 @@ public class ModuleModel
     private MetaInfo metaInfo;
 
     public ModuleModel( String name,
-                        MetaInfo metaInfo, CompositesModel compositesModel,
+                        MetaInfo metaInfo, TransientsModel transientsModel,
                         EntitiesModel entitiesModel,
                         ObjectsModel objectsModel,
                         ValuesModel valuesModel,
@@ -58,7 +58,7 @@ public class ModuleModel
     {
         this.name = name;
         this.metaInfo = metaInfo;
-        this.compositesModel = compositesModel;
+        this.transientsModel = transientsModel;
         this.entitiesModel = entitiesModel;
         this.objectsModel = objectsModel;
         this.valuesModel = valuesModel;
@@ -78,9 +78,9 @@ public class ModuleModel
         return metaInfo.get( infoType );
     }
 
-    public CompositesModel composites()
+    public TransientsModel composites()
     {
-        return compositesModel;
+        return transientsModel;
     }
 
     public EntitiesModel entities()
@@ -118,7 +118,7 @@ public class ModuleModel
     {
         modelVisitor.visit( this );
 
-        compositesModel.visitModel( modelVisitor );
+        transientsModel.visitModel( modelVisitor );
         entitiesModel.visitModel( modelVisitor );
         servicesModel.visitModel( modelVisitor );
         importedServicesModel.visitModel( modelVisitor );
@@ -148,7 +148,7 @@ public class ModuleModel
 
         resolution = new Resolution( resolution.application(), resolution.layer(), this, null, null, null );
 
-        compositesModel.bind( resolution );
+        transientsModel.bind( resolution );
         entitiesModel.bind( resolution );
         servicesModel.bind( resolution );
         objectsModel.bind( resolution );
@@ -159,21 +159,13 @@ public class ModuleModel
 
     public ModuleInstance newInstance( LayerInstance layerInstance )
     {
-        return new ModuleInstance( this, layerInstance, compositesModel, entitiesModel, objectsModel, valuesModel, servicesModel, importedServicesModel );
+        return new ModuleInstance( this, layerInstance, transientsModel, entitiesModel, objectsModel, valuesModel, servicesModel, importedServicesModel );
     }
 
     @Override
     public String toString()
     {
         return name;
-    }
-
-    private void readObject( java.io.ObjectInputStream in )
-        throws IOException, ClassNotFoundException
-    {
-        in.defaultReadObject();
-
-        classLoader = new ModuleClassLoader( Thread.currentThread().getContextClassLoader() );
     }
 
     private class ModuleClassLoader

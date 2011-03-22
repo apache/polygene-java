@@ -40,5 +40,7 @@ public interface ServiceDeclaration
 
     ServiceDeclaration identifiedBy( String identity );
 
+    ServiceDeclaration taggedWith( String... tags );
+
     ServiceDeclaration instantiateOnStartup();
 }

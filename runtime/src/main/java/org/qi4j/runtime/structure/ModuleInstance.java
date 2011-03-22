@@ -46,10 +46,12 @@ import org.qi4j.api.util.NullArgumentException;
 import org.qi4j.api.value.NoSuchValueException;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
-import org.qi4j.runtime.composite.CompositesModel;
+import org.qi4j.runtime.composite.TransientsModel;
 import org.qi4j.runtime.composite.TransientBuilderInstance;
 import org.qi4j.runtime.composite.TransientModel;
 import org.qi4j.runtime.composite.UsesInstance;
+import org.qi4j.runtime.entity.EntitiesInstance;
+import org.qi4j.runtime.entity.EntitiesModel;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.object.ObjectBuilderInstance;
@@ -99,7 +101,7 @@ public class ModuleInstance
     private final Map<Class, ObjectFinder> objectFinders;
     private final Map<Class, ValueFinder> valueFinders;
 
-    public ModuleInstance( ModuleModel moduleModel, LayerInstance layerInstance, CompositesModel compositesModel,
+    public ModuleInstance( ModuleModel moduleModel, LayerInstance layerInstance, TransientsModel transientsModel,
                            EntitiesModel entitiesModel, ObjectsModel objectsModel, ValuesModel valuesModel,
                            ServicesModel servicesModel, ImportedServicesModel importedServicesModel
     )

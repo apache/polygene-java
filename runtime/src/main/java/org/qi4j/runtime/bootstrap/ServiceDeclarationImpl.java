@@ -14,16 +14,20 @@
 
 package org.qi4j.runtime.bootstrap;
 
-import java.io.Serializable;
-import java.util.Arrays;
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.service.qualifier.ServiceTags;
 import org.qi4j.bootstrap.ServiceDeclaration;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Declaration of a Service. Created by {@link org.qi4j.runtime.bootstrap.ModuleAssemblyImpl#services(Class[])}.
  */
 public final class ServiceDeclarationImpl
-    implements ServiceDeclaration, Serializable
+        implements ServiceDeclaration, Serializable
 {
     private Iterable<ServiceAssemblyImpl> serviceAssemblies;
 
@@ -47,6 +51,33 @@ public final class ServiceDeclarationImpl
         {
             serviceAssembly.identity = identity;
         }
+        return this;
+    }
+
+    @Override
+    public ServiceDeclaration taggedWith( String... tags )
+    {
+        for( ServiceAssemblyImpl serviceAssembly : serviceAssemblies )
+        {
+            ServiceTags previousTags = serviceAssembly.metaInfo.get( ServiceTags.class );
+            if (previousTags != null)
+            {
+                List<String> tagList = new ArrayList<String>();
+                for( String tag : previousTags.tags() )
+                {
+                    tagList.add( tag );
+                }
+                for( String tag : tags )
+                {
+                    tagList.add( tag );
+                }
+                serviceAssembly.metaInfo.set( new ServiceTags( tagList.toArray( new String[tagList.size()] )) );
+            } else
+            {
+                serviceAssembly.metaInfo.set( new ServiceTags(tags) );
+            }
+        }
+
         return this;
     }
 

@@ -14,7 +14,6 @@
 
 package org.qi4j.runtime.bootstrap;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -30,12 +29,12 @@ import org.qi4j.api.service.DuplicateServiceIdentityException;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.api.specification.Specification;
-import org.qi4j.api.specification.Specifications;
 import org.qi4j.api.util.Iterables;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.*;
-import org.qi4j.runtime.composite.CompositesModel;
+import org.qi4j.runtime.composite.TransientsModel;
 import org.qi4j.runtime.composite.TransientModel;
+import org.qi4j.runtime.entity.EntitiesModel;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.object.ObjectModel;
 import org.qi4j.runtime.object.ObjectsModel;
@@ -43,7 +42,6 @@ import org.qi4j.runtime.service.ImportedServiceModel;
 import org.qi4j.runtime.service.ImportedServicesModel;
 import org.qi4j.runtime.service.ServiceModel;
 import org.qi4j.runtime.service.ServicesModel;
-import org.qi4j.runtime.structure.EntitiesModel;
 import org.qi4j.runtime.structure.ModuleModel;
 import org.qi4j.runtime.value.ValueModel;
 import org.qi4j.runtime.value.ValuesModel;
@@ -383,7 +381,7 @@ public final class ModuleAssemblyImpl
       }
 
       ModuleModel moduleModel = new ModuleModel(name,
-              metaInfo, new CompositesModel(transientModels),
+              metaInfo, new TransientsModel(transientModels),
               new EntitiesModel(entityModels),
               new ObjectsModel(objectModels),
               new ValuesModel(valueModels),

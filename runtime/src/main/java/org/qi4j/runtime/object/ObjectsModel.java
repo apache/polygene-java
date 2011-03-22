@@ -59,7 +59,7 @@ public class ObjectsModel
         ObjectModel foundModel = null;
         for( ObjectModel objectModel : objectModels )
         {
-            if( type.isAssignableFrom( objectModel.type() ) && objectModel.visibility() == visibility )
+            if( type.isAssignableFrom( objectModel.type() ) && objectModel.visibility().ordinal() >= visibility.ordinal() )
             {
                 if( foundModel != null )
                 {

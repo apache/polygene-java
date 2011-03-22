@@ -60,7 +60,12 @@ public class ServicesModel
         return new ServicesInstance( this, serviceReferences );
     }
 
-    public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
+   public Iterable<ServiceModel> services()
+   {
+      return serviceModels;
+   }
+
+   public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
         throws ThrowableType
     {
         for( ServiceModel serviceModel : serviceModels )

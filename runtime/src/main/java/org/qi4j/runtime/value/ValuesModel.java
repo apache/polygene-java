@@ -61,7 +61,7 @@ public final class ValuesModel
         {
             for( ValueModel valueModel : valueModels )
             {
-                if( valueType.equals( valueModel.type() ) && valueModel.visibility() == visibility )
+                if( valueType.equals( valueModel.type() ) && valueModel.visibility().ordinal() >= visibility.ordinal())
                 {
                     if( foundModel != null )
                     {
@@ -78,7 +78,7 @@ public final class ValuesModel
         {
             for( ValueModel valueModel : valueModels )
             {
-                if( valueType.isAssignableFrom( valueModel.type() ) && valueModel.visibility() == visibility )
+                if( valueType.isAssignableFrom( valueModel.type() ) && valueModel.visibility().ordinal() >= visibility.ordinal() )
                 {
                     if( foundModel != null )
                     {

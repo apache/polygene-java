@@ -96,7 +96,7 @@ public final class ImportedServiceModel
     public boolean isServiceFor( Type serviceType, Visibility visibility )
     {
         // Check visibility
-        if( visibility != this.visibility )
+        if( visibility().ordinal() < visibility.ordinal() )
         {
             return false;
         }

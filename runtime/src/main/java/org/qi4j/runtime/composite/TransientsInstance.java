@@ -19,19 +19,19 @@ import org.qi4j.runtime.structure.ModuleInstance;
 /**
  * JAVADOC
  */
-public class CompositesInstance
+public class TransientsInstance
 {
-    private final CompositesModel composites;
+    private final TransientsModel transients;
     private final ModuleInstance moduleInstance;
 
-    public CompositesInstance( CompositesModel composites, ModuleInstance moduleInstance )
+    public TransientsInstance( TransientsModel transients, ModuleInstance moduleInstance )
     {
-        this.composites = composites;
+        this.transients = transients;
         this.moduleInstance = moduleInstance;
     }
 
-    public CompositesModel model()
+    public TransientsModel model()
     {
-        return composites;
+        return transients;
     }
 }

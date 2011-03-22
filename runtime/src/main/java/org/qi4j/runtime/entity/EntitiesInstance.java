@@ -12,12 +12,13 @@
  *
  */
 
-package org.qi4j.runtime.structure;
+package org.qi4j.runtime.entity;
 
 import org.qi4j.api.entity.IdentityGenerator;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.unitofwork.UnitOfWorkException;
+import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.entitystore.EntityStore;
 
 /**

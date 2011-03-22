@@ -17,7 +17,8 @@ package org.qi4j.api.service.qualifier;
 import java.io.Serializable;
 
 /**
- * Use this as metainfo about a Service to specify tags.
+ * Use this as metainfo about a Service to specify tags. Easiest way to set them on a service
+ * is to use the ServiceDeclaration.taggedWith(String...) method.
  *
  * These can be used in conjunction with the withTags() Service
  * Selector.
@@ -25,11 +26,6 @@ import java.io.Serializable;
 public final class ServiceTags
     implements Serializable
 {
-    public static ServiceTags tags( String... tags )
-    {
-        return new ServiceTags( tags );
-    }
-
     private String[] tags;
 
     public ServiceTags( String... tags )

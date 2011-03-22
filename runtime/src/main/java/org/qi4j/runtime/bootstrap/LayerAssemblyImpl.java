@@ -274,6 +274,16 @@ public final class LayerAssemblyImpl
             }
 
             @Override
+            public ServiceDeclaration taggedWith( String... tags )
+            {
+                for( ServiceDeclaration declaration : declarations )
+                {
+                    declaration.taggedWith( tags );
+                }
+                return this;
+            }
+
+            @Override
             public ServiceDeclaration instantiateOnStartup()
             {
                 for( ServiceDeclaration declaration : declarations )

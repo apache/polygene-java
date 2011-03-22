@@ -27,12 +27,12 @@ import org.qi4j.runtime.structure.ModelVisitor;
 /**
  * JAVADOC
  */
-public class CompositesModel
+public class TransientsModel
     implements Binder, Serializable
 {
     private final List<? extends TransientModel> compositeModels;
 
-    public CompositesModel( List<? extends TransientModel> compositeModels )
+    public TransientsModel( List<? extends TransientModel> compositeModels )
     {
         this.compositeModels = compositeModels;
     }
@@ -62,7 +62,7 @@ public class CompositesModel
         {
             if( Composite.class.isAssignableFrom( mixinType ) )
             {
-                if( mixinType.equals( aTransient.type() ) && aTransient.visibility() == visibility )
+                if( mixinType.equals( aTransient.type() ) && aTransient.visibility().ordinal() >= visibility.ordinal())
                 {
                     if( foundModel != null )
                     {
