@@ -19,9 +19,10 @@ package org.qi4j.entitystore.file;
 import java.io.File;
 import org.junit.After;
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.service.ServiceReference;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
+import org.qi4j.test.performance.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.library.fileconfig.FileConfiguration;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
@@ -41,29 +42,5 @@ public class FileEntityStoreTest
         ModuleAssembly config = module.layer().module( "config" );
         config.entities( FileEntityStoreConfiguration.class ).visibleIn( Visibility.layer );
         config.services( MemoryEntityStoreService.class );
-    }
-
-    @Override
-    @After
-    public void tearDown()
-        throws Exception
-    {
-        super.tearDown();
-        File rootDirectory = new File( System.getProperty("user.dir"), "qi4j/filestore/" );
-        deleteDir( rootDirectory );
-    }
-
-    @SuppressWarnings( { "ResultOfMethodCallIgnored" } )
-    private void deleteDir( File dir )
-    {
-        File[] files = dir.listFiles();
-        for( File file : files )
-        {
-            if( file.isDirectory())
-                deleteDir( file );
-            else
-                file.delete();
-        }
-        dir.delete();
     }
 }

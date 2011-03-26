@@ -1,25 +1,20 @@
 /*
- * Copyright 2009 Niclas Hedhman.
+ * Copyright (c) 2010, Rickard Öberg. All Rights Reserved.
  *
- * Licensed  under the  Apache License,  Version 2.0  (the "License");
- * you may not use  this file  except in  compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed  under the  License is distributed on an "AS IS" BASIS,
- * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
- * implied.
- *
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
  */
 
-package org.qi4j.index.rdf;
+package org.qi4j.index.rdf.qi236;
 
-import org.junit.Assert;
-import org.junit.Ignore;
+import junit.framework.Assert;
 import org.junit.Test;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
@@ -33,11 +28,13 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.performance.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.index.rdf.assembly.RdfMemoryStoreAssembler;
-import org.qi4j.spi.util.CollectionUtils;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
 
-public class QueryOfPropertySubTypeTest
+/**
+ * JAVADOC
+ */
+public class Qi236IssueTest
     extends AbstractQi4jTest
 {
 
@@ -89,14 +86,15 @@ public class QueryOfPropertySubTypeTest
             Query<FlatEntity> query = queryBuilder.newQuery( uow );
             query.maxResults( 1 );
 
-            FlatEntity foundByName = (FlatEntity) CollectionUtils.firstElementOrNull( query );
+            FlatEntity foundByName = query.find();
             Assert.assertEquals( "Bob", foundByName.name().get() );
 
             uow.complete();
         }
     }
 
-    @Ignore( "// FIXME : This one do not work." )
+    // FIXME : This one do not work.
+
     @Test
     public void givenAnEntityWithSubtypedPropertyWhenQueriedOnPropertyThenJustWork()
         throws UnitOfWorkCompletionException
@@ -120,7 +118,7 @@ public class QueryOfPropertySubTypeTest
             Query<WoupsEntity> query = queryBuilder.newQuery( uow );
             query.maxResults( 1 );
 
-            WoupsEntity foundByName = (WoupsEntity) CollectionUtils.firstElementOrNull( query );
+            WoupsEntity foundByName = query.find();
             Assert.assertEquals( "Bob", foundByName.name().get() );
 
             uow.complete();

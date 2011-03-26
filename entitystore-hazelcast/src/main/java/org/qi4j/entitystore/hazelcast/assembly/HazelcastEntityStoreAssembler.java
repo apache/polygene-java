@@ -6,7 +6,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.hazelcast.HazelcastConfiguration;
 import org.qi4j.entitystore.hazelcast.HazelcastEntityStoreService;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
+import org.qi4j.test.performance.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 
 /**

@@ -35,7 +35,7 @@ import org.qi4j.test.AbstractQi4jTest;
 public class ImportedDataSourceServiceTest extends AbstractQi4jTest
 {
 
-    private static final String CONNECTION_STRING = "jdbc:derby:target/qi4jdata;create=true";
+    private static final String CONNECTION_STRING = "jdbc:derby:build/qi4jdata;create=true";
 
     @SuppressWarnings("unchecked")
     public void assemble( ModuleAssembly module )

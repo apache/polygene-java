@@ -38,7 +38,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.jdbm.JdbmConfiguration;
 import org.qi4j.entitystore.jdbm.assembly.JdbmEntityStoreAssembler;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
+import org.qi4j.test.performance.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.index.rdf.assembly.RdfNativeSesameStoreAssembler;
 import org.qi4j.library.rdf.repository.NativeConfiguration;
 import org.qi4j.test.AbstractQi4jTest;

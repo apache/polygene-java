@@ -28,7 +28,7 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
+import org.qi4j.test.performance.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.entitystore.qrm.entity.AccountComposite;
 import org.qi4j.entitystore.qrm.entity.Person;
 import org.qi4j.entitystore.qrm.entity.PersonComposite;

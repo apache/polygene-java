@@ -53,7 +53,7 @@ public class NeoEntityStoreMixin
          if (fileConfiguration != null)
             path = new File(fileConfiguration.dataDirectory(), config.configuration().identity().get()).getAbsolutePath();
          else
-            path = "target/neodb";
+            path = "build/neodb";
       }
       neo = new EmbeddedGraphDatabase(path);
       indexService = new LuceneIndexService(neo);
