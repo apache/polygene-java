@@ -23,7 +23,7 @@ import org.junit.Test;
 
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
+import org.qi4j.test.performance.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.library.http.JettyConfiguration;
 import org.qi4j.library.http.JettyServiceAssembler;
 import static org.qi4j.library.http.Servlets.*;
