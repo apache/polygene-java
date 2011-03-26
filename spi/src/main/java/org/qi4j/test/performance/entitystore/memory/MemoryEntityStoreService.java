@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.entitystore.memory;
+package org.qi4j.test.performance.entitystore.memory;
 
 import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.mixin.Mixins;

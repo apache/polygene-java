@@ -12,70 +12,79 @@
  *
  */
 
-package org.qi4j.api.common;
+package org.qi4j.regression.qi59;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.property.Property;
 import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.test.performance.entitystore.memory.MemoryEntityStoreService;
-import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
+import org.qi4j.library.constraints.annotation.NotEmpty;
 import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.test.EntityTestAssembler;
 
 import static org.junit.Assert.*;
 
 /**
- * Test UnitOfWorkCallback and Validatable
+ * Test for QI-59
  */
-public class UnitOfWorkCallbackEntityTest
+public class IssueTest
     extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
         module.entities( TestCase.class );
-        module.services( UuidIdentityGeneratorService.class, MemoryEntityStoreService.class );
+        new EntityTestAssembler().assemble( module );
     }
 
     @Test
-    @Ignore( "Validation is moved to sandbox, and UoW is under massive refactoring." )
-    public void givenCompositeWithValidatableWhenUnitCompletesThenPerformValidation()
+    public void givenEntityWithConstrainedPropertyWhenInvalidPropertyValueSetThenThrowException()
     {
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
-        TestCase test = uow.newEntity( TestCase.class );
 
         try
         {
+            TestCase testCase = uow.newEntity( TestCase.class );
+
+            testCase.someProperty().set( null );
+
             uow.complete();
-            fail( "Validation did not occur" );
+            fail( "Should not be allowed to set invalid property value" );
         }
-        catch( UnitOfWorkCompletionException e )
+        catch( Exception e )
         {
             uow.discard();
         }
     }
 
-    //    @Concerns( TestValidatableConcern.class )
+    @Test
+    public void givenEntityWithComplexConstrainedPropertyWhenInvalidPropertyValueSetThenThrowException()
+    {
+        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+
+        try
+        {
+            TestCase testCase = uow.newEntity( TestCase.class );
+
+            testCase.otherProperty().set( "" );
+
+            uow.complete();
+            fail( "Should not be allowed to set invalid property value" );
+        }
+        catch( Exception e )
+        {
+            uow.discard();
+        }
+    }
 
     interface TestCase
-        extends EntityComposite  //, ValidatableAbstractComposite
+        extends EntityComposite
     {
-    }
-/*
-    public static abstract class TestValidatableConcern extends AbstractValidatableConcern
-    {
-        @Override protected void isValid( Validator validator )
-        {
-            validator.error( true, "Validation error" );
-        }
+        Property<String> someProperty();
 
-        @Override protected String getResourceBundle()
-        {
-            return null;
-        }
+        @NotEmpty
+        Property<String> otherProperty();
     }
-*/
 }

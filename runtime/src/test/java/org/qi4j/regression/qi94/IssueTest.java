@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Niclas Hedhman.
+ * Copyright 2008 Richard Wallace. All Rights Reserved.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -15,31 +15,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.qi4j.runtime.entity;
+package org.qi4j.regression.qi94;
 
 import org.junit.Test;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.association.Association;
+import org.qi4j.api.property.Property;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.test.performance.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.test.EntityTestAssembler;
 
-public class EntityTypeTest
+import static org.junit.Assert.*;
+
+public class IssueTest
     extends AbstractQi4jTest
 {
+    @SuppressWarnings( "unchecked" )
+    public void assemble( ModuleAssembly aModule )
+        throws AssemblyException
+    {
+        aModule.entities( Item.class, ItemType.class );
+        new EntityTestAssembler().assemble( aModule );
+    }
+
     @Test
-    public void givenSubclassedEntityWhenRequestingSuperclassExpectResolutionToWork()
-        throws Exception
+    public void entityBuilderAssociationTypeIsNotNull()
     {
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         try
         {
-            EntityBuilder<Rst> builder3 = uow.newEntityBuilder( Rst.class, "123" );
-            EntityBuilder<Def> builder2 = uow.newEntityBuilder( Def.class, "456" );
-            EntityBuilder<Abc> builder1 = uow.newEntityBuilder( Abc.class, "789" );
+            EntityBuilder<Item> builder = uow.newEntityBuilder( Item.class );
+            assertEquals( ItemType.class, builder.instance().typeOfItem().type() );
         }
         finally
         {
@@ -47,25 +56,15 @@ public class EntityTypeTest
         }
     }
 
-    public void assemble( ModuleAssembly module )
-        throws AssemblyException
-    {
-        module.entities( Rst.class );
-        module.services( MemoryEntityStoreService.class );
-    }
-
-    public interface Abc
+    interface Item
         extends EntityComposite
     {
+        Association<ItemType> typeOfItem();
     }
 
-    public interface Def
-        extends Abc
+    interface ItemType
+        extends EntityComposite
     {
-    }
-
-    public interface Rst
-        extends Def, EntityComposite
-    {
+        Property<String> name();
     }
 }
