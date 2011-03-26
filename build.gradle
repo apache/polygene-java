@@ -1,3 +1,4 @@
+
 title = "Qi4j SDK"
 description = "Qi4j™ is a framework for domain centric application development, including evolved concepts from AOP, DI and DDD."
 
@@ -9,7 +10,7 @@ apply from: 'libraries.gradle'
 targetCompatibility = "1.6"
 sourceCompatibility = "1.6"
 
-testFailures = false
+testFailures = []
 
 groovycMain_mx = "512m"
 groovycMain_permSize = "64m"
@@ -19,17 +20,28 @@ groovycMain_maxPermSize = "128m"
 project.releaseSpec = new ModuleReleaseSpecification()
 def releaseApprovedProjects = allprojects.findAll({ project ->  rootProject.releaseSpec.satisfiedBy(project) })
 
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath 'de.huxhorn.gradle:de.huxhorn.gradle.pgp-plugin:0.0.3'
+  }
+}
+
+
 allprojects {
   apply plugin: 'eclipse'
   apply plugin: 'idea'
   apply plugin: 'java'
   apply plugin: 'code-quality'
   apply plugin: 'project-report'
+  apply plugin: de.huxhorn.gradle.pgp.PgpPlugin
 
+  defaultTasks 'classes','test'
   project.Xslt = Xslt.class
 
   group = name.substring(0, name.lastIndexOf('.'))
-  defaultTasks 'build'
   version = System.properties.version ?: "0"
   idea.javaVersion = '1.6'
   [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
@@ -39,14 +51,6 @@ allprojects {
     mavenRepo name: 'ops4j-repo', urls: "http://repository.ops4j.org/maven2/"
   }
 
-  dependencies {
-    testCompile("org.apache.ant:ant:$antVersion")
-    testCompile("org.apache.ant:ant-junit:$antVersion")
-    testCompile('junit:junit:4.8.1')
-    testRuntime('net.sourceforge.cobertura:cobertura:1.9.3')
-    testRuntime("asm:asm:$asmVersion", "asm:asm-util:$asmVersion", "asm:asm-commons:$asmVersion")
-  }
-
   configurations {
     deployerJars
     provided
@@ -54,8 +58,14 @@ allprojects {
   }
 
   dependencies {
+    testCompile("org.apache.ant:ant:$antVersion")
+    testCompile("org.apache.ant:ant-junit:$antVersion")
+    testCompile('junit:junit:4.8.1')
+    testRuntime('net.sourceforge.cobertura:cobertura:1.9.3')
+    testRuntime("asm:asm:$asmVersion", "asm:asm-util:$asmVersion", "asm:asm-commons:$asmVersion")
     deployerJars "org.apache.maven.wagon:wagon-ssh:1.0-beta-2"
   }
+
 
   javaDir = new File("$projectDir/src/main/java")
   testDir = new File("$projectDir/src/test/java")
@@ -64,7 +74,6 @@ allprojects {
   {
     apply plugin: 'osgi'
     apply plugin: VersionClass
-    apply plugin: 'code-quality'
 
     if( name == "org.qi4j.core.runtime" )
     {
@@ -105,8 +114,14 @@ allprojects {
       from sourceSets.main.allSource
     }
 
+    task javadocJar(type: Jar) {
+      classifier = "javadoc"
+      from javadoc.destinationDir
+      dependsOn javadoc
+    }
+
     artifacts {
-      archives sourceJar
+      archives sourceJar, javadocJar
     }
 
     def cobSerFile = "${project.buildDir}/coverage/cobertura.ser"
@@ -172,9 +187,9 @@ allprojects {
       systemProperties[ "net.sourceforge.cobertura.datafile" ] = cobSerFile
       ignoreFailures = true
       afterSuite { descriptor, result ->
-        if( result.testCount != result.successfulTestCount )
+        if( result.resultType == TestResult.ResultType.FAILURE )
         {
-          rootProject.testFailures = true
+          rootProject.testFailures = project
         }
       }
     }
@@ -188,6 +203,10 @@ allprojects {
       stylesheetFile = file("$rootProject.projectDir/etc/checkstyle-noframes.xsl")
     }
 
+    task minBuild {
+      dependsOn jar
+      dependsOn test
+    }
   }
 
   uploadArchives.doFirst {
@@ -212,13 +231,20 @@ allprojects {
       module.dependencies*.exported = true
     }
   }
-
-
   dependsOnChildren()
 }
 
+gradle.taskGraph.whenReady {taskGraph ->
+  taskGraph.allTasks.last().doLast {
+    println "NICLAS!!!!!" + rootProject.testFailures
+    if( rootProject.testFailures ) {
+      println "\nTest failures in:"
+      rootProject.testFailures.each { project -> println "  " + project.name }
+      throw new RuntimeException( "There was TEST FAILURES!! See list above." ) }
+  }
+}
+
 test.doLast() {
-//task genReport {
   def cobSerFile = "${project.buildDir}/coverage/cobertura.ser"
   ant {
     taskdef(name: 'coberturaReport',
@@ -354,26 +380,26 @@ task distLayout {
 }
 
 task zipSources(type: Zip) {
-  baseName='qi4j-sdk'
+  baseName = 'qi4j-sdk'
   with distLayout.srcDistImage
   classifier = 'src'
 }
 
 task tarSources(type: Tar) {
-  baseName='qi4j-sdk'
+  baseName = 'qi4j-sdk'
   with distLayout.srcDistImage
   compression = Compression.GZIP
   classifier = 'src'
 }
 
 task zipBinaries(type: Zip, dependsOn: [javadocs, test, distLayout]) {
-  baseName='qi4j-sdk'
+  baseName = 'qi4j-sdk'
   classifier = 'bin'
   with distLayout.binDistImage
 }
 
 task tarBinaries(type: Tar, dependsOn: [javadocs, test, distLayout]) {
-  baseName='qi4j-sdk'
+  baseName = 'qi4j-sdk'
   classifier = 'bin'
   compression = Compression.GZIP
   with distLayout.binDistImage
@@ -389,6 +415,7 @@ task release {
     }
   }
   dependsOn allprojects*.uploadArchives
+  dependsOn allprojects*.javadoc
   dependsOn tarBinaries
   dependsOn zipBinaries
   dependsOn tarSources
@@ -406,3 +433,4 @@ task wrapper(type: Wrapper) {
   gradleVersion = '1.0-milestone-1'
   jarPath = 'wrapper'
 }
+

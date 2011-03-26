@@ -19,6 +19,8 @@ package org.qi4j.tests.regression.niclas2;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.qi4j.api.composite.TransientBuilder;
 import org.qi4j.api.composite.TransientComposite;
@@ -31,6 +33,8 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
 
+
+@Ignore(" This is a new feature test, and will fail.")
 public class ConcernsOnPropertyTest
     extends AbstractQi4jTest
 {
@@ -40,6 +44,7 @@ public class ConcernsOnPropertyTest
         module.transients( CarComposite.class );
     }
 
+
     @Test
     public void whenConcernOnPropertyThenConcernIsInvoked()
     {
@@ -47,9 +52,7 @@ public class ConcernsOnPropertyTest
         Car prototype = builder.prototypeFor( Car.class );
         prototype.manufacturer().set( "Volvo" );
         Car car = builder.newInstance();
-
-        // The following assertion is turned off until Concerns on Properties have been implemented.
-//        Assert.assertEquals( "Concern on Property methods.", "Simon says: Volvo", car.manufacturer().get() );
+        Assert.assertEquals( "Concern on Property methods.", "Simon says: Volvo", car.manufacturer().get() );
     }
 
     public interface CarComposite
