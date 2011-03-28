@@ -36,9 +36,10 @@ public class ApplicationModeTest
     @Test
     public void testApplicationModeNotSet()
     {
+        // mode is set to test in AbstractQi4jTest
         Assert.assertThat( "mode set to default",
                            application.mode(),
-                           CoreMatchers.equalTo( Application.Mode.production ) );
+                           CoreMatchers.equalTo( Application.Mode.test ) );
     }
 
     @Test

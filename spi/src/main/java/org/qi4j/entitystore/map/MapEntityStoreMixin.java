@@ -42,7 +42,7 @@ import java.util.*;
 /**
  * Implementation of EntityStore that works with an implementation of MapEntityStore. Implement
  * MapEntityStore and add as mixin to the service using this mixin.
- * See {@link org.qi4j.entitystore.memory.MemoryMapEntityStoreMixin} for reference.
+ * See {@link org.qi4j.test.performance.entitystore.memory.MemoryMapEntityStoreMixin} for reference.
  */
 public class MapEntityStoreMixin
     implements EntityStore, EntityStoreSPI, StateStore, Activatable

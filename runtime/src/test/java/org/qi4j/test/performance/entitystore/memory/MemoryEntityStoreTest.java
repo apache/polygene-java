@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.entitystore.memory;
+package org.qi4j.test.performance.entitystore.memory;
 
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
