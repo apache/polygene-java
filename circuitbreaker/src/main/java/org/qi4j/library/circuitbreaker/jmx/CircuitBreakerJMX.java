@@ -30,7 +30,7 @@ import java.text.DateFormat;
 import java.util.Date;
 
 /**
- * MBean for circuit breakers
+ * MBean for circuit breakers. Exposes CB properties and also the property changes as notifications.
  */
 public class CircuitBreakerJMX
         extends NotificationBroadcasterSupport

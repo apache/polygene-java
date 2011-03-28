@@ -15,7 +15,8 @@
 package org.qi4j.library.eventsourcing.domain.spi;
 
 /**
- * Return username of current user
+ * Return username of current user. This needs to be implemented and provided
+ * as a service so that the DomainEventFactory can associate events with a particular user.
  */
 public interface CurrentUser
 {

@@ -3,7 +3,6 @@ package org.qi4j.library.sql.liquibase;
 import org.junit.Test;
 import org.qi4j.api.io.Inputs;
 import org.qi4j.api.io.Outputs;
-import org.qi4j.api.io.Transforms;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.util.Function;
 import org.qi4j.api.value.ValueBuilder;
@@ -35,85 +34,95 @@ import static org.qi4j.api.io.Transforms.map;
  */
 public class LiquibaseServiceTest
 {
-   @Test
-   public void testLiquibase() throws SQLException, IOException
-   {
-      final SingletonAssembler assembler = new SingletonAssembler()
-      {
-         @Override
-         public void assemble(ModuleAssembly module) throws AssemblyException
-         {
-            // Set up DataSource service that will manage the connection pools
-            module.services(DataSourceService.class).identifiedBy("datasource");
-            module.entities(DataSourceConfiguration.class);
+    @Test
+    public void testLiquibase() throws SQLException, IOException
+    {
+        final SingletonAssembler assembler = new SingletonAssembler()
+        {
+            @Override
+            public void assemble( ModuleAssembly module ) throws AssemblyException
+            {
+                module.values( SomeValue.class );
 
-            // Create a specific DataSource that uses the "datasource" service to do the main work
-            module.importedServices(DataSource.class).
-                    importedBy(ServiceInstanceImporter.class).
-                    setMetaInfo("datasource").
-                    identifiedBy("testds");
+                // Set up DataSource service that will manage the connection pools
+                module.services( DataSourceService.class ).identifiedBy( "datasource" );
+                module.entities( DataSourceConfiguration.class );
 
-            // Set up Liquibase service that will create the tables
-            module.services(LiquibaseService.class).instantiateOnStartup();
-            module.entities(LiquibaseConfiguration.class);
-            module.forMixin(LiquibaseConfiguration.class).declareDefaults().enabled().set(true);
-            module.forMixin(LiquibaseConfiguration.class).declareDefaults().changeLog().set("changelog.xml");
+                // Create a specific DataSource that uses the "datasource" service to do the main work
+                module.importedServices( DataSource.class ).
+                        importedBy( ServiceInstanceImporter.class ).
+                        setMetaInfo( "datasource" ).
+                        identifiedBy( "testds" );
 
-            // Set defaults
-            module.forMixin(DataSourceConfiguration.class).declareDefaults().url().set("jdbc:derby:memory:testdb;create=true");
-            module.forMixin(DataSourceConfiguration.class).declareDefaults().username().set("");
-            module.forMixin(DataSourceConfiguration.class).declareDefaults().password().set("");
-            module.forMixin(DataSourceConfiguration.class).declareDefaults().driver().set("org.apache.derby.jdbc.EmbeddedDriver");
-            module.forMixin(DataSourceConfiguration.class).declareDefaults().enabled().set(true);
+                // Set up Liquibase service that will create the tables
+                module.services( LiquibaseService.class ).instantiateOnStartup();
+                module.entities( LiquibaseConfiguration.class );
+                module.forMixin( LiquibaseConfiguration.class ).declareDefaults().enabled().set( true );
+                module.forMixin( LiquibaseConfiguration.class ).declareDefaults().changeLog().set( "changelog.xml" );
 
-            // Create in-memory store for configurations
-            module.services(MemoryEntityStoreService.class);
-         }
-      };
+                // Set defaults
+                module.forMixin( DataSourceConfiguration.class ).declareDefaults().url().set( "jdbc:derby:memory:testdb;create=true" );
+                module.forMixin( DataSourceConfiguration.class ).declareDefaults().username().set( "" );
+                module.forMixin( DataSourceConfiguration.class ).declareDefaults().password().set( "" );
+                module.forMixin( DataSourceConfiguration.class ).declareDefaults().driver().set( "org.apache.derby.jdbc.EmbeddedDriver" );
+                module.forMixin( DataSourceConfiguration.class ).declareDefaults().enabled().set( true );
 
-      // Look up the DataSource
-      DataSource ds = assembler.serviceFinder().<DataSource>findService(DataSource.class).get();
+                // Create in-memory store for configurations
+                module.services( MemoryEntityStoreService.class );
+            }
+        };
 
-      // Insert and query for data to check that it's working
-      Databases database = new Databases(ds);
+        // Look up the DataSource
+        DataSource ds = assembler.serviceFinder().<DataSource>findService( DataSource.class ).get();
 
-      assertTrue(database.update("insert into test values ('someid', 'bar')") == 1);
+        // Insert and query for data to check that it's working
+        Databases database = new Databases( ds );
 
-      database.query("select * from test", new Databases.ResultSetVisitor()
-      {
-         @Override
-         public boolean visit(ResultSet visited) throws SQLException
-         {
-            assertThat(visited.getString("id"), equalTo("someid"));
-            assertThat(visited.getString("foo"), equalTo("bar"));
-            
-            return true;
-         }
-      });
+        assertTrue( database.update( "insert into test values ('someid', 'bar')" ) == 1 );
 
-      Function<ResultSet, SomeValue> toValue = new Function<ResultSet, SomeValue>()
-      {
-         @Override
-         public SomeValue map(ResultSet resultSet)
-         {
-            ValueBuilder<SomeValue> builder = assembler.valueBuilderFactory().newValueBuilder(SomeValue.class);
+        database.query( "select * from test", new Databases.ResultSetVisitor()
+        {
+            @Override
+            public boolean visit( ResultSet visited ) throws SQLException
+            {
+                assertThat( visited.getString( "id" ), equalTo( "someid" ) );
+                assertThat( visited.getString( "foo" ), equalTo( "bar" ) );
 
+                return true;
+            }
+        } );
 
-            return builder.newInstance();
-         }
-      };
+        Function<ResultSet, SomeValue> toValue = new Function<ResultSet, SomeValue>()
+        {
+            @Override
+            public SomeValue map( ResultSet resultSet )
+            {
+                ValueBuilder<SomeValue> builder = assembler.valueBuilderFactory().newValueBuilder( SomeValue.class );
+                try
+                {
+                    builder.prototype().id().set( resultSet.getString( "id" ) );
+                    builder.prototype().foo().set( resultSet.getString( "foo" ) );
+                } catch( SQLException e )
+                {
+                    throw new IllegalArgumentException( "Could not convert to SomeValue", e );
+                }
 
-      List<SomeValue> rows = new ArrayList<SomeValue>();
-      database.query("select * from test").transferTo(map(toValue, collection(rows)));
+                return builder.newInstance();
+            }
+        };
 
-      Inputs.iterable(rows).transferTo(Outputs.systemOut());
+        List<SomeValue> rows = new ArrayList<SomeValue>();
+        database.query( "select * from test" ).transferTo( map( toValue, collection( rows ) ) );
 
-   }
+        Inputs.iterable( rows ).transferTo( Outputs.systemOut() );
 
-   interface SomeValue
-      extends ValueComposite
-   {
-      Property<String> id();
-      Property<String> foo();
-   }
+    }
+
+    interface SomeValue
+            extends ValueComposite
+    {
+        Property<String> id();
+
+        Property<String> foo();
+    }
 }
