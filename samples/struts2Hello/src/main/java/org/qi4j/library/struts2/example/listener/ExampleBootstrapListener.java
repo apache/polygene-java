@@ -24,7 +24,7 @@ import org.qi4j.bootstrap.ApplicationAssemblyFactory;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.test.performance.entitystore.memory.MemoryEntityStoreService;
+import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.index.rdf.RdfIndexingEngineService;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.repository.MemoryRepositoryService;

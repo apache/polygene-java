@@ -19,7 +19,7 @@ package org.qi4j.envisage.school.infrastructure.persistence;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.test.performance.entitystore.memory.MemoryEntityStoreService;
+import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.index.rdf.RdfIndexingEngineService;
 import org.qi4j.index.rdf.query.RdfQueryParserFactory;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;

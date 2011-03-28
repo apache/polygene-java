@@ -22,7 +22,7 @@ import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.test.performance.entitystore.memory.MemoryEntityStoreService;
+import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.samples.dddsample.domain.model.location.Location;
 import org.qi4j.samples.dddsample.domain.model.location.LocationRepository;
 import org.qi4j.samples.dddsample.domain.model.location.UnLocode;

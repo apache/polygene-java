@@ -32,7 +32,7 @@ import org.qi4j.dci.moneytransfer.domain.entity.SavingsAccountEntity;
 import org.qi4j.dci.moneytransfer.rolemap.CheckingAccountRolemap;
 import org.qi4j.dci.moneytransfer.rolemap.CreditorRolemap;
 import org.qi4j.dci.moneytransfer.rolemap.SavingsAccountRolemap;
-import org.qi4j.test.performance.entitystore.memory.MemoryEntityStoreService;
+import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 
 import static org.qi4j.api.usecase.UsecaseBuilder.newUsecase;
