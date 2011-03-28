@@ -520,6 +520,16 @@ public final class LayerAssemblyImpl
             }
 
             @Override
+            public ImportedServiceDeclaration taggedWith( String... tags )
+            {
+                for( ImportedServiceDeclaration declaration : declarations )
+                {
+                    declaration.taggedWith( tags );
+                }
+                return this;
+            }
+
+            @Override
             public ImportedServiceDeclaration setMetaInfo( Object serviceAttribute )
             {
                 for( ImportedServiceDeclaration declaration : declarations )

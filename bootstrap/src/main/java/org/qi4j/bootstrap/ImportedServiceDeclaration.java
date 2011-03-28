@@ -43,5 +43,7 @@ public interface ImportedServiceDeclaration
 
     ImportedServiceDeclaration identifiedBy( String identity );
 
+    ImportedServiceDeclaration taggedWith( String... tags );
+
     ImportedServiceDeclaration setMetaInfo( Object serviceAttribute );
 }
