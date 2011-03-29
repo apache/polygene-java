@@ -6,7 +6,7 @@ if [ $# -ne 1 ]; then
          exit 127
 fi
  
-set branch_name = $1
+export branch_name=$1
 for DIR in core libraries extensions . ; do 
   cd $DIR
   git push origin origin:refs/heads/${branch_name}
