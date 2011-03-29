@@ -1,4 +1,4 @@
-package org.qi4j.test.performance.entitystore.memory;
+package org.qi4j.entitystore.memory;
 
 import org.json.JSONException;
 import org.json.JSONObject;
