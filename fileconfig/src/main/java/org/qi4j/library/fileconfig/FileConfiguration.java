@@ -207,7 +207,7 @@ public interface FileConfiguration
 
         private void testCleanup()
         {
-            if (app.mode().equals( Application.Mode.test ) || app.mode().equals( Application.Mode.development ))
+            if (app.mode().equals( Application.Mode.test ))
             {
                 // Delete test data
                 delete( configurationDirectory() );
@@ -217,7 +217,6 @@ public interface FileConfiguration
                 delete( logDirectory() );
             }
         }
-
 
         private boolean delete( File file )
         {
