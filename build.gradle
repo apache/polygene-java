@@ -319,6 +319,7 @@ task distLayout {
   srcDistImage = copySpec {
     from '.'
     exclude '**/build/'     // build output
+    exclude '**/out/'       // build output
     exclude '**/.git/'      // git directories
     exclude '**/.git*'      // git files
     exclude '**/.gradle/'   // gradle management files
