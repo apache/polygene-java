@@ -16,11 +16,11 @@ import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
+import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.library.sql.datasource.DataSourceConfiguration;
 import org.qi4j.library.sql.datasource.DataSourceService;
 import org.qi4j.library.sql.datasource.Databases;
 import org.qi4j.spi.service.importer.ServiceInstanceImporter;
-import org.qi4j.test.performance.entitystore.memory.MemoryEntityStoreService;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
