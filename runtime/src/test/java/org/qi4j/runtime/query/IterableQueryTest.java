@@ -69,7 +69,7 @@ public class IterableQueryTest
             public void assemble( ModuleAssembly module )
                     throws AssemblyException
             {
-                module.addEntities(
+                module.entities(
                         MaleEntity.class,
                         FemaleEntity.class,
                         CityEntity.class,
