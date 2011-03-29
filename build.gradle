@@ -405,6 +405,11 @@ task tarBinaries(type: Tar, dependsOn: [javadocs, test, distLayout]) {
   with distLayout.binDistImage
 }
 
+artifacts {
+  archives zipSources, tarSources, zipBinaries, tarBinaries
+}
+
+
 task release {
   description = 'Builds, tests and uploads the release artifacts'
   group = 'release'
