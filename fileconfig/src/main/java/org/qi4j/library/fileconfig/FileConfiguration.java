@@ -118,9 +118,8 @@ public interface FileConfiguration
             data.cache().set( new File( format( bundle.getString( "cache" ), arguments ) ) );
             data.log().set( new File( format( bundle.getString( "log" ), arguments ) ) );
 
-            autoCreateDirectories();
-
             testCleanup();
+            autoCreateDirectories();
         }
 
         private Map getArguments( OS os )

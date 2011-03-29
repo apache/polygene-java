@@ -36,6 +36,7 @@ import org.qi4j.api.sideeffect.SideEffects;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.library.fileconfig.FileConfiguration;
 import org.qi4j.library.rdf.model.ApplicationSerializer;
 import org.qi4j.test.AbstractQi4jTest;
 
@@ -51,23 +52,24 @@ public class ApplicationXmlTest extends AbstractQi4jTest
         LayerAssembly layerAssembly = module.layer();
         layerAssembly.application().setName( "testapp" );
         module.transients( TestComposite.class );
+        module.services( FileConfiguration.class );
     }
 
     @Test
     public void testApplicationXml()
         throws Exception
     {
-        String name = "application";
+        FileConfiguration fileConfig = (FileConfiguration) serviceLocator.findService( FileConfiguration.class ).get();
         ApplicationSerializer parser = new ApplicationSerializer();
         Iterable<Statement> graph = parser.serialize( application ); // TODO Fix this
-        writeN3( graph, name );
-        writeXml( graph, name );
+        writeN3( graph, fileConfig.temporaryDirectory() );
+        writeXml( graph, fileConfig.temporaryDirectory() );
     }
 
-    private void writeN3( Iterable<Statement> graph, String name )
+    private void writeN3( Iterable<Statement> graph, File temp )
         throws RDFHandlerException, IOException
     {
-        File file = new File( name + ".rdfn3" );
+        File file = new File( temp, "application.rdfn3" );
         FileWriter fileWriter = new FileWriter( file );
         RDFWriterFactory writerFactory = new N3WriterFactory();
         RDFWriter writer = writerFactory.getWriter( fileWriter );
@@ -76,10 +78,10 @@ public class ApplicationXmlTest extends AbstractQi4jTest
         System.out.println( "RDF/N3 written to " + file.getAbsolutePath() );
     }
 
-    private void writeXml( Iterable<Statement> graph, String name )
+    private void writeXml( Iterable<Statement> graph, File temp )
         throws RDFHandlerException, IOException
     {
-        File file = new File( name + ".rdfxml" );
+        File file = new File( temp, "application.rdfxml" );
         FileWriter fileWriter = new FileWriter( file );
         RDFWriterFactory writerFactory = new RDFXMLWriterFactory();
         RDFWriter writer = writerFactory.getWriter( fileWriter );
