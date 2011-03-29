@@ -15,11 +15,13 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.entitystore.prefs.assembly.PreferenceEntityStoreAssembler;
 import org.qi4j.index.rdf.ContainsAllTest.ExampleEntity;
 import org.qi4j.index.rdf.ContainsAllTest.ExampleValue;
 import org.qi4j.index.rdf.ContainsAllTest.ExampleValue2;
 import org.qi4j.index.rdf.assembly.RdfNativeSesameStoreAssembler;
+import org.qi4j.library.fileconfig.FileConfiguration;
 import org.qi4j.library.rdf.repository.NativeConfiguration;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
@@ -28,11 +30,11 @@ public class ContainsTest extends AbstractQi4jTest
 {
    public void assemble(ModuleAssembly module) throws AssemblyException
    {
-      PreferenceEntityStoreAssembler pAss = new PreferenceEntityStoreAssembler(Visibility.module);
+       module.services( FileConfiguration.class );
       ModuleAssembly prefModule = module.layer().module( "PrefModule" );
       prefModule.entities( NativeConfiguration.class ).visibleIn(Visibility.application);
-      pAss.assemble(prefModule);
-      
+       prefModule.services( MemoryEntityStoreService.class );
+
       module.entities( ExampleEntity.class );
       module.values( ExampleValue.class, ExampleValue2.class );
       
@@ -41,24 +43,6 @@ public class ContainsTest extends AbstractQi4jTest
       
       RdfNativeSesameStoreAssembler rdfAssembler = new RdfNativeSesameStoreAssembler();
       rdfAssembler.assemble(module);
-   }
-   
-   // Override this in order to delete all indexing files.
-   @Override
-   public void tearDown() throws Exception
-   {
-      UnitOfWork uow = this.unitOfWorkFactory.newUnitOfWork();
-      String dataDir = uow.get(NativeConfiguration.class, "rdf-indexing").dataDirectory().get();
-      uow.discard();
-      
-      super.tearDown();
-      
-      File f = new File(dataDir);
-      for (File sub : f.listFiles())
-      {
-         sub.delete();
-      }
-      f.delete();
    }
    
    @Test

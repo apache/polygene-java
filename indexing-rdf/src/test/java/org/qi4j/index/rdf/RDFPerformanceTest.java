@@ -34,8 +34,10 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.entitystore.prefs.assembly.PreferenceEntityStoreAssembler;
 import org.qi4j.index.rdf.assembly.RdfNativeSesameStoreAssembler;
+import org.qi4j.library.fileconfig.FileConfiguration;
 import org.qi4j.library.rdf.repository.NativeConfiguration;
 import org.qi4j.spi.query.IndexExporter;
 import org.qi4j.test.AbstractQi4jTest;
@@ -57,11 +59,11 @@ public class RDFPerformanceTest extends AbstractQi4jTest
 
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        PreferenceEntityStoreAssembler pAss = new PreferenceEntityStoreAssembler( Visibility.module );
+        module.services( FileConfiguration.class );
         ModuleAssembly prefModule = module.layer().module( "PrefModule" );
         prefModule.entities( NativeConfiguration.class ).visibleIn( Visibility.application );
         prefModule.forMixin( NativeConfiguration.class ).declareDefaults().tripleIndexes().set( "spoc,cspo" );
-        pAss.assemble( prefModule );
+        prefModule.services( MemoryEntityStoreService.class );
 
         module.entities( ExampleEntity.class );
 
