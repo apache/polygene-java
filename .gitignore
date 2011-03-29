@@ -1,0 +1,12 @@
+api/build/
+api/org.qi4j.core.api.iml
+bootstrap/build/
+bootstrap/org.qi4j.core.bootstrap.iml
+build/
+org.qi4j.core.iml
+runtime/build/
+runtime/org.qi4j.core.runtime.iml
+spi/build/
+spi/org.qi4j.core.spi.iml
+testsupport/build/
+testsupport/org.qi4j.core.testsupport.iml
