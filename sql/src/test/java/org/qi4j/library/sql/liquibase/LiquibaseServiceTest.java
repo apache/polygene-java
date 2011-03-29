@@ -50,20 +50,13 @@ public class LiquibaseServiceTest
                 module.importedServices( DataSource.class ).
                         importedBy( ServiceInstanceImporter.class ).
                         setMetaInfo( "datasource" ).
-                        identifiedBy( "testds" );
+                        identifiedBy( "testds3" );
 
                 // Set up Liquibase service that will create the tables
                 module.services( LiquibaseService.class ).instantiateOnStartup();
                 module.entities( LiquibaseConfiguration.class );
                 module.forMixin( LiquibaseConfiguration.class ).declareDefaults().enabled().set( true );
                 module.forMixin( LiquibaseConfiguration.class ).declareDefaults().changeLog().set( "changelog.xml" );
-
-                // Set defaults
-                module.forMixin( DataSourceConfiguration.class ).declareDefaults().url().set( "jdbc:derby:memory:testdb;create=true" );
-                module.forMixin( DataSourceConfiguration.class ).declareDefaults().username().set( "" );
-                module.forMixin( DataSourceConfiguration.class ).declareDefaults().password().set( "" );
-                module.forMixin( DataSourceConfiguration.class ).declareDefaults().driver().set( "org.apache.derby.jdbc.EmbeddedDriver" );
-                module.forMixin( DataSourceConfiguration.class ).declareDefaults().enabled().set( true );
 
                 // Create in-memory store for configurations
                 module.services( MemoryEntityStoreService.class );
