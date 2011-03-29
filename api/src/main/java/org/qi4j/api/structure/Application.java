@@ -22,7 +22,10 @@ public interface Application
     public enum Mode
     {
         // Application modes
-        test, development, staging, production
+        test,           // Should be used for unit test runs. Created files etc. should be cleaned up between runs
+        development,    // Should be used during development. Typically create in-memory databases etc.
+        staging,        // Should be used in QA environments, and other production-like settings where different set of external resources are utilized.
+        production      // Should be used in production. All databases are persistent on disk etc.
     }
 
     String name();
