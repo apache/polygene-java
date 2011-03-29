@@ -27,7 +27,7 @@ import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.test.performance.entitystore.memory.MemoryEntityStoreService;
+import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.library.rdf.DcRdf;
 import org.qi4j.library.rdf.Qi4jEntityType;
 import org.qi4j.library.rdf.Rdfs;

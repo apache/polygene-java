@@ -28,7 +28,7 @@ import org.qi4j.api.service.ServiceReference;
 import org.qi4j.bootstrap.ApplicationName;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.test.performance.entitystore.memory.MemoryEntityStoreService;
+import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import static org.qi4j.library.http.Dispatchers.Dispatcher.*;
 import static org.qi4j.library.http.Servlets.*;
 import org.qi4j.test.AbstractQi4jTest;

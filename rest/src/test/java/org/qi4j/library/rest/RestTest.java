@@ -43,7 +43,7 @@ import org.qi4j.bootstrap.ApplicationAssemblerAdapter;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.test.performance.entitystore.memory.MemoryEntityStoreService;
+import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.index.rdf.assembly.RdfMemoryStoreAssembler;
 import org.qi4j.spi.structure.ApplicationModelSPI;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;

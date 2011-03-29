@@ -12,7 +12,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.AssemblySpecifications;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
-import org.qi4j.test.performance.entitystore.memory.MemoryEntityStoreService;
+import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.library.circuitbreaker.CircuitBreaker;
 import org.qi4j.library.jmx.JMXAssembler;
 import org.qi4j.library.sql.assembler.DataSourceAssembler;
