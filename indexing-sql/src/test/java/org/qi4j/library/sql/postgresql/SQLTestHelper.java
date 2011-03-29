@@ -24,7 +24,7 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.test.performance.entitystore.memory.MemoryEntityStoreService;
+import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.index.reindexer.ReindexerConfiguration;
 import org.qi4j.index.sql.assembly.SQLIndexingAssembler;
 import org.qi4j.index.sql.support.common.DBNames;
