@@ -89,14 +89,26 @@ public class Iterables
         return false;
     }
 
-    public static <X> Iterable<X> flatten( Iterable<X>... multiIterator )
+    public static <T> boolean matchesAll( Specification<? super T> specification, Iterable<T> iterable )
     {
-        return new FlattenIterable<X>( Arrays.asList( multiIterator ) );
+        for( T item : iterable )
+        {
+            if( !specification.satisfiedBy( item ) )
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
-    public static <X> Iterable<X> flatten( Iterable<Iterable<X>> multiIterator )
+    public static <X,I extends Iterable<? extends X>> Iterable<X> flatten( I... multiIterator )
     {
-        return new FlattenIterable<X>( multiIterator );
+        return new FlattenIterable<X,I>( Arrays.asList( multiIterator ) );
+    }
+
+    public static <X,I extends Iterable<? extends X>> Iterable<X> flattenIterables( Iterable<I> multiIterator )
+    {
+        return new FlattenIterable<X,I>( multiIterator );
     }
 
     public static <FROM, TO> Iterable<TO> map( Function<? super FROM, TO> function, Iterable<FROM> from )
@@ -116,9 +128,9 @@ public class Iterables
         return list;
     }
 
-    public static <T> Iterable<T> iterable( T... items )
+    public static <T, C extends T> Iterable<T> iterable( C... items )
     {
-        return Arrays.asList( items );
+        return (Iterable<T>) Arrays.asList( items );
     }
 
     private static class MapIterable<FROM, TO>
@@ -255,28 +267,28 @@ public class Iterables
         }
     }
 
-    private static class FlattenIterable<T>
+    private static class FlattenIterable<T,I extends Iterable<? extends T>>
         implements Iterable<T>
     {
-        private Iterable<Iterable<T>> iterable;
+        private Iterable<I> iterable;
 
-        public FlattenIterable( Iterable<Iterable<T>> iterable )
+        public FlattenIterable( Iterable<I> iterable )
         {
             this.iterable = iterable;
         }
 
         public Iterator<T> iterator()
         {
-            return new FlattenIterator<T>( iterable.iterator() );
+            return new FlattenIterator<T,I>( iterable.iterator() );
         }
 
-        static class FlattenIterator<T>
+        static class FlattenIterator<T,I extends Iterable<? extends T>>
             implements Iterator<T>
         {
-            private Iterator<Iterable<T>> iterator;
-            private Iterator<T> currentIterator;
+            private Iterator<I> iterator;
+            private Iterator<? extends T> currentIterator;
 
-            public FlattenIterator( Iterator<Iterable<T>> iterator )
+            public FlattenIterator( Iterator<I> iterator )
             {
                 this.iterator = iterator;
                 currentIterator = null;
@@ -288,7 +300,8 @@ public class Iterables
                 {
                     if( iterator.hasNext() )
                     {
-                        currentIterator = iterator.next().iterator();
+                        I next = iterator.next();
+                        currentIterator = next.iterator();
                     }
                     else
                     {

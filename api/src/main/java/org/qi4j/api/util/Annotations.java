@@ -61,7 +61,7 @@ public final class Annotations
     public static Iterable<Annotation> getMethodAndTypeAnnotations( Method method )
     {
         return flatten( iterable( method.getAnnotations() ),
-                        flatten( map( new Function<Class, Iterable<Annotation>>()
+                        flattenIterables( map( new Function<Class, Iterable<Annotation>>()
                         {
                             public Iterable<Annotation> map( Class aClass )
                             {
