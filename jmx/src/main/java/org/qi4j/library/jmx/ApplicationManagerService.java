@@ -41,13 +41,18 @@ import java.util.List;
  *
  * Other services should reuse the object names and create
  * nodes under the ones created here. For example:
+ * <pre>
  * Qi4j:application=MyApp,layer=Application,module=MyModule,class=Service,service=MyService
+ * </pre>
  * is exported by this service, so another exporter showing some aspect related to this service should
  * use this as base for the ObjectName, and add their own properties. Example:
+ * <pre>
  * Qi4j:application=MyApp,layer=Application,module=MyModule,class=Service,service=MyService,name=Configuration
- *
+ * </pre>
  * Use the following snippet to find the ObjectName of a service with a given identity:
+ * <pre>
  * ObjectName serviceName = Qi4jMBeans.findService(mbeanServer, applicationName, serviceId);
+ * </pre>
  */
 @Mixins(ApplicationManagerService.Mixin.class)
 public interface ApplicationManagerService
@@ -192,7 +197,8 @@ public interface ApplicationManagerService
             return uses;
         }
 
-        public String restart() throws Exception
+        public String restart()
+            throws Exception
         {
             try
             {
