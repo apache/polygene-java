@@ -7,6 +7,29 @@ repositories {
   mavenRepo name: 'oracle-repo', urls: 'http://download.oracle.com/maven'
 }
 
+uploadArchives {
+  repositories.mavenDeployer {
+    pom {
+      project {
+        repositories {
+          repository {
+            id = 'clojars'
+            url = 'http://clojars.org/repo'
+          }
+          repository {
+            id = 'oracle'
+            url = 'http://download.oracle.com/maven'
+          }
+        }
+      }
+      name = 'sshDeployer' // optional
+      configuration = configurations.deployerJars
+      repository(url: "scp://repository.ops4j.org/home/www/repository.ops4j.org/maven2/")
+    }
+  }
+}
+
+
 dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.api"))
   compile(project(":org.qi4j.core:org.qi4j.core.spi"))
