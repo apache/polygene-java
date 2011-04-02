@@ -1,6 +1,6 @@
-description = "Qi4j RDF Indexing Extension"
+description = "Qi4j Solr Indexing Extension"
 
-jar { manifest {name = "Qi4j Extension - Indexing - RDF" }}
+jar { manifest {name = "Qi4j Extension - Indexing - Solr" }}
 
 dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.api"))
