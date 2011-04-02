@@ -3,7 +3,9 @@
 asmVersion = '3.3'
 bouncyVersion = '1.45'
 derbyVersion = '10.7.1.1'
+ehcacheVersion = '2.1.1'
 googleCollectionsVersion = '1.0'
+hazelcastVersion = '1.9.2.2'
 hibernateVersion = "3.2.7.ga"
 ibatisVersion = "2.3.0"
 jclVersion = '1.1'
