@@ -13,7 +13,7 @@ import org.qi4j.test.AbstractQi4jTest;
 
 import static org.junit.Assert.*;
 
-@Ignore( "Wait for fix for ")
+@Ignore( "Wait for fix for QI-328")
 public class ValueCompositeBasicsTest
     extends AbstractQi4jTest
 {
