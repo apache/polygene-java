@@ -35,27 +35,42 @@ public class IterablesTest
    @Test
    public void testAddAll()
    {
-      Assert.assertThat(Iterables.addAll(new ArrayList<String>(), numbers).toString(), equalTo("[1, 2, 3]"));
+       ArrayList<String> strings = Iterables.addAll( new ArrayList<String>(), numbers );
+       Assert.assertThat( strings.toString(), equalTo( "[1, 2, 3]" ) );
       Assert.assertThat(Iterables.addAll(new ArrayList<Number>(), numberLongs).toString(), equalTo("[1, 2, 3]"));
    }
 
    @Test
    public void testCount()
    {
-      Assert.assertThat(Iterables.count(numbers), equalTo(3L));
+      Assert.assertThat(Iterables.count( numbers ), equalTo(3L));
    }
 
    @Test
    public void testFilter()
    {
-      Assert.assertThat(Iterables.first(Iterables.filter(Specifications.in("2"), numbers)), equalTo("2"));
+      Assert.assertThat(Iterables.first( Iterables.filter( Specifications.in( "2" ), numbers ) ), equalTo("2"));
    }
 
    @Test
    public void testFirst()
    {
       Assert.assertThat(Iterables.first(numbers), equalTo("1"));
-      Assert.assertThat(Iterables.first(Collections.<Object>emptyList()), CoreMatchers.<Object>nullValue());
+      Assert.assertThat(Iterables.first( Collections.<Object>emptyList() ), CoreMatchers.<Object>nullValue());
+   }
+
+   @Test
+   public void testLast()
+   {
+      Assert.assertThat(Iterables.last( numbers ), equalTo("3"));
+      Assert.assertThat(Iterables.last( Collections.<Object>emptyList() ), CoreMatchers.<Object>nullValue());
+   }
+
+   @Test
+   public void testReverse()
+   {
+      Assert.assertThat(Iterables.reverse(numbers).toString(), equalTo("[3, 2, 1]"));
+      Assert.assertThat(Iterables.reverse( Collections.<Object>emptyList() ), equalTo((Object) Collections.<Object>emptyList()));
    }
 
    @Test

@@ -14,12 +14,8 @@
 
 package org.qi4j.api.util;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
+
 import org.qi4j.api.specification.Specification;
 
 /**
@@ -27,7 +23,7 @@ import org.qi4j.api.specification.Specification;
  */
 public class Iterables
 {
-    public static <T> Collection<T> addAll( Collection<T> collection, Iterable<? extends T> iterable )
+    public static <T,C extends Collection<T>> C addAll( C collection, Iterable<? extends T> iterable )
     {
         for( T item : iterable )
         {
@@ -63,6 +59,22 @@ public class Iterables
         {
             return null;
         }
+    }
+
+    public static <X> X last( Iterable<? extends X> i )
+    {
+        Iterator<? extends X> iter = i.iterator();
+        X item = null;
+        while (iter.hasNext())
+            item = iter.next();
+        return item;
+    }
+
+    public static <X> Iterable<X> reverse(Iterable<X> iterable)
+    {
+        ArrayList<X> list = addAll( new ArrayList<X>(), iterable );
+        Collections.reverse( list );
+        return list;
     }
 
     public static <T> boolean matchesAny( Specification<? super T> specification, Iterable<T> iterable )
