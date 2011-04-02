@@ -1,13 +1,8 @@
 description = "Qi4j Schduler Library for long term timing functionalities."
 
-jar { manifest { name = "Qi4j Library - RDF" }}
-
+jar { manifest { name = "Qi4j Library - Scheduler" }}
 
 skedVersion='1.2'
-
-//repositories {
-//  mavenRepo name: 'aduna-repo', urls: "http://repo.aduna-software.org/maven2/releases/"
-//}
 
 dependencies {
   compile("org.codeartisans:sked:$skedVersion")
@@ -15,15 +10,6 @@ dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.api"))
   compile(project(":org.qi4j.core:org.qi4j.core.spi"))
   compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
-//  compile(libraries.slf4j_api)
-//  compile('org.openrdf.sesame:sesame-model:' + rdfVersion)
-//  compile('org.openrdf.sesame:sesame-repository-dataset:' + rdfVersion)
-//  compile('org.openrdf.sesame:sesame-repository-http:' + rdfVersion)
-//  compile('org.openrdf.sesame:sesame-rio-n3:' + rdfVersion)
-//  compile('org.openrdf.sesame:sesame-rio-rdfxml:' + rdfVersion)
-//  compile('org.openrdf.sesame:sesame-sail-memory:' + rdfVersion)
-//  compile('org.openrdf.sesame:sesame-sail-nativerdf:' + rdfVersion)
-//  compile('org.openrdf.sesame:sesame-sail-rdbms:' + rdfVersion)
   testCompile(libraries.junit)
   testCompile(project(":org.qi4j.extensions:org.qi4j.extension.indexing-rdf"))
   testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
