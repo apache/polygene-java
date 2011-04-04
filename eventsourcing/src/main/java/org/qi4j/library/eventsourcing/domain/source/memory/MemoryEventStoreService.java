@@ -18,10 +18,7 @@ package org.qi4j.library.eventsourcing.domain.source.memory;
  * JAVADOC
  */
 
-import org.qi4j.api.io.Input;
-import org.qi4j.api.io.Output;
-import org.qi4j.api.io.Receiver;
-import org.qi4j.api.io.Sender;
+import org.qi4j.api.io.*;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
@@ -32,7 +29,9 @@ import org.qi4j.library.eventsourcing.domain.source.EventStore;
 import org.qi4j.library.eventsourcing.domain.source.EventStream;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.ListIterator;
 
 /**
@@ -42,71 +41,88 @@ import java.util.ListIterator;
 public interface MemoryEventStoreService
         extends EventSource, EventStore, EventStream, Activatable, ServiceComposite
 {
-   abstract class MemoryEventStoreMixin
-           extends AbstractEventStoreMixin
-           implements EventSource
-   {
-      // This list holds all transactions
-      private LinkedList<UnitOfWorkDomainEventsValue> store = new LinkedList<UnitOfWorkDomainEventsValue>();
+    abstract class MemoryEventStoreMixin
+            extends AbstractEventStoreMixin
+            implements EventSource
+    {
+        // This list holds all transactions
+        private LinkedList<UnitOfWorkDomainEventsValue> store = new LinkedList<UnitOfWorkDomainEventsValue>();
 
-      private long currentCount = 0;
+        private long currentCount = 0;
 
-      public void activate() throws IOException
-      {
-         super.activate();
-      }
+        public void activate() throws IOException
+        {
+            super.activate();
+        }
 
-      public void passivate() throws Exception
-      {
-         super.passivate();
-      }
+        public void passivate() throws Exception
+        {
+            super.passivate();
+        }
 
-      public Input<UnitOfWorkDomainEventsValue, IOException> events(final long offset, final long limit)
-      {
-         return new Input<UnitOfWorkDomainEventsValue, IOException>()
-         {
-            @Override
-            public <ReceiverThrowableType extends Throwable> void transferTo(Output<? super UnitOfWorkDomainEventsValue, ReceiverThrowableType> output) throws IOException, ReceiverThrowableType
+        public Input<UnitOfWorkDomainEventsValue, IOException> events( final long offset, final long limit )
+        {
+            return new Input<UnitOfWorkDomainEventsValue, IOException>()
             {
-               // Lock store first
-               lock.lock();
-               try
-               {
-                  output.receiveFrom(new Sender<UnitOfWorkDomainEventsValue, IOException>()
-                  {
-                     @Override
-                     public <ReceiverThrowableType extends Throwable> void sendTo(Receiver<? super UnitOfWorkDomainEventsValue, ReceiverThrowableType> receiver) throws ReceiverThrowableType, IOException
-                     {
-                        ListIterator<UnitOfWorkDomainEventsValue> iterator = store.listIterator((int) offset);
-
-                        long count = 0;
-
-                        while (iterator.hasNext() && count < limit)
+                @Override
+                public <ReceiverThrowableType extends Throwable> void transferTo( Output<? super UnitOfWorkDomainEventsValue, ReceiverThrowableType> output ) throws IOException, ReceiverThrowableType
+                {
+                    // Lock store first
+                    lock.lock();
+                    try
+                    {
+                        output.receiveFrom( new Sender<UnitOfWorkDomainEventsValue, IOException>()
                         {
-                           UnitOfWorkDomainEventsValue next = iterator.next();
-                           receiver.receive(next);
-                           count++;
+                            @Override
+                            public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<? super UnitOfWorkDomainEventsValue, ReceiverThrowableType> receiver ) throws ReceiverThrowableType, IOException
+                            {
+                                ListIterator<UnitOfWorkDomainEventsValue> iterator = store.listIterator( (int) offset );
+
+                                long count = 0;
+
+                                while( iterator.hasNext() && count < limit )
+                                {
+                                    UnitOfWorkDomainEventsValue next = iterator.next();
+                                    receiver.receive( next );
+                                    count++;
+                                }
+                            }
+                        } );
+                    } finally
+                    {
+                        lock.unlock();
+                    }
+                }
+            };
+        }
+
+        public long count()
+        {
+            return currentCount;
+        }
+
+
+        @Override
+        protected Output<UnitOfWorkDomainEventsValue, IOException> storeEvents0()
+        {
+            return new Output<UnitOfWorkDomainEventsValue, IOException>()
+            {
+                @Override
+                public <SenderThrowableType extends Throwable> void receiveFrom( Sender<? extends UnitOfWorkDomainEventsValue, SenderThrowableType> sender ) throws IOException, SenderThrowableType
+                {
+                    final List<UnitOfWorkDomainEventsValue> newEvents = new ArrayList<UnitOfWorkDomainEventsValue>(  );
+                    sender.sendTo( new Receiver<UnitOfWorkDomainEventsValue, IOException>()
+                    {
+                        @Override
+                        public void receive( UnitOfWorkDomainEventsValue item ) throws IOException
+                        {
+                            newEvents.add( item );
                         }
-                     }
-                  });
-               } finally
-               {
-                  lock.unlock();
-               }
-            }
-         };
-      }
-
-      public long count()
-      {
-         return currentCount;
-      }
-
-      protected void storeEvents0(UnitOfWorkDomainEventsValue unitOfWorkDomainValue)
-              throws IOException
-      {
-         store.addLast(unitOfWorkDomainValue);
-         currentCount++;
-      }
-   }
+                    });
+                    store.addAll( newEvents );
+                    currentCount += newEvents.size();
+                }
+            };
+        }
+    }
 }

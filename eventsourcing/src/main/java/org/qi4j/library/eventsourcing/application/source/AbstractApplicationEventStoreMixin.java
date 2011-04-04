@@ -88,10 +88,7 @@ public abstract class AbstractApplicationEventStoreMixin
         transactionNotifier.awaitTermination( 10000, TimeUnit.MILLISECONDS );
     }
 
-    // UnitOfWorkEventsVisitor implementation
     // This is how transactions are put into the store
-
-
     public TransactionApplicationEvents storeEvents( Iterable<ApplicationEvent> events ) throws IOException
     {
         // Create new TransactionApplicationEvents

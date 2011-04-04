@@ -31,6 +31,7 @@ import org.qi4j.api.io.*;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.util.Function;
 import org.qi4j.library.eventsourcing.domain.api.UnitOfWorkDomainEventsValue;
 import org.qi4j.library.eventsourcing.domain.source.*;
 import org.qi4j.library.fileconfig.FileConfiguration;
@@ -83,49 +84,38 @@ public interface JdbmEventStoreService
 
         public Output<String, IOException> restore()
         {
-            return Transforms.lock( JdbmEventStoreMixin.this.lock, new Output<String, IOException>()
+            // Commit every 1000 events, convert from string to value, and then store. Put a lock around the whole thing
+            Output<String, IOException> map = Transforms.map( new Transforms.ProgressLog<String>( 1000 )
             {
-               @Override
-               public <SenderThrowableType extends Throwable> void receiveFrom(Sender<? extends String, SenderThrowableType> sender) throws IOException, SenderThrowableType
-               {
+                @Override
+                protected void logProgress()
+                {
                     try
                     {
-                        sender.sendTo( new Receiver<String, IOException>()
-                        {
-                            int count = 0;
-
-                            public void receive( String item ) throws IOException
-                            {
-                                try
-                                {
-                                    JSONObject json = (JSONObject) new JSONTokener( item ).nextValue();
-                                    UnitOfWorkDomainEventsValue transactionDomain = (UnitOfWorkDomainEventsValue) eventsType.fromJSON( json, module );
-
-                                    storeEvents( transactionDomain );
-
-                                    count++;
-                                    if (count % 1000 == 0)
-                                        recordManager.commit(); // Commit every 1000 transactions to avoid OutOfMemory issues
-
-                                } catch (JSONException e)
-                                {
-                                    throw new IOException( e );
-                                }
-                            }
-                        } );
-
-                        recordManager.commit();
-                    } catch (IOException e)
+                        recordManager.commit(); // Commit every 1000 transactions to avoid OutOfMemory issues
+                    } catch( IOException e )
                     {
-                        recordManager.rollback();
-                        throw e;
-                    } catch (Throwable senderThrowableType)
-                    {
-                        recordManager.rollback();
-                        throw (SenderThrowableType) senderThrowableType;
+                        throw new IllegalStateException( "Could not commit data", e );
                     }
                 }
-            } );
+            }, Transforms.map( new Function<String, UnitOfWorkDomainEventsValue>()
+            {
+                @Override
+                public UnitOfWorkDomainEventsValue map( String item )
+                {
+                    try
+                    {
+                        JSONObject json = (JSONObject) new JSONTokener( item ).nextValue();
+                        return (UnitOfWorkDomainEventsValue) eventsType.fromJSON( json, module );
+                    } catch( JSONException e )
+                    {
+                        throw new IllegalArgumentException( e );
+                    }
+                }
+            }, storeEvents0() ) );
+
+            return Transforms.lock( JdbmEventStoreMixin.this.lock,
+                    map );
         }
 
         // EventStore implementation
@@ -177,12 +167,37 @@ public interface JdbmEventStoreService
         }
 
         @Override
-        protected void storeEvents0( UnitOfWorkDomainEventsValue unitOfWorkDomainValue ) throws IOException
+        protected Output<UnitOfWorkDomainEventsValue, IOException> storeEvents0()
         {
-            String jsonString = unitOfWorkDomainValue.toJSON();
-            currentCount++;
-            index.insert( currentCount, jsonString.getBytes( "UTF-8" ), false );
-            recordManager.commit();
+            return new Output<UnitOfWorkDomainEventsValue, IOException>()
+            {
+                @Override
+                public <SenderThrowableType extends Throwable> void receiveFrom( Sender<? extends UnitOfWorkDomainEventsValue, SenderThrowableType> sender ) throws IOException, SenderThrowableType
+                {
+                    try
+                    {
+                        sender.sendTo( new Receiver<UnitOfWorkDomainEventsValue, IOException>()
+                        {
+                            @Override
+                            public void receive( UnitOfWorkDomainEventsValue item ) throws IOException
+                            {
+                                String jsonString = item.toJSON();
+                                currentCount++;
+                                index.insert( currentCount, jsonString.getBytes( "UTF-8" ), false );
+                            }
+                        });
+                        recordManager.commit();
+                    } catch( IOException e )
+                    {
+                        recordManager.rollback();
+                        throw e;
+                    } catch( Throwable e )
+                    {
+                        recordManager.rollback();
+                        throw (SenderThrowableType) e;
+                    }
+                }
+            };
         }
 
         private void initialize( String name, Properties properties )

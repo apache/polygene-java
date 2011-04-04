@@ -21,11 +21,14 @@ import org.qi4j.api.concern.ConcernOf;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.io.Inputs;
+import org.qi4j.api.io.Output;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCallback;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+import org.qi4j.api.util.Iterables;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
 import org.qi4j.library.eventsourcing.domain.api.DomainEventValue;
@@ -64,9 +67,12 @@ public class UnitOfWorkNotificationConcern
 
     Logger logger = LoggerFactory.getLogger( DomainEventFactory.class );
 
+    Output<UnitOfWorkDomainEventsValue, IOException> eventOutput;
+
     public void init( @Structure Application application )
     {
         version = application.version();
+        eventOutput = eventStore.storeEvents();
     }
 
     public DomainEventValue createEvent( EntityComposite entity, String name, Object[] args )
@@ -106,7 +112,7 @@ public class UnitOfWorkNotificationConcern
                         try
                         {
                             final UnitOfWorkDomainEventsValue unitOfWorkDomainValue = builder.newInstance();
-                            eventStore.storeEvents( unitOfWorkDomainValue );
+                            Inputs.iterable( Iterables.iterable( unitOfWorkDomainValue ) ).transferTo( eventOutput );
 
                             for (UnitOfWorkEventsVisitor unitOfWorkEventsVisitor : transactionVisitors)
                             {

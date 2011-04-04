@@ -16,6 +16,7 @@
 
 package org.qi4j.library.eventsourcing.domain.source;
 
+import org.qi4j.api.io.Output;
 import org.qi4j.library.eventsourcing.domain.api.UnitOfWorkDomainEventsValue;
 
 import java.io.IOException;
@@ -25,5 +26,5 @@ import java.io.IOException;
  */
 public interface EventStore
 {
-    void storeEvents( UnitOfWorkDomainEventsValue newEvents) throws IOException;
+    Output<UnitOfWorkDomainEventsValue, IOException> storeEvents();
 }

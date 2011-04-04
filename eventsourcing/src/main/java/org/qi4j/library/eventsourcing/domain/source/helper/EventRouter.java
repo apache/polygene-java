@@ -17,50 +17,86 @@
 
 package org.qi4j.library.eventsourcing.domain.source.helper;
 
+import org.qi4j.api.io.Output;
+import org.qi4j.api.io.Receiver;
+import org.qi4j.api.io.Sender;
 import org.qi4j.api.specification.Specification;
 import org.qi4j.library.eventsourcing.domain.api.DomainEventValue;
-import org.qi4j.library.eventsourcing.domain.source.EventVisitor;
+import org.qi4j.library.eventsourcing.domain.api.UnitOfWorkDomainEventsValue;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Event handling router. Add specification->visitor routes. When an event comes in
+ * Event handling router. Add specification->receiver routes. When an event comes in
  * the router will ask each specification if it matches, and if so, delegate to the
- * visitor and return whether it successfully handled it or not. If no routes match,
- * returns true.
+ * receiver and return whether it successfully handled it or not. If no routes match,
+ * delegate to the default receiver
  */
-public class EventRouter
-        implements EventVisitor
+public class EventRouter<T extends Throwable>
+        implements Output<DomainEventValue, T>, Receiver<UnitOfWorkDomainEventsValue, T>
 {
-    Map<Specification<DomainEventValue>, EventVisitor> domainEventRoutes = new HashMap<Specification<DomainEventValue>, EventVisitor>();
+    private Map<Specification<DomainEventValue>, Receiver<DomainEventValue, T>> routeEvent = new LinkedHashMap<Specification<DomainEventValue>, Receiver<DomainEventValue, T>>();
 
-    public EventRouter route( Specification<DomainEventValue> specification, EventVisitor visitor )
+    private Receiver<DomainEventValue, T> defaultReceiver = new Receiver<DomainEventValue, T>()
     {
-        domainEventRoutes.put( specification, visitor );
+        @Override
+        public void receive( DomainEventValue item ) throws T
+        {
+            // Do nothing;
+        }
+    };
+
+    public EventRouter route( Specification<DomainEventValue> specification, Receiver<DomainEventValue, T> receiver )
+    {
+        routeEvent.put( specification, receiver );
 
         return this;
     }
 
-    /**
-     * Route an eventValue to a visitor whose specification matches it. If no
-     * specification matches, then return true. Otherwise return the status
-     * of the visitor that was matched.
-     *
-     * @param eventValue the eventValue
-     * @return true if eventValue was handled successfully.
-     */
-    public boolean visit( DomainEventValue eventValue )
+    public EventRouter defaultReceiver( Receiver<DomainEventValue, T> defaultReceiver )
     {
-        for (Specification<DomainEventValue> specification : domainEventRoutes.keySet())
-        {
-            if (specification.satisfiedBy( eventValue ))
-            {
-                EventVisitor eventVisitor = domainEventRoutes.get( specification );
-                return eventVisitor.visit( eventValue );
-            }
-        }
+        this.defaultReceiver = defaultReceiver;
+        return this;
+    }
 
-        return true;
+    @Override
+    public <SenderThrowableType extends Throwable> void receiveFrom( Sender<? extends DomainEventValue, SenderThrowableType> sender ) throws T, SenderThrowableType
+    {
+        sender.sendTo( new Receiver<DomainEventValue, T>()
+        {
+            @Override
+            public void receive( DomainEventValue item ) throws T
+            {
+                for( Map.Entry<Specification<DomainEventValue>, Receiver<DomainEventValue, T>> specificationReceiverEntry : routeEvent.entrySet() )
+                {
+                    if( specificationReceiverEntry.getKey().satisfiedBy( item ) )
+                    {
+                        specificationReceiverEntry.getValue().receive( item );
+                        return;
+                    }
+                }
+
+                // No match, use default
+                defaultReceiver.receive( item );
+            }
+        } );
+    }
+
+    @Override
+    public void receive( final UnitOfWorkDomainEventsValue item ) throws T
+    {
+        receiveFrom( new Sender<DomainEventValue, T>()
+        {
+            @Override
+            public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<? super DomainEventValue, ReceiverThrowableType> receiver ) throws ReceiverThrowableType, T
+            {
+
+                for( DomainEventValue domainEventValue : item.events().get() )
+                {
+                    receiver.receive( domainEventValue );
+                }
+            }
+        } );
     }
 }

@@ -24,6 +24,8 @@ import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.structure.Module;
+import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
+import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.usecase.UsecaseBuilder;
@@ -76,7 +78,15 @@ public interface DomainEventPlayerService
                     // Get the entity
                     Class entityType = module.classLoader().loadClass( domainEventValue.entityType().get() );
                     String id = domainEventValue.entityId().get();
-                    Object entity = uow.get( entityType, id );
+                    Object entity = null;
+                    try
+                    {
+                        entity = uow.get( entityType, id );
+                    } catch( NoSuchEntityException e )
+                    {
+                        // Event to play for an entity that doesn't yet exist - create a default instance
+                        entity = uow.newEntity( entityType, id );
+                    }
 
                     // check if the event has already occured
                     EntityState state = spi.getEntityState( (EntityComposite) entity );

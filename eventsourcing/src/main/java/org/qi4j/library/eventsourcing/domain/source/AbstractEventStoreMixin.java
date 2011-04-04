@@ -20,6 +20,10 @@ package org.qi4j.library.eventsourcing.domain.source;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.io.Output;
+import org.qi4j.api.io.Receiver;
+import org.qi4j.api.io.Sender;
+import org.qi4j.api.io.Transforms;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.library.eventsourcing.domain.api.DomainEventValue;
 import org.qi4j.library.eventsourcing.domain.api.UnitOfWorkDomainEventsValue;
@@ -82,39 +86,64 @@ public abstract class AbstractEventStoreMixin
     // This is how transactions are put into the store
 
 
-    public void storeEvents( final UnitOfWorkDomainEventsValue events )
-            throws IOException
+    @Override
+    public Output<UnitOfWorkDomainEventsValue, IOException> storeEvents()
     {
-        // Lock store so noone else can interrupt
-        lock();
-        try
-        {
-            storeEvents0( events );
-        } finally
-        {
-            lock.unlock();
-        }
+        final Output<UnitOfWorkDomainEventsValue, IOException> storeOutput = storeEvents0();
 
-        // Notify listeners
-        transactionNotifier.submit( new Runnable()
+        return new Output<UnitOfWorkDomainEventsValue, IOException>()
         {
-            public void run()
+            @Override
+            public <SenderThrowableType extends Throwable> void receiveFrom( final Sender<? extends UnitOfWorkDomainEventsValue, SenderThrowableType> sender ) throws IOException, SenderThrowableType
             {
-                synchronized (listeners)
+                final List<UnitOfWorkDomainEventsValue> events = new ArrayList<UnitOfWorkDomainEventsValue>(  );
+                lock();
+                try
                 {
-                    for (UnitOfWorkEventsListener listener : listeners)
+                    storeOutput.receiveFrom(new Sender<UnitOfWorkDomainEventsValue, SenderThrowableType>()
                     {
-                        try
+                        @Override
+                        public <ReceiverThrowableType extends Throwable> void sendTo( final Receiver<? super UnitOfWorkDomainEventsValue, ReceiverThrowableType> receiver ) throws ReceiverThrowableType, SenderThrowableType
                         {
-                            listener.notifyTransactions( Collections.singleton( events ) );
-                        } catch (Exception e)
+                            sender.sendTo( new Receiver<UnitOfWorkDomainEventsValue, ReceiverThrowableType>()
+                            {
+                                @Override
+                                public void receive( UnitOfWorkDomainEventsValue item ) throws ReceiverThrowableType
+                                {
+                                    receiver.receive( item );
+                                    events.add( item );
+                                }
+                            });
+                        }
+                    });
+
+                } finally
+                {
+                    lock.unlock();
+                }
+
+                // Notify listeners
+                transactionNotifier.submit( new Runnable()
+                {
+                    public void run()
+                    {
+                        synchronized(listeners)
                         {
-                            logger.warn( "Could not notify event listener", e );
+                            for( UnitOfWorkEventsListener listener : listeners )
+                            {
+                                try
+                                {
+                                    listener.notifyTransactions( events );
+                                } catch( Exception e )
+                                {
+                                    logger.warn( "Could not notify event listener", e );
+                                }
+                            }
                         }
                     }
-                }
+                } );
             }
-        } );
+        };
     }
 
     // EventStream implementation
@@ -128,8 +157,7 @@ public abstract class AbstractEventStoreMixin
         listeners.remove( subscriber );
     }
 
-    abstract protected void storeEvents0( UnitOfWorkDomainEventsValue unitOfWorkDomainValue )
-            throws IOException;
+    abstract protected Output<UnitOfWorkDomainEventsValue, IOException> storeEvents0();
 
     /**
      * Fix for this bug:

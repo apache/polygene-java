@@ -17,24 +17,15 @@
 package org.qi4j.library.eventsourcing.domain.source.helper;
 
 import org.qi4j.api.specification.Specification;
-import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.util.Classes;
 import org.qi4j.api.util.Function;
 import org.qi4j.api.util.Iterables;
 import org.qi4j.library.eventsourcing.domain.api.DomainEventValue;
 import org.qi4j.library.eventsourcing.domain.api.UnitOfWorkDomainEventsValue;
-import org.qi4j.library.eventsourcing.domain.replay.DomainEventPlayer;
-import org.qi4j.library.eventsourcing.domain.source.EventVisitor;
-import org.qi4j.library.eventsourcing.domain.source.UnitOfWorkEventsVisitor;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-import static org.qi4j.api.util.Iterables.filter;
 import static org.qi4j.api.util.Iterables.map;
 
 /**
@@ -44,47 +35,19 @@ public class Events
 {
     public static Iterable<DomainEventValue> events( Iterable<UnitOfWorkDomainEventsValue> transactions )
     {
-        List<Iterable<DomainEventValue>> events = new ArrayList<Iterable<DomainEventValue>>();
-        for (UnitOfWorkDomainEventsValue unitOfWorkDomainValue : transactions)
+        return Iterables.flattenIterables( Iterables.map( new Function<UnitOfWorkDomainEventsValue, Iterable<DomainEventValue>>()
         {
-            events.add( unitOfWorkDomainValue.events().get() );
-        }
-
-        Iterable<DomainEventValue>[] iterables = (Iterable<DomainEventValue>[]) new Iterable[events.size()];
-        return Iterables.<DomainEventValue>flatten( events.<Iterable<DomainEventValue>>toArray( iterables ) );
+            @Override
+            public Iterable<DomainEventValue> map( UnitOfWorkDomainEventsValue unitOfWorkDomainEventsValue )
+            {
+                return unitOfWorkDomainEventsValue.events().get();
+            }
+        }, transactions ) );
     }
 
     public static Iterable<DomainEventValue> events( UnitOfWorkDomainEventsValue... unitOfWorkDomainValues )
     {
-        List<Iterable<DomainEventValue>> events = new ArrayList<Iterable<DomainEventValue>>();
-        for (UnitOfWorkDomainEventsValue unitOfWorkDomainValue : unitOfWorkDomainValues)
-        {
-            events.add( unitOfWorkDomainValue.events().get() );
-        }
-
-        Iterable<DomainEventValue>[] iterables = (Iterable<DomainEventValue>[]) new Iterable[events.size()];
-        return Iterables.<DomainEventValue>flatten( events.<Iterable<DomainEventValue>>toArray( iterables ) );
-    }
-
-    public static UnitOfWorkEventsVisitor adapter( final EventVisitor eventVisitor )
-    {
-        return new UnitOfWorkEventsVisitor()
-        {
-            public boolean visit( UnitOfWorkDomainEventsValue unitOfWorkDomainValue )
-            {
-                for (DomainEventValue domainEventValue : unitOfWorkDomainValue.events().get())
-                {
-                    if (!eventVisitor.visit( domainEventValue ))
-                        return false;
-                }
-                return true;
-            }
-        };
-    }
-
-    public static boolean matches( Specification<DomainEventValue> specification, Iterable<UnitOfWorkDomainEventsValue> transactions )
-    {
-        return filter( specification, events( transactions ) ).iterator().hasNext();
+        return events( Iterables.iterable( unitOfWorkDomainValues ) );
     }
 
     // Common specifications
@@ -224,28 +187,6 @@ public class Events
             public boolean satisfiedBy( DomainEventValue eventValue )
             {
                 return EventParameters.getParameter( eventValue, name ).equals( value );
-            }
-        };
-    }
-
-    public static EventVisitor playEvents( final DomainEventPlayer player, final Object eventHandler, final UnitOfWorkFactory uowf, final Usecase usecase )
-    {
-        return new EventVisitor()
-        {
-            public boolean visit( DomainEventValue eventValue )
-            {
-                UnitOfWork uow = uowf.newUnitOfWork( usecase );
-                try
-                {
-                    player.playEvent( eventValue, eventHandler );
-                    uow.complete();
-                    return true;
-                } catch (Exception e)
-                {
-                    uow.discard();
-
-                    return false;
-                }
             }
         };
     }
