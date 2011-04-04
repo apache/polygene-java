@@ -330,7 +330,9 @@ public class Transforms
    }
 
    /**
-    * Track progress of transfer by emitting a log message in given intervals
+    * Track progress of transfer by emitting a log message in given intervals.
+    *
+    * If logger or format is null, then you need to override the logProgress to do something
     *
     * @param <T> type of items to be transferred
     */
@@ -344,7 +346,14 @@ public class Transforms
       public ProgressLog(Logger logger, String format, long interval)
       {
          this.interval = interval;
-         log = new Log<String>(logger, format);
+         if (logger != null && format != null)
+            log = new Log<String>(logger, format);
+         counter = new Counter<T>();
+      }
+
+      public ProgressLog(long interval)
+      {
+         this.interval = interval;
          counter = new Counter<T>();
       }
 
@@ -354,10 +363,17 @@ public class Transforms
 
          if (counter.count % interval == 0)
          {
-            log.map(counter.count + "");
+             logProgress();
          }
 
          return t;
       }
+
+       // Override this to do something other than logging the progress
+       protected void logProgress()
+       {
+           if (log != null)
+               log.map(counter.count + "");
+       }
    }
 }

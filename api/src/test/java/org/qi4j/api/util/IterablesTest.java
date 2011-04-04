@@ -72,17 +72,16 @@ public class IterablesTest
     @Test
     public void testFolding()
     {
-        assertThat( last( map( new Function<Integer, Integer>()
+        assertThat( Iterables.fold( new Function<Integer, Integer>()
         {
             int sum = 0;
 
             @Override
             public Integer map( Integer number )
             {
-                sum += number;
-                return sum;
+                return sum += number;
             }
-        }, numberIntegers ) ), equalTo( 6 ) );
+        }, numberIntegers ), equalTo( 6 ) );
     }
 
     @Test

@@ -1,6 +1,13 @@
 package org.qi4j.api.util;
 
 import org.qi4j.api.specification.Specification;
+import org.qi4j.api.specification.Specifications;
+
+import static org.qi4j.api.specification.Specifications.in;
+import static org.qi4j.api.specification.Specifications.not;
+import static org.qi4j.api.util.Iterables.filter;
+import static org.qi4j.api.util.Iterables.first;
+import static org.qi4j.api.util.Iterables.map;
 
 /**
  * Utility functions. See FunctionsTest for usages.
@@ -72,5 +79,10 @@ public class Functions
                 return index;
             }
         };
+    }
+
+    public static <T> int indexOf(T item, Iterable<T> iterable)
+    {
+        return first( filter( not( in( -1 ) ), map( indexOf( in( item ) ), iterable ) ) );
     }
 }

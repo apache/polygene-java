@@ -36,4 +36,10 @@ public class FunctionsTest
     {
         assertThat( last( map( indexOf( in( "D" ) ), iterable( "A","B","C","D","D" ) ) ), equalTo( 3 ) );
     }
+
+    @Test
+    public void testIndexOf2()
+    {
+        assertThat( indexOf( "D", iterable( "A","B","C","D","D" )), equalTo( 3 ) );
+    }
 }

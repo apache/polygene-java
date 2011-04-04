@@ -36,8 +36,10 @@ public class Iterables
     public static long count( Iterable<?> iterable )
     {
         long c = 0;
-        for( Object item : iterable )
+        Iterator<?> iterator = iterable.iterator();
+        while( iterator.hasNext() )
         {
+            iterator.next();
             c++;
         }
         return c;
@@ -131,6 +133,11 @@ public class Iterables
     public static <T, C extends T> Iterable<T> iterable( C... items )
     {
         return (Iterable<T>) Arrays.asList( items );
+    }
+
+    public static <FROM, TO> TO fold( Function<? super FROM, TO> function, Iterable<? extends FROM> i )
+    {
+        return last(map(function, i));
     }
 
     private static class MapIterable<FROM, TO>
