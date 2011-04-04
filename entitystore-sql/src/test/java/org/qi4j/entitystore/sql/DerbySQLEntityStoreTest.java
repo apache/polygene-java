@@ -13,10 +13,8 @@
  */
 package org.qi4j.entitystore.sql;
 
-import java.sql.Connection;
-import java.sql.Statement;
 import org.apache.derby.iapi.services.io.FileUtil;
-import org.junit.Assume;
+import org.junit.Ignore;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.AssemblyException;
@@ -29,10 +27,14 @@ import org.qi4j.library.sql.common.SQLUtil;
 import org.qi4j.library.sql.ds.DBCPDataSourceConfiguration;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
 
+import java.sql.Connection;
+import java.sql.Statement;
+
 /**
  * @author Stanislav Muhametsin
  * @author Paul Merlin
  */
+@Ignore // Do not work anymore since the use of java-sql-generator that do not support Derby
 public class DerbySQLEntityStoreTest extends AbstractEntityStoreTest
 {
 
@@ -43,15 +45,7 @@ public class DerbySQLEntityStoreTest extends AbstractEntityStoreTest
     {
         super.assemble( module );
 
-        try
-        {
-            new DerbySQLEntityStoreAssembler().assemble( module );
-        }
-        catch( AssemblyException e )
-        {
-            System.err.println( "TEST WILL BE SKIPPED!!!!!" );
-            Assume.assumeNoException( e );
-        }
+        new DerbySQLEntityStoreAssembler().assemble( module );
 
         ModuleAssembly config = module.layer().module( "config" );
         config.services( MemoryEntityStoreService.class );
