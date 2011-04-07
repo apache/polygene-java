@@ -16,6 +16,7 @@ dependencies {
   testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
   testCompile("org.apache.derby:derby:10.7.1.1")
   testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
+  testRuntime('org.java-sql-generator.implementation:java-sql-generator-implementation:' + javasqlgeneratorVersion)
   testRuntime(libraries.asm)
   testRuntime(libraries.asm_commons)
   testRuntime(libraries.slf4j_simple)
