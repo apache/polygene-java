@@ -45,59 +45,59 @@ import org.qi4j.library.alarm.providers.extended.ReactivatedState;
 public class ExtendedModelSpiImplTest extends TestCase
 {
 
-    private Alarm m_Alarm;
-    private ExtendedModelProvider m_Provider;
-    private AlarmModel m_Model;
+    private Alarm underTest;
+    private ExtendedModelProvider provider;
+    private AlarmModel model;
 
     public void setUp()
         throws Exception
     {
-        m_Provider = new ExtendedModelProvider();
-        m_Model = new AlarmModelImpl( m_Provider );
-        m_Alarm = m_Model.createAlarm( "TestCase Alarm" );
+        provider = new ExtendedModelProvider();
+        model = new AlarmModelImpl( provider );
+        underTest = model.createAlarm( "TestCase Alarm" );
     }
 
     public void testName()
         throws Exception
     {
-        Assert.assertEquals( "org.qi4j.library.alarm.model.extended", m_Provider.getName() );
+        Assert.assertEquals( "org.qi4j.library.alarm.model.extended", provider.getName() );
     }
 
     public void testDescription()
         throws Exception
     {
-        boolean test1 = m_Provider.getDescription().toLowerCase().indexOf( "normal" ) >= 0;
-        boolean test2 = m_Provider.getDescription().toLowerCase().indexOf( "activated" ) >= 0;
-        boolean test3 = m_Provider.getDescription().toLowerCase().indexOf( "deactivated" ) >= 0;
-        boolean test4 = m_Provider.getDescription().toLowerCase().indexOf( "acknowledged" ) >= 0;
-        boolean test5 = m_Provider.getDescription().toLowerCase().indexOf( "activation" ) >= 0;
-        boolean test6 = m_Provider.getDescription().toLowerCase().indexOf( "deactivation" ) >= 0;
-        boolean test7 = m_Provider.getDescription().toLowerCase().indexOf( "acknowledge" ) >= 0;
-        boolean test8 = m_Provider.getDescription().toLowerCase().indexOf( "block" ) >= 0;
-        boolean test9 = m_Provider.getDescription().toLowerCase().indexOf( "unblock" ) >= 0;
-        boolean test10 = m_Provider.getDescription().toLowerCase().indexOf( "disable" ) >= 0;
-        boolean test11 = m_Provider.getDescription().toLowerCase().indexOf( "enable" ) >= 0;
+        boolean test1 = provider.getDescription().toLowerCase().indexOf( "normal" ) >= 0;
+        boolean test2 = provider.getDescription().toLowerCase().indexOf( "activated" ) >= 0;
+        boolean test3 = provider.getDescription().toLowerCase().indexOf( "deactivated" ) >= 0;
+        boolean test4 = provider.getDescription().toLowerCase().indexOf( "acknowledged" ) >= 0;
+        boolean test5 = provider.getDescription().toLowerCase().indexOf( "activation" ) >= 0;
+        boolean test6 = provider.getDescription().toLowerCase().indexOf( "deactivation" ) >= 0;
+        boolean test7 = provider.getDescription().toLowerCase().indexOf( "acknowledge" ) >= 0;
+        boolean test8 = provider.getDescription().toLowerCase().indexOf( "block" ) >= 0;
+        boolean test9 = provider.getDescription().toLowerCase().indexOf( "unblock" ) >= 0;
+        boolean test10 = provider.getDescription().toLowerCase().indexOf( "disable" ) >= 0;
+        boolean test11 = provider.getDescription().toLowerCase().indexOf( "enable" ) >= 0;
         assertTrue( test1 && test2 && test3 && test4 && test5 && test6 && test7 && test8 && test9 && test10 && test11 );
 
         Locale english = new Locale( "en" );
-        test1 = m_Provider.getDescription( english ).toLowerCase().indexOf( "normal" ) >= 0;
-        test2 = m_Provider.getDescription( english ).toLowerCase().indexOf( "activated" ) >= 0;
-        test3 = m_Provider.getDescription( english ).toLowerCase().indexOf( "deactivated" ) >= 0;
-        test4 = m_Provider.getDescription( english ).toLowerCase().indexOf( "acknowledged" ) >= 0;
-        test5 = m_Provider.getDescription( english ).toLowerCase().indexOf( "activation" ) >= 0;
-        test6 = m_Provider.getDescription( english ).toLowerCase().indexOf( "deactivation" ) >= 0;
-        test7 = m_Provider.getDescription( english ).toLowerCase().indexOf( "acknowledge" ) >= 0;
-        test8 = m_Provider.getDescription( english ).toLowerCase().indexOf( "block" ) >= 0;
-        test9 = m_Provider.getDescription( english ).toLowerCase().indexOf( "unblock" ) >= 0;
-        test10 = m_Provider.getDescription( english ).toLowerCase().indexOf( "disable" ) >= 0;
-        test11 = m_Provider.getDescription( english ).toLowerCase().indexOf( "enable" ) >= 0;
+        test1 = provider.getDescription( english ).toLowerCase().indexOf( "normal" ) >= 0;
+        test2 = provider.getDescription( english ).toLowerCase().indexOf( "activated" ) >= 0;
+        test3 = provider.getDescription( english ).toLowerCase().indexOf( "deactivated" ) >= 0;
+        test4 = provider.getDescription( english ).toLowerCase().indexOf( "acknowledged" ) >= 0;
+        test5 = provider.getDescription( english ).toLowerCase().indexOf( "activation" ) >= 0;
+        test6 = provider.getDescription( english ).toLowerCase().indexOf( "deactivation" ) >= 0;
+        test7 = provider.getDescription( english ).toLowerCase().indexOf( "acknowledge" ) >= 0;
+        test8 = provider.getDescription( english ).toLowerCase().indexOf( "block" ) >= 0;
+        test9 = provider.getDescription( english ).toLowerCase().indexOf( "unblock" ) >= 0;
+        test10 = provider.getDescription( english ).toLowerCase().indexOf( "disable" ) >= 0;
+        test11 = provider.getDescription( english ).toLowerCase().indexOf( "enable" ) >= 0;
         assertTrue( test1 && test2 && test3 && test4 && test5 && test6 && test7 && test8 && test9 && test10 && test11 );
     }
 
     public void testTriggers()
         throws Exception
     {
-        String[] triggers = m_Provider.getAlarmTriggers();
+        String[] triggers = provider.getAlarmTriggers();
         assertEquals( 7, triggers.length );
         int result = 0;
         for( int i = 0; i < triggers.length; i++ )
@@ -132,263 +132,263 @@ public class ExtendedModelSpiImplTest extends TestCase
             }
         }
         assertEquals( 127, result );
-        assertEquals( m_Alarm.getState().getName(), "normal" );
+        assertEquals( underTest.getState().getName(), "normal" );
     }
 
     public void testStateChangeFromNormal()
         throws Exception
     {
-        Alarm alarm = m_Model.createAlarm( "Another 1" );
-        AlarmEvent event1 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_ACTIVATION );
+        Alarm alarm = model.createAlarm( "Another 1" );
+        AlarmEvent event1 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_ACTIVATION );
         assertEquals( event1.getClass(), ActivationEvent.class );
 
-        alarm = m_Model.createAlarm( "Another 2" );
-        AlarmEvent event2 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_DEACTIVATION );
+        alarm = model.createAlarm( "Another 2" );
+        AlarmEvent event2 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_DEACTIVATION );
         assertNull( event2 );
 
-        alarm = m_Model.createAlarm( "Another 3" );
-        AlarmEvent event3 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_ACKNOWLEDGE );
+        alarm = model.createAlarm( "Another 3" );
+        AlarmEvent event3 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_ACKNOWLEDGE );
         assertNull( event3 );
 
-        alarm = m_Model.createAlarm( "Another 4" );
-        AlarmEvent event4 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_BLOCK );
+        alarm = model.createAlarm( "Another 4" );
+        AlarmEvent event4 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_BLOCK );
         assertEquals( BlockEvent.class, event4.getClass() );
 
-        alarm = m_Model.createAlarm( "Another 5" );
-        AlarmEvent event5 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_UNBLOCK );
+        alarm = model.createAlarm( "Another 5" );
+        AlarmEvent event5 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_UNBLOCK );
         assertNull( event5 );
 
-        alarm = m_Model.createAlarm( "Another 6" );
-        AlarmEvent event6 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_DISABLE );
+        alarm = model.createAlarm( "Another 6" );
+        AlarmEvent event6 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_DISABLE );
         assertEquals( DisableEvent.class, event6.getClass() );
 
-        alarm = m_Model.createAlarm( "Another 7" );
-        AlarmEvent event7 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_ENABLE );
+        alarm = model.createAlarm( "Another 7" );
+        AlarmEvent event7 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_ENABLE );
         assertNull( event7 );
     }
 
     public void testStateChangeFromActivated()
         throws Exception
     {
-        Alarm alarm = m_Model.createAlarm( "Another 1" );
+        Alarm alarm = model.createAlarm( "Another 1" );
         alarm.activate( this );
 
-        AlarmEvent event1 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_ACTIVATION );
+        AlarmEvent event1 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_ACTIVATION );
         assertNull( event1 );
 
-        alarm = m_Model.createAlarm( "Another 2" );
+        alarm = model.createAlarm( "Another 2" );
         alarm.activate( this );
-        AlarmEvent event2 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_DEACTIVATION );
+        AlarmEvent event2 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_DEACTIVATION );
         assertEquals( DeactivationEvent.class, event2.getClass() );
 
-        alarm = m_Model.createAlarm( "Another 3" );
+        alarm = model.createAlarm( "Another 3" );
         alarm.activate( this );
-        AlarmEvent event3 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_ACKNOWLEDGE );
+        AlarmEvent event3 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_ACKNOWLEDGE );
         assertEquals( AcknowledgeEvent.class, event3.getClass() );
 
-        alarm = m_Model.createAlarm( "Another 4" );
+        alarm = model.createAlarm( "Another 4" );
         alarm.activate( this );
-        AlarmEvent event4 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_BLOCK);
+        AlarmEvent event4 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_BLOCK);
         assertEquals( BlockEvent.class, event4.getClass() );
 
-        alarm = m_Model.createAlarm( "Another 5" );
+        alarm = model.createAlarm( "Another 5" );
         alarm.activate( this );
-        AlarmEvent event5 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_UNBLOCK );
+        AlarmEvent event5 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_UNBLOCK );
         assertNull( event5 );
 
-        alarm = m_Model.createAlarm( "Another 6" );
+        alarm = model.createAlarm( "Another 6" );
         alarm.activate( this );
-        AlarmEvent event6 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_DISABLE );
+        AlarmEvent event6 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_DISABLE );
         assertEquals( DisableEvent.class, event6.getClass() );
 
-        alarm = m_Model.createAlarm( "Another 7" );
+        alarm = model.createAlarm( "Another 7" );
         alarm.activate( this );
-        AlarmEvent event7 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_ENABLE );
+        AlarmEvent event7 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_ENABLE );
         assertNull( event7 );
     }
 
     public void testStateChangeFromAcknowledged()
         throws Exception
     {
-        Alarm alarm = m_Model.createAlarm( "Another 1" );
+        Alarm alarm = model.createAlarm( "Another 1" );
         alarm.activate( this );
         alarm.acknowledge( this );
 
-        AlarmEvent event1 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_ACTIVATION );
+        AlarmEvent event1 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_ACTIVATION );
         assertNull( event1 );
 
-        alarm = m_Model.createAlarm( "Another 2" );
+        alarm = model.createAlarm( "Another 2" );
         alarm.activate( this );
         alarm.acknowledge( this );
-        AlarmEvent event2 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_DEACTIVATION );
+        AlarmEvent event2 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_DEACTIVATION );
         assertEquals( DeactivationEvent.class, event2.getClass() );
 
-        alarm = m_Model.createAlarm( "Another 3" );
+        alarm = model.createAlarm( "Another 3" );
         alarm.activate( this );
         alarm.acknowledge( this );
-        AlarmEvent event3 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_ACKNOWLEDGE );
+        AlarmEvent event3 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_ACKNOWLEDGE );
         assertNull( event3 );
 
-        alarm = m_Model.createAlarm( "Another 4" );
+        alarm = model.createAlarm( "Another 4" );
         alarm.activate( this );
         alarm.acknowledge( this );
-        AlarmEvent event4 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_BLOCK);
+        AlarmEvent event4 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_BLOCK);
         assertEquals( BlockEvent.class, event4.getClass() );
 
-        alarm = m_Model.createAlarm( "Another 5" );
+        alarm = model.createAlarm( "Another 5" );
         alarm.activate( this );
         alarm.acknowledge( this );
-        AlarmEvent event5 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_UNBLOCK );
+        AlarmEvent event5 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_UNBLOCK );
         assertNull( event5 );
 
-        alarm = m_Model.createAlarm( "Another 6" );
+        alarm = model.createAlarm( "Another 6" );
         alarm.activate( this );
         alarm.acknowledge( this );
-        AlarmEvent event6 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_DISABLE );
+        AlarmEvent event6 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_DISABLE );
         assertEquals( DisableEvent.class, event6.getClass() );
 
-        alarm = m_Model.createAlarm( "Another 7" );
+        alarm = model.createAlarm( "Another 7" );
         alarm.activate( this );
         alarm.acknowledge( this );
-        AlarmEvent event7 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_ENABLE );
+        AlarmEvent event7 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_ENABLE );
         assertNull( event7 );
     }
 
     public void testStateChangeFromDeactivated()
         throws Exception
     {
-        Alarm alarm = m_Model.createAlarm( "Another 1" );
+        Alarm alarm = model.createAlarm( "Another 1" );
         alarm.activate( this );
         alarm.deactivate( this );
-        AlarmEvent event1 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_ACTIVATION );
+        AlarmEvent event1 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_ACTIVATION );
         assertEquals( ActivationEvent.class, event1.getClass() );
 
-        alarm = m_Model.createAlarm( "Another 2" );
+        alarm = model.createAlarm( "Another 2" );
         alarm.activate( this );
         alarm.deactivate( this );
-        AlarmEvent event2 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_DEACTIVATION );
+        AlarmEvent event2 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_DEACTIVATION );
         assertNull( event2 );
 
-        alarm = m_Model.createAlarm( "Another 3" );
+        alarm = model.createAlarm( "Another 3" );
         alarm.activate( this );
         alarm.deactivate( this );
-        AlarmEvent event3 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_ACKNOWLEDGE );
+        AlarmEvent event3 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_ACKNOWLEDGE );
         assertEquals( AcknowledgeEvent.class, event3.getClass() );
 
-        alarm = m_Model.createAlarm( "Another 4" );
+        alarm = model.createAlarm( "Another 4" );
         alarm.activate( this );
         alarm.deactivate( this );
-        AlarmEvent event4 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_BLOCK);
+        AlarmEvent event4 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_BLOCK);
         assertEquals( BlockEvent.class, event4.getClass() );
 
-        alarm = m_Model.createAlarm( "Another 5" );
+        alarm = model.createAlarm( "Another 5" );
         alarm.activate( this );
         alarm.deactivate( this );
-        AlarmEvent event5 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_UNBLOCK );
+        AlarmEvent event5 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_UNBLOCK );
         assertNull( event5 );
 
-        alarm = m_Model.createAlarm( "Another 6" );
+        alarm = model.createAlarm( "Another 6" );
         alarm.activate( this );
         alarm.deactivate( this );
-        AlarmEvent event6 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_DISABLE );
+        AlarmEvent event6 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_DISABLE );
         assertEquals( DisableEvent.class, event6.getClass() );
 
-        alarm = m_Model.createAlarm( "Another 7" );
+        alarm = model.createAlarm( "Another 7" );
         alarm.activate( this );
         alarm.deactivate( this );
-        AlarmEvent event7 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_ENABLE );
+        AlarmEvent event7 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_ENABLE );
         assertNull( event7 );
     }
 
     public void testStateChangeFromBlocked()
         throws Exception
     {
-        Alarm alarm = m_Model.createAlarm( "Another 1" );
+        Alarm alarm = model.createAlarm( "Another 1" );
         alarm.activate( this );
         alarm.trigger( this, "block" );
-        AlarmEvent event1 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_ACTIVATION );
+        AlarmEvent event1 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_ACTIVATION );
         assertNull( event1 );
 
-        alarm = m_Model.createAlarm( "Another 2" );
+        alarm = model.createAlarm( "Another 2" );
         alarm.activate( this );
         alarm.trigger( this, "block" );
-        AlarmEvent event2 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_DEACTIVATION );
+        AlarmEvent event2 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_DEACTIVATION );
         assertNull( event2 );
 
-        alarm = m_Model.createAlarm( "Another 3" );
+        alarm = model.createAlarm( "Another 3" );
         alarm.activate( this );
         alarm.trigger( this, "block" );
-        AlarmEvent event3 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_ACKNOWLEDGE );
+        AlarmEvent event3 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_ACKNOWLEDGE );
         assertNull( event3 );
 
-        alarm = m_Model.createAlarm( "Another 4" );
+        alarm = model.createAlarm( "Another 4" );
         alarm.activate( this );
         alarm.trigger( this, "block" );
-        AlarmEvent event4 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_BLOCK);
+        AlarmEvent event4 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_BLOCK);
         assertNull( event4 );
 
-        alarm = m_Model.createAlarm( "Another 5" );
+        alarm = model.createAlarm( "Another 5" );
         alarm.activate( this );
         alarm.trigger( this, "block" );
-        AlarmEvent event5 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_UNBLOCK );
+        AlarmEvent event5 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_UNBLOCK );
         assertEquals( UnblockEvent.class, event5.getClass() );
 
-        alarm = m_Model.createAlarm( "Another 6" );
+        alarm = model.createAlarm( "Another 6" );
         alarm.activate( this );
         alarm.trigger( this, "block" );
-        AlarmEvent event6 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_DISABLE );
+        AlarmEvent event6 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_DISABLE );
         assertEquals( DisableEvent.class, event6.getClass() );
 
-        alarm = m_Model.createAlarm( "Another 7" );
+        alarm = model.createAlarm( "Another 7" );
         alarm.activate( this );
         alarm.trigger( this, "block" );
-        AlarmEvent event7 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_ENABLE );
+        AlarmEvent event7 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_ENABLE );
         assertNull( event7 );
     }
 
     public void testStateChangeFromDisabled()
         throws Exception
     {
-        Alarm alarm = m_Model.createAlarm( "Another 1" );
+        Alarm alarm = model.createAlarm( "Another 1" );
         alarm.activate( this );
         alarm.trigger( this, "disable" );
-        AlarmEvent event1 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_ACTIVATION );
+        AlarmEvent event1 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_ACTIVATION );
         assertNull( event1 );
 
-        alarm = m_Model.createAlarm( "Another 2" );
+        alarm = model.createAlarm( "Another 2" );
         alarm.activate( this );
         alarm.trigger( this, "disable" );
-        AlarmEvent event2 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_DEACTIVATION );
+        AlarmEvent event2 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_DEACTIVATION );
         assertNull( event2 );
 
-        alarm = m_Model.createAlarm( "Another 3" );
+        alarm = model.createAlarm( "Another 3" );
         alarm.activate( this );
         alarm.trigger( this, "disable" );
-        AlarmEvent event3 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_ACKNOWLEDGE );
+        AlarmEvent event3 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_ACKNOWLEDGE );
         assertNull( event3 );
 
-        alarm = m_Model.createAlarm( "Another 4" );
+        alarm = model.createAlarm( "Another 4" );
         alarm.activate( this );
         alarm.trigger( this, "disable" );
-        AlarmEvent event4 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_BLOCK);
+        AlarmEvent event4 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_BLOCK);
         assertNull( event4 );
 
-        alarm = m_Model.createAlarm( "Another 5" );
+        alarm = model.createAlarm( "Another 5" );
         alarm.activate( this );
         alarm.trigger( this, "disable" );
-        AlarmEvent event5 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_UNBLOCK );
+        AlarmEvent event5 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_UNBLOCK );
         assertNull( event5 );
 
-        alarm = m_Model.createAlarm( "Another 6" );
+        alarm = model.createAlarm( "Another 6" );
         alarm.activate( this );
         alarm.trigger( this, "disable" );
-        AlarmEvent event6 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_DISABLE );
+        AlarmEvent event6 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_DISABLE );
         assertNull( event6 );
 
-        alarm = m_Model.createAlarm( "Another 7" );
+        alarm = model.createAlarm( "Another 7" );
         alarm.activate( this );
         alarm.trigger( this, "disable" );
-        AlarmEvent event7 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_ENABLE );
+        AlarmEvent event7 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_ENABLE );
         assertEquals( EnableEvent.class, event7.getClass() );
     }
 
@@ -397,7 +397,7 @@ public class ExtendedModelSpiImplTest extends TestCase
     {
         try
         {
-            m_Provider.executeStateChange( this, m_Alarm, "my-trigger" );
+            provider.executeStateChange( this, underTest, "my-trigger" );
             fail( "AlarmTriggerException not thrown." );
         }
         catch( AlarmTriggerException e )
@@ -409,8 +409,8 @@ public class ExtendedModelSpiImplTest extends TestCase
     public void testNormalToActivated()
         throws Exception
     {
-        m_Alarm.activate( this );
-        AlarmEvent event = m_Alarm.getHistory().getLast();
+        underTest.activate( this );
+        AlarmEvent event = underTest.getHistory().getLast();
 
         AlarmState oldstate = event.getOldState();
         Assert.assertEquals( new NormalState().getName(), oldstate.getName() );
@@ -419,7 +419,7 @@ public class ExtendedModelSpiImplTest extends TestCase
         Assert.assertEquals( new ActivatedState().getName(), newstate.getName() );
 
         Alarm eventalarm = event.getAlarm();
-        assertEquals( m_Alarm, eventalarm );
+        assertEquals( underTest, eventalarm );
 
         assertEquals( this, event.getTriggeredBy() );
     }
@@ -427,9 +427,9 @@ public class ExtendedModelSpiImplTest extends TestCase
     public void testActivatedToDeactivated()
         throws Exception
     {
-        m_Alarm.activate( this );
-        m_Alarm.deactivate( this );
-        AlarmEvent event = m_Alarm.getHistory().getLast();
+        underTest.activate( this );
+        underTest.deactivate( this );
+        AlarmEvent event = underTest.getHistory().getLast();
 
         AlarmState oldstate = event.getOldState();
         Assert.assertEquals( new ActivatedState().getName(), oldstate.getName() );
@@ -438,7 +438,7 @@ public class ExtendedModelSpiImplTest extends TestCase
         Assert.assertEquals( new DeactivatedState().getName(), newstate.getName() );
 
         Alarm eventalarm = event.getAlarm();
-        assertEquals( m_Alarm, eventalarm );
+        assertEquals( underTest, eventalarm );
 
         assertEquals( this, event.getTriggeredBy() );
     }
@@ -446,9 +446,9 @@ public class ExtendedModelSpiImplTest extends TestCase
     public void testActivatedToAcknowledged()
         throws Exception
     {
-        m_Alarm.activate( this );
-        m_Alarm.acknowledge( this );
-        AlarmEvent event = m_Alarm.getHistory().getLast();
+        underTest.activate( this );
+        underTest.acknowledge( this );
+        AlarmEvent event = underTest.getHistory().getLast();
 
         AlarmState oldstate = event.getOldState();
         Assert.assertEquals( new ActivatedState().getName(), oldstate.getName() );
@@ -457,7 +457,7 @@ public class ExtendedModelSpiImplTest extends TestCase
         Assert.assertEquals( new AcknowledgedState().getName(), newstate.getName() );
 
         Alarm eventalarm = event.getAlarm();
-        assertEquals( m_Alarm, eventalarm );
+        assertEquals( underTest, eventalarm );
 
         assertEquals( this, event.getTriggeredBy() );
     }
@@ -465,10 +465,10 @@ public class ExtendedModelSpiImplTest extends TestCase
     public void testDeactivatedToNormal()
         throws Exception
     {
-        m_Alarm.activate( this );
-        m_Alarm.deactivate( this );
-        m_Alarm.acknowledge( this );
-        AlarmEvent event = m_Alarm.getHistory().getLast();
+        underTest.activate( this );
+        underTest.deactivate( this );
+        underTest.acknowledge( this );
+        AlarmEvent event = underTest.getHistory().getLast();
 
         AlarmState oldstate = event.getOldState();
         Assert.assertEquals( new DeactivatedState().getName(), oldstate.getName() );
@@ -477,7 +477,7 @@ public class ExtendedModelSpiImplTest extends TestCase
         Assert.assertEquals( new NormalState().getName(), newstate.getName() );
 
         Alarm eventalarm = event.getAlarm();
-        assertEquals( m_Alarm, eventalarm );
+        assertEquals( underTest, eventalarm );
 
         assertEquals( this, event.getTriggeredBy() );
     }
@@ -485,10 +485,10 @@ public class ExtendedModelSpiImplTest extends TestCase
     public void testAcknowledgedToNormal()
         throws Exception
     {
-        m_Alarm.activate( this );
-        m_Alarm.acknowledge( this );
-        m_Alarm.deactivate( this );
-        AlarmEvent event = m_Alarm.getHistory().getLast();
+        underTest.activate( this );
+        underTest.acknowledge( this );
+        underTest.deactivate( this );
+        AlarmEvent event = underTest.getHistory().getLast();
 
         AlarmState oldstate = event.getOldState();
         Assert.assertEquals( new AcknowledgedState().getName(), oldstate.getName() );
@@ -497,7 +497,7 @@ public class ExtendedModelSpiImplTest extends TestCase
         Assert.assertEquals( new NormalState().getName(), newstate.getName() );
 
         Alarm eventalarm = event.getAlarm();
-        assertEquals( m_Alarm, eventalarm );
+        assertEquals( underTest, eventalarm );
 
         assertEquals( this, event.getTriggeredBy() );
     }
@@ -505,10 +505,10 @@ public class ExtendedModelSpiImplTest extends TestCase
     public void testDisabledToNormal()
         throws Exception
     {
-        m_Alarm.activate( this );
-        m_Alarm.trigger( this, "disable" );
-        m_Alarm.trigger( this, "enable" );
-        AlarmEvent event = m_Alarm.getHistory().getLast();
+        underTest.activate( this );
+        underTest.trigger( this, "disable" );
+        underTest.trigger( this, "enable" );
+        AlarmEvent event = underTest.getHistory().getLast();
 
         AlarmState oldstate = event.getOldState();
         Assert.assertEquals( new DisabledState().getName(), oldstate.getName() );
@@ -517,17 +517,17 @@ public class ExtendedModelSpiImplTest extends TestCase
         Assert.assertEquals( new NormalState().getName(), newstate.getName() );
 
         Alarm eventalarm = event.getAlarm();
-        assertEquals( m_Alarm, eventalarm );
+        assertEquals( underTest, eventalarm );
         assertEquals( this, event.getTriggeredBy() );
     }
 
     public void testBlockedToNormal()
         throws Exception
     {
-        m_Alarm.activate( this );
-        m_Alarm.trigger( this, "block" );
-        m_Alarm.trigger( this, "unblock" );
-        AlarmEvent event = m_Alarm.getHistory().getLast();
+        underTest.activate( this );
+        underTest.trigger( this, "block" );
+        underTest.trigger( this, "unblock" );
+        AlarmEvent event = underTest.getHistory().getLast();
 
         AlarmState oldstate = event.getOldState();
         Assert.assertEquals( new BlockedState().getName(), oldstate.getName() );
@@ -536,15 +536,15 @@ public class ExtendedModelSpiImplTest extends TestCase
         Assert.assertEquals( new NormalState().getName(), newstate.getName() );
 
         Alarm eventalarm = event.getAlarm();
-        assertEquals( m_Alarm, eventalarm );
+        assertEquals( underTest, eventalarm );
         assertEquals( this, event.getTriggeredBy() );
     }
 
     public void testNormalToBlocked()
         throws Exception
     {
-        m_Alarm.trigger( this, "block" );
-        AlarmEvent event = m_Alarm.getHistory().getLast();
+        underTest.trigger( this, "block" );
+        AlarmEvent event = underTest.getHistory().getLast();
 
         AlarmState oldstate = event.getOldState();
         Assert.assertEquals( new NormalState().getName(), oldstate.getName() );
@@ -553,16 +553,16 @@ public class ExtendedModelSpiImplTest extends TestCase
         Assert.assertEquals( new BlockedState().getName(), newstate.getName() );
 
         Alarm eventalarm = event.getAlarm();
-        assertEquals( m_Alarm, eventalarm );
+        assertEquals( underTest, eventalarm );
         assertEquals( this, event.getTriggeredBy() );
     }
 
     public void testActivatedToBlocked()
         throws Exception
     {
-        m_Alarm.activate( this );
-        m_Alarm.trigger( this, "block" );
-        AlarmEvent event = m_Alarm.getHistory().getLast();
+        underTest.activate( this );
+        underTest.trigger( this, "block" );
+        AlarmEvent event = underTest.getHistory().getLast();
 
         AlarmState oldstate = event.getOldState();
         Assert.assertEquals( new ActivatedState().getName(), oldstate.getName() );
@@ -571,17 +571,17 @@ public class ExtendedModelSpiImplTest extends TestCase
         Assert.assertEquals( new BlockedState().getName(), newstate.getName() );
 
         Alarm eventalarm = event.getAlarm();
-        assertEquals( m_Alarm, eventalarm );
+        assertEquals( underTest, eventalarm );
         assertEquals( this, event.getTriggeredBy() );
     }
 
     public void testDeactivatedToBlocked()
         throws Exception
     {
-        m_Alarm.activate( this );
-        m_Alarm.deactivate( this );
-        m_Alarm.trigger( this, "block" );
-        AlarmEvent event = m_Alarm.getHistory().getLast();
+        underTest.activate( this );
+        underTest.deactivate( this );
+        underTest.trigger( this, "block" );
+        AlarmEvent event = underTest.getHistory().getLast();
 
         AlarmState oldstate = event.getOldState();
         Assert.assertEquals( new DeactivatedState().getName(), oldstate.getName() );
@@ -590,17 +590,17 @@ public class ExtendedModelSpiImplTest extends TestCase
         Assert.assertEquals( new BlockedState().getName(), newstate.getName() );
 
         Alarm eventalarm = event.getAlarm();
-        assertEquals( m_Alarm, eventalarm );
+        assertEquals( underTest, eventalarm );
         assertEquals( this, event.getTriggeredBy() );
     }
 
     public void testAcknowledgedToBlocked()
         throws Exception
     {
-        m_Alarm.activate( this );
-        m_Alarm.acknowledge( this );
-        m_Alarm.trigger( this, "block" );
-        AlarmEvent event = m_Alarm.getHistory().getLast();
+        underTest.activate( this );
+        underTest.acknowledge( this );
+        underTest.trigger( this, "block" );
+        AlarmEvent event = underTest.getHistory().getLast();
 
         AlarmState oldstate = event.getOldState();
         Assert.assertEquals( new AcknowledgedState().getName(), oldstate.getName() );
@@ -609,15 +609,15 @@ public class ExtendedModelSpiImplTest extends TestCase
         Assert.assertEquals( new BlockedState().getName(), newstate.getName() );
 
         Alarm eventalarm = event.getAlarm();
-        assertEquals( m_Alarm, eventalarm );
+        assertEquals( underTest, eventalarm );
         assertEquals( this, event.getTriggeredBy() );
     }
 
     public void testNormalToDisabled()
         throws Exception
     {
-        m_Alarm.trigger( this, "disable" );
-        AlarmEvent event = m_Alarm.getHistory().getLast();
+        underTest.trigger( this, "disable" );
+        AlarmEvent event = underTest.getHistory().getLast();
 
         AlarmState oldstate = event.getOldState();
         Assert.assertEquals( new NormalState().getName(), oldstate.getName() );
@@ -626,16 +626,16 @@ public class ExtendedModelSpiImplTest extends TestCase
         Assert.assertEquals( new DisabledState().getName(), newstate.getName() );
 
         Alarm eventalarm = event.getAlarm();
-        assertEquals( m_Alarm, eventalarm );
+        assertEquals( underTest, eventalarm );
         assertEquals( this, event.getTriggeredBy() );
     }
 
     public void testActivatedToDisabled()
         throws Exception
     {
-        m_Alarm.activate( this );
-        m_Alarm.trigger( this, "disable" );
-        AlarmEvent event = m_Alarm.getHistory().getLast();
+        underTest.activate( this );
+        underTest.trigger( this, "disable" );
+        AlarmEvent event = underTest.getHistory().getLast();
 
         AlarmState oldstate = event.getOldState();
         Assert.assertEquals( new ActivatedState().getName(), oldstate.getName() );
@@ -644,17 +644,17 @@ public class ExtendedModelSpiImplTest extends TestCase
         Assert.assertEquals( new DisabledState().getName(), newstate.getName() );
 
         Alarm eventalarm = event.getAlarm();
-        assertEquals( m_Alarm, eventalarm );
+        assertEquals( underTest, eventalarm );
         assertEquals( this, event.getTriggeredBy() );
     }
 
     public void testDeactivatedToDisabled()
         throws Exception
     {
-        m_Alarm.activate( this );
-        m_Alarm.deactivate( this );
-        m_Alarm.trigger( this, "disable" );
-        AlarmEvent event = m_Alarm.getHistory().getLast();
+        underTest.activate( this );
+        underTest.deactivate( this );
+        underTest.trigger( this, "disable" );
+        AlarmEvent event = underTest.getHistory().getLast();
 
         AlarmState oldstate = event.getOldState();
         Assert.assertEquals( new DeactivatedState().getName(), oldstate.getName() );
@@ -663,17 +663,17 @@ public class ExtendedModelSpiImplTest extends TestCase
         Assert.assertEquals( new DisabledState().getName(), newstate.getName() );
 
         Alarm eventalarm = event.getAlarm();
-        assertEquals( m_Alarm, eventalarm );
+        assertEquals( underTest, eventalarm );
         assertEquals( this, event.getTriggeredBy() );
     }
 
     public void testAcknowledgedToDisabled()
         throws Exception
     {
-        m_Alarm.activate( this );
-        m_Alarm.acknowledge( this );
-        m_Alarm.trigger( this, "disable" );
-        AlarmEvent event = m_Alarm.getHistory().getLast();
+        underTest.activate( this );
+        underTest.acknowledge( this );
+        underTest.trigger( this, "disable" );
+        AlarmEvent event = underTest.getHistory().getLast();
 
         AlarmState oldstate = event.getOldState();
         Assert.assertEquals( new AcknowledgedState().getName(), oldstate.getName() );
@@ -682,17 +682,17 @@ public class ExtendedModelSpiImplTest extends TestCase
         Assert.assertEquals( new DisabledState().getName(), newstate.getName() );
 
         Alarm eventalarm = event.getAlarm();
-        assertEquals( m_Alarm, eventalarm );
+        assertEquals( underTest, eventalarm );
         assertEquals( this, event.getTriggeredBy() );
     }
 
     public void testBlockedToDisabled()
         throws Exception
     {
-        m_Alarm.activate( this );
-        m_Alarm.trigger( this, "block" );
-        m_Alarm.trigger( this, "disable" );
-        AlarmEvent event = m_Alarm.getHistory().getLast();
+        underTest.activate( this );
+        underTest.trigger( this, "block" );
+        underTest.trigger( this, "disable" );
+        AlarmEvent event = underTest.getHistory().getLast();
 
         AlarmState oldstate = event.getOldState();
         Assert.assertEquals( new BlockedState().getName(), oldstate.getName() );
@@ -701,17 +701,17 @@ public class ExtendedModelSpiImplTest extends TestCase
         Assert.assertEquals( new DisabledState().getName(), newstate.getName() );
 
         Alarm eventalarm = event.getAlarm();
-        assertEquals( m_Alarm, eventalarm );
+        assertEquals( underTest, eventalarm );
         assertEquals( this, event.getTriggeredBy() );
     }
 
     public void testDisabledToBlocked()
         throws Exception
     {
-        m_Alarm.activate( this );
-        m_Alarm.trigger( this, "disable" );
-        m_Alarm.trigger( this, "block" );       // This trigger should be ignored.
-        AlarmEvent event = m_Alarm.getHistory().getLast();
+        underTest.activate( this );
+        underTest.trigger( this, "disable" );
+        underTest.trigger( this, "block" );       // This trigger should be ignored.
+        AlarmEvent event = underTest.getHistory().getLast();
 
         AlarmState oldstate = event.getOldState();
         Assert.assertEquals( new ActivatedState().getName(), oldstate.getName() );
@@ -720,23 +720,23 @@ public class ExtendedModelSpiImplTest extends TestCase
         Assert.assertEquals( new DisabledState().getName(), newstate.getName() );
 
         Alarm eventalarm = event.getAlarm();
-        assertEquals( m_Alarm, eventalarm );
+        assertEquals( underTest, eventalarm );
         assertEquals( this, event.getTriggeredBy() );
     }
 
     public void testConditionChanges1()
         throws Exception
     {
-        m_Alarm.setCondition( false );
-        AlarmEvent event = m_Alarm.getHistory().getLast();
+        underTest.setCondition( false );
+        AlarmEvent event = underTest.getHistory().getLast();
         assertNull( "Generated an event but should have not.", event );
     }
 
     public void testConditionChanges2()
         throws Exception
     {
-        m_Alarm.setCondition( true );
-        AlarmEvent event = m_Alarm.getHistory().getLast();
+        underTest.setCondition( true );
+        AlarmEvent event = underTest.getHistory().getLast();
 
         AlarmState oldstate = event.getOldState();
         Assert.assertEquals( new NormalState().getName(), oldstate.getName() );
@@ -745,17 +745,17 @@ public class ExtendedModelSpiImplTest extends TestCase
         Assert.assertEquals( new ActivatedState().getName(), newstate.getName() );
 
         Alarm eventalarm = event.getAlarm();
-        assertEquals( m_Alarm, eventalarm );
+        assertEquals( underTest, eventalarm );
 
-        assertEquals( m_Alarm, event.getTriggeredBy() );
+        assertEquals( underTest, event.getTriggeredBy() );
     }
 
     public void testConditionChanges3()
         throws Exception
     {
-        m_Alarm.setCondition( true );
-        m_Alarm.setCondition( false );
-        AlarmEvent event = m_Alarm.getHistory().getLast();
+        underTest.setCondition( true );
+        underTest.setCondition( false );
+        AlarmEvent event = underTest.getHistory().getLast();
 
         AlarmState oldstate = event.getOldState();
         Assert.assertEquals( new ActivatedState().getName(), oldstate.getName() );
@@ -764,37 +764,37 @@ public class ExtendedModelSpiImplTest extends TestCase
         Assert.assertEquals( new DeactivatedState().getName(), newstate.getName() );
 
         Alarm eventalarm = event.getAlarm();
-        assertEquals( m_Alarm, eventalarm );
+        assertEquals( underTest, eventalarm );
 
-        assertEquals( m_Alarm, event.getTriggeredBy() );
+        assertEquals( underTest, event.getTriggeredBy() );
     }
 
     public void testComputeCondition()
         throws Exception
     {
         AlarmState s1 = new NormalState();
-        assertFalse( m_Provider.computeCondition( s1 ) );
+        assertFalse( provider.computeCondition( s1 ) );
         AlarmState s2 = new ActivatedState();
-        assertTrue( m_Provider.computeCondition( s2 ) );
+        assertTrue( provider.computeCondition( s2 ) );
         AlarmState s3 = new DeactivatedState();
-        assertFalse( m_Provider.computeCondition( s3 ) );
+        assertFalse( provider.computeCondition( s3 ) );
         AlarmState s4 = new AcknowledgedState();
-        assertTrue( m_Provider.computeCondition( s4 ) );
+        assertTrue( provider.computeCondition( s4 ) );
 
         AlarmState s5 = new DisabledState();
-        assertFalse( m_Provider.computeCondition( s5 ) );
+        assertFalse( provider.computeCondition( s5 ) );
         AlarmState s6 = new BlockedState();
-        assertFalse( m_Provider.computeCondition( s6 ) );
+        assertFalse( provider.computeCondition( s6 ) );
         AlarmState s7 = new ReactivatedState();
-        assertTrue( m_Provider.computeCondition( s7 ) );
+        assertTrue( provider.computeCondition( s7 ) );
     }
 
     public void testComputeTriggerNormal()
         throws Exception
     {
         AlarmState state = new NormalState();
-        String trigger1 = m_Provider.computeTrigger( state, true );
-        String trigger2 = m_Provider.computeTrigger( state, false );
+        String trigger1 = provider.computeTrigger( state, true );
+        String trigger2 = provider.computeTrigger( state, false );
         assertEquals( Alarm.TRIGGER_ACTIVATION, trigger1 );
         assertEquals( null, trigger2 );
     }
@@ -802,8 +802,8 @@ public class ExtendedModelSpiImplTest extends TestCase
     public void testComputeTriggerActivated()
     {
         AlarmState state = new ActivatedState();
-        String trigger1 = m_Provider.computeTrigger( state, true );
-        String trigger2 = m_Provider.computeTrigger( state, false );
+        String trigger1 = provider.computeTrigger( state, true );
+        String trigger2 = provider.computeTrigger( state, false );
         assertEquals( null, trigger1 );
         assertEquals( Alarm.TRIGGER_DEACTIVATION, trigger2 );
     }
@@ -811,8 +811,8 @@ public class ExtendedModelSpiImplTest extends TestCase
     public void testComputeTRiggerDeactivated()
     {
         AlarmState state = new DeactivatedState();
-        String trigger1 = m_Provider.computeTrigger( state, true );
-        String trigger2 = m_Provider.computeTrigger( state, false );
+        String trigger1 = provider.computeTrigger( state, true );
+        String trigger2 = provider.computeTrigger( state, false );
         assertEquals( Alarm.TRIGGER_ACTIVATION, trigger1 );
         assertEquals( null, trigger2 );
     }
@@ -820,8 +820,8 @@ public class ExtendedModelSpiImplTest extends TestCase
     public void testComputeTriggerAcknowledged()
     {
         AlarmState state = new AcknowledgedState();
-        String trigger1 = m_Provider.computeTrigger( state, true );
-        String trigger2 = m_Provider.computeTrigger( state, false );
+        String trigger1 = provider.computeTrigger( state, true );
+        String trigger2 = provider.computeTrigger( state, false );
         assertEquals( null, trigger1 );
         assertEquals( Alarm.TRIGGER_DEACTIVATION, trigger2 );
     }
@@ -829,8 +829,8 @@ public class ExtendedModelSpiImplTest extends TestCase
     public void testComputeTriggerReactivated()
     {
         AlarmState state = new ReactivatedState();
-        String trigger1 = m_Provider.computeTrigger( state, true );
-        String trigger2 = m_Provider.computeTrigger( state, false );
+        String trigger1 = provider.computeTrigger( state, true );
+        String trigger2 = provider.computeTrigger( state, false );
         assertEquals( null, trigger1 );
         assertEquals( Alarm.TRIGGER_DEACTIVATION, trigger2 );
     }
@@ -838,8 +838,8 @@ public class ExtendedModelSpiImplTest extends TestCase
     public void testComputeTriggerBlocked()
     {
         AlarmState state = new BlockedState();
-        String trigger1 = m_Provider.computeTrigger( state, true );
-        String trigger2 = m_Provider.computeTrigger( state, false );
+        String trigger1 = provider.computeTrigger( state, true );
+        String trigger2 = provider.computeTrigger( state, false );
         assertEquals( null, trigger1 );
         assertEquals( null, trigger2 );
     }
@@ -847,8 +847,8 @@ public class ExtendedModelSpiImplTest extends TestCase
     public void testComputeTriggerDisabled()
     {
         AlarmState state = new DisabledState();
-        String trigger1 = m_Provider.computeTrigger( state, true );
-        String trigger2 = m_Provider.computeTrigger( state, false );
+        String trigger1 = provider.computeTrigger( state, true );
+        String trigger2 = provider.computeTrigger( state, false );
         assertEquals( null, trigger1 );
         assertEquals( null, trigger2 );
     }

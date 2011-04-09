@@ -33,20 +33,20 @@ import java.util.regex.Matcher;
 
 public class ReactivationEventTest extends TestCase
 {
-    private Alarm m_Alarm;
+    private Alarm underTest;
 
     public void setUp()
         throws Exception
     {
         AlarmModelProvider provider = new ExtendedModelProvider();
         AlarmModel model = new AlarmModelImpl( provider );
-        m_Alarm = model.createAlarm( "TestCase Alarm" );
+        underTest = model.createAlarm( "TestCase Alarm" );
     }
 
     public void testName()
         throws Exception
     {
-        AlarmEvent e = new ReactivationEvent( this, m_Alarm, null, null, System.currentTimeMillis() );
+        AlarmEvent e = new ReactivationEvent( this, underTest, null, null, System.currentTimeMillis() );
         assertEquals( "reactivation", e.getName() );
 
         Locale english = new Locale( "en" );
@@ -59,7 +59,7 @@ public class ReactivationEventTest extends TestCase
     public void testDescription()
         throws Exception
     {
-        AlarmEvent e = new ReactivationEvent( this, m_Alarm, null, null, System.currentTimeMillis() );
+        AlarmEvent e = new ReactivationEvent( this, underTest, null, null, System.currentTimeMillis() );
         boolean test = e.getDescription().toLowerCase().indexOf( "again" ) >= 0;
         assertTrue( test );
 
@@ -74,20 +74,20 @@ public class ReactivationEventTest extends TestCase
 
     public void testTriggeredBy()
     {
-        GenericAlarmEvent e = new ReactivationEvent( this, m_Alarm, null, null, System.currentTimeMillis() );
+        GenericAlarmEvent e = new ReactivationEvent( this, underTest, null, null, System.currentTimeMillis() );
         Assert.assertEquals( this, e.getTriggeredBy() );
     }
 
     public void testAlarm()
     {
-        AlarmEvent e = new ReactivationEvent( this, m_Alarm, null, null, System.currentTimeMillis() );
-        assertEquals( m_Alarm, e.getAlarm() );
+        AlarmEvent e = new ReactivationEvent( this, underTest, null, null, System.currentTimeMillis() );
+        assertEquals( underTest, e.getAlarm() );
     }
 
     public void testEventTime()
         throws Exception
     {
-        AlarmEvent e = new ReactivationEvent( this, m_Alarm, null, null, System.currentTimeMillis() );
+        AlarmEvent e = new ReactivationEvent( this, underTest, null, null, System.currentTimeMillis() );
         Thread.sleep( 15 );
         long now = System.currentTimeMillis();
         boolean test = now > e.getEventTime().getTime() && ( now - e.getEventTime().getTime() < 150 );
@@ -96,13 +96,13 @@ public class ReactivationEventTest extends TestCase
 
     public void testResourceHead()
     {
-        GenericAlarmEvent e = new ReactivationEvent( this, m_Alarm, null, null, System.currentTimeMillis() );
+        GenericAlarmEvent e = new ReactivationEvent( this, underTest, null, null, System.currentTimeMillis() );
         Assert.assertEquals( "EVENT_REACTIVATION", e.getResourceHead() );
     }
 
     public void testToString()
     {
-        AlarmEvent e = new ReactivationEvent( this, m_Alarm, null, null, System.currentTimeMillis() );
+        AlarmEvent e = new ReactivationEvent( this, underTest, null, null, System.currentTimeMillis() );
         String str = e.toString();
         String pattern =
             "^event\\[Alarm\\[TestCase Alarm : normal  : This is a default Locale description of a testcase Alarm.\\], time\\[[ 0-9:/APM]*\\], oldstate\\[null\\], newstate\\[null\\], reactivation\\].*";

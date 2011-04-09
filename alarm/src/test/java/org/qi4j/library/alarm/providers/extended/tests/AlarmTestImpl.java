@@ -29,31 +29,31 @@ import java.util.Locale;
 public class AlarmTestImpl
     implements Alarm
 {
-    private AlarmHistory m_History;
-    private AlarmModel m_Model;
-    private boolean m_Condition;
-    private AlarmState m_State;
-    private Map m_Properties;
-    private String m_Name;
+    private AlarmHistory history;
+    private AlarmModel model;
+    private boolean condition;
+    private AlarmState state;
+    private Map properties;
+    private String name;
 
     public AlarmTestImpl( AlarmModel model, String name )
     {
-        m_Model = model;
-        m_Properties = new HashMap();
-        m_History = new TestAlarmHistory();
-        m_Condition = false;
-        m_State = model.getAlarmModelProvider().createInitialState();
-        m_Name = name;
+        this.model = model;
+        properties = new HashMap();
+        history = new TestAlarmHistory();
+        condition = false;
+        state = model.getAlarmModelProvider().createInitialState();
+        this.name = name;
     }
 
     public AlarmModel getAlarmModel()
     {
-        return m_Model;
+        return model;
     }
 
     public void setAlarmModel( AlarmModel model )
     {
-        m_Model = model;
+        this.model = model;
     }
 
     public void trigger( Object source, String trig )
@@ -78,42 +78,42 @@ public class AlarmTestImpl
 
     public boolean getCondition()
     {
-        return m_Condition;
+        return condition;
     }
 
     public void setCondition( boolean condition )
     {
-        m_Condition = condition;
+        this.condition = condition;
     }
 
     public AlarmState getState()
     {
-        return m_State;
+        return state;
     }
 
     public AlarmHistory getHistory()
     {
-        return m_History;
+        return history;
     }
 
     public Map getProperties()
     {
-        return m_Properties;
+        return properties;
     }
 
     public Object getProperty( String name )
     {
-        return m_Properties.get( name );
+        return properties.get( name );
     }
 
     public void setProperty( String name, Object value )
     {
-        m_Properties.put( name, value );
+        properties.put( name, value );
     }
 
     public String getName()
     {
-        return m_Name;
+        return name;
     }
 
     public String getDescription()

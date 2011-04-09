@@ -37,16 +37,16 @@ import org.qi4j.library.alarm.impl.AlarmImpl;
 public class AlarmImplTest extends TestCase
     implements AlarmListener
 {
-    private Alarm m_TestAlarm;
-    private int m_Fired;
-    private AlarmModelImpl m_Model;
+    private Alarm underTest;
+    private int fired;
+    private AlarmModelImpl model;
 
     public void setUp()
         throws Exception
     {
         AlarmModelProvider spi = new SimpleModelProvider();
-        m_Model = new AlarmModelImpl( spi );
-        m_TestAlarm = m_Model.createAlarm( "TestCase Alarm" );
+        model = new AlarmModelImpl( spi );
+        underTest = model.createAlarm( "TestCase Alarm" );
     }
 
     public void testCreationProblems()
@@ -54,7 +54,7 @@ public class AlarmImplTest extends TestCase
     {
         try
         {
-            new AlarmImpl( m_Model, null );
+            new AlarmImpl( model, null );
             fail( "Alarm created with null name." );
         } catch( AlarmCreationException e )
         {
@@ -62,7 +62,7 @@ public class AlarmImplTest extends TestCase
         }
         try
         {
-            new AlarmImpl( m_Model, "" );
+            new AlarmImpl( model, "" );
             fail( "Alarm created with empty string name." );
         } catch( AlarmCreationException e )
         {
@@ -70,7 +70,7 @@ public class AlarmImplTest extends TestCase
         }
         try
         {
-            new AlarmImpl( m_Model, "\n \n" );
+            new AlarmImpl( model, "\n \n" );
             fail( "Alarm created with white space name." );
         } catch( AlarmCreationException e )
         {
@@ -89,56 +89,56 @@ public class AlarmImplTest extends TestCase
 
     public void testName() throws Exception
     {
-        assertEquals( "TestCase Alarm", m_TestAlarm.getName() );
+        assertEquals( "TestCase Alarm", underTest.getName() );
     }
 
     public void testDescription() throws Exception
     {
-//        assertEquals( "This is a default Locale description of a testcase Alarm.", m_TestAlarm.getDescription() );
+//        assertEquals( "This is a default Locale description of a testcase Alarm.", underTest.getDescription() );
 
         Locale english = Locale.UK;
-        assertEquals( "This is a UK Locale description of a testcase Alarm.", m_TestAlarm.getDescription(english) );
+        assertEquals( "This is a UK Locale description of a testcase Alarm.", underTest.getDescription(english) );
 
         Locale swedish = new Locale( "sv" );
-        assertEquals( "Detta \u00E5r en svensk beskrivning av ett testlarm.", m_TestAlarm.getDescription( swedish ) );
+        assertEquals( "Detta \u00E5r en svensk beskrivning av ett testlarm.", underTest.getDescription( swedish ) );
 
     }
 
     public void testState()
     {
-        assertEquals( "normal", m_TestAlarm.getState().getName() );
-        boolean condition = m_TestAlarm.getCondition();
+        assertEquals( "normal", underTest.getState().getName() );
+        boolean condition = underTest.getCondition();
         assertEquals( false, condition );
     }
 
     public void testCheckAndSetModel()
         throws Exception
     {
-        AlarmModel model = m_TestAlarm.getAlarmModel();
-        assertEquals( m_Model, model );
+        AlarmModel model = underTest.getAlarmModel();
+        assertEquals( this.model, model );
         AlarmModelProvider spi = new SimpleModelProvider();
-        m_TestAlarm.setAlarmModel( new AlarmModelImpl( spi ) );
-        model = m_TestAlarm.getAlarmModel();
-        assertFalse( "AlarmModel still considered equal.", m_Model.equals( model ) );
+        underTest.setAlarmModel( new AlarmModelImpl( spi ) );
+        model = underTest.getAlarmModel();
+        assertFalse( "AlarmModel still considered equal.", this.model.equals( model ) );
 
     }
 
     public void testProperties()
     {
-        String alarmText = (String) m_TestAlarm.getProperty( "text" );
+        String alarmText = (String) underTest.getProperty( "text" );
         assertNull( alarmText );
 
-        m_TestAlarm.setProperty( "text", "TestCase Alarm" );
-        alarmText = (String) m_TestAlarm.getProperty( "text" );
+        underTest.setProperty( "text", "TestCase Alarm" );
+        alarmText = (String) underTest.getProperty( "text" );
         assertEquals( "TestCase Alarm", alarmText );
 
-        Map props1 = m_TestAlarm.getProperties();
+        Map props1 = underTest.getProperties();
         Map props2 = new HashMap();
         props2.put( "text", "TestCase Alarm" );
         assertEquals( props2, props1 );
 
-        m_TestAlarm.setProperty( "text", null );
-        Map props3 = m_TestAlarm.getProperties();
+        underTest.setProperty( "text", null );
+        Map props3 = underTest.getProperties();
         Map props4 = new HashMap();
         assertEquals( props4, props3 );
     }
@@ -148,7 +148,7 @@ public class AlarmImplTest extends TestCase
     {
         try
         {
-            m_TestAlarm.trigger( this, "my-special-trigger" );
+            underTest.trigger( this, "my-special-trigger" );
             fail( "AlarmTriggerException was not thrown." );
         } catch( AlarmTriggerException e )
         {
@@ -159,32 +159,32 @@ public class AlarmImplTest extends TestCase
     public void testNoEvent()
         throws Exception
     {
-        m_TestAlarm.addAlarmListener( this );
-        m_TestAlarm.deactivate( this );
-        assertEquals( 0, m_Fired );
+        underTest.addAlarmListener( this );
+        underTest.deactivate( this );
+        assertEquals( 0, fired );
     }
 
     public void testListener()
     {
-        m_TestAlarm.removeAlarmListener( null );  // make sure it doesn't fail.
-        m_TestAlarm.removeAlarmListener( this );  // make sure it doesn't fail.
+        underTest.removeAlarmListener( null );  // make sure it doesn't fail.
+        underTest.removeAlarmListener( this );  // make sure it doesn't fail.
 
-        m_TestAlarm.addAlarmListener( this );
-        m_TestAlarm.activate( this );
-        assertEquals( 1, m_Fired );
-        m_TestAlarm.addAlarmListener( this );
-        m_TestAlarm.deactivate( this );
-        assertEquals( 3, m_Fired );
-        m_TestAlarm.removeAlarmListener( this );
-        m_TestAlarm.activate( this );
-        assertEquals( 4, m_Fired );
-        m_TestAlarm.removeAlarmListener( this );
-        m_TestAlarm.deactivate( this );
-        assertEquals( 4, m_Fired );
+        underTest.addAlarmListener( this );
+        underTest.activate( this );
+        assertEquals( 1, fired );
+        underTest.addAlarmListener( this );
+        underTest.deactivate( this );
+        assertEquals( 3, fired );
+        underTest.removeAlarmListener( this );
+        underTest.activate( this );
+        assertEquals( 4, fired );
+        underTest.removeAlarmListener( this );
+        underTest.deactivate( this );
+        assertEquals( 4, fired );
     }
 
     public void alarmFired( AlarmEvent event )
     {
-        m_Fired++;
+        fired++;
     }
 }

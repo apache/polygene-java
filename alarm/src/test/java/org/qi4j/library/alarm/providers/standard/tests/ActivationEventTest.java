@@ -32,20 +32,20 @@ import org.qi4j.library.alarm.providers.standard.StandardModelProvider;
 
 public class ActivationEventTest extends TestCase
 {
-    private Alarm m_Alarm;
+    private Alarm underTest;
 
     public void setUp()
         throws Exception
     {
         AlarmModelProvider provider = new StandardModelProvider();
         AlarmModel model = new AlarmModelImpl( provider );
-        m_Alarm = model.createAlarm( "TestCase Alarm" );
+        underTest = model.createAlarm( "TestCase Alarm" );
     }
 
     public void testName()
         throws Exception
     {
-        AlarmEvent e = new ActivationEvent( this, m_Alarm, null, null, System.currentTimeMillis() );
+        AlarmEvent e = new ActivationEvent( this, underTest, null, null, System.currentTimeMillis() );
         assertEquals( "activation", e.getName() );
 
         Locale english = new Locale( "en" );
@@ -58,7 +58,7 @@ public class ActivationEventTest extends TestCase
     public void testDescription()
         throws Exception
     {
-        AlarmEvent e = new ActivationEvent( this, m_Alarm, null, null, System.currentTimeMillis() );
+        AlarmEvent e = new ActivationEvent( this, underTest, null, null, System.currentTimeMillis() );
         boolean test = e.getDescription().toLowerCase().indexOf( "triggered" ) >= 0;
         assertTrue( test );
 
@@ -73,22 +73,22 @@ public class ActivationEventTest extends TestCase
 
     public void testTriggeredBy()
     {
-        GenericAlarmEvent e = new ActivationEvent( this, m_Alarm, null, null, System.currentTimeMillis() );
+        GenericAlarmEvent e = new ActivationEvent( this, underTest, null, null, System.currentTimeMillis() );
 
         assertEquals( this, e.getTriggeredBy() );
     }
 
     public void testAlarm()
     {
-        AlarmEvent e = new ActivationEvent( this, m_Alarm, null, null, System.currentTimeMillis() );
+        AlarmEvent e = new ActivationEvent( this, underTest, null, null, System.currentTimeMillis() );
 
-        assertEquals( m_Alarm, e.getAlarm() );
+        assertEquals( underTest, e.getAlarm() );
     }
 
     public void testEventTime()
         throws Exception
     {
-        AlarmEvent e = new ActivationEvent( this, m_Alarm, null, null, System.currentTimeMillis() );
+        AlarmEvent e = new ActivationEvent( this, underTest, null, null, System.currentTimeMillis() );
 
         Thread.sleep( 15 );
         long now = System.currentTimeMillis();
@@ -98,14 +98,14 @@ public class ActivationEventTest extends TestCase
 
     public void testResourceHead()
     {
-        GenericAlarmEvent e = new ActivationEvent( this, m_Alarm, null, null, System.currentTimeMillis() );
+        GenericAlarmEvent e = new ActivationEvent( this, underTest, null, null, System.currentTimeMillis() );
 
         assertEquals( "EVENT_ACTIVATION", e.getResourceHead() );
     }
 
     public void testToString()
     {
-        AlarmEvent e = new ActivationEvent( this, m_Alarm, null, null, System.currentTimeMillis() );
+        AlarmEvent e = new ActivationEvent( this, underTest, null, null, System.currentTimeMillis() );
 
         String str = e.toString();
         String pattern =

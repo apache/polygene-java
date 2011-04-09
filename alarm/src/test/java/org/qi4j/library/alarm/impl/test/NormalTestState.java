@@ -25,16 +25,16 @@ public class NormalTestState
     implements AlarmState
 {
 
-    private Date m_Creation;
+    private Date creation;
 
     public NormalTestState()
     {
-        m_Creation = new Date();
+        creation = new Date();
     }
 
     public Date getCreationDate()
     {
-        return m_Creation;
+        return creation;
     }
 
     public String getName()

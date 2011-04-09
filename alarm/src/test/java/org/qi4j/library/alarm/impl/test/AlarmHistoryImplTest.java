@@ -34,22 +34,22 @@ import org.qi4j.library.alarm.impl.AlarmModelImpl;
 public class AlarmHistoryImplTest extends TestCase
     implements AlarmListener
 {
-    private int m_EventCounter = 0;
+    private int eventCounter = 0;
 
-    private Alarm m_TestAlarm;
+    private Alarm underTest;
 
     public void setUp()
         throws Exception
     {
         AlarmModelProvider spi = new SimpleModelProvider();
         AlarmModel model = new AlarmModelImpl( spi );
-        m_TestAlarm = model.createAlarm( "TestCase Alarm" );
+        underTest = model.createAlarm( "TestCase Alarm" );
     }
 
     public void testEmpty()
         throws Exception
     {
-        AlarmHistory hist = m_TestAlarm.getHistory();
+        AlarmHistory hist = underTest.getHistory();
         AlarmEvent event1 = hist.getFirst();
         AlarmEvent event2 = hist.getLast();
         assertNull( event1 );
@@ -60,9 +60,9 @@ public class AlarmHistoryImplTest extends TestCase
     public void testFirstNotLast()
         throws Exception
     {
-        m_TestAlarm.setCondition( true );
-        m_TestAlarm.setCondition( false );
-        AlarmHistory hist = m_TestAlarm.getHistory();
+        underTest.setCondition( true );
+        underTest.setCondition( false );
+        AlarmHistory hist = underTest.getHistory();
         AlarmEvent event1 = hist.getFirst();
         AlarmEvent event2 = hist.getLast();
         assertFalse( event1.equals( event2 ) );
@@ -73,16 +73,16 @@ public class AlarmHistoryImplTest extends TestCase
     public void testGetPosition()
         throws Exception
     {
-        m_TestAlarm.addAlarmListener( this );
-        AlarmHistory hist = m_TestAlarm.getHistory();
-        m_TestAlarm.trigger( this, Alarm.TRIGGER_ACTIVATION );
-        m_TestAlarm.trigger( this, Alarm.TRIGGER_DEACTIVATION );
-        m_TestAlarm.trigger( this, Alarm.TRIGGER_ACTIVATION );
-        m_TestAlarm.trigger( this, Alarm.TRIGGER_DEACTIVATION );
-        m_TestAlarm.trigger( this, Alarm.TRIGGER_DEACTIVATION );
-        m_TestAlarm.trigger( this, Alarm.TRIGGER_ACTIVATION );
+        underTest.addAlarmListener( this );
+        AlarmHistory hist = underTest.getHistory();
+        underTest.trigger( this, Alarm.TRIGGER_ACTIVATION );
+        underTest.trigger( this, Alarm.TRIGGER_DEACTIVATION );
+        underTest.trigger( this, Alarm.TRIGGER_ACTIVATION );
+        underTest.trigger( this, Alarm.TRIGGER_DEACTIVATION );
+        underTest.trigger( this, Alarm.TRIGGER_DEACTIVATION );
+        underTest.trigger( this, Alarm.TRIGGER_ACTIVATION );
 
-        assertEquals( 5, m_EventCounter );
+        assertEquals( 5, eventCounter );
         assertEquals( 5, hist.getAllAlarmEvents().size() );
 
         AlarmEvent event = hist.getAt(-1);
@@ -106,16 +106,16 @@ public class AlarmHistoryImplTest extends TestCase
     public void testGetPositionFromLast()
         throws Exception
     {
-        m_TestAlarm.addAlarmListener( this );
-        AlarmHistory hist = m_TestAlarm.getHistory();
-        m_TestAlarm.trigger( this, Alarm.TRIGGER_ACTIVATION );
-        m_TestAlarm.trigger( this, Alarm.TRIGGER_DEACTIVATION );
-        m_TestAlarm.trigger( this, Alarm.TRIGGER_ACTIVATION );
-        m_TestAlarm.trigger( this, Alarm.TRIGGER_DEACTIVATION );
-        m_TestAlarm.trigger( this, Alarm.TRIGGER_DEACTIVATION );
-        m_TestAlarm.trigger( this, Alarm.TRIGGER_ACTIVATION );
+        underTest.addAlarmListener( this );
+        AlarmHistory hist = underTest.getHistory();
+        underTest.trigger( this, Alarm.TRIGGER_ACTIVATION );
+        underTest.trigger( this, Alarm.TRIGGER_DEACTIVATION );
+        underTest.trigger( this, Alarm.TRIGGER_ACTIVATION );
+        underTest.trigger( this, Alarm.TRIGGER_DEACTIVATION );
+        underTest.trigger( this, Alarm.TRIGGER_DEACTIVATION );
+        underTest.trigger( this, Alarm.TRIGGER_ACTIVATION );
 
-        assertEquals( 5, m_EventCounter );
+        assertEquals( 5, eventCounter );
         assertEquals( 5, hist.getAllAlarmEvents().size() );
 
         AlarmEvent event = hist.getAtFromLast(-1);
@@ -137,25 +137,25 @@ public class AlarmHistoryImplTest extends TestCase
     public void testCounters()
         throws Exception
     {
-        AlarmHistory hist = m_TestAlarm.getHistory();
+        AlarmHistory hist = underTest.getHistory();
         Map counters = hist.getCounters();
 
-        m_TestAlarm.trigger( this, Alarm.TRIGGER_ACTIVATION );
+        underTest.trigger( this, Alarm.TRIGGER_ACTIVATION );
         verifyCounters( counters, 1, 0 );
 
-        m_TestAlarm.trigger( this, Alarm.TRIGGER_DEACTIVATION );
+        underTest.trigger( this, Alarm.TRIGGER_DEACTIVATION );
         verifyCounters( counters, 1, 1 );
 
-        m_TestAlarm.trigger( this, Alarm.TRIGGER_ACTIVATION );
+        underTest.trigger( this, Alarm.TRIGGER_ACTIVATION );
         verifyCounters( counters, 2, 1 );
 
-        m_TestAlarm.trigger( this, Alarm.TRIGGER_DEACTIVATION );
+        underTest.trigger( this, Alarm.TRIGGER_DEACTIVATION );
         verifyCounters( counters, 2, 2 );
 
-        m_TestAlarm.trigger( this, Alarm.TRIGGER_DEACTIVATION );
+        underTest.trigger( this, Alarm.TRIGGER_DEACTIVATION );
         verifyCounters( counters, 2, 2 );
 
-        m_TestAlarm.trigger( this, Alarm.TRIGGER_ACTIVATION );
+        underTest.trigger( this, Alarm.TRIGGER_ACTIVATION );
         verifyCounters( counters, 3, 2 );
 
         int activateCounters = hist.getActivateCounter();
@@ -187,16 +187,16 @@ public class AlarmHistoryImplTest extends TestCase
     public void testSetMaxSize()
         throws Exception
     {
-        m_TestAlarm.addAlarmListener( this );
-        AlarmHistory hist = m_TestAlarm.getHistory();
+        underTest.addAlarmListener( this );
+        AlarmHistory hist = underTest.getHistory();
         assertEquals( 0, hist.getAllAlarmEvents().size() );
-        m_TestAlarm.trigger( this, Alarm.TRIGGER_ACTIVATION );
+        underTest.trigger( this, Alarm.TRIGGER_ACTIVATION );
         assertEquals( 1, hist.getAllAlarmEvents().size() );
-        m_TestAlarm.trigger( this, Alarm.TRIGGER_DEACTIVATION );
+        underTest.trigger( this, Alarm.TRIGGER_DEACTIVATION );
         assertEquals( 2, hist.getAllAlarmEvents().size() );
-        m_TestAlarm.trigger( this, Alarm.TRIGGER_ACTIVATION );
+        underTest.trigger( this, Alarm.TRIGGER_ACTIVATION );
         assertEquals( 3, hist.getAllAlarmEvents().size() );
-        m_TestAlarm.trigger( this, Alarm.TRIGGER_DEACTIVATION );
+        underTest.trigger( this, Alarm.TRIGGER_DEACTIVATION );
         assertEquals( 4, hist.getAllAlarmEvents().size() );
 
         int maxsize = hist.getMaxSize();
@@ -207,31 +207,31 @@ public class AlarmHistoryImplTest extends TestCase
 
         hist.setMaxSize(0);
         assertEquals( 0, hist.getAllAlarmEvents().size() );
-        m_TestAlarm.trigger( this, Alarm.TRIGGER_ACTIVATION );
+        underTest.trigger( this, Alarm.TRIGGER_ACTIVATION );
         assertEquals( 0, hist.getAllAlarmEvents().size() );
-        m_TestAlarm.trigger( this, Alarm.TRIGGER_DEACTIVATION );
+        underTest.trigger( this, Alarm.TRIGGER_DEACTIVATION );
         assertEquals( 0, hist.getAllAlarmEvents().size() );
         hist.setMaxSize(2);
         assertEquals( 0, hist.getAllAlarmEvents().size() );
-        m_TestAlarm.trigger( this, Alarm.TRIGGER_ACTIVATION );
+        underTest.trigger( this, Alarm.TRIGGER_ACTIVATION );
         assertEquals( 1, hist.getAllAlarmEvents().size() );
-        m_TestAlarm.trigger( this, Alarm.TRIGGER_DEACTIVATION );
+        underTest.trigger( this, Alarm.TRIGGER_DEACTIVATION );
         assertEquals( 2, hist.getAllAlarmEvents().size() );
-        m_TestAlarm.trigger( this, Alarm.TRIGGER_ACTIVATION );
+        underTest.trigger( this, Alarm.TRIGGER_ACTIVATION );
         assertEquals( 2, hist.getAllAlarmEvents().size() );
-        assertEquals( 9, m_EventCounter );
+        assertEquals( 9, eventCounter );
     }
 
     public void testToString()
         throws Exception
     {
-        AlarmHistory hist = m_TestAlarm.getHistory();
+        AlarmHistory hist = underTest.getHistory();
         String str = hist.toString();
         assertEquals( "history[maxsize=30, size=0]", str );
-        m_TestAlarm.activate( this );
+        underTest.activate( this );
         str = hist.toString();
         assertEquals( "history[maxsize=30, size=1, " + Alarm.TRIGGER_ACTIVATION + "=1]", str );
-        m_TestAlarm.deactivate( this );
+        underTest.deactivate( this );
         str = hist.toString();
         assertEquals( "history[maxsize=30, size=2, " + Alarm.TRIGGER_DEACTIVATION + "=1, " + Alarm.TRIGGER_ACTIVATION + "=1]", str );
 
@@ -239,6 +239,6 @@ public class AlarmHistoryImplTest extends TestCase
 
     public void alarmFired( AlarmEvent event )
     {
-        m_EventCounter++;
+        eventCounter++;
     }
 }

@@ -33,20 +33,20 @@ import org.qi4j.library.alarm.providers.standard.StandardModelProvider;
 public class AcknowledgeEventTest
     extends TestCase
 {
-    private Alarm m_Alarm;
+    private Alarm underTest;
 
     public void setUp()
         throws Exception
     {
         AlarmModelProvider provider = new StandardModelProvider();
         AlarmModel model = new AlarmModelImpl( provider );
-        m_Alarm = model.createAlarm( "TestCase Alarm" );
+        underTest = model.createAlarm( "TestCase Alarm" );
     }
 
     public void testName()
         throws Exception
     {
-        AlarmEvent e = new AcknowledgeEvent( this, m_Alarm, null, null, System.currentTimeMillis() );
+        AlarmEvent e = new AcknowledgeEvent( this, underTest, null, null, System.currentTimeMillis() );
         assertEquals( "acknowledge", e.getName() );
         Locale english = new Locale( "en" );
         assertEquals( "acknowledge", e.getName( english ) );
@@ -57,7 +57,7 @@ public class AcknowledgeEventTest
     public void testDescription()
         throws Exception
     {
-        AlarmEvent e = new AcknowledgeEvent( this, m_Alarm, null, null, System.currentTimeMillis() );
+        AlarmEvent e = new AcknowledgeEvent( this, underTest, null, null, System.currentTimeMillis() );
         boolean test = e.getDescription().toLowerCase().indexOf( "acknowledge" ) >= 0;
         assertTrue( test );
         Locale english = new Locale( "en" );
@@ -70,20 +70,20 @@ public class AcknowledgeEventTest
 
     public void testTriggeredBy()
     {
-        GenericAlarmEvent e = new AcknowledgeEvent( this, m_Alarm, null, null, System.currentTimeMillis() );
+        GenericAlarmEvent e = new AcknowledgeEvent( this, underTest, null, null, System.currentTimeMillis() );
         assertEquals( this, e.getTriggeredBy() );
     }
 
     public void testAlarm()
     {
-        AlarmEvent e = new AcknowledgeEvent( this, m_Alarm, null, null, System.currentTimeMillis() );
-        assertEquals( m_Alarm, e.getAlarm() );
+        AlarmEvent e = new AcknowledgeEvent( this, underTest, null, null, System.currentTimeMillis() );
+        assertEquals( underTest, e.getAlarm() );
     }
 
     public void testEventTime()
         throws Exception
     {
-        AlarmEvent e = new AcknowledgeEvent( this, m_Alarm, null, null, System.currentTimeMillis() );
+        AlarmEvent e = new AcknowledgeEvent( this, underTest, null, null, System.currentTimeMillis() );
         Thread.sleep( 15 );
         long now = System.currentTimeMillis();
         boolean test = now > e.getEventTime().getTime() && ( now - e.getEventTime().getTime() < 150 );
@@ -92,7 +92,7 @@ public class AcknowledgeEventTest
 
     public void testToString()
     {
-        AlarmEvent e = new AcknowledgeEvent( this, m_Alarm, null, null, System.currentTimeMillis() );
+        AlarmEvent e = new AcknowledgeEvent( this, underTest, null, null, System.currentTimeMillis() );
         String str = e.toString();
         String pattern =
             "^event\\[Alarm\\[TestCase Alarm : normal  : This is a default Locale description of a testcase Alarm.\\], time\\[[ 0-9:/APM]*\\], oldstate\\[null\\], newstate\\[null\\], acknowledge\\].*";

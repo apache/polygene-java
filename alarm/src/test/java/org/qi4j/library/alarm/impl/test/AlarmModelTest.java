@@ -33,59 +33,59 @@ import org.qi4j.library.alarm.impl.AlarmImpl;
 public class AlarmModelTest extends TestCase
     implements AlarmListener
 {
-    private AlarmModelProvider m_Provider;
-    private AlarmModelImpl     m_Model;
-    private int m_Counter;
+    private AlarmModelProvider provider;
+    private AlarmModelImpl model;
+    private int counter;
 
     public void setUp()
         throws Exception
     {
-        m_Provider = new SimpleModelProvider();
-        m_Model = new AlarmModelImpl( m_Provider );
+        provider = new SimpleModelProvider();
+        model = new AlarmModelImpl( provider );
     }
 
     public void testAlarmRegistrations()
         throws Exception
     {
-        List alarms =  m_Model.getAlarms();
+        List alarms =  model.getAlarms();
         assertEquals( "Registered Alarms.", 0, alarms.size() );
-        Alarm alarm = new AlarmImpl( m_Model, "TestAlarm" );
-        alarms =  m_Model.getAlarms();
+        Alarm alarm = new AlarmImpl( model, "TestAlarm" );
+        alarms =  model.getAlarms();
         assertEquals( "Registered Alarms.", 0, alarms.size() );
-        m_Model.registerAlarm( alarm );
-        alarms =  m_Model.getAlarms();
+        model.registerAlarm( alarm );
+        alarms =  model.getAlarms();
         assertEquals( "Registered Alarms.", 1, alarms.size() );
     }
 
     public void testName()
     {
-        String name = m_Model.getName();
+        String name = model.getName();
         assertEquals( "org.qi4j.library.alarm.model.simple", name );
     }
 
     public void testDescription()
         throws Exception
     {
-        String descr1 = m_Model.getDescription();
+        String descr1 = model.getDescription();
         String text = "Simple AlarmModel for \"activation\" and \"deactivation\" events, and \"Normal\" and \"Activated\" states.";
         assertEquals( text, descr1 );
 
-        String descr2 = m_Model.getDescription( null );
+        String descr2 = model.getDescription( null );
         assertEquals( text, descr2 );
 
         Locale english = Locale.UK;
-        String descr3 = m_Model.getDescription( english );
+        String descr3 = model.getDescription( english );
         assertEquals( text, descr3 );
 
         Locale swedish = new Locale( "sv"  );
-        String descr4 = m_Model.getDescription( swedish );
+        String descr4 = model.getDescription( swedish );
         assertEquals( "Enkel AlarmModel f\u00F6r \"utl\u00F6sning\" och \"fr\u00E5ng\u00E5ng\" h\u00E4ndelser, samt \"normalt\" och \"utl\u00F6st\" tillst\u00E5nd.", descr4 );
     }
 
     public void testAlarmTriggers()
         throws Exception
     {
-        String[] triggers = m_Model.getAlarmTriggers();
+        String[] triggers = model.getAlarmTriggers();
         int mask = 0;
         for( int i = 0; i < triggers.length; i++ )
         {
@@ -102,41 +102,41 @@ public class AlarmModelTest extends TestCase
     public void testListeners()
         throws Exception
     {
-        m_Model.removeAlarmListener( null );
-        m_Model.removeAlarmListener( this );
-        m_Model.removeAlarmListener( null );
-        m_Model.addAlarmListener( this );
-        assertEquals( "Some problem with Listener registrations", 1, m_Model.getAlarmListeners().size() );
-        m_Model.addAlarmListener( this );
-        assertEquals( "Some problem with Listener registrations", 2, m_Model.getAlarmListeners().size() );
-        m_Model.addAlarmListener( this );
-        assertEquals( "Some problem with Listener registrations", 3, m_Model.getAlarmListeners().size() );
-        m_Model.removeAlarmListener( null );
-        assertEquals( "Some problem with Listener registrations", 3, m_Model.getAlarmListeners().size() );
-        m_Model.removeAlarmListener( this );
-        assertEquals( "Some problem with Listener registrations", 2, m_Model.getAlarmListeners().size() );
-        m_Model.removeAlarmListener( this );
-        assertEquals( "Some problem with Listener registrations", 1, m_Model.getAlarmListeners().size() );
-        m_Model.removeAlarmListener( this );
-        assertEquals( "Some problem with Listener registrations", 0, m_Model.getAlarmListeners().size() );
-        m_Model.removeAlarmListener( this );
-        assertEquals( "Some problem with Listener registrations", 0, m_Model.getAlarmListeners().size() );
+        model.removeAlarmListener( null );
+        model.removeAlarmListener( this );
+        model.removeAlarmListener( null );
+        model.addAlarmListener( this );
+        assertEquals( "Some problem with Listener registrations", 1, model.getAlarmListeners().size() );
+        model.addAlarmListener( this );
+        assertEquals( "Some problem with Listener registrations", 2, model.getAlarmListeners().size() );
+        model.addAlarmListener( this );
+        assertEquals( "Some problem with Listener registrations", 3, model.getAlarmListeners().size() );
+        model.removeAlarmListener( null );
+        assertEquals( "Some problem with Listener registrations", 3, model.getAlarmListeners().size() );
+        model.removeAlarmListener( this );
+        assertEquals( "Some problem with Listener registrations", 2, model.getAlarmListeners().size() );
+        model.removeAlarmListener( this );
+        assertEquals( "Some problem with Listener registrations", 1, model.getAlarmListeners().size() );
+        model.removeAlarmListener( this );
+        assertEquals( "Some problem with Listener registrations", 0, model.getAlarmListeners().size() );
+        model.removeAlarmListener( this );
+        assertEquals( "Some problem with Listener registrations", 0, model.getAlarmListeners().size() );
     }
 
     public void testProperties()
         throws Exception
     {
-        m_Model.addProperty( "my property", "my value" );
-        Alarm alarm = m_Model.createAlarm( "my alarm" );
+        model.addProperty( "my property", "my value" );
+        Alarm alarm = model.createAlarm( "my alarm" );
         String prop = (String) alarm.getProperty( "my property" );
         assertEquals( "Property setting.", "my value", prop );
-        m_Model.addProperty( "my other property", "my other value" );
+        model.addProperty( "my other property", "my other value" );
         prop = (String) alarm.getProperty( "my property" );
         assertEquals( "Property setting.", "my value", prop );
         prop = (String) alarm.getProperty( "my other property" );
         assertEquals( "Property setting.", "my other value", prop );
 
-        m_Model.removeProperty( "my property" );
+        model.removeProperty( "my property" );
         prop = (String) alarm.getProperty( "my property" );
         assertEquals( "Property setting.", null, prop );
 
@@ -149,7 +149,7 @@ public class AlarmModelTest extends TestCase
         assertEquals( "Property setting.", "my other value", prop );
 
         alarm.setProperty( "my other property", "this value" );
-        m_Model.removeProperty( "my other property" );
+        model.removeProperty( "my other property" );
         prop = (String) alarm.getProperty( "my other property" );
         assertEquals( "Property setting.", "this value", prop );
     }
@@ -157,18 +157,18 @@ public class AlarmModelTest extends TestCase
     public void testNewDefaultModel()
         throws Exception
     {
-        List alarms = m_Model.getAlarms();
+        List alarms = model.getAlarms();
         assertEquals( "Alarms registered.", 0, alarms.size() );
-        Alarm alarm1 = m_Model.createAlarm( "my alarm 1" );
-        Alarm alarm2 = m_Model.createAlarm( "my alarm 2" );
-        Alarm alarm3 = m_Model.createAlarm( "my alarm 3" );
-        Alarm alarm4 = m_Model.createAlarm( "my alarm 4" );
-        Alarm alarm5 = m_Model.createAlarm( "my alarm 5" );
-        alarms = m_Model.getAlarms();
+        Alarm alarm1 = model.createAlarm( "my alarm 1" );
+        Alarm alarm2 = model.createAlarm( "my alarm 2" );
+        Alarm alarm3 = model.createAlarm( "my alarm 3" );
+        Alarm alarm4 = model.createAlarm( "my alarm 4" );
+        Alarm alarm5 = model.createAlarm( "my alarm 5" );
+        alarms = model.getAlarms();
         assertEquals( "Alarms registered.", 5, alarms.size() );
-        AlarmModel model = new AlarmModelImpl( m_Provider );
-        m_Model.newDefaultModelSet( model );
-        alarms = m_Model.getAlarms();
+        AlarmModel model = new AlarmModelImpl( provider );
+        this.model.newDefaultModelSet( model );
+        alarms = this.model.getAlarms();
         assertEquals( "Alarms registered.", 0, alarms.size() );
         alarms = model.getAlarms();
         assertEquals( "Alarms registered.", 5, alarms.size() );
@@ -188,11 +188,11 @@ public class AlarmModelTest extends TestCase
         alarm3.removeAlarmListener( this );
         alarm4.removeAlarmListener( this );
         alarm5.removeAlarmListener( this );
-        assertEquals( "Wrong number of AlarmListener calls.", 5, m_Counter );
+        assertEquals( "Wrong number of AlarmListener calls.", 5, counter );
     }
 
     public void alarmFired( AlarmEvent event )
     {
-        m_Counter++;
+        counter++;
     }
 }

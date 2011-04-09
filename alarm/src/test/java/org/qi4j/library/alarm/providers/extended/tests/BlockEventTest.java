@@ -33,20 +33,20 @@ import java.util.regex.Matcher;
 
 public class BlockEventTest extends TestCase
 {
-    private Alarm m_Alarm;
+    private Alarm underTest;
 
     public void setUp()
         throws Exception
     {
         AlarmModelProvider provider = new ExtendedModelProvider();
         AlarmModel model = new AlarmModelImpl( provider );
-        m_Alarm = model.createAlarm( "TestCase Alarm" );
+        underTest = model.createAlarm( "TestCase Alarm" );
     }
 
     public void testName()
         throws Exception
     {
-        AlarmEvent e = new BlockEvent( this, m_Alarm, null, null, System.currentTimeMillis() );
+        AlarmEvent e = new BlockEvent( this, underTest, null, null, System.currentTimeMillis() );
         assertEquals( "block", e.getName() );
 
         Locale english = new Locale( "en" );
@@ -59,7 +59,7 @@ public class BlockEventTest extends TestCase
     public void testDescription()
         throws Exception
     {
-        AlarmEvent e = new BlockEvent( this, m_Alarm, null, null, System.currentTimeMillis() );
+        AlarmEvent e = new BlockEvent( this, underTest, null, null, System.currentTimeMillis() );
         boolean test = e.getDescription().toLowerCase().indexOf( "blocked" ) >= 0;
         assertTrue( test );
 
@@ -74,22 +74,22 @@ public class BlockEventTest extends TestCase
 
     public void testTriggeredBy()
     {
-        GenericAlarmEvent e = new BlockEvent( this, m_Alarm, null, null, System.currentTimeMillis() );
+        GenericAlarmEvent e = new BlockEvent( this, underTest, null, null, System.currentTimeMillis() );
 
         Assert.assertEquals( this, e.getTriggeredBy() );
     }
 
     public void testAlarm()
     {
-        AlarmEvent e = new BlockEvent( this, m_Alarm, null, null, System.currentTimeMillis() );
+        AlarmEvent e = new BlockEvent( this, underTest, null, null, System.currentTimeMillis() );
 
-        assertEquals( m_Alarm, e.getAlarm() );
+        assertEquals( underTest, e.getAlarm() );
     }
 
     public void testEventTime()
         throws Exception
     {
-        AlarmEvent e = new BlockEvent( this, m_Alarm, null, null, System.currentTimeMillis() );
+        AlarmEvent e = new BlockEvent( this, underTest, null, null, System.currentTimeMillis() );
 
         Thread.sleep( 15 );
         long now = System.currentTimeMillis();
@@ -99,14 +99,14 @@ public class BlockEventTest extends TestCase
 
     public void testResourceHead()
     {
-        GenericAlarmEvent e = new BlockEvent( this, m_Alarm, null, null, System.currentTimeMillis() );
+        GenericAlarmEvent e = new BlockEvent( this, underTest, null, null, System.currentTimeMillis() );
 
         Assert.assertEquals( "EVENT_BLOCK", e.getResourceHead() );
     }
 
     public void testToString()
     {
-        AlarmEvent e = new BlockEvent( this, m_Alarm, null, null, System.currentTimeMillis() );
+        AlarmEvent e = new BlockEvent( this, underTest, null, null, System.currentTimeMillis() );
 
         String str = e.toString();
         String pattern =

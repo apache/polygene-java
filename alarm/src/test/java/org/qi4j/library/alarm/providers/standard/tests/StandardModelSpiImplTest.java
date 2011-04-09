@@ -37,16 +37,16 @@ import org.qi4j.library.alarm.providers.standard.StandardModelProvider;
 
 public class StandardModelSpiImplTest extends TestCase
 {
-    private Alarm m_Alarm;
-    private StandardModelProvider m_Provider;
-    private AlarmModel m_Model;
+    private Alarm underTest;
+    private StandardModelProvider provider;
+    private AlarmModel model;
 
     public void setUp()
         throws Exception
     {
-        m_Provider = new StandardModelProvider();
-        m_Model = new AlarmModelImpl( m_Provider );
-        m_Alarm = m_Model.createAlarm( "TestCase Alarm" );
+        provider = new StandardModelProvider();
+        model = new AlarmModelImpl( provider );
+        underTest = model.createAlarm( "TestCase Alarm" );
     }
 
     public void testName()
@@ -83,7 +83,7 @@ public class StandardModelSpiImplTest extends TestCase
     public void testTriggers()
         throws Exception
     {
-        String[] triggers = m_Provider.getAlarmTriggers();
+        String[] triggers = provider.getAlarmTriggers();
         assertEquals( 3, triggers.length );
         int result = 0;
         for( int i = 0; i < triggers.length; i++ )
@@ -102,87 +102,87 @@ public class StandardModelSpiImplTest extends TestCase
             }
         }
         assertEquals( 7, result );
-        assertEquals( m_Alarm.getState().getName(), "normal" );
+        assertEquals( underTest.getState().getName(), "normal" );
     }
 
     public void testStateChangeFromNormal()
         throws Exception
     {
-        Alarm alarm = m_Model.createAlarm( "Another 1" );
-        AlarmEvent event1 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_ACTIVATION );
+        Alarm alarm = model.createAlarm( "Another 1" );
+        AlarmEvent event1 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_ACTIVATION );
         assertEquals( event1.getClass(), ActivationEvent.class );
 
-        alarm = m_Model.createAlarm( "Another 2" );
-        AlarmEvent event2 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_DEACTIVATION );
+        alarm = model.createAlarm( "Another 2" );
+        AlarmEvent event2 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_DEACTIVATION );
         assertNull( event2 );
 
-        alarm = m_Model.createAlarm( "Another 3" );
-        AlarmEvent event3 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_ACKNOWLEDGE );
+        alarm = model.createAlarm( "Another 3" );
+        AlarmEvent event3 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_ACKNOWLEDGE );
         assertNull( event3 );
     }
 
     public void testStateChangeFromActivated()
         throws Exception
     {
-        Alarm alarm = m_Model.createAlarm( "Another 1" );
+        Alarm alarm = model.createAlarm( "Another 1" );
         alarm.activate( this );
 
-        AlarmEvent event1 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_ACTIVATION );
+        AlarmEvent event1 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_ACTIVATION );
         assertNull( event1 );
 
-        alarm = m_Model.createAlarm( "Another 2" );
+        alarm = model.createAlarm( "Another 2" );
         alarm.activate( this );
-        AlarmEvent event2 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_DEACTIVATION );
+        AlarmEvent event2 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_DEACTIVATION );
         assertEquals( DeactivationEvent.class, event2.getClass() );
 
-        alarm = m_Model.createAlarm( "Another 3" );
+        alarm = model.createAlarm( "Another 3" );
         alarm.activate( this );
-        AlarmEvent event3 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_ACKNOWLEDGE );
+        AlarmEvent event3 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_ACKNOWLEDGE );
         assertEquals( AcknowledgeEvent.class, event3.getClass() );
     }
 
     public void testStateChangeFromAcknowledged()
         throws Exception
     {
-        Alarm alarm = m_Model.createAlarm( "Another 1" );
+        Alarm alarm = model.createAlarm( "Another 1" );
         alarm.activate( this );
         alarm.acknowledge( this );
 
-        AlarmEvent event1 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_ACTIVATION );
+        AlarmEvent event1 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_ACTIVATION );
         assertNull( event1 );
 
-        alarm = m_Model.createAlarm( "Another 2" );
+        alarm = model.createAlarm( "Another 2" );
         alarm.activate( this );
         alarm.acknowledge( this );
-        AlarmEvent event2 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_DEACTIVATION );
+        AlarmEvent event2 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_DEACTIVATION );
         assertEquals( DeactivationEvent.class, event2.getClass() );
 
-        alarm = m_Model.createAlarm( "Another 3" );
+        alarm = model.createAlarm( "Another 3" );
         alarm.activate( this );
         alarm.acknowledge( this );
-        AlarmEvent event3 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_ACKNOWLEDGE );
+        AlarmEvent event3 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_ACKNOWLEDGE );
         assertNull( event3 );
     }
 
     public void testStateChangeFromDeactivated()
         throws Exception
     {
-        Alarm alarm = m_Model.createAlarm( "Another 1" );
+        Alarm alarm = model.createAlarm( "Another 1" );
         alarm.activate( this );
         alarm.deactivate( this );
-        AlarmEvent event1 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_ACTIVATION );
+        AlarmEvent event1 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_ACTIVATION );
         assertEquals( ActivationEvent.class, event1.getClass() );
 
-        alarm = m_Model.createAlarm( "Another 2" );
+        alarm = model.createAlarm( "Another 2" );
         alarm.activate( this );
         alarm.deactivate( this );
-        AlarmEvent event2 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_DEACTIVATION );
+        AlarmEvent event2 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_DEACTIVATION );
         assertNull( event2 );
 
-        alarm = m_Model.createAlarm( "Another 3" );
+        alarm = model.createAlarm( "Another 3" );
         alarm.activate( this );
         alarm.deactivate( this );
-        AlarmEvent event3 = m_Provider.executeStateChange( this, alarm, Alarm.TRIGGER_ACKNOWLEDGE );
+        AlarmEvent event3 = provider.executeStateChange( this, alarm, Alarm.TRIGGER_ACKNOWLEDGE );
         assertEquals( AcknowledgeEvent.class, event3.getClass() );
     }
 
@@ -191,7 +191,7 @@ public class StandardModelSpiImplTest extends TestCase
     {
         try
         {
-            m_Provider.executeStateChange( this, m_Alarm, "my-trigger" );
+            provider.executeStateChange( this, underTest, "my-trigger" );
             fail( "AlarmTriggerException not thrown." );
         }
         catch( AlarmTriggerException e )
@@ -203,8 +203,8 @@ public class StandardModelSpiImplTest extends TestCase
     public void testNormalToActivated()
         throws Exception
     {
-        m_Alarm.activate( this );
-        AlarmEvent event = m_Alarm.getHistory().getLast();
+        underTest.activate( this );
+        AlarmEvent event = underTest.getHistory().getLast();
 
         AlarmState oldstate = event.getOldState();
         Assert.assertEquals( new NormalState().getName(), oldstate.getName() );
@@ -213,7 +213,7 @@ public class StandardModelSpiImplTest extends TestCase
         Assert.assertEquals( new ActivatedState().getName(), newstate.getName() );
 
         Alarm eventalarm = event.getAlarm();
-        assertEquals( m_Alarm, eventalarm );
+        assertEquals( underTest, eventalarm );
 
         assertEquals( this, event.getTriggeredBy() );
     }
@@ -221,9 +221,9 @@ public class StandardModelSpiImplTest extends TestCase
     public void testActivatedToDeactivated()
         throws Exception
     {
-        m_Alarm.activate( this );
-        m_Alarm.deactivate( this );
-        AlarmEvent event = m_Alarm.getHistory().getLast();
+        underTest.activate( this );
+        underTest.deactivate( this );
+        AlarmEvent event = underTest.getHistory().getLast();
 
         AlarmState oldstate = event.getOldState();
         assertEquals( new ActivatedState().getName(), oldstate.getName() );
@@ -232,7 +232,7 @@ public class StandardModelSpiImplTest extends TestCase
         Assert.assertEquals( new DeactivatedState().getName(), newstate.getName() );
 
         Alarm eventalarm = event.getAlarm();
-        assertEquals( m_Alarm, eventalarm );
+        assertEquals( underTest, eventalarm );
 
         assertEquals( this, event.getTriggeredBy() );
     }
@@ -240,9 +240,9 @@ public class StandardModelSpiImplTest extends TestCase
     public void testActivatedToAcknowledged()
         throws Exception
     {
-        m_Alarm.activate( this );
-        m_Alarm.acknowledge( this );
-        AlarmEvent event = m_Alarm.getHistory().getLast();
+        underTest.activate( this );
+        underTest.acknowledge( this );
+        AlarmEvent event = underTest.getHistory().getLast();
 
         AlarmState oldstate = event.getOldState();
         assertEquals( new ActivatedState().getName(), oldstate.getName() );
@@ -251,7 +251,7 @@ public class StandardModelSpiImplTest extends TestCase
         Assert.assertEquals( new AcknowledgedState().getName(), newstate.getName() );
 
         Alarm eventalarm = event.getAlarm();
-        assertEquals( m_Alarm, eventalarm );
+        assertEquals( underTest, eventalarm );
 
         assertEquals( this, event.getTriggeredBy() );
     }
@@ -259,10 +259,10 @@ public class StandardModelSpiImplTest extends TestCase
     public void testDeactivatedToNormal()
         throws Exception
     {
-        m_Alarm.activate( this );
-        m_Alarm.deactivate( this );
-        m_Alarm.acknowledge( this );
-        AlarmEvent event = m_Alarm.getHistory().getLast();
+        underTest.activate( this );
+        underTest.deactivate( this );
+        underTest.acknowledge( this );
+        AlarmEvent event = underTest.getHistory().getLast();
 
         AlarmState oldstate = event.getOldState();
         assertEquals( new DeactivatedState().getName(), oldstate.getName() );
@@ -271,7 +271,7 @@ public class StandardModelSpiImplTest extends TestCase
         assertEquals( new NormalState().getName(), newstate.getName() );
 
         Alarm eventalarm = event.getAlarm();
-        assertEquals( m_Alarm, eventalarm );
+        assertEquals( underTest, eventalarm );
 
         assertEquals( this, event.getTriggeredBy() );
     }
@@ -279,10 +279,10 @@ public class StandardModelSpiImplTest extends TestCase
     public void testAcknowledgedToNormal()
         throws Exception
     {
-        m_Alarm.activate( this );
-        m_Alarm.acknowledge( this );
-        m_Alarm.deactivate( this );
-        AlarmEvent event = m_Alarm.getHistory().getLast();
+        underTest.activate( this );
+        underTest.acknowledge( this );
+        underTest.deactivate( this );
+        AlarmEvent event = underTest.getHistory().getLast();
 
         AlarmState oldstate = event.getOldState();
         assertEquals( new AcknowledgedState().getName(), oldstate.getName() );
@@ -291,7 +291,7 @@ public class StandardModelSpiImplTest extends TestCase
         assertEquals( new NormalState().getName(), newstate.getName() );
 
         Alarm eventalarm = event.getAlarm();
-        assertEquals( m_Alarm, eventalarm );
+        assertEquals( underTest, eventalarm );
 
         assertEquals( this, event.getTriggeredBy() );
     }
@@ -299,16 +299,16 @@ public class StandardModelSpiImplTest extends TestCase
     public void testConditionChanges1()
         throws Exception
     {
-        m_Alarm.setCondition( false );
-        AlarmEvent event = m_Alarm.getHistory().getLast();
+        underTest.setCondition( false );
+        AlarmEvent event = underTest.getHistory().getLast();
         assertNull( "Generated an event but should have not.", event );
     }
 
     public void testConditionChanges2()
         throws Exception
     {
-        m_Alarm.setCondition( true );
-        AlarmEvent event = m_Alarm.getHistory().getLast();
+        underTest.setCondition( true );
+        AlarmEvent event = underTest.getHistory().getLast();
 
         AlarmState oldstate = event.getOldState();
         assertEquals( new NormalState().getName(), oldstate.getName() );
@@ -317,17 +317,17 @@ public class StandardModelSpiImplTest extends TestCase
         assertEquals( new ActivatedState().getName(), newstate.getName() );
 
         Alarm eventalarm = event.getAlarm();
-        assertEquals( m_Alarm, eventalarm );
+        assertEquals( underTest, eventalarm );
 
-        assertEquals( m_Alarm, event.getTriggeredBy() );
+        assertEquals( underTest, event.getTriggeredBy() );
     }
 
     public void testConditionChanges3()
         throws Exception
     {
-        m_Alarm.setCondition( true );
-        m_Alarm.setCondition( false );
-        AlarmEvent event = m_Alarm.getHistory().getLast();
+        underTest.setCondition( true );
+        underTest.setCondition( false );
+        AlarmEvent event = underTest.getHistory().getLast();
 
         AlarmState oldstate = event.getOldState();
         assertEquals( new ActivatedState().getName(), oldstate.getName() );
@@ -336,22 +336,22 @@ public class StandardModelSpiImplTest extends TestCase
         assertEquals( new DeactivatedState().getName(), newstate.getName() );
 
         Alarm eventalarm = event.getAlarm();
-        assertEquals( m_Alarm, eventalarm );
+        assertEquals( underTest, eventalarm );
 
-        assertEquals( m_Alarm, event.getTriggeredBy() );
+        assertEquals( underTest, event.getTriggeredBy() );
     }
 
     public void testComputeCondition()
         throws Exception
     {
         AlarmState s1 = new NormalState();
-        assertFalse( m_Provider.computeCondition( s1 ) );
+        assertFalse( provider.computeCondition( s1 ) );
         AlarmState s2 = new ActivatedState();
-        assertTrue( m_Provider.computeCondition( s2 ) );
+        assertTrue( provider.computeCondition( s2 ) );
         AlarmState s3 = new DeactivatedState();
-        assertFalse( m_Provider.computeCondition( s3 ) );
+        assertFalse( provider.computeCondition( s3 ) );
         AlarmState s4 = new AcknowledgedState();
-        assertTrue( m_Provider.computeCondition( s4 ) );
+        assertTrue( provider.computeCondition( s4 ) );
     }
 
     public void testComputeTrigger()
@@ -361,14 +361,14 @@ public class StandardModelSpiImplTest extends TestCase
         AlarmState s2 = new ActivatedState();
         AlarmState s3 = new DeactivatedState();
         AlarmState s4 = new AcknowledgedState();
-        String trigger1 = m_Provider.computeTrigger( s1, true );
-        String trigger2 = m_Provider.computeTrigger( s2, true );
-        String trigger3 = m_Provider.computeTrigger( s3, true );
-        String trigger4 = m_Provider.computeTrigger( s4, true );
-        String trigger5 = m_Provider.computeTrigger( s1, false );
-        String trigger6 = m_Provider.computeTrigger( s2, false );
-        String trigger7 = m_Provider.computeTrigger( s3, false );
-        String trigger8 = m_Provider.computeTrigger( s4, false );
+        String trigger1 = provider.computeTrigger( s1, true );
+        String trigger2 = provider.computeTrigger( s2, true );
+        String trigger3 = provider.computeTrigger( s3, true );
+        String trigger4 = provider.computeTrigger( s4, true );
+        String trigger5 = provider.computeTrigger( s1, false );
+        String trigger6 = provider.computeTrigger( s2, false );
+        String trigger7 = provider.computeTrigger( s3, false );
+        String trigger8 = provider.computeTrigger( s4, false );
         assertEquals( Alarm.TRIGGER_ACTIVATION, trigger1 );
         assertEquals( null, trigger2 );
         assertEquals( Alarm.TRIGGER_ACTIVATION, trigger3 );
