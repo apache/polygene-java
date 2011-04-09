@@ -31,20 +31,20 @@ public final class DisabledState
     implements AlarmState, java.io.Serializable
 {
 
-    static final long serialVersionUID = 2L;
+    private static final long serialVersionUID = 2L;
 
-    private Date m_CreationDate;
+    private Date creationDate;
 
     public DisabledState()
     {
-        m_CreationDate = new Date();
+        creationDate = new Date();
     }
 
     public String toString()
     {
         ResourceBundle rb = ExtendedModelProvider.getResourceBundle( null );
         String pattern = rb.getString( "STATE_DISABLED_TOSTRING" );
-        Object[] args = new Object[]{ m_CreationDate };
+        Object[] args = new Object[]{ creationDate };
         return MessageFormat.format( pattern, args );
     }
 
@@ -53,7 +53,7 @@ public final class DisabledState
      */
     public Date getCreationDate()
     {
-        return m_CreationDate;
+        return creationDate;
     }
 
     /**

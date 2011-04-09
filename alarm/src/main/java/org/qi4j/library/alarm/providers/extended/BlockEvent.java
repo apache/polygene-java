@@ -25,7 +25,7 @@ import java.text.MessageFormat;
 public final class BlockEvent extends GenericAlarmEvent
 {
 
-    static final long serialVersionUID = 2L;
+    private static final long serialVersionUID = 2L;
 
     public BlockEvent( Object triggedBy, Alarm alarm,
                             AlarmState oldstate, AlarmState newstate, long time )

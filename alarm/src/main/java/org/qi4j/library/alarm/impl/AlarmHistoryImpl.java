@@ -29,35 +29,35 @@ import org.qi4j.library.alarm.Alarm;
 public class AlarmHistoryImpl
     implements java.io.Serializable, AlarmHistory
 {
-    static final long serialVersionUID = 2L;
+    private static final long serialVersionUID = 2L;
 
-    private final ArrayList m_EventList;
-    private int m_MaxSize = 30;
-    private HashMap m_Counters;
+    private final ArrayList eventList;
+    private int maxSize = 30;
+    private HashMap counters;
 
     public AlarmHistoryImpl()
     {
-        m_EventList = new ArrayList();
-        m_Counters = new HashMap();
+        eventList = new ArrayList();
+        counters = new HashMap();
     }
 
     public AlarmEvent getFirst()
     {
-        synchronized( m_EventList )
+        synchronized( eventList )
         {
-            if( m_EventList.size() == 0 )
+            if( eventList.size() == 0 )
                 return null;
-            return (AlarmEvent) m_EventList.get(0);
+            return (AlarmEvent) eventList.get(0);
         }
     }
 
     public AlarmEvent getLast()
     {
-        synchronized(m_EventList)
+        synchronized( eventList )
         {
-            if( m_EventList.size() == 0 )
+            if( eventList.size() == 0 )
                 return null;
-            return (AlarmEvent) m_EventList.get(m_EventList.size()-1);
+            return (AlarmEvent) eventList.get( eventList.size()-1);
         }
     }
 
@@ -65,20 +65,20 @@ public class AlarmHistoryImpl
     {
         synchronized( this )
         {
-            if( m_EventList.size() <= position || position < 0 )
+            if( eventList.size() <= position || position < 0 )
                 return null;
-            return (AlarmEvent) m_EventList.get(position);
+            return (AlarmEvent) eventList.get(position);
         }
     }
 
     public AlarmEvent getAtFromLast( final int position )
     {
-        synchronized( m_EventList )
+        synchronized( eventList )
         {
-            int size = m_EventList.size();
+            int size = eventList.size();
             if( size <= position || position < 0 )
                 return null;
-            return (AlarmEvent) m_EventList.get( size-position-1 );
+            return (AlarmEvent) eventList.get( size-position-1 );
         }
     }
 
@@ -86,39 +86,39 @@ public class AlarmHistoryImpl
     {
         synchronized( this )
         {
-            m_EventList.add(event);
+            eventList.add(event);
             purge();
-            Integer counter = (Integer) m_Counters.get( trigger );
+            Integer counter = (Integer) counters.get( trigger );
             if( counter == null )
                 counter = new Integer( 1 );
             else
                 counter = new Integer( counter.intValue() + 1 );
-            m_Counters.put( trigger, counter );
+            counters.put( trigger, counter );
         }
     }
 
     synchronized public void setMaxSize( final int size )
     {
-        m_MaxSize = size;
+        maxSize = size;
         purge();
     }
 
     synchronized public int getMaxSize()
     {
-        return m_MaxSize;
+        return maxSize;
     }
 
     public String toString()
     {
-        synchronized(m_EventList)
+        synchronized( eventList )
         {
             StringBuffer buf = new StringBuffer();
             buf.append( "history[maxsize=" );
-            buf.append( m_MaxSize );
+            buf.append( maxSize );
             buf.append( ", size=" );
-            buf.append( m_EventList.size() );
+            buf.append( eventList.size() );
 
-            Iterator list = m_Counters.entrySet().iterator();
+            Iterator list = counters.entrySet().iterator();
             while( list.hasNext() )
             {
                 Map.Entry entry = (Map.Entry) list.next();
@@ -136,33 +136,33 @@ public class AlarmHistoryImpl
 
     synchronized protected void purge()
     {
-        if( m_MaxSize <= 0 )
-            m_EventList.clear();
+        if( maxSize <= 0 )
+            eventList.clear();
 
-        while( m_EventList.size() > m_MaxSize )
+        while( eventList.size() > maxSize )
         {
-            m_EventList.remove(0);
+            eventList.remove(0);
         }
     }
 
     public List getAllAlarmEvents()
     {
-        return m_EventList;
+        return eventList;
     }
 
     public Map getCounters()
     {
-        return m_Counters;
+        return counters;
     }
 
     public void resetAllCounters()
     {
-        m_Counters.clear();
+        counters.clear();
     }
 
     public int getActivateCounter()
     {
-        Integer counter = (Integer) m_Counters.get( Alarm.TRIGGER_ACTIVATION );
+        Integer counter = (Integer) counters.get( Alarm.TRIGGER_ACTIVATION );
         if( counter == null )
         {
             return 0;
@@ -172,6 +172,6 @@ public class AlarmHistoryImpl
 
     public void resetActivateCounter()
     {
-        m_Counters.remove( Alarm.TRIGGER_ACTIVATION );
+        counters.remove( Alarm.TRIGGER_ACTIVATION );
     }
 }

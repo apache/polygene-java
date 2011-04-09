@@ -34,20 +34,20 @@ public final class NormalState
     implements AlarmState, java.io.Serializable
 {
 
-    static final long serialVersionUID = 2L;
+    private static final long serialVersionUID = 2L;
 
-    private Date m_CreationDate;
+    private Date creationDate;
 
     public NormalState()
     {
-        m_CreationDate = new Date();
+        creationDate = new Date();
     }
 
     public String toString()
     {
         ResourceBundle rb = StandardModelProvider.getResourceBundle( null );
         String pattern = rb.getString( "STATE_NORMAL_TOSTRING" );
-        Object[] args = new Object[]{ m_CreationDate };
+        Object[] args = new Object[]{ creationDate };
         return MessageFormat.format( pattern, args );
     }
 
@@ -56,7 +56,7 @@ public final class NormalState
      */
     public Date getCreationDate()
     {
-        return m_CreationDate;
+        return creationDate;
     }
 
     /**

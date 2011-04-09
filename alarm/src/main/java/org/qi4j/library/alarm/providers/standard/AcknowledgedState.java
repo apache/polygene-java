@@ -32,20 +32,20 @@ public final class AcknowledgedState
     implements AlarmState, java.io.Serializable
 {
 
-    static final long serialVersionUID = 2L;
+    private static final long serialVersionUID = 2L;
 
-    private Date m_CreationDate;
+    private Date creationDate;
 
     public AcknowledgedState()
     {
-        m_CreationDate = new Date();
+        creationDate = new Date();
     }
 
     public String toString()
     {
         ResourceBundle rb = StandardModelProvider.getResourceBundle( null );
         String pattern = rb.getString( "STATE_ACKNOWLEDGED_TOSTRING" );
-        Object[] args = new Object[]{ m_CreationDate };
+        Object[] args = new Object[]{ creationDate };
         return MessageFormat.format( pattern, args );
     }
 
@@ -54,7 +54,7 @@ public final class AcknowledgedState
      */
     public Date getCreationDate()
     {
-        return m_CreationDate;
+        return creationDate;
     }
 
     /**

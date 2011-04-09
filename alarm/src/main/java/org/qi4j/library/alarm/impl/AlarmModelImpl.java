@@ -38,16 +38,16 @@ import org.qi4j.library.alarm.AlarmListener;
 public class AlarmModelImpl
     implements AlarmModel
 {
-    private AlarmModelProvider m_Provider;
-    private ArrayList m_Listeners;
-    private HashMap m_Properties;
-    private final WeakHashMap m_Alarms;
+    private AlarmModelProvider provider;
+    private ArrayList listeners;
+    private HashMap properties;
+    private final WeakHashMap alarms;
 
     public AlarmModelImpl( AlarmModelProvider provider )
     {
-        m_Alarms = new WeakHashMap();
-        m_Properties = new HashMap();
-        m_Provider = provider;
+        alarms = new WeakHashMap();
+        properties = new HashMap();
+        this.provider = provider;
     }
 
     /** Called when the default AlarmModel is changed.
@@ -58,9 +58,9 @@ public class AlarmModelImpl
     public void newDefaultModelSet( AlarmModel newDefaultModel )
     {
         Iterator list;
-        synchronized( m_Alarms )
+        synchronized( alarms )
         {
-            list = m_Alarms.keySet().iterator();
+            list = alarms.keySet().iterator();
         }
         while( list.hasNext() )
         {
@@ -72,15 +72,15 @@ public class AlarmModelImpl
 
     public void registerAlarm( Alarm alarm )
     {
-        synchronized( m_Alarms )
+        synchronized( alarms )
         {
-            m_Alarms.put( alarm, new Date() );
+            alarms.put( alarm, new Date() );
         }
     }
 
     public String getName()
     {
-        return m_Provider.getName();
+        return provider.getName();
     }
 
     public String getDescription()
@@ -90,7 +90,7 @@ public class AlarmModelImpl
 
     public String getDescription( Locale locale )
     {
-        return m_Provider.getDescription( locale );
+        return provider.getDescription( locale );
     }
 
     public Alarm createAlarm( String name )
@@ -105,9 +105,9 @@ public class AlarmModelImpl
     {
         ArrayList result = new ArrayList();
         Iterator list;
-        synchronized( m_Alarms )
+        synchronized( alarms )
         {
-            list = m_Alarms.keySet().iterator();
+            list = alarms.keySet().iterator();
         }
         while( list.hasNext() )
         {
@@ -124,7 +124,7 @@ public class AlarmModelImpl
 
     public AlarmModelProvider getAlarmModelProvider()
     {
-        return m_Provider;
+        return provider;
     }
 
     /** Register AlarmListener to recieve <code>AlarmEvents</code> from all
@@ -135,12 +135,12 @@ public class AlarmModelImpl
         synchronized( this )
         {
             ArrayList v;
-            if( m_Listeners == null )
+            if( listeners == null )
                 v = new ArrayList();
             else
-                v = (ArrayList) m_Listeners.clone();
+                v = (ArrayList) listeners.clone();
             v.add( listener );
-            m_Listeners = v;
+            listeners = v;
         }
     }
 
@@ -148,15 +148,15 @@ public class AlarmModelImpl
      */
     public void removeAlarmListener( AlarmListener listener )
     {
-        if( m_Listeners == null )
+        if( listeners == null )
         {
             return;
         }
         synchronized( this )
         {
-            ArrayList v = (ArrayList) m_Listeners.clone();
+            ArrayList v = (ArrayList) listeners.clone();
             v.remove( listener );
-            m_Listeners = v;
+            listeners = v;
         }
     }
 
@@ -164,11 +164,11 @@ public class AlarmModelImpl
     {
         synchronized( this )
         {
-            if( m_Listeners == null )
+            if( listeners == null )
             {
                 return new ArrayList();
             }
-            return m_Listeners;
+            return listeners;
         }
     }
 
@@ -180,20 +180,20 @@ public class AlarmModelImpl
      */
     public void addProperty( String name, String defaultValue )
     {
-        m_Properties.put( name, defaultValue );
+        properties.put( name, defaultValue );
     }
 
     /** Removes the <i>Property</i> from all <code>Alarms</code>.
      */
     public void removeProperty( String name )
     {
-        m_Properties.remove( name );
+        properties.remove( name );
     }
 
     /** Returns a <code>java.util.Map</code> of all global default <i>Properties</i>.
      */
     public Map getDefaultProperties()
     {
-        return m_Properties;
+        return properties;
     }
 }

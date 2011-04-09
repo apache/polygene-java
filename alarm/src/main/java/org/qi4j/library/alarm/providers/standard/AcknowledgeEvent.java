@@ -26,7 +26,7 @@ import org.qi4j.library.alarm.AlarmState;
 public final class AcknowledgeEvent extends GenericAlarmEvent
 {
 
-    static final long serialVersionUID = 2L;
+    private static final long serialVersionUID = 2L;
 
     public AcknowledgeEvent( Object triggedBy, Alarm alarm,
                              AlarmState oldstate, AlarmState newstate, long time )

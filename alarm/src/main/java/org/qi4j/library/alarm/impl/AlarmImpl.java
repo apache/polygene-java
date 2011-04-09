@@ -37,15 +37,15 @@ import org.qi4j.library.alarm.InternalAlarmException;
 public class AlarmImpl
     implements Alarm, java.io.Serializable
 {
-    static final long serialVersionUID = 2L;
+    private static final long serialVersionUID = 2L;
 
-    private AlarmModel m_Model;
-    private AlarmState m_State;
-    private AlarmHistoryImpl m_History;
-    private String m_Name;
+    private AlarmModel model;
+    private AlarmState state;
+    private AlarmHistoryImpl history;
+    private String name;
 
-    private Map m_Properties;
-    private ArrayList m_Listeners = null;
+    private Map properties;
+    private ArrayList listeners = null;
 
     public AlarmImpl( AlarmModel model, String name )
         throws AlarmCreationException
@@ -65,18 +65,18 @@ public class AlarmImpl
             throw new AlarmCreationException( "name only contains white space" );
         }
 
-        m_Name = name;
-        m_Model = model;
-        m_Properties = new HashMap();
-        m_History = new AlarmHistoryImpl();
-        m_State = m_Model.getAlarmModelProvider().createInitialState();
+        this.name = name;
+        this.model = model;
+        properties = new HashMap();
+        history = new AlarmHistoryImpl();
+        state = this.model.getAlarmModelProvider().createInitialState();
     }
 
     public AlarmModel getAlarmModel()
     {
         synchronized( this )
         {
-            return m_Model;
+            return model;
         }
     }
 
@@ -84,7 +84,7 @@ public class AlarmImpl
     {
         synchronized( this )
         {
-            m_Model = model;
+            this.model = model;
         }
     }
 
@@ -94,11 +94,11 @@ public class AlarmImpl
         {
             if( value == null )
             {
-                m_Properties.remove( name );
+                properties.remove( name );
             }
             else
             {
-                m_Properties.put( name, value );
+                properties.put( name, value );
             }
         }
     }
@@ -107,12 +107,12 @@ public class AlarmImpl
     {
         synchronized( this )
         {
-            Object value = m_Properties.get( name );
+            Object value = properties.get( name );
             if( value != null )
             {
                 return value;
             }
-            return m_Model.getDefaultProperties().get( name );
+            return model.getDefaultProperties().get( name );
         }
     }
 
@@ -120,7 +120,7 @@ public class AlarmImpl
     {
         synchronized( this )
         {
-            return new HashMap( m_Properties );
+            return new HashMap( properties );
         }
     }
 
@@ -129,16 +129,16 @@ public class AlarmImpl
         synchronized( this )
         {
             ArrayList v;
-            if( m_Listeners == null )
+            if( listeners == null )
             {
                 v = new ArrayList();
             }
             else
             {
-                v = (ArrayList) m_Listeners.clone();
+                v = (ArrayList) listeners.clone();
             }
             v.add( listener );
-            m_Listeners = v;
+            listeners = v;
         }
     }
 
@@ -150,24 +150,24 @@ public class AlarmImpl
         }
         synchronized( this )
         {
-            if( m_Listeners == null )
+            if( listeners == null )
             {
                 return;
             }
-            ArrayList v = (ArrayList) m_Listeners.clone();
+            ArrayList v = (ArrayList) listeners.clone();
             v.remove( listener );
-            m_Listeners = v;
+            listeners = v;
         }
     }
 
     protected void fireAlarm( AlarmEvent event )
     {
-        Collection all = m_Model.getAlarmListeners();
+        Collection all = model.getAlarmListeners();
         if( all != null )
         {
             fireAlarm( all, event );
         }
-        all = m_Listeners;
+        all = listeners;
         if( all != null )
         {
             fireAlarm( all, event );
@@ -193,7 +193,7 @@ public class AlarmImpl
 
     public String toString()
     {
-        return "Alarm[" + getName() + " : " + m_State.getName() + "  : " + getDescription() + "]";
+        return "Alarm[" + getName() + " : " + state.getName() + "  : " + getDescription() + "]";
     }
 
     public void trigger( Object source, String trigger )
@@ -202,13 +202,13 @@ public class AlarmImpl
         AlarmEvent event;
         synchronized( this )
         {
-            event = m_Model.getAlarmModelProvider().executeStateChange( source, this, trigger );
+            event = model.getAlarmModelProvider().executeStateChange( source, this, trigger );
             if( event == null )
             {
                 return;
             }
-            m_State = event.getNewState();
-            m_History.addEvent( event, trigger );
+            state = event.getNewState();
+            history.addEvent( event, trigger );
         }
         fireAlarm( event );
     }
@@ -254,12 +254,12 @@ public class AlarmImpl
 
     public AlarmHistory getHistory()
     {
-        return m_History;
+        return history;
     }
 
     public AlarmState getState()
     {
-        return m_State;
+        return state;
     }
 
     /**
@@ -268,7 +268,7 @@ public class AlarmImpl
      */
     public String getName()
     {
-        return m_Name;
+        return name;
     }
 
     /**
@@ -301,7 +301,7 @@ public class AlarmImpl
     {
         try
         {
-            String trig = m_Model.getAlarmModelProvider().computeTrigger( m_State, condition );
+            String trig = model.getAlarmModelProvider().computeTrigger( state, condition );
             if( trig != null )
             {
                 trigger( this, trig );
@@ -316,6 +316,6 @@ public class AlarmImpl
 
     public boolean getCondition()
     {
-        return m_Model.getAlarmModelProvider().computeCondition( m_State );
+        return model.getAlarmModelProvider().computeCondition( state );
     }
 }

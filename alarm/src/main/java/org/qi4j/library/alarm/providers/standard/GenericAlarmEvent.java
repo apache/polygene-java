@@ -31,12 +31,12 @@ public abstract class GenericAlarmEvent extends EventObject
     implements AlarmEvent, java.io.Serializable
 {
 
-    static final long serialVersionUID = 2L;
+    private static final long serialVersionUID = 2L;
 
-    private Object m_TriggeredBy;
-    private AlarmState m_OldState;
-    private AlarmState m_NewState;
-    private Date m_EventTime;
+    private Object triggeredBy;
+    private AlarmState oldState;
+    private AlarmState newState;
+    private Date eventTime;
 
     protected GenericAlarmEvent( Object triggeredBy,
                                  Alarm source,
@@ -46,15 +46,15 @@ public abstract class GenericAlarmEvent extends EventObject
     )
     {
         super( source );
-        m_TriggeredBy = triggeredBy;
-        m_OldState = oldstate;
-        m_NewState = newstate;
-        m_EventTime = new Date( time );
+        this.triggeredBy = triggeredBy;
+        oldState = oldstate;
+        newState = newstate;
+        eventTime = new Date( time );
     }
 
     public Object getTriggeredBy()
     {
-        return m_TriggeredBy;
+        return triggeredBy;
     }
 
     public Alarm getAlarm()
@@ -64,17 +64,17 @@ public abstract class GenericAlarmEvent extends EventObject
 
     public AlarmState getOldState()
     {
-        return m_OldState;
+        return oldState;
     }
 
     public AlarmState getNewState()
     {
-        return m_NewState;
+        return newState;
     }
 
     public Date getEventTime()
     {
-        return m_EventTime;
+        return eventTime;
     }
 
     public String toString()
@@ -83,16 +83,16 @@ public abstract class GenericAlarmEvent extends EventObject
         String pattern = rb.getString( "EVENT_GENERIC_PART_TOSTRING" );
         String eventsource = getSource().toString();
         String oldstate = null;
-        if( m_OldState != null )
+        if( oldState != null )
         {
-            oldstate = m_OldState.getName();
+            oldstate = oldState.getName();
         }
         String newstate = null;
-        if( m_NewState != null )
+        if( newState != null )
         {
-            newstate = m_NewState.getName();
+            newstate = newState.getName();
         }
-        Object[] args = new Object[]{ eventsource, m_EventTime, oldstate, newstate };
+        Object[] args = new Object[]{ eventsource, eventTime, oldstate, newstate };
         return MessageFormat.format( pattern, args );
     }
 

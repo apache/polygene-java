@@ -29,7 +29,7 @@ public class ExtendedModelProvider
     implements AlarmModelProvider
 {
 
-    static String MODEL_BUNDLE_NAME = "org.qi4j.library.alarm.providers.extended.AlarmResources";
+    private static String MODEL_BUNDLE_NAME = "org.qi4j.library.alarm.providers.extended.AlarmResources";
 
     private final String[] ALARM_TRIGGERS =
         {

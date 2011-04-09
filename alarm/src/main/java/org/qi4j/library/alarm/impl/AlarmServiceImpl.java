@@ -34,14 +34,14 @@ public class AlarmServiceImpl
     implements AlarmService, AlarmListener
 {
 
-    private ArrayList m_AlarmListeners;
-    private final ArrayList m_Models;
-    private AlarmModel m_DefaultModel;
+    private ArrayList alarmListeners;
+    private final ArrayList models;
+    private AlarmModel defaultModel;
 
     public AlarmServiceImpl()
     {
-        m_Models = new ArrayList();
-        m_AlarmListeners = new ArrayList();
+        models = new ArrayList();
+        alarmListeners = new ArrayList();
     }
 
     /**
@@ -49,10 +49,10 @@ public class AlarmServiceImpl
      */
     public AlarmModel[] getAlarmModels()
     {
-        synchronized( m_Models )
+        synchronized( models )
         {
-            AlarmModel[] am = new AlarmModel[m_Models.size()];
-            m_Models.toArray( am );
+            AlarmModel[] am = new AlarmModel[ models.size()];
+            models.toArray( am );
             return am;
         }
     }
@@ -64,7 +64,7 @@ public class AlarmServiceImpl
     {
         synchronized( this )
         {
-            return m_DefaultModel;
+            return defaultModel;
         }
     }
 
@@ -81,12 +81,12 @@ public class AlarmServiceImpl
     {
         synchronized( this )
         {
-            AlarmModel oldModel = m_DefaultModel;
+            AlarmModel oldModel = defaultModel;
             if( oldModel != null )
             {
                 oldModel.newDefaultModelSet( model );
             }
-            m_DefaultModel = model;
+            defaultModel = model;
         }
     }
 
@@ -106,11 +106,11 @@ public class AlarmServiceImpl
     public void addAlarmListener( AlarmListener listener )
     {
         //noinspection SynchronizeOnNonFinalField
-        synchronized( m_AlarmListeners )
+        synchronized( alarmListeners )
         {
-            ArrayList clone = (ArrayList) m_AlarmListeners.clone();
+            ArrayList clone = (ArrayList) alarmListeners.clone();
             clone.add( listener );
-            m_AlarmListeners = clone;
+            alarmListeners = clone;
         }
     }
 
@@ -120,11 +120,11 @@ public class AlarmServiceImpl
     public void removeAlarmListener( AlarmListener listener )
     {
         //noinspection SynchronizeOnNonFinalField
-        synchronized( m_AlarmListeners )
+        synchronized( alarmListeners )
         {
-            ArrayList clone = (ArrayList) m_AlarmListeners.clone();
+            ArrayList clone = (ArrayList) alarmListeners.clone();
             clone.remove( listener );
-            m_AlarmListeners = clone;
+            alarmListeners = clone;
         }
     }
 
@@ -145,9 +145,9 @@ public class AlarmServiceImpl
 
     public List getAlarmListeners()
     {
-        synchronized( m_AlarmListeners )
+        synchronized( alarmListeners )
         {
-            return m_AlarmListeners;
+            return alarmListeners;
         }
     }
 
@@ -155,9 +155,9 @@ public class AlarmServiceImpl
     {
         Iterator list;
         //noinspection SynchronizeOnNonFinalField
-        synchronized( m_AlarmListeners )
+        synchronized( alarmListeners )
         {
-            list = m_AlarmListeners.iterator();
+            list = alarmListeners.iterator();
         }
         while( list.hasNext() )
         {
@@ -177,10 +177,10 @@ public class AlarmServiceImpl
 
     public void addAlarmModel( AlarmModel model )
     {
-        synchronized( m_Models )
+        synchronized( models )
         {
-            m_Models.add( model );
-            if( m_DefaultModel == null )
+            models.add( model );
+            if( defaultModel == null )
             {
                 setDefaultAlarmModel( model );
             }
@@ -191,18 +191,18 @@ public class AlarmServiceImpl
 
     public void removeAlarmModel( AlarmModel model )
     {
-        synchronized( m_Models )
+        synchronized( models )
         {
-            m_Models.remove( model );
+            models.remove( model );
             model.removeAlarmListener( this );
-            if( m_Models.size() == 0 )
+            if( models.size() == 0 )
             {
                 setDefaultAlarmModel( null );
             }
-            else if( m_DefaultModel.equals( model ) && !m_Models.contains( model ) )
+            else if( defaultModel.equals( model ) && !models.contains( model ) )
             {
-                int lastIndex = m_Models.size() - 1;
-                AlarmModel lastModel = (AlarmModel) m_Models.get( lastIndex );
+                int lastIndex = models.size() - 1;
+                AlarmModel lastModel = (AlarmModel) models.get( lastIndex );
                 setDefaultAlarmModel( lastModel );
             }
         }

@@ -31,20 +31,20 @@ public final class BlockedState
     implements AlarmState, java.io.Serializable
 {
 
-    static final long serialVersionUID = 2L;
+    private static final long serialVersionUID = 2L;
 
-    private Date m_CreationDate;
+    private Date creationDate;
 
     public BlockedState()
     {
-        m_CreationDate = new Date();
+        creationDate = new Date();
     }
 
     public String toString()
     {
         ResourceBundle rb = ExtendedModelProvider.getResourceBundle( null );
         String pattern = rb.getString( "STATE_BLOCKED_TOSTRING" );
-        Object[] args = new Object[]{ m_CreationDate };
+        Object[] args = new Object[]{ creationDate };
         return MessageFormat.format( pattern, args );
     }
 
@@ -53,7 +53,7 @@ public final class BlockedState
      */
     public Date getCreationDate()
     {
-        return m_CreationDate;
+        return creationDate;
     }
 
     /**

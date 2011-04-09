@@ -26,7 +26,7 @@ import org.qi4j.library.alarm.AlarmState;
 public final class DeactivationEvent extends GenericAlarmEvent
 {
 
-    static final long serialVersionUID = 2L;
+    private static final long serialVersionUID = 2L;
 
     public DeactivationEvent( Object triggedBy, Alarm alarm,
                               AlarmState oldstate, AlarmState newstate, long time
