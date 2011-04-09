@@ -1,0 +1,51 @@
+/*
+ * Copyright 1996-2005 Niclas Hedhman.
+ *
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
+ * implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.qi4j.library.alarm.providers.standard;
+
+import java.text.MessageFormat;
+import java.util.ResourceBundle;
+import org.qi4j.library.alarm.Alarm;
+import org.qi4j.library.alarm.AlarmState;
+
+public final class ActivationEvent extends GenericAlarmEvent
+{
+
+    static final long serialVersionUID = 2L;
+
+    public ActivationEvent( Object triggedBy, Alarm alarm,
+                            AlarmState oldstate, AlarmState newstate, long time )
+    {
+        super( triggedBy, alarm, oldstate, newstate, time );
+    }
+
+    public String toString()
+    {
+        ResourceBundle rb = StandardModelProvider.getResourceBundle( null );
+        String pattern = rb.getString( "EVENT_ACTIVATION_TOSTRING" );
+        String generic = super.toString();
+        Object[] args = new Object[]{ generic };
+        return MessageFormat.format( pattern, args );
+    }
+
+    public String getResourceHead()
+    {
+        return "EVENT_ACTIVATION";
+    }
+
+}

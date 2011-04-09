@@ -1,0 +1,85 @@
+<p>
+    The Standard Model is centered around the Normal, Activated, Acknowledged
+    and Deactivated states, and the triggers "activate", "deactivate",
+    and "acknowledge". The following matrix details the resulting grid;
+<p>
+<table>
+<tr>
+    <th>Initial State</th>
+    <th>Trigger</th>
+    <th>Resulting State</th>
+    <th>Event Generated</th>
+</tr>
+<tr>
+    <td>Normal</td>
+    <td>activate</td>
+    <td>Activated</td>
+    <td>activation</td>
+</tr>
+<tr>
+    <td>Normal</td>
+    <td>deactivate</td>
+    <td>Normal</td>
+    <td>-</td>
+</tr>
+<tr>
+    <td>Normal</td>
+    <td>acknowledge</td>
+    <td>Normal</td>
+    <td>-</td>
+</tr>
+<tr>
+    <td>Activated</td>
+    <td>activate</td>
+    <td>Activated</td>
+    <td>-</td>
+</tr>
+<tr>
+    <td>Activated</td>
+    <td>deactivate</td>
+    <td>Deactivated</td>
+    <td>deactivation</td>
+</tr>
+<tr>
+    <td>Activated</td>
+    <td>acknowledge</td>
+    <td>Acknowledged</td>
+    <td>acknowledge</td>
+</tr>
+<tr>
+    <td>Deactivated</td>
+    <td>activate</td>
+    <td>Activated</td>
+    <td>activation</td>
+</tr>
+<tr>
+    <td>Deactivated</td>
+    <td>deactivate</td>
+    <td>Deativated</td>
+    <td>-</td>
+</tr>
+<tr>
+    <td>Deactivated</td>
+    <td>acknowledge</td>
+    <td>Normal</td>
+    <td>acknowledge</td>
+</tr>
+<tr>
+    <td>Acknowledged</td>
+    <td>activate</td>
+    <td>Acknowledged</td>
+    <td>-</td>
+</tr>
+<tr>
+    <td>Acknowledged</td>
+    <td>deactivate</td>
+    <td>Normal</td>
+    <td>deactivation</td>
+</tr>
+<tr>
+    <td>Acknowledged</td>
+    <td>acknowledge</td>
+    <td>Acknowledged</td>
+    <td>-</td>
+</tr>
+</table>
