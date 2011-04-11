@@ -17,7 +17,6 @@
  */
 package org.qi4j.library.alarm.impl;
 
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -26,11 +25,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.WeakHashMap;
-import org.qi4j.library.alarm.AlarmModelProvider;
-import org.qi4j.library.alarm.AlarmModel;
 import org.qi4j.library.alarm.Alarm;
 import org.qi4j.library.alarm.AlarmCreationException;
 import org.qi4j.library.alarm.AlarmListener;
+import org.qi4j.library.alarm.AlarmModel;
+import org.qi4j.library.alarm.AlarmModelProvider;
 
 /**
  *
@@ -39,7 +38,7 @@ public class AlarmModelImpl
     implements AlarmModel
 {
     private AlarmModelProvider provider;
-    private ArrayList listeners;
+    private ArrayList<AlarmListener> listeners;
     private HashMap properties;
     private final WeakHashMap alarms;
 
@@ -50,11 +49,12 @@ public class AlarmModelImpl
         this.provider = provider;
     }
 
-    /** Called when the default AlarmModel is changed.
+    /**
+     * Called when the default AlarmModel is changed.
      * This AlarmModel has been the default AlarmModel, and now it is being changed
      * to another AlarmModel. This instance must transfer all the registered alarms
      * to the new AlarmModel.
-     **/
+     */
     public void newDefaultModelSet( AlarmModel newDefaultModel )
     {
         Iterator list;
@@ -78,17 +78,17 @@ public class AlarmModelImpl
         }
     }
 
-    public String getName()
+    public String modelName()
     {
         return provider.getName();
     }
 
-    public String getDescription()
+    public String modelDescriptionInDefaultLocale()
     {
-        return getDescription( null );
+        return modelDescription( null );
     }
 
-    public String getDescription( Locale locale )
+    public String modelDescription( Locale locale )
     {
         return provider.getDescription( locale );
     }
@@ -101,9 +101,9 @@ public class AlarmModelImpl
         return alarm;
     }
 
-    public List getAlarms()
+    public List<Alarm> alarmList()
     {
-        ArrayList result = new ArrayList();
+        ArrayList<Alarm> result = new ArrayList<Alarm>();
         Iterator list;
         synchronized( alarms )
         {
@@ -117,34 +117,36 @@ public class AlarmModelImpl
         return result;
     }
 
-    public String[] getAlarmTriggers()
+    public String[] alarmTriggers()
     {
-        return getAlarmModelProvider().getAlarmTriggers();
+        return alarmModelProvider().getAlarmTriggers();
     }
 
-    public AlarmModelProvider getAlarmModelProvider()
+    public AlarmModelProvider alarmModelProvider()
     {
         return provider;
     }
 
-    /** Register AlarmListener to recieve <code>AlarmEvents</code> from all
+    /**
+     * Register AlarmListener to recieve <code>AlarmEvents</code> from all
      * <code>Alarms</code> managed by this <code>AlarmModel</code>.
      */
     public void addAlarmListener( AlarmListener listener )
     {
         synchronized( this )
         {
-            ArrayList v;
-            if( listeners == null )
-                v = new ArrayList();
-            else
-                v = (ArrayList) listeners.clone();
+            ArrayList<AlarmListener> v = new ArrayList<AlarmListener>();
+            if( listeners != null )
+            {
+                v.addAll( listeners );
+            }
             v.add( listener );
             listeners = v;
         }
     }
 
-    /** Remove the <code>AlarmListener</code> from the <code>AlarmModel</code>.
+    /**
+     * Remove the <code>AlarmListener</code> from the <code>AlarmModel</code>.
      */
     public void removeAlarmListener( AlarmListener listener )
     {
@@ -154,13 +156,14 @@ public class AlarmModelImpl
         }
         synchronized( this )
         {
-            ArrayList v = (ArrayList) listeners.clone();
+            ArrayList<AlarmListener> v = new ArrayList<AlarmListener>();
+            v.addAll( listeners );
             v.remove( listener );
             listeners = v;
         }
     }
 
-    public List getAlarmListeners()
+    public List alarmListeners()
     {
         synchronized( this )
         {
@@ -172,7 +175,8 @@ public class AlarmModelImpl
         }
     }
 
-    /** Adds a new <i>Property</i> to <strong>all</strong> <code>Alarms</code>.
+    /**
+     * Adds a new <i>Property</i> to <strong>all</strong> <code>Alarms</code>.
      * The <code>defaultvalue</code> will be added to all present and future
      * <code>Alarms</code> created through this AlarmModel. In case any existing
      * <code>Alarms</code> already have this property defined, the existing value
@@ -183,16 +187,18 @@ public class AlarmModelImpl
         properties.put( name, defaultValue );
     }
 
-    /** Removes the <i>Property</i> from all <code>Alarms</code>.
+    /**
+     * Removes the <i>Property</i> from all <code>Alarms</code>.
      */
     public void removeProperty( String name )
     {
         properties.remove( name );
     }
 
-    /** Returns a <code>java.util.Map</code> of all global default <i>Properties</i>.
+    /**
+     * Returns a <code>java.util.Map</code> of all global default <i>Properties</i>.
      */
-    public Map getDefaultProperties()
+    public Map defaultProperties()
     {
         return properties;
     }

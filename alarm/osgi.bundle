@@ -1,3 +1,0 @@
-Export-Package: org.openhmi.alarm; version=${pom.version}
-
-Import-Package: org.osgi.framework;version="[1.0.0, 2.0.0)"

@@ -48,42 +48,42 @@ public class DeactivationEventTest extends TestCase
         throws Exception
     {
         AlarmEvent e =
-            new DeactivationEvent( this, underTest, new AcknowledgedState(), underTest.getState(), System.currentTimeMillis() );
-        assertEquals( "deactivation", e.getName() );
+            new DeactivationEvent( this, underTest, new AcknowledgedState(), underTest.alarmState(), System.currentTimeMillis() );
+        assertEquals( "deactivation", e.nameInDefaultLocale() );
 
         Locale english = new Locale( "en" );
-        assertEquals( "deactivation", e.getName( english ) );
+        assertEquals( "deactivation", e.name( english ) );
 
         Locale swedish = new Locale( "sv" );
-        assertEquals( "fr\u00E5ng\u00E5ng", e.getName( swedish ) );
+        assertEquals( "fr\u00E5ng\u00E5ng", e.name( swedish ) );
     }
 
     public void testDescription()
         throws Exception
     {
         AlarmEvent e = new DeactivationEvent( this, underTest, null, null, System.currentTimeMillis() );
-        boolean test = e.getDescription().toLowerCase().indexOf( "reset" ) >= 0;
+        boolean test = e.descriptionInDefaultLocale().toLowerCase().indexOf( "reset" ) >= 0;
         assertTrue( test );
 
         Locale english = new Locale( "en" );
-        test = e.getDescription( english ).toLowerCase().indexOf( "reset" ) >= 0;
+        test = e.description( english ).toLowerCase().indexOf( "reset" ) >= 0;
         assertTrue( test );
 
         Locale swedish = new Locale( "sv" );
-        test = e.getDescription( swedish ).toLowerCase().indexOf( "ifr\u00E5n" ) >= 0;
+        test = e.description( swedish ).toLowerCase().indexOf( "ifr\u00E5n" ) >= 0;
         assertTrue( test );
     }
 
     public void testTriggeredBy()
     {
         GenericAlarmEvent e = new DeactivationEvent( this, underTest, null, null, System.currentTimeMillis() );
-        Assert.assertEquals( this, e.getTriggeredBy() );
+        Assert.assertEquals( this, e.triggeredBy() );
     }
 
     public void testAlarm()
     {
         AlarmEvent e = new DeactivationEvent( this, underTest, null, null, System.currentTimeMillis() );
-        assertEquals( underTest, e.getAlarm() );
+        assertEquals( underTest, e.alarm() );
     }
 
     public void testEventTime()
@@ -92,7 +92,7 @@ public class DeactivationEventTest extends TestCase
         AlarmEvent e = new DeactivationEvent( this, underTest, null, null, System.currentTimeMillis() );
         Thread.sleep( 15 );
         long now = System.currentTimeMillis();
-        boolean test = now > e.getEventTime().getTime() && ( now - e.getEventTime().getTime() < 150 );
+        boolean test = now > e.eventTime().getTime() && ( now - e.eventTime().getTime() < 150 );
         assertTrue( "EventTime not accurate.", test );
     }
 

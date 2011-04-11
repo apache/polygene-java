@@ -20,6 +20,7 @@ package org.qi4j.library.alarm.impl;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import org.qi4j.library.alarm.Alarm;
 import org.qi4j.library.alarm.AlarmCreationException;
 import org.qi4j.library.alarm.AlarmEvent;
@@ -34,20 +35,20 @@ public class AlarmServiceImpl
     implements AlarmService, AlarmListener
 {
 
-    private ArrayList alarmListeners;
-    private final ArrayList models;
+    private final CopyOnWriteArrayList<AlarmListener> alarmListeners;
+    private final ArrayList<AlarmModel> models;
     private AlarmModel defaultModel;
 
     public AlarmServiceImpl()
     {
-        models = new ArrayList();
-        alarmListeners = new ArrayList();
+        models = new ArrayList<AlarmModel>();
+        alarmListeners = new CopyOnWriteArrayList<AlarmListener>(  );
     }
 
     /**
      * Returns all the AlarmModels that has been installed.
      */
-    public AlarmModel[] getAlarmModels()
+    public AlarmModel[] alarmModels()
     {
         synchronized( models )
         {
@@ -60,7 +61,7 @@ public class AlarmServiceImpl
     /**
      * Returns the default AlarmModel.
      */
-    public AlarmModel getDefaultAlarmModel()
+    public AlarmModel defaultAlarmModel()
     {
         synchronized( this )
         {
@@ -96,7 +97,7 @@ public class AlarmServiceImpl
     public Alarm createAlarm( String name )
         throws AlarmCreationException
     {
-        return getDefaultAlarmModel().createAlarm( name );
+        return defaultAlarmModel().createAlarm( name );
     }
 
     /**
@@ -105,13 +106,7 @@ public class AlarmServiceImpl
      */
     public void addAlarmListener( AlarmListener listener )
     {
-        //noinspection SynchronizeOnNonFinalField
-        synchronized( alarmListeners )
-        {
-            ArrayList clone = (ArrayList) alarmListeners.clone();
-            clone.add( listener );
-            alarmListeners = clone;
-        }
+        alarmListeners.add( listener );
     }
 
     /**
@@ -119,31 +114,24 @@ public class AlarmServiceImpl
      */
     public void removeAlarmListener( AlarmListener listener )
     {
-        //noinspection SynchronizeOnNonFinalField
-        synchronized( alarmListeners )
-        {
-            ArrayList clone = (ArrayList) alarmListeners.clone();
-            clone.remove( listener );
-            alarmListeners = clone;
-        }
+        alarmListeners.remove( listener );
     }
 
     /**
      * Returns a list of all Alarms registered to the service.
      */
-    public List getAlarms()
+    public List<Alarm> alarmList()
     {
-        ArrayList result = new ArrayList();
-        AlarmModel[] models = getAlarmModels();
-        for( int i = 0; i < models.length; i++ )
+        ArrayList<Alarm> result = new ArrayList<Alarm>();
+        AlarmModel[] models = alarmModels();
+        for( AlarmModel model : models )
         {
-            List c = models[ i ].getAlarms();
-            result.addAll( c );
+            result.addAll( model.alarmList() );
         }
         return result;
     }
 
-    public List getAlarmListeners()
+    public List alarmListeners()
     {
         synchronized( alarmListeners )
         {
@@ -202,7 +190,7 @@ public class AlarmServiceImpl
             else if( defaultModel.equals( model ) && !models.contains( model ) )
             {
                 int lastIndex = models.size() - 1;
-                AlarmModel lastModel = (AlarmModel) models.get( lastIndex );
+                AlarmModel lastModel = models.get( lastIndex );
                 setDefaultAlarmModel( lastModel );
             }
         }

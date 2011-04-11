@@ -34,7 +34,7 @@ public interface AlarmEvent
      *
      * @return The Object that created the trigger.
      */
-    Object getTriggeredBy();
+    Object triggeredBy();
 
     /**
      * Returns the Alarm that generated the event.
@@ -43,28 +43,28 @@ public interface AlarmEvent
      *
      * @return the Alarm causing this event.
      */
-    Alarm getAlarm();
+    Alarm alarm();
 
     /**
      * Returns the AlarmState prior to the Event.
      *
      * @return the old AlarmState prior to this event.
      */
-    AlarmState getOldState();
+    AlarmState oldState();
 
     /**
      * Returns the AlarmState after the Event.
      *
      * @return the new AlarmState of the Alarm after this event.
      */
-    AlarmState getNewState();
+    AlarmState newState();
 
     /**
      * Returns the Time when the event occurred.
      *
      * @return the timestamp when this event occurred.
      */
-    Date getEventTime();
+    Date eventTime();
 
     /**
      * Returns the Name of the event.
@@ -73,7 +73,7 @@ public interface AlarmEvent
      *
      * @return the name of this event in the default locale.
      */
-    String getName();
+    String nameInDefaultLocale();
 
     /**
      * Returns the Name of the event.
@@ -84,7 +84,7 @@ public interface AlarmEvent
      *
      * @return the name of the event in the given locale.
      */
-    String getName( Locale locale );
+    String name( Locale locale );
 
     /**
      * Returns a Description of the event.
@@ -94,9 +94,9 @@ public interface AlarmEvent
      *
      * @return the description of the event in the default locale.
      *
-     * @see #getDescription(Locale)
+     * @see #description(Locale)
      */
-    String getDescription();
+    String descriptionInDefaultLocale();
 
     /**
      * Returns a Description of the event in the specified locale.
@@ -107,5 +107,5 @@ public interface AlarmEvent
      *
      * @return the description of the event in the given locale.
      */
-    String getDescription( Locale locale );
+    String description( Locale locale );
 }

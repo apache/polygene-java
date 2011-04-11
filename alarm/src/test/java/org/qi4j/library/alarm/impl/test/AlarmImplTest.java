@@ -89,7 +89,7 @@ public class AlarmImplTest extends TestCase
 
     public void testName() throws Exception
     {
-        assertEquals( "TestCase Alarm", underTest.getName() );
+        assertEquals( "TestCase Alarm", underTest.name() );
     }
 
     public void testDescription() throws Exception
@@ -97,28 +97,28 @@ public class AlarmImplTest extends TestCase
 //        assertEquals( "This is a default Locale description of a testcase Alarm.", underTest.getDescription() );
 
         Locale english = Locale.UK;
-        assertEquals( "This is a UK Locale description of a testcase Alarm.", underTest.getDescription(english) );
+        assertEquals( "This is a UK Locale description of a testcase Alarm.", underTest.description( english ) );
 
         Locale swedish = new Locale( "sv" );
-        assertEquals( "Detta \u00E5r en svensk beskrivning av ett testlarm.", underTest.getDescription( swedish ) );
+        assertEquals( "Detta \u00E5r en svensk beskrivning av ett testlarm.", underTest.description( swedish ) );
 
     }
 
     public void testState()
     {
-        assertEquals( "normal", underTest.getState().getName() );
-        boolean condition = underTest.getCondition();
+        assertEquals( "normal", underTest.alarmState().getName() );
+        boolean condition = underTest.currentCondition();
         assertEquals( false, condition );
     }
 
     public void testCheckAndSetModel()
         throws Exception
     {
-        AlarmModel model = underTest.getAlarmModel();
+        AlarmModel model = underTest.alarmModel();
         assertEquals( this.model, model );
         AlarmModelProvider spi = new SimpleModelProvider();
         underTest.setAlarmModel( new AlarmModelImpl( spi ) );
-        model = underTest.getAlarmModel();
+        model = underTest.alarmModel();
         assertFalse( "AlarmModel still considered equal.", this.model.equals( model ) );
 
     }

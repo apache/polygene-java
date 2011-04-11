@@ -27,27 +27,27 @@ import org.qi4j.library.alarm.AlarmHistory;
 public class TestAlarmHistory implements AlarmHistory
 {
 
-    public AlarmEvent getLast()
+    public AlarmEvent lastEvent()
     {
         return null;
     }
 
-    public AlarmEvent getFirst()
+    public AlarmEvent firstEvent()
     {
         return null;
     }
 
-    public AlarmEvent getAt( int position )
+    public AlarmEvent eventAt( int position )
     {
         return null;
     }
 
-    public AlarmEvent getAtFromLast( int position )
+    public AlarmEvent eventAtEnd( int position )
     {
         return null;
     }
 
-    public List getAllAlarmEvents()
+    public List<AlarmEvent> getAllAlarmEvents()
     {
         return new ArrayList();
     }
@@ -56,12 +56,12 @@ public class TestAlarmHistory implements AlarmHistory
     {
     }
 
-    public int getMaxSize()
+    public int maxSize()
     {
         return 0;
     }
 
-    public Map getCounters()
+    public Map<String, Integer> counters()
     {
         return new HashMap();
     }
@@ -70,7 +70,7 @@ public class TestAlarmHistory implements AlarmHistory
     {
     }
 
-    public int getActivateCounter()
+    public int activateCounter()
     {
         return 0;
     }

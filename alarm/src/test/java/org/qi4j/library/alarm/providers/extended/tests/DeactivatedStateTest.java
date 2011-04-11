@@ -61,7 +61,7 @@ public class DeactivatedStateTest extends TestCase
 
         Thread.sleep( 15 );
         long now = System.currentTimeMillis();
-        boolean test = now > s.getCreationDate().getTime() && ( now - s.getCreationDate().getTime() < 50 );
+        boolean test = now > s.creationDate().getTime() && ( now - s.creationDate().getTime() < 50 );
         assertTrue( "EventTime not accurate.", test );
     }
 

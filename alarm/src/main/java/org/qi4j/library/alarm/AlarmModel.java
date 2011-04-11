@@ -50,7 +50,7 @@ public interface AlarmModel
      *
      * @return the name of the AlarmModel in english.
      */
-    String getName();
+    String modelName();
 
     /**
      * Returns a description of the AlarmModel in the default Locale.
@@ -59,7 +59,7 @@ public interface AlarmModel
      *
      * @return a description of the AlarmModel in the default Locale.
      */
-    String getDescription();
+    String modelDescriptionInDefaultLocale();
 
     /**
      * Returns a description of the AlarmModel in the given Locale.
@@ -71,7 +71,7 @@ public interface AlarmModel
      *
      * @return a description of the AlarmModel in the given Locale.
      */
-    String getDescription( Locale locale );
+    String modelDescription( Locale locale );
 
     /**
      * Creates an Alarm with this AlarmModel behaviour.
@@ -110,7 +110,7 @@ public interface AlarmModel
      *
      * @return an array of standard triggers valid for this AlarmModel.
      */
-    String[] getAlarmTriggers();
+    String[] alarmTriggers();
 
     /**
      * Register AlarmListener to recieve <code>AlarmEvents</code> from all
@@ -134,14 +134,14 @@ public interface AlarmModel
      *
      * @return all Listeners to this model. If there are no listeners, the List is empty.
      */
-    List getAlarmListeners();
+    List alarmListeners();
 
     /**
      * Returns all Alarms using this AlarmModel.
      *
      * @return all Alarms using this AlarmModel.
      */
-    List getAlarms();
+    List<Alarm> alarmList();
 
     /**
      * Adds a new <i>Property</i> to <strong>all</strong> <code>Alarms</code>.
@@ -167,7 +167,7 @@ public interface AlarmModel
      *
      * @return a <code>java.util.Map</code> of all global default <i>Properties</i>.
      */
-    Map getDefaultProperties();
+    Map defaultProperties();
 
     /**
      * Returns the serice provider interface for the AlarmModel.
@@ -175,5 +175,5 @@ public interface AlarmModel
      *
      * @return The AlarmModelProvider for this AlarmModel.
      */
-    AlarmModelProvider getAlarmModelProvider();
+    AlarmModelProvider alarmModelProvider();
 }

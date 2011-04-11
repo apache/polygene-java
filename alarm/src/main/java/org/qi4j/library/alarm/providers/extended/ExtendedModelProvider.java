@@ -180,7 +180,7 @@ public class ExtendedModelProvider
      */
     private AlarmEvent activation( Object source, Alarm alarm )
     {
-        AlarmState oldState = alarm.getState();
+        AlarmState oldState = alarm.alarmState();
         if( ( oldState instanceof NormalState ) ||
             ( oldState instanceof DeactivatedState ) )
         {
@@ -201,7 +201,7 @@ public class ExtendedModelProvider
      */
     private AlarmEvent deactivation( Object source, Alarm alarm )
     {
-        AlarmState oldState = alarm.getState();
+        AlarmState oldState = alarm.alarmState();
         long time = System.currentTimeMillis();
         if( oldState instanceof AcknowledgedState )
         {
@@ -226,7 +226,7 @@ public class ExtendedModelProvider
      */
     private AlarmEvent acknowledge( Object source, Alarm alarm )
     {
-        AlarmState oldState = alarm.getState();
+        AlarmState oldState = alarm.alarmState();
         long time = System.currentTimeMillis();
         if( oldState instanceof DeactivatedState )
         {
@@ -251,7 +251,7 @@ public class ExtendedModelProvider
      */
     private AlarmEvent block( Object source, Alarm alarm )
     {
-        AlarmState oldState = alarm.getState();
+        AlarmState oldState = alarm.alarmState();
         long time = System.currentTimeMillis();
         if( oldState instanceof BlockedState ||
             oldState instanceof DisabledState )
@@ -272,7 +272,7 @@ public class ExtendedModelProvider
      */
     private AlarmEvent unblock( Object source, Alarm alarm )
     {
-        AlarmState oldState = alarm.getState();
+        AlarmState oldState = alarm.alarmState();
         long time = System.currentTimeMillis();
         if( oldState instanceof BlockedState )
         {
@@ -292,7 +292,7 @@ public class ExtendedModelProvider
      */
     private AlarmEvent disable( Object source, Alarm alarm )
     {
-        AlarmState oldState = alarm.getState();
+        AlarmState oldState = alarm.alarmState();
         long time = System.currentTimeMillis();
         if( oldState instanceof DisabledState )
         {
@@ -312,7 +312,7 @@ public class ExtendedModelProvider
      */
     private AlarmEvent enable( Object source, Alarm alarm )
     {
-        AlarmState oldState = alarm.getState();
+        AlarmState oldState = alarm.alarmState();
         long time = System.currentTimeMillis();
         if( oldState instanceof DisabledState )
         {

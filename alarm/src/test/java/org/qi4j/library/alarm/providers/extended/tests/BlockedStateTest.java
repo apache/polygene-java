@@ -63,7 +63,7 @@ public class BlockedStateTest extends TestCase
 
         Thread.sleep( 15 );
         long now = System.currentTimeMillis();
-        boolean test = now > s.getCreationDate().getTime() && ( now - s.getCreationDate().getTime() < 150 );
+        boolean test = now > s.creationDate().getTime() && ( now - s.creationDate().getTime() < 150 );
         assertTrue( "EventTime not accurate.", test );
     }
 

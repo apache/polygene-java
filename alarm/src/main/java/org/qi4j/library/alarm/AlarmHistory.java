@@ -36,14 +36,14 @@ public interface AlarmHistory
      *
      * @return the last AlarmEvent in the buffer. This is the newest event.
      */
-    AlarmEvent getLast();
+    AlarmEvent lastEvent();
 
     /**
      * Returns the oldest recorded <code>AlarmEvent</code>.
      *
      * @return the first AlarmEvent in the buffer. This is the oldest event.
      */
-    AlarmEvent getFirst();
+    AlarmEvent firstEvent();
 
     /**
      * Returns the recorded <code>AlarmEvent</code> at the given position
@@ -54,7 +54,7 @@ public interface AlarmHistory
      *
      * @return the recorded <code>AlarmEvent</code> at the given position in the buffer.
      */
-    AlarmEvent getAt( int position );
+    AlarmEvent eventAt( int position );
 
     /**
      * Returns the recorded <code>AlarmEvent</code> at the given position
@@ -65,14 +65,14 @@ public interface AlarmHistory
      *
      * @return the recorded <code>AlarmEvent</code> at the given position in the buffer counted from the end.
      */
-    AlarmEvent getAtFromLast( int position );
+    AlarmEvent eventAtEnd( int position );
 
     /**
      * Returns a <code>java.util.List</code> of all recorded <code>AlarmEvents</code>.
      *
      * @return a <code>java.util.List</code> of all recorded <code>AlarmEvents</code>.
      */
-    List getAllAlarmEvents();
+    List<AlarmEvent> getAllAlarmEvents();
 
     /**
      * Sets the maximum size of the history buffer.
@@ -88,7 +88,7 @@ public interface AlarmHistory
      *
      * @return the maximum size of the buffer.
      */
-    int getMaxSize();
+    int maxSize();
 
     /**
      * Returns all the Counters of triggers.
@@ -107,7 +107,7 @@ public interface AlarmHistory
      *
      * @return all the Counters of triggers.
      */
-    Map getCounters();
+    Map<String, Integer> counters();
 
     /**
      * Resets all counters.
@@ -122,7 +122,7 @@ public interface AlarmHistory
      *
      * @return the Counter of activate triggers.
      */
-    int getActivateCounter();
+    int activateCounter();
 
     /**
      * Resets the Activate counter.

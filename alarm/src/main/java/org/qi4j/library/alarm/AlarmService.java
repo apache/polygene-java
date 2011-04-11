@@ -52,14 +52,14 @@ public interface AlarmService
      *
      * @return all the AlarmModels that has been installed.
      */
-    AlarmModel[] getAlarmModels();
+    AlarmModel[] alarmModels();
 
     /**
      * Returns the default AlarmModel.
      *
      * @return the default AlarmModel in this AlarmService.
      */
-    AlarmModel getDefaultAlarmModel();
+    AlarmModel defaultAlarmModel();
 
     /**
      * Sets the default AlarmModel.
@@ -84,7 +84,7 @@ public interface AlarmService
      *
      * @return a list of all Alarms registered to the service.
      */
-    List getAlarms();
+    List<Alarm> alarmList();
 
     /**
      * Creates an Alarm with the default AlarmModel.
@@ -118,7 +118,7 @@ public interface AlarmService
      *
      * @return a list of all AlarmListeners registered to the service.
      */
-    List getAlarmListeners();
+    List alarmListeners();
 
     /**
      * Adds an AlarmModel to this service.

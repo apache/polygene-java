@@ -87,7 +87,7 @@ public interface AlarmModelProvider
     /**
      * Computes a trigger if the standard condition changes. <p> This method must return a trigger if the condition
      * changes, otherwise it must return a null, which will not trigger an AlarmEvent. </p> <p> This method is called by
-     * the Alarm in the <code>setCondition(boolean condition)</code> method. </p>
+     * the Alarm in the <code>updateCondition(boolean condition)</code> method. </p>
      *
      * @param state     the current state of the standard.
      * @param condition the standard condition, such as High Level.

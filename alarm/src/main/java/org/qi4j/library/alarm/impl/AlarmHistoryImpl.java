@@ -19,66 +19,73 @@ package org.qi4j.library.alarm.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import org.qi4j.library.alarm.Alarm;
 import org.qi4j.library.alarm.AlarmEvent;
 import org.qi4j.library.alarm.AlarmHistory;
-import org.qi4j.library.alarm.Alarm;
 
 public class AlarmHistoryImpl
     implements java.io.Serializable, AlarmHistory
 {
     private static final long serialVersionUID = 2L;
 
-    private final ArrayList eventList;
+    private final ArrayList<AlarmEvent> eventList;
     private int maxSize = 30;
-    private HashMap counters;
+    private final HashMap<String, Integer> counters;
 
     public AlarmHistoryImpl()
     {
-        eventList = new ArrayList();
-        counters = new HashMap();
+        eventList = new ArrayList<AlarmEvent>();
+        counters = new HashMap<String, Integer>();
     }
 
-    public AlarmEvent getFirst()
+    public AlarmEvent firstEvent()
     {
         synchronized( eventList )
         {
             if( eventList.size() == 0 )
+            {
                 return null;
-            return (AlarmEvent) eventList.get(0);
+            }
+            return eventList.get( 0 );
         }
     }
 
-    public AlarmEvent getLast()
+    public AlarmEvent lastEvent()
     {
         synchronized( eventList )
         {
             if( eventList.size() == 0 )
+            {
                 return null;
-            return (AlarmEvent) eventList.get( eventList.size()-1);
+            }
+            return eventList.get( eventList.size() - 1 );
         }
     }
 
-    public AlarmEvent getAt( final int position )
+    public AlarmEvent eventAt( final int position )
     {
         synchronized( this )
         {
             if( eventList.size() <= position || position < 0 )
+            {
                 return null;
-            return (AlarmEvent) eventList.get(position);
+            }
+            return eventList.get( position );
         }
     }
 
-    public AlarmEvent getAtFromLast( final int position )
+    public AlarmEvent eventAtEnd( final int position )
     {
         synchronized( eventList )
         {
             int size = eventList.size();
             if( size <= position || position < 0 )
+            {
                 return null;
-            return (AlarmEvent) eventList.get( size-position-1 );
+            }
+            return eventList.get( size - position - 1 );
         }
     }
 
@@ -86,13 +93,17 @@ public class AlarmHistoryImpl
     {
         synchronized( this )
         {
-            eventList.add(event);
+            eventList.add( event );
             purge();
-            Integer counter = (Integer) counters.get( trigger );
+            Integer counter = counters.get( trigger );
             if( counter == null )
-                counter = new Integer( 1 );
+            {
+                counter = 1;
+            }
             else
-                counter = new Integer( counter.intValue() + 1 );
+            {
+                counter = counter + 1;
+            }
             counters.put( trigger, counter );
         }
     }
@@ -103,7 +114,7 @@ public class AlarmHistoryImpl
         purge();
     }
 
-    synchronized public int getMaxSize()
+    synchronized public int maxSize()
     {
         return maxSize;
     }
@@ -118,12 +129,10 @@ public class AlarmHistoryImpl
             buf.append( ", size=" );
             buf.append( eventList.size() );
 
-            Iterator list = counters.entrySet().iterator();
-            while( list.hasNext() )
+            for( Map.Entry<String, Integer> entry : counters.entrySet() )
             {
-                Map.Entry entry = (Map.Entry) list.next();
-                String type = (String) entry.getKey();
-                Integer counts = (Integer) entry.getValue();
+                String type = entry.getKey();
+                Integer counts = entry.getValue();
                 buf.append( ", " );
                 buf.append( type );
                 buf.append( "=" );
@@ -137,20 +146,22 @@ public class AlarmHistoryImpl
     synchronized protected void purge()
     {
         if( maxSize <= 0 )
+        {
             eventList.clear();
+        }
 
         while( eventList.size() > maxSize )
         {
-            eventList.remove(0);
+            eventList.remove( 0 );
         }
     }
 
-    public List getAllAlarmEvents()
+    public List<AlarmEvent> getAllAlarmEvents()
     {
         return eventList;
     }
 
-    public Map getCounters()
+    public Map<String, Integer> counters()
     {
         return counters;
     }
@@ -160,14 +171,14 @@ public class AlarmHistoryImpl
         counters.clear();
     }
 
-    public int getActivateCounter()
+    public int activateCounter()
     {
-        Integer counter = (Integer) counters.get( Alarm.TRIGGER_ACTIVATION );
+        Integer counter = counters.get( Alarm.TRIGGER_ACTIVATION );
         if( counter == null )
         {
             return 0;
         }
-        return counter.intValue();
+        return counter;
     }
 
     public void resetActivateCounter()

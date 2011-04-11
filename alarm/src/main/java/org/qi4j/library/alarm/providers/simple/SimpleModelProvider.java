@@ -152,7 +152,7 @@ public class SimpleModelProvider
      */
     private AlarmEvent activation( Object source, Alarm alarm )
     {
-        AlarmState oldState = alarm.getState();
+        AlarmState oldState = alarm.alarmState();
         if( oldState instanceof NormalState )
         {
             AlarmState newState = new ActivatedState();
@@ -172,7 +172,7 @@ public class SimpleModelProvider
      */
     private AlarmEvent deactivation( Object source, Alarm alarm )
     {
-        AlarmState oldState = alarm.getState();
+        AlarmState oldState = alarm.alarmState();
         long time = System.currentTimeMillis();
         if( oldState instanceof ActivatedState )
         {

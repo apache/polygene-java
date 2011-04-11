@@ -42,11 +42,11 @@ public class AlarmTestImpl
         properties = new HashMap();
         history = new TestAlarmHistory();
         condition = false;
-        state = model.getAlarmModelProvider().createInitialState();
+        state = model.alarmModelProvider().createInitialState();
         this.name = name;
     }
 
-    public AlarmModel getAlarmModel()
+    public AlarmModel alarmModel()
     {
         return model;
     }
@@ -76,27 +76,27 @@ public class AlarmTestImpl
         trigger( source, "acknowledge" );
     }
 
-    public boolean getCondition()
+    public boolean currentCondition()
     {
         return condition;
     }
 
-    public void setCondition( boolean condition )
+    public void updateCondition( boolean condition )
     {
         this.condition = condition;
     }
 
-    public AlarmState getState()
+    public AlarmState alarmState()
     {
         return state;
     }
 
-    public AlarmHistory getHistory()
+    public AlarmHistory history()
     {
         return history;
     }
 
-    public Map getProperties()
+    public Map<String, Object> getProperties()
     {
         return properties;
     }
@@ -111,17 +111,17 @@ public class AlarmTestImpl
         properties.put( name, value );
     }
 
-    public String getName()
+    public String name()
     {
         return name;
     }
 
-    public String getDescription()
+    public String descriptionInDefaultLocale()
     {
         return "Some dummy description.";
     }
 
-    public String getDescription( Locale locale )
+    public String description( Locale locale )
     {
         return "Some dummy description.";
     }

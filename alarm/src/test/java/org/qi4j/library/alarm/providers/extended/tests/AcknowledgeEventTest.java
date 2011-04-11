@@ -48,37 +48,37 @@ public class AcknowledgeEventTest
         throws Exception
     {
         AlarmEvent e = new AcknowledgeEvent( this, underTest, null, null, System.currentTimeMillis() );
-        assertEquals( "acknowledge", e.getName() );
+        assertEquals( "acknowledge", e.nameInDefaultLocale() );
         Locale english = new Locale( "en" );
-        assertEquals( "acknowledge", e.getName( english ) );
+        assertEquals( "acknowledge", e.name( english ) );
         Locale swedish = new Locale( "sv" );
-        assertEquals( "kvittens", e.getName( swedish ) );
+        assertEquals( "kvittens", e.name( swedish ) );
     }
 
     public void testDescription()
         throws Exception
     {
         AlarmEvent e = new AcknowledgeEvent( this, underTest, null, null, System.currentTimeMillis() );
-        boolean test = e.getDescription().toLowerCase().indexOf( "acknowledge" ) >= 0;
+        boolean test = e.descriptionInDefaultLocale().toLowerCase().indexOf( "acknowledge" ) >= 0;
         assertTrue( test );
         Locale english = new Locale( "en" );
-        test = e.getDescription( english ).toLowerCase().indexOf( "acknowledge" ) >= 0;
+        test = e.description( english ).toLowerCase().indexOf( "acknowledge" ) >= 0;
         assertTrue( test );
         Locale swedish = new Locale( "sv" );
-        test = e.getDescription( swedish ).toLowerCase().indexOf( "kvittering" ) >= 0;
+        test = e.description( swedish ).toLowerCase().indexOf( "kvittering" ) >= 0;
         assertTrue( test );
     }
 
     public void testTriggeredBy()
     {
         GenericAlarmEvent e = new AcknowledgeEvent( this, underTest, null, null, System.currentTimeMillis() );
-        Assert.assertEquals( this, e.getTriggeredBy() );
+        Assert.assertEquals( this, e.triggeredBy() );
     }
 
     public void testAlarm()
     {
         AlarmEvent e = new AcknowledgeEvent( this, underTest, null, null, System.currentTimeMillis() );
-        assertEquals( underTest, e.getAlarm() );
+        assertEquals( underTest, e.alarm() );
     }
 
     public void testEventTime()
@@ -87,7 +87,7 @@ public class AcknowledgeEventTest
         AlarmEvent e = new AcknowledgeEvent( this, underTest, null, null, System.currentTimeMillis() );
         Thread.sleep( 15 );
         long now = System.currentTimeMillis();
-        boolean test = now > e.getEventTime().getTime() && ( now - e.getEventTime().getTime() < 150 );
+        boolean test = now > e.eventTime().getTime() && ( now - e.eventTime().getTime() < 150 );
         assertTrue( "EventTime not accurate.", test );
     }
 

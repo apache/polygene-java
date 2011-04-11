@@ -47,28 +47,28 @@ public class EnableEventTest extends TestCase
         throws Exception
     {
         AlarmEvent e = new EnableEvent( this, underTest, null, null, System.currentTimeMillis() );
-        assertEquals( "enable", e.getName() );
+        assertEquals( "enable", e.nameInDefaultLocale() );
 
         Locale english = new Locale( "en" );
-        assertEquals( "enable", e.getName( english ) );
+        assertEquals( "enable", e.name( english ) );
 
         Locale swedish = new Locale( "sv" );
-        assertEquals( "p\u00E5slagning", e.getName( swedish ) );
+        assertEquals( "p\u00E5slagning", e.name( swedish ) );
     }
 
     public void testDescription()
         throws Exception
     {
         AlarmEvent e = new EnableEvent( this, underTest, null, null, System.currentTimeMillis() );
-        boolean test = e.getDescription().toLowerCase().indexOf( "enabled" ) >= 0;
+        boolean test = e.descriptionInDefaultLocale().toLowerCase().indexOf( "enabled" ) >= 0;
         assertTrue( test );
 
         Locale english = new Locale( "en" );
-        test = e.getDescription( english ).toLowerCase().indexOf( "enabled" ) >= 0;
+        test = e.description( english ).toLowerCase().indexOf( "enabled" ) >= 0;
         assertTrue( test );
 
         Locale swedish = new Locale( "sv" );
-        test = e.getDescription( swedish ).toLowerCase().indexOf( "p\u00E5slaget" ) >= 0;
+        test = e.description( swedish ).toLowerCase().indexOf( "p\u00E5slaget" ) >= 0;
         assertTrue( test );
     }
 
@@ -76,14 +76,14 @@ public class EnableEventTest extends TestCase
     {
         GenericAlarmEvent e = new EnableEvent( this, underTest, null, null, System.currentTimeMillis() );
 
-        Assert.assertEquals( this, e.getTriggeredBy() );
+        Assert.assertEquals( this, e.triggeredBy() );
     }
 
     public void testAlarm()
     {
         AlarmEvent e = new EnableEvent( this, underTest, null, null, System.currentTimeMillis() );
 
-        assertEquals( underTest, e.getAlarm() );
+        assertEquals( underTest, e.alarm() );
     }
 
     public void testEventTime()
@@ -93,7 +93,7 @@ public class EnableEventTest extends TestCase
 
         Thread.sleep( 15 );
         long now = System.currentTimeMillis();
-        boolean test = now > e.getEventTime().getTime() && ( now - e.getEventTime().getTime() < 150 );
+        boolean test = now > e.eventTime().getTime() && ( now - e.eventTime().getTime() < 150 );
         assertTrue( "EventTime not accurate.", test );
     }
 

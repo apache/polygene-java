@@ -47,28 +47,28 @@ public class UnblockEventTest extends TestCase
         throws Exception
     {
         AlarmEvent e = new UnblockEvent( this, underTest, null, null, System.currentTimeMillis() );
-        assertEquals( "unblock", e.getName() );
+        assertEquals( "unblock", e.nameInDefaultLocale() );
 
         Locale english = new Locale( "en" );
-        assertEquals( "unblock", e.getName( english ) );
+        assertEquals( "unblock", e.name( english ) );
 
         Locale swedish = new Locale( "sv" );
-        assertEquals( "avblockering", e.getName( swedish ) );
+        assertEquals( "avblockering", e.name( swedish ) );
     }
 
     public void testDescription()
         throws Exception
     {
         AlarmEvent e = new UnblockEvent( this, underTest, null, null, System.currentTimeMillis() );
-        boolean test = e.getDescription().toLowerCase().indexOf( "unblocked" ) >= 0;
+        boolean test = e.descriptionInDefaultLocale().toLowerCase().indexOf( "unblocked" ) >= 0;
         assertTrue( test );
 
         Locale english = new Locale( "en" );
-        test = e.getDescription( english ).toLowerCase().indexOf( "unblocked" ) >= 0;
+        test = e.description( english ).toLowerCase().indexOf( "unblocked" ) >= 0;
         assertTrue( test );
 
         Locale swedish = new Locale( "sv" );
-        test = e.getDescription( swedish ).toLowerCase().indexOf( "avblockerat" ) >= 0;
+        test = e.description( swedish ).toLowerCase().indexOf( "avblockerat" ) >= 0;
         assertTrue( test );
     }
 
@@ -76,14 +76,14 @@ public class UnblockEventTest extends TestCase
     {
         GenericAlarmEvent e = new UnblockEvent( this, underTest, null, null, System.currentTimeMillis() );
 
-        Assert.assertEquals( this, e.getTriggeredBy() );
+        Assert.assertEquals( this, e.triggeredBy() );
     }
 
     public void testAlarm()
     {
         AlarmEvent e = new UnblockEvent( this, underTest, null, null, System.currentTimeMillis() );
 
-        assertEquals( underTest, e.getAlarm() );
+        assertEquals( underTest, e.alarm() );
     }
 
     public void testEventTime()
@@ -93,7 +93,7 @@ public class UnblockEventTest extends TestCase
 
         Thread.sleep( 15 );
         long now = System.currentTimeMillis();
-        boolean test = now > e.getEventTime().getTime() && ( now - e.getEventTime().getTime() < 150 );
+        boolean test = now > e.eventTime().getTime() && ( now - e.eventTime().getTime() < 150 );
         assertTrue( "EventTime not accurate.", test );
     }
 

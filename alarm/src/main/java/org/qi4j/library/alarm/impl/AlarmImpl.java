@@ -44,7 +44,7 @@ public class AlarmImpl
     private AlarmHistoryImpl history;
     private String name;
 
-    private Map properties;
+    private Map<String,Object> properties;
     private ArrayList listeners = null;
 
     public AlarmImpl( AlarmModel model, String name )
@@ -67,12 +67,12 @@ public class AlarmImpl
 
         this.name = name;
         this.model = model;
-        properties = new HashMap();
+        properties = new HashMap<String,Object>();
         history = new AlarmHistoryImpl();
-        state = this.model.getAlarmModelProvider().createInitialState();
+        state = this.model.alarmModelProvider().createInitialState();
     }
 
-    public AlarmModel getAlarmModel()
+    public AlarmModel alarmModel()
     {
         synchronized( this )
         {
@@ -112,15 +112,15 @@ public class AlarmImpl
             {
                 return value;
             }
-            return model.getDefaultProperties().get( name );
+            return model.defaultProperties().get( name );
         }
     }
 
-    public Map getProperties()
+    public Map<String, Object> getProperties()
     {
         synchronized( this )
         {
-            return new HashMap( properties );
+            return new HashMap<String,Object>( properties );
         }
     }
 
@@ -162,7 +162,7 @@ public class AlarmImpl
 
     protected void fireAlarm( AlarmEvent event )
     {
-        Collection all = model.getAlarmListeners();
+        Collection all = model.alarmListeners();
         if( all != null )
         {
             fireAlarm( all, event );
@@ -193,7 +193,7 @@ public class AlarmImpl
 
     public String toString()
     {
-        return "Alarm[" + getName() + " : " + state.getName() + "  : " + getDescription() + "]";
+        return "Alarm[" + name() + " : " + state.getName() + "  : " + descriptionInDefaultLocale() + "]";
     }
 
     public void trigger( Object source, String trigger )
@@ -202,12 +202,12 @@ public class AlarmImpl
         AlarmEvent event;
         synchronized( this )
         {
-            event = model.getAlarmModelProvider().executeStateChange( source, this, trigger );
+            event = model.alarmModelProvider().executeStateChange( source, this, trigger );
             if( event == null )
             {
                 return;
             }
-            state = event.getNewState();
+            state = event.newState();
             history.addEvent( event, trigger );
         }
         fireAlarm( event );
@@ -252,12 +252,12 @@ public class AlarmImpl
         }
     }
 
-    public AlarmHistory getHistory()
+    public AlarmHistory history()
     {
         return history;
     }
 
-    public AlarmState getState()
+    public AlarmState alarmState()
     {
         return state;
     }
@@ -266,7 +266,7 @@ public class AlarmImpl
      * Returns the Name of the Alarm.
      * This normally returns the human readable technical name of the Alarm.
      */
-    public String getName()
+    public String name()
     {
         return name;
     }
@@ -276,9 +276,9 @@ public class AlarmImpl
      * This normally returns a full Description of the Alarm in the
      * default Locale.
      */
-    public String getDescription()
+    public String descriptionInDefaultLocale()
     {
-        return getDescription( null );
+        return description( null );
     }
 
     /**
@@ -287,21 +287,21 @@ public class AlarmImpl
      * Locale. If Locale is <code><b>null</b></code>, then the
      * default Locale is used.
      */
-    public String getDescription( Locale locale )
+    public String description( Locale locale )
     {
         if( locale == null )
         {
             locale = Locale.getDefault();
         }
         ResourceBundle rb = ResourceBundle.getBundle( "org.qi4j.library.alarm.user.AlarmDescriptions", locale );
-        return rb.getString( getName() );
+        return rb.getString( name() );
     }
 
-    public void setCondition( boolean condition )
+    public void updateCondition( boolean condition )
     {
         try
         {
-            String trig = model.getAlarmModelProvider().computeTrigger( state, condition );
+            String trig = model.alarmModelProvider().computeTrigger( state, condition );
             if( trig != null )
             {
                 trigger( this, trig );
@@ -314,8 +314,8 @@ public class AlarmImpl
         }
     }
 
-    public boolean getCondition()
+    public boolean currentCondition()
     {
-        return model.getAlarmModelProvider().computeCondition( state );
+        return model.alarmModelProvider().computeCondition( state );
     }
 }

@@ -47,7 +47,7 @@ public final class NormalState
     }
 
     /** Returns the Date/Time of when this state was created. */
-    public Date getCreationDate()
+    public Date creationDate()
     {
         return creationDate;
     }

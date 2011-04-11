@@ -45,60 +45,60 @@ public class AlarmServiceTest extends TestCase
 
     public void testGetAlarmModels()
     {
-        AlarmModel[] models = alarmService.getAlarmModels();
+        AlarmModel[] models = alarmService.alarmModels();
         assertNotNull( models );
         assertEquals( 0, models.length );
 
         alarmService.addAlarmModel( model );
-        models = alarmService.getAlarmModels();
+        models = alarmService.alarmModels();
         assertEquals( 1, models.length );
         assertEquals( model, models[ 0 ] );
 
         alarmService.addAlarmModel( model );
-        models = alarmService.getAlarmModels();
+        models = alarmService.alarmModels();
         assertEquals( 2, models.length );
         assertEquals( model, models[ 0 ] );
         assertEquals( model, models[ 1 ] );
 
         alarmService.removeAlarmModel( model );
-        models = alarmService.getAlarmModels();
+        models = alarmService.alarmModels();
         assertEquals( 1, models.length );
         assertEquals( model, models[ 0 ] );
 
         alarmService.removeAlarmModel( model );
-        models = alarmService.getAlarmModels();
+        models = alarmService.alarmModels();
         assertEquals( 0, models.length );
     }
 
     public void testDefaultModel()
         throws Exception
     {
-        AlarmModel[] models = alarmService.getAlarmModels();
+        AlarmModel[] models = alarmService.alarmModels();
         assertNotNull( models );
         assertEquals( 0, models.length );
 
-        AlarmModel model = alarmService.getDefaultAlarmModel();
+        AlarmModel model = alarmService.defaultAlarmModel();
         assertNull( model );
 
         alarmService.addAlarmModel( this.model );
-        model = alarmService.getDefaultAlarmModel();
+        model = alarmService.defaultAlarmModel();
         assertEquals( this.model, model );
 
         AlarmModel newModel = new AlarmModelImpl( provider );
         alarmService.addAlarmModel( newModel );
-        model = alarmService.getDefaultAlarmModel();
+        model = alarmService.defaultAlarmModel();
         assertEquals( this.model, model );
 
         alarmService.setDefaultAlarmModel( newModel );
-        model = alarmService.getDefaultAlarmModel();
+        model = alarmService.defaultAlarmModel();
         assertEquals( newModel, model );
 
         alarmService.removeAlarmModel( newModel );
-        model = alarmService.getDefaultAlarmModel();
+        model = alarmService.defaultAlarmModel();
         assertEquals( this.model, model );
 
         alarmService.removeAlarmModel( this.model );
-        model = alarmService.getDefaultAlarmModel();
+        model = alarmService.defaultAlarmModel();
         assertNull( model );
     }
 
@@ -111,11 +111,11 @@ public class AlarmServiceTest extends TestCase
     {
         AlarmModel newModel = new AlarmModelImpl( provider );
         alarmService.addAlarmModel( newModel );
-        List alarms = alarmService.getAlarms();
+        List alarms = alarmService.alarmList();
         assertEquals( "Registered alarms.", 0, alarms.size() );
 
         Alarm alarm = alarmService.createAlarm( "TestAlarm" );
-        alarms = alarmService.getAlarms();
+        alarms = alarmService.alarmList();
         assertEquals( "Registered alarms.", 1, alarms.size() );
         alarm.activate( this );
 
@@ -126,7 +126,7 @@ public class AlarmServiceTest extends TestCase
         {
             System.gc();  // try to get it garbage collected.
             Thread.sleep( 100 );
-            alarms = alarmService.getAlarms();
+            alarms = alarmService.alarmList();
             if( alarms.size() == 0 )
             {
                 break;
@@ -134,7 +134,7 @@ public class AlarmServiceTest extends TestCase
             alarms.clear();
             alarms = null;
         }
-        alarms = alarmService.getAlarms();
+        alarms = alarmService.alarmList();
         assertEquals( "Dropped Alarm reference.", 0, alarms.size() );
 
         try
@@ -180,32 +180,32 @@ public class AlarmServiceTest extends TestCase
         // all listeners are called and then return.
         assertEquals( 3, listener1.getCounter() );
 
-        List listeners = alarmService.getAlarmListeners();
+        List listeners = alarmService.alarmListeners();
         assertEquals( "Listeners registered.", 3, listeners.size() );
 
         alarmService.removeAlarmListener( listener1 );
-        listeners = alarmService.getAlarmListeners();
+        listeners = alarmService.alarmListeners();
         assertEquals( "Listeners registered.", 2, listeners.size() );
 
         alarmService.removeAlarmListener( listener1 );
-        listeners = alarmService.getAlarmListeners();
+        listeners = alarmService.alarmListeners();
         assertEquals( "Listeners registered.", 1, listeners.size() );
 
         alarmService.removeAlarmListener( listener1 );
-        listeners = alarmService.getAlarmListeners();
+        listeners = alarmService.alarmListeners();
         assertEquals( "Listeners registered.", 1, listeners.size() );
 
         alarmService.removeAlarmListener( listener2 );
-        listeners = alarmService.getAlarmListeners();
+        listeners = alarmService.alarmListeners();
         System.out.println( listeners );
         assertEquals( "Listeners registered.", 0, listeners.size() );
 
         alarmService.removeAlarmListener( listener2 );
-        listeners = alarmService.getAlarmListeners();
+        listeners = alarmService.alarmListeners();
         assertEquals( "Listeners registered.", 0, listeners.size() );
 
         alarmService.removeAlarmListener( null );
-        listeners = alarmService.getAlarmListeners();
+        listeners = alarmService.alarmListeners();
         assertEquals( "Listeners registered.", 0, listeners.size() );
     }
 

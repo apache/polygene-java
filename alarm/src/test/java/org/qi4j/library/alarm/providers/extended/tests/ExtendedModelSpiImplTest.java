@@ -132,7 +132,7 @@ public class ExtendedModelSpiImplTest extends TestCase
             }
         }
         assertEquals( 127, result );
-        assertEquals( underTest.getState().getName(), "normal" );
+        assertEquals( underTest.alarmState().getName(), "normal" );
     }
 
     public void testStateChangeFromNormal()
@@ -410,18 +410,18 @@ public class ExtendedModelSpiImplTest extends TestCase
         throws Exception
     {
         underTest.activate( this );
-        AlarmEvent event = underTest.getHistory().getLast();
+        AlarmEvent event = underTest.history().lastEvent();
 
-        AlarmState oldstate = event.getOldState();
+        AlarmState oldstate = event.oldState();
         Assert.assertEquals( new NormalState().getName(), oldstate.getName() );
 
-        AlarmState newstate = event.getNewState();
+        AlarmState newstate = event.newState();
         Assert.assertEquals( new ActivatedState().getName(), newstate.getName() );
 
-        Alarm eventalarm = event.getAlarm();
+        Alarm eventalarm = event.alarm();
         assertEquals( underTest, eventalarm );
 
-        assertEquals( this, event.getTriggeredBy() );
+        assertEquals( this, event.triggeredBy() );
     }
 
     public void testActivatedToDeactivated()
@@ -429,18 +429,18 @@ public class ExtendedModelSpiImplTest extends TestCase
     {
         underTest.activate( this );
         underTest.deactivate( this );
-        AlarmEvent event = underTest.getHistory().getLast();
+        AlarmEvent event = underTest.history().lastEvent();
 
-        AlarmState oldstate = event.getOldState();
+        AlarmState oldstate = event.oldState();
         Assert.assertEquals( new ActivatedState().getName(), oldstate.getName() );
 
-        AlarmState newstate = event.getNewState();
+        AlarmState newstate = event.newState();
         Assert.assertEquals( new DeactivatedState().getName(), newstate.getName() );
 
-        Alarm eventalarm = event.getAlarm();
+        Alarm eventalarm = event.alarm();
         assertEquals( underTest, eventalarm );
 
-        assertEquals( this, event.getTriggeredBy() );
+        assertEquals( this, event.triggeredBy() );
     }
 
     public void testActivatedToAcknowledged()
@@ -448,18 +448,18 @@ public class ExtendedModelSpiImplTest extends TestCase
     {
         underTest.activate( this );
         underTest.acknowledge( this );
-        AlarmEvent event = underTest.getHistory().getLast();
+        AlarmEvent event = underTest.history().lastEvent();
 
-        AlarmState oldstate = event.getOldState();
+        AlarmState oldstate = event.oldState();
         Assert.assertEquals( new ActivatedState().getName(), oldstate.getName() );
 
-        AlarmState newstate = event.getNewState();
+        AlarmState newstate = event.newState();
         Assert.assertEquals( new AcknowledgedState().getName(), newstate.getName() );
 
-        Alarm eventalarm = event.getAlarm();
+        Alarm eventalarm = event.alarm();
         assertEquals( underTest, eventalarm );
 
-        assertEquals( this, event.getTriggeredBy() );
+        assertEquals( this, event.triggeredBy() );
     }
 
     public void testDeactivatedToNormal()
@@ -468,18 +468,18 @@ public class ExtendedModelSpiImplTest extends TestCase
         underTest.activate( this );
         underTest.deactivate( this );
         underTest.acknowledge( this );
-        AlarmEvent event = underTest.getHistory().getLast();
+        AlarmEvent event = underTest.history().lastEvent();
 
-        AlarmState oldstate = event.getOldState();
+        AlarmState oldstate = event.oldState();
         Assert.assertEquals( new DeactivatedState().getName(), oldstate.getName() );
 
-        AlarmState newstate = event.getNewState();
+        AlarmState newstate = event.newState();
         Assert.assertEquals( new NormalState().getName(), newstate.getName() );
 
-        Alarm eventalarm = event.getAlarm();
+        Alarm eventalarm = event.alarm();
         assertEquals( underTest, eventalarm );
 
-        assertEquals( this, event.getTriggeredBy() );
+        assertEquals( this, event.triggeredBy() );
     }
 
     public void testAcknowledgedToNormal()
@@ -488,18 +488,18 @@ public class ExtendedModelSpiImplTest extends TestCase
         underTest.activate( this );
         underTest.acknowledge( this );
         underTest.deactivate( this );
-        AlarmEvent event = underTest.getHistory().getLast();
+        AlarmEvent event = underTest.history().lastEvent();
 
-        AlarmState oldstate = event.getOldState();
+        AlarmState oldstate = event.oldState();
         Assert.assertEquals( new AcknowledgedState().getName(), oldstate.getName() );
 
-        AlarmState newstate = event.getNewState();
+        AlarmState newstate = event.newState();
         Assert.assertEquals( new NormalState().getName(), newstate.getName() );
 
-        Alarm eventalarm = event.getAlarm();
+        Alarm eventalarm = event.alarm();
         assertEquals( underTest, eventalarm );
 
-        assertEquals( this, event.getTriggeredBy() );
+        assertEquals( this, event.triggeredBy() );
     }
 
     public void testDisabledToNormal()
@@ -508,17 +508,17 @@ public class ExtendedModelSpiImplTest extends TestCase
         underTest.activate( this );
         underTest.trigger( this, "disable" );
         underTest.trigger( this, "enable" );
-        AlarmEvent event = underTest.getHistory().getLast();
+        AlarmEvent event = underTest.history().lastEvent();
 
-        AlarmState oldstate = event.getOldState();
+        AlarmState oldstate = event.oldState();
         Assert.assertEquals( new DisabledState().getName(), oldstate.getName() );
 
-        AlarmState newstate = event.getNewState();
+        AlarmState newstate = event.newState();
         Assert.assertEquals( new NormalState().getName(), newstate.getName() );
 
-        Alarm eventalarm = event.getAlarm();
+        Alarm eventalarm = event.alarm();
         assertEquals( underTest, eventalarm );
-        assertEquals( this, event.getTriggeredBy() );
+        assertEquals( this, event.triggeredBy() );
     }
 
     public void testBlockedToNormal()
@@ -527,34 +527,34 @@ public class ExtendedModelSpiImplTest extends TestCase
         underTest.activate( this );
         underTest.trigger( this, "block" );
         underTest.trigger( this, "unblock" );
-        AlarmEvent event = underTest.getHistory().getLast();
+        AlarmEvent event = underTest.history().lastEvent();
 
-        AlarmState oldstate = event.getOldState();
+        AlarmState oldstate = event.oldState();
         Assert.assertEquals( new BlockedState().getName(), oldstate.getName() );
 
-        AlarmState newstate = event.getNewState();
+        AlarmState newstate = event.newState();
         Assert.assertEquals( new NormalState().getName(), newstate.getName() );
 
-        Alarm eventalarm = event.getAlarm();
+        Alarm eventalarm = event.alarm();
         assertEquals( underTest, eventalarm );
-        assertEquals( this, event.getTriggeredBy() );
+        assertEquals( this, event.triggeredBy() );
     }
 
     public void testNormalToBlocked()
         throws Exception
     {
         underTest.trigger( this, "block" );
-        AlarmEvent event = underTest.getHistory().getLast();
+        AlarmEvent event = underTest.history().lastEvent();
 
-        AlarmState oldstate = event.getOldState();
+        AlarmState oldstate = event.oldState();
         Assert.assertEquals( new NormalState().getName(), oldstate.getName() );
 
-        AlarmState newstate = event.getNewState();
+        AlarmState newstate = event.newState();
         Assert.assertEquals( new BlockedState().getName(), newstate.getName() );
 
-        Alarm eventalarm = event.getAlarm();
+        Alarm eventalarm = event.alarm();
         assertEquals( underTest, eventalarm );
-        assertEquals( this, event.getTriggeredBy() );
+        assertEquals( this, event.triggeredBy() );
     }
 
     public void testActivatedToBlocked()
@@ -562,17 +562,17 @@ public class ExtendedModelSpiImplTest extends TestCase
     {
         underTest.activate( this );
         underTest.trigger( this, "block" );
-        AlarmEvent event = underTest.getHistory().getLast();
+        AlarmEvent event = underTest.history().lastEvent();
 
-        AlarmState oldstate = event.getOldState();
+        AlarmState oldstate = event.oldState();
         Assert.assertEquals( new ActivatedState().getName(), oldstate.getName() );
 
-        AlarmState newstate = event.getNewState();
+        AlarmState newstate = event.newState();
         Assert.assertEquals( new BlockedState().getName(), newstate.getName() );
 
-        Alarm eventalarm = event.getAlarm();
+        Alarm eventalarm = event.alarm();
         assertEquals( underTest, eventalarm );
-        assertEquals( this, event.getTriggeredBy() );
+        assertEquals( this, event.triggeredBy() );
     }
 
     public void testDeactivatedToBlocked()
@@ -581,17 +581,17 @@ public class ExtendedModelSpiImplTest extends TestCase
         underTest.activate( this );
         underTest.deactivate( this );
         underTest.trigger( this, "block" );
-        AlarmEvent event = underTest.getHistory().getLast();
+        AlarmEvent event = underTest.history().lastEvent();
 
-        AlarmState oldstate = event.getOldState();
+        AlarmState oldstate = event.oldState();
         Assert.assertEquals( new DeactivatedState().getName(), oldstate.getName() );
 
-        AlarmState newstate = event.getNewState();
+        AlarmState newstate = event.newState();
         Assert.assertEquals( new BlockedState().getName(), newstate.getName() );
 
-        Alarm eventalarm = event.getAlarm();
+        Alarm eventalarm = event.alarm();
         assertEquals( underTest, eventalarm );
-        assertEquals( this, event.getTriggeredBy() );
+        assertEquals( this, event.triggeredBy() );
     }
 
     public void testAcknowledgedToBlocked()
@@ -600,34 +600,34 @@ public class ExtendedModelSpiImplTest extends TestCase
         underTest.activate( this );
         underTest.acknowledge( this );
         underTest.trigger( this, "block" );
-        AlarmEvent event = underTest.getHistory().getLast();
+        AlarmEvent event = underTest.history().lastEvent();
 
-        AlarmState oldstate = event.getOldState();
+        AlarmState oldstate = event.oldState();
         Assert.assertEquals( new AcknowledgedState().getName(), oldstate.getName() );
 
-        AlarmState newstate = event.getNewState();
+        AlarmState newstate = event.newState();
         Assert.assertEquals( new BlockedState().getName(), newstate.getName() );
 
-        Alarm eventalarm = event.getAlarm();
+        Alarm eventalarm = event.alarm();
         assertEquals( underTest, eventalarm );
-        assertEquals( this, event.getTriggeredBy() );
+        assertEquals( this, event.triggeredBy() );
     }
 
     public void testNormalToDisabled()
         throws Exception
     {
         underTest.trigger( this, "disable" );
-        AlarmEvent event = underTest.getHistory().getLast();
+        AlarmEvent event = underTest.history().lastEvent();
 
-        AlarmState oldstate = event.getOldState();
+        AlarmState oldstate = event.oldState();
         Assert.assertEquals( new NormalState().getName(), oldstate.getName() );
 
-        AlarmState newstate = event.getNewState();
+        AlarmState newstate = event.newState();
         Assert.assertEquals( new DisabledState().getName(), newstate.getName() );
 
-        Alarm eventalarm = event.getAlarm();
+        Alarm eventalarm = event.alarm();
         assertEquals( underTest, eventalarm );
-        assertEquals( this, event.getTriggeredBy() );
+        assertEquals( this, event.triggeredBy() );
     }
 
     public void testActivatedToDisabled()
@@ -635,17 +635,17 @@ public class ExtendedModelSpiImplTest extends TestCase
     {
         underTest.activate( this );
         underTest.trigger( this, "disable" );
-        AlarmEvent event = underTest.getHistory().getLast();
+        AlarmEvent event = underTest.history().lastEvent();
 
-        AlarmState oldstate = event.getOldState();
+        AlarmState oldstate = event.oldState();
         Assert.assertEquals( new ActivatedState().getName(), oldstate.getName() );
 
-        AlarmState newstate = event.getNewState();
+        AlarmState newstate = event.newState();
         Assert.assertEquals( new DisabledState().getName(), newstate.getName() );
 
-        Alarm eventalarm = event.getAlarm();
+        Alarm eventalarm = event.alarm();
         assertEquals( underTest, eventalarm );
-        assertEquals( this, event.getTriggeredBy() );
+        assertEquals( this, event.triggeredBy() );
     }
 
     public void testDeactivatedToDisabled()
@@ -654,17 +654,17 @@ public class ExtendedModelSpiImplTest extends TestCase
         underTest.activate( this );
         underTest.deactivate( this );
         underTest.trigger( this, "disable" );
-        AlarmEvent event = underTest.getHistory().getLast();
+        AlarmEvent event = underTest.history().lastEvent();
 
-        AlarmState oldstate = event.getOldState();
+        AlarmState oldstate = event.oldState();
         Assert.assertEquals( new DeactivatedState().getName(), oldstate.getName() );
 
-        AlarmState newstate = event.getNewState();
+        AlarmState newstate = event.newState();
         Assert.assertEquals( new DisabledState().getName(), newstate.getName() );
 
-        Alarm eventalarm = event.getAlarm();
+        Alarm eventalarm = event.alarm();
         assertEquals( underTest, eventalarm );
-        assertEquals( this, event.getTriggeredBy() );
+        assertEquals( this, event.triggeredBy() );
     }
 
     public void testAcknowledgedToDisabled()
@@ -673,17 +673,17 @@ public class ExtendedModelSpiImplTest extends TestCase
         underTest.activate( this );
         underTest.acknowledge( this );
         underTest.trigger( this, "disable" );
-        AlarmEvent event = underTest.getHistory().getLast();
+        AlarmEvent event = underTest.history().lastEvent();
 
-        AlarmState oldstate = event.getOldState();
+        AlarmState oldstate = event.oldState();
         Assert.assertEquals( new AcknowledgedState().getName(), oldstate.getName() );
 
-        AlarmState newstate = event.getNewState();
+        AlarmState newstate = event.newState();
         Assert.assertEquals( new DisabledState().getName(), newstate.getName() );
 
-        Alarm eventalarm = event.getAlarm();
+        Alarm eventalarm = event.alarm();
         assertEquals( underTest, eventalarm );
-        assertEquals( this, event.getTriggeredBy() );
+        assertEquals( this, event.triggeredBy() );
     }
 
     public void testBlockedToDisabled()
@@ -692,17 +692,17 @@ public class ExtendedModelSpiImplTest extends TestCase
         underTest.activate( this );
         underTest.trigger( this, "block" );
         underTest.trigger( this, "disable" );
-        AlarmEvent event = underTest.getHistory().getLast();
+        AlarmEvent event = underTest.history().lastEvent();
 
-        AlarmState oldstate = event.getOldState();
+        AlarmState oldstate = event.oldState();
         Assert.assertEquals( new BlockedState().getName(), oldstate.getName() );
 
-        AlarmState newstate = event.getNewState();
+        AlarmState newstate = event.newState();
         Assert.assertEquals( new DisabledState().getName(), newstate.getName() );
 
-        Alarm eventalarm = event.getAlarm();
+        Alarm eventalarm = event.alarm();
         assertEquals( underTest, eventalarm );
-        assertEquals( this, event.getTriggeredBy() );
+        assertEquals( this, event.triggeredBy() );
     }
 
     public void testDisabledToBlocked()
@@ -711,62 +711,62 @@ public class ExtendedModelSpiImplTest extends TestCase
         underTest.activate( this );
         underTest.trigger( this, "disable" );
         underTest.trigger( this, "block" );       // This trigger should be ignored.
-        AlarmEvent event = underTest.getHistory().getLast();
+        AlarmEvent event = underTest.history().lastEvent();
 
-        AlarmState oldstate = event.getOldState();
+        AlarmState oldstate = event.oldState();
         Assert.assertEquals( new ActivatedState().getName(), oldstate.getName() );
 
-        AlarmState newstate = event.getNewState();
+        AlarmState newstate = event.newState();
         Assert.assertEquals( new DisabledState().getName(), newstate.getName() );
 
-        Alarm eventalarm = event.getAlarm();
+        Alarm eventalarm = event.alarm();
         assertEquals( underTest, eventalarm );
-        assertEquals( this, event.getTriggeredBy() );
+        assertEquals( this, event.triggeredBy() );
     }
 
     public void testConditionChanges1()
         throws Exception
     {
-        underTest.setCondition( false );
-        AlarmEvent event = underTest.getHistory().getLast();
+        underTest.updateCondition( false );
+        AlarmEvent event = underTest.history().lastEvent();
         assertNull( "Generated an event but should have not.", event );
     }
 
     public void testConditionChanges2()
         throws Exception
     {
-        underTest.setCondition( true );
-        AlarmEvent event = underTest.getHistory().getLast();
+        underTest.updateCondition( true );
+        AlarmEvent event = underTest.history().lastEvent();
 
-        AlarmState oldstate = event.getOldState();
+        AlarmState oldstate = event.oldState();
         Assert.assertEquals( new NormalState().getName(), oldstate.getName() );
 
-        AlarmState newstate = event.getNewState();
+        AlarmState newstate = event.newState();
         Assert.assertEquals( new ActivatedState().getName(), newstate.getName() );
 
-        Alarm eventalarm = event.getAlarm();
+        Alarm eventalarm = event.alarm();
         assertEquals( underTest, eventalarm );
 
-        assertEquals( underTest, event.getTriggeredBy() );
+        assertEquals( underTest, event.triggeredBy() );
     }
 
     public void testConditionChanges3()
         throws Exception
     {
-        underTest.setCondition( true );
-        underTest.setCondition( false );
-        AlarmEvent event = underTest.getHistory().getLast();
+        underTest.updateCondition( true );
+        underTest.updateCondition( false );
+        AlarmEvent event = underTest.history().lastEvent();
 
-        AlarmState oldstate = event.getOldState();
+        AlarmState oldstate = event.oldState();
         Assert.assertEquals( new ActivatedState().getName(), oldstate.getName() );
 
-        AlarmState newstate = event.getNewState();
+        AlarmState newstate = event.newState();
         Assert.assertEquals( new DeactivatedState().getName(), newstate.getName() );
 
-        Alarm eventalarm = event.getAlarm();
+        Alarm eventalarm = event.alarm();
         assertEquals( underTest, eventalarm );
 
-        assertEquals( underTest, event.getTriggeredBy() );
+        assertEquals( underTest, event.triggeredBy() );
     }
 
     public void testComputeCondition()

@@ -47,28 +47,28 @@ public class BlockEventTest extends TestCase
         throws Exception
     {
         AlarmEvent e = new BlockEvent( this, underTest, null, null, System.currentTimeMillis() );
-        assertEquals( "block", e.getName() );
+        assertEquals( "block", e.nameInDefaultLocale() );
 
         Locale english = new Locale( "en" );
-        assertEquals( "block", e.getName( english ) );
+        assertEquals( "block", e.name( english ) );
 
         Locale swedish = new Locale( "sv" );
-        assertEquals( "blockering", e.getName( swedish ) );
+        assertEquals( "blockering", e.name( swedish ) );
     }
 
     public void testDescription()
         throws Exception
     {
         AlarmEvent e = new BlockEvent( this, underTest, null, null, System.currentTimeMillis() );
-        boolean test = e.getDescription().toLowerCase().indexOf( "blocked" ) >= 0;
+        boolean test = e.descriptionInDefaultLocale().toLowerCase().indexOf( "blocked" ) >= 0;
         assertTrue( test );
 
         Locale english = new Locale( "en" );
-        test = e.getDescription( english ).toLowerCase().indexOf( "blocked" ) >= 0;
+        test = e.description( english ).toLowerCase().indexOf( "blocked" ) >= 0;
         assertTrue( test );
 
         Locale swedish = new Locale( "sv" );
-        test = e.getDescription( swedish ).toLowerCase().indexOf( "blockerat" ) >= 0;
+        test = e.description( swedish ).toLowerCase().indexOf( "blockerat" ) >= 0;
         assertTrue( test );
     }
 
@@ -76,14 +76,14 @@ public class BlockEventTest extends TestCase
     {
         GenericAlarmEvent e = new BlockEvent( this, underTest, null, null, System.currentTimeMillis() );
 
-        Assert.assertEquals( this, e.getTriggeredBy() );
+        Assert.assertEquals( this, e.triggeredBy() );
     }
 
     public void testAlarm()
     {
         AlarmEvent e = new BlockEvent( this, underTest, null, null, System.currentTimeMillis() );
 
-        assertEquals( underTest, e.getAlarm() );
+        assertEquals( underTest, e.alarm() );
     }
 
     public void testEventTime()
@@ -93,7 +93,7 @@ public class BlockEventTest extends TestCase
 
         Thread.sleep( 15 );
         long now = System.currentTimeMillis();
-        boolean test = now > e.getEventTime().getTime() && ( now - e.getEventTime().getTime() < 150 );
+        boolean test = now > e.eventTime().getTime() && ( now - e.eventTime().getTime() < 150 );
         assertTrue( "EventTime not accurate.", test );
     }
 

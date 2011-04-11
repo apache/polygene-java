@@ -32,7 +32,7 @@ public class NormalTestState
         creation = new Date();
     }
 
-    public Date getCreationDate()
+    public Date creationDate()
     {
         return creation;
     }

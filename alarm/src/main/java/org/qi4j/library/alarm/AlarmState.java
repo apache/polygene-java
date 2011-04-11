@@ -34,7 +34,7 @@ public interface AlarmState
      *
      * @return the timestamp of when the state was created.
      */
-    Date getCreationDate();
+    Date creationDate();
 
     /**
      * Returns the Name of the AlarmState.

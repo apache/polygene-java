@@ -162,7 +162,7 @@ public class StandardModelProvider
      */
     private AlarmEvent activation( Object source, Alarm alarm )
     {
-        AlarmState oldState = alarm.getState();
+        AlarmState oldState = alarm.alarmState();
         if( ( oldState instanceof NormalState ) ||
             ( oldState instanceof DeactivatedState ) )
         {
@@ -183,7 +183,7 @@ public class StandardModelProvider
      */
     private AlarmEvent deactivation( Object source, Alarm alarm )
     {
-        AlarmState oldState = alarm.getState();
+        AlarmState oldState = alarm.alarmState();
         long time = System.currentTimeMillis();
         if( oldState instanceof AcknowledgedState )
         {
@@ -208,7 +208,7 @@ public class StandardModelProvider
      */
     private AlarmEvent acknowledge( Object source, Alarm alarm )
     {
-        AlarmState oldState = alarm.getState();
+        AlarmState oldState = alarm.alarmState();
         long time = System.currentTimeMillis();
         if( oldState instanceof DeactivatedState )
         {

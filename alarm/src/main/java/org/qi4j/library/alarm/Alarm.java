@@ -59,9 +59,9 @@ import java.util.Map;
  * a convenience method, that will create/generate the <code>trigger</code>
  * method calls when a boolean standard condition changes. The usage is fairly
  * simple. Example;<code><pre>
- *     ala1.setCondition( value > highlimit );
+ *     ala1.updateCondition( value > highlimit );
  * </pre></code>
- * It is possible to mix and match the usage of <code>setCondition()</code>
+ * It is possible to mix and match the usage of <code>updateCondition()</code>
  * and <code>trigger()</code> methods without any concerns.
  * </p>
  * <p>
@@ -110,7 +110,7 @@ public interface Alarm
      *
      * @return the AlarmModel used for this Alarm.
      */
-    AlarmModel getAlarmModel();
+    AlarmModel alarmModel();
 
     /**
      * Sets the AlarmModel for the Alarm.
@@ -175,7 +175,7 @@ public interface Alarm
      *
      * @return The condition of the Alarm, which is used to simplify trigging of activate and deactivate.
      */
-    boolean getCondition();
+    boolean currentCondition();
 
     /**
      * Set Alarm condition.
@@ -186,28 +186,28 @@ public interface Alarm
      *
      * @param condition Sets the Alarm condition.
      */
-    void setCondition( boolean condition );
+    void updateCondition( boolean condition );
 
     /**
      * Returns the current state of the standard.
      *
      * @return The AlarmState (interface) object
      */
-    AlarmState getState();
+    AlarmState alarmState();
 
     /**
      * Returns the AlarmHistory of the standard.
      *
      * @return The AlarmHistory object, or null if AlarmHistory is not supported.
      */
-    AlarmHistory getHistory();
+    AlarmHistory history();
 
     /**
      * Return all Properties
      *
      * @return the properties of this Alarm.
      */
-    Map getProperties();
+    Map<String, Object> getProperties();
 
     /**
      * Return the Property of the given name.
@@ -232,7 +232,7 @@ public interface Alarm
      *
      * @return the name of the Alarm.
      */
-    String getName();
+    String name();
 
     /**
      * Returns a Description of the Alarm.
@@ -241,7 +241,7 @@ public interface Alarm
      *
      * @return a human-readable description of the Alarm in the default locale.
      */
-    String getDescription();
+    String descriptionInDefaultLocale();
 
     /**
      * Returns a Description of the Alarm.
@@ -253,7 +253,7 @@ public interface Alarm
      *
      * @return a human-readable description of the Alarm in the given locale.
      */
-    String getDescription( Locale locale );
+    String description( Locale locale );
 
     /**
      * Adds an AlarmListener to this Alarm.

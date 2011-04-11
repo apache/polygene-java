@@ -52,27 +52,27 @@ public abstract class GenericAlarmEvent extends EventObject
         eventTime = new Date( time );
     }
 
-    public Object getTriggeredBy()
+    public Object triggeredBy()
     {
         return triggeredBy;
     }
 
-    public Alarm getAlarm()
+    public Alarm alarm()
     {
         return (Alarm) super.getSource();
     }
 
-    public AlarmState getOldState()
+    public AlarmState oldState()
     {
         return oldState;
     }
 
-    public AlarmState getNewState()
+    public AlarmState newState()
     {
         return newState;
     }
 
-    public Date getEventTime()
+    public Date eventTime()
     {
         return eventTime;
     }
@@ -103,9 +103,9 @@ public abstract class GenericAlarmEvent extends EventObject
      * This normally returns the human readable name of the Event, such as
      * activate, deactivate and acknowledge, in the default locale.
      */
-    public String getName()
+    public String nameInDefaultLocale()
     {
-        return getName( null );
+        return name( null );
     }
 
     /**
@@ -113,7 +113,7 @@ public abstract class GenericAlarmEvent extends EventObject
      * This normally returns the human readable name of the Event, such as
      * activate, deactivate and acknowledge, in the given locale.
      */
-    public String getName( Locale locale )
+    public String name( Locale locale )
     {
         if( locale == null )
         {
@@ -130,11 +130,11 @@ public abstract class GenericAlarmEvent extends EventObject
      * allow for Alarm specific descriptions for humans to be better informed.
      * The description is returned in the default Locale.
      *
-     * @see #getDescription(Locale)
+     * @see #description(Locale)
      */
-    public String getDescription()
+    public String descriptionInDefaultLocale()
     {
-        return getDescription( null );
+        return description( null );
     }
 
     /**
@@ -142,7 +142,7 @@ public abstract class GenericAlarmEvent extends EventObject
      * This normally returns a brief description of the event type, but could/should
      * allow for Alarm specific descriptions for humans to be better informed.
      */
-    public String getDescription( Locale locale )
+    public String description( Locale locale )
     {
         if( locale == null )
         {
