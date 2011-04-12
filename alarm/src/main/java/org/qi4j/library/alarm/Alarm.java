@@ -18,20 +18,22 @@
 
 package org.qi4j.library.alarm;
 
+import java.util.List;
 import java.util.Locale;
-import java.util.Map;
+import org.qi4j.api.common.Optional;
+import org.qi4j.api.mixin.Mixins;
 
 /**
  * Defines the basic Alarm interface.
  * <p>
  * This is the basic interface for the whole Alarm System. The Alarm
  * is created by calling <code>createAlarm()</code> method in the
- * <code>AlarmService</code> or the <code>AlarmModel</code>.
+ * <code>AlarmSystem</code> or the <code>AlarmModel</code>.
  * </p>
  * <ul>
- * <li>All alarms carries a set of properties, runtime extendable.</li>
+ * <li>All alarms carries a set of attributes, runtime extendable.</li>
  * <li>All alarms can be activated (on), deactivated (off) and acknowledged.</li>
- * <li>All alarms have an AlarmState.</li>
+ * <li>All alarms have an AlarmStatus.</li>
  * <li>All alarms generates AlarmEvents.</li>
  * <li>The behaviour of the Alarm is defined by an AlarmModel.</li>
  * <li>Every Alarm can have its own AlarmModel.</li>
@@ -76,11 +78,11 @@ import java.util.Map;
  * </p>
  * <p>
  * The default AlarmModel can be changed by a call to the
- * <code>AlarmService.setDefaultAlarmModel()</code> and
+ * <code>AlarmSystem.setDefaultAlarmModel()</code> and
  * ALL ALARMS that has the old AlarmModel assigned to it, will be
  * transferred to the new default AlarmModel. It is important to
  * understand that this is done irregardless of whether the Alarm was
- * created from the <code>AlarmService.createAlarm()</code> method or
+ * created from the <code>AlarmSystem.createAlarm()</code> method or
  * the <code>AlarmModel.createAlarm()</code> method. If distinct different
  * behaviours are required for certain Alarms, and yet want to allow
  * users to freely select AlarmModel for all other Alarms, one need
@@ -91,71 +93,66 @@ import java.util.Map;
  *
  * @author Niclas Hedhman
  */
+@Mixins( AlarmMixin.class )
 public interface Alarm
 {
 
-    public static final String TRIGGER_ACTIVATION = "activation";
-    public static final String TRIGGER_DEACTIVATION = "deactivation";
-    public static final String TRIGGER_ACKNOWLEDGE = "acknowledge";
-    public static final String TRIGGER_BLOCK = "block";
-    public static final String TRIGGER_UNBLOCK = "unblock";
-    public static final String TRIGGER_ENABLE = "enable";
-    public static final String TRIGGER_DISABLE = "disable";
+    String STATUS_NORMAL = "Normal";
+    String STATUS_ACTIVATED = "Activated";
+    String STATUS_DEACTIVATED = "Deactivated";
+    String STATUS_REACTIVATED = "Reactivated";
+    String STATUS_ACKNOWLEDGED = "Acknowledged";
+    String STATUS_DISABLED = "Disabled";
+    String STATUS_BLOCKED = "Blocked";
 
-    /**
-     * Returns the AlarmModel for the Alarm.
-     * If the Alarm does not have a specific AlarmModel specified
-     * this method will return null, and the default AlarmModel is
-     * used.
-     *
-     * @return the AlarmModel used for this Alarm.
-     */
-    AlarmModel alarmModel();
+    String EVENT_ENABLING = "enabled";
+    String EVENT_DISABLING = "disabled";
+    String EVENT_BLOCKING = "blocked";
+    String EVENT_UNBLOCKING = "unblocked";
+    String EVENT_ACTIVATION = "activation";
+    String EVENT_DEACTIVATION = "deactivation";
+    String EVENT_ACKNOWLEDGEMENT = "acknowledgement";
 
-    /**
-     * Sets the AlarmModel for the Alarm.
-     *
-     * @param model the AlarmModel to use on this Alarm.
-     */
-    void setAlarmModel( AlarmModel model );
+    String TRIGGER_ACTIVATE = "activate";
+    String TRIGGER_DEACTIVATE = "deactivate";
+    String TRIGGER_ACKNOWLEDGE = "acknowledge";
+    String TRIGGER_BLOCK = "block";
+    String TRIGGER_UNBLOCK = "unblock";
+    String TRIGGER_ENABLE = "enable";
+    String TRIGGER_DISABLE = "disable";
 
     /**
      * Trigger a state change.
      * <p>
      * When the Alarm object receives a trigger, it must consult the
-     * AlarmModel provider and figure out if there is an actual state change
-     * occuring and if any AlarmEvents should be fired.
+     * AlarmModel and figure out if there is an actual state change
+     * occurring and if any AlarmEvents should be fired.
      * </p>
      *
-     * @param source  The object that is trigging the Alarm.
      * @param trigger The trigger to execute if existing in the AlarmModel.
      *
-     * @throws AlarmTriggerException if a trigger could not be executed, typically that the AlarmModel does not specify the trigger.
+     * @throws IllegalArgumentException if a trigger is not a known one.
      */
-    void trigger( Object source, String trigger )
-        throws AlarmTriggerException;
+    void trigger( String trigger )
+        throws IllegalArgumentException;
 
     /**
      * Activates an Alarm.
      * <p>
      * Convinience method for:<pre>
-     *       trigger( source, "activate" );
+     *       trigger( "activate" );
      *   </pre>
      * </p>
-     *
-     * @param source The object that is trigging the Alarm.
      */
-    void activate( Object source );
+    void activate();
 
     /**
      * Deactivates an Alarm.
      * Convinience method for:<pre>
-     *     trigger( source, "deactivate" );
+     *     trigger( "deactivate" );
      * </pre>
-     *
-     * @param source The object that is trigging the Alarm.
      */
-    void deactivate( Object source );
+    void deactivate();
 
     /**
      * Acknowledges an Alarm.
@@ -163,9 +160,8 @@ public interface Alarm
      *     trigger( source, "acknowledge" );
      * </pre>
      *
-     * @param source The object that is trigging the Alarm.
      */
-    void acknowledge( Object source );
+    void acknowledge();
 
     /**
      * Get Alarm condition.
@@ -191,9 +187,9 @@ public interface Alarm
     /**
      * Returns the current state of the standard.
      *
-     * @return The AlarmState (interface) object
+     * @return The AlarmStatus (interface) object
      */
-    AlarmState alarmState();
+    AlarmStatus currentStatus();
 
     /**
      * Returns the AlarmHistory of the standard.
@@ -203,28 +199,28 @@ public interface Alarm
     AlarmHistory history();
 
     /**
-     * Return all Properties
+     * Return all attribute names
      *
-     * @return the properties of this Alarm.
+     * @return the names of the attributes of this Alarm.
      */
-    Map<String, Object> getProperties();
+    List<String> attributeNames();
 
     /**
-     * Return the Property of the given name.
+     * Return the attribute of the given name.
      *
-     * @param name The name of the property to return.
+     * @param name The name of the attribute to return.
      *
-     * @return the named property of this Alarm.
+     * @return the named attribute of this Alarm.
      */
-    Object getProperty( String name );
+    String attribute( String name );
 
     /**
-     * Sets the Property of the given name.
+     * Sets the attribute of the given name.
      *
-     * @param name  The name of the property to set.
-     * @param value The value to set the named property to.
+     * @param name  The name of the attribute to set.
+     * @param value The value to set the named attribute to.
      */
-    void setProperty( String name, Object value );
+    void setAttribute( String name, @Optional String value );
 
     /**
      * Returns the Name of the Alarm.
@@ -254,29 +250,4 @@ public interface Alarm
      * @return a human-readable description of the Alarm in the given locale.
      */
     String description( Locale locale );
-
-    /**
-     * Adds an AlarmListener to this Alarm.
-     * This method is only used in exceptional cases, where
-     * only particular alarms are of interest.
-     *
-     * @param listener The listener to be added.
-     *
-     * @see AlarmService#addAlarmListener(AlarmListener)
-     */
-    void addAlarmListener( AlarmListener listener );
-
-    /**
-     * Removes AlarmListener from this Alarm.
-     * Only AlarmListeners that are directly registered to
-     * this Alarm can be removed by this method. AlarmListeners
-     * that have been registered at the AlarmService will
-     * still receive AlarmEvents from this method, even if
-     * this method is called.
-     *
-     * @param listener The listener to be removed.
-     *
-     * @see AlarmService#removeAlarmListener(AlarmListener)
-     */
-    void removeAlarmListener( AlarmListener listener );
 }

@@ -23,8 +23,8 @@ import java.util.EventListener;
 /**
  * Listener for AlarmEvents.
  * <code>Alarm</code> classes will fire an <code>AlarmEvent</code> whenever
- * its <code>AlarmState</code> is altered.
- * <p><strong>Note:</strong>Since <code>AlarmState</code> of an <code>Alarm</code>
+ * its <code>AlarmStatus</code> is altered.
+ * <p><strong>Note:</strong>Since <code>AlarmStatus</code> of an <code>Alarm</code>
  * may change <i>implicitly</i>, e.g. without proper execution of tha Java
  * Virtual Machine, there are situations when the sequence of <i>old state</i>
  * and <i>new state</i> in <code>AlarmEvents</code> will not match.

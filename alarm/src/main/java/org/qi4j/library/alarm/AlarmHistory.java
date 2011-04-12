@@ -20,6 +20,9 @@ package org.qi4j.library.alarm;
 
 import java.util.List;
 import java.util.Map;
+import org.qi4j.api.common.UseDefaults;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.property.Property;
 
 /**
  * History of an Alarm.
@@ -28,6 +31,7 @@ import java.util.Map;
  *
  * @author Niclas Hedhman
  */
+@Mixins( AlarmHistory.AlarmHistoryMixin.class )
 public interface AlarmHistory
 {
 
@@ -72,23 +76,18 @@ public interface AlarmHistory
      *
      * @return a <code>java.util.List</code> of all recorded <code>AlarmEvents</code>.
      */
-    List<AlarmEvent> getAllAlarmEvents();
+    @UseDefaults
+    Property<List<AlarmEvent>> allAlarmEvents();
 
     /**
-     * Sets the maximum size of the history buffer.
+     * The maximum size of the history buffer.
      * If the sizes shrinks, the oldest <code>AlarmEvents</code> should be removed
      * so that the number of stored events are equal to the new <i>MaxSize</i>.
      *
-     * @param size the maximum size of the history buffer.
+     * @return The maxSize Property instance.
      */
-    void setMaxSize( int size );
-
-    /**
-     * Returns the maximum size of the buffer.
-     *
-     * @return the maximum size of the buffer.
-     */
-    int maxSize();
+    @UseDefaults
+    Property<Integer> maxSize();
 
     /**
      * Returns all the Counters of triggers.
@@ -107,7 +106,8 @@ public interface AlarmHistory
      *
      * @return all the Counters of triggers.
      */
-    Map<String, Integer> counters();
+    @UseDefaults
+    Property<Map<String, Integer>> counters();
 
     /**
      * Resets all counters.
@@ -128,4 +128,134 @@ public interface AlarmHistory
      * Resets the Activate counter.
      */
     void resetActivateCounter();
+
+    void addEvent( AlarmEvent event, String trigger );
+
+    abstract class AlarmHistoryMixin
+        implements java.io.Serializable, AlarmHistory
+    {
+        private static final long serialVersionUID = 2L;
+
+        public AlarmEvent firstEvent()
+        {
+            List<AlarmEvent> eventList = allAlarmEvents().get();
+            if( eventList.size() == 0 )
+            {
+                return null;
+            }
+            return eventList.get( 0 );
+        }
+
+        public AlarmEvent lastEvent()
+        {
+            List<AlarmEvent> eventList = allAlarmEvents().get();
+            if( eventList.size() == 0 )
+            {
+                return null;
+            }
+            return eventList.get( eventList.size() - 1 );
+        }
+
+        public AlarmEvent eventAt( final int position )
+        {
+            List<AlarmEvent> eventList = allAlarmEvents().get();
+            if( eventList.size() <= position || position < 0 )
+            {
+                return null;
+            }
+            return eventList.get( position );
+        }
+
+        public AlarmEvent eventAtEnd( final int position )
+        {
+            List<AlarmEvent> eventList = allAlarmEvents().get();
+            int size = eventList.size();
+            if( size <= position || position < 0 )
+            {
+                return null;
+            }
+            return eventList.get( size - position - 1 );
+        }
+
+        @Override
+        public void addEvent( AlarmEvent event, String trigger )
+        {
+            List<AlarmEvent> eventList = allAlarmEvents().get();
+            eventList.add( event );
+            purge();
+            allAlarmEvents().set( eventList );
+            Map<String, Integer> counters = counters().get();
+            Integer counter = counters.get( trigger );
+            if( counter == null )
+            {
+                counter = 1;
+            }
+            else
+            {
+                counter = counter + 1;
+            }
+            counters.put( trigger, counter );
+            counters().set( counters );
+        }
+
+        public String toString()
+        {
+            StringBuffer buf = new StringBuffer();
+            buf.append( "history[maxsize=" );
+            buf.append( maxSize().get() );
+            buf.append( ", size=" );
+            buf.append( allAlarmEvents().get().size() );
+
+            for( Map.Entry<String, Integer> entry : counters().get().entrySet() )
+            {
+                String type = entry.getKey();
+                Integer counts = entry.getValue();
+                buf.append( ", " );
+                buf.append( type );
+                buf.append( "=" );
+                buf.append( counts );
+            }
+            buf.append( "]" );
+            return buf.toString();
+        }
+
+        private void purge()
+        {
+            List<AlarmEvent> eventList = allAlarmEvents().get();
+            Integer maxSize = maxSize().get();
+            if( maxSize <= 0 )
+            {
+                eventList.clear();
+            }
+
+            while( eventList.size() > maxSize )
+            {
+                eventList.remove( 0 );
+            }
+        }
+
+        public void resetAllCounters()
+        {
+            Map<String, Integer> counters = counters().get();
+            counters.clear();
+            counters().set(counters);
+        }
+
+        public int activateCounter()
+        {
+            Integer counter = counters().get().get( Alarm.TRIGGER_ACTIVATE );
+            if( counter == null )
+            {
+                return 0;
+            }
+            return counter;
+        }
+
+        public void resetActivateCounter()
+        {
+            Map<String, Integer> counters = counters().get();
+            counters.remove( Alarm.TRIGGER_ACTIVATE );
+            counters().set( counters );
+        }
+    }
 }

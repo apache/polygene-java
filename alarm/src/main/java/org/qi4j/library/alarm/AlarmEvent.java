@@ -20,51 +20,50 @@ package org.qi4j.library.alarm;
 
 import java.util.Date;
 import java.util.Locale;
+import java.util.ResourceBundle;
+import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.injection.scope.Uses;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.value.ValueComposite;
 
 /**
- * Event for indicating change of AlarmState of an Alarm.
+ * Event for indicating change of AlarmStatus of an Alarm.
  *
  * @author Niclas Hedhman
  */
+@Mixins( AlarmEvent.Mixin.class )
 public interface AlarmEvent
+    extends ValueComposite
 {
-
     /**
-     * Returns the source of the trigger.
-     *
-     * @return The Object that created the trigger.
-     */
-    Object triggeredBy();
-
-    /**
-     * Returns the Alarm that generated the event.
-     * Also known as <code>getSource</code> under the normal Java Event Model
-     * but casted to the Alarm type.
+     * Returns the identity of the Alarm that generated the event.
      *
      * @return the Alarm causing this event.
      */
-    Alarm alarm();
+    Property<String> alarmIdentity();
 
     /**
-     * Returns the AlarmState prior to the Event.
+     * Returns the AlarmStatus prior to the Event.
      *
-     * @return the old AlarmState prior to this event.
+     * @return the old AlarmStatus prior to this event.
      */
-    AlarmState oldState();
+    Property<AlarmStatus> oldStatus();
 
     /**
-     * Returns the AlarmState after the Event.
+     * Returns the AlarmStatus after the Event.
      *
-     * @return the new AlarmState of the Alarm after this event.
+     * @return the new AlarmStatus of the Alarm after this event.
      */
-    AlarmState newState();
+    Property<AlarmStatus> newStatus();
 
     /**
      * Returns the Time when the event occurred.
      *
      * @return the timestamp when this event occurred.
      */
-    Date eventTime();
+    Property<Date> eventTime();
 
     /**
      * Returns the Name of the event.
@@ -73,7 +72,7 @@ public interface AlarmEvent
      *
      * @return the name of this event in the default locale.
      */
-    String nameInDefaultLocale();
+    Property<String> systemName();
 
     /**
      * Returns the Name of the event.
@@ -87,18 +86,6 @@ public interface AlarmEvent
     String name( Locale locale );
 
     /**
-     * Returns a Description of the event.
-     * This normally returns a brief description of the event type, but could/should
-     * allow for Alarm specific descriptions for humans to be better informed.
-     * The description is returned in the default Locale.
-     *
-     * @return the description of the event in the default locale.
-     *
-     * @see #description(Locale)
-     */
-    String descriptionInDefaultLocale();
-
-    /**
      * Returns a Description of the event in the specified locale.
      * This normally returns a brief description of the event type, but could/should
      * allow for Alarm specific descriptions for humans to be better informed.
@@ -108,4 +95,26 @@ public interface AlarmEvent
      * @return the description of the event in the given locale.
      */
     String description( Locale locale );
+
+    abstract class Mixin
+        implements AlarmEvent
+    {
+        @Service
+        private AlarmModel model;
+
+        @Override
+        public String name( Locale locale )
+        {
+            ResourceBundle bundle = ResourceBundle.getBundle( ((ServiceComposite) model).identity().get(), locale );
+            return bundle.getString( systemName().get() );
+        }
+
+        @Override
+        public String description( Locale locale )
+        {
+            ResourceBundle bundle = ResourceBundle.getBundle( ((ServiceComposite) model).identity().get(), locale );
+            String eventDescriptionId = "EVENT_" + systemName().get().toUpperCase() + "_DESCRIPTION";
+            return bundle.getString( eventDescriptionId );
+        }
+    }
 }

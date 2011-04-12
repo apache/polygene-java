@@ -20,160 +20,111 @@ package org.qi4j.library.alarm;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
+import org.qi4j.api.common.Optional;
 
 /**
- * Definition of the behaviour of the standard model.
+ * Definition of the behaviour of the alarm model.
  * <p>
  * The AlarmModel is basically the state machine of the Alarm system,
  * and it is possible to define different <code>AlarmModel</code>s
- * for each and every standard. Alarms that are assigned the default
- * <code>AlarmModel</code> of the <code>AlarmService</code> can be
+ * for each and every alarm. Alarms that are assigned the default
+ * <code>AlarmModel</code> of the <code>AlarmSystem</code> can be
  * re-assigned another <code>AlarmModel</code> in runtime, just by
  * changing the default <code>AlarmModel</code> in the
- * <code>AlarmService</code>. Alarms can also change the
+ * <code>AlarmSystem</code>. Alarms can also change the
  * <code>AlarmModel</code> by calling the <code>setAlarmModel</code>
- * in each standard individually.
+ * in each alarm individually.
  * </p>
  *
- * @see AlarmService
+ * @see AlarmSystem
  */
 public interface AlarmModel
 {
 
     /**
-     * Returns the name of the AlarmModel.
-     * This name is typically hardcoded into the AlarmModel
-     * implementation, or assigned in the configuration system
-     * of the AlarmModel implementation.
-     * The name should be short, yet descriptive in english.
+     * Execute the required changes upon an AlarmTrigger.
+     * The AlarmSystem calls this method. The AlarmModel must NOT update the Alarm itself, and only return the
+     * resulting event, and the AlarmSystem will update the AlarmStatus accordingly.
      *
-     * @return the name of the AlarmModel in english.
+     * @param alarm   The Alarm the trigger is for.
+     * @param trigger the AlarmTrigger that was used.
+     *
+     * @return An AlarmEvent representing the state change for the given trigger.
+     *
+     * @throws IllegalArgumentException If the trigger given is not supported by this alarm model.
+     */
+    AlarmEvent evaluate( Alarm alarm, String trigger )
+        throws IllegalArgumentException;
+
+    List<String> statusList();
+
+    /**
+     * Returns an array of alarm triggers valid for this AlarmModel.
+     * Alarms are triggered by alarm triggers, which are predefined
+     * java.lang.Strings. The AlarmModel advertise which alarm trigger
+     * strings it supports with this method.
+     *
+     * @return an array of alarm triggers valid for this AlarmModel.
+     */
+    List<String> alarmTriggers();
+
+//    /**
+//     * Adds a new <i>Property</i> to <strong>all</strong> <code>Alarms</code>.
+//     * The <code>defaultvalue</code> will be added to all present and future
+//     * <code>Alarms</code> created through this AlarmModel. In case any existing
+//     * <code>Alarms</code> already have this property defined, the existing value
+//     * should not be overwritten.
+//     *
+//     * @param name         The name of the global property to add.
+//     * @param defaultvalue the default value of the global property.
+//     */
+//    void addProperty( String name, String defaultvalue );
+//
+//    /**
+//     * Removes the <i>Property</i> from all <code>Alarms</code>.
+//     *
+//     * @param name the name of the global property to remove.
+//     */
+//    void removeProperty( String name );
+//
+//    /**
+//     * Returns a <code>java.util.Map</code> of all global default <i>Properties</i>.
+//     *
+//     * @return a <code>java.util.Map</code> of all global default <i>Properties</i>.
+//     */
+//    Map<String,String> defaultProperties();
+
+    String computeTrigger( AlarmStatus status, boolean condition );
+
+    boolean computeCondition( AlarmStatus status );
+
+    /**
+     * Returns the Name of the AlarmModel.
+     * This normally returns the human readable technical name of
+     * the AlarmModel.
+     *
+     * @return The system name of this alarm model.
      */
     String modelName();
 
     /**
-     * Returns a description of the AlarmModel in the default Locale.
-     * The Description should be concise and describe the AlarmModel's
-     * behaviour to an adequate degree, without being verbose.
+     * Returns a Description of the AlarmModel in the default Locale.
+     * This normally returns a full Description of the AlarmModel in the
+     * default Locale.
      *
-     * @return a description of the AlarmModel in the default Locale.
+     * @return the description of the ModelProvider, in the default locale.
      */
-    String modelDescriptionInDefaultLocale();
+    String modelDescription();
 
     /**
-     * Returns a description of the AlarmModel in the given Locale.
-     * The Description should be concise and describe the AlarmModel's
-     * behaviour to an adequate degree, without being verbose.
+     * Returns a Description of the AlarmModel.
+     * This normally returns a full Description of the AlarmModel in the
+     * Locale. If Locale is <code><b>null</b></code>, then the
+     * default Locale is used.
      *
-     * @param locale the language of choice for the description of the
-     *               AlarmModel.
+     * @param locale The locale that should be used for the description, or null for the default locale.
      *
-     * @return a description of the AlarmModel in the given Locale.
+     * @return The human readable, in the given locale, description of this alarm model.
      */
-    String modelDescription( Locale locale );
-
-    /**
-     * Creates an Alarm with this AlarmModel behaviour.
-     *
-     * @param name the name of the Alarm.
-     *
-     * @return the created Alarm.
-     *
-     * @throws AlarmCreationException if the Alarm can not be created.
-     */
-    Alarm createAlarm( String name )
-        throws AlarmCreationException;
-
-    /**
-     * Called to indicate that a new AlarmModel has been set.
-     *
-     * @param model the default AlarmModel that will be used as the new default AlarmModel.
-     */
-    void newDefaultModelSet( AlarmModel model );
-
-    /**
-     * Register an existing Alarm with this AlarmModel.
-     *
-     * The registration must be kept with a weak reference, as no deregistration of the Alarm is
-     * required.
-     *
-     * @param alarm the Alarm to be registered to this AlarmModel.
-     */
-    void registerAlarm( Alarm alarm );
-
-    /**
-     * Returns an array of standard triggers valid for this AlarmModel.
-     * Alarms are triggered by standard triggers, which are predefined
-     * java.lang.Strings. The AlarmModel advertise which standard trigger
-     * strings it supports with this method.
-     *
-     * @return an array of standard triggers valid for this AlarmModel.
-     */
-    String[] alarmTriggers();
-
-    /**
-     * Register AlarmListener to recieve <code>AlarmEvents</code> from all
-     * <code>Alarms</code> managed by this <code>AlarmModel</code>.
-     *
-     * @param listener the listener to be added.
-     */
-    void addAlarmListener( AlarmListener listener );
-
-    /**
-     * Remove the <code>AlarmListener</code> from the <code>AlarmModel</code>.
-     *
-     * @param listener the listener to be removed.
-     */
-    void removeAlarmListener( AlarmListener listener );
-
-    /**
-     * Returns all Listeners to this model.
-     *
-     * The Collection is never null.
-     *
-     * @return all Listeners to this model. If there are no listeners, the List is empty.
-     */
-    List alarmListeners();
-
-    /**
-     * Returns all Alarms using this AlarmModel.
-     *
-     * @return all Alarms using this AlarmModel.
-     */
-    List<Alarm> alarmList();
-
-    /**
-     * Adds a new <i>Property</i> to <strong>all</strong> <code>Alarms</code>.
-     * The <code>defaultvalue</code> will be added to all present and future
-     * <code>Alarms</code> created through this AlarmModel. In case any existing
-     * <code>Alarms</code> already have this property defined, the existing value
-     * should not be overwritten.
-     *
-     * @param name         The name of the global property to add.
-     * @param defaultvalue the default value of the global property.
-     */
-    void addProperty( String name, String defaultvalue );
-
-    /**
-     * Removes the <i>Property</i> from all <code>Alarms</code>.
-     *
-     * @param name the name of the global property to remove.
-     */
-    void removeProperty( String name );
-
-    /**
-     * Returns a <code>java.util.Map</code> of all global default <i>Properties</i>.
-     *
-     * @return a <code>java.util.Map</code> of all global default <i>Properties</i>.
-     */
-    Map defaultProperties();
-
-    /**
-     * Returns the serice provider interface for the AlarmModel.
-     * Clients should never use the returned object directly.
-     *
-     * @return The AlarmModelProvider for this AlarmModel.
-     */
-    AlarmModelProvider alarmModelProvider();
+    String modelDescription( @Optional Locale locale );
 }
