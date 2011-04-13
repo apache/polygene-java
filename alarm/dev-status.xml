@@ -2,13 +2,14 @@
 <module xmlns="http://www.qi4j.org/schemas/2008/dev-status/1">
   <status>
     <!--none,early,beta,stable,mature-->
-    <codebase>stable</codebase>
+    <codebase>beta</codebase>
 
     <!-- none, brief, good, complete -->
-    <documentation>none</documentation>
+    <documentation>brief</documentation>
 
     <!-- none, some, good, complete -->
     <unittests>some</unittests>
+
   </status>
   <licenses>
     <license>ALv2</license>
