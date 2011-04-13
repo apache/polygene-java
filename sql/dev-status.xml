@@ -8,7 +8,7 @@
     <documentation>none</documentation>
 
     <!-- none, some, good, complete -->
-    <unittests>none</unittests>
+    <unittests>some</unittests>
   </status>
   <licenses>
     <license>ALv2</license>

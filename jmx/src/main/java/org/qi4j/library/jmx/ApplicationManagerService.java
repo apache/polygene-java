@@ -94,7 +94,6 @@ public interface ApplicationManagerService
                             newModelMBean();
 
                     mbean.setManagedResource( layerBean, "ObjectReference" );
-
                     server.registerMBean( mbean, objectName );
                     mbeans.add( objectName );
                 }
