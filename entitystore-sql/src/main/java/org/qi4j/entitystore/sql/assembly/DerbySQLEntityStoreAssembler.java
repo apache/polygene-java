@@ -17,6 +17,10 @@ package org.qi4j.entitystore.sql.assembly;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.entitystore.sql.internal.DerbySQLDatabaseSQLServiceMixin;
 import org.qi4j.library.sql.ds.assembly.DataSourceAssembler;
+import org.sql.generation.api.vendor.SQLVendor;
+import org.sql.generation.api.vendor.SQLVendorProvider;
+
+import java.io.IOException;
 
 public class DerbySQLEntityStoreAssembler extends AbstractSQLEntityStoreAssembler
 {
@@ -55,6 +59,13 @@ public class DerbySQLEntityStoreAssembler extends AbstractSQLEntityStoreAssemble
     protected Class<?> getDatabaseSQLServiceSpecializationMixin()
     {
         return DerbySQLDatabaseSQLServiceMixin.class;
+    }
+
+    @Override
+    protected SQLVendor getSQLVendor()
+        throws IOException
+    {
+        return SQLVendorProvider.createVendor(SQLVendor.class);
     }
 
 }
