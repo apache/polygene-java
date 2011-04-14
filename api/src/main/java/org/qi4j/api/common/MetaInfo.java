@@ -135,7 +135,8 @@ public final class MetaInfo
     {
         for( Annotation annotation : annotatedElement.getAnnotations() )
         {
-            if( !ignored.contains( annotation.annotationType() ) )
+            if( !ignored.contains( annotation.annotationType() )
+                && get(annotation.annotationType()) == null )
             {
                 set( annotation );
             }

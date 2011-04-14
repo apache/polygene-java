@@ -1,5 +1,6 @@
 package org.qi4j.runtime.value;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
@@ -12,6 +13,7 @@ import org.qi4j.test.AbstractQi4jTest;
 
 import static org.junit.Assert.*;
 
+@Ignore( "Wait for fix for QI-328")
 public class ValueCompositeBasicsTest
     extends AbstractQi4jTest
 {

@@ -117,7 +117,7 @@ public class UnitOfWorkConcern
                     uowf.currentUnitOfWork().discard();
                     Thread.sleep( initialDelay + retry * delayFactor );
                     retry++;
-                    uowf.newUnitOfWork();
+                    currentUnitOfWork = uowf.newUnitOfWork();
                 }
             }
         }
