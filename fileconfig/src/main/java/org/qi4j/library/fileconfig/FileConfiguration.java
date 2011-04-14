@@ -145,10 +145,10 @@ public interface FileConfiguration
                 temp = temp.substring( 0, temp.length()-1 );
 
             // Arguments available to use in directory specifications
-            Map arguments = new HashMap<String, String>();
+            Map<String, String> arguments = new HashMap<String, String>();
             arguments.put( "application", application );
             arguments.put( "user", user );
-            arguments.put( "os", os );
+            arguments.put( "os", os.name() );
             arguments.put( "temp", temp );
 
             // Add environment variables
@@ -159,7 +159,7 @@ public interface FileConfiguration
             // Add system properties
             for (Map.Entry<Object, Object> envVariable : System.getProperties().entrySet())
             {
-                arguments.put( "system."+envVariable.getKey(), envVariable.getValue() );
+                arguments.put( "system."+envVariable.getKey(), envVariable.getValue().toString() );
             }
 
             return arguments;
@@ -221,7 +221,9 @@ public interface FileConfiguration
         private boolean delete( File file )
         {
             if (!file.exists())
+            {
                 return true;
+            }
 
             if (file.isFile())
             {
