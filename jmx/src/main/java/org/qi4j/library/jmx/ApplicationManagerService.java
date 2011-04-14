@@ -24,9 +24,12 @@ import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.service.qualifier.ServiceQualifier;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.util.Iterables;
+import org.qi4j.spi.composite.TransientDescriptor;
 import org.qi4j.spi.entity.EntityDescriptor;
+import org.qi4j.spi.object.ObjectDescriptor;
 import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.spi.structure.*;
+import org.qi4j.spi.value.ValueDescriptor;
 
 import javax.management.MBeanOperationInfo;
 import javax.management.MBeanServer;
@@ -148,15 +151,60 @@ public interface ApplicationManagerService
                     ObjectName objectName = new ObjectName( "Qi4j:application="+application.name()+",layer="+layer.name()+",module="+module.name()+",class=Entity,entity="+entityDescriptor.entityType().type().name() );
                     RequiredModelMBean mbean = new ModelMBeanBuilder( objectName, entityDescriptor.entityType().type().name(), EntityBean.class.getName()).
                             attribute( "Type", "Entity type", String.class.getName(), "Type of entity", "getType", null ).
+                            attribute( "Visibility", "Visibility", String.class.getName(), "Type of entity", "getVisibility", null ).
                             newModelMBean();
 
-                    mbean.setManagedResource( new EntityBean(entityDescriptor, module), "ObjectReference" );
+                    mbean.setManagedResource( new EntityBean(entityDescriptor), "ObjectReference" );
 
                     server.registerMBean( mbean, objectName );
                     mbeans.add( objectName );
                 }
 
-                
+                @Override
+                public void visit( TransientDescriptor transientDescriptor ) throws Exception
+                {
+                    ObjectName objectName = new ObjectName( "Qi4j:application="+application.name()+",layer="+layer.name()+",module="+module.name()+",class=Transient,transient="+transientDescriptor.type().getName() );
+                    RequiredModelMBean mbean = new ModelMBeanBuilder( objectName, transientDescriptor.type().getName(), TransientBean.class.getName()).
+                            attribute( "Type", "Transient type", String.class.getName(), "Type of transient", "getType", null ).
+                            attribute( "Visibility", "Visibility", String.class.getName(), "Type of transient", "getVisibility", null ).
+                            newModelMBean();
+
+                    mbean.setManagedResource( new TransientBean(transientDescriptor), "ObjectReference" );
+
+                    server.registerMBean( mbean, objectName );
+                    mbeans.add( objectName );
+                }
+
+                @Override
+                public void visit( ValueDescriptor valueDescriptor ) throws Exception
+                {
+                    ObjectName objectName = new ObjectName( "Qi4j:application="+application.name()+",layer="+layer.name()+",module="+module.name()+",class=Value,value="+valueDescriptor.type().getName() );
+                    RequiredModelMBean mbean = new ModelMBeanBuilder( objectName, valueDescriptor.type().getName(), ValueBean.class.getName()).
+                            attribute( "Type", "Value type", String.class.getName(), "Type of value", "getType", null ).
+                            attribute( "Visibility", "Visibility", String.class.getName(), "Type of transient", "getVisibility", null ).
+                            newModelMBean();
+
+                    mbean.setManagedResource( new ValueBean(valueDescriptor), "ObjectReference" );
+
+                    server.registerMBean( mbean, objectName );
+                    mbeans.add( objectName );
+                }
+
+
+                @Override
+                public void visit( ObjectDescriptor objectDescriptor ) throws Exception
+                {
+                    ObjectName objectName = new ObjectName( "Qi4j:application="+application.name()+",layer="+layer.name()+",module="+module.name()+",class=Object,object="+objectDescriptor.type().getName() );
+                    RequiredModelMBean mbean = new ModelMBeanBuilder( objectName, objectDescriptor.type().getName(), ObjectBean.class.getName()).
+                            attribute( "Type", "Object type", String.class.getName(), "Type of object", "getType", null ).
+                            attribute( "Visibility", "Visibility", String.class.getName(), "Type of transient", "getVisibility", null ).
+                            newModelMBean();
+
+                    mbean.setManagedResource( new ObjectBean(objectDescriptor), "ObjectReference" );
+
+                    server.registerMBean( mbean, objectName );
+                    mbeans.add( objectName );
+                }
             });
         }
 
@@ -280,12 +328,10 @@ public interface ApplicationManagerService
     public static class EntityBean
     {
         private final EntityDescriptor entityDescriptor;
-        private final Module module;
 
-        public EntityBean( EntityDescriptor entityDescriptor, Module module )
+        public EntityBean( EntityDescriptor entityDescriptor)
         {
             this.entityDescriptor = entityDescriptor;
-            this.module = module;
         }
 
         public String getType()
@@ -296,6 +342,66 @@ public interface ApplicationManagerService
         public String getVisibility()
         {
             return entityDescriptor.visibility().name();
+        }
+    }
+
+    public static class ValueBean
+    {
+        private final ValueDescriptor valueDescriptor;
+
+        public ValueBean( ValueDescriptor valueDescriptor)
+        {
+            this.valueDescriptor = valueDescriptor;
+        }
+
+        public String getType()
+        {
+            return valueDescriptor.valueType().type().name();
+        }
+
+        public String getVisibility()
+        {
+            return valueDescriptor.visibility().name();
+        }
+    }
+
+    public static class TransientBean
+    {
+        private final TransientDescriptor transientDescriptor;
+
+        public TransientBean( TransientDescriptor transientDescriptor )
+        {
+            this.transientDescriptor = transientDescriptor;
+        }
+
+        public String getType()
+        {
+            return transientDescriptor.type().getName();
+        }
+
+        public String getVisibility()
+        {
+            return transientDescriptor.visibility().name();
+        }
+    }
+
+    public static class ObjectBean
+    {
+        private final ObjectDescriptor objectDescriptor;
+
+        public ObjectBean( ObjectDescriptor objectDescriptor )
+        {
+            this.objectDescriptor = objectDescriptor;
+        }
+
+        public String getType()
+        {
+            return objectDescriptor.type().getName();
+        }
+
+        public String getVisibility()
+        {
+            return objectDescriptor.visibility().name();
         }
     }
 

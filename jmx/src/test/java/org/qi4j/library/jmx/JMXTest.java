@@ -23,6 +23,7 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
@@ -58,6 +59,10 @@ public class JMXTest
 
                 module.services( TestService.class ).instantiateOnStartup();
                 module.entities( TestConfiguration.class );
+
+                module.values( TestValue.class );
+
+                module.objects( TestObject.class );
 
                 module.services( JMXConnectorService.class ).instantiateOnStartup();
                 module.entities( JMXConnectorConfiguration.class );
@@ -114,5 +119,13 @@ public class JMXTest
     enum TestEnum
     {
         Value1,Value2,Value3
+    }
+
+    interface TestValue
+        extends ValueComposite
+    {}
+
+    public static class TestObject
+    {
     }
 }
