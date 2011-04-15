@@ -86,19 +86,18 @@ public class QrmEntityStoreServiceMixin
 
     public EntityState newEntityState( EntityStoreUnitOfWork unitOfWork,
                                        EntityReference identity,
-                                       EntityDescriptor entityDescriptor
-    )
+                                       EntityDescriptor entityDescriptor )
     {
         System.err.println( "EntityState newEntityState ... was called." );
 
         return new DefaultEntityState( (DefaultEntityStoreUnitOfWork) unitOfWork, identity, entityDescriptor );
     }
 
-    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSPI module )
+    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSPI module, long currentTime )
     {
         System.err.println( "EntityStoreUnitOfWork newUnitOfWork ... was called." );
 
-        return new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), module, usecase );
+        return new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), module, usecase, currentTime );
     }
 
     public Input<EntityState, EntityStoreException> entityStates( ModuleSPI module )
@@ -130,8 +129,7 @@ public class QrmEntityStoreServiceMixin
         return mapper.get( (DefaultEntityStoreUnitOfWork) unitOfWork, mappedClazz, identity );
     }
 
-    public StateCommitter applyChanges( EntityStoreUnitOfWork unitofwork, final Iterable<EntityState> entityStates,
-                                        final String version, final long lastModified )
+    public StateCommitter applyChanges( final EntityStoreUnitOfWork unitofwork, final Iterable<EntityState> entityStates )
     {
         return new StateCommitter()
         {
@@ -155,15 +153,15 @@ public class QrmEntityStoreServiceMixin
 
                     if( state.status() == EntityStatus.NEW )
                     {
-                        mapper.newEntity( mappedClazz, state, version, lastModified );
+                        mapper.newEntity( mappedClazz, state, unitofwork.identity(), unitofwork.currentTime() );
                     }
                     else if( state.status() == EntityStatus.REMOVED )
                     {
-                        mapper.delEntity( mappedClazz, state, version );
+                        mapper.delEntity( mappedClazz, state, unitofwork.identity() );
                     }
                     else if( state.status() == EntityStatus.UPDATED )
                     {
-                        mapper.updEntity( mappedClazz, state, version, lastModified );
+                        mapper.updEntity( mappedClazz, state, unitofwork.identity(), unitofwork.currentTime() );
                     }
                 }
             }

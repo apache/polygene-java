@@ -121,8 +121,7 @@ public class SQLEntityStoreMixin
         database.stopDatabase();
     }
 
-    public StateCommitter applyChanges( EntityStoreUnitOfWork unitofwork, final Iterable<EntityState> states,
-                                        final String version, final long lastModified )
+    public StateCommitter applyChanges( final EntityStoreUnitOfWork unitofwork, final Iterable<EntityState> states )
     {
         return new StateCommitter()
         {
@@ -152,20 +151,20 @@ public class SQLEntityStoreMixin
                         else
                         {
                             StringWriter writer = new StringWriter();
-                            writeEntityState( defState, writer, version );
+                            writeEntityState( defState, writer, unitofwork.identity() );
                             writer.flush();
                             if( EntityStatus.UPDATED.equals( status ) )
                             {
                                 Long entityOptimisticLock = ( (SQLEntityState) state ).getEntityOptimisticLock();
                                 database.populateUpdateEntityStatement( updatePS, entityPK, entityOptimisticLock,
                                                                         defState.identity(), writer.toString(),
-                                                                        lastModified );
+                                                                        unitofwork.currentTime() );
                                 updatePS.addBatch();
                             }
                             else if( EntityStatus.NEW.equals( status ) )
                             {
                                 database.populateInsertEntityStatement( insertPS, entityPK, defState.identity(),
-                                                                        writer.toString(), lastModified );
+                                                                        writer.toString(), unitofwork.currentTime() );
                                 insertPS.addBatch();
                             }
                         }
@@ -235,9 +234,9 @@ public class SQLEntityStoreMixin
                                           null );
     }
 
-    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSPI module )
+    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSPI module, long currentTime )
     {
-        return new DefaultEntityStoreUnitOfWork( entityStoreSPI, newUnitOfWorkId(), module, usecase );
+        return new DefaultEntityStoreUnitOfWork( entityStoreSPI, newUnitOfWorkId(), module, usecase, currentTime );
     }
 
     public Input<EntityState, EntityStoreException> entityStates( final ModuleSPI module )
@@ -258,7 +257,7 @@ public class SQLEntityStoreMixin
                         UsecaseBuilder builder = UsecaseBuilder.buildUsecase( "qi4j.entitystore.sql.visit" );
                         Usecase usecase = builder.with( CacheOptions.NEVER ).newUsecase();
                         final DefaultEntityStoreUnitOfWork uow = new DefaultEntityStoreUnitOfWork( entityStoreSPI, newUnitOfWorkId(),
-                                                                                                   module, usecase );
+                                                                                                   module, usecase, System.currentTimeMillis() );
                         try
                         {
                             connection = database.getConnection();

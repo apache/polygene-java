@@ -65,9 +65,9 @@ public class GaeEntityStoreMixin
    {
    }
 
-   public EntityStoreUnitOfWork newUnitOfWork(Usecase usecase, ModuleSPI module)
+   public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSPI module, long currentTime )
    {
-      return new GaeEntityStoreUnitOfWork(datastoreService, generateId(), module);
+      return new GaeEntityStoreUnitOfWork(datastoreService, generateId(), module, currentTime);
    }
 
    public Input<EntityState, EntityStoreException> entityStates(final ModuleSPI module)
@@ -77,7 +77,7 @@ public class GaeEntityStoreMixin
          @Override
          public <ReceiverThrowableType extends Throwable> void transferTo(Output<? super EntityState, ReceiverThrowableType> output) throws EntityStoreException, ReceiverThrowableType
          {
-            final GaeEntityStoreUnitOfWork euow = new GaeEntityStoreUnitOfWork(datastoreService, generateId(), module);
+            final GaeEntityStoreUnitOfWork euow = new GaeEntityStoreUnitOfWork(datastoreService, generateId(), module, System.currentTimeMillis() );
             Query query = new Query();
             PreparedQuery q = datastoreService.prepare(query);
             final QueryResultIterable<Entity> iterable = q.asQueryResultIterable();

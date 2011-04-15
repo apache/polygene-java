@@ -32,7 +32,7 @@ import org.qi4j.spi.structure.ModuleSPI;
 public class QrmSqlEntityStore
     implements EntityStore, Activatable
 {
-    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSPI module )
+    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSPI module, long currentTime )
     {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }

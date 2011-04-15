@@ -49,7 +49,7 @@ public class NeoEntityState
             status = EntityStatus.UPDATED;
             Long version = (Long) underlyingNode.getProperty( VERSION );
             underlyingNode.setProperty( VERSION, version + 1 );
-            underlyingNode.setProperty( MODIFIED, System.currentTimeMillis() );
+            underlyingNode.setProperty( MODIFIED, uow.currentTime() );
         }
     }
 

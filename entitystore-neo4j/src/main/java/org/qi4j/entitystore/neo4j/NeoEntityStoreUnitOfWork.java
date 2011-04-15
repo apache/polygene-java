@@ -26,6 +26,7 @@ public class NeoEntityStoreUnitOfWork
 
     private final EmbeddedGraphDatabase neo;
     private final IndexService indexService;
+    private long currentTime;
     private final TransactionManager tm;
 
     private final Transaction transaction;
@@ -33,11 +34,12 @@ public class NeoEntityStoreUnitOfWork
     private final Module module;
 
     NeoEntityStoreUnitOfWork( EmbeddedGraphDatabase neo, IndexService indexService,
-                              String identity, Module module
-    )
+                              String identity, Module module,
+                              long currentTime )
     {
         this.neo = neo;
         this.indexService = indexService;
+        this.currentTime = currentTime;
         this.tm = this.neo.getConfig().getTxModule().getTxManager();
         this.transaction = beginTransaction();
         this.identity = identity;
@@ -48,6 +50,11 @@ public class NeoEntityStoreUnitOfWork
         throws EntityStoreException
     {
         return this;
+    }
+
+    public long currentTime()
+    {
+        return currentTime;
     }
 
     public void discard()
@@ -92,7 +99,7 @@ public class NeoEntityStoreUnitOfWork
         }
         node = neo.createNode();
         node.setProperty( NeoEntityState.VERSION, 0l );
-        node.setProperty( NeoEntityState.MODIFIED, System.currentTimeMillis() );
+        node.setProperty( NeoEntityState.MODIFIED, currentTime );
         node.createRelationshipTo( typeNode, RelTypes.IS_OF_TYPE );
         node.setProperty( NeoEntityState.ENTITY_ID, anIdentity.identity() );
         indexService.index( node, ENTITY_STATE_ID, anIdentity.identity() );

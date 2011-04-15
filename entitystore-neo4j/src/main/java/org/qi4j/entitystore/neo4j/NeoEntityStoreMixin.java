@@ -67,9 +67,9 @@ public class NeoEntityStoreMixin
       neo.shutdown();
    }
 
-   public EntityStoreUnitOfWork newUnitOfWork(Usecase usecase, ModuleSPI module)
+   public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSPI module, long currentTime )
    {
-      return new NeoEntityStoreUnitOfWork(neo, indexService, newUnitOfWorkId(), module);
+      return new NeoEntityStoreUnitOfWork(neo, indexService, newUnitOfWorkId(), module, currentTime);
    }
 
    public Input<EntityState, EntityStoreException> entityStates(final ModuleSPI module)
@@ -84,7 +84,7 @@ public class NeoEntityStoreMixin
                @Override
                public <ReceiverThrowableType extends Throwable> void sendTo(Receiver<? super EntityState, ReceiverThrowableType> receiver) throws ReceiverThrowableType, EntityStoreException
                {
-                  NeoEntityStoreUnitOfWork uow = new NeoEntityStoreUnitOfWork(neo, indexService, newUnitOfWorkId(), module);
+                  NeoEntityStoreUnitOfWork uow = new NeoEntityStoreUnitOfWork(neo, indexService, newUnitOfWorkId(), module, System.currentTimeMillis());
 
                   try
                   {
@@ -111,8 +111,7 @@ public class NeoEntityStoreMixin
       };
    }
 
-   public StateCommitter applyChanges(EntityStoreUnitOfWork unitofwork, Iterable<EntityState> state,
-                                      String version, long lastModified)
+   public StateCommitter applyChanges( EntityStoreUnitOfWork unitofwork, Iterable<EntityState> state )
    {
       for (EntityState firstState : state)
       {
@@ -129,7 +128,7 @@ public class NeoEntityStoreMixin
       return unitOfWork.getEntityState(identity);
    }
 
-   public EntityState newEntityState(EntityStoreUnitOfWork uow, EntityReference ref, EntityDescriptor descriptor)
+   public EntityState newEntityState( EntityStoreUnitOfWork uow, EntityReference ref, EntityDescriptor descriptor )
    {
       return uow.newEntityState(ref, descriptor);
    }

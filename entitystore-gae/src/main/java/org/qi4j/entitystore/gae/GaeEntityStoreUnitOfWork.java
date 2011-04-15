@@ -43,10 +43,12 @@ public class GaeEntityStoreUnitOfWork
     private String identity;
     private LinkedList<GaeEntityState> states;
     private ModuleSPI module;
+    private long currentTime;
 
-    public GaeEntityStoreUnitOfWork( DatastoreService datastore, String identity, ModuleSPI module )
+    public GaeEntityStoreUnitOfWork( DatastoreService datastore, String identity, ModuleSPI module, long currentTime )
     {
         this.module = module;
+        this.currentTime = currentTime;
         states = new LinkedList<GaeEntityState>();
         this.datastore = datastore;
         this.identity = identity;
@@ -55,6 +57,11 @@ public class GaeEntityStoreUnitOfWork
     public String identity()
     {
         return identity;
+    }
+
+    public long currentTime()
+    {
+        return currentTime;
     }
 
     public EntityState newEntityState( EntityReference anIdentity, EntityDescriptor entityDescriptor )

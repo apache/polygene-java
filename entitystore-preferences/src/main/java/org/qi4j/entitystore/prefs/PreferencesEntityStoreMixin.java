@@ -149,9 +149,9 @@ public class PreferencesEntityStoreMixin
         reloadExecutor.awaitTermination( 10, TimeUnit.SECONDS );
     }
 
-    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSPI module )
+    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSPI module, long currentTime )
     {
-        return new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), module, usecase );
+        return new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), module, usecase, currentTime );
     }
 
     public Input<EntityState, EntityStoreException> entityStates( final ModuleSPI module )
@@ -169,8 +169,7 @@ public class PreferencesEntityStoreMixin
                         UsecaseBuilder builder = UsecaseBuilder.buildUsecase( "qi4j.entitystore.preferences.visit" );
                         Usecase visitUsecase = builder.with( CacheOptions.NEVER ).newUsecase();
                         final DefaultEntityStoreUnitOfWork uow = new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(),
-                                                                                                   module, visitUsecase
-                        );
+                                                                                                   module, visitUsecase, System.currentTimeMillis());
 
                         try
                         {
@@ -193,8 +192,7 @@ public class PreferencesEntityStoreMixin
 
     public EntityState newEntityState( EntityStoreUnitOfWork unitOfWork,
                                        EntityReference identity,
-                                       EntityDescriptor entityDescriptor
-    )
+                                       EntityDescriptor entityDescriptor )
     {
         return new DefaultEntityState( (DefaultEntityStoreUnitOfWork) unitOfWork, identity, entityDescriptor );
     }
@@ -405,7 +403,7 @@ public class PreferencesEntityStoreMixin
 
             return new DefaultEntityState( desuw,
                                            entityPrefs.get( "version", "" ),
-                                           entityPrefs.getLong( "modified", System.currentTimeMillis() ),
+                                           entityPrefs.getLong( "modified", unitOfWork.currentTime() ),
                                            identity,
                                            status,
                                            entityDescriptor,
@@ -424,7 +422,7 @@ public class PreferencesEntityStoreMixin
         }
     }
 
-    public StateCommitter applyChanges( EntityStoreUnitOfWork unitofwork, final Iterable<EntityState> state, final String version, final long lastModified )
+    public StateCommitter applyChanges( final EntityStoreUnitOfWork unitofwork, final Iterable<EntityState> state )
     {
         return new StateCommitter()
         {
@@ -440,12 +438,12 @@ public class PreferencesEntityStoreMixin
                             if( state.status().equals( EntityStatus.NEW ) )
                             {
                                 Preferences entityPrefs = root.node( state.identity().identity() );
-                                writeEntityState( state, entityPrefs, version, lastModified );
+                                writeEntityState( state, entityPrefs, unitofwork.identity(), unitofwork.currentTime() );
                             }
                             else if( state.status().equals( EntityStatus.UPDATED ) )
                             {
                                 Preferences entityPrefs = root.node( state.identity().identity() );
-                                writeEntityState( state, entityPrefs, version, lastModified );
+                                writeEntityState( state, entityPrefs, unitofwork.identity(), unitofwork.currentTime() );
                             }
                             else if( state.status().equals( EntityStatus.REMOVED ) )
                             {
