@@ -32,17 +32,19 @@ public final class DefaultEntityStoreUnitOfWork
     private ModuleSPI module;
     private LinkedList<EntityState> states = new LinkedList<EntityState>();
     private Usecase usecase;
+    private long currentTime;
 
     public DefaultEntityStoreUnitOfWork( EntityStoreSPI entityStoreSPI,
                                          String identity,
                                          ModuleSPI module,
-                                         Usecase usecase
-    )
+                                         Usecase usecase,
+                                         long currentTime )
     {
         this.entityStoreSPI = entityStoreSPI;
         this.identity = identity;
         this.module = module;
         this.usecase = usecase;
+        this.currentTime = currentTime;
     }
 
     public String identity()
@@ -53,6 +55,16 @@ public final class DefaultEntityStoreUnitOfWork
     public ModuleSPI module()
     {
         return module;
+    }
+
+    public long currentTime()
+    {
+        return currentTime;
+    }
+
+    public Usecase usecase()
+    {
+        return usecase;
     }
 
     // EntityStore
@@ -76,20 +88,10 @@ public final class DefaultEntityStoreUnitOfWork
     public StateCommitter applyChanges()
         throws EntityStoreException
     {
-        return entityStoreSPI.applyChanges( this, states, identity, System.currentTimeMillis() );
+        return entityStoreSPI.applyChanges( this, states );
     }
 
     public void discard()
     {
-    }
-
-    public void registerEntityState( EntityState state )
-    {
-        states.add( state );
-    }
-
-    public Usecase usecase()
-    {
-        return usecase;
     }
 }

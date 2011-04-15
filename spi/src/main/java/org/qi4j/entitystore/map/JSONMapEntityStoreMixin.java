@@ -32,6 +32,7 @@ import org.qi4j.spi.structure.ModuleSPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.*;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
@@ -104,17 +105,16 @@ public class JSONMapEntityStoreMixin
 
     // EntityStore
 
-    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecaseMetaInfo, ModuleSPI module )
+    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecaseMetaInfo, ModuleSPI module, long currentTime )
     {
-        return new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), module, usecaseMetaInfo );
+        return new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), module, usecaseMetaInfo, currentTime );
     }
 
     // EntityStoreSPI
 
     public EntityState newEntityState( EntityStoreUnitOfWork unitOfWork,
                                        EntityReference identity,
-                                       EntityDescriptor entityDescriptor
-    )
+                                       EntityDescriptor entityDescriptor)
     {
         try
         {
@@ -123,7 +123,7 @@ public class JSONMapEntityStoreMixin
             state.put( JSONEntityState.JSON_KEY_APPLICATION_VERSION, application.version() );
             state.put( JSONEntityState.JSON_KEY_TYPE, entityDescriptor.entityType().type().name() );
             state.put( JSONEntityState.JSON_KEY_VERSION, unitOfWork.identity() );
-            state.put( JSONEntityState.JSON_KEY_MODIFIED, System.currentTimeMillis() );
+            state.put( JSONEntityState.JSON_KEY_MODIFIED, unitOfWork.currentTime() );
             state.put( JSONEntityState.JSON_KEY_PROPERTIES, new JSONObject() );
             state.put( JSONEntityState.JSON_KEY_ASSOCIATIONS, new JSONObject() );
             state.put( JSONEntityState.JSON_KEY_MANYASSOCIATIONS, new JSONObject() );
@@ -152,8 +152,7 @@ public class JSONMapEntityStoreMixin
         return loadedState;
     }
 
-    public StateCommitter applyChanges( final EntityStoreUnitOfWork unitOfWork, final Iterable<EntityState> state,
-                                        final String version, final long lastModified
+    public StateCommitter applyChanges( final EntityStoreUnitOfWork unitOfWork, final Iterable<EntityState> state
     )
         throws EntityStoreException
     {
@@ -182,7 +181,7 @@ public class JSONMapEntityStoreMixin
                                 {
                                     Writer writer = changer.newEntity( state.identity(),
                                                                        state.entityDescriptor().entityType() );
-                                    writeEntityState( state, writer, version, lastModified );
+                                    writeEntityState( state, writer, unitOfWork.identity(), unitOfWork.currentTime() );
                                     writer.close();
                                     if( options.cacheOnNew() )
                                     {
@@ -193,7 +192,7 @@ public class JSONMapEntityStoreMixin
                                 {
                                     Writer writer = changer.updateEntity( state.identity(),
                                                                           state.entityDescriptor().entityType() );
-                                    writeEntityState( state, writer, version, lastModified );
+                                    writeEntityState( state, writer, unitOfWork.identity(), unitOfWork.currentTime() );
                                     writer.close();
                                     if( options.cacheOnWrite() )
                                     {
@@ -239,7 +238,7 @@ public class JSONMapEntityStoreMixin
                             .newUsecase();
 
                         final DefaultEntityStoreUnitOfWork uow =
-                            new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), module, usecase );
+                            new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), module, usecase, System.currentTimeMillis() );
 
                         final List<EntityState> migrated = new ArrayList<EntityState>();
 

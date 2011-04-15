@@ -64,6 +64,7 @@ public final class UnitOfWorkInstance
         return stack;
     }
 
+    private long currentTime;
     final HashMap<EntityReference, EntityState> stateCache;
     final HashMap<InstanceKey, EntityInstance> instanceCache;
     final HashMap<EntityStore, EntityStoreUnitOfWork> storeUnitOfWork;
@@ -81,8 +82,9 @@ public final class UnitOfWorkInstance
 
     private List<UnitOfWorkCallback> callbacks;
 
-    public UnitOfWorkInstance( Usecase usecase )
+    public UnitOfWorkInstance( Usecase usecase, long currentTime )
     {
+        this.currentTime = currentTime;
         this.open = true;
         stateCache = new HashMap<EntityReference, EntityState>();
         instanceCache = new HashMap<InstanceKey, EntityInstance>();
@@ -97,7 +99,7 @@ public final class UnitOfWorkInstance
         EntityStoreUnitOfWork uow = storeUnitOfWork.get( store );
         if( uow == null )
         {
-            uow = store.newUnitOfWork( usecase, module );
+            uow = store.newUnitOfWork( usecase, module, currentTime );
             storeUnitOfWork.put( store, uow );
         }
         return uow;

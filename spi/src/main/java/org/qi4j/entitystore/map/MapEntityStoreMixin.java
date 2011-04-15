@@ -83,17 +83,16 @@ public class MapEntityStoreMixin
 
     // EntityStore
 
-    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecaseMetaInfo, ModuleSPI module )
+    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecaseMetaInfo, ModuleSPI module, long currentTime )
     {
-        return new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), module, usecaseMetaInfo );
+        return new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), module, usecaseMetaInfo, currentTime );
     }
 
     // EntityStoreSPI
 
     public EntityState newEntityState( EntityStoreUnitOfWork unitOfWork,
                                        EntityReference identity,
-                                       EntityDescriptor entityDescriptor
-    )
+                                       EntityDescriptor entityDescriptor )
     {
         return new DefaultEntityState( (DefaultEntityStoreUnitOfWork) unitOfWork, identity, entityDescriptor );
     }
@@ -105,8 +104,7 @@ public class MapEntityStoreMixin
         return readEntityState( unitOfWork, in );
     }
 
-    public StateCommitter applyChanges( final EntityStoreUnitOfWork unitofwork, final Iterable<EntityState> state,
-                                        final String version, final long lastModified
+    public StateCommitter applyChanges( final EntityStoreUnitOfWork unitofwork, final Iterable<EntityState> state
     )
         throws EntityStoreException
     {
@@ -128,14 +126,14 @@ public class MapEntityStoreMixin
                                 {
                                     Writer writer = changer.newEntity( state.identity(),
                                                                        state.entityDescriptor().entityType() );
-                                    writeEntityState( state, writer, version, lastModified );
+                                    writeEntityState( state, writer, unitofwork.identity(), unitofwork.currentTime() );
                                     writer.close();
                                 }
                                 else if( state.status().equals( EntityStatus.UPDATED ) )
                                 {
                                     Writer writer = changer.updateEntity( state.identity(),
                                                                           state.entityDescriptor().entityType() );
-                                    writeEntityState( state, writer, version, lastModified );
+                                    writeEntityState( state, writer, unitofwork.identity(), unitofwork.currentTime() );
                                     writer.close();
                                 }
                                 else if( state.status().equals( EntityStatus.REMOVED ) )
@@ -176,7 +174,7 @@ public class MapEntityStoreMixin
                             .newUsecase();
 
                         final DefaultEntityStoreUnitOfWork uow =
-                            new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), module, usecase );
+                            new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), module, usecase, System.currentTimeMillis() );
 
                         final List<EntityState> migrated = new ArrayList<EntityState>();
 

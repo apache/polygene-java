@@ -27,10 +27,34 @@ public interface UnitOfWorkFactory
      * it with the current thread.
      * <p/>
      * The UnitOfWork will use the default Usecase settings.
+     * <p/>
+     * Current time will be set to System.currentTimeMillis();
      *
      * @return a new UnitOfWork
      */
     UnitOfWork newUnitOfWork();
+
+    /**
+     * Create a new UnitOfWork and associate
+     * it with the current thread.
+     * <p/>
+     * The UnitOfWork will use the default Usecase settings.
+     *
+     * @return a new UnitOfWork
+     */
+    UnitOfWork newUnitOfWork(long currentTime);
+
+    /**
+     * Create a new UnitOfWork for the given Usecase and
+     * associate it with the current thread.
+     * <p/>
+     * Current time will be set to System.currentTimeMillis();
+     *
+     * @param usecase the Usecase for this UnitOfWork
+     *
+     * @return a new UnitOfWork
+     */
+    UnitOfWork newUnitOfWork( Usecase usecase );
 
     /**
      * Create a new UnitOfWork for the given Usecase and
@@ -40,7 +64,7 @@ public interface UnitOfWorkFactory
      *
      * @return a new UnitOfWork
      */
-    UnitOfWork newUnitOfWork( Usecase usecase );
+    UnitOfWork newUnitOfWork( Usecase usecase, long currentTime );
 
     /**
      * Returns the UnitOfWork that is currently associated with the executing thread.

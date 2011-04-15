@@ -55,7 +55,7 @@ public final class DefaultEntityState
     )
     {
         this( unitOfWork, "",
-              System.currentTimeMillis(),
+              unitOfWork.currentTime(),
               identity,
               EntityStatus.NEW,
               entityDescriptor,

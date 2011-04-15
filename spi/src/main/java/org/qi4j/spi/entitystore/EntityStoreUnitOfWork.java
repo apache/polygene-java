@@ -25,6 +25,8 @@ public interface EntityStoreUnitOfWork
 {
     String identity();
 
+    long currentTime();
+
     /**
      * Create new EntityState for a given identity.
      * <p/>

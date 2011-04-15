@@ -44,10 +44,10 @@ public abstract class ConcurrentModificationCheckConcern
     @Structure
     private Qi4j api;
 
-    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSPI module )
+    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSPI module, long currentTime )
     {
-        final EntityStoreUnitOfWork uow = next.newUnitOfWork( usecase, module );
-        return new ConcurrentCheckingEntityStoreUnitOfWork( uow, api.dereference( versions ), module );
+        final EntityStoreUnitOfWork uow = next.newUnitOfWork( usecase, module, currentTime );
+        return new ConcurrentCheckingEntityStoreUnitOfWork( uow, api.dereference( versions ), module, currentTime );
     }
 
     private class ConcurrentCheckingEntityStoreUnitOfWork
@@ -56,22 +56,30 @@ public abstract class ConcurrentModificationCheckConcern
         private final EntityStoreUnitOfWork uow;
         private EntityStateVersions versions;
         private ModuleSPI module;
+        private long currentTime;
 
         private List<EntityState> loaded = new ArrayList<EntityState>();
 
         public ConcurrentCheckingEntityStoreUnitOfWork( EntityStoreUnitOfWork uow,
                                                         EntityStateVersions versions,
-                                                        ModuleSPI module
-        )
+                                                        ModuleSPI module,
+                                                        long currentTime )
         {
             this.uow = uow;
             this.versions = versions;
             this.module = module;
+            this.currentTime = currentTime;
         }
 
         public String identity()
         {
             return uow.identity();
+        }
+
+        @Override
+        public long currentTime()
+        {
+            return uow.currentTime();
         }
 
         public EntityState newEntityState( EntityReference anIdentity, EntityDescriptor entityDescriptor )
@@ -83,7 +91,7 @@ public abstract class ConcurrentModificationCheckConcern
         public StateCommitter applyChanges()
             throws EntityStoreException
         {
-            versions.checkForConcurrentModification( loaded, module );
+            versions.checkForConcurrentModification( loaded, module, currentTime );
 
             final StateCommitter committer = uow.applyChanges();
 

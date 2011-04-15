@@ -26,7 +26,7 @@ import org.qi4j.spi.structure.ModuleSPI;
  */
 public interface EntityStore
 {
-    EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSPI module );
+    EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSPI module, long currentTime );
 
     Input<EntityState, EntityStoreException> entityStates( ModuleSPI module );
 }

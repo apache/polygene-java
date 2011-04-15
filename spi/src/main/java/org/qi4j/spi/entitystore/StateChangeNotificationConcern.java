@@ -29,10 +29,10 @@ public abstract class StateChangeNotificationConcern
     Iterable<StateChangeListener> listeners;
 
     public StateCommitter applyChanges( final EntityStoreUnitOfWork unitofwork,
-                                        final Iterable<EntityState> state, String version, long lastModified
+                                        final Iterable<EntityState> state
     )
     {
-        final StateCommitter committer = next.applyChanges( unitofwork, state, version, lastModified );
+        final StateCommitter committer = next.applyChanges( unitofwork, state );
         return new StateCommitter()
         {
             public void commit()

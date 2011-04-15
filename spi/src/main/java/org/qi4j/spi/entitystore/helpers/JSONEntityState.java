@@ -72,7 +72,7 @@ public final class JSONEntityState
     )
     {
         this( unitOfWork, "",
-              System.currentTimeMillis(),
+              unitOfWork.currentTime(),
               identity,
               EntityStatus.NEW,
               entityDescriptor,

@@ -66,7 +66,7 @@ public class ModuleUnitOfWork
     private UnitOfWorkInstance uow;
     private ModuleInstance moduleInstance;
 
-    ModuleUnitOfWork( ModuleInstance moduleInstance, UnitOfWorkInstance uow )
+    ModuleUnitOfWork( ModuleInstance moduleInstance, UnitOfWorkInstance uow)
     {
         this.moduleInstance = moduleInstance;
         this.uow = uow;

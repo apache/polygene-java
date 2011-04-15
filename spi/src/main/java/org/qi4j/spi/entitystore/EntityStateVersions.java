@@ -36,7 +36,7 @@ public interface EntityStateVersions
 
     void rememberVersion( EntityReference identity, String version );
 
-    void checkForConcurrentModification( Iterable<EntityState> loaded, ModuleSPI module )
+    void checkForConcurrentModification( Iterable<EntityState> loaded, ModuleSPI module, long currentTime )
         throws ConcurrentEntityStateModificationException;
 
     class EntityStateVersionsMixin
@@ -60,7 +60,7 @@ public interface EntityStateVersions
             versions.put( identity, version );
         }
 
-        public synchronized void checkForConcurrentModification( Iterable<EntityState> loaded, ModuleSPI module )
+        public synchronized void checkForConcurrentModification( Iterable<EntityState> loaded, ModuleSPI module, long currentTime )
             throws ConcurrentEntityStateModificationException
         {
             List<EntityReference> changed = null;
@@ -74,7 +74,7 @@ public interface EntityStateVersions
                 String storeVersion = versions.get( entityState.identity() );
                 if( storeVersion == null )
                 {
-                    EntityStoreUnitOfWork unitOfWork = store.newUnitOfWork( Usecase.DEFAULT, module );
+                    EntityStoreUnitOfWork unitOfWork = store.newUnitOfWork( Usecase.DEFAULT, module, currentTime );
                     EntityState state = unitOfWork.getEntityState( entityState.identity() );
                     storeVersion = state.version();
                     unitOfWork.discard();

@@ -593,9 +593,20 @@ public class ModuleInstance
             return newUnitOfWork( Usecase.DEFAULT );
         }
 
+        public UnitOfWork newUnitOfWork( long currentTime )
+        {
+            return newUnitOfWork( Usecase.DEFAULT, currentTime );
+        }
+
         public UnitOfWork newUnitOfWork( Usecase usecase )
         {
-            return new ModuleUnitOfWork( ModuleInstance.this, new UnitOfWorkInstance( usecase ) );
+            return newUnitOfWork( usecase, System.currentTimeMillis() );
+        }
+
+        @Override
+        public UnitOfWork newUnitOfWork( Usecase usecase, long currentTime )
+        {
+            return new ModuleUnitOfWork( ModuleInstance.this, new UnitOfWorkInstance( usecase, currentTime ));
         }
 
         public UnitOfWork currentUnitOfWork()
