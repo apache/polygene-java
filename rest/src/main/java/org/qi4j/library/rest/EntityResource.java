@@ -126,7 +126,7 @@ public class EntityResource
     protected Representation delete() throws ResourceException
     {
         Usecase usecase = UsecaseBuilder.newUsecase( "Remove entity" );
-        EntityStoreUnitOfWork uow = entityStore.newUnitOfWork( usecase, module );
+        EntityStoreUnitOfWork uow = entityStore.newUnitOfWork( usecase, module, System.currentTimeMillis() );
         try
         {
             EntityReference identityRef = EntityReference.parseEntityReference( identity );
@@ -146,7 +146,7 @@ public class EntityResource
     @Override
     protected Representation get( Variant variant ) throws ResourceException
     {
-        EntityStoreUnitOfWork uow = entityStore.newUnitOfWork( UsecaseBuilder.newUsecase( "Get entity" ), module );
+        EntityStoreUnitOfWork uow = entityStore.newUnitOfWork( UsecaseBuilder.newUsecase( "Get entity" ), module, System.currentTimeMillis() );
 
         try
         {
@@ -342,7 +342,7 @@ public class EntityResource
     {
         Usecase usecase = UsecaseBuilder.newUsecase( "Update entity" );
         MetaInfo info = new MetaInfo();
-        EntityStoreUnitOfWork unitOfWork = entityStore.newUnitOfWork( usecase, module );
+        EntityStoreUnitOfWork unitOfWork = entityStore.newUnitOfWork( usecase, module, System.currentTimeMillis() );
         EntityState entity = getEntityState( unitOfWork );
 
         Form form = new Form( entityRepresentation );
