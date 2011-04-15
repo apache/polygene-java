@@ -1,0 +1,19 @@
+description = "Qi4j Regression Tests are added by community members who find bugs and typically reported via Jira issues. These tests are not run as part of the normal build, but is accessible from './gradlew regression' to allow builds to still work."
+
+jar { manifest { name = "Qi4j Tests - Regression" }}
+
+dependencies {
+  compile(project(":org.qi4j.core:org.qi4j.core.api"))
+  compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
+  compile(libraries.slf4j_api)
+  compile(libraries.junit)
+  runtime(libraries.asm)
+  runtime(libraries.asm_commons)
+  runtime(libraries.slf4j_simple)
+  compile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
+  compile(project(":org.qi4j.libraries:org.qi4j.library.logging"))
+  compile(project(":org.qi4j.extensions:org.qi4j.extension.indexing-rdf"))
+  compile(project(":org.qi4j.extensions:org.qi4j.extension.entitystore-jdbm"))
+  runtime(project(":org.qi4j.core:org.qi4j.core.spi"))
+  runtime(project(":org.qi4j.core:org.qi4j.core.runtime"))
+}

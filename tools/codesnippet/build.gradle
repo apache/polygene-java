@@ -1,0 +1,17 @@
+description = "Tool to extract portions of a Java file into the web site."
+
+jar { manifest { name = "Qi4j Sample - Code Snippet"}}
+
+dependencies {
+  compile(project(":org.qi4j.core:org.qi4j.core.api"))
+  compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
+  compile(libraries.slf4j_api)
+  compile("javax.servlet:servlet-api:$servletVersion")
+  testCompile(libraries.junit)
+  testRuntime(libraries.asm)
+  testRuntime(libraries.asm_commons)
+  testRuntime(libraries.slf4j_simple)
+  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
+  testRuntime(project(":org.qi4j.core:org.qi4j.core.spi"))
+  testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
+}

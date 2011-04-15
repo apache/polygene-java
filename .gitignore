@@ -1,6 +1,9 @@
 *.iws
-target
 .idea
+.idea/**
 *.iws
 *.ipr
 *.iml
+build/
+out/
+.gradle/
