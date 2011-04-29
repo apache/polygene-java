@@ -2,6 +2,10 @@ package org.qi4j.api.util;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.qi4j.api.specification.Specifications.in;
@@ -41,5 +45,22 @@ public class FunctionsTest
     public void testIndexOf2()
     {
         assertThat( indexOf( "D", iterable( "A","B","C","D","D" )), equalTo( 3 ) );
+    }
+
+    @Test
+    public void testComparator()
+    {
+        Comparator<Integer> comparator = Functions.comparator( new Function<Integer, Comparable>()
+        {
+            @Override
+            public Comparable map( Integer integer )
+            {
+                return integer.toString();
+            }
+        });
+
+        ArrayList<Integer> integers = Iterables.addAll( new ArrayList<Integer>(), Iterables.iterable( 1, 5, 3, 6, 8 ) );
+        Collections.sort( integers, comparator );
+        assertThat( integers.toString(), equalTo( "[1, 3, 5, 6, 8]" ));
     }
 }
