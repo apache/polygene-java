@@ -76,7 +76,7 @@ public class EntityMigrationBuilder
      *
      * @return the builder
      */
-    public EntityMigrationBuilder addProperty( String property, String defaultValue )
+    public EntityMigrationBuilder addProperty( String property, Object defaultValue )
     {
         migrationBuilder.builder.getEntityRules().addRule( new EntityMigrationRule( migrationBuilder.fromVersion,
                                                                                     migrationBuilder.toVersion,

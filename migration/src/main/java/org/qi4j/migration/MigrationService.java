@@ -165,8 +165,7 @@ public interface MigrationService
         }
 
         // Migrator implementation
-
-        public boolean addProperty( JSONObject state, String name, String defaultValue )
+        public boolean addProperty( JSONObject state, String name, Object defaultValue )
             throws JSONException
         {
             JSONObject properties = (JSONObject) state.get( MapEntityStore.JSONKeys.properties.name() );

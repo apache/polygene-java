@@ -26,9 +26,9 @@ public class MigrationEventLogger
 {
     protected Logger logger = LoggerFactory.getLogger( getClass().getName() );
 
-    public void propertyAdded( String entity, String name, String value )
+    public void propertyAdded( String entity, String name, Object value )
     {
-        logger.info( "Added property " + name + " with value " + value + " in " + entity );
+        logger.info( "Added property " + name + " with value " + (value==null?"null":value.toString()) + " in " + entity );
     }
 
     public void propertyRemoved( String entity, String name )

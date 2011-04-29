@@ -23,7 +23,7 @@ import org.json.JSONObject;
  */
 public interface Migrator
 {
-    boolean addProperty( JSONObject state, String name, String defaultValue )
+    boolean addProperty( JSONObject state, String name, Object defaultValue )
         throws JSONException;
 
     boolean removeProperty( JSONObject state, String name )

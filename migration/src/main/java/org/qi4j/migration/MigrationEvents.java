@@ -19,7 +19,7 @@ package org.qi4j.migration;
  */
 public interface MigrationEvents
 {
-    void propertyAdded( String entity, String name, String value );
+    void propertyAdded( String entity, String name, Object value );
 
     void propertyRemoved( String entity, String name );
 

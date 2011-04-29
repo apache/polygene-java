@@ -27,9 +27,9 @@ public class AddProperty
     implements EntityMigrationOperation
 {
     private String property;
-    private String defaultValue;
+    private Object defaultValue;
 
-    public AddProperty( String property, String defaultValue )
+    public AddProperty( String property, Object defaultValue )
     {
         this.property = property;
         this.defaultValue = defaultValue;
