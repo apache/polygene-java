@@ -24,7 +24,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.gae2.GaeEntityStoreConfiguration;
 import org.qi4j.entitystore.gae2.GaeEntityStoreService;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
-import org.qi4j.test.entity.AbstractEntityStoreTest;
+import org.qi4j.core.testsupport.AbstractEntityStoreTest;
 
 public class UnitTests extends AbstractEntityStoreTest
 {

@@ -216,7 +216,7 @@ allprojects {
     }
   }
 
-  uploadArchives.onlyIf { releaseApprovedProjects.contains(project)}
+  uploadArchives.onlyIf { releaseApprovedProjects.contains(project) || project == rootProject }
   uploadArchives {
     dependsOn check
     repositories.mavenDeployer {
