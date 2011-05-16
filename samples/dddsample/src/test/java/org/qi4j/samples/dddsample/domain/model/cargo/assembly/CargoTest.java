@@ -7,6 +7,7 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.index.rdf.assembly.RdfMemoryStoreAssembler;
 import org.qi4j.samples.dddsample.domain.model.cargo.Cargo;
@@ -16,7 +17,6 @@ import org.qi4j.samples.dddsample.domain.model.handling.assembly.HandlingEventMo
 import org.qi4j.samples.dddsample.domain.model.location.LocationRepository;
 import org.qi4j.samples.dddsample.domain.model.location.assembly.LocationModelAssembler;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
-import org.qi4j.test.AbstractQi4jTest;
 
 import java.text.DateFormat;
 import java.text.ParseException;
