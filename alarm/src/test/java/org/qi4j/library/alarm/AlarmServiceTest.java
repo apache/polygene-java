@@ -22,6 +22,7 @@ import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
@@ -45,6 +46,7 @@ public class AlarmServiceTest
         module.services( AlarmSystemService.class );
         module.entities( AlarmEntity.class );
         module.values( AlarmStatus.class );
+        module.values( AlarmCategory.class );
         module.values( AlarmEvent.class );
         module.services( MemoryEntityStoreService.class );
         module.services( UuidIdentityGeneratorService.class );
@@ -109,7 +111,7 @@ public class AlarmServiceTest
         throws Exception
     {
         AlarmSystem alarmService = (AlarmSystem) module.findService( AlarmSystem.class ).get();
-        Alarm alarm = alarmService.createAlarm( "TestAlarm" );
+        Alarm alarm = alarmService.createAlarm( "TestAlarm", createCategory("AlarmServiceTest") );
 
         CountingListener listener1 = new CountingListener();
         ExceptionThrowingListener listener2 = new ExceptionThrowingListener();
@@ -172,6 +174,15 @@ public class AlarmServiceTest
         listeners = alarmService.alarmListeners();
         assertEquals( "Listeners registered.", 0, listeners.size() );
     }
+
+    private AlarmCategory createCategory( String name )
+    {
+        ValueBuilder<AlarmCategory> builder = valueBuilderFactory.newValueBuilder( AlarmCategory.class );
+        builder.prototype().name().set( name );
+        return builder.newInstance();
+    }
+
+
 
     private class CountingListener
         implements AlarmListener

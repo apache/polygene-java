@@ -50,6 +50,7 @@ public class StandardAlarmModelTest
         module.services( UuidIdentityGeneratorService.class );
         module.entities( AlarmEntity.class );
         module.values( AlarmEvent.class );
+        module.values( AlarmCategory.class );
         module.values( AlarmStatus.class );
         module.forMixin( AlarmHistory.class ).declareDefaults().maxSize().set( 10 );
     }
@@ -436,12 +437,21 @@ public class StandardAlarmModelTest
     {
         UnitOfWork uow = module.currentUnitOfWork();
         EntityBuilder<Alarm> builder = uow.newEntityBuilder( Alarm.class );
+        builder.instance().category().set( createCategory( "StandardModelTest" ) );
         Alarm.AlarmState state = builder.instanceFor( Alarm.AlarmState.class );
         state.currentStatus().set( createStatus( Alarm.STATUS_NORMAL ) );
         state.description().set( "Test Description" );
         state.systemName().set( name );
         return builder.newInstance();
     }
+
+    private AlarmCategory createCategory( String name )
+    {
+        ValueBuilder<AlarmCategory> builder = valueBuilderFactory.newValueBuilder( AlarmCategory.class );
+        builder.prototype().name().set( name );
+        return builder.newInstance();
+    }
+
 
     private Alarm getAlarm( String identity )
     {

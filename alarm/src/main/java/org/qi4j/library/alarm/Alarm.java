@@ -277,7 +277,6 @@ public interface Alarm
      *
      * @return the property instance that contains the {@link AlarmCategory}.
      */
-    @UseDefaults
     Property<AlarmCategory> category();
 
     /**
@@ -356,6 +355,7 @@ public interface Alarm
                 }
                 catch( Exception e )
                 {
+
                     // ignore.
                 }
             }

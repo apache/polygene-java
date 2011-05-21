@@ -50,8 +50,9 @@ public class ExtendedAlarmModelTest
         module.services( MemoryEntityStoreService.class );
         module.services( UuidIdentityGeneratorService.class );
         module.entities( AlarmEntity.class );
-        module.forMixin( AlarmHistory.class ).declareDefaults().maxSize().set(10);
+        module.forMixin( AlarmHistory.class ).declareDefaults().maxSize().set( 10 );
         module.values( AlarmEvent.class );
+        module.values( AlarmCategory.class );
         module.values( AlarmStatus.class );
     }
 
@@ -75,7 +76,9 @@ public class ExtendedAlarmModelTest
     {
         UnitOfWork uow = module.currentUnitOfWork();
         if( uow != null )
+        {
             uow.discard();
+        }
         super.tearDown();
     }
 
@@ -941,10 +944,18 @@ public class ExtendedAlarmModelTest
     {
         UnitOfWork uow = module.currentUnitOfWork();
         EntityBuilder<Alarm> builder = uow.newEntityBuilder( Alarm.class );
+        builder.instance().category().set( createCategory( "Testing" ) );
         Alarm.AlarmState state = builder.instanceFor( Alarm.AlarmState.class );
         state.currentStatus().set( createStatus( Alarm.STATUS_NORMAL ) );
         state.description().set( "Test Description" );
         state.systemName().set( name );
+        return builder.newInstance();
+    }
+
+    private AlarmCategory createCategory( String name )
+    {
+        ValueBuilder<AlarmCategory> builder = valueBuilderFactory.newValueBuilder( AlarmCategory.class );
+        builder.prototype().name().set( name );
         return builder.newInstance();
     }
 

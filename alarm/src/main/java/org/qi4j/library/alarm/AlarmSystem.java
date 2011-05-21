@@ -105,9 +105,11 @@ public interface AlarmSystem
      *
      * @param name the name of the Alarm to be created.
      *
+     * @param category The category the created Alarm should belong to.
+     *
      * @return the created Alarm with the given name using the default AlarmModel.
      */
-    Alarm createAlarm( String name );
+    Alarm createAlarm( String name, AlarmCategory category );
 
     /**
      * Register AlarmListener to recieve <code>AlarmEvents</code> from all
@@ -200,11 +202,14 @@ public interface AlarmSystem
 
         /**
          * Creates an Alarm with the default AlarmModel.
+         * @param name The system name of the Alarm.
+         * @param category The Alarm Category the created alarm should belong to.
          */
-        public Alarm createAlarm( String name )
+        public Alarm createAlarm( String name, AlarmCategory category )
         {
             UnitOfWork uow = uowf.currentUnitOfWork();
             EntityBuilder<Alarm> builder = uow.newEntityBuilder( Alarm.class );
+            builder.instance().category().set( category );
             Alarm.AlarmState state = builder.instanceFor( Alarm.AlarmState.class );
             state.systemName().set( name );
             state.currentStatus().set( createStatus( Alarm.STATUS_NORMAL ) );

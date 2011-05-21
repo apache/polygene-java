@@ -23,6 +23,7 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
@@ -49,6 +50,7 @@ public class AlarmImplTest
         module.services( AlarmSystemService.class );
         module.entities( AlarmEntity.class );
         module.values( AlarmEvent.class );
+        module.values( AlarmCategory.class );
         module.values( AlarmStatus.class );
         module.services( MemoryEntityStoreService.class );
         module.services( UuidIdentityGeneratorService.class );
@@ -226,6 +228,15 @@ public class AlarmImplTest
     {
         ServiceReference<AlarmSystem> ref = module.findService( AlarmSystem.class );
         alarmSystem = ref.get();
-        return alarmSystem.createAlarm( name );
+        return alarmSystem.createAlarm( name, createCategory( "AlarmImplTest" ) );
     }
+
+    private AlarmCategory createCategory( String name )
+    {
+        ValueBuilder<AlarmCategory> builder = valueBuilderFactory.newValueBuilder( AlarmCategory.class );
+        builder.prototype().name().set( name );
+        return builder.newInstance();
+    }
+
+
 }
