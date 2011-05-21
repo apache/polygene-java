@@ -20,9 +20,10 @@ import java.lang.annotation.RetentionPolicy;
 
 /**
  * Annotate methods that should trigger domain events with this annotation. Example:
- * @DomainEvent
+ * <pre>
+ * &#64;DomainEvent
  * void changedDescription(String newDescription);
- *
+ * </pre>
  * Event methods may only change state. They may not fail or thrown exceptions. The name of the
  * method should be in past tense, as in something HAS already occurred, and the method is merely
  * reacting to it.

@@ -36,10 +36,10 @@ public class DomainEventCreationConcern
         extends GenericConcern
 {
     @This
-    EntityComposite entity;
+    private EntityComposite entity;
 
     @Service
-    DomainEventFactory domainEventFactory;
+    private DomainEventFactory domainEventFactory;
 
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {
