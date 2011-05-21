@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 Niclas Hedhman.
+ * Copyright 2005-2011 Niclas Hedhman.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -50,13 +50,13 @@ public class AlarmServiceTest
         module.services( UuidIdentityGeneratorService.class );
     }
 
-    @Mixins( SimpleAlarmModelMixin.class )
+    @Mixins( SimpleAlarmModelService.SimpleAlarmModelMixin.class )
     public interface TestAlarmModel1
         extends AlarmModel, ServiceComposite
     {
     }
 
-    @Mixins( StandardAlarmModel.class )
+    @Mixins( StandardAlarmModelService.StandardAlarmModelMixin.class )
     public interface TestAlarmModel2
         extends AlarmModel, ServiceComposite
     {

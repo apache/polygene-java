@@ -1,5 +1,5 @@
 /*
- * Copyright 1996-2005 Niclas Hedhman.
+ * Copyright 1996-2011 Niclas Hedhman.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -18,8 +18,6 @@
 
 package org.qi4j.library.alarm;
 
-import java.util.EventListener;
-
 /**
  * Listener for AlarmEvents.
  * <code>Alarm</code> classes will fire an <code>AlarmEvent</code> whenever
@@ -31,7 +29,7 @@ import java.util.EventListener;
  *
  * @author Niclas Hedhman
  */
-public interface AlarmListener extends EventListener
+public interface AlarmListener
 {
 
     /**

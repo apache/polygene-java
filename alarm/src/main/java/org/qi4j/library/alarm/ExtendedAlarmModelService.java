@@ -32,39 +32,72 @@ import org.qi4j.api.value.ValueBuilderFactory;
 
 /**
  * <p>
- * The Standard Alarm Model is centered around the Normal, Activated, Acknowledged
- * and Deactivated states, and the triggers "activate", "deactivate",
- * and "acknowledge". The following matrix details the resulting grid;
+ * The Standard Model is centered around the Normal, Activated, Acknowledged
+ * Deactivated, Reactivated, Blocked and Disabled states, and the triggers "activate", "deactivate",
+ * "acknowledge", "block", "unblock", "enable" and "disable". The following matrix details the
+ * resulting grid;
  * <p>
  * <table>
- * <tr><th>Initial State</th><th>Trigger</th><th>Resulting State</th><th>Event Generated</th></tr>
+ * <tr><th>Initial State</th>* <th>Trigger</th><th>Resulting State</th><th>Event Generated</th></tr>
  * <tr><td>Normal</td><td>activate</td><td>Activated</td><td>activation</td></tr>
  * <tr><td>Normal</td><td>deactivate</td><td>Normal</td><td>-</td></tr>
  * <tr><td>Normal</td><td>acknowledge</td><td>Normal</td><td>-</td></tr>
+ * <tr><td>Normal</td><td>block</td><td>Blocked</td><td>block</td></tr>
+ * <tr><td>Normal</td><td>unblock</td><td>Normal</td><td>-</td></tr>
  * <tr><td>Activated</td><td>activate</td><td>Activated</td><td>-</td></tr>
  * <tr><td>Activated</td><td>deactivate</td><td>Deactivated</td><td>deactivation</td></tr>
  * <tr><td>Activated</td><td>acknowledge</td><td>Acknowledged</td><td>acknowledge</td></tr>
+ * <tr><td>Activated</td><td>block</td><td>Blocked</td><td>block</td></tr>
+ * <tr><td>Activated</td><td>unblock</td><td>Activated</td><td>-</td></tr>
  * <tr><td>Deactivated</td><td>activate</td><td>Activated</td><td>activation</td></tr>
  * <tr><td>Deactivated</td><td>deactivate</td><td>Deativated</td><td>-</td></tr>
  * <tr><td>Deactivated</td><td>acknowledge</td><td>Normal</td><td>acknowledge</td></tr>
+ * <tr><td>Deactivated</td><td>block</td><td>Blocked</td><td>block</td></tr>
+ * <tr><td>Deactivated</td><td>unblock</td><td>Deactivated</td><td>-</td></tr>
  * <tr><td>Acknowledged</td><td>activate</td><td>Acknowledged</td><td>-</td></tr>
  * <tr><td>Acknowledged</td><td>deactivate</td><td>Normal</td><td>deactivation</td></tr>
  * <tr><td>Acknowledged</td><td>acknowledge</td><td>Acknowledged</td><td>-</td></tr>
+ * <tr><td>Acknowledged</td><td>block</td><td>Blocked</td><td>block</td></tr>
+ * <tr><td>Acknowledged</td><td>unblock</td><td>Acknowledged</td><td>-</td></tr>
+ * <tr><td>Blocked</td><td>activate</td><td>Blocked</td><td>-</td></tr>
+ * <tr><td>Blocked</td><td>deactivate</td><td>Blocked</td><td>-</td></tr>
+ * <tr><td>Blocked</td><td>acknowledge</td><td>Blocked</td><td>-</td></tr>
+ * <tr><td>Blocked</td><td>block</td><td>Blocked</td><td>-</td></tr>
+ * <tr><td>Blocked</td><td>unblock</td><td>Normal</td><td>unblock</td></tr>
+ * <tr><td>Normal</td><td>disable</td><td>Disabled</td><td>disable</td></tr>
+ * <tr><td>Blocked</td><td>disable</td><td>Disabled</td><td>disable</td></tr>
+ * <tr><td>Deactivated</td><td>disable</td><td>Disabled</td><td>disable</td></tr>
+ * <tr><td>Acknowledged</td><td>disable</td><td>Disabled</td><td>disable</td></tr>
+ * <tr><td>Activated</td><td>disable</td><td>Disabled</td><td>disable</td></tr>
+ * <tr><td>Reactivated</td><td>disable</td><td>Disabled</td><td>disable</td></tr>
+ * <tr><td>Disabled</td><td>disable</td><td>Disabled</td><td>-</td></tr>
+ * <tr><td>Normal</td><td>enable</td><td>Normal</td><td>-</td></tr>
+ * <tr><td>Blocked</td><td>enable</td><td>Blocked</td><td>-</td></tr>
+ * <tr><td>Deactivated</td><td>enable</td><td>Deactivated</td><td>-</td></tr>
+ * <tr><td>Acknowledged</td><td>enable</td><td>Acknowledged</td><td>-</td></tr>
+ * <tr><td>Activated</td><td>enable</td><td>Activated</td><td>-</td></tr>
+ * <tr><td>Reactivated</td><td>enable</td><td>Reactivated</td><td>-</td></tr>
+ * <tr><td>Disabled</td><td>enable</td><td>Normal</td><td>enable</td></tr>
+ *
  * </table>
  */
 
-@Mixins(StandardAlarmModelService.StandardAlarmModelMixin.class)
-public interface StandardAlarmModelService extends AlarmModel, ServiceComposite
+@Mixins(ExtendedAlarmModelService.ExtendedAlarmModelMixin.class)
+public interface ExtendedAlarmModelService
+    extends AlarmModel, ServiceComposite
 {
-    class StandardAlarmModelMixin
+    class ExtendedAlarmModelMixin
         implements AlarmModel
     {
 
-        static String MODEL_BUNDLE_NAME = "org.qi4j.library.alarm.standard.AlarmResources";
+        private static String MODEL_BUNDLE_NAME = "org.qi4j.library.alarm.extended.AlarmResources";
 
-        private static final List<String> TRIGGER_LIST;
+        private final static List<String> TRIGGER_LIST;
 
         private static final List<String> STATUS_LIST;
+
+        @Structure
+        private ValueBuilderFactory vbf;
 
         static
         {
@@ -73,17 +106,21 @@ public interface StandardAlarmModelService extends AlarmModel, ServiceComposite
             list.add( Alarm.STATUS_ACTIVATED );
             list.add( Alarm.STATUS_DEACTIVATED );
             list.add( Alarm.STATUS_ACKNOWLEDGED );
+            list.add( Alarm.STATUS_REACTIVATED );
+            list.add( Alarm.STATUS_BLOCKED );
+            list.add( Alarm.STATUS_DISABLED );
             STATUS_LIST = Collections.unmodifiableList( list );
 
             list.clear();
             list.add( Alarm.TRIGGER_ACTIVATE );
             list.add( Alarm.TRIGGER_DEACTIVATE );
             list.add( Alarm.TRIGGER_ACKNOWLEDGE );
+            list.add( Alarm.TRIGGER_BLOCK );
+            list.add( Alarm.TRIGGER_UNBLOCK );
+            list.add(Alarm.TRIGGER_DISABLE);
+            list.add(Alarm.TRIGGER_ENABLE );
             TRIGGER_LIST = Collections.unmodifiableList( list );
         }
-
-        @Structure
-        private ValueBuilderFactory vbf;
 
         static ResourceBundle getResourceBundle( Locale locale )
         {
@@ -91,7 +128,7 @@ public interface StandardAlarmModelService extends AlarmModel, ServiceComposite
             {
                 locale = Locale.getDefault();
             }
-            ClassLoader cl = StandardAlarmModelMixin.class.getClassLoader();
+            ClassLoader cl = ExtendedAlarmModelMixin.class.getClassLoader();
             return ResourceBundle.getBundle( MODEL_BUNDLE_NAME, locale, cl );
         }
 
@@ -99,10 +136,13 @@ public interface StandardAlarmModelService extends AlarmModel, ServiceComposite
          * Returns the Name of the AlarmModel.
          * This normally returns the human readable technical name of
          * the AlarmModel.
+         *
+         * @return The system name of this alarm model.
          */
+        @Override
         public String modelName()
         {
-            return "org.qi4j.library.alarm.model.standard";
+            return "org.qi4j.library.alarm.model.extended";
         }
 
         /**
@@ -110,8 +150,9 @@ public interface StandardAlarmModelService extends AlarmModel, ServiceComposite
          * This normally returns a full Description of the AlarmModel in the
          * default Locale.
          *
-         * @return the description of the ModelProvider.
+         * @return the description of the ModelProvider, in the default locale.
          */
+        @Override
         public String modelDescription()
         {
             return modelDescription( null );
@@ -122,7 +163,12 @@ public interface StandardAlarmModelService extends AlarmModel, ServiceComposite
          * This normally returns a full Description of the AlarmModel in the
          * Locale. If Locale is <code><b>null</b></code>, then the
          * default Locale is used.
+         *
+         * @param locale The locale that should be used for the description, or null for the default locale.
+         *
+         * @return The human readable, in the given locale, description of this alarm model.
          */
+        @Override
         public String modelDescription( Locale locale )
         {
             ResourceBundle rb = getResourceBundle( locale );
@@ -153,6 +199,22 @@ public interface StandardAlarmModelService extends AlarmModel, ServiceComposite
             {
                 return acknowledge( alarm );
             }
+            else if( trigger.equals( Alarm.TRIGGER_BLOCK ) )
+            {
+                return block( alarm );
+            }
+            else if( trigger.equals( Alarm.TRIGGER_UNBLOCK ) )
+            {
+                return unblock( alarm );
+            }
+            else if( trigger.equals( Alarm.TRIGGER_ENABLE ) )
+            {
+                return enable( alarm );
+            }
+            else if( trigger.equals( Alarm.TRIGGER_DISABLE ) )
+            {
+                return disable( alarm );
+            }
             else
             {
                 throw new IllegalArgumentException( "'" + trigger + "' is not supported by this AlarmModel." );
@@ -161,6 +223,8 @@ public interface StandardAlarmModelService extends AlarmModel, ServiceComposite
 
         /**
          * Returns all the supported Alarm triggers.
+         *
+         * @return The Alarm triggers that this AlarmModel supports.
          */
         public List<String> alarmTriggers()
         {
@@ -170,7 +234,7 @@ public interface StandardAlarmModelService extends AlarmModel, ServiceComposite
         @Override
         public List<String> statusList()
         {
-            return STATUS_LIST;
+            return STATUS_LIST;  //To change body of implemented methods use File | Settings | File Templates.
         }
 
         public String computeTrigger( AlarmStatus status, boolean condition )
@@ -186,6 +250,7 @@ public interface StandardAlarmModelService extends AlarmModel, ServiceComposite
             else
             {
                 if( ( status.name().get().equals( Alarm.STATUS_ACTIVATED ) ) ||
+                    ( status.name().get().equals( Alarm.STATUS_REACTIVATED ) ) ||
                     ( status.name().get().equals( Alarm.STATUS_ACKNOWLEDGED ) ) )
                 {
                     return Alarm.TRIGGER_DEACTIVATE;
@@ -197,6 +262,7 @@ public interface StandardAlarmModelService extends AlarmModel, ServiceComposite
         public boolean computeCondition( AlarmStatus status )
         {
             return ( status.name().get().equals( Alarm.STATUS_ACTIVATED ) ) ||
+                   ( status.name().get().equals( Alarm.STATUS_REACTIVATED ) ) ||
                    ( status.name().get().equals( Alarm.STATUS_ACKNOWLEDGED ) );
         }
 
@@ -209,12 +275,12 @@ public interface StandardAlarmModelService extends AlarmModel, ServiceComposite
          */
         private AlarmEvent activation( Alarm alarm )
         {
-            AlarmStatus oldStatus = alarm.currentStatus();
-            if( ( oldStatus.name().get().equals( Alarm.STATUS_NORMAL ) ) ||
-                ( oldStatus.name().get().equals( Alarm.STATUS_DEACTIVATED ) ) )
+            AlarmStatus status = alarm.currentStatus();
+            if( ( status.name().get().equals( Alarm.STATUS_NORMAL ) ) ||
+                ( status.name().get().equals( Alarm.STATUS_DEACTIVATED ) ) )
             {
                 AlarmStatus newStatus = createStatus( Alarm.STATUS_ACTIVATED );
-                return createEvent( ( (Identity) alarm ), oldStatus, newStatus, Alarm.EVENT_ACTIVATION );
+                return createEvent( ( (Identity) alarm ), status, newStatus, Alarm.EVENT_ACTIVATION );
             }
             return null;
         }
@@ -228,17 +294,16 @@ public interface StandardAlarmModelService extends AlarmModel, ServiceComposite
          */
         private AlarmEvent deactivation( Alarm alarm )
         {
-            AlarmStatus oldStatus = alarm.currentStatus();
-            long time = System.currentTimeMillis();
-            if( oldStatus.name().get().equals( Alarm.STATUS_ACKNOWLEDGED ) )
+            AlarmStatus status = alarm.currentStatus();
+            if( status.name().get().equals( Alarm.STATUS_ACKNOWLEDGED ) )
             {
                 AlarmStatus newStatus = createStatus( Alarm.STATUS_NORMAL );
-                return createEvent( ( (Identity) alarm ), oldStatus, newStatus, Alarm.EVENT_DEACTIVATION );
+                return createEvent( ( (Identity) alarm ), status, newStatus, Alarm.EVENT_DEACTIVATION );
             }
-            else if( oldStatus.name().get().equals( Alarm.STATUS_ACTIVATED ) )
+            else if( status.name().get().equals( Alarm.STATUS_ACTIVATED ) )
             {
                 AlarmStatus newStatus = createStatus( Alarm.STATUS_DEACTIVATED );
-                return createEvent( ( (Identity) alarm ), oldStatus, newStatus, Alarm.EVENT_DEACTIVATION );
+                return createEvent( ( (Identity) alarm ), status, newStatus, Alarm.EVENT_DEACTIVATION );
             }
             return null;
         }
@@ -252,17 +317,89 @@ public interface StandardAlarmModelService extends AlarmModel, ServiceComposite
          */
         private AlarmEvent acknowledge( Alarm alarm )
         {
-            AlarmStatus oldStatus = alarm.currentStatus();
-            long time = System.currentTimeMillis();
-            if( oldStatus.name().get().equals( Alarm.STATUS_DEACTIVATED ) )
+            AlarmStatus status = alarm.currentStatus();
+            if( status.name().get().equals( Alarm.STATUS_DEACTIVATED ) )
             {
                 AlarmStatus newStatus = createStatus( Alarm.STATUS_NORMAL );
-                return createEvent( ( (Identity) alarm ), oldStatus, newStatus, Alarm.EVENT_ACKNOWLEDGEMENT );
+                return createEvent( ( (Identity) alarm ), status, newStatus, Alarm.EVENT_ACKNOWLEDGEMENT );
             }
-            else if( oldStatus.name().get().equals( Alarm.STATUS_ACTIVATED ) )
+            else if( status.name().get().equals( Alarm.STATUS_ACTIVATED ) )
             {
                 AlarmStatus newStatus = createStatus( Alarm.STATUS_ACKNOWLEDGED );
-                return createEvent( ( (Identity) alarm ), oldStatus, newStatus, Alarm.EVENT_ACKNOWLEDGEMENT );
+                return createEvent( ( (Identity) alarm ), status, newStatus, Alarm.EVENT_ACKNOWLEDGEMENT );
+            }
+            return null;
+        }
+
+        /**
+         * StateMachine change for block trigger.
+         *
+         * @param alarm the alarm that is being triggered.
+         *
+         * @return The event to be fired on acknowledge.
+         */
+        private AlarmEvent block( Alarm alarm )
+        {
+            AlarmStatus status = alarm.currentStatus();
+            if( status.name().get().equals( Alarm.STATUS_BLOCKED ) ||
+                status.name().get().equals( Alarm.STATUS_DISABLED ) )
+            {
+                return null;
+            }
+            AlarmStatus newStatus = createStatus( Alarm.STATUS_BLOCKED );
+            return createEvent( ( (Identity) alarm ), status, newStatus, Alarm.EVENT_BLOCKING );
+        }
+
+        /**
+         * StateMachine change for unblock trigger.
+         *
+         * @param alarm the alarm that is being triggered.
+         *
+         * @return The event to be fired on acknowledge.
+         */
+        private AlarmEvent unblock( Alarm alarm )
+        {
+            AlarmStatus status = alarm.currentStatus();
+            if( status.name().get().equals( Alarm.STATUS_BLOCKED ) )
+            {
+                AlarmStatus newStatus = createStatus( Alarm.STATUS_NORMAL );
+                return createEvent( ( (Identity) alarm ), status, newStatus, Alarm.EVENT_UNBLOCKING );
+            }
+            return null;
+        }
+
+        /**
+         * StateMachine change for disable trigger.
+         *
+         * @param alarm the alarm that is being triggered.
+         *
+         * @return The event to be fired on acknowledge.
+         */
+        private AlarmEvent disable( Alarm alarm )
+        {
+            AlarmStatus status = alarm.currentStatus();
+            if( status.name().get().equals( Alarm.STATUS_DISABLED ) )
+            {
+                return null;
+            }
+            AlarmStatus newStatus = createStatus( Alarm.STATUS_DISABLED );
+            return createEvent( ( (Identity) alarm ), status, newStatus, Alarm.EVENT_DISABLING );
+        }
+
+        /**
+         * StateMachine change for unblock trigger.
+         *
+         * @param alarm the alarm that is being triggered.
+         *
+         * @return The event to be fired on acknowledge.
+         */
+        private AlarmEvent enable( Alarm alarm )
+        {
+            AlarmStatus status = alarm.currentStatus();
+            if( status.name().get().equals( Alarm.STATUS_DISABLED ) )
+            {
+                AlarmStatus newStatus = createStatus( Alarm.STATUS_NORMAL );
+                return createEvent( ( (Identity) alarm ), status, newStatus, Alarm.EVENT_ENABLING );
             }
             return null;
         }

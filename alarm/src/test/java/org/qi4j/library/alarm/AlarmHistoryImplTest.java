@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 Niclas Hedhman.
+ * Copyright 2005-2011 Niclas Hedhman.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -56,7 +56,7 @@ public class AlarmHistoryImplTest
         module.forMixin( AlarmHistory.class ).declareDefaults().maxSize().set( 30 );
     }
 
-    @Mixins( SimpleAlarmModelMixin.class )
+    @Mixins( SimpleAlarmModelService.SimpleAlarmModelMixin.class )
     public interface TestAlarmModel
         extends AlarmModel, ServiceComposite
     {

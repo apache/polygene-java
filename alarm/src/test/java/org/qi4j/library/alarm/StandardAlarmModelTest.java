@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 Niclas Hedhman.
+ * Copyright 2005-2011 Niclas Hedhman.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -54,7 +54,7 @@ public class StandardAlarmModelTest
         module.forMixin( AlarmHistory.class ).declareDefaults().maxSize().set( 10 );
     }
 
-    @Mixins( StandardAlarmModel.class )
+    @Mixins( StandardAlarmModelService.StandardAlarmModelMixin.class )
     public interface TestAlarmModel
         extends AlarmModel, ServiceComposite
     {
@@ -84,7 +84,7 @@ public class StandardAlarmModelTest
     public void testName()
         throws Exception
     {
-        StandardAlarmModel spi = new StandardAlarmModel();
+        StandardAlarmModelService.StandardAlarmModelMixin spi = new StandardAlarmModelService.StandardAlarmModelMixin();
         assertEquals( "org.qi4j.library.alarm.model.standard", spi.modelName() );
     }
 
@@ -92,7 +92,7 @@ public class StandardAlarmModelTest
     public void testDescription()
         throws Exception
     {
-        StandardAlarmModel spi = new StandardAlarmModel();
+        StandardAlarmModelService.StandardAlarmModelMixin spi = new StandardAlarmModelService.StandardAlarmModelMixin();
         boolean test1 = spi.modelDescription().toLowerCase().indexOf( "normal" ) >= 0;
         boolean test2 = spi.modelDescription().toLowerCase().indexOf( "activated" ) >= 0;
         boolean test3 = spi.modelDescription().toLowerCase().indexOf( "deactivated" ) >= 0;
@@ -436,7 +436,7 @@ public class StandardAlarmModelTest
     {
         UnitOfWork uow = module.currentUnitOfWork();
         EntityBuilder<Alarm> builder = uow.newEntityBuilder( Alarm.class );
-        AlarmState state = builder.instanceFor( AlarmState.class );
+        Alarm.AlarmState state = builder.instanceFor( Alarm.AlarmState.class );
         state.currentStatus().set( createStatus( Alarm.STATUS_NORMAL ) );
         state.description().set( "Test Description" );
         state.systemName().set( name );

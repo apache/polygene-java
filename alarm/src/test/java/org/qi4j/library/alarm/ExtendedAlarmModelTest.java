@@ -1,5 +1,5 @@
 /*
- * Copyright 2006 Niclas Hedhman.
+ * Copyright 2006-2011 Niclas Hedhman.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -55,7 +55,7 @@ public class ExtendedAlarmModelTest
         module.values( AlarmStatus.class );
     }
 
-    @Mixins( ExtendedAlarmModel.class )
+    @Mixins( ExtendedAlarmModelService.ExtendedAlarmModelMixin.class )
     public interface TestAlarmModel
         extends AlarmModel, ServiceComposite
     {
@@ -941,7 +941,7 @@ public class ExtendedAlarmModelTest
     {
         UnitOfWork uow = module.currentUnitOfWork();
         EntityBuilder<Alarm> builder = uow.newEntityBuilder( Alarm.class );
-        AlarmState state = builder.instanceFor( AlarmState.class );
+        Alarm.AlarmState state = builder.instanceFor( Alarm.AlarmState.class );
         state.currentStatus().set( createStatus( Alarm.STATUS_NORMAL ) );
         state.description().set( "Test Description" );
         state.systemName().set( name );

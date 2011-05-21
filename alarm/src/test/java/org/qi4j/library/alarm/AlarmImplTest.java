@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 Niclas Hedhman.
+ * Copyright 2005-2011 Niclas Hedhman.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.qi4j.library.alarm;
 
 import org.junit.Test;
@@ -55,7 +54,7 @@ public class AlarmImplTest
         module.services( UuidIdentityGeneratorService.class );
     }
 
-    @Mixins( SimpleAlarmModelMixin.class )
+    @Mixins( SimpleAlarmModelService.SimpleAlarmModelMixin.class )
     public interface TestAlarmModel
         extends AlarmModel, ServiceComposite
     {

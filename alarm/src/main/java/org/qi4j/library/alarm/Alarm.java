@@ -1,5 +1,5 @@
 /*
- * Copyright 1996-2005 Niclas Hedhman.
+ * Copyright 1996-2011 Niclas Hedhman.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -18,11 +18,17 @@
 
 package org.qi4j.library.alarm;
 
-import org.qi4j.api.common.Optional;
-import org.qi4j.api.mixin.Mixins;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.ResourceBundle;
+import org.qi4j.api.common.Optional;
+import org.qi4j.api.common.UseDefaults;
+import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.property.Property;
 
 /**
  * Defines the basic Alarm interface.
@@ -94,7 +100,7 @@ import java.util.Locale;
  *
  * @author Niclas Hedhman
  */
-@Mixins( AlarmMixin.class )
+@Mixins( Alarm.AlarmMixin.class )
 public interface Alarm
 {
 
@@ -160,7 +166,6 @@ public interface Alarm
      * Convinience method for:<pre>
      *     trigger( source, "acknowledge" );
      * </pre>
-     *
      */
     void acknowledge();
 
@@ -251,4 +256,205 @@ public interface Alarm
      * @return a human-readable description of the Alarm in the given locale.
      */
     String description( Locale locale );
+
+    /**
+     * The {@link AlarmClass} of the Alarm.
+     *
+     * The {@link AlarmClass} indicates the urgency of {@link AlarmEvent}s emitted from the Alarm. The property
+     * has {@link UseDefaults} annotation so that the application developer can set the default during assembly.
+     * The default {@link org.qi4j.bootstrap.Assembler} in this library defaults alarms to {@link AlarmClass} <b>B</b>.
+     *
+     * @return the property instance that contains the {@link AlarmClass}.
+     */
+    @UseDefaults
+    Property<AlarmClass> alarmClass();
+
+    /**
+     * The {@link AlarmCategory} of this Alarm.
+     *
+     * AlarmCategory is used to group Alarms together, which can be used to forward {@link AlarmEvent} to different
+     * destinations, produce reports for different target audiences or separation of aggregation.
+     *
+     * @return the property instance that contains the {@link AlarmCategory}.
+     */
+    @UseDefaults
+    Property<AlarmCategory> category();
+
+    /**
+     * The AlarmState is an internal type, used inside the Alarm for all state that needs to be persisted on disk
+     * and/or transferred across networks.
+     */
+    interface AlarmState
+    {
+        @AlarmNameFormat
+        Property<String> systemName();
+
+        @Optional
+        Property<String> description();
+
+        @UseDefaults
+        Property<Map<String, String>> attributes();
+
+        Property<AlarmStatus> currentStatus();
+    }
+
+    abstract class AlarmMixin
+        implements Alarm
+    {
+        @Service
+        private AlarmModel model;
+
+        @Service
+        private AlarmSystem alarmSystem;
+
+        @This
+        private Alarm me;
+
+        @This
+        private AlarmState state;
+
+        @This
+        private AlarmHistory history;
+
+        public void setAttribute( String name, String value )
+        {
+            Map<String, String> properties = state.attributes().get();
+            if( value == null )
+            {
+                properties.remove( name );
+            }
+            else
+            {
+                properties.put( name, value );
+            }
+            state.attributes().set( properties );
+        }
+
+        public String attribute( String name )
+        {
+            return state.attributes().get().get( name );
+        }
+
+        public List<String> attributeNames()
+        {
+            ArrayList<String> result = new ArrayList<String>();
+            for( String name : state.attributes().get().keySet() )
+            {
+                result.add( name );
+            }
+            return result;
+        }
+
+        private void fireAlarm( AlarmEvent event )
+        {
+            // TODO: Should possibly just be delegated to AlarmSystem
+            for( AlarmListener listener : alarmSystem.alarmListeners() )
+            {
+                try
+                {
+                    listener.alarmFired( event );
+                }
+                catch( Exception e )
+                {
+                    // ignore.
+                }
+            }
+        }
+
+        public String toString()
+        {
+            return "Alarm[" + name() + " : " + state.currentStatus().get().name().get()
+                   + "  : " + descriptionInDefaultLocale() + "]";
+        }
+
+        public void trigger( String trigger )
+        {
+            AlarmEvent event;
+            synchronized( this )
+            {
+                event = model.evaluate( me, trigger );
+                if( event == null )
+                {
+                    return;
+                }
+                state.currentStatus().set( event.newStatus().get() );
+                history.addEvent( event, trigger );
+            }
+            fireAlarm( event );
+        }
+
+        public void activate()
+        {
+            trigger( Alarm.TRIGGER_ACTIVATE );
+        }
+
+        public void deactivate()
+        {
+            trigger( Alarm.TRIGGER_DEACTIVATE );
+        }
+
+        public void acknowledge()
+        {
+            trigger( Alarm.TRIGGER_ACKNOWLEDGE );
+        }
+
+        public AlarmHistory history()
+        {
+            return history;
+        }
+
+        public AlarmStatus currentStatus()
+        {
+            return state.currentStatus().get();
+        }
+
+        /**
+         * Returns the Name of the Alarm.
+         * This normally returns the human readable technical name of the Alarm.
+         */
+        public String name()
+        {
+            return state.systemName().get();
+        }
+
+        /**
+         * Returns a Description of the Alarm.
+         * This normally returns a full Description of the Alarm in the
+         * default Locale.
+         */
+        public String descriptionInDefaultLocale()
+        {
+            return description( null );
+        }
+
+        /**
+         * Returns a Description of the Alarm.
+         * This normally returns a full Description of the Alarm in the
+         * Locale. If Locale is <code><b>null</b></code>, then the
+         * default Locale is used.
+         */
+        public String description( Locale locale )
+        {
+            if( locale == null )
+            {
+                locale = Locale.getDefault();
+            }
+            ResourceBundle rb = ResourceBundle.getBundle( "org.qi4j.library.alarm.user.AlarmDescriptions", locale );
+            return rb.getString( name() );
+        }
+
+        public void updateCondition( boolean condition )
+        {
+            String trig = model.computeTrigger( state.currentStatus().get(), condition );
+            if( trig != null )
+            {
+                trigger( trig );
+            }
+        }
+
+        public boolean currentCondition()
+        {
+            return model.computeCondition( state.currentStatus().get() );
+        }
+    }
 }
