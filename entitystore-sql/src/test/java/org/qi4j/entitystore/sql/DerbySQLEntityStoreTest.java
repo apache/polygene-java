@@ -33,7 +33,6 @@ import java.sql.Statement;
  * @author Stanislav Muhametsin
  * @author Paul Merlin
  */
-// Do not work anymore since the use of java-sql-generator that do not support Derby
 public class DerbySQLEntityStoreTest extends AbstractEntityStoreTest
 {
 
