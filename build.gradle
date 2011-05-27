@@ -157,8 +157,6 @@ allprojects {
 
         // replace instrumented classes with backup copy again
         ant {
-          delete(file: srcOriginal)
-          move(file: srcCopy, tofile: srcOriginal)
 
           taskdef(name: 'coberturaMerge',
                   classname: 'net.sourceforge.cobertura.ant.MergeTask',
@@ -168,7 +166,6 @@ allprojects {
 
             if( file("${gradleProject.buildDir}/coverage/cobertura.ser").exists() )
             {
-
               fileset(dir: gradleProject.buildDir, includes: 'coverage/cobertura.ser')
             }
           }
@@ -244,6 +241,8 @@ gradle.taskGraph.whenReady {taskGraph ->
 }
 
 test.doLast() {
+
+
   def cobSerFile = "${project.buildDir}/coverage/cobertura.ser"
   ant {
     taskdef(name: 'coberturaReport',
@@ -259,6 +258,14 @@ test.doLast() {
           {
             fileset(dir: "$module.projectDir.absolutePath/src/main/java") {
               include(name: '**/*.java')
+            }
+            // Now we should restore the original classes and get rid of the instrumented ones.
+            def srcOriginal = "${sourceSets.main.classesDir}"
+            def srcCopy = "${srcOriginal}-copy"
+            ant {
+              println "Moving $srcCopy back to $srcOriginal"
+              delete(file: srcOriginal)
+              move(file: srcCopy, tofile: srcOriginal)
             }
           }
         }
