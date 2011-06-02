@@ -15,6 +15,8 @@ public interface FileEntityStoreConfiguration
      * The directory where the File Entity Store will be keep its persisted state.
      * <p>
      * Default: System.getProperty( "user.dir" ) + "/qi4j/filestore";
+     * <br/>
+     * Ignored if the FileConfiguration service is found.
      * </p>
      * <p>
      * The content inside this directory should not be modified directly, and doing so may corrupt the data.
