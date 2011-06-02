@@ -38,11 +38,22 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Service for accessing application-specific directories. These will default to
- * the platform settings, but can be overridden manually, either one-by-one or as a whole.
- * <p/>
+ * Service for accessing application-specific directories.
+ * 
+ * <p>
+ * These will default to the platform settings, but can be overridden manually, either one-by-one or as a whole.
+ * </p>
+ * <p>
+ * You can override defaults by adding org.qi4j.library.fileconfig.FileConfiguration_OS.properties files to your
+ * classpath where OS is one of win, mac or unix.
+ * <br/>
+ * You can also override all properties definitions at assembly time by setting a FileConfigurationOverride object
+ * as meta info of this service.
+ * </p>
+ * <p>
  * Services will most likely want to create their own subdirectories in the directories accessed
  * from here.
+ * </p>
  */
 @Mixins(FileConfiguration.Mixin.class)
 public interface FileConfiguration
@@ -118,6 +129,8 @@ public interface FileConfiguration
             data.cache().set( new File( format( bundle.getString( "cache" ), arguments ) ) );
             data.log().set( new File( format( bundle.getString( "log" ), arguments ) ) );
 
+            applyOverride();
+
             testCleanup();
             autoCreateDirectories();
         }
@@ -163,6 +176,28 @@ public interface FileConfiguration
             }
 
             return arguments;
+        }
+
+        private void applyOverride()
+        {
+            FileConfigurationOverride override = metaInfo( FileConfigurationOverride.class );
+            if ( override != null ) {
+                if ( override.configuration() != null ) {
+                    data.configuration().set( override.configuration() );
+                }
+                if ( override.data() != null ) {
+                    data.data().set( override.data() );
+                }
+                if ( override.temporary() != null ) {
+                    data.temporary().set( override.temporary() );
+                }
+                if ( override.cache() != null ) {
+                    data.cache().set( override.cache() );
+                }
+                if ( override.log() != null ) {
+                    data.log().set( override.log() );
+                }
+            }
         }
 
         public void passivate() throws Exception
@@ -293,5 +328,7 @@ public interface FileConfiguration
 
             return buffer.toString();
         }
+
     }
+    
 }
