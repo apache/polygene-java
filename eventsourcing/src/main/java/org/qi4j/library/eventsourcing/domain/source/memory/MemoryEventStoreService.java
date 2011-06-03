@@ -62,6 +62,12 @@ public interface MemoryEventStoreService
 
         public Input<UnitOfWorkDomainEventsValue, IOException> events( final long offset, final long limit )
         {
+            if (offset < 0 || offset > count())
+                throw new IllegalArgumentException( "Offset must be between 0 and current number of events in the store" );
+
+            if (limit <= 0 )
+                throw new IllegalArgumentException( "Limit must be above 0" );
+
             return new Input<UnitOfWorkDomainEventsValue, IOException>()
             {
                 @Override

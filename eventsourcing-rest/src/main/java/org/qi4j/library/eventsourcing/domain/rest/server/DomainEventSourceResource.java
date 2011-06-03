@@ -20,6 +20,7 @@ package org.qi4j.library.eventsourcing.domain.rest.server;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.io.Outputs;
 import org.qi4j.api.service.qualifier.Tagged;
+import org.qi4j.api.util.Iterables;
 import org.qi4j.library.eventsourcing.domain.api.UnitOfWorkDomainEventsValue;
 import org.qi4j.library.eventsourcing.domain.source.EventSource;
 import org.restlet.Request;
@@ -40,14 +41,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static org.qi4j.api.util.Iterables.addAll;
+import static org.qi4j.api.util.Iterables.iterable;
+
 /**
- * Get events before or after a given date in various formats. The feed is paged, with one
+ * Get events in various formats. The feed is paged, with one
  * current set page, one working set page, and the rest being archive pages that never change. The links "next", "previous",
- * "first" and "last" are used as expected per the Atom spec. Page size is 10.
+ * "first" and "last" are used as expected per the Atom spec.
  * <p/>
- * / = current set of most recent events
- * /n = archive page nr n
- * /w = where w is the last page that is not yet completed
+ * / = current set of most recent events (event range: count-pagesize to count)
+ * /n,m = events from index n to index m. These are archive pages.
+ * /n = working set page, where n is the first event index to be presented
  */
 public class DomainEventSourceResource
         extends Restlet
@@ -62,91 +66,180 @@ public class DomainEventSourceResource
     @Override
     public void handle( Request request, Response response )
     {
-        long currentPage = -1;
-        long previousPage = -1;
-        long nextPage = -1;
         long eventCount = source.count();
-        long pageSize = 100;
-        long offset = 0;
-
-        long workingSetOffset = eventCount - (eventCount % pageSize);
-        if (workingSetOffset == eventCount)
-            workingSetOffset -= pageSize;
-
+        long pageSize = 10;
+        long startEvent = -1;
+        long endEvent = -1;
+        long limit = pageSize;
 
         final List<UnitOfWorkDomainEventsValue> eventsValues = new ArrayList<UnitOfWorkDomainEventsValue>();
+
+        final Feed feed = new Feed();
+        feed.setBaseReference( request.getResourceRef().getParentRef() );
+        List<Link> links = feed.getLinks();
 
         String remainingPart = request.getResourceRef().getRemainingPart();
         if (remainingPart.equals( "/" ))
         {
             // Current set - always contains the last "pageSize" events
-            offset = eventCount - pageSize;
+            startEvent = Math.max( 0, eventCount - pageSize - 1 );
 
-            currentPage = eventCount / pageSize;
-            previousPage = currentPage - 1;
+            feed.setTitle( new Text( "Current set" ) );
+
+            if (startEvent > 0)
+            {
+                long previousStart = Math.max(0, startEvent-pageSize);
+                long previousEnd = startEvent-1;
+
+                Link link = new Link( new Reference( previousStart+","+previousEnd ), new Relation( "previous" ), MediaType.APPLICATION_ATOM );
+                link.setTitle( "Previous page" );
+                links.add( link );
+            }
+
         } else
         {
-
-
             // Archive
-            currentPage = Long.parseLong( remainingPart.substring( 1 ) );
-            offset = currentPage * pageSize;
+            String[] indices = remainingPart.substring(1).split( "," );
 
-            if (offset >= workingSetOffset)
+            if (indices.length == 1)
+            {
+                // Working set
+                startEvent = Long.parseLong( indices[0] );
+                endEvent = startEvent + pageSize - 1;
+                limit = pageSize;
+                feed.setTitle( new Text("Working set") );
+            } else if (indices.length == 2)
+            {
+                feed.setTitle( new Text("Archive page") );
+                startEvent = Long.parseLong( indices[0] );
+                endEvent = Long.parseLong( indices[1] );
+                limit = 1+endEvent-startEvent;
+
+            } else
                 throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
 
-            if (currentPage > 0)
-                previousPage = currentPage - 1;
+            if (startEvent > 0)
+            {
+                long previousStart = Math.max(0, startEvent-pageSize);
+                long previousEnd = startEvent-1;
 
-            if (offset + pageSize < workingSetOffset)
-                nextPage = currentPage + 1;
+                Link link = new Link( new Reference( previousStart+","+previousEnd ), new Relation( "previous" ), MediaType.APPLICATION_ATOM );
+                link.setTitle( "Previous page" );
+                links.add( link );
+            }
+
+            long nextStart = endEvent+1;
+            long nextEnd = nextStart+pageSize-1;
+
+            if (nextStart < eventCount)
+                if (nextEnd >= eventCount)
+                {
+                    Link next = new Link( new Reference( nextStart+"" ), new Relation( "next" ), MediaType.APPLICATION_ATOM );
+                    next.setTitle( "Working set" );
+                    links.add( next );
+                } else
+                {
+                    Link next = new Link( new Reference( nextStart+","+nextEnd ), new Relation( "next" ), MediaType.APPLICATION_ATOM );
+                    next.setTitle( "Next page" );
+                    links.add( next );
+                }
         }
 
         try
         {
-            source.events( offset, pageSize ).transferTo( Outputs.collection( eventsValues ) );
+            source.events( startEvent, limit ).transferTo( Outputs.collection( eventsValues ) );
         } catch (Throwable throwable)
         {
-            throwable.printStackTrace();
+            throw new ResourceException( Status.SERVER_ERROR_INTERNAL, throwable );
         }
 
-        final Feed feed = new Feed();
-        feed.setTitle( new Text( "Latest domain events" ) );
+        Link last = new Link( new Reference( "0,"+(pageSize-1) ), new Relation( "last" ), MediaType.APPLICATION_ATOM );
+        last.setTitle( "Last archive page" );
+        links.add( last );
 
-        List<Link> links = feed.getLinks();
-        links.add( new Link( new Reference( "/0" ), new Relation( "last" ), MediaType.APPLICATION_ATOM ) );
+        Link first = new Link( new Reference( "." ), new Relation( "first" ), MediaType.APPLICATION_ATOM );
+        first.setTitle( "Current set" );
+        links.add( first );
+
+/*
         if (previousPage != -1)
-            links.add( new Link( new Reference( "/" + previousPage ), new Relation( "prev-archive" ), MediaType.APPLICATION_ATOM ) );
+        {
+            Link link = new Link( new Reference( ""+previousPage ), new Relation( "prev-archive" ), MediaType.APPLICATION_ATOM );
+            link.setTitle( "Previous archive page" );
+            links.add( link );
+        }
         if (nextPage != -1)
-            links.add( new Link( new Reference( "/" + nextPage ), new Relation( "next-archive" ), MediaType.APPLICATION_ATOM ) );
-        else if (offset != workingSetOffset)
-            links.add( new Link( new Reference( "/" ), new Relation( "next" ), MediaType.APPLICATION_ATOM ) );
-        links.add( new Link( new Reference( "/" ), new Relation( "first" ), MediaType.APPLICATION_ATOM ) );
+        {
+            Link link = new Link( new Reference( "" + nextPage ), new Relation( "next-archive" ), MediaType.APPLICATION_ATOM );
+            link.setTitle( "Next archive page" );
+            links.add( link );
+        }
+        else if (startEvent != workingSetOffset)
+        {
+            Link next = new Link( new Reference( "" ), new Relation( "next" ), MediaType.APPLICATION_ATOM );
+            next.setTitle( "Next page" );
+            links.add( next );
+        }
+*/
 
+        Date lastModified = null;
         for (UnitOfWorkDomainEventsValue eventsValue : eventsValues)
         {
             Entry entry = new Entry();
             entry.setTitle( new Text( eventsValue.usecase().get() + "(" + eventsValue.user().get() + ")" ) );
             entry.setPublished( new Date( eventsValue.timestamp().get() ) );
-            entry.setModificationDate( new Date( eventsValue.timestamp().get() ) );
-            entry.setId( Long.toString( offset + 1 ) );
-            offset++;
+            entry.setModificationDate( lastModified = new Date( eventsValue.timestamp().get() ) );
+            entry.setId( Long.toString( startEvent + 1 ) );
+            startEvent++;
             Content content = new Content();
             content.setInlineContent( new StringRepresentation( eventsValue.toJSON(), MediaType.APPLICATION_JSON ) );
             entry.setContent( content );
             feed.getEntries().add( entry );
         }
 
-        WriterRepresentation representation = new WriterRepresentation( MediaType.APPLICATION_ATOM )
-        {
-            public void write( final Writer writer ) throws IOException
-            {
-                feed.write( writer );
-            }
-        };
+        feed.setModificationDate( lastModified );
 
-        representation.setCharacterSet( CharacterSet.UTF_8 );
-        response.setEntity( representation );
+        MediaType mediaType = request.getClientInfo().getPreferredMediaType( addAll( new ArrayList<MediaType>(), iterable( MediaType.TEXT_HTML, MediaType.APPLICATION_ATOM ) ));
+
+        if (MediaType.APPLICATION_ATOM.equals( mediaType ))
+        {
+            WriterRepresentation representation = new WriterRepresentation( MediaType.APPLICATION_ATOM )
+            {
+                public void write( final Writer writer ) throws IOException
+                {
+                    feed.write( writer );
+                }
+            };
+            representation.setCharacterSet( CharacterSet.UTF_8 );
+            response.setEntity( representation );
+        } else
+        {
+            WriterRepresentation representation = new WriterRepresentation(MediaType.TEXT_HTML)
+            {
+                @Override
+                public void write( Writer writer ) throws IOException
+                {
+                    writer.append( "<html><head><title>Events</title></head><body>" );
+
+                    for( Link link : feed.getLinks() )
+                    {
+                        writer.append( "<a href=\"").append( link.getHref().getPath()).append( "\">" );
+                        writer.append( link.getTitle() );
+                        writer.append( "</a><br/>" );
+                    }
+
+                    writer.append( "<ol>" );
+                    for( Entry entry : feed.getEntries() )
+                    {
+                        writer.append( "<li>" ).append( entry.getTitle().toString() ).append( "</li>" );
+                    }
+                    writer.append( "</ol></body>" );
+                }
+            };
+            representation.setCharacterSet( CharacterSet.UTF_8 );
+            response.setEntity( representation );
+        }
+
 /*
         } else
         {

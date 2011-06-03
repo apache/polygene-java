@@ -41,6 +41,7 @@ import org.qi4j.test.EntityTestAssembler;
 import org.restlet.*;
 import org.restlet.data.Protocol;
 import org.restlet.data.Status;
+import org.restlet.representation.StringRepresentation;
 import org.restlet.resource.ResourceException;
 
 import java.security.Principal;
@@ -175,7 +176,8 @@ public class DomainEventSourceResourceTest
                 entity.changedDescription( "New description" );
                 uow.complete();
 
-                response.setStatus( Status.SUCCESS_NO_CONTENT );
+                response.setEntity( new StringRepresentation( "Event created" ) );
+                response.setStatus( Status.SUCCESS_OK );
             } catch (UnitOfWorkCompletionException e)
             {
                 throw new ResourceException(e);
