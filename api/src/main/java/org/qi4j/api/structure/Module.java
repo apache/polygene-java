@@ -15,6 +15,7 @@
 package org.qi4j.api.structure;
 
 import org.qi4j.api.composite.TransientBuilderFactory;
+import org.qi4j.api.event.ActivationEventListenerRegistration;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.api.query.QueryBuilderFactory;
@@ -28,6 +29,7 @@ import org.qi4j.api.value.ValueBuilderFactory;
  * injection scope.
  */
 public interface Module
+    extends ActivationEventListenerRegistration
 {
     String name();
 

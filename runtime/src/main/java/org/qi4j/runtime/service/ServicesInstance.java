@@ -20,19 +20,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.event.ActivationEventListener;
+import org.qi4j.api.event.ActivationEventListenerRegistration;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceReference;
+import org.qi4j.runtime.structure.ActivationEventListenerSupport;
 
 /**
  * JAVADOC
  */
 public class ServicesInstance
-    implements Activatable
+    implements Activatable, ActivationEventListenerRegistration
 {
     private final ServicesModel servicesModel;
     private final List<ServiceReference> serviceReferences;
     private final Activator activator;
     private final Map<String, ServiceReference> mapIdentityServiceReference = new HashMap<String, ServiceReference>();
+    private final ActivationEventListenerSupport eventListenerSupport = new ActivationEventListenerSupport();
 
     public ServicesInstance( ServicesModel servicesModel, List<ServiceReference> serviceReferences )
     {
@@ -42,6 +46,7 @@ public class ServicesInstance
         for( ServiceReference serviceReference : serviceReferences )
         {
             mapIdentityServiceReference.put( serviceReference.identity(), serviceReference );
+            ((ActivationEventListenerRegistration)serviceReference).registerActivationEventListener( eventListenerSupport );
         }
         activator = new Activator();
     }
@@ -49,11 +54,26 @@ public class ServicesInstance
     public void activate()
         throws Exception
     {
-        for( ServiceReference serviceReference : serviceReferences )
+        for( final ServiceReference serviceReference : serviceReferences )
         {
             if( serviceReference instanceof Activatable )
             {
-                activator.activate( (Activatable) serviceReference );
+                Activatable eventActivatable = new Activatable()
+                {
+                    @Override
+                    public void activate() throws Exception
+                    {
+                        ((Activatable)serviceReference).activate();
+                    }
+
+                    @Override
+                    public void passivate() throws Exception
+                    {
+                        ((Activatable)serviceReference).passivate();
+                    }
+                };
+
+                activator.activate(eventActivatable);
             }
         }
     }
@@ -67,6 +87,18 @@ public class ServicesInstance
     public <T> ServiceReference<T> getServiceWithIdentity( String serviceIdentity )
     {
         return mapIdentityServiceReference.get( serviceIdentity );
+    }
+
+    @Override
+    public void registerActivationEventListener( ActivationEventListener listener )
+    {
+        eventListenerSupport.registerActivationEventListener( listener );
+    }
+
+    @Override
+    public void deregisterActivationEventListener( ActivationEventListener listener )
+    {
+        eventListenerSupport.deregisterActivationEventListener( listener );
     }
 
     public <T> ServiceReference<T> getServiceFor( Type type, Visibility visibility )

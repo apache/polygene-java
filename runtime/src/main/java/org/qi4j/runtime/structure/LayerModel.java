@@ -94,12 +94,11 @@ public final class LayerModel
     // Context
     public LayerInstance newInstance( ApplicationInstance applicationInstance, UsedLayersInstance usedLayerInstance )
     {
-        List<ModuleInstance> moduleInstances = new ArrayList<ModuleInstance>();
-        LayerInstance layerInstance = new LayerInstance( this, applicationInstance, moduleInstances, usedLayerInstance );
+        LayerInstance layerInstance = new LayerInstance( this, applicationInstance, usedLayerInstance );
         for( ModuleModel module : modules )
         {
             ModuleInstance moduleInstance = module.newInstance( layerInstance );
-            moduleInstances.add( moduleInstance );
+            layerInstance.addModule( moduleInstance );
         }
 
         return layerInstance;

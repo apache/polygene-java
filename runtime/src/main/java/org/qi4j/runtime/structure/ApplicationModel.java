@@ -112,8 +112,7 @@ public final class ApplicationModel
     public ApplicationInstance newInstance( Qi4jSPI runtime )
         throws InvalidApplicationException
     {
-        List<LayerInstance> layerInstances = new ArrayList<LayerInstance>();
-        ApplicationInstance applicationInstance = new ApplicationInstance( this, runtime, layerInstances );
+        ApplicationInstance applicationInstance = new ApplicationInstance( this, runtime );
 
         // Create layer instances
         Map<LayerModel, LayerInstance> layerInstanceMap = new HashMap<LayerModel, LayerInstance>();
@@ -124,7 +123,7 @@ public final class ApplicationModel
             usedLayers.put( layer, usedLayerInstances );
             UsedLayersInstance usedLayersInstance = layer.usedLayers().newInstance( usedLayerInstances );
             LayerInstance layerInstance = layer.newInstance( applicationInstance, usedLayersInstance );
-            layerInstances.add( layerInstance );
+            applicationInstance.addLayer( layerInstance );
             layerInstanceMap.put( layer, layerInstance );
         }
 

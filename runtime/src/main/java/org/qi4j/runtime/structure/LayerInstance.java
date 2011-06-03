@@ -14,42 +14,46 @@
 
 package org.qi4j.runtime.structure;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.qi4j.api.Qi4j;
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.event.ActivationEvent;
+import org.qi4j.api.event.ActivationEventListener;
+import org.qi4j.api.event.LayerActivationEvent;
 import org.qi4j.api.structure.Layer;
 import org.qi4j.api.structure.Module;
 import org.qi4j.runtime.service.Activator;
 import org.qi4j.spi.structure.LayerSPI;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Instance of a Qi4j application layer. Contains a list of modules which are managed by this layer.
  */
 public class LayerInstance
-    implements Layer, LayerSPI
+        implements Layer, LayerSPI
 {
-    private static final Logger logger = LoggerFactory.getLogger( Qi4j.class );
-
     private final LayerModel model;
     private final ApplicationInstance applicationInstance;
-    private final List<ModuleInstance> moduleInstances;
+    private final List<ModuleInstance> moduleInstances = new ArrayList<ModuleInstance>();
     private final Activator moduleActivator;
     private final UsedLayersInstance usedLayersInstance;
+    private final ActivationEventListenerSupport eventListenerSupport = new ActivationEventListenerSupport();
 
     public LayerInstance( LayerModel model,
                           ApplicationInstance applicationInstance,
-                          List<ModuleInstance> moduleInstances,
                           UsedLayersInstance usedLayersInstance
     )
     {
         this.model = model;
         this.applicationInstance = applicationInstance;
-        this.moduleInstances = moduleInstances;
         this.usedLayersInstance = usedLayersInstance;
         this.moduleActivator = new Activator();
+    }
+
+    void addModule( ModuleInstance module )
+    {
+        moduleInstances.add( module );
+        module.registerActivationEventListener( eventListenerSupport );
     }
 
     public LayerModel model()
@@ -70,6 +74,18 @@ public class LayerInstance
     public <T> T metaInfo( Class<T> infoType )
     {
         return model.metaInfo( infoType );
+    }
+
+    @Override
+    public void registerActivationEventListener( ActivationEventListener listener )
+    {
+        eventListenerSupport.registerActivationEventListener( listener );
+    }
+
+    @Override
+    public void deregisterActivationEventListener( ActivationEventListener listener )
+    {
+        eventListenerSupport.deregisterActivationEventListener( listener );
     }
 
     public List<Module> modules()
@@ -101,17 +117,25 @@ public class LayerInstance
     }
 
     public void activate()
-        throws Exception
+            throws Exception
     {
+        eventListenerSupport.fireEvent( new LayerActivationEvent( this, ActivationEvent.EventType.ACTIVATING ) );
         moduleActivator.activate( moduleInstances );
+        eventListenerSupport.fireEvent( new LayerActivationEvent( this, ActivationEvent.EventType.ACTIVATED ) );
+    }
 
-        logger.debug( "Layer " + name() + " activated" );
+    public void passivate()
+            throws Exception
+    {
+        eventListenerSupport.fireEvent( new LayerActivationEvent( this, ActivationEvent.EventType.PASSIVATING ) );
+        moduleActivator.passivate();
+        eventListenerSupport.fireEvent( new LayerActivationEvent( this, ActivationEvent.EventType.PASSIVATED ) );
     }
 
     public <ThrowableType extends Throwable> boolean visitModules( ModuleVisitor<ThrowableType> visitor,
                                                                    Visibility visibility
     )
-        throws ThrowableType
+            throws ThrowableType
     {
         // Visit modules in this layer
         for( ModuleInstance moduleInstance : moduleInstances )
@@ -135,14 +159,6 @@ public class LayerInstance
         }
 
         return true;
-    }
-
-    public void passivate()
-        throws Exception
-    {
-        moduleActivator.passivate();
-
-        logger.debug( "Layer " + name() + " passivated" );
     }
 
     @Override

@@ -14,15 +14,8 @@
 
 package org.qi4j.runtime.structure;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
-import java.util.concurrent.ConcurrentHashMap;
 import org.json.JSONException;
 import org.json.JSONTokener;
-import org.qi4j.api.Qi4j;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.AmbiguousTypeException;
@@ -30,6 +23,9 @@ import org.qi4j.api.composite.NoSuchCompositeException;
 import org.qi4j.api.composite.TransientBuilder;
 import org.qi4j.api.composite.TransientBuilderFactory;
 import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.event.ActivationEvent;
+import org.qi4j.api.event.ActivationEventListener;
+import org.qi4j.api.event.ModuleActivationEvent;
 import org.qi4j.api.object.NoSuchObjectException;
 import org.qi4j.api.object.ObjectBuilder;
 import org.qi4j.api.object.ObjectBuilderFactory;
@@ -46,9 +42,9 @@ import org.qi4j.api.util.NullArgumentException;
 import org.qi4j.api.value.NoSuchValueException;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
-import org.qi4j.runtime.composite.TransientsModel;
 import org.qi4j.runtime.composite.TransientBuilderInstance;
 import org.qi4j.runtime.composite.TransientModel;
+import org.qi4j.runtime.composite.TransientsModel;
 import org.qi4j.runtime.composite.UsesInstance;
 import org.qi4j.runtime.entity.EntitiesInstance;
 import org.qi4j.runtime.entity.EntitiesModel;
@@ -71,8 +67,13 @@ import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.object.ObjectDescriptor;
 import org.qi4j.spi.structure.ModuleSPI;
 import org.qi4j.spi.value.ValueDescriptor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Instance of a Qi4j Module. Contains the various composites for this Module.
@@ -80,8 +81,6 @@ import org.slf4j.LoggerFactory;
 public class ModuleInstance
     implements Module, ModuleSPI, Activatable
 {
-    private static final Logger logger = LoggerFactory.getLogger( Qi4j.class );
-
     private final ModuleModel moduleModel;
     private final LayerInstance layerInstance;
     private final EntitiesInstance entities;
@@ -94,6 +93,7 @@ public class ModuleInstance
     private final UnitOfWorkFactory unitOfWorkFactory;
     private final QueryBuilderFactory queryBuilderFactory;
     private final ServiceFinder serviceFinder;
+    private final ActivationEventListenerSupport eventListenerSupport = new ActivationEventListenerSupport();
 
     // Lookup caches
     private final Map<Class, EntityFinder> entityFinders;
@@ -123,6 +123,8 @@ public class ModuleInstance
         compositeFinders = new ConcurrentHashMap<Class, CompositeFinder>();
         objectFinders = new ConcurrentHashMap<Class, ObjectFinder>();
         valueFinders = new ConcurrentHashMap<Class, ValueFinder>();
+
+        services.registerActivationEventListener( eventListenerSupport );
     }
 
     public String name()
@@ -264,20 +266,32 @@ public class ModuleInstance
         layerInstance.visitModules( visitor, Visibility.layer );
     }
 
+    @Override
+    public void registerActivationEventListener( ActivationEventListener listener )
+    {
+        eventListenerSupport.registerActivationEventListener( listener );
+    }
+
+    @Override
+    public void deregisterActivationEventListener( ActivationEventListener listener )
+    {
+        eventListenerSupport.deregisterActivationEventListener( listener );
+    }
+
     public void activate()
         throws Exception
     {
+        eventListenerSupport.fireEvent( new ModuleActivationEvent(this, ActivationEvent.EventType.ACTIVATING) );
         services.activate();
-
-        logger.debug( "Module " + name() + " activated" );
+        eventListenerSupport.fireEvent( new ModuleActivationEvent( this, ActivationEvent.EventType.ACTIVATED ) );
     }
 
     public void passivate()
         throws Exception
     {
+        eventListenerSupport.fireEvent( new ModuleActivationEvent(this, ActivationEvent.EventType.PASSIVATING) );
         services.passivate();
-
-        logger.debug( "Module " + name() + " passivated" );
+        eventListenerSupport.fireEvent( new ModuleActivationEvent( this, ActivationEvent.EventType.PASSIVATED ) );
     }
 
     @Override

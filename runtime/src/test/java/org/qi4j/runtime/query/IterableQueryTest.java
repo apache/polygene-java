@@ -31,7 +31,10 @@ import org.qi4j.api.query.QueryExpressions;
 import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
+import org.qi4j.api.util.Function;
+import org.qi4j.api.util.Iterables;
 import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.ClassScanner;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.runtime.query.model.City;
@@ -69,13 +72,20 @@ public class IterableQueryTest
             public void assemble( ModuleAssembly module )
                     throws AssemblyException
             {
-                module.entities(
-                        MaleEntity.class,
-                        FemaleEntity.class,
-                        CityEntity.class,
-                        DomainEntity.class,
-                        PetEntity.class
-                );
+                Iterable<Class> entities = Iterables.debug("Entity:{0}", ClassScanner.getClasses( DomainEntity.class ), new Function<Class, String>()
+                {
+                    @Override
+                    public String map( Class aClass )
+                    {
+                        return aClass.getSimpleName();
+                    }
+                });
+
+                for( Class entity : entities )
+                {
+                    module.entities( entity );
+                }
+
                 module.values( ContactsValue.class, ContactValue.class );
                 new EntityTestAssembler().assemble( module );
             }

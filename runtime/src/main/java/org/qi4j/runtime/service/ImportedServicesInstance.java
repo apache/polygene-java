@@ -20,18 +20,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceReference;
 
 /**
  * JAVADOC
  */
 public class ImportedServicesInstance
-    implements Activatable
 {
     private final ImportedServicesModel servicesModel;
     private final List<? extends ServiceReference> serviceReferences;
-    private final Activator activator;
     private final Map<String, ServiceReference<?>> mapIdentityServiceReference = new HashMap<String, ServiceReference<?>>();
 
     public ImportedServicesInstance( ImportedServicesModel servicesModel,
@@ -45,26 +42,6 @@ public class ImportedServicesInstance
         {
             mapIdentityServiceReference.put( serviceReference.identity(), serviceReference );
         }
-
-        activator = new Activator();
-    }
-
-    public void activate()
-        throws Exception
-    {
-        for( ServiceReference serviceReference : serviceReferences )
-        {
-            if( serviceReference instanceof Activatable )
-            {
-                activator.activate( (Activatable) serviceReference );
-            }
-        }
-    }
-
-    public void passivate()
-        throws Exception
-    {
-        activator.passivate();
     }
 
     public ServiceReference<Object> getServiceWithIdentity( String serviceIdentity )

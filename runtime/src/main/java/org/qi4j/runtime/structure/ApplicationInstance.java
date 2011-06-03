@@ -14,8 +14,9 @@
 
 package org.qi4j.runtime.structure;
 
-import java.util.List;
-import org.qi4j.api.Qi4j;
+import org.qi4j.api.event.ActivationEvent;
+import org.qi4j.api.event.ActivationEventListener;
+import org.qi4j.api.event.ApplicationActivationEvent;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Layer;
 import org.qi4j.api.structure.Module;
@@ -23,8 +24,9 @@ import org.qi4j.runtime.service.Activator;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.spi.structure.DescriptorVisitor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Instance of a Qi4j application. Contains a list of layers which are managed by this application
@@ -32,19 +34,23 @@ import org.slf4j.LoggerFactory;
 public class ApplicationInstance
     implements Application, ApplicationSPI
 {
-    private static final Logger logger = LoggerFactory.getLogger( Qi4j.class );
-
     private final ApplicationModel model;
     private final Qi4jSPI runtime;
-    private final List<LayerInstance> layerInstances;
+    private final List<LayerInstance> layerInstances = new ArrayList<LayerInstance>(  );
     private final Activator layerActivator;
+    private final ActivationEventListenerSupport eventListenerSupport = new ActivationEventListenerSupport();
 
-    public ApplicationInstance( ApplicationModel model, Qi4jSPI runtime, List<LayerInstance> layerInstances )
+    public ApplicationInstance( ApplicationModel model, Qi4jSPI runtime )
     {
         this.model = model;
         this.runtime = runtime;
-        this.layerInstances = layerInstances;
         layerActivator = new Activator();
+    }
+
+    void addLayer(LayerInstance layer)
+    {
+        layerInstances.add(layer);
+        layer.registerActivationEventListener( eventListenerSupport );
     }
 
     public ApplicationModel model()
@@ -108,20 +114,32 @@ public class ApplicationInstance
         return null;
     }
 
+    @Override
+    public void registerActivationEventListener( ActivationEventListener listener )
+    {
+        eventListenerSupport.registerActivationEventListener( listener );
+    }
+
+    @Override
+    public void deregisterActivationEventListener( ActivationEventListener listener )
+    {
+        eventListenerSupport.deregisterActivationEventListener( listener );
+    }
+
     public void activate()
         throws Exception
     {
+        eventListenerSupport.fireEvent( new ApplicationActivationEvent(this, ActivationEvent.EventType.ACTIVATING) );
         layerActivator.activate( layerInstances );
-
-        logger.debug( "Application " + name() + " activated" );
+        eventListenerSupport.fireEvent( new ApplicationActivationEvent( this, ActivationEvent.EventType.ACTIVATED ) );
     }
 
     public void passivate()
         throws Exception
     {
+        eventListenerSupport.fireEvent( new ApplicationActivationEvent(this, ActivationEvent.EventType.PASSIVATING) );
         layerActivator.passivate();
-
-        logger.debug( "Application " + name() + " passivated" );
+        eventListenerSupport.fireEvent( new ApplicationActivationEvent( this, ActivationEvent.EventType.PASSIVATED ) );
     }
 
     public <ThrowableType extends Throwable> void visitDescriptor( DescriptorVisitor<ThrowableType> visitor )
@@ -143,5 +161,11 @@ public class ApplicationInstance
                 visitor.visit( module );
             }
         }
+    }
+
+    @Override
+    public String toString()
+    {
+        return name();
     }
 }

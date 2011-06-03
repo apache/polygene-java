@@ -14,15 +14,21 @@
 
 package org.qi4j.api.util;
 
+import java.text.MessageFormat;
 import java.util.*;
 
 import org.qi4j.api.specification.Specification;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Utility methods for working with Iterables. See test for examples of how to use.
+ *
  */
 public class Iterables
 {
+    private static Logger debugLogger = LoggerFactory.getLogger( Iterables.class );
+
     public static <T,C extends Collection<T>> C addAll( C collection, Iterable<? extends T> iterable )
     {
         for( T item : iterable )
@@ -55,6 +61,7 @@ public class Iterables
         Iterator<? extends X> iter = i.iterator();
         if( iter.hasNext() )
         {
+
             return iter.next();
         }
         else
@@ -69,6 +76,7 @@ public class Iterables
         X item = null;
         while (iter.hasNext())
             item = iter.next();
+
         return item;
     }
 
@@ -76,31 +84,38 @@ public class Iterables
     {
         ArrayList<X> list = addAll( new ArrayList<X>(), iterable );
         Collections.reverse( list );
+
         return list;
     }
 
     public static <T> boolean matchesAny( Specification<? super T> specification, Iterable<T> iterable )
     {
+        boolean result = false;
+
         for( T item : iterable )
         {
             if( specification.satisfiedBy( item ) )
             {
-                return true;
+                result = true;
+                break;
             }
         }
-        return false;
+
+        return result;
     }
 
     public static <T> boolean matchesAll( Specification<? super T> specification, Iterable<T> iterable )
     {
+        boolean result = true;
         for( T item : iterable )
         {
             if( !specification.satisfiedBy( item ) )
             {
-                return false;
+                result = false;
             }
         }
-        return true;
+
+        return result;
     }
 
     public static <X,I extends Iterable<? extends X>> Iterable<X> flatten( I... multiIterator )
@@ -140,6 +155,33 @@ public class Iterables
         return last(map(function, i));
     }
 
+    public static <T> Iterable<T> debug(String format, final Iterable<T> iterable, final Function<T, String>... functions)
+    {
+        final MessageFormat msgFormat = new MessageFormat(format);
+
+        return map( new Function<T, T>()
+        {
+            @Override
+            public T map( T t )
+            {
+                if (functions.length == 0)
+                    debugLogger.info( msgFormat.format( new Object[]{t} ) );
+                else
+                {
+                    String[] mapped = new String[functions.length];
+                    for( int i = 0; i < functions.length; i++ )
+                    {
+                        Function<T, String> function = functions[i];
+                        mapped[i] = function.map( t );
+                        debugLogger.info( msgFormat.format( mapped ) );
+                    }
+                }
+
+                return t;
+            }
+        }, iterable );
+    }
+
     private static class MapIterable<FROM, TO>
         implements Iterable<TO>
     {
@@ -176,7 +218,9 @@ public class Iterables
 
             public TO next()
             {
-                return function.map( fromIterator.next() );
+                FROM from = fromIterator.next();
+
+                return function.map( from );
             }
 
             public void remove()
@@ -227,7 +271,9 @@ public class Iterables
                 while( !found && iterator.hasNext() )
                 {
                     T currentValue = iterator.next();
-                    if( specification.satisfiedBy( currentValue ) )
+                    boolean satisfies = specification.satisfiedBy( currentValue );
+
+                    if( satisfies )
                     {
                         found = true;
                         this.currentValue = currentValue;

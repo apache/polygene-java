@@ -14,6 +14,7 @@
 
 package org.qi4j.runtime.service;
 
+import org.qi4j.api.event.ActivationEventListener;
 import org.qi4j.api.service.ServiceImporterException;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Module;
@@ -52,6 +53,18 @@ public final class ImportedServiceReferenceInstance<T>
     public synchronized T get()
     {
         return getInstance();
+    }
+
+    @Override
+    public void registerActivationEventListener( ActivationEventListener listener )
+    {
+        // TODO What to do here?
+    }
+
+    @Override
+    public void deregisterActivationEventListener( ActivationEventListener listener )
+    {
+        // TODO What to do here?
     }
 
     public boolean isActive()

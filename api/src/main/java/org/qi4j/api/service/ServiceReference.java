@@ -14,11 +14,14 @@
 
 package org.qi4j.api.service;
 
+import org.qi4j.api.event.ActivationEventListenerRegistration;
+
 /**
  * From a ServiceReference you can access and modify metadata about a service.
  * You can also access the actual service through get(), that can then be invoked.
  */
 public interface ServiceReference<T>
+    extends ActivationEventListenerRegistration
 {
     String identity();
 

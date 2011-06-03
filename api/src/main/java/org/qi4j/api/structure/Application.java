@@ -14,10 +14,13 @@
 
 package org.qi4j.api.structure;
 
+import org.qi4j.api.event.ActivationEventListenerRegistration;
+
 /**
  * The Application represents a whole Qi4j application.
  */
 public interface Application
+    extends ActivationEventListenerRegistration
 {
     public enum Mode
     {

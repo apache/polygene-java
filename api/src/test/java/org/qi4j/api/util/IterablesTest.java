@@ -15,7 +15,6 @@
 package org.qi4j.api.util;
 
 import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
 import org.junit.Test;
 import org.qi4j.api.specification.Specifications;
 
@@ -33,7 +32,7 @@ public class IterablesTest
 {
     private List<String> numbers = Arrays.asList( "1", "2", "3" );
     private Iterable<Long> numberLongs = Arrays.asList( 1L, 2L, 3L );
-    private Iterable<Integer> numberIntegers = Arrays.asList(1, 2, 3);
+    private Iterable<Integer> numberIntegers = Arrays.asList( 1, 2, 3 );
 
     @Test
     public void testAddAll()
@@ -101,8 +100,8 @@ public class IterablesTest
     @Test
     public void testMatchesAll()
     {
-        assertThat( Iterables.matchesAll( Specifications.in( "1","2","3" ), numbers ), equalTo( true ) );
-        assertThat( Iterables.matchesAll( Specifications.in( "2","3","4" ), numbers ), equalTo( false ) );
+        assertThat( Iterables.matchesAll( Specifications.in( "1", "2", "3" ), numbers ), equalTo( true ) );
+        assertThat( Iterables.matchesAll( Specifications.in( "2", "3", "4" ), numbers ), equalTo( false ) );
     }
 
     @Test
@@ -119,7 +118,7 @@ public class IterablesTest
     @Test
     public void testFlattenIterables()
     {
-      Iterable<List<String>> iterable = Iterables.iterable(numbers, numbers);
+        Iterable<List<String>> iterable = Iterables.iterable( numbers, numbers );
         assertThat( Iterables.addAll( new ArrayList<String>(),
                 Iterables.flattenIterables( iterable ) )
                 .toString(), equalTo( "[1, 2, 3, 1, 2, 3]" ) );
@@ -137,7 +136,7 @@ public class IterablesTest
         }, numbers ) ).toString(), equalTo( "[11, 22, 33]" ) );
 
 
-      Iterable<List<String>> numberIterable = Iterables.iterable(numbers, numbers, numbers);
+        Iterable<List<String>> numberIterable = Iterables.iterable( numbers, numbers, numbers );
         assertThat( Iterables.addAll( new ArrayList<Integer>(), map( new Function<Collection, Integer>()
         {
             @Override
@@ -162,5 +161,24 @@ public class IterablesTest
     {
         assertThat( Iterables.addAll( new ArrayList<String>(), Iterables.iterable( "1", "2", "3" ) )
                 .toString(), equalTo( "[1, 2, 3]" ) );
+    }
+
+    @Test
+    public void testDebug()
+    {
+        assertThat( Iterables.first( Iterables.debug( "Filtered number:{0}", Iterables.filter( Specifications.in( "2" ), Iterables.debug( "Number:{0}", numbers ) ) ) ), equalTo( "2" ) );
+    }
+
+    @Test
+    public void testDebugWithFunctions()
+    {
+        assertThat( Iterables.first( Iterables.debug( "Filtered number:{0}", Iterables.filter( Specifications.in( "2" ), Iterables.debug( "Number:{0}", numbers, new Function<String,String>()
+        {
+            @Override
+            public String map( String s )
+            {
+                return s+":"+s.length();
+            }
+        }) ) ) ), equalTo( "2" ) );
     }
 }
