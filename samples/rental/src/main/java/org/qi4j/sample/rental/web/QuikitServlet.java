@@ -161,7 +161,7 @@ public class QuikitServlet
         String path = httpServletRequest.getPathInfo();
         if( urlService == null )
         {
-            urlService = (UrlService) finder.findService( UrlService.class ).get();
+            urlService = finder.findService( UrlService.class ).get();
             String uri = httpServletRequest.getRequestURI();
             String basePath = uri.substring( 0, uri.length() - path.length() );
             urlService.registerBaseUri( basePath );

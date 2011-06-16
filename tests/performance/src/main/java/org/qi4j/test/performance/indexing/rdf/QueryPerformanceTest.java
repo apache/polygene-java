@@ -234,8 +234,7 @@ public class QueryPerformanceTest
         throws UnitOfWorkCompletionException
     {
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
-        ServiceReference<LeadRepository> leadRepoRef = serviceLocator.findService( LeadRepositoryService.class );
-        LeadRepository leadRepo = leadRepoRef.get();
+        LeadRepository leadRepo = serviceLocator.findService( LeadRepositoryService.class ).get();
         if( leadRepo.findByName( "Lead99999" ) == null )
         {
             ServiceReference<LeadEntityFactoryService> leadFactoryRef = serviceLocator.findService( LeadEntityFactoryService.class );

@@ -53,7 +53,7 @@ public final class SampleLocationDataBootstrapServiceTest
     public final void testSampleLocations()
     {
         ServiceFinder serviceFinder = moduleInstance.serviceFinder();
-        LocationRepository locationRepository = serviceFinder.<LocationRepository>findService( LocationRepository.class )
+        LocationRepository locationRepository = serviceFinder.findService( LocationRepository.class )
             .get();
 
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();

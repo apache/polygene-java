@@ -57,6 +57,7 @@ include "core:api",
         'samples:dddsample2',
         'samples:rental',
         'samples:struts2Hello',
+        'samples:scala',
 //        'tools:codesnippet',   // TODO: JavaCC plugin found for Gradle requires Javacc to be installed on system. Need better solution.
 'tools:entity-viewer',
 'tools:envisage',
