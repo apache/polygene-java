@@ -62,8 +62,6 @@ public class DataSourceConfigurationManagerServiceTest
             {
                 new JMXAssembler().assemble( module );
 
-                module.objects( DataSourceConfigurationManagerServiceTest.class );
-
                 // Set up DataSource service that will manage the connection pools
                 module.services( DataSourceService.class ).identifiedBy( "datasource" ).visibleIn( Visibility.layer );
 
@@ -106,10 +104,12 @@ public class DataSourceConfigurationManagerServiceTest
                 module.services( MemoryEntityStoreService.class ).visibleIn( Visibility.layer );
 
                 module.services(DataSourceConfigurationManagerService.class).instantiateOnStartup();
+
+//                module.layer().module( "Test" ).objects( DataSourceConfigurationManagerServiceTest.class );
             }
         };
 
-        assembler.objectBuilderFactory().newObjectBuilder( DataSourceConfigurationManagerServiceTest.class ).injectTo( this );
+//        assembler.application().findModule( "Layer 1","Test" ).objectBuilderFactory().newObjectBuilder( DataSourceConfigurationManagerServiceTest.class ).injectTo( this );
     }
 
     public void init( @Service @IdentifiedBy("testds") DataSource dataSource, @Service @IdentifiedBy("testds2") ServiceReference<DataSource> dataSource2 ) throws SQLException, PropertyVetoException

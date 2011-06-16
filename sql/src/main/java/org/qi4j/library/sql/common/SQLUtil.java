@@ -98,6 +98,6 @@ public class SQLUtil
     public static Connection getConnection( ServiceFinder finder )
         throws SQLException
     {
-        return finder.<DataSourceService>findService( DataSourceService.class).get().getDataSource().getConnection();
+        return finder.findService( DataSourceService.class).get().getDataSource().getConnection();
     }
 }

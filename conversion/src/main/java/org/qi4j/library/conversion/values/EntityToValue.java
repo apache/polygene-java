@@ -95,6 +95,12 @@ public interface EntityToValue
                         };
                     }
 
+                    @Override
+                    public Iterable<Property<?>> properties()
+                    {
+                        return null;
+                    }
+
                     public <ThrowableType extends Throwable> void visitProperties( StateVisitor<ThrowableType> visitor )
                         throws ThrowableType
                     {

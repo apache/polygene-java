@@ -34,7 +34,7 @@ public interface OSGiServiceExporter extends Activatable, ServiceComposite
                 Class<? extends BundleContext> type = BundleContext.class;
                 BundleContext context = ref.metaInfo( type );
                 ServiceComposite service = ref.get();
-                Set<Class> interfaces = Classes.interfacesOf( service.getClass() );
+                Set<Class<?>> interfaces = Classes.interfacesOf( service.getClass() );
                 String[] interfaceNames = new String[interfaces.size()];
                 Properties properties = ref.metaInfo( Properties.class );
                 if( properties == null )

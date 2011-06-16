@@ -41,7 +41,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static org.qi4j.api.util.Iterables.addAll;
 import static org.qi4j.api.util.Iterables.iterable;
 
 /**
@@ -199,7 +198,7 @@ public class DomainEventSourceResource
 
         feed.setModificationDate( lastModified );
 
-        MediaType mediaType = request.getClientInfo().getPreferredMediaType( addAll( new ArrayList<MediaType>(), iterable( MediaType.TEXT_HTML, MediaType.APPLICATION_ATOM ) ));
+        MediaType mediaType = request.getClientInfo().getPreferredMediaType( Iterables.toList( iterable( MediaType.TEXT_HTML, MediaType.APPLICATION_ATOM ) ));
 
         if (MediaType.APPLICATION_ATOM.equals( mediaType ))
         {

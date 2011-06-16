@@ -94,6 +94,13 @@ public class ValueCompositeCxfType extends AegisType
                 return null;
             }
 
+            @Override
+            public Iterable<Property<?>> properties()
+            {
+                // TODO
+                return null;
+            }
+
             public <ThrowableType extends Throwable> void visitProperties( final StateVisitor<ThrowableType> visitor )
                 throws ThrowableType
             {

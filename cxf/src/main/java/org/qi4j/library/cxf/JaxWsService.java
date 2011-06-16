@@ -26,6 +26,7 @@ import org.apache.cxf.aegis.type.TypeMapping;
 import org.apache.cxf.interceptor.LoggingInInterceptor;
 import org.apache.cxf.interceptor.LoggingOutInterceptor;
 import org.apache.cxf.jaxws.JaxWsServerFactoryBean;
+import org.qi4j.api.composite.Composite;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.object.ObjectBuilderFactory;
@@ -98,7 +99,7 @@ public interface JaxWsService extends Activatable, ServiceComposite
 
         private Object findThisService()
         {
-            ServiceReference<Object> reference = module.serviceFinder().findService( type() );
+            ServiceReference<? extends Composite> reference = module.serviceFinder().findService( type() );
             if( reference == null )
             {
                 System.err.println( "Internal Error?? JaxWsService.findThisService()" );

@@ -4,6 +4,7 @@ import java.util.Dictionary;
 import java.util.Set;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
+import org.qi4j.api.composite.Composite;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.Activatable;
@@ -32,12 +33,12 @@ public interface OSGiEnabledService extends Activatable, ServiceComposite
             {
                 return;
             }
-            Iterable<ServiceReference<Object>> services = module.serviceFinder().findServices( type() );
+            Iterable<ServiceReference<Object>> services = module.serviceFinder().findServices( (Class)type() );
             for( ServiceReference ref : services )
             {
                 if( ref.identity().equals( identity().get() ) )
                 {
-                    Set<Class> classesSet = Classes.classesOf( type() );
+                    Set<Class<?>> classesSet = Classes.classesOf( type() );
                     Dictionary properties = metaInfo( Dictionary.class );
                     String[] clazzes = fetchInterfacesImplemented( classesSet );
                     registration = context.registerService( clazzes, ref.get(), properties );
@@ -45,7 +46,7 @@ public interface OSGiEnabledService extends Activatable, ServiceComposite
             }
         }
 
-        private String[] fetchInterfacesImplemented( Set<Class> classesSet )
+        private String[] fetchInterfacesImplemented( Set<Class<?>> classesSet )
         {
             String[] clazzes = new String[classesSet.size()];
             int i = 0;
