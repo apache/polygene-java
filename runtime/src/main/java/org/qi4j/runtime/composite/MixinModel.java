@@ -19,18 +19,16 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.composite.Composite;
-import org.qi4j.api.entity.Lifecycle;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Initializable;
 import org.qi4j.api.mixin.InitializationException;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.service.Activatable;
-import org.qi4j.api.util.Classes;
+import org.qi4j.api.util.Iterables;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.bootstrap.AssemblyHelper;
 import org.qi4j.runtime.injection.DependencyModel;
@@ -39,11 +37,13 @@ import org.qi4j.runtime.injection.InjectedMethodsModel;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
-import org.qi4j.runtime.structure.DependencyVisitor;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.composite.InvalidCompositeException;
 import org.qi4j.spi.mixin.MixinDescriptor;
+
+import static org.qi4j.api.util.Iterables.map;
+import static org.qi4j.api.util.Iterables.unique;
 
 /**
  * JAVADOC
@@ -58,7 +58,7 @@ public final class MixinModel
     private final InjectedMethodsModel injectedMethodsModel;
     private final ConcernsDeclaration concernsDeclaration;
     private final SideEffectsDeclaration sideEffectsDeclaration;
-    private final Set<Class> thisMixinTypes;
+    private final Iterable<Class<?>> thisMixinTypes;
 
     public MixinModel( Class declaredMixinClass, Class instantiationClass )
     {
@@ -101,6 +101,11 @@ public final class MixinModel
     public boolean isGeneric()
     {
         return InvocationHandler.class.isAssignableFrom( mixinClass );
+    }
+
+    public Iterable<DependencyModel> dependencies()
+    {
+        return Iterables.flatten( constructorsModel.dependencies(), injectedFieldsModel.dependencies(), injectedMethodsModel.dependencies() );
     }
 
     public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
@@ -179,31 +184,14 @@ public final class MixinModel
         return mixin;
     }
 
-    public Set<Class> thisMixinTypes()
+    public Iterable<Class<?>> thisMixinTypes()
     {
         return thisMixinTypes;
     }
 
-    private Set<Class> buildThisMixinTypes()
+    private Iterable<Class<?>> buildThisMixinTypes()
     {
-        final Set<Class> thisDependencies = new HashSet<Class>();
-        visitModel(
-            new DependencyVisitor<RuntimeException>( new DependencyModel.ScopeSpecification( This.class ) )
-            {
-                public void visitDependency( DependencyModel dependencyModel )
-                {
-                    thisDependencies.add( dependencyModel.rawInjectionType() );
-                }
-            }
-        );
-        if( thisDependencies.isEmpty() )
-        {
-            return Collections.emptySet();
-        }
-        else
-        {
-            return thisDependencies;
-        }
+        return map( new DependencyModel.InjectionTypeFunction(), unique( Iterables.filter( new DependencyModel.ScopeSpecification( This.class ), dependencies() ) ) );
     }
 
     protected FragmentInvocationHandler newInvocationHandler( Method method )
@@ -236,28 +224,6 @@ public final class MixinModel
     public String toString()
     {
         return mixinClass.getName();
-    }
-
-    public void addThisInjections( final Set<Class> thisDependencies )
-    {
-        // Add all @This injections
-        visitModel(
-            new DependencyVisitor<RuntimeException>( new DependencyModel.ScopeSpecification( This.class ) )
-            {
-                public void visitDependency( DependencyModel dependencyModel )
-                {
-                    thisDependencies.add( dependencyModel.rawInjectionType() );
-                }
-            }
-        );
-
-        // Add all implemented interfaces
-        Set<Class> classes = Classes.interfacesOf( mixinClass );
-        classes.remove( Activatable.class );
-        classes.remove( Initializable.class );
-        classes.remove( Lifecycle.class );
-        classes.remove( InvocationHandler.class );
-        thisDependencies.addAll( classes );
     }
 
     public void activate( Object mixin )

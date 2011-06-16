@@ -133,7 +133,7 @@ public class ServiceInjectionTest
             {
                 module.objects( ServiceUser.class );
             }
-        };
+        }.objectBuilderFactory().newObject( ServiceUser.class );
     }
 
     @Mixins( MyServiceMixin.class )

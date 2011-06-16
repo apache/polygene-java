@@ -27,6 +27,8 @@ import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.util.Iterables;
+import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
@@ -68,7 +70,6 @@ public abstract class AbstractCompositeModel
     }
 
     // Model
-
     public Class<? extends Composite> type()
     {
         return compositeType;
@@ -89,24 +90,14 @@ public abstract class AbstractCompositeModel
         return visibility;
     }
 
-    public Class<? extends Composite> proxyClass()
-    {
-        return proxyClass;
-    }
-
-    public boolean hasMixinType( Class<?> mixinType )
-    {
-        return mixinsModel.hasMixinType( mixinType );
-    }
-
     public Iterable<Class> mixinTypes()
     {
         return mixinsModel.mixinTypes();
     }
 
-    public CompositeMethodsModel compositeMethodsModel()
+    public Iterable<DependencyModel> dependencies()
     {
-        return compositeMethodsModel;
+        return Iterables.flatten( mixinsModel.dependencies(), compositeMethodsModel.dependencies() );
     }
 
     @SuppressWarnings( "unchecked" )

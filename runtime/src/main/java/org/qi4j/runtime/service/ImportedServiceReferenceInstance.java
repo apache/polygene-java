@@ -45,6 +45,12 @@ public final class ImportedServiceReferenceInstance<T>
         return serviceModel.identity();
     }
 
+    @Override
+    public Class type()
+    {
+        return serviceModel.type();
+    }
+
     public <T> T metaInfo( Class<T> infoType )
     {
         return serviceModel.metaInfo( infoType );
@@ -53,6 +59,11 @@ public final class ImportedServiceReferenceInstance<T>
     public synchronized T get()
     {
         return getInstance();
+    }
+
+    public ImportedServiceModel serviceDescriptor()
+    {
+        return serviceModel;
     }
 
     @Override

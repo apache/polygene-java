@@ -14,20 +14,35 @@
 
 package org.qi4j.runtime.structure;
 
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.composite.AmbiguousTypeException;
+import org.qi4j.api.specification.Specification;
+import org.qi4j.api.specification.Specifications;
+import org.qi4j.api.util.Iterables;
 import org.qi4j.bootstrap.BindingException;
+import org.qi4j.runtime.composite.TransientModel;
 import org.qi4j.runtime.composite.TransientsModel;
 import org.qi4j.runtime.entity.EntitiesModel;
+import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
+import org.qi4j.runtime.object.ObjectModel;
 import org.qi4j.runtime.object.ObjectsModel;
 import org.qi4j.runtime.service.ImportedServicesModel;
 import org.qi4j.runtime.service.ServicesModel;
+import org.qi4j.runtime.value.ValueModel;
 import org.qi4j.runtime.value.ValuesModel;
+import org.qi4j.spi.object.ObjectDescriptor;
 import org.qi4j.spi.structure.ModuleDescriptor;
+
+import static org.qi4j.api.util.Iterables.*;
+import static org.qi4j.api.util.Iterables.iterable;
+import static org.qi4j.runtime.object.ObjectModel.modelTypeSpecification;
+import static org.qi4j.runtime.structure.VisibilitySpecification.MODULE;
 
 /**
  * JAVADOC
@@ -35,14 +50,12 @@ import org.qi4j.spi.structure.ModuleDescriptor;
 public class ModuleModel
     implements Binder, ModuleDescriptor
 {
-    private LayerModel layerModel;
     private final TransientsModel transientsModel;
     private final EntitiesModel entitiesModel;
     private final ObjectsModel objectsModel;
     private final ValuesModel valuesModel;
     private final ServicesModel servicesModel;
-    private ImportedServicesModel importedServicesModel;
-    private transient ClassLoader classLoader;
+    private final ImportedServicesModel importedServicesModel;
 
     private final String name;
     private MetaInfo metaInfo;
@@ -64,8 +77,6 @@ public class ModuleModel
         this.valuesModel = valuesModel;
         this.servicesModel = servicesModel;
         this.importedServicesModel = importedServicesModel;
-
-        this.classLoader = new ModuleClassLoader( Thread.currentThread().getContextClassLoader() );
     }
 
     public String name()
@@ -76,41 +87,6 @@ public class ModuleModel
     public <T> T metaInfo( Class<T> infoType )
     {
         return metaInfo.get( infoType );
-    }
-
-    public TransientsModel composites()
-    {
-        return transientsModel;
-    }
-
-    public EntitiesModel entities()
-    {
-        return entitiesModel;
-    }
-
-    public ObjectsModel objects()
-    {
-        return objectsModel;
-    }
-
-    public ValuesModel values()
-    {
-        return valuesModel;
-    }
-
-    public ServicesModel services()
-    {
-        return servicesModel;
-    }
-
-    public ImportedServicesModel importedServicesModel()
-    {
-        return importedServicesModel;
-    }
-
-    public ClassLoader classLoader()
-    {
-        return classLoader;
     }
 
     public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
@@ -126,26 +102,10 @@ public class ModuleModel
         valuesModel.visitModel( modelVisitor );
     }
 
-    public <ThrowableType extends Throwable> void visitModules( ModuleVisitor<ThrowableType> visitor )
-        throws ThrowableType
-    {
-        // Visit this module
-        if( !visitor.visitModule( null, this, Visibility.module ) )
-        {
-            return;
-        }
-
-        // Visit layer
-        layerModel.visitModules( visitor, Visibility.layer );
-    }
-
     // Binding
-
     public void bind( Resolution resolution )
         throws BindingException
     {
-        layerModel = resolution.layer();
-
         resolution = new Resolution( resolution.application(), resolution.layer(), this, null, null, null );
 
         transientsModel.bind( resolution );
@@ -166,64 +126,5 @@ public class ModuleModel
     public String toString()
     {
         return name;
-    }
-
-    private class ModuleClassLoader
-        extends ClassLoader
-    {
-        Map<String, Class> classes = new ConcurrentHashMap<String, Class>();
-
-        private ModuleClassLoader( ClassLoader classLoader )
-        {
-            super( classLoader );
-        }
-
-        @Override
-        protected Class<?> findClass( String name )
-            throws ClassNotFoundException
-        {
-            Class clazz = classes.get( name );
-            if( clazz == null )
-            {
-                ClassFinder finder = new ClassFinder();
-                finder.type = name;
-                visitModules( finder );
-
-                if( finder.clazz == null )
-                {
-                    throw new ClassNotFoundException( name );
-                }
-                clazz = finder.clazz;
-                classes.put( name, clazz );
-            }
-
-            return clazz;
-        }
-    }
-
-    static class ClassFinder
-        implements ModuleVisitor<RuntimeException>
-    {
-        public String type;
-        public Class clazz;
-
-        public boolean visitModule( ModuleInstance moduleInstance, ModuleModel moduleModel, Visibility visibility )
-        {
-            clazz = moduleModel.objects().getClassForName( type );
-            if( clazz == null )
-            {
-                clazz = moduleModel.composites().getClassForName( type );
-            }
-            if( clazz == null )
-            {
-                clazz = moduleModel.entities().getClassForName( type );
-            }
-            if( clazz == null )
-            {
-                clazz = moduleModel.values().getClassForName( type );
-            }
-
-            return clazz == null;
-        }
     }
 }

@@ -14,12 +14,19 @@
 
 package org.qi4j.runtime.entity;
 
+import org.qi4j.api.common.Visibility;
 import org.qi4j.api.entity.IdentityGenerator;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.unitofwork.UnitOfWorkException;
+import org.qi4j.runtime.composite.TransientModel;
+import org.qi4j.runtime.structure.ModelModule;
 import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.runtime.structure.VisibilitySpecification;
 import org.qi4j.spi.entitystore.EntityStore;
+
+import static org.qi4j.api.util.Iterables.filter;
+import static org.qi4j.api.util.Iterables.map;
 
 /**
  * JAVADOC
@@ -92,5 +99,10 @@ public class EntitiesInstance
             }
         }
         return generator;
+    }
+
+    public Iterable<ModelModule<EntityModel>> visibleEntities( Visibility visibility )
+    {
+        return map( ModelModule.<EntityModel>modelModuleFunction( moduleInstance ), filter( new VisibilitySpecification( visibility ), entities.models() ) );
     }
 }

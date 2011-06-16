@@ -72,14 +72,7 @@ public class IterableQueryTest
             public void assemble( ModuleAssembly module )
                     throws AssemblyException
             {
-                Iterable<Class> entities = Iterables.debug("Entity:{0}", ClassScanner.getClasses( DomainEntity.class ), new Function<Class, String>()
-                {
-                    @Override
-                    public String map( Class aClass )
-                    {
-                        return aClass.getSimpleName();
-                    }
-                });
+                Iterable<Class> entities = ClassScanner.getClasses( DomainEntity.class );
 
                 for( Class entity : entities )
                 {

@@ -14,22 +14,166 @@
 
 package org.qi4j.api.util;
 
-import java.text.MessageFormat;
-import java.util.*;
-
 import org.qi4j.api.specification.Specification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.text.MessageFormat;
+import java.util.*;
+
 /**
  * Utility methods for working with Iterables. See test for examples of how to use.
- *
  */
-public class Iterables
+public final class Iterables
 {
     private static Logger debugLogger = LoggerFactory.getLogger( Iterables.class );
 
-    public static <T,C extends Collection<T>> C addAll( C collection, Iterable<? extends T> iterable )
+    private static Iterable EMPTY = new Iterable()
+    {
+        Iterator iterator = new Iterator()
+        {
+            @Override
+            public boolean hasNext()
+            {
+                return false;
+            }
+
+            @Override
+            public Object next()
+            {
+                throw new NoSuchElementException(  );
+            }
+
+            @Override
+            public void remove()
+            {
+            }
+        };
+
+        @Override
+        public Iterator iterator()
+        {
+            return iterator;
+        }
+    };
+
+    public static <T> Iterable<T> empty()
+    {
+        return EMPTY;
+    }
+
+    public static <T> Iterable<T> constant( final T item )
+    {
+        return new Iterable<T>()
+        {
+            @Override
+            public Iterator<T> iterator()
+            {
+                return new Iterator<T>()
+                {
+                    @Override
+                    public boolean hasNext()
+                    {
+                        return true;
+                    }
+
+                    @Override
+                    public T next()
+                    {
+                        return item;
+                    }
+
+                    @Override
+                    public void remove()
+                    {
+                    }
+                };
+            }
+        };
+    }
+
+    public static <T> Iterable<T> limit( final int limitItems, final Iterable<T> iterable )
+    {
+        return new Iterable<T>()
+        {
+            @Override
+            public Iterator<T> iterator()
+            {
+                final Iterator<T> iterator = iterable.iterator();
+
+                return new Iterator<T>()
+                {
+                    int count;
+
+                    @Override
+                    public boolean hasNext()
+                    {
+                        return count < limitItems && iterator.hasNext();
+                    }
+
+                    @Override
+                    public T next()
+                    {
+                        count++;
+                        return iterator.next();
+                    }
+
+                    @Override
+                    public void remove()
+                    {
+                        iterator.remove();
+                    }
+                };
+            }
+        };
+    }
+
+    public static <T> Iterable<T> unique( final Iterable<T> iterable)
+    {
+        return new Iterable<T>()
+        {
+            @Override
+            public Iterator<T> iterator()
+            {
+                final Iterator<T> iterator = iterable.iterator();
+
+                return new Iterator<T>()
+                {
+                    Set<T> items = new HashSet<T>();
+                    T nextItem;
+
+                    @Override
+                    public boolean hasNext()
+                    {
+                        while(iterator.hasNext())
+                        {
+                            nextItem = iterator.next();
+                            if (items.add( nextItem ))
+                                return true;
+                        }
+
+                        return false;
+                    }
+
+                    @Override
+                    public T next()
+                    {
+                        if (nextItem == null && !hasNext())
+                            throw new NoSuchElementException(  );
+
+                        return nextItem;
+                    }
+
+                    @Override
+                    public void remove()
+                    {
+                    }
+                };
+            }
+        };
+    }
+
+    public static <T, C extends Collection<T>> C addAll( C collection, Iterable<? extends T> iterable )
     {
         for( T item : iterable )
         {
@@ -61,30 +205,49 @@ public class Iterables
         Iterator<? extends X> iter = i.iterator();
         if( iter.hasNext() )
         {
-
             return iter.next();
-        }
-        else
+        } else
         {
             return null;
         }
+    }
+
+    public static <X> Iterable<X> skip( final int skip, final Iterable<X> iterable)
+    {
+        return new Iterable<X>()
+        {
+            @Override
+            public Iterator<X> iterator()
+            {
+                Iterator<X> iterator = iterable.iterator();
+
+                for (int i = 0; i < skip; i++)
+                {
+                    if (iterator.hasNext())
+                        iterator.next();
+                    else
+                        return Iterables.<X>empty().iterator();
+                }
+
+                return iterator;
+            }
+        };
     }
 
     public static <X> X last( Iterable<? extends X> i )
     {
         Iterator<? extends X> iter = i.iterator();
         X item = null;
-        while (iter.hasNext())
+        while( iter.hasNext() )
             item = iter.next();
 
         return item;
     }
 
-    public static <X> Iterable<X> reverse(Iterable<X> iterable)
+    public static <X> Iterable<X> reverse( Iterable<X> iterable )
     {
-        ArrayList<X> list = addAll( new ArrayList<X>(), iterable );
+        List<X> list = toList( iterable );
         Collections.reverse( list );
-
         return list;
     }
 
@@ -118,14 +281,82 @@ public class Iterables
         return result;
     }
 
-    public static <X,I extends Iterable<? extends X>> Iterable<X> flatten( I... multiIterator )
+    public static <X, I extends Iterable<? extends X>> Iterable<X> flatten( I... multiIterator )
     {
-        return new FlattenIterable<X,I>( Arrays.asList( multiIterator ) );
+        return new FlattenIterable<X, I>( Arrays.asList( multiIterator ) );
     }
 
-    public static <X,I extends Iterable<? extends X>> Iterable<X> flattenIterables( Iterable<I> multiIterator )
+    public static <X, I extends Iterable<? extends X>> Iterable<X> flattenIterables( Iterable<I> multiIterator )
     {
-        return new FlattenIterable<X,I>( multiIterator );
+        return new FlattenIterable<X, I>( multiIterator );
+    }
+
+    public static <T> Iterable<T> mix( final Iterable<T>... iterables )
+    {
+        return new Iterable<T>()
+        {
+            @Override
+            public Iterator<T> iterator()
+            {
+                final Iterable<Iterator<T>> iterators = toList(map( new Function<Iterable<T>, Iterator<T>>()
+                        {
+                            @Override
+                            public Iterator<T> map( Iterable<T> iterable )
+                            {
+                                return iterable.iterator();
+                            }
+                        }, Iterables.iterable( iterables) ));
+
+                return new Iterator<T>()
+                {
+                    Iterator<Iterator<T>> iterator;
+
+                    Iterator<T> iter;
+
+                    @Override
+                    public boolean hasNext()
+                    {
+                        for( Iterator<T> iterator : iterators )
+                        {
+                            if (iterator.hasNext())
+                            {
+                                return true;
+                            }
+                        }
+
+                        return false;
+                    }
+
+                    @Override
+                    public T next()
+                    {
+                        if (iterator == null)
+                        {
+                            iterator = iterators.iterator();
+                        }
+
+                        while (iterator.hasNext())
+                        {
+                            iter = iterator.next();
+
+                            if (iter.hasNext())
+                                return iter.next();
+                        }
+
+                        iterator = null;
+
+                        return next();
+                    }
+
+                    @Override
+                    public void remove()
+                    {
+                        if (iter != null)
+                            iter.remove();
+                    }
+                };
+            }
+        };
     }
 
     public static <FROM, TO> Iterable<TO> map( Function<? super FROM, TO> function, Iterable<FROM> from )
@@ -150,40 +381,104 @@ public class Iterables
         return (Iterable<T>) Arrays.asList( items );
     }
 
-    public static <FROM, TO> TO fold( Function<? super FROM, TO> function, Iterable<? extends FROM> i )
+    public static <T, C> Iterable<T> cast( Iterable<C> iterable )
     {
-        return last(map(function, i));
+        Iterable iter = iterable;
+        return iter;
     }
 
-    public static <T> Iterable<T> debug(String format, final Iterable<T> iterable, final Function<T, String>... functions)
+    public static <FROM, TO> TO fold( Function<? super FROM, TO> function, Iterable<? extends FROM> i )
     {
-        final MessageFormat msgFormat = new MessageFormat(format);
+        return last( map( function, i ) );
+    }
 
-        return map( new Function<T, T>()
+    public static <T, C extends T> Iterable<T> prepend( final C item, final Iterable<T> iterable )
+    {
+        return new Iterable<T>()
         {
             @Override
-            public T map( T t )
+            public Iterator<T> iterator()
             {
-                if (functions.length == 0)
-                    debugLogger.info( msgFormat.format( new Object[]{t} ) );
-                else
+                return new Iterator<T>()
                 {
-                    String[] mapped = new String[functions.length];
-                    for( int i = 0; i < functions.length; i++ )
-                    {
-                        Function<T, String> function = functions[i];
-                        mapped[i] = function.map( t );
-                        debugLogger.info( msgFormat.format( mapped ) );
-                    }
-                }
+                    T first = item;
+                    Iterator<T> iterator;
 
-                return t;
+                    @Override
+                    public boolean hasNext()
+                    {
+                        if( item != null )
+                            return true;
+                        else
+                        {
+                            if( iterator == null )
+                            {
+                                iterator = iterable.iterator();
+                            }
+                        }
+
+                        return iterator.hasNext();
+                    }
+
+                    @Override
+                    public T next()
+                    {
+                        if( first != null )
+                        {
+                            try
+                            {
+                                return first;
+                            } finally
+                            {
+                                first = null;
+                            }
+                        } else
+                            return iterator.next();
+                    }
+
+                    @Override
+                    public void remove()
+                    {
+                    }
+                };
             }
-        }, iterable );
+        };
+    }
+
+    public static <T> Iterable<T> debug( String format, final Iterable<T> iterable, final Function<T, String>... functions )
+    {
+        final MessageFormat msgFormat = new MessageFormat( format );
+
+        return map( new Function<T, T>()
+                {
+                    @Override
+                    public T map( T t )
+                    {
+                        if( functions.length == 0 )
+                            debugLogger.info( msgFormat.format( new Object[]{t} ) );
+                        else
+                        {
+                            String[] mapped = new String[functions.length];
+                            for( int i = 0; i < functions.length; i++ )
+                            {
+                                Function<T, String> function = functions[i];
+                                mapped[i] = function.map( t );
+                                debugLogger.info( msgFormat.format( mapped ) );
+                            }
+                        }
+
+                        return t;
+                    }
+                }, iterable );
+    }
+
+    public static <T> List<T> toList( Iterable<T> iterable )
+    {
+        return addAll( new ArrayList<T>(), iterable );
     }
 
     private static class MapIterable<FROM, TO>
-        implements Iterable<TO>
+            implements Iterable<TO>
     {
         private final Iterable<FROM> from;
         private final Function<? super FROM, TO> function;
@@ -200,7 +495,7 @@ public class Iterables
         }
 
         static class MapIterator<FROM, TO>
-            implements Iterator<TO>
+                implements Iterator<TO>
         {
             private final Iterator<FROM> fromIterator;
             private final Function<? super FROM, TO> function;
@@ -231,7 +526,7 @@ public class Iterables
     }
 
     private static class FilterIterable<T>
-        implements Iterable<T>
+            implements Iterable<T>
     {
         private Iterable<T> iterable;
 
@@ -249,7 +544,7 @@ public class Iterables
         }
 
         static class FilterIterator<T>
-            implements Iterator<T>
+                implements Iterator<T>
         {
             private Iterator<T> iterator;
 
@@ -293,8 +588,7 @@ public class Iterables
                 {
                     nextConsumed = true;
                     return currentValue;
-                }
-                else
+                } else
                 {
                     if( !finished )
                     {
@@ -311,7 +605,7 @@ public class Iterables
             public boolean hasNext()
             {
                 return !finished &&
-                       ( !nextConsumed || moveToNextValid() );
+                        (!nextConsumed || moveToNextValid());
             }
 
             public void remove()
@@ -320,8 +614,8 @@ public class Iterables
         }
     }
 
-    private static class FlattenIterable<T,I extends Iterable<? extends T>>
-        implements Iterable<T>
+    private static class FlattenIterable<T, I extends Iterable<? extends T>>
+            implements Iterable<T>
     {
         private Iterable<I> iterable;
 
@@ -332,11 +626,11 @@ public class Iterables
 
         public Iterator<T> iterator()
         {
-            return new FlattenIterator<T,I>( iterable.iterator() );
+            return new FlattenIterator<T, I>( iterable.iterator() );
         }
 
-        static class FlattenIterator<T,I extends Iterable<? extends T>>
-            implements Iterator<T>
+        static class FlattenIterator<T, I extends Iterable<? extends T>>
+                implements Iterator<T>
         {
             private Iterator<I> iterator;
             private Iterator<? extends T> currentIterator;
@@ -355,15 +649,14 @@ public class Iterables
                     {
                         I next = iterator.next();
                         currentIterator = next.iterator();
-                    }
-                    else
+                    } else
                     {
                         return false;
                     }
                 }
 
                 while( !currentIterator.hasNext() &&
-                       iterator.hasNext() )
+                        iterator.hasNext() )
                 {
                     currentIterator = iterator.next().iterator();
                 }

@@ -19,18 +19,21 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.event.ActivationEventListener;
 import org.qi4j.api.event.ActivationEventListenerRegistration;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceReference;
+import org.qi4j.api.specification.Specification;
+import org.qi4j.api.util.Iterables;
 import org.qi4j.runtime.structure.ActivationEventListenerSupport;
 
 /**
  * JAVADOC
  */
 public class ServicesInstance
-    implements Activatable, ActivationEventListenerRegistration
+        implements Activatable, ActivationEventListenerRegistration
 {
     private final ServicesModel servicesModel;
     private final List<ServiceReference> serviceReferences;
@@ -46,13 +49,13 @@ public class ServicesInstance
         for( ServiceReference serviceReference : serviceReferences )
         {
             mapIdentityServiceReference.put( serviceReference.identity(), serviceReference );
-            ((ActivationEventListenerRegistration)serviceReference).registerActivationEventListener( eventListenerSupport );
+            ((ActivationEventListenerRegistration) serviceReference).registerActivationEventListener( eventListenerSupport );
         }
         activator = new Activator();
     }
 
     public void activate()
-        throws Exception
+            throws Exception
     {
         for( final ServiceReference serviceReference : serviceReferences )
         {
@@ -63,23 +66,23 @@ public class ServicesInstance
                     @Override
                     public void activate() throws Exception
                     {
-                        ((Activatable)serviceReference).activate();
+                        ((Activatable) serviceReference).activate();
                     }
 
                     @Override
                     public void passivate() throws Exception
                     {
-                        ((Activatable)serviceReference).passivate();
+                        ((Activatable) serviceReference).passivate();
                     }
                 };
 
-                activator.activate(eventActivatable);
+                activator.activate( eventActivatable );
             }
         }
     }
 
     public void passivate()
-        throws Exception
+            throws Exception
     {
         activator.passivate();
     }
@@ -101,27 +104,16 @@ public class ServicesInstance
         eventListenerSupport.deregisterActivationEventListener( listener );
     }
 
-    public <T> ServiceReference<T> getServiceFor( Type type, Visibility visibility )
+    public Iterable<ServiceReference> visibleServices( final Visibility visibility )
     {
-        ServiceModel serviceModel = servicesModel.getServiceFor( type, visibility );
-
-        ServiceReference<T> serviceRef = null;
-        if( serviceModel != null )
+        return Iterables.filter( new Specification<ServiceReference>()
         {
-            serviceRef = mapIdentityServiceReference.get( serviceModel.identity() );
-        }
-
-        return serviceRef;
-    }
-
-    public <T> void getServicesFor( Type type, Visibility visibility, List<ServiceReference<T>> serviceReferences )
-    {
-        List<ServiceModel> serviceModels = new ArrayList<ServiceModel>();
-        servicesModel.getServicesFor( type, visibility, serviceModels );
-        for( ServiceModel serviceModel : serviceModels )
-        {
-            serviceReferences.add( mapIdentityServiceReference.get( serviceModel.identity() ) );
-        }
+            @Override
+            public boolean satisfiedBy( ServiceReference item )
+            {
+                return ((ServiceReferenceInstance)item).serviceDescriptor().visibility().ordinal() >= visibility.ordinal();
+            }
+        }, serviceReferences );
     }
 
     @Override

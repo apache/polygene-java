@@ -47,9 +47,9 @@ public final class Classes
      *
      * @return set of interfaces of given type
      */
-    public static Set<Class> interfacesOf( Type type )
+    public static Set<Class<?>> interfacesOf( Type type )
     {
-        Set<Class> interfaces = new LinkedHashSet<Class>();
+        Set<Class<?>> interfaces = new LinkedHashSet<Class<?>>();
         addInterfaces( type, interfaces );
 
         if( type instanceof Class )
@@ -92,9 +92,9 @@ public final class Classes
         return interfaces;
     }
 
-    public static Set<Class> interfacesWithMethods( Set<Class> interfaces )
+    public static Set<Class<?>> interfacesWithMethods( Set<Class<?>> interfaces )
     {
-        Set<Class> newSet = new LinkedHashSet<Class>();
+        Set<Class<?>> newSet = new LinkedHashSet<Class<?>>();
         for( Class type : interfaces )
         {
             if( type.isInterface() && type.getDeclaredMethods().length > 0 )
@@ -106,9 +106,9 @@ public final class Classes
         return newSet;
     }
 
-    public static Set<Class> classesOf( Type type )
+    public static Set<Class<?>> classesOf( Type type )
     {
-        Set<Class> types = new LinkedHashSet<Class>();
+        Set<Class<?>> types = new LinkedHashSet<Class<?>>();
         addInterfaces( type, types );
 
         if( type instanceof Class )
@@ -124,9 +124,9 @@ public final class Classes
         return types;
     }
 
-    public static Set<Class> typesOf( Type type )
+    public static Set<Class<?>> typesOf( Type type )
     {
-        Set<Class> types = new LinkedHashSet<Class>();
+        Set<Class<?>> types = new LinkedHashSet<Class<?>>();
         addInterfaces( type, types );
 
         if( type instanceof Class )
@@ -143,7 +143,7 @@ public final class Classes
         return types;
     }
 
-    public static Class[] toClassArray( Set<Class> types )
+    public static Class[] toClassArray( Set<Class<?>> types )
     {
         Class[] array = new Class[ types.size() ];
         int idx = 0;
@@ -157,7 +157,7 @@ public final class Classes
 
     public static Type actualTypeOf( Type type )
     {
-        Set<Class> types = interfacesOf( type );
+        Set<Class<?>> types = interfacesOf( type );
         for( Type type1 : types )
         {
             if( type1 instanceof ParameterizedType )
@@ -315,7 +315,7 @@ public final class Classes
         }
     }
 
-    private static void addInterfaces( Type type, Set<Class> interfaces )
+    private static void addInterfaces( Type type, Set<Class<?>> interfaces )
     {
         if( !interfaces.contains( type ) )
         {

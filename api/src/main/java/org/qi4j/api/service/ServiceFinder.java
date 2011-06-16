@@ -19,11 +19,13 @@ import java.lang.reflect.Type;
 /**
  * Interface used to query for ServiceReferences. Each ServiceFinder is
  * obtained from a specific Module, and the lookup rules are the following:
- * 1) First look in the same Module as the ServiceLocator
- * 2) Then look in the same Layer as the ServiceLocator. Any Services declared
+ * 1) First look in the same Module as the ServiceFinder
+ * 2) Then look in the same Layer as the ServiceFinder. Any Services declared
  * with Visibility Layer and Application should be included
  * 3) Then look in the extended Layers. Any Services declared with Visibility Application
  * should be included
+ *
+ * Both native Qi4j services and imported services are considered, with preference to native services.
  */
 public interface ServiceFinder
 {
@@ -34,7 +36,7 @@ public interface ServiceFinder
      *
      * @return a ServiceReference if one is found, or null if none exists
      */
-    <T> ServiceReference<T> findService( Type serviceType );
+    <T> ServiceReference<T> findService( Class<T> serviceType );
 
     /**
      * Find ServiceReferences that implements the given type.
@@ -46,5 +48,5 @@ public interface ServiceFinder
      *
      * @return an iterable of ServiceReferences for the given type. It is empty if none exist
      */
-    <T> Iterable<ServiceReference<T>> findServices( Type serviceType );
+    <T> Iterable<ServiceReference<T>> findServices( Class<T> serviceType );
 }

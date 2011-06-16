@@ -28,6 +28,7 @@ import java.util.List;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.constraint.Name;
 import org.qi4j.api.util.Iterables;
+import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.spi.constraint.MethodConstraintsDescriptor;
 import org.qi4j.spi.util.SerializationUtil;
@@ -97,6 +98,11 @@ public final class MethodConstraintsModel
         {
             parameterConstraintModels = null; // No constraints for this method
         }
+    }
+
+    public Iterable<DependencyModel> dependencies()
+    {
+        return null;
     }
 
     public boolean isConstrained()

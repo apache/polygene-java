@@ -14,20 +14,35 @@
 
 package org.qi4j.runtime.value;
 
+import org.qi4j.api.common.Visibility;
+import org.qi4j.runtime.structure.ModelModule;
+import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.runtime.structure.VisibilitySpecification;
+
+import static org.qi4j.api.util.Iterables.filter;
+import static org.qi4j.api.util.Iterables.map;
+
 /**
  * JAVADOC
  */
 public final class ValuesInstance
 {
     private final ValuesModel values;
+    private ModuleInstance moduleInstance;
 
-    public ValuesInstance( ValuesModel values )
+    public ValuesInstance( ValuesModel values, ModuleInstance moduleInstance )
     {
         this.values = values;
+        this.moduleInstance = moduleInstance;
     }
 
     public ValuesModel model()
     {
         return values;
+    }
+
+    public Iterable<ModelModule<ValueModel>> visibleValues( Visibility visibility )
+    {
+        return map( ModelModule.<ValueModel>modelModuleFunction( moduleInstance ), filter( new VisibilitySpecification( visibility ), values.models() ) );
     }
 }

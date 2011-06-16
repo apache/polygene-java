@@ -16,6 +16,8 @@ package org.qi4j.api.specification;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.qi4j.api.util.Function;
+import org.qi4j.api.util.Functions;
 
 import static org.hamcrest.CoreMatchers.*;
 
@@ -66,5 +68,20 @@ public class SpecificationsTest
     {
         Assert.assertThat( Specifications.in( "1", "2", "3" ).satisfiedBy( "2" ), equalTo( true ) );
         Assert.assertThat( Specifications.in( "1", "2", "3" ).satisfiedBy( "4" ), equalTo( false ) );
+    }
+
+    @Test
+    public void testTranslate()
+    {
+        Function<Object, String> stringifier = new Function<Object, String>()
+        {
+            @Override
+            public String map( Object s )
+            {
+                return s.toString();
+            }
+        };
+
+        Assert.assertTrue( Specifications.translate( stringifier, Specifications.in( "3" ) ).satisfiedBy( 3L ) );
     }
 }

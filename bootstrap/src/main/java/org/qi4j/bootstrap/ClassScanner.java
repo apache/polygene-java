@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.net.URL;
+import java.security.CodeSource;
 import java.util.ArrayList;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -49,7 +50,11 @@ public class ClassScanner
     */
    public static Iterable<Class> getClasses(final Class seedClass)
    {
-      URL location = seedClass.getProtectionDomain().getCodeSource().getLocation();
+       CodeSource codeSource = seedClass.getProtectionDomain().getCodeSource();
+       if (codeSource == null)
+           return Iterables.<Class,Class>iterable(  );
+
+      URL location = codeSource.getLocation();
 
       if (!location.getProtocol().equals("file"))
          throw new IllegalArgumentException("Can only enumerate classes from file system locations. URL is:" + location);
@@ -60,11 +65,13 @@ public class ClassScanner
       {
          try
          {
+            final String packageName = seedClass.getPackage().getName().replace( '.','/' );
+
             JarFile jarFile = new JarFile(file);
             Iterable<JarEntry> entries = Iterables.iterable( jarFile.entries() );
             try
             {
-               return Iterables.addAll(new ArrayList<Class>(), filter(new NonAbstractClass(),
+               return Iterables.toList( filter(new NonAbstractClass(),
                      map(new Function<JarEntry, Class>()
                      {
                         public Class map(JarEntry jarEntry)
@@ -86,7 +93,7 @@ public class ClassScanner
                      {
                         public boolean satisfiedBy(JarEntry jarEntry)
                         {
-                           return jarEntry.getName().endsWith(".class");
+                           return jarEntry.getName().startsWith( packageName ) && jarEntry.getName().endsWith(".class");
                         }
                      }, entries))));
             } finally
@@ -115,7 +122,7 @@ public class ClassScanner
                   {
                      String fileName = f.getAbsolutePath().substring(file.toString().length() + 1);
                      fileName = fileName.replace(File.separatorChar, '.').substring(0, fileName.length() - 6);
-
+                      System.out.println("Found file:"+fileName);
                      try
                      {
                         return seedClass.getClassLoader().loadClass(fileName);

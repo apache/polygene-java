@@ -93,56 +93,6 @@ public final class ImportedServiceModel
         modelVisitor.visit( this );
     }
 
-    public boolean isServiceFor( Type serviceType, Visibility visibility )
-    {
-        // Check visibility
-        if( visibility().ordinal() < visibility.ordinal() )
-        {
-            return false;
-        }
-
-        // Check types
-        if( serviceType instanceof Class )
-        {
-            // Plain class check
-            Class serviceClass = (Class) serviceType;
-            return serviceClass.isAssignableFrom( type );
-        }
-        else if( serviceType instanceof ParameterizedType )
-        {
-            // Parameterized type check. This is useful for example Wrapper<Foo> usages
-            ParameterizedType paramType = (ParameterizedType) serviceType;
-            Class rawClass = (Class) paramType.getRawType();
-            Set<Type> types = Classes.genericInterfacesOf( type );
-            for( Type type1 : types )
-            {
-                if( type1 instanceof ParameterizedType && rawClass.isAssignableFrom( Classes.getRawClass( type1 ) ) )
-                {
-                    // Check params
-                    Type[] actualTypes = paramType.getActualTypeArguments();
-                    Type[] actualServiceTypes = ( (ParameterizedType) type1 ).getActualTypeArguments();
-                    for( int i = 0; i < actualTypes.length; i++ )
-                    {
-                        Type actualType = actualTypes[ i ];
-                        if( actualType instanceof Class )
-                        {
-                            Class actualClass = (Class) actualType;
-                            Class actualServiceType = (Class) actualServiceTypes[ i ];
-                            if( !actualClass.isAssignableFrom( actualServiceType ) )
-                            {
-                                return false;
-                            }
-                        }
-                    }
-
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
     public <T> ImportedServiceInstance<T> importInstance( Module module )
     {
         ServiceImporter importer = module.objectBuilderFactory().newObject( serviceImporter );

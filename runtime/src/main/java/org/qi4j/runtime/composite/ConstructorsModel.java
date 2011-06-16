@@ -25,7 +25,10 @@ import java.util.List;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.injection.InjectionScope;
 import org.qi4j.api.util.Annotations;
+import org.qi4j.api.util.Function;
+import org.qi4j.api.util.Iterables;
 import org.qi4j.bootstrap.BindingException;
+import org.qi4j.runtime.injection.Dependencies;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectedParametersModel;
 import org.qi4j.runtime.injection.InjectionContext;
@@ -40,7 +43,7 @@ import static org.qi4j.api.util.Iterables.*;
  * JAVADOC
  */
 public final class ConstructorsModel
-    implements Binder, Serializable
+    implements Binder, Serializable, Dependencies
 {
     private final Class fragmentClass;
     private final List<ConstructorModel> constructorModels;
@@ -76,6 +79,20 @@ public final class ConstructorsModel
     public Class getFragmentClass()
     {
         return fragmentClass;
+    }
+
+    public Iterable<DependencyModel> dependencies()
+    {
+        Function<ConstructorModel, Iterable<DependencyModel>> constructorDependencies = new Function<ConstructorModel, Iterable<DependencyModel>>()
+        {
+            @Override
+            public Iterable<DependencyModel> map( ConstructorModel constructorModel )
+            {
+                return constructorModel.dependencies();
+            }
+        };
+
+        return Iterables.flattenIterables( Iterables.map( constructorDependencies, boundConstructors == null ? constructorModels : boundConstructors));
     }
 
     private ConstructorModel newConstructorModel( Class fragmentClass,

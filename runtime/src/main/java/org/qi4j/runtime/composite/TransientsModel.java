@@ -30,17 +30,22 @@ import org.qi4j.runtime.structure.ModelVisitor;
 public class TransientsModel
     implements Binder, Serializable
 {
-    private final List<? extends TransientModel> compositeModels;
+    private final List<TransientModel> transientModels;
 
-    public TransientsModel( List<? extends TransientModel> compositeModels )
+    public TransientsModel( List<TransientModel> transientModels )
     {
-        this.compositeModels = compositeModels;
+        this.transientModels = transientModels;
+    }
+
+    public Iterable<TransientModel> models()
+    {
+        return transientModels;
     }
 
     public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
         throws ThrowableType
     {
-        for( TransientModel transientModel : compositeModels )
+        for( TransientModel transientModel : transientModels )
         {
             transientModel.visitModel( modelVisitor );
         }
@@ -49,60 +54,9 @@ public class TransientsModel
     public void bind( Resolution resolution )
         throws BindingException
     {
-        for( TransientModel transientModel : compositeModels )
+        for( TransientModel transientModel : transientModels )
         {
             transientModel.bind( resolution );
         }
-    }
-
-    public TransientModel getCompositeModelFor( Class mixinType, Visibility visibility )
-    {
-        TransientModel foundModel = null;
-        for( TransientModel aTransient : compositeModels )
-        {
-            if( Composite.class.isAssignableFrom( mixinType ) )
-            {
-                if( mixinType.equals( aTransient.type() ) && aTransient.visibility().ordinal() >= visibility.ordinal())
-                {
-                    if( foundModel != null )
-                    {
-                        throw new AmbiguousTypeException( mixinType, foundModel.type(), aTransient.type() );
-                    }
-                    else
-                    {
-                        foundModel = aTransient;
-                    }
-                }
-            }
-            else
-            {
-                if( mixinType.isAssignableFrom( aTransient.type() ) && aTransient.visibility() == visibility )
-                {
-                    if( foundModel != null )
-                    {
-                        throw new AmbiguousTypeException( mixinType, foundModel.type(), aTransient.type() );
-                    }
-                    else
-                    {
-                        foundModel = aTransient;
-                    }
-                }
-            }
-        }
-
-        return foundModel;
-    }
-
-    public Class getClassForName( String type )
-    {
-        for( TransientModel transientModel : compositeModels )
-        {
-            if( transientModel.type().getName().equals( type ) )
-            {
-                return transientModel.type();
-            }
-        }
-
-        return null;
     }
 }

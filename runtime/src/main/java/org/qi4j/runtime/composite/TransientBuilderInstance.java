@@ -22,6 +22,7 @@ import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.TransientBuilder;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.StateHolder;
+import org.qi4j.runtime.structure.ModelModule;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.CompositeInstance;
 
@@ -47,8 +48,7 @@ public final class TransientBuilderInstance<T>
         }
     }
 
-    private final ModuleInstance moduleInstance;
-    private final TransientModel transientModel;
+    private ModelModule<TransientModel> model;
 
     // lazy initialized in accessor
     private UsesInstance uses = UsesInstance.EMPTY_USES;
@@ -59,22 +59,20 @@ public final class TransientBuilderInstance<T>
     // lazy initialized in accessor
     private StateHolder state;
 
-    public TransientBuilderInstance( ModuleInstance moduleInstance, TransientModel transientModel, UsesInstance uses )
+    public TransientBuilderInstance( ModelModule<TransientModel> model, UsesInstance uses )
     {
-        this( moduleInstance, transientModel );
+        this( model );
         this.uses = uses;
     }
 
-    public TransientBuilderInstance( ModuleInstance moduleInstance, TransientModel transientModel )
+    public TransientBuilderInstance( ModelModule<TransientModel> model )
     {
-        this.moduleInstance = moduleInstance;
-
-        this.transientModel = transientModel;
+        this.model = model;
     }
 
     public Class<T> compositeType()
     {
-        return (Class<T>) transientModel.type();
+        return (Class<T>) model.model().type();
     }
 
     public TransientBuilder<T> use( Object... usedObjects )
@@ -89,7 +87,7 @@ public final class TransientBuilderInstance<T>
         // Instantiate given value type
         if( prototypeInstance == null )
         {
-            prototypeInstance = transientModel.newCompositeInstance( moduleInstance, uses, getState() );
+            prototypeInstance = model.model().newCompositeInstance( model.module(), uses, getState() );
         }
 
         return prototypeInstance.<T>proxy();
@@ -100,7 +98,7 @@ public final class TransientBuilderInstance<T>
         // Instantiate given value type
         if( prototypeInstance == null )
         {
-            prototypeInstance = transientModel.newCompositeInstance( moduleInstance, uses, getState() );
+            prototypeInstance = model.model().newCompositeInstance( model.module(), uses, getState() );
         }
 
         return prototypeInstance.newProxy( mixinType );
@@ -112,17 +110,17 @@ public final class TransientBuilderInstance<T>
         StateHolder instanceState;
         if( state == null )
         {
-            instanceState = transientModel.newInitialState();
+            instanceState = model.model().newInitialState();
         }
         else
         {
-            instanceState = transientModel.newState( state );
+            instanceState = model.model().newState( state );
         }
 
-        transientModel.state().checkConstraints( instanceState );
+        model.model().state().checkConstraints( instanceState );
 
         CompositeInstance compositeInstance =
-            transientModel.newCompositeInstance( moduleInstance, uses, instanceState );
+            model.model().newCompositeInstance( model.module(), uses, instanceState );
         return compositeInstance.<T>proxy();
     }
 
@@ -151,7 +149,7 @@ public final class TransientBuilderInstance<T>
     {
         if( state == null )
         {
-            state = transientModel.newBuilderState();
+            state = model.model().newBuilderState();
         }
 
         return state;
@@ -173,11 +171,11 @@ public final class TransientBuilderInstance<T>
             }
             else if( method.equals( TYPE_METHOD ) )
             {
-                return transientModel.type();
+                return model.model().type();
             }
             else if( method.equals( METAINFO_METHOD ) )
             {
-                return transientModel.metaInfo( (Class<? extends Object>) objects[ 0 ] );
+                return model.model().metaInfo( (Class<? extends Object>) objects[ 0 ] );
             }
             else
             {

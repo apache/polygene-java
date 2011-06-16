@@ -21,6 +21,7 @@ import org.qi4j.api.property.Property;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueComposite;
+import org.qi4j.runtime.structure.ModelModule;
 import org.qi4j.runtime.structure.ModuleInstance;
 
 /**
@@ -29,8 +30,7 @@ import org.qi4j.runtime.structure.ModuleInstance;
 public final class ValueBuilderInstance<T>
     implements ValueBuilder<T>
 {
-    private final ModuleInstance moduleInstance;
-    private final ValueModel valueModel;
+    private final ModelModule<ValueModel> model;
 
     // lazy initialized in accessor
     private ValueInstance prototypeInstance;
@@ -38,18 +38,16 @@ public final class ValueBuilderInstance<T>
     // lazy initialized in accessor
     private StateHolder state;
 
-    public ValueBuilderInstance( ModuleInstance moduleInstance, ValueModel valueModel )
+    public ValueBuilderInstance( ModelModule<ValueModel> model)
     {
-        this.moduleInstance = moduleInstance;
-
-        this.valueModel = valueModel;
+        this.model = model;
     }
 
     public ValueBuilder<T> withPrototype( T value )
     {
         ValueInstance valueInstance = ValueInstance.getValueInstance( (ValueComposite) value );
         StateHolder state = valueInstance.state();
-        this.state = valueModel.newBuilderState( state );
+        this.state = model.model().newBuilderState( state );
         prototypeInstance = null;
 
         return this;
@@ -77,7 +75,7 @@ public final class ValueBuilderInstance<T>
         // Instantiate given value type
         if( prototypeInstance == null )
         {
-            prototypeInstance = valueModel.newValueInstance( moduleInstance, getState() );
+            prototypeInstance = model.model().newValueInstance( model.module(), getState() );
         }
 
         return prototypeInstance.<T>proxy();
@@ -88,7 +86,7 @@ public final class ValueBuilderInstance<T>
         // Instantiate given value type
         if( prototypeInstance == null )
         {
-            prototypeInstance = valueModel.newValueInstance( moduleInstance, getState() );
+            prototypeInstance = model.model().newValueInstance( model.module(), getState() );
         }
 
         return prototypeInstance.newProxy( mixinType );
@@ -100,15 +98,15 @@ public final class ValueBuilderInstance<T>
         StateHolder instanceState;
         if( state == null )
         {
-            instanceState = valueModel.newInitialState();
+            instanceState = model.model().newInitialState();
         }
         else
         {
-            instanceState = valueModel.newState( state );
+            instanceState = model.model().newState( state );
         }
 
-        valueModel.checkConstraints( instanceState );
-        ValueInstance valueInstance = valueModel.newValueInstance( moduleInstance, instanceState );
+        model.model().checkConstraints( instanceState );
+        ValueInstance valueInstance = model.model().newValueInstance( model.module(), instanceState );
         return valueInstance.<T>proxy();
     }
 
@@ -137,7 +135,7 @@ public final class ValueBuilderInstance<T>
     {
         if( state == null )
         {
-            state = valueModel.newBuilderState();
+            state = model.model().newBuilderState();
         }
 
         return state;

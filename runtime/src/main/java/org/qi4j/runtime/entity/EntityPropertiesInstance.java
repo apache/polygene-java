@@ -16,6 +16,8 @@ package org.qi4j.runtime.entity;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.Iterator;
+
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.property.Property;
 import org.qi4j.runtime.property.PropertiesInstance;
@@ -77,6 +79,39 @@ public class EntityPropertiesInstance
         }
 
         return property;
+    }
+
+    @Override
+    public Iterable<Property<?>> properties()
+    {
+        return new Iterable<Property<?>>()
+        {
+            @Override
+            public Iterator<Property<?>> iterator()
+            {
+                final Iterator<EntityPropertyModel> propertyModels = model.properties().iterator();
+                return new Iterator<Property<?>>()
+                {
+                    @Override
+                    public boolean hasNext()
+                    {
+                        return propertyModels.hasNext();
+                    }
+
+                    @Override
+                    public Property<?> next()
+                    {
+                        EntityPropertyModel model = propertyModels.next();
+                        return getProperty( model.accessor());
+                    }
+
+                    @Override
+                    public void remove()
+                    {
+                    }
+                };
+            }
+        };
     }
 
     @Override

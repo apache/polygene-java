@@ -14,20 +14,22 @@
 
 package org.qi4j.runtime.structure;
 
-import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.composite.AmbiguousTypeException;
-import org.qi4j.api.specification.Specification;
 import org.qi4j.api.util.Function;
 import org.qi4j.api.util.Iterables;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.composite.TransientModel;
+import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
-import org.qi4j.runtime.service.ServiceModel;
+import org.qi4j.runtime.object.ObjectModel;
+import org.qi4j.runtime.value.ValueModel;
 import org.qi4j.spi.structure.LayerDescriptor;
+
+import static org.qi4j.api.util.Iterables.filter;
+import static org.qi4j.runtime.structure.VisibilitySpecification.LAYER;
 
 /**
  * JAVADOC
@@ -61,6 +63,11 @@ public final class LayerModel
     public <T> T metaInfo( Class<T> infoType )
     {
         return metaInfo.get( infoType );
+    }
+
+    public Iterable<ModuleModel> modules()
+    {
+        return modules;
     }
 
     public UsedLayersModel usedLayers()
@@ -108,35 +115,5 @@ public final class LayerModel
     public String toString()
     {
         return name;
-    }
-
-    public <ThrowableType extends Throwable> boolean visitModules( ModuleVisitor<ThrowableType> visitor,
-                                                                   Visibility visibility
-    )
-        throws ThrowableType
-    {
-        // Visit modules in this layer
-        ModuleInstance foundModule = null;
-        for( ModuleModel moduleModel : modules )
-        {
-            if( !visitor.visitModule( null, moduleModel, visibility ) )
-            {
-                return false;
-            }
-        }
-
-        if( visibility == Visibility.layer )
-        {
-            // Visit modules in this layer
-            if( !visitModules( visitor, Visibility.application ) )
-            {
-                return false;
-            }
-
-            // Visit modules in used layers
-            return usedLayersModel.visitModules( visitor );
-        }
-
-        return true;
     }
 }

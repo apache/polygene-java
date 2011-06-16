@@ -14,6 +14,9 @@
 
 package org.qi4j.api.specification;
 
+import org.qi4j.api.util.Function;
+import org.qi4j.api.util.Iterables;
+
 /**
  * Common generic specification expressions
  */
@@ -43,6 +46,11 @@ public class Specifications
 
     public static <T> Specification<T> and( final Specification<T>... specifications )
     {
+        return and( Iterables.iterable( specifications ));
+    }
+
+    public static <T> Specification<T> and( final Iterable<Specification<T>> specifications )
+    {
         return new Specification<T>()
         {
             public boolean satisfiedBy( T instance )
@@ -61,6 +69,11 @@ public class Specifications
     }
 
     public static <T> Specification<T> or( final Specification<T>... specifications )
+    {
+        return or( Iterables.iterable( specifications ) );
+    }
+
+    public static <T> Specification<T> or( final Iterable<Specification<T>> specifications )
     {
         return new Specification<T>()
         {
@@ -81,6 +94,11 @@ public class Specifications
 
     public static <T> Specification<T> in( final T... allowed )
     {
+        return in( Iterables.iterable( allowed ) );
+    }
+
+    public static <T> Specification<T> in( final Iterable<T> allowed )
+    {
         return new Specification<T>()
         {
             public boolean satisfiedBy( T item )
@@ -93,6 +111,30 @@ public class Specifications
                     }
                 }
                 return false;
+            }
+        };
+    }
+
+    public static <T> Specification<T> notNull()
+    {
+        return new Specification<T>()
+        {
+            @Override
+            public boolean satisfiedBy( T item )
+            {
+                return item != null;
+            }
+        };
+    }
+
+    public static <FROM,TO> Specification<FROM> translate( final Function<FROM,TO> function, final Specification<? super TO> specification)
+    {
+        return new Specification<FROM>()
+        {
+            @Override
+            public boolean satisfiedBy( FROM item )
+            {
+                return specification.satisfiedBy( function.map( item ) );
             }
         };
     }

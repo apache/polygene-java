@@ -20,20 +20,25 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.qi4j.api.injection.InjectionScope;
 import org.qi4j.api.util.Classes;
+import org.qi4j.api.util.Function;
+import org.qi4j.api.util.Iterables;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.structure.ModelVisitor;
 
 import static org.qi4j.api.util.Annotations.*;
 import static org.qi4j.api.util.Iterables.*;
+import static org.qi4j.api.util.Iterables.flattenIterables;
+import static org.qi4j.api.util.Iterables.map;
 
 /**
  * JAVADOC
  */
 public final class InjectedMethodsModel
-    implements Serializable
+        implements Serializable, Dependencies
 {
     // Model
     private final List<InjectedMethodModel> methodModels = new ArrayList<InjectedMethodModel>();
@@ -51,16 +56,16 @@ public final class InjectedMethodsModel
                 final Type[] genericParameterTypes = method.getGenericParameterTypes();
                 for( int i = 0; i < parameterAnnotations.length; i++ )
                 {
-                    Annotation injectionAnnotation = first( filter( hasAnnotation( InjectionScope.class ), iterable( parameterAnnotations[ i ] ) ) );
+                    Annotation injectionAnnotation = first( filter( hasAnnotation( InjectionScope.class ), iterable( parameterAnnotations[i] ) ) );
                     if( injectionAnnotation == null )
                     {
                         continue nextMethod;
                     }
 
-                    Type type = genericParameterTypes[ i ];
+                    Type type = genericParameterTypes[i];
 
-                    boolean optional = DependencyModel.isOptional( injectionAnnotation, parameterAnnotations[ i ] );
-                    DependencyModel dependencyModel = new DependencyModel( injectionAnnotation, type, fragmentClass, optional, parameterAnnotations[ i ] );
+                    boolean optional = DependencyModel.isOptional( injectionAnnotation, parameterAnnotations[i] );
+                    DependencyModel dependencyModel = new DependencyModel( injectionAnnotation, type, fragmentClass, optional, parameterAnnotations[i] );
                     parametersModel.addDependency( dependencyModel );
                 }
                 InjectedMethodModel methodModel = new InjectedMethodModel( method, parametersModel );
@@ -69,10 +74,15 @@ public final class InjectedMethodsModel
         }
     }
 
+    public Iterable<DependencyModel> dependencies()
+    {
+        return flattenIterables( map( Dependencies.DEPENDENCIES_FUNCTION, methodModels ) );
+    }
+
     // Binding
 
     public void bind( Resolution context )
-        throws BindingException
+            throws BindingException
     {
         for( InjectedMethodModel methodModel : methodModels )
         {
@@ -91,7 +101,7 @@ public final class InjectedMethodsModel
     }
 
     public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
-        throws ThrowableType
+            throws ThrowableType
     {
         for( InjectedMethodModel methodModel : methodModels )
         {

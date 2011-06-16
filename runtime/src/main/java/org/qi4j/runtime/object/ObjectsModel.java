@@ -54,36 +54,8 @@ public class ObjectsModel
         }
     }
 
-    public ObjectModel getObjectModelFor( Class type, Visibility visibility )
+    public Iterable<ObjectModel> models()
     {
-        ObjectModel foundModel = null;
-        for( ObjectModel objectModel : objectModels )
-        {
-            if( type.isAssignableFrom( objectModel.type() ) && objectModel.visibility().ordinal() >= visibility.ordinal() )
-            {
-                if( foundModel != null )
-                {
-                    throw new AmbiguousTypeException( type, foundModel.type(), objectModel.type() );
-                }
-                else
-                {
-                    foundModel = objectModel;
-                }
-            }
-        }
-
-        return foundModel;
-    }
-
-    public Class getClassForName( String type )
-    {
-        for( ObjectModel objectModel : objectModels )
-        {
-            if( objectModel.type().getName().equals( type ) )
-            {
-                return objectModel.type();
-            }
-        }
-        return null;
+        return objectModels;
     }
 }

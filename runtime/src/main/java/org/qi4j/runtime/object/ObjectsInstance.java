@@ -14,7 +14,13 @@
 
 package org.qi4j.runtime.object;
 
+import org.qi4j.api.common.Visibility;
+import org.qi4j.runtime.structure.ModelModule;
 import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.runtime.structure.VisibilitySpecification;
+
+import static org.qi4j.api.util.Iterables.filter;
+import static org.qi4j.api.util.Iterables.map;
 
 /**
  * JAVADOC
@@ -33,5 +39,10 @@ public class ObjectsInstance
     public ObjectsModel model()
     {
         return objects;
+    }
+
+    public Iterable<ModelModule<ObjectModel>> visibleObjects( Visibility visibility )
+    {
+        return map( ModelModule.<ObjectModel>modelModuleFunction( moduleInstance ), filter( new VisibilitySpecification( visibility ), objects.models() ) );
     }
 }

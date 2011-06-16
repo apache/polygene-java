@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2010, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,26 +12,23 @@
  *
  */
 
-package org.qi4j.api.service;
-
-import org.qi4j.api.event.ActivationEventListenerRegistration;
+package org.qi4j.api.util;
 
 /**
- * From a ServiceReference you can access and modify metadata about a service.
- * You can also access the actual service through get(), that can then be invoked.
+ * Generic function interface to map from two parameters to a third.
+ *
+ * This can be used with the Iterables methods to transform lists of objects.
+ *
  */
-public interface ServiceReference<T>
-    extends ActivationEventListenerRegistration
+public interface Function2<First, Second, To>
 {
-    String identity();
-
-    Class type();
-
-    <T> T metaInfo( Class<T> infoType );
-
-    T get();
-
-    boolean isActive();
-
-    boolean isAvailable();
+    /**
+     * Map a single item from one type to another
+     *
+     *
+     * @param first
+     * @param second
+     * @return the mapped item
+     */
+    To map( First first, Second second);
 }

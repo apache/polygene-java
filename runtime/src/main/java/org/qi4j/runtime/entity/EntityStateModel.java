@@ -139,6 +139,12 @@ public final class EntityStateModel
             return entityPropertiesInstance.getProperty( name );
         }
 
+        @Override
+        public Iterable<Property<?>> properties()
+        {
+            return entityPropertiesInstance.properties();
+        }
+
         public <T> Association<T> getAssociation( Method accessor )
         {
             return entityAssociationsInstance.associationFor( accessor );

@@ -29,7 +29,7 @@ import org.qi4j.spi.composite.InjectedParametersDescriptor;
  * JAVADOC
  */
 public final class InjectedParametersModel
-    implements Binder, InjectedParametersDescriptor, Serializable
+    implements Binder, InjectedParametersDescriptor, Serializable, Dependencies
 {
     private final List<DependencyModel> parameterDependencies;
 
@@ -38,7 +38,7 @@ public final class InjectedParametersModel
         parameterDependencies = new ArrayList<DependencyModel>();
     }
 
-    public List<DependencyModel> dependencies()
+    public Iterable<DependencyModel> dependencies()
     {
         return parameterDependencies;
     }

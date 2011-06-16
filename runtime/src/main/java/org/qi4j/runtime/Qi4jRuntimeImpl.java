@@ -14,12 +14,6 @@
 
 package org.qi4j.runtime;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Proxy;
-import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.PropertyMapper;
 import org.qi4j.api.composite.TransientComposite;
@@ -43,15 +37,11 @@ import org.qi4j.runtime.bootstrap.ApplicationModelFactoryImpl;
 import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
 import org.qi4j.runtime.composite.TransientInstance;
 import org.qi4j.runtime.entity.EntityInstance;
-import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.service.ImportedServiceReferenceInstance;
 import org.qi4j.runtime.service.ServiceInstance;
 import org.qi4j.runtime.service.ServiceModel;
 import org.qi4j.runtime.service.ServiceReferenceInstance;
-import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.runtime.structure.ModuleModel;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
-import org.qi4j.runtime.structure.ModuleVisitor;
 import org.qi4j.runtime.value.ValueInstance;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.composite.CompositeInstance;
@@ -61,8 +51,14 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.spi.value.ValueDescriptor;
 
-import static java.lang.reflect.Proxy.*;
-import static org.qi4j.runtime.composite.TransientInstance.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
+
+import static java.lang.reflect.Proxy.getInvocationHandler;
+import static org.qi4j.runtime.composite.TransientInstance.getCompositeInstance;
 
 /**
  * Incarnation of Qi4j.
@@ -270,19 +266,6 @@ public final class Qi4jRuntimeImpl
     {
         EntityInstance entityInstance = (EntityInstance) getInvocationHandler( composite );
         return entityInstance.entityModel();
-    }
-
-    class EntityFinder
-        implements ModuleVisitor<RuntimeException>
-    {
-        Class type;
-        EntityModel model;
-
-        public boolean visitModule( ModuleInstance moduleInstance, ModuleModel moduleModel, Visibility visibility )
-        {
-            model = moduleModel.entities().getEntityModelFor( type, visibility );
-            return model == null;
-        }
     }
 
     public EntityState getEntityState( EntityComposite composite )

@@ -15,20 +15,24 @@
 package org.qi4j.runtime.structure;
 
 import java.util.List;
+
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.composite.AmbiguousTypeException;
-import org.qi4j.api.specification.Specification;
 import org.qi4j.api.util.Function;
 import org.qi4j.api.util.Iterables;
 import org.qi4j.runtime.composite.TransientModel;
-import org.qi4j.runtime.service.ServiceModel;
+import org.qi4j.runtime.entity.EntityModel;
+import org.qi4j.runtime.object.ObjectModel;
+import org.qi4j.runtime.value.ValueModel;
+import org.qi4j.spi.object.ObjectDescriptor;
 import org.qi4j.spi.structure.UsedLayersDescriptor;
+
+import static org.qi4j.runtime.structure.VisibilitySpecification.APPLICATION;
 
 /**
  * JAVADOC
  */
 public final class UsedLayersModel
-    implements UsedLayersDescriptor
+        implements UsedLayersDescriptor
 {
     private final List<LayerModel> usedLayers;
 
@@ -45,18 +49,5 @@ public final class UsedLayersModel
     public UsedLayersInstance newInstance( List<LayerInstance> usedLayerInstances )
     {
         return new UsedLayersInstance( usedLayerInstances );
-    }
-
-    public <ThrowableType extends Throwable> boolean visitModules( ModuleVisitor<ThrowableType> visitor )
-        throws ThrowableType
-    {
-        for( LayerModel usedLayerModel : usedLayers )
-        {
-            if( !usedLayerModel.visitModules( visitor, Visibility.application ) )
-            {
-                return false;
-            }
-        }
-        return true;
     }
 }

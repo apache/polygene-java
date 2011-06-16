@@ -23,6 +23,7 @@ import java.util.Collections;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.specification.Specification;
+import org.qi4j.api.util.Function;
 import org.qi4j.api.util.Iterables;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.bootstrap.InvalidInjectionException;
@@ -409,6 +410,16 @@ public final class DependencyModel
         public boolean satisfiedBy( DependencyModel model )
         {
             return model.hasScope( scope );
+        }
+    }
+
+    public static class InjectionTypeFunction
+        implements Function<DependencyModel, Class<?>>
+    {
+        @Override
+        public Class<?> map( DependencyModel dependencyModel )
+        {
+            return dependencyModel.rawInjectionType();
         }
     }
 }

@@ -32,7 +32,7 @@ import org.qi4j.spi.util.SerializationUtil;
  * JAVADOC
  */
 public final class InjectedMethodModel
-    implements InjectedMethodDescriptor, Serializable
+    implements InjectedMethodDescriptor, Serializable, Dependencies
 {
     // Model
     private Method method;
@@ -70,6 +70,11 @@ public final class InjectedMethodModel
     public Method method()
     {
         return method;
+    }
+
+    public Iterable<DependencyModel> dependencies()
+    {
+        return parameters.dependencies();
     }
 
     // Binding

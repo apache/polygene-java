@@ -1,7 +1,9 @@
 package org.qi4j.api.util;
 
 import org.qi4j.api.specification.Specification;
+import org.qi4j.api.specification.Specifications;
 
+import java.awt.image.TileObserver;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,9 +17,82 @@ import static org.qi4j.api.util.Iterables.map;
 /**
  * Utility functions. Combine these with methods in Iterables, for example. See FunctionsTest for usages.
  */
-public class Functions
+public final class Functions
 {
-    public static Function<Number, Long> longSum()
+    public static <A,B,C> Function2<Function<? super B,C>,Function<A,B>, Function<A,C>> compose()
+    {
+        return new Function2<Function<? super B, C>, Function<A, B>, Function<A, C>>()
+        {
+            @Override
+            public Function<A, C> map( Function<? super B, C> bcFunction, Function<A, B> abFunction )
+            {
+                return compose( bcFunction, abFunction );
+            }
+        };
+    }
+
+    /**
+     * compose(F1(M,T),F2(F,M)) = F1(F2(F)) -> T
+     *
+     * @param outer
+     * @param inner
+     * @param <FROM>
+     * @param <MIDDLE>
+     * @param <TO>
+     * @return
+     */
+    public static <FROM,MIDDLE,TO> Function<FROM,TO> compose( final Function<? super MIDDLE,TO> outer, final Function<FROM,MIDDLE> inner)
+    {
+        return new Function<FROM,TO>()
+        {
+            @Override
+            public TO map( FROM from )
+            {
+                return outer.map( inner.map( from ));
+            }
+        };
+    }
+
+    public static <TYPE> Function<TYPE, TYPE> identity()
+    {
+        return new Function<TYPE,TYPE>()
+        {
+            @Override
+            public TYPE map( TYPE from )
+            {
+                return from;
+            }
+        };
+    }
+
+    public static <FROM,TO> Function<FROM,TO> fromMap( final Map<FROM,TO> map)
+    {
+        return new Function<FROM,TO>()
+        {
+            @Override
+            public TO map( FROM from )
+            {
+                return map.get( from );
+            }
+        };
+    }
+
+    public static <T> Function<T,T> withDefault( final T defaultValue)
+    {
+        return new Function<T, T>()
+        {
+            @Override
+            public T map( T from )
+            {
+                if (from == null)
+                    return defaultValue;
+                else
+                    return from;
+            }
+        };
+    }
+
+    public static final Function<Number, Long> longSum()
     {
         return new Function<Number, Long>()
         {
@@ -50,7 +125,7 @@ public class Functions
     /**
      * Count the number of items in an iterable that matches a given specification.
      *
-     * Sample usage: last( map( indexOf( in( "D" ) ), iterable( "A","B","C","D","D" ) ) )
+     * Sample usage: last( map( count( in( "X" ) ), iterable( "X","Y","X","X","Y" ) ) )
      * Returns: 3
      *
      * @param specification

@@ -1,8 +1,12 @@
 package org.qi4j.bootstrap;
 
+import org.hamcrest.CoreMatchers;
+import org.junit.Assert;
 import org.junit.Test;
 import org.qi4j.api.util.Iterables;
 import org.qi4j.bootstrap.somepackage.Test2Value;
+
+import java.util.Collection;
 
 import static org.qi4j.api.util.Iterables.filter;
 import static org.qi4j.bootstrap.ClassScanner.getClasses;
@@ -15,7 +19,7 @@ import static org.qi4j.bootstrap.ClassScanner.matches;
 public class ClassScannerTest
 {
     @Test
-    public void testClassScanner()
+    public void testClassScannerFiles()
     {
         SingletonAssembler singleton = new SingletonAssembler()
         {
@@ -35,5 +39,9 @@ public class ClassScannerTest
         singleton.valueBuilderFactory().newValueBuilder( Test2Value.class );
     }
 
-
+    @Test
+    public void testClassScannerJar()
+    {
+        Assert.assertEquals( 166, Iterables.count( getClasses( Test.class )));
+    }
 }

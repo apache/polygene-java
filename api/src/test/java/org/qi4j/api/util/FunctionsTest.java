@@ -1,10 +1,10 @@
 package org.qi4j.api.util;
 
+import org.junit.Assert;
 import org.junit.Test;
+import org.qi4j.api.specification.Specifications;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.*;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -17,6 +17,47 @@ import static org.qi4j.api.util.Iterables.*;
  */
 public class FunctionsTest
 {
+    Function<Object, String> stringifier = new Function<Object, String>()
+    {
+        @Override
+        public String map( Object s )
+        {
+            return s.toString();
+        }
+    };
+
+    Function<String, Integer> length = new Function<String, Integer>()
+    {
+        @Override
+        public Integer map( String s )
+        {
+            return s.length();
+        }
+    };
+
+    @Test
+    public void testCompose()
+    {
+        assertThat( Functions.<Object, String, Integer>compose().map( length, stringifier ).map( 12345L ), equalTo( 5 ) );
+        assertThat( compose( length, stringifier ).map( 12345L ), equalTo( 5 ) );
+    }
+
+    @Test
+    public void testFromMap()
+    {
+        Map<String,String> map = new HashMap<String, String>(  );
+        map.put( "A","1" );
+        map.put( "B","2" );
+        map.put( "C","3" );
+        assertThat( Iterables.toList( Iterables.filter( Specifications.notNull(), Iterables.map( Functions.fromMap( map ), Iterables.iterable( "A", "B", "D" ) ) ) ).toString(), equalTo( "[1, 2]" ));
+    }
+
+    @Test
+    public void testWithDefault()
+    {
+        assertThat( Iterables.toList( Iterables.map( Functions.withDefault( "DEFAULT" ), Iterables.iterable( "123", null, "456" ) ) ).toString(), equalTo( "[123, DEFAULT, 456]" ) );
+    }
+
     @Test
     public void testLongSum()
     {
@@ -59,7 +100,7 @@ public class FunctionsTest
             }
         });
 
-        ArrayList<Integer> integers = Iterables.addAll( new ArrayList<Integer>(), Iterables.iterable( 1, 5, 3, 6, 8 ) );
+        List<Integer> integers = Iterables.toList( Iterables.iterable( 1, 5, 3, 6, 8 ) );
         Collections.sort( integers, comparator );
         assertThat( integers.toString(), equalTo( "[1, 3, 5, 6, 8]" ));
     }

@@ -23,7 +23,8 @@ import org.qi4j.api.entity.Identity;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.property.*;
 import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.api.util.Classes;
+import org.qi4j.api.specification.Specifications;
+import org.qi4j.api.util.Iterables;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.bootstrap.MetaInfoDeclaration;
 import org.qi4j.bootstrap.PropertyDeclarations;
@@ -33,7 +34,6 @@ import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.property.PropertiesModel;
 import org.qi4j.runtime.property.PropertyModel;
-import org.qi4j.runtime.structure.DependencyVisitor;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.InvalidCompositeException;
@@ -43,7 +43,10 @@ import java.io.Serializable;
 import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+
+import static org.qi4j.api.specification.Specifications.and;
+import static org.qi4j.api.specification.Specifications.translate;
+import static org.qi4j.api.util.Iterables.filter;
 
 /**
  * JAVADOC
@@ -151,55 +154,6 @@ public final class ServiceModel
         mixinsModel.bind( resolution );
     }
 
-    public boolean isServiceFor( Type serviceType, Visibility visibility )
-    {
-        // Check visibility
-        if( visibility().ordinal() < visibility.ordinal() )
-        {
-            return false;
-        }
-
-        // Check types
-        if( serviceType instanceof Class )
-        {
-            // Plain class check
-            Class serviceClass = (Class) serviceType;
-            return serviceClass.isAssignableFrom( type() );
-        } else if( serviceType instanceof ParameterizedType )
-        {
-            // Parameterized type check. This is useful for example Wrapper<Foo> usages
-            ParameterizedType paramType = (ParameterizedType) serviceType;
-            Class rawClass = (Class) paramType.getRawType();
-            Set<Type> types = Classes.genericInterfacesOf( type() );
-            for( Type type1 : types )
-            {
-                if( type1 instanceof ParameterizedType && rawClass.isAssignableFrom( Classes.getRawClass( type1 ) ) )
-                {
-                    // Check params
-                    Type[] actualTypes = paramType.getActualTypeArguments();
-                    Type[] actualServiceTypes = ((ParameterizedType) type1).getActualTypeArguments();
-                    for( int i = 0; i < actualTypes.length; i++ )
-                    {
-                        Type actualType = actualTypes[i];
-                        if( actualType instanceof Class )
-                        {
-                            Class actualClass = (Class) actualType;
-                            Class actualServiceType = (Class) actualServiceTypes[i];
-                            if( !actualClass.isAssignableFrom( actualServiceType ) )
-                            {
-                                return false;
-                            }
-                        }
-                    }
-
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
     public ServiceInstance newInstance( ModuleInstance module )
     {
         Object[] mixins = mixinsModel.newMixinHolder();
@@ -238,6 +192,18 @@ public final class ServiceModel
                         return null;
                     }
                 };
+            }
+
+            @Override
+            public Iterable<Property<?>> properties()
+            {
+                try
+                {
+                    return Iterables.cast(Iterables.iterable( getProperty( Identity.class.getMethod( "identity" ) ) ));
+                } catch( NoSuchMethodException e )
+                {
+                    return Iterables.empty();
+                }
             }
 
             public void visitProperties( StateVisitor visitor )
@@ -288,18 +254,9 @@ public final class ServiceModel
 
     public Class calculateConfigurationType()
     {
-        final List<DependencyModel> dependencyModels = new ArrayList<DependencyModel>();
-        visitModel( new DependencyVisitor<RuntimeException>( new DependencyModel.ScopeSpecification( This.class ) )
-        {
-            @Override
-            public void visitDependency( DependencyModel dependencyModel )
-            {
-                dependencyModels.add( dependencyModel );
-            }
-        } );
-
         Class injectionClass = null;
-        for( DependencyModel dependencyModel : dependencyModels )
+        Iterable<DependencyModel> configurationThisDependencies = filter( and( translate( new DependencyModel.InjectionTypeFunction(), Specifications.<Class<?>>in( Configuration.class ) ), new DependencyModel.ScopeSpecification( This.class ) ), dependencies() );
+        for( DependencyModel dependencyModel : configurationThisDependencies )
         {
             if( dependencyModel.rawInjectionType().equals( Configuration.class ) )
             {

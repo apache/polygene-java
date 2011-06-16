@@ -29,15 +29,21 @@ import java.util.Set;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.util.Classes;
+import org.qi4j.api.util.Function;
+import org.qi4j.api.util.Iterables;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.bootstrap.AssemblyHelper;
+import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.spi.composite.InvalidCompositeException;
 import org.qi4j.spi.util.MethodKeyMap;
 import org.qi4j.spi.util.UsageGraph;
+
+import static org.qi4j.api.util.Iterables.flattenIterables;
+import static org.qi4j.api.util.Iterables.map;
 
 /**
  * Base implementation of model for mixins. This records the mapping between methods in the Composite
@@ -76,9 +82,9 @@ public abstract class AbstractMixinsModel
 
         // Find mixin declarations
         this.mixins.add( new MixinDeclaration( CompositeMixin.class, Composite.class ) );
-        Set<Class> interfaces = Classes.interfacesOf( compositeType );
+        Set<Class<?>> interfaces = Classes.interfacesOf( compositeType );
 
-        for( Class anInterface : interfaces )
+        for( Class<?> anInterface : interfaces )
         {
             addMixinDeclarations( anInterface, this.mixins );
             mixinTypes.add( anInterface );
@@ -99,11 +105,6 @@ public abstract class AbstractMixinsModel
     public Iterable<Class> mixinTypes()
     {
         return mixinTypes;
-    }
-
-    public Iterable<Method> mixinMethods()
-    {
-        return Collections.unmodifiableSet( methodImplementation.keySet() );
     }
 
     public boolean hasMixinType( Class<?> mixinType )
@@ -346,12 +347,24 @@ public abstract class AbstractMixinsModel
         }
     }
 
+    public Iterable<DependencyModel> dependencies()
+    {
+        return flattenIterables( map( new Function<MixinModel, Iterable<DependencyModel>>()
+                {
+                    @Override
+                    public Iterable<DependencyModel> map( MixinModel mixinModel )
+                    {
+                        return mixinModel.dependencies();
+                    }
+                }, mixinModels ) );
+    }
+
     private class Uses
         implements UsageGraph.Use<MixinModel>
     {
         public Collection<MixinModel> uses( MixinModel source )
         {
-            Set<Class> thisMixinTypes = source.thisMixinTypes();
+            Iterable<Class<?>> thisMixinTypes = source.thisMixinTypes();
             List<MixinModel> usedMixinClasses = new ArrayList<MixinModel>();
             for( Class thisMixinType : thisMixinTypes )
             {

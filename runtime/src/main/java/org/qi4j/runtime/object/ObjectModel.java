@@ -20,6 +20,8 @@ import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.mixin.Initializable;
 import org.qi4j.api.mixin.InitializationException;
+import org.qi4j.api.specification.Specification;
+import org.qi4j.api.util.Function;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.composite.ConstructorsModel;
 import org.qi4j.runtime.injection.InjectedFieldsModel;
@@ -36,6 +38,51 @@ import org.qi4j.spi.object.ObjectDescriptor;
 public final class ObjectModel
     implements Binder, ObjectDescriptor, Serializable
 {
+    public static Specification<ObjectDescriptor> modelTypeSpecification( final String className)
+    {
+        return new Specification<ObjectDescriptor>()
+        {
+            @Override
+            public boolean satisfiedBy( ObjectDescriptor item )
+            {
+                return item.type().getName().equals(className);
+            }
+        };
+    }
+
+    public static Specification<ObjectDescriptor> exactTypeSpecification( final Class type)
+    {
+        return new Specification<ObjectDescriptor>()
+        {
+            @Override
+            public boolean satisfiedBy( ObjectDescriptor item )
+            {
+                return item.type().equals(type);
+            }
+        };
+    }
+
+    public static Specification<ObjectDescriptor> assignableTypeSpecification( final Class type)
+    {
+        return new Specification<ObjectDescriptor>()
+        {
+            @Override
+            public boolean satisfiedBy( ObjectDescriptor item )
+            {
+                return !type.equals( item.type() ) && type.isAssignableFrom( item.type());
+            }
+        };
+    }
+
+    public static final Function<ObjectDescriptor, Class<?>> MODEL_TYPE_FUNCTION = new Function<ObjectDescriptor, Class<?>>()
+    {
+        @Override
+        public Class<?> map( ObjectDescriptor objectDescriptor )
+        {
+            return objectDescriptor.type();
+        }
+    };
+
     private final Class<?> objectType;
     private final Visibility visibility;
     private final MetaInfo metaInfo;

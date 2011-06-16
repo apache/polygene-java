@@ -57,7 +57,7 @@ public class Qi4jAPITest
 
         api.getModule( transientBuilderFactory.newTransient( TestTransient.class ) );
 
-        api.getModule( (Composite) serviceLocator.<Object>findService( TestService.class ).get() );
+        api.getModule( serviceLocator.findService( TestService.class ).get() );
     }
 
     public interface TestTransient

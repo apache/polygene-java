@@ -474,8 +474,8 @@ public class FragmentClassLoader
     private static Class getInterfaceMethodDeclaration( Method method, Class clazz )
         throws NoSuchMethodException
     {
-        Set<Class> interfaces = interfacesOf( clazz );
-        for( Class anInterface : interfaces )
+        Set<Class<?>> interfaces = interfacesOf( clazz );
+        for( Class<?> anInterface : interfaces )
         {
             try
             {

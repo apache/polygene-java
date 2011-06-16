@@ -81,7 +81,6 @@ public final class ConcernsDeclaration
     }
 
     // Model
-
     public MethodConcernsModel concernsFor( Method method, Class<? extends Composite> type, AssemblyHelper helper )
     {
         if( !methodConcernsModels.containsKey( method ) )

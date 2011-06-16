@@ -14,33 +14,24 @@
 
 package org.qi4j.runtime.injection.provider;
 
-import java.io.Serializable;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.service.qualifier.Qualifier;
 import org.qi4j.api.specification.Specification;
+import org.qi4j.api.util.Function;
+import org.qi4j.api.util.Iterables;
 import org.qi4j.bootstrap.InvalidInjectionException;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.injection.InjectionProvider;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
 import org.qi4j.runtime.model.Resolution;
-import org.qi4j.runtime.service.ImportedServiceModel;
-import org.qi4j.runtime.service.ServiceModel;
-import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.runtime.structure.ModuleModel;
-import org.qi4j.runtime.structure.ModuleVisitor;
 
-import static org.qi4j.api.util.Annotations.*;
+import java.io.Serializable;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+
+import static org.qi4j.api.util.Annotations.hasAnnotation;
 import static org.qi4j.api.util.Iterables.*;
 
 public final class ServiceInjectionProviderFactory
@@ -49,6 +40,7 @@ public final class ServiceInjectionProviderFactory
     public InjectionProvider newInjectionProvider( Resolution resolution, DependencyModel dependencyModel )
         throws InvalidInjectionException
     {
+        // TODO This could be changed to allow multiple @Qualifier annotations
         Annotation qualifierAnnotation = first( filter( hasAnnotation( Qualifier.class ), iterable( dependencyModel.annotations() ) ) );
         Specification<ServiceReference<?>> serviceQualifier = null;
         if( qualifierAnnotation != null )
@@ -70,105 +62,40 @@ public final class ServiceInjectionProviderFactory
             {
                 // @Service Iterable<ServiceReference<MyService>> serviceRefs
                 Type[] arguments = ( (ParameterizedType) dependencyModel.injectionType() ).getActualTypeArguments();
-                Type serviceType = ( (ParameterizedType) arguments[ 0 ] ).getActualTypeArguments()[ 0 ];
+                Class<?> serviceType = (Class<Object>) ( (ParameterizedType) arguments[ 0 ] ).getActualTypeArguments()[ 0 ];
 
-                ServicesFinder servicesFinder = new ServicesFinder();
-                servicesFinder.serviceType = serviceType;
-
-                resolution.module().visitModules( servicesFinder );
-
-                return new IterableServiceReferenceProvider( servicesFinder, serviceQualifier );
+                return new IterableServiceReferenceProvider( serviceType, serviceQualifier );
             }
             else
             {
                 // @Service Iterable<MyService> services
                 Class serviceType = dependencyModel.injectionClass();
 
-                ServicesFinder servicesFinder = new ServicesFinder();
-                servicesFinder.serviceType = serviceType;
-
-                resolution.module().visitModules( servicesFinder );
-
-                return new IterableServiceProvider( servicesFinder, serviceQualifier );
+                return new IterableServiceProvider( serviceType, serviceQualifier );
             }
         }
         else if( dependencyModel.rawInjectionType().equals( ServiceReference.class ) )
         {
             // @Service ServiceReference<MyService> serviceRef
-            Type serviceType = dependencyModel.injectionClass();
-            if( serviceQualifier == null )
-            {
-                ServiceFinder serviceFinder = new ServiceFinder();
-                serviceFinder.serviceType = serviceType;
-                resolution.module().visitModules( serviceFinder );
-
-                if( serviceFinder.identity == null )
-                {
-                    return null;
-                }
-
-                return new ServiceReferenceProvider( serviceFinder );
-            }
-            else
-            {
-                ServicesFinder serviceFinder = new ServicesFinder();
-                serviceFinder.serviceType = serviceType;
-                resolution.module().visitModules( serviceFinder );
-
-                if( serviceFinder.serviceIdentities.size() + serviceFinder.importedServiceIdentities.size() == 0 )
-                {
-                    return null;
-                }
-
-                return new ServiceReferenceProvider( serviceFinder, serviceQualifier );
-            }
+            Class<?> serviceType = dependencyModel.injectionClass();
+            return new ServiceReferenceProvider( serviceType, serviceQualifier );
         }
         else
         {
             // @Service MyService service
-            Type serviceType = dependencyModel.injectionType();
-            if( serviceQualifier == null )
-            {
-                ServiceFinder serviceFinder = new ServiceFinder();
-                serviceFinder.serviceType = serviceType;
-                resolution.module().visitModules( serviceFinder );
-
-                if( serviceFinder.identity == null )
-                {
-                    return null;
-                }
-
-                return new ServiceProvider( serviceFinder );
-            }
-            else
-            {
-                ServicesFinder serviceFinder = new ServicesFinder();
-                serviceFinder.serviceType = serviceType;
-                resolution.module().visitModules( serviceFinder );
-
-                if( serviceFinder.serviceIdentities.size() + serviceFinder.importedServiceIdentities.size() == 0 )
-                {
-                    return null;
-                }
-
-                return new ServiceProvider( serviceFinder, serviceQualifier );
-            }
+            Class<?> serviceType = (Class<Object>) dependencyModel.injectionType();
+            return new ServiceProvider( serviceType, serviceQualifier );
         }
     }
 
     private static class IterableServiceReferenceProvider
         extends ServiceInjectionProvider
     {
-        private IterableServiceReferenceProvider( ServiceFinder serviceFinder )
-        {
-            super( serviceFinder );
-        }
-
-        private IterableServiceReferenceProvider( ServicesFinder servicesFinder,
+        private IterableServiceReferenceProvider( Class<?> serviceType,
                                                   Specification<ServiceReference<?>> serviceQualifier
         )
         {
-            super( servicesFinder, serviceQualifier );
+            super( serviceType, serviceQualifier );
         }
 
         public synchronized Object provideInjection( InjectionContext context )
@@ -180,60 +107,34 @@ public final class ServiceInjectionProviderFactory
 
     private static class IterableServiceProvider
         extends ServiceInjectionProvider
+        implements Function<ServiceReference<?>, Object>
     {
-        private IterableServiceProvider( ServiceFinder serviceFinder )
-        {
-            super( serviceFinder );
-        }
-
-        private IterableServiceProvider( ServicesFinder servicesFinder,
+        private IterableServiceProvider( Class<?> serviceType,
                                          Specification<ServiceReference<?>> serviceQualifier
         )
         {
-            super( servicesFinder, serviceQualifier );
+            super( serviceType, serviceQualifier );
         }
 
         public synchronized Object provideInjection( final InjectionContext context )
             throws InjectionProviderException
         {
-            return new Iterable()
-            {
-                public Iterator iterator()
-                {
-                    final Iterator<ServiceReference<Object>> iter = getServiceReferences( context ).iterator();
-                    return new Iterator()
-                    {
-                        public boolean hasNext()
-                        {
-                            return iter.hasNext();
-                        }
+            return Iterables.map( this, getServiceReferences( context ) );
+        }
 
-                        public Object next()
-                        {
-                            ServiceReference<Object> serviceRef = iter.next();
-                            return serviceRef.get();
-                        }
-
-                        public void remove()
-                        {
-                        }
-                    };
-                }
-            };
+        @Override
+        public Object map( ServiceReference<?> objectServiceReference )
+        {
+            return objectServiceReference.get();
         }
     }
 
     private static class ServiceReferenceProvider
         extends ServiceInjectionProvider
     {
-        ServiceReferenceProvider( ServiceFinder serviceFinder )
+        ServiceReferenceProvider( Class<?> serviceType, Specification<ServiceReference<?>> qualifier )
         {
-            super( serviceFinder );
-        }
-
-        ServiceReferenceProvider( ServicesFinder servicesFinder, Specification<ServiceReference<?>> serviceQualifier )
-        {
-            super( servicesFinder, serviceQualifier );
+            super( serviceType, qualifier );
         }
 
         public synchronized Object provideInjection( InjectionContext context )
@@ -246,20 +147,15 @@ public final class ServiceInjectionProviderFactory
     private static class ServiceProvider
         extends ServiceInjectionProvider
     {
-        ServiceProvider( ServiceFinder serviceFinder )
+        ServiceProvider( Class<?> serviceType, Specification<ServiceReference<?>> qualifier )
         {
-            super( serviceFinder );
-        }
-
-        ServiceProvider( ServicesFinder servicesFinder, Specification<ServiceReference<?>> selector )
-        {
-            super( servicesFinder, selector );
+            super( serviceType, qualifier );
         }
 
         public synchronized Object provideInjection( InjectionContext context )
             throws InjectionProviderException
         {
-            ServiceReference<Object> ref = getServiceReference( context );
+            ServiceReference<?> ref = getServiceReference( context );
 
             if( ref != null )
             {
@@ -275,216 +171,39 @@ public final class ServiceInjectionProviderFactory
     private abstract static class ServiceInjectionProvider
         implements InjectionProvider
     {
-        private ServiceFinder serviceFinder;
-        private ServicesFinder servicesFinder;
+        private Class<?> serviceType;
         private Specification<ServiceReference<?>> serviceQualifier;
 
-        protected ServiceInjectionProvider( ServiceFinder serviceFinder )
-        {
-            this.serviceFinder = serviceFinder;
-        }
-
-        protected ServiceInjectionProvider( ServicesFinder servicesFinder,
+        protected ServiceInjectionProvider( Class<?> serviceType,
                                             Specification<ServiceReference<?>> serviceQualifier
         )
         {
-            this.servicesFinder = servicesFinder;
+            this.serviceType = serviceType;
             this.serviceQualifier = serviceQualifier;
         }
 
-        protected ServiceReference<Object> getServiceReference( InjectionContext context )
+        protected ServiceReference<?> getServiceReference( InjectionContext context )
         {
-            ModuleMapper mapper = new ModuleMapper();
-            context.moduleInstance().visitModules( mapper );
             if( serviceQualifier == null )
             {
-                if( serviceFinder.identity != null )
-                {
-                    if( serviceFinder.imported )
-                    {
-                        return mapper.modules
-                            .get( serviceFinder.module )
-                            .importedServices()
-                            .getServiceWithIdentity( serviceFinder.identity );
-                    }
-                    else
-                    {
-                        return mapper.modules
-                            .get( serviceFinder.module )
-                            .services()
-                            .getServiceWithIdentity( serviceFinder.identity );
-                    }
-                }
-
-                return null;
+                return context.moduleInstance().serviceFinder().findService( serviceType );
             }
             else
             {
-                for( Map.Entry<ModuleModel, List<String>> entry : servicesFinder.serviceIdentities.entrySet() )
-                {
-                    ModuleInstance moduleInstance = mapper.modules.get( entry.getKey() );
-                    for( String identity : entry.getValue() )
-                    {
-                        ServiceReference<Object> serviceRef = moduleInstance.services()
-                            .getServiceWithIdentity( identity );
-                        if( serviceQualifier.satisfiedBy( serviceRef ) )
-                        {
-                            return serviceRef;
-                        }
-                    }
-                }
-                for( Map.Entry<ModuleModel, List<String>> entry : servicesFinder.importedServiceIdentities.entrySet() )
-                {
-                    ModuleInstance moduleInstance = mapper.modules.get( entry.getKey() );
-                    for( String identity : entry.getValue() )
-                    {
-                        ServiceReference<Object> serviceRef = moduleInstance.importedServices()
-                            .getServiceWithIdentity( identity );
-                        if( serviceQualifier.satisfiedBy( serviceRef ) )
-                        {
-                            return serviceRef;
-                        }
-                    }
-                }
-
-                return null;
+                return Iterables.first( Iterables.filter( serviceQualifier, context.moduleInstance().serviceFinder().findServices( serviceType ) ) );
             }
         }
 
-        protected Iterable<ServiceReference<Object>> getServiceReferences( final InjectionContext context )
+        protected Iterable<ServiceReference<?>> getServiceReferences( final InjectionContext context )
         {
-            return new Iterable<ServiceReference<Object>>()
+            if( serviceQualifier == null )
             {
-                public Iterator<ServiceReference<Object>> iterator()
-                {
-                    List<ServiceReference<Object>> serviceReferences = new ArrayList<ServiceReference<Object>>();
-
-                    ModuleMapper mapper = new ModuleMapper();
-                    context.moduleInstance().visitModules( mapper );
-
-                    for( Map.Entry<ModuleModel, List<String>> entry : servicesFinder.serviceIdentities.entrySet() )
-                    {
-                        ModuleInstance moduleInstance = mapper.modules.get( entry.getKey() );
-                        for( String identity : entry.getValue() )
-                        {
-                            ServiceReference<Object> serviceRef = moduleInstance.services()
-                                .getServiceWithIdentity( identity );
-                            if( serviceQualifier == null || serviceQualifier.satisfiedBy( serviceRef ) )
-                            {
-                                serviceReferences.add( serviceRef );
-                            }
-                        }
-                    }
-                    for( Map.Entry<ModuleModel, List<String>> entry : servicesFinder.importedServiceIdentities
-                        .entrySet() )
-                    {
-                        ModuleInstance moduleInstance = mapper.modules.get( entry.getKey() );
-                        for( String identity : entry.getValue() )
-                        {
-                            ServiceReference<Object> serviceRef = moduleInstance.importedServices()
-                                .getServiceWithIdentity( identity );
-                            if( serviceQualifier == null || serviceQualifier.satisfiedBy( serviceRef ) )
-                            {
-                                serviceReferences.add( serviceRef );
-                            }
-                        }
-                    }
-
-                    return serviceReferences.iterator();
-                }
-            };
-        }
-    }
-
-    static class ServiceFinder
-        implements ModuleVisitor<RuntimeException>
-    {
-        public Type serviceType;
-
-        public boolean imported;
-        public String identity;
-        public ModuleModel module;
-
-        public boolean visitModule( ModuleInstance moduleInstance, ModuleModel moduleModel, Visibility visibility )
-        {
-            ServiceModel model = moduleModel.services().getServiceFor( serviceType, visibility );
-            if( model != null )
-            {
-                identity = model.identity();
-                module = moduleModel;
+                return context.moduleInstance().serviceFinder().findServices( (Class) serviceType );
             }
-
-            ImportedServiceModel importedServiceModel = moduleModel.importedServicesModel()
-                .getServiceFor( serviceType, visibility );
-            if( importedServiceModel != null )
+            else
             {
-                identity = importedServiceModel.identity();
-                module = moduleModel;
-                imported = true;
+                return Iterables.filter( serviceQualifier, context.moduleInstance().serviceFinder().findServices( (Class)serviceType ) );
             }
-
-            return identity == null;
-        }
-    }
-
-    static class ServicesFinder
-        implements ModuleVisitor<RuntimeException>, Serializable
-    {
-        public Type serviceType;
-
-        private Map<ModuleModel, List<String>> serviceIdentities = new LinkedHashMap<ModuleModel, List<String>>();
-        private Map<ModuleModel, List<String>> importedServiceIdentities = new LinkedHashMap<ModuleModel, List<String>>();
-
-        private List<ServiceModel> services = new ArrayList<ServiceModel>();
-        private List<ImportedServiceModel> importedServices = new ArrayList<ImportedServiceModel>();
-
-        public boolean visitModule( ModuleInstance moduleInstance, ModuleModel moduleModel, Visibility visibility )
-        {
-            moduleModel.services().getServicesFor( serviceType, visibility, services );
-            if( !services.isEmpty() )
-            {
-                List<String> identities = serviceIdentities.get( moduleModel );
-                if( identities == null )
-                {
-                    serviceIdentities.put( moduleModel, identities = new ArrayList<String>( services.size() ) );
-                }
-                for( ServiceModel service : services )
-                {
-                    identities.add( service.identity() );
-                }
-            }
-
-            moduleModel.importedServicesModel().getServicesFor( serviceType, visibility, importedServices );
-            if( !importedServices.isEmpty() )
-            {
-                List<String> identities = importedServiceIdentities.get( moduleModel );
-                if( identities == null )
-                {
-                    importedServiceIdentities.put( moduleModel, identities = new ArrayList<String>( importedServices.size() ) );
-                }
-                for( ImportedServiceModel service : importedServices )
-                {
-                    identities.add( service.identity() );
-                }
-            }
-
-            services.clear();
-            importedServices.clear();
-
-            return true;
-        }
-    }
-
-    static class ModuleMapper
-        implements ModuleVisitor<RuntimeException>
-    {
-        public Map<ModuleModel, ModuleInstance> modules = new HashMap<ModuleModel, ModuleInstance>();
-
-        public boolean visitModule( ModuleInstance moduleInstance, ModuleModel moduleModel, Visibility visibility )
-        {
-            modules.put( moduleModel, moduleInstance );
-
-            return true;
         }
     }
 }

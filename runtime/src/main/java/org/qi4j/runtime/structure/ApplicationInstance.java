@@ -16,7 +16,6 @@ package org.qi4j.runtime.structure;
 
 import org.qi4j.api.event.ActivationEvent;
 import org.qi4j.api.event.ActivationEventListener;
-import org.qi4j.api.event.ApplicationActivationEvent;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Layer;
 import org.qi4j.api.structure.Module;
@@ -129,17 +128,17 @@ public class ApplicationInstance
     public void activate()
         throws Exception
     {
-        eventListenerSupport.fireEvent( new ApplicationActivationEvent(this, ActivationEvent.EventType.ACTIVATING) );
+        eventListenerSupport.fireEvent( new ActivationEvent(this, ActivationEvent.EventType.ACTIVATING) );
         layerActivator.activate( layerInstances );
-        eventListenerSupport.fireEvent( new ApplicationActivationEvent( this, ActivationEvent.EventType.ACTIVATED ) );
+        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATED ) );
     }
 
     public void passivate()
         throws Exception
     {
-        eventListenerSupport.fireEvent( new ApplicationActivationEvent(this, ActivationEvent.EventType.PASSIVATING) );
+        eventListenerSupport.fireEvent( new ActivationEvent(this, ActivationEvent.EventType.PASSIVATING) );
         layerActivator.passivate();
-        eventListenerSupport.fireEvent( new ApplicationActivationEvent( this, ActivationEvent.EventType.PASSIVATED ) );
+        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATED ) );
     }
 
     public <ThrowableType extends Throwable> void visitDescriptor( DescriptorVisitor<ThrowableType> visitor )

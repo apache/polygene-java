@@ -50,6 +50,12 @@ public class PropertiesInstance
         return null; // indicate with null that it has not been found.
     }
 
+    @Override
+    public Iterable<Property<?>> properties()
+    {
+        return properties.values();
+    }
+
     public <ThrowableType extends Throwable> void visitProperties( StateVisitor<ThrowableType> visitor )
         throws ThrowableType
     {

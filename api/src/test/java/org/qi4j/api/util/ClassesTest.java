@@ -42,9 +42,9 @@ public class ClassesTest
     @Test
     public void givenClassWithInterfacesWhenGetInterfacesWithMethodsThenGetCorrectSet()
     {
-        HashSet<Class> interfaces = new HashSet<Class>();
+        HashSet<Class<?>> interfaces = new HashSet<Class<?>>();
         interfaces.add( B.class );
-        Set<Class> types = interfacesWithMethods( interfaces );
+        Set<Class<?>> types = interfacesWithMethods( interfaces );
         assertThat( "one interface returned", types.size(), equalTo( 1 ) );
         assertThat( "correct interface returned", types.contains( B.class ), is( true ) );
     }
@@ -52,7 +52,7 @@ public class ClassesTest
     @Test
     public void givenClassesWithInterfacesWhenGetInterfacesWithMethodsThenGetCorrectSet()
     {
-        Set<Class> types = interfacesWithMethods( interfacesOf( C.class ) );
+        Set<Class<?>> types = interfacesWithMethods( interfacesOf( C.class ) );
         assertThat( "one interface returned", types.size(), equalTo( 1 ) );
         assertThat( "correct interface returned", types.contains( B.class ), is( true ) );
     }

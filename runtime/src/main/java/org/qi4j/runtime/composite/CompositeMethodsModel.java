@@ -15,25 +15,41 @@
 package org.qi4j.runtime.composite;
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.MissingMethodException;
+import org.qi4j.api.entity.Lifecycle;
+import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.mixin.Initializable;
+import org.qi4j.api.service.Activatable;
+import org.qi4j.api.specification.Specifications;
+import org.qi4j.api.util.Classes;
+import org.qi4j.api.util.Function;
+import org.qi4j.api.util.Iterables;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.bootstrap.AssemblyHelper;
+import org.qi4j.runtime.injection.Dependencies;
+import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.util.MethodKeyMap;
 
+import static org.qi4j.api.specification.Specifications.in;
+import static org.qi4j.api.specification.Specifications.not;
+import static org.qi4j.api.util.Iterables.*;
+
 /**
  * Model for Composite methods. This includes both private and public methods.
  */
 public final class CompositeMethodsModel
-    implements Binder, Serializable
+        implements Binder, Serializable
 {
     private HashMap<Method, CompositeMethodModel> methods;
     private final Class<? extends Composite> type;
@@ -63,10 +79,15 @@ public final class CompositeMethodsModel
         }
     }
 
-    // Binding
 
+    public Iterable<DependencyModel> dependencies()
+    {
+        return Iterables.flattenIterables( map( Dependencies.DEPENDENCIES_FUNCTION, methods.values() ) );
+    }
+
+    // Binding
     public void bind( Resolution resolution )
-        throws BindingException
+            throws BindingException
     {
         for( CompositeMethodModel compositeMethodComposite : methods.values() )
         {
@@ -82,7 +103,7 @@ public final class CompositeMethodsModel
                           Object[] args,
                           ModuleInstance moduleInstance
     )
-        throws Throwable
+            throws Throwable
     {
         CompositeMethodModel compositeMethod = methods.get( method );
 
@@ -103,19 +124,16 @@ public final class CompositeMethodsModel
                         Method realMethod = aClass.getMethod( method.getName(), method.getParameterTypes() );
                         compositeMethod = methods.get( realMethod );
                         break;
-                    }
-                    catch( NoSuchMethodException e )
+                    } catch( NoSuchMethodException e )
                     {
-                    }
-                    catch( SecurityException e )
+                    } catch( SecurityException e )
                     {
                     }
                 }
             }
 //            return mixins.invokeObject( proxy, args, method );
             throw new MissingMethodException( "Method '" + method + "' is not present in composite " + type.getName(), method );
-        }
-        else
+        } else
         {
             return compositeMethod.invoke( proxy, args, mixins, moduleInstance );
         }
@@ -123,7 +141,7 @@ public final class CompositeMethodsModel
 
     public void implementMixinType( Class mixinType, AssemblyHelper helper )
     {
-        final Set<Class> thisDependencies = new HashSet<Class>();
+        Iterable<Class<?>> thisDependencies = Iterables.empty();
         for( Method method : mixinType.getMethods() )
         {
             if( methods.get( method ) == null )
@@ -139,8 +157,7 @@ public final class CompositeMethodsModel
                     methodConcernsModel1 = methodConcernsModel1.combineWith( methodConcernsModel2 );
                     MethodSideEffectsModel methodSideEffectsModel2 = sideEffectsModel.sideEffectsFor( mixinMethod, type, helper );
                     methodSideEffectsModel1 = methodSideEffectsModel1.combineWith( methodSideEffectsModel2 );
-                }
-                catch( NoSuchMethodException e )
+                } catch( NoSuchMethodException e )
                 {
                     // Ignore...
                 }
@@ -168,14 +185,21 @@ public final class CompositeMethodsModel
                 }
 
                 CompositeMethodModel methodComposite = new CompositeMethodModel( method,
-                                                                                 new MethodConstraintsModel( method, constraintsModel ),
-                                                                                 methodConcernsModel1,
-                                                                                 methodSideEffectsModel1,
-                                                                                 mixinsModel );
+                        new MethodConstraintsModel( method, constraintsModel ),
+                        methodConcernsModel1,
+                        methodSideEffectsModel1,
+                        mixinsModel );
 
                 // Implement @This references
-                methodComposite.addThisInjections( thisDependencies );
-                mixinModel.addThisInjections( thisDependencies );
+                Iterable<Class<?>> map = map( new DependencyModel.InjectionTypeFunction(), filter( new DependencyModel.ScopeSpecification( This.class ), methodComposite.dependencies() ) );
+                Iterable<Class<?>> map1 = map( new DependencyModel.InjectionTypeFunction(), filter( new DependencyModel.ScopeSpecification( This.class ), mixinModel.dependencies() ) );
+                Iterable<Class<?>> filter = Iterables.filter( not( in( Activatable.class, Initializable.class, Lifecycle.class, InvocationHandler.class ) ), Classes.interfacesOf( mixinModel.mixinClass() ) );
+                thisDependencies = flatten( thisDependencies,
+                        map,
+                        map1,
+                        filter );
+                thisDependencies = Iterables.toList( thisDependencies );
+
                 methods.put( method, methodComposite );
             }
         }
@@ -184,7 +208,7 @@ public final class CompositeMethodsModel
         mixinsModel.addMixinType( mixinType );
 
         // Implement all @This dependencies that were found
-        for( Class thisDependency : thisDependencies )
+        for( Class<?> thisDependency : unique( thisDependencies ) )
         {
             implementMixinType( thisDependency, helper );
         }
@@ -196,7 +220,7 @@ public final class CompositeMethodsModel
     }
 
     public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
-        throws ThrowableType
+            throws ThrowableType
     {
         for( CompositeMethodModel compositeMethodModel : methods.values() )
         {

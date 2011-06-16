@@ -49,32 +49,12 @@ import org.qi4j.api.mixin.MixinMappingException;
  * </p>
  */
 public class AmbiguousTypeException
-    extends MixinMappingException
+    extends RuntimeException
 {
     private static final long serialVersionUID = 1L;
 
-    private final Class<?> mixinType;
-    private Iterable<Class<?>> matchingTypes;
-
-    public AmbiguousTypeException( Class<?> mixinType, Class<?>... matchingTypes )
+    public AmbiguousTypeException( String message )
     {
-        this( mixinType, Arrays.asList( matchingTypes ) );
-    }
-
-    public AmbiguousTypeException( Class<?> mixinType, Iterable<Class<?>> matchingTypes )
-    {
-        super( "More than one visible CompositeType implements mixintype " + mixinType.getName() + ":" + matchingTypes );
-        this.mixinType = mixinType;
-        this.matchingTypes = matchingTypes;
-    }
-
-    public Class<?> mixinType()
-    {
-        return mixinType;
-    }
-
-    public Iterable<Class<?>> matchingTypes()
-    {
-        return matchingTypes;
+        super(message);
     }
 }

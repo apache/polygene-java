@@ -20,6 +20,8 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.api.injection.InjectionScope;
+import org.qi4j.api.util.Function;
+import org.qi4j.api.util.Iterables;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
@@ -33,7 +35,7 @@ import static org.qi4j.api.util.Iterables.*;
  * JAVADOC
  */
 public final class InjectedFieldsModel
-    implements Binder, Serializable
+    implements Binder, Serializable, Dependencies
 {
     private final List<InjectedFieldModel> fields = new ArrayList<InjectedFieldModel>();
 
@@ -56,6 +58,18 @@ public final class InjectedFieldsModel
             .getAnnotations() );
         InjectedFieldModel injectedFieldModel = new InjectedFieldModel( field, dependencyModel );
         this.fields.add( injectedFieldModel );
+    }
+
+    public Iterable<DependencyModel> dependencies()
+    {
+        return Iterables.map( new Function<InjectedFieldModel, DependencyModel>()
+        {
+            @Override
+            public DependencyModel map( InjectedFieldModel injectedFieldModel )
+            {
+                return injectedFieldModel.dependency();
+            }
+        }, fields);
     }
 
     public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )

@@ -35,6 +35,7 @@ import org.qi4j.api.unitofwork.UnitOfWorkException;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
+import org.qi4j.runtime.structure.ModelModule;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
@@ -107,8 +108,7 @@ public final class UnitOfWorkInstance
 
     public EntityInstance get( EntityReference identity,
                                ModuleUnitOfWork uow,
-                               List<EntityModel> potentialModels,
-                               List<ModuleInstance> potentialModules,
+                               Iterable<ModelModule<EntityModel>> potentialModels,
                                Class mixinType
     )
         throws EntityTypeNotFoundException, NoSuchEntityException
@@ -124,10 +124,10 @@ public final class UnitOfWorkInstance
             EntityModel model = null;
             ModuleInstance module = null;
             // Figure out what EntityStore to use
-            for( ModuleInstance potentialModule : potentialModules )
+            for( ModelModule<EntityModel> potentialModule : potentialModels )
             {
-                EntityStore store = potentialModule.entities().entityStore();
-                EntityStoreUnitOfWork storeUow = getEntityStoreUnitOfWork( store, potentialModule );
+                EntityStore store = potentialModule.module().entities().entityStore();
+                EntityStoreUnitOfWork storeUow = getEntityStoreUnitOfWork( store, potentialModule.module() );
                 try
                 {
                     entityState = storeUow.getEntityState( identity );
@@ -139,7 +139,7 @@ public final class UnitOfWorkInstance
 
                 // Get the selected model
                 model = (EntityModel) entityState.entityDescriptor();
-                module = potentialModule;
+                module = potentialModule.module();
             }
 
             // Check if model was found
@@ -173,9 +173,9 @@ public final class UnitOfWorkInstance
 
             // Find instance in cache
             InstanceKey instanceKey = new InstanceKey();
-            for( EntityModel potentialModel : potentialModels )
+            for( ModelModule<EntityModel> potentialModel : potentialModels )
             {
-                instanceKey.update( potentialModel.entityType().type(), identity );
+                instanceKey.update( potentialModel.model().entityType().type(), identity );
                 EntityInstance instance = instanceCache.get( instanceKey );
                 if( instance != null )
                 {
@@ -187,21 +187,21 @@ public final class UnitOfWorkInstance
             // See if any types match
             EntityModel model = null;
             ModuleInstance module = null;
-            for( int i = 0; i < potentialModels.size(); i++ )
+            for( ModelModule<EntityModel> potentialModel : potentialModels )
             {
-                EntityModel potentialModel = potentialModels.get( i );
-                TypeName typeRef = potentialModel.entityType().type();
+                EntityModel entityModel = potentialModel.model();
+                TypeName typeRef = potentialModel.model().entityType().type();
                 if( entityState.isOfType( typeRef ) )
                 {
                     // Found it!
                     // Check for ambiguity
                     if( model != null )
                     {
-                        throw new AmbiguousTypeException( mixinType, model.type(), potentialModel.type() );
+                        throw new AmbiguousTypeException( "More than one model matches the type "+mixinType.getName()+":"+potentialModel.model().type() );
                     }
 
-                    model = potentialModel;
-                    module = potentialModules.get( i );
+                    model = entityModel;
+                    module = potentialModel.module();
                 }
             }
 

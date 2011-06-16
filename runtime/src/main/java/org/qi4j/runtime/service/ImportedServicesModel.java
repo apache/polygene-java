@@ -29,7 +29,6 @@ public class ImportedServicesModel
     implements Serializable
 {
     private List<ImportedServiceModel> importedServiceModels;
-    private List<ImportedServiceReferenceInstance> serviceReferences;
 
     public ImportedServicesModel( List<ImportedServiceModel> importedServiceModels )
     {
@@ -38,7 +37,7 @@ public class ImportedServicesModel
 
     public ImportedServicesInstance newInstance( ModuleInstance module )
     {
-        serviceReferences = new ArrayList<ImportedServiceReferenceInstance>();
+        List<ImportedServiceReferenceInstance> serviceReferences = new ArrayList<ImportedServiceReferenceInstance>();
         for( ImportedServiceModel serviceModel : importedServiceModels )
         {
             ImportedServiceReferenceInstance serviceReferenceInstance = new ImportedServiceReferenceInstance( serviceModel, module );
@@ -54,30 +53,6 @@ public class ImportedServicesModel
         for( ImportedServiceModel importedServiceModel : importedServiceModels )
         {
             importedServiceModel.visitModel( modelVisitor );
-        }
-    }
-
-    public ImportedServiceModel getServiceFor( Type type, Visibility visibility )
-    {
-        for( ImportedServiceModel serviceModel : importedServiceModels )
-        {
-            if( serviceModel.isServiceFor( type, visibility ) )
-            {
-                return serviceModel;
-            }
-        }
-
-        return null;
-    }
-
-    public void getServicesFor( Type type, Visibility visibility, List<ImportedServiceModel> serviceModels )
-    {
-        for( ImportedServiceModel importedServiceModel : importedServiceModels )
-        {
-            if( importedServiceModel.isServiceFor( type, visibility ) )
-            {
-                serviceModels.add( importedServiceModel );
-            }
         }
     }
 }

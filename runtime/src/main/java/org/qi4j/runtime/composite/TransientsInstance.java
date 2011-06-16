@@ -14,7 +14,14 @@
 
 package org.qi4j.runtime.composite;
 
+import org.qi4j.api.common.Visibility;
+import org.qi4j.runtime.object.ObjectModel;
+import org.qi4j.runtime.structure.ModelModule;
 import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.runtime.structure.VisibilitySpecification;
+
+import static org.qi4j.api.util.Iterables.filter;
+import static org.qi4j.api.util.Iterables.map;
 
 /**
  * JAVADOC
@@ -33,5 +40,10 @@ public class TransientsInstance
     public TransientsModel model()
     {
         return transients;
+    }
+
+    public Iterable<ModelModule<TransientModel>> visibleTransients( Visibility visibility )
+    {
+        return map( ModelModule.<TransientModel>modelModuleFunction( moduleInstance ), filter( new VisibilitySpecification( visibility ), transients.models() ) );
     }
 }

@@ -4,8 +4,10 @@ import java.io.Serializable;
 import org.qi4j.api.composite.TransientBuilder;
 import org.qi4j.api.object.ObjectBuilder;
 import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.util.Iterables;
 import org.qi4j.bootstrap.InvalidInjectionException;
 import org.qi4j.runtime.composite.TransientBuilderInstance;
+import org.qi4j.runtime.composite.TransientModel;
 import org.qi4j.runtime.composite.UsesInstance;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectionContext;
@@ -13,6 +15,8 @@ import org.qi4j.runtime.injection.InjectionProvider;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.object.ObjectBuilderInstance;
+import org.qi4j.runtime.object.ObjectModel;
+import org.qi4j.runtime.structure.ModelModule;
 import org.qi4j.runtime.structure.ModuleInstance;
 
 /**
@@ -61,35 +65,35 @@ public final class UsesInjectionProviderFactory
                 // Try instantiating a Composite or Object for the given type
                 ModuleInstance moduleInstance = context.moduleInstance();
 
-                ModuleInstance.CompositeFinder compositeFinder = moduleInstance.findTransientModel( dependency.injectionClass() );
-                if( compositeFinder.model != null )
+                ModelModule<TransientModel> transientModel  = moduleInstance.findTransientModels( dependency.injectionClass() );
+                if( transientModel != null )
                 {
                     if( Iterable.class.equals( injectionType ) || TransientBuilder.class.equals( injectionType ) )
                     {
-                        usesObject = new TransientBuilderInstance( compositeFinder.module, compositeFinder.model, uses );
+                        usesObject = new TransientBuilderInstance( transientModel, uses );
                     }
                     else
                     {
                         StateHolder stateHolder = context.state();
-                        compositeFinder.model.state().checkConstraints( stateHolder );
-                        usesObject = compositeFinder.model
-                            .newCompositeInstance( compositeFinder.module, uses, stateHolder );
+                        transientModel.model().state().checkConstraints( stateHolder );
+                        usesObject = transientModel.model()
+                            .newCompositeInstance( transientModel.module(), uses, stateHolder );
                     }
                 }
                 else
                 {
-                    ModuleInstance.ObjectFinder objectFinder = moduleInstance.findObjectModel( dependency.injectionClass() );
-                    if( objectFinder.model != null )
+                    ModelModule<ObjectModel> objectModel = moduleInstance.findObjectModels( dependency.injectionClass() );
+                    if( objectModel != null )
                     {
                         if( Iterable.class.equals( injectionType ) || ObjectBuilder.class.equals( injectionType ) )
                         {
-                            usesObject = new ObjectBuilderInstance( context, objectFinder.model );
+                            usesObject = new ObjectBuilderInstance( context, objectModel.model() );
                         }
                         else
                         {
                             try
                             {
-                                usesObject = objectFinder.model.newInstance( context );
+                                usesObject = objectModel.model().newInstance( context );
                             }
                             catch( Exception e )
                             {

@@ -19,22 +19,24 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import org.qi4j.api.common.ConstructionException;
+import org.qi4j.api.util.Iterables;
 import org.qi4j.bootstrap.BindingException;
-import org.qi4j.runtime.injection.InjectedFieldsModel;
-import org.qi4j.runtime.injection.InjectedMethodsModel;
-import org.qi4j.runtime.injection.InjectionContext;
+import org.qi4j.runtime.injection.*;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 
 import static org.qi4j.api.util.Classes.*;
+import static org.qi4j.api.util.Iterables.flattenIterables;
+import static org.qi4j.api.util.Iterables.iterable;
+import static org.qi4j.api.util.Iterables.map;
 
 /**
  * JAVADOC
  */
 public abstract class AbstractModifierModel
-    implements Binder, Serializable
+    implements Binder, Serializable, Dependencies
 {
     private final Class modifierClass;
 
@@ -56,6 +58,12 @@ public abstract class AbstractModifierModel
     public Class modifierClass()
     {
         return modifierClass;
+    }
+
+    @Override
+    public Iterable<DependencyModel> dependencies()
+    {
+        return flattenIterables( map( DEPENDENCIES_FUNCTION, iterable( constructorsModel, injectedFieldsModel, injectedMethodsModel ) ) );
     }
 
     public boolean isGeneric()

@@ -110,7 +110,7 @@ public final class MetaInfo
         else
         {
             Class<?> metaInfoclass = metaInfo.getClass();
-            Set<Class> types = Classes.typesOf( metaInfoclass );
+            Set<Class<?>> types = Classes.typesOf( metaInfoclass );
             for( Type type : types )
             {
                 if( type instanceof Class )

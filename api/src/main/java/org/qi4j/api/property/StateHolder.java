@@ -40,9 +40,13 @@ public interface StateHolder
      */
     <T> Property<T> getProperty( QualifiedName name );
 
+    Iterable<Property<?>> properties();
+
+    @Deprecated
     <ThrowableType extends Throwable> void visitProperties( StateVisitor<ThrowableType> visitor )
         throws ThrowableType;
 
+    @Deprecated
     public interface StateVisitor<ThrowableType extends Throwable>
     {
         void visitProperty( QualifiedName name, Object value )

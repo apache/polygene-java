@@ -17,10 +17,16 @@ package org.qi4j.runtime.structure;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.event.ActivationEvent;
 import org.qi4j.api.event.ActivationEventListener;
-import org.qi4j.api.event.LayerActivationEvent;
+import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Layer;
 import org.qi4j.api.structure.Module;
+import org.qi4j.api.util.Function;
+import org.qi4j.api.util.Iterables;
+import org.qi4j.runtime.composite.TransientModel;
+import org.qi4j.runtime.entity.EntityModel;
+import org.qi4j.runtime.object.ObjectModel;
 import org.qi4j.runtime.service.Activator;
+import org.qi4j.runtime.value.ValueModel;
 import org.qi4j.spi.structure.LayerSPI;
 
 import java.util.ArrayList;
@@ -103,6 +109,66 @@ public class LayerInstance
         return usedLayersInstance;
     }
 
+    Iterable<ModelModule<ObjectModel>> visibleObjects(final Visibility visibility)
+    {
+        return Iterables.flattenIterables( Iterables.map( new Function<ModuleInstance, Iterable<ModelModule<ObjectModel>>>()
+                {
+                    @Override
+                    public Iterable<ModelModule<ObjectModel>> map( ModuleInstance moduleInstance )
+                    {
+                        return moduleInstance.visibleObjects( visibility );
+                    }
+                }, moduleInstances ) );
+    }
+
+    Iterable<ModelModule<TransientModel>> visibleTransients(final Visibility visibility)
+    {
+        return Iterables.flattenIterables( Iterables.map( new Function<ModuleInstance, Iterable<ModelModule<TransientModel>>>()
+                {
+                    @Override
+                    public Iterable<ModelModule<TransientModel>> map( ModuleInstance moduleInstance )
+                    {
+                        return moduleInstance.visibleTransients( visibility );
+                    }
+                }, moduleInstances ) );
+    }
+
+    Iterable<ModelModule<EntityModel>> visibleEntities(final Visibility visibility)
+    {
+        return Iterables.flattenIterables( Iterables.map( new Function<ModuleInstance, Iterable<ModelModule<EntityModel>>>()
+                {
+                    @Override
+                    public Iterable<ModelModule<EntityModel>> map( ModuleInstance moduleInstance )
+                    {
+                        return moduleInstance.visibleEntities( visibility );
+                    }
+                }, moduleInstances ) );
+    }
+
+    Iterable<ModelModule<ValueModel>> visibleValues(final Visibility visibility)
+    {
+        return Iterables.flattenIterables( Iterables.map( new Function<ModuleInstance, Iterable<ModelModule<ValueModel>>>()
+                {
+                    @Override
+                    public Iterable<ModelModule<ValueModel>> map( ModuleInstance moduleInstance )
+                    {
+                        return moduleInstance.visibleValues( visibility );
+                    }
+                }, moduleInstances ) );
+    }
+
+    Iterable<ServiceReference> visibleServices( final Visibility visibility )
+    {
+        return Iterables.flattenIterables( Iterables.map( new Function<ModuleInstance, Iterable<ServiceReference>>()
+                {
+                    @Override
+                    public Iterable<ServiceReference> map( ModuleInstance moduleInstance )
+                    {
+                        return moduleInstance.visibleServices( visibility );
+                    }
+                }, moduleInstances ) );
+    }
+
     public ModuleInstance findModule( String moduleName )
     {
         for( ModuleInstance moduleInstance : moduleInstances )
@@ -119,46 +185,17 @@ public class LayerInstance
     public void activate()
             throws Exception
     {
-        eventListenerSupport.fireEvent( new LayerActivationEvent( this, ActivationEvent.EventType.ACTIVATING ) );
+        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATING ) );
         moduleActivator.activate( moduleInstances );
-        eventListenerSupport.fireEvent( new LayerActivationEvent( this, ActivationEvent.EventType.ACTIVATED ) );
+        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATED ) );
     }
 
     public void passivate()
             throws Exception
     {
-        eventListenerSupport.fireEvent( new LayerActivationEvent( this, ActivationEvent.EventType.PASSIVATING ) );
+        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATING ) );
         moduleActivator.passivate();
-        eventListenerSupport.fireEvent( new LayerActivationEvent( this, ActivationEvent.EventType.PASSIVATED ) );
-    }
-
-    public <ThrowableType extends Throwable> boolean visitModules( ModuleVisitor<ThrowableType> visitor,
-                                                                   Visibility visibility
-    )
-            throws ThrowableType
-    {
-        // Visit modules in this layer
-        for( ModuleInstance moduleInstance : moduleInstances )
-        {
-            if( !visitor.visitModule( moduleInstance, moduleInstance.model(), visibility ) )
-            {
-                return false;
-            }
-        }
-
-        if( visibility == Visibility.layer )
-        {
-            // Visit modules in this layer
-            if( !visitModules( visitor, Visibility.application ) )
-            {
-                return false;
-            }
-
-            // Visit modules in used layers
-            return usedLayersInstance.visitModules( visitor );
-        }
-
-        return true;
+        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATED ) );
     }
 
     @Override

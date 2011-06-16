@@ -1,13 +1,9 @@
 package org.qi4j.api.event;
 
 /**
- * Created by IntelliJ IDEA.
- * User: rickard
- * Date: 5/8/11
- * Time: 18:28
- * To change this template use File | Settings | File Templates.
+ * ActivationEvents are fired during activation and passivation of instances in Qi4j.
  */
-public class ActivationEvent<T>
+public final class ActivationEvent
 {
     public enum EventType
     {
@@ -15,17 +11,17 @@ public class ActivationEvent<T>
     }
 
     private long timestamp;
-    private T source;
+    private Object source;
     private EventType type;
 
-    public ActivationEvent( T source, EventType type )
+    public ActivationEvent( Object source, EventType type )
     {
         this.timestamp = System.currentTimeMillis();
         this.source = source;
         this.type = type;
     }
 
-    public T source()
+    public Object source()
     {
         return source;
     }

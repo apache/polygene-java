@@ -29,11 +29,16 @@ import org.qi4j.runtime.structure.ModelVisitor;
 public final class ValuesModel
     implements Binder
 {
-    private final List<? extends ValueModel> valueModels;
+    private final List<ValueModel> valueModels;
 
-    public ValuesModel( List<? extends ValueModel> valueModels )
+    public ValuesModel( List<ValueModel> valueModels )
     {
         this.valueModels = valueModels;
+    }
+
+    public Iterable<ValueModel> models()
+    {
+        return valueModels;
     }
 
     public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
@@ -52,59 +57,5 @@ public final class ValuesModel
         {
             valueModel.bind( resolution );
         }
-    }
-
-    public ValueModel getValueModelFor( Class valueType, Visibility visibility )
-    {
-        ValueModel foundModel = null;
-        if( ValueComposite.class.isAssignableFrom( valueType ) )
-        {
-            for( ValueModel valueModel : valueModels )
-            {
-                if( valueType.equals( valueModel.type() ) && valueModel.visibility().ordinal() >= visibility.ordinal())
-                {
-                    if( foundModel != null )
-                    {
-                        throw new AmbiguousTypeException( valueType, foundModel.type(), valueModel.type() );
-                    }
-                    else
-                    {
-                        foundModel = valueModel;
-                    }
-                }
-            }
-        }
-        else
-        {
-            for( ValueModel valueModel : valueModels )
-            {
-                if( valueType.isAssignableFrom( valueModel.type() ) && valueModel.visibility().ordinal() >= visibility.ordinal() )
-                {
-                    if( foundModel != null )
-                    {
-                        throw new AmbiguousTypeException( valueType, foundModel.type(), valueModel.type() );
-                    }
-                    else
-                    {
-                        foundModel = valueModel;
-                    }
-                }
-            }
-        }
-
-        return foundModel;
-    }
-
-    public Class getClassForName( String type )
-    {
-        for( ValueModel valueModel : valueModels )
-        {
-            if( valueModel.type().getName().equals( type ) )
-            {
-                return valueModel.type();
-            }
-        }
-
-        return null;
     }
 }

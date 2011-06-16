@@ -15,7 +15,9 @@
 package org.qi4j.api.util;
 
 /**
- * Generic function interface to map from one type to another
+ * Generic function interface to map from one type to another.
+ *
+ * This can be used with the Iterables methods to transform lists of objects.
  *
  * @param <From>
  * @param <To>

@@ -36,6 +36,11 @@ public class EntitiesModel
         this.entityModels = entityModels;
     }
 
+    public Iterable<EntityModel> models()
+    {
+        return entityModels;
+    }
+
     public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
         throws ThrowableType
     {
@@ -52,40 +57,5 @@ public class EntitiesModel
         {
             entityModel.bind( resolution );
         }
-    }
-
-    public EntityModel getEntityModelFor( Class mixinType, Visibility visibility )
-        throws AmbiguousTypeException
-    {
-        EntityModel foundModel = null;
-        for( EntityModel entityModel : entityModels )
-        {
-            if( mixinType.isAssignableFrom( entityModel.type() ) && entityModel.visibility().ordinal() >= visibility.ordinal() )
-            {
-                if( foundModel != null )
-                {
-                    throw new AmbiguousTypeException( mixinType, foundModel.type(), entityModel.type() );
-                }
-                else
-                {
-                    foundModel = entityModel;
-                }
-            }
-        }
-
-        return foundModel;
-    }
-
-    public Class getClassForName( String type )
-    {
-        for( EntityModel entityModel : entityModels )
-        {
-            if( entityModel.type().getName().equals( type ) )
-            {
-                return entityModel.type();
-            }
-        }
-
-        return null;
     }
 }

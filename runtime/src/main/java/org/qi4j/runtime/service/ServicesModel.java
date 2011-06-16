@@ -60,41 +60,12 @@ public class ServicesModel
         return new ServicesInstance( this, serviceReferences );
     }
 
-   public Iterable<ServiceModel> services()
-   {
-      return serviceModels;
-   }
-
    public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
         throws ThrowableType
     {
         for( ServiceModel serviceModel : serviceModels )
         {
             serviceModel.visitModel( modelVisitor );
-        }
-    }
-
-    public ServiceModel getServiceFor( Type type, Visibility visibility )
-    {
-        for( ServiceModel serviceModel : serviceModels )
-        {
-            if( serviceModel.isServiceFor( type, visibility ) )
-            {
-                return serviceModel;
-            }
-        }
-
-        return null;
-    }
-
-    public void getServicesFor( Type type, Visibility visibility, List<ServiceModel> models )
-    {
-        for( ServiceModel serviceModel : serviceModels )
-        {
-            if( serviceModel.isServiceFor( type, visibility ) )
-            {
-                models.add( serviceModel );
-            }
         }
     }
 }

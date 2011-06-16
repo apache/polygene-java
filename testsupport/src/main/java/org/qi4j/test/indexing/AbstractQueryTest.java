@@ -71,7 +71,7 @@ public abstract class AbstractQueryTest
         throws IOException
     {
         ServiceFinder serviceFinder = this.serviceLocator;
-        IndexExporter indexerExporter = serviceFinder.<IndexExporter>findService( IndexExporter.class ).get();
+        IndexExporter indexerExporter = serviceFinder.findService( IndexExporter.class ).get();
         indexerExporter.exportReadableToStream( System.out );
     }
 

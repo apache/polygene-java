@@ -14,13 +14,12 @@
 
 package org.qi4j.runtime.service;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.ServiceReference;
+import org.qi4j.api.specification.Specification;
+import org.qi4j.api.util.Iterables;
+
+import java.util.List;
 
 /**
  * JAVADOC
@@ -29,7 +28,6 @@ public class ImportedServicesInstance
 {
     private final ImportedServicesModel servicesModel;
     private final List<? extends ServiceReference> serviceReferences;
-    private final Map<String, ServiceReference<?>> mapIdentityServiceReference = new HashMap<String, ServiceReference<?>>();
 
     public ImportedServicesInstance( ImportedServicesModel servicesModel,
                                      List<? extends ServiceReference> serviceReferences
@@ -37,39 +35,18 @@ public class ImportedServicesInstance
     {
         this.servicesModel = servicesModel;
         this.serviceReferences = serviceReferences;
-
-        for( ServiceReference serviceReference : serviceReferences )
-        {
-            mapIdentityServiceReference.put( serviceReference.identity(), serviceReference );
-        }
     }
 
-    public ServiceReference<Object> getServiceWithIdentity( String serviceIdentity )
+    public Iterable<? extends ServiceReference> visibleServices( final Visibility visibility )
     {
-        return (ServiceReference<Object>) mapIdentityServiceReference.get( serviceIdentity );
-    }
-
-    public <T> ServiceReference<T> getServiceFor( Type type, Visibility visibility )
-    {
-        ImportedServiceModel serviceModel = servicesModel.getServiceFor( type, visibility );
-
-        ServiceReference<T> serviceRef = null;
-        if( serviceModel != null )
-        {
-            serviceRef = (ServiceReference<T>) mapIdentityServiceReference.get( serviceModel.identity() );
-        }
-
-        return serviceRef;
-    }
-
-    public <T> void getServicesFor( Type type, Visibility visibility, List<ServiceReference<T>> serviceReferences )
-    {
-        List<ImportedServiceModel> serviceModels = new ArrayList<ImportedServiceModel>();
-        servicesModel.getServicesFor( type, visibility, serviceModels );
-        for( ImportedServiceModel serviceModel : serviceModels )
-        {
-            serviceReferences.add( (ServiceReference<T>) mapIdentityServiceReference.get( serviceModel.identity() ) );
-        }
+        return Iterables.filter( new Specification<ServiceReference>()
+                {
+                    @Override
+                    public boolean satisfiedBy( ServiceReference item )
+                    {
+                        return ((ImportedServiceReferenceInstance) item).serviceDescriptor().visibility().ordinal() >= visibility.ordinal();
+                    }
+                }, serviceReferences );
     }
 
     @Override

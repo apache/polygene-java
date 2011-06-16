@@ -102,6 +102,4 @@ public abstract class ServiceQualifier
             }
         };
     }
-
-    public abstract boolean qualifies( ServiceReference<?> service );
 }

@@ -22,8 +22,6 @@ import java.util.*;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
-import static org.qi4j.api.util.Iterables.last;
-import static org.qi4j.api.util.Iterables.map;
 
 /**
  * Test of Iterables utility methods
@@ -35,11 +33,36 @@ public class IterablesTest
     private Iterable<Integer> numberIntegers = Arrays.asList( 1, 2, 3 );
 
     @Test
+    public void testConstant()
+    {
+        String str = "";
+
+        for( String string : Iterables.limit( 3, Iterables.constant( "123" ) ) )
+        {
+            str += string;
+        }
+
+        assertThat( str, CoreMatchers.equalTo( "123123123" ) );
+    }
+
+    @Test
+    public void testUnique()
+    {
+        String str = "";
+
+        for( String string : Iterables.unique( Iterables.flatten( numbers, numbers, numbers ) ))
+        {
+            str += string;
+        }
+        assertThat( str, CoreMatchers.equalTo( "123" ) );
+    }
+
+    @Test
     public void testAddAll()
     {
-        ArrayList<String> strings = Iterables.addAll( new ArrayList<String>(), numbers );
+        List<String> strings = Iterables.toList( numbers );
         assertThat( strings.toString(), equalTo( "[1, 2, 3]" ) );
-        assertThat( Iterables.addAll( new ArrayList<Long>(), numberLongs ).toString(), equalTo( "[1, 2, 3]" ) );
+        assertThat( Iterables.toList( numberLongs ).toString(), equalTo( "[1, 2, 3]" ) );
     }
 
     @Test
@@ -64,8 +87,8 @@ public class IterablesTest
     @Test
     public void testLast()
     {
-        assertThat( last( numbers ), equalTo( "3" ) );
-        assertThat( last( Collections.<Object>emptyList() ), CoreMatchers.<Object>nullValue() );
+        assertThat( Iterables.last( numbers ), equalTo( "3" ) );
+        assertThat( Iterables.last( Collections.<Object>emptyList() ), CoreMatchers.<Object>nullValue() );
     }
 
     @Test
@@ -107,11 +130,11 @@ public class IterablesTest
     @Test
     public void testFlatten()
     {
-        assertThat( Iterables.addAll( new ArrayList<String>(), Iterables.flatten( numbers, numbers ) )
+        assertThat( Iterables.toList( Iterables.flatten( numbers, numbers ) )
                 .toString(), equalTo( "[1, 2, 3, 1, 2, 3]" ) );
 
         Iterable<? extends Number> flatten = Iterables.flatten( numberIntegers, numberLongs );
-        assertThat( Iterables.addAll( new ArrayList<Number>(), flatten )
+        assertThat( Iterables.toList( flatten )
                 .toString(), equalTo( "[1, 2, 3, 1, 2, 3]" ) );
     }
 
@@ -119,15 +142,21 @@ public class IterablesTest
     public void testFlattenIterables()
     {
         Iterable<List<String>> iterable = Iterables.iterable( numbers, numbers );
-        assertThat( Iterables.addAll( new ArrayList<String>(),
+        assertThat( Iterables.toList(
                 Iterables.flattenIterables( iterable ) )
                 .toString(), equalTo( "[1, 2, 3, 1, 2, 3]" ) );
     }
 
     @Test
+    public void testMix()
+    {
+        assertThat( Iterables.toList(Iterables.mix( Iterables.iterable( "A","B","C" ),Iterables.iterable( "1","2","3","4","5" ),Iterables.iterable( "X","Y","Z" ) )).toString(), equalTo( "[A, 1, X, B, 2, Y, C, 3, Z, 4, 5]" ));
+    }
+
+    @Test
     public void testMap()
     {
-        assertThat( Iterables.addAll( new ArrayList<String>(), map( new Function<String, String>()
+        assertThat( Iterables.toList( Iterables.map( new Function<String, String>()
         {
             public String map( String s )
             {
@@ -137,7 +166,7 @@ public class IterablesTest
 
 
         Iterable<List<String>> numberIterable = Iterables.iterable( numbers, numbers, numbers );
-        assertThat( Iterables.addAll( new ArrayList<Integer>(), map( new Function<Collection, Integer>()
+        assertThat( Iterables.toList( Iterables.map( new Function<Collection, Integer>()
         {
             @Override
             public Integer map( Collection collection )
@@ -152,15 +181,22 @@ public class IterablesTest
     {
 
         Enumeration<String> enumeration = Collections.enumeration( numbers );
-        assertThat( Iterables.addAll( new ArrayList<String>(), Iterables.iterable( enumeration ) )
+        assertThat( Iterables.toList( Iterables.iterable( enumeration ) )
                 .toString(), equalTo( "[1, 2, 3]" ) );
     }
 
     @Test
     public void testIterableVarArg()
     {
-        assertThat( Iterables.addAll( new ArrayList<String>(), Iterables.iterable( "1", "2", "3" ) )
+        assertThat( Iterables.toList( Iterables.iterable( "1", "2", "3" ) )
                 .toString(), equalTo( "[1, 2, 3]" ) );
+    }
+
+    @Test
+    public void testCast()
+    {
+        Iterable<Long> values = numberLongs;
+        Iterable<Number> numbers = Iterables.cast(values);
     }
 
     @Test

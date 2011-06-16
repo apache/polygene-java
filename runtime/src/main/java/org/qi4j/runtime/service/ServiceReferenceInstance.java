@@ -14,12 +14,8 @@
 
 package org.qi4j.runtime.service;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-
 import org.qi4j.api.event.ActivationEvent;
 import org.qi4j.api.event.ActivationEventListener;
-import org.qi4j.api.event.ServiceActivationEvent;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceImporterException;
 import org.qi4j.api.service.ServiceReference;
@@ -28,6 +24,9 @@ import org.qi4j.api.structure.Module;
 import org.qi4j.runtime.structure.ActivationEventListenerSupport;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.service.ServiceDescriptor;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 
 /**
  * Implementation of ServiceReference. This manages the actual instance of the service
@@ -57,6 +56,12 @@ public final class ServiceReferenceInstance<T>
     public String identity()
     {
         return serviceModel.identity();
+    }
+
+    @Override
+    public Class type()
+    {
+        return serviceModel.type();
     }
 
     public <T> T metaInfo( Class<T> infoType )
@@ -99,24 +104,24 @@ public final class ServiceReferenceInstance<T>
     public void activate()
         throws Exception
     {
-        eventListenerSupport.fireEvent( new ServiceActivationEvent( this, ActivationEvent.EventType.ACTIVATING ) );
+        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATING ) );
         if( serviceModel.isInstantiateOnStartup() )
         {
             getInstance();
         }
-        eventListenerSupport.fireEvent( new ServiceActivationEvent( this, ActivationEvent.EventType.ACTIVATED ) );
+        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATED ) );
     }
 
     public void passivate()
         throws Exception
     {
-        eventListenerSupport.fireEvent( new ServiceActivationEvent( this, ActivationEvent.EventType.PASSIVATING ) );
+        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATING ) );
         if( instance != null )
         {
             activator.passivate();
             instance = null;
         }
-        eventListenerSupport.fireEvent( new ServiceActivationEvent( this, ActivationEvent.EventType.PASSIVATED ) );
+        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATED ) );
     }
 
     private ServiceInstance getInstance()

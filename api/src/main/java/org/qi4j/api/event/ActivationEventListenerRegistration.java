@@ -1,11 +1,7 @@
 package org.qi4j.api.event;
 
 /**
- * Created by IntelliJ IDEA.
- * User: rickard
- * Date: 5/8/11
- * Time: 18:43
- * To change this template use File | Settings | File Templates.
+ * Use this to register listeners for ActivationEvents.
  */
 public interface ActivationEventListenerRegistration
 {

@@ -21,6 +21,7 @@ import org.qi4j.api.entity.Identity;
 import org.qi4j.api.entity.LifecycleException;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
+import org.qi4j.runtime.structure.ModelModule;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
@@ -35,8 +36,7 @@ public final class EntityBuilderInstance<T>
 {
     private static final QualifiedName identityStateName;
 
-    private final ModuleInstance moduleInstance;
-    private final EntityModel entityModel;
+    private ModelModule<EntityModel> model;
     private final ModuleUnitOfWork uow;
     private final EntityStoreUnitOfWork store;
     private String identity;
@@ -57,23 +57,21 @@ public final class EntityBuilderInstance<T>
     }
 
     public EntityBuilderInstance(
-        ModuleInstance moduleInstance,
-        EntityModel entityModel,
+        ModelModule<EntityModel> model,
         ModuleUnitOfWork uow,
         EntityStoreUnitOfWork store,
         String identity
     )
     {
-        this.moduleInstance = moduleInstance;
-        this.entityModel = entityModel;
+        this.model = model;
         this.uow = uow;
         this.store = store;
         this.identity = identity;
         EntityReference reference = new EntityReference( identity );
-        entityState = new BuilderEntityState( entityModel, reference );
-        entityModel.initState( entityState );
+        entityState = new BuilderEntityState( model.model(), reference );
+        model.model().initState( entityState );
         entityState.setProperty( identityStateName, identity );
-        prototypeInstance = entityModel.newInstance( uow, moduleInstance, entityState );
+        prototypeInstance = model.model().newInstance( uow, model.module(), entityState );
     }
 
     @SuppressWarnings( "unchecked" )
@@ -98,7 +96,7 @@ public final class EntityBuilderInstance<T>
 
         // Figure out whether to use given or generated identity
         identity = (String) entityState.getProperty( identityStateName );
-        EntityState newEntityState = entityModel.newEntityState( store, EntityReference.parseEntityReference( identity ) );
+        EntityState newEntityState = model.model().newEntityState( store, EntityReference.parseEntityReference( identity ) );
 
         prototypeInstance.invokeCreate();
 
@@ -107,7 +105,7 @@ public final class EntityBuilderInstance<T>
 
         entityState.copyTo( newEntityState );
 
-        EntityInstance instance = entityModel.newInstance( uow, moduleInstance, newEntityState );
+        EntityInstance instance = model.model().newInstance( uow, model.module(), newEntityState );
 
         Object proxy = instance.proxy();
 

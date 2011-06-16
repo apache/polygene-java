@@ -26,24 +26,28 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
+
 import org.qi4j.api.common.ConstructionException;
-import org.qi4j.api.injection.scope.This;
 import org.qi4j.bootstrap.BindingException;
+import org.qi4j.runtime.injection.Dependencies;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
-import org.qi4j.runtime.structure.DependencyVisitor;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.MethodDescriptor;
 import org.qi4j.spi.util.SerializationUtil;
 
+import static org.qi4j.api.specification.Specifications.notNull;
+import static org.qi4j.api.util.Iterables.filter;
+import static org.qi4j.api.util.Iterables.flattenIterables;
+import static org.qi4j.api.util.Iterables.iterable;
+
 /**
  * JAVADOC
  */
 public final class CompositeMethodModel
-    implements Binder, MethodDescriptor, Serializable
+    implements Binder, MethodDescriptor, Serializable, Dependencies
 {
     // Model
     private Method method;
@@ -121,6 +125,12 @@ public final class CompositeMethodModel
     public MixinModel mixin()
     {
         return mixins.mixinFor( method );
+    }
+
+    public Iterable<DependencyModel> dependencies()
+    {
+        return flattenIterables( filter( notNull(), iterable( methodConcerns != null ? methodConcerns.dependencies() : null,
+                                                              methodSideEffects != null ? methodSideEffects.dependencies() : null ) ) );
     }
 
     // Binding
@@ -249,19 +259,6 @@ public final class CompositeMethodModel
         {
             new MethodSideEffectsModel( method, Collections.<MethodSideEffectModel>emptyList() ).visitModel( modelVisitor );
         }
-    }
-
-    public void addThisInjections( final Set<Class> thisDependencies )
-    {
-        visitModel(
-            new DependencyVisitor<RuntimeException>( new DependencyModel.ScopeSpecification( This.class ) )
-            {
-                public void visitDependency( DependencyModel dependencyModel )
-                {
-                    thisDependencies.add( dependencyModel.rawInjectionType() );
-                }
-            }
-        );
     }
 
     @Override

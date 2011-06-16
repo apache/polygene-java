@@ -71,7 +71,7 @@ public abstract class AbstractEntityFinderTest
         throws Exception
     {
         super.setUp();
-        entityFinder = (EntityFinder) this.serviceLocator.findService( EntityFinder.class ).get();
+        entityFinder = this.serviceLocator.findService( EntityFinder.class ).get();
     }
 
     @Test

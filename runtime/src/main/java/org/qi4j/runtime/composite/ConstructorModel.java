@@ -23,7 +23,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import org.qi4j.api.common.ConstructionException;
+import org.qi4j.api.util.Iterables;
 import org.qi4j.bootstrap.BindingException;
+import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectedParametersModel;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.model.Binder;
@@ -76,6 +78,11 @@ public final class ConstructorModel
     public Constructor constructor()
     {
         return constructor;
+    }
+
+    public Iterable<DependencyModel> dependencies()
+    {
+        return parameters.dependencies();
     }
 
     public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
