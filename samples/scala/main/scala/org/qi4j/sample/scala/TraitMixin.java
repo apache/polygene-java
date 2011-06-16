@@ -3,14 +3,18 @@ package org.qi4j.sample.scala;
 import org.qi4j.api.common.AppliesTo;
 import org.qi4j.api.common.AppliesToFilter;
 import org.qi4j.api.composite.Composite;
+import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.util.Classes;
 import org.qi4j.api.util.Function;
 import org.qi4j.api.util.Iterables;
+import org.qi4j.spi.composite.CompositeInstance;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,7 +25,7 @@ import java.util.Map;
 public class TraitMixin
     implements InvocationHandler
 {
-    private static Map<Class<?>, Map<Method, Method>> methods = new HashMap<Class<?>, Map<Method, Method>>();
+    private static Map<Class<?>, Map<Method, InvocationHandler>> methods = new HashMap<Class<?>, Map<Method, InvocationHandler>>();
 
     private Class<? extends Composite> compositeType;
 
@@ -33,17 +37,9 @@ public class TraitMixin
     @Override
     public Object invoke( Object composite, Method method, Object[] args ) throws Throwable
     {
-        Method traitMethod = methods.get( compositeType ).get( method );
+        InvocationHandler handler = methods.get( compositeType ).get( method );
 
-        if (args != null)
-        {
-            Object[] params = new Object[args.length+1];
-            params[0] = composite;
-            System.arraycopy( args, 0, params, 1, args.length );
-
-            return traitMethod.invoke( null, params );
-        } else
-            return traitMethod.invoke( null, composite );
+        return handler.invoke( composite, method, args );
     }
 
     public static class TraitFilter
@@ -54,8 +50,37 @@ public class TraitMixin
         {
             if (isScalaTrait(method.getDeclaringClass()))
             {
+                // Service injection
+                if (method.getAnnotation( Service.class ) != null)
+                {
+                    if (method.getReturnType().equals( ServiceReference.class ))
+                    {
+                        InvocationHandler handler = new InvocationHandler()
+                        {
+                            @Override
+                            public Object invoke( Object composite, Method method, Object[] objects ) throws Throwable
+                            {
+                                return ((CompositeInstance)Proxy.getInvocationHandler( composite )).module().serviceFinder().findService( method.getReturnType() );
+                            }
+                        };
+                        getHandlers( compositeType ).put( method, handler );
+                    } else
+                    {
+                        InvocationHandler handler = new InvocationHandler()
+                        {
+                            @Override
+                            public Object invoke( Object composite, Method method, Object[] objects ) throws Throwable
+                            {
+                                return ((CompositeInstance)Proxy.getInvocationHandler( composite )).module().serviceFinder().findService( method.getReturnType() ).get();
+                            }
+                        };
+                        getHandlers( compositeType ).put( method, handler );
+                    }
+
+                    return true;
+                }
+
                 // Map methods
-                
                 final Class<?> declaringClass = method.getDeclaringClass();
                 Class traitClass = Iterables.last( Iterables.map( new Function<Class, Class>()
                         {
@@ -94,16 +119,27 @@ public class TraitMixin
                     Class[] parameterTypes = new Class[1+ methodParameterTypes.length];
                     parameterTypes[0] = traitClass;
                     System.arraycopy( methodParameterTypes, 0, parameterTypes, 1, methodParameterTypes.length );
-                    Method traitMethod = traitMixin.getMethod( method.getName(), parameterTypes );
+                    final Method traitMethod = traitMixin.getMethod( method.getName(), parameterTypes );
 
-                    Map<Method,Method> methodsMap = methods.get( compositeType );
-                    if (methodsMap == null)
+                    Map<Method,InvocationHandler> handlers = getHandlers( compositeType );
+
+                    handlers.put( method, new InvocationHandler()
                     {
-                        methodsMap = new HashMap<Method, Method>();
-                        methods.put( compositeType, methodsMap );
-                    }
+                        @Override
+                        public Object invoke( Object composite, Method method, Object[] args ) throws Throwable
+                        {
 
-                    methodsMap.put( method, traitMethod );
+                            if( args != null )
+                            {
+                                Object[] params = new Object[args.length + 1];
+                                params[0] = composite;
+                                System.arraycopy( args, 0, params, 1, args.length );
+
+                                return traitMethod.invoke( null, params );
+                            } else
+                                return traitMethod.invoke( null, composite );
+                        }
+                    } );
 
                     return true;
                 } catch( ClassNotFoundException e )
@@ -129,6 +165,18 @@ public class TraitMixin
                 }
             }
             return false;
+        }
+
+        private Map<Method, InvocationHandler> getHandlers(Class<?> compositeType)
+        {
+            Map<Method,InvocationHandler> handlerMap = methods.get( compositeType );
+            if (handlerMap == null)
+            {
+                handlerMap = new HashMap<Method, InvocationHandler>();
+                methods.put( compositeType, handlerMap );
+            }
+
+            return handlerMap;
         }
     }
 }
