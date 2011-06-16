@@ -231,7 +231,7 @@ public final class IBatisEntityStoreTest
     {
         assertNotNull( moduleInstance );
         return moduleInstance.serviceFinder()
-            .<QrmSqlEntityStoreService>findService( QrmSqlEntityStoreService.class )
+            .findService( QrmSqlEntityStoreService.class )
             .get();
     }
 }

@@ -213,7 +213,7 @@ public class RDFPerformanceTest extends AbstractQi4jTest
         this.performTest( 200 );
 
         IndexExporter indexerExporter =
-                serviceLocator.<IndexExporter>findService( IndexExporter.class ).get();
+                serviceLocator.findService( IndexExporter.class ).get();
         indexerExporter.exportReadableToStream( System.out );
     }
 

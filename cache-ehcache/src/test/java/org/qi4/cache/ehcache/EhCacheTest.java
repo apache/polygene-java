@@ -39,9 +39,8 @@ public class EhCacheTest extends AbstractQi4jTest
     public void setUp()
         throws Exception
     {
-        super.setUp();    //To change body of overridden methods use File | Settings | File Templates.
-        ServiceReference<Object> service = serviceLocator.findService( CachePool.class );
-        caching = (CachePool) service.get();
+        super.setUp();
+        caching = serviceLocator.findService( CachePool.class ).get();
         cache = caching.fetchCache( "1", String.class );
     }
 
