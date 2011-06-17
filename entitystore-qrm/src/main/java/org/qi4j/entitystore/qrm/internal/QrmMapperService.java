@@ -31,6 +31,7 @@ import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.util.HierarchicalVisitor;
 import org.qi4j.entitystore.qrm.QrmEntityStoreDescriptor;
 import org.qi4j.entitystore.qrm.QrmMapper;
 import org.qi4j.spi.entity.EntityDescriptor;
@@ -40,10 +41,10 @@ import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entitystore.DefaultEntityStoreUnitOfWork;
 import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entitystore.helpers.DefaultEntityState;
+import org.qi4j.spi.object.ObjectDescriptor;
 import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.spi.property.PropertyType;
-import org.qi4j.spi.structure.ApplicationSPI;
-import org.qi4j.spi.structure.DescriptorVisitor;
+import org.qi4j.spi.structure.*;
 
 @Mixins( { QrmMapperService.QrmMapperServiceMixin.class } )
 public interface QrmMapperService
@@ -269,18 +270,42 @@ public interface QrmMapperService
         {
             final List<Class> types = cfg.types();
 
-            app.visitDescriptor( new DescriptorVisitor<RuntimeException>()
+            app.model().accept( new HierarchicalVisitor<Object, Object, RuntimeException>()
             {
-                public void visit( EntityDescriptor entityDescriptor )
+                @Override
+                public boolean visitEnter( Object visited ) throws RuntimeException
                 {
-                    for( Class mixinClazz : entityDescriptor.mixinTypes() )
+                    if (visited instanceof ObjectDescriptor)
                     {
-                        if( types.contains( mixinClazz ) )
+                        if (visited instanceof EntityDescriptor)
                         {
-                            mappings.put( mixinClazz, createMapping( entityDescriptor, mixinClazz ) );
-                            classId.put( mixinClazz, new Long( 0 ) );
+                            EntityDescriptor entityDescriptor = (EntityDescriptor) visited;
+                            for( Class mixinClazz : entityDescriptor.mixinTypes() )
+                            {
+                                if( types.contains( mixinClazz ) )
+                                {
+                                    mappings.put( mixinClazz, createMapping( entityDescriptor, mixinClazz ) );
+                                    classId.put( mixinClazz, new Long( 0 ) );
+                                }
+                            }
                         }
+
+                        return false;
                     }
+
+                    return true;
+                }
+
+                @Override
+                public boolean visitLeave( Object visited ) throws RuntimeException
+                {
+                    return true;
+                }
+
+                @Override
+                public boolean visit( Object visited ) throws RuntimeException
+                {
+                    return true;
                 }
             } );
         }

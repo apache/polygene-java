@@ -70,7 +70,7 @@ import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.api.structure.Application;
+import org.qi4j.api.util.HierarchicalVisitor;
 import org.qi4j.index.reindexer.Reindexer;
 import org.qi4j.index.sql.support.api.SQLAppStartup;
 import org.qi4j.index.sql.support.api.SQLTypeInfo;
@@ -85,9 +85,9 @@ import org.qi4j.library.sql.ds.DataSourceService;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
+import org.qi4j.spi.object.ObjectDescriptor;
 import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.spi.structure.ApplicationSPI;
-import org.qi4j.spi.structure.DescriptorVisitor;
 import org.qi4j.spi.value.ValueDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -143,7 +143,7 @@ public abstract class AbstractSQLStartup
     private Reindexer _reindexer;
 
     @Structure
-    private Application _app;
+    private ApplicationSPI _app;
 
     private SQLVendor _vendor;
 
@@ -1135,25 +1135,41 @@ public abstract class AbstractSQLStartup
         throws SQLException
     {
         final List<ValueDescriptor> valueDescriptors = new ArrayList<ValueDescriptor>();
-        ApplicationSPI appSPI = (ApplicationSPI) this._app;
-        appSPI.visitDescriptor( new DescriptorVisitor<RuntimeException>()
+        _app.model().accept( new HierarchicalVisitor<Object, Object, RuntimeException>()
         {
             @Override
-            public void visit( EntityDescriptor entityDescriptor )
+            public boolean visitEnter( Object visited ) throws RuntimeException
             {
-                if( entityDescriptor.entityType().queryable() )
+                if (visited instanceof ObjectDescriptor )
                 {
-                    entityDescriptors.put( entityDescriptor.type().getName(), entityDescriptor );
+                    if (visited instanceof EntityDescriptor)
+                    {
+                        EntityDescriptor entityDescriptor = (EntityDescriptor) visited;
+                        if( entityDescriptor.entityType().queryable() )
+                        {
+                            entityDescriptors.put( entityDescriptor.type().getName(), entityDescriptor );
+                        }
+                    } else if (visited instanceof ValueDescriptor)
+                        valueDescriptors.add( (ValueDescriptor) visited );
+
+                    return false;
                 }
+
+                return true;
             }
 
             @Override
-            public void visit( ValueDescriptor valueDescriptor )
+            public boolean visitLeave( Object visited ) throws RuntimeException
             {
-                valueDescriptors.add( valueDescriptor );
+                return true;
             }
 
-        } );
+            @Override
+            public boolean visit( Object visited ) throws RuntimeException
+            {
+                return true;
+            }
+        });
 
         Set<String> usedVCClassNames = new HashSet<String>();
         for( EntityDescriptor descriptor : entityDescriptors.values() )
