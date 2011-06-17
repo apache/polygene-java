@@ -62,32 +62,24 @@ public class ApplicationXmlTest extends AbstractQi4jTest
         FileConfiguration fileConfig = (FileConfiguration) serviceLocator.findService( FileConfiguration.class ).get();
         ApplicationSerializer parser = new ApplicationSerializer();
         Iterable<Statement> graph = parser.serialize( application ); // TODO Fix this
-        writeN3( graph, fileConfig.temporaryDirectory() );
-        writeXml( graph, fileConfig.temporaryDirectory() );
+        writeN3( graph );
+        writeXml( graph );
     }
 
-    private void writeN3( Iterable<Statement> graph, File temp )
+    private void writeN3( Iterable<Statement> graph )
         throws RDFHandlerException, IOException
     {
-        File file = new File( temp, "application.rdfn3" );
-        FileWriter fileWriter = new FileWriter( file );
         RDFWriterFactory writerFactory = new N3WriterFactory();
-        RDFWriter writer = writerFactory.getWriter( fileWriter );
+        RDFWriter writer = writerFactory.getWriter( System.out );
         writeOutput( writer, graph );
-        fileWriter.close();
-        System.out.println( "RDF/N3 written to " + file.getAbsolutePath() );
     }
 
-    private void writeXml( Iterable<Statement> graph, File temp )
+    private void writeXml( Iterable<Statement> graph )
         throws RDFHandlerException, IOException
     {
-        File file = new File( temp, "application.rdfxml" );
-        FileWriter fileWriter = new FileWriter( file );
         RDFWriterFactory writerFactory = new RDFXMLWriterFactory();
-        RDFWriter writer = writerFactory.getWriter( fileWriter );
+        RDFWriter writer = writerFactory.getWriter( System.out );
         writeOutput( writer, graph );
-        fileWriter.close();
-        System.out.println( "RDF/XML written to " + file.getAbsolutePath() );
     }
 
     private void writeOutput( RDFWriter writer, Iterable<Statement> graph )

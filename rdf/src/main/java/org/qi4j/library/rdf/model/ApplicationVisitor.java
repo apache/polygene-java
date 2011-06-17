@@ -14,6 +14,7 @@
 
 package org.qi4j.library.rdf.model;
 
+import org.qi4j.api.util.HierarchicalVisitor;
 import org.qi4j.library.rdf.Qi4jRdf;
 import org.qi4j.library.rdf.serializer.SerializerContext;
 import org.qi4j.spi.composite.MethodDescriptor;
@@ -21,14 +22,13 @@ import org.qi4j.spi.composite.TransientDescriptor;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.object.ObjectDescriptor;
 import org.qi4j.spi.structure.ApplicationDescriptor;
-import org.qi4j.spi.structure.DescriptorVisitor;
 import org.qi4j.spi.structure.LayerDescriptor;
 import org.qi4j.spi.structure.ModuleDescriptor;
 
 /**
  * JAVADOC
  */
-class ApplicationVisitor extends DescriptorVisitor<RuntimeException>
+class ApplicationVisitor implements HierarchicalVisitor<Object, Object, RuntimeException>
 {
     private SerializerContext context;
 
@@ -45,52 +45,77 @@ class ApplicationVisitor extends DescriptorVisitor<RuntimeException>
         this.context = context;
     }
 
-    @Override public void visit( ApplicationDescriptor applicationDescriptor )
+    @Override
+    public boolean visitEnter( Object visited ) throws RuntimeException
     {
-        appUri = context.createApplicationUri( applicationDescriptor.name() );
-        context.setNameAndType( appUri, applicationDescriptor.name(), Qi4jRdf.TYPE_APPLICATION );
+        if( visited instanceof ApplicationDescriptor )
+        {
+            ApplicationDescriptor applicationDescriptor = (ApplicationDescriptor) visited;
+            appUri = context.createApplicationUri( applicationDescriptor.name() );
+            context.setNameAndType( appUri, applicationDescriptor.name(), Qi4jRdf.TYPE_APPLICATION );
+        }
+
+        if( visited instanceof LayerDescriptor )
+        {
+            LayerDescriptor layerDescriptor = (LayerDescriptor) visited;
+            layerUri = context.createLayerUri( appUri, layerDescriptor.name() );
+            context.setNameAndType( layerUri, layerDescriptor.name(), Qi4jRdf.TYPE_LAYER );
+            context.addRelationship( appUri, Qi4jRdf.RELATIONSHIP_LAYER, layerUri );
+        }
+
+        if( visited instanceof ModuleDescriptor )
+        {
+            ModuleDescriptor moduleDescriptor = (ModuleDescriptor) visited;
+            moduleUri = context.createModuleUri( layerUri, moduleDescriptor.name() );
+            context.setNameAndType( layerUri, moduleDescriptor.name(), Qi4jRdf.TYPE_MODULE );
+
+            context.addRelationship( layerUri, Qi4jRdf.RELATIONSHIP_MODULE, moduleUri );
+        }
+
+        if( visited instanceof TransientDescriptor )
+        {
+            TransientDescriptor transientDescriptor =(TransientDescriptor) visited;
+            compositeUri = context.createCompositeUri( moduleUri, transientDescriptor.type() );
+            context.addType( compositeUri, Qi4jRdf.TYPE_COMPOSITE );
+            context.addRelationship( moduleUri, Qi4jRdf.RELATIONSHIP_COMPOSITE, compositeUri );
+        }
+
+        if( visited instanceof EntityDescriptor )
+        {
+            EntityDescriptor entityDescriptor =(EntityDescriptor) visited;
+            compositeUri = context.createCompositeUri( moduleUri, entityDescriptor.type() );
+            context.addType( compositeUri, Qi4jRdf.TYPE_ENTITY );
+            context.addRelationship( moduleUri, Qi4jRdf.RELATIONSHIP_ENTITY, compositeUri );
+        }
+
+        if( visited instanceof ObjectDescriptor )
+        {
+            ObjectDescriptor objectDescriptor = (ObjectDescriptor) visited;
+            compositeUri = context.createCompositeUri( moduleUri, objectDescriptor.type() );
+            context.addType( compositeUri, Qi4jRdf.TYPE_OBJECT );
+            context.addRelationship( moduleUri, Qi4jRdf.RELATIONSHIP_OBJECT, compositeUri );
+        }
+
+        if( visited instanceof MethodDescriptor )
+        {
+            MethodDescriptor compositeMethodDescriptor = (MethodDescriptor) visited;
+            String compositeMethodUri = context.createCompositeMethodUri( compositeUri, compositeMethodDescriptor.method() );
+            context.addType( compositeMethodUri, Qi4jRdf.TYPE_METHOD );
+            context.addRelationship( compositeUri, Qi4jRdf.RELATIONSHIP_METHOD, compositeMethodUri );
+        }
+
+        return true;
     }
 
-    @Override public void visit( LayerDescriptor layerDescriptor )
+    @Override
+    public boolean visitLeave( Object visited ) throws RuntimeException
     {
-        layerUri = context.createLayerUri( appUri, layerDescriptor.name() );
-        context.setNameAndType( layerUri, layerDescriptor.name(), Qi4jRdf.TYPE_LAYER );
-        context.addRelationship( appUri, Qi4jRdf.RELATIONSHIP_LAYER, layerUri );
+        return true;
     }
 
-    @Override public void visit( ModuleDescriptor moduleDescriptor )
+    @Override
+    public boolean visit( Object visited ) throws RuntimeException
     {
-        moduleUri = context.createModuleUri( layerUri, moduleDescriptor.name() );
-        context.setNameAndType( layerUri, moduleDescriptor.name(), Qi4jRdf.TYPE_MODULE );
-
-        context.addRelationship( layerUri, Qi4jRdf.RELATIONSHIP_MODULE, moduleUri );
-    }
-
-    @Override public void visit( TransientDescriptor compositeModel )
-    {
-        compositeUri = context.createCompositeUri( moduleUri, compositeModel.type() );
-        context.addType( compositeUri, Qi4jRdf.TYPE_COMPOSITE );
-        context.addRelationship( moduleUri, Qi4jRdf.RELATIONSHIP_COMPOSITE, compositeUri );
-    }
-
-    @Override public void visit( EntityDescriptor entityDescriptor )
-    {
-        compositeUri = context.createCompositeUri( moduleUri, entityDescriptor.type() );
-        context.addType( compositeUri, Qi4jRdf.TYPE_ENTITY );
-        context.addRelationship( moduleUri, Qi4jRdf.RELATIONSHIP_ENTITY, compositeUri );
-    }
-
-    @Override public void visit( ObjectDescriptor objectDescriptor )
-    {
-        compositeUri = context.createCompositeUri( moduleUri, objectDescriptor.type() );
-        context.addType( compositeUri, Qi4jRdf.TYPE_OBJECT );
-        context.addRelationship( moduleUri, Qi4jRdf.RELATIONSHIP_OBJECT, compositeUri );
-    }
-
-    @Override public void visit( MethodDescriptor compositeMethodDescriptor )
-    {
-        String compositeMethodUri = context.createCompositeMethodUri( compositeUri, compositeMethodDescriptor.method() );
-        context.addType( compositeMethodUri, Qi4jRdf.TYPE_METHOD );
-        context.addRelationship( compositeUri, Qi4jRdf.RELATIONSHIP_METHOD, compositeMethodUri );
+        return true;
     }
 }

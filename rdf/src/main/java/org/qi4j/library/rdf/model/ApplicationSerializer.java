@@ -32,7 +32,7 @@ public class ApplicationSerializer
         Graph graph = new GraphImpl();
         SerializerContext context = new SerializerContext( graph );
         ApplicationVisitor applicationVisitor = new ApplicationVisitor( context );
-        ( (ApplicationSPI) app ).visitDescriptor( applicationVisitor );
+        ( (ApplicationSPI) app ).model().accept( applicationVisitor );
         return graph;
     }
 

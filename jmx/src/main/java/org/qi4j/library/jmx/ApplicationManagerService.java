@@ -23,6 +23,7 @@ import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.service.qualifier.ServiceQualifier;
 import org.qi4j.api.structure.Module;
+import org.qi4j.api.util.HierarchicalVisitor;
 import org.qi4j.api.util.Iterables;
 import org.qi4j.spi.composite.TransientDescriptor;
 import org.qi4j.spi.entity.EntityDescriptor;
@@ -38,6 +39,7 @@ import javax.management.modelmbean.ModelMBeanOperationInfo;
 import javax.management.modelmbean.RequiredModelMBean;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 /**
  * Expose the Qi4j app as a "tree" of MBeans.
@@ -74,142 +76,156 @@ public interface ApplicationManagerService
 
         public void activate() throws Exception
         {
-            application.visitDescriptor( new DescriptorVisitor<Exception>()
+            application.model().accept( new HierarchicalVisitor<Object, Object, Exception>()
             {
                 LayerSPI layer;
                 ModuleSPI module;
+                Stack<ObjectName> names = new Stack<ObjectName>();
 
                 @Override
-                public void visit( ApplicationDescriptor applicationDescriptor ) throws Exception
+                public boolean visitEnter( Object visited ) throws Exception
                 {
+                    if (visited instanceof LayerDescriptor)
+                    {
+                        LayerDescriptor layerDescriptor = (LayerDescriptor) visited;
+                        layer = (LayerSPI) application.findLayer( layerDescriptor.name() );
+
+                        LayerBean layerBean = new LayerBean(layer, layerDescriptor);
+                        ObjectName objectName = new ObjectName( "Qi4j:application="+application.name()+",layer="+layer.name() );
+                        names.push( objectName );
+
+                        RequiredModelMBean mbean = new ModelMBeanBuilder( objectName, layerDescriptor.name(), LayerBean.class.getName()).
+                                attribute( "uses", "Layer usages", String.class.getName(), "Other layers that this layer uses", "getUses", null ).
+                                operation( "restart", "Restart layer", String.class.getName(), MBeanOperationInfo.ACTION_INFO ).
+                                newModelMBean();
+
+                        mbean.setManagedResource( layerBean, "ObjectReference" );
+                        server.registerMBean( mbean, objectName );
+                        mbeans.add( objectName );
+
+                        return true;
+                    } else if (visited instanceof ModuleDescriptor)
+                    {
+                        ModuleDescriptor moduleDescriptor = (ModuleDescriptor) visited;
+                        module = (ModuleSPI) application.findModule( layer.name(), moduleDescriptor.name() );
+                        ObjectName objectName = new ObjectName( names.peek().toString()+",module="+moduleDescriptor.name() );
+                        names.push( objectName );
+                        RequiredModelMBean mbean = new ModelMBeanBuilder( objectName, moduleDescriptor.name(), moduleDescriptor.getClass().getName()).
+                                attribute( "name", "Module name", String.class.getName(), "Name of module", "name", null ).
+                                newModelMBean();
+
+                        mbean.setManagedResource( moduleDescriptor, "ObjectReference" );
+
+                        server.registerMBean( mbean, objectName );
+                        mbeans.add( objectName );
+
+                        return true;
+                    } else if (visited instanceof ServiceDescriptor)
+                    {
+                        ServiceDescriptor serviceDescriptor = (ServiceDescriptor) visited;
+                        ObjectName objectName = new ObjectName( names.peek().toString()+",class=Service,service="+serviceDescriptor.identity() );
+                        names.push( objectName );
+                        RequiredModelMBean mbean = new ModelMBeanBuilder( objectName, serviceDescriptor.identity(), ServiceBean.class.getName()).
+                                attribute( "Id", "Service id", String.class.getName(), "Id of service", "getId", null ).
+                                attribute( "Visibility", "Service visibility", String.class.getName(), "Visibility of service", "getVisibility", null ).
+                                attribute( "Type", "Service type", String.class.getName(), "Type of service", "getType", null ).
+                                operation( "restart", "Restart service", String.class.getName(), ModelMBeanOperationInfo.ACTION_INFO).
+                                newModelMBean();
+
+                        mbean.setManagedResource( new ServiceBean(serviceDescriptor, module), "ObjectReference" );
+
+                        server.registerMBean( mbean, objectName );
+                        mbeans.add( objectName );
+                    } else if (visited instanceof ImportedServiceDescriptor)
+                    {
+                        ImportedServiceDescriptor importedServiceDescriptor = (ImportedServiceDescriptor) visited;
+                        ObjectName objectName = new ObjectName( names.peek().toString()+",class=Imported service,importedservice="+importedServiceDescriptor.identity() );
+                        names.push( objectName );
+                        RequiredModelMBean mbean = new ModelMBeanBuilder( objectName, importedServiceDescriptor.identity(), ImportedServiceBean.class.getName()).
+                                attribute( "Id", "Service id", String.class.getName(), "Id of service", "getId", null ).
+                                attribute( "Visibility", "Service visibility", String.class.getName(), "Visibility of service", "getVisibility", null ).
+                                attribute( "Type", "Service type", String.class.getName(), "Type of imported service", "getType", null ).
+                                newModelMBean();
+
+                        mbean.setManagedResource( new ImportedServiceBean(importedServiceDescriptor), "ObjectReference" );
+
+                        server.registerMBean( mbean, objectName );
+                        mbeans.add( objectName );
+                    } else if (visited instanceof EntityDescriptor)
+                    {
+                        EntityDescriptor entityDescriptor = (EntityDescriptor) visited;
+                        ObjectName objectName = new ObjectName( "Qi4j:application="+application.name()+",layer="+layer.name()+",module="+module.name()+",class=Entity,entity="+entityDescriptor.entityType().type().name() );
+                        names.push( objectName );
+                        RequiredModelMBean mbean = new ModelMBeanBuilder( objectName, entityDescriptor.entityType().type().name(), EntityBean.class.getName()).
+                                attribute( "Type", "Entity type", String.class.getName(), "Type of entity", "getType", null ).
+                                attribute( "Visibility", "Visibility", String.class.getName(), "Type of entity", "getVisibility", null ).
+                                newModelMBean();
+
+                        mbean.setManagedResource( new EntityBean(entityDescriptor), "ObjectReference" );
+
+                        server.registerMBean( mbean, objectName );
+                        mbeans.add( objectName );
+                    } else if (visited instanceof TransientDescriptor)
+                    {
+                        TransientDescriptor transientDescriptor = (TransientDescriptor) visited;
+                        ObjectName objectName = new ObjectName( names.peek().toString()+",class=Transient,transient="+transientDescriptor.type().getName() );
+                        names.push( objectName );
+                        RequiredModelMBean mbean = new ModelMBeanBuilder( objectName, transientDescriptor.type().getName(), TransientBean.class.getName()).
+                                attribute( "Type", "Transient type", String.class.getName(), "Type of transient", "getType", null ).
+                                attribute( "Visibility", "Visibility", String.class.getName(), "Type of transient", "getVisibility", null ).
+                                newModelMBean();
+
+                        mbean.setManagedResource( new TransientBean(transientDescriptor), "ObjectReference" );
+
+                        server.registerMBean( mbean, objectName );
+                        mbeans.add( objectName );
+                    } else if (visited instanceof ValueDescriptor)
+                    {
+                        ValueDescriptor valueDescriptor = (ValueDescriptor) visited;
+                        ObjectName objectName = new ObjectName( names.peek().toString()+",class=Value,value="+valueDescriptor.type().getName() );
+                        names.push( objectName );
+                        RequiredModelMBean mbean = new ModelMBeanBuilder( objectName, valueDescriptor.type().getName(), ValueBean.class.getName()).
+                                attribute( "Type", "Value type", String.class.getName(), "Type of value", "getType", null ).
+                                attribute( "Visibility", "Visibility", String.class.getName(), "Type of transient", "getVisibility", null ).
+                                newModelMBean();
+
+                        mbean.setManagedResource( new ValueBean(valueDescriptor), "ObjectReference" );
+
+                        server.registerMBean( mbean, objectName );
+                        mbeans.add( objectName );
+                    } else if (visited instanceof ObjectDescriptor)
+                    {
+                        ObjectDescriptor objectDescriptor = (ObjectDescriptor) visited;
+                        ObjectName objectName = new ObjectName( "Qi4j:application="+application.name()+",layer="+layer.name()+",module="+module.name()+",class=Object,object="+objectDescriptor.type().getName() );
+                        names.push( objectName );
+                        RequiredModelMBean mbean = new ModelMBeanBuilder( objectName, objectDescriptor.type().getName(), ObjectBean.class.getName()).
+                                attribute( "Type", "Object type", String.class.getName(), "Type of object", "getType", null ).
+                                attribute( "Visibility", "Visibility", String.class.getName(), "Type of transient", "getVisibility", null ).
+                                newModelMBean();
+
+                        mbean.setManagedResource( new ObjectBean(objectDescriptor), "ObjectReference" );
+
+                        server.registerMBean( mbean, objectName );
+                        mbeans.add( objectName );
+                    }
+
+                    return false;
                 }
 
                 @Override
-                public void visit( LayerDescriptor layerDescriptor ) throws Exception
+                public boolean visitLeave( Object visited ) throws Exception
                 {
-                    layer = (LayerSPI) application.findLayer( layerDescriptor.name() );
+                    names.pop();
 
-                    LayerBean layerBean = new LayerBean(layer, layerDescriptor);
-                    ObjectName objectName = new ObjectName( "Qi4j:application="+application.name()+",layer="+layer.name() );
-                    RequiredModelMBean mbean = new ModelMBeanBuilder( objectName, layerDescriptor.name(), LayerBean.class.getName()).
-                            attribute( "uses", "Layer usages", String.class.getName(), "Other layers that this layer uses", "getUses", null ).
-                            operation( "restart", "Restart layer", String.class.getName(), MBeanOperationInfo.ACTION_INFO ).
-                            newModelMBean();
-
-                    mbean.setManagedResource( layerBean, "ObjectReference" );
-                    server.registerMBean( mbean, objectName );
-                    mbeans.add( objectName );
+                    return true;
                 }
 
                 @Override
-                public void visit( ModuleDescriptor moduleDescriptor ) throws Exception
+                public boolean visit( Object visited ) throws Exception
                 {
-                    module = (ModuleSPI) application.findModule( layer.name(), moduleDescriptor.name() );
-                    ObjectName objectName = new ObjectName( "Qi4j:application="+application.name()+",layer="+layer.name()+",module="+moduleDescriptor.name() );
-                    RequiredModelMBean mbean = new ModelMBeanBuilder( objectName, moduleDescriptor.name(), moduleDescriptor.getClass().getName()).
-                            attribute( "name", "Module name", String.class.getName(), "Name of module", "name", null ).
-                            newModelMBean();
-
-                    mbean.setManagedResource( moduleDescriptor, "ObjectReference" );
-
-                    server.registerMBean( mbean, objectName );
-                    mbeans.add( objectName );
+                    return true;
                 }
-
-                @Override
-                public void visit( ServiceDescriptor serviceDescriptor ) throws Exception
-                {
-                    ObjectName objectName = new ObjectName( "Qi4j:application="+application.name()+",layer="+layer.name()+",module="+module.name()+",class=Service,service="+serviceDescriptor.identity() );
-                    RequiredModelMBean mbean = new ModelMBeanBuilder( objectName, serviceDescriptor.identity(), ServiceBean.class.getName()).
-                            attribute( "Id", "Service id", String.class.getName(), "Id of service", "getId", null ).
-                            attribute( "Visibility", "Service visibility", String.class.getName(), "Visibility of service", "getVisibility", null ).
-                            attribute( "Type", "Service type", String.class.getName(), "Type of service", "getType", null ).
-                            operation( "restart", "Restart service", String.class.getName(), ModelMBeanOperationInfo.ACTION_INFO).
-                            newModelMBean();
-
-                    mbean.setManagedResource( new ServiceBean(serviceDescriptor, module), "ObjectReference" );
-
-                    server.registerMBean( mbean, objectName );
-                    mbeans.add( objectName );
-                }
-
-                @Override
-                public void visit( ImportedServiceDescriptor importedServiceDescriptor ) throws Exception
-                {
-                    ObjectName objectName = new ObjectName( "Qi4j:application="+application.name()+",layer="+layer.name()+",module="+module.name()+",class=Imported service,importedservice="+importedServiceDescriptor.identity() );
-                    RequiredModelMBean mbean = new ModelMBeanBuilder( objectName, importedServiceDescriptor.identity(), ImportedServiceBean.class.getName()).
-                            attribute( "Id", "Service id", String.class.getName(), "Id of service", "getId", null ).
-                            attribute( "Visibility", "Service visibility", String.class.getName(), "Visibility of service", "getVisibility", null ).
-                            attribute( "Type", "Service type", String.class.getName(), "Type of imported service", "getType", null ).
-                            newModelMBean();
-
-                    mbean.setManagedResource( new ImportedServiceBean(importedServiceDescriptor), "ObjectReference" );
-
-                    server.registerMBean( mbean, objectName );
-                    mbeans.add( objectName );
-                }
-
-                @Override
-                public void visit( EntityDescriptor entityDescriptor ) throws Exception
-                {
-                    ObjectName objectName = new ObjectName( "Qi4j:application="+application.name()+",layer="+layer.name()+",module="+module.name()+",class=Entity,entity="+entityDescriptor.entityType().type().name() );
-                    RequiredModelMBean mbean = new ModelMBeanBuilder( objectName, entityDescriptor.entityType().type().name(), EntityBean.class.getName()).
-                            attribute( "Type", "Entity type", String.class.getName(), "Type of entity", "getType", null ).
-                            attribute( "Visibility", "Visibility", String.class.getName(), "Type of entity", "getVisibility", null ).
-                            newModelMBean();
-
-                    mbean.setManagedResource( new EntityBean(entityDescriptor), "ObjectReference" );
-
-                    server.registerMBean( mbean, objectName );
-                    mbeans.add( objectName );
-                }
-
-                @Override
-                public void visit( TransientDescriptor transientDescriptor ) throws Exception
-                {
-                    ObjectName objectName = new ObjectName( "Qi4j:application="+application.name()+",layer="+layer.name()+",module="+module.name()+",class=Transient,transient="+transientDescriptor.type().getName() );
-                    RequiredModelMBean mbean = new ModelMBeanBuilder( objectName, transientDescriptor.type().getName(), TransientBean.class.getName()).
-                            attribute( "Type", "Transient type", String.class.getName(), "Type of transient", "getType", null ).
-                            attribute( "Visibility", "Visibility", String.class.getName(), "Type of transient", "getVisibility", null ).
-                            newModelMBean();
-
-                    mbean.setManagedResource( new TransientBean(transientDescriptor), "ObjectReference" );
-
-                    server.registerMBean( mbean, objectName );
-                    mbeans.add( objectName );
-                }
-
-                @Override
-                public void visit( ValueDescriptor valueDescriptor ) throws Exception
-                {
-                    ObjectName objectName = new ObjectName( "Qi4j:application="+application.name()+",layer="+layer.name()+",module="+module.name()+",class=Value,value="+valueDescriptor.type().getName() );
-                    RequiredModelMBean mbean = new ModelMBeanBuilder( objectName, valueDescriptor.type().getName(), ValueBean.class.getName()).
-                            attribute( "Type", "Value type", String.class.getName(), "Type of value", "getType", null ).
-                            attribute( "Visibility", "Visibility", String.class.getName(), "Type of transient", "getVisibility", null ).
-                            newModelMBean();
-
-                    mbean.setManagedResource( new ValueBean(valueDescriptor), "ObjectReference" );
-
-                    server.registerMBean( mbean, objectName );
-                    mbeans.add( objectName );
-                }
-
-
-                @Override
-                public void visit( ObjectDescriptor objectDescriptor ) throws Exception
-                {
-                    ObjectName objectName = new ObjectName( "Qi4j:application="+application.name()+",layer="+layer.name()+",module="+module.name()+",class=Object,object="+objectDescriptor.type().getName() );
-                    RequiredModelMBean mbean = new ModelMBeanBuilder( objectName, objectDescriptor.type().getName(), ObjectBean.class.getName()).
-                            attribute( "Type", "Object type", String.class.getName(), "Type of object", "getType", null ).
-                            attribute( "Visibility", "Visibility", String.class.getName(), "Type of transient", "getVisibility", null ).
-                            newModelMBean();
-
-                    mbean.setManagedResource( new ObjectBean(objectDescriptor), "ObjectReference" );
-
-                    server.registerMBean( mbean, objectName );
-                    mbeans.add( objectName );
-                }
-            });
+            } );
         }
 
         public void passivate() throws Exception

@@ -16,22 +16,24 @@
 */
 package org.qi4j.library.spring.bootstrap.internal.service;
 
+import org.qi4j.api.service.ImportedServiceDescriptor;
 import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
+import org.qi4j.api.util.HierarchicalVisitor;
+import org.qi4j.spi.object.ObjectDescriptor;
 import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.spi.structure.ApplicationDescriptor;
-import org.qi4j.spi.structure.DescriptorVisitor;
 import org.qi4j.spi.structure.LayerDescriptor;
 import org.qi4j.spi.structure.ModuleDescriptor;
 
-final class ServiceLocator extends DescriptorVisitor<RuntimeException>
+final class ServiceLocator implements HierarchicalVisitor<Object, Object, RuntimeException>
 {
     private final String serviceId;
+    private Class serviceType;
     private String moduleName;
     private String layerName;
-    private ServiceDescriptor serviceDescriptor;
 
     private String tempLayerName;
     private String tempModuleName;
@@ -41,36 +43,60 @@ final class ServiceLocator extends DescriptorVisitor<RuntimeException>
         this.serviceId = serviceId;
     }
 
-    public void visit( ApplicationDescriptor aDescriptor )
-    {
-        moduleName = null;
-        layerName = null;
-        serviceDescriptor = null;
-    }
-
     @Override
-    public final void visit( LayerDescriptor aDescriptor )
+    public boolean visitEnter( Object visited ) throws RuntimeException
     {
-        tempLayerName = aDescriptor.name();
-    }
-
-    @Override
-    public final void visit( ModuleDescriptor aDescriptor )
-    {
-        tempModuleName = aDescriptor.name();
-    }
-
-    @Override
-    public final void visit( ServiceDescriptor aDescriptor )
-    {
-        String identity = aDescriptor.identity();
-        if( serviceId.equals( identity ) )
+        if (visited instanceof ApplicationDescriptor)
         {
-            layerName = tempLayerName;
-            moduleName = tempModuleName;
-
-            serviceDescriptor = aDescriptor;
+            return true;
+        }else if (visited instanceof LayerDescriptor)
+        {
+            tempLayerName = ((LayerDescriptor)visited).name();
+            return true;
+        } else if (visited instanceof ModuleDescriptor)
+        {
+            tempModuleName = ((ModuleDescriptor)visited).name();
+            return true;
+        } else if (visited instanceof ServiceDescriptor)
+        {
+            ServiceDescriptor aDescriptor = (ServiceDescriptor) visited;
+            String identity = aDescriptor.identity();
+            if( serviceId.equals( identity ) )
+            {
+                layerName = tempLayerName;
+                moduleName = tempModuleName;
+                serviceType = aDescriptor.type();
+            }
+        } else if (visited instanceof ObjectDescriptor )
+        {
+            return false;
         }
+
+        return true;
+    }
+
+    @Override
+    public boolean visitLeave( Object visited ) throws RuntimeException
+    {
+        return true;
+    }
+
+    @Override
+    public boolean visit( Object visited ) throws RuntimeException
+    {
+        if (visited instanceof ImportedServiceDescriptor)
+        {
+            ImportedServiceDescriptor aDescriptor = (ImportedServiceDescriptor) visited;
+            String identity = aDescriptor.identity();
+            if( serviceId.equals( identity ) )
+            {
+                layerName = tempLayerName;
+                moduleName = tempModuleName;
+                serviceType = aDescriptor.type();
+            }
+        }
+
+        return true;
     }
 
     @SuppressWarnings( "unchecked" ) ServiceReference locateService( Application anApplication )
@@ -79,8 +105,7 @@ final class ServiceLocator extends DescriptorVisitor<RuntimeException>
         {
             Module module = anApplication.findModule( layerName, moduleName );
             ServiceFinder serviceFinder = module.serviceFinder();
-            Class type = serviceDescriptor.type();
-            Iterable<ServiceReference<Object>> serviceRefs = serviceFinder.<Object>findServices( type );
+            Iterable<ServiceReference<Object>> serviceRefs = serviceFinder.<Object>findServices( serviceType );
             for( ServiceReference<Object> serviceRef : serviceRefs )
             {
                 if( serviceId.equals( serviceRef.identity() ) )
@@ -91,10 +116,5 @@ final class ServiceLocator extends DescriptorVisitor<RuntimeException>
         }
 
         return null;
-    }
-
-    ServiceDescriptor serviceDescriptor()
-    {
-        return serviceDescriptor;
     }
 }

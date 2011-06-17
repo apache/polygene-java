@@ -26,7 +26,6 @@ import static org.springframework.util.Assert.notNull;
 public final class ServiceFactoryBean
     implements FactoryBean
 {
-    private ServiceDescriptor serviceDescriptor;
     private ServiceReference serviceReference;
 
     public ServiceFactoryBean( Application anApplication, String aServiceId )
@@ -37,9 +36,8 @@ public final class ServiceFactoryBean
 
         ServiceLocator serviceLocator = new ServiceLocator( aServiceId );
         ApplicationSPI spi = (ApplicationSPI) anApplication;
-        spi.visitDescriptor( serviceLocator );
+        spi.model().accept( serviceLocator );
         serviceReference = serviceLocator.locateService( anApplication );
-        serviceDescriptor = serviceLocator.serviceDescriptor();
 
         if( serviceReference == null )
         {
@@ -55,7 +53,7 @@ public final class ServiceFactoryBean
 
     public final Class getObjectType()
     {
-        return serviceDescriptor.type();
+        return serviceReference.type();
     }
 
     public final boolean isSingleton()
