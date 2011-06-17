@@ -14,20 +14,19 @@
 
 package org.qi4j.runtime.entity;
 
-import java.util.List;
-import org.qi4j.api.common.Visibility;
-import org.qi4j.api.composite.AmbiguousTypeException;
+import org.qi4j.api.util.HierarchicalVisitor;
+import org.qi4j.api.util.VisitableHierarchy;
 import org.qi4j.bootstrap.BindingException;
-import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
-import org.qi4j.runtime.structure.ModelVisitor;
+
+import java.util.List;
 
 /**
  * Model of entities in a particular Module.
  */
 public class EntitiesModel
-    implements Binder
+    implements VisitableHierarchy<Object, Object>
 {
     private final List<EntityModel> entityModels;
 
@@ -41,21 +40,15 @@ public class EntitiesModel
         return entityModels;
     }
 
-    public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
-        throws ThrowableType
+    @Override
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> modelVisitor ) throws ThrowableType
     {
-        for( EntityModel entityModel : entityModels )
-        {
-            entityModel.visitModel( modelVisitor );
-        }
-    }
-
-    public void bind( Resolution resolution )
-        throws BindingException
-    {
-        for( EntityModel entityModel : entityModels )
-        {
-            entityModel.bind( resolution );
-        }
+        if (modelVisitor.visitEnter( this ))
+            for( EntityModel entityModel : entityModels )
+            {
+                if (!entityModel.accept( modelVisitor ))
+                    break;
+            }
+        return modelVisitor.visitLeave( this );
     }
 }

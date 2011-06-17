@@ -18,7 +18,10 @@
  */
 package org.qi4j.runtime.query;
 
-import org.qi4j.api.query.*;
+import org.qi4j.api.query.MissingIndexingSystemException;
+import org.qi4j.api.query.Query;
+import org.qi4j.api.query.QueryBuilder;
+import org.qi4j.api.query.QueryExpressions;
 import org.qi4j.api.query.grammar.BooleanExpression;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.spi.query.EntityFinder;

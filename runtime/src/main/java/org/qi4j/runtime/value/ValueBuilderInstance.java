@@ -14,7 +14,6 @@
 
 package org.qi4j.runtime.value;
 
-import java.util.Iterator;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.property.Property;
@@ -22,7 +21,8 @@ import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.runtime.structure.ModelModule;
-import org.qi4j.runtime.structure.ModuleInstance;
+
+import java.util.Iterator;
 
 /**
  * Implementation of ValueBuilder

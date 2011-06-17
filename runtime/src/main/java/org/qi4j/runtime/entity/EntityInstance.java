@@ -15,10 +15,6 @@
 
 package org.qi4j.runtime.entity;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.util.HashSet;
-import java.util.Set;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
@@ -40,6 +36,11 @@ import org.qi4j.spi.entity.EntityStateDescriptor;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Entity instance

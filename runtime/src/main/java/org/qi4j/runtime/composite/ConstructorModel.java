@@ -14,32 +14,29 @@
 
 package org.qi4j.runtime.composite;
 
-import java.io.IOException;
-import java.io.NotSerializableException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
 import org.qi4j.api.common.ConstructionException;
-import org.qi4j.api.util.Iterables;
+import org.qi4j.api.util.HierarchicalVisitor;
+import org.qi4j.api.util.VisitableHierarchy;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectedParametersModel;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
-import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.spi.composite.ConstructorDescriptor;
 import org.qi4j.spi.composite.InvalidCompositeException;
 import org.qi4j.spi.util.SerializationUtil;
+
+import java.io.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 
 /**
  * JAVADOC
  */
 public final class ConstructorModel
-    implements Binder, ConstructorDescriptor, Serializable
+    implements ConstructorDescriptor, Serializable, VisitableHierarchy<Object, Object>
 {
     private Constructor constructor;
 
@@ -85,19 +82,13 @@ public final class ConstructorModel
         return parameters.dependencies();
     }
 
-    public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
-        throws ThrowableType
+    @Override
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> modelVisitor ) throws ThrowableType
     {
-        modelVisitor.visit( this );
-        parameters.visitModel( modelVisitor );
-    }
+        if (modelVisitor.visitEnter( this ))
+            parameters.accept( modelVisitor );
 
-    // Binding
-
-    public void bind( Resolution resolution )
-        throws BindingException
-    {
-        parameters.bind( resolution );
+        return modelVisitor.visitLeave( this );
     }
 
     // Context

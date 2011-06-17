@@ -14,26 +14,22 @@
 
 package org.qi4j.runtime.composite;
 
+import org.objectweb.asm.*;
+import org.qi4j.api.entity.Lifecycle;
+import org.qi4j.api.mixin.Initializable;
+import org.qi4j.api.service.Activatable;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import org.objectweb.asm.AnnotationVisitor;
-import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.FieldVisitor;
-import org.objectweb.asm.Label;
-import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.Type;
-import org.qi4j.api.entity.Lifecycle;
-import org.qi4j.api.mixin.Initializable;
-import org.qi4j.api.service.Activatable;
 
 import static org.objectweb.asm.Opcodes.*;
-import static org.objectweb.asm.Type.*;
-import static org.qi4j.api.util.Classes.*;
+import static org.objectweb.asm.Type.getInternalName;
+import static org.qi4j.api.util.Classes.interfacesOf;
+import static org.qi4j.api.util.Classes.interfacesWithMethods;
 
 /**
  * Generate subclasses of mixins/modifiers that implement all interfaces not in the class itself

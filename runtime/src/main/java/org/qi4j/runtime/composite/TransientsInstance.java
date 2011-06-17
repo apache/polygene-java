@@ -15,7 +15,6 @@
 package org.qi4j.runtime.composite;
 
 import org.qi4j.api.common.Visibility;
-import org.qi4j.runtime.object.ObjectModel;
 import org.qi4j.runtime.structure.ModelModule;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.VisibilitySpecification;

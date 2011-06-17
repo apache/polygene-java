@@ -14,14 +14,15 @@
 
 package org.qi4j.runtime.entity.association;
 
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.EntityStateHolder;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
+
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Collection of Property instances.

@@ -14,7 +14,6 @@
 
 package org.qi4j.runtime.entity.association;
 
-import java.lang.reflect.Type;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.association.Association;
@@ -22,6 +21,8 @@ import org.qi4j.api.entity.association.AssociationInfo;
 import org.qi4j.runtime.composite.ConstraintsCheck;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
+
+import java.lang.reflect.Type;
 
 /**
  * Implementation of Association to a single Entity.

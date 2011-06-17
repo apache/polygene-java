@@ -14,7 +14,6 @@
 
 package org.qi4j.runtime.structure;
 
-import java.util.List;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.util.Function;
@@ -23,9 +22,8 @@ import org.qi4j.runtime.composite.TransientModel;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.object.ObjectModel;
 import org.qi4j.runtime.value.ValueModel;
-import org.qi4j.spi.object.ObjectDescriptor;
 
-import static org.qi4j.runtime.structure.VisibilitySpecification.APPLICATION;
+import java.util.List;
 
 /**
  * JAVADOC

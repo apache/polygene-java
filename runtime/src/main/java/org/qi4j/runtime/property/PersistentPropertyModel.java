@@ -14,7 +14,6 @@
 
 package org.qi4j.runtime.property;
 
-import java.lang.reflect.Method;
 import org.json.JSONException;
 import org.json.JSONStringer;
 import org.json.JSONTokener;
@@ -28,6 +27,8 @@ import org.qi4j.runtime.types.PropertyTypeImpl;
 import org.qi4j.runtime.types.ValueTypeFactory;
 import org.qi4j.spi.property.PropertyTypeDescriptor;
 import org.qi4j.spi.property.ValueType;
+
+import java.lang.reflect.Method;
 
 /**
  * JAVADOC

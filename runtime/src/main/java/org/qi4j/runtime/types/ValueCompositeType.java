@@ -14,11 +14,6 @@
 
 package org.qi4j.runtime.types;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONWriter;
@@ -36,6 +31,12 @@ import org.qi4j.spi.property.DefaultValues;
 import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.structure.ModuleSPI;
 import org.qi4j.spi.value.ValueDescriptor;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * ValueComposite type

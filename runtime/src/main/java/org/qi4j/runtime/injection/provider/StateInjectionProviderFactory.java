@@ -1,6 +1,5 @@
 package org.qi4j.runtime.injection.provider;
 
-import java.io.Serializable;
 import org.qi4j.api.entity.association.AbstractAssociation;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.EntityStateHolder;
@@ -25,6 +24,8 @@ import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
 import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.spi.value.ValueDescriptor;
+
+import java.io.Serializable;
 
 /**
  * JAVADOC

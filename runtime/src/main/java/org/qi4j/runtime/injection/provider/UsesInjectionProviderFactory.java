@@ -1,10 +1,8 @@
 package org.qi4j.runtime.injection.provider;
 
-import java.io.Serializable;
 import org.qi4j.api.composite.TransientBuilder;
 import org.qi4j.api.object.ObjectBuilder;
 import org.qi4j.api.property.StateHolder;
-import org.qi4j.api.util.Iterables;
 import org.qi4j.bootstrap.InvalidInjectionException;
 import org.qi4j.runtime.composite.TransientBuilderInstance;
 import org.qi4j.runtime.composite.TransientModel;
@@ -18,6 +16,8 @@ import org.qi4j.runtime.object.ObjectBuilderInstance;
 import org.qi4j.runtime.object.ObjectModel;
 import org.qi4j.runtime.structure.ModelModule;
 import org.qi4j.runtime.structure.ModuleInstance;
+
+import java.io.Serializable;
 
 /**
  * JAVADOC

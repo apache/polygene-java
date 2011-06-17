@@ -17,13 +17,14 @@
  */
 package org.qi4j.runtime.query.grammar.impl;
 
-import java.util.Collection;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.query.QueryExpressionException;
 import org.qi4j.api.query.grammar.ContainsAllPredicate;
 import org.qi4j.api.query.grammar.PropertyReference;
 import org.qi4j.api.query.grammar.SingleValueExpression;
 import org.qi4j.api.query.grammar.ValueExpression;
+
+import java.util.Collection;
 
 public final class ContainsAllPredicateImpl<T, C extends Collection<T>>
     implements ContainsAllPredicate<T, C>

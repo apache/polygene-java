@@ -14,22 +14,20 @@
 
 package org.qi4j.runtime.bootstrap;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.bootstrap.AssociationDeclarations;
 import org.qi4j.bootstrap.EntityAssembly;
-import org.qi4j.bootstrap.EntityDeclaration;
 import org.qi4j.bootstrap.ManyAssociationDeclarations;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.runtime.composite.ConcernDeclaration;
 import org.qi4j.runtime.composite.ConcernsDeclaration;
 import org.qi4j.runtime.entity.EntityModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Declaration of a EntityComposite.

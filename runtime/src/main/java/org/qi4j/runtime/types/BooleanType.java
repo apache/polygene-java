@@ -14,12 +14,13 @@
 
 package org.qi4j.runtime.types;
 
-import java.lang.reflect.Type;
 import org.json.JSONException;
 import org.json.JSONWriter;
 import org.qi4j.api.structure.Module;
 
-import static org.qi4j.api.common.TypeName.*;
+import java.lang.reflect.Type;
+
+import static org.qi4j.api.common.TypeName.nameOf;
 
 /**
  * Boolean type

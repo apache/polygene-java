@@ -14,21 +14,22 @@
 
 package org.qi4j.runtime.composite;
 
-import java.io.Serializable;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.constraint.Constraint;
 import org.qi4j.api.constraint.ConstraintImplementationNotFoundException;
 import org.qi4j.api.constraint.Constraints;
 import org.qi4j.api.util.Iterables;
 
-import static java.util.Arrays.*;
-import static org.qi4j.api.util.Annotations.*;
-import static org.qi4j.api.util.Classes.*;
+import java.io.Serializable;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import static java.util.Arrays.asList;
+import static org.qi4j.api.util.Annotations.hasAnnotation;
+import static org.qi4j.api.util.Classes.genericInterfacesOf;
 
 /**
  * JAVADOC

@@ -14,13 +14,6 @@
 
 package org.qi4j.runtime.composite;
 
-import java.io.Serializable;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.injection.scope.This;
@@ -28,7 +21,9 @@ import org.qi4j.api.mixin.Initializable;
 import org.qi4j.api.mixin.InitializationException;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.service.Activatable;
+import org.qi4j.api.util.HierarchicalVisitor;
 import org.qi4j.api.util.Iterables;
+import org.qi4j.api.util.VisitableHierarchy;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.bootstrap.AssemblyHelper;
 import org.qi4j.runtime.injection.DependencyModel;
@@ -37,10 +32,16 @@ import org.qi4j.runtime.injection.InjectedMethodsModel;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
-import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.composite.InvalidCompositeException;
 import org.qi4j.spi.mixin.MixinDescriptor;
+
+import java.io.Serializable;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import static org.qi4j.api.util.Iterables.map;
 import static org.qi4j.api.util.Iterables.unique;
@@ -49,7 +50,7 @@ import static org.qi4j.api.util.Iterables.unique;
  * JAVADOC
  */
 public final class MixinModel
-    implements Binder, MixinDescriptor, Serializable
+    implements MixinDescriptor, Serializable, VisitableHierarchy<Object, Object>
 {
     private final Class mixinClass;
     private final Class instantiationClass;
@@ -108,28 +109,19 @@ public final class MixinModel
         return Iterables.flatten( constructorsModel.dependencies(), injectedFieldsModel.dependencies(), injectedMethodsModel.dependencies() );
     }
 
-    public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
-        throws ThrowableType
+    @Override
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor ) throws ThrowableType
     {
-        modelVisitor.visit( this );
-
-        constructorsModel.visitModel( modelVisitor );
-        injectedFieldsModel.visitModel( modelVisitor );
-        injectedMethodsModel.visitModel( modelVisitor );
-    }
-
-    // Binding
-
-    public void bind( Resolution context )
-        throws BindingException
-    {
-        constructorsModel.bind( context );
-        injectedFieldsModel.bind( context );
-        injectedMethodsModel.bind( context );
+        if (visitor.visitEnter( this ))
+        {
+            if (constructorsModel.accept( visitor ))
+                if (injectedFieldsModel.accept( visitor ))
+                    injectedMethodsModel.accept( visitor );
+        }
+        return visitor.visitLeave( this );
     }
 
     // Context
-
     public Object newInstance( CompositeInstance compositeInstance, StateHolder state, UsesInstance uses )
     {
         InjectionContext injectionContext = new InjectionContext( compositeInstance, uses, state );

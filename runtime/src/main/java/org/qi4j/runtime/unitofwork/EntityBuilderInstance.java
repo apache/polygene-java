@@ -22,7 +22,6 @@ import org.qi4j.api.entity.LifecycleException;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.structure.ModelModule;
-import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;

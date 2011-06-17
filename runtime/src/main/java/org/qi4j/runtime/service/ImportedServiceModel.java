@@ -14,26 +14,24 @@
 
 package org.qi4j.runtime.service;
 
-import java.io.Serializable;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Proxy;
-import java.lang.reflect.Type;
-import java.util.Set;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.ImportedServiceDescriptor;
 import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.api.service.ServiceImporterException;
 import org.qi4j.api.structure.Module;
-import org.qi4j.api.util.Classes;
-import org.qi4j.runtime.structure.ModelVisitor;
+import org.qi4j.api.util.Visitable;
+import org.qi4j.api.util.Visitor;
+
+import java.io.Serializable;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
 
 /**
  * JAVADOC
  */
 public final class ImportedServiceModel
-    implements ImportedServiceDescriptor, Serializable
+    implements ImportedServiceDescriptor, Serializable, Visitable<ImportedServiceModel>
 {
     private final Class type;
     private final Visibility visibility;
@@ -87,10 +85,10 @@ public final class ImportedServiceModel
         return moduleName;
     }
 
-    public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
-        throws ThrowableType
+    @Override
+    public <ThrowableType extends Throwable> boolean accept( Visitor<? super ImportedServiceModel, ThrowableType> visitor ) throws ThrowableType
     {
-        modelVisitor.visit( this );
+        return visitor.visit( this );
     }
 
     public <T> ImportedServiceInstance<T> importInstance( Module module )

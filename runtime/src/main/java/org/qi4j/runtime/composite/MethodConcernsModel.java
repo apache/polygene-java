@@ -14,33 +14,29 @@
 
 package org.qi4j.runtime.composite;
 
-import java.io.IOException;
-import java.io.NotSerializableException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.qi4j.api.util.Function;
+import org.qi4j.api.util.HierarchicalVisitor;
 import org.qi4j.api.util.Iterables;
+import org.qi4j.api.util.VisitableHierarchy;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.injection.Dependencies;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
-import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.concern.MethodConcernsDescriptor;
 import org.qi4j.spi.util.SerializationUtil;
+
+import java.io.*;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * JAVADOC
  */
 public final class MethodConcernsModel
-    implements Binder, MethodConcernsDescriptor, Serializable, Dependencies
+    implements MethodConcernsDescriptor, Serializable, Dependencies, VisitableHierarchy<Object, Object>
 {
     private List<MethodConcernModel> concernsForMethod;
     private Method method;
@@ -83,19 +79,7 @@ public final class MethodConcernsModel
         return Iterables.flattenIterables( Iterables.map( Dependencies.DEPENDENCIES_FUNCTION, concernsForMethod) );
     }
 
-    // Binding
-
-    public void bind( Resolution resolution )
-        throws BindingException
-    {
-        for( MethodConcernModel concernModel : concernsForMethod )
-        {
-            concernModel.bind( resolution );
-        }
-    }
-
     // Context
-
     public MethodConcernsInstance newInstance( ModuleInstance moduleInstance,
                                                FragmentInvocationHandler mixinInvocationHandler
     )
@@ -112,14 +96,18 @@ public final class MethodConcernsModel
         return new MethodConcernsInstance( nextConcern, mixinInvocationHandler, proxyHandler );
     }
 
-    public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
-        throws ThrowableType
+    @Override
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> modelVisitor ) throws ThrowableType
     {
-        modelVisitor.visit( this );
-        for( MethodConcernModel methodConcernModel : concernsForMethod )
+        if (modelVisitor.visitEnter( this ))
         {
-            methodConcernModel.visitModel( modelVisitor );
+            for( MethodConcernModel methodConcernModel : concernsForMethod )
+            {
+                if (!methodConcernModel.accept( modelVisitor ))
+                    break;
+            }
         }
+        return modelVisitor.visitLeave( this );
     }
 
     public MethodConcernsModel combineWith( MethodConcernsModel mixinMethodConcernsModel )

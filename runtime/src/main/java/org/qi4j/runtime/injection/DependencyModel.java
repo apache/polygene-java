@@ -13,18 +13,13 @@
  */
 package org.qi4j.runtime.injection;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
-import java.lang.reflect.WildcardType;
-import java.util.Collections;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.specification.Specification;
 import org.qi4j.api.util.Function;
 import org.qi4j.api.util.Iterables;
+import org.qi4j.api.util.Visitable;
+import org.qi4j.api.util.Visitor;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.bootstrap.InvalidInjectionException;
 import org.qi4j.runtime.injection.provider.InjectionProviderException;
@@ -32,16 +27,20 @@ import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.spi.composite.DependencyDescriptor;
 
-import static org.qi4j.api.util.Annotations.*;
-import static org.qi4j.api.util.Iterables.*;
-import static org.qi4j.spi.util.CollectionUtils.*;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.*;
+import java.util.Collections;
+
+import static org.qi4j.api.util.Annotations.isType;
+import static org.qi4j.api.util.Iterables.iterable;
+import static org.qi4j.spi.util.CollectionUtils.firstElementOrNull;
 
 /**
  * JAVADOC
  * move all the extraction code to a TypeUtils class
  */
 public final class DependencyModel
-    implements Binder, DependencyDescriptor
+    implements Binder, DependencyDescriptor, Visitable<DependencyModel>
 {
     public static boolean isOptional( Annotation injectionAnnotation, Annotation[] annotations )
     {
@@ -95,6 +94,12 @@ public final class DependencyModel
         this.annotations = annotations;
         this.rawInjectionClass = mapPrimitiveTypes( extractRawInjectionClass( injectedClass, injectionType ) );
         this.injectionClass = extractInjectionClass( injectionType );
+    }
+
+    @Override
+    public <ThrowableType extends Throwable> boolean accept( Visitor<? super DependencyModel, ThrowableType> visitor ) throws ThrowableType
+    {
+        return visitor.visit( this );
     }
 
     private Class<?> extractRawInjectionClass( Class<?> injectedClass, final Type injectionType )
@@ -290,7 +295,6 @@ public final class DependencyModel
     }
 
     // Context
-
     public Object inject( InjectionContext context )
     {
         if( injectionProvider == null )

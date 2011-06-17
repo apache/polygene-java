@@ -16,22 +16,12 @@
  */
 package org.qi4j.runtime.unitofwork;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Stack;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
-import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
-import org.qi4j.api.unitofwork.NoSuchEntityException;
-import org.qi4j.api.unitofwork.UnitOfWorkCallback;
-import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
-import org.qi4j.api.unitofwork.UnitOfWorkException;
+import org.qi4j.api.unitofwork.*;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
@@ -40,14 +30,13 @@ import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entitystore.ConcurrentEntityStateModificationException;
-import org.qi4j.spi.entitystore.EntityNotFoundException;
-import org.qi4j.spi.entitystore.EntityStore;
-import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
-import org.qi4j.spi.entitystore.StateCommitter;
+import org.qi4j.spi.entitystore.*;
 import org.qi4j.spi.structure.ModuleSPI;
 
-import static org.qi4j.api.unitofwork.UnitOfWorkCallback.UnitOfWorkStatus.*;
+import java.util.*;
+
+import static org.qi4j.api.unitofwork.UnitOfWorkCallback.UnitOfWorkStatus.COMPLETED;
+import static org.qi4j.api.unitofwork.UnitOfWorkCallback.UnitOfWorkStatus.DISCARDED;
 
 public final class UnitOfWorkInstance
 {

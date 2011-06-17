@@ -6,10 +6,10 @@ import org.qi4j.api.common.Visibility;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.specification.Specifications;
+import org.qi4j.api.util.HierarchicalVisitor;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.spi.structure.ApplicationModelSPI;
-import org.qi4j.spi.structure.DescriptorVisitor;
 
 /**
  * TODO
@@ -48,24 +48,37 @@ public class ApplicationAssemblerTest
             }
         } );
 
-        model.visitDescriptor( new DescriptorVisitor<RuntimeException>()
+        model.accept( new HierarchicalVisitor<Object, Object, RuntimeException>()
         {
             @Override
-            public void visit( ServiceDescriptor serviceDescriptor )
+            public boolean visitEnter( Object visited ) throws RuntimeException
             {
-                Assert.assertTrue( serviceDescriptor.isInstantiateOnStartup() );
-                Assert.assertTrue( serviceDescriptor.visibility() == Visibility.layer );
+                if (visited instanceof ServiceDescriptor)
+                {
+                    ServiceDescriptor serviceDescriptor = (ServiceDescriptor) visited;
+                    Assert.assertTrue( serviceDescriptor.isInstantiateOnStartup() );
+                    Assert.assertTrue( serviceDescriptor.visibility() == Visibility.layer );
+                    return false;
+                } else if (visited instanceof EntityDescriptor)
+                {
+                    EntityDescriptor entityDescriptor = (EntityDescriptor) visited;
+                    Assert.assertTrue( entityDescriptor.visibility() == Visibility.application );
+                    return false;
+                }
 
-                super.visit( serviceDescriptor );    //To change body of overridden methods use File | Settings | File Templates.
+                return true;
             }
 
             @Override
-            public void visit( EntityDescriptor entityDescriptor )
-                throws RuntimeException
+            public boolean visitLeave( Object visited ) throws RuntimeException
             {
-                Assert.assertTrue( entityDescriptor.visibility() == Visibility.application );
+                return true;
+            }
 
-                super.visit( entityDescriptor );    //To change body of overridden methods use File | Settings | File Templates.
+            @Override
+            public boolean visit( Object visited ) throws RuntimeException
+            {
+                return true;
             }
         });
 

@@ -14,35 +14,34 @@
 
 package org.qi4j.runtime.composite;
 
-import java.io.IOException;
-import java.io.NotSerializableException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import org.qi4j.api.common.Optional;
+import org.qi4j.api.constraint.Name;
+import org.qi4j.api.util.HierarchicalVisitor;
+import org.qi4j.api.util.Iterables;
+import org.qi4j.api.util.VisitableHierarchy;
+import org.qi4j.runtime.injection.DependencyModel;
+import org.qi4j.spi.constraint.MethodConstraintsDescriptor;
+import org.qi4j.spi.util.SerializationUtil;
+
+import java.io.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.qi4j.api.common.Optional;
-import org.qi4j.api.constraint.Name;
-import org.qi4j.api.util.Iterables;
-import org.qi4j.runtime.injection.DependencyModel;
-import org.qi4j.runtime.structure.ModelVisitor;
-import org.qi4j.spi.constraint.MethodConstraintsDescriptor;
-import org.qi4j.spi.util.SerializationUtil;
 
-import static org.qi4j.api.util.Annotations.*;
+import static org.qi4j.api.util.Annotations.isType;
 
 /**
  * JAVADOC
  */
 public final class MethodConstraintsModel
-    implements MethodConstraintsDescriptor, Serializable
+    implements MethodConstraintsDescriptor, Serializable, VisitableHierarchy<Object, Object>
 {
     private List<ValueConstraintsModel> parameterConstraintModels;
     private Method method;
+    private static MethodConstraintsInstance EMPTY_CONSTRAINTS = new MethodConstraintsInstance();
 
     private void writeObject( ObjectOutputStream out )
         throws IOException
@@ -112,21 +111,23 @@ public final class MethodConstraintsModel
 
     public MethodConstraintsInstance newInstance()
     {
-        return parameterConstraintModels == null ? new MethodConstraintsInstance() : new MethodConstraintsInstance( method, parameterConstraintModels );
+        return parameterConstraintModels == null ? EMPTY_CONSTRAINTS : new MethodConstraintsInstance( method, parameterConstraintModels );
     }
 
-    public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
-        throws ThrowableType
+    @Override
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> modelVisitor ) throws ThrowableType
     {
-        modelVisitor.visit( this );
-        if( parameterConstraintModels == null )
+        if (modelVisitor.visitEnter( this ))
         {
-            return;
+            if( parameterConstraintModels != null )
+            {
+                for( ValueConstraintsModel parameterConstraintModel : parameterConstraintModels )
+                {
+                    if (!parameterConstraintModel.accept( modelVisitor ))
+                        break;
+                }
+            }
         }
-
-        for( ValueConstraintsModel parameterConstraintModel : parameterConstraintModels )
-        {
-            parameterConstraintModel.visitModel( modelVisitor );
-        }
+        return modelVisitor.visitLeave( this );
     }
 }

@@ -1,8 +1,5 @@
 package org.qi4j.runtime.entity.association;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Proxy;
-import java.lang.reflect.Type;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
@@ -13,6 +10,10 @@ import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.QualifiedIdentity;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
+import java.lang.reflect.Type;
 
 /**
  * Implementation of AbstractAssociation. Includes helper methods for subclasses

@@ -14,6 +14,13 @@
 
 package org.qi4j.runtime.injection;
 
+import org.qi4j.api.injection.InjectionScope;
+import org.qi4j.api.util.Classes;
+import org.qi4j.api.util.HierarchicalVisitor;
+import org.qi4j.api.util.VisitableHierarchy;
+import org.qi4j.bootstrap.BindingException;
+import org.qi4j.runtime.model.Resolution;
+
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -21,24 +28,14 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.qi4j.api.injection.InjectionScope;
-import org.qi4j.api.util.Classes;
-import org.qi4j.api.util.Function;
-import org.qi4j.api.util.Iterables;
-import org.qi4j.bootstrap.BindingException;
-import org.qi4j.runtime.model.Resolution;
-import org.qi4j.runtime.structure.ModelVisitor;
-
-import static org.qi4j.api.util.Annotations.*;
+import static org.qi4j.api.util.Annotations.hasAnnotation;
 import static org.qi4j.api.util.Iterables.*;
-import static org.qi4j.api.util.Iterables.flattenIterables;
-import static org.qi4j.api.util.Iterables.map;
 
 /**
  * JAVADOC
  */
 public final class InjectedMethodsModel
-        implements Serializable, Dependencies
+        implements Serializable, Dependencies, VisitableHierarchy<Object, Object>
 {
     // Model
     private final List<InjectedMethodModel> methodModels = new ArrayList<InjectedMethodModel>();
@@ -79,19 +76,7 @@ public final class InjectedMethodsModel
         return flattenIterables( map( Dependencies.DEPENDENCIES_FUNCTION, methodModels ) );
     }
 
-    // Binding
-
-    public void bind( Resolution context )
-            throws BindingException
-    {
-        for( InjectedMethodModel methodModel : methodModels )
-        {
-            methodModel.bind( context );
-        }
-    }
-
     // Context
-
     public void inject( InjectionContext context, Object instance )
     {
         for( InjectedMethodModel methodModel : methodModels )
@@ -100,24 +85,17 @@ public final class InjectedMethodsModel
         }
     }
 
-    public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
-            throws ThrowableType
+    @Override
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor ) throws ThrowableType
     {
-        for( InjectedMethodModel methodModel : methodModels )
+        if (visitor.visitEnter( this ))
         {
-            methodModel.visitModel( modelVisitor );
-        }
-    }
-
-    public boolean isInjected( Method method )
-    {
-        for( InjectedMethodModel methodModel : methodModels )
-        {
-            if( methodModel.method().equals( method ) )
+            for( InjectedMethodModel methodModel : methodModels )
             {
-                return true;
+                if (!methodModel.accept( visitor ))
+                    break;
             }
         }
-        return false;
+        return visitor.visitLeave( this );
     }
 }

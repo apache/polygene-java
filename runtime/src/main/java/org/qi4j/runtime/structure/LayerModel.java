@@ -14,28 +14,21 @@
 
 package org.qi4j.runtime.structure;
 
-import java.util.List;
 import org.qi4j.api.common.MetaInfo;
-import org.qi4j.api.common.Visibility;
-import org.qi4j.api.util.Function;
-import org.qi4j.api.util.Iterables;
+import org.qi4j.api.util.HierarchicalVisitor;
+import org.qi4j.api.util.VisitableHierarchy;
 import org.qi4j.bootstrap.BindingException;
-import org.qi4j.runtime.composite.TransientModel;
-import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
-import org.qi4j.runtime.object.ObjectModel;
-import org.qi4j.runtime.value.ValueModel;
 import org.qi4j.spi.structure.LayerDescriptor;
 
-import static org.qi4j.api.util.Iterables.filter;
-import static org.qi4j.runtime.structure.VisibilitySpecification.LAYER;
+import java.util.List;
 
 /**
  * JAVADOC
  */
 public final class LayerModel
-    implements Binder, LayerDescriptor
+    implements LayerDescriptor, VisitableHierarchy<Object, Object>
 {
     // Model
     private final String name;
@@ -75,27 +68,18 @@ public final class LayerModel
         return usedLayersModel;
     }
 
-    public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
-        throws ThrowableType
+    @Override
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> modelVisitor ) throws ThrowableType
     {
-        modelVisitor.visit( this );
-
-        for( ModuleModel module : modules )
+        if (modelVisitor.visitEnter( this ))
         {
-            module.visitModel( modelVisitor );
+            for( ModuleModel module : modules )
+            {
+                if (!module.accept( modelVisitor ))
+                    break;
+            }
         }
-    }
-
-    // Binding
-
-    public void bind( Resolution resolution )
-        throws BindingException
-    {
-        resolution = new Resolution( resolution.application(), this, null, null, null, null );
-        for( ModuleModel module : modules )
-        {
-            module.bind( resolution );
-        }
+        return modelVisitor.visitLeave( this );
     }
 
     // Context

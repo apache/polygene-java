@@ -14,13 +14,10 @@
 
 package org.qi4j.runtime.structure;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.structure.Application;
+import org.qi4j.api.util.HierarchicalVisitor;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
 import org.qi4j.runtime.injection.provider.InjectionProviderFactoryStrategy;
@@ -28,7 +25,11 @@ import org.qi4j.runtime.model.Resolution;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.structure.ApplicationDescriptor;
 import org.qi4j.spi.structure.ApplicationModelSPI;
-import org.qi4j.spi.structure.DescriptorVisitor;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * JAVADOC
@@ -78,35 +79,19 @@ public final class ApplicationModel
         return metaInfo.get( infoType );
     }
 
-    public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
-        throws ThrowableType
-    {
-        modelVisitor.visit( this );
-
-        for( LayerModel layer : layers )
-        {
-            layer.visitModel( modelVisitor );
-        }
-    }
-
-    // Binding
-
-    public void bind()
-        throws BindingException
-    {
-        Resolution resolution = new Resolution( this, null, null, null, null, null );
-        for( LayerModel layer : layers )
-        {
-            layer.bind( resolution );
-        }
-    }
-
     // SPI
-
-    public <ThrowableType extends Throwable> void visitDescriptor( DescriptorVisitor<ThrowableType> visitor )
-        throws ThrowableType
+    @Override
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor ) throws ThrowableType
     {
-        visitModel( new DescriptorModelVisitor<ThrowableType>( visitor ) );
+        if (visitor.visitEnter( this ))
+        {
+            for( LayerModel layer : layers )
+            {
+                if (!layer.accept( visitor ))
+                    break;
+            }
+        }
+        return visitor.visitLeave( this );
     }
 
     public ApplicationInstance newInstance( Qi4jSPI runtime )

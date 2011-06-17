@@ -14,15 +14,17 @@
 
 package org.qi4j.runtime.composite;
 
+import org.qi4j.api.util.HierarchicalVisitor;
+import org.qi4j.api.util.VisitableHierarchy;
+
 import java.io.Serializable;
 import java.util.List;
-import org.qi4j.runtime.structure.ModelVisitor;
 
 /**
  * JAVADOC
  */
 public final class ValueConstraintsModel
-    implements Serializable
+    implements Serializable, VisitableHierarchy<Object, Object>
 {
     private final List<AbstractConstraintModel> constraintModels;
     private String name;
@@ -50,12 +52,14 @@ public final class ValueConstraintsModel
         return !optional;
     }
 
-    public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
-        throws ThrowableType
+    @Override
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> modelVisitor ) throws ThrowableType
     {
         for( AbstractConstraintModel constraintModel : constraintModels )
         {
-            constraintModel.visitModel( modelVisitor );
+            if (constraintModel.accept( modelVisitor ))
+                return false;
         }
+        return true;
     }
 }

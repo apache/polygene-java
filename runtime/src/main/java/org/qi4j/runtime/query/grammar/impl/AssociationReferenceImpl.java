@@ -18,8 +18,6 @@
  */
 package org.qi4j.runtime.query.grammar.impl;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.GenericAssociationInfo;
@@ -28,6 +26,9 @@ import org.qi4j.api.query.QueryExpressionException;
 import org.qi4j.api.query.grammar.AssociationReference;
 import org.qi4j.api.util.Classes;
 import org.qi4j.runtime.entity.EntityInstance;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 
 /**
  * Default {@link AssociationReference}.

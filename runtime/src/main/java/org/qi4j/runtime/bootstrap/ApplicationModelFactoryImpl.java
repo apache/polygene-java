@@ -14,21 +14,21 @@
 
 package org.qi4j.runtime.bootstrap;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import org.qi4j.bootstrap.ApplicationAssembly;
-import org.qi4j.bootstrap.ApplicationModelFactory;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.BindingException;
-import org.qi4j.bootstrap.LayerAssembly;
+import org.qi4j.api.util.HierarchicalVisitor;
+import org.qi4j.bootstrap.*;
+import org.qi4j.runtime.composite.*;
+import org.qi4j.runtime.injection.DependencyModel;
+import org.qi4j.runtime.injection.InjectedFieldModel;
+import org.qi4j.runtime.model.Binder;
+import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.structure.ApplicationModel;
 import org.qi4j.runtime.structure.LayerModel;
 import org.qi4j.runtime.structure.ModuleModel;
 import org.qi4j.runtime.structure.UsedLayersModel;
+import org.qi4j.spi.object.ObjectDescriptor;
 import org.qi4j.spi.structure.ApplicationModelSPI;
+
+import java.util.*;
 
 /**
  * Factory for Applications.
@@ -43,7 +43,7 @@ public final class ApplicationModelFactoryImpl
 
         ApplicationAssemblyImpl applicationAssembly = (ApplicationAssemblyImpl) assembly;
         List<LayerModel> layerModels = new ArrayList<LayerModel>();
-        ApplicationModel applicationModel = new ApplicationModel( applicationAssembly.name(), applicationAssembly.version(), applicationAssembly
+        final ApplicationModel applicationModel = new ApplicationModel( applicationAssembly.name(), applicationAssembly.version(), applicationAssembly
             .mode(), applicationAssembly.metaInfo(), layerModels );
         Map<LayerAssembly, LayerModel> mapAssemblyModel = new HashMap<LayerAssembly, LayerModel>();
         Map<LayerAssembly, List<LayerModel>> mapUsedLayers = new HashMap<LayerAssembly, List<LayerModel>>();
@@ -88,7 +88,9 @@ public final class ApplicationModelFactoryImpl
         // This will resolve all dependencies
         try
         {
-            applicationModel.bind();
+//            applicationModel.bind();
+            applicationModel.accept( new BindingVisitor( applicationModel ) );
+
         }
         catch( BindingException e )
         {
@@ -96,5 +98,72 @@ public final class ApplicationModelFactoryImpl
         }
 
         return applicationModel;
+    }
+
+    private static class BindingVisitor implements HierarchicalVisitor<Object, Object, BindingException>
+    {
+        private LayerModel layer;
+        private ModuleModel module;
+        private ObjectDescriptor objectDescriptor;
+        private CompositeMethodModel compositeMethodModel;
+
+        private Resolution resolution;
+        private final ApplicationModel applicationModel;
+
+        public BindingVisitor( ApplicationModel applicationModel )
+        {
+            this.applicationModel = applicationModel;
+        }
+
+        @Override
+        public boolean visitEnter( Object visited ) throws BindingException
+        {
+            if (visited instanceof AbstractStateModel )
+            {
+                return false;
+            } else if (visited instanceof Binder )
+            {
+                Binder constructorsModel = (Binder) visited;
+                constructorsModel.bind( resolution );
+
+                return false;
+            }
+            else if (visited instanceof CompositeMethodModel )
+            {
+                compositeMethodModel = (CompositeMethodModel) visited;
+                resolution = new Resolution( applicationModel, layer, module, objectDescriptor, compositeMethodModel, null);
+            }
+            else if (visited instanceof ObjectDescriptor)
+            {
+                objectDescriptor = (ObjectDescriptor) visited;
+                resolution = new Resolution( applicationModel, layer, module, objectDescriptor, null, null);
+            }
+            else if (visited instanceof ModuleModel)
+                module = (ModuleModel)visited;
+            else if (visited instanceof LayerModel)
+                layer = (LayerModel)visited;
+
+            return true;
+        }
+
+        @Override
+        public boolean visitLeave( Object visited ) throws BindingException
+        {
+            return true;
+        }
+
+        @Override
+        public boolean visit( Object visited ) throws BindingException
+        {
+            if (visited instanceof InjectedFieldModel )
+            {
+                InjectedFieldModel fieldModel = (InjectedFieldModel) visited;
+                fieldModel.bind( new Resolution( applicationModel, layer, module, objectDescriptor, compositeMethodModel, fieldModel.field() ) );
+            } else if (visited instanceof Binder )
+            {
+                ((Binder)visited).bind( resolution );
+            }
+            return true;
+        }
     }
 }

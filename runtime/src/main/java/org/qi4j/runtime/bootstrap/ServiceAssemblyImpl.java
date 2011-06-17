@@ -14,16 +14,15 @@
 
 package org.qi4j.runtime.bootstrap;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.bootstrap.ServiceAssembly;
-import org.qi4j.bootstrap.ServiceDeclaration;
 import org.qi4j.runtime.service.ServiceModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Assembly of a Service.

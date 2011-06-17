@@ -14,29 +14,29 @@
 
 package org.qi4j.runtime.composite;
 
-import java.io.Serializable;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import org.qi4j.api.common.ConstructionException;
-import org.qi4j.api.util.Iterables;
+import org.qi4j.api.util.HierarchicalVisitor;
+import org.qi4j.api.util.VisitableHierarchy;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.injection.*;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
-import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 
-import static org.qi4j.api.util.Classes.*;
-import static org.qi4j.api.util.Iterables.flattenIterables;
-import static org.qi4j.api.util.Iterables.iterable;
-import static org.qi4j.api.util.Iterables.map;
+import java.io.Serializable;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+
+import static org.qi4j.api.util.Classes.interfacesOf;
+import static org.qi4j.api.util.Classes.toClassArray;
+import static org.qi4j.api.util.Iterables.*;
 
 /**
  * JAVADOC
  */
 public abstract class AbstractModifierModel
-    implements Binder, Serializable, Dependencies
+    implements Serializable, Dependencies, VisitableHierarchy<Object, Object>
 {
     private final Class modifierClass;
 
@@ -71,26 +71,20 @@ public abstract class AbstractModifierModel
         return InvocationHandler.class.isAssignableFrom( modifierClass );
     }
 
-    public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
-        throws ThrowableType
+    @Override
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor ) throws ThrowableType
     {
-        constructorsModel.visitModel( modelVisitor );
-        injectedFieldsModel.visitModel( modelVisitor );
-        injectedMethodsModel.visitModel( modelVisitor );
-    }
+        if (visitor.visitEnter( this ))
+        {
+            if (constructorsModel.accept( visitor ))
+                if (injectedFieldsModel.accept( visitor ))
+                    injectedMethodsModel.accept( visitor );
+        }
 
-    // Binding
-
-    public void bind( Resolution context )
-        throws BindingException
-    {
-        constructorsModel.bind( context );
-        injectedFieldsModel.bind( context );
-        injectedMethodsModel.bind( context );
+        return visitor.visitLeave( this );
     }
 
     // Context
-
     public InvocationHandler newInstance( ModuleInstance moduleInstance,
                                           InvocationHandler next,
                                           ProxyReferenceInvocationHandler proxyHandler,

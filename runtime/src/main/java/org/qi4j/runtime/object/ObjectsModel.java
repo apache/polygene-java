@@ -14,20 +14,20 @@
 
 package org.qi4j.runtime.object;
 
-import java.io.Serializable;
-import java.util.List;
-import org.qi4j.api.common.Visibility;
-import org.qi4j.api.composite.AmbiguousTypeException;
+import org.qi4j.api.util.HierarchicalVisitor;
+import org.qi4j.api.util.VisitableHierarchy;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
-import org.qi4j.runtime.structure.ModelVisitor;
+
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * JAVADOC
  */
 public class ObjectsModel
-    implements Binder, Serializable
+    implements Serializable, VisitableHierarchy<Object, Object>
 {
     private final List<ObjectModel> objectModels;
 
@@ -36,22 +36,18 @@ public class ObjectsModel
         this.objectModels = objectModels;
     }
 
-    public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
-        throws ThrowableType
+    @Override
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor ) throws ThrowableType
     {
-        for( ObjectModel objectModel : objectModels )
+        if (visitor.visitEnter( this ))
         {
-            objectModel.visitModel( modelVisitor );
+            for( ObjectModel objectModel : objectModels )
+            {
+                if (!objectModel.accept(visitor))
+                    break;
+            }
         }
-    }
-
-    public void bind( Resolution resolution )
-        throws BindingException
-    {
-        for( ObjectModel objectModel : objectModels )
-        {
-            objectModel.bind( resolution );
-        }
+        return visitor.visitLeave( this );
     }
 
     public Iterable<ObjectModel> models()

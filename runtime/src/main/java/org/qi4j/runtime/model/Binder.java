@@ -17,7 +17,7 @@ package org.qi4j.runtime.model;
 import org.qi4j.bootstrap.BindingException;
 
 /**
- * JAVADOC
+ * Interface for models that can understand binding of dependencies
  */
 public interface Binder
 {

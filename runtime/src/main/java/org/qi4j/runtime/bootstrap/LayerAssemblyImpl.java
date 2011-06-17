@@ -14,35 +14,14 @@
 
 package org.qi4j.runtime.bootstrap;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.api.specification.Specification;
-import org.qi4j.bootstrap.ApplicationAssembly;
-import org.qi4j.bootstrap.AssemblyVisitor;
-import org.qi4j.bootstrap.EntityAssembly;
-import org.qi4j.bootstrap.EntityDeclaration;
-import org.qi4j.bootstrap.ImportedServiceAssembly;
-import org.qi4j.bootstrap.ImportedServiceDeclaration;
-import org.qi4j.bootstrap.LayerAssembly;
-import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.bootstrap.ObjectAssembly;
-import org.qi4j.bootstrap.ObjectDeclaration;
-import org.qi4j.bootstrap.ServiceAssembly;
-import org.qi4j.bootstrap.ServiceDeclaration;
-import org.qi4j.bootstrap.TransientAssembly;
-import org.qi4j.bootstrap.TransientDeclaration;
-import org.qi4j.bootstrap.ValueAssembly;
-import org.qi4j.bootstrap.ValueDeclaration;
+import org.qi4j.bootstrap.*;
+
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * Assembly of a Layer. From here you can create more ModuleAssemblies for

@@ -14,41 +14,25 @@
 
 package org.qi4j.runtime.structure;
 
-import java.util.Iterator;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import org.qi4j.api.common.MetaInfo;
-import org.qi4j.api.common.Visibility;
-import org.qi4j.api.composite.AmbiguousTypeException;
-import org.qi4j.api.specification.Specification;
-import org.qi4j.api.specification.Specifications;
-import org.qi4j.api.util.Iterables;
+import org.qi4j.api.util.HierarchicalVisitor;
+import org.qi4j.api.util.VisitableHierarchy;
 import org.qi4j.bootstrap.BindingException;
-import org.qi4j.runtime.composite.TransientModel;
 import org.qi4j.runtime.composite.TransientsModel;
 import org.qi4j.runtime.entity.EntitiesModel;
-import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
-import org.qi4j.runtime.object.ObjectModel;
 import org.qi4j.runtime.object.ObjectsModel;
 import org.qi4j.runtime.service.ImportedServicesModel;
 import org.qi4j.runtime.service.ServicesModel;
-import org.qi4j.runtime.value.ValueModel;
 import org.qi4j.runtime.value.ValuesModel;
-import org.qi4j.spi.object.ObjectDescriptor;
 import org.qi4j.spi.structure.ModuleDescriptor;
-
-import static org.qi4j.api.util.Iterables.*;
-import static org.qi4j.api.util.Iterables.iterable;
-import static org.qi4j.runtime.object.ObjectModel.modelTypeSpecification;
-import static org.qi4j.runtime.structure.VisibilitySpecification.MODULE;
 
 /**
  * JAVADOC
  */
 public class ModuleModel
-    implements Binder, ModuleDescriptor
+    implements ModuleDescriptor, VisitableHierarchy<Object, Object>
 {
     private final TransientsModel transientsModel;
     private final EntitiesModel entitiesModel;
@@ -89,30 +73,19 @@ public class ModuleModel
         return metaInfo.get( infoType );
     }
 
-    public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
-        throws ThrowableType
+    @Override
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> modelVisitor ) throws ThrowableType
     {
-        modelVisitor.visit( this );
-
-        transientsModel.visitModel( modelVisitor );
-        entitiesModel.visitModel( modelVisitor );
-        servicesModel.visitModel( modelVisitor );
-        importedServicesModel.visitModel( modelVisitor );
-        objectsModel.visitModel( modelVisitor );
-        valuesModel.visitModel( modelVisitor );
-    }
-
-    // Binding
-    public void bind( Resolution resolution )
-        throws BindingException
-    {
-        resolution = new Resolution( resolution.application(), resolution.layer(), this, null, null, null );
-
-        transientsModel.bind( resolution );
-        entitiesModel.bind( resolution );
-        servicesModel.bind( resolution );
-        objectsModel.bind( resolution );
-        valuesModel.bind( resolution );
+        if (modelVisitor.visitEnter( this ))
+        {
+            if (transientsModel.accept( modelVisitor ))
+                if (entitiesModel.accept( modelVisitor ))
+                    if (servicesModel.accept( modelVisitor ))
+                        if (importedServicesModel.accept( modelVisitor ))
+                            if (objectsModel.accept( modelVisitor ))
+                                valuesModel.accept( modelVisitor );
+        }
+        return modelVisitor.visitLeave( this );
     }
 
     // Context

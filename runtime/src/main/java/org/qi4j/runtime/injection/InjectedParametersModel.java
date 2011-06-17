@@ -14,22 +14,24 @@
 
 package org.qi4j.runtime.injection;
 
+import org.qi4j.api.specification.Specification;
+import org.qi4j.api.util.HierarchicalVisitor;
+import org.qi4j.api.util.VisitableHierarchy;
+import org.qi4j.bootstrap.BindingException;
+import org.qi4j.runtime.model.Binder;
+import org.qi4j.runtime.model.Resolution;
+import org.qi4j.spi.composite.InjectedParametersDescriptor;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.qi4j.api.specification.Specification;
-import org.qi4j.bootstrap.BindingException;
-import org.qi4j.runtime.model.Binder;
-import org.qi4j.runtime.model.Resolution;
-import org.qi4j.runtime.structure.ModelVisitor;
-import org.qi4j.spi.composite.InjectedParametersDescriptor;
 
 /**
  * JAVADOC
  */
 public final class InjectedParametersModel
-    implements Binder, InjectedParametersDescriptor, Serializable, Dependencies
+    implements InjectedParametersDescriptor, Serializable, Dependencies, VisitableHierarchy<Object, Object>
 {
     private final List<DependencyModel> parameterDependencies;
 
@@ -43,19 +45,7 @@ public final class InjectedParametersModel
         return parameterDependencies;
     }
 
-    // Binding
-
-    public void bind( Resolution resolution )
-        throws BindingException
-    {
-        for( DependencyModel parameterDependency : parameterDependencies )
-        {
-            parameterDependency.bind( resolution );
-        }
-    }
-
     // Context
-
     public Object[] newParametersInstance( InjectionContext context )
     {
         Object[] parametersInstance = new Object[ parameterDependencies.size() ];
@@ -76,10 +66,18 @@ public final class InjectedParametersModel
         parameterDependencies.add( dependency );
     }
 
-    public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
-        throws ThrowableType
+    @Override
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor ) throws ThrowableType
     {
-        modelVisitor.visit( this );
+        if (visitor.visitEnter( this ))
+        {
+            for( DependencyModel parameterDependency : parameterDependencies )
+            {
+                if (!visitor.visit( parameterDependency ))
+                    break;
+            }
+        }
+        return visitor.visitLeave( this );
     }
 
     public Collection<DependencyModel> filter( Specification<DependencyModel> specification )

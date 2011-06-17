@@ -14,24 +14,11 @@
 
 package org.qi4j.runtime.structure;
 
-import java.util.Collections;
-import java.util.List;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.api.composite.NoSuchCompositeException;
-import org.qi4j.api.entity.EntityBuilder;
-import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.entity.Identity;
-import org.qi4j.api.entity.IdentityGenerator;
-import org.qi4j.api.entity.LifecycleException;
-import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
-import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
-import org.qi4j.api.unitofwork.NoSuchEntityException;
-import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.unitofwork.UnitOfWorkCallback;
-import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
-import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+import org.qi4j.api.entity.*;
+import org.qi4j.api.unitofwork.*;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.util.Iterables;
 import org.qi4j.runtime.entity.EntityInstance;
@@ -42,7 +29,9 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entitystore.EntityStore;
 
-import static org.qi4j.api.entity.EntityReference.*;
+import java.util.Collections;
+
+import static org.qi4j.api.entity.EntityReference.parseEntityReference;
 
 /**
  * JAVADOC

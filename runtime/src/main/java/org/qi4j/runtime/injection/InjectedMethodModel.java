@@ -14,25 +14,23 @@
 
 package org.qi4j.runtime.injection;
 
-import java.io.IOException;
-import java.io.NotSerializableException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import org.qi4j.api.util.HierarchicalVisitor;
+import org.qi4j.api.util.VisitableHierarchy;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.bootstrap.InjectionException;
 import org.qi4j.runtime.model.Resolution;
-import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.spi.composite.InjectedMethodDescriptor;
 import org.qi4j.spi.util.SerializationUtil;
+
+import java.io.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  * JAVADOC
  */
 public final class InjectedMethodModel
-    implements InjectedMethodDescriptor, Serializable, Dependencies
+    implements InjectedMethodDescriptor, Serializable, Dependencies, VisitableHierarchy<Object, Object>
 {
     // Model
     private Method method;
@@ -77,16 +75,7 @@ public final class InjectedMethodModel
         return parameters.dependencies();
     }
 
-    // Binding
-
-    public void bind( Resolution resolution )
-        throws BindingException
-    {
-        parameters.bind( resolution );
-    }
-
     // Context
-
     public void inject( InjectionContext context, Object instance )
         throws InjectionException
     {
@@ -109,10 +98,11 @@ public final class InjectedMethodModel
         }
     }
 
-    public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
-        throws ThrowableType
+    @Override
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor ) throws ThrowableType
     {
-        modelVisitor.visit( this );
-        parameters.visitModel( modelVisitor );
+        if (visitor.visitEnter( this ))
+            parameters.accept( visitor );
+        return visitor.visitLeave( this );
     }
 }

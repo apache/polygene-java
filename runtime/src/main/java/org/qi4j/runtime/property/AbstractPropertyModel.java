@@ -14,27 +14,14 @@
 
 package org.qi4j.runtime.property;
 
-import java.io.IOException;
-import java.io.NotSerializableException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.lang.reflect.Type;
-import java.util.List;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.constraint.ConstraintViolation;
 import org.qi4j.api.constraint.ConstraintViolationException;
-import org.qi4j.api.property.Computed;
-import org.qi4j.api.property.ComputedPropertyInstance;
-import org.qi4j.api.property.GenericPropertyInfo;
-import org.qi4j.api.property.Property;
-import org.qi4j.api.property.PropertyInfo;
+import org.qi4j.api.property.*;
+import org.qi4j.api.util.Visitable;
+import org.qi4j.api.util.Visitor;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.composite.ConstraintsCheck;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
@@ -44,11 +31,15 @@ import org.qi4j.spi.property.DefaultValues;
 import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.spi.util.SerializationUtil;
 
+import java.io.*;
+import java.lang.reflect.*;
+import java.util.List;
+
 /**
  * JAVADOC
  */
 public abstract class AbstractPropertyModel
-    implements Serializable, PropertyDescriptor, ConstraintsCheck, Binder
+    implements Serializable, PropertyDescriptor, ConstraintsCheck, Visitable<AbstractPropertyModel>
 {
     private static final long serialVersionUID = 1L;
 
@@ -145,10 +136,10 @@ public abstract class AbstractPropertyModel
         return value;
     }
 
-    public void bind( Resolution resolution )
-        throws BindingException
+    @Override
+    public <ThrowableType extends Throwable> boolean accept( Visitor<? super AbstractPropertyModel, ThrowableType> visitor ) throws ThrowableType
     {
-        // TODO Select ValueComposite type
+        return visitor.visit( this );
     }
 
     public Property<?> newBuilderInstance()

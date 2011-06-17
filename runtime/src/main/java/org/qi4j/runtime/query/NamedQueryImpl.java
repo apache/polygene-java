@@ -17,8 +17,6 @@
  */
 package org.qi4j.runtime.query;
 
-import java.util.HashMap;
-import java.util.Iterator;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryExecutionException;
@@ -27,6 +25,9 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.spi.query.EntityFinderException;
 import org.qi4j.spi.query.NamedEntityFinder;
 import org.qi4j.spi.query.NamedQueryDescriptor;
+
+import java.util.HashMap;
+import java.util.Iterator;
 
 public class NamedQueryImpl<T>
     implements Query<T>

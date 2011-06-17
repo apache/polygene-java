@@ -14,12 +14,12 @@
 
 package org.qi4j.runtime.composite;
 
-import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.util.Set;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.util.HierarchicalVisitor;
+import org.qi4j.api.util.VisitableHierarchy;
+import org.qi4j.api.util.Visitor;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
@@ -29,11 +29,15 @@ import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.composite.StateDescriptor;
 import org.qi4j.spi.property.PropertyDescriptor;
 
+import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.util.Set;
+
 /**
  * Base model for Composite state
  */
 public abstract class AbstractStateModel<T extends AbstractPropertiesModel>
-    implements StateDescriptor, Serializable, Binder
+    implements StateDescriptor, Serializable, VisitableHierarchy<Object, Object>
 {
     protected final T propertiesModel;
 
@@ -85,10 +89,15 @@ public abstract class AbstractStateModel<T extends AbstractPropertiesModel>
         return propertiesModel.properties();
     }
 
-    public void bind( Resolution resolution )
-        throws BindingException
+    @Override
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor ) throws ThrowableType
     {
-        propertiesModel.bind( resolution );
+        if (visitor.visitEnter( this ))
+        {
+            ((VisitableHierarchy<Object, Object>)propertiesModel).accept(visitor);
+        }
+
+        return visitor.visitLeave( this );
     }
 
     public void checkConstraints( StateHolder state )

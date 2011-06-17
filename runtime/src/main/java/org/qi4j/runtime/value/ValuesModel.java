@@ -14,20 +14,19 @@
 
 package org.qi4j.runtime.value;
 
-import java.util.List;
-import org.qi4j.api.common.Visibility;
-import org.qi4j.api.composite.AmbiguousTypeException;
-import org.qi4j.api.value.ValueComposite;
+import org.qi4j.api.util.HierarchicalVisitor;
+import org.qi4j.api.util.VisitableHierarchy;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
-import org.qi4j.runtime.structure.ModelVisitor;
+
+import java.util.List;
 
 /**
  * JAVADOC
  */
 public final class ValuesModel
-    implements Binder
+    implements VisitableHierarchy<Object, Object>
 {
     private final List<ValueModel> valueModels;
 
@@ -41,21 +40,17 @@ public final class ValuesModel
         return valueModels;
     }
 
-    public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
-        throws ThrowableType
+    @Override
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor ) throws ThrowableType
     {
-        for( ValueModel valueModel : valueModels )
+        if (visitor.visitEnter( this ))
         {
-            valueModel.visitModel( modelVisitor );
+            for( ValueModel valueModel : valueModels )
+            {
+                if (!valueModel.accept( visitor ))
+                    break;
+            }
         }
-    }
-
-    public void bind( Resolution resolution )
-        throws BindingException
-    {
-        for( ValueModel valueModel : valueModels )
-        {
-            valueModel.bind( resolution );
-        }
+        return visitor.visitLeave( this );
     }
 }

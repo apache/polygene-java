@@ -20,14 +20,15 @@ package org.qi4j.regression.qi78;
 import org.junit.Assert;
 import org.junit.Test;
 import org.qi4j.api.structure.Application;
+import org.qi4j.api.util.HierarchicalVisitor;
 import org.qi4j.bootstrap.ApplicationAssembler;
 import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.bootstrap.ApplicationAssemblyFactory;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.bootstrap.LayerAssembly;
+import org.qi4j.spi.structure.ApplicationModelSPI;
 import org.qi4j.spi.structure.ApplicationSPI;
-import org.qi4j.spi.structure.DescriptorVisitor;
 import org.qi4j.spi.structure.LayerDescriptor;
 
 public class IssueTest
@@ -56,17 +57,35 @@ public class IssueTest
                 return assembly;
             }
         } );
-        ApplicationSPI model = ( (ApplicationSPI) app );
-        model.visitDescriptor( new DescriptorVisitor<RuntimeException>()
+        ApplicationModelSPI model = ( (ApplicationSPI) app ).model();
+        model.accept( new HierarchicalVisitor<Object, Object, RuntimeException>()
         {
-            public void visit( LayerDescriptor layerModel )
+            @Override
+            public boolean visitEnter( Object visited ) throws RuntimeException
             {
-                Iterable<? extends LayerDescriptor> usedLayers = layerModel.usedLayers().layers();
-                for( LayerDescriptor usedLayerModel : usedLayers )
-                {
-                    Assert.assertNotNull( "Used layer model is null", usedLayerModel );
-                }
+                return visited instanceof ApplicationModelSPI;
             }
-        } );
+
+            @Override
+            public boolean visitLeave( Object visited ) throws RuntimeException
+            {
+                return visited instanceof LayerDescriptor;
+            }
+
+            @Override
+            public boolean visit( Object visited ) throws RuntimeException
+            {
+                if (visited instanceof LayerDescriptor)
+                {
+                    Iterable<? extends LayerDescriptor> usedLayers = ((LayerDescriptor)visited).usedLayers().layers();
+                    for( LayerDescriptor usedLayerModel : usedLayers )
+                    {
+                        Assert.assertNotNull( "Used layer model is null", usedLayerModel );
+                    }
+                }
+
+                return false;
+            }
+        });
     }
 }

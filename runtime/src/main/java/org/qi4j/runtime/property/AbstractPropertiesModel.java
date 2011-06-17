@@ -14,21 +14,12 @@
 
 package org.qi4j.runtime.property;
 
-import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.util.HierarchicalVisitor;
+import org.qi4j.api.util.VisitableHierarchy;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.bootstrap.PropertyDeclarations;
@@ -40,11 +31,15 @@ import org.qi4j.runtime.value.ValueModel;
 import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.util.MethodKeyMap;
 
+import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.util.*;
+
 /**
  * Base class for properties model
  */
 public abstract class AbstractPropertiesModel<T extends AbstractPropertyModel>
-    implements Serializable, Binder
+    implements Serializable, VisitableHierarchy<Object, Object>
 {
     protected final Set<T> propertyModels = new LinkedHashSet<T>();
     protected final Set<T> computedPropertyModels = new LinkedHashSet<T>();
@@ -81,13 +76,19 @@ public abstract class AbstractPropertiesModel<T extends AbstractPropertyModel>
         }
     }
 
-    public void bind( Resolution resolution )
-        throws BindingException
+    @Override
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor ) throws ThrowableType
     {
-        for( T propertyModel : propertyModels )
+        if (visitor.visitEnter( this ))
         {
-            propertyModel.bind( resolution );
+            for( T propertyModel : propertyModels )
+            {
+                if (!propertyModel.accept(visitor))
+                    break;
+            }
         }
+
+        return visitor.visitLeave( this );
     }
 
     public Set<T> properties()

@@ -29,7 +29,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Map type. This handles instances of Map

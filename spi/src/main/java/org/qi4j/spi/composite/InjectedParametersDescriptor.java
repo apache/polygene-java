@@ -19,5 +19,4 @@ package org.qi4j.spi.composite;
  */
 public interface InjectedParametersDescriptor
 {
-    Iterable<? extends DependencyDescriptor> dependencies();
 }

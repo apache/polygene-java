@@ -18,15 +18,6 @@
 
 package org.qi4j.runtime.types;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.property.GenericPropertyInfo;
@@ -34,7 +25,13 @@ import org.qi4j.api.util.Classes;
 import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.property.ValueType;
 
-import static org.qi4j.api.common.TypeName.*;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.util.*;
+
+import static org.qi4j.api.common.TypeName.nameOf;
 
 public class ValueTypeFactory
 {

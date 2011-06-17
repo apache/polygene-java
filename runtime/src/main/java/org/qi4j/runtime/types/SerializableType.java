@@ -14,12 +14,6 @@
 
 package org.qi4j.runtime.types;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.lang.reflect.Proxy;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONWriter;
@@ -34,6 +28,9 @@ import org.qi4j.spi.property.ValueType;
 import org.qi4j.spi.structure.ModuleSPI;
 import org.qi4j.spi.util.Base64Encoder;
 import org.qi4j.spi.value.ValueDescriptor;
+
+import java.io.*;
+import java.lang.reflect.Proxy;
 
 /**
  * Serializable type. If the serialized object is an ValueComposite,

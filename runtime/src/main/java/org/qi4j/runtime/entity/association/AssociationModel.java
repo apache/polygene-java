@@ -14,14 +14,6 @@
 
 package org.qi4j.runtime.entity.association;
 
-import java.io.IOException;
-import java.io.NotSerializableException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.List;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.common.TypeName;
@@ -42,6 +34,11 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.util.SerializationUtil;
+
+import java.io.*;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.List;
 
 /**
  * JAVADOC

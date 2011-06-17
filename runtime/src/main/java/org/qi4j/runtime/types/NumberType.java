@@ -14,14 +14,15 @@
 
 package org.qi4j.runtime.types;
 
-import java.lang.reflect.Type;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONWriter;
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.structure.Module;
+
+import java.lang.reflect.Type;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 /**
  * Number type

@@ -14,11 +14,19 @@
 
 package org.qi4j.runtime.composite;
 
-import java.io.IOException;
-import java.io.NotSerializableException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import org.qi4j.api.common.ConstructionException;
+import org.qi4j.api.util.HierarchicalVisitor;
+import org.qi4j.api.util.VisitableHierarchy;
+import org.qi4j.bootstrap.BindingException;
+import org.qi4j.runtime.injection.Dependencies;
+import org.qi4j.runtime.injection.DependencyModel;
+import org.qi4j.runtime.model.Binder;
+import org.qi4j.runtime.model.Resolution;
+import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.spi.composite.MethodDescriptor;
+import org.qi4j.spi.util.SerializationUtil;
+
+import java.io.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.InvocationHandler;
@@ -27,27 +35,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.qi4j.api.common.ConstructionException;
-import org.qi4j.bootstrap.BindingException;
-import org.qi4j.runtime.injection.Dependencies;
-import org.qi4j.runtime.injection.DependencyModel;
-import org.qi4j.runtime.model.Binder;
-import org.qi4j.runtime.model.Resolution;
-import org.qi4j.runtime.structure.ModelVisitor;
-import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.spi.composite.MethodDescriptor;
-import org.qi4j.spi.util.SerializationUtil;
-
 import static org.qi4j.api.specification.Specifications.notNull;
-import static org.qi4j.api.util.Iterables.filter;
-import static org.qi4j.api.util.Iterables.flattenIterables;
-import static org.qi4j.api.util.Iterables.iterable;
+import static org.qi4j.api.util.Iterables.*;
 
 /**
  * JAVADOC
  */
 public final class CompositeMethodModel
-    implements Binder, MethodDescriptor, Serializable, Dependencies
+    implements MethodDescriptor, Serializable, Dependencies, VisitableHierarchy<Object, Object>
 {
     // Model
     private Method method;
@@ -105,6 +100,7 @@ public final class CompositeMethodModel
         methodConcerns = methodConcernsModel;
         methodSideEffects = methodSideEffectsModel;
         methodConstraints = methodConstraintsModel;
+        methodConstraintsInstance = methodConstraints.newInstance();
         initialize();
     }
 
@@ -131,32 +127,6 @@ public final class CompositeMethodModel
     {
         return flattenIterables( filter( notNull(), iterable( methodConcerns != null ? methodConcerns.dependencies() : null,
                                                               methodSideEffects != null ? methodSideEffects.dependencies() : null ) ) );
-    }
-
-    // Binding
-
-    public void bind( Resolution resolution )
-        throws BindingException
-    {
-        resolution = new Resolution( resolution.application(),
-                                     resolution.layer(),
-                                     resolution.module(),
-                                     resolution.object(),
-                                     this,
-                                     null //no field
-        );
-
-        if( methodConcerns != null )
-        {
-            methodConcerns.bind( resolution );
-        }
-
-        if( methodSideEffects != null )
-        {
-            methodSideEffects.bind( resolution );
-        }
-
-        methodConstraintsInstance = methodConstraints.newInstance();
     }
 
     // Context
@@ -235,30 +205,32 @@ public final class CompositeMethodModel
         return annotations;
     }
 
-    public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
-        throws ThrowableType
+    @Override
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> modelVisitor ) throws ThrowableType
     {
-        modelVisitor.visit( this );
+        if (modelVisitor.visitEnter( this ))
+        {
+            methodConstraints.accept( modelVisitor );
 
-        methodConstraints.visitModel( modelVisitor );
+            if( methodConcerns != null )
+            {
+                methodConcerns.accept( modelVisitor );
+            }
+            else
+            {
+                new MethodConcernsModel( method, Collections.<MethodConcernModel>emptyList() ).accept( modelVisitor );
+            }
 
-        if( methodConcerns != null )
-        {
-            methodConcerns.visitModel( modelVisitor );
+            if( methodSideEffects != null )
+            {
+                methodSideEffects.accept( modelVisitor );
+            }
+            else
+            {
+                new MethodSideEffectsModel( method, Collections.<MethodSideEffectModel>emptyList() ).accept( modelVisitor );
+            }
         }
-        else
-        {
-            new MethodConcernsModel( method, Collections.<MethodConcernModel>emptyList() ).visitModel( modelVisitor );
-        }
-
-        if( methodSideEffects != null )
-        {
-            methodSideEffects.visitModel( modelVisitor );
-        }
-        else
-        {
-            new MethodSideEffectsModel( method, Collections.<MethodSideEffectModel>emptyList() ).visitModel( modelVisitor );
-        }
+        return modelVisitor.visitLeave( this );
     }
 
     @Override

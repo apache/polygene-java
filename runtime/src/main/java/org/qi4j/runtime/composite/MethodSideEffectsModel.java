@@ -14,34 +14,31 @@
 
 package org.qi4j.runtime.composite;
 
-import java.io.IOException;
-import java.io.NotSerializableException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
+import org.qi4j.api.util.HierarchicalVisitor;
 import org.qi4j.api.util.Iterables;
+import org.qi4j.api.util.VisitableHierarchy;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.bootstrap.AssemblyHelper;
 import org.qi4j.runtime.injection.Dependencies;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
-import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.sideeffect.MethodSideEffectsDescriptor;
 import org.qi4j.spi.util.SerializationUtil;
+
+import java.io.*;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * JAVADOC
  */
 public final class MethodSideEffectsModel
-    implements Binder, MethodSideEffectsDescriptor, Serializable, Dependencies
+    implements MethodSideEffectsDescriptor, Serializable, Dependencies, VisitableHierarchy<Object, Object>
 {
     private Method method;
     private List<MethodSideEffectModel> sideEffectModels = null;
@@ -84,19 +81,7 @@ public final class MethodSideEffectsModel
         return Iterables.flattenIterables( Iterables.map( Dependencies.DEPENDENCIES_FUNCTION, sideEffectModels ) );
     }
 
-    // Binding
-
-    public void bind( Resolution resolution )
-        throws BindingException
-    {
-        for( MethodSideEffectModel methodSideEffectModel : sideEffectModels )
-        {
-            methodSideEffectModel.bind( resolution );
-        }
-    }
-
     // Context
-
     public MethodSideEffectsInstance newInstance( ModuleInstance moduleInstance, InvocationHandler invoker )
     {
         ProxyReferenceInvocationHandler proxyHandler = new ProxyReferenceInvocationHandler();
@@ -110,14 +95,18 @@ public final class MethodSideEffectsModel
         return new MethodSideEffectsInstance( sideEffects, result, proxyHandler, invoker );
     }
 
-    public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
-        throws ThrowableType
+    @Override
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> modelVisitor ) throws ThrowableType
     {
-        modelVisitor.visit( this );
-        for( MethodSideEffectModel methodSideEffectModel : sideEffectModels )
+        if (modelVisitor.visitEnter( this ))
         {
-            methodSideEffectModel.visitModel( modelVisitor );
+            for( MethodSideEffectModel methodSideEffectModel : sideEffectModels )
+            {
+                if (!methodSideEffectModel.accept( modelVisitor ))
+                    break;
+            }
         }
+        return modelVisitor.visitLeave( this );
     }
 
     public MethodSideEffectsModel combineWith( MethodSideEffectsModel mixinMethodSideEffectsModel )

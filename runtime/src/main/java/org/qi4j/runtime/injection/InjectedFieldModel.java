@@ -14,28 +14,27 @@
 
 package org.qi4j.runtime.injection;
 
-import java.io.IOException;
-import java.io.NotSerializableException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.util.Collection;
 import org.qi4j.api.specification.Specification;
+import org.qi4j.api.util.Visitable;
+import org.qi4j.api.util.Visitor;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.bootstrap.InjectionException;
 import org.qi4j.runtime.model.Resolution;
-import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.spi.composite.InjectedFieldDescriptor;
 import org.qi4j.spi.util.SerializationUtil;
 
-import static java.util.Collections.*;
+import java.io.*;
+import java.lang.reflect.Field;
+import java.util.Collection;
+
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singleton;
 
 /**
  * JAVADOC
  */
 public final class InjectedFieldModel
-    implements InjectedFieldDescriptor, Serializable
+    implements InjectedFieldDescriptor, Serializable, Visitable<InjectedFieldModel>
 {
     private DependencyModel dependencyModel;
     private Field injectedField;
@@ -106,10 +105,10 @@ public final class InjectedFieldModel
         }
     }
 
-    public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
-        throws ThrowableType
+    @Override
+    public <ThrowableType extends Throwable> boolean accept( Visitor<? super InjectedFieldModel, ThrowableType> modelVisitor ) throws ThrowableType
     {
-        modelVisitor.visit( this );
+        return modelVisitor.visit( this );
     }
 
     public Collection<DependencyModel> filter( Specification<DependencyModel> specification )

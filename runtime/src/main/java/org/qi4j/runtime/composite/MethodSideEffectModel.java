@@ -14,9 +14,9 @@
 
 package org.qi4j.runtime.composite;
 
-import java.io.Serializable;
-import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.spi.sideeffect.MethodSideEffectDescriptor;
+
+import java.io.Serializable;
 
 /**
  * JAVADOC
@@ -28,14 +28,5 @@ public final class MethodSideEffectModel
     public MethodSideEffectModel( Class sideEffectClass, Class instantiationClass )
     {
         super( sideEffectClass, instantiationClass );
-    }
-
-    @Override
-    public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
-        throws ThrowableType
-    {
-        modelVisitor.visit( this );
-
-        super.visitModel( modelVisitor );
     }
 }

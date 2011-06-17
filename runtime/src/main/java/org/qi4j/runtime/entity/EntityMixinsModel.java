@@ -14,10 +14,6 @@
 
 package org.qi4j.runtime.entity;
 
-import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 import org.qi4j.api.entity.Entity;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.Lifecycle;
@@ -30,6 +26,11 @@ import org.qi4j.runtime.composite.UsesInstance;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.spi.composite.CompositeInstance;
+
+import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * JAVADOC

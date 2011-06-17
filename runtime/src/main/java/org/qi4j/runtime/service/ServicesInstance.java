@@ -14,12 +14,6 @@
 
 package org.qi4j.runtime.service;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.event.ActivationEventListener;
 import org.qi4j.api.event.ActivationEventListenerRegistration;
@@ -28,6 +22,10 @@ import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.specification.Specification;
 import org.qi4j.api.util.Iterables;
 import org.qi4j.runtime.structure.ActivationEventListenerSupport;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * JAVADOC

@@ -14,14 +14,15 @@
 
 package org.qi4j.runtime.bootstrap;
 
-import java.lang.reflect.InvocationHandler;
-import java.util.HashMap;
-import java.util.Map;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.runtime.composite.FragmentClassLoader;
 import org.qi4j.runtime.composite.MethodConcernModel;
 import org.qi4j.runtime.composite.MethodSideEffectModel;
 import org.qi4j.runtime.composite.MixinModel;
+
+import java.lang.reflect.InvocationHandler;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This helper is used when building the application model. It keeps track

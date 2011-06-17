@@ -21,8 +21,8 @@ import org.qi4j.api.structure.Layer;
 import org.qi4j.api.structure.Module;
 import org.qi4j.runtime.service.Activator;
 import org.qi4j.spi.Qi4jSPI;
+import org.qi4j.spi.structure.ApplicationModelSPI;
 import org.qi4j.spi.structure.ApplicationSPI;
-import org.qi4j.spi.structure.DescriptorVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +52,7 @@ public class ApplicationInstance
         layer.registerActivationEventListener( eventListenerSupport );
     }
 
-    public ApplicationModel model()
+    public ApplicationModelSPI model()
     {
         return model;
     }
@@ -139,27 +139,6 @@ public class ApplicationInstance
         eventListenerSupport.fireEvent( new ActivationEvent(this, ActivationEvent.EventType.PASSIVATING) );
         layerActivator.passivate();
         eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATED ) );
-    }
-
-    public <ThrowableType extends Throwable> void visitDescriptor( DescriptorVisitor<ThrowableType> visitor )
-        throws ThrowableType
-    {
-        model.visitDescriptor( visitor );
-    }
-
-    public <ThrowableType extends Throwable> void visitInstance( InstanceVisitor<ThrowableType> visitor )
-        throws ThrowableType
-    {
-        visitor.visit( this );
-
-        for( LayerInstance layerInstance : layerInstances )
-        {
-            visitor.visit( layerInstance );
-            for( Module module : layerInstance.modules() )
-            {
-                visitor.visit( module );
-            }
-        }
     }
 
     @Override

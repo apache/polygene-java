@@ -14,7 +14,6 @@
 
 package org.qi4j.runtime.value;
 
-import java.util.List;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.value.Value;
 import org.qi4j.api.value.ValueComposite;
@@ -23,6 +22,8 @@ import org.qi4j.runtime.composite.MixinDeclaration;
 import org.qi4j.runtime.composite.MixinModel;
 import org.qi4j.runtime.composite.UsesInstance;
 import org.qi4j.runtime.injection.InjectionContext;
+
+import java.util.List;
 
 /**
  * Model for mixins in ValueComposites

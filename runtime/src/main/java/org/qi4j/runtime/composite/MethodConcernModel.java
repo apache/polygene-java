@@ -14,9 +14,9 @@
 
 package org.qi4j.runtime.composite;
 
-import java.io.Serializable;
-import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.spi.concern.MethodConcernDescriptor;
+
+import java.io.Serializable;
 
 /**
  * JAVADOC
@@ -28,13 +28,5 @@ public final class MethodConcernModel
     public MethodConcernModel( Class concernClass, Class instantiationClass )
     {
         super( concernClass, instantiationClass );
-    }
-
-    public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
-        throws ThrowableType
-    {
-        modelVisitor.visit( this );
-
-        super.visitModel( modelVisitor );
     }
 }

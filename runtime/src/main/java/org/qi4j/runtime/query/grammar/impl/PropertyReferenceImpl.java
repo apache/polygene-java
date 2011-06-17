@@ -19,10 +19,6 @@
  */
 package org.qi4j.runtime.query.grammar.impl;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Proxy;
-import java.lang.reflect.Type;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.query.NotQueryableException;
@@ -31,6 +27,11 @@ import org.qi4j.api.query.grammar.AssociationReference;
 import org.qi4j.api.query.grammar.PropertyReference;
 import org.qi4j.api.util.Classes;
 import org.qi4j.spi.composite.CompositeInstance;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Proxy;
+import java.lang.reflect.Type;
 
 /**
  * Default {@link org.qi4j.api.query.grammar.PropertyReference} implementation.

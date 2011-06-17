@@ -14,19 +14,19 @@
 
 package org.qi4j.runtime.service;
 
+import org.qi4j.api.util.HierarchicalVisitor;
+import org.qi4j.api.util.VisitableHierarchy;
+import org.qi4j.runtime.structure.ModuleInstance;
+
 import java.io.Serializable;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import org.qi4j.api.common.Visibility;
-import org.qi4j.runtime.structure.ModelVisitor;
-import org.qi4j.runtime.structure.ModuleInstance;
 
 /**
  * JAVADOC
  */
 public class ImportedServicesModel
-    implements Serializable
+    implements Serializable, VisitableHierarchy<Object, Object>
 {
     private List<ImportedServiceModel> importedServiceModels;
 
@@ -47,12 +47,17 @@ public class ImportedServicesModel
         return new ImportedServicesInstance( this, serviceReferences );
     }
 
-    public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
-        throws ThrowableType
+    @Override
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor ) throws ThrowableType
     {
-        for( ImportedServiceModel importedServiceModel : importedServiceModels )
+        if (visitor.visitEnter( this ))
         {
-            importedServiceModel.visitModel( modelVisitor );
+            for( ImportedServiceModel importedServiceModel : importedServiceModels )
+            {
+                if (!importedServiceModel.accept( visitor ))
+                    break;
+            }
         }
+        return visitor.visitLeave( this );
     }
 }

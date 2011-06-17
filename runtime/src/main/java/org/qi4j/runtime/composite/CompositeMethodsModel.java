@@ -14,32 +14,29 @@
 
 package org.qi4j.runtime.composite;
 
-import java.io.Serializable;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.MissingMethodException;
 import org.qi4j.api.entity.Lifecycle;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Initializable;
 import org.qi4j.api.service.Activatable;
-import org.qi4j.api.specification.Specifications;
 import org.qi4j.api.util.Classes;
-import org.qi4j.api.util.Function;
+import org.qi4j.api.util.HierarchicalVisitor;
 import org.qi4j.api.util.Iterables;
+import org.qi4j.api.util.VisitableHierarchy;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.bootstrap.AssemblyHelper;
 import org.qi4j.runtime.injection.Dependencies;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
-import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.util.MethodKeyMap;
+
+import java.io.Serializable;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.util.HashMap;
 
 import static org.qi4j.api.specification.Specifications.in;
 import static org.qi4j.api.specification.Specifications.not;
@@ -49,7 +46,7 @@ import static org.qi4j.api.util.Iterables.*;
  * Model for Composite methods. This includes both private and public methods.
  */
 public final class CompositeMethodsModel
-        implements Binder, Serializable
+        implements Serializable, VisitableHierarchy<Object, Object>
 {
     private HashMap<Method, CompositeMethodModel> methods;
     private final Class<? extends Composite> type;
@@ -85,18 +82,7 @@ public final class CompositeMethodsModel
         return Iterables.flattenIterables( map( Dependencies.DEPENDENCIES_FUNCTION, methods.values() ) );
     }
 
-    // Binding
-    public void bind( Resolution resolution )
-            throws BindingException
-    {
-        for( CompositeMethodModel compositeMethodComposite : methods.values() )
-        {
-            compositeMethodComposite.bind( resolution );
-        }
-    }
-
     // Context
-
     public Object invoke( MixinsInstance mixins,
                           Object proxy,
                           Method method,
@@ -219,13 +205,18 @@ public final class CompositeMethodsModel
         return methods.keySet();
     }
 
-    public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
-            throws ThrowableType
+    @Override
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> modelVisitor ) throws ThrowableType
     {
-        for( CompositeMethodModel compositeMethodModel : methods.values() )
+        if (modelVisitor.visitEnter( this ))
         {
-            compositeMethodModel.visitModel( modelVisitor );
+            for( CompositeMethodModel compositeMethodModel : methods.values() )
+            {
+                if (!compositeMethodModel.accept( modelVisitor ))
+                    break;
+            }
         }
+        return modelVisitor.visitLeave( this );
     }
 
     public String toString()

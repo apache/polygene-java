@@ -14,15 +14,14 @@
 
 package org.qi4j.spi.structure;
 
+import org.qi4j.api.util.VisitableHierarchy;
 import org.qi4j.spi.Qi4jSPI;
 
 /**
  * JAVADOC
  */
 public interface ApplicationModelSPI
+    extends VisitableHierarchy<Object, Object>
 {
-    <ThrowableType extends Throwable> void visitDescriptor( DescriptorVisitor<ThrowableType> visitor )
-        throws ThrowableType;
-
     ApplicationSPI newInstance( Qi4jSPI runtime );
 }

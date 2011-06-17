@@ -14,17 +14,17 @@
 
 package org.qi4j.runtime.composite;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.util.Iterator;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.TransientBuilder;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.runtime.structure.ModelModule;
-import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.CompositeInstance;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.util.Iterator;
 
 /**
  * JAVADOC

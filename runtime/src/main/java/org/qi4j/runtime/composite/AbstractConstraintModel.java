@@ -14,16 +14,18 @@
 
 package org.qi4j.runtime.composite;
 
+import org.qi4j.api.util.Visitable;
+import org.qi4j.api.util.Visitor;
+import org.qi4j.spi.constraint.ConstraintDescriptor;
+
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
-import org.qi4j.runtime.structure.ModelVisitor;
-import org.qi4j.spi.constraint.ConstraintDescriptor;
 
 /**
  * JAVADOC
  */
 public abstract class AbstractConstraintModel
-    implements ConstraintDescriptor, Serializable
+    implements ConstraintDescriptor, Serializable, Visitable<ConstraintDescriptor>
 {
     protected final Annotation annotation;
 
@@ -39,9 +41,9 @@ public abstract class AbstractConstraintModel
 
     public abstract ConstraintInstance<?, ?> newInstance();
 
-    public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
-        throws ThrowableType
+    @Override
+    public <ThrowableType extends Throwable> boolean accept( Visitor<? super ConstraintDescriptor, ThrowableType> modelVisitor ) throws ThrowableType
     {
-        modelVisitor.visit( this );
+        return modelVisitor.visit( this );
     }
 }

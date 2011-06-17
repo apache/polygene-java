@@ -14,28 +14,30 @@
 
 package org.qi4j.runtime.injection;
 
+import org.qi4j.api.injection.InjectionScope;
+import org.qi4j.api.util.Function;
+import org.qi4j.api.util.HierarchicalVisitor;
+import org.qi4j.api.util.Iterables;
+import org.qi4j.api.util.VisitableHierarchy;
+import org.qi4j.bootstrap.BindingException;
+import org.qi4j.runtime.model.Binder;
+import org.qi4j.runtime.model.Resolution;
+
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import org.qi4j.api.injection.InjectionScope;
-import org.qi4j.api.util.Function;
-import org.qi4j.api.util.Iterables;
-import org.qi4j.bootstrap.BindingException;
-import org.qi4j.runtime.model.Binder;
-import org.qi4j.runtime.model.Resolution;
-import org.qi4j.runtime.structure.ModelVisitor;
 
-import static org.qi4j.api.util.Annotations.*;
-import static org.qi4j.api.util.Classes.*;
+import static org.qi4j.api.util.Annotations.hasAnnotation;
+import static org.qi4j.api.util.Classes.fieldsOf;
 import static org.qi4j.api.util.Iterables.*;
 
 /**
  * JAVADOC
  */
 public final class InjectedFieldsModel
-    implements Binder, Serializable, Dependencies
+    implements Serializable, Dependencies, VisitableHierarchy<Object, Object>
 {
     private final List<InjectedFieldModel> fields = new ArrayList<InjectedFieldModel>();
 
@@ -72,22 +74,16 @@ public final class InjectedFieldsModel
         }, fields);
     }
 
-    public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
-        throws ThrowableType
+    @Override
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> modelVisitor ) throws ThrowableType
     {
-        for( InjectedFieldModel field : fields )
-        {
-            field.visitModel( modelVisitor );
-        }
-    }
-
-    public void bind( Resolution context )
-        throws BindingException
-    {
-        for( InjectedFieldModel field : fields )
-        {
-            field.bind( context );
-        }
+        if (modelVisitor.visitEnter( this ))
+            for( InjectedFieldModel field : fields )
+            {
+                if (!field.accept( modelVisitor ))
+                    break;
+            }
+        return modelVisitor.visitLeave( this );
     }
 
     public void inject( InjectionContext context, Object instance )

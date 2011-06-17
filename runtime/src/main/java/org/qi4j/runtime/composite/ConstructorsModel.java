@@ -14,6 +14,18 @@
 
 package org.qi4j.runtime.composite;
 
+import org.qi4j.api.common.ConstructionException;
+import org.qi4j.api.injection.InjectionScope;
+import org.qi4j.api.util.*;
+import org.qi4j.bootstrap.BindingException;
+import org.qi4j.runtime.injection.Dependencies;
+import org.qi4j.runtime.injection.DependencyModel;
+import org.qi4j.runtime.injection.InjectedParametersModel;
+import org.qi4j.runtime.injection.InjectionContext;
+import org.qi4j.runtime.model.Binder;
+import org.qi4j.runtime.model.Resolution;
+import org.qi4j.spi.composite.AbstractCompositeDescriptor;
+
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -22,20 +34,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import org.qi4j.api.common.ConstructionException;
-import org.qi4j.api.injection.InjectionScope;
-import org.qi4j.api.util.Annotations;
-import org.qi4j.api.util.Function;
-import org.qi4j.api.util.Iterables;
-import org.qi4j.bootstrap.BindingException;
-import org.qi4j.runtime.injection.Dependencies;
-import org.qi4j.runtime.injection.DependencyModel;
-import org.qi4j.runtime.injection.InjectedParametersModel;
-import org.qi4j.runtime.injection.InjectionContext;
-import org.qi4j.runtime.model.Binder;
-import org.qi4j.runtime.model.Resolution;
-import org.qi4j.runtime.structure.ModelVisitor;
-import org.qi4j.spi.composite.AbstractCompositeDescriptor;
 
 import static org.qi4j.api.util.Iterables.*;
 
@@ -43,7 +41,7 @@ import static org.qi4j.api.util.Iterables.*;
  * JAVADOC
  */
 public final class ConstructorsModel
-    implements Binder, Serializable, Dependencies
+    implements Binder, Serializable, Dependencies, VisitableHierarchy<Object, Object>
 {
     private final Class fragmentClass;
     private final List<ConstructorModel> constructorModels;
@@ -74,11 +72,6 @@ public final class ConstructorsModel
                 // Ignore and continue
             }
         }
-    }
-
-    public Class getFragmentClass()
-    {
-        return fragmentClass;
     }
 
     public Iterable<DependencyModel> dependencies()
@@ -122,28 +115,33 @@ public final class ConstructorsModel
         return new ConstructorModel( realConstructor, parameters );
     }
 
-    public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
-        throws ThrowableType
+    @Override
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor ) throws ThrowableType
     {
-        if( boundConstructors != null )
+        if (visitor.visitEnter( this ))
         {
-            for( ConstructorModel constructorModel : boundConstructors )
+            if( boundConstructors != null )
             {
-                constructorModel.visitModel( modelVisitor );
+                for( ConstructorModel constructorModel : boundConstructors )
+                {
+                    if (!constructorModel.accept( visitor ))
+                        break;
+                }
+            }
+            else
+            {
+                for( ConstructorModel constructorModel : constructorModels )
+                {
+                    if (!constructorModel.accept( visitor ))
+                        break;
+                }
             }
         }
-        else
-        {
-            for( ConstructorModel constructorModel : constructorModels )
-            {
-                constructorModel.visitModel( modelVisitor );
-            }
-        }
+        return visitor.visitLeave( this );
     }
 
     // Binding
-
-    public void bind( Resolution resolution )
+    public void bind( final Resolution resolution )
         throws BindingException
     {
         boundConstructors = new ArrayList<ConstructorModel>();
@@ -151,7 +149,28 @@ public final class ConstructorsModel
         {
             try
             {
-                constructorModel.bind( resolution );
+                constructorModel.accept( new HierarchicalVisitor<Object, Object, BindingException>()
+                {
+                    @Override
+                    public boolean visitEnter( Object visited ) throws BindingException
+                    {
+                        return true;
+                    }
+
+                    @Override
+                    public boolean visitLeave( Object visited ) throws BindingException
+                    {
+                        return true;
+                    }
+
+                    @Override
+                    public boolean visit( Object visitor ) throws BindingException
+                    {
+                        if( visitor instanceof Binder )
+                            ((Binder)visitor).bind( resolution );
+                        return true;
+                    }
+                } );
                 boundConstructors.add( constructorModel );
             }
             catch( Exception e )
@@ -213,31 +232,5 @@ public final class ConstructorsModel
         }
 
         throw exception;
-    }
-
-    private Annotation[][] getConstructorAnnotations( Class fragmentClass, Constructor constructor )
-    {
-        Annotation[][] parameterAnnotations;
-        if( FragmentClassLoader.isGenerated( fragmentClass ) )
-        {
-            try
-            {
-                Class[] constructorParameterTypes = constructor.getParameterTypes();
-                Class fragmentSuperClass = fragmentClass.getSuperclass();
-                Constructor realConstructor = fragmentSuperClass.getDeclaredConstructor( constructorParameterTypes );
-                parameterAnnotations = realConstructor.getParameterAnnotations();
-            }
-            catch( NoSuchMethodException e )
-            {
-                // Shouldn't happen
-                throw new InternalError( "Could not get real constructor of class " + fragmentClass.getName() );
-            }
-        }
-        else
-        {
-            parameterAnnotations = constructor.getParameterAnnotations();
-        }
-
-        return parameterAnnotations;
     }
 }

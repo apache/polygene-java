@@ -14,13 +14,6 @@
 
 package org.qi4j.runtime.bootstrap;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.TransientComposite;
@@ -32,8 +25,8 @@ import org.qi4j.api.specification.Specification;
 import org.qi4j.api.util.Iterables;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.*;
-import org.qi4j.runtime.composite.TransientsModel;
 import org.qi4j.runtime.composite.TransientModel;
+import org.qi4j.runtime.composite.TransientsModel;
 import org.qi4j.runtime.entity.EntitiesModel;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.object.ObjectModel;
@@ -45,6 +38,8 @@ import org.qi4j.runtime.service.ServicesModel;
 import org.qi4j.runtime.structure.ModuleModel;
 import org.qi4j.runtime.value.ValueModel;
 import org.qi4j.runtime.value.ValuesModel;
+
+import java.util.*;
 
 import static org.qi4j.api.util.Iterables.iterable;
 

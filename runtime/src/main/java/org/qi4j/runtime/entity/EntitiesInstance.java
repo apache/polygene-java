@@ -19,7 +19,6 @@ import org.qi4j.api.entity.IdentityGenerator;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.unitofwork.UnitOfWorkException;
-import org.qi4j.runtime.composite.TransientModel;
 import org.qi4j.runtime.structure.ModelModule;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.VisibilitySpecification;

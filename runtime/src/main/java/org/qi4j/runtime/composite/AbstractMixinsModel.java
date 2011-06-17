@@ -14,33 +14,27 @@
 
 package org.qi4j.runtime.composite;
 
-import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.util.Classes;
 import org.qi4j.api.util.Function;
-import org.qi4j.api.util.Iterables;
+import org.qi4j.api.util.HierarchicalVisitor;
+import org.qi4j.api.util.VisitableHierarchy;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.bootstrap.AssemblyHelper;
 import org.qi4j.runtime.injection.DependencyModel;
+import org.qi4j.runtime.injection.InjectedFieldModel;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
-import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.spi.composite.InvalidCompositeException;
 import org.qi4j.spi.util.MethodKeyMap;
 import org.qi4j.spi.util.UsageGraph;
+
+import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.*;
 
 import static org.qi4j.api.util.Iterables.flattenIterables;
 import static org.qi4j.api.util.Iterables.map;
@@ -50,7 +44,7 @@ import static org.qi4j.api.util.Iterables.map;
  * and mixin implementations.
  */
 public abstract class AbstractMixinsModel
-    implements Serializable, Binder
+        implements Serializable, Binder, VisitableHierarchy<Object, Object>
 {
     protected final Set<MixinDeclaration> mixins = new LinkedHashSet<MixinDeclaration>();
 
@@ -163,7 +157,7 @@ public abstract class AbstractMixinsModel
         }
 
         throw new InvalidCompositeException( "No implementation found for method " + method.toGenericString(),
-                                             compositeType );
+                compositeType );
     }
 
     public void addMixinType( Class mixinType )
@@ -178,7 +172,7 @@ public abstract class AbstractMixinsModel
             // Check if mixin implements the method. If so, check if the mixin is generic or if the filter passes
             // If a mixin is both generic AND non-generic at the same time, then the filter applies to the generic side only
             if( method.getDeclaringClass().isAssignableFrom( mixin.fragmentClass() ) &&
-                ( mixin.isGeneric() || mixin.appliesTo( method, compositeType ) ) )
+                    (mixin.isGeneric() || mixin.appliesTo( method, compositeType )) )
             {
                 Class mixinClass = mixin.fragmentClass();
                 return mixinClass;
@@ -241,19 +235,22 @@ public abstract class AbstractMixinsModel
         }
     }
 
-    public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
-        throws ThrowableType
+    @Override
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor ) throws ThrowableType
     {
-        for( MixinModel mixinModel : mixinModels )
+        if( visitor.visitEnter( this ) )
         {
-            mixinModel.visitModel( modelVisitor );
+            for( MixinModel mixinModel : mixinModels )
+            {
+                mixinModel.accept( visitor );
+            }
         }
+        return visitor.visitLeave( this );
     }
 
     // Binding
-
-    public void bind( Resolution resolution )
-        throws BindingException
+    public void bind( final Resolution resolution )
+            throws BindingException
     {
         // Order mixins based on @This usages
         UsageGraph<MixinModel> deps = new UsageGraph<MixinModel>( mixinModels, new Uses(), true );
@@ -271,9 +268,43 @@ public abstract class AbstractMixinsModel
             methodIndex.put( methodClassEntry.getKey(), mixinIndex.get( methodClassEntry.getValue().mixinClass() ) );
         }
 
-        for( MixinModel mixinComposite : mixinModels )
+        for( MixinModel mixinModel : mixinModels )
         {
-            mixinComposite.bind( resolution );
+            mixinModel.accept( new HierarchicalVisitor<Object, Object, BindingException>()
+            {
+                @Override
+                public boolean visitEnter( Object visited ) throws BindingException
+                {
+                    if( visited instanceof Binder )
+                    {
+                        Binder constructorsModel = (Binder) visited;
+                        constructorsModel.bind( resolution );
+
+                        return false;
+                    }
+                    return true;
+                }
+
+                @Override
+                public boolean visitLeave( Object visited ) throws BindingException
+                {
+                    return true;
+                }
+
+                @Override
+                public boolean visit( Object visited ) throws BindingException
+                {
+                    if( visited instanceof InjectedFieldModel )
+                    {
+                        InjectedFieldModel fieldModel = (InjectedFieldModel) visited;
+                        fieldModel.bind( resolution.forField( fieldModel.field() ) );
+                    } else if( visited instanceof Binder )
+                    {
+                        ((Binder) visited).bind( resolution );
+                    }
+                    return true;
+                }
+            } );
         }
     }
 
@@ -281,12 +312,12 @@ public abstract class AbstractMixinsModel
 
     public Object[] newMixinHolder()
     {
-        return new Object[ mixinIndex.size() ];
+        return new Object[mixinIndex.size()];
     }
 
     public Object getMixin( Object[] mixins, Method method )
     {
-        return mixins[ methodIndex.get( method ) ];
+        return mixins[methodIndex.get( method )];
     }
 
     public FragmentInvocationHandler newInvocationHandler( final Method method )
@@ -295,18 +326,17 @@ public abstract class AbstractMixinsModel
     }
 
     public void activate( Object[] mixins )
-        throws Exception
+            throws Exception
     {
         int idx = 0;
         try
         {
             for( MixinModel mixinModel : mixinModels )
             {
-                mixinModel.activate( mixins[ idx ] );
+                mixinModel.activate( mixins[idx] );
                 idx++;
             }
-        }
-        catch( Exception e )
+        } catch( Exception e )
         {
             // Passivate activated mixins
             for( int i = idx - 1; i >= 0; i-- )
@@ -314,8 +344,7 @@ public abstract class AbstractMixinsModel
                 try
                 {
                     mixinModels.get( i ).passivate( i );
-                }
-                catch( Exception e1 )
+                } catch( Exception e1 )
                 {
                     // Ignore
                 }
@@ -326,7 +355,7 @@ public abstract class AbstractMixinsModel
     }
 
     public void passivate( Object[] mixins )
-        throws Exception
+            throws Exception
     {
         int idx = 0;
         Exception ex = null;
@@ -334,9 +363,8 @@ public abstract class AbstractMixinsModel
         {
             try
             {
-                mixinModel.passivate( mixins[ idx++ ] );
-            }
-            catch( Exception e )
+                mixinModel.passivate( mixins[idx++] );
+            } catch( Exception e )
             {
                 ex = e;
             }
@@ -360,7 +388,7 @@ public abstract class AbstractMixinsModel
     }
 
     private class Uses
-        implements UsageGraph.Use<MixinModel>
+            implements UsageGraph.Use<MixinModel>
     {
         public Collection<MixinModel> uses( MixinModel source )
         {

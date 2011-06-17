@@ -1,11 +1,5 @@
 package org.qi4j.runtime.entity.association;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.association.AssociationInfo;
 import org.qi4j.api.entity.association.ManyAssociation;
@@ -13,6 +7,8 @@ import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.ManyAssociationState;
 import org.qi4j.spi.entity.QualifiedIdentity;
+
+import java.util.*;
 
 /**
  * JAVADOC

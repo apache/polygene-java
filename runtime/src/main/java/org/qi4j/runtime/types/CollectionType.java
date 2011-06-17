@@ -14,12 +14,6 @@
 
 package org.qi4j.runtime.types;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONWriter;
@@ -27,6 +21,9 @@ import org.qi4j.api.common.TypeName;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.util.Classes;
 import org.qi4j.spi.property.ValueType;
+
+import java.lang.reflect.Type;
+import java.util.*;
 
 /**
  * Collection type. This handles Collection, List and Set types

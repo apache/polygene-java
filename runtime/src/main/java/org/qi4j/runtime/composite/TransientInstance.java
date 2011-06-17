@@ -16,15 +16,16 @@
 
 package org.qi4j.runtime.composite;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.util.Arrays;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.AbstractCompositeDescriptor;
 import org.qi4j.spi.composite.CompositeInstance;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.Arrays;
 
 /**
  * InvocationHandler for proxy objects.

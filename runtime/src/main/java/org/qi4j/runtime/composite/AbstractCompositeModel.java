@@ -14,6 +14,17 @@
 
 package org.qi4j.runtime.composite;
 
+import org.qi4j.api.common.ConstructionException;
+import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.common.Visibility;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.util.Iterables;
+import org.qi4j.api.util.VisitableHierarchy;
+import org.qi4j.runtime.injection.DependencyModel;
+import org.qi4j.runtime.model.Binder;
+import org.qi4j.runtime.structure.ModuleInstance;
+
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
@@ -22,22 +33,12 @@ import java.lang.reflect.Proxy;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.qi4j.api.common.ConstructionException;
-import org.qi4j.api.common.MetaInfo;
-import org.qi4j.api.common.Visibility;
-import org.qi4j.api.composite.Composite;
-import org.qi4j.api.property.StateHolder;
-import org.qi4j.api.util.Iterables;
-import org.qi4j.runtime.injection.DependencyModel;
-import org.qi4j.runtime.model.Binder;
-import org.qi4j.runtime.structure.ModelVisitor;
-import org.qi4j.runtime.structure.ModuleInstance;
 
 /**
  * JAVADOC
  */
 public abstract class AbstractCompositeModel
-    implements Binder, Serializable
+    implements Serializable, VisitableHierarchy<Object, Object>
 {
     protected final AbstractMixinsModel mixinsModel;
     protected final CompositeMethodsModel compositeMethodsModel;
@@ -121,11 +122,7 @@ public abstract class AbstractCompositeModel
         return (Class<? extends Composite>) Proxy.getProxyClass( proxyClassloader, interfaces );
     }
 
-    public abstract <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
-        throws ThrowableType;
-
     // Context
-
     public final Object invoke( MixinsInstance mixins,
                                 Object proxy,
                                 Method method,

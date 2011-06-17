@@ -14,25 +14,26 @@
 
 package org.qi4j.runtime.composite;
 
-import java.lang.reflect.InvocationHandler;
-import java.util.ArrayList;
-import java.util.List;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.util.HierarchicalVisitor;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.runtime.bootstrap.AssemblyHelper;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.property.PropertiesModel;
-import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.composite.InvalidCompositeException;
 import org.qi4j.spi.composite.TransientDescriptor;
+
+import java.lang.reflect.InvocationHandler;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Model for Transient Composites
@@ -83,23 +84,16 @@ public class TransientModel
         super( compositeType, roles, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
     }
 
-    public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
-        throws ThrowableType
+    @Override
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> modelVisitor ) throws ThrowableType
     {
-        modelVisitor.visit( this );
+        if (modelVisitor.visitEnter( this ))
+        {
+            if (compositeMethodsModel.accept( modelVisitor ))
+                mixinsModel.accept( modelVisitor );
+        }
 
-        compositeMethodsModel.visitModel( modelVisitor );
-        mixinsModel.visitModel( modelVisitor );
-    }
-
-    // Binding
-
-    public void bind( Resolution resolution )
-        throws BindingException
-    {
-        resolution = new Resolution( resolution.application(), resolution.layer(), resolution.module(), this, null, null );
-        compositeMethodsModel.bind( resolution );
-        mixinsModel.bind( resolution );
+        return modelVisitor.visitLeave( this );
     }
 
     public Composite newProxy( InvocationHandler invocationHandler )

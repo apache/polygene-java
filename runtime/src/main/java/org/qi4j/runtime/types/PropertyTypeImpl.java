@@ -14,10 +14,11 @@
 
 package org.qi4j.runtime.types;
 
-import java.io.Serializable;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.property.ValueType;
+
+import java.io.Serializable;
 
 /**
  * JAVADOC

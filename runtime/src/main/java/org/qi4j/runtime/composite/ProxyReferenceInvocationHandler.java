@@ -14,12 +14,9 @@
  */
 package org.qi4j.runtime.composite;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.lang.reflect.UndeclaredThrowableException;
 import org.qi4j.spi.composite.CompositeInvoker;
+
+import java.lang.reflect.*;
 
 public final class ProxyReferenceInvocationHandler
     implements InvocationHandler, CompositeInvoker

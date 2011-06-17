@@ -14,7 +14,6 @@
 
 package org.qi4j.runtime.object;
 
-import java.io.Serializable;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
@@ -22,6 +21,8 @@ import org.qi4j.api.mixin.Initializable;
 import org.qi4j.api.mixin.InitializationException;
 import org.qi4j.api.specification.Specification;
 import org.qi4j.api.util.Function;
+import org.qi4j.api.util.HierarchicalVisitor;
+import org.qi4j.api.util.VisitableHierarchy;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.composite.ConstructorsModel;
 import org.qi4j.runtime.injection.InjectedFieldsModel;
@@ -29,14 +30,15 @@ import org.qi4j.runtime.injection.InjectedMethodsModel;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
-import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.spi.object.ObjectDescriptor;
+
+import java.io.Serializable;
 
 /**
  * JAVADOC
  */
 public final class ObjectModel
-    implements Binder, ObjectDescriptor, Serializable
+    implements ObjectDescriptor, Serializable, VisitableHierarchy<Object, Object>
 {
     public static Specification<ObjectDescriptor> modelTypeSpecification( final String className)
     {
@@ -119,24 +121,16 @@ public final class ObjectModel
         return metaInfo.get( infoType );
     }
 
-    public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
-        throws ThrowableType
+    @Override
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor ) throws ThrowableType
     {
-        modelVisitor.visit( this );
-
-        constructorsModel.visitModel( modelVisitor );
-        injectedFieldsModel.visitModel( modelVisitor );
-        injectedMethodsModel.visitModel( modelVisitor );
-    }
-
-    public void bind( Resolution resolution )
-        throws BindingException
-    {
-        resolution = new Resolution( resolution.application(), resolution.layer(), resolution.module(), this, null, null );
-
-        constructorsModel.bind( resolution );
-        injectedFieldsModel.bind( resolution );
-        injectedMethodsModel.bind( resolution );
+        if (visitor.visitEnter( this ))
+        {
+            if (constructorsModel.accept( visitor ))
+                if (injectedFieldsModel.accept( visitor ))
+                    injectedMethodsModel.accept( visitor );
+        }
+        return visitor.visitLeave( this );
     }
 
     public Object newInstance( InjectionContext injectionContext )

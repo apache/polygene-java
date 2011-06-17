@@ -14,9 +14,6 @@
 
 package org.qi4j.runtime.types;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import org.json.JSONException;
 import org.json.JSONStringer;
 import org.json.JSONTokener;
@@ -25,6 +22,10 @@ import org.qi4j.api.common.TypeName;
 import org.qi4j.api.structure.Module;
 import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.property.ValueType;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Base class for types of values in ValueComposites.

@@ -14,11 +14,12 @@
 
 package org.qi4j.runtime.unitofwork;
 
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.spi.entity.ManyAssociationState;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import org.qi4j.api.entity.EntityReference;
-import org.qi4j.spi.entity.ManyAssociationState;
 
 /**
  * Default implementation of ManyAssociationState that also

@@ -24,6 +24,7 @@ import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.property.*;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.specification.Specifications;
+import org.qi4j.api.util.HierarchicalVisitor;
 import org.qi4j.api.util.Iterables;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.bootstrap.MetaInfoDeclaration;
@@ -34,13 +35,14 @@ import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.property.PropertiesModel;
 import org.qi4j.runtime.property.PropertyModel;
-import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.InvalidCompositeException;
 import org.qi4j.spi.service.ServiceDescriptor;
 
 import java.io.Serializable;
-import java.lang.reflect.*;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -135,23 +137,15 @@ public final class ServiceModel
         return configurationType;
     }
 
-    public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
-            throws ThrowableType
+    @Override
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> modelVisitor ) throws ThrowableType
     {
-        modelVisitor.visit( this );
-
-        compositeMethodsModel.visitModel( modelVisitor );
-        mixinsModel.visitModel( modelVisitor );
-    }
-
-    // Binding
-
-    public void bind( Resolution resolution )
-            throws BindingException
-    {
-        resolution = new Resolution( resolution.application(), resolution.layer(), resolution.module(), this, null, null );
-        compositeMethodsModel.bind( resolution );
-        mixinsModel.bind( resolution );
+        if (modelVisitor.visitEnter( this ))
+        {
+            if (compositeMethodsModel.accept( modelVisitor ))
+                mixinsModel.accept( modelVisitor );
+        }
+        return modelVisitor.visitLeave( this );
     }
 
     public ServiceInstance newInstance( ModuleInstance module )

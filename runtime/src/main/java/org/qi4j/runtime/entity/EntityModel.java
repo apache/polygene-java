@@ -14,16 +14,7 @@
 
 package org.qi4j.runtime.entity;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-import org.qi4j.api.common.ConstructionException;
-import org.qi4j.api.common.MetaInfo;
-import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.common.TypeName;
-import org.qi4j.api.common.Visibility;
+import org.qi4j.api.common.*;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
@@ -33,21 +24,18 @@ import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.unitofwork.EntityCompositeAlreadyExistsException;
 import org.qi4j.api.util.Classes;
+import org.qi4j.api.util.HierarchicalVisitor;
+import org.qi4j.api.util.VisitableHierarchy;
 import org.qi4j.bootstrap.AssociationDeclarations;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.bootstrap.ManyAssociationDeclarations;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.runtime.bootstrap.AssemblyHelper;
-import org.qi4j.runtime.composite.AbstractCompositeModel;
-import org.qi4j.runtime.composite.CompositeMethodsModel;
-import org.qi4j.runtime.composite.ConcernsDeclaration;
-import org.qi4j.runtime.composite.ConstraintsModel;
-import org.qi4j.runtime.composite.SideEffectsDeclaration;
+import org.qi4j.runtime.composite.*;
 import org.qi4j.runtime.entity.association.EntityAssociationsModel;
 import org.qi4j.runtime.entity.association.EntityManyAssociationsModel;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.property.PersistentPropertyModel;
-import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.composite.CompositeInstance;
@@ -60,6 +48,12 @@ import org.qi4j.spi.entitystore.EntityAlreadyExistsException;
 import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 import org.qi4j.spi.property.PropertyTypeDescriptor;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * JAVADOC
@@ -134,6 +128,19 @@ public final class EntityModel
 
         final Queryable queryable = Classes.getAnnotationOfTypeOrAnyOfSuperTypes( type, Queryable.class );
         this.queryable = queryable == null || queryable.value();
+
+        // Create EntityType
+        Set<String> mixinTypes = new LinkedHashSet<String>();
+        for( Class mixinType : mixinsModel.mixinTypes() )
+        {
+            mixinTypes.add( mixinType.getName() );
+        }
+
+        EntityStateModel entityStateModel = stateModel;
+        entityType = new EntityType(
+            TypeName.nameOf( type() ), this.queryable,
+            mixinTypes, entityStateModel.propertyTypes(), entityStateModel.associationTypes(), entityStateModel.manyAssociationTypes()
+        );
     }
 
     public Class<? extends EntityComposite> type()
@@ -162,34 +169,16 @@ public final class EntityModel
         return mixinsModel.hasMixinType( mixinType );
     }
 
-    public <ThrowableType extends Throwable> void visitModel( ModelVisitor<ThrowableType> modelVisitor )
-        throws ThrowableType
+    @Override
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor ) throws ThrowableType
     {
-        modelVisitor.visit( this );
-
-        compositeMethodsModel.visitModel( modelVisitor );
-        mixinsModel.visitModel( modelVisitor );
-    }
-
-    public void bind( Resolution resolution )
-        throws BindingException
-    {
-        Set<String> mixinTypes = new LinkedHashSet<String>();
-        for( Class mixinType : mixinsModel.mixinTypes() )
+        if (visitor.visitEnter( this ))
         {
-            mixinTypes.add( mixinType.getName() );
+            if (compositeMethodsModel.accept( visitor ))
+                if (((VisitableHierarchy<Object, Object>)stateModel).accept( visitor ))
+                    mixinsModel.accept(visitor);
         }
-
-        EntityStateModel entityStateModel = (EntityStateModel) stateModel;
-        entityType = new EntityType(
-            TypeName.nameOf( type() ), queryable,
-            mixinTypes, entityStateModel.propertyTypes(), entityStateModel.associationTypes(), entityStateModel.manyAssociationTypes()
-        );
-
-        resolution = new Resolution( resolution.application(), resolution.layer(), resolution.module(), this, null, null );
-        compositeMethodsModel.bind( resolution );
-        mixinsModel.bind( resolution );
-        stateModel.bind( resolution );
+        return visitor.visitLeave( this );
     }
 
     public EntityInstance newInstance( ModuleUnitOfWork uow, ModuleInstance moduleInstance, EntityState state )
