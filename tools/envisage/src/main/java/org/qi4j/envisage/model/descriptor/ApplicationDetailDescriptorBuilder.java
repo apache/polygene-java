@@ -20,6 +20,7 @@
 package org.qi4j.envisage.model.descriptor;
 
 import org.qi4j.api.service.ImportedServiceDescriptor;
+import org.qi4j.api.util.HierarchicalVisitor;
 import org.qi4j.spi.composite.ConstructorDescriptor;
 import org.qi4j.spi.composite.InjectedFieldDescriptor;
 import org.qi4j.spi.composite.InjectedMethodDescriptor;
@@ -38,7 +39,6 @@ import org.qi4j.spi.sideeffect.MethodSideEffectDescriptor;
 import org.qi4j.spi.sideeffect.MethodSideEffectsDescriptor;
 import org.qi4j.spi.structure.ApplicationDescriptor;
 import org.qi4j.spi.structure.ApplicationModelSPI;
-import org.qi4j.spi.structure.DescriptorVisitor;
 import org.qi4j.spi.structure.LayerDescriptor;
 import org.qi4j.spi.structure.ModuleDescriptor;
 import org.qi4j.spi.structure.UsedLayersDescriptor;
@@ -56,13 +56,13 @@ public final class ApplicationDetailDescriptorBuilder
     public static ApplicationDetailDescriptor createApplicationDetailDescriptor( ApplicationModelSPI anApplication )
     {
         ApplicationDescriptorVisitor visitor = new ApplicationDescriptorVisitor();
-        anApplication.visitDescriptor( visitor );
+        anApplication.accept( visitor );
 
         return visitor.applicationDescriptor;
     }
 
     static final class ApplicationDescriptorVisitor
-        extends DescriptorVisitor<RuntimeException>
+            implements HierarchicalVisitor<Object, Object, RuntimeException>
     {
         // Temp: application
         private ApplicationDetailDescriptor applicationDescriptor;
@@ -114,24 +114,264 @@ public final class ApplicationDetailDescriptorBuilder
         }
 
         @Override
-        public final void visit( ApplicationDescriptor aDescriptor )
+        public boolean visitEnter( Object visited ) throws RuntimeException
         {
-            applicationDescriptor = new ApplicationDetailDescriptor( aDescriptor );
+            if( visited instanceof ApplicationDescriptor )
+            {
+                applicationDescriptor = new ApplicationDetailDescriptor( (ApplicationDescriptor) visited );
+            } else if( visited instanceof LayerDescriptor )
+            {
+                LayerDescriptor layerDescriptor = (LayerDescriptor) visited;
+                currLayerDescriptor = getLayerDetailDescriptor( layerDescriptor );
+                applicationDescriptor.addLayer( currLayerDescriptor );
+
+                UsedLayersDescriptor usedLayesDescriptor = layerDescriptor.usedLayers();
+                Iterable<? extends LayerDescriptor> usedLayers = usedLayesDescriptor.layers();
+                for( LayerDescriptor usedLayer : usedLayers )
+                {
+                    LayerDetailDescriptor usedLayerDetailDesc = getLayerDetailDescriptor( usedLayer );
+                    currLayerDescriptor.addUsedLayer( usedLayerDetailDesc );
+                }
+            } else if( visited instanceof ModuleDescriptor )
+            {
+                ModuleDescriptor moduleDescriptor = (ModuleDescriptor) visited;
+                currModuleDescriptor = new ModuleDetailDescriptor( moduleDescriptor );
+                currLayerDescriptor.addModule( currModuleDescriptor );
+            } else if( visited instanceof ServiceDescriptor )
+            {
+                ServiceDetailDescriptor descriptor = new ServiceDetailDescriptor( (ServiceDescriptor) visited );
+                currModuleDescriptor.addService( descriptor );
+                currCompositeDescriptor = descriptor;
+            } else if( visited instanceof EntityDescriptor )
+            {
+                EntityDetailDescriptor descriptor = new EntityDetailDescriptor( (EntityDescriptor) visited );
+                currModuleDescriptor.addEntity( descriptor );
+                currCompositeDescriptor = descriptor;
+            } else if( visited instanceof ValueDescriptor )
+            {
+                ValueDetailDescriptor descriptor = new ValueDetailDescriptor( (ValueDescriptor) visited );
+                currModuleDescriptor.addValue( descriptor );
+                currCompositeDescriptor = descriptor;
+            } else if( visited instanceof TransientDescriptor )
+            {
+                currCompositeDescriptor = new CompositeDetailDescriptor<TransientDescriptor>( (TransientDescriptor) visited );
+                currModuleDescriptor.addComposite( currCompositeDescriptor );
+            } else if( visited instanceof MethodDescriptor )
+            {
+                if( currCompositeDescriptor == null )
+                {
+                    // Service via CompositeDescriptor in progress )
+                    return false;
+                }
+                currMethodDesciptor = new CompositeMethodDetailDescriptor( (MethodDescriptor) visited );
+                currCompositeDescriptor.addMethod( currMethodDesciptor );
+            } else if( visited instanceof MethodConstraintsDescriptor )
+            {
+                if( currCompositeDescriptor == null )
+                {
+                    // Service via CompositeDescriptor in progress )
+                    return false;
+                }
+                currMethodConstraintsDescriptor =
+                        new MethodConstraintsDetailDescriptor( (MethodConstraintsDescriptor) visited );
+                currMethodDesciptor.setConstraints( currMethodConstraintsDescriptor );
+            } else if( visited instanceof MethodConcernsDescriptor )
+            {
+                if( currCompositeDescriptor == null )
+                {
+                    // Service via CompositeDescriptor in progress )
+                    return false;
+                }
+                currMethodConcernsDescriptor = new MethodConcernsDetailDescriptor( (MethodConcernsDescriptor) visited );
+                currMethodDesciptor.setConcerns( currMethodConcernsDescriptor );
+            } else if( visited instanceof MethodConcernDescriptor )
+            {
+                if( currCompositeDescriptor == null )
+                {
+                    // Service via CompositeDescriptor in progress )
+                    return false;
+                }
+                resetInjectableRelatedVariables();
+
+                currMethodConcernDescriptor = new MethodConcernDetailDescriptor( (MethodConcernDescriptor) visited );
+                currMethodConcernsDescriptor.addConcern( currMethodConcernDescriptor );
+            } else if( visited instanceof MethodSideEffectsDescriptor )
+            {
+                if( currCompositeDescriptor == null )
+                {
+                    // Service via CompositeDescriptor in progress )
+                    return false;
+                }
+                currMethodSideEffectsDescriptor = new MethodSideEffectsDetailDescriptor( (MethodSideEffectsDescriptor) visited );
+                currMethodDesciptor.setSideEffects( currMethodSideEffectsDescriptor );
+            } else if( visited instanceof MethodSideEffectDescriptor )
+            {
+                if( currCompositeDescriptor == null )
+                {
+                    // Service via CompositeDescriptor in progress )
+                    return false;
+                }
+                resetInjectableRelatedVariables();
+
+                currMethodSideEffectDescriptor = new MethodSideEffectDetailDescriptor( (MethodSideEffectDescriptor) visited );
+                currMethodSideEffectsDescriptor.addSideEffect( currMethodSideEffectDescriptor );
+            } else if( visited instanceof MixinDescriptor )
+            {
+                if( currCompositeDescriptor == null )
+                {
+                    // Service via CompositeDescriptor in progress )
+                    return false;
+                }
+                resetInjectableRelatedVariables();
+
+                currMixinDescriptor = new MixinDetailDescriptor( (MixinDescriptor) visited );
+                currCompositeDescriptor.addMixin( currMixinDescriptor );
+            } else if( visited instanceof ObjectDescriptor )
+            {
+                resetInjectableRelatedVariables();
+
+                currObjectDescriptor = new ObjectDetailDescriptor( (ObjectDescriptor) visited );
+                currModuleDescriptor.addObject( currObjectDescriptor );
+            } else if( visited instanceof ConstructorDescriptor )
+            {
+                if( currCompositeDescriptor == null )
+                {
+                    // Service via CompositeDescriptor in progress )
+                    return false;
+                }
+                currConstructorDescriptor = new ConstructorDetailDescriptor( (ConstructorDescriptor) visited );
+                currInjectedMethodDescriptor = null;
+
+                // Invoked for mixin and object
+                if( currMixinDescriptor != null )
+                {
+                    currMixinDescriptor.addConstructor( currConstructorDescriptor );
+                } else if( currObjectDescriptor != null )
+                {
+                    currObjectDescriptor.addConstructor( currConstructorDescriptor );
+                } else if( currMethodConcernDescriptor != null )
+                {
+                    currMethodConcernDescriptor.addConstructor( currConstructorDescriptor );
+                } else if( currMethodSideEffectDescriptor != null )
+                {
+                    currMethodSideEffectDescriptor.addConstructor( currConstructorDescriptor );
+                } else
+                {
+                    throw new IllegalStateException(
+                            "ConstructorDescriptor is only valid for mixin and object."
+                    );
+                }
+            } else if( visited instanceof InjectedParametersDescriptor )
+            {
+                if( currCompositeDescriptor == null )
+                {
+                    // Service via CompositeDescriptor in progress )
+                    return false;
+                }
+                InjectedParametersDetailDescriptor detailDescriptor = new InjectedParametersDetailDescriptor( (InjectedParametersDescriptor) visited );
+
+                // Invoked for constructor and injected method
+                if( currConstructorDescriptor != null )
+                {
+                    currConstructorDescriptor.setInjectedParameter( detailDescriptor );
+                } else if( currInjectedMethodDescriptor != null )
+                {
+                    currInjectedMethodDescriptor.setInjectedParameter( detailDescriptor );
+                } else
+                {
+                    throw new IllegalStateException(
+                            "InjectedParametersDescriptor is only valid for constructor and injector method descriptor."
+                    );
+                }
+            } else if( visited instanceof InjectedMethodDescriptor )
+            {
+                if( currCompositeDescriptor == null )
+                {
+                    // Service via CompositeDescriptor in progress )
+                    return false;
+                }
+                // Invoked for mixin and object
+                currInjectedMethodDescriptor = new InjectedMethodDetailDescriptor( (InjectedMethodDescriptor) visited);
+                currConstructorDescriptor = null;
+
+                // Invoked for mixin and object
+                if( currMixinDescriptor != null )
+                {
+                    currMixinDescriptor.addInjectedMethod( currInjectedMethodDescriptor );
+                } else if( currObjectDescriptor != null )
+                {
+                    currObjectDescriptor.addInjectedMethod( currInjectedMethodDescriptor );
+                } else if( currMethodConcernDescriptor != null )
+                {
+                    currMethodConcernDescriptor.addInjectedMethod( currInjectedMethodDescriptor );
+                } else if( currMethodSideEffectDescriptor != null )
+                {
+                    currMethodSideEffectDescriptor.addInjectedMethod( currInjectedMethodDescriptor );
+                } else
+                {
+                    throw new IllegalStateException(
+                            "InjectedMethodDescriptor is only valid for mixin and object."
+                    );
+                }
+            }
+
+            return true;
         }
 
         @Override
-        public final void visit( LayerDescriptor layerDescriptor )
+        public boolean visitLeave( Object visited ) throws RuntimeException
         {
-            currLayerDescriptor = getLayerDetailDescriptor( layerDescriptor );
-            applicationDescriptor.addLayer( currLayerDescriptor );
+            return true;
+        }
 
-            UsedLayersDescriptor usedLayesDescriptor = layerDescriptor.usedLayers();
-            Iterable<? extends LayerDescriptor> usedLayers = usedLayesDescriptor.layers();
-            for( LayerDescriptor usedLayer : usedLayers )
+        @Override
+        public boolean visit( Object visited ) throws RuntimeException
+        {
+            if (visited instanceof ConstraintDescriptor)
             {
-                LayerDetailDescriptor usedLayerDetailDesc = getLayerDetailDescriptor( usedLayer );
-                currLayerDescriptor.addUsedLayer( usedLayerDetailDesc );
+                if( currCompositeDescriptor == null )
+                {
+                    // Service via CompositeDescriptor in progress )
+                    return false;
+                }
+                MethodConstraintDetailDescriptor detailDescriptor = new MethodConstraintDetailDescriptor( (ConstraintDescriptor) visited );
+                currMethodConstraintsDescriptor.addConstraint( detailDescriptor );
+            } else if( visited instanceof ImportedServiceDescriptor )
+            {
+                ImportedServiceDetailDescriptor descriptor = new ImportedServiceDetailDescriptor( new ImportedServiceCompositeDescriptor( (ImportedServiceDescriptor) visited ) );
+                currModuleDescriptor.addImportedService( descriptor );
+                currCompositeDescriptor = descriptor;
+            } else if (visited instanceof InjectedFieldDescriptor)
+            {
+                if( currCompositeDescriptor == null )
+                {
+                    // Service via CompositeDescriptor in progress )
+                    return false;
+                }
+                InjectedFieldDetailDescriptor detailDescriptor = new InjectedFieldDetailDescriptor( (InjectedFieldDescriptor) visited);
+
+                // Invoked for mixin and object
+                if( currMixinDescriptor != null )
+                {
+                    currMixinDescriptor.addInjectedField( detailDescriptor );
+                } else if( currObjectDescriptor != null )
+                {
+                    currObjectDescriptor.addInjectedField( detailDescriptor );
+                } else if( currMethodConcernDescriptor != null )
+                {
+                    currMethodConcernDescriptor.addInjectedField( detailDescriptor );
+                } else if( currMethodSideEffectDescriptor != null )
+                {
+                    currMethodSideEffectDescriptor.addInjectedField( detailDescriptor );
+                } else
+                {
+                    throw new IllegalStateException(
+                            "InjectedFieldDescriptor is only valid for mixin and object."
+                    );
+                }
             }
+
+            return true;
         }
 
         private LayerDetailDescriptor getLayerDetailDescriptor( LayerDescriptor aDescriptor )
@@ -146,121 +386,6 @@ public final class ApplicationDetailDescriptorBuilder
             return detailDescriptor;
         }
 
-        @Override
-        public final void visit( ModuleDescriptor aDescriptor )
-        {
-            currModuleDescriptor = new ModuleDetailDescriptor( aDescriptor );
-            currLayerDescriptor.addModule( currModuleDescriptor );
-        }
-
-        @Override
-        public final void visit( ServiceDescriptor aDescriptor )
-        {
-            ServiceDetailDescriptor descriptor = new ServiceDetailDescriptor( aDescriptor );
-            currModuleDescriptor.addService( descriptor );
-            currCompositeDescriptor = descriptor;
-        }
-
-        @Override
-        public final void visit( ImportedServiceDescriptor aDescriptor )
-        {
-            ImportedServiceDetailDescriptor descriptor = new ImportedServiceDetailDescriptor( new ImportedServiceCompositeDescriptor( aDescriptor ) );
-            currModuleDescriptor.addImportedService( descriptor );
-            currCompositeDescriptor = descriptor;
-        }
-
-        @Override
-        public final void visit( EntityDescriptor aDescriptor )
-        {
-            EntityDetailDescriptor descriptor = new EntityDetailDescriptor( aDescriptor );
-            currModuleDescriptor.addEntity( descriptor );
-            currCompositeDescriptor = descriptor;
-        }
-
-        @Override
-        public final void visit( ValueDescriptor aDescriptor )
-        {
-            ValueDetailDescriptor descriptor = new ValueDetailDescriptor( aDescriptor );
-            currModuleDescriptor.addValue( descriptor );
-            currCompositeDescriptor = descriptor;
-        }
-
-        @Override
-        public final void visit( TransientDescriptor aDescriptor )
-        {
-            // Commented out by efy: To prevent NPE
-            /*if( ServiceComposite.class.isAssignableFrom( aDescriptor.type() ) )
-            {
-                return; // Skip services
-            }*/
-
-            currCompositeDescriptor = new CompositeDetailDescriptor<TransientDescriptor>( aDescriptor );
-            currModuleDescriptor.addComposite( currCompositeDescriptor );
-        }
-
-        @Override
-        public final void visit( MethodDescriptor aDescriptor )
-        {
-            if( currCompositeDescriptor == null )
-            {
-                // Service via CompositeDescriptor in progress )
-                return;
-            }
-            currMethodDesciptor = new CompositeMethodDetailDescriptor( aDescriptor );
-            currCompositeDescriptor.addMethod( currMethodDesciptor );
-        }
-
-        @Override
-        public final void visit( MethodConstraintsDescriptor aDescriptor )
-        {
-            if( currCompositeDescriptor == null )
-            {
-                // Service via CompositeDescriptor in progress )
-                return;
-            }
-            currMethodConstraintsDescriptor =
-                new MethodConstraintsDetailDescriptor( aDescriptor );
-            currMethodDesciptor.setConstraints( currMethodConstraintsDescriptor );
-        }
-
-        @Override
-        public final void visit( ConstraintDescriptor aDescriptor )
-        {
-            if( currCompositeDescriptor == null )
-            {
-                // Service via CompositeDescriptor in progress )
-                return;
-            }
-            MethodConstraintDetailDescriptor detailDescriptor = new MethodConstraintDetailDescriptor( aDescriptor );
-            currMethodConstraintsDescriptor.addConstraint( detailDescriptor );
-        }
-
-        @Override
-        public final void visit( MethodConcernsDescriptor aDescriptor )
-        {
-            if( currCompositeDescriptor == null )
-            {
-                // Service via CompositeDescriptor in progress )
-                return;
-            }
-            currMethodConcernsDescriptor = new MethodConcernsDetailDescriptor( aDescriptor );
-            currMethodDesciptor.setConcerns( currMethodConcernsDescriptor );
-        }
-
-        @Override
-        public final void visit( MethodConcernDescriptor aDescriptor )
-        {
-            if( currCompositeDescriptor == null )
-            {
-                // Service via CompositeDescriptor in progress )
-                return;
-            }
-            resetInjectableRelatedVariables();
-
-            currMethodConcernDescriptor = new MethodConcernDetailDescriptor( aDescriptor );
-            currMethodConcernsDescriptor.addConcern( currMethodConcernDescriptor );
-        }
-
         private void resetInjectableRelatedVariables()
         {
             currMixinDescriptor = null;
@@ -268,189 +393,5 @@ public final class ApplicationDetailDescriptorBuilder
             currMethodConcernDescriptor = null;
             currMethodSideEffectDescriptor = null;
         }
-
-        @Override
-        public final void visit( MethodSideEffectsDescriptor aDescriptor )
-        {
-            if( currCompositeDescriptor == null )
-            {
-                // Service via CompositeDescriptor in progress )
-                return;
-            }
-            currMethodSideEffectsDescriptor = new MethodSideEffectsDetailDescriptor( aDescriptor );
-            currMethodDesciptor.setSideEffects( currMethodSideEffectsDescriptor );
-        }
-
-        @Override
-        public final void visit( MethodSideEffectDescriptor aDescriptor )
-        {
-            if( currCompositeDescriptor == null )
-            {
-                // Service via CompositeDescriptor in progress )
-                return;
-            }
-            resetInjectableRelatedVariables();
-
-            currMethodSideEffectDescriptor = new MethodSideEffectDetailDescriptor( aDescriptor );
-            currMethodSideEffectsDescriptor.addSideEffect( currMethodSideEffectDescriptor );
-        }
-
-        @Override
-        public final void visit( MixinDescriptor aDescriptor )
-        {
-            if( currCompositeDescriptor == null )
-            {
-                // Service via CompositeDescriptor in progress )
-                return;
-            }
-            resetInjectableRelatedVariables();
-
-            currMixinDescriptor = new MixinDetailDescriptor( aDescriptor );
-            currCompositeDescriptor.addMixin( currMixinDescriptor );
-        }
-
-        @Override
-        public final void visit( ObjectDescriptor aDescriptor )
-        {
-            resetInjectableRelatedVariables();
-
-            currObjectDescriptor = new ObjectDetailDescriptor( aDescriptor );
-            currModuleDescriptor.addObject( currObjectDescriptor );
-        }
-
-        @Override
-        public void visit( ConstructorDescriptor aDescriptor )
-        {
-            if( currCompositeDescriptor == null )
-            {
-                // Service via CompositeDescriptor in progress )
-                return;
-            }
-            currConstructorDescriptor = new ConstructorDetailDescriptor( aDescriptor );
-            currInjectedMethodDescriptor = null;
-
-            // Invoked for mixin and object
-            if( currMixinDescriptor != null )
-            {
-                currMixinDescriptor.addConstructor( currConstructorDescriptor );
-            }
-            else if( currObjectDescriptor != null )
-            {
-                currObjectDescriptor.addConstructor( currConstructorDescriptor );
-            }
-            else if( currMethodConcernDescriptor != null )
-            {
-                currMethodConcernDescriptor.addConstructor( currConstructorDescriptor );
-            }
-            else if( currMethodSideEffectDescriptor != null )
-            {
-                currMethodSideEffectDescriptor.addConstructor( currConstructorDescriptor );
-            }
-            else
-            {
-                throw new IllegalStateException(
-                    "ConstructorDescriptor is only valid for mixin and object."
-                );
-            }
-        }
-
-        @Override
-        public void visit( InjectedParametersDescriptor aDescriptor )
-        {
-            if( currCompositeDescriptor == null )
-            {
-                // Service via CompositeDescriptor in progress )
-                return;
-            }
-            InjectedParametersDetailDescriptor detailDescriptor = new InjectedParametersDetailDescriptor( aDescriptor );
-
-            // Invoked for constructor and injected method
-            if( currConstructorDescriptor != null )
-            {
-                currConstructorDescriptor.setInjectedParameter( detailDescriptor );
-            }
-            else if( currInjectedMethodDescriptor != null )
-            {
-                currInjectedMethodDescriptor.setInjectedParameter( detailDescriptor );
-            }
-            else
-            {
-                throw new IllegalStateException(
-                    "InjectedParametersDescriptor is only valid for constructor and injector method descriptor."
-                );
-            }
-        }
-
-        @Override
-        public void visit( InjectedMethodDescriptor aDescriptor )
-        {
-            if( currCompositeDescriptor == null )
-            {
-                // Service via CompositeDescriptor in progress )
-                return;
-            }
-            // Invoked for mixin and object
-            currInjectedMethodDescriptor = new InjectedMethodDetailDescriptor( aDescriptor );
-            currConstructorDescriptor = null;
-
-            // Invoked for mixin and object
-            if( currMixinDescriptor != null )
-            {
-                currMixinDescriptor.addInjectedMethod( currInjectedMethodDescriptor );
-            }
-            else if( currObjectDescriptor != null )
-            {
-                currObjectDescriptor.addInjectedMethod( currInjectedMethodDescriptor );
-            }
-            else if( currMethodConcernDescriptor != null )
-            {
-                currMethodConcernDescriptor.addInjectedMethod( currInjectedMethodDescriptor );
-            }
-            else if( currMethodSideEffectDescriptor != null )
-            {
-                currMethodSideEffectDescriptor.addInjectedMethod( currInjectedMethodDescriptor );
-            }
-            else
-            {
-                throw new IllegalStateException(
-                    "InjectedMethodDescriptor is only valid for mixin and object."
-                );
-            }
-        }
-
-        @Override
-        public void visit( InjectedFieldDescriptor aDescriptor )
-        {
-            if( currCompositeDescriptor == null )
-            {
-                // Service via CompositeDescriptor in progress )
-                return;
-            }
-            InjectedFieldDetailDescriptor detailDescriptor = new InjectedFieldDetailDescriptor( aDescriptor );
-
-            // Invoked for mixin and object
-            if( currMixinDescriptor != null )
-            {
-                currMixinDescriptor.addInjectedField( detailDescriptor );
-            }
-            else if( currObjectDescriptor != null )
-            {
-                currObjectDescriptor.addInjectedField( detailDescriptor );
-            }
-            else if( currMethodConcernDescriptor != null )
-            {
-                currMethodConcernDescriptor.addInjectedField( detailDescriptor );
-            }
-            else if( currMethodSideEffectDescriptor != null )
-            {
-                currMethodSideEffectDescriptor.addInjectedField( detailDescriptor );
-            }
-            else
-            {
-                throw new IllegalStateException(
-                    "InjectedFieldDescriptor is only valid for mixin and object."
-                );
-            }
-        }
-    }
+   }
 }
