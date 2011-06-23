@@ -3,15 +3,15 @@ description = "Qi4j SQL EntityStore Extension"
 
 jar { manifest { name = "Qi4j Extension - EntityStore - SQL" }}
 
-javasqlgeneratorVersion='0.2'
+javasqlgeneratorVersion='0.2.2'
 
 dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.api"))
   compile(project(":org.qi4j.core:org.qi4j.core.spi"))
   compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
   compile(project(":org.qi4j.libraries:org.qi4j.library.sql"))
-  compile('org.java-sql-generator.api:java-sql-generator-api:' + javasqlgeneratorVersion)
-  compile('org.java-sql-generator.implementation:java-sql-generator-implementation:' + javasqlgeneratorVersion)
+  compile('org.java-sql-generator:org.java-sql-generator.api:' + javasqlgeneratorVersion)
+  compile('org.java-sql-generator:org.java-sql-generator.implementation:' + javasqlgeneratorVersion)
   compile(libraries.slf4j_api)
   testCompile(libraries.junit)
   testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
