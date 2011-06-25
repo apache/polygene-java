@@ -34,7 +34,6 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
 
 
-@Ignore(" This is a new feature test, and will fail.")
 public class ConcernsOnPropertyTest
     extends AbstractQi4jTest
 {
