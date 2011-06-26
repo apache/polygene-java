@@ -18,76 +18,29 @@
 
 package org.qi4j.library.cxf.divs;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.junit.Ignore;
 import org.junit.Test;
-
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 import static org.junit.Assert.assertEquals;
 
-@Ignore( "For now" )
 public class DividendsTest
 {
-    @Test
-    public void whenRequestQi4jValueExpectCorrectResult()
-        throws Exception
-    {
-        DividendsMain.main(new String[0]);  // Start server;
-
-        HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httpPost = new HttpPost("http://localhost:9300/ProjectedDividendsService");
-        httpPost.setHeader( "SOAPAction","\"DSDataRequest\"");
-        httpPost.setHeader( "Content-Type","text/xml;charset=UTF-8");
-        HttpEntity data = new StringEntity( "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:divs=\"http://divs.cxf.library.qi4j.org/\" xmlns:cxf=\"http://cxf.library.qi4j.org\">\n" +
-                                            "   <soapenv:Header/>\n" +
-                                            "   <soapenv:Body>\n" +
-                                            "      <divs:DSData>\n" +
-                                            "         <!--Optional:-->\n" +
-                                            "         <divs:RequestType>?</divs:RequestType>\n" +
-                                            "         <!--Optional:-->\n" +
-                                            "         <divs:DataService>?</divs:DataService>\n" +
-                                            "         <!--Optional:-->\n" +
-                                            "         <divs:Subscription>\n" +
-                                            "            <!--Optional:-->\n" +
-                                            "            <cxf:key>?</cxf:key>\n" +
-                                            "         </divs:Subscription>\n" +
-                                            "      </divs:DSData>\n" +
-                                            "   </soapenv:Body>\n" +
-                                            "</soapenv:Envelope>" );
-        httpPost.setEntity( data );
-        HttpResponse response = httpclient.execute(httpPost);
-        HttpEntity entity = response.getEntity();
-        String result = "";
-        if (entity != null) {
-            InputStream instream = entity.getContent();
-            InputStreamReader isr = new InputStreamReader( instream );
-            BufferedReader br = new BufferedReader( isr );
-            String line = br.readLine();
-            while( line != null )
-            {
-                result = result+line;
-                line = br.readLine();
-            }
-
-        }
-        assertEquals( expected, result);
-    }
-
-    private static final String expected =
+    private static final String EXPECTED =
         "<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">" +
         "<soap:Body><ns1:DSDataResponse xmlns:ns1=\"http://divs.cxf.library.qi4j.org/\">" +
         "<ns1:Snapshot>" +
         "<ns1:entry>" +
         "<ns1:key>bt.l/PRIVATE_niclas</ns1:key>" +
-        "<ns1:value xmlns:ns2=\"urn:qi4j:type:value:org.qi4j.library.cxf.divs\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"ns2:DivStream\">" +
+        "<ns1:value xmlns:ns2=\"urn:qi4j:type:value:org.qi4j.library.cxf.divs\" " +
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"ns2:DivStream\">" +
         "<issueId>PC10YZNZC100</issueId>" +
         "<divPoints>" +
         "<ns3:anyType xmlns:ns3=\"http://cxf.apache.org/arrays\" xsi:type=\"ns2:DivPoint\">" +
@@ -132,4 +85,52 @@ public class DividendsTest
         "</ns1:DSDataResponse>" +
         "</soap:Body>" +
         "</soap:Envelope>";
+
+    @Test
+    public void whenRequestQi4jValueExpectCorrectResult()
+        throws Exception
+    {
+        DividendsMain.main( new String[ 0 ] );  // Start server;
+
+        HttpClient httpclient = new DefaultHttpClient();
+        HttpPost httpPost = new HttpPost( "http://localhost:9300/ProjectedDividendsService" );
+        httpPost.setHeader( "SOAPAction", "\"DSDataRequest\"" );
+        httpPost.setHeader( "Content-Type", "text/xml;charset=UTF-8" );
+        HttpEntity data = new StringEntity(
+            "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" " +
+            "xmlns:divs=\"http://divs.cxf.library.qi4j.org/\" " +
+            "xmlns:cxf=\"http://cxf.library.qi4j.org\">\n" +
+            "   <soapenv:Header/>\n" +
+            "   <soapenv:Body>\n" +
+            "      <divs:DSData>\n" +
+            "         <!--Optional:-->\n" +
+            "         <divs:RequestType>?</divs:RequestType>\n" +
+            "         <!--Optional:-->\n" +
+            "         <divs:DataService>?</divs:DataService>\n" +
+            "         <!--Optional:-->\n" +
+            "         <divs:Subscription>\n" +
+            "            <!--Optional:-->\n" +
+            "            <cxf:key>?</cxf:key>\n" +
+            "         </divs:Subscription>\n" +
+            "      </divs:DSData>\n" +
+            "   </soapenv:Body>\n" +
+            "</soapenv:Envelope>" );
+        httpPost.setEntity( data );
+        HttpResponse response = httpclient.execute( httpPost );
+        HttpEntity entity = response.getEntity();
+        String result = "";
+        if( entity != null )
+        {
+            InputStream instream = entity.getContent();
+            InputStreamReader isr = new InputStreamReader( instream );
+            BufferedReader br = new BufferedReader( isr );
+            String line = br.readLine();
+            while( line != null )
+            {
+                result = result + line;
+                line = br.readLine();
+            }
+        }
+        assertEquals( EXPECTED, result );
+    }
 }

@@ -24,17 +24,28 @@ import org.qi4j.api.value.ValueComposite;
 public interface DivPoint extends ValueComposite
 {
     Property<String> dt();
-    Property<String> val();
-    Property<String> valCcy();
-    Property<String> divType();
-    Property<String> recType();
-    Property<String> net();
-    Property<String> netCcy();
-    Property<String> recDate();
-    Property<String> paydate();
-    Property<String> divTypeCD();
-    Property<String> comment();
-    Property<String> updateTS();
-    Property<String> lastUpdater();
 
+    Property<String> val();
+
+    Property<String> valCcy();
+
+    Property<String> divType();
+
+    Property<String> recType();
+
+    Property<String> net();
+
+    Property<String> netCcy();
+
+    Property<String> recDate();
+
+    Property<String> paydate();
+
+    Property<String> divTypeCD();
+
+    Property<String> comment();
+
+    Property<String> updateTS();
+
+    Property<String> lastUpdater();
 }

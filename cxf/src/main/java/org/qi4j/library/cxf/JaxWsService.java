@@ -43,7 +43,7 @@ import org.qi4j.api.structure.Module;
 public interface JaxWsService extends Activatable, ServiceComposite
 {
 
-    public static abstract class JaxWsMixin
+    public abstract static class JaxWsMixin
         implements JaxWsService
     {
         @Structure
