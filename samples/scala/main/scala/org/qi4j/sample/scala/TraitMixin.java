@@ -7,8 +7,8 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.util.Classes;
-import org.qi4j.api.util.Function;
-import org.qi4j.api.util.Iterables;
+import org.qi4j.functional.Function;
+import org.qi4j.functional.Iterables;
 import org.qi4j.spi.composite.CompositeInstance;
 
 import java.lang.annotation.Annotation;
