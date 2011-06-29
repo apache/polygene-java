@@ -33,4 +33,9 @@ public class AlarmModelDescriptor
     {
         return isDefault;
     }
+
+    public String getName()
+    {
+        return name;
+    }
 }
