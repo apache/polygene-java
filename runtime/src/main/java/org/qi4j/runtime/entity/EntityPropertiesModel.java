@@ -19,20 +19,18 @@ import org.qi4j.api.common.Optional;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.util.Annotations;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.composite.ValueConstraintsModel;
 import org.qi4j.runtime.property.AbstractPropertiesModel;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.property.PropertyType;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Member;
 
-import static org.qi4j.api.util.Annotations.getMethodAndTypeAnnotations;
 import static org.qi4j.api.util.Annotations.isType;
 import static org.qi4j.api.util.Iterables.filter;
 import static org.qi4j.api.util.Iterables.first;
@@ -51,36 +49,29 @@ public final class EntityPropertiesModel
         super( constraints, propertyDeclarations, immutable );
     }
 
-    public Set<PropertyType> propertyTypes()
+    public <T> Property<T> newInstance( AccessibleObject accessor, EntityState entityState ) throws IllegalArgumentException
     {
-        Set<PropertyType> propertyTypes = new LinkedHashSet<PropertyType>();
-        for( EntityPropertyModel propertyModel : properties() )
-        {
-            propertyTypes.add( propertyModel.propertyType() );
-        }
-        return propertyTypes;
+        EntityPropertyModel entityPropertyModel = mapAccessiblePropertyModel.get( accessor );
+        if (entityPropertyModel == null)
+            throw new IllegalArgumentException("No such property:"+accessor);
+        return entityPropertyModel.newInstance( entityState );
     }
 
-    public <T> Property<T> newInstance( Method accessor, EntityState entityState )
+    protected EntityPropertyModel newPropertyModel( AccessibleObject accessor )
     {
-        return mapMethodPropertyModel.get( accessor ).newInstance( entityState );
-    }
-
-    protected EntityPropertyModel newPropertyModel( Method method, Class compositeType )
-    {
-        Iterable<Annotation> annotations = getMethodAndTypeAnnotations( method );
+        Iterable<Annotation> annotations = Annotations.getAccessorAndTypeAnnotations( accessor );
         boolean optional = first( filter( isType( Optional.class ), annotations ) ) != null;
-        ValueConstraintsModel valueConstraintsModel = constraints.constraintsFor( annotations, GenericPropertyInfo.getPropertyType( method ), method
+        ValueConstraintsModel valueConstraintsModel = constraints.constraintsFor( annotations, GenericPropertyInfo.getPropertyType( accessor ), ((Member)accessor)
             .getName(), optional );
         ValueConstraintsInstance valueConstraintsInstance = null;
         if( valueConstraintsModel.isConstrained() )
         {
             valueConstraintsInstance = valueConstraintsModel.newInstance();
         }
-        MetaInfo metaInfo = propertyDeclarations.getMetaInfo( method );
-        Object defaultValue = propertyDeclarations.getInitialValue( method );
+        MetaInfo metaInfo = propertyDeclarations.getMetaInfo( accessor );
+        Object defaultValue = propertyDeclarations.getInitialValue( accessor );
         boolean immutable = this.immutable || metaInfo.get( Immutable.class ) != null;
-        EntityPropertyModel propertyModel = new EntityPropertyModel( method, compositeType, immutable, valueConstraintsInstance, metaInfo, defaultValue );
+        EntityPropertyModel propertyModel = new EntityPropertyModel( accessor, immutable, valueConstraintsInstance, metaInfo, defaultValue );
         return propertyModel;
     }
 

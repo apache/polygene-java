@@ -30,18 +30,12 @@ import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
 import org.qi4j.api.value.ValueComposite;
-import org.qi4j.bootstrap.ApplicationAssembler;
-import org.qi4j.bootstrap.ApplicationAssembly;
-import org.qi4j.bootstrap.ApplicationAssemblyFactory;
-import org.qi4j.bootstrap.Assembler;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.Energy4Java;
-import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.bootstrap.*;
 import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.test.EntityTestAssembler;
 
-import static org.junit.Assert.*;
-import static org.qi4j.api.common.Visibility.*;
+import static org.junit.Assert.fail;
+import static org.qi4j.api.common.Visibility.application;
 
 /**
  * JAVADOC

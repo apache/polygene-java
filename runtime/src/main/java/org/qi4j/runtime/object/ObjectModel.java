@@ -23,22 +23,17 @@ import org.qi4j.api.specification.Specification;
 import org.qi4j.api.util.Function;
 import org.qi4j.api.util.HierarchicalVisitor;
 import org.qi4j.api.util.VisitableHierarchy;
-import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.composite.ConstructorsModel;
 import org.qi4j.runtime.injection.InjectedFieldsModel;
 import org.qi4j.runtime.injection.InjectedMethodsModel;
 import org.qi4j.runtime.injection.InjectionContext;
-import org.qi4j.runtime.model.Binder;
-import org.qi4j.runtime.model.Resolution;
 import org.qi4j.spi.object.ObjectDescriptor;
-
-import java.io.Serializable;
 
 /**
  * JAVADOC
  */
 public final class ObjectModel
-    implements ObjectDescriptor, Serializable, VisitableHierarchy<Object, Object>
+    implements ObjectDescriptor, VisitableHierarchy<Object, Object>
 {
     public static Specification<ObjectDescriptor> modelTypeSpecification( final String className)
     {

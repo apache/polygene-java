@@ -14,10 +14,7 @@
 
 package org.qi4j.runtime.value;
 
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import org.junit.Assert;
 import org.junit.Test;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.UseDefaults;
@@ -30,8 +27,14 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
 import org.slf4j.LoggerFactory;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * Tests for ValueType serialization and deserialization
@@ -110,6 +113,9 @@ public class ValueTypeSerializationTest
         System.out.println( someTZ.toJSON() );
         System.out.println( someAt.toJSON() );
         System.out.println( someMS.toJSON() );
+
+        String s1 = some.toString();
+        String s2 = some2.toString();
 
         assertThat( "Same value", some.toString(), equalTo( some2.toString() ) );
         assertThat( "Same value", some, equalTo( some2 ) );

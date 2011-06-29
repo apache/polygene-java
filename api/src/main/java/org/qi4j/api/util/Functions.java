@@ -1,18 +1,14 @@
 package org.qi4j.api.util;
 
 import org.qi4j.api.specification.Specification;
-import org.qi4j.api.specification.Specifications;
 
-import java.awt.image.TileObserver;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.qi4j.api.specification.Specifications.in;
 import static org.qi4j.api.specification.Specifications.not;
-import static org.qi4j.api.util.Iterables.filter;
-import static org.qi4j.api.util.Iterables.first;
-import static org.qi4j.api.util.Iterables.map;
+import static org.qi4j.api.util.Iterables.*;
 
 /**
  * Utility functions. Combine these with methods in Iterables, for example. See FunctionsTest for usages.
@@ -53,12 +49,12 @@ public final class Functions
         };
     }
 
-    public static <TYPE> Function<TYPE, TYPE> identity()
+    public static <TO, FROM extends TO> Function<FROM,TO> identity()
     {
-        return new Function<TYPE,TYPE>()
+        return new Function<FROM,TO>()
         {
             @Override
-            public TYPE map( TYPE from )
+            public TO map( FROM from )
             {
                 return from;
             }

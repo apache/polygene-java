@@ -17,7 +17,7 @@
 package org.qi4j.spi.entity;
 
 import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.common.TypeName;
+import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
 
 /**
@@ -63,7 +63,7 @@ public interface EntityState
      */
     EntityStatus status();
 
-    boolean isOfType( TypeName type );
+    boolean isOfType( Class<? extends EntityComposite> type );
 
     EntityDescriptor entityDescriptor();
 

@@ -38,6 +38,8 @@ public interface ServiceFinder
      */
     <T> ServiceReference<T> findService( Class<T> serviceType );
 
+    <T> ServiceReference<T> findService( Type serviceType );
+
     /**
      * Find ServiceReferences that implements the given type.
      * <p/>
@@ -49,4 +51,6 @@ public interface ServiceFinder
      * @return an iterable of ServiceReferences for the given type. It is empty if none exist
      */
     <T> Iterable<ServiceReference<T>> findServices( Class<T> serviceType );
+
+    <T> Iterable<ServiceReference<T>> findServices( Type serviceType );
 }

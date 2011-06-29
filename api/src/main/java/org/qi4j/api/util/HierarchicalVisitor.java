@@ -3,8 +3,8 @@ package org.qi4j.api.util;
 /**
  * Generic Hierarchical Visitor interface.
  */
-public interface HierarchicalVisitor<NODE, LEAF, ThrowableType extends Throwable>
-        extends Visitor<LEAF, ThrowableType>
+public class HierarchicalVisitor<NODE, LEAF, ThrowableType extends Throwable>
+        implements Visitor<LEAF, ThrowableType>
 {
     /**
      * Enter an instance of T
@@ -14,8 +14,11 @@ public interface HierarchicalVisitor<NODE, LEAF, ThrowableType extends Throwable
      * @throws ThrowableType if an exception occurred during processing. Any client call that initiated the visiting should
      *                       get the exception in order to handle it properly.
      */
-    boolean visitEnter( NODE visited )
-            throws ThrowableType;
+    public boolean visitEnter( NODE visited )
+            throws ThrowableType
+    {
+        return true;
+    }
 
     /**
      * Leave an instance of T
@@ -25,6 +28,15 @@ public interface HierarchicalVisitor<NODE, LEAF, ThrowableType extends Throwable
      * @throws ThrowableType if an exception occurred during processing. Any client call that initiated the visiting should
      *                       get the exception in order to handle it properly.
      */
-    boolean visitLeave( NODE visited )
-            throws ThrowableType;
+    public boolean visitLeave( NODE visited )
+            throws ThrowableType
+    {
+        return true;
+    }
+
+    @Override
+    public boolean visit( LEAF visited ) throws ThrowableType
+    {
+        return true;
+    }
 }

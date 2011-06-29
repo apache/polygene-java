@@ -27,7 +27,6 @@ import org.qi4j.runtime.injection.InjectionProviderFactory;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.spi.object.ObjectDescriptor;
 
-import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,7 +35,7 @@ import java.util.Map;
  * JAVADOC
  */
 public final class InjectionProviderFactoryStrategy
-    implements InjectionProviderFactory, Serializable
+    implements InjectionProviderFactory
 {
     private final Map<Class<? extends Annotation>, InjectionProviderFactory> generalProviderFactories = new HashMap<Class<? extends Annotation>, InjectionProviderFactory>();
     private final Map<Class<? extends Annotation>, InjectionProviderFactory> valuesProviderFactories = new HashMap<Class<? extends Annotation>, InjectionProviderFactory>();

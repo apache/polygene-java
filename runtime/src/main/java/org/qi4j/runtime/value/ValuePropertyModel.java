@@ -15,62 +15,35 @@
 package org.qi4j.runtime.value;
 
 import org.qi4j.api.common.MetaInfo;
-import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.entity.Queryable;
-import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Property;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.property.PersistentPropertyModel;
-import org.qi4j.runtime.types.PropertyTypeImpl;
-import org.qi4j.runtime.types.ValueTypeFactory;
-import org.qi4j.spi.property.PropertyTypeDescriptor;
-import org.qi4j.spi.property.ValueType;
+import org.qi4j.spi.property.PersistentPropertyDescriptor;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.AccessibleObject;
 
 /**
  * Property model for values
  */
 public final class ValuePropertyModel
     extends PersistentPropertyModel
-    implements PropertyTypeDescriptor
+    implements PersistentPropertyDescriptor
 {
-    public ValuePropertyModel( Method anAccessor,
-                               Class compositeType, ValueConstraintsInstance constraints,
+    public ValuePropertyModel( AccessibleObject anAccessor,
+                               ValueConstraintsInstance constraints,
                                MetaInfo metaInfo,
                                Object defaultValue
     )
     {
-        super( createPropertyType( anAccessor, compositeType ), anAccessor, true, constraints, metaInfo, defaultValue );
+        super( anAccessor, true, constraints, metaInfo, defaultValue );
     }
 
-    private static PropertyTypeImpl createPropertyType( Method anAccessor, Class compositeType )
-    {
-        final Queryable queryable = anAccessor.getAnnotation( Queryable.class );
-        boolean isQueryable = queryable == null || queryable.value();
-        ValueType valueType = ValueTypeFactory.instance()
-            .newValueType( GenericPropertyInfo.getPropertyType( anAccessor ),
-                           anAccessor.getDeclaringClass(),
-                           compositeType );
-        return new PropertyTypeImpl( QualifiedName.fromMethod( anAccessor ),
-                                     valueType,
-                                     isQueryable,
-                                     PropertyTypeImpl.PropertyTypeEnum.IMMUTABLE );
-    }
-
-    public Property<?> newInstance( Object value )
+    public <T> Property<T> newInstance( Object value )
     {
         // Property was constructed using a builder
 
         Property property;
-        if( isComputed() )
-        {
-            property = new ComputedPropertyInfo<Object>( propertyInfo );
-        }
-        else
-        {
-            property = new ValuePropertyInstance<Object>( propertyInfo, value );
-        }
+        property = new ValuePropertyInstance<Object>( this, value );
         return wrapProperty( property );
     }
 }

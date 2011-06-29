@@ -14,7 +14,6 @@
 
 package org.qi4j.api.value;
 
-import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 import org.qi4j.api.common.Optional;
@@ -31,8 +30,11 @@ import org.qi4j.library.constraints.annotation.MaxLength;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 /**
  * Tests for ValueComposites
@@ -66,6 +68,9 @@ public class ValueCompositeTest
         SomeValue some = builder.prototype();
         some.other().set( "test" );
         builder.newInstance();
+
+        // Check that @UseDefaults works for ValueComposites
+        assertEquals("{\"val1\":\"\"}", some.another().get().toJSON());
     }
 
     @Test
@@ -209,7 +214,7 @@ public class ValueCompositeTest
         @UseDefaults
         Property<List<String>> xyzzyList();
 
-        @Optional
+        @UseDefaults
         Property<AnotherValue> another();
 
         @UseDefaults

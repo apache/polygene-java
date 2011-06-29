@@ -17,7 +17,6 @@
 package org.qi4j.runtime.unitofwork;
 
 import org.qi4j.api.common.MetaInfo;
-import org.qi4j.api.common.TypeName;
 import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
@@ -149,7 +148,7 @@ public final class UnitOfWorkInstance
             entityInstance = new EntityInstance( uow, module, model, entityState );
 
             stateCache.put( identity, entityState );
-            InstanceKey instanceKey = new InstanceKey( model.entityType().type(), identity );
+            InstanceKey instanceKey = new InstanceKey( model.type(), identity );
             instanceCache.put( instanceKey, entityInstance );
         }
         else
@@ -164,7 +163,7 @@ public final class UnitOfWorkInstance
             InstanceKey instanceKey = new InstanceKey();
             for( ModelModule<EntityModel> potentialModel : potentialModels )
             {
-                instanceKey.update( potentialModel.model().entityType().type(), identity );
+                instanceKey.update( potentialModel.model().type(), identity );
                 EntityInstance instance = instanceCache.get( instanceKey );
                 if( instance != null )
                 {
@@ -179,7 +178,7 @@ public final class UnitOfWorkInstance
             for( ModelModule<EntityModel> potentialModel : potentialModels )
             {
                 EntityModel entityModel = potentialModel.model();
-                TypeName typeRef = potentialModel.model().entityType().type();
+                Class<? extends EntityComposite> typeRef = potentialModel.model().type();
                 if( entityState.isOfType( typeRef ) )
                 {
                     // Found it!
@@ -197,7 +196,7 @@ public final class UnitOfWorkInstance
             // Create instance
             entityInstance = new EntityInstance( uow, module, model, entityState );
 
-            instanceKey.update( model.entityType().type(), identity );
+            instanceKey.update( model.type(), identity );
             instanceCache.put( instanceKey, entityInstance );
         }
 
@@ -339,7 +338,7 @@ public final class UnitOfWorkInstance
     public void createEntity( EntityInstance instance )
     {
         stateCache.put( instance.identity(), instance.entityState() );
-        InstanceKey instanceKey = new InstanceKey( instance.entityModel().entityType().type(), instance.identity() );
+        InstanceKey instanceKey = new InstanceKey( instance.entityModel().type(), instance.identity() );
         instanceCache.put( instanceKey, instance );
     }
 
@@ -517,22 +516,17 @@ public final class UnitOfWorkInstance
 
     private static class InstanceKey
     {
-        private TypeName typeName;
+        private Class<? extends EntityComposite> type;
         private EntityReference entityReference;
 
         private InstanceKey()
         {
         }
 
-        private InstanceKey( TypeName typeName, EntityReference entityReference )
+        private InstanceKey( Class<? extends EntityComposite> type, EntityReference entityReference )
         {
-            this.typeName = typeName;
+            this.type = type;
             this.entityReference = entityReference;
-        }
-
-        public TypeName typeName()
-        {
-            return typeName;
         }
 
         public EntityReference entityReference()
@@ -540,9 +534,9 @@ public final class UnitOfWorkInstance
             return entityReference;
         }
 
-        public void update( TypeName typeName, EntityReference entityReference )
+        public void update( Class<? extends EntityComposite> type, EntityReference entityReference )
         {
-            this.typeName = typeName;
+            this.type = type;
             this.entityReference = entityReference;
         }
 
@@ -563,13 +557,13 @@ public final class UnitOfWorkInstance
             {
                 return false;
             }
-            return typeName.equals( that.typeName );
+            return type.equals( that.type );
         }
 
         @Override
         public int hashCode()
         {
-            int result = typeName.hashCode();
+            int result = type.hashCode();
             result = 31 * result + entityReference.hashCode();
             return result;
         }

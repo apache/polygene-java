@@ -14,8 +14,9 @@
 
 package org.qi4j.entitystore.map;
 
-import java.io.IOException;
 import org.json.JSONObject;
+
+import java.io.IOException;
 
 /**
  * JAVADOC

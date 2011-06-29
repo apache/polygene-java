@@ -19,7 +19,10 @@
  */
 package org.qi4j.api.query;
 
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.entity.Entity;
 import org.qi4j.api.query.grammar.BooleanExpression;
+import org.qi4j.api.specification.Specification;
 import org.qi4j.api.unitofwork.UnitOfWork;
 
 /**
@@ -39,11 +42,11 @@ public interface QueryBuilder<T>
      * Add a where-clause to the Query. Use {@link QueryExpressions}
      * to create the expression.
      *
-     * @param expressions the where clause
+     * @param specification the where clause
      *
      * @return a new builder with the added where-clause
      */
-    QueryBuilder<T> where( BooleanExpression expressions );
+    QueryBuilder<T> where( Specification<Composite> specification );
 
     /**
      * Create a new query with the declared where-clauses.

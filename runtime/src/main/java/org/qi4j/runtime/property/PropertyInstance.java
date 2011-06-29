@@ -14,9 +14,8 @@
  */
 package org.qi4j.runtime.property;
 
-import org.qi4j.api.property.AbstractPropertyInstance;
-import org.qi4j.api.property.PropertyInfo;
 import org.qi4j.runtime.composite.ConstraintsCheck;
+import org.qi4j.spi.property.PropertyDescriptor;
 
 /**
  * {@code PropertyInstance} represents a property.
@@ -30,16 +29,15 @@ public class PropertyInstance<T>
     /**
      * Construct an instance of {@code PropertyInstance} with the specified arguments.
      *
-     * @param aPropertyInfo The property info. This argument must not be {@code null}.
+     * @param descriptor The property info. This argument must not be {@code null}.
      * @param aValue        The property value.
      * @param constraints   constraint checker for this property
      *
      * @throws IllegalArgumentException Thrown if the specified {@code aPropertyInfo} is {@code null}.
      */
-    public PropertyInstance( PropertyInfo aPropertyInfo, T aValue, ConstraintsCheck constraints )
-        throws IllegalArgumentException
+    public PropertyInstance( PropertyDescriptor descriptor, T aValue, ConstraintsCheck constraints )
     {
-        super( aPropertyInfo );
+        super( descriptor );
         value = aValue;
         this.constraints = constraints;
     }
@@ -61,9 +59,9 @@ public class PropertyInstance<T>
      */
     public void set( T aNewValue )
     {
-        if( isImmutable() )
+        if( propertyDescriptor.isImmutable() )
         {
-            throw new IllegalStateException( "Property [" + qualifiedName() + "] is immutable." );
+            throw new IllegalStateException( "Property [" + propertyDescriptor.qualifiedName() + "] is immutable." );
         }
 
         if( constraints != null )

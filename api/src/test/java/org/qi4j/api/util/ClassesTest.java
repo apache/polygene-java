@@ -14,17 +14,23 @@
 
 package org.qi4j.api.util;
 
+import org.junit.Test;
+import org.qi4j.api.specification.Specification;
+import org.qi4j.api.specification.Specifications;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.HashSet;
 import java.util.Set;
-import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
-import static org.qi4j.api.util.Classes.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.qi4j.api.util.Classes.INTERFACES_OF;
+import static org.qi4j.api.util.Classes.interfacesWithMethods;
+import static org.qi4j.api.util.Iterables.count;
 
 /**
  * Tests for Classes
@@ -34,9 +40,9 @@ public class ClassesTest
     @Test
     public void givenClassWithInterfacesWhenInterfacesOfThenGetCorrectSet()
     {
-        assertThat( "one interface returned", interfacesOf( A.class ).size(), equalTo( 1 ) );
-        assertThat( "two interface returned", interfacesOf( B.class ).size(), equalTo( 2 ) );
-        assertThat( "tree interface returned", interfacesOf( C.class ).size(), equalTo( 3 ) );
+        assertThat( "one interface returned", count( INTERFACES_OF.map( A.class ) ), equalTo( 1L ) );
+        assertThat( "two interface returned", count( INTERFACES_OF.map( B.class ) ), equalTo( 2L ) );
+        assertThat( "tree interface returned", count( INTERFACES_OF.map( C.class ) ), equalTo( 4L ) );
     }
 
     @Test
@@ -52,9 +58,9 @@ public class ClassesTest
     @Test
     public void givenClassesWithInterfacesWhenGetInterfacesWithMethodsThenGetCorrectSet()
     {
-        Set<Class<?>> types = interfacesWithMethods( interfacesOf( C.class ) );
-        assertThat( "one interface returned", types.size(), equalTo( 1 ) );
-        assertThat( "correct interface returned", types.contains( B.class ), is( true ) );
+        Iterable<Type> types = Iterables.filter(Methods.HAS_METHODS, INTERFACES_OF.map( C.class ) );
+        assertThat( "one interface returned", count( types), equalTo( 1L ) );
+        assertThat( "correct interface returned", Iterables.matchesAny( (Specification) Specifications.in( B.class ), Iterables.<Class<?>, Type>cast( types) ), is( true ) );
     }
 
     @Test
@@ -75,7 +81,7 @@ public class ClassesTest
     {
         Type returnType = Generics.class.getMethod( "wildcard" ).getGenericReturnType();
         Type wildcardType = ( (ParameterizedType) returnType ).getActualTypeArguments()[ 0 ];
-        assertThat( "Return type is A", (Class) Classes.getRawClass( wildcardType ), equalTo( (Class) A.class ) );
+        assertThat( "Return type is A", Classes.RAW_CLASS.map( wildcardType ), equalTo( (Class) A.class ) );
     }
 
     @Test

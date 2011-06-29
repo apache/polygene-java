@@ -18,6 +18,7 @@ import org.qi4j.api.specification.Specification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Array;
 import java.text.MessageFormat;
 import java.util.*;
 
@@ -407,7 +408,7 @@ public final class Iterables
                     @Override
                     public boolean hasNext()
                     {
-                        if( item != null )
+                        if( first != null )
                             return true;
                         else
                         {
@@ -434,6 +435,55 @@ public final class Iterables
                             }
                         } else
                             return iterator.next();
+                    }
+
+                    @Override
+                    public void remove()
+                    {
+                    }
+                };
+            }
+        };
+    }
+
+    public static <T, C extends T> Iterable<T> append( final C item, final Iterable<T> iterable )
+    {
+        return new Iterable<T>()
+        {
+            @Override
+            public Iterator<T> iterator()
+            {
+                final Iterator<T> iterator = iterable.iterator();
+
+                return new Iterator<T>()
+                {
+                    T last = item;
+
+                    @Override
+                    public boolean hasNext()
+                    {
+                        if(iterator.hasNext())
+                        {
+                            return true;
+                        } else
+                        {
+                            return last != null;
+                        }
+                    }
+
+                    @Override
+                    public T next()
+                    {
+                        if (iterator.hasNext() )
+                            return iterator.next();
+                        else
+                            try
+                            {
+                                return last;
+                            } finally
+                            {
+                                last  = null;
+                            }
                     }
 
                     @Override
@@ -475,6 +525,17 @@ public final class Iterables
     public static <T> List<T> toList( Iterable<T> iterable )
     {
         return addAll( new ArrayList<T>(), iterable );
+    }
+
+    public static Object[] toArray(Iterable<Object> iterable)
+    {
+        return toArray( Object.class, iterable );
+    }
+
+    public static <T> T[] toArray(Class<T> componentType, Iterable<T> iterable)
+    {
+        List<T> list = toList( iterable );
+        return list.toArray( (T[]) Array.newInstance( componentType, list.size() ) );
     }
 
     private static class MapIterable<FROM, TO>

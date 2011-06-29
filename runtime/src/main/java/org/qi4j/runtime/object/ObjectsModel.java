@@ -16,18 +16,14 @@ package org.qi4j.runtime.object;
 
 import org.qi4j.api.util.HierarchicalVisitor;
 import org.qi4j.api.util.VisitableHierarchy;
-import org.qi4j.bootstrap.BindingException;
-import org.qi4j.runtime.model.Binder;
-import org.qi4j.runtime.model.Resolution;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
  * JAVADOC
  */
 public class ObjectsModel
-    implements Serializable, VisitableHierarchy<Object, Object>
+    implements VisitableHierarchy<Object, Object>
 {
     private final List<ObjectModel> objectModels;
 

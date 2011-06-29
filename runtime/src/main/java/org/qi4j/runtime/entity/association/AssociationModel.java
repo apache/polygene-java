@@ -16,7 +16,6 @@ package org.qi4j.runtime.entity.association;
 
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.common.TypeName;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.constraint.ConstraintViolation;
 import org.qi4j.api.constraint.ConstraintViolationException;
@@ -26,64 +25,40 @@ import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.AssociationInfo;
 import org.qi4j.api.entity.association.GenericAssociationInfo;
 import org.qi4j.api.property.Immutable;
+import org.qi4j.api.util.Classes;
+import org.qi4j.api.util.Visitable;
+import org.qi4j.api.util.Visitor;
+import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.composite.ConstraintsCheck;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
+import org.qi4j.runtime.model.Binder;
+import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.runtime.unitofwork.BuilderEntityState;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
-import org.qi4j.spi.entity.association.AssociationType;
-import org.qi4j.spi.util.SerializationUtil;
 
-import java.io.*;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
+import java.lang.reflect.*;
 import java.util.List;
 
 /**
  * JAVADOC
  */
 public final class AssociationModel
-    implements AssociationDescriptor, Serializable, ConstraintsCheck
+    implements AssociationDescriptor, ConstraintsCheck, Binder, Visitable<AssociationModel>
 {
     private MetaInfo metaInfo;
     private Type type;
-    private Method accessor;
+    private AccessibleObject accessor;
     private QualifiedName qualifiedName;
     private ValueConstraintsInstance constraints;
     private ValueConstraintsInstance associationConstraints;
     private boolean queryable;
     private boolean immutable;
     private boolean aggregated;
-    private AssociationType associationType;
     private AssociationInfo builderInfo;
 
-    private void writeObject( ObjectOutputStream out )
-        throws IOException
-    {
-        try
-        {
-            out.writeObject( metaInfo );
-            SerializationUtil.writeMethod( out, accessor );
-            out.writeObject( constraints );
-        }
-        catch( NotSerializableException e )
-        {
-            System.err.println( "NotSerializable in " + getClass() );
-            throw e;
-        }
-    }
-
-    private void readObject( ObjectInputStream in )
-        throws IOException, ClassNotFoundException
-    {
-        metaInfo = (MetaInfo) in.readObject();
-        accessor = SerializationUtil.readMethod( in );
-        constraints = (ValueConstraintsInstance) in.readObject();
-        initialize();
-    }
-
-    public AssociationModel( Method accessor,
+    public AssociationModel( AccessibleObject accessor,
                              ValueConstraintsInstance valueConstraintsInstance,
                              ValueConstraintsInstance associationConstraintsInstance,
                              MetaInfo metaInfo
@@ -94,14 +69,12 @@ public final class AssociationModel
         this.associationConstraints = associationConstraintsInstance;
         this.accessor = accessor;
         initialize();
-        this.associationType = new AssociationType( qualifiedName, TypeName.nameOf( type ), queryable );
-        builderInfo = new GenericAssociationInfo( accessor, metaInfo, false );
     }
 
     private void initialize()
     {
         this.type = GenericAssociationInfo.getAssociationType( accessor );
-        this.qualifiedName = QualifiedName.fromMethod( accessor );
+        this.qualifiedName = QualifiedName.fromAccessor( accessor );
         this.immutable = metaInfo.get( Immutable.class ) != null;
         this.aggregated = metaInfo.get( Aggregated.class ) != null;
 
@@ -134,20 +107,28 @@ public final class AssociationModel
         return aggregated;
     }
 
-    public Method accessor()
+    public AccessibleObject accessor()
     {
         return accessor;
     }
 
-    public boolean isAssociation()
+    @Override
+    public boolean queryable()
     {
-        return Association.class.isAssignableFrom( accessor.getReturnType() );
+        return queryable;
+    }
+
+    @Override
+    public <ThrowableType extends Throwable> boolean accept( Visitor<? super AssociationModel, ThrowableType> visitor ) throws ThrowableType
+    {
+        return visitor.visit( this );
     }
 
     public <T> Association<T> newInstance( ModuleUnitOfWork uow, EntityState state )
     {
         Association<T> associationInstance = new AssociationInstance<T>( state instanceof BuilderEntityState ? builderInfo : this, this, uow, state );
 
+/* TODO What was this supposed to do?
         if( Composite.class.isAssignableFrom( accessor.getReturnType() ) )
         {
             associationInstance = (Association<T>) uow.module()
@@ -156,6 +137,7 @@ public final class AssociationModel
                 .use( associationInstance )
                 .newInstance();
         }
+*/
 
         return associationInstance;
     }
@@ -168,12 +150,12 @@ public final class AssociationModel
             List<ConstraintViolation> violations = constraints.checkConstraints( value );
             if( !violations.isEmpty() )
             {
-                throw new ConstraintViolationException( "", "<unknown>", accessor, violations );
+                throw new ConstraintViolationException( "", "<unknown>", (Member) accessor, violations );
             }
         }
     }
 
-    public void checkConstraints( EntityAssociationsInstance associations )
+    public void checkConstraints( AssociationsInstance associations )
         throws ConstraintViolationException
     {
         if( constraints != null )
@@ -183,7 +165,7 @@ public final class AssociationModel
         }
     }
 
-    public void checkAssociationConstraints( EntityAssociationsInstance associationsInstance )
+    public void checkAssociationConstraints( AssociationsInstance associationsInstance )
         throws ConstraintViolationException
     {
         if( associationConstraints != null )
@@ -193,8 +175,62 @@ public final class AssociationModel
             List<ConstraintViolation> violations = associationConstraints.checkConstraints( association );
             if( !violations.isEmpty() )
             {
-                throw new ConstraintViolationException( (Composite) association.get(), accessor, violations );
+                throw new ConstraintViolationException( (Composite) association.get(), (Member) accessor, violations );
             }
+        }
+    }
+
+    @Override
+    public void bind( Resolution resolution ) throws BindingException
+    {
+        builderInfo = new AssociationDescriptor()
+        {
+            @Override
+            public boolean isImmutable()
+            {
+                return false;
+            }
+
+            @Override
+            public <T> T metaInfo( Class<T> infoType )
+            {
+                return metaInfo.get( infoType );
+            }
+
+            @Override
+            public QualifiedName qualifiedName()
+            {
+                return qualifiedName;
+            }
+
+            @Override
+            public Type type()
+            {
+                return type;
+            }
+
+            @Override
+            public AccessibleObject accessor()
+            {
+                return accessor;
+            }
+
+            @Override
+            public boolean isAggregated()
+            {
+                return aggregated;
+            }
+
+            @Override
+            public boolean queryable()
+            {
+                return queryable;
+            }
+        };
+
+        if (type instanceof TypeVariable)
+        {
+            type = Classes.resolveTypeVariable( (TypeVariable) type, ((Member)accessor).getDeclaringClass(), resolution.object().type());
         }
     }
 
@@ -227,11 +263,9 @@ public final class AssociationModel
     @Override
     public String toString()
     {
-        return accessor.toGenericString();
-    }
-
-    public AssociationType associationType()
-    {
-        return associationType;
+        if (accessor instanceof Field )
+          return ((Field)accessor).toGenericString();
+        else
+            return ((Method)accessor).toGenericString();
     }
 }

@@ -14,10 +14,12 @@
 
 package org.qi4j.runtime.query;
 
+import org.qi4j.api.composite.Composite;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.query.Query;
-import org.qi4j.api.query.grammar.BooleanExpression;
 import org.qi4j.api.query.grammar.OrderBy;
+import org.qi4j.api.specification.Specification;
+import org.qi4j.api.util.Iterables;
 
 import java.util.*;
 
@@ -40,7 +42,7 @@ public class IterableQuery<T>
      */
     IterableQuery( final Iterable<T> iterable,
                    final Class<T> resultType,
-                   final BooleanExpression whereClause
+                   final Specification<Composite> whereClause
     )
     {
         super( resultType, whereClause );
@@ -120,18 +122,13 @@ public class IterableQuery<T>
 
     private List<T> filter( final List<T> list )
     {
-        final List<T> filtered = new ArrayList<T>();
-        if( list != null && list.size() > 0 )
+        if (whereClause == null)
         {
-            for( T entry : list )
-            {
-                if( whereClause == null || whereClause.eval( entry ) )
-                {
-                    filtered.add( entry );
-                }
-            }
+            return Iterables.toList( list );
+        } else
+        {
+            return Iterables.toList( Iterables.filter( (Specification<T>) whereClause, list ) );
         }
-        return filtered;
     }
 
     /**
@@ -168,7 +165,7 @@ public class IterableQuery<T>
         return "Iterable query of type " + resultType.getName();
     }
 
-    private class OrderByComparator
+    private class OrderByComparator<T extends Composite>
         implements Comparator<T>
     {
 
@@ -180,8 +177,8 @@ public class IterableQuery<T>
                 OrderBy orderBySegment = orderBySegments[ i ];
                 try
                 {
-                    final Property prop1 = orderBySegment.propertyReference().eval( o1 );
-                    final Property prop2 = orderBySegment.propertyReference().eval( o2 );
+                    final Property prop1 = orderBySegment.getPropertyFunction().map( o1 );
+                    final Property prop2 = orderBySegment.getPropertyFunction().map( o2 );
                     if( prop1 == null || prop2 == null )
                     {
                         if( prop1 == null && prop2 == null )

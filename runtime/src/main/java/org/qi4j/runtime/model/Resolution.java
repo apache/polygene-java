@@ -20,14 +20,12 @@ import org.qi4j.runtime.structure.LayerModel;
 import org.qi4j.runtime.structure.ModuleModel;
 import org.qi4j.spi.object.ObjectDescriptor;
 
-import java.io.Serializable;
 import java.lang.reflect.Field;
 
 /**
  * JAVADOC
  */
 public final class Resolution
-    implements Serializable
 {
     private final ApplicationModel application;
     private final LayerModel layer;

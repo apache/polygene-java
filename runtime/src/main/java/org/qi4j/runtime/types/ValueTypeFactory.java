@@ -18,20 +18,20 @@
 
 package org.qi4j.runtime.types;
 
-import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.entity.Queryable;
-import org.qi4j.api.property.GenericPropertyInfo;
+import org.qi4j.api.common.InvalidApplicationException;
+import org.qi4j.api.common.Visibility;
 import org.qi4j.api.util.Classes;
-import org.qi4j.spi.property.PropertyType;
-import org.qi4j.spi.property.ValueType;
+import org.qi4j.api.util.HierarchicalVisitor;
+import org.qi4j.runtime.structure.LayerModel;
+import org.qi4j.runtime.structure.ModuleModel;
+import org.qi4j.runtime.structure.UsedLayersModel;
+import org.qi4j.runtime.value.ValueModel;
+import org.qi4j.runtime.value.ValuesModel;
+import org.qi4j.spi.property.*;
 
-import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
-import java.util.*;
-
-import static org.qi4j.api.common.TypeName.nameOf;
 
 public class ValueTypeFactory
 {
@@ -42,12 +42,7 @@ public class ValueTypeFactory
         return instance;
     }
 
-    public ValueType newValueType( Type type, Class declaringClass, Class compositeType )
-    {
-        return newValueType( null, type, declaringClass, compositeType );
-    }
-
-    private ValueType newValueType( Map<Type, ValueType> typeMap, Type type, Class declaringClass, Class compositeType )
+    public ValueType newValueType( Type type, Class declaringClass, Class compositeType, LayerModel layer, ModuleModel module )
     {
         ValueType valueType = null;
         if( CollectionType.isCollection( type ) )
@@ -61,12 +56,12 @@ public class ValueTypeFactory
                     TypeVariable collectionTypeVariable = (TypeVariable) collectionType;
                     collectionType = Classes.resolveTypeVariable( collectionTypeVariable, declaringClass, compositeType );
                 }
-                ValueType collectedType = newValueType( typeMap, collectionType, declaringClass, compositeType );
-                valueType = new CollectionType( nameOf( type ), collectedType );
+                ValueType collectedType = newValueType( collectionType, declaringClass, compositeType, layer, module );
+                valueType = new CollectionType( Classes.RAW_CLASS.map(type) , collectedType );
             }
             else
             {
-                valueType = new CollectionType( nameOf( type ), newValueType( typeMap, Object.class, declaringClass, compositeType ) );
+                valueType = new CollectionType( Classes.RAW_CLASS.map(type) , newValueType( Object.class, declaringClass, compositeType, layer, module ) );
             }
         }
         else if( MapType.isMap( type ) )
@@ -80,7 +75,7 @@ public class ValueTypeFactory
                     TypeVariable keyTypeVariable = (TypeVariable) keyType;
                     keyType = Classes.resolveTypeVariable( keyTypeVariable, declaringClass, compositeType );
                 }
-                ValueType keyedType = newValueType( typeMap, keyType, declaringClass, compositeType );
+                ValueType keyedType = newValueType( keyType, declaringClass, compositeType, layer, module );
 
                 Type valType = pt.getActualTypeArguments()[ 1 ];
                 if( valType instanceof TypeVariable )
@@ -88,114 +83,93 @@ public class ValueTypeFactory
                     TypeVariable valueTypeVariable = (TypeVariable) valType;
                     valType = Classes.resolveTypeVariable( valueTypeVariable, declaringClass, compositeType );
                 }
-                ValueType valuedType = newValueType( typeMap, valType, declaringClass, compositeType );
+                ValueType valuedType = newValueType( valType, declaringClass, compositeType, layer, module );
 
-                valueType = new MapType( nameOf( type ), keyedType, valuedType );
+                valueType = new MapType( Classes.RAW_CLASS.map(type) , keyedType, valuedType );
             }
             else
             {
-                valueType = new MapType( nameOf( type ), newValueType( typeMap, Object.class, declaringClass, compositeType ), newValueType( typeMap, Object.class, declaringClass, compositeType ) );
+                valueType = new MapType( Classes.RAW_CLASS.map(type) , newValueType( Object.class, declaringClass, compositeType, layer, module ), newValueType( Object.class, declaringClass, compositeType, layer, module ) );
             }
         }
         else if( ValueCompositeType.isValueComposite( type ) )
         {
-            if( typeMap != null )
-            {
-                valueType = typeMap.get( type );
-            }
+            // Find ValueModel in module/layer/used layers
+            ValueModel model = new ValueFinder(layer, module, Classes.RAW_CLASS.map( type )).getFoundModel();
 
-            if( valueType == null )
-            {
-                Class valueTypeClass = Classes.getRawClass( type );
+            if (model == null)
+                throw new InvalidApplicationException("["+module.name()+"] Could not ValueComposite of type "+type);
 
-                List<PropertyType> types = new ArrayList<PropertyType>();
-                valueType = new ValueCompositeType( nameOf( valueTypeClass ), types );
-                if( typeMap == null )
-                {
-                    typeMap = new HashMap<Type, ValueType>();
-                }
-                typeMap.put( type, valueType );
-
-                addProperties( typeMap, valueTypeClass, compositeType, types );
-
-                Collections.sort( types ); // Sort by property name
-            }
+            return model.valueType();
         }
         else if( EnumType.isEnum( type ) )
         {
-            valueType = new EnumType( nameOf( type ) );
-        }
-        else if( StringType.isString( type ) )
+            valueType = new EnumType( Classes.RAW_CLASS.map(type)  );
+        }else
         {
-            valueType = new StringType();
-        }
-        else if( NumberType.isNumber( type ) )
-        {
-            valueType = new NumberType( nameOf( type ) );
-        }
-        else if( BooleanType.isBoolean( type ) )
-        {
-            valueType = new BooleanType();
-        }
-        else if( DateType.isDate( type ) )
-        {
-            valueType = new DateType();
-        }
-        else if( JodaDateTimeType.isDate( type ) )
-        {
-            valueType = new JodaDateTimeType();
-        }
-        else if( JodaLocalDateType.isDate( type ) )
-        {
-            valueType = new JodaLocalDateType();
-        }
-        else if( EntityReferenceType.isEntityReference( type ) )
-        {
-            valueType = new EntityReferenceType( nameOf( type ) );
-        }
-        else
-        {
-            // TODO: shouldn't we check that the type is a Serializable?
-            valueType = new SerializableType( nameOf( type ) );
+            valueType = new ValueType(Classes.RAW_CLASS.map(type) );
         }
 
         return valueType;
     }
 
-    private void addProperties( Map<Type, ValueType> typeMap,
-                                Class valueTypeClass,
-                                Class compositeType,
-                                List<PropertyType> types
-    )
+    private class ValueFinder
+        extends HierarchicalVisitor<Object, Object, RuntimeException>
     {
-        for( Method method : valueTypeClass.getDeclaredMethods() )
+        private Class type;
+        private ValueModel foundModel;
+        private Visibility visibility;
+
+        private ValueFinder( LayerModel layer, ModuleModel module, Class type )
         {
-            Type propType = GenericPropertyInfo.getPropertyType( method );
-            if( propType != null )
+            this.type = type;
+
+            visibility = Visibility.module;
+            module.accept( this );
+
+            if (foundModel == null)
             {
-                Queryable queryableAnnotation = method.getAnnotation( Queryable.class );
-                boolean queryable = queryableAnnotation == null || queryableAnnotation.value();
-                ValueType propValueType = newValueType( typeMap, propType, valueTypeClass, compositeType );
-                PropertyTypeImpl propertyType = new PropertyTypeImpl( QualifiedName.fromMethod( method ), propValueType, queryable, PropertyTypeImpl.PropertyTypeEnum.IMMUTABLE );
-                types.add( propertyType );
+                visibility = Visibility.layer;
+                layer.accept( this );
+
+                if (foundModel == null)
+                {
+                    visibility = Visibility.application;
+                    layer.usedLayers().accept( this );
+                }
             }
         }
 
-        // Add methods from subinterface
-        for( Type subType : valueTypeClass.getGenericInterfaces() )
+        public ValueModel getFoundModel()
         {
-            // Handles generic type variables
-            Class subClass;
-            if( subType instanceof ParameterizedType )
+            return foundModel;
+        }
+
+        @Override
+        public boolean visitEnter( Object visited ) throws RuntimeException
+        {
+            if (visited instanceof ValuesModel )
+                return true;
+            else if (visited instanceof ModuleModel )
+                return true;
+            else if (visited instanceof UsedLayersModel )
+                return true;
+            else if (visited instanceof ValueModel )
             {
-                subClass = (Class) ( (ParameterizedType) subType ).getRawType();
-            }
-            else
-            {
-                subClass = (Class) subType;
+                ValueModel valueModel = (ValueModel) visited;
+                if (valueModel.type().equals( type ) && valueModel.visibility().ordinal() >= visibility.ordinal())
+                {
+                    foundModel = valueModel;
+                }
             }
 
-            addProperties( typeMap, subClass, valueTypeClass, types );
+            return false;
+        }
+
+        @Override
+        public boolean visitLeave( Object visited ) throws RuntimeException
+        {
+            return foundModel == null;
         }
     }
 }

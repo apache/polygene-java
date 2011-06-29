@@ -16,13 +16,8 @@
  */
 package org.qi4j.spi.entitystore.helpers;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.common.TypeName;
+import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
@@ -30,11 +25,16 @@ import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.ManyAssociationState;
 import org.qi4j.spi.entitystore.DefaultEntityStoreUnitOfWork;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Standard implementation of EntityState.
  */
 public final class DefaultEntityState
-    implements EntityState, Serializable
+    implements EntityState
 {
     protected DefaultEntityStoreUnitOfWork unitOfWork;
 
@@ -174,9 +174,9 @@ public final class DefaultEntityState
         return status;
     }
 
-    public boolean isOfType( TypeName type )
+    public boolean isOfType( Class<? extends EntityComposite> type)
     {
-        return entityDescriptor.entityType().type().equals( type );
+        return entityDescriptor.type().equals( type );
     }
 
     public EntityDescriptor entityDescriptor()

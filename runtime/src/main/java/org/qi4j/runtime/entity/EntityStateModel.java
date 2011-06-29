@@ -14,26 +14,22 @@
 
 package org.qi4j.runtime.entity;
 
-import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.EntityStateHolder;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.util.Classes;
+import org.qi4j.api.util.HierarchicalVisitor;
+import org.qi4j.api.util.VisitableHierarchy;
 import org.qi4j.runtime.composite.AbstractStateModel;
-import org.qi4j.runtime.entity.association.EntityAssociationsInstance;
-import org.qi4j.runtime.entity.association.EntityAssociationsModel;
-import org.qi4j.runtime.entity.association.EntityManyAssociationsInstance;
-import org.qi4j.runtime.entity.association.EntityManyAssociationsModel;
+import org.qi4j.runtime.entity.association.*;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStateDescriptor;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
-import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
-import org.qi4j.spi.entity.association.ManyAssociationType;
-import org.qi4j.spi.property.PropertyType;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.AccessibleObject;
 import java.util.Set;
 
 /**
@@ -43,12 +39,12 @@ public final class EntityStateModel
     extends AbstractStateModel<EntityPropertiesModel>
     implements EntityStateDescriptor
 {
-    private final EntityAssociationsModel associationsModel;
-    private EntityManyAssociationsModel manyAssociationsModel;
+    private final AssociationsModel associationsModel;
+    private final ManyAssociationsModel manyAssociationsModel;
 
     public EntityStateModel( EntityPropertiesModel propertiesModel,
-                             EntityAssociationsModel associationsModel,
-                             EntityManyAssociationsModel manyAssociationsModel
+                             AssociationsModel associationsModel,
+                             ManyAssociationsModel manyAssociationsModel
     )
     {
         super( propertiesModel );
@@ -61,20 +57,6 @@ public final class EntityStateModel
         return new EntityStateInstance( propertiesModel.newInstance( entityState ),
                                         associationsModel.newInstance( entityState, uow ),
                                         manyAssociationsModel.newInstance( entityState, uow ) );
-    }
-
-    @Override
-    public void addStateFor( Iterable<Method> methods, Class compositeType )
-    {
-        super.addStateFor( methods, compositeType );
-        for( Method method : methods )
-        {
-            associationsModel.addAssociationFor( method );
-        }
-        for( Method method : methods )
-        {
-            manyAssociationsModel.addManyAssociationFor( method );
-        }
     }
 
     public AssociationDescriptor getAssociationByName( String name )
@@ -97,47 +79,56 @@ public final class EntityStateModel
         return manyAssociationsModel.manyAssociations();
     }
 
-    public Set<PropertyType> propertyTypes()
+    protected void addStateFor(AccessibleObject accessor)
     {
-        return propertiesModel.propertyTypes();
+        Class<?> stateType = Classes.RAW_CLASS.map( Classes.TYPE_OF.map( accessor ) );
+        if( Association.class.isAssignableFrom( stateType ))
+        {
+            associationsModel.addAssociationFor( accessor );
+        }
+        else if( ManyAssociation.class.isAssignableFrom( stateType ))
+        {
+            manyAssociationsModel.addManyAssociationFor( accessor );
+        } else
+            super.addStateFor(accessor);
     }
 
-    public Set<AssociationType> associationTypes()
+    @Override
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor ) throws ThrowableType
     {
-        return associationsModel.associationTypes();
-    }
+        if (visitor.visitEnter( this ))
+        {
+            if (((VisitableHierarchy<Object, Object>)propertiesModel).accept(visitor))
+                if (((VisitableHierarchy<AssociationsModel, AssociationModel >)associationsModel).accept(visitor))
+                    ((VisitableHierarchy<ManyAssociationsModel, ManyAssociationModel>)manyAssociationsModel).accept(visitor);
 
-    public Set<ManyAssociationType> manyAssociationTypes()
-    {
-        return manyAssociationsModel.manyAssociationTypes();
+        }
+
+        return visitor.visitLeave( this );
     }
 
     public final class EntityStateInstance
         implements EntityStateHolder
     {
         private final EntityPropertiesInstance entityPropertiesInstance;
-        private final EntityAssociationsInstance entityAssociationsInstance;
-        private final EntityManyAssociationsInstance entityManyAssociationsInstance;
+        private final AssociationsInstance associationsInstance;
+        private final ManyAssociationsInstance manyAssociationsInstance;
 
         private EntityStateInstance(
             EntityPropertiesInstance entityPropertiesInstance,
-            EntityAssociationsInstance entityAssociationsInstance,
-            EntityManyAssociationsInstance entityManyAssociationsInstance
+            AssociationsInstance associationsInstance,
+            ManyAssociationsInstance manyAssociationsInstance
         )
         {
             this.entityPropertiesInstance = entityPropertiesInstance;
-            this.entityAssociationsInstance = entityAssociationsInstance;
-            this.entityManyAssociationsInstance = entityManyAssociationsInstance;
+            this.associationsInstance = associationsInstance;
+            this.manyAssociationsInstance = manyAssociationsInstance;
         }
 
-        public <T> Property<T> getProperty( Method accessor )
+        public <T> Property<T> getProperty( AccessibleObject accessor )
+                throws IllegalArgumentException
         {
             return entityPropertiesInstance.<T>getProperty( accessor );
-        }
-
-        public <T> Property<T> getProperty( QualifiedName name )
-        {
-            return entityPropertiesInstance.getProperty( name );
         }
 
         @Override
@@ -146,36 +137,33 @@ public final class EntityStateModel
             return entityPropertiesInstance.properties();
         }
 
-        public <T> Association<T> getAssociation( Method accessor )
+        public <T> Association<T> getAssociation( AccessibleObject accessor )
         {
-            return entityAssociationsInstance.associationFor( accessor );
+            return associationsInstance.associationFor( accessor );
         }
 
-        public <T> ManyAssociation<T> getManyAssociation( Method accessor )
+        public <T> ManyAssociation<T> getManyAssociation( AccessibleObject accessor )
         {
-            return entityManyAssociationsInstance.manyAssociationFor( accessor );
+            return manyAssociationsInstance.manyAssociationFor( accessor );
         }
 
-        public <ThrowableType extends Throwable> void visitState( EntityStateVisitor<ThrowableType> visitor )
-            throws ThrowableType
+        @Override
+        public Iterable<Association<?>> associations()
         {
-            visitProperties( visitor );
-
-            entityAssociationsInstance.visitAssociations( visitor );
-            entityManyAssociationsInstance.visitManyAssociations( visitor );
+            return associationsInstance.associations();
         }
 
-        public <ThrowableType extends Throwable> void visitProperties( StateVisitor<ThrowableType> visitor )
-            throws ThrowableType
+        @Override
+        public Iterable<ManyAssociation<?>> manyAssociations()
         {
-            entityPropertiesInstance.visitProperties( visitor );
+            return manyAssociationsInstance.manyAssociations();
         }
 
         public void checkConstraints()
         {
             entityPropertiesInstance.checkConstraints();
-            entityAssociationsInstance.checkConstraints();
-            entityManyAssociationsInstance.checkConstraints();
+            associationsInstance.checkConstraints();
+            manyAssociationsInstance.checkConstraints();
         }
     }
 }

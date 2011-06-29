@@ -28,12 +28,14 @@ import org.qi4j.runtime.model.Resolution;
 import org.qi4j.spi.composite.DependencyDescriptor;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.*;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.Collections;
 
 import static org.qi4j.api.util.Annotations.isType;
 import static org.qi4j.api.util.Iterables.iterable;
-import static org.qi4j.spi.util.CollectionUtils.firstElementOrNull;
 
 /**
  * JAVADOC
@@ -73,7 +75,6 @@ public final class DependencyModel
     private final Type injectionType;
     private final Class<?> injectedClass;
     private final Class<?> rawInjectionClass;
-    private final Class<?> injectionClass;
     private final boolean optional;
     private final Annotation[] annotations;
 
@@ -89,11 +90,11 @@ public final class DependencyModel
     {
         this.injectionAnnotation = injectionAnnotation;
         this.injectedClass = injectedClass;
+
         this.injectionType = genericType;
         this.optional = optional;
         this.annotations = annotations;
         this.rawInjectionClass = mapPrimitiveTypes( extractRawInjectionClass( injectedClass, injectionType ) );
-        this.injectionClass = extractInjectionClass( injectionType );
     }
 
     @Override
@@ -174,51 +175,20 @@ public final class DependencyModel
         return type;
     }
 
-    private Class<?> extractInjectionClass( Type injectionType )
+    private Type extractDependencyType( Type injectionType )
     {
         if( injectionType instanceof ParameterizedType )
         {
-            return extractInjectionClass( (ParameterizedType) injectionType );
+            return ((ParameterizedType)injectionType).getActualTypeArguments()[ 0 ];
         }
         else if( injectionType instanceof TypeVariable )
         {
-            return extractInjectionClass( (TypeVariable<?>) injectionType );
+            return ((TypeVariable)injectionType).getBounds()[ 0 ];
         }
-        return (Class<?>) injectionType;
-    }
-
-    private Class<?> extractInjectionClass( TypeVariable<?> typeVariable )
-    {
-        return (Class<?>) typeVariable.getBounds()[ 0 ];
-    }
-
-    private Class<?> extractInjectionClass( ParameterizedType parameterizedType )
-    {
-        Type type = parameterizedType.getActualTypeArguments()[ 0 ];
-        if( type instanceof Class )
-        {
-            return (Class<?>) type;
-        }
-        else if( type instanceof ParameterizedType )
-        {
-            return (Class<?>) ( (ParameterizedType) type ).getRawType();
-        }
-        else if( type instanceof WildcardType )
-        {
-            // To handle for instance Class<? extends Habba>, which will then return habba
-            WildcardType wcType = (WildcardType) type;
-            return (Class) wcType.getUpperBounds()[ 0 ];
-        }
-        else if( type instanceof TypeVariable )
-        {
-            TypeVariable tv = (TypeVariable) type;
-            return (Class) tv.getBounds()[ 0 ];
-        }
-        throw new IllegalArgumentException( "Could not extract injectionClass of Type " + parameterizedType );
+        return injectionType;
     }
 
     // Model
-
     public Annotation injectionAnnotation()
     {
         return injectionAnnotation;
@@ -246,20 +216,6 @@ public final class DependencyModel
     public Class<?> rawInjectionType()
     {
         return rawInjectionClass;
-    }
-
-    /**
-     * Get the injection class. If the injection uses generics this is the parameter type,
-     * and otherwise it is the raw type. Examples:<br/>
-     * {@code @Service MyService service} -> MyService<br/>
-     * {@code @Entity Iterable<Foo> fooList} -> Foo<br/>
-     * {@code @Entity Query<Foo> fooQuery} -> Foo<br/>
-     *
-     * @return injection class
-     */
-    public Class<?> injectionClass()
-    {
-        return injectionClass;
     }
 
     public boolean optional()
@@ -341,7 +297,7 @@ public final class DependencyModel
             }
             else
             {
-                return firstElementOrNull( (Iterable) injectionResult );
+                return Iterables.first( (Iterable) injectionResult );
             }
         }
         else

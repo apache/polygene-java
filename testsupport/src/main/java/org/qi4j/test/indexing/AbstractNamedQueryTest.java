@@ -17,59 +17,35 @@
  */
 package org.qi4j.test.indexing;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.qi4j.api.query.QueryExpressions.orderBy;
-import static org.qi4j.api.query.QueryExpressions.templateFor;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.entity.Entity;
 import org.qi4j.api.query.Query;
-import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.api.service.ServiceFinder;
-import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
+import org.qi4j.api.specification.Specification;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.spi.query.EntityFinderException;
 import org.qi4j.spi.query.IndexExporter;
-import org.qi4j.spi.query.NamedQueries;
-import org.qi4j.spi.query.NamedQueryDescriptor;
 import org.qi4j.test.EntityTestAssembler;
-import org.qi4j.test.indexing.model.Address;
-import org.qi4j.test.indexing.model.Domain;
-import org.qi4j.test.indexing.model.Female;
-import org.qi4j.test.indexing.model.File;
-import org.qi4j.test.indexing.model.Host;
-import org.qi4j.test.indexing.model.Male;
-import org.qi4j.test.indexing.model.Nameable;
-import org.qi4j.test.indexing.model.Person;
-import org.qi4j.test.indexing.model.Port;
-import org.qi4j.test.indexing.model.Protocol;
-import org.qi4j.test.indexing.model.QueryParam;
-import org.qi4j.test.indexing.model.URL;
-import org.qi4j.test.indexing.model.entities.AccountEntity;
-import org.qi4j.test.indexing.model.entities.CatEntity;
-import org.qi4j.test.indexing.model.entities.CityEntity;
-import org.qi4j.test.indexing.model.entities.DomainEntity;
-import org.qi4j.test.indexing.model.entities.FemaleEntity;
-import org.qi4j.test.indexing.model.entities.MaleEntity;
+import org.qi4j.test.indexing.model.*;
+
+import java.io.IOException;
+import java.util.*;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.*;
+import static org.qi4j.api.query.QueryExpressions.orderBy;
+import static org.qi4j.api.query.QueryExpressions.templateFor;
 
 public abstract class AbstractNamedQueryTest
     extends AbstractAnyQueryTest
 {
+
+    Map<String, Specification<Composite>> queries = new HashMap<String, Specification<Composite>>(  );
 
     @Override
     public void assemble( ModuleAssembly module )
@@ -77,26 +53,21 @@ public abstract class AbstractNamedQueryTest
     {
         super.assemble( module );
         new EntityTestAssembler().assemble( module );
-        NamedQueries namedQueries = new NamedQueries();
         String[] query = queryStrings();
         for( int i = 0; i < query.length; i++ )
         {
             String queryName = String.format( "script%02d", i + 1 );
             if( query[ i ].length() != 0 )
             {
-                NamedQueryDescriptor descriptor = createNamedQueryDescriptor( queryName, query[ i ] );
-                namedQueries.addQuery( descriptor );
+                Specification<Composite> expression = createNamedQueryDescriptor( queryName, query[ i ] );
+                queries.put( queryName, expression);
             }
         }
-        this.assembleNamedQueries( module, namedQueries );
     }
 
     protected abstract String[] queryStrings();
 
-    protected abstract NamedQueryDescriptor createNamedQueryDescriptor( String queryName, String queryString );
-
-    protected abstract void assembleNamedQueries( ModuleAssembly module, NamedQueries queries )
-        throws AssemblyException;
+    protected abstract Specification<Composite> createNamedQueryDescriptor( String queryName, String queryString );
 
     @Test
     public void showNetwork()
@@ -139,7 +110,7 @@ public abstract class AbstractNamedQueryTest
     public void script01()
         throws EntityFinderException
     {
-        final Query<Person> query = this.queryBuilderFactory.newNamedQuery( Person.class, unitOfWork, "script01" );
+        final Query<Person> query = this.queryBuilderFactory.newQueryBuilder( Person.class ).where( queries.get( "script01" ) ).newQuery( unitOfWork );
         System.out.println( "*** script01: " + query );
         verifyUnorderedResults( query, "Joe Doe", "Ann Doe", "Jack Doe" );
     }
@@ -148,7 +119,7 @@ public abstract class AbstractNamedQueryTest
     public void script02()
         throws EntityFinderException
     {
-        final Query<Domain> query = this.queryBuilderFactory.newNamedQuery( Domain.class, unitOfWork, "script02" );
+        final Query<Domain> query = this.queryBuilderFactory.newQueryBuilder( Domain.class ).where( queries.get( "script02" ) ).newQuery( unitOfWork );
         System.out.println( "*** script02: " + query );
         verifyUnorderedResults( query, "Gaming" );
     }
@@ -157,7 +128,7 @@ public abstract class AbstractNamedQueryTest
     public void script03()
         throws EntityFinderException
     {
-        final Query<Nameable> query = this.queryBuilderFactory.newNamedQuery( Nameable.class, unitOfWork, "script03" );
+        final Query<Nameable> query = this.queryBuilderFactory.newQueryBuilder( Nameable.class ).where( queries.get( "script03" ) ).newQuery( unitOfWork );
         System.out.println( "*** script03: " + query );
         verifyUnorderedResults( query, "Joe Doe", "Ann Doe", "Jack Doe", "Penang", "Kuala Lumpur", "Cooking", "Gaming",
                                 "Programming", "Cars" );
@@ -167,7 +138,7 @@ public abstract class AbstractNamedQueryTest
     public void script04()
         throws EntityFinderException
     {
-        final Query<Person> query = this.queryBuilderFactory.newNamedQuery( Person.class, unitOfWork, "script04" );
+        final Query<Person> query = this.queryBuilderFactory.newQueryBuilder( Person.class ).where( queries.get( "script04" ) ).newQuery( unitOfWork );
         System.out.println( "*** script04: " + query );
         verifyUnorderedResults( query, "Joe Doe", "Ann Doe" );
     }
@@ -176,7 +147,7 @@ public abstract class AbstractNamedQueryTest
     public void script05()
         throws EntityFinderException
     {
-        final Query<Person> query = this.queryBuilderFactory.newNamedQuery( Person.class, unitOfWork, "script05" );
+        final Query<Person> query = this.queryBuilderFactory.newQueryBuilder( Person.class ).where( queries.get( "script05" ) ).newQuery( unitOfWork );
         System.out.println( "*** script05: " + query );
         verifyUnorderedResults( query, "Joe Doe" );
     }
@@ -185,7 +156,7 @@ public abstract class AbstractNamedQueryTest
     public void script06()
         throws EntityFinderException
     {
-        final Query<Person> query = this.queryBuilderFactory.newNamedQuery( Person.class, unitOfWork, "script06" );
+        final Query<Person> query = this.queryBuilderFactory.newQueryBuilder( Person.class ).where( queries.get( "script06" ) ).newQuery( unitOfWork );
         System.out.println( "*** script06: " + query );
         verifyUnorderedResults( query, "Joe Doe", "Ann Doe" );
     }
@@ -194,7 +165,7 @@ public abstract class AbstractNamedQueryTest
     public void script07()
         throws EntityFinderException
     {
-        final Query<Nameable> query = this.queryBuilderFactory.newNamedQuery( Nameable.class, unitOfWork, "script07" );
+        final Query<Nameable> query = this.queryBuilderFactory.newQueryBuilder( Nameable.class ).where( queries.get( "script07" ) ).newQuery( unitOfWork );
         System.out.println( "*** script07: " + query );
         verifyUnorderedResults( query, "Jack Doe" );
     }
@@ -203,7 +174,7 @@ public abstract class AbstractNamedQueryTest
     public void script08()
         throws EntityFinderException
     {
-        final Query<Person> query = this.queryBuilderFactory.newNamedQuery( Person.class, unitOfWork, "script08" );
+        final Query<Person> query = this.queryBuilderFactory.newQueryBuilder( Person.class ).where( queries.get( "script08" ) ).newQuery( unitOfWork );
         System.out.println( "*** script08: " + query );
         verifyUnorderedResults( query, "Jack Doe", "Ann Doe" );
     }
@@ -212,7 +183,7 @@ public abstract class AbstractNamedQueryTest
     public void script09()
         throws EntityFinderException
     {
-        final Query<Female> query = this.queryBuilderFactory.newNamedQuery( Female.class, unitOfWork, "script09" );
+        final Query<Female> query = this.queryBuilderFactory.newQueryBuilder( Female.class ).where( queries.get( "script09" ) ).newQuery( unitOfWork );
         System.out.println( "*** script09: " + query );
         verifyUnorderedResults( query, "Ann Doe" );
     }
@@ -221,7 +192,7 @@ public abstract class AbstractNamedQueryTest
     public void script10()
         throws EntityFinderException
     {
-        final Query<Person> query = this.queryBuilderFactory.newNamedQuery( Person.class, unitOfWork, "script10" );
+        final Query<Person> query = this.queryBuilderFactory.newQueryBuilder( Person.class ).where( queries.get( "script10" ) ).newQuery( unitOfWork );
         System.out.println( "*** script10: " + query );
         verifyUnorderedResults( query, "Jack Doe", "Joe Doe" );
     }
@@ -230,7 +201,7 @@ public abstract class AbstractNamedQueryTest
     public void script11()
         throws EntityFinderException
     {
-        final Query<Person> query = this.queryBuilderFactory.newNamedQuery( Person.class, unitOfWork, "script11" );
+        final Query<Person> query = this.queryBuilderFactory.newQueryBuilder( Person.class ).where( queries.get( "script11" ) ).newQuery( unitOfWork );
         System.out.println( "*** script11: " + query );
         verifyUnorderedResults( query, "Joe Doe" );
     }
@@ -239,7 +210,7 @@ public abstract class AbstractNamedQueryTest
     public void script12()
         throws EntityFinderException
     {
-        final Query<Person> query = this.queryBuilderFactory.newNamedQuery( Person.class, unitOfWork, "script12" );
+        final Query<Person> query = this.queryBuilderFactory.newQueryBuilder( Person.class ).where( queries.get( "script12" ) ).newQuery( unitOfWork );
         System.out.println( "*** script12: " + query );
         verifyUnorderedResults( query, "Ann Doe", "Jack Doe" );
     }
@@ -248,7 +219,7 @@ public abstract class AbstractNamedQueryTest
     public void script13()
         throws EntityFinderException
     {
-        final Query<Person> query = this.queryBuilderFactory.newNamedQuery( Person.class, unitOfWork, "script13" );
+        final Query<Person> query = this.queryBuilderFactory.newQueryBuilder( Person.class ).where( queries.get( "script13" ) ).newQuery( unitOfWork );
         System.out.println( "*** script13: " + query );
         verifyUnorderedResults( query, "Jack Doe" );
     }
@@ -257,7 +228,7 @@ public abstract class AbstractNamedQueryTest
     public void script14()
         throws EntityFinderException
     {
-        final Query<Male> query = this.queryBuilderFactory.newNamedQuery( Male.class, unitOfWork, "script14" );
+        final Query<Male> query = this.queryBuilderFactory.newQueryBuilder( Male.class ).where( queries.get( "script14" ) ).newQuery( unitOfWork );
         System.out.println( "*** script14: " + query );
         verifyUnorderedResults( query, "Joe Doe" );
     }
@@ -266,7 +237,7 @@ public abstract class AbstractNamedQueryTest
     public void script15()
         throws EntityFinderException
     {
-        final Query<Person> query = this.queryBuilderFactory.newNamedQuery( Person.class, unitOfWork, "script15" );
+        final Query<Person> query = this.queryBuilderFactory.newQueryBuilder( Person.class ).where( queries.get( "script15" ) ).newQuery( unitOfWork );
         System.out.println( "*** script15: " + query );
         verifyUnorderedResults( query, "Joe Doe", "Ann Doe" );
     }
@@ -276,7 +247,7 @@ public abstract class AbstractNamedQueryTest
         throws EntityFinderException
     {
         Nameable nameable = templateFor( Nameable.class );
-        final Query<Nameable> query = this.queryBuilderFactory.newNamedQuery( Nameable.class, unitOfWork, "script16" );
+        final Query<Nameable> query = this.queryBuilderFactory.newQueryBuilder( Nameable.class ).where( queries.get( "script16" ) ).newQuery( unitOfWork );
         query.orderBy( orderBy( nameable.name() ) );
         query.maxResults( 2 );
         System.out.println( "*** script16: " + query );
@@ -288,7 +259,7 @@ public abstract class AbstractNamedQueryTest
         throws EntityFinderException
     {
         Nameable nameable = templateFor( Nameable.class );
-        final Query<Nameable> query = this.queryBuilderFactory.newNamedQuery( Nameable.class, unitOfWork, "script17" );
+        final Query<Nameable> query = this.queryBuilderFactory.newQueryBuilder( Nameable.class ).where( queries.get( "script17" ) ).newQuery( unitOfWork );
         query.orderBy( orderBy( nameable.name() ) );
         query.firstResult( 3 );
         query.maxResults( 3 );
@@ -301,7 +272,7 @@ public abstract class AbstractNamedQueryTest
         throws EntityFinderException
     {
         Nameable nameable = templateFor( Nameable.class );
-        final Query<Nameable> query = this.queryBuilderFactory.newNamedQuery( Nameable.class, unitOfWork, "script18" );
+        final Query<Nameable> query = this.queryBuilderFactory.newQueryBuilder( Nameable.class ).where( queries.get( "script18" ) ).newQuery( unitOfWork );
         query.orderBy( orderBy( nameable.name() ) );
         System.out.println( "*** script18: " + query );
         verifyOrderedResults( query, "Ann Doe", "Cars", "Cooking", "Gaming", "Jack Doe", "Joe Doe", "Kuala Lumpur",
@@ -313,7 +284,7 @@ public abstract class AbstractNamedQueryTest
         throws EntityFinderException
     {
         Nameable nameable = templateFor( Nameable.class );
-        final Query<Nameable> query = this.queryBuilderFactory.newNamedQuery( Nameable.class, unitOfWork, "script19" );
+        final Query<Nameable> query = this.queryBuilderFactory.newQueryBuilder( Nameable.class ).where( queries.get( "script19" ) ).newQuery( unitOfWork );
         query.orderBy( orderBy( nameable.name() ) );
         System.out.println( "*** script19: " + query );
         verifyOrderedResults( query, "Gaming", "Jack Doe", "Joe Doe", "Kuala Lumpur", "Penang", "Programming" );
@@ -324,7 +295,7 @@ public abstract class AbstractNamedQueryTest
         throws EntityFinderException
     {
         Person person = templateFor( Person.class );
-        final Query<Person> query = this.queryBuilderFactory.newNamedQuery( Person.class, unitOfWork, "script20" );
+        final Query<Person> query = this.queryBuilderFactory.newQueryBuilder( Person.class ).where( queries.get( "script20" ) ).newQuery( unitOfWork );
         query.orderBy( orderBy( person.name(), OrderBy.Order.DESCENDING ) );
         System.out.println( "*** script20: " + query );
         verifyOrderedResults( query, "Joe Doe", "Ann Doe" );
@@ -335,7 +306,7 @@ public abstract class AbstractNamedQueryTest
         throws EntityFinderException
     {
         Person person = templateFor( Person.class );
-        final Query<Person> query = this.queryBuilderFactory.newNamedQuery( Person.class, unitOfWork, "script21" );
+        final Query<Person> query = this.queryBuilderFactory.newQueryBuilder( Person.class ).where( queries.get( "script21" ) ).newQuery( unitOfWork );
         query.orderBy( orderBy( person.placeOfBirth().get().name() ), orderBy( person.yearOfBirth() ) );
         System.out.println( "*** script21: " + query );
         verifyOrderedResults( query, "Ann Doe", "Joe Doe", "Jack Doe" );
@@ -345,7 +316,7 @@ public abstract class AbstractNamedQueryTest
     public void script22()
         throws EntityFinderException
     {
-        final Query<Nameable> query = this.queryBuilderFactory.newNamedQuery( Nameable.class, unitOfWork, "script22" );
+        final Query<Nameable> query = this.queryBuilderFactory.newQueryBuilder( Nameable.class ).where( queries.get( "script22" ) ).newQuery( unitOfWork );
         System.out.println( "*** script22: " + query );
         verifyUnorderedResults( query, "Jack Doe", "Joe Doe" );
     }
@@ -355,7 +326,7 @@ public abstract class AbstractNamedQueryTest
     public void script23()
         throws EntityFinderException
     {
-        final Query<Person> query = this.queryBuilderFactory.newNamedQuery( Person.class, unitOfWork, "script23" );
+        final Query<Person> query = this.queryBuilderFactory.newQueryBuilder( Person.class ).where( queries.get( "script23" ) ).newQuery( unitOfWork );
         System.out.println( "*** script23: " + query );
         verifyOrderedResults( query, "Jack Doe" );
     }
@@ -364,7 +335,7 @@ public abstract class AbstractNamedQueryTest
     public void script24()
         throws EntityFinderException
     {
-        final Query<Domain> query = this.queryBuilderFactory.newNamedQuery( Domain.class, unitOfWork, "script24" );
+        final Query<Domain> query = this.queryBuilderFactory.newQueryBuilder( Domain.class ).where( queries.get( "script24" ) ).newQuery( unitOfWork );
         query.setVariable("domain", "Gaming");
         System.out.println( "*** script24: " + query );
         assertThat( query.find().name().get(), is( equalTo( "Gaming" ) ) );
@@ -374,7 +345,7 @@ public abstract class AbstractNamedQueryTest
     @Ignore( "Wait until indexing of complex values is implemented" )
     public void script29()
     {
-        final Query<Person> query = this.queryBuilderFactory.newNamedQuery( Person.class, unitOfWork, "script29" );
+        final Query<Person> query = this.queryBuilderFactory.newQueryBuilder( Person.class ).where( queries.get( "script29" ) ).newQuery( unitOfWork );
         System.out.println( "*** script29: " + query );
         verifyUnorderedResults( query, "Jack Doe" );
     }
@@ -383,7 +354,7 @@ public abstract class AbstractNamedQueryTest
     @Ignore( "Wait till 1.1?" )
     public void script30()
     {
-        final Query<Nameable> query = this.queryBuilderFactory.newNamedQuery( Nameable.class, unitOfWork, "script30" );
+        final Query<Nameable> query = this.queryBuilderFactory.newQueryBuilder( Nameable.class ).where( queries.get( "script30" ) ).newQuery( unitOfWork );
         System.out.println( "*** script30: " + query );
         verifyUnorderedResults( query, "Jack Doe" );
     }
@@ -392,7 +363,7 @@ public abstract class AbstractNamedQueryTest
     @Ignore( "Wait till 1.1?" )
     public void script31()
     {
-        final Query<Person> query = this.queryBuilderFactory.newNamedQuery( Person.class, unitOfWork, "script31" );
+        final Query<Person> query = this.queryBuilderFactory.newQueryBuilder( Person.class ).where( queries.get( "script31" ) ).newQuery( unitOfWork );
         System.out.println( "*** script31: " + query );
         verifyUnorderedResults( query, "Jack Doe" );
     }

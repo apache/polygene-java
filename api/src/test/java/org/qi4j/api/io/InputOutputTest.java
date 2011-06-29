@@ -14,30 +14,23 @@
 
 package org.qi4j.api.io;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
-import java.net.URL;
-import java.rmi.RemoteException;
-import java.util.*;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 import org.qi4j.api.util.Function;
 import org.slf4j.LoggerFactory;
 
-import static java.util.Arrays.*;
-import static org.qi4j.api.io.Inputs.*;
-import static org.qi4j.api.io.Transforms.*;
+import java.io.*;
+import java.net.URL;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+import static java.util.Arrays.asList;
+import static org.qi4j.api.io.Inputs.text;
+import static org.qi4j.api.io.Transforms.lock;
 import static org.qi4j.api.util.Iterables.iterable;
 
 /**

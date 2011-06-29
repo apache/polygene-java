@@ -14,9 +14,12 @@
 
 package org.qi4j.api.common;
 
-import java.io.Serializable;
-import java.lang.reflect.Method;
 import org.qi4j.api.util.NullArgumentException;
+
+import java.io.Serializable;
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
 
 /**
  * QualifiedName is a representation of Property names to their full declaration.
@@ -63,10 +66,10 @@ public final class QualifiedName
      *
      * @throws NullArgumentException If the {@code method} argument passed is null.
      */
-    public static QualifiedName fromMethod( Method method )
+    public static QualifiedName fromAccessor( AccessibleObject method )
     {
         NullArgumentException.validateNotNull( "method", method );
-        return fromClass( method.getDeclaringClass(), method.getName() );
+        return fromClass( ((Member)method).getDeclaringClass(), ((Member)method).getName() );
     }
 
     /**

@@ -15,7 +15,9 @@
 package org.qi4j.api.value;
 
 import org.qi4j.api.common.ConstructionException;
+import org.qi4j.api.property.PropertyInfo;
 import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.util.Function;
 
 /**
  * JAVADOC
@@ -32,7 +34,7 @@ public interface ValueBuilder<T>
      */
     ValueBuilder<T> withPrototype( T value );
 
-    ValueBuilder<T> withState( StateHolder state );
+    ValueBuilder<T> withState( Function<PropertyInfo,Object> state);
 
     /**
      * Get a representation of the state for the new Value.
@@ -42,6 +44,8 @@ public interface ValueBuilder<T>
      * @return a mutable instance of the Value type
      */
     T prototype();
+
+    StateHolder state();
 
     /**
      * Get a representation of the state of the given type for the new ValueComposite.

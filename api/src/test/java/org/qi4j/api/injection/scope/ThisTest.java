@@ -12,11 +12,13 @@
 */
 package org.qi4j.api.injection.scope;
 
-import java.lang.annotation.Annotation;
 import org.junit.Test;
 import org.qi4j.api.common.Optional;
 
-import static org.junit.Assert.*;
+import java.lang.annotation.Annotation;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Tests public api exposed by This annotation.

@@ -14,7 +14,10 @@
 
 package org.qi4j.runtime.entity;
 
-import org.qi4j.api.common.*;
+import org.qi4j.api.common.ConstructionException;
+import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.common.Visibility;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
@@ -24,34 +27,28 @@ import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.unitofwork.EntityCompositeAlreadyExistsException;
 import org.qi4j.api.util.Classes;
-import org.qi4j.api.util.HierarchicalVisitor;
-import org.qi4j.api.util.VisitableHierarchy;
 import org.qi4j.bootstrap.AssociationDeclarations;
-import org.qi4j.bootstrap.BindingException;
 import org.qi4j.bootstrap.ManyAssociationDeclarations;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.runtime.bootstrap.AssemblyHelper;
 import org.qi4j.runtime.composite.*;
-import org.qi4j.runtime.entity.association.EntityAssociationsModel;
-import org.qi4j.runtime.entity.association.EntityManyAssociationsModel;
-import org.qi4j.runtime.model.Resolution;
+import org.qi4j.runtime.entity.association.AssociationsModel;
+import org.qi4j.runtime.entity.association.ManyAssociationsModel;
 import org.qi4j.runtime.property.PersistentPropertyModel;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
 import org.qi4j.spi.entitystore.EntityAlreadyExistsException;
 import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
-import org.qi4j.spi.property.PropertyTypeDescriptor;
+import org.qi4j.spi.property.PersistentPropertyDescriptor;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -91,8 +88,8 @@ public final class EntityModel
         ConstraintsModel constraintsModel = new ConstraintsModel( type );
         boolean immutable = metaInfo.get( Immutable.class ) != null;
         EntityPropertiesModel entityPropertiesModel = new EntityPropertiesModel( constraintsModel, propertyDecs, immutable );
-        EntityAssociationsModel associationsModel = new EntityAssociationsModel( constraintsModel, associationDecs );
-        EntityManyAssociationsModel manyAssociationsModel = new EntityManyAssociationsModel( constraintsModel, manyAssociationDecs );
+        AssociationsModel associationsModel = new AssociationsModel( constraintsModel, associationDecs );
+        ManyAssociationsModel manyAssociationsModel = new ManyAssociationsModel( constraintsModel, manyAssociationDecs );
         EntityStateModel stateModel = new EntityStateModel( entityPropertiesModel, associationsModel, manyAssociationsModel );
         EntityMixinsModel mixinsModel = new EntityMixinsModel( type, roles, mixins );
         SideEffectsDeclaration sideEffectsModel = new SideEffectsDeclaration( type, sideEffects );
@@ -101,7 +98,7 @@ public final class EntityModel
                                                                                  concernsDeclaration,
                                                                                  sideEffectsModel,
                                                                                  mixinsModel, helper );
-        stateModel.addStateFor( compositeMethodsModel.methods(), type );
+        stateModel.addStateFor( compositeMethodsModel.methods(), mixinsModel );
 
         return new EntityModel( type,
                                 roles,
@@ -113,7 +110,6 @@ public final class EntityModel
     }
 
     private final boolean queryable;
-    private EntityType entityType;
 
     private EntityModel( Class<? extends EntityComposite> type,
                          List<Class<?>> roles,
@@ -128,24 +124,16 @@ public final class EntityModel
 
         final Queryable queryable = Classes.getAnnotationOfTypeOrAnyOfSuperTypes( type, Queryable.class );
         this.queryable = queryable == null || queryable.value();
-
-        // Create EntityType
-        Set<String> mixinTypes = new LinkedHashSet<String>();
-        for( Class mixinType : mixinsModel.mixinTypes() )
-        {
-            mixinTypes.add( mixinType.getName() );
-        }
-
-        EntityStateModel entityStateModel = stateModel;
-        entityType = new EntityType(
-            TypeName.nameOf( type() ), this.queryable,
-            mixinTypes, entityStateModel.propertyTypes(), entityStateModel.associationTypes(), entityStateModel.manyAssociationTypes()
-        );
     }
 
     public Class<? extends EntityComposite> type()
     {
         return (Class<? extends EntityComposite>) super.type();
+    }
+
+    public boolean queryable()
+    {
+        return queryable;
     }
 
     @Override
@@ -154,31 +142,9 @@ public final class EntityModel
         return (EntityStateModel) super.state();
     }
 
-    public EntityType entityType()
-    {
-        return entityType;
-    }
-
     public boolean hasRole( Class roleType )
     {
         return roleType.isAssignableFrom( proxyClass );
-    }
-
-    public boolean hasMixinType( Class<?> mixinType )
-    {
-        return mixinsModel.hasMixinType( mixinType );
-    }
-
-    @Override
-    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor ) throws ThrowableType
-    {
-        if (visitor.visitEnter( this ))
-        {
-            if (compositeMethodsModel.accept( visitor ))
-                if (((VisitableHierarchy<Object, Object>)stateModel).accept( visitor ))
-                    mixinsModel.accept(visitor);
-        }
-        return visitor.visitLeave( this );
     }
 
     public EntityInstance newInstance( ModuleUnitOfWork uow, ModuleInstance moduleInstance, EntityState state )
@@ -229,8 +195,8 @@ public final class EntityModel
             EntityState entityState = store.newEntityState( identity, this );
 
             // Set identity property
-            PropertyTypeDescriptor propertyDescriptor = state().getPropertyByQualifiedName( QualifiedName.fromMethod( IDENTITY_METHOD ) );
-            entityState.setProperty( propertyDescriptor.propertyType().qualifiedName(), identity.identity() );
+            PersistentPropertyDescriptor persistentPropertyDescriptor = state().getPropertyByQualifiedName( QualifiedName.fromAccessor( IDENTITY_METHOD ) );
+            entityState.setProperty( persistentPropertyDescriptor.qualifiedName(), identity.identity() );
 
             return entityState;
         }
@@ -250,15 +216,14 @@ public final class EntityModel
         return type().getName();
     }
 
-    public void initState( EntityState entityState )
+    public void initState( ModuleInstance module, EntityState entityState )
     {
         {
             // Set new properties to default value
             Set<PersistentPropertyModel> entityProperties = state().properties();
             for( PersistentPropertyModel propertyDescriptor : entityProperties )
             {
-                entityState.setProperty( propertyDescriptor.propertyType()
-                                             .qualifiedName(), propertyDescriptor.initialValue() );
+                entityState.setProperty( propertyDescriptor.qualifiedName(), propertyDescriptor.initialValue( module ) );
             }
         }
 
@@ -267,7 +232,7 @@ public final class EntityModel
             Set<AssociationDescriptor> entityAssociations = state().associations();
             for( AssociationDescriptor associationDescriptor : entityAssociations )
             {
-                entityState.setAssociation( associationDescriptor.associationType().qualifiedName(), null );
+                entityState.setAssociation( associationDescriptor.qualifiedName(), null );
             }
         }
 
@@ -276,14 +241,9 @@ public final class EntityModel
             Set<ManyAssociationDescriptor> entityAssociations = state().manyAssociations();
             for( ManyAssociationDescriptor associationDescriptor : entityAssociations )
             {
-                entityState.getManyAssociation( associationDescriptor.manyAssociationType().qualifiedName() );
+                entityState.getManyAssociation( associationDescriptor.qualifiedName() );
             }
         }
-    }
-
-    boolean hasEntityType( EntityModel entityModel, EntityState entityState )
-    {
-        return entityState.isOfType( entityModel.entityType().type() );
     }
 
     public void invokeLifecycle( boolean create, Object[] mixins, CompositeInstance instance, StateHolder state )

@@ -20,7 +20,6 @@ import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.bootstrap.AssemblyVisitor;
 import org.qi4j.bootstrap.LayerAssembly;
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -31,7 +30,7 @@ import java.util.Map;
  * and create LayerAssemblies.
  */
 public final class ApplicationAssemblyImpl
-    implements ApplicationAssembly, Serializable
+    implements ApplicationAssembly
 {
     private Map<String, LayerAssemblyImpl> layerAssemblies = new LinkedHashMap<String, LayerAssemblyImpl>();
     private String name = "Application";

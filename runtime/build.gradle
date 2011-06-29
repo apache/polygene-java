@@ -7,7 +7,6 @@ dependencies {
   compile project(":org.qi4j.core:org.qi4j.core.spi")
   compile project(":org.qi4j.core:org.qi4j.core.bootstrap")
   compile project(":org.qi4j.core:org.qi4j.core.testsupport")
-  compile "joda-time:joda-time:$jodaTimeVersion"
 
   compile libraries.slf4j_api
   compile libraries.asm

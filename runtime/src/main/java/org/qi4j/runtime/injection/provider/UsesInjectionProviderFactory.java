@@ -3,6 +3,7 @@ package org.qi4j.runtime.injection.provider;
 import org.qi4j.api.composite.TransientBuilder;
 import org.qi4j.api.object.ObjectBuilder;
 import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.util.Classes;
 import org.qi4j.bootstrap.InvalidInjectionException;
 import org.qi4j.runtime.composite.TransientBuilderInstance;
 import org.qi4j.runtime.composite.TransientModel;
@@ -17,13 +18,13 @@ import org.qi4j.runtime.object.ObjectModel;
 import org.qi4j.runtime.structure.ModelModule;
 import org.qi4j.runtime.structure.ModuleInstance;
 
-import java.io.Serializable;
+import java.lang.reflect.ParameterizedType;
 
 /**
  * JAVADOC
  */
 public final class UsesInjectionProviderFactory
-    implements InjectionProviderFactory, Serializable
+    implements InjectionProviderFactory
 {
     public UsesInjectionProviderFactory()
     {
@@ -36,7 +37,7 @@ public final class UsesInjectionProviderFactory
     }
 
     private class UsesInjectionProvider
-        implements InjectionProvider, Serializable
+        implements InjectionProvider
     {
         private final DependencyModel dependency;
 
@@ -59,13 +60,23 @@ public final class UsesInjectionProviderFactory
                 usesObject = uses.useForType( injectionType );
             }
 
-            if( usesObject == null && !dependency.optional() )
+            if( usesObject == null && !dependency.optional())
             {
+                Class<?> type;
+                if (dependency.injectionType() instanceof ParameterizedType)
+                {
+                    ParameterizedType parameterizedType = (ParameterizedType) dependency.injectionType();
+                    type = Classes.RAW_CLASS.map( parameterizedType.getActualTypeArguments()[0] );
+                } else
+                {
+                    type = injectionType;
+                }
+
                 // No @Uses object provided
                 // Try instantiating a Composite or Object for the given type
                 ModuleInstance moduleInstance = context.moduleInstance();
 
-                ModelModule<TransientModel> transientModel  = moduleInstance.findTransientModels( dependency.injectionClass() );
+                ModelModule<TransientModel> transientModel  = moduleInstance.findTransientModels( type );
                 if( transientModel != null )
                 {
                     if( Iterable.class.equals( injectionType ) || TransientBuilder.class.equals( injectionType ) )
@@ -82,7 +93,7 @@ public final class UsesInjectionProviderFactory
                 }
                 else
                 {
-                    ModelModule<ObjectModel> objectModel = moduleInstance.findObjectModels( dependency.injectionClass() );
+                    ModelModule<ObjectModel> objectModel = moduleInstance.findObjectModels( type );
                     if( objectModel != null )
                     {
                         if( Iterable.class.equals( injectionType ) || ObjectBuilder.class.equals( injectionType ) )
@@ -97,9 +108,7 @@ public final class UsesInjectionProviderFactory
                             }
                             catch( Exception e )
                             {
-                                throw new InjectionProviderException( "Could not instantiate object of class " + dependency
-                                    .injectionClass()
-                                    .getName(), e );
+                                throw new InjectionProviderException( "Could not instantiate object of class " + type.getName(), e );
                             }
                         }
                     }

@@ -17,14 +17,13 @@ package org.qi4j.runtime.composite;
 import org.qi4j.api.util.HierarchicalVisitor;
 import org.qi4j.api.util.VisitableHierarchy;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
  * JAVADOC
  */
 public final class ValueConstraintsModel
-    implements Serializable, VisitableHierarchy<Object, Object>
+    implements VisitableHierarchy<Object, Object>
 {
     private final List<AbstractConstraintModel> constraintModels;
     private String name;

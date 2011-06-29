@@ -15,11 +15,10 @@
 package org.qi4j.runtime.bootstrap;
 
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.api.service.qualifier.ServiceTags;
 import org.qi4j.bootstrap.ImportedServiceDeclaration;
+import org.qi4j.spi.service.ServiceImporter;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +26,7 @@ import java.util.List;
  * Declaration of an imported Service.
  */
 public final class ImportedServiceDeclarationImpl
-    implements ImportedServiceDeclaration, Serializable
+    implements ImportedServiceDeclaration
 {
     private Iterable<ImportedServiceAssemblyImpl> assemblies;
 

@@ -15,19 +15,16 @@
 package org.qi4j.runtime.composite;
 
 import org.qi4j.api.constraint.Constraint;
+import org.qi4j.api.util.Classes;
 
-import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-
-import static org.qi4j.api.util.Classes.getRawClass;
 
 /**
  * JAVADOC
  */
 public final class ConstraintDeclaration
-    implements Serializable
 {
     private final Class<? extends Constraint<?, ?>> constraintClass;
     private final Type declaredIn;
@@ -59,14 +56,14 @@ public final class ConstraintDeclaration
         if( constraintValueType instanceof Class )
         {
             Class constraintValueClass = (Class) constraintValueType;
-            Class valueClass = getRawClass( valueType );
+            Class valueClass = Classes.RAW_CLASS.map( valueType );
             return constraintAnnotationType.equals( annotationType ) && constraintValueClass.isAssignableFrom( valueClass );
         }
         else if( constraintValueType instanceof ParameterizedType )
         {
             // TODO Handle nested generics
-            Class constraintValueClass = getRawClass( constraintValueType );
-            Class valueClass = getRawClass( valueType );
+            Class constraintValueClass = Classes.RAW_CLASS.map( constraintValueType );
+            Class valueClass = Classes.RAW_CLASS.map( valueType );
             return constraintAnnotationType.equals( annotationType ) && constraintValueClass.isAssignableFrom( valueClass );
         }
         else

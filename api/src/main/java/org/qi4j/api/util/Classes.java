@@ -14,82 +14,135 @@
 
 package org.qi4j.api.util;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Array;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.GenericArrayType;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
-import java.lang.reflect.WildcardType;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import org.qi4j.api.specification.Specification;
 
-import static java.util.Arrays.*;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.*;
+import java.util.*;
+
+import static java.util.Arrays.asList;
+import static org.qi4j.api.util.Iterables.*;
+import static org.qi4j.api.util.Iterables.flattenIterables;
+import static org.qi4j.api.util.Iterables.iterable;
 
 /**
  * Class-related utility methods
  */
 public final class Classes
 {
-    /**
-     * Get all interfaces for the given type,
-     * including the provided type. No type
-     * is included twice in the list.
-     *
-     * @param type to extract interfaces from
-     *
-     * @return set of interfaces of given type
-     */
-    public static Set<Class<?>> interfacesOf( Type type )
+    public static final Function<Type, Class<?>> RAW_CLASS = new Function<Type, Class<?>>()
     {
-        Set<Class<?>> interfaces = new LinkedHashSet<Class<?>>();
-        addInterfaces( type, interfaces );
-
-        if( type instanceof Class )
+        @Override
+        public Class<?> map( Type genericType )
         {
-            Class current = (Class) type;
-            while( current != null )
+            // Calculate raw type
+            if( genericType instanceof Class )
             {
-                addInterfaces( current, interfaces );
-                current = current.getSuperclass();
+                return (Class<?>) genericType;
+            } else if( genericType instanceof ParameterizedType )
+            {
+                return (Class<?>) ((ParameterizedType) genericType).getRawType();
+            } else if( genericType instanceof TypeVariable )
+            {
+                return (Class<?>) ((TypeVariable) genericType).getGenericDeclaration();
+            } else if( genericType instanceof WildcardType )
+            {
+                return (Class<?>) ((WildcardType) genericType).getUpperBounds()[0];
+            } else if( genericType instanceof GenericArrayType )
+            {
+                Object temp = Array.newInstance( (Class<?>) ((GenericArrayType) genericType).getGenericComponentType(), 0 );
+                return temp.getClass();
+            }
+            throw new IllegalArgumentException( "Could not extract the raw class of " + genericType );
+        }
+    };
+
+    public static final Function<AccessibleObject, Type> TYPE_OF = new Function<AccessibleObject, Type>()
+    {
+        @Override
+        public Type map( AccessibleObject accessor )
+        {
+            return accessor instanceof Method ? ((Method) accessor).getGenericReturnType() : ((Field) accessor).getGenericType();
+        }
+    };
+
+    public static final Function<Type, Iterable<Class<?>>> CLASS_HIERARCHY = new Function<Type, Iterable<Class<?>>>()
+    {
+        @Override
+        public Iterable<Class<?>> map( Type type )
+        {
+            if( type.equals( Object.class ) )
+            {
+                Class<?> aClass = (Class<?>) type;
+                return cast(iterable( aClass ));
+            }
+            else
+            {
+                type = RAW_CLASS.map( type );
+                return prepend( ((Class) type), map( ((Class) type).getSuperclass() ) );
             }
         }
+    };
 
-        return interfaces;
+    public static final Function<Type, Iterable<Type>> INTERFACES_OF = new Function<Type, Iterable<Type>>()
+    {
+        @Override
+        public Iterable<Type> map( Type type )
+        {
+            Class clazz = RAW_CLASS.map( type );
+
+            if( clazz.isInterface() )
+            {
+                return prepend( type, flattenIterables( Iterables.map( INTERFACES_OF, iterable( clazz.getGenericInterfaces() ) ) ) );
+            } else
+            {
+                if (type.equals( Object.class ))
+                    return iterable(clazz.getGenericInterfaces());
+                else
+                    return flatten( flattenIterables( Iterables.map( INTERFACES_OF, iterable(clazz.getGenericInterfaces()))), INTERFACES_OF.map( RAW_CLASS.map( type ).getSuperclass() ) );
+            }
+        }
+    };
+
+    public static final Function<Type, Iterable<Type>> TYPES_OF = new Function<Type, Iterable<Type>>()
+    {
+        @Override
+        public Iterable<Type> map( Type type )
+        {
+            Class clazz = RAW_CLASS.map( type );
+
+            if( clazz.isInterface() )
+            {
+                return prepend( clazz, flattenIterables( Iterables.map( INTERFACES_OF, iterable( clazz.getGenericInterfaces() ) ) ) );
+            } else
+            {
+                return flatten( CLASS_HIERARCHY.map( type ), flattenIterables( Iterables.map( INTERFACES_OF, CLASS_HIERARCHY.map( type ) ) ) );
+            }
+        }
+    };
+
+    public static <T> Function<Type, Iterable<T>> forClassHierarchy( final Function<Class<?>, Iterable<T>> function )
+    {
+        return new Function<Type, Iterable<T>>()
+        {
+            @Override
+            public Iterable<T> map( Type type )
+            {
+                return flattenIterables( Iterables.map( function, CLASS_HIERARCHY.map( type ) ) );
+            }
+        };
     }
 
-    /**
-     * Get all interfaces for the given type,
-     * including the provided type. No type
-     * is included twice in the list.
-     *
-     * @param type to extract interfaces from
-     *
-     * @return set of interfaces of given type
-     */
-    public static Set<Type> genericInterfacesOf( Type type )
+    public static <T> Function<Type, Iterable<T>> forTypes( final Function<Type, Iterable<T>> function )
     {
-        Set<Type> interfaces = new LinkedHashSet<Type>();
-        addGenericInterfaces( type, interfaces );
-
-        if( type instanceof Class )
+        return new Function<Type, Iterable<T>>()
         {
-            Class current = (Class) type;
-            while( current != null )
+            @Override
+            public Iterable<T> map( Type type )
             {
-                addGenericInterfaces( current, interfaces );
-                current = current.getSuperclass();
+                return flattenIterables( Iterables.map( function, TYPES_OF.map( type ) ) );
             }
-        }
-
-        return interfaces;
+        };
     }
 
     public static Set<Class<?>> interfacesWithMethods( Set<Class<?>> interfaces )
@@ -106,75 +159,12 @@ public final class Classes
         return newSet;
     }
 
-    public static Set<Class<?>> classesOf( Type type )
-    {
-        Set<Class<?>> types = new LinkedHashSet<Class<?>>();
-        addInterfaces( type, types );
-
-        if( type instanceof Class )
-        {
-            Class current = (Class) type;
-            while( current != null )
-            {
-                types.add( current );
-                current = current.getSuperclass();
-            }
-        }
-
-        return types;
-    }
-
-    public static Set<Class<?>> typesOf( Type type )
-    {
-        Set<Class<?>> types = new LinkedHashSet<Class<?>>();
-        addInterfaces( type, types );
-
-        if( type instanceof Class )
-        {
-            Class current = (Class) type;
-            while( current != null )
-            {
-                addInterfaces( current, types );
-                types.add( current );
-                current = current.getSuperclass();
-            }
-        }
-
-        return types;
-    }
-
-    public static Class[] toClassArray( Set<Class<?>> types )
-    {
-        Class[] array = new Class[ types.size() ];
-        int idx = 0;
-        for( Class type : types )
-        {
-            array[ idx++ ] = type;
-        }
-
-        return array;
-    }
-
-    public static Type actualTypeOf( Type type )
-    {
-        Set<Class<?>> types = interfacesOf( type );
-        for( Type type1 : types )
-        {
-            if( type1 instanceof ParameterizedType )
-            {
-                return ( (ParameterizedType) type1 ).getActualTypeArguments()[ 0 ];
-            }
-        }
-        return null;
-    }
-
     public static String getSimpleGenericName( Type type )
     {
         if( type instanceof Class )
         {
-            return ( (Class) type ).getSimpleName();
-        }
-        else if( type instanceof ParameterizedType )
+            return ((Class) type).getSimpleName();
+        } else if( type instanceof ParameterizedType )
         {
             ParameterizedType pt = (ParameterizedType) type;
             String str = getSimpleGenericName( pt.getRawType() );
@@ -191,18 +181,15 @@ public final class Classes
             str += args;
             str += ">";
             return str;
-        }
-        else if( type instanceof GenericArrayType )
+        } else if( type instanceof GenericArrayType )
         {
             GenericArrayType gat = (GenericArrayType) type;
             return getSimpleGenericName( gat.getGenericComponentType() ) + "[]";
-        }
-        else if( type instanceof TypeVariable )
+        } else if( type instanceof TypeVariable )
         {
             TypeVariable tv = (TypeVariable) type;
             return tv.getName();
-        }
-        else if( type instanceof WildcardType )
+        } else if( type instanceof WildcardType )
         {
             WildcardType wt = (WildcardType) type;
             String args = "";
@@ -216,8 +203,7 @@ public final class Classes
             }
 
             return "? extends " + args;
-        }
-        else
+        } else
         {
             throw new IllegalArgumentException( "Don't know how to deal with type:" + type );
         }
@@ -228,9 +214,9 @@ public final class Classes
     )
     {
         AnnotationType result = null;
-        for( Class<?> clazz : typesOf( type ) )
+        for( Type clazz : Classes.TYPES_OF.map( type ) )
         {
-            result = clazz.getAnnotation( annotationClass );
+            result = Classes.RAW_CLASS.map( clazz ).getAnnotation( annotationClass );
             if( result != null )
             {
                 break;
@@ -240,132 +226,16 @@ public final class Classes
         return result;
     }
 
-    public static Class<?> getRawClass( final Type genericType )
+    public static Specification<Member> memberNamed( final String name )
     {
-        // Calculate raw type
-        if( genericType instanceof Class )
+        return new Specification<Member>()
         {
-            return (Class<?>) genericType;
-        }
-        else if( genericType instanceof ParameterizedType )
-        {
-            return (Class<?>) ( (ParameterizedType) genericType ).getRawType();
-        }
-        else if( genericType instanceof TypeVariable )
-        {
-            return (Class<?>) ( (TypeVariable) genericType ).getGenericDeclaration();
-        }
-        else if( genericType instanceof WildcardType )
-        {
-            return (Class<?>) ( (WildcardType) genericType ).getUpperBounds()[ 0 ];
-        }
-        else if( genericType instanceof GenericArrayType )
-        {
-            Object temp = Array.newInstance( (Class<?>) ( (GenericArrayType) genericType ).getGenericComponentType(), 0 );
-            return temp.getClass();
-        }
-        throw new IllegalArgumentException( "Could not extract the raw class of " + genericType );
-    }
-
-    public static List<Constructor> constructorsOf( Class clazz )
-    {
-        List<Constructor> constructors = new ArrayList<Constructor>();
-        addConstructors( clazz, constructors );
-        return constructors;
-    }
-
-    private static void addConstructors( Class clazz, List<Constructor> constructors )
-    {
-        if( clazz != null && !clazz.equals( Object.class ) )
-        {
-            constructors.addAll( asList( clazz.getDeclaredConstructors() ) );
-            addConstructors( clazz.getSuperclass(), constructors );
-        }
-    }
-
-    public static List<Method> methodsOf( Class clazz )
-    {
-        List<Method> methods = new ArrayList<Method>();
-        addMethods( clazz, methods );
-        return methods;
-    }
-
-    private static void addMethods( Class clazz, List<Method> methods )
-    {
-        if( clazz != null && !clazz.equals( Object.class ) )
-        {
-            methods.addAll( asList( clazz.getDeclaredMethods() ) );
-            addMethods( clazz.getSuperclass(), methods );
-        }
-    }
-
-    public static List<Field> fieldsOf( Class clazz )
-    {
-        List<Field> fields = new ArrayList<Field>();
-        addFields( clazz, fields );
-        return fields;
-    }
-
-    private static void addFields( Class clazz, List<Field> fields )
-    {
-        if( clazz != null && !clazz.equals( Object.class ) )
-        {
-            fields.addAll( asList( clazz.getDeclaredFields() ) );
-            addFields( clazz.getSuperclass(), fields );
-        }
-    }
-
-    private static void addInterfaces( Type type, Set<Class<?>> interfaces )
-    {
-        if( !interfaces.contains( type ) )
-        {
-            if( type instanceof ParameterizedType )
+            @Override
+            public boolean satisfiedBy( Member item )
             {
-                final ParameterizedType parameterizedType = (ParameterizedType) type;
-                addInterfaces( parameterizedType.getRawType(), interfaces );
+                return item.getName().equals( name );
             }
-            else if( type instanceof Class )
-            {
-                Class clazz = (Class) type;
-
-                if( clazz.isInterface() )
-                {
-                    interfaces.add( clazz );
-                }
-
-                Type[] subTypes = clazz.getGenericInterfaces();
-                for( Type subType : subTypes )
-                {
-                    addInterfaces( subType, interfaces );
-                }
-            }
-        }
-    }
-
-    private static void addGenericInterfaces( Type type, Set<Type> interfaces )
-    {
-        if( !interfaces.contains( type ) )
-        {
-            if( type instanceof ParameterizedType )
-            {
-                interfaces.add( type );
-            }
-            else if( type instanceof Class )
-            {
-                Class clazz = (Class) type;
-
-                if( clazz.isInterface() )
-                {
-                    interfaces.add( clazz );
-                }
-
-                Type[] subTypes = clazz.getGenericInterfaces();
-                for( Type subType : subTypes )
-                {
-                    addGenericInterfaces( subType, interfaces );
-                }
-            }
-        }
+        };
     }
 
     /**
@@ -375,7 +245,6 @@ public final class Classes
      * @param name
      * @param declaringClass
      * @param topClass
-     *
      * @return
      */
     public static Type resolveTypeVariable( TypeVariable name, Class declaringClass, Class topClass )
@@ -407,7 +276,7 @@ public final class Classes
         List<Type> types = new ArrayList<Type>();
         for( Type type : current.getGenericInterfaces() )
         {
-            Set<Type> interfaces = Classes.genericInterfacesOf( type );
+            Iterable<Type> interfaces = Classes.INTERFACES_OF.map( type );
             for( Type anInterface : interfaces )
             {
                 if( !types.contains( anInterface ) )
@@ -417,6 +286,9 @@ public final class Classes
             }
             types.add( type );
         }
+
+        if (current.getGenericSuperclass() != null)
+            types.add( current.getGenericSuperclass() );
 
         for( Type type : types )
         {
@@ -429,13 +301,12 @@ public final class Classes
                 TypeVariable[] vars = clazz.getTypeParameters();
                 for( int i = 0; i < vars.length; i++ )
                 {
-                    TypeVariable var = vars[ i ];
-                    Type mappedType = args[ i ];
+                    TypeVariable var = vars[i];
+                    Type mappedType = args[i];
                     mappings.put( var, mappedType );
                 }
                 subClass = (Class) pt.getRawType();
-            }
-            else
+            } else
             {
                 subClass = (Class) type;
             }
@@ -454,13 +325,11 @@ public final class Classes
      * Get URI for a class.
      *
      * @param clazz class
-     *
      * @return URI
-     *
      * @throws NullPointerException if clazz is null
      */
     public static String toURI( final Class clazz )
-        throws NullPointerException
+            throws NullPointerException
     {
         return toURI( clazz.getName() );
     }
@@ -474,13 +343,11 @@ public final class Classes
      * URI urn:qi4j:com.example.Foo-Bar
      *
      * @param className class name
-     *
      * @return URI
-     *
      * @throws NullPointerException if className is null
      */
     public static String toURI( String className )
-        throws NullPointerException
+            throws NullPointerException
     {
         className = normalizeClassToURI( className );
         return "urn:qi4j:type:" + className;
@@ -490,13 +357,11 @@ public final class Classes
      * Get class name from a URI
      *
      * @param uri URI
-     *
      * @return class name
-     *
      * @throws NullPointerException if uri is null
      */
     public static String toClassName( String uri )
-        throws NullPointerException
+            throws NullPointerException
     {
         uri = uri.substring( "urn:qi4j:type:".length() );
         uri = denormalizeURIToClass( uri );

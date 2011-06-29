@@ -19,7 +19,7 @@
 package org.qi4j.bootstrap;
 
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.service.ServiceImporter;
+import org.qi4j.spi.service.ServiceImporter;
 import org.qi4j.spi.service.importer.InstanceImporter;
 import org.qi4j.spi.service.importer.NewObjectImporter;
 import org.qi4j.spi.service.importer.ServiceInstanceImporter;

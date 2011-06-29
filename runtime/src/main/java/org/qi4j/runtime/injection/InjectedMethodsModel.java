@@ -15,16 +15,14 @@
 package org.qi4j.runtime.injection;
 
 import org.qi4j.api.injection.InjectionScope;
-import org.qi4j.api.util.Classes;
-import org.qi4j.api.util.HierarchicalVisitor;
-import org.qi4j.api.util.VisitableHierarchy;
-import org.qi4j.bootstrap.BindingException;
-import org.qi4j.runtime.model.Resolution;
+import org.qi4j.api.specification.Specifications;
+import org.qi4j.api.util.*;
 
-import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,16 +33,15 @@ import static org.qi4j.api.util.Iterables.*;
  * JAVADOC
  */
 public final class InjectedMethodsModel
-        implements Serializable, Dependencies, VisitableHierarchy<Object, Object>
+        implements Dependencies, VisitableHierarchy<Object, Object>
 {
     // Model
     private final List<InjectedMethodModel> methodModels = new ArrayList<InjectedMethodModel>();
 
     public InjectedMethodsModel( Class fragmentClass )
     {
-        List<Method> methods = Classes.methodsOf( fragmentClass );
         nextMethod:
-        for( Method method : methods )
+        for( Method method : Methods.METHODS_OF.map( fragmentClass ) )
         {
             Annotation[][] parameterAnnotations = method.getParameterAnnotations();
             if( parameterAnnotations.length > 0 )
@@ -53,16 +50,30 @@ public final class InjectedMethodsModel
                 final Type[] genericParameterTypes = method.getGenericParameterTypes();
                 for( int i = 0; i < parameterAnnotations.length; i++ )
                 {
-                    Annotation injectionAnnotation = first( filter( hasAnnotation( InjectionScope.class ), iterable( parameterAnnotations[i] ) ) );
+                    Annotation injectionAnnotation = first( filter( Specifications.translate( Annotations.type(), hasAnnotation( InjectionScope.class )), iterable( parameterAnnotations[i] ) ) );
                     if( injectionAnnotation == null )
                     {
                         continue nextMethod;
                     }
 
-                    Type type = genericParameterTypes[i];
+                    Type genericType = genericParameterTypes[i];
+                    if (genericType instanceof ParameterizedType )
+                    {
+                        genericType = new ParameterizedTypeInstance(((ParameterizedType) genericType).getActualTypeArguments(), ((ParameterizedType) genericType).getRawType(), ((ParameterizedType) genericType).getOwnerType());
+
+                        for( int j = 0; j < ((ParameterizedType) genericType).getActualTypeArguments().length; j++ )
+                        {
+                            Type type = ((ParameterizedType) genericType).getActualTypeArguments()[j];
+                            if (type instanceof TypeVariable )
+                            {
+                                type = Classes.resolveTypeVariable( (TypeVariable) type, method.getDeclaringClass(), fragmentClass );
+                                ((ParameterizedType) genericType).getActualTypeArguments()[j] = type;
+                            }
+                        }
+                    }
 
                     boolean optional = DependencyModel.isOptional( injectionAnnotation, parameterAnnotations[i] );
-                    DependencyModel dependencyModel = new DependencyModel( injectionAnnotation, type, fragmentClass, optional, parameterAnnotations[i] );
+                    DependencyModel dependencyModel = new DependencyModel( injectionAnnotation, genericType, fragmentClass, optional, parameterAnnotations[i] );
                     parametersModel.addDependency( dependencyModel );
                 }
                 InjectedMethodModel methodModel = new InjectedMethodModel( method, parametersModel );

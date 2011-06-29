@@ -21,14 +21,14 @@ import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
 import org.qi4j.spi.entitystore.*;
 import org.qi4j.spi.entitystore.helpers.DefaultEntityState;
+import org.qi4j.spi.property.JSONWriterSerializer;
 import org.qi4j.spi.property.PropertyDescriptor;
-import org.qi4j.spi.property.PropertyType;
-import org.qi4j.spi.property.PropertyTypeDescriptor;
+import org.qi4j.spi.property.PersistentPropertyDescriptor;
+import org.qi4j.spi.property.JSONDeserializer;
 import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.spi.structure.ModuleSPI;
 import org.slf4j.Logger;
@@ -125,20 +125,20 @@ public class MapEntityStoreMixin
                                 if( state.status().equals( EntityStatus.NEW ) )
                                 {
                                     Writer writer = changer.newEntity( state.identity(),
-                                                                       state.entityDescriptor().entityType() );
+                                                                       state.entityDescriptor() );
                                     writeEntityState( state, writer, unitofwork.identity(), unitofwork.currentTime() );
                                     writer.close();
                                 }
                                 else if( state.status().equals( EntityStatus.UPDATED ) )
                                 {
                                     Writer writer = changer.updateEntity( state.identity(),
-                                                                          state.entityDescriptor().entityType() );
+                                                                          state.entityDescriptor() );
                                     writeEntityState( state, writer, unitofwork.identity(), unitofwork.currentTime() );
                                     writer.close();
                                 }
                                 else if( state.status().equals( EntityStatus.REMOVED ) )
                                 {
-                                    changer.removeEntity( state.identity(), state.entityDescriptor().entityType() );
+                                    changer.removeEntity( state.identity(), state.entityDescriptor() );
                                 }
                             }
                         }
@@ -236,7 +236,7 @@ public class MapEntityStoreMixin
                     {
                         DefaultEntityState state = (DefaultEntityState) migratedEntity;
                         Writer writer = changer.updateEntity( state.identity(),
-                                                              state.entityDescriptor().entityType() );
+                                                              state.entityDescriptor() );
                         writeEntityState( state, writer, state.version(), state.lastModified() );
                         writer.close();
                     }
@@ -264,23 +264,17 @@ public class MapEntityStoreMixin
             JSONWriter properties = json.object().
                 key( "identity" ).value( state.identity().identity() ).
                 key( "application_version" ).value( application.version() ).
-                key( "type" ).value( state.entityDescriptor().entityType().type().name() ).
+                key( "type" ).value( state.entityDescriptor().type().getName() ).
                 key( "version" ).value( identity ).
                 key( "modified" ).value( lastModified ).
                 key( "properties" ).object();
-            EntityType entityType = state.entityDescriptor().entityType();
-            for( PropertyType propertyType : entityType.properties() )
+            EntityDescriptor entityType = state.entityDescriptor();
+            JSONWriterSerializer serializer = new JSONWriterSerializer( json );
+            for( PersistentPropertyDescriptor persistentProperty : entityType.state().<PersistentPropertyDescriptor>properties() )
             {
-                Object value = state.properties().get( propertyType.qualifiedName() );
-                json.key( propertyType.qualifiedName().name() );
-                if( value == null )
-                {
-                    json.value( null );
-                }
-                else
-                {
-                    propertyType.type().toJSON( value, json );
-                }
+                Object value = state.properties().get( persistentProperty.qualifiedName() );
+                json.key( persistentProperty.qualifiedName().name() );
+                serializer.serialize( value, persistentProperty.valueType() );
             }
 
             JSONWriter associations = properties.endObject().key( "associations" ).object();
@@ -317,6 +311,7 @@ public class MapEntityStoreMixin
         try
         {
             ModuleSPI module = unitOfWork.module();
+            JSONDeserializer deserializer = new JSONDeserializer( module );
             JSONObject jsonObject = new JSONObject( new JSONTokener( entityState ) );
             EntityStatus status = EntityStatus.LOADED;
 
@@ -367,7 +362,7 @@ public class MapEntityStoreMixin
                 catch( JSONException e )
                 {
                     // Value not found, default it
-                    Object initialValue = propertyDescriptor.initialValue();
+                    Object initialValue = propertyDescriptor.initialValue( module );
                     properties.put( propertyDescriptor.qualifiedName(), initialValue );
                     status = EntityStatus.UPDATED;
                     continue;
@@ -378,9 +373,7 @@ public class MapEntityStoreMixin
                 }
                 else
                 {
-                    Object value = ( (PropertyTypeDescriptor) propertyDescriptor ).propertyType()
-                        .type()
-                        .fromJSON( jsonValue, module );
+                    Object value = deserializer.deserialize( jsonValue, propertyDescriptor.valueType() );
                     properties.put( propertyDescriptor.qualifiedName(), value );
                 }
             }

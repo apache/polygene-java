@@ -37,6 +37,4 @@ public interface QueryBuilderFactory
      */
     <T> QueryBuilder<T> newQueryBuilder( Class<T> resultType )
         throws MissingIndexingSystemException;
-
-    <T> Query<T> newNamedQuery( Class<T> resultType, UnitOfWork unitOfWork, String name );
 }

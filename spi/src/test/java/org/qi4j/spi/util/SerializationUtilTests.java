@@ -17,16 +17,13 @@
  */
 package org.qi4j.spi.util;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import org.junit.Assert;
+import org.junit.Test;
+
+import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import org.junit.Assert;
-import org.junit.Test;
 
 public class SerializationUtilTests
 {

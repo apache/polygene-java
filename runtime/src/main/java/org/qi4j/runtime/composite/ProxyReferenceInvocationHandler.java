@@ -14,7 +14,9 @@
  */
 package org.qi4j.runtime.composite;
 
-import org.qi4j.spi.composite.CompositeInvoker;
+import org.qi4j.api.composite.CompositeInvoker;
+import org.qi4j.api.property.StateHolder;
+import org.qi4j.spi.composite.CompositeInstance;
 
 import java.lang.reflect.*;
 
@@ -54,6 +56,13 @@ public final class ProxyReferenceInvocationHandler
         {
             throw e.getUndeclaredThrowable();
         }
+    }
+
+    @Override
+    public StateHolder state()
+    {
+        InvocationHandler invocationHandler = Proxy.getInvocationHandler( this.proxy );
+        return ((CompositeInstance)invocationHandler).state();
     }
 
     public Object invoke( Object proxy, Method method, Object[] args )

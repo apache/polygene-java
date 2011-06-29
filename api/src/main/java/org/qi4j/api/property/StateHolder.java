@@ -14,8 +14,7 @@
 
 package org.qi4j.api.property;
 
-import java.lang.reflect.Method;
-import org.qi4j.api.common.QualifiedName;
+import java.lang.reflect.AccessibleObject;
 
 /**
  * This represents the state of a composite (properties).
@@ -23,33 +22,15 @@ import org.qi4j.api.common.QualifiedName;
 public interface StateHolder
 {
     /**
-     * Get a property for a specific accessor method
+     * Get a property for a specific accessor
      *
-     * @param propertyMethod of the property
-     *
-     * @return the property
-     */
-    <T> Property<T> getProperty( Method propertyMethod );
-
-    /**
-     * Get a property for a specific accessor method
-     *
-     * @param name The qualified name of the property
+     * @param accessor of the property
      *
      * @return the property
+     * @throws IllegalArgumentException if no property for given accessor exists
      */
-    <T> Property<T> getProperty( QualifiedName name );
+    <T> Property<T> getProperty( AccessibleObject accessor )
+            throws IllegalArgumentException;
 
     Iterable<Property<?>> properties();
-
-    @Deprecated
-    <ThrowableType extends Throwable> void visitProperties( StateVisitor<ThrowableType> visitor )
-        throws ThrowableType;
-
-    @Deprecated
-    public interface StateVisitor<ThrowableType extends Throwable>
-    {
-        void visitProperty( QualifiedName name, Object value )
-            throws ThrowableType;
-    }
 }

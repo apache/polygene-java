@@ -25,7 +25,7 @@ public interface ServiceReference<T>
 {
     String identity();
 
-    Class type();
+    Class<T> type();
 
     <T> T metaInfo( Class<T> infoType );
 

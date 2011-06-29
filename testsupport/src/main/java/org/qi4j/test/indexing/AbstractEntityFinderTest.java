@@ -17,46 +17,32 @@
  */
 package org.qi4j.test.indexing;
 
-import static org.junit.Assert.assertEquals;
-import static org.qi4j.api.query.QueryExpressions.and;
-import static org.qi4j.api.query.QueryExpressions.eq;
-import static org.qi4j.api.query.QueryExpressions.ge;
-import static org.qi4j.api.query.QueryExpressions.gt;
-import static org.qi4j.api.query.QueryExpressions.isNotNull;
-import static org.qi4j.api.query.QueryExpressions.isNull;
-import static org.qi4j.api.query.QueryExpressions.matches;
-import static org.qi4j.api.query.QueryExpressions.not;
-import static org.qi4j.api.query.QueryExpressions.or;
-import static org.qi4j.api.query.QueryExpressions.orderBy;
-import static org.qi4j.api.query.QueryExpressions.templateFor;
-import static org.qi4j.test.indexing.NameableAssert.assertNames;
-import static org.qi4j.test.indexing.NameableAssert.toList;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.entity.Entity;
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.api.query.grammar.BooleanExpression;
+import org.qi4j.api.query.QueryExpressions;
 import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.api.service.ServiceReference;
+import org.qi4j.api.specification.Specification;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
 import org.qi4j.spi.query.IndexExporter;
-import org.qi4j.test.indexing.model.Domain;
-import org.qi4j.test.indexing.model.Female;
-import org.qi4j.test.indexing.model.Male;
-import org.qi4j.test.indexing.model.Nameable;
-import org.qi4j.test.indexing.model.Person;
+import org.qi4j.test.indexing.model.*;
+
+import java.io.IOException;
+import java.util.*;
+
+import static org.junit.Assert.assertEquals;
+import static org.qi4j.api.query.QueryExpressions.*;
+import static org.qi4j.test.indexing.NameableAssert.assertNames;
+import static org.qi4j.test.indexing.NameableAssert.toList;
 
 public abstract class AbstractEntityFinderTest
     extends AbstractAnyQueryTest
 {
-    private static final BooleanExpression ALL = null;
+    private static final Specification<Composite> ALL = null;
     private static final OrderBy[] NO_SORTING = null;
     private static final Integer NO_FIRST_RESULT = null;
     private static final Integer NO_MAX_RESULTS = null;
@@ -90,7 +76,7 @@ public abstract class AbstractEntityFinderTest
     {
         // should return all persons (Joe, Ann, Jack Doe)
         Iterable<EntityReference> entities = entityFinder.findEntities( Person.class, ALL, NO_SORTING, NO_FIRST_RESULT,
-                                                                        NO_MAX_RESULTS );
+                                                                        NO_MAX_RESULTS, Collections.<String, Object>emptyMap() );
         assertNames( entities, JOE, JACK, ANN );
     }
 
@@ -100,8 +86,8 @@ public abstract class AbstractEntityFinderTest
     {
         Nameable nameable = templateFor( Nameable.class );
         // should return Gaming domain
-        Iterable<EntityReference> entities = entityFinder.findEntities( Domain.class, eq( nameable.name(), "Gaming" ),
-                                                                        NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS );
+        Iterable<EntityReference> entities = entityFinder.findEntities( Domain.class, QueryExpressions.eq( nameable.name(), "Gaming" ),
+                                                                        NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS, Collections.<String, Object>emptyMap() );
         assertNames( entities, "Gaming" );
     }
 
@@ -111,7 +97,7 @@ public abstract class AbstractEntityFinderTest
     {
         // should return all entities
         Iterable<EntityReference> entities = entityFinder.findEntities( Nameable.class, ALL, NO_SORTING,
-                                                                        NO_FIRST_RESULT, NO_MAX_RESULTS );
+                                                                        NO_FIRST_RESULT, NO_MAX_RESULTS, Collections.<String, Object>emptyMap() );
         assertNames( entities, NameableAssert.allNames() );
     }
 
@@ -124,7 +110,7 @@ public abstract class AbstractEntityFinderTest
         Iterable<EntityReference> entities = entityFinder.findEntities( Person.class,
                                                                         eq( person.placeOfBirth()
                                                                                 .get()
-                                                                                .name(), "Kuala Lumpur" ), NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS );
+                                                                                .name(), "Kuala Lumpur" ), NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS, Collections.<String, Object>emptyMap() );
         assertNames( entities, JOE, ANN );
     }
 
@@ -140,7 +126,7 @@ public abstract class AbstractEntityFinderTest
                                                                                 .placeOfBirth()
                                                                                 .get()
                                                                                 .name(), "Kuala Lumpur" ), NO_SORTING, NO_FIRST_RESULT,
-                                                                        NO_MAX_RESULTS );
+                                                                        NO_MAX_RESULTS, Collections.<String, Object>emptyMap() );
         assertNames( entities, JOE );
     }
 
@@ -151,7 +137,7 @@ public abstract class AbstractEntityFinderTest
         Person person = templateFor( Person.class );
         // should return Joe and Ann Doe
         Iterable<EntityReference> entities = entityFinder.findEntities( Person.class, ge( person.yearOfBirth(), 1973 ),
-                                                                        NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS );
+                                                                        NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS, Collections.<String, Object>emptyMap() );
         assertNames( entities, JOE, ANN );
     }
 
@@ -166,7 +152,7 @@ public abstract class AbstractEntityFinderTest
                                                                                                                        .placeOfBirth()
                                                                                                                        .get()
                                                                                                                        .name(), "Penang" ) ), NO_SORTING,
-                                                                        NO_FIRST_RESULT, NO_MAX_RESULTS );
+                                                                        NO_FIRST_RESULT, NO_MAX_RESULTS, Collections.<String, Object>emptyMap() );
         assertNames( entities, JACK );
     }
 
@@ -179,7 +165,7 @@ public abstract class AbstractEntityFinderTest
         Iterable<EntityReference> entities = entityFinder.findEntities( Person.class,
                                                                         or( eq( person.yearOfBirth(), 1970 ), eq( person
                                                                                                                       .yearOfBirth(), 1975 ) ), NO_SORTING, NO_FIRST_RESULT,
-                                                                        NO_MAX_RESULTS );
+                                                                        NO_MAX_RESULTS, Collections.<String, Object>emptyMap() );
         assertNames( entities, JACK, ANN );
     }
 
@@ -192,7 +178,7 @@ public abstract class AbstractEntityFinderTest
         Iterable<EntityReference> entities = entityFinder.findEntities( Female.class,
                                                                         or( eq( person.yearOfBirth(), 1970 ), eq( person
                                                                                                                       .yearOfBirth(), 1975 ) ), NO_SORTING, NO_FIRST_RESULT,
-                                                                        NO_MAX_RESULTS );
+                                                                        NO_MAX_RESULTS, Collections.<String, Object>emptyMap() );
         assertNames( entities, ANN );
     }
 
@@ -203,7 +189,7 @@ public abstract class AbstractEntityFinderTest
         Person person = templateFor( Person.class );
         // should return Joe and Jack Doe
         Iterable<EntityReference> entities = entityFinder.findEntities( Person.class,
-                                                                        not( eq( person.yearOfBirth(), 1975 ) ), NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS );
+                                                                        not( eq( person.yearOfBirth(), 1975 ) ), NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS, Collections.<String, Object>emptyMap() );
         assertNames( entities, JOE, JACK );
     }
 
@@ -214,7 +200,7 @@ public abstract class AbstractEntityFinderTest
         Person person = templateFor( Person.class );
         // should return Joe Doe
         Iterable<EntityReference> entities = entityFinder.findEntities( Person.class, isNotNull( person.email() ),
-                                                                        NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS );
+                                                                        NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS, Collections.<String, Object>emptyMap() );
         assertNames( entities, JOE );
     }
 
@@ -225,7 +211,7 @@ public abstract class AbstractEntityFinderTest
         Person person = templateFor( Person.class );
         // should return Ann and Jack Doe
         Iterable<EntityReference> entities = entityFinder.findEntities( Person.class, isNull( person.email() ),
-                                                                        NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS );
+                                                                        NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS, Collections.<String, Object>emptyMap() );
         assertNames( entities, ANN, JACK );
     }
 
@@ -236,7 +222,7 @@ public abstract class AbstractEntityFinderTest
         Male person = templateFor( Male.class );
         // should return Jack Doe
         Iterable<EntityReference> entities = entityFinder.findEntities( Person.class, isNotNull( person.wife() ),
-                                                                        NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS );
+                                                                        NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS, Collections.<String, Object>emptyMap() );
         assertNames( entities, JACK );
     }
 
@@ -247,7 +233,7 @@ public abstract class AbstractEntityFinderTest
         Male person = templateFor( Male.class );
         // should return Joe Doe
         Iterable<EntityReference> entities = entityFinder.findEntities( Male.class, isNull( person.wife() ),
-                                                                        NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS );
+                                                                        NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS, Collections.<String, Object>emptyMap() );
         assertNames( entities, JOE );
     }
 
@@ -258,7 +244,7 @@ public abstract class AbstractEntityFinderTest
         Male person = templateFor( Male.class );
         // should return Ann and Joe Doe
         Iterable<EntityReference> entities = entityFinder.findEntities( Person.class, isNull( person.wife() ),
-                                                                        NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS );
+                                                                        NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS, Collections.<String, Object>emptyMap() );
         assertNames( entities, ANN, JOE );
     }
 
@@ -268,7 +254,7 @@ public abstract class AbstractEntityFinderTest
     {
         // should return only 2 entities
         final List<EntityReference> references = toList( entityFinder.findEntities( Nameable.class, ALL, NO_SORTING,
-                                                                                    NO_FIRST_RESULT, 2 ) );
+                                                                                    NO_FIRST_RESULT, 2, Collections.<String, Object>emptyMap() ) );
         assertEquals( "2 identitities", 2, references.size() );
     }
 
@@ -278,7 +264,7 @@ public abstract class AbstractEntityFinderTest
     {
         // should return only 2 entities starting with third one
         final List<EntityReference> references = toList( entityFinder.findEntities( Nameable.class, ALL, NO_SORTING, 3,
-                                                                                    2 ) );
+                                                                                    2, Collections.<String, Object>emptyMap() ) );
         assertEquals( "2 identitities", 2, references.size() );
     }
 
@@ -294,7 +280,7 @@ public abstract class AbstractEntityFinderTest
         Iterable<EntityReference> entities = entityFinder.findEntities( Nameable.class, ALL, new OrderBy[]
             {
                 orderBy( nameable.name() )
-            }, NO_FIRST_RESULT, NO_MAX_RESULTS );
+            }, NO_FIRST_RESULT, NO_MAX_RESULTS, Collections.<String, Object>emptyMap() );
         assertNames( false, entities, allNames );
     }
 
@@ -317,7 +303,7 @@ public abstract class AbstractEntityFinderTest
                                                                         new OrderBy[]
                                                                             {
                                                                                 orderBy( nameable.name() )
-                                                                            }, NO_FIRST_RESULT, NO_MAX_RESULTS );
+                                                                            }, NO_FIRST_RESULT, NO_MAX_RESULTS, Collections.<String, Object>emptyMap() );
         assertNames( false, entities, largerThanB.toArray( new String[ largerThanB.size() ] ) );
     }
 
@@ -331,7 +317,7 @@ public abstract class AbstractEntityFinderTest
                                                                         new OrderBy[]
                                                                             {
                                                                                 orderBy( person.name(), OrderBy.Order.DESCENDING )
-                                                                            }, NO_FIRST_RESULT, NO_MAX_RESULTS );
+                                                                            }, NO_FIRST_RESULT, NO_MAX_RESULTS, Collections.<String, Object>emptyMap() );
         assertNames( false, entities, JOE, ANN );
     }
 
@@ -344,7 +330,7 @@ public abstract class AbstractEntityFinderTest
         Iterable<EntityReference> entities = entityFinder.findEntities( Person.class, ALL, new OrderBy[]
             {
                 orderBy( person.placeOfBirth().get().name() ), orderBy( person.name() )
-            }, NO_FIRST_RESULT, NO_MAX_RESULTS );
+            }, NO_FIRST_RESULT, NO_MAX_RESULTS, Collections.<String, Object>emptyMap() );
         assertNames( false, entities, ANN, JOE, JACK );
     }
 
@@ -355,7 +341,21 @@ public abstract class AbstractEntityFinderTest
         Nameable nameable = templateFor( Nameable.class );
         // should return Jack and Joe Doe
         Iterable<EntityReference> entities = entityFinder.findEntities( Nameable.class,
-                                                                        matches( nameable.name(), "J.*Doe" ), NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS );
+                                                                        matches( nameable.name(), "J.*Doe" ), NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS, Collections.<String, Object>emptyMap() );
         assertNames( entities, JACK, JOE );
+    }
+
+    @Test
+    public void script23()
+        throws EntityFinderException
+    {
+        Nameable nameable = templateFor( Nameable.class );
+
+        // Try using variables
+        Map<String, Object> variables = new HashMap<String, Object>();
+        variables.put("domain", "Gaming");
+        Iterable<EntityReference> entities = entityFinder.findEntities( Domain.class, QueryExpressions.eq( nameable.name(), QueryExpressions.<String>variable( "domain" ) ),
+                                                                        NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS, variables );
+        assertNames( entities, "Gaming" );
     }
 }

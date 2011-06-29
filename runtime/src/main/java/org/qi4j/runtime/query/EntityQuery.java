@@ -18,15 +18,17 @@
  */
 package org.qi4j.runtime.query;
 
+import org.qi4j.api.composite.Composite;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryExecutionException;
-import org.qi4j.api.query.grammar.BooleanExpression;
+import org.qi4j.api.specification.Specification;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
 
+import java.util.Collections;
 import java.util.Iterator;
 
 /**
@@ -55,7 +57,7 @@ final class EntityQuery<T>
      * @param whereClause        where clause
      */
     EntityQuery( final UnitOfWork unitOfWorkInstance, final EntityFinder entityFinder, final Class<T> resultType,
-                 final BooleanExpression whereClause
+                 final Specification<Composite> whereClause
     )
     {
         super( resultType, whereClause );
@@ -70,7 +72,7 @@ final class EntityQuery<T>
     {
         try
         {
-            final EntityReference foundEntity = entityFinder.findEntity( resultType, whereClause );
+            final EntityReference foundEntity = entityFinder.findEntity( resultType, whereClause, variables == null ? Collections.<String, Object>emptyMap() : variables );
             if( foundEntity != null )
             {
                 try
@@ -99,8 +101,12 @@ final class EntityQuery<T>
     {
         try
         {
-            final Iterator<EntityReference> foundEntities = entityFinder.findEntities( resultType, whereClause,
-                                                                                       orderBySegments, firstResult, maxResults )
+            final Iterator<EntityReference> foundEntities = entityFinder.findEntities( resultType,
+                                                                                       whereClause,
+                                                                                       orderBySegments,
+                                                                                       firstResult,
+                                                                                       maxResults,
+                                                                                       variables == null ? Collections.<String, Object>emptyMap() : variables)
                 .iterator();
 
             return new Iterator<T>()
@@ -143,7 +149,7 @@ final class EntityQuery<T>
     {
         try
         {
-            return entityFinder.countEntities( resultType, whereClause );
+            return entityFinder.countEntities( resultType, whereClause, variables == null ? Collections.<String, Object>emptyMap() : variables );
         }
         catch( EntityFinderException e )
         {

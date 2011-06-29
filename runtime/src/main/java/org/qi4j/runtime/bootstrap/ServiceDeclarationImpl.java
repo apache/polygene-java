@@ -18,7 +18,6 @@ import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.qualifier.ServiceTags;
 import org.qi4j.bootstrap.ServiceDeclaration;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -27,7 +26,7 @@ import java.util.List;
  * Declaration of a Service. Created by {@link org.qi4j.runtime.bootstrap.ModuleAssemblyImpl#services(Class[])}.
  */
 public final class ServiceDeclarationImpl
-        implements ServiceDeclaration, Serializable
+        implements ServiceDeclaration
 {
     private Iterable<ServiceAssemblyImpl> serviceAssemblies;
 

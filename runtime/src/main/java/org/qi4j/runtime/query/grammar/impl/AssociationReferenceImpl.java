@@ -74,8 +74,8 @@ public class AssociationReferenceImpl
         name = accessor.getName();
         declaringType = accessor.getDeclaringClass();
         Type returnType = accessor.getGenericReturnType();
-        if( !Association.class.isAssignableFrom( Classes.getRawClass( returnType ) ) &&
-            !ManyAssociation.class.isAssignableFrom( Classes.getRawClass( returnType ) ) )
+        if( !Association.class.isAssignableFrom( Classes.RAW_CLASS.map( returnType ) ) &&
+            !ManyAssociation.class.isAssignableFrom( Classes.RAW_CLASS.map( returnType ) ) )
         {
             throw new QueryExpressionException( "Unsupported association type:" + returnType );
         }

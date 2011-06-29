@@ -16,14 +16,13 @@ package org.qi4j.runtime.composite;
 
 import org.qi4j.api.common.AppliesToFilter;
 
-import java.io.Serializable;
 import java.lang.reflect.Method;
 
 /**
  * JAVADOC
  */
 final class OrAppliesToFilter
-    implements AppliesToFilter, Serializable
+    implements AppliesToFilter
 {
     private final AppliesToFilter left;
     private final AppliesToFilter right;

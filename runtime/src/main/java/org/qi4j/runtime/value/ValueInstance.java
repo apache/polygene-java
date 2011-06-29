@@ -16,9 +16,8 @@
 
 package org.qi4j.runtime.value;
 
-import org.json.JSONException;
-import org.json.JSONStringer;
 import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.value.Value;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.runtime.composite.MixinsInstance;
 import org.qi4j.runtime.composite.TransientInstance;
@@ -83,15 +82,11 @@ public final class ValueInstance
     @Override
     public String toString()
     {
-        try
-        {
+        return ((Value)proxy()).toJSON();
+/*
             JSONStringer stringer = new JSONStringer();
             ( (ValueModel) compositeModel ).valueType().toJSON( proxy(), stringer );
             return stringer.toString();
-        }
-        catch( JSONException e )
-        {
-            return super.toString();
-        }
+*/
     }
 }

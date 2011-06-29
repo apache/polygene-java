@@ -18,32 +18,6 @@
  */
 package org.qi4j.test.indexing;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.qi4j.api.query.QueryExpressions.and;
-import static org.qi4j.api.query.QueryExpressions.contains;
-import static org.qi4j.api.query.QueryExpressions.eq;
-import static org.qi4j.api.query.QueryExpressions.ge;
-import static org.qi4j.api.query.QueryExpressions.gt;
-import static org.qi4j.api.query.QueryExpressions.isNotNull;
-import static org.qi4j.api.query.QueryExpressions.isNull;
-import static org.qi4j.api.query.QueryExpressions.matches;
-import static org.qi4j.api.query.QueryExpressions.not;
-import static org.qi4j.api.query.QueryExpressions.oneOf;
-import static org.qi4j.api.query.QueryExpressions.or;
-import static org.qi4j.api.query.QueryExpressions.orderBy;
-import static org.qi4j.api.query.QueryExpressions.templateFor;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.junit.Ignore;
 import org.junit.Test;
 import org.qi4j.api.query.NotQueryableException;
@@ -53,14 +27,15 @@ import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.spi.query.EntityFinderException;
 import org.qi4j.spi.query.IndexExporter;
-import org.qi4j.test.indexing.model.City;
-import org.qi4j.test.indexing.model.Domain;
-import org.qi4j.test.indexing.model.Female;
-import org.qi4j.test.indexing.model.File;
-import org.qi4j.test.indexing.model.Male;
-import org.qi4j.test.indexing.model.Nameable;
-import org.qi4j.test.indexing.model.Person;
-import org.qi4j.test.indexing.model.QueryParam;
+import org.qi4j.test.indexing.model.*;
+
+import java.io.IOException;
+import java.util.*;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.*;
+import static org.qi4j.api.query.QueryExpressions.*;
 
 public abstract class AbstractQueryTest
     extends AbstractAnyQueryTest

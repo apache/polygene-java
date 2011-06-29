@@ -14,8 +14,13 @@
 
 package org.qi4j.spi.property;
 
-import java.lang.reflect.Method;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.property.PropertyInfo;
+import org.qi4j.spi.structure.ModuleSPI;
+
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 
 /**
  * JAVADOC
@@ -23,7 +28,38 @@ import org.qi4j.api.property.PropertyInfo;
 public interface PropertyDescriptor
     extends PropertyInfo
 {
-    Method accessor();
+    boolean isImmutable();
 
-    Object initialValue();
+    /**
+     * Access metadata about the property with a given type.
+     * The info is registered for the property during
+     * assembly of the application.
+     *
+     * @param infoType the type of the metadata to return
+     *
+     * @return a metadata object that implements the requested type or null if none is registered
+     */
+    <T> T metaInfo( Class<T> infoType );
+
+    /**
+     * Get the qualified name of the property which is equal to:<br/>
+     * <interface name>:<method name>
+     *
+     * @return the qualified name of the property
+     */
+    QualifiedName qualifiedName();
+
+    /**
+     * Get the type of the property. If the property is declared
+     * as Property<X> then X is returned.
+     *
+     * @return the property type
+     */
+    Type type();
+
+    AccessibleObject accessor();
+
+    Object initialValue( ModuleSPI module );
+
+    ValueType valueType();
 }

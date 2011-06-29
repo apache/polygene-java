@@ -17,12 +17,13 @@
  */
 package org.qi4j.test.indexing.model;
 
-import java.util.Map;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.property.Property;
+
+import java.util.Map;
 
 /**
  * JAVADOC Add JavaDoc

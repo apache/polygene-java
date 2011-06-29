@@ -20,7 +20,6 @@ import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.service.DuplicateServiceIdentityException;
 import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.api.specification.Specification;
 import org.qi4j.api.util.Iterables;
 import org.qi4j.api.value.ValueComposite;
@@ -38,6 +37,7 @@ import org.qi4j.runtime.service.ServicesModel;
 import org.qi4j.runtime.structure.ModuleModel;
 import org.qi4j.runtime.value.ValueModel;
 import org.qi4j.runtime.value.ValuesModel;
+import org.qi4j.spi.service.ServiceImporter;
 
 import java.util.*;
 

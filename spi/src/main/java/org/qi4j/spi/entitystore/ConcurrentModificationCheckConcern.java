@@ -14,8 +14,6 @@
 
 package org.qi4j.spi.entitystore;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.concern.ConcernOf;
 import org.qi4j.api.entity.EntityReference;
@@ -25,6 +23,9 @@ import org.qi4j.api.usecase.Usecase;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.structure.ModuleSPI;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Concern that helps EntityStores do concurrent modification checks.

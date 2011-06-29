@@ -1,9 +1,10 @@
 package org.qi4j.api.common;
 
-import java.io.Serializable;
-import java.lang.reflect.Type;
 import org.qi4j.api.util.Classes;
 import org.qi4j.api.util.NullArgumentException;
+
+import java.io.Serializable;
+import java.lang.reflect.Type;
 
 public final class TypeName
     implements Serializable, Comparable<TypeName>
@@ -18,7 +19,7 @@ public final class TypeName
 
     public static TypeName nameOf( Type type )
     {
-        return nameOf( Classes.getRawClass( type ) );
+        return nameOf( Classes.RAW_CLASS.map( type ) );
     }
 
     public static TypeName nameOf( String typeName )

@@ -39,6 +39,7 @@ import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.usecase.Usecase;
+import org.qi4j.api.util.Classes;
 import org.qi4j.api.util.Function;
 import org.qi4j.api.util.Iterables;
 import org.qi4j.api.util.NullArgumentException;
@@ -68,9 +69,11 @@ import org.qi4j.runtime.value.ValuesModel;
 import org.qi4j.spi.composite.TransientDescriptor;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.object.ObjectDescriptor;
+import org.qi4j.spi.property.JSONDeserializer;
 import org.qi4j.spi.structure.ModuleSPI;
 import org.qi4j.spi.value.ValueDescriptor;
 
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -445,7 +448,7 @@ public class ModuleInstance
                 throw new NoSuchCompositeException( mixinType.getName(), name() );
             }
 
-            StateHolder stateHolder = model.model().newInitialState();
+            StateHolder stateHolder = model.model().newInitialState(model.module());
             model.model().state().checkConstraints( stateHolder );
             return model.model().newCompositeInstance( model.module(), UsesInstance.EMPTY_USES, stateHolder ).<T>proxy();
         }
@@ -512,7 +515,7 @@ public class ModuleInstance
                 throw new NoSuchValueException( mixinType.getName(), name() );
             }
 
-            StateHolder initialState = model.model().newInitialState();
+            StateHolder initialState = model.model().newInitialState(model.module());
             model.model().checkConstraints( initialState );
             return mixinType.cast( model.model().newValueInstance( model.module(), initialState ).proxy() );
         }
@@ -530,7 +533,7 @@ public class ModuleInstance
 
             try
             {
-                return (T) model.model().valueType().fromJSON( new JSONTokener( jsonValue ).nextValue(), model.module() );
+                return (T) new JSONDeserializer( model.module() ).deserialize( new JSONTokener( jsonValue ).nextValue(), model.model().valueType() );
             } catch( JSONException e )
             {
                 throw new ConstructionException( "Could not create value from JSON", e );
@@ -604,7 +607,29 @@ public class ModuleInstance
             return serviceReference;
         }
 
-        public <T> Iterable<ServiceReference<T>> findServices( final Class<T> serviceType )
+        @Override
+        public <T> ServiceReference<T> findService( Type serviceType )
+        {
+            ServiceReference serviceReference = service.get( serviceType );
+            if( serviceReference == null )
+            {
+                serviceReference = Iterables.first( findServices( serviceType ));
+                if( serviceReference != null )
+                {
+                    service.put( serviceType, serviceReference );
+                }
+            }
+
+            return serviceReference;
+        }
+
+        @Override
+        public <T> Iterable<ServiceReference<T>> findServices( Class<T> serviceType )
+        {
+            return findServices( (Type)serviceType );
+        }
+
+        public <T> Iterable<ServiceReference<T>> findServices( final Type serviceType )
         {
             Iterable<ServiceReference> iterable = services.get( serviceType );
             if( iterable == null )
@@ -614,7 +639,29 @@ public class ModuleInstance
                     @Override
                     public boolean satisfiedBy( Class item )
                     {
-                        return serviceType.isAssignableFrom( item );
+                        if (serviceType instanceof Class)
+                        {
+                            // Straight class assignability check
+                            return ((Class)serviceType).isAssignableFrom( item );
+                        } else if (serviceType instanceof ParameterizedType)
+                        {
+                            // Foo<Bar> check
+                            // First check Foo
+                            ParameterizedType parameterizedType = (ParameterizedType) serviceType;
+                            if (!((Class) parameterizedType.getRawType()).isAssignableFrom( item ))
+                                return false;
+
+                            // Then check Bar
+                            for( Type intf : Classes.INTERFACES_OF.map( item ) )
+                            {
+                                if (intf.equals( serviceType ))
+                                    return true;
+                            }
+
+                            // All parameters are the same - ok!
+                            return false;
+                        } else
+                            return false;
                     }
                 };
 

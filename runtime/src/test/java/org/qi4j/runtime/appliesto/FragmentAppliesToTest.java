@@ -16,13 +16,6 @@
  */
 package org.qi4j.runtime.appliesto;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.lang.reflect.Method;
 import org.junit.Test;
 import org.qi4j.api.common.AppliesTo;
 import org.qi4j.api.composite.TransientBuilder;
@@ -37,7 +30,11 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
 
-import static org.junit.Assert.*;
+import java.lang.annotation.*;
+import java.lang.reflect.Method;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class FragmentAppliesToTest
     extends AbstractQi4jTest

@@ -16,9 +16,6 @@ package org.qi4j.runtime.entity;
 
 import org.qi4j.api.util.HierarchicalVisitor;
 import org.qi4j.api.util.VisitableHierarchy;
-import org.qi4j.bootstrap.BindingException;
-import org.qi4j.runtime.model.Binder;
-import org.qi4j.runtime.model.Resolution;
 
 import java.util.List;
 

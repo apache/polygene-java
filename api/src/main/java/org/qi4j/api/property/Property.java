@@ -29,7 +29,7 @@ package org.qi4j.api.property;
  * </ul>
  */
 public interface Property<T>
-    extends PropertyInfo
+//    extends PropertyInfo
 {
     /**
      * Get the value of the property.
@@ -44,7 +44,7 @@ public interface Property<T>
      * @param newValue the new value
      *
      * @throws IllegalArgumentException if the value has an invalid value
-     * @throws IllegalStateException    if the property is immutable or computed
+     * @throws IllegalStateException    if the property is immutable
      */
     void set( T newValue )
         throws IllegalArgumentException, IllegalStateException;

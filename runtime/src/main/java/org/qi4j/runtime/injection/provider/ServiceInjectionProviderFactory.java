@@ -17,6 +17,9 @@ package org.qi4j.runtime.injection.provider;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.service.qualifier.Qualifier;
 import org.qi4j.api.specification.Specification;
+import org.qi4j.api.specification.Specifications;
+import org.qi4j.api.util.Annotations;
+import org.qi4j.api.util.Classes;
 import org.qi4j.api.util.Function;
 import org.qi4j.api.util.Iterables;
 import org.qi4j.bootstrap.InvalidInjectionException;
@@ -26,7 +29,6 @@ import org.qi4j.runtime.injection.InjectionProvider;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
 import org.qi4j.runtime.model.Resolution;
 
-import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -35,13 +37,13 @@ import static org.qi4j.api.util.Annotations.hasAnnotation;
 import static org.qi4j.api.util.Iterables.*;
 
 public final class ServiceInjectionProviderFactory
-    implements InjectionProviderFactory, Serializable
+    implements InjectionProviderFactory
 {
     public InjectionProvider newInjectionProvider( Resolution resolution, DependencyModel dependencyModel )
         throws InvalidInjectionException
     {
         // TODO This could be changed to allow multiple @Qualifier annotations
-        Annotation qualifierAnnotation = first( filter( hasAnnotation( Qualifier.class ), iterable( dependencyModel.annotations() ) ) );
+        Annotation qualifierAnnotation = first( filter( Specifications.translate( Annotations.type(), hasAnnotation( Qualifier.class )), iterable( dependencyModel.annotations() ) ) );
         Specification<ServiceReference<?>> serviceQualifier = null;
         if( qualifierAnnotation != null )
         {
@@ -58,40 +60,37 @@ public final class ServiceInjectionProviderFactory
 
         if( dependencyModel.rawInjectionType().equals( Iterable.class ) )
         {
-            if( dependencyModel.injectionClass().equals( ServiceReference.class ) )
+            Type iterableType = ( (ParameterizedType) dependencyModel.injectionType() ).getActualTypeArguments()[0];
+            if( Classes.RAW_CLASS.map( iterableType ).equals( ServiceReference.class ) )
             {
-                // @Service Iterable<ServiceReference<MyService>> serviceRefs
-                Type[] arguments = ( (ParameterizedType) dependencyModel.injectionType() ).getActualTypeArguments();
-                Class<?> serviceType = (Class<Object>) ( (ParameterizedType) arguments[ 0 ] ).getActualTypeArguments()[ 0 ];
+                // @Service Iterable<ServiceReference<MyService<Foo>> serviceRefs
+                Type serviceType = ( (ParameterizedType) iterableType ).getActualTypeArguments()[ 0 ];
 
                 return new IterableServiceReferenceProvider( serviceType, serviceQualifier );
             }
             else
             {
-                // @Service Iterable<MyService> services
-                Class serviceType = dependencyModel.injectionClass();
-
-                return new IterableServiceProvider( serviceType, serviceQualifier );
+                // @Service Iterable<MyService<Foo>> services
+                return new IterableServiceProvider( iterableType, serviceQualifier );
             }
         }
         else if( dependencyModel.rawInjectionType().equals( ServiceReference.class ) )
         {
-            // @Service ServiceReference<MyService> serviceRef
-            Class<?> serviceType = dependencyModel.injectionClass();
-            return new ServiceReferenceProvider( serviceType, serviceQualifier );
+            // @Service ServiceReference<MyService<Foo>> serviceRef
+            Type referencedType = ( (ParameterizedType) dependencyModel.injectionType() ).getActualTypeArguments()[0];
+            return new ServiceReferenceProvider( referencedType, serviceQualifier );
         }
         else
         {
-            // @Service MyService service
-            Class<?> serviceType = (Class<Object>) dependencyModel.injectionType();
-            return new ServiceProvider( serviceType, serviceQualifier );
+            // @Service MyService<Foo> service
+            return new ServiceProvider( dependencyModel.injectionType(), serviceQualifier );
         }
     }
 
     private static class IterableServiceReferenceProvider
         extends ServiceInjectionProvider
     {
-        private IterableServiceReferenceProvider( Class<?> serviceType,
+        private IterableServiceReferenceProvider( Type serviceType,
                                                   Specification<ServiceReference<?>> serviceQualifier
         )
         {
@@ -109,7 +108,7 @@ public final class ServiceInjectionProviderFactory
         extends ServiceInjectionProvider
         implements Function<ServiceReference<?>, Object>
     {
-        private IterableServiceProvider( Class<?> serviceType,
+        private IterableServiceProvider( Type serviceType,
                                          Specification<ServiceReference<?>> serviceQualifier
         )
         {
@@ -132,7 +131,7 @@ public final class ServiceInjectionProviderFactory
     private static class ServiceReferenceProvider
         extends ServiceInjectionProvider
     {
-        ServiceReferenceProvider( Class<?> serviceType, Specification<ServiceReference<?>> qualifier )
+        ServiceReferenceProvider( Type serviceType, Specification<ServiceReference<?>> qualifier )
         {
             super( serviceType, qualifier );
         }
@@ -147,7 +146,7 @@ public final class ServiceInjectionProviderFactory
     private static class ServiceProvider
         extends ServiceInjectionProvider
     {
-        ServiceProvider( Class<?> serviceType, Specification<ServiceReference<?>> qualifier )
+        ServiceProvider( Type serviceType, Specification<ServiceReference<?>> qualifier )
         {
             super( serviceType, qualifier );
         }
@@ -171,10 +170,10 @@ public final class ServiceInjectionProviderFactory
     private abstract static class ServiceInjectionProvider
         implements InjectionProvider
     {
-        private Class<?> serviceType;
+        private Type serviceType;
         private Specification<ServiceReference<?>> serviceQualifier;
 
-        protected ServiceInjectionProvider( Class<?> serviceType,
+        protected ServiceInjectionProvider( Type serviceType,
                                             Specification<ServiceReference<?>> serviceQualifier
         )
         {

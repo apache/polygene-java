@@ -16,18 +16,14 @@ package org.qi4j.runtime.composite;
 
 import org.qi4j.api.util.HierarchicalVisitor;
 import org.qi4j.api.util.VisitableHierarchy;
-import org.qi4j.bootstrap.BindingException;
-import org.qi4j.runtime.model.Binder;
-import org.qi4j.runtime.model.Resolution;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
  * JAVADOC
  */
 public class TransientsModel
-    implements Serializable, VisitableHierarchy<Object, Object>
+    implements VisitableHierarchy<Object, Object>
 {
     private final List<TransientModel> transientModels;
 
@@ -44,11 +40,14 @@ public class TransientsModel
     @Override
     public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> modelVisitor ) throws ThrowableType
     {
-        for( TransientModel transientModel : transientModels )
+        if (modelVisitor.visitEnter( this ))
         {
-            if (!transientModel.accept( modelVisitor ))
-                return false;
+            for( TransientModel transientModel : transientModels )
+            {
+                if (!transientModel.accept( modelVisitor ))
+                    break;
+            }
         }
-        return true;
+        return modelVisitor.visitLeave( this );
     }
 }

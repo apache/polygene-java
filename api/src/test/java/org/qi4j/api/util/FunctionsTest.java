@@ -1,6 +1,5 @@
 package org.qi4j.api.util;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.qi4j.api.specification.Specifications;
 
@@ -10,6 +9,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.qi4j.api.specification.Specifications.in;
 import static org.qi4j.api.util.Functions.*;
+import static org.qi4j.api.util.Functions.count;
 import static org.qi4j.api.util.Iterables.*;
 
 /**

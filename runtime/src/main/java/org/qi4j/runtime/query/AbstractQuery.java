@@ -18,9 +18,10 @@
  */
 package org.qi4j.runtime.query;
 
+import org.qi4j.api.composite.Composite;
 import org.qi4j.api.query.Query;
-import org.qi4j.api.query.grammar.*;
-import org.qi4j.runtime.query.grammar.impl.VariableValueExpressionImpl;
+import org.qi4j.api.query.grammar.OrderBy;
+import org.qi4j.api.specification.Specification;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,7 +41,7 @@ abstract class AbstractQuery<T>
     /**
      * Where clause.
      */
-    protected final BooleanExpression whereClause;
+    protected final Specification<Composite> whereClause;
     /**
      * Order by clause segments.
      */
@@ -54,9 +55,9 @@ abstract class AbstractQuery<T>
      */
     protected Integer maxResults;
     /**
-     * Mapping between variable name and variable value expression.
+     * Mapping between variable name and variable values.
      */
-    private final Map<String, SingleValueExpression> variables;
+    protected Map<String, Object> variables;
 
     /**
      * Constructor.
@@ -65,45 +66,11 @@ abstract class AbstractQuery<T>
      * @param whereClause where clause
      */
     AbstractQuery( final Class<T> resultType,
-                   final BooleanExpression whereClause
+                   final Specification<Composite> whereClause
     )
     {
         this.resultType = resultType;
         this.whereClause = whereClause;
-        this.variables = new HashMap<String, SingleValueExpression>();
-        initializeVariables( whereClause );
-    }
-
-    private void initializeVariables( BooleanExpression anExpression )
-    {
-        if( anExpression instanceof Negation )
-        {
-            Negation negation = (Negation) anExpression;
-            initializeVariables( negation.expression() );
-        }
-        else if( anExpression instanceof Disjunction )
-        {
-            Disjunction disjunction = (Disjunction) anExpression;
-            initializeVariables( disjunction.leftSideExpression() );
-            initializeVariables( disjunction.rightSideExpression() );
-        }
-        else if( anExpression instanceof Conjunction )
-        {
-            Conjunction conjunction = (Conjunction) anExpression;
-            initializeVariables( conjunction.leftSideExpression() );
-            initializeVariables( conjunction.rightSideExpression() );
-        }
-        else if( anExpression instanceof ComparisonPredicate )
-        {
-            ComparisonPredicate predicate = (ComparisonPredicate) anExpression;
-            ValueExpression valueExpression = predicate.valueExpression();
-
-            if( valueExpression instanceof VariableValueExpressionImpl )
-            {
-                VariableValueExpressionImpl variableValueExpression = (VariableValueExpressionImpl) valueExpression;
-                variables.put( variableValueExpression.name(), variableValueExpression );
-            }
-        }
     }
 
     /**
@@ -139,13 +106,9 @@ abstract class AbstractQuery<T>
     @SuppressWarnings( "unchecked" )
     public Query<T> setVariable( final String name, final Object value )
     {
-        // TODO: Casting to VariableValueExpression
-        VariableValueExpressionImpl variable = getVariable( name );
-        if( variable == null )
-        {
-            throw new IllegalArgumentException( "Variable [" + name + "] is not found." );
-        }
-        variable.setValue( value );
+        if (variables == null)
+            variables = new HashMap<String, Object>(  );
+        variables.put( name, value );
 
         return this;
     }
@@ -156,7 +119,10 @@ abstract class AbstractQuery<T>
     @SuppressWarnings( "unchecked" )
     public <V> V getVariable( final String name )
     {
-        return (V) variables.get( name );
+        if (variables == null)
+            return null;
+        else
+            return (V) variables.get( name );
     }
 
     public Class<T> resultType()

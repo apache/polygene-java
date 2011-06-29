@@ -14,14 +14,6 @@
 
 package org.qi4j.runtime.property;
 
-import java.io.Serializable;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.lang.reflect.Method;
-import javax.swing.Icon;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.qi4j.api.common.AppliesTo;
 import org.qi4j.api.composite.TransientBuilder;
@@ -30,11 +22,21 @@ import org.qi4j.api.concern.ConcernOf;
 import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.concern.GenericConcern;
 import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.property.*;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.property.PropertyInfo;
+import org.qi4j.api.property.PropertyMixin;
 import org.qi4j.api.sideeffect.SideEffectOf;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
+
+import javax.swing.*;
+import java.io.Serializable;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.lang.reflect.Method;
 
 import static org.junit.Assert.assertEquals;
 
@@ -116,18 +118,18 @@ public class PropertyTest
         extends GenericConcern
     {
         @Override
-        public Object invoke( Object o, Method method, Object[] objects ) throws Throwable
+        public Object invoke( Object o, final Method method, Object[] objects ) throws Throwable
         {
             final Property<Object> property = (Property<Object>) next.invoke( o, method, objects );
 
-            return new ComputedPropertyInstance<Object>(property)
+            return new Property<Object>()
             {
                 @Override
                 public Object get()
                 {
                     Object result = property.get();
 
-                    System.out.println( "Property " + property.qualifiedName().name() + " accessed with value " + result);
+                    System.out.println( "Property " + method.getName() + " accessed with value " + result);
 
                     return result;
                 }
@@ -140,42 +142,9 @@ public class PropertyTest
                     property.set( newValue );
 
                     System.out
-                        .println( "Property " + property.qualifiedName()
-                                .name() + " changed from " + current + " to " + newValue );
+                        .println( "Property " + method.getName() + " changed from " + current + " to " + newValue );
                 }
             };
-        }
-    }
-
-    public static abstract class LogPropertyAccess
-        extends SideEffectOf<Property<String>>
-        implements Property<String>
-    {
-        @This
-        PropertyInfo info;
-
-        public String get()
-        {
-            System.out.println( "Property " + info.qualifiedName().name() + " accessed with value " + result.get() );
-            return null;
-        }
-    }
-
-    public static abstract class LogPropertyChanges
-        extends SideEffectOf<Property<String>>
-        implements Property<Object>
-    {
-        @This
-        Property current;
-        @This
-        PropertyInfo info;
-
-        public void set( Object newValue )
-            throws IllegalArgumentException
-        {
-            System.out
-                .println( "Property " + info.qualifiedName()
-                    .name() + " changed from " + current.get() + " to " + newValue );
         }
     }
 

@@ -1,29 +1,33 @@
 package org.qi4j.runtime.types;
 
-import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
 import org.junit.Before;
 import org.junit.Test;
+import org.qi4j.api.common.TypeName;
+import org.qi4j.spi.property.JSONDeserializer;
+import org.qi4j.spi.property.JSONObjectSerializer;
+import org.qi4j.spi.property.ValueType;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class JodaLocalDateTypeTest
 {
 
-    private JodaLocalDateType underTest;
+    private ValueType underTest;
 
     @Before
     public void setup()
     {
-        underTest = new JodaLocalDateType();
+        underTest = new ValueType( LocalDate.class );
     }
 
     @Test
     public void givenLocalDateTypeWhenConvertingToJsonExpectValidString()
         throws Exception
     {
-        Object value = underTest.toJSON( new LocalDate( "2020-03-04" ) );
+        JSONObjectSerializer serializer = new JSONObjectSerializer();
+        serializer.serialize( new LocalDate( "2020-03-04" ), underTest );
+        Object value = serializer.getRoot();
         assertEquals( "2020-03-04", value.toString());
     }
 
@@ -31,25 +35,7 @@ public class JodaLocalDateTypeTest
     public void givenLocalDateTypeWhenConvertingFromJsonExpectValidLocalDate()
         throws Exception
     {
-        Object value = underTest.fromJSON( "2020-03-04", null );
+        Object value = new JSONDeserializer( null ).deserialize( "2020-03-04", underTest );
         assertEquals( new LocalDate("2020-03-04"), value);
-    }
-
-
-    @Test
-    public void givenLocalDateTypeWhenCheckingLocalDateExpectIsDate()
-        throws Exception
-    {
-        assertTrue( JodaLocalDateType.isDate( LocalDate.class ) );
-    }
-
-    @Test
-    public void givenLocalDateTypeWhenCheckingOtherDateTypesExpectIsFalse()
-        throws Exception
-    {
-        assertFalse( JodaLocalDateType.isDate( LocalDateTime.class ) );
-        assertFalse( JodaLocalDateType.isDate( DateTime.class ) );
-        assertFalse( JodaLocalDateType.isDate( java.util.Date.class ) );
-        assertFalse( JodaLocalDateType.isDate( java.sql.Date.class ) );
     }
 }

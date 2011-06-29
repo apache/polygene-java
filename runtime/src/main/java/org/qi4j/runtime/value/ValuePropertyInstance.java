@@ -13,8 +13,8 @@
  */
 package org.qi4j.runtime.value;
 
-import org.qi4j.api.property.AbstractPropertyInstance;
-import org.qi4j.api.property.PropertyInfo;
+import org.qi4j.runtime.property.AbstractPropertyInstance;
+import org.qi4j.spi.property.PropertyDescriptor;
 
 /**
  * {@code ValuePropertyInstance} represents a ValueComposite property. It is always immutable.
@@ -27,15 +27,14 @@ public final class ValuePropertyInstance<T>
     /**
      * Construct an instance of {@code PropertyInstance} with the specified arguments.
      *
-     * @param aPropertyInfo The property info. This argument must not be {@code null}.
+     * @param descriptor The property info. This argument must not be {@code null}.
      * @param aValue        The property value.
      *
      * @throws IllegalArgumentException Thrown if the specified {@code aPropertyInfo} is {@code null}.
      */
-    public ValuePropertyInstance( PropertyInfo aPropertyInfo, T aValue )
-        throws IllegalArgumentException
+    public ValuePropertyInstance( PropertyDescriptor descriptor, T aValue )
     {
-        super( aPropertyInfo );
+        super( descriptor );
         value = aValue;
     }
 
@@ -56,7 +55,7 @@ public final class ValuePropertyInstance<T>
      */
     public void set( T aNewValue )
     {
-        throw new IllegalStateException( "Property [" + qualifiedName() + "] is immutable." );
+        throw new IllegalStateException( "Property [" + propertyDescriptor.qualifiedName() + "] is immutable." );
     }
 
     /**

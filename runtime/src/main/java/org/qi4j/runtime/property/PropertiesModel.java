@@ -18,15 +18,16 @@ import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Immutable;
+import org.qi4j.api.util.Annotations;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.composite.ValueConstraintsModel;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Member;
 
-import static org.qi4j.api.util.Annotations.getMethodAndTypeAnnotations;
 import static org.qi4j.api.util.Annotations.isType;
 import static org.qi4j.api.util.Iterables.filter;
 import static org.qi4j.api.util.Iterables.first;
@@ -37,26 +38,28 @@ import static org.qi4j.api.util.Iterables.first;
 public final class PropertiesModel
     extends AbstractPropertiesModel<PropertyModel>
 {
-    public PropertiesModel( ConstraintsModel constraints, PropertyDeclarations propertyDeclarations, boolean immutable )
+    public PropertiesModel( ConstraintsModel constraints,
+                            PropertyDeclarations propertyDeclarations,
+                            boolean immutable)
     {
         super( constraints, propertyDeclarations, immutable );
     }
 
-    protected PropertyModel newPropertyModel( Method method, Class compositeType )
+    protected PropertyModel newPropertyModel( AccessibleObject accessor)
     {
-        Iterable<Annotation> annotations = getMethodAndTypeAnnotations( method );
+        Iterable<Annotation> annotations = Annotations.getAccessorAndTypeAnnotations( accessor );
         boolean optional = first( filter( isType( Optional.class ), annotations ) ) != null;
-        ValueConstraintsModel valueConstraintsModel = constraints.constraintsFor( annotations, GenericPropertyInfo.getPropertyType( method ), method
+        ValueConstraintsModel valueConstraintsModel = constraints.constraintsFor( annotations, GenericPropertyInfo.getPropertyType( accessor ), ((Member)accessor)
             .getName(), optional );
         ValueConstraintsInstance valueConstraintsInstance = null;
         if( valueConstraintsModel.isConstrained() )
         {
             valueConstraintsInstance = valueConstraintsModel.newInstance();
         }
-        MetaInfo metaInfo = propertyDeclarations.getMetaInfo( method );
-        Object initialValue = propertyDeclarations.getInitialValue( method );
+        MetaInfo metaInfo = propertyDeclarations.getMetaInfo( accessor );
+        Object initialValue = propertyDeclarations.getInitialValue( accessor );
         boolean immutable = this.immutable || metaInfo.get( Immutable.class ) != null;
-        PropertyModel propertyModel = new PropertyModel( method, immutable, valueConstraintsInstance, metaInfo, initialValue );
+        PropertyModel propertyModel = new PropertyModel( accessor, immutable, valueConstraintsInstance, metaInfo, initialValue );
         return propertyModel;
     }
 }

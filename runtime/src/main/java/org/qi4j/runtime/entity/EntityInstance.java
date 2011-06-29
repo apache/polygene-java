@@ -298,9 +298,7 @@ public final class EntityInstance
         }
         catch( ConstraintViolationException e )
         {
-            throw new ConstraintViolationException( identity.identity(), entityModel.entityType()
-                .type()
-                .name(), e.mixinTypeName(), e.methodName(), e.constraintViolations() );
+            throw new ConstraintViolationException( identity.identity(), entityModel.type().getName(), e.mixinTypeName(), e.methodName(), e.constraintViolations() );
         }
     }
 

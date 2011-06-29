@@ -24,19 +24,15 @@ import org.qi4j.api.service.Activatable;
 import org.qi4j.api.util.HierarchicalVisitor;
 import org.qi4j.api.util.Iterables;
 import org.qi4j.api.util.VisitableHierarchy;
-import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.bootstrap.AssemblyHelper;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectedFieldsModel;
 import org.qi4j.runtime.injection.InjectedMethodsModel;
 import org.qi4j.runtime.injection.InjectionContext;
-import org.qi4j.runtime.model.Binder;
-import org.qi4j.runtime.model.Resolution;
 import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.composite.InvalidCompositeException;
 import org.qi4j.spi.mixin.MixinDescriptor;
 
-import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -50,7 +46,7 @@ import static org.qi4j.api.util.Iterables.unique;
  * JAVADOC
  */
 public final class MixinModel
-    implements MixinDescriptor, Serializable, VisitableHierarchy<Object, Object>
+    implements MixinDescriptor, VisitableHierarchy<Object, Object>
 {
     private final Class mixinClass;
     private final Class instantiationClass;
@@ -76,17 +72,6 @@ public final class MixinModel
         sideEffectsDeclaration = new SideEffectsDeclaration( declaredMixinClass, Collections.<Class<?>>emptyList() );
 
         thisMixinTypes = buildThisMixinTypes();
-
-/*
-        mixinInvoker = new MethodInterceptor()
-        {
-            public Object intercept( Object obj, Method method, Object[] args, MethodProxy proxy )
-                    throws Throwable
-            {
-                return proxy.invokeSuper( obj, args );
-            }
-        };
-*/
     }
 
     public Class mixinClass()

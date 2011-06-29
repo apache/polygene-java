@@ -14,11 +14,10 @@
 
 package org.qi4j.runtime.property;
 
-import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.StateHolder;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.AccessibleObject;
 import java.util.Map;
 
 /**
@@ -27,43 +26,28 @@ import java.util.Map;
 public class PropertiesInstance
     implements StateHolder
 {
-    protected Map<Method, Property<?>> properties;
+    protected Map<AccessibleObject, Property<?>> properties;
 
-    public PropertiesInstance( Map<Method, Property<?>> properties )
+    public PropertiesInstance( Map<AccessibleObject, Property<?>> properties )
     {
         this.properties = properties;
     }
 
-    public <T> Property<T> getProperty( Method propertyMethod )
+    public <T> Property<T> getProperty( AccessibleObject accessor )
+            throws IllegalArgumentException
     {
-        return (Property<T>) properties.get( propertyMethod );
-    }
+        Property<T> property = (Property<T>) properties.get( accessor );
 
-    public <T> Property<T> getProperty( QualifiedName name )
-    {
-        for( Property property : properties.values() )
-        {
-            if( property.qualifiedName().equals( name ) )
-            {
-                return property;
-            }
-        }
-        return null; // indicate with null that it has not been found.
+        if (property == null)
+            throw new IllegalArgumentException( "No such property:"+accessor );
+
+        return property;
     }
 
     @Override
     public Iterable<Property<?>> properties()
     {
         return properties.values();
-    }
-
-    public <ThrowableType extends Throwable> void visitProperties( StateVisitor<ThrowableType> visitor )
-        throws ThrowableType
-    {
-        for( Property<?> property : properties.values() )
-        {
-            visitor.visitProperty( property.qualifiedName(), property.get() );
-        }
     }
 
     @Override
@@ -78,8 +62,19 @@ public class PropertiesInstance
             return false;
         }
 
+        // Check if all properties are the same
         PropertiesInstance that = (PropertiesInstance) o;
-        return properties.equals( that.properties );
+        for( Map.Entry<AccessibleObject, Property<?>> propertyEntry : properties.entrySet() )
+        {
+            Property<?> thatProperty = that.getProperty( propertyEntry.getKey() );
+            if (thatProperty == null)
+                return false;
+            else
+                if (!propertyEntry.getValue().equals( thatProperty ))
+                    return false;
+        }
+
+        return true;
     }
 
     @Override

@@ -15,33 +15,29 @@
 package org.qi4j.runtime.service;
 
 import org.qi4j.api.common.MetaInfo;
-import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.property.*;
+import org.qi4j.api.property.Immutable;
+import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.specification.Specifications;
-import org.qi4j.api.util.HierarchicalVisitor;
-import org.qi4j.api.util.Iterables;
-import org.qi4j.bootstrap.BindingException;
+import org.qi4j.api.util.Classes;
 import org.qi4j.bootstrap.MetaInfoDeclaration;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.runtime.bootstrap.AssemblyHelper;
 import org.qi4j.runtime.composite.*;
 import org.qi4j.runtime.injection.DependencyModel;
-import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.property.PropertiesModel;
-import org.qi4j.runtime.property.PropertyModel;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.InvalidCompositeException;
 import org.qi4j.spi.service.ServiceDescriptor;
 
-import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,8 +51,20 @@ import static org.qi4j.api.util.Iterables.filter;
  */
 public final class ServiceModel
         extends AbstractCompositeModel
-        implements ServiceDescriptor, Serializable
+        implements ServiceDescriptor
 {
+    private static Method identityMethod;
+    static
+    {
+        try
+        {
+            identityMethod = Identity.class.getMethod( "identity" );
+        } catch( NoSuchMethodException e )
+        {
+            e.printStackTrace();
+        }
+    }
+
     public static ServiceModel newModel( final Class<? extends ServiceComposite> compositeType,
                                          final Visibility visibility,
                                          final MetaInfo metaInfo,
@@ -84,7 +92,8 @@ public final class ServiceModel
         SideEffectsDeclaration sideEffectsModel = new SideEffectsDeclaration( compositeType, sideEffects );
         CompositeMethodsModel compositeMethodsModel =
                 new CompositeMethodsModel( compositeType, constraintsModel, concernsModel, sideEffectsModel, mixinsModel, helper );
-        stateModel.addStateFor( compositeMethodsModel.methods(), compositeType );
+
+        stateModel.addStateFor( compositeMethodsModel.methods(), mixinsModel );
 
         return new ServiceModel(
                 compositeType, roles, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel, moduleName, identity, instantiateOnStartup );
@@ -137,73 +146,12 @@ public final class ServiceModel
         return configurationType;
     }
 
-    @Override
-    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> modelVisitor ) throws ThrowableType
-    {
-        if (modelVisitor.visitEnter( this ))
-        {
-            if (compositeMethodsModel.accept( modelVisitor ))
-                mixinsModel.accept( modelVisitor );
-        }
-        return modelVisitor.visitLeave( this );
-    }
-
     public ServiceInstance newInstance( ModuleInstance module )
     {
         Object[] mixins = mixinsModel.newMixinHolder();
 
-        // Service has no state
-        StateHolder stateHolder = new StateHolder()
-        {
-            public <T> Property<T> getProperty( final Method propertyMethod )
-            {
-                if( QualifiedName.fromMethod( propertyMethod )
-                        .equals( QualifiedName.fromClass( Identity.class, "identity" ) ) )
-                {
-                    PropertyModel propertyDescriptor = (PropertyModel) stateModel.getPropertyByQualifiedName( QualifiedName
-                            .fromMethod( propertyMethod ) );
-                    return propertyDescriptor.newInstance( identity );
-                } else
-                {
-                    // State is set to defaults
-                    return new ComputedPropertyInstance<T>( new GenericPropertyInfo( propertyMethod ) )
-                    {
-                        public T get()
-                        {
-                            return null;
-                        }
-                    };
-                }
-            }
-
-            public <T> Property<T> getProperty( QualifiedName name )
-            {
-                // Create a dummy one...
-                return new ComputedPropertyInstance<T>( new GenericPropertyInfo( null, true, true, name, null ) )
-                {
-                    public T get()
-                    {
-                        return null;
-                    }
-                };
-            }
-
-            @Override
-            public Iterable<Property<?>> properties()
-            {
-                try
-                {
-                    return Iterables.cast(Iterables.iterable( getProperty( Identity.class.getMethod( "identity" ) ) ));
-                } catch( NoSuchMethodException e )
-                {
-                    return Iterables.empty();
-                }
-            }
-
-            public void visitProperties( StateVisitor visitor )
-            {
-            }
-        };
+        StateHolder stateHolder = stateModel.newBuilderInstance( module );
+        stateHolder.getProperty( identityMethod).set( identity );
         stateHolder = stateModel.newInstance( stateHolder );
         ServiceInstance compositeInstance = new ServiceInstance( this, module, mixins, stateHolder );
 
@@ -252,16 +200,17 @@ public final class ServiceModel
         Iterable<DependencyModel> configurationThisDependencies = filter( and( translate( new DependencyModel.InjectionTypeFunction(), Specifications.<Class<?>>in( Configuration.class ) ), new DependencyModel.ScopeSpecification( This.class ) ), dependencies() );
         for( DependencyModel dependencyModel : configurationThisDependencies )
         {
-            if( dependencyModel.rawInjectionType().equals( Configuration.class ) )
+            if( dependencyModel.rawInjectionType().equals( Configuration.class ) && dependencyModel.injectionType() instanceof ParameterizedType )
             {
+                Class<?> type = Classes.RAW_CLASS.map(((ParameterizedType)dependencyModel.injectionType()).getActualTypeArguments()[0]);
                 if( injectionClass == null )
                 {
-                    injectionClass = dependencyModel.injectionClass();
+                    injectionClass = type;
                 } else
                 {
-                    if( injectionClass.isAssignableFrom( dependencyModel.injectionClass() ) )
+                    if( injectionClass.isAssignableFrom( type ) )
                     {
-                        injectionClass = dependencyModel.injectionClass();
+                        injectionClass = type;
                     }
                 }
             }

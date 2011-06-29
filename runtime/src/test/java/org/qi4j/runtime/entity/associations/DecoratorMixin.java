@@ -17,11 +17,12 @@
  */
 package org.qi4j.runtime.entity.associations;
 
+import org.qi4j.api.injection.scope.Uses;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import org.qi4j.api.injection.scope.Uses;
 
 /**
  * Generic decorator mixin that allows a Composite to wrap

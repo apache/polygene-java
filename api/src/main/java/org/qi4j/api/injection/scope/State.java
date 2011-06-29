@@ -13,12 +13,9 @@
  */
 package org.qi4j.api.injection.scope;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import org.qi4j.api.injection.InjectionScope;
+
+import java.lang.annotation.*;
 
 /**
  * Annotation to denote the injection of a property, association or
@@ -26,6 +23,7 @@ import org.qi4j.api.injection.InjectionScope;
  * <pre><code>
  * &#64;State Property<String> propertyName;
  * &#64;State Association<MyEntity> associationName;
+ * &#64;State ManyAssociation<MyEntity> manyAssociationName;
  * &#64;State StateHolder state;
  * &#64;State EntityStateHolder entityState;
  * </code></pre>

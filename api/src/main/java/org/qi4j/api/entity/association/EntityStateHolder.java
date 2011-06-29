@@ -17,9 +17,11 @@
  */
 package org.qi4j.api.entity.association;
 
-import java.lang.reflect.Method;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.property.StateHolder;
+
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Method;
 
 /**
  * This represents the state of a entity (properties+associations).
@@ -34,7 +36,14 @@ public interface EntityStateHolder
      *
      * @return the association
      */
-    <T> Association<T> getAssociation( Method associationMethod );
+    <T> Association<T> getAssociation( AccessibleObject associationMethod );
+
+    /**
+     * Get all associations
+     *
+     * @return iterable of associations
+     */
+    Iterable<Association<?>> associations();
 
     /**
      * Get a many-association for a specific accessor method
@@ -43,18 +52,12 @@ public interface EntityStateHolder
      *
      * @return the association
      */
-    <T> ManyAssociation<T> getManyAssociation( Method manyassociationMethod );
+    <T> ManyAssociation<T> getManyAssociation( AccessibleObject manyassociationMethod );
 
-    <ThrowableType extends Throwable> void visitState( EntityStateVisitor<ThrowableType> visitor )
-        throws ThrowableType;
-
-    public interface EntityStateVisitor<ThrowableType extends Throwable>
-        extends StateVisitor<ThrowableType>
-    {
-        void visitAssociation( QualifiedName name, Object association )
-            throws ThrowableType;
-
-        void visitManyAssociation( QualifiedName name, ManyAssociation association )
-            throws ThrowableType;
-    }
+    /**
+     * Get all ManyAssociations
+     *
+     * @return iterable of many-associations
+     */
+    Iterable<ManyAssociation<?>> manyAssociations();
 }

@@ -14,14 +14,11 @@
 
 package org.qi4j.runtime.composite;
 
-import java.io.Serializable;
-
 /**
  * JAVADOC
  */
 public final class SideEffectDeclaration
     extends FragmentDeclaration
-    implements Serializable
 {
     public SideEffectDeclaration( Class sideEffectClass, Class declaredIn )
     {

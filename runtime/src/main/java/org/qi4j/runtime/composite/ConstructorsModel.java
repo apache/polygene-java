@@ -16,20 +16,19 @@ package org.qi4j.runtime.composite;
 
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.injection.InjectionScope;
+import org.qi4j.api.specification.Specifications;
 import org.qi4j.api.util.*;
 import org.qi4j.bootstrap.BindingException;
-import org.qi4j.runtime.injection.Dependencies;
-import org.qi4j.runtime.injection.DependencyModel;
-import org.qi4j.runtime.injection.InjectedParametersModel;
-import org.qi4j.runtime.injection.InjectionContext;
+import org.qi4j.runtime.injection.*;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.spi.composite.AbstractCompositeDescriptor;
 
-import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -41,7 +40,7 @@ import static org.qi4j.api.util.Iterables.*;
  * JAVADOC
  */
 public final class ConstructorsModel
-    implements Binder, Serializable, Dependencies, VisitableHierarchy<Object, Object>
+    implements Binder, Dependencies, VisitableHierarchy<Object, Object>
 {
     private final Class fragmentClass;
     private final List<ConstructorModel> constructorModels;
@@ -99,7 +98,7 @@ public final class ConstructorsModel
         for( Type type : injectedConstructor.getGenericParameterTypes() )
         {
             final Annotation injectionAnnotation = first(
-                filter( Annotations.hasAnnotation( InjectionScope.class ), iterable( parameterAnnotations[ idx ] ) ) );
+                filter( Specifications.translate( Annotations.type(), Annotations.hasAnnotation( InjectionScope.class )), iterable( parameterAnnotations[idx] ) ) );
             if( injectionAnnotation == null )
             {
                 return null; // invalid constructor parameter
@@ -107,7 +106,23 @@ public final class ConstructorsModel
 
             boolean optional = DependencyModel.isOptional( injectionAnnotation, parameterAnnotations[ idx ] );
 
-            DependencyModel dependencyModel = new DependencyModel( injectionAnnotation, type, fragmentClass, optional,
+            Type genericType = type;
+            if (genericType instanceof ParameterizedType )
+            {
+                genericType = new ParameterizedTypeInstance(((ParameterizedType) genericType).getActualTypeArguments(), ((ParameterizedType) genericType).getRawType(), ((ParameterizedType) genericType).getOwnerType());
+
+                for( int i = 0; i < ((ParameterizedType) genericType).getActualTypeArguments().length; i++ )
+                {
+                    Type typeArg = ((ParameterizedType) genericType).getActualTypeArguments()[i];
+                    if (typeArg instanceof TypeVariable )
+                    {
+                        typeArg = Classes.resolveTypeVariable( (TypeVariable) type, realConstructor.getDeclaringClass(), fragmentClass );
+                        ((ParameterizedType) genericType).getActualTypeArguments()[i] = typeArg;
+                    }
+                }
+            }
+
+            DependencyModel dependencyModel = new DependencyModel( injectionAnnotation, genericType, fragmentClass, optional,
                                                                    parameterAnnotations[ idx ] );
             parameters.addDependency( dependencyModel );
             idx++;
@@ -151,18 +166,6 @@ public final class ConstructorsModel
             {
                 constructorModel.accept( new HierarchicalVisitor<Object, Object, BindingException>()
                 {
-                    @Override
-                    public boolean visitEnter( Object visited ) throws BindingException
-                    {
-                        return true;
-                    }
-
-                    @Override
-                    public boolean visitLeave( Object visited ) throws BindingException
-                    {
-                        return true;
-                    }
-
                     @Override
                     public boolean visit( Object visitor ) throws BindingException
                     {

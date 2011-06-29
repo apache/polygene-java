@@ -14,12 +14,11 @@
 
 package org.qi4j.api.util;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import org.qi4j.api.specification.Specification;
 
-import static org.qi4j.api.util.Classes.*;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.*;
+
 import static org.qi4j.api.util.Iterables.*;
 
 /**
@@ -27,16 +26,38 @@ import static org.qi4j.api.util.Iterables.*;
  */
 public final class Annotations
 {
-    public static Specification<Annotation> hasAnnotation( final Class<? extends Annotation> annotationType )
+    public static Function<Type, Iterable<Annotation>> ANNOTATIONS_OF = Classes.forTypes( new Function<Type, Iterable<Annotation>>()
     {
-        return new Specification<Annotation>()
+        @Override
+        public Iterable<Annotation> map( Type type )
         {
-            public boolean satisfiedBy( Annotation annotation )
+            return Iterables.iterable(Classes.RAW_CLASS.map( type ).getAnnotations());
+        }
+    });
+
+    public static Specification<AnnotatedElement> hasAnnotation( final Class<? extends Annotation> annotationType )
+    {
+        return new Specification<AnnotatedElement>()
+        {
+            public boolean satisfiedBy( AnnotatedElement element )
             {
-                return annotation.annotationType().getAnnotation( annotationType ) != null;
+                return element.getAnnotation( annotationType ) != null;
             }
         };
     }
+
+    public static Function<Annotation, Class<? extends Annotation>> type()
+    {
+        return new Function<Annotation, Class<? extends Annotation>>()
+        {
+            @Override
+            public Class<? extends Annotation> map( Annotation annotation )
+            {
+                return annotation.annotationType();
+            }
+        };
+    }
+
 
     public static Specification<Annotation> isType( final Class<? extends Annotation> annotationType )
     {
@@ -55,18 +76,12 @@ public final class Annotations
         {
             return null;
         }
-        return annotationType.cast( ( (Class<?>) type ).getAnnotation( annotationType ) );
+        return annotationType.cast( ((Class<?>) type).getAnnotation( annotationType ) );
     }
 
-    public static Iterable<Annotation> getMethodAndTypeAnnotations( Method method )
+    public static Iterable<Annotation> getAccessorAndTypeAnnotations( AccessibleObject accessor )
     {
-        return flatten( iterable( method.getAnnotations() ),
-                        flattenIterables( map( new Function<Class, Iterable<Annotation>>()
-                        {
-                            public Iterable<Annotation> map( Class aClass )
-                            {
-                                return iterable( aClass.getAnnotations() );
-                            }
-                        }, interfacesOf( method.getReturnType() ) ) ) );
+        return flatten( iterable( accessor.getAnnotations() ),
+                        flattenIterables( map( Annotations.ANNOTATIONS_OF, Classes.INTERFACES_OF.map( Classes.TYPE_OF.map( accessor ) ))));
     }
 }

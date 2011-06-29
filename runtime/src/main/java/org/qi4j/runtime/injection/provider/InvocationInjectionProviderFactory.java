@@ -1,5 +1,6 @@
 package org.qi4j.runtime.injection.provider;
 
+import org.qi4j.api.util.Classes;
 import org.qi4j.bootstrap.InvalidInjectionException;
 import org.qi4j.runtime.composite.CompositeMethodModel;
 import org.qi4j.runtime.injection.DependencyModel;
@@ -8,7 +9,6 @@ import org.qi4j.runtime.injection.InjectionProvider;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
 import org.qi4j.runtime.model.Resolution;
 
-import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
@@ -17,12 +17,12 @@ import java.lang.reflect.Method;
  * JAVADOC
  */
 public final class InvocationInjectionProviderFactory
-    implements InjectionProviderFactory, Serializable
+    implements InjectionProviderFactory
 {
     public InjectionProvider newInjectionProvider( Resolution resolution, DependencyModel dependencyModel )
         throws InvalidInjectionException
     {
-        Class injectionClass = dependencyModel.injectionClass();
+        Class injectionClass = Classes.RAW_CLASS.map( dependencyModel.injectionType() );
         if( injectionClass.equals( Method.class ) ||
             injectionClass.equals( AnnotatedElement.class ) ||
             Annotation.class.isAssignableFrom( injectionClass ) )
@@ -37,7 +37,7 @@ public final class InvocationInjectionProviderFactory
     }
 
     private class InvocationDependencyResolution
-        implements InjectionProvider, Serializable
+        implements InjectionProvider
     {
         private final Resolution resolution;
         private final DependencyModel dependencyModel;
@@ -51,7 +51,7 @@ public final class InvocationInjectionProviderFactory
         public Object provideInjection( InjectionContext context )
             throws InjectionProviderException
         {
-            Class injectionClass = dependencyModel.injectionClass();
+            Class injectionClass = Classes.RAW_CLASS.map( dependencyModel.injectionType() );
             final CompositeMethodModel methodModel = resolution.method();
             if( injectionClass.equals( Method.class ) )
             {

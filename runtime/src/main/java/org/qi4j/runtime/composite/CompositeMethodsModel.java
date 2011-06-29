@@ -24,19 +24,16 @@ import org.qi4j.api.util.Classes;
 import org.qi4j.api.util.HierarchicalVisitor;
 import org.qi4j.api.util.Iterables;
 import org.qi4j.api.util.VisitableHierarchy;
-import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.bootstrap.AssemblyHelper;
 import org.qi4j.runtime.injection.Dependencies;
 import org.qi4j.runtime.injection.DependencyModel;
-import org.qi4j.runtime.model.Binder;
-import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.spi.util.MethodKeyMap;
 
-import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.qi4j.api.specification.Specifications.in;
 import static org.qi4j.api.specification.Specifications.not;
@@ -46,7 +43,7 @@ import static org.qi4j.api.util.Iterables.*;
  * Model for Composite methods. This includes both private and public methods.
  */
 public final class CompositeMethodsModel
-        implements Serializable, VisitableHierarchy<Object, Object>
+        implements VisitableHierarchy<Object, Object>
 {
     private HashMap<Method, CompositeMethodModel> methods;
     private final Class<? extends Composite> type;
@@ -63,7 +60,7 @@ public final class CompositeMethodsModel
                                   AssemblyHelper helper
     )
     {
-        methods = new MethodKeyMap<CompositeMethodModel>();
+        methods = new HashMap<Method, CompositeMethodModel>();
         this.type = type;
         this.constraintsModel = constraintsModel;
         this.concernsModel = concernsModel;
@@ -127,7 +124,7 @@ public final class CompositeMethodsModel
 
     public void implementMixinType( Class mixinType, AssemblyHelper helper )
     {
-        Iterable<Class<?>> thisDependencies = Iterables.empty();
+        Set<Class<?>> thisDependencies = new HashSet<Class<?>>(  );
         for( Method method : mixinType.getMethods() )
         {
             if( methods.get( method ) == null )
@@ -179,12 +176,10 @@ public final class CompositeMethodsModel
                 // Implement @This references
                 Iterable<Class<?>> map = map( new DependencyModel.InjectionTypeFunction(), filter( new DependencyModel.ScopeSpecification( This.class ), methodComposite.dependencies() ) );
                 Iterable<Class<?>> map1 = map( new DependencyModel.InjectionTypeFunction(), filter( new DependencyModel.ScopeSpecification( This.class ), mixinModel.dependencies() ) );
-                Iterable<Class<?>> filter = Iterables.filter( not( in( Activatable.class, Initializable.class, Lifecycle.class, InvocationHandler.class ) ), Classes.interfacesOf( mixinModel.mixinClass() ) );
-                thisDependencies = flatten( thisDependencies,
-                        map,
+                Iterable<Class<?>> filter = filter( not( in( Activatable.class, Initializable.class, Lifecycle.class, InvocationHandler.class ) ), map(Classes.RAW_CLASS, Classes.INTERFACES_OF.map( mixinModel.mixinClass() ) ));
+                Iterables.addAll( thisDependencies, (Iterable<? extends Class<?>>) flatten(map,
                         map1,
-                        filter );
-                thisDependencies = Iterables.toList( thisDependencies );
+                        filter ));
 
                 methods.put( method, methodComposite );
             }
@@ -194,7 +189,7 @@ public final class CompositeMethodsModel
         mixinsModel.addMixinType( mixinType );
 
         // Implement all @This dependencies that were found
-        for( Class<?> thisDependency : unique( thisDependencies ) )
+        for( Class<?> thisDependency : thisDependencies )
         {
             implementMixinType( thisDependency, helper );
         }

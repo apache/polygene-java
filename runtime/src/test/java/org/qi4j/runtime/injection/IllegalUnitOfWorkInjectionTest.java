@@ -28,7 +28,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.test.AbstractQi4jTest;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
 public class IllegalUnitOfWorkInjectionTest
     extends AbstractQi4jTest

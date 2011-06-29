@@ -14,12 +14,13 @@
 
 package org.qi4j.spi.entitystore;
 
-import java.util.LinkedList;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.structure.ModuleSPI;
+
+import java.util.LinkedList;
 
 /**
  * JAVADOC

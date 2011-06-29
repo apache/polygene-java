@@ -47,7 +47,7 @@ public final class EntityBuilderInstance<T>
     {
         try
         {
-            identityStateName = QualifiedName.fromMethod( Identity.class.getMethod( "identity" ) );
+            identityStateName = QualifiedName.fromAccessor( Identity.class.getMethod( "identity" ) );
         }
         catch( NoSuchMethodException e )
         {
@@ -68,7 +68,7 @@ public final class EntityBuilderInstance<T>
         this.identity = identity;
         EntityReference reference = new EntityReference( identity );
         entityState = new BuilderEntityState( model.model(), reference );
-        model.model().initState( entityState );
+        model.model().initState( model.module(), entityState );
         entityState.setProperty( identityStateName, identity );
         prototypeInstance = model.model().newInstance( uow, model.module(), entityState );
     }

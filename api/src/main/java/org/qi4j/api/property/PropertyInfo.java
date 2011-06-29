@@ -14,8 +14,9 @@
 
 package org.qi4j.api.property;
 
-import java.lang.reflect.Type;
 import org.qi4j.api.common.QualifiedName;
+
+import java.lang.reflect.Type;
 
 /**
  * Provide access to metadata information about a property.
@@ -25,8 +26,6 @@ import org.qi4j.api.common.QualifiedName;
 public interface PropertyInfo
 {
     boolean isImmutable();
-
-    boolean isComputed();
 
     /**
      * Access metadata about the property with a given type.

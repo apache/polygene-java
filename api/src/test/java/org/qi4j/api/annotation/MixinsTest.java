@@ -12,11 +12,13 @@
 */
 package org.qi4j.api.annotation;
 
-import java.lang.annotation.Annotation;
 import org.junit.Test;
 import org.qi4j.api.mixin.Mixins;
 
-import static org.junit.Assert.*;
+import java.lang.annotation.Annotation;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Tests public api exposed by Mixins annotation.

@@ -18,14 +18,13 @@ import org.qi4j.api.util.Visitable;
 import org.qi4j.api.util.Visitor;
 import org.qi4j.spi.constraint.ConstraintDescriptor;
 
-import java.io.Serializable;
 import java.lang.annotation.Annotation;
 
 /**
  * JAVADOC
  */
 public abstract class AbstractConstraintModel
-    implements ConstraintDescriptor, Serializable, Visitable<ConstraintDescriptor>
+    implements ConstraintDescriptor, Visitable<ConstraintDescriptor>
 {
     protected final Annotation annotation;
 

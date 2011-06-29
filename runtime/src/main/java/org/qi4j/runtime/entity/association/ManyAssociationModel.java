@@ -16,7 +16,6 @@ package org.qi4j.runtime.entity.association;
 
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.constraint.ConstraintViolation;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.Aggregated;
@@ -25,66 +24,40 @@ import org.qi4j.api.entity.association.AssociationInfo;
 import org.qi4j.api.entity.association.GenericAssociationInfo;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.property.Immutable;
+import org.qi4j.api.util.Classes;
+import org.qi4j.api.util.Visitable;
+import org.qi4j.api.util.Visitor;
+import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.composite.ConstraintsCheck;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
+import org.qi4j.runtime.model.Binder;
+import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.runtime.unitofwork.BuilderEntityState;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
-import org.qi4j.spi.entity.association.ManyAssociationType;
-import org.qi4j.spi.util.SerializationUtil;
 
-import java.io.*;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
+import java.lang.reflect.*;
 import java.util.List;
-
-import static org.qi4j.api.util.Classes.getRawClass;
 
 /**
  * JAVADOC
  */
 public final class ManyAssociationModel
-    implements ManyAssociationDescriptor, ConstraintsCheck, Serializable
+    implements ManyAssociationDescriptor, ConstraintsCheck, Binder, Visitable<ManyAssociationModel>
 {
     private ValueConstraintsInstance associationConstraints;
     private MetaInfo metaInfo;
     private Type type;
-    private Method accessor;
+    private AccessibleObject accessor;
     private QualifiedName qualifiedName;
     private ValueConstraintsInstance constraints;
     private boolean queryable;
     private boolean immutable;
     private boolean aggregated;
-    private ManyAssociationType manyAssociationType;
     private AssociationInfo builderInfo;
 
-    private void writeObject( ObjectOutputStream out )
-        throws IOException
-    {
-        try
-        {
-            out.writeObject( metaInfo );
-            SerializationUtil.writeMethod( out, accessor );
-            out.writeObject( constraints );
-        }
-        catch( NotSerializableException e )
-        {
-            System.err.println( "NotSerializable in " + getClass() );
-            throw e;
-        }
-    }
-
-    private void readObject( ObjectInputStream in )
-        throws IOException, ClassNotFoundException
-    {
-        metaInfo = (MetaInfo) in.readObject();
-        accessor = SerializationUtil.readMethod( in );
-        constraints = (ValueConstraintsInstance) in.readObject();
-        initialize();
-    }
-
-    public ManyAssociationModel( Method accessor,
+    public ManyAssociationModel( AccessibleObject accessor,
                                  ValueConstraintsInstance valueConstraintsInstance,
                                  ValueConstraintsInstance associationConstraintsInstance,
                                  MetaInfo metaInfo
@@ -95,14 +68,12 @@ public final class ManyAssociationModel
         this.associationConstraints = associationConstraintsInstance;
         this.accessor = accessor;
         initialize();
-        this.manyAssociationType = new ManyAssociationType( qualifiedName, getRawClass( type ).getName(), queryable );
-        this.builderInfo = new GenericAssociationInfo( accessor, metaInfo, false );
     }
 
     private void initialize()
     {
         this.type = GenericAssociationInfo.getAssociationType( accessor );
-        this.qualifiedName = QualifiedName.fromMethod( accessor );
+        this.qualifiedName = QualifiedName.fromAccessor( accessor );
         this.immutable = metaInfo.get( Immutable.class ) != null;
         this.aggregated = metaInfo.get( Aggregated.class ) != null;
 
@@ -135,28 +106,20 @@ public final class ManyAssociationModel
         return aggregated;
     }
 
-    public Method accessor()
+    public AccessibleObject accessor()
     {
         return accessor;
     }
 
-    public ManyAssociationType manyAssociationType()
+    @Override
+    public boolean queryable()
     {
-        return manyAssociationType;
+        return queryable;
     }
 
     public <T> ManyAssociation<T> newInstance( ModuleUnitOfWork uow, EntityState state )
     {
         ManyAssociation<T> associationInstance = new ManyAssociationInstance<T>( state instanceof BuilderEntityState ? builderInfo : this, this, uow, state );
-
-        if( TransientComposite.class.isAssignableFrom( accessor.getReturnType() ) )
-        {
-            associationInstance = (ManyAssociation<T>) uow.module()
-                .transientBuilderFactory()
-                .newTransientBuilder( accessor.getReturnType() )
-                .use( associationInstance )
-                .newInstance();
-        }
 
         return associationInstance;
     }
@@ -169,7 +132,7 @@ public final class ManyAssociationModel
             List<ConstraintViolation> violations = constraints.checkConstraints( composite );
             if( !violations.isEmpty() )
             {
-                throw new ConstraintViolationException( "", "<unknown>", accessor, violations );
+                throw new ConstraintViolationException( "", "<unknown>", (Member) accessor, violations );
             }
         }
     }
@@ -182,8 +145,68 @@ public final class ManyAssociationModel
             List<ConstraintViolation> violations = associationConstraints.checkConstraints( manyAssociation );
             if( !violations.isEmpty() )
             {
-                throw new ConstraintViolationException( "", "<unknown>", accessor, violations );
+                throw new ConstraintViolationException( "", "<unknown>", (Member) accessor, violations );
             }
+        }
+    }
+
+    @Override
+    public <ThrowableType extends Throwable> boolean accept( Visitor<? super ManyAssociationModel, ThrowableType> visitor ) throws ThrowableType
+    {
+        return visitor.visit( this );
+    }
+
+    @Override
+    public void bind( Resolution resolution ) throws BindingException
+    {
+        builderInfo = new ManyAssociationDescriptor()
+        {
+            @Override
+            public boolean isImmutable()
+            {
+                return false;
+            }
+
+            @Override
+            public <T> T metaInfo( Class<T> infoType )
+            {
+                return metaInfo.get( infoType );
+            }
+
+            @Override
+            public QualifiedName qualifiedName()
+            {
+                return qualifiedName;
+            }
+
+            @Override
+            public Type type()
+            {
+                return type;
+            }
+
+            @Override
+            public AccessibleObject accessor()
+            {
+                return accessor;
+            }
+
+            @Override
+            public boolean isAggregated()
+            {
+                return aggregated;
+            }
+
+            @Override
+            public boolean queryable()
+            {
+                return queryable;
+            }
+        };
+
+        if (type instanceof TypeVariable)
+        {
+            type = Classes.resolveTypeVariable( (TypeVariable) type, ((Member) accessor).getDeclaringClass(), resolution.object().type() );
         }
     }
 
@@ -211,6 +234,9 @@ public final class ManyAssociationModel
     @Override
     public String toString()
     {
-        return accessor.toGenericString();
+        if (accessor instanceof Field )
+          return ((Field)accessor).toGenericString();
+        else
+            return ((Method)accessor).toGenericString();
     }
 }

@@ -17,10 +17,6 @@
  */
 package org.qi4j.runtime.query;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,31 +27,26 @@ import org.qi4j.api.query.QueryExpressions;
 import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
-import org.qi4j.api.util.Function;
-import org.qi4j.api.util.Iterables;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ClassScanner;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
-import org.qi4j.runtime.query.model.City;
-import org.qi4j.runtime.query.model.Domain;
-import org.qi4j.runtime.query.model.Female;
-import org.qi4j.runtime.query.model.Male;
-import org.qi4j.runtime.query.model.Nameable;
-import org.qi4j.runtime.query.model.Person;
-import org.qi4j.runtime.query.model.Pet;
-import org.qi4j.runtime.query.model.entities.CityEntity;
+import org.qi4j.runtime.query.model.*;
 import org.qi4j.runtime.query.model.entities.DomainEntity;
-import org.qi4j.runtime.query.model.entities.FemaleEntity;
-import org.qi4j.runtime.query.model.entities.MaleEntity;
 import org.qi4j.runtime.query.model.entities.PetEntity;
 import org.qi4j.runtime.query.model.values.ContactValue;
 import org.qi4j.runtime.query.model.values.ContactsValue;
 import org.qi4j.spi.query.EntityFinderException;
 import org.qi4j.test.EntityTestAssembler;
 
-import static org.junit.Assert.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.qi4j.api.query.QueryExpressions.*;
+import static org.qi4j.api.query.QueryExpressions.property;
 
 public class IterableQueryTest
 {
@@ -239,10 +230,7 @@ public class IterableQueryTest
         QueryBuilder<Nameable> qb = qbf.newQueryBuilder( Nameable.class );
         Person person = templateFor( Person.class );
         Query<Nameable> query = qb.where(
-                and(
-                        ge( person.yearOfBirth(), 1900 ),
-                        eq( person.placeOfBirth().get().name(), "Penang" )
-                )
+                        ge( person.yearOfBirth(), 1900 ).and( eq( person.placeOfBirth().get().name(), "Penang" ) )
         ).newQuery( Network.nameables() );
         verifyUnorderedResults( query, "Jack Doe" );
     }
@@ -254,11 +242,9 @@ public class IterableQueryTest
         QueryBuilder<Nameable> qb = qbf.newQueryBuilder( Nameable.class );
         Person person = templateFor( Person.class );
         Query<Nameable> query = qb.where(
-                and(
-                        ge( person.yearOfBirth(), 1900 ),
-                        lt( person.yearOfBirth(), 2000 ),
-                        eq( person.placeOfBirth().get().name(), "Penang" )
-                )
+                    ge( person.yearOfBirth(), 1900 ).
+                    and(lt( person.yearOfBirth(), 2000 )).
+                    and(eq( person.placeOfBirth().get().name(), "Penang" ))
         ).newQuery( Network.nameables() );
         verifyUnorderedResults( query, "Jack Doe" );
     }
@@ -498,7 +484,7 @@ public class IterableQueryTest
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
-        Domain interests = oneOf( person.interests() );
+        Domain interests = person.interests().get( 0 );
         Query<Person> query = qb.where( eq( interests.name(), "Cars" ) ).newQuery( Network.persons() );
         verifyOrderedResults( query, "Jack Doe" );
     }
@@ -524,8 +510,24 @@ public class IterableQueryTest
     {
         QueryBuilder<PetEntity> qb = qbf.newQueryBuilder( PetEntity.class );
         Pet.PetState pet = templateFor( Pet.PetState.class );
-        Nameable petOwner = templateFor( Nameable.class, pet.owner().get() );
+        Nameable petOwner = templateFor( Nameable.class, pet.owner() );
         Query<PetEntity> query = qb.where( eq( petOwner.name(), "Jack Doe" ) ).newQuery( Network.pets() );
+        verifyOrderedResults( query, "Rex" );
+    }
+
+    @Test
+    public void givenEntitiesWithFieldPropertyByNameWhenQueriedThenReturnCorrect()
+    {
+        QueryBuilder<PetEntity> qb = qbf.newQueryBuilder( PetEntity.class );
+        Query<PetEntity> query = qb.where( eq( property( Describable.Mixin.class, "description" ), "Rex is a great dog" ) ).newQuery( Network.pets() );
+        verifyOrderedResults( query, "Rex" );
+    }
+
+    @Test
+    public void givenEntitiesWithFieldPropertyWhenQueriedThenReturnCorrect()
+    {
+        QueryBuilder<PetEntity> qb = qbf.newQueryBuilder( PetEntity.class );
+        Query<PetEntity> query = qb.where( eq( templateFor( Describable.Mixin.class).description, "Rex is a great dog" ) ).newQuery( Network.pets() );
         verifyOrderedResults( query, "Rex" );
     }
 }

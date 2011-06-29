@@ -16,26 +16,22 @@ package org.qi4j.runtime.composite;
 
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.concern.Concerns;
+import org.qi4j.api.util.Classes;
 import org.qi4j.runtime.bootstrap.AssemblyHelper;
-import org.qi4j.spi.util.MethodKeyMap;
 
-import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.*;
-
-import static org.qi4j.api.util.Classes.genericInterfacesOf;
 
 /**
  * JAVADOC
  */
 public final class ConcernsDeclaration
-    implements Serializable
 {
     public static void concernDeclarations( Class type, List<ConcernDeclaration> concerns )
     {
         // Find concern declarations
-        Set<Type> types = ( type.isInterface() ? genericInterfacesOf( type ) : Collections.singleton( (Type) type ) );
+        Iterable<Type> types = ( type.isInterface() ? Classes.INTERFACES_OF.map( type ) : Collections.singleton( (Type) type ) );
 
         for( Type aType : types )
         {
@@ -70,7 +66,7 @@ public final class ConcernsDeclaration
     }
 
     private final List<ConcernDeclaration> concerns;
-    private final Map<Method, MethodConcernsModel> methodConcernsModels = new MethodKeyMap<MethodConcernsModel>();
+    private final Map<Method, MethodConcernsModel> methodConcernsModels = new HashMap<Method, MethodConcernsModel>();
 
     public ConcernsDeclaration( List<ConcernDeclaration> concerns )
     {

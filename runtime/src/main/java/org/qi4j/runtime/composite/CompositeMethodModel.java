@@ -17,16 +17,11 @@ package org.qi4j.runtime.composite;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.util.HierarchicalVisitor;
 import org.qi4j.api.util.VisitableHierarchy;
-import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.injection.Dependencies;
 import org.qi4j.runtime.injection.DependencyModel;
-import org.qi4j.runtime.model.Binder;
-import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.MethodDescriptor;
-import org.qi4j.spi.util.SerializationUtil;
 
-import java.io.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.InvocationHandler;
@@ -42,7 +37,7 @@ import static org.qi4j.api.util.Iterables.*;
  * JAVADOC
  */
 public final class CompositeMethodModel
-    implements MethodDescriptor, Serializable, Dependencies, VisitableHierarchy<Object, Object>
+    implements MethodDescriptor, Dependencies, VisitableHierarchy<Object, Object>
 {
     // Model
     private Method method;
@@ -58,35 +53,6 @@ public final class CompositeMethodModel
     //    private final InstancePool instancePool = new AtomicInstancePool();
     //    private final InstancePool instancePool = new ThreadLocalCompositeMethodInstancePool();
     private MethodConstraintsInstance methodConstraintsInstance;
-
-    private void writeObject( ObjectOutputStream out )
-        throws IOException
-    {
-        try
-        {
-            SerializationUtil.writeMethod( out, method );
-            out.writeObject( mixins );
-            out.writeObject( methodConcerns );
-            out.writeObject( methodSideEffects );
-            out.writeObject( methodConstraints );
-        }
-        catch( NotSerializableException e )
-        {
-            System.err.println( "NotSerializable in " + getClass() );
-            throw e;
-        }
-    }
-
-    private void readObject( ObjectInputStream in )
-        throws IOException, ClassNotFoundException
-    {
-        this.method = SerializationUtil.readMethod( in );
-        mixins = (AbstractMixinsModel) in.readObject();
-        methodConcerns = (MethodConcernsModel) in.readObject();
-        methodSideEffects = (MethodSideEffectsModel) in.readObject();
-        methodConstraints = (MethodConstraintsModel) in.readObject();
-        initialize();
-    }
 
     public CompositeMethodModel( Method method,
                                  MethodConstraintsModel methodConstraintsModel,
@@ -240,7 +206,7 @@ public final class CompositeMethodModel
     }
 
     public class CompositeMethodAnnotatedElement
-        implements AnnotatedElement, Serializable
+        implements AnnotatedElement
     {
         public boolean isAnnotationPresent( Class<? extends Annotation> annotationClass )
         {

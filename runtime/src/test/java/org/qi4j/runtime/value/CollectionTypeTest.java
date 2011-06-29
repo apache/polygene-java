@@ -18,21 +18,16 @@
 
 package org.qi4j.runtime.value;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
 import org.json.JSONArray;
 import org.junit.Test;
 import org.qi4j.api.common.TypeName;
-import org.qi4j.runtime.types.CollectionType;
-import org.qi4j.runtime.types.NumberType;
-import org.qi4j.spi.property.ValueType;
+import org.qi4j.spi.property.*;
 
-import static org.junit.Assert.*;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.*;
+
+import static org.junit.Assert.assertEquals;
 
 public class CollectionTypeTest
 {
@@ -41,13 +36,13 @@ public class CollectionTypeTest
     public void givenCollectionTypeWithByteAndNullElementWhenSerializingExpectCorrectJsonOutput()
         throws Exception
     {
-        TypeName numberTypeName = TypeName.nameOf( Byte.class );
-        ValueType collectedType = new NumberType( numberTypeName );
-        TypeName typeName = TypeName.nameOf( Collection.class );
-        CollectionType collectionType = new CollectionType( typeName, collectedType );
+        ValueType collectedType = new ValueType( Byte.class );
+        CollectionType collectionType = new CollectionType( Collection.class, collectedType );
 
         Collection<Byte> value = byteCollection();
-        Object json = collectionType.toJSON( value );
+        JSONObjectSerializer serializer = new JSONObjectSerializer();
+        serializer.serialize( value, collectionType );
+        Object json = serializer.getRoot();
         assertEquals( byteJson(), json.toString() );
     }
 
@@ -55,13 +50,13 @@ public class CollectionTypeTest
     public void givenCollectionTypeWithShortAndNullElementWhenSerializingExpectCorrectJsonOutput()
         throws Exception
     {
-        TypeName numberTypeName = TypeName.nameOf( Short.class );
-        ValueType collectedType = new NumberType( numberTypeName );
-        TypeName typeName = TypeName.nameOf( Collection.class );
-        CollectionType collectionType = new CollectionType( typeName, collectedType );
+        ValueType collectedType = new ValueType( Short.class );
+        CollectionType collectionType = new CollectionType( Collection.class, collectedType );
 
         Collection<Short> value = shortCollection();
-        Object json = collectionType.toJSON( value );
+        JSONObjectSerializer serializer = new JSONObjectSerializer();
+        serializer.serialize( value, collectionType );
+        Object json = serializer.getRoot();
         assertEquals( shortJson(), json.toString() );
     }
 
@@ -69,13 +64,13 @@ public class CollectionTypeTest
     public void givenCollectionTypeWithIntegerAndNullElementWhenSerializingExpectCorrectJsonOutput()
         throws Exception
     {
-        TypeName numberTypeName = TypeName.nameOf( Integer.class );
-        ValueType collectedType = new NumberType( numberTypeName );
-        TypeName typeName = TypeName.nameOf( Collection.class );
-        CollectionType collectionType = new CollectionType( typeName, collectedType );
+        ValueType collectedType = new ValueType( Integer.class );
+        CollectionType collectionType = new CollectionType( Collection.class, collectedType );
 
         Collection<Integer> value = integerCollection();
-        Object json = collectionType.toJSON( value );
+        JSONObjectSerializer serializer = new JSONObjectSerializer();
+        serializer.serialize( value, collectionType );
+        Object json = serializer.getRoot();
         assertEquals( integerJson(), json.toString() );
     }
 
@@ -83,13 +78,13 @@ public class CollectionTypeTest
     public void givenCollectionTypeWithLongAndNullElementWhenSerializingExpectCorrectJsonOutput()
         throws Exception
     {
-        TypeName numberTypeName = TypeName.nameOf( Long.class );
-        ValueType collectedType = new NumberType( numberTypeName );
-        TypeName typeName = TypeName.nameOf( Collection.class );
-        CollectionType collectionType = new CollectionType( typeName, collectedType );
+        ValueType collectedType = new ValueType( Long.class );
+        CollectionType collectionType = new CollectionType( Collection.class, collectedType );
 
         Collection<Long> value = longCollection();
-        Object json = collectionType.toJSON( value );
+        JSONObjectSerializer serializer = new JSONObjectSerializer();
+        serializer.serialize( value, collectionType );
+        Object json = serializer.getRoot();
         assertEquals( longJson(), json.toString() );
     }
 
@@ -97,13 +92,13 @@ public class CollectionTypeTest
     public void givenCollectionTypeWithFloatAndNullElementWhenSerializingExpectCorrectJsonOutput()
         throws Exception
     {
-        TypeName numberTypeName = TypeName.nameOf( Float.class );
-        ValueType collectedType = new NumberType( numberTypeName );
-        TypeName typeName = TypeName.nameOf( Collection.class );
-        CollectionType collectionType = new CollectionType( typeName, collectedType );
+        ValueType collectedType = new ValueType( Float.class );
+        CollectionType collectionType = new CollectionType( Collection.class , collectedType );
 
         Collection<Float> value = floatCollection();
-        Object json = collectionType.toJSON( value );
+        JSONObjectSerializer serializer = new JSONObjectSerializer();
+        serializer.serialize( value, collectionType );
+        Object json = serializer.getRoot();
         assertEquals( floatJson(), json.toString() );
     }
 
@@ -111,13 +106,13 @@ public class CollectionTypeTest
     public void givenCollectionTypeWithDoubleAndNullElementWhenSerializingExpectCorrectJsonOutput()
         throws Exception
     {
-        TypeName numberTypeName = TypeName.nameOf( Double.class );
-        ValueType collectedType = new NumberType( numberTypeName );
-        TypeName typeName = TypeName.nameOf( Collection.class );
-        CollectionType collectionType = new CollectionType( typeName, collectedType );
+        ValueType collectedType = new ValueType( Double.class );
+        CollectionType collectionType = new CollectionType( Collection.class, collectedType );
 
         Collection<Double> value = doubleCollection();
-        Object json = collectionType.toJSON( value );
+        JSONObjectSerializer serializer = new JSONObjectSerializer();
+        serializer.serialize( value, collectionType );
+        Object json = serializer.getRoot();
         assertEquals( doubleJson(), json.toString() );
     }
 
@@ -125,13 +120,13 @@ public class CollectionTypeTest
     public void givenCollectionTypeWithBigIntegerAndNullElementWhenSerializingExpectCorrectJsonOutput()
         throws Exception
     {
-        TypeName numberTypeName = TypeName.nameOf( BigInteger.class );
-        ValueType collectedType = new NumberType( numberTypeName );
-        TypeName typeName = TypeName.nameOf( Collection.class );
-        CollectionType collectionType = new CollectionType( typeName, collectedType );
+        ValueType collectedType = new ValueType( BigInteger.class );
+        CollectionType collectionType = new CollectionType( Collection.class, collectedType );
 
         Collection<BigInteger> value = bigIntegerCollection();
-        Object json = collectionType.toJSON( value );
+        JSONObjectSerializer serializer = new JSONObjectSerializer();
+        serializer.serialize( value, collectionType );
+        Object json = serializer.getRoot();
         assertEquals( bigIntegerJson(), json.toString() );
     }
 
@@ -139,13 +134,13 @@ public class CollectionTypeTest
     public void givenCollectionTypeWithBigDecimalAndNullElementWhenSerializingExpectCorrectJsonOutput()
         throws Exception
     {
-        TypeName numberTypeName = TypeName.nameOf( BigDecimal.class );
-        ValueType collectedType = new NumberType( numberTypeName );
-        TypeName typeName = TypeName.nameOf( Collection.class );
-        CollectionType collectionType = new CollectionType( typeName, collectedType );
+        ValueType collectedType = new ValueType( BigDecimal.class );
+        CollectionType collectionType = new CollectionType( Collection.class, collectedType );
 
         Collection<BigDecimal> value = bigDecimalCollection();
-        Object json = collectionType.toJSON( value );
+        JSONObjectSerializer serializer = new JSONObjectSerializer();
+        serializer.serialize( value, collectionType );
+        Object json = serializer.getRoot();
         assertEquals( bigDecimalJson(), json.toString() );
     }
 
@@ -153,12 +148,10 @@ public class CollectionTypeTest
     public void givenJsonOfByteListWhenDeserializingExpectCorrectValueOutput()
         throws Exception
     {
-        TypeName numberTypeName = TypeName.nameOf( Byte.class );
-        ValueType collectedType = new NumberType( numberTypeName );
-        TypeName typeName = TypeName.nameOf( List.class );
-        CollectionType collectionType = new CollectionType( typeName, collectedType );
+        ValueType collectedType = new ValueType( Byte.class );
+        CollectionType collectionType = new CollectionType( List.class, collectedType );
         Object json = new JSONArray( byteJson() );
-        ArrayList<Byte> result = (ArrayList<Byte>) collectionType.fromJSON( json, null );
+        ArrayList<Byte> result = (ArrayList<Byte>) new JSONDeserializer( null ).deserialize( json, collectionType );
         ArrayList<Byte> bytes = byteCollection();
         for( int i = 0; i < result.size(); i++ )
         {
@@ -175,12 +168,10 @@ public class CollectionTypeTest
     public void givenJsonOfByteSetWhenDeserializingExpectCorrectValueOutput()
         throws Exception
     {
-        TypeName numberTypeName = TypeName.nameOf( Byte.class );
-        ValueType collectedType = new NumberType( numberTypeName );
-        TypeName typeName = TypeName.nameOf( Set.class );
-        CollectionType collectionType = new CollectionType( typeName, collectedType );
+        ValueType collectedType = new ValueType( Byte.class );
+        CollectionType collectionType = new CollectionType( Set.class, collectedType );
         Object json = new JSONArray( byteJson() );
-        Set<Byte> result = (Set<Byte>) collectionType.fromJSON( json, null );
+        Set<Byte> result = (Set<Byte>) new JSONDeserializer( null ).deserialize( json, collectionType );
         Set<Byte> bytes = new LinkedHashSet<Byte>( byteCollection() );
         assertEquals( bytes, result );
     }
@@ -189,12 +180,10 @@ public class CollectionTypeTest
     public void givenJsonOfByteCollectionWhenDeserializingExpectCorrectValueOutput()
         throws Exception
     {
-        TypeName numberTypeName = TypeName.nameOf( Byte.class );
-        ValueType collectedType = new NumberType( numberTypeName );
-        TypeName typeName = TypeName.nameOf( Collection.class );
-        CollectionType collectionType = new CollectionType( typeName, collectedType );
+        ValueType collectedType = new ValueType( Byte.class );
+        CollectionType collectionType = new CollectionType( Collection.class, collectedType );
         Object json = new JSONArray( byteJson() );
-        ArrayList<Byte> result = (ArrayList<Byte>) collectionType.fromJSON( json, null );
+        ArrayList<Byte> result = (ArrayList<Byte>) new JSONDeserializer( null ).deserialize( json, collectionType );
         assertEquals( byteCollection(), result );
     }
 
@@ -202,12 +191,10 @@ public class CollectionTypeTest
     public void givenJsonOfShortCollectionWhenDeserializingExpectCorrectValueOutput()
         throws Exception
     {
-        TypeName numberTypeName = TypeName.nameOf( Short.class );
-        ValueType collectedType = new NumberType( numberTypeName );
-        TypeName typeName = TypeName.nameOf( Collection.class );
-        CollectionType collectionType = new CollectionType( typeName, collectedType );
+        ValueType collectedType = new ValueType( Short.class );
+        CollectionType collectionType = new CollectionType( Collection.class, collectedType );
         Object json = new JSONArray( shortJson() );
-        ArrayList<Short> result = (ArrayList<Short>) collectionType.fromJSON( json, null );
+        ArrayList<Short> result = (ArrayList<Short>) new JSONDeserializer( null ).deserialize( json, collectionType );
         assertEquals( shortCollection(), result );
     }
 
@@ -215,12 +202,10 @@ public class CollectionTypeTest
     public void givenJsonOfIntegerCollectionWhenDeserializingExpectCorrectValueOutput()
         throws Exception
     {
-        TypeName numberTypeName = TypeName.nameOf( Integer.class );
-        ValueType collectedType = new NumberType( numberTypeName );
-        TypeName typeName = TypeName.nameOf( Collection.class );
-        CollectionType collectionType = new CollectionType( typeName, collectedType );
+        ValueType collectedType = new ValueType( Integer.class );
+        CollectionType collectionType = new CollectionType( Collection.class, collectedType );
         Object json = new JSONArray( integerJson() );
-        ArrayList<Integer> result = (ArrayList<Integer>) collectionType.fromJSON( json, null );
+        ArrayList<Integer> result = (ArrayList<Integer>) new JSONDeserializer( null ).deserialize( json, collectionType );
         assertEquals( integerCollection(), result );
     }
 
@@ -228,12 +213,10 @@ public class CollectionTypeTest
     public void givenJsonOfLongCollectionWhenDeserializingExpectCorrectValueOutput()
         throws Exception
     {
-        TypeName numberTypeName = TypeName.nameOf( Long.class );
-        ValueType collectedType = new NumberType( numberTypeName );
-        TypeName typeName = TypeName.nameOf( Collection.class );
-        CollectionType collectionType = new CollectionType( typeName, collectedType );
+        ValueType collectedType = new ValueType( Long.class );
+        CollectionType collectionType = new CollectionType( Collection.class, collectedType );
         Object json = new JSONArray( longJson() );
-        ArrayList<Long> result = (ArrayList<Long>) collectionType.fromJSON( json, null );
+        ArrayList<Long> result = (ArrayList<Long>) new JSONDeserializer( null ).deserialize( json, collectionType );
         assertEquals( longCollection(), result );
     }
 
@@ -241,12 +224,10 @@ public class CollectionTypeTest
     public void givenJsonOfFloatCollectionWhenDeserializingExpectCorrectValueOutput()
         throws Exception
     {
-        TypeName numberTypeName = TypeName.nameOf( Float.class );
-        ValueType collectedType = new NumberType( numberTypeName );
-        TypeName typeName = TypeName.nameOf( Collection.class );
-        CollectionType collectionType = new CollectionType( typeName, collectedType );
+        ValueType collectedType = new ValueType( Float.class );
+        CollectionType collectionType = new CollectionType( Collection.class, collectedType );
         Object json = new JSONArray( floatJson() );
-        ArrayList<Float> result = (ArrayList<Float>) collectionType.fromJSON( json, null );
+        ArrayList<Float> result = (ArrayList<Float>) new JSONDeserializer( null ).deserialize( json, collectionType );
         assertEquals( floatCollection(), result );
     }
 
@@ -254,12 +235,10 @@ public class CollectionTypeTest
     public void givenJsonOfDoubleCollectionWhenDeserializingExpectCorrectValueOutput()
         throws Exception
     {
-        TypeName numberTypeName = TypeName.nameOf( Double.class );
-        ValueType collectedType = new NumberType( numberTypeName );
-        TypeName typeName = TypeName.nameOf( Collection.class );
-        CollectionType collectionType = new CollectionType( typeName, collectedType );
+        ValueType collectedType = new ValueType( Double.class );
+        CollectionType collectionType = new CollectionType( Collection.class, collectedType );
         Object json = new JSONArray( doubleJson() );
-        ArrayList<Double> result = (ArrayList<Double>) collectionType.fromJSON( json, null );
+        ArrayList<Double> result = (ArrayList<Double>) new JSONDeserializer( null ).deserialize( json, collectionType );
         assertEquals( doubleCollection(), result );
     }
 
@@ -267,12 +246,10 @@ public class CollectionTypeTest
     public void givenJsonOfBigIntegerCollectionWhenDeserializingExpectCorrectValueOutput()
         throws Exception
     {
-        TypeName numberTypeName = TypeName.nameOf( BigInteger.class );
-        ValueType collectedType = new NumberType( numberTypeName );
-        TypeName typeName = TypeName.nameOf( Collection.class );
-        CollectionType collectionType = new CollectionType( typeName, collectedType );
+        ValueType collectedType = new ValueType( BigInteger.class );
+        CollectionType collectionType = new CollectionType( Collection.class, collectedType );
         Object json = new JSONArray( bigIntegerJson() );
-        ArrayList<BigInteger> result = (ArrayList<BigInteger>) collectionType.fromJSON( json, null );
+        ArrayList<BigInteger> result = (ArrayList<BigInteger>) new JSONDeserializer( null ).deserialize( json, collectionType );
         assertEquals( bigIntegerCollection(), result );
     }
 
@@ -280,12 +257,10 @@ public class CollectionTypeTest
     public void givenJsonOfBigDecimalCollectionWhenDeserializingExpectCorrectValueOutput()
         throws Exception
     {
-        TypeName numberTypeName = TypeName.nameOf( BigDecimal.class );
-        ValueType collectedType = new NumberType( numberTypeName );
-        TypeName typeName = TypeName.nameOf( Collection.class );
-        CollectionType collectionType = new CollectionType( typeName, collectedType );
+        ValueType collectedType = new ValueType( BigDecimal.class );
+        CollectionType collectionType = new CollectionType( Collection.class, collectedType );
         Object json = new JSONArray( bigDecimalJson() );
-        ArrayList<BigDecimal> result = (ArrayList<BigDecimal>) collectionType.fromJSON( json, null );
+        ArrayList<BigDecimal> result = (ArrayList<BigDecimal>) new JSONDeserializer( null ).deserialize( json, collectionType );
         assertEquals( bigDecimalCollection(), result );
     }
 
@@ -293,12 +268,10 @@ public class CollectionTypeTest
     public void givenJsonOfBigIntegerCollectionWithQuotesWhenDeserializingExpectCorrectValueOutput()
         throws Exception
     {
-        TypeName numberTypeName = TypeName.nameOf( BigInteger.class );
-        ValueType collectedType = new NumberType( numberTypeName );
-        TypeName typeName = TypeName.nameOf( Collection.class );
-        CollectionType collectionType = new CollectionType( typeName, collectedType );
+        ValueType collectedType = new ValueType( BigInteger.class );
+        CollectionType collectionType = new CollectionType( Collection.class, collectedType );
         Object json = new JSONArray( bigIntegerJsonWithQuotes() );
-        ArrayList<BigDecimal> result = (ArrayList<BigDecimal>) collectionType.fromJSON( json, null );
+        ArrayList<BigDecimal> result = (ArrayList<BigDecimal>) new JSONDeserializer( null ).deserialize( json, collectionType );
         assertEquals( bigIntegerCollection(), result );
     }
 
@@ -306,12 +279,10 @@ public class CollectionTypeTest
     public void givenJsonOfBigDecimalCollectionWithQuotesWhenDeserializingExpectCorrectValueOutput()
         throws Exception
     {
-        TypeName numberTypeName = TypeName.nameOf( BigDecimal.class );
-        ValueType collectedType = new NumberType( numberTypeName );
-        TypeName typeName = TypeName.nameOf( Collection.class );
-        CollectionType collectionType = new CollectionType( typeName, collectedType );
+        ValueType collectedType = new ValueType( BigDecimal.class );
+        CollectionType collectionType = new CollectionType( Collection.class, collectedType );
         Object json = new JSONArray( bigDecimalJsonWithQuotes() );
-        ArrayList<BigDecimal> result = (ArrayList<BigDecimal>) collectionType.fromJSON( json, null );
+        ArrayList<BigDecimal> result = (ArrayList<BigDecimal>) new JSONDeserializer( null ).deserialize( json, collectionType );
         assertEquals( bigDecimalCollection(), result );
     }
 

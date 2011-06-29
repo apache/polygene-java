@@ -15,37 +15,34 @@
 package org.qi4j.runtime.injection;
 
 import org.qi4j.api.injection.InjectionScope;
-import org.qi4j.api.util.Function;
-import org.qi4j.api.util.HierarchicalVisitor;
-import org.qi4j.api.util.Iterables;
-import org.qi4j.api.util.VisitableHierarchy;
-import org.qi4j.bootstrap.BindingException;
-import org.qi4j.runtime.model.Binder;
-import org.qi4j.runtime.model.Resolution;
+import org.qi4j.api.util.*;
 
-import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.qi4j.api.specification.Specifications.translate;
 import static org.qi4j.api.util.Annotations.hasAnnotation;
-import static org.qi4j.api.util.Classes.fieldsOf;
+import static org.qi4j.api.util.Annotations.type;
 import static org.qi4j.api.util.Iterables.*;
 
 /**
  * JAVADOC
  */
 public final class InjectedFieldsModel
-    implements Serializable, Dependencies, VisitableHierarchy<Object, Object>
+    implements Dependencies, VisitableHierarchy<Object, Object>
 {
     private final List<InjectedFieldModel> fields = new ArrayList<InjectedFieldModel>();
 
     public InjectedFieldsModel( Class fragmentClass )
     {
-        for( Field field : fieldsOf( fragmentClass ) )
+        for( Field field : Fields.FIELDS_OF.map( fragmentClass ) )
         {
-            Annotation injectionAnnotation = first( filter( hasAnnotation( InjectionScope.class ), iterable( field.getAnnotations() ) ) );
+            Annotation injectionAnnotation = first( filter( translate( type(), hasAnnotation( InjectionScope.class ) ), iterable( field.getAnnotations() ) ) );
             if( injectionAnnotation != null )
             {
                 addModel( fragmentClass, field, injectionAnnotation );
@@ -55,8 +52,24 @@ public final class InjectedFieldsModel
 
     private void addModel( Class fragmentClass, Field field, Annotation injectionAnnotation )
     {
+        Type genericType = field.getGenericType();
+        if (genericType instanceof ParameterizedType )
+        {
+            genericType = new ParameterizedTypeInstance(((ParameterizedType) genericType).getActualTypeArguments(), ((ParameterizedType) genericType).getRawType(), ((ParameterizedType) genericType).getOwnerType());
+
+            for( int i = 0; i < ((ParameterizedType) genericType).getActualTypeArguments().length; i++ )
+            {
+                Type type = ((ParameterizedType) genericType).getActualTypeArguments()[i];
+                if (type instanceof TypeVariable )
+                {
+                    type = Classes.resolveTypeVariable( (TypeVariable) type, field.getDeclaringClass(), fragmentClass );
+                    ((ParameterizedType) genericType).getActualTypeArguments()[i] = type;
+                }
+            }
+        }
+
         boolean optional = DependencyModel.isOptional( injectionAnnotation, field.getAnnotations() );
-        DependencyModel dependencyModel = new DependencyModel( injectionAnnotation, field.getGenericType(), fragmentClass, optional, field
+        DependencyModel dependencyModel = new DependencyModel( injectionAnnotation, genericType, fragmentClass, optional, field
             .getAnnotations() );
         InjectedFieldModel injectedFieldModel = new InjectedFieldModel( field, dependencyModel );
         this.fields.add( injectedFieldModel );

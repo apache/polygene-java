@@ -16,7 +16,6 @@ package org.qi4j.runtime.composite;
 
 import org.qi4j.api.common.AppliesToFilter;
 
-import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -25,7 +24,6 @@ import java.lang.reflect.Type;
  * JAVADOC
  */
 public abstract class FragmentDeclaration
-    implements Serializable
 {
     private final Class fragmentClass;
     private final Class declaredIn;

@@ -20,596 +20,358 @@
  */
 package org.qi4j.api.query;
 
-import java.util.Collection;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.entity.Identity;
 import org.qi4j.api.entity.association.Association;
+import org.qi4j.api.entity.association.GenericAssociationInfo;
 import org.qi4j.api.entity.association.ManyAssociation;
+import org.qi4j.api.injection.scope.State;
+import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Property;
-import org.qi4j.api.query.grammar.AssociationIsNotNullPredicate;
-import org.qi4j.api.query.grammar.AssociationIsNullPredicate;
-import org.qi4j.api.query.grammar.AssociationReference;
-import org.qi4j.api.query.grammar.BooleanExpression;
-import org.qi4j.api.query.grammar.Conjunction;
-import org.qi4j.api.query.grammar.ContainsAllPredicate;
-import org.qi4j.api.query.grammar.ContainsPredicate;
-import org.qi4j.api.query.grammar.Disjunction;
-import org.qi4j.api.query.grammar.EqualsPredicate;
-import org.qi4j.api.query.grammar.GreaterOrEqualPredicate;
-import org.qi4j.api.query.grammar.GreaterThanPredicate;
-import org.qi4j.api.query.grammar.LessOrEqualPredicate;
-import org.qi4j.api.query.grammar.LessThanPredicate;
-import org.qi4j.api.query.grammar.ManyAssociationContainsPredicate;
-import org.qi4j.api.query.grammar.ManyAssociationReference;
-import org.qi4j.api.query.grammar.MatchesPredicate;
-import org.qi4j.api.query.grammar.Negation;
-import org.qi4j.api.query.grammar.NotEqualsPredicate;
 import org.qi4j.api.query.grammar.OrderBy;
-import org.qi4j.api.query.grammar.PropertyIsNotNullPredicate;
-import org.qi4j.api.query.grammar.PropertyIsNullPredicate;
-import org.qi4j.api.query.grammar.PropertyReference;
-import org.qi4j.api.query.grammar.SingleValueExpression;
-import org.qi4j.api.query.grammar.VariableValueExpression;
+import org.qi4j.api.query.grammar2.*;
+import org.qi4j.api.specification.Specification;
+import org.qi4j.api.util.NullArgumentException;
+
+import java.lang.reflect.*;
+import java.util.Collection;
+
+import static org.qi4j.api.util.Iterables.iterable;
+import static org.qi4j.api.util.Iterables.prepend;
 
 /**
  * Static factory methods for query expressions and operators.
  */
 public final class QueryExpressions
 {
+    // This is used for eq(Association,Composite)
+    private static Method idComposite;
 
-    private static QueryExpressionsProvider provider;
-
-    /**
-     * Set the provider to be used. This is typically called by the runtime.
-     *
-     * @param provider the QueryExpressionsProvider
-     */
-    public static void setProvider( QueryExpressionsProvider provider )
+    static
     {
-        QueryExpressions.provider = provider;
+        try
+        {
+            idComposite = Identity.class.getMethod( "identity" );
+        }
+        catch( NoSuchMethodException e )
+        {
+            e.printStackTrace();
+        }
     }
 
-    /**
-     * When querying for a member of an association, use this to get a template for a single element, which can then be
-     * used in expressions.
-     *
-     * @param association
-     * @param <T>
-     *
-     * @return
-     */
+    // Templates and variables
+    public static <T> T templateFor( Class<T> clazz )
+    {
+        NullArgumentException.validateNotNull( "Template class", clazz );
+
+        if (clazz.isInterface())
+            return clazz.cast( Proxy.newProxyInstance( clazz.getClassLoader(), new Class[]{clazz}, new TemplateHandler<Object>( null, null, null ) ) );
+        else
+        {
+            try
+            {
+                T mixin = clazz.newInstance();
+                for( Field field : clazz.getFields() )
+                {
+                    if (field.getAnnotation( State.class ) != null)
+                    {
+                        if (field.getType().equals( Property.class ))
+                        {
+                            field.set(mixin, Proxy.newProxyInstance( field.getType().getClassLoader(),
+                                    new Class[]{field.getType()},
+                                    new PropertyReferenceHandler( new PropertyFunction( null, null, null, field ) ) ));
+                        }
+                    }
+                }
+                return mixin;
+            } catch( Throwable e )
+            {
+                throw new IllegalArgumentException( "Cannot use class as template", e );
+            }
+        }
+    }
+
+    public static <T> T templateFor( final Class<T> mixinType, Association<?> association )
+    {
+        NullArgumentException.validateNotNull( "Mixin class", mixinType );
+        NullArgumentException.validateNotNull( "Association", association );
+        return mixinType.cast( Proxy.newProxyInstance( mixinType.getClassLoader(), new Class[]{mixinType}, new TemplateHandler<Object>( null, association( association ), null ) ) );
+    }
+
     public static <T> T oneOf( final ManyAssociation<T> association )
     {
-        return provider.oneOf( association );
+        NullArgumentException.validateNotNull( "Association", association );
+        return association.get( 0 );
     }
 
-    /**
-     * Creates a template for the a mixin type to be used to access properties in type safe fashion.
-     *
-     * @param mixinType mixin type
-     *
-     * @return template instance
-     */
-    @SuppressWarnings( "unchecked" )
-    public static <T> T templateFor( final Class<T> mixinType )
+    public static <T> T variable(String name)
     {
-        return provider.templateFor( mixinType );
+        NullArgumentException.validateNotNull( "Variable name", name );
+        return (T) new Variable( name );
     }
 
-    public static <T> T templateFor( final Class<T> mixinType, Object associatedEntity )
+    public static <T> PropertyFunction<T> property( Property<T> property )
     {
-        return provider.templateFor( mixinType, associatedEntity );
+        return (PropertyFunction<T>) ((PropertyReferenceHandler<T>)Proxy.getInvocationHandler( property )).getProperty();
     }
 
-    /**
-     * {@link org.qi4j.api.query.grammar.VariableValueExpression} factory method.
-     *
-     * @param name variable name; cannot be null
-     *
-     * @return an {@link org.qi4j.api.query.grammar.VariableValueExpression} expression
-     *
-     * @throws IllegalArgumentException - If name is null or empty
-     */
-    public static <T> VariableValueExpression<T> variable( final String name )
+    public static <T> Property<T> property(Class mixinClass, String fieldName)
     {
-        return provider.newVariableValueExpression( name );
-    }
-
-    /**
-     * {@link org.qi4j.api.query.grammar.PropertyIsNullPredicate} factory method.
-     *
-     * @param property filtered property; cannot be null
-     *
-     * @return an {@link org.qi4j.api.query.grammar.PropertyIsNullPredicate} expression
-     *
-     * @throws IllegalArgumentException - If property is null
-     */
-    public static <T> PropertyIsNullPredicate<T> isNull( final Property<T> property )
-    {
-        return provider.newPropertyIsNullPredicate( asPropertyExpression( property ) );
-    }
-
-    /**
-     * {@link org.qi4j.api.query.grammar.AssociationIsNullPredicate} factory method.
-     *
-     * @param association filtered association; cannot be null
-     *
-     * @return an {@link org.qi4j.api.query.grammar.AssociationIsNullPredicate} expression
-     *
-     * @throws IllegalArgumentException - If association is null
-     */
-    public static AssociationIsNullPredicate isNull( final Association<?> association )
-    {
-        return provider.newAssociationIsNullPredicate( asAssociationExpression( association ) );
-    }
-
-    /**
-     * {@link org.qi4j.api.query.grammar.PropertyIsNotNullPredicate} factory method.
-     *
-     * @param property filtered property; cannot be null
-     *
-     * @return an {@link org.qi4j.api.query.grammar.PropertyIsNotNullPredicate} expression
-     *
-     * @throws IllegalArgumentException - If property is null
-     */
-    public static <T> PropertyIsNotNullPredicate<T> isNotNull( final Property<T> property )
-    {
-        return provider.newPropertyIsNotNullPredicate( asPropertyExpression( property ) );
-    }
-
-    /**
-     * {@link org.qi4j.api.query.grammar.AssociationIsNotNullPredicate} factory method.
-     *
-     * @param association filtered association; cannot be null
-     *
-     * @return an {@link org.qi4j.api.query.grammar.AssociationIsNotNullPredicate} expression
-     *
-     * @throws IllegalArgumentException - If association is null
-     */
-    public static AssociationIsNotNullPredicate isNotNull( final Association<?> association )
-    {
-        return provider.newAssociationIsNotNullPredicate( asAssociationExpression( association ) );
-    }
-
-    /**
-     * {@link org.qi4j.api.query.grammar.EqualsPredicate} factory method.
-     *
-     * @param property filtered property; cannot be null
-     * @param value    expected value that property is equal to; cannot be null
-     *
-     * @return an {@link org.qi4j.api.query.grammar.EqualsPredicate}
-     *
-     * @throws IllegalArgumentException - If property or value are null
-     */
-    public static <T> EqualsPredicate<T> eq( final Property<T> property, final T value )
-    {
-        return provider.newEqualsPredicate( asPropertyExpression( property ), asTypedValueExpression( value ) );
-    }
-
-    /**
-     * {@link org.qi4j.api.query.grammar.EqualsPredicate} factory method.
-     *
-     * @param property        filtered property; cannot be null
-     * @param valueExpression expected value that property is equal to; cannot be null
-     *
-     * @return an {@link org.qi4j.api.query.grammar.EqualsPredicate}
-     *
-     * @throws IllegalArgumentException - If property or value are null
-     */
-    public static <T> EqualsPredicate<T> eq( final Property<T> property,
-                                             final VariableValueExpression<T> valueExpression
-    )
-    {
-        return provider.newEqualsPredicate( asPropertyExpression( property ), valueExpression );
-    }
-
-    /**
-     * {@link org.qi4j.api.query.grammar.EqualsPredicate} factory method.
-     *
-     * @param property filtered property; cannot be null
-     * @param value    expected value that property is equal to; cannot be null
-     *
-     * @return an {@link org.qi4j.api.query.grammar.EqualsPredicate}
-     *
-     * @throws IllegalArgumentException - If property or value are null
-     */
-    public static <T> EqualsPredicate<String> eq( final Association<T> property, final T value )
-    {
-        return provider.newEqualsPredicate( asAssociationExpression( property ), asTypedValueExpression( value ) );
-    }
-
-    /**
-     * {@link org.qi4j.api.query.grammar.EqualsPredicate} factory method.
-     *
-     * @param property        filtered property; cannot be null
-     * @param valueExpression expected value that property is equal to; cannot be null
-     *
-     * @return an {@link org.qi4j.api.query.grammar.EqualsPredicate}
-     *
-     * @throws IllegalArgumentException - If property or value are null
-     */
-    public static <T> EqualsPredicate<String> eq( final Association<T> property,
-                                                  final VariableValueExpression<T> valueExpression
-    )
-    {
-        return provider.newEqualsPredicate( asAssociationExpression( property ), valueExpression );
-    }
-
-    /**
-     * {@link org.qi4j.api.query.grammar.NotEqualsPredicate} factory method.
-     *
-     * @param property filtered property; cannot be null
-     * @param value    expected value that property is not equal to; cannot be null
-     *
-     * @return an {@link org.qi4j.api.query.grammar.NotEqualsPredicate} expression
-     *
-     * @throws IllegalArgumentException - If property or value are null
-     */
-    public static <T> NotEqualsPredicate<T> notEq( final Property<T> property, final T value )
-    {
-        return provider.newNotEqualsPredicate( asPropertyExpression( property ), asTypedValueExpression( value ) );
-    }
-
-    /**
-     * {@link org.qi4j.api.query.grammar.NotEqualsPredicate} factory method.
-     *
-     * @param property        filtered property; cannot be null
-     * @param valueExpression expected value that property is not equal to; cannot be null
-     *
-     * @return an {@link org.qi4j.api.query.grammar.NotEqualsPredicate} expression
-     *
-     * @throws IllegalArgumentException - If property or value are null
-     */
-    public static <T> NotEqualsPredicate<T> notEq( final Property<T> property,
-                                                   final VariableValueExpression<T> valueExpression
-    )
-    {
-        return provider.newNotEqualsPredicate( asPropertyExpression( property ), valueExpression );
-    }
-
-    /**
-     * {@link org.qi4j.api.query.grammar.LessThanPredicate} factory method.
-     *
-     * @param property filtered property; cannot be null
-     * @param value    expected value that property is less than; cannot be null
-     *
-     * @return an {@link org.qi4j.api.query.grammar.LessThanPredicate} expression
-     *
-     * @throws IllegalArgumentException - If property or value are null
-     */
-    public static <T> LessThanPredicate<T> lt( final Property<T> property, final T value )
-    {
-        return provider.newLessThanPredicate( asPropertyExpression( property ), asTypedValueExpression( value ) );
-    }
-
-    /**
-     * {@link org.qi4j.api.query.grammar.LessThanPredicate} factory method.
-     *
-     * @param property        filtered property; cannot be null
-     * @param valueExpression expected value that property is less than; cannot be null
-     *
-     * @return an {@link org.qi4j.api.query.grammar.LessThanPredicate} expression
-     *
-     * @throws IllegalArgumentException - If property or value are null
-     */
-    public static <T> LessThanPredicate<T> lt( final Property<T> property,
-                                               final VariableValueExpression<T> valueExpression
-    )
-    {
-        return provider.newLessThanPredicate( asPropertyExpression( property ), valueExpression );
-    }
-
-    /**
-     * {@link org.qi4j.api.query.grammar.LessOrEqualPredicate} factory method.
-     *
-     * @param property filtered property; cannot be null
-     * @param value    expected value that property is less than or equal to; cannot be null
-     *
-     * @return an {@link org.qi4j.api.query.grammar.LessOrEqualPredicate} expression
-     *
-     * @throws IllegalArgumentException - If property or value are null
-     */
-    public static <T> LessOrEqualPredicate<T> le( final Property<T> property, final T value )
-    {
-        return provider.newLessOrEqualPredicate( asPropertyExpression( property ), asTypedValueExpression( value ) );
-    }
-
-    /**
-     * {@link org.qi4j.api.query.grammar.LessOrEqualPredicate} factory method.
-     *
-     * @param property        filtered property; cannot be null
-     * @param valueExpression expected value that property is less than or equal to; cannot be null
-     *
-     * @return an {@link org.qi4j.api.query.grammar.LessOrEqualPredicate} expression
-     *
-     * @throws IllegalArgumentException - If property or value are null
-     */
-    public static <T> LessOrEqualPredicate<T> le( final Property<T> property,
-                                                  final VariableValueExpression<T> valueExpression
-    )
-    {
-        return provider.newLessOrEqualPredicate( asPropertyExpression( property ), valueExpression );
-    }
-
-    /**
-     * {@link org.qi4j.api.query.grammar.GreaterThanPredicate} factory method.
-     *
-     * @param property filtered property; cannot be null
-     * @param value    expected value that property is greater than; cannot be null
-     *
-     * @return an {@link org.qi4j.api.query.grammar.GreaterThanPredicate} expression
-     *
-     * @throws IllegalArgumentException - If property or value are null
-     */
-    public static <T> GreaterThanPredicate<T> gt( final Property<T> property, final T value )
-    {
-        return provider.newGreaterThanPredicate( asPropertyExpression( property ), asTypedValueExpression( value ) );
-    }
-
-    /**
-     * {@link org.qi4j.api.query.grammar.GreaterThanPredicate} factory method.
-     *
-     * @param property        filtered property; cannot be null
-     * @param valueExpression expected value that property is greater than; cannot be null
-     *
-     * @return an {@link org.qi4j.api.query.grammar.GreaterThanPredicate} expression
-     *
-     * @throws IllegalArgumentException - If property or value are null
-     */
-    public static <T> GreaterThanPredicate<T> gt( final Property<T> property,
-                                                  final VariableValueExpression<T> valueExpression
-    )
-    {
-        return provider.newGreaterThanPredicate( asPropertyExpression( property ), valueExpression );
-    }
-
-    /**
-     * {@link org.qi4j.api.query.grammar.GreaterOrEqualPredicate} factory method.
-     *
-     * @param property filtered property; cannot be null
-     * @param value    expected value that property is greater than or equal; cannot be null
-     *
-     * @return an {@link org.qi4j.api.query.grammar.GreaterOrEqualPredicate} expression
-     *
-     * @throws IllegalArgumentException - If property or value are null
-     */
-    public static <T> GreaterOrEqualPredicate<T> ge( final Property<T> property, final T value )
-    {
-        return provider.newGreaterOrEqualPredicate( asPropertyExpression( property ), asTypedValueExpression( value ) );
-    }
-
-    /**
-     * {@link org.qi4j.api.query.grammar.GreaterOrEqualPredicate} factory method.
-     *
-     * @param property        filtered property; cannot be null
-     * @param valueExpression expected value that property is greater than or equal; cannot be null
-     *
-     * @return an {@link org.qi4j.api.query.grammar.GreaterOrEqualPredicate} expression
-     *
-     * @throws IllegalArgumentException - If property or value are null
-     */
-    public static <T> GreaterOrEqualPredicate<T> ge( final Property<T> property,
-                                                     final VariableValueExpression<T> valueExpression
-    )
-    {
-        return provider.newGreaterOrEqualPredicate( asPropertyExpression( property ), valueExpression );
-    }
-
-    /**
-     * {@link org.qi4j.api.query.grammar.MatchesPredicate} factory method.
-     *
-     * @param property filtered property; cannot be null
-     * @param regexp   expected regexp that property should match to; cannot be null
-     *
-     * @return an {@link org.qi4j.api.query.grammar.MatchesPredicate}
-     *
-     * @throws IllegalArgumentException - If property or value are null
-     */
-    public static MatchesPredicate matches( final Property<String> property, final String regexp )
-    {
-        return provider.newMatchesPredicate( asPropertyExpression( property ), asTypedValueExpression( regexp ) );
-    }
-
-    /**
-     * {@link org.qi4j.api.query.grammar.Conjunction} factory method. Apply a logical "AND" between two (or more)
-     * boolean expressions. Also known as "conjunction".
-     *
-     * @param left          left side boolean expression; cannot be null
-     * @param right         right side boolean expression; cannot be null
-     * @param optionalRight optional additional right side boolean expressions
-     *
-     * @return an {@link org.qi4j.api.query.grammar.Conjunction} operator
-     *
-     * @throws IllegalArgumentException - If left or right expressions are null
-     */
-    public static Conjunction and( final BooleanExpression left, final BooleanExpression right,
-                                   final BooleanExpression... optionalRight
-    )
-    {
-        BooleanExpression leftExpr = left;
-        BooleanExpression rightExpr = right;
-        Conjunction conjunction = provider.newConjunction( leftExpr, rightExpr );
-        for( BooleanExpression anOptionalRight : optionalRight )
+        try
         {
-            leftExpr = conjunction;
-            rightExpr = anOptionalRight;
-            conjunction = provider.newConjunction( leftExpr, rightExpr );
-        }
+            Field field = mixinClass.getField( fieldName );
 
-        return conjunction;
-    }
+            if (!Property.class.isAssignableFrom( field.getType()))
+                throw new IllegalArgumentException( "Field must be of type Property<?>" );
 
-    /**
-     * {@link org.qi4j.api.query.grammar.Disjunction} factory method. Apply a logical "OR" between two (or more) boolean
-     * expressions. Also known as disjunction.
-     *
-     * @param left          left side boolean expression; cannot be null
-     * @param right         right side boolean expression; cannot be null
-     * @param optionalRight optional additional right side boolean expressions
-     *
-     * @return an {@link org.qi4j.api.query.grammar.Disjunction} operator
-     *
-     * @throws IllegalArgumentException - If left or right expressions are null
-     */
-    public static Disjunction or( final BooleanExpression left, final BooleanExpression right,
-                                  final BooleanExpression... optionalRight
-    )
-    {
-        BooleanExpression leftExpr = left;
-        BooleanExpression rightExpr = right;
-        Disjunction disjunction = provider.newDisjunction( leftExpr, rightExpr );
-        for( BooleanExpression anOptionalRight : optionalRight )
+            return (Property<T>) Proxy.newProxyInstance( mixinClass.getClassLoader(), new Class[]{field.getType()}, new PropertyReferenceHandler<T>(new PropertyFunction<T>(null, null, null, field )) );
+        } catch( NoSuchFieldException e )
         {
-            leftExpr = disjunction;
-            rightExpr = anOptionalRight;
-            disjunction = provider.newDisjunction( leftExpr, rightExpr );
+            throw new IllegalArgumentException( "No such field '"+fieldName+"' in mixin "+mixinClass.getName() );
         }
-
-        return disjunction;
     }
 
-    /**
-     * {@link org.qi4j.api.query.grammar.Negation} factory method. Apply a logical "NOT" to a boolean expression.
-     *
-     * @param expression boolean expression; cannot be null; cannot be null
-     *
-     * @return an {@link org.qi4j.api.query.grammar.Negation} operator
-     *
-     * @throws IllegalArgumentException - If expression is null
-     */
-    public static Negation not( final BooleanExpression expression )
+    public static <T> AssociationFunction<T> association( Association<T> association )
     {
-        return provider.newNegation( expression );
+        return (AssociationFunction<T>) ((AssociationReferenceHandler<T>)Proxy.getInvocationHandler( association )).getAssociation();
     }
 
-    public static <T, C extends Collection<T>> ContainsPredicate<T, C> contains( Property<C> property, T value )
+    public static <T> ManyAssociationFunction<T> manyAssociation( ManyAssociation<T> association )
     {
-        return provider.newContainsPredicate( asPropertyExpression( property ), asTypedValueExpression( value ) );
+        return (ManyAssociationFunction<T>) ((ManyAssociationReferenceHandler<T>)Proxy.getInvocationHandler( association )).getManyAssociation();
     }
 
-    public static <T> ManyAssociationContainsPredicate<T> contains( ManyAssociation<T> manyAssoc, T value )
+    // And/Or/Not
+    public static AndSpecification and(Specification<Composite> left, Specification<Composite> right, Specification<Composite>... optionalRight)
     {
-        return provider.newManyAssociationContainsPredicate( asManyAssociationExpression( manyAssoc ),
-                                                             asTypedValueExpression( value ) );
+        return new AndSpecification(prepend( left, prepend( right, iterable( optionalRight ) ) ));
     }
 
-    public static <T, C extends Collection<T>> ContainsAllPredicate<T, C> containsAll( Property<C> property, C value )
+    public static OrSpecification or(Specification<Composite> left, Specification<Composite> right, Specification<Composite>... optionalRight)
     {
-        return provider.newContainsAllPredicate( asPropertyExpression( property ), asTypedValueExpression( value ) );
+        return new OrSpecification(prepend( left, prepend( right, iterable( optionalRight ) ) ));
     }
 
-    /**
-     * {@link org.qi4j.api.query.grammar.OrderBy} factory method (ascending order).
-     *
-     * @param property sorting property; cannot be null
-     *
-     * @return an {@link org.qi4j.api.query.grammar.OrderBy}
-     *
-     * @throws IllegalArgumentException - If property is null
-     */
+    public static NotSpecification not(Specification<Composite> operand)
+    {
+        return new NotSpecification(operand);
+    }
+
+    // Comparisons
+    public static <T> EqSpecification<T> eq( Property<T> property, T value )
+    {
+        return new EqSpecification<T>(  property( property ), value );
+    }
+
+    public static <T> EqSpecification<String> eq( Association<T> association, T value )
+    {
+        return new EqSpecification<String>(  new PropertyFunction<String>(null, association( association ), null, idComposite), value.toString() );
+    }
+
+    public static <T> GeSpecification<T> ge( Property<T> property, T value )
+    {
+        return new GeSpecification<T>(  property( property ), value );
+    }
+
+    public static <T> GtSpecification<T> gt( Property<T> property, T value )
+    {
+        return new GtSpecification<T>(  property( property ), value );
+    }
+
+    public static <T> LeSpecification<T> le( Property<T> property, T value )
+    {
+        return new LeSpecification<T>(  property( property ), value );
+    }
+
+    public static <T> LtSpecification<T> lt( Property<T> property, T value )
+    {
+        return new LtSpecification<T>(  property( property ), value );
+    }
+
+    public static <T> NeSpecification<T> ne( Property<T> property, T value )
+    {
+        return new NeSpecification<T>(  property( property ), value );
+    }
+
+    public static MatchesSpecification matches(Property<String> property, String regexp)
+    {
+        return new MatchesSpecification(property(property), regexp);
+    }
+
+    // Null checks
+    public static <T> PropertyNotNullSpecification<T> isNotNull( Property<T> property)
+    {
+        return new PropertyNotNullSpecification<T>(  property( property ));
+    }
+
+    public static <T> PropertyNullSpecification<T> isNull( Property<T> property)
+    {
+        return new PropertyNullSpecification<T>(  property( property ));
+    }
+
+    public static <T> AssociationNotNullSpecification<T> isNotNull( Association<T> association)
+    {
+        return new AssociationNotNullSpecification<T>(  association( association ));
+    }
+
+    public static <T> AssociationNullSpecification<T> isNull( Association<T> association)
+    {
+        return new AssociationNullSpecification<T>(  association( association ));
+    }
+
+    // Collections
+    public static <T> ContainsAllSpecification<T> containsAll( Property<? extends Collection<T>> collectionProperty, Iterable<T> values )
+    {
+        NullArgumentException.validateNotNull( "Values", values );
+        return new ContainsAllSpecification<T>(property( collectionProperty ), values);
+    }
+
+    public static <T> ContainsSpecification<T> contains( Property<? extends Collection<T>> collectionProperty, T value )
+    {
+        NullArgumentException.validateNotNull( "Value", value );
+        return new ContainsSpecification<T>(property( collectionProperty ), value);
+    }
+
+    public static <T> ManyAssociationContainsSpecification<T> contains( ManyAssociation<T> manyAssoc, T value )
+    {
+        return new ManyAssociationContainsSpecification<T>(manyAssociation( manyAssoc ), value);
+    }
+
+    // Ordering
     public static <T> OrderBy orderBy( final Property<T> property )
     {
-        return orderBy( property, null );
+        return orderBy( property, OrderBy.Order.ASCENDING );
     }
 
-    /**
-     * {@link org.qi4j.api.query.grammar.OrderBy} factory method.
-     *
-     * @param property sorting property; cannot be null
-     * @param order    sorting direction
-     *
-     * @return an {@link org.qi4j.api.query.grammar.OrderBy}
-     *
-     * @throws IllegalArgumentException - If property is null
-     */
     public static <T> OrderBy orderBy( final Property<T> property, final OrderBy.Order order )
     {
-        return provider.newOrderBy( asPropertyExpression( property ), order );
+        return new OrderBy(property( property ), order );
     }
 
-    /**
-     * Adapts a {@link Property} to a {@link org.qi4j.api.query.grammar.PropertyReference}.
-     *
-     * @param property to be adapted; cannot be null
-     *
-     * @return adapted property expression
-     *
-     * @throws IllegalArgumentException - If property is null or is not an property expression
-     */
-    @SuppressWarnings( "unchecked" )
-    private static <T> PropertyReference<T> asPropertyExpression( final Property<T> property )
+    public static class TemplateHandler<T>
+            implements InvocationHandler
     {
-        if( property == null )
+        private PropertyFunction<?> CompositeProperty;
+        private AssociationFunction<?> CompositeAssociation;
+        private ManyAssociationFunction<?> CompositeManyAssociation;
+
+        private TemplateHandler(PropertyFunction<?> CompositeProperty, AssociationFunction<?> CompositeAssociation, ManyAssociationFunction<?> CompositeManyAssociation)
         {
-            throw new IllegalArgumentException( "Property cannot be null" );
+            this.CompositeProperty = CompositeProperty;
+            this.CompositeAssociation = CompositeAssociation;
+            this.CompositeManyAssociation = CompositeManyAssociation;
         }
-        if( !( property instanceof PropertyReference ) )
+
+        @Override
+        public Object invoke( Object o, Method method, Object[] objects ) throws Throwable
         {
-            throw new IllegalArgumentException(
-                "Invalid property. Properties used in queries must be a result of using QueryBuilder.templateFor(...)." );
+            if( Property.class.isAssignableFrom( method.getReturnType() ) )
+            {
+                return Proxy.newProxyInstance( method.getReturnType().getClassLoader(), new Class[]{method.getReturnType()}, new PropertyReferenceHandler( new PropertyFunction( CompositeProperty, CompositeAssociation, CompositeManyAssociation, method ) ) );
+            }
+            else if( Association.class.isAssignableFrom( method.getReturnType() ) )
+            {
+                return Proxy.newProxyInstance( method.getReturnType().getClassLoader(), new Class[]{method.getReturnType()}, new AssociationReferenceHandler( new AssociationFunction( CompositeAssociation, CompositeManyAssociation, method ) ) );
+            }
+            else if( ManyAssociation.class.isAssignableFrom( method.getReturnType() ) )
+            {
+                return Proxy.newProxyInstance( method.getReturnType().getClassLoader(), new Class[]{method.getReturnType()}, new ManyAssociationReferenceHandler( new ManyAssociationFunction( CompositeAssociation, CompositeManyAssociation, method ) ) );
+            }
+
+            return null;
         }
-        return (PropertyReference<T>) property;
     }
 
-    /**
-     * Adapts an {@link Association} to a {@link org.qi4j.api.query.grammar.AssociationReference}.
-     *
-     * @param association to be adapted; cannot be null
-     *
-     * @return adapted association expression
-     *
-     * @throws IllegalArgumentException - If association is null or is not an association expression
-     */
-    private static AssociationReference asAssociationExpression( final Association<?> association )
+    private static class PropertyReferenceHandler<T>
+            implements InvocationHandler
     {
-        if( association == null )
+        private PropertyFunction<?> property;
+
+        public PropertyReferenceHandler( PropertyFunction<?> property )
         {
-            throw new IllegalArgumentException( "Association cannot be null" );
+            this.property = property;
         }
-        if( !( association instanceof AssociationReference ) )
+
+        public PropertyFunction<?> getProperty()
         {
-            throw new IllegalArgumentException(
-                "Invalid property. Association used in queries must be a result of using QueryBuilder.templateFor(...)." );
+            return property;
         }
-        return (AssociationReference) association;
+
+        @Override
+        public Object invoke( Object o, final Method method, Object[] objects ) throws Throwable
+        {
+            if( method.equals( Property.class.getMethod( "get" ) ) )
+            {
+                Type propertyType = GenericPropertyInfo.getPropertyType( property.getAccessor() );
+                if( propertyType.getClass().equals( Class.class ) )
+                    return Proxy.newProxyInstance( method.getDeclaringClass().getClassLoader(),
+                            new Class[]{(Class) propertyType, org.qi4j.api.query.grammar2.PropertyReference.class},
+                            new TemplateHandler( property, null, null ));
+            }
+
+            return null;
+        }
     }
 
-    /**
-     * Adapts an {@link ManyAssociation} to a {@link org.qi4j.api.query.grammar.ManyAssociationReference}.
-     *
-     * @param association to be adapted; cannot be null
-     *
-     * @return adapted association expression
-     *
-     * @throws IllegalArgumentException - If association is null or is not an association expression
-     */
-    private static ManyAssociationReference asManyAssociationExpression( final ManyAssociation<?> association )
+    private static class AssociationReferenceHandler<T>
+            implements InvocationHandler
     {
-        if( association == null )
+        private AssociationFunction<?> association;
+
+        public AssociationReferenceHandler( AssociationFunction<?> association )
         {
-            throw new IllegalArgumentException( "ManyAssociation cannot be null" );
+            this.association = association;
         }
-        if( !( association instanceof ManyAssociationReference ) )
+
+        public AssociationFunction<?> getAssociation()
         {
-            throw new IllegalArgumentException(
-                "Invalid property. Association used in queries must be a result of using QueryBuilder.templateFor(...)." );
+            return association;
         }
-        return (ManyAssociationReference) association;
+
+        @Override
+        public Object invoke( Object o, final Method method, Object[] objects ) throws Throwable
+        {
+            if( method.equals( Association.class.getMethod( "get" ) ) )
+            {
+                Type associationType = GenericAssociationInfo.getAssociationType( association.getAccessor() );
+                if( associationType.getClass().equals( Class.class ) )
+                    return Proxy.newProxyInstance( method.getDeclaringClass().getClassLoader(),
+                            new Class[]{(Class) associationType, org.qi4j.api.query.grammar2.PropertyReference.class},
+                            new TemplateHandler( null, association, null ));
+            }
+
+            return null;
+        }
     }
 
-    /**
-     * Creates a typed value expression from a value.
-     *
-     * @param value to create expression from; cannot be null
-     *
-     * @return created expression
-     *
-     * @throws IllegalArgumentException - If value is null
-     */
-    private static <T> SingleValueExpression<T> asTypedValueExpression( final T value )
+    private static class ManyAssociationReferenceHandler<T>
+            implements InvocationHandler
     {
-        if( value == null )
+        private ManyAssociationFunction<?> manyAssociation;
+
+        public ManyAssociationReferenceHandler( ManyAssociationFunction<?> manyAssociation )
         {
-            throw new IllegalArgumentException( "Value cannot be null" );
+            this.manyAssociation = manyAssociation;
         }
-        return provider.newSingleValueExpression( value );
+
+        public ManyAssociationFunction<?> getManyAssociation()
+        {
+            return manyAssociation;
+        }
+
+        @Override
+        public Object invoke( Object o, final Method method, Object[] objects ) throws Throwable
+        {
+            if( method.equals( ManyAssociation.class.getMethod( "get", Integer.TYPE ) ) )
+            {
+                Type manyAssociationType = GenericAssociationInfo.getAssociationType( manyAssociation.getMethod().getReturnType() );
+                if( manyAssociationType.getClass().equals( Class.class ) )
+                    return Proxy.newProxyInstance( method.getDeclaringClass().getClassLoader(),
+                            new Class[]{(Class) manyAssociationType, org.qi4j.api.query.grammar2.PropertyReference.class},
+                            new TemplateHandler( null, null, manyAssociation ));
+            }
+
+            return null;
+        }
     }
 }

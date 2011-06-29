@@ -16,10 +16,7 @@ package org.qi4j.runtime.composite;
 
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.util.Classes;
-import org.qi4j.api.util.Function;
-import org.qi4j.api.util.HierarchicalVisitor;
-import org.qi4j.api.util.VisitableHierarchy;
+import org.qi4j.api.util.*;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.bootstrap.AssemblyHelper;
@@ -28,28 +25,26 @@ import org.qi4j.runtime.injection.InjectedFieldModel;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.spi.composite.InvalidCompositeException;
-import org.qi4j.spi.util.MethodKeyMap;
 import org.qi4j.spi.util.UsageGraph;
 
-import java.io.Serializable;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.*;
 
-import static org.qi4j.api.util.Iterables.flattenIterables;
-import static org.qi4j.api.util.Iterables.map;
+import static org.qi4j.api.util.Iterables.*;
 
 /**
  * Base implementation of model for mixins. This records the mapping between methods in the Composite
  * and mixin implementations.
  */
 public abstract class AbstractMixinsModel
-        implements Serializable, Binder, VisitableHierarchy<Object, Object>
+        implements Binder, VisitableHierarchy<Object, Object>
 {
     protected final Set<MixinDeclaration> mixins = new LinkedHashSet<MixinDeclaration>();
 
-    protected final Map<Method, MixinModel> methodImplementation = new MethodKeyMap<MixinModel>();
-    protected final Map<Method, Integer> methodIndex = new MethodKeyMap<Integer>();
+    protected final Map<Method, MixinModel> methodImplementation = new HashMap<Method, MixinModel>();
+    protected final Map<Method, Integer> methodIndex = new HashMap<Method, Integer>();
     private final Class<? extends Composite> compositeType;
     protected List<MixinModel> mixinModels = new ArrayList<MixinModel>();
 
@@ -65,24 +60,20 @@ public abstract class AbstractMixinsModel
         this.compositeType = compositeType;
         roles.add( compositeType );
 
+        // Add additional roles
+        roles.addAll( assemblyRoles );
+
+        // Default mixin for Composite
+        this.mixins.add( new MixinDeclaration( CompositeMixin.class, Composite.class ) );
+
         // Add assembly mixins
         for( Class<?> assemblyMixin : assemblyMixins )
         {
             this.mixins.add( new MixinDeclaration( assemblyMixin, Assembler.class ) );
         }
 
-        // Add additional roles
-        roles.addAll( assemblyRoles );
-
         // Find mixin declarations
-        this.mixins.add( new MixinDeclaration( CompositeMixin.class, Composite.class ) );
-        Set<Class<?>> interfaces = Classes.interfacesOf( compositeType );
-
-        for( Class<?> anInterface : interfaces )
-        {
-            addMixinDeclarations( anInterface, this.mixins );
-            mixinTypes.add( anInterface );
-        }
+        addMixinDeclarations( compositeType, mixins );
     }
 
     // Model
@@ -99,19 +90,6 @@ public abstract class AbstractMixinsModel
     public Iterable<Class> mixinTypes()
     {
         return mixinTypes;
-    }
-
-    public boolean hasMixinType( Class<?> mixinType )
-    {
-        for( Class type : mixinTypes )
-        {
-            if( mixinType.isAssignableFrom( type ) )
-            {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     public MixinModel mixinFor( Method method )
@@ -162,7 +140,10 @@ public abstract class AbstractMixinsModel
 
     public void addMixinType( Class mixinType )
     {
-        mixinTypes.add( mixinType );
+        for( Type type : Classes.INTERFACES_OF.map( mixinType ) )
+        {
+            mixinTypes.add( Classes.RAW_CLASS.map( type ) );
+        }
     }
 
     private Class findTypedImplementation( Method method, Set<MixinDeclaration> mixins )
@@ -218,18 +199,15 @@ public abstract class AbstractMixinsModel
         return foundMixinModel;
     }
 
-    private void addMixinDeclarations( Type type, Set<MixinDeclaration> declarations )
+    private void addMixinDeclarations( Type typeDeclarations, Set<MixinDeclaration> declarations )
     {
-        if( type instanceof Class )
+        for( Type type : Classes.INTERFACES_OF.map( typeDeclarations ) )
         {
-            final Class clazz = (Class) type;
-            Mixins annotation = Mixins.class.cast( clazz.getAnnotation( Mixins.class ) );
-            if( annotation != null )
+            for( Annotation mixinsAnnotation : filter( Annotations.isType( Mixins.class ), Annotations.ANNOTATIONS_OF.map( type ) ) )
             {
-                Class[] mixinClasses = annotation.value();
-                for( Class mixinClass : mixinClasses )
+                for( Class<?> mixinClass : ((Mixins)mixinsAnnotation).value() )
                 {
-                    declarations.add( new MixinDeclaration( mixinClass, clazz ) );
+                    declarations.add( new MixinDeclaration( mixinClass, Classes.RAW_CLASS.map( type) ) );
                 }
             }
         }
@@ -275,7 +253,12 @@ public abstract class AbstractMixinsModel
                 @Override
                 public boolean visitEnter( Object visited ) throws BindingException
                 {
-                    if( visited instanceof Binder )
+                    if( visited instanceof InjectedFieldModel )
+                    {
+                        InjectedFieldModel fieldModel = (InjectedFieldModel) visited;
+                        fieldModel.bind( resolution.forField( fieldModel.field() ) );
+                        return false;
+                    } else if( visited instanceof Binder )
                     {
                         Binder constructorsModel = (Binder) visited;
                         constructorsModel.bind( resolution );
@@ -286,19 +269,9 @@ public abstract class AbstractMixinsModel
                 }
 
                 @Override
-                public boolean visitLeave( Object visited ) throws BindingException
-                {
-                    return true;
-                }
-
-                @Override
                 public boolean visit( Object visited ) throws BindingException
                 {
-                    if( visited instanceof InjectedFieldModel )
-                    {
-                        InjectedFieldModel fieldModel = (InjectedFieldModel) visited;
-                        fieldModel.bind( resolution.forField( fieldModel.field() ) );
-                    } else if( visited instanceof Binder )
+                    if( visited instanceof Binder )
                     {
                         ((Binder) visited).bind( resolution );
                     }

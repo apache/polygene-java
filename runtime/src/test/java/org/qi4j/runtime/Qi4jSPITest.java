@@ -34,7 +34,7 @@ import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 /**
  * JAVADOC
@@ -95,7 +95,7 @@ public class Qi4jSPITest
             assertThat( "Properties could be listed", prop, CoreMatchers.notNullValue() );
         }
 
-        EntityStateDescriptor descriptor = (EntityStateDescriptor) entityDescriptor.state();
+        EntityStateDescriptor descriptor = entityDescriptor.state();
         for( AssociationDescriptor associationDescriptor : descriptor.associations() )
         {
             AbstractAssociation assoc = state.getAssociation( associationDescriptor.accessor() );

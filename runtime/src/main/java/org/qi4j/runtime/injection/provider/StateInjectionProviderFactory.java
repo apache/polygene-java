@@ -25,13 +25,11 @@ import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.spi.value.ValueDescriptor;
 
-import java.io.Serializable;
-
 /**
  * JAVADOC
  */
 public final class StateInjectionProviderFactory
-    implements InjectionProviderFactory, Serializable
+    implements InjectionProviderFactory
 {
     public InjectionProvider newInjectionProvider( Resolution resolution, DependencyModel dependencyModel )
         throws InvalidInjectionException
@@ -144,7 +142,7 @@ public final class StateInjectionProviderFactory
     }
 
     static private class PropertyInjectionProvider
-        implements InjectionProvider, Serializable
+        implements InjectionProvider
     {
         private final PropertyDescriptor propertyDescriptor;
 
@@ -169,7 +167,7 @@ public final class StateInjectionProviderFactory
     }
 
     static private class AssociationInjectionProvider
-        implements InjectionProvider, Serializable
+        implements InjectionProvider
     {
         private final AssociationDescriptor associationDescriptor;
 
@@ -195,7 +193,7 @@ public final class StateInjectionProviderFactory
     }
 
     static private class ManyAssociationInjectionProvider
-        implements InjectionProvider, Serializable
+        implements InjectionProvider
     {
         private final ManyAssociationDescriptor manyAssociationDescriptor;
 
@@ -221,7 +219,7 @@ public final class StateInjectionProviderFactory
     }
 
     static private class StateInjectionProvider
-        implements InjectionProvider, Serializable
+        implements InjectionProvider
     {
         public Object provideInjection( InjectionContext context )
             throws InjectionProviderException
@@ -231,7 +229,7 @@ public final class StateInjectionProviderFactory
     }
 
     static private class UnitOfWorkInjectionProvider
-        implements InjectionProvider, Serializable
+        implements InjectionProvider
     {
 
         public Object provideInjection( InjectionContext context )

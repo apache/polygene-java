@@ -26,7 +26,8 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.ServiceAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Test of activatable services

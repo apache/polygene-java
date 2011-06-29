@@ -14,8 +14,12 @@
 
 package org.qi4j.spi.entity.association;
 
-import java.lang.reflect.Method;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.association.AssociationInfo;
+
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 
 /**
  * JAVADOC
@@ -23,7 +27,41 @@ import org.qi4j.api.entity.association.AssociationInfo;
 public interface AssociationDescriptor
     extends AssociationInfo
 {
-    Method accessor();
+    /**
+     * Get metadata that implements the given type
+     *
+     * @param infoType the type of metadata to be returned
+     *
+     * @return the metadata for the given type, or <code>null</code> if
+     *         no such metadata has been registered
+     */
+    <T> T metaInfo( Class<T> infoType );
 
-    AssociationType associationType();
+    /**
+     * Get the qualified name of the association. This is constructed by
+     * concatenating the name of the declaring interface with the name
+     * of the method, using ":" as separator. Example:<br/>
+     * com.somecompany.MyInterface with association method<br/>
+     * Association<String> someAssociation();<br/>
+     * will have the qualified name:<br/>
+     * com.somecompany.MyInterface:someAssociation
+     *
+     * @return the qualified name of the association
+     */
+    QualifiedName qualifiedName();
+
+    /**
+     * Get the type of the associated Entities
+     *
+     * @return the type of the associated Entities
+     */
+    Type type();
+
+    boolean isImmutable();
+
+    boolean isAggregated();
+
+    AccessibleObject accessor();
+
+    boolean queryable();
 }

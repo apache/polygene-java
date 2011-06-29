@@ -17,17 +17,12 @@ package org.qi4j.runtime.composite;
 import org.qi4j.api.util.HierarchicalVisitor;
 import org.qi4j.api.util.Iterables;
 import org.qi4j.api.util.VisitableHierarchy;
-import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.bootstrap.AssemblyHelper;
 import org.qi4j.runtime.injection.Dependencies;
 import org.qi4j.runtime.injection.DependencyModel;
-import org.qi4j.runtime.model.Binder;
-import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.sideeffect.MethodSideEffectsDescriptor;
-import org.qi4j.spi.util.SerializationUtil;
 
-import java.io.*;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -38,32 +33,10 @@ import java.util.List;
  * JAVADOC
  */
 public final class MethodSideEffectsModel
-    implements MethodSideEffectsDescriptor, Serializable, Dependencies, VisitableHierarchy<Object, Object>
+    implements MethodSideEffectsDescriptor, Dependencies, VisitableHierarchy<Object, Object>
 {
     private Method method;
     private List<MethodSideEffectModel> sideEffectModels = null;
-
-    private void writeObject( ObjectOutputStream out )
-        throws IOException
-    {
-        try
-        {
-            SerializationUtil.writeMethod( out, method );
-            out.writeObject( sideEffectModels );
-        }
-        catch( NotSerializableException e )
-        {
-            System.err.println( "NotSerializable in " + getClass() );
-            throw e;
-        }
-    }
-
-    private void readObject( ObjectInputStream in )
-        throws IOException, ClassNotFoundException
-    {
-        method = SerializationUtil.readMethod( in );
-        sideEffectModels = (List<MethodSideEffectModel>) in.readObject();
-    }
 
     public MethodSideEffectsModel( Method method, List<MethodSideEffectModel> sideEffectModels )
     {

@@ -1,7 +1,5 @@
 package org.qi4j.runtime.composite;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 import org.junit.Test;
 import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.mixin.Mixins;
@@ -9,10 +7,11 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+
 import static junit.framework.Assert.assertSame;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class QI247Test2
     extends AbstractQi4jTest

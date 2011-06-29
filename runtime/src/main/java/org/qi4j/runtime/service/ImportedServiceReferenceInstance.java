@@ -15,9 +15,9 @@
 package org.qi4j.runtime.service;
 
 import org.qi4j.api.event.ActivationEventListener;
-import org.qi4j.api.service.ServiceImporterException;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Module;
+import org.qi4j.spi.service.ServiceImporterException;
 
 /**
  * Implementation of ServiceReference. This manages the reference to the imported service
@@ -46,7 +46,7 @@ public final class ImportedServiceReferenceInstance<T>
     }
 
     @Override
-    public Class type()
+    public Class<T> type()
     {
         return serviceModel.type();
     }

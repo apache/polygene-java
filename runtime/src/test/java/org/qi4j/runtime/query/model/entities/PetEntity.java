@@ -15,6 +15,7 @@
 package org.qi4j.runtime.query.model.entities;
 
 import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.runtime.query.model.Describable;
 import org.qi4j.runtime.query.model.Nameable;
 import org.qi4j.runtime.query.model.Pet;
 
@@ -22,6 +23,6 @@ import org.qi4j.runtime.query.model.Pet;
  * JAVADOC
  */
 public interface PetEntity
-    extends Pet, Nameable, EntityComposite
+    extends Pet, Nameable, Describable, EntityComposite
 {
 }

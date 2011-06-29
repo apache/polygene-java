@@ -14,45 +14,35 @@
 
 package org.qi4j.spi.property;
 
-import java.util.List;
 import org.json.JSONException;
 import org.json.JSONWriter;
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.structure.Module;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
- * Base class for types of values in ValueComposites.
+ * Base class for types of values in ValueComposites and Properties.
  */
-public interface ValueType
+public class ValueType
 {
-    TypeName type();
+    protected final Class<?> type;
 
-    boolean isNumber();
+    public ValueType( Class<?> type )
+    {
+        this.type = type;
+    }
 
-    boolean isBoolean();
+    public Class<?> type()
+    {
+        return type;
+    }
 
-    boolean isString();
-
-    boolean isValue();
-
-    boolean isDate();
-
-    boolean isEnum();
-
-    List<PropertyType> types();
-
-    void toJSON( Object value, JSONWriter json )
-        throws JSONException;
-
-    Object toJSON( Object value )
-        throws JSONException;
-
-    Object fromJSON( Object object, Module module )
-        throws JSONException;
-
-    String toQueryParameter( Object value )
-        throws IllegalArgumentException;
-
-    Object fromQueryParameter( String parameter, Module module )
-        throws IllegalArgumentException, JSONException;
+    @Override
+    public String toString()
+    {
+        return type.getName();
+    }
 }

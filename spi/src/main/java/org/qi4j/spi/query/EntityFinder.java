@@ -7,7 +7,7 @@
  * You may obtain a copy of the License at
  *
  *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ *count( INTERFACES_OF.map( A.class ) ), equalTo( 1L )
  * Unless required by applicable law or agreed to in writing, software
  * distributed  under the  License is distributed on an "AS IS" BASIS,
  * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
@@ -19,9 +19,14 @@
 package org.qi4j.spi.query;
 
 import org.qi4j.api.common.Optional;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.entity.Entity;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.query.grammar.BooleanExpression;
 import org.qi4j.api.query.grammar.OrderBy;
+import org.qi4j.api.specification.Specification;
+
+import java.util.Map;
 
 /**
  * JAVADOC Add JavaDoc
@@ -29,16 +34,17 @@ import org.qi4j.api.query.grammar.OrderBy;
 public interface EntityFinder
 {
     Iterable<EntityReference> findEntities( Class<?> resultType,
-                                            @Optional BooleanExpression whereClause,
+                                            @Optional Specification<Composite> whereClause,
                                             @Optional OrderBy[] orderBySegments,
                                             @Optional Integer firstResult,
-                                            @Optional Integer maxResults
+                                            @Optional Integer maxResults,
+                                            Map<String,Object> variables
     )
         throws EntityFinderException;
 
-    EntityReference findEntity( Class<?> resultType, @Optional BooleanExpression whereClause )
+    EntityReference findEntity( Class<?> resultType, @Optional Specification<Composite> whereClause, Map<String, Object> variables )
         throws EntityFinderException;
 
-    long countEntities( Class<?> resultType, @Optional BooleanExpression whereClause )
+    long countEntities( Class<?> resultType, @Optional Specification<Composite> whereClause, Map<String, Object> variables )
         throws EntityFinderException;
 }

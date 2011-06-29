@@ -15,14 +15,17 @@
 package org.qi4j.runtime.value;
 
 import org.qi4j.api.common.ConstructionException;
-import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.property.Property;
+import org.qi4j.api.property.PropertyInfo;
 import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.util.Function;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.runtime.structure.ModelModule;
+import org.qi4j.spi.composite.StateDescriptor;
+import org.qi4j.spi.property.PropertyDescriptor;
 
 import java.util.Iterator;
+import java.util.Set;
 
 /**
  * Implementation of ValueBuilder
@@ -47,26 +50,23 @@ public final class ValueBuilderInstance<T>
     {
         ValueInstance valueInstance = ValueInstance.getValueInstance( (ValueComposite) value );
         StateHolder state = valueInstance.state();
-        this.state = model.model().newBuilderState( state );
+        this.state = model.model().newBuilderState( model.module(), state );
         prototypeInstance = null;
 
         return this;
     }
 
-    public ValueBuilder<T> withState( StateHolder state )
+    public ValueBuilder<T> withState( Function<PropertyInfo,Object> state)
     {
-        final StateHolder valueState = getState();
-        state.visitProperties( new StateHolder.StateVisitor<RuntimeException>()
+        final StateHolder valueState = state();
+
+        StateDescriptor state1 = model.model().state();
+        Set<PropertyDescriptor> properties = state1.properties();
+        for( PropertyDescriptor property : properties )
         {
-            public void visitProperty( QualifiedName name, Object value )
-            {
-                Property<Object> property = valueState.getProperty( name );
-                if( property != null )
-                {
-                    property.set( value );
-                }
-            }
-        } );
+            Object value = state.map( property );
+            valueState.getProperty( property.accessor() ).set( value );
+        }
         return this;
     }
 
@@ -75,10 +75,21 @@ public final class ValueBuilderInstance<T>
         // Instantiate given value type
         if( prototypeInstance == null )
         {
-            prototypeInstance = model.model().newValueInstance( model.module(), getState() );
+            prototypeInstance = model.model().newValueInstance( model.module(), state() );
         }
 
         return prototypeInstance.<T>proxy();
+    }
+
+    @Override
+    public StateHolder state()
+    {
+        if( state == null )
+        {
+            state = model.model().newBuilderState( model.module() );
+        }
+
+        return state;
     }
 
     public <K> K prototypeFor( Class<K> mixinType )
@@ -86,7 +97,7 @@ public final class ValueBuilderInstance<T>
         // Instantiate given value type
         if( prototypeInstance == null )
         {
-            prototypeInstance = model.model().newValueInstance( model.module(), getState() );
+            prototypeInstance = model.model().newValueInstance( model.module(), state() );
         }
 
         return prototypeInstance.newProxy( mixinType );
@@ -98,7 +109,7 @@ public final class ValueBuilderInstance<T>
         StateHolder instanceState;
         if( state == null )
         {
-            instanceState = model.model().newInitialState();
+            instanceState = model.model().newInitialState(model.module());
         }
         else
         {
@@ -129,15 +140,5 @@ public final class ValueBuilderInstance<T>
                 throw new UnsupportedOperationException();
             }
         };
-    }
-
-    private StateHolder getState()
-    {
-        if( state == null )
-        {
-            state = model.model().newBuilderState();
-        }
-
-        return state;
     }
 }

@@ -17,7 +17,6 @@ package org.qi4j.runtime.composite;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.constraint.Constraint;
 
-import java.io.Serializable;
 import java.lang.annotation.Annotation;
 
 /**
@@ -25,8 +24,6 @@ import java.lang.annotation.Annotation;
  */
 public final class ConstraintModel
     extends AbstractConstraintModel
-    implements Serializable
-
 {
     private final Class<? extends Constraint<?, ?>> constraintClass;
 

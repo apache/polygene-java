@@ -15,7 +15,7 @@
 package org.qi4j.runtime.unitofwork;
 
 import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.common.TypeName;
+import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
@@ -70,9 +70,10 @@ public final class BuilderEntityState
         return EntityStatus.NEW;
     }
 
-    public boolean isOfType( TypeName type )
+    @Override
+    public boolean isOfType( Class<? extends EntityComposite> type )
     {
-        return entityType.entityType().type().equals( type );
+        return entityType.type().equals( type );
     }
 
     public EntityDescriptor entityDescriptor()

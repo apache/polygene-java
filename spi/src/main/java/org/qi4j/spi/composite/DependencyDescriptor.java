@@ -29,8 +29,6 @@ public interface DependencyDescriptor
 
     Class<?> rawInjectionType();
 
-    Class<?> injectionClass();
-
     boolean optional();
 
     Annotation[] annotations();

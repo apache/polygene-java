@@ -17,14 +17,15 @@
  */
 package org.qi4j.runtime.query.model;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.property.Property;
 import org.qi4j.runtime.query.model.values.ContactsValue;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 public interface Person
     extends Nameable, Alive

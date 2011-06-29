@@ -19,7 +19,9 @@ import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.constraint.ConstraintViolation;
 import org.qi4j.api.constraint.ConstraintViolationException;
-import org.qi4j.api.property.*;
+import org.qi4j.api.property.GenericPropertyInfo;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.util.Classes;
 import org.qi4j.api.util.Visitable;
 import org.qi4j.api.util.Visitor;
 import org.qi4j.bootstrap.BindingException;
@@ -27,25 +29,33 @@ import org.qi4j.runtime.composite.ConstraintsCheck;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
+import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.runtime.types.ValueTypeFactory;
 import org.qi4j.spi.property.DefaultValues;
 import org.qi4j.spi.property.PropertyDescriptor;
-import org.qi4j.spi.util.SerializationUtil;
+import org.qi4j.spi.property.ValueCompositeType;
+import org.qi4j.spi.property.ValueType;
+import org.qi4j.spi.structure.ModuleSPI;
 
-import java.io.*;
 import java.lang.reflect.*;
 import java.util.List;
+
+import static org.qi4j.api.util.Classes.RAW_CLASS;
+import static org.qi4j.api.util.Classes.TYPE_OF;
 
 /**
  * JAVADOC
  */
 public abstract class AbstractPropertyModel
-    implements Serializable, PropertyDescriptor, ConstraintsCheck, Visitable<AbstractPropertyModel>
+    implements PropertyDescriptor, ConstraintsCheck, Binder, Visitable<AbstractPropertyModel>
 {
     private static final long serialVersionUID = 1L;
 
-    private final Type type;
+    private Type type;
 
-    private transient Method accessor; // Interface accessor
+    private final Class rawType;
+
+    private transient AccessibleObject accessor; // Interface accessor
 
     private final QualifiedName qualifiedName;
 
@@ -59,21 +69,22 @@ public abstract class AbstractPropertyModel
 
     private final boolean immutable;
 
-    private final boolean computed;
-
     private final boolean needsWrapper;
 
-    protected final PropertyInfo builderInfo;
+    private ValueType valueType;
 
-    public AbstractPropertyModel( Method accessor, boolean immutable, ValueConstraintsInstance constraints,
+    protected PropertyDescriptor builderInfo;
+
+    public AbstractPropertyModel( AccessibleObject accessor, boolean immutable, ValueConstraintsInstance constraints,
                                   MetaInfo metaInfo, Object initialValue
     )
     {
         this.immutable = immutable;
         this.metaInfo = metaInfo;
         type = GenericPropertyInfo.getPropertyType( accessor );
+        rawType = RAW_CLASS.map( TYPE_OF.map( accessor ));
         this.accessor = accessor;
-        qualifiedName = QualifiedName.fromMethod( accessor );
+        qualifiedName = QualifiedName.fromAccessor( accessor );
 
         // Check for @UseDefaults annotation
         useDefaults = this.metaInfo.get( UseDefaults.class ) != null;
@@ -82,10 +93,8 @@ public abstract class AbstractPropertyModel
 
         this.constraints = constraints;
 
-        computed = this.metaInfo.get( Computed.class ) != null;
-        needsWrapper = !this.accessor.getReturnType().equals( Property.class );
+        needsWrapper = !rawType.equals( Property.class );
 
-        builderInfo = new GenericPropertyInfo( this.metaInfo, false, computed, qualifiedName, type );
     }
 
     public <T> T metaInfo( Class<T> infoType )
@@ -108,9 +117,15 @@ public abstract class AbstractPropertyModel
         return type;
     }
 
-    public Method accessor()
+    public AccessibleObject accessor()
     {
         return accessor;
+    }
+
+    @Override
+    public ValueType valueType()
+    {
+        return valueType;
     }
 
     public boolean isImmutable()
@@ -118,22 +133,79 @@ public abstract class AbstractPropertyModel
         return immutable;
     }
 
-    public boolean isComputed()
-    {
-        return computed;
-    }
-
-    public Object initialValue()
+    public Object initialValue( ModuleSPI module )
     {
         Object value = initialValue;
 
         // Check for @UseDefaults annotation
         if( value == null && useDefaults )
         {
-            value = DefaultValues.getDefaultValue( type );
+            if (valueType instanceof ValueCompositeType )
+            {
+                return module.valueBuilderFactory().newValue( valueType().type() );
+            } else
+            {
+                value = DefaultValues.getDefaultValue( type );
+            }
         }
 
         return value;
+    }
+
+    @Override
+    public void bind( Resolution resolution ) throws BindingException
+    {
+        valueType = ValueTypeFactory.instance().newValueType( type(), ((Member)accessor()).getDeclaringClass(), resolution.object().type(), resolution.layer(), resolution.module() );
+
+        builderInfo = new PropertyDescriptor()
+        {
+            @Override
+            public boolean isImmutable()
+            {
+                return false;
+            }
+
+            @Override
+            public <T> T metaInfo( Class<T> infoType )
+            {
+                return metaInfo.get( infoType );
+            }
+
+            @Override
+            public QualifiedName qualifiedName()
+            {
+                return qualifiedName;
+            }
+
+            @Override
+            public Type type()
+            {
+                return type;
+            }
+
+            @Override
+            public AccessibleObject accessor()
+            {
+                return accessor;
+            }
+
+            @Override
+            public Object initialValue( ModuleSPI module )
+            {
+                return initialValue( module );
+            }
+
+            @Override
+            public ValueType valueType()
+            {
+                return valueType;
+            }
+        };
+
+        if (type instanceof TypeVariable)
+        {
+            type = Classes.resolveTypeVariable( (TypeVariable) type, ((Member)accessor).getDeclaringClass(), resolution.object().type());
+        }
     }
 
     @Override
@@ -142,45 +214,31 @@ public abstract class AbstractPropertyModel
         return visitor.visit( this );
     }
 
-    public Property<?> newBuilderInstance()
+    public Property<?> newBuilderInstance(ModuleInstance module)
     {
         // Properties cannot be immutable during construction
 
         Property<?> property;
-        if( computed )
-        {
-            property = new ComputedPropertyInfo<Object>( builderInfo );
-        }
-        else
-        {
-            property = new PropertyInstance<Object>( builderInfo, initialValue(), this );
-        }
+        property = new PropertyInstance<Object>( builderInfo, initialValue( module ), this );
 
         return wrapProperty( property );
     }
 
-    public Property<?> newBuilderInstance( Object initialValue )
+    public Property<?> newBuilderInstance( ModuleInstance module, Object initialValue )
     {
         // Properties cannot be immutable during construction
 
         Property<?> property;
-        if( computed )
-        {
-            property = new ComputedPropertyInfo<Object>( builderInfo );
-        }
-        else
-        {
-            property = new PropertyInstance<Object>( builderInfo, initialValue, this );
-        }
+        property = new PropertyInstance<Object>( builderInfo, initialValue, this );
 
         return wrapProperty( property );
     }
 
-    public Property<?> newInitialInstance()
+    public Property<?> newInitialInstance( ModuleInstance module )
     {
         // Construct instance without using a builder
 
-        return newInstance( initialValue() );
+        return newInstance( initialValue( module ) );
     }
 
     public abstract <T> Property<T> newInstance( Object value );
@@ -193,7 +251,7 @@ public abstract class AbstractPropertyModel
             List<ConstraintViolation> violations = constraints.checkConstraints( value );
             if( !violations.isEmpty() )
             {
-                throw new ConstraintViolationException( "<new instance>", "<unknown>", accessor, violations );
+                throw new ConstraintViolationException( "<new instance>", "<unknown>", ((Member)accessor), violations );
             }
         }
     }
@@ -234,56 +292,22 @@ public abstract class AbstractPropertyModel
     @Override
     public String toString()
     {
-        return accessor.toGenericString();
+        if (accessor instanceof Field)
+          return ((Field)accessor).toGenericString();
+        else
+            return ((Method)accessor).toGenericString();
     }
 
     protected <T> Property<T> wrapProperty( Property<T> property )
     {
-        if( needsWrapper && !accessor.getReturnType().isInstance( property ) )
+        if( needsWrapper )
         {
             // Create proxy
-            final ClassLoader loader = accessor.getReturnType().getClassLoader();
-            final Class[] type = { accessor.getReturnType() };
-            property = (Property<T>) Proxy.newProxyInstance( loader, type, new PropertyHandler( property ) );
+            final ClassLoader loader = rawType.getClassLoader();
+            final Class[] types = { rawType };
+            property = (Property<T>) Proxy.newProxyInstance( loader, types, new PropertyHandler( property ) );
         }
         return property;
-    }
-
-    private void writeObject( ObjectOutputStream out )
-        throws IOException
-    {
-        out.defaultWriteObject();
-        try
-        {
-            SerializationUtil.writeMethod( out, accessor );
-        }
-        catch( NotSerializableException e )
-        {
-            System.err.println( "NotSerializable in " + getClass() );
-            throw e;
-        }
-    }
-
-    private void readObject( ObjectInputStream in )
-        throws IOException, ClassNotFoundException
-    {
-        in.defaultReadObject();
-        accessor = SerializationUtil.readMethod( in );
-    }
-
-    protected static class ComputedPropertyInfo<T>
-        extends ComputedPropertyInstance<T>
-    {
-        public ComputedPropertyInfo( PropertyInfo aPropertyInfo )
-            throws IllegalArgumentException
-        {
-            super( aPropertyInfo );
-        }
-
-        public T get()
-        {
-            throw new IllegalStateException( "Property [" + qualifiedName().name() + "] must be computed" );
-        }
     }
 
     static class PropertyHandler

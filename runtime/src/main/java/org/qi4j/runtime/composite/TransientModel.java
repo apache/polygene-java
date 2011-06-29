@@ -20,11 +20,8 @@ import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.StateHolder;
-import org.qi4j.api.util.HierarchicalVisitor;
-import org.qi4j.bootstrap.BindingException;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.runtime.bootstrap.AssemblyHelper;
-import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.property.PropertiesModel;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.CompositeInstance;
@@ -67,7 +64,7 @@ public class TransientModel
         SideEffectsDeclaration sideEffectsModel = new SideEffectsDeclaration( compositeType, sideEffects );
         CompositeMethodsModel compositeMethodsModel =
             new CompositeMethodsModel( compositeType, constraintsModel, concernsModel, sideEffectsModel, mixinsModel, helper );
-        stateModel.addStateFor( compositeMethodsModel.methods(), compositeType );
+        stateModel.addStateFor( compositeMethodsModel.methods(), mixinsModel );
 
         return new TransientModel(
             compositeType, roles, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
@@ -82,18 +79,6 @@ public class TransientModel
     )
     {
         super( compositeType, roles, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
-    }
-
-    @Override
-    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> modelVisitor ) throws ThrowableType
-    {
-        if (modelVisitor.visitEnter( this ))
-        {
-            if (compositeMethodsModel.accept( modelVisitor ))
-                mixinsModel.accept( modelVisitor );
-        }
-
-        return modelVisitor.visitLeave( this );
     }
 
     public Composite newProxy( InvocationHandler invocationHandler )
@@ -134,15 +119,13 @@ public class TransientModel
             throw e;
         }
 
-        stateModel.setComputedProperties( state, compositeInstance );
-
         // Return
         return compositeInstance;
     }
 
-    public StateHolder newBuilderState()
+    public StateHolder newBuilderState( ModuleInstance module )
     {
-        return stateModel.newBuilderInstance();
+        return stateModel.newBuilderInstance(module);
     }
 
     public StateHolder newState( StateHolder state )

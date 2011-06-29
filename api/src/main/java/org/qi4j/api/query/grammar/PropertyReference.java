@@ -18,8 +18,9 @@
  */
 package org.qi4j.api.query.grammar;
 
-import java.lang.reflect.Method;
 import org.qi4j.api.property.Property;
+
+import java.lang.reflect.Method;
 
 /**
  * An expression related to {@link org.qi4j.api.property.Property}.

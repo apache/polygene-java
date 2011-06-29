@@ -16,14 +16,12 @@ package org.qi4j.runtime.composite;
 
 import org.qi4j.spi.concern.MethodConcernDescriptor;
 
-import java.io.Serializable;
-
 /**
  * JAVADOC
  */
 public final class MethodConcernModel
     extends AbstractModifierModel
-    implements MethodConcernDescriptor, Serializable
+    implements MethodConcernDescriptor
 {
     public MethodConcernModel( Class concernClass, Class instantiationClass )
     {

@@ -17,20 +17,23 @@
  */
 package org.qi4j.api.entity.association;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.Aggregated;
 import org.qi4j.api.property.Immutable;
+import org.qi4j.api.util.Classes;
+
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 
 public final class GenericAssociationInfo
     implements AssociationInfo
 {
-    public static Type getAssociationType( Method accessor )
+    public static Type getAssociationType( AccessibleObject accessor )
     {
-        return getAssociationType( accessor.getGenericReturnType() );
+        return getAssociationType( Classes.TYPE_OF.map( accessor ) );
     }
 
     public static Type getAssociationType( Type methodReturnType )
@@ -79,12 +82,12 @@ public final class GenericAssociationInfo
     public GenericAssociationInfo( Method accessor, MetaInfo metainfo )
     {
         this( metainfo, metainfo.get( Immutable.class ) != null, metainfo.get( Aggregated.class ) != null, QualifiedName
-            .fromMethod( accessor ), getAssociationType( accessor.getGenericReturnType() ) );
+            .fromAccessor( accessor ), getAssociationType( accessor.getGenericReturnType() ) );
     }
 
     public GenericAssociationInfo( Method accessor, MetaInfo metainfo, boolean immutable )
     {
-        this( metainfo, immutable, metainfo.get( Aggregated.class ) != null, QualifiedName.fromMethod( accessor ), getAssociationType( accessor
+        this( metainfo, immutable, metainfo.get( Aggregated.class ) != null, QualifiedName.fromAccessor( accessor ), getAssociationType( accessor
                                                                                                                                            .getGenericReturnType() ) );
     }
 

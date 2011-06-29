@@ -68,18 +68,6 @@ public class ApplicationAssemblerTest
 
                 return true;
             }
-
-            @Override
-            public boolean visitLeave( Object visited ) throws RuntimeException
-            {
-                return true;
-            }
-
-            @Override
-            public boolean visit( Object visited ) throws RuntimeException
-            {
-                return true;
-            }
         });
 
         model.newInstance( is.spi() );

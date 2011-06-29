@@ -19,19 +19,8 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
-import org.qi4j.test.indexing.model.Address;
-import org.qi4j.test.indexing.model.File;
-import org.qi4j.test.indexing.model.Host;
-import org.qi4j.test.indexing.model.Port;
-import org.qi4j.test.indexing.model.Protocol;
-import org.qi4j.test.indexing.model.QueryParam;
-import org.qi4j.test.indexing.model.URL;
-import org.qi4j.test.indexing.model.entities.AccountEntity;
-import org.qi4j.test.indexing.model.entities.CatEntity;
-import org.qi4j.test.indexing.model.entities.CityEntity;
-import org.qi4j.test.indexing.model.entities.DomainEntity;
-import org.qi4j.test.indexing.model.entities.FemaleEntity;
-import org.qi4j.test.indexing.model.entities.MaleEntity;
+import org.qi4j.test.indexing.model.*;
+import org.qi4j.test.indexing.model.entities.*;
 
 /**
  * 

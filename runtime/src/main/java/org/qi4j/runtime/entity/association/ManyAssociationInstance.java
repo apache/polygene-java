@@ -6,7 +6,6 @@ import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.ManyAssociationState;
-import org.qi4j.spi.entity.QualifiedIdentity;
 
 import java.util.*;
 
@@ -138,16 +137,6 @@ public class ManyAssociationInstance<T>
         return result;
     }
 
-    protected Collection<QualifiedIdentity> getEntityIdCollection( Collection ts )
-    {
-        ArrayList<QualifiedIdentity> list = new ArrayList<QualifiedIdentity>();
-        for( Object t : ts )
-        {
-            list.add( getEntityId( t ) );
-        }
-        return list;
-    }
-
     protected class ManyAssociationIterator
         implements Iterator<T>
     {
@@ -193,6 +182,6 @@ public class ManyAssociationInstance<T>
 
     private ManyAssociationState associated()
     {
-        return entityState.getManyAssociation( ( model ).manyAssociationType().qualifiedName() );
+        return entityState.getManyAssociation( ( model ).qualifiedName() );
     }
 }

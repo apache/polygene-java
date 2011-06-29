@@ -7,9 +7,7 @@ import org.qi4j.runtime.injection.InjectionProvider;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.spi.composite.AbstractCompositeDescriptor;
-import org.qi4j.spi.util.SerializationUtil;
 
-import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
@@ -18,7 +16,7 @@ import java.lang.reflect.Proxy;
  * JAVADOC
  */
 public final class ThisInjectionProviderFactory
-    implements InjectionProviderFactory, Serializable
+    implements InjectionProviderFactory
 {
     public InjectionProvider newInjectionProvider( Resolution bindingContext, DependencyModel dependencyModel )
         throws InvalidInjectionException
@@ -64,7 +62,7 @@ public final class ThisInjectionProviderFactory
     }
 
     private class ThisInjectionProvider
-        implements InjectionProvider, Serializable
+        implements InjectionProvider
     {
         Constructor proxyConstructor;
 
@@ -97,26 +95,6 @@ public final class ThisInjectionProviderFactory
             {
                 throw new InjectionProviderException( "Could not instantiate @This proxy", e );
             }
-        }
-
-        private void writeObject( ObjectOutputStream out )
-            throws IOException
-        {
-            try
-            {
-                SerializationUtil.writeConstructor( out, proxyConstructor );
-            }
-            catch( NotSerializableException e )
-            {
-                System.err.println( "NotSerializable in " + getClass() );
-                throw e;
-            }
-        }
-
-        private void readObject( ObjectInputStream in )
-            throws IOException, ClassNotFoundException
-        {
-            proxyConstructor = SerializationUtil.readConstructor( in );
         }
     }
 }

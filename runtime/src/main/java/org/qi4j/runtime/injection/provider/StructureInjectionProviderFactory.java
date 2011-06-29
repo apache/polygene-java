@@ -34,11 +34,10 @@ import org.qi4j.runtime.injection.InjectionProvider;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
 import org.qi4j.runtime.model.Resolution;
 
-import java.io.Serializable;
 import java.lang.reflect.Type;
 
 public final class StructureInjectionProviderFactory
-    implements InjectionProviderFactory, Serializable
+    implements InjectionProviderFactory
 {
     public InjectionProvider newInjectionProvider( Resolution resolution, DependencyModel dependencyModel )
         throws InvalidInjectionException
@@ -47,7 +46,7 @@ public final class StructureInjectionProviderFactory
     }
 
     private static class StructureInjectionProvider
-        implements InjectionProvider, Serializable
+        implements InjectionProvider
     {
         private final DependencyModel dependencyModel;
 

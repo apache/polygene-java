@@ -44,52 +44,24 @@ public class Specifications
         };
     }
 
-    public static <T> Specification<T> and( final Specification<T>... specifications )
+    public static <T> AndSpecification<T> and( final Specification<T>... specifications )
     {
         return and( Iterables.iterable( specifications ));
     }
 
-    public static <T> Specification<T> and( final Iterable<Specification<T>> specifications )
+    public static <T> AndSpecification<T> and( final Iterable<Specification<T>> specifications )
     {
-        return new Specification<T>()
-        {
-            public boolean satisfiedBy( T instance )
-            {
-                for( Specification<T> specification : specifications )
-                {
-                    if( !specification.satisfiedBy( instance ) )
-                    {
-                        return false;
-                    }
-                }
-
-                return true;
-            }
-        };
+        return new AndSpecification<T>( specifications );
     }
 
-    public static <T> Specification<T> or( final Specification<T>... specifications )
+    public static <T> OrSpecification<T> or( final Specification<T>... specifications )
     {
         return or( Iterables.iterable( specifications ) );
     }
 
-    public static <T> Specification<T> or( final Iterable<Specification<T>> specifications )
+    public static <T> OrSpecification<T> or( final Iterable<Specification<T>> specifications )
     {
-        return new Specification<T>()
-        {
-            public boolean satisfiedBy( T instance )
-            {
-                for( Specification<T> specification : specifications )
-                {
-                    if( specification.satisfiedBy( instance ) )
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
-            }
-        };
+        return new OrSpecification<T>( specifications );
     }
 
     public static <T> Specification<T> in( final T... allowed )
@@ -137,5 +109,75 @@ public class Specifications
                 return specification.satisfiedBy( function.map( item ) );
             }
         };
+    }
+
+    public static class AndSpecification<T> implements Specification<T>
+    {
+        private final Iterable<Specification<T>> specifications;
+
+        private AndSpecification( Iterable<Specification<T>> specifications )
+        {
+            this.specifications = specifications;
+        }
+
+        public boolean satisfiedBy( T instance )
+        {
+            for( Specification<T> specification : specifications )
+            {
+                if( !specification.satisfiedBy( instance ) )
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public AndSpecification<T> and(Specification<T>... specifications)
+        {
+            Iterable<Specification<T>> iterable = Iterables.iterable( specifications );
+            Iterable<Specification<T>> flatten = Iterables.flatten( this.specifications, iterable );
+            return Specifications.and( flatten );
+        }
+
+        public OrSpecification<T> or(Specification<T>... specifications)
+        {
+            return Specifications.or( Iterables.prepend( this, Iterables.iterable( specifications ) ) );
+        }
+    }
+
+    public static class OrSpecification<T> implements Specification<T>
+    {
+        private final Iterable<Specification<T>> specifications;
+
+        private OrSpecification( Iterable<Specification<T>> specifications )
+        {
+            this.specifications = specifications;
+        }
+
+        public boolean satisfiedBy( T instance )
+        {
+            for( Specification<T> specification : specifications )
+            {
+                if( specification.satisfiedBy( instance ) )
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public AndSpecification<T> and(Specification<T>... specifications)
+        {
+            return Specifications.and( Iterables.prepend( this, Iterables.iterable( specifications ) ) );
+        }
+
+        public OrSpecification<T> or(Specification<T>... specifications)
+        {
+            Iterable<Specification<T>> iterable = Iterables.iterable( specifications );
+            Iterable<Specification<T>> flatten = Iterables.flatten( this.specifications, iterable );
+            return Specifications.or( flatten );
+        }
     }
 }

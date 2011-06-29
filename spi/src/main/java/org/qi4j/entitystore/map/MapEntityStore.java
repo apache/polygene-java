@@ -16,7 +16,7 @@ package org.qi4j.entitystore.map;
 
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.io.Input;
-import org.qi4j.spi.entity.EntityType;
+import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entitystore.EntityStoreException;
 
@@ -59,13 +59,13 @@ public interface MapEntityStore
 
     interface MapChanger
     {
-        Writer newEntity( EntityReference ref, EntityType entityType )
+        Writer newEntity( EntityReference ref, EntityDescriptor entityDescriptor )
             throws IOException;
 
-        Writer updateEntity( EntityReference ref, EntityType entityType )
+        Writer updateEntity( EntityReference ref, EntityDescriptor entityDescriptor )
             throws IOException;
 
-        void removeEntity( EntityReference ref, EntityType entityType )
+        void removeEntity( EntityReference ref, EntityDescriptor entityDescriptor )
             throws EntityNotFoundException;
     }
 }

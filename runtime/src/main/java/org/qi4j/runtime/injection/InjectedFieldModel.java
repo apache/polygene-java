@@ -15,15 +15,13 @@
 package org.qi4j.runtime.injection;
 
 import org.qi4j.api.specification.Specification;
-import org.qi4j.api.util.Visitable;
-import org.qi4j.api.util.Visitor;
+import org.qi4j.api.util.HierarchicalVisitor;
+import org.qi4j.api.util.VisitableHierarchy;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.bootstrap.InjectionException;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.spi.composite.InjectedFieldDescriptor;
-import org.qi4j.spi.util.SerializationUtil;
 
-import java.io.*;
 import java.lang.reflect.Field;
 import java.util.Collection;
 
@@ -34,32 +32,10 @@ import static java.util.Collections.singleton;
  * JAVADOC
  */
 public final class InjectedFieldModel
-    implements InjectedFieldDescriptor, Serializable, Visitable<InjectedFieldModel>
+    implements InjectedFieldDescriptor, VisitableHierarchy<InjectedFieldModel, DependencyModel>
 {
     private DependencyModel dependencyModel;
     private Field injectedField;
-
-    private void writeObject( ObjectOutputStream out )
-        throws IOException
-    {
-        try
-        {
-            out.writeObject( dependencyModel );
-            SerializationUtil.writeField( out, injectedField );
-        }
-        catch( NotSerializableException e )
-        {
-            System.err.println( "NotSerializable in " + getClass() );
-            throw e;
-        }
-    }
-
-    private void readObject( ObjectInputStream in )
-        throws IOException, ClassNotFoundException
-    {
-        dependencyModel = (DependencyModel) in.readObject();
-        injectedField = SerializationUtil.readField( in );
-    }
 
     public InjectedFieldModel( Field injectedField, DependencyModel dependencyModel )
     {
@@ -106,9 +82,13 @@ public final class InjectedFieldModel
     }
 
     @Override
-    public <ThrowableType extends Throwable> boolean accept( Visitor<? super InjectedFieldModel, ThrowableType> modelVisitor ) throws ThrowableType
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super InjectedFieldModel, ? super DependencyModel, ThrowableType> visitor ) throws ThrowableType
     {
-        return modelVisitor.visit( this );
+        if (visitor.visitEnter( this ))
+        {
+            visitor.visit( dependencyModel );
+        }
+        return visitor.visitLeave( this );
     }
 
     public Collection<DependencyModel> filter( Specification<DependencyModel> specification )

@@ -110,7 +110,7 @@ public final class TransientBuilderInstance<T>
         StateHolder instanceState;
         if( state == null )
         {
-            instanceState = model.model().newInitialState();
+            instanceState = model.model().newInitialState(model.module());
         }
         else
         {
@@ -149,7 +149,7 @@ public final class TransientBuilderInstance<T>
     {
         if( state == null )
         {
-            state = model.model().newBuilderState();
+            state = model.model().newBuilderState(model.module());
         }
 
         return state;

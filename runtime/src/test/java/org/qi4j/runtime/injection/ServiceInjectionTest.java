@@ -21,7 +21,8 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.api.service.ServiceImporterException;
+import org.qi4j.api.util.Iterables;
+import org.qi4j.spi.service.ServiceImporterException;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.service.qualifier.AnnotationQualifier;
 import org.qi4j.api.service.qualifier.IdentifiedBy;
@@ -32,6 +33,7 @@ import org.qi4j.bootstrap.*;
 import java.io.Serializable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.Iterator;
 
 import static junit.framework.Assert.assertEquals;
 import static org.qi4j.api.common.Visibility.application;
@@ -53,6 +55,7 @@ public class ServiceInjectionTest
             {
                 module.services( MyServiceComposite.class ).identifiedBy( "Foo" ).setMetaInfo( new ServiceName( "Foo" ) );
                 module.services( MyServiceComposite2.class ).identifiedBy( "Bar" ).setMetaInfo( new ServiceName( "Bar" ) );
+                module.services( StringService.class, LongService.class );
                 module.objects( ServiceUser.class );
             }
         };
@@ -71,6 +74,8 @@ public class ServiceInjectionTest
         assertEquals( "FooX", user.testServiceReference() );
         assertEquals( "FooXBarX", user.testIterableServiceReferences() );
         assertEquals( "Bar", user.testQualifier() );
+        assertEquals( "A", user.testStringIterable() );
+        assertEquals( new Long(1L), user.testLongIterable() );
     }
 
     @Test
@@ -82,6 +87,7 @@ public class ServiceInjectionTest
                 throws AssemblyException
             {
                 module.services( MyServiceComposite.class ).identifiedBy( "Foo" ).setMetaInfo( new ServiceName( "Foo" ) );
+                module.services( StringService.class, LongService.class );
                 module.objects( ServiceUser.class );
 
                 ModuleAssembly module2 = module.layer().module( "Other module" );
@@ -105,6 +111,7 @@ public class ServiceInjectionTest
                 throws AssemblyException
             {
                 module.services( MyServiceComposite.class ).identifiedBy( "Foo" ).setMetaInfo( new ServiceName( "Foo" ) );
+                module.services( StringService.class, LongService.class );
                 LayerAssembly layerAssembly = module.layer();
                 module.objects( ServiceUser.class );
 
@@ -162,6 +169,10 @@ public class ServiceInjectionTest
     }
 
     public static class ServiceUser
+        extends AbstractServiceUser<String>
+    {}
+
+    public static class AbstractServiceUser<T>
     {
         @Service
         MyService service;
@@ -183,6 +194,12 @@ public class ServiceInjectionTest
         @Optional
         @Service
         MyServiceMixin optionalService12;
+
+        @Service
+        Foo<Long> longService;
+
+        @Service
+        Foo<T> stringService;
 
         public String testSingle()
         {
@@ -237,6 +254,16 @@ public class ServiceInjectionTest
             }
             return str;
         }
+
+        public T testStringIterable()
+        {
+            return stringService.get();
+        }
+
+        public Long testLongIterable()
+        {
+            return longService.get();
+        }
     }
 
     @Qualifier( NamedSelector.class )
@@ -275,6 +302,41 @@ public class ServiceInjectionTest
         public String getName()
         {
             return name;
+        }
+    }
+
+    public static interface Foo<T>
+    {
+        T get();
+    }
+
+    @Mixins(StringService.Mixin.class)
+    public static interface StringService
+            extends Foo<String>, ServiceComposite
+    {
+        class Mixin
+            implements Foo<String>
+        {
+            @Override
+            public String get()
+            {
+                return "A";
+            }
+        }
+    }
+
+    @Mixins(LongService.Mixin.class)
+    public static interface LongService
+            extends Foo<Long>, ServiceComposite
+    {
+        class Mixin
+            implements Foo<Long>
+        {
+            @Override
+            public Long get()
+            {
+                return 1L;
+            }
         }
     }
 }

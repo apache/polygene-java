@@ -14,10 +14,11 @@
 
 package org.qi4j.api.service.qualifier;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.specification.Specification;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
  * Filter services based on tags. Tags can be set using the ServiceTags meta-info, like so:

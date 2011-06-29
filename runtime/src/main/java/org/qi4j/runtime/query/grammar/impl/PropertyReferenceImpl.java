@@ -87,7 +87,7 @@ public final class PropertyReferenceImpl<T>
         name = accessor.getName();
         declaringType = accessor.getDeclaringClass();
         Type returnType = accessor.getGenericReturnType();
-        if( !Property.class.isAssignableFrom( Classes.getRawClass( returnType ) ) )
+        if( !Property.class.isAssignableFrom( Classes.RAW_CLASS.map( returnType ) ) )
         {
             throw new QueryExpressionException( "Not a property type:" + returnType );
         }

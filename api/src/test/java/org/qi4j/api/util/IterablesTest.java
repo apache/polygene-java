@@ -107,6 +107,12 @@ public class IterablesTest
     }
 
     @Test
+    public void testAppend()
+    {
+        assertThat( Iterables.toList(Iterables.append( "C", Iterables.iterable( "A","B" ) )).toString(), equalTo( "[A, B, C]" ) );
+    }
+
+    @Test
     public void testReverse()
     {
         assertThat( Iterables.reverse( numbers ).toString(), equalTo( "[3, 2, 1]" ) );

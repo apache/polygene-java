@@ -9,7 +9,7 @@ import org.qi4j.api.io.Output;
 import org.qi4j.api.io.Receiver;
 import org.qi4j.api.io.Sender;
 import org.qi4j.entitystore.map.MapEntityStore;
-import org.qi4j.spi.entity.EntityType;
+import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entitystore.BackupRestore;
 import org.qi4j.spi.entitystore.EntityAlreadyExistsException;
 import org.qi4j.spi.entitystore.EntityNotFoundException;
@@ -32,7 +32,7 @@ public class MemoryMapEntityStoreMixin
         store = new HashMap<EntityReference, String>();
     }
 
-    public boolean contains( EntityReference entityReference, EntityType entityType )
+    public boolean contains( EntityReference entityReference, EntityDescriptor descriptor )
         throws EntityStoreException
     {
         return store.containsKey( entityReference );
@@ -142,7 +142,7 @@ public class MemoryMapEntityStoreMixin
     private class MemoryMapChanger
         implements MapChanger
     {
-        public Writer newEntity( final EntityReference ref, EntityType entityType )
+        public Writer newEntity( final EntityReference ref, EntityDescriptor descriptor )
         {
             return new StringWriter( 1000 )
             {
@@ -161,7 +161,7 @@ public class MemoryMapEntityStoreMixin
             };
         }
 
-        public Writer updateEntity( final EntityReference ref, EntityType entityType )
+        public Writer updateEntity( final EntityReference ref, EntityDescriptor descriptor )
             throws IOException
         {
             return new StringWriter( 1000 )
@@ -181,7 +181,7 @@ public class MemoryMapEntityStoreMixin
             };
         }
 
-        public void removeEntity( EntityReference ref, EntityType entityType )
+        public void removeEntity( EntityReference ref, EntityDescriptor descriptor )
             throws EntityNotFoundException
         {
             String state = store.remove( ref );

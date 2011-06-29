@@ -26,13 +26,11 @@ import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.security.CodeSource;
-import java.util.ArrayList;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.regex.Pattern;
 
 import static org.qi4j.api.util.Iterables.*;
-import static org.qi4j.api.util.Iterables.iterable;
 
 /**
  * Scan classpath for classes that matches given criteria. Useful for automated assemblies with lots of similar classes.
@@ -122,7 +120,6 @@ public class ClassScanner
                   {
                      String fileName = f.getAbsolutePath().substring(file.toString().length() + 1);
                      fileName = fileName.replace(File.separatorChar, '.').substring(0, fileName.length() - 6);
-                      System.out.println("Found file:"+fileName);
                      try
                      {
                         return seedClass.getClassLoader().loadClass(fileName);

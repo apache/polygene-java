@@ -16,8 +16,7 @@ package org.qi4j.runtime.bootstrap;
 
 import org.qi4j.api.util.HierarchicalVisitor;
 import org.qi4j.bootstrap.*;
-import org.qi4j.runtime.composite.*;
-import org.qi4j.runtime.injection.DependencyModel;
+import org.qi4j.runtime.composite.CompositeMethodModel;
 import org.qi4j.runtime.injection.InjectedFieldModel;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
@@ -100,7 +99,7 @@ public final class ApplicationModelFactoryImpl
         return applicationModel;
     }
 
-    private static class BindingVisitor implements HierarchicalVisitor<Object, Object, BindingException>
+    private static class BindingVisitor extends HierarchicalVisitor<Object, Object, BindingException>
     {
         private LayerModel layer;
         private ModuleModel module;
@@ -118,10 +117,7 @@ public final class ApplicationModelFactoryImpl
         @Override
         public boolean visitEnter( Object visited ) throws BindingException
         {
-            if (visited instanceof AbstractStateModel )
-            {
-                return false;
-            } else if (visited instanceof Binder )
+            if (visited instanceof Binder )
             {
                 Binder constructorsModel = (Binder) visited;
                 constructorsModel.bind( resolution );
@@ -138,7 +134,11 @@ public final class ApplicationModelFactoryImpl
                 objectDescriptor = (ObjectDescriptor) visited;
                 resolution = new Resolution( applicationModel, layer, module, objectDescriptor, null, null);
             }
-            else if (visited instanceof ModuleModel)
+            else if (visited instanceof InjectedFieldModel )
+            {
+                InjectedFieldModel fieldModel = (InjectedFieldModel) visited;
+                fieldModel.bind( new Resolution( applicationModel, layer, module, objectDescriptor, compositeMethodModel, fieldModel.field() ) );
+            } else if (visited instanceof ModuleModel)
                 module = (ModuleModel)visited;
             else if (visited instanceof LayerModel)
                 layer = (LayerModel)visited;
@@ -155,11 +155,7 @@ public final class ApplicationModelFactoryImpl
         @Override
         public boolean visit( Object visited ) throws BindingException
         {
-            if (visited instanceof InjectedFieldModel )
-            {
-                InjectedFieldModel fieldModel = (InjectedFieldModel) visited;
-                fieldModel.bind( new Resolution( applicationModel, layer, module, objectDescriptor, compositeMethodModel, fieldModel.field() ) );
-            } else if (visited instanceof Binder )
+            if (visited instanceof Binder )
             {
                 ((Binder)visited).bind( resolution );
             }

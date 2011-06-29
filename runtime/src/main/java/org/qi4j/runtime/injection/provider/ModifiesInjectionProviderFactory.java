@@ -1,5 +1,6 @@
 package org.qi4j.runtime.injection.provider;
 
+import org.qi4j.api.util.Classes;
 import org.qi4j.bootstrap.InvalidInjectionException;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectionContext;
@@ -8,28 +9,26 @@ import org.qi4j.runtime.injection.InjectionProviderFactory;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.spi.composite.AbstractCompositeDescriptor;
 
-import java.io.Serializable;
-
 /**
  * JAVADOC
  */
 public final class ModifiesInjectionProviderFactory
-    implements InjectionProviderFactory, Serializable
+    implements InjectionProviderFactory
 {
     public InjectionProvider newInjectionProvider( Resolution bindingContext, DependencyModel dependencyModel )
         throws InvalidInjectionException
     {
         if( bindingContext.object() instanceof AbstractCompositeDescriptor )
         {
-            if( dependencyModel.injectionClass().isAssignableFrom( dependencyModel.injectedClass() ) )
+            Class<?> type = Classes.RAW_CLASS.map( dependencyModel.injectionType() );
+            if( type.isAssignableFrom( dependencyModel.injectedClass() ) )
             {
                 return new ModifiedInjectionProvider();
             }
             else
             {
                 throw new InvalidInjectionException( "Composite " + bindingContext.object()
-                    .type() + " does not implement @ConcernFor type " + dependencyModel.injectionClass()
-                    .getName() + " in modifier " + dependencyModel.injectedClass().getName() );
+                    .type() + " does not implement @ConcernFor type " + type.getName() + " in modifier " + dependencyModel.injectedClass().getName() );
             }
         }
         else
@@ -40,7 +39,7 @@ public final class ModifiesInjectionProviderFactory
     }
 
     private class ModifiedInjectionProvider
-        implements InjectionProvider, Serializable
+        implements InjectionProvider
     {
         public Object provideInjection( InjectionContext context )
             throws InjectionProviderException

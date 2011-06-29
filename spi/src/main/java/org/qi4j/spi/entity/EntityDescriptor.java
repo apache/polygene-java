@@ -24,5 +24,5 @@ public interface EntityDescriptor
 {
     EntityStateDescriptor state();
 
-    EntityType entityType();
+    boolean queryable();
 }

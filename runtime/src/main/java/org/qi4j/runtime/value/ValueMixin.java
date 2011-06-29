@@ -15,7 +15,6 @@
 package org.qi4j.runtime.value;
 
 import org.json.JSONException;
-import org.json.JSONStringer;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.injection.scope.State;
 import org.qi4j.api.injection.scope.This;
@@ -23,7 +22,9 @@ import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.value.Value;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueComposite;
-import org.qi4j.spi.property.ValueType;
+import org.qi4j.spi.property.JSONWriterSerializer;
+
+import java.io.StringWriter;
 
 /**
  * Implementation of Value
@@ -55,18 +56,15 @@ public class ValueMixin
 
     public String toJSON()
     {
-        ValueInstance valueInstance = ValueInstance.getValueInstance( (ValueComposite) thisValue );
-
-        ValueType valueType = ( (ValueModel) valueInstance.compositeModel() ).valueType();
-        JSONStringer json = new JSONStringer();
+        StringWriter string = new StringWriter( );
         try
         {
-            valueType.toJSON( thisValue, json );
+            new JSONWriterSerializer( string ).serialize( thisValue );
         }
         catch( JSONException e )
         {
             throw new IllegalStateException( "Could not JSON serialize value", e );
         }
-        return json.toString();
+        return string.toString();
     }
 }

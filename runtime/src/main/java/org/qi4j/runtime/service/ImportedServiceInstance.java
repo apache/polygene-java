@@ -14,7 +14,7 @@
 
 package org.qi4j.runtime.service;
 
-import org.qi4j.api.service.ServiceImporter;
+import org.qi4j.spi.service.ServiceImporter;
 
 /**
  * JAVADOC

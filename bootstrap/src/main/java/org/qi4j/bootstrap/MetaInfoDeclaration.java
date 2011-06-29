@@ -14,14 +14,12 @@
 
 package org.qi4j.bootstrap;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.util.HashMap;
-import java.util.Map;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.property.Property;
-import org.qi4j.spi.util.MethodKeyMap;
+
+import java.lang.reflect.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Declaration of a Property or Association.
@@ -46,7 +44,7 @@ public final class MetaInfoDeclaration
         return propertyDeclarationHolder;
     }
 
-    public MetaInfo getMetaInfo( Method accessor )
+    public MetaInfo getMetaInfo( AccessibleObject accessor )
     {
         for( Map.Entry<Class<?>, InfoHolder<?>> entry : mixinPropertyDeclarations.entrySet() )
         {
@@ -57,17 +55,17 @@ public final class MetaInfoDeclaration
                 Class<?> mixinType = entry.getKey();
                 return metaInfo.withAnnotations( mixinType )
                     .withAnnotations( accessor )
-                    .withAnnotations( accessor.getReturnType() );
+                    .withAnnotations( accessor instanceof Method ? ((Method)accessor).getReturnType() : ((Field)accessor).getType() );
             }
         }
         // TODO is this code reached at all??
-        Class<?> declaringType = accessor.getDeclaringClass();
+        Class<?> declaringType = ((Member)accessor).getDeclaringClass();
         return new MetaInfo().withAnnotations( declaringType )
             .withAnnotations( accessor )
-            .withAnnotations( accessor.getReturnType() );
+            .withAnnotations( accessor instanceof Method ? ((Method)accessor).getReturnType() : ((Field)accessor).getType() );
     }
 
-    public Object getInitialValue( Method accessor )
+    public Object getInitialValue( AccessibleObject accessor )
     {
         for( InfoHolder<?> propertyDeclarationHolder : mixinPropertyDeclarations.values() )
         {
@@ -95,7 +93,7 @@ public final class MetaInfoDeclaration
         }
 
         private final Class<T> mixinType;
-        private final Map<Method, MethodInfo> methodInfos = new MethodKeyMap<MethodInfo>();
+        private final Map<AccessibleObject, MethodInfo> methodInfos = new HashMap<AccessibleObject, MethodInfo>();
         // temporary holder
         private MetaInfo metaInfo = null;
 
@@ -134,12 +132,12 @@ public final class MetaInfoDeclaration
             }
         }
 
-        public MethodInfo matches( Method accessor )
+        public MethodInfo matches( AccessibleObject accessor )
         {
             return methodInfos.get( accessor );
         }
 
-        public MetaInfo getMetaInfo( Method accessor )
+        public MetaInfo getMetaInfo( AccessibleObject accessor )
         {
             final MethodInfo methodInfo = matches( accessor );
             if( methodInfo == null )
@@ -149,7 +147,7 @@ public final class MetaInfoDeclaration
             return methodInfo.metaInfo;
         }
 
-        public Object getInitialValue( Method accessor )
+        public Object getInitialValue( AccessibleObject accessor )
         {
             final MethodInfo methodInfo = matches( accessor );
             if( methodInfo == null )

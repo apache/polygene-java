@@ -16,14 +16,13 @@ package org.qi4j.runtime.service;
 
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.service.ImportedServiceDescriptor;
-import org.qi4j.api.service.ServiceImporter;
-import org.qi4j.api.service.ServiceImporterException;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.util.Visitable;
 import org.qi4j.api.util.Visitor;
+import org.qi4j.spi.service.ImportedServiceDescriptor;
+import org.qi4j.spi.service.ServiceImporter;
+import org.qi4j.spi.service.ServiceImporterException;
 
-import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 
@@ -31,7 +30,7 @@ import java.lang.reflect.Proxy;
  * JAVADOC
  */
 public final class ImportedServiceModel
-    implements ImportedServiceDescriptor, Serializable, Visitable<ImportedServiceModel>
+    implements ImportedServiceDescriptor, Visitable<ImportedServiceModel>
 {
     private final Class type;
     private final Visibility visibility;

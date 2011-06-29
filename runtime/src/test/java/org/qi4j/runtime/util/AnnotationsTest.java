@@ -1,13 +1,15 @@
 package org.qi4j.runtime.util;
 
-import java.lang.reflect.Type;
-import java.util.Collection;
 import org.junit.Test;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.sideeffect.SideEffects;
 import org.qi4j.api.util.Annotations;
 
-import static org.junit.Assert.*;
+import java.lang.reflect.Type;
+import java.util.Collection;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 public class AnnotationsTest
 {

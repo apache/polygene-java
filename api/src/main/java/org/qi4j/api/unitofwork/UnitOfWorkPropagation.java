@@ -19,9 +19,9 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import static java.lang.annotation.ElementType.*;
-import static java.lang.annotation.RetentionPolicy.*;
-import static org.qi4j.api.unitofwork.UnitOfWorkPropagation.Propagation.*;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import static org.qi4j.api.unitofwork.UnitOfWorkPropagation.Propagation.REQUIRED;
 
 /**
  * Annotation to denote the unit of work propagation.

@@ -25,9 +25,10 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
-import static org.qi4j.api.service.qualifier.ServiceQualifier.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
+import static org.qi4j.api.service.qualifier.ServiceQualifier.firstService;
+import static org.qi4j.api.service.qualifier.ServiceQualifier.withId;
 
 /**
  * JAVADOC

@@ -17,15 +17,14 @@
  */
 package org.qi4j.api.constraint;
 
+import org.qi4j.api.composite.Composite;
+
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Locale;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
-import org.qi4j.api.composite.Composite;
+import java.util.*;
 
 /**
  * This Exception is thrown when there is one or more Constraint Violations in a method
@@ -51,7 +50,7 @@ public class ConstraintViolationException
     private String instanceToString;
     private String instanceTypeName;
 
-    public ConstraintViolationException( Composite instance, Method method,
+    public ConstraintViolationException( Composite instance, Member method,
                                          Collection<ConstraintViolation> constraintViolations
     )
     {
@@ -60,7 +59,7 @@ public class ConstraintViolationException
 
     public ConstraintViolationException( String instanceToString,
                                          String instanceTypeName,
-                                         Method method,
+                                         Member method,
                                          Collection<ConstraintViolation> violations
     )
     {

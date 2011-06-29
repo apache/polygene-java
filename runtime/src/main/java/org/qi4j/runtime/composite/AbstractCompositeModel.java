@@ -19,13 +19,13 @@ import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.util.HierarchicalVisitor;
 import org.qi4j.api.util.Iterables;
 import org.qi4j.api.util.VisitableHierarchy;
+import org.qi4j.runtime.injection.Dependencies;
 import org.qi4j.runtime.injection.DependencyModel;
-import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.structure.ModuleInstance;
 
-import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -38,7 +38,7 @@ import java.util.Set;
  * JAVADOC
  */
 public abstract class AbstractCompositeModel
-    implements Serializable, VisitableHierarchy<Object, Object>
+    implements VisitableHierarchy<Object, Object>, Dependencies
 {
     protected final AbstractMixinsModel mixinsModel;
     protected final CompositeMethodsModel compositeMethodsModel;
@@ -101,6 +101,18 @@ public abstract class AbstractCompositeModel
         return Iterables.flatten( mixinsModel.dependencies(), compositeMethodsModel.dependencies() );
     }
 
+    @Override
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor ) throws ThrowableType
+    {
+        if (visitor.visitEnter( this ))
+        {
+            if (compositeMethodsModel.accept( visitor ))
+                if (((VisitableHierarchy<Object, Object>)stateModel).accept( visitor ))
+                    mixinsModel.accept(visitor);
+        }
+        return visitor.visitLeave( this );
+    }
+
     @SuppressWarnings( "unchecked" )
     private Class<? extends Composite> createProxyClass( Class<? extends Composite> compositeType,
                                                          List<Class<?>> roles
@@ -161,19 +173,19 @@ public abstract class AbstractCompositeModel
         return mixinType.cast( Proxy.newProxyInstance( mixinType.getClassLoader(), new Class[]{ mixinType }, invocationHandler ) );
     }
 
-    public StateHolder newBuilderState()
+    public StateHolder newBuilderState( ModuleInstance module )
     {
-        return stateModel.newBuilderInstance();
+        return stateModel.newBuilderInstance(module);
     }
 
-    public StateHolder newBuilderState( StateHolder state )
+    public StateHolder newBuilderState( ModuleInstance module, StateHolder state )
     {
-        return stateModel.newBuilderInstance( state );
+        return stateModel.newBuilderInstance( module, state );
     }
 
-    public StateHolder newInitialState()
+    public StateHolder newInitialState( ModuleInstance module )
     {
-        return stateModel.newInitialInstance();
+        return stateModel.newInitialInstance(module);
     }
 
     public StateHolder newState( StateHolder state )

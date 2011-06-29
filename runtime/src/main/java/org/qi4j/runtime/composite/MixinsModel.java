@@ -19,7 +19,6 @@ import org.qi4j.api.property.StateHolder;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.spi.composite.CompositeInstance;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -27,7 +26,6 @@ import java.util.List;
  */
 public final class MixinsModel
     extends AbstractMixinsModel
-    implements Serializable
 {
     public MixinsModel( Class<? extends Composite> compositeType,
                         List<Class<?>> assemblyRoles,

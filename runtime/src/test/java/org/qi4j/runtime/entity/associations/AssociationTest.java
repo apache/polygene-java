@@ -14,12 +14,12 @@
 
 package org.qi4j.runtime.entity.associations;
 
-import java.io.Serializable;
-import javax.swing.Icon;
 import org.junit.Assert;
 import org.junit.Test;
+import org.qi4j.api.common.Optional;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.unitofwork.UnitOfWork;
@@ -28,6 +28,9 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
+
+import javax.swing.*;
+import java.io.Serializable;
 
 /**
  * Tests for associations
@@ -75,17 +78,38 @@ public class AssociationTest
             builder.instance().name().set( "Rickard" );
             Person rickard = builder.newInstance();
 
+            builder = unitOfWork.newEntityBuilder( Person.class );
+            builder.instance().name().set( "Niclas" );
+            builder.instance().friend().set( rickard );
+            Person niclas = builder.newInstance();
+
+            niclas.members().add( rickard );
+
             company.employees().add( 0, rickard );
 
             for( Employer employer : rickard.employers() )
             {
                 System.out.println( ( (Nameable) employer ).name() );
             }
+
+            Assert.assertEquals( niclas.friend().get(), rickard );
+            Assert.assertEquals( niclas.members().get(0), rickard );
         }
         finally
         {
             unitOfWork.discard();
         }
+    }
+
+    public interface Friend<T>
+    {
+        @Optional
+        Association<T> friend();
+    }
+
+    public interface Team<T>
+    {
+        ManyAssociation<T> members();
     }
 
     public interface Company
@@ -99,6 +123,8 @@ public class AssociationTest
     public interface Person
         extends AssociationTest.Nameable,
                 AssociationTest.Employee,
+                AssociationTest.Friend<Person>,
+                AssociationTest.Team<Person>,
                 AssociationTest.StandardComposite,
                 EntityComposite
     {

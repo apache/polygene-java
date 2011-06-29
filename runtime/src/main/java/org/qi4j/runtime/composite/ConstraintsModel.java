@@ -18,24 +18,24 @@ import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.constraint.Constraint;
 import org.qi4j.api.constraint.ConstraintImplementationNotFoundException;
 import org.qi4j.api.constraint.Constraints;
+import org.qi4j.api.util.Classes;
 import org.qi4j.api.util.Iterables;
 
-import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import static java.util.Arrays.asList;
+import static org.qi4j.api.specification.Specifications.translate;
 import static org.qi4j.api.util.Annotations.hasAnnotation;
-import static org.qi4j.api.util.Classes.genericInterfacesOf;
+import static org.qi4j.api.util.Annotations.type;
+import static org.qi4j.api.util.Iterables.filter;
 
 /**
  * JAVADOC
  */
 public final class ConstraintsModel
-    implements Serializable
 {
     private final List<ConstraintDeclaration> constraints = new ArrayList<ConstraintDeclaration>();
     private final Class declaringType;
@@ -44,7 +44,7 @@ public final class ConstraintsModel
     {
         this.declaringType = declaringType;
         // Find constraint declarations
-        Set<Type> interfaces = genericInterfacesOf( declaringType );
+        Iterable<Type> interfaces = Classes.INTERFACES_OF.map( declaringType );
 
         for( Type anInterface : interfaces )
         {
@@ -60,7 +60,7 @@ public final class ConstraintsModel
     {
         List<AbstractConstraintModel> constraintModels = new ArrayList<AbstractConstraintModel>();
         nextConstraint:
-        for( Annotation constraintAnnotation : Iterables.filter( hasAnnotation( org.qi4j.api.constraint.ConstraintDeclaration.class ), constraintAnnotations ) )
+        for( Annotation constraintAnnotation : filter( translate( type(), hasAnnotation( org.qi4j.api.constraint.ConstraintDeclaration.class ) ), constraintAnnotations ) )
         {
             // Check composite declarations first
             Class<? extends Annotation> annotationType = constraintAnnotation.annotationType();
@@ -92,7 +92,7 @@ public final class ConstraintsModel
             // No implementation found!
 
             // Check if if it's a composite constraints
-            if( Iterables.matchesAny( hasAnnotation( org.qi4j.api.constraint.ConstraintDeclaration.class ), asList( constraintAnnotation
+            if( Iterables.matchesAny( translate( type(), hasAnnotation( org.qi4j.api.constraint.ConstraintDeclaration.class )), asList( constraintAnnotation
                                                                                                                         .annotationType()
                                                                                                                         .getAnnotations() ) ) )
             {

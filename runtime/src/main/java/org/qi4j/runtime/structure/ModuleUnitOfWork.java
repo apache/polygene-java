@@ -45,7 +45,7 @@ public class ModuleUnitOfWork
     {
         try
         {
-            IDENTITY_STATE_NAME = QualifiedName.fromMethod( Identity.class.getMethod( "identity" ) );
+            IDENTITY_STATE_NAME = QualifiedName.fromAccessor( Identity.class.getMethod( "identity" ) );
         }
         catch( NoSuchMethodException e )
         {
@@ -115,7 +115,7 @@ public class ModuleUnitOfWork
                                                               parseEntityReference( identity ) );
 
         // Init state
-        model.model().initState( entityState );
+        model.model().initState( model.module(), entityState );
 
         entityState.setProperty( IDENTITY_STATE_NAME, identity );
 

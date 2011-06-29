@@ -20,13 +20,11 @@ import org.qi4j.runtime.injection.InjectionProvider;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
 import org.qi4j.runtime.model.Resolution;
 
-import java.io.Serializable;
-
 /**
  * JAVADOC
  */
 public class CachingInjectionProviderFactoryDecorator
-    implements InjectionProviderFactory, Serializable
+    implements InjectionProviderFactory
 {
     private final InjectionProviderFactory decoratedFactory;
 

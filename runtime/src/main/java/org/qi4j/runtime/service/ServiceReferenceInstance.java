@@ -17,13 +17,13 @@ package org.qi4j.runtime.service;
 import org.qi4j.api.event.ActivationEvent;
 import org.qi4j.api.event.ActivationEventListener;
 import org.qi4j.api.service.Activatable;
-import org.qi4j.api.service.ServiceImporterException;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.service.ServiceUnavailableException;
 import org.qi4j.api.structure.Module;
 import org.qi4j.runtime.structure.ActivationEventListenerSupport;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.service.ServiceDescriptor;
+import org.qi4j.spi.service.ServiceImporterException;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -59,9 +59,9 @@ public final class ServiceReferenceInstance<T>
     }
 
     @Override
-    public Class type()
+    public Class<T> type()
     {
-        return serviceModel.type();
+        return (Class<T>) serviceModel.type();
     }
 
     public <T> T metaInfo( Class<T> infoType )

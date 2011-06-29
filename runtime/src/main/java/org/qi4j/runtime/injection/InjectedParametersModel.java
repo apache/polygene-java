@@ -17,12 +17,8 @@ package org.qi4j.runtime.injection;
 import org.qi4j.api.specification.Specification;
 import org.qi4j.api.util.HierarchicalVisitor;
 import org.qi4j.api.util.VisitableHierarchy;
-import org.qi4j.bootstrap.BindingException;
-import org.qi4j.runtime.model.Binder;
-import org.qi4j.runtime.model.Resolution;
 import org.qi4j.spi.composite.InjectedParametersDescriptor;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -31,7 +27,7 @@ import java.util.List;
  * JAVADOC
  */
 public final class InjectedParametersModel
-    implements InjectedParametersDescriptor, Serializable, Dependencies, VisitableHierarchy<Object, Object>
+    implements InjectedParametersDescriptor, Dependencies, VisitableHierarchy<Object, Object>
 {
     private final List<DependencyModel> parameterDependencies;
 

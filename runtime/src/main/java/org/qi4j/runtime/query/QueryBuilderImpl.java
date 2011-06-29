@@ -18,11 +18,12 @@
  */
 package org.qi4j.runtime.query;
 
+import org.qi4j.api.composite.Composite;
 import org.qi4j.api.query.MissingIndexingSystemException;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryExpressions;
-import org.qi4j.api.query.grammar.BooleanExpression;
+import org.qi4j.api.specification.Specification;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.spi.query.EntityFinder;
 
@@ -45,7 +46,7 @@ final class QueryBuilderImpl<T>
     /**
      * Where clause.
      */
-    private BooleanExpression whereClause;
+    private Specification<Composite> whereClause;
 
     /**
      * Constructor.
@@ -56,7 +57,7 @@ final class QueryBuilderImpl<T>
      */
     public QueryBuilderImpl( final EntityFinder entityFinder,
                              final Class<T> resultType,
-                             final BooleanExpression whereClause
+                             final Specification<Composite> whereClause
     )
     {
         this.entityFinder = entityFinder;
@@ -64,20 +65,18 @@ final class QueryBuilderImpl<T>
         this.whereClause = whereClause;
     }
 
-    /**
-     * @see QueryBuilder#where(BooleanExpression)
-     */
-    public QueryBuilder<T> where( BooleanExpression whereClause )
+    @Override
+    public QueryBuilder<T> where( Specification<Composite> specification )
     {
-        if( whereClause == null )
+        if( specification == null )
         {
             throw new IllegalArgumentException( "Where clause cannot be null" );
         }
         if( this.whereClause != null )
         {
-            whereClause = QueryExpressions.and( this.whereClause, whereClause );
+            specification = QueryExpressions.and( this.whereClause, specification );
         }
-        return new QueryBuilderImpl<T>( entityFinder, resultType, whereClause );
+        return new QueryBuilderImpl<T>( entityFinder, resultType, specification );
     }
 
     /**

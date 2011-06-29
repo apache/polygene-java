@@ -14,6 +14,8 @@
 
 package org.qi4j.runtime.structure;
 
+import org.qi4j.api.util.HierarchicalVisitor;
+import org.qi4j.api.util.VisitableHierarchy;
 import org.qi4j.spi.structure.UsedLayersDescriptor;
 
 import java.util.List;
@@ -22,7 +24,7 @@ import java.util.List;
  * JAVADOC
  */
 public final class UsedLayersModel
-        implements UsedLayersDescriptor
+        implements UsedLayersDescriptor, VisitableHierarchy<Object, Object>
 {
     private final List<LayerModel> usedLayers;
 
@@ -34,6 +36,21 @@ public final class UsedLayersModel
     public Iterable<LayerModel> layers()
     {
         return usedLayers;
+    }
+
+    @Override
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor ) throws ThrowableType
+    {
+        if (visitor.visitEnter( this ))
+        {
+            for( LayerModel usedLayer : usedLayers )
+            {
+                if (!usedLayer.accept( visitor ))
+                    break;
+            }
+        }
+
+        return visitor.visitLeave( this );
     }
 
     public UsedLayersInstance newInstance( List<LayerInstance> usedLayerInstances )

@@ -17,19 +17,19 @@
  */
 package org.qi4j.api.property;
 
-import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.util.Classes;
+
+import java.io.Serializable;
+import java.lang.reflect.*;
 
 public final class GenericPropertyInfo
     implements PropertyInfo, Serializable
 {
-    public static Type getPropertyType( Method accessor )
+    public static Type getPropertyType( AccessibleObject accessor )
     {
-        return getPropertyType( accessor.getGenericReturnType() );
+        return getPropertyType( Classes.TYPE_OF.map(accessor) );
     }
 
     public static Type getPropertyType( Type methodReturnType )
@@ -60,17 +60,15 @@ public final class GenericPropertyInfo
 
     private MetaInfo infos;
     private boolean immutable;
-    private boolean computed;
     private final QualifiedName qualifiedName;
     private final Type type;
 
     public GenericPropertyInfo( Method accessor )
     {
-        this.qualifiedName = QualifiedName.fromMethod( accessor );
+        this.qualifiedName = QualifiedName.fromAccessor( accessor );
         this.type = getPropertyType( accessor );
         infos = new MetaInfo().withAnnotations( accessor );
         immutable = metaInfo( Immutable.class ) != null;
-        computed = metaInfo( Computed.class ) != null;
     }
 
     public GenericPropertyInfo( Class declaringClass, String accessorName )
@@ -78,11 +76,10 @@ public final class GenericPropertyInfo
         try
         {
             Method accessor = declaringClass.getMethod( accessorName );
-            this.qualifiedName = QualifiedName.fromMethod( accessor );
+            this.qualifiedName = QualifiedName.fromAccessor( accessor );
             this.type = getPropertyType( accessor );
             infos = new MetaInfo().withAnnotations( accessor );
             immutable = metaInfo( Immutable.class ) != null;
-            computed = metaInfo( Computed.class ) != null;
         }
         catch( NoSuchMethodException e )
         {
@@ -93,14 +90,12 @@ public final class GenericPropertyInfo
 
     public GenericPropertyInfo( MetaInfo infos,
                                 boolean immutable,
-                                boolean computed,
                                 QualifiedName qualifiedName,
                                 Type type
     )
     {
         this.infos = infos;
         this.immutable = immutable;
-        this.computed = computed;
         this.qualifiedName = qualifiedName;
         this.type = type;
     }
@@ -128,10 +123,5 @@ public final class GenericPropertyInfo
     public boolean isImmutable()
     {
         return immutable;
-    }
-
-    public boolean isComputed()
-    {
-        return computed;
     }
 }

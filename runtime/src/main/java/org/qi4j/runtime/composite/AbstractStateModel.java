@@ -16,20 +16,18 @@ package org.qi4j.runtime.composite;
 
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.constraint.ConstraintViolationException;
+import org.qi4j.api.injection.scope.State;
+import org.qi4j.api.property.Property;
 import org.qi4j.api.property.StateHolder;
-import org.qi4j.api.util.HierarchicalVisitor;
-import org.qi4j.api.util.VisitableHierarchy;
-import org.qi4j.api.util.Visitor;
-import org.qi4j.bootstrap.BindingException;
-import org.qi4j.runtime.model.Binder;
-import org.qi4j.runtime.model.Resolution;
+import org.qi4j.api.util.*;
 import org.qi4j.runtime.property.AbstractPropertiesModel;
 import org.qi4j.runtime.property.PropertiesInstance;
-import org.qi4j.spi.composite.CompositeInstance;
+import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.StateDescriptor;
 import org.qi4j.spi.property.PropertyDescriptor;
 
-import java.io.Serializable;
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Set;
 
@@ -37,7 +35,7 @@ import java.util.Set;
  * Base model for Composite state
  */
 public abstract class AbstractStateModel<T extends AbstractPropertiesModel>
-    implements StateDescriptor, Serializable, VisitableHierarchy<Object, Object>
+    implements StateDescriptor, VisitableHierarchy<Object, Object>
 {
     protected final T propertiesModel;
 
@@ -46,19 +44,19 @@ public abstract class AbstractStateModel<T extends AbstractPropertiesModel>
         this.propertiesModel = propertiesModel;
     }
 
-    public StateHolder newInitialInstance()
+    public StateHolder newInitialInstance( ModuleInstance module )
     {
-        return propertiesModel.newInitialInstance();
+        return propertiesModel.newInitialInstance( module );
     }
 
-    public StateHolder newBuilderInstance()
+    public StateHolder newBuilderInstance( ModuleInstance module )
     {
-        return propertiesModel.newBuilderInstance();
+        return propertiesModel.newBuilderInstance(module);
     }
 
-    public StateHolder newBuilderInstance( StateHolder state )
+    public StateHolder newBuilderInstance( ModuleInstance module, StateHolder state )
     {
-        return propertiesModel.newBuilderInstance( state );
+        return propertiesModel.newBuilderInstance( module, state );
     }
 
     public StateHolder newInstance( StateHolder state )
@@ -66,12 +64,41 @@ public abstract class AbstractStateModel<T extends AbstractPropertiesModel>
         return propertiesModel.newInstance( state );
     }
 
-    public void addStateFor( Iterable<Method> methods, Class compositeType )
+    public void addStateFor( Iterable<Method> methods, AbstractMixinsModel mixins )
     {
+        // Methods
         for( Method method : methods )
         {
-            propertiesModel.addPropertyFor( method, compositeType );
+            if (method.getParameterTypes().length == 0)
+                addStateFor( method );
         }
+
+        // Fields
+        mixins.accept( new HierarchicalVisitor<Object, Object, RuntimeException>()
+        {
+            @Override
+            public boolean visitEnter( Object visited ) throws RuntimeException
+            {
+                if (visited instanceof MixinModel)
+                {
+                    MixinModel model = (MixinModel) visited;
+                    ForEach.forEach( Fields.FIELDS_OF.map( model.mixinClass() ) ).
+                            filter( Annotations.hasAnnotation( State.class ) ).
+                            visit( new Visitor<Field, RuntimeException>()
+                            {
+                                @Override
+                                public boolean visit( Field visited ) throws RuntimeException
+                                {
+                                    addStateFor( visited );
+                                    return true;
+                                }
+                            } );
+                    return false;
+                }
+
+                return true;
+            }
+        } );
     }
 
     public <T extends PropertyDescriptor> T getPropertyByName( String name )
@@ -107,8 +134,11 @@ public abstract class AbstractStateModel<T extends AbstractPropertiesModel>
         propertiesModel.checkConstraints( stateInstance );
     }
 
-    public void setComputedProperties( StateHolder state, CompositeInstance compositeInstance )
+    protected void addStateFor(AccessibleObject accessor)
     {
-        propertiesModel.setComputedProperties( state, compositeInstance );
+        if( Property.class.isAssignableFrom( Classes.RAW_CLASS.map( Classes.TYPE_OF.map( accessor ) )))
+        {
+            propertiesModel.addPropertyFor( accessor );
+        }
     }
 }

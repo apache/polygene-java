@@ -16,12 +16,11 @@
  */
 package org.qi4j.spi.entitystore.helpers;
 
-import java.io.Serializable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.common.TypeName;
+import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
@@ -29,15 +28,17 @@ import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.ManyAssociationState;
 import org.qi4j.spi.entitystore.DefaultEntityStoreUnitOfWork;
 import org.qi4j.spi.entitystore.EntityStoreException;
+import org.qi4j.spi.property.JSONDeserializer;
+import org.qi4j.spi.property.JSONObjectSerializer;
+import org.qi4j.spi.property.PersistentPropertyDescriptor;
 import org.qi4j.spi.property.PropertyDescriptor;
-import org.qi4j.spi.property.PropertyTypeDescriptor;
 import org.qi4j.spi.structure.ModuleSPI;
 
 /**
  * Standard implementation of EntityState.
  */
 public final class JSONEntityState
-    implements EntityState, Serializable
+    implements EntityState
 {
     public static final String JSON_KEY_PROPERTIES = "properties";
     public static final String JSON_KEY_ASSOCIATIONS = "associations";
@@ -127,7 +128,13 @@ public final class JSONEntityState
             {
                 ModuleSPI module = unitOfWork.module();
                 PropertyDescriptor descriptor = entityDescriptor.state().getPropertyByQualifiedName( stateName );
-                return ( (PropertyTypeDescriptor) descriptor ).propertyType().type().fromJSON( json, module );
+
+                if (descriptor == null)
+                    return null;
+
+                JSONDeserializer deserializer = new JSONDeserializer( module );
+
+                return deserializer.deserialize( json, descriptor.valueType() );
             }
         }
         catch( JSONException e )
@@ -147,9 +154,12 @@ public final class JSONEntityState
             }
             else
             {
-                PropertyTypeDescriptor propertyDescriptor = entityDescriptor.state()
+                PersistentPropertyDescriptor persistentPropertyDescriptor = entityDescriptor.state()
                     .getPropertyByQualifiedName( stateName );
-                jsonValue = propertyDescriptor.propertyType().type().toJSON( newValue );
+
+                JSONObjectSerializer serializer = new JSONObjectSerializer();
+                serializer.serialize( newValue, persistentPropertyDescriptor.valueType() );
+                jsonValue = serializer.getRoot();
             }
             cloneStateIfGlobalStateLoaded();
             state.getJSONObject( JSON_KEY_PROPERTIES ).put( stateName.name(), jsonValue );
@@ -236,9 +246,10 @@ public final class JSONEntityState
         return status;
     }
 
-    public boolean isOfType( TypeName type )
+    @Override
+    public boolean isOfType( Class<? extends EntityComposite> type )
     {
-        return entityDescriptor.entityType().type().equals( type );
+        return entityDescriptor.type().equals( type );
     }
 
     public EntityDescriptor entityDescriptor()

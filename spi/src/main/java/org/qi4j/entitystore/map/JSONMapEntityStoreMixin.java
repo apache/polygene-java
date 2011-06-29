@@ -32,7 +32,6 @@ import org.qi4j.spi.structure.ModuleSPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.*;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
@@ -121,7 +120,7 @@ public class JSONMapEntityStoreMixin
             JSONObject state = new JSONObject();
             state.put( JSONEntityState.JSON_KEY_IDENTITY, identity.identity() );
             state.put( JSONEntityState.JSON_KEY_APPLICATION_VERSION, application.version() );
-            state.put( JSONEntityState.JSON_KEY_TYPE, entityDescriptor.entityType().type().name() );
+            state.put( JSONEntityState.JSON_KEY_TYPE, entityDescriptor.type().getName() );
             state.put( JSONEntityState.JSON_KEY_VERSION, unitOfWork.identity() );
             state.put( JSONEntityState.JSON_KEY_MODIFIED, unitOfWork.currentTime() );
             state.put( JSONEntityState.JSON_KEY_PROPERTIES, new JSONObject() );
@@ -180,7 +179,7 @@ public class JSONMapEntityStoreMixin
                                 if( state.status().equals( EntityStatus.NEW ) )
                                 {
                                     Writer writer = changer.newEntity( state.identity(),
-                                                                       state.entityDescriptor().entityType() );
+                                                                       state.entityDescriptor() );
                                     writeEntityState( state, writer, unitOfWork.identity(), unitOfWork.currentTime() );
                                     writer.close();
                                     if( options.cacheOnNew() )
@@ -191,7 +190,7 @@ public class JSONMapEntityStoreMixin
                                 else if( state.status().equals( EntityStatus.UPDATED ) )
                                 {
                                     Writer writer = changer.updateEntity( state.identity(),
-                                                                          state.entityDescriptor().entityType() );
+                                                                          state.entityDescriptor() );
                                     writeEntityState( state, writer, unitOfWork.identity(), unitOfWork.currentTime() );
                                     writer.close();
                                     if( options.cacheOnWrite() )
@@ -201,7 +200,7 @@ public class JSONMapEntityStoreMixin
                                 }
                                 else if( state.status().equals( EntityStatus.REMOVED ) )
                                 {
-                                    changer.removeEntity( state.identity(), state.entityDescriptor().entityType() );
+                                    changer.removeEntity( state.identity(), state.entityDescriptor() );
                                     cache.remove( state.identity().identity() );
                                 }
                             }
@@ -300,7 +299,7 @@ public class JSONMapEntityStoreMixin
                     {
                         JSONEntityState state = (JSONEntityState) migratedEntity;
                         Writer writer = changer.updateEntity( state.identity(),
-                                                              state.entityDescriptor().entityType() );
+                                                              state.entityDescriptor() );
                         writeEntityState( state, writer, state.version(), state.lastModified() );
                         writer.close();
                     }

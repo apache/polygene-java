@@ -1,12 +1,9 @@
 package org.qi4j.bootstrap;
 
-import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 import org.qi4j.api.util.Iterables;
 import org.qi4j.bootstrap.somepackage.Test2Value;
-
-import java.util.Collection;
 
 import static org.qi4j.api.util.Iterables.filter;
 import static org.qi4j.bootstrap.ClassScanner.getClasses;

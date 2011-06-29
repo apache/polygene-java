@@ -18,7 +18,6 @@ import org.qi4j.api.util.HierarchicalVisitor;
 import org.qi4j.api.util.VisitableHierarchy;
 import org.qi4j.runtime.structure.ModuleInstance;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +25,7 @@ import java.util.List;
  * JAVADOC
  */
 public class ImportedServicesModel
-    implements Serializable, VisitableHierarchy<Object, Object>
+    implements VisitableHierarchy<Object, Object>
 {
     private List<ImportedServiceModel> importedServiceModels;
 

@@ -14,20 +14,21 @@
 
 package org.qi4j.spi.entitystore.helpers;
 
-import java.io.Serializable;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.spi.entity.ManyAssociationState;
 import org.qi4j.spi.entitystore.EntityStoreException;
 
+import java.io.Serializable;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 /**
  * JSON implementation of ManyAssociationState. Backed by JSONArray.
  */
 public final class JSONManyAssociationState
-    implements ManyAssociationState, Serializable
+    implements ManyAssociationState
 {
     private JSONEntityState entityState;
     private JSONArray references;

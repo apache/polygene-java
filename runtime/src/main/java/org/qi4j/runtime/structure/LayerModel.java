@@ -17,9 +17,6 @@ package org.qi4j.runtime.structure;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.util.HierarchicalVisitor;
 import org.qi4j.api.util.VisitableHierarchy;
-import org.qi4j.bootstrap.BindingException;
-import org.qi4j.runtime.model.Binder;
-import org.qi4j.runtime.model.Resolution;
 import org.qi4j.spi.structure.LayerDescriptor;
 
 import java.util.List;

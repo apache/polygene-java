@@ -16,13 +16,9 @@ package org.qi4j.runtime.injection;
 
 import org.qi4j.api.util.HierarchicalVisitor;
 import org.qi4j.api.util.VisitableHierarchy;
-import org.qi4j.bootstrap.BindingException;
 import org.qi4j.bootstrap.InjectionException;
-import org.qi4j.runtime.model.Resolution;
 import org.qi4j.spi.composite.InjectedMethodDescriptor;
-import org.qi4j.spi.util.SerializationUtil;
 
-import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -30,33 +26,11 @@ import java.lang.reflect.Method;
  * JAVADOC
  */
 public final class InjectedMethodModel
-    implements InjectedMethodDescriptor, Serializable, Dependencies, VisitableHierarchy<Object, Object>
+    implements InjectedMethodDescriptor, Dependencies, VisitableHierarchy<Object, Object>
 {
     // Model
     private Method method;
     private InjectedParametersModel parameters;
-
-    private void writeObject( ObjectOutputStream out )
-        throws IOException
-    {
-        try
-        {
-            SerializationUtil.writeMethod( out, method );
-            out.writeObject( parameters );
-        }
-        catch( NotSerializableException e )
-        {
-            System.err.println( "NotSerializable in " + getClass() );
-            throw e;
-        }
-    }
-
-    private void readObject( ObjectInputStream in )
-        throws IOException, ClassNotFoundException
-    {
-        method = SerializationUtil.readMethod( in );
-        parameters = (InjectedParametersModel) in.readObject();
-    }
 
     public InjectedMethodModel( Method method, InjectedParametersModel parameters )
     {

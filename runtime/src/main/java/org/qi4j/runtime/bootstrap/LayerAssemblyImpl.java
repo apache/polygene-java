@@ -16,11 +16,10 @@ package org.qi4j.runtime.bootstrap;
 
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.api.specification.Specification;
 import org.qi4j.bootstrap.*;
+import org.qi4j.spi.service.ServiceImporter;
 
-import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -29,7 +28,7 @@ import java.util.*;
  * what other Layers this Layer is using by calling {@link org.qi4j.runtime.bootstrap.LayerAssemblyImpl#uses()}.
  */
 public final class LayerAssemblyImpl
-    implements LayerAssembly, Serializable
+    implements LayerAssembly
 {
     private ApplicationAssembly applicationAssembly;
     private HashMap<String, ModuleAssemblyImpl> moduleAssemblies;

@@ -18,12 +18,14 @@ import org.qi4j.api.Qi4j;
 import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.association.EntityStateHolder;
+import org.qi4j.api.property.Property;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.spi.composite.TransientDescriptor;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.spi.value.ValueDescriptor;
 
@@ -33,7 +35,7 @@ import org.qi4j.spi.value.ValueDescriptor;
 public interface Qi4jSPI
     extends Qi4j
 {
-    // Composites
+    // Transients
 
     TransientDescriptor getTransientDescriptor( TransientComposite composite );
 
@@ -54,6 +56,8 @@ public interface Qi4jSPI
     StateHolder getState( ValueComposite composite );
 
     // Services
-
     ServiceDescriptor getServiceDescriptor( ServiceReference service );
+
+    // Properties
+    PropertyDescriptor getPropertyDescriptor( Property property);
 }

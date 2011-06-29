@@ -50,7 +50,7 @@ public final class ValueAssemblyImpl
         return compositeType;
     }
 
-    void addValueModel( List<ValueModel> values, PropertyDeclarations propertyDecs, AssemblyHelper helper )
+    void addValueModel( List<ValueModel> values, PropertyDeclarations propertyDecs, AssemblyHelper helper)
     {
         try
         {
@@ -62,7 +62,7 @@ public final class ValueAssemblyImpl
                                                          sideEffects,
                                                          mixins,
                                                          roles,
-                                                         helper );
+                                                         helper);
             values.add( valueModel );
         }
         catch( Exception e )

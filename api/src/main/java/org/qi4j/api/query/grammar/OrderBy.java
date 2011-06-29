@@ -18,30 +18,77 @@
  */
 package org.qi4j.api.query.grammar;
 
+import org.qi4j.api.query.grammar2.PropertyFunction;
+
 /**
  * Query sorting segment.
  */
-public interface OrderBy
+public class OrderBy
 {
-    /**
-     * Getter.
-     *
-     * @return property reference; cannot be null
-     */
-    PropertyReference<?> propertyReference();
-
-    /**
-     * Getter.
-     *
-     * @return direction; cannot be null
-     */
-    Order order();
-
     /**
      * Order direction.
      */
     public enum Order
     {
         ASCENDING, DESCENDING
+    }
+
+    /**
+     * Order.
+     */
+    private final PropertyFunction<?> propertyReference;
+    /**
+     * Direction.
+     */
+    private final Order order;
+
+    /**
+     * Constructor.
+     *
+     * @param propertyReference property that determines the order; cannot be null
+     * @param order             direction
+     *
+     * @throws IllegalArgumentException - If property is null
+     */
+    public OrderBy( final PropertyFunction<?> propertyReference,
+                        final Order order
+    )
+    {
+        if( propertyReference == null )
+        {
+            throw new IllegalArgumentException( "Ordering property cannot be null" );
+        }
+        this.propertyReference = propertyReference;
+        this.order = order;
+    }
+
+    /**
+     * Getter.
+     *
+     * @return property; cannot be null
+     */
+    public PropertyFunction<?> getPropertyFunction()
+    {
+        return propertyReference;
+    }
+
+    /**
+     * Getter.
+     *
+     * @return direction; cannot be null
+     */
+    public Order order()
+    {
+        return order;
+    }
+
+    @Override
+    public String toString()
+    {
+        return new StringBuilder()
+            .append( propertyReference )
+            .append( " " )
+            .append( order )
+            .toString();
     }
 }

@@ -17,26 +17,22 @@ package org.qi4j.runtime.composite;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.util.HierarchicalVisitor;
 import org.qi4j.api.util.VisitableHierarchy;
-import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.injection.*;
-import org.qi4j.runtime.model.Binder;
-import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.structure.ModuleInstance;
 
-import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
-import static org.qi4j.api.util.Classes.interfacesOf;
-import static org.qi4j.api.util.Classes.toClassArray;
+import static org.qi4j.api.util.Classes.INTERFACES_OF;
+import static org.qi4j.api.util.Classes.RAW_CLASS;
 import static org.qi4j.api.util.Iterables.*;
 
 /**
  * JAVADOC
  */
 public abstract class AbstractModifierModel
-    implements Serializable, Dependencies, VisitableHierarchy<Object, Object>
+    implements Dependencies, VisitableHierarchy<Object, Object>
 {
     private final Class modifierClass;
 
@@ -52,7 +48,8 @@ public abstract class AbstractModifierModel
         constructorsModel = new ConstructorsModel( modifierClass );
         injectedFieldsModel = new InjectedFieldsModel( declaredModifierClass );
         injectedMethodsModel = new InjectedMethodsModel( declaredModifierClass );
-        nextInterfaces = toClassArray( interfacesOf( declaredModifierClass ) );
+        Class<Class<?>> componentType = (Class<Class<?>>) Class.class.cast( Class.class );
+        nextInterfaces = toArray( componentType, map( RAW_CLASS, INTERFACES_OF.map( declaredModifierClass ) ) );
     }
 
     public Class modifierClass()

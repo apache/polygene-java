@@ -14,21 +14,19 @@
 
 package org.qi4j.api.common;
 
-import java.io.Serializable;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Type;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
 import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.sideeffect.SideEffects;
 import org.qi4j.api.util.Classes;
 
-import static java.util.Arrays.*;
+import java.io.Serializable;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.*;
+
+import static java.util.Arrays.asList;
 
 /**
  * Used to declare and access meta-info.
@@ -110,13 +108,10 @@ public final class MetaInfo
         else
         {
             Class<?> metaInfoclass = metaInfo.getClass();
-            Set<Class<?>> types = Classes.typesOf( metaInfoclass );
+            Iterable<Type> types = Classes.TYPES_OF.map( metaInfoclass );
             for( Type type : types )
             {
-                if( type instanceof Class )
-                {
-                    metaInfoMap.put( (Class) type, metaInfo );
-                }
+                metaInfoMap.put( Classes.RAW_CLASS.map( type), metaInfo );
             }
         }
     }

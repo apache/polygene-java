@@ -24,7 +24,7 @@ import org.qi4j.library.constraints.annotation.NotEmpty;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
 /**
  * Test for QI-59

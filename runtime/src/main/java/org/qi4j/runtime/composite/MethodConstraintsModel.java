@@ -21,9 +21,7 @@ import org.qi4j.api.util.Iterables;
 import org.qi4j.api.util.VisitableHierarchy;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.spi.constraint.MethodConstraintsDescriptor;
-import org.qi4j.spi.util.SerializationUtil;
 
-import java.io.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -37,33 +35,11 @@ import static org.qi4j.api.util.Annotations.isType;
  * JAVADOC
  */
 public final class MethodConstraintsModel
-    implements MethodConstraintsDescriptor, Serializable, VisitableHierarchy<Object, Object>
+    implements MethodConstraintsDescriptor, VisitableHierarchy<Object, Object>
 {
     private List<ValueConstraintsModel> parameterConstraintModels;
     private Method method;
     private static MethodConstraintsInstance EMPTY_CONSTRAINTS = new MethodConstraintsInstance();
-
-    private void writeObject( ObjectOutputStream out )
-        throws IOException
-    {
-        try
-        {
-            SerializationUtil.writeMethod( out, method );
-            out.writeObject( parameterConstraintModels );
-        }
-        catch( NotSerializableException e )
-        {
-            System.err.println( "NotSerializable in " + getClass() );
-            throw e;
-        }
-    }
-
-    private void readObject( ObjectInputStream in )
-        throws IOException, ClassNotFoundException
-    {
-        method = SerializationUtil.readMethod( in );
-        parameterConstraintModels = (List<ValueConstraintsModel>) in.readObject();
-    }
 
     public MethodConstraintsModel( Method method, ConstraintsModel constraintsModel )
     {

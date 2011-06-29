@@ -14,12 +14,11 @@
 
 package org.qi4j.runtime.entity;
 
-import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.property.Property;
 import org.qi4j.runtime.property.PropertiesInstance;
 import org.qi4j.spi.entity.EntityState;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.AccessibleObject;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -39,11 +38,12 @@ public class EntityPropertiesInstance
         this.entityState = entityState;
     }
 
-    public <T> Property<T> getProperty( Method accessor )
+    public <T> Property<T> getProperty( AccessibleObject accessor )
+            throws IllegalArgumentException
     {
         if( properties == null )
         {
-            properties = new HashMap<Method, Property<?>>();
+            properties = new HashMap<AccessibleObject, Property<?>>();
         }
 
         Property<T> property = (Property<T>) properties.get( accessor );
@@ -52,30 +52,6 @@ public class EntityPropertiesInstance
         {
             property = model.newInstance( accessor, entityState );
             properties.put( accessor, property );
-        }
-
-        return property;
-    }
-
-    @Override
-    public <T> Property<T> getProperty( QualifiedName name )
-    {
-        if( properties == null )
-        {
-            properties = new HashMap<Method, Property<?>>();
-        }
-
-        Property<T> property = super.getProperty( name );
-
-        if( property == null )
-        {
-            for( EntityPropertyModel propertyType : model.properties() )
-            {
-                if( propertyType.qualifiedName().equals( name ) )
-                {
-                    property = getProperty( propertyType.accessor() );
-                }
-            }
         }
 
         return property;
@@ -112,20 +88,6 @@ public class EntityPropertiesInstance
                 };
             }
         };
-    }
-
-    @Override
-    public <ThrowableType extends Throwable> void visitProperties( StateVisitor<ThrowableType> visitor )
-        throws ThrowableType
-    {
-        for( EntityPropertyModel propertyModel : model.properties() )
-        {
-            QualifiedName qualifiedName = propertyModel.qualifiedName();
-
-            // Should this.getProperty( qualifiedName ) be called instead??
-            Object value = getProperty( propertyModel.accessor() );
-            visitor.visitProperty( qualifiedName, value );
-        }
     }
 
     public void checkConstraints()

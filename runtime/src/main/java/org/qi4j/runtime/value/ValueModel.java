@@ -18,20 +18,15 @@ import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.property.StateHolder;
-import org.qi4j.api.util.HierarchicalVisitor;
 import org.qi4j.api.value.ValueComposite;
-import org.qi4j.bootstrap.BindingException;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.runtime.bootstrap.AssemblyHelper;
 import org.qi4j.runtime.composite.*;
-import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.runtime.types.ValueCompositeType;
-import org.qi4j.runtime.types.ValueTypeFactory;
 import org.qi4j.spi.composite.InvalidCompositeException;
+import org.qi4j.spi.property.ValueCompositeType;
 import org.qi4j.spi.value.ValueDescriptor;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +35,7 @@ import java.util.List;
  */
 public final class ValueModel
     extends AbstractCompositeModel
-    implements ValueDescriptor, Serializable
+    implements ValueDescriptor
 {
     private ValueCompositeType valueType;
 
@@ -52,8 +47,7 @@ public final class ValueModel
                                        final List<Class<?>> sideEffects,
                                        final List<Class<?>> mixins,
                                        final List<Class<?>> roles,
-                                       AssemblyHelper helper
-    )
+                                       AssemblyHelper helper )
     {
         ConstraintsModel constraintsModel = new ConstraintsModel( compositeType );
         ValuePropertiesModel propertiesModel = new ValuePropertiesModel( constraintsModel, propertyDeclarations );
@@ -69,12 +63,9 @@ public final class ValueModel
         // TODO: Disable constraints, concerns and sideeffects??
         CompositeMethodsModel compositeMethodsModel =
             new CompositeMethodsModel( compositeType, constraintsModel, concernsModel, sideEffectsModel, mixinsModel, helper );
-        stateModel.addStateFor( compositeMethodsModel.methods(), compositeType );
+        stateModel.addStateFor( compositeMethodsModel.methods(), mixinsModel );
 
-        ValueCompositeType valueType = (ValueCompositeType) ValueTypeFactory.instance()
-            .newValueType( compositeType, compositeType, compositeType );
-
-        return new ValueModel( compositeType, roles, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel, valueType );
+        return new ValueModel( compositeType, roles, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
     }
 
     private ValueModel( final Class<? extends ValueComposite> compositeType,
@@ -83,29 +74,17 @@ public final class ValueModel
                         final MetaInfo metaInfo,
                         final ValueMixinsModel mixinsModel,
                         final ValueStateModel stateModel,
-                        final CompositeMethodsModel compositeMethodsModel,
-                        ValueCompositeType valueType
+                        final CompositeMethodsModel compositeMethodsModel
     )
     {
         super( compositeType, roles, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
 
-        this.valueType = valueType;
+        valueType = new ValueCompositeType( this );
     }
 
     public ValueCompositeType valueType()
     {
         return valueType;
-    }
-
-    @Override
-    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor ) throws ThrowableType
-    {
-        if (visitor.visitEnter( this ))
-        {
-            if (compositeMethodsModel.accept( visitor ))
-                mixinsModel.accept( visitor );
-        }
-        return visitor.visitLeave( this );
     }
 
     public void checkConstraints( StateHolder state )

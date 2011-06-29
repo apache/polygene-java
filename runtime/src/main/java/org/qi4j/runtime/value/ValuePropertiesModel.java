@@ -23,11 +23,10 @@ import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.composite.ValueConstraintsModel;
 import org.qi4j.runtime.property.AbstractPropertiesModel;
-import org.qi4j.spi.property.PropertyType;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.util.List;
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Member;
 
 import static org.qi4j.api.util.Annotations.isType;
 import static org.qi4j.api.util.Iterables.filter;
@@ -39,34 +38,24 @@ import static org.qi4j.api.util.Iterables.first;
 public final class ValuePropertiesModel
     extends AbstractPropertiesModel<ValuePropertyModel>
 {
-    public ValuePropertiesModel( ConstraintsModel constraints, PropertyDeclarations propertyDeclarations )
+    public ValuePropertiesModel( ConstraintsModel constraints, PropertyDeclarations propertyDeclarations)
     {
         super( constraints, propertyDeclarations, true );
     }
 
-    protected ValuePropertyModel newPropertyModel( Method method, Class compositeType )
+    protected ValuePropertyModel newPropertyModel( AccessibleObject accessor )
     {
-        Iterable<Annotation> annotations = Annotations.getMethodAndTypeAnnotations( method );
+        Iterable<Annotation> annotations = Annotations.getAccessorAndTypeAnnotations( accessor );
         boolean optional = first( filter( isType( Optional.class ), annotations ) ) != null;
-        ValueConstraintsModel valueConstraintsModel = constraints.constraintsFor( annotations, GenericPropertyInfo.getPropertyType( method ), method
+        ValueConstraintsModel valueConstraintsModel = constraints.constraintsFor( annotations, GenericPropertyInfo.getPropertyType( accessor ), ((Member)accessor)
             .getName(), optional );
         ValueConstraintsInstance valueConstraintsInstance = null;
         if( valueConstraintsModel.isConstrained() )
         {
             valueConstraintsInstance = valueConstraintsModel.newInstance();
         }
-        MetaInfo metaInfo = propertyDeclarations.getMetaInfo( method );
-        Object initialValue = propertyDeclarations.getInitialValue( method );
-        return new ValuePropertyModel( method, compositeType, valueConstraintsInstance, metaInfo, initialValue );
-    }
-
-    public List<PropertyType> propertyTypes()
-    {
-        for( ValuePropertyModel valuePropertyModel : mapMethodPropertyModel.values() )
-        {
-            valuePropertyModel.propertyType().type();
-        }
-
-        return null;
+        MetaInfo metaInfo = propertyDeclarations.getMetaInfo( accessor );
+        Object initialValue = propertyDeclarations.getInitialValue( accessor );
+        return new ValuePropertyModel( accessor, valueConstraintsInstance, metaInfo, initialValue );
     }
 }

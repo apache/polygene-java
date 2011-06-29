@@ -17,29 +17,26 @@ package org.qi4j.runtime.composite;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.sideeffect.SideEffects;
 import org.qi4j.api.util.Annotations;
+import org.qi4j.api.util.Classes;
 import org.qi4j.runtime.bootstrap.AssemblyHelper;
-import org.qi4j.spi.util.MethodKeyMap;
 
-import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.*;
 
 import static java.util.Collections.singleton;
-import static org.qi4j.api.util.Classes.genericInterfacesOf;
 
 /**
  * JAVADOC
  */
 public final class SideEffectsDeclaration
-    implements Serializable
 {
     private final List<SideEffectDeclaration> sideEffectDeclarations = new ArrayList<SideEffectDeclaration>();
-    private final Map<Method, MethodSideEffectsModel> methodSideEffects = new MethodKeyMap<MethodSideEffectsModel>();
+    private final Map<Method, MethodSideEffectsModel> methodSideEffects = new HashMap<Method, MethodSideEffectsModel>();
 
     public SideEffectsDeclaration( Class type, Iterable<Class<?>> sideEffects )
     {
-        Collection<Type> types = asSideEffectsTargetTypes( type );
+        Iterable<Type> types = asSideEffectsTargetTypes( type );
 
         for( Type aType : types )
         {
@@ -53,12 +50,12 @@ public final class SideEffectsDeclaration
         }
     }
 
-    private Collection<Type> asSideEffectsTargetTypes( Class type )
+    private Iterable<Type> asSideEffectsTargetTypes( Class type )
     {
         // Find side-effect declarations
         if( type.isInterface() )
         {
-            return genericInterfacesOf( type );
+            return Classes.INTERFACES_OF.map( type );
         }
         else
         {

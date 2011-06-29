@@ -17,14 +17,13 @@ package org.qi4j.runtime.bootstrap;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.EntityDeclaration;
 
-import java.io.Serializable;
 import java.util.Arrays;
 
 /**
  * Declaration of a Composite. Created by {@link org.qi4j.bootstrap.ModuleAssembly#transients(Class[])}.
  */
 public final class EntityDeclarationImpl
-    implements EntityDeclaration, Serializable
+    implements EntityDeclaration
 {
     private Iterable<EntityAssemblyImpl> entities;
 

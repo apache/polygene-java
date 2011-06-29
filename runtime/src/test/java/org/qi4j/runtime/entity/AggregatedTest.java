@@ -29,7 +29,7 @@ import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
 /**
  * JAVADOC

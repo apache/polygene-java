@@ -14,14 +14,14 @@
 
 package org.qi4j.api.io;
 
+import org.qi4j.api.specification.Specification;
+import org.qi4j.api.util.Function;
+import org.slf4j.Logger;
+
 import java.nio.charset.Charset;
 import java.text.MessageFormat;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
-
-import org.qi4j.api.specification.Specification;
-import org.qi4j.api.util.Function;
-import org.slf4j.Logger;
 
 /**
  * Utility class for I/O transforms

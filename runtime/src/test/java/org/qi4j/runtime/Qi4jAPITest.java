@@ -15,7 +15,6 @@
 package org.qi4j.runtime;
 
 import org.junit.Test;
-import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.service.ServiceComposite;

@@ -18,18 +18,18 @@ import org.objectweb.asm.*;
 import org.qi4j.api.entity.Lifecycle;
 import org.qi4j.api.mixin.Initializable;
 import org.qi4j.api.service.Activatable;
+import org.qi4j.api.util.Classes;
+import org.qi4j.api.util.Iterables;
+import org.qi4j.api.util.Methods;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import static org.objectweb.asm.Opcodes.*;
 import static org.objectweb.asm.Type.getInternalName;
-import static org.qi4j.api.util.Classes.interfacesOf;
-import static org.qi4j.api.util.Classes.interfacesWithMethods;
 
 /**
  * Generate subclasses of mixins/modifiers that implement all interfaces not in the class itself
@@ -121,7 +121,7 @@ public class FragmentClassLoader
 
         // Composite reference
         {
-            fv = cw.visitField( ACC_PUBLIC, "_instance", "Lorg/qi4j/spi/composite/CompositeInvoker;", null, null );
+            fv = cw.visitField( ACC_PUBLIC, "_instance", "Lorg/qi4j/api/composite/CompositeInvoker;", null, null );
             fv.visitEnd();
         }
 
@@ -219,7 +219,7 @@ public class FragmentClassLoader
                             mv.visitLabel( l0 );
                             mv.visitVarInsn( ALOAD, 0 );
                             mv.visitFieldInsn( GETFIELD, classSlash, "_instance",
-                                               "Lorg/qi4j/spi/composite/CompositeInvoker;" );
+                                               "Lorg/qi4j/api/composite/CompositeInvoker;" );
                             mv.visitFieldInsn( GETSTATIC, classSlash, "m" + idx, "Ljava/lang/reflect/Method;" );
 
                             int paramCount = method.getParameterTypes().length;
@@ -244,7 +244,7 @@ public class FragmentClassLoader
                             }
 
                             // Call method
-                            mv.visitMethodInsn( INVOKEINTERFACE, "org/qi4j/spi/composite/CompositeInvoker",
+                            mv.visitMethodInsn( INVOKEINTERFACE, "org/qi4j/api/composite/CompositeInvoker",
                                                 "invokeComposite",
                                                 "(Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;" );
 
@@ -470,7 +470,7 @@ public class FragmentClassLoader
     private static Class getInterfaceMethodDeclaration( Method method, Class clazz )
         throws NoSuchMethodException
     {
-        Set<Class<?>> interfaces = interfacesOf( clazz );
+        Iterable<Class<?>> interfaces = Iterables.map( Classes.RAW_CLASS, Classes.INTERFACES_OF.map( clazz ));
         for( Class<?> anInterface : interfaces )
         {
             try
@@ -489,7 +489,7 @@ public class FragmentClassLoader
 
     private static boolean isInterfaceMethod( Method method, Class baseClass )
     {
-        for( Class aClass : interfacesWithMethods( interfacesOf( baseClass ) ) )
+        for( Class aClass : Iterables.filter( Methods.HAS_METHODS, Iterables.map( Classes.RAW_CLASS, Classes.INTERFACES_OF.map( baseClass ) ) ))
         {
             try
             {

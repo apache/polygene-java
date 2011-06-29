@@ -14,14 +14,11 @@
 
 package org.qi4j.runtime.composite;
 
-import java.io.Serializable;
-
 /**
  * JAVADOC
  */
 public final class MixinDeclaration
     extends FragmentDeclaration
-    implements Serializable
 {
     public MixinDeclaration( Class mixinClass, Class declaredIn )
     {

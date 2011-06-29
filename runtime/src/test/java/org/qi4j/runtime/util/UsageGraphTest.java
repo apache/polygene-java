@@ -17,15 +17,17 @@
  */
 package org.qi4j.runtime.util;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.qi4j.spi.util.CyclicUsageException;
 import org.qi4j.spi.util.UsageGraph;
 
-import static org.junit.Assert.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class UsageGraphTest
 {

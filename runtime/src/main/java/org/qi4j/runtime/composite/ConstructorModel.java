@@ -17,17 +17,12 @@ package org.qi4j.runtime.composite;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.util.HierarchicalVisitor;
 import org.qi4j.api.util.VisitableHierarchy;
-import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectedParametersModel;
 import org.qi4j.runtime.injection.InjectionContext;
-import org.qi4j.runtime.model.Binder;
-import org.qi4j.runtime.model.Resolution;
 import org.qi4j.spi.composite.ConstructorDescriptor;
 import org.qi4j.spi.composite.InvalidCompositeException;
-import org.qi4j.spi.util.SerializationUtil;
 
-import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
@@ -36,33 +31,11 @@ import java.util.Arrays;
  * JAVADOC
  */
 public final class ConstructorModel
-    implements ConstructorDescriptor, Serializable, VisitableHierarchy<Object, Object>
+    implements ConstructorDescriptor, VisitableHierarchy<Object, Object>
 {
     private Constructor constructor;
 
     private InjectedParametersModel parameters;
-
-    private void writeObject( ObjectOutputStream out )
-        throws IOException
-    {
-        try
-        {
-            SerializationUtil.writeConstructor( out, constructor );
-            out.writeObject( parameters );
-        }
-        catch( NotSerializableException e )
-        {
-            System.err.println( "NotSerializable in " + getClass() );
-            throw e;
-        }
-    }
-
-    private void readObject( ObjectInputStream in )
-        throws IOException, ClassNotFoundException
-    {
-        constructor = SerializationUtil.readConstructor( in );
-        parameters = (InjectedParametersModel) in.readObject();
-    }
 
     public ConstructorModel( Constructor constructor, InjectedParametersModel parameters )
     {
@@ -111,7 +84,7 @@ public final class ConstructorModel
             }
             throw new ConstructionException( "Could not instantiate " + constructor.getDeclaringClass(), e.getTargetException() );
         }
-        catch( Exception e )
+        catch( Throwable e )
         {
             System.err.println( constructor.toGenericString() );
             System.err.println( Arrays.asList( parametersInstance ) );

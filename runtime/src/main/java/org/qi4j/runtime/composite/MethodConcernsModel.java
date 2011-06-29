@@ -17,16 +17,11 @@ package org.qi4j.runtime.composite;
 import org.qi4j.api.util.HierarchicalVisitor;
 import org.qi4j.api.util.Iterables;
 import org.qi4j.api.util.VisitableHierarchy;
-import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.injection.Dependencies;
 import org.qi4j.runtime.injection.DependencyModel;
-import org.qi4j.runtime.model.Binder;
-import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.concern.MethodConcernsDescriptor;
-import org.qi4j.spi.util.SerializationUtil;
 
-import java.io.*;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -36,32 +31,10 @@ import java.util.List;
  * JAVADOC
  */
 public final class MethodConcernsModel
-    implements MethodConcernsDescriptor, Serializable, Dependencies, VisitableHierarchy<Object, Object>
+    implements MethodConcernsDescriptor, Dependencies, VisitableHierarchy<Object, Object>
 {
     private List<MethodConcernModel> concernsForMethod;
     private Method method;
-
-    private void writeObject( ObjectOutputStream out )
-        throws IOException
-    {
-        try
-        {
-            SerializationUtil.writeMethod( out, method );
-            out.writeObject( concernsForMethod );
-        }
-        catch( NotSerializableException e )
-        {
-            System.err.println( "NotSerializable in " + getClass() );
-            throw e;
-        }
-    }
-
-    private void readObject( ObjectInputStream in )
-        throws IOException, ClassNotFoundException
-    {
-        method = SerializationUtil.readMethod( in );
-        concernsForMethod = (List<MethodConcernModel>) in.readObject();
-    }
 
     public MethodConcernsModel( Method method, List<MethodConcernModel> concernsForMethod )
     {

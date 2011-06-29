@@ -20,10 +20,10 @@ import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.association.EntityStateHolder;
+import org.qi4j.api.property.Property;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceReference;
-import org.qi4j.api.service.UnknownServiceReferenceType;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
@@ -37,6 +37,7 @@ import org.qi4j.runtime.bootstrap.ApplicationModelFactoryImpl;
 import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
 import org.qi4j.runtime.composite.TransientInstance;
 import org.qi4j.runtime.entity.EntityInstance;
+import org.qi4j.runtime.property.AbstractPropertyInstance;
 import org.qi4j.runtime.service.ImportedServiceReferenceInstance;
 import org.qi4j.runtime.service.ServiceInstance;
 import org.qi4j.runtime.service.ServiceModel;
@@ -48,12 +49,12 @@ import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.composite.TransientDescriptor;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.spi.value.ValueDescriptor;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 
@@ -64,7 +65,7 @@ import static org.qi4j.runtime.composite.TransientInstance.getCompositeInstance;
  * Incarnation of Qi4j.
  */
 public final class Qi4jRuntimeImpl
-    implements Qi4jSPI, Qi4jRuntime, Serializable
+    implements Qi4jSPI, Qi4jRuntime
 {
     private ApplicationAssemblyFactory applicationAssemblyFactory;
     private ApplicationModelFactory applicationModelFactory;
@@ -220,7 +221,7 @@ public final class Qi4jRuntimeImpl
         }
         else
         {
-            throw new UnknownServiceReferenceType( "ServiceReference type is not known: ", service );
+            throw new IllegalArgumentException( "ServiceReference type is not known: "+service );
         }
     }
 
@@ -300,5 +301,11 @@ public final class Qi4jRuntimeImpl
         {
             return null;
         }
+    }
+
+    @Override
+    public PropertyDescriptor getPropertyDescriptor( Property property )
+    {
+        return ((AbstractPropertyInstance)property).getPropertyDescriptor();
     }
 }

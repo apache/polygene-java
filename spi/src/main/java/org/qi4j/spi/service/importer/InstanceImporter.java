@@ -15,9 +15,9 @@
 package org.qi4j.spi.service.importer;
 
 import org.qi4j.api.injection.scope.Structure;
-import org.qi4j.api.service.ImportedServiceDescriptor;
-import org.qi4j.api.service.ServiceImporter;
-import org.qi4j.api.service.ServiceImporterException;
+import org.qi4j.spi.service.ImportedServiceDescriptor;
+import org.qi4j.spi.service.ServiceImporter;
+import org.qi4j.spi.service.ServiceImporterException;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Layer;
 import org.qi4j.api.structure.Module;

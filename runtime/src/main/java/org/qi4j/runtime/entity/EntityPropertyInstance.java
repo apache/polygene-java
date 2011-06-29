@@ -14,12 +14,10 @@
  */
 package org.qi4j.runtime.entity;
 
-import org.qi4j.api.property.AbstractPropertyInstance;
-import org.qi4j.api.property.PropertyInfo;
 import org.qi4j.runtime.composite.ConstraintsCheck;
+import org.qi4j.runtime.property.AbstractPropertyInstance;
 import org.qi4j.spi.entity.EntityState;
-
-import static org.qi4j.api.util.NullArgumentException.validateNotNull;
+import org.qi4j.spi.property.PropertyDescriptor;
 
 /**
  * {@code EntityPropertyInstance} represents a property whose value must be backed by an EntityState.
@@ -39,15 +37,10 @@ public class EntityPropertyInstance<T>
      *
      * @param aPropertyInfo The property info. This argument must not be {@code null}.
      * @param entityState
-     *
-     * @throws IllegalArgumentException Thrown if the specified {@code aPropertyInfo} is {@code null}.
      */
-    public EntityPropertyInstance( PropertyInfo aPropertyInfo, EntityState entityState, ConstraintsCheck constraints )
-        throws IllegalArgumentException
+    public EntityPropertyInstance( PropertyDescriptor aPropertyInfo, EntityState entityState, ConstraintsCheck constraints )
     {
         super( aPropertyInfo );
-
-        validateNotNull( "entitystate", entityState );
 
         this.constraints = constraints;
         this.value = (T) NOT_LOADED;
@@ -63,7 +56,7 @@ public class EntityPropertyInstance<T>
     {
         if( value == NOT_LOADED )
         {
-            value = (T) entityState.getProperty( propertyInfo.qualifiedName() );
+            value = (T) entityState.getProperty( propertyDescriptor.qualifiedName() );
         }
 
         return value;
@@ -76,9 +69,9 @@ public class EntityPropertyInstance<T>
      */
     public void set( T aNewValue )
     {
-        if( isImmutable() )
+        if( propertyDescriptor.isImmutable() )
         {
-            throw new IllegalStateException( "Property [" + qualifiedName() + "] is immutable" );
+            throw new IllegalStateException( "Property [" + propertyDescriptor.qualifiedName() + "] is immutable" );
         }
 
         if( constraints != null )
@@ -87,7 +80,7 @@ public class EntityPropertyInstance<T>
         }
 
         // Change property
-        entityState.setProperty( propertyInfo.qualifiedName(), aNewValue );
+        entityState.setProperty( propertyDescriptor.qualifiedName(), aNewValue );
         value = aNewValue;
     }
 
