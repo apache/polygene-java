@@ -13,8 +13,6 @@
  */
 package org.qi4j.library.shiro.realms;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
@@ -26,13 +24,16 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.library.shiro.Shiro;
+import org.qi4j.library.shiro.bootstrap.RealmActivator;
 import org.qi4j.library.shiro.domain.permissions.Permission;
 import org.qi4j.library.shiro.domain.permissions.Role;
 import org.qi4j.library.shiro.domain.permissions.RoleAssignee;
 import org.qi4j.library.shiro.domain.permissions.RoleAssignment;
-import org.qi4j.library.shiro.bootstrap.RealmActivator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 public abstract class AbstractQi4jRealm
         extends AuthorizingRealm

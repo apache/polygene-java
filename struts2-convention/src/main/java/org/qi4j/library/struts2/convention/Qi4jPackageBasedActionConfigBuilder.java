@@ -4,9 +4,10 @@ import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.config.Configuration;
 import com.opensymphony.xwork2.inject.Container;
 import com.opensymphony.xwork2.inject.Inject;
-import java.lang.reflect.Modifier;
 import org.apache.struts2.convention.PackageBasedActionConfigBuilder;
 import org.qi4j.library.struts2.ActionConfiguration;
+
+import java.lang.reflect.Modifier;
 
 public class Qi4jPackageBasedActionConfigBuilder
     extends PackageBasedActionConfigBuilder

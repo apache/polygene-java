@@ -17,8 +17,9 @@
  */
 package org.qi4j.logging.log;
 
-import java.io.Serializable;
 import org.qi4j.api.concern.Concerns;
+
+import java.io.Serializable;
 
 @Concerns( StandardLogConcern.class )
 public interface StandardLog

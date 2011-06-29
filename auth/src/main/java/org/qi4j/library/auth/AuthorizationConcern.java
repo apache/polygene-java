@@ -18,11 +18,6 @@
  */
 package org.qi4j.library.auth;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.security.AccessController;
-import java.util.Date;
-import javax.security.auth.Subject;
 import org.qi4j.api.common.AppliesTo;
 import org.qi4j.api.concern.ConcernOf;
 import org.qi4j.api.entity.EntityBuilder;
@@ -34,6 +29,12 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
+
+import javax.security.auth.Subject;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.util.Date;
 
 @AppliesTo( RequiresPermission.class )
 public class AuthorizationConcern

@@ -18,10 +18,11 @@
 
 package org.qi4j.library.alarm;
 
-import java.util.List;
-import java.util.Locale;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.mixin.Mixins;
+
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Defines the basic Alarm interface.

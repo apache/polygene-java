@@ -22,7 +22,8 @@ import org.qi4j.index.rdf.RdfIndexingEngineService;
 import org.qi4j.library.rdf.repository.MemoryRepositoryService;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 
-import static org.qi4j.api.common.Visibility.*;
+import static org.qi4j.api.common.Visibility.application;
+import static org.qi4j.api.common.Visibility.layer;
 
 /**
  * JAVADOC

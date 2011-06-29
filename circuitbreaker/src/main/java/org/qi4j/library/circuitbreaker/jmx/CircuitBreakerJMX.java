@@ -16,13 +16,12 @@
 
 package org.qi4j.library.circuitbreaker.jmx;
 
+import org.qi4j.library.circuitbreaker.CircuitBreaker;
+
 import javax.management.MBeanNotificationInfo;
 import javax.management.Notification;
 import javax.management.NotificationBroadcasterSupport;
 import javax.management.ObjectName;
-
-import org.qi4j.library.circuitbreaker.CircuitBreaker;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;

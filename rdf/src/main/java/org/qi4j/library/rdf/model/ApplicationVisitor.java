@@ -28,7 +28,7 @@ import org.qi4j.spi.structure.ModuleDescriptor;
 /**
  * JAVADOC
  */
-class ApplicationVisitor implements HierarchicalVisitor<Object, Object, RuntimeException>
+class ApplicationVisitor extends HierarchicalVisitor<Object, Object, RuntimeException>
 {
     private SerializerContext context;
 
@@ -104,18 +104,6 @@ class ApplicationVisitor implements HierarchicalVisitor<Object, Object, RuntimeE
             context.addRelationship( compositeUri, Qi4jRdf.RELATIONSHIP_METHOD, compositeMethodUri );
         }
 
-        return true;
-    }
-
-    @Override
-    public boolean visitLeave( Object visited ) throws RuntimeException
-    {
-        return true;
-    }
-
-    @Override
-    public boolean visit( Object visited ) throws RuntimeException
-    {
         return true;
     }
 }

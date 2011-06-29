@@ -6,8 +6,9 @@ import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-import static org.qi4j.library.struts2.util.ClassNames.*;
-import static org.qi4j.library.struts2.util.ParameterizedTypes.*;
+
+import static org.qi4j.library.struts2.util.ClassNames.classNameInDotNotation;
+import static org.qi4j.library.struts2.util.ParameterizedTypes.findTypeVariables;
 
 public abstract class ProvidesAddingOfMixin<T>
     extends ActionSupport

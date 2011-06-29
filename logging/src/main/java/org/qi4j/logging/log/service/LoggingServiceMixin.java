@@ -17,10 +17,6 @@
  */
 package org.qi4j.logging.log.service;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
@@ -35,6 +31,11 @@ import org.qi4j.logging.log.records.CompositeLogRecord;
 import org.qi4j.logging.log.records.EntityLogRecord;
 import org.qi4j.logging.log.records.LogRecord;
 import org.qi4j.logging.log.records.ServiceLogRecord;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public abstract class LoggingServiceMixin
     implements LoggingService

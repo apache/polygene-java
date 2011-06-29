@@ -18,7 +18,6 @@
 
 package org.qi4j.library.rdf.repository;
 
-import java.io.File;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
@@ -32,6 +31,8 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+
+import java.io.File;
 
 @Mixins( RdbmsRepositoryService.RdbmsRepositoryMixin.class )
 public interface RdbmsRepositoryService extends Repository, ServiceComposite, Activatable

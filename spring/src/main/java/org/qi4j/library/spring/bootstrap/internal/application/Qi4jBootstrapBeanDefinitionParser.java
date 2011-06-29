@@ -16,12 +16,6 @@
  */
 package org.qi4j.library.spring.bootstrap.internal.application;
 
-import static org.qi4j.library.spring.bootstrap.Constants.BEAN_ID_QI4J_APPLICATION;
-import static org.springframework.beans.BeanUtils.instantiateClass;
-import static org.springframework.beans.factory.support.BeanDefinitionBuilder.rootBeanDefinition;
-import static org.springframework.util.Assert.hasText;
-import static org.springframework.util.ClassUtils.forName;
-
 import org.qi4j.library.spring.bootstrap.Qi4jApplicationBootstrap;
 import org.springframework.beans.BeanInstantiationException;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -32,6 +26,12 @@ import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.beans.factory.xml.XmlReaderContext;
 import org.w3c.dom.Element;
+
+import static org.qi4j.library.spring.bootstrap.Constants.BEAN_ID_QI4J_APPLICATION;
+import static org.springframework.beans.BeanUtils.instantiateClass;
+import static org.springframework.beans.factory.support.BeanDefinitionBuilder.rootBeanDefinition;
+import static org.springframework.util.Assert.hasText;
+import static org.springframework.util.ClassUtils.forName;
 
 public final class Qi4jBootstrapBeanDefinitionParser
         implements BeanDefinitionParser

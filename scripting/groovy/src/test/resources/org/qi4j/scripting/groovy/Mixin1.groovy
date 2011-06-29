@@ -1,5 +1,3 @@
-import org.qi4j.scripting.groovy.Mixin1
-
 public class Mixin1
 {
     def This

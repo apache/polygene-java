@@ -14,12 +14,9 @@
 package org.qi4j.library.scheduler.schedule;
 
 import org.codeartisans.sked.crontab.schedule.CronSchedule;
-
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
-
 import org.qi4j.library.scheduler.Scheduler;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

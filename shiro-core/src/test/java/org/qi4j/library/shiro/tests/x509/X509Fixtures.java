@@ -21,7 +21,6 @@
  */
 package org.qi4j.library.shiro.tests.x509;
 
-import java.util.Arrays;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
@@ -37,6 +36,8 @@ import org.qi4j.library.shiro.domain.permissions.RoleFactory;
 import org.qi4j.library.shiro.domain.x509.X509LightFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Arrays;
 
 @Mixins( X509Fixtures.Mixin.class )
 public interface X509Fixtures

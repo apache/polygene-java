@@ -13,16 +13,14 @@
  */
 package org.qi4j.library.scheduler;
 
-import java.util.Date;
-
 import org.codeartisans.sked.crontab.schedule.CronSchedule;
 import org.codeartisans.sked.crontab.schedule.CronScheduleFactoryImpl;
-
 import org.qi4j.api.injection.scope.Service;
-
 import org.qi4j.library.scheduler.schedule.Schedule;
 import org.qi4j.library.scheduler.schedule.ScheduleFactory;
 import org.qi4j.library.scheduler.task.Task;
+
+import java.util.Date;
 
 public class SchedulerMixin
         implements Scheduler

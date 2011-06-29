@@ -13,13 +13,14 @@
  */
 package org.qi4j.library.shiro.bootstrap;
 
-import java.security.Security;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
+
+import java.security.Security;
 
 @Mixins( ShiroLifecycleService.Mixin.class )
 public interface ShiroLifecycleService

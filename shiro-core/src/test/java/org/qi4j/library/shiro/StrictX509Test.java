@@ -21,8 +21,6 @@
  */
 package org.qi4j.library.shiro;
 
-import java.io.IOException;
-import java.net.InetAddress;
 import org.apache.http.HttpHost;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
@@ -36,7 +34,6 @@ import org.eclipse.jetty.server.ssl.SslSelectChannelConnector;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.FilterMapping;
 import org.eclipse.jetty.servlet.ServletContextHandler;
-import static org.junit.Assert.*;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -45,6 +42,11 @@ import org.qi4j.library.shiro.tests.x509.X509FixturesData;
 import org.qi4j.library.shiro.web.servlet.Qi4jShiroServletFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.net.InetAddress;
+
+import static org.junit.Assert.assertEquals;
 
 public class StrictX509Test
         extends AbstractServletTestSupport

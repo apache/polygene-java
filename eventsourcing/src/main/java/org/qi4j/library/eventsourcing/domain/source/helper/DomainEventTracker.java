@@ -27,8 +27,6 @@ import org.qi4j.library.eventsourcing.domain.source.UnitOfWorkEventsListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-
 /**
  * Helper that enables a service to easily track transactions. Upon startup
  * the tracker will get all the transactions from the store since the last

@@ -17,11 +17,7 @@
 package org.qi4j.library.spring.bootstrap.internal.application;
 
 import org.qi4j.api.structure.Application;
-import org.qi4j.bootstrap.ApplicationAssembler;
-import org.qi4j.bootstrap.ApplicationAssembly;
-import org.qi4j.bootstrap.ApplicationAssemblyFactory;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.Energy4Java;
+import org.qi4j.bootstrap.*;
 import org.qi4j.library.spring.bootstrap.Qi4jApplicationBootstrap;
 import org.qi4j.spi.structure.ApplicationSPI;
 import org.springframework.beans.BeansException;

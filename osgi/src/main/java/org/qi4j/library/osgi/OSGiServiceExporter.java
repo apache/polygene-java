@@ -9,6 +9,7 @@ import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.service.qualifier.HasMetaInfo;
 import org.qi4j.api.util.Classes;
+import org.qi4j.api.util.Iterables;
 
 import java.util.ArrayList;
 import java.util.Properties;
@@ -34,8 +35,8 @@ public interface OSGiServiceExporter extends Activatable, ServiceComposite
                 Class<? extends BundleContext> type = BundleContext.class;
                 BundleContext context = ref.metaInfo( type );
                 ServiceComposite service = ref.get();
-                Set<Class<?>> interfaces = Classes.interfacesOf( service.getClass() );
-                String[] interfaceNames = new String[interfaces.size()];
+                Iterable<Class<?>> interfaces = Iterables.map( Classes.RAW_CLASS, Classes.INTERFACES_OF.map( service.getClass() ));
+                String[] interfaceNames = new String[(int) Iterables.count( interfaces )];
                 Properties properties = ref.metaInfo( Properties.class );
                 if( properties == null )
                 {

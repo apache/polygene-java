@@ -16,15 +16,16 @@
 */
 package org.qi4j.library.spring.bootstrap.internal.service;
 
-import static org.qi4j.library.spring.bootstrap.Constants.BEAN_ID_QI4J_APPLICATION;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
-import static org.springframework.beans.factory.support.BeanDefinitionBuilder.rootBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.w3c.dom.Element;
+
+import static org.qi4j.library.spring.bootstrap.Constants.BEAN_ID_QI4J_APPLICATION;
+import static org.springframework.beans.factory.support.BeanDefinitionBuilder.rootBeanDefinition;
 
 public final class Qi4jServiceBeanDefinitionParser
     implements BeanDefinitionParser

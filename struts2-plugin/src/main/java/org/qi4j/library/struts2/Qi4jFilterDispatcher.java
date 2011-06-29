@@ -8,7 +8,6 @@ import com.opensymphony.xwork2.inject.ContainerBuilder;
 import com.opensymphony.xwork2.inject.Context;
 import com.opensymphony.xwork2.inject.Factory;
 import com.opensymphony.xwork2.util.location.LocatableProperties;
-import javax.servlet.FilterConfig;
 import org.apache.struts2.config.BeanSelectionProvider;
 import org.apache.struts2.dispatcher.Dispatcher;
 import org.apache.struts2.dispatcher.FilterDispatcher;
@@ -16,7 +15,10 @@ import org.qi4j.api.composite.TransientBuilderFactory;
 import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-import static org.qi4j.library.struts2.Constants.*;
+
+import javax.servlet.FilterConfig;
+
+import static org.qi4j.library.struts2.Constants.SERVLET_ATTRIBUTE;
 
 public class Qi4jFilterDispatcher
     extends FilterDispatcher

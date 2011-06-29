@@ -13,9 +13,6 @@
  */
 package org.qi4j.library.scheduler.slaves;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
@@ -23,11 +20,13 @@ import org.qi4j.api.query.Query;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-
 import org.qi4j.library.scheduler.Scheduler;
 import org.qi4j.library.scheduler.schedule.ScheduleEntity;
 import org.qi4j.library.scheduler.schedule.ScheduleRepository;
 import org.qi4j.library.scheduler.task.Task;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * Heartbeat of the {@link Scheduler}, load runnable {@link Task}s and enqueue them in the {@link SchedulerWorkQueue}.

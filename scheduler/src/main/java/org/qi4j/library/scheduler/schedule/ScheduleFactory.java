@@ -19,7 +19,6 @@ import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-
 import org.qi4j.library.scheduler.SchedulerService;
 import org.qi4j.library.scheduler.task.Task;
 

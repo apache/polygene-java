@@ -14,9 +14,9 @@
 
 package org.qi4j.library.jmx;
 
-import org.qi4j.api.service.ImportedServiceDescriptor;
-import org.qi4j.api.service.ServiceImporter;
-import org.qi4j.api.service.ServiceImporterException;
+import org.qi4j.spi.service.ServiceImporter;
+import org.qi4j.spi.service.ImportedServiceDescriptor;
+import org.qi4j.spi.service.ServiceImporterException;
 
 import java.lang.management.ManagementFactory;
 

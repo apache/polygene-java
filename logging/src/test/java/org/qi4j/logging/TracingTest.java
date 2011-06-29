@@ -17,7 +17,6 @@
  */
 package org.qi4j.logging;
 
-import java.util.Iterator;
 import org.junit.Test;
 import org.qi4j.api.concern.ConcernOf;
 import org.qi4j.api.concern.Concerns;
@@ -41,8 +40,11 @@ import org.qi4j.logging.trace.records.TraceRecord;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
 
+import java.util.Iterator;
+
 import static org.junit.Assert.*;
-import static org.qi4j.api.query.QueryExpressions.*;
+import static org.qi4j.api.query.QueryExpressions.orderBy;
+import static org.qi4j.api.query.QueryExpressions.templateFor;
 
 public class TracingTest
     extends AbstractQi4jTest

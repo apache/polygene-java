@@ -14,10 +14,6 @@
 
 package org.qi4j.library.rdf.entity;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import org.openrdf.model.Graph;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
@@ -28,10 +24,15 @@ import org.openrdf.model.vocabulary.XMLSchema;
 import org.qi4j.api.util.Classes;
 import org.qi4j.library.rdf.Qi4jEntityType;
 import org.qi4j.library.rdf.Rdfs;
-import org.qi4j.spi.entity.EntityType;
-import org.qi4j.spi.entity.association.AssociationType;
-import org.qi4j.spi.entity.association.ManyAssociationType;
-import org.qi4j.spi.property.PropertyType;
+import org.qi4j.spi.entity.EntityDescriptor;
+import org.qi4j.spi.entity.association.AssociationDescriptor;
+import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
+import org.qi4j.spi.property.PersistentPropertyDescriptor;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * JAVADOC
@@ -55,50 +56,50 @@ public class EntityTypeSerializer
         dataTypes.put( Date.class.getName(), XMLSchema.DATETIME );
     }
 
-    public Iterable<Statement> serialize( final EntityType entityType )
+    public Iterable<Statement> serialize( final EntityDescriptor entityDescriptor )
     {
         Graph graph = new GraphImpl();
         ValueFactory values = graph.getValueFactory();
-        URI entityTypeUri = values.createURI( entityType.uri() );
+        URI entityTypeUri = values.createURI(Classes.toURI( entityDescriptor.type()) );
 
         graph.add( entityTypeUri, Rdfs.TYPE, Rdfs.CLASS );
         graph.add( entityTypeUri, Rdfs.TYPE, OWL.CLASS );
 
-        graph.add(entityTypeUri, Qi4jEntityType.TYPE, values.createLiteral( entityType.type().toString() ));
-        graph.add(entityTypeUri, Qi4jEntityType.QUERYABLE, values.createLiteral( entityType.queryable() ));
+        graph.add(entityTypeUri, Qi4jEntityType.TYPE, values.createLiteral( entityDescriptor.type().toString() ));
+        graph.add(entityTypeUri, Qi4jEntityType.QUERYABLE, values.createLiteral( entityDescriptor.queryable() ));
 
-        serializeMixinTypes( entityType, graph, entityTypeUri );
+        serializeMixinTypes( entityDescriptor, graph, entityTypeUri );
 
-        serializePropertyTypes( entityType, graph, entityTypeUri );
-        serializeAssociationTypes( entityType, graph, entityTypeUri );
-        serializeManyAssociationTypes( entityType, graph, entityTypeUri );
+        serializePropertyTypes( entityDescriptor, graph, entityTypeUri );
+        serializeAssociationTypes( entityDescriptor, graph, entityTypeUri );
+        serializeManyAssociationTypes( entityDescriptor, graph, entityTypeUri );
 
         return graph;
     }
 
-    private void serializeMixinTypes( final EntityType entityType,
+    private void serializeMixinTypes( final EntityDescriptor entityDescriptor,
                                       final Graph graph,
                                       final URI entityTypeUri )
     {
         ValueFactory values = graph.getValueFactory();
 
         // Mixin types
-        for( String mixinType : entityType.mixinTypes() )
+        for( Class mixinType : entityDescriptor.mixinTypes() )
         {
-//            if( !mixinType.equals( entityType.type() ) )
+//            if( !mixinType.equals( entityDescriptor.type() ) )
 //            {
             graph.add( entityTypeUri, Rdfs.SUB_CLASS_OF, values.createURI( Classes.toURI( mixinType ) ) );
 //            }
         }
     }
 
-    private void serializeManyAssociationTypes( final EntityType entityType,
+    private void serializeManyAssociationTypes( final EntityDescriptor entityDescriptor,
                                                 final Graph graph,
                                                 final URI entityTypeUri )
     {
         ValueFactory values = graph.getValueFactory();
         // ManyAssociations
-        for( ManyAssociationType manyAssociationType : entityType.manyAssociations() )
+        for( ManyAssociationDescriptor manyAssociationType : entityDescriptor.state().manyAssociations() )
         {
             URI associationURI = values.createURI( manyAssociationType.qualifiedName().toURI() );
             graph.add( associationURI, Rdfs.DOMAIN, entityTypeUri );
@@ -111,39 +112,39 @@ public class EntityTypeSerializer
         }
     }
 
-    private void serializeAssociationTypes( final EntityType entityType,
+    private void serializeAssociationTypes( final EntityDescriptor entityDescriptor,
                                             final Graph graph,
                                             final URI entityTypeUri )
     {
         ValueFactory values = graph.getValueFactory();
         // Associations
-        for( AssociationType associationType : entityType.associations() )
+        for( AssociationDescriptor associationType : entityDescriptor.state().associations() )
         {
             URI associationURI = values.createURI( associationType.qualifiedName().toURI() );
             graph.add( associationURI, Rdfs.DOMAIN, entityTypeUri );
             graph.add( associationURI, Rdfs.TYPE, Rdfs.PROPERTY );
 
-            URI associatedURI = values.createURI( associationType.type().toURI() );
+            URI associatedURI = values.createURI( Classes.toURI( Classes.RAW_CLASS.map( associationType.type())) );
             graph.add( associationURI, Rdfs.RANGE, associatedURI );
             graph.add( associationURI, Rdfs.RANGE, XMLSchema.ANYURI );
         }
     }
 
-    private void serializePropertyTypes( final EntityType entityType,
+    private void serializePropertyTypes( final EntityDescriptor entityDescriptor,
                                          final Graph graph,
                                          final URI entityTypeUri )
     {
         ValueFactory values = graph.getValueFactory();
 
         // Properties
-        for( PropertyType propertyType : entityType.properties() )
+        for( PersistentPropertyDescriptor persistentProperty : entityDescriptor.state().<PersistentPropertyDescriptor>properties() )
         {
-            URI propertyURI = values.createURI( propertyType.qualifiedName().toURI() );
+            URI propertyURI = values.createURI( persistentProperty.qualifiedName().toURI() );
             graph.add( propertyURI, Rdfs.DOMAIN, entityTypeUri );
             graph.add( propertyURI, Rdfs.TYPE, Rdfs.PROPERTY );
 
             // TODO Support more types
-            URI type = dataTypes.get( propertyType.type().type().name() );
+            URI type = dataTypes.get( persistentProperty.valueType().type().getName() );
             if( type != null )
             {
                 graph.add( propertyURI, Rdfs.RANGE, type );

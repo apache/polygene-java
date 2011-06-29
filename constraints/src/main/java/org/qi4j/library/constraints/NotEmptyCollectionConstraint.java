@@ -18,9 +18,10 @@
  */
 package org.qi4j.library.constraints;
 
-import java.util.Collection;
 import org.qi4j.api.constraint.Constraint;
 import org.qi4j.library.constraints.annotation.NotEmpty;
+
+import java.util.Collection;
 
 /**
  * Constraints that a string is non empty.

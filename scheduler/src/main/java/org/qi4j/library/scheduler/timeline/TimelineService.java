@@ -13,20 +13,6 @@
  */
 package org.qi4j.library.scheduler.timeline;
 
-import static org.qi4j.api.query.QueryExpressions.*;
-import static org.qi4j.api.query.grammar.OrderBy.Order.*;
-
-import static org.qi4j.library.scheduler.timeline.TimelineRecordStep.FUTURE;
-import static org.qi4j.library.scheduler.timeline.TimelineRecordStep.RUNNING;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
@@ -35,19 +21,25 @@ import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.api.query.grammar.EqualsPredicate;
 import org.qi4j.api.query.grammar.OrderBy;
+import org.qi4j.api.query.grammar2.EqSpecification;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.util.Iterables;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
-
 import org.qi4j.library.scheduler.Scheduler;
 import org.qi4j.library.scheduler.SchedulerService;
 import org.qi4j.library.scheduler.schedule.ScheduleEntity;
 import org.qi4j.library.scheduler.task.Task;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.*;
+
+import static org.qi4j.api.query.QueryExpressions.*;
+import static org.qi4j.api.query.grammar.OrderBy.Order.DESCENDING;
+import static org.qi4j.library.scheduler.timeline.TimelineRecordStep.FUTURE;
+import static org.qi4j.library.scheduler.timeline.TimelineRecordStep.RUNNING;
 
 @Mixins( TimelineService.Mixin.class )
 public interface TimelineService
@@ -213,12 +205,12 @@ public interface TimelineService
             return recordBuilder.newInstance();
         }
 
-        private EqualsPredicate<String> eqSchedulerIdentity( ScheduleEntity template )
+        private EqSpecification<String> eqSchedulerIdentity( ScheduleEntity template )
         {
             return eq( template.schedulerIdentity(), scheduler.identity().get() );
         }
 
-        private EqualsPredicate<String> eqSchedulerIdentity( TimelineRecord template )
+        private EqSpecification<String> eqSchedulerIdentity( TimelineRecord template )
         {
             return eq( template.schedulerIdentity(), scheduler.identity().get() );
         }

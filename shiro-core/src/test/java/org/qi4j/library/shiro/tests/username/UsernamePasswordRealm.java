@@ -25,13 +25,15 @@ import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryBuilderFactory;
-import static org.qi4j.api.query.QueryExpressions.*;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.library.shiro.domain.permissions.RoleAssignee;
 import org.qi4j.library.shiro.domain.securehash.SecureHashSecurable;
 import org.qi4j.library.shiro.realms.AbstractSecureHashQi4jRealm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.qi4j.api.query.QueryExpressions.eq;
+import static org.qi4j.api.query.QueryExpressions.templateFor;
 
 public class UsernamePasswordRealm
         extends AbstractSecureHashQi4jRealm

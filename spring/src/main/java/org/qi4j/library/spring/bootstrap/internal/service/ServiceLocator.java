@@ -16,7 +16,7 @@
 */
 package org.qi4j.library.spring.bootstrap.internal.service;
 
-import org.qi4j.api.service.ImportedServiceDescriptor;
+import org.qi4j.spi.service.ImportedServiceDescriptor;
 import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Application;
@@ -28,7 +28,7 @@ import org.qi4j.spi.structure.ApplicationDescriptor;
 import org.qi4j.spi.structure.LayerDescriptor;
 import org.qi4j.spi.structure.ModuleDescriptor;
 
-final class ServiceLocator implements HierarchicalVisitor<Object, Object, RuntimeException>
+final class ServiceLocator extends HierarchicalVisitor<Object, Object, RuntimeException>
 {
     private final String serviceId;
     private Class serviceType;

@@ -20,12 +20,10 @@ import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-
 import org.qi4j.library.scheduler.Scheduler;
 import org.qi4j.library.scheduler.task.Task;
 import org.qi4j.library.scheduler.timeline.TimelineRecord;
 import org.qi4j.library.scheduler.timeline.TimelineRecorderService;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

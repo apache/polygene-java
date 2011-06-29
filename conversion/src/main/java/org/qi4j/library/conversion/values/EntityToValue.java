@@ -6,9 +6,9 @@ import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.property.ComputedPropertyInstance;
 import org.qi4j.api.property.Property;
-import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.property.PropertyInfo;
+import org.qi4j.api.util.Function;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
 import org.qi4j.spi.Qi4jSPI;
@@ -21,8 +21,7 @@ import org.qi4j.spi.structure.ModuleSPI;
 import org.qi4j.spi.value.ValueDescriptor;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.UndeclaredThrowableException;
+import java.lang.reflect.Member;
 import java.util.ArrayList;
 import java.util.Set;
 
@@ -59,69 +58,42 @@ public interface EntityToValue
 
             if( unqualified == null || !unqualified.value() )
             {
-                builder.withState( new StateHolder()
+                builder.withState( new Function<PropertyInfo, Object>()
                 {
-                    public <T> Property<T> getProperty( Method propertyMethod )
-                    {
-                        try
-                        {
-                            return (Property<T>) propertyMethod.invoke( composite );
-                        }
-                        catch( IllegalAccessException e )
-                        {
-                            String message = propertyMethod + " is not present in " + entityDescriptor.type();
-                            throw new PropertyNotPresentException( message,
-                                                                   valueType,
-                                                                   (Class<? extends EntityComposite>) composite.type() );
-                        }
-                        catch( InvocationTargetException e )
-                        {
-                            String message = "Exception in property method. Internal Error? [" + propertyMethod + " / " +
-                                             entityDescriptor.type();
-                            throw new UndeclaredThrowableException( e.getTargetException(), message );
-                        }
-                    }
-
-                    public <T> Property<T> getProperty( final QualifiedName name )
-                    {
-                        PropertyDescriptor info = entityDescriptor.state().getPropertyByQualifiedName( name );
-                        return new ComputedPropertyInstance<T>( info )
-                        {
-                            @Override
-                            public T get()
-                            {
-                                return (T) entityState.getProperty( name );
-                            }
-                        };
-                    }
-
                     @Override
-                    public Iterable<Property<?>> properties()
+                    public Object map( PropertyInfo propertyInfo )
                     {
-                        return null;
+                        return entityState.getProperty( propertyInfo.qualifiedName() );
                     }
-
-                    public <ThrowableType extends Throwable> void visitProperties( StateVisitor<ThrowableType> visitor )
-                        throws ThrowableType
-                    {
-                        for( PropertyDescriptor descriptor : entityDescriptor.state().properties() )
-                        {
-                            QualifiedName name = descriptor.qualifiedName();
-                            Object value = entityState.getProperty( name );
-                            visitor.visitProperty( name, value );
-                        }
-                    }
-                } );
+                });
             }
             else
             {
+                builder.withState( new Function<PropertyInfo, Object>()
+                {
+                    @Override
+                    public Object map( PropertyInfo propertyInfo )
+                    {
+                        PropertyDescriptor propertyDescriptor = entityState.entityDescriptor().state().getPropertyByName( propertyInfo.qualifiedName().name() );
+                        if (propertyDescriptor == null)
+                            return null;
+
+                        QualifiedName qn = propertyDescriptor.qualifiedName();
+                        return entityState.getProperty( qn );
+                    }
+                });
+/*
+
                 for( PropertyDescriptor descriptor : entityDescriptor.state().properties() )
                 {
                     QualifiedName name = descriptor.qualifiedName();
                     Object value = entityState.getProperty( name );
                     setUnqualifiedProperty( builder, properties, name, value );
                 }
+*/
             }
+
+
             for( AssociationDescriptor descriptor : entityDescriptor.state().associations() )
             {
                 QualifiedName name = descriptor.qualifiedName();
@@ -149,20 +121,8 @@ public interface EntityToValue
             {
                 return;
             }
-            Object prototype = builder.prototypeFor( pd.accessor().getDeclaringClass() );
-            try
-            {
-                Property property = (Property) pd.accessor().invoke( prototype );
-                property.set( value );
-            }
-            catch( IllegalAccessException e )
-            {
-                e.printStackTrace();
-            }
-            catch( InvocationTargetException e )
-            {
-                e.printStackTrace();
-            }
+
+            builder.state().getProperty( pd.accessor() ).set( value );
         }
 
         private PropertyDescriptor findProperty( Set<PropertyDescriptor> properties, String name )

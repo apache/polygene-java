@@ -31,13 +31,18 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.EntityDescriptor;
-import org.qi4j.spi.property.PropertyType;
+import org.qi4j.spi.property.EnumType;
+import org.qi4j.spi.property.PersistentPropertyDescriptor;
+import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.spi.structure.ModuleSPI;
+import sun.reflect.MethodAccessor;
 
 import javax.management.*;
 import javax.management.modelmbean.DescriptorSupport;
+import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.*;
 
 /**
@@ -88,19 +93,19 @@ public interface ConfigurationManagerService
                 {
                     EntityDescriptor descriptor = module.entityDescriptor( configurationClass.getName() );
                     List<MBeanAttributeInfo> attributes = new ArrayList<MBeanAttributeInfo>();
-                    Map<String, QualifiedName> properties = new HashMap<String, QualifiedName>();
-                    for( PropertyType propertyType : descriptor.entityType().properties() )
+                    Map<String, AccessibleObject> properties = new HashMap<String, AccessibleObject>();
+                    for( PersistentPropertyDescriptor persistentProperty : descriptor.state().<PersistentPropertyDescriptor>properties() )
                     {
-                        if( propertyType.propertyType() == PropertyType.PropertyTypeEnum.MUTABLE )
+                        if( !persistentProperty.isImmutable() )
                         {
-                            String propertyName = propertyType.qualifiedName().name();
-                            String type = propertyType.type().type().name();
+                            String propertyName = persistentProperty.qualifiedName().name();
+                            String type = persistentProperty.valueType().type().getName();
 
                             Descriptor attrDescriptor = new DescriptorSupport();
                             attrDescriptor.setField( "name",  propertyName);
                             attrDescriptor.setField( "descriptorType",  "attribute");
 
-                            if( propertyType.type().isEnum() )
+                            if( persistentProperty.valueType() instanceof EnumType )
                             {
                                 type = String.class.getName();
 
@@ -108,7 +113,7 @@ public interface ConfigurationManagerService
                                 try
                                 {
                                     Set<String> legalValues = new LinkedHashSet();
-                                    Class<?> enumType = getClass().getClassLoader().loadClass( propertyType.type().type().name() );
+                                    Class<?> enumType = getClass().getClassLoader().loadClass( persistentProperty.valueType().type().getName() );
                                     for (Field field : enumType.getFields())
                                     {
                                         legalValues.add( field.getName() );
@@ -121,7 +126,7 @@ public interface ConfigurationManagerService
                                 }
                             }
                             attributes.add( new MBeanAttributeInfo( propertyName, type, propertyName, true, true, type.equals( "java.lang.Boolean" ), attrDescriptor ) );
-                            properties.put( propertyName, propertyType.qualifiedName() );
+                            properties.put( propertyName, persistentProperty.accessor() );
                         }
                     }
 
@@ -163,9 +168,9 @@ public interface ConfigurationManagerService
         {
             MBeanInfo info;
             String identity;
-            Map<String, QualifiedName> propertyNames;
+            Map<String, AccessibleObject> propertyNames;
 
-            EditableConfiguration( MBeanInfo info, String identity, Map<String, QualifiedName> propertyNames )
+            EditableConfiguration( MBeanInfo info, String identity, Map<String, AccessibleObject> propertyNames )
             {
                 this.info = info;
                 this.identity = identity;
@@ -180,8 +185,8 @@ public interface ConfigurationManagerService
                 {
                     Entity configuration = uow.get( Entity.class, identity );
                     EntityStateHolder state = spi.getState( (EntityComposite) configuration );
-                    QualifiedName qualifiedName = propertyNames.get( name );
-                    Property<Object> property = state.getProperty( qualifiedName );
+                    AccessibleObject accessor = propertyNames.get( name );
+                    Property<Object> property = state.getProperty( accessor );
                     Object object = property.get();
                     if( object instanceof Enum )
                     {
@@ -207,12 +212,12 @@ public interface ConfigurationManagerService
                 {
                     Entity configuration = uow.get( Entity.class, identity );
                     EntityStateHolder state = spi.getState( (EntityComposite) configuration );
-                    QualifiedName qualifiedName = propertyNames.get( attribute.getName() );
-                    Property<Object> property = state.getProperty( qualifiedName );
-
-                    if( Enum.class.isAssignableFrom( (Class<Object>) property.type() ) )
+                    AccessibleObject accessor = propertyNames.get( attribute.getName() );
+                    Property<Object> property = state.getProperty( accessor );
+                    PropertyDescriptor propertyDescriptor = spi.getPropertyDescriptor( property );
+                    if( EnumType.isEnum( propertyDescriptor.type() ))
                     {
-                        property.set( Enum.valueOf( (Class<Enum>) property.type(), attribute.getValue().toString() ) );
+                        property.set( Enum.valueOf( (Class<Enum>) propertyDescriptor.type(), attribute.getValue().toString() ) );
                     }
                     else
                     {
@@ -301,7 +306,7 @@ public interface ConfigurationManagerService
             ConfigurableService( ServiceReference<Configuration> service,
                                  MBeanInfo info,
                                  String identity,
-                                 Map<String, QualifiedName> propertyNames
+                                 Map<String, AccessibleObject> propertyNames
             )
             {
                 super( info, identity, propertyNames );

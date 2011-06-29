@@ -13,14 +13,9 @@
  */
 package org.qi4j.library.shiro.crypto;
 
+import org.apache.shiro.crypto.hash.*;
+
 import java.util.Arrays;
-import org.apache.shiro.crypto.hash.Hash;
-import org.apache.shiro.crypto.hash.Md2Hash;
-import org.apache.shiro.crypto.hash.Md5Hash;
-import org.apache.shiro.crypto.hash.Sha1Hash;
-import org.apache.shiro.crypto.hash.Sha256Hash;
-import org.apache.shiro.crypto.hash.Sha384Hash;
-import org.apache.shiro.crypto.hash.Sha512Hash;
 
 public class HashFactory
 {

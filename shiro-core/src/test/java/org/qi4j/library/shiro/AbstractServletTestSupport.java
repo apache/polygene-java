@@ -21,13 +21,6 @@
  */
 package org.qi4j.library.shiro;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.InetAddress;
-import java.net.ServerSocket;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.apache.http.HttpHost;
 import org.apache.http.cookie.Cookie;
 import org.eclipse.jetty.server.Server;
@@ -35,14 +28,18 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.junit.After;
 import org.junit.Before;
 import org.qi4j.api.structure.Module;
-import org.qi4j.bootstrap.ApplicationAssembly;
-import org.qi4j.bootstrap.ApplicationAssemblyFactory;
-import org.qi4j.bootstrap.Assembler;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.bootstrap.*;
 import org.qi4j.library.servlet.Qi4jServlet;
 import org.qi4j.library.servlet.lifecycle.AbstractQi4jServletBootstrap;
 import org.qi4j.library.shiro.tests.SecuredService;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.InetAddress;
+import java.net.ServerSocket;
 
 public abstract class AbstractServletTestSupport
         implements Assembler

@@ -14,12 +14,12 @@
 
 package org.qi4j.library.sql.ds;
 
-import javax.sql.DataSource;
-
 import org.postgresql.ds.PGPoolingDataSource;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.service.Activatable;
+
+import javax.sql.DataSource;
 
 /**
  * 

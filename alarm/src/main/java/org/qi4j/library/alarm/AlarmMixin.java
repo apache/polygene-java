@@ -1,12 +1,9 @@
 package org.qi4j.library.alarm;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.ResourceBundle;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
+
+import java.util.*;
 
 public class AlarmMixin
     implements Alarm

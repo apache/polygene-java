@@ -23,10 +23,10 @@ import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.io.Output;
 import org.qi4j.api.io.Receiver;
 import org.qi4j.api.io.Sender;
-import org.qi4j.api.io.Transforms;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.library.eventsourcing.domain.api.DomainEventValue;
 import org.qi4j.library.eventsourcing.domain.api.UnitOfWorkDomainEventsValue;
+import org.qi4j.spi.property.JSONDeserializer;
 import org.qi4j.spi.property.ValueType;
 import org.qi4j.spi.structure.ModuleSPI;
 import org.slf4j.Logger;
@@ -34,7 +34,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -62,6 +61,8 @@ public abstract class AbstractEventStoreMixin
     @Structure
     protected ModuleSPI module;
 
+    protected JSONDeserializer deserializer;
+
     private ExecutorService transactionNotifier;
 
     final private List<UnitOfWorkEventsListener> listeners = synchronizedList( new ArrayList<UnitOfWorkEventsListener>() );
@@ -72,6 +73,8 @@ public abstract class AbstractEventStoreMixin
 
         domainEventType = module.valueDescriptor( DomainEventValue.class.getName() ).valueType();
         eventsType = module.valueDescriptor( UnitOfWorkDomainEventsValue.class.getName() ).valueType();
+
+        deserializer = new JSONDeserializer( module );
 
         transactionNotifier = Executors.newSingleThreadExecutor();
     }

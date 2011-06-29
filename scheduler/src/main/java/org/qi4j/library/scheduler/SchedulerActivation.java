@@ -23,13 +23,11 @@ import org.qi4j.api.service.Activatable;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-
 import org.qi4j.library.scheduler.schedule.ScheduleEntity;
 import org.qi4j.library.scheduler.schedule.ScheduleRepository;
 import org.qi4j.library.scheduler.slaves.SchedulerGarbageCollector;
 import org.qi4j.library.scheduler.slaves.SchedulerPulse;
 import org.qi4j.library.scheduler.slaves.SchedulerWorkQueue;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

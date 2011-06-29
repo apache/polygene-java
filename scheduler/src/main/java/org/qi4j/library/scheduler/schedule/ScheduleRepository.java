@@ -13,8 +13,6 @@
  */
 package org.qi4j.library.scheduler.schedule;
 
-import static org.qi4j.api.query.QueryExpressions.*;
-
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
@@ -22,10 +20,12 @@ import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.api.query.grammar.EqualsPredicate;
+import org.qi4j.api.query.grammar2.EqSpecification;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-
 import org.qi4j.library.scheduler.SchedulerService;
+
+import static org.qi4j.api.query.QueryExpressions.*;
 
 @Mixins( ScheduleRepository.Mixin.class )
 public interface ScheduleRepository
@@ -90,7 +90,7 @@ public interface ScheduleRepository
             return builder.newQuery( uowf.currentUnitOfWork() );
         }
 
-        private EqualsPredicate<String> eqSchedulerIdentity( ScheduleEntity template )
+        private EqSpecification<String> eqSchedulerIdentity( ScheduleEntity template )
         {
             return eq( template.schedulerIdentity(), scheduler.identity().get() );
         }

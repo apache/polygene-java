@@ -54,7 +54,7 @@ public class Qi4jTypeCreator extends AbstractTypeCreator
     @Override
     public AegisType createDefaultType( TypeClassInfo info )
     {
-        if( ValueComposite.class.isAssignableFrom( Classes.getRawClass( info.getType() ) ) )
+        if( ValueComposite.class.isAssignableFrom( Classes.RAW_CLASS.map( info.getType() ) ) )
         {
             ObjectBuilder<ValueCompositeCxfType> builder = obf.newObjectBuilder( ValueCompositeCxfType.class );
             builder.use( info.getType() );

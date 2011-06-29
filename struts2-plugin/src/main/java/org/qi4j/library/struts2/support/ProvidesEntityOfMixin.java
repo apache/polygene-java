@@ -5,7 +5,8 @@ import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-import static org.qi4j.library.struts2.util.ParameterizedTypes.*;
+
+import static org.qi4j.library.struts2.util.ParameterizedTypes.findTypeVariables;
 
 public abstract class ProvidesEntityOfMixin<T>
     implements ProvidesEntityOf<T>, StrutsAction

@@ -13,13 +13,6 @@
  */
 package org.qi4j.library.scheduler.timeline;
 
-import static org.qi4j.library.scheduler.timeline.TimelineRecordStep.SUCCESS;
-import static org.qi4j.library.scheduler.timeline.TimelineRecordStep.FAILURE;
-
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.io.Writer;
-
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
@@ -27,10 +20,16 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-
 import org.qi4j.library.scheduler.SchedulerService;
 import org.qi4j.library.scheduler.schedule.ScheduleRunner;
 import org.qi4j.library.scheduler.task.Task;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
+
+import static org.qi4j.library.scheduler.timeline.TimelineRecordStep.FAILURE;
+import static org.qi4j.library.scheduler.timeline.TimelineRecordStep.SUCCESS;
 
 /**
  * Used by {@link ScheduleRunner} to record {@link Task} runs.

@@ -17,7 +17,6 @@
  */
 package org.qi4j.library.uid.sequence;
 
-import static junit.framework.Assert.*;
 import org.junit.Test;
 import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.injection.scope.Service;
@@ -27,6 +26,8 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.uid.sequence.assembly.PersistingSequencingAssembler;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
+
+import static junit.framework.Assert.assertEquals;
 
 public class PersistingSequencingTest extends AbstractQi4jTest
 {

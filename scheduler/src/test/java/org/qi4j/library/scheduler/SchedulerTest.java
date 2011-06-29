@@ -13,26 +13,22 @@
  */
 package org.qi4j.library.scheduler;
 
-import static org.qi4j.api.common.Visibility.module;
-
-import static org.junit.Assert.*;
-
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
-
 import org.junit.Test;
-
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.util.Iterables;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-
 import org.qi4j.library.scheduler.bootstrap.SchedulerAssembler;
 import org.qi4j.library.scheduler.timeline.Timeline;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.qi4j.api.common.Visibility.module;
 
 public class SchedulerTest
         extends AbstractSchedulerTest

@@ -13,17 +13,16 @@
  */
 package org.qi4j.library.scheduler.timeline;
 
-import java.util.List;
-
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.Property;
-
 import org.qi4j.library.scheduler.Scheduler;
 import org.qi4j.library.scheduler.task.Task;
+
+import java.util.List;
 
 /**
  * Record in {@link Scheduler}'s {@link Timeline}.

@@ -17,9 +17,6 @@
  */
 package org.qi4j.library.alarm;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
 import junit.framework.Assert;
 import org.junit.Test;
 import org.qi4j.api.entity.EntityBuilder;
@@ -33,11 +30,12 @@ import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
 
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+
 import static junit.framework.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class ExtendedAlarmModelTest
     extends AbstractQi4jTest

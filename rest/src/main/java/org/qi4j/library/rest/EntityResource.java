@@ -32,16 +32,17 @@ import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.serializer.RdfXmlSerializer;
-import org.qi4j.spi.Qi4jSPI;
+import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.ManyAssociationState;
-import org.qi4j.spi.entity.association.AssociationType;
-import org.qi4j.spi.entity.association.ManyAssociationType;
-import org.qi4j.spi.entitystore.*;
+import org.qi4j.spi.entity.association.AssociationDescriptor;
+import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
+import org.qi4j.spi.entitystore.ConcurrentEntityStateModificationException;
+import org.qi4j.spi.entitystore.EntityNotFoundException;
+import org.qi4j.spi.entitystore.EntityStore;
+import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 import org.qi4j.spi.entitystore.helpers.JSONEntityState;
-import org.qi4j.spi.property.PropertyType;
-import org.qi4j.spi.property.ValueType;
+import org.qi4j.spi.property.*;
 import org.qi4j.spi.structure.ModuleSPI;
 import org.restlet.data.*;
 import org.restlet.representation.*;
@@ -49,7 +50,10 @@ import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
 import java.io.*;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Map;
 
 public class EntityResource
         extends ServerResource
@@ -86,15 +90,14 @@ public class EntityResource
             return "";
         } else
         {
-            return valueType.toJSON( newValue ).toString().replace( "\"", "&quot;" );
+            JSONWriterSerializer serializer = new JSONWriterSerializer(  );
+            serializer.serialize( newValue, valueType );
+            return serializer.getJSON().toString().replace( "\"", "&quot;" );
         }
     }
 
     @Service
     private EntityStore entityStore;
-
-    @Structure
-    private Qi4jSPI spi;
 
     @Structure
     private ModuleSPI module;
@@ -221,23 +224,23 @@ public class EntityResource
                 out.println( "<form method=\"post\" action=\"" + getRequest().getResourceRef().getPath() + "\">\n" );
                 out.println( "<fieldset><legend>Properties</legend>\n<table>" );
 
-                final EntityType type = entity.entityDescriptor().entityType();
+                final EntityDescriptor descriptor = entity.entityDescriptor();
 
-                for (PropertyType propertyType : type.properties())
+                for (PersistentPropertyDescriptor persistentProperty : descriptor.state().<PersistentPropertyDescriptor>properties())
                 {
-                    Object value = entity.getProperty( propertyType.qualifiedName() );
+                    Object value = entity.getProperty( persistentProperty.qualifiedName() );
                     try
                     {
                         out.println( "<tr><td>" +
-                                "<label for=\"" + propertyType.qualifiedName() + "\" >" +
-                                propertyType.qualifiedName().name() +
+                                "<label for=\"" + persistentProperty.qualifiedName() + "\" >" +
+                                persistentProperty.qualifiedName().name() +
                                 "</label></td>\n" +
                                 "<td><input " +
                                 "size=\"80\" " +
                                 "type=\"text\" " +
-                                (propertyType.propertyType() != PropertyType.PropertyTypeEnum.MUTABLE ? "readonly=\"true\" " : "") +
-                                "name=\"" + propertyType.qualifiedName() + "\" " +
-                                "value=\"" + EntityResource.toString( value, propertyType.type() ) + "\"></td></tr>" );
+                                (persistentProperty.isImmutable() ? "readonly=\"true\" " : "") +
+                                "name=\"" + persistentProperty.qualifiedName() + "\" " +
+                                "value=\"" + EntityResource.toString( value, persistentProperty.valueType() ) + "\"></td></tr>" );
                     } catch (JSONException e)
                     {
                         throw new ResourceException(Status.SERVER_ERROR_INTERNAL, e);
@@ -246,7 +249,7 @@ public class EntityResource
                 out.println( "</table></fieldset>\n" );
 
                 out.println( "<fieldset><legend>Associations</legend>\n<table>" );
-                for (AssociationType associationType : type.associations())
+                for (AssociationDescriptor associationType : descriptor.state().associations())
                 {
                     Object value = entity.getAssociation( associationType.qualifiedName() );
                     if (value == null)
@@ -266,7 +269,7 @@ public class EntityResource
                 out.println( "</table></fieldset>\n" );
 
                 out.println( "<fieldset><legend>Many manyAssociations</legend>\n<table>" );
-                for (ManyAssociationType associationType : type.manyAssociations())
+                for (ManyAssociationDescriptor associationType : descriptor.state().manyAssociations())
                 {
                     ManyAssociationState identities = entity.getManyAssociation( associationType.qualifiedName() );
                     String value = "";
@@ -349,34 +352,31 @@ public class EntityResource
 
         try
         {
-            final EntityType type = entity.entityDescriptor().entityType();
+            final EntityDescriptor descriptor = entity.entityDescriptor();
 
             // Create JSON string of all properties
             StringBuilder str = new StringBuilder();
             str.append( '{' );
 
             boolean first = true;
-            for (PropertyType propertyType : type.properties())
+            for (PersistentPropertyDescriptor persistentProperty : descriptor.state().<PersistentPropertyDescriptor>properties())
             {
-                if (propertyType.propertyType() == PropertyType.PropertyTypeEnum.MUTABLE)
+                if ( !persistentProperty.isImmutable())
                 {
                     if (!first)
                         str.append( "," );
                     first = false;
 
-                    str.append( '"' ).append( propertyType.qualifiedName().name() ).append( "\":" );
+                    str.append( '"' ).append( persistentProperty.qualifiedName().name() ).append( "\":" );
 
-                    String newStringValue = form.getFirstValue( propertyType.qualifiedName().toString() );
+                    String newStringValue = form.getFirstValue( persistentProperty.qualifiedName().toString() );
 
                     if (newStringValue == null)
                     {
                         str.append("null");
                     } else
                     {
-                        if (propertyType.type().isValue())
-                        {
-                            str.append(newStringValue);
-                        } else if (propertyType.type().isString())
+                        if ( JSONDeserializer.isString( persistentProperty.valueType()))
                         {
                             str.append( '"' ).append( newStringValue ).append( '"' );
                         } else
@@ -392,22 +392,23 @@ public class EntityResource
             // Parse JSON into properties
             JSONObject properties = new JSONObject(str.toString());
 
-            for (PropertyType propertyType : type.properties())
+            JSONDeserializer deserializer = new JSONDeserializer( module );
+            for (PersistentPropertyDescriptor persistentProperty : descriptor.state().<PersistentPropertyDescriptor>properties())
             {
-                if (propertyType.propertyType() == PropertyType.PropertyTypeEnum.MUTABLE)
+                if ( !persistentProperty.isImmutable())
                 {
-                    Object jsonValue = properties.get( propertyType.qualifiedName().name() );
+                    Object jsonValue = properties.get( persistentProperty.qualifiedName().name() );
 
                     if (jsonValue == JSONObject.NULL)
                         jsonValue = null;
 
-                    Object value = propertyType.type().fromJSON( jsonValue, module );
+                    Object value = deserializer.deserialize( jsonValue, persistentProperty.valueType() );
 
-                    entity.setProperty( propertyType.qualifiedName(), value );
+                    entity.setProperty( persistentProperty.qualifiedName(), value );
                 }
             }
 
-            for (AssociationType associationType : type.associations())
+            for (AssociationDescriptor associationType : descriptor.state().associations())
             {
                 String newStringAssociation = form.getFirstValue( associationType.qualifiedName().toString() );
                 if (newStringAssociation == null || newStringAssociation.equals( "" ))
@@ -418,7 +419,7 @@ public class EntityResource
                     entity.setAssociation( associationType.qualifiedName(), EntityReference.parseEntityReference( newStringAssociation ) );
                 }
             }
-            for (ManyAssociationType associationType : type.manyAssociations())
+            for (ManyAssociationDescriptor associationType : descriptor.state().manyAssociations())
             {
                 String newStringAssociation = form.getFirstValue( associationType.qualifiedName().toString() );
                 ManyAssociationState manyAssociation = entity.getManyAssociation( associationType.qualifiedName() );

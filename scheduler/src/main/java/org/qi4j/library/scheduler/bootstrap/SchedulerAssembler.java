@@ -13,13 +13,10 @@
  */
 package org.qi4j.library.scheduler.bootstrap;
 
-import static org.qi4j.api.common.Visibility.module;
-
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-
 import org.qi4j.library.scheduler.SchedulerConfiguration;
 import org.qi4j.library.scheduler.SchedulerService;
 import org.qi4j.library.scheduler.schedule.ScheduleEntity;
@@ -33,6 +30,8 @@ import org.qi4j.library.scheduler.timeline.TimelineRecordEntity;
 import org.qi4j.library.scheduler.timeline.TimelineRecordValue;
 import org.qi4j.library.scheduler.timeline.TimelineRecorderService;
 import org.qi4j.library.scheduler.timeline.TimelineService;
+
+import static org.qi4j.api.common.Visibility.module;
 
 /**
  * Assembler for Scheduler.

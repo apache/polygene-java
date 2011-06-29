@@ -14,7 +14,6 @@
 package org.qi4j.library.scheduler.constraints;
 
 import org.codeartisans.sked.crontab.schedule.CronSchedule;
-
 import org.qi4j.api.constraint.Constraint;
 
 public class CronExpressionConstraint

@@ -14,7 +14,6 @@
 
 package org.qi4j.library.rdf.entity;
 
-import java.io.PrintWriter;
 import org.junit.Before;
 import org.junit.Test;
 import org.openrdf.model.Statement;
@@ -36,6 +35,8 @@ import org.qi4j.library.rdf.serializer.RdfXmlSerializer;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.test.AbstractQi4jTest;
+
+import java.io.PrintWriter;
 
 /**
  * JAVADOC

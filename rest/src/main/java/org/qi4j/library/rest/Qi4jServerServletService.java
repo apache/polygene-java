@@ -14,9 +14,10 @@
 
 package org.qi4j.library.rest;
 
-import javax.servlet.Servlet;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
+
+import javax.servlet.Servlet;
 
 /**
  * JAVADOC

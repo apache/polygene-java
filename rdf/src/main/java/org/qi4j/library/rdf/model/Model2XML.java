@@ -1,19 +1,21 @@
 package org.qi4j.library.rdf.model;
 
+import org.qi4j.api.specification.Specifications;
 import org.qi4j.api.util.Function;
 import org.qi4j.api.util.HierarchicalVisitor;
+import org.qi4j.spi.composite.DependencyDescriptor;
+import org.qi4j.spi.composite.MethodDescriptor;
+import org.qi4j.spi.composite.TransientDescriptor;
+import org.qi4j.spi.mixin.MixinDescriptor;
 import org.qi4j.spi.structure.ApplicationDescriptor;
 import org.qi4j.spi.structure.ApplicationModelSPI;
 import org.qi4j.spi.structure.LayerDescriptor;
 import org.qi4j.spi.structure.ModuleDescriptor;
-import org.w3c.dom.Attr;
-import org.w3c.dom.DOMException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
+import org.w3c.dom.*;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * TODO
@@ -21,6 +23,21 @@ import java.util.Stack;
 public class Model2XML
     implements Function<ApplicationModelSPI, Document>
 {
+    private static Map<String, String> simpleMappings = new HashMap<String, String>();
+    static
+    {
+        simpleMappings.put( "TransientsModel", "transients" );
+        simpleMappings.put( "EntitiesModel", "entities" );
+        simpleMappings.put( "ServicesModel", "services" );
+        simpleMappings.put( "ImportedServicesModel", "importedservices" );
+        simpleMappings.put( "ObjectsModel", "objects" );
+        simpleMappings.put( "ValuesModel", "values" );
+        simpleMappings.put( "MixinsModel", "mixins" );
+        simpleMappings.put( "CompositeMethodsModel", "methods" );
+        simpleMappings.put( "InjectedFieldsModel", "injectedfields" );
+        simpleMappings.put( "InjectedFieldModel", "injectedfield" );
+    }
+
     @Override
     public Document map( ApplicationModelSPI applicationSPI )
     {
@@ -29,21 +46,26 @@ public class Model2XML
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             final Document document = builder.newDocument();
 
+            final Stack<Node> current = new Stack<Node>();
+            current.push( document );
+
             applicationSPI.accept( new HierarchicalVisitor<Object, Object, DOMException>()
             {
-                Stack<Node> current = new Stack<Node>();
-
                 @Override
                 public boolean visitEnter( Object visited ) throws DOMException
                 {
-                    if (visited instanceof ApplicationDescriptor)
+                    String mapping = simpleMappings.get( visited.getClass().getSimpleName() );
+                    if (mapping != null)
+                    {
+                        Node node = document.createElement( "mapping" );
+                        current.push( node );
+                    } else if (visited instanceof ApplicationDescriptor)
                     {
                         ApplicationDescriptor applicationDescriptor = (ApplicationDescriptor) visited;
                         Node application = document.createElement( "application" );
 
                         addAttribute( "name", applicationDescriptor.name(), application );
-                        
-                        current.peek().appendChild( application );
+
                         current.push( application );
                     } else if (visited instanceof LayerDescriptor)
                     {
@@ -52,21 +74,54 @@ public class Model2XML
 
                         addAttribute( "name", layerDescriptor.name(), layer );
 
-                        current.peek().appendChild( layer );
                         current.push( layer );
                     } else if (visited instanceof ModuleDescriptor)
                     {
                         ModuleDescriptor moduleDescriptor = (ModuleDescriptor) visited;
-                        Node module = document.createElement( "layer" );
+                        Node module = document.createElement( "module" );
 
                         addAttribute( "name", moduleDescriptor.name(), module );
 
-                        current.peek().appendChild( module );
                         current.push( module );
+                    } else if (visited instanceof TransientDescriptor )
+                    {
+                        TransientDescriptor descriptor = (TransientDescriptor) visited;
+                        Node node = document.createElement( "transient" );
+
+                        addAttribute( "type", descriptor.type().getName(), node );
+                        addAttribute( "visibility", descriptor.visibility().name(), node );
+
+                        current.push( node );
+                    } else if (visited instanceof MethodDescriptor )
+                    {
+                        MethodDescriptor descriptor = (MethodDescriptor) visited;
+                        Node node = document.createElement( "method" );
+
+                        addAttribute( "name", descriptor.method().getName(), node );
+
+                        current.push( node );
+                    } else if (visited instanceof MixinDescriptor )
+                    {
+                        MixinDescriptor descriptor = (MixinDescriptor) visited;
+                        Node node = document.createElement( "mixin" );
+
+                        addAttribute( "class", descriptor.mixinClass().getName(), node );
+
+                        current.push( node );
+                    } else if (visited instanceof DependencyDescriptor )
+                    {
+                        DependencyDescriptor descriptor = (DependencyDescriptor) visited;
+                        Node node = document.createElement( "dependency" );
+
+                        addAttribute( "annotation", descriptor.injectionAnnotation().toString(), node );
+                        addAttribute( "injection", descriptor.injectionType().toString(), node );
+                        addAttribute( "optional", Boolean.toString( descriptor.optional() ), node );
+
+                        current.push( node );
                     } else
                     {
-                        current.push( document.createElement( "" ) );
-                        return false;
+                        Element element = document.createElement( visited.getClass().getSimpleName() );
+                        current.push( element );
                     }
 
                     return true;
@@ -75,21 +130,40 @@ public class Model2XML
                 @Override
                 public boolean visitLeave( Object visited ) throws DOMException
                 {
-                    current.pop();
+                    Node node = current.pop();
+
+                    if (node.getChildNodes().getLength() == 0 && node.getAttributes().getLength() == 0)
+                        return true;
+
+                    current.peek().appendChild( node );
                     return true;
                 }
 
                 @Override
                 public boolean visit( Object visited ) throws DOMException
                 {
+                    Element element;
+                    if (visited instanceof DependencyDescriptor )
+                    {
+                        DependencyDescriptor descriptor = (DependencyDescriptor) visited;
+                        element = document.createElement( "dependency" );
+
+                        addAttribute( "annotation", descriptor.injectionAnnotation().toString(), element );
+                        addAttribute( "injection", descriptor.injectionType().toString(), element );
+                        addAttribute( "optional", Boolean.toString( descriptor.optional() ), element );
+                    } else
+                        element = document.createElement( visited.getClass().getSimpleName() );
+
+                    current.peek().appendChild( element );
+
                     return true;
                 }
 
                 private void addAttribute( String name, String value, Node node )
                 {
-                    Attr attr = document.createAttribute( "name" );
+                    Attr attr = document.createAttribute( name );
                     attr.setValue( value );
-                    node.appendChild( attr );
+                    ((Element)node).setAttributeNode( attr );
                 }
             } );
 

@@ -18,7 +18,6 @@
 
 package org.qi4j.library.alarm;
 
-import java.util.Map;
 import junit.framework.Assert;
 import org.junit.Test;
 import org.qi4j.api.mixin.Mixins;
@@ -30,6 +29,8 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
+
+import java.util.Map;
 
 import static org.junit.Assert.*;
 

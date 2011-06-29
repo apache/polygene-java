@@ -18,7 +18,7 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.Activatable;
-import org.qi4j.api.service.ImportedServiceDescriptor;
+import org.qi4j.spi.service.ImportedServiceDescriptor;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.service.qualifier.ServiceQualifier;
@@ -154,9 +154,9 @@ public interface ApplicationManagerService
                     } else if (visited instanceof EntityDescriptor)
                     {
                         EntityDescriptor entityDescriptor = (EntityDescriptor) visited;
-                        ObjectName objectName = new ObjectName( "Qi4j:application="+application.name()+",layer="+layer.name()+",module="+module.name()+",class=Entity,entity="+entityDescriptor.entityType().type().name() );
+                        ObjectName objectName = new ObjectName( "Qi4j:application="+application.name()+",layer="+layer.name()+",module="+module.name()+",class=Entity,entity="+entityDescriptor.type().getName() );
                         names.push( objectName );
-                        RequiredModelMBean mbean = new ModelMBeanBuilder( objectName, entityDescriptor.entityType().type().name(), EntityBean.class.getName()).
+                        RequiredModelMBean mbean = new ModelMBeanBuilder( objectName, entityDescriptor.type().getName(), EntityBean.class.getName()).
                                 attribute( "Type", "Entity type", String.class.getName(), "Type of entity", "getType", null ).
                                 attribute( "Visibility", "Visibility", String.class.getName(), "Type of entity", "getVisibility", null ).
                                 newModelMBean();
@@ -215,14 +215,9 @@ public interface ApplicationManagerService
                 @Override
                 public boolean visitLeave( Object visited ) throws Exception
                 {
-                    names.pop();
+                    if (!names.isEmpty())
+                        names.pop();
 
-                    return true;
-                }
-
-                @Override
-                public boolean visit( Object visited ) throws Exception
-                {
                     return true;
                 }
             } );
@@ -357,7 +352,7 @@ public interface ApplicationManagerService
 
         public String getType()
         {
-            return entityDescriptor.entityType().type().name();
+            return entityDescriptor.type().getName();
         }
 
         public String getVisibility()
@@ -377,7 +372,7 @@ public interface ApplicationManagerService
 
         public String getType()
         {
-            return valueDescriptor.valueType().type().name();
+            return valueDescriptor.valueType().type().getName();
         }
 
         public String getVisibility()

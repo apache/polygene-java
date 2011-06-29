@@ -106,7 +106,7 @@ public interface JdbmEventStoreService
                     try
                     {
                         JSONObject json = (JSONObject) new JSONTokener( item ).nextValue();
-                        return (UnitOfWorkDomainEventsValue) eventsType.fromJSON( json, module );
+                        return (UnitOfWorkDomainEventsValue) deserializer.deserialize( json, eventsType );
                     } catch( JSONException e )
                     {
                         throw new IllegalArgumentException( e );
@@ -229,7 +229,7 @@ public interface JdbmEventStoreService
             String eventJson = new String( eventData, "UTF-8" );
             JSONTokener tokener = new JSONTokener( eventJson );
             JSONObject transaction = (JSONObject) tokener.nextValue();
-            return (UnitOfWorkDomainEventsValue) eventsType.fromJSON( transaction, module );
+            return (UnitOfWorkDomainEventsValue) deserializer.deserialize( transaction, eventsType );
         }
     }
 }

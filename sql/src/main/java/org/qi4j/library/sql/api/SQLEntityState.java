@@ -14,7 +14,7 @@
 package org.qi4j.library.sql.api;
 
 import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.common.TypeName;
+import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.util.NullArgumentException;
 import org.qi4j.spi.entity.EntityDescriptor;
@@ -98,7 +98,8 @@ public interface SQLEntityState
             return state.identity();
         }
 
-        public boolean isOfType( TypeName type )
+        @Override
+        public boolean isOfType( Class<? extends EntityComposite> type )
         {
             return state.isOfType( type );
         }

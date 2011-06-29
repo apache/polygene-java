@@ -16,18 +16,20 @@
  */
 package org.qi4j.library.struts2;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
 import org.qi4j.bootstrap.ApplicationAssembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.Energy4Java;
-import static org.qi4j.library.struts2.Constants.*;
 import org.qi4j.spi.structure.ApplicationSPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+
+import static org.qi4j.library.struts2.Constants.SERVLET_ATTRIBUTE;
 
 public abstract class Qi4jApplicationBootstrapListener
     implements ServletContextListener

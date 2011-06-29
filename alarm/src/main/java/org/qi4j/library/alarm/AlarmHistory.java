@@ -18,11 +18,12 @@
 
 package org.qi4j.library.alarm;
 
-import java.util.List;
-import java.util.Map;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * History of an Alarm.

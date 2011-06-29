@@ -21,21 +21,23 @@
  */
 package org.qi4j.library.shiro.tests.x509;
 
-import java.security.cert.X509Certificate;
-import java.util.HashSet;
-import java.util.Set;
-import javax.security.auth.x500.X500Principal;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.api.unitofwork.UnitOfWork;
-import static org.qi4j.api.query.QueryExpressions.*;
 import org.qi4j.library.shiro.domain.permissions.RoleAssignee;
 import org.qi4j.library.shiro.domain.x509.X509Light;
 import org.qi4j.library.shiro.realms.AbstractX509Qi4jRealm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.security.auth.x500.X500Principal;
+import java.security.cert.X509Certificate;
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.qi4j.api.query.QueryExpressions.*;
 
 public class StrictX509Realm
         extends AbstractX509Qi4jRealm

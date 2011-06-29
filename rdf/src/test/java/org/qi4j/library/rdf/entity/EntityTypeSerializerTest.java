@@ -14,7 +14,6 @@
 
 package org.qi4j.library.rdf.entity;
 
-import java.io.PrintWriter;
 import org.junit.Before;
 import org.junit.Test;
 import org.openrdf.model.Statement;
@@ -33,9 +32,10 @@ import org.qi4j.library.rdf.Qi4jEntityType;
 import org.qi4j.library.rdf.Rdfs;
 import org.qi4j.library.rdf.serializer.RdfXmlSerializer;
 import org.qi4j.spi.entity.EntityDescriptor;
-import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.test.AbstractQi4jTest;
+
+import java.io.PrintWriter;
 
 
 /**
@@ -71,8 +71,7 @@ public class EntityTypeSerializerTest
 
         EntityDescriptor entityDescriptor = moduleInstance.entityDescriptor(TestEntity.class.getName());
 
-        EntityType entityType = entityDescriptor.entityType();
-        Iterable<Statement> graph = serializer.serialize( entityType );
+        Iterable<Statement> graph = serializer.serialize( entityDescriptor );
 
         String[] prefixes = new String[]{ "rdf", "dc", " vc", "qi4j" };
         String[] namespaces = new String[]{ Rdfs.RDF, DcRdf.NAMESPACE, "http://www.w3.org/2001/vcard-rdf/3.0#", Qi4jEntityType.NAMESPACE };

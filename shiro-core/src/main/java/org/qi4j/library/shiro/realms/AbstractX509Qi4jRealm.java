@@ -13,8 +13,6 @@
  */
 package org.qi4j.library.shiro.realms;
 
-import java.security.cert.X509Certificate;
-import java.util.Set;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -28,6 +26,9 @@ import org.qi4j.library.shiro.authc.X509CredentialsPKIXPathMatcher;
 import org.qi4j.library.shiro.domain.permissions.RoleAssignee;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.security.cert.X509Certificate;
+import java.util.Set;
 
 public abstract class AbstractX509Qi4jRealm
         extends AbstractQi4jRealm

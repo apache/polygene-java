@@ -13,21 +13,22 @@
  */
 package org.qi4j.library.vaadin;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-
-import static org.junit.Assert.*;
 import org.junit.Test;
-
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.library.http.JettyConfiguration;
 import org.qi4j.library.http.JettyServiceAssembler;
-import static org.qi4j.library.http.Servlets.*;
 import org.qi4j.test.AbstractQi4jTest;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+
+import static org.junit.Assert.assertTrue;
+import static org.qi4j.library.http.Servlets.addServlets;
+import static org.qi4j.library.http.Servlets.serve;
 
 /**
  * @author Paul Merlin

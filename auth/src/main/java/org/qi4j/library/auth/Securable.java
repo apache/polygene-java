@@ -18,8 +18,8 @@
 
 package org.qi4j.library.auth;
 
-import org.qi4j.api.property.Property;
 import org.qi4j.api.common.Optional;
+import org.qi4j.api.property.Property;
 
 public interface Securable
 {

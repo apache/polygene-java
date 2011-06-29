@@ -19,7 +19,6 @@ import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.unitofwork.UnitOfWork;
-
 import org.qi4j.library.scheduler.Scheduler;
 import org.qi4j.library.scheduler.constraints.CronExpression;
 import org.qi4j.library.scheduler.slaves.SchedulerGarbageCollector;

@@ -39,9 +39,9 @@ public class EventRouterTest
         list = new ArrayList<UnitOfWorkDomainEventsValue>(  );
         {
             ValueBuilder<UnitOfWorkDomainEventsValue> builder = assembler.valueBuilderFactory().newValueBuilder( UnitOfWorkDomainEventsValue.class );
-            builder.prototype().events().get().add( assembler.valueBuilderFactory().newValueFromJSON( DomainEventValue.class,"{name:'Test1'}" ) );
-            builder.prototype().events().get().add( assembler.valueBuilderFactory().newValueFromJSON( DomainEventValue.class,"{name:'Test2'}" ) );
-            builder.prototype().events().get().add( assembler.valueBuilderFactory().newValueFromJSON( DomainEventValue.class,"{name:'Test3'}" ) );
+            builder.prototype().events().get().add( newDomainEvent( assembler, "Test1" ) );
+            builder.prototype().events().get().add( newDomainEvent( assembler, "Test2" ) );
+            builder.prototype().events().get().add( newDomainEvent( assembler, "Test3" ) );
             builder.prototype().version().set( "1.0" );
             builder.prototype().timestamp().set( System.currentTimeMillis() );
             builder.prototype().usecase().set( "Test" );
@@ -49,14 +49,24 @@ public class EventRouterTest
         }
         {
             ValueBuilder<UnitOfWorkDomainEventsValue> builder = assembler.valueBuilderFactory().newValueBuilder( UnitOfWorkDomainEventsValue.class );
-            builder.prototype().events().get().add( assembler.valueBuilderFactory().newValueFromJSON( DomainEventValue.class,"{name:'Test4'}" ) );
-            builder.prototype().events().get().add( assembler.valueBuilderFactory().newValueFromJSON( DomainEventValue.class,"{name:'Test5'}" ) );
-            builder.prototype().events().get().add( assembler.valueBuilderFactory().newValueFromJSON( DomainEventValue.class,"{name:'Test6'}" ) );
+            builder.prototype().events().get().add( newDomainEvent( assembler, "Test4" ) );
+            builder.prototype().events().get().add( newDomainEvent( assembler, "Test5" ) );
+            builder.prototype().events().get().add( newDomainEvent( assembler, "Test6" ) );
             builder.prototype().version().set( "1.0" );
             builder.prototype().timestamp().set( System.currentTimeMillis() );
             builder.prototype().usecase().set( "Test2" );
             list.add( builder.newInstance() );
         }
+    }
+
+    private DomainEventValue newDomainEvent( SingletonAssembler assembler, String name )
+    {
+        ValueBuilder<DomainEventValue> eventBuilder = assembler.valueBuilderFactory().newValueBuilder( DomainEventValue.class );
+        eventBuilder.prototype().entityId().set( "123" );
+        eventBuilder.prototype().entityType().set( "Foo" );
+        eventBuilder.prototype().parameters().set( "{}" );
+        eventBuilder.prototype().name().set( name );
+        return eventBuilder.newInstance();
     }
 
     @Test
@@ -75,6 +85,6 @@ public class EventRouterTest
 
         Inputs.iterable( Events.events( list) ).transferTo( router );
 
-        Assert.assertThat(matched.toString(), CoreMatchers.equalTo( "[{\"entityId\":\"\",\"entityType\":\"\",\"name\":\"Test1\",\"parameters\":\"\"}, {\"entityId\":\"\",\"entityType\":\"\",\"name\":\"Test2\",\"parameters\":\"\"}]" ));
+        Assert.assertThat(matched.toString(), CoreMatchers.equalTo( "[{\"name\":\"Test1\",\"entityType\":\"Foo\",\"entityId\":\"123\",\"parameters\":\"{}\"}, {\"name\":\"Test2\",\"entityType\":\"Foo\",\"entityId\":\"123\",\"parameters\":\"{}\"}]" ));
     }
 }

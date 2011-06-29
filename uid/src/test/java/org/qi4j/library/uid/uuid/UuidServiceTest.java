@@ -17,8 +17,6 @@
  */
 package org.qi4j.library.uid.uuid;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.injection.scope.Service;
@@ -27,6 +25,9 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.uid.uuid.assembly.UuidServiceAssembler;
 import org.qi4j.test.AbstractQi4jTest;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class UuidServiceTest extends AbstractQi4jTest
 {

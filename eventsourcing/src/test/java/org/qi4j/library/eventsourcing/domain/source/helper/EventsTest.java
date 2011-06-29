@@ -1,12 +1,7 @@
 package org.qi4j.library.eventsourcing.domain.source.helper;
 
-import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.qi4j.api.io.Inputs;
-import org.qi4j.api.io.Outputs;
-import org.qi4j.api.util.Iterables;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -46,9 +41,9 @@ public class EventsTest
         list = new ArrayList<UnitOfWorkDomainEventsValue>(  );
         {
             ValueBuilder<UnitOfWorkDomainEventsValue> builder = assembler.valueBuilderFactory().newValueBuilder( UnitOfWorkDomainEventsValue.class );
-            builder.prototype().events().get().add( assembler.valueBuilderFactory().newValueFromJSON( DomainEventValue.class,"{name:'Test1'}" ) );
-            builder.prototype().events().get().add( assembler.valueBuilderFactory().newValueFromJSON( DomainEventValue.class,"{name:'Test2'}" ) );
-            builder.prototype().events().get().add( assembler.valueBuilderFactory().newValueFromJSON( DomainEventValue.class,"{name:'Test3'}" ) );
+            builder.prototype().events().get().add( newDomainEvent( assembler, "Test1" ) );
+            builder.prototype().events().get().add( newDomainEvent( assembler, "Test2" ) );
+            builder.prototype().events().get().add( newDomainEvent( assembler, "Test3" ) );
             builder.prototype().version().set( "1.0" );
             builder.prototype().timestamp().set( System.currentTimeMillis() );
             builder.prototype().usecase().set( "Test" );
@@ -56,14 +51,24 @@ public class EventsTest
         }
         {
             ValueBuilder<UnitOfWorkDomainEventsValue> builder = assembler.valueBuilderFactory().newValueBuilder( UnitOfWorkDomainEventsValue.class );
-            builder.prototype().events().get().add( assembler.valueBuilderFactory().newValueFromJSON( DomainEventValue.class,"{name:'Test4'}" ) );
-            builder.prototype().events().get().add( assembler.valueBuilderFactory().newValueFromJSON( DomainEventValue.class,"{name:'Test5'}" ) );
-            builder.prototype().events().get().add( assembler.valueBuilderFactory().newValueFromJSON( DomainEventValue.class,"{name:'Test6'}" ) );
+            builder.prototype().events().get().add( newDomainEvent( assembler, "Test4" ) );
+            builder.prototype().events().get().add( newDomainEvent( assembler, "Test5" ) );
+            builder.prototype().events().get().add( newDomainEvent( assembler, "Test6" ) );
             builder.prototype().version().set( "1.0" );
             builder.prototype().timestamp().set( System.currentTimeMillis() );
             builder.prototype().usecase().set( "Test2" );
             list.add( builder.newInstance() );
         }
+    }
+
+    private DomainEventValue newDomainEvent( SingletonAssembler assembler, String name )
+    {
+        ValueBuilder<DomainEventValue> eventBuilder = assembler.valueBuilderFactory().newValueBuilder( DomainEventValue.class );
+        eventBuilder.prototype().entityId().set( "123" );
+        eventBuilder.prototype().entityType().set( "Foo" );
+        eventBuilder.prototype().parameters().set( "{}" );
+        eventBuilder.prototype().name().set( name );
+        return eventBuilder.newInstance();
     }
 
     @Test

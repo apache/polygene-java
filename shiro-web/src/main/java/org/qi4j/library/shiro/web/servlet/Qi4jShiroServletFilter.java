@@ -13,12 +13,11 @@
  */
 package org.qi4j.library.shiro.web.servlet;
 
-import java.util.Iterator;
 import org.apache.shiro.config.Ini;
 import org.apache.shiro.config.Ini.Section;
 import org.apache.shiro.realm.Realm;
-import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.config.IniFilterChainResolverFactory;
+import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.servlet.AbstractShiroFilter;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,6 +26,8 @@ import org.qi4j.api.structure.Module;
 import org.qi4j.api.util.NullArgumentException;
 import org.qi4j.library.servlet.Qi4jServletSupport;
 import org.qi4j.library.shiro.web.filter.authc.X509AuthenticationFilter;
+
+import java.util.Iterator;
 
 public class Qi4jShiroServletFilter
         extends AbstractShiroFilter

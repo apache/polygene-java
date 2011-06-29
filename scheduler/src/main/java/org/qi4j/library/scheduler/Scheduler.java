@@ -13,21 +13,20 @@
  */
 package org.qi4j.library.scheduler;
 
-import static org.qi4j.api.unitofwork.UnitOfWorkPropagation.Propagation.MANDATORY;
-
-import java.util.Date;
-
 import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.unitofwork.UnitOfWorkConcern;
 import org.qi4j.api.unitofwork.UnitOfWorkPropagation;
-
 import org.qi4j.library.scheduler.bootstrap.SchedulerAssembler;
 import org.qi4j.library.scheduler.constraints.CronExpression;
 import org.qi4j.library.scheduler.schedule.Schedule;
 import org.qi4j.library.scheduler.slaves.SchedulerGarbageCollector;
 import org.qi4j.library.scheduler.task.Task;
 import org.qi4j.library.scheduler.timeline.Timeline;
+
+import java.util.Date;
+
+import static org.qi4j.api.unitofwork.UnitOfWorkPropagation.Propagation.MANDATORY;
 
 /**
  * Scheduler.

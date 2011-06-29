@@ -17,11 +17,12 @@
  */
 package org.qi4j.logging.trace;
 
-import java.io.PrintStream;
-import java.lang.reflect.Method;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.sideeffect.SideEffectOf;
 import org.qi4j.logging.trace.service.TraceService;
+
+import java.io.PrintStream;
+import java.lang.reflect.Method;
 
 /**
  * The ConsoleViewSideEffect is just a temporary solution for logging output, until a more

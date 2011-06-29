@@ -21,7 +21,6 @@
  */
 package org.qi4j.library.shiro;
 
-import java.io.IOException;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.ResponseHandler;
@@ -31,13 +30,16 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.FilterMapping;
 import org.eclipse.jetty.servlet.ServletContextHandler;
-import static org.junit.Assert.*;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.library.shiro.web.servlet.Qi4jShiroServletFilter;
 import org.qi4j.library.shiro.tests.username.UsernameFixtures;
 import org.qi4j.library.shiro.tests.username.UsernameTestAssembler;
+import org.qi4j.library.shiro.web.servlet.Qi4jShiroServletFilter;
+
+import java.io.IOException;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * A unit test showing how to use Shiro in Qi4j Web Applications with Username & Password credentials.

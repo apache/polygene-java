@@ -14,9 +14,7 @@
 package org.qi4j.library.scheduler.slaves;
 
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
-
 import org.qi4j.library.scheduler.Scheduler;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

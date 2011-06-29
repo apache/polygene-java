@@ -1,22 +1,23 @@
 package org.qi4j.library.struts2;
 
-import static com.opensymphony.xwork2.conversion.impl.XWorkConverter.*;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import ognl.MethodFailedException;
-import ognl.ObjectMethodAccessor;
-import ognl.ObjectPropertyAccessor;
-import ognl.OgnlContext;
-import ognl.OgnlException;
-import ognl.OgnlRuntime;
-import static ognl.OgnlRuntime.*;
+import ognl.*;
 import org.qi4j.api.constraint.ConstraintViolation;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.ManyAssociation;
+import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.property.Property;
-import static org.qi4j.library.struts2.ConstraintViolationInterceptor.*;
+import org.qi4j.spi.Qi4jSPI;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.opensymphony.xwork2.conversion.impl.XWorkConverter.CONVERSION_PROPERTY_FULLNAME;
+import static ognl.OgnlRuntime.getConvertedType;
+import static ognl.OgnlRuntime.getFieldValue;
+import static org.qi4j.library.struts2.ConstraintViolationInterceptor.CONTEXT_CONSTRAINT_VIOLATIONS;
+import static org.qi4j.library.struts2.ConstraintViolationInterceptor.FieldConstraintViolations;
 
 /**
  * <p>An implementation of the ObjectPropertyAccessor that provides conversion for Qi4j properties.  The typical way that
@@ -46,6 +47,9 @@ public class Qi4jPropertyAccessor
     private static final Object[] BLANK_ARGUMENTS = new Object[0];
 
     private final ObjectMethodAccessor methodAccessor = new ObjectMethodAccessor();
+
+    @Structure
+    Qi4jSPI spi;
 
     @Override
     public final Object getProperty( Map aContext, Object aTarget, Object aPropertyName )
@@ -123,7 +127,7 @@ public class Qi4jPropertyAccessor
                 Property property = (Property) qi4jField;
 
                 OgnlContext ognlContext = (OgnlContext) aContext;
-                Class propertyType = (Class) property.type();
+                Class propertyType = (Class) spi.getPropertyDescriptor( property ).type();
                 Object convertedValue = getConvertedType(
                     ognlContext, aTarget, null, fieldName, aPropertyValue, propertyType );
                 try

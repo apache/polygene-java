@@ -13,14 +13,13 @@
  */
 package org.qi4j.library.scheduler.task;
 
-import java.util.List;
-
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.unitofwork.UnitOfWork;
-
 import org.qi4j.library.scheduler.schedule.ScheduleRunner;
 import org.qi4j.library.scheduler.slaves.SchedulerWorkQueue;
+
+import java.util.List;
 
 /**
  * Compose an Entity using this type to be able to Schedule it.

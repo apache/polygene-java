@@ -21,7 +21,6 @@
  */
 package org.qi4j.library.shiro.tests.username;
 
-import java.util.Arrays;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
@@ -35,6 +34,8 @@ import org.qi4j.library.shiro.domain.permissions.PermissionFactory;
 import org.qi4j.library.shiro.domain.permissions.Role;
 import org.qi4j.library.shiro.domain.permissions.RoleFactory;
 import org.qi4j.library.shiro.domain.securehash.SecureHashFactory;
+
+import java.util.Arrays;
 
 @Mixins( UsernameFixtures.Mixin.class )
 public interface UsernameFixtures

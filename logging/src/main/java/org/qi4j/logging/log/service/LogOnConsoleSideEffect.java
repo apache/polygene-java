@@ -17,14 +17,15 @@
  */
 package org.qi4j.logging.log.service;
 
-import java.io.PrintStream;
-import java.lang.reflect.Method;
-import java.text.MessageFormat;
-import java.util.ResourceBundle;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.injection.scope.Invocation;
 import org.qi4j.api.sideeffect.SideEffectOf;
 import org.qi4j.logging.log.LogType;
+
+import java.io.PrintStream;
+import java.lang.reflect.Method;
+import java.text.MessageFormat;
+import java.util.ResourceBundle;
 
 /**
  * The ConsoleViewSideEffect is just a temporary solution for logging output, until a more

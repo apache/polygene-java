@@ -23,6 +23,7 @@ import org.qi4j.api.specification.Specification;
 import org.qi4j.api.util.Classes;
 import org.qi4j.api.util.Function;
 import org.qi4j.api.util.Iterables;
+import org.qi4j.api.util.Methods;
 import org.qi4j.library.eventsourcing.application.api.ApplicationEvent;
 import org.qi4j.library.eventsourcing.application.api.TransactionApplicationEvents;
 import org.qi4j.library.eventsourcing.application.replay.ApplicationEventPlayer;
@@ -109,7 +110,7 @@ public class ApplicationEvents
             {
                 return method.getName();
             }
-        }, Classes.methodsOf( eventClass ) ) );
+        }, Iterables.toList( Methods.METHODS_OF.map( eventClass ) ) ));
     }
 
     public static Specification<ApplicationEvent> afterDate( final Date afterDate )

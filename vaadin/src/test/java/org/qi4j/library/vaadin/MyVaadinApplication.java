@@ -14,14 +14,8 @@
 package org.qi4j.library.vaadin;
 
 import com.vaadin.Application;
-import com.vaadin.ui.Button;
+import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
-
 import org.qi4j.api.injection.scope.Service;
 
 /**

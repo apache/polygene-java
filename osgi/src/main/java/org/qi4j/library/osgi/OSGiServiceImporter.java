@@ -3,9 +3,9 @@ package org.qi4j.library.osgi;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
-import org.qi4j.api.service.ImportedServiceDescriptor;
-import org.qi4j.api.service.ServiceImporter;
-import org.qi4j.api.service.ServiceImporterException;
+import org.qi4j.spi.service.ImportedServiceDescriptor;
+import org.qi4j.spi.service.ServiceImporter;
+import org.qi4j.spi.service.ServiceImporterException;
 import org.qi4j.api.service.ServiceUnavailableException;
 
 import java.lang.reflect.InvocationHandler;

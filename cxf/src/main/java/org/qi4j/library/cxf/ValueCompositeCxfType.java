@@ -36,12 +36,15 @@ import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.object.ObjectBuilder;
 import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.property.PropertyInfo;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.util.Classes;
+import org.qi4j.api.util.Function;
 import org.qi4j.api.value.NoSuchValueException;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
 import org.qi4j.api.value.ValueComposite;
+import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.composite.StateDescriptor;
 import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.spi.structure.ModuleSPI;
@@ -52,6 +55,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 public class ValueCompositeCxfType extends AegisType
@@ -64,6 +68,9 @@ public class ValueCompositeCxfType extends AegisType
 
     @Structure
     private ModuleSPI module;
+
+    @Structure
+    Qi4jSPI spi;
 
     public ValueCompositeCxfType( @Uses Type type, @Uses TypeMapping typeMapping )
     {
@@ -80,47 +87,33 @@ public class ValueCompositeCxfType extends AegisType
         final String className = ( qname.getNamespaceURI() + "." + qname.getLocalPart() ).substring( 20 );
         ValueBuilder<?> builder = vbf.newValueBuilder( (Class<?>) typeClass );
         // Read attributes
-        builder.withState( new StateHolder()
+        ValueDescriptor descriptor = module.valueDescriptor( className );
+        StateDescriptor stateDescriptor = descriptor.state();
+        final Map<QualifiedName, Object> values = new HashMap<QualifiedName, Object>();
+        while( reader.hasMoreElementReaders() )
         {
-            public <T> Property<T> getProperty( final Method propertyMethod )
-            {
-                // ignore, not used
-                return null;
-            }
+            MessageReader childReader = reader.getNextElementReader();
+            QName childName = childReader.getName();
+            QualifiedName childQualifiedName = QualifiedName.fromClass( (Class) typeClass,
+                                                                        childName.getLocalPart() );
+            PropertyDescriptor propertyDescriptor = stateDescriptor.getPropertyByQualifiedName(
+                childQualifiedName );
+            Type propertyType = propertyDescriptor.type();
+            AegisType type = getTypeMapping().getType( propertyType );
+            Object value = type.readObject( childReader, context );
+            values.put( childQualifiedName, value );
+        }
 
-            public <T> Property<T> getProperty( final QualifiedName name )
-            {
-                // ignore, not used
-                return null;
-            }
-
+        builder.withState( new Function<PropertyInfo, Object>()
+        {
             @Override
-            public Iterable<Property<?>> properties()
+            public Object map( PropertyInfo propertyInfo )
             {
-                // TODO
-                return null;
+                return values.get( propertyInfo.qualifiedName() );
             }
+        });
 
-            public <ThrowableType extends Throwable> void visitProperties( final StateVisitor<ThrowableType> visitor )
-                throws ThrowableType
-            {
-                ValueDescriptor descriptor = module.valueDescriptor( className );
-                StateDescriptor stateDescriptor = descriptor.state();
-                while( reader.hasMoreElementReaders() )
-                {
-                    MessageReader childReader = reader.getNextElementReader();
-                    QName childName = childReader.getName();
-                    QualifiedName childQualifiedName = QualifiedName.fromClass( (Class) typeClass,
-                                                                                childName.getLocalPart() );
-                    PropertyDescriptor propertyDescriptor = stateDescriptor.getPropertyByQualifiedName(
-                        childQualifiedName );
-                    Type propertyType = propertyDescriptor.type();
-                    AegisType type = getTypeMapping().getType( propertyType );
-                    Object value = type.readObject( childReader, context );
-                    visitor.visitProperty( childQualifiedName, value );
-                }
-            }
-        } );
+
         return builder.newInstance();
     }
 
@@ -131,36 +124,35 @@ public class ValueCompositeCxfType extends AegisType
         ValueComposite composite = (ValueComposite) object;
         writer.writeXsiType( NamespaceUtil.convertJavaTypeToQName( composite.type() ) );
         StateHolder state = composite.state();
-        state.visitProperties( new StateHolder.StateVisitor<RuntimeException>()
+        for( Property<?> property : state.properties() )
         {
-            public void visitProperty( QualifiedName name, Object value )
+            Object value = property.get();
+            AegisType type = null;
+            if( value instanceof ValueComposite )
             {
-                AegisType type = null;
-                if( value instanceof ValueComposite )
-                {
-                    ValueComposite composite = (ValueComposite) value;
-                    type = getTypeMapping().getType( NamespaceUtil.convertJavaTypeToQName( composite.type() ) );
-                }
-                else
-                {
-                    if( value != null )
-                    {
-                        type = getOrCreateNonQi4jType( value );
-                    }
-                }
-                QName childName = new QName( "", name.name() );
-                MessageWriter cwriter = writer.getElementWriter( childName );
-                if( type != null )
-                {
-                    type.writeObject( value, cwriter, context );
-                }
-                else
-                {
-//                    cwriter.writeXsiNil();
-                }
-                cwriter.close();
+                ValueComposite compositeValue = (ValueComposite) value;
+                type = getTypeMapping().getType( NamespaceUtil.convertJavaTypeToQName( compositeValue.type() ) );
             }
-        } );
+            else
+            {
+                if( value != null )
+                {
+                    type = getOrCreateNonQi4jType( value );
+                }
+            }
+
+            QName childName = new QName( "", spi.getPropertyDescriptor( property ).qualifiedName().name() );
+            MessageWriter cwriter = writer.getElementWriter( childName );
+            if( type != null )
+            {
+                type.writeObject( value, cwriter, context );
+            }
+            else
+            {
+//                    cwriter.writeXsiNil();
+            }
+            cwriter.close();
+        }
     }
 
     private AegisType getOrCreateNonQi4jType( Object value )
@@ -367,7 +359,7 @@ public class ValueCompositeCxfType extends AegisType
 
     private boolean isValueComposite( Type type )
     {
-        Class clazz = Classes.getRawClass( type );
+        Class clazz = Classes.RAW_CLASS.map( type );
         ValueDescriptor descriptor = module.valueDescriptor( clazz.getName() );
         return descriptor != null;
     }

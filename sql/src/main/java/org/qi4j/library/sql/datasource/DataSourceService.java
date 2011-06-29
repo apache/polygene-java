@@ -18,6 +18,9 @@ import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.library.circuitbreaker.CircuitBreaker;
+import org.qi4j.spi.service.ImportedServiceDescriptor;
+import org.qi4j.spi.service.ServiceImporter;
+import org.qi4j.spi.service.ServiceImporterException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -13,14 +13,14 @@
  */
 package org.qi4j.library.scheduler.constraints;
 
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
-import java.lang.annotation.Retention;
-
 import org.qi4j.api.constraint.ConstraintDeclaration;
 import org.qi4j.api.constraint.Constraints;
 import org.qi4j.library.constraints.annotation.InstanceOf;
 import org.qi4j.library.constraints.annotation.NotEmpty;
+
+import java.lang.annotation.Retention;
+
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @ConstraintDeclaration
 @Retention( RUNTIME )

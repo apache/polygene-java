@@ -14,12 +14,6 @@
 
 package org.qi4j.library.rest;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.util.Arrays;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.index.rdf.indexing.RdfExporter;
 import org.restlet.data.MediaType;
@@ -28,6 +22,9 @@ import org.restlet.representation.Representation;
 import org.restlet.representation.Variant;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
+
+import java.io.*;
+import java.util.Arrays;
 
 /**
  * Show RDF index

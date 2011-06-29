@@ -13,9 +13,6 @@
  */
 package org.qi4j.library.shiro.authc;
 
-import java.security.NoSuchProviderException;
-import java.security.cert.X509Certificate;
-import java.util.Arrays;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.HostAuthenticationToken;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -23,6 +20,10 @@ import org.bouncycastle.x509.NoSuchStoreException;
 import org.bouncycastle.x509.X509CertStoreSelector;
 import org.bouncycastle.x509.X509CollectionStoreParameters;
 import org.bouncycastle.x509.X509Store;
+
+import java.security.NoSuchProviderException;
+import java.security.cert.X509Certificate;
+import java.util.Arrays;
 
 public class X509AuthenticationToken
         implements AuthenticationToken, HostAuthenticationToken

@@ -14,7 +14,6 @@
 
 package org.qi4j.logging.log;
 
-import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.TransientComposite;
 
 /**

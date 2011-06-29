@@ -1,11 +1,5 @@
 package org.qi4j.library.sql.liquibase;
 
-import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import javax.sql.DataSource;
 import org.junit.Test;
 import org.qi4j.api.io.Inputs;
 import org.qi4j.api.io.Outputs;
@@ -22,10 +16,18 @@ import org.qi4j.library.sql.datasource.DataSourceService;
 import org.qi4j.library.sql.datasource.Databases;
 import org.qi4j.spi.service.importer.ServiceInstanceImporter;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
-import static org.qi4j.api.io.Outputs.*;
-import static org.qi4j.api.io.Transforms.*;
+import javax.sql.DataSource;
+import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.qi4j.api.io.Outputs.collection;
+import static org.qi4j.api.io.Transforms.map;
 
 /**
  * Test DataSource and Liquibase services

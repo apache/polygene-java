@@ -16,10 +16,6 @@
 */
 package org.qi4j.library.spring.importer;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
-import static org.qi4j.api.service.qualifier.ServiceQualifier.*;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.qi4j.api.injection.scope.Service;
@@ -34,6 +30,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
+import static org.qi4j.api.service.qualifier.ServiceQualifier.firstService;
+import static org.qi4j.api.service.qualifier.ServiceQualifier.withId;
 
 @RunWith( SpringJUnit4ClassRunner.class )
 @ContextConfiguration

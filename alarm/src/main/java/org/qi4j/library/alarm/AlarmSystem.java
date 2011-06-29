@@ -18,9 +18,10 @@
 
 package org.qi4j.library.alarm;
 
-import java.util.List;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.query.Query;
+
+import java.util.List;
 
 /**
  * Defines the AlarmSystem interface.

@@ -13,11 +13,12 @@
  */
 package org.qi4j.library.shiro.authc;
 
+import org.apache.shiro.authc.SimpleAuthenticationInfo;
+
 import java.security.cert.TrustAnchor;
 import java.security.cert.X509Certificate;
 import java.util.HashSet;
 import java.util.Set;
-import org.apache.shiro.authc.SimpleAuthenticationInfo;
 
 public class X509AuthenticationInfo
         extends SimpleAuthenticationInfo

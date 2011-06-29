@@ -18,9 +18,7 @@ import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
-
 import org.qi4j.library.scheduler.task.Task;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

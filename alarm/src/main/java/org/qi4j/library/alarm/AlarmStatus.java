@@ -18,11 +18,12 @@
 
 package org.qi4j.library.alarm;
 
-import java.util.Date;
-import java.util.Locale;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueComposite;
+
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Status of an Alarm.

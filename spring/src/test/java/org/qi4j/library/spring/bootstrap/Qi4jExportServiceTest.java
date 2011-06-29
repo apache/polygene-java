@@ -16,17 +16,15 @@
  */
 package org.qi4j.library.spring.bootstrap;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.qi4j.library.spring.bootstrap.Qi4jTestBootstrap.COMMENT_SERVICE_ID;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import static org.junit.Assert.*;
+import static org.qi4j.library.spring.bootstrap.Qi4jTestBootstrap.COMMENT_SERVICE_ID;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration

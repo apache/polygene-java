@@ -20,6 +20,7 @@ import org.qi4j.api.specification.Specification;
 import org.qi4j.api.util.Classes;
 import org.qi4j.api.util.Function;
 import org.qi4j.api.util.Iterables;
+import org.qi4j.api.util.Methods;
 import org.qi4j.library.eventsourcing.domain.api.DomainEventValue;
 import org.qi4j.library.eventsourcing.domain.api.UnitOfWorkDomainEventsValue;
 
@@ -145,7 +146,7 @@ public class Events
             {
                 return method.getName();
             }
-        }, Classes.methodsOf( eventClass ) ) );
+        }, Iterables.toList( Methods.METHODS_OF.map( eventClass ) ) ));
     }
 
     public static Specification<DomainEventValue> onEntities( final String... entities )

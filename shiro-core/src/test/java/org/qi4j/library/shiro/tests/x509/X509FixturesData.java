@@ -21,18 +21,15 @@
  */
 package org.qi4j.library.shiro.tests.x509;
 
+import org.apache.shiro.crypto.CryptoException;
+import org.bouncycastle.openssl.PEMReader;
+
+import javax.net.ssl.*;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.security.cert.X509Certificate;
-import javax.net.ssl.KeyManager;
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.TrustManagerFactory;
-import org.apache.shiro.crypto.CryptoException;
-import org.bouncycastle.openssl.PEMReader;
 
 /**
  * User, service and authorities certificates are valid til 2020/03, should be enough for qi4j unit tests : )

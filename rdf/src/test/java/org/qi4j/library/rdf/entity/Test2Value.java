@@ -18,8 +18,8 @@
 
 package org.qi4j.library.rdf.entity;
 
-import org.qi4j.api.value.ValueComposite;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.value.ValueComposite;
 
 public interface Test2Value extends ValueComposite
 {

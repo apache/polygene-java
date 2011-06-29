@@ -13,9 +13,9 @@
  */
 package org.qi4j.library.sql.ds.assembly;
 
-import javax.sql.DataSource;
-
 import org.qi4j.library.sql.ds.DataSourceService;
+
+import javax.sql.DataSource;
 
 /**
  * @author Stanislav Muhametsin

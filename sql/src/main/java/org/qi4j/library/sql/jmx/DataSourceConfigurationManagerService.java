@@ -18,12 +18,17 @@ import org.qi4j.library.sql.datasource.DataSourceConfiguration;
 import org.qi4j.library.sql.datasource.DataSourceService;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.EntityDescriptor;
-import org.qi4j.spi.property.PropertyType;
+import org.qi4j.spi.property.PersistentPropertyDescriptor;
 import org.qi4j.spi.structure.ModuleSPI;
 
 import javax.management.*;
 import javax.sql.DataSource;
-import java.util.*;
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Expose DataSourceConfiguration through JMX. Allow configurations to be edited, and the services to be restarted.
@@ -68,15 +73,15 @@ public interface DataSourceConfigurationManagerService
             ModuleSPI module = (ModuleSPI) spi.getModule( dataSource );
             EntityDescriptor descriptor = module.entityDescriptor( DataSourceConfiguration.class.getName() );
             List<MBeanAttributeInfo> attributes = new ArrayList<MBeanAttributeInfo>();
-            Map<String, QualifiedName> properties = new LinkedHashMap<String, QualifiedName>();
-            for (PropertyType propertyType : descriptor.entityType().properties())
+            Map<String, AccessibleObject> properties = new LinkedHashMap<String, AccessibleObject>();
+            for (PersistentPropertyDescriptor persistentProperty : descriptor.state().<PersistentPropertyDescriptor>properties())
             {
-               if (propertyType.propertyType() == PropertyType.PropertyTypeEnum.MUTABLE)
+               if ( !persistentProperty.isImmutable())
                {
-                  String propertyName = propertyType.qualifiedName().name();
-                  String type = propertyType.type().type().name();
+                  String propertyName = persistentProperty.qualifiedName().name();
+                  String type = persistentProperty.valueType().type().getName();
                   attributes.add( new MBeanAttributeInfo( propertyName, type, propertyName, true, true, type.equals( "java.lang.Boolean" ) ) );
-                  properties.put( propertyName, propertyType.qualifiedName() );
+                  properties.put( propertyName, persistentProperty.accessor() );
                }
             }
 
@@ -104,9 +109,9 @@ public interface DataSourceConfigurationManagerService
       {
          MBeanInfo info;
          String identity;
-         Map<String, QualifiedName> propertyNames;
+         Map<String, AccessibleObject> propertyNames;
 
-         EditableConfiguration( MBeanInfo info, String identity, Map<String, QualifiedName> propertyNames )
+         EditableConfiguration( MBeanInfo info, String identity, Map<String, AccessibleObject> propertyNames )
          {
             this.info = info;
             this.identity = identity;
@@ -120,8 +125,8 @@ public interface DataSourceConfigurationManagerService
             {
                Entity configuration = uow.get( Entity.class, identity );
                EntityStateHolder state = spi.getState( (EntityComposite) configuration );
-               QualifiedName qualifiedName = propertyNames.get( name );
-               Property<Object> property = state.getProperty( qualifiedName );
+               AccessibleObject accessor = propertyNames.get( name );
+               Property<Object> property = state.getProperty( accessor );
                return property.get();
             } catch (Exception ex)
             {
@@ -139,8 +144,8 @@ public interface DataSourceConfigurationManagerService
             {
                Entity configuration = uow.get( Entity.class, identity );
                EntityStateHolder state = spi.getState( (EntityComposite) configuration );
-               QualifiedName qualifiedName = propertyNames.get( attribute.getName() );
-               Property<Object> property = state.getProperty( qualifiedName );
+               AccessibleObject accessor = propertyNames.get( attribute.getName() );
+               Property<Object> property = state.getProperty( accessor );
                property.set( attribute.getValue() );
                uow.complete();
             } catch (Exception ex)
@@ -213,7 +218,7 @@ public interface DataSourceConfigurationManagerService
       {
          private ServiceReference<DataSourceService> service;
 
-         ConfigurableDataSource( ServiceReference<DataSourceService> service, MBeanInfo info, String identity, Map<String, QualifiedName> propertyNames )
+         ConfigurableDataSource( ServiceReference<DataSourceService> service, MBeanInfo info, String identity, Map<String, AccessibleObject> propertyNames )
          {
             super( info, identity, propertyNames );
             this.service = service;

@@ -13,10 +13,6 @@
  */
 package org.qi4j.library.shiro.authc;
 
-import java.security.GeneralSecurityException;
-import java.security.cert.CertPathBuilder;
-import java.security.cert.CertPathBuilderResult;
-import java.security.cert.X509Certificate;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
@@ -27,6 +23,11 @@ import org.bouncycastle.x509.PKIXCertPathReviewer;
 import org.qi4j.library.shiro.Shiro;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.security.GeneralSecurityException;
+import java.security.cert.CertPathBuilder;
+import java.security.cert.CertPathBuilderResult;
+import java.security.cert.X509Certificate;
 
 /**
  * See http://java.sun.com/javase/6/docs/technotes/guides/security/certpath/CertPathProgGuide.html for reference
