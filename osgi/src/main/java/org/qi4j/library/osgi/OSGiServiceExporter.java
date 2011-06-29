@@ -9,11 +9,10 @@ import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.service.qualifier.HasMetaInfo;
 import org.qi4j.api.util.Classes;
-import org.qi4j.api.util.Iterables;
+import org.qi4j.functional.Iterables;
 
 import java.util.ArrayList;
 import java.util.Properties;
-import java.util.Set;
 
 @Mixins( OSGiServiceExporter.OSGiServiceExporterMixin.class )
 public interface OSGiServiceExporter extends Activatable, ServiceComposite

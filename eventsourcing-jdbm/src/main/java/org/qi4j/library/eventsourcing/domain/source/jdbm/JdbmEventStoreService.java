@@ -31,7 +31,7 @@ import org.qi4j.api.io.*;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.api.util.Function;
+import org.qi4j.functional.Function;
 import org.qi4j.library.eventsourcing.domain.api.UnitOfWorkDomainEventsValue;
 import org.qi4j.library.eventsourcing.domain.source.*;
 import org.qi4j.library.fileconfig.FileConfiguration;

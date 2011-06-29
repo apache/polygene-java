@@ -39,7 +39,7 @@ import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyInfo;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.util.Classes;
-import org.qi4j.api.util.Function;
+import org.qi4j.functional.Function;
 import org.qi4j.api.value.NoSuchValueException;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
@@ -51,7 +51,6 @@ import org.qi4j.spi.structure.ModuleSPI;
 import org.qi4j.spi.value.ValueDescriptor;
 
 import javax.xml.namespace.QName;
-import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;

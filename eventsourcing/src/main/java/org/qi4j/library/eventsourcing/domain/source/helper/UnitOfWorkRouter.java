@@ -20,7 +20,7 @@ package org.qi4j.library.eventsourcing.domain.source.helper;
 import org.qi4j.api.io.Output;
 import org.qi4j.api.io.Receiver;
 import org.qi4j.api.io.Sender;
-import org.qi4j.api.specification.Specification;
+import org.qi4j.functional.Specification;
 import org.qi4j.library.eventsourcing.domain.api.UnitOfWorkDomainEventsValue;
 
 import java.util.LinkedHashMap;

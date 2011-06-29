@@ -21,7 +21,7 @@ import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
-import org.qi4j.api.util.HierarchicalVisitor;
+import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.spi.object.ObjectDescriptor;
 import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.spi.structure.ApplicationDescriptor;

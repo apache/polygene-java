@@ -23,7 +23,7 @@ import org.qi4j.api.io.Input;
 import org.qi4j.api.io.Inputs;
 import org.qi4j.api.io.Output;
 import org.qi4j.api.service.Activatable;
-import org.qi4j.api.util.Iterables;
+import org.qi4j.functional.Iterables;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
 import org.qi4j.library.eventsourcing.application.api.ApplicationEvent;

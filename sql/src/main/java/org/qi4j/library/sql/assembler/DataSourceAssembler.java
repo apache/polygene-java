@@ -9,7 +9,7 @@ import org.qi4j.spi.service.importer.ServiceInstanceImporter;
 import javax.sql.DataSource;
 import java.net.ConnectException;
 
-import static org.qi4j.api.specification.Specifications.not;
+import static org.qi4j.functional.Specifications.not;
 import static org.qi4j.library.circuitbreaker.CircuitBreakers.in;
 import static org.qi4j.library.circuitbreaker.CircuitBreakers.rootCause;
 

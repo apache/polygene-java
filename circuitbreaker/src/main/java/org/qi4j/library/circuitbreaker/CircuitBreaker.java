@@ -16,13 +16,13 @@
  */
 package org.qi4j.library.circuitbreaker;
 
-import org.qi4j.api.specification.Specification;
-import org.qi4j.api.specification.Specifications;
+import org.qi4j.functional.Specification;
+import org.qi4j.functional.Specifications;
 
 import java.beans.*;
 import java.util.Date;
 
-import static org.qi4j.api.specification.Specifications.not;
+import static org.qi4j.functional.Specifications.not;
 
 /**
  * Implementation of CircuitBreaker pattern

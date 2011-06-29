@@ -14,8 +14,8 @@
 
 package org.qi4j.library.jmx;
 
-import org.qi4j.api.specification.Specification;
-import org.qi4j.api.util.Iterables;
+import org.qi4j.functional.Iterables;
+import org.qi4j.functional.Specification;
 
 import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
@@ -29,11 +29,11 @@ public class Qi4jMBeans
     public static ObjectName findServiceName( MBeanServer server, String applicationName, String serviceId ) throws MalformedObjectNameException
     {
         return Iterables.first( Iterables.filter( new Specification<ObjectName>()
-        {
-            public boolean satisfiedBy( ObjectName item )
-            {
-                return item.getKeyPropertyList().size() == 5;
-            }
-        }, server.queryNames( new ObjectName( "Qi4j:application="+applicationName + ",*,service=" + serviceId ), null ) ) );
+                {
+                    public boolean satisfiedBy( ObjectName item )
+                    {
+                        return item.getKeyPropertyList().size() == 5;
+                    }
+                }, server.queryNames( new ObjectName( "Qi4j:application=" + applicationName + ",*,service=" + serviceId ), null ) ) );
     }
 }

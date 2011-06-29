@@ -4,7 +4,7 @@ import org.qi4j.api.io.Input;
 import org.qi4j.api.io.Output;
 import org.qi4j.api.io.Receiver;
 import org.qi4j.api.io.Sender;
-import org.qi4j.api.util.Visitor;
+import org.qi4j.functional.Visitor;
 
 import javax.sql.DataSource;
 import java.sql.Connection;

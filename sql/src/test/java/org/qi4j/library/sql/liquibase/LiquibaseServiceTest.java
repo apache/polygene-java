@@ -4,7 +4,7 @@ import org.junit.Test;
 import org.qi4j.api.io.Inputs;
 import org.qi4j.api.io.Outputs;
 import org.qi4j.api.property.Property;
-import org.qi4j.api.util.Function;
+import org.qi4j.functional.Function;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.AssemblyException;

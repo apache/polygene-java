@@ -6,9 +6,8 @@ import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyInfo;
-import org.qi4j.api.util.Function;
+import org.qi4j.functional.Function;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
 import org.qi4j.spi.Qi4jSPI;
@@ -20,8 +19,6 @@ import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.spi.structure.ModuleSPI;
 import org.qi4j.spi.value.ValueDescriptor;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Member;
 import java.util.ArrayList;
 import java.util.Set;
 

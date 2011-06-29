@@ -14,7 +14,7 @@
 
 package org.qi4j.library.rdf.model;
 
-import org.qi4j.api.util.HierarchicalVisitor;
+import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.library.rdf.Qi4jRdf;
 import org.qi4j.library.rdf.serializer.SerializerContext;
 import org.qi4j.spi.composite.MethodDescriptor;

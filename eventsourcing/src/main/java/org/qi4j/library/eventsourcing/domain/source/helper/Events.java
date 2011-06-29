@@ -16,10 +16,9 @@
 
 package org.qi4j.library.eventsourcing.domain.source.helper;
 
-import org.qi4j.api.specification.Specification;
-import org.qi4j.api.util.Classes;
-import org.qi4j.api.util.Function;
-import org.qi4j.api.util.Iterables;
+import org.qi4j.functional.Iterables;
+import org.qi4j.functional.Specification;
+import org.qi4j.functional.Function;
 import org.qi4j.api.util.Methods;
 import org.qi4j.library.eventsourcing.domain.api.DomainEventValue;
 import org.qi4j.library.eventsourcing.domain.api.UnitOfWorkDomainEventsValue;
@@ -27,7 +26,7 @@ import org.qi4j.library.eventsourcing.domain.api.UnitOfWorkDomainEventsValue;
 import java.lang.reflect.Method;
 import java.util.Date;
 
-import static org.qi4j.api.util.Iterables.map;
+import static org.qi4j.functional.Iterables.map;
 
 /**
  * Helper methods for working with Iterables of DomainEvents and UnitOfWorkDomainEventsValue.

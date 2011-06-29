@@ -1,8 +1,7 @@
 package org.qi4j.library.rdf.model;
 
-import org.qi4j.api.specification.Specifications;
-import org.qi4j.api.util.Function;
-import org.qi4j.api.util.HierarchicalVisitor;
+import org.qi4j.functional.Function;
+import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.spi.composite.DependencyDescriptor;
 import org.qi4j.spi.composite.MethodDescriptor;
 import org.qi4j.spi.composite.TransientDescriptor;

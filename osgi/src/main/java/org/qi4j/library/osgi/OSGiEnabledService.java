@@ -9,11 +9,10 @@ import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.util.Classes;
-import org.qi4j.api.util.Iterables;
+import org.qi4j.functional.Iterables;
 
 import java.lang.reflect.Type;
 import java.util.Dictionary;
-import java.util.Set;
 
 @Mixins( OSGiEnabledService.OSGiEnabledServiceMixin.class )
 public interface OSGiEnabledService extends Activatable, ServiceComposite
@@ -50,7 +49,7 @@ public interface OSGiEnabledService extends Activatable, ServiceComposite
 
         private String[] fetchInterfacesImplemented( Iterable<Type> classesSet )
         {
-            String[] clazzes = new String[(int) Iterables.count( classesSet)];
+            String[] clazzes = new String[(int) Iterables.count( classesSet )];
             int i = 0;
             for( Type clazz : classesSet )
             {

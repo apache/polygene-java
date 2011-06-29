@@ -18,13 +18,13 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.Activatable;
+import org.qi4j.functional.HierarchicalVisitor;
+import org.qi4j.functional.Iterables;
 import org.qi4j.spi.service.ImportedServiceDescriptor;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.service.qualifier.ServiceQualifier;
 import org.qi4j.api.structure.Module;
-import org.qi4j.api.util.HierarchicalVisitor;
-import org.qi4j.api.util.Iterables;
 import org.qi4j.spi.composite.TransientDescriptor;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.object.ObjectDescriptor;
@@ -299,7 +299,7 @@ public interface ApplicationManagerService
         public String restart()
         {
             Iterable services = module.serviceFinder().findServices( Activatable.class );
-            ServiceReference<Activatable> serviceRef = (ServiceReference<Activatable>) Iterables.first(Iterables.filter( ServiceQualifier.withId( serviceDescriptor.identity() ), services ));
+            ServiceReference<Activatable> serviceRef = (ServiceReference<Activatable>) Iterables.first( Iterables.filter( ServiceQualifier.withId( serviceDescriptor.identity() ), services ));
             if (serviceRef != null)
             {
                 try
