@@ -1,0 +1,38 @@
+package org.qi4j.api.query.grammar2;
+
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.specification.Specification;
+import org.qi4j.api.specification.Specifications;
+
+/**
+* TODO
+*/
+public class OrSpecification
+    extends BinarySpecification
+{
+    public OrSpecification( Iterable<Specification<Composite>> operands )
+    {
+        super( operands );
+    }
+
+    @Override
+    public boolean satisfiedBy( Composite item )
+    {
+        return Specifications.or( operands ).satisfiedBy( item );
+    }
+
+    @Override
+    public String toString()
+    {
+        String str = "(";
+        String or = "";
+        for( Specification<Composite> operand : operands )
+        {
+            str += or+operand;
+            or = " or ";
+        }
+        str+=")";
+
+        return str;
+    }
+}
