@@ -15,10 +15,8 @@
 package org.qi4j.index.sql.support.postgresql;
 
 import org.qi4j.api.composite.Composite;
-import org.qi4j.api.entity.Entity;
-import org.qi4j.api.query.grammar.BooleanExpression;
 import org.qi4j.api.query.grammar.OrderBy;
-import org.qi4j.api.specification.Specification;
+import org.qi4j.functional.Specification;
 import org.qi4j.index.sql.support.skeletons.AbstractSQLQuerying;
 import org.sql.generation.api.grammar.builders.query.QuerySpecificationBuilder;
 import org.sql.generation.api.grammar.builders.query.pgsql.PgSQLQuerySpecificationBuilder;

@@ -16,12 +16,10 @@ package org.qi4j.index.sql.internal;
 
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.composite.Composite;
-import org.qi4j.api.entity.Entity;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
-import org.qi4j.api.query.grammar.BooleanExpression;
 import org.qi4j.api.query.grammar.OrderBy;
-import org.qi4j.api.specification.Specification;
+import org.qi4j.functional.Specification;
 import org.qi4j.index.sql.support.api.SQLQuerying;
 import org.qi4j.library.sql.common.SQLUtil;
 import org.qi4j.library.sql.ds.DataSourceService;

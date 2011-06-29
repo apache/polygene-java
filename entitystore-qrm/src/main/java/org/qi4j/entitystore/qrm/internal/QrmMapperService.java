@@ -26,7 +26,7 @@ import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.api.util.HierarchicalVisitor;
+import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.entitystore.qrm.QrmEntityStoreDescriptor;
 import org.qi4j.entitystore.qrm.QrmMapper;
 import org.qi4j.spi.entity.EntityDescriptor;

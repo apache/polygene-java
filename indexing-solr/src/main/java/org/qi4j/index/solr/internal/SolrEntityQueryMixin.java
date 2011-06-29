@@ -26,10 +26,9 @@ import org.qi4j.api.composite.Composite;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.query.grammar.OrderBy;
-import org.qi4j.api.query.grammar2.PropertyFunction;
 import org.qi4j.api.query.grammar2.QuerySpecification;
-import org.qi4j.api.specification.Specification;
-import org.qi4j.api.util.Iterables;
+import org.qi4j.functional.Iterables;
+import org.qi4j.functional.Specification;
 import org.qi4j.index.solr.EmbeddedSolrService;
 import org.qi4j.index.solr.SolrSearch;
 import org.qi4j.spi.query.EntityFinder;
@@ -114,7 +113,7 @@ public class SolrEntityQueryMixin
     @Override
     public long countEntities( Class<?> resultType, @Optional Specification<Composite> whereClause, Map<String, Object> variables ) throws EntityFinderException
     {
-        return Iterables.count( findEntities( resultType, whereClause, null, 0, 1, variables ));
+        return Iterables.count( findEntities( resultType, whereClause, null, 0, 1, variables ) );
     }
 
     public SolrDocumentList search( String queryString ) throws SolrServerException

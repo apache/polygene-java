@@ -21,19 +21,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.entity.Entity;
-import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.query.grammar.OrderBy;
-import org.qi4j.api.query.grammar.PropertyReference;
 import org.qi4j.api.query.grammar2.*;
-import org.qi4j.api.specification.Specification;
-import org.qi4j.api.util.Classes;
-import org.qi4j.api.util.Iterables;
+import org.qi4j.functional.Iterables;
+import org.qi4j.functional.Specification;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.index.rdf.query.RdfQueryParser;
-import org.qi4j.index.rdf.query.SesameExpressions;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.property.*;
-import org.qi4j.spi.query.EntityFinderException;
 import org.qi4j.spi.value.ValueDescriptor;
 import org.slf4j.LoggerFactory;
 
@@ -421,7 +416,7 @@ public class RdfQueryParserImpl2
     {
         Iterable<?> values = predicate.getValueCollection();
         String valueVariable = triples.addTriple( predicate.getCollectionProperty(), false ).getValue();
-        String[] strings = new String[( values instanceof Collection ? ((Collection<?>) values).size() : (int)Iterables.count( values ))];
+        String[] strings = new String[( values instanceof Collection ? ((Collection<?>) values).size() : (int) Iterables.count( values ))];
         Integer x = 0;
         for( Object item : (Collection<?>) values )
         {
