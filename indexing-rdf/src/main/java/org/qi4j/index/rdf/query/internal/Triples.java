@@ -111,7 +111,7 @@ public class Triples
         {
             subject = addTripleAssociation( traversedAssociation, false ).value;
         }
-        QualifiedName qualifiedName = QualifiedName.fromAccessor( manyAssociationReference.getMethod() );
+        QualifiedName qualifiedName = QualifiedName.fromAccessor( manyAssociationReference.getAccessor() );
         String predicatePrefix = addNamespace( qualifiedName.toNamespace() );
         String predicate = predicatePrefix + ":" + qualifiedName.name();
         Triple collectionTriple = addTriple( subject, predicate, optional );
