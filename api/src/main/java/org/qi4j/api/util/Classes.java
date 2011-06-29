@@ -14,16 +14,17 @@
 
 package org.qi4j.api.util;
 
-import org.qi4j.api.specification.Specification;
+import org.qi4j.functional.Function;
+import org.qi4j.functional.Iterables;
+import org.qi4j.functional.Specification;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.*;
 
-import static java.util.Arrays.asList;
-import static org.qi4j.api.util.Iterables.*;
-import static org.qi4j.api.util.Iterables.flattenIterables;
-import static org.qi4j.api.util.Iterables.iterable;
+import static org.qi4j.functional.Iterables.*;
+import static org.qi4j.functional.Iterables.flattenIterables;
+import static org.qi4j.functional.Iterables.iterable;
 
 /**
  * Class-related utility methods

@@ -12,21 +12,23 @@
  *
  */
 
-package org.qi4j.api.specification;
+package org.qi4j.functional;
 
 /**
- * Generic specification interface.
+ * Generic function interface to map from two parameters to a third.
  *
- * @param <T>
+ * This can be used with the Iterables methods to transform lists of objects.
+ *
  */
-public interface Specification<T>
+public interface Function2<First, Second, To>
 {
     /**
-     * Test whether an item matches the given specification
+     * Map a single item from one type to another
      *
-     * @param item the item to be tested
      *
-     * @return true if the item matches, false otherwise
+     * @param first
+     * @param second
+     * @return the mapped item
      */
-    boolean satisfiedBy( T item );
+    To map( First first, Second second);
 }

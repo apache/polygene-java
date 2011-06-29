@@ -21,9 +21,9 @@ import org.qi4j.api.mixin.Initializable;
 import org.qi4j.api.mixin.InitializationException;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.service.Activatable;
-import org.qi4j.api.util.HierarchicalVisitor;
-import org.qi4j.api.util.Iterables;
-import org.qi4j.api.util.VisitableHierarchy;
+import org.qi4j.functional.HierarchicalVisitor;
+import org.qi4j.functional.Iterables;
+import org.qi4j.functional.VisitableHierarchy;
 import org.qi4j.runtime.bootstrap.AssemblyHelper;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectedFieldsModel;
@@ -39,8 +39,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.qi4j.api.util.Iterables.map;
-import static org.qi4j.api.util.Iterables.unique;
+import static org.qi4j.functional.Iterables.map;
+import static org.qi4j.functional.Iterables.unique;
 
 /**
  * JAVADOC

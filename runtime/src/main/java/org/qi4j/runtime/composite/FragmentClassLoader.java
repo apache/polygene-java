@@ -19,7 +19,7 @@ import org.qi4j.api.entity.Lifecycle;
 import org.qi4j.api.mixin.Initializable;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.util.Classes;
-import org.qi4j.api.util.Iterables;
+import org.qi4j.functional.Iterables;
 import org.qi4j.api.util.Methods;
 
 import java.lang.reflect.Constructor;

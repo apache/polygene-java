@@ -14,9 +14,9 @@
 
 package org.qi4j.runtime.injection;
 
-import org.qi4j.api.specification.Specification;
-import org.qi4j.api.util.HierarchicalVisitor;
-import org.qi4j.api.util.VisitableHierarchy;
+import org.qi4j.functional.Specification;
+import org.qi4j.functional.HierarchicalVisitor;
+import org.qi4j.functional.VisitableHierarchy;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.bootstrap.InjectionException;
 import org.qi4j.runtime.model.Resolution;

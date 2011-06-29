@@ -1,11 +1,12 @@
 package org.qi4j.api.util;
 
-import org.qi4j.api.specification.Specification;
+import org.qi4j.functional.Function;
+import org.qi4j.functional.Specification;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
-import static org.qi4j.api.util.Iterables.iterable;
+import static org.qi4j.functional.Iterables.iterable;
 
 /**
  * TODO

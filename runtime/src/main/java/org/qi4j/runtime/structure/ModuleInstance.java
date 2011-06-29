@@ -33,19 +33,19 @@ import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.service.ServiceReference;
-import org.qi4j.api.specification.Specification;
-import org.qi4j.api.specification.Specifications;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.util.Classes;
-import org.qi4j.api.util.Function;
-import org.qi4j.api.util.Iterables;
+import org.qi4j.functional.Function;
+import org.qi4j.functional.Iterables;
 import org.qi4j.api.util.NullArgumentException;
 import org.qi4j.api.value.NoSuchValueException;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
+import org.qi4j.functional.Specification;
+import org.qi4j.functional.Specifications;
 import org.qi4j.runtime.composite.*;
 import org.qi4j.runtime.entity.EntitiesInstance;
 import org.qi4j.runtime.entity.EntitiesModel;
@@ -78,7 +78,7 @@ import java.lang.reflect.Type;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static org.qi4j.api.util.Iterables.*;
+import static org.qi4j.functional.Iterables.*;
 import static org.qi4j.runtime.object.ObjectModel.modelTypeSpecification;
 
 /**
@@ -772,7 +772,7 @@ public class ModuleInstance
                         if( iter.hasNext() )
                         {
                             // Ambiguous exception
-                            throw new ClassNotFoundException( name, new AmbiguousTypeException( "More than one model matches the classname "+name+":"+Iterables.toList( usedLayersModels )) );
+                            throw new ClassNotFoundException( name, new AmbiguousTypeException( "More than one model matches the classname "+name+":"+ Iterables.toList( usedLayersModels )) );
                         }
                     }
                 }

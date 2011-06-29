@@ -21,7 +21,7 @@ package org.qi4j.runtime.query;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.grammar.OrderBy;
-import org.qi4j.api.specification.Specification;
+import org.qi4j.functional.Specification;
 
 import java.util.HashMap;
 import java.util.Map;

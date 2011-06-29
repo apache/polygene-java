@@ -15,8 +15,8 @@
 package org.qi4j.runtime.entity.association;
 
 import org.qi4j.api.entity.association.Association;
-import org.qi4j.api.util.Function;
-import org.qi4j.api.util.Iterables;
+import org.qi4j.functional.Function;
+import org.qi4j.functional.Iterables;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
@@ -63,13 +63,13 @@ public final class AssociationsInstance
     public Iterable<Association<?>> associations()
     {
         return Iterables.map( new Function<AssociationDescriptor, Association<?>>()
-        {
-            @Override
-            public Association<?> map( AssociationDescriptor associationDescriptor )
-            {
-                return associationFor( associationDescriptor.accessor() );
-            }
-        }, model.<AssociationDescriptor>associations());
+                {
+                    @Override
+                    public Association<?> map( AssociationDescriptor associationDescriptor )
+                    {
+                        return associationFor( associationDescriptor.accessor() );
+                    }
+                }, model.<AssociationDescriptor>associations() );
     }
 
     public void checkConstraints()

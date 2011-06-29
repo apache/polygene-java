@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.api.util;
+package org.qi4j.functional;
 
 /**
  * Generic function interface to map from one type to another.

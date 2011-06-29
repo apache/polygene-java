@@ -14,7 +14,7 @@
 
 package org.qi4j.runtime.bootstrap;
 
-import org.qi4j.api.util.HierarchicalVisitor;
+import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.bootstrap.*;
 import org.qi4j.runtime.composite.CompositeMethodModel;
 import org.qi4j.runtime.injection.InjectedFieldModel;

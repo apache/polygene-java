@@ -14,9 +14,9 @@
 
 package org.qi4j.runtime.composite;
 
-import org.qi4j.api.util.HierarchicalVisitor;
-import org.qi4j.api.util.Iterables;
-import org.qi4j.api.util.VisitableHierarchy;
+import org.qi4j.functional.HierarchicalVisitor;
+import org.qi4j.functional.Iterables;
+import org.qi4j.functional.VisitableHierarchy;
 import org.qi4j.runtime.injection.Dependencies;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.structure.ModuleInstance;
@@ -49,7 +49,7 @@ public final class MethodConcernsModel
 
     public Iterable<DependencyModel> dependencies()
     {
-        return Iterables.flattenIterables( Iterables.map( Dependencies.DEPENDENCIES_FUNCTION, concernsForMethod) );
+        return Iterables.flattenIterables( Iterables.map( Dependencies.DEPENDENCIES_FUNCTION, concernsForMethod ) );
     }
 
     // Context

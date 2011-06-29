@@ -15,8 +15,9 @@
 package org.qi4j.api.util;
 
 import org.junit.Test;
-import org.qi4j.api.specification.Specification;
-import org.qi4j.api.specification.Specifications;
+import org.qi4j.functional.*;
+import org.qi4j.functional.Specification;
+import org.qi4j.functional.Specifications;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -30,7 +31,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.qi4j.api.util.Classes.INTERFACES_OF;
 import static org.qi4j.api.util.Classes.interfacesWithMethods;
-import static org.qi4j.api.util.Iterables.count;
+import static org.qi4j.functional.Iterables.count;
 
 /**
  * Tests for Classes
@@ -60,7 +61,7 @@ public class ClassesTest
     {
         Iterable<Type> types = Iterables.filter(Methods.HAS_METHODS, INTERFACES_OF.map( C.class ) );
         assertThat( "one interface returned", count( types), equalTo( 1L ) );
-        assertThat( "correct interface returned", Iterables.matchesAny( (Specification) Specifications.in( B.class ), Iterables.<Class<?>, Type>cast( types) ), is( true ) );
+        assertThat( "correct interface returned", Iterables.matchesAny( (Specification) Specifications.in( B.class ), Iterables.<Class<?>, Type>cast( types ) ), is( true ) );
     }
 
     @Test

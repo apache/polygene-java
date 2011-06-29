@@ -12,10 +12,7 @@
  *
  */
 
-package org.qi4j.api.specification;
-
-import org.qi4j.api.util.Function;
-import org.qi4j.api.util.Iterables;
+package org.qi4j.functional;
 
 /**
  * Common generic specification expressions

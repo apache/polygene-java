@@ -1,6 +1,4 @@
-package org.qi4j.api.util;
-
-import org.qi4j.api.specification.Specification;
+package org.qi4j.functional;
 
 import java.util.Iterator;
 

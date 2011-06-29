@@ -21,19 +21,17 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.api.util.Iterables;
+import org.qi4j.functional.Specification;
 import org.qi4j.spi.service.ServiceImporterException;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.service.qualifier.AnnotationQualifier;
 import org.qi4j.api.service.qualifier.IdentifiedBy;
 import org.qi4j.api.service.qualifier.Qualifier;
-import org.qi4j.api.specification.Specification;
 import org.qi4j.bootstrap.*;
 
 import java.io.Serializable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.util.Iterator;
 
 import static junit.framework.Assert.assertEquals;
 import static org.qi4j.api.common.Visibility.application;

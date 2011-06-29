@@ -15,8 +15,10 @@
 package org.qi4j.runtime.injection;
 
 import org.qi4j.api.injection.InjectionScope;
-import org.qi4j.api.specification.Specifications;
+import org.qi4j.functional.HierarchicalVisitor;
+import org.qi4j.functional.Specifications;
 import org.qi4j.api.util.*;
+import org.qi4j.functional.VisitableHierarchy;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -27,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.qi4j.api.util.Annotations.hasAnnotation;
-import static org.qi4j.api.util.Iterables.*;
+import static org.qi4j.functional.Iterables.*;
 
 /**
  * JAVADOC
@@ -50,7 +52,7 @@ public final class InjectedMethodsModel
                 final Type[] genericParameterTypes = method.getGenericParameterTypes();
                 for( int i = 0; i < parameterAnnotations.length; i++ )
                 {
-                    Annotation injectionAnnotation = first( filter( Specifications.translate( Annotations.type(), hasAnnotation( InjectionScope.class )), iterable( parameterAnnotations[i] ) ) );
+                    Annotation injectionAnnotation = first( filter( Specifications.translate( Annotations.type(), hasAnnotation( InjectionScope.class ) ), iterable( parameterAnnotations[i] ) ) );
                     if( injectionAnnotation == null )
                     {
                         continue nextMethod;

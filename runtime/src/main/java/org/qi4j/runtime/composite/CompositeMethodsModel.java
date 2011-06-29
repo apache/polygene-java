@@ -21,9 +21,9 @@ import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Initializable;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.util.Classes;
-import org.qi4j.api.util.HierarchicalVisitor;
-import org.qi4j.api.util.Iterables;
-import org.qi4j.api.util.VisitableHierarchy;
+import org.qi4j.functional.HierarchicalVisitor;
+import org.qi4j.functional.Iterables;
+import org.qi4j.functional.VisitableHierarchy;
 import org.qi4j.runtime.bootstrap.AssemblyHelper;
 import org.qi4j.runtime.injection.Dependencies;
 import org.qi4j.runtime.injection.DependencyModel;
@@ -35,9 +35,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.qi4j.api.specification.Specifications.in;
-import static org.qi4j.api.specification.Specifications.not;
-import static org.qi4j.api.util.Iterables.*;
+import static org.qi4j.functional.Specifications.in;
+import static org.qi4j.functional.Specifications.not;
+import static org.qi4j.functional.Iterables.*;
 
 /**
  * Model for Composite methods. This includes both private and public methods.
@@ -177,9 +177,9 @@ public final class CompositeMethodsModel
                 Iterable<Class<?>> map = map( new DependencyModel.InjectionTypeFunction(), filter( new DependencyModel.ScopeSpecification( This.class ), methodComposite.dependencies() ) );
                 Iterable<Class<?>> map1 = map( new DependencyModel.InjectionTypeFunction(), filter( new DependencyModel.ScopeSpecification( This.class ), mixinModel.dependencies() ) );
                 Iterable<Class<?>> filter = filter( not( in( Activatable.class, Initializable.class, Lifecycle.class, InvocationHandler.class ) ), map(Classes.RAW_CLASS, Classes.INTERFACES_OF.map( mixinModel.mixinClass() ) ));
-                Iterables.addAll( thisDependencies, (Iterable<? extends Class<?>>) flatten(map,
+                Iterables.addAll( thisDependencies, (Iterable<? extends Class<?>>) flatten( map,
                         map1,
-                        filter ));
+                        filter ) );
 
                 methods.put( method, methodComposite );
             }

@@ -19,8 +19,8 @@ import org.qi4j.api.event.ActivationEventListener;
 import org.qi4j.api.event.ActivationEventListenerRegistration;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceReference;
-import org.qi4j.api.specification.Specification;
-import org.qi4j.api.util.Iterables;
+import org.qi4j.functional.Iterables;
+import org.qi4j.functional.Specification;
 import org.qi4j.runtime.structure.ActivationEventListenerSupport;
 
 import java.util.HashMap;
@@ -105,13 +105,13 @@ public class ServicesInstance
     public Iterable<ServiceReference> visibleServices( final Visibility visibility )
     {
         return Iterables.filter( new Specification<ServiceReference>()
-        {
-            @Override
-            public boolean satisfiedBy( ServiceReference item )
-            {
-                return ((ServiceReferenceInstance)item).serviceDescriptor().visibility().ordinal() >= visibility.ordinal();
-            }
-        }, serviceReferences );
+                {
+                    @Override
+                    public boolean satisfiedBy( ServiceReference item )
+                    {
+                        return ((ServiceReferenceInstance) item).serviceDescriptor().visibility().ordinal() >= visibility.ordinal();
+                    }
+                }, serviceReferences );
     }
 
     @Override

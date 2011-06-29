@@ -20,7 +20,7 @@ import org.qi4j.api.composite.NoSuchCompositeException;
 import org.qi4j.api.entity.*;
 import org.qi4j.api.unitofwork.*;
 import org.qi4j.api.usecase.Usecase;
-import org.qi4j.api.util.Iterables;
+import org.qi4j.functional.Iterables;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.unitofwork.EntityBuilderInstance;

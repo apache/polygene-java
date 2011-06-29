@@ -16,13 +16,13 @@ package org.qi4j.runtime.injection.provider;
 
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.service.qualifier.Qualifier;
-import org.qi4j.api.specification.Specification;
-import org.qi4j.api.specification.Specifications;
 import org.qi4j.api.util.Annotations;
 import org.qi4j.api.util.Classes;
-import org.qi4j.api.util.Function;
-import org.qi4j.api.util.Iterables;
+import org.qi4j.functional.Function;
+import org.qi4j.functional.Iterables;
 import org.qi4j.bootstrap.InvalidInjectionException;
+import org.qi4j.functional.Specification;
+import org.qi4j.functional.Specifications;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.injection.InjectionProvider;
@@ -34,7 +34,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 import static org.qi4j.api.util.Annotations.hasAnnotation;
-import static org.qi4j.api.util.Iterables.*;
+import static org.qi4j.functional.Iterables.*;
 
 public final class ServiceInjectionProviderFactory
     implements InjectionProviderFactory
@@ -43,7 +43,7 @@ public final class ServiceInjectionProviderFactory
         throws InvalidInjectionException
     {
         // TODO This could be changed to allow multiple @Qualifier annotations
-        Annotation qualifierAnnotation = first( filter( Specifications.translate( Annotations.type(), hasAnnotation( Qualifier.class )), iterable( dependencyModel.annotations() ) ) );
+        Annotation qualifierAnnotation = first( filter( Specifications.translate( Annotations.type(), hasAnnotation( Qualifier.class ) ), iterable( dependencyModel.annotations() ) ) );
         Specification<ServiceReference<?>> serviceQualifier = null;
         if( qualifierAnnotation != null )
         {
@@ -201,7 +201,7 @@ public final class ServiceInjectionProviderFactory
             }
             else
             {
-                return Iterables.filter( serviceQualifier, context.moduleInstance().serviceFinder().findServices( (Class)serviceType ) );
+                return Iterables.filter( serviceQualifier, context.moduleInstance().serviceFinder().findServices( (Class) serviceType ) );
             }
         }
     }

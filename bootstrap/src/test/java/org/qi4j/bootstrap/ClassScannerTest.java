@@ -2,10 +2,10 @@ package org.qi4j.bootstrap;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.qi4j.api.util.Iterables;
+import org.qi4j.functional.Iterables;
 import org.qi4j.bootstrap.somepackage.Test2Value;
 
-import static org.qi4j.api.util.Iterables.filter;
+import static org.qi4j.functional.Iterables.filter;
 import static org.qi4j.bootstrap.ClassScanner.getClasses;
 import static org.qi4j.bootstrap.ClassScanner.matches;
 
@@ -39,6 +39,6 @@ public class ClassScannerTest
     @Test
     public void testClassScannerJar()
     {
-        Assert.assertEquals( 166, Iterables.count( getClasses( Test.class )));
+        Assert.assertEquals( 166, Iterables.count( getClasses( Test.class ) ));
     }
 }

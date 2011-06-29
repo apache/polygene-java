@@ -1,10 +1,10 @@
 package org.qi4j.api.query.grammar2;
 
 import org.qi4j.api.composite.Composite;
-import org.qi4j.api.specification.Specification;
-import org.qi4j.api.util.Iterables;
+import org.qi4j.functional.Iterables;
+import org.qi4j.functional.Specification;
 
-import static org.qi4j.api.util.Iterables.iterable;
+import static org.qi4j.functional.Iterables.iterable;
 
 /**
  * TODO
@@ -26,7 +26,7 @@ public abstract class ExpressionSpecification
     {
         if (this instanceof OrSpecification)
         {
-            return new OrSpecification( Iterables.append( specification, ((OrSpecification)this).getOperands() ));
+            return new OrSpecification( Iterables.append( specification, ((OrSpecification) this).getOperands() ));
 
         } else
             return new OrSpecification( iterable( this, specification ) );

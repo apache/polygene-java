@@ -15,7 +15,7 @@
 package org.qi4j.api.service.qualifier;
 
 import org.qi4j.api.service.ServiceReference;
-import org.qi4j.api.specification.Specification;
+import org.qi4j.functional.Specification;
 
 /**
  * This class helps you select a particular service

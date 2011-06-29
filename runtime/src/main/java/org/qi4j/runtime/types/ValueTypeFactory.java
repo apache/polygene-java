@@ -21,7 +21,7 @@ package org.qi4j.runtime.types;
 import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.util.Classes;
-import org.qi4j.api.util.HierarchicalVisitor;
+import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.runtime.structure.LayerModel;
 import org.qi4j.runtime.structure.ModuleModel;
 import org.qi4j.runtime.structure.UsedLayersModel;

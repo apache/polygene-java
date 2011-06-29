@@ -19,6 +19,9 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.util.*;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.BindingException;
+import org.qi4j.functional.Function;
+import org.qi4j.functional.HierarchicalVisitor;
+import org.qi4j.functional.VisitableHierarchy;
 import org.qi4j.runtime.bootstrap.AssemblyHelper;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectedFieldModel;
@@ -32,7 +35,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.*;
 
-import static org.qi4j.api.util.Iterables.*;
+import static org.qi4j.functional.Iterables.*;
 
 /**
  * Base implementation of model for mixins. This records the mapping between methods in the Composite

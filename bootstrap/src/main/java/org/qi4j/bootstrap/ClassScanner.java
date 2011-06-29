@@ -17,9 +17,9 @@
  */
 package org.qi4j.bootstrap;
 
-import org.qi4j.api.specification.Specification;
-import org.qi4j.api.util.Function;
-import org.qi4j.api.util.Iterables;
+import org.qi4j.functional.Iterables;
+import org.qi4j.functional.Specification;
+import org.qi4j.functional.Function;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,7 +30,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.regex.Pattern;
 
-import static org.qi4j.api.util.Iterables.*;
+import static org.qi4j.functional.Iterables.*;
 
 /**
  * Scan classpath for classes that matches given criteria. Useful for automated assemblies with lots of similar classes.
@@ -69,31 +69,31 @@ public class ClassScanner
             Iterable<JarEntry> entries = Iterables.iterable( jarFile.entries() );
             try
             {
-               return Iterables.toList( filter(new NonAbstractClass(),
-                     map(new Function<JarEntry, Class>()
-                     {
-                        public Class map(JarEntry jarEntry)
-                        {
-                           String name = jarEntry.getName();
-                           name = name.substring(0, name.length() - 6);
-                           name = name.replace('/', '.');
-                           try
-                           {
-                              return seedClass.getClassLoader().loadClass(name);
-                           } catch (ClassNotFoundException e)
-                           {
-                              return null;
-                           }
-                        }
+               return Iterables.toList( filter( new NonAbstractClass(),
+                       map( new Function<JarEntry, Class>()
+                               {
+                                   public Class map( JarEntry jarEntry )
+                                   {
+                                       String name = jarEntry.getName();
+                                       name = name.substring( 0, name.length() - 6 );
+                                       name = name.replace( '/', '.' );
+                                       try
+                                       {
+                                           return seedClass.getClassLoader().loadClass( name );
+                                       } catch( ClassNotFoundException e )
+                                       {
+                                           return null;
+                                       }
+                                   }
 
-                     }
-                           , filter(new Specification<JarEntry>()
-                     {
-                        public boolean satisfiedBy(JarEntry jarEntry)
-                        {
-                           return jarEntry.getName().startsWith( packageName ) && jarEntry.getName().endsWith(".class");
-                        }
-                     }, entries))));
+                               }
+                               , filter( new Specification<JarEntry>()
+                               {
+                                   public boolean satisfiedBy( JarEntry jarEntry )
+                                   {
+                                       return jarEntry.getName().startsWith( packageName ) && jarEntry.getName().endsWith( ".class" );
+                                   }
+                               }, entries ) ) ) );
             } finally
             {
                jarFile.close();

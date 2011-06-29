@@ -1,4 +1,4 @@
-package org.qi4j.api.util;
+package org.qi4j.functional;
 
 /**
  * Generic Visitor interface.

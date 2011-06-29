@@ -15,8 +15,8 @@
 package org.qi4j.runtime.composite;
 
 import org.qi4j.api.common.ConstructionException;
-import org.qi4j.api.util.HierarchicalVisitor;
-import org.qi4j.api.util.VisitableHierarchy;
+import org.qi4j.functional.HierarchicalVisitor;
+import org.qi4j.functional.VisitableHierarchy;
 import org.qi4j.runtime.injection.Dependencies;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.structure.ModuleInstance;
@@ -30,8 +30,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.qi4j.api.specification.Specifications.notNull;
-import static org.qi4j.api.util.Iterables.*;
+import static org.qi4j.functional.Specifications.notNull;
+import static org.qi4j.functional.Iterables.*;
 
 /**
  * JAVADOC

@@ -3,16 +3,15 @@ package org.qi4j.api;
 import org.junit.Assert;
 import org.junit.Test;
 import org.qi4j.api.composite.Composite;
-import org.qi4j.api.entity.Entity;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryExpressions;
-import org.qi4j.api.specification.Specification;
+import org.qi4j.functional.Iterables;
+import org.qi4j.functional.Specification;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
-import org.qi4j.api.util.Iterables;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -50,7 +49,7 @@ public class OperatorsTest
         uow.complete();
         uow = assembler.unitOfWorkFactory().newUnitOfWork();
 
-        Iterable<TestEntity> entities = Iterables.iterable( testEntity = uow.get(testEntity) );
+        Iterable<TestEntity> entities = Iterables.iterable( testEntity = uow.get( testEntity ) );
 
         QueryBuilder<TestEntity> builder = assembler.queryBuilderFactory().newQueryBuilder( TestEntity.class );
 

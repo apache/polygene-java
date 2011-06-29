@@ -18,8 +18,8 @@ import org.qi4j.api.composite.Composite;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.grammar.OrderBy;
-import org.qi4j.api.specification.Specification;
-import org.qi4j.api.util.Iterables;
+import org.qi4j.functional.Iterables;
+import org.qi4j.functional.Specification;
 
 import java.util.*;
 

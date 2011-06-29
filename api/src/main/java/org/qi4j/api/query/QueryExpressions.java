@@ -30,14 +30,14 @@ import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.api.query.grammar2.*;
-import org.qi4j.api.specification.Specification;
+import org.qi4j.functional.Specification;
 import org.qi4j.api.util.NullArgumentException;
 
 import java.lang.reflect.*;
 import java.util.Collection;
 
-import static org.qi4j.api.util.Iterables.iterable;
-import static org.qi4j.api.util.Iterables.prepend;
+import static org.qi4j.functional.Iterables.iterable;
+import static org.qi4j.functional.Iterables.prepend;
 
 /**
  * Static factory methods for query expressions and operators.

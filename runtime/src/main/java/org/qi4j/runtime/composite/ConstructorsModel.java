@@ -16,9 +16,10 @@ package org.qi4j.runtime.composite;
 
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.injection.InjectionScope;
-import org.qi4j.api.specification.Specifications;
+import org.qi4j.functional.*;
 import org.qi4j.api.util.*;
 import org.qi4j.bootstrap.BindingException;
+import org.qi4j.functional.Specifications;
 import org.qi4j.runtime.injection.*;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
@@ -34,7 +35,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import static org.qi4j.api.util.Iterables.*;
+import static org.qi4j.functional.Iterables.*;
 
 /**
  * JAVADOC
@@ -84,7 +85,7 @@ public final class ConstructorsModel
             }
         };
 
-        return Iterables.flattenIterables( Iterables.map( constructorDependencies, boundConstructors == null ? constructorModels : boundConstructors));
+        return Iterables.flattenIterables( Iterables.map( constructorDependencies, boundConstructors == null ? constructorModels : boundConstructors ));
     }
 
     private ConstructorModel newConstructorModel( Class fragmentClass,
@@ -98,7 +99,7 @@ public final class ConstructorsModel
         for( Type type : injectedConstructor.getGenericParameterTypes() )
         {
             final Annotation injectionAnnotation = first(
-                filter( Specifications.translate( Annotations.type(), Annotations.hasAnnotation( InjectionScope.class )), iterable( parameterAnnotations[idx] ) ) );
+                filter( Specifications.translate( Annotations.type(), Annotations.hasAnnotation( InjectionScope.class ) ), iterable( parameterAnnotations[idx] ) ) );
             if( injectionAnnotation == null )
             {
                 return null; // invalid constructor parameter

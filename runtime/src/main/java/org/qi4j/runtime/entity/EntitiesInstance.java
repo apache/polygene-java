@@ -24,8 +24,8 @@ import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.VisibilitySpecification;
 import org.qi4j.spi.entitystore.EntityStore;
 
-import static org.qi4j.api.util.Iterables.filter;
-import static org.qi4j.api.util.Iterables.map;
+import static org.qi4j.functional.Iterables.filter;
+import static org.qi4j.functional.Iterables.map;
 
 /**
  * JAVADOC

@@ -8,7 +8,7 @@ import org.qi4j.api.entity.association.GenericAssociationInfo;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.query.QueryExpressionException;
 import org.qi4j.api.util.Classes;
-import org.qi4j.api.util.Function;
+import org.qi4j.functional.Function;
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Member;

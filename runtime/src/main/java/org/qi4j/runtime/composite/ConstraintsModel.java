@@ -19,7 +19,7 @@ import org.qi4j.api.constraint.Constraint;
 import org.qi4j.api.constraint.ConstraintImplementationNotFoundException;
 import org.qi4j.api.constraint.Constraints;
 import org.qi4j.api.util.Classes;
-import org.qi4j.api.util.Iterables;
+import org.qi4j.functional.Iterables;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -27,10 +27,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static org.qi4j.api.specification.Specifications.translate;
+import static org.qi4j.functional.Specifications.translate;
 import static org.qi4j.api.util.Annotations.hasAnnotation;
 import static org.qi4j.api.util.Annotations.type;
-import static org.qi4j.api.util.Iterables.filter;
+import static org.qi4j.functional.Iterables.filter;
 
 /**
  * JAVADOC
@@ -92,9 +92,9 @@ public final class ConstraintsModel
             // No implementation found!
 
             // Check if if it's a composite constraints
-            if( Iterables.matchesAny( translate( type(), hasAnnotation( org.qi4j.api.constraint.ConstraintDeclaration.class )), asList( constraintAnnotation
-                                                                                                                        .annotationType()
-                                                                                                                        .getAnnotations() ) ) )
+            if( Iterables.matchesAny( translate( type(), hasAnnotation( org.qi4j.api.constraint.ConstraintDeclaration.class ) ), asList( constraintAnnotation
+                    .annotationType()
+                    .getAnnotations() ) ) )
             {
                 ValueConstraintsModel valueConstraintsModel = constraintsFor( asList( constraintAnnotation.annotationType()
                                                                                           .getAnnotations() ), valueType, name, optional );

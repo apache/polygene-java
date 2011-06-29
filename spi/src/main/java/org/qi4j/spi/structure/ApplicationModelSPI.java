@@ -14,7 +14,7 @@
 
 package org.qi4j.spi.structure;
 
-import org.qi4j.api.util.VisitableHierarchy;
+import org.qi4j.functional.VisitableHierarchy;
 import org.qi4j.spi.Qi4jSPI;
 
 /**

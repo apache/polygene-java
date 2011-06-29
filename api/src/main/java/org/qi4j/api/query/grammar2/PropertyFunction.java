@@ -8,7 +8,7 @@ import org.qi4j.api.property.Property;
 import org.qi4j.api.query.NotQueryableException;
 import org.qi4j.api.query.QueryExpressionException;
 import org.qi4j.api.util.Classes;
-import org.qi4j.api.util.Function;
+import org.qi4j.functional.Function;
 
 import java.lang.reflect.*;
 

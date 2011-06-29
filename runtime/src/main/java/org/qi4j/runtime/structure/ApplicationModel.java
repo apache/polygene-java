@@ -17,7 +17,7 @@ package org.qi4j.runtime.structure;
 import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.structure.Application;
-import org.qi4j.api.util.HierarchicalVisitor;
+import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
 import org.qi4j.runtime.injection.provider.InjectionProviderFactoryStrategy;
 import org.qi4j.spi.Qi4jSPI;

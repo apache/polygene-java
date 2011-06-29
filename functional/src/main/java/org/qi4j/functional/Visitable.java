@@ -1,4 +1,4 @@
-package org.qi4j.api.util;
+package org.qi4j.functional;
 
 /**
  * Interface that visitable objects should implement.

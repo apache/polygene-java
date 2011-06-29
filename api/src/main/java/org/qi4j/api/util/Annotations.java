@@ -14,12 +14,14 @@
 
 package org.qi4j.api.util;
 
-import org.qi4j.api.specification.Specification;
+import org.qi4j.functional.Iterables;
+import org.qi4j.functional.Specification;
+import org.qi4j.functional.Function;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 
-import static org.qi4j.api.util.Iterables.*;
+import static org.qi4j.functional.Iterables.*;
 
 /**
  * Useful methods for handling Annotations.
@@ -31,7 +33,7 @@ public final class Annotations
         @Override
         public Iterable<Annotation> map( Type type )
         {
-            return Iterables.iterable(Classes.RAW_CLASS.map( type ).getAnnotations());
+            return Iterables.iterable( Classes.RAW_CLASS.map( type ).getAnnotations() );
         }
     });
 

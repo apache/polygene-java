@@ -1,9 +1,8 @@
 package org.qi4j.api.query.grammar2;
 
 import org.qi4j.api.composite.Composite;
-import org.qi4j.api.specification.Specification;
-import org.qi4j.api.specification.Specifications;
-import org.qi4j.api.util.Iterables;
+import org.qi4j.functional.Specification;
+import org.qi4j.functional.Specifications;
 
 /**
 * TODO

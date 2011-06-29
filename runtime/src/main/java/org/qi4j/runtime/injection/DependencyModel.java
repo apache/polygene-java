@@ -15,13 +15,13 @@ package org.qi4j.runtime.injection;
 
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.Optional;
-import org.qi4j.api.specification.Specification;
-import org.qi4j.api.util.Function;
-import org.qi4j.api.util.Iterables;
-import org.qi4j.api.util.Visitable;
-import org.qi4j.api.util.Visitor;
+import org.qi4j.functional.Function;
+import org.qi4j.functional.Iterables;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.bootstrap.InvalidInjectionException;
+import org.qi4j.functional.Specification;
+import org.qi4j.functional.Visitable;
+import org.qi4j.functional.Visitor;
 import org.qi4j.runtime.injection.provider.InjectionProviderException;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
@@ -35,7 +35,7 @@ import java.lang.reflect.TypeVariable;
 import java.util.Collections;
 
 import static org.qi4j.api.util.Annotations.isType;
-import static org.qi4j.api.util.Iterables.iterable;
+import static org.qi4j.functional.Iterables.iterable;
 
 /**
  * JAVADOC

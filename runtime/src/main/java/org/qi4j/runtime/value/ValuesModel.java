@@ -14,8 +14,8 @@
 
 package org.qi4j.runtime.value;
 
-import org.qi4j.api.util.HierarchicalVisitor;
-import org.qi4j.api.util.VisitableHierarchy;
+import org.qi4j.functional.HierarchicalVisitor;
+import org.qi4j.functional.VisitableHierarchy;
 
 import java.util.List;
 

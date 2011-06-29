@@ -1,7 +1,7 @@
 package org.qi4j.api.query.grammar2;
 
 import org.qi4j.api.composite.Composite;
-import org.qi4j.api.specification.Specification;
+import org.qi4j.functional.Specification;
 
 /**
  * This should be used when doing native queries, such as SQL, SPARQL or similar. EntityFinders can choose

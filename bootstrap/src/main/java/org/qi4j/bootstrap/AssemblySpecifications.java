@@ -1,7 +1,7 @@
 package org.qi4j.bootstrap;
 
-import org.qi4j.api.specification.Specification;
-import org.qi4j.api.specification.Specifications;
+import org.qi4j.functional.Specification;
+import org.qi4j.functional.Specifications;
 
 /**
  * Utility specifications for Assemblies.

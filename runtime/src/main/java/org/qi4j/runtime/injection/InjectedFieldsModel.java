@@ -16,6 +16,10 @@ package org.qi4j.runtime.injection;
 
 import org.qi4j.api.injection.InjectionScope;
 import org.qi4j.api.util.*;
+import org.qi4j.functional.Function;
+import org.qi4j.functional.HierarchicalVisitor;
+import org.qi4j.functional.Iterables;
+import org.qi4j.functional.VisitableHierarchy;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -25,10 +29,10 @@ import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.qi4j.api.specification.Specifications.translate;
+import static org.qi4j.functional.Specifications.translate;
 import static org.qi4j.api.util.Annotations.hasAnnotation;
 import static org.qi4j.api.util.Annotations.type;
-import static org.qi4j.api.util.Iterables.*;
+import static org.qi4j.functional.Iterables.*;
 
 /**
  * JAVADOC
@@ -78,13 +82,13 @@ public final class InjectedFieldsModel
     public Iterable<DependencyModel> dependencies()
     {
         return Iterables.map( new Function<InjectedFieldModel, DependencyModel>()
-        {
-            @Override
-            public DependencyModel map( InjectedFieldModel injectedFieldModel )
-            {
-                return injectedFieldModel.dependency();
-            }
-        }, fields);
+                {
+                    @Override
+                    public DependencyModel map( InjectedFieldModel injectedFieldModel )
+                    {
+                        return injectedFieldModel.dependency();
+                    }
+                }, fields );
     }
 
     @Override

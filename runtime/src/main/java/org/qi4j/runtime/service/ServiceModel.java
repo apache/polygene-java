@@ -23,7 +23,7 @@ import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.api.specification.Specifications;
+import org.qi4j.functional.Specifications;
 import org.qi4j.api.util.Classes;
 import org.qi4j.bootstrap.MetaInfoDeclaration;
 import org.qi4j.bootstrap.PropertyDeclarations;
@@ -42,9 +42,9 @@ import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.qi4j.api.specification.Specifications.and;
-import static org.qi4j.api.specification.Specifications.translate;
-import static org.qi4j.api.util.Iterables.filter;
+import static org.qi4j.functional.Specifications.and;
+import static org.qi4j.functional.Specifications.translate;
+import static org.qi4j.functional.Iterables.filter;
 
 /**
  * JAVADOC

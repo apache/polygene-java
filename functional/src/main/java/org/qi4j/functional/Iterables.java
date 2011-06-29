@@ -12,9 +12,8 @@
  *
  */
 
-package org.qi4j.api.util;
+package org.qi4j.functional;
 
-import org.qi4j.api.specification.Specification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

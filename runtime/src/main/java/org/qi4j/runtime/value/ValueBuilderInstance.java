@@ -17,7 +17,7 @@ package org.qi4j.runtime.value;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.property.PropertyInfo;
 import org.qi4j.api.property.StateHolder;
-import org.qi4j.api.util.Function;
+import org.qi4j.functional.Function;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.runtime.structure.ModelModule;

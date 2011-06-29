@@ -20,8 +20,8 @@ import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.service.DuplicateServiceIdentityException;
 import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.api.specification.Specification;
-import org.qi4j.api.util.Iterables;
+import org.qi4j.functional.Iterables;
+import org.qi4j.functional.Specification;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.*;
 import org.qi4j.runtime.composite.TransientModel;
@@ -41,7 +41,7 @@ import org.qi4j.spi.service.ServiceImporter;
 
 import java.util.*;
 
-import static org.qi4j.api.util.Iterables.iterable;
+import static org.qi4j.functional.Iterables.iterable;
 
 /**
  * Assembly of a Module. This is where you register all objects, Composites,
@@ -264,7 +264,7 @@ public final class ModuleAssemblyImpl
       {
          if (Iterables.matchesAny(AssemblySpecifications.types(serviceType), serviceAssemblies))
          {
-            Iterables.addAll(assemblies, Iterables.filter(AssemblySpecifications.types(serviceType), serviceAssemblies));
+            Iterables.addAll(assemblies, Iterables.filter( AssemblySpecifications.types( serviceType ), serviceAssemblies ));
          } else
          {
             ServiceAssemblyImpl serviceAssembly = new ServiceAssemblyImpl(serviceType, this);

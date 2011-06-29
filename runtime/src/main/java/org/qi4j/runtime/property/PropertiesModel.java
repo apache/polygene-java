@@ -29,8 +29,8 @@ import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Member;
 
 import static org.qi4j.api.util.Annotations.isType;
-import static org.qi4j.api.util.Iterables.filter;
-import static org.qi4j.api.util.Iterables.first;
+import static org.qi4j.functional.Iterables.filter;
+import static org.qi4j.functional.Iterables.first;
 
 /**
  * Model for properties in Transient Composites

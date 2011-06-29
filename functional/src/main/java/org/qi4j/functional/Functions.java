@@ -1,14 +1,10 @@
-package org.qi4j.api.util;
-
-import org.qi4j.api.specification.Specification;
+package org.qi4j.functional;
 
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.qi4j.api.specification.Specifications.in;
-import static org.qi4j.api.specification.Specifications.not;
-import static org.qi4j.api.util.Iterables.*;
+import static org.qi4j.functional.Specifications.in;
 
 /**
  * Utility functions. Combine these with methods in Iterables, for example. See FunctionsTest for usages.
@@ -183,7 +179,7 @@ public final class Functions
      */
     public static <T> int indexOf(T item, Iterable<T> iterable)
     {
-        return first( filter( not( in( -1 ) ), map( indexOf( in( item ) ), iterable ) ) );
+        return Iterables.first( Iterables.filter( Specifications.not( Specifications.in( -1 ) ), Iterables.map( indexOf( Specifications.in( item ) ), iterable ) ) );
     }
 
     /**

@@ -20,7 +20,7 @@ package org.qi4j.regression.qi78;
 import org.junit.Assert;
 import org.junit.Test;
 import org.qi4j.api.structure.Application;
-import org.qi4j.api.util.HierarchicalVisitor;
+import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.bootstrap.*;
 import org.qi4j.spi.structure.ApplicationModelSPI;
 import org.qi4j.spi.structure.ApplicationSPI;

@@ -16,9 +16,9 @@ package org.qi4j.runtime.composite;
 
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.constraint.Name;
-import org.qi4j.api.util.HierarchicalVisitor;
-import org.qi4j.api.util.Iterables;
-import org.qi4j.api.util.VisitableHierarchy;
+import org.qi4j.functional.HierarchicalVisitor;
+import org.qi4j.functional.Iterables;
+import org.qi4j.functional.VisitableHierarchy;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.spi.constraint.MethodConstraintsDescriptor;
 

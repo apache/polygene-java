@@ -16,8 +16,8 @@ package org.qi4j.runtime.service;
 
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.ServiceReference;
-import org.qi4j.api.specification.Specification;
-import org.qi4j.api.util.Iterables;
+import org.qi4j.functional.Iterables;
+import org.qi4j.functional.Specification;
 
 import java.util.List;
 

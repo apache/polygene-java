@@ -18,7 +18,7 @@
 
 package org.qi4j.bootstrap;
 
-import org.qi4j.api.specification.Specification;
+import org.qi4j.functional.Specification;
 
 /**
  * Fluid API for declaring a layer in an application. This is obtained by calling {@link ApplicationAssembly#layer(String)}.

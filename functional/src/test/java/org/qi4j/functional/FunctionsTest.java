@@ -1,16 +1,17 @@
-package org.qi4j.api.util;
+package org.qi4j.functional;
 
 import org.junit.Test;
-import org.qi4j.api.specification.Specifications;
+import org.qi4j.functional.*;
+import org.qi4j.functional.Specifications;
 
 import java.util.*;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
-import static org.qi4j.api.specification.Specifications.in;
-import static org.qi4j.api.util.Functions.*;
-import static org.qi4j.api.util.Functions.count;
-import static org.qi4j.api.util.Iterables.*;
+import static org.qi4j.functional.Specifications.in;
+import static org.qi4j.functional.Functions.*;
+import static org.qi4j.functional.Functions.count;
+import static org.qi4j.functional.Iterables.*;
 
 /**
  * Test of utility functions
@@ -98,7 +99,7 @@ public class FunctionsTest
             {
                 return integer.toString();
             }
-        });
+        } );
 
         List<Integer> integers = Iterables.toList( Iterables.iterable( 1, 5, 3, 6, 8 ) );
         Collections.sort( integers, comparator );

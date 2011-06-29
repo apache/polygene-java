@@ -12,11 +12,13 @@
  *
  */
 
-package org.qi4j.api.specification;
+package org.qi4j.functional;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.qi4j.api.util.Function;
+import org.qi4j.functional.Function;
+import org.qi4j.functional.Specification;
+import org.qi4j.functional.Specifications;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 

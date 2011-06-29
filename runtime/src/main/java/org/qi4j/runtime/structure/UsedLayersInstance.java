@@ -16,8 +16,8 @@ package org.qi4j.runtime.structure;
 
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.ServiceReference;
-import org.qi4j.api.util.Function;
-import org.qi4j.api.util.Iterables;
+import org.qi4j.functional.Function;
+import org.qi4j.functional.Iterables;
 import org.qi4j.runtime.composite.TransientModel;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.object.ObjectModel;
@@ -88,12 +88,12 @@ public final class UsedLayersInstance
     Iterable<ServiceReference> visibleServices()
     {
         return Iterables.flattenIterables( Iterables.map( new Function<LayerInstance, Iterable<ServiceReference>>()
-        {
-            @Override
-            public Iterable<ServiceReference> map( LayerInstance layerInstance )
-            {
-                return layerInstance.visibleServices(Visibility.application);
-            }
-        }, usedLayerInstances ));
+                {
+                    @Override
+                    public Iterable<ServiceReference> map( LayerInstance layerInstance )
+                    {
+                        return layerInstance.visibleServices( Visibility.application );
+                    }
+                }, usedLayerInstances ));
     }
 }

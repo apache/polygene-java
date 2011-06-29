@@ -17,7 +17,7 @@ package org.qi4j.api.io;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
-import org.qi4j.api.util.Function;
+import org.qi4j.functional.Function;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
@@ -31,7 +31,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import static java.util.Arrays.asList;
 import static org.qi4j.api.io.Inputs.text;
 import static org.qi4j.api.io.Transforms.lock;
-import static org.qi4j.api.util.Iterables.iterable;
+import static org.qi4j.functional.Iterables.iterable;
 
 /**
  * Test Input/Output

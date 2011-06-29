@@ -12,11 +12,13 @@
  *
  */
 
-package org.qi4j.api.util;
+package org.qi4j.functional;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
-import org.qi4j.api.specification.Specifications;
+import org.qi4j.functional.Iterables;
+import org.qi4j.functional.Specifications;
+import org.qi4j.functional.Function;
 
 import java.util.*;
 
@@ -214,13 +216,13 @@ public class IterablesTest
     @Test
     public void testDebugWithFunctions()
     {
-        assertThat( Iterables.first( Iterables.debug( "Filtered number:{0}", Iterables.filter( Specifications.in( "2" ), Iterables.debug( "Number:{0}", numbers, new Function<String,String>()
+        assertThat( Iterables.first( Iterables.debug( "Filtered number:{0}", Iterables.filter( Specifications.in( "2" ), Iterables.debug( "Number:{0}", numbers, new Function<String, String>()
         {
             @Override
             public String map( String s )
             {
-                return s+":"+s.length();
+                return s + ":" + s.length();
             }
-        }) ) ) ), equalTo( "2" ) );
+        } ) ) ) ), equalTo( "2" ) );
     }
 }
