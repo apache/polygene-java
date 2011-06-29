@@ -10,7 +10,10 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.index.rdf.assembly.RdfMemoryStoreAssembler;
+import org.qi4j.spi.query.IndexExporter;
 import org.qi4j.test.EntityTestAssembler;
+
+import java.io.IOException;
 
 import static org.qi4j.api.query.QueryExpressions.eq;
 import static org.qi4j.api.query.QueryExpressions.templateFor;
@@ -51,7 +54,7 @@ public class HelloWorldCompositeTest
     }
 
     @Test
-    public void testEntity() throws UnitOfWorkCompletionException
+    public void testEntity() throws UnitOfWorkCompletionException, IOException
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {
@@ -80,6 +83,8 @@ public class HelloWorldCompositeTest
         {
             uow.complete();
         }
+
+        assembler.serviceFinder().findService( IndexExporter.class ).get().exportReadableToStream( System.out );
 
         // Find it
         uow = assembler.unitOfWorkFactory().newUnitOfWork();

@@ -1,11 +1,11 @@
 
 // Versions of Dependencies;
-asmVersion = '3.3'
+asmVersion = '3.3.1'
 bouncyVersion = '1.45'
-derbyVersion = '10.7.1.1'
-ehcacheVersion = '2.1.1'
+derbyVersion = '10.8.1.2'
+ehcacheVersion = '2.4.2'
 googleCollectionsVersion = '1.0'
-hazelcastVersion = '1.9.2.2'
+hazelcastVersion = '1.9.3.1'
 hibernateVersion = "3.2.7.ga"
 ibatisVersion = "2.3.0"
 jclVersion = '1.1'
@@ -14,7 +14,7 @@ jettyVersion = '6.1.22'
 jodaTimeVersion = '1.6.2'
 log4jVersion = '1.2.16'
 osgiVersion = '4.2.0'
-rdfVersion = '2.3.2'
+rdfVersion = '2.4.0'
 restletVersion = '2.0.4'
 servletVersion = '2.5'
 shiroVersion = '1.1.0'
@@ -25,7 +25,7 @@ springVersion = '2.5.6'
 strutsVersion = '2.1.8.1'
 vaadinVersion = '6.4.8'
 voldemortVersion = '0.81'
-c3p0Version = '0.9.1'
+c3p0Version = '0.9.1.2'
 liquibaseVersion = '2.0.1'
 
 antVersion = '1.8.1'

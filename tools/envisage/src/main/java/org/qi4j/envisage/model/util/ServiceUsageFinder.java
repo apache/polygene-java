@@ -135,7 +135,7 @@ class ServiceUsageFinder
             if( Uses.class.equals( clazz ) || Service.class.equals( clazz ) )
             {
                 boolean used = false;
-                if( dependencyDescriptor.injectionClass().equals( this.descriptor.descriptor().type() ) )
+                if( dependencyDescriptor.injectionType().equals( this.descriptor.descriptor().type() ) )
                 {
                     TableRow row = new TableRow( 5 );
                     if( ownerDescriptor instanceof MixinDetailDescriptor )

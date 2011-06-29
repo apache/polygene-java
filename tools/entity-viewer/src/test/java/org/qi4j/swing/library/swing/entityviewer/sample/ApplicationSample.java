@@ -32,6 +32,7 @@ import org.qi4j.library.swing.entityviewer.EntityViewer;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
 
+@SuppressWarnings({"unchecked"})
 public class ApplicationSample
     extends AbstractQi4jTest
 {

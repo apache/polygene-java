@@ -62,11 +62,11 @@ public class SequencingConcernTest
         Voyage voyage = createMock( Voyage.class );
         HasSequence sequence = createMock( HasSequence.class );
         expect( shippingService.makeBooking( cargo, voyage ) ).andReturn( -1000 );
-        expect( voyage.bookedCargoSize() ).andReturn( new PropertyInstance<Double>( new GenericPropertyInfo( Voyage.class, "bookedCargoSize" ), 0.0, null ) )
+        expect( voyage.bookedCargoSize().get() ).andReturn( 0.0 )
             .atLeastOnce();
-        expect( cargo.size() ).andReturn( new PropertyInstance<Double>( new GenericPropertyInfo( Cargo.class, "size" ), 0.0, null ) )
+        expect( cargo.size().get() ).andReturn( 0.0 )
             .atLeastOnce();
-        expect( sequence.sequence() ).andReturn( new PropertyInstance<Integer>( new GenericPropertyInfo( HasSequence.class, "sequence" ), 0, null ) )
+        expect( sequence.sequence().get() ).andReturn( 0 )
             .atLeastOnce();
         replay( shippingService, cargo, voyage );
         ShippingServiceTestComposite underTest =

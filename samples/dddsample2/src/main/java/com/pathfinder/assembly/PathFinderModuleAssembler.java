@@ -3,12 +3,12 @@ package com.pathfinder.assembly;
 import com.pathfinder.api.GraphTraversalService;
 import com.pathfinder.internal.GraphDAO;
 import com.pathfinder.internal.GraphTraversalServiceImpl;
-import org.qi4j.api.service.ImportedServiceDescriptor;
-import org.qi4j.api.service.ServiceImporter;
-import org.qi4j.api.service.ServiceImporterException;
+import org.qi4j.spi.service.ServiceImporter;
+import org.qi4j.spi.service.ImportedServiceDescriptor;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.spi.service.ServiceImporterException;
 
 public class PathFinderModuleAssembler
     implements Assembler

@@ -19,8 +19,8 @@ package org.qi4j.envisage.model.descriptor;
 import java.util.LinkedList;
 import java.util.List;
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.service.ImportedServiceDescriptor;
-import org.qi4j.api.service.ServiceImporter;
+import org.qi4j.spi.service.ImportedServiceDescriptor;
+import org.qi4j.spi.service.ServiceImporter;
 import org.qi4j.api.util.Classes;
 import org.qi4j.spi.composite.AbstractCompositeDescriptor;
 

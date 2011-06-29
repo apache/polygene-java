@@ -18,7 +18,6 @@
 
 package org.qi4j.test.performance.indexing.rdf;
 
-import java.io.File;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -39,24 +38,20 @@ import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-import org.qi4j.bootstrap.ApplicationAssembler;
-import org.qi4j.bootstrap.ApplicationAssembly;
-import org.qi4j.bootstrap.ApplicationAssemblyFactory;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.Energy4Java;
-import org.qi4j.bootstrap.LayerAssembly;
-import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.bootstrap.*;
 import org.qi4j.entitystore.jdbm.JdbmConfiguration;
 import org.qi4j.entitystore.jdbm.assembly.JdbmEntityStoreAssembler;
 import org.qi4j.index.rdf.assembly.RdfNativeSesameStoreAssembler;
 import org.qi4j.index.rdf.indexing.RdfIndexingService;
-import org.qi4j.index.rdf.query.NamedSparqlDescriptor;
+import org.qi4j.index.rdf.query.SesameExpressions;
 import org.qi4j.library.rdf.repository.NativeConfiguration;
-import org.qi4j.spi.query.NamedQueries;
 import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.test.EntityTestAssembler;
 
-import static org.qi4j.api.query.QueryExpressions.*;
+import java.io.File;
+
+import static org.qi4j.api.query.QueryExpressions.eq;
+import static org.qi4j.api.query.QueryExpressions.templateFor;
 
 @SuppressWarnings( { "ResultOfMethodCallIgnored" } )
 public class QueryPerformanceTest
@@ -223,11 +218,11 @@ public class QueryPerformanceTest
         throws Exception
     {
         LeadRepository leadRepo = populateEntityStore();
-        measureNamedQuery( leadRepo, "1" );
-        measureNamedQuery( leadRepo, "2" );
-        measureNamedQuery( leadRepo, "3" );
-        measureNamedQuery( leadRepo, "4" );
-        measureNamedQuery( leadRepo, "5" );
+        measureNamedQuery( leadRepo, QUERY1 );
+        measureNamedQuery( leadRepo, QUERY2 );
+        measureNamedQuery( leadRepo, QUERY3 );
+        measureNamedQuery( leadRepo, QUERY4 );
+        measureNamedQuery( leadRepo, QUERY5 );
     }
 
     private LeadRepository populateEntityStore()
@@ -334,14 +329,7 @@ public class QueryPerformanceTest
 
         // Indexing
 
-        NamedQueries namedQueries = new NamedQueries();
-        namedQueries.addQuery( new NamedSparqlDescriptor( "1", QUERY1 ) );
-        namedQueries.addQuery( new NamedSparqlDescriptor( "2", QUERY2 ) );
-        namedQueries.addQuery( new NamedSparqlDescriptor( "3", QUERY3 ) );
-        namedQueries.addQuery( new NamedSparqlDescriptor( "4", QUERY4 ) );
-        namedQueries.addQuery( new NamedSparqlDescriptor( "5", QUERY5 ) );
-
-        new RdfNativeSesameStoreAssembler( namedQueries ).assemble( module );
+        new RdfNativeSesameStoreAssembler( ).assemble( module );
 
         // Entity store
         new JdbmEntityStoreAssembler( Visibility.application ).assemble( module );
@@ -419,10 +407,10 @@ public class QueryPerformanceTest
         @Structure
         private QueryBuilderFactory qbf;
 
-        public Lead findByFixedQuery( String name )
+        public Lead findByFixedQuery( String queryString )
         {
             UnitOfWork uow = uowf.currentUnitOfWork();
-            Query<Lead> query = qbf.newNamedQuery( Lead.class, uow, name );
+            Query<Lead> query = qbf.newQueryBuilder( Lead.class ).where( SesameExpressions.sparql( queryString ) ).newQuery( uow );
             return query.find();
         }
 

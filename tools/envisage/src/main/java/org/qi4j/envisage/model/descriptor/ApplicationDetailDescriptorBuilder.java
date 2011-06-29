@@ -19,7 +19,7 @@
  */
 package org.qi4j.envisage.model.descriptor;
 
-import org.qi4j.api.service.ImportedServiceDescriptor;
+import org.qi4j.spi.service.ImportedServiceDescriptor;
 import org.qi4j.api.util.HierarchicalVisitor;
 import org.qi4j.spi.composite.ConstructorDescriptor;
 import org.qi4j.spi.composite.InjectedFieldDescriptor;
@@ -62,7 +62,7 @@ public final class ApplicationDetailDescriptorBuilder
     }
 
     static final class ApplicationDescriptorVisitor
-            implements HierarchicalVisitor<Object, Object, RuntimeException>
+            extends HierarchicalVisitor<Object, Object, RuntimeException>
     {
         // Temp: application
         private ApplicationDetailDescriptor applicationDescriptor;

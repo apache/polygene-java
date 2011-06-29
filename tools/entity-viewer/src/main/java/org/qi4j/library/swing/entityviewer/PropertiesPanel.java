@@ -22,7 +22,7 @@ import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.property.PropertyTypeDescriptor;
+import org.qi4j.spi.property.PersistentPropertyDescriptor;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -86,18 +86,18 @@ public class PropertiesPanel
             // genereate column, first time only
             if( model.getColumnCount() < 1 )
             {
-                for( PropertyTypeDescriptor propertyDescriptor : descriptor.state()
-                    .<PropertyTypeDescriptor>properties() )
+                for( PersistentPropertyDescriptor persistentPropertyDescriptor : descriptor.state()
+                    .<PersistentPropertyDescriptor>properties() )
                 {
-                    model.addColumn( propertyDescriptor.qualifiedName().name() );
+                    model.addColumn( persistentPropertyDescriptor.qualifiedName().name() );
                 }
             }
 
             Object[] rowData = new Object[model.getColumnCount()];
             int i = 0;
-            for( PropertyTypeDescriptor propertyDescriptor : descriptor.state().<PropertyTypeDescriptor>properties() )
+            for( PersistentPropertyDescriptor persistentPropertyDescriptor : descriptor.state().<PersistentPropertyDescriptor>properties() )
             {
-                rowData[ i++ ] = state.getProperty( propertyDescriptor.propertyType().qualifiedName() );
+                rowData[ i++ ] = state.getProperty( persistentPropertyDescriptor.qualifiedName() );
             }
             model.addRow( rowData );
         }
