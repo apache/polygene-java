@@ -1,7 +1,7 @@
 jar { manifest { name = "Qi4j Core API"}}
 
 dependencies {
-  compile(project(':org.qi4j.core:org.qi4j.core.functional'))
+  compile(project(':org.qi4j.core:org.qi4j.core.io'))
   compile(libraries.slf4j_api)
   testCompile(libraries.ant)
   testCompile(libraries.junit)
