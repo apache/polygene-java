@@ -2,9 +2,12 @@ package org.qi4j.api.query.grammar2;
 
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.CompositeInvoker;
+import org.qi4j.api.entity.association.EntityStateHolder;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.util.Function;
 
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
@@ -16,13 +19,13 @@ public class ManyAssociationFunction<T>
 {
     private AssociationFunction<?> traversedAssociation;
     private ManyAssociationFunction<?> traversedManyAssociation;
-    private final Method method;
+    private final AccessibleObject accessor;
 
-    public ManyAssociationFunction( AssociationFunction<?> traversedAssociation, ManyAssociationFunction<?> traversedManyAssociation, Method method )
+    public ManyAssociationFunction( AssociationFunction<?> traversedAssociation, ManyAssociationFunction<?> traversedManyAssociation, AccessibleObject accessor )
     {
         this.traversedAssociation = traversedAssociation;
         this.traversedManyAssociation = traversedManyAssociation;
-        this.method = method;
+        this.accessor = accessor;
     }
 
     public AssociationFunction<?> getTraversedAssociation()
@@ -35,9 +38,9 @@ public class ManyAssociationFunction<T>
         return traversedManyAssociation;
     }
 
-    public Method getMethod()
+    public AccessibleObject getAccessor()
     {
-        return method;
+        return accessor;
     }
 
     @Override
@@ -52,10 +55,10 @@ public class ManyAssociationFunction<T>
                 throw new IllegalArgumentException( "Cannot traverse ManyAssociations" );
 
             CompositeInvoker handler = (CompositeInvoker) Proxy.getInvocationHandler( target );
-            return (ManyAssociation<T>) handler.invokeComposite( method, new Object[0] );
-        } catch( IllegalAccessException e )
+            return ((EntityStateHolder)handler.state()).getManyAssociation( accessor );
+        } catch( IllegalArgumentException e )
         {
-            throw new IllegalArgumentException( e );
+            throw e;
         } catch( Throwable e )
         {
             throw new IllegalArgumentException( e );
@@ -66,8 +69,8 @@ public class ManyAssociationFunction<T>
     public String toString()
     {
         if (traversedAssociation != null)
-            return traversedAssociation.toString()+"."+method.getName();
+            return traversedAssociation.toString()+"."+ ((Member)accessor).getName();
         else
-            return method.getName();
+            return ((Member)accessor).getName();
     }
 }

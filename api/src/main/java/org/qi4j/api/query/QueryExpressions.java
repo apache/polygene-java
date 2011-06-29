@@ -81,6 +81,18 @@ public final class QueryExpressions
                                     new Class[]{field.getType()},
                                     new PropertyReferenceHandler( new PropertyFunction( null, null, null, field ) ) ));
                         }
+                        else if (field.getType().equals( Association.class ))
+                        {
+                            field.set(mixin, Proxy.newProxyInstance( field.getType().getClassLoader(),
+                                    new Class[]{field.getType()},
+                                    new AssociationReferenceHandler( new AssociationFunction( null, null, field ) ) ));
+                        }
+                        else if (field.getType().equals( Property.class ))
+                        {
+                            field.set(mixin, Proxy.newProxyInstance( field.getType().getClassLoader(),
+                                    new Class[]{field.getType()},
+                                    new ManyAssociationReferenceHandler( new ManyAssociationFunction( null, null, field ) ) ));
+                        }
                     }
                 }
                 return mixin;
@@ -364,7 +376,7 @@ public final class QueryExpressions
         {
             if( method.equals( ManyAssociation.class.getMethod( "get", Integer.TYPE ) ) )
             {
-                Type manyAssociationType = GenericAssociationInfo.getAssociationType( manyAssociation.getMethod().getReturnType() );
+                Type manyAssociationType = GenericAssociationInfo.getAssociationType( manyAssociation.getAccessor() );
                 if( manyAssociationType.getClass().equals( Class.class ) )
                     return Proxy.newProxyInstance( method.getDeclaringClass().getClassLoader(),
                             new Class[]{(Class) manyAssociationType, org.qi4j.api.query.grammar2.PropertyReference.class},
