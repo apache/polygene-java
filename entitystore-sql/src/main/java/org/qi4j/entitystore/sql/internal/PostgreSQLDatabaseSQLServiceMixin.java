@@ -14,16 +14,14 @@
  */
 package org.qi4j.entitystore.sql.internal;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.library.sql.common.SQLUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sql.generation.api.grammar.common.datatypes.SQLDataType;
-import org.sql.generation.api.vendor.PostgreSQLVendor;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 @SuppressWarnings("ProtectedField")
 public abstract class PostgreSQLDatabaseSQLServiceMixin

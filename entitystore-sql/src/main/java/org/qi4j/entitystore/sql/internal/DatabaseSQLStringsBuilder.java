@@ -22,13 +22,7 @@ import org.sql.generation.api.grammar.builders.modification.UpdateBySearchBuilde
 import org.sql.generation.api.grammar.common.SQLStatement;
 import org.sql.generation.api.grammar.common.datatypes.SQLDataType;
 import org.sql.generation.api.grammar.definition.table.UniqueSpecification;
-import org.sql.generation.api.grammar.factories.BooleanFactory;
-import org.sql.generation.api.grammar.factories.ColumnsFactory;
-import org.sql.generation.api.grammar.factories.DefinitionFactory;
-import org.sql.generation.api.grammar.factories.LiteralFactory;
-import org.sql.generation.api.grammar.factories.ModificationFactory;
-import org.sql.generation.api.grammar.factories.QueryFactory;
-import org.sql.generation.api.grammar.factories.TableReferenceFactory;
+import org.sql.generation.api.grammar.factories.*;
 import org.sql.generation.api.vendor.SQLVendor;
 
 public interface DatabaseSQLStringsBuilder

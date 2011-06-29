@@ -13,9 +13,6 @@
  */
 package org.qi4j.entitystore.sql;
 
-import java.sql.Connection;
-import java.sql.Statement;
-
 import org.junit.Ignore;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.unitofwork.UnitOfWork;
@@ -28,6 +25,9 @@ import org.qi4j.library.sql.common.SQLConfiguration;
 import org.qi4j.library.sql.common.SQLUtil;
 import org.qi4j.library.sql.ds.PGDataSourceConfiguration;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
+
+import java.sql.Connection;
+import java.sql.Statement;
 
 /**
  * WARN This test is deactivated on purpose, please do not commit it activated.

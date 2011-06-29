@@ -27,8 +27,9 @@ import org.qi4j.api.io.Output;
 import org.qi4j.api.io.Receiver;
 import org.qi4j.api.io.Sender;
 import org.qi4j.api.service.Activatable;
+import org.qi4j.api.util.Classes;
 import org.qi4j.entitystore.map.MapEntityStore;
-import org.qi4j.spi.entity.EntityType;
+import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entitystore.EntityStoreException;
 
@@ -161,7 +162,7 @@ public class GaeEntityStoreMixin
          this.transaction = transaction;
       }
 
-      public Writer newEntity(final EntityReference ref, final EntityType entityType)
+      public Writer newEntity(final EntityReference ref, final EntityDescriptor descriptor)
       {
          return new StringWriter(1000)
          {
@@ -175,13 +176,13 @@ public class GaeEntityStoreMixin
                Text value = new Text(toString());
                entity.setUnindexedProperty("value", value);
                entity.setProperty("ref", ref.identity());
-               entity.setProperty("type", entityType.uri());
+               entity.setProperty("type", Classes.toURI( descriptor.type() ));
                datastore.put(transaction, entity);
             }
          };
       }
 
-      public Writer updateEntity(final EntityReference ref, final EntityType entityType)
+      public Writer updateEntity(final EntityReference ref, final EntityDescriptor descriptor)
       {
          return new StringWriter(1000)
          {
@@ -195,13 +196,13 @@ public class GaeEntityStoreMixin
                Text value = new Text(toString());
                entity.setUnindexedProperty("value", value);
                entity.setProperty("ref", ref.identity());
-               entity.setProperty("type", entityType.uri());
+               entity.setProperty("type", Classes.toURI( descriptor.type() ));
                datastore.put(transaction, entity);
             }
          };
       }
 
-      public void removeEntity(EntityReference ref, EntityType entityType)
+      public void removeEntity(EntityReference ref, EntityDescriptor descriptor)
               throws EntityNotFoundException
       {
          Key key = KeyFactory.createKey(entityKind, ref.toURI());

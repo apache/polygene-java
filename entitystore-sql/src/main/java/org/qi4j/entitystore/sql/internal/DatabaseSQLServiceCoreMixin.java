@@ -14,10 +14,6 @@
  */
 package org.qi4j.entitystore.sql.internal;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
@@ -33,6 +29,10 @@ import org.qi4j.spi.entitystore.EntityStoreException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sql.generation.api.vendor.SQLVendor;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 @SuppressWarnings("ProtectedField")
 public abstract class DatabaseSQLServiceCoreMixin

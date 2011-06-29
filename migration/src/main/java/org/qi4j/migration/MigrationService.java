@@ -14,8 +14,6 @@
 
 package org.qi4j.migration;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,6 +36,9 @@ import org.qi4j.migration.assembly.MigrationRule;
 import org.qi4j.spi.entitystore.EntityStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Migration service. This is used by MapEntityStore EntityStore implementations to

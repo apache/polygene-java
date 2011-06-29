@@ -16,36 +16,26 @@
  */
 package org.qi4j.entitystore.voldemort;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.util.ConcurrentModificationException;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReadWriteLock;
-
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.io.Input;
 import org.qi4j.api.io.Output;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.entitystore.map.MapEntityStore;
-import org.qi4j.spi.entity.EntityType;
+import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entitystore.EntityStoreException;
-import org.qi4j.spi.service.ServiceDescriptor;
-import voldemort.client.ClientConfig;
-import voldemort.client.RoutingTier;
-import voldemort.client.SocketStoreClientFactory;
-import voldemort.client.StoreClient;
-import voldemort.client.StoreClientFactory;
+import voldemort.client.*;
 import voldemort.client.protocol.RequestFormatType;
 import voldemort.versioning.ObsoleteVersionException;
 import voldemort.versioning.Versioned;
+
+import java.io.*;
+import java.util.ConcurrentModificationException;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReadWriteLock;
 
 /**
  * JDBM implementation of SerializationStore
@@ -275,7 +265,7 @@ public class VoldemortEntityStoreMixin
       {
          changes.visitMap(new MapChanger()
          {
-            public Writer newEntity(final EntityReference ref, EntityType entityType)
+            public Writer newEntity(final EntityReference ref, EntityDescriptor descriptor )
                     throws IOException
             {
                return new StringWriter(1000)
@@ -291,7 +281,7 @@ public class VoldemortEntityStoreMixin
                };
             }
 
-            public Writer updateEntity(final EntityReference ref, EntityType entityType)
+            public Writer updateEntity(final EntityReference ref, EntityDescriptor descriptor)
                     throws IOException
             {
                return new StringWriter(1000)
@@ -316,7 +306,7 @@ public class VoldemortEntityStoreMixin
                        ;
             }
 
-            public void removeEntity(EntityReference ref, EntityType entityType)
+            public void removeEntity(EntityReference ref, EntityDescriptor descriptor)
                     throws EntityNotFoundException
             {
                client.delete(ref.identity());

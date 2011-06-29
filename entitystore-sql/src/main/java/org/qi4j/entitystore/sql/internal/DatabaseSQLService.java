@@ -14,14 +14,14 @@
  */
 package org.qi4j.entitystore.sql.internal;
 
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.service.ServiceComposite;
+
 import java.io.Reader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import org.qi4j.api.entity.EntityReference;
-import org.qi4j.api.service.ServiceComposite;
 
 @SuppressWarnings( "PublicInnerClass" )
 public interface DatabaseSQLService

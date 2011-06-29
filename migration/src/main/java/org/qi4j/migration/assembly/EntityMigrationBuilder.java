@@ -14,15 +14,7 @@
 
 package org.qi4j.migration.assembly;
 
-import org.qi4j.migration.operation.AddAssociation;
-import org.qi4j.migration.operation.AddManyAssociation;
-import org.qi4j.migration.operation.AddProperty;
-import org.qi4j.migration.operation.RemoveAssociation;
-import org.qi4j.migration.operation.RemoveManyAssociation;
-import org.qi4j.migration.operation.RemoveProperty;
-import org.qi4j.migration.operation.RenameAssociation;
-import org.qi4j.migration.operation.RenameManyAssociation;
-import org.qi4j.migration.operation.RenameProperty;
+import org.qi4j.migration.operation.*;
 
 /**
  * Fluent API for creating migration rules for specific entity types.

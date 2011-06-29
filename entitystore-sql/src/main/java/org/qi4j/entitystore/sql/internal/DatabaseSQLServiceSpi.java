@@ -14,11 +14,6 @@
  */
 package org.qi4j.entitystore.sql.internal;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.library.sql.common.SQLUtil;
 import org.slf4j.Logger;
@@ -26,6 +21,11 @@ import org.slf4j.LoggerFactory;
 import org.sql.generation.api.grammar.factories.QueryFactory;
 import org.sql.generation.api.grammar.factories.TableReferenceFactory;
 import org.sql.generation.api.vendor.SQLVendor;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public interface DatabaseSQLServiceSpi
 {

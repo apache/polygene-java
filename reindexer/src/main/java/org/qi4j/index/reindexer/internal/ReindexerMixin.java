@@ -18,8 +18,6 @@
 
 package org.qi4j.index.reindexer.internal;
 
-import java.util.ArrayList;
-
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.Identity;
@@ -39,6 +37,8 @@ import org.qi4j.spi.structure.ModuleSPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+
 public class ReindexerMixin
         implements Reindexer
 {
@@ -48,7 +48,7 @@ public class ReindexerMixin
    {
       try
       {
-         identityQN = QualifiedName.fromMethod(Identity.class.getMethod("identity"));
+         identityQN = QualifiedName.fromAccessor( Identity.class.getMethod( "identity" ) );
       } catch (NoSuchMethodException e)
       {
          throw new InternalError("Qi4j Core Runtime codebase is corrupted. Contact Qi4j team: ReindexerMixin");

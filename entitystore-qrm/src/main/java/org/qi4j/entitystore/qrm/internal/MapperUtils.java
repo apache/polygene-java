@@ -16,8 +16,9 @@
  */
 package org.qi4j.entitystore.qrm.internal;
 
-import java.util.Map;
 import org.qi4j.entitystore.qrm.QrmEntityStoreDescriptor;
+
+import java.util.Map;
 
 public class MapperUtils
 {

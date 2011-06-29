@@ -13,25 +13,7 @@
  */
 package org.qi4j.entitystore.sql;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
-import org.json.JSONWriter;
+import org.json.*;
 import org.qi4j.api.cache.CacheOptions;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.QualifiedName;
@@ -60,23 +42,24 @@ import org.qi4j.library.sql.common.SQLUtil;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
-import org.qi4j.spi.entitystore.DefaultEntityStoreUnitOfWork;
-import org.qi4j.spi.entitystore.EntityNotFoundException;
-import org.qi4j.spi.entitystore.EntityStore;
-import org.qi4j.spi.entitystore.EntityStoreException;
-import org.qi4j.spi.entitystore.EntityStoreSPI;
-import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
-import org.qi4j.spi.entitystore.StateCommitter;
+import org.qi4j.spi.entitystore.*;
 import org.qi4j.spi.entitystore.helpers.DefaultEntityState;
+import org.qi4j.spi.property.JSONWriterSerializer;
+import org.qi4j.spi.property.PersistentPropertyDescriptor;
 import org.qi4j.spi.property.PropertyDescriptor;
-import org.qi4j.spi.property.PropertyType;
-import org.qi4j.spi.property.PropertyTypeDescriptor;
+import org.qi4j.spi.property.JSONDeserializer;
 import org.qi4j.spi.structure.ModuleSPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.*;
 
 /**
  * Most of this code is copy-paste from {@link MapEntityStoreMixin}. TODO refactor stuff that has to do with general
@@ -337,6 +320,7 @@ public class SQLEntityStoreMixin
 
             Map<QualifiedName, Object> properties = new HashMap<QualifiedName, Object>();
             JSONObject props = jsonObject.getJSONObject( "properties" );
+            JSONDeserializer deserializer = new JSONDeserializer( module );
             for( PropertyDescriptor propertyDescriptor : entityDescriptor.state().properties() )
             {
                 Object jsonValue;
@@ -347,7 +331,7 @@ public class SQLEntityStoreMixin
                 catch( JSONException e )
                 {
                     // Value not found, default it
-                    Object initialValue = propertyDescriptor.initialValue();
+                    Object initialValue = propertyDescriptor.initialValue(module);
                     properties.put( propertyDescriptor.qualifiedName(), initialValue );
                     status = EntityStatus.UPDATED;
                     continue;
@@ -358,8 +342,7 @@ public class SQLEntityStoreMixin
                 }
                 else
                 {
-                    Object value = ( (PropertyTypeDescriptor) propertyDescriptor ).propertyType().type().fromJSON(
-                        jsonValue, module );
+                    Object value = deserializer.deserialize( jsonValue, propertyDescriptor.valueType() );
                     properties.put( propertyDescriptor.qualifiedName(), value );
                 }
             }
@@ -475,22 +458,23 @@ public class SQLEntityStoreMixin
             JSONWriter properties = json.object().
                 key( "identity" ).value( state.identity().identity() ).
                 key( "application_version" ).value( application.version() ).
-                key( "type" ).value( state.entityDescriptor().entityType().type().name() ).
+                key( "type" ).value( state.entityDescriptor().type().getName() ).
                 key( "version" ).value( version ).
                 key( "modified" ).value( state.lastModified() ).
                 key( "properties" ).object();
-            EntityType entityType = state.entityDescriptor().entityType();
-            for( PropertyType propertyType : entityType.properties() )
+
+            JSONWriterSerializer serializer = new JSONWriterSerializer( json );
+            for( PersistentPropertyDescriptor persistentProperty : state.entityDescriptor().state().<PersistentPropertyDescriptor>properties() )
             {
-                Object value = state.properties().get( propertyType.qualifiedName() );
-                json.key( propertyType.qualifiedName().name() );
+                Object value = state.properties().get( persistentProperty.qualifiedName() );
+                json.key( persistentProperty.qualifiedName().name() );
                 if( value == null )
                 {
                     json.value( null );
                 }
                 else
                 {
-                    propertyType.type().toJSON( value, json );
+                    serializer.serialize( value, persistentProperty.valueType() );
                 }
             }
 

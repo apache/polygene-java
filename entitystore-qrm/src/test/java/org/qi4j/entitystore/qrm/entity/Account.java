@@ -16,8 +16,9 @@
  */
 package org.qi4j.entitystore.qrm.entity;
 
-import java.math.BigDecimal;
 import org.qi4j.api.property.Property;
+
+import java.math.BigDecimal;
 
 public interface Account
     extends HasPrimaryContactPerson, HasName

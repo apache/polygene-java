@@ -17,62 +17,27 @@
  */
 package org.qi4j.index.rdf.query.internal;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TimeZone;
 import org.json.JSONException;
 import org.json.JSONStringer;
-import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.Entity;
-import org.qi4j.api.property.StateHolder;
-import org.qi4j.api.query.grammar.AssociationIsNullPredicate;
-import org.qi4j.api.query.grammar.AssociationNullPredicate;
-import org.qi4j.api.query.grammar.BooleanExpression;
-import org.qi4j.api.query.grammar.ComparisonPredicate;
-import org.qi4j.api.query.grammar.Conjunction;
-import org.qi4j.api.query.grammar.ContainsAllPredicate;
-import org.qi4j.api.query.grammar.ContainsPredicate;
-import org.qi4j.api.query.grammar.Disjunction;
-import org.qi4j.api.query.grammar.EqualsPredicate;
-import org.qi4j.api.query.grammar.GreaterOrEqualPredicate;
-import org.qi4j.api.query.grammar.GreaterThanPredicate;
-import org.qi4j.api.query.grammar.LessOrEqualPredicate;
-import org.qi4j.api.query.grammar.LessThanPredicate;
-import org.qi4j.api.query.grammar.ManyAssociationContainsPredicate;
-import org.qi4j.api.query.grammar.MatchesPredicate;
-import org.qi4j.api.query.grammar.Negation;
-import org.qi4j.api.query.grammar.NotEqualsPredicate;
-import org.qi4j.api.query.grammar.OrderBy;
-import org.qi4j.api.query.grammar.Predicate;
-import org.qi4j.api.query.grammar.PropertyIsNullPredicate;
-import org.qi4j.api.query.grammar.PropertyNullPredicate;
-import org.qi4j.api.query.grammar.PropertyReference;
-import org.qi4j.api.query.grammar.SingleValueExpression;
-import org.qi4j.api.query.grammar.ValueExpression;
-import org.qi4j.api.value.ValueComposite;
+import org.qi4j.api.query.grammar.*;
 import org.qi4j.index.rdf.query.RdfQueryParser;
-import org.qi4j.runtime.types.SerializableType;
-import org.qi4j.runtime.types.ValueTypeFactory;
-import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.property.ValueType;
 import org.slf4j.LoggerFactory;
 
-import static java.lang.String.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import static java.lang.String.format;
 
 /**
  * JAVADOC Add JavaDoc
  */
 public class RdfQueryParserImpl
-    implements RdfQueryParser
+//    implements RdfQueryParser
 {
+    /*
     private static ThreadLocal<DateFormat> ISO8601_UTC = new ThreadLocal<DateFormat>()
     {
         @Override
@@ -270,27 +235,6 @@ public class RdfQueryParserImpl
         return builder.toString();
     }
 
-    private String createAndEscapeJSONString( Object value, PropertyReference<?> propertyRef )
-        throws JSONException
-    {
-        ValueType type = ValueTypeFactory.instance().newValueType(
-            value.getClass(),
-            propertyRef.propertyType(),
-            propertyRef.propertyDeclaringType()
-        );
-
-        JSONStringer json = new JSONStringer();
-        json.array();
-        this.createJSONString( value, type, json );
-        json.endArray();
-        String result = json.toString();
-        result = result.substring( 1, result.length() - 1 );
-
-        result = this.escapeJSONString( result );
-
-        return result;
-    }
-
     private String createRegexStringForContaining( String valueVariable, String containedString )
     {
         // The matching value must start with [, then contain something (possibly nothing),
@@ -298,52 +242,6 @@ public class RdfQueryParserImpl
         return format( "regex(str(%s), \"^\\\\u005B.*%s.*\\\\u005D$\", \"s\")", valueVariable, containedString );
     }
 
-    private void createJSONString( Object value, ValueType type, JSONStringer stringer )
-        throws JSONException
-    {
-        // TODO the sole purpose of this method is to get rid of "_type" information, which ValueType.toJSON
-        // produces for value composites
-        // So, change toJSON(...) to be configurable so that the caller can decide whether he wants type
-        // information into json string or not
-        if( type.isValue() || ( type instanceof SerializableType && value instanceof ValueComposite ) )
-        {
-            stringer.object();
-
-            // Rest is partial copypasta from ValueCompositeType.toJSON(Object, JSONStringer)
-
-            ValueComposite valueComposite = (ValueComposite) value;
-            StateHolder state = valueComposite.state();
-            final Map<QualifiedName, Object> values = new HashMap<QualifiedName, Object>();
-            state.visitProperties( new StateHolder.StateVisitor<RuntimeException>()
-            {
-                public void visitProperty( QualifiedName name, Object value )
-                {
-                    values.put( name, value );
-                }
-            } );
-
-            List<PropertyType> actualTypes = type.types();
-            for( PropertyType propertyType : actualTypes )
-            {
-                stringer.key( propertyType.qualifiedName().name() );
-
-                Object propertyValue = values.get( propertyType.qualifiedName() );
-                if( propertyValue == null )
-                {
-                    stringer.value( null );
-                }
-                else
-                {
-                    this.createJSONString( propertyValue, propertyType.type(), stringer );
-                }
-            }
-            stringer.endObject();
-        }
-        else
-        {
-            type.toJSON( value, stringer );
-        }
-    }
 
     private String escapeJSONString( String jsonStr )
     {
@@ -470,7 +368,7 @@ public class RdfQueryParserImpl
             {
                 String valueVariable = triple.getValue();
                 final SingleValueExpression singleValueExpression = (SingleValueExpression) valueExpression;
-                return String.format( "(%s %s \"%s\")", valueVariable, getOperator( predicate.getClass() ), toString( singleValueExpression.value() ) );
+                return String.format( "(%s %s \"%s\")", valueVariable, getOperand( predicate.getClass() ), toString( singleValueExpression.value() ) );
             }
         }
         else
@@ -498,7 +396,7 @@ public class RdfQueryParserImpl
             {
                 String valueVariable = triple.getValue();
                 final SingleValueExpression singleValueExpression = (SingleValueExpression) valueExpression;
-                return String.format( "(%s %s <%s>)", valueVariable, getOperator( predicate.getClass() ), toString( singleValueExpression.value() ) );
+                return String.format( "(%s %s <%s>)", valueVariable, getOperand( predicate.getClass() ), toString( singleValueExpression.value() ) );
             }
         }
         else
@@ -542,7 +440,7 @@ public class RdfQueryParserImpl
             {
                 if( orderBySegment != null )
                 {
-                    final String valueVariable = triples.addTriple( orderBySegment.propertyReference(), false )
+                    final String valueVariable = triples.addTriple( orderBySegment.getPropertyFunction(), false )
                         .getValue();
                     if( orderBySegment.order() == OrderBy.Order.ASCENDING )
                     {
@@ -559,7 +457,7 @@ public class RdfQueryParserImpl
         return null;
     }
 
-    private String getOperator( final Class<? extends Predicate> predicateClass )
+    private String getOperand( final Class<? extends Predicate> predicateClass )
     {
         String operator = null;
         for( Map.Entry<Class<? extends Predicate>, String> entry : m_operators.entrySet() )
@@ -597,4 +495,5 @@ public class RdfQueryParserImpl
             return value.toString();
         }
     }
+    */
 }

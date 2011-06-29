@@ -18,15 +18,6 @@
 
 package org.qi4j.entitystore.voldemort;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import java.util.Random;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -34,6 +25,12 @@ import org.qi4j.entitystore.voldemort.assembly.VoldemortAssembler;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
 import voldemort.server.VoldemortConfig;
 import voldemort.server.VoldemortServer;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+import java.util.Random;
 
 public class VoldemortTest extends AbstractEntityStoreTest
 {

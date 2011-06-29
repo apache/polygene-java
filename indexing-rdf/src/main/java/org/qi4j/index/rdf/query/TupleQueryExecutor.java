@@ -18,12 +18,8 @@
 package org.qi4j.index.rdf.query;
 
 import org.openrdf.model.Value;
-import org.openrdf.query.BindingSet;
-import org.openrdf.query.MalformedQueryException;
-import org.openrdf.query.QueryEvaluationException;
-import org.openrdf.query.QueryLanguage;
-import org.openrdf.query.TupleQuery;
-import org.openrdf.query.TupleQueryResult;
+import org.openrdf.model.impl.ValueFactoryImpl;
+import org.openrdf.query.*;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
@@ -33,12 +29,13 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.spi.query.EntityFinderException;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Mixins( TupleQueryExecutor.TupleQueryExecutorMixin.class )
 public interface TupleQueryExecutor
 {
-    long performTupleQuery( QueryLanguage language, String query, @Optional Map<String, Value> bindings, @Optional QualifiedIdentityResultCallback callback )
+    long performTupleQuery( QueryLanguage language, String query, @Optional Map<String, Object> bindings, @Optional QualifiedIdentityResultCallback callback )
         throws EntityFinderException;
 
     class TupleQueryExecutorMixin
@@ -47,7 +44,7 @@ public interface TupleQueryExecutor
         @Service
         private Repository repository;
 
-        public long performTupleQuery( QueryLanguage language, String query, Map<String, Value> bindings, QualifiedIdentityResultCallback callback )
+        public long performTupleQuery( QueryLanguage language, String query, Map<String, Object> bindings, QualifiedIdentityResultCallback callback )
             throws EntityFinderException
         {
             try
@@ -59,13 +56,11 @@ public interface TupleQueryExecutor
 
                     TupleQuery tupleQuery = connection.prepareTupleQuery( language, query );
 
-                    if (bindings != null)
+                    for (Map.Entry<String, Value> stringValueEntry : getBindings( bindings ).entrySet())
                     {
-                        for (Map.Entry<String, Value> stringValueEntry : bindings.entrySet())
-                        {
-                            tupleQuery.setBinding(stringValueEntry.getKey(), stringValueEntry.getValue());
-                        }
+                        tupleQuery.setBinding(stringValueEntry.getKey(), stringValueEntry.getValue());
                     }
+
                     tupleQuery.setIncludeInferred( false );
                     result = tupleQuery.evaluate();
                     long row = 0;
@@ -137,6 +132,17 @@ public interface TupleQueryExecutor
 
             final EntityReference entityReference = new EntityReference( identity );
             return callback.processRow( row, entityReference );
+        }
+
+        private Map<String, Value> getBindings(Map<String, Object> variables)
+        {
+            Map<String, Value> bindings = new HashMap<String, Value>();
+            for (Map.Entry<String, Object> stringObjectEntry : variables.entrySet())
+            {
+                if (!stringObjectEntry.getValue().getClass().equals(Object.class))
+                    bindings.put(stringObjectEntry.getKey(), ValueFactoryImpl.getInstance().createLiteral(stringObjectEntry.getValue().toString()));
+            }
+            return bindings;
         }
     }
 }

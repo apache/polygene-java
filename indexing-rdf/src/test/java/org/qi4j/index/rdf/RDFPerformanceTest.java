@@ -18,9 +18,6 @@ package org.qi4j.index.rdf;
  * JAVADOC
  */
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.qi4j.api.common.UseDefaults;
@@ -35,7 +32,6 @@ import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
-import org.qi4j.entitystore.prefs.assembly.PreferenceEntityStoreAssembler;
 import org.qi4j.index.rdf.assembly.RdfNativeSesameStoreAssembler;
 import org.qi4j.library.fileconfig.FileConfiguration;
 import org.qi4j.library.rdf.repository.NativeConfiguration;
@@ -44,6 +40,10 @@ import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class RDFPerformanceTest extends AbstractQi4jTest
 {
@@ -200,7 +200,7 @@ public class RDFPerformanceTest extends AbstractQi4jTest
         // Dummy test to make Maven happy
     }
 
-    //    @Test
+    // @Test
     public void performanceTest200() throws Exception
     {
         this.performTest( 200 );

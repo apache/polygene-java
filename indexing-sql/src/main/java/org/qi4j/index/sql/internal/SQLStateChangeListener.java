@@ -14,14 +14,14 @@
 
 package org.qi4j.index.sql.internal;
 
-import java.sql.SQLException;
-
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.unitofwork.UnitOfWorkException;
 import org.qi4j.index.sql.support.api.SQLIndexing;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entitystore.StateChangeListener;
 import org.slf4j.LoggerFactory;
+
+import java.sql.SQLException;
 
 /**
  * @author Stanislav Muhametsin

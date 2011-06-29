@@ -14,10 +14,11 @@
 
 package org.qi4j.migration.assembly;
 
+import org.qi4j.api.util.ListMap;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.qi4j.api.util.ListMap;
 
 /**
  * Set of migration rules.

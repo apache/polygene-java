@@ -16,12 +16,7 @@
  */
 package org.qi4j.entitystore.gae;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.QueryResultIterable;
+import com.google.appengine.api.datastore.*;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.entity.IdentityGenerator;
 import org.qi4j.api.injection.scope.Service;

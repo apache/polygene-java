@@ -16,9 +16,10 @@
  */
 package org.qi4j.entitystore.qrm.internal;
 
+import org.qi4j.spi.entity.EntityDescriptor;
+
 import java.util.ArrayList;
 import java.util.List;
-import org.qi4j.spi.entity.EntityDescriptor;
 
 public class QrmMapping
 {

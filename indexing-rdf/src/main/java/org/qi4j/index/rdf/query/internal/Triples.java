@@ -17,17 +17,18 @@
  */
 package org.qi4j.index.rdf.query.internal;
 
+import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.entity.Identity;
+import org.qi4j.api.query.grammar2.AssociationFunction;
+import org.qi4j.api.query.grammar2.ManyAssociationFunction;
+import org.qi4j.api.query.grammar2.PropertyFunction;
+import org.qi4j.api.util.Classes;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.entity.Identity;
-import org.qi4j.api.query.grammar.AssociationReference;
-import org.qi4j.api.query.grammar.ManyAssociationReference;
-import org.qi4j.api.query.grammar.PropertyReference;
-import org.qi4j.api.util.Classes;
 
-import static java.lang.String.*;
+import static java.lang.String.format;
 
 public class Triples
     implements Iterable<Triples.Triple>
@@ -72,59 +73,47 @@ public class Triples
         return namespaces.addNamespace( namespace );
     }
 
-    public Triple addTriple( final PropertyReference propertyReference, boolean optional )
+    public Triple addTriple( final PropertyFunction propertyFunction, boolean optional )
     {
         String subject = "?entity";
-        if( propertyReference.traversedAssociation() != null )
+        if( propertyFunction.getTraversedAssociation() != null )
         {
-            subject = addTriple( propertyReference.traversedAssociation(), false ).value;
+            subject = addTripleAssociation( propertyFunction.getTraversedAssociation(), false ).value;
         }
-        else if( propertyReference.traversedProperty() != null )
+        else if( propertyFunction.getTraversedProperty() != null )
         {
-            subject = addTriple( propertyReference.traversedProperty(), false ).value;
+            subject = addTriple( propertyFunction.getTraversedProperty(), false ).value;
         }
-        String prefix = addNamespace( QualifiedName.fromMethod( propertyReference.propertyAccessor() ).toNamespace() );
-        return addTriple( subject, prefix + ":" + propertyReference.propertyName(), optional );
+        QualifiedName qualifiedName = QualifiedName.fromAccessor( propertyFunction.getAccessor() );
+        String prefix = addNamespace( qualifiedName.toNamespace() );
+        return addTriple( subject, prefix + ":" + qualifiedName.name(), optional );
     }
 
-    public Triple addTriple( final AssociationReference associationReference,
-                             final boolean optional
-    )
-    {
-        if( associationReference instanceof ManyAssociationReference )
-        {
-            ManyAssociationReference manyAssociation = (ManyAssociationReference) associationReference;
-            return addTripleManyAssociation( manyAssociation, optional );
-        }
-        else
-        {
-            return addTripleAssociation( associationReference, optional );
-        }
-    }
-
-    private Triple addTripleAssociation( AssociationReference associationReference, boolean optional )
+    public Triple addTripleAssociation( AssociationFunction associationReference, boolean optional )
     {
         String subject = "?entity";
-        if( associationReference.traversedAssociation() != null )
+        if( associationReference.getTraversedAssociation() != null )
         {
-            subject = addTriple( associationReference.traversedAssociation(), false ).value;
+            subject = addTripleAssociation( associationReference.getTraversedAssociation(), false ).value;
         }
-        String prefix = addNamespace( QualifiedName.fromMethod( associationReference.associationAccessor() ).toNamespace() );
-        return addTriple( subject, prefix + ":" + associationReference.associationName(), optional );
+        QualifiedName qualifiedName = QualifiedName.fromAccessor( associationReference.getAccessor() );
+        String prefix = addNamespace( qualifiedName.toNamespace() );
+        return addTriple( subject, prefix + ":" + qualifiedName.name(), optional );
     }
 
-    private Triple addTripleManyAssociation( final ManyAssociationReference manyAssociationReference,
+    public Triple addTripleManyAssociation( final ManyAssociationFunction manyAssociationReference,
                                              final boolean optional
     )
     {
-        AssociationReference traversedAssociation = manyAssociationReference.traversedAssociation();
+        AssociationFunction traversedAssociation = manyAssociationReference.getTraversedAssociation();
         String subject = "?entity";
         if( traversedAssociation != null )
         {
-            subject = addTriple( traversedAssociation, false ).value;
+            subject = addTripleAssociation( traversedAssociation, false ).value;
         }
-        String predicatePrefix = addNamespace( QualifiedName.fromMethod( manyAssociationReference.associationAccessor() ).toNamespace() );
-        String predicate = predicatePrefix + ":" + manyAssociationReference.associationName();
+        QualifiedName qualifiedName = QualifiedName.fromAccessor( manyAssociationReference.getMethod() );
+        String predicatePrefix = addNamespace( qualifiedName.toNamespace() );
+        String predicate = predicatePrefix + ":" + qualifiedName.name();
         Triple collectionTriple = addTriple( subject, predicate, optional );
 
         String liSubject = collectionTriple.value;

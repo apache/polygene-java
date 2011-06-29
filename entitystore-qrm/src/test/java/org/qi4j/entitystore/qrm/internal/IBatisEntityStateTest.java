@@ -16,9 +16,6 @@
  */
 package org.qi4j.entitystore.qrm.internal;
 
-import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.Map;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.qi4j.api.common.QualifiedName;
@@ -30,7 +27,12 @@ import org.qi4j.entitystore.qrm.entity.PersonComposite;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.test.AbstractQi4jTest;
 
-import static junit.framework.Assert.*;
+import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.Map;
+
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
 
 @Ignore( "Until store is upgraded" )
 public final class IBatisEntityStateTest

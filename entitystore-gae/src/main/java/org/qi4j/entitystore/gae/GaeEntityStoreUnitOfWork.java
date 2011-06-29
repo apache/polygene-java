@@ -18,15 +18,8 @@
 
 package org.qi4j.entitystore.gae;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.Transaction;
-import java.util.ArrayList;
-import java.util.LinkedList;
+import com.google.appengine.api.datastore.*;
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.api.structure.Module;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
@@ -35,6 +28,8 @@ import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 import org.qi4j.spi.entitystore.StateCommitter;
 import org.qi4j.spi.structure.ModuleSPI;
+
+import java.util.LinkedList;
 
 public class GaeEntityStoreUnitOfWork
     implements EntityStoreUnitOfWork

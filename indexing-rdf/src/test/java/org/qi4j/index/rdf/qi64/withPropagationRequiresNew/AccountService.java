@@ -24,8 +24,8 @@ import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.unitofwork.UnitOfWorkPropagation;
 import org.qi4j.index.rdf.qi64.AccountComposite;
 
-import static org.qi4j.api.unitofwork.UnitOfWorkPropagation.Propagation.*;
-import static org.qi4j.index.rdf.qi64.withPropagationRequiresNew.AccountService.*;
+import static org.qi4j.api.unitofwork.UnitOfWorkPropagation.Propagation.REQUIRES_NEW;
+import static org.qi4j.index.rdf.qi64.withPropagationRequiresNew.AccountService.AccountServiceMixin;
 
 @Mixins( AccountServiceMixin.class )
 public interface AccountService

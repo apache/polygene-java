@@ -13,9 +13,6 @@
  */
 package org.qi4j.entitystore.sql;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-
 import org.apache.commons.dbcp.BasicDataSource;
 import org.junit.Assume;
 import org.junit.Test;
@@ -27,6 +24,9 @@ import org.qi4j.library.sql.ds.DataSourceService;
 import org.qi4j.library.sql.ds.assembly.DataSourceAssembler;
 import org.qi4j.library.sql.ds.assembly.ImportableDataSourceService;
 import org.qi4j.test.AbstractQi4jTest;
+
+import java.sql.Connection;
+import java.sql.SQLException;
 
 /**
  * @author Stanislav Muhametsin

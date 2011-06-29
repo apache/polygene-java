@@ -14,10 +14,6 @@
 
 package org.qi4j.migration;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
-
 import org.hamcrest.CoreMatchers;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,7 +37,11 @@ import org.qi4j.spi.service.importer.NewObjectImporter;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
 
-import static org.junit.Assert.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
+
+import static org.junit.Assert.assertThat;
 
 /**
  * JAVADOC

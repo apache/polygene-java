@@ -20,7 +20,7 @@ package org.qi4j.index.rdf.query.internal;
 import java.util.HashMap;
 import java.util.Map;
 
-import static java.lang.String.*;
+import static java.lang.String.format;
 
 public class Namespaces
 {

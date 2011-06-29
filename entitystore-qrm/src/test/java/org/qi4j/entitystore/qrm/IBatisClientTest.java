@@ -1,13 +1,6 @@
 package org.qi4j.entitystore.qrm;
 
 import com.ibatis.common.jdbc.ScriptRunner;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.Collection;
-import java.util.Map;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -15,8 +8,17 @@ import org.junit.Test;
 import org.qi4j.entitystore.qrm.entity.PersonComposite;
 import org.qi4j.spi.entity.QualifiedIdentity;
 
-import static java.util.Arrays.*;
-import static org.junit.Assert.*;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.Collection;
+import java.util.Map;
+
+import static java.util.Arrays.asList;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class IBatisClientTest
 {

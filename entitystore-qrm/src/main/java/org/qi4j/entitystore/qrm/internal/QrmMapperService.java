@@ -16,11 +16,6 @@
  */
 package org.qi4j.entitystore.qrm.internal;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
@@ -37,14 +32,15 @@ import org.qi4j.entitystore.qrm.QrmMapper;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entitystore.DefaultEntityStoreUnitOfWork;
 import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entitystore.helpers.DefaultEntityState;
 import org.qi4j.spi.object.ObjectDescriptor;
 import org.qi4j.spi.property.PropertyDescriptor;
-import org.qi4j.spi.property.PropertyType;
-import org.qi4j.spi.structure.*;
+import org.qi4j.spi.property.PersistentPropertyDescriptor;
+import org.qi4j.spi.structure.ApplicationSPI;
+
+import java.util.*;
 
 @Mixins( { QrmMapperService.QrmMapperServiceMixin.class } )
 public interface QrmMapperService
@@ -80,21 +76,11 @@ public interface QrmMapperService
 
         public Class findMappedMixin( EntityDescriptor eDesc )
         {
-            for( String mixinClassName : eDesc.entityType().mixinTypes() )
+            for( Class mixinClass : eDesc.mixinTypes() )
             {
-                Class clazz = null;
-                try
+                if( mappings.get( mixinClass ) != null )
                 {
-                    clazz = getClass().getClassLoader().loadClass( mixinClassName );
-                }
-                catch( ClassNotFoundException e )
-                {
-                    continue;
-                }
-
-                if( mappings.get( clazz ) != null )
-                {
-                    return clazz;
+                    return mixinClass;
                 }
             }
 
@@ -295,37 +281,18 @@ public interface QrmMapperService
 
                     return true;
                 }
-
-                @Override
-                public boolean visitLeave( Object visited ) throws RuntimeException
-                {
-                    return true;
-                }
-
-                @Override
-                public boolean visit( Object visited ) throws RuntimeException
-                {
-                    return true;
-                }
             } );
         }
 
         private QrmMapping createMapping( EntityDescriptor entityDescriptor, Class mixinClazz )
         {
-            EntityType entityType = entityDescriptor.entityType();
-
             QrmMapping result = new QrmMapping( entityDescriptor );
 
-            for( PropertyType pType : entityType.properties() )
+            for( PersistentPropertyDescriptor pPersistent : entityDescriptor.state().<PersistentPropertyDescriptor>properties() )
             {
-                if( pType.propertyType() == PropertyType.PropertyTypeEnum.COMPUTED )
-                {
-                    continue;
-                }
+                String name = pPersistent.qualifiedName().name();
 
-                String name = pType.qualifiedName().name();
-
-                String hibType = pType.type().type().name();
+                String hibType = ((Class) pPersistent.type()).getName();
 
                 if( "identity".equals( name ) )
                 {

@@ -89,7 +89,7 @@ public class SolrEntityIndexerMixin
                 List<SolrInputDocument> added = new ArrayList<SolrInputDocument>();
                 for( EntityState entityState : entityStates )
                 {
-                    if( entityState.entityDescriptor().entityType().queryable() )
+                    if( entityState.entityDescriptor().queryable() )
                     {
                         if( entityState.status().equals( EntityStatus.REMOVED ) )
                         {
@@ -134,7 +134,7 @@ public class SolrEntityIndexerMixin
 
         SolrInputDocument input = new SolrInputDocument();
         input.addField( "id", entityState.identity().identity() );
-        input.addField( "type", entityState.entityDescriptor().entityType().type().name() );
+        input.addField( "type", entityState.entityDescriptor().type().getName() );
         input.addField( "lastModified", new Date( entityState.lastModified() ) );
 
         for( Statement statement : graph )

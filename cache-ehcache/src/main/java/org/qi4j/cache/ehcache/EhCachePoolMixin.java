@@ -1,10 +1,8 @@
 package org.qi4j.cache.ehcache;
 
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.config.CacheConfiguration;
-import net.sf.ehcache.config.TerracottaConfigConfiguration;
+import net.sf.ehcache.config.TerracottaClientConfiguration;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.injection.scope.This;
@@ -12,6 +10,9 @@ import org.qi4j.api.service.Activatable;
 import org.qi4j.api.util.NullArgumentException;
 import org.qi4j.spi.cache.Cache;
 import org.qi4j.spi.cache.CachePool;
+
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class EhCachePoolMixin
     implements CachePool, Activatable
@@ -94,7 +95,7 @@ public class EhCachePoolMixin
         {
             for( String terracottaURL : terracottaConfigURLs )
             {
-                TerracottaConfigConfiguration terracottaConfig = new TerracottaConfigConfiguration();
+                TerracottaClientConfiguration terracottaConfig = new TerracottaClientConfiguration();
                 terracottaConfig.setUrl( terracottaURL );
                 configuration.addTerracottaConfig( terracottaConfig );
             }

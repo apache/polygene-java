@@ -17,11 +17,6 @@
  */
 package org.qi4j.index.rdf.qi95;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Random;
 import org.junit.Test;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.entity.EntityBuilder;
@@ -32,14 +27,7 @@ import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-import org.qi4j.bootstrap.ApplicationAssembler;
-import org.qi4j.bootstrap.ApplicationAssembly;
-import org.qi4j.bootstrap.ApplicationAssemblyFactory;
-import org.qi4j.bootstrap.Assembler;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.Energy4Java;
-import org.qi4j.bootstrap.LayerAssembly;
-import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.bootstrap.*;
 import org.qi4j.entitystore.jdbm.JdbmConfiguration;
 import org.qi4j.entitystore.jdbm.assembly.JdbmEntityStoreAssembler;
 import org.qi4j.index.rdf.assembly.RdfMemoryStoreAssembler;
@@ -48,7 +36,13 @@ import org.qi4j.library.rdf.repository.NativeConfiguration;
 import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.test.EntityTestAssembler;
 
-import static org.junit.Assert.*;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Random;
+
+import static org.junit.Assert.assertTrue;
 
 public class Qi95IssueTest
 {

@@ -14,17 +14,16 @@
 
 package org.qi4j.index.sql.support.skeletons;
 
-import java.sql.Types;
-import java.util.Map;
-import java.util.Set;
-
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.property.Property;
 import org.qi4j.index.sql.support.api.SQLIndexing;
 import org.qi4j.index.sql.support.common.EntityTypeInfo;
 import org.qi4j.index.sql.support.common.QNameInfo;
-import org.sql.generation.api.vendor.SQLVendor;
+
+import java.sql.Types;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * The state-type interface containing some important database-related data, in order to create proper SQL statements in

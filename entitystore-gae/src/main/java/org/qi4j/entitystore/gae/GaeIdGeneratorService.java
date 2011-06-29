@@ -21,11 +21,12 @@ package org.qi4j.entitystore.gae;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Key;
-import java.util.Iterator;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.entity.IdentityGenerator;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
+
+import java.util.Iterator;
 
 @Mixins( GaeIdGeneratorService.Mixin.class )
 public interface GaeIdGeneratorService

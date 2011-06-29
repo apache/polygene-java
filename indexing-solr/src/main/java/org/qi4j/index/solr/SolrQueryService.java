@@ -20,13 +20,13 @@ import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.index.solr.internal.SolrEntityIndexerMixin;
 import org.qi4j.index.solr.internal.SolrEntityQueryMixin;
 import org.qi4j.spi.entitystore.StateChangeListener;
-import org.qi4j.spi.query.NamedEntityFinder;
+import org.qi4j.spi.query.EntityFinder;
 
 /**
  * JAVADOC
  */
 @Mixins({SolrEntityIndexerMixin.class, SolrEntityQueryMixin.class})
 public interface SolrQueryService
-   extends NamedEntityFinder, StateChangeListener, SolrSearch, ServiceComposite, Activatable
+   extends EntityFinder, StateChangeListener, SolrSearch, ServiceComposite, Activatable
 {
 }

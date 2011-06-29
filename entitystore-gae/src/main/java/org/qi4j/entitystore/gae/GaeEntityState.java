@@ -21,25 +21,23 @@ package org.qi4j.entitystore.gae;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.Text;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.spi.entity.EntityDescriptor;
+import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityStatus;
+import org.qi4j.spi.entity.ManyAssociationState;
+import org.qi4j.spi.property.*;
+import org.qi4j.spi.structure.ModuleSPI;
+
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.common.TypeName;
-import org.qi4j.api.entity.EntityReference;
-import org.qi4j.api.structure.Module;
-import org.qi4j.spi.entity.EntityDescriptor;
-import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entity.EntityType;
-import org.qi4j.spi.entity.ManyAssociationState;
-import org.qi4j.spi.property.PropertyType;
-import org.qi4j.spi.property.ValueType;
-import org.qi4j.spi.structure.ModuleSPI;
 
 public class GaeEntityState
     implements EntityState
@@ -50,8 +48,9 @@ public class GaeEntityState
     private EntityStatus status;
     private final GaeEntityStoreUnitOfWork unitOfWork;
     private final EntityDescriptor descriptor;
-    private final HashMap<QualifiedName, PropertyType> valueTypes;
+    private final HashMap<QualifiedName, ValueType> valueTypes;
     private final ModuleSPI module;
+    private JSONDeserializer deserializer;
 
     public GaeEntityState( GaeEntityStoreUnitOfWork unitOfWork, Key key, EntityDescriptor descriptor, ModuleSPI module )
     {
@@ -61,14 +60,12 @@ public class GaeEntityState
         this.descriptor = descriptor;
         entity = new Entity( key );
         entity.setProperty( "$version", unitOfWork.identity() );
-        EntityType entityType = descriptor.entityType();
-        TypeName typeName = entityType.type();
-        String name = typeName.name();
+        Class type = descriptor.type();
+        String name = type.getName();
         System.out.println( "New Entity\n" +
                             "    descriptor:" + descriptor + "\n  " +
-                            "    entityType:" + entityType + "\n  " +
-                            "    typeName:" + typeName + "\n  " +
-                            "    name:" + name + "\n  " 
+                            "    entityType:" + name + "\n  " +
+                            "    name:" + name + "\n  "
         );
         entity.setUnindexedProperty( PROPERTY_TYPE, name );
         status = EntityStatus.NEW;
@@ -94,17 +91,18 @@ public class GaeEntityState
         descriptor = module.entityDescriptor( typeName );
         status = EntityStatus.LOADED;
         valueTypes = initializeValueTypes( descriptor );
+        deserializer = new JSONDeserializer( module );
     }
 
-    private HashMap<QualifiedName, PropertyType> initializeValueTypes( EntityDescriptor descriptor )
+    private HashMap<QualifiedName, ValueType> initializeValueTypes( EntityDescriptor descriptor )
     {
-        HashMap<QualifiedName, PropertyType> result = new HashMap<QualifiedName, PropertyType>();
-        for( PropertyType type : descriptor.entityType().properties() )
+        HashMap<QualifiedName, ValueType> result = new HashMap<QualifiedName, ValueType>();
+        for( PersistentPropertyDescriptor persistent : descriptor.state().<PersistentPropertyDescriptor>properties() )
         {
-            if( type.type().isValue() )
+            if( persistent.valueType() instanceof ValueCompositeType )
             {
-                QualifiedName name = type.qualifiedName();
-                result.put( name, type );
+                QualifiedName name = persistent.qualifiedName();
+                result.put( name, persistent.valueType() );
             }
         }
         return result;
@@ -149,7 +147,8 @@ public class GaeEntityState
         return status;
     }
 
-    public boolean isOfType( TypeName type )
+    @Override
+    public boolean isOfType( Class<? extends EntityComposite> type )
     {
         System.out.println( "isOfType( " + type + " )  -->  false" );
         return false;
@@ -169,15 +168,14 @@ public class GaeEntityState
         {
             value = ( (Text) value ).getValue();
         }
-        PropertyType type = valueTypes.get( stateName );
+        ValueType type = valueTypes.get( stateName );
 
         if( type != null )
         {
             try
             {
                 JSONObject json = new JSONObject( value );
-                ValueType valueType = type.type();
-                value = valueType.fromJSON( json, module );
+                value = deserializer.deserialize( json, type );
             }
             catch( JSONException e )
             {
@@ -203,11 +201,12 @@ public class GaeEntityState
         if( value != null && Proxy.isProxyClass( value.getClass() ) )
         {
             System.out.println( "handler: " + Proxy.getInvocationHandler( value ) );
-            PropertyType type = valueTypes.get( stateName );
+            ValueType type = valueTypes.get( stateName );
             try
             {
-                ValueType valueType = type.type();
-                value = valueType.toJSON( value ).toString();
+                JSONWriterSerializer serializer = new JSONWriterSerializer(  );
+                serializer.serialize( value, type );
+                value = serializer.getJSON().toString();
             }
             catch( JSONException e )
             {

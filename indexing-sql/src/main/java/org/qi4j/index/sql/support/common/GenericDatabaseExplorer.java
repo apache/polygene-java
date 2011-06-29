@@ -14,21 +14,17 @@
 
 package org.qi4j.index.sql.support.common;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.qi4j.spi.query.IndexExporter;
 import org.sql.generation.api.grammar.builders.query.QuerySpecificationBuilder;
 import org.sql.generation.api.grammar.factories.QueryFactory;
 import org.sql.generation.api.grammar.factories.TableReferenceFactory;
 import org.sql.generation.api.vendor.SQLVendor;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This is a helper class to traverse through all content in specified tables in database. Typical usecase would be by

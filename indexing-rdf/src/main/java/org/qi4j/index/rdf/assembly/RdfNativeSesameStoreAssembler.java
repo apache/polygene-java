@@ -22,35 +22,22 @@ import org.qi4j.index.rdf.query.RdfQueryParserFactory;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.entity.EntityTypeSerializer;
 import org.qi4j.library.rdf.repository.NativeRepositoryService;
-import org.qi4j.spi.query.NamedQueries;
 
 public class RdfNativeSesameStoreAssembler
     implements Assembler
 {
-    private NamedQueries namedQueries;
     private Visibility indexingVisibility;
     private Visibility repositoryVisibility;
 
-    public RdfNativeSesameStoreAssembler( NamedQueries namedQueries )
-    {
-        this( namedQueries, Visibility.application, Visibility.module );
-    }
-
     public RdfNativeSesameStoreAssembler()
     {
-        this( null, Visibility.application, Visibility.module );
+        this( Visibility.application, Visibility.module );
     }
 
-    public RdfNativeSesameStoreAssembler( NamedQueries namedQueries,
-                                          Visibility indexingVisibility,
+    public RdfNativeSesameStoreAssembler( Visibility indexingVisibility,
                                           Visibility repositoryVisibility
     )
     {
-        if( namedQueries == null )
-        {
-            namedQueries = new NamedQueries();
-        }
-        this.namedQueries = namedQueries;
         this.indexingVisibility = indexingVisibility;
         this.repositoryVisibility = repositoryVisibility;
     }
@@ -64,7 +51,6 @@ public class RdfNativeSesameStoreAssembler
             .identifiedBy( "rdf-indexing" );
         module.services( RdfIndexingEngineService.class )
             .visibleIn( indexingVisibility )
-            .setMetaInfo( namedQueries )
             .instantiateOnStartup();
         module.services( RdfQueryParserFactory.class ).visibleIn( indexingVisibility );
         module.objects( EntityStateSerializer.class, EntityTypeSerializer.class );

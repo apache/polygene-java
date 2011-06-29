@@ -16,11 +16,6 @@
  */
 package org.qi4j.entitystore.qrm.test;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 import org.junit.Before;
 import org.qi4j.entitystore.qrm.DerbyDatabaseHandler;
 import org.qi4j.entitystore.qrm.entity.PersonComposite;
@@ -30,7 +25,13 @@ import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.test.AbstractQi4jTest;
 
-import static org.junit.Assert.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.junit.Assert.assertNotNull;
 
 public abstract class AbstractTestCase
     extends AbstractQi4jTest

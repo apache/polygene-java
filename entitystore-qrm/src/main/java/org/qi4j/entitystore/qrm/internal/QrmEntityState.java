@@ -16,26 +16,23 @@
  */
 package org.qi4j.entitystore.qrm.internal;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.entitystore.qrm.IdentifierConverter;
+import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
-import org.qi4j.spi.entity.association.AssociationType;
-import org.qi4j.spi.entity.association.ManyAssociationType;
+import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
 import org.qi4j.spi.entitystore.EntityNotFoundException;
+import org.qi4j.spi.property.PersistentPropertyDescriptor;
 import org.qi4j.spi.property.PropertyDescriptor;
-import org.qi4j.spi.property.PropertyType;
+import org.qi4j.spi.property.ValueType;
 
-import static org.qi4j.api.util.NullArgumentException.*;
-import static org.qi4j.spi.entity.EntityStatus.*;
+import java.lang.reflect.Type;
+import java.util.*;
+
+import static org.qi4j.api.util.NullArgumentException.validateNotNull;
+import static org.qi4j.spi.entity.EntityStatus.REMOVED;
 
 /**
  * {@code IBatisEntityState} represents {@code IBatis} version of {@link org.qi4j.spi.entity.EntityState}.
@@ -45,7 +42,7 @@ public final class QrmEntityState
 {
     private static final long serialVersionUID = 1L;
 
-    private final EntityType entityType;
+    private final EntityDescriptor descriptor;
     private final QualifiedIdentity identity;
 
     private final Map<QualifiedName, Object> propertyValues = new HashMap<QualifiedName, Object>();
@@ -59,7 +56,7 @@ public final class QrmEntityState
     /**
      * Construct an instance of {@code IBatisEntityState}.
      *
-     * @param entityType   The entityType of this State. This argument must not be {@code null}.
+     * @param descriptor   The entityType of this State. This argument must not be {@code null}.
      * @param identity     The identity. This argument must not be {@code null}.
      * @param rawData      The field values of this entity state. This argument must not be {@code null}.
      * @param version      The version of the state.
@@ -69,42 +66,42 @@ public final class QrmEntityState
      * @throws IllegalArgumentException if any of the following arguments are null; entityType, identity, rawData, status
      */
     public QrmEntityState(
-        final EntityType entityType, final QualifiedIdentity identity,
+        final EntityDescriptor descriptor, final QualifiedIdentity identity,
         final Map<QualifiedName, Object> rawData,
         final long version, final long lastModified,
         final EntityStatus status
     )
         throws IllegalArgumentException
     {
-        validateNotNull( "aDescriptor", entityType );
+        validateNotNull( "aDescriptor", descriptor );
         validateNotNull( "anIdentity", identity );
         validateNotNull( "propertyValuez", rawData );
         validateNotNull( "aStatus", status );
         // TODO validateNotNull( "aVersion", aVersion );
 
-        this.entityType = entityType;
+        this.descriptor = descriptor;
         this.identity = identity;
         this.status = status;
-        mapData( entityType, rawData );
+        mapData( descriptor, rawData );
         this.version = version;
         this.lastModified = lastModified;
     }
 
-    private void mapData( final EntityType entityType, final Map<QualifiedName, Object> rawData )
+    private void mapData( final EntityDescriptor descriptor, final Map<QualifiedName, Object> rawData )
     {
         Map<String, Object> convertedData = identifierConverter.convertKeys( rawData );
         System.err.println( rawData );
         System.err.println( convertedData );
-        mapProperties( convertedData, entityType );
-        mapAssociations( convertedData, entityType );
+        mapProperties( convertedData, descriptor );
+        mapAssociations( convertedData, descriptor );
     }
 
-    private void mapAssociations( final Map<String, Object> rawData, final EntityType stateDescriptor )
+    private void mapAssociations( final Map<String, Object> rawData, final EntityDescriptor descriptor )
     {
-        for( final AssociationType associationDescriptor : stateDescriptor.associations() )
+        for( final AssociationDescriptor associationDescriptor : descriptor.state().associations() )
         {
             final QualifiedName qualifiedName = associationDescriptor.qualifiedName();
-            final String typeName = associationDescriptor.type().name();
+            final String typeName = associationDescriptor.qualifiedName().name();
             final String associationId = (String) identifierConverter.getValueFromData( rawData, qualifiedName );
             if( associationId != null )
             {
@@ -112,10 +109,10 @@ public final class QrmEntityState
             }
         }
 
-        for( final ManyAssociationType associationDescriptor : stateDescriptor.manyAssociations() )
+        for( final ManyAssociationDescriptor associationDescriptor : descriptor.state().manyAssociations() )
         {
             final QualifiedName qualifiedName = associationDescriptor.qualifiedName();
-            final String typeName = associationDescriptor.type();
+            final String typeName = associationDescriptor.qualifiedName().name();
             Collection<String> identifiers = (Collection<String>) identifierConverter.getValueFromData( rawData, qualifiedName );
             if( identifiers != null && !identifiers.isEmpty() )
             {
@@ -126,7 +123,7 @@ public final class QrmEntityState
 
     private Collection<QualifiedIdentity> createQualifiedIdentities( final Collection<String> identifiers,
                                                                      final String typeName,
-                                                                     ManyAssociationType associationType
+                                                                     ManyAssociationDescriptor associationType
     )
     {
         final int size = identifiers.size();
@@ -139,23 +136,23 @@ public final class QrmEntityState
     }
 
     private Collection<QualifiedIdentity> createManyAssociationCollection( int size,
-                                                                           ManyAssociationType associationType
+                                                                           ManyAssociationDescriptor associationType
     )
     {
         return new ArrayList<QualifiedIdentity>( size );
     }
 
-    private void mapProperties( final Map<String, Object> rawData, final EntityType compositeModel )
+    private void mapProperties( final Map<String, Object> rawData, final EntityDescriptor descriptor )
     {
-        for( final PropertyType propertyDescriptor : compositeModel.properties() )
+        for( final PersistentPropertyDescriptor persistentPropertyDescriptor : descriptor.state().<PersistentPropertyDescriptor>properties() )
         {
-            final QualifiedName qualifiedName = propertyDescriptor.qualifiedName();
+            final QualifiedName qualifiedName = persistentPropertyDescriptor.qualifiedName();
             final Object value = identifierConverter.getValueFromData( rawData, qualifiedName );
-            setProperty( qualifiedName, convertValue( propertyDescriptor, value ) );
+            setProperty( qualifiedName, convertValue( persistentPropertyDescriptor.valueType(), value ) );
         }
     }
 
-    private Object convertValue( final PropertyType propertyDescriptor, final Object value )
+    private Object convertValue( final ValueType propertyDescriptor, final Object value )
     {
         return value; // TODO Implement value conversion
     }
@@ -215,9 +212,9 @@ public final class QrmEntityState
         return status;
     }
 
-    public EntityType entityType()
+    public EntityDescriptor entityDescriptor()
     {
-        return entityType;
+        return descriptor;
     }
 
     /**

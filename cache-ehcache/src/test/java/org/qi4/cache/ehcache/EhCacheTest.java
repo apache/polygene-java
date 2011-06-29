@@ -1,12 +1,9 @@
 package org.qi4.cache.ehcache;
 
-import java.util.Collection;
-import java.util.Random;
 import org.junit.Test;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.constraint.ConstraintViolation;
 import org.qi4j.api.constraint.ConstraintViolationException;
-import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.util.NullArgumentException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -17,9 +14,10 @@ import org.qi4j.spi.cache.CachePool;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import java.util.Collection;
+import java.util.Random;
+
+import static org.junit.Assert.*;
 
 public class EhCacheTest extends AbstractQi4jTest
 {

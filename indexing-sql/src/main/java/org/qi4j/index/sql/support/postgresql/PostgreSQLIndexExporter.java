@@ -14,14 +14,6 @@
 
 package org.qi4j.index.sql.support.postgresql;
 
-import java.io.IOException;
-import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.sql.SQLException;
-import java.sql.Types;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.service.Activatable;
@@ -34,6 +26,14 @@ import org.qi4j.index.sql.support.skeletons.SQLDBState;
 import org.qi4j.library.sql.ds.DataSourceService;
 import org.qi4j.spi.query.IndexExporter;
 import org.sql.generation.api.vendor.SQLVendor;
+
+import java.io.IOException;
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.sql.Types;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 

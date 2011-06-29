@@ -14,13 +14,6 @@
 
 package org.qi4j.index.sql.support.postgresql;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Map;
-
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.service.ServiceComposite;
@@ -32,10 +25,13 @@ import org.sql.generation.api.grammar.definition.table.pgsql.PgSQLTableCommitAct
 import org.sql.generation.api.grammar.factories.DataTypeFactory;
 import org.sql.generation.api.grammar.factories.DefinitionFactory;
 import org.sql.generation.api.grammar.factories.TableReferenceFactory;
-import org.sql.generation.api.grammar.manipulation.DropBehaviour;
-import org.sql.generation.api.grammar.manipulation.ObjectType;
 import org.sql.generation.api.vendor.PostgreSQLVendor;
 import org.sql.generation.api.vendor.SQLVendor;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Map;
 
 /**
  * TODO refactoring

@@ -14,22 +14,6 @@
 
 package org.qi4j.index.sql.support.skeletons;
 
-import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_NAME;
-
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.sql.Types;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.Identity;
@@ -60,18 +44,20 @@ import org.sql.generation.api.grammar.builders.modification.ColumnSourceByValues
 import org.sql.generation.api.grammar.builders.modification.DeleteBySearchBuilder;
 import org.sql.generation.api.grammar.builders.modification.UpdateBySearchBuilder;
 import org.sql.generation.api.grammar.builders.query.QuerySpecificationBuilder;
-import org.sql.generation.api.grammar.factories.BooleanFactory;
-import org.sql.generation.api.grammar.factories.ColumnsFactory;
-import org.sql.generation.api.grammar.factories.LiteralFactory;
-import org.sql.generation.api.grammar.factories.ModificationFactory;
-import org.sql.generation.api.grammar.factories.QueryFactory;
-import org.sql.generation.api.grammar.factories.TableReferenceFactory;
+import org.sql.generation.api.grammar.factories.*;
 import org.sql.generation.api.grammar.modification.DeleteStatement;
 import org.sql.generation.api.grammar.modification.InsertStatement;
 import org.sql.generation.api.grammar.modification.UpdateSourceByExpression;
 import org.sql.generation.api.grammar.modification.UpdateStatement;
 import org.sql.generation.api.grammar.query.QueryExpression;
 import org.sql.generation.api.vendor.SQLVendor;
+
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.sql.*;
+import java.util.*;
+
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_NAME;
 
 /**
  * 
@@ -158,7 +144,7 @@ public class AbstractSQLIndexing
 
             for( EntityState eState : changedStates )
             {
-                if( eState.entityDescriptor().entityType().queryable() )
+                if( eState.entityDescriptor().queryable() )
                 {
                     EntityStatus status = eState.status();
                     Long pk = null;
@@ -199,7 +185,7 @@ public class AbstractSQLIndexing
             for( Map.Entry<Long, EntityState> entry : statesByPK.entrySet() )
             {
                 EntityState eState = entry.getValue();
-                if( eState.entityDescriptor().entityType().queryable() )
+                if( eState.entityDescriptor().queryable() )
                 {
                     Long pk = entry.getKey();
                     EntityStatus status = eState.status();
@@ -761,7 +747,7 @@ public class AbstractSQLIndexing
                 propertyPK, //
                 entityPK, //
                 pDesc.qualifiedName(), //
-                state.getProperty( pDesc.qualifiedName() ).get(), //
+                state.getProperty( pDesc.accessor() ).get(), //
                 originalPropertyPK //
                 );
         }

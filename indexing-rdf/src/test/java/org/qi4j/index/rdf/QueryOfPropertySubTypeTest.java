@@ -29,11 +29,11 @@ import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryExpressions;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
+import org.qi4j.api.util.Iterables;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.index.rdf.assembly.RdfMemoryStoreAssembler;
-import org.qi4j.spi.util.CollectionUtils;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
 
@@ -89,7 +89,7 @@ public class QueryOfPropertySubTypeTest
             Query<FlatEntity> query = queryBuilder.newQuery( uow );
             query.maxResults( 1 );
 
-            FlatEntity foundByName = (FlatEntity) CollectionUtils.firstElementOrNull( query );
+            FlatEntity foundByName = (FlatEntity) Iterables.first( query );
             Assert.assertEquals( "Bob", foundByName.name().get() );
 
             uow.complete();
@@ -120,7 +120,7 @@ public class QueryOfPropertySubTypeTest
             Query<WoupsEntity> query = queryBuilder.newQuery( uow );
             query.maxResults( 1 );
 
-            WoupsEntity foundByName = (WoupsEntity) CollectionUtils.firstElementOrNull( query );
+            WoupsEntity foundByName = (WoupsEntity) Iterables.first( query );
             Assert.assertEquals( "Bob", foundByName.name().get() );
 
             uow.complete();

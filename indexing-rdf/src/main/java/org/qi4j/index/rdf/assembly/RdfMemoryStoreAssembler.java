@@ -22,35 +22,23 @@ import org.qi4j.index.rdf.query.RdfQueryParserFactory;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.entity.EntityTypeSerializer;
 import org.qi4j.library.rdf.repository.MemoryRepositoryService;
-import org.qi4j.spi.query.NamedQueries;
 
 public class RdfMemoryStoreAssembler
     implements Assembler
 {
-    private NamedQueries namedQueries;
     private Visibility indexingVisibility;
     private Visibility repositoryVisibility;
 
     public RdfMemoryStoreAssembler()
     {
-        this( null, Visibility.application, Visibility.module );
+        this( Visibility.application, Visibility.module );
     }
 
-    public RdfMemoryStoreAssembler( NamedQueries namedQueries )
-    {
-        this( namedQueries, Visibility.application, Visibility.module );
-    }
-
-    public RdfMemoryStoreAssembler( NamedQueries namedQueries,
+    public RdfMemoryStoreAssembler(
                                     Visibility indexingVisibility,
                                     Visibility repositoryVisibility
     )
     {
-        if( namedQueries == null )
-        {
-            namedQueries = new NamedQueries();
-        }
-        this.namedQueries = namedQueries;
         this.indexingVisibility = indexingVisibility;
         this.repositoryVisibility = repositoryVisibility;
     }
@@ -64,7 +52,6 @@ public class RdfMemoryStoreAssembler
             .identifiedBy( "rdf-repository" );
         module.services( RdfIndexingEngineService.class )
             .visibleIn( indexingVisibility )
-            .setMetaInfo( namedQueries )
             .instantiateOnStartup();
         module.services( RdfQueryParserFactory.class ).visibleIn( indexingVisibility );
         module.objects( EntityStateSerializer.class, EntityTypeSerializer.class );

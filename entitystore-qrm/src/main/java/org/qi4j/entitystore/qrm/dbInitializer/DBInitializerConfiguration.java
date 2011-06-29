@@ -16,8 +16,9 @@
  */
 package org.qi4j.entitystore.qrm.dbInitializer;
 
-import java.util.Properties;
 import org.qi4j.api.property.Property;
+
+import java.util.Properties;
 
 /**
  * {@code DBInitializerInfo} represents information on the sql resources to initialize the database.

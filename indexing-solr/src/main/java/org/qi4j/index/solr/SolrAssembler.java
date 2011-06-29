@@ -19,10 +19,6 @@ import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
-import org.qi4j.spi.query.NamedQueries;
-import org.qi4j.spi.query.NamedQueryDescriptor;
-
-import static org.qi4j.api.service.qualifier.ServiceTags.*;
 
 /**
  * JAVADOC
@@ -34,12 +30,8 @@ public class SolrAssembler
    {
       module.services( EmbeddedSolrService.class ).identifiedBy( "solr" ).instantiateOnStartup();
 
-      NamedQueries namedQueries = new NamedQueries();
-      NamedQueryDescriptor queryDescriptor = new NamedSolrDescriptor( "search", "" );
-      namedQueries.addQuery( queryDescriptor );
       module.services( SolrQueryService.class ).
-            taggedWith( "solr","search" ).
-            setMetaInfo( namedQueries ).
+            taggedWith( "solr", "search" ).
             identifiedBy( "solrquery" ).
             visibleIn( Visibility.application );
 

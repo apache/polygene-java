@@ -1,17 +1,9 @@
 package org.qi4j.entitystore.neo4j;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONStringer;
-import org.json.JSONTokener;
-import org.neo4j.graphdb.Direction;
-import org.neo4j.graphdb.DynamicRelationshipType;
-import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.Relationship;
-import org.neo4j.graphdb.RelationshipType;
+import org.json.*;
+import org.neo4j.graphdb.*;
 import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.common.TypeName;
+import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
@@ -19,7 +11,10 @@ import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.ManyAssociationState;
 import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
-import org.qi4j.spi.property.PropertyType;
+import org.qi4j.spi.property.JSONObjectSerializer;
+import org.qi4j.spi.property.JSONWriterSerializer;
+import org.qi4j.spi.property.PersistentPropertyDescriptor;
+import org.qi4j.spi.property.JSONDeserializer;
 
 public class NeoEntityState
     implements EntityState
@@ -129,27 +124,21 @@ public class NeoEntityState
             }
             else
             {
-                // why is it a set and not a Map?
-                for( PropertyType propertyType : entityDescriptor().entityType().properties() )
+                PersistentPropertyDescriptor persistentProperty = entityDescriptor().state().getPropertyByQualifiedName( stateName );
+                String json = "[" + prop + "]";
+                JSONTokener tokener = new JSONTokener( json );
+                JSONArray array = (JSONArray) tokener.nextValue();
+                Object jsonValue = array.get( 0 );
+                if( jsonValue == JSONObject.NULL )
                 {
-                    if( propertyType.qualifiedName().equals( stateName ) )
-                    {
-                        String json = "[" + prop + "]";
-                        JSONTokener tokener = new JSONTokener( json );
-                        JSONArray array = (JSONArray) tokener.nextValue();
-                        Object jsonValue = array.get( 0 );
-                        if( jsonValue == JSONObject.NULL )
-                        {
-                            return null;
-                        }
-                        else
-                        {
-                            return propertyType.type().fromJSON( jsonValue, uow.getModule() );
-                        }
-                    }
+                    return null;
+                }
+                else
+                {
+                    JSONDeserializer deserializer = new JSONDeserializer( uow.getModule() );
+                    return deserializer.deserialize( jsonValue, persistentProperty.valueType() );
                 }
             }
-            return underlyingNode.getProperty( "prop::" + stateName.toString() ).toString();
         }
         catch( JSONException e )
         {
@@ -169,27 +158,17 @@ public class NeoEntityState
                 }
                 else
                 {
-                    // why is it a set and not a Map?
-                    for( PropertyType propertyType : entityDescriptor().entityType().properties() )
+                    PersistentPropertyDescriptor persistentProperty = entityDescriptor().state().getPropertyByQualifiedName( stateName );
+                    if( prop instanceof String && persistentProperty.valueType().type().equals( String.class ) )
                     {
-                        if( propertyType.qualifiedName().equals( stateName ) )
-                        {
-                            if( prop instanceof String && propertyType.type().isString() )
-                            {
-                                underlyingNode.setProperty( "prop::" + stateName.toString(), prop );
-                            }
-                            else
-                            {
-                                JSONStringer json = new JSONStringer();
-                                json.array();
-                                propertyType.type().toJSON( prop, json );
-                                json.endArray();
-                                String jsonString = json.toString();
-                                jsonString = jsonString.substring( 1, jsonString.length() - 1 );
-                                underlyingNode.setProperty( "prop::" + stateName.toString(), jsonString );
-                            }
-                            break;
-                        }
+                        underlyingNode.setProperty( "prop::" + stateName.toString(), prop );
+                    }
+                    else
+                    {
+                        JSONObjectSerializer serializer = new JSONObjectSerializer(  );
+                        serializer.serialize( prop, persistentProperty.valueType() );
+                        String jsonString = serializer.getRoot().toString();
+                        underlyingNode.setProperty( "prop::" + stateName.toString(), jsonString );
                     }
                 }
             }
@@ -290,11 +269,12 @@ public class NeoEntityState
         return new EntityReference( (String) underlyingNode.getProperty( ENTITY_ID ) );
     }
 
-    public boolean isOfType( TypeName type )
+    @Override
+    public boolean isOfType( Class<? extends EntityComposite> type )
     {
         Node typeNode = underlyingNode.getSingleRelationship( RelTypes.IS_OF_TYPE, Direction.OUTGOING ).getEndNode();
         String typeName = (String) typeNode.getProperty( NeoEntityStoreUnitOfWork.ENTITY_TYPE );
-        return typeName.equals( type.name() );
+        return typeName.equals( type.getName() );
     }
 
     public long lastModified()

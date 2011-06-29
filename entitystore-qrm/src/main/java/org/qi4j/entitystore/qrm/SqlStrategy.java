@@ -17,8 +17,9 @@
  */
 package org.qi4j.entitystore.qrm;
 
-import java.sql.PreparedStatement;
 import org.qi4j.api.entity.EntityReference;
+
+import java.sql.PreparedStatement;
 
 public interface SqlStrategy
 {

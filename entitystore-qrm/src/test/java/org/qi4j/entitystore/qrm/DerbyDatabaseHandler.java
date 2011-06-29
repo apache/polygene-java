@@ -16,14 +16,6 @@
  */
 package org.qi4j.entitystore.qrm;
 
-import java.io.PrintWriter;
-import java.net.URL;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Properties;
 import org.apache.derby.drda.NetworkServerControl;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -33,9 +25,14 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.qrm.dbInitializer.DBInitializerConfiguration;
 import org.qi4j.entitystore.qrm.test.TestProperty;
 
-import static java.lang.System.*;
-import static java.lang.Thread.*;
-import static java.sql.DriverManager.*;
+import java.io.PrintWriter;
+import java.net.URL;
+import java.sql.*;
+import java.util.Properties;
+
+import static java.lang.System.out;
+import static java.lang.Thread.sleep;
+import static java.sql.DriverManager.getConnection;
 import static org.junit.Assert.*;
 
 /**

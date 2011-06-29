@@ -13,10 +13,6 @@
  */
 package org.qi4j.library.sql.postgresql;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-
 import org.junit.Assume;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.ServiceFinder;
@@ -39,6 +35,10 @@ import org.qi4j.library.sql.ds.PGSQLDataSourceServiceMixin;
 import org.qi4j.library.sql.ds.assembly.DataSourceAssembler;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.slf4j.Logger;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  * @author Stanislav Muhametsin

@@ -16,11 +16,12 @@
  */
 package org.qi4j.entitystore.qrm.dbInitializer;
 
-import java.util.Properties;
 import org.junit.After;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.qi4j.entitystore.qrm.DerbyDatabaseHandler;
+
+import java.util.Properties;
 
 /**
  * {@code DBInitializerTest} test db initializer.

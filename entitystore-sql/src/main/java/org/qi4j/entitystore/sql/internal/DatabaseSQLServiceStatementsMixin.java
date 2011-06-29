@@ -14,12 +14,12 @@
  */
 package org.qi4j.entitystore.sql.internal;
 
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.injection.scope.This;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-
-import org.qi4j.api.entity.EntityReference;
-import org.qi4j.api.injection.scope.This;
 
 public abstract class DatabaseSQLServiceStatementsMixin
         implements DatabaseSQLService

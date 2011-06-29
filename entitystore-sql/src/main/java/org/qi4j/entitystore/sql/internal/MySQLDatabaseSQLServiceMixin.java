@@ -14,15 +14,15 @@
  */
 package org.qi4j.entitystore.sql.internal;
 
-import java.io.StringReader;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.library.sql.common.SQLUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.StringReader;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 @SuppressWarnings("ProtectedField")
 public abstract class MySQLDatabaseSQLServiceMixin

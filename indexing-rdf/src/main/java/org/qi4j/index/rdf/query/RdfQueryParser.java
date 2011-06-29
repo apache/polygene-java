@@ -18,15 +18,21 @@
 
 package org.qi4j.index.rdf.query;
 
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.entity.Entity;
 import org.qi4j.api.query.grammar.BooleanExpression;
 import org.qi4j.api.query.grammar.OrderBy;
+import org.qi4j.api.specification.Specification;
+
+import java.util.Map;
 
 public interface RdfQueryParser
 {
     String getQuery( Class<?> resultType,
-                     BooleanExpression whereClause,
+                     Specification<Composite> whereClause,
                      OrderBy[] orderBySegments,
                      Integer firstResult,
-                     Integer maxResults
+                     Integer maxResults,
+                     Map<String, Object> variables
     );
 }

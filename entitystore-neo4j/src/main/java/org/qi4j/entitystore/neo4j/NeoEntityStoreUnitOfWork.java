@@ -1,21 +1,18 @@
 package org.qi4j.entitystore.neo4j;
 
-import javax.transaction.Transaction;
-import javax.transaction.TransactionManager;
-import org.neo4j.kernel.EmbeddedGraphDatabase;
 import org.neo4j.graphdb.Node;
 import org.neo4j.index.IndexService;
+import org.neo4j.kernel.EmbeddedGraphDatabase;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.structure.Module;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entitystore.EntityAlreadyExistsException;
-import org.qi4j.spi.entitystore.EntityNotFoundException;
-import org.qi4j.spi.entitystore.EntityStoreException;
-import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
-import org.qi4j.spi.entitystore.StateCommitter;
+import org.qi4j.spi.entitystore.*;
 import org.qi4j.spi.structure.ModuleSPI;
+
+import javax.transaction.Transaction;
+import javax.transaction.TransactionManager;
 
 public class NeoEntityStoreUnitOfWork
     implements EntityStoreUnitOfWork,
@@ -85,7 +82,7 @@ public class NeoEntityStoreUnitOfWork
     )
         throws EntityStoreException
     {
-        String type = entityDescriptor.entityType().type().name();
+        String type = entityDescriptor.type().getName();
         Node typeNode = indexService.getSingleNode( ENTITY_TYPE, type );
         if( typeNode == null )
         {

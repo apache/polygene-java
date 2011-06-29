@@ -14,8 +14,6 @@
 
 package org.qi4j.library.sql.postgresql;
 
-import org.junit.After;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;

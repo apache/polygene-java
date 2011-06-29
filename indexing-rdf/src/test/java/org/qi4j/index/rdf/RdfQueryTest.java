@@ -32,7 +32,7 @@ import org.qi4j.library.rdf.repository.NativeConfiguration;
 import org.qi4j.library.rdf.repository.NativeRepositoryService;
 import org.qi4j.test.indexing.AbstractQueryTest;
 
-@Ignore("Getting failures when running under Gradle and new OpenRDF version." )
+//@Ignore("Getting failures when running under Gradle and new OpenRDF version." )
 public class RdfQueryTest extends AbstractQueryTest
 {
 

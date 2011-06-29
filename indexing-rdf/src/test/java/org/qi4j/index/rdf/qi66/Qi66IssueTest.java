@@ -30,7 +30,8 @@ import org.qi4j.library.rdf.repository.MemoryRepositoryService;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.fail;
 
 /**
  * Test for Qi-66

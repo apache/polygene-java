@@ -14,54 +14,6 @@
 
 package org.qi4j.index.sql.support.skeletons;
 
-import static org.qi4j.index.sql.support.common.DBNames.ALL_QNAMES_TABLE_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.ALL_QNAMES_TABLE_PK_COLUMN_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.APP_VERSION_PK_COLUMN_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.APP_VERSION_TABLE_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_APPLICATION_VERSION_COLUMN_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_IDENTITY_COLUMN_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_MODIFIED_COLUMN_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_PK_COLUMN_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_VERSION_COLUMN_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TYPES_TABLE_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TYPES_TABLE_PK_COLUMN_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TYPES_TABLE_TYPE_NAME_COLUMN_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.ENUM_LOOKUP_TABLE_ENUM_VALUE_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.ENUM_LOOKUP_TABLE_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.ENUM_LOOKUP_TABLE_PK_COLUMN_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.QNAME_TABLE_ASSOCIATION_INDEX_COLUMN_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.QNAME_TABLE_COLLECTION_PATH_COLUMN_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.QNAME_TABLE_NAME_PREFIX;
-import static org.qi4j.index.sql.support.common.DBNames.QNAME_TABLE_PARENT_QNAME_COLUMN_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.QNAME_TABLE_VALUE_COLUMN_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.USED_CLASSES_TABLE_CLASS_NAME_COLUMN_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.USED_CLASSES_TABLE_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.USED_CLASSES_TABLE_PK_COLUMN_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.USED_QNAMES_TABLE_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.USED_QNAMES_TABLE_QNAME_COLUMN_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.USED_QNAMES_TABLE_TABLE_NAME_COLUMN_NAME;
-
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Types;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Pattern;
-
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.Identity;
@@ -96,17 +48,23 @@ import org.sql.generation.api.grammar.common.datatypes.SQLDataType;
 import org.sql.generation.api.grammar.definition.table.ConstraintCharacteristics;
 import org.sql.generation.api.grammar.definition.table.ReferentialAction;
 import org.sql.generation.api.grammar.definition.table.UniqueSpecification;
-import org.sql.generation.api.grammar.factories.DataTypeFactory;
-import org.sql.generation.api.grammar.factories.DefinitionFactory;
-import org.sql.generation.api.grammar.factories.LiteralFactory;
-import org.sql.generation.api.grammar.factories.ModificationFactory;
-import org.sql.generation.api.grammar.factories.QueryFactory;
-import org.sql.generation.api.grammar.factories.TableReferenceFactory;
+import org.sql.generation.api.grammar.factories.*;
 import org.sql.generation.api.grammar.manipulation.DropBehaviour;
 import org.sql.generation.api.grammar.manipulation.ObjectType;
 import org.sql.generation.api.grammar.modification.DeleteBySearch;
 import org.sql.generation.api.grammar.query.QueryExpression;
 import org.sql.generation.api.vendor.SQLVendor;
+
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.sql.*;
+import java.util.*;
+import java.util.Date;
+import java.util.regex.Pattern;
+
+import static org.qi4j.index.sql.support.common.DBNames.*;
 
 /**
  * 
@@ -1145,7 +1103,7 @@ public abstract class AbstractSQLStartup
                     if (visited instanceof EntityDescriptor)
                     {
                         EntityDescriptor entityDescriptor = (EntityDescriptor) visited;
-                        if( entityDescriptor.entityType().queryable() )
+                        if( entityDescriptor.queryable() )
                         {
                             entityDescriptors.put( entityDescriptor.type().getName(), entityDescriptor );
                         }
@@ -1155,18 +1113,6 @@ public abstract class AbstractSQLStartup
                     return false;
                 }
 
-                return true;
-            }
-
-            @Override
-            public boolean visitLeave( Object visited ) throws RuntimeException
-            {
-                return true;
-            }
-
-            @Override
-            public boolean visit( Object visited ) throws RuntimeException
-            {
                 return true;
             }
         });

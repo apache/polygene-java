@@ -14,8 +14,6 @@
  */
 package org.qi4j.entitystore.sql.assembly;
 
-import java.io.IOException;
-
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -30,6 +28,8 @@ import org.qi4j.library.sql.ds.assembly.DataSourceAssembler;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.sql.generation.api.vendor.SQLVendor;
 import org.sql.generation.api.vendor.SQLVendorProvider;
+
+import java.io.IOException;
 
 abstract class AbstractSQLEntityStoreAssembler extends AbstractSQLAssembler
 {

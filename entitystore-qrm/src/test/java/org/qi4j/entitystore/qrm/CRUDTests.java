@@ -1,10 +1,5 @@
 package org.qi4j.entitystore.qrm;
 
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
-import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Test;
 import org.qi4j.api.common.Visibility;
@@ -18,6 +13,12 @@ import org.qi4j.entitystore.qrm.entity.AccountComposite;
 import org.qi4j.entitystore.qrm.internal.QrmMapperService;
 import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.test.AbstractQi4jTest;
+
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Properties;
+import java.util.UUID;
 
 /**
  * User: alex

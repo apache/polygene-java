@@ -14,15 +14,16 @@
 
 package org.qi4j.entitystore.qrm;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.SQLException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
+
+import static org.junit.Assert.assertNotNull;
 
 public class DerbyDatabaseHandlerTest
 {

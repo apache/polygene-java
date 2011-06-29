@@ -18,16 +18,7 @@
 
 package org.qi4j.index.rdf.indexing;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import org.openrdf.model.Graph;
-import org.openrdf.model.Resource;
-import org.openrdf.model.Statement;
-import org.openrdf.model.URI;
-import org.openrdf.model.ValueFactory;
+import org.openrdf.model.*;
 import org.openrdf.model.impl.GraphImpl;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
@@ -36,12 +27,19 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.Activatable;
+import org.qi4j.api.util.Classes;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.entity.EntityTypeSerializer;
+import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entitystore.StateChangeListener;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Mixins( RdfIndexingService.RdfEntityIndexerMixin.class )
 public interface RdfIndexingService
@@ -64,13 +62,13 @@ public interface RdfIndexingService
         @Uses
         private EntityTypeSerializer typeSerializer;
 
-        private Set<EntityType> indexedEntityTypes;
+        private Set<EntityDescriptor> indexedEntityTypes;
         private ValueFactory valueFactory;
 
         public void activate()
             throws Exception
         {
-            indexedEntityTypes = new HashSet<EntityType>();
+            indexedEntityTypes = new HashSet<EntityDescriptor>();
         }
 
         public void passivate()
@@ -100,28 +98,28 @@ public interface RdfIndexingService
                     connection.commit();
 
                     // Figure out what to update
-                    final Set<EntityType> entityTypes = new HashSet<EntityType>();
+                    final Set<EntityDescriptor> entityTypes = new HashSet<EntityDescriptor>();
                     for( EntityState entityState : entityStates )
                     {
                         if( entityState.status().equals( EntityStatus.UPDATED ) )
                         {
                             indexEntityState( entityState, connection );
-                            entityTypes.add( entityState.entityDescriptor().entityType() );
+                            entityTypes.add( entityState.entityDescriptor() );
                         }
                         else if( entityState.status().equals( EntityStatus.NEW ) )
                         {
                             indexEntityState( entityState, connection );
-                            entityTypes.add( entityState.entityDescriptor().entityType() );
+                            entityTypes.add( entityState.entityDescriptor() );
                         }
                     }
 
                     // Index new types
-                    for( EntityType entityType : entityTypes )
+                    for( EntityDescriptor entityDescriptor : entityTypes )
                     {
-                        if( !indexedEntityTypes.contains( entityType ) )
+                        if( !indexedEntityTypes.contains( entityDescriptor ) )
                         {
-                            indexEntityType( entityType, connection );
-                            indexedEntityTypes.add( entityType );
+                            indexEntityType( entityDescriptor, connection );
+                            indexedEntityTypes.add( entityDescriptor );
                         }
                     }
                 }
@@ -169,7 +167,7 @@ public interface RdfIndexingService
         )
             throws RepositoryException
         {
-            if( entityState.entityDescriptor().entityType().queryable() )
+            if( entityState.entityDescriptor().queryable() )
             {
                 final URI entityURI = stateSerializer.createEntityURI( getValueFactory(), entityState.identity() );
                 Graph graph = new GraphImpl();
@@ -178,14 +176,14 @@ public interface RdfIndexingService
             }
         }
 
-        private void indexEntityType( final EntityType entityType,
+        private void indexEntityType( final EntityDescriptor entityType,
                                       final RepositoryConnection connection
         )
             throws RepositoryException
         {
             if( entityType.queryable() )
             {
-                final URI compositeURI = getValueFactory().createURI( entityType.uri() );
+                final URI compositeURI = getValueFactory().createURI( Classes.toURI(entityType.type()) );
                 // remove composite type if already present
                 connection.clear( compositeURI );
 

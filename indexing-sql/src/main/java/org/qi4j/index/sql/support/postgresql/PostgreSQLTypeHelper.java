@@ -14,17 +14,17 @@
 
 package org.qi4j.index.sql.support.postgresql;
 
+import org.qi4j.api.common.Optional;
+import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.index.sql.support.skeletons.SQLDBState;
+
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
-
-import org.qi4j.api.common.Optional;
-import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.mixin.Mixins;
-import org.qi4j.index.sql.support.skeletons.SQLDBState;
 
 /**
  * A little helper interface to convert java types to SQL types when inserting objects to prepared statements. It will

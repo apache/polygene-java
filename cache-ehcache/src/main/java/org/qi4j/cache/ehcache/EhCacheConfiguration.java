@@ -1,9 +1,10 @@
 package org.qi4j.cache.ehcache;
 
-import java.util.List;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.configuration.ConfigurationComposite;
 import org.qi4j.api.property.Property;
+
+import java.util.List;
 
 public interface EhCacheConfiguration
     extends ConfigurationComposite

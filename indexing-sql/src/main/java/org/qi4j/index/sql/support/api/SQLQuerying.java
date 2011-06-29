@@ -14,13 +14,16 @@
 
 package org.qi4j.index.sql.support.api;
 
-import java.sql.PreparedStatement;
-import java.util.List;
-
 import org.qi4j.api.common.Optional;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.entity.Entity;
 import org.qi4j.api.query.grammar.BooleanExpression;
 import org.qi4j.api.query.grammar.OrderBy;
+import org.qi4j.api.specification.Specification;
 import org.qi4j.spi.query.EntityFinderException;
+
+import java.sql.PreparedStatement;
+import java.util.List;
 
 /**
  * This interface provides parsing support from Qi4j queries to SQL queries. The idea is that this interface produces
@@ -49,7 +52,7 @@ public interface SQLQuerying
      */
     public String constructQuery( //
         Class<?> resultType, //
-        @Optional BooleanExpression whereClause, //
+        @Optional Specification<Composite> whereClause, //
         @Optional OrderBy[] orderBySegments, //
         @Optional Integer firstResult, //
         @Optional Integer maxResults, //

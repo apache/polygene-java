@@ -17,7 +17,6 @@
  */
 package org.qi4j.index.rdf.qi173;
 
-import java.util.Iterator;
 import org.junit.Assert;
 import org.junit.Test;
 import org.qi4j.api.entity.EntityBuilder;
@@ -35,7 +34,9 @@ import org.qi4j.index.rdf.assembly.RdfMemoryStoreAssembler;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
 
-import static org.qi4j.api.query.QueryExpressions.*;
+import java.util.Iterator;
+
+import static org.qi4j.api.query.QueryExpressions.orderBy;
 
 public class Qi173IssueTest
     extends AbstractQi4jTest

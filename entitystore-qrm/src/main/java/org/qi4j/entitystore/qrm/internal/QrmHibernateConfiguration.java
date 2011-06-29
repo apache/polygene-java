@@ -16,10 +16,11 @@
  */
 package org.qi4j.entitystore.qrm.internal;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import org.hibernate.HibernateException;
 import org.hibernate.cfg.Configuration;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 
 public class QrmHibernateConfiguration
     extends Configuration

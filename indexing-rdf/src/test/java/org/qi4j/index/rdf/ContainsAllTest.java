@@ -1,9 +1,5 @@
 package org.qi4j.index.rdf;
 
-import java.io.File;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 import org.junit.Assert;
 import org.junit.Test;
 import org.qi4j.api.common.Visibility;
@@ -14,18 +10,22 @@ import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryExpressions;
 import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.util.Iterables;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
-import org.qi4j.entitystore.prefs.assembly.PreferenceEntityStoreAssembler;
 import org.qi4j.index.rdf.assembly.RdfNativeSesameStoreAssembler;
 import org.qi4j.library.fileconfig.FileConfiguration;
 import org.qi4j.library.rdf.repository.NativeConfiguration;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 // A test to verify that containsAll QueryExpression works properly.
 public class ContainsAllTest
@@ -285,9 +285,8 @@ public class ContainsAllTest
         QueryBuilder<ExampleEntity> builder = this.queryBuilderFactory.newQueryBuilder( ExampleEntity.class );
 
         builder = builder.where( QueryExpressions.containsAll(
-            QueryExpressions.templateFor( ExampleEntity.class ).strings(),
-            new HashSet<String>( Arrays.asList( strings ) ) )
-        );
+                QueryExpressions.templateFor( ExampleEntity.class ).strings(),
+                Iterables.iterable( strings ) ) );
         return builder.newQuery( this.unitOfWorkFactory.currentUnitOfWork() ).find();
     }
 
@@ -311,8 +310,8 @@ public class ContainsAllTest
     {
         QueryBuilder<ExampleEntity> builder = this.queryBuilderFactory.newQueryBuilder( ExampleEntity.class );
         builder = builder.where( QueryExpressions.containsAll(
-            QueryExpressions.templateFor( ExampleEntity.class ).complexValue(),
-            valuez
+                QueryExpressions.templateFor( ExampleEntity.class ).complexValue(),
+                valuez
         )
         );
 

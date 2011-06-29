@@ -16,7 +16,6 @@
  */
 package org.qi4j.entitystore.qrm;
 
-import java.util.UUID;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.entity.IdentityGenerator;
@@ -32,15 +31,12 @@ import org.qi4j.api.usecase.Usecase;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entitystore.DefaultEntityStoreUnitOfWork;
-import org.qi4j.spi.entitystore.EntityStore;
-import org.qi4j.spi.entitystore.EntityStoreException;
-import org.qi4j.spi.entitystore.EntityStoreSPI;
-import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
-import org.qi4j.spi.entitystore.StateCommitter;
+import org.qi4j.spi.entitystore.*;
 import org.qi4j.spi.entitystore.helpers.DefaultEntityState;
 import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.spi.structure.ModuleSPI;
+
+import java.util.UUID;
 
 public class QrmEntityStoreServiceMixin
     implements Activatable, EntityStore, EntityStoreSPI, IdentityGenerator

@@ -14,12 +14,13 @@
 
 package org.qi4j.migration.operation;
 
-import java.util.Arrays;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.qi4j.entitystore.map.StateStore;
 import org.qi4j.migration.Migrator;
 import org.qi4j.migration.assembly.EntityMigrationOperation;
+
+import java.util.Arrays;
 
 /**
  * Add a many-association

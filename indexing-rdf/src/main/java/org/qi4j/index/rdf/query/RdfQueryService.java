@@ -17,34 +17,31 @@
  */
 package org.qi4j.index.rdf.query;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.openrdf.model.Value;
-import org.openrdf.model.impl.ValueFactoryImpl;
 import org.openrdf.query.QueryLanguage;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.entity.Entity;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.query.grammar.BooleanExpression;
 import org.qi4j.api.query.grammar.OrderBy;
+import org.qi4j.api.query.grammar2.QuerySpecification;
 import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.specification.Specification;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
-import org.qi4j.spi.query.NamedEntityFinder;
-import org.qi4j.spi.query.NamedQueryDescriptor;
+
+import java.util.Map;
 
 /**
  * JAVADOC Add JavaDoc
  */
-@Mixins( { RdfQueryService.RdfEntityFinderMixin.class, RdfQueryService.RdfNamedEntityFinderMixin.class } )
+@Mixins( { RdfQueryService.RdfEntityFinderMixin.class } )
 public interface RdfQueryService
-    extends EntityFinder, NamedEntityFinder, RdfQueryParserFactory, ServiceComposite
+    extends EntityFinder, RdfQueryParserFactory, ServiceComposite
 {
     /**
      * JAVADOC Add JavaDoc
-     * JAVADOC shall we support different implementation as SERQL?
      */
     public static class RdfEntityFinderMixin
         implements EntityFinder
@@ -59,104 +56,65 @@ public interface RdfQueryService
         TupleQueryExecutor tupleExecutor;
 
         public Iterable<EntityReference> findEntities( Class<?> resultType,
-                                                       BooleanExpression whereClause,
+                                                       Specification<Composite> whereClause,
                                                        OrderBy[] orderBySegments,
                                                        Integer firstResult,
-                                                       Integer maxResults
+                                                       Integer maxResults,
+                                                       Map<String, Object> variables
         )
             throws EntityFinderException
         {
             CollectingQualifiedIdentityResultCallback collectingCallback = new CollectingQualifiedIdentityResultCallback();
-            RdfQueryParser rdfQueryParser = queryParserFactory.newQueryParser( language );
-            String query = rdfQueryParser.getQuery( resultType, whereClause, orderBySegments, firstResult, maxResults );
-            tupleExecutor.performTupleQuery( language, query, null, collectingCallback );
-            return collectingCallback.getEntities();
+
+            if( QuerySpecification.isQueryLanguage( "SERQL", whereClause ))
+            {
+                String query = ((QuerySpecification)whereClause).getQuery();
+                tupleExecutor.performTupleQuery( QueryLanguage.SERQL, query, variables, collectingCallback );
+                return collectingCallback.getEntities();
+
+            } else
+            {
+                RdfQueryParser rdfQueryParser = queryParserFactory.newQueryParser( language );
+                String query = rdfQueryParser.getQuery( resultType, whereClause, orderBySegments, firstResult, maxResults, variables );
+
+                tupleExecutor.performTupleQuery( language, query, variables, collectingCallback );
+                return collectingCallback.getEntities();
+            }
         }
 
-        public EntityReference findEntity( Class<?> resultType, BooleanExpression whereClause )
+        public EntityReference findEntity( Class<?> resultType, Specification<Composite> whereClause, Map<String, Object> variables )
             throws EntityFinderException
         {
             final SingleQualifiedIdentityResultCallback singleCallback = new SingleQualifiedIdentityResultCallback();
-            RdfQueryParser rdfQueryParser = queryParserFactory.newQueryParser( language );
-            String query = rdfQueryParser.getQuery( resultType, whereClause, null, null, null );
-            tupleExecutor.performTupleQuery( language, query, null, singleCallback );
-            return singleCallback.getQualifiedIdentity();
-        }
 
-        public long countEntities( Class<?> resultType, BooleanExpression whereClause )
-            throws EntityFinderException
-        {
-            RdfQueryParser rdfQueryParser = queryParserFactory.newQueryParser( language );
-            String query = rdfQueryParser.getQuery( resultType, whereClause, null, null, null );
-            return tupleExecutor.performTupleQuery( language, query, null, null );
-        }
-    }
-
-    public static class RdfNamedEntityFinderMixin
-        implements NamedEntityFinder
-    {
-        @Service
-        private RdfQueryParserFactory queryParserFactory;
-
-        @This
-        private TupleQueryExecutor tupleExecutor;
-
-        public Iterable<EntityReference> findEntities( NamedQueryDescriptor descriptor,
-                                                       String resultType,
-                                                       Map<String, Object> variables,
-                                                       OrderBy[] orderBySegments,
-                                                       Integer firstResult,
-                                                       Integer maxResults
-        )
-            throws EntityFinderException
-        {
-            Map<String, Value> bindings = getBindings(variables);
-
-            QueryLanguage queryLanguage = QueryLanguage.valueOf( descriptor.language() );
-            String query = descriptor.compose( variables, orderBySegments, firstResult, maxResults );
-            CollectingQualifiedIdentityResultCallback callback = new CollectingQualifiedIdentityResultCallback();
-            tupleExecutor.performTupleQuery( queryLanguage, query, bindings, callback );
-            return callback.getEntities();
-        }
-
-        public EntityReference findEntity( NamedQueryDescriptor descriptor,
-                                           String resultType,
-                                           Map<String, Object> variables
-        )
-            throws EntityFinderException
-        {
-            Map<String, Value> bindings = getBindings(variables);
-
-            QueryLanguage queryLanguage = QueryLanguage.valueOf( descriptor.language() );
-            String query = descriptor.compose( variables, null, null, 1 );
-            SingleQualifiedIdentityResultCallback callback = new SingleQualifiedIdentityResultCallback();
-            tupleExecutor.performTupleQuery( queryLanguage, query, bindings, callback );
-            return callback.getQualifiedIdentity();
-        }
-
-        public long countEntities( NamedQueryDescriptor descriptor, String resultType, Map<String, Object> variables )
-            throws EntityFinderException
-        {
-            Map<String, Value> bindings = getBindings(variables);
-
-            QueryLanguage queryLanguage = QueryLanguage.valueOf( descriptor.language() );
-            return tupleExecutor.performTupleQuery( queryLanguage, descriptor.compose( null, null, null, null ), bindings, null );
-        }
-
-        public String showQuery( NamedQueryDescriptor descriptor )
-        {
-            return descriptor.compose( null, null, null, null );
-        }
-
-        private Map<String, Value> getBindings(Map<String, Object> variables)
-        {
-            Map<String, Value> bindings = new HashMap<String, Value>();
-            for (Map.Entry<String, Object> stringObjectEntry : variables.entrySet())
+            if (QuerySpecification.isQueryLanguage( "SERQL", whereClause))
             {
-                if (!stringObjectEntry.getValue().getClass().equals(Object.class))
-                    bindings.put(stringObjectEntry.getKey(), ValueFactoryImpl.getInstance().createLiteral(stringObjectEntry.getValue().toString()));
+                String query = ((QuerySpecification)whereClause).getQuery();
+                tupleExecutor.performTupleQuery( QueryLanguage.SERQL, query, variables, singleCallback );
+                return singleCallback.getQualifiedIdentity();
+            } else
+            {
+                RdfQueryParser rdfQueryParser = queryParserFactory.newQueryParser( language );
+                String query = rdfQueryParser.getQuery( resultType, whereClause, null, null, null, variables );
+                tupleExecutor.performTupleQuery( QueryLanguage.SPARQL, query, variables, singleCallback );
+                return singleCallback.getQualifiedIdentity();
             }
-            return bindings;
+        }
+
+        public long countEntities( Class<?> resultType, Specification<Composite> whereClause, Map<String, Object> variables )
+            throws EntityFinderException
+        {
+            if (QuerySpecification.isQueryLanguage( "SERQL", whereClause ))
+            {
+                String query = ((QuerySpecification)whereClause).getQuery();
+                return tupleExecutor.performTupleQuery( QueryLanguage.SERQL, query, variables, null );
+
+            } else
+            {
+                RdfQueryParser rdfQueryParser = queryParserFactory.newQueryParser( language );
+                String query = rdfQueryParser.getQuery( resultType, whereClause, null, null, null, variables );
+                return tupleExecutor.performTupleQuery( language, query, variables, null );
+            }
         }
     }
 }

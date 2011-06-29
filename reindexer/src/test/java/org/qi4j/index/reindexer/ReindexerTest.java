@@ -18,20 +18,14 @@
 package org.qi4j.index.reindexer;
 
 import info.aduna.io.FileUtil;
-
-import java.io.File;
-
 import org.junit.AfterClass;
-import static org.junit.Assert.*;
 import org.junit.Test;
-
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
-import static org.qi4j.api.query.QueryExpressions.*;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
@@ -42,6 +36,12 @@ import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.index.rdf.assembly.RdfNativeSesameStoreAssembler;
 import org.qi4j.library.rdf.repository.NativeConfiguration;
 import org.qi4j.test.AbstractQi4jTest;
+
+import java.io.File;
+
+import static org.junit.Assert.assertEquals;
+import static org.qi4j.api.query.QueryExpressions.eq;
+import static org.qi4j.api.query.QueryExpressions.templateFor;
 
 @SuppressWarnings( "PublicInnerClass" )
 public class ReindexerTest

@@ -14,7 +14,6 @@
 package org.qi4j.entitystore.sql;
 
 import org.apache.derby.iapi.services.io.FileUtil;
-import org.junit.Ignore;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.AssemblyException;

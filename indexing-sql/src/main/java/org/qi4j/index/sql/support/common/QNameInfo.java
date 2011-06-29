@@ -14,17 +14,17 @@
 
 package org.qi4j.index.sql.support.common;
 
+import org.qi4j.api.common.QualifiedName;
+import org.qi4j.spi.entity.association.AssociationDescriptor;
+import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
+import org.qi4j.spi.property.PropertyDescriptor;
+
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-
-import org.qi4j.api.common.QualifiedName;
-import org.qi4j.spi.entity.association.AssociationDescriptor;
-import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
-import org.qi4j.spi.property.PropertyDescriptor;
 
 /**
  * A helper interface to encapsulate information about qualified name and how it appears in database.

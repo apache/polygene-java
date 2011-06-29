@@ -14,10 +14,11 @@
 
 package org.qi4j.index.sql.support.postgresql;
 
-import java.util.List;
-
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.entity.Entity;
 import org.qi4j.api.query.grammar.BooleanExpression;
 import org.qi4j.api.query.grammar.OrderBy;
+import org.qi4j.api.specification.Specification;
 import org.qi4j.index.sql.support.skeletons.AbstractSQLQuerying;
 import org.sql.generation.api.grammar.builders.query.QuerySpecificationBuilder;
 import org.sql.generation.api.grammar.builders.query.pgsql.PgSQLQuerySpecificationBuilder;
@@ -25,6 +26,8 @@ import org.sql.generation.api.grammar.factories.pgsql.PgSQLQueryFactory;
 import org.sql.generation.api.grammar.query.QueryExpression;
 import org.sql.generation.api.vendor.PostgreSQLVendor;
 import org.sql.generation.api.vendor.SQLVendor;
+
+import java.util.List;
 
 /**
  * 
@@ -37,7 +40,7 @@ public class PostgreSQLQuerying extends AbstractSQLQuerying
     protected QueryExpression finalizeQuery( //
         SQLVendor sqlVendor, QuerySpecificationBuilder specBuilder, //
         Class<?> resultType, //
-        BooleanExpression whereClause, //
+        Specification<Composite> whereClause, //
         OrderBy[] orderBySegments, //
         Integer firstResult, //
         Integer maxResults, //

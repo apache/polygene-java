@@ -14,11 +14,10 @@
 
 package org.qi4j.migration.assembly;
 
-import java.io.IOException;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.qi4j.entitystore.map.StateStore;
 import org.qi4j.migration.Migrator;
+
+import java.io.IOException;
 
 /**
  * Non-entity specific migration operation. These operations

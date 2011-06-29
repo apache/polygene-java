@@ -14,8 +14,6 @@
 
 package org.qi4j.index.solr;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
@@ -26,6 +24,7 @@ import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.query.Query;
+import org.qi4j.api.query.QueryExpressions;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
@@ -35,7 +34,10 @@ import org.qi4j.library.fileconfig.FileConfiguration;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
 
-import static org.hamcrest.CoreMatchers.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.equalTo;
 
 /**
  * JAVADOC
@@ -74,8 +76,7 @@ public class SolrQueryServiceTest
     {
         // Search for it
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
-        Query<TestEntity> query = queryBuilderFactory.newNamedQuery( TestEntity.class, uow, "search" );
-        query.setVariable( "query", "hello" );
+        Query<TestEntity> query = queryBuilderFactory.newQueryBuilder( TestEntity.class ).where( SolrExpressions.search( "hello" ) ).newQuery( uow );
 
         TestEntity test = query.find();
         Assert.assertThat( test.name().get(), equalTo( "Hello World" ) );

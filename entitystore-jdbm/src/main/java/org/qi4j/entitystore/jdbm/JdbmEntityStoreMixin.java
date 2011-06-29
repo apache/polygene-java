@@ -37,7 +37,7 @@ import org.qi4j.entitystore.map.MapEntityStore;
 import org.qi4j.library.fileconfig.FileConfiguration;
 import org.qi4j.library.locking.ReadLock;
 import org.qi4j.library.locking.WriteLock;
-import org.qi4j.spi.entity.EntityType;
+import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entitystore.BackupRestore;
 import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entitystore.EntityStoreException;
@@ -120,7 +120,7 @@ public class JdbmEntityStoreMixin
       {
          changes.visitMap(new MapChanger()
          {
-            public Writer newEntity(final EntityReference ref, EntityType entityType)
+            public Writer newEntity(final EntityReference ref, EntityDescriptor descriptor)
                     throws IOException
             {
                return new StringWriter(1000)
@@ -139,7 +139,7 @@ public class JdbmEntityStoreMixin
                };
             }
 
-            public Writer updateEntity(final EntityReference ref, EntityType entityType)
+            public Writer updateEntity(final EntityReference ref, EntityDescriptor descriptor)
                     throws IOException
             {
                return new StringWriter(1000)
@@ -157,7 +157,7 @@ public class JdbmEntityStoreMixin
                };
             }
 
-            public void removeEntity(EntityReference ref, EntityType entityType)
+            public void removeEntity(EntityReference ref, EntityDescriptor descriptor)
                     throws EntityNotFoundException
             {
                try

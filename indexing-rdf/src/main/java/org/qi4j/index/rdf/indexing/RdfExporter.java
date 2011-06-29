@@ -14,9 +14,6 @@
 
 package org.qi4j.index.rdf.indexing;
 
-import java.io.IOException;
-import java.io.PrintStream;
-import java.io.PrintWriter;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
@@ -26,6 +23,10 @@ import org.openrdf.rio.Rio;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.spi.query.IndexExporter;
+
+import java.io.IOException;
+import java.io.PrintStream;
+import java.io.PrintWriter;
 
 /**
  * JAVADOC

@@ -57,12 +57,12 @@ public class TestProperty<T>
         return null;
     }
 
-    public boolean isImmutable()
+    public boolean isMutable()
     {
         return false;
     }
 
-    public boolean isComputed()
+    public boolean isImmutable()
     {
         return false;
     }

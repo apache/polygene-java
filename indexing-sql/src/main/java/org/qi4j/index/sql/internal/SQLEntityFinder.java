@@ -14,22 +14,27 @@
 
 package org.qi4j.index.sql.internal;
 
+import org.qi4j.api.common.Optional;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.entity.Entity;
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.query.grammar.BooleanExpression;
+import org.qi4j.api.query.grammar.OrderBy;
+import org.qi4j.api.specification.Specification;
+import org.qi4j.index.sql.support.api.SQLQuerying;
+import org.qi4j.library.sql.common.SQLUtil;
+import org.qi4j.library.sql.ds.DataSourceService;
+import org.qi4j.spi.query.EntityFinder;
+import org.qi4j.spi.query.EntityFinderException;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.qi4j.api.entity.EntityReference;
-import org.qi4j.api.injection.scope.Service;
-import org.qi4j.api.query.grammar.BooleanExpression;
-import org.qi4j.api.query.grammar.OrderBy;
-import org.qi4j.index.sql.support.api.SQLQuerying;
-import org.qi4j.library.sql.common.SQLUtil;
-import org.qi4j.library.sql.ds.DataSourceService;
-import org.qi4j.spi.query.EntityFinder;
-import org.qi4j.spi.query.EntityFinderException;
+import java.util.Map;
 
 /**
  * @author Stanislav Muhametsin
@@ -54,10 +59,9 @@ public class SQLEntityFinder
             throws SQLException;
     }
 
-    public long countEntities( Class<?> resultType, BooleanExpression whereClause )
-        throws EntityFinderException
+    @Override
+    public long countEntities( Class<?> resultType, @Optional Specification<Composite> whereClause, Map<String, Object> variables ) throws EntityFinderException
     {
-
         final List<Object> values = new ArrayList<Object>();
         final List<Integer> valueSQLTypes = new ArrayList<Integer>();
         final String query = this.parser.constructQuery( resultType, whereClause, null, null, null, values,
@@ -88,9 +92,8 @@ public class SQLEntityFinder
         } );
     }
 
-    public Iterable<EntityReference> findEntities( Class<?> resultType, BooleanExpression whereClause,
-        OrderBy[] orderBySegments, final Integer firstResult, final Integer maxResults )
-        throws EntityFinderException
+    @Override
+    public Iterable<EntityReference> findEntities( Class<?> resultType, @Optional Specification<Composite> whereClause, @Optional OrderBy[] orderBySegments, @Optional final Integer firstResult, @Optional final Integer maxResults, Map<String, Object> variables ) throws EntityFinderException
     {
         // TODO what is Qi4j's policy on negative firstResult and/or maxResults? JDBC has its own way of interpreting
         // these values - does it match with Qi4j's way?
@@ -150,8 +153,9 @@ public class SQLEntityFinder
         return result;
     }
 
-    public EntityReference findEntity( Class<?> resultType, BooleanExpression whereClause )
-        throws EntityFinderException
+
+    @Override
+    public EntityReference findEntity( Class<?> resultType, @Optional Specification<Composite> whereClause, Map<String, Object> variables ) throws EntityFinderException
     {
         final List<Object> values = new ArrayList<Object>();
         final List<Integer> valueSQLTypes = new ArrayList<Integer>();

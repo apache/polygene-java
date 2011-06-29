@@ -14,17 +14,18 @@
 package org.qi4j.entitystore.qrm;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
+import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entitystore.EntityStoreException;
+import org.qi4j.spi.entitystore.StateCommitter;
+
 import java.io.InputStream;
 import java.io.Serializable;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.Properties;
-import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entitystore.EntityStoreException;
-import org.qi4j.spi.entitystore.StateCommitter;
 
-import static com.ibatis.sqlmap.client.SqlMapClientBuilder.*;
+import static com.ibatis.sqlmap.client.SqlMapClientBuilder.buildSqlMapClient;
 
 public class QrmSqlClient
     implements Serializable, StateCommitter

@@ -14,10 +14,6 @@
 
 package org.qi4j.migration.assembly;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.qi4j.entitystore.map.StateStore;
-
 /**
  * Base class for migration rules.
  */

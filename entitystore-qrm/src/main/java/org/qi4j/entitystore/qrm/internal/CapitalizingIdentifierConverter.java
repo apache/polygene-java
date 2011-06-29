@@ -14,11 +14,13 @@
 
 package org.qi4j.entitystore.qrm.internal;
 
-import static java.lang.String.format;
-import java.util.HashMap;
-import java.util.Map;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.entitystore.qrm.IdentifierConverter;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static java.lang.String.format;
 
 public class CapitalizingIdentifierConverter
     implements IdentifierConverter

@@ -17,6 +17,7 @@
 package org.qi4j.entitystore.qrm.dbInitializer;
 
 import com.ibatis.common.jdbc.ScriptRunner;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
