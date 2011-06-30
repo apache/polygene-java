@@ -4,8 +4,8 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.qi4j.api.io.Inputs;
-import org.qi4j.api.io.Receiver;
+import org.qi4j.io.Inputs;
+import org.qi4j.io.Receiver;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -83,7 +83,7 @@ public class EventRouterTest
             }
         });
 
-        Inputs.iterable( Events.events( list) ).transferTo( router );
+        Inputs.iterable( Events.events( list ) ).transferTo( router );
 
         Assert.assertThat(matched.toString(), CoreMatchers.equalTo( "[{\"name\":\"Test1\",\"entityType\":\"Foo\",\"entityId\":\"123\",\"parameters\":\"{}\"}, {\"name\":\"Test2\",\"entityType\":\"Foo\",\"entityId\":\"123\",\"parameters\":\"{}\"}]" ));
     }

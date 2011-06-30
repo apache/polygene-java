@@ -16,7 +16,7 @@
 
 package org.qi4j.library.eventsourcing.application.source;
 
-import org.qi4j.api.io.Input;
+import org.qi4j.io.Input;
 import org.qi4j.library.eventsourcing.application.api.TransactionApplicationEvents;
 
 import java.io.IOException;

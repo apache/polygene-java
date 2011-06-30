@@ -18,8 +18,8 @@
 package org.qi4j.library.eventsourcing.domain.source.helper;
 
 import org.qi4j.api.configuration.Configuration;
-import org.qi4j.api.io.Output;
-import org.qi4j.api.io.Transforms;
+import org.qi4j.io.Output;
+import org.qi4j.io.Transforms;
 import org.qi4j.library.eventsourcing.domain.api.UnitOfWorkDomainEventsValue;
 import org.qi4j.library.eventsourcing.domain.source.EventSource;
 import org.qi4j.library.eventsourcing.domain.source.EventStream;

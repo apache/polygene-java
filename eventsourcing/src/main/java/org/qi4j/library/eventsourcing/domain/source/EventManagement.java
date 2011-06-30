@@ -14,7 +14,7 @@
 
 package org.qi4j.library.eventsourcing.domain.source;
 
-import org.qi4j.api.io.Output;
+import org.qi4j.io.Output;
 
 import java.io.IOException;
 

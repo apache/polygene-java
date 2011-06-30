@@ -1,8 +1,8 @@
 package org.qi4j.library.sql.liquibase;
 
 import org.junit.Test;
-import org.qi4j.api.io.Inputs;
-import org.qi4j.api.io.Outputs;
+import org.qi4j.io.Inputs;
+import org.qi4j.io.Outputs;
 import org.qi4j.api.property.Property;
 import org.qi4j.functional.Function;
 import org.qi4j.api.value.ValueBuilder;
@@ -26,8 +26,8 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.qi4j.api.io.Outputs.collection;
-import static org.qi4j.api.io.Transforms.map;
+import static org.qi4j.io.Outputs.collection;
+import static org.qi4j.io.Transforms.map;
 
 /**
  * Test DataSource and Liquibase services

@@ -17,8 +17,8 @@ package org.qi4j.library.eventsourcing.domain;
 import org.junit.Test;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.io.Outputs;
-import org.qi4j.api.io.Transforms;
+import org.qi4j.io.Outputs;
+import org.qi4j.io.Transforms;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.unitofwork.UnitOfWork;
@@ -85,12 +85,12 @@ public class DomainEventTest
         EventSource source = (EventSource) serviceLocator.findService( EventSource.class ).get();
 
         source.events( 0, Long.MAX_VALUE ).transferTo( Transforms.map( new Function<UnitOfWorkDomainEventsValue, String>()
-        {
-            public String map( UnitOfWorkDomainEventsValue unitOfWorkDomainEventsValue )
-            {
-                return unitOfWorkDomainEventsValue.toJSON();
-            }
-        }, Outputs.systemOut()));
+                {
+                    public String map( UnitOfWorkDomainEventsValue unitOfWorkDomainEventsValue )
+                    {
+                        return unitOfWorkDomainEventsValue.toJSON();
+                    }
+                }, Outputs.systemOut() ));
     }
 
     @Mixins( TestEntity.Mixin.class )

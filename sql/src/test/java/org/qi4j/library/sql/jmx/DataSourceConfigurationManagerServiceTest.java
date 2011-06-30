@@ -4,8 +4,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.injection.scope.Service;
-import org.qi4j.api.io.Outputs;
-import org.qi4j.api.io.Receiver;
+import org.qi4j.io.Outputs;
+import org.qi4j.io.Receiver;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.service.qualifier.IdentifiedBy;
 import org.qi4j.bootstrap.AssemblyException;
@@ -171,9 +171,9 @@ public class DataSourceConfigurationManagerServiceTest
             @Override
             public void receive( ResultSet item ) throws SQLException
             {
-                System.out.println(item.getString( "id" ));
+                System.out.println( item.getString( "id" ) );
             }
-        }));
+        } ));
 
     }
 }

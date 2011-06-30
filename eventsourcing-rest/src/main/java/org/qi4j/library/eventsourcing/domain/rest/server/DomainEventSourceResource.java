@@ -18,7 +18,7 @@
 package org.qi4j.library.eventsourcing.domain.rest.server;
 
 import org.qi4j.api.injection.scope.Service;
-import org.qi4j.api.io.Outputs;
+import org.qi4j.io.Outputs;
 import org.qi4j.api.service.qualifier.Tagged;
 import org.qi4j.functional.Iterables;
 import org.qi4j.library.eventsourcing.domain.api.UnitOfWorkDomainEventsValue;

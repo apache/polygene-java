@@ -21,8 +21,8 @@ package org.qi4j.logging;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.io.Outputs;
-import org.qi4j.api.io.Transforms;
+import org.qi4j.io.Outputs;
+import org.qi4j.io.Transforms;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
@@ -78,18 +78,18 @@ public class DebuggingTest
             EntityStore es = (EntityStore) serviceLocator.findService( EntityStore.class ).get();
             final String[] result = new String[1];
             es.entityStates( moduleInstance ).transferTo( Transforms.map( new Function<EntityState, EntityState>()
-            {
-                public EntityState map( EntityState entityState )
-                {
-                    if( ServiceDebugRecordEntity.class.getName()
-                        .equals( entityState.entityDescriptor().type().getName() ) )
                     {
-                        result[ 0 ] = entityState.identity().identity();
-                    }
+                        public EntityState map( EntityState entityState )
+                        {
+                            if( ServiceDebugRecordEntity.class.getName()
+                                    .equals( entityState.entityDescriptor().type().getName() ) )
+                            {
+                                result[0] = entityState.identity().identity();
+                            }
 
-                    return entityState;
-                }
-            },Outputs.<EntityState>noop() ));
+                            return entityState;
+                        }
+                    }, Outputs.<EntityState>noop() ));
 
             ServiceDebugRecordEntity debugEntry = uow.get( ServiceDebugRecordEntity.class, result[ 0 ] );
             String mess = debugEntry.message().get();
