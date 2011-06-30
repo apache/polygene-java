@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.api.io;
+package org.qi4j.io;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
@@ -29,8 +29,8 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static java.util.Arrays.asList;
-import static org.qi4j.api.io.Inputs.text;
-import static org.qi4j.api.io.Transforms.lock;
+import static org.qi4j.io.Inputs.text;
+import static org.qi4j.io.Transforms.lock;
 import static org.qi4j.functional.Iterables.iterable;
 
 /**
@@ -76,7 +76,7 @@ public class InputOutputTest
    public void testInputOutput()
            throws IOException
    {
-      URL source = getClass().getResource("/iotest.txt");
+      URL source = getClass().getResource( "/iotest.txt" );
       File destination = File.createTempFile("test", ".txt");
       destination.deleteOnExit();
       text(source).transferTo(Outputs.text(destination));
@@ -198,7 +198,7 @@ public class InputOutputTest
            throws IOException
    {
 
-      text(new File(getClass().getResource("/iotest.txt").getFile())).
+      text(getSourceFile()).
               transferTo(writerOutput(new Writer()
               {
                  @Override
@@ -257,7 +257,7 @@ public class InputOutputTest
       Lock inputLock = new ReentrantLock();
       Lock outputLock = new ReentrantLock();
 
-      URL source = getClass().getResource("/iotest.txt");
+      URL source = getClass().getResource( "/iotest.txt" );
       File destination = File.createTempFile("test", ".txt");
       destination.deleteOnExit();
       lock(inputLock, text(source)).transferTo(lock(outputLock, Outputs.text(destination)));
@@ -269,7 +269,7 @@ public class InputOutputTest
       ArrayList<Object> objects = new ArrayList<Object>();
       Inputs.iterable(Arrays.asList("Foo", "Bar", "Xyzzy")).transferTo(Outputs.collection(objects));
 
-      Inputs.iterable(objects).transferTo(Outputs.systemOut());
+      Inputs.iterable( objects ).transferTo( Outputs.systemOut());
    }
 
    public Output<String, IOException> writerOutput(final Writer writer)
@@ -312,7 +312,7 @@ public class InputOutputTest
 
    private File getSourceFile()
    {
-      String path = getClass().getResource("/iotest.txt").getFile();
+      String path = getClass().getResource( "/iotest.txt" ).getFile();
       return new File(path.replaceAll("%20", " "));
    }
 }

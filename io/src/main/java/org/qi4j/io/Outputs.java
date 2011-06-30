@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.api.io;
+package org.qi4j.io;
 
 import java.io.*;
 import java.nio.ByteBuffer;

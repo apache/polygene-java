@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.api.io;
+package org.qi4j.io;
 
 import org.qi4j.functional.Specification;
 import org.qi4j.functional.Function;

@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.api.io;
+package org.qi4j.io;
 
 /**
  * Input source of data.

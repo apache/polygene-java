@@ -15,8 +15,8 @@
 
 package org.qi4j.spi.entitystore;
 
-import org.qi4j.api.io.Input;
-import org.qi4j.api.io.Output;
+import org.qi4j.io.Input;
+import org.qi4j.io.Output;
 
 import java.io.IOException;
 

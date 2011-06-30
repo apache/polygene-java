@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.api.io;
+package org.qi4j.io;
 
 /**
  * Receiver of items during a specific transfer from an Input to an Output.

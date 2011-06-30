@@ -15,7 +15,7 @@
 package org.qi4j.entitystore.map;
 
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.api.io.Input;
+import org.qi4j.io.Input;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entitystore.EntityStoreException;
