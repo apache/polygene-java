@@ -1,8 +1,5 @@
 package org.qi4j.samples.cargo.app1.ui.booking;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.jws.WebService;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
@@ -17,6 +14,10 @@ import org.qi4j.samples.cargo.app1.model.location.Location;
 import org.qi4j.samples.cargo.app1.services.booking.BookingService;
 import org.qi4j.samples.cargo.app1.system.repositories.CargoRepository;
 import org.qi4j.samples.cargo.app1.system.repositories.LocationRepository;
+
+import javax.jws.WebService;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *

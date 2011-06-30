@@ -16,9 +16,9 @@
 */
 package org.qi4j.envisage.model.descriptor;
 
-import org.qi4j.spi.composite.InjectedParametersDescriptor;
+import org.qi4j.api.composite.InjectedParametersDescriptor;
 
-import static org.qi4j.api.util.NullArgumentException.*;
+import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 
 public class InjectedParametersDetailDescriptor
 {

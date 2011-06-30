@@ -17,12 +17,13 @@
  */
 package org.qi4j.tutorials.services.step3;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class LibraryMixin
     implements Library, Activatable

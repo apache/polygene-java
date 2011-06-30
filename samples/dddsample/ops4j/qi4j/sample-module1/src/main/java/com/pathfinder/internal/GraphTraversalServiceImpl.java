@@ -3,12 +3,8 @@ package com.pathfinder.internal;
 import com.pathfinder.api.GraphTraversalService;
 import com.pathfinder.api.TransitEdge;
 import com.pathfinder.api.TransitPath;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Properties;
-import java.util.Random;
+
+import java.util.*;
 
 public class GraphTraversalServiceImpl
         implements GraphTraversalService {

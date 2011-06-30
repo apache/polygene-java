@@ -18,25 +18,25 @@ package org.qi4j.ide.plugin.idea.sideEffects.inspections;
 
 import com.intellij.codeInspection.InspectionManager;
 import com.intellij.codeInspection.ProblemDescriptor;
-import static com.intellij.codeInspection.ProblemHighlightType.GENERIC_ERROR_OR_WARNING;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiAnnotationMemberValue;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiJavaCodeReferenceElement;
 import com.intellij.psi.search.GlobalSearchScope;
-import java.util.LinkedList;
-import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.qi4j.ide.plugin.idea.common.inspections.AbstractFix;
 import org.qi4j.ide.plugin.idea.common.inspections.AbstractInspection;
-import static org.qi4j.ide.plugin.idea.common.psi.search.GlobalSearchScopeUtil.determineSearchScope;
 import org.qi4j.ide.plugin.idea.common.resource.Qi4jResourceBundle;
-import static org.qi4j.ide.plugin.idea.common.resource.Qi4jResourceBundle.message;
 import org.qi4j.ide.plugin.idea.sideEffects.common.Qi4jSideEffectUtil;
-import static org.qi4j.ide.plugin.idea.sideEffects.common.Qi4jSideEffectUtil.getSideEffectClassReference;
-import static org.qi4j.ide.plugin.idea.sideEffects.common.Qi4jSideEffectUtil.getSideEffectsAnnotation;
-import static org.qi4j.ide.plugin.idea.sideEffects.common.Qi4jSideEffectUtil.getSideEffectsAnnotationValue;
+
+import java.util.LinkedList;
+import java.util.List;
+
+import static com.intellij.codeInspection.ProblemHighlightType.GENERIC_ERROR_OR_WARNING;
+import static org.qi4j.ide.plugin.idea.common.psi.search.GlobalSearchScopeUtil.determineSearchScope;
+import static org.qi4j.ide.plugin.idea.common.resource.Qi4jResourceBundle.message;
+import static org.qi4j.ide.plugin.idea.sideEffects.common.Qi4jSideEffectUtil.*;
 
 /**
  * @author edward.yakop@gmail.com

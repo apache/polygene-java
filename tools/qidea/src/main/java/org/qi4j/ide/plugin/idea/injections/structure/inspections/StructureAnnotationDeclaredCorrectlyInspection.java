@@ -18,14 +18,15 @@ package org.qi4j.ide.plugin.idea.injections.structure.inspections;
 
 import com.intellij.codeInspection.InspectionManager;
 import com.intellij.codeInspection.ProblemDescriptor;
-import static com.intellij.codeInspection.ProblemHighlightType.GENERIC_ERROR_OR_WARNING;
 import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiVariable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.qi4j.ide.plugin.idea.common.inspections.AbstractFix;
-import static org.qi4j.ide.plugin.idea.common.resource.Qi4jResourceBundle.message;
 import org.qi4j.ide.plugin.idea.injections.common.inspections.AbstractInjectionAnnotationDeclarationOnFieldAndConstructorInspection;
+
+import static com.intellij.codeInspection.ProblemHighlightType.GENERIC_ERROR_OR_WARNING;
+import static org.qi4j.ide.plugin.idea.common.resource.Qi4jResourceBundle.message;
 import static org.qi4j.ide.plugin.idea.injections.structure.common.Qi4jStructureAnnotationConstants.QUALIFIED_NAME_STRUCTURE_ANNOTATION;
 import static org.qi4j.ide.plugin.idea.injections.structure.common.Qi4jStructureAnnotationUtil.StructureAnnotationDeclarationValidationResult;
 import static org.qi4j.ide.plugin.idea.injections.structure.common.Qi4jStructureAnnotationUtil.validateStructureAnnotationDeclaration;

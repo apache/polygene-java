@@ -16,18 +16,6 @@
 */
 package org.qi4j.envisage.graph;
 
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Shape;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseWheelEvent;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Rectangle2D;
-import java.util.Iterator;
-import javax.swing.JViewport;
-import javax.swing.SwingUtilities;
 import org.qi4j.envisage.event.LinkEvent;
 import prefuse.Constants;
 import prefuse.Visualization;
@@ -60,6 +48,14 @@ import prefuse.visual.NodeItem;
 import prefuse.visual.VisualItem;
 import prefuse.visual.expression.InGroupPredicate;
 import prefuse.visual.sort.TreeDepthItemSorter;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Rectangle2D;
+import java.util.Iterator;
 
 public class StackedGraphDisplay
     extends GraphDisplay

@@ -18,12 +18,10 @@
 package org.qi4j.lib.swing.binding.example;
 
 import org.qi4j.lib.swing.binding.StateModel;
-import java.awt.Dimension;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.JLabel;
-import javax.swing.BoxLayout;
 import org.qi4j.property.Property;
+
+import javax.swing.*;
+import java.awt.*;
 
 public class Form<T extends BoundPersonComposite> extends JPanel
 {

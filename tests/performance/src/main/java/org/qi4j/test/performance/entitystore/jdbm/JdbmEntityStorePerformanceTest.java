@@ -16,7 +16,6 @@
  */
 package org.qi4j.test.performance.entitystore.jdbm;
 
-import java.io.File;
 import org.junit.Test;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
@@ -26,6 +25,8 @@ import org.qi4j.entitystore.jdbm.JdbmConfiguration;
 import org.qi4j.entitystore.jdbm.assembly.JdbmEntityStoreAssembler;
 import org.qi4j.test.EntityTestAssembler;
 import org.qi4j.test.performance.entitystore.model.AbstractEntityStorePerformanceTest;
+
+import java.io.File;
 
 /**
  * Performance test for JdbmEntityStoreComposite

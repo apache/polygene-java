@@ -13,11 +13,11 @@
  */
 package org.qi4j.samples.cargo.app1.assembly;
 
-import org.qi4j.samples.cargo.app1.model.location.LocationEntity;
-import org.qi4j.samples.cargo.app1.system.repositories.LocationRepository;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.samples.cargo.app1.model.location.LocationEntity;
+import org.qi4j.samples.cargo.app1.system.repositories.LocationRepository;
 
 /**
  *

@@ -18,23 +18,18 @@ package org.qi4j.ide.plugin.idea.appliesTo.inspections;
 
 import com.intellij.codeInspection.InspectionManager;
 import com.intellij.codeInspection.ProblemDescriptor;
-import static com.intellij.codeInspection.ProblemHighlightType.GENERIC_ERROR_OR_WARNING;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiAnnotation;
-import com.intellij.psi.PsiAnnotationMemberValue;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiJavaCodeReferenceElement;
-import com.intellij.psi.PsiReferenceList;
+import com.intellij.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
-import java.util.LinkedList;
-import java.util.List;
 import org.jetbrains.annotations.NotNull;
-import static org.qi4j.ide.plugin.idea.appliesTo.common.Qi4jAppliesToUtil.getAppliesToAnnotation;
-import static org.qi4j.ide.plugin.idea.appliesTo.common.Qi4jAppliesToUtil.getAppliesToAnnotationValue;
-import static org.qi4j.ide.plugin.idea.appliesTo.common.Qi4jAppliesToUtil.getAppliesToFilterClass;
-import static org.qi4j.ide.plugin.idea.appliesTo.common.Qi4jAppliesToUtil.getAppliesToValueClassReference;
 import org.qi4j.ide.plugin.idea.common.inspections.AbstractFix;
 import org.qi4j.ide.plugin.idea.common.inspections.AbstractInspection;
+
+import java.util.LinkedList;
+import java.util.List;
+
+import static com.intellij.codeInspection.ProblemHighlightType.GENERIC_ERROR_OR_WARNING;
+import static org.qi4j.ide.plugin.idea.appliesTo.common.Qi4jAppliesToUtil.*;
 import static org.qi4j.ide.plugin.idea.common.psi.PsiClassUtil.isImplementsInvocationHandler;
 import static org.qi4j.ide.plugin.idea.common.psi.search.GlobalSearchScopeUtil.determineSearchScope;
 import static org.qi4j.ide.plugin.idea.common.resource.Qi4jResourceBundle.message;

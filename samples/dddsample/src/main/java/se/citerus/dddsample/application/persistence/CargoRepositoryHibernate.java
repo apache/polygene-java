@@ -1,12 +1,13 @@
 package se.citerus.dddsample.application.persistence;
 
-import java.util.List;
-import java.util.UUID;
 import org.springframework.stereotype.Repository;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
 import se.citerus.dddsample.domain.model.cargo.Itinerary;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
+
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Hibernate implementation of CargoRepository.

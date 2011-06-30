@@ -1,5 +1,12 @@
 package org.qi4j.samples.cargo.app1.services.routing.internal;
 
+import com.pathfinder.api.GraphTraversalService;
+import com.pathfinder.api.TransitEdge;
+import com.pathfinder.api.TransitPath;
+import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.value.ValueBuilder;
+import org.qi4j.api.value.ValueBuilderFactory;
 import org.qi4j.samples.cargo.app1.model.cargo.Itinerary;
 import org.qi4j.samples.cargo.app1.model.cargo.Leg;
 import org.qi4j.samples.cargo.app1.model.cargo.RouteSpecification;
@@ -9,20 +16,14 @@ import org.qi4j.samples.cargo.app1.services.routing.RoutingService;
 import org.qi4j.samples.cargo.app1.system.factories.LegFactory;
 import org.qi4j.samples.cargo.app1.system.repositories.LocationRepository;
 import org.qi4j.samples.cargo.app1.system.repositories.VoyageRepository;
-import com.pathfinder.api.GraphTraversalService;
-import com.pathfinder.api.TransitEdge;
-import com.pathfinder.api.TransitPath;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
-import org.qi4j.api.injection.scope.Service;
-import org.qi4j.api.injection.scope.Structure;
-import org.qi4j.api.value.ValueBuilder;
-import org.qi4j.api.value.ValueBuilderFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Our end of the routing service. This is basically a data model

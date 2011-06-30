@@ -29,8 +29,8 @@ import org.qi4j.samples.dddsample.domain.model.location.UnLocode;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
 
-import static org.junit.Assert.*;
-import static org.qi4j.samples.dddsample.domain.model.location.assembly.SampleLocationDataBootstrapService.*;
+import static org.junit.Assert.assertNotNull;
+import static org.qi4j.samples.dddsample.domain.model.location.assembly.SampleLocationDataBootstrapService.LOCATIONS;
 
 /**
  * @author edward.yakop@gmail.com

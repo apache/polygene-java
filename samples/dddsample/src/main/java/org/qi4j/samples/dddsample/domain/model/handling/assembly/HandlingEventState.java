@@ -16,7 +16,6 @@
 */
 package org.qi4j.samples.dddsample.domain.model.handling.assembly;
 
-import java.util.Date;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.property.Immutable;
@@ -25,6 +24,8 @@ import org.qi4j.samples.dddsample.domain.model.cargo.Cargo;
 import org.qi4j.samples.dddsample.domain.model.carrier.CarrierMovement;
 import org.qi4j.samples.dddsample.domain.model.handling.HandlingEvent;
 import org.qi4j.samples.dddsample.domain.model.location.Location;
+
+import java.util.Date;
 
 /**
  * @author edward.yakop@gmail.com

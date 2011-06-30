@@ -16,20 +16,18 @@
 */
 package org.qi4j.library.swing.entityviewer;
 
+import org.qi4j.api.Qi4j;
 import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.EntityDescriptor;
+import org.qi4j.api.entity.association.EntityStateHolder;
+import org.qi4j.api.property.PersistentPropertyDescriptor;
 import org.qi4j.api.query.Query;
 import org.qi4j.bootstrap.Energy4Java;
-import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.entity.EntityDescriptor;
-import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.property.PersistentPropertyDescriptor;
 
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
-import java.awt.BorderLayout;
+import java.awt.*;
 
 /**
  * Entity Properties Viewer as Swing Component.
@@ -77,12 +75,12 @@ public class PropertiesPanel
     {
         DefaultTableModel model = new DefaultTableModel();
 
-        Qi4jSPI spi = qi4j.spi();
+        Qi4j api = qi4j.api();
 
         for( Object qObj : query )
         {
-            EntityState state = spi.getEntityState( (EntityComposite) qObj );
-            EntityDescriptor descriptor = spi.getEntityDescriptor( (EntityComposite) qObj );
+            EntityStateHolder state = api.getState( (EntityComposite) qObj );
+            EntityDescriptor descriptor = api.getEntityDescriptor( (EntityComposite) qObj );
             // genereate column, first time only
             if( model.getColumnCount() < 1 )
             {
@@ -97,7 +95,7 @@ public class PropertiesPanel
             int i = 0;
             for( PersistentPropertyDescriptor persistentPropertyDescriptor : descriptor.state().<PersistentPropertyDescriptor>properties() )
             {
-                rowData[ i++ ] = state.getProperty( persistentPropertyDescriptor.qualifiedName() );
+                rowData[ i++ ] = state.getProperty( persistentPropertyDescriptor.accessor() );
             }
             model.addRow( rowData );
         }

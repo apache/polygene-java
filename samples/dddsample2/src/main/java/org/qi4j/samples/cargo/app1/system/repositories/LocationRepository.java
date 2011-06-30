@@ -44,7 +44,7 @@ public interface LocationRepository extends ServiceComposite
         {
             QueryBuilder<Location> builder = qbf.newQueryBuilder( Location.class );
             UnitOfWork uow = uowf.currentUnitOfWork();
-            return builder.newQuery( uow );
+            return uow.newQuery( builder );
         }
 
         public void activate()

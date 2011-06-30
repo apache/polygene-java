@@ -16,28 +16,23 @@
 */
 package org.qi4j.envisage.detail;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Cursor;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.event.MouseInputAdapter;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableColumnModel;
 import org.qi4j.envisage.event.LinkEvent;
 import org.qi4j.envisage.model.descriptor.LayerDetailDescriptor;
 import org.qi4j.envisage.model.descriptor.ModuleDetailDescriptor;
 import org.qi4j.envisage.model.descriptor.ServiceDetailDescriptor;
 import org.qi4j.envisage.model.util.DescriptorUtilities;
 import org.qi4j.envisage.util.TableRow;
+
+import javax.swing.*;
+import javax.swing.event.MouseInputAdapter;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumnModel;
+import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * API would be defined as "All service interfaces which are visible for layer

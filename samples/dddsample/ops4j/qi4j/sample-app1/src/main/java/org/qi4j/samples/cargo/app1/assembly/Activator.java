@@ -17,14 +17,14 @@ import com.msdw.eqrisk.vorticity.ApplicationBuilder;
 import com.msdw.eqrisk.vorticity.StandardLayerAssembler;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.qi4j.spi.structure.ApplicationSPI;
+import org.qi4j.api.structure.Application;
 
 /**
  *
  */
 public class Activator
         implements BundleActivator {
-    private ApplicationSPI application;
+    private Application application;
 
     /**
      * Called when this bundle is started so the Framework can perform the

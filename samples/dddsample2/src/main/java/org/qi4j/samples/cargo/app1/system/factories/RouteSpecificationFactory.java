@@ -1,6 +1,5 @@
 package org.qi4j.samples.cargo.app1.system.factories;
 
-import java.util.Date;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
@@ -8,6 +7,8 @@ import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
 import org.qi4j.samples.cargo.app1.model.cargo.RouteSpecification;
 import org.qi4j.samples.cargo.app1.model.location.Location;
+
+import java.util.Date;
 
 /**
  *

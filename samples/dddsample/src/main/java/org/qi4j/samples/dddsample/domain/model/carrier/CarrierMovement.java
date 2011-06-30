@@ -17,9 +17,10 @@
  */
 package org.qi4j.samples.dddsample.domain.model.carrier;
 
-import java.util.Date;
 import org.qi4j.samples.dddsample.domain.model.Entity;
 import org.qi4j.samples.dddsample.domain.model.location.Location;
+
+import java.util.Date;
 
 /**
  * A carrier movement is a vessel voyage from one location to another.

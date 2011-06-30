@@ -14,12 +14,7 @@
 
 package org.qi4j.envisage.school;
 
-import org.qi4j.bootstrap.ApplicationAssembler;
-import org.qi4j.bootstrap.ApplicationAssembly;
-import org.qi4j.bootstrap.ApplicationAssemblyFactory;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.LayerAssembly;
-import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.bootstrap.*;
 import org.qi4j.envisage.school.config.persistence.PersistenceConfigAssembler;
 import org.qi4j.envisage.school.domain.person.assembly.PersonModelAssembler;
 import org.qi4j.envisage.school.domain.school.assembly.SchoolModelAssembler;

@@ -23,7 +23,8 @@ import org.qi4j.library.spring.importer.SpringImporter;
 import org.qi4j.samples.dddsample.application.routing.ExternalRoutingService;
 import org.qi4j.samples.dddsample.routingteam.internal.GraphTraversalServiceImpl;
 
-import static org.qi4j.api.common.Visibility.*;
+import static org.qi4j.api.common.Visibility.application;
+import static org.qi4j.api.common.Visibility.layer;
 
 /**
  * @author edward.yakop@gmail.com

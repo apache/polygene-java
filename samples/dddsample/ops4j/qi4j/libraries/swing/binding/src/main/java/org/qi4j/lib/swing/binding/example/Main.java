@@ -17,23 +17,22 @@
  */
 package org.qi4j.lib.swing.binding.example;
 
-import org.qi4j.lib.swing.binding.StateModel;
-import org.qi4j.lib.swing.binding.SwingBindingAssembler;
-import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusListener;
-import java.awt.event.FocusEvent;
-import javax.swing.JCheckBox;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.composite.ObjectBuilder;
+import org.qi4j.composite.ObjectBuilderFactory;
+import org.qi4j.lib.swing.binding.StateModel;
+import org.qi4j.lib.swing.binding.SwingBindingAssembler;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 public class Main
 {

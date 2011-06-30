@@ -1,6 +1,5 @@
 package org.qi4j.samples.dddsample.domain.model.cargo.assembly;
 
-import java.util.Date;
 import org.qi4j.api.composite.TransientBuilder;
 import org.qi4j.api.composite.TransientBuilderFactory;
 import org.qi4j.api.entity.EntityBuilder;
@@ -11,16 +10,14 @@ import org.qi4j.api.query.Query;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-import org.qi4j.samples.dddsample.domain.model.cargo.Cargo;
-import org.qi4j.samples.dddsample.domain.model.cargo.CargoRepository;
-import org.qi4j.samples.dddsample.domain.model.cargo.Itinerary;
-import org.qi4j.samples.dddsample.domain.model.cargo.RouteSpecification;
-import org.qi4j.samples.dddsample.domain.model.cargo.TrackingId;
+import org.qi4j.samples.dddsample.domain.model.cargo.*;
 import org.qi4j.samples.dddsample.domain.model.location.Location;
 import org.qi4j.samples.dddsample.domain.model.location.LocationRepository;
 import org.qi4j.samples.dddsample.domain.model.location.UnLocode;
 import org.qi4j.samples.dddsample.domain.service.Booking;
 import org.qi4j.samples.dddsample.domain.service.Routing;
+
+import java.util.Date;
 
 @Mixins( BookingService.BookingServiceMixin.class )
 interface BookingService

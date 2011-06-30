@@ -17,11 +17,12 @@
 package org.qi4j.ide.plugin.idea.common.inspections;
 
 import com.intellij.codeHighlighting.HighlightDisplayLevel;
-import static com.intellij.codeHighlighting.HighlightDisplayLevel.ERROR;
 import com.intellij.codeInspection.BaseJavaLocalInspectionTool;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.qi4j.ide.plugin.idea.common.resource.Qi4jResourceBundle;
+
+import static com.intellij.codeHighlighting.HighlightDisplayLevel.ERROR;
 
 /**
  * @author edward.yakop@gmail.com

@@ -1,11 +1,5 @@
 package se.citerus.dddsample.ui;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
 import se.citerus.dddsample.application.remoting.BookingServiceFacade;
 import se.citerus.dddsample.application.remoting.dto.CargoRoutingDTO;
@@ -14,6 +8,13 @@ import se.citerus.dddsample.application.remoting.dto.LegDTO;
 import se.citerus.dddsample.application.remoting.dto.LocationDTO;
 import se.citerus.dddsample.ui.command.RegistrationCommand;
 import se.citerus.dddsample.ui.command.RouteAssignmentCommand;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Handles cargo booking and routing. Operates against a dedicated remoting service facade,

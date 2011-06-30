@@ -1,10 +1,11 @@
 package se.citerus.dddsample.application.persistence;
 
-import java.util.List;
 import org.springframework.stereotype.Repository;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import se.citerus.dddsample.domain.model.location.UnLocode;
+
+import java.util.List;
 
 @Repository
 public final class LocationRepositoryHibernate extends HibernateRepository implements LocationRepository {

@@ -1,15 +1,12 @@
 package se.citerus.dddsample.application.messaging;
 
-import javax.jms.Destination;
-import javax.jms.JMSException;
-import javax.jms.MapMessage;
-import javax.jms.Message;
-import javax.jms.Session;
 import org.springframework.jms.core.JmsOperations;
 import org.springframework.jms.core.MessageCreator;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.service.DomainEventNotifier;
+
+import javax.jms.*;
 
 /**
  * JMS based implementation.

@@ -17,12 +17,13 @@
  */
 package org.qi4j.samples.dddsample.domain.model.handling;
 
-import java.util.Date;
 import org.qi4j.samples.dddsample.domain.model.DomainEvent;
 import org.qi4j.samples.dddsample.domain.model.cargo.Cargo;
 import org.qi4j.samples.dddsample.domain.model.cargo.TrackingId;
 import org.qi4j.samples.dddsample.domain.model.carrier.CarrierMovement;
 import org.qi4j.samples.dddsample.domain.model.location.Location;
+
+import java.util.Date;
 
 /**
  * A HandlingEvent is used to register the event when, for instance,

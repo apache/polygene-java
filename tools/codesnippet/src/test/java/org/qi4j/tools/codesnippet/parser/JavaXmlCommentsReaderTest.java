@@ -17,18 +17,12 @@
  */
 package org.qi4j.tools.codesnippet.parser;
 
-import java.io.BufferedReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 import junit.framework.JUnit4TestAdapter;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import java.io.*;
+
+import static org.junit.Assert.assertEquals;
 
 public class JavaXmlCommentsReaderTest
 {

@@ -17,8 +17,6 @@
  */
 package org.qi4j.lib.swing.binding.example;
 
-import org.qi4j.property.Property;
-
 public interface Country extends HasName
 {
 }

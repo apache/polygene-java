@@ -16,7 +16,6 @@
 */
 package org.qi4j.samples.dddsample.domain.model.cargo.assembly;
 
-import java.util.Date;
 import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.mixin.Mixins;
@@ -26,6 +25,8 @@ import org.qi4j.samples.dddsample.domain.model.cargo.Itinerary;
 import org.qi4j.samples.dddsample.domain.model.cargo.RouteSpecification;
 import org.qi4j.samples.dddsample.domain.model.location.Location;
 import org.qi4j.samples.dddsample.domain.shared.Specification;
+
+import java.util.Date;
 
 /**
  * @author edward.yakop@gmail.com

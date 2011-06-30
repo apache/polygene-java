@@ -14,11 +14,7 @@
 
 package org.qi4j.library.sql.postgresql;
 
-import java.sql.Connection;
-
 import junit.framework.Assert;
-
-import org.junit.Assume;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.qi4j.api.common.UseDefaults;
@@ -36,6 +32,8 @@ import org.qi4j.library.sql.ds.DataSourceService;
 import org.qi4j.test.AbstractQi4jTest;
 import org.sql.generation.api.vendor.PostgreSQLVendor;
 import org.sql.generation.api.vendor.SQLVendorProvider;
+
+import java.sql.Connection;
 
 /**
  * 

@@ -19,30 +19,24 @@
  */
 package org.qi4j.envisage.model.descriptor;
 
+import org.qi4j.api.composite.*;
+import org.qi4j.api.concern.MethodConcernDescriptor;
+import org.qi4j.api.concern.MethodConcernsDescriptor;
+import org.qi4j.api.constraint.ConstraintDescriptor;
+import org.qi4j.api.constraint.MethodConstraintsDescriptor;
+import org.qi4j.api.entity.EntityDescriptor;
+import org.qi4j.api.mixin.MixinDescriptor;
+import org.qi4j.api.object.ObjectDescriptor;
+import org.qi4j.api.service.ImportedServiceDescriptor;
+import org.qi4j.api.service.ServiceDescriptor;
+import org.qi4j.api.sideeffect.MethodSideEffectDescriptor;
+import org.qi4j.api.sideeffect.MethodSideEffectsDescriptor;
+import org.qi4j.api.structure.ApplicationDescriptor;
+import org.qi4j.api.structure.LayerDescriptor;
+import org.qi4j.api.structure.ModuleDescriptor;
+import org.qi4j.api.structure.UsedLayersDescriptor;
+import org.qi4j.api.value.ValueDescriptor;
 import org.qi4j.functional.HierarchicalVisitor;
-import org.qi4j.spi.service.ImportedServiceDescriptor;
-import org.qi4j.spi.composite.ConstructorDescriptor;
-import org.qi4j.spi.composite.InjectedFieldDescriptor;
-import org.qi4j.spi.composite.InjectedMethodDescriptor;
-import org.qi4j.spi.composite.InjectedParametersDescriptor;
-import org.qi4j.spi.composite.MethodDescriptor;
-import org.qi4j.spi.composite.TransientDescriptor;
-import org.qi4j.spi.concern.MethodConcernDescriptor;
-import org.qi4j.spi.concern.MethodConcernsDescriptor;
-import org.qi4j.spi.constraint.ConstraintDescriptor;
-import org.qi4j.spi.constraint.MethodConstraintsDescriptor;
-import org.qi4j.spi.entity.EntityDescriptor;
-import org.qi4j.spi.mixin.MixinDescriptor;
-import org.qi4j.spi.object.ObjectDescriptor;
-import org.qi4j.spi.service.ServiceDescriptor;
-import org.qi4j.spi.sideeffect.MethodSideEffectDescriptor;
-import org.qi4j.spi.sideeffect.MethodSideEffectsDescriptor;
-import org.qi4j.spi.structure.ApplicationDescriptor;
-import org.qi4j.spi.structure.ApplicationModelSPI;
-import org.qi4j.spi.structure.LayerDescriptor;
-import org.qi4j.spi.structure.ModuleDescriptor;
-import org.qi4j.spi.structure.UsedLayersDescriptor;
-import org.qi4j.spi.value.ValueDescriptor;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -53,7 +47,7 @@ public final class ApplicationDetailDescriptorBuilder
     {
     }
 
-    public static ApplicationDetailDescriptor createApplicationDetailDescriptor( ApplicationModelSPI anApplication )
+    public static ApplicationDetailDescriptor createApplicationDetailDescriptor( ApplicationDescriptor anApplication )
     {
         ApplicationDescriptorVisitor visitor = new ApplicationDescriptorVisitor();
         anApplication.accept( visitor );

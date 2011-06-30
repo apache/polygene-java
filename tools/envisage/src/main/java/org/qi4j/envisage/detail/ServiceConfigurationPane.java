@@ -16,28 +16,18 @@
 */
 package org.qi4j.envisage.detail;
 
-import java.awt.BorderLayout;
-import java.awt.Cursor;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import org.qi4j.api.object.ObjectDescriptor;
+import org.qi4j.envisage.event.LinkEvent;
+import org.qi4j.envisage.model.descriptor.*;
+import org.qi4j.envisage.model.util.DescriptorUtilities;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ResourceBundle;
-import javax.swing.AbstractButton;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import org.qi4j.envisage.event.LinkEvent;
-import org.qi4j.envisage.model.descriptor.CompositeDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.EntityDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.ObjectDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.ServiceDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.ValueDetailDescriptor;
-import org.qi4j.envisage.model.util.DescriptorUtilities;
-import org.qi4j.spi.object.ObjectDescriptor;
 
 /**
  * Implementation of Service Configuration Panel

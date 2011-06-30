@@ -1,6 +1,5 @@
 package org.qi4j.samples.cargo.app1.system.repositories;
 
-import org.qi4j.samples.cargo.app1.model.location.Location;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.query.Query;
@@ -12,6 +11,7 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.usecase.UsecaseBuilder;
+import org.qi4j.samples.cargo.app1.model.location.Location;
 
 
 /**
@@ -41,7 +41,7 @@ public interface LocationRepository extends ServiceComposite {
         public Query<Location> findAll() {
             QueryBuilder<Location> builder = qbf.newQueryBuilder(Location.class);
             UnitOfWork uow = uowf.currentUnitOfWork();
-            return builder.newQuery(uow);
+            return uow.newQuery( builder );
         }
 
         public void activate() throws Exception {

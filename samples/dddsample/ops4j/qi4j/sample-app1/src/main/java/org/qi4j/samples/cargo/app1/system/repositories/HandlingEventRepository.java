@@ -1,11 +1,11 @@
 package org.qi4j.samples.cargo.app1.system.repositories;
 
-import org.qi4j.samples.cargo.app1.model.handling.HandlingEvent;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+import org.qi4j.samples.cargo.app1.model.handling.HandlingEvent;
 
 
 /**

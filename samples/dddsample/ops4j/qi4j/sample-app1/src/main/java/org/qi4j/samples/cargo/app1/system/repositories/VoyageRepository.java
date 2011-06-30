@@ -1,15 +1,5 @@
 package org.qi4j.samples.cargo.app1.system.repositories;
 
-import org.qi4j.samples.cargo.app1.model.location.Location;
-import org.qi4j.samples.cargo.app1.model.voyage.CarrierMovement;
-import org.qi4j.samples.cargo.app1.model.voyage.Schedule;
-import org.qi4j.samples.cargo.app1.model.voyage.Voyage;
-import org.qi4j.samples.cargo.app1.model.voyage.VoyageNumber;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
@@ -22,6 +12,17 @@ import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
+import org.qi4j.samples.cargo.app1.model.location.Location;
+import org.qi4j.samples.cargo.app1.model.voyage.CarrierMovement;
+import org.qi4j.samples.cargo.app1.model.voyage.Schedule;
+import org.qi4j.samples.cargo.app1.model.voyage.Voyage;
+import org.qi4j.samples.cargo.app1.model.voyage.VoyageNumber;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 
 /**

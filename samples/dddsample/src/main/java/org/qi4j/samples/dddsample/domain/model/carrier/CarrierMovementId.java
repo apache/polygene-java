@@ -19,7 +19,7 @@ package org.qi4j.samples.dddsample.domain.model.carrier;
 
 import org.qi4j.samples.dddsample.domain.model.ValueObject;
 
-import static org.qi4j.api.util.NullArgumentException.*;
+import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 
 public class CarrierMovementId
     implements ValueObject<CarrierMovementId>

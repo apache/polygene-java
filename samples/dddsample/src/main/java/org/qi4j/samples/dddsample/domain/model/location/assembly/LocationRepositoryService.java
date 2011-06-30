@@ -86,7 +86,7 @@ public interface LocationRepositoryService
             QueryBuilder<Location> builder = qbf.newQueryBuilder( Location.class );
             final LocationState template = QueryExpressions.templateFor( LocationState.class );
             builder.where( QueryExpressions.eq( template.name(), "Hong Kong" ) );
-            return builder.newQuery( uow );
+            return uow.newQuery( builder );
         }
     }
 }

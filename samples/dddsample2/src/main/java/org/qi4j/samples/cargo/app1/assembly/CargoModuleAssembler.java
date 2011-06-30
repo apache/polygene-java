@@ -17,18 +17,8 @@ import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.samples.cargo.app1.model.cargo.Cargo;
-import org.qi4j.samples.cargo.app1.model.cargo.Delivery;
-import org.qi4j.samples.cargo.app1.model.cargo.HandlingActivity;
-import org.qi4j.samples.cargo.app1.model.cargo.Itinerary;
-import org.qi4j.samples.cargo.app1.model.cargo.Leg;
-import org.qi4j.samples.cargo.app1.model.cargo.RouteSpecification;
-import org.qi4j.samples.cargo.app1.model.cargo.TrackingId;
-import org.qi4j.samples.cargo.app1.system.factories.CargoFactory;
-import org.qi4j.samples.cargo.app1.system.factories.DeliveryFactory;
-import org.qi4j.samples.cargo.app1.system.factories.HandlingActivityFactory;
-import org.qi4j.samples.cargo.app1.system.factories.LegFactory;
-import org.qi4j.samples.cargo.app1.system.factories.RouteSpecificationFactory;
+import org.qi4j.samples.cargo.app1.model.cargo.*;
+import org.qi4j.samples.cargo.app1.system.factories.*;
 import org.qi4j.samples.cargo.app1.system.repositories.CargoRepository;
 
 /**

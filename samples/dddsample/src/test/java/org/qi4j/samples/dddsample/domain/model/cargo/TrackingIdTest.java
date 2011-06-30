@@ -2,7 +2,7 @@ package org.qi4j.samples.dddsample.domain.model.cargo;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
 public class TrackingIdTest
 {

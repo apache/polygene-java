@@ -19,9 +19,9 @@ package org.qi4j.ide.plugin.idea.common.facet.ui;
 import com.intellij.facet.ui.FacetEditorContext;
 import com.intellij.facet.ui.FacetEditorTab;
 import com.intellij.openapi.options.ConfigurationException;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
 import org.jetbrains.annotations.Nls;
+
+import javax.swing.*;
 
 /**
  * @author edward.yakop@gmail.com

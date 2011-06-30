@@ -17,10 +17,12 @@
  */
 package org.qi4j.samples.dddsample.domain.model.location;
 
-import java.util.regex.Pattern;
 import org.qi4j.samples.dddsample.domain.model.ValueObject;
 
-import static org.springframework.util.Assert.*;
+import java.util.regex.Pattern;
+
+import static org.springframework.util.Assert.isTrue;
+import static org.springframework.util.Assert.notNull;
 
 /**
  * United nations location code.

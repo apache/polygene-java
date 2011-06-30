@@ -1,10 +1,5 @@
 package org.qi4j.samples.dddsample.spring.ui.tracking;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
 import org.qi4j.api.query.Query;
 import org.qi4j.samples.dddsample.domain.model.cargo.Cargo;
 import org.qi4j.samples.dddsample.domain.model.cargo.DeliveryHistory;
@@ -12,6 +7,12 @@ import org.qi4j.samples.dddsample.domain.model.carrier.CarrierMovement;
 import org.qi4j.samples.dddsample.domain.model.handling.HandlingEvent;
 import org.qi4j.samples.dddsample.domain.model.location.Location;
 import org.springframework.context.MessageSource;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * View adapter for displaying a cargo in a tracking context.

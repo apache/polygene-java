@@ -14,10 +14,6 @@
 
 package org.qi4j.library.sql.postgresql;
 
-import java.sql.SQLException;
-
-import org.junit.After;
-import org.junit.Ignore;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.indexing.AbstractComplexQueryTest;

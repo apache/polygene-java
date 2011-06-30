@@ -16,22 +16,7 @@
 */
 package org.qi4j.envisage;
 
-import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.util.ResourceBundle;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JSplitPane;
-import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
+import org.qi4j.api.structure.ApplicationDescriptor;
 import org.qi4j.envisage.detail.DetailModelPane;
 import org.qi4j.envisage.event.LinkEvent;
 import org.qi4j.envisage.event.LinkListener;
@@ -40,7 +25,15 @@ import org.qi4j.envisage.model.descriptor.ApplicationDetailDescriptor;
 import org.qi4j.envisage.model.descriptor.ApplicationDetailDescriptorBuilder;
 import org.qi4j.envisage.print.PDFWriter;
 import org.qi4j.envisage.tree.TreeModelPane;
-import org.qi4j.spi.structure.ApplicationModelSPI;
+
+import javax.swing.*;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.util.ResourceBundle;
 
 /**
  * Envisage Main Frame
@@ -58,12 +51,12 @@ public class EnvisageFrame
     private TreeModelPane treeModelPane;
     private DetailModelPane detailModelPane;
 
-    private ApplicationModelSPI application;
+    private ApplicationDescriptor application;
     private ApplicationDetailDescriptor descriptor;
 
     private boolean graphItemSelectionInProgress;
 
-    public EnvisageFrame( ApplicationModelSPI application )
+    public EnvisageFrame( ApplicationDescriptor application )
     {
         this.application = application;
 

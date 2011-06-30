@@ -1,5 +1,7 @@
 package org.qi4j.samples.cargo.app1.services.booking;
 
+import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.unitofwork.UnitOfWorkPropagation;
 import org.qi4j.samples.cargo.app1.model.cargo.Cargo;
 import org.qi4j.samples.cargo.app1.model.cargo.Itinerary;
 import org.qi4j.samples.cargo.app1.model.cargo.RouteSpecification;
@@ -12,13 +14,12 @@ import org.qi4j.samples.cargo.app1.system.factories.CargoFactory;
 import org.qi4j.samples.cargo.app1.system.factories.RouteSpecificationFactory;
 import org.qi4j.samples.cargo.app1.system.repositories.CargoRepository;
 import org.qi4j.samples.cargo.app1.system.repositories.LocationRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import org.qi4j.api.injection.scope.Service;
-import org.qi4j.api.unitofwork.UnitOfWorkPropagation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public final class BookingServiceImpl 
         implements BookingService {

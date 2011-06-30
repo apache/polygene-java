@@ -15,7 +15,6 @@
 package org.qi4j.dci.moneytransfer.domain.entity;
 
 import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.dci.moneytransfer.context.TransferMoneyContext;
 import org.qi4j.dci.moneytransfer.domain.data.BalanceData;
 
 /**

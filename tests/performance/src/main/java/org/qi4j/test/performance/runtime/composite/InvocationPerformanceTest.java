@@ -11,10 +11,6 @@
  */
 package org.qi4j.test.performance.runtime.composite;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.text.NumberFormat;
-
 import org.junit.Test;
 import org.qi4j.api.composite.TransientBuilder;
 import org.qi4j.api.composite.TransientComposite;
@@ -24,6 +20,10 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.text.NumberFormat;
 
 /**
  * Invocation performance test. Don't forget to add VM value "-server"

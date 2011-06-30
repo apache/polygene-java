@@ -63,7 +63,7 @@ public interface CargoRepositoryService
         {
             UnitOfWork uow = uowf.currentUnitOfWork();
             QueryBuilder<Cargo> builder = qbf.newQueryBuilder( Cargo.class );
-            return builder.newQuery( uow );
+            return uow.newQuery( builder );
         }
     }
 }

@@ -1,10 +1,11 @@
 package org.qi4j.lib.swing.binding.internal;
 
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import javax.swing.JComponent;
 import org.qi4j.entity.association.Association;
 import org.qi4j.lib.swing.binding.SwingAdapter;
+
+import javax.swing.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 public class AssociationFocusLostListener
     implements FocusListener

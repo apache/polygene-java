@@ -16,11 +16,12 @@
 */
 package org.qi4j.envisage.model.util;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.qi4j.envisage.model.descriptor.LayerDetailDescriptor;
 import org.qi4j.envisage.model.descriptor.ModuleDetailDescriptor;
 import org.qi4j.envisage.model.descriptor.ServiceDetailDescriptor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * API would be defined as "All service interfaces which are visible for layer

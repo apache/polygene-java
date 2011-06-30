@@ -34,6 +34,7 @@ import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.service.ServiceReference;
+import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
@@ -45,7 +46,6 @@ import org.qi4j.index.rdf.assembly.RdfNativeSesameStoreAssembler;
 import org.qi4j.index.rdf.indexing.RdfIndexingService;
 import org.qi4j.index.rdf.query.SesameExpressions;
 import org.qi4j.library.rdf.repository.NativeConfiguration;
-import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.test.EntityTestAssembler;
 
 import java.io.File;
@@ -65,7 +65,7 @@ public class QueryPerformanceTest
     private static final String MODULE_DOMAIN = "MODULE_DOMAIN";
     private static final String MODULE_CONFIG = "MODULE_CONFIG";
 
-    private ApplicationSPI application;
+    private Application application;
     private ServiceFinder serviceLocator;
     private UnitOfWorkFactory unitOfWorkFactory;
     private static final String QUERY1 = "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n" +
@@ -410,7 +410,7 @@ public class QueryPerformanceTest
         public Lead findByFixedQuery( String queryString )
         {
             UnitOfWork uow = uowf.currentUnitOfWork();
-            Query<Lead> query = qbf.newQueryBuilder( Lead.class ).where( SesameExpressions.sparql( queryString ) ).newQuery( uow );
+            Query<Lead> query = uow.newQuery( qbf.newQueryBuilder( Lead.class ).where( SesameExpressions.sparql( queryString ) ));
             return query.find();
         }
 
@@ -420,7 +420,7 @@ public class QueryPerformanceTest
             QueryBuilder<Lead> builder = qbf.newQueryBuilder( Lead.class );
             Lead template = templateFor( Lead.class );
 
-            Query<Lead> query = builder.where( eq( template.name(), name ) ).newQuery( uow );
+            Query<Lead> query = uow.newQuery( builder.where( eq( template.name(), name ) ));
             return query.find();
         }
     }

@@ -1,9 +1,10 @@
 package se.citerus.dddsample.domain.model.carrier;
 
-import java.util.Date;
 import org.apache.commons.lang.Validate;
 import se.citerus.dddsample.domain.model.Entity;
 import se.citerus.dddsample.domain.model.location.Location;
+
+import java.util.Date;
 
 
 /**

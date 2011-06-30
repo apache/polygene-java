@@ -20,23 +20,21 @@ import com.jgoodies.looks.LookUtils;
 import com.jgoodies.looks.Options;
 import com.jgoodies.looks.plastic.PlasticLookAndFeel;
 import com.jgoodies.looks.plastic.theme.ExperienceBlue;
-import java.awt.Dimension;
+import org.qi4j.api.structure.ApplicationDescriptor;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import javax.swing.JFrame;
-import javax.swing.LookAndFeel;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import org.qi4j.spi.structure.ApplicationModelSPI;
 
 /**
  * Qi4J Application Viewer
  */
 public class Envisage
 {
-    protected ApplicationModelSPI application;
+    protected ApplicationDescriptor application;
 
-    public void run( ApplicationModelSPI application )
+    public void run( ApplicationDescriptor application )
     {
         initLookAndFeel();
 

@@ -16,15 +16,16 @@
 */
 package org.qi4j.envisage.model.util;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.property.Property;
 import org.qi4j.envisage.model.descriptor.CompositeDetailDescriptor;
 import org.qi4j.envisage.model.descriptor.CompositeMethodDetailDescriptor;
+
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class MethodFinder
 {

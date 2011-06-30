@@ -1,8 +1,5 @@
 package org.qi4j.tutorials.services.step5;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.StringTokenizer;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.configuration.ConfigurationComposite;
 import org.qi4j.api.injection.scope.Structure;
@@ -13,6 +10,10 @@ import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.StringTokenizer;
 
 @Mixins( LibraryService.LibraryMixin.class )
 public interface LibraryService

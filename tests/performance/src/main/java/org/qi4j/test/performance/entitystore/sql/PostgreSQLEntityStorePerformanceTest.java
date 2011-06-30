@@ -13,27 +13,23 @@
  */
 package org.qi4j.test.performance.entitystore.sql;
 
-import java.sql.Connection;
-import java.sql.Statement;
-
 import org.junit.Ignore;
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-import org.qi4j.bootstrap.ApplicationAssemblerAdapter;
-import org.qi4j.bootstrap.Assembler;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.Energy4Java;
-import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.bootstrap.*;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.entitystore.sql.assembly.PostgreSQLEntityStoreAssembler;
 import org.qi4j.entitystore.sql.internal.SQLs;
 import org.qi4j.library.sql.common.SQLConfiguration;
 import org.qi4j.library.sql.common.SQLUtil;
 import org.qi4j.library.sql.ds.PGDataSourceConfiguration;
-import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.test.performance.entitystore.model.AbstractEntityStorePerformanceTest;
+
+import java.sql.Connection;
+import java.sql.Statement;
 
 /**
  * WARN This test is deactivated on purpose, please do not commit it activated.
@@ -94,7 +90,7 @@ public class PostgreSQLEntityStorePerformanceTest extends AbstractEntityStorePer
                     }
                 }
             };
-            ApplicationSPI application = qi4j.newApplication( new ApplicationAssemblerAdapter( assemblers )
+            Application application = qi4j.newApplication( new ApplicationAssemblerAdapter( assemblers )
             {
             } );
             application.activate();

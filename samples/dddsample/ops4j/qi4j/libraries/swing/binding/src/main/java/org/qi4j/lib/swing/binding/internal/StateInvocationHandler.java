@@ -16,11 +16,6 @@
  */
 package org.qi4j.lib.swing.binding.internal;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
 import org.qi4j.composite.ObjectBuilder;
 import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.composite.scope.Structure;
@@ -29,6 +24,12 @@ import org.qi4j.entity.association.Association;
 import org.qi4j.entity.association.ListAssociation;
 import org.qi4j.entity.association.SetAssociation;
 import org.qi4j.property.Property;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author edward.yakop@gmail.com

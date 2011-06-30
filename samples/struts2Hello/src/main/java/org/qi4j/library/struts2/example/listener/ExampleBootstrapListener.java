@@ -18,12 +18,7 @@ package org.qi4j.library.struts2.example.listener;
 
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
-import org.qi4j.bootstrap.ApplicationAssembler;
-import org.qi4j.bootstrap.ApplicationAssembly;
-import org.qi4j.bootstrap.ApplicationAssemblyFactory;
-import org.qi4j.bootstrap.Assembler;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.bootstrap.*;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.index.rdf.RdfIndexingEngineService;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
@@ -33,11 +28,7 @@ import org.qi4j.library.struts2.Qi4jApplicationBootstrapListener;
 import org.qi4j.library.struts2.bootstrap.Struts2PluginAssembler;
 import org.qi4j.library.struts2.codebehind.bootstrap.CodebehindAssembler;
 import org.qi4j.library.struts2.example.Item;
-import org.qi4j.library.struts2.example.actions.AddItem;
-import org.qi4j.library.struts2.example.actions.EditItem;
-import org.qi4j.library.struts2.example.actions.HelloWorldAction;
-import org.qi4j.library.struts2.example.actions.IndexAction;
-import org.qi4j.library.struts2.example.actions.ListItems;
+import org.qi4j.library.struts2.example.actions.*;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 
 /**

@@ -1,7 +1,5 @@
 package org.qi4j.samples.dddsample.application.routing;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.qi4j.api.composite.TransientBuilder;
 import org.qi4j.api.composite.TransientBuilderFactory;
 import org.qi4j.api.injection.scope.Service;
@@ -24,6 +22,9 @@ import org.qi4j.samples.dddsample.domain.service.Routing;
 import se.citerus.routingteam.GraphTraversalService;
 import se.citerus.routingteam.TransitEdge;
 import se.citerus.routingteam.TransitPath;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Our end of the routing service. This is basically a data model

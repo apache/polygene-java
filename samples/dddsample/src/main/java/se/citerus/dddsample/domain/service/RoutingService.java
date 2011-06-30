@@ -1,8 +1,9 @@
 package se.citerus.dddsample.domain.service;
 
-import java.util.List;
 import se.citerus.dddsample.domain.model.cargo.Itinerary;
 import se.citerus.dddsample.domain.model.cargo.RouteSpecification;
+
+import java.util.List;
 
 /**
  * Routing service.

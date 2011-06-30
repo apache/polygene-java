@@ -17,8 +17,6 @@
  */
 package org.qi4j.tests.regression.niclas2;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -32,6 +30,9 @@ import org.qi4j.api.sideeffect.SideEffects;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 
 
 @Ignore(" This is a new feature test, and will fail.")

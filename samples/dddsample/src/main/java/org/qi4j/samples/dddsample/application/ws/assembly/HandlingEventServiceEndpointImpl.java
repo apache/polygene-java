@@ -1,9 +1,5 @@
 package org.qi4j.samples.dddsample.application.ws.assembly;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import javax.jws.WebService;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +18,11 @@ import se.citerus.dddsample.domain.service.HandlingEventService;
 import se.citerus.dddsample.domain.service.UnknownCarrierMovementIdException;
 import se.citerus.dddsample.domain.service.UnknownLocationException;
 import se.citerus.dddsample.domain.service.UnknownTrackingIdException;
+
+import javax.jws.WebService;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @WebService( endpointInterface = "se.citerus.dddsample.application.ws.HandlingEventServiceEndpoint" )
 public class HandlingEventServiceEndpointImpl

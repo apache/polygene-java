@@ -14,7 +14,6 @@
 
 package org.qi4j.samples.dddsample.domain.model.cargo.assembly;
 
-import java.util.Iterator;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.query.Query;
@@ -27,6 +26,8 @@ import org.qi4j.samples.dddsample.domain.model.handling.HandlingEvent;
 import org.qi4j.samples.dddsample.domain.model.handling.HandlingEventRepository;
 import org.qi4j.samples.dddsample.domain.model.location.Location;
 import org.qi4j.samples.dddsample.domain.model.location.LocationRepository;
+
+import java.util.Iterator;
 
 /**
  * JAVADOC

@@ -37,7 +37,7 @@ import org.qi4j.samples.dddsample.domain.service.assembly.TrackingServiceAssembl
 import org.qi4j.samples.dddsample.spring.assembly.SpringModuleAssembler;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 
-import static org.qi4j.api.common.Visibility.*;
+import static org.qi4j.api.common.Visibility.application;
 
 /**
  * @author edward.yakop@gmail.com

@@ -16,19 +16,17 @@
 */
 package org.qi4j.ide.plugin.idea.injections.service.common;
 
-import static com.intellij.codeInsight.AnnotationUtil.findAnnotation;
 import com.intellij.psi.PsiAnnotation;
-import static com.intellij.psi.PsiModifier.STATIC;
 import com.intellij.psi.PsiModifierList;
 import com.intellij.psi.PsiModifierListOwner;
 import com.intellij.psi.PsiVariable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import static com.intellij.codeInsight.AnnotationUtil.findAnnotation;
+import static com.intellij.psi.PsiModifier.STATIC;
 import static org.qi4j.ide.plugin.idea.injections.service.common.Qi4jServiceAnnotationConstants.QUALIFIED_NAME_SERVICE_ANNOTATION;
-import static org.qi4j.ide.plugin.idea.injections.service.common.Qi4jServiceAnnotationUtil.ServiceAnnotationDeclarationValidationResult.invalidDeclaredOnStaticVariable;
-import static org.qi4j.ide.plugin.idea.injections.service.common.Qi4jServiceAnnotationUtil.ServiceAnnotationDeclarationValidationResult.invalidServiceAnnotationNotDeclared;
-import static org.qi4j.ide.plugin.idea.injections.service.common.Qi4jServiceAnnotationUtil.ServiceAnnotationDeclarationValidationResult.invalidTypeIsInjectedViaStructureAnnotation;
-import static org.qi4j.ide.plugin.idea.injections.service.common.Qi4jServiceAnnotationUtil.ServiceAnnotationDeclarationValidationResult.valid;
+import static org.qi4j.ide.plugin.idea.injections.service.common.Qi4jServiceAnnotationUtil.ServiceAnnotationDeclarationValidationResult.*;
 import static org.qi4j.ide.plugin.idea.injections.structure.common.Qi4jStructureAnnotationUtil.isInjecteableByStructureAnnotation;
 
 /**

@@ -16,7 +16,6 @@
 */
 package org.qi4j.ide.plugin.idea.injections.common.inspections;
 
-import static com.intellij.codeInsight.AnnotationUtil.findAnnotation;
 import com.intellij.codeInspection.InspectionManager;
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.openapi.project.Project;
@@ -28,6 +27,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.qi4j.ide.plugin.idea.common.inspections.AbstractFix;
 import org.qi4j.ide.plugin.idea.common.inspections.AbstractInspection;
+
+import static com.intellij.codeInsight.AnnotationUtil.findAnnotation;
 
 /**
  * @author edward.yakop@gmail.com

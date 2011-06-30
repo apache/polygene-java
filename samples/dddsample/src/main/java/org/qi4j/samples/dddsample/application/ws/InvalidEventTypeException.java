@@ -1,7 +1,8 @@
 package org.qi4j.samples.dddsample.application.ws;
 
-import java.util.Arrays;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
+
+import java.util.Arrays;
 
 /**
  * Thrown when trying to register an event with an invalid type.

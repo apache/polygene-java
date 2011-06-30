@@ -17,7 +17,7 @@
  */
 package org.qi4j.lib.swing.binding;
 
-import javax.swing.JComponent;
+import javax.swing.*;
 
 /** This exception is thrown when attempt to bind incompatible types and swing components.
 */

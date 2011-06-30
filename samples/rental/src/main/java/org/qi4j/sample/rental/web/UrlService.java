@@ -18,8 +18,10 @@
 
 package org.qi4j.sample.rental.web;
 
+import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.spi.Qi4jSPI;
 
 @Mixins( UrlService.UrlServiceMixin.class )
 public interface UrlService
@@ -32,6 +34,9 @@ public interface UrlService
     static abstract class UrlServiceMixin
         implements UrlService
     {
+        @Structure
+        Qi4jSPI spi;
+
         private String baseUri;
 
         public void registerBaseUri( String baseUri )
@@ -41,7 +46,7 @@ public interface UrlService
 
         public String createLink( Page page )
         {
-            String mountPoint = page.metaInfo( PageMetaInfo.class ).mountPoint();
+            String mountPoint = spi.getServiceDescriptor( page ).metaInfo( PageMetaInfo.class ).mountPoint();
             return baseUri + mountPoint;
         }
     }

@@ -16,7 +16,6 @@
 */
 package org.qi4j.samples.dddsample.domain.model.handling.assembly;
 
-import java.util.Date;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
@@ -38,6 +37,8 @@ import org.qi4j.samples.dddsample.domain.model.location.UnLocode;
 import org.qi4j.samples.dddsample.domain.service.UnknownCarrierMovementIdException;
 import org.qi4j.samples.dddsample.domain.service.UnknownLocationException;
 import org.qi4j.samples.dddsample.domain.service.UnknownTrackingIdException;
+
+import java.util.Date;
 
 /**
  * @author edward.yakop@gmail.com

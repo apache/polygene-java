@@ -1,9 +1,5 @@
 package org.qi4j.samples.dddsample.domain.model.cargo.assembly;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import org.junit.Test;
 import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.service.ServiceReference;
@@ -22,8 +18,13 @@ import org.qi4j.samples.dddsample.domain.model.location.assembly.LocationModelAs
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
 
-import static org.junit.Assert.*;
-import static org.qi4j.samples.dddsample.domain.model.cargo.assembly.SampleCargoDataBootstrapService.*;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import static org.junit.Assert.assertEquals;
+import static org.qi4j.samples.dddsample.domain.model.cargo.assembly.SampleCargoDataBootstrapService.XYZ;
 
 public class CargoTest
     extends AbstractQi4jTest

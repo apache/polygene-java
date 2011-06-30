@@ -3,7 +3,6 @@ package org.qi4j.sample.scala;
 import org.junit.Assert;
 import org.junit.Test;
 import org.qi4j.api.constraint.ConstraintViolationException;
-import org.qi4j.api.query.QueryExpressions;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
@@ -90,7 +89,7 @@ public class HelloWorldCompositeTest
         uow = assembler.unitOfWorkFactory().newUnitOfWork();
         try
         {
-            Data data = assembler.queryBuilderFactory().newQueryBuilder( Data.class ).where( eq( templateFor( Data.class ).foo(), "FooFoo" ) ).newQuery( uow ).find();
+            Data data = uow.newQuery( assembler.queryBuilderFactory().newQueryBuilder( Data.class ).where( eq( templateFor( Data.class ).foo(), "FooFoo" ) )).find();
             Assert.assertEquals( "FooFoo", data.foo().get() );
         } finally
         {

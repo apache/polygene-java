@@ -17,8 +17,9 @@
  */
 package org.qi4j.samples.dddsample.domain.model.cargo;
 
-import java.util.Date;
 import org.qi4j.samples.dddsample.domain.model.location.Location;
+
+import java.util.Date;
 
 public interface RouteSpecification
 {

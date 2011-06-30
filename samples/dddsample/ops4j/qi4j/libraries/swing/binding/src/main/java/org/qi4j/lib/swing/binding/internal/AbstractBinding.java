@@ -17,13 +17,6 @@
  */
 package org.qi4j.lib.swing.binding.internal;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-import javax.swing.JComponent;
 import org.qi4j.composite.ObjectBuilder;
 import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.composite.scope.Service;
@@ -32,6 +25,14 @@ import org.qi4j.composite.scope.Uses;
 import org.qi4j.lib.swing.binding.StateModel;
 import org.qi4j.lib.swing.binding.SwingAdapter;
 import org.qi4j.lib.swing.binding.SwingBinding;
+
+import javax.swing.*;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 public abstract class AbstractBinding<T>
     implements SwingBinding

@@ -32,7 +32,7 @@ import org.qi4j.index.rdf.assembly.RdfMemoryStoreAssembler;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
 
-import static org.qi4j.api.query.QueryExpressions.*;
+import static org.qi4j.api.query.QueryExpressions.orderBy;
 
 public class PieroTest
     extends AbstractQi4jTest
@@ -82,7 +82,7 @@ public class PieroTest
         Car template = QueryExpressions.templateFor( Car.class );
         qb.where( QueryExpressions.eq( template.year(), 2007 ) );
 
-        Query<Car> query = qb.newQuery( uow );
+        Query<Car> query = uow.newQuery( qb );
         query.orderBy( orderBy( template.manufacturer() ), orderBy( template.model() ) );
         System.out.println( "Cars from 2007" );
         for( Car car : query )

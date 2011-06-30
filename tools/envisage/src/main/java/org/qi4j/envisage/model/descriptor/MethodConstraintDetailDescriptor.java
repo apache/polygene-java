@@ -16,9 +16,9 @@
 */
 package org.qi4j.envisage.model.descriptor;
 
-import org.qi4j.spi.constraint.ConstraintDescriptor;
+import org.qi4j.api.constraint.ConstraintDescriptor;
 
-import static org.qi4j.api.util.NullArgumentException.*;
+import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 
 public final class MethodConstraintDetailDescriptor
 {

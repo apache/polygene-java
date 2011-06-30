@@ -1,10 +1,5 @@
 package se.citerus.dddsample.ui;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.springframework.context.MessageSource;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
@@ -14,6 +9,12 @@ import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.service.TrackingService;
 import se.citerus.dddsample.ui.command.TrackCommand;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Controller for tracking cargo. This interface sits immediately on top of the

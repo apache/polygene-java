@@ -18,15 +18,18 @@
 
 package org.qi4j.sample.rental.web;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
-import java.util.TreeMap;
+import org.qi4j.api.Qi4j;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.service.ServiceFinder;
+import org.qi4j.api.service.ServiceReference;
+import org.qi4j.api.structure.Application;
+import org.qi4j.api.structure.Module;
+import org.qi4j.bootstrap.ApplicationAssembler;
+import org.qi4j.bootstrap.Energy4Java;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -44,22 +47,16 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
-import org.qi4j.api.composite.Composite;
-import org.qi4j.api.service.ServiceFinder;
-import org.qi4j.api.service.ServiceReference;
-import org.qi4j.api.structure.Application;
-import org.qi4j.api.structure.Module;
-import org.qi4j.bootstrap.ApplicationAssembler;
-import org.qi4j.bootstrap.Energy4Java;
-import org.qi4j.spi.structure.ApplicationSPI;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
+import java.io.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class QuikitServlet
     extends HttpServlet
 {
-    private ApplicationSPI application;
+    private Application application;
     private ServiceFinder finder;
     private UrlService urlService;
     private DocumentBuilderFactory documentFactory;
@@ -93,7 +90,7 @@ public class QuikitServlet
             Module module = application.findModule( "WebLayer", "PagesModule" );
             finder = module.serviceFinder();
 
-            if( application.mode() == ApplicationSPI.Mode.development )
+            if( application.mode() == Application.Mode.development )
             {
                 DataInitializer initializer = module.transientBuilderFactory().newTransient( DataInitializer.class );
                 initializer.initialize();
@@ -194,7 +191,7 @@ public class QuikitServlet
     private void renderPage( Page page, String path, PrintWriter output, HttpServletRequest httpRequest )
         throws ParserConfigurationException, SAXException, IOException, RenderException, TransformerException
     {
-        Class<? extends Composite> pageClass = page.type();
+        Class<? extends Composite> pageClass = (Class<Composite>) Qi4j.DESCRIPTOR_FUNCTION.map( page ).type();
         String pageName = pageClass.getSimpleName() + ".html";
         DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
         documentBuilder.setEntityResolver( quickitResolver );

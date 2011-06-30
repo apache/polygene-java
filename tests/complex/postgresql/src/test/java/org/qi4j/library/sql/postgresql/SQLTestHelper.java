@@ -13,9 +13,6 @@
  */
 package org.qi4j.library.sql.postgresql;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
 import org.junit.Assume;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.ServiceFinder;
@@ -23,7 +20,6 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.test.performance.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.index.reindexer.ReindexerConfiguration;
 import org.qi4j.index.sql.assembly.SQLIndexingAssembler;
 import org.qi4j.index.sql.support.common.DBNames;
@@ -37,7 +33,12 @@ import org.qi4j.library.sql.ds.PGDataSourceConfiguration;
 import org.qi4j.library.sql.ds.PGSQLDataSourceServiceMixin;
 import org.qi4j.library.sql.ds.assembly.DataSourceAssembler;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
+import org.qi4j.test.performance.entitystore.memory.MemoryEntityStoreService;
 import org.slf4j.Logger;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  * @author Stanislav Muhametsin

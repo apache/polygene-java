@@ -1,7 +1,5 @@
 package se.citerus.dddsample.domain.model.handling;
 
-import java.util.Comparator;
-import java.util.Date;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -10,6 +8,9 @@ import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.carrier.CarrierMovement;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.shared.DomainObjectUtils;
+
+import java.util.Comparator;
+import java.util.Date;
 
 /**
  * A HandlingEvent is used to register the event when, for instance,

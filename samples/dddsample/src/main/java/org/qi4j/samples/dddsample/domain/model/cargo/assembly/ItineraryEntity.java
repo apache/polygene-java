@@ -1,6 +1,5 @@
 package org.qi4j.samples.dddsample.domain.model.cargo.assembly;
 
-import java.util.List;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
@@ -8,6 +7,8 @@ import org.qi4j.samples.dddsample.domain.model.cargo.Cargo;
 import org.qi4j.samples.dddsample.domain.model.cargo.Itinerary;
 import org.qi4j.samples.dddsample.domain.model.cargo.Leg;
 import org.qi4j.samples.dddsample.domain.model.handling.HandlingEvent;
+
+import java.util.List;
 
 /**
  * An itinerary.

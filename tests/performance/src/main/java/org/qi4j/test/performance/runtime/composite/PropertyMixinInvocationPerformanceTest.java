@@ -14,7 +14,6 @@
 
 package org.qi4j.test.performance.runtime.composite;
 
-import java.text.NumberFormat;
 import org.junit.Test;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.composite.TransientBuilder;
@@ -25,6 +24,8 @@ import org.qi4j.api.property.Property;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
+
+import java.text.NumberFormat;
 
 /**
  * PropertyMixin invocation performance test. Don't forget to add VM value "-server"

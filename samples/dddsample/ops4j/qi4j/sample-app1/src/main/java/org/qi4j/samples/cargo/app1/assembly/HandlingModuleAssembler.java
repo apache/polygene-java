@@ -13,14 +13,14 @@
  */
 package org.qi4j.samples.cargo.app1.assembly;
 
-import org.qi4j.samples.cargo.app1.model.handling.HandlingEvent;
-import org.qi4j.samples.cargo.app1.model.handling.HandlingHistory;
-import org.qi4j.samples.cargo.app1.system.factories.HandlingEventFactory;
-import org.qi4j.samples.cargo.app1.system.repositories.HandlingEventRepository;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.samples.cargo.app1.model.handling.HandlingEvent;
+import org.qi4j.samples.cargo.app1.model.handling.HandlingHistory;
+import org.qi4j.samples.cargo.app1.system.factories.HandlingEventFactory;
+import org.qi4j.samples.cargo.app1.system.repositories.HandlingEventRepository;
 
 /**
  *

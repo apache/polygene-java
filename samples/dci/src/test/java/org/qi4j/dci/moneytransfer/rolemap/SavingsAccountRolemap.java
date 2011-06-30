@@ -14,7 +14,6 @@
 
 package org.qi4j.dci.moneytransfer.rolemap;
 
-import org.qi4j.dci.moneytransfer.context.PayBillsContext;
 import org.qi4j.dci.moneytransfer.context.TransferMoneyContext;
 import org.qi4j.dci.moneytransfer.domain.entity.SavingsAccountEntity;
 

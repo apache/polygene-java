@@ -16,9 +16,9 @@
 */
 package org.qi4j.envisage.model.descriptor;
 
-import org.qi4j.spi.composite.ConstructorDescriptor;
+import org.qi4j.api.composite.ConstructorDescriptor;
 
-import static org.qi4j.api.util.NullArgumentException.*;
+import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 
 public final class ConstructorDetailDescriptor
 {

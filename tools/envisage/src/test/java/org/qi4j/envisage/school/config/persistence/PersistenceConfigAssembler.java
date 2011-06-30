@@ -24,7 +24,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 
-import static org.qi4j.api.common.Visibility.*;
+import static org.qi4j.api.common.Visibility.layer;
 
 public class PersistenceConfigAssembler
     implements Assembler

@@ -16,24 +16,18 @@
 */
 package org.qi4j.ide.plugin.idea.mixins.common;
 
-import static com.intellij.codeInsight.AnnotationUtil.findAnnotation;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiAnnotation;
-import com.intellij.psi.PsiAnnotationMemberValue;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementFactory;
-import com.intellij.psi.PsiJavaCodeReferenceElement;
-import com.intellij.psi.PsiModifierList;
-import com.intellij.psi.PsiModifierListOwner;
+import com.intellij.psi.*;
 import com.intellij.psi.codeStyle.JavaCodeStyleManager;
-import static java.util.Collections.emptyList;
-import static java.util.Collections.emptySet;
-import java.util.List;
-import java.util.Set;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.Set;
+
+import static com.intellij.codeInsight.AnnotationUtil.findAnnotation;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.emptySet;
 import static org.qi4j.ide.plugin.idea.common.psi.PsiAnnotationUtil.getAnnotationDefaultParameterValue;
 import static org.qi4j.ide.plugin.idea.common.psi.PsiAnnotationUtil.getClassReference;
 import static org.qi4j.ide.plugin.idea.common.psi.PsiClassUtil.getExtendsDeep;

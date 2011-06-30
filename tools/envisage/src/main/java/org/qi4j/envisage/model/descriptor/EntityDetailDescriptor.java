@@ -16,7 +16,7 @@
 */
 package org.qi4j.envisage.model.descriptor;
 
-import org.qi4j.spi.entity.EntityDescriptor;
+import org.qi4j.api.entity.EntityDescriptor;
 
 public final class EntityDetailDescriptor
     extends CompositeDetailDescriptor<EntityDescriptor>

@@ -21,8 +21,8 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.map.MapEntityStoreMixin;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
+import org.qi4j.spi.entitystore.helpers.MapEntityStoreMixin;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.performance.entitystore.model.AbstractEntityStorePerformanceTest;
 

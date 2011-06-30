@@ -16,7 +16,6 @@
 */
 package org.qi4j.samples.dddsample.domain.model.carrier.assembly;
 
-import java.util.Date;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
@@ -32,6 +31,8 @@ import org.qi4j.samples.dddsample.domain.model.carrier.CarrierMovementId;
 import org.qi4j.samples.dddsample.domain.model.carrier.CarrierMovementRepository;
 import org.qi4j.samples.dddsample.domain.model.location.Location;
 import org.qi4j.samples.dddsample.domain.model.location.LocationRepository;
+
+import java.util.Date;
 
 /**
  * @author edward.yakop@gmail.com

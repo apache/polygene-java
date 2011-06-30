@@ -16,15 +16,8 @@
 */
 package org.qi4j.envisage.model.util;
 
-import org.qi4j.envisage.model.descriptor.ApplicationDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.CompositeDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.EntityDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.LayerDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.ModuleDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.ObjectDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.ServiceDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.ValueDetailDescriptor;
-import org.qi4j.spi.object.ObjectDescriptor;
+import org.qi4j.api.object.ObjectDescriptor;
+import org.qi4j.envisage.model.descriptor.*;
 
 class ServiceConfigurationFinder
 {

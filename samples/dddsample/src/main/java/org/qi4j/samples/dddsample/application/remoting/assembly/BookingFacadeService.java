@@ -1,7 +1,5 @@
 package org.qi4j.samples.dddsample.application.remoting.assembly;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.mixin.Mixins;
@@ -22,7 +20,10 @@ import org.qi4j.samples.dddsample.domain.model.location.LocationRepository;
 import org.qi4j.samples.dddsample.domain.model.location.UnLocode;
 import org.qi4j.samples.dddsample.domain.service.Booking;
 
-import static org.qi4j.samples.dddsample.application.remoting.assembly.CargoRoutingDTOImpl.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.qi4j.samples.dddsample.application.remoting.assembly.CargoRoutingDTOImpl.toDTO;
 
 /**
  * This implementation has additional support from the infrastructure, for exposing as an RMI

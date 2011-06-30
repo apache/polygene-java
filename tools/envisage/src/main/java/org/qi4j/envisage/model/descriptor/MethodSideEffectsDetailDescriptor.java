@@ -16,11 +16,12 @@
 */
 package org.qi4j.envisage.model.descriptor;
 
+import org.qi4j.api.sideeffect.MethodSideEffectsDescriptor;
+
 import java.util.LinkedList;
 import java.util.List;
-import org.qi4j.spi.sideeffect.MethodSideEffectsDescriptor;
 
-import static org.qi4j.api.util.NullArgumentException.*;
+import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 
 public final class MethodSideEffectsDetailDescriptor
 {

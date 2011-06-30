@@ -1,17 +1,18 @@
 package org.qi4j.samples.cargo.app1.model.cargo;
 
-import org.qi4j.samples.cargo.app1.model.handling.HandlingEvent;
-import org.qi4j.samples.cargo.app1.model.location.Location;
-import org.qi4j.samples.cargo.app1.model.voyage.Voyage;
-import org.qi4j.samples.cargo.app1.system.factories.HandlingActivityFactory;
-import org.qi4j.samples.cargo.app1.system.repositories.HandlingEventRepository;
-import java.util.Date;
-import java.util.Iterator;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueComposite;
+import org.qi4j.samples.cargo.app1.model.handling.HandlingEvent;
+import org.qi4j.samples.cargo.app1.model.location.Location;
+import org.qi4j.samples.cargo.app1.model.voyage.Voyage;
+import org.qi4j.samples.cargo.app1.system.factories.HandlingActivityFactory;
+import org.qi4j.samples.cargo.app1.system.repositories.HandlingEventRepository;
+
+import java.util.Date;
+import java.util.Iterator;
 
 /**
  *

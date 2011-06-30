@@ -31,9 +31,10 @@ import com.intellij.psi.JavaElementVisitor;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiImportStatement;
 import com.intellij.psi.PsiReferenceExpression;
-import java.util.Collection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Collection;
 
 /**
  * @author edward.yakop@gmail.com

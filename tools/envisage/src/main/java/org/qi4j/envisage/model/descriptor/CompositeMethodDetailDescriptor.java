@@ -16,9 +16,9 @@
 */
 package org.qi4j.envisage.model.descriptor;
 
-import org.qi4j.spi.composite.MethodDescriptor;
+import org.qi4j.api.composite.MethodDescriptor;
 
-import static org.qi4j.api.util.NullArgumentException.*;
+import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 
 public final class CompositeMethodDetailDescriptor
 {

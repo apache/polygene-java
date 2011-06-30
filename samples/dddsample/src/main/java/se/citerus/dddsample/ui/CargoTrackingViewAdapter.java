@@ -1,16 +1,17 @@
 package se.citerus.dddsample.ui;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
 import org.springframework.context.MessageSource;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.DeliveryHistory;
 import se.citerus.dddsample.domain.model.carrier.CarrierMovement;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.location.Location;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * View adapter for displaying a cargo in a tracking context.

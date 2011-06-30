@@ -36,7 +36,7 @@ import org.qi4j.samples.dddsample.domain.model.handling.HandlingEvent;
 import org.qi4j.samples.dddsample.domain.model.location.Location;
 import org.qi4j.samples.dddsample.domain.model.location.LocationRepository;
 
-import static org.qi4j.samples.dddsample.domain.model.handling.HandlingEvent.Type.*;
+import static org.qi4j.samples.dddsample.domain.model.handling.HandlingEvent.Type.UNLOAD;
 
 /**
  * @author edward.yakop@gmail.com

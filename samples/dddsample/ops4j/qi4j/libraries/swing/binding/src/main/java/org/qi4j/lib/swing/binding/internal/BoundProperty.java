@@ -17,9 +17,6 @@
  */
 package org.qi4j.lib.swing.binding.internal;
 
-import java.awt.event.FocusListener;
-import java.lang.reflect.Method;
-import javax.swing.JComponent;
 import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.composite.scope.Service;
 import org.qi4j.composite.scope.Structure;
@@ -30,6 +27,10 @@ import org.qi4j.property.GenericPropertyInfo;
 import org.qi4j.property.ImmutableProperty;
 import org.qi4j.property.Property;
 import org.qi4j.property.PropertyInfo;
+
+import javax.swing.*;
+import java.awt.event.FocusListener;
+import java.lang.reflect.Method;
 
 public final class BoundProperty<T> extends AbstractBinding<T>
     implements ImmutableProperty<T>, Binding

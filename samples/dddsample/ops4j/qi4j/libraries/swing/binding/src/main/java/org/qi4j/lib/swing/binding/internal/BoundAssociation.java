@@ -17,9 +17,6 @@
  */
 package org.qi4j.lib.swing.binding.internal;
 
-import java.awt.event.FocusListener;
-import java.lang.reflect.Method;
-import javax.swing.JComponent;
 import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.composite.scope.Service;
 import org.qi4j.composite.scope.Structure;
@@ -27,6 +24,10 @@ import org.qi4j.composite.scope.Uses;
 import org.qi4j.entity.association.Association;
 import org.qi4j.lib.swing.binding.Binding;
 import org.qi4j.lib.swing.binding.SwingAdapter;
+
+import javax.swing.*;
+import java.awt.event.FocusListener;
+import java.lang.reflect.Method;
 
 public final class BoundAssociation<T> extends AbstractBinding<T>
     implements Association<T>, Binding

@@ -2,7 +2,7 @@ package org.qi4j.samples.dddsample.spring.ui.tracking;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
-import static org.apache.commons.lang.builder.ToStringStyle.*;
+import static org.apache.commons.lang.builder.ToStringStyle.MULTI_LINE_STYLE;
 
 public final class TrackCommand
 {

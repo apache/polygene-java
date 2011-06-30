@@ -1,6 +1,5 @@
 package se.citerus.dddsample.domain.model.handling;
 
-import java.util.Date;
 import org.apache.commons.lang.Validate;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
@@ -14,6 +13,8 @@ import se.citerus.dddsample.domain.model.location.UnLocode;
 import se.citerus.dddsample.domain.service.UnknownCarrierMovementIdException;
 import se.citerus.dddsample.domain.service.UnknownLocationException;
 import se.citerus.dddsample.domain.service.UnknownTrackingIdException;
+
+import java.util.Date;
 
 /**
  * Creates handling events.

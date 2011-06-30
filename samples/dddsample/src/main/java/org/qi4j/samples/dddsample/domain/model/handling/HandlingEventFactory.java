@@ -1,12 +1,13 @@
 package org.qi4j.samples.dddsample.domain.model.handling;
 
-import java.util.Date;
 import org.qi4j.samples.dddsample.domain.model.cargo.TrackingId;
 import org.qi4j.samples.dddsample.domain.model.carrier.CarrierMovementId;
 import org.qi4j.samples.dddsample.domain.model.location.UnLocode;
 import org.qi4j.samples.dddsample.domain.service.UnknownCarrierMovementIdException;
 import org.qi4j.samples.dddsample.domain.service.UnknownLocationException;
 import org.qi4j.samples.dddsample.domain.service.UnknownTrackingIdException;
+
+import java.util.Date;
 
 /**
  * Creates handling events.

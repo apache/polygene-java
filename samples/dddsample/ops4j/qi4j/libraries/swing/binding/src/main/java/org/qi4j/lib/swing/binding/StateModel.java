@@ -17,15 +17,16 @@
  */
 package org.qi4j.lib.swing.binding;
 
-import org.qi4j.lib.swing.binding.internal.BoundProperty;
-import org.qi4j.lib.swing.binding.internal.StateInvocationHandler;
-import static java.lang.reflect.Proxy.newProxyInstance;
-import org.qi4j.library.framework.constraint.annotation.NotNull;
-import org.qi4j.property.Property;
+import org.qi4j.composite.ObjectBuilder;
+import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.composite.scope.Structure;
 import org.qi4j.composite.scope.Uses;
-import org.qi4j.composite.ObjectBuilderFactory;
-import org.qi4j.composite.ObjectBuilder;
+import org.qi4j.lib.swing.binding.internal.BoundProperty;
+import org.qi4j.lib.swing.binding.internal.StateInvocationHandler;
+import org.qi4j.library.framework.constraint.annotation.NotNull;
+import org.qi4j.property.Property;
+
+import static java.lang.reflect.Proxy.newProxyInstance;
 
 public class StateModel<T>
 {

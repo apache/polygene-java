@@ -1,10 +1,5 @@
 package org.qi4j.samples.dddsample.spring.ui.tracking;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.qi4j.samples.dddsample.domain.model.cargo.Cargo;
 import org.qi4j.samples.dddsample.domain.model.cargo.TrackingId;
 import org.qi4j.samples.dddsample.domain.service.Tracking;
@@ -14,6 +9,12 @@ import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 import org.springframework.web.servlet.support.RequestContextUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Controller for tracking cargo. This interface sits immediately on top of the

@@ -16,22 +16,10 @@
 */
 package org.qi4j.envisage.model.util;
 
-import java.lang.annotation.Annotation;
+import org.qi4j.envisage.model.descriptor.*;
+
 import java.util.ArrayList;
 import java.util.List;
-import org.qi4j.api.injection.scope.Service;
-import org.qi4j.api.injection.scope.Uses;
-import org.qi4j.envisage.model.descriptor.ApplicationDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.CompositeDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.EntityDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.InjectedFieldDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.LayerDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.MixinDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.ModuleDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.ObjectDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.ServiceDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.ValueDetailDescriptor;
-import org.qi4j.spi.composite.DependencyDescriptor;
 
 /**
  * SPI would be defined as "All service dependencies which
@@ -42,7 +30,7 @@ class SPIFinder
 
     private ApplicationDetailDescriptor appDetailDescriptor;
 
-    public List<ServiceDetailDescriptor> findModuleSPI( ModuleDetailDescriptor descriptor )
+    public List<ServiceDetailDescriptor> findModule( ModuleDetailDescriptor descriptor )
     {
         appDetailDescriptor = descriptor.layer().application();
 
@@ -63,7 +51,7 @@ class SPIFinder
 
         for( ModuleDetailDescriptor moduleDetailDescriptor : descriptor.modules() )
         {
-            list.addAll( findModuleSPI( moduleDetailDescriptor ) );
+            list.addAll( findModule( moduleDetailDescriptor ) );
         }
 
         return list;

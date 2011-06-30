@@ -1,10 +1,11 @@
 package se.citerus.dddsample.application.persistence;
 
-import java.util.List;
 import org.springframework.stereotype.Repository;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
+
+import java.util.List;
 
 /**
  * Hibernate implementation of HandlingEventRepository.

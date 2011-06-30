@@ -19,31 +19,18 @@ package org.qi4j.library.swing.entityviewer;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.structure.Application;
+import org.qi4j.api.structure.ApplicationDescriptor;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.Energy4Java;
-import org.qi4j.envisage.model.descriptor.ApplicationDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.ApplicationDetailDescriptorBuilder;
-import org.qi4j.envisage.model.descriptor.EntityDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.LayerDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.ModuleDetailDescriptor;
-import org.qi4j.spi.structure.ApplicationModelSPI;
+import org.qi4j.envisage.model.descriptor.*;
 
-import javax.swing.ComboBoxModel;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSplitPane;
+import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
-import java.awt.BorderLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
@@ -60,11 +47,11 @@ public class EntityViewer
     private TreePanel treePanel;
 
     private Energy4Java qi4j;
-    private ApplicationModelSPI model;
+    private ApplicationDescriptor model;
     private Application application;
     //private UnitOfWorkFactory uowf;
 
-    public void show( Energy4Java qi4j, ApplicationModelSPI model, Application application )
+    public void show( Energy4Java qi4j, ApplicationDescriptor model, Application application )
     {
         this.qi4j = qi4j;
         this.model = model;
@@ -150,7 +137,7 @@ public class EntityViewer
         UnitOfWork uow = module.unitOfWorkFactory().newUnitOfWork();
         QueryBuilder qb = module.queryBuilderFactory().newQueryBuilder( clazz );
         //Object template  = QueryExpressions.templateFor( clazz );
-        return qb.newQuery( uow );
+        return uow.newQuery( qb );
     }
 
     private Module findModule( EntityDetailDescriptor descriptor )

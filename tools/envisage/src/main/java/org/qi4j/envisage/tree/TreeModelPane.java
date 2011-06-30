@@ -16,28 +16,16 @@
 */
 package org.qi4j.envisage.tree;
 
-import java.awt.BorderLayout;
-import java.awt.CardLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
+import org.qi4j.envisage.model.descriptor.ApplicationDetailDescriptor;
+
+import javax.swing.*;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.*;
+import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ResourceBundle;
-import javax.swing.BorderFactory;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTree;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.MutableTreeNode;
-import javax.swing.tree.TreeNode;
-import javax.swing.tree.TreePath;
-import org.qi4j.envisage.model.descriptor.ApplicationDetailDescriptor;
 
 /**
  * Application Model View as Swing Component.
@@ -134,8 +122,8 @@ public class TreeModelPane
     {
         this.descriptor = descriptor;
 
-        //ApplicationSPI applicationSPI = (ApplicationSPI) application;
-        //ApplicationDetailDescriptor descriptor = ApplicationDetailDescriptorBuilder.createApplicationDetailDescriptor( applicationSPI );
+        //Application Application = (Application) application;
+        //ApplicationDetailDescriptor descriptor = ApplicationDetailDescriptorBuilder.createApplicationDetailDescriptor( Application );
 
         // traverse the model and build JTree representation
         MutableTreeNode rootNode1 = StructureModelBuilder.build( descriptor );

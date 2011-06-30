@@ -16,11 +16,12 @@
 */
 package org.qi4j.envisage.model.descriptor;
 
+import org.qi4j.api.sideeffect.MethodSideEffectDescriptor;
+
 import java.util.LinkedList;
 import java.util.List;
-import org.qi4j.spi.sideeffect.MethodSideEffectDescriptor;
 
-import static org.qi4j.api.util.NullArgumentException.*;
+import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 
 public final class MethodSideEffectDetailDescriptor
     implements InjectableDetailDescriptor

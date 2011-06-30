@@ -1,7 +1,5 @@
 package se.citerus.dddsample.application.remoting.dto.assembler;
 
-import java.util.ArrayList;
-import java.util.List;
 import se.citerus.dddsample.application.remoting.dto.ItineraryCandidateDTO;
 import se.citerus.dddsample.application.remoting.dto.LegDTO;
 import se.citerus.dddsample.domain.model.cargo.Itinerary;
@@ -12,6 +10,9 @@ import se.citerus.dddsample.domain.model.carrier.CarrierMovementRepository;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import se.citerus.dddsample.domain.model.location.UnLocode;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Assembler class for the ItineraryCandidateDTO.

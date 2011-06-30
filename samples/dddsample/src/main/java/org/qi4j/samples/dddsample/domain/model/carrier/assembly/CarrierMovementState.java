@@ -16,10 +16,11 @@
 */
 package org.qi4j.samples.dddsample.domain.model.carrier.assembly;
 
-import java.util.Date;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.property.Property;
 import org.qi4j.samples.dddsample.domain.model.location.Location;
+
+import java.util.Date;
 
 /**
  * @author edward.yakop@gmail.com

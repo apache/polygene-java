@@ -1,10 +1,5 @@
 package org.qi4j.lib.swing.binding.internal;
 
-import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
 import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.composite.scope.Service;
 import org.qi4j.composite.scope.Structure;
@@ -12,6 +7,12 @@ import org.qi4j.composite.scope.Uses;
 import org.qi4j.entity.association.ListAssociation;
 import org.qi4j.lib.swing.binding.Binding;
 import org.qi4j.lib.swing.binding.SwingAdapter;
+
+import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
 public class BoundListAssociation<T> extends AbstractBinding<T>
     implements Binding, ListAssociation<T>

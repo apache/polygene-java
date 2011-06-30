@@ -16,9 +16,9 @@
 */
 package org.qi4j.envisage.school;
 
+import org.qi4j.api.structure.ApplicationDescriptor;
 import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.envisage.Envisage;
-import org.qi4j.spi.structure.ApplicationModelSPI;
 
 public class EnvisageSchoolSample
 {
@@ -27,7 +27,7 @@ public class EnvisageSchoolSample
     {
         Energy4Java energy4Java = new Energy4Java();
 
-        ApplicationModelSPI applicationModel =
+        ApplicationDescriptor applicationModel =
             energy4Java.newApplicationModel( new SchoolAssembler() );
 
         new Envisage().run( applicationModel );

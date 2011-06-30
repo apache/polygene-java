@@ -23,12 +23,10 @@ import com.intellij.ide.fileTemplates.FileTemplateGroupDescriptor;
 import com.intellij.ide.fileTemplates.FileTemplateGroupDescriptorFactory;
 import com.intellij.openapi.components.ApplicationComponent;
 import com.intellij.openapi.fileTypes.FileTypeManager;
-import javax.swing.Icon;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.qi4j.ide.plugin.idea.appliesTo.inspections.AppliesToAnnotationDeclaredCorrectlyInspection;
 import org.qi4j.ide.plugin.idea.common.facet.Qi4jFacetType;
-import static org.qi4j.ide.plugin.idea.common.resource.Qi4jResourceBundle.message;
 import org.qi4j.ide.plugin.idea.concerns.inspections.ConcernsAnnotationDeclaredCorrectlyInspection;
 import org.qi4j.ide.plugin.idea.injections.invocation.inspections.InvocationAnnotationDeclaredCorrectlyInspection;
 import org.qi4j.ide.plugin.idea.injections.service.inspections.ServiceAnnotationDeclaredCorrectlyInspection;
@@ -36,6 +34,10 @@ import org.qi4j.ide.plugin.idea.injections.structure.inspections.StructureAnnota
 import org.qi4j.ide.plugin.idea.mixins.inspections.MixinImplementsMixinType;
 import org.qi4j.ide.plugin.idea.mixins.inspections.MixinsAnnotationDeclaredOnMixinType;
 import org.qi4j.ide.plugin.idea.sideEffects.inspections.SideEffectsAnnotationDeclaredCorrectlyInspection;
+
+import javax.swing.*;
+
+import static org.qi4j.ide.plugin.idea.common.resource.Qi4jResourceBundle.message;
 
 /**
  * @author edward.yakop@gmail.com

@@ -1,15 +1,16 @@
 package org.qi4j.sample.scala;
 
+import org.qi4j.api.Qi4j;
 import org.qi4j.api.common.AppliesTo;
 import org.qi4j.api.common.AppliesToFilter;
 import org.qi4j.api.composite.Composite;
+import org.qi4j.api.composite.CompositeInstance;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.util.Classes;
 import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
-import org.qi4j.spi.composite.CompositeInstance;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
@@ -27,11 +28,11 @@ public class TraitMixin
 {
     private static Map<Class<?>, Map<Method, InvocationHandler>> methods = new HashMap<Class<?>, Map<Method, InvocationHandler>>();
 
-    private Class<? extends Composite> compositeType;
+    private Class<?> compositeType;
 
     public TraitMixin(@This Composite composite)
     {
-        compositeType = composite.type();
+        compositeType = Qi4j.DESCRIPTOR_FUNCTION.map( composite).type();
     }
 
     @Override

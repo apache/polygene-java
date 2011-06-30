@@ -19,11 +19,7 @@
 package org.qi4j.sample.rental.web.assembly;
 
 import org.qi4j.api.structure.Application;
-import org.qi4j.bootstrap.ApplicationAssembler;
-import org.qi4j.bootstrap.ApplicationAssembly;
-import org.qi4j.bootstrap.ApplicationAssemblyFactory;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.LayerAssembly;
+import org.qi4j.bootstrap.*;
 
 public class RentalApplicationAssembler
     implements ApplicationAssembler

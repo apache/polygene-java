@@ -1,8 +1,5 @@
 package org.qi4j.samples.dddsample.application.remoting;
 
-import java.rmi.Remote;
-import java.rmi.RemoteException;
-import java.util.List;
 import org.qi4j.api.constraint.Name;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
@@ -10,6 +7,10 @@ import org.qi4j.library.constraints.annotation.Matches;
 import org.qi4j.samples.dddsample.application.remoting.dto.CargoRoutingDTO;
 import org.qi4j.samples.dddsample.application.remoting.dto.LocationDTO;
 import org.qi4j.samples.dddsample.domain.model.cargo.Itinerary;
+
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+import java.util.List;
 
 /**
  * This facade shields the domain layer - model, services, repositories -

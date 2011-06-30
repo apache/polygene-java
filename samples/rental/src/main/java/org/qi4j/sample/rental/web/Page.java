@@ -18,17 +18,21 @@
 
 package org.qi4j.sample.rental.web;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.List;
+import org.qi4j.api.Qi4j;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.concern.Concerns;
+import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.service.ServiceDescriptor;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.List;
 
 @Concerns( PageUowManagement.class )
 @Mixins( { Page.MountPointMixin.class, Page.DefaultPageRenderMixin.class } )
@@ -84,7 +88,7 @@ public interface Page
         private void execute( QuikitContext context, Element element, Element parent )
             throws RenderException
         {
-            Class<? extends Composite> compositeType = context.page().type();
+            Class<? extends Composite> compositeType = (Class<Composite>) Qi4j.DESCRIPTOR_FUNCTION.map( context.page() ).type();
             try
             {
                 Method method = findMethod( context.methodName(), compositeType );
@@ -163,10 +167,13 @@ public interface Page
     abstract class MountPointMixin
         implements Page
     {
+        @Uses
+        ServiceDescriptor descriptor;
+
 
         public String mountPoint()
         {
-            return metaInfo( PageMetaInfo.class ).mountPoint();
+            return descriptor.metaInfo( PageMetaInfo.class ).mountPoint();
         }
     }
 }

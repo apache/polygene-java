@@ -17,12 +17,13 @@
  */
 package org.qi4j.tools.codesnippet.parser;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLFilterImpl;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * A xml filter to strip of whitespaces in character data at the start of each line, i.e. shorten the indent.

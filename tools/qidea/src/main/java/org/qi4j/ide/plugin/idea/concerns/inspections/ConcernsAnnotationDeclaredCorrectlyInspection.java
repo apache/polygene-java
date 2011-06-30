@@ -18,25 +18,24 @@ package org.qi4j.ide.plugin.idea.concerns.inspections;
 
 import com.intellij.codeInspection.InspectionManager;
 import com.intellij.codeInspection.ProblemDescriptor;
-import static com.intellij.codeInspection.ProblemHighlightType.GENERIC_ERROR_OR_WARNING;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiAnnotationMemberValue;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiJavaCodeReferenceElement;
 import com.intellij.psi.search.GlobalSearchScope;
-import java.util.LinkedList;
-import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.qi4j.ide.plugin.idea.common.inspections.AbstractFix;
 import org.qi4j.ide.plugin.idea.common.inspections.AbstractInspection;
-import static org.qi4j.ide.plugin.idea.common.psi.search.GlobalSearchScopeUtil.determineSearchScope;
 import org.qi4j.ide.plugin.idea.common.resource.Qi4jResourceBundle;
+
+import java.util.LinkedList;
+import java.util.List;
+
+import static com.intellij.codeInspection.ProblemHighlightType.GENERIC_ERROR_OR_WARNING;
+import static org.qi4j.ide.plugin.idea.common.psi.search.GlobalSearchScopeUtil.determineSearchScope;
 import static org.qi4j.ide.plugin.idea.common.resource.Qi4jResourceBundle.message;
-import static org.qi4j.ide.plugin.idea.concerns.common.Qi4jConcernUtil.getConcernClassReference;
-import static org.qi4j.ide.plugin.idea.concerns.common.Qi4jConcernUtil.getConcernOfClass;
-import static org.qi4j.ide.plugin.idea.concerns.common.Qi4jConcernUtil.getConcernsAnnotation;
-import static org.qi4j.ide.plugin.idea.concerns.common.Qi4jConcernUtil.getConcernsAnnotationValue;
+import static org.qi4j.ide.plugin.idea.concerns.common.Qi4jConcernUtil.*;
 
 
 /**

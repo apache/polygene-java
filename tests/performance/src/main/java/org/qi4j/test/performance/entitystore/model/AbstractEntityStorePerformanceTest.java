@@ -1,30 +1,27 @@
 package org.qi4j.test.performance.entitystore.model;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.qi4j.api.structure.Application;
+import org.qi4j.api.structure.Module;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
+import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+import org.qi4j.bootstrap.*;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Random;
 import java.util.logging.Logger;
-import org.junit.Before;
-import org.junit.Test;
-import org.qi4j.api.structure.Module;
-import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
-import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-import org.qi4j.bootstrap.ApplicationAssemblerAdapter;
-import org.qi4j.bootstrap.Assembler;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.Energy4Java;
-import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.spi.structure.ApplicationSPI;
 
 /**
  * Performance Test Suite for Entity Stores.
  */
 public abstract class AbstractEntityStorePerformanceTest
 {
-    private ApplicationSPI application;
+    private Application application;
     private UnitOfWorkFactory unitOfWorkFactory;
     private String storeName;
     private Assembler infrastructure;

@@ -1,13 +1,10 @@
 package se.citerus.routingteam.internal;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
 import se.citerus.routingteam.GraphTraversalService;
 import se.citerus.routingteam.TransitEdge;
 import se.citerus.routingteam.TransitPath;
+
+import java.util.*;
 
 public class GraphTraversalServiceImpl implements GraphTraversalService {
 

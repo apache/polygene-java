@@ -1,8 +1,5 @@
 package se.citerus.dddsample.application.remoting;
 
-import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 import se.citerus.dddsample.application.remoting.dto.CargoRoutingDTO;
 import se.citerus.dddsample.application.remoting.dto.ItineraryCandidateDTO;
@@ -19,6 +16,10 @@ import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import se.citerus.dddsample.domain.model.location.UnLocode;
 import se.citerus.dddsample.domain.service.BookingService;
+
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**

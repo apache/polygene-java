@@ -16,14 +16,14 @@
 */
 package org.qi4j.envisage.model.descriptor;
 
-import org.qi4j.spi.composite.AbstractCompositeDescriptor;
-import org.qi4j.spi.composite.MethodDescriptor;
+import org.qi4j.api.composite.AbstractCompositeDescriptor;
+import org.qi4j.api.composite.MethodDescriptor;
 
 import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.qi4j.api.util.NullArgumentException.*;
+import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 
 public class CompositeDetailDescriptor<T extends AbstractCompositeDescriptor>
 {

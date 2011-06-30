@@ -1,12 +1,13 @@
 package org.qi4j.samples.cargo.app1.model.handling;
 
-import org.qi4j.samples.cargo.app1.system.repositories.HandlingEventRepository;
-import java.util.List;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueComposite;
+import org.qi4j.samples.cargo.app1.system.repositories.HandlingEventRepository;
+
+import java.util.List;
 
 
 /**

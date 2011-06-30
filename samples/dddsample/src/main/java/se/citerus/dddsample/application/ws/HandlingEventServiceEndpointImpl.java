@@ -1,9 +1,5 @@
 package se.citerus.dddsample.application.ws;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import javax.jws.WebService;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -20,6 +16,11 @@ import se.citerus.dddsample.domain.service.HandlingEventService;
 import se.citerus.dddsample.domain.service.UnknownCarrierMovementIdException;
 import se.citerus.dddsample.domain.service.UnknownLocationException;
 import se.citerus.dddsample.domain.service.UnknownTrackingIdException;
+
+import javax.jws.WebService;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @WebService(endpointInterface = "se.citerus.dddsample.application.ws.HandlingEventServiceEndpoint")
 public class HandlingEventServiceEndpointImpl implements HandlingEventServiceEndpoint {

@@ -1,9 +1,10 @@
 package se.citerus.dddsample.ui.command;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.apache.commons.collections.Factory;
 import org.apache.commons.collections.ListUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class RouteAssignmentCommand {
 

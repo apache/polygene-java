@@ -1,10 +1,11 @@
 package se.citerus.dddsample.domain.model.cargo;
 
-import java.util.Collections;
-import java.util.List;
 import org.apache.commons.lang.Validate;
 import se.citerus.dddsample.domain.model.ValueObject;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * An itinerary.

@@ -1,11 +1,12 @@
 package org.qi4j.samples.cargo.app1.services.routing;
 
-import java.util.List;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.samples.cargo.app1.model.cargo.Itinerary;
 import org.qi4j.samples.cargo.app1.model.cargo.RouteSpecification;
 import org.qi4j.samples.cargo.app1.services.routing.internal.ExternalRoutingService;
+
+import java.util.List;
 
 /**
  *

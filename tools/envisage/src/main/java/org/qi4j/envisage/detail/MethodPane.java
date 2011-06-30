@@ -16,37 +16,23 @@
 */
 package org.qi4j.envisage.detail;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
+import org.qi4j.api.util.Classes;
+import org.qi4j.envisage.model.descriptor.*;
+import org.qi4j.envisage.model.util.DescriptorUtilities;
+import org.qi4j.envisage.util.TableRow;
+
+import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableColumnModel;
+import java.awt.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.DefaultListModel;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JComponent;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableColumnModel;
-import org.qi4j.api.util.Classes;
-import org.qi4j.envisage.model.descriptor.CompositeDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.CompositeMethodDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.MethodConcernDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.MethodSideEffectDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.ObjectDetailDescriptor;
-import org.qi4j.envisage.model.util.DescriptorUtilities;
-import org.qi4j.envisage.util.TableRow;
 
 /**
  * Implementation of Composite Method Panel

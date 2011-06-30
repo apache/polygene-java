@@ -1,9 +1,10 @@
 package se.citerus.dddsample.domain.model.location;
 
-import java.util.regex.Pattern;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import se.citerus.dddsample.domain.model.ValueObject;
+
+import java.util.regex.Pattern;
 
 /**
  * United nations location code.

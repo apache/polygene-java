@@ -17,7 +17,6 @@
 */
 package org.qi4j.envisage.school.domain.school.assembly;
 
-import org.qi4j.api.common.Optional;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.injection.scope.Structure;
@@ -34,7 +33,8 @@ import org.qi4j.envisage.school.domain.school.School;
 import org.qi4j.envisage.school.domain.school.Student;
 import org.qi4j.envisage.school.domain.school.Subject;
 
-import static org.qi4j.api.query.QueryExpressions.*;
+import static org.qi4j.api.query.QueryExpressions.eq;
+import static org.qi4j.api.query.QueryExpressions.templateFor;
 
 @Mixins( SchoolEntity.SchoolMixin.class )
 public interface SchoolEntity
@@ -69,7 +69,7 @@ public interface SchoolEntity
                 QueryBuilder<Subject> builder = qbf.newQueryBuilder( Subject.class );
                 SubjectEntity.SubjectState subject = templateFor( SubjectEntity.SubjectState.class );
                 builder.where( eq( subject.schoolId(), schoolId ) );
-                return builder.newQuery( uow );
+                return uow.newQuery( builder );
             }
             finally
             {
@@ -85,7 +85,7 @@ public interface SchoolEntity
                 QueryBuilder<Student> builder = qbf.newQueryBuilder( Student.class );
                 StudentEntity.StudentState studentState = templateFor( StudentEntity.StudentState.class );
                 builder.where( eq( studentState.schoolId(), schoolId ) );
-                return builder.newQuery( uow );
+                return uow.newQuery( builder );
             }
             finally
             {

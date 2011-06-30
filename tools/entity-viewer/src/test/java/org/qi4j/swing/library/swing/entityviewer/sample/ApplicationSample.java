@@ -81,7 +81,7 @@ public class ApplicationSample
         UnitOfWork uow = moduleInstance.unitOfWorkFactory().newUnitOfWork();
         QueryBuilder qb = moduleInstance.queryBuilderFactory().newQueryBuilder( CarEntity.class );
         //Object template  = QueryExpressions.templateFor( clazz );
-        Query query = qb.newQuery( uow );
+        Query query = uow.newQuery( qb );
 
         for( Object qObj : query )
         {

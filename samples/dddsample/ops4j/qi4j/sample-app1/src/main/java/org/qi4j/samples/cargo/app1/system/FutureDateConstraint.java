@@ -1,7 +1,8 @@
 package org.qi4j.samples.cargo.app1.system;
 
-import java.util.Date;
 import org.qi4j.api.constraint.Constraint;
+
+import java.util.Date;
 
 /**
  *

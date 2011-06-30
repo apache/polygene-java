@@ -17,9 +17,10 @@
  */
 package org.qi4j.samples.dddsample.domain.model.cargo;
 
-import java.util.List;
 import org.qi4j.samples.dddsample.domain.model.ValueObject;
 import org.qi4j.samples.dddsample.domain.model.handling.HandlingEvent;
+
+import java.util.List;
 
 public interface Itinerary
     extends ValueObject<Itinerary>

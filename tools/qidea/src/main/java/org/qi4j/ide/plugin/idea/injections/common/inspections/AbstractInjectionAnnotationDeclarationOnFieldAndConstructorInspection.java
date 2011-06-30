@@ -18,16 +18,18 @@ package org.qi4j.ide.plugin.idea.injections.common.inspections;
 
 import com.intellij.codeInspection.InspectionManager;
 import com.intellij.codeInspection.ProblemDescriptor;
-import static com.intellij.codeInspection.ProblemHighlightType.GENERIC_ERROR_OR_WARNING;
 import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiParameter;
 import com.intellij.psi.PsiParameterList;
-import static java.util.Arrays.asList;
-import java.util.LinkedList;
-import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.qi4j.ide.plugin.idea.common.inspections.AbstractFix;
+
+import java.util.LinkedList;
+import java.util.List;
+
+import static com.intellij.codeInspection.ProblemHighlightType.GENERIC_ERROR_OR_WARNING;
+import static java.util.Arrays.asList;
 
 /**
  * {@code AbstractInjectionAnnotationDeclarationOnFieldAndConstructorInspection} is a helper method to check whether

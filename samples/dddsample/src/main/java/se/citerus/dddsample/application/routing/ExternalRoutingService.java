@@ -1,7 +1,5 @@
 package se.citerus.dddsample.application.routing;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 import se.citerus.dddsample.domain.model.cargo.Itinerary;
 import se.citerus.dddsample.domain.model.cargo.Leg;
@@ -15,6 +13,9 @@ import se.citerus.dddsample.domain.service.RoutingService;
 import se.citerus.routingteam.GraphTraversalService;
 import se.citerus.routingteam.TransitEdge;
 import se.citerus.routingteam.TransitPath;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Our end of the routing service. This is basically a data model

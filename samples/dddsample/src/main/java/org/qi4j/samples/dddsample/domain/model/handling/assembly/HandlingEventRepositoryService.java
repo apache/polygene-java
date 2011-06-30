@@ -67,7 +67,7 @@ public interface HandlingEventRepositoryService
 
             builder.where( eq( eventTemplate.cargoTrackingId(), trackingId.idString() ) );
 
-            Query<HandlingEvent> handlingEventQuery = builder.newQuery( uow );
+            Query<HandlingEvent> handlingEventQuery = uow.newQuery( builder );
             handlingEventQuery.orderBy( orderBy( eventTemplate.completionTime() ) );
 
             return handlingEventQuery;

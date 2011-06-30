@@ -16,7 +16,7 @@
 */
 package org.qi4j.envisage.model.descriptor;
 
-import org.qi4j.spi.value.ValueDescriptor;
+import org.qi4j.api.value.ValueDescriptor;
 
 public class ValueDetailDescriptor
     extends CompositeDetailDescriptor<ValueDescriptor>

@@ -1,9 +1,10 @@
 package se.citerus.dddsample.application.remoting.dto.assembler;
 
-import java.util.ArrayList;
-import java.util.List;
 import se.citerus.dddsample.application.remoting.dto.LocationDTO;
 import se.citerus.dddsample.domain.model.location.Location;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class LocationDTOAssembler {
 

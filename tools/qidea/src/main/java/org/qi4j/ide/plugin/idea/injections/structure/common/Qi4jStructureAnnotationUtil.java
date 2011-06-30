@@ -16,26 +16,16 @@
 */
 package org.qi4j.ide.plugin.idea.injections.structure.common;
 
-import static com.intellij.codeInsight.AnnotationUtil.findAnnotation;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiAnnotation;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementFactory;
-import static com.intellij.psi.PsiModifier.STATIC;
-import com.intellij.psi.PsiModifierList;
-import com.intellij.psi.PsiModifierListOwner;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.PsiVariable;
-import static java.util.Arrays.binarySearch;
+import com.intellij.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import static com.intellij.codeInsight.AnnotationUtil.findAnnotation;
+import static com.intellij.psi.PsiModifier.STATIC;
 import static org.qi4j.ide.plugin.idea.injections.structure.common.Qi4jStructureAnnotationConstants.QUALIFIED_NAME_STRUCTURE_ANNOTATION;
 import static org.qi4j.ide.plugin.idea.injections.structure.common.Qi4jStructureAnnotationConstants.VALID_STRUCTURE_INJECTION_TYPE;
-import static org.qi4j.ide.plugin.idea.injections.structure.common.Qi4jStructureAnnotationUtil.StructureAnnotationDeclarationValidationResult.invalidDeclaredOnStaticVariable;
-import static org.qi4j.ide.plugin.idea.injections.structure.common.Qi4jStructureAnnotationUtil.StructureAnnotationDeclarationValidationResult.invalidInjectionType;
-import static org.qi4j.ide.plugin.idea.injections.structure.common.Qi4jStructureAnnotationUtil.StructureAnnotationDeclarationValidationResult.invalidStructureAnnotationNotDeclared;
-import static org.qi4j.ide.plugin.idea.injections.structure.common.Qi4jStructureAnnotationUtil.StructureAnnotationDeclarationValidationResult.valid;
+import static org.qi4j.ide.plugin.idea.injections.structure.common.Qi4jStructureAnnotationUtil.StructureAnnotationDeclarationValidationResult.*;
 
 /**
  * @author edward.yakop@gmail.com

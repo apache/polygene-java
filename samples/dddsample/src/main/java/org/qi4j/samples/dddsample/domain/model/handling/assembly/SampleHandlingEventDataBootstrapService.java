@@ -16,7 +16,6 @@
 */
 package org.qi4j.samples.dddsample.domain.model.handling.assembly;
 
-import java.util.Date;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
@@ -40,7 +39,9 @@ import org.qi4j.samples.dddsample.domain.model.location.LocationRepository;
 import org.qi4j.samples.dddsample.domain.model.location.UnLocode;
 import org.qi4j.samples.dddsample.domain.model.location.assembly.SampleLocationDataBootstrapService;
 
-import static org.qi4j.samples.dddsample.domain.model.SampleConstants.*;
+import java.util.Date;
+
+import static org.qi4j.samples.dddsample.domain.model.SampleConstants.offset;
 import static org.qi4j.samples.dddsample.domain.model.cargo.assembly.SampleCargoDataBootstrapService.*;
 import static org.qi4j.samples.dddsample.domain.model.carrier.assembly.SampleCarierMovementDataBootstrapService.*;
 import static org.qi4j.samples.dddsample.domain.model.handling.HandlingEvent.Type.*;
@@ -121,11 +122,6 @@ public interface SampleHandlingEventDataBootstrapService
         public void activate()
             throws Exception
         {
-            // TODO: Remove the 3 lines below when Dependency Ordering is solved.
-            dependency1.type();
-            dependency2.type();
-            dependency3.type();
-
             UnitOfWork uow = uowf.newUnitOfWork();
 
             try

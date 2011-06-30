@@ -16,23 +16,15 @@
 */
 package org.qi4j.envisage.model.util;
 
+import org.qi4j.api.composite.DependencyDescriptor;
+import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.injection.scope.Uses;
+import org.qi4j.envisage.model.descriptor.*;
+import org.qi4j.envisage.util.TableRow;
+
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
-import org.qi4j.api.injection.scope.Service;
-import org.qi4j.api.injection.scope.Uses;
-import org.qi4j.envisage.model.descriptor.ApplicationDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.CompositeDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.EntityDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.InjectedFieldDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.LayerDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.MixinDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.ModuleDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.ObjectDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.ServiceDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.ValueDetailDescriptor;
-import org.qi4j.envisage.util.TableRow;
-import org.qi4j.spi.composite.DependencyDescriptor;
 
 class ServiceUsageFinder
 {

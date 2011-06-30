@@ -1,12 +1,13 @@
 package org.qi4j.samples.cargo.app1.services.booking;
 
-import java.util.Date;
-import java.util.List;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.samples.cargo.app1.model.cargo.Itinerary;
 import org.qi4j.samples.cargo.app1.model.cargo.TrackingId;
 import org.qi4j.samples.cargo.app1.system.FutureDate;
 import org.qi4j.samples.cargo.app1.system.UnLocode;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * Cargo booking service.

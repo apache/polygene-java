@@ -1,11 +1,12 @@
 package se.citerus.dddsample.application.remoting;
 
-import java.rmi.Remote;
-import java.rmi.RemoteException;
-import java.util.List;
 import se.citerus.dddsample.application.remoting.dto.CargoRoutingDTO;
 import se.citerus.dddsample.application.remoting.dto.ItineraryCandidateDTO;
 import se.citerus.dddsample.application.remoting.dto.LocationDTO;
+
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+import java.util.List;
 
 /**
  * This facade shields the domain layer - model, services, repositories -

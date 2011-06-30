@@ -1,7 +1,8 @@
 package se.citerus.dddsample.domain.model.handling;
 
-import java.util.List;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
+
+import java.util.List;
 
 /**
  * Handling event repository.

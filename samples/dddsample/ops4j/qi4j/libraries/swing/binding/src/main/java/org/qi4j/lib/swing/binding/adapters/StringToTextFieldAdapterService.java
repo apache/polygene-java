@@ -17,23 +17,21 @@
  */
 package org.qi4j.lib.swing.binding.adapters;
 
-import org.qi4j.lib.swing.binding.SwingAdapter;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.text.JTextComponent;
+import org.qi4j.composite.ConcernOf;
 import org.qi4j.composite.Concerns;
 import org.qi4j.composite.Mixins;
 import org.qi4j.composite.NoopMixin;
-import org.qi4j.composite.ConcernOf;
+import org.qi4j.entity.association.Association;
+import org.qi4j.entity.association.ListAssociation;
+import org.qi4j.entity.association.SetAssociation;
+import org.qi4j.lib.swing.binding.SwingAdapter;
 import org.qi4j.property.Property;
 import org.qi4j.service.ServiceComposite;
-import org.qi4j.entity.association.Association;
-import org.qi4j.entity.association.SetAssociation;
-import org.qi4j.entity.association.ListAssociation;
-import java.util.Set;
+
+import javax.swing.*;
+import javax.swing.text.JTextComponent;
 import java.util.HashSet;
+import java.util.Set;
 
 @Concerns( StringToTextFieldAdapterService.StringToTextFieldAdapterConcern.class )
 @Mixins( NoopMixin.class )

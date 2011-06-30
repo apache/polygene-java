@@ -1,8 +1,5 @@
 package org.qi4j.samples.cargo.app1.model.cargo;
 
-import org.qi4j.samples.cargo.app1.model.handling.HandlingHistory;
-import org.qi4j.samples.cargo.app1.model.location.Location;
-import org.qi4j.samples.cargo.app1.system.factories.DeliveryFactory;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.Identity;
@@ -14,6 +11,9 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
+import org.qi4j.samples.cargo.app1.model.handling.HandlingHistory;
+import org.qi4j.samples.cargo.app1.model.location.Location;
+import org.qi4j.samples.cargo.app1.system.factories.DeliveryFactory;
 
 /**
  * A Cargo. This is the central class in the domain model,

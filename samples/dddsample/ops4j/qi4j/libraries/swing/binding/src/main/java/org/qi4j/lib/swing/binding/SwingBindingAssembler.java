@@ -18,11 +18,11 @@
 package org.qi4j.lib.swing.binding;
 
 import org.qi4j.bootstrap.Assembler;
-import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.lib.swing.binding.internal.StateInvocationHandler;
-import org.qi4j.lib.swing.binding.internal.BoundProperty;
+import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.lib.swing.binding.adapters.StringToTextFieldAdapterService;
+import org.qi4j.lib.swing.binding.internal.BoundProperty;
+import org.qi4j.lib.swing.binding.internal.StateInvocationHandler;
 
 public class SwingBindingAssembler
     implements Assembler

@@ -15,6 +15,15 @@ package org.qi4j.samples.cargo.app1.model.cargo;
 
 import com.msdw.eqrisk.vorticity.messaging.qi4j.Person;
 import com.msdw.eqrisk.vorticity.messaging.testsupport.VorticityMessagingTest;
+import org.apache.cxf.aegis.type.AegisType;
+import org.apache.cxf.aegis.xml.stax.ElementReader;
+import org.apache.cxf.aegis.xml.stax.ElementWriter;
+import org.apache.cxf.helpers.DOMUtils;
+import org.junit.Test;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.value.ValueBuilder;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.samples.cargo.app1.model.location.Location;
 import org.qi4j.samples.cargo.app1.model.location.LocationEntity;
 import org.qi4j.samples.cargo.app1.model.voyage.CarrierMovement;
@@ -27,6 +36,9 @@ import org.qi4j.samples.cargo.app1.system.repositories.HandlingEventRepository;
 import org.qi4j.samples.cargo.app1.system.repositories.LocationRepository;
 import org.qi4j.samples.cargo.app1.system.repositories.VoyageRepository;
 import org.qi4j.samples.cargo.app1.ui.booking.CargoValue;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.text.ParseException;
@@ -34,17 +46,6 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import org.apache.cxf.aegis.type.AegisType;
-import org.apache.cxf.aegis.xml.stax.ElementReader;
-import org.apache.cxf.aegis.xml.stax.ElementWriter;
-import org.apache.cxf.helpers.DOMUtils;
-import org.junit.Test;
-import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.value.ValueBuilder;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.ModuleAssembly;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  *

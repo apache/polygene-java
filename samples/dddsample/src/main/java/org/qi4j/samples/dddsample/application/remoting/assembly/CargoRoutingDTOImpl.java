@@ -1,12 +1,13 @@
 package org.qi4j.samples.dddsample.application.remoting.assembly;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import org.qi4j.samples.dddsample.application.remoting.dto.CargoRoutingDTO;
 import org.qi4j.samples.dddsample.application.remoting.dto.LegDTO;
 import org.qi4j.samples.dddsample.domain.model.cargo.Cargo;
 import org.qi4j.samples.dddsample.domain.model.cargo.Leg;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * DTO for registering and routing a cargo.

@@ -13,15 +13,15 @@
  */
 package org.qi4j.samples.cargo.app1.assembly;
 
+import org.qi4j.api.common.Visibility;
+import org.qi4j.bootstrap.Assembler;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.samples.cargo.app1.model.voyage.CarrierMovement;
 import org.qi4j.samples.cargo.app1.model.voyage.Schedule;
 import org.qi4j.samples.cargo.app1.model.voyage.Voyage;
 import org.qi4j.samples.cargo.app1.model.voyage.VoyageNumber;
 import org.qi4j.samples.cargo.app1.system.repositories.VoyageRepository;
-import org.qi4j.api.common.Visibility;
-import org.qi4j.bootstrap.Assembler;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.ModuleAssembly;
 
 /**
  *

@@ -21,18 +21,17 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Property;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
-import org.qi4j.runtime.property.PropertyInstance;
 import org.qi4j.test.mock.MockComposite;
 import org.qi4j.test.mock.MockPlayerMixin;
 
 import static org.easymock.EasyMock.*;
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * Unit tests for SequencingConcern.

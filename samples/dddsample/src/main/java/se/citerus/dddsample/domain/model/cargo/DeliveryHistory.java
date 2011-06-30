@@ -1,19 +1,13 @@
 package se.citerus.dddsample.domain.model.cargo;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import se.citerus.dddsample.domain.model.ValueObject;
-import static se.citerus.dddsample.domain.model.cargo.StatusCode.CLAIMED;
-import static se.citerus.dddsample.domain.model.cargo.StatusCode.IN_PORT;
-import static se.citerus.dddsample.domain.model.cargo.StatusCode.NOT_RECEIVED;
-import static se.citerus.dddsample.domain.model.cargo.StatusCode.ONBOARD_CARRIER;
 import se.citerus.dddsample.domain.model.carrier.CarrierMovement;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.location.Location;
+
+import java.util.*;
+
+import static se.citerus.dddsample.domain.model.cargo.StatusCode.*;
 
 /**
  * The delivery history of a cargo.

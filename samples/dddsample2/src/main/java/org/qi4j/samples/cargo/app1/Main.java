@@ -1,27 +1,13 @@
 package org.qi4j.samples.cargo.app1;
 
 import com.pathfinder.assembly.PathFinderModuleAssembler;
-import org.qi4j.bootstrap.ApplicationAssembler;
-import org.qi4j.bootstrap.ApplicationAssembly;
-import org.qi4j.bootstrap.ApplicationAssemblyFactory;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.Energy4Java;
-import org.qi4j.bootstrap.LayerAssembly;
-import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.samples.cargo.app1.assembly.CargoModuleAssembler;
-import org.qi4j.samples.cargo.app1.assembly.ConfigurationModule;
-import org.qi4j.samples.cargo.app1.assembly.DomainSupportModuleAssembler;
-import org.qi4j.samples.cargo.app1.assembly.HandlingModuleAssembler;
-import org.qi4j.samples.cargo.app1.assembly.InterfaceModuleAssembler;
-import org.qi4j.samples.cargo.app1.assembly.LocationModuleAssembler;
-import org.qi4j.samples.cargo.app1.assembly.PersistenceModule;
-import org.qi4j.samples.cargo.app1.assembly.RoutingServiceModuleAssembler;
-import org.qi4j.samples.cargo.app1.assembly.VoyageModuleAssembler;
-import org.qi4j.spi.structure.ApplicationSPI;
+import org.qi4j.api.structure.Application;
+import org.qi4j.bootstrap.*;
+import org.qi4j.samples.cargo.app1.assembly.*;
 
 public class Main
 {
-    private static ApplicationSPI application;
+    private static Application application;
 
     public static void main( String[] args )
         throws Exception

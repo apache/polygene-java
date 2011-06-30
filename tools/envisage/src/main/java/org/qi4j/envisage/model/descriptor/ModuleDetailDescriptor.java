@@ -16,11 +16,12 @@
  */
 package org.qi4j.envisage.model.descriptor;
 
+import org.qi4j.api.structure.ModuleDescriptor;
+
 import java.util.LinkedList;
 import java.util.List;
-import org.qi4j.spi.structure.ModuleDescriptor;
 
-import static org.qi4j.api.util.NullArgumentException.*;
+import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 
 public final class ModuleDetailDescriptor
 {

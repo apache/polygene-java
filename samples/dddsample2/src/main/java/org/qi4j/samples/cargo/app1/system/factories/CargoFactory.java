@@ -1,6 +1,5 @@
 package org.qi4j.samples.cargo.app1.system.factories;
 
-import java.util.Date;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
@@ -16,6 +15,8 @@ import org.qi4j.samples.cargo.app1.system.repositories.CargoRepository;
 import org.qi4j.samples.cargo.app1.system.repositories.LocationRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Date;
 
 /**
  *

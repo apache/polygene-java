@@ -1,17 +1,18 @@
 package org.qi4j.samples.dddsample.spring.ui.admin;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.qi4j.api.query.Query;
 import org.qi4j.samples.dddsample.application.remoting.BookingFacade;
 import org.qi4j.samples.dddsample.application.remoting.dto.CargoRoutingDTO;
 import org.qi4j.samples.dddsample.application.remoting.dto.LocationDTO;
 import org.qi4j.samples.dddsample.domain.model.cargo.Itinerary;
 import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Handles cargo booking and routing. Operates against a dedicated remoting service facade,

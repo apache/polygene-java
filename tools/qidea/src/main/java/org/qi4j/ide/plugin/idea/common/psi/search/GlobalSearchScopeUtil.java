@@ -17,7 +17,6 @@
 package org.qi4j.ide.plugin.idea.common.psi.search;
 
 import com.intellij.openapi.module.Module;
-import static com.intellij.openapi.module.ModuleUtil.findModuleForPsiElement;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -25,6 +24,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import static com.intellij.openapi.module.ModuleUtil.findModuleForPsiElement;
 import static org.qi4j.ide.plugin.idea.common.vfs.VirtualFileUtil.getVirtualFile;
 
 /**

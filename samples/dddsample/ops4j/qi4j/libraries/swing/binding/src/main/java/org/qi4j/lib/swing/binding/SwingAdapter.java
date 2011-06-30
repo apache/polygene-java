@@ -17,11 +17,12 @@
  */
 package org.qi4j.lib.swing.binding;
 
-import javax.swing.JComponent;
-import org.qi4j.property.Property;
-import org.qi4j.entity.association.SetAssociation;
 import org.qi4j.entity.association.Association;
 import org.qi4j.entity.association.ListAssociation;
+import org.qi4j.entity.association.SetAssociation;
+import org.qi4j.property.Property;
+
+import javax.swing.*;
 import java.util.Set;
 
 public interface SwingAdapter
