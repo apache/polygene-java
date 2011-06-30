@@ -16,7 +16,7 @@
  */
 package org.qi4j.entitystore.qrm;
 
-import org.qi4j.api.io.Input;
+import org.qi4j.io.Input;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.spi.entity.EntityState;
