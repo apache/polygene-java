@@ -24,6 +24,7 @@ import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryBuilderFactory;
+import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
@@ -33,7 +34,6 @@ import org.qi4j.entitystore.jdbm.assembly.JdbmEntityStoreAssembler;
 import org.qi4j.index.rdf.assembly.RdfMemoryStoreAssembler;
 import org.qi4j.index.rdf.assembly.RdfNativeSesameStoreAssembler;
 import org.qi4j.library.rdf.repository.NativeConfiguration;
-import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.test.EntityTestAssembler;
 
 import java.io.File;
@@ -51,7 +51,7 @@ public class Qi95IssueTest
     public void canCreateAndQueryWithNativeRdfAndJdbm()
         throws Exception
     {
-        ApplicationSPI application = createApplication( nativeRdf, jdbmStore, domain );
+        Application application = createApplication( nativeRdf, jdbmStore, domain );
         try
         {
             application.activate();
@@ -69,7 +69,7 @@ public class Qi95IssueTest
     public void canCreateAndQueryWithAllInMemory()
         throws Exception
     {
-        ApplicationSPI application = createApplication( inMemoryRdf, inMemoryStore, domain );
+        Application application = createApplication( inMemoryRdf, inMemoryStore, domain );
         try
         {
             application.activate();
@@ -87,7 +87,7 @@ public class Qi95IssueTest
     public void canCreateAndQueryWithNativeRdfWithInMemoryStore()
         throws Exception
     {
-        ApplicationSPI application = createApplication( nativeRdf, inMemoryStore, domain );
+        Application application = createApplication( nativeRdf, inMemoryStore, domain );
         try
         {
             application.activate();
@@ -105,7 +105,7 @@ public class Qi95IssueTest
     public void canCreateAndQueryWithInMemoryRdfWithJdbm()
         throws Exception
     {
-        ApplicationSPI application = createApplication( inMemoryRdf, jdbmStore, domain );
+        Application application = createApplication( inMemoryRdf, jdbmStore, domain );
         try
         {
             application.activate();
@@ -133,7 +133,7 @@ public class Qi95IssueTest
 
         uow = unitOfWorkFactory.newUnitOfWork();
         QueryBuilder<ItemType> qb = queryBuilderFactory.newQueryBuilder( ItemType.class );
-        Iterable<ItemType> initialList = copyOf( qb.newQuery( uow ) );
+        Iterable<ItemType> initialList = copyOf( uow.newQuery( qb ));
 
         assertTrue( "Band is not in the initial list", hasItemTypeNamed( "Band", initialList ) );
         assertTrue( "Bracelet is not in the initial list", hasItemTypeNamed( "Bracelet", initialList ) );
@@ -144,7 +144,7 @@ public class Qi95IssueTest
 
         uow = unitOfWorkFactory.newUnitOfWork();
         qb = queryBuilderFactory.newQueryBuilder( ItemType.class );
-        Iterable<ItemType> listAfterFirstQueryAndAdd = copyOf( qb.newQuery( uow ) );
+        Iterable<ItemType> listAfterFirstQueryAndAdd = copyOf( uow.newQuery( qb ) );
 
         assertTrue( "Band is not in the list after the first query and add", hasItemTypeNamed( "Band", listAfterFirstQueryAndAdd ) );
         assertTrue( "Bracelet is not in the list after the first query and add", hasItemTypeNamed( "Bracelet", listAfterFirstQueryAndAdd ) );
@@ -155,7 +155,7 @@ public class Qi95IssueTest
         uow.complete();
 
         uow = unitOfWorkFactory.newUnitOfWork();
-        Iterable<ItemType> finalList = copyOf( qb.newQuery( uow ) );
+        Iterable<ItemType> finalList = copyOf( uow.newQuery( qb ) );
         assertTrue( "Band is not in the final list", hasItemTypeNamed( "Band", finalList ) );
         assertTrue( "Bracelet is not in the final list", hasItemTypeNamed( "Bracelet", finalList ) );
         assertTrue( "Necklace is not in the final list", hasItemTypeNamed( "Necklace", finalList ) );
@@ -164,14 +164,14 @@ public class Qi95IssueTest
         uow.complete();
     }
 
-    private ApplicationSPI createApplication( final ModuleAssemblyBuilder queryServiceModuleBuilder,
+    private Application createApplication( final ModuleAssemblyBuilder queryServiceModuleBuilder,
                                               final ModuleAssemblyBuilder entityStoreModuleBuilder,
                                               final LayerAssemblyBuilder domainLayerBuilder
     )
         throws AssemblyException
     {
         Energy4Java qi4j = new Energy4Java();
-        ApplicationSPI application = qi4j.newApplication( new ApplicationAssembler()
+        Application application = qi4j.newApplication( new ApplicationAssembler()
         {
             public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
                 throws AssemblyException

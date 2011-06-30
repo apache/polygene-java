@@ -3,13 +3,12 @@ package org.qi4j.entitystore.neo4j;
 import org.neo4j.graphdb.Node;
 import org.neo4j.index.IndexService;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
+import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.structure.Module;
-import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entitystore.*;
-import org.qi4j.spi.structure.ModuleSPI;
 
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
@@ -199,7 +198,7 @@ public class NeoEntityStoreUnitOfWork
 
     EntityDescriptor getEntityDescriptor( String type )
     {
-        return ( (ModuleSPI) module ).entityDescriptor( type );
+        return ( (Module) module ).entityDescriptor( type );
     }
 
     Module getModule()

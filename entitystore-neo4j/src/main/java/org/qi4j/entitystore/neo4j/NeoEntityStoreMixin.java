@@ -8,21 +8,21 @@ import org.neo4j.index.lucene.LuceneIndexService;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.configuration.Configuration;
+import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.service.Activatable;
+import org.qi4j.api.structure.Module;
+import org.qi4j.api.usecase.Usecase;
 import org.qi4j.io.Input;
 import org.qi4j.io.Output;
 import org.qi4j.io.Receiver;
 import org.qi4j.io.Sender;
-import org.qi4j.api.service.Activatable;
-import org.qi4j.api.usecase.Usecase;
 import org.qi4j.library.fileconfig.FileConfiguration;
-import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entitystore.*;
-import org.qi4j.spi.structure.ModuleSPI;
 
 import java.io.File;
 import java.util.UUID;
@@ -67,12 +67,12 @@ public class NeoEntityStoreMixin
       neo.shutdown();
    }
 
-   public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSPI module, long currentTime )
+   public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, Module module, long currentTime )
    {
       return new NeoEntityStoreUnitOfWork(neo, indexService, newUnitOfWorkId(), module, currentTime);
    }
 
-   public Input<EntityState, EntityStoreException> entityStates(final ModuleSPI module)
+   public Input<EntityState, EntityStoreException> entityStates(final Module module)
    {
       return new Input<EntityState, EntityStoreException>()
       {

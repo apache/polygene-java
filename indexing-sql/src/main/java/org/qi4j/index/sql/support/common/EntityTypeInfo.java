@@ -15,7 +15,7 @@
 
 package org.qi4j.index.sql.support.common;
 
-import org.qi4j.spi.entity.EntityDescriptor;
+import org.qi4j.api.entity.EntityDescriptor;
 
 /**
  * A helper interface to encapsulate information about certain entity type and how it appears in database.

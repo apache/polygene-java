@@ -116,7 +116,7 @@ public class ContainsTest extends AbstractQi4jTest
             string
             )
       );
-      return builder.newQuery(this.unitOfWorkFactory.currentUnitOfWork()).find();
+      return this.unitOfWorkFactory.currentUnitOfWork().newQuery( builder ).find();
       
    }
    
@@ -140,7 +140,7 @@ public class ContainsTest extends AbstractQi4jTest
             )
          );
       
-      return builder.newQuery(this.unitOfWorkFactory.currentUnitOfWork());
+      return this.unitOfWorkFactory.currentUnitOfWork().newQuery( builder);
    }
    
    private ExampleEntity performContainsStringTest(Set<String> entityStrings, String queryableString) throws Exception

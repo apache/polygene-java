@@ -19,15 +19,15 @@
 package org.qi4j.entitystore.gae;
 
 import com.google.appengine.api.datastore.*;
+import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.spi.entity.EntityDescriptor;
+import org.qi4j.api.structure.Module;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 import org.qi4j.spi.entitystore.StateCommitter;
-import org.qi4j.spi.structure.ModuleSPI;
 
 import java.util.LinkedList;
 
@@ -37,10 +37,10 @@ public class GaeEntityStoreUnitOfWork
     private DatastoreService datastore;
     private String identity;
     private LinkedList<GaeEntityState> states;
-    private ModuleSPI module;
+    private Module module;
     private long currentTime;
 
-    public GaeEntityStoreUnitOfWork( DatastoreService datastore, String identity, ModuleSPI module, long currentTime )
+    public GaeEntityStoreUnitOfWork( DatastoreService datastore, String identity, Module module, long currentTime )
     {
         this.module = module;
         this.currentTime = currentTime;

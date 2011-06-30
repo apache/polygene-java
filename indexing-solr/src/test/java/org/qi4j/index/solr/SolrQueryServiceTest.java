@@ -24,7 +24,6 @@ import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.query.Query;
-import org.qi4j.api.query.QueryExpressions;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
@@ -76,7 +75,7 @@ public class SolrQueryServiceTest
     {
         // Search for it
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
-        Query<TestEntity> query = queryBuilderFactory.newQueryBuilder( TestEntity.class ).where( SolrExpressions.search( "hello" ) ).newQuery( uow );
+        Query<TestEntity> query = uow.newQuery( queryBuilderFactory.newQueryBuilder( TestEntity.class ).where( SolrExpressions.search( "hello" ) ));
 
         TestEntity test = query.find();
         Assert.assertThat( test.name().get(), equalTo( "Hello World" ) );

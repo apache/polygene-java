@@ -26,7 +26,7 @@ import org.qi4j.api.composite.Composite;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.query.grammar.OrderBy;
-import org.qi4j.api.query.grammar2.QuerySpecification;
+import org.qi4j.api.query.grammar.QuerySpecification;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specification;
 import org.qi4j.index.solr.EmbeddedSolrService;

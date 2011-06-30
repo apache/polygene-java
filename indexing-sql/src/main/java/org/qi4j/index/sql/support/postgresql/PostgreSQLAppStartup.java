@@ -15,8 +15,8 @@
 package org.qi4j.index.sql.support.postgresql;
 
 import org.qi4j.api.injection.scope.Service;
-import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.injection.scope.Uses;
+import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.index.sql.support.skeletons.AbstractSQLStartup;
 import org.qi4j.library.sql.ds.DataSourceService;
 import org.sql.generation.api.grammar.common.datatypes.SQLDataType;
@@ -41,8 +41,8 @@ import java.util.Map;
 public class PostgreSQLAppStartup extends AbstractSQLStartup
 {
 
-    @This
-    private ServiceComposite _myselfAsService;
+    @Uses
+    private ServiceDescriptor descriptor;
 
     @Service
     private DataSourceService _dataSource;
@@ -54,7 +54,7 @@ public class PostgreSQLAppStartup extends AbstractSQLStartup
         throws Exception
     {
         super.activate();
-        this._vendor = this._myselfAsService.metaInfo( PostgreSQLVendor.class );
+        this._vendor = this.descriptor.metaInfo( PostgreSQLVendor.class );
     }
 
     //    @Override

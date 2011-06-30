@@ -14,17 +14,23 @@
 
 package org.qi4j.index.sql.support.skeletons;
 
+import org.qi4j.api.Qi4j;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.Identity;
+import org.qi4j.api.entity.association.AssociationDescriptor;
+import org.qi4j.api.entity.association.ManyAssociationDescriptor;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.injection.scope.Uses;
+import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.service.Activatable;
-import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.value.ValueComposite;
+import org.qi4j.api.value.ValueDescriptor;
 import org.qi4j.index.sql.support.api.SQLIndexing;
 import org.qi4j.index.sql.support.common.DBNames;
 import org.qi4j.index.sql.support.common.QNameInfo;
@@ -36,10 +42,6 @@ import org.qi4j.library.sql.ds.DataSourceService;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entity.association.AssociationDescriptor;
-import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
-import org.qi4j.spi.property.PropertyDescriptor;
-import org.qi4j.spi.value.ValueDescriptor;
 import org.sql.generation.api.grammar.builders.modification.ColumnSourceByValuesBuilder;
 import org.sql.generation.api.grammar.builders.modification.DeleteBySearchBuilder;
 import org.sql.generation.api.grammar.builders.modification.UpdateBySearchBuilder;
@@ -87,15 +89,15 @@ public class AbstractSQLIndexing
     @This
     private PostgreSQLTypeHelper _sqlTypeHelper;
 
-    @This
-    private ServiceComposite _meAsService;
+    @Uses
+    private ServiceDescriptor descriptor;
 
     private SQLVendor _vendor;
 
     public void activate()
         throws Exception
     {
-        this._vendor = this._meAsService.metaInfo( SQLVendor.class );
+        this._vendor = this.descriptor.metaInfo( SQLVendor.class );
     }
 
     public void passivate()
@@ -735,7 +737,7 @@ public class AbstractSQLIndexing
         throws SQLException
     {
         ValueDescriptor vDesc = this._qi4SPI.getValueDescriptor( (ValueComposite) property );
-        StateHolder state = ((ValueComposite) property).state();
+        StateHolder state = Qi4j.INSTANCE_FUNCTION.map( (ValueComposite) property ).state();
         Integer originalPropertyPK = propertyPK;
         ++propertyPK;
         for( PropertyDescriptor pDesc : vDesc.state().properties() )

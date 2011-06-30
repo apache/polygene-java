@@ -17,16 +17,16 @@
 package org.qi4j.entitystore.qrm.internal;
 
 import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.entity.EntityDescriptor;
+import org.qi4j.api.entity.association.AssociationDescriptor;
+import org.qi4j.api.entity.association.ManyAssociationDescriptor;
+import org.qi4j.api.property.PersistentPropertyDescriptor;
+import org.qi4j.api.property.PropertyDescriptor;
+import org.qi4j.api.type.ValueType;
 import org.qi4j.entitystore.qrm.IdentifierConverter;
-import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entity.association.AssociationDescriptor;
-import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
 import org.qi4j.spi.entitystore.EntityNotFoundException;
-import org.qi4j.spi.property.PersistentPropertyDescriptor;
-import org.qi4j.spi.property.PropertyDescriptor;
-import org.qi4j.spi.property.ValueType;
 
 import java.lang.reflect.Type;
 import java.util.*;

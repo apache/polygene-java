@@ -17,12 +17,12 @@
 package org.qi4j.entitystore.qrm.test;
 
 import org.junit.Before;
+import org.qi4j.api.composite.TransientDescriptor;
+import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.entitystore.qrm.DerbyDatabaseHandler;
 import org.qi4j.entitystore.qrm.entity.PersonComposite;
-import org.qi4j.spi.composite.TransientDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.test.AbstractQi4jTest;
 
 import java.sql.Connection;

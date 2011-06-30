@@ -16,8 +16,8 @@ package org.qi4j.migration.assembly;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.qi4j.entitystore.map.StateStore;
 import org.qi4j.migration.Migrator;
+import org.qi4j.spi.entitystore.helpers.StateStore;
 
 /**
  * Migration operation for a specific entity.

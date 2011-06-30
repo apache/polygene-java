@@ -16,14 +16,14 @@
  */
 package org.qi4j.entitystore.qrm;
 
-import org.qi4j.io.Input;
 import org.qi4j.api.service.Activatable;
+import org.qi4j.api.structure.Module;
 import org.qi4j.api.usecase.Usecase;
+import org.qi4j.io.Input;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
-import org.qi4j.spi.structure.ModuleSPI;
 
 /**
  * JAVADOC: Figure out how does transaction supposed to work for all EntityStore methods.
@@ -32,12 +32,12 @@ import org.qi4j.spi.structure.ModuleSPI;
 public class QrmSqlEntityStore
     implements EntityStore, Activatable
 {
-    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSPI module, long currentTime )
+    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, Module module, long currentTime )
     {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public Input<EntityState, EntityStoreException> entityStates( ModuleSPI module )
+    public Input<EntityState, EntityStoreException> entityStates( Module module )
     {
         return null;
     }

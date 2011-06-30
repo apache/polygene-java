@@ -17,20 +17,6 @@
  */
 package org.qi4j.index.rdf.query.internal;
 
-import org.json.JSONException;
-import org.json.JSONStringer;
-import org.qi4j.api.entity.Entity;
-import org.qi4j.api.query.grammar.*;
-import org.qi4j.index.rdf.query.RdfQueryParser;
-import org.qi4j.spi.property.ValueType;
-import org.slf4j.LoggerFactory;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import static java.lang.String.format;
-
 /**
  * JAVADOC Add JavaDoc
  */

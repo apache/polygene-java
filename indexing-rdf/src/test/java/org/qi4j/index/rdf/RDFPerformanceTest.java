@@ -111,7 +111,7 @@ public class RDFPerformanceTest extends AbstractQi4jTest
     {
         List<ExampleEntity> list = new ArrayList<ExampleEntity>();
         UnitOfWork uow = this.unitOfWorkFactory.newUnitOfWork();
-        Iterator<ExampleEntity> iter = this.queryBuilderFactory.newQueryBuilder( ExampleEntity.class ).newQuery( uow ).iterator();
+        Iterator<ExampleEntity> iter = uow.newQuery( this.queryBuilderFactory.newQueryBuilder( ExampleEntity.class ) ).iterator();
         int found = 0;
         while (iter.hasNext())
         {
@@ -134,7 +134,7 @@ public class RDFPerformanceTest extends AbstractQi4jTest
 
     private void doRemove( int howMany )
     {
-        Iterator<ExampleEntity> iter = this.queryBuilderFactory.newQueryBuilder( ExampleEntity.class ).newQuery( this.unitOfWorkFactory.currentUnitOfWork() ).maxResults( howMany ).iterator();
+        Iterator<ExampleEntity> iter = this.unitOfWorkFactory.currentUnitOfWork().newQuery( this.queryBuilderFactory.newQueryBuilder( ExampleEntity.class )).maxResults( howMany ).iterator();
         Integer removed = 0;
         while (iter.hasNext())
         {
@@ -169,8 +169,8 @@ public class RDFPerformanceTest extends AbstractQi4jTest
         UnitOfWork uow = this.unitOfWorkFactory.newUnitOfWork();
         for (int i = 0; i < 1000; i++)
         {
-            Query<ExampleEntity> query = this.queryBuilderFactory.newQueryBuilder( ExampleEntity.class ).
-                    where( QueryExpressions.contains( QueryExpressions.templateFor( ExampleEntity.class ).manyAssoc(), uow.get( ExampleEntity.class, "entity50" ) ) ).newQuery( uow );
+            Query<ExampleEntity> query = uow.newQuery( this.queryBuilderFactory.newQueryBuilder( ExampleEntity.class ).
+                    where( QueryExpressions.contains( QueryExpressions.templateFor( ExampleEntity.class ).manyAssoc(), uow.get( ExampleEntity.class, "entity50" ) ) ));
             System.out.println(query.count());
         }
 

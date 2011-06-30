@@ -20,16 +20,16 @@ package org.qi4j.index.rdf.query.internal;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.qi4j.api.composite.Composite;
-import org.qi4j.api.entity.Entity;
-import org.qi4j.api.query.grammar.OrderBy;
-import org.qi4j.api.query.grammar2.*;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.json.JSONObjectSerializer;
+import org.qi4j.api.query.grammar.*;
+import org.qi4j.api.type.ValueType;
+import org.qi4j.api.value.ValueComposite;
+import org.qi4j.api.value.ValueDescriptor;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specification;
-import org.qi4j.api.value.ValueComposite;
 import org.qi4j.index.rdf.query.RdfQueryParser;
 import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.property.*;
-import org.qi4j.spi.value.ValueDescriptor;
 import org.slf4j.LoggerFactory;
 
 import java.text.DateFormat;
@@ -259,10 +259,10 @@ public class RdfQueryParserImpl2
         } else if( expression instanceof MatchesSpecification )
         {
             processMatchesPredicate( (MatchesSpecification) expression, builder );
-        } else if (expression instanceof PropertyNotNullSpecification<?>)
+        } else if (expression instanceof PropertyNotNullSpecification<?> )
         {
             processNotNullPredicate( (PropertyNotNullSpecification) expression, builder );
-        }else if (expression instanceof PropertyNullSpecification<?>)
+        }else if (expression instanceof PropertyNullSpecification<?> )
         {
             processNullPredicate( (PropertyNullSpecification) expression, builder );
         }else if (expression instanceof AssociationNotNullSpecification<?>)
@@ -599,7 +599,7 @@ public class RdfQueryParserImpl2
         {
             return ISO8601_UTC.get().format( (Date) value );
         }
-        else if( value instanceof Entity )
+        else if( value instanceof EntityComposite )
         {
             return "urn:qi4j:entity:" + value.toString();
         }

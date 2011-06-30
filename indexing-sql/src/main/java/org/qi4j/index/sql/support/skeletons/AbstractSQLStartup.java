@@ -16,12 +16,20 @@ package org.qi4j.index.sql.support.skeletons;
 
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.configuration.Configuration;
+import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.Identity;
+import org.qi4j.api.entity.association.AssociationDescriptor;
+import org.qi4j.api.entity.association.ManyAssociationDescriptor;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.injection.scope.Uses;
+import org.qi4j.api.object.ObjectDescriptor;
+import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.service.Activatable;
-import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.service.ServiceDescriptor;
+import org.qi4j.api.structure.Application;
+import org.qi4j.api.value.ValueDescriptor;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.index.reindexer.Reindexer;
 import org.qi4j.index.sql.support.api.SQLAppStartup;
@@ -34,13 +42,6 @@ import org.qi4j.index.sql.support.common.ReindexingStrategy;
 import org.qi4j.library.sql.common.SQLConfiguration;
 import org.qi4j.library.sql.common.SQLUtil;
 import org.qi4j.library.sql.ds.DataSourceService;
-import org.qi4j.spi.entity.EntityDescriptor;
-import org.qi4j.spi.entity.association.AssociationDescriptor;
-import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
-import org.qi4j.spi.object.ObjectDescriptor;
-import org.qi4j.spi.property.PropertyDescriptor;
-import org.qi4j.spi.structure.ApplicationSPI;
-import org.qi4j.spi.value.ValueDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sql.generation.api.grammar.builders.definition.TableElementListBuilder;
@@ -85,8 +86,8 @@ public abstract class AbstractSQLStartup
     @This
     private SQLDBState _state;
 
-    @This
-    private ServiceComposite _myselfAsService;
+    @Uses
+    private ServiceDescriptor descriptor;
 
     @This
     private Configuration<SQLConfiguration> _configuration;
@@ -101,7 +102,7 @@ public abstract class AbstractSQLStartup
     private Reindexer _reindexer;
 
     @Structure
-    private ApplicationSPI _app;
+    private Application _app;
 
     private SQLVendor _vendor;
 
@@ -112,7 +113,7 @@ public abstract class AbstractSQLStartup
     public void activate()
         throws Exception
     {
-        this._vendor = this._myselfAsService.metaInfo( SQLVendor.class );
+        this._vendor = this.descriptor.metaInfo( SQLVendor.class );
         this.setVendor( this._vendor );
         this.initTypes();
         this.modifyPrimitiveTypes( this._primitiveTypes, this._state.javaTypes2SQLTypes().get() );
@@ -1093,7 +1094,7 @@ public abstract class AbstractSQLStartup
         throws SQLException
     {
         final List<ValueDescriptor> valueDescriptors = new ArrayList<ValueDescriptor>();
-        _app.model().accept( new HierarchicalVisitor<Object, Object, RuntimeException>()
+        _app.descriptor().accept( new HierarchicalVisitor<Object, Object, RuntimeException>()
         {
             @Override
             public boolean visitEnter( Object visited ) throws RuntimeException

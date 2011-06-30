@@ -17,15 +17,15 @@
 package org.qi4j.entitystore.voldemort;
 
 import org.qi4j.api.configuration.Configuration;
+import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.service.Activatable;
 import org.qi4j.io.Input;
 import org.qi4j.io.Output;
-import org.qi4j.api.service.Activatable;
-import org.qi4j.entitystore.map.MapEntityStore;
-import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entitystore.EntityStoreException;
+import org.qi4j.spi.entitystore.helpers.MapEntityStore;
 import voldemort.client.*;
 import voldemort.client.protocol.RequestFormatType;
 import voldemort.versioning.ObsoleteVersionException;

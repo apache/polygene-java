@@ -17,23 +17,24 @@ package org.qi4j.migration;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.qi4j.api.composite.Composite;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-import org.qi4j.entitystore.map.MapEntityStore;
-import org.qi4j.entitystore.map.Migration;
-import org.qi4j.entitystore.map.StateStore;
 import org.qi4j.migration.assembly.EntityMigrationRule;
 import org.qi4j.migration.assembly.MigrationBuilder;
 import org.qi4j.migration.assembly.MigrationRule;
 import org.qi4j.spi.entitystore.EntityStore;
+import org.qi4j.spi.entitystore.helpers.MapEntityStore;
+import org.qi4j.spi.entitystore.helpers.Migration;
+import org.qi4j.spi.entitystore.helpers.StateStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,8 +65,8 @@ public interface MigrationService
         @This
         Configuration<MigrationConfiguration> config;
 
-        @This
-        Composite composite;
+        @Uses
+        ServiceDescriptor descriptor;
 
         @Service
         StateStore store;
@@ -118,7 +119,7 @@ public interface MigrationService
         public void activate()
             throws Exception
         {
-            builder = composite.metaInfo( MigrationBuilder.class );
+            builder = descriptor.metaInfo( MigrationBuilder.class );
 
             log = LoggerFactory.getLogger( MigrationService.class );
 

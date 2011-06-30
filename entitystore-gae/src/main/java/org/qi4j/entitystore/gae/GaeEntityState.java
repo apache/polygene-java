@@ -25,13 +25,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.spi.entity.EntityDescriptor;
+import org.qi4j.api.json.JSONDeserializer;
+import org.qi4j.api.json.JSONWriterSerializer;
+import org.qi4j.api.property.PersistentPropertyDescriptor;
+import org.qi4j.api.structure.Module;
+import org.qi4j.api.type.ValueCompositeType;
+import org.qi4j.api.type.ValueType;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.ManyAssociationState;
-import org.qi4j.spi.property.*;
-import org.qi4j.spi.structure.ModuleSPI;
 
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
@@ -49,10 +53,10 @@ public class GaeEntityState
     private final GaeEntityStoreUnitOfWork unitOfWork;
     private final EntityDescriptor descriptor;
     private final HashMap<QualifiedName, ValueType> valueTypes;
-    private final ModuleSPI module;
+    private final Module module;
     private JSONDeserializer deserializer;
 
-    public GaeEntityState( GaeEntityStoreUnitOfWork unitOfWork, Key key, EntityDescriptor descriptor, ModuleSPI module )
+    public GaeEntityState( GaeEntityStoreUnitOfWork unitOfWork, Key key, EntityDescriptor descriptor, Module module )
     {
         System.out.println( "GaeEntityState( " + unitOfWork + ", " + key + ", " + descriptor + " )" );
         this.module = module;
@@ -72,7 +76,7 @@ public class GaeEntityState
         valueTypes = initializeValueTypes( descriptor );
     }
 
-    public GaeEntityState( GaeEntityStoreUnitOfWork unitOfWork, Entity entity, ModuleSPI module )
+    public GaeEntityState( GaeEntityStoreUnitOfWork unitOfWork, Entity entity, Module module )
     {
         System.out.println( "GaeEntityState( " + unitOfWork + ", " + entity + " )" );
         if( entity == null )

@@ -17,40 +17,39 @@ import org.json.*;
 import org.qi4j.api.cache.CacheOptions;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.entity.association.AssociationDescriptor;
+import org.qi4j.api.entity.association.ManyAssociationDescriptor;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.json.JSONDeserializer;
+import org.qi4j.api.json.JSONWriterSerializer;
+import org.qi4j.api.property.PersistentPropertyDescriptor;
+import org.qi4j.api.property.PropertyDescriptor;
+import org.qi4j.api.service.Activatable;
+import org.qi4j.api.structure.Application;
+import org.qi4j.api.structure.Module;
+import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
+import org.qi4j.api.usecase.Usecase;
+import org.qi4j.api.usecase.UsecaseBuilder;
+import org.qi4j.entitystore.sql.internal.DatabaseSQLService;
+import org.qi4j.entitystore.sql.internal.DatabaseSQLService.EntityValueResult;
 import org.qi4j.io.Input;
 import org.qi4j.io.Output;
 import org.qi4j.io.Receiver;
 import org.qi4j.io.Sender;
-import org.qi4j.api.service.Activatable;
-import org.qi4j.api.structure.Application;
-import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
-import org.qi4j.api.usecase.Usecase;
-import org.qi4j.api.usecase.UsecaseBuilder;
-import org.qi4j.entitystore.map.MapEntityStore;
-import org.qi4j.entitystore.map.MapEntityStoreMixin;
-import org.qi4j.entitystore.map.Migration;
-import org.qi4j.entitystore.map.StateStore;
-import org.qi4j.entitystore.sql.internal.DatabaseSQLService;
-import org.qi4j.entitystore.sql.internal.DatabaseSQLService.EntityValueResult;
 import org.qi4j.library.sql.api.SQLEntityState;
 import org.qi4j.library.sql.api.SQLEntityState.DefaultSQLEntityState;
 import org.qi4j.library.sql.common.SQLUtil;
-import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entity.association.AssociationDescriptor;
-import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
 import org.qi4j.spi.entitystore.*;
 import org.qi4j.spi.entitystore.helpers.DefaultEntityState;
-import org.qi4j.spi.property.JSONWriterSerializer;
-import org.qi4j.spi.property.PersistentPropertyDescriptor;
-import org.qi4j.spi.property.PropertyDescriptor;
-import org.qi4j.spi.property.JSONDeserializer;
-import org.qi4j.spi.structure.ModuleSPI;
+import org.qi4j.spi.entitystore.helpers.MapEntityStore;
+import org.qi4j.spi.entitystore.helpers.Migration;
+import org.qi4j.spi.entitystore.helpers.StateStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,8 +61,8 @@ import java.sql.SQLException;
 import java.util.*;
 
 /**
- * Most of this code is copy-paste from {@link MapEntityStoreMixin}. TODO refactor stuff that has to do with general
- * things than actual MapEntityStore from {@link MapEntityStoreMixin} so that this class could extend some
+ * Most of this code is copy-paste from {@link org.qi4j.spi.entitystore.helpers.MapEntityStoreMixin}. TODO refactor stuff that has to do with general
+ * things than actual MapEntityStore from {@link org.qi4j.spi.entitystore.helpers.MapEntityStoreMixin} so that this class could extend some
  * "AbstractJSONEntityStoreMixin".
  *
  */
@@ -217,12 +216,12 @@ public class SQLEntityStoreMixin
                                           null );
     }
 
-    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSPI module, long currentTime )
+    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, Module module, long currentTime )
     {
         return new DefaultEntityStoreUnitOfWork( entityStoreSPI, newUnitOfWorkId(), module, usecase, currentTime );
     }
 
-    public Input<EntityState, EntityStoreException> entityStates( final ModuleSPI module )
+    public Input<EntityState, EntityStoreException> entityStates( final Module module )
     {
         return new Input<EntityState, EntityStoreException>()
         {
@@ -280,7 +279,7 @@ public class SQLEntityStoreMixin
     {
         try
         {
-            ModuleSPI module = unitOfWork.module();
+            Module module = unitOfWork.module();
             JSONObject jsonObject = new JSONObject( new JSONTokener( entityState ) );
             EntityStatus status = EntityStatus.LOADED;
 

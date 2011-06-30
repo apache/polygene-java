@@ -29,10 +29,10 @@ import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryExpressions;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
-import org.qi4j.functional.Iterables;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
+import org.qi4j.functional.Iterables;
 import org.qi4j.index.rdf.assembly.RdfMemoryStoreAssembler;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
@@ -86,7 +86,7 @@ public class QueryOfPropertySubTypeTest
             FlatEntity thingTemplate = QueryExpressions.templateFor( FlatEntity.class );
             queryBuilder.where( QueryExpressions.eq( thingTemplate.name(), "Bob" ) );
 
-            Query<FlatEntity> query = queryBuilder.newQuery( uow );
+            Query<FlatEntity> query = uow.newQuery( queryBuilder );
             query.maxResults( 1 );
 
             FlatEntity foundByName = (FlatEntity) Iterables.first( query );
@@ -117,7 +117,7 @@ public class QueryOfPropertySubTypeTest
             WoupsEntity thingTemplate = QueryExpressions.templateFor( WoupsEntity.class );
             queryBuilder.where( QueryExpressions.eq( thingTemplate.name(), "Bob" ) );
 
-            Query<WoupsEntity> query = queryBuilder.newQuery( uow );
+            Query<WoupsEntity> query = uow.newQuery( queryBuilder );
             query.maxResults( 1 );
 
             WoupsEntity foundByName = (WoupsEntity) Iterables.first( query );

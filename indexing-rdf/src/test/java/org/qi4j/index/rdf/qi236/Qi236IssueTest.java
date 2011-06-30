@@ -83,7 +83,7 @@ public class Qi236IssueTest
             FlatEntity thingTemplate = QueryExpressions.templateFor( FlatEntity.class );
             queryBuilder.where( QueryExpressions.eq( thingTemplate.name(), "Bob" ) );
 
-            Query<FlatEntity> query = queryBuilder.newQuery( uow );
+            Query<FlatEntity> query = uow.newQuery( queryBuilder );
             query.maxResults( 1 );
 
             FlatEntity foundByName = query.find();
@@ -115,7 +115,7 @@ public class Qi236IssueTest
             WoupsEntity thingTemplate = QueryExpressions.templateFor( WoupsEntity.class );
             queryBuilder.where( QueryExpressions.eq( thingTemplate.name(), "Bob" ) );
 
-            Query<WoupsEntity> query = queryBuilder.newQuery( uow );
+            Query<WoupsEntity> query = uow.newQuery( queryBuilder );
             query.maxResults( 1 );
 
             WoupsEntity foundByName = query.find();

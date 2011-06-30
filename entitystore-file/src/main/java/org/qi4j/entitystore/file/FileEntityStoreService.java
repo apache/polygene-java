@@ -21,10 +21,10 @@ import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.entitystore.map.MapEntityStoreMixin;
-import org.qi4j.entitystore.map.StateStore;
 import org.qi4j.library.locking.LockingAbstractComposite;
 import org.qi4j.spi.entitystore.*;
+import org.qi4j.spi.entitystore.helpers.MapEntityStoreMixin;
+import org.qi4j.spi.entitystore.helpers.StateStore;
 
 /**
  * EntityStore service backed by a source control friendly file system format.
@@ -35,7 +35,7 @@ import org.qi4j.spi.entitystore.*;
 public interface FileEntityStoreService
     extends EntityStore,
             EntityStateVersions,
-            StateStore,
+        StateStore,
             BackupRestore,
             ServiceComposite,
             Activatable,

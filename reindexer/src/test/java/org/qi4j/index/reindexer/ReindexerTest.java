@@ -107,7 +107,7 @@ public class ReindexerTest
 
         QueryBuilder<MyEntity> qBuilder = queryBuilderFactory.newQueryBuilder( MyEntity.class );
         qBuilder = qBuilder.where( eq( templateFor( MyEntity.class ).name(), TEST_NAME ) );
-        Query<MyEntity> q = qBuilder.newQuery( uow );
+        Query<MyEntity> q = uow.newQuery( qBuilder );
 
         assertEquals( 1, q.count() );
         assertEquals( TEST_NAME, q.iterator().next().name().get() );

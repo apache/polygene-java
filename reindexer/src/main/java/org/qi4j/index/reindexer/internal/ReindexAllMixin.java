@@ -20,9 +20,9 @@ package org.qi4j.index.reindexer.internal;
 
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Uses;
+import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.index.reindexer.Reindexer;
-import org.qi4j.spi.service.ServiceDescriptor;
 
 public class ReindexAllMixin
     implements Reindexer

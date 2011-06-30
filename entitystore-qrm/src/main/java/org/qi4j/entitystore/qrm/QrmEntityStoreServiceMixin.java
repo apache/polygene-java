@@ -16,6 +16,7 @@
  */
 package org.qi4j.entitystore.qrm;
 
+import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.entity.IdentityGenerator;
@@ -23,18 +24,17 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
-import org.qi4j.io.Input;
-import org.qi4j.io.Output;
 import org.qi4j.api.service.Activatable;
+import org.qi4j.api.service.ServiceDescriptor;
+import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.api.usecase.Usecase;
-import org.qi4j.spi.entity.EntityDescriptor;
+import org.qi4j.io.Input;
+import org.qi4j.io.Output;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entitystore.*;
 import org.qi4j.spi.entitystore.helpers.DefaultEntityState;
-import org.qi4j.spi.service.ServiceDescriptor;
-import org.qi4j.spi.structure.ModuleSPI;
 
 import java.util.UUID;
 
@@ -52,7 +52,7 @@ public class QrmEntityStoreServiceMixin
     EntityStoreSPI entityStoreSpi;
 
     @Structure
-    ModuleSPI module;
+    Module module;
 
     protected String uowUUID;
 
@@ -89,14 +89,14 @@ public class QrmEntityStoreServiceMixin
         return new DefaultEntityState( (DefaultEntityStoreUnitOfWork) unitOfWork, identity, entityDescriptor );
     }
 
-    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSPI module, long currentTime )
+    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, Module module, long currentTime )
     {
         System.err.println( "EntityStoreUnitOfWork newUnitOfWork ... was called." );
 
         return new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), module, usecase, currentTime );
     }
 
-    public Input<EntityState, EntityStoreException> entityStates( ModuleSPI module )
+    public Input<EntityState, EntityStoreException> entityStates( Module module )
     {
         return new Input<EntityState,  EntityStoreException>()
         {

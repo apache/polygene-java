@@ -14,22 +14,23 @@
 
 package org.qi4j.index.sql.support.skeletons;
 
+import org.qi4j.api.Qi4j;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.property.Property;
-import org.qi4j.api.query.grammar.OrderBy;
+import org.qi4j.api.query.grammar.*;
 import org.qi4j.api.query.grammar.OrderBy.Order;
-import org.qi4j.api.query.grammar2.*;
 import org.qi4j.api.service.Activatable;
-import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.functional.Iterables;
-import org.qi4j.functional.Specification;
+import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.value.ValueComposite;
+import org.qi4j.functional.Iterables;
+import org.qi4j.functional.Specification;
 import org.qi4j.index.sql.support.api.SQLQuerying;
 import org.qi4j.index.sql.support.common.DBNames;
 import org.qi4j.index.sql.support.common.EntityTypeInfo;
@@ -297,13 +298,13 @@ public abstract class AbstractSQLQuerying
 
     private SQLVendor _vendor;
 
-    @This
-    private ServiceComposite _meAsService;
+    @Uses
+    private ServiceDescriptor descriptor;
 
     public void activate()
         throws Exception
     {
-        this._vendor = this._meAsService.metaInfo( SQLVendor.class );
+        this._vendor = this.descriptor.metaInfo( SQLVendor.class );
     }
 
     public void passivate()
@@ -1254,7 +1255,7 @@ public abstract class AbstractSQLQuerying
         {
             // Visit all properties with recursion and make joins as necessary
             // @formatter:off
-            for ( Property property : ((ValueComposite)value).state().properties())
+            for ( Property property : Qi4j.INSTANCE_FUNCTION.map( (ValueComposite) value ).state().properties())
             {
                     Boolean qNameJoinDone = false;
                     Integer sourceIndex = maxTableIndex.getInt();

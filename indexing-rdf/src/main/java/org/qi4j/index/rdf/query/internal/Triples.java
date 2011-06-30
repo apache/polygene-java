@@ -19,9 +19,9 @@ package org.qi4j.index.rdf.query.internal;
 
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.Identity;
-import org.qi4j.api.query.grammar2.AssociationFunction;
-import org.qi4j.api.query.grammar2.ManyAssociationFunction;
-import org.qi4j.api.query.grammar2.PropertyFunction;
+import org.qi4j.api.query.grammar.AssociationFunction;
+import org.qi4j.api.query.grammar.ManyAssociationFunction;
+import org.qi4j.api.query.grammar.PropertyFunction;
 import org.qi4j.api.util.Classes;
 
 import java.util.ArrayList;

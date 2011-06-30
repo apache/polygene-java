@@ -18,20 +18,20 @@ package org.qi4j.entitystore.file;
 
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.configuration.Configuration;
+import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.service.Activatable;
 import org.qi4j.io.Input;
 import org.qi4j.io.Output;
 import org.qi4j.io.Receiver;
 import org.qi4j.io.Sender;
-import org.qi4j.api.service.Activatable;
-import org.qi4j.entitystore.map.MapEntityStore;
 import org.qi4j.library.fileconfig.FileConfiguration;
-import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entitystore.BackupRestore;
 import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entitystore.EntityStoreException;
+import org.qi4j.spi.entitystore.helpers.MapEntityStore;
 
 import java.io.*;
 

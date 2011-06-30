@@ -24,16 +24,16 @@ import org.qi4j.api.entity.Identity;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.service.ServiceReference;
+import org.qi4j.api.structure.Module;
+import org.qi4j.index.reindexer.Reindexer;
+import org.qi4j.index.reindexer.ReindexerConfiguration;
 import org.qi4j.io.Output;
 import org.qi4j.io.Receiver;
 import org.qi4j.io.Sender;
-import org.qi4j.api.service.ServiceReference;
-import org.qi4j.index.reindexer.Reindexer;
-import org.qi4j.index.reindexer.ReindexerConfiguration;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.entitystore.StateChangeListener;
-import org.qi4j.spi.structure.ModuleSPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,7 +63,7 @@ public class ReindexerMixin
    @Service
    private Iterable<ServiceReference<StateChangeListener>> listeners;
    @Structure
-   private ModuleSPI module;
+   private Module module;
 
    private Logger logger = LoggerFactory.getLogger(Reindexer.class);
 

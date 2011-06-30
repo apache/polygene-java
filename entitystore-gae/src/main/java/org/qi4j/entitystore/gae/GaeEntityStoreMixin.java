@@ -20,17 +20,17 @@ import com.google.appengine.api.datastore.*;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.entity.IdentityGenerator;
 import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.service.Activatable;
+import org.qi4j.api.structure.Module;
+import org.qi4j.api.usecase.Usecase;
 import org.qi4j.io.Input;
 import org.qi4j.io.Output;
 import org.qi4j.io.Receiver;
 import org.qi4j.io.Sender;
-import org.qi4j.api.service.Activatable;
-import org.qi4j.api.usecase.Usecase;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
-import org.qi4j.spi.structure.ModuleSPI;
 
 /**
  * GAE implementation of SerializationStore
@@ -60,12 +60,12 @@ public class GaeEntityStoreMixin
    {
    }
 
-   public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSPI module, long currentTime )
+   public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, Module module, long currentTime )
    {
       return new GaeEntityStoreUnitOfWork(datastoreService, generateId(), module, currentTime);
    }
 
-   public Input<EntityState, EntityStoreException> entityStates(final ModuleSPI module)
+   public Input<EntityState, EntityStoreException> entityStates(final Module module)
    {
       return new Input<EntityState, EntityStoreException>()
       {

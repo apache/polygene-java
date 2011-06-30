@@ -14,33 +14,40 @@
 
 package org.qi4j.entitystore.prefs;
 
-import org.json.*;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 import org.qi4j.api.cache.CacheOptions;
 import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.entity.association.AssociationDescriptor;
+import org.qi4j.api.entity.association.ManyAssociationDescriptor;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
-import org.qi4j.io.Input;
-import org.qi4j.io.Output;
-import org.qi4j.io.Receiver;
-import org.qi4j.io.Sender;
+import org.qi4j.api.json.JSONDeserializer;
+import org.qi4j.api.json.JSONObjectSerializer;
+import org.qi4j.api.json.JSONWriterSerializer;
+import org.qi4j.api.property.PersistentPropertyDescriptor;
 import org.qi4j.api.service.Activatable;
+import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.structure.Application;
+import org.qi4j.api.structure.Module;
+import org.qi4j.api.type.*;
 import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.usecase.UsecaseBuilder;
-import org.qi4j.spi.entity.EntityDescriptor;
+import org.qi4j.io.Input;
+import org.qi4j.io.Output;
+import org.qi4j.io.Receiver;
+import org.qi4j.io.Sender;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entity.association.AssociationDescriptor;
-import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
 import org.qi4j.spi.entitystore.*;
 import org.qi4j.spi.entitystore.helpers.DefaultEntityState;
-import org.qi4j.spi.property.*;
-import org.qi4j.spi.service.ServiceDescriptor;
-import org.qi4j.spi.structure.ModuleSPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -130,12 +137,12 @@ public class PreferencesEntityStoreMixin
         reloadExecutor.awaitTermination( 10, TimeUnit.SECONDS );
     }
 
-    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSPI module, long currentTime )
+    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, Module module, long currentTime )
     {
         return new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), module, usecase, currentTime );
     }
 
-    public Input<EntityState, EntityStoreException> entityStates( final ModuleSPI module )
+    public Input<EntityState, EntityStoreException> entityStates( final Module module )
     {
         return new Input<EntityState, EntityStoreException>()
         {
@@ -184,7 +191,7 @@ public class PreferencesEntityStoreMixin
         {
             DefaultEntityStoreUnitOfWork desuw = (DefaultEntityStoreUnitOfWork) unitOfWork;
 
-            ModuleSPI module = desuw.module();
+            Module module = desuw.module();
             JSONDeserializer deserializer = new JSONDeserializer( module );
 
             if( !root.nodeExists( identity.identity() ) )
@@ -497,7 +504,7 @@ public class PreferencesEntityStoreMixin
                     else if( valueType instanceof ValueCompositeType ||
                             valueType instanceof MapType ||
                             valueType instanceof CollectionType ||
-                            valueType instanceof EnumType)
+                            valueType instanceof EnumType )
                     {
                         JSONWriterSerializer serializer = new JSONWriterSerializer(  );
                         serializer.serialize( value, valueType );

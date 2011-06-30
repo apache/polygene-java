@@ -16,8 +16,9 @@ package org.qi4j.index.sql.support.postgresql;
 
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.service.Activatable;
-import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.index.sql.support.common.GenericDatabaseExplorer;
 import org.qi4j.index.sql.support.common.GenericDatabaseExplorer.ColumnInfo;
 import org.qi4j.index.sql.support.common.GenericDatabaseExplorer.DatabaseProcessor;
@@ -46,8 +47,8 @@ public class PostgreSQLIndexExporter
     @This
     private SQLDBState _state;
 
-    @This
-    private ServiceComposite _meAsService;
+    @Uses
+    private ServiceDescriptor descriptor;
 
     private SQLVendor _vendor;
 
@@ -57,7 +58,7 @@ public class PostgreSQLIndexExporter
     public void activate()
         throws Exception
     {
-        this._vendor = this._meAsService.metaInfo( SQLVendor.class );
+        this._vendor = this.descriptor.metaInfo( SQLVendor.class );
     }
 
     public void passivate()

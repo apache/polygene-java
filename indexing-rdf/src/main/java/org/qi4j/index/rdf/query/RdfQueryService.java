@@ -24,7 +24,7 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.query.grammar.OrderBy;
-import org.qi4j.api.query.grammar2.QuerySpecification;
+import org.qi4j.api.query.grammar.QuerySpecification;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.functional.Specification;
 import org.qi4j.spi.query.EntityFinder;

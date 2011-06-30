@@ -19,7 +19,6 @@
 package org.qi4j.index.rdf;
 
 import org.junit.After;
-import org.junit.Ignore;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;

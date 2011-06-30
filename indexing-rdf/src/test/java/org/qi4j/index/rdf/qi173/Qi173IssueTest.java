@@ -78,7 +78,7 @@ public class Qi173IssueTest
         Car template = QueryExpressions.templateFor( Car.class );
         qb = qb.where( QueryExpressions.eq( template.year(), 2007 ) );
 
-        Query<Car> query = qb.newQuery( uow );
+        Query<Car> query = uow.newQuery( qb );
         query.orderBy( orderBy( template.manufacturer() ), orderBy( template.model() ) );
         Iterator<Car> cars = query.iterator();
         Assert.assertTrue( cars.hasNext() );

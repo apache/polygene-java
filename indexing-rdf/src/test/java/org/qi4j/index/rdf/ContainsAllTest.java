@@ -10,13 +10,13 @@ import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryExpressions;
 import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.functional.Iterables;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
+import org.qi4j.functional.Iterables;
 import org.qi4j.index.rdf.assembly.RdfNativeSesameStoreAssembler;
 import org.qi4j.library.fileconfig.FileConfiguration;
 import org.qi4j.library.rdf.repository.NativeConfiguration;
@@ -287,7 +287,7 @@ public class ContainsAllTest
         builder = builder.where( QueryExpressions.containsAll(
                 QueryExpressions.templateFor( ExampleEntity.class ).strings(),
                 Iterables.iterable( strings ) ) );
-        return builder.newQuery( this.unitOfWorkFactory.currentUnitOfWork() ).find();
+        return this.unitOfWorkFactory.currentUnitOfWork().newQuery( builder ).find();
     }
 
     private ExampleEntity findEntityBasedOnValueStrings( String... valueStrings )
@@ -315,7 +315,7 @@ public class ContainsAllTest
         )
         );
 
-        return builder.newQuery( this.unitOfWorkFactory.currentUnitOfWork() );
+        return this.unitOfWorkFactory.currentUnitOfWork().newQuery( builder );
     }
 
     private ExampleEntity performContainsAllStringsTest( Set<String> entityStrings, Set<String> queryableStrings )

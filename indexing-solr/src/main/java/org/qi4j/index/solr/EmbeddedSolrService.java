@@ -10,8 +10,8 @@ import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.library.fileconfig.FileConfiguration;
-import org.qi4j.spi.service.ServiceDescriptor;
 
 import java.io.File;
 import java.lang.reflect.Field;

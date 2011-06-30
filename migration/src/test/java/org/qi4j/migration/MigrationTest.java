@@ -18,22 +18,22 @@ import org.hamcrest.CoreMatchers;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
-import org.qi4j.io.Input;
-import org.qi4j.io.Output;
-import org.qi4j.io.Receiver;
-import org.qi4j.io.Sender;
+import org.qi4j.api.service.importer.NewObjectImporter;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
-import org.qi4j.entitystore.map.MapEntityStore;
-import org.qi4j.entitystore.map.StateStore;
+import org.qi4j.io.Input;
+import org.qi4j.io.Output;
+import org.qi4j.io.Receiver;
+import org.qi4j.io.Sender;
 import org.qi4j.migration.assembly.EntityMigrationOperation;
 import org.qi4j.migration.assembly.MigrationBuilder;
 import org.qi4j.migration.assembly.MigrationOperation;
 import org.qi4j.spi.entitystore.BackupRestore;
-import org.qi4j.spi.service.importer.NewObjectImporter;
+import org.qi4j.spi.entitystore.helpers.MapEntityStore;
+import org.qi4j.spi.entitystore.helpers.StateStore;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
 
@@ -208,7 +208,7 @@ public class MigrationTest
       public boolean upgrade(JSONObject state, StateStore stateStore, Migrator migrator)
               throws JSONException
       {
-         JSONObject properties = (JSONObject) state.get(MapEntityStore.JSONKeys.properties.name());
+         JSONObject properties = (JSONObject) state.get( MapEntityStore.JSONKeys.properties.name());
 
          return migrator.addProperty(state, "customBar", "Hello " + properties.getString("bar"));
       }

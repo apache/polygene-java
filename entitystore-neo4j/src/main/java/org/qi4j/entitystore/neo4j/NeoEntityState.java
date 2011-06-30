@@ -1,20 +1,22 @@
 package org.qi4j.entitystore.neo4j;
 
-import org.json.*;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 import org.neo4j.graphdb.*;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.spi.entity.EntityDescriptor;
+import org.qi4j.api.json.JSONDeserializer;
+import org.qi4j.api.json.JSONObjectSerializer;
+import org.qi4j.api.property.PersistentPropertyDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.ManyAssociationState;
 import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
-import org.qi4j.spi.property.JSONObjectSerializer;
-import org.qi4j.spi.property.JSONWriterSerializer;
-import org.qi4j.spi.property.PersistentPropertyDescriptor;
-import org.qi4j.spi.property.JSONDeserializer;
 
 public class NeoEntityState
     implements EntityState

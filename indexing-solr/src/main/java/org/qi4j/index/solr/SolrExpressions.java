@@ -1,6 +1,6 @@
 package org.qi4j.index.solr;
 
-import org.qi4j.api.query.grammar2.QuerySpecification;
+import org.qi4j.api.query.grammar.QuerySpecification;
 
 /**
  * TODO

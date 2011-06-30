@@ -18,9 +18,9 @@
 package org.qi4j.index.rdf;
 
 import org.qi4j.api.composite.Composite;
-import org.qi4j.functional.Specification;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.functional.Specification;
 import org.qi4j.index.rdf.query.RdfQueryParserFactory;
 import org.qi4j.index.rdf.query.SesameExpressions;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;

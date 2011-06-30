@@ -22,23 +22,23 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.object.ObjectDescriptor;
+import org.qi4j.api.property.PersistentPropertyDescriptor;
+import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.functional.HierarchicalVisitor;
+import org.qi4j.api.structure.Application;
 import org.qi4j.entitystore.qrm.QrmEntityStoreDescriptor;
 import org.qi4j.entitystore.qrm.QrmMapper;
-import org.qi4j.spi.entity.EntityDescriptor;
+import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entitystore.DefaultEntityStoreUnitOfWork;
 import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entitystore.helpers.DefaultEntityState;
-import org.qi4j.spi.object.ObjectDescriptor;
-import org.qi4j.spi.property.PropertyDescriptor;
-import org.qi4j.spi.property.PersistentPropertyDescriptor;
-import org.qi4j.spi.structure.ApplicationSPI;
 
 import java.util.*;
 
@@ -57,7 +57,7 @@ public interface QrmMapperService
 
         private
         @Structure
-        ApplicationSPI app;
+        Application app;
 
         private Map<Class, QrmMapping> mappings = new HashMap<Class, QrmMapping>();
 
@@ -256,12 +256,12 @@ public interface QrmMapperService
         {
             final List<Class> types = cfg.types();
 
-            app.model().accept( new HierarchicalVisitor<Object, Object, RuntimeException>()
+            app.descriptor().accept( new HierarchicalVisitor<Object, Object, RuntimeException>()
             {
                 @Override
                 public boolean visitEnter( Object visited ) throws RuntimeException
                 {
-                    if (visited instanceof ObjectDescriptor)
+                    if (visited instanceof ObjectDescriptor )
                     {
                         if (visited instanceof EntityDescriptor)
                         {
