@@ -14,9 +14,9 @@ import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.qi4j.functional.Iterables.count;
 import static org.qi4j.io.Inputs.iterable;
 import static org.qi4j.io.Outputs.systemOut;
-import static org.qi4j.functional.Iterables.count;
 import static org.qi4j.library.eventsourcing.domain.source.helper.Events.events;
 
 /**

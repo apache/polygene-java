@@ -17,6 +17,7 @@
  */
 package org.qi4j.logging.debug.service;
 
+import org.qi4j.api.Qi4j;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.injection.scope.Invocation;
 import org.qi4j.api.sideeffect.SideEffectOf;
@@ -53,14 +54,14 @@ public class DebugOnConsoleSideEffect extends SideEffectOf<LoggingService>
     public void debug( Composite composite, String message )
     {
         String localized = bundle.getString( message );
-        OUT.println( "DEBUG:" + composite.type().getName() + ": " + localized );
+        OUT.println( "DEBUG:" + Qi4j.DESCRIPTOR_FUNCTION.map( composite ).type().getName() + ": " + localized );
     }
 
     public void debug( Composite composite, String message, Serializable param1 )
     {
         String localized = bundle.getString( message );
         String formatted = MessageFormat.format( localized, param1 );
-        OUT.println( "DEBUG:" + composite.type().getName() + ": " + formatted );
+        OUT.println( "DEBUG:" + Qi4j.DESCRIPTOR_FUNCTION.map( composite ).type().getName() + ": " + formatted );
         if( param1 instanceof Throwable )
         {
             handleException( (Throwable) param1 );
@@ -71,7 +72,7 @@ public class DebugOnConsoleSideEffect extends SideEffectOf<LoggingService>
     {
         String localized = bundle.getString( message );
         String formatted = MessageFormat.format( localized, param1, param2 );
-        OUT.println( "DEBUG:" + composite.type().getName() + ": " + formatted );
+        OUT.println( "DEBUG:" + Qi4j.DESCRIPTOR_FUNCTION.map( composite ).type().getName() + ": " + formatted );
         if( param1 instanceof Throwable )
         {
             handleException( (Throwable) param1 );
@@ -82,7 +83,7 @@ public class DebugOnConsoleSideEffect extends SideEffectOf<LoggingService>
     {
         String localized = bundle.getString( message );
         String formatted = MessageFormat.format( localized, (Serializable) params );
-        OUT.println( "DEBUG:" + composite.type().getName() + ": " + formatted );
+        OUT.println( "DEBUG:" + Qi4j.DESCRIPTOR_FUNCTION.map( composite ).type().getName() + ": " + formatted );
         if( params[ 0 ] instanceof Throwable )
         {
             handleException( (Throwable) params[ 0 ] );

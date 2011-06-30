@@ -15,20 +15,24 @@
 package org.qi4j.library.rdf.entity;
 
 import org.json.JSONException;
-import org.json.JSONStringer;
 import org.openrdf.model.*;
 import org.openrdf.model.impl.GraphImpl;
 import org.openrdf.model.vocabulary.XMLSchema;
+import org.qi4j.api.Qi4j;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.entity.association.AssociationDescriptor;
+import org.qi4j.api.entity.association.ManyAssociationDescriptor;
+import org.qi4j.api.json.JSONObjectSerializer;
+import org.qi4j.api.property.PersistentPropertyDescriptor;
+import org.qi4j.api.type.ValueCompositeType;
+import org.qi4j.api.type.ValueType;
 import org.qi4j.api.util.Classes;
-import org.qi4j.api.value.Value;
+import org.qi4j.api.value.ValueComposite;
 import org.qi4j.library.rdf.Rdfs;
-import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.ManyAssociationState;
-import org.qi4j.spi.entity.association.AssociationDescriptor;
-import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
-import org.qi4j.spi.property.*;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -139,7 +143,7 @@ public class EntityStateSerializer
 
         if( valueType instanceof ValueCompositeType )
         {
-            serializeValueComposite( subject, predicate, (Value) property, valueType, graph, baseURI, includeNonQueryable );
+            serializeValueComposite( subject, predicate, (ValueComposite) property, valueType, graph, baseURI, includeNonQueryable );
         }
         else
         {
@@ -154,7 +158,7 @@ public class EntityStateSerializer
     }
 
     private void serializeValueComposite( Resource subject, URI predicate,
-                                          Value value, ValueType valueType, Graph graph, String baseUri, boolean includeNonQueryable ) throws JSONException
+                                          ValueComposite value, ValueType valueType, Graph graph, String baseUri, boolean includeNonQueryable ) throws JSONException
     {
         final ValueFactory valueFactory = graph.getValueFactory();
         BNode collection = valueFactory.createBNode();
@@ -162,7 +166,7 @@ public class EntityStateSerializer
 
         for( PersistentPropertyDescriptor persistentProperty : ((ValueCompositeType)valueType).types() )
         {
-            Object propertyValue = value.state().getProperty( persistentProperty.accessor() ).get();
+            Object propertyValue = Qi4j.INSTANCE_FUNCTION.map( (Composite) value).state().getProperty( persistentProperty.accessor() ).get();
 
             if( propertyValue == null )
             {
@@ -170,10 +174,10 @@ public class EntityStateSerializer
             }
 
             ValueType type = persistentProperty.valueType();
-            if( type instanceof ValueCompositeType)
+            if( type instanceof ValueCompositeType )
             {
                 URI pred = valueFactory.createURI( baseUri, persistentProperty.qualifiedName().name() );
-                serializeValueComposite( collection, pred, (Value) propertyValue, type, graph, baseUri + persistentProperty.qualifiedName().name() + "/", includeNonQueryable );
+                serializeValueComposite( collection, pred, (ValueComposite) propertyValue, type, graph, baseUri + persistentProperty.qualifiedName().name() + "/", includeNonQueryable );
             }
             else
             {

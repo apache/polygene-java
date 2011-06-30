@@ -26,12 +26,13 @@ import org.apache.cxf.aegis.type.TypeMapping;
 import org.apache.cxf.interceptor.LoggingInInterceptor;
 import org.apache.cxf.interceptor.LoggingOutInterceptor;
 import org.apache.cxf.jaxws.JaxWsServerFactoryBean;
-import org.qi4j.api.composite.Composite;
 import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Module;
 
@@ -51,6 +52,9 @@ public interface JaxWsService extends Activatable, ServiceComposite
         @Structure
         private ObjectBuilderFactory obf;
 
+        @Uses
+        ServiceDescriptor descriptor;
+
         /**
          * This is invoked on the service when the instance is being activated
          *
@@ -59,12 +63,12 @@ public interface JaxWsService extends Activatable, ServiceComposite
         public void activate()
             throws Exception
         {
-            final JaxWsServerFactoryInfo info = metaInfo( JaxWsServerFactoryInfo.class );
+            final JaxWsServerFactoryInfo info = descriptor.metaInfo( JaxWsServerFactoryInfo.class );
             AegisDatabinding dataBinding = new AegisDatabinding();
             createQi4jTypeCreator( dataBinding );
             JaxWsServerFactoryBean svrFactory = new JaxWsServerFactoryBean();
             svrFactory.setDataBinding( dataBinding );
-            svrFactory.setServiceClass( type() );
+            svrFactory.setServiceClass( descriptor.type() );
             svrFactory.setServiceBean( findThisService() );
             if( info != null )
             {
@@ -99,7 +103,7 @@ public interface JaxWsService extends Activatable, ServiceComposite
 
         private Object findThisService()
         {
-            ServiceReference<? extends Composite> reference = module.serviceFinder().findService( type() );
+            ServiceReference<?> reference = module.serviceFinder().findService( descriptor.type() );
             if( reference == null )
             {
                 System.err.println( "Internal Error?? JaxWsService.findThisService()" );

@@ -1,23 +1,22 @@
 package org.qi4j.library.conversion.values;
 
+import org.qi4j.api.Qi4j;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.composite.NoSuchCompositeException;
 import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.entity.association.AssociationDescriptor;
+import org.qi4j.api.entity.association.EntityStateHolder;
+import org.qi4j.api.entity.association.ManyAssociationDescriptor;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.property.PropertyInfo;
-import org.qi4j.functional.Function;
+import org.qi4j.api.property.PropertyDescriptor;
+import org.qi4j.api.structure.Module;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
-import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.entity.EntityDescriptor;
-import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.association.AssociationDescriptor;
-import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
-import org.qi4j.spi.property.PropertyDescriptor;
-import org.qi4j.spi.structure.ModuleSPI;
-import org.qi4j.spi.value.ValueDescriptor;
+import org.qi4j.api.value.ValueDescriptor;
+import org.qi4j.functional.Function;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -34,10 +33,10 @@ public interface EntityToValue
         private ValueBuilderFactory vbf;
 
         @Structure
-        private Qi4jSPI spi;
+        private Qi4j api;
 
         @Structure
-        private ModuleSPI module;
+        private Module module;
 
         public <T> T convert( final Class<T> valueType, Object entity )
         {
@@ -49,34 +48,39 @@ public interface EntityToValue
             Unqualified unqualified = valueDescriptor.metaInfo( Unqualified.class );
             Set<PropertyDescriptor> properties = valueDescriptor.state().properties();
             final EntityComposite composite = (EntityComposite) entity;
-            final EntityDescriptor entityDescriptor = spi.getEntityDescriptor( composite );
-            final EntityState entityState = spi.getEntityState( composite );
-            ValueBuilder builder = vbf.newValueBuilder( valueType );
+            final EntityDescriptor entityDescriptor = api.getEntityDescriptor( composite );
+            final EntityStateHolder entityState = api.getState( composite );
+            ValueBuilder builder;
 
             if( unqualified == null || !unqualified.value() )
             {
-                builder.withState( new Function<PropertyInfo, Object>()
+                builder = vbf.newValueBuilderWithState( valueType, new Function<PropertyDescriptor, Object>()
                 {
                     @Override
-                    public Object map( PropertyInfo propertyInfo )
+                    public Object map( PropertyDescriptor descriptor )
                     {
-                        return entityState.getProperty( propertyInfo.qualifiedName() );
+                        try
+                        {
+                            return entityState.getProperty( descriptor.accessor() ).get();
+                        } catch( IllegalArgumentException e )
+                        {
+                            return null;
+                        }
                     }
-                });
+                } );
             }
             else
             {
-                builder.withState( new Function<PropertyInfo, Object>()
+                builder = vbf.newValueBuilderWithState( valueType, new Function<PropertyDescriptor, Object>()
                 {
                     @Override
-                    public Object map( PropertyInfo propertyInfo )
+                    public Object map( PropertyDescriptor descriptor )
                     {
-                        PropertyDescriptor propertyDescriptor = entityState.entityDescriptor().state().getPropertyByName( propertyInfo.qualifiedName().name() );
+                        PropertyDescriptor propertyDescriptor = entityDescriptor.state().getPropertyByName( descriptor.qualifiedName().name() );
                         if (propertyDescriptor == null)
                             return null;
 
-                        QualifiedName qn = propertyDescriptor.qualifiedName();
-                        return entityState.getProperty( qn );
+                        return entityState.getProperty( propertyDescriptor.accessor() ).get();
                     }
                 });
 /*
@@ -93,19 +97,17 @@ public interface EntityToValue
 
             for( AssociationDescriptor descriptor : entityDescriptor.state().associations() )
             {
-                QualifiedName name = descriptor.qualifiedName();
-                EntityReference value = entityState.getAssociation( name );
-                setUnqualifiedProperty( builder, properties, name, value.toURI() );
+                EntityReference value = EntityReference.getEntityReference( entityState.getAssociation( descriptor.accessor() ).get());
+                setUnqualifiedProperty( builder, properties, descriptor.qualifiedName(), value.toURI() );
             }
             for( ManyAssociationDescriptor descriptor : entityDescriptor.state().manyAssociations() )
             {
                 ArrayList<String> entityURIs = new ArrayList<String>();
-                QualifiedName name = descriptor.qualifiedName();
-                for( EntityReference value : entityState.getManyAssociation( name ) )
+                for( Object value : entityState.getManyAssociation( descriptor.accessor() ) )
                 {
-                    entityURIs.add( value.toURI() );
+                    entityURIs.add( EntityReference.getEntityReference( value ).toURI() );
                 }
-                setUnqualifiedProperty( builder, properties, name, entityURIs );
+                setUnqualifiedProperty( builder, properties, descriptor.qualifiedName(), entityURIs );
             }
 
             return (T) builder.newInstance();

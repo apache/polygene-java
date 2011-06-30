@@ -19,17 +19,17 @@ package org.qi4j.library.eventsourcing.application.source;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.service.Activatable;
+import org.qi4j.api.structure.Module;
+import org.qi4j.api.type.ValueType;
+import org.qi4j.api.value.ValueBuilder;
+import org.qi4j.api.value.ValueBuilderFactory;
+import org.qi4j.functional.Iterables;
 import org.qi4j.io.Input;
 import org.qi4j.io.Inputs;
 import org.qi4j.io.Output;
-import org.qi4j.api.service.Activatable;
-import org.qi4j.functional.Iterables;
-import org.qi4j.api.value.ValueBuilder;
-import org.qi4j.api.value.ValueBuilderFactory;
 import org.qi4j.library.eventsourcing.application.api.ApplicationEvent;
 import org.qi4j.library.eventsourcing.application.api.TransactionApplicationEvents;
-import org.qi4j.spi.property.ValueType;
-import org.qi4j.spi.structure.ModuleSPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,7 +61,7 @@ public abstract class AbstractApplicationEventStoreMixin
     protected Lock lock = new ReentrantLock();
 
     @Structure
-    protected ModuleSPI module;
+    protected Module module;
 
     @Structure
     private ValueBuilderFactory vbf;

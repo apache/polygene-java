@@ -73,7 +73,7 @@ public class StrictX509Realm
         X509Light x509Template = templateFor( X509Light.class );
         x509QueryBuilder = x509QueryBuilder.where( and( eq( x509Template.canonicalIssuerDN(), userCertificate.getIssuerX500Principal().getName( X500Principal.CANONICAL ) ),
                                                         eq( x509Template.hexSerialNumber(), userCertificate.getSerialNumber().toString( 16 ) ) ) );
-        Query<X509Light> x509Query = x509QueryBuilder.newQuery( uow ).maxResults( 1 );
+        Query<X509Light> x509Query = uow.newQuery( x509QueryBuilder ).maxResults( 1 );
         X509Light foundX509 = x509Query.iterator().next();
         if ( foundX509 == null ) {
             return null;
@@ -81,7 +81,7 @@ public class StrictX509Realm
         QueryBuilder<UserEntity> userQueryBuilder = qbf.newQueryBuilder( UserEntity.class );
         UserEntity userTemplate = templateFor( UserEntity.class );
         userQueryBuilder = userQueryBuilder.where( eq( userTemplate.x509().get().identity(), foundX509.identity().get() ) );
-        Query<UserEntity> userQuery = userQueryBuilder.newQuery( uow ).maxResults( 1 );
+        Query<UserEntity> userQuery = uow.newQuery( userQueryBuilder ).maxResults( 1 );
         return userQuery.iterator().next();
     }
 

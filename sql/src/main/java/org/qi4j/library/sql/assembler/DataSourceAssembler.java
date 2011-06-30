@@ -1,10 +1,10 @@
 package org.qi4j.library.sql.assembler;
 
+import org.qi4j.api.service.importer.ServiceInstanceImporter;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.circuitbreaker.CircuitBreaker;
-import org.qi4j.spi.service.importer.ServiceInstanceImporter;
 
 import javax.sql.DataSource;
 import java.net.ConnectException;

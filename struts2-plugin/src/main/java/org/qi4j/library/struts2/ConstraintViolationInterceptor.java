@@ -6,6 +6,7 @@ import com.opensymphony.xwork2.ValidationAware;
 import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
 import com.opensymphony.xwork2.interceptor.PreResultListener;
 import com.opensymphony.xwork2.util.ValueStack;
+import org.qi4j.api.Qi4j;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.constraint.ConstraintViolation;
 import org.qi4j.library.struts2.util.ClassNameFilter;
@@ -146,7 +147,7 @@ public class ConstraintViolationInterceptor
         if( target instanceof Composite )
         {
             Composite composite = (Composite) target;
-            type = composite.type();
+            type = Qi4j.DESCRIPTOR_FUNCTION.map( composite ).type();
         }
         else
         {

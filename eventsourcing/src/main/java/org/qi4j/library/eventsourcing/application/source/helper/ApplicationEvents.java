@@ -16,13 +16,13 @@
 
 package org.qi4j.library.eventsourcing.application.source.helper;
 
+import org.qi4j.api.util.Methods;
+import org.qi4j.functional.Function;
+import org.qi4j.functional.Iterables;
+import org.qi4j.functional.Specification;
 import org.qi4j.io.Output;
 import org.qi4j.io.Receiver;
 import org.qi4j.io.Sender;
-import org.qi4j.functional.Iterables;
-import org.qi4j.functional.Specification;
-import org.qi4j.functional.Function;
-import org.qi4j.api.util.Methods;
 import org.qi4j.library.eventsourcing.application.api.ApplicationEvent;
 import org.qi4j.library.eventsourcing.application.api.TransactionApplicationEvents;
 import org.qi4j.library.eventsourcing.application.replay.ApplicationEventPlayer;

@@ -18,7 +18,6 @@ package org.qi4j.library.spring.bootstrap.internal.service;
 
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Application;
-import org.qi4j.spi.structure.ApplicationSPI;
 import org.springframework.beans.factory.FactoryBean;
 
 import static org.springframework.util.Assert.notNull;
@@ -35,8 +34,7 @@ public final class ServiceFactoryBean
         notNull( aServiceId, "Argument [aServiceId] must not be [null]." );
 
         ServiceLocator serviceLocator = new ServiceLocator( aServiceId );
-        ApplicationSPI spi = (ApplicationSPI) anApplication;
-        spi.model().accept( serviceLocator );
+        anApplication.descriptor().accept( serviceLocator );
         serviceReference = serviceLocator.locateService( anApplication );
 
         if( serviceReference == null )

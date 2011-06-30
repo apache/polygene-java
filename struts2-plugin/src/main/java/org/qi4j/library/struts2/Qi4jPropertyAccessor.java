@@ -1,13 +1,13 @@
 package org.qi4j.library.struts2;
 
 import ognl.*;
+import org.qi4j.api.Qi4j;
 import org.qi4j.api.constraint.ConstraintViolation;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.property.Property;
-import org.qi4j.spi.Qi4jSPI;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -49,7 +49,7 @@ public class Qi4jPropertyAccessor
     private final ObjectMethodAccessor methodAccessor = new ObjectMethodAccessor();
 
     @Structure
-    Qi4jSPI spi;
+    Qi4j api;
 
     @Override
     public final Object getProperty( Map aContext, Object aTarget, Object aPropertyName )
@@ -127,7 +127,7 @@ public class Qi4jPropertyAccessor
                 Property property = (Property) qi4jField;
 
                 OgnlContext ognlContext = (OgnlContext) aContext;
-                Class propertyType = (Class) spi.getPropertyDescriptor( property ).type();
+                Class propertyType = (Class) api.getPropertyDescriptor( property ).type();
                 Object convertedValue = getConvertedType(
                     ognlContext, aTarget, null, fieldName, aPropertyValue, propertyType );
                 try

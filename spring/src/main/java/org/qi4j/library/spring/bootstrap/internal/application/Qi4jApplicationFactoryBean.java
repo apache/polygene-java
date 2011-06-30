@@ -19,7 +19,6 @@ package org.qi4j.library.spring.bootstrap.internal.application;
 import org.qi4j.api.structure.Application;
 import org.qi4j.bootstrap.*;
 import org.qi4j.library.spring.bootstrap.Qi4jApplicationBootstrap;
-import org.qi4j.spi.structure.ApplicationSPI;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.DisposableBean;
@@ -38,7 +37,7 @@ public final class Qi4jApplicationFactoryBean
 
     private final Qi4jApplicationBootstrap applicationBootstrap;
 
-    private ApplicationSPI application;
+    private Application application;
 
     public Qi4jApplicationFactoryBean( final Qi4jApplicationBootstrap applicationBootstrap )
     {
@@ -46,7 +45,7 @@ public final class Qi4jApplicationFactoryBean
         this.applicationBootstrap = applicationBootstrap;
     }
 
-    public final ApplicationSPI getObject() throws Exception
+    public final Application getObject() throws Exception
     {
         if ( this.application == null )
         {
@@ -75,7 +74,7 @@ public final class Qi4jApplicationFactoryBean
         this.getObject().activate();
     }
 
-    private ApplicationSPI createApplication()
+    private Application createApplication()
     {
         Energy4Java energy4Java = new Energy4Java();
         try

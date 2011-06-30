@@ -17,6 +17,7 @@
  */
 package org.qi4j.logging.log.service;
 
+import org.qi4j.api.Qi4j;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.injection.scope.Invocation;
 import org.qi4j.api.sideeffect.SideEffectOf;
@@ -47,7 +48,7 @@ public abstract class LogOnConsoleSideEffect extends SideEffectOf<LoggingService
     {
         String localized = bundle.getString( message );
         String logType = type.get();
-        OUT.println( logType + ":" + category + ":" + composite.type().getName() + ": " + localized );
+        OUT.println( logType + ":" + category + ":" + Qi4j.DESCRIPTOR_FUNCTION.map( composite ).type().getName() + ": " + localized );
     }
 
     public void log( LogType type, Composite composite, String category, String message, Object param1 )
@@ -55,7 +56,7 @@ public abstract class LogOnConsoleSideEffect extends SideEffectOf<LoggingService
         String localized = bundle.getString( message );
         String formatted = MessageFormat.format( localized, param1 );
         String logType = type.get();
-        OUT.println( logType + ":" + category + ":" + composite.type().getName() + ": " + formatted );
+        OUT.println( logType + ":" + category + ":" + Qi4j.DESCRIPTOR_FUNCTION.map( composite ).type().getName() + ": " + formatted );
     }
 
     public void log( LogType type, Composite composite, String category, String message, Object param1, Object param2 )
@@ -63,7 +64,7 @@ public abstract class LogOnConsoleSideEffect extends SideEffectOf<LoggingService
         String localized = bundle.getString( message );
         String formatted = MessageFormat.format( localized, param1, param2 );
         String logtype = type.get();
-        OUT.println( logtype + ":" + category + ":" + composite.type().getName() + ": " + formatted );
+        OUT.println( logtype + ":" + category + ":" + Qi4j.DESCRIPTOR_FUNCTION.map( composite ).type().getName() + ": " + formatted );
     }
 
     public void log( LogType type, Composite composite, String category, String message, Object... params )
@@ -71,6 +72,6 @@ public abstract class LogOnConsoleSideEffect extends SideEffectOf<LoggingService
         String localized = bundle.getString( message );
         String formatted = MessageFormat.format( localized, params );
         String logType = type.get();
-        OUT.println( logType + ":" + category + ":" + composite.type().getName() + ": " + formatted );
+        OUT.println( logType + ":" + category + ":" + Qi4j.DESCRIPTOR_FUNCTION.map( composite ).type().getName() + ": " + formatted );
     }
 }

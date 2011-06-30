@@ -4,14 +4,12 @@ jar { manifest { name = "Qi4j Library - Struts2" }}
 
 dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.api"))
-  compile(project(":org.qi4j.core:org.qi4j.core.spi"))
   compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
   compile(libraries.slf4j_api)
   compile('org.apache.struts:struts2-core:' + strutsVersion)
   compile('javax.servlet:servlet-api:' + servletVersion)
   testCompile(libraries.junit)
   testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
-  testRuntime(project(":org.qi4j.core:org.qi4j.core.spi"))
   testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
   testRuntime(libraries.asm)
   testRuntime(libraries.asm_commons)

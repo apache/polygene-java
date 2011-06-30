@@ -15,10 +15,10 @@
  */
 package org.qi4j.library.circuitbreaker;
 
+import org.qi4j.functional.Specification;
 import org.qi4j.io.Output;
 import org.qi4j.io.Receiver;
 import org.qi4j.io.Sender;
-import org.qi4j.functional.Specification;
 
 /**
  * CircuitBreaker helper methods.

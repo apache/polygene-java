@@ -18,6 +18,7 @@ package org.qi4j.library.eventsourcing.application.replay;
 
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import org.qi4j.api.Qi4j;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
@@ -26,7 +27,6 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.library.eventsourcing.application.api.ApplicationEvent;
-import org.qi4j.spi.Qi4jSPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +53,7 @@ public interface ApplicationEventPlayerService
         Module module;
 
         @Structure
-        Qi4jSPI spi;
+        Qi4j api;
 
         SimpleDateFormat dateFormat = new SimpleDateFormat( "EEE MMM dd HH:mm:ss zzz yyyy" );
 

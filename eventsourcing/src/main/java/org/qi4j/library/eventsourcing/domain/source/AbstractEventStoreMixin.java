@@ -20,15 +20,15 @@ package org.qi4j.library.eventsourcing.domain.source;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.json.JSONDeserializer;
+import org.qi4j.api.service.Activatable;
+import org.qi4j.api.structure.Module;
+import org.qi4j.api.type.ValueType;
 import org.qi4j.io.Output;
 import org.qi4j.io.Receiver;
 import org.qi4j.io.Sender;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.library.eventsourcing.domain.api.DomainEventValue;
 import org.qi4j.library.eventsourcing.domain.api.UnitOfWorkDomainEventsValue;
-import org.qi4j.spi.property.JSONDeserializer;
-import org.qi4j.spi.property.ValueType;
-import org.qi4j.spi.structure.ModuleSPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,7 +59,7 @@ public abstract class AbstractEventStoreMixin
     protected Lock lock = new ReentrantLock();
 
     @Structure
-    protected ModuleSPI module;
+    protected Module module;
 
     protected JSONDeserializer deserializer;
 

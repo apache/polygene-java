@@ -17,17 +17,17 @@ package org.qi4j.library.eventsourcing.domain;
 import org.junit.Test;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.io.Outputs;
-import org.qi4j.io.Transforms;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.usecase.UsecaseBuilder;
-import org.qi4j.functional.Function;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ImportedServiceDeclaration;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.functional.Function;
+import org.qi4j.io.Outputs;
+import org.qi4j.io.Transforms;
 import org.qi4j.library.eventsourcing.domain.api.DomainEvent;
 import org.qi4j.library.eventsourcing.domain.api.DomainEventValue;
 import org.qi4j.library.eventsourcing.domain.api.UnitOfWorkDomainEventsValue;
@@ -88,7 +88,7 @@ public class DomainEventTest
                 {
                     public String map( UnitOfWorkDomainEventsValue unitOfWorkDomainEventsValue )
                     {
-                        return unitOfWorkDomainEventsValue.toJSON();
+                        return unitOfWorkDomainEventsValue.toString();
                     }
                 }, Outputs.systemOut() ));
     }

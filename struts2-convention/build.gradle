@@ -10,7 +10,6 @@ dependencies {
   compile('org.apache.struts:struts2-convention-plugin:' + strutsVersion)
   testCompile(libraries.junit)
   testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
-  testRuntime(project(":org.qi4j.core:org.qi4j.core.spi"))
   testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
   testRuntime(libraries.asm)
   testRuntime(libraries.asm_commons)

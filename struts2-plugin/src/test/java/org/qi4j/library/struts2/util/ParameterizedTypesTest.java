@@ -1,6 +1,5 @@
 package org.qi4j.library.struts2.util;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.lang.reflect.ParameterizedType;

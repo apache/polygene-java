@@ -70,7 +70,7 @@ public class UsernamePasswordRealm
         QueryBuilder<UserEntity> queryBuilder = qbf.newQueryBuilder( UserEntity.class );
         UserEntity userTemplate = templateFor( UserEntity.class );
         queryBuilder = queryBuilder.where( eq( userTemplate.username(), username ) );
-        Query<UserEntity> query = queryBuilder.newQuery( uow ).maxResults( 1 );
+        Query<UserEntity> query = uow.newQuery( queryBuilder ).maxResults( 1 );
         return query.iterator().next();
     }
 

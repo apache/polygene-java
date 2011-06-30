@@ -28,27 +28,22 @@ import org.apache.cxf.aegis.xml.MessageReader;
 import org.apache.cxf.aegis.xml.MessageWriter;
 import org.apache.cxf.common.xmlschema.XmlSchemaUtils;
 import org.apache.ws.commons.schema.*;
+import org.qi4j.api.Qi4j;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.common.TypeName;
+import org.qi4j.api.composite.StateDescriptor;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.object.ObjectBuilder;
 import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.api.property.Property;
-import org.qi4j.api.property.PropertyInfo;
+import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.structure.Module;
 import org.qi4j.api.util.Classes;
+import org.qi4j.api.value.*;
 import org.qi4j.functional.Function;
-import org.qi4j.api.value.NoSuchValueException;
-import org.qi4j.api.value.ValueBuilder;
-import org.qi4j.api.value.ValueBuilderFactory;
-import org.qi4j.api.value.ValueComposite;
-import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.composite.StateDescriptor;
-import org.qi4j.spi.property.PropertyDescriptor;
-import org.qi4j.spi.structure.ModuleSPI;
-import org.qi4j.spi.value.ValueDescriptor;
 
 import javax.xml.namespace.QName;
 import java.lang.reflect.ParameterizedType;
@@ -66,10 +61,10 @@ public class ValueCompositeCxfType extends AegisType
     private ObjectBuilderFactory obf;
 
     @Structure
-    private ModuleSPI module;
+    private Module module;
 
     @Structure
-    Qi4jSPI spi;
+    Qi4j api;
 
     public ValueCompositeCxfType( @Uses Type type, @Uses TypeMapping typeMapping )
     {
@@ -84,7 +79,7 @@ public class ValueCompositeCxfType extends AegisType
     {
         QName qname = getSchemaType();
         final String className = ( qname.getNamespaceURI() + "." + qname.getLocalPart() ).substring( 20 );
-        ValueBuilder<?> builder = vbf.newValueBuilder( (Class<?>) typeClass );
+
         // Read attributes
         ValueDescriptor descriptor = module.valueDescriptor( className );
         StateDescriptor stateDescriptor = descriptor.state();
@@ -103,14 +98,14 @@ public class ValueCompositeCxfType extends AegisType
             values.put( childQualifiedName, value );
         }
 
-        builder.withState( new Function<PropertyInfo, Object>()
+        ValueBuilder<?> builder = vbf.newValueBuilderWithState( (Class<?>) typeClass, new Function<PropertyDescriptor, Object>()
         {
             @Override
-            public Object map( PropertyInfo propertyInfo )
+            public Object map( PropertyDescriptor descriptor1 )
             {
-                return values.get( propertyInfo.qualifiedName() );
+                return values.get( descriptor1.qualifiedName() );
             }
-        });
+        } );
 
 
         return builder.newInstance();
@@ -121,8 +116,8 @@ public class ValueCompositeCxfType extends AegisType
         throws DatabindingException
     {
         ValueComposite composite = (ValueComposite) object;
-        writer.writeXsiType( NamespaceUtil.convertJavaTypeToQName( composite.type() ) );
-        StateHolder state = composite.state();
+        writer.writeXsiType( NamespaceUtil.convertJavaTypeToQName( Qi4j.DESCRIPTOR_FUNCTION.map( composite ).type() ) );
+        StateHolder state = Qi4j.INSTANCE_FUNCTION.map( composite).state();
         for( Property<?> property : state.properties() )
         {
             Object value = property.get();
@@ -130,7 +125,7 @@ public class ValueCompositeCxfType extends AegisType
             if( value instanceof ValueComposite )
             {
                 ValueComposite compositeValue = (ValueComposite) value;
-                type = getTypeMapping().getType( NamespaceUtil.convertJavaTypeToQName( compositeValue.type() ) );
+                type = getTypeMapping().getType( NamespaceUtil.convertJavaTypeToQName( Qi4j.DESCRIPTOR_FUNCTION.map( compositeValue ).type() ) );
             }
             else
             {
@@ -140,7 +135,7 @@ public class ValueCompositeCxfType extends AegisType
                 }
             }
 
-            QName childName = new QName( "", spi.getPropertyDescriptor( property ).qualifiedName().name() );
+            QName childName = new QName( "", api.getPropertyDescriptor( property ).qualifiedName().name() );
             MessageWriter cwriter = writer.getElementWriter( childName );
             if( type != null )
             {

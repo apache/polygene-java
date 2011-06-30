@@ -1,10 +1,10 @@
 package org.qi4j.library.sql.datasource;
 
+import org.qi4j.functional.Visitor;
 import org.qi4j.io.Input;
 import org.qi4j.io.Output;
 import org.qi4j.io.Receiver;
 import org.qi4j.io.Sender;
-import org.qi4j.functional.Visitor;
 
 import javax.sql.DataSource;
 import java.sql.Connection;

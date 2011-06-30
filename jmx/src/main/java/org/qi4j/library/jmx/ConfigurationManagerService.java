@@ -14,35 +14,31 @@
 
 package org.qi4j.library.jmx;
 
-import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.Qi4j;
 import org.qi4j.api.configuration.Configuration;
-import org.qi4j.api.entity.Entity;
 import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.association.EntityStateHolder;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.property.PersistentPropertyDescriptor;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Application;
+import org.qi4j.api.structure.Module;
+import org.qi4j.api.type.EnumType;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.entity.EntityDescriptor;
-import org.qi4j.spi.property.EnumType;
-import org.qi4j.spi.property.PersistentPropertyDescriptor;
-import org.qi4j.spi.property.PropertyDescriptor;
-import org.qi4j.spi.service.ServiceDescriptor;
-import org.qi4j.spi.structure.ModuleSPI;
-import sun.reflect.MethodAccessor;
 
 import javax.management.*;
 import javax.management.modelmbean.DescriptorSupport;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.*;
 
 /**
@@ -65,7 +61,7 @@ public interface ConfigurationManagerService
         Application application;
 
         @Structure
-        Qi4jSPI spi;
+        Qi4j api;
 
         @Service
         Iterable<ServiceReference<Configuration>> configurableServices;
@@ -86,8 +82,8 @@ public interface ConfigurationManagerService
             {
                 String serviceClass = configurableService.get().getClass().getInterfaces()[ 0 ].getName();
                 String name = configurableService.identity();
-                ServiceDescriptor serviceDescriptor = spi.getServiceDescriptor( configurableService );
-                ModuleSPI module = (ModuleSPI) spi.getModule( configurableService );
+                ServiceDescriptor serviceDescriptor = api.getServiceDescriptor( configurableService );
+                Module module = api.getModule( configurableService );
                 Class<Object> configurationClass = serviceDescriptor.configurationType();
                 if (configurationClass != null)
                 {
@@ -183,8 +179,8 @@ public interface ConfigurationManagerService
                 UnitOfWork uow = uowf.newUnitOfWork();
                 try
                 {
-                    Entity configuration = uow.get( Entity.class, identity );
-                    EntityStateHolder state = spi.getState( (EntityComposite) configuration );
+                    EntityComposite configuration = uow.get( EntityComposite.class, identity );
+                    EntityStateHolder state = api.getState( configuration );
                     AccessibleObject accessor = propertyNames.get( name );
                     Property<Object> property = state.getProperty( accessor );
                     Object object = property.get();
@@ -210,11 +206,11 @@ public interface ConfigurationManagerService
                 UnitOfWork uow = uowf.newUnitOfWork();
                 try
                 {
-                    Entity configuration = uow.get( Entity.class, identity );
-                    EntityStateHolder state = spi.getState( (EntityComposite) configuration );
+                    EntityComposite configuration = uow.get( EntityComposite.class, identity );
+                    EntityStateHolder state = api.getState( (EntityComposite) configuration );
                     AccessibleObject accessor = propertyNames.get( attribute.getName() );
                     Property<Object> property = state.getProperty( accessor );
-                    PropertyDescriptor propertyDescriptor = spi.getPropertyDescriptor( property );
+                    PropertyDescriptor propertyDescriptor = api.getPropertyDescriptor( property );
                     if( EnumType.isEnum( propertyDescriptor.type() ))
                     {
                         property.set( Enum.valueOf( (Class<Enum>) propertyDescriptor.type(), attribute.getValue().toString() ) );

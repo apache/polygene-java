@@ -16,13 +16,11 @@ package org.qi4j.library.servlet.lifecycle;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.structure.Application;
+import org.qi4j.api.structure.ApplicationDescriptor;
 import org.qi4j.bootstrap.ApplicationAssembler;
 import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.library.servlet.Qi4jServlet;
 import org.qi4j.library.servlet.Qi4jServletSupport;
-import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.structure.ApplicationModelSPI;
-import org.qi4j.spi.structure.ApplicationSPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,11 +65,10 @@ public abstract class AbstractQi4jServletBootstrap
     private static final Logger LOGGER = LoggerFactory.getLogger( Qi4jServlet.class.getPackage().getName() );
     // Qi4j Runtime
     protected Qi4j api;
-    protected Qi4jSPI spi;
     protected Energy4Java qi4j;
     // Qi4j Application
-    protected ApplicationModelSPI applicationModel;
-    protected ApplicationSPI application;
+    protected ApplicationDescriptor applicationModel;
+    protected Application application;
 
     public final void contextInitialized( ServletContextEvent sce )
     {
@@ -84,9 +81,8 @@ public abstract class AbstractQi4jServletBootstrap
             applicationModel = qi4j.newApplicationModel( this );
 
             LOGGER.trace( "Instanciating and activating Application" );
-            application = applicationModel.newInstance( qi4j.spi() );
-            spi = qi4j.spi();
-            api = spi;
+            application = applicationModel.newInstance( qi4j.api() );
+            api = qi4j.api();
             beforeApplicationActivation( application );
             application.activate();
             afterApplicationActivation( application );

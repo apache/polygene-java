@@ -9,7 +9,6 @@ xmlSchemaVersion = '1.4.7'
 
 dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.api"))
-  compile(project(":org.qi4j.core:org.qi4j.core.spi"))
   compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
   compile(libraries.slf4j_api)
   compile('org.apache.cxf:cxf-api:' + cxfVersion)

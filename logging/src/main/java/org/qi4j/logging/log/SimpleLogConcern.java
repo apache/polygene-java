@@ -40,7 +40,7 @@ public final class SimpleLogConcern
     public SimpleLogConcern( @This Composite composite, @Structure TransientBuilderFactory cbf )
     {
         this.composite = composite;
-        Class<?> type = composite.type();
+        Class<?> type = Qi4j.DESCRIPTOR_FUNCTION.map( composite ).type();
         category = type.getName();
         types = cbf.newTransient( LogTypes.class );
     }

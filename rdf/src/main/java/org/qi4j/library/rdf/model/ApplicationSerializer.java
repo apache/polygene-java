@@ -22,7 +22,6 @@ import org.openrdf.model.impl.GraphImpl;
 import org.qi4j.api.structure.Application;
 import org.qi4j.library.rdf.serializer.RdfXmlSerializer;
 import org.qi4j.library.rdf.serializer.SerializerContext;
-import org.qi4j.spi.structure.ApplicationSPI;
 
 import java.io.PrintWriter;
 
@@ -33,7 +32,7 @@ public class ApplicationSerializer
         Graph graph = new GraphImpl();
         SerializerContext context = new SerializerContext( graph );
         ApplicationVisitor applicationVisitor = new ApplicationVisitor( context );
-        ( (ApplicationSPI) app ).model().accept( applicationVisitor );
+        ( (Application) app ).descriptor().accept( applicationVisitor );
         return graph;
     }
 

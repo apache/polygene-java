@@ -13,7 +13,7 @@
  */
 package org.qi4j.library.rest;
 
-import org.qi4j.api.entity.Entity;
+import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.spi.entitystore.EntityStore;
@@ -97,7 +97,7 @@ public class EntitiesResource extends ServerResource
     {
         try
         {
-            final Iterable<EntityReference> query = entityFinder.findEntities( Entity.class, null, null, null, null, Collections.<String, Object>emptyMap() );
+            final Iterable<EntityReference> query = entityFinder.findEntities( EntityComposite.class, null, null, null, null, Collections.<String, Object>emptyMap() );
 
             DomRepresentation representation = new DomRepresentation( MediaType.TEXT_XML );
             // Generate a DOM document representing the item.
@@ -128,7 +128,7 @@ public class EntitiesResource extends ServerResource
     {
         try
         {
-            final Iterable<EntityReference> query = entityFinder.findEntities( Entity.class, null, null, null, null, Collections.<String, Object>emptyMap() );
+            final Iterable<EntityReference> query = entityFinder.findEntities( EntityComposite.class, null, null, null, null, Collections.<String, Object>emptyMap() );
 
             WriterRepresentation representation = new WriterRepresentation( MediaType.APPLICATION_RDF_XML )
             {
@@ -165,7 +165,7 @@ public class EntitiesResource extends ServerResource
     {
         try
         {
-            final Iterable<EntityReference> query = entityFinder.findEntities( Entity.class, null, null, null, null, Collections.<String, Object>emptyMap() );
+            final Iterable<EntityReference> query = entityFinder.findEntities( EntityComposite.class, null, null, null, null, Collections.<String, Object>emptyMap() );
             Representation representation = new WriterRepresentation( MediaType.TEXT_HTML )
             {
                 public void write( Writer buf )
@@ -200,7 +200,7 @@ public class EntitiesResource extends ServerResource
             Feed feed = new Feed();
             feed.setTitle( new Text( MediaType.TEXT_PLAIN, "All entities" ) );
             List<Entry> entries = feed.getEntries();
-            final Iterable<EntityReference> query = entityFinder.findEntities( Entity.class, null, null, null, null, Collections.<String, Object>emptyMap() );
+            final Iterable<EntityReference> query = entityFinder.findEntities( EntityComposite.class, null, null, null, null, Collections.<String, Object>emptyMap() );
             for( EntityReference entityReference : query )
             {
                 Entry entry = new Entry();

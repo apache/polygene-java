@@ -18,7 +18,6 @@ import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.library.sql.ds.DataSourceService;
 
 import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;

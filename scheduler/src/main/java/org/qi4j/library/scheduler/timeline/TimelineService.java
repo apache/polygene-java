@@ -19,13 +19,13 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryBuilderFactory;
+import org.qi4j.api.query.grammar.EqSpecification;
 import org.qi4j.api.query.grammar.OrderBy;
-import org.qi4j.api.query.grammar2.EqSpecification;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-import org.qi4j.functional.Iterables;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
+import org.qi4j.functional.Iterables;
 import org.qi4j.library.scheduler.Scheduler;
 import org.qi4j.library.scheduler.SchedulerService;
 import org.qi4j.library.scheduler.schedule.ScheduleEntity;
@@ -68,7 +68,7 @@ public interface TimelineService
             QueryBuilder<TimelineRecord> builder = qbf.newQueryBuilder( TimelineRecord.class );
             TimelineRecord template = templateFor( TimelineRecord.class );
             builder = builder.where( eqSchedulerIdentity( template ) );
-            return builder.newQuery( uowf.currentUnitOfWork() ).
+            return uowf.currentUnitOfWork().newQuery( builder ).
                     orderBy( orderBy( template.timestamp(), DESCENDING ) ).
                     maxResults( maxResults );
         }
@@ -81,7 +81,7 @@ public interface TimelineService
             QueryBuilder<ScheduleEntity> queryBuilder = qbf.newQueryBuilder( ScheduleEntity.class );
             queryBuilder = queryBuilder.where( and( eqSchedulerIdentity( template ),
                                                     ge( template.nextRun(), System.currentTimeMillis() ) ) );
-            Query<ScheduleEntity> query = queryBuilder.newQuery( uowf.currentUnitOfWork() );
+            Query<ScheduleEntity> query = uowf.currentUnitOfWork().newQuery( queryBuilder );
             query = query.orderBy( orderByNextRun ).maxResults( maxResults );
 
             if ( query.count() == 0 ) {
@@ -143,7 +143,7 @@ public interface TimelineService
                                           ge( template.timestamp(), from ),
                                           le( template.timestamp(), to ) ) );
             OrderBy order = orderBy( template.timestamp() );
-            Iterable<TimelineRecord> pastRecords = builder.newQuery( uowf.currentUnitOfWork() ).orderBy( order );
+            Iterable<TimelineRecord> pastRecords = uowf.currentUnitOfWork().newQuery( builder ).orderBy( order );
 
             if ( to >= now ) {
                 // Mixed past records and future runs
@@ -164,7 +164,7 @@ public interface TimelineService
                                                     ge( template.nextRun(), from ),
                                                     le( template.nextRun(), to ) ) );
             OrderBy order = orderBy( template.nextRun() );
-            Query<ScheduleEntity> query = queryBuilder.newQuery( uowf.currentUnitOfWork() ).orderBy( order );
+            Query<ScheduleEntity> query = uowf.currentUnitOfWork().newQuery( queryBuilder ).orderBy( order );
 
             SortedSet<TimelineRecord> futureRuns = new TreeSet<TimelineRecord>();
             for ( ScheduleEntity eachSchedule : query ) {

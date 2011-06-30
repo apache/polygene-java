@@ -17,20 +17,21 @@
 
 package org.qi4j.library.eventsourcing.domain.factory;
 
+import org.qi4j.api.Qi4j;
 import org.qi4j.api.concern.ConcernOf;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
-import org.qi4j.io.Inputs;
-import org.qi4j.io.Output;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCallback;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-import org.qi4j.functional.Iterables;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
+import org.qi4j.functional.Iterables;
+import org.qi4j.io.Inputs;
+import org.qi4j.io.Output;
 import org.qi4j.library.eventsourcing.domain.api.DomainEventValue;
 import org.qi4j.library.eventsourcing.domain.api.UnitOfWorkDomainEventsValue;
 import org.qi4j.library.eventsourcing.domain.source.EventStore;
@@ -63,6 +64,9 @@ public class UnitOfWorkNotificationConcern
     @Structure
     UnitOfWorkFactory uowf;
 
+    @Structure
+    Qi4j api;
+
     String version;
 
     Logger logger = LoggerFactory.getLogger( DomainEventFactory.class );
@@ -79,7 +83,7 @@ public class UnitOfWorkNotificationConcern
     {
         final UnitOfWork unitOfWork = uowf.currentUnitOfWork();
 
-        DomainEventValue eventValue = next.createEvent( entity, name, args );
+        DomainEventValue eventValue = next.createEvent( api.dereference( entity ), name, args );
 
         // Add eventValue to list in UoW
         UnitOfWorkEvents events = unitOfWork.metaInfo().get( UnitOfWorkEvents.class );

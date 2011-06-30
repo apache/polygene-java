@@ -19,8 +19,7 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryBuilderFactory;
-import org.qi4j.api.query.grammar.EqualsPredicate;
-import org.qi4j.api.query.grammar2.EqSpecification;
+import org.qi4j.api.query.grammar.EqSpecification;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.library.scheduler.SchedulerService;
@@ -57,7 +56,7 @@ public interface ScheduleRepository
             ScheduleEntity template = templateFor( ScheduleEntity.class );
             builder = builder.where( and( eqSchedulerIdentity( template ),
                                           eq( template.durable(), false ) ) );
-            return builder.newQuery( uowf.currentUnitOfWork() );
+            return uowf.currentUnitOfWork().newQuery( builder );
         }
 
         public Query<ScheduleEntity> findRunning()
@@ -66,7 +65,7 @@ public interface ScheduleRepository
             ScheduleEntity template = templateFor( ScheduleEntity.class );
             builder = builder.where( and( eqSchedulerIdentity( template ),
                                           eq( template.running(), true ) ) );
-            return builder.newQuery( uowf.currentUnitOfWork() );
+            return uowf.currentUnitOfWork().newQuery( builder );
         }
 
         public Query<ScheduleEntity> findRunnables( Long from, Long to )
@@ -77,7 +76,7 @@ public interface ScheduleRepository
                                           eq( template.running(), false ),
                                           ge( template.nextRun(), from ),
                                           lt( template.nextRun(), to ) ) );
-            return builder.newQuery( uowf.currentUnitOfWork() ).orderBy( orderBy( template.nextRun() ) );
+            return uowf.currentUnitOfWork().newQuery( builder ).orderBy( orderBy( template.nextRun() ) );
         }
 
         public Query<ScheduleEntity> findNotDurableWithoutNextRun()
@@ -87,7 +86,7 @@ public interface ScheduleRepository
             builder = builder.where( and( eqSchedulerIdentity( template ),
                                           eq( template.durable(), false ),
                                           isNull( template.nextRun() ) ) );
-            return builder.newQuery( uowf.currentUnitOfWork() );
+            return uowf.currentUnitOfWork().newQuery( builder );
         }
 
         private EqSpecification<String> eqSchedulerIdentity( ScheduleEntity template )

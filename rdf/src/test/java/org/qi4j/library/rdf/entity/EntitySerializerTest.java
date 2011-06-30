@@ -108,7 +108,7 @@ public class EntitySerializerTest
             niclasTemplate.group().add( 0, testEntity );
             niclasTemplate.group().add( 0, testEntity );
             niclasTemplate.group().add( 0, testEntity );
-            valueBuilder = testValue.buildWith();
+            valueBuilder = valueBuilderFactory.newValueBuilderWithPrototype( testValue );
             valueBuilder.prototype().test1().set( 5L );
             testValue = valueBuilder.newInstance();
             niclasTemplate.value().set( testValue );

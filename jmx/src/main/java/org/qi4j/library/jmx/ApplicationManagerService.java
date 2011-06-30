@@ -14,23 +14,18 @@
 
 package org.qi4j.library.jmx;
 
+import org.qi4j.api.composite.TransientDescriptor;
+import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.Activatable;
+import org.qi4j.api.object.ObjectDescriptor;
+import org.qi4j.api.service.*;
+import org.qi4j.api.service.qualifier.ServiceQualifier;
+import org.qi4j.api.structure.*;
+import org.qi4j.api.value.ValueDescriptor;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.functional.Iterables;
-import org.qi4j.spi.service.ImportedServiceDescriptor;
-import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.api.service.ServiceReference;
-import org.qi4j.api.service.qualifier.ServiceQualifier;
-import org.qi4j.api.structure.Module;
-import org.qi4j.spi.composite.TransientDescriptor;
-import org.qi4j.spi.entity.EntityDescriptor;
-import org.qi4j.spi.object.ObjectDescriptor;
-import org.qi4j.spi.service.ServiceDescriptor;
-import org.qi4j.spi.structure.*;
-import org.qi4j.spi.value.ValueDescriptor;
 
 import javax.management.MBeanOperationInfo;
 import javax.management.MBeanServer;
@@ -70,16 +65,16 @@ public interface ApplicationManagerService
         public MBeanServer server;
 
         @Structure
-        public ApplicationSPI application;
+        public Application application;
 
         private List<ObjectName> mbeans = new ArrayList<ObjectName>( );
 
         public void activate() throws Exception
         {
-            application.model().accept( new HierarchicalVisitor<Object, Object, Exception>()
+            application.descriptor().accept( new HierarchicalVisitor<Object, Object, Exception>()
             {
-                LayerSPI layer;
-                ModuleSPI module;
+                Layer layer;
+                Module module;
                 Stack<ObjectName> names = new Stack<ObjectName>();
 
                 @Override
@@ -88,7 +83,7 @@ public interface ApplicationManagerService
                     if (visited instanceof LayerDescriptor)
                     {
                         LayerDescriptor layerDescriptor = (LayerDescriptor) visited;
-                        layer = (LayerSPI) application.findLayer( layerDescriptor.name() );
+                        layer = application.findLayer( layerDescriptor.name() );
 
                         LayerBean layerBean = new LayerBean(layer, layerDescriptor);
                         ObjectName objectName = new ObjectName( "Qi4j:application="+application.name()+",layer="+layer.name() );
@@ -107,7 +102,7 @@ public interface ApplicationManagerService
                     } else if (visited instanceof ModuleDescriptor)
                     {
                         ModuleDescriptor moduleDescriptor = (ModuleDescriptor) visited;
-                        module = (ModuleSPI) application.findModule( layer.name(), moduleDescriptor.name() );
+                        module = (Module) application.findModule( layer.name(), moduleDescriptor.name() );
                         ObjectName objectName = new ObjectName( names.peek().toString()+",module="+moduleDescriptor.name() );
                         names.push( objectName );
                         RequiredModelMBean mbean = new ModelMBeanBuilder( objectName, moduleDescriptor.name(), moduleDescriptor.getClass().getName()).
@@ -234,11 +229,11 @@ public interface ApplicationManagerService
 
     public static class LayerBean
     {
-        private final LayerSPI layer;
+        private final Layer layer;
         private final LayerDescriptor layerDescriptor;
         private String uses;
 
-        public LayerBean( LayerSPI layer, LayerDescriptor layerDescriptor)
+        public LayerBean( Layer layer, LayerDescriptor layerDescriptor)
         {
             this.layer = layer;
             this.layerDescriptor = layerDescriptor;

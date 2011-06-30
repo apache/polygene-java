@@ -27,6 +27,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.json.JSONWriterSerializer;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
@@ -38,6 +39,7 @@ import org.qi4j.library.fileconfig.FileConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Properties;
 
@@ -181,9 +183,20 @@ public interface JdbmEventStoreService
                             @Override
                             public void receive( UnitOfWorkDomainEventsValue item ) throws IOException
                             {
-                                String jsonString = item.toJSON();
-                                currentCount++;
-                                index.insert( currentCount, jsonString.getBytes( "UTF-8" ), false );
+                                StringWriter string = new StringWriter( );
+                                try
+                                {
+                                    JSONWriterSerializer jsonWriterSerializer = new JSONWriterSerializer( string );
+                                    jsonWriterSerializer.serialize( item );
+
+                                    String jsonString = string.toString();
+                                    currentCount++;
+                                    index.insert( currentCount, jsonString.getBytes( "UTF-8" ), false );
+                                }
+                                catch( JSONException e )
+                                {
+                                    throw new IllegalStateException( "Could not JSON serialize value", e );
+                                }
                             }
                         });
                         recordManager.commit();

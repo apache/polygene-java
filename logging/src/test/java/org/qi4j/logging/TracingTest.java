@@ -72,7 +72,7 @@ public class TracingTest
         assertEquals( 456, sc.doSomethingLessImportant() );
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         QueryBuilder<TraceRecord> builder = queryBuilderFactory.newQueryBuilder( TraceRecord.class );
-        Query<TraceRecord> query = builder.newQuery( uow );
+        Query<TraceRecord> query = uow.newQuery( builder );
         // IS sorting needed??
 //        TraceRecord template = templateFor( TraceRecord.class );
 //        query.orderBy( orderBy( template.methodName() ) );
@@ -93,7 +93,7 @@ public class TracingTest
         assertEquals( 456, sc.doSomethingLessImportant() );
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         QueryBuilder<TraceRecord> builder = queryBuilderFactory.newQueryBuilder( TraceRecord.class );
-        Query<TraceRecord> query = builder.newQuery( uow );
+        Query<TraceRecord> query = uow.newQuery( builder );
         // IS sorting needed??
 //        TraceRecord template = templateFor( TraceRecord.class );
 //        query.orderBy( orderBy( template.methodName() ) );
@@ -119,7 +119,7 @@ public class TracingTest
         try
         {
             QueryBuilder<TraceRecord> builder = queryBuilderFactory.newQueryBuilder( TraceRecord.class );
-            Query<TraceRecord> query = builder.newQuery( uow );
+            Query<TraceRecord> query = uow.newQuery( builder );
             // IS sorting needed??
             TraceRecord template = templateFor( TraceRecord.class );
             query.orderBy( orderBy( template.methodName() ) );
@@ -156,7 +156,7 @@ public class TracingTest
         assertEquals( 753, sc.doSomethingInsanelyImportant() );
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         QueryBuilder<TraceRecord> builder = queryBuilderFactory.newQueryBuilder( TraceRecord.class );
-        Query<TraceRecord> query = builder.newQuery( uow );
+        Query<TraceRecord> query = uow.newQuery( builder );
         // IS sorting needed??
 //        TraceRecord template = templateFor( TraceRecord.class );
 //        query.orderBy( orderBy( template.methodName() ) );

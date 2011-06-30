@@ -3,9 +3,11 @@ package org.qi4j.library.osgi;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.util.Classes;
@@ -21,6 +23,9 @@ public interface OSGiEnabledService extends Activatable, ServiceComposite
     public abstract class OSGiEnabledServiceMixin
         implements OSGiEnabledService
     {
+        @Uses
+        ServiceDescriptor descriptor;
+
         @Structure
         private Module module;
 
@@ -29,18 +34,18 @@ public interface OSGiEnabledService extends Activatable, ServiceComposite
         public void activate()
             throws Exception
         {
-            BundleContext context = metaInfo( BundleContext.class );
+            BundleContext context = descriptor.metaInfo( BundleContext.class );
             if( context == null )
             {
                 return;
             }
-            Iterable<ServiceReference<Object>> services = module.serviceFinder().findServices( (Class)type() );
+            Iterable<ServiceReference<Object>> services = module.serviceFinder().<Object>findServices( descriptor.type() );
             for( ServiceReference ref : services )
             {
                 if( ref.identity().equals( identity().get() ) )
                 {
-                    Iterable<Type> classesSet = Classes.TYPES_OF.map( type() );
-                    Dictionary properties = metaInfo( Dictionary.class );
+                    Iterable<Type> classesSet = Classes.TYPES_OF.map( descriptor.type() );
+                    Dictionary properties = descriptor.metaInfo( Dictionary.class );
                     String[] clazzes = fetchInterfacesImplemented( classesSet );
                     registration = context.registerService( clazzes, ref.get(), properties );
                 }

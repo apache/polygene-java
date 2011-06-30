@@ -14,15 +14,15 @@
 
 package org.qi4j.library.rest;
 
+import org.qi4j.api.structure.Application;
 import org.qi4j.bootstrap.Energy4Java;
-import org.qi4j.spi.structure.ApplicationSPI;
 
 /**
  * JAVADOC
  */
 public class Main
 {
-    private ApplicationSPI application;
+    private Application application;
 
     public static void main( String[] args )
         throws Exception
@@ -38,7 +38,7 @@ public class Main
         application.activate();
     }
 
-    public ApplicationSPI application()
+    public Application application()
     {
         return application;
     }

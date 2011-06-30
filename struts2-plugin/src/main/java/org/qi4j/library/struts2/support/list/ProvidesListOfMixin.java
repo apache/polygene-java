@@ -44,7 +44,7 @@ public abstract class ProvidesListOfMixin<T>
     {
         UnitOfWork uow = uowf.currentUnitOfWork();
         QueryBuilder<T> qb = qbf.newQueryBuilder( typeToList() );
-        results = qb.newQuery( uow );
+        results = uow.newQuery( qb );
     }
 
     private Class<T> typeToList()

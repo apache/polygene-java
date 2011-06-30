@@ -18,11 +18,11 @@
 
 package org.qi4j.library.cxf.divs;
 
+import org.qi4j.api.structure.Application;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.library.cxf.CxfAssembler;
-import org.qi4j.spi.structure.ApplicationSPI;
 
 public class DividendsMain
 {
@@ -40,7 +40,7 @@ public class DividendsMain
                 new CxfAssembler().assemble( module );
             }
         };
-        final ApplicationSPI application = assembler.application();
+        final Application application = assembler.application();
         Runtime.getRuntime().addShutdownHook( new Thread()
         {
             @Override

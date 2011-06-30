@@ -21,6 +21,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
 import org.json.JSONWriter;
+import org.qi4j.api.Qi4j;
 import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.injection.scope.Structure;
@@ -50,7 +51,7 @@ public interface DomainEventFactoryService
 
             DomainEventValue prototype = builder.prototype();
             prototype.name().set( name );
-            prototype.entityType().set( entity.type().getName() );
+            prototype.entityType().set( Qi4j.DESCRIPTOR_FUNCTION.map( entity ).type().getName() );
             prototype.entityId().set( entity.identity().get() );
 
             // JSON-ify parameters

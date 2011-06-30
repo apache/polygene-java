@@ -19,8 +19,8 @@ package org.qi4j.library.circuitbreaker.service;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.mixin.Initializable;
 import org.qi4j.api.mixin.InitializationException;
+import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.library.circuitbreaker.CircuitBreaker;
-import org.qi4j.spi.service.ServiceDescriptor;
 
 /**
  * Helper implementation of ServiceCircuitBreaker. Fetches the CircuitBreaker from meta-info

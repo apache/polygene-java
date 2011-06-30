@@ -1,30 +1,27 @@
 package org.qi4j.library.sql.jmx;
 
-import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.entity.Entity;
+import org.qi4j.api.Qi4j;
 import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.association.EntityStateHolder;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.property.PersistentPropertyDescriptor;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Application;
+import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.library.sql.datasource.DataSourceConfiguration;
 import org.qi4j.library.sql.datasource.DataSourceService;
-import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.entity.EntityDescriptor;
-import org.qi4j.spi.property.PersistentPropertyDescriptor;
-import org.qi4j.spi.structure.ModuleSPI;
 
 import javax.management.*;
 import javax.sql.DataSource;
 import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -47,7 +44,7 @@ public interface DataSourceConfigurationManagerService
       MBeanServer server;
 
       @Structure
-      Qi4jSPI spi;
+      Qi4j api;
 
       @Structure
       Application application;
@@ -70,7 +67,7 @@ public interface DataSourceConfigurationManagerService
          for (ServiceReference<DataSource> dataSource : dataSources)
          {
             String name = dataSource.identity();
-            ModuleSPI module = (ModuleSPI) spi.getModule( dataSource );
+            Module module = (Module) api.getModule( dataSource );
             EntityDescriptor descriptor = module.entityDescriptor( DataSourceConfiguration.class.getName() );
             List<MBeanAttributeInfo> attributes = new ArrayList<MBeanAttributeInfo>();
             Map<String, AccessibleObject> properties = new LinkedHashMap<String, AccessibleObject>();
@@ -123,8 +120,8 @@ public interface DataSourceConfigurationManagerService
             UnitOfWork uow = uowf.newUnitOfWork();
             try
             {
-               Entity configuration = uow.get( Entity.class, identity );
-               EntityStateHolder state = spi.getState( (EntityComposite) configuration );
+               EntityComposite configuration = uow.get( EntityComposite.class, identity );
+               EntityStateHolder state = api.getState( configuration );
                AccessibleObject accessor = propertyNames.get( name );
                Property<Object> property = state.getProperty( accessor );
                return property.get();
@@ -142,8 +139,8 @@ public interface DataSourceConfigurationManagerService
             UnitOfWork uow = uowf.newUnitOfWork();
             try
             {
-               Entity configuration = uow.get( Entity.class, identity );
-               EntityStateHolder state = spi.getState( (EntityComposite) configuration );
+               EntityComposite configuration = uow.get( EntityComposite.class, identity );
+               EntityStateHolder state = api.getState( configuration );
                AccessibleObject accessor = propertyNames.get( attribute.getName() );
                Property<Object> property = state.getProperty( accessor );
                property.set( attribute.getValue() );

@@ -16,10 +16,10 @@
 
 package org.qi4j.library.eventsourcing.domain.source.helper;
 
+import org.qi4j.api.util.Methods;
+import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specification;
-import org.qi4j.functional.Function;
-import org.qi4j.api.util.Methods;
 import org.qi4j.library.eventsourcing.domain.api.DomainEventValue;
 import org.qi4j.library.eventsourcing.domain.api.UnitOfWorkDomainEventsValue;
 

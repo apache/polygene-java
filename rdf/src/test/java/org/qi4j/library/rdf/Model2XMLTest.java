@@ -3,9 +3,9 @@ package org.qi4j.library.rdf;
 import org.junit.Test;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.TransientComposite;
+import org.qi4j.api.structure.ApplicationDescriptor;
 import org.qi4j.bootstrap.*;
 import org.qi4j.library.rdf.model.Model2XML;
-import org.qi4j.spi.structure.ApplicationModelSPI;
 import org.w3c.dom.Document;
 
 import javax.xml.transform.Transformer;
@@ -23,7 +23,7 @@ public class Model2XMLTest
     public void testModel2XML() throws AssemblyException, TransformerException
     {
         Energy4Java is = new Energy4Java(  );
-        ApplicationModelSPI model = is.newApplicationModel( new ApplicationAssembler()
+        ApplicationDescriptor model = is.newApplicationModel( new ApplicationAssembler()
         {
             @Override
             public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory ) throws AssemblyException

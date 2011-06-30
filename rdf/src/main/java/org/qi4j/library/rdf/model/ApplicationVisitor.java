@@ -14,16 +14,16 @@
 
 package org.qi4j.library.rdf.model;
 
+import org.qi4j.api.composite.MethodDescriptor;
+import org.qi4j.api.composite.TransientDescriptor;
+import org.qi4j.api.entity.EntityDescriptor;
+import org.qi4j.api.object.ObjectDescriptor;
+import org.qi4j.api.structure.ApplicationDescriptor;
+import org.qi4j.api.structure.LayerDescriptor;
+import org.qi4j.api.structure.ModuleDescriptor;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.library.rdf.Qi4jRdf;
 import org.qi4j.library.rdf.serializer.SerializerContext;
-import org.qi4j.spi.composite.MethodDescriptor;
-import org.qi4j.spi.composite.TransientDescriptor;
-import org.qi4j.spi.entity.EntityDescriptor;
-import org.qi4j.spi.object.ObjectDescriptor;
-import org.qi4j.spi.structure.ApplicationDescriptor;
-import org.qi4j.spi.structure.LayerDescriptor;
-import org.qi4j.spi.structure.ModuleDescriptor;
 
 /**
  * JAVADOC

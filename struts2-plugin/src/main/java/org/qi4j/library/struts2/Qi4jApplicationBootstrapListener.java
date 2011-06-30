@@ -21,7 +21,6 @@ import org.qi4j.api.structure.Module;
 import org.qi4j.bootstrap.ApplicationAssembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.Energy4Java;
-import org.qi4j.spi.structure.ApplicationSPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +35,7 @@ public abstract class Qi4jApplicationBootstrapListener
 {
     private static final Logger LOG = LoggerFactory.getLogger( Qi4jApplicationBootstrapListener.class );
 
-    private ApplicationSPI application;
+    private Application application;
 
     public final void contextInitialized( ServletContextEvent sce )
     {
@@ -73,7 +72,7 @@ public abstract class Qi4jApplicationBootstrapListener
      */
     protected abstract Module qi4jStrutsModule( Application application );
 
-    private ApplicationSPI createNewApplication( ServletContext context )
+    private Application createNewApplication( ServletContext context )
     {
         Energy4Java qi4j = new Energy4Java();
 

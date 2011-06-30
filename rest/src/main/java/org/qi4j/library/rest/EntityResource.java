@@ -24,26 +24,29 @@ import org.openrdf.rio.RDFHandlerException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.common.TypeName;
+import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.entity.association.AssociationDescriptor;
+import org.qi4j.api.entity.association.ManyAssociationDescriptor;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
+import org.qi4j.api.json.JSONDeserializer;
+import org.qi4j.api.json.JSONWriterSerializer;
+import org.qi4j.api.property.PersistentPropertyDescriptor;
+import org.qi4j.api.structure.Module;
+import org.qi4j.api.type.ValueType;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.serializer.RdfXmlSerializer;
-import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.ManyAssociationState;
-import org.qi4j.spi.entity.association.AssociationDescriptor;
-import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
 import org.qi4j.spi.entitystore.ConcurrentEntityStateModificationException;
 import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 import org.qi4j.spi.entitystore.helpers.JSONEntityState;
-import org.qi4j.spi.property.*;
-import org.qi4j.spi.structure.ModuleSPI;
 import org.restlet.data.*;
 import org.restlet.representation.*;
 import org.restlet.resource.ResourceException;
@@ -100,7 +103,7 @@ public class EntityResource
     private EntityStore entityStore;
 
     @Structure
-    private ModuleSPI module;
+    private Module module;
 
     @Uses
     EntityStateSerializer entitySerializer;

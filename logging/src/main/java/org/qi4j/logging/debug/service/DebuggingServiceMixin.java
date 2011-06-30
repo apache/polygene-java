@@ -18,6 +18,7 @@
 
 package org.qi4j.logging.debug.service;
 
+import org.qi4j.api.Qi4j;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.EntityBuilder;
@@ -161,7 +162,7 @@ public class DebuggingServiceMixin
     {
         state.time().set( System.currentTimeMillis() );
         state.message().set( message );
-        state.compositeTypeName().set( composite.type().getName() );
+        state.compositeTypeName().set( Qi4j.DESCRIPTOR_FUNCTION.map( composite ).type().getName() );
         state.threadName().set( Thread.currentThread().getName() );
         state.parameters().set( params );
     }

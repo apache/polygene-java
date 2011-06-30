@@ -18,9 +18,9 @@
 package org.qi4j.library.eventsourcing.domain.rest.server;
 
 import org.qi4j.api.injection.scope.Service;
-import org.qi4j.io.Outputs;
 import org.qi4j.api.service.qualifier.Tagged;
 import org.qi4j.functional.Iterables;
+import org.qi4j.io.Outputs;
 import org.qi4j.library.eventsourcing.domain.api.UnitOfWorkDomainEventsValue;
 import org.qi4j.library.eventsourcing.domain.source.EventSource;
 import org.restlet.Request;
@@ -191,7 +191,7 @@ public class DomainEventSourceResource
             entry.setId( Long.toString( startEvent + 1 ) );
             startEvent++;
             Content content = new Content();
-            content.setInlineContent( new StringRepresentation( eventsValue.toJSON(), MediaType.APPLICATION_JSON ) );
+            content.setInlineContent( new StringRepresentation( eventsValue.toString(), MediaType.APPLICATION_JSON ) );
             entry.setContent( content );
             feed.getEntries().add( entry );
         }

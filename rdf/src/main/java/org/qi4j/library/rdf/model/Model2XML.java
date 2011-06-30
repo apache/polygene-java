@@ -1,26 +1,27 @@
 package org.qi4j.library.rdf.model;
 
+import org.qi4j.api.composite.DependencyDescriptor;
+import org.qi4j.api.composite.MethodDescriptor;
+import org.qi4j.api.composite.TransientDescriptor;
+import org.qi4j.api.mixin.MixinDescriptor;
+import org.qi4j.api.structure.ApplicationDescriptor;
+import org.qi4j.api.structure.LayerDescriptor;
+import org.qi4j.api.structure.ModuleDescriptor;
 import org.qi4j.functional.Function;
 import org.qi4j.functional.HierarchicalVisitor;
-import org.qi4j.spi.composite.DependencyDescriptor;
-import org.qi4j.spi.composite.MethodDescriptor;
-import org.qi4j.spi.composite.TransientDescriptor;
-import org.qi4j.spi.mixin.MixinDescriptor;
-import org.qi4j.spi.structure.ApplicationDescriptor;
-import org.qi4j.spi.structure.ApplicationModelSPI;
-import org.qi4j.spi.structure.LayerDescriptor;
-import org.qi4j.spi.structure.ModuleDescriptor;
 import org.w3c.dom.*;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Stack;
 
 /**
  * TODO
  */
 public class Model2XML
-    implements Function<ApplicationModelSPI, Document>
+    implements Function<ApplicationDescriptor, Document>
 {
     private static Map<String, String> simpleMappings = new HashMap<String, String>();
     static
@@ -38,7 +39,7 @@ public class Model2XML
     }
 
     @Override
-    public Document map( ApplicationModelSPI applicationSPI )
+    public Document map( ApplicationDescriptor Application )
     {
         try
         {
@@ -48,7 +49,7 @@ public class Model2XML
             final Stack<Node> current = new Stack<Node>();
             current.push( document );
 
-            applicationSPI.accept( new HierarchicalVisitor<Object, Object, DOMException>()
+            Application.accept( new HierarchicalVisitor<Object, Object, DOMException>()
             {
                 @Override
                 public boolean visitEnter( Object visited ) throws DOMException

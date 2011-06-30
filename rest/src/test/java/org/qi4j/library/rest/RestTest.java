@@ -32,6 +32,7 @@ import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.structure.ApplicationDescriptor;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.ApplicationAssemblerAdapter;
@@ -40,7 +41,6 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.index.rdf.assembly.RdfMemoryStoreAssembler;
-import org.qi4j.spi.structure.ApplicationModelSPI;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
 
@@ -59,7 +59,7 @@ public class RestTest
     extends AbstractQi4jTest
 {
 
-    protected ApplicationModelSPI newApplication()
+    protected ApplicationDescriptor newApplication()
         throws AssemblyException
     {
         return qi4j.newApplicationModel( new ApplicationAssemblerAdapter( new Assembler[][][]

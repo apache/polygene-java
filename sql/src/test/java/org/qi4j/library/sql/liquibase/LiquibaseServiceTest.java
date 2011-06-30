@@ -1,20 +1,20 @@
 package org.qi4j.library.sql.liquibase;
 
 import org.junit.Test;
-import org.qi4j.io.Inputs;
-import org.qi4j.io.Outputs;
 import org.qi4j.api.property.Property;
-import org.qi4j.functional.Function;
+import org.qi4j.api.service.importer.ServiceInstanceImporter;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
+import org.qi4j.functional.Function;
+import org.qi4j.io.Inputs;
+import org.qi4j.io.Outputs;
 import org.qi4j.library.sql.datasource.DataSourceConfiguration;
 import org.qi4j.library.sql.datasource.DataSourceService;
 import org.qi4j.library.sql.datasource.Databases;
-import org.qi4j.spi.service.importer.ServiceInstanceImporter;
 
 import javax.sql.DataSource;
 import java.io.IOException;
