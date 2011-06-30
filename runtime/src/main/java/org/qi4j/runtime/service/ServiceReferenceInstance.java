@@ -14,16 +14,16 @@
 
 package org.qi4j.runtime.service;
 
+import org.qi4j.api.composite.AbstractCompositeDescriptor;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.composite.CompositeInstance;
 import org.qi4j.api.event.ActivationEvent;
 import org.qi4j.api.event.ActivationEventListener;
-import org.qi4j.api.service.Activatable;
-import org.qi4j.api.service.ServiceReference;
-import org.qi4j.api.service.ServiceUnavailableException;
+import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.service.*;
 import org.qi4j.api.structure.Module;
 import org.qi4j.runtime.structure.ActivationEventListenerSupport;
 import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.spi.service.ServiceDescriptor;
-import org.qi4j.spi.service.ServiceImporterException;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -169,8 +169,50 @@ public final class ServiceReferenceInstance<T>
     }
 
     public final class ServiceInvocationHandler
-        implements InvocationHandler
+        implements InvocationHandler, CompositeInstance
     {
+        @Override
+        public <T> T proxy()
+        {
+            return (T) ServiceReferenceInstance.this.get();
+        }
+
+        @Override
+        public <T> T newProxy( Class<T> mixinType )
+        {
+            return instance.newProxy( mixinType );
+        }
+
+        @Override
+        public <T> T metaInfo( Class<T> infoType )
+        {
+            return ServiceReferenceInstance.this.metaInfo( infoType );
+        }
+
+        @Override
+        public Class<? extends Composite> type()
+        {
+            return (Class<Composite>) ServiceReferenceInstance.this.type();
+        }
+
+        @Override
+        public AbstractCompositeDescriptor descriptor()
+        {
+            return ServiceReferenceInstance.this.serviceDescriptor();
+        }
+
+        @Override
+        public Object invokeComposite( Method method, Object[] args ) throws Throwable
+        {
+            return getInstance().invokeComposite( method, args );
+        }
+
+        @Override
+        public StateHolder state()
+        {
+            return getInstance().state();
+        }
+
         public Object invoke( Object object, Method method, Object[] objects )
             throws Throwable
         {

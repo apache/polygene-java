@@ -18,9 +18,9 @@ package org.qi4j.runtime.structure;
 
 import org.junit.Test;
 import org.qi4j.api.composite.TransientComposite;
+import org.qi4j.api.composite.TransientDescriptor;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.spi.composite.TransientDescriptor;
 import org.qi4j.test.AbstractQi4jTest;
 
 import static org.junit.Assert.*;

@@ -19,23 +19,22 @@ import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.constraint.ConstraintViolation;
 import org.qi4j.api.constraint.ConstraintViolationException;
+import org.qi4j.api.property.DefaultValues;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.property.PropertyDescriptor;
+import org.qi4j.api.structure.Module;
+import org.qi4j.api.type.ValueCompositeType;
+import org.qi4j.api.type.ValueType;
 import org.qi4j.api.util.Classes;
+import org.qi4j.bootstrap.BindingException;
 import org.qi4j.functional.Visitable;
 import org.qi4j.functional.Visitor;
-import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.composite.ConstraintsCheck;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
-import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.types.ValueTypeFactory;
-import org.qi4j.spi.property.DefaultValues;
-import org.qi4j.spi.property.PropertyDescriptor;
-import org.qi4j.spi.property.ValueCompositeType;
-import org.qi4j.spi.property.ValueType;
-import org.qi4j.spi.structure.ModuleSPI;
 
 import java.lang.reflect.*;
 import java.util.List;
@@ -133,8 +132,9 @@ public abstract class AbstractPropertyModel
         return immutable;
     }
 
-    public Object initialValue( ModuleSPI module )
+    public Object initialValue( Module module )
     {
+        // Use supplied value from assembly
         Object value = initialValue;
 
         // Check for @UseDefaults annotation
@@ -190,7 +190,7 @@ public abstract class AbstractPropertyModel
             }
 
             @Override
-            public Object initialValue( ModuleSPI module )
+            public Object initialValue( Module module )
             {
                 return initialValue( module );
             }
@@ -214,17 +214,7 @@ public abstract class AbstractPropertyModel
         return visitor.visit( this );
     }
 
-    public Property<?> newBuilderInstance(ModuleInstance module)
-    {
-        // Properties cannot be immutable during construction
-
-        Property<?> property;
-        property = new PropertyInstance<Object>( builderInfo, initialValue( module ), this );
-
-        return wrapProperty( property );
-    }
-
-    public Property<?> newBuilderInstance( ModuleInstance module, Object initialValue )
+    public Property<?> newBuilderInstance( Object initialValue )
     {
         // Properties cannot be immutable during construction
 
@@ -232,13 +222,6 @@ public abstract class AbstractPropertyModel
         property = new PropertyInstance<Object>( builderInfo, initialValue, this );
 
         return wrapProperty( property );
-    }
-
-    public Property<?> newInitialInstance( ModuleInstance module )
-    {
-        // Construct instance without using a builder
-
-        return newInstance( initialValue( module ) );
     }
 
     public abstract <T> Property<T> newInstance( Object value );

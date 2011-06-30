@@ -15,6 +15,7 @@
 package org.qi4j.runtime.structure;
 
 import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.structure.ModuleDescriptor;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.functional.VisitableHierarchy;
 import org.qi4j.runtime.composite.TransientsModel;
@@ -23,7 +24,6 @@ import org.qi4j.runtime.object.ObjectsModel;
 import org.qi4j.runtime.service.ImportedServicesModel;
 import org.qi4j.runtime.service.ServicesModel;
 import org.qi4j.runtime.value.ValuesModel;
-import org.qi4j.spi.structure.ModuleDescriptor;
 
 /**
  * JAVADOC

@@ -20,11 +20,10 @@ package org.qi4j.regression.qi78;
 import org.junit.Assert;
 import org.junit.Test;
 import org.qi4j.api.structure.Application;
-import org.qi4j.functional.HierarchicalVisitor;
+import org.qi4j.api.structure.ApplicationDescriptor;
+import org.qi4j.api.structure.LayerDescriptor;
 import org.qi4j.bootstrap.*;
-import org.qi4j.spi.structure.ApplicationModelSPI;
-import org.qi4j.spi.structure.ApplicationSPI;
-import org.qi4j.spi.structure.LayerDescriptor;
+import org.qi4j.functional.HierarchicalVisitor;
 
 public class IssueTest
 {
@@ -52,13 +51,13 @@ public class IssueTest
                 return assembly;
             }
         } );
-        ApplicationModelSPI model = ( (ApplicationSPI) app ).model();
+        ApplicationDescriptor model = app.descriptor();
         model.accept( new HierarchicalVisitor<Object, Object, RuntimeException>()
         {
             @Override
             public boolean visitEnter( Object visited ) throws RuntimeException
             {
-                return visited instanceof ApplicationModelSPI;
+                return visited instanceof ApplicationDescriptor;
             }
 
             @Override

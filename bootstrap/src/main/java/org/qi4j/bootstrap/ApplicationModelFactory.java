@@ -14,7 +14,7 @@
 
 package org.qi4j.bootstrap;
 
-import org.qi4j.spi.structure.ApplicationModelSPI;
+import org.qi4j.api.structure.ApplicationDescriptor;
 
 /**
  * Factory for ApplicationModelSPI's. Takes an ApplicationAssembly, executes it,
@@ -22,6 +22,6 @@ import org.qi4j.spi.structure.ApplicationModelSPI;
  */
 public interface ApplicationModelFactory
 {
-    ApplicationModelSPI newApplicationModel( ApplicationAssembly assembly )
+    ApplicationDescriptor newApplicationModel( ApplicationAssembly assembly )
         throws AssemblyException;
 }

@@ -14,12 +14,14 @@
 
 package org.qi4j.api.util;
 
+import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specification;
-import org.qi4j.functional.Function;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.*;
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Type;
 
 import static org.qi4j.functional.Iterables.*;
 

@@ -15,15 +15,15 @@
 package org.qi4j.runtime.composite;
 
 import org.qi4j.api.common.ConstructionException;
+import org.qi4j.api.composite.AbstractCompositeDescriptor;
 import org.qi4j.api.injection.InjectionScope;
-import org.qi4j.functional.*;
-import org.qi4j.api.util.*;
+import org.qi4j.api.util.Annotations;
+import org.qi4j.api.util.Classes;
 import org.qi4j.bootstrap.BindingException;
-import org.qi4j.functional.Specifications;
+import org.qi4j.functional.*;
 import org.qi4j.runtime.injection.*;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
-import org.qi4j.spi.composite.AbstractCompositeDescriptor;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;

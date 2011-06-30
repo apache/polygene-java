@@ -15,13 +15,17 @@
 package org.qi4j.api.structure;
 
 import org.qi4j.api.composite.TransientBuilderFactory;
+import org.qi4j.api.composite.TransientDescriptor;
+import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.event.ActivationEventListenerRegistration;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.object.ObjectBuilderFactory;
+import org.qi4j.api.object.ObjectDescriptor;
 import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.value.ValueBuilderFactory;
+import org.qi4j.api.value.ValueDescriptor;
 
 /**
  * API for interacting with a Module. Instances
@@ -48,4 +52,12 @@ public interface Module
     ServiceFinder serviceFinder();
 
     ClassLoader classLoader();
+
+    TransientDescriptor transientDescriptor( String typeName );
+
+    EntityDescriptor entityDescriptor( String typeName );
+
+    ObjectDescriptor objectDescriptor( String typeName );
+
+    ValueDescriptor valueDescriptor( String typeName );
 }

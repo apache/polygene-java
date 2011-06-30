@@ -15,12 +15,12 @@
 package org.qi4j.runtime.composite;
 
 import org.qi4j.api.common.Optional;
+import org.qi4j.api.constraint.MethodConstraintsDescriptor;
 import org.qi4j.api.constraint.Name;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.VisitableHierarchy;
 import org.qi4j.runtime.injection.DependencyModel;
-import org.qi4j.spi.constraint.MethodConstraintsDescriptor;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;

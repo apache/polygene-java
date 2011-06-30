@@ -22,14 +22,13 @@ import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.structure.Application;
+import org.qi4j.api.structure.ApplicationDescriptor;
+import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.value.ValueBuilderFactory;
 import org.qi4j.bootstrap.*;
 import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.structure.ApplicationModelSPI;
-import org.qi4j.spi.structure.ApplicationSPI;
-import org.qi4j.spi.structure.ModuleSPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,8 +42,8 @@ public abstract class AbstractQi4jScenarioTest
     static protected Qi4jSPI spi;
 
     static protected Energy4Java qi4j;
-    static protected ApplicationModelSPI applicationModel;
-    static protected ApplicationSPI application;
+    static protected ApplicationDescriptor applicationModel;
+    static protected Application application;
 
     static protected TransientBuilderFactory transientBuilderFactory;
     static protected ObjectBuilderFactory objectBuilderFactory;
@@ -53,7 +52,7 @@ public abstract class AbstractQi4jScenarioTest
     static protected QueryBuilderFactory queryBuilderFactory;
     static protected ServiceFinder serviceLocator;
 
-    static protected ModuleSPI moduleInstance;
+    static protected Module moduleInstance;
 
     static protected Assembler assembler; // Initialize this in static block of subclass
 
@@ -76,7 +75,7 @@ public abstract class AbstractQi4jScenarioTest
         application.activate();
 
         // Assume only one module
-        moduleInstance = (ModuleSPI) application.findModule( "Layer 1", "Module 1" );
+        moduleInstance = (Module) application.findModule( "Layer 1", "Module 1" );
         transientBuilderFactory = moduleInstance.transientBuilderFactory();
         objectBuilderFactory = moduleInstance.objectBuilderFactory();
         valueBuilderFactory = moduleInstance.valueBuilderFactory();
@@ -85,7 +84,7 @@ public abstract class AbstractQi4jScenarioTest
         serviceLocator = moduleInstance.serviceFinder();
     }
 
-    static protected ApplicationModelSPI newApplication()
+    static protected ApplicationDescriptor newApplication()
         throws AssemblyException
     {
         final Assembler asm = assembler;

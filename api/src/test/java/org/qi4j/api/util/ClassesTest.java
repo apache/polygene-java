@@ -15,7 +15,7 @@
 package org.qi4j.api.util;
 
 import org.junit.Test;
-import org.qi4j.functional.*;
+import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specification;
 import org.qi4j.functional.Specifications;
 

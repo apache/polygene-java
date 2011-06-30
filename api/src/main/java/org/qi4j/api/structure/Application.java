@@ -15,12 +15,13 @@
 package org.qi4j.api.structure;
 
 import org.qi4j.api.event.ActivationEventListenerRegistration;
+import org.qi4j.api.service.Activatable;
 
 /**
  * The Application represents a whole Qi4j application.
  */
 public interface Application
-    extends ActivationEventListenerRegistration
+    extends ActivationEventListenerRegistration, Activatable
 {
     public enum Mode
     {
@@ -48,4 +49,6 @@ public interface Application
     Layer findLayer( String layerName );
 
     Module findModule( String layerName, String moduleName );
+
+    ApplicationDescriptor descriptor();
 }

@@ -17,8 +17,6 @@
  */
 package org.qi4j.api.query;
 
-import org.qi4j.api.unitofwork.UnitOfWork;
-
 /**
  * This is used to create QueryBuilders.
  *

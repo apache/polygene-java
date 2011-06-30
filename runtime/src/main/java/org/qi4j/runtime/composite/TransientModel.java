@@ -18,15 +18,15 @@ import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
+import org.qi4j.api.composite.CompositeInstance;
+import org.qi4j.api.composite.InvalidCompositeException;
+import org.qi4j.api.composite.TransientDescriptor;
 import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.runtime.bootstrap.AssemblyHelper;
 import org.qi4j.runtime.property.PropertiesModel;
 import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.spi.composite.CompositeInstance;
-import org.qi4j.spi.composite.InvalidCompositeException;
-import org.qi4j.spi.composite.TransientDescriptor;
 
 import java.lang.reflect.InvocationHandler;
 import java.util.ArrayList;

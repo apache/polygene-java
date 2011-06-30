@@ -14,9 +14,9 @@
 
 package org.qi4j.runtime.composite;
 
+import org.qi4j.api.constraint.ConstraintDescriptor;
 import org.qi4j.functional.Visitable;
 import org.qi4j.functional.Visitor;
-import org.qi4j.spi.constraint.ConstraintDescriptor;
 
 import java.lang.annotation.Annotation;
 

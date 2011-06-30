@@ -15,6 +15,7 @@
 package org.qi4j.spi.property;
 
 import org.junit.Test;
+import org.qi4j.api.property.DefaultValues;
 
 import java.util.Collection;
 import java.util.Collections;

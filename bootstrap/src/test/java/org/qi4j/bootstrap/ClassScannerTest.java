@@ -2,12 +2,12 @@ package org.qi4j.bootstrap;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.qi4j.functional.Iterables;
 import org.qi4j.bootstrap.somepackage.Test2Value;
+import org.qi4j.functional.Iterables;
 
-import static org.qi4j.functional.Iterables.filter;
 import static org.qi4j.bootstrap.ClassScanner.getClasses;
 import static org.qi4j.bootstrap.ClassScanner.matches;
+import static org.qi4j.functional.Iterables.filter;
 
 /**
  * Test and showcase of the ClassScanner assembly utility.

@@ -94,7 +94,7 @@ public abstract class AbstractComplexQueryTest
         address.zipcode().set( "12345" );
 
         qb = qb.where( eq( addressProp, addressBuilder.newInstance() ) );
-        Query<Person> query = qb.newQuery( unitOfWork );
+        Query<Person> query = unitOfWork.newQuery( qb );
         System.out.println( "*** script01: " + query );
 
         verifyUnorderedResults( query, ANN );
@@ -113,7 +113,7 @@ public abstract class AbstractComplexQueryTest
         address.zipcode().set( "12345" );
 
         qb = qb.where( not( eq( addressProp, addressBuilder.newInstance() ) ) );
-        Query<Person> query = qb.newQuery( unitOfWork );
+        Query<Person> query = unitOfWork.newQuery( qb );
         System.out.println( "*** script02: " + query );
 
         verifyUnorderedResults( query, JOE, JACK );
@@ -135,7 +135,7 @@ public abstract class AbstractComplexQueryTest
         QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
         Property<Collection<QueryParam>> paramsProp = templateFor( Person.class ).personalWebsite().get().queryParams();
         qb = qb.where( eq( paramsProp, queryParams ) );
-        Query<Person> query = qb.newQuery( unitOfWork );
+        Query<Person> query = unitOfWork.newQuery( qb );
         System.out.println( "*** script03: " + query );
 
         verifyUnorderedResults( query, JACK );
@@ -158,7 +158,7 @@ public abstract class AbstractComplexQueryTest
         QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
         Property<Collection<QueryParam>> paramsProp = templateFor( Person.class ).personalWebsite().get().queryParams();
         qb = qb.where( eq( paramsProp, queryParams ) );
-        Query<Person> query = qb.newQuery( unitOfWork );
+        Query<Person> query = unitOfWork.newQuery( qb );
         System.out.println( "*** script04: " + query );
 
         verifyUnorderedResults( query );
@@ -180,7 +180,7 @@ public abstract class AbstractComplexQueryTest
         QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
         Property<Collection<QueryParam>> paramsProp = templateFor( Person.class ).personalWebsite().get().queryParams();
         qb = qb.where( not( eq( paramsProp, queryParams ) ) );
-        Query<Person> query = qb.newQuery( unitOfWork );
+        Query<Person> query = unitOfWork.newQuery( qb );
         System.out.println( "*** script05: " + query );
 
         verifyUnorderedResults( query, ANN, JOE );
@@ -212,7 +212,7 @@ public abstract class AbstractComplexQueryTest
         QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
         Property<URL> websiteProp = templateFor( Person.class ).personalWebsite();
         qb = qb.where( eq( websiteProp, urlBuilder.newInstance() ) );
-        Query<Person> query = qb.newQuery( unitOfWork );
+        Query<Person> query = unitOfWork.newQuery( qb );
         System.out.println( "*** script06: " + query );
 
         verifyUnorderedResults( query, JACK );
@@ -244,7 +244,7 @@ public abstract class AbstractComplexQueryTest
         QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
         Property<URL> websiteProp = templateFor( Person.class ).personalWebsite();
         qb = qb.where( not( eq( websiteProp, urlBuilder.newInstance() ) ) );
-        Query<Person> query = qb.newQuery( unitOfWork );
+        Query<Person> query = unitOfWork.newQuery( qb );
         System.out.println( "*** script07: " + query );
 
         verifyUnorderedResults( query, ANN, JOE );
@@ -261,7 +261,7 @@ public abstract class AbstractComplexQueryTest
         QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
         Property<Collection<QueryParam>> paramsProp = templateFor( Person.class ).personalWebsite().get().queryParams();
         qb = qb.where( contains( paramsProp, queryParamBuilder.newInstance() ) );
-        Query<Person> query = qb.newQuery( unitOfWork );
+        Query<Person> query = unitOfWork.newQuery( qb );
         System.out.println( "*** script08: " + query );
         verifyUnorderedResults( query, JACK );
     }
@@ -278,7 +278,7 @@ public abstract class AbstractComplexQueryTest
         QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
         Property<Collection<QueryParam>> paramsProp = templateFor( Person.class ).personalWebsite().get().queryParams();
         qb = qb.where( not( contains( paramsProp, queryParamBuilder.newInstance() ) ) );
-        Query<Person> query = qb.newQuery( unitOfWork );
+        Query<Person> query = unitOfWork.newQuery( qb );
         System.out.println( "*** script09: " + query );
         verifyUnorderedResults( query, ANN, JOE );
     }
@@ -300,7 +300,7 @@ public abstract class AbstractComplexQueryTest
         QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
         Property<Collection<QueryParam>> paramsProp = templateFor( Person.class ).personalWebsite().get().queryParams();
         qb = qb.where( containsAll( paramsProp, queryParams ) );
-        Query<Person> query = qb.newQuery( unitOfWork );
+        Query<Person> query = unitOfWork.newQuery( qb );
         System.out.println( "*** script10: " + query );
         verifyUnorderedResults( query, JACK );
     }
@@ -322,7 +322,7 @@ public abstract class AbstractComplexQueryTest
         QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
         Property<Collection<QueryParam>> paramsProp = templateFor( Person.class ).personalWebsite().get().queryParams();
         qb = qb.where( not( containsAll( paramsProp, queryParams ) ) );
-        Query<Person> query = qb.newQuery( unitOfWork );
+        Query<Person> query = unitOfWork.newQuery( qb );
         System.out.println( "*** script11: " + query );
         verifyUnorderedResults( query, ANN, JOE );
     }

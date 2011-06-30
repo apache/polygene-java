@@ -15,8 +15,10 @@
 package org.qi4j.runtime.composite;
 
 import org.qi4j.api.composite.Composite;
+import org.qi4j.api.composite.InvalidCompositeException;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.util.*;
+import org.qi4j.api.util.Annotations;
+import org.qi4j.api.util.Classes;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.functional.Function;
@@ -27,8 +29,6 @@ import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectedFieldModel;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
-import org.qi4j.spi.composite.InvalidCompositeException;
-import org.qi4j.spi.util.UsageGraph;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -65,9 +65,6 @@ public abstract class AbstractMixinsModel
 
         // Add additional roles
         roles.addAll( assemblyRoles );
-
-        // Default mixin for Composite
-        this.mixins.add( new MixinDeclaration( CompositeMixin.class, Composite.class ) );
 
         // Add assembly mixins
         for( Class<?> assemblyMixin : assemblyMixins )

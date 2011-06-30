@@ -15,12 +15,13 @@
 package org.qi4j.api.structure;
 
 import org.qi4j.api.event.ActivationEventListenerRegistration;
+import org.qi4j.api.service.Activatable;
 
 /**
  * The Layer represents a single layer in a Qi4j application.
  */
 public interface Layer
-    extends ActivationEventListenerRegistration
+    extends ActivationEventListenerRegistration, Activatable
 {
     String name();
 

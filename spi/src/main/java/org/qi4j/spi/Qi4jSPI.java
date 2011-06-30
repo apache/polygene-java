@@ -15,19 +15,8 @@
 package org.qi4j.spi;
 
 import org.qi4j.api.Qi4j;
-import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.entity.association.EntityStateHolder;
-import org.qi4j.api.property.Property;
-import org.qi4j.api.property.StateHolder;
-import org.qi4j.api.service.ServiceReference;
-import org.qi4j.api.value.ValueComposite;
-import org.qi4j.spi.composite.TransientDescriptor;
-import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.property.PropertyDescriptor;
-import org.qi4j.spi.service.ServiceDescriptor;
-import org.qi4j.spi.value.ValueDescriptor;
 
 /**
  * Encapsulation of the Qi4j SPI. This is implemented by the runtime.
@@ -35,29 +24,6 @@ import org.qi4j.spi.value.ValueDescriptor;
 public interface Qi4jSPI
     extends Qi4j
 {
-    // Transients
-
-    TransientDescriptor getTransientDescriptor( TransientComposite composite );
-
-    StateHolder getState( TransientComposite composite );
-
     // Entities
-
-    EntityDescriptor getEntityDescriptor( EntityComposite composite );
-
-    EntityStateHolder getState( EntityComposite composite );
-
     EntityState getEntityState( EntityComposite composite );
-
-    // Values
-
-    ValueDescriptor getValueDescriptor( ValueComposite value );
-
-    StateHolder getState( ValueComposite composite );
-
-    // Services
-    ServiceDescriptor getServiceDescriptor( ServiceReference service );
-
-    // Properties
-    PropertyDescriptor getPropertyDescriptor( Property property);
 }

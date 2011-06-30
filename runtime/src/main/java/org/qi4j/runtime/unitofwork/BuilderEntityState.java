@@ -16,8 +16,8 @@ package org.qi4j.runtime.unitofwork;
 
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.ManyAssociationState;

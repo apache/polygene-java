@@ -83,7 +83,7 @@ public abstract class AbstractQueryTest
         throws EntityFinderException
     {
         final QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
-        final Query<Person> query = qb.newQuery( unitOfWork );
+        final Query<Person> query = unitOfWork.newQuery(qb);
         System.out.println( "*** script01: " + query );
         verifyUnorderedResults( query, "Joe Doe", "Ann Doe", "Jack Doe" );
     }
@@ -94,7 +94,7 @@ public abstract class AbstractQueryTest
     {
         final QueryBuilder<Domain> qb = this.queryBuilderFactory.newQueryBuilder( Domain.class );
         final Nameable nameable = templateFor( Nameable.class );
-        final Query<Domain> query = qb.where( eq( nameable.name(), "Gaming" ) ).newQuery( unitOfWork );
+        final Query<Domain> query = unitOfWork.newQuery( qb.where( eq( nameable.name(), "Gaming" ) ));
         System.out.println( "*** script02: " + query );
         verifyUnorderedResults( query, "Gaming" );
     }
@@ -104,7 +104,7 @@ public abstract class AbstractQueryTest
         throws EntityFinderException
     {
         QueryBuilder<Nameable> qb = this.queryBuilderFactory.newQueryBuilder( Nameable.class );
-        Query<Nameable> query = qb.newQuery( unitOfWork );
+        Query<Nameable> query = unitOfWork.newQuery(qb);
         verifyUnorderedResults( query, "Joe Doe", "Ann Doe", "Jack Doe", "Penang", "Kuala Lumpur", "Cooking", "Gaming",
                                 "Programming", "Cars" );
         System.out.println( "*** script03: " + query );
@@ -117,7 +117,7 @@ public abstract class AbstractQueryTest
         QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
         Person personTemplate = templateFor( Person.class );
         City placeOfBirth = personTemplate.placeOfBirth().get();
-        Query<Person> query = qb.where( eq( placeOfBirth.name(), "Kuala Lumpur" ) ).newQuery( unitOfWork );
+        Query<Person> query = unitOfWork.newQuery( qb.where( eq( placeOfBirth.name(), "Kuala Lumpur" ) ));
         System.out.println( "*** script04: " + query );
         verifyUnorderedResults( query, "Joe Doe", "Ann Doe" );
     }
@@ -128,8 +128,8 @@ public abstract class AbstractQueryTest
     {
         QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
-        Query<Person> query = qb.where( eq( person.mother().get().placeOfBirth().get().name(), "Kuala Lumpur" ) )
-            .newQuery( unitOfWork );
+        Query<Person> query = unitOfWork.newQuery( qb.where( eq( person.mother().get().placeOfBirth().get().name(), "Kuala Lumpur" ) )
+            );
         System.out.println( "*** script05: " + query );
         verifyUnorderedResults( query, "Joe Doe" );
     }
@@ -140,7 +140,7 @@ public abstract class AbstractQueryTest
     {
         QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
-        Query<Person> query = qb.where( ge( person.yearOfBirth(), 1973 ) ).newQuery( unitOfWork );
+        Query<Person> query = unitOfWork.newQuery( qb.where( ge( person.yearOfBirth(), 1973 ) ));
         System.out.println( "*** script06: " + query );
         verifyUnorderedResults( query, "Joe Doe", "Ann Doe" );
     }
@@ -151,9 +151,8 @@ public abstract class AbstractQueryTest
     {
         QueryBuilder<Nameable> qb = this.queryBuilderFactory.newQueryBuilder( Nameable.class );
         Person person = templateFor( Person.class );
-        Query<Nameable> query = qb.where(
-            and( ge( person.yearOfBirth(), 1900 ), eq( person.placeOfBirth().get().name(), "Penang" ) ) ).newQuery(
-            unitOfWork );
+        Query<Nameable> query = unitOfWork.newQuery( qb.where(
+            and( ge( person.yearOfBirth(), 1900 ), eq( person.placeOfBirth().get().name(), "Penang" ) ) ));
         System.out.println( "*** script07: " + query );
         verifyUnorderedResults( query, "Jack Doe" );
     }
@@ -164,8 +163,8 @@ public abstract class AbstractQueryTest
     {
         QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
-        Query<Person> query = qb.where( or( eq( person.yearOfBirth(), 1970 ), eq( person.yearOfBirth(), 1975 ) ) )
-            .newQuery( unitOfWork );
+        Query<Person> query = unitOfWork.newQuery( qb.where( or( eq( person.yearOfBirth(), 1970 ), eq( person.yearOfBirth(), 1975 ) ) )
+            );
         System.out.println( "*** script08: " + query );
         verifyUnorderedResults( query, "Jack Doe", "Ann Doe" );
     }
@@ -176,8 +175,8 @@ public abstract class AbstractQueryTest
     {
         QueryBuilder<Female> qb = this.queryBuilderFactory.newQueryBuilder( Female.class );
         Person person = templateFor( Person.class );
-        Query<Female> query = qb.where( or( eq( person.yearOfBirth(), 1970 ), eq( person.yearOfBirth(), 1975 ) ) )
-            .newQuery( unitOfWork );
+        Query<Female> query = unitOfWork.newQuery( qb.where( or( eq( person.yearOfBirth(), 1970 ), eq( person.yearOfBirth(), 1975 ) ) )
+            );
         System.out.println( "*** script09: " + query );
         verifyUnorderedResults( query, "Ann Doe" );
     }
@@ -188,7 +187,7 @@ public abstract class AbstractQueryTest
     {
         QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
-        Query<Person> query = qb.where( not( eq( person.yearOfBirth(), 1975 ) ) ).newQuery( unitOfWork );
+        Query<Person> query = unitOfWork.newQuery( qb.where( not( eq( person.yearOfBirth(), 1975 ) ) ));
         System.out.println( "*** script10: " + query );
         verifyUnorderedResults( query, "Jack Doe", "Joe Doe" );
     }
@@ -199,7 +198,7 @@ public abstract class AbstractQueryTest
     {
         QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
-        Query<Person> query = qb.where( isNotNull( person.email() ) ).newQuery( unitOfWork );
+        Query<Person> query = unitOfWork.newQuery( qb.where( isNotNull( person.email() ) ));
         System.out.println( "*** script11: " + query );
         verifyUnorderedResults( query, "Joe Doe" );
     }
@@ -210,7 +209,7 @@ public abstract class AbstractQueryTest
     {
         QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
-        Query<Person> query = qb.where( isNull( person.email() ) ).newQuery( unitOfWork );
+        Query<Person> query = unitOfWork.newQuery( qb.where( isNull( person.email() ) ));
         System.out.println( "*** script12: " + query );
         verifyUnorderedResults( query, "Ann Doe", "Jack Doe" );
     }
@@ -221,7 +220,7 @@ public abstract class AbstractQueryTest
     {
         QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
         Male person = templateFor( Male.class );
-        Query<Person> query = qb.where( isNotNull( person.wife() ) ).newQuery( unitOfWork );
+        Query<Person> query = unitOfWork.newQuery( qb.where( isNotNull( person.wife() ) ));
         System.out.println( "*** script13: " + query );
         verifyUnorderedResults( query, "Jack Doe" );
     }
@@ -232,7 +231,7 @@ public abstract class AbstractQueryTest
     {
         QueryBuilder<Male> qb = this.queryBuilderFactory.newQueryBuilder( Male.class );
         Male person = templateFor( Male.class );
-        Query<Male> query = qb.where( isNull( person.wife() ) ).newQuery( unitOfWork );
+        Query<Male> query = unitOfWork.newQuery( qb.where( isNull( person.wife() ) ));
         System.out.println( "*** script14: " + query );
         verifyUnorderedResults( query, "Joe Doe" );
     }
@@ -243,7 +242,7 @@ public abstract class AbstractQueryTest
     {
         QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
         Male person = templateFor( Male.class );
-        Query<Person> query = qb.where( isNull( person.wife() ) ).newQuery( unitOfWork );
+        Query<Person> query = unitOfWork.newQuery( qb.where( isNull( person.wife() ) ));
         System.out.println( "*** script15: " + query );
         verifyUnorderedResults( query, "Joe Doe", "Ann Doe" );
     }
@@ -255,7 +254,7 @@ public abstract class AbstractQueryTest
         QueryBuilder<Nameable> qb = this.queryBuilderFactory.newQueryBuilder( Nameable.class );
         // should return only 2 entities
         Nameable nameable = templateFor( Nameable.class );
-        Query<Nameable> query = qb.newQuery( unitOfWork );
+        Query<Nameable> query = unitOfWork.newQuery(qb);
         query.orderBy( orderBy( nameable.name() ) );
         query.maxResults( 2 );
         System.out.println( "*** script16: " + query );
@@ -269,7 +268,7 @@ public abstract class AbstractQueryTest
         QueryBuilder<Nameable> qb = this.queryBuilderFactory.newQueryBuilder( Nameable.class );
         // should return only 3 entities starting with forth one
         Nameable nameable = templateFor( Nameable.class );
-        Query<Nameable> query = qb.newQuery( unitOfWork );
+        Query<Nameable> query = unitOfWork.newQuery(qb);
         query.orderBy( orderBy( nameable.name() ) );
         query.firstResult( 3 );
         query.maxResults( 2 );
@@ -284,7 +283,7 @@ public abstract class AbstractQueryTest
         QueryBuilder<Nameable> qb = this.queryBuilderFactory.newQueryBuilder( Nameable.class );
         // should return all Nameable entities sorted by name
         Nameable nameable = templateFor( Nameable.class );
-        Query<Nameable> query = qb.newQuery( unitOfWork );
+        Query<Nameable> query = unitOfWork.newQuery(qb);
         query.orderBy( orderBy( nameable.name() ) );
         System.out.println( "*** script18: " + query );
         verifyOrderedResults( query, "Ann Doe", "Cars", "Cooking", "Gaming", "Jack Doe", "Joe Doe", "Kuala Lumpur",
@@ -298,7 +297,7 @@ public abstract class AbstractQueryTest
         QueryBuilder<Nameable> qb = this.queryBuilderFactory.newQueryBuilder( Nameable.class );
         // should return all Nameable entities with a name > "D" sorted by name
         Nameable nameable = templateFor( Nameable.class );
-        Query<Nameable> query = qb.where( gt( nameable.name(), "D" ) ).newQuery( unitOfWork );
+        Query<Nameable> query = unitOfWork.newQuery( qb.where( gt( nameable.name(), "D" ) ));
         query.orderBy( orderBy( nameable.name() ) );
         System.out.println( "*** script19: " + query );
         verifyOrderedResults( query, "Gaming", "Jack Doe", "Joe Doe", "Kuala Lumpur", "Penang", "Programming" );
@@ -311,7 +310,7 @@ public abstract class AbstractQueryTest
         QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
         // should return all Persons born after 1973 (Ann and Joe Doe) sorted descending by name
         Person person = templateFor( Person.class );
-        Query<Person> query = qb.where( gt( person.yearOfBirth(), 1973 ) ).newQuery( unitOfWork );
+        Query<Person> query = unitOfWork.newQuery( qb.where( gt( person.yearOfBirth(), 1973 ) ));
         query.orderBy( orderBy( person.name(), OrderBy.Order.DESCENDING ) );
         System.out.println( "*** script20: " + query );
         verifyOrderedResults( query, "Joe Doe", "Ann Doe" );
@@ -324,7 +323,7 @@ public abstract class AbstractQueryTest
         QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
         // should return all Persons sorted by name of the city they were born, and then by year they were born
         Person person = templateFor( Person.class );
-        Query<Person> query = qb.newQuery( unitOfWork );
+        Query<Person> query = unitOfWork.newQuery(qb);
         query.orderBy( orderBy( person.placeOfBirth().get().name() ), orderBy( person.yearOfBirth() ) );
         System.out.println( "*** script21: " + query );
         verifyOrderedResults( query, "Ann Doe", "Joe Doe", "Jack Doe" );
@@ -337,7 +336,7 @@ public abstract class AbstractQueryTest
         QueryBuilder<Nameable> qb = this.queryBuilderFactory.newQueryBuilder( Nameable.class );
         Nameable nameable = templateFor( Nameable.class );
         // should return Jack and Joe Doe
-        Query<Nameable> query = qb.where( matches( nameable.name(), "J.*Doe" ) ).newQuery( unitOfWork );
+        Query<Nameable> query = unitOfWork.newQuery( qb.where( matches( nameable.name(), "J.*Doe" ) ));
         System.out.println( "*** script22: " + query );
         verifyUnorderedResults( query, "Jack Doe", "Joe Doe" );
     }
@@ -350,7 +349,7 @@ public abstract class AbstractQueryTest
         QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         Domain interests = oneOf( person.interests() );
-        Query<Person> query = qb.where( eq( interests.name(), "Cars" ) ).newQuery( unitOfWork );
+        Query<Person> query = unitOfWork.newQuery( qb.where( eq( interests.name(), "Cars" ) ));
         System.out.println( "*** script23: " + query );
         verifyOrderedResults( query, "Jack Doe" );
     }
@@ -361,7 +360,7 @@ public abstract class AbstractQueryTest
     {
         final QueryBuilder<Domain> qb = this.queryBuilderFactory.newQueryBuilder( Domain.class );
         final Nameable nameable = templateFor( Nameable.class );
-        final Query<Domain> query = qb.where( eq( nameable.name(), "Gaming" ) ).newQuery( unitOfWork );
+        final Query<Domain> query = unitOfWork.newQuery( qb.where( eq( nameable.name(), "Gaming" ) ));
         System.out.println( "*** script24: " + query );
         assertThat( query.find().name().get(), is( equalTo( "Gaming" ) ) );
     }
@@ -402,8 +401,8 @@ public abstract class AbstractQueryTest
     {
         QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
-        Query<Person> query = qb.where( eq( person.personalWebsite().get().protocol().get().value(), "http" ) )
-            .newQuery( unitOfWork );
+        Query<Person> query = unitOfWork.newQuery( qb.where( eq( person.personalWebsite().get().protocol().get().value(), "http" ) )
+            );
         System.out.println( "*** script29: " + query );
         verifyUnorderedResults( query, "Jack Doe" );
     }
@@ -415,8 +414,8 @@ public abstract class AbstractQueryTest
         QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         QueryParam queryParam = null; // oneOf( person.personalWebsite().get().queryParams() );
-        Query<Person> query = qb.where( and( eq( queryParam.name(), "foo" ), eq( queryParam.value(), "bar" ) ) )
-            .newQuery( unitOfWork );
+        Query<Person> query = unitOfWork.newQuery( qb.where( and( eq( queryParam.name(), "foo" ), eq( queryParam.value(), "bar" ) ) )
+            );
         System.out.println( "*** script30: " + query );
         verifyUnorderedResults( query, "Jack Doe" );
     }
@@ -428,7 +427,7 @@ public abstract class AbstractQueryTest
         QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         Map<String, String> info = new HashMap<String, String>();
-        Query<Person> query = qb.where( eq( person.additionalInfo(), info ) ).newQuery( unitOfWork );
+        Query<Person> query = unitOfWork.newQuery( qb.where( eq( person.additionalInfo(), info ) ));
         System.out.println( "*** script31: " + query );
         verifyUnorderedResults( query, "Jack Doe" );
     }
@@ -440,7 +439,7 @@ public abstract class AbstractQueryTest
         QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         Map<String, String> info = new HashMap<String, String>();
-        Query<Person> query = qb.where( eq( person.address().get().line1(), "Qi Alley 4j" ) ).newQuery( unitOfWork );
+        Query<Person> query = unitOfWork.newQuery( qb.where( eq( person.address().get().line1(), "Qi Alley 4j" ) ));
         System.out.println( "*** script32: " + query );
         verifyUnorderedResults( query, "Joe Doe" );
     }
@@ -451,7 +450,7 @@ public abstract class AbstractQueryTest
         QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         Domain gaming = unitOfWork.get( Domain.class, "Gaming" );
-        Query<Person> query = qb.where( contains( person.interests(), gaming ) ).newQuery( unitOfWork );
+        Query<Person> query = unitOfWork.newQuery( qb.where( contains( person.interests(), gaming ) ));
         System.out.println( "*** script33: " + query );
 
         verifyUnorderedResults( query, "Joe Doe" );
@@ -463,7 +462,7 @@ public abstract class AbstractQueryTest
         QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         Female annDoe = unitOfWork.get( Female.class, "anndoe" );
-        Query<Person> query = qb.where( eq( person.mother(), annDoe ) ).newQuery( unitOfWork );
+        Query<Person> query = unitOfWork.newQuery( qb.where( eq( person.mother(), annDoe ) ));
 
         verifyUnorderedResults( query, "Joe Doe" );
     }

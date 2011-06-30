@@ -14,6 +14,7 @@
 
 package org.qi4j.spi.entity;
 
+import org.qi4j.api.Qi4j;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.util.Classes;
 
@@ -59,7 +60,7 @@ public final class QualifiedIdentity
 
     public QualifiedIdentity( EntityComposite entityComposite )
     {
-        this( entityComposite.identity().get(), entityComposite.type().getName() );
+        this( entityComposite.identity().get(), Qi4j.DESCRIPTOR_FUNCTION.map(entityComposite).type().getName() );
     }
 
     public QualifiedIdentity( String identity, Class clazz )

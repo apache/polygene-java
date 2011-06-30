@@ -16,13 +16,13 @@ package org.qi4j.spi.entitystore;
 
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.concern.ConcernOf;
+import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.structure.Module;
 import org.qi4j.api.usecase.Usecase;
-import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.structure.ModuleSPI;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +45,7 @@ public abstract class ConcurrentModificationCheckConcern
     @Structure
     private Qi4j api;
 
-    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSPI module, long currentTime )
+    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, Module module, long currentTime )
     {
         final EntityStoreUnitOfWork uow = next.newUnitOfWork( usecase, module, currentTime );
         return new ConcurrentCheckingEntityStoreUnitOfWork( uow, api.dereference( versions ), module, currentTime );
@@ -56,14 +56,14 @@ public abstract class ConcurrentModificationCheckConcern
     {
         private final EntityStoreUnitOfWork uow;
         private EntityStateVersions versions;
-        private ModuleSPI module;
+        private Module module;
         private long currentTime;
 
         private List<EntityState> loaded = new ArrayList<EntityState>();
 
         public ConcurrentCheckingEntityStoreUnitOfWork( EntityStoreUnitOfWork uow,
                                                         EntityStateVersions versions,
-                                                        ModuleSPI module,
+                                                        Module module,
                                                         long currentTime )
         {
             this.uow = uow;

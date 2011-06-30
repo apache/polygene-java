@@ -23,7 +23,6 @@ import org.qi4j.api.util.Classes;
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Member;
-import java.lang.reflect.Method;
 
 /**
  * Thrown in case that a non queryable type or accessor (marked with @Queriable(false)) is used during query building,

@@ -16,11 +16,11 @@ package org.qi4j.runtime.composite;
 
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.composite.Composite;
+import org.qi4j.api.composite.CompositeInstance;
 import org.qi4j.api.composite.TransientBuilder;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.runtime.structure.ModelModule;
-import org.qi4j.spi.composite.CompositeInstance;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -32,22 +32,6 @@ import java.util.Iterator;
 public final class TransientBuilderInstance<T>
     implements TransientBuilder<T>
 {
-    private static final Method TYPE_METHOD;
-    private static final Method METAINFO_METHOD;
-
-    static
-    {
-        try
-        {
-            TYPE_METHOD = Composite.class.getMethod( "type" );
-            METAINFO_METHOD = Composite.class.getMethod( "metaInfo", Class.class );
-        }
-        catch( NoSuchMethodException e )
-        {
-            throw new InternalError( "Qi4j Core Runtime codebase is corrupted. Contact Qi4j team: TransientBuilderInstance" );
-        }
-    }
-
     private ModelModule<TransientModel> model;
 
     // lazy initialized in accessor
@@ -153,34 +137,5 @@ public final class TransientBuilderInstance<T>
         }
 
         return state;
-    }
-
-    protected class StateInvocationHandler
-        implements InvocationHandler
-    {
-        public StateInvocationHandler()
-        {
-        }
-
-        public Object invoke( Object o, Method method, Object[] objects )
-            throws Throwable
-        {
-            if( Property.class.isAssignableFrom( method.getReturnType() ) )
-            {
-                return getState().getProperty( method );
-            }
-            else if( method.equals( TYPE_METHOD ) )
-            {
-                return model.model().type();
-            }
-            else if( method.equals( METAINFO_METHOD ) )
-            {
-                return model.model().metaInfo( (Class<? extends Object>) objects[ 0 ] );
-            }
-            else
-            {
-                throw new IllegalArgumentException( "Method does not represent state: " + method );
-            }
-        }
     }
 }

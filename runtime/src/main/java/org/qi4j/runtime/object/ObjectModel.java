@@ -19,15 +19,15 @@ import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.mixin.Initializable;
 import org.qi4j.api.mixin.InitializationException;
-import org.qi4j.functional.Specification;
+import org.qi4j.api.object.ObjectDescriptor;
 import org.qi4j.functional.Function;
 import org.qi4j.functional.HierarchicalVisitor;
+import org.qi4j.functional.Specification;
 import org.qi4j.functional.VisitableHierarchy;
 import org.qi4j.runtime.composite.ConstructorsModel;
 import org.qi4j.runtime.injection.InjectedFieldsModel;
 import org.qi4j.runtime.injection.InjectedMethodsModel;
 import org.qi4j.runtime.injection.InjectionContext;
-import org.qi4j.spi.object.ObjectDescriptor;
 
 /**
  * JAVADOC

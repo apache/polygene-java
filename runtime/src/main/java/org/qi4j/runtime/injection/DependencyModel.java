@@ -15,17 +15,13 @@ package org.qi4j.runtime.injection;
 
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.Optional;
-import org.qi4j.functional.Function;
-import org.qi4j.functional.Iterables;
+import org.qi4j.api.composite.DependencyDescriptor;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.bootstrap.InvalidInjectionException;
-import org.qi4j.functional.Specification;
-import org.qi4j.functional.Visitable;
-import org.qi4j.functional.Visitor;
+import org.qi4j.functional.*;
 import org.qi4j.runtime.injection.provider.InjectionProviderException;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
-import org.qi4j.spi.composite.DependencyDescriptor;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;

@@ -19,7 +19,6 @@ import org.qi4j.api.util.NullArgumentException;
 import java.io.Serializable;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Member;
-import java.lang.reflect.Method;
 
 /**
  * QualifiedName is a representation of Property names to their full declaration.

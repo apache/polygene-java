@@ -23,8 +23,6 @@ import java.lang.reflect.*;
 import java.util.*;
 
 import static org.qi4j.functional.Iterables.*;
-import static org.qi4j.functional.Iterables.flattenIterables;
-import static org.qi4j.functional.Iterables.iterable;
 
 /**
  * Class-related utility methods

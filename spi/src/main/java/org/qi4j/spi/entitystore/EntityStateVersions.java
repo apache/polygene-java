@@ -17,10 +17,10 @@ package org.qi4j.spi.entitystore;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.structure.Module;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.structure.ModuleSPI;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +37,7 @@ public interface EntityStateVersions
 
     void rememberVersion( EntityReference identity, String version );
 
-    void checkForConcurrentModification( Iterable<EntityState> loaded, ModuleSPI module, long currentTime )
+    void checkForConcurrentModification( Iterable<EntityState> loaded, Module module, long currentTime )
         throws ConcurrentEntityStateModificationException;
 
     class EntityStateVersionsMixin
@@ -61,7 +61,7 @@ public interface EntityStateVersions
             versions.put( identity, version );
         }
 
-        public synchronized void checkForConcurrentModification( Iterable<EntityState> loaded, ModuleSPI module, long currentTime )
+        public synchronized void checkForConcurrentModification( Iterable<EntityState> loaded, Module module, long currentTime )
             throws ConcurrentEntityStateModificationException
         {
             List<EntityReference> changed = null;

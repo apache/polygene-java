@@ -27,7 +27,6 @@ import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.object.ObjectModel;
 import org.qi4j.runtime.service.Activator;
 import org.qi4j.runtime.value.ValueModel;
-import org.qi4j.spi.structure.LayerSPI;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +35,7 @@ import java.util.List;
  * Instance of a Qi4j application layer. Contains a list of modules which are managed by this layer.
  */
 public class LayerInstance
-        implements Layer, LayerSPI
+        implements Layer
 {
     private final LayerModel model;
     private final ApplicationInstance applicationInstance;

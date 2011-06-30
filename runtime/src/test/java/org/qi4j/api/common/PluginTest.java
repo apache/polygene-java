@@ -20,11 +20,8 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.*;
+import org.qi4j.api.structure.Application;
 import org.qi4j.bootstrap.*;
-import org.qi4j.spi.service.ImportedServiceDescriptor;
-import org.qi4j.spi.service.ServiceImporter;
-import org.qi4j.spi.service.ServiceImporterException;
-import org.qi4j.spi.structure.ApplicationSPI;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -45,7 +42,7 @@ public class PluginTest
         throws Exception
     {
         Energy4Java runtime = new Energy4Java();
-        ApplicationSPI app = runtime.newApplication( new MainApplicationAssembler() );
+        Application app = runtime.newApplication( new MainApplicationAssembler() );
         app.activate();
     }
 
@@ -200,7 +197,7 @@ public class PluginTest
             ServiceFinder finder;
             @Service
             ServiceReference<Plugin> plugin;
-            private ApplicationSPI app;
+            private Application app;
 
             public void activate()
                 throws Exception

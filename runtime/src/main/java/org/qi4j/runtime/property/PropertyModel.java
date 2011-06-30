@@ -36,8 +36,6 @@ public class PropertyModel
     @SuppressWarnings( "unchecked" )
     public <T> Property<T> newInstance( Object value )
     {
-        // Property was constructed using a builder
-
         Property property;
         property = new PropertyInstance<Object>( this, value, this );
         return wrapProperty( property );

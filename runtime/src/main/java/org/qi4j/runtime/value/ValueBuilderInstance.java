@@ -15,17 +15,11 @@
 package org.qi4j.runtime.value;
 
 import org.qi4j.api.common.ConstructionException;
-import org.qi4j.api.property.PropertyInfo;
 import org.qi4j.api.property.StateHolder;
-import org.qi4j.functional.Function;
 import org.qi4j.api.value.ValueBuilder;
-import org.qi4j.api.value.ValueComposite;
 import org.qi4j.runtime.structure.ModelModule;
-import org.qi4j.spi.composite.StateDescriptor;
-import org.qi4j.spi.property.PropertyDescriptor;
 
 import java.util.Iterator;
-import java.util.Set;
 
 /**
  * Implementation of ValueBuilder
@@ -41,33 +35,10 @@ public final class ValueBuilderInstance<T>
     // lazy initialized in accessor
     private StateHolder state;
 
-    public ValueBuilderInstance( ModelModule<ValueModel> model)
+    public ValueBuilderInstance( ModelModule<ValueModel> model, StateHolder state)
     {
         this.model = model;
-    }
-
-    public ValueBuilder<T> withPrototype( T value )
-    {
-        ValueInstance valueInstance = ValueInstance.getValueInstance( (ValueComposite) value );
-        StateHolder state = valueInstance.state();
-        this.state = model.model().newBuilderState( model.module(), state );
-        prototypeInstance = null;
-
-        return this;
-    }
-
-    public ValueBuilder<T> withState( Function<PropertyInfo,Object> state)
-    {
-        final StateHolder valueState = state();
-
-        StateDescriptor state1 = model.model().state();
-        Set<PropertyDescriptor> properties = state1.properties();
-        for( PropertyDescriptor property : properties )
-        {
-            Object value = state.map( property );
-            valueState.getProperty( property.accessor() ).set( value );
-        }
-        return this;
+        this.state = state;
     }
 
     public T prototype()

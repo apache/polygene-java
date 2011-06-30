@@ -16,9 +16,6 @@ package org.qi4j.functional;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
-import org.qi4j.functional.Iterables;
-import org.qi4j.functional.Specifications;
-import org.qi4j.functional.Function;
 
 import java.util.*;
 

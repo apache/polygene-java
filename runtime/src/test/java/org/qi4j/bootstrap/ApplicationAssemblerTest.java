@@ -4,12 +4,12 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.functional.Specifications;
+import org.qi4j.api.service.ServiceDescriptor;
+import org.qi4j.api.structure.ApplicationDescriptor;
 import org.qi4j.functional.HierarchicalVisitor;
-import org.qi4j.spi.entity.EntityDescriptor;
-import org.qi4j.spi.service.ServiceDescriptor;
-import org.qi4j.spi.structure.ApplicationModelSPI;
+import org.qi4j.functional.Specifications;
 
 /**
  * TODO
@@ -22,7 +22,7 @@ public class ApplicationAssemblerTest
     {
         Energy4Java is = new Energy4Java(  );
 
-        ApplicationModelSPI model = is.newApplicationModel( new ApplicationAssembler()
+        ApplicationDescriptor model = is.newApplicationModel( new ApplicationAssembler()
         {
             @Override
             public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )

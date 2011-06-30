@@ -32,6 +32,6 @@ import org.qi4j.api.property.Immutable;
  */
 @Immutable
 public interface ValueComposite
-    extends Value, Composite
+    extends Composite
 {
 }

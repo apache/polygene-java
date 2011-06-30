@@ -15,9 +15,11 @@
 package org.qi4j.runtime.injection;
 
 import org.qi4j.api.injection.InjectionScope;
+import org.qi4j.api.util.Annotations;
+import org.qi4j.api.util.Classes;
+import org.qi4j.api.util.Methods;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.functional.Specifications;
-import org.qi4j.api.util.*;
 import org.qi4j.functional.VisitableHierarchy;
 
 import java.lang.annotation.Annotation;

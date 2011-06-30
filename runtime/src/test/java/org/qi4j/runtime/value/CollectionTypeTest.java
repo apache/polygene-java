@@ -20,8 +20,10 @@ package org.qi4j.runtime.value;
 
 import org.json.JSONArray;
 import org.junit.Test;
-import org.qi4j.api.common.TypeName;
-import org.qi4j.spi.property.*;
+import org.qi4j.api.json.JSONDeserializer;
+import org.qi4j.api.json.JSONObjectSerializer;
+import org.qi4j.api.type.CollectionType;
+import org.qi4j.api.type.ValueType;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

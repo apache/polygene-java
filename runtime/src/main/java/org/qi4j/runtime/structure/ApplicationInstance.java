@@ -14,15 +14,15 @@
 
 package org.qi4j.runtime.structure;
 
+import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.event.ActivationEvent;
 import org.qi4j.api.event.ActivationEventListener;
 import org.qi4j.api.structure.Application;
+import org.qi4j.api.structure.ApplicationDescriptor;
 import org.qi4j.api.structure.Layer;
 import org.qi4j.api.structure.Module;
+import org.qi4j.bootstrap.Qi4jRuntime;
 import org.qi4j.runtime.service.Activator;
-import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.structure.ApplicationModelSPI;
-import org.qi4j.spi.structure.ApplicationSPI;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,18 +31,20 @@ import java.util.List;
  * Instance of a Qi4j application. Contains a list of layers which are managed by this application
  */
 public class ApplicationInstance
-    implements Application, ApplicationSPI
+    implements Application
 {
-    private final ApplicationModel model;
-    private final Qi4jSPI runtime;
+    private final org.qi4j.runtime.structure.ApplicationModel model;
+    private final Qi4jRuntime runtime;
+    private MetaInfo instanceMetaInfo;
     private final List<LayerInstance> layerInstances = new ArrayList<LayerInstance>(  );
     private final Activator layerActivator;
     private final ActivationEventListenerSupport eventListenerSupport = new ActivationEventListenerSupport();
 
-    public ApplicationInstance( ApplicationModel model, Qi4jSPI runtime )
+    public ApplicationInstance( ApplicationModel model, Qi4jRuntime runtime, MetaInfo instanceMetaInfo )
     {
         this.model = model;
         this.runtime = runtime;
+        this.instanceMetaInfo = instanceMetaInfo;
         layerActivator = new Activator();
     }
 
@@ -52,12 +54,12 @@ public class ApplicationInstance
         layer.registerActivationEventListener( eventListenerSupport );
     }
 
-    public ApplicationModelSPI model()
+    public ApplicationDescriptor descriptor()
     {
         return model;
     }
 
-    public Qi4jSPI runtime()
+    public Qi4jRuntime runtime()
     {
         return runtime;
     }
@@ -79,7 +81,7 @@ public class ApplicationInstance
 
     public <T> T metaInfo( Class<T> infoType )
     {
-        return model.metaInfo( infoType );
+        return instanceMetaInfo.get( infoType );
     }
 
     public List<LayerInstance> layers()

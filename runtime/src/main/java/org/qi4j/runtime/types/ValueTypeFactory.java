@@ -20,6 +20,7 @@ package org.qi4j.runtime.types;
 
 import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.type.*;
 import org.qi4j.api.util.Classes;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.runtime.structure.LayerModel;
@@ -27,7 +28,6 @@ import org.qi4j.runtime.structure.ModuleModel;
 import org.qi4j.runtime.structure.UsedLayersModel;
 import org.qi4j.runtime.value.ValueModel;
 import org.qi4j.runtime.value.ValuesModel;
-import org.qi4j.spi.property.*;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;

@@ -14,9 +14,9 @@
 
 package org.qi4j.runtime.structure;
 
+import org.qi4j.api.structure.UsedLayersDescriptor;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.functional.VisitableHierarchy;
-import org.qi4j.spi.structure.UsedLayersDescriptor;
 
 import java.util.List;
 

@@ -1,13 +1,17 @@
 package org.qi4j.runtime.injection.provider;
 
-import org.qi4j.api.entity.association.AbstractAssociation;
-import org.qi4j.api.entity.association.Association;
-import org.qi4j.api.entity.association.EntityStateHolder;
-import org.qi4j.api.entity.association.ManyAssociation;
+import org.qi4j.api.composite.StateDescriptor;
+import org.qi4j.api.composite.TransientDescriptor;
+import org.qi4j.api.entity.EntityDescriptor;
+import org.qi4j.api.entity.EntityStateDescriptor;
+import org.qi4j.api.entity.association.*;
 import org.qi4j.api.injection.scope.State;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.value.ValueDescriptor;
 import org.qi4j.bootstrap.InvalidInjectionException;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.injection.DependencyModel;
@@ -15,15 +19,6 @@ import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.injection.InjectionProvider;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
 import org.qi4j.runtime.model.Resolution;
-import org.qi4j.spi.composite.StateDescriptor;
-import org.qi4j.spi.composite.TransientDescriptor;
-import org.qi4j.spi.entity.EntityDescriptor;
-import org.qi4j.spi.entity.EntityStateDescriptor;
-import org.qi4j.spi.entity.association.AssociationDescriptor;
-import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
-import org.qi4j.spi.property.PropertyDescriptor;
-import org.qi4j.spi.service.ServiceDescriptor;
-import org.qi4j.spi.value.ValueDescriptor;
 
 /**
  * JAVADOC

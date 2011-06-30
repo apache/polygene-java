@@ -13,8 +13,8 @@
  */
 package org.qi4j.runtime.value;
 
+import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.runtime.property.AbstractPropertyInstance;
-import org.qi4j.spi.property.PropertyDescriptor;
 
 /**
  * {@code ValuePropertyInstance} represents a ValueComposite property. It is always immutable.

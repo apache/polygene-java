@@ -14,9 +14,8 @@
 
 package org.qi4j.runtime.entity;
 
-import org.qi4j.api.entity.association.Association;
-import org.qi4j.api.entity.association.EntityStateHolder;
-import org.qi4j.api.entity.association.ManyAssociation;
+import org.qi4j.api.entity.EntityStateDescriptor;
+import org.qi4j.api.entity.association.*;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.util.Classes;
 import org.qi4j.functional.HierarchicalVisitor;
@@ -25,9 +24,6 @@ import org.qi4j.runtime.composite.AbstractStateModel;
 import org.qi4j.runtime.entity.association.*;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityStateDescriptor;
-import org.qi4j.spi.entity.association.AssociationDescriptor;
-import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
 
 import java.lang.reflect.AccessibleObject;
 import java.util.Set;

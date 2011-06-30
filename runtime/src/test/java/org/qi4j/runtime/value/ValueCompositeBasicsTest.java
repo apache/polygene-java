@@ -53,7 +53,7 @@ public class ValueCompositeBasicsTest
         ValueBuilder<SomeValue> builder = valueBuilderFactory.newValueBuilder( SomeValue.class );
         builder.prototypeFor( SomeInternalState.class ).name().set( "Niclas" );
         SomeValue underTest = builder.newInstance();
-        assertEquals( "{name: \"Niclas\"}", underTest.toJSON() );
+        assertEquals( "{name: \"Niclas\"}", underTest.toString() );
     }
 
     public abstract static class SomeMixin

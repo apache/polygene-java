@@ -14,11 +14,11 @@
 
 package org.qi4j.spi.entitystore;
 
+import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.structure.Module;
 import org.qi4j.api.usecase.Usecase;
-import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.structure.ModuleSPI;
 
 import java.util.LinkedList;
 
@@ -30,14 +30,14 @@ public final class DefaultEntityStoreUnitOfWork
 {
     private EntityStoreSPI entityStoreSPI;
     private String identity;
-    private ModuleSPI module;
+    private Module module;
     private LinkedList<EntityState> states = new LinkedList<EntityState>();
     private Usecase usecase;
     private long currentTime;
 
     public DefaultEntityStoreUnitOfWork( EntityStoreSPI entityStoreSPI,
                                          String identity,
-                                         ModuleSPI module,
+                                         Module module,
                                          Usecase usecase,
                                          long currentTime )
     {
@@ -53,7 +53,7 @@ public final class DefaultEntityStoreUnitOfWork
         return identity;
     }
 
-    public ModuleSPI module()
+    public Module module()
     {
         return module;
     }

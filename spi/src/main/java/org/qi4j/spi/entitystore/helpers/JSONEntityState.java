@@ -21,18 +21,18 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.spi.entity.EntityDescriptor;
+import org.qi4j.api.json.JSONDeserializer;
+import org.qi4j.api.json.JSONObjectSerializer;
+import org.qi4j.api.property.PersistentPropertyDescriptor;
+import org.qi4j.api.property.PropertyDescriptor;
+import org.qi4j.api.structure.Module;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.ManyAssociationState;
 import org.qi4j.spi.entitystore.DefaultEntityStoreUnitOfWork;
 import org.qi4j.spi.entitystore.EntityStoreException;
-import org.qi4j.spi.property.JSONDeserializer;
-import org.qi4j.spi.property.JSONObjectSerializer;
-import org.qi4j.spi.property.PersistentPropertyDescriptor;
-import org.qi4j.spi.property.PropertyDescriptor;
-import org.qi4j.spi.structure.ModuleSPI;
 
 /**
  * Standard implementation of EntityState.
@@ -126,7 +126,7 @@ public final class JSONEntityState
             }
             else
             {
-                ModuleSPI module = unitOfWork.module();
+                Module module = unitOfWork.module();
                 PropertyDescriptor descriptor = entityDescriptor.state().getPropertyByQualifiedName( stateName );
 
                 if (descriptor == null)

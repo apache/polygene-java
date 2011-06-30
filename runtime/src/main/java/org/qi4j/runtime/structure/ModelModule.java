@@ -1,7 +1,7 @@
 package org.qi4j.runtime.structure;
 
+import org.qi4j.api.object.ObjectDescriptor;
 import org.qi4j.functional.Function;
-import org.qi4j.spi.object.ObjectDescriptor;
 
 /**
  * TODO

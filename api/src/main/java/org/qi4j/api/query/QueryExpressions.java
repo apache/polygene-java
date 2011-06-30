@@ -28,10 +28,9 @@ import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.injection.scope.State;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Property;
-import org.qi4j.api.query.grammar.OrderBy;
-import org.qi4j.api.query.grammar2.*;
-import org.qi4j.functional.Specification;
+import org.qi4j.api.query.grammar.*;
 import org.qi4j.api.util.NullArgumentException;
+import org.qi4j.functional.Specification;
 
 import java.lang.reflect.*;
 import java.util.Collection;
@@ -317,7 +316,7 @@ public final class QueryExpressions
                 Type propertyType = GenericPropertyInfo.getPropertyType( property.getAccessor() );
                 if( propertyType.getClass().equals( Class.class ) )
                     return Proxy.newProxyInstance( method.getDeclaringClass().getClassLoader(),
-                            new Class[]{(Class) propertyType, org.qi4j.api.query.grammar2.PropertyReference.class},
+                            new Class[]{(Class) propertyType, PropertyReference.class},
                             new TemplateHandler( property, null, null ));
             }
 
@@ -348,7 +347,7 @@ public final class QueryExpressions
                 Type associationType = GenericAssociationInfo.getAssociationType( association.getAccessor() );
                 if( associationType.getClass().equals( Class.class ) )
                     return Proxy.newProxyInstance( method.getDeclaringClass().getClassLoader(),
-                            new Class[]{(Class) associationType, org.qi4j.api.query.grammar2.PropertyReference.class},
+                            new Class[]{(Class) associationType, PropertyReference.class},
                             new TemplateHandler( null, association, null ));
             }
 
@@ -379,7 +378,7 @@ public final class QueryExpressions
                 Type manyAssociationType = GenericAssociationInfo.getAssociationType( manyAssociation.getAccessor() );
                 if( manyAssociationType.getClass().equals( Class.class ) )
                     return Proxy.newProxyInstance( method.getDeclaringClass().getClassLoader(),
-                            new Class[]{(Class) manyAssociationType, org.qi4j.api.query.grammar2.PropertyReference.class},
+                            new Class[]{(Class) manyAssociationType, PropertyReference.class},
                             new TemplateHandler( null, null, manyAssociation ));
             }
 

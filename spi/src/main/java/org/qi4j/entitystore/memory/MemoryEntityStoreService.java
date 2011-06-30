@@ -17,9 +17,9 @@ package org.qi4j.entitystore.memory;
 import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.entitystore.map.JSONMapEntityStoreMixin;
-import org.qi4j.entitystore.map.StateStore;
 import org.qi4j.spi.entitystore.*;
+import org.qi4j.spi.entitystore.helpers.JSONMapEntityStoreMixin;
+import org.qi4j.spi.entitystore.helpers.StateStore;
 
 /**
  * In-memory EntityStore service. Useful for testing

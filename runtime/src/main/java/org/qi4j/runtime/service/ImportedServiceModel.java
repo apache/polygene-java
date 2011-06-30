@@ -16,12 +16,12 @@ package org.qi4j.runtime.service;
 
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.service.ImportedServiceDescriptor;
+import org.qi4j.api.service.ServiceImporter;
+import org.qi4j.api.service.ServiceImporterException;
 import org.qi4j.api.structure.Module;
 import org.qi4j.functional.Visitable;
 import org.qi4j.functional.Visitor;
-import org.qi4j.spi.service.ImportedServiceDescriptor;
-import org.qi4j.spi.service.ServiceImporter;
-import org.qi4j.spi.service.ServiceImporterException;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;

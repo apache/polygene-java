@@ -35,9 +35,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import static org.qi4j.functional.Iterables.*;
 import static org.qi4j.functional.Specifications.in;
 import static org.qi4j.functional.Specifications.not;
-import static org.qi4j.functional.Iterables.*;
 
 /**
  * Model for Composite methods. This includes both private and public methods.

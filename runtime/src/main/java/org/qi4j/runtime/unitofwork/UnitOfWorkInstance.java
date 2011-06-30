@@ -20,6 +20,7 @@ import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.*;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.runtime.entity.EntityInstance;
@@ -30,7 +31,6 @@ import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entitystore.*;
-import org.qi4j.spi.structure.ModuleSPI;
 
 import java.util.*;
 
@@ -83,7 +83,7 @@ public final class UnitOfWorkInstance
         this.usecase = usecase;
     }
 
-    public EntityStoreUnitOfWork getEntityStoreUnitOfWork( EntityStore store, ModuleSPI module )
+    public EntityStoreUnitOfWork getEntityStoreUnitOfWork( EntityStore store, Module module )
     {
         EntityStoreUnitOfWork uow = storeUnitOfWork.get( store );
         if( uow == null )

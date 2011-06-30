@@ -17,23 +17,23 @@ package org.qi4j.runtime.service;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
+import org.qi4j.api.composite.InvalidCompositeException;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.functional.Specifications;
+import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.util.Classes;
 import org.qi4j.bootstrap.MetaInfoDeclaration;
 import org.qi4j.bootstrap.PropertyDeclarations;
+import org.qi4j.functional.Specifications;
 import org.qi4j.runtime.bootstrap.AssemblyHelper;
 import org.qi4j.runtime.composite.*;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.property.PropertiesModel;
 import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.spi.composite.InvalidCompositeException;
-import org.qi4j.spi.service.ServiceDescriptor;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -42,9 +42,9 @@ import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.qi4j.functional.Iterables.filter;
 import static org.qi4j.functional.Specifications.and;
 import static org.qi4j.functional.Specifications.translate;
-import static org.qi4j.functional.Iterables.filter;
 
 /**
  * JAVADOC

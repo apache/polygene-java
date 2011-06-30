@@ -20,13 +20,13 @@
 package org.qi4j.api.query;
 
 import org.qi4j.api.composite.Composite;
-import org.qi4j.functional.Specification;
 import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.functional.Specification;
 
 /**
  * QueryBuilders are used to create {@link Query} instances.
  * Iteratively add where() clauses to the query, and then use
- * {@link QueryBuilder#newQuery(org.qi4j.api.unitofwork.UnitOfWork)} to instantiate the Query.
+ * {@link org.qi4j.api.unitofwork.UnitOfWork#newQuery(QueryBuilder)}  to instantiate the Query.
  * QueryBuilders are immutable, so when adding new where-clauses you get new instances. This
  *
  * DDD tip: Query objects are not executed immediately, so they
@@ -45,15 +45,6 @@ public interface QueryBuilder<T>
      * @return a new builder with the added where-clause
      */
     QueryBuilder<T> where( Specification<Composite> specification );
-
-    /**
-     * Create a new query with the declared where-clauses.
-     *
-     * @param unitOfWork the UoW in which the query is to be executed
-     *
-     * @return a new Query instance
-     */
-    Query<T> newQuery( UnitOfWork unitOfWork );
 
     /**
      * Create a new query with the declared where-clauses that will be evaluated against the iterable entries.

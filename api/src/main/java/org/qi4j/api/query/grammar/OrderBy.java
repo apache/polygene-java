@@ -18,8 +18,6 @@
  */
 package org.qi4j.api.query.grammar;
 
-import org.qi4j.api.query.grammar2.PropertyFunction;
-
 /**
  * Query sorting segment.
  */

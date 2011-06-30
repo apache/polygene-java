@@ -16,7 +16,6 @@ package org.qi4j.api.value;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.EntityBuilder;
@@ -70,7 +69,7 @@ public class ValueCompositeTest
         builder.newInstance();
 
         // Check that @UseDefaults works for ValueComposites
-        assertEquals("{\"val1\":\"\"}", some.another().get().toJSON());
+        assertEquals("{\"val1\":\"\"}", some.another().get().toString());
     }
 
     @Test
@@ -117,7 +116,7 @@ public class ValueCompositeTest
         assertThat( "List has value blah", instance.xyzzyList().get().get( 0 ), equalTo( "blah" ) );
 
         // Modify value
-        builder = valueBuilderFactory.newValueBuilder( SomeValue.class ).withPrototype( instance );
+        builder = valueBuilderFactory.newValueBuilderWithPrototype( instance );
         builder.prototype().some().set( "bar" );
         instance = builder.newInstance();
 
@@ -126,7 +125,7 @@ public class ValueCompositeTest
         assertThat( "AnotherValue.val1 has value Val1", instance.another().get().val1().get(), equalTo( "Val1" ) );
 
         // Modify value again using method 2
-        builder = instance.buildWith();
+        builder = valueBuilderFactory.newValueBuilderWithPrototype( instance );
         builder.prototype().other().set( "test2" );
         instance = builder.newInstance();
 
@@ -142,7 +141,7 @@ public class ValueCompositeTest
         prototype.some().set( "foo" );
         SomeValue instance = builder.newInstance();
 
-        builder = valueBuilderFactory.newValueBuilder( SomeValue.class ).withPrototype( instance );
+        builder = valueBuilderFactory.newValueBuilderWithPrototype( instance );
         builder.prototype().some().set( "123456" );
     }
 
@@ -153,7 +152,7 @@ public class ValueCompositeTest
         builder.prototype().anotherList().get().add( valueBuilderFactory.newValue( AnotherValue.class ) );
         SomeValue some = builder.newInstance();
 
-        builder = valueBuilderFactory.newValueBuilder( SomeValue.class ).withPrototype( some );
+        builder = valueBuilderFactory.newValueBuilderWithPrototype( some );
         builder.prototype().anotherList().get().get( 0 ).val1().set( "Foo" );
         builder.prototype().anotherList().get().add( valueBuilderFactory.newValue( AnotherValue.class ) );
         some = builder.newInstance();

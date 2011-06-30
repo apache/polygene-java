@@ -27,10 +27,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static org.qi4j.functional.Specifications.translate;
 import static org.qi4j.api.util.Annotations.hasAnnotation;
 import static org.qi4j.api.util.Annotations.type;
 import static org.qi4j.functional.Iterables.filter;
+import static org.qi4j.functional.Specifications.translate;
 
 /**
  * JAVADOC

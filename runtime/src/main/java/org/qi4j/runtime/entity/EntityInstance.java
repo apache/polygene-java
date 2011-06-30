@@ -15,13 +15,14 @@
 
 package org.qi4j.runtime.entity;
 
+import org.qi4j.api.composite.AbstractCompositeDescriptor;
+import org.qi4j.api.composite.CompositeInstance;
 import org.qi4j.api.constraint.ConstraintViolationException;
-import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.entity.EntityReference;
-import org.qi4j.api.entity.Identity;
-import org.qi4j.api.entity.LifecycleException;
+import org.qi4j.api.entity.*;
 import org.qi4j.api.entity.association.Association;
+import org.qi4j.api.entity.association.AssociationDescriptor;
 import org.qi4j.api.entity.association.ManyAssociation;
+import org.qi4j.api.entity.association.ManyAssociationDescriptor;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkException;
@@ -29,13 +30,8 @@ import org.qi4j.runtime.composite.CompositeMethodInstance;
 import org.qi4j.runtime.composite.MixinsInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
-import org.qi4j.spi.composite.AbstractCompositeDescriptor;
-import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityStateDescriptor;
 import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entity.association.AssociationDescriptor;
-import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;

@@ -14,10 +14,10 @@
 
 package org.qi4j.runtime.injection;
 
-import org.qi4j.functional.Specification;
+import org.qi4j.api.composite.InjectedParametersDescriptor;
 import org.qi4j.functional.HierarchicalVisitor;
+import org.qi4j.functional.Specification;
 import org.qi4j.functional.VisitableHierarchy;
-import org.qi4j.spi.composite.InjectedParametersDescriptor;
 
 import java.util.ArrayList;
 import java.util.Collection;

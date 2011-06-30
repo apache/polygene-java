@@ -16,9 +16,9 @@
 package org.qi4j.runtime.composite;
 
 import org.qi4j.api.composite.Composite;
+import org.qi4j.api.composite.CompositeInstance;
 import org.qi4j.api.constraint.ConstraintViolation;
 import org.qi4j.api.constraint.ConstraintViolationException;
-import org.qi4j.spi.composite.CompositeInstance;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;

@@ -16,11 +16,18 @@ package org.qi4j.runtime.structure;
 
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.NoSuchCompositeException;
 import org.qi4j.api.entity.*;
+import org.qi4j.api.query.Query;
+import org.qi4j.api.query.QueryBuilder;
+import org.qi4j.api.query.QueryExecutionException;
+import org.qi4j.api.query.grammar.OrderBy;
+import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.unitofwork.*;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.functional.Iterables;
+import org.qi4j.functional.Specification;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.unitofwork.EntityBuilderInstance;
@@ -28,8 +35,14 @@ import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entitystore.EntityStore;
+import org.qi4j.spi.query.EntityFinder;
+import org.qi4j.spi.query.EntityFinderException;
+import org.qi4j.spi.query.QueryBuilderSPI;
+import org.qi4j.spi.query.QuerySource;
 
 import java.util.Collections;
+import java.util.Iterator;
+import java.util.Map;
 
 import static org.qi4j.api.entity.EntityReference.parseEntityReference;
 
@@ -85,6 +98,14 @@ public class ModuleUnitOfWork
     public MetaInfo metaInfo()
     {
         return uow.metaInfo();
+    }
+
+    @Override
+    public <T> Query<T> newQuery( QueryBuilder<T> queryBuilder )
+    {
+        QueryBuilderSPI queryBuilderSPI = (QueryBuilderSPI) queryBuilder;
+
+        return queryBuilderSPI.newQuery( new UoWQuerySource(this) );
     }
 
     public <T> T newEntity( Class<T> type )
@@ -305,5 +326,107 @@ public class ModuleUnitOfWork
     public void addEntity( EntityInstance instance )
     {
         uow.createEntity( instance );
+    }
+
+    private class UoWQuerySource implements QuerySource
+    {
+        private ModuleUnitOfWork moduleUnitOfWork;
+
+        public UoWQuerySource( ModuleUnitOfWork moduleUnitOfWork )
+        {
+            this.moduleUnitOfWork = moduleUnitOfWork;
+        }
+
+        @Override
+        public <T> T find( Class<T> resultType, Specification<Composite> whereClause, OrderBy[] orderBySegments, Integer firstResult, Integer maxResults, Map<String, Object> variables )
+        {
+            final EntityFinder entityFinder = moduleUnitOfWork.module().serviceFinder().findService( EntityFinder.class ).get();
+
+            try
+            {
+                final EntityReference foundEntity = entityFinder.findEntity( resultType, whereClause, variables == null ? Collections.<String, Object>emptyMap() : variables );
+                if( foundEntity != null )
+                {
+                    try
+                    {
+                        return moduleUnitOfWork.get( resultType, foundEntity.identity() );
+                    }
+                    catch( NoSuchEntityException e )
+                    {
+                        return null; // Index is out of sync - entity has been removed
+                    }
+                }
+                // No entity was found
+                return null;
+            }
+            catch( EntityFinderException e )
+            {
+                throw new QueryExecutionException( "Finder caused exception", e );
+            }
+        }
+
+        @Override
+        public <T> long count( Class<T> resultType, Specification<Composite> whereClause, OrderBy[] orderBySegments, Integer firstResult, Integer maxResults, Map<String, Object> variables )
+        {
+            final EntityFinder entityFinder = moduleUnitOfWork.module().serviceFinder().findService( EntityFinder.class ).get();
+
+            try
+            {
+                return entityFinder.countEntities( resultType, whereClause, variables == null ? Collections.<String, Object>emptyMap() : variables );
+            }
+            catch( EntityFinderException e )
+            {
+                e.printStackTrace();
+                return 0;
+            }
+        }
+
+        @Override
+        public <T> Iterator<T> iterator( final Class<T> resultType, Specification<Composite> whereClause, OrderBy[] orderBySegments, Integer firstResult, Integer maxResults, Map<String, Object> variables )
+        {
+            final EntityFinder entityFinder = moduleUnitOfWork.module().serviceFinder().findService( EntityFinder.class ).get();
+
+            try
+            {
+                final Iterator<EntityReference> foundEntities = entityFinder.findEntities( resultType,
+                                                                                           whereClause,
+                                                                                           orderBySegments,
+                                                                                           firstResult,
+                                                                                           maxResults,
+                                                                                           variables == null ? Collections.<String, Object>emptyMap() : variables)
+                    .iterator();
+
+                return new Iterator<T>()
+                {
+                    public boolean hasNext()
+                    {
+                        return foundEntities.hasNext();
+                    }
+
+                    public T next()
+                    {
+                        final EntityReference foundEntity = foundEntities.next();
+                        try
+                        {
+                            return moduleUnitOfWork.get( resultType, foundEntity.identity() );
+                        }
+                        catch( NoSuchEntityException e )
+                        {
+                            // Index is out of sync - entity has been removed
+                            return null;
+                        }
+                    }
+
+                    public void remove()
+                    {
+                        throw new UnsupportedOperationException();
+                    }
+                };
+            }
+            catch( EntityFinderException e )
+            {
+                throw new QueryExecutionException( "Query '" + toString() + "' could not be executed", e );
+            }
+        }
     }
 }

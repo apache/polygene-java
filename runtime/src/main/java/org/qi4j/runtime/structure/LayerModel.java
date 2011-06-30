@@ -15,9 +15,9 @@
 package org.qi4j.runtime.structure;
 
 import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.structure.LayerDescriptor;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.functional.VisitableHierarchy;
-import org.qi4j.spi.structure.LayerDescriptor;
 
 import java.util.List;
 

@@ -20,11 +20,11 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceReference;
-import org.qi4j.functional.Specification;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.ServiceAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
+import org.qi4j.functional.Specification;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

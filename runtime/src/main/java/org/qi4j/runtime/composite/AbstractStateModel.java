@@ -15,20 +15,19 @@
 package org.qi4j.runtime.composite;
 
 import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.composite.StateDescriptor;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.injection.scope.State;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.property.StateHolder;
-import org.qi4j.api.util.*;
-import org.qi4j.functional.ForEach;
-import org.qi4j.functional.HierarchicalVisitor;
-import org.qi4j.functional.VisitableHierarchy;
-import org.qi4j.functional.Visitor;
+import org.qi4j.api.util.Annotations;
+import org.qi4j.api.util.Classes;
+import org.qi4j.api.util.Fields;
+import org.qi4j.functional.*;
 import org.qi4j.runtime.property.AbstractPropertiesModel;
 import org.qi4j.runtime.property.PropertiesInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.spi.composite.StateDescriptor;
-import org.qi4j.spi.property.PropertyDescriptor;
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
@@ -53,14 +52,21 @@ public abstract class AbstractStateModel<T extends AbstractPropertiesModel>
         return propertiesModel.newInitialInstance( module );
     }
 
-    public StateHolder newBuilderInstance( ModuleInstance module )
+    public StateHolder newBuilderInstance( final ModuleInstance module )
     {
-        return propertiesModel.newBuilderInstance(module);
+        return propertiesModel.newBuilderInstance( new Function<PropertyDescriptor, Object>()
+        {
+            @Override
+            public Object map( PropertyDescriptor propertyDescriptor )
+            {
+                return propertyDescriptor.initialValue( module );
+            }
+        } );
     }
 
-    public StateHolder newBuilderInstance( ModuleInstance module, StateHolder state )
+    public StateHolder newBuilderInstance( Function<PropertyDescriptor, Object> state )
     {
-        return propertiesModel.newBuilderInstance( module, state );
+        return propertiesModel.newBuilderInstance( state );
     }
 
     public StateHolder newInstance( StateHolder state )

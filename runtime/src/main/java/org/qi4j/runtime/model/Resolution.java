@@ -14,11 +14,11 @@
 
 package org.qi4j.runtime.model;
 
+import org.qi4j.api.object.ObjectDescriptor;
 import org.qi4j.runtime.composite.CompositeMethodModel;
 import org.qi4j.runtime.structure.ApplicationModel;
 import org.qi4j.runtime.structure.LayerModel;
 import org.qi4j.runtime.structure.ModuleModel;
-import org.qi4j.spi.object.ObjectDescriptor;
 
 import java.lang.reflect.Field;
 

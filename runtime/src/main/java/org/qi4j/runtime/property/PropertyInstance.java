@@ -14,8 +14,8 @@
  */
 package org.qi4j.runtime.property;
 
+import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.runtime.composite.ConstraintsCheck;
-import org.qi4j.spi.property.PropertyDescriptor;
 
 /**
  * {@code PropertyInstance} represents a property.

@@ -17,9 +17,9 @@
  */
 package org.qi4j.bootstrap;
 
+import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specification;
-import org.qi4j.functional.Function;
 
 import java.io.File;
 import java.io.IOException;

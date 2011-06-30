@@ -17,11 +17,13 @@ package org.qi4j.runtime.property;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.property.StateHolder;
-import org.qi4j.functional.HierarchicalVisitor;
-import org.qi4j.functional.VisitableHierarchy;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.PropertyDeclarations;
+import org.qi4j.functional.Function;
+import org.qi4j.functional.HierarchicalVisitor;
+import org.qi4j.functional.VisitableHierarchy;
 import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.value.ValueInstance;
@@ -86,29 +88,17 @@ public abstract class AbstractPropertiesModel<T extends AbstractPropertyModel>
         return propertyModels;
     }
 
-    public PropertiesInstance newBuilderInstance( ModuleInstance module )
-    {
-        Map<AccessibleObject, Property<?>> properties = new HashMap<AccessibleObject, Property<?>>();
-        for( T propertyModel : propertyModels )
-        {
-            Property property = propertyModel.newBuilderInstance(module);
-            properties.put( propertyModel.accessor(), property );
-        }
-
-        return new PropertiesInstance( properties );
-    }
-
-    public PropertiesInstance newBuilderInstance( ModuleInstance module, StateHolder state )
+    public PropertiesInstance newBuilderInstance( Function<PropertyDescriptor, Object> state)
     {
         Map<AccessibleObject, Property<?>> properties = new HashMap<AccessibleObject, Property<?>>();
         for( T propertyModel : propertyModels )
         {
             Property property;
-            Object initialValue = state.getProperty( propertyModel.accessor() ).get();
+            Object initialValue = state.map( propertyModel );
 
             initialValue = cloneInitialValue( initialValue, true );
 
-            property = propertyModel.newBuilderInstance( module, initialValue );
+            property = propertyModel.newBuilderInstance( initialValue );
             properties.put( propertyModel.accessor(), property );
         }
 
@@ -120,7 +110,7 @@ public abstract class AbstractPropertiesModel<T extends AbstractPropertyModel>
         Map<AccessibleObject, Property<?>> properties = new HashMap<AccessibleObject, Property<?>>();
         for( T propertyModel : propertyModels )
         {
-            Property property = propertyModel.newInitialInstance( module );
+            Property property = propertyModel.newInstance( propertyModel.initialValue( module ) );
             properties.put( propertyModel.accessor(), property );
         }
 
@@ -183,13 +173,20 @@ public abstract class AbstractPropertiesModel<T extends AbstractPropertyModel>
     private Object cloneValue( Object value, boolean isPrototype )
     {
         // Create real value
-        ValueInstance instance = ValueInstance.getValueInstance( (ValueComposite) value );
+        final ValueInstance instance = ValueInstance.getValueInstance( (ValueComposite) value );
 
         ValueModel model = (ValueModel) instance.compositeModel();
         StateHolder state;
         if( isPrototype )
         {
-            state = model.state().newBuilderInstance( instance.module(), instance.state() );
+            state = model.state().newBuilderInstance( new Function<PropertyDescriptor, Object>()
+                    {
+                        @Override
+                        public Object map( PropertyDescriptor propertyDescriptor )
+                        {
+                            return instance.state().getProperty( propertyDescriptor.accessor() ).get();
+                        }
+                        });
         }
         else
         {

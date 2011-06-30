@@ -22,7 +22,10 @@ import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.util.Classes;
 
 import java.io.Serializable;
-import java.lang.reflect.*;
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 
 public final class GenericPropertyInfo
     implements PropertyInfo, Serializable

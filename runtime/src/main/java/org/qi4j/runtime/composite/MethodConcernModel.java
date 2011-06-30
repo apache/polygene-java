@@ -14,7 +14,7 @@
 
 package org.qi4j.runtime.composite;
 
-import org.qi4j.spi.concern.MethodConcernDescriptor;
+import org.qi4j.api.concern.MethodConcernDescriptor;
 
 /**
  * JAVADOC

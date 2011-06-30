@@ -17,9 +17,9 @@ package org.qi4j.runtime.property;
 import org.json.JSONException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.entity.Queryable;
+import org.qi4j.api.json.JSONWriterSerializer;
+import org.qi4j.api.property.PersistentPropertyDescriptor;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
-import org.qi4j.spi.property.JSONWriterSerializer;
-import org.qi4j.spi.property.PersistentPropertyDescriptor;
 
 import java.lang.reflect.AccessibleObject;
 

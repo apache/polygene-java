@@ -14,21 +14,24 @@
 
 package org.qi4j.runtime;
 
-import org.qi4j.api.composite.Composite;
-import org.qi4j.api.composite.PropertyMapper;
-import org.qi4j.api.composite.TransientComposite;
+import org.qi4j.api.Qi4j;
+import org.qi4j.api.composite.*;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.association.EntityStateHolder;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.value.ValueComposite;
+import org.qi4j.api.value.ValueDescriptor;
 import org.qi4j.bootstrap.ApplicationAssemblyFactory;
 import org.qi4j.bootstrap.ApplicationModelFactory;
 import org.qi4j.bootstrap.Qi4jRuntime;
@@ -45,13 +48,7 @@ import org.qi4j.runtime.service.ServiceReferenceInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.runtime.value.ValueInstance;
 import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.composite.CompositeInstance;
-import org.qi4j.spi.composite.TransientDescriptor;
-import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.property.PropertyDescriptor;
-import org.qi4j.spi.service.ServiceDescriptor;
-import org.qi4j.spi.value.ValueDescriptor;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -84,6 +81,11 @@ public final class Qi4jRuntimeImpl
     public ApplicationModelFactory applicationModelFactory()
     {
         return applicationModelFactory;
+    }
+
+    public Qi4j api()
+    {
+        return this;
     }
 
     public Qi4jSPI spi()
@@ -164,7 +166,7 @@ public final class Qi4jRuntimeImpl
 
         // Check for defaults
         String s = identity + ".properties";
-        InputStream asStream = serviceComposite.type().getResourceAsStream( s );
+        InputStream asStream = Qi4j.DESCRIPTOR_FUNCTION.map( serviceComposite).type().getResourceAsStream( s );
         if( asStream != null )
         {
             try
@@ -250,7 +252,7 @@ public final class Qi4jRuntimeImpl
         }
     }
 
-    // SPI
+    // Descriptors
 
     public TransientDescriptor getTransientDescriptor( TransientComposite composite )
     {
@@ -267,11 +269,6 @@ public final class Qi4jRuntimeImpl
     {
         EntityInstance entityInstance = (EntityInstance) getInvocationHandler( composite );
         return entityInstance.entityModel();
-    }
-
-    public EntityState getEntityState( EntityComposite composite )
-    {
-        return EntityInstance.getEntityInstance( composite ).entityState();
     }
 
     public EntityStateHolder getState( EntityComposite composite )
@@ -303,9 +300,20 @@ public final class Qi4jRuntimeImpl
         }
     }
 
+    public ServiceDescriptor getServiceDescriptor( ServiceComposite service )
+    {
+        return (ServiceDescriptor) ServiceInstance.getCompositeInstance( service ).descriptor();
+    }
+
     @Override
     public PropertyDescriptor getPropertyDescriptor( Property property )
     {
         return ((AbstractPropertyInstance)property).getPropertyDescriptor();
+    }
+
+    // SPI
+    public EntityState getEntityState( EntityComposite composite )
+    {
+        return EntityInstance.getEntityInstance( composite ).entityState();
     }
 }

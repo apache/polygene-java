@@ -8,14 +8,14 @@ import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryExpressions;
-import org.qi4j.functional.Iterables;
-import org.qi4j.functional.Specification;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
+import org.qi4j.functional.Iterables;
+import org.qi4j.functional.Specification;
 import org.qi4j.test.EntityTestAssembler;
 
 /**

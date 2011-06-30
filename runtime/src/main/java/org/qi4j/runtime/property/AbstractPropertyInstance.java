@@ -20,7 +20,7 @@
 package org.qi4j.runtime.property;
 
 import org.qi4j.api.property.Property;
-import org.qi4j.spi.property.PropertyDescriptor;
+import org.qi4j.api.property.PropertyDescriptor;
 
 /**
  * {@code AbstractPropertyInstance} is the base implementation of {@link org.qi4j.api.property.Property}.

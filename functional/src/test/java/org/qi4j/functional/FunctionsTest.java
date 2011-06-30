@@ -1,17 +1,15 @@
 package org.qi4j.functional;
 
 import org.junit.Test;
-import org.qi4j.functional.*;
-import org.qi4j.functional.Specifications;
 
 import java.util.*;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
-import static org.qi4j.functional.Specifications.in;
 import static org.qi4j.functional.Functions.*;
 import static org.qi4j.functional.Functions.count;
 import static org.qi4j.functional.Iterables.*;
+import static org.qi4j.functional.Specifications.in;
 
 /**
  * Test of utility functions

@@ -14,7 +14,6 @@
 
 package org.qi4j.runtime.value;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.UseDefaults;
@@ -85,7 +84,7 @@ public class ValueTypeSerializationTest
         SomeValue some = builder.newInstance();
 
         // Serialize
-        String json = some.toJSON();
+        String json = some.toString();
 
         LoggerFactory.getLogger( getClass() ).info( some.string().get() );
         LoggerFactory.getLogger( getClass() ).info( json );
@@ -108,18 +107,18 @@ public class ValueTypeSerializationTest
         String jsonMS = json.substring( 0, idx1 ) + "/Date(" + System.currentTimeMillis() + ")/" + json.substring( idx2 );
         SomeValue someMS = valueBuilderFactory.newValueFromJSON( SomeValue.class, jsonMS );
 
-        System.out.println( some.toJSON() );
-        System.out.println( some2.toJSON() );
-        System.out.println( someTZ.toJSON() );
-        System.out.println( someAt.toJSON() );
-        System.out.println( someMS.toJSON() );
+        System.out.println( some.toString() );
+        System.out.println( some2.toString() );
+        System.out.println( someTZ.toString() );
+        System.out.println( someAt.toString() );
+        System.out.println( someMS.toString() );
 
         String s1 = some.toString();
         String s2 = some2.toString();
 
         assertThat( "Same value", some.toString(), equalTo( some2.toString() ) );
         assertThat( "Same value", some, equalTo( some2 ) );
-        assertThat( "Same JSON value", json, equalTo( some2.toJSON() ) );
+        assertThat( "Same JSON value", json, equalTo( some2.toString() ) );
         assertThat( "Same JSON value", some.customFoo().get() instanceof CustomFooValue, is( true ) );
         assertThat( "Same JSON value", some.customFooValue().get() instanceof CustomFooValue, is( true ) );
     }

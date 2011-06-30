@@ -14,7 +14,7 @@
 
 package org.qi4j.runtime.composite;
 
-import org.qi4j.spi.sideeffect.MethodSideEffectDescriptor;
+import org.qi4j.api.sideeffect.MethodSideEffectDescriptor;
 
 /**
  * JAVADOC

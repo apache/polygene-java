@@ -23,6 +23,7 @@ import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.api.unitofwork.UnitOfWork;
@@ -31,7 +32,6 @@ import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.*;
-import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.test.EntityTestAssembler;
 
 import static org.junit.Assert.fail;
@@ -52,7 +52,7 @@ public class PrivateEntityUnitOfWorkTest
         System.setProperty( "qi4j.compacttrace", "off" );
 
         Energy4Java is = new Energy4Java();
-        ApplicationSPI app = is.newApplication( new ApplicationAssembler()
+        Application app = is.newApplication( new ApplicationAssembler()
         {
             public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
                     throws AssemblyException

@@ -4,8 +4,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.qi4j.functional.Specifications.in;
-
 /**
  * Utility functions. Combine these with methods in Iterables, for example. See FunctionsTest for usages.
  */

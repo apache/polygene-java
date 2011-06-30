@@ -18,16 +18,18 @@ import org.json.JSONException;
 import org.json.JSONTokener;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.composite.AmbiguousTypeException;
-import org.qi4j.api.composite.NoSuchCompositeException;
-import org.qi4j.api.composite.TransientBuilder;
-import org.qi4j.api.composite.TransientBuilderFactory;
+import org.qi4j.api.composite.*;
 import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.event.ActivationEvent;
 import org.qi4j.api.event.ActivationEventListener;
+import org.qi4j.api.json.JSONDeserializer;
 import org.qi4j.api.object.NoSuchObjectException;
 import org.qi4j.api.object.ObjectBuilder;
 import org.qi4j.api.object.ObjectBuilderFactory;
+import org.qi4j.api.object.ObjectDescriptor;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.api.service.Activatable;
@@ -38,12 +40,10 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.util.Classes;
+import org.qi4j.api.util.NullArgumentException;
+import org.qi4j.api.value.*;
 import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
-import org.qi4j.api.util.NullArgumentException;
-import org.qi4j.api.value.NoSuchValueException;
-import org.qi4j.api.value.ValueBuilder;
-import org.qi4j.api.value.ValueBuilderFactory;
 import org.qi4j.functional.Specification;
 import org.qi4j.functional.Specifications;
 import org.qi4j.runtime.composite.*;
@@ -62,16 +62,7 @@ import org.qi4j.runtime.service.ImportedServicesModel;
 import org.qi4j.runtime.service.ServicesInstance;
 import org.qi4j.runtime.service.ServicesModel;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
-import org.qi4j.runtime.value.ValueBuilderInstance;
-import org.qi4j.runtime.value.ValueModel;
-import org.qi4j.runtime.value.ValuesInstance;
-import org.qi4j.runtime.value.ValuesModel;
-import org.qi4j.spi.composite.TransientDescriptor;
-import org.qi4j.spi.entity.EntityDescriptor;
-import org.qi4j.spi.object.ObjectDescriptor;
-import org.qi4j.spi.property.JSONDeserializer;
-import org.qi4j.spi.structure.ModuleSPI;
-import org.qi4j.spi.value.ValueDescriptor;
+import org.qi4j.runtime.value.*;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -85,7 +76,7 @@ import static org.qi4j.runtime.object.ObjectModel.modelTypeSpecification;
  * Instance of a Qi4j Module. Contains the various composites for this Module.
  */
 public class ModuleInstance
-        implements Module, ModuleSPI, Activatable
+        implements Module, Activatable
 {
     private final ModuleModel moduleModel;
     private final LayerInstance layerInstance;
@@ -490,19 +481,6 @@ public class ModuleInstance
     private class ValueBuilderFactoryInstance
             implements ValueBuilderFactory
     {
-        public <T> ValueBuilder<T> newValueBuilder( Class<T> mixinType )
-                throws NoSuchValueException
-        {
-            NullArgumentException.validateNotNull( "mixinType", mixinType );
-            ModelModule<ValueModel> model = findValueModels( mixinType );
-
-            if( model == null )
-            {
-                throw new NoSuchValueException( mixinType.getName(), name() );
-            }
-
-            return new ValueBuilderInstance<T>( model );
-        }
 
         public <T> T newValue( Class<T> mixinType )
                 throws NoSuchValueException, ConstructionException
@@ -518,6 +496,63 @@ public class ModuleInstance
             StateHolder initialState = model.model().newInitialState(model.module());
             model.model().checkConstraints( initialState );
             return mixinType.cast( model.model().newValueInstance( model.module(), initialState ).proxy() );
+        }
+
+        public <T> ValueBuilder<T> newValueBuilder( Class<T> mixinType )
+                throws NoSuchValueException
+        {
+            NullArgumentException.validateNotNull( "mixinType", mixinType );
+            ModelModule<ValueModel> model = findValueModels( mixinType );
+
+            if( model == null )
+            {
+                throw new NoSuchValueException( mixinType.getName(), name() );
+            }
+
+            return new ValueBuilderInstance<T>( model, model.model().newBuilderState( model.module() ) );
+        }
+
+        @Override
+        public <T> ValueBuilder<T> newValueBuilderWithPrototype( T prototype )
+        {
+            NullArgumentException.validateNotNull( "prototype", prototype );
+
+            final ValueInstance valueInstance = ValueInstance.getValueInstance( (ValueComposite) prototype );
+            Class<Composite> valueType = (Class<Composite>) valueInstance.type();
+
+            ModelModule<ValueModel> model = findValueModels( valueType );
+
+            if( model == null )
+            {
+                throw new NoSuchValueException( valueType.getName(), name() );
+            }
+
+            Function<PropertyDescriptor, Object> state = new Function<PropertyDescriptor, Object>()
+            {
+                @Override
+                public Object map( PropertyDescriptor propertyDescriptor )
+                {
+                    Property<?> property = valueInstance.state().getProperty( propertyDescriptor.accessor() );
+                    return property == null ? null : property.get();
+                }
+            };
+
+            return new ValueBuilderInstance<T>( model, model.model().newBuilderState( state ) );
+        }
+
+        @Override
+        public <T> ValueBuilder<T> newValueBuilderWithState( Class<T> mixinType, Function<PropertyDescriptor, Object> stateFunction )
+        {
+            NullArgumentException.validateNotNull( "prototype", stateFunction );
+
+            ModelModule<ValueModel> model = findValueModels( mixinType );
+
+            if( model == null )
+            {
+                throw new NoSuchValueException( mixinType.getName(), name() );
+            }
+
+            return new ValueBuilderInstance<T>( model, model.model().newBuilderState( stateFunction ) );
         }
 
         public <T> T newValueFromJSON( Class<T> mixinType, String jsonValue )

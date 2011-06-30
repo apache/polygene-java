@@ -14,18 +14,17 @@
 
 package org.qi4j.runtime.bootstrap;
 
-import org.qi4j.functional.HierarchicalVisitor;
+import org.qi4j.api.object.ObjectDescriptor;
+import org.qi4j.api.structure.ApplicationDescriptor;
 import org.qi4j.bootstrap.*;
+import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.runtime.composite.CompositeMethodModel;
 import org.qi4j.runtime.injection.InjectedFieldModel;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
-import org.qi4j.runtime.structure.ApplicationModel;
 import org.qi4j.runtime.structure.LayerModel;
 import org.qi4j.runtime.structure.ModuleModel;
 import org.qi4j.runtime.structure.UsedLayersModel;
-import org.qi4j.spi.object.ObjectDescriptor;
-import org.qi4j.spi.structure.ApplicationModelSPI;
 
 import java.util.*;
 
@@ -35,14 +34,14 @@ import java.util.*;
 public final class ApplicationModelFactoryImpl
     implements ApplicationModelFactory
 {
-    public ApplicationModelSPI newApplicationModel( ApplicationAssembly assembly )
+    public ApplicationDescriptor newApplicationModel( ApplicationAssembly assembly )
         throws AssemblyException
     {
         AssemblyHelper helper = new AssemblyHelper();
 
         ApplicationAssemblyImpl applicationAssembly = (ApplicationAssemblyImpl) assembly;
         List<LayerModel> layerModels = new ArrayList<LayerModel>();
-        final ApplicationModel applicationModel = new ApplicationModel( applicationAssembly.name(), applicationAssembly.version(), applicationAssembly
+        final org.qi4j.runtime.structure.ApplicationModel applicationModel = new org.qi4j.runtime.structure.ApplicationModel( applicationAssembly.name(), applicationAssembly.version(), applicationAssembly
             .mode(), applicationAssembly.metaInfo(), layerModels );
         Map<LayerAssembly, LayerModel> mapAssemblyModel = new HashMap<LayerAssembly, LayerModel>();
         Map<LayerAssembly, List<LayerModel>> mapUsedLayers = new HashMap<LayerAssembly, List<LayerModel>>();
@@ -107,9 +106,9 @@ public final class ApplicationModelFactoryImpl
         private CompositeMethodModel compositeMethodModel;
 
         private Resolution resolution;
-        private final ApplicationModel applicationModel;
+        private final org.qi4j.runtime.structure.ApplicationModel applicationModel;
 
-        public BindingVisitor( ApplicationModel applicationModel )
+        public BindingVisitor( org.qi4j.runtime.structure.ApplicationModel applicationModel )
         {
             this.applicationModel = applicationModel;
         }

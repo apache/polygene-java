@@ -14,10 +14,10 @@
 
 package org.qi4j.runtime.injection;
 
+import org.qi4j.api.composite.InjectedMethodDescriptor;
+import org.qi4j.bootstrap.InjectionException;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.functional.VisitableHierarchy;
-import org.qi4j.bootstrap.InjectionException;
-import org.qi4j.spi.composite.InjectedMethodDescriptor;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

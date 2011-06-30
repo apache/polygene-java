@@ -19,10 +19,10 @@ import org.qi4j.api.composite.TransientBuilderFactory;
 import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.api.service.ServiceFinder;
+import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.value.ValueBuilderFactory;
-import org.qi4j.spi.structure.ApplicationSPI;
 
 /**
  * Base class for Assembler that creates an Application
@@ -36,7 +36,7 @@ public abstract class SingletonAssembler
     implements Assembler
 {
     private Energy4Java qi4j;
-    private ApplicationSPI applicationInstance;
+    private Application applicationInstance;
     private Module moduleInstance;
 
     /**
@@ -85,7 +85,7 @@ public abstract class SingletonAssembler
         return qi4j.spi();
     }
 
-    public final ApplicationSPI application()
+    public final Application application()
     {
         return applicationInstance;
     }

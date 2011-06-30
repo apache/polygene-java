@@ -19,19 +19,20 @@
 package org.qi4j.runtime.query;
 
 import org.qi4j.api.composite.Composite;
-import org.qi4j.api.query.MissingIndexingSystemException;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryExpressions;
-import org.qi4j.functional.Specification;
 import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.functional.Specification;
 import org.qi4j.spi.query.EntityFinder;
+import org.qi4j.spi.query.QueryBuilderSPI;
+import org.qi4j.spi.query.QuerySource;
 
 /**
  * Default implementation of {@link QueryBuilder}
  */
 final class QueryBuilderImpl<T>
-    implements QueryBuilder<T>
+    implements QueryBuilder<T>, QueryBuilderSPI<T>
 {
 
     /**
@@ -79,28 +80,15 @@ final class QueryBuilderImpl<T>
         return new QueryBuilderImpl<T>( entityFinder, resultType, specification );
     }
 
-    /**
-     * @see QueryBuilder#newQuery(org.qi4j.api.unitofwork.UnitOfWork)
-     */
-    public Query<T> newQuery( UnitOfWork unitOfWork )
-    {
-        if( unitOfWork == null )
-        {
-            throw new IllegalArgumentException( "UnitOfWork may not be null" );
-        }
-
-        if( entityFinder == null )
-        {
-            throw new MissingIndexingSystemException();
-        }
-        return new EntityQuery<T>( unitOfWork, entityFinder, resultType, whereClause );
-    }
-
-    /**
-     * @see QueryBuilder#newQuery(Iterable)
-     */
     public Query<T> newQuery( Iterable<T> iterable )
     {
-        return new IterableQuery<T>( iterable, resultType, whereClause );
+        return new QueryImpl<T>(resultType, whereClause, new IterableQuerySource( iterable )  );
+    }
+
+    // SPI
+    @Override
+    public Query<T> newQuery( QuerySource querySource )
+    {
+        return new QueryImpl<T>( resultType, whereClause, querySource );
     }
 }

@@ -22,14 +22,13 @@ import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.structure.Application;
+import org.qi4j.api.structure.ApplicationDescriptor;
+import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.value.ValueBuilderFactory;
 import org.qi4j.bootstrap.*;
 import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.structure.ApplicationModelSPI;
-import org.qi4j.spi.structure.ApplicationSPI;
-import org.qi4j.spi.structure.ModuleSPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,8 +42,8 @@ public abstract class AbstractQi4jTest
    protected Qi4jSPI spi;
 
    protected Energy4Java qi4j;
-   protected ApplicationModelSPI applicationModel;
-   protected ApplicationSPI application;
+   protected ApplicationDescriptor applicationModel;
+   protected Application application;
 
    protected TransientBuilderFactory transientBuilderFactory;
    protected ObjectBuilderFactory objectBuilderFactory;
@@ -53,7 +52,7 @@ public abstract class AbstractQi4jTest
    protected QueryBuilderFactory queryBuilderFactory;
    protected ServiceFinder serviceLocator;
 
-   protected ModuleSPI moduleInstance;
+   protected Module moduleInstance;
 
    private Logger log;
 
@@ -74,7 +73,7 @@ public abstract class AbstractQi4jTest
       application.activate();
 
       // Assume only one module
-      moduleInstance = (ModuleSPI) application.findModule("Layer 1", "Module 1");
+      moduleInstance = (Module) application.findModule("Layer 1", "Module 1");
       transientBuilderFactory = moduleInstance.transientBuilderFactory();
       objectBuilderFactory = moduleInstance.objectBuilderFactory();
       valueBuilderFactory = moduleInstance.valueBuilderFactory();
@@ -83,7 +82,7 @@ public abstract class AbstractQi4jTest
       serviceLocator = moduleInstance.serviceFinder();
    }
 
-   protected ApplicationModelSPI newApplication()
+   protected ApplicationDescriptor newApplication()
            throws AssemblyException
    {
       ApplicationAssembler assembler = new ApplicationAssembler()

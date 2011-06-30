@@ -16,11 +16,11 @@
 
 package org.qi4j.runtime.composite;
 
+import org.qi4j.api.composite.AbstractCompositeDescriptor;
 import org.qi4j.api.composite.Composite;
+import org.qi4j.api.composite.CompositeInstance;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.spi.composite.AbstractCompositeDescriptor;
-import org.qi4j.spi.composite.CompositeInstance;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -147,12 +147,9 @@ public class TransientInstance
 
         for( int i = 0; i < mixins.length; i++ )
         {
-            if( !CompositeMixin.class.isAssignableFrom( mixins[ i ].getClass() ) )
+            if( !mixins[ i ].equals( other.mixins[ i ] ) )
             {
-                if( !mixins[ i ].equals( other.mixins[ i ] ) )
-                {
-                    return false;
-                }
+                return false;
             }
         }
         return true;
@@ -164,10 +161,7 @@ public class TransientInstance
         int hashCode = 0;
         for( Object mixin : mixins )
         {
-            if( !CompositeMixin.class.isAssignableFrom( mixin.getClass() ) )
-            {
-                hashCode = hashCode * 31 + mixin.hashCode();
-            }
+            hashCode = hashCode * 31 + mixin.hashCode();
         }
         return hashCode;
     }

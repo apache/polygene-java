@@ -1,12 +1,12 @@
 package org.qi4j.runtime.injection.provider;
 
+import org.qi4j.api.composite.AbstractCompositeDescriptor;
 import org.qi4j.bootstrap.InvalidInjectionException;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.injection.InjectionProvider;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
 import org.qi4j.runtime.model.Resolution;
-import org.qi4j.spi.composite.AbstractCompositeDescriptor;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;

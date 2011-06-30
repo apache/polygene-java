@@ -14,6 +14,7 @@
 
 package org.qi4j.runtime.composite;
 
+import org.qi4j.api.sideeffect.MethodSideEffectsDescriptor;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.VisitableHierarchy;
@@ -21,7 +22,6 @@ import org.qi4j.runtime.bootstrap.AssemblyHelper;
 import org.qi4j.runtime.injection.Dependencies;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.spi.sideeffect.MethodSideEffectsDescriptor;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

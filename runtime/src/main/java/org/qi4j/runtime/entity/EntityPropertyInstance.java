@@ -14,10 +14,10 @@
  */
 package org.qi4j.runtime.entity;
 
+import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.runtime.composite.ConstraintsCheck;
 import org.qi4j.runtime.property.AbstractPropertyInstance;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.property.PropertyDescriptor;
 
 /**
  * {@code EntityPropertyInstance} represents a property whose value must be backed by an EntityState.

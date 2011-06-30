@@ -21,13 +21,13 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.functional.Specification;
-import org.qi4j.spi.service.ServiceImporterException;
+import org.qi4j.api.service.ServiceImporterException;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.service.qualifier.AnnotationQualifier;
 import org.qi4j.api.service.qualifier.IdentifiedBy;
 import org.qi4j.api.service.qualifier.Qualifier;
 import org.qi4j.bootstrap.*;
+import org.qi4j.functional.Specification;
 
 import java.io.Serializable;
 import java.lang.annotation.Retention;

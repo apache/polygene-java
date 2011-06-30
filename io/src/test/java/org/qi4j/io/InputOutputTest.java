@@ -29,9 +29,9 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static java.util.Arrays.asList;
+import static org.qi4j.functional.Iterables.iterable;
 import static org.qi4j.io.Inputs.text;
 import static org.qi4j.io.Transforms.lock;
-import static org.qi4j.functional.Iterables.iterable;
 
 /**
  * Test Input/Output

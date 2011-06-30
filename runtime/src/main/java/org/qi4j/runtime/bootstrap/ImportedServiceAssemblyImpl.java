@@ -17,10 +17,10 @@ package org.qi4j.runtime.bootstrap;
 import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.service.ServiceImporter;
+import org.qi4j.api.service.importer.InstanceImporter;
 import org.qi4j.bootstrap.ImportedServiceAssembly;
 import org.qi4j.runtime.service.ImportedServiceModel;
-import org.qi4j.spi.service.ServiceImporter;
-import org.qi4j.spi.service.importer.InstanceImporter;
 
 import java.util.List;
 

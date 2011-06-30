@@ -17,12 +17,13 @@
  */
 package org.qi4j.api.constraint;
 
+import org.qi4j.api.Qi4j;
 import org.qi4j.api.composite.Composite;
+import org.qi4j.api.composite.CompositeInstance;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Member;
-import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.text.MessageFormat;
 import java.util.*;
 
@@ -54,7 +55,7 @@ public class ConstraintViolationException
                                          Collection<ConstraintViolation> constraintViolations
     )
     {
-        this( instance.toString(), instance.type().getName(), method, constraintViolations );
+        this( instance.toString(), Qi4j.DESCRIPTOR_FUNCTION.map( instance ).type().getName(), method, constraintViolations );
     }
 
     public ConstraintViolationException( String instanceToString,

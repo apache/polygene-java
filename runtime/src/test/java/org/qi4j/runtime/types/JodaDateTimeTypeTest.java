@@ -4,10 +4,9 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.Before;
 import org.junit.Test;
-import org.qi4j.api.common.TypeName;
-import org.qi4j.spi.property.JSONDeserializer;
-import org.qi4j.spi.property.JSONObjectSerializer;
-import org.qi4j.spi.property.ValueType;
+import org.qi4j.api.json.JSONDeserializer;
+import org.qi4j.api.json.JSONObjectSerializer;
+import org.qi4j.api.type.ValueType;
 
 import static org.junit.Assert.assertEquals;
 

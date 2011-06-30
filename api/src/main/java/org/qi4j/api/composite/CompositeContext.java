@@ -46,7 +46,7 @@ public class CompositeContext<T extends TransientComposite>
         TransientComposite composite = get();
 
         return (T) Proxy.newProxyInstance( composite.getClass()
-                                               .getClassLoader(), new Class[]{ composite.type() }, new ContextInvocationhandler() );
+                                               .getClassLoader(), new Class[]{ ((CompositeInstance)Proxy.getInvocationHandler( composite)).type() }, new ContextInvocationhandler() );
     }
 
     private class ContextInvocationhandler

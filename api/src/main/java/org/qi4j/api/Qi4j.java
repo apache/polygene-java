@@ -14,11 +14,24 @@
 
 package org.qi4j.api;
 
-import org.qi4j.api.composite.Composite;
+import org.qi4j.api.composite.*;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.EntityDescriptor;
+import org.qi4j.api.entity.association.EntityStateHolder;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.property.PropertyDescriptor;
+import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.value.ValueComposite;
+import org.qi4j.api.value.ValueDescriptor;
+import org.qi4j.functional.Function;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
 
 /**
  * Encapsulation of the Qi4j API.
@@ -102,4 +115,43 @@ public interface Qi4j
      * @return The Module instance where the Composite belongs.
      */
     Module getModule( ServiceReference service );
+
+    TransientDescriptor getTransientDescriptor( TransientComposite composite );
+
+    StateHolder getState( TransientComposite composite );
+
+    EntityDescriptor getEntityDescriptor( EntityComposite composite );
+
+    EntityStateHolder getState( EntityComposite composite );
+
+    ValueDescriptor getValueDescriptor( ValueComposite value );
+
+    StateHolder getState( ValueComposite composite );
+
+    // Services
+    ServiceDescriptor getServiceDescriptor( ServiceReference service );
+
+    ServiceDescriptor getServiceDescriptor( ServiceComposite service );
+
+    // Properties
+    PropertyDescriptor getPropertyDescriptor( Property property );
+
+    public static Function<Composite, AbstractCompositeDescriptor> DESCRIPTOR_FUNCTION = new Function<Composite, AbstractCompositeDescriptor>()
+    {
+        @Override
+        public AbstractCompositeDescriptor map( Composite composite )
+        {
+            InvocationHandler invocationHandler = Proxy.getInvocationHandler( composite );
+            return ((CompositeInstance) invocationHandler).descriptor();
+        }
+    };
+
+    public static Function<Composite, CompositeInstance> INSTANCE_FUNCTION = new Function<Composite, CompositeInstance>()
+    {
+        @Override
+        public CompositeInstance map( Composite composite )
+        {
+            return ((CompositeInstance) Proxy.getInvocationHandler( composite ));
+        }
+    };
 }

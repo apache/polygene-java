@@ -15,24 +15,14 @@
 package org.qi4j.api.value;
 
 import org.qi4j.api.common.ConstructionException;
+import org.qi4j.api.property.PropertyDescriptor;
+import org.qi4j.functional.Function;
 
 /**
  * Factory for Values and ValueBuilders.
  */
 public interface ValueBuilderFactory
 {
-    /**
-     * Create a builder for creating new Values that implements the given Value type.
-     *
-     * @param valueType an interface that describes the Composite to be instantiated
-     *
-     * @return a ValueBuilder for creation of ValueComposites implementing the interface
-     *
-     * @throws NoSuchValueException if no value extending the mixinType has been registered
-     */
-    <T> ValueBuilder<T> newValueBuilder( Class<T> valueType )
-        throws NoSuchValueException;
-
     /**
      * Instantiate a Value of the given type.
      *
@@ -46,6 +36,22 @@ public interface ValueBuilderFactory
      */
     <T> T newValue( Class<T> valueType )
         throws NoSuchValueException, ConstructionException;
+
+    /**
+     * Create a builder for creating new Values that implements the given Value type.
+     *
+     * @param valueType an interface that describes the Composite to be instantiated
+     *
+     * @return a ValueBuilder for creation of ValueComposites implementing the interface
+     *
+     * @throws NoSuchValueException if no value extending the mixinType has been registered
+     */
+    <T> ValueBuilder<T> newValueBuilder( Class<T> valueType )
+        throws NoSuchValueException;
+
+    <T> ValueBuilder<T> newValueBuilderWithPrototype( T prototype );
+
+    <T> ValueBuilder<T> newValueBuilderWithState( Class<T> mixinType, Function<PropertyDescriptor, Object> stateFunction );
 
     <T> T newValueFromJSON( Class<T> valueType, String jsonValue );
 }

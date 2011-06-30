@@ -18,7 +18,9 @@ import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
+import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.property.StateHolder;
+import org.qi4j.functional.Function;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.VisitableHierarchy;
@@ -170,17 +172,17 @@ public abstract class AbstractCompositeModel
     public <T> T newProxy( InvocationHandler invocationHandler, Class<T> mixinType )
     {
         // Instantiate proxy for given mixin interface
-        return mixinType.cast( Proxy.newProxyInstance( mixinType.getClassLoader(), new Class[]{ mixinType }, invocationHandler ) );
+        return mixinType.cast( Proxy.newProxyInstance( mixinType.getClassLoader(), new Class[]{mixinType}, invocationHandler ) );
     }
 
     public StateHolder newBuilderState( ModuleInstance module )
     {
-        return stateModel.newBuilderInstance(module);
+        return stateModel.newBuilderInstance( module );
     }
 
-    public StateHolder newBuilderState( ModuleInstance module, StateHolder state )
+    public StateHolder newBuilderState( Function<PropertyDescriptor, Object> state )
     {
-        return stateModel.newBuilderInstance( module, state );
+        return stateModel.newBuilderInstance( state );
     }
 
     public StateHolder newInitialState( ModuleInstance module )

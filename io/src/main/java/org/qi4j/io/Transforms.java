@@ -14,8 +14,8 @@
 
 package org.qi4j.io;
 
-import org.qi4j.functional.Specification;
 import org.qi4j.functional.Function;
+import org.qi4j.functional.Specification;
 import org.slf4j.Logger;
 
 import java.nio.charset.Charset;

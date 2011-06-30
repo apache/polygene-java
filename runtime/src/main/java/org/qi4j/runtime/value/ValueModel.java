@@ -16,16 +16,16 @@ package org.qi4j.runtime.value;
 
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.composite.InvalidCompositeException;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.type.ValueCompositeType;
 import org.qi4j.api.value.ValueComposite;
+import org.qi4j.api.value.ValueDescriptor;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.runtime.bootstrap.AssemblyHelper;
 import org.qi4j.runtime.composite.*;
 import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.spi.composite.InvalidCompositeException;
-import org.qi4j.spi.property.ValueCompositeType;
-import org.qi4j.spi.value.ValueDescriptor;
 
 import java.util.ArrayList;
 import java.util.List;

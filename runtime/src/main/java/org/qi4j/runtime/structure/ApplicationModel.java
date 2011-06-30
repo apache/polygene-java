@@ -14,15 +14,15 @@
 
 package org.qi4j.runtime.structure;
 
+import org.qi4j.api.Qi4j;
 import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.structure.Application;
+import org.qi4j.api.structure.ApplicationDescriptor;
+import org.qi4j.bootstrap.Qi4jRuntime;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
 import org.qi4j.runtime.injection.provider.InjectionProviderFactoryStrategy;
-import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.structure.ApplicationDescriptor;
-import org.qi4j.spi.structure.ApplicationModelSPI;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,7 +33,7 @@ import java.util.Map;
  * JAVADOC
  */
 public final class ApplicationModel
-    implements ApplicationModelSPI, ApplicationDescriptor
+    implements ApplicationDescriptor
 {
     private final String name;
     private final String version;
@@ -72,9 +72,9 @@ public final class ApplicationModel
         return mode;
     }
 
-    public <T> T metaInfo( Class<T> infoType )
+    public MetaInfo metaInfo()
     {
-        return metaInfo.get( infoType );
+        return metaInfo;
     }
 
     // SPI
@@ -92,10 +92,16 @@ public final class ApplicationModel
         return visitor.visitLeave( this );
     }
 
-    public ApplicationInstance newInstance( Qi4jSPI runtime )
+    public ApplicationInstance newInstance( Qi4j runtime, Object... importedServiceInstances )
         throws InvalidApplicationException
     {
-        ApplicationInstance applicationInstance = new ApplicationInstance( this, runtime );
+        MetaInfo instanceMetaInfo = new MetaInfo( metaInfo );
+        for( Object importedServiceInstance : importedServiceInstances )
+        {
+            instanceMetaInfo.set( importedServiceInstance );
+        }
+
+        ApplicationInstance applicationInstance = new ApplicationInstance( this, (Qi4jRuntime) runtime, instanceMetaInfo );
 
         // Create layer instances
         Map<LayerModel, LayerInstance> layerInstanceMap = new HashMap<LayerModel, LayerInstance>();

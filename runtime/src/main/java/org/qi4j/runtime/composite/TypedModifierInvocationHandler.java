@@ -11,7 +11,7 @@
 */
 package org.qi4j.runtime.composite;
 
-import org.qi4j.spi.composite.InvalidCompositeException;
+import org.qi4j.api.composite.InvalidCompositeException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

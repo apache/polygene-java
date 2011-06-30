@@ -16,15 +16,17 @@
 
 package org.qi4j.runtime.value;
 
+import org.json.JSONException;
+import org.qi4j.api.composite.CompositeInstance;
+import org.qi4j.api.json.JSONWriterSerializer;
 import org.qi4j.api.property.StateHolder;
-import org.qi4j.api.value.Value;
 import org.qi4j.api.value.ValueComposite;
+import org.qi4j.api.value.ValueDescriptor;
 import org.qi4j.runtime.composite.MixinsInstance;
 import org.qi4j.runtime.composite.TransientInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.spi.composite.CompositeInstance;
-import org.qi4j.spi.value.ValueDescriptor;
 
+import java.io.StringWriter;
 import java.lang.reflect.Proxy;
 
 /**
@@ -82,11 +84,15 @@ public final class ValueInstance
     @Override
     public String toString()
     {
-        return ((Value)proxy()).toJSON();
-/*
-            JSONStringer stringer = new JSONStringer();
-            ( (ValueModel) compositeModel ).valueType().toJSON( proxy(), stringer );
-            return stringer.toString();
-*/
+        StringWriter string = new StringWriter( );
+        try
+        {
+            new JSONWriterSerializer( string ).serialize( this.<ValueComposite>proxy() );
+        }
+        catch( JSONException e )
+        {
+            throw new IllegalStateException( "Could not JSON serialize value", e );
+        }
+        return string.toString();
     }
 }

@@ -15,13 +15,13 @@
 package org.qi4j.runtime.composite;
 
 import org.qi4j.api.common.ConstructionException;
+import org.qi4j.api.composite.ConstructorDescriptor;
+import org.qi4j.api.composite.InvalidCompositeException;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.functional.VisitableHierarchy;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectedParametersModel;
 import org.qi4j.runtime.injection.InjectionContext;
-import org.qi4j.spi.composite.ConstructorDescriptor;
-import org.qi4j.spi.composite.InvalidCompositeException;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

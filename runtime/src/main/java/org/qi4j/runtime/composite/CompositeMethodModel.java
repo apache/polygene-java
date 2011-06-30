@@ -15,12 +15,12 @@
 package org.qi4j.runtime.composite;
 
 import org.qi4j.api.common.ConstructionException;
+import org.qi4j.api.composite.MethodDescriptor;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.functional.VisitableHierarchy;
 import org.qi4j.runtime.injection.Dependencies;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.spi.composite.MethodDescriptor;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
@@ -30,8 +30,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.qi4j.functional.Specifications.notNull;
 import static org.qi4j.functional.Iterables.*;
+import static org.qi4j.functional.Specifications.notNull;
 
 /**
  * JAVADOC

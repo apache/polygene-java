@@ -24,6 +24,6 @@ import org.qi4j.api.mixin.Mixins;
  */
 @Mixins( { AssociationMixin.class, ManyAssociationMixin.class } )
 public interface EntityComposite
-    extends Identity, Entity, Composite
+    extends Identity, Composite
 {
 }
