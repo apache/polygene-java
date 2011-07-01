@@ -22,7 +22,6 @@ import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.logging.log.LogTypes;
 import org.qi4j.logging.trace.service.StandardTraceServiceComposite;
 import org.qi4j.logging.trace.service.TraceServiceConfiguration;
 
@@ -34,9 +33,5 @@ public class TracingAssembler
     {
         module.services( StandardTraceServiceComposite.class ).visibleIn( Visibility.application );
         module.entities( TraceServiceConfiguration.class );
-        module.transients( LogTypes.class );
-        module.forMixin(  LogTypes.class ).declareDefaults().info().set( "INFO" );
-        module.forMixin( LogTypes.class ).declareDefaults().warning().set( "WARNING" );
-        module.forMixin( LogTypes.class ).declareDefaults().error().set( "ERROR" );
     }
 }

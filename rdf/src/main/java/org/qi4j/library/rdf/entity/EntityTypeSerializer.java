@@ -23,7 +23,6 @@ import org.openrdf.model.vocabulary.OWL;
 import org.openrdf.model.vocabulary.XMLSchema;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.association.AssociationDescriptor;
-import org.qi4j.api.entity.association.ManyAssociationDescriptor;
 import org.qi4j.api.property.PersistentPropertyDescriptor;
 import org.qi4j.api.util.Classes;
 import org.qi4j.library.rdf.Qi4jEntityType;
@@ -99,7 +98,7 @@ public class EntityTypeSerializer
     {
         ValueFactory values = graph.getValueFactory();
         // ManyAssociations
-        for( ManyAssociationDescriptor manyAssociationType : entityDescriptor.state().manyAssociations() )
+        for( AssociationDescriptor manyAssociationType : entityDescriptor.state().manyAssociations() )
         {
             URI associationURI = values.createURI( manyAssociationType.qualifiedName().toURI() );
             graph.add( associationURI, Rdfs.DOMAIN, entityTypeUri );

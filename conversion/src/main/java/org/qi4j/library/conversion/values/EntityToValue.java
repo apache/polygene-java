@@ -8,7 +8,6 @@ import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.association.AssociationDescriptor;
 import org.qi4j.api.entity.association.EntityStateHolder;
-import org.qi4j.api.entity.association.ManyAssociationDescriptor;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.PropertyDescriptor;
@@ -100,7 +99,7 @@ public interface EntityToValue
                 EntityReference value = EntityReference.getEntityReference( entityState.getAssociation( descriptor.accessor() ).get());
                 setUnqualifiedProperty( builder, properties, descriptor.qualifiedName(), value.toURI() );
             }
-            for( ManyAssociationDescriptor descriptor : entityDescriptor.state().manyAssociations() )
+            for( AssociationDescriptor descriptor : entityDescriptor.state().manyAssociations() )
             {
                 ArrayList<String> entityURIs = new ArrayList<String>();
                 for( Object value : entityState.getManyAssociation( descriptor.accessor() ) )

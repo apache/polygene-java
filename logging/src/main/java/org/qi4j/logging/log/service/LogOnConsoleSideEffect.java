@@ -47,7 +47,7 @@ public abstract class LogOnConsoleSideEffect extends SideEffectOf<LoggingService
     public void log( LogType type, Composite composite, String category, String message )
     {
         String localized = bundle.getString( message );
-        String logType = type.get();
+        String logType = type.name();
         OUT.println( logType + ":" + category + ":" + Qi4j.DESCRIPTOR_FUNCTION.map( composite ).type().getName() + ": " + localized );
     }
 
@@ -55,7 +55,7 @@ public abstract class LogOnConsoleSideEffect extends SideEffectOf<LoggingService
     {
         String localized = bundle.getString( message );
         String formatted = MessageFormat.format( localized, param1 );
-        String logType = type.get();
+        String logType = type.name();
         OUT.println( logType + ":" + category + ":" + Qi4j.DESCRIPTOR_FUNCTION.map( composite ).type().getName() + ": " + formatted );
     }
 
@@ -63,7 +63,7 @@ public abstract class LogOnConsoleSideEffect extends SideEffectOf<LoggingService
     {
         String localized = bundle.getString( message );
         String formatted = MessageFormat.format( localized, param1, param2 );
-        String logtype = type.get();
+        String logtype = type.name();
         OUT.println( logtype + ":" + category + ":" + Qi4j.DESCRIPTOR_FUNCTION.map( composite ).type().getName() + ": " + formatted );
     }
 
@@ -71,7 +71,7 @@ public abstract class LogOnConsoleSideEffect extends SideEffectOf<LoggingService
     {
         String localized = bundle.getString( message );
         String formatted = MessageFormat.format( localized, params );
-        String logType = type.get();
+        String logType = type.name();
         OUT.println( logType + ":" + category + ":" + Qi4j.DESCRIPTOR_FUNCTION.map( composite ).type().getName() + ": " + formatted );
     }
 }

@@ -27,7 +27,6 @@ import org.qi4j.api.common.TypeName;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.association.AssociationDescriptor;
-import org.qi4j.api.entity.association.ManyAssociationDescriptor;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
@@ -272,7 +271,7 @@ public class EntityResource
                 out.println( "</table></fieldset>\n" );
 
                 out.println( "<fieldset><legend>Many manyAssociations</legend>\n<table>" );
-                for (ManyAssociationDescriptor associationType : descriptor.state().manyAssociations())
+                for (AssociationDescriptor associationType : descriptor.state().manyAssociations())
                 {
                     ManyAssociationState identities = entity.getManyAssociation( associationType.qualifiedName() );
                     String value = "";
@@ -422,7 +421,7 @@ public class EntityResource
                     entity.setAssociation( associationType.qualifiedName(), EntityReference.parseEntityReference( newStringAssociation ) );
                 }
             }
-            for (ManyAssociationDescriptor associationType : descriptor.state().manyAssociations())
+            for (AssociationDescriptor associationType : descriptor.state().manyAssociations())
             {
                 String newStringAssociation = form.getFirstValue( associationType.qualifiedName().toString() );
                 ManyAssociationState manyAssociation = entity.getManyAssociation( associationType.qualifiedName() );

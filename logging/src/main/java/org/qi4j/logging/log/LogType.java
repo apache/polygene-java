@@ -21,9 +21,7 @@ import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.Property;
 import org.qi4j.library.constraints.annotation.OneOf;
 
-@Immutable
-@OneOf( { "INFO", "WARNING", "ERROR" } )
-public interface LogType
-    extends Property<String>
+public enum LogType
 {
+    INFO, WARNING, ERROR
 }

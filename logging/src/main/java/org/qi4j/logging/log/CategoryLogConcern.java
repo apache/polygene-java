@@ -34,11 +34,9 @@ public final class CategoryLogConcern
     @Structure private Qi4j api;
     @Optional @Service private LoggingService loggingService;
     @This private Composite composite;
-    private LogTypes types;
 
     public CategoryLogConcern( @Structure TransientBuilderFactory cbf )
     {
-        types = cbf.newTransient( LogTypes.class );
     }
 
     public void info( String category, String message )
@@ -47,7 +45,7 @@ public final class CategoryLogConcern
         {
             return;
         }
-        loggingService.log( types.info(), api.dereference( composite ), category, message );
+        loggingService.log( LogType.INFO, api.dereference( composite ), category, message );
     }
 
     public void info( String category, String message, Serializable param1 )
@@ -56,7 +54,7 @@ public final class CategoryLogConcern
         {
             return;
         }
-        loggingService.log( types.info(), api.dereference( composite ), category, message, param1 );
+        loggingService.log( LogType.INFO, api.dereference( composite ), category, message, param1 );
     }
 
     public void info( String category, String message, Serializable param1, Serializable param2 )
@@ -65,7 +63,7 @@ public final class CategoryLogConcern
         {
             return;
         }
-        loggingService.log( types.info(), api.dereference( composite ), category, message, param1, param2 );
+        loggingService.log( LogType.INFO, api.dereference( composite ), category, message, param1, param2 );
     }
 
     public void info( String category, String message, Serializable... params )
@@ -74,7 +72,7 @@ public final class CategoryLogConcern
         {
             return;
         }
-        loggingService.log( types.info(), api.dereference( composite ), category, message, params );
+        loggingService.log( LogType.INFO, api.dereference( composite ), category, message, params );
     }
 
     public void warning( String category, String message )
@@ -83,7 +81,7 @@ public final class CategoryLogConcern
         {
             return;
         }
-        loggingService.log( types.warning(), api.dereference( composite ), category, message );
+        loggingService.log( LogType.WARNING, api.dereference( composite ), category, message );
     }
 
     public void warning( String category, String message, Serializable param1 )
@@ -92,7 +90,7 @@ public final class CategoryLogConcern
         {
             return;
         }
-        loggingService.log( types.warning(), api.dereference( composite ), category, message, param1 );
+        loggingService.log( LogType.WARNING, api.dereference( composite ), category, message, param1 );
     }
 
     public void warning( String category, String message, Serializable param1, Serializable param2 )
@@ -101,7 +99,7 @@ public final class CategoryLogConcern
         {
             return;
         }
-        loggingService.log( types.warning(), api.dereference( composite ), category, message, param1, param2 );
+        loggingService.log( LogType.WARNING, api.dereference( composite ), category, message, param1, param2 );
     }
 
     public void warning( String category, String message, Serializable... params )
@@ -110,7 +108,7 @@ public final class CategoryLogConcern
         {
             return;
         }
-        loggingService.log( types.warning(), api.dereference( composite ), category, message, params );
+        loggingService.log( LogType.WARNING, api.dereference( composite ), category, message, params );
     }
 
     public void error( String category, String message )
@@ -119,7 +117,7 @@ public final class CategoryLogConcern
         {
             return;
         }
-        loggingService.log( types.error(), api.dereference( composite ), category, message );
+        loggingService.log( LogType.ERROR, api.dereference( composite ), category, message );
     }
 
     public void error( String category, String message, Serializable param1 )
@@ -128,7 +126,7 @@ public final class CategoryLogConcern
         {
             return;
         }
-        loggingService.log( types.error(), api.dereference( composite ), category, message, param1 );
+        loggingService.log( LogType.ERROR, api.dereference( composite ), category, message, param1 );
     }
 
     public void error( String category, String message, Serializable param1, Serializable param2 )
@@ -137,7 +135,7 @@ public final class CategoryLogConcern
         {
             return;
         }
-        loggingService.log( types.error(), api.dereference( composite ), category, message, param1, param2 );
+        loggingService.log( LogType.ERROR, api.dereference( composite ), category, message, param1, param2 );
     }
 
     public void error( String category, String message, Serializable... params )
@@ -146,6 +144,6 @@ public final class CategoryLogConcern
         {
             return;
         }
-        loggingService.log( types.error(), api.dereference( composite ), category, message, params );
+        loggingService.log( LogType.ERROR, api.dereference( composite ), category, message, params );
     }
 }

@@ -15,13 +15,10 @@
 
 package org.qi4j.library.auth;
 
-import org.qi4j.api.property.Property;
-
 /**
  * JAVADOC
  */
-public interface AuthenticationMethod
-    extends Property<String>
+public enum AuthenticationMethod
 {
-    String BASIC = "BASIC";
+    BASIC
 }

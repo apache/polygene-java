@@ -23,7 +23,6 @@ import org.qi4j.api.composite.Composite;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.association.AssociationDescriptor;
-import org.qi4j.api.entity.association.ManyAssociationDescriptor;
 import org.qi4j.api.json.JSONObjectSerializer;
 import org.qi4j.api.property.PersistentPropertyDescriptor;
 import org.qi4j.api.type.ValueCompositeType;
@@ -215,13 +214,13 @@ public class EntityStateSerializer
     private void serializeManyAssociations( final EntityState entityState,
                                             final Graph graph,
                                             final URI entityUri,
-                                            final Iterable<ManyAssociationDescriptor> associations,
+                                            final Iterable<AssociationDescriptor> associations,
                                             final boolean includeNonQueryable )
     {
         ValueFactory values = graph.getValueFactory();
 
         // Many-Associations
-        for( ManyAssociationDescriptor associationType : associations )
+        for( AssociationDescriptor associationType : associations )
         {
             if( !( includeNonQueryable || associationType.queryable() ) )
             {

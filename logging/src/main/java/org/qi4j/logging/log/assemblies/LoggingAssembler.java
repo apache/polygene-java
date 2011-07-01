@@ -21,7 +21,6 @@ package org.qi4j.logging.log.assemblies;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.logging.log.LogTypes;
 import org.qi4j.logging.log.service.LoggingServiceComposite;
 
 public class LoggingAssembler
@@ -31,10 +30,6 @@ public class LoggingAssembler
         throws AssemblyException
     {
         module.services( LoggingServiceComposite.class );
-        module.transients( LogTypes.class );
-        module.forMixin( LogTypes.class ).declareDefaults().info().set( "INFO" );
-        module.forMixin( LogTypes.class ).declareDefaults().warning().set( "WARNING" );
-        module.forMixin( LogTypes.class ).declareDefaults().error().set( "ERROR" );
     }
 
 }

@@ -146,7 +146,7 @@ public class Qi4jPropertyAccessor
             {
                 Association association = (Association) qi4jField;
                 OgnlContext ognlContext = (OgnlContext) aContext;
-                Class associationType = (Class) association.type();
+                Class associationType = (Class) api.getAssociationDescriptor( association).type();
                 Object convertedValue = getConvertedType(
                     ognlContext, aTarget, null, fieldName, aPropertyValue, associationType );
                 if( convertedValue == OgnlRuntime.NoConversionPossible )
