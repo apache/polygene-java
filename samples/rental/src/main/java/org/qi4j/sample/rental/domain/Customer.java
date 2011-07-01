@@ -27,7 +27,7 @@ import org.qi4j.api.query.Query;
 public interface Customer
     extends EntityComposite
 {
-    Name name();
+    Property<String> name();
 
     Property<Address> address();
 

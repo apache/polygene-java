@@ -15,6 +15,7 @@
 package org.qi4j.dci.moneytransfer.domain.data;
 
 import org.qi4j.api.common.UseDefaults;
+import org.qi4j.api.injection.scope.State;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
@@ -37,31 +38,26 @@ public interface BalanceData
 
    // Default implementation
 
-   interface Data
-   {
-      @UseDefaults
-      Property<Integer> balance();
-   }
-
    class Mixin
          implements BalanceData
    {
-      @This
-      Data data;
+      @State
+      @UseDefaults
+      Property<Integer> balance;
 
       public void increasedBalance( Integer amount )
       {
-         data.balance().set( data.balance().get() + amount );
+         balance.set( balance.get() + amount );
       }
 
       public void decreasedBalance( Integer amount )
       {
-         data.balance().set( data.balance().get() - amount );
+         balance.set( balance.get() - amount );
       }
 
       public Integer getBalance()
       {
-         return data.balance().get();
+         return balance.get();
       }
    }
 }

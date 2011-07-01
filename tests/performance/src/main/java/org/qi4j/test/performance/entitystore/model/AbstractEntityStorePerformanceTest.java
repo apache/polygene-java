@@ -320,7 +320,7 @@ public abstract class AbstractEntityStorePerformanceTest
                             String id = rnd.nextInt( ITERATIONS ) + "";
                             ComplexProduct product = uow.get( ComplexProduct.class, "product" + id );
 
-                            Name name = product.name();
+                            String name = product.name().get();
 
                             if( i % 100 == 0 )
                             {

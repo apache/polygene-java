@@ -82,7 +82,6 @@ public class PayBillsContext
     {
         void payBills() throws Exception;
 
-
         class Mixin
                 implements SourceAccountRole
         {

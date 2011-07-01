@@ -31,9 +31,9 @@ import java.util.Date;
 public interface Car
     extends EntityComposite
 {
-    LicensePlate licensePlate();
+    Property<String> licensePlate();
 
-    CarModel model();
+    Property<String> model();
 
     Association<CarCategory> category();
 
