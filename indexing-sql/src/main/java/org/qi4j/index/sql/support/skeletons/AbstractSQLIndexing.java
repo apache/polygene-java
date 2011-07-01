@@ -19,7 +19,6 @@ import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.entity.association.AssociationDescriptor;
-import org.qi4j.api.entity.association.ManyAssociationDescriptor;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
@@ -499,7 +498,7 @@ public class AbstractSQLIndexing
             }
         }
 
-        for( ManyAssociationDescriptor mDesc : state.entityDescriptor().state().manyAssociations() )
+        for( AssociationDescriptor mDesc : state.entityDescriptor().state().manyAssociations() )
         {
             if( SQLUtil.isQueryable( mDesc.accessor() ) )
             {

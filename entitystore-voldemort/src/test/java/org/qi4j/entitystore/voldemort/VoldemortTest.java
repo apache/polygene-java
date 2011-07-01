@@ -89,6 +89,7 @@ public class VoldemortTest extends AbstractEntityStoreTest
         props.load( in );
         props.setProperty( "voldemort.home", voldemortHome.getCanonicalPath() );
         VoldemortConfig config = new VoldemortConfig( props );
+        config.setEnableJmx( false );
         VoldemortServer server = new VoldemortServer( config );
         server.start();
         this.servers.add( server );

@@ -41,44 +41,4 @@ public class TestProperty<T>
     {
         this.value = newValue;
     }
-
-    public T _()
-    {
-        return get();
-    }
-
-    public void _( T newValue )
-        throws IllegalArgumentException, IllegalStateException
-    {
-    }
-
-    public <T> T metaInfo( Class<T> infoType )
-    {
-        return null;
-    }
-
-    public boolean isMutable()
-    {
-        return false;
-    }
-
-    public boolean isImmutable()
-    {
-        return false;
-    }
-
-    public String name()
-    {
-        return name.name();
-    }
-
-    public QualifiedName qualifiedName()
-    {
-        return name;
-    }
-
-    public Type type()
-    {
-        return value.getClass();
-    }
 }

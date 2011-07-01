@@ -19,7 +19,6 @@ package org.qi4j.entitystore.qrm.internal;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.association.AssociationDescriptor;
-import org.qi4j.api.entity.association.ManyAssociationDescriptor;
 import org.qi4j.api.property.PersistentPropertyDescriptor;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.type.ValueType;
@@ -109,7 +108,7 @@ public final class QrmEntityState
             }
         }
 
-        for( final ManyAssociationDescriptor associationDescriptor : descriptor.state().manyAssociations() )
+        for( final AssociationDescriptor associationDescriptor : descriptor.state().manyAssociations() )
         {
             final QualifiedName qualifiedName = associationDescriptor.qualifiedName();
             final String typeName = associationDescriptor.qualifiedName().name();
@@ -123,7 +122,7 @@ public final class QrmEntityState
 
     private Collection<QualifiedIdentity> createQualifiedIdentities( final Collection<String> identifiers,
                                                                      final String typeName,
-                                                                     ManyAssociationDescriptor associationType
+                                                                     AssociationDescriptor associationType
     )
     {
         final int size = identifiers.size();
@@ -136,7 +135,7 @@ public final class QrmEntityState
     }
 
     private Collection<QualifiedIdentity> createManyAssociationCollection( int size,
-                                                                           ManyAssociationDescriptor associationType
+                                                                           AssociationDescriptor associationType
     )
     {
         return new ArrayList<QualifiedIdentity>( size );

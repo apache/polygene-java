@@ -19,7 +19,6 @@ import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.entity.association.AssociationDescriptor;
-import org.qi4j.api.entity.association.ManyAssociationDescriptor;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
@@ -1245,7 +1244,7 @@ public abstract class AbstractSQLStartup
     private void extractManyAssociationQNames( EntityDescriptor entityDesc,
         Map<QualifiedName, QNameInfo> extractedQNames, Set<QualifiedName> newQNames, Boolean setQNameTableNameToNull )
     {
-        for( ManyAssociationDescriptor mAssoDesc : entityDesc.state().manyAssociations() )
+        for( AssociationDescriptor mAssoDesc : entityDesc.state().manyAssociations() )
         {
             QualifiedName qName = mAssoDesc.qualifiedName();
             if( SQLUtil.isQueryable( mAssoDesc.accessor() ) )

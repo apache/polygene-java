@@ -23,7 +23,6 @@ import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.association.AssociationDescriptor;
-import org.qi4j.api.entity.association.ManyAssociationDescriptor;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
@@ -355,7 +354,7 @@ public class PreferencesEntityStoreMixin
             if( !entityDescriptor.state().manyAssociations().isEmpty() )
             {
                 Preferences manyAssocs = entityPrefs.node( "manyassociations" );
-                for( ManyAssociationDescriptor manyAssociationType : entityDescriptor.state().manyAssociations() )
+                for( AssociationDescriptor manyAssociationType : entityDescriptor.state().manyAssociations() )
                 {
                     List<EntityReference> references = new ArrayList<EntityReference>();
                     String entityReferences = manyAssocs.get( manyAssociationType.qualifiedName().name(), null );
