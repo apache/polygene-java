@@ -119,11 +119,6 @@ public class UnitOfWorkFactoryTest
     {
     }
 
-    public interface Name
-            extends Property<String>
-    {
-    }
-
     public interface Order
     {
         Association<Customer> customer();
@@ -148,62 +143,5 @@ public class UnitOfWorkFactoryTest
     public interface ProductEntity
             extends Product, EntityComposite
     {
-    }
-}
-
-class UnitOfWorkTemplate
-        implements Callable, Runnable
-{
-    private UnitOfWorkFactory factory;
-    private Callable callable;
-
-    UnitOfWorkTemplate( UnitOfWorkFactory factory, Callable callable )
-    {
-        this.factory = factory;
-        this.callable = callable;
-    }
-
-    UnitOfWorkTemplate( UnitOfWorkFactory factory, final Runnable runnable )
-    {
-
-        this.factory = factory;
-        callable = new Callable()
-        {
-            public Object call()
-                    throws Exception
-            {
-                runnable.run();
-                return null;
-            }
-        };
-    }
-
-    public Object call()
-            throws Exception
-    {
-        UnitOfWork unitOfWork = factory.newUnitOfWork();
-        try
-        {
-            Object result = callable.call();
-            unitOfWork.complete();
-            return result;
-        }
-        catch (Exception e)
-        {
-            unitOfWork.discard();
-            throw e;
-        }
-    }
-
-    public void run()
-    {
-        try
-        {
-            call();
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
     }
 }

@@ -80,7 +80,6 @@ public class ValueTypeSerializationTest
         proto.fooValue().set( valueBuilderFactory.newValue( FooValue.class ) );
         proto.customFoo().set( valueBuilderFactory.newValue( CustomFooValue.class ) );
         proto.customFooValue().set( valueBuilderFactory.newValue( CustomFooValue.class ) );
-        proto.explicit().set( "foobar" );
         SomeValue some = builder.newInstance();
 
         // Serialize
@@ -126,11 +125,6 @@ public class ValueTypeSerializationTest
     public enum TestEnum
     {
         somevalue, anothervalue
-    }
-
-    public interface ExplicitPropertyType
-        extends Property<String>
-    {
     }
 
     public interface SomeValue
@@ -180,8 +174,6 @@ public class ValueTypeSerializationTest
         Property<Foo> customFoo();
 
         Property<FooValue> customFooValue();
-
-        ExplicitPropertyType explicit();
 
 /* Too complicated to do generics here for now
         Property<SpecificCollection> specificCollection();

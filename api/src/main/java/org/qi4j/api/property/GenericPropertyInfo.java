@@ -28,7 +28,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 public final class GenericPropertyInfo
-    implements PropertyInfo, Serializable
 {
     public static Type getPropertyType( AccessibleObject accessor )
     {
@@ -59,72 +58,5 @@ public final class GenericPropertyInfo
             }
         }
         return null;
-    }
-
-    private MetaInfo infos;
-    private boolean immutable;
-    private final QualifiedName qualifiedName;
-    private final Type type;
-
-    public GenericPropertyInfo( Method accessor )
-    {
-        this.qualifiedName = QualifiedName.fromAccessor( accessor );
-        this.type = getPropertyType( accessor );
-        infos = new MetaInfo().withAnnotations( accessor );
-        immutable = metaInfo( Immutable.class ) != null;
-    }
-
-    public GenericPropertyInfo( Class declaringClass, String accessorName )
-    {
-        try
-        {
-            Method accessor = declaringClass.getMethod( accessorName );
-            this.qualifiedName = QualifiedName.fromAccessor( accessor );
-            this.type = getPropertyType( accessor );
-            infos = new MetaInfo().withAnnotations( accessor );
-            immutable = metaInfo( Immutable.class ) != null;
-        }
-        catch( NoSuchMethodException e )
-        {
-            //noinspection ThrowableInstanceNeverThrown
-            throw (InternalError) new InternalError().initCause( e );
-        }
-    }
-
-    public GenericPropertyInfo( MetaInfo infos,
-                                boolean immutable,
-                                QualifiedName qualifiedName,
-                                Type type
-    )
-    {
-        this.infos = infos;
-        this.immutable = immutable;
-        this.qualifiedName = qualifiedName;
-        this.type = type;
-    }
-
-    public <T> T metaInfo( Class<T> infoType )
-    {
-        return infos.get( infoType );
-    }
-
-    public String name()
-    {
-        return qualifiedName.name();
-    }
-
-    public QualifiedName qualifiedName()
-    {
-        return qualifiedName;
-    }
-
-    public Type type()
-    {
-        return type;
-    }
-
-    public boolean isImmutable()
-    {
-        return immutable;
     }
 }

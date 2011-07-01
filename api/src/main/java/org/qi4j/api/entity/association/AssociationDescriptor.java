@@ -23,7 +23,6 @@ import java.lang.reflect.Type;
  * JAVADOC
  */
 public interface AssociationDescriptor
-    extends AssociationInfo
 {
     /**
      * Get metadata that implements the given type

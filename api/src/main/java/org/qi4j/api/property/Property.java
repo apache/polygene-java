@@ -29,7 +29,6 @@ package org.qi4j.api.property;
  * </ul>
  */
 public interface Property<T>
-//    extends PropertyInfo
 {
     /**
      * Get the value of the property.

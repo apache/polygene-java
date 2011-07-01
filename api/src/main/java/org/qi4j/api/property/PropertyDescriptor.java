@@ -25,7 +25,6 @@ import java.lang.reflect.Type;
  * JAVADOC
  */
 public interface PropertyDescriptor
-    extends PropertyInfo
 {
     boolean isImmutable();
 

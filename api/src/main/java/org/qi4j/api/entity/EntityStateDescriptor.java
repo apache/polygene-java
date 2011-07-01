@@ -19,7 +19,6 @@ package org.qi4j.api.entity;
 
 import org.qi4j.api.composite.StateDescriptor;
 import org.qi4j.api.entity.association.AssociationDescriptor;
-import org.qi4j.api.entity.association.ManyAssociationDescriptor;
 
 import java.util.Set;
 
@@ -28,9 +27,9 @@ public interface EntityStateDescriptor
 {
     AssociationDescriptor getAssociationByName( String name );
 
-    ManyAssociationDescriptor getManyAssociationByName( String name );
+    AssociationDescriptor getManyAssociationByName( String name );
 
     <T extends AssociationDescriptor> Set<T> associations();
 
-    <T extends ManyAssociationDescriptor> Set<T> manyAssociations();
+    <T extends AssociationDescriptor> Set<T> manyAssociations();
 }

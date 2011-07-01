@@ -42,8 +42,6 @@ public final class ValuePropertyModel
     {
         // Property was constructed using a builder
 
-        Property property;
-        property = new ValuePropertyInstance<Object>( this, value );
-        return wrapProperty( property );
+        return (Property<T>) new ValuePropertyInstance<Object>( this, value );
     }
 }

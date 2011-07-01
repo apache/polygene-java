@@ -18,21 +18,16 @@ import org.junit.Test;
 import org.qi4j.api.common.AppliesTo;
 import org.qi4j.api.composite.TransientBuilder;
 import org.qi4j.api.composite.TransientComposite;
-import org.qi4j.api.concern.ConcernOf;
-import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.concern.GenericConcern;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyMixin;
+import org.qi4j.api.property.PropertyWrapper;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
 
 import javax.swing.*;
 import java.io.Serializable;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import java.lang.reflect.Method;
 
 import static org.junit.Assert.assertEquals;
@@ -84,30 +79,9 @@ public class PropertyTest
     {
     }
 
-    @Concerns( CapitalizeConcern.class )
     public interface Nameable
     {
-        @Capitalized
         Property<String> name();
-    }
-
-    @Retention( RetentionPolicy.RUNTIME )
-    @Target( { ElementType.METHOD } )
-    public @interface Capitalized
-    {
-    }
-
-    @AppliesTo( Capitalized.class )
-    public static abstract class CapitalizeConcern
-        extends ConcernOf<Property<String>>
-        implements Property<String>
-    {
-        public void set( String newValue )
-            throws IllegalArgumentException
-        {
-            newValue = newValue.toUpperCase();
-            next.set( newValue );
-        }
     }
 
     @AppliesTo( PropertyMixin.PropertyFilter.class )
@@ -119,12 +93,12 @@ public class PropertyTest
         {
             final Property<Object> property = (Property<Object>) next.invoke( o, method, objects );
 
-            return new Property<Object>()
+            return new PropertyWrapper(property)
             {
                 @Override
                 public Object get()
                 {
-                    Object result = property.get();
+                    Object result = next.get();
 
                     System.out.println( "Property " + method.getName() + " accessed with value " + result);
 
@@ -134,9 +108,9 @@ public class PropertyTest
                 @Override
                 public void set( Object newValue ) throws IllegalArgumentException, IllegalStateException
                 {
-                    Object current = property.get();
+                    Object current = next.get();
 
-                    property.set( newValue );
+                    next.set( newValue );
 
                     System.out
                         .println( "Property " + method.getName() + " changed from " + current + " to " + newValue );

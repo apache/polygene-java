@@ -14,8 +14,8 @@
 
 package org.qi4j.runtime.entity.association;
 
+import org.qi4j.api.entity.association.AssociationDescriptor;
 import org.qi4j.api.entity.association.ManyAssociation;
-import org.qi4j.api.entity.association.ManyAssociationDescriptor;
 import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
@@ -65,14 +65,14 @@ public final class ManyAssociationsInstance
 
     public Iterable<ManyAssociation<?>> manyAssociations()
     {
-        return Iterables.map( new Function<ManyAssociationDescriptor, ManyAssociation<?>>()
+        return Iterables.map( new Function<AssociationDescriptor, ManyAssociation<?>>()
                 {
                     @Override
-                    public ManyAssociation<?> map( ManyAssociationDescriptor associationDescriptor )
+                    public ManyAssociation<?> map( AssociationDescriptor associationDescriptor )
                     {
                         return manyAssociationFor( associationDescriptor.accessor() );
                     }
-                }, model.<ManyAssociationDescriptor>manyAssociations() );
+                }, model.<AssociationDescriptor>manyAssociations() );
     }
 
     public void checkConstraints()

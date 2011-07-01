@@ -34,7 +34,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Test for ability to creates subtypes of Property
+ * Test for ability to set constraints on Properties
  */
 public class PropertyTypeTest
     extends AbstractQi4jTest
@@ -48,7 +48,7 @@ public class PropertyTypeTest
     }
 
     @Test
-    public void givenEntityWithPropertyTypesWhenInstantiatedThenPropertiesWork()
+    public void givenEntityWithPropertyConstraintsWhenInstantiatedThenPropertiesWork()
         throws Exception
     {
         UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
@@ -73,7 +73,7 @@ public class PropertyTypeTest
     }
 
     @Test
-    public void givenCompositeWithPropertyTypesWhenInstantiatedThenPropertiesWork()
+    public void givenCompositeWithPropertyConstraintsWhenInstantiatedThenPropertiesWork()
         throws Exception
     {
         TransientBuilder<PersonComposite> builder = transientBuilderFactory.newTransientBuilder( PersonComposite.class );
@@ -86,32 +86,37 @@ public class PropertyTypeTest
         personComposite.familyName().set( "Hedhman" );
     }
 
-    @MaxLength( 50 )
-    interface Name
-        extends Property<String>
-    {
-    }
+    @ConstraintDeclaration
+    @Retention( RetentionPolicy.RUNTIME )
+    @MaxLength(50)
+    public @interface Name {}
 
-    @NotEmpty
-    interface GivenName
-        extends Name
+
+    @ConstraintDeclaration
+    @Retention( RetentionPolicy.RUNTIME )
+    @NotEmpty @Name
+    public @interface GivenName
     {
     }
 
     interface PersonEntity
         extends EntityComposite
     {
-        GivenName givenName();
+        @GivenName
+        Property<String> givenName();
 
-        Name familyName();
+        @Name
+        Property<String> familyName();
     }
 
     interface PersonComposite
         extends TransientComposite
     {
-        GivenName givenName();
+        @GivenName
+        Property<String> givenName();
 
-        Name familyName();
+        @Name
+        Property<String> familyName();
     }
 
     @ConstraintDeclaration

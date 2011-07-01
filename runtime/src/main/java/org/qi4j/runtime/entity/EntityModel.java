@@ -22,7 +22,6 @@ import org.qi4j.api.composite.CompositeInstance;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.*;
 import org.qi4j.api.entity.association.AssociationDescriptor;
-import org.qi4j.api.entity.association.ManyAssociationDescriptor;
 import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.PersistentPropertyDescriptor;
 import org.qi4j.api.property.StateHolder;
@@ -234,8 +233,8 @@ public final class EntityModel
 
         {
             // Set new many-manyAssociations to empty
-            Set<ManyAssociationDescriptor> entityAssociations = state().manyAssociations();
-            for( ManyAssociationDescriptor associationDescriptor : entityAssociations )
+            Set<AssociationDescriptor> entityAssociations = state().manyAssociations();
+            for( AssociationDescriptor associationDescriptor : entityAssociations )
             {
                 entityState.getManyAssociation( associationDescriptor.qualifiedName() );
             }

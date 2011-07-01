@@ -37,6 +37,7 @@ public class EntityPropertyInstance<T>
      *
      * @param aPropertyInfo The property info. This argument must not be {@code null}.
      * @param entityState
+     * @param constraints
      */
     public EntityPropertyInstance( PropertyDescriptor aPropertyInfo, EntityState entityState, ConstraintsCheck constraints )
     {

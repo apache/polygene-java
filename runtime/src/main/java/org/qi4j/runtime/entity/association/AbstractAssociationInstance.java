@@ -1,10 +1,9 @@
 package org.qi4j.runtime.entity.association;
 
-import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.association.AbstractAssociation;
-import org.qi4j.api.entity.association.AssociationInfo;
+import org.qi4j.api.entity.association.AssociationDescriptor;
 import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
@@ -12,7 +11,6 @@ import org.qi4j.spi.entity.EntityState;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
-import java.lang.reflect.Type;
 
 /**
  * Implementation of AbstractAssociation. Includes helper methods for subclasses
@@ -20,45 +18,23 @@ import java.lang.reflect.Type;
 public abstract class AbstractAssociationInstance<T>
     implements AbstractAssociation
 {
-    protected final AssociationInfo associationInfo;
+    protected final AssociationDescriptor associationDescriptor;
     protected final ModuleUnitOfWork unitOfWork;
     protected EntityState entityState;
 
-    public AbstractAssociationInstance( AssociationInfo associationInfo,
+    public AbstractAssociationInstance( AssociationDescriptor associationDescriptor,
                                         ModuleUnitOfWork unitOfWork,
                                         EntityState entityState
     )
     {
-        this.associationInfo = associationInfo;
+        this.associationDescriptor = associationDescriptor;
         this.unitOfWork = unitOfWork;
         this.entityState = entityState;
     }
 
-    // AssociationInfo implementation
-
-    public <T> T metaInfo( Class<T> infoType )
+    public AssociationDescriptor getAssociationDescriptor()
     {
-        return associationInfo.metaInfo( infoType );
-    }
-
-    public QualifiedName qualifiedName()
-    {
-        return associationInfo.qualifiedName();
-    }
-
-    public Type type()
-    {
-        return associationInfo.type();
-    }
-
-    public boolean isImmutable()
-    {
-        return associationInfo.isImmutable();
-    }
-
-    public boolean isAggregated()
-    {
-        return associationInfo.isAggregated();
+        return associationDescriptor;
     }
 
     protected T getEntity( EntityReference entityId )
@@ -68,7 +44,7 @@ public abstract class AbstractAssociationInstance<T>
             return null;
         }
 
-        return (T) unitOfWork.get( (Class<? extends Object>) type(), entityId.identity() );
+        return (T) unitOfWork.get( (Class<? extends Object>) associationDescriptor.type(), entityId.identity() );
     }
 
     protected EntityReference getEntityReference( Object composite )
@@ -106,11 +82,11 @@ public abstract class AbstractAssociationInstance<T>
         }
     }
 
-    protected void checkImmutable()
+    protected void checkImmutable() throws IllegalStateException
     {
-        if( isImmutable() )
+        if( associationDescriptor.isImmutable() )
         {
-            throw new IllegalStateException( "Association [" + qualifiedName() + "] is immutable." );
+            throw new IllegalStateException( "Association [" + associationDescriptor.qualifiedName() + "] is immutable." );
         }
     }
 

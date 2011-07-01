@@ -17,6 +17,8 @@ package org.qi4j.api;
 import org.qi4j.api.composite.*;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityDescriptor;
+import org.qi4j.api.entity.association.AbstractAssociation;
+import org.qi4j.api.entity.association.AssociationDescriptor;
 import org.qi4j.api.entity.association.EntityStateHolder;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyDescriptor;
@@ -133,8 +135,10 @@ public interface Qi4j
 
     ServiceDescriptor getServiceDescriptor( ServiceComposite service );
 
-    // Properties
+    // State
     PropertyDescriptor getPropertyDescriptor( Property property );
+
+    AssociationDescriptor getAssociationDescriptor( AbstractAssociation association);
 
     public static Function<Composite, AbstractCompositeDescriptor> DESCRIPTOR_FUNCTION = new Function<Composite, AbstractCompositeDescriptor>()
     {

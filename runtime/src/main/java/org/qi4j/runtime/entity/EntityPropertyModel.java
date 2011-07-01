@@ -47,9 +47,6 @@ public final class EntityPropertyModel
 
     public <T> Property<T> newInstance( EntityState state )
     {
-        Property property;
-        property = new EntityPropertyInstance( state instanceof BuilderEntityState ? builderInfo : this, state, this );
-
-        return wrapProperty( property );
+        return (Property<T>) new EntityPropertyInstance<Object>( state instanceof BuilderEntityState ? builderInfo : this, state, this );
     }
 }

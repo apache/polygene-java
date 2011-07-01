@@ -17,9 +17,9 @@ package org.qi4j.runtime.entity.association;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.entity.association.AssociationDescriptor;
 import org.qi4j.api.entity.association.GenericAssociationInfo;
 import org.qi4j.api.entity.association.ManyAssociation;
-import org.qi4j.api.entity.association.ManyAssociationDescriptor;
 import org.qi4j.api.util.Annotations;
 import org.qi4j.api.util.Classes;
 import org.qi4j.bootstrap.ManyAssociationDeclarations;
@@ -113,7 +113,7 @@ public final class ManyAssociationsModel
         return visitor.visitLeave( this );
     }
 
-    public <T extends ManyAssociationDescriptor> Set<T> manyAssociations()
+    public <T extends AssociationDescriptor> Set<T> manyAssociations()
     {
         return (Set<T>) manyAssociationModels;
     }
@@ -123,7 +123,7 @@ public final class ManyAssociationsModel
         return mapAccessorAssociationModel.get( accessor ).newInstance( uow, entityState );
     }
 
-    public ManyAssociationDescriptor getManyAssociationByName( String name )
+    public AssociationDescriptor getManyAssociationByName( String name )
     {
         for( ManyAssociationModel associationModel : manyAssociationModels )
         {

@@ -20,10 +20,7 @@ import org.qi4j.api.constraint.ConstraintViolation;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.Aggregated;
 import org.qi4j.api.entity.Queryable;
-import org.qi4j.api.entity.association.AssociationInfo;
-import org.qi4j.api.entity.association.GenericAssociationInfo;
-import org.qi4j.api.entity.association.ManyAssociation;
-import org.qi4j.api.entity.association.ManyAssociationDescriptor;
+import org.qi4j.api.entity.association.*;
 import org.qi4j.api.property.Immutable;
 import org.qi4j.api.util.Classes;
 import org.qi4j.bootstrap.BindingException;
@@ -44,7 +41,7 @@ import java.util.List;
  * JAVADOC
  */
 public final class ManyAssociationModel
-    implements ManyAssociationDescriptor, ConstraintsCheck, Binder, Visitable<ManyAssociationModel>
+    implements AssociationDescriptor, ConstraintsCheck, Binder, Visitable<ManyAssociationModel>
 {
     private ValueConstraintsInstance associationConstraints;
     private MetaInfo metaInfo;
@@ -55,7 +52,7 @@ public final class ManyAssociationModel
     private boolean queryable;
     private boolean immutable;
     private boolean aggregated;
-    private AssociationInfo builderInfo;
+    private AssociationDescriptor builderInfo;
 
     public ManyAssociationModel( AccessibleObject accessor,
                                  ValueConstraintsInstance valueConstraintsInstance,
@@ -119,9 +116,7 @@ public final class ManyAssociationModel
 
     public <T> ManyAssociation<T> newInstance( ModuleUnitOfWork uow, EntityState state )
     {
-        ManyAssociation<T> associationInstance = new ManyAssociationInstance<T>( state instanceof BuilderEntityState ? builderInfo : this, this, uow, state );
-
-        return associationInstance;
+        return new ManyAssociationInstance<T>( state instanceof BuilderEntityState ? builderInfo : this, this, uow, state );
     }
 
     public void checkConstraints( Object composite )
@@ -159,7 +154,7 @@ public final class ManyAssociationModel
     @Override
     public void bind( Resolution resolution ) throws BindingException
     {
-        builderInfo = new ManyAssociationDescriptor()
+        builderInfo = new AssociationDescriptor()
         {
             @Override
             public boolean isImmutable()

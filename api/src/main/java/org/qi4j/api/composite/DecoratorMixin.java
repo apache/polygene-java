@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.runtime.entity.associations;
+package org.qi4j.api.composite;
 
 import org.qi4j.api.injection.scope.Uses;
 
@@ -67,7 +67,6 @@ public class DecoratorMixin
             catch( IllegalArgumentException e )
             {
                 String message = constructMessage( method, args );
-                System.err.println( message );
                 throw new IllegalArgumentException( message, e );
             }
         }

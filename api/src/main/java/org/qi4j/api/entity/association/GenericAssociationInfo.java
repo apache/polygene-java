@@ -29,7 +29,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 public final class GenericAssociationInfo
-    implements AssociationInfo
 {
     public static Type getAssociationType( AccessibleObject accessor )
     {
@@ -59,65 +58,4 @@ public final class GenericAssociationInfo
         return null;
     }
 
-    private QualifiedName qualifiedName;
-    private Type type;
-    private MetaInfo metainfo;
-    private boolean immutable;
-    private boolean aggregated;
-
-    public GenericAssociationInfo( MetaInfo infos,
-                                   boolean immutable,
-                                   boolean aggregated,
-                                   QualifiedName qualifiedName,
-                                   Type type
-    )
-    {
-        this.metainfo = infos;
-        this.immutable = immutable;
-        this.aggregated = aggregated;
-        this.qualifiedName = qualifiedName;
-        this.type = type;
-    }
-
-    public GenericAssociationInfo( Method accessor, MetaInfo metainfo )
-    {
-        this( metainfo, metainfo.get( Immutable.class ) != null, metainfo.get( Aggregated.class ) != null, QualifiedName
-            .fromAccessor( accessor ), getAssociationType( accessor.getGenericReturnType() ) );
-    }
-
-    public GenericAssociationInfo( Method accessor, MetaInfo metainfo, boolean immutable )
-    {
-        this( metainfo, immutable, metainfo.get( Aggregated.class ) != null, QualifiedName.fromAccessor( accessor ), getAssociationType( accessor
-                                                                                                                                           .getGenericReturnType() ) );
-    }
-
-    public <T> T metaInfo( Class<T> infoType )
-    {
-        return metainfo.get( infoType );
-    }
-
-    public String name()
-    {
-        return qualifiedName.name();
-    }
-
-    public QualifiedName qualifiedName()
-    {
-        return qualifiedName;
-    }
-
-    public Type type()
-    {
-        return type;
-    }
-
-    public boolean isImmutable()
-    {
-        return immutable;
-    }
-
-    public boolean isAggregated()
-    {
-        return aggregated;
-    }
 }

@@ -46,23 +46,4 @@ public abstract class PersistentPropertyModel
     {
         return queryable;
     }
-
-    public String toJSON( Object value )
-    {
-        if( value == null )
-        {
-            return "null";
-        }
-
-        try
-        {
-            JSONWriterSerializer valueJSONWriterSerializer = new JSONWriterSerializer();
-            valueJSONWriterSerializer.serialize( value, valueType() );
-            return valueJSONWriterSerializer.getJSON().toString();
-        }
-        catch( JSONException e )
-        {
-            throw new IllegalStateException( "Could not serialize value to JSON", e );
-        }
-    }
 }

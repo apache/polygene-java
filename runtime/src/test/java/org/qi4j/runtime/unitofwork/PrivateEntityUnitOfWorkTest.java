@@ -230,11 +230,6 @@ public class PrivateEntityUnitOfWorkTest
     {
     }
 
-    public interface Name
-            extends Property<String>
-    {
-    }
-
     public interface Order
     {
         Association<Customer> customer();

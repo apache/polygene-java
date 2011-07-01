@@ -1,7 +1,7 @@
 package org.qi4j.runtime.entity.association;
 
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.api.entity.association.AssociationInfo;
+import org.qi4j.api.entity.association.AssociationDescriptor;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
@@ -18,7 +18,7 @@ public class ManyAssociationInstance<T>
 {
     private ManyAssociationModel model;
 
-    public ManyAssociationInstance( AssociationInfo associationInfo,
+    public ManyAssociationInstance( AssociationDescriptor associationInfo,
                                     ManyAssociationModel constraints,
                                     ModuleUnitOfWork unitOfWork,
                                     EntityState entityState

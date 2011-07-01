@@ -18,6 +18,5 @@ package org.qi4j.api.entity.association;
  * Base interface for all associations.
  */
 public interface AbstractAssociation
-    extends AssociationInfo
 {
 }

@@ -16,12 +16,14 @@ package org.qi4j.runtime;
 
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.composite.*;
-import org.qi4j.api.entity.EntityBuilder;
-import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.entity.EntityDescriptor;
+import org.qi4j.api.entity.*;
+import org.qi4j.api.entity.association.AbstractAssociation;
+import org.qi4j.api.entity.association.Association;
+import org.qi4j.api.entity.association.AssociationDescriptor;
 import org.qi4j.api.entity.association.EntityStateHolder;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyDescriptor;
+import org.qi4j.api.property.PropertyWrapper;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceDescriptor;
@@ -40,6 +42,7 @@ import org.qi4j.runtime.bootstrap.ApplicationModelFactoryImpl;
 import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
 import org.qi4j.runtime.composite.TransientInstance;
 import org.qi4j.runtime.entity.EntityInstance;
+import org.qi4j.runtime.entity.association.AbstractAssociationInstance;
 import org.qi4j.runtime.property.AbstractPropertyInstance;
 import org.qi4j.runtime.service.ImportedServiceReferenceInstance;
 import org.qi4j.runtime.service.ServiceInstance;
@@ -308,7 +311,21 @@ public final class Qi4jRuntimeImpl
     @Override
     public PropertyDescriptor getPropertyDescriptor( Property property )
     {
+        while (property instanceof PropertyWrapper)
+            property = ((PropertyWrapper)property).getNext();
+
         return ((AbstractPropertyInstance)property).getPropertyDescriptor();
+    }
+
+    public AssociationDescriptor getAssociationDescriptor( AbstractAssociation association)
+    {
+        while (association instanceof AssociationWrapper )
+            association = ((AssociationWrapper)association).getNext();
+
+        while (association instanceof ManyAssociationWrapper )
+            association = ((ManyAssociationWrapper)association).getNext();
+
+        return ((AbstractAssociationInstance)association).getAssociationDescriptor();
     }
 
     // SPI

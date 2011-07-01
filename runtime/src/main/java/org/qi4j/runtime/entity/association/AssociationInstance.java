@@ -14,15 +14,12 @@
 
 package org.qi4j.runtime.entity.association;
 
-import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.association.Association;
-import org.qi4j.api.entity.association.AssociationInfo;
+import org.qi4j.api.entity.association.AssociationDescriptor;
 import org.qi4j.runtime.composite.ConstraintsCheck;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
-
-import java.lang.reflect.Type;
 
 /**
  * Implementation of Association to a single Entity.
@@ -36,7 +33,7 @@ public final class AssociationInstance<T>
     private T value = (T) NOT_LOADED;
     private ConstraintsCheck constraints;
 
-    public AssociationInstance( AssociationInfo associationInfo,
+    public AssociationInstance( AssociationDescriptor associationInfo,
                                 ConstraintsCheck constraints,
                                 ModuleUnitOfWork unitOfWork,
                                 EntityState entityState
@@ -52,7 +49,7 @@ public final class AssociationInstance<T>
     {
         if( !isSet() )
         {
-            EntityReference entityId = entityState.getAssociation( qualifiedName() );
+            EntityReference entityId = entityState.getAssociation( associationDescriptor.qualifiedName() );
             value = getEntity( entityId );
         }
         return value;
@@ -69,7 +66,7 @@ public final class AssociationInstance<T>
         // Change association
         if( entityState != null )
         {
-            entityState.setAssociation( qualifiedName(), getEntityReference( newValue ) );
+            entityState.setAssociation( associationDescriptor.qualifiedName(), getEntityReference( newValue ) );
         }
         this.value = newValue;
     }
@@ -77,23 +74,6 @@ public final class AssociationInstance<T>
     protected boolean isSet()
     {
         return value != NOT_LOADED;
-    }
-
-    // AssociationInfo implementation
-
-    public <T> T metaInfo( Class<T> infoType )
-    {
-        return associationInfo.metaInfo( infoType );
-    }
-
-    public QualifiedName qualifiedName()
-    {
-        return associationInfo.qualifiedName();
-    }
-
-    public Type type()
-    {
-        return associationInfo.type();
     }
 
     public void write( T value )

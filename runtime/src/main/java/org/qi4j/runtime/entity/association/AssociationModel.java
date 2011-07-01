@@ -23,7 +23,6 @@ import org.qi4j.api.entity.Aggregated;
 import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.AssociationDescriptor;
-import org.qi4j.api.entity.association.AssociationInfo;
 import org.qi4j.api.entity.association.GenericAssociationInfo;
 import org.qi4j.api.property.Immutable;
 import org.qi4j.api.util.Classes;
@@ -56,7 +55,7 @@ public final class AssociationModel
     private boolean queryable;
     private boolean immutable;
     private boolean aggregated;
-    private AssociationInfo builderInfo;
+    private AssociationDescriptor builderInfo;
 
     public AssociationModel( AccessibleObject accessor,
                              ValueConstraintsInstance valueConstraintsInstance,
@@ -126,20 +125,7 @@ public final class AssociationModel
 
     public <T> Association<T> newInstance( ModuleUnitOfWork uow, EntityState state )
     {
-        Association<T> associationInstance = new AssociationInstance<T>( state instanceof BuilderEntityState ? builderInfo : this, this, uow, state );
-
-/* TODO What was this supposed to do?
-        if( Composite.class.isAssignableFrom( accessor.getReturnType() ) )
-        {
-            associationInstance = (Association<T>) uow.module()
-                .transientBuilderFactory()
-                .newTransientBuilder( accessor.getReturnType() )
-                .use( associationInstance )
-                .newInstance();
-        }
-*/
-
-        return associationInstance;
+        return new AssociationInstance<T>( state instanceof BuilderEntityState ? builderInfo : this, this, uow, state );
     }
 
     public void checkConstraints( Object value )

@@ -60,7 +60,7 @@ public final class EntityStateModel
         return associationsModel.getAssociationByName( name );
     }
 
-    public ManyAssociationDescriptor getManyAssociationByName( String name )
+    public AssociationDescriptor getManyAssociationByName( String name )
     {
         return manyAssociationsModel.getManyAssociationByName( name );
     }
@@ -70,7 +70,7 @@ public final class EntityStateModel
         return associationsModel.associations();
     }
 
-    public <T extends ManyAssociationDescriptor> Set<T> manyAssociations()
+    public <T extends AssociationDescriptor> Set<T> manyAssociations()
     {
         return manyAssociationsModel.manyAssociations();
     }

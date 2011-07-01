@@ -122,7 +122,7 @@ public final class StateInjectionProviderFactory
             {
                 name = annotation.value();
             }
-            ManyAssociationDescriptor model = descriptor.getManyAssociationByName( name );
+            AssociationDescriptor model = descriptor.getManyAssociationByName( name );
 
             // No such association found
             if( model == null )
@@ -190,9 +190,9 @@ public final class StateInjectionProviderFactory
     static private class ManyAssociationInjectionProvider
         implements InjectionProvider
     {
-        private final ManyAssociationDescriptor manyAssociationDescriptor;
+        private final AssociationDescriptor manyAssociationDescriptor;
 
-        public ManyAssociationInjectionProvider( ManyAssociationDescriptor manyAssociationDescriptor )
+        public ManyAssociationInjectionProvider( AssociationDescriptor manyAssociationDescriptor )
         {
             this.manyAssociationDescriptor = manyAssociationDescriptor;
         }

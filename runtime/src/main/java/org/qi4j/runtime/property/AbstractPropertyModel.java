@@ -68,8 +68,6 @@ public abstract class AbstractPropertyModel
 
     private final boolean immutable;
 
-    private final boolean needsWrapper;
-
     private ValueType valueType;
 
     protected PropertyDescriptor builderInfo;
@@ -91,9 +89,6 @@ public abstract class AbstractPropertyModel
         this.initialValue = initialValue;
 
         this.constraints = constraints;
-
-        needsWrapper = !rawType.equals( Property.class );
-
     }
 
     public <T> T metaInfo( Class<T> infoType )
@@ -219,9 +214,7 @@ public abstract class AbstractPropertyModel
         // Properties cannot be immutable during construction
 
         Property<?> property;
-        property = new PropertyInstance<Object>( builderInfo, initialValue, this );
-
-        return wrapProperty( property );
+        return new PropertyInstance<Object>( builderInfo, initialValue, this );
     }
 
     public abstract <T> Property<T> newInstance( Object value );
@@ -279,104 +272,5 @@ public abstract class AbstractPropertyModel
           return ((Field)accessor).toGenericString();
         else
             return ((Method)accessor).toGenericString();
-    }
-
-    protected <T> Property<T> wrapProperty( Property<T> property )
-    {
-        if( needsWrapper )
-        {
-            // Create proxy
-            final ClassLoader loader = rawType.getClassLoader();
-            final Class[] types = { rawType };
-            property = (Property<T>) Proxy.newProxyInstance( loader, types, new PropertyHandler( property ) );
-        }
-        return property;
-    }
-
-    static class PropertyHandler
-        implements InvocationHandler
-    {
-        Property p;
-
-        public PropertyHandler( Property<?> property )
-        {
-            p = property;
-        }
-
-        public Object invoke( Object proxy, Method method, Object[] args )
-            throws Throwable
-        {
-            try
-            {
-                if( method.getDeclaringClass() == Object.class )
-                {
-                    return invokeObject( method, args );
-                }
-                return method.invoke( p, args );
-            }
-            catch( InvocationTargetException e )
-            {
-                throw e.getCause();
-            }
-        }
-
-        private Object invokeObject( Method method, Object[] args )
-            throws Throwable
-        {
-            String methodName = method.getName();
-            if( "equals".equals( methodName ) )
-            {
-                Object arg = args[ 0 ];
-                if( Proxy.isProxyClass( arg.getClass() ) )
-                {
-                    arg = Proxy.getInvocationHandler( arg );
-                    if( arg instanceof PropertyHandler )
-                    {
-                        arg = ( (PropertyHandler) arg ).p;
-                    }
-                }
-                return p.equals( arg );
-            }
-            else if( "hashCode".equals( methodName ) )
-            {
-                return p.hashCode();
-            }
-            else if( "toString".equals( methodName ) )
-            {
-                return p.toString();
-            }
-            else if( "wait".equals( methodName ) )
-            {
-                if( args.length == 0 )
-                {
-                    p.wait();
-                }
-                else if( args.length == 1 )
-                {
-                    p.wait( (Long) args[ 0 ] );
-                }
-                else
-                {
-                    p.wait( (Long) args[ 0 ], (Integer) args[ 1 ] );
-                }
-            }
-            else if( "getClass".equals( methodName ) )
-            {
-                return p.getClass();
-            }
-            else if( "clone".equals( methodName ) )
-            {
-                throw new CloneNotSupportedException();
-            }
-            else if( "notifyAll".equals( methodName ) )
-            {
-                p.notifyAll();
-            }
-            else if( "notify".equals( methodName ) )
-            {
-                p.notify();
-            }
-            return null;
-        }
     }
 }

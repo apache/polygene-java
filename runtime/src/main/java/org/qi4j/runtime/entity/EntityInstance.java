@@ -22,7 +22,6 @@ import org.qi4j.api.entity.*;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.AssociationDescriptor;
 import org.qi4j.api.entity.association.ManyAssociation;
-import org.qi4j.api.entity.association.ManyAssociationDescriptor;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkException;
@@ -266,8 +265,8 @@ public final class EntityInstance
                 }
             }
         }
-        Set<ManyAssociationDescriptor> manyAssociations = stateDescriptor.manyAssociations();
-        for( ManyAssociationDescriptor association : manyAssociations )
+        Set<AssociationDescriptor> manyAssociations = stateDescriptor.manyAssociations();
+        for( AssociationDescriptor association : manyAssociations )
         {
             if( association.isAggregated() )
             {
