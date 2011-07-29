@@ -1,6 +1,7 @@
 package org.qi4j.entitystore.qrm;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.entity.EntityBuilder;
@@ -23,6 +24,7 @@ import java.util.UUID;
 /**
  * User: alex
  */
+@Ignore
 public class CRUDTests
     extends AbstractQi4jTest
 {

@@ -51,7 +51,7 @@ public interface GaeIdGeneratorService
             };
         }
 
-        public String generate( Class<? extends Identity> compositeType )
+        public String generate( Class<?> compositeType )
         {
             if( !range.get().hasNext() )
             {

@@ -272,7 +272,7 @@ public class NeoEntityState
     }
 
     @Override
-    public boolean isOfType( Class<? extends EntityComposite> type )
+    public boolean isAssignableTo( Class<?> type )
     {
         Node typeNode = underlyingNode.getSingleRelationship( RelTypes.IS_OF_TYPE, Direction.OUTGOING ).getEndNode();
         String typeName = (String) typeNode.getProperty( NeoEntityStoreUnitOfWork.ENTITY_TYPE );

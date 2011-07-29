@@ -152,9 +152,9 @@ public class GaeEntityState
     }
 
     @Override
-    public boolean isOfType( Class<? extends EntityComposite> type )
+    public boolean isAssignableTo( Class<?> type )
     {
-        System.out.println( "isOfType( " + type + " )  -->  false" );
+        System.out.println( "isAssignableTo( " + type + " )  -->  false" );
         return false;
     }
 

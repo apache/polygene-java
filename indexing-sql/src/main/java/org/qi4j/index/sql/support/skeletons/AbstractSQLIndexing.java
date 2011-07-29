@@ -748,7 +748,7 @@ public class AbstractSQLIndexing
                 propertyPK, //
                 entityPK, //
                 pDesc.qualifiedName(), //
-                state.getProperty( pDesc.accessor() ).get(), //
+                state.propertyFor( pDesc.accessor() ).get(), //
                 originalPropertyPK //
                 );
         }

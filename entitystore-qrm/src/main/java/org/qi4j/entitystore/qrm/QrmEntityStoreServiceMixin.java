@@ -168,7 +168,7 @@ public class QrmEntityStoreServiceMixin
         };
     }
 
-    public String generate( Class<? extends Identity> compositeType )
+    public String generate( Class<?> compositeType )
     {
         System.err.println( "generating for: " + compositeType );
 
