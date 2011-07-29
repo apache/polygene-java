@@ -21,16 +21,16 @@ import java.lang.reflect.Method;
 /**
  * JAVADOC
  */
-public final class MethodConcernsInstance
+public final class ConcernsInstance
     implements InvocationHandler
 {
     private final InvocationHandler firstConcern;
     private final FragmentInvocationHandler mixinInvocationHandler;
     private final ProxyReferenceInvocationHandler proxyHandler;
 
-    public MethodConcernsInstance( InvocationHandler firstConcern,
-                                   FragmentInvocationHandler mixinInvocationHandler,
-                                   ProxyReferenceInvocationHandler proxyHandler
+    public ConcernsInstance( InvocationHandler firstConcern,
+                             FragmentInvocationHandler mixinInvocationHandler,
+                             ProxyReferenceInvocationHandler proxyHandler
     )
     {
         this.firstConcern = firstConcern;

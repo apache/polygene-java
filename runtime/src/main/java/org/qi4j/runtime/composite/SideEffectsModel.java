@@ -18,7 +18,6 @@ import org.qi4j.api.sideeffect.MethodSideEffectsDescriptor;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.VisitableHierarchy;
-import org.qi4j.runtime.bootstrap.AssemblyHelper;
 import org.qi4j.runtime.injection.Dependencies;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.structure.ModuleInstance;
@@ -26,27 +25,22 @@ import org.qi4j.runtime.structure.ModuleInstance;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * JAVADOC
  */
-public final class MethodSideEffectsModel
+public final class SideEffectsModel
     implements MethodSideEffectsDescriptor, Dependencies, VisitableHierarchy<Object, Object>
 {
-    private Method method;
-    private List<MethodSideEffectModel> sideEffectModels = null;
+    public static final SideEffectsModel EMPTY_SIDEEFFECTS = new SideEffectsModel( Collections.<SideEffectModel>emptyList() );
 
-    public MethodSideEffectsModel( Method method, List<MethodSideEffectModel> sideEffectModels )
+    private List<SideEffectModel> sideEffectModels = null;
+
+    public SideEffectsModel( List<SideEffectModel> sideEffectModels )
     {
-        this.method = method;
         this.sideEffectModels = sideEffectModels;
-    }
-
-    public boolean hasSideEffects()
-    {
-        return !sideEffectModels.isEmpty();
     }
 
     public Iterable<DependencyModel> dependencies()
@@ -55,17 +49,17 @@ public final class MethodSideEffectsModel
     }
 
     // Context
-    public MethodSideEffectsInstance newInstance( ModuleInstance moduleInstance, InvocationHandler invoker )
+    public SideEffectsInstance newInstance(Method method, ModuleInstance moduleInstance, InvocationHandler invoker )
     {
         ProxyReferenceInvocationHandler proxyHandler = new ProxyReferenceInvocationHandler();
         SideEffectInvocationHandlerResult result = new SideEffectInvocationHandlerResult();
         List<InvocationHandler> sideEffects = new ArrayList<InvocationHandler>( sideEffectModels.size() );
-        for( MethodSideEffectModel sideEffectModel : sideEffectModels )
+        for( SideEffectModel sideEffectModel : sideEffectModels )
         {
             InvocationHandler sideEffect = sideEffectModel.newInstance( moduleInstance, result, proxyHandler, method );
             sideEffects.add( sideEffect );
         }
-        return new MethodSideEffectsInstance( sideEffects, result, proxyHandler, invoker );
+        return new SideEffectsInstance( sideEffects, result, proxyHandler, invoker );
     }
 
     @Override
@@ -73,44 +67,12 @@ public final class MethodSideEffectsModel
     {
         if (modelVisitor.visitEnter( this ))
         {
-            for( MethodSideEffectModel methodSideEffectModel : sideEffectModels )
+            for( SideEffectModel sideEffectModel : sideEffectModels )
             {
-                if (!methodSideEffectModel.accept( modelVisitor ))
+                if (!sideEffectModel.accept( modelVisitor ))
                     break;
             }
         }
         return modelVisitor.visitLeave( this );
-    }
-
-    public MethodSideEffectsModel combineWith( MethodSideEffectsModel mixinMethodSideEffectsModel )
-    {
-        if( mixinMethodSideEffectsModel.sideEffectModels.size() > 0 )
-        {
-            List<MethodSideEffectModel> combinedModels = new ArrayList<MethodSideEffectModel>( sideEffectModels.size() + mixinMethodSideEffectsModel
-                .sideEffectModels
-                .size() );
-            combinedModels.addAll( sideEffectModels );
-            combinedModels.removeAll( mixinMethodSideEffectsModel.sideEffectModels );
-            combinedModels.addAll( mixinMethodSideEffectsModel.sideEffectModels );
-            return new MethodSideEffectsModel( method, combinedModels );
-        }
-        else
-        {
-            return this;
-        }
-    }
-
-    static MethodSideEffectsModel createForMethod( Method method,
-                                                   Collection<Class> sideEffectClasses,
-                                                   AssemblyHelper helper
-    )
-    {
-        List<MethodSideEffectModel> sideEffects = new ArrayList<MethodSideEffectModel>();
-        for( Class sideEffectClass : sideEffectClasses )
-        {
-            sideEffects.add( helper.getSideEffectModel( sideEffectClass ) );
-        }
-
-        return new MethodSideEffectsModel( method, sideEffects );
     }
 }

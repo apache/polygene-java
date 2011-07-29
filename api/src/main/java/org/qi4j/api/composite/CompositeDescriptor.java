@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2009, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,19 +12,15 @@
  *
  */
 
-package org.qi4j.runtime.composite;
-
-import org.qi4j.api.sideeffect.MethodSideEffectDescriptor;
+package org.qi4j.api.composite;
 
 /**
  * JAVADOC
  */
-public final class MethodSideEffectModel
-    extends AbstractModifierModel
-    implements MethodSideEffectDescriptor
+public interface CompositeDescriptor
+    extends ModelDescriptor
 {
-    public MethodSideEffectModel( Class sideEffectClass, Class instantiationClass )
-    {
-        super( sideEffectClass, instantiationClass );
-    }
+    Iterable<Class<?>> types();
+
+    Iterable<Class<?>> mixinTypes();
 }

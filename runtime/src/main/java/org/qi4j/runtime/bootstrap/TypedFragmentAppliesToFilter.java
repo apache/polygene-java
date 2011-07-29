@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.runtime.composite;
+package org.qi4j.runtime.bootstrap;
 
 import org.qi4j.api.common.AppliesToFilter;
 
@@ -21,18 +21,11 @@ import java.lang.reflect.Method;
 /**
  * JAVADOC
  */
-final class TypeCheckAppliesToFilter
+final class TypedFragmentAppliesToFilter
     implements AppliesToFilter
 {
-    private final Class type;
-
-    TypeCheckAppliesToFilter( Class type )
-    {
-        this.type = type;
-    }
-
     public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> fragmentClass )
     {
-        return type.isAssignableFrom( compositeType );
+        return method.getDeclaringClass().isAssignableFrom( fragmentClass );
     }
 }

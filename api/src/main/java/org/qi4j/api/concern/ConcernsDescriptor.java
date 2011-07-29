@@ -16,6 +16,6 @@
 */
 package org.qi4j.api.concern;
 
-public interface MethodConcernsDescriptor
+public interface ConcernsDescriptor
 {
 }

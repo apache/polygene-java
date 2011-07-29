@@ -27,34 +27,24 @@ import java.util.List;
 /**
  * JAVADOC
  */
-public final class MethodConstraintsInstance
+public final class ConstraintsInstance
 {
     private List<ValueConstraintsInstance> valueConstraintsInstances;
-    private Method method;
 
-    public MethodConstraintsInstance()
+    public ConstraintsInstance( List<ValueConstraintsInstance> parameterConstraints )
     {
+        valueConstraintsInstances = parameterConstraints;
     }
 
-    public MethodConstraintsInstance( Method method, List<ValueConstraintsModel> parameterConstraintsModels )
-    {
-        this.method = method;
-        valueConstraintsInstances = new ArrayList<ValueConstraintsInstance>();
-        for( ValueConstraintsModel parameterConstraintModel : parameterConstraintsModels )
-        {
-            ValueConstraintsInstance valueConstraintsInstance = parameterConstraintModel.newInstance();
-            valueConstraintsInstances.add( valueConstraintsInstance );
-        }
-    }
-
-    public void checkValid( Object instance, Object[] params )
+    public void checkValid( Object instance, Method method, Object[] params )
         throws ConstraintViolationException
     {
-        if( valueConstraintsInstances == null )
+        if( valueConstraintsInstances.isEmpty())
         {
             return; // No constraints to check
         }
 
+        // Check constraints
         List<ConstraintViolation> violations = null;
         for( int i = 0; i < params.length; i++ )
         {
@@ -70,6 +60,7 @@ public final class MethodConstraintsInstance
             }
         }
 
+        // Check if any constraint failed
         if( violations != null )
         {
             if( instance instanceof Composite )

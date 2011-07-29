@@ -12,18 +12,19 @@
  *
  */
 
-package org.qi4j.runtime.value;
+package org.qi4j.runtime.composite;
 
-import org.qi4j.runtime.composite.AbstractStateModel;
+import org.qi4j.api.concern.MethodConcernDescriptor;
 
 /**
- * State model for values
+ * JAVADOC
  */
-public final class ValueStateModel
-    extends AbstractStateModel<ValuePropertiesModel>
+public final class ConcernModel
+    extends AbstractModifierModel
+    implements MethodConcernDescriptor
 {
-    public ValueStateModel( ValuePropertiesModel propertiesModel )
+    public ConcernModel( Class concernClass, Class instantiationClass )
     {
-        super( propertiesModel );
+        super( concernClass, instantiationClass );
     }
 }

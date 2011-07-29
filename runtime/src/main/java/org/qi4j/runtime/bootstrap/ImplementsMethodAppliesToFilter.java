@@ -12,22 +12,29 @@
  *
  */
 
-package org.qi4j.runtime.composite;
+package org.qi4j.runtime.bootstrap;
+
+import org.qi4j.api.common.AppliesToFilter;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 /**
  * JAVADOC
  */
-public final class ConcernDeclaration
-    extends FragmentDeclaration
+final class ImplementsMethodAppliesToFilter
+    implements AppliesToFilter
 {
-    public ConcernDeclaration( Class concernClass, Class declaredIn )
+    public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> fragmentClass )
     {
-        super( concernClass, declaredIn );
-    }
-
-    @Override
-    public String toString()
-    {
-        return "Concern " + super.toString();
+        try
+        {
+            return !Modifier.isAbstract( fragmentClass.getMethod( method.getName(), method.getParameterTypes() )
+                                             .getModifiers() );
+        }
+        catch( NoSuchMethodException e )
+        {
+            return false;
+        }
     }
 }

@@ -14,17 +14,17 @@
 
 package org.qi4j.runtime.composite;
 
-import org.qi4j.api.concern.MethodConcernDescriptor;
+import org.qi4j.api.sideeffect.MethodSideEffectDescriptor;
 
 /**
  * JAVADOC
  */
-public final class MethodConcernModel
+public final class SideEffectModel
     extends AbstractModifierModel
-    implements MethodConcernDescriptor
+    implements MethodSideEffectDescriptor
 {
-    public MethodConcernModel( Class concernClass, Class instantiationClass )
+    public SideEffectModel( Class sideEffectClass, Class instantiationClass )
     {
-        super( concernClass, instantiationClass );
+        super( sideEffectClass, instantiationClass );
     }
 }

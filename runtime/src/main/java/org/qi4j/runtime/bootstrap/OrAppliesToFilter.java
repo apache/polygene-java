@@ -12,22 +12,30 @@
  *
  */
 
-package org.qi4j.runtime.composite;
+package org.qi4j.runtime.bootstrap;
+
+import org.qi4j.api.common.AppliesToFilter;
+
+import java.lang.reflect.Method;
 
 /**
  * JAVADOC
  */
-public final class SideEffectDeclaration
-    extends FragmentDeclaration
+final class OrAppliesToFilter
+    implements AppliesToFilter
 {
-    public SideEffectDeclaration( Class sideEffectClass, Class declaredIn )
+    private final AppliesToFilter left;
+    private final AppliesToFilter right;
+
+    OrAppliesToFilter( AppliesToFilter left, AppliesToFilter right )
     {
-        super( sideEffectClass, declaredIn );
+        this.left = left;
+        this.right = right;
     }
 
-    @Override
-    public String toString()
+    public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> fragmentClass )
     {
-        return "Side-effect " + super.toString();
+        return left.appliesTo( method, mixin, compositeType, fragmentClass ) ||
+               right.appliesTo( method, mixin, compositeType, fragmentClass );
     }
 }

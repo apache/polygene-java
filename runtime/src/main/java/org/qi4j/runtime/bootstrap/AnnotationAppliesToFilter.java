@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,15 +12,27 @@
  *
  */
 
-package org.qi4j.api.composite;
+package org.qi4j.runtime.bootstrap;
 
-import org.qi4j.api.object.ObjectDescriptor;
+import org.qi4j.api.common.AppliesToFilter;
+
+import java.lang.reflect.Method;
 
 /**
  * JAVADOC
  */
-public interface AbstractCompositeDescriptor
-    extends ObjectDescriptor
+final class AnnotationAppliesToFilter
+    implements AppliesToFilter
 {
-    Iterable<Class> mixinTypes();
+    private final Class annotationType;
+
+    AnnotationAppliesToFilter( Class type )
+    {
+        this.annotationType = type;
+    }
+
+    public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> fragmentClass )
+    {
+        return method.getAnnotation( annotationType ) != null;
+    }
 }

@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * JAVADOC
  */
-public final class MethodSideEffectsInstance
+public final class SideEffectsInstance
     implements InvocationHandler
 {
     private final List<InvocationHandler> sideEffects;
@@ -29,10 +29,10 @@ public final class MethodSideEffectsInstance
     private final ProxyReferenceInvocationHandler proxyHandler;
     private InvocationHandler invoker;
 
-    public MethodSideEffectsInstance( List<InvocationHandler> sideEffects,
-                                      SideEffectInvocationHandlerResult resultInvocationHandler,
-                                      ProxyReferenceInvocationHandler proxyHandler,
-                                      InvocationHandler invoker
+    public SideEffectsInstance( List<InvocationHandler> sideEffects,
+                                SideEffectInvocationHandlerResult resultInvocationHandler,
+                                ProxyReferenceInvocationHandler proxyHandler,
+                                InvocationHandler invoker
     )
     {
         this.sideEffects = sideEffects;
@@ -57,43 +57,33 @@ public final class MethodSideEffectsInstance
         }
     }
 
-    private void invokeSideEffects( Object proxy, Method method, Object[] params, Object result, Throwable throwable )
+    private void invokeSideEffects( Object proxy, Method method, Object[] params, Object result, Throwable originalThrowable )
         throws Throwable
     {
         proxyHandler.setProxy( proxy );
-        resultInvocationHandler.setResult( result, throwable );
+        resultInvocationHandler.setResult( result, originalThrowable );
 
         try
         {
             for( InvocationHandler sideEffect : sideEffects )
             {
-                invokeSideEffect( proxy, method, params, throwable, sideEffect );
+                try
+                {
+                    sideEffect.invoke( proxy, method, params );
+                }
+                catch( Throwable throwable )
+                {
+                    if( throwable != originalThrowable )
+                    {
+                        throwable.printStackTrace();
+                    }
+                }
             }
         }
         finally
         {
             proxyHandler.clearProxy();
             resultInvocationHandler.setResult( null, null );
-        }
-    }
-
-    private void invokeSideEffect( Object proxy,
-                                   Method method,
-                                   Object[] params,
-                                   Throwable originalThrowable,
-                                   InvocationHandler sideEffect
-    )
-    {
-        try
-        {
-            sideEffect.invoke( proxy, method, params );
-        }
-        catch( Throwable throwable )
-        {
-            if( throwable != originalThrowable )
-            {
-                throwable.printStackTrace();
-            }
         }
     }
 }

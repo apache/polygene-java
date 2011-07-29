@@ -18,6 +18,8 @@ import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
+import org.qi4j.api.composite.CompositeDescriptor;
+import org.qi4j.api.composite.InvalidCompositeException;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.functional.Function;
@@ -32,53 +34,61 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * JAVADOC
  */
-public abstract class AbstractCompositeModel
-    implements VisitableHierarchy<Object, Object>, Dependencies
+public abstract class CompositeModel
+    implements VisitableHierarchy<Object, Object>, Dependencies, CompositeDescriptor
 {
-    protected final AbstractMixinsModel mixinsModel;
+    protected final MixinsModel mixinsModel;
     protected final CompositeMethodsModel compositeMethodsModel;
-    private final Class<? extends Composite> compositeType;
+    private final Class<?> type;
+    private final Iterable<Class<?>> types;
     private final Visibility visibility;
     private final MetaInfo metaInfo;
-    protected final AbstractStateModel stateModel;
+    protected final StateModel stateModel;
     protected final Class<? extends Composite> proxyClass;
+    protected Constructor<? extends Composite> proxyConstructor;
 
-    protected AbstractCompositeModel( final Class<? extends Composite> compositeType,
-                                      List<Class<?>> roles,
-                                      final Visibility visibility,
-                                      final MetaInfo metaInfo,
-                                      final AbstractMixinsModel mixinsModel,
-                                      final AbstractStateModel stateModel,
-                                      final CompositeMethodsModel compositeMethodsModel
+    protected CompositeModel( final Class<?> type,
+                              final Iterable<Class<?>> types,
+                              final Visibility visibility,
+                              final MetaInfo metaInfo,
+                              final MixinsModel mixinsModel,
+                              final StateModel stateModel,
+                              final CompositeMethodsModel compositeMethodsModel
     )
     {
-        this.compositeType = compositeType;
+        this.type = type;
+        this.types = types;
         this.visibility = visibility;
         this.metaInfo = metaInfo;
         this.stateModel = stateModel;
 
-        // Create proxy class
         this.mixinsModel = mixinsModel;
 
-        this.proxyClass = createProxyClass( compositeType, roles );
+        // Create proxy class
+        this.proxyClass = createProxyClass( types );
+        try
+        {
+            proxyConstructor = proxyClass.getConstructor( InvocationHandler.class );
+        } catch( NoSuchMethodException e )
+        {
+            throw (InvalidCompositeException) new InvalidCompositeException( "Could not get proxy constructor").initCause( e );
+        }
+        proxyConstructor.setAccessible( true );
 
         this.compositeMethodsModel = compositeMethodsModel;
     }
 
     // Model
-    public Class<? extends Composite> type()
+    public Iterable<Class<?>> types()
     {
-        return compositeType;
+        return types;
     }
 
-    public AbstractStateModel state()
+    public StateModel state()
     {
         return stateModel;
     }
@@ -93,7 +103,25 @@ public abstract class AbstractCompositeModel
         return visibility;
     }
 
-    public Iterable<Class> mixinTypes()
+
+    @Override
+    public Class<?> type()
+    {
+        return type;
+    }
+
+    @Override
+    public boolean isAssignableTo( Class<?> type )
+    {
+        for( Class<?> aClass : types )
+        {
+            if (type.isAssignableFrom( aClass ))
+                return true;
+        }
+        return false;
+    }
+
+    public Iterable<Class<?>> mixinTypes()
     {
         return mixinsModel.mixinTypes();
     }
@@ -116,23 +144,11 @@ public abstract class AbstractCompositeModel
     }
 
     @SuppressWarnings( "unchecked" )
-    private Class<? extends Composite> createProxyClass( Class<? extends Composite> compositeType,
-                                                         List<Class<?>> roles
-    )
+    private Class<? extends Composite> createProxyClass( Iterable<Class<?>> types)
     {
-        ClassLoader proxyClassloader = compositeType.getClassLoader();
+        ClassLoader proxyClassloader = Iterables.first( types ).getClassLoader();
 
-        Set<Class> proxyInterfaces = new HashSet<Class>();
-        proxyInterfaces.add( compositeType );
-        for( Class aClass : roles )
-        {
-            if( !aClass.isAssignableFrom( compositeType ) )
-            {
-                proxyInterfaces.add( aClass );
-            }
-        }
-
-        Class[] interfaces = proxyInterfaces.toArray( new Class[ proxyInterfaces.size() ] );
+        Class<?>[] interfaces = Iterables.toArray( Class.class, Iterables.<Class, Class<?>>cast( types) );
         return (Class<? extends Composite>) Proxy.getProxyClass( proxyClassloader, interfaces );
     }
 
@@ -148,20 +164,12 @@ public abstract class AbstractCompositeModel
         return compositeMethodsModel.invoke( mixins, proxy, method, args, moduleInstance );
     }
 
-    public final Object getMixin( Object[] mixins, Method method )
-    {
-        return mixinsModel.getMixin( mixins, method );
-    }
-
     public Composite newProxy( InvocationHandler invocationHandler )
         throws ConstructionException
     {
-        // Instantiate proxy for given composite interface
         try
         {
-            Constructor<? extends Composite> constructor = proxyClass.getConstructor( InvocationHandler.class );
-            constructor.setAccessible( true );
-            return Composite.class.cast( constructor.newInstance( invocationHandler ) );
+            return Composite.class.cast( proxyConstructor.newInstance( invocationHandler ) );
         }
         catch( Exception e )
         {
@@ -175,9 +183,16 @@ public abstract class AbstractCompositeModel
         return mixinType.cast( Proxy.newProxyInstance( mixinType.getClassLoader(), new Class[]{mixinType}, invocationHandler ) );
     }
 
-    public StateHolder newBuilderState( ModuleInstance module )
+    public StateHolder newBuilderState( final ModuleInstance module )
     {
-        return stateModel.newBuilderInstance( module );
+        return stateModel.newBuilderInstance( new Function<PropertyDescriptor, Object>()
+        {
+            @Override
+            public Object map( PropertyDescriptor propertyDescriptor )
+            {
+                return propertyDescriptor.initialValue( module );
+            }
+        }  );
     }
 
     public StateHolder newBuilderState( Function<PropertyDescriptor, Object> state )
@@ -198,6 +213,6 @@ public abstract class AbstractCompositeModel
     @Override
     public String toString()
     {
-        return compositeType.getName();
+        return Iterables.toList( types ).toString();
     }
 }
