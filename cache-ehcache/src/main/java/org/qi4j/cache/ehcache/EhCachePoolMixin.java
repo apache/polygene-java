@@ -199,6 +199,7 @@ public class EhCachePoolMixin
         {
             cc.clearOnFlush( clearOnFlush );
         }
+
         return cc;
     }
 }

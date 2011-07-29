@@ -23,10 +23,7 @@ import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.service.Activatable;
-import org.qi4j.io.Input;
-import org.qi4j.io.Output;
-import org.qi4j.io.Receiver;
-import org.qi4j.io.Sender;
+import org.qi4j.io.*;
 import org.qi4j.library.fileconfig.FileConfiguration;
 import org.qi4j.spi.entitystore.BackupRestore;
 import org.qi4j.spi.entitystore.EntityNotFoundException;
@@ -393,9 +390,13 @@ public class FileEntityStoreMixin
         FileOutputStream fos = null;
         BufferedOutputStream bos = null;
 
+        // Write to tempfile first
+        File tempFile = File.createTempFile( "data",".json" );
+        tempFile.deleteOnExit();
+
         try
         {
-            fos = new FileOutputStream( dataFile, false );
+            fos = new FileOutputStream( tempFile, false );
             bos = new BufferedOutputStream( fos );
             bos.write( stateArray );
         }
@@ -424,5 +425,9 @@ public class FileEntityStoreMixin
                 }
             }
         }
+
+        // Replace old file
+        dataFile.delete();
+        tempFile.renameTo( dataFile );
     }
 }

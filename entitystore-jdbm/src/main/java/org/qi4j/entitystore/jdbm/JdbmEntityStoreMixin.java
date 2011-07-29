@@ -19,6 +19,7 @@ package org.qi4j.entitystore.jdbm;
 import jdbm.RecordManager;
 import jdbm.RecordManagerFactory;
 import jdbm.RecordManagerOptions;
+import jdbm.Serializer;
 import jdbm.btree.BTree;
 import jdbm.helper.*;
 import jdbm.recman.CacheRecordManager;
@@ -290,7 +291,7 @@ public class JdbmEntityStoreMixin
             File tempDatabase = File.createTempFile("restorejdbm", ".data");
             final RecordManager recordManager = RecordManagerFactory.createRecordManager(tempDatabase.getAbsolutePath(), new Properties());
             ByteArrayComparator comparator = new ByteArrayComparator();
-            final BTree index = BTree.createInstance(recordManager, comparator, serializer, new LongSerializer(), 16);
+            final BTree index = BTree.createInstance(recordManager, comparator, serializer, DefaultSerializer.INSTANCE, 16);
             recordManager.setNamedObject("index", index.getRecid());
             recordManager.commit();
 
@@ -415,8 +416,8 @@ public class JdbmEntityStoreMixin
       Properties properties = getProperties();
 
       recordManager = RecordManagerFactory.createRecordManager(name, properties);
-      serializer = new ByteArraySerializer();
-      recordManager = new CacheRecordManager(recordManager, new MRU(1000));
+      serializer = DefaultSerializer.INSTANCE;
+      recordManager = new CacheRecordManager(recordManager, 1000, false);
       long recid = recordManager.getNamedObject("index");
       if (recid != 0)
       {
@@ -424,7 +425,7 @@ public class JdbmEntityStoreMixin
       } else
       {
          ByteArrayComparator comparator = new ByteArrayComparator();
-         index = BTree.createInstance(recordManager, comparator, serializer, new LongSerializer(), 16);
+         index = BTree.createInstance(recordManager, comparator, serializer, DefaultSerializer.INSTANCE, 16);
          recordManager.setNamedObject("index", index.getRecid());
       }
       recordManager.commit();

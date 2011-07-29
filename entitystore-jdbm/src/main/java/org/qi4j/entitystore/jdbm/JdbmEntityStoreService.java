@@ -25,6 +25,7 @@ import org.qi4j.library.locking.LockingAbstractComposite;
 import org.qi4j.library.locking.ReadLockConcern;
 import org.qi4j.library.locking.WriteLockConcern;
 import org.qi4j.spi.entitystore.*;
+import org.qi4j.spi.entitystore.helpers.JSONMapEntityStoreMixin;
 import org.qi4j.spi.entitystore.helpers.MapEntityStoreMixin;
 import org.qi4j.spi.entitystore.helpers.StateStore;
 
@@ -33,7 +34,7 @@ import org.qi4j.spi.entitystore.helpers.StateStore;
  */
 
 @Concerns({StateChangeNotificationConcern.class, ConcurrentModificationCheckConcern.class, ReadLockConcern.class, WriteLockConcern.class})
-@Mixins({MapEntityStoreMixin.class, JdbmEntityStoreMixin.class})
+@Mixins({JSONMapEntityStoreMixin.class, JdbmEntityStoreMixin.class})
 public interface JdbmEntityStoreService
         extends EntityStore,
         EntityStateVersions,
@@ -42,7 +43,7 @@ public interface JdbmEntityStoreService
         ServiceComposite,
         Activatable,
         LockingAbstractComposite,
-        Configuration
+        Configuration<JdbmConfiguration>
 
 {
 }
