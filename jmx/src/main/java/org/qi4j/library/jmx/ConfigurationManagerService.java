@@ -182,7 +182,7 @@ public interface ConfigurationManagerService
                     EntityComposite configuration = uow.get( EntityComposite.class, identity );
                     EntityStateHolder state = api.getState( configuration );
                     AccessibleObject accessor = propertyNames.get( name );
-                    Property<Object> property = state.getProperty( accessor );
+                    Property<Object> property = state.propertyFor( accessor );
                     Object object = property.get();
                     if( object instanceof Enum )
                     {
@@ -209,7 +209,7 @@ public interface ConfigurationManagerService
                     EntityComposite configuration = uow.get( EntityComposite.class, identity );
                     EntityStateHolder state = api.getState( (EntityComposite) configuration );
                     AccessibleObject accessor = propertyNames.get( attribute.getName() );
-                    Property<Object> property = state.getProperty( accessor );
+                    Property<Object> property = state.propertyFor( accessor );
                     PropertyDescriptor propertyDescriptor = api.getPropertyDescriptor( property );
                     if( EnumType.isEnum( propertyDescriptor.type() ))
                     {

@@ -60,7 +60,7 @@ public interface EntityToValue
                     {
                         try
                         {
-                            return entityState.getProperty( descriptor.accessor() ).get();
+                            return entityState.propertyFor( descriptor.accessor() ).get();
                         } catch( IllegalArgumentException e )
                         {
                             return null;
@@ -79,7 +79,7 @@ public interface EntityToValue
                         if (propertyDescriptor == null)
                             return null;
 
-                        return entityState.getProperty( propertyDescriptor.accessor() ).get();
+                        return entityState.propertyFor( propertyDescriptor.accessor() ).get();
                     }
                 });
 /*
@@ -120,7 +120,7 @@ public interface EntityToValue
                 return;
             }
 
-            builder.state().getProperty( pd.accessor() ).set( value );
+            builder.state().propertyFor( pd.accessor() ).set( value );
         }
 
         private PropertyDescriptor findProperty( Set<PropertyDescriptor> properties, String name )

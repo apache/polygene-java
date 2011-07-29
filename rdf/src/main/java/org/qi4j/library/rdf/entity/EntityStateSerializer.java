@@ -163,9 +163,9 @@ public class EntityStateSerializer
         BNode collection = valueFactory.createBNode();
         graph.add( subject, predicate, collection );
 
-        for( PersistentPropertyDescriptor persistentProperty : ((ValueCompositeType)valueType).types() )
+        for( PersistentPropertyDescriptor persistentProperty : ((ValueCompositeType)valueType).properties() )
         {
-            Object propertyValue = Qi4j.INSTANCE_FUNCTION.map( (Composite) value).state().getProperty( persistentProperty.accessor() ).get();
+            Object propertyValue = Qi4j.INSTANCE_FUNCTION.map( (Composite) value).state().propertyFor( persistentProperty.accessor() ).get();
 
             if( propertyValue == null )
             {

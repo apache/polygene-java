@@ -99,9 +99,9 @@ public interface SQLEntityState
         }
 
         @Override
-        public boolean isOfType( Class<? extends EntityComposite> type )
+        public boolean isAssignableTo( Class<?> type )
         {
-            return state.isOfType( type );
+            return state.isAssignableTo( type );
         }
 
         public long lastModified()

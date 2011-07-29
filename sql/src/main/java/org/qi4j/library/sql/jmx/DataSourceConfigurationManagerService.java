@@ -123,7 +123,7 @@ public interface DataSourceConfigurationManagerService
                EntityComposite configuration = uow.get( EntityComposite.class, identity );
                EntityStateHolder state = api.getState( configuration );
                AccessibleObject accessor = propertyNames.get( name );
-               Property<Object> property = state.getProperty( accessor );
+               Property<Object> property = state.propertyFor( accessor );
                return property.get();
             } catch (Exception ex)
             {
@@ -142,7 +142,7 @@ public interface DataSourceConfigurationManagerService
                EntityComposite configuration = uow.get( EntityComposite.class, identity );
                EntityStateHolder state = api.getState( configuration );
                AccessibleObject accessor = propertyNames.get( attribute.getName() );
-               Property<Object> property = state.getProperty( accessor );
+               Property<Object> property = state.propertyFor( accessor );
                property.set( attribute.getValue() );
                uow.complete();
             } catch (Exception ex)
