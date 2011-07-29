@@ -16,7 +16,7 @@
 */
 package org.qi4j.envisage.model.descriptor;
 
-import org.qi4j.api.sideeffect.MethodSideEffectDescriptor;
+import org.qi4j.api.sideeffect.SideEffectDescriptor;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -26,14 +26,14 @@ import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 public final class MethodSideEffectDetailDescriptor
     implements InjectableDetailDescriptor
 {
-    private final MethodSideEffectDescriptor descriptor;
+    private final SideEffectDescriptor descriptor;
     private MethodSideEffectDetailDescriptor sideEffects;
 
     private final List<ConstructorDetailDescriptor> constructors;
     private final List<InjectedMethodDetailDescriptor> injectedMethods;
     private final List<InjectedFieldDetailDescriptor> injectedFields;
 
-    MethodSideEffectDetailDescriptor( MethodSideEffectDescriptor aDescriptor )
+    MethodSideEffectDetailDescriptor( SideEffectDescriptor aDescriptor )
         throws IllegalArgumentException
     {
         validateNotNull( "aDescriptor", aDescriptor );
@@ -49,7 +49,7 @@ public final class MethodSideEffectDetailDescriptor
      *
      * @since 0.5
      */
-    public final MethodSideEffectDescriptor descriptor()
+    public final SideEffectDescriptor descriptor()
     {
         return descriptor;
     }

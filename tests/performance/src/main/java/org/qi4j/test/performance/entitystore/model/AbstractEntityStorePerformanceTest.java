@@ -315,9 +315,9 @@ public abstract class AbstractEntityStorePerformanceTest
                         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
                         Random rnd = new Random();
                         report.start( "readEntityWithComplexType" );
+                        String id = rnd.nextInt( ITERATIONS ) + "";
                         for( int i = 0; i < ITERATIONS; i++ )
                         {
-                            String id = rnd.nextInt( ITERATIONS ) + "";
                             ComplexProduct product = uow.get( ComplexProduct.class, "product" + id );
 
                             String name = product.name().get();

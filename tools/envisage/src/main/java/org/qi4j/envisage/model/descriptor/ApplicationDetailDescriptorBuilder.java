@@ -20,17 +20,17 @@
 package org.qi4j.envisage.model.descriptor;
 
 import org.qi4j.api.composite.*;
-import org.qi4j.api.concern.MethodConcernDescriptor;
+import org.qi4j.api.concern.ConcernDescriptor;
 import org.qi4j.api.concern.ConcernsDescriptor;
 import org.qi4j.api.constraint.ConstraintDescriptor;
-import org.qi4j.api.constraint.MethodConstraintsDescriptor;
+import org.qi4j.api.constraint.ConstraintsDescriptor;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.mixin.MixinDescriptor;
 import org.qi4j.api.object.ObjectDescriptor;
 import org.qi4j.api.service.ImportedServiceDescriptor;
 import org.qi4j.api.service.ServiceDescriptor;
-import org.qi4j.api.sideeffect.MethodSideEffectDescriptor;
-import org.qi4j.api.sideeffect.MethodSideEffectsDescriptor;
+import org.qi4j.api.sideeffect.SideEffectDescriptor;
+import org.qi4j.api.sideeffect.SideEffectsDescriptor;
 import org.qi4j.api.structure.ApplicationDescriptor;
 import org.qi4j.api.structure.LayerDescriptor;
 import org.qi4j.api.structure.ModuleDescriptor;
@@ -159,7 +159,7 @@ public final class ApplicationDetailDescriptorBuilder
                 }
                 currMethodDesciptor = new CompositeMethodDetailDescriptor( (MethodDescriptor) visited );
                 currCompositeDescriptor.addMethod( currMethodDesciptor );
-            } else if( visited instanceof MethodConstraintsDescriptor )
+            } else if( visited instanceof ConstraintsDescriptor )
             {
                 if( currCompositeDescriptor == null )
                 {
@@ -167,7 +167,7 @@ public final class ApplicationDetailDescriptorBuilder
                     return false;
                 }
                 currMethodConstraintsDescriptor =
-                        new MethodConstraintsDetailDescriptor( (MethodConstraintsDescriptor) visited );
+                        new MethodConstraintsDetailDescriptor( (ConstraintsDescriptor) visited );
                 currMethodDesciptor.setConstraints( currMethodConstraintsDescriptor );
             } else if( visited instanceof ConcernsDescriptor )
             {
@@ -178,7 +178,7 @@ public final class ApplicationDetailDescriptorBuilder
                 }
                 currMethodConcernsDescriptor = new MethodConcernsDetailDescriptor( (ConcernsDescriptor) visited );
                 currMethodDesciptor.setConcerns( currMethodConcernsDescriptor );
-            } else if( visited instanceof MethodConcernDescriptor )
+            } else if( visited instanceof ConcernDescriptor )
             {
                 if( currCompositeDescriptor == null )
                 {
@@ -187,18 +187,18 @@ public final class ApplicationDetailDescriptorBuilder
                 }
                 resetInjectableRelatedVariables();
 
-                currMethodConcernDescriptor = new MethodConcernDetailDescriptor( (MethodConcernDescriptor) visited );
+                currMethodConcernDescriptor = new MethodConcernDetailDescriptor( (ConcernDescriptor) visited );
                 currMethodConcernsDescriptor.addConcern( currMethodConcernDescriptor );
-            } else if( visited instanceof MethodSideEffectsDescriptor )
+            } else if( visited instanceof SideEffectsDescriptor )
             {
                 if( currCompositeDescriptor == null )
                 {
                     // Service via CompositeDescriptor in progress )
                     return false;
                 }
-                currMethodSideEffectsDescriptor = new MethodSideEffectsDetailDescriptor( (MethodSideEffectsDescriptor) visited );
+                currMethodSideEffectsDescriptor = new MethodSideEffectsDetailDescriptor( (SideEffectsDescriptor) visited );
                 currMethodDesciptor.setSideEffects( currMethodSideEffectsDescriptor );
-            } else if( visited instanceof MethodSideEffectDescriptor )
+            } else if( visited instanceof SideEffectDescriptor )
             {
                 if( currCompositeDescriptor == null )
                 {
@@ -207,7 +207,7 @@ public final class ApplicationDetailDescriptorBuilder
                 }
                 resetInjectableRelatedVariables();
 
-                currMethodSideEffectDescriptor = new MethodSideEffectDetailDescriptor( (MethodSideEffectDescriptor) visited );
+                currMethodSideEffectDescriptor = new MethodSideEffectDetailDescriptor( (SideEffectDescriptor) visited );
                 currMethodSideEffectsDescriptor.addSideEffect( currMethodSideEffectDescriptor );
             } else if( visited instanceof MixinDescriptor )
             {

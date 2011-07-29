@@ -16,7 +16,7 @@
 */
 package org.qi4j.envisage.model.descriptor;
 
-import org.qi4j.api.constraint.MethodConstraintsDescriptor;
+import org.qi4j.api.constraint.ConstraintsDescriptor;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -25,11 +25,11 @@ import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 
 public final class MethodConstraintsDetailDescriptor
 {
-    private final MethodConstraintsDescriptor descriptor;
+    private final ConstraintsDescriptor descriptor;
     private CompositeMethodDetailDescriptor method;
     private final List<MethodConstraintDetailDescriptor> constraints;
 
-    MethodConstraintsDetailDescriptor( MethodConstraintsDescriptor aDescriptor )
+    MethodConstraintsDetailDescriptor( ConstraintsDescriptor aDescriptor )
         throws IllegalArgumentException
     {
         validateNotNull( "aDescriptor", aDescriptor );
@@ -43,7 +43,7 @@ public final class MethodConstraintsDetailDescriptor
      *
      * @since 0.5
      */
-    public final MethodConstraintsDescriptor descriptor()
+    public final ConstraintsDescriptor descriptor()
     {
         return descriptor;
     }
