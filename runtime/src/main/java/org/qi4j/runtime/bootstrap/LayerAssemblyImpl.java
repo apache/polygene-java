@@ -158,11 +158,11 @@ public final class LayerAssemblyImpl
             }
 
             @Override
-            public EntityDeclaration withRoles( Class<?>... roleInterfaces )
+            public EntityDeclaration withTypes( Class<?>... types )
             {
                 for( EntityDeclaration declaration : declarations )
                 {
-                    declaration.withRoles( roleInterfaces );
+                    declaration.withTypes( types );
                 }
                 return this;
             }
@@ -232,11 +232,11 @@ public final class LayerAssemblyImpl
             }
 
             @Override
-            public ServiceDeclaration withRoles( Class<?>... roles )
+            public ServiceDeclaration withTypes( Class<?>... types )
             {
                 for( ServiceDeclaration declaration : declarations )
                 {
-                    declaration.withRoles( roles );
+                    declaration.withTypes( types );
                 }
                 return this;
             }
@@ -337,11 +337,11 @@ public final class LayerAssemblyImpl
             }
 
             @Override
-            public TransientDeclaration withRoles( Class<?>... roles )
+            public TransientDeclaration withTypes( Class<?>... types )
             {
                 for( TransientDeclaration declaration : declarations )
                 {
-                    declaration.withRoles( roles );
+                    declaration.withTypes( types );
                 }
                 return this;
             }
@@ -410,11 +410,11 @@ public final class LayerAssemblyImpl
             }
 
             @Override
-            public ValueDeclaration withRoles( Class<?>... roles )
+            public ValueDeclaration withTypes( Class<?>... types )
             {
                 for( ValueDeclaration declaration : declarations )
                 {
-                    declaration.withRoles( roles );
+                    declaration.withTypes( types );
                 }
                 return this;
             }

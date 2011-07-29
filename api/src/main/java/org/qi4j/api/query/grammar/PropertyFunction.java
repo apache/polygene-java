@@ -1,7 +1,7 @@
 package org.qi4j.api.query.grammar;
 
 import org.qi4j.api.composite.Composite;
-import org.qi4j.api.composite.CompositeInvoker;
+import org.qi4j.api.composite.CompositeInstance;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Property;
@@ -99,8 +99,8 @@ public class PropertyFunction<T>
             if (target == null)
                 return null;
 
-            CompositeInvoker handler = (CompositeInvoker) Proxy.getInvocationHandler( target );
-            return handler.state().getProperty( accessor );
+            CompositeInstance handler = (CompositeInstance) Proxy.getInvocationHandler( target );
+            return handler.state().propertyFor( accessor );
         } catch( IllegalArgumentException e )
         {
             throw e;

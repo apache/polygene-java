@@ -36,7 +36,7 @@ public interface ServiceDeclaration
 
     ServiceDeclaration withMixins( Class<?>... mixins );
 
-    ServiceDeclaration withRoles( Class<?>... roles );
+    ServiceDeclaration withTypes( Class<?>... types );
 
     ServiceDeclaration identifiedBy( String identity );
 

@@ -15,7 +15,7 @@
 
 package org.qi4j.runtime.entity;
 
-import org.qi4j.api.composite.AbstractCompositeDescriptor;
+import org.qi4j.api.composite.CompositeDescriptor;
 import org.qi4j.api.composite.CompositeInstance;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.*;
@@ -70,7 +70,7 @@ public final class EntityInstance
         this.identity = entityState.identity();
         this.entityState = entityState;
 
-        proxy = entityModel.newProxy( this );
+        proxy = (EntityComposite) entityModel.newProxy( this );
     }
 
     public Object invoke( Object proxy, Method method, Object[] args )
@@ -89,7 +89,7 @@ public final class EntityInstance
         return (T) proxy;
     }
 
-    public AbstractCompositeDescriptor descriptor()
+    public CompositeDescriptor descriptor()
     {
         return entityModel;
     }
@@ -115,7 +115,7 @@ public final class EntityInstance
         return entityModel;
     }
 
-    public Class<? extends EntityComposite> type()
+    public Class<?> type()
     {
         return entityModel.type();
     }

@@ -174,7 +174,7 @@ public final class DefaultEntityState
         return status;
     }
 
-    public boolean isOfType( Class<? extends EntityComposite> type)
+    public boolean isAssignableTo( Class<?> type)
     {
         return entityDescriptor.type().equals( type );
     }

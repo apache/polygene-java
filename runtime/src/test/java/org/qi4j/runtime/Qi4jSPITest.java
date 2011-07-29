@@ -87,7 +87,7 @@ public class Qi4jSPITest
     {
         for( PropertyDescriptor propertyDescriptor : entityDescriptor.state().properties() )
         {
-            Property<?> prop = state.getProperty( propertyDescriptor.accessor() );
+            Property<?> prop = state.propertyFor( propertyDescriptor.accessor() );
             assertThat( "Properties could be listed", prop, CoreMatchers.notNullValue() );
         }
 

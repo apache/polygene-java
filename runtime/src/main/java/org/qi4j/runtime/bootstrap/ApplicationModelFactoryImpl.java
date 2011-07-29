@@ -14,11 +14,14 @@
 
 package org.qi4j.runtime.bootstrap;
 
+import org.qi4j.api.composite.InvalidCompositeException;
+import org.qi4j.api.composite.ModelDescriptor;
 import org.qi4j.api.object.ObjectDescriptor;
 import org.qi4j.api.structure.ApplicationDescriptor;
 import org.qi4j.bootstrap.*;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.runtime.composite.CompositeMethodModel;
+import org.qi4j.runtime.composite.CompositeModel;
 import org.qi4j.runtime.injection.InjectedFieldModel;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
@@ -102,7 +105,7 @@ public final class ApplicationModelFactoryImpl
     {
         private LayerModel layer;
         private ModuleModel module;
-        private ObjectDescriptor objectDescriptor;
+        private ModelDescriptor objectDescriptor;
         private CompositeMethodModel compositeMethodModel;
 
         private Resolution resolution;
@@ -118,8 +121,8 @@ public final class ApplicationModelFactoryImpl
         {
             if (visited instanceof Binder )
             {
-                Binder constructorsModel = (Binder) visited;
-                constructorsModel.bind( resolution );
+                Binder binder = (Binder) visited;
+                binder.bind( resolution );
 
                 return false;
             }
@@ -128,9 +131,9 @@ public final class ApplicationModelFactoryImpl
                 compositeMethodModel = (CompositeMethodModel) visited;
                 resolution = new Resolution( applicationModel, layer, module, objectDescriptor, compositeMethodModel, null);
             }
-            else if (visited instanceof ObjectDescriptor)
+            else if (visited instanceof ModelDescriptor )
             {
-                objectDescriptor = (ObjectDescriptor) visited;
+                objectDescriptor = (ModelDescriptor) visited;
                 resolution = new Resolution( applicationModel, layer, module, objectDescriptor, null, null);
             }
             else if (visited instanceof InjectedFieldModel )

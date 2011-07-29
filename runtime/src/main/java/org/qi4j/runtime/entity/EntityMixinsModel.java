@@ -15,11 +15,10 @@
 package org.qi4j.runtime.entity;
 
 import org.qi4j.api.composite.CompositeInstance;
-import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.Lifecycle;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.bootstrap.BindingException;
-import org.qi4j.runtime.composite.AbstractMixinsModel;
+import org.qi4j.runtime.composite.MixinsModel;
 import org.qi4j.runtime.composite.MixinModel;
 import org.qi4j.runtime.composite.UsesInstance;
 import org.qi4j.runtime.injection.InjectionContext;
@@ -33,17 +32,9 @@ import java.util.List;
  * JAVADOC
  */
 public final class EntityMixinsModel
-    extends AbstractMixinsModel
+    extends MixinsModel
 {
     List<Integer> lifecycleMixins;
-
-    public EntityMixinsModel( Class<? extends EntityComposite> compositeType,
-                              List<Class<?>> assemblyRoles,
-                              List<Class<?>> assemblyMixins
-    )
-    {
-        super( compositeType, assemblyRoles, assemblyMixins );
-    }
 
     @Override
     public void bind( Resolution resolution )

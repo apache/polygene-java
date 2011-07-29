@@ -14,16 +14,76 @@
 
 package org.qi4j.runtime.composite;
 
+import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.composite.StateDescriptor;
+import org.qi4j.api.constraint.ConstraintViolationException;
+import org.qi4j.api.property.PropertyDescriptor;
+import org.qi4j.api.property.StateHolder;
+import org.qi4j.functional.*;
 import org.qi4j.runtime.property.PropertiesModel;
+import org.qi4j.runtime.property.PropertiesInstance;
+import org.qi4j.runtime.structure.ModuleInstance;
+
+import java.util.Set;
 
 /**
- * Model for Transient Composite state.
+ * Base model for Composite state
  */
-public final class StateModel
-    extends AbstractStateModel<PropertiesModel>
+public class StateModel
+    implements StateDescriptor, VisitableHierarchy<Object, Object>
 {
+    protected final PropertiesModel propertiesModel;
+
     public StateModel( PropertiesModel propertiesModel )
     {
-        super( propertiesModel );
+        this.propertiesModel = propertiesModel;
+    }
+
+    public StateHolder newInitialInstance( ModuleInstance module )
+    {
+        return propertiesModel.newInitialInstance( module );
+    }
+
+    public StateHolder newBuilderInstance( Function<PropertyDescriptor, Object> state )
+    {
+        return propertiesModel.newBuilderInstance( state );
+    }
+
+    public StateHolder newInstance( StateHolder state )
+    {
+        return propertiesModel.newInstance( state );
+    }
+
+    public <T extends PropertyDescriptor> T getPropertyByName( String name )
+    {
+        return (T) propertiesModel.getPropertyByName( name );
+    }
+
+    public <T extends PropertyDescriptor> T getPropertyByQualifiedName( QualifiedName name )
+    {
+        return (T) propertiesModel.getPropertyByQualifiedName( name );
+    }
+
+    public <T extends PropertyDescriptor> Set<T> properties()
+    {
+        return propertiesModel.properties();
+    }
+
+    @Override
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor ) throws ThrowableType
+    {
+        if (visitor.visitEnter( this ))
+        {
+            ((VisitableHierarchy<Object, Object>)propertiesModel).accept(visitor);
+        }
+
+        return visitor.visitLeave( this );
+    }
+
+    public void checkConstraints( StateHolder state )
+        throws ConstraintViolationException
+    {
+        PropertiesInstance stateInstance = (PropertiesInstance) state;
+        propertiesModel.checkConstraints( stateInstance );
     }
 }

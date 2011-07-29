@@ -14,37 +14,29 @@
  */
 package org.qi4j.runtime.entity;
 
-import org.qi4j.api.property.PropertyDescriptor;
-import org.qi4j.runtime.composite.ConstraintsCheck;
-import org.qi4j.runtime.property.AbstractPropertyInstance;
+import org.qi4j.runtime.property.PropertyInfo;
+import org.qi4j.runtime.property.PropertyInstance;
 import org.qi4j.spi.entity.EntityState;
 
 /**
  * {@code EntityPropertyInstance} represents a property whose value must be backed by an EntityState.
  */
 public class EntityPropertyInstance<T>
-    extends AbstractPropertyInstance<T>
+    extends PropertyInstance<T>
 {
     private static final Object NOT_LOADED = new Object();
 
     private EntityState entityState;
-
-    private T value;
-    private ConstraintsCheck constraints;
 
     /**
      * Construct an instance of {@code PropertyInstance} with the specified arguments.
      *
      * @param aPropertyInfo The property info. This argument must not be {@code null}.
      * @param entityState
-     * @param constraints
      */
-    public EntityPropertyInstance( PropertyDescriptor aPropertyInfo, EntityState entityState, ConstraintsCheck constraints )
+    public EntityPropertyInstance( PropertyInfo aPropertyInfo, EntityState entityState)
     {
-        super( aPropertyInfo );
-
-        this.constraints = constraints;
-        this.value = (T) NOT_LOADED;
+        super( aPropertyInfo, (T) NOT_LOADED );
         this.entityState = entityState;
     }
 
@@ -57,7 +49,7 @@ public class EntityPropertyInstance<T>
     {
         if( value == NOT_LOADED )
         {
-            value = (T) entityState.getProperty( propertyDescriptor.qualifiedName() );
+            value = (T) entityState.getProperty( model.qualifiedName() );
         }
 
         return value;
@@ -70,30 +62,7 @@ public class EntityPropertyInstance<T>
      */
     public void set( T aNewValue )
     {
-        if( propertyDescriptor.isImmutable() )
-        {
-            throw new IllegalStateException( "Property [" + propertyDescriptor.qualifiedName() + "] is immutable" );
-        }
-
-        if( constraints != null )
-        {
-            constraints.checkConstraints( aNewValue );
-        }
-
-        // Change property
-        entityState.setProperty( propertyDescriptor.qualifiedName(), aNewValue );
-        value = aNewValue;
-    }
-
-    /**
-     * Returns the value as string.
-     *
-     * @return The value as string.
-     */
-    @Override
-    public String toString()
-    {
-        Object value = get();
-        return value == null ? "" : value.toString();
+        super.set( aNewValue );
+        entityState.setProperty( model.qualifiedName(), aNewValue );
     }
 }

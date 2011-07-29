@@ -17,8 +17,14 @@ package org.qi4j.runtime.bootstrap;
 import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.constraint.Constraint;
+import org.qi4j.api.property.Immutable;
 import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.bootstrap.ServiceAssembly;
+import org.qi4j.functional.Iterables;
+import org.qi4j.runtime.composite.*;
+import org.qi4j.runtime.property.PropertiesModel;
 import org.qi4j.runtime.service.ServiceModel;
 
 import java.util.ArrayList;
@@ -28,31 +34,28 @@ import java.util.List;
  * Assembly of a Service.
  */
 public final class ServiceAssemblyImpl
+    extends CompositeAssemblyImpl
     implements ServiceAssembly
 {
-    private ModuleAssemblyImpl moduleAssembly;
-    private Class<? extends ServiceComposite> serviceType;
     List<Class<?>> concerns = new ArrayList<Class<?>>();
     List<Class<?>> sideEffects = new ArrayList<Class<?>>();
     List<Class<?>> mixins = new ArrayList<Class<?>>();
-    List<Class<?>> roles = new ArrayList<Class<?>>();
+    List<Class<?>> types = new ArrayList<Class<?>>();
     String identity;
     boolean instantiateOnStartup = false;
     MetaInfo metaInfo = new MetaInfo();
     Visibility visibility = Visibility.module;
 
-    public ServiceAssemblyImpl( Class<? extends ServiceComposite> serviceType,
-                                ModuleAssemblyImpl moduleAssembly
+    public ServiceAssemblyImpl( Class<?> serviceType
     )
     {
-        this.serviceType = serviceType;
-        this.moduleAssembly = moduleAssembly;
+        this.compositeType = serviceType;
     }
 
     @Override
-    public Class<? extends ServiceComposite> type()
+    public Class<?> type()
     {
-        return serviceType;
+        return compositeType;
     }
 
    @Override
@@ -61,55 +64,63 @@ public final class ServiceAssemblyImpl
       return identity;
    }
 
-   void addServiceModel( List<ServiceModel> serviceModels, AssemblyHelper helper )
+    ServiceModel newServiceModel(
+            PropertyDeclarations propertyDeclarations,
+            AssemblyHelper helper
+    )
     {
+        this.propertyDeclarations = propertyDeclarations;
         try
         {
-            String id = identity;
-            if( id == null )
+            this.helper = helper;
+
+            metaInfo = new MetaInfo( metaInfo ).withAnnotations( compositeType );
+            addAnnotationsMetaInfo( compositeType, metaInfo );
+
+            immutable = metaInfo.get( Immutable.class ) != null;
+            propertiesModel = new PropertiesModel();
+            stateModel = new StateModel( propertiesModel );
+            mixinsModel = new MixinsModel();
+
+            compositeMethodsModel = new CompositeMethodsModel( mixinsModel );
+
+            // The composite must always implement ServiceComposite, as a marker interface
+            if (!ServiceComposite.class.isAssignableFrom(compositeType))
             {
-                id = generateId( serviceModels, serviceType );
+                types.add( ServiceComposite.class );
             }
 
-            ServiceModel serviceModel = ServiceModel.newModel( serviceType,
-                                                               visibility,
-                                                               metaInfo,
-                                                               concerns,
-                                                               sideEffects,
-                                                               mixins,
-                                                               roles,
-                                                               moduleAssembly.name(),
-                                                               id,
-                                                               instantiateOnStartup, helper );
-            serviceModels.add( serviceModel );
+            // Implement composite methods
+            Iterable<Class<? extends Constraint<?, ?>>> constraintClasses = constraintDeclarations( compositeType );
+            Iterable<Class<?>> concernClasses = Iterables.<Class<?>, Iterable<Class<?>>>flatten( concerns, concernDeclarations( compositeType ) );
+            Iterable<Class<?>> sideEffectClasses = Iterables.<Class<?>, Iterable<Class<?>>>flatten( sideEffects, sideEffectDeclarations( compositeType ) );
+            Iterable<Class<?>> mixinClasses = Iterables.<Class<?>, Iterable<Class<?>>>flatten( mixins, mixinDeclarations( compositeType ) );
+            implementMixinType( compositeType,
+                    constraintClasses, concernClasses, sideEffectClasses, mixinClasses);
+
+            // Implement additional type methods
+            for( Class<?> type : types )
+            {
+                Iterable<Class<? extends Constraint<?, ?>>> typeConstraintClasses = Iterables.<Class<? extends Constraint<?, ?>>, Iterable<Class<? extends Constraint<?, ?>>>>flatten( constraintClasses, constraintDeclarations( type ) );
+                Iterable<Class<?>> typeConcernClasses = Iterables.<Class<?>, Iterable<Class<?>>>flatten( concernClasses, concernDeclarations( type ) );
+                Iterable<Class<?>> typeSideEffectClasses = Iterables.<Class<?>, Iterable<Class<?>>>flatten( sideEffectClasses, sideEffectDeclarations( type ) );
+                Iterable<Class<?>> typeMixinClasses = Iterables.<Class<?>, Iterable<Class<?>>>flatten( mixinClasses, mixinDeclarations( type ) );
+
+                implementMixinType( type,
+                        typeConstraintClasses, typeConcernClasses, typeSideEffectClasses, typeMixinClasses);
+            }
+
+            // Add state from methods and fields
+            addState(constraintClasses);
+
+            ServiceModel serviceModel = new ServiceModel(
+                compositeType, Iterables.prepend(compositeType, types), visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel, identity, instantiateOnStartup );
+
+            return serviceModel;
         }
         catch( Exception e )
         {
-            throw new InvalidApplicationException( "Could not register " + serviceType.getName(), e );
+            throw new InvalidApplicationException( "Could not register " + compositeType.getName(), e );
         }
-    }
-
-    private String generateId( List<ServiceModel> serviceModels, Class serviceType )
-    {
-        // Find identity that is not yet used
-        int idx = 0;
-        String id = serviceType.getSimpleName();
-        boolean invalid;
-        do
-        {
-            invalid = false;
-            for( ServiceModel serviceModel : serviceModels )
-            {
-                if( serviceModel.identity().equals( id ) )
-                {
-                    idx++;
-                    id = serviceType.getSimpleName() + "_" + idx;
-                    invalid = true;
-                    break;
-                }
-            }
-        }
-        while( invalid );
-        return id;
     }
 }

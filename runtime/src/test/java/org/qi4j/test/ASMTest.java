@@ -139,12 +139,6 @@ public class ASMTest
                     }
                 }
             }
-
-            @Override
-            public StateHolder state()
-            {
-                return null;
-            }
         };
 
         clazz.getField( "_instance" ).set( instance, invoker );

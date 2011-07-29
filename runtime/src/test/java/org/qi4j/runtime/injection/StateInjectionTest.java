@@ -58,7 +58,7 @@ public class StateInjectionTest
         assertThat( "Test field", pfic.testField().get(), is( equalTo( "X" ) ) );
         assertThat( "Named fieldX", pfic.namedField().get(), is( equalTo( "X" ) ) );
         assertThat( "State", (String) pfic.getState()
-            .getProperty( PropertyFieldInjectionComposite.class.getMethod( "testField" ) )
+            .propertyFor( PropertyFieldInjectionComposite.class.getMethod( "testField" ) )
             .get(), is( equalTo( "X" ) ) );
     }
 

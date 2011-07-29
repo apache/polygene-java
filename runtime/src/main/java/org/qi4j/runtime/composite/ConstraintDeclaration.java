@@ -27,14 +27,12 @@ import java.lang.reflect.Type;
 public final class ConstraintDeclaration
 {
     private final Class<? extends Constraint<?, ?>> constraintClass;
-    private final Type declaredIn;
     private final Class constraintAnnotationType;
     private final Type constraintValueType;
 
-    public ConstraintDeclaration( Class<? extends Constraint<?, ?>> constraintClass, Type type )
+    public ConstraintDeclaration( Class<? extends Constraint<?, ?>> constraintClass)
     {
         this.constraintClass = constraintClass;
-        declaredIn = type;
 
         constraintAnnotationType = (Class<? extends Annotation>) ( (ParameterizedType) constraintClass.getGenericInterfaces()[ 0 ] )
             .getActualTypeArguments()[ 0 ];
@@ -44,11 +42,6 @@ public final class ConstraintDeclaration
     public Class<? extends Constraint<?, ?>> constraintClass()
     {
         return constraintClass;
-    }
-
-    public Type declaredIn()
-    {
-        return declaredIn;
     }
 
     public boolean appliesTo( Class annotationType, Type valueType )

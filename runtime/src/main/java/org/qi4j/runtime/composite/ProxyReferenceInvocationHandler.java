@@ -58,13 +58,6 @@ public final class ProxyReferenceInvocationHandler
         }
     }
 
-    @Override
-    public StateHolder state()
-    {
-        InvocationHandler invocationHandler = Proxy.getInvocationHandler( this.proxy );
-        return ((CompositeInstance)invocationHandler).state();
-    }
-
     public Object invoke( Object proxy, Method method, Object[] args )
         throws Throwable
     {

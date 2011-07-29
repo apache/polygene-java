@@ -15,7 +15,7 @@
 package org.qi4j.runtime.composite;
 
 import org.qi4j.api.common.ConstructionException;
-import org.qi4j.api.composite.AbstractCompositeDescriptor;
+import org.qi4j.api.composite.CompositeDescriptor;
 import org.qi4j.api.injection.InjectionScope;
 import org.qi4j.api.util.Annotations;
 import org.qi4j.api.util.Classes;
@@ -187,15 +187,15 @@ public final class ConstructorsModel
         if( boundConstructors.size() == 0 )
         {
             StringBuilder messageBuilder = new StringBuilder( "Found no constructor that could be bound: " );
-            if( resolution.object() instanceof AbstractCompositeDescriptor )
+            if( resolution.model() instanceof CompositeDescriptor )
             {
                 messageBuilder.append( fragmentClass.getName() )
                     .append( " in " )
-                    .append( resolution.object().toString() );
+                    .append( resolution.model().toString() );
             }
             else
             {
-                messageBuilder.append( resolution.object().toString() );
+                messageBuilder.append( resolution.model().toString() );
             }
 
             if( messageBuilder.indexOf( "$" ) >= 0 )

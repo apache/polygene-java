@@ -14,20 +14,17 @@
 
 package org.qi4j.api.service;
 
-import org.qi4j.api.composite.AbstractCompositeDescriptor;
+import org.qi4j.api.composite.CompositeDescriptor;
 import org.qi4j.api.composite.StateDescriptor;
+import org.qi4j.api.composite.StatefulCompositeDescriptor;
 
 /**
  * {@code ServiceDescriptor} provides meta informations of a service.
  */
 public interface ServiceDescriptor
-    extends AbstractCompositeDescriptor
+    extends CompositeDescriptor, IdentityDescriptor, StatefulCompositeDescriptor
 {
-    String identity();
-
     boolean isInstantiateOnStartup();
 
     <T> Class<T> configurationType();
-
-    StateDescriptor state();
 }

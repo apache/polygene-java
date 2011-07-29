@@ -14,6 +14,7 @@
 
 package org.qi4j.api.composite;
 
+import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.structure.Module;
 
 import java.lang.reflect.InvocationHandler;
@@ -32,7 +33,9 @@ public interface CompositeInstance
 
     <T> T metaInfo( Class<T> infoType );
 
-    Class<? extends Composite> type();
+    Class<?> type();
 
-    AbstractCompositeDescriptor descriptor();
+    CompositeDescriptor descriptor();
+
+    StateHolder state();
 }

@@ -32,7 +32,7 @@ public class UuidIdentityGeneratorMixin
         uuid = UUID.randomUUID().toString() + "-";
     }
 
-    public String generate( Class<? extends Identity> compositeType )
+    public String generate( Class<?> compositeType )
     {
         return uuid + Integer.toHexString( count++ );
     }

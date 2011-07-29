@@ -16,6 +16,7 @@ package org.qi4j.runtime.injection.provider;
 
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.composite.InvalidValueCompositeException;
+import org.qi4j.api.composite.ModelDescriptor;
 import org.qi4j.api.concern.internal.ConcernFor;
 import org.qi4j.api.injection.scope.*;
 import org.qi4j.api.object.ObjectDescriptor;
@@ -74,7 +75,7 @@ public final class InjectionProviderFactoryStrategy
                 throw new InvalidInjectionException( "Unknown injection annotation @" + injectionAnnotationType.getSimpleName() );
             }
         }
-        ObjectDescriptor composite = resolution.object();
+        ModelDescriptor composite = resolution.model();
         Class<?> compositeType = composite.type();
         if( factory1 != null && ValueComposite.class.isAssignableFrom( compositeType ) )
         {

@@ -64,7 +64,7 @@ public interface EntityState
      */
     EntityStatus status();
 
-    boolean isOfType( Class<? extends EntityComposite> type );
+    boolean isAssignableTo( Class<?> type );
 
     EntityDescriptor entityDescriptor();
 

@@ -14,6 +14,7 @@
  */
 package org.qi4j.runtime.property;
 
+import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.runtime.composite.ConstraintsCheck;
 
@@ -21,25 +22,26 @@ import org.qi4j.runtime.composite.ConstraintsCheck;
  * {@code PropertyInstance} represents a property.
  */
 public class PropertyInstance<T>
-    extends AbstractPropertyInstance<T>
+    implements Property<T>
 {
-    private volatile T value;
-    private ConstraintsCheck constraints;
+    protected volatile T value;
+    protected PropertyInfo model;
 
     /**
      * Construct an instance of {@code PropertyInstance} with the specified arguments.
      *
-     * @param descriptor The property info. This argument must not be {@code null}.
+     * @param model The property model. This argument must not be {@code null}.
      * @param aValue        The property value.
-     * @param constraints   constraint checker for this property
-     *
-     * @throws IllegalArgumentException Thrown if the specified {@code aPropertyInfo} is {@code null}.
      */
-    public PropertyInstance( PropertyDescriptor descriptor, T aValue, ConstraintsCheck constraints )
+    public PropertyInstance( PropertyInfo model, T aValue)
     {
-        super( descriptor );
+        this.model = model;
         value = aValue;
-        this.constraints = constraints;
+    }
+
+    public PropertyInfo getPropertyInfo()
+    {
+        return model;
     }
 
     /**
@@ -59,17 +61,66 @@ public class PropertyInstance<T>
      */
     public void set( T aNewValue )
     {
-        if( propertyDescriptor.isImmutable() )
+        if( model.isImmutable() )
         {
-            throw new IllegalStateException( "Property [" + propertyDescriptor.qualifiedName() + "] is immutable." );
+            throw new IllegalStateException( "Property [" + model.qualifiedName() + "] is immutable." );
         }
 
-        if( constraints != null )
-        {
-            constraints.checkConstraints( aNewValue );
-        }
+        model.checkConstraints( aNewValue );
 
         value = aNewValue;
+    }
+
+    /**
+     * Perform equals with {@code o} argument.
+     * <p/>
+     * The definition of equals() for the property is that if the value and subclass are
+     * equal, then the properties are equal
+     *
+     * @param o The other object to compare.
+     *
+     * @return Returns a {@code boolean} indicator whether this object is equals the other.
+     */
+    public boolean equals( Object o )
+    {
+        if( this == o )
+        {
+            return true;
+        }
+        if( o == null || getClass() != o.getClass() )
+        {
+            return false;
+        }
+
+        Property<?> that = (Property<?>) o;
+
+        T value = get();
+        if( value == null )
+        {
+            return that.get() == null;
+        }
+        return value.equals( that.get() );
+    }
+
+    /**
+     * Calculate hash code.
+     *
+     * @return the hashcode of this instance.
+     */
+    public int hashCode()
+    {
+        int hash = getClass().hashCode();
+        if( model != null )
+        {
+            hash = model.type().hashCode();
+        }
+        hash = hash * 19;
+        T value = get();
+        if( value != null )
+        {
+            hash = hash + value.hashCode() * 13;
+        }
+        return hash;
     }
 
     /**
@@ -80,6 +131,7 @@ public class PropertyInstance<T>
     @Override
     public String toString()
     {
+        Object value = get();
         return value == null ? "" : value.toString();
     }
 }

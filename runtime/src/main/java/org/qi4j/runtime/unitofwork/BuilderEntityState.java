@@ -71,7 +71,7 @@ public final class BuilderEntityState
     }
 
     @Override
-    public boolean isOfType( Class<? extends EntityComposite> type )
+    public boolean isAssignableTo( Class<?> type )
     {
         return entityType.type().equals( type );
     }

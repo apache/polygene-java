@@ -1,6 +1,7 @@
 package org.qi4j.api.query.grammar;
 
 import org.qi4j.api.composite.Composite;
+import org.qi4j.api.composite.CompositeInstance;
 import org.qi4j.api.composite.CompositeInvoker;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.EntityStateHolder;
@@ -78,7 +79,7 @@ public class AssociationFunction<T>
             if (target == null)
                 return null;
 
-            CompositeInvoker handler = (CompositeInvoker) Proxy.getInvocationHandler( target );
+            CompositeInstance handler = (CompositeInstance) Proxy.getInvocationHandler( target );
             return ((EntityStateHolder)handler.state()).getAssociation( accessor );
         } catch( IllegalArgumentException e )
         {

@@ -1,6 +1,6 @@
 package org.qi4j.runtime.injection.provider;
 
-import org.qi4j.api.composite.AbstractCompositeDescriptor;
+import org.qi4j.api.composite.CompositeDescriptor;
 import org.qi4j.bootstrap.InvalidInjectionException;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectionContext;
@@ -21,18 +21,18 @@ public final class ThisInjectionProviderFactory
     public InjectionProvider newInjectionProvider( Resolution bindingContext, DependencyModel dependencyModel )
         throws InvalidInjectionException
     {
-        if( bindingContext.object() instanceof AbstractCompositeDescriptor )
+        if( bindingContext.model() instanceof CompositeDescriptor )
         {
             // If Composite type then return real type, otherwise use the specified one
             Class thisType = dependencyModel.rawInjectionType();
 
-            if( thisType.isAssignableFrom( bindingContext.object().type() ) )
+            if( thisType.isAssignableFrom( bindingContext.model().type() ) )
             {
-                thisType = bindingContext.object().type();
+                thisType = bindingContext.model().type();
             }
             else
             {
-                AbstractCompositeDescriptor acd = ( (AbstractCompositeDescriptor) bindingContext.object() );
+                CompositeDescriptor acd = ( (CompositeDescriptor) bindingContext.model() );
                 boolean ok = false;
                 for( Class mixinType : acd.mixinTypes() )
                 {
@@ -45,7 +45,7 @@ public final class ThisInjectionProviderFactory
 
                 if( !ok )
                 {
-                    throw new InvalidInjectionException( "Composite " + bindingContext.object()
+                    throw new InvalidInjectionException( "Composite " + bindingContext.model()
                         .type()
                         .getName() + " does not implement @This type " + thisType.getName() + " in fragment " + dependencyModel
                         .injectedClass()
@@ -70,8 +70,9 @@ public final class ThisInjectionProviderFactory
         {
             try
             {
-                proxyConstructor = Proxy.getProxyClass( type.getClassLoader(), new Class[]{ type } )
-                    .getConstructor( InvocationHandler.class );
+                Class proxyClass = Proxy.class.isAssignableFrom( type ) ? type : Proxy.getProxyClass( type.getClassLoader(), new Class[]{ type } );
+
+                proxyConstructor = proxyClass.getConstructor( InvocationHandler.class );
             }
             catch( Exception e )
             {

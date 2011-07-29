@@ -15,7 +15,8 @@
 package org.qi4j.runtime.entity;
 
 import org.qi4j.api.property.Property;
-import org.qi4j.runtime.property.PropertiesInstance;
+import org.qi4j.runtime.property.*;
+import org.qi4j.runtime.unitofwork.BuilderEntityState;
 import org.qi4j.spi.entity.EntityState;
 
 import java.lang.reflect.AccessibleObject;
@@ -28,17 +29,17 @@ import java.util.Iterator;
 public class EntityPropertiesInstance
     extends PropertiesInstance
 {
-    private EntityPropertiesModel model;
+    private PropertiesModel model;
     private EntityState entityState;
 
-    public EntityPropertiesInstance( EntityPropertiesModel model, EntityState entityState )
+    public EntityPropertiesInstance( PropertiesModel model, EntityState entityState )
     {
         super( null );
         this.model = model;
         this.entityState = entityState;
     }
 
-    public <T> Property<T> getProperty( AccessibleObject accessor )
+    public <T> Property<T> propertyFor( AccessibleObject accessor )
             throws IllegalArgumentException
     {
         if( properties == null )
@@ -50,7 +51,11 @@ public class EntityPropertiesInstance
 
         if( property == null )
         {
-            property = model.newInstance( accessor, entityState );
+            PersistentPropertyModel entityPropertyModel = (PersistentPropertyModel) model.getProperty( accessor );
+            if (entityPropertyModel == null)
+                throw new IllegalArgumentException("No such property:"+accessor);
+
+            property = new EntityPropertyInstance<T>( entityState instanceof BuilderEntityState ? entityPropertyModel.getBuilderInfo() : entityPropertyModel, entityState);
             properties.put( accessor, property );
         }
 
@@ -65,7 +70,7 @@ public class EntityPropertiesInstance
             @Override
             public Iterator<Property<?>> iterator()
             {
-                final Iterator<EntityPropertyModel> propertyModels = model.properties().iterator();
+                final Iterator<PropertyModel> propertyModels = model.properties().iterator();
                 return new Iterator<Property<?>>()
                 {
                     @Override
@@ -77,8 +82,8 @@ public class EntityPropertiesInstance
                     @Override
                     public Property<?> next()
                     {
-                        EntityPropertyModel model = propertyModels.next();
-                        return getProperty( model.accessor());
+                        PropertyModel model = propertyModels.next();
+                        return propertyFor( model.accessor() );
                     }
 
                     @Override

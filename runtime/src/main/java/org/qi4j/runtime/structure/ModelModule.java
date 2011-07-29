@@ -1,14 +1,15 @@
 package org.qi4j.runtime.structure;
 
+import org.qi4j.api.composite.ModelDescriptor;
 import org.qi4j.api.object.ObjectDescriptor;
 import org.qi4j.functional.Function;
 
 /**
  * TODO
  */
-public class ModelModule<T extends ObjectDescriptor>
+public class ModelModule<T extends ModelDescriptor>
 {
-    public static <T extends ObjectDescriptor> Function<T, ModelModule<T>> modelModuleFunction( final ModuleInstance module)
+    public static <T extends ModelDescriptor> Function<T, ModelModule<T>> modelModuleFunction( final ModuleInstance module)
     {
         return new Function<T, ModelModule<T>>()
         {
@@ -20,7 +21,7 @@ public class ModelModule<T extends ObjectDescriptor>
         };
     }
 
-    public static <T extends ObjectDescriptor> Function<ModelModule<T>, T> modelFunction()
+    public static <T extends ModelDescriptor> Function<ModelModule<T>, T> modelFunction()
     {
         return new Function<ModelModule<T>, T>()
         {

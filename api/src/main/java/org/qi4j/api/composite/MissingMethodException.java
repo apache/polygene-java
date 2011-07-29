@@ -18,21 +18,11 @@
 
 package org.qi4j.api.composite;
 
-import java.lang.reflect.Method;
-
 public class MissingMethodException
     extends RuntimeException
 {
-    private Method method;
-
-    public MissingMethodException( String message, Method method )
+    public MissingMethodException( String message)
     {
         super( message );
-        this.method = method;
-    }
-
-    public Method method()
-    {
-        return method;
     }
 }

@@ -74,14 +74,14 @@ public interface EntityDeclaration
     EntityDeclaration withMixins( Class<?>... mixins );
 
     /**
-     * Declare additional role interfaces for these declared interfaces.
+     * Declare additional interfaces for these declared interfaces.
      * <p/>
-     * This can be useful to add roles that the entities should implement, but
+     * This can be useful to add types that the entities should implement, but
      * which you do not want to include in the entity interface itself.
      *
-     * @param roleInterfaces list of role interfaces to add
+     * @param types list of interfaces to add
      *
      * @return
      */
-    EntityDeclaration withRoles( Class<?>... roleInterfaces );
+    EntityDeclaration withTypes( Class<?>... types );
 }

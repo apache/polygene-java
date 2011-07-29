@@ -28,5 +28,5 @@ public interface IdentityGenerator
      *
      * @return a new identity
      */
-    String generate( Class<? extends Identity> compositeType );
+    String generate( Class<?> compositeType );
 }

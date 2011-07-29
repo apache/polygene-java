@@ -120,6 +120,18 @@ public final class Classes
         }
     };
 
+    public static Specification<Class<?>> isAssignableFrom( final Class clazz)
+    {
+        return new Specification<Class<?>>()
+        {
+            @Override
+            public boolean satisfiedBy( Class<?> item )
+            {
+                return clazz.isAssignableFrom( item );
+            }
+        };
+    }
+
     public static <T> Function<Type, Iterable<T>> forClassHierarchy( final Function<Class<?>, Iterable<T>> function )
     {
         return new Function<Type, Iterable<T>>()

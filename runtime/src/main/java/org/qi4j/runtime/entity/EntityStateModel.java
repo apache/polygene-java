@@ -17,11 +17,11 @@ package org.qi4j.runtime.entity;
 import org.qi4j.api.entity.EntityStateDescriptor;
 import org.qi4j.api.entity.association.*;
 import org.qi4j.api.property.Property;
-import org.qi4j.api.util.Classes;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.functional.VisitableHierarchy;
-import org.qi4j.runtime.composite.AbstractStateModel;
+import org.qi4j.runtime.composite.StateModel;
 import org.qi4j.runtime.entity.association.*;
+import org.qi4j.runtime.property.PropertiesModel;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 
@@ -32,13 +32,13 @@ import java.util.Set;
  * JAVADOC
  */
 public final class EntityStateModel
-    extends AbstractStateModel<EntityPropertiesModel>
+    extends StateModel
     implements EntityStateDescriptor
 {
     private final AssociationsModel associationsModel;
     private final ManyAssociationsModel manyAssociationsModel;
 
-    public EntityStateModel( EntityPropertiesModel propertiesModel,
+    public EntityStateModel( PropertiesModel propertiesModel,
                              AssociationsModel associationsModel,
                              ManyAssociationsModel manyAssociationsModel
     )
@@ -50,9 +50,9 @@ public final class EntityStateModel
 
     public EntityStateModel.EntityStateInstance newInstance( ModuleUnitOfWork uow, EntityState entityState )
     {
-        return new EntityStateInstance( propertiesModel.newInstance( entityState ),
-                                        associationsModel.newInstance( entityState, uow ),
-                                        manyAssociationsModel.newInstance( entityState, uow ) );
+        return new EntityStateInstance(new EntityPropertiesInstance( propertiesModel, entityState ),
+                                        new AssociationsInstance( associationsModel, entityState, uow ),
+                                        new ManyAssociationsInstance( manyAssociationsModel, entityState, uow ));
     }
 
     public AssociationDescriptor getAssociationByName( String name )
@@ -73,20 +73,6 @@ public final class EntityStateModel
     public <T extends AssociationDescriptor> Set<T> manyAssociations()
     {
         return manyAssociationsModel.manyAssociations();
-    }
-
-    protected void addStateFor(AccessibleObject accessor)
-    {
-        Class<?> stateType = Classes.RAW_CLASS.map( Classes.TYPE_OF.map( accessor ) );
-        if( Association.class.isAssignableFrom( stateType ))
-        {
-            associationsModel.addAssociationFor( accessor );
-        }
-        else if( ManyAssociation.class.isAssignableFrom( stateType ))
-        {
-            manyAssociationsModel.addManyAssociationFor( accessor );
-        } else
-            super.addStateFor(accessor);
     }
 
     @Override
@@ -121,10 +107,10 @@ public final class EntityStateModel
             this.manyAssociationsInstance = manyAssociationsInstance;
         }
 
-        public <T> Property<T> getProperty( AccessibleObject accessor )
+        public <T> Property<T> propertyFor( AccessibleObject accessor )
                 throws IllegalArgumentException
         {
-            return entityPropertiesInstance.<T>getProperty( accessor );
+            return entityPropertiesInstance.<T>propertyFor( accessor );
         }
 
         @Override

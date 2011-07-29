@@ -3,7 +3,7 @@ package org.qi4j.bootstrap;
 /**
  * TODO
  */
-public interface TypeAssembly<T>
+public interface TypeAssembly
 {
-    Class<? extends T> type();
+    Class<?> type();
 }

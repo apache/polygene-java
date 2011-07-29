@@ -29,7 +29,7 @@ public interface StateHolder
      * @return the property
      * @throws IllegalArgumentException if no property for given accessor exists
      */
-    <T> Property<T> getProperty( AccessibleObject accessor )
+    <T> Property<T> propertyFor( AccessibleObject accessor )
             throws IllegalArgumentException;
 
     Iterable<Property<?>> properties();

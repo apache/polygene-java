@@ -77,11 +77,11 @@ public final class EntityDeclarationImpl
         return this;
     }
 
-    public EntityDeclaration withRoles( Class<?>... roles )
+    public EntityDeclaration withTypes( Class<?>... types )
     {
         for( EntityAssemblyImpl entity : entities )
         {
-            entity.roles.addAll( Arrays.asList( roles ) );
+            entity.types.addAll( Arrays.asList( types ) );
         }
         return this;
     }

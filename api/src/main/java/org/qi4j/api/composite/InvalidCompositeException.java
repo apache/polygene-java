@@ -19,61 +19,8 @@ package org.qi4j.api.composite;
 public class InvalidCompositeException
     extends RuntimeException
 {
-    private Class<? extends Composite> composite;
-    private String message;
-    private Class mixinClass;
-
-    public InvalidCompositeException( String message, Class<? extends Composite> composite )
+    public InvalidCompositeException( String message )
     {
         super( message );
-        this.message = message;
-        this.composite = composite;
-    }
-
-    public InvalidCompositeException()
-    {
-    }
-
-    public Class<? extends Composite> getFailingComposite()
-    {
-        return composite;
-    }
-
-    @Override
-    public String getMessage()
-    {
-        return message;
-    }
-
-    public void setMessage( String message )
-    {
-        this.message = message;
-    }
-
-    public String toString()
-    {
-        if( mixinClass == null )
-        {
-            return super.toString() + " in " + composite.getName();
-        }
-        else
-        {
-            return super.toString() + " for " + mixinClass.getName() + " in " + composite.getName();
-        }
-    }
-
-    public void setFailingCompositeType( Class<? extends Composite> compositeType )
-    {
-        composite = compositeType;
-    }
-
-    public void setMixinClass( Class mixinClass )
-    {
-        this.mixinClass = mixinClass;
-    }
-
-    public Class getMixinClass()
-    {
-        return mixinClass;
     }
 }

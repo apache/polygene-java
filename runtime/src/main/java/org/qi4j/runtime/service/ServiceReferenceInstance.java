@@ -14,7 +14,7 @@
 
 package org.qi4j.runtime.service;
 
-import org.qi4j.api.composite.AbstractCompositeDescriptor;
+import org.qi4j.api.composite.CompositeDescriptor;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.CompositeInstance;
 import org.qi4j.api.event.ActivationEvent;
@@ -155,7 +155,7 @@ public final class ServiceReferenceInstance<T>
     @Override
     public String toString()
     {
-        return serviceModel.identity() + ", active=" + isActive() + ", module='" + serviceModel.moduleName() + "'";
+        return serviceModel.identity() + ", active=" + isActive() + ", module='" + module.name() + "'";
     }
 
     public T newProxy()
@@ -169,7 +169,7 @@ public final class ServiceReferenceInstance<T>
     }
 
     public final class ServiceInvocationHandler
-        implements InvocationHandler, CompositeInstance
+        implements CompositeInstance
     {
         @Override
         public <T> T proxy()
@@ -196,7 +196,7 @@ public final class ServiceReferenceInstance<T>
         }
 
         @Override
-        public AbstractCompositeDescriptor descriptor()
+        public CompositeDescriptor descriptor()
         {
             return ServiceReferenceInstance.this.serviceDescriptor();
         }

@@ -14,6 +14,7 @@
 
 package org.qi4j.runtime.model;
 
+import org.qi4j.api.composite.ModelDescriptor;
 import org.qi4j.api.object.ObjectDescriptor;
 import org.qi4j.runtime.composite.CompositeMethodModel;
 import org.qi4j.runtime.structure.ApplicationModel;
@@ -30,14 +31,14 @@ public final class Resolution
     private final ApplicationModel application;
     private final LayerModel layer;
     private final ModuleModel module;
-    private ObjectDescriptor objectDescriptor;
+    private final ModelDescriptor modelDescriptor;
     private final CompositeMethodModel method;
     private final Field field;
 
     public Resolution( ApplicationModel application,
                        LayerModel layer,
                        ModuleModel module,
-                       ObjectDescriptor objectDescriptor,
+                       ModelDescriptor modelDescriptor,
                        CompositeMethodModel method,
                        Field field
     )
@@ -45,7 +46,7 @@ public final class Resolution
         this.application = application;
         this.layer = layer;
         this.module = module;
-        this.objectDescriptor = objectDescriptor;
+        this.modelDescriptor = modelDescriptor;
         this.method = method;
         this.field = field;
     }
@@ -65,9 +66,9 @@ public final class Resolution
         return module;
     }
 
-    public ObjectDescriptor object()
+    public ModelDescriptor model()
     {
-        return objectDescriptor;
+        return modelDescriptor;
     }
 
     public CompositeMethodModel method()
@@ -82,6 +83,6 @@ public final class Resolution
 
     public Resolution forField( final Field injectedField )
     {
-        return new Resolution( application, layer, module, objectDescriptor, method, injectedField );
+        return new Resolution( application, layer, module, modelDescriptor, method, injectedField );
     }
 }

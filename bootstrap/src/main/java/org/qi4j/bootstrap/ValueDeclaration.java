@@ -35,5 +35,5 @@ public interface ValueDeclaration
 
     ValueDeclaration withMixins( Class<?>... mixins );
 
-    ValueDeclaration withRoles( Class<?>... roles );
+    ValueDeclaration withTypes( Class<?>... roles );
 }

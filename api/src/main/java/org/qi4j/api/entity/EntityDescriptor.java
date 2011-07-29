@@ -14,13 +14,14 @@
 
 package org.qi4j.api.entity;
 
-import org.qi4j.api.composite.AbstractCompositeDescriptor;
+import org.qi4j.api.composite.CompositeDescriptor;
+import org.qi4j.api.composite.StatefulCompositeDescriptor;
 
 /**
  * JAVADOC
  */
 public interface EntityDescriptor
-    extends AbstractCompositeDescriptor
+    extends CompositeDescriptor, StatefulCompositeDescriptor
 {
     EntityStateDescriptor state();
 

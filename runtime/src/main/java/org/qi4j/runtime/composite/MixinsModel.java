@@ -14,36 +14,245 @@
 
 package org.qi4j.runtime.composite;
 
-import org.qi4j.api.composite.Composite;
-import org.qi4j.api.composite.CompositeInstance;
-import org.qi4j.api.property.StateHolder;
-import org.qi4j.runtime.injection.InjectionContext;
+import org.ietf.jgss.Oid;
+import org.qi4j.api.composite.InvalidCompositeException;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.util.Annotations;
+import org.qi4j.api.util.Classes;
+import org.qi4j.bootstrap.BindingException;
+import org.qi4j.functional.Function;
+import org.qi4j.functional.HierarchicalVisitor;
+import org.qi4j.functional.Iterables;
+import org.qi4j.functional.VisitableHierarchy;
+import org.qi4j.runtime.bootstrap.AssemblyHelper;
+import org.qi4j.runtime.injection.DependencyModel;
+import org.qi4j.runtime.injection.InjectedFieldModel;
+import org.qi4j.runtime.model.Binder;
+import org.qi4j.runtime.model.Resolution;
 
-import java.util.List;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.*;
+
+import static org.qi4j.api.util.Annotations.isType;
+import static org.qi4j.api.util.Annotations.type;
+import static org.qi4j.functional.Iterables.*;
 
 /**
- * Model for Composite mixins
+ * Base implementation of model for mixins. This records the mapping between methods in the Composite
+ * and mixin implementations.
  */
-public final class MixinsModel
-    extends AbstractMixinsModel
+public class MixinsModel
+        implements Binder, VisitableHierarchy<Object, Object>
 {
-    public MixinsModel( Class<? extends Composite> compositeType,
-                        List<Class<?>> assemblyRoles,
-                        List<Class<?>> assemblyMixins
-    )
+    protected final Map<Method, MixinModel> methodImplementation = new HashMap<Method, MixinModel>();
+    protected final Map<Method, Integer> methodIndex = new HashMap<Method, Integer>();
+    protected List<MixinModel> mixinModels = new ArrayList<MixinModel>();
+
+    private final Map<Class, Integer> mixinIndex = new HashMap<Class, Integer>();
+    private final Set<Class<?>> mixinTypes = new HashSet<Class<?>>();
+
+    public Iterable<Class<?>> mixinTypes()
     {
-        super( compositeType, assemblyRoles, assemblyMixins );
+        return mixinTypes;
+    }
+
+    public List<MixinModel> mixinModels()
+    {
+        return mixinModels;
+    }
+
+    public MixinModel mixinFor( Method method )
+    {
+        return methodImplementation.get( method );
+    }
+    
+    public MixinModel getMixinModel(Class mixinClass)
+    {
+        for( MixinModel mixinModel : mixinModels )
+        {
+            if (mixinModel.mixinClass().equals( mixinClass ))
+                return mixinModel;
+        }
+        return null;
+    }
+
+    public void addMixinType( Class mixinType )
+    {
+        for( Type type : Classes.INTERFACES_OF.map( mixinType ) )
+        {
+            mixinTypes.add( Classes.RAW_CLASS.map( type ) );
+        }
+    }
+
+    public void addMixinModel(MixinModel mixinModel)
+    {
+        mixinModels.add( mixinModel );
+    }
+
+    public void addMethodMixin(Method method, MixinModel mixinModel)
+    {
+        methodImplementation.put( method, mixinModel);
+    }
+
+    @Override
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor ) throws ThrowableType
+    {
+        if( visitor.visitEnter( this ) )
+        {
+            for( MixinModel mixinModel : mixinModels )
+            {
+                mixinModel.accept( visitor );
+            }
+        }
+        return visitor.visitLeave( this );
+    }
+
+    // Binding
+    public void bind( final Resolution resolution )
+            throws BindingException
+    {
+        // Order mixins based on @This usages
+        UsageGraph<MixinModel> deps = new UsageGraph<MixinModel>( mixinModels, new Uses(), true );
+        mixinModels = deps.resolveOrder();
+
+        // Populate mappings
+        for( int i = 0; i < mixinModels.size(); i++ )
+        {
+            MixinModel mixinModel = mixinModels.get( i );
+            mixinIndex.put( mixinModel.mixinClass(), i );
+        }
+
+        for( Map.Entry<Method, MixinModel> methodClassEntry : methodImplementation.entrySet() )
+        {
+            methodIndex.put( methodClassEntry.getKey(), mixinIndex.get( methodClassEntry.getValue().mixinClass() ) );
+        }
+
+        for( MixinModel mixinModel : mixinModels )
+        {
+            mixinModel.accept( new HierarchicalVisitor<Object, Object, BindingException>()
+            {
+                @Override
+                public boolean visitEnter( Object visited ) throws BindingException
+                {
+                    if( visited instanceof InjectedFieldModel )
+                    {
+                        InjectedFieldModel fieldModel = (InjectedFieldModel) visited;
+                        fieldModel.bind( resolution.forField( fieldModel.field() ) );
+                        return false;
+                    } else if( visited instanceof Binder )
+                    {
+                        Binder constructorsModel = (Binder) visited;
+                        constructorsModel.bind( resolution );
+
+                        return false;
+                    }
+                    return true;
+                }
+
+                @Override
+                public boolean visit( Object visited ) throws BindingException
+                {
+                    if( visited instanceof Binder )
+                    {
+                        ((Binder) visited).bind( resolution );
+                    }
+                    return true;
+                }
+            } );
+        }
     }
 
     // Context
 
-    public void newMixins( CompositeInstance compositeInstance, UsesInstance uses, StateHolder state, Object[] mixins )
+    public Object[] newMixinHolder()
     {
-        int i = 0;
-        InjectionContext injectionContext = new InjectionContext( compositeInstance, uses, state );
+        return new Object[mixinIndex.size()];
+    }
+
+    public FragmentInvocationHandler newInvocationHandler( final Method method )
+    {
+        return mixinFor( method ).newInvocationHandler( method );
+    }
+
+    public void activate( Object[] mixins )
+            throws Exception
+    {
+        int idx = 0;
+        try
+        {
+            for( MixinModel mixinModel : mixinModels )
+            {
+                mixinModel.activate( mixins[idx] );
+                idx++;
+            }
+        } catch( Exception e )
+        {
+            // Passivate activated mixins
+            for( int i = idx - 1; i >= 0; i-- )
+            {
+                try
+                {
+                    mixinModels.get( i ).passivate( i );
+                } catch( Exception e1 )
+                {
+                    // Ignore
+                }
+            }
+
+            throw e;
+        }
+    }
+
+    public void passivate( Object[] mixins )
+            throws Exception
+    {
+        int idx = 0;
+        Exception ex = null;
         for( MixinModel mixinModel : mixinModels )
         {
-            mixins[ i++ ] = mixinModel.newInstance( injectionContext );
+            try
+            {
+                mixinModel.passivate( mixins[idx++] );
+            } catch( Exception e )
+            {
+                ex = e;
+            }
+        }
+        if( ex != null )
+        {
+            throw ex;
+        }
+    }
+
+    public Iterable<DependencyModel> dependencies()
+    {
+        return flattenIterables( map( new Function<MixinModel, Iterable<DependencyModel>>()
+                {
+                    @Override
+                    public Iterable<DependencyModel> map( MixinModel mixinModel )
+                    {
+                        return mixinModel.dependencies();
+                    }
+                }, mixinModels ) );
+    }
+
+    private class Uses
+            implements UsageGraph.Use<MixinModel>
+    {
+        public Collection<MixinModel> uses( MixinModel source )
+        {
+            Iterable<Class<?>> thisMixinTypes = source.thisMixinTypes();
+            List<MixinModel> usedMixinClasses = new ArrayList<MixinModel>();
+            for( Class thisMixinType : thisMixinTypes )
+            {
+                for( Method method : thisMixinType.getMethods() )
+                {
+                    usedMixinClasses.add( methodImplementation.get( method ) );
+                }
+            }
+            return usedMixinClasses;
         }
     }
 }

@@ -178,8 +178,8 @@ public final class UnitOfWorkInstance
             for( ModelModule<EntityModel> potentialModel : potentialModels )
             {
                 EntityModel entityModel = potentialModel.model();
-                Class<? extends EntityComposite> typeRef = potentialModel.model().type();
-                if( entityState.isOfType( typeRef ) )
+                Class<?> typeRef = potentialModel.model().type();
+                if( entityState.isAssignableTo( typeRef ) )
                 {
                     // Found it!
                     // Check for ambiguity
@@ -516,14 +516,14 @@ public final class UnitOfWorkInstance
 
     private static class InstanceKey
     {
-        private Class<? extends EntityComposite> type;
+        private Class<?> type;
         private EntityReference entityReference;
 
         private InstanceKey()
         {
         }
 
-        private InstanceKey( Class<? extends EntityComposite> type, EntityReference entityReference )
+        private InstanceKey( Class<?> type, EntityReference entityReference )
         {
             this.type = type;
             this.entityReference = entityReference;
@@ -534,7 +534,7 @@ public final class UnitOfWorkInstance
             return entityReference;
         }
 
-        public void update( Class<? extends EntityComposite> type, EntityReference entityReference )
+        public void update( Class<?> type, EntityReference entityReference )
         {
             this.type = type;
             this.entityReference = entityReference;

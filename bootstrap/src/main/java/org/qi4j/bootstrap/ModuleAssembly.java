@@ -54,9 +54,6 @@ public interface ModuleAssembly
     */
    String name();
 
-   @Deprecated
-   TransientDeclaration addTransients(Class<? extends TransientComposite>... compositeTypes);
-
    /**
     * Declare a list of TransientComposites for this Module. Use the TransientDeclaration that is returned to
     * declare further settings. Note that the TransientDeclaration works on all of the types specified.
@@ -64,7 +61,7 @@ public interface ModuleAssembly
     * @param compositeTypes
     * @return
     */
-   TransientDeclaration transients(Class<? extends TransientComposite>... compositeTypes);
+   TransientDeclaration transients(Class<?>... compositeTypes);
 
    /**
     * Given a Specification for TransientAssembly's, returns a TransientDeclaration that can
@@ -75,9 +72,6 @@ public interface ModuleAssembly
     */
    TransientDeclaration transients(Specification<? super TransientAssembly> specification);
 
-   @Deprecated
-   ValueDeclaration addValues(Class<? extends ValueComposite>... compositeTypes);
-
    /**
     * Declare a list of ValueComposites for this Module. Use the ValueDeclaration that is returned to
     * declare further settings. Note that the ValueDeclaration works on all of the types specified.
@@ -85,7 +79,7 @@ public interface ModuleAssembly
     * @param compositeTypes
     * @return
     */
-   ValueDeclaration values(Class<? extends ValueComposite>... compositeTypes);
+   ValueDeclaration values(Class<?>... compositeTypes);
 
    /**
     * Given a Specification for ValueAssembly's, returns a ValueDeclaration that can
@@ -96,9 +90,6 @@ public interface ModuleAssembly
     */
    ValueDeclaration values(Specification<? super ValueAssembly> specification);
 
-   @Deprecated
-   EntityDeclaration addEntities(Class<? extends EntityComposite>... compositeTypes);
-
    /**
     * Declare a list of EntityComposites for this Module. Use the EntityDeclaration that is returned to
     * declare further settings. Note that the EntityDeclaration works on all of the types specified.
@@ -106,7 +97,7 @@ public interface ModuleAssembly
     * @param compositeTypes
     * @return
     */
-   EntityDeclaration entities(Class<? extends EntityComposite>... compositeTypes);
+   EntityDeclaration entities(Class<?>... compositeTypes);
 
    /**
     * Given a Specification for EntityAssembly's, returns a EntityDeclaration that can
@@ -116,9 +107,6 @@ public interface ModuleAssembly
     * @return
     */
    EntityDeclaration entities(Specification<? super EntityAssembly> specification);
-
-   @Deprecated
-   ObjectDeclaration addObjects(Class<?>... objectTypes);
 
    /**
     * Declare a list of object classes for this Module. Use the ObjectDeclaration that is returned to
@@ -147,7 +135,7 @@ public interface ModuleAssembly
     * @param serviceTypes
     * @return
     */
-   ServiceDeclaration addServices(Class<? extends ServiceComposite>... serviceTypes);
+   ServiceDeclaration addServices(Class<?>... serviceTypes);
 
    /**
     * Declare a list of ServiceComposites for this Module. Use the ServiceDeclaration that is returned to
@@ -156,7 +144,7 @@ public interface ModuleAssembly
     * @param serviceTypes
     * @return
     */
-   ServiceDeclaration services(Class<? extends ServiceComposite>... serviceTypes);
+   ServiceDeclaration services(Class<?>... serviceTypes);
 
    /**
     * Given a Specification for ServiceAssembly's, returns a ServiceDeclaration that can
@@ -174,7 +162,7 @@ public interface ModuleAssembly
     * @param serviceTypes
     * @return
     */
-   ImportedServiceDeclaration importedServices(Class... serviceTypes);
+   ImportedServiceDeclaration importedServices(Class<?>... serviceTypes);
 
    /**
     * Given a Specification for ImportedServiceAssembly's, returns a ImportedServiceDeclaration that can

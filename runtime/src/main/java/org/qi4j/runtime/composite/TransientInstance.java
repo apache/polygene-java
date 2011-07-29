@@ -16,7 +16,7 @@
 
 package org.qi4j.runtime.composite;
 
-import org.qi4j.api.composite.AbstractCompositeDescriptor;
+import org.qi4j.api.composite.CompositeDescriptor;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.CompositeInstance;
 import org.qi4j.api.property.StateHolder;
@@ -41,10 +41,10 @@ public class TransientInstance
     private final Composite proxy;
     protected final Object[] mixins;
     protected StateHolder state;
-    protected final AbstractCompositeModel compositeModel;
+    protected final CompositeModel compositeModel;
     private final ModuleInstance moduleInstance;
 
-    public TransientInstance( AbstractCompositeModel compositeModel,
+    public TransientInstance( CompositeModel compositeModel,
                               ModuleInstance moduleInstance,
                               Object[] mixins,
                               StateHolder state
@@ -80,9 +80,9 @@ public class TransientInstance
         return compositeModel.invoke( this, proxy, method, args, moduleInstance );
     }
 
-    public AbstractCompositeDescriptor descriptor()
+    public CompositeDescriptor descriptor()
     {
-        return (AbstractCompositeDescriptor) compositeModel;
+        return compositeModel;
     }
 
     public <T> T metaInfo( Class<T> infoType )
@@ -90,7 +90,7 @@ public class TransientInstance
         return compositeModel.metaInfo( infoType );
     }
 
-    public Class<? extends Composite> type()
+    public Class<?> type()
     {
         return compositeModel.type();
     }
@@ -100,7 +100,7 @@ public class TransientInstance
         return moduleInstance;
     }
 
-    public AbstractCompositeModel compositeModel()
+    public CompositeModel compositeModel()
     {
         return compositeModel;
     }
@@ -147,7 +147,7 @@ public class TransientInstance
 
         for( int i = 0; i < mixins.length; i++ )
         {
-            if( !mixins[ i ].equals( other.mixins[ i ] ) )
+            if( !mixins[ i ].equals( other.mixins[i] ) )
             {
                 return false;
             }

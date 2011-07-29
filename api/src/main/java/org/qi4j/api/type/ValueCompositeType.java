@@ -40,7 +40,7 @@ public final class ValueCompositeType
         this.model = model;
     }
 
-    public Iterable<PersistentPropertyDescriptor> types()
+    public Iterable<PersistentPropertyDescriptor> properties()
     {
         return model.state().properties();
     }

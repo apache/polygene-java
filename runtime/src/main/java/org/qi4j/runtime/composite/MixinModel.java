@@ -26,6 +26,7 @@ import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.functional.Iterables;
+import org.qi4j.functional.Specification;
 import org.qi4j.functional.VisitableHierarchy;
 import org.qi4j.runtime.bootstrap.AssemblyHelper;
 import org.qi4j.runtime.injection.DependencyModel;
@@ -53,8 +54,6 @@ public final class MixinModel
     private final ConstructorsModel constructorsModel;
     private final InjectedFieldsModel injectedFieldsModel;
     private final InjectedMethodsModel injectedMethodsModel;
-    private final ConcernsDeclaration concernsDeclaration;
-    private final SideEffectsDeclaration sideEffectsDeclaration;
     private final Iterable<Class<?>> thisMixinTypes;
 
     public MixinModel( Class declaredMixinClass, Class instantiationClass )
@@ -65,11 +64,6 @@ public final class MixinModel
         this.mixinClass = declaredMixinClass;
         this.instantiationClass = instantiationClass;
         constructorsModel = new ConstructorsModel( instantiationClass );
-
-        List<ConcernDeclaration> concerns = new ArrayList<ConcernDeclaration>();
-        ConcernsDeclaration.concernDeclarations( declaredMixinClass, concerns );
-        concernsDeclaration = new ConcernsDeclaration( concerns );
-        sideEffectsDeclaration = new SideEffectsDeclaration( declaredMixinClass, Collections.<Class<?>>emptyList() );
 
         thisMixinTypes = buildThisMixinTypes();
     }
@@ -117,32 +111,26 @@ public final class MixinModel
     {
         Object mixin;
         CompositeInstance compositeInstance = injectionContext.compositeInstance();
-        try
-        {
-            mixin = constructorsModel.newInstance( injectionContext );
 
-            if( FragmentClassLoader.isGenerated( instantiationClass ) )
+        mixin = constructorsModel.newInstance( injectionContext );
+
+        if( FragmentClassLoader.isGenerated( instantiationClass ) )
+        {
+            try
             {
-                try
-                {
-                    instantiationClass.getDeclaredField( "_instance" ).set( mixin,
-                                                                            injectionContext.compositeInstance() );
-                }
-                catch( IllegalAccessException e )
-                {
-                    e.printStackTrace();
-                }
-                catch( NoSuchFieldException e )
-                {
-                    e.printStackTrace();
-                }
+                instantiationClass.getDeclaredField( "_instance" ).set( mixin,
+                                                                        injectionContext.compositeInstance() );
+            }
+            catch( IllegalAccessException e )
+            {
+                e.printStackTrace();
+            }
+            catch( NoSuchFieldException e )
+            {
+                e.printStackTrace();
             }
         }
-        catch( InvalidCompositeException e )
-        {
-            e.setMixinClass( mixinClass );
-            throw e;
-        }
+
         injectedFieldsModel.inject( injectionContext, mixin );
         injectedMethodsModel.inject( injectionContext, mixin );
         if( mixin instanceof Initializable )
@@ -153,7 +141,7 @@ public final class MixinModel
             }
             catch( InitializationException e )
             {
-                Class<? extends Composite> compositeType = compositeInstance.type();
+                Class<?> compositeType = compositeInstance.type();
                 String message = "Unable to initialize " + mixinClass + " in composite " + compositeType;
                 throw new ConstructionException( message, e );
             }
@@ -182,19 +170,6 @@ public final class MixinModel
         {
             return new TypedModifierInvocationHandler();
         }
-    }
-
-    public MethodConcernsModel concernsFor( Method method, Class<? extends Composite> type, AssemblyHelper helper )
-    {
-        return concernsDeclaration.concernsFor( method, type, helper );
-    }
-
-    public MethodSideEffectsModel sideEffectsFor( Method method,
-                                                  Class<? extends Composite> type,
-                                                  AssemblyHelper helper
-    )
-    {
-        return sideEffectsDeclaration.sideEffectsFor( method, type, helper );
     }
 
     @Override

@@ -17,6 +17,7 @@ package org.qi4j.runtime.object;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.composite.ModelDescriptor;
 import org.qi4j.api.mixin.Initializable;
 import org.qi4j.api.mixin.InitializationException;
 import org.qi4j.api.object.ObjectDescriptor;
@@ -35,42 +36,6 @@ import org.qi4j.runtime.injection.InjectionContext;
 public final class ObjectModel
     implements ObjectDescriptor, VisitableHierarchy<Object, Object>
 {
-    public static Specification<ObjectDescriptor> modelTypeSpecification( final String className)
-    {
-        return new Specification<ObjectDescriptor>()
-        {
-            @Override
-            public boolean satisfiedBy( ObjectDescriptor item )
-            {
-                return item.type().getName().equals(className);
-            }
-        };
-    }
-
-    public static Specification<ObjectDescriptor> exactTypeSpecification( final Class type)
-    {
-        return new Specification<ObjectDescriptor>()
-        {
-            @Override
-            public boolean satisfiedBy( ObjectDescriptor item )
-            {
-                return item.type().equals(type);
-            }
-        };
-    }
-
-    public static Specification<ObjectDescriptor> assignableTypeSpecification( final Class type)
-    {
-        return new Specification<ObjectDescriptor>()
-        {
-            @Override
-            public boolean satisfiedBy( ObjectDescriptor item )
-            {
-                return !type.equals( item.type() ) && type.isAssignableFrom( item.type());
-            }
-        };
-    }
-
     public static final Function<ObjectDescriptor, Class<?>> MODEL_TYPE_FUNCTION = new Function<ObjectDescriptor, Class<?>>()
     {
         @Override
@@ -114,6 +79,12 @@ public final class ObjectModel
     public <T> T metaInfo( Class<T> infoType )
     {
         return metaInfo.get( infoType );
+    }
+
+    @Override
+    public boolean isAssignableTo( Class<?> type )
+    {
+        return type.isAssignableFrom( objectType );
     }
 
     @Override

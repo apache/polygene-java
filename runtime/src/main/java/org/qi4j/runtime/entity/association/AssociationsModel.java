@@ -14,31 +14,16 @@
 
 package org.qi4j.runtime.entity.association;
 
-import org.qi4j.api.common.MetaInfo;
-import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.AssociationDescriptor;
-import org.qi4j.api.entity.association.GenericAssociationInfo;
-import org.qi4j.api.util.Annotations;
-import org.qi4j.api.util.Classes;
-import org.qi4j.bootstrap.AssociationDeclarations;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.functional.VisitableHierarchy;
-import org.qi4j.runtime.composite.ConstraintsModel;
-import org.qi4j.runtime.composite.ValueConstraintsInstance;
-import org.qi4j.runtime.composite.ValueConstraintsModel;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.Member;
 import java.util.*;
-
-import static org.qi4j.api.util.Annotations.isType;
-import static org.qi4j.functional.Iterables.filter;
-import static org.qi4j.functional.Iterables.first;
 
 /**
  * JAVADOC
@@ -50,52 +35,16 @@ public final class AssociationsModel
     private final Set<AssociationModel> associationModels = new LinkedHashSet<AssociationModel>();
     private final Map<AccessibleObject, AssociationModel> mapAccessorAssociationModel = new HashMap<AccessibleObject, AssociationModel>();
     private final Map<QualifiedName, AccessibleObject> mapQualifiedNameAccessors = new HashMap<QualifiedName, AccessibleObject>();
-    private final ConstraintsModel constraints;
-    private AssociationDeclarations associationDeclarations;
 
-    public AssociationsModel( ConstraintsModel constraints, AssociationDeclarations associationDeclarations )
+    public AssociationsModel(  )
     {
-        this.constraints = constraints;
-        this.associationDeclarations = associationDeclarations;
     }
 
-    public void addAssociationFor( AccessibleObject accessor )
+    public void addAssociation(AssociationModel associationModel)
     {
-        if( !accessors.contains( accessor ) )
-        {
-            if( Association.class.isAssignableFrom( Classes.RAW_CLASS.map( Classes.TYPE_OF.map( accessor ) ) ))
-            {
-                Iterable<Annotation> annotations = Annotations.getAccessorAndTypeAnnotations( accessor );
-                boolean optional = first( filter( isType( Optional.class ), annotations ) ) != null;
-
-                // Constraints for Association references
-                ValueConstraintsModel valueConstraintsModel = constraints.constraintsFor( annotations, GenericAssociationInfo
-                    .getAssociationType( accessor ), ((Member)accessor).getName(), optional );
-                ValueConstraintsInstance valueConstraintsInstance = null;
-                if( valueConstraintsModel.isConstrained() )
-                {
-                    valueConstraintsInstance = valueConstraintsModel.newInstance();
-                }
-
-                // Constraints for the Association itself
-                valueConstraintsModel = constraints.constraintsFor( annotations, Association.class, ((Member)accessor).getName(), optional );
-                ValueConstraintsInstance associationValueConstraintsInstance = null;
-                if( valueConstraintsModel.isConstrained() )
-                {
-                    associationValueConstraintsInstance = valueConstraintsModel.newInstance();
-                }
-
-                MetaInfo metaInfo = associationDeclarations.getMetaInfo( accessor );
-                AssociationModel associationModel = new AssociationModel( accessor, valueConstraintsInstance, associationValueConstraintsInstance, metaInfo );
-                if( !mapQualifiedNameAccessors.containsKey( associationModel.qualifiedName() ) )
-                {
-                    associationModels.add( associationModel );
-                    mapAccessorAssociationModel.put( accessor, associationModel );
-                    mapQualifiedNameAccessors.put( associationModel.qualifiedName(), associationModel.accessor() );
-                }
-            }
-            accessors.add( accessor );
-        }
+        associationModels.add( associationModel );
+        mapAccessorAssociationModel.put( associationModel.accessor(), associationModel );
+        mapQualifiedNameAccessors.put( associationModel.qualifiedName(), associationModel.accessor() );
     }
 
     public <T extends AssociationDescriptor> Set<T> associations()
@@ -142,10 +91,5 @@ public final class AssociationsModel
             associationModel.checkAssociationConstraints( associations );
             associationModel.checkConstraints( associations );
         }
-    }
-
-    public AssociationsInstance newInstance( EntityState entityState, ModuleUnitOfWork uow )
-    {
-        return new AssociationsInstance( this, entityState, uow );
     }
 }

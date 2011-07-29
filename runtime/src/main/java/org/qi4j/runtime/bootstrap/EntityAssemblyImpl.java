@@ -14,34 +14,61 @@
 
 package org.qi4j.runtime.bootstrap;
 
-import org.qi4j.api.common.InvalidApplicationException;
-import org.qi4j.api.common.MetaInfo;
-import org.qi4j.api.common.Visibility;
+import org.qi4j.api.common.*;
+import org.qi4j.api.constraint.Constraint;
 import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.association.Association;
+import org.qi4j.api.entity.association.GenericAssociationInfo;
+import org.qi4j.api.entity.association.ManyAssociation;
+import org.qi4j.api.property.GenericPropertyInfo;
+import org.qi4j.api.property.Immutable;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.util.Annotations;
+import org.qi4j.api.util.Classes;
 import org.qi4j.bootstrap.AssociationDeclarations;
 import org.qi4j.bootstrap.EntityAssembly;
 import org.qi4j.bootstrap.ManyAssociationDeclarations;
 import org.qi4j.bootstrap.PropertyDeclarations;
-import org.qi4j.runtime.composite.ConcernDeclaration;
-import org.qi4j.runtime.composite.ConcernsDeclaration;
+import org.qi4j.functional.Iterables;
+import org.qi4j.runtime.composite.*;
+import org.qi4j.runtime.entity.EntityMixinsModel;
 import org.qi4j.runtime.entity.EntityModel;
+import org.qi4j.runtime.entity.EntityStateModel;
+import org.qi4j.runtime.entity.association.AssociationModel;
+import org.qi4j.runtime.entity.association.AssociationsModel;
+import org.qi4j.runtime.entity.association.ManyAssociationModel;
+import org.qi4j.runtime.entity.association.ManyAssociationsModel;
+import org.qi4j.runtime.property.PropertiesModel;
+import org.qi4j.runtime.property.PropertyModel;
+import org.qi4j.runtime.property.PersistentPropertyModel;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Member;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.qi4j.api.util.Annotations.isType;
+import static org.qi4j.functional.Iterables.filter;
+import static org.qi4j.functional.Iterables.first;
 
 /**
  * Declaration of a EntityComposite.
  */
 public final class EntityAssemblyImpl
-    implements EntityAssembly
+        extends CompositeAssemblyImpl
+        implements EntityAssembly
 {
-    private Class<? extends EntityComposite> compositeType;
     MetaInfo metaInfo = new MetaInfo();
     Visibility visibility = Visibility.module;
     List<Class<?>> concerns = new ArrayList<Class<?>>();
     List<Class<?>> sideEffects = new ArrayList<Class<?>>();
     List<Class<?>> mixins = new ArrayList<Class<?>>();
-    List<Class<?>> roles = new ArrayList<Class<?>>();
+    List<Class<?>> types = new ArrayList<Class<?>>();
+    private AssociationDeclarations associationDeclarations;
+    private ManyAssociationDeclarations manyAssociationDeclarations;
+    protected AssociationsModel associationsModel;
+    protected ManyAssociationsModel manyAssociationsModel;
 
     public EntityAssemblyImpl( Class<? extends EntityComposite> compositeType )
     {
@@ -49,41 +76,167 @@ public final class EntityAssemblyImpl
     }
 
     @Override
-    public Class<? extends EntityComposite> type()
+    public Class<?> type()
     {
         return compositeType;
     }
 
-    void addEntityModel( List<EntityModel> entities,
-                         PropertyDeclarations propertyDecs,
-                         AssociationDeclarations associationDecs,
-                         ManyAssociationDeclarations manyAssociationDecs,
-                         AssemblyHelper helper
+    EntityModel newEntityModel(
+            PropertyDeclarations propertyDeclarations,
+            AssociationDeclarations associationDecs,
+            ManyAssociationDeclarations manyAssociationDecs,
+            AssemblyHelper helper
     )
     {
+        this.associationDeclarations = associationDecs;
+        this.manyAssociationDeclarations = manyAssociationDecs;
+        this.propertyDeclarations = propertyDeclarations;
         try
         {
-            List<ConcernDeclaration> concernDeclarations = new ArrayList<ConcernDeclaration>();
-            ConcernsDeclaration.concernDeclarations( concerns, concernDeclarations );
-            ConcernsDeclaration.concernDeclarations( compositeType, concernDeclarations );
-            ConcernsDeclaration concernsDeclaration = new ConcernsDeclaration( concernDeclarations );
+            this.helper = helper;
 
-            EntityModel compositeModel = EntityModel.newModel( compositeType,
-                                                               visibility,
-                                                               new MetaInfo( metaInfo ).withAnnotations( compositeType ),
-                                                               propertyDecs,
-                                                               associationDecs,
-                                                               manyAssociationDecs,
-                                                               concernsDeclaration,
-                                                               sideEffects,
-                                                               mixins,
-                                                               roles,
-                                                               helper );
-            entities.add( compositeModel );
-        }
-        catch( Exception e )
+            metaInfo = new MetaInfo( metaInfo ).withAnnotations( compositeType );
+            addAnnotationsMetaInfo( compositeType, metaInfo );
+
+            immutable = metaInfo.get( Immutable.class ) != null;
+            propertiesModel = new PropertiesModel();
+            stateModel = new StateModel( propertiesModel );
+            mixinsModel = new MixinsModel();
+
+            propertiesModel = new PropertiesModel();
+            associationsModel = new AssociationsModel( );
+            manyAssociationsModel = new ManyAssociationsModel();
+            stateModel = new EntityStateModel( propertiesModel, associationsModel, manyAssociationsModel );
+            mixinsModel = new EntityMixinsModel();
+
+            compositeMethodsModel = new CompositeMethodsModel( mixinsModel );
+
+            // The composite must always implement EntityComposite, as a marker interface
+            if( !EntityComposite.class.isAssignableFrom( compositeType ) )
+            {
+                types.add( EntityComposite.class );
+            }
+
+            // Implement composite methods
+            Iterable<Class<? extends Constraint<?, ?>>> constraintClasses = constraintDeclarations( compositeType );
+            Iterable<Class<?>> concernClasses = Iterables.<Class<?>, Iterable<Class<?>>>flatten( concerns, concernDeclarations( compositeType ) );
+            Iterable<Class<?>> sideEffectClasses = Iterables.<Class<?>, Iterable<Class<?>>>flatten( sideEffects, sideEffectDeclarations( compositeType ) );
+            Iterable<Class<?>> mixinClasses = Iterables.<Class<?>, Iterable<Class<?>>>flatten( mixins, mixinDeclarations( compositeType ) );
+            implementMixinType( compositeType,
+                    constraintClasses, concernClasses, sideEffectClasses, mixinClasses );
+
+            // Implement additional type methods
+            for( Class<?> type : types )
+            {
+                Iterable<Class<? extends Constraint<?, ?>>> typeConstraintClasses = Iterables.<Class<? extends Constraint<?, ?>>, Iterable<Class<? extends Constraint<?, ?>>>>flatten( constraintClasses, constraintDeclarations( type ) );
+                Iterable<Class<?>> typeConcernClasses = Iterables.<Class<?>, Iterable<Class<?>>>flatten( concernClasses, concernDeclarations( type ) );
+                Iterable<Class<?>> typeSideEffectClasses = Iterables.<Class<?>, Iterable<Class<?>>>flatten( sideEffectClasses, sideEffectDeclarations( type ) );
+                Iterable<Class<?>> typeMixinClasses = Iterables.<Class<?>, Iterable<Class<?>>>flatten( mixinClasses, mixinDeclarations( type ) );
+
+                implementMixinType( type,
+                        typeConstraintClasses, typeConcernClasses, typeSideEffectClasses, typeMixinClasses );
+            }
+
+            // Add state from methods and fields
+            addState( constraintClasses );
+
+            EntityModel entityModel = new EntityModel(
+                    compositeType, Iterables.prepend( compositeType, types ), visibility, metaInfo, (EntityMixinsModel) mixinsModel, (EntityStateModel) stateModel, compositeMethodsModel );
+
+            return entityModel;
+        } catch( Exception e )
         {
             throw new InvalidApplicationException( "Could not register " + compositeType.getName(), e );
         }
+    }
+
+    protected void addStateFor( AccessibleObject accessor, Iterable<Class<? extends Constraint<?, ?>>> constraintClasses )
+    {
+        Class<?> accessorType = Classes.RAW_CLASS.map( Classes.TYPE_OF.map( accessor ) );
+        if( Property.class.isAssignableFrom( accessorType ) )
+        {
+            if (propertiesModel.getPropertyByName( QualifiedName.fromAccessor( accessor ).name() ) == null)
+                propertiesModel.addProperty( newPropertyModel( accessor, constraintClasses ) );
+        } else if( Association.class.isAssignableFrom( accessorType ) )
+        {
+            if (associationsModel.getAssociationByName( QualifiedName.fromAccessor( accessor ).name() ) == null)
+                associationsModel.addAssociation( newAssociationModel( accessor, constraintClasses ) );
+        } else if( ManyAssociation.class.isAssignableFrom( accessorType ) )
+        {
+            if (manyAssociationsModel.getManyAssociationByName( QualifiedName.fromAccessor( accessor ).name() ) == null)
+                manyAssociationsModel.addManyAssociation( newManyAssociationModel( accessor, constraintClasses ) );
+        }
+    }
+
+    @Override
+    protected PropertyModel newPropertyModel( AccessibleObject accessor, Iterable<Class<? extends Constraint<?, ?>>> constraintClasses )
+    {
+        Iterable<Annotation> annotations = Annotations.getAccessorAndTypeAnnotations( accessor );
+        boolean optional = first( filter( isType( Optional.class ), annotations ) ) != null;
+        ValueConstraintsModel valueConstraintsModel = constraintsFor( annotations, GenericPropertyInfo.getPropertyType( accessor ), ((Member) accessor)
+                .getName(), optional, constraintClasses, accessor );
+        ValueConstraintsInstance valueConstraintsInstance = null;
+        if( valueConstraintsModel.isConstrained() )
+        {
+            valueConstraintsInstance = valueConstraintsModel.newInstance();
+        }
+        MetaInfo metaInfo = propertyDeclarations.getMetaInfo( accessor );
+        Object defaultValue = propertyDeclarations.getInitialValue( accessor );
+        boolean immutable = this.immutable || metaInfo.get( Immutable.class ) != null;
+        PersistentPropertyModel propertyModel = new PersistentPropertyModel( accessor, immutable, valueConstraintsInstance, metaInfo, defaultValue );
+        return propertyModel;
+    }
+
+    public AssociationModel newAssociationModel( AccessibleObject accessor, Iterable<Class<? extends Constraint<?, ?>>> constraintClasses )
+    {
+        Iterable<Annotation> annotations = Annotations.getAccessorAndTypeAnnotations( accessor );
+        boolean optional = first( filter( isType( Optional.class ), annotations ) ) != null;
+
+        // Constraints for Association references
+        ValueConstraintsModel valueConstraintsModel = constraintsFor( annotations, GenericAssociationInfo
+                .getAssociationType( accessor ), ((Member) accessor).getName(), optional, constraintClasses, accessor );
+        ValueConstraintsInstance valueConstraintsInstance = null;
+        if( valueConstraintsModel.isConstrained() )
+        {
+            valueConstraintsInstance = valueConstraintsModel.newInstance();
+        }
+
+        // Constraints for the Association itself
+        valueConstraintsModel = constraintsFor( annotations, Association.class, ((Member) accessor).getName(), optional, constraintClasses, accessor );
+        ValueConstraintsInstance associationValueConstraintsInstance = null;
+        if( valueConstraintsModel.isConstrained() )
+        {
+            associationValueConstraintsInstance = valueConstraintsModel.newInstance();
+        }
+
+        MetaInfo metaInfo = associationDeclarations.getMetaInfo( accessor );
+        AssociationModel associationModel = new AssociationModel( accessor, valueConstraintsInstance, associationValueConstraintsInstance, metaInfo );
+        return associationModel;
+    }
+
+    public ManyAssociationModel newManyAssociationModel( AccessibleObject accessor, Iterable<Class<? extends Constraint<?, ?>>> constraintClasses )
+    {
+        Iterable<Annotation> annotations = Annotations.getAccessorAndTypeAnnotations(  accessor );
+        boolean optional = first( filter( isType( Optional.class ), annotations ) ) != null;
+
+        // Constraints for entities in ManyAssociation
+        ValueConstraintsModel valueConstraintsModel = constraintsFor( annotations, GenericAssociationInfo
+                .getAssociationType( accessor ), ((Member) accessor).getName(), optional, constraintClasses, accessor );
+        ValueConstraintsInstance valueConstraintsInstance = null;
+        if( valueConstraintsModel.isConstrained() )
+        {
+            valueConstraintsInstance = valueConstraintsModel.newInstance();
+        }
+
+        // Constraints for the ManyAssociation itself
+        valueConstraintsModel = constraintsFor( annotations, ManyAssociation.class, ((Member) accessor).getName(), optional, constraintClasses, accessor );
+        ValueConstraintsInstance manyValueConstraintsInstance = null;
+        if( valueConstraintsModel.isConstrained() )
+        {
+            manyValueConstraintsInstance = valueConstraintsModel.newInstance();
+        }
+        MetaInfo metaInfo = manyAssociationDeclarations.getMetaInfo( accessor );
+        ManyAssociationModel associationModel = new ManyAssociationModel( accessor, valueConstraintsInstance, manyValueConstraintsInstance, metaInfo );
+        return associationModel;
     }
 }

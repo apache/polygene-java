@@ -1,7 +1,7 @@
 package org.qi4j.runtime.injection.provider;
 
 import org.qi4j.api.composite.StateDescriptor;
-import org.qi4j.api.composite.TransientDescriptor;
+import org.qi4j.api.composite.StatefulCompositeDescriptor;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityStateDescriptor;
 import org.qi4j.api.entity.association.*;
@@ -9,9 +9,7 @@ import org.qi4j.api.injection.scope.State;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.property.StateHolder;
-import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.value.ValueDescriptor;
 import org.qi4j.bootstrap.InvalidInjectionException;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.injection.DependencyModel;
@@ -36,7 +34,7 @@ public final class StateInjectionProviderFactory
         }
         else if( UnitOfWork.class.isAssignableFrom( dependencyModel.rawInjectionType() ) )
         {
-            if( !( resolution.object() instanceof EntityDescriptor ) )
+            if( !( resolution.model() instanceof EntityDescriptor ) )
             {
                 throw new InvalidInjectionException( "Only EntityComposites can be injected with '@State UnitOfWork'" );
             }
@@ -46,22 +44,7 @@ public final class StateInjectionProviderFactory
         {
             // @State Property<String> name;
             StateDescriptor descriptor;
-            if( resolution.object() instanceof TransientDescriptor )
-            {
-                descriptor = ( (TransientDescriptor) resolution.object() ).state();
-            }
-            else if( resolution.object() instanceof ValueDescriptor )
-            {
-                descriptor = ( (ValueDescriptor) resolution.object() ).state();
-            }
-            else if( resolution.object() instanceof ServiceDescriptor )
-            {
-                descriptor = ( (ServiceDescriptor) resolution.object() ).state();
-            }
-            else
-            {
-                descriptor = ( (EntityDescriptor) resolution.object() ).state();
-            }
+            descriptor = ( (StatefulCompositeDescriptor) resolution.model() ).state();
 
             State annotation = (State) dependencyModel.injectionAnnotation();
             String name;
@@ -87,7 +70,7 @@ public final class StateInjectionProviderFactory
         else if( Association.class.isAssignableFrom( dependencyModel.rawInjectionType() ) )
         {
             // @State Association<MyEntity> name;
-            EntityStateDescriptor descriptor = ( (EntityDescriptor) resolution.object() ).state();
+            EntityStateDescriptor descriptor = ( (EntityDescriptor) resolution.model() ).state();
             State annotation = (State) dependencyModel.injectionAnnotation();
             String name;
             if( annotation.value().equals( "" ) )
@@ -111,7 +94,7 @@ public final class StateInjectionProviderFactory
         else if( ManyAssociation.class.isAssignableFrom( dependencyModel.rawInjectionType() ) )
         {
             // @State ManyAssociation<MyEntity> name;
-            EntityStateDescriptor descriptor = ( (EntityDescriptor) resolution.object() ).state();
+            EntityStateDescriptor descriptor = ( (EntityDescriptor) resolution.model() ).state();
             State annotation = (State) dependencyModel.injectionAnnotation();
             String name;
             if( annotation.value().equals( "" ) )
@@ -149,7 +132,7 @@ public final class StateInjectionProviderFactory
         public Object provideInjection( InjectionContext context )
             throws InjectionProviderException
         {
-            Property value = context.state().getProperty( propertyDescriptor.accessor() );
+            Property value = context.state().propertyFor( propertyDescriptor.accessor() );
             if( value != null )
             {
                 return value;

@@ -220,7 +220,7 @@ public class ModuleUnitOfWork
         EntityComposite entityComposite = (EntityComposite) entity;
         EntityInstance compositeInstance = EntityInstance.getEntityInstance( entityComposite );
         ModelModule<EntityModel> model = new ModelModule<EntityModel>( compositeInstance.module(), compositeInstance.entityModel() );
-        Class<? extends EntityComposite> type = compositeInstance.type();
+        Class<?> type = compositeInstance.type();
         return uow.get( compositeInstance.identity(), this, Collections.singletonList( model), type ).<T>proxy();
     }
 

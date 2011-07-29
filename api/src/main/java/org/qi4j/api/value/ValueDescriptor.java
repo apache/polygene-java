@@ -14,17 +14,16 @@
 
 package org.qi4j.api.value;
 
-import org.qi4j.api.composite.AbstractCompositeDescriptor;
+import org.qi4j.api.composite.CompositeDescriptor;
 import org.qi4j.api.composite.StateDescriptor;
+import org.qi4j.api.composite.StatefulCompositeDescriptor;
 import org.qi4j.api.type.ValueType;
 
 /**
  * Descriptor for ValueComposites.
  */
 public interface ValueDescriptor
-    extends AbstractCompositeDescriptor
+    extends CompositeDescriptor, StatefulCompositeDescriptor
 {
-    StateDescriptor state();
-
     ValueType valueType();
 }

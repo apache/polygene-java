@@ -14,20 +14,13 @@
 
 package org.qi4j.api.service;
 
-import org.qi4j.api.common.Visibility;
+import org.qi4j.api.composite.ModelDescriptor;
 
 /**
  * {@code ServiceDescriptor} provides meta informations of a service.
  */
 public interface ImportedServiceDescriptor
+    extends ModelDescriptor, IdentityDescriptor
 {
-    Class type();
-
     Class<? extends ServiceImporter> serviceImporter();
-
-    String identity();
-
-    Visibility visibility();
-
-    <T> T metaInfo( Class<T> infoType );
 }

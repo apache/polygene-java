@@ -305,7 +305,7 @@ public class JSONDeserializer
             JSONObject jsonObject = (JSONObject) json;
 
             ValueCompositeType actualValueType = (ValueCompositeType) valueType;
-            Iterable<PersistentPropertyDescriptor> actualTypes = actualValueType.types();
+            Iterable<PersistentPropertyDescriptor> actualTypes = actualValueType.properties();
             String actualType = jsonObject.optString( "_type" );
             if( !actualType.equals( "" ) )
             {
@@ -317,7 +317,7 @@ public class JSONDeserializer
                 }
 
                 actualValueType = (ValueCompositeType) descriptor.valueType();
-                actualTypes = actualValueType.types();
+                actualTypes = actualValueType.properties();
             }
 
             final Map<QualifiedName, Object> values = new HashMap<QualifiedName, Object>();

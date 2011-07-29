@@ -36,5 +36,5 @@ public interface TransientDeclaration
 
     TransientDeclaration withMixins( Class<?>... mixins );
 
-    TransientDeclaration withRoles( Class<?>... roles );
+    TransientDeclaration withTypes( Class<?>... roles );
 }

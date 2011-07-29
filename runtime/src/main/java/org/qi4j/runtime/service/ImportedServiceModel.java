@@ -85,6 +85,12 @@ public final class ImportedServiceModel
     }
 
     @Override
+    public boolean isAssignableTo( Class<?> type )
+    {
+        return this.type.isAssignableFrom( type );
+    }
+
+    @Override
     public <ThrowableType extends Throwable> boolean accept( Visitor<? super ImportedServiceModel, ThrowableType> visitor ) throws ThrowableType
     {
         return visitor.visit( this );

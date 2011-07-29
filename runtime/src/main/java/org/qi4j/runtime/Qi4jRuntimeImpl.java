@@ -18,7 +18,6 @@ import org.qi4j.api.Qi4j;
 import org.qi4j.api.composite.*;
 import org.qi4j.api.entity.*;
 import org.qi4j.api.entity.association.AbstractAssociation;
-import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.AssociationDescriptor;
 import org.qi4j.api.entity.association.EntityStateHolder;
 import org.qi4j.api.property.Property;
@@ -43,7 +42,7 @@ import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
 import org.qi4j.runtime.composite.TransientInstance;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.association.AbstractAssociationInstance;
-import org.qi4j.runtime.property.AbstractPropertyInstance;
+import org.qi4j.runtime.property.PropertyInstance;
 import org.qi4j.runtime.service.ImportedServiceReferenceInstance;
 import org.qi4j.runtime.service.ServiceInstance;
 import org.qi4j.runtime.service.ServiceModel;
@@ -314,7 +313,7 @@ public final class Qi4jRuntimeImpl
         while (property instanceof PropertyWrapper)
             property = ((PropertyWrapper)property).getNext();
 
-        return ((AbstractPropertyInstance)property).getPropertyDescriptor();
+        return (PropertyDescriptor) ((PropertyInstance)property).getPropertyInfo();
     }
 
     public AssociationDescriptor getAssociationDescriptor( AbstractAssociation association)

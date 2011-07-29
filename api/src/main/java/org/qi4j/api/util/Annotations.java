@@ -21,6 +21,7 @@ import org.qi4j.functional.Specification;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 import static org.qi4j.functional.Iterables.*;
@@ -76,11 +77,7 @@ public final class Annotations
 
     public static <T extends Annotation> T getAnnotation( Type type, Class<T> annotationType )
     {
-        if( !( type instanceof Class ) )
-        {
-            return null;
-        }
-        return annotationType.cast( ((Class<?>) type).getAnnotation( annotationType ) );
+        return annotationType.cast( Classes.RAW_CLASS.map( type ).getAnnotation( annotationType ) );
     }
 
     public static Iterable<Annotation> getAccessorAndTypeAnnotations( AccessibleObject accessor )

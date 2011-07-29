@@ -16,37 +16,13 @@ package org.qi4j.api.constraint;
 import org.qi4j.api.common.InvalidApplicationException;
 
 import java.lang.reflect.Type;
+import java.util.List;
 
 public class ConstraintImplementationNotFoundException
     extends InvalidApplicationException
 {
-    private static final long serialVersionUID = 1L;
-
-    private final Class compositeType;
-    private final Class constraintType;
-    private final Type valueType;
-
-    public ConstraintImplementationNotFoundException( Class compositeType, Class constraintType, Type valueType )
+    public ConstraintImplementationNotFoundException( String message )
     {
-        super( "Cannot find implementation of constraint @" + constraintType.getSimpleName() + " for " + valueType + " in composite " + compositeType
-            .getName() );
-        this.compositeType = compositeType;
-        this.constraintType = constraintType;
-        this.valueType = valueType;
-    }
-
-    public Class compositeType()
-    {
-        return compositeType;
-    }
-
-    public Class constraintType()
-    {
-        return constraintType;
-    }
-
-    public Type valueType()
-    {
-        return valueType;
+        super( message );
     }
 }

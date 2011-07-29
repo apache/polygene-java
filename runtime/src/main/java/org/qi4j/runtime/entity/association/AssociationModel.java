@@ -216,7 +216,7 @@ public final class AssociationModel
 
         if (type instanceof TypeVariable)
         {
-            type = Classes.resolveTypeVariable( (TypeVariable) type, ((Member)accessor).getDeclaringClass(), resolution.object().type());
+            type = Classes.resolveTypeVariable( (TypeVariable) type, ((Member)accessor).getDeclaringClass(), resolution.model().type());
         }
     }
 

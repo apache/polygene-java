@@ -154,22 +154,22 @@ public abstract class JSONSerializer
             objectStart();
             ValueComposite valueComposite = (ValueComposite) value;
 
-            Iterable<PersistentPropertyDescriptor> actualTypes = valueCompositeType.types();
-            if( !value.getClass().getInterfaces()[0].getName().equals( Qi4j.DESCRIPTOR_FUNCTION.map(valueComposite).type().getName() ) )
+            Iterable<PersistentPropertyDescriptor> actualProperties = valueCompositeType.properties();
+            if( !valueCompositeType.type().equals( Qi4j.DESCRIPTOR_FUNCTION.map( valueComposite ).type() ) )
             {
                 // Actual value is a subtype - use it instead
                 ValueDescriptor valueDescriptor = (ValueDescriptor) Qi4j.DESCRIPTOR_FUNCTION.map( valueComposite );
 
-                actualTypes = ((ValueCompositeType)valueDescriptor.valueType()).types();
+                actualProperties = ((ValueCompositeType)valueDescriptor.valueType()).properties();
 
                 if (includeTypeInformation)
                     key("_type").value( valueDescriptor.valueType().type().getName() );
             }
 
             StateHolder state = Qi4j.INSTANCE_FUNCTION.map( valueComposite ).state();
-            for( PersistentPropertyDescriptor persistentProperty : actualTypes )
+            for( PersistentPropertyDescriptor persistentProperty : actualProperties )
             {
-                Property<?> property = state.getProperty( persistentProperty.accessor() );
+                Property<?> property = state.propertyFor( persistentProperty.accessor() );
                 key( persistentProperty.qualifiedName().name() ).serialize( property.get(), persistentProperty.valueType() );
             }
             objectEnd();

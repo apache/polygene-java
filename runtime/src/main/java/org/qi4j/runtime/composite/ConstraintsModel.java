@@ -14,123 +14,58 @@
 
 package org.qi4j.runtime.composite;
 
-import org.qi4j.api.common.InvalidApplicationException;
-import org.qi4j.api.constraint.Constraint;
-import org.qi4j.api.constraint.ConstraintImplementationNotFoundException;
-import org.qi4j.api.constraint.Constraints;
-import org.qi4j.api.util.Classes;
-import org.qi4j.functional.Iterables;
+import org.qi4j.api.constraint.MethodConstraintsDescriptor;
+import org.qi4j.functional.HierarchicalVisitor;
+import org.qi4j.functional.VisitableHierarchy;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-
-import static java.util.Arrays.asList;
-import static org.qi4j.api.util.Annotations.hasAnnotation;
-import static org.qi4j.api.util.Annotations.type;
-import static org.qi4j.functional.Iterables.filter;
-import static org.qi4j.functional.Specifications.translate;
 
 /**
  * JAVADOC
  */
 public final class ConstraintsModel
+    implements MethodConstraintsDescriptor, VisitableHierarchy<Object, Object>
 {
-    private final List<ConstraintDeclaration> constraints = new ArrayList<ConstraintDeclaration>();
-    private final Class declaringType;
+    private List<ValueConstraintsModel> parameterConstraintModels;
 
-    public ConstraintsModel( Class declaringType )
+    private static ConstraintsInstance EMPTY_CONSTRAINTS = new ConstraintsInstance(Collections.<ValueConstraintsInstance>emptyList());
+
+    public ConstraintsModel( List<ValueConstraintsModel> parameterConstraintModels )
     {
-        this.declaringType = declaringType;
-        // Find constraint declarations
-        Iterable<Type> interfaces = Classes.INTERFACES_OF.map( declaringType );
+        this.parameterConstraintModels = parameterConstraintModels;
+    }
 
-        for( Type anInterface : interfaces )
+    public ConstraintsInstance newInstance()
+    {
+        if (parameterConstraintModels.isEmpty())
+            return EMPTY_CONSTRAINTS;
+        else
         {
-            addConstraintDeclarations( anInterface );
+            List<ValueConstraintsInstance> parameterConstraintsInstances = new ArrayList<ValueConstraintsInstance>(parameterConstraintModels.size());
+            for( ValueConstraintsModel parameterConstraintModel : parameterConstraintModels )
+            {
+                parameterConstraintsInstances.add( parameterConstraintModel.newInstance() );
+            }
+            return new ConstraintsInstance( parameterConstraintsInstances );
         }
     }
 
-    public ValueConstraintsModel constraintsFor( Iterable<Annotation> constraintAnnotations,
-                                                 Type valueType,
-                                                 String name,
-                                                 boolean optional
-    )
+    @Override
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> modelVisitor ) throws ThrowableType
     {
-        List<AbstractConstraintModel> constraintModels = new ArrayList<AbstractConstraintModel>();
-        nextConstraint:
-        for( Annotation constraintAnnotation : filter( translate( type(), hasAnnotation( org.qi4j.api.constraint.ConstraintDeclaration.class ) ), constraintAnnotations ) )
+        if (modelVisitor.visitEnter( this ))
         {
-            // Check composite declarations first
-            Class<? extends Annotation> annotationType = constraintAnnotation.annotationType();
-            for( ConstraintDeclaration constraint : constraints )
+            if( parameterConstraintModels != null )
             {
-                if( constraint.appliesTo( annotationType, valueType ) )
+                for( ValueConstraintsModel parameterConstraintModel : parameterConstraintModels )
                 {
-                    constraintModels.add( new ConstraintModel( constraintAnnotation, constraint.constraintClass() ) );
-                    continue nextConstraint;
+                    if (!parameterConstraintModel.accept( modelVisitor ))
+                        break;
                 }
-            }
-
-            // Check the annotation itself
-            Constraints constraints = annotationType.getAnnotation( Constraints.class );
-            if( constraints != null )
-            {
-                for( Class<? extends Constraint<?, ?>> constraintClass : constraints.value() )
-                {
-                    ConstraintDeclaration declaration = new ConstraintDeclaration( constraintClass, constraintAnnotation
-                        .annotationType() );
-                    if( declaration.appliesTo( annotationType, valueType ) )
-                    {
-                        constraintModels.add( new ConstraintModel( constraintAnnotation, declaration.constraintClass() ) );
-                        continue nextConstraint;
-                    }
-                }
-            }
-
-            // No implementation found!
-
-            // Check if if it's a composite constraints
-            if( Iterables.matchesAny( translate( type(), hasAnnotation( org.qi4j.api.constraint.ConstraintDeclaration.class ) ), asList( constraintAnnotation
-                    .annotationType()
-                    .getAnnotations() ) ) )
-            {
-                ValueConstraintsModel valueConstraintsModel = constraintsFor( asList( constraintAnnotation.annotationType()
-                                                                                          .getAnnotations() ), valueType, name, optional );
-                CompositeConstraintModel compositeConstraintModel = new CompositeConstraintModel( constraintAnnotation, valueConstraintsModel );
-                constraintModels.add( compositeConstraintModel );
-                continue nextConstraint;
-            }
-
-            throw new ConstraintImplementationNotFoundException( declaringType, constraintAnnotation.annotationType(), valueType );
-        }
-
-        return new ValueConstraintsModel( constraintModels, name, optional );
-    }
-
-    private void addConstraintDeclarations( Type type )
-    {
-        if( type instanceof Class )
-        {
-            Class<?> clazz = (Class<?>) type;
-            try
-            {
-                Constraints annotation = clazz.getAnnotation( Constraints.class );
-
-                if( annotation != null )
-                {
-                    Class<? extends Constraint<?, ?>>[] constraintClasses = annotation.value();
-                    for( Class<? extends Constraint<?, ?>> constraintClass : constraintClasses )
-                    {
-                        constraints.add( new ConstraintDeclaration( constraintClass, type ) );
-                    }
-                }
-            }
-            catch( Exception e )
-            {
-                throw new InvalidApplicationException( "Could not get Constraints for type " + clazz.getName(), e );
             }
         }
+        return modelVisitor.visitLeave( this );
     }
 }

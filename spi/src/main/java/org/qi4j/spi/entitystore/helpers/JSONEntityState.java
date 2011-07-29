@@ -247,9 +247,9 @@ public final class JSONEntityState
     }
 
     @Override
-    public boolean isOfType( Class<? extends EntityComposite> type )
+    public boolean isAssignableTo( Class<?> type )
     {
-        return entityDescriptor.type().equals( type );
+        return entityDescriptor.isAssignableTo( type );
     }
 
     public EntityDescriptor entityDescriptor()

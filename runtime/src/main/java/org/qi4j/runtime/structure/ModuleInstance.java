@@ -70,7 +70,6 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static org.qi4j.functional.Iterables.*;
-import static org.qi4j.runtime.object.ObjectModel.modelTypeSpecification;
 
 /**
  * Instance of a Qi4j Module. Contains the various composites for this Module.
@@ -302,7 +301,7 @@ public class ModuleInstance
             };
 
             LinkedHashSet<ModelModule<EntityModel>> result = new LinkedHashSet<ModelModule<EntityModel>>(  );
-            Iterables.addAll( result, ambiguousCheck( type, findModels( ObjectModel.exactTypeSpecification( type ), visibleEntities(Visibility.module), layerInstance().visibleEntities(Visibility.layer), layerInstance().visibleEntities(Visibility.application), layerInstance().usedLayersInstance().visibleEntities() ) ) );
+            Iterables.addAll( result, ambiguousCheck( type, findModels( exactTypeSpecification( type ), visibleEntities(Visibility.module), layerInstance().visibleEntities(Visibility.layer), layerInstance().visibleEntities(Visibility.application), layerInstance().usedLayersInstance().visibleEntities() ) ) );
             Iterables.addAll( result, findModels( hasRole, visibleEntities( Visibility.module ), layerInstance().visibleEntities( Visibility.layer ), layerInstance().visibleEntities( Visibility.application ), layerInstance().usedLayersInstance().visibleEntities() ) );
 
             models = result;
@@ -319,8 +318,8 @@ public class ModuleInstance
 
         if( model == null )
         {
-            Iterable<ModelModule<TransientModel>> flatten = flatten( ambiguousCheck( type, findModels( ObjectModel.exactTypeSpecification( type ), visibleTransients( Visibility.module ), layerInstance().visibleTransients( Visibility.layer ), layerInstance().visibleTransients( Visibility.application ), layerInstance().usedLayersInstance().visibleTransients() ) ),
-                    ambiguousCheck( type, findModels( ObjectModel.assignableTypeSpecification( type ), visibleTransients( Visibility.module ), layerInstance().visibleTransients( Visibility.layer ), layerInstance().visibleTransients( Visibility.application ), layerInstance().usedLayersInstance().visibleTransients() ) ) );
+            Iterable<ModelModule<TransientModel>> flatten = flatten( ambiguousCheck( type, findModels( exactTypeSpecification( type ), visibleTransients( Visibility.module ), layerInstance().visibleTransients( Visibility.layer ), layerInstance().visibleTransients( Visibility.application ), layerInstance().usedLayersInstance().visibleTransients() ) ),
+                    ambiguousCheck( type, findModels( assignableTypeSpecification( type ), visibleTransients( Visibility.module ), layerInstance().visibleTransients( Visibility.layer ), layerInstance().visibleTransients( Visibility.application ), layerInstance().usedLayersInstance().visibleTransients() ) ) );
             model = Iterables.first( flatten );
 
             if (model != null)
@@ -336,8 +335,8 @@ public class ModuleInstance
 
         if( model == null )
         {
-            Iterable<ModelModule<ObjectModel>> flatten = Iterables.flatten( ambiguousCheck( type, findModels( ObjectModel.exactTypeSpecification( type ), visibleObjects( Visibility.module ), layerInstance().visibleObjects( Visibility.layer ), layerInstance().visibleObjects(Visibility.application), layerInstance().usedLayersInstance().visibleObjects() ) ),
-                    ambiguousCheck( type, findModels( ObjectModel.assignableTypeSpecification( type ), visibleObjects( Visibility.module ), layerInstance().visibleObjects( Visibility.layer ), layerInstance().visibleObjects(Visibility.application), layerInstance().usedLayersInstance().visibleObjects() ) ) );
+            Iterable<ModelModule<ObjectModel>> flatten = Iterables.flatten( ambiguousCheck( type, findModels( exactTypeSpecification( type ), visibleObjects( Visibility.module ), layerInstance().visibleObjects( Visibility.layer ), layerInstance().visibleObjects(Visibility.application), layerInstance().usedLayersInstance().visibleObjects() ) ),
+                    ambiguousCheck( type, findModels( assignableTypeSpecification( type ), visibleObjects( Visibility.module ), layerInstance().visibleObjects( Visibility.layer ), layerInstance().visibleObjects(Visibility.application), layerInstance().usedLayersInstance().visibleObjects() ) ) );
 
             model = Iterables.first( flatten );
 
@@ -355,13 +354,13 @@ public class ModuleInstance
         if( model == null )
         {
             Iterable<ModelModule<ValueModel>> flatten =  Iterables.flatten( ambiguousCheck( type,
-                                            findModels( ObjectModel.exactTypeSpecification( type ),
+                                            findModels( exactTypeSpecification( type ),
                                                     visibleValues( Visibility.module ),
                                                     layerInstance().visibleValues( Visibility.layer ),
                                                     layerInstance().visibleValues(Visibility.application),
                                                     layerInstance().usedLayersInstance().visibleValues() )),
                                         ambiguousCheck( type,
-                                            findModels( ObjectModel.assignableTypeSpecification( type ),
+                                            findModels( assignableTypeSpecification( type ),
                                                     visibleValues( Visibility.module ),
                                                     layerInstance().visibleValues( Visibility.layer ),
                                                     layerInstance().visibleValues(Visibility.application),
@@ -376,7 +375,7 @@ public class ModuleInstance
         return model;
     }
 
-    private <T extends ObjectDescriptor> Iterable<ModelModule<T>> findModels( Specification<? super T> specification,
+    private <T extends ModelDescriptor> Iterable<ModelModule<T>> findModels( Specification<? super T> specification,
                                                                               Iterable<ModelModule<T>>... models )
     {
         Specification<ModelModule<T>> spec = Specifications.translate( ModelModule.<T>modelFunction(), specification );
@@ -532,7 +531,7 @@ public class ModuleInstance
                 @Override
                 public Object map( PropertyDescriptor propertyDescriptor )
                 {
-                    Property<?> property = valueInstance.state().getProperty( propertyDescriptor.accessor() );
+                    Property<?> property = valueInstance.state().propertyFor( propertyDescriptor.accessor() );
                     return property == null ? null : property.get();
                 }
             };
@@ -740,18 +739,18 @@ public class ModuleInstance
             Class clazz = classes.get( name );
             if( clazz == null )
             {
-                Specification<ObjectDescriptor> modelTypeSpecification = modelTypeSpecification( name );
-                Specification<ModelModule<ObjectDescriptor>> translate = Specifications.translate( ModelModule.modelFunction(), modelTypeSpecification );
+                Specification<ModelDescriptor> modelTypeSpecification = modelTypeSpecification( name );
+                Specification<ModelModule<ModelDescriptor>> translate = Specifications.translate( ModelModule.modelFunction(), modelTypeSpecification );
 
                 // Check module
                 {
-                    Iterable<ModelModule<ObjectDescriptor>> i = cast( flatten( cast( visibleObjects(Visibility.module) ),
+                    Iterable<ModelModule<ModelDescriptor>> i = cast( flatten( cast( visibleObjects(Visibility.module) ),
                             cast( visibleEntities(Visibility.module) ),
                             cast( visibleTransients(Visibility.module) ),
                             cast( visibleValues(Visibility.module) ) ) );
 
-                    Iterable<ModelModule<ObjectDescriptor>> moduleModels = filter( translate, i );
-                    Iterator<ModelModule<ObjectDescriptor>> iter = moduleModels.iterator();
+                    Iterable<ModelModule<ModelDescriptor>> moduleModels = filter( translate, i );
+                    Iterator<ModelModule<ModelDescriptor>> iter = moduleModels.iterator();
                     if( iter.hasNext() )
                     {
                         clazz = iter.next().model().type();
@@ -767,7 +766,7 @@ public class ModuleInstance
                 // Check layer
                 if( clazz == null )
                 {
-                    Iterable<ModelModule<ObjectDescriptor>> flatten = cast( flatten(
+                    Iterable<ModelModule<ModelDescriptor>> flatten = cast( flatten(
                             cast( layerInstance().visibleObjects( Visibility.layer ) ),
                             cast( layerInstance().visibleTransients( Visibility.layer ) ),
                             cast( layerInstance().visibleEntities( Visibility.layer ) ),
@@ -776,8 +775,8 @@ public class ModuleInstance
                             cast( layerInstance().visibleTransients( Visibility.application ) ),
                             cast( layerInstance().visibleEntities( Visibility.application ) ),
                             cast( layerInstance().visibleValues( Visibility.application ) ) ) );
-                    Iterable<ModelModule<ObjectDescriptor>> layerModels = filter( translate, flatten );
-                    Iterator<ModelModule<ObjectDescriptor>> iter = layerModels.iterator();
+                    Iterable<ModelModule<ModelDescriptor>> layerModels = filter( translate, flatten );
+                    Iterator<ModelModule<ModelDescriptor>> iter = layerModels.iterator();
                     if( iter.hasNext() )
                     {
                         clazz = iter.next().model().type();
@@ -793,13 +792,13 @@ public class ModuleInstance
                 // Check used layers
                 if( clazz == null )
                 {
-                    Iterable<ModelModule<ObjectDescriptor>> flatten = cast( flatten(
+                    Iterable<ModelModule<ModelDescriptor>> flatten = cast( flatten(
                             cast( layerInstance().usedLayersInstance().visibleObjects() ),
                             cast( layerInstance().usedLayersInstance().visibleTransients() ),
                             cast( layerInstance().usedLayersInstance().visibleEntities() ),
                             cast( layerInstance().usedLayersInstance().visibleValues() ) ) );
-                    Iterable<ModelModule<ObjectDescriptor>> usedLayersModels = filter( translate, flatten );
-                    Iterator<ModelModule<ObjectDescriptor>> iter = usedLayersModels.iterator();
+                    Iterable<ModelModule<ModelDescriptor>> usedLayersModels = filter( translate, flatten );
+                    Iterator<ModelModule<ModelDescriptor>> iter = usedLayersModels.iterator();
                     if( iter.hasNext() )
                     {
                         clazz = iter.next().model().type();
@@ -832,7 +831,7 @@ public class ModuleInstance
      * @param <T>
      * @return
      */
-    private <T extends ObjectDescriptor> Iterable<ModelModule<T>> ambiguousCheck( final Class type, final Iterable<ModelModule<T>> models )
+    private <T extends ModelDescriptor> Iterable<ModelModule<T>> ambiguousCheck( final Class type, final Iterable<ModelModule<T>> models )
     {
         return new Iterable<ModelModule<T>>()
         {
@@ -870,6 +869,42 @@ public class ModuleInstance
 
                 // Ambiguity check done, and no ambiguities found. Return results
                 return results.iterator();
+            }
+        };
+    }
+
+    public Specification<ModelDescriptor> modelTypeSpecification( final String className)
+    {
+        return new Specification<ModelDescriptor>()
+        {
+            @Override
+            public boolean satisfiedBy( ModelDescriptor item )
+            {
+                return item.type().getName().equals(className);
+            }
+        };
+    }
+
+    public Specification<ModelDescriptor> exactTypeSpecification( final Class type)
+    {
+        return new Specification<ModelDescriptor>()
+        {
+            @Override
+            public boolean satisfiedBy( ModelDescriptor item )
+            {
+                return item.type().equals(type);
+            }
+        };
+    }
+
+    public Specification<ModelDescriptor> assignableTypeSpecification( final Class type)
+    {
+        return new Specification<ModelDescriptor>()
+        {
+            @Override
+            public boolean satisfiedBy( ModelDescriptor item )
+            {
+                return !type.equals( item.type() ) && type.isAssignableFrom( item.type());
             }
         };
     }

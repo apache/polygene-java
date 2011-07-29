@@ -125,11 +125,11 @@ public final class ServiceDeclarationImpl
         return this;
     }
 
-    public ServiceDeclaration withRoles( Class<?>... roles )
+    public ServiceDeclaration withTypes( Class<?>... types )
     {
         for( ServiceAssemblyImpl serviceAssembly : serviceAssemblies )
         {
-            serviceAssembly.roles.addAll( Arrays.asList( roles ) );
+            serviceAssembly.types.addAll( Arrays.asList( types ) );
         }
         return this;
     }

@@ -77,11 +77,11 @@ public final class TransientDeclarationImpl
         return this;
     }
 
-    public TransientDeclaration withRoles( Class<?>... roles )
+    public TransientDeclaration withTypes( Class<?>... types )
     {
         for( TransientAssemblyImpl assembly : assemblies )
         {
-            assembly.roles.addAll( Arrays.asList( roles ) );
+            assembly.types.addAll( Arrays.asList( types ) );
         }
         return this;
     }

@@ -27,7 +27,6 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static org.qi4j.functional.Iterables.*;
@@ -42,31 +41,31 @@ public final class CompositeMethodModel
     // Model
     private Method method;
     private Method invocationMethod; // This will be the _ prefixed method on typed mixins
-    private MethodConstraintsModel methodConstraints;
-    private MethodConcernsModel methodConcerns;
-    private MethodSideEffectsModel methodSideEffects;
-    private AbstractMixinsModel mixins;
+    private ConstraintsModel constraints;
+    private ConcernsModel concerns;
+    private SideEffectsModel sideEffects;
+    private MixinsModel mixins;
     private AnnotatedElement annotations;
 
     // Context
     private SynchronizedCompositeMethodInstancePool instancePool;
     //    private final InstancePool instancePool = new AtomicInstancePool();
     //    private final InstancePool instancePool = new ThreadLocalCompositeMethodInstancePool();
-    private MethodConstraintsInstance methodConstraintsInstance;
+    private ConstraintsInstance constraintsInstance;
 
     public CompositeMethodModel( Method method,
-                                 MethodConstraintsModel methodConstraintsModel,
-                                 MethodConcernsModel methodConcernsModel,
-                                 MethodSideEffectsModel methodSideEffectsModel,
-                                 AbstractMixinsModel mixinsModel
+                                 ConstraintsModel constraintsModel,
+                                 ConcernsModel concernsModel,
+                                 SideEffectsModel sideEffectsModel,
+                                 MixinsModel mixinsModel
     )
     {
         this.method = method;
         mixins = mixinsModel;
-        methodConcerns = methodConcernsModel;
-        methodSideEffects = methodSideEffectsModel;
-        methodConstraints = methodConstraintsModel;
-        methodConstraintsInstance = methodConstraints.newInstance();
+        concerns = concernsModel;
+        sideEffects = sideEffectsModel;
+        constraints = constraintsModel;
+        constraintsInstance = constraints.newInstance();
         initialize();
     }
 
@@ -91,8 +90,8 @@ public final class CompositeMethodModel
 
     public Iterable<DependencyModel> dependencies()
     {
-        return flattenIterables( filter( notNull(), iterable( methodConcerns != null ? methodConcerns.dependencies() : null,
-                                                              methodSideEffects != null ? methodSideEffects.dependencies() : null ) ) );
+        return flattenIterables( filter( notNull(), iterable( concerns != null ? concerns.dependencies() : null,
+                                                              sideEffects != null ? sideEffects.dependencies() : null ) ) );
     }
 
     // Context
@@ -100,7 +99,7 @@ public final class CompositeMethodModel
     public Object invoke( Object composite, Object[] params, MixinsInstance mixins, ModuleInstance moduleInstance )
         throws Throwable
     {
-        methodConstraintsInstance.checkValid( composite, params );
+        constraintsInstance.checkValid( composite, method,  params );
 
         CompositeMethodInstance methodInstance = getInstance( moduleInstance );
         try
@@ -129,14 +128,14 @@ public final class CompositeMethodModel
     {
         FragmentInvocationHandler mixinInvocationHandler = mixins.newInvocationHandler( method );
         InvocationHandler invoker = mixinInvocationHandler;
-        if( methodConcerns != null )
+        if( concerns != ConcernsModel.EMPTY_CONCERNS )
         {
-            MethodConcernsInstance concernsInstance = methodConcerns.newInstance( moduleInstance, mixinInvocationHandler );
+            ConcernsInstance concernsInstance = concerns.newInstance( method, moduleInstance, mixinInvocationHandler );
             invoker = concernsInstance;
         }
-        if( methodSideEffects != null )
+        if( sideEffects != SideEffectsModel.EMPTY_SIDEEFFECTS )
         {
-            MethodSideEffectsInstance sideEffectsInstance = methodSideEffects.newInstance( moduleInstance, invoker );
+            SideEffectsInstance sideEffectsInstance = sideEffects.newInstance( method, moduleInstance, invoker );
             invoker = sideEffectsInstance;
         }
 
@@ -176,25 +175,9 @@ public final class CompositeMethodModel
     {
         if (modelVisitor.visitEnter( this ))
         {
-            methodConstraints.accept( modelVisitor );
-
-            if( methodConcerns != null )
-            {
-                methodConcerns.accept( modelVisitor );
-            }
-            else
-            {
-                new MethodConcernsModel( method, Collections.<MethodConcernModel>emptyList() ).accept( modelVisitor );
-            }
-
-            if( methodSideEffects != null )
-            {
-                methodSideEffects.accept( modelVisitor );
-            }
-            else
-            {
-                new MethodSideEffectsModel( method, Collections.<MethodSideEffectModel>emptyList() ).accept( modelVisitor );
-            }
+            constraints.accept( modelVisitor );
+            concerns.accept( modelVisitor );
+            sideEffects.accept( modelVisitor );
         }
         return modelVisitor.visitLeave( this );
     }
@@ -220,7 +203,7 @@ public final class CompositeMethodModel
             try
             {
                 MixinModel model = mixins.mixinFor( method );
-                if( model.isGeneric() )
+                if( GenericSpecification.INSTANCE.satisfiedBy( model.mixinClass() ) )
                 {
                     return false;
                 }
@@ -240,7 +223,7 @@ public final class CompositeMethodModel
             try
             {
                 MixinModel model = mixins.mixinFor( method );
-                if( !model.isGeneric() )
+                if( !GenericSpecification.INSTANCE.satisfiedBy( model.mixinClass() ) )
                 {
                     T annotation = annotationClass.cast( model.mixinClass()
                                                              .getMethod( method.getName(), method.getParameterTypes() )
@@ -266,7 +249,7 @@ public final class CompositeMethodModel
             List<Annotation> annotations = new ArrayList<Annotation>();
             MixinModel model = mixins.mixinFor( method );
             Annotation[] mixinAnnotations = new Annotation[ 0 ];
-            if( !model.isGeneric() )
+            if( !GenericSpecification.INSTANCE.satisfiedBy( model.mixinClass() ) )
             {
                 mixinAnnotations = model.mixinClass().getAnnotations();
                 for( int i = 0; i < mixinAnnotations.length; i++ )

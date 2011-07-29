@@ -77,11 +77,11 @@ public final class ValueDeclarationImpl
         return this;
     }
 
-    public ValueDeclaration withRoles( Class<?>... roles )
+    public ValueDeclaration withTypes( Class<?>... types )
     {
         for( ValueAssemblyImpl assembly : assemblies )
         {
-            assembly.roles.addAll( Arrays.asList( roles ) );
+            assembly.types.addAll( Arrays.asList( types ) );
         }
         return this;
     }

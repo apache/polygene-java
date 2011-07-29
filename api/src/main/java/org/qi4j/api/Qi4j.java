@@ -140,10 +140,10 @@ public interface Qi4j
 
     AssociationDescriptor getAssociationDescriptor( AbstractAssociation association);
 
-    public static Function<Composite, AbstractCompositeDescriptor> DESCRIPTOR_FUNCTION = new Function<Composite, AbstractCompositeDescriptor>()
+    public static Function<Composite, CompositeDescriptor> DESCRIPTOR_FUNCTION = new Function<Composite, CompositeDescriptor>()
     {
         @Override
-        public AbstractCompositeDescriptor map( Composite composite )
+        public CompositeDescriptor map( Composite composite )
         {
             InvocationHandler invocationHandler = Proxy.getInvocationHandler( composite );
             return ((CompositeInstance) invocationHandler).descriptor();

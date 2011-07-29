@@ -33,7 +33,7 @@ public class PropertiesInstance
         this.properties = properties;
     }
 
-    public <T> Property<T> getProperty( AccessibleObject accessor )
+    public <T> Property<T> propertyFor( AccessibleObject accessor )
             throws IllegalArgumentException
     {
         Property<T> property = (Property<T>) properties.get( accessor );
@@ -66,7 +66,7 @@ public class PropertiesInstance
         PropertiesInstance that = (PropertiesInstance) o;
         for( Map.Entry<AccessibleObject, Property<?>> propertyEntry : properties.entrySet() )
         {
-            Property<?> thatProperty = that.getProperty( propertyEntry.getKey() );
+            Property<?> thatProperty = that.propertyFor( propertyEntry.getKey() );
             if (thatProperty == null)
                 return false;
             else

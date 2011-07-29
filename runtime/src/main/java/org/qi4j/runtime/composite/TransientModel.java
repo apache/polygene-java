@@ -19,81 +19,31 @@ import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.CompositeInstance;
-import org.qi4j.api.composite.InvalidCompositeException;
 import org.qi4j.api.composite.TransientDescriptor;
-import org.qi4j.api.property.Immutable;
+import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.property.StateHolder;
-import org.qi4j.bootstrap.PropertyDeclarations;
-import org.qi4j.runtime.bootstrap.AssemblyHelper;
-import org.qi4j.runtime.property.PropertiesModel;
+import org.qi4j.functional.Function;
+import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.structure.ModuleInstance;
 
 import java.lang.reflect.InvocationHandler;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Model for Transient Composites
  */
 public class TransientModel
-    extends AbstractCompositeModel
+    extends CompositeModel
     implements TransientDescriptor
 {
-    public static TransientModel newModel( final Class<? extends Composite> compositeType,
-                                           final Visibility visibility,
-                                           final MetaInfo metaInfo,
-                                           final PropertyDeclarations propertyDeclarations,
-                                           final Iterable<Class<?>> assemblyConcerns,
-                                           final Iterable<Class<?>> sideEffects,
-                                           final List<Class<?>> mixins,
-                                           final List<Class<?>> roles,
-                                           AssemblyHelper helper
+    public TransientModel( final Class<?> compositeType,
+                           Iterable<Class<?>> types, final Visibility visibility,
+                           final MetaInfo metaInfo,
+                           final MixinsModel mixinsModel,
+                           final StateModel stateModel,
+                           final CompositeMethodsModel compositeMethodsModel
     )
     {
-        ConstraintsModel constraintsModel = new ConstraintsModel( compositeType );
-        boolean immutable = metaInfo.get( Immutable.class ) != null;
-        PropertiesModel propertiesModel = new PropertiesModel( constraintsModel, propertyDeclarations, immutable );
-        StateModel stateModel = new StateModel( propertiesModel );
-        MixinsModel mixinsModel = new MixinsModel( compositeType, roles, mixins );
-
-        List<ConcernDeclaration> concerns = new ArrayList<ConcernDeclaration>();
-        ConcernsDeclaration.concernDeclarations( assemblyConcerns, concerns );
-        ConcernsDeclaration.concernDeclarations( compositeType, concerns );
-        ConcernsDeclaration concernsModel = new ConcernsDeclaration( concerns );
-
-        SideEffectsDeclaration sideEffectsModel = new SideEffectsDeclaration( compositeType, sideEffects );
-        CompositeMethodsModel compositeMethodsModel =
-            new CompositeMethodsModel( compositeType, constraintsModel, concernsModel, sideEffectsModel, mixinsModel, helper );
-        stateModel.addStateFor( compositeMethodsModel.methods(), mixinsModel );
-
-        return new TransientModel(
-            compositeType, roles, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
-    }
-
-    protected TransientModel( final Class<? extends Composite> compositeType,
-                              List<Class<?>> roles, final Visibility visibility,
-                              final MetaInfo metaInfo,
-                              final MixinsModel mixinsModel,
-                              final StateModel stateModel,
-                              final CompositeMethodsModel compositeMethodsModel
-    )
-    {
-        super( compositeType, roles, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
-    }
-
-    public Composite newProxy( InvocationHandler invocationHandler )
-        throws ConstructionException
-    {
-        // Instantiate proxy for given composite interface
-        try
-        {
-            return Composite.class.cast( proxyClass.getConstructor( InvocationHandler.class )
-                                             .newInstance( invocationHandler ) );
-        }
-        catch( Exception e )
-        {
-            throw new ConstructionException( e );
-        }
+        super( compositeType, types, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
     }
 
     public CompositeInstance newCompositeInstance( ModuleInstance moduleInstance,
@@ -104,28 +54,28 @@ public class TransientModel
         Object[] mixins = mixinsModel.newMixinHolder();
         CompositeInstance compositeInstance = new TransientInstance( this, moduleInstance, mixins, state );
 
-        try
+        // Instantiate all mixins
+        int i = 0;
+        InjectionContext injectionContext = new InjectionContext( compositeInstance, uses, state );
+        for( MixinModel mixinModel : mixinsModel.mixinModels() )
         {
-            // Instantiate all mixins
-            ( (MixinsModel) mixinsModel ).newMixins( compositeInstance,
-                                                     uses,
-                                                     state,
-                                                     mixins );
-        }
-        catch( InvalidCompositeException e )
-        {
-            e.setFailingCompositeType( type() );
-            e.setMessage( "Invalid Cyclic Mixin usage dependency" );
-            throw e;
+            mixins[ i++ ] = mixinModel.newInstance( injectionContext );
         }
 
         // Return
         return compositeInstance;
     }
 
-    public StateHolder newBuilderState( ModuleInstance module )
+    public StateHolder newBuilderState( final ModuleInstance module )
     {
-        return stateModel.newBuilderInstance(module);
+        return stateModel.newBuilderInstance(new Function<PropertyDescriptor, Object>()
+        {
+            @Override
+            public Object map( PropertyDescriptor propertyDescriptor )
+            {
+                return propertyDescriptor.initialValue( module );
+            }
+        } );
     }
 
     public StateHolder newState( StateHolder state )

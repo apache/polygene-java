@@ -14,16 +14,12 @@
 
 package org.qi4j.api.object;
 
-import org.qi4j.api.common.Visibility;
+import org.qi4j.api.composite.ModelDescriptor;
 
 /**
  * JAVADOC
  */
 public interface ObjectDescriptor
+    extends ModelDescriptor
 {
-    Class<?> type();
-
-    <T> T metaInfo( Class<T> infoType );
-
-    Visibility visibility();
 }

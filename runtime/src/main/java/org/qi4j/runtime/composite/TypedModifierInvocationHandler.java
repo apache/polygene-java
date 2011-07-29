@@ -45,7 +45,7 @@ public final class TypedModifierInvocationHandler
         {
             if( fragment == null )
             {
-                throw new InvalidCompositeException();
+                throw new InvalidCompositeException("No fragment available for method "+method.getName());
             }
             throw cleanStackTrace( e, proxy, method );
         }

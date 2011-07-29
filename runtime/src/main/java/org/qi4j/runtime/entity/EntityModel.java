@@ -26,10 +26,12 @@ import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.PersistentPropertyDescriptor;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.unitofwork.EntityCompositeAlreadyExistsException;
+import org.qi4j.api.util.Annotations;
 import org.qi4j.api.util.Classes;
 import org.qi4j.bootstrap.AssociationDeclarations;
 import org.qi4j.bootstrap.ManyAssociationDeclarations;
 import org.qi4j.bootstrap.PropertyDeclarations;
+import org.qi4j.functional.Iterables;
 import org.qi4j.runtime.bootstrap.AssemblyHelper;
 import org.qi4j.runtime.composite.*;
 import org.qi4j.runtime.entity.association.AssociationsModel;
@@ -42,6 +44,7 @@ import org.qi4j.spi.entitystore.EntityAlreadyExistsException;
 import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -51,7 +54,7 @@ import java.util.Set;
  * JAVADOC
  */
 public final class EntityModel
-    extends AbstractCompositeModel
+    extends CompositeModel
     implements EntityDescriptor
 {
     private static final Method IDENTITY_METHOD;
@@ -68,46 +71,10 @@ public final class EntityModel
         }
     }
 
-    public static EntityModel newModel( Class<? extends EntityComposite> type,
-                                        Visibility visibility,
-                                        MetaInfo metaInfo,
-                                        PropertyDeclarations propertyDecs,
-                                        AssociationDeclarations associationDecs,
-                                        ManyAssociationDeclarations manyAssociationDecs,
-                                        ConcernsDeclaration concernsDeclaration,
-                                        Iterable<Class<?>> sideEffects,
-                                        List<Class<?>> mixins,
-                                        List<Class<?>> roles, AssemblyHelper helper
-    )
-    {
-        ConstraintsModel constraintsModel = new ConstraintsModel( type );
-        boolean immutable = metaInfo.get( Immutable.class ) != null;
-        EntityPropertiesModel entityPropertiesModel = new EntityPropertiesModel( constraintsModel, propertyDecs, immutable );
-        AssociationsModel associationsModel = new AssociationsModel( constraintsModel, associationDecs );
-        ManyAssociationsModel manyAssociationsModel = new ManyAssociationsModel( constraintsModel, manyAssociationDecs );
-        EntityStateModel stateModel = new EntityStateModel( entityPropertiesModel, associationsModel, manyAssociationsModel );
-        EntityMixinsModel mixinsModel = new EntityMixinsModel( type, roles, mixins );
-        SideEffectsDeclaration sideEffectsModel = new SideEffectsDeclaration( type, sideEffects );
-        CompositeMethodsModel compositeMethodsModel = new CompositeMethodsModel( type,
-                                                                                 constraintsModel,
-                                                                                 concernsDeclaration,
-                                                                                 sideEffectsModel,
-                                                                                 mixinsModel, helper );
-        stateModel.addStateFor( compositeMethodsModel.methods(), mixinsModel );
-
-        return new EntityModel( type,
-                                roles,
-                                visibility,
-                                metaInfo,
-                                mixinsModel,
-                                stateModel,
-                                compositeMethodsModel );
-    }
-
     private final boolean queryable;
 
-    private EntityModel( Class<? extends EntityComposite> type,
-                         List<Class<?>> roles,
+    public EntityModel( Class<?> type,
+                        Iterable<Class<?>> types,
                          Visibility visibility,
                          MetaInfo info,
                          EntityMixinsModel mixinsModel,
@@ -115,15 +82,10 @@ public final class EntityModel
                          CompositeMethodsModel compositeMethodsModel
     )
     {
-        super( type, roles, visibility, info, mixinsModel, stateModel, compositeMethodsModel );
+        super( type, types, visibility, info, mixinsModel, stateModel, compositeMethodsModel );
 
-        final Queryable queryable = Classes.getAnnotationOfTypeOrAnyOfSuperTypes( type, Queryable.class );
+        final Queryable queryable = Iterables.first( Iterables.<Queryable, Annotation>cast(Iterables.filter( Annotations.isType( Queryable.class ), Iterables.flattenIterables( Iterables.map( Annotations.ANNOTATIONS_OF, types ) ) )));
         this.queryable = queryable == null || queryable.value();
-    }
-
-    public Class<? extends EntityComposite> type()
-    {
-        return (Class<? extends EntityComposite>) super.type();
     }
 
     public boolean queryable()
@@ -165,20 +127,6 @@ public final class EntityModel
     )
     {
         return ( (EntityMixinsModel) mixinsModel ).newMixin( entityInstance, entityState, mixins, method );
-    }
-
-    public EntityComposite newProxy( InvocationHandler invocationHandler )
-    {
-        // Instantiate proxy for given composite interface
-        try
-        {
-            return EntityComposite.class.cast( proxyClass.getConstructor( InvocationHandler.class )
-                                                   .newInstance( invocationHandler ) );
-        }
-        catch( Exception e )
-        {
-            throw new ConstructionException( e );
-        }
     }
 
     public EntityState newEntityState( EntityStoreUnitOfWork store, EntityReference identity )

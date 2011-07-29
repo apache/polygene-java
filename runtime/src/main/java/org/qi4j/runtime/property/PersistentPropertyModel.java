@@ -14,10 +14,8 @@
 
 package org.qi4j.runtime.property;
 
-import org.json.JSONException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.entity.Queryable;
-import org.qi4j.api.json.JSONWriterSerializer;
 import org.qi4j.api.property.PersistentPropertyDescriptor;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 
@@ -26,8 +24,8 @@ import java.lang.reflect.AccessibleObject;
 /**
  * JAVADOC
  */
-public abstract class PersistentPropertyModel
-    extends AbstractPropertyModel
+public class PersistentPropertyModel
+    extends PropertyModel
     implements PersistentPropertyDescriptor
 {
     private final boolean queryable;
