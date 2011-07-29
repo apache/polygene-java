@@ -14,14 +14,14 @@
 
 package org.qi4j.runtime.composite;
 
-import org.qi4j.api.sideeffect.MethodSideEffectDescriptor;
+import org.qi4j.api.sideeffect.SideEffectDescriptor;
 
 /**
  * JAVADOC
  */
 public final class SideEffectModel
     extends AbstractModifierModel
-    implements MethodSideEffectDescriptor
+    implements SideEffectDescriptor
 {
     public SideEffectModel( Class sideEffectClass, Class instantiationClass )
     {

@@ -12,12 +12,12 @@
  *
  */
 
-package org.qi4j.api.sideeffect;
+package org.qi4j.api.concern;
 
 /**
  * JAVADOC
  */
-public interface MethodSideEffectDescriptor
+public interface ConcernDescriptor
 {
     Class modifierClass();
 }

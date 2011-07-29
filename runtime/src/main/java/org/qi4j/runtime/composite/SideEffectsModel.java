@@ -14,7 +14,7 @@
 
 package org.qi4j.runtime.composite;
 
-import org.qi4j.api.sideeffect.MethodSideEffectsDescriptor;
+import org.qi4j.api.sideeffect.SideEffectsDescriptor;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.VisitableHierarchy;
@@ -32,7 +32,7 @@ import java.util.List;
  * JAVADOC
  */
 public final class SideEffectsModel
-    implements MethodSideEffectsDescriptor, Dependencies, VisitableHierarchy<Object, Object>
+    implements SideEffectsDescriptor, Dependencies, VisitableHierarchy<Object, Object>
 {
     public static final SideEffectsModel EMPTY_SIDEEFFECTS = new SideEffectsModel( Collections.<SideEffectModel>emptyList() );
 

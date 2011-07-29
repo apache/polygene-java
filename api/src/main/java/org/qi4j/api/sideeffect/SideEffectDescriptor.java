@@ -12,11 +12,12 @@
  *
  */
 
-package org.qi4j.api.constraint;
+package org.qi4j.api.sideeffect;
 
 /**
  * JAVADOC
  */
-public interface MethodConstraintsDescriptor
+public interface SideEffectDescriptor
 {
+    Class modifierClass();
 }

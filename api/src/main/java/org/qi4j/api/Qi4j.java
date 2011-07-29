@@ -52,23 +52,6 @@ public interface Qi4j
     <T> T dereference( T composite );
 
     /**
-     * Get the super Composite of the given Composite. <p>If one Composite
-     * type MyComposite is extended by CustomMyComposite interface,
-     * then the MyComposite is considered to be the super Composite
-     * of CustomMyComposite. A Composite may only extend one other Composite,
-     * but may extend any number of other interfaces which do not in turn
-     * extend Composite.</p>
-     *
-     * <p>If there are multiple super composites, this method will only return the first
-     * one found.</p>
-     *
-     * @param compositeClass the Composite type whose super Composite should be returned
-     *
-     * @return the super Composite of the given Composite, or null if it does not have one
-     */
-    <S extends Composite, T extends S> Class<S> getSuperComposite( Class<T> compositeClass );
-
-    /**
      * Finds the Configuration instance of a service.
      * <p>This is used by ConfigurationMixin to figure out the configuration instance used by
      * a Service using {@link org.qi4j.api.configuration.Configuration}, and should not be
@@ -88,8 +71,6 @@ public interface Qi4j
      */
     <T> T getConfigurationInstance( ServiceComposite serviceComposite, UnitOfWork uow )
         throws InstantiationException;
-
-    Class<?> getConfigurationType( Composite serviceComposite );
 
     /**
      * Returns the Module where the UnitOfWork belongs.
@@ -120,15 +101,9 @@ public interface Qi4j
 
     TransientDescriptor getTransientDescriptor( TransientComposite composite );
 
-    StateHolder getState( TransientComposite composite );
-
     EntityDescriptor getEntityDescriptor( EntityComposite composite );
 
-    EntityStateHolder getState( EntityComposite composite );
-
     ValueDescriptor getValueDescriptor( ValueComposite value );
-
-    StateHolder getState( ValueComposite composite );
 
     // Services
     ServiceDescriptor getServiceDescriptor( ServiceReference service );
@@ -139,6 +114,12 @@ public interface Qi4j
     PropertyDescriptor getPropertyDescriptor( Property property );
 
     AssociationDescriptor getAssociationDescriptor( AbstractAssociation association);
+
+    StateHolder getState( TransientComposite composite );
+
+    EntityStateHolder getState( EntityComposite composite );
+
+    StateHolder getState( ValueComposite composite );
 
     public static Function<Composite, CompositeDescriptor> DESCRIPTOR_FUNCTION = new Function<Composite, CompositeDescriptor>()
     {

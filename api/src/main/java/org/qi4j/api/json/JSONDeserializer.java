@@ -15,7 +15,7 @@ import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.type.*;
 import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.util.DateFunctions;
+import org.qi4j.api.util.Dates;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueDescriptor;
 import org.qi4j.functional.Function;
@@ -167,7 +167,7 @@ public class JSONDeserializer
             @Override
             public Date map( Object json )
             {
-                return DateFunctions.fromString( json.toString() );
+                return Dates.fromString( json.toString() );
             }
         } );
         registerDeserializer( DateTime.class, new Function<Object, DateTime>()

@@ -3,7 +3,7 @@ package org.qi4j.api.composite;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.util.Classes;
-import org.qi4j.api.util.DateFunctions;
+import org.qi4j.api.util.Dates;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -420,7 +420,7 @@ public final class PropertyMapper
     {
         public Object map( Type type, String value )
         {
-            return DateFunctions.fromString( value.trim() );
+            return Dates.fromString( value.trim() );
         }
     }
 

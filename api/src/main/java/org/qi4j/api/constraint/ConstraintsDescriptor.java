@@ -12,12 +12,11 @@
  *
  */
 
-package org.qi4j.api.concern;
+package org.qi4j.api.constraint;
 
 /**
  * JAVADOC
  */
-public interface MethodConcernDescriptor
+public interface ConstraintsDescriptor
 {
-    Class modifierClass();
 }

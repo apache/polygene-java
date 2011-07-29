@@ -111,24 +111,6 @@ public final class Qi4jRuntimeImpl
         return null;
     }
 
-    @SuppressWarnings( "unchecked" )
-    public <S extends Composite, T extends S> Class<S> getSuperComposite( Class<T> compositeClass )
-    {
-        Class<?>[] extendedInterfaces = compositeClass.getInterfaces();
-        for( Class<?> extendedInterface : extendedInterfaces )
-        {
-            if( Composite.class.isAssignableFrom( extendedInterface ) &&
-                !Composite.class.equals( extendedInterface ) &&
-                !EntityComposite.class.equals( extendedInterface ) &&
-                !ServiceComposite.class.equals( extendedInterface )
-                )
-            {
-                return (Class<S>) extendedInterface;
-            }
-        }
-        return null; // No super Composite type found
-    }
-
     public <T> T getConfigurationInstance( ServiceComposite serviceComposite, UnitOfWork uow )
         throws InstantiationException
     {
@@ -199,13 +181,6 @@ public final class Qi4jRuntimeImpl
             ex.initCause( e1 );
             throw ex;
         }
-    }
-
-    public Class<?> getConfigurationType( Composite serviceComposite )
-    {
-        ServiceModel descriptor = (ServiceModel) ServiceInstance.getCompositeInstance( serviceComposite )
-            .compositeModel();
-        return descriptor.calculateConfigurationType();
     }
 
     public Module getModule( UnitOfWork uow )

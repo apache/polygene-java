@@ -13,7 +13,7 @@ import org.qi4j.api.property.PersistentPropertyDescriptor;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.type.*;
-import org.qi4j.api.util.DateFunctions;
+import org.qi4j.api.util.Dates;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.api.value.ValueDescriptor;
 import org.qi4j.functional.Function;
@@ -77,7 +77,7 @@ public abstract class JSONSerializer
             @Override
             public Object map( Date date )
             {
-                return DateFunctions.toUtcString( date );
+                return Dates.toUtcString( date );
             }
         } );
 

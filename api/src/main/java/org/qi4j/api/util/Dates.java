@@ -25,7 +25,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-public final class DateFunctions
+public final class Dates
 {
     // Formatters are not thread-safe. Create one per thread
     private static ThreadLocal<DateFormat> ISO8601 = new ThreadLocal<DateFormat>()
@@ -47,16 +47,6 @@ public final class DateFunctions
             return dateFormat;
         }
     };
-
-    public static boolean isDate( Type type )
-    {
-        if( type instanceof Class )
-        {
-            Class typeClass = (Class) type;
-            return ( typeClass.equals( Date.class ) );
-        }
-        return false;
-    }
 
     public static Date fromString( String stringDate )
     {

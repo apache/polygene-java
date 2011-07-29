@@ -14,14 +14,14 @@
 
 package org.qi4j.runtime.composite;
 
-import org.qi4j.api.concern.MethodConcernDescriptor;
+import org.qi4j.api.concern.ConcernDescriptor;
 
 /**
  * JAVADOC
  */
 public final class ConcernModel
     extends AbstractModifierModel
-    implements MethodConcernDescriptor
+    implements ConcernDescriptor
 {
     public ConcernModel( Class concernClass, Class instantiationClass )
     {
