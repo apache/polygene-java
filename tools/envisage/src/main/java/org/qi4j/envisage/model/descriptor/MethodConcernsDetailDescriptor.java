@@ -16,7 +16,7 @@
 */
 package org.qi4j.envisage.model.descriptor;
 
-import org.qi4j.api.concern.MethodConcernsDescriptor;
+import org.qi4j.api.concern.ConcernsDescriptor;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -25,11 +25,11 @@ import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 
 public final class MethodConcernsDetailDescriptor
 {
-    private final MethodConcernsDescriptor descriptor;
+    private final ConcernsDescriptor descriptor;
     private CompositeMethodDetailDescriptor method;
     private final List<MethodConcernDetailDescriptor> concerns;
 
-    MethodConcernsDetailDescriptor( MethodConcernsDescriptor aDescriptor )
+    MethodConcernsDetailDescriptor( ConcernsDescriptor aDescriptor )
         throws IllegalArgumentException
     {
         validateNotNull( "aDescriptor", aDescriptor );
@@ -42,7 +42,7 @@ public final class MethodConcernsDetailDescriptor
      *
      * @since 0.5
      */
-    public final MethodConcernsDescriptor descriptor()
+    public final ConcernsDescriptor descriptor()
     {
         return descriptor;
     }

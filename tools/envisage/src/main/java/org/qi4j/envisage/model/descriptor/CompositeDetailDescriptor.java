@@ -16,7 +16,7 @@
 */
 package org.qi4j.envisage.model.descriptor;
 
-import org.qi4j.api.composite.AbstractCompositeDescriptor;
+import org.qi4j.api.composite.CompositeDescriptor;
 import org.qi4j.api.composite.MethodDescriptor;
 
 import java.lang.reflect.Method;
@@ -25,7 +25,7 @@ import java.util.List;
 
 import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 
-public class CompositeDetailDescriptor<T extends AbstractCompositeDescriptor>
+public class CompositeDetailDescriptor<T extends CompositeDescriptor>
 {
     protected final T descriptor;
     protected ModuleDetailDescriptor module;

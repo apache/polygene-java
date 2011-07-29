@@ -21,7 +21,7 @@ package org.qi4j.envisage.model.descriptor;
 
 import org.qi4j.api.composite.*;
 import org.qi4j.api.concern.MethodConcernDescriptor;
-import org.qi4j.api.concern.MethodConcernsDescriptor;
+import org.qi4j.api.concern.ConcernsDescriptor;
 import org.qi4j.api.constraint.ConstraintDescriptor;
 import org.qi4j.api.constraint.MethodConstraintsDescriptor;
 import org.qi4j.api.entity.EntityDescriptor;
@@ -169,14 +169,14 @@ public final class ApplicationDetailDescriptorBuilder
                 currMethodConstraintsDescriptor =
                         new MethodConstraintsDetailDescriptor( (MethodConstraintsDescriptor) visited );
                 currMethodDesciptor.setConstraints( currMethodConstraintsDescriptor );
-            } else if( visited instanceof MethodConcernsDescriptor )
+            } else if( visited instanceof ConcernsDescriptor )
             {
                 if( currCompositeDescriptor == null )
                 {
                     // Service via CompositeDescriptor in progress )
                     return false;
                 }
-                currMethodConcernsDescriptor = new MethodConcernsDetailDescriptor( (MethodConcernsDescriptor) visited );
+                currMethodConcernsDescriptor = new MethodConcernsDetailDescriptor( (ConcernsDescriptor) visited );
                 currMethodDesciptor.setConcerns( currMethodConcernsDescriptor );
             } else if( visited instanceof MethodConcernDescriptor )
             {

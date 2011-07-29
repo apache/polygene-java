@@ -95,7 +95,7 @@ public class PropertiesPanel
             int i = 0;
             for( PersistentPropertyDescriptor persistentPropertyDescriptor : descriptor.state().<PersistentPropertyDescriptor>properties() )
             {
-                rowData[ i++ ] = state.getProperty( persistentPropertyDescriptor.accessor() );
+                rowData[ i++ ] = state.propertyFor( persistentPropertyDescriptor.accessor() );
             }
             model.addRow( rowData );
         }

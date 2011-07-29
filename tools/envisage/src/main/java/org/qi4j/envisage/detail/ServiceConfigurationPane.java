@@ -16,6 +16,7 @@
 */
 package org.qi4j.envisage.detail;
 
+import org.qi4j.api.composite.ModelDescriptor;
 import org.qi4j.api.object.ObjectDescriptor;
 import org.qi4j.envisage.event.LinkEvent;
 import org.qi4j.envisage.model.descriptor.*;
@@ -117,7 +118,7 @@ public class ServiceConfigurationPane
             return;
         }
 
-        ObjectDescriptor spiDescriptor = null;
+        ModelDescriptor spiDescriptor = null;
         String typeString = null;
         if( configDescriptor instanceof ServiceDetailDescriptor )
         {

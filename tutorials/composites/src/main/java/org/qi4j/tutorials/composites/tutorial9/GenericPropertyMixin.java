@@ -36,7 +36,7 @@ public class GenericPropertyMixin
     public Object invoke( Object proxy, Method method, Object[] args )
         throws Throwable
     {
-        return state.getProperty( method );
+        return state.propertyFor( method );
     }
 
     public static class PropertyFilter

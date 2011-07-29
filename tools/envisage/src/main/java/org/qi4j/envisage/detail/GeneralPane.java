@@ -16,7 +16,7 @@
 */
 package org.qi4j.envisage.detail;
 
-import org.qi4j.api.composite.AbstractCompositeDescriptor;
+import org.qi4j.api.composite.CompositeDescriptor;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.object.ObjectDescriptor;
 import org.qi4j.api.service.ServiceDescriptor;
@@ -172,7 +172,7 @@ public class GeneralPane
             }
             else if( objectDesciptor instanceof CompositeDetailDescriptor )
             {
-                AbstractCompositeDescriptor descriptor = ( (CompositeDetailDescriptor) objectDesciptor ).descriptor();
+                CompositeDescriptor descriptor = ( (CompositeDetailDescriptor) objectDesciptor ).descriptor();
                 rows.add( new TableRow( 2, new Object[]{ nameRow, descriptor.type().getSimpleName() } ) );
                 rows.add( new TableRow( 2, new Object[]{ classRow, descriptor.type().getName() } ) );
                 rows.add( new TableRow( 2, new Object[]{ visibilityRow, descriptor.visibility().toString() } ) );

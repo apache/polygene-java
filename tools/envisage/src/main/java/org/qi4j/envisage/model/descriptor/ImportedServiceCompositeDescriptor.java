@@ -17,10 +17,11 @@
 package org.qi4j.envisage.model.descriptor;
 
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.composite.AbstractCompositeDescriptor;
+import org.qi4j.api.composite.CompositeDescriptor;
 import org.qi4j.api.service.ImportedServiceDescriptor;
 import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.api.util.Classes;
+import org.qi4j.functional.Iterables;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -30,15 +31,15 @@ import java.util.List;
  * ImportedServiceDescriptor wrapper as composite
  */
 public class ImportedServiceCompositeDescriptor
-    implements AbstractCompositeDescriptor
+    implements CompositeDescriptor
 {
     protected ImportedServiceDescriptor importedService;
-    protected List<Class> mixins;
+    protected List<Class<?>> mixins;
 
     public ImportedServiceCompositeDescriptor( ImportedServiceDescriptor importedService )
     {
         this.importedService = importedService;
-        mixins = new LinkedList<Class>();
+        mixins = new LinkedList<Class<?>>();
     }
 
     public ImportedServiceDescriptor importedService()
@@ -46,7 +47,7 @@ public class ImportedServiceCompositeDescriptor
         return importedService;
     }
 
-    public Iterable<Class> mixinTypes()
+    public Iterable<Class<?>> mixinTypes()
     {
         return mixins;
     }
@@ -64,6 +65,18 @@ public class ImportedServiceCompositeDescriptor
     public <T> T metaInfo( Class<T> infoType )
     {
         return importedService.metaInfo( infoType );
+    }
+
+    @Override
+    public Iterable<Class<?>> types()
+    {
+        return Iterables.cast(Iterables.iterable( importedService.type() ));
+    }
+
+    @Override
+    public boolean isAssignableTo( Class<?> type )
+    {
+        return importedService.isAssignableTo( type );
     }
 
     public Class<? extends ServiceImporter> serviceImporter()

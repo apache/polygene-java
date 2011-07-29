@@ -16,6 +16,7 @@
 */
 package org.qi4j.envisage.model.util;
 
+import org.qi4j.api.composite.ModelDescriptor;
 import org.qi4j.api.object.ObjectDescriptor;
 import org.qi4j.envisage.model.descriptor.*;
 
@@ -109,7 +110,7 @@ class ServiceConfigurationFinder
 
         for( Object obj : iter )
         {
-            ObjectDescriptor descriptor = null;
+            ModelDescriptor descriptor = null;
 
             if( obj instanceof ServiceDetailDescriptor )
             {

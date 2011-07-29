@@ -24,8 +24,9 @@ import org.apache.pdfbox.pdmodel.edit.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.graphics.xobject.PDJpeg;
-import org.qi4j.api.composite.AbstractCompositeDescriptor;
+import org.qi4j.api.composite.CompositeDescriptor;
 import org.qi4j.api.composite.DependencyDescriptor;
+import org.qi4j.api.composite.ModelDescriptor;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.object.ObjectDescriptor;
 import org.qi4j.api.service.ImportedServiceDescriptor;
@@ -333,7 +334,7 @@ public class PDFWriter
         }
         else if( objectDesciptor instanceof CompositeDetailDescriptor )
         {
-            AbstractCompositeDescriptor descriptor = ( (CompositeDetailDescriptor) objectDesciptor ).descriptor();
+            CompositeDescriptor descriptor = ( (CompositeDetailDescriptor) objectDesciptor ).descriptor();
             writeString( "- name: " + descriptor.type().getSimpleName() );
             writeString( "- class: " + descriptor.type().getSimpleName() );
             writeString( "- visibility: " + descriptor.visibility().toString() );
@@ -569,7 +570,7 @@ public class PDFWriter
             return;
         }
 
-        ObjectDescriptor spiDescriptor;
+        ModelDescriptor spiDescriptor;
         String typeString;
         if( configDescriptor instanceof ServiceDetailDescriptor )
         {
