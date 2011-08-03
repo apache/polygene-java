@@ -41,6 +41,7 @@ public class ExtendedAlarmModelTest
     extends AbstractQi4jTest
 {
 
+    @SuppressWarnings( { "unchecked" } )
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
@@ -101,17 +102,17 @@ public class ExtendedAlarmModelTest
         assertTrue( test1 && test2 && test3 && test4 && test5 && test6 && test7 && test8 && test9 && test10 && test11 );
 
         Locale english = new Locale( "en" );
-        test1 = provider.modelDescription( english ).toLowerCase().indexOf( "normal" ) >= 0;
-        test2 = provider.modelDescription( english ).toLowerCase().indexOf( "activated" ) >= 0;
-        test3 = provider.modelDescription( english ).toLowerCase().indexOf( "deactivated" ) >= 0;
-        test4 = provider.modelDescription( english ).toLowerCase().indexOf( "acknowledged" ) >= 0;
-        test5 = provider.modelDescription( english ).toLowerCase().indexOf( "activation" ) >= 0;
-        test6 = provider.modelDescription( english ).toLowerCase().indexOf( "deactivation" ) >= 0;
-        test7 = provider.modelDescription( english ).toLowerCase().indexOf( "acknowledge" ) >= 0;
-        test8 = provider.modelDescription( english ).toLowerCase().indexOf( "block" ) >= 0;
-        test9 = provider.modelDescription( english ).toLowerCase().indexOf( "unblock" ) >= 0;
-        test10 = provider.modelDescription( english ).toLowerCase().indexOf( "disable" ) >= 0;
-        test11 = provider.modelDescription( english ).toLowerCase().indexOf( "enable" ) >= 0;
+        test1 = provider.modelDescription( english ).toLowerCase().contains( "normal" );
+        test2 = provider.modelDescription( english ).toLowerCase().contains( "activated" );
+        test3 = provider.modelDescription( english ).toLowerCase().contains( "deactivated" );
+        test4 = provider.modelDescription( english ).toLowerCase().contains( "acknowledged" );
+        test5 = provider.modelDescription( english ).toLowerCase().contains( "activation" );
+        test6 = provider.modelDescription( english ).toLowerCase().contains( "deactivation" );
+        test7 = provider.modelDescription( english ).toLowerCase().contains( "acknowledge" );
+        test8 = provider.modelDescription( english ).toLowerCase().contains( "block" );
+        test9 = provider.modelDescription( english ).toLowerCase().contains( "unblock" );
+        test10 = provider.modelDescription( english ).toLowerCase().contains( "disable" );
+        test11 = provider.modelDescription( english ).toLowerCase().contains( "enable" );
         assertTrue( test1 && test2 && test3 && test4 && test5 && test6 && test7 && test8 && test9 && test10 && test11 );
     }
 

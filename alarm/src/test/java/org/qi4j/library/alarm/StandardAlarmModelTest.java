@@ -40,6 +40,7 @@ public class StandardAlarmModelTest
     extends AbstractQi4jTest
 {
 
+    @SuppressWarnings( { "unchecked" } )
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
@@ -94,23 +95,23 @@ public class StandardAlarmModelTest
         throws Exception
     {
         StandardAlarmModelService.StandardAlarmModelMixin spi = new StandardAlarmModelService.StandardAlarmModelMixin();
-        boolean test1 = spi.modelDescription().toLowerCase().indexOf( "normal" ) >= 0;
-        boolean test2 = spi.modelDescription().toLowerCase().indexOf( "activated" ) >= 0;
-        boolean test3 = spi.modelDescription().toLowerCase().indexOf( "deactivated" ) >= 0;
-        boolean test4 = spi.modelDescription().toLowerCase().indexOf( "acknowledged" ) >= 0;
-        boolean test5 = spi.modelDescription().toLowerCase().indexOf( "activation" ) >= 0;
-        boolean test6 = spi.modelDescription().toLowerCase().indexOf( "deactivation" ) >= 0;
-        boolean test7 = spi.modelDescription().toLowerCase().indexOf( "acknowledge" ) >= 0;
+        boolean test1 = spi.modelDescription().toLowerCase().contains( "normal" );
+        boolean test2 = spi.modelDescription().toLowerCase().contains( "activated" );
+        boolean test3 = spi.modelDescription().toLowerCase().contains( "deactivated" );
+        boolean test4 = spi.modelDescription().toLowerCase().contains( "acknowledged" );
+        boolean test5 = spi.modelDescription().toLowerCase().contains( "activation" );
+        boolean test6 = spi.modelDescription().toLowerCase().contains( "deactivation" );
+        boolean test7 = spi.modelDescription().toLowerCase().contains( "acknowledge" );
         assertTrue( test1 && test2 && test3 && test4 && test5 && test6 && test7 );
 
         Locale english = new Locale( "en" );
-        test1 = spi.modelDescription( english ).toLowerCase().indexOf( "normal" ) >= 0;
-        test2 = spi.modelDescription( english ).toLowerCase().indexOf( "activated" ) >= 0;
-        test3 = spi.modelDescription( english ).toLowerCase().indexOf( "deactivated" ) >= 0;
-        test4 = spi.modelDescription( english ).toLowerCase().indexOf( "acknowledged" ) >= 0;
-        test5 = spi.modelDescription( english ).toLowerCase().indexOf( "activation" ) >= 0;
-        test6 = spi.modelDescription( english ).toLowerCase().indexOf( "deactivation" ) >= 0;
-        test7 = spi.modelDescription( english ).toLowerCase().indexOf( "acknowledge" ) >= 0;
+        test1 = spi.modelDescription( english ).toLowerCase().contains( "normal" );
+        test2 = spi.modelDescription( english ).toLowerCase().contains( "activated" );
+        test3 = spi.modelDescription( english ).toLowerCase().contains( "deactivated" );
+        test4 = spi.modelDescription( english ).toLowerCase().contains( "acknowledged" );
+        test5 = spi.modelDescription( english ).toLowerCase().contains( "activation" );
+        test6 = spi.modelDescription( english ).toLowerCase().contains( "deactivation" );
+        test7 = spi.modelDescription( english ).toLowerCase().contains( "acknowledge" );
         assertTrue( test1 && test2 && test3 && test4 && test5 && test6 && test7 );
     }
 
