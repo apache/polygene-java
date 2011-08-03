@@ -101,25 +101,25 @@ public interface ExtendedAlarmModelService
 
         static
         {
-            List<String> list = new ArrayList<String>();
-            list.add( Alarm.STATUS_NORMAL );
-            list.add( Alarm.STATUS_ACTIVATED );
-            list.add( Alarm.STATUS_DEACTIVATED );
-            list.add( Alarm.STATUS_ACKNOWLEDGED );
-            list.add( Alarm.STATUS_REACTIVATED );
-            list.add( Alarm.STATUS_BLOCKED );
-            list.add( Alarm.STATUS_DISABLED );
-            STATUS_LIST = Collections.unmodifiableList( list );
+            List<String> list1 = new ArrayList<String>();
+            list1.add( Alarm.STATUS_NORMAL );
+            list1.add( Alarm.STATUS_ACTIVATED );
+            list1.add( Alarm.STATUS_DEACTIVATED );
+            list1.add( Alarm.STATUS_ACKNOWLEDGED );
+            list1.add( Alarm.STATUS_REACTIVATED );
+            list1.add( Alarm.STATUS_BLOCKED );
+            list1.add( Alarm.STATUS_DISABLED );
+            STATUS_LIST = Collections.unmodifiableList( list1 );
 
-            list.clear();
-            list.add( Alarm.TRIGGER_ACTIVATE );
-            list.add( Alarm.TRIGGER_DEACTIVATE );
-            list.add( Alarm.TRIGGER_ACKNOWLEDGE );
-            list.add( Alarm.TRIGGER_BLOCK );
-            list.add( Alarm.TRIGGER_UNBLOCK );
-            list.add(Alarm.TRIGGER_DISABLE);
-            list.add(Alarm.TRIGGER_ENABLE );
-            TRIGGER_LIST = Collections.unmodifiableList( list );
+            List<String> list2 = new ArrayList<String>();
+            list2.add( Alarm.TRIGGER_ACTIVATE );
+            list2.add( Alarm.TRIGGER_DEACTIVATE );
+            list2.add( Alarm.TRIGGER_ACKNOWLEDGE );
+            list2.add( Alarm.TRIGGER_BLOCK );
+            list2.add( Alarm.TRIGGER_UNBLOCK );
+            list2.add(Alarm.TRIGGER_DISABLE);
+            list2.add(Alarm.TRIGGER_ENABLE );
+            TRIGGER_LIST = Collections.unmodifiableList( list2 );
         }
 
         static ResourceBundle getResourceBundle( Locale locale )

@@ -68,18 +68,18 @@ public interface StandardAlarmModelService extends AlarmModel, ServiceComposite
 
         static
         {
-            List<String> list = new ArrayList<String>();
-            list.add( Alarm.STATUS_NORMAL );
-            list.add( Alarm.STATUS_ACTIVATED );
-            list.add( Alarm.STATUS_DEACTIVATED );
-            list.add( Alarm.STATUS_ACKNOWLEDGED );
-            STATUS_LIST = Collections.unmodifiableList( list );
+            List<String> list1 = new ArrayList<String>();
+            list1.add( Alarm.STATUS_NORMAL );
+            list1.add( Alarm.STATUS_ACTIVATED );
+            list1.add( Alarm.STATUS_DEACTIVATED );
+            list1.add( Alarm.STATUS_ACKNOWLEDGED );
+            STATUS_LIST = Collections.unmodifiableList( list1 );
 
-            list.clear();
-            list.add( Alarm.TRIGGER_ACTIVATE );
-            list.add( Alarm.TRIGGER_DEACTIVATE );
-            list.add( Alarm.TRIGGER_ACKNOWLEDGE );
-            TRIGGER_LIST = Collections.unmodifiableList( list );
+            List<String> list2 = new ArrayList<String>();
+            list2.add( Alarm.TRIGGER_ACTIVATE );
+            list2.add( Alarm.TRIGGER_DEACTIVATE );
+            list2.add( Alarm.TRIGGER_ACKNOWLEDGE );
+            TRIGGER_LIST = Collections.unmodifiableList( list2 );
         }
 
         @Structure
@@ -229,7 +229,6 @@ public interface StandardAlarmModelService extends AlarmModel, ServiceComposite
         private AlarmEvent deactivation( Alarm alarm )
         {
             AlarmStatus oldStatus = alarm.currentStatus();
-            long time = System.currentTimeMillis();
             if( oldStatus.name().get().equals( Alarm.STATUS_ACKNOWLEDGED ) )
             {
                 AlarmStatus newStatus = createStatus( Alarm.STATUS_NORMAL );
@@ -253,7 +252,6 @@ public interface StandardAlarmModelService extends AlarmModel, ServiceComposite
         private AlarmEvent acknowledge( Alarm alarm )
         {
             AlarmStatus oldStatus = alarm.currentStatus();
-            long time = System.currentTimeMillis();
             if( oldStatus.name().get().equals( Alarm.STATUS_DEACTIVATED ) )
             {
                 AlarmStatus newStatus = createStatus( Alarm.STATUS_NORMAL );

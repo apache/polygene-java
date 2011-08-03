@@ -57,20 +57,31 @@ public interface SimpleAlarmModelService extends AlarmModel, ServiceComposite
 
         static
         {
-            List<String> list = new ArrayList<String>();
+            List<String> list1 = new ArrayList<String>();
 
-            list.add( Alarm.TRIGGER_ACTIVATE );
-            list.add( Alarm.TRIGGER_DEACTIVATE );
-            ALARM_TRIGGERS = Collections.unmodifiableList( list );
-            list.clear();
+            list1.add( Alarm.TRIGGER_ACTIVATE );
+            list1.add( Alarm.TRIGGER_DEACTIVATE );
+            ALARM_TRIGGERS = Collections.unmodifiableList( list1 );
 
-            list.add( Alarm.STATUS_NORMAL );
-            list.add( Alarm.STATUS_ACTIVATED );
-            ALARM_STATUSES = Collections.unmodifiableList( list );
+            List<String> list2 = new ArrayList<String>();
+            list2.add( Alarm.STATUS_NORMAL );
+            list2.add( Alarm.STATUS_ACTIVATED );
+            ALARM_STATUSES = Collections.unmodifiableList( list2 );
         }
 
         @Structure
         private ValueBuilderFactory vbf;
+
+        static ResourceBundle getResourceBundle( Locale locale )
+        {
+            if( locale == null )
+            {
+                locale = Locale.getDefault();
+            }
+            ClassLoader cl = SimpleAlarmModelMixin.class.getClassLoader();
+            return ResourceBundle.getBundle( MODEL_BUNDLE_NAME, locale, cl );
+        }
+
 
         /**
          * Returns the Name of the AlarmModel.
@@ -108,7 +119,7 @@ public interface SimpleAlarmModelService extends AlarmModel, ServiceComposite
          */
         public String modelDescription( Locale locale )
         {
-            ResourceBundle rb = ResourceBundle.getBundle( getClass().getName(), locale );
+            ResourceBundle rb = getResourceBundle( locale );
             return rb.getString( "MODEL_DESCRIPTION" );
         }
 
