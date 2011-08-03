@@ -29,6 +29,7 @@ import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.Activatable;
+import org.qi4j.api.service.Availability;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 
@@ -42,9 +43,6 @@ public interface RdbmsRepositoryService extends Repository, ServiceComposite, Ac
     {
         @This
         private Configuration<RdbmsRepositoryConfiguration> configuration;
-
-        @Structure
-        private UnitOfWorkFactory uowf;
 
         private SailRepository repo;
 

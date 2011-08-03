@@ -116,7 +116,7 @@ public interface FileConfiguration
             OS os = detectOS();
 
             data.os().set( os );
-            logger.info( "Operating system:" + os.name() );
+            logger.info( "Operating system : " + os.name() );
 
             // Get bundle with application name and configured directories
             ResourceBundle bundle = ResourceBundle.getBundle( FileConfiguration.class.getName(), new Locale( os.name() ) );
