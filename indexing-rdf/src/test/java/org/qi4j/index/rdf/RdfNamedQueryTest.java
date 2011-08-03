@@ -47,7 +47,7 @@ public class RdfNamedQueryTest extends AbstractNamedQueryTest
         throws AssemblyException
     {
         super.assemble( module );
-        module.services( MemoryRepositoryService.class, RdfQueryParserFactory.class );
+        module.services( MemoryRepositoryService.class, RdfQueryParserFactory.class ).instantiateOnStartup();
         module.objects( EntityStateSerializer.class, EntityTypeSerializer.class );
         module.services( RdfIndexingEngineService.class );
     }
