@@ -61,7 +61,6 @@ allprojects {
     testCompile("org.apache.ant:ant:$antVersion")
     testCompile("org.apache.ant:ant-junit:$antVersion")
     testCompile('junit:junit:4.8.1')
-    testRuntime('net.sourceforge.cobertura:cobertura:1.9.3')
     testRuntime("asm:asm:$asmVersion", "asm:asm-util:$asmVersion", "asm:asm-commons:$asmVersion")
     deployerJars "org.apache.maven.wagon:wagon-ssh:1.0-beta-2"
   }
@@ -124,58 +123,6 @@ allprojects {
       archives sourceJar, javadocJar
     }
 
-    def cobSerFile = "${project.buildDir}/coverage/cobertura.ser"
-    def srcOriginal = "${sourceSets.main.classesDir}"
-    def srcCopy = "${srcOriginal}-copy"
-
-    test.doFirst {
-      ant {
-        // delete data file for cobertura, otherwise coverage would be added
-        delete(file: cobSerFile, failonerror: false)
-        // delete copy of original classes
-        delete(dir: srcCopy, failonerror: false)
-        // import cobertura task, so it is available in the script
-        taskdef(resource: 'tasks.properties', classpath: configurations.testRuntime.asPath)
-        // create copy (backup) of original class files
-        copy(todir: srcCopy) {
-          fileset(dir: srcOriginal)
-        }
-        // instrument the relevant classes in-place
-        'cobertura-instrument'(datafile: cobSerFile) {
-          fileset(dir: srcOriginal,
-                  includes: "org/qi4j/**/*.class",
-                  excludes: "**/*Test.class")
-        }
-      }
-    }
-
-    test.doLast {
-      if( new File(srcCopy).exists() )
-      {
-        def gradleProject = project
-        def rootCobSerFile = "${rootProject.buildDir}/coverage/cobertura.ser"
-
-        // replace instrumented classes with backup copy again
-        ant {
-          delete(file: srcOriginal)
-          move(file: srcCopy, tofile: srcOriginal)
-
-          taskdef(name: 'coberturaMerge',
-                  classname: 'net.sourceforge.cobertura.ant.MergeTask',
-                  classpath: configurations.testRuntime.asPath)
-
-          coberturaMerge(datafile: rootCobSerFile) {
-
-            if( file("${gradleProject.buildDir}/coverage/cobertura.ser").exists() )
-            {
-
-              fileset(dir: gradleProject.buildDir, includes: 'coverage/cobertura.ser')
-            }
-          }
-        }
-      }
-    }
-
     def testProperties = [
             'proxySet': System.properties[ 'proxySet' ],
             'proxyHost': System.properties[ 'proxyHost' ],
@@ -184,7 +131,6 @@ allprojects {
     test {
       maxHeapSize = "1024m"
       systemProperties = testProperties
-      systemProperties[ "net.sourceforge.cobertura.datafile" ] = cobSerFile
       ignoreFailures = true
       afterSuite { descriptor, result ->
         if( result.resultType == TestResult.ResultType.FAILURE )
@@ -244,27 +190,7 @@ gradle.taskGraph.whenReady {taskGraph ->
 }
 
 test.doLast() {
-  def cobSerFile = "${project.buildDir}/coverage/cobertura.ser"
   ant {
-    taskdef(name: 'coberturaReport',
-            classname: 'net.sourceforge.cobertura.ant.ReportTask',
-            classpath: configurations.testRuntime.asPath)
-
-    // create cobertura report
-    coberturaReport(destdir: buildDirName + "/reports/cobertura", format: 'html', datafile: cobSerFile) {
-      allprojects.each { module ->
-        if( rootProject != module )
-        {
-          if( file("$module.projectDir.absolutePath/src/main/java").exists() )
-          {
-            fileset(dir: "$module.projectDir.absolutePath/src/main/java") {
-              include(name: '**/*.java')
-            }
-          }
-        }
-      }
-    }
-
     taskdef(name: 'junitreport',
             classname: 'org.apache.tools.ant.taskdefs.optional.junit.XMLResultAggregator',
             classpath: configurations.testRuntime.asPath)

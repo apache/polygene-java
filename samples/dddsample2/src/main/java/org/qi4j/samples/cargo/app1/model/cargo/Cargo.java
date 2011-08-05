@@ -2,7 +2,6 @@ package org.qi4j.samples.cargo.app1.model.cargo;
 
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.entity.Identity;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
@@ -51,7 +50,8 @@ import org.qi4j.samples.cargo.app1.system.factories.DeliveryFactory;
  * in port etc), are captured in this aggregate.
  */
 @Mixins( Cargo.CargoMixin.class )
-public interface Cargo extends EntityComposite
+public interface Cargo
+    extends EntityComposite
 {
 
     TrackingId trackingId();
@@ -107,7 +107,6 @@ public interface Cargo extends EntityComposite
 
         @Optional
         Property<Delivery> delivery();
-
     }
 
     public abstract class CargoMixin
@@ -118,9 +117,6 @@ public interface Cargo extends EntityComposite
 
         @This
         private State state;
-
-        @This
-        private Identity identity;
 
         @Service
         private DeliveryFactory deliveryFactory;
@@ -201,6 +197,5 @@ public interface Cargo extends EntityComposite
             // and replace it with a new
             state.delivery().set( deliveryFactory.derivedFrom( routeSpecification(), itinerary(), handlingHistory ) );
         }
-
     }
 }
