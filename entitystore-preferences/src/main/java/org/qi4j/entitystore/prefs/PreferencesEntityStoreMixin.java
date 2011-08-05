@@ -22,14 +22,14 @@ import org.qi4j.api.cache.CacheOptions;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.api.entity.association.AssociationDescriptor;
+import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.json.JSONDeserializer;
 import org.qi4j.api.json.JSONObjectSerializer;
 import org.qi4j.api.json.JSONWriterSerializer;
-import org.qi4j.api.property.PersistentPropertyDescriptor;
+import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.structure.Application;
@@ -210,11 +210,9 @@ public class PreferencesEntityStoreMixin
             }
 
             Map<QualifiedName, Object> properties = new HashMap<QualifiedName, Object>();
-            if( !entityDescriptor.state().properties().isEmpty() )
-            {
-                Preferences propsPrefs = entityPrefs.node( "properties" );
-                for( PersistentPropertyDescriptor persistentPropertyDescriptor : entityDescriptor.state()
-                    .<PersistentPropertyDescriptor>properties() )
+                Preferences propsPrefs = null;
+                for( PropertyDescriptor persistentPropertyDescriptor : entityDescriptor.state()
+                    .properties() )
                 {
                     if( persistentPropertyDescriptor.qualifiedName().name().equals( "identity" ) )
                     {
@@ -222,6 +220,9 @@ public class PreferencesEntityStoreMixin
                         properties.put( persistentPropertyDescriptor.qualifiedName(), identity.identity() );
                         continue;
                     }
+
+                    if (propsPrefs == null)
+                        propsPrefs = entityPrefs.node( "properties" );
 
                     ValueType propertyType = persistentPropertyDescriptor.valueType();
                     if( Number.class.isAssignableFrom(propertyType.type()) )
@@ -333,29 +334,29 @@ public class PreferencesEntityStoreMixin
                         }
                     }
                 }
-            }
 
             // Associations
             Map<QualifiedName, EntityReference> associations = new HashMap<QualifiedName, EntityReference>();
-            if( !entityDescriptor.state().associations().isEmpty() )
+            Preferences assocs = null;
+            for( AssociationDescriptor associationType : entityDescriptor.state().associations() )
             {
-                Preferences assocs = entityPrefs.node( "associations" );
-                for( AssociationDescriptor associationType : entityDescriptor.state().associations() )
-                {
-                    String associatedEntity = assocs.get( associationType.qualifiedName().name(), null );
-                    EntityReference value = associatedEntity == null ? null : EntityReference.parseEntityReference(
-                        associatedEntity );
-                    associations.put( associationType.qualifiedName(), value );
-                }
+                if (assocs == null)
+                    assocs = entityPrefs.node( "associations" );
+
+                String associatedEntity = assocs.get( associationType.qualifiedName().name(), null );
+                EntityReference value = associatedEntity == null ? null : EntityReference.parseEntityReference(
+                    associatedEntity );
+                associations.put( associationType.qualifiedName(), value );
             }
 
             // ManyAssociations
             Map<QualifiedName, List<EntityReference>> manyAssociations = new HashMap<QualifiedName, List<EntityReference>>();
-            if( !entityDescriptor.state().manyAssociations().isEmpty() )
-            {
-                Preferences manyAssocs = entityPrefs.node( "manyassociations" );
+                Preferences manyAssocs = null;
                 for( AssociationDescriptor manyAssociationType : entityDescriptor.state().manyAssociations() )
                 {
+                    if (manyAssocs == null)
+                        manyAssocs = entityPrefs.node( "manyassociations" );
+
                     List<EntityReference> references = new ArrayList<EntityReference>();
                     String entityReferences = manyAssocs.get( manyAssociationType.qualifiedName().name(), null );
                     if( entityReferences == null )
@@ -374,7 +375,6 @@ public class PreferencesEntityStoreMixin
                         manyAssociations.put( manyAssociationType.qualifiedName(), references );
                     }
                 }
-            }
 
             return new DefaultEntityState( desuw,
                                            entityPrefs.get( "version", "" ),
@@ -452,7 +452,7 @@ public class PreferencesEntityStoreMixin
 
             // Properties
             Preferences propsPrefs = entityPrefs.node( "properties" );
-            for( PersistentPropertyDescriptor persistentProperty : state.entityDescriptor().state().<PersistentPropertyDescriptor>properties() )
+            for( PropertyDescriptor persistentProperty : state.entityDescriptor().state().properties() )
             {
                 if( persistentProperty.qualifiedName().name().equals( "identity" ) )
                 {
@@ -573,7 +573,7 @@ public class PreferencesEntityStoreMixin
         T parse( String str );
     }
 
-    private <T> T getNumber( Preferences prefs, PersistentPropertyDescriptor pDesc, NumberParser<T> parser )
+    private <T> T getNumber( Preferences prefs, PropertyDescriptor pDesc, NumberParser<T> parser )
     {
         Object initialValue = pDesc.initialValue(null);
         String str = prefs.get( pDesc.qualifiedName().name(), initialValue == null ? null : initialValue.toString() );

@@ -47,7 +47,7 @@ public class Qi66IssueTest
     {
         String accountIdentity = newQi4jAccount();
 
-        UnitOfWork work = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork work = module.newUnitOfWork();
         AccountComposite account = work.get( AccountComposite.class, accountIdentity );
         assertNotNull( account );
 
@@ -72,7 +72,7 @@ public class Qi66IssueTest
     private String newQi4jAccount()
         throws UnitOfWorkCompletionException
     {
-        UnitOfWork work = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork work = module.newUnitOfWork();
         EntityBuilder<AccountComposite> entityBuilder = work.newEntityBuilder( AccountComposite.class );
         AccountComposite accountComposite = entityBuilder.instance();
         accountComposite.name().set( ACCOUNT_NAME );

@@ -67,12 +67,12 @@ public class PostgreSQLEntityStoreTest extends AbstractEntityStoreTest
         throws Exception
     {
 
-        UnitOfWork uow = this.unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork uow = this.module.newUnitOfWork();
         try
         {
             SQLConfiguration config = uow.get( SQLConfiguration.class,
                 PostgreSQLEntityStoreAssembler.ENTITYSTORE_SERVICE_NAME );
-            Connection connection = SQLUtil.getConnection( this.serviceLocator );
+            Connection connection = SQLUtil.getConnection( this.module );
             String schemaName = config.schemaName().get();
             if( schemaName == null )
             {

@@ -109,7 +109,7 @@ public class MigrationTest
             }
          };
 
-         UnitOfWork uow = v1.unitOfWorkFactory().newUnitOfWork();
+         UnitOfWork uow = v1.module().newUnitOfWork();
          TestEntity1_0 entity = uow.newEntity(TestEntity1_0.class);
          entity.foo().set("Some value");
          entity.fooManyAssoc().add(entity);
@@ -117,8 +117,7 @@ public class MigrationTest
          id = entity.identity().get();
          uow.complete();
 
-         BackupRestore backupRestore = (BackupRestore) v1.module()
-                 .serviceFinder()
+         BackupRestore backupRestore = v1.module()
                  .findService(BackupRestore.class)
                  .get();
          backupRestore.backup().transferTo(data_v1);
@@ -137,10 +136,10 @@ public class MigrationTest
             }
          };
 
-         BackupRestore testData = (BackupRestore) v1_1.serviceFinder().findService(BackupRestore.class).get();
+         BackupRestore testData = v1_1.module().findService(BackupRestore.class).get();
          data_v1.transferTo(testData.restore());
 
-         UnitOfWork uow = v1_1.unitOfWorkFactory().newUnitOfWork();
+         UnitOfWork uow = v1_1.module().newUnitOfWork();
          TestEntity1_1 entity = uow.get(TestEntity1_1.class, id);
          assertThat("Property has been renamed", entity.newFoo().get(), CoreMatchers.equalTo("Some value"));
          assertThat("ManyAssociation has been renamed", entity.newFooManyAssoc().count(), CoreMatchers.equalTo(1));
@@ -162,12 +161,12 @@ public class MigrationTest
             }
          };
 
-         BackupRestore testData = (BackupRestore) v2_0.serviceFinder().findService(BackupRestore.class).get();
+         BackupRestore testData = v2_0.module().findService(BackupRestore.class).get();
 
          // Test migration from 1.0 -> 2.0
          {
             data_v1.transferTo(testData.restore());
-            UnitOfWork uow = v2_0.unitOfWorkFactory().newUnitOfWork();
+            UnitOfWork uow = v2_0.module().newUnitOfWork();
             TestEntity2_0 entity = uow.get(TestEntity2_0.class, id);
             assertThat("Property has been created", entity.bar().get(), CoreMatchers.equalTo("Some value"));
             assertThat("Custom Property has been created", entity.customBar().get(), CoreMatchers.equalTo("Hello Some value"));
@@ -189,13 +188,13 @@ public class MigrationTest
             }
          };
 
-         BackupRestore testData = (BackupRestore) v3_0.serviceFinder().findService(BackupRestore.class).get();
+         BackupRestore testData = v3_0.module().findService(BackupRestore.class).get();
          data_v1_1.transferTo(testData.restore());
 
          // Test migration from 1.0 -> 3.0
          {
             data_v1.transferTo(testData.restore());
-            UnitOfWork uow = v3_0.unitOfWorkFactory().newUnitOfWork();
+            UnitOfWork uow = v3_0.module().newUnitOfWork();
             org.qi4j.migration.moved.TestEntity2_0 entity = uow.get(org.qi4j.migration.moved.TestEntity2_0.class, id);
             uow.complete();
          }

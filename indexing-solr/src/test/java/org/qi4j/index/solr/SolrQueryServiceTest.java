@@ -62,7 +62,7 @@ public class SolrQueryServiceTest
         throws UnitOfWorkCompletionException, InterruptedException
     {
         // Create and index an entity
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork uow = module.newUnitOfWork();
         TestEntity test = uow.newEntity( TestEntity.class );
         test.name().set( "Hello World" );
         uow.complete();
@@ -74,8 +74,8 @@ public class SolrQueryServiceTest
         throws UnitOfWorkCompletionException
     {
         // Search for it
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
-        Query<TestEntity> query = uow.newQuery( queryBuilderFactory.newQueryBuilder( TestEntity.class ).where( SolrExpressions.search( "hello" ) ));
+        UnitOfWork uow = module.newUnitOfWork();
+        Query<TestEntity> query = uow.newQuery( module.newQueryBuilder( TestEntity.class ).where( SolrExpressions.search( "hello" ) ));
 
         TestEntity test = query.find();
         Assert.assertThat( test.name().get(), equalTo( "Hello World" ) );
@@ -88,7 +88,7 @@ public class SolrQueryServiceTest
         throws UnitOfWorkCompletionException, SolrServerException
     {
         // Search for it using search interface
-        SolrSearch search = (SolrSearch) serviceLocator.findService( SolrSearch.class ).get();
+        SolrSearch search = (SolrSearch) module.findService( SolrSearch.class ).get();
 
         SolrDocumentList results = search.search( "hello" );
 

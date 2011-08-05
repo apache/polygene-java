@@ -24,12 +24,11 @@ import com.google.appengine.api.datastore.Text;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.json.JSONDeserializer;
 import org.qi4j.api.json.JSONWriterSerializer;
-import org.qi4j.api.property.PersistentPropertyDescriptor;
+import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.type.ValueCompositeType;
 import org.qi4j.api.type.ValueType;
@@ -101,7 +100,7 @@ public class GaeEntityState
     private HashMap<QualifiedName, ValueType> initializeValueTypes( EntityDescriptor descriptor )
     {
         HashMap<QualifiedName, ValueType> result = new HashMap<QualifiedName, ValueType>();
-        for( PersistentPropertyDescriptor persistent : descriptor.state().<PersistentPropertyDescriptor>properties() )
+        for( PropertyDescriptor persistent : descriptor.state().properties() )
         {
             if( persistent.valueType() instanceof ValueCompositeType )
             {

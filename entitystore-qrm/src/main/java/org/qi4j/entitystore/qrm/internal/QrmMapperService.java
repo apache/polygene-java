@@ -27,7 +27,6 @@ import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.object.ObjectDescriptor;
-import org.qi4j.api.property.PersistentPropertyDescriptor;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.structure.Application;
@@ -288,7 +287,7 @@ public interface QrmMapperService
         {
             QrmMapping result = new QrmMapping( entityDescriptor );
 
-            for( PersistentPropertyDescriptor pPersistent : entityDescriptor.state().<PersistentPropertyDescriptor>properties() )
+            for( PropertyDescriptor pPersistent : entityDescriptor.state().properties() )
             {
                 String name = pPersistent.qualifiedName().name();
 

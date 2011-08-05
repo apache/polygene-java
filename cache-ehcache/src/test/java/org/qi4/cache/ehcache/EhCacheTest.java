@@ -38,7 +38,7 @@ public class EhCacheTest extends AbstractQi4jTest
         throws Exception
     {
         super.setUp();
-        caching = serviceLocator.findService( CachePool.class ).get();
+        caching = module.findService( CachePool.class ).get();
         cache = caching.fetchCache( "1", String.class );
     }
 

@@ -57,7 +57,7 @@ public class ImportedDataSourceServiceTest extends AbstractQi4jTest
     public void test()
         throws SQLException
     {
-        DataSourceService dsService = serviceLocator.findService( DataSourceService.class ).get();
+        DataSourceService dsService = module.findService( DataSourceService.class ).get();
         Connection connection = null;
         try
         {

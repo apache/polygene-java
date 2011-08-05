@@ -91,12 +91,15 @@ public class SQLTestHelper
 
     public static void tearDownTest( UnitOfWorkFactory uowf, ServiceFinder finder, Logger log )
     {
-        UnitOfWork uow = uowf.currentUnitOfWork();
+        UnitOfWork uow;
         Boolean created = false;
-        if( uowf.currentUnitOfWork() == null )
+        if( !uowf.isUnitOfWorkActive())
         {
             uow = uowf.newUnitOfWork();
             created = true;
+        } else
+        {
+            uow = uowf.currentUnitOfWork();
         }
 
         try
@@ -146,7 +149,7 @@ public class SQLTestHelper
     {
         try
         {
-            DataSourceService ds = (DataSourceService) finder.findService( DataSourceService.class ).get();
+            DataSourceService ds = finder.findService( DataSourceService.class ).get();
             Assume.assumeNotNull( ds.getDataSource().getConnection() );
         }
         catch( Throwable t )

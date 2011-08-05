@@ -38,7 +38,7 @@ public final class IssueTest
     {
         super.setUp();
 
-        accountService = moduleInstance.serviceFinder().<AccountService>findService( AccountService.class ).get();
+        accountService = module.findService( AccountService.class ).get();
     }
 
     @Test
@@ -49,13 +49,12 @@ public final class IssueTest
         String id = newQi4jAccount();
 
         // Make sure there's no unit of work
-        assertNull( unitOfWorkFactory.currentUnitOfWork() );
+        assertFalse( module.isUnitOfWorkActive() );
 
         AccountComposite account = accountService.getAccountById( id );
         assertNotNull( account );
 
-        UnitOfWork currentUnitOfWork = unitOfWorkFactory.currentUnitOfWork();
-        assertNull( currentUnitOfWork );
+        assertFalse( module.isUnitOfWorkActive() );
     }
 
     @Test
@@ -66,14 +65,14 @@ public final class IssueTest
         String id = newQi4jAccount();
 
         // Make sure there's no unit of work
-        assertNull( unitOfWorkFactory.currentUnitOfWork() );
+        assertFalse( module.isUnitOfWorkActive() );
 
-        UnitOfWork parentUnitOfWork = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork parentUnitOfWork = module.newUnitOfWork();
 
         AccountComposite account = accountService.getAccountById( id );
         assertNotNull( account );
 
-        UnitOfWork currentUnitOfWork = unitOfWorkFactory.currentUnitOfWork();
+        UnitOfWork currentUnitOfWork = module.currentUnitOfWork();
         assertEquals( parentUnitOfWork, currentUnitOfWork );
 
         assertTrue( currentUnitOfWork.isOpen() );

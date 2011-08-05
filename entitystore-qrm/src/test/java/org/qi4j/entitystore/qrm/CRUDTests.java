@@ -90,7 +90,7 @@ public class CRUDTests
 
         try
         {
-            uow = moduleInstance.unitOfWorkFactory().newUnitOfWork();
+            uow = module.newUnitOfWork();
 
             Account acc = uow.get( Account.class, "org.qi4j.entitystore.qrm.entity.Account:23" );
 
@@ -123,7 +123,7 @@ public class CRUDTests
 
         try
         {
-            uow = moduleInstance.unitOfWorkFactory().newUnitOfWork();
+            uow = module.newUnitOfWork();
 
             EntityBuilder<Account> eBuilder = uow.newEntityBuilder( Account.class, newId );
 
@@ -144,7 +144,7 @@ public class CRUDTests
 
         try
         {
-            uow = moduleInstance.unitOfWorkFactory().newUnitOfWork();
+            uow = module.newUnitOfWork();
 
             Account acc_after = uow.get( Account.class, newId );
 
@@ -179,7 +179,7 @@ public class CRUDTests
         String newId = Account.class.getName() + ":" + UUID.randomUUID();
 
         {
-            uow = moduleInstance.unitOfWorkFactory().newUnitOfWork();
+            uow = module.newUnitOfWork();
 
             EntityBuilder<Account> eBuilder = uow.newEntityBuilder( Account.class, newId );
 
@@ -196,7 +196,7 @@ public class CRUDTests
 
         // make sure we can find it.
         {
-            uow = moduleInstance.unitOfWorkFactory().newUnitOfWork();
+            uow = module.newUnitOfWork();
 
             Account acc_after = uow.get( Account.class, newId );
 
@@ -209,7 +209,7 @@ public class CRUDTests
         }
 
         {
-            uow = moduleInstance.unitOfWorkFactory().newUnitOfWork();
+            uow = module.newUnitOfWork();
 
             Account acc_after = uow.get( Account.class, newId );
 
@@ -221,7 +221,7 @@ public class CRUDTests
         // make sure we can not find it.
         try
         {
-            uow = moduleInstance.unitOfWorkFactory().newUnitOfWork();
+            uow = module.newUnitOfWork();
 
             Account acc_after = uow.get( Account.class, newId );
 
@@ -257,7 +257,7 @@ public class CRUDTests
 
         try
         {
-            uow = moduleInstance.unitOfWorkFactory().newUnitOfWork();
+            uow = module.newUnitOfWork();
 
             EntityBuilder<Account> eBuilder = uow.newEntityBuilder( Account.class, newId );
 
@@ -279,7 +279,7 @@ public class CRUDTests
         // find and update it.
         Account acc_after = null;
         {
-            uow = moduleInstance.unitOfWorkFactory().newUnitOfWork();
+            uow = module.newUnitOfWork();
 
             acc_after = uow.get( Account.class, newId );
 
@@ -300,7 +300,7 @@ public class CRUDTests
         Account updatedAcc = null;
         try
         {
-            uow = moduleInstance.unitOfWorkFactory().newUnitOfWork();
+            uow = module.newUnitOfWork();
 
             updatedAcc = uow.get( Account.class, newId );
 

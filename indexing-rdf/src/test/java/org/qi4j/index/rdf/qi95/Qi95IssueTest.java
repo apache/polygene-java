@@ -56,8 +56,8 @@ public class Qi95IssueTest
         {
             application.activate();
             Module domain = application.findModule( "Domain", "Domain" );
-            UnitOfWorkFactory unitOfWorkFactory = domain.unitOfWorkFactory();
-            createABunchOfStuffAndDoQueries( unitOfWorkFactory, domain.queryBuilderFactory() );
+            UnitOfWorkFactory unitOfWorkFactory = domain;
+            createABunchOfStuffAndDoQueries( unitOfWorkFactory, domain );
         }
         finally
         {
@@ -74,8 +74,8 @@ public class Qi95IssueTest
         {
             application.activate();
             Module domain = application.findModule( "Domain", "Domain" );
-            UnitOfWorkFactory unitOfWorkFactory = domain.unitOfWorkFactory();
-            createABunchOfStuffAndDoQueries( unitOfWorkFactory, domain.queryBuilderFactory() );
+            UnitOfWorkFactory unitOfWorkFactory = domain;
+            createABunchOfStuffAndDoQueries( unitOfWorkFactory, domain );
         }
         finally
         {
@@ -92,8 +92,8 @@ public class Qi95IssueTest
         {
             application.activate();
             Module domain = application.findModule( "Domain", "Domain" );
-            UnitOfWorkFactory unitOfWorkFactory = domain.unitOfWorkFactory();
-            createABunchOfStuffAndDoQueries( unitOfWorkFactory, domain.queryBuilderFactory() );
+            UnitOfWorkFactory unitOfWorkFactory = domain;
+            createABunchOfStuffAndDoQueries( unitOfWorkFactory, domain );
         }
         finally
         {
@@ -111,8 +111,8 @@ public class Qi95IssueTest
             application.activate();
 
             Module domain = application.findModule( "Domain", "Domain" );
-            UnitOfWorkFactory unitOfWorkFactory = domain.unitOfWorkFactory();
-            createABunchOfStuffAndDoQueries( unitOfWorkFactory, domain.queryBuilderFactory() );
+            UnitOfWorkFactory unitOfWorkFactory = domain;
+            createABunchOfStuffAndDoQueries( unitOfWorkFactory, domain );
         }
         finally
         {

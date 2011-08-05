@@ -14,8 +14,8 @@
 
 package org.qi4j.index.sql.support.common;
 
+import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.entity.association.AssociationDescriptor;
 import org.qi4j.api.property.PropertyDescriptor;
 
 import java.lang.reflect.ParameterizedType;

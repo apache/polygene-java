@@ -55,12 +55,12 @@ public class MySQLEntityStoreTest extends AbstractEntityStoreTest
     public void tearDown()
         throws Exception
     {
-        UnitOfWork uow = this.unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork uow = this.module.newUnitOfWork();
         try
         {
             SQLConfiguration config = uow.get( SQLConfiguration.class,
                 MySQLEntityStoreAssembler.DATASOURCE_SERVICE_NAME );
-            Connection connection = SQLUtil.getConnection( serviceLocator );
+            Connection connection = SQLUtil.getConnection( module );
             String schemaName = config.schemaName().get();
             if( schemaName == null )
             {

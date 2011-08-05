@@ -42,7 +42,7 @@ public abstract class AbstractIssueTest
     protected final String newQi4jAccount()
         throws UnitOfWorkCompletionException
     {
-        UnitOfWork work = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork work = module.newUnitOfWork();
         EntityBuilder<AccountComposite> entityBuilder = work.newEntityBuilder( AccountComposite.class );
         AccountComposite accountComposite = entityBuilder.instance();
         accountComposite.name().set( DEFAULT_ACCOUNT_NAME );

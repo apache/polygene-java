@@ -16,10 +16,9 @@
  */
 package org.qi4j.entitystore.qrm.internal;
 
+import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityDescriptor;
-import org.qi4j.api.entity.association.AssociationDescriptor;
-import org.qi4j.api.property.PersistentPropertyDescriptor;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.type.ValueType;
 import org.qi4j.entitystore.qrm.IdentifierConverter;
@@ -143,7 +142,7 @@ public final class QrmEntityState
 
     private void mapProperties( final Map<String, Object> rawData, final EntityDescriptor descriptor )
     {
-        for( final PersistentPropertyDescriptor persistentPropertyDescriptor : descriptor.state().<PersistentPropertyDescriptor>properties() )
+        for( final PropertyDescriptor persistentPropertyDescriptor : descriptor.state().properties() )
         {
             final QualifiedName qualifiedName = persistentPropertyDescriptor.qualifiedName();
             final Object value = identifierConverter.getValueFromData( rawData, qualifiedName );

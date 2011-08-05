@@ -60,9 +60,9 @@ public abstract class AbstractTestCase
             derbyDatabaseHandler.shutdown();
         }
 
-        if( unitOfWorkFactory != null && unitOfWorkFactory.currentUnitOfWork() != null )
+        if( module != null && module.isUnitOfWorkActive())
         {
-            unitOfWorkFactory.currentUnitOfWork().discard();
+            module.currentUnitOfWork().discard();
         }
 
         super.tearDown();

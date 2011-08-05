@@ -43,9 +43,9 @@ public class PostgreSQLEntityFinderTest extends AbstractEntityFinderTest
         catch( Exception e )
         {
             // Let's check if exception was because database was not available
-            if( this.serviceLocator != null )
+            if( this.module != null )
             {
-                SQLTestHelper.setUpTest( this.serviceLocator );
+                SQLTestHelper.setUpTest( this.module );
             }
 
             // If we got this far, the database must have been available, and exception must have had other reason!
@@ -57,7 +57,7 @@ public class PostgreSQLEntityFinderTest extends AbstractEntityFinderTest
     public void tearDown()
         throws Exception
     {
-        SQLTestHelper.tearDownTest( unitOfWorkFactory, serviceLocator, getLog() );
+        SQLTestHelper.tearDownTest( module, module, getLog() );
         super.tearDown();
     }
 }

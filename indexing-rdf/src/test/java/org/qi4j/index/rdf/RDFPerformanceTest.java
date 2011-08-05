@@ -23,7 +23,7 @@ import org.junit.Test;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.entity.association.ManyAssociation;
+import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryExpressions;
@@ -82,7 +82,7 @@ public class RDFPerformanceTest extends AbstractQi4jTest
         List<ExampleEntity> entities = new ArrayList<ExampleEntity>();
         for (Integer x = 0; x < howMany; ++x)
         {
-            ExampleEntity exampleEntity = this.unitOfWorkFactory.currentUnitOfWork().newEntity( ExampleEntity.class, "entity" + x );
+            ExampleEntity exampleEntity = this.module.currentUnitOfWork().newEntity( ExampleEntity.class, "entity" + x );
 
             for (ExampleEntity entity : entities)
             {
@@ -103,15 +103,15 @@ public class RDFPerformanceTest extends AbstractQi4jTest
     {
         for (ExampleEntity entity : entities)
         {
-            this.unitOfWorkFactory.currentUnitOfWork().remove( this.unitOfWorkFactory.currentUnitOfWork().get( entity ) );
+            this.module.currentUnitOfWork().remove( this.module.currentUnitOfWork().get( entity ) );
         }
     }
 
     private List<ExampleEntity> doList( int howMany )
     {
         List<ExampleEntity> list = new ArrayList<ExampleEntity>();
-        UnitOfWork uow = this.unitOfWorkFactory.newUnitOfWork();
-        Iterator<ExampleEntity> iter = uow.newQuery( this.queryBuilderFactory.newQueryBuilder( ExampleEntity.class ) ).iterator();
+        UnitOfWork uow = this.module.newUnitOfWork();
+        Iterator<ExampleEntity> iter = uow.newQuery( this.module.newQueryBuilder( ExampleEntity.class ) ).iterator();
         int found = 0;
         while (iter.hasNext())
         {
@@ -134,11 +134,11 @@ public class RDFPerformanceTest extends AbstractQi4jTest
 
     private void doRemove( int howMany )
     {
-        Iterator<ExampleEntity> iter = this.unitOfWorkFactory.currentUnitOfWork().newQuery( this.queryBuilderFactory.newQueryBuilder( ExampleEntity.class )).maxResults( howMany ).iterator();
+        Iterator<ExampleEntity> iter = this.module.currentUnitOfWork().newQuery( this.module.newQueryBuilder( ExampleEntity.class )).maxResults( howMany ).iterator();
         Integer removed = 0;
         while (iter.hasNext())
         {
-            this.unitOfWorkFactory.currentUnitOfWork().remove( iter.next() );
+            this.module.currentUnitOfWork().remove( iter.next() );
             ++removed;
         }
 
@@ -152,7 +152,7 @@ public class RDFPerformanceTest extends AbstractQi4jTest
     {
         long startTest = System.currentTimeMillis();
 
-        UnitOfWork creatingUOW = this.unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork creatingUOW = this.module.newUnitOfWork();
         Long startingTime = System.currentTimeMillis();
         List<ExampleEntity> entities = this.doCreate( howMany );
         _log.info( "Time to create " + howMany + " entities (ms): " + (System.currentTimeMillis() - startingTime) );
@@ -166,10 +166,10 @@ public class RDFPerformanceTest extends AbstractQi4jTest
         entityList = this.doList( howMany );
 
         startingTime = System.currentTimeMillis();
-        UnitOfWork uow = this.unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork uow = this.module.newUnitOfWork();
         for (int i = 0; i < 1000; i++)
         {
-            Query<ExampleEntity> query = uow.newQuery( this.queryBuilderFactory.newQueryBuilder( ExampleEntity.class ).
+            Query<ExampleEntity> query = uow.newQuery( this.module.newQueryBuilder( ExampleEntity.class ).
                     where( QueryExpressions.contains( QueryExpressions.templateFor( ExampleEntity.class ).manyAssoc(), uow.get( ExampleEntity.class, "entity50" ) ) ));
             System.out.println(query.count());
         }
@@ -177,7 +177,7 @@ public class RDFPerformanceTest extends AbstractQi4jTest
         long endTest = System.currentTimeMillis();
         _log.info( "Time to query " + howMany + " entities (ms): " + (endTest - startingTime) );
 
-        UnitOfWork deletingUOW = this.unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork deletingUOW = this.module.newUnitOfWork();
         startingTime = System.currentTimeMillis();
         this.doRemoveAll( entityList );
 //      this.doRemove(200);
@@ -213,7 +213,7 @@ public class RDFPerformanceTest extends AbstractQi4jTest
         this.performTest( 200 );
 
         IndexExporter indexerExporter =
-                serviceLocator.findService( IndexExporter.class ).get();
+                module.findService( IndexExporter.class ).get();
         indexerExporter.exportReadableToStream( System.out );
     }
 

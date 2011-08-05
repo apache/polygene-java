@@ -70,7 +70,7 @@ public final class IBatisEntityStoreTest
     {
         final Map<String, String> data = createTestData( "Edward", "Yakop" );
 
-        final UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        final UnitOfWork uow = module.newUnitOfWork();
 
         final EntityBuilder<PersonComposite> builder = uow.newEntityBuilder( PersonComposite.class );
         PersonComposite person = builder.instance();
@@ -87,7 +87,7 @@ public final class IBatisEntityStoreTest
     public final void existingEntityIsDeletedFromPersistentStore()
         throws SQLException, UnitOfWorkCompletionException
     {
-        final UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        final UnitOfWork uow = module.newUnitOfWork();
         final PersonComposite john = uow.get( PersonComposite.class, TestConfig.JOHN_SMITH_ID );
         uow.remove( john );
         uow.complete();
@@ -105,7 +105,7 @@ public final class IBatisEntityStoreTest
     public final void completeThrowsNPE()
         throws UnitOfWorkCompletionException
     {
-        final UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        final UnitOfWork uow = module.newUnitOfWork();
         uow.get( PersonComposite.class, TestConfig.JOHN_SMITH_ID );
         uow.complete();
     }
@@ -114,7 +114,7 @@ public final class IBatisEntityStoreTest
     public final void existingEntityIsUpdatedInPersistentStore()
         throws SQLException, UnitOfWorkCompletionException
     {
-        final UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        final UnitOfWork uow = module.newUnitOfWork();
         final PersonComposite john = uow.get( PersonComposite.class, TestConfig.JOHN_SMITH_ID );
         john.lastName().set( "Doe" );
         uow.complete();
@@ -132,7 +132,7 @@ public final class IBatisEntityStoreTest
     public final void associationIsPersistedToDatabase()
         throws SQLException, UnitOfWorkCompletionException
     {
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork uow = module.newUnitOfWork();
         final PersonComposite john = uow.get( PersonComposite.class, TestConfig.JOHN_SMITH_ID );
         assertNotNull( "john", john );
         final AccountComposite johnsAccount = uow.newEntity( AccountComposite.class );
@@ -141,7 +141,7 @@ public final class IBatisEntityStoreTest
         johnsAccount.primaryContactPerson().set( john );
         uow.complete();
 
-        uow = unitOfWorkFactory.newUnitOfWork();
+        uow = module.newUnitOfWork();
         final AccountComposite account = uow.get( AccountComposite.class, accountId );
         assertEquals( "account name", JOHNS_ACCOUNT, account.name().get() );
         final Person contactPerson = account.primaryContactPerson().get();
@@ -184,7 +184,7 @@ public final class IBatisEntityStoreTest
     public void findExistingPersonComposite()
         throws UnitOfWorkCompletionException
     {
-        final UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        final UnitOfWork uow = module.newUnitOfWork();
         final PersonComposite person = uow.get( PersonComposite.class, TestConfig.JOHN_SMITH_ID );
         assertPersonEquals( TestConfig.JOHN_SMITH_ID, "John", "Smith", person );
         uow.complete();
@@ -231,8 +231,8 @@ public final class IBatisEntityStoreTest
     private QrmSqlEntityStoreService getEntityStore()
         throws Exception
     {
-        assertNotNull( moduleInstance );
-        return moduleInstance.serviceFinder()
+        assertNotNull( module );
+        return module
             .findService( QrmSqlEntityStoreService.class )
             .get();
     }

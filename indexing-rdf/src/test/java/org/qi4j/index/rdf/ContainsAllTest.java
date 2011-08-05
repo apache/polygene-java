@@ -282,12 +282,12 @@ public class ContainsAllTest
 
     private ExampleEntity findEntity( String... strings )
     {
-        QueryBuilder<ExampleEntity> builder = this.queryBuilderFactory.newQueryBuilder( ExampleEntity.class );
+        QueryBuilder<ExampleEntity> builder = this.module.newQueryBuilder( ExampleEntity.class );
 
         builder = builder.where( QueryExpressions.containsAll(
                 QueryExpressions.templateFor( ExampleEntity.class ).strings(),
                 Iterables.iterable( strings ) ) );
-        return this.unitOfWorkFactory.currentUnitOfWork().newQuery( builder ).find();
+        return this.module.currentUnitOfWork().newQuery( builder ).find();
     }
 
     private ExampleEntity findEntityBasedOnValueStrings( String... valueStrings )
@@ -295,10 +295,10 @@ public class ContainsAllTest
         Set<ExampleValue> values = new HashSet<ExampleValue>();
         for( String value : valueStrings )
         {
-            ValueBuilder<ExampleValue2> vBuilder = this.valueBuilderFactory.newValueBuilder( ExampleValue2.class );
+            ValueBuilder<ExampleValue2> vBuilder = this.module.newValueBuilder( ExampleValue2.class );
             vBuilder.prototype().stringProperty().set( value );
 
-            ValueBuilder<ExampleValue> vBuilder2 = this.valueBuilderFactory.newValueBuilder( ExampleValue.class );
+            ValueBuilder<ExampleValue> vBuilder2 = this.module.newValueBuilder( ExampleValue.class );
             vBuilder2.prototype().valueProperty().set( vBuilder.newInstance() );
             values.add( vBuilder2.newInstance() );
         }
@@ -308,25 +308,25 @@ public class ContainsAllTest
 
     private Query<ExampleEntity> createComplexQuery( Set<ExampleValue> valuez )
     {
-        QueryBuilder<ExampleEntity> builder = this.queryBuilderFactory.newQueryBuilder( ExampleEntity.class );
+        QueryBuilder<ExampleEntity> builder = this.module.newQueryBuilder( ExampleEntity.class );
         builder = builder.where( QueryExpressions.containsAll(
                 QueryExpressions.templateFor( ExampleEntity.class ).complexValue(),
                 valuez
         )
         );
 
-        return this.unitOfWorkFactory.currentUnitOfWork().newQuery( builder );
+        return this.module.currentUnitOfWork().newQuery( builder );
     }
 
     private ExampleEntity performContainsAllStringsTest( Set<String> entityStrings, Set<String> queryableStrings )
         throws Exception
     {
-        UnitOfWork creatingUOW = this.unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork creatingUOW = this.module.newUnitOfWork();
         String[] entityStringsArray = new String[entityStrings.size()];
-        createEntityWithStrings( creatingUOW, this.valueBuilderFactory, entityStrings.toArray( entityStringsArray ) );
+        createEntityWithStrings( creatingUOW, this.module, entityStrings.toArray( entityStringsArray ) );
         creatingUOW.complete();
 
-        UnitOfWork queryingUOW = this.unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork queryingUOW = this.module.newUnitOfWork();
         try
         {
             String[] queryableStringsArray = new String[queryableStrings.size()];
@@ -342,12 +342,12 @@ public class ContainsAllTest
     private ExampleEntity performContainsAllStringValueTest( Set<String> entityStrings, Set<String> queryableStrings )
         throws Exception
     {
-        UnitOfWork creatingUOW = this.unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork creatingUOW = this.module.newUnitOfWork();
         String[] entityStringsArray = new String[entityStrings.size()];
-        createEntityWithComplexValues( creatingUOW, this.valueBuilderFactory, entityStrings.toArray( entityStringsArray ) );
+        createEntityWithComplexValues( creatingUOW, this.module, entityStrings.toArray( entityStringsArray ) );
         creatingUOW.complete();
 
-        UnitOfWork queryingUOW = this.unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork queryingUOW = this.module.newUnitOfWork();
         try
         {
             String[] queryableStringsArray = new String[queryableStrings.size()];

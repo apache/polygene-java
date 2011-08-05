@@ -6,12 +6,11 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.neo4j.graphdb.*;
 import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.json.JSONDeserializer;
 import org.qi4j.api.json.JSONObjectSerializer;
-import org.qi4j.api.property.PersistentPropertyDescriptor;
+import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.ManyAssociationState;
@@ -126,7 +125,7 @@ public class NeoEntityState
             }
             else
             {
-                PersistentPropertyDescriptor persistentProperty = entityDescriptor().state().getPropertyByQualifiedName( stateName );
+                PropertyDescriptor persistentProperty = entityDescriptor().state().getPropertyByQualifiedName( stateName );
                 String json = "[" + prop + "]";
                 JSONTokener tokener = new JSONTokener( json );
                 JSONArray array = (JSONArray) tokener.nextValue();
@@ -160,7 +159,7 @@ public class NeoEntityState
                 }
                 else
                 {
-                    PersistentPropertyDescriptor persistentProperty = entityDescriptor().state().getPropertyByQualifiedName( stateName );
+                    PropertyDescriptor persistentProperty = entityDescriptor().state().getPropertyByQualifiedName( stateName );
                     if( prop instanceof String && persistentProperty.valueType().type().equals( String.class ) )
                     {
                         underlyingNode.setProperty( "prop::" + stateName.toString(), prop );

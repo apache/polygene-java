@@ -18,7 +18,7 @@ import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.Identity;
-import org.qi4j.api.entity.association.AssociationDescriptor;
+import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
@@ -1138,7 +1138,7 @@ public abstract class AbstractSQLStartup
         Set<String> enumValues, Boolean setQNameTableNameToNull )
     {
         QualifiedName qName = pType.qualifiedName();
-        if( !newQNames.contains( qName ) && !qName.typeName().name().equals( Identity.class.getName() ) )
+        if( !newQNames.contains( qName ) && !qName.name().equals( Identity.class.getName() ) )
         {
             newQNames.add( qName );
             // System.out.println("QName: " + qName + ", hc: " + qName.hashCode());

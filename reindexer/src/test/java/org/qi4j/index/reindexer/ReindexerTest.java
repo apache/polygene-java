@@ -85,7 +85,7 @@ public class ReindexerTest
     public void createDataAndWipeIndex()
             throws UnitOfWorkCompletionException
     {
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork uow = module.newUnitOfWork();
 
         EntityBuilder<MyEntity> eBuilder = uow.newEntityBuilder( MyEntity.class );
         MyEntity e = eBuilder.instance();
@@ -101,11 +101,11 @@ public class ReindexerTest
     public void reindexAndAssertData()
             throws UnitOfWorkCompletionException
     {
-        serviceLocator.<ReindexerService>findService( ReindexerService.class ).get().reindex();
+        module.<ReindexerService>findService( ReindexerService.class ).get().reindex();
 
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork uow = module.newUnitOfWork();
 
-        QueryBuilder<MyEntity> qBuilder = queryBuilderFactory.newQueryBuilder( MyEntity.class );
+        QueryBuilder<MyEntity> qBuilder = module.newQueryBuilder( MyEntity.class );
         qBuilder = qBuilder.where( eq( templateFor( MyEntity.class ).name(), TEST_NAME ) );
         Query<MyEntity> q = uow.newQuery( qBuilder );
 
