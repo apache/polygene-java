@@ -42,7 +42,7 @@ public class PersistingSequencingTest extends AbstractQi4jTest
     public void whenTransientSequencingThenNumbersStartAtZero()
         throws Exception
     {
-        UnderTest underTest = transientBuilderFactory.newTransient( UnderTest.class );
+        UnderTest underTest = module.newTransient( UnderTest.class );
         assertEquals( 0, underTest.currentValue() );
     }
 
@@ -50,7 +50,7 @@ public class PersistingSequencingTest extends AbstractQi4jTest
     public void whenTransientSequencingThenFirstNextValueIsOne()
         throws Exception
     {
-        UnderTest underTest = transientBuilderFactory.newTransient( UnderTest.class );
+        UnderTest underTest = module.newTransient( UnderTest.class );
         assertEquals( 1, underTest.nextValue() );
         assertEquals( 1, underTest.currentValue() );
     }
@@ -59,7 +59,7 @@ public class PersistingSequencingTest extends AbstractQi4jTest
     public void whenTransientSequencingThenFirst100ValuesAreInSequence()
         throws Exception
     {
-        UnderTest underTest = transientBuilderFactory.newTransient( UnderTest.class );
+        UnderTest underTest = module.newTransient( UnderTest.class );
         for( int i = 1; i <= 100; i++ )
         {
             assertEquals( i, underTest.nextValue() );

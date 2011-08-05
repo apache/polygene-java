@@ -58,7 +58,7 @@ public class ApplicationXmlTest extends AbstractQi4jTest
     public void testApplicationXml()
         throws Exception
     {
-        FileConfiguration fileConfig = (FileConfiguration) serviceLocator.findService( FileConfiguration.class ).get();
+        FileConfiguration fileConfig = (FileConfiguration) module.findService( FileConfiguration.class ).get();
         ApplicationSerializer parser = new ApplicationSerializer();
         Iterable<Statement> graph = parser.serialize( application ); // TODO Fix this
         writeN3( graph );

@@ -19,7 +19,8 @@ package org.qi4j.library.rest;
 
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
-import org.qi4j.api.object.ObjectBuilderFactory;
+import org.qi4j.api.object.ObjectFactory;
+import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.*;
 import org.restlet.*;
 import org.restlet.data.MediaType;
@@ -34,9 +35,7 @@ public class RestApplication
     public static final MediaType APPLICATION_SPARQL_JSON = new MediaType( "application/sparql-results+json", "SPARQL JSON" );
 
     @Structure
-    ObjectBuilderFactory factory;
-    @Structure
-    UnitOfWorkFactory unitOfWorkFactory;
+    Module module;
 
     public RestApplication( @Uses Context parentContext )
     {
@@ -50,7 +49,7 @@ public class RestApplication
     @Override
     public void handle( Request request, Response response )
     {
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork uow = module.newUnitOfWork();
         try
         {
             super.handle( request, response );
@@ -98,7 +97,7 @@ public class RestApplication
 
     private Finder createFinder( Class<? extends ServerResource> resource )
     {
-        Finder finder = factory.newObject( Finder.class );
+        Finder finder = module.newObject( Finder.class );
         finder.setTargetClass( resource );
         return finder;
     }

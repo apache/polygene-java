@@ -21,9 +21,9 @@ import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.GraphImpl;
 import org.openrdf.model.vocabulary.OWL;
 import org.openrdf.model.vocabulary.XMLSchema;
+import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.entity.EntityDescriptor;
-import org.qi4j.api.entity.association.AssociationDescriptor;
-import org.qi4j.api.property.PersistentPropertyDescriptor;
+import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.util.Classes;
 import org.qi4j.library.rdf.Qi4jEntityType;
 import org.qi4j.library.rdf.Rdfs;
@@ -136,7 +136,7 @@ public class EntityTypeSerializer
         ValueFactory values = graph.getValueFactory();
 
         // Properties
-        for( PersistentPropertyDescriptor persistentProperty : entityDescriptor.state().<PersistentPropertyDescriptor>properties() )
+        for( PropertyDescriptor persistentProperty : entityDescriptor.state().properties() )
         {
             URI propertyURI = values.createURI( persistentProperty.qualifiedName().toURI() );
             graph.add( propertyURI, Rdfs.DOMAIN, entityTypeUri );

@@ -55,7 +55,7 @@ public class Qi4jShiroServletFilter
         NullArgumentException.validateNotEmpty( REALM_MODULE_PARAM, moduleName );
 
         Module module = application.findModule( layerName, moduleName );
-        Realm realm = module.objectBuilderFactory().newObject( Realm.class );
+        Realm realm = module.newObject( Realm.class );
         setSecurityManager( new DefaultWebSecurityManager( realm ) );
     }
 

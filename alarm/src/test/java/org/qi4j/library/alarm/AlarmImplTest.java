@@ -65,16 +65,16 @@ public class AlarmImplTest
         throws Exception
     {
         super.setUp();
-        unitOfWorkFactory.newUnitOfWork();
+        module.newUnitOfWork();
     }
 
     @Override
     public void tearDown()
         throws Exception
     {
-        UnitOfWork uow = unitOfWorkFactory.currentUnitOfWork();
-        if( uow != null )
+        if (module.isUnitOfWorkActive())
         {
+            UnitOfWork uow = module.currentUnitOfWork();
             uow.discard();
         }
         super.tearDown();
@@ -225,7 +225,7 @@ public class AlarmImplTest
 
     private Alarm createAlarm( String name )
     {
-        ServiceReference<AlarmSystem> ref = serviceLocator.findService( AlarmSystem.class );
+        ServiceReference<AlarmSystem> ref = module.findService( AlarmSystem.class );
         alarmSystem = ref.get();
         return alarmSystem.createAlarm( name );
     }

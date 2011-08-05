@@ -26,10 +26,10 @@ import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.qi4j.api.association.Association;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.structure.ApplicationDescriptor;
@@ -92,7 +92,7 @@ public class RestTest
         throws Exception
     {
         super.setUp();
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork uow = module.newUnitOfWork();
         try
         {
             EntityBuilder<PersonEntity> builder1 = uow.newEntityBuilder( PersonEntity.class, "P2" );
@@ -121,7 +121,7 @@ public class RestTest
     public void givenAnIdentityWhenExecutingGetCommandThenExpectTheCorrectXml()
         throws Exception
     {
-        RestTester restTester = objectBuilderFactory.newObject( RestTester.class );
+        RestTester restTester = module.newObject( RestTester.class );
         String xml = restTester.getEntity( "P1" );
         assertEquals( "Incorrect XML produced", "<?xml version=\"1.0\" encoding=\"UTF-8\"?><entity><type>org.qi4j.rest.RestTest$PersonEntity</type><identity>P1</identity><properties><identity>P1</identity><firstname>Joe</firstname><lastname>Doe</lastname></properties><manyAssociations><mother href=\"/entity/org.qi4j.rest.RestTest$PersonEntity/P2\">P2</mother></manyAssociations></entity>", xml );
     }
@@ -130,9 +130,9 @@ public class RestTest
     public void givenExistingIdentityWhenExecutingPutCommandThenNewValuesInEntity()
         throws Throwable
     {
-        RestTester restTester = objectBuilderFactory.newObject( RestTester.class );
+        RestTester restTester = module.newObject( RestTester.class );
         restTester.putEntity( "P1", "<?xml version=\"1.0\" encoding=\"UTF-8\"?><entity><identity>P1</identity><properties><identity>P1</identity><firstname>Jack</firstname><lastname>Doe</lastname></properties></entity>" );
-        UnitOfWork work = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork work = module.newUnitOfWork();
         try
         {
             PersonEntity entity = work.get( PersonEntity.class, "P1" );
@@ -151,9 +151,9 @@ public class RestTest
     public void givenExistingIdentityWhenExecutingDeleteCommandThenEntityIsRemoved()
         throws Throwable
     {
-        RestTester restTester = objectBuilderFactory.newObject( RestTester.class );
+        RestTester restTester = module.newObject( RestTester.class );
         restTester.deleteEntity( "P1" );
-        UnitOfWork work = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork work = module.newUnitOfWork();
         try
         {
             PersonEntity entity = null;
@@ -179,7 +179,7 @@ public class RestTest
     public void givenAnTypeWhenExecutingGetCommandThenExpectTheCorrectXml()
         throws Exception
     {
-        final RestTester restTester = objectBuilderFactory.newObject( RestTester.class );
+        final RestTester restTester = module.newObject( RestTester.class );
         final String result = restTester.getEntities( PersonEntity.class );
         assertThat(
             "Returned XML", result,

@@ -124,7 +124,7 @@ public interface ApplicationEventPlayerService
             } else if (ValueComposite.class.isAssignableFrom( parameterType ))
             {
 
-                return module.valueBuilderFactory().newValueFromJSON( parameterType, (String) value );
+                return module.newValueFromJSON( parameterType, (String) value );
             } else if (parameterType.isInterface())
             {
                 return uow.get( parameterType, (String) value );

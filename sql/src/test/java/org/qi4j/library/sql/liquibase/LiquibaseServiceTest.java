@@ -66,7 +66,7 @@ public class LiquibaseServiceTest
         };
 
         // Look up the DataSource
-        DataSource ds = assembler.serviceFinder().<DataSource>findService( DataSource.class ).get();
+        DataSource ds = assembler.module().<DataSource>findService( DataSource.class ).get();
 
         // Insert and query for data to check that it's working
         Databases database = new Databases( ds );
@@ -90,7 +90,7 @@ public class LiquibaseServiceTest
             @Override
             public SomeValue map( ResultSet resultSet )
             {
-                ValueBuilder<SomeValue> builder = assembler.valueBuilderFactory().newValueBuilder( SomeValue.class );
+                ValueBuilder<SomeValue> builder = assembler.module().newValueBuilder( SomeValue.class );
                 try
                 {
                     builder.prototype().id().set( resultSet.getString( "id" ) );

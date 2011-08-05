@@ -16,6 +16,7 @@ package org.qi4j.library.scheduler;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.junit.Test;
+import org.qi4j.api.common.Visibility;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
@@ -39,7 +40,7 @@ public class SchedulerTest
     protected void onAssembly( ModuleAssembly testAssembly )
             throws AssemblyException
     {
-        new SchedulerAssembler().visibleIn( module ).
+        new SchedulerAssembler().visibleIn( Visibility.module ).
                 withConfigAssembly( testAssembly ).
                 withPulseRhythm( Constants.PULSE_RHYTHM_SECS ).
                 withGarbageCollectorRhythm( Constants.GC_RHYTHM_SECS ).
@@ -52,14 +53,14 @@ public class SchedulerTest
             throws UnitOfWorkCompletionException,
             InterruptedException
     {
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork uow = module.newUnitOfWork();
         FooTask task = createFooTask( uow, "TestTask", Constants.BAZAR );
 
         String taskId = task.identity().get();
         task.run();
         uow.complete();
 
-        uow = unitOfWorkFactory.newUnitOfWork();
+        uow = module.newUnitOfWork();
         task = uow.get( FooTask.class, taskId );
         assertEquals( Constants.BAR, task.output().get() );
 
@@ -73,9 +74,9 @@ public class SchedulerTest
             UnitOfWorkCompletionException,
             Exception
     {
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork uow = module.newUnitOfWork();
 
-        Scheduler scheduler = serviceLocator.<Scheduler>findService( Scheduler.class ).get();
+        Scheduler scheduler = module.<Scheduler>findService( Scheduler.class ).get();
         DateTime start = new DateTime();
 
         FooTask task = createFooTask( uow, "TestMinutely", Constants.BAZAR );
@@ -90,13 +91,13 @@ public class SchedulerTest
 
         Thread.sleep( new Interval( start, expectedRun ).toDurationMillis() + 15000 ); // waiting a little more
 
-        uow = unitOfWorkFactory.newUnitOfWork();
+        uow = module.newUnitOfWork();
 
         task = uow.get( FooTask.class, taskIdentity );
         assertNotNull( task );
         assertEquals( Constants.BAR, task.output().get() );
 
-        Timeline timeline = serviceLocator.<Timeline>findService( Timeline.class ).get();
+        Timeline timeline = module.<Timeline>findService( Timeline.class ).get();
         DateTime now = new DateTime();
 
         // Queries returning past records
@@ -118,9 +119,9 @@ public class SchedulerTest
             throws UnitOfWorkCompletionException,
             InterruptedException
     {
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork uow = module.newUnitOfWork();
 
-        Scheduler scheduler = serviceLocator.<Scheduler>findService( Scheduler.class ).get();
+        Scheduler scheduler = module.<Scheduler>findService( Scheduler.class ).get();
 
         FooTask task = createFooTask( uow, "TestOnce", Constants.BAZAR );
         String taskIdentity = task.identity().get();
@@ -131,7 +132,7 @@ public class SchedulerTest
 
         Thread.sleep( 20000 );
 
-        uow = unitOfWorkFactory.newUnitOfWork();
+        uow = module.newUnitOfWork();
 
         task = uow.get( FooTask.class, taskIdentity );
         assertNotNull( task );

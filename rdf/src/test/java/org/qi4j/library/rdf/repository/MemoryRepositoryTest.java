@@ -43,7 +43,7 @@ public class MemoryRepositoryTest
     @Test
     public void testMemoryRepository() throws RepositoryException
     {
-        objectBuilderFactory.newObjectBuilder( MemoryRepositoryTest.class ).injectTo( this );
+        module.injectTo( this );
 
 
         RepositoryConnection conn = repository.getConnection();

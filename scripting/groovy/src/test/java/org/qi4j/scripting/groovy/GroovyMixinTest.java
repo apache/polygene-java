@@ -29,8 +29,8 @@ public class GroovyMixinTest extends AbstractQi4jTest
     @Test
     public void testInvoke()
     {
-        GroovyComposite domain1 = transientBuilderFactory.newTransient( GroovyComposite.class );
-        GroovyComposite domain2 = transientBuilderFactory.newTransient( GroovyComposite.class );
+        GroovyComposite domain1 = module.newTransient( GroovyComposite.class );
+        GroovyComposite domain2 = module.newTransient( GroovyComposite.class );
         Assert.assertEquals( "do1() in Groovy:1", domain1.do1() );
         Assert.assertEquals( "do1() in Groovy:2", domain1.do1() );
         Assert.assertEquals( "do1() in Groovy:3", domain1.do1() );

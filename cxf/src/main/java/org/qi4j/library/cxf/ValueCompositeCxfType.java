@@ -29,37 +29,32 @@ import org.apache.cxf.aegis.xml.MessageWriter;
 import org.apache.cxf.common.xmlschema.XmlSchemaUtils;
 import org.apache.ws.commons.schema.*;
 import org.qi4j.api.Qi4j;
+import org.qi4j.api.association.Association;
+import org.qi4j.api.association.AssociationDescriptor;
+import org.qi4j.api.association.AssociationStateHolder;
+import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.common.TypeName;
 import org.qi4j.api.composite.StateDescriptor;
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.entity.Identity;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
-import org.qi4j.api.object.ObjectBuilder;
-import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyDescriptor;
-import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.util.Classes;
 import org.qi4j.api.value.*;
 import org.qi4j.functional.Function;
+import org.qi4j.functional.Iterables;
 
 import javax.xml.namespace.QName;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class ValueCompositeCxfType extends AegisType
 {
-    @Structure
-    private ValueBuilderFactory vbf;
-
-    @Structure
-    private ObjectBuilderFactory obf;
-
     @Structure
     private Module module;
 
@@ -98,15 +93,45 @@ public class ValueCompositeCxfType extends AegisType
             values.put( childQualifiedName, value );
         }
 
-        ValueBuilder<?> builder = vbf.newValueBuilderWithState( (Class<?>) typeClass, new Function<PropertyDescriptor, Object>()
+        ValueBuilder<?> builder = module.newValueBuilderWithState( (Class<?>) typeClass, new Function<PropertyDescriptor, Object>()
         {
             @Override
             public Object map( PropertyDescriptor descriptor1 )
             {
                 return values.get( descriptor1.qualifiedName() );
             }
+        }, new Function<AssociationDescriptor, EntityReference>()
+        {
+            @Override
+            public EntityReference map( AssociationDescriptor descriptor )
+            {
+                Object value = values.get( descriptor.qualifiedName() );
+                if (value == null)
+                    return null;
+                else
+                    return EntityReference.parseEntityReference( value.toString());
+            }
+        }, new Function<AssociationDescriptor, Iterable<EntityReference>>()
+        {
+            @Override
+            public Iterable<EntityReference> map( AssociationDescriptor descriptor )
+            {
+                Object value = values.get( descriptor.qualifiedName() );
+                if (value == null)
+                    return Iterables.empty();
+                else
+                {
+                    String[] ids = value.toString().split( "," );
+                    List<EntityReference> references = new ArrayList<EntityReference>(  );
+                    for( int i = 0; i < ids.length; i++ )
+                    {
+                        String id = ids[i];
+                        references.add( EntityReference.parseEntityReference( id ) );
+                    }
+                    return references;
+                }
+            }
         } );
-
 
         return builder.newInstance();
     }
@@ -117,7 +142,7 @@ public class ValueCompositeCxfType extends AegisType
     {
         ValueComposite composite = (ValueComposite) object;
         writer.writeXsiType( NamespaceUtil.convertJavaTypeToQName( Qi4j.DESCRIPTOR_FUNCTION.map( composite ).type() ) );
-        StateHolder state = Qi4j.INSTANCE_FUNCTION.map( composite).state();
+        AssociationStateHolder state = api.getState( composite );
         for( Property<?> property : state.properties() )
         {
             Object value = property.get();
@@ -145,6 +170,40 @@ public class ValueCompositeCxfType extends AegisType
             {
 //                    cwriter.writeXsiNil();
             }
+            cwriter.close();
+        }
+
+        AegisType type = getTypeMapping().getType( NamespaceUtil.convertJavaTypeToQName( String.class ) );
+        for( Association association: state.associations() )
+        {
+            QName childName = new QName( "", api.getAssociationDescriptor( association ).qualifiedName().name() );
+            MessageWriter cwriter = writer.getElementWriter( childName );
+
+            if (association.get() != null)
+            {
+                type.writeObject( ((Identity)association.get()).identity().get(), cwriter, context );
+            }
+            cwriter.close();
+        }
+
+        for( ManyAssociation association: state.manyAssociations() )
+        {
+            QName childName = new QName( "", api.getAssociationDescriptor( association ).qualifiedName().name() );
+            MessageWriter cwriter = writer.getElementWriter( childName );
+
+            String ids = null;
+            for( Object entity : association )
+            {
+                String id = EntityReference.getEntityReference( entity ).identity();
+                if (ids != null)
+                    ids+=",";
+                id+=id;
+            }
+            if (ids == null)
+            {
+                ids = "";
+            }
+            type.writeObject( ids, cwriter, context );
             cwriter.close();
         }
     }
@@ -231,7 +290,6 @@ public class ValueCompositeCxfType extends AegisType
         {
             AegisType componentType = getOrCreateAegisType( getCollectionComponentType( type ), root );
             CollectionType resultType = new CollectionType( componentType );
-            TypeName name = TypeName.nameOf( type );
             QName schemaType = new QName( "http://www.w3.org/2001/XMLSchema", "list" );
             resultType.setSchemaType( schemaType );
             return resultType;
@@ -240,16 +298,12 @@ public class ValueCompositeCxfType extends AegisType
         {
             AegisType keyType = getOrCreateAegisType( getMapKeyComponentType( type ), root );
             AegisType valueType = getOrCreateAegisType( getMapValueComponentType( type ), root );
-            TypeName name = TypeName.nameOf( type );
-            QName schemaType = new QName( name.toURI(), "map" );
+            QName schemaType = new QName( Classes.toURI( Classes.RAW_CLASS.map( type ) ), "map" );
             return new MapType( schemaType, keyType, valueType );
         }
         else if( isValueComposite( type ) )
         {
-            ObjectBuilder<ValueCompositeCxfType> builder = obf.newObjectBuilder( ValueCompositeCxfType.class );
-            builder.use( getTypeMapping() );
-            builder.use( type );
-            ValueCompositeCxfType aegisType = builder.newInstance();
+            ValueCompositeCxfType aegisType = module.newObject( ValueCompositeCxfType.class, getTypeMapping(), type );
             getTypeMapping().register( aegisType );
             return aegisType;
         }

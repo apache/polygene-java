@@ -19,12 +19,12 @@ import org.openrdf.model.*;
 import org.openrdf.model.impl.GraphImpl;
 import org.openrdf.model.vocabulary.XMLSchema;
 import org.qi4j.api.Qi4j;
+import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.api.entity.association.AssociationDescriptor;
 import org.qi4j.api.json.JSONObjectSerializer;
-import org.qi4j.api.property.PersistentPropertyDescriptor;
+import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.type.ValueCompositeType;
 import org.qi4j.api.type.ValueType;
 import org.qi4j.api.util.Classes;
@@ -108,7 +108,7 @@ public class EntityStateSerializer
         try
         {
             // Properties
-            for( PersistentPropertyDescriptor persistentProperty : entityType.state().<PersistentPropertyDescriptor>properties() )
+            for( PropertyDescriptor persistentProperty : entityType.state().properties() )
             {
                 Object property = entityState.getProperty( persistentProperty.qualifiedName() );
                 if( property != null )
@@ -125,7 +125,7 @@ public class EntityStateSerializer
 
     }
 
-    private void serializeProperty( PersistentPropertyDescriptor persistentProperty, Object property, Resource subject, Graph graph, boolean includeNonQueryable ) throws JSONException
+    private void serializeProperty( PropertyDescriptor persistentProperty, Object property, Resource subject, Graph graph, boolean includeNonQueryable ) throws JSONException
     {
         if( !( includeNonQueryable || persistentProperty.queryable() ) )
         {
@@ -163,7 +163,7 @@ public class EntityStateSerializer
         BNode collection = valueFactory.createBNode();
         graph.add( subject, predicate, collection );
 
-        for( PersistentPropertyDescriptor persistentProperty : ((ValueCompositeType)valueType).properties() )
+        for( PropertyDescriptor persistentProperty : ((ValueCompositeType)valueType).properties() )
         {
             Object propertyValue = Qi4j.INSTANCE_FUNCTION.map( (Composite) value).state().propertyFor( persistentProperty.accessor() ).get();
 
@@ -188,7 +188,7 @@ public class EntityStateSerializer
 
     private void serializeAssociations( final EntityState entityState,
                                         final Graph graph, URI entityUri,
-                                        final Iterable<AssociationDescriptor> associations,
+                                        final Iterable<? extends AssociationDescriptor> associations,
                                         final boolean includeNonQueryable )
     {
         ValueFactory values = graph.getValueFactory();
@@ -214,7 +214,7 @@ public class EntityStateSerializer
     private void serializeManyAssociations( final EntityState entityState,
                                             final Graph graph,
                                             final URI entityUri,
-                                            final Iterable<AssociationDescriptor> associations,
+                                            final Iterable<? extends AssociationDescriptor> associations,
                                             final boolean includeNonQueryable )
     {
         ValueFactory values = graph.getValueFactory();

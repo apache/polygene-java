@@ -15,14 +15,13 @@
 package org.qi4j.library.jmx;
 
 import org.qi4j.api.Qi4j;
+import org.qi4j.api.association.AssociationStateHolder;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityDescriptor;
-import org.qi4j.api.entity.association.EntityStateHolder;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.property.PersistentPropertyDescriptor;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.service.Activatable;
@@ -90,7 +89,7 @@ public interface ConfigurationManagerService
                     EntityDescriptor descriptor = module.entityDescriptor( configurationClass.getName() );
                     List<MBeanAttributeInfo> attributes = new ArrayList<MBeanAttributeInfo>();
                     Map<String, AccessibleObject> properties = new HashMap<String, AccessibleObject>();
-                    for( PersistentPropertyDescriptor persistentProperty : descriptor.state().<PersistentPropertyDescriptor>properties() )
+                    for( PropertyDescriptor persistentProperty : descriptor.state().properties() )
                     {
                         if( !persistentProperty.isImmutable() )
                         {
@@ -180,7 +179,7 @@ public interface ConfigurationManagerService
                 try
                 {
                     EntityComposite configuration = uow.get( EntityComposite.class, identity );
-                    EntityStateHolder state = api.getState( configuration );
+                    AssociationStateHolder state = api.getState( configuration );
                     AccessibleObject accessor = propertyNames.get( name );
                     Property<Object> property = state.propertyFor( accessor );
                     Object object = property.get();
@@ -207,7 +206,7 @@ public interface ConfigurationManagerService
                 try
                 {
                     EntityComposite configuration = uow.get( EntityComposite.class, identity );
-                    EntityStateHolder state = api.getState( (EntityComposite) configuration );
+                    AssociationStateHolder state = api.getState( (EntityComposite) configuration );
                     AccessibleObject accessor = propertyNames.get( attribute.getName() );
                     Property<Object> property = state.propertyFor( accessor );
                     PropertyDescriptor propertyDescriptor = api.getPropertyDescriptor( property );

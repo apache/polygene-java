@@ -22,8 +22,7 @@ import org.apache.cxf.aegis.type.AbstractTypeCreator;
 import org.apache.cxf.aegis.type.AegisType;
 import org.apache.cxf.aegis.type.TypeClassInfo;
 import org.qi4j.api.injection.scope.Structure;
-import org.qi4j.api.object.ObjectBuilder;
-import org.qi4j.api.object.ObjectBuilderFactory;
+import org.qi4j.api.structure.Module;
 import org.qi4j.api.util.Classes;
 import org.qi4j.api.value.ValueComposite;
 
@@ -33,7 +32,7 @@ import java.lang.reflect.Method;
 public class Qi4jTypeCreator extends AbstractTypeCreator
 {
     @Structure
-    private ObjectBuilderFactory obf;
+    private Module module;
 
     public Qi4jTypeCreator()
     {
@@ -56,10 +55,7 @@ public class Qi4jTypeCreator extends AbstractTypeCreator
     {
         if( ValueComposite.class.isAssignableFrom( Classes.RAW_CLASS.map( info.getType() ) ) )
         {
-            ObjectBuilder<ValueCompositeCxfType> builder = obf.newObjectBuilder( ValueCompositeCxfType.class );
-            builder.use( info.getType() );
-            builder.use( getTypeMapping() );
-            return builder.newInstance();
+            return module.newObject( ValueCompositeCxfType.class, info.getType(), getTypeMapping() );
         }
         return nextCreator.createDefaultType( info );
     }

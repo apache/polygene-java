@@ -17,9 +17,10 @@ import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.object.ObjectBuilderFactory;
+import org.qi4j.api.object.ObjectFactory;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.service.Activatable;
+import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
@@ -44,9 +45,7 @@ public class SchedulerActivation
     private static final int DEFAULT_WORKERS_COUNT = Runtime.getRuntime().availableProcessors();
     private static final int DEFAULT_WORKQUEUE_SIZE = 10;
     @Structure
-    private ObjectBuilderFactory obf;
-    @Structure
-    private UnitOfWorkFactory uowf;
+    private Module module;
     @This
     private Configuration<SchedulerConfiguration> config;
     @This
@@ -116,7 +115,7 @@ public class SchedulerActivation
             throws UnitOfWorkCompletionException
     {
         // Remove not durable schedules
-        UnitOfWork uow = uowf.newUnitOfWork();
+        UnitOfWork uow = module.newUnitOfWork();
         Query<ScheduleEntity> notDurableQuery = scheduleRepository.findNotDurable();
         long notDurableCount = notDurableQuery.count();
         if ( notDurableCount > 0 ) {
@@ -132,7 +131,7 @@ public class SchedulerActivation
             throws UnitOfWorkCompletionException
     {
         // Handling schedules that were running when last activated
-        UnitOfWork uow = uowf.newUnitOfWork();
+        UnitOfWork uow = module.newUnitOfWork();
         Query<ScheduleEntity> runningQuery = scheduleRepository.findRunning();
         long runningCount = runningQuery.count();
         if ( runningCount > 0 ) {
@@ -146,15 +145,8 @@ public class SchedulerActivation
 
     private void startPulse( Integer workersCount, Integer workQueueSize, Integer pulseRhythmSeconds )
     {
-        workQueue = obf.newObjectBuilder( SchedulerWorkQueue.class ).
-                use( me.identity().get() ).
-                use( workersCount ).
-                use( workQueueSize ).
-                newInstance();
-        pulse = obf.newObjectBuilder( SchedulerPulse.class ).
-                use( Long.valueOf( pulseRhythmSeconds * 1000 ) ).
-                use( workQueue ).
-                newInstance();
+        workQueue = module.newObject( SchedulerWorkQueue.class, me.identity().get(), workersCount, workQueueSize);
+        pulse = module.newObject( SchedulerPulse.class, Long.valueOf( pulseRhythmSeconds * 1000 ), workQueue );
         pulseThread = new Thread( pulse, me.identity().get() + "-Pulse" );
         pulseThread.start();
         LOGGER.debug( "Pulsing every {}s", pulseRhythmSeconds );
@@ -178,9 +170,7 @@ public class SchedulerActivation
 
     private void startGarbageCollector( Integer gcRhythmSeconds )
     {
-        gc = obf.newObjectBuilder( SchedulerGarbageCollector.class ).
-                use( Long.valueOf( gcRhythmSeconds * 1000 ) ).
-                newInstance();
+        gc = module.newObject( SchedulerGarbageCollector.class, Long.valueOf( gcRhythmSeconds * 1000 ) );
         gcThread = new Thread( gc, me.identity().get() + "-GC" );
         gcThread.start();
         LOGGER.debug( "Garbage Collecting every {}s", gcRhythmSeconds );

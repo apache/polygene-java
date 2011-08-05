@@ -54,7 +54,7 @@ public final class JettyServiceTest extends AbstractQi4jTest
         throws Throwable
     {
         Iterable<ServiceReference<JettyService>> services =
-            serviceLocator.findServices( JettyService.class );
+            module.findServices( JettyService.class );
         assertNotNull( services );
 
         Iterator<ServiceReference<JettyService>> iterator = services.iterator();

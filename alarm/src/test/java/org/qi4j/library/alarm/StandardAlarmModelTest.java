@@ -65,14 +65,14 @@ public class StandardAlarmModelTest
         throws Exception
     {
         super.setUp();
-        unitOfWorkFactory.newUnitOfWork();
+        module.newUnitOfWork();
     }
 
     @Override
     public void tearDown()
         throws Exception
     {
-        UnitOfWork uow = unitOfWorkFactory.currentUnitOfWork();
+        UnitOfWork uow = module.currentUnitOfWork();
         if( uow != null )
         {
             uow.discard();
@@ -117,7 +117,7 @@ public class StandardAlarmModelTest
     public void testTriggers()
         throws Exception
     {
-        AlarmModel provider = (AlarmModel) serviceLocator.findService( AlarmModel.class ).get();
+        AlarmModel provider = (AlarmModel) module.findService( AlarmModel.class ).get();
         Alarm underTest = createAlarm( "Test Alarm" );
         List<String> triggers = provider.alarmTriggers();
         assertEquals( 3, triggers.size() );
@@ -145,7 +145,7 @@ public class StandardAlarmModelTest
     public void testStateChangeFromNormal()
         throws Exception
     {
-        AlarmModel provider = (AlarmModel) serviceLocator.findService( AlarmModel.class ).get();
+        AlarmModel provider = (AlarmModel) module.findService( AlarmModel.class ).get();
         Alarm alarm = createAlarm( "Another 1" );
         AlarmEvent event1 = provider.evaluate( alarm, Alarm.TRIGGER_ACTIVATE );
         assertEquals( Alarm.EVENT_ACTIVATION, event1.systemName().get() );
@@ -163,7 +163,7 @@ public class StandardAlarmModelTest
     public void testStateChangeFromActivated()
         throws Exception
     {
-        AlarmModel provider = (AlarmModel) serviceLocator.findService( AlarmModel.class ).get();
+        AlarmModel provider = (AlarmModel) module.findService( AlarmModel.class ).get();
         Alarm alarm = createAlarm( "Another 1" );
         alarm.activate();
 
@@ -185,7 +185,7 @@ public class StandardAlarmModelTest
     public void testStateChangeFromAcknowledged()
         throws Exception
     {
-        AlarmModel provider = (AlarmModel) serviceLocator.findService( AlarmModel.class ).get();
+        AlarmModel provider = (AlarmModel) module.findService( AlarmModel.class ).get();
         Alarm alarm = createAlarm( "Another 1" );
         alarm.activate();
         alarm.acknowledge();
@@ -210,7 +210,7 @@ public class StandardAlarmModelTest
     public void testStateChangeFromDeactivated()
         throws Exception
     {
-        AlarmModel provider = (AlarmModel) serviceLocator.findService( AlarmModel.class ).get();
+        AlarmModel provider = (AlarmModel) module.findService( AlarmModel.class ).get();
         Alarm alarm = createAlarm( "Another 1" );
         alarm.activate();
         alarm.deactivate();
@@ -236,7 +236,7 @@ public class StandardAlarmModelTest
     {
         try
         {
-            AlarmModel provider = (AlarmModel) serviceLocator.findService( AlarmModel.class ).get();
+            AlarmModel provider = (AlarmModel) module.findService( AlarmModel.class ).get();
             Alarm underTest = createAlarm( "Test Alarm" );
             provider.evaluate( underTest, "my-trigger" );
             fail( "IllegalArgumentException not thrown." );
@@ -394,7 +394,7 @@ public class StandardAlarmModelTest
     public void testComputeCondition()
         throws Exception
     {
-        AlarmModel provider = (AlarmModel) serviceLocator.findService( AlarmModel.class ).get();
+        AlarmModel provider = (AlarmModel) module.findService( AlarmModel.class ).get();
         AlarmStatus s1 = createStatus( Alarm.STATUS_NORMAL );
         assertFalse( provider.computeCondition( s1 ) );
         AlarmStatus s2 = createStatus( Alarm.STATUS_ACTIVATED );
@@ -409,7 +409,7 @@ public class StandardAlarmModelTest
     public void testComputeTrigger()
         throws Exception
     {
-        AlarmModel provider = (AlarmModel) serviceLocator.findService( AlarmModel.class ).get();
+        AlarmModel provider = (AlarmModel) module.findService( AlarmModel.class ).get();
         AlarmStatus s1 = createStatus( Alarm.STATUS_NORMAL );
         AlarmStatus s2 = createStatus( Alarm.STATUS_ACTIVATED );
         AlarmStatus s3 = createStatus( Alarm.STATUS_DEACTIVATED );
@@ -434,7 +434,7 @@ public class StandardAlarmModelTest
 
     private Alarm createAlarm( String name )
     {
-        UnitOfWork uow = unitOfWorkFactory.currentUnitOfWork();
+        UnitOfWork uow = module.currentUnitOfWork();
         EntityBuilder<Alarm> builder = uow.newEntityBuilder( Alarm.class );
         AlarmState state = builder.instanceFor( AlarmState.class );
         state.currentStatus().set( createStatus( Alarm.STATUS_NORMAL ) );
@@ -445,13 +445,13 @@ public class StandardAlarmModelTest
 
     private Alarm getAlarm( String identity )
     {
-        UnitOfWork uow = unitOfWorkFactory.currentUnitOfWork();
+        UnitOfWork uow = module.currentUnitOfWork();
         return uow.get( Alarm.class, identity );
     }
 
     private AlarmStatus createStatus( String status )
     {
-        ValueBuilder<AlarmStatus> builder = valueBuilderFactory.newValueBuilder( AlarmStatus.class );
+        ValueBuilder<AlarmStatus> builder = module.newValueBuilder( AlarmStatus.class );
         builder.prototype().name().set( status );
         builder.prototype().creationDate().set( new Date() );
         return builder.newInstance();

@@ -38,7 +38,7 @@ public class EventRouterTest
 
         list = new ArrayList<UnitOfWorkDomainEventsValue>(  );
         {
-            ValueBuilder<UnitOfWorkDomainEventsValue> builder = assembler.valueBuilderFactory().newValueBuilder( UnitOfWorkDomainEventsValue.class );
+            ValueBuilder<UnitOfWorkDomainEventsValue> builder = assembler.module().newValueBuilder( UnitOfWorkDomainEventsValue.class );
             builder.prototype().events().get().add( newDomainEvent( assembler, "Test1" ) );
             builder.prototype().events().get().add( newDomainEvent( assembler, "Test2" ) );
             builder.prototype().events().get().add( newDomainEvent( assembler, "Test3" ) );
@@ -48,7 +48,7 @@ public class EventRouterTest
             list.add( builder.newInstance() );
         }
         {
-            ValueBuilder<UnitOfWorkDomainEventsValue> builder = assembler.valueBuilderFactory().newValueBuilder( UnitOfWorkDomainEventsValue.class );
+            ValueBuilder<UnitOfWorkDomainEventsValue> builder = assembler.module().newValueBuilder( UnitOfWorkDomainEventsValue.class );
             builder.prototype().events().get().add( newDomainEvent( assembler, "Test4" ) );
             builder.prototype().events().get().add( newDomainEvent( assembler, "Test5" ) );
             builder.prototype().events().get().add( newDomainEvent( assembler, "Test6" ) );
@@ -61,7 +61,7 @@ public class EventRouterTest
 
     private DomainEventValue newDomainEvent( SingletonAssembler assembler, String name )
     {
-        ValueBuilder<DomainEventValue> eventBuilder = assembler.valueBuilderFactory().newValueBuilder( DomainEventValue.class );
+        ValueBuilder<DomainEventValue> eventBuilder = assembler.module().newValueBuilder( DomainEventValue.class );
         eventBuilder.prototype().entityId().set( "123" );
         eventBuilder.prototype().entityType().set( "Foo" );
         eventBuilder.prototype().parameters().set( "{}" );

@@ -5,8 +5,8 @@ import org.qi4j.api.common.Optional;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.entity.association.Association;
-import org.qi4j.api.entity.association.ManyAssociation;
+import org.qi4j.api.association.Association;
+import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
@@ -45,18 +45,18 @@ public class EntityToValueTest extends AbstractQi4jTest
     public void whenConvertingEntityToValueExpectCorrectValues()
         throws UnitOfWorkCompletionException
     {
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork uow = module.newUnitOfWork();
         try
         {
             PersonEntity niclas = setupPersonEntities( uow );
 
-            ServiceReference<EntityToValueService> reference = serviceLocator.findService( EntityToValueService.class );
+            ServiceReference<EntityToValueService> reference = module.findService( EntityToValueService.class );
             EntityToValueService service = reference.get();
             PersonValue niclasValue = service.convert( PersonValue.class, niclas );
             assertEquals( "Niclas", niclasValue.firstName().get() );
             assertEquals( "Hedhman", niclasValue.lastName().get() );
-            assertEquals( "urn:qi4j:entity:id:Lis", niclasValue.spouse().get() );
-            assertEquals( "urn:qi4j:entity:id:Eric", niclasValue.children().get().get( 0 ) );
+            assertEquals( "id:Lis", niclasValue.spouse().get() );
+            assertEquals( "id:Eric", niclasValue.children().get().get( 0 ) );
             uow.complete();
         }
         finally
@@ -69,19 +69,19 @@ public class EntityToValueTest extends AbstractQi4jTest
     public void givenUnqualifiedValueWhenConvertingEntityExpectCorrectMapping()
         throws UnitOfWorkCompletionException
     {
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork uow = module.newUnitOfWork();
         try
         {
             PersonEntity niclas = setupPersonEntities( uow );
 
-            ServiceReference<EntityToValueService> reference = serviceLocator.findService( EntityToValueService.class );
+            ServiceReference<EntityToValueService> reference = module.findService( EntityToValueService.class );
             EntityToValueService service = reference.get();
 
             PersonValue2 niclasValue = service.convert( PersonValue2.class, niclas );
             assertEquals( "Niclas", niclasValue.firstName().get() );
             assertEquals( "Hedhman", niclasValue.lastName().get() );
-            assertEquals( "urn:qi4j:entity:id:Lis", niclasValue.spouse().get() );
-            assertEquals( "urn:qi4j:entity:id:Eric", niclasValue.children().get().get( 0 ) );
+            assertEquals( "id:Lis", niclasValue.spouse().get() );
+            assertEquals( "id:Eric", niclasValue.children().get().get( 0 ) );
             uow.complete();
         }
         finally
@@ -94,19 +94,19 @@ public class EntityToValueTest extends AbstractQi4jTest
     public void givenUnqualifiedValue2WhenConvertingEntityExpectCorrectMapping()
         throws UnitOfWorkCompletionException
     {
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork uow = module.newUnitOfWork();
         try
         {
             PersonEntity niclas = setupPersonEntities( uow );
 
-            ServiceReference<EntityToValueService> reference = serviceLocator.findService( EntityToValueService.class );
+            ServiceReference<EntityToValueService> reference = module.findService( EntityToValueService.class );
             EntityToValueService service = reference.get();
 
             PersonValue3 niclasValue = service.convert( PersonValue3.class, niclas );
             assertEquals( "Niclas", niclasValue.firstName().get() );
             assertEquals( "Hedhman", niclasValue.lastName().get() );
-            assertEquals( "urn:qi4j:entity:id:Lis", niclasValue.spouse().get() );
-            assertEquals( "urn:qi4j:entity:id:Eric", niclasValue.children().get().get( 0 ) );
+            assertEquals( "id:Lis", niclasValue.spouse().get() );
+            assertEquals( "id:Eric", niclasValue.children().get().get( 0 ) );
             uow.complete();
         }
         finally
@@ -119,12 +119,12 @@ public class EntityToValueTest extends AbstractQi4jTest
     public void givenQualifiedValueNotFromSameInterfaceWhenConvertingEntityExpectNonOptionalException()
         throws UnitOfWorkCompletionException
     {
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork uow = module.newUnitOfWork();
         try
         {
             PersonEntity niclas = setupPersonEntities( uow );
 
-            ServiceReference<EntityToValueService> reference = serviceLocator.findService( EntityToValueService.class );
+            ServiceReference<EntityToValueService> reference = module.findService( EntityToValueService.class );
             EntityToValueService service = reference.get();
 
             PersonValue4 niclasValue = service.convert( PersonValue4.class, niclas );

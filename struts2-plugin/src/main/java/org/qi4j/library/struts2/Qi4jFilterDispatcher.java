@@ -12,7 +12,7 @@ import org.apache.struts2.config.BeanSelectionProvider;
 import org.apache.struts2.dispatcher.Dispatcher;
 import org.apache.struts2.dispatcher.FilterDispatcher;
 import org.qi4j.api.composite.TransientBuilderFactory;
-import org.qi4j.api.object.ObjectBuilderFactory;
+import org.qi4j.api.object.ObjectFactory;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 
@@ -58,9 +58,9 @@ public class Qi4jFilterDispatcher
         public void register( ContainerBuilder builder, LocatableProperties props )
             throws ConfigurationException
         {
-            factory( builder, UnitOfWorkFactory.class, module.unitOfWorkFactory() );
-            factory( builder, ObjectBuilderFactory.class, module.objectBuilderFactory() );
-            factory( builder, TransientBuilderFactory.class, module.transientBuilderFactory() );
+            factory( builder, UnitOfWorkFactory.class, module );
+            factory( builder, ObjectFactory.class, module );
+            factory( builder, TransientBuilderFactory.class, module );
             factory( builder, ActionConfiguration.class, actionConfiguration() );
             registered = true;
         }
@@ -92,7 +92,7 @@ public class Qi4jFilterDispatcher
 
         private ActionConfiguration actionConfiguration()
         {
-            return module.serviceFinder().findService( ActionService.class ).metaInfo( ActionConfiguration.class );
+            return module.findService( ActionService.class ).metaInfo( ActionConfiguration.class );
         }
     }
 }

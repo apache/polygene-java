@@ -15,7 +15,7 @@ package org.qi4j.library.scheduler.slaves;
 
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
-import org.qi4j.api.object.ObjectBuilderFactory;
+import org.qi4j.api.object.ObjectFactory;
 import org.qi4j.library.scheduler.Scheduler;
 import org.qi4j.library.scheduler.schedule.ScheduleRunner;
 import org.slf4j.Logger;
@@ -31,7 +31,7 @@ public class SchedulerWorkQueue
     private static final Logger LOGGER = LoggerFactory.getLogger( Scheduler.class );
     private ThreadPoolExecutor executor;
     @Structure
-    private ObjectBuilderFactory obf;
+    private ObjectFactory obf;
 
     public SchedulerWorkQueue( @Uses String schedulerIdentity, @Uses Integer workersCount, @Uses Integer workQueueSize )
     {
@@ -44,7 +44,7 @@ public class SchedulerWorkQueue
 
     void enqueue( String scheduleIdentity )
     {
-        ScheduleRunner scheduleRunner = obf.newObjectBuilder( ScheduleRunner.class ).use( scheduleIdentity ).newInstance();
+        ScheduleRunner scheduleRunner = obf.newObject( ScheduleRunner.class, scheduleIdentity );
         executor.execute( scheduleRunner );
         LOGGER.debug( "Enqueued Task identity to be run immediatly: {}", scheduleIdentity );
     }

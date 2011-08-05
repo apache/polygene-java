@@ -29,7 +29,7 @@ public class JavaScriptMixinTest
     @Test
     public void testInvoke() throws Throwable
     {
-        JavaScriptComposite domain = transientBuilderFactory.newTransient( JavaScriptComposite.class );
+        JavaScriptComposite domain = module.newTransient( JavaScriptComposite.class );
         Assert.assertEquals( "do1 script \" and ' for many cases is harder.", domain.do1() );
     }
 }

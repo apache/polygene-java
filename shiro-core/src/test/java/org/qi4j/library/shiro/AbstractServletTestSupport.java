@@ -111,7 +111,7 @@ public abstract class AbstractServletTestSupport
                 throws ServletException, IOException
         {
             Module module = application().findModule( TEST_LAYER, TEST_MODULE );
-            SecuredService service = module.serviceFinder().<SecuredService>findService( SecuredService.class ).get();
+            SecuredService service = module.findService( SecuredService.class ).get();
             service.doSomethingThatRequiresNothing();
             service.doSomethingThatRequiresUser();
             service.doSomethingThatRequiresPermissions();

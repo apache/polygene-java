@@ -39,8 +39,7 @@ public interface OSGiEnabledService extends Activatable, ServiceComposite
             {
                 return;
             }
-            Iterable<ServiceReference<Object>> services = module.serviceFinder().<Object>findServices( descriptor.type() );
-            for( ServiceReference ref : services )
+            for( ServiceReference ref : module.findServices( descriptor.type() ) )
             {
                 if( ref.identity().equals( identity().get() ) )
                 {

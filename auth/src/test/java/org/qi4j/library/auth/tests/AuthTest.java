@@ -57,7 +57,7 @@ public class AuthTest
     public void testAuth()
         throws Exception
     {
-        UnitOfWork unit = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork unit = module.newUnitOfWork();
         try
         {
             // Create resource
@@ -78,11 +78,11 @@ public class AuthTest
             role.permissions().add( 0, permission );
 
             // Find authorization service
-            AuthorizationService authorization = serviceLocator.<AuthorizationService>findService( AuthorizationService.class )
+            AuthorizationService authorization = module.<AuthorizationService>findService( AuthorizationService.class )
                 .get();
 
             // Create authorization context
-            ValueBuilder<AuthorizationContext> accb = valueBuilderFactory.newValueBuilder( AuthorizationContext.class );
+            ValueBuilder<AuthorizationContext> accb = module.newValueBuilder( AuthorizationContext.class );
             AuthorizationContext context = accb.prototype();
             context.user().set( user );
             context.time().set( new Date() );

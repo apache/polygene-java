@@ -17,14 +17,13 @@
 package org.qi4j.library.struts2;
 
 import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.inject.Inject;
 import org.apache.struts2.util.ObjectFactoryDestroyable;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.composite.NoSuchCompositeException;
 import org.qi4j.api.composite.TransientBuilderFactory;
 import org.qi4j.api.object.NoSuchObjectException;
-import org.qi4j.api.object.ObjectBuilderFactory;
+import org.qi4j.api.object.ObjectFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,7 +34,7 @@ import static org.qi4j.library.struts2.Qi4jObjectFactory.ClassType.*;
  * Qi4j implementation of struts object factory.
  */
 public class Qi4jObjectFactory
-    extends ObjectFactory
+    extends com.opensymphony.xwork2.ObjectFactory
     implements ObjectFactoryDestroyable
 {
     private static final long serialVersionUID = 1L;
@@ -49,7 +48,7 @@ public class Qi4jObjectFactory
 
     private final Map<Class, ClassType> types;
 
-    private ObjectBuilderFactory objectBuilderFactory;
+    private ObjectFactory objectFactory;
     private TransientBuilderFactory compositeBuilderFactory;
 
     public Qi4jObjectFactory()
@@ -58,9 +57,9 @@ public class Qi4jObjectFactory
     }
 
     @Inject
-    public void setObjectBuilderFactory( ObjectBuilderFactory objectBuilderFactory )
+    public void setObjectFactory( ObjectFactory objectFactory )
     {
-        this.objectBuilderFactory = objectBuilderFactory;
+        this.objectFactory = objectFactory;
     }
 
     @Inject
@@ -145,7 +144,7 @@ public class Qi4jObjectFactory
     @SuppressWarnings( "unchecked" )
     private Object createQi4jObject( Class aClass, boolean isAddToTypes )
     {
-        if( objectBuilderFactory == null )
+        if( objectFactory == null )
         {
             return null;
         }
@@ -155,7 +154,7 @@ public class Qi4jObjectFactory
 
         try
         {
-            obj = objectBuilderFactory.newObject( aClass );
+            obj = objectFactory.newObject( aClass );
         }
         catch( NoSuchObjectException e )
         {

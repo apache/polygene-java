@@ -17,11 +17,9 @@
  */
 package org.qi4j.library.rest;
 
-import org.qi4j.api.composite.TransientBuilderFactory;
 import org.qi4j.api.injection.scope.Structure;
-import org.qi4j.api.object.ObjectBuilder;
-import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.api.service.Activatable;
+import org.qi4j.api.structure.Module;
 import org.restlet.Component;
 import org.restlet.data.Protocol;
 
@@ -29,9 +27,7 @@ public class RestServerMixin
     implements Activatable
 {
     @Structure
-    private TransientBuilderFactory cbf;
-    @Structure
-    private ObjectBuilderFactory obf;
+    private Module module;
 
     private Component component;
 
@@ -40,9 +36,7 @@ public class RestServerMixin
     {
         component = new Component();
         component.getServers().add( Protocol.HTTP, 8182 );
-        ObjectBuilder<RestApplication> builder = obf.newObjectBuilder( RestApplication.class );
-        builder.use( component.getContext() );
-        RestApplication application = builder.newInstance();
+        RestApplication application = module.newObject( RestApplication.class, component.getContext() );
         component.getDefaultHost().attach( application );
         component.start();
     }

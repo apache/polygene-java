@@ -62,14 +62,14 @@ public class EntitySerializerTest
 
         createDummyData();
 
-        objectBuilderFactory.newObjectBuilder( EntitySerializerTest.class ).injectTo( this );
+        module.injectTo( this );
     }
 
     @Test
     public void testEntitySerializer() throws RDFHandlerException
     {
         EntityReference entityReference = new EntityReference( "test2" );
-        EntityState entityState = entityStore.newUnitOfWork( UsecaseBuilder.newUsecase( "Test" ), moduleInstance, System.currentTimeMillis() ).getEntityState( entityReference );
+        EntityState entityState = entityStore.newUnitOfWork( UsecaseBuilder.newUsecase( "Test" ), module, System.currentTimeMillis() ).getEntityState( entityReference );
 
         Iterable<Statement> graph = serializer.serialize( entityState );
 
@@ -82,12 +82,12 @@ public class EntitySerializerTest
 
     void createDummyData() throws UnitOfWorkCompletionException
     {
-        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork unitOfWork = module.newUnitOfWork();
         try
         {
-            ValueBuilder<TestValue> valueBuilder = valueBuilderFactory.newValueBuilder( TestValue.class );
+            ValueBuilder<TestValue> valueBuilder = module.newValueBuilder( TestValue.class );
             valueBuilder.prototype().test1().set( 4L );
-            ValueBuilder<Test2Value> valueBuilder2 = valueBuilderFactory.newValueBuilder( Test2Value.class );
+            ValueBuilder<Test2Value> valueBuilder2 = module.newValueBuilder( Test2Value.class );
             valueBuilder2.prototype().data().set( "Habba" );
             valueBuilder.prototype().test3().set( valueBuilder2.newInstance() );
             TestValue testValue = valueBuilder.newInstance();
@@ -108,7 +108,7 @@ public class EntitySerializerTest
             niclasTemplate.group().add( 0, testEntity );
             niclasTemplate.group().add( 0, testEntity );
             niclasTemplate.group().add( 0, testEntity );
-            valueBuilder = valueBuilderFactory.newValueBuilderWithPrototype( testValue );
+            valueBuilder = module.newValueBuilderWithPrototype( testValue );
             valueBuilder.prototype().test1().set( 5L );
             testValue = valueBuilder.newInstance();
             niclasTemplate.value().set( testValue );

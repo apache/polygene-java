@@ -57,7 +57,7 @@ public final class Qi4jImportServiceTest
             }
         };
 
-        assembler.objectBuilderFactory().newObjectBuilder( Qi4jImportServiceTest.class ).injectTo( this );
+        assembler.module().injectTo( this );
 
         assertThat( "service can be called", service.comment( "beer" ), equalTo( "beer is good." ) );
     }
@@ -77,7 +77,7 @@ public final class Qi4jImportServiceTest
             }
         };
 
-        assembler.objectBuilderFactory().newObjectBuilder( Qi4jImportServiceTest.class ).injectTo( this );
+        assembler.module().injectTo(this);
 
         CommentService service = firstService( withId( "commentService2" ), services );
         assertThat( "service with correct id has been selected", service.comment( "pizza" ), equalTo( "pizza is good." ) );
@@ -98,7 +98,7 @@ public final class Qi4jImportServiceTest
             }
         };
 
-        assembler.objectBuilderFactory().newObjectBuilder( Qi4jImportServiceTest.class ).injectTo( this );
+        assembler.module().injectTo( this );
 
         CommentService foundService = ServiceQualifier.firstService( withId( "commentService2" ), finder.<CommentService>findServices( CommentService.class ));
         assertThat( "service with correct id has been selected", foundService.comment( "pizza" ), equalTo( "pizza is good." ) );

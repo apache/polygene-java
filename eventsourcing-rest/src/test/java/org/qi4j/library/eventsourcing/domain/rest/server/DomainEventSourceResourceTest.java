@@ -76,10 +76,10 @@ public class DomainEventSourceResourceTest
         };
 
         component.getDefaultHost().attach( "/events", new TestApplication( assembler ) );
-        component.getDefaultHost().attach( "/ping", assembler.objectBuilderFactory().newObject( PingResource.class ) );
+        component.getDefaultHost().attach( "/ping", assembler.module().newObject( PingResource.class ) );
         component.start();
 
-        generateTestData(assembler.unitOfWorkFactory());
+        generateTestData(assembler.module());
     }
 
     private static void generateTestData(UnitOfWorkFactory unitOfWorkFactory) throws UnitOfWorkCompletionException
@@ -119,7 +119,7 @@ public class DomainEventSourceResourceTest
         public Restlet createInboundRoot()
         {
             getTunnelService().setExtensionsTunnel( true );
-            return assembler.objectBuilderFactory().newObject(DomainEventSourceResource.class  );
+            return assembler.module().newObject(DomainEventSourceResource.class  );
         }
     }
 

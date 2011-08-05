@@ -48,7 +48,7 @@ public class NativeRepositoryTest
    @Test
    public void testNativeRepository() throws RepositoryException
    {
-      objectBuilderFactory.newObjectBuilder(NativeRepositoryTest.class).injectTo(this);
+      module.injectTo(this);
 
       RepositoryConnection conn = repository.getConnection();
 

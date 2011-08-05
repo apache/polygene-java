@@ -42,7 +42,7 @@ public class LockingTest
     public void testLocking()
         throws InterruptedException
     {
-        final TestComposite composite = transientBuilderFactory.newTransient( TestComposite.class );
+        final TestComposite composite = module.newTransient( TestComposite.class );
 
         ExecutorService executor = Executors.newFixedThreadPool( 2 );
 

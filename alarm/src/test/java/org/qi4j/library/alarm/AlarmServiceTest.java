@@ -67,16 +67,16 @@ public class AlarmServiceTest
         throws Exception
     {
         super.setUp();
-        unitOfWorkFactory.newUnitOfWork();
+        module.newUnitOfWork();
     }
 
     @Override
     public void tearDown()
         throws Exception
     {
-        UnitOfWork uow = unitOfWorkFactory.currentUnitOfWork();
-        if( uow != null )
+        if (module.isUnitOfWorkActive())
         {
+            UnitOfWork uow = module.currentUnitOfWork();
             uow.discard();
         }
         super.tearDown();
@@ -85,7 +85,7 @@ public class AlarmServiceTest
     @Test
     public void testGetAlarmModels()
     {
-        AlarmSystem alarmService = (AlarmSystem) serviceLocator.findService( AlarmSystem.class ).get();
+        AlarmSystem alarmService = (AlarmSystem) module.findService( AlarmSystem.class ).get();
         List<AlarmModelDescriptor> models = alarmService.alarmModels();
         assertNotNull( models );
         assertEquals( 2, models.size() );
@@ -95,7 +95,7 @@ public class AlarmServiceTest
     public void testDefaultModel()
         throws Exception
     {
-        AlarmSystem alarmService = (AlarmSystem) serviceLocator.findService( AlarmSystem.class ).get();
+        AlarmSystem alarmService = (AlarmSystem) module.findService( AlarmSystem.class ).get();
         List<AlarmModelDescriptor> models = alarmService.alarmModels();
         assertNotNull( models );
         assertEquals( 2, models.size() );
@@ -108,7 +108,7 @@ public class AlarmServiceTest
     public void testListeners()
         throws Exception
     {
-        AlarmSystem alarmService = (AlarmSystem) serviceLocator.findService( AlarmSystem.class ).get();
+        AlarmSystem alarmService = (AlarmSystem) module.findService( AlarmSystem.class ).get();
         Alarm alarm = alarmService.createAlarm( "TestAlarm" );
 
         CountingListener listener1 = new CountingListener();

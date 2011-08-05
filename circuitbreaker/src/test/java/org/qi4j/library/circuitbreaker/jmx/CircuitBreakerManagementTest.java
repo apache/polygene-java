@@ -33,7 +33,7 @@ public class CircuitBreakerManagementTest
          }
       };
 
-      TestService service = assembler.serviceFinder().<TestService>findService(TestService.class).get();
+      TestService service = assembler.module().<TestService>findService(TestService.class).get();
 
       while (true)
       {

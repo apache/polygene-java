@@ -14,7 +14,7 @@
 package org.qi4j.library.rest;
 
 import org.qi4j.api.injection.scope.Structure;
-import org.qi4j.api.object.ObjectBuilderFactory;
+import org.qi4j.api.object.ObjectFactory;
 import org.restlet.Request;
 import org.restlet.Response;
 import org.restlet.resource.Finder;
@@ -24,7 +24,7 @@ public class Qi4jFinder
     extends Finder
 {
     @Structure
-    private ObjectBuilderFactory factory;
+    private ObjectFactory factory;
 
     public Qi4jFinder()
     {

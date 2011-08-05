@@ -74,7 +74,7 @@ public class DomainEventTrackerTest
     @Test
     public void testDomainEvent() throws UnitOfWorkCompletionException, IOException
     {
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "Change description" ));
+        UnitOfWork uow = module.newUnitOfWork( UsecaseBuilder.newUsecase( "Change description" ));
         uow.metaInfo().set( new Principal()
         {
             public String getName()

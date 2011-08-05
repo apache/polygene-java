@@ -41,11 +41,11 @@ import java.util.List;
 public abstract class LoggingServiceMixin
     implements LoggingService
 {
-    @Structure private UnitOfWorkFactory unitOfWorkFactory;
+    @Structure private UnitOfWorkFactory uowf;
 
     public void log( LogType type, Composite composite, String category, String message )
     {
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
             List<Serializable> paramsList = new ArrayList<Serializable>();
@@ -64,7 +64,7 @@ public abstract class LoggingServiceMixin
 
     public void log( LogType type, Composite composite, String category, String message, Serializable param1 )
     {
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
             List<Serializable> paramsList = new ArrayList<Serializable>();
@@ -84,7 +84,7 @@ public abstract class LoggingServiceMixin
 
     public void log( LogType type, Composite composite, String category, String message, Serializable param1, Serializable param2 )
     {
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
             List<Serializable> paramsList = new ArrayList<Serializable>();
@@ -105,7 +105,7 @@ public abstract class LoggingServiceMixin
 
     public void log( LogType type, Composite composite, String category, String message, Serializable... params )
     {
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
             List<Serializable> paramsList = new ArrayList<Serializable>( Arrays.asList( params ) );

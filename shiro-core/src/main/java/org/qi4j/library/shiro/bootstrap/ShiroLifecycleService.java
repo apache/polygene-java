@@ -16,7 +16,7 @@ package org.qi4j.library.shiro.bootstrap;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.object.ObjectBuilderFactory;
+import org.qi4j.api.object.ObjectFactory;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
 
@@ -32,7 +32,7 @@ public interface ShiroLifecycleService
     {
 
         @Structure
-        private ObjectBuilderFactory obf;
+        private ObjectFactory obf;
 
         public void activate()
                 throws Exception

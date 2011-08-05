@@ -13,9 +13,9 @@
  */
 package org.qi4j.library.shiro.domain.permissions;
 
+import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;

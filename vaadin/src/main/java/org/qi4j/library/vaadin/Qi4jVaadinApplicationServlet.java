@@ -16,7 +16,7 @@ package org.qi4j.library.vaadin;
 import com.vaadin.Application;
 import com.vaadin.terminal.gwt.server.AbstractApplicationServlet;
 import org.qi4j.api.injection.scope.Structure;
-import org.qi4j.api.object.ObjectBuilderFactory;
+import org.qi4j.api.object.ObjectFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -29,7 +29,7 @@ public class Qi4jVaadinApplicationServlet
 {
 
     @Structure
-    private ObjectBuilderFactory obf;
+    private ObjectFactory obf;
 
     @Override
     protected Application getNewApplication( HttpServletRequest request )

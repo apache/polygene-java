@@ -43,7 +43,7 @@ import java.util.List;
 public class DebuggingServiceMixin
     implements DebuggingService
 {
-    @Structure private UnitOfWorkFactory unitOfWorkFactory;
+    @Structure private UnitOfWorkFactory uowf;
     @This private Configuration<DebugServiceConfiguration> configuration;
 
     public int debugLevel()
@@ -53,7 +53,7 @@ public class DebuggingServiceMixin
 
     public void debug( Composite composite, String message )
     {
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
             List<Serializable> paramsList = new ArrayList<Serializable>();
@@ -72,7 +72,7 @@ public class DebuggingServiceMixin
 
     public void debug( Composite composite, String message, Serializable param1 )
     {
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
             List<Serializable> paramsList = new ArrayList<Serializable>();
@@ -92,7 +92,7 @@ public class DebuggingServiceMixin
 
     public void debug( Composite composite, String message, Serializable param1, Serializable param2 )
     {
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
             List<Serializable> paramsList = new ArrayList<Serializable>();
@@ -113,7 +113,7 @@ public class DebuggingServiceMixin
 
     public void debug( Composite composite, String message, Serializable... params )
     {
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
             List<Serializable> paramsList = new ArrayList<Serializable>( Arrays.asList( params ) );

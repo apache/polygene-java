@@ -42,7 +42,7 @@ import java.util.List;
 public class TraceServiceMixin
     implements TraceService
 {
-    @Structure private UnitOfWorkFactory unitOfWorkFactory;
+    @Structure private UnitOfWorkFactory uowf;
     @This private Configuration<TraceServiceConfiguration> configuration;
     private int counter;
     private Integer traceLevel;
@@ -59,7 +59,7 @@ public class TraceServiceMixin
 
     public void traceSuccess( Class compositeType, Composite object, Method method, Object[] args, Object result, long entryTime, long durationNano )
     {
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
             createTraceRecord( uow, compositeType, object, method, args, entryTime, durationNano, null );
@@ -77,7 +77,7 @@ public class TraceServiceMixin
 
     public void traceException( Class compositeType, Composite object, Method method, Object[] args, Throwable t, long entryTime, long durationNano )
     {
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
             createTraceRecord( uow, compositeType, object, method, args, entryTime, durationNano, t );

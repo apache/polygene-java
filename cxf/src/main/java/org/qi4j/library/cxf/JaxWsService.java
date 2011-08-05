@@ -29,7 +29,7 @@ import org.apache.cxf.jaxws.JaxWsServerFactoryBean;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.object.ObjectBuilderFactory;
+import org.qi4j.api.object.ObjectFactory;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceDescriptor;
@@ -50,7 +50,7 @@ public interface JaxWsService extends Activatable, ServiceComposite
         private Module module;
 
         @Structure
-        private ObjectBuilderFactory obf;
+        private ObjectFactory obf;
 
         @Uses
         ServiceDescriptor descriptor;
@@ -103,7 +103,7 @@ public interface JaxWsService extends Activatable, ServiceComposite
 
         private Object findThisService()
         {
-            ServiceReference<?> reference = module.serviceFinder().findService( descriptor.type() );
+            ServiceReference<?> reference = module.findService( descriptor.type() );
             if( reference == null )
             {
                 System.err.println( "Internal Error?? JaxWsService.findThisService()" );

@@ -100,8 +100,7 @@ final class ServiceLocator extends HierarchicalVisitor<Object, Object, RuntimeEx
         if( layerName != null )
         {
             Module module = anApplication.findModule( layerName, moduleName );
-            ServiceFinder serviceFinder = module.serviceFinder();
-            Iterable<ServiceReference<Object>> serviceRefs = serviceFinder.<Object>findServices( serviceType );
+            Iterable<ServiceReference<Object>> serviceRefs = module.findServices( serviceType );
             for( ServiceReference<Object> serviceRef : serviceRefs )
             {
                 if( serviceId.equals( serviceRef.identity() ) )

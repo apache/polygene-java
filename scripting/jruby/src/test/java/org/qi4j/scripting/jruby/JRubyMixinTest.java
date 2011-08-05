@@ -35,7 +35,7 @@ public class JRubyMixinTest
     public void testInvoke()
         throws Throwable
     {
-        JRubyComposite domain = transientBuilderFactory.newTransientBuilder( JRubyComposite.class ).newInstance();
+        JRubyComposite domain = module.newTransientBuilder( JRubyComposite.class ).newInstance();
 
         Assert.assertEquals( "do1() in Ruby mixin.", domain.do1() );
     }

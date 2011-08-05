@@ -22,7 +22,7 @@
 package org.qi4j.library.shiro.tests.x509;
 
 import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.entity.association.Association;
+import org.qi4j.api.association.Association;
 import org.qi4j.library.shiro.domain.permissions.RoleAssignee;
 import org.qi4j.library.shiro.domain.x509.X509Light;
 

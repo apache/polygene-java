@@ -293,7 +293,7 @@ public interface ApplicationManagerService
 
         public String restart()
         {
-            Iterable services = module.serviceFinder().findServices( Activatable.class );
+            Iterable services = module.findServices( Activatable.class );
             ServiceReference<Activatable> serviceRef = (ServiceReference<Activatable>) Iterables.first( Iterables.filter( ServiceQualifier.withId( serviceDescriptor.identity() ), services ));
             if (serviceRef != null)
             {

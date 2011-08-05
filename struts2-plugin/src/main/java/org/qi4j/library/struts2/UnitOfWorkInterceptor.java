@@ -36,11 +36,14 @@ public class UnitOfWorkInterceptor
         throws Exception
     {
         boolean createdUnitOfWork = false;
-        UnitOfWork uow = uowf.currentUnitOfWork();
-        if( uow == null )
+        UnitOfWork uow;
+        if (!uowf.isUnitOfWorkActive())
         {
             uow = uowf.newUnitOfWork();
             createdUnitOfWork = true;
+        } else
+        {
+            uow = uowf.currentUnitOfWork();
         }
 
         String resultCode = null;

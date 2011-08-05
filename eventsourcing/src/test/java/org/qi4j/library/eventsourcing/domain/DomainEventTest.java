@@ -74,7 +74,7 @@ public class DomainEventTest
         };
 
         // Perform UoW with usecase defined
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "Change description" ));
+        UnitOfWork uow = module.newUnitOfWork( UsecaseBuilder.newUsecase( "Change description" ));
         uow.metaInfo().set( administratorPrincipal );
 
         TestEntity entity = uow.newEntity( TestEntity.class );
@@ -82,7 +82,7 @@ public class DomainEventTest
         uow.complete();
 
         // Print events
-        EventSource source = (EventSource) serviceLocator.findService( EventSource.class ).get();
+        EventSource source = (EventSource) module.findService( EventSource.class ).get();
 
         source.events( 0, Long.MAX_VALUE ).transferTo( Transforms.map( new Function<UnitOfWorkDomainEventsValue, String>()
                 {

@@ -19,7 +19,7 @@
 package org.qi4j.library.auth;
 
 import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.entity.association.ManyAssociation;
+import org.qi4j.api.association.ManyAssociation;
 
 public interface Role extends EntityComposite
 {

@@ -62,22 +62,22 @@ public class DebuggingTest
     @Ignore( "Needs QI-230 to be resolved." )
     public void whenCallingMethodThenExpectDebugEntityCreated()
     {
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork uow = module.newUnitOfWork();
         try
         {
             // There is no Query capability available for Libraries, since that sits in Extensions.
             // Obtaining the EntityStore directly is a very ugly hack to get around this problem, and only related
             // to the test sitting in qi4j-libraries source repository.
 
-//            QueryBuilder<DebugRecord> builder = queryBuilderFactory.newQueryBuilder( DebugRecord.class );
+//            QueryBuilder<DebugRecord> builder = module.newQueryBuilder( DebugRecord.class );
 //            Query<DebugRecord> query = builder.newQuery( uow );
 //            assertEquals( 0, query.count() );
-            Some service = (Some) serviceLocator.findService( Some.class ).get();
+            Some service = (Some) module.findService( Some.class ).get();
             String message = service.doSomething( "World!", 10 );
             assertEquals( message, "Hello!" );
-            EntityStore es = (EntityStore) serviceLocator.findService( EntityStore.class ).get();
+            EntityStore es = (EntityStore) module.findService( EntityStore.class ).get();
             final String[] result = new String[1];
-            es.entityStates( moduleInstance ).transferTo( Transforms.map( new Function<EntityState, EntityState>()
+            es.entityStates( module ).transferTo( Transforms.map( new Function<EntityState, EntityState>()
                     {
                         public EntityState map( EntityState entityState )
                         {

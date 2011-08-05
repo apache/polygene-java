@@ -62,14 +62,14 @@ public class EntityTypeSerializerTest
 
         createDummyData();
 
-        objectBuilderFactory.newObjectBuilder( EntityTypeSerializerTest.class ).injectTo( this );
+        module.injectTo( this );
     }
 
     @Test
     public void testEntityTypeSerializer() throws RDFHandlerException
     {
 
-        EntityDescriptor entityDescriptor = moduleInstance.entityDescriptor(TestEntity.class.getName());
+        EntityDescriptor entityDescriptor = module.entityDescriptor(TestEntity.class.getName());
 
         Iterable<Statement> graph = serializer.serialize( entityDescriptor );
 
@@ -81,13 +81,13 @@ public class EntityTypeSerializerTest
 
     void createDummyData() throws UnitOfWorkCompletionException
     {
-        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork unitOfWork = module.newUnitOfWork();
         try
         {
-            ValueBuilder<Test2Value> vb2 = valueBuilderFactory.newValueBuilder( Test2Value.class );
+            ValueBuilder<Test2Value> vb2 = module.newValueBuilder( Test2Value.class );
             vb2.prototype().data().set( "Zout" );
 
-            ValueBuilder<TestValue> valueBuilder = valueBuilderFactory.newValueBuilder( TestValue.class );
+            ValueBuilder<TestValue> valueBuilder = module.newValueBuilder( TestValue.class );
             valueBuilder.prototype().test1().set( 4L );
             valueBuilder.prototype().test3().set( vb2.newInstance() );
             TestValue testValue = valueBuilder.newInstance();
@@ -108,7 +108,7 @@ public class EntityTypeSerializerTest
             niclasTemplate.group().add( 0, testEntity );
             niclasTemplate.group().add( 0, testEntity );
             niclasTemplate.group().add( 0, testEntity );
-            valueBuilder = valueBuilderFactory.newValueBuilderWithPrototype( testValue );
+            valueBuilder = module.newValueBuilderWithPrototype( testValue );
             valueBuilder.prototype().test1().set( 5L );
             testValue = valueBuilder.newInstance();
             niclasTemplate.value().set( testValue );

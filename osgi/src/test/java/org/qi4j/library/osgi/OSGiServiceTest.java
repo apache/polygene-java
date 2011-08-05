@@ -30,7 +30,7 @@ public class OSGiServiceTest extends AbstractQi4jTest
     @Test
     public void givenFelixFrameworkWhenStartingQi4jApplicationExpectServiceToBeRegisteredToOsgiBundleContext()
     {
-        MyService service = serviceLocator.findService( MyService.class ).get();
+        MyService service = module.findService( MyService.class ).get();
         service.value().set( 15 );
         assertEquals( (Integer) 15, service.value().get() );
         String[] expectedClasses = new String[]{ "org.qi4j.library.osgi.OSGiServiceTest$MyService",

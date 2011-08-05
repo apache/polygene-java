@@ -67,14 +67,14 @@ public class JdbmEventStoreServiceTest
         @Test
         public void testDomainEvent() throws UnitOfWorkCompletionException, IOException
         {
-            UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "Create entity" ));
+            UnitOfWork uow = module.newUnitOfWork( UsecaseBuilder.newUsecase( "Create entity" ));
             TestEntity entity = uow.newEntity( TestEntity.class );
             uow.complete();
 
             int count = 10;
             for (int i = 0; i < count; i++)
             {
-                uow = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "Change description" ));
+                uow = module.newUnitOfWork( UsecaseBuilder.newUsecase( "Change description" ));
                 uow.metaInfo().set( new Principal()
                 {
                     public String getName()
@@ -88,7 +88,7 @@ public class JdbmEventStoreServiceTest
                 uow.complete();
             }
 
-            EventSource source = (EventSource) serviceLocator.findService( EventSource.class ).get();
+            EventSource source = (EventSource) module.findService( EventSource.class ).get();
 
             source.events( 0, Long.MAX_VALUE ).transferTo( Transforms.map( new Function<UnitOfWorkDomainEventsValue, String>()
                     {

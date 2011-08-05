@@ -15,8 +15,7 @@
 package org.qi4j.library.rest;
 
 import org.qi4j.api.injection.scope.Structure;
-import org.qi4j.api.object.ObjectBuilder;
-import org.qi4j.api.object.ObjectBuilderFactory;
+import org.qi4j.api.structure.Module;
 import org.restlet.Application;
 import org.restlet.Context;
 import org.restlet.ext.servlet.ServerServlet;
@@ -28,16 +27,12 @@ public class Qi4jServerServlet
     extends ServerServlet
 {
     @Structure
-    ObjectBuilderFactory obf;
+    Module module;
 
     @Override
     @SuppressWarnings( "unchecked" )
     protected Application createApplication( Context context )
     {
-        ObjectBuilder<Application> app = obf.newObjectBuilder( Application.class );
-
-        app.use( context.createChildContext(), getServletConfig(), getServletContext() );
-
-        return app.newInstance();
+        return module.newObject( Application.class, context.createChildContext(), getServletConfig(), getServletContext() );
     }
 }

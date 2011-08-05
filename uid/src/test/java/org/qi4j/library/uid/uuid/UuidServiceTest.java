@@ -41,7 +41,7 @@ public class UuidServiceTest extends AbstractQi4jTest
     public void whenGeneratingUuidGivenHashLengthLargerThanZeroThenValidateTheSizeAndContent()
         throws Exception
     {
-        UnderTest ut = transientBuilderFactory.newTransient( UnderTest.class );
+        UnderTest ut = module.newTransient( UnderTest.class );
         for( int hashLength = 1; hashLength < 50; hashLength++ )
         {
             String uid = ut.generateUuid( hashLength );
@@ -58,7 +58,7 @@ public class UuidServiceTest extends AbstractQi4jTest
     public void whenGeneratingUuidGivenZeroHashLengthThenValidateFormat()
         throws Exception
     {
-        UnderTest ut = transientBuilderFactory.newTransient( UnderTest.class );
+        UnderTest ut = module.newTransient( UnderTest.class );
         String uid = ut.generateUuid( 0 );
         int dashCounter = 0;
         for( int i = 0; i < uid.length(); i++ )

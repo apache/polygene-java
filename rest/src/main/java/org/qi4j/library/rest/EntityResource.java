@@ -21,18 +21,18 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.openrdf.model.Statement;
 import org.openrdf.rio.RDFHandlerException;
+import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.api.entity.association.AssociationDescriptor;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.json.JSONDeserializer;
 import org.qi4j.api.json.JSONWriterSerializer;
-import org.qi4j.api.property.PersistentPropertyDescriptor;
+import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.type.ValueType;
 import org.qi4j.api.usecase.Usecase;
@@ -60,30 +60,6 @@ import java.util.Map;
 public class EntityResource
         extends ServerResource
 {
-    public static Object toValue( String stringValue, QualifiedName propertyName, TypeName propertyType )
-            throws IllegalArgumentException
-    {
-        Object newValue = null;
-        try
-        {
-            // TODO A ton of more types need to be added here. Converter registration mechanism needed?
-            newValue = null;
-            if (propertyType.isClass( String.class ))
-            {
-                newValue = stringValue;
-            } else if (propertyType.isClass( Integer.class ))
-            {
-                newValue = Integer.parseInt( stringValue );
-            }
-        }
-        catch (Exception e)
-        {
-            throw new IllegalArgumentException( "Value '" + stringValue + "' is not of type " + propertyType );
-        }
-
-        return newValue;
-    }
-
     public static String toString( Object newValue, ValueType valueType )
             throws IllegalArgumentException, JSONException
     {
@@ -228,7 +204,7 @@ public class EntityResource
 
                 final EntityDescriptor descriptor = entity.entityDescriptor();
 
-                for (PersistentPropertyDescriptor persistentProperty : descriptor.state().<PersistentPropertyDescriptor>properties())
+                for (PropertyDescriptor persistentProperty : descriptor.state().properties())
                 {
                     Object value = entity.getProperty( persistentProperty.qualifiedName() );
                     try
@@ -361,7 +337,7 @@ public class EntityResource
             str.append( '{' );
 
             boolean first = true;
-            for (PersistentPropertyDescriptor persistentProperty : descriptor.state().<PersistentPropertyDescriptor>properties())
+            for (PropertyDescriptor persistentProperty : descriptor.state().properties())
             {
                 if ( !persistentProperty.isImmutable())
                 {
@@ -395,7 +371,7 @@ public class EntityResource
             JSONObject properties = new JSONObject(str.toString());
 
             JSONDeserializer deserializer = new JSONDeserializer( module );
-            for (PersistentPropertyDescriptor persistentProperty : descriptor.state().<PersistentPropertyDescriptor>properties())
+            for (PropertyDescriptor persistentProperty : descriptor.state().properties())
             {
                 if ( !persistentProperty.isImmutable())
                 {

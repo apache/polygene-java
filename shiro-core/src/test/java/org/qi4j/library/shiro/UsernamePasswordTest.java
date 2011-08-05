@@ -55,7 +55,7 @@ public class UsernamePasswordTest
     @Test
     public void test()
     {
-        ServiceReference<SecuredService> ref = serviceLocator.findService( SecuredService.class );
+        ServiceReference<SecuredService> ref = module.findService( SecuredService.class );
         SecuredService secured = ref.get();
         secured.doSomethingThatRequiresNothing();
         try {

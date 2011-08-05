@@ -17,8 +17,8 @@
  */
 package org.qi4j.logging.log.records;
 
+import org.qi4j.api.association.Association;
 import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.entity.association.Association;
 
 public interface EntityLogRecord extends LogRecord
 {

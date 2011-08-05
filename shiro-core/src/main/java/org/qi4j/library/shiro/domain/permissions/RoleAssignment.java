@@ -13,8 +13,8 @@
  */
 package org.qi4j.library.shiro.domain.permissions;
 
+import org.qi4j.api.association.Association;
 import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.entity.association.Association;
 
 public interface RoleAssignment
         extends EntityComposite
