@@ -48,7 +48,7 @@ public class ApplicationSample
 
     public void createTestData()
     {
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork uow = module.newUnitOfWork();
         try
         {
             createCar( "Volvo", "S80", 2007 );
@@ -78,8 +78,8 @@ public class ApplicationSample
 
     public void testQuery()
     {
-        UnitOfWork uow = moduleInstance.unitOfWorkFactory().newUnitOfWork();
-        QueryBuilder qb = moduleInstance.queryBuilderFactory().newQueryBuilder( CarEntity.class );
+        UnitOfWork uow = module.newUnitOfWork();
+        QueryBuilder qb = module.newQueryBuilder( CarEntity.class );
         //Object template  = QueryExpressions.templateFor( clazz );
         Query query = uow.newQuery( qb );
 
@@ -111,7 +111,7 @@ public class ApplicationSample
 
     private String createCar( String manufacturer, String model, int year )
     {
-        UnitOfWork uow = unitOfWorkFactory.currentUnitOfWork();
+        UnitOfWork uow = module.currentUnitOfWork();
         EntityBuilder<Car> builder = uow.newEntityBuilder( Car.class );
         Car prototype = builder.instanceFor( CarEntity.class );
         prototype.manufacturer().set( manufacturer );
@@ -123,7 +123,7 @@ public class ApplicationSample
 
     private String createAnimal( String name, String sound )
     {
-        UnitOfWork uow = unitOfWorkFactory.currentUnitOfWork();
+        UnitOfWork uow = module.currentUnitOfWork();
         EntityBuilder<Animal> builder = uow.newEntityBuilder( Animal.class );
         Animal prototype = builder.instanceFor( AnimalEntity.class );
         prototype.name().set( name );

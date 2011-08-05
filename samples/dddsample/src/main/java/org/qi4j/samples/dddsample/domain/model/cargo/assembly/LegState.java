@@ -16,7 +16,7 @@
 */
 package org.qi4j.samples.dddsample.domain.model.cargo.assembly;
 
-import org.qi4j.api.entity.association.Association;
+import org.qi4j.api.association.Association;
 import org.qi4j.samples.dddsample.domain.model.carrier.CarrierMovement;
 import org.qi4j.samples.dddsample.domain.model.location.Location;
 

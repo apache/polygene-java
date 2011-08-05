@@ -47,7 +47,7 @@ public class InvocationPerformanceTest
     public void testInvokeMixin()
     {
         // Create instance
-        TransientBuilder<SimpleComposite> builder = transientBuilderFactory.newTransientBuilder( SimpleComposite.class );
+        TransientBuilder<SimpleComposite> builder = module.newTransientBuilder( SimpleComposite.class );
         Simple simple = builder.newInstance();
 
         for (int i = 0; i < 60000; i++)
@@ -67,7 +67,7 @@ public class InvocationPerformanceTest
     public void testInvokeMixinWithTypedConcern()
     {
         // Create instance
-        Simple simple = transientBuilderFactory.newTransient( SimpleWithTypedConcernComposite.class );
+        Simple simple = module.newTransient( SimpleWithTypedConcernComposite.class );
 
         for (int i = 0; i < 60000; i++)
         {
@@ -85,7 +85,7 @@ public class InvocationPerformanceTest
     public void testInvokeMixinWithGenericConcern()
     {
         // Create instance
-        Simple simple = transientBuilderFactory.newTransient( SimpleWithGenericConcernComposite.class );
+        Simple simple = module.newTransient( SimpleWithGenericConcernComposite.class );
 
         for (int i = 0; i < 60000; i++)
         {

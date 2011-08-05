@@ -81,7 +81,7 @@ public class CargoXmlTest extends VorticityMessagingTest {
     public void givenCargoWhenConvertingToSoapMessageExpectCorrectFormat()
             throws Exception {
         AegisType type = typeMapping.getType(CargoValue.class);
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork uow = module.newUnitOfWork();
         try {
             // Test Writing
             Location origin = locationRepository.findLocationByUnLocode("SESTO");
@@ -125,7 +125,7 @@ public class CargoXmlTest extends VorticityMessagingTest {
     }
 //
 //    private HandlingEvent createHandlingEvent(HandlingEvent.Type eventType, Cargo cargo, Date completionTime) {
-//        UnitOfWork uow = unitOfWorkFactory.currentUnitOfWork();
+//        UnitOfWork uow = module.currentUnitOfWork();
 //        EntityBuilder<HandlingEvent> builder = uow.newEntityBuilder(HandlingEvent.class);
 //        HandlingEvent.State instance = builder.instanceFor(HandlingEvent.State.class);
 //        instance.cargo().set( cargo );
@@ -151,7 +151,7 @@ public class CargoXmlTest extends VorticityMessagingTest {
     private Leg createLeg(String loadLocation, Date loadTime,
                           String unloadLocation, Date unloadTime,
                           Voyage voyage) {
-        ValueBuilder<Leg> builder = valueBuilderFactory.newValueBuilder(Leg.class);
+        ValueBuilder<Leg> builder = module.newValueBuilder(Leg.class);
         Leg.State prototype = builder.prototypeFor(Leg.State.class);
         prototype.loadLocationUnLocodeIdentity().set(loadLocation);
         prototype.loadTime().set(loadTime);
@@ -166,7 +166,7 @@ public class CargoXmlTest extends VorticityMessagingTest {
     }
 
     private CargoValue createCargo(Location origin, RouteSpecification specification, Itinerary itinerary, Delivery delivery) {
-        ValueBuilder<CargoValue> builder = valueBuilderFactory.newValueBuilder(CargoValue.class);
+        ValueBuilder<CargoValue> builder = module.newValueBuilder(CargoValue.class);
         CargoValue prototype = builder.prototype();
         prototype.origin().set(origin.identity().get());
         prototype.routeSpecification().set(specification);
@@ -176,7 +176,7 @@ public class CargoXmlTest extends VorticityMessagingTest {
     }
 
     private Itinerary createItinerary(List<Leg> legs) {
-        ValueBuilder<Itinerary> builder = valueBuilderFactory.newValueBuilder(Itinerary.class);
+        ValueBuilder<Itinerary> builder = module.newValueBuilder(Itinerary.class);
         Itinerary.State prototype = builder.prototypeFor(Itinerary.State.class);
         prototype.legs().set(legs);
         return builder.newInstance();
@@ -185,7 +185,7 @@ public class CargoXmlTest extends VorticityMessagingTest {
     private RouteSpecification createRouteSpecification(String originUnLocodeIdentity,
                                                         String destinationUnLocodeIdentity,
                                                         Date arrivalDeadline) {
-        ValueBuilder<RouteSpecification> builder = valueBuilderFactory.newValueBuilder(RouteSpecification.class);
+        ValueBuilder<RouteSpecification> builder = module.newValueBuilder(RouteSpecification.class);
         RouteSpecification.State template = builder.prototypeFor(RouteSpecification.State.class);
         template.arrivalDeadline().set(arrivalDeadline);
         template.originUnLocodeIdentity().set(originUnLocodeIdentity);
@@ -194,7 +194,7 @@ public class CargoXmlTest extends VorticityMessagingTest {
     }
 
     private Location createLocation(String unLocode, String commonName) {
-        ValueBuilder<Location> builder = valueBuilderFactory.newValueBuilder(Location.class);
+        ValueBuilder<Location> builder = module.newValueBuilder(Location.class);
         Location prototype = builder.prototype();
         prototype.identity().set(unLocode);
         prototype.commonName().set(commonName);

@@ -34,7 +34,7 @@ public class HelloWorldTest
     {
         {
             TransientBuilder<HelloWorldComposite> builder =
-                assembly.transientBuilderFactory().newTransientBuilder( HelloWorldComposite.class );
+                assembly.module().newTransientBuilder( HelloWorldComposite.class );
             builder.prototypeFor( HelloWorldState.class ).phrase().set( "Hello" );
             builder.prototypeFor( HelloWorldState.class ).name().set( "World" );
             HelloWorldComposite helloWorld = builder.newInstance();
@@ -44,7 +44,7 @@ public class HelloWorldTest
 
         {
             TransientBuilder<HelloWorldComposite> builder =
-                assembly.transientBuilderFactory().newTransientBuilder( HelloWorldComposite.class );
+                assembly.module().newTransientBuilder( HelloWorldComposite.class );
             builder.prototypeFor( HelloWorldState.class ).phrase().set( "Hey" );
             builder.prototypeFor( HelloWorldState.class ).name().set( "Universe" );
             HelloWorldComposite helloWorld = builder.newInstance();
@@ -59,7 +59,7 @@ public class HelloWorldTest
         try
         {
             TransientBuilder<HelloWorldComposite> builder =
-                assembly.transientBuilderFactory().newTransientBuilder( HelloWorldComposite.class );
+                assembly.module().newTransientBuilder( HelloWorldComposite.class );
             builder.prototypeFor( HelloWorldState.class ).phrase().set( null );
             HelloWorldComposite helloWorld = builder.newInstance();
 
@@ -73,7 +73,7 @@ public class HelloWorldTest
         try
         {
             TransientBuilder<HelloWorldComposite> builder =
-                assembly.transientBuilderFactory().newTransientBuilder( HelloWorldComposite.class );
+                assembly.module().newTransientBuilder( HelloWorldComposite.class );
             builder.prototypeFor( HelloWorldState.class ).phrase().set( "" );
             HelloWorldComposite helloWorld = builder.newInstance();
 
@@ -91,7 +91,7 @@ public class HelloWorldTest
         try
         {
             TransientBuilder<HelloWorldComposite> builder =
-                assembly.transientBuilderFactory().newTransientBuilder( HelloWorldComposite.class );
+                assembly.module().newTransientBuilder( HelloWorldComposite.class );
             builder.prototypeFor( HelloWorldState.class ).name().set( null );
             HelloWorldComposite helloWorld = builder.newInstance();
 
@@ -105,7 +105,7 @@ public class HelloWorldTest
         try
         {
             TransientBuilder<HelloWorldComposite> builder =
-                assembly.transientBuilderFactory().newTransientBuilder( HelloWorldComposite.class );
+                assembly.module().newTransientBuilder( HelloWorldComposite.class );
             builder.prototypeFor( HelloWorldState.class ).name().set( "" );
             HelloWorldComposite helloWorld = builder.newInstance();
 

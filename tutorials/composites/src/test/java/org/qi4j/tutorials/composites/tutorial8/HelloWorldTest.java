@@ -28,7 +28,7 @@ public class HelloWorldTest
                 module.transients( HelloWorldComposite.class );
             }
         };
-        TransientBuilderFactory builderFactory = assembly.transientBuilderFactory();
+        TransientBuilderFactory builderFactory = assembly.module();
         TransientBuilder<HelloWorldComposite> builder = builderFactory.newTransientBuilder( HelloWorldComposite.class );
         builder.prototype().name().set( "Hello" );
         builder.prototype().phrase().set( "World" );

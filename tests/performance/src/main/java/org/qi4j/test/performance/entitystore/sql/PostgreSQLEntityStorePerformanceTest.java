@@ -96,7 +96,7 @@ public class PostgreSQLEntityStorePerformanceTest extends AbstractEntityStorePer
             application.activate();
 
             Module moduleInstance = application.findModule( "Layer 1", "config" );
-            UnitOfWorkFactory uowf = moduleInstance.unitOfWorkFactory();
+            UnitOfWorkFactory uowf = moduleInstance;
             UnitOfWork uow = uowf.newUnitOfWork();
             try
             {

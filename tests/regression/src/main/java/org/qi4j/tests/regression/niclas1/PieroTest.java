@@ -48,7 +48,7 @@ public class PieroTest
     @Test
     public void testPersistence()
     {
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork uow = module.newUnitOfWork();
         try
         {
             String carId1 = createCar( "Volvo", "S80", 2007 );
@@ -58,7 +58,7 @@ public class PieroTest
             String carId5 = createCar( "Ford", "Mustang", 2006 );
             String carId6 = createCar( "Ford", "Mustang", 2005 );
             uow.complete();
-            uow = unitOfWorkFactory.newUnitOfWork();
+            uow = module.newUnitOfWork();
             System.out.println( uow.get( Car.class, carId1 ) );
             System.out.println( uow.get( Car.class, carId2 ) );
             System.out.println( uow.get( Car.class, carId3 ) );
@@ -77,8 +77,8 @@ public class PieroTest
             e.printStackTrace();
         }
 
-        uow = unitOfWorkFactory.newUnitOfWork();
-        QueryBuilder<Car> qb = queryBuilderFactory.newQueryBuilder( Car.class );
+        uow = module.newUnitOfWork();
+        QueryBuilder<Car> qb = module.newQueryBuilder( Car.class );
         Car template = QueryExpressions.templateFor( Car.class );
         qb.where( QueryExpressions.eq( template.year(), 2007 ) );
 
@@ -95,7 +95,7 @@ public class PieroTest
 
     private String createCar( String manufacturer, String model, int year )
     {
-        UnitOfWork uow = unitOfWorkFactory.currentUnitOfWork();
+        UnitOfWork uow = module.currentUnitOfWork();
         EntityBuilder<Car> builder = uow.newEntityBuilder( Car.class );
         Car prototype = builder.instanceFor( Car.class );
         prototype.manufacturer().set( manufacturer );

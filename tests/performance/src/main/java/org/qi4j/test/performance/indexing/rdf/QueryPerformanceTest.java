@@ -66,8 +66,7 @@ public class QueryPerformanceTest
     private static final String MODULE_CONFIG = "MODULE_CONFIG";
 
     private Application application;
-    private ServiceFinder serviceLocator;
-    private UnitOfWorkFactory unitOfWorkFactory;
+    private Module module;
     private static final String QUERY1 = "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n" +
                                          "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n" +
                                          "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" +
@@ -133,12 +132,10 @@ public class QueryPerformanceTest
         {
             Energy4Java qi4j = new Energy4Java();
             application = qi4j.newApplication( this );
-            Module module = application.findModule( LAYER_DOMAIN, MODULE_DOMAIN );
-            serviceLocator = module.serviceFinder();
-            unitOfWorkFactory = module.unitOfWorkFactory();
+            module = application.findModule( LAYER_DOMAIN, MODULE_DOMAIN );
             application.activate();
             ServiceReference<RdfIndexingService> indexer =
-                serviceLocator.findService( RdfIndexingService.class );
+                module.findService( RdfIndexingService.class );
 
             indexingDataDir = indexer.get().dataDir();
         }
@@ -228,11 +225,11 @@ public class QueryPerformanceTest
     private LeadRepository populateEntityStore()
         throws UnitOfWorkCompletionException
     {
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
-        LeadRepository leadRepo = serviceLocator.findService( LeadRepositoryService.class ).get();
+        UnitOfWork uow = module.newUnitOfWork();
+        LeadRepository leadRepo = module.findService( LeadRepositoryService.class ).get();
         if( leadRepo.findByName( "Lead99999" ) == null )
         {
-            ServiceReference<LeadEntityFactoryService> leadFactoryRef = serviceLocator.findService( LeadEntityFactoryService.class );
+            ServiceReference<LeadEntityFactoryService> leadFactoryRef = module.findService( LeadEntityFactoryService.class );
             LeadEntityFactory leadFactory = leadFactoryRef.get();
             long start, end;
             start = System.currentTimeMillis();
@@ -242,7 +239,7 @@ public class QueryPerformanceTest
                 {
                     System.out.print( "\r" + i );
                     uow.complete();
-                    uow = unitOfWorkFactory.newUnitOfWork();
+                    uow = module.newUnitOfWork();
                 }
                 leadFactory.create( "Lead" + i );
             }
@@ -260,7 +257,7 @@ public class QueryPerformanceTest
         UnitOfWork uow;
         long start;
         long end;
-        uow = unitOfWorkFactory.newUnitOfWork();
+        uow = module.newUnitOfWork();
         try
         {
             start = System.currentTimeMillis();
@@ -287,7 +284,7 @@ public class QueryPerformanceTest
         UnitOfWork uow;
         long start;
         long end;
-        uow = unitOfWorkFactory.newUnitOfWork();
+        uow = module.newUnitOfWork();
         try
         {
             start = System.currentTimeMillis();

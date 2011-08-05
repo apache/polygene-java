@@ -61,7 +61,7 @@ public class TraitMixin
                             @Override
                             public Object invoke( Object composite, Method method, Object[] objects ) throws Throwable
                             {
-                                return ((CompositeInstance)Proxy.getInvocationHandler( composite )).module().serviceFinder().findService( method.getReturnType() );
+                                return ((CompositeInstance)Proxy.getInvocationHandler( composite )).module().findService( method.getReturnType() );
                             }
                         };
                         getHandlers( compositeType ).put( method, handler );
@@ -72,7 +72,7 @@ public class TraitMixin
                             @Override
                             public Object invoke( Object composite, Method method, Object[] objects ) throws Throwable
                             {
-                                return ((CompositeInstance)Proxy.getInvocationHandler( composite )).module().serviceFinder().findService( method.getReturnType() ).get();
+                                return ((CompositeInstance)Proxy.getInvocationHandler( composite )).module().findService( method.getReturnType() ).get();
                             }
                         };
                         getHandlers( compositeType ).put( method, handler );

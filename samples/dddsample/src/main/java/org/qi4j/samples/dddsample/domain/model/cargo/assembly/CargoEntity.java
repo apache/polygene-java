@@ -16,11 +16,11 @@
 */
 package org.qi4j.samples.dddsample.domain.model.cargo.assembly;
 
+import org.qi4j.api.association.Association;
 import org.qi4j.api.composite.TransientBuilderFactory;
 import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.Identity;
-import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
@@ -110,8 +110,7 @@ interface CargoEntity
 
         private Location unknownLocation()
         {
-            ServiceFinder serviceFinder = module.serviceFinder();
-            ServiceReference<LocationRepository> reference = serviceFinder.findService( LocationRepository.class );
+            ServiceReference<LocationRepository> reference = module.findService( LocationRepository.class );
             LocationRepository locationRepository = reference.get();
 
             return locationRepository.unknownLocation();

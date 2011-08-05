@@ -31,7 +31,7 @@ public class LibraryTest
     public void testLibrary()
         throws Exception
     {
-        Consumer consumer = objectBuilderFactory.newObject( Consumer.class );
+        Consumer consumer = module.newObject( Consumer.class );
         consumer.run();
     }
 

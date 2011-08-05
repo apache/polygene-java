@@ -32,7 +32,7 @@ public class CargoTest
     @Test
     public void testlastKnownLocationUnknownWhenNoEvents()
     {
-        UnitOfWorkFactory uowf = moduleInstance.unitOfWorkFactory();
+        UnitOfWorkFactory uowf = module;
         UnitOfWork uow = uowf.newUnitOfWork();
 
         ServiceReference<CargoRepository> cargoRepositoryRef = cargoRepositoryService();
@@ -54,13 +54,13 @@ public class CargoTest
 
     private ServiceReference<CargoRepository> cargoRepositoryService()
     {
-        ServiceFinder serviceFinder = moduleInstance.serviceFinder();
+        ServiceFinder serviceFinder = module;
         return serviceFinder.findService( CargoRepository.class );
     }
 
     private ServiceReference<LocationRepository> locationRepositoryService()
     {
-        ServiceFinder serviceFinder = moduleInstance.serviceFinder();
+        ServiceFinder serviceFinder = module;
         return serviceFinder.findService( LocationRepository.class );
     }
 

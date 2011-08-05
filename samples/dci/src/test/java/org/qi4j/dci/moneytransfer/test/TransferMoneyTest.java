@@ -89,7 +89,7 @@ public class TransferMoneyTest
 
     public void printBalances()
     {
-        UnitOfWork uow = assembler.unitOfWorkFactory().newUnitOfWork( UsecaseBuilder.newUsecase( "Print balances" ) );
+        UnitOfWork uow = assembler.module().newUnitOfWork( UsecaseBuilder.newUsecase( "Print balances" ) );
 
         try
         {
@@ -105,7 +105,7 @@ public class TransferMoneyTest
 
     private static void bootstrapData( SingletonAssembler assembler ) throws Exception
     {
-        UnitOfWork uow = assembler.unitOfWorkFactory().newUnitOfWork( newUsecase( "Bootstrap data" ) );
+        UnitOfWork uow = assembler.module().newUnitOfWork( newUsecase( "Bootstrap data" ) );
         try
         {
             SavingsAccountEntity account = uow.newEntity( SavingsAccountEntity.class, SAVINGS_ACCOUNT_ID );
@@ -132,7 +132,7 @@ public class TransferMoneyTest
     @Test
     public void transferHalfOfMoneyFromSavingsToChecking() throws Exception
     {
-        UnitOfWork uow = assembler.unitOfWorkFactory().newUnitOfWork( UsecaseBuilder.newUsecase( "Transfer from savings to checking" ) );
+        UnitOfWork uow = assembler.module().newUnitOfWork( UsecaseBuilder.newUsecase( "Transfer from savings to checking" ) );
 
         try
         {
@@ -161,7 +161,7 @@ public class TransferMoneyTest
     @Test(expected = IllegalArgumentException.class)
     public void transferTwiceOfMoneyFromSavingsToChecking() throws Exception
     {
-        UnitOfWork uow = assembler.unitOfWorkFactory().newUnitOfWork( UsecaseBuilder.newUsecase( "Transfer from savings to checking" ) );
+        UnitOfWork uow = assembler.module().newUnitOfWork( UsecaseBuilder.newUsecase( "Transfer from savings to checking" ) );
 
         try
         {
@@ -190,7 +190,7 @@ public class TransferMoneyTest
     @Test
     public void payAllBills() throws Exception
     {
-        UnitOfWork uow = assembler.unitOfWorkFactory().newUnitOfWork( newUsecase( "Pay all bills from checking to creditors" ) );
+        UnitOfWork uow = assembler.module().newUnitOfWork( newUsecase( "Pay all bills from checking to creditors" ) );
         try
         {
             BalanceData source = uow.get( BalanceData.class, CHECKING_ACCOUNT_ID );

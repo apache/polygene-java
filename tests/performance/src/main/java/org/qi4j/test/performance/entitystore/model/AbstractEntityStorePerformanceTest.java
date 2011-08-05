@@ -387,16 +387,16 @@ public abstract class AbstractEntityStorePerformanceTest
         application.activate();
 
         Module moduleInstance = application.findModule( "Layer 1", "Module 1" );
-        unitOfWorkFactory = moduleInstance.unitOfWorkFactory();
+        unitOfWorkFactory = moduleInstance;
     }
 
     protected void cleanUp()
         throws Exception
     {
-        if( unitOfWorkFactory != null && unitOfWorkFactory.currentUnitOfWork() != null )
+        if( unitOfWorkFactory != null && unitOfWorkFactory.isUnitOfWorkActive())
         {
             UnitOfWork current;
-            while( ( current = unitOfWorkFactory.currentUnitOfWork() ) != null )
+            while( unitOfWorkFactory.isUnitOfWorkActive() && ( current = unitOfWorkFactory.currentUnitOfWork() ) != null )
             {
                 if( current.isOpen() )
                 {

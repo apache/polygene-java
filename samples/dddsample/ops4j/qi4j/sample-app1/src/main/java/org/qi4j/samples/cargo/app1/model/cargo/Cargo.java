@@ -3,7 +3,7 @@ package org.qi4j.samples.cargo.app1.model.cargo;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.Identity;
-import org.qi4j.api.entity.association.Association;
+import org.qi4j.api.association.Association;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;

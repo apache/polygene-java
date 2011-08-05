@@ -83,17 +83,17 @@ public class LibraryMixin
 
     private void createBook( String author, String title, int copies )
     {
-        ValueBuilder<Book> builder = factory.newValueBuilder( Book.class );
-        Book prototype = builder.prototype();
-        prototype.author().set( author );
-        prototype.title().set( title );
-
         ArrayList<Book> bookCopies = new ArrayList<Book>();
         String key = constructKey( author, title );
         books.put( key, bookCopies );
 
         for( int i = 0; i < copies; i++ )
         {
+            ValueBuilder<Book> builder = factory.newValueBuilder( Book.class );
+            Book prototype = builder.prototype();
+            prototype.author().set( author );
+            prototype.title().set( title );
+
             Book book = builder.newInstance();
             bookCopies.add( book );
         }

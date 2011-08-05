@@ -80,11 +80,11 @@ public class PostgreSQLDBIntegrityTest extends AbstractQi4jTest
     public void createAndRemoveEntityAndVerifyNoExtraDataLeftInDB()
         throws Exception
     {
-        UnitOfWork uow = this.unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork uow = this.module.newUnitOfWork();
         TestEntity entity = uow.newEntity( TestEntity.class );
         uow.complete();
 
-        uow = this.unitOfWorkFactory.newUnitOfWork();
+        uow = this.module.newUnitOfWork();
         entity = uow.get( entity );
         SQLConfiguration config = uow.get( SQLConfiguration.class, SQLTestHelper.SQL_INDEXING_SERVICE_NAME );
         String schemaName = config.schemaName().get();
@@ -95,7 +95,7 @@ public class PostgreSQLDBIntegrityTest extends AbstractQi4jTest
         uow.remove( entity );
         uow.complete();
 
-        Connection connection = ((DataSourceService) this.serviceLocator.findService( DataSourceService.class ).get())
+        Connection connection = ((DataSourceService) this.module.findService( DataSourceService.class ).get())
             .getDataSource().getConnection();
         GenericDatabaseExplorer.visitDatabaseTables( connection, null, schemaName, null, new DatabaseProcessorAdapter()
         {
@@ -117,16 +117,16 @@ public class PostgreSQLDBIntegrityTest extends AbstractQi4jTest
     public void createAndModifyEntity()
         throws Exception
     {
-        UnitOfWork uow = this.unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork uow = this.module.newUnitOfWork();
         TestEntity entity = uow.newEntity( TestEntity.class );
         uow.complete();
 
-        uow = this.unitOfWorkFactory.newUnitOfWork();
+        uow = this.module.newUnitOfWork();
         entity = uow.get( entity );
         entity.testString().set( "NewTestString" );
         uow.complete();
 
-        uow = this.unitOfWorkFactory.newUnitOfWork();
+        uow = this.module.newUnitOfWork();
         entity = uow.get( entity );
         Assert.assertEquals( "New value did not store in indexing.", "NewTestString", entity.testString().get() );
         uow.discard();

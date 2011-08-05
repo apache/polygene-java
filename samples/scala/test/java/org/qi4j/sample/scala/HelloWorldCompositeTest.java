@@ -36,7 +36,7 @@ public class HelloWorldCompositeTest
             }
         };
 
-        HelloWorldComposite composite = assembler.transientBuilderFactory().newTransient( HelloWorldComposite.class );
+        HelloWorldComposite composite = assembler.module().newTransient( HelloWorldComposite.class );
         Assert.assertEquals( "Do stuff!", composite.doStuff() );
         Assert.assertEquals( "Hello there World!", composite.sayHello( "World" ) );
 
@@ -48,7 +48,7 @@ public class HelloWorldCompositeTest
             // Ok!
         }
 
-        HelloWorldComposite2 composite2 = assembler.transientBuilderFactory().newTransient( HelloWorldComposite2.class);
+        HelloWorldComposite2 composite2 = assembler.module().newTransient( HelloWorldComposite2.class);
         Assert.assertEquals( "Do custom stuff!", composite2.doStuff());
     }
 
@@ -69,7 +69,7 @@ public class HelloWorldCompositeTest
         };
 
         // Create and update Entity
-        UnitOfWork uow = assembler.unitOfWorkFactory().newUnitOfWork();
+        UnitOfWork uow = assembler.module().newUnitOfWork();
         try
         {
             Commands entity = uow.newEntity( Commands.class );
@@ -83,13 +83,13 @@ public class HelloWorldCompositeTest
             uow.complete();
         }
 
-        assembler.serviceFinder().findService( IndexExporter.class ).get().exportReadableToStream( System.out );
+        assembler.module().findService( IndexExporter.class ).get().exportReadableToStream( System.out );
 
         // Find it
-        uow = assembler.unitOfWorkFactory().newUnitOfWork();
+        uow = assembler.module().newUnitOfWork();
         try
         {
-            Data data = uow.newQuery( assembler.queryBuilderFactory().newQueryBuilder( Data.class ).where( eq( templateFor( Data.class ).foo(), "FooFoo" ) )).find();
+            Data data = uow.newQuery( assembler.module().newQueryBuilder( Data.class ).where( eq( templateFor( Data.class ).foo(), "FooFoo" ) )).find();
             Assert.assertEquals( "FooFoo", data.foo().get() );
         } finally
         {

@@ -1,6 +1,6 @@
 package org.qi4j.samples.cargo.app1.model.handling;
 
-import org.qi4j.api.entity.association.Association;
+import org.qi4j.api.association.Association;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;

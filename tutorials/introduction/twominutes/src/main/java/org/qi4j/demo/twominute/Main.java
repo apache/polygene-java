@@ -18,7 +18,7 @@ public class Main
             }
         };
         TransientBuilderFactory factory =
-            assembler.transientBuilderFactory();
+            assembler.module();
         Speaker speaker =
             factory.newTransient( PoliticianComposite.class );
         System.out.println( speaker.sayHello() );

@@ -66,7 +66,7 @@ interface CarrierMovementRepositoryService
 
         private UnitOfWork currentUnitOfWork()
         {
-            UnitOfWorkFactory uowf = module.unitOfWorkFactory();
+            UnitOfWorkFactory uowf = module;
             return uowf.currentUnitOfWork();
         }
 
@@ -76,7 +76,7 @@ interface CarrierMovementRepositoryService
                 uow.newEntityBuilder( CarrierMovement.class, NONE_CARRIER_MOVEMENT_ID );
             CarrierMovementState state = builder.instanceFor( CarrierMovementState.class );
 
-            ServiceFinder serviceFinder = module.serviceFinder();
+            ServiceFinder serviceFinder = module;
             ServiceReference<LocationRepository> locationRepositoryRef =
                 serviceFinder.findService( LocationRepository.class );
             LocationRepository locationRepository = locationRepositoryRef.get();

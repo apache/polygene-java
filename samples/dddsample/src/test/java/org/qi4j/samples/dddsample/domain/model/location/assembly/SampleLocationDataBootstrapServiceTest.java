@@ -52,11 +52,10 @@ public final class SampleLocationDataBootstrapServiceTest
     @Test
     public final void testSampleLocations()
     {
-        ServiceFinder serviceFinder = moduleInstance.serviceFinder();
-        LocationRepository locationRepository = serviceFinder.findService( LocationRepository.class )
+        LocationRepository locationRepository = module.findService( LocationRepository.class )
             .get();
 
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork uow = module.newUnitOfWork();
         try
         {
             for( String[] locations : LOCATIONS )

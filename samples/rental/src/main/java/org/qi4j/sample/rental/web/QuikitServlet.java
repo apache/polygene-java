@@ -88,11 +88,11 @@ public class QuikitServlet
             application = qi4j.newApplication( assembler );
             application.activate();
             Module module = application.findModule( "WebLayer", "PagesModule" );
-            finder = module.serviceFinder();
+            finder = module;
 
             if( application.mode() == Application.Mode.development )
             {
-                DataInitializer initializer = module.transientBuilderFactory().newTransient( DataInitializer.class );
+                DataInitializer initializer = module.newTransient( DataInitializer.class );
                 initializer.initialize();
             }
             Iterable<ServiceReference<Page>> iterable = finder.findServices( Page.class );

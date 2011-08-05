@@ -69,7 +69,7 @@ public class SequencingConcernTest
             .atLeastOnce();
         replay( shippingService, cargo, voyage );
         ShippingServiceTestComposite underTest =
-            assembler.transientBuilderFactory().newTransient( ShippingServiceTestComposite.class );
+            assembler.module().newTransient( ShippingServiceTestComposite.class );
         underTest.useMock( shippingService ).forClass( ShippingService.class );
         assertThat( "Booking result", underTest.makeBooking( cargo, voyage ), is( equalTo( -1000 ) ) );
         verify( shippingService, cargo, voyage );
@@ -101,7 +101,7 @@ public class SequencingConcernTest
         expect( sequence.get() ).andReturn( 1000 );
         replay( shippingService, cargo, voyage, generator, sequence );
         ShippingServiceTestComposite underTest =
-            assembler.transientBuilderFactory().newTransient( ShippingServiceTestComposite.class );
+            assembler.module().newTransient( ShippingServiceTestComposite.class );
         underTest.useMock( shippingService ).forClass( ShippingService.class );
         underTest.useMock( generator ).forClass( HasSequence.class );
         assertThat( "Booking result", underTest.makeBooking( cargo, voyage ), is( equalTo( 1000 ) ) );

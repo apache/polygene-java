@@ -51,7 +51,7 @@ public class LocationTest
     @Test
     public final void testEquals()
     {
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork uow = module.newUnitOfWork();
 
         try
         {
@@ -95,16 +95,13 @@ public class LocationTest
 
     private ServiceReference<LocationRepository> locationRepositoryService()
     {
-        ServiceFinder serviceFinder = moduleInstance.serviceFinder();
-        return serviceFinder.findService( LocationRepository.class );
+        return module.findService( LocationRepository.class );
     }
 
     private Location createLocation( String unlocodeIdString, String locationName )
     {
-        ServiceFinder serviceFinder = moduleInstance.serviceFinder();
-
         ServiceReference<LocationFactoryService> factoryRef =
-            serviceFinder.findService( LocationFactoryService.class );
+            module.findService( LocationFactoryService.class );
         LocationFactoryService factory = factoryRef.get();
 
         UnLocode unLocode = new UnLocode( unlocodeIdString );

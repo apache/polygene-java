@@ -27,7 +27,7 @@ public class HelloWorldTest
             }
         };
 
-        helloWorld = assembly.transientBuilderFactory().newTransient( HelloWorldComposite.class );
+        helloWorld = assembly.module().newTransient( HelloWorldComposite.class );
     }
 
     @Test

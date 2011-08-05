@@ -134,8 +134,8 @@ public class EntityViewer
     @SuppressWarnings( "unchecked" )
     protected Query createQuery( Module module, Class clazz )
     {
-        UnitOfWork uow = module.unitOfWorkFactory().newUnitOfWork();
-        QueryBuilder qb = module.queryBuilderFactory().newQueryBuilder( clazz );
+        UnitOfWork uow = module.newUnitOfWork();
+        QueryBuilder qb = module.newQueryBuilder( clazz );
         //Object template  = QueryExpressions.templateFor( clazz );
         return uow.newQuery( qb );
     }

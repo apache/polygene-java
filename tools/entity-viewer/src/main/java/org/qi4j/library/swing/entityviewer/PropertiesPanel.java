@@ -19,8 +19,8 @@ package org.qi4j.library.swing.entityviewer;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityDescriptor;
-import org.qi4j.api.entity.association.EntityStateHolder;
-import org.qi4j.api.property.PersistentPropertyDescriptor;
+import org.qi4j.api.association.AssociationStateHolder;
+import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.query.Query;
 import org.qi4j.bootstrap.Energy4Java;
 
@@ -79,13 +79,13 @@ public class PropertiesPanel
 
         for( Object qObj : query )
         {
-            EntityStateHolder state = api.getState( (EntityComposite) qObj );
+            AssociationStateHolder state = api.getState( (EntityComposite) qObj );
             EntityDescriptor descriptor = api.getEntityDescriptor( (EntityComposite) qObj );
             // genereate column, first time only
             if( model.getColumnCount() < 1 )
             {
-                for( PersistentPropertyDescriptor persistentPropertyDescriptor : descriptor.state()
-                    .<PersistentPropertyDescriptor>properties() )
+                for( PropertyDescriptor persistentPropertyDescriptor : descriptor.state()
+                    .properties() )
                 {
                     model.addColumn( persistentPropertyDescriptor.qualifiedName().name() );
                 }
@@ -93,7 +93,7 @@ public class PropertiesPanel
 
             Object[] rowData = new Object[model.getColumnCount()];
             int i = 0;
-            for( PersistentPropertyDescriptor persistentPropertyDescriptor : descriptor.state().<PersistentPropertyDescriptor>properties() )
+            for( PropertyDescriptor persistentPropertyDescriptor : descriptor.state().properties() )
             {
                 rowData[ i++ ] = state.propertyFor( persistentPropertyDescriptor.accessor() );
             }
