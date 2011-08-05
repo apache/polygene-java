@@ -20,16 +20,13 @@ import java.lang.annotation.*;
 
 /**
  * Annotation to denote the injection of a dependency to be used by a Mixin. The injected
- * object is provided by the ValueBuilder, TransientBuilder or ObjectBuilder.
+ * object is provided either by the TransientBuilder.uses() declarations, or if an instance of the appropriate types is not
+ * found, then a new Transient or Object is instantiated.
  * Call {@link org.qi4j.api.composite.TransientBuilder#use} to provide the instance
  * to be injected.
  *
- * The injection can be done in a couple of ways:
- * <ul>
- * <li>Direct type injection: @Uses SomeType someInstance;
- * <li>Iterable type injection. This will inject a ValueBuilder, ObjectBuilder or TransientBuilder for the type: @Uses Iterable<SomeType> someIterable;
- * <li>Builder type injection. This will inject a ValueBuilder, ObjectBuilder or TransientBuilder for the type: @Uses ObjectBuilder<SomeType> someBuilder;
- * </ul>
+ * Example:
+ * <pre>@Uses SomeType someInstance</pre>
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.PARAMETER, ElementType.FIELD } )

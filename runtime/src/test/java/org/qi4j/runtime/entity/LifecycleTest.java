@@ -49,7 +49,7 @@ public class LifecycleTest
     @Test
     public void whenEntityHasLifecycleWhenInstantiatedThenInvokeCreate()
     {
-        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork unitOfWork = module.newUnitOfWork();
         try
         {
             EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class );
@@ -67,7 +67,7 @@ public class LifecycleTest
     @Test
     public void whenEntityHasLifecycleWhenRemovedThenInvokeRemove()
     {
-        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork unitOfWork = module.newUnitOfWork();
         try
         {
             EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class );

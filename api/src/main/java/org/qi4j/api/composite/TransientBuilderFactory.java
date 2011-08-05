@@ -49,6 +49,6 @@ public interface TransientBuilderFactory
      * @throws org.qi4j.api.common.ConstructionException
      *                                  if the composite could not be instantiated
      */
-    <T> T newTransient( Class<T> mixinType )
+    <T> T newTransient( Class<T> mixinType, Object... uses )
         throws NoSuchCompositeException, ConstructionException;
 }

@@ -2,9 +2,8 @@ package org.qi4j.api.query.grammar;
 
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.CompositeInstance;
-import org.qi4j.api.composite.CompositeInvoker;
-import org.qi4j.api.entity.association.EntityStateHolder;
-import org.qi4j.api.entity.association.ManyAssociation;
+import org.qi4j.api.association.AssociationStateHolder;
+import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.functional.Function;
 
 import java.lang.reflect.AccessibleObject;
@@ -55,7 +54,7 @@ public class ManyAssociationFunction<T>
                 throw new IllegalArgumentException( "Cannot traverse ManyAssociations" );
 
             CompositeInstance handler = (CompositeInstance) Proxy.getInvocationHandler( target );
-            return ((EntityStateHolder)handler.state()).getManyAssociation( accessor );
+            return ((AssociationStateHolder)handler.state()).manyAssociationFor( accessor );
         } catch( IllegalArgumentException e )
         {
             throw e;

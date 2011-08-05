@@ -33,7 +33,7 @@ public class GoogleMixin
 
     public Iterable<Person> bornIn( String city )
     {
-//        QueryBuilder<Person> queryBuilder = unitOfWorkFactory.newUnitOfWork().queryBuilderFactory()
+//        QueryBuilder<Person> queryBuilder = module.newUnitOfWork().queryBuilderFactory()
 //            .newQueryBuilder( Person.class );
 //        Person personTemplate = queryBuilder.parameter( Person.class );
 //        Query<Person> query = queryBuilder

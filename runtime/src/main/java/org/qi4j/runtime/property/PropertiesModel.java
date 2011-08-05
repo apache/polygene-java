@@ -15,37 +15,27 @@
 package org.qi4j.runtime.property;
 
 import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.constraint.ConstraintViolationException;
-import org.qi4j.api.property.Property;
-import org.qi4j.api.property.PropertyDescriptor;
-import org.qi4j.api.property.StateHolder;
-import org.qi4j.api.value.ValueComposite;
-import org.qi4j.functional.Function;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.functional.VisitableHierarchy;
-import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.runtime.value.ValueInstance;
-import org.qi4j.runtime.value.ValueModel;
 
 import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Member;
 import java.util.*;
 
 /**
  * Base class for properties model
  */
-public class PropertiesModel<T extends PropertyModel>
+public class PropertiesModel
     implements VisitableHierarchy<Object, Object>
 {
-    protected final Set<T> propertyModels = new LinkedHashSet<T>();
-    protected final Map<AccessibleObject, T> mapAccessiblePropertyModel = new HashMap<AccessibleObject,T>();
+    protected final Map<AccessibleObject, PropertyModel> mapAccessiblePropertyModel = new LinkedHashMap<AccessibleObject,PropertyModel>();
 
     public PropertiesModel()
     {
     }
 
-    public void addProperty(T property)
+    public void addProperty(PropertyModel property)
     {
-        propertyModels.add( property );
         mapAccessiblePropertyModel.put( property.accessor(), property );
     }
 
@@ -54,7 +44,7 @@ public class PropertiesModel<T extends PropertyModel>
     {
         if (visitor.visitEnter( this ))
         {
-            for( T propertyModel : propertyModels )
+            for( PropertyModel propertyModel : mapAccessiblePropertyModel.values() )
             {
                 if (!propertyModel.accept(visitor))
                     break;
@@ -64,154 +54,41 @@ public class PropertiesModel<T extends PropertyModel>
         return visitor.visitLeave( this );
     }
 
-    public Set<T> properties()
+    public Iterable<PropertyModel> properties()
     {
-        return propertyModels;
+        return mapAccessiblePropertyModel.values();
     }
 
-    public PropertiesInstance newBuilderInstance( Function<PropertyDescriptor, Object> state)
+    public PropertyModel getProperty(AccessibleObject accessor)
     {
-        Map<AccessibleObject, Property<?>> properties = new HashMap<AccessibleObject, Property<?>>();
-        for( T propertyModel : propertyModels )
-        {
-            Property property;
-            Object initialValue = state.map( propertyModel );
+        PropertyModel propertyModel = mapAccessiblePropertyModel.get( accessor );
+        if (propertyModel == null)
+            throw new IllegalArgumentException( "No property found with name:"+((Member)accessor).getName() );
 
-            initialValue = cloneInitialValue( initialValue, true );
-
-            property = new PropertyInstance<Object>( propertyModel.getBuilderInfo(), initialValue );
-            properties.put( propertyModel.accessor(), property );
-        }
-
-        return new PropertiesInstance( properties );
+        return propertyModel;
     }
 
-    public PropertiesInstance newInitialInstance( ModuleInstance module )
+    public PropertyModel getPropertyByName( String name ) throws IllegalArgumentException
     {
-        Map<AccessibleObject, Property<?>> properties = new HashMap<AccessibleObject, Property<?>>();
-        for( T propertyModel : propertyModels )
-        {
-            Property property = new PropertyInstance<Object>(propertyModel, propertyModel.initialValue( module ) );
-            properties.put( propertyModel.accessor(), property );
-        }
-
-        return new PropertiesInstance( properties );
-    }
-
-    public PropertiesInstance newInstance( StateHolder state )
-    {
-        Map<AccessibleObject, Property<?>> properties = new HashMap<AccessibleObject, Property<?>>();
-        for( PropertyModel propertyModel : propertyModels )
-        {
-            Property<Object> prop = state.propertyFor( propertyModel.accessor() );
-            Object initialValue = prop.get();
-
-            initialValue = cloneInitialValue( initialValue, false );
-
-            // Create property instance
-            prop = new PropertyInstance<Object>( propertyModel, initialValue );
-            properties.put( propertyModel.accessor(), prop );
-        }
-        return new PropertiesInstance( properties );
-    }
-
-    private Object cloneInitialValue( Object initialValue, boolean isPrototype )
-    {
-        if( initialValue instanceof Collection )
-        {
-            Collection<Object> initialCollection = (Collection<Object>) initialValue;
-            Collection<Object> newCollection;
-            // Create new unmodifiable collection
-            if( initialValue instanceof List )
-            {
-                newCollection = new ArrayList<Object>();
-                initialValue = isPrototype ? newCollection : Collections.unmodifiableList( (List<Object>) newCollection );
-            }
-            else
-            {
-                newCollection = new HashSet<Object>();
-                initialValue = isPrototype ? newCollection : Collections.unmodifiableSet( (Set<Object>) newCollection );
-            }
-
-            // Copy values, ensuring that values are cloned correctly
-            for( Object value : initialCollection )
-            {
-                if( value instanceof ValueComposite )
-                {
-                    value = cloneValue( value, isPrototype );
-                }
-
-                newCollection.add( value );
-            }
-        }
-        else if( initialValue instanceof ValueComposite )
-        {
-            initialValue = cloneValue( initialValue, isPrototype );
-        }
-        return initialValue;
-    }
-
-    private Object cloneValue( Object value, boolean isPrototype )
-    {
-        // Create real value
-        final ValueInstance instance = ValueInstance.getValueInstance( (ValueComposite) value );
-
-        ValueModel model = (ValueModel) instance.compositeModel();
-        StateHolder state;
-        if( isPrototype )
-        {
-            state = model.state().newBuilderInstance( new Function<PropertyDescriptor, Object>()
-                    {
-                        @Override
-                        public Object map( PropertyDescriptor propertyDescriptor )
-                        {
-                            return instance.state().propertyFor( propertyDescriptor.accessor() ).get();
-                        }
-                        });
-        }
-        else
-        {
-            state = model.state().newInstance( instance.state() );
-        }
-        ValueInstance newInstance = model.newValueInstance( instance.module(), state );
-        return newInstance.proxy();
-    }
-
-    public T getProperty(AccessibleObject accessor)
-    {
-        return mapAccessiblePropertyModel.get( accessor );
-    }
-
-    public T getPropertyByName( String name )
-    {
-        for( T propertyModel : propertyModels )
+        for( PropertyModel propertyModel : mapAccessiblePropertyModel.values() )
         {
             if( propertyModel.qualifiedName().name().equals( name ) )
             {
                 return propertyModel;
             }
         }
-        return null;
+        throw new IllegalArgumentException( "No property found with name:"+name );
     }
 
-    public T getPropertyByQualifiedName( QualifiedName name )
+    public PropertyModel getPropertyByQualifiedName( QualifiedName name ) throws IllegalArgumentException
     {
-        for( T propertyModel : propertyModels )
+        for( PropertyModel propertyModel : mapAccessiblePropertyModel.values() )
         {
             if( propertyModel.qualifiedName().equals( name ) )
             {
                 return propertyModel;
             }
         }
-        return null;
-    }
-
-    public void checkConstraints( PropertiesInstance properties )
-        throws ConstraintViolationException
-    {
-        for( PropertyModel propertyModel : propertyModels )
-        {
-            propertyModel.checkConstraints( properties );
-        }
+        throw new IllegalArgumentException( "No property found with ualified name:"+name );
     }
 }

@@ -46,7 +46,7 @@ public class AssemblyMixinTest
     @Test
     public void testAssemblyMixins()
     {
-        assertThat( "Custom mixin has executed", transientBuilderFactory.newTransient( Foo.class )
+        assertThat( "Custom mixin has executed", module.newTransient( Foo.class )
             .test( "Foo", 42 ), equalTo( "Foo/42" ) );
     }
 
@@ -54,11 +54,11 @@ public class AssemblyMixinTest
     public void testAssemblyMixinsEntity()
         throws UnitOfWorkCompletionException
     {
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork uow = module.newUnitOfWork();
         FooEntity entity = uow.newEntity( FooEntity.class, "123" );
         uow.complete();
 
-        uow = unitOfWorkFactory.newUnitOfWork();
+        uow = module.newUnitOfWork();
         Foo foo = uow.get( Foo.class, "123" );
 
         try

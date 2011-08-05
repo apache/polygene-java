@@ -46,7 +46,7 @@ public class ValueInstantiationTests
         // valueBuilderFactory.newValueBuilder()
         try
         {
-            valueBuilderFactory.newValueBuilder( null );
+            module.newValueBuilder( null );
             fail( "NullArgumentException was expected." );
         }
         catch( NullArgumentException e )
@@ -57,7 +57,7 @@ public class ValueInstantiationTests
         // valueBuilderFactory.newValue();
         try
         {
-            valueBuilderFactory.newValue( null );
+            module.newValue( null );
             fail( "NullArgumentException was expected." );
         }
         catch( NullArgumentException e )
@@ -65,11 +65,11 @@ public class ValueInstantiationTests
             // expected
         }
 
-        //valueBuilderFactory.newValueFromJSON();
+        //module.newValueFromJSON();
         try
         {
-            valueBuilderFactory.newValueFromJSON( null, "abc:123" );
-            ValueBuilder<My> builder = valueBuilderFactory.newValueBuilder( null );
+            module.newValueFromJSON( null, "abc:123" );
+            ValueBuilder<My> builder = module.newValueBuilder( null );
             fail( "NullArgumentException was expected." );
         }
         catch( NullArgumentException e )
@@ -82,7 +82,7 @@ public class ValueInstantiationTests
     public void whenCreatingServiceCompositeGivenAServiceCompositeThenSucceed()
         throws Exception
     {
-        ValueBuilder<My> builder = valueBuilderFactory.newValueBuilder( My.class );
+        ValueBuilder<My> builder = module.newValueBuilder( My.class );
         My my = builder.newInstance();
         Assert.assertEquals( "Niclas", my.doSomething() );
     }

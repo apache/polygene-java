@@ -48,14 +48,14 @@ public class AssemblyRoleTest
     @Test
     public void testAssemblyRolesCustomMixin()
     {
-        FooComposite2 composite2 = transientBuilderFactory.newTransient( FooComposite2.class );
+        FooComposite2 composite2 = module.newTransient( FooComposite2.class );
         assertThat( "Custom mixin has executed", ( (Foo) composite2 ).test( "Foo", 42 ), equalTo( "Foo/42" ) );
     }
 
     @Test
     public void testAssemblyRolesDefaultMixin()
     {
-        FooComposite composite = transientBuilderFactory.newTransient( FooComposite.class );
+        FooComposite composite = module.newTransient( FooComposite.class );
         assertThat( "Default mixin has executed", ( (Foo) composite ).test( "Foo", 42 ), equalTo( "Foo 42" ) );
     }
 
@@ -63,11 +63,11 @@ public class AssemblyRoleTest
     public void testAssemblyMixinsEntity()
         throws UnitOfWorkCompletionException
     {
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork uow = module.newUnitOfWork();
         FooEntity entity = uow.newEntity( FooEntity.class, "123" );
         uow.complete();
 
-        uow = unitOfWorkFactory.newUnitOfWork();
+        uow = module.newUnitOfWork();
         Foo foo = uow.get( Foo.class, "123" );
 
         try

@@ -20,7 +20,7 @@ import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.constraint.Constraint;
 import org.qi4j.api.property.Immutable;
-import org.qi4j.bootstrap.PropertyDeclarations;
+import org.qi4j.bootstrap.StateDeclarations;
 import org.qi4j.bootstrap.TransientAssembly;
 import org.qi4j.functional.Iterables;
 import org.qi4j.runtime.composite.*;
@@ -55,11 +55,11 @@ public final class TransientAssemblyImpl
     }
 
     TransientModel newTransientModel(
-            PropertyDeclarations propertyDeclarations,
+            StateDeclarations stateDeclarations,
             AssemblyHelper helper
     )
     {
-        this.propertyDeclarations = propertyDeclarations;
+        this.stateDeclarations = stateDeclarations;
         try
         {
             this.helper = helper;

@@ -48,43 +48,43 @@ public class QI247Test2
     @Test
     public void testWithHandlerToString()
     {
-        ObjectMethods withHandler = transientBuilderFactory.newTransient( ObjectMethods.class );
+        ObjectMethods withHandler = module.newTransient( ObjectMethods.class );
         checkToString( withHandler );
     }
 
     @Test
     public void testWithHandlerHashCode()
     {
-        ObjectMethods withHandler = transientBuilderFactory.newTransient( ObjectMethods.class );
+        ObjectMethods withHandler = module.newTransient( ObjectMethods.class );
         checkHashCode( withHandler );
     }
 
     @Test
     public void testWithHandlerSelfEquals()
     {
-        ObjectMethods withHandler = transientBuilderFactory.newTransient( ObjectMethods.class );
+        ObjectMethods withHandler = module.newTransient( ObjectMethods.class );
         checkSelfEquals( withHandler );
     }
 
     @Test
     public void testWithHandlerSelfEquals2()
     {
-        ObjectMethods withHandler = transientBuilderFactory.newTransient( ObjectMethods.class );
+        ObjectMethods withHandler = module.newTransient( ObjectMethods.class );
         assertTrue( withHandler.equals( withHandler ) );
     }
 
     @Test
     public void testWithHandlerSelfSame()
     {
-        ObjectMethods withHandler = transientBuilderFactory.newTransient( ObjectMethods.class );
+        ObjectMethods withHandler = module.newTransient( ObjectMethods.class );
         assertSame( withHandler, withHandler );
     }
 
     @Test
     public void testWithHandlerTwoNotEqual()
     {
-        ObjectMethods first = transientBuilderFactory.newTransient( ObjectMethods.class );
-        ObjectMethods second = transientBuilderFactory.newTransient( ObjectMethods.class );
+        ObjectMethods first = module.newTransient( ObjectMethods.class );
+        ObjectMethods second = module.newTransient( ObjectMethods.class );
         checkTwoNotEqual( first, second );
     }
 

@@ -14,7 +14,7 @@
 
 package org.qi4j.runtime.composite;
 
-import org.qi4j.runtime.object.ObjectBuilderInstance;
+import org.qi4j.functional.Iterables;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -69,28 +69,12 @@ public final class UsesInstance
             }
         }
 
-        // Check builders
-        for( Object use : uses )
-        {
-            if( use instanceof TransientBuilderInstance )
-            {
-                TransientBuilderInstance builder = (TransientBuilderInstance) use;
-                if( type.isAssignableFrom( builder.compositeType() ) )
-                {
-                    return builder.newInstance();
-                }
-            }
-            else if( use instanceof ObjectBuilderInstance )
-            {
-                ObjectBuilderInstance builder = (ObjectBuilderInstance) use;
-                if( type.isAssignableFrom( builder.objectType() ) )
-                {
-                    return builder.newInstance();
-                }
-            }
-        }
-
         return null;
+    }
+
+    public Object[] toArray()
+    {
+        return Iterables.toArray( uses );
     }
 
     @Override

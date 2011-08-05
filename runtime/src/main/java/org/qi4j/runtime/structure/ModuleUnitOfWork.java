@@ -23,7 +23,6 @@ import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryExecutionException;
 import org.qi4j.api.query.grammar.OrderBy;
-import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.unitofwork.*;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.functional.Iterables;
@@ -87,7 +86,7 @@ public class ModuleUnitOfWork
 
     public UnitOfWorkFactory unitOfWorkFactory()
     {
-        return moduleInstance.unitOfWorkFactory();
+        return moduleInstance;
     }
 
     public Usecase usecase()
@@ -127,10 +126,10 @@ public class ModuleUnitOfWork
         // Generate id
         if( identity == null )
         {
-            identity = model.module().entities().identityGenerator().generate( model.model().type() );
+            identity = model.module().identityGenerator().generate( model.model().type() );
         }
 
-        EntityStore entityStore = model.module().entities().entityStore();
+        EntityStore entityStore = model.module().entityStore();
 
         EntityState entityState = model.model().newEntityState( uow.getEntityStoreUnitOfWork( entityStore, module() ),
                                                               parseEntityReference( identity ) );
@@ -169,12 +168,12 @@ public class ModuleUnitOfWork
             throw new EntityTypeNotFoundException( type.getName() );
         }
 
-        EntityStore entityStore = model.module().entities().entityStore();
+        EntityStore entityStore = model.module().entityStore();
 
         // Generate id if necessary
         if( identity == null )
         {
-            IdentityGenerator idGen = model.module().entities().identityGenerator();
+            IdentityGenerator idGen = model.module().identityGenerator();
             if( idGen == null )
             {
                 throw new NoSuchCompositeException(IdentityGenerator.class.getName(), model.module().name() );
@@ -183,21 +182,10 @@ public class ModuleUnitOfWork
         }
         EntityBuilder<T> builder;
 
-        if( identity != null )
-        {
-            builder = new EntityBuilderInstance<T>( model,
-                                                    this,
-                                                    uow.getEntityStoreUnitOfWork( entityStore, moduleInstance ),
-                                                    identity );
-        }
-        else
-        {
-            builder = new EntityBuilderInstance<T>( model,
-                                                    this,
-                                                    uow.getEntityStoreUnitOfWork( model.module().entities()
-                                                                                      .entityStore(), moduleInstance ),
-                                                    identity );
-        }
+        builder = new EntityBuilderInstance<T>( model,
+                                                this,
+                                                uow.getEntityStoreUnitOfWork( entityStore, moduleInstance ),
+                                                identity );
         return builder;
     }
 
@@ -211,7 +199,7 @@ public class ModuleUnitOfWork
             throw new EntityTypeNotFoundException( type.getName() );
         }
 
-        return uow.get( parseEntityReference( identity ), this, models, type ).<T>proxy();
+        return uow.get( parseEntityReference( identity ), this, models, type );
     }
 
     public <T> T get( T entity )
@@ -220,8 +208,8 @@ public class ModuleUnitOfWork
         EntityComposite entityComposite = (EntityComposite) entity;
         EntityInstance compositeInstance = EntityInstance.getEntityInstance( entityComposite );
         ModelModule<EntityModel> model = new ModelModule<EntityModel>( compositeInstance.module(), compositeInstance.entityModel() );
-        Class<?> type = compositeInstance.type();
-        return uow.get( compositeInstance.identity(), this, Collections.singletonList( model), type ).<T>proxy();
+        Class<T> type = (Class<T>) compositeInstance.type();
+        return uow.get( compositeInstance.identity(), this, Collections.singletonList( model), type );
     }
 
     public void remove( Object entity )
@@ -325,7 +313,7 @@ public class ModuleUnitOfWork
 
     public void addEntity( EntityInstance instance )
     {
-        uow.createEntity( instance );
+        uow.addEntity( instance );
     }
 
     private class UoWQuerySource implements QuerySource
@@ -340,7 +328,7 @@ public class ModuleUnitOfWork
         @Override
         public <T> T find( Class<T> resultType, Specification<Composite> whereClause, OrderBy[] orderBySegments, Integer firstResult, Integer maxResults, Map<String, Object> variables )
         {
-            final EntityFinder entityFinder = moduleUnitOfWork.module().serviceFinder().findService( EntityFinder.class ).get();
+            final EntityFinder entityFinder = moduleUnitOfWork.module().findService( EntityFinder.class ).get();
 
             try
             {
@@ -368,7 +356,7 @@ public class ModuleUnitOfWork
         @Override
         public <T> long count( Class<T> resultType, Specification<Composite> whereClause, OrderBy[] orderBySegments, Integer firstResult, Integer maxResults, Map<String, Object> variables )
         {
-            final EntityFinder entityFinder = moduleUnitOfWork.module().serviceFinder().findService( EntityFinder.class ).get();
+            final EntityFinder entityFinder = moduleUnitOfWork.module().findService( EntityFinder.class ).get();
 
             try
             {
@@ -384,7 +372,7 @@ public class ModuleUnitOfWork
         @Override
         public <T> Iterator<T> iterator( final Class<T> resultType, Specification<Composite> whereClause, OrderBy[] orderBySegments, Integer firstResult, Integer maxResults, Map<String, Object> variables )
         {
-            final EntityFinder entityFinder = moduleUnitOfWork.module().serviceFinder().findService( EntityFinder.class ).get();
+            final EntityFinder entityFinder = moduleUnitOfWork.module().findService( EntityFinder.class ).get();
 
             try
             {

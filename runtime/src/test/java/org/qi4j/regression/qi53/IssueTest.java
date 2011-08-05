@@ -28,7 +28,7 @@ public class IssueTest
     public void genericPropertiesAndParameters()
         throws SecurityException, NoSuchMethodException
     {
-        TransientBuilder<CostPerUnitComposite> builder = transientBuilderFactory.newTransientBuilder( CostPerUnitComposite.class );
+        TransientBuilder<CostPerUnitComposite> builder = module.newTransientBuilder( CostPerUnitComposite.class );
         builder.prototype().unit().set( new Unit<Integer>( 10 ) );
         CostPerUnitComposite test = builder.newInstance();
         assertEquals( 10, test.unit().get().value );

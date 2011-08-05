@@ -18,8 +18,8 @@ import org.junit.Test;
 import org.qi4j.api.entity.Aggregated;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.entity.association.Association;
-import org.qi4j.api.entity.association.ManyAssociation;
+import org.qi4j.api.association.Association;
+import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.unitofwork.UnitOfWork;
@@ -55,7 +55,7 @@ public class AggregatedTest
         PersonEntity personEntity, personEntity2;
         EmployeeEntity employeeEntity, employeeEntity2;
         {
-            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+            UnitOfWork unitOfWork = module.newUnitOfWork();
             try
             {
                 {
@@ -109,7 +109,7 @@ public class AggregatedTest
         }
 
         {
-            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+            UnitOfWork unitOfWork = module.newUnitOfWork();
             try
             {
                 companyEntity = unitOfWork.get( companyEntity );
@@ -125,7 +125,7 @@ public class AggregatedTest
         }
 
         {
-            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+            UnitOfWork unitOfWork = module.newUnitOfWork();
             try
             {
                 unitOfWork.get( employeeEntity );
@@ -141,7 +141,7 @@ public class AggregatedTest
         }
 
         {
-            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+            UnitOfWork unitOfWork = module.newUnitOfWork();
             try
             {
                 unitOfWork.get( employeeEntity2 );

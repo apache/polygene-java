@@ -42,7 +42,7 @@ public class Qi228Test
     public void test1()
         throws Exception
     {
-        SomeLogic service = serviceLocator.findService( SomeLogic.class ).get();
+        SomeLogic service = module.findService( SomeLogic.class ).get();
         try
         {
             service.getNumbers();

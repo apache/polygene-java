@@ -99,7 +99,7 @@ public class ApplicationInstance
             }
         }
 
-        return null;
+        throw new IllegalArgumentException( "No such layer:"+layerName );
     }
 
     public Module findModule( String layerName, String moduleName )
@@ -112,7 +112,7 @@ public class ApplicationInstance
             }
         }
 
-        return null;
+        throw new IllegalArgumentException( "No such layer:"+layerName );
     }
 
     @Override

@@ -18,7 +18,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.composite.TransientBuilderFactory;
-import org.qi4j.api.object.ObjectBuilderFactory;
+import org.qi4j.api.object.ObjectFactory;
 import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.structure.Application;
@@ -45,14 +45,7 @@ public abstract class AbstractQi4jScenarioTest
     static protected ApplicationDescriptor applicationModel;
     static protected Application application;
 
-    static protected TransientBuilderFactory transientBuilderFactory;
-    static protected ObjectBuilderFactory objectBuilderFactory;
-    static protected ValueBuilderFactory valueBuilderFactory;
-    static protected UnitOfWorkFactory unitOfWorkFactory;
-    static protected QueryBuilderFactory queryBuilderFactory;
-    static protected ServiceFinder serviceLocator;
-
-    static protected Module moduleInstance;
+    static protected Module module;
 
     static protected Assembler assembler; // Initialize this in static block of subclass
 
@@ -75,13 +68,7 @@ public abstract class AbstractQi4jScenarioTest
         application.activate();
 
         // Assume only one module
-        moduleInstance = (Module) application.findModule( "Layer 1", "Module 1" );
-        transientBuilderFactory = moduleInstance.transientBuilderFactory();
-        objectBuilderFactory = moduleInstance.objectBuilderFactory();
-        valueBuilderFactory = moduleInstance.valueBuilderFactory();
-        unitOfWorkFactory = moduleInstance.unitOfWorkFactory();
-        queryBuilderFactory = moduleInstance.queryBuilderFactory();
-        serviceLocator = moduleInstance.serviceFinder();
+        module = application.findModule( "Layer 1", "Module 1" );
     }
 
     static protected ApplicationDescriptor newApplication()
@@ -133,21 +120,20 @@ public abstract class AbstractQi4jScenarioTest
     public void tearDown()
         throws Exception
     {
-        if( unitOfWorkFactory != null && unitOfWorkFactory.currentUnitOfWork() != null )
+        if( module != null && module.isUnitOfWorkActive())
         {
-            UnitOfWork current;
-            while( ( current = unitOfWorkFactory.currentUnitOfWork() ) != null )
+            while( module.isUnitOfWorkActive())
             {
-                if( current.isOpen() )
+                UnitOfWork uow = module.currentUnitOfWork();
+                if( uow.isOpen() )
                 {
-                    current.discard();
+                    uow.discard();
                 }
                 else
                 {
                     throw new InternalError( "I have seen a case where a UoW is on the stack, but not opened." );
                 }
             }
-
             new Exception( "UnitOfWork not properly cleaned up" ).printStackTrace();
         }
 

@@ -19,7 +19,7 @@ import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.object.ObjectBuilderFactory;
+import org.qi4j.api.object.ObjectFactory;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceImporterException;
 import org.qi4j.api.service.ServiceReference;
@@ -63,8 +63,8 @@ public class ServiceInjectionTest
 
     private void testInjection( SingletonAssembler assembly )
     {
-        ObjectBuilderFactory builderFactory = assembly.objectBuilderFactory();
-        ServiceUser user = builderFactory.newObject( ServiceUser.class );
+        ObjectFactory factory = assembly.module();
+        ServiceUser user = factory.newObject( ServiceUser.class );
 
         assertEquals( "X", user.testSingle() );
         assertEquals( "Foo", user.testIdentity() );
@@ -138,7 +138,7 @@ public class ServiceInjectionTest
             {
                 module.objects( ServiceUser.class );
             }
-        }.objectBuilderFactory().newObject( ServiceUser.class );
+        }.module().newObject( ServiceUser.class );
     }
 
     @Mixins( MyServiceMixin.class )

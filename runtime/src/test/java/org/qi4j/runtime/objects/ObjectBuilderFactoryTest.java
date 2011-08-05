@@ -19,7 +19,6 @@ import org.junit.Test;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.object.NoSuchObjectException;
-import org.qi4j.api.object.ObjectBuilder;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.util.NullArgumentException;
 import org.qi4j.bootstrap.AssemblyException;
@@ -51,7 +50,7 @@ public class ObjectBuilderFactoryTest
             {
             }
         };
-        assembler.objectBuilderFactory().newObjectBuilder( AnyObject.class );
+        assembler.module().newObject( AnyObject.class );
     }
 
     /**
@@ -70,7 +69,7 @@ public class ObjectBuilderFactoryTest
             {
             }
         };
-        assembler.objectBuilderFactory().newObjectBuilder( null );
+        assembler.module().newObject( null );
     }
 
     /**
@@ -89,24 +88,7 @@ public class ObjectBuilderFactoryTest
             {
             }
         };
-        assembler.objectBuilderFactory().newObject( null );
-    }
-
-    /**
-     * Tests that an object builder can be created for an registered object.
-     */
-    @Test
-    public void newBuilderForRegisteredObject()
-    {
-        SingletonAssembler assembler = new SingletonAssembler()
-        {
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
-            {
-                module.objects( AnyObject.class );
-            }
-        };
-        assembler.objectBuilderFactory().newObjectBuilder( AnyObject.class );
+        assembler.module().newObject( null );
     }
 
     /**
@@ -123,7 +105,7 @@ public class ObjectBuilderFactoryTest
                 module.objects( AnyObject.class );
             }
         };
-        assembler.objectBuilderFactory().newObject( AnyObject.class );
+        assembler.module().newObject( AnyObject.class );
     }
 
     @Test
@@ -138,13 +120,11 @@ public class ObjectBuilderFactoryTest
             }
         };
 
-        ManyConstructorObject object = assembler.objectBuilderFactory().newObject( ManyConstructorObject.class );
+        ManyConstructorObject object = assembler.module().newObject( ManyConstructorObject.class );
         Assert.assertThat( "ref is null", object.anyObject, nullValue() );
 
-        ObjectBuilder<ManyConstructorObject> builder = assembler.objectBuilderFactory()
-            .newObjectBuilder( ManyConstructorObject.class );
-        builder.use( new AnyObject() );
-        object = builder.newInstance();
+        object = assembler.module()
+            .newObject( ManyConstructorObject.class, new AnyObject() );
 
         Assert.assertThat( "ref is not null", object.anyObject, notNullValue() );
     }

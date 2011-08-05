@@ -52,7 +52,7 @@ public class AvailableServiceTest
             }
         };
 
-        ServiceReference<TestServiceComposite1> serviceRef = assembler.serviceFinder().findService( TestServiceComposite1.class );
+        ServiceReference<TestServiceComposite1> serviceRef = assembler.module().findService( TestServiceComposite1.class );
 
         assertThat( "service is available", serviceRef.isAvailable(), equalTo( true ) );
     }
@@ -72,7 +72,7 @@ public class AvailableServiceTest
             }
         };
 
-        ServiceReference<TestServiceComposite2> serviceRef = assembler.serviceFinder().findService( TestServiceComposite2.class );
+        ServiceReference<TestServiceComposite2> serviceRef = assembler.module().findService( TestServiceComposite2.class );
 
         assertThat( "service is unavailable", serviceRef.isAvailable(), equalTo( false ) );
 
@@ -98,15 +98,15 @@ public class AvailableServiceTest
             }
         };
 
-        TestObject object = assembler.objectBuilderFactory().newObject( TestObject.class );
+        TestObject object = assembler.module().newObject( TestObject.class );
 
         assertThat( "service is unavailable", object.getService(), CoreMatchers.<Object>nullValue() );
 
-        ServiceReference<TestServiceComposite2> serviceRef = assembler.serviceFinder().findService( TestServiceComposite2.class );
+        ServiceReference<TestServiceComposite2> serviceRef = assembler.module().findService( TestServiceComposite2.class );
         serviceRef.get().configuration().enabled().set( true );
         serviceRef.get().save();
 
-        object = assembler.objectBuilderFactory().newObject( TestObject.class );
+        object = assembler.module().newObject( TestObject.class );
         assertThat( "service is available", object.getService(), CoreMatchers.<Object>notNullValue() );
     }
 

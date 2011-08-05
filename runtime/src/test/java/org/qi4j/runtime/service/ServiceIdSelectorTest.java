@@ -18,7 +18,7 @@ import org.junit.Test;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.object.ObjectBuilderFactory;
+import org.qi4j.api.object.ObjectFactory;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.bootstrap.AssemblyException;
@@ -49,10 +49,8 @@ public class ServiceIdSelectorTest
             }
         };
 
-        ObjectBuilderFactory obf = assembler.objectBuilderFactory();
-        ServiceConsumer consumer = obf.newObjectBuilder( ServiceConsumer.class )
-            .use( TestServiceComposite2.class.getSimpleName() )
-            .newInstance();
+        ObjectFactory obf = assembler.module();
+        ServiceConsumer consumer = obf.newObject( ServiceConsumer.class, TestServiceComposite2.class.getSimpleName() );
         TestService service = consumer.getService();
 
         assertThat( "service is selected one", service.test(), equalTo( "mixin2" ) );

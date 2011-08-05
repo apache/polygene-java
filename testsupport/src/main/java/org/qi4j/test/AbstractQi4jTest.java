@@ -17,16 +17,10 @@ package org.qi4j.test;
 import org.junit.After;
 import org.junit.Before;
 import org.qi4j.api.Qi4j;
-import org.qi4j.api.composite.TransientBuilderFactory;
-import org.qi4j.api.object.ObjectBuilderFactory;
-import org.qi4j.api.query.QueryBuilderFactory;
-import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.ApplicationDescriptor;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-import org.qi4j.api.value.ValueBuilderFactory;
 import org.qi4j.bootstrap.*;
 import org.qi4j.spi.Qi4jSPI;
 import org.slf4j.Logger;
@@ -38,133 +32,123 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractQi4jTest
         implements Assembler
 {
-   protected Qi4j api;
-   protected Qi4jSPI spi;
+    protected Qi4j api;
+    protected Qi4jSPI spi;
 
-   protected Energy4Java qi4j;
-   protected ApplicationDescriptor applicationModel;
-   protected Application application;
+    protected Energy4Java qi4j;
+    protected ApplicationDescriptor applicationModel;
+    protected Application application;
+    protected Module module;
 
-   protected TransientBuilderFactory transientBuilderFactory;
-   protected ObjectBuilderFactory objectBuilderFactory;
-   protected ValueBuilderFactory valueBuilderFactory;
-   protected UnitOfWorkFactory unitOfWorkFactory;
-   protected QueryBuilderFactory queryBuilderFactory;
-   protected ServiceFinder serviceLocator;
+    private Logger log;
 
-   protected Module moduleInstance;
+    @Before
+    public void setUp()
+            throws Exception
+    {
+        qi4j = new Energy4Java();
+        applicationModel = newApplication();
+        if( applicationModel == null )
+        {
+            // An AssemblyException has occurred that the Test wants to check for.
+            return;
+        }
+        application = applicationModel.newInstance( qi4j.spi() );
+        initApplication( application );
+        api = spi = qi4j.spi();
+        application.activate();
 
-   private Logger log;
+        // Assume only one module
+        module = application.findModule( "Layer 1", "Module 1" );
 
-   @Before
-   public void setUp()
-           throws Exception
-   {
-      qi4j = new Energy4Java();
-      applicationModel = newApplication();
-      if (applicationModel == null)
-      {
-         // An AssemblyException has occurred that the Test wants to check for.
-         return;
-      }
-      application = applicationModel.newInstance(qi4j.spi());
-      initApplication(application);
-      api = spi = qi4j.spi();
-      application.activate();
+        // Inject this test instance
+        module.injectTo( this );
+    }
 
-      // Assume only one module
-      moduleInstance = (Module) application.findModule("Layer 1", "Module 1");
-      transientBuilderFactory = moduleInstance.transientBuilderFactory();
-      objectBuilderFactory = moduleInstance.objectBuilderFactory();
-      valueBuilderFactory = moduleInstance.valueBuilderFactory();
-      unitOfWorkFactory = moduleInstance.unitOfWorkFactory();
-      queryBuilderFactory = moduleInstance.queryBuilderFactory();
-      serviceLocator = moduleInstance.serviceFinder();
-   }
-
-   protected ApplicationDescriptor newApplication()
-           throws AssemblyException
-   {
-      ApplicationAssembler assembler = new ApplicationAssembler()
-      {
-         public ApplicationAssembly assemble(ApplicationAssemblyFactory applicationFactory)
-                 throws AssemblyException
-         {
-            return applicationFactory.newApplicationAssembly(new Assembler()
+    protected ApplicationDescriptor newApplication()
+            throws AssemblyException
+    {
+        ApplicationAssembler assembler = new ApplicationAssembler()
+        {
+            public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
+                    throws AssemblyException
             {
-               @Override
-               public void assemble(ModuleAssembly module) throws AssemblyException
-               {
-                  module.layer().application().setMode(Application.Mode.test);
-                  AbstractQi4jTest.this.assemble(module);
-               }
-            });
-         }
-      };
-
-      try
-      {
-         return qi4j.newApplicationModel(assembler);
-      } catch (AssemblyException e)
-      {
-         assemblyException(e);
-         return null;
-      }
-   }
-
-   /**
-    * This method is called when there was an AssemblyException in the creation of the Qi4j application model.
-    * <p/>
-    * Override this method to catch valid failures to place into satisfiedBy suites.
-    *
-    * @param exception the exception thrown.
-    * @throws AssemblyException The default implementation of this method will simply re-throw the exception.
-    */
-   protected void assemblyException(AssemblyException exception)
-           throws AssemblyException
-   {
-      throw exception;
-   }
-
-   protected void initApplication(Application app)
-           throws Exception
-   {
-   }
-
-   @After
-   public void tearDown()
-           throws Exception
-   {
-      if (unitOfWorkFactory != null && unitOfWorkFactory.currentUnitOfWork() != null)
-      {
-         UnitOfWork current;
-         while ((current = unitOfWorkFactory.currentUnitOfWork()) != null)
-         {
-            if (current.isOpen())
-            {
-               current.discard();
-            } else
-            {
-               throw new InternalError("I have seen a case where a UoW is on the stack, but not opened.");
+                return applicationFactory.newApplicationAssembly( new Assembler()
+                {
+                    @Override
+                    public void assemble( ModuleAssembly module ) throws AssemblyException
+                    {
+                        module.layer().application().setMode( Application.Mode.test );
+                        module.objects( AbstractQi4jTest.this.getClass() ); // Register test class
+                        AbstractQi4jTest.this.assemble( module );
+                    }
+                } );
             }
-         }
+        };
 
-         new Exception("UnitOfWork not properly cleaned up").printStackTrace();
-      }
+        try
+        {
+            return qi4j.newApplicationModel( assembler );
+        } catch( AssemblyException e )
+        {
+            assemblyException( e );
+            return null;
+        }
+    }
 
-      if (application != null)
-      {
-         application.passivate();
-      }
-   }
+    /**
+     * This method is called when there was an AssemblyException in the creation of the Qi4j application model.
+     * <p/>
+     * Override this method to catch valid failures to place into satisfiedBy suites.
+     *
+     * @param exception the exception thrown.
+     * @throws AssemblyException The default implementation of this method will simply re-throw the exception.
+     */
+    protected void assemblyException( AssemblyException exception )
+            throws AssemblyException
+    {
+        throw exception;
+    }
 
-   protected Logger getLog()
-   {
-      if (this.log == null)
-      {
-         this.log = LoggerFactory.getLogger(this.getClass());
-      }
+    protected void initApplication( Application app )
+            throws Exception
+    {
+    }
 
-      return this.log;
-   }
+    @After
+    public void tearDown()
+            throws Exception
+    {
+        if( module != null && module.isUnitOfWorkActive())
+        {
+            while( module.isUnitOfWorkActive())
+            {
+                UnitOfWork uow = module.currentUnitOfWork();
+                if( uow.isOpen() )
+                {
+                    uow.discard();
+                }
+                else
+                {
+                    throw new InternalError( "I have seen a case where a UoW is on the stack, but not opened." );
+                }
+            }
+            new Exception( "UnitOfWork not properly cleaned up" ).printStackTrace();
+        }
+
+        if( application != null )
+        {
+            application.passivate();
+        }
+    }
+
+    protected Logger getLog()
+    {
+        if( this.log == null )
+        {
+            this.log = LoggerFactory.getLogger( this.getClass() );
+        }
+
+        return this.log;
+    }
 }

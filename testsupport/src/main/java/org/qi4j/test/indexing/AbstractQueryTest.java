@@ -45,8 +45,7 @@ public abstract class AbstractQueryTest
     public void showNetwork()
         throws IOException
     {
-        ServiceFinder serviceFinder = this.serviceLocator;
-        IndexExporter indexerExporter = serviceFinder.findService( IndexExporter.class ).get();
+        IndexExporter indexerExporter = module.findService( IndexExporter.class ).get();
         indexerExporter.exportReadableToStream( System.out );
     }
 
@@ -82,7 +81,7 @@ public abstract class AbstractQueryTest
     public void script01()
         throws EntityFinderException
     {
-        final QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
+        final QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
         final Query<Person> query = unitOfWork.newQuery(qb);
         System.out.println( "*** script01: " + query );
         verifyUnorderedResults( query, "Joe Doe", "Ann Doe", "Jack Doe" );
@@ -92,7 +91,7 @@ public abstract class AbstractQueryTest
     public void script02()
         throws EntityFinderException
     {
-        final QueryBuilder<Domain> qb = this.queryBuilderFactory.newQueryBuilder( Domain.class );
+        final QueryBuilder<Domain> qb = this.module.newQueryBuilder( Domain.class );
         final Nameable nameable = templateFor( Nameable.class );
         final Query<Domain> query = unitOfWork.newQuery( qb.where( eq( nameable.name(), "Gaming" ) ));
         System.out.println( "*** script02: " + query );
@@ -103,7 +102,7 @@ public abstract class AbstractQueryTest
     public void script03()
         throws EntityFinderException
     {
-        QueryBuilder<Nameable> qb = this.queryBuilderFactory.newQueryBuilder( Nameable.class );
+        QueryBuilder<Nameable> qb = this.module.newQueryBuilder( Nameable.class );
         Query<Nameable> query = unitOfWork.newQuery(qb);
         verifyUnorderedResults( query, "Joe Doe", "Ann Doe", "Jack Doe", "Penang", "Kuala Lumpur", "Cooking", "Gaming",
                                 "Programming", "Cars" );
@@ -114,7 +113,7 @@ public abstract class AbstractQueryTest
     public void script04()
         throws EntityFinderException
     {
-        QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
         Person personTemplate = templateFor( Person.class );
         City placeOfBirth = personTemplate.placeOfBirth().get();
         Query<Person> query = unitOfWork.newQuery( qb.where( eq( placeOfBirth.name(), "Kuala Lumpur" ) ));
@@ -126,7 +125,7 @@ public abstract class AbstractQueryTest
     public void script05()
         throws EntityFinderException
     {
-        QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         Query<Person> query = unitOfWork.newQuery( qb.where( eq( person.mother().get().placeOfBirth().get().name(), "Kuala Lumpur" ) )
             );
@@ -138,7 +137,7 @@ public abstract class AbstractQueryTest
     public void script06()
         throws EntityFinderException
     {
-        QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         Query<Person> query = unitOfWork.newQuery( qb.where( ge( person.yearOfBirth(), 1973 ) ));
         System.out.println( "*** script06: " + query );
@@ -149,7 +148,7 @@ public abstract class AbstractQueryTest
     public void script07()
         throws EntityFinderException
     {
-        QueryBuilder<Nameable> qb = this.queryBuilderFactory.newQueryBuilder( Nameable.class );
+        QueryBuilder<Nameable> qb = this.module.newQueryBuilder( Nameable.class );
         Person person = templateFor( Person.class );
         Query<Nameable> query = unitOfWork.newQuery( qb.where(
             and( ge( person.yearOfBirth(), 1900 ), eq( person.placeOfBirth().get().name(), "Penang" ) ) ));
@@ -161,7 +160,7 @@ public abstract class AbstractQueryTest
     public void script08()
         throws EntityFinderException
     {
-        QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         Query<Person> query = unitOfWork.newQuery( qb.where( or( eq( person.yearOfBirth(), 1970 ), eq( person.yearOfBirth(), 1975 ) ) )
             );
@@ -173,7 +172,7 @@ public abstract class AbstractQueryTest
     public void script09()
         throws EntityFinderException
     {
-        QueryBuilder<Female> qb = this.queryBuilderFactory.newQueryBuilder( Female.class );
+        QueryBuilder<Female> qb = this.module.newQueryBuilder( Female.class );
         Person person = templateFor( Person.class );
         Query<Female> query = unitOfWork.newQuery( qb.where( or( eq( person.yearOfBirth(), 1970 ), eq( person.yearOfBirth(), 1975 ) ) )
             );
@@ -185,7 +184,7 @@ public abstract class AbstractQueryTest
     public void script10()
         throws EntityFinderException
     {
-        QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         Query<Person> query = unitOfWork.newQuery( qb.where( not( eq( person.yearOfBirth(), 1975 ) ) ));
         System.out.println( "*** script10: " + query );
@@ -196,7 +195,7 @@ public abstract class AbstractQueryTest
     public void script11()
         throws EntityFinderException
     {
-        QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         Query<Person> query = unitOfWork.newQuery( qb.where( isNotNull( person.email() ) ));
         System.out.println( "*** script11: " + query );
@@ -207,7 +206,7 @@ public abstract class AbstractQueryTest
     public void script12()
         throws EntityFinderException
     {
-        QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         Query<Person> query = unitOfWork.newQuery( qb.where( isNull( person.email() ) ));
         System.out.println( "*** script12: " + query );
@@ -218,7 +217,7 @@ public abstract class AbstractQueryTest
     public void script13()
         throws EntityFinderException
     {
-        QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
         Male person = templateFor( Male.class );
         Query<Person> query = unitOfWork.newQuery( qb.where( isNotNull( person.wife() ) ));
         System.out.println( "*** script13: " + query );
@@ -229,7 +228,7 @@ public abstract class AbstractQueryTest
     public void script14()
         throws EntityFinderException
     {
-        QueryBuilder<Male> qb = this.queryBuilderFactory.newQueryBuilder( Male.class );
+        QueryBuilder<Male> qb = this.module.newQueryBuilder( Male.class );
         Male person = templateFor( Male.class );
         Query<Male> query = unitOfWork.newQuery( qb.where( isNull( person.wife() ) ));
         System.out.println( "*** script14: " + query );
@@ -240,7 +239,7 @@ public abstract class AbstractQueryTest
     public void script15()
         throws EntityFinderException
     {
-        QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
         Male person = templateFor( Male.class );
         Query<Person> query = unitOfWork.newQuery( qb.where( isNull( person.wife() ) ));
         System.out.println( "*** script15: " + query );
@@ -251,7 +250,7 @@ public abstract class AbstractQueryTest
     public void script16()
         throws EntityFinderException
     {
-        QueryBuilder<Nameable> qb = this.queryBuilderFactory.newQueryBuilder( Nameable.class );
+        QueryBuilder<Nameable> qb = this.module.newQueryBuilder( Nameable.class );
         // should return only 2 entities
         Nameable nameable = templateFor( Nameable.class );
         Query<Nameable> query = unitOfWork.newQuery(qb);
@@ -265,7 +264,7 @@ public abstract class AbstractQueryTest
     public void script17()
         throws EntityFinderException
     {
-        QueryBuilder<Nameable> qb = this.queryBuilderFactory.newQueryBuilder( Nameable.class );
+        QueryBuilder<Nameable> qb = this.module.newQueryBuilder( Nameable.class );
         // should return only 3 entities starting with forth one
         Nameable nameable = templateFor( Nameable.class );
         Query<Nameable> query = unitOfWork.newQuery(qb);
@@ -280,7 +279,7 @@ public abstract class AbstractQueryTest
     public void script18()
         throws EntityFinderException
     {
-        QueryBuilder<Nameable> qb = this.queryBuilderFactory.newQueryBuilder( Nameable.class );
+        QueryBuilder<Nameable> qb = this.module.newQueryBuilder( Nameable.class );
         // should return all Nameable entities sorted by name
         Nameable nameable = templateFor( Nameable.class );
         Query<Nameable> query = unitOfWork.newQuery(qb);
@@ -294,7 +293,7 @@ public abstract class AbstractQueryTest
     public void script19()
         throws EntityFinderException
     {
-        QueryBuilder<Nameable> qb = this.queryBuilderFactory.newQueryBuilder( Nameable.class );
+        QueryBuilder<Nameable> qb = this.module.newQueryBuilder( Nameable.class );
         // should return all Nameable entities with a name > "D" sorted by name
         Nameable nameable = templateFor( Nameable.class );
         Query<Nameable> query = unitOfWork.newQuery( qb.where( gt( nameable.name(), "D" ) ));
@@ -307,7 +306,7 @@ public abstract class AbstractQueryTest
     public void script20()
         throws EntityFinderException
     {
-        QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
         // should return all Persons born after 1973 (Ann and Joe Doe) sorted descending by name
         Person person = templateFor( Person.class );
         Query<Person> query = unitOfWork.newQuery( qb.where( gt( person.yearOfBirth(), 1973 ) ));
@@ -320,7 +319,7 @@ public abstract class AbstractQueryTest
     public void script21()
         throws EntityFinderException
     {
-        QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
         // should return all Persons sorted by name of the city they were born, and then by year they were born
         Person person = templateFor( Person.class );
         Query<Person> query = unitOfWork.newQuery(qb);
@@ -333,7 +332,7 @@ public abstract class AbstractQueryTest
     public void script22()
         throws EntityFinderException
     {
-        QueryBuilder<Nameable> qb = this.queryBuilderFactory.newQueryBuilder( Nameable.class );
+        QueryBuilder<Nameable> qb = this.module.newQueryBuilder( Nameable.class );
         Nameable nameable = templateFor( Nameable.class );
         // should return Jack and Joe Doe
         Query<Nameable> query = unitOfWork.newQuery( qb.where( matches( nameable.name(), "J.*Doe" ) ));
@@ -346,7 +345,7 @@ public abstract class AbstractQueryTest
     public void script23()
         throws EntityFinderException
     {
-        QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         Domain interests = oneOf( person.interests() );
         Query<Person> query = unitOfWork.newQuery( qb.where( eq( interests.name(), "Cars" ) ));
@@ -358,7 +357,7 @@ public abstract class AbstractQueryTest
     public void script24()
         throws EntityFinderException
     {
-        final QueryBuilder<Domain> qb = this.queryBuilderFactory.newQueryBuilder( Domain.class );
+        final QueryBuilder<Domain> qb = this.module.newQueryBuilder( Domain.class );
         final Nameable nameable = templateFor( Nameable.class );
         final Query<Domain> query = unitOfWork.newQuery( qb.where( eq( nameable.name(), "Gaming" ) ));
         System.out.println( "*** script24: " + query );
@@ -368,13 +367,13 @@ public abstract class AbstractQueryTest
     @Test( expected = NotQueryableException.class )
     public void script25()
     {
-        this.queryBuilderFactory.newQueryBuilder( File.class );
+        this.module.newQueryBuilder( File.class );
     }
 
     @Test( expected = NotQueryableException.class )
     public void script26()
     {
-        QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         qb.where( eq( person.personalWebsite().get().file().get().value(), "some/path" ) );
     }
@@ -382,7 +381,7 @@ public abstract class AbstractQueryTest
     @Test( expected = NotQueryableException.class )
     public void script27()
     {
-        QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         qb.where( eq( person.personalWebsite().get().host().get().value(), "www.qi4j.org" ) );
     }
@@ -390,7 +389,7 @@ public abstract class AbstractQueryTest
     @Test( expected = NotQueryableException.class )
     public void script28()
     {
-        QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         qb.where( eq( person.personalWebsite().get().port().get().value(), 8080 ) );
     }
@@ -399,7 +398,7 @@ public abstract class AbstractQueryTest
     @Ignore( "Wait until indexing of complex values is implemented" )
     public void script29()
     {
-        QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         Query<Person> query = unitOfWork.newQuery( qb.where( eq( person.personalWebsite().get().protocol().get().value(), "http" ) )
             );
@@ -411,7 +410,7 @@ public abstract class AbstractQueryTest
     @Ignore( "Wait till 1.1?" )
     public void script30()
     {
-        QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         QueryParam queryParam = null; // oneOf( person.personalWebsite().get().queryParams() );
         Query<Person> query = unitOfWork.newQuery( qb.where( and( eq( queryParam.name(), "foo" ), eq( queryParam.value(), "bar" ) ) )
@@ -424,7 +423,7 @@ public abstract class AbstractQueryTest
     @Ignore( "Wait till 1.1?" )
     public void script31()
     {
-        QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         Map<String, String> info = new HashMap<String, String>();
         Query<Person> query = unitOfWork.newQuery( qb.where( eq( person.additionalInfo(), info ) ));
@@ -436,7 +435,7 @@ public abstract class AbstractQueryTest
     @Ignore( "Wait for QI-58" )
     public void script32()
     {
-        QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         Map<String, String> info = new HashMap<String, String>();
         Query<Person> query = unitOfWork.newQuery( qb.where( eq( person.address().get().line1(), "Qi Alley 4j" ) ));
@@ -447,7 +446,7 @@ public abstract class AbstractQueryTest
     @Test
     public void script33()
     {
-        QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         Domain gaming = unitOfWork.get( Domain.class, "Gaming" );
         Query<Person> query = unitOfWork.newQuery( qb.where( contains( person.interests(), gaming ) ));
@@ -459,7 +458,7 @@ public abstract class AbstractQueryTest
     @Test
     public void script34()
     {
-        QueryBuilder<Person> qb = this.queryBuilderFactory.newQueryBuilder( Person.class );
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         Female annDoe = unitOfWork.get( Female.class, "anndoe" );
         Query<Person> query = unitOfWork.newQuery( qb.where( eq( person.mother(), annDoe ) ));

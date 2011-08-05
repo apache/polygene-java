@@ -20,7 +20,7 @@ import org.qi4j.api.composite.TransientBuilderFactory;
 import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.object.ObjectBuilderFactory;
+import org.qi4j.api.object.ObjectFactory;
 import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
@@ -51,7 +51,7 @@ public class StructureInjectionTest
     @Test
     public void injectedStructureForCompositeBuilderFactory()
     {
-        StructureInjectionComposite sic = transientBuilderFactory.newTransient( StructureInjectionComposite.class );
+        StructureInjectionComposite sic = module.newTransient( StructureInjectionComposite.class );
         assertThat( "Injected CompositeBuilderFactory", sic.getCompositeBuilderFactory(), is( notNullValue() ) );
     }
 
@@ -61,8 +61,8 @@ public class StructureInjectionTest
     @Test
     public void injectedStructureForObjectBuilderFactory()
     {
-        StructureInjectionComposite sic = transientBuilderFactory.newTransient( StructureInjectionComposite.class );
-        assertThat( "Injected ObjectBuilderFactory", sic.getObjectBuilderFactory(), is( notNullValue() ) );
+        StructureInjectionComposite sic = module.newTransient( StructureInjectionComposite.class );
+        assertThat( "Injected ObjectBuilderFactory", sic.getObjectFactory(), is( notNullValue() ) );
     }
 
     /**
@@ -71,7 +71,7 @@ public class StructureInjectionTest
     @Test
     public void injectedStructureForUnitOfWorkFactory()
     {
-        StructureInjectionComposite sic = transientBuilderFactory.newTransient( StructureInjectionComposite.class );
+        StructureInjectionComposite sic = module.newTransient( StructureInjectionComposite.class );
         assertThat( "Injected UnitOfWorkFactory", sic.getUnitOfWorkFactory(), is( notNullValue() ) );
     }
 
@@ -81,7 +81,7 @@ public class StructureInjectionTest
     @Test
     public void injectedStructureForServiceLocator()
     {
-        StructureInjectionComposite sic = transientBuilderFactory.newTransient( StructureInjectionComposite.class );
+        StructureInjectionComposite sic = module.newTransient( StructureInjectionComposite.class );
         assertThat( "Injected ServiceLocator", sic.getServiceLocator(), is( notNullValue() ) );
     }
 
@@ -91,7 +91,7 @@ public class StructureInjectionTest
     @Test
     public void injectedStructureForModuleBinding()
     {
-        StructureInjectionComposite sic = transientBuilderFactory.newTransient( StructureInjectionComposite.class );
+        StructureInjectionComposite sic = module.newTransient( StructureInjectionComposite.class );
         assertThat( "Injected Module", sic.getModule(), is( notNullValue() ) );
     }
 
@@ -101,7 +101,7 @@ public class StructureInjectionTest
     @Test
     public void injectedStructureForQi4j()
     {
-        StructureInjectionComposite sic = transientBuilderFactory.newTransient( StructureInjectionComposite.class );
+        StructureInjectionComposite sic = module.newTransient( StructureInjectionComposite.class );
         assertThat( "Injected Qi4j", sic.getQi4j(), is( notNullValue() ) );
     }
 
@@ -111,7 +111,7 @@ public class StructureInjectionTest
     @Test
     public void injectedStructureForQi4jSpi()
     {
-        StructureInjectionComposite sic = transientBuilderFactory.newTransient( StructureInjectionComposite.class );
+        StructureInjectionComposite sic = module.newTransient( StructureInjectionComposite.class );
         assertThat( "Injected Qi4jSpi", sic.getQi4jSpi(), is( notNullValue() ) );
     }
 
@@ -121,7 +121,7 @@ public class StructureInjectionTest
     {
         public TransientBuilderFactory getCompositeBuilderFactory();
 
-        public ObjectBuilderFactory getObjectBuilderFactory();
+        public ObjectFactory getObjectFactory();
 
         public UnitOfWorkFactory getUnitOfWorkFactory();
 
@@ -141,7 +141,7 @@ public class StructureInjectionTest
         TransientBuilderFactory compositeBuilderFactory;
 
         @Structure
-        ObjectBuilderFactory objectBuilderFactory;
+        ObjectFactory objectFactory;
 
         @Structure
         UnitOfWorkFactory unitOfWorkFactory;
@@ -162,9 +162,9 @@ public class StructureInjectionTest
             return compositeBuilderFactory;
         }
 
-        public ObjectBuilderFactory getObjectBuilderFactory()
+        public ObjectFactory getObjectFactory()
         {
-            return objectBuilderFactory;
+            return objectFactory;
         }
 
         public UnitOfWorkFactory getUnitOfWorkFactory()

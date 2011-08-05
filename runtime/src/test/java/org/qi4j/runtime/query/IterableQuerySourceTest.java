@@ -73,12 +73,12 @@ public class IterableQuerySourceTest
                 new EntityTestAssembler().assemble( module );
             }
         };
-        uow = assembler.unitOfWorkFactory().newUnitOfWork();
-        Network.populate( uow, assembler.valueBuilderFactory() );
+        uow = assembler.module().newUnitOfWork();
+        Network.populate( uow, assembler.module() );
         uow.complete();
-        uow = assembler.unitOfWorkFactory().newUnitOfWork();
+        uow = assembler.module().newUnitOfWork();
         Network.refresh( uow );
-        qbf = assembler.queryBuilderFactory();
+        qbf = assembler.module();
     }
 
     @After

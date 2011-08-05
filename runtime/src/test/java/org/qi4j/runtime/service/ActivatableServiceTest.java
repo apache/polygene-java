@@ -64,7 +64,7 @@ public class ActivatableServiceTest
 
         assertTrue( isActive );
 
-        assembly.objectBuilderFactory().newObjectBuilder( ActivatableServiceTest.class ).injectTo( this );
+        assembly.module().injectTo( this );
 
         assertTrue( isActive );
 

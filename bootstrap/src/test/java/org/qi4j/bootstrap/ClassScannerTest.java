@@ -32,8 +32,8 @@ public class ClassScannerTest
             }
         };
 
-        singleton.valueBuilderFactory().newValueBuilder( TestValue.class );
-        singleton.valueBuilderFactory().newValueBuilder( Test2Value.class );
+        singleton.module().newValueBuilder( TestValue.class );
+        singleton.module().newValueBuilder( Test2Value.class );
     }
 
     @Test

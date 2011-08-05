@@ -20,12 +20,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.json.JSONDeserializer;
 import org.qi4j.api.json.JSONObjectSerializer;
-import org.qi4j.api.property.PersistentPropertyDescriptor;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.structure.Module;
 import org.qi4j.spi.entity.EntityState;
@@ -154,7 +152,7 @@ public final class JSONEntityState
             }
             else
             {
-                PersistentPropertyDescriptor persistentPropertyDescriptor = entityDescriptor.state()
+                PropertyDescriptor persistentPropertyDescriptor = entityDescriptor.state()
                     .getPropertyByQualifiedName( stateName );
 
                 JSONObjectSerializer serializer = new JSONObjectSerializer();

@@ -15,11 +15,9 @@
 package org.qi4j.runtime;
 
 import org.qi4j.api.Qi4j;
+import org.qi4j.api.association.*;
 import org.qi4j.api.composite.*;
 import org.qi4j.api.entity.*;
-import org.qi4j.api.entity.association.AbstractAssociation;
-import org.qi4j.api.entity.association.AssociationDescriptor;
-import org.qi4j.api.entity.association.EntityStateHolder;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.property.PropertyWrapper;
@@ -36,12 +34,12 @@ import org.qi4j.api.value.ValueDescriptor;
 import org.qi4j.bootstrap.ApplicationAssemblyFactory;
 import org.qi4j.bootstrap.ApplicationModelFactory;
 import org.qi4j.bootstrap.Qi4jRuntime;
+import org.qi4j.runtime.association.AbstractAssociationInstance;
 import org.qi4j.runtime.bootstrap.ApplicationAssemblyFactoryImpl;
 import org.qi4j.runtime.bootstrap.ApplicationModelFactoryImpl;
 import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
 import org.qi4j.runtime.composite.TransientInstance;
 import org.qi4j.runtime.entity.EntityInstance;
-import org.qi4j.runtime.entity.association.AbstractAssociationInstance;
 import org.qi4j.runtime.property.PropertyInstance;
 import org.qi4j.runtime.service.ImportedServiceReferenceInstance;
 import org.qi4j.runtime.service.ServiceInstance;
@@ -115,7 +113,7 @@ public final class Qi4jRuntimeImpl
         throws InstantiationException
     {
         ServiceModel serviceModel = (ServiceModel) TransientInstance.getCompositeInstance( serviceComposite )
-            .compositeModel();
+            .descriptor();
 
         String identity = serviceComposite.identity().get();
         T configuration;
@@ -144,7 +142,7 @@ public final class Qi4jRuntimeImpl
     {
         T configuration;
         Module module = ServiceInstance.getCompositeInstance( serviceComposite ).module();
-        UnitOfWork buildUow = module.unitOfWorkFactory().newUnitOfWork();
+        UnitOfWork buildUow = module.newUnitOfWork();
 
         EntityBuilder<T> configBuilder = buildUow.newEntityBuilder( serviceModel.<T>configurationType(), identity );
 
@@ -234,7 +232,7 @@ public final class Qi4jRuntimeImpl
     public TransientDescriptor getTransientDescriptor( TransientComposite composite )
     {
         TransientInstance transientInstance = getCompositeInstance( composite );
-        return (TransientDescriptor) transientInstance.compositeModel();
+        return (TransientDescriptor) transientInstance.descriptor();
     }
 
     public StateHolder getState( TransientComposite composite )
@@ -248,7 +246,7 @@ public final class Qi4jRuntimeImpl
         return entityInstance.entityModel();
     }
 
-    public EntityStateHolder getState( EntityComposite composite )
+    public AssociationStateHolder getState( EntityComposite composite )
     {
         return EntityInstance.getEntityInstance( composite ).state();
     }
@@ -256,10 +254,10 @@ public final class Qi4jRuntimeImpl
     public ValueDescriptor getValueDescriptor( ValueComposite value )
     {
         ValueInstance valueInstance = ValueInstance.getValueInstance( value );
-        return (ValueDescriptor) valueInstance.compositeModel();
+        return valueInstance.descriptor();
     }
 
-    public StateHolder getState( ValueComposite composite )
+    public AssociationStateHolder getState( ValueComposite composite )
     {
         return ValueInstance.getValueInstance( composite ).state();
     }
@@ -299,7 +297,7 @@ public final class Qi4jRuntimeImpl
         while (association instanceof ManyAssociationWrapper )
             association = ((ManyAssociationWrapper)association).getNext();
 
-        return ((AbstractAssociationInstance)association).getAssociationDescriptor();
+        return (AssociationDescriptor) ((AbstractAssociationInstance)association).getAssociationInfo();
     }
 
     // SPI

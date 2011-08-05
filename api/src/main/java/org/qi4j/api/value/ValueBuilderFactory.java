@@ -14,7 +14,9 @@
 
 package org.qi4j.api.value;
 
+import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.common.ConstructionException;
+import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.functional.Function;
 
@@ -51,7 +53,10 @@ public interface ValueBuilderFactory
 
     <T> ValueBuilder<T> newValueBuilderWithPrototype( T prototype );
 
-    <T> ValueBuilder<T> newValueBuilderWithState( Class<T> mixinType, Function<PropertyDescriptor, Object> stateFunction );
+    <T> ValueBuilder<T> newValueBuilderWithState( Class<T> mixinType,
+                                                  Function<PropertyDescriptor, Object> stateFunction,
+                                                  Function<AssociationDescriptor, EntityReference> associationFunction,
+                                                  Function<AssociationDescriptor, Iterable<EntityReference>> manyAssociationFunction);
 
     <T> T newValueFromJSON( Class<T> valueType, String jsonValue );
 }

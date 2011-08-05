@@ -67,11 +67,19 @@ public interface UnitOfWorkFactory
     UnitOfWork newUnitOfWork( Usecase usecase, long currentTime );
 
     /**
+     * @return true if there is an active UnitOfWork associated with the executing thread
+     */
+    boolean isUnitOfWorkActive();
+
+    /**
      * Returns the UnitOfWork that is currently associated with the executing thread.
      *
-     * @return The current UnitOfWork associated with the executing thread, or null if there is no current UnitOfWork.
+     * @return The current UnitOfWork associated with the executing thread
+     *
+     * @throws IllegalStateException if no current UnitOfWork is active
      */
-    UnitOfWork currentUnitOfWork();
+    UnitOfWork currentUnitOfWork()
+        throws IllegalStateException;
 
     /**
      * Returns the UnitOfWork that the EntityComposite is bound to.

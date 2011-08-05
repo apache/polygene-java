@@ -58,7 +58,7 @@ public class ModuleConcernTest
     @Test
     public void testModuleConcerns()
     {
-        transientBuilderFactory.newTransient( Foo.class ).test( "Foo", 42 );
+        module.newTransient( Foo.class ).test( "Foo", 42 );
         assertThat( "Concern has executed", ok, equalTo( true ) );
     }
 

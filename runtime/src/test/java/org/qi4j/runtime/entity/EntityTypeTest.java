@@ -34,7 +34,7 @@ public class EntityTypeTest
     public void givenSubclassedEntityWhenRequestingSuperclassExpectResolutionToWork()
         throws Exception
     {
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork uow = module.newUnitOfWork();
         try
         {
             EntityBuilder<Rst> builder3 = uow.newEntityBuilder( Rst.class, "123" );

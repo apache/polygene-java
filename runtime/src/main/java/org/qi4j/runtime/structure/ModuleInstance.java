@@ -16,46 +16,48 @@ package org.qi4j.runtime.structure;
 
 import org.json.JSONException;
 import org.json.JSONTokener;
+import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.*;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityDescriptor;
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.entity.IdentityGenerator;
 import org.qi4j.api.event.ActivationEvent;
 import org.qi4j.api.event.ActivationEventListener;
 import org.qi4j.api.json.JSONDeserializer;
+import org.qi4j.api.json.JSONObjectSerializer;
 import org.qi4j.api.object.NoSuchObjectException;
-import org.qi4j.api.object.ObjectBuilder;
-import org.qi4j.api.object.ObjectBuilderFactory;
+import org.qi4j.api.object.ObjectFactory;
 import org.qi4j.api.object.ObjectDescriptor;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyDescriptor;
-import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWorkException;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.util.Classes;
 import org.qi4j.api.util.NullArgumentException;
 import org.qi4j.api.value.*;
-import org.qi4j.functional.Function;
-import org.qi4j.functional.Iterables;
-import org.qi4j.functional.Specification;
-import org.qi4j.functional.Specifications;
+import org.qi4j.functional.*;
+import org.qi4j.runtime.association.*;
 import org.qi4j.runtime.composite.*;
-import org.qi4j.runtime.entity.EntitiesInstance;
 import org.qi4j.runtime.entity.EntitiesModel;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.injection.InjectionContext;
-import org.qi4j.runtime.object.ObjectBuilderInstance;
 import org.qi4j.runtime.object.ObjectModel;
-import org.qi4j.runtime.object.ObjectsInstance;
 import org.qi4j.runtime.object.ObjectsModel;
+import org.qi4j.runtime.property.PropertyInfo;
+import org.qi4j.runtime.property.PropertyInstance;
+import org.qi4j.runtime.property.PropertyModel;
 import org.qi4j.runtime.query.QueryBuilderFactoryImpl;
 import org.qi4j.runtime.service.ImportedServicesInstance;
 import org.qi4j.runtime.service.ImportedServicesModel;
@@ -63,7 +65,9 @@ import org.qi4j.runtime.service.ServicesInstance;
 import org.qi4j.runtime.service.ServicesModel;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.runtime.value.*;
+import org.qi4j.spi.entitystore.EntityStore;
 
+import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
@@ -79,21 +83,31 @@ public class ModuleInstance
 {
     private final ModuleModel moduleModel;
     private final LayerInstance layerInstance;
-    private final TransientsInstance transients;
-    private final ValuesInstance values;
-    private final ObjectsInstance objects;
-    private final EntitiesInstance entities;
+    private final TransientsModel transients;
+    private final ValuesModel values;
+    private final ObjectsModel objects;
+    private final EntitiesModel entities;
     private final ServicesInstance services;
     private final ImportedServicesInstance importedServices;
 
-    private final TransientBuilderFactory transientBuilderFactory;
-    private final ObjectBuilderFactory objectBuilderFactory;
-    private final ValueBuilderFactory valueBuilderFactory;
-    private final UnitOfWorkFactory unitOfWorkFactory;
+    //lazy assigned on accessor
+    private EntityStore store;
+    //lazy assigned on accessor
+    private IdentityGenerator generator;
+
     private final QueryBuilderFactory queryBuilderFactory;
-    private final ServiceFinder serviceFinder;
+
     private final ClassLoader classLoader;
     private final ActivationEventListenerSupport eventListenerSupport = new ActivationEventListenerSupport();
+
+    private final Function2<EntityReference, Type, Object> entityFunction = new Function2<EntityReference, Type, Object>()
+    {
+        @Override
+        public Object map( EntityReference entityReference, Type type )
+        {
+            return currentUnitOfWork().get( Classes.RAW_CLASS.map( type ), entityReference.identity() );
+        }
+    };
 
     // Lookup caches
     private final Map<Class, ModelModule<ObjectModel>> objectModels;
@@ -108,19 +122,14 @@ public class ModuleInstance
     {
         this.moduleModel = moduleModel;
         this.layerInstance = layerInstance;
-        transients = new TransientsInstance( transientsModel, this );
-        values = new ValuesInstance( valuesModel, this );
-        objects = new ObjectsInstance( objectsModel, this );
-        entities = new EntitiesInstance( entitiesModel, this );
+        transients = transientsModel;
+        values = valuesModel;
+        objects = objectsModel;
+        entities = entitiesModel;
         services = servicesModel.newInstance( this );
         importedServices = importedServicesModel.newInstance( this );
 
-        transientBuilderFactory = new TransientBuilderFactoryInstance();
-        objectBuilderFactory = new ObjectBuilderFactoryInstance();
-        valueBuilderFactory = new ValueBuilderFactoryInstance();
-        unitOfWorkFactory = new UnitOfWorkFactoryInstance();
-        serviceFinder = new ServiceFinderInstance();
-        queryBuilderFactory = new QueryBuilderFactoryImpl( serviceFinder );
+        queryBuilderFactory = new QueryBuilderFactoryImpl( this );
 
         objectModels = new ConcurrentHashMap<Class, ModelModule<ObjectModel>>();
         transientModels = new ConcurrentHashMap<Class, ModelModule<TransientModel>>();
@@ -150,11 +159,6 @@ public class ModuleInstance
     public LayerInstance layerInstance()
     {
         return layerInstance;
-    }
-
-    public EntitiesInstance entities()
-    {
-        return entities;
     }
 
     public ServicesInstance services()
@@ -218,32 +222,32 @@ public class ModuleInstance
 
     public TransientBuilderFactory transientBuilderFactory()
     {
-        return transientBuilderFactory;
+        return this;
     }
 
-    public ObjectBuilderFactory objectBuilderFactory()
+    public ObjectFactory objectFactory()
     {
-        return objectBuilderFactory;
+        return this;
     }
 
     public ValueBuilderFactory valueBuilderFactory()
     {
-        return valueBuilderFactory;
+        return this;
     }
 
     public UnitOfWorkFactory unitOfWorkFactory()
     {
-        return unitOfWorkFactory;
+        return this;
     }
 
     public QueryBuilderFactory queryBuilderFactory()
     {
-        return queryBuilderFactory;
+        return this;
     }
 
     public ServiceFinder serviceFinder()
     {
-        return serviceFinder;
+        return this;
     }
 
     public ClassLoader classLoader()
@@ -283,6 +287,11 @@ public class ModuleInstance
     public String toString()
     {
         return moduleModel.toString();
+    }
+
+    public Function2<EntityReference, Type, Object> getEntityFunction()
+    {
+        return entityFunction;
     }
 
     public Iterable<ModelModule<EntityModel>> findEntityModels( final Class type )
@@ -335,8 +344,8 @@ public class ModuleInstance
 
         if( model == null )
         {
-            Iterable<ModelModule<ObjectModel>> flatten = Iterables.flatten( ambiguousCheck( type, findModels( exactTypeSpecification( type ), visibleObjects( Visibility.module ), layerInstance().visibleObjects( Visibility.layer ), layerInstance().visibleObjects(Visibility.application), layerInstance().usedLayersInstance().visibleObjects() ) ),
-                    ambiguousCheck( type, findModels( assignableTypeSpecification( type ), visibleObjects( Visibility.module ), layerInstance().visibleObjects( Visibility.layer ), layerInstance().visibleObjects(Visibility.application), layerInstance().usedLayersInstance().visibleObjects() ) ) );
+            Iterable<ModelModule<ObjectModel>> flatten = Iterables.flatten( ambiguousCheck( type, findModels( exactTypeSpecification( type ), visibleObjects( Visibility.module ), layerInstance().visibleObjects( Visibility.layer ), layerInstance().visibleObjects( Visibility.application ), layerInstance().usedLayersInstance().visibleObjects() ) ),
+                    ambiguousCheck( type, findModels( assignableTypeSpecification( type ), visibleObjects( Visibility.module ), layerInstance().visibleObjects( Visibility.layer ), layerInstance().visibleObjects( Visibility.application ), layerInstance().usedLayersInstance().visibleObjects() ) ) );
 
             model = Iterables.first( flatten );
 
@@ -382,24 +391,24 @@ public class ModuleInstance
         return Iterables.filter( spec, Iterables.flattenIterables( Iterables.iterable( models ) ) );
     }
 
-    Iterable<ModelModule<ObjectModel>> visibleObjects(Visibility visibility)
+    public Iterable<ModelModule<ObjectModel>> visibleObjects( Visibility visibility )
     {
-        return objects.visibleObjects( visibility );
+        return map( ModelModule.<ObjectModel>modelModuleFunction( this ), filter( new VisibilitySpecification( visibility ), objects.models() ) );
     }
 
-    Iterable<ModelModule<TransientModel>> visibleTransients(Visibility visibility)
+    Iterable<ModelModule<TransientModel>> visibleTransients( Visibility visibility )
     {
-        return transients.visibleTransients( visibility );
+        return map( ModelModule.<TransientModel>modelModuleFunction( this ), filter( new VisibilitySpecification( visibility ), transients.models() ) );
     }
 
-    Iterable<ModelModule<EntityModel>> visibleEntities(Visibility visibility)
+    public Iterable<ModelModule<EntityModel>> visibleEntities( Visibility visibility )
     {
-        return entities.visibleEntities( visibility );
+        return map( ModelModule.<EntityModel>modelModuleFunction( this ), filter( new VisibilitySpecification( visibility ), entities.models() ) );
     }
 
-    Iterable<ModelModule<ValueModel>> visibleValues(Visibility visibility)
+    Iterable<ModelModule<ValueModel>> visibleValues( Visibility visibility )
     {
-        return values.visibleValues( visibility );
+        return map( ModelModule.<ValueModel>modelModuleFunction( this ), filter( new VisibilitySpecification( visibility ), values.models() ) );
     }
 
     Iterable<ServiceReference> visibleServices(Visibility visibility)
@@ -408,320 +417,443 @@ public class ModuleInstance
                 importedServices.visibleServices( visibility ) );
     }
 
-    private class TransientBuilderFactoryInstance
-            implements TransientBuilderFactory
+    public EntityStore entityStore()
     {
-        public <T> TransientBuilder<T> newTransientBuilder( Class<T> mixinType )
-                throws NoSuchCompositeException
+        synchronized( this )
         {
-            NullArgumentException.validateNotNull( "mixinType", mixinType );
-
-            ModelModule<TransientModel> model = findTransientModels( mixinType );
-
-            if( model == null )
+            if( store == null )
             {
-                throw new NoSuchCompositeException( mixinType.getName(), name() );
+                ServiceReference<EntityStore> service = findService( EntityStore.class );
+                if( service == null )
+                {
+                    throw new UnitOfWorkException( "No EntityStore service available in module " + name() );
+                }
+                store = service.get();
             }
+        }
+        return store;
+    }
 
-            return new TransientBuilderInstance<T>( model );
+    public IdentityGenerator identityGenerator()
+    {
+        synchronized( this )
+        {
+            if( generator == null )
+            {
+                ServiceReference<IdentityGenerator> service = findService( IdentityGenerator.class );
+                if( service == null )
+                {
+                    return null;
+                }
+                generator = service.get();
+            }
+        }
+        return generator;
+    }
+
+    // Implementation of TransientBuilderFactory
+    public <T> TransientBuilder<T> newTransientBuilder( Class<T> mixinType )
+            throws NoSuchCompositeException
+    {
+        NullArgumentException.validateNotNull( "mixinType", mixinType );
+
+        ModelModule<TransientModel> model = findTransientModels( mixinType );
+
+        if( model == null )
+        {
+            throw new NoSuchCompositeException( mixinType.getName(), name() );
         }
 
-        public <T> T newTransient( final Class<T> mixinType )
-                throws NoSuchCompositeException, ConstructionException
+        Map<AccessibleObject, Property<?>> properties = new HashMap<AccessibleObject, Property<?>>();
+        for( PropertyModel propertyModel : model.model().state().properties() )
         {
-            NullArgumentException.validateNotNull( "mixinType", mixinType );
+            Property property = new PropertyInstance<Object>(propertyModel.getBuilderInfo(), propertyModel.initialValue( model.module() ) );
+            properties.put( propertyModel.accessor(), property );
+        }
 
-            ModelModule<TransientModel> model = findTransientModels( mixinType );
+        TransientStateInstance state = new TransientStateInstance( properties );
 
-            if( model == null )
-            {
-                throw new NoSuchCompositeException( mixinType.getName(), name() );
-            }
+        return new TransientBuilderInstance<T>( model, state, UsesInstance.EMPTY_USES );
+    }
 
-            StateHolder stateHolder = model.model().newInitialState(model.module());
-            model.model().state().checkConstraints( stateHolder );
-            return model.model().newCompositeInstance( model.module(), UsesInstance.EMPTY_USES, stateHolder ).<T>proxy();
+    public <T> T newTransient( final Class<T> mixinType, Object... uses )
+            throws NoSuchCompositeException, ConstructionException
+    {
+        NullArgumentException.validateNotNull( "mixinType", mixinType );
+
+        ModelModule<TransientModel> model = findTransientModels( mixinType );
+
+        if( model == null )
+        {
+            throw new NoSuchCompositeException( mixinType.getName(), name() );
+        }
+
+        Map<AccessibleObject, Property<?>> properties = new HashMap<AccessibleObject, Property<?>>();
+        for( PropertyModel propertyModel : model.model().state().properties() )
+        {
+            Property property = new PropertyInstance<Object>(propertyModel, propertyModel.initialValue( model.module() ) );
+            properties.put( propertyModel.accessor(), property );
+        }
+
+        TransientStateInstance state = new TransientStateInstance( properties );
+
+        model.model().checkConstraints( state );
+        return model.model().newInstance( model.module(), UsesInstance.EMPTY_USES.use( uses ), state ).<T>proxy();
+    }
+
+    // Implementation of ObjectFactory
+    public <T> T newObject( Class<T> mixinType, Object... uses )
+            throws NoSuchObjectException
+    {
+        NullArgumentException.validateNotNull( "mixinType", mixinType );
+        ModelModule<ObjectModel> model = findObjectModels( mixinType );
+
+        if( model == null )
+        {
+            throw new NoSuchObjectException( mixinType.getName(), name() );
+        }
+
+        InjectionContext injectionContext = new InjectionContext( model.module(), UsesInstance.EMPTY_USES.use( uses ) );
+        return mixinType.cast( model.model().newInstance( injectionContext ) );
+    }
+
+    @Override
+    public void injectTo( Object instance, Object... uses ) throws ConstructionException
+    {
+        NullArgumentException.validateNotNull( "instance", instance );
+        ModelModule<ObjectModel> model = findObjectModels( instance.getClass() );
+
+        if( model == null )
+        {
+            throw new NoSuchObjectException( instance.getClass().getName(), name() );
+        }
+        InjectionContext injectionContext = new InjectionContext( model.module(), UsesInstance.EMPTY_USES.use( uses ) );
+        model.model().inject( injectionContext, instance );
+    }
+
+    // Implementation of ValueBuilderFactory
+    public <T> T newValue( Class<T> mixinType )
+            throws NoSuchValueException, ConstructionException
+    {
+        NullArgumentException.validateNotNull( "mixinType", mixinType );
+        ModelModule<ValueModel> model = findValueModels( mixinType );
+
+        if( model == null )
+        {
+            throw new NoSuchValueException( mixinType.getName(), name() );
+        }
+
+        Map<AccessibleObject, PropertyInstance<?>> properties = new LinkedHashMap<AccessibleObject, PropertyInstance<?>>();
+        for( PropertyDescriptor propertyDescriptor : model.model().state().properties() )
+        {
+            properties.put( propertyDescriptor.accessor(), new PropertyInstance<Object>( (PropertyInfo) propertyDescriptor, propertyDescriptor.initialValue( model.module() ) ) );
+        }
+
+        Map<AccessibleObject, AssociationInstance<?>> associations = new LinkedHashMap<AccessibleObject, AssociationInstance<?>>();
+        for( AssociationDescriptor associationDescriptor : model.model().state().associations() )
+        {
+            associations.put( associationDescriptor.accessor(), new AssociationInstance<Object>( (AssociationInfo) associationDescriptor, entityFunction, new ReferenceProperty() ) );
+        }
+
+        Map<AccessibleObject, ManyAssociationInstance<?>> manyAssociations = new LinkedHashMap<AccessibleObject, ManyAssociationInstance<?>>();
+        for( AssociationDescriptor associationDescriptor : model.model().state().manyAssociations() )
+        {
+            manyAssociations.put( associationDescriptor.accessor(), new ManyAssociationInstance<Object>( (AssociationInfo) associationDescriptor, entityFunction, new ManyAssociationValueState(new ArrayList<EntityReference>() ) ));
+        }
+
+        ValueStateInstance state = new ValueStateInstance( properties, associations, manyAssociations );
+
+        model.model().checkConstraints( state );
+        return mixinType.cast( model.model().newValueInstance( model.module(), state ).proxy() );
+    }
+
+    public <T> ValueBuilder<T> newValueBuilder( Class<T> mixinType )
+            throws NoSuchValueException
+    {
+        NullArgumentException.validateNotNull( "mixinType", mixinType );
+        ModelModule<ValueModel> model = findValueModels( mixinType );
+
+        if( model == null )
+        {
+            throw new NoSuchValueException( mixinType.getName(), name() );
+        }
+
+        Map<AccessibleObject, PropertyInstance<?>> properties = new LinkedHashMap<AccessibleObject, PropertyInstance<?>>();
+        for( PropertyDescriptor propertyDescriptor : model.model().state().properties() )
+        {
+            properties.put( propertyDescriptor.accessor(), new PropertyInstance<Object>( ((PropertyModel) propertyDescriptor).getBuilderInfo(), propertyDescriptor.initialValue( model.module() ) ) );
+        }
+
+        Map<AccessibleObject, AssociationInstance<?>> associations = new LinkedHashMap<AccessibleObject, AssociationInstance<?>>();
+        for( AssociationDescriptor associationDescriptor : model.model().state().associations() )
+        {
+            associations.put( associationDescriptor.accessor(), new AssociationInstance<Object>( ((AssociationModel)associationDescriptor).getBuilderInfo(), entityFunction, new ReferenceProperty() ) );
+        }
+
+        Map<AccessibleObject, ManyAssociationInstance<?>> manyAssociations = new LinkedHashMap<AccessibleObject, ManyAssociationInstance<?>>();
+        for( AssociationDescriptor associationDescriptor : model.model().state().manyAssociations() )
+        {
+            manyAssociations.put( associationDescriptor.accessor(), new ManyAssociationInstance<Object>( ((ManyAssociationModel) associationDescriptor).getBuilderInfo(), entityFunction, new ManyAssociationValueState(new ArrayList<EntityReference>() ) ));
+        }
+
+        ValueStateInstance state = new ValueStateInstance( properties, associations, manyAssociations );
+        ValueInstance instance = model.model().newValueInstance( model.module(), state );
+        instance.prepareToBuild();
+        return new ValueBuilderInstance<T>( model, instance );
+    }
+
+    @Override
+    public <T> ValueBuilder<T> newValueBuilderWithPrototype( T prototype )
+    {
+        NullArgumentException.validateNotNull( "prototype", prototype );
+
+        ValueInstance valueInstance = ValueInstance.getValueInstance( (ValueComposite) prototype );
+        Class<Composite> valueType = (Class<Composite>) valueInstance.type();
+
+        ModelModule<ValueModel> model = findValueModels( valueType );
+
+        if( model == null )
+        {
+            throw new NoSuchValueException( valueType.getName(), name() );
+        }
+
+        // Use JSON serialization-deserialization to make a copy of it
+        Object value = null;
+        try
+        {
+            JSONObjectSerializer serializer = new JSONObjectSerializer();
+            serializer.serialize( prototype, model.model().valueType() );
+            Object object = serializer.getRoot();
+
+            JSONDeserializer deserializer = new JSONDeserializer( model.module() );
+            value = deserializer.deserialize( object, model.model().valueType() );
+        } catch( JSONException e )
+        {
+            throw new IllegalStateException( "Could not JSON-copy Value", e );
+        }
+
+        valueInstance = ValueInstance.getValueInstance( (ValueComposite) value );
+        valueInstance.prepareToBuild();
+
+        return new ValueBuilderInstance<T>( model, valueInstance);
+    }
+
+    @Override
+    public <T> ValueBuilder<T> newValueBuilderWithState( Class<T> mixinType,
+                                                         Function<PropertyDescriptor, Object> propertyFunction,
+                                                         Function<AssociationDescriptor, EntityReference> associationFunction,
+                                                         Function<AssociationDescriptor, Iterable<EntityReference>> manyAssociationFunction)
+    {
+        NullArgumentException.validateNotNull( "propertyFunction", propertyFunction );
+        NullArgumentException.validateNotNull( "associationFunction", associationFunction );
+        NullArgumentException.validateNotNull( "manyAssociationFunction", manyAssociationFunction );
+
+        ModelModule<ValueModel> model = findValueModels( mixinType );
+
+        if( model == null )
+        {
+            throw new NoSuchValueException( mixinType.getName(), name() );
+        }
+
+        Map<AccessibleObject, PropertyInstance<?>> properties = new LinkedHashMap<AccessibleObject, PropertyInstance<?>>();
+        for( PropertyDescriptor propertyDescriptor : model.model().state().properties() )
+        {
+            properties.put( propertyDescriptor.accessor(), new PropertyInstance<Object>( ((PropertyModel) propertyDescriptor).getBuilderInfo(), propertyFunction.map( propertyDescriptor ) ));
+        }
+
+        Map<AccessibleObject, AssociationInstance<?>> associations = new LinkedHashMap<AccessibleObject, AssociationInstance<?>>();
+        for( AssociationDescriptor associationDescriptor : model.model().state().associations() )
+        {
+            associations.put( associationDescriptor.accessor(), new AssociationInstance<Object>( ((AssociationModel)associationDescriptor).getBuilderInfo(), entityFunction, new ReferenceProperty(associationFunction.map( associationDescriptor )) ) );
+        }
+
+        Map<AccessibleObject, ManyAssociationInstance<?>> manyAssociations = new LinkedHashMap<AccessibleObject, ManyAssociationInstance<?>>();
+        for( AssociationDescriptor associationDescriptor : model.model().state().manyAssociations() )
+        {
+            manyAssociations.put( associationDescriptor.accessor(), new ManyAssociationInstance<Object>( ((ManyAssociationModel) associationDescriptor).getBuilderInfo(), entityFunction, new ManyAssociationValueState(Iterables.toList( manyAssociationFunction.map( associationDescriptor ) )) ));
+        }
+
+        ValueStateInstance state = new ValueStateInstance( properties, associations, manyAssociations );
+        ValueInstance instance = model.model().newValueInstance( model.module(), state );
+        instance.prepareToBuild();
+
+        return new ValueBuilderInstance<T>( model, instance );
+    }
+
+    public <T> T newValueFromJSON( Class<T> mixinType, String jsonValue )
+            throws NoSuchValueException, ConstructionException
+    {
+        NullArgumentException.validateNotNull( "mixinType", mixinType );
+        ModelModule<ValueModel> model = findValueModels( mixinType );
+
+        if( model == null )
+        {
+            throw new NoSuchValueException( mixinType.getName(), name() );
+        }
+
+        try
+        {
+            return (T) new JSONDeserializer( model.module() ).deserialize( new JSONTokener( jsonValue ).nextValue(), model.model().valueType() );
+        } catch( JSONException e )
+        {
+            throw new ConstructionException( "Could not create value from JSON", e );
         }
     }
 
-    private class ObjectBuilderFactoryInstance
-            implements ObjectBuilderFactory
+    // Implementation of UnitOfWorkFactory
+    public UnitOfWork newUnitOfWork()
     {
-        public <T> ObjectBuilder<T> newObjectBuilder( Class<T> mixinType )
-                throws NoSuchObjectException
-        {
-            NullArgumentException.validateNotNull( "mixinType", mixinType );
-            ModelModule<ObjectModel> model = findObjectModels( mixinType );
-
-            if( model == null )
-            {
-                throw new NoSuchObjectException( mixinType.getName(), name() );
-            }
-            InjectionContext injectionContext = new InjectionContext( model.module(), UsesInstance.EMPTY_USES );
-            return new ObjectBuilderInstance<T>( injectionContext, model.model() );
-        }
-
-        public <T> T newObject( Class<T> mixinType )
-                throws NoSuchObjectException
-        {
-            NullArgumentException.validateNotNull( "mixinType", mixinType );
-            ModelModule<ObjectModel> model = findObjectModels( mixinType );
-
-            if( model == null )
-            {
-                throw new NoSuchObjectException( mixinType.getName(), name() );
-            }
-
-            InjectionContext injectionContext = new InjectionContext( model.module(), UsesInstance.EMPTY_USES );
-            return mixinType.cast( model.model().newInstance( injectionContext ) );
-        }
+        return newUnitOfWork( Usecase.DEFAULT );
     }
 
-    private class ValueBuilderFactoryInstance
-            implements ValueBuilderFactory
+    public UnitOfWork newUnitOfWork( long currentTime )
     {
+        return newUnitOfWork( Usecase.DEFAULT, currentTime );
+    }
 
-        public <T> T newValue( Class<T> mixinType )
-                throws NoSuchValueException, ConstructionException
+    public UnitOfWork newUnitOfWork( Usecase usecase )
+    {
+        return newUnitOfWork( usecase, System.currentTimeMillis() );
+    }
+
+    @Override
+    public UnitOfWork newUnitOfWork( Usecase usecase, long currentTime )
+    {
+        return new ModuleUnitOfWork( ModuleInstance.this, new UnitOfWorkInstance( usecase, currentTime ) );
+    }
+
+    @Override
+    public boolean isUnitOfWorkActive()
+    {
+        Stack<UnitOfWorkInstance> stack = UnitOfWorkInstance.getCurrent();
+        return !stack.isEmpty();
+    }
+
+    public UnitOfWork currentUnitOfWork()
+    {
+        Stack<UnitOfWorkInstance> stack = UnitOfWorkInstance.getCurrent();
+        if( stack.size() == 0 )
         {
-            NullArgumentException.validateNotNull( "mixinType", mixinType );
-            ModelModule<ValueModel> model = findValueModels( mixinType );
+            throw new IllegalStateException( "No current UnitOfWork active" );
+        }
+        return new ModuleUnitOfWork( ModuleInstance.this, stack.peek() );
+    }
 
-            if( model == null )
+    public UnitOfWork getUnitOfWork( EntityComposite entity )
+    {
+        EntityInstance instance = EntityInstance.getEntityInstance( entity );
+        return instance.unitOfWork();
+    }
+
+    // Implementation of ServiceFinder
+    Map<Type, ServiceReference> serviceReferences = new ConcurrentHashMap<Type, ServiceReference>();
+    Map<Type, Iterable<ServiceReference>> servicesReferences = new ConcurrentHashMap<Type, Iterable<ServiceReference>>();
+
+    public <T> ServiceReference<T> findService( final Class<T> serviceType )
+    {
+        ServiceReference serviceReference = serviceReferences.get( serviceType );
+        if( serviceReference == null )
+        {
+            serviceReference = Iterables.first( findServices( serviceType ));
+            if( serviceReference != null )
             {
-                throw new NoSuchValueException( mixinType.getName(), name() );
+                serviceReferences.put( serviceType, serviceReference );
             }
-
-            StateHolder initialState = model.model().newInitialState(model.module());
-            model.model().checkConstraints( initialState );
-            return mixinType.cast( model.model().newValueInstance( model.module(), initialState ).proxy() );
         }
 
-        public <T> ValueBuilder<T> newValueBuilder( Class<T> mixinType )
-                throws NoSuchValueException
+        return serviceReference;
+    }
+
+    @Override
+    public <T> ServiceReference<T> findService( Type serviceType )
+    {
+        ServiceReference serviceReference = serviceReferences.get( serviceType );
+        if( serviceReference == null )
         {
-            NullArgumentException.validateNotNull( "mixinType", mixinType );
-            ModelModule<ValueModel> model = findValueModels( mixinType );
-
-            if( model == null )
+            serviceReference = Iterables.first( findServices( serviceType ));
+            if( serviceReference != null )
             {
-                throw new NoSuchValueException( mixinType.getName(), name() );
+                serviceReferences.put( serviceType, serviceReference );
             }
-
-            return new ValueBuilderInstance<T>( model, model.model().newBuilderState( model.module() ) );
         }
 
-        @Override
-        public <T> ValueBuilder<T> newValueBuilderWithPrototype( T prototype )
+        return serviceReference;
+    }
+
+    @Override
+    public <T> Iterable<ServiceReference<T>> findServices( Class<T> serviceType )
+    {
+        return findServices( (Type)serviceType );
+    }
+
+    public <T> Iterable<ServiceReference<T>> findServices( final Type serviceType )
+    {
+        Iterable<ServiceReference> iterable = servicesReferences.get( serviceType );
+        if( iterable == null )
         {
-            NullArgumentException.validateNotNull( "prototype", prototype );
-
-            final ValueInstance valueInstance = ValueInstance.getValueInstance( (ValueComposite) prototype );
-            Class<Composite> valueType = (Class<Composite>) valueInstance.type();
-
-            ModelModule<ValueModel> model = findValueModels( valueType );
-
-            if( model == null )
-            {
-                throw new NoSuchValueException( valueType.getName(), name() );
-            }
-
-            Function<PropertyDescriptor, Object> state = new Function<PropertyDescriptor, Object>()
+            Specification<Class> typeSpecification = new Specification<Class>()
             {
                 @Override
-                public Object map( PropertyDescriptor propertyDescriptor )
+                public boolean satisfiedBy( Class item )
                 {
-                    Property<?> property = valueInstance.state().propertyFor( propertyDescriptor.accessor() );
-                    return property == null ? null : property.get();
+                    if (serviceType instanceof Class)
+                    {
+                        // Straight class assignability check
+                        return ((Class)serviceType).isAssignableFrom( item );
+                    } else if (serviceType instanceof ParameterizedType)
+                    {
+                        // Foo<Bar> check
+                        // First check Foo
+                        ParameterizedType parameterizedType = (ParameterizedType) serviceType;
+                        if (!((Class) parameterizedType.getRawType()).isAssignableFrom( item ))
+                            return false;
+
+                        // Then check Bar
+                        for( Type intf : Classes.INTERFACES_OF.map( item ) )
+                        {
+                            if (intf.equals( serviceType ))
+                                return true;
+                        }
+
+                        // All parameters are the same - ok!
+                        return false;
+                    } else
+                        return false;
                 }
             };
 
-            return new ValueBuilderInstance<T>( model, model.model().newBuilderState( state ) );
-        }
-
-        @Override
-        public <T> ValueBuilder<T> newValueBuilderWithState( Class<T> mixinType, Function<PropertyDescriptor, Object> stateFunction )
-        {
-            NullArgumentException.validateNotNull( "prototype", stateFunction );
-
-            ModelModule<ValueModel> model = findValueModels( mixinType );
-
-            if( model == null )
+            Specification<ServiceReference> referenceTypeCheck = Specifications.translate( new Function<ServiceReference, Class>()
             {
-                throw new NoSuchValueException( mixinType.getName(), name() );
-            }
-
-            return new ValueBuilderInstance<T>( model, model.model().newBuilderState( stateFunction ) );
-        }
-
-        public <T> T newValueFromJSON( Class<T> mixinType, String jsonValue )
-                throws NoSuchValueException, ConstructionException
-        {
-            NullArgumentException.validateNotNull( "mixinType", mixinType );
-            ModelModule<ValueModel> model = findValueModels( mixinType );
-
-            if( model == null )
-            {
-                throw new NoSuchValueException( mixinType.getName(), name() );
-            }
-
-            try
-            {
-                return (T) new JSONDeserializer( model.module() ).deserialize( new JSONTokener( jsonValue ).nextValue(), model.model().valueType() );
-            } catch( JSONException e )
-            {
-                throw new ConstructionException( "Could not create value from JSON", e );
-            }
-        }
-    }
-
-    private class UnitOfWorkFactoryInstance
-            implements UnitOfWorkFactory
-    {
-        public UnitOfWorkFactoryInstance()
-        {
-        }
-
-        public UnitOfWork newUnitOfWork()
-        {
-            return newUnitOfWork( Usecase.DEFAULT );
-        }
-
-        public UnitOfWork newUnitOfWork( long currentTime )
-        {
-            return newUnitOfWork( Usecase.DEFAULT, currentTime );
-        }
-
-        public UnitOfWork newUnitOfWork( Usecase usecase )
-        {
-            return newUnitOfWork( usecase, System.currentTimeMillis() );
-        }
-
-        @Override
-        public UnitOfWork newUnitOfWork( Usecase usecase, long currentTime )
-        {
-            return new ModuleUnitOfWork( ModuleInstance.this, new UnitOfWorkInstance( usecase, currentTime ) );
-        }
-
-        public UnitOfWork currentUnitOfWork()
-        {
-            Stack<UnitOfWorkInstance> stack = UnitOfWorkInstance.getCurrent();
-            if( stack.size() == 0 )
-            {
-                return null;
-            }
-            return new ModuleUnitOfWork( ModuleInstance.this, stack.peek() );
-        }
-
-        public UnitOfWork getUnitOfWork( EntityComposite entity )
-        {
-            EntityInstance instance = EntityInstance.getEntityInstance( entity );
-            return instance.unitOfWork();
-        }
-    }
-
-    private class ServiceFinderInstance
-            implements ServiceFinder
-    {
-        Map<Type, ServiceReference> service = new ConcurrentHashMap<Type, ServiceReference>();
-        Map<Type, Iterable<ServiceReference>> services = new ConcurrentHashMap<Type, Iterable<ServiceReference>>();
-
-        public <T> ServiceReference<T> findService( final Class<T> serviceType )
-        {
-            ServiceReference serviceReference = service.get( serviceType );
-            if( serviceReference == null )
-            {
-                serviceReference = Iterables.first( findServices( serviceType ));
-                if( serviceReference != null )
+                @Override
+                public Class map( ServiceReference serviceReference )
                 {
-                    service.put( serviceType, serviceReference );
+                    return serviceReference.type();
                 }
-            }
+            }, typeSpecification);
 
-            return serviceReference;
+            Iterable<ServiceReference> matchingServices = Iterables.flatten(
+                    Iterables.filter( referenceTypeCheck, visibleServices(Visibility.module)),
+                    Iterables.filter( referenceTypeCheck, layerInstance.visibleServices( Visibility.layer ) ),
+                    Iterables.filter( referenceTypeCheck, layerInstance.visibleServices( Visibility.application ) ),
+                    Iterables.filter( referenceTypeCheck, layerInstance.usedLayersInstance().visibleServices() ));
+
+            iterable = Iterables.toList( matchingServices );
+            servicesReferences.put( serviceType, iterable );
         }
 
-        @Override
-        public <T> ServiceReference<T> findService( Type serviceType )
-        {
-            ServiceReference serviceReference = service.get( serviceType );
-            if( serviceReference == null )
-            {
-                serviceReference = Iterables.first( findServices( serviceType ));
-                if( serviceReference != null )
-                {
-                    service.put( serviceType, serviceReference );
-                }
-            }
-
-            return serviceReference;
-        }
-
-        @Override
-        public <T> Iterable<ServiceReference<T>> findServices( Class<T> serviceType )
-        {
-            return findServices( (Type)serviceType );
-        }
-
-        public <T> Iterable<ServiceReference<T>> findServices( final Type serviceType )
-        {
-            Iterable<ServiceReference> iterable = services.get( serviceType );
-            if( iterable == null )
-            {
-                Specification<Class> typeSpecification = new Specification<Class>()
-                {
-                    @Override
-                    public boolean satisfiedBy( Class item )
-                    {
-                        if (serviceType instanceof Class)
-                        {
-                            // Straight class assignability check
-                            return ((Class)serviceType).isAssignableFrom( item );
-                        } else if (serviceType instanceof ParameterizedType)
-                        {
-                            // Foo<Bar> check
-                            // First check Foo
-                            ParameterizedType parameterizedType = (ParameterizedType) serviceType;
-                            if (!((Class) parameterizedType.getRawType()).isAssignableFrom( item ))
-                                return false;
-
-                            // Then check Bar
-                            for( Type intf : Classes.INTERFACES_OF.map( item ) )
-                            {
-                                if (intf.equals( serviceType ))
-                                    return true;
-                            }
-
-                            // All parameters are the same - ok!
-                            return false;
-                        } else
-                            return false;
-                    }
-                };
-
-                Specification<ServiceReference> referenceTypeCheck = Specifications.translate( new Function<ServiceReference, Class>()
-                {
-                    @Override
-                    public Class map( ServiceReference serviceReference )
-                    {
-                        return serviceReference.type();
-                    }
-                }, typeSpecification);
-
-                Iterable<ServiceReference> matchingServices = Iterables.flatten(
-                        Iterables.filter( referenceTypeCheck, visibleServices(Visibility.module)),
-                        Iterables.filter( referenceTypeCheck, layerInstance.visibleServices( Visibility.layer ) ),
-                        Iterables.filter( referenceTypeCheck, layerInstance.visibleServices( Visibility.application ) ),
-                        Iterables.filter( referenceTypeCheck, layerInstance.usedLayersInstance().visibleServices() ));
-
-                iterable = Iterables.toList( matchingServices );
-                services.put( serviceType, iterable );
-            }
-
-            return Iterables.cast( iterable);
-        }
+        return Iterables.cast( iterable);
     }
 
+    // Implementation of QueryBuilderFactory
+    /**
+     * @see QueryBuilderFactory#newQueryBuilder(Class)
+     */
+    public <T> QueryBuilder<T> newQueryBuilder( final Class<T> resultType )
+    {
+        return queryBuilderFactory.newQueryBuilder( resultType );
+    }
+
+    // Module classloader
     private class ModuleClassLoader
             extends ClassLoader
     {

@@ -15,6 +15,9 @@
 package org.qi4j.api.value;
 
 import org.qi4j.api.composite.Composite;
+import org.qi4j.api.association.AssociationMixin;
+import org.qi4j.api.association.ManyAssociationMixin;
+import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Immutable;
 
 /**
@@ -31,6 +34,7 @@ import org.qi4j.api.property.Immutable;
  * <li>Can not have @Uses</li>
  */
 @Immutable
+@Mixins( { AssociationMixin.class, ManyAssociationMixin.class } )
 public interface ValueComposite
     extends Composite
 {

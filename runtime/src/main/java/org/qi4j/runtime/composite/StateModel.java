@@ -16,15 +16,11 @@ package org.qi4j.runtime.composite;
 
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.composite.StateDescriptor;
-import org.qi4j.api.constraint.ConstraintViolationException;
-import org.qi4j.api.property.PropertyDescriptor;
-import org.qi4j.api.property.StateHolder;
 import org.qi4j.functional.*;
 import org.qi4j.runtime.property.PropertiesModel;
-import org.qi4j.runtime.property.PropertiesInstance;
-import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.runtime.property.PropertyModel;
 
-import java.util.Set;
+import java.lang.reflect.AccessibleObject;
 
 /**
  * Base model for Composite state
@@ -39,32 +35,24 @@ public class StateModel
         this.propertiesModel = propertiesModel;
     }
 
-    public StateHolder newInitialInstance( ModuleInstance module )
+    public PropertyModel getProperty( AccessibleObject accessor )
     {
-        return propertiesModel.newInitialInstance( module );
+        return propertiesModel.getProperty( accessor );
     }
 
-    public StateHolder newBuilderInstance( Function<PropertyDescriptor, Object> state )
+    public PropertyModel getPropertyByName( String name )
+            throws IllegalArgumentException
     {
-        return propertiesModel.newBuilderInstance( state );
+        return propertiesModel.getPropertyByName( name );
     }
 
-    public StateHolder newInstance( StateHolder state )
+    public PropertyModel getPropertyByQualifiedName( QualifiedName name )
+            throws IllegalArgumentException
     {
-        return propertiesModel.newInstance( state );
+        return propertiesModel.getPropertyByQualifiedName( name );
     }
 
-    public <T extends PropertyDescriptor> T getPropertyByName( String name )
-    {
-        return (T) propertiesModel.getPropertyByName( name );
-    }
-
-    public <T extends PropertyDescriptor> T getPropertyByQualifiedName( QualifiedName name )
-    {
-        return (T) propertiesModel.getPropertyByQualifiedName( name );
-    }
-
-    public <T extends PropertyDescriptor> Set<T> properties()
+    public Iterable<PropertyModel> properties()
     {
         return propertiesModel.properties();
     }
@@ -78,12 +66,5 @@ public class StateModel
         }
 
         return visitor.visitLeave( this );
-    }
-
-    public void checkConstraints( StateHolder state )
-        throws ConstraintViolationException
-    {
-        PropertiesInstance stateInstance = (PropertiesInstance) state;
-        propertiesModel.checkConstraints( stateInstance );
     }
 }

@@ -15,7 +15,7 @@
 package org.qi4j.api.service.importer;
 
 import org.qi4j.api.injection.scope.Structure;
-import org.qi4j.api.object.ObjectBuilderFactory;
+import org.qi4j.api.object.ObjectFactory;
 import org.qi4j.api.service.ImportedServiceDescriptor;
 import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.api.service.ServiceImporterException;
@@ -27,7 +27,7 @@ public final class NewObjectImporter<T>
     implements ServiceImporter<T>
 {
     @Structure
-    private ObjectBuilderFactory obf;
+    private ObjectFactory obf;
 
     public T importService( ImportedServiceDescriptor serviceDescriptor )
         throws ServiceImporterException

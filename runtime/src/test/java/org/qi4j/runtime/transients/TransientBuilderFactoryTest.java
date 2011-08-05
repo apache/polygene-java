@@ -44,7 +44,7 @@ public class TransientBuilderFactoryTest
             {
             }
         };
-        assembler.transientBuilderFactory().newTransientBuilder( AnyComposite.class );
+        assembler.module().newTransientBuilder( AnyComposite.class );
     }
 
     /**
@@ -63,7 +63,7 @@ public class TransientBuilderFactoryTest
             {
             }
         };
-        assembler.transientBuilderFactory().newTransientBuilder( null );
+        assembler.module().newTransientBuilder( null );
     }
 
     /**
@@ -82,7 +82,7 @@ public class TransientBuilderFactoryTest
             {
             }
         };
-        assembler.transientBuilderFactory().newTransient( null );
+        assembler.module().newTransient( null );
     }
 
     /**
@@ -99,7 +99,7 @@ public class TransientBuilderFactoryTest
                 module.transients( AnyComposite.class );
             }
         };
-        assembler.transientBuilderFactory().newTransientBuilder( AnyComposite.class );
+        assembler.module().newTransientBuilder( AnyComposite.class );
     }
 
     /**
@@ -116,7 +116,7 @@ public class TransientBuilderFactoryTest
                 module.transients( AnyComposite.class );
             }
         };
-        assembler.transientBuilderFactory().newTransientBuilder( AnyComposite.class );
+        assembler.module().newTransientBuilder( AnyComposite.class );
     }
 
     public static interface AnyComposite

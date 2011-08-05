@@ -20,6 +20,7 @@ import org.qi4j.api.composite.Composite;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.service.ServiceDescriptor;
@@ -29,12 +30,13 @@ import org.qi4j.functional.Specifications;
 import org.qi4j.runtime.composite.*;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectionContext;
+import org.qi4j.runtime.property.PropertyInstance;
+import org.qi4j.runtime.property.PropertyModel;
 import org.qi4j.runtime.structure.ModuleInstance;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Proxy;
+import java.lang.reflect.*;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.qi4j.functional.Iterables.filter;
 import static org.qi4j.functional.Specifications.and;
@@ -102,22 +104,24 @@ public final class ServiceModel
     {
         Object[] mixins = mixinsModel.newMixinHolder();
 
-        StateHolder stateHolder = stateModel.newBuilderInstance( new Function<PropertyDescriptor, Object>()
+        Map<AccessibleObject, Property<?>> properties = new HashMap<AccessibleObject, Property<?>>();
+        for( PropertyModel propertyModel : stateModel.properties() )
         {
-            @Override
-            public Object map( PropertyDescriptor propertyDescriptor )
-            {
-                return propertyDescriptor.initialValue( module );
-            }
-        }  );
-        stateHolder.propertyFor( identityMethod ).set( identity );
-        stateHolder = stateModel.newInstance( stateHolder );
-        ServiceInstance compositeInstance = new ServiceInstance( this, module, mixins, stateHolder );
+            Object initialValue = propertyModel.initialValue( module );
+            if (propertyModel.accessor().equals(identityMethod))
+                initialValue = identity;
+
+            Property property = new PropertyInstance<Object>(propertyModel, initialValue );
+            properties.put( propertyModel.accessor(), property );
+        }
+
+        TransientStateInstance state = new TransientStateInstance( properties );
+        ServiceInstance compositeInstance = new ServiceInstance( this, module, mixins, state );
 
         // Instantiate all mixins
         int i = 0;
         UsesInstance uses = UsesInstance.EMPTY_USES.use( this );
-        InjectionContext injectionContext = new InjectionContext( compositeInstance, uses, stateHolder );
+        InjectionContext injectionContext = new InjectionContext( compositeInstance, uses, state );
         for( MixinModel mixinModel : mixinsModel.mixinModels() )
         {
             mixins[ i++ ] = mixinModel.newInstance( injectionContext );

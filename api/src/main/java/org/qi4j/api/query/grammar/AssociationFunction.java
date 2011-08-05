@@ -1,12 +1,11 @@
 package org.qi4j.api.query.grammar;
 
+import org.qi4j.api.association.GenericAssociationInfo;
+import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.CompositeInstance;
-import org.qi4j.api.composite.CompositeInvoker;
-import org.qi4j.api.entity.association.Association;
-import org.qi4j.api.entity.association.EntityStateHolder;
-import org.qi4j.api.entity.association.GenericAssociationInfo;
-import org.qi4j.api.entity.association.ManyAssociation;
+import org.qi4j.api.association.Association;
+import org.qi4j.api.association.AssociationStateHolder;
 import org.qi4j.api.query.QueryExpressionException;
 import org.qi4j.api.util.Classes;
 import org.qi4j.functional.Function;
@@ -80,7 +79,7 @@ public class AssociationFunction<T>
                 return null;
 
             CompositeInstance handler = (CompositeInstance) Proxy.getInvocationHandler( target );
-            return ((EntityStateHolder)handler.state()).getAssociation( accessor );
+            return ((AssociationStateHolder)handler.state()).associationFor( accessor );
         } catch( IllegalArgumentException e )
         {
             throw e;

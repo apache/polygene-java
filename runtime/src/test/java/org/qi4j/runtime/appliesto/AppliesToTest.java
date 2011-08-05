@@ -47,7 +47,7 @@ public class AppliesToTest
     public void givenAnAppliesToWhenNoAnnotationExpectNoConcernInInvocationStack()
         throws Exception
     {
-        Some some = transientBuilderFactory.newTransient( Some.class );
+        Some some = module.newTransient( Some.class );
         Assert.assertEquals( ",", some.doStuff1() );
     }
 
@@ -55,7 +55,7 @@ public class AppliesToTest
     public void givenAnAppliesToWhenAnnotationIsOnMixinTypeExpectConcernInInvocationStack()
         throws Exception
     {
-        Some some = transientBuilderFactory.newTransient( Some.class );
+        Some some = module.newTransient( Some.class );
         Assert.assertEquals( ",,..", some.doStuff2() );
     }
 
@@ -63,7 +63,7 @@ public class AppliesToTest
     public void givenAnAppliesToWhenAnnotationIsOnMixinImplementationExpectConcernInInvocationStack()
         throws Exception
     {
-        Some some = transientBuilderFactory.newTransient( Some.class );
+        Some some = module.newTransient( Some.class );
         Assert.assertEquals( ",", some.doStuff1() );
         Assert.assertEquals( ",,..", some.doStuff2() );
         Assert.assertEquals( ",,,", some.doStuff3() );

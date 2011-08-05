@@ -14,24 +14,34 @@
 
 package org.qi4j.runtime.bootstrap;
 
-import org.qi4j.api.common.InvalidApplicationException;
-import org.qi4j.api.common.MetaInfo;
-import org.qi4j.api.common.Optional;
-import org.qi4j.api.common.Visibility;
-import org.qi4j.api.composite.TransientComposite;
+import org.qi4j.api.association.GenericAssociationInfo;
+import org.qi4j.api.association.ManyAssociation;
+import org.qi4j.api.common.*;
 import org.qi4j.api.constraint.Constraint;
+import org.qi4j.api.association.Association;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Immutable;
+import org.qi4j.api.property.Property;
 import org.qi4j.api.util.Annotations;
+import org.qi4j.api.util.Classes;
 import org.qi4j.api.value.ValueComposite;
-import org.qi4j.bootstrap.PropertyDeclarations;
+import org.qi4j.bootstrap.AssociationDeclarations;
+import org.qi4j.bootstrap.ManyAssociationDeclarations;
+import org.qi4j.bootstrap.StateDeclarations;
 import org.qi4j.bootstrap.ValueAssembly;
 import org.qi4j.functional.Iterables;
-import org.qi4j.runtime.composite.*;
+import org.qi4j.runtime.composite.CompositeMethodsModel;
+import org.qi4j.runtime.composite.MixinsModel;
+import org.qi4j.runtime.composite.ValueConstraintsInstance;
+import org.qi4j.runtime.composite.ValueConstraintsModel;
+import org.qi4j.runtime.association.AssociationModel;
+import org.qi4j.runtime.association.AssociationsModel;
+import org.qi4j.runtime.association.ManyAssociationModel;
+import org.qi4j.runtime.association.ManyAssociationsModel;
 import org.qi4j.runtime.property.PropertiesModel;
 import org.qi4j.runtime.property.PropertyModel;
-import org.qi4j.runtime.property.PersistentPropertyModel;
-import org.qi4j.runtime.value.*;
+import org.qi4j.runtime.value.ValueModel;
+import org.qi4j.runtime.value.ValueStateModel;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
@@ -56,6 +66,8 @@ public final class ValueAssemblyImpl
     List<Class<?>> types = new ArrayList<Class<?>>();
     MetaInfo metaInfo = new MetaInfo();
     Visibility visibility = Visibility.module;
+    protected AssociationsModel associationsModel;
+    protected ManyAssociationsModel manyAssociationsModel;
 
     public ValueAssemblyImpl( Class<?> compositeType )
     {
@@ -69,11 +81,11 @@ public final class ValueAssemblyImpl
     }
 
     ValueModel newValueModel(
-            PropertyDeclarations propertyDeclarations,
+            StateDeclarations stateDeclarations,
             AssemblyHelper helper
     )
     {
-        this.propertyDeclarations = propertyDeclarations;
+        this.stateDeclarations = stateDeclarations;
         try
         {
             this.helper = helper;
@@ -83,7 +95,9 @@ public final class ValueAssemblyImpl
 
             immutable = metaInfo.get( Immutable.class ) != null;
             propertiesModel = new PropertiesModel();
-            stateModel = new StateModel( propertiesModel );
+            associationsModel = new AssociationsModel( );
+            manyAssociationsModel = new ManyAssociationsModel();
+            stateModel = new ValueStateModel( propertiesModel, associationsModel, manyAssociationsModel );
             mixinsModel = new MixinsModel();
 
             compositeMethodsModel = new CompositeMethodsModel( mixinsModel );
@@ -118,13 +132,36 @@ public final class ValueAssemblyImpl
             addState(constraintClasses);
 
             ValueModel valueModel = new ValueModel(
-                compositeType, Iterables.prepend(compositeType, types), visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
+                compositeType, Iterables.prepend(compositeType, types), visibility, metaInfo, mixinsModel, (ValueStateModel) stateModel, compositeMethodsModel );
 
             return valueModel;
         }
         catch( Exception e )
         {
             throw new InvalidApplicationException( "Could not register " + compositeType.getName(), e );
+        }
+    }
+
+    protected void addStateFor( AccessibleObject accessor, Iterable<Class<? extends Constraint<?, ?>>> constraintClasses )
+    {
+        String stateName = QualifiedName.fromAccessor( accessor ).name();
+
+        if (registeredStateNames.contains( stateName ))
+            return; // Skip already registered names
+
+        Class<?> accessorType = Classes.RAW_CLASS.map( Classes.TYPE_OF.map( accessor ) );
+        if( Property.class.isAssignableFrom( accessorType ) )
+        {
+            propertiesModel.addProperty( newPropertyModel( accessor, constraintClasses ) );
+            registeredStateNames.add( stateName );
+        } else if( Association.class.isAssignableFrom( accessorType ) )
+        {
+            associationsModel.addAssociation( newAssociationModel( accessor, constraintClasses ) );
+            registeredStateNames.add( stateName );
+        } else if( ManyAssociation.class.isAssignableFrom( accessorType ) )
+        {
+            manyAssociationsModel.addManyAssociation( newManyAssociationModel( accessor, constraintClasses ) );
+            registeredStateNames.add( stateName );
         }
     }
 
@@ -140,8 +177,61 @@ public final class ValueAssemblyImpl
         {
             valueConstraintsInstance = valueConstraintsModel.newInstance();
         }
-        MetaInfo metaInfo = propertyDeclarations.getMetaInfo( accessor );
-        Object initialValue = propertyDeclarations.getInitialValue( accessor );
-        return new PersistentPropertyModel( accessor, true, valueConstraintsInstance, metaInfo, initialValue );
+        MetaInfo metaInfo = stateDeclarations.getMetaInfo( accessor );
+        Object initialValue = stateDeclarations.getInitialValue( accessor );
+        return new PropertyModel( accessor, true, valueConstraintsInstance, metaInfo, initialValue );
+    }
+
+    public AssociationModel newAssociationModel( AccessibleObject accessor, Iterable<Class<? extends Constraint<?, ?>>> constraintClasses )
+    {
+        Iterable<Annotation> annotations = Annotations.getAccessorAndTypeAnnotations( accessor );
+        boolean optional = first( filter( isType( Optional.class ), annotations ) ) != null;
+
+        // Constraints for Association references
+        ValueConstraintsModel valueConstraintsModel = constraintsFor( annotations, GenericAssociationInfo
+                .getAssociationType( accessor ), ((Member) accessor).getName(), optional, constraintClasses, accessor );
+        ValueConstraintsInstance valueConstraintsInstance = null;
+        if( valueConstraintsModel.isConstrained() )
+        {
+            valueConstraintsInstance = valueConstraintsModel.newInstance();
+        }
+
+        // Constraints for the Association itself
+        valueConstraintsModel = constraintsFor( annotations, Association.class, ((Member) accessor).getName(), optional, constraintClasses, accessor );
+        ValueConstraintsInstance associationValueConstraintsInstance = null;
+        if( valueConstraintsModel.isConstrained() )
+        {
+            associationValueConstraintsInstance = valueConstraintsModel.newInstance();
+        }
+
+        MetaInfo metaInfo = stateDeclarations.getMetaInfo( accessor );
+        AssociationModel associationModel = new AssociationModel( accessor, valueConstraintsInstance, associationValueConstraintsInstance, metaInfo );
+        return associationModel;
+    }
+
+    public ManyAssociationModel newManyAssociationModel( AccessibleObject accessor, Iterable<Class<? extends Constraint<?, ?>>> constraintClasses )
+    {
+        Iterable<Annotation> annotations = Annotations.getAccessorAndTypeAnnotations(  accessor );
+        boolean optional = first( filter( isType( Optional.class ), annotations ) ) != null;
+
+        // Constraints for entities in ManyAssociation
+        ValueConstraintsModel valueConstraintsModel = constraintsFor( annotations, GenericAssociationInfo
+                .getAssociationType( accessor ), ((Member) accessor).getName(), optional, constraintClasses, accessor );
+        ValueConstraintsInstance valueConstraintsInstance = null;
+        if( valueConstraintsModel.isConstrained() )
+        {
+            valueConstraintsInstance = valueConstraintsModel.newInstance();
+        }
+
+        // Constraints for the ManyAssociation itself
+        valueConstraintsModel = constraintsFor( annotations, ManyAssociation.class, ((Member) accessor).getName(), optional, constraintClasses, accessor );
+        ValueConstraintsInstance manyValueConstraintsInstance = null;
+        if( valueConstraintsModel.isConstrained() )
+        {
+            manyValueConstraintsInstance = valueConstraintsModel.newInstance();
+        }
+        MetaInfo metaInfo = stateDeclarations.getMetaInfo( accessor );
+        ManyAssociationModel associationModel = new ManyAssociationModel( accessor, valueConstraintsInstance, manyValueConstraintsInstance, metaInfo );
+        return associationModel;
     }
 }

@@ -20,7 +20,7 @@ import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.entity.association.Association;
+import org.qi4j.api.association.Association;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.unitofwork.UnitOfWork;
@@ -52,28 +52,28 @@ public class OptionalTest
     @Test
     public void givenOptionalMethodWhenCorrectInvokeThenNoException()
     {
-        TestComposite instance = transientBuilderFactory.newTransient( TestComposite.class );
+        TestComposite instance = module.newTransient( TestComposite.class );
         instance.doStuff( "Hello WOrld", "Hello World" );
     }
 
     @Test( expected = ConstraintViolationException.class )
     public void givenOptionalMethodWhenMandatoryMissingThenException()
     {
-        TestComposite instance = transientBuilderFactory.newTransient( TestComposite.class );
+        TestComposite instance = module.newTransient( TestComposite.class );
         instance.doStuff( "Hello World", null );
     }
 
     @Test
     public void givenOptionalMethodWhenOptionalMissingThenNoException()
     {
-        TestComposite instance = transientBuilderFactory.newTransient( TestComposite.class );
+        TestComposite instance = module.newTransient( TestComposite.class );
         instance.doStuff( null, "Hello World" );
     }
 
     @Test
     public void givenOptionalPropertyWhenOptionalMissingThenNoException()
     {
-        TransientBuilder<TestComposite2> builder = transientBuilderFactory.newTransientBuilder( TestComposite2.class );
+        TransientBuilder<TestComposite2> builder = module.newTransientBuilder( TestComposite2.class );
         builder.prototype().mandatoryProperty().set( "Hello World" );
         TestComposite2 testComposite2 = builder.newInstance();
     }
@@ -81,7 +81,7 @@ public class OptionalTest
     @Test
     public void givenOptionalPropertyWhenOptionalSetThenNoException()
     {
-        TransientBuilder<TestComposite2> builder = transientBuilderFactory.newTransientBuilder( TestComposite2.class );
+        TransientBuilder<TestComposite2> builder = module.newTransientBuilder( TestComposite2.class );
         builder.prototype().mandatoryProperty().set( "Hello World" );
         builder.prototype().optionalProperty().set( "Hello World" );
         TestComposite2 testComposite2 = builder.newInstance();
@@ -90,15 +90,14 @@ public class OptionalTest
     @Test( expected = ConstraintViolationException.class )
     public void givenMandatoryPropertyWhenMandatoryMissingThenException()
     {
-        TransientBuilder<TestComposite2> builder = transientBuilderFactory.newTransientBuilder( TestComposite2.class );
-        TestComposite2 testComposite2 = builder.newInstance();
+        TestComposite2 testComposite2 = module.newTransient( TestComposite2.class );
     }
 
     @Test
     public void givenOptionalAssociationWhenOptionalMissingThenNoException()
         throws Exception
     {
-        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork unitOfWork = module.newUnitOfWork();
         try
         {
             TestComposite4 ref = unitOfWork.newEntity( TestComposite4.class );
@@ -120,7 +119,7 @@ public class OptionalTest
     public void givenOptionalAssociationWhenOptionalSetThenNoException()
         throws Exception
     {
-        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork unitOfWork = module.newUnitOfWork();
         try
         {
             TestComposite4 ref = unitOfWork.newEntity( TestComposite4.class );
@@ -143,7 +142,7 @@ public class OptionalTest
     public void givenMandatoryAssociationWhenMandatoryMissingThenException()
         throws Exception
     {
-        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork unitOfWork = module.newUnitOfWork();
         try
         {
             TestComposite4 ref = unitOfWork.newEntity( TestComposite4.class );

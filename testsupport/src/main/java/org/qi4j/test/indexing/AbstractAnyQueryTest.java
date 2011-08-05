@@ -59,9 +59,9 @@ public class AbstractAnyQueryTest extends AbstractQi4jTest
         throws Exception
     {
         super.setUp();
-        TestData.populate( moduleInstance );
+        TestData.populate( module );
 
-        this.unitOfWork = this.unitOfWorkFactory.newUnitOfWork();
+        this.unitOfWork = this.module.newUnitOfWork();
     }
 
     @Override

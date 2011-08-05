@@ -39,10 +39,10 @@ class TestData
     static void populate( Module module )
         throws UnitOfWorkCompletionException
     {
-        UnitOfWork unitOfWork = module.unitOfWorkFactory().newUnitOfWork();
+        UnitOfWork unitOfWork = module.newUnitOfWork();
         try
         {
-            ValueBuilderFactory valueBuilderFactory = module.valueBuilderFactory();
+            ValueBuilderFactory valueBuilderFactory = module;
 
             NameableAssert.clear();
             Domain gaming;
@@ -123,7 +123,7 @@ class TestData
                 jacksAccount = accountBuilder.newInstance();
             }
 
-            ValueBuilder<Address> addressBuilder = valueBuilderFactory.newValueBuilder( Address.class );
+            ValueBuilder<Address> addressBuilder = module.newValueBuilder( Address.class );
             Address address = addressBuilder.prototype();
             address.line1().set( "Qi Street 4j" );
             address.line2().set( "Off main Java Street" );
@@ -161,8 +161,9 @@ class TestData
                 joeDoe.email().set( "joe@thedoes.net" );
                 joeDoe.password().set( "passwordOfJoeDoe" );
                 joeDoe = maleBuilder.newInstance();
+                address = module.newValueBuilderWithPrototype( address ).prototype();
                 address.line1().set( "Qi Alley 4j" );
-                joeDoe.address().set( addressBuilder.newInstance() );
+                joeDoe.address().set( address );
                 NameableAssert.trace( joeDoe );
             }
 
@@ -179,12 +180,13 @@ class TestData
                 jackDoe.mainAccount().set( jacksAccount );
                 jackDoe.accounts().add( 0, annsAccount );
                 jackDoe.accounts().add( 0, jacksAccount );
+                address = module.newValueBuilderWithPrototype( address ).prototype();
                 address.line1().set( "Qi Avenue 4j" );
-                jackDoe.address().set( addressBuilder.newInstance() );
+                jackDoe.address().set( address );
 
-                ValueBuilder<URL> urlBuilder = valueBuilderFactory.newValueBuilder( URL.class );
-                ValueBuilder<Protocol> protocolBuilder = valueBuilderFactory.newValueBuilder( Protocol.class );
-                ValueBuilder<QueryParam> queryParamBuilder = valueBuilderFactory.newValueBuilder( QueryParam.class );
+                ValueBuilder<URL> urlBuilder = module.newValueBuilder( URL.class );
+                ValueBuilder<Protocol> protocolBuilder = module.newValueBuilder( Protocol.class );
+                ValueBuilder<QueryParam> queryParamBuilder = module.newValueBuilder( QueryParam.class );
 
                 Protocol protocol = protocolBuilder.prototype();
                 protocol.value().set( "http" );
@@ -194,6 +196,8 @@ class TestData
                 param.name().set( "user" );
                 param.value().set( "jackdoe" );
                 queryParams.add( queryParamBuilder.newInstance() );
+                queryParamBuilder = module.newValueBuilder( QueryParam.class );
+                param = queryParamBuilder.prototype();
                 param.name().set( "password" );
                 param.value().set( "somepassword" );
                 queryParams.add( queryParamBuilder.newInstance() );

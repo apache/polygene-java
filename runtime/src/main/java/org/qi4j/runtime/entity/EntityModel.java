@@ -14,29 +14,25 @@
 
 package org.qi4j.runtime.entity;
 
+import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.CompositeInstance;
 import org.qi4j.api.constraint.ConstraintViolationException;
-import org.qi4j.api.entity.*;
-import org.qi4j.api.entity.association.AssociationDescriptor;
-import org.qi4j.api.property.Immutable;
-import org.qi4j.api.property.PersistentPropertyDescriptor;
+import org.qi4j.api.entity.EntityDescriptor;
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.entity.Identity;
+import org.qi4j.api.entity.Queryable;
+import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.unitofwork.EntityCompositeAlreadyExistsException;
 import org.qi4j.api.util.Annotations;
-import org.qi4j.api.util.Classes;
-import org.qi4j.bootstrap.AssociationDeclarations;
-import org.qi4j.bootstrap.ManyAssociationDeclarations;
-import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.functional.Iterables;
-import org.qi4j.runtime.bootstrap.AssemblyHelper;
-import org.qi4j.runtime.composite.*;
-import org.qi4j.runtime.entity.association.AssociationsModel;
-import org.qi4j.runtime.entity.association.ManyAssociationsModel;
-import org.qi4j.runtime.property.PersistentPropertyModel;
+import org.qi4j.runtime.composite.CompositeMethodsModel;
+import org.qi4j.runtime.composite.CompositeModel;
+import org.qi4j.runtime.property.PropertyModel;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
@@ -45,10 +41,7 @@ import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Set;
 
 /**
  * JAVADOC
@@ -115,13 +108,8 @@ public final class EntityModel
         return mixinsModel.newMixinHolder();
     }
 
-    public EntityStateModel.EntityStateInstance newStateHolder( ModuleUnitOfWork uow, EntityState entityState )
-    {
-        return ( (EntityStateModel) stateModel ).newInstance( uow, entityState );
-    }
-
     public Object newMixin( Object[] mixins,
-                            EntityStateModel.EntityStateInstance entityState,
+                            EntityStateInstance entityState,
                             EntityInstance entityInstance,
                             Method method
     )
@@ -138,7 +126,7 @@ public final class EntityModel
             EntityState entityState = store.newEntityState( identity, this );
 
             // Set identity property
-            PersistentPropertyDescriptor persistentPropertyDescriptor = state().getPropertyByQualifiedName( QualifiedName.fromAccessor( IDENTITY_METHOD ) );
+            PropertyDescriptor persistentPropertyDescriptor = state().getProperty( IDENTITY_METHOD );
             entityState.setProperty( persistentPropertyDescriptor.qualifiedName(), identity.identity() );
 
             return entityState;
@@ -163,8 +151,7 @@ public final class EntityModel
     {
         {
             // Set new properties to default value
-            Set<PersistentPropertyModel> entityProperties = state().properties();
-            for( PersistentPropertyModel propertyDescriptor : entityProperties )
+            for( PropertyModel propertyDescriptor : state().properties() )
             {
                 entityState.setProperty( propertyDescriptor.qualifiedName(), propertyDescriptor.initialValue( module ) );
             }
@@ -172,8 +159,7 @@ public final class EntityModel
 
         {
             // Set new manyAssociations to null
-            Set<AssociationDescriptor> entityAssociations = state().associations();
-            for( AssociationDescriptor associationDescriptor : entityAssociations )
+            for( AssociationDescriptor associationDescriptor : state().associations() )
             {
                 entityState.setAssociation( associationDescriptor.qualifiedName(), null );
             }
@@ -181,8 +167,7 @@ public final class EntityModel
 
         {
             // Set new many-manyAssociations to empty
-            Set<AssociationDescriptor> entityAssociations = state().manyAssociations();
-            for( AssociationDescriptor associationDescriptor : entityAssociations )
+            for( AssociationDescriptor associationDescriptor : state().manyAssociations() )
             {
                 entityState.getManyAssociation( associationDescriptor.qualifiedName() );
             }

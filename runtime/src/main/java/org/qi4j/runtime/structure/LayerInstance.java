@@ -178,7 +178,7 @@ public class LayerInstance
             }
         }
 
-        return null;
+        throw new IllegalArgumentException( "No such module:"+moduleName );
     }
 
     public void activate()

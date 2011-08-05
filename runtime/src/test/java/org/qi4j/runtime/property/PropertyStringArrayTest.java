@@ -43,7 +43,7 @@ public class PropertyStringArrayTest
     {
         TestComposite instance;
         {
-            TransientBuilder<TestComposite> builder = transientBuilderFactory.newTransientBuilder( TestComposite.class );
+            TransientBuilder<TestComposite> builder = module.newTransientBuilder( TestComposite.class );
             builder.prototype().array().set( new String[]{ "Foo", "Bar" } );
             instance = builder.newInstance();
         }

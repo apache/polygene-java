@@ -14,7 +14,8 @@
 
 package org.qi4j.api.type;
 
-import org.qi4j.api.property.PersistentPropertyDescriptor;
+import org.qi4j.api.association.AssociationDescriptor;
+import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.util.Classes;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.api.value.ValueDescriptor;
@@ -40,8 +41,18 @@ public final class ValueCompositeType
         this.model = model;
     }
 
-    public Iterable<PersistentPropertyDescriptor> properties()
+    public Iterable<? extends PropertyDescriptor> properties()
     {
         return model.state().properties();
+    }
+
+    public Iterable<? extends AssociationDescriptor> associations()
+    {
+        return model.state().associations();
+    }
+
+    public Iterable<? extends AssociationDescriptor> manyAssociations()
+    {
+        return model.state().manyAssociations();
     }
 }

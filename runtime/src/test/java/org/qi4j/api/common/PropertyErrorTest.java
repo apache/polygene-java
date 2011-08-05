@@ -42,7 +42,7 @@ public class PropertyErrorTest
     public void givenEntityWithNonOptionPropertyWhenInstantiatedThenException()
         throws Exception
     {
-        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork unitOfWork = module.newUnitOfWork();
         try
         {
             PersonEntity person = unitOfWork.newEntity( PersonEntity.class );

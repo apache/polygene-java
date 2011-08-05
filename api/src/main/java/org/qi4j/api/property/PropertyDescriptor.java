@@ -60,4 +60,6 @@ public interface PropertyDescriptor
     Object initialValue( Module module );
 
     ValueType valueType();
+
+    boolean queryable();
 }

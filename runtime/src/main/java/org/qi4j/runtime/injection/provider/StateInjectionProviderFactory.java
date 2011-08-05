@@ -1,10 +1,10 @@
 package org.qi4j.runtime.injection.provider;
 
+import org.qi4j.api.association.*;
 import org.qi4j.api.composite.StateDescriptor;
 import org.qi4j.api.composite.StatefulCompositeDescriptor;
 import org.qi4j.api.entity.EntityDescriptor;
-import org.qi4j.api.entity.EntityStateDescriptor;
-import org.qi4j.api.entity.association.*;
+import org.qi4j.api.association.AssociationStateDescriptor;
 import org.qi4j.api.injection.scope.State;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyDescriptor;
@@ -70,7 +70,7 @@ public final class StateInjectionProviderFactory
         else if( Association.class.isAssignableFrom( dependencyModel.rawInjectionType() ) )
         {
             // @State Association<MyEntity> name;
-            EntityStateDescriptor descriptor = ( (EntityDescriptor) resolution.model() ).state();
+            AssociationStateDescriptor descriptor = ( (EntityDescriptor) resolution.model() ).state();
             State annotation = (State) dependencyModel.injectionAnnotation();
             String name;
             if( annotation.value().equals( "" ) )
@@ -94,7 +94,7 @@ public final class StateInjectionProviderFactory
         else if( ManyAssociation.class.isAssignableFrom( dependencyModel.rawInjectionType() ) )
         {
             // @State ManyAssociation<MyEntity> name;
-            EntityStateDescriptor descriptor = ( (EntityDescriptor) resolution.model() ).state();
+            AssociationStateDescriptor descriptor = ( (EntityDescriptor) resolution.model() ).state();
             State annotation = (State) dependencyModel.injectionAnnotation();
             String name;
             if( annotation.value().equals( "" ) )
@@ -157,8 +157,8 @@ public final class StateInjectionProviderFactory
         public Object provideInjection( InjectionContext context )
             throws InjectionProviderException
         {
-            AbstractAssociation abstractAssociation = ( (EntityStateHolder) context.state() ).getAssociation( associationDescriptor
-                                                                                                                  .accessor() );
+            AbstractAssociation abstractAssociation = ( (AssociationStateHolder) context.state() ).associationFor( associationDescriptor
+                    .accessor() );
             if( abstractAssociation != null )
             {
                 return abstractAssociation;
@@ -183,8 +183,8 @@ public final class StateInjectionProviderFactory
         public Object provideInjection( InjectionContext context )
             throws InjectionProviderException
         {
-            ManyAssociation abstractAssociation = ( (EntityStateHolder) context.state() ).getManyAssociation( manyAssociationDescriptor
-                                                                                                                  .accessor() );
+            ManyAssociation abstractAssociation = ( (AssociationStateHolder) context.state() ).manyAssociationFor( manyAssociationDescriptor
+                    .accessor() );
             if( abstractAssociation != null )
             {
                 return abstractAssociation;

@@ -154,20 +154,6 @@ public final class QualifiedName
     }
 
     /**
-     * Returns the internal {@link TypeName} instance of the QualifiedName.
-     * <p>
-     * The TypeName instance represents the type from which the QualifiedName originates, typically the Class of the
-     * Property method.
-     * </p>
-     *
-     * @return the internal {@link TypeName} instance of the QualifiedName.
-     */
-    public TypeName typeName()
-    {
-        return typeName;
-    }
-
-    /**
      * Returns the name component of the QualifiedName.
      *
      * @return the name component of the QualifiedName.

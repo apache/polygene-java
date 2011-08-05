@@ -66,7 +66,7 @@ public final class InjectionContext
         this.proxyHandler = null;
     }
 
-    public ModuleInstance moduleInstance()
+    public ModuleInstance module()
     {
         return moduleInstance;
     }
@@ -106,7 +106,7 @@ public final class InjectionContext
     {
         return "InjectionContext{" +
                "compositeInstance=" + compositeInstance +
-               ", moduleInstance=" + moduleInstance +
+               ", module=" + moduleInstance +
                ", uses=" + uses +
                ", state=" + state +
                ", next=" + next +

@@ -16,6 +16,9 @@ package org.qi4j.api.value;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.qi4j.api.association.Association;
+import org.qi4j.api.association.ManyAssociation;
+import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.EntityBuilder;
@@ -45,7 +48,7 @@ public class ValueCompositeTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.values( SomeValue.class, AnotherValue.class );
+        module.values( SomeValue.class, AnotherValue.class, AssociationValue.class );
         module.entities( SomeEntity.class );
         new EntityTestAssembler().assemble( module );
     }
@@ -53,7 +56,7 @@ public class ValueCompositeTest
     @Test( expected = IllegalStateException.class )
     public void testImmutabilityOfValueComposite()
     {
-        ValueBuilder<SomeValue> builder = valueBuilderFactory.newValueBuilder( SomeValue.class );
+        ValueBuilder<SomeValue> builder = module.newValueBuilder( SomeValue.class );
         SomeValue some = builder.prototype();
         some.other().set( "test" );
         some = builder.newInstance();
@@ -63,7 +66,7 @@ public class ValueCompositeTest
     @Test
     public void testCreationOfValueComposite()
     {
-        ValueBuilder<SomeValue> builder = valueBuilderFactory.newValueBuilder( SomeValue.class );
+        ValueBuilder<SomeValue> builder = module.newValueBuilder( SomeValue.class );
         SomeValue some = builder.prototype();
         some.other().set( "test" );
         builder.newInstance();
@@ -75,10 +78,12 @@ public class ValueCompositeTest
     @Test
     public void testEqualityOfValueComposite()
     {
-        ValueBuilder<SomeValue> builder = valueBuilderFactory.newValueBuilder( SomeValue.class );
+        ValueBuilder<SomeValue> builder = module.newValueBuilder( SomeValue.class );
         SomeValue prototype = builder.prototype();
         prototype.other().set( "test" );
         SomeValue instance = builder.newInstance();
+        builder = module.newValueBuilder( SomeValue.class );
+        prototype = builder.prototype();
         prototype.other().set( "test" );
         SomeValue other = builder.newInstance();
         Assert.assertFalse( "Instances should not be the same.", instance == other );
@@ -88,10 +93,13 @@ public class ValueCompositeTest
     @Test
     public void testHashcodeOfValueComposite()
     {
-        ValueBuilder<SomeValue> builder = valueBuilderFactory.newValueBuilder( SomeValue.class );
+        ValueBuilder<SomeValue> builder = module.newValueBuilder( SomeValue.class );
         SomeValue prototype = builder.prototype();
         prototype.other().set( "test" );
         SomeValue instance = builder.newInstance();
+
+        builder = module.newValueBuilder( SomeValue.class );
+        prototype = builder.prototype();
         prototype.other().set( "test" );
         SomeValue other = builder.newInstance();
         Assert.assertFalse( "Instances should not be the same.", instance == other );
@@ -101,11 +109,11 @@ public class ValueCompositeTest
     @Test
     public void testModifyValue()
     {
-        ValueBuilder<AnotherValue> anotherBuilder = valueBuilderFactory.newValueBuilder( AnotherValue.class );
+        ValueBuilder<AnotherValue> anotherBuilder = module.newValueBuilder( AnotherValue.class );
         anotherBuilder.prototype().val1().set( "Val1" );
         AnotherValue anotherValue = anotherBuilder.newInstance();
 
-        ValueBuilder<SomeValue> builder = valueBuilderFactory.newValueBuilder( SomeValue.class );
+        ValueBuilder<SomeValue> builder = module.newValueBuilder( SomeValue.class );
         SomeValue prototype = builder.prototype();
         prototype.some().set( "foo" );
         prototype.other().set( "test" );
@@ -116,7 +124,7 @@ public class ValueCompositeTest
         assertThat( "List has value blah", instance.xyzzyList().get().get( 0 ), equalTo( "blah" ) );
 
         // Modify value
-        builder = valueBuilderFactory.newValueBuilderWithPrototype( instance );
+        builder = module.newValueBuilderWithPrototype( instance );
         builder.prototype().some().set( "bar" );
         instance = builder.newInstance();
 
@@ -125,7 +133,7 @@ public class ValueCompositeTest
         assertThat( "AnotherValue.val1 has value Val1", instance.another().get().val1().get(), equalTo( "Val1" ) );
 
         // Modify value again using method 2
-        builder = valueBuilderFactory.newValueBuilderWithPrototype( instance );
+        builder = module.newValueBuilderWithPrototype( instance );
         builder.prototype().other().set( "test2" );
         instance = builder.newInstance();
 
@@ -136,25 +144,25 @@ public class ValueCompositeTest
     @Test( expected = ConstraintViolationException.class )
     public void givenValueWhenModifyToIncorrectValueThenThrowConstraintException()
     {
-        ValueBuilder<SomeValue> builder = valueBuilderFactory.newValueBuilder( SomeValue.class );
+        ValueBuilder<SomeValue> builder = module.newValueBuilder( SomeValue.class );
         SomeValue prototype = builder.prototype();
         prototype.some().set( "foo" );
         SomeValue instance = builder.newInstance();
 
-        builder = valueBuilderFactory.newValueBuilderWithPrototype( instance );
+        builder = module.newValueBuilderWithPrototype( instance );
         builder.prototype().some().set( "123456" );
     }
 
     @Test
     public void givenValueWithListOfValueWhenPrototypeThenListedValuesAreEditable()
     {
-        ValueBuilder<SomeValue> builder = valueBuilderFactory.newValueBuilder( SomeValue.class );
-        builder.prototype().anotherList().get().add( valueBuilderFactory.newValue( AnotherValue.class ) );
+        ValueBuilder<SomeValue> builder = module.newValueBuilder( SomeValue.class );
+        builder.prototype().anotherList().get().add( module.newValue( AnotherValue.class ) );
         SomeValue some = builder.newInstance();
 
-        builder = valueBuilderFactory.newValueBuilderWithPrototype( some );
+        builder = module.newValueBuilderWithPrototype( some );
         builder.prototype().anotherList().get().get( 0 ).val1().set( "Foo" );
-        builder.prototype().anotherList().get().add( valueBuilderFactory.newValue( AnotherValue.class ) );
+        builder.prototype().anotherList().get().add( module.newValue( AnotherValue.class ) );
         some = builder.newInstance();
 
         assertThat( "Val1 has been set", some.anotherList().get().get( 0 ).val1().get(), equalTo( "Foo" ) );
@@ -174,15 +182,15 @@ public class ValueCompositeTest
     public void givenEntityWhenUpdateValueThenValueIsSet()
         throws UnitOfWorkCompletionException
     {
-        ValueBuilder<SomeValue> builder = valueBuilderFactory.newValueBuilder( SomeValue.class );
-        builder.prototype().anotherList().get().add( valueBuilderFactory.newValue( AnotherValue.class ) );
-        ValueBuilder<AnotherValue> valueBuilder = valueBuilderFactory.newValueBuilder( AnotherValue.class );
+        ValueBuilder<SomeValue> builder = module.newValueBuilder( SomeValue.class );
+        builder.prototype().anotherList().get().add( module.newValue( AnotherValue.class ) );
+        ValueBuilder<AnotherValue> valueBuilder = module.newValueBuilder( AnotherValue.class );
         valueBuilder.prototype().val1().set( "Foo" );
         builder.prototype().another().set( valueBuilder.newInstance() );
         builder.prototype().number().set( 42L );
         SomeValue some = builder.newInstance();
 
-        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork unitOfWork = module.newUnitOfWork();
         EntityBuilder<SomeEntity> entityBuilder = unitOfWork.newEntityBuilder( SomeEntity.class );
         entityBuilder.instance().someValue().set( some );
         SomeEntity entity = entityBuilder.newInstance();
@@ -190,6 +198,39 @@ public class ValueCompositeTest
         assertThat( "Value has been set", entity.someValue().get().another().get().val1().get(), equalTo( "Foo" ) );
 
         unitOfWork.complete();
+    }
+
+    @Test
+    public void givenValueWithAssociationsWhenNewUoWThenCanRead() throws UnitOfWorkCompletionException
+    {
+        ValueBuilder<SomeValue> builder = module.newValueBuilder( SomeValue.class );
+        builder.prototype().anotherList().get().add( module.newValue( AnotherValue.class ) );
+        ValueBuilder<AnotherValue> valueBuilder = module.newValueBuilder( AnotherValue.class );
+        valueBuilder.prototype().val1().set( "Foo" );
+        builder.prototype().another().set( valueBuilder.newInstance() );
+        builder.prototype().number().set( 42L );
+        SomeValue some = builder.newInstance();
+
+        UnitOfWork unitOfWork = module.newUnitOfWork();
+        EntityBuilder<SomeEntity> entityBuilder = unitOfWork.newEntityBuilder( SomeEntity.class );
+        entityBuilder.instance().someValue().set( some );
+        SomeEntity entity = entityBuilder.newInstance();
+
+        ValueBuilder<AssociationValue> associationBuilder = module.newValueBuilder( AssociationValue.class );
+        associationBuilder.prototype().some().set( entity );
+        AssociationValue associationValue = associationBuilder.newInstance();
+
+        String json = associationValue.toString();
+
+        unitOfWork.complete();
+
+        unitOfWork = module.newUnitOfWork();
+
+        AssociationValue newAssociationValue = module.newValueFromJSON( AssociationValue.class, json );
+
+        Assert.assertEquals( associationValue.some().get(), newAssociationValue.some().get() );
+
+        unitOfWork.discard();
     }
 
     public enum TestEnum
@@ -228,6 +269,15 @@ public class ValueCompositeTest
     {
         @UseDefaults
         Property<String> val1();
+    }
+
+    public interface AssociationValue
+        extends ValueComposite
+    {
+        @Optional
+        Association<SomeEntity> some();
+
+        ManyAssociation<SomeEntity> manySome();
     }
 
     public interface SomeEntity

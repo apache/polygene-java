@@ -18,8 +18,8 @@ import org.junit.Test;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.Identity;
-import org.qi4j.api.entity.association.Association;
-import org.qi4j.api.entity.association.ManyAssociation;
+import org.qi4j.api.association.Association;
+import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
@@ -91,7 +91,7 @@ public class PrivateEntityUnitOfWorkTest
         app.activate();
 
         Module module = app.findModule( "Layer 1", "Module 1" );
-        module.objectBuilderFactory().newObjectBuilder( PrivateEntityUnitOfWorkTest.class ).injectTo( this );
+        module.injectTo( this );
 
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
 
@@ -121,7 +121,7 @@ public class PrivateEntityUnitOfWorkTest
             throw e;
         }
 
-        unitOfWork = module.unitOfWorkFactory().newUnitOfWork();
+        unitOfWork = module.newUnitOfWork();
         try
         {
             ProductCatalog catalog = unitOfWork.get( ProductCatalog.class, "1" );

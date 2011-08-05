@@ -57,18 +57,18 @@ public class ValueInjectionDeserializationTest
         UnitOfWork uow = null;
         try
         {
-            ValueBuilder<Some> builder = valueBuilderFactory.newValueBuilder( Some.class );
+            ValueBuilder<Some> builder = module.newValueBuilder( Some.class );
             builder.prototype().data().set( "Niclas" );
             Some value = builder.newInstance();
 
-            uow = unitOfWorkFactory.newUnitOfWork();
+            uow = module.newUnitOfWork();
             EntityBuilder<Niclas> eb = uow.newEntityBuilder( Niclas.class );
             eb.instance().value().set( value );
             Niclas niclas1 = eb.newInstance();
             String id = niclas1.identity().get();
             uow.complete();
 
-            uow = unitOfWorkFactory.newUnitOfWork();
+            uow = module.newUnitOfWork();
             Niclas niclas2 = uow.get( Niclas.class, id );
             Some someValue = niclas2.value().get();
             Assert.assertEquals( someValue.data().get(), "Niclas" );

@@ -40,7 +40,7 @@ public class UsesGenericClassTest
     @Test
     public void givenMixinUsesGenericClassWhenUseClassThenInjectWorks()
     {
-        TransientBuilder<TestCase> builder = transientBuilderFactory.newTransientBuilder( TestCase.class );
+        TransientBuilder<TestCase> builder = module.newTransientBuilder( TestCase.class );
 
         builder.use( UsesGenericClassTest.class );
 

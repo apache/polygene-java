@@ -51,7 +51,7 @@ public class PropertyTypeTest
     public void givenEntityWithPropertyConstraintsWhenInstantiatedThenPropertiesWork()
         throws Exception
     {
-        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork unitOfWork = module.newUnitOfWork();
         try
         {
             EntityBuilder<PersonEntity> builder = unitOfWork.newEntityBuilder( PersonEntity.class );
@@ -76,7 +76,7 @@ public class PropertyTypeTest
     public void givenCompositeWithPropertyConstraintsWhenInstantiatedThenPropertiesWork()
         throws Exception
     {
-        TransientBuilder<PersonComposite> builder = transientBuilderFactory.newTransientBuilder( PersonComposite.class );
+        TransientBuilder<PersonComposite> builder = module.newTransientBuilder( PersonComposite.class );
         PersonComposite personComposite = builder.prototype();
         personComposite.givenName().set( "Rickard" );
         personComposite.familyName().set( "Öberg" );

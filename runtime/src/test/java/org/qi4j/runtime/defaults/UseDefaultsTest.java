@@ -43,7 +43,7 @@ public class UseDefaultsTest
     @Test
     public void givenPropertyWithUseDefaultsWhenInstantiatedThenPropertiesAreDefaulted()
     {
-        TransientBuilder<TestComposite> builder = transientBuilderFactory.newTransientBuilder( TestComposite.class );
+        TransientBuilder<TestComposite> builder = module.newTransientBuilder( TestComposite.class );
         TestComposite testComposite = builder.newInstance();
 
         assertThat( "nullInt is null", testComposite.nullInt().get(), nullValue() );

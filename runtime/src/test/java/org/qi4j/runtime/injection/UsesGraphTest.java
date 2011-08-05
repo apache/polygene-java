@@ -17,7 +17,6 @@ package org.qi4j.runtime.injection;
 import org.junit.Assert;
 import org.junit.Test;
 import org.qi4j.api.injection.scope.Uses;
-import org.qi4j.api.object.ObjectBuilder;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
@@ -40,7 +39,8 @@ public class UsesGraphTest
     @Test
     public void givenGraphDependenciesWhenInstantiateAThenGetSameReferences()
     {
-        A a = objectBuilderFactory.newObject( A.class );
+        D d = new D();
+        A a = module.newObject( A.class, module.newObject( C.class, d ), d);
 
         Assert.assertThat( "Same reference expected", a.c, equalTo( a.b.c ) );
         Assert.assertThat( "Same reference expected", a.d, equalTo( a.b.c.d ) );
@@ -49,9 +49,7 @@ public class UsesGraphTest
     @Test
     public void givenGraphDependenciesWhenInstantiateUsingBuildersThenDontGetSameReferences()
     {
-        ObjectBuilder<A> builder = objectBuilderFactory.newObjectBuilder( A.class );
-        builder.use( objectBuilderFactory.newObjectBuilder( C.class ) );
-        A a = builder.newInstance();
+        A a = module.newObject( A.class );
         Assert.assertThat( "Same reference not expected", a.c, not( equalTo( a.b.c ) ) );
         Assert.assertThat( "Same reference not expected", a.d, not( equalTo( a.b.c.d ) ) );
     }

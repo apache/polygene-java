@@ -41,7 +41,7 @@ public class IssueTest
     {
         try
         {
-            TransientBuilder<ValueHolder> builder = transientBuilderFactory.newTransientBuilder( ValueHolder.class );
+            TransientBuilder<ValueHolder> builder = module.newTransientBuilder( ValueHolder.class );
             builder.newInstance();
             Assert.fail( "NotNull constraint violated but no exception is raised" );
         }

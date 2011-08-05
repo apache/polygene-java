@@ -47,7 +47,7 @@ public class ServicesInstance
         for( ServiceReference serviceReference : serviceReferences )
         {
             mapIdentityServiceReference.put( serviceReference.identity(), serviceReference );
-            ((ActivationEventListenerRegistration) serviceReference).registerActivationEventListener( eventListenerSupport );
+            serviceReference.registerActivationEventListener( eventListenerSupport );
         }
         activator = new Activator();
     }

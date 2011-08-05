@@ -33,7 +33,7 @@ public class CompositeDescriptorTest
         throws Throwable
     {
         // Test with Standard composite
-        AddressComposite address = transientBuilderFactory.newTransient( AddressComposite.class );
+        AddressComposite address = module.newTransient( AddressComposite.class );
         TransientDescriptor addressDescriptor = spi.getTransientDescriptor( address );
 
         assertNotNull( addressDescriptor );
@@ -45,7 +45,7 @@ public class CompositeDescriptorTest
     public final void testCompositeDescriptorWithMixin()
     {
         // Test with composite
-        TransientDescriptor addressDesc = moduleInstance.transientDescriptor( AddressComposite.class.getName() );
+        TransientDescriptor addressDesc = module.transientDescriptor( AddressComposite.class.getName() );
         assertNotNull( addressDesc );
 
         assertEquals( AddressComposite.class, addressDesc.type() );

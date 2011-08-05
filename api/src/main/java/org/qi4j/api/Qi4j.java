@@ -14,12 +14,12 @@
 
 package org.qi4j.api;
 
+import org.qi4j.api.association.AssociationStateHolder;
 import org.qi4j.api.composite.*;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityDescriptor;
-import org.qi4j.api.entity.association.AbstractAssociation;
-import org.qi4j.api.entity.association.AssociationDescriptor;
-import org.qi4j.api.entity.association.EntityStateHolder;
+import org.qi4j.api.association.AbstractAssociation;
+import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.property.StateHolder;
@@ -117,9 +117,9 @@ public interface Qi4j
 
     StateHolder getState( TransientComposite composite );
 
-    EntityStateHolder getState( EntityComposite composite );
+    AssociationStateHolder getState( EntityComposite composite );
 
-    StateHolder getState( ValueComposite composite );
+    AssociationStateHolder getState( ValueComposite composite );
 
     public static Function<Composite, CompositeDescriptor> DESCRIPTOR_FUNCTION = new Function<Composite, CompositeDescriptor>()
     {

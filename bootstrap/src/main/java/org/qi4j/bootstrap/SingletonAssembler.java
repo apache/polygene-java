@@ -16,7 +16,7 @@ package org.qi4j.bootstrap;
 
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.composite.TransientBuilderFactory;
-import org.qi4j.api.object.ObjectBuilderFactory;
+import org.qi4j.api.object.ObjectFactory;
 import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.structure.Application;
@@ -93,35 +93,5 @@ public abstract class SingletonAssembler
     public final Module module()
     {
         return moduleInstance;
-    }
-
-    public final TransientBuilderFactory transientBuilderFactory()
-    {
-        return moduleInstance.transientBuilderFactory();
-    }
-
-    public final ObjectBuilderFactory objectBuilderFactory()
-    {
-        return moduleInstance.objectBuilderFactory();
-    }
-
-    public final UnitOfWorkFactory unitOfWorkFactory()
-    {
-        return moduleInstance.unitOfWorkFactory();
-    }
-
-    public final ServiceFinder serviceFinder()
-    {
-        return moduleInstance.serviceFinder();
-    }
-
-    public final ValueBuilderFactory valueBuilderFactory()
-    {
-        return moduleInstance.valueBuilderFactory();
-    }
-
-    public final QueryBuilderFactory queryBuilderFactory()
-    {
-        return moduleInstance.queryBuilderFactory();
     }
 }

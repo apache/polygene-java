@@ -77,7 +77,6 @@ import static java.util.Arrays.asList;
  * <p>
  */
 public final class MetaInfo
-    implements Serializable
 {
     private final static Collection<Class> ignored;
 

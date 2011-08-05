@@ -7,10 +7,10 @@ import org.joda.time.LocalDateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.property.DefaultValues;
-import org.qi4j.api.property.PersistentPropertyDescriptor;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.type.*;
@@ -19,6 +19,7 @@ import org.qi4j.api.util.Dates;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueDescriptor;
 import org.qi4j.functional.Function;
+import org.qi4j.functional.Iterables;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -234,15 +235,21 @@ public class JSONDeserializer
             if( valueType.type().equals( Set.class ) )
             {
                 coll = new LinkedHashSet<Object>();
+
+                for( int i = 0; i < array.length(); i++ )
+                {
+                    Object value = array.get( i );
+                    coll.add( deserialize( value, collectionType.collectedType() ));
+                }
             } else
             {
                 coll = new ArrayList<Object>();
-            }
 
-            for( int i = 0; i < array.length(); i++ )
-            {
-                Object value = array.get( i );
-                coll.add( deserialize( value, collectionType.collectedType() ));
+                for( int i = 0; i < array.length(); i++ )
+                {
+                    Object value = array.get( i );
+                    coll.add( deserialize( value, collectionType.collectedType() ));
+                }
             }
 
             return coll;
@@ -305,7 +312,6 @@ public class JSONDeserializer
             JSONObject jsonObject = (JSONObject) json;
 
             ValueCompositeType actualValueType = (ValueCompositeType) valueType;
-            Iterable<PersistentPropertyDescriptor> actualTypes = actualValueType.properties();
             String actualType = jsonObject.optString( "_type" );
             if( !actualType.equals( "" ) )
             {
@@ -316,12 +322,11 @@ public class JSONDeserializer
                     throw new IllegalArgumentException( "Could not find any value of type '" + actualType + "' in module" + module );
                 }
 
-                actualValueType = (ValueCompositeType) descriptor.valueType();
-                actualTypes = actualValueType.properties();
+                actualValueType = descriptor.valueType();
             }
 
             final Map<QualifiedName, Object> values = new HashMap<QualifiedName, Object>();
-            for( PersistentPropertyDescriptor persistentProperty : actualTypes )
+            for( PropertyDescriptor persistentProperty : actualValueType.properties() )
             {
                 Object valueJson = null;
                 try
@@ -332,6 +337,20 @@ public class JSONDeserializer
                     if( valueJson != null && !valueJson.equals( JSONObject.NULL ) )
                     {
                         value = deserialize( valueJson, persistentProperty.valueType() );
+
+                        if (persistentProperty.isImmutable())
+                        {
+                            if (value instanceof Set)
+                            {
+                                value = Collections.unmodifiableSet( (Set<? extends Object>) value);
+                            } else if (value instanceof List)
+                            {
+                                value = Collections.unmodifiableList( (List<? extends Object>) value);
+                            } else if (value instanceof Map)
+                            {
+                                value = Collections.unmodifiableMap( (Map<? extends Object, ? extends Object>) value);
+                            }
+                        }
                     }
 
                     values.put( persistentProperty.qualifiedName(), value );
@@ -350,7 +369,27 @@ public class JSONDeserializer
                 }
             }
 
-            ValueBuilder valueBuilder = module.valueBuilderFactory()
+            for( AssociationDescriptor associationDescriptor : actualValueType.associations() )
+            {
+                Object valueJson = jsonObject.optString( associationDescriptor.qualifiedName().name() );
+                if (valueJson != null)
+                    values.put( associationDescriptor.qualifiedName(), EntityReference.parseEntityReference( valueJson.toString() ) );
+            }
+
+            for( AssociationDescriptor associationDescriptor : actualValueType.manyAssociations() )
+            {
+                JSONArray jsonArray = jsonObject.optJSONArray( associationDescriptor.qualifiedName().name() );
+                if (jsonArray != null)
+                {
+                    List<EntityReference> refs = new ArrayList<EntityReference>();
+                    for (int i = 0; i < jsonArray.length(); i++)
+                    {
+                        refs.add( EntityReference.parseEntityReference( jsonArray.getString( i ) ) );
+                    }
+                }
+            }
+
+            ValueBuilder valueBuilder = module
                     .newValueBuilderWithState( actualValueType.type(), new Function<PropertyDescriptor, Object>()
                     {
                         @Override
@@ -358,7 +397,29 @@ public class JSONDeserializer
                         {
                             return values.get( descriptor.qualifiedName() );
                         }
-                    } );
+                    },new Function<AssociationDescriptor, EntityReference>()
+                    {
+                        @Override
+                        public EntityReference map( AssociationDescriptor associationDescriptor )
+                        {
+                            Object ref = values.get( associationDescriptor.qualifiedName() );
+                            if (ref == null)
+                                return null;
+                            else
+                                return (EntityReference) ref;
+                        }
+                    },new Function<AssociationDescriptor, Iterable<EntityReference>>()
+                    {
+                        @Override
+                        public Iterable<EntityReference> map( AssociationDescriptor associationDescriptor )
+                        {
+                            Object ref = values.get( associationDescriptor.qualifiedName() );
+                            if (ref == null)
+                                return Iterables.empty();
+                            else
+                                return (Iterable<EntityReference>) ref;
+                        }
+                    });
 
             return valueBuilder.newInstance();
         } else
@@ -389,9 +450,9 @@ public class JSONDeserializer
                         if( !valueType.type().equals( EntityReference.class ) )
                         {
                             Class mixinType = valueType.type();
-                            UnitOfWork unitOfWork = module.unitOfWorkFactory().currentUnitOfWork();
-                            if( unitOfWork != null )
+                            if (module.isUnitOfWorkActive())
                             {
+                                UnitOfWork unitOfWork = module.currentUnitOfWork();
                                 result = unitOfWork.get( mixinType, ref.identity() );
                             }
                         }

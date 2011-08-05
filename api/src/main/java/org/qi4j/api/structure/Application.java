@@ -46,9 +46,11 @@ public interface Application
 
     <T> T metaInfo( Class<T> infoType );
 
-    Layer findLayer( String layerName );
+    Layer findLayer( String layerName )
+        throws IllegalArgumentException;
 
-    Module findModule( String layerName, String moduleName );
+    Module findModule( String layerName, String moduleName )
+        throws IllegalArgumentException;
 
     ApplicationDescriptor descriptor();
 }

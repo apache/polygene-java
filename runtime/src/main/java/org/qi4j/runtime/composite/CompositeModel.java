@@ -183,33 +183,6 @@ public abstract class CompositeModel
         return mixinType.cast( Proxy.newProxyInstance( mixinType.getClassLoader(), new Class[]{mixinType}, invocationHandler ) );
     }
 
-    public StateHolder newBuilderState( final ModuleInstance module )
-    {
-        return stateModel.newBuilderInstance( new Function<PropertyDescriptor, Object>()
-        {
-            @Override
-            public Object map( PropertyDescriptor propertyDescriptor )
-            {
-                return propertyDescriptor.initialValue( module );
-            }
-        }  );
-    }
-
-    public StateHolder newBuilderState( Function<PropertyDescriptor, Object> state )
-    {
-        return stateModel.newBuilderInstance( state );
-    }
-
-    public StateHolder newInitialState( ModuleInstance module )
-    {
-        return stateModel.newInitialInstance(module);
-    }
-
-    public StateHolder newState( StateHolder state )
-    {
-        return stateModel.newInstance( state );
-    }
-
     @Override
     public String toString()
     {

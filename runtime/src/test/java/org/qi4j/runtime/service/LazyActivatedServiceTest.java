@@ -50,7 +50,7 @@ public class LazyActivatedServiceTest
 
         assertFalse( isActive );
 
-        assembly.objectBuilderFactory().newObjectBuilder( LazyActivatedServiceTest.class ).injectTo( this );
+        assembly.module().injectTo( this );
 
         assertFalse( isActive );
 

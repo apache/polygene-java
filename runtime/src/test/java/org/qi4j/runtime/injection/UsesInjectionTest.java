@@ -16,7 +16,6 @@ package org.qi4j.runtime.injection;
 
 import org.junit.Test;
 import org.qi4j.api.injection.scope.Uses;
-import org.qi4j.api.object.ObjectBuilder;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
@@ -40,43 +39,27 @@ public class UsesInjectionTest
     public void givenUsedObjectWhenUseWithBuilderThenInjectReferences()
         throws Exception
     {
-        ObjectBuilder<InjectionTarget> builder = objectBuilderFactory.newObjectBuilder( InjectionTarget.class );
         ToBeInjected toBeInjected = new ToBeInjected();
-        builder.use( toBeInjected );
-        builder.use( true );
-        assertThat( "Injected object", builder.newInstance().getUsedObject(), is( equalTo( toBeInjected ) ) );
-        assertThat( "Injected boolean", builder.newInstance().isUsedBoolean(), is( equalTo( true ) ) );
+        assertThat( "Injected object", module.newObject( InjectionTarget.class, toBeInjected, true ).getUsedObject(), is( equalTo( toBeInjected ) ) );
+        assertThat( "Injected boolean", module.newObject( InjectionTarget.class, toBeInjected, true ).isUsedBoolean(), is( equalTo( true ) ) );
     }
 
     @Test
     public void givenUsedObjectBuilderWhenUseWithBuilderThenInjectNewInstance()
         throws Exception
     {
-        ObjectBuilder<InjectionTarget> builder = objectBuilderFactory.newObjectBuilder( InjectionTarget.class );
-        builder.use( objectBuilderFactory.newObjectBuilder( ToBeInjected.class ) );
-        builder.use( true );
-        assertThat( "Injected object", builder.newInstance().getUsedObject(), is( notNullValue() ) );
+        assertThat( "Injected object", module.newObject( InjectionTarget.class, module.newObject( ToBeInjected.class ), true ), is( notNullValue() ) );
     }
 
     @Test
     public void givenNoUsesWhenBuilderNewInstanceThenInjectNewInstance()
         throws Exception
     {
-        ObjectBuilder<InjectionTarget> builder = objectBuilderFactory.newObjectBuilder( InjectionTarget.class );
-        builder.use( true );
-        assertThat( "Injected object", builder.newInstance().getUsedObject(), is( notNullValue() ) );
-
-        InjectionTarget target = builder.newInstance();
-        ToBeInjected instance1 = target.newUsedObject();
-        ToBeInjected instance2 = target.newUsedObject();
-        assertThat( "New object", instance1, not( equalTo( instance2 ) ) );
+        assertThat( "Injected object", module.newObject( InjectionTarget.class, true ), is( notNullValue() ) );
     }
 
     public static class InjectionTarget
     {
-        @Uses
-        Iterable<ToBeInjected> usedObjects;
-
         @Uses
         ToBeInjected usedObject;
 
@@ -86,11 +69,6 @@ public class UsesInjectionTest
         public ToBeInjected getUsedObject()
         {
             return usedObject;
-        }
-
-        public ToBeInjected newUsedObject()
-        {
-            return usedObjects.iterator().next();
         }
 
         public boolean isUsedBoolean()

@@ -20,11 +20,11 @@
  */
 package org.qi4j.api.query;
 
+import org.qi4j.api.association.Association;
+import org.qi4j.api.association.GenericAssociationInfo;
+import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.entity.Identity;
-import org.qi4j.api.entity.association.Association;
-import org.qi4j.api.entity.association.GenericAssociationInfo;
-import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.injection.scope.State;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Property;

@@ -44,9 +44,9 @@ public class ConfigurationTest
     public void whenConfiguredThenSayHelloWorks()
         throws Exception
     {
-        objectBuilderFactory.newObjectBuilder( ConfigurationTest.class ).injectTo( this );
+        module.injectTo( this );
 
-        UnitOfWork unit = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork unit = module.newUnitOfWork();
         EntityBuilder<HelloWorldConfiguration> entityBuilder = unit.newEntityBuilder( HelloWorldConfiguration.class, service
             .identity() );
         HelloWorldConfiguration config = entityBuilder.instance();
@@ -62,7 +62,7 @@ public class ConfigurationTest
     public void whenUnconfiguredThenSayHelloGivesDefaults()
         throws Exception
     {
-        objectBuilderFactory.newObjectBuilder( ConfigurationTest.class ).injectTo( this );
+        module.injectTo( this );
 
         assertThat( "result is correct", service.get().sayHello(), equalTo( "Hello World" ) );
     }
@@ -71,12 +71,12 @@ public class ConfigurationTest
     public void givenConfiguredServiceWhenReconfiguredAndRefreshedThenNewConfigurationIsUsed()
         throws Exception
     {
-        objectBuilderFactory.newObjectBuilder( ConfigurationTest.class ).injectTo( this );
+        module.injectTo( this );
 
         HelloWorldConfiguration config;
 
         {
-            UnitOfWork unit = unitOfWorkFactory.newUnitOfWork();
+            UnitOfWork unit = module.newUnitOfWork();
             EntityBuilder<HelloWorldConfiguration> entityBuilder = unit.newEntityBuilder( HelloWorldConfiguration.class, service
                 .identity() );
             config = entityBuilder.instance();
@@ -89,7 +89,7 @@ public class ConfigurationTest
         assertThat( "result is correct", service.get().sayHello(), equalTo( "Hello World" ) );
 
         {
-            UnitOfWork unit = unitOfWorkFactory.newUnitOfWork();
+            UnitOfWork unit = module.newUnitOfWork();
             config = unit.get( config );
             config.phrase().set( "Hey" );
             config.name().set( "Universe" );

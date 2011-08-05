@@ -19,7 +19,7 @@ package org.qi4j.runtime.injection.provider;
 
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.composite.TransientBuilderFactory;
-import org.qi4j.api.object.ObjectBuilderFactory;
+import org.qi4j.api.object.ObjectFactory;
 import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.structure.Application;
@@ -66,43 +66,43 @@ public final class StructureInjectionProviderFactory
             Class clazz = (Class) type1;
             if( clazz.equals( TransientBuilderFactory.class ) )
             {
-                return context.moduleInstance().transientBuilderFactory();
+                return context.module();
             }
-            else if( clazz.equals( ObjectBuilderFactory.class ) )
+            else if( clazz.equals( ObjectFactory.class ) )
             {
-                return context.moduleInstance().objectBuilderFactory();
+                return context.module();
             }
             else if( clazz.equals( ValueBuilderFactory.class ) )
             {
-                return context.moduleInstance().valueBuilderFactory();
+                return context.module();
             }
             else if( clazz.equals( UnitOfWorkFactory.class ) )
             {
-                return context.moduleInstance().unitOfWorkFactory();
+                return context.module();
             }
             else if( clazz.equals( QueryBuilderFactory.class ) )
             {
-                return context.moduleInstance().queryBuilderFactory();
+                return context.module();
             }
             else if( clazz.equals( ServiceFinder.class ) )
             {
-                return context.moduleInstance().serviceFinder();
+                return context.module();
             }
             else if( Module.class.isAssignableFrom( clazz ) )
             {
-                return context.moduleInstance();
+                return context.module();
             }
             else if( Layer.class.isAssignableFrom( clazz ) )
             {
-                return context.moduleInstance().layerInstance();
+                return context.module().layerInstance();
             }
             else if( Application.class.isAssignableFrom( clazz ) )
             {
-                return context.moduleInstance().layerInstance().applicationInstance();
+                return context.module().layerInstance().applicationInstance();
             }
             else if( Qi4j.class.isAssignableFrom( clazz ) )
             {
-                return context.moduleInstance().layerInstance().applicationInstance().runtime();
+                return context.module().layerInstance().applicationInstance().runtime();
             }
 
             return null;

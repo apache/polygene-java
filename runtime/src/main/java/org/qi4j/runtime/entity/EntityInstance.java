@@ -15,13 +15,14 @@
 
 package org.qi4j.runtime.entity;
 
+import org.qi4j.api.association.Association;
+import org.qi4j.api.association.AssociationDescriptor;
+import org.qi4j.api.association.AssociationStateDescriptor;
 import org.qi4j.api.composite.CompositeDescriptor;
 import org.qi4j.api.composite.CompositeInstance;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.*;
-import org.qi4j.api.entity.association.Association;
-import org.qi4j.api.entity.association.AssociationDescriptor;
-import org.qi4j.api.entity.association.ManyAssociation;
+import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkException;
@@ -56,7 +57,7 @@ public final class EntityInstance
     private final EntityState entityState;
 
     private Object[] mixins;
-    private EntityStateModel.EntityStateInstance state;
+    private EntityStateInstance state;
 
     public EntityInstance( ModuleUnitOfWork uow,
                            ModuleInstance moduleInstance,
@@ -135,7 +136,7 @@ public final class EntityInstance
         return entityState;
     }
 
-    public EntityStateModel.EntityStateInstance state()
+    public EntityStateInstance state()
     {
         if( state == null )
         {
@@ -187,7 +188,7 @@ public final class EntityInstance
         }
 
         mixins = entityModel.newMixinHolder();
-        state = entityModel.newStateHolder( uow, entityState );
+        state = new EntityStateInstance( entityModel.state(), uow, entityState );
     }
 
     @Override
@@ -250,14 +251,14 @@ public final class EntityInstance
     private void removeAggregatedEntities( UnitOfWork unitOfWork )
     {
         // Calculate aggregated Entities
-        EntityStateDescriptor stateDescriptor = entityModel.state();
+        AssociationStateDescriptor stateDescriptor = entityModel.state();
         Set<Object> aggregatedEntities = new HashSet<Object>();
-        Set<AssociationDescriptor> associations = stateDescriptor.associations();
+        Iterable<? extends AssociationDescriptor> associations = stateDescriptor.associations();
         for( AssociationDescriptor association : associations )
         {
             if( association.isAggregated() )
             {
-                Association assoc = state.getAssociation( association.accessor() );
+                Association assoc = state.associationFor( association.accessor() );
                 Object aggregatedEntity = assoc.get();
                 if( aggregatedEntity != null )
                 {
@@ -265,12 +266,12 @@ public final class EntityInstance
                 }
             }
         }
-        Set<AssociationDescriptor> manyAssociations = stateDescriptor.manyAssociations();
+        Iterable<? extends AssociationDescriptor> manyAssociations = stateDescriptor.manyAssociations();
         for( AssociationDescriptor association : manyAssociations )
         {
             if( association.isAggregated() )
             {
-                ManyAssociation manyAssoc = state.getManyAssociation( association.accessor() );
+                ManyAssociation manyAssoc = state.manyAssociationFor( association.accessor() );
                 for( Object entity : manyAssoc )
                 {
                     aggregatedEntities.add( entity );
@@ -295,10 +296,5 @@ public final class EntityInstance
         {
             throw new ConstraintViolationException( identity.identity(), entityModel.type().getName(), e.mixinTypeName(), e.methodName(), e.constraintViolations() );
         }
-    }
-
-    public void discard()
-    {
-        mixins = null;
     }
 }

@@ -17,17 +17,28 @@
 package org.qi4j.runtime.value;
 
 import org.json.JSONException;
+import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.composite.CompositeInstance;
+import org.qi4j.api.association.AssociationStateHolder;
 import org.qi4j.api.json.JSONWriterSerializer;
-import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.property.PropertyDescriptor;
+import org.qi4j.api.type.CollectionType;
+import org.qi4j.api.type.MapType;
+import org.qi4j.api.type.ValueCompositeType;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.api.value.ValueDescriptor;
+import org.qi4j.runtime.association.*;
 import org.qi4j.runtime.composite.MixinsInstance;
 import org.qi4j.runtime.composite.TransientInstance;
+import org.qi4j.runtime.property.PropertyInfo;
+import org.qi4j.runtime.property.PropertyInstance;
+import org.qi4j.runtime.property.PropertyModel;
 import org.qi4j.runtime.structure.ModuleInstance;
 
 import java.io.StringWriter;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Proxy;
+import java.util.*;
 
 /**
  * ValueComposite instance
@@ -41,7 +52,7 @@ public final class ValueInstance
         return (ValueInstance) Proxy.getInvocationHandler( composite );
     }
 
-    public ValueInstance( ValueModel compositeModel, ModuleInstance moduleInstance, Object[] mixins, StateHolder state )
+    public ValueInstance( ValueModel compositeModel, ModuleInstance moduleInstance, Object[] mixins, ValueStateInstance state )
     {
         super( compositeModel, moduleInstance, mixins, state );
     }
@@ -70,10 +81,64 @@ public final class ValueInstance
     }
 
     @Override
-    public ValueDescriptor descriptor()
+    public ValueStateInstance state()
     {
-        return (ValueDescriptor) compositeModel;
+        return (ValueStateInstance) state;
     }
+
+    @Override
+    public ValueModel descriptor()
+    {
+        return (ValueModel) compositeModel;
+    }
+
+    /**
+     * When a ValueBuilder is about to start, ensure that all state has builder infos, i.e. they are mutable.
+     */
+    public void prepareToBuild( )
+    {
+        for( PropertyModel propertyDescriptor : descriptor().state().properties() )
+        {
+            PropertyInstance<Object> propertyInstance = (PropertyInstance<Object>) state.propertyFor( propertyDescriptor.accessor() );
+
+            propertyInstance.prepareToBuild(propertyDescriptor);
+        }
+
+        for( AssociationModel associationDescriptor : descriptor().state().associations() )
+        {
+            state().associationFor( associationDescriptor.accessor() ).setAssociationInfo( associationDescriptor.getBuilderInfo() );
+        }
+
+        for( ManyAssociationModel associationDescriptor : descriptor().state().manyAssociations() )
+        {
+            state().manyAssociationFor( associationDescriptor.accessor() ).setAssociationInfo( associationDescriptor.getBuilderInfo() );
+        }
+    }
+
+    /**
+     * When a ValueBuilder is finished and is about to instantiate a Value, call this to ensure that the state has correct
+     * settings, i.e. is immutable.
+     */
+    public void prepareBuilderState(  )
+    {
+        for( PropertyModel propertyDescriptor : descriptor().state().properties() )
+        {
+            PropertyInstance<Object> propertyInstance = (PropertyInstance<Object>) state.propertyFor( propertyDescriptor.accessor() );
+
+            propertyInstance.prepareBuilderState(propertyDescriptor);
+        }
+
+        for( AssociationModel associationDescriptor : descriptor().state().associations() )
+        {
+            state().associationFor( associationDescriptor.accessor() ).setAssociationInfo( associationDescriptor );
+        }
+
+        for( ManyAssociationModel associationDescriptor : descriptor().state().manyAssociations() )
+        {
+            state().manyAssociationFor( associationDescriptor.accessor() ).setAssociationInfo( associationDescriptor );
+        }
+    }
+
 
     @Override
     public int hashCode()

@@ -21,7 +21,7 @@ import org.qi4j.api.sideeffect.SideEffects;
 import org.qi4j.api.util.Annotations;
 import org.qi4j.api.util.Classes;
 import org.qi4j.api.util.Fields;
-import org.qi4j.bootstrap.PropertyDeclarations;
+import org.qi4j.bootstrap.StateDeclarations;
 import org.qi4j.functional.*;
 import org.qi4j.runtime.composite.*;
 import org.qi4j.runtime.injection.DependencyModel;
@@ -50,7 +50,9 @@ public abstract class CompositeAssemblyImpl
     protected MixinsModel mixinsModel;
     protected CompositeMethodsModel compositeMethodsModel;
     protected AssemblyHelper helper;
-    protected PropertyDeclarations propertyDeclarations;
+    protected StateDeclarations stateDeclarations;
+
+    protected Set<String> registeredStateNames = new HashSet<String>();
 
     protected void addAnnotationsMetaInfo( Class<?> type, MetaInfo compositeMetaInfo )
     {
@@ -230,10 +232,15 @@ public abstract class CompositeAssemblyImpl
 
     protected void addStateFor( AccessibleObject accessor, Iterable<Class<? extends Constraint<?, ?>>> constraintClasses )
     {
+        String stateName = QualifiedName.fromAccessor( accessor ).name();
+
+        if (registeredStateNames.contains( stateName ))
+            return; // Skip already registered names
+
         if( Property.class.isAssignableFrom( Classes.RAW_CLASS.map( Classes.TYPE_OF.map( accessor ) )))
         {
-            if (propertiesModel.getPropertyByName( QualifiedName.fromAccessor( accessor ).name() ) == null)
-                propertiesModel.addProperty( newPropertyModel( accessor, constraintClasses ) );
+            propertiesModel.addProperty( newPropertyModel( accessor, constraintClasses ) );
+            registeredStateNames.add( stateName );
         }
     }
 
@@ -248,8 +255,8 @@ public abstract class CompositeAssemblyImpl
         {
             valueConstraintsInstance = valueConstraintsModel.newInstance();
         }
-        MetaInfo metaInfo = propertyDeclarations.getMetaInfo( accessor );
-        Object initialValue = propertyDeclarations.getInitialValue( accessor );
+        MetaInfo metaInfo = stateDeclarations.getMetaInfo( accessor );
+        Object initialValue = stateDeclarations.getInitialValue( accessor );
         boolean immutable = this.immutable || metaInfo.get( Immutable.class ) != null;
         PropertyModel propertyModel = new PropertyModel( accessor, immutable, valueConstraintsInstance, metaInfo, initialValue );
         return propertyModel;
@@ -440,7 +447,7 @@ public abstract class CompositeAssemblyImpl
     protected Iterable<Class<?>> concernDeclarations( Class<?> type )
     {
         // Find concern declarations
-        Iterable<Type> types = type.isInterface() ? Classes.TYPES_OF.map( type ) : Iterables.<Type, Class<?>>cast( Classes.CLASS_HIERARCHY.map( type ));
+        Iterable<Type> types = type.isInterface() ? Classes.TYPES_OF.map( type ) : Iterables.<Type, Class<?>>cast( Classes.CLASS_HIERARCHY.map( type ) );
 
         // Find all concerns and flattern them into an iterable
         return Iterables.toList( Iterables.flattenIterables( Iterables.map( new Function<Type, Iterable<Class<?>>>()

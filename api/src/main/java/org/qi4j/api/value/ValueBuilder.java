@@ -14,16 +14,15 @@
 
 package org.qi4j.api.value;
 
+import org.qi4j.api.association.AssociationStateHolder;
 import org.qi4j.api.common.ConstructionException;
-import org.qi4j.api.property.StateHolder;
 
 /**
  * JAVADOC
  */
 public interface ValueBuilder<T>
-    extends Iterable<T>
 {
-    StateHolder state();
+    AssociationStateHolder state();
 
     /**
      * Get a representation of the state for the new Value.

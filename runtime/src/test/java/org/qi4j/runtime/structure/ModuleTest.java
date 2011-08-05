@@ -76,9 +76,8 @@ public class ModuleTest
         throws AssemblyException
     {
         Application app = givenFixture1();
-        TransientBuilderFactory cbf = app.findModule( "Layer 1", "Module 1" ).transientBuilderFactory();
 
-        Module module = cbf.newTransient( TestComposite1.class ).getModule();
+        Module module = app.findModule( "Layer 1", "Module 1" ).newTransient( TestComposite1.class ).getModule();
         assertThat( "module name is correct", module.name(), equalTo( "Module 1" ) );
     }
 
@@ -87,9 +86,8 @@ public class ModuleTest
         throws AssemblyException
     {
         Application app = givenFixture1();
-        TransientBuilderFactory cbf = app.findModule( "Layer 1", "Module 1" ).transientBuilderFactory();
 
-        Module module = cbf.newTransient( TestComposite1.class ).getModule();
+        Module module = app.findModule( "Layer 1", "Module 1" ).newTransient( TestComposite1.class ).getModule();
         assertThat( "module for composite is correct", module, equalTo( module ) );
     }
 
@@ -98,9 +96,8 @@ public class ModuleTest
         throws ClassNotFoundException, AssemblyException
     {
         Application app = givenFixture1();
-        TransientBuilderFactory cbf = app.findModule( "Layer 1", "Module 1" ).transientBuilderFactory();
 
-        Module module = cbf.newTransient( TestComposite1.class ).getModule();
+        Module module = app.findModule( "Layer 1", "Module 1" ).newTransient( TestComposite1.class ).getModule();
         module.classLoader().loadClass( TestComposite2.class.getName() );
     }
 

@@ -47,7 +47,7 @@ public class AbstractMixinTest
     @Test
     public void testAbstractMixin()
     {
-        TestComposite instance = transientBuilderFactory.newTransient( TestComposite.class );
+        TestComposite instance = module.newTransient( TestComposite.class );
 
         Assert.assertEquals( "Hello WorldHello World", instance.test( "Hello World" ) );
     }

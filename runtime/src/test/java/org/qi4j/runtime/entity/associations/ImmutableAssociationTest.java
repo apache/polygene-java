@@ -15,11 +15,11 @@
 package org.qi4j.runtime.entity.associations;
 
 import org.junit.Test;
+import org.qi4j.api.association.Association;
+import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.entity.association.Association;
-import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.property.Immutable;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.AssemblyException;
@@ -45,7 +45,7 @@ public class ImmutableAssociationTest
     public void givenEntityWithImmutableAssociationWhenBuildingThenNoException()
         throws Exception
     {
-        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork unitOfWork = module.newUnitOfWork();
         try
         {
             PersonEntity father = unitOfWork.newEntity( PersonEntity.class );
@@ -65,7 +65,7 @@ public class ImmutableAssociationTest
     public void givenEntityWithImmutableAssociationWhenChangingValueThenThrowException()
         throws Exception
     {
-        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork unitOfWork = module.newUnitOfWork();
         try
         {
             EntityBuilder<PersonEntity> builder = unitOfWork.newEntityBuilder( PersonEntity.class );
@@ -91,7 +91,7 @@ public class ImmutableAssociationTest
     public void givenEntityWithImmutableManyAssociationWhenBuildingThenNoException()
         throws Exception
     {
-        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork unitOfWork = module.newUnitOfWork();
         try
         {
             EntityBuilder<PersonEntity> builder = unitOfWork.newEntityBuilder( PersonEntity.class );
@@ -113,7 +113,7 @@ public class ImmutableAssociationTest
     public void givenEntityWithImmutableManyAssociationWhenChangingValueThenThrowException()
         throws Exception
     {
-        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork unitOfWork = module.newUnitOfWork();
         try
         {
             EntityBuilder<PersonEntity> builder = unitOfWork.newEntityBuilder( PersonEntity.class );

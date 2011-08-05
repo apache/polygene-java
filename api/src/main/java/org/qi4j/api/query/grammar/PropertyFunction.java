@@ -1,8 +1,8 @@
 package org.qi4j.api.query.grammar;
 
+import org.qi4j.api.association.Association;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.CompositeInstance;
-import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.query.NotQueryableException;

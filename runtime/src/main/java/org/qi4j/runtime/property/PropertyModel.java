@@ -19,6 +19,7 @@ import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.constraint.ConstraintViolation;
 import org.qi4j.api.constraint.ConstraintViolationException;
+import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.property.DefaultValues;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Property;
@@ -67,6 +68,8 @@ public class PropertyModel
 
     protected PropertyInfo builderInfo;
 
+    private final boolean queryable;
+
     public PropertyModel( AccessibleObject accessor, boolean immutable, ValueConstraintsInstance constraints,
                           MetaInfo metaInfo, Object initialValue
     )
@@ -83,6 +86,9 @@ public class PropertyModel
         this.initialValue = initialValue;
 
         this.constraints = constraints;
+
+        final Queryable queryable = accessor.getAnnotation( Queryable.class );
+        this.queryable = queryable == null || queryable.value();
     }
 
     public <T> T metaInfo( Class<T> infoType )
@@ -126,6 +132,11 @@ public class PropertyModel
         return builderInfo;
     }
 
+    public boolean queryable()
+    {
+        return queryable;
+    }
+
     public Object initialValue( Module module )
     {
         // Use supplied value from assembly
@@ -136,7 +147,7 @@ public class PropertyModel
         {
             if (valueType instanceof ValueCompositeType )
             {
-                return module.valueBuilderFactory().newValue( valueType().type() );
+                return module.newValue( valueType().type() );
             } else
             {
                 value = DefaultValues.getDefaultValue( type );
@@ -151,39 +162,7 @@ public class PropertyModel
     {
         valueType = ValueTypeFactory.instance().newValueType( type(), ((Member)accessor()).getDeclaringClass(), resolution.model().type(), resolution.layer(), resolution.module() );
 
-        builderInfo = new PropertyInfo()
-        {
-            @Override
-            public boolean isImmutable()
-            {
-                return false;
-            }
-
-            @Override
-            public QualifiedName qualifiedName()
-            {
-                return qualifiedName;
-            }
-
-            @Override
-            public Type type()
-            {
-                return type;
-            }
-
-            @Override
-            public void checkConstraints( Object value ) throws ConstraintViolationException
-            {
-                if( constraints != null )
-                {
-                    List<ConstraintViolation> violations = constraints.checkConstraints( value );
-                    if( !violations.isEmpty() )
-                    {
-                        throw new ConstraintViolationException( "<new instance>", "<unknown>", ((Member)accessor), violations );
-                    }
-                }
-            }
-        };
+        builderInfo = new BuilderPropertyInfo();
 
         if (type instanceof TypeVariable)
         {
@@ -207,17 +186,6 @@ public class PropertyModel
             {
                 throw new ConstraintViolationException( "<new instance>", "<unknown>", ((Member)accessor), violations );
             }
-        }
-    }
-
-    public void checkConstraints( PropertiesInstance properties )
-        throws ConstraintViolationException
-    {
-        if( constraints != null )
-        {
-            Object value = properties.propertyFor( accessor ).get();
-
-            checkConstraints( value );
         }
     }
 
@@ -250,5 +218,39 @@ public class PropertyModel
           return ((Field)accessor).toGenericString();
         else
             return ((Method)accessor).toGenericString();
+    }
+
+    private class BuilderPropertyInfo implements PropertyInfo
+    {
+        @Override
+        public boolean isImmutable()
+        {
+            return false;
+        }
+
+        @Override
+        public QualifiedName qualifiedName()
+        {
+            return qualifiedName;
+        }
+
+        @Override
+        public Type type()
+        {
+            return type;
+        }
+
+        @Override
+        public void checkConstraints( Object value ) throws ConstraintViolationException
+        {
+            if( constraints != null )
+            {
+                List<ConstraintViolation> violations = constraints.checkConstraints( value );
+                if( !violations.isEmpty() )
+                {
+                    throw new ConstraintViolationException( "<new instance>", "<unknown>", ((Member)accessor), violations );
+                }
+            }
+        }
     }
 }

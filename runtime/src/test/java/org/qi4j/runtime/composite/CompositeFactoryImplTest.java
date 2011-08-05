@@ -47,7 +47,7 @@ public class CompositeFactoryImplTest
         try
         {
             Class aClass = FirstComposite.class;
-            TransientBuilder builder = transientBuilderFactory.newTransientBuilder( aClass );
+            TransientBuilder builder = module.newTransientBuilder( aClass );
             builder.newInstance();
             fail(
                 "CompositeBuilderFactory.newInstance() should return MixinTypeNotAvailableException when creating a new instance for "
@@ -65,7 +65,7 @@ public class CompositeFactoryImplTest
     {
         try
         {
-            TransientBuilder<SecondComposite> builder = transientBuilderFactory.newTransientBuilder(
+            TransientBuilder<SecondComposite> builder = module.newTransientBuilder(
                 SecondComposite.class );
             SecondComposite composition9 = builder.newInstance();
             composition9.setValue( "satisfiedBy value" );

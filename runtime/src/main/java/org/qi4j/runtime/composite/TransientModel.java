@@ -14,19 +14,13 @@
 
 package org.qi4j.runtime.composite;
 
-import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.composite.Composite;
-import org.qi4j.api.composite.CompositeInstance;
 import org.qi4j.api.composite.TransientDescriptor;
-import org.qi4j.api.property.PropertyDescriptor;
-import org.qi4j.api.property.StateHolder;
-import org.qi4j.functional.Function;
+import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.runtime.injection.InjectionContext;
+import org.qi4j.runtime.property.PropertyModel;
 import org.qi4j.runtime.structure.ModuleInstance;
-
-import java.lang.reflect.InvocationHandler;
 
 /**
  * Model for Transient Composites
@@ -46,13 +40,13 @@ public class TransientModel
         super( compositeType, types, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
     }
 
-    public CompositeInstance newCompositeInstance( ModuleInstance moduleInstance,
-                                                   UsesInstance uses,
-                                                   StateHolder state
+    public TransientInstance newInstance( ModuleInstance moduleInstance,
+                                          UsesInstance uses,
+                                          TransientStateInstance state
     )
     {
         Object[] mixins = mixinsModel.newMixinHolder();
-        CompositeInstance compositeInstance = new TransientInstance( this, moduleInstance, mixins, state );
+        TransientInstance compositeInstance = new TransientInstance( this, moduleInstance, mixins, state );
 
         // Instantiate all mixins
         int i = 0;
@@ -66,26 +60,18 @@ public class TransientModel
         return compositeInstance;
     }
 
-    public StateHolder newBuilderState( final ModuleInstance module )
-    {
-        return stateModel.newBuilderInstance(new Function<PropertyDescriptor, Object>()
-        {
-            @Override
-            public Object map( PropertyDescriptor propertyDescriptor )
-            {
-                return propertyDescriptor.initialValue( module );
-            }
-        } );
-    }
-
-    public StateHolder newState( StateHolder state )
-    {
-        return stateModel.newInstance( state );
-    }
-
     @Override
     public String toString()
     {
         return type().getName();
+    }
+
+    public void checkConstraints( TransientStateInstance instanceState )
+            throws ConstraintViolationException
+    {
+        for( PropertyModel propertyModel : stateModel.properties() )
+        {
+            propertyModel.checkConstraints( instanceState.<Object>propertyFor( propertyModel.accessor() ).get() );
+        }
     }
 }

@@ -22,12 +22,8 @@ import org.qi4j.api.common.ConstructionException;
  * TransientBuilders are used to instantiate TransientComposites. They can be acquired from
  * {@link TransientBuilderFactory#newTransientBuilder(Class)} and allows the client
  * to provide additional settings before instantiating the TransientComposite.
- * <p/>
- * It extends Iterable which allows client code to iteratively create new instances. This
- * can be used to implement the prototype pattern.
  */
 public interface TransientBuilder<T>
-    extends Iterable<T>
 {
     /**
      * Provide objects that can be injected into mixins that has the @Uses

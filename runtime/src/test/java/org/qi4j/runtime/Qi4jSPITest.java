@@ -16,12 +16,12 @@ package org.qi4j.runtime;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
+import org.qi4j.api.association.*;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityDescriptor;
-import org.qi4j.api.entity.EntityStateDescriptor;
-import org.qi4j.api.entity.association.*;
+import org.qi4j.api.association.AssociationStateDescriptor;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.unitofwork.UnitOfWork;
@@ -49,7 +49,7 @@ public class Qi4jSPITest
     public void givenEntityWhenGettingStateThenGetCorrectState()
         throws Exception
     {
-        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork unitOfWork = module.newUnitOfWork();
         TestEntity testEntity;
         try
         {
@@ -57,7 +57,7 @@ public class Qi4jSPITest
 
             testEntity = builder.newInstance();
 
-            EntityStateHolder state = spi.getState( testEntity );
+            AssociationStateHolder state = spi.getState( testEntity );
 
             validateState( state, spi.getEntityDescriptor( testEntity ) );
 
@@ -69,7 +69,7 @@ public class Qi4jSPITest
             throw e;
         }
 
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork uow = module.newUnitOfWork();
         try
         {
             testEntity = uow.get( testEntity );
@@ -83,7 +83,7 @@ public class Qi4jSPITest
         }
     }
 
-    private void validateState( EntityStateHolder state, EntityDescriptor entityDescriptor )
+    private void validateState( AssociationStateHolder state, EntityDescriptor entityDescriptor )
     {
         for( PropertyDescriptor propertyDescriptor : entityDescriptor.state().properties() )
         {
@@ -91,10 +91,10 @@ public class Qi4jSPITest
             assertThat( "Properties could be listed", prop, CoreMatchers.notNullValue() );
         }
 
-        EntityStateDescriptor descriptor = entityDescriptor.state();
+        AssociationStateDescriptor descriptor = entityDescriptor.state();
         for( AssociationDescriptor associationDescriptor : descriptor.associations() )
         {
-            AbstractAssociation assoc = state.getAssociation( associationDescriptor.accessor() );
+            AbstractAssociation assoc = state.associationFor( associationDescriptor.accessor() );
             assertThat( "Assocs could be listed", assoc, CoreMatchers.notNullValue() );
         }
     }

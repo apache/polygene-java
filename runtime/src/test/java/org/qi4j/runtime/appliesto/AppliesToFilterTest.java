@@ -47,7 +47,7 @@ public class AppliesToFilterTest
     public void givenAnAppliesToFilterWhenAppliedThenFilterMethods()
         throws Exception
     {
-        Some some = transientBuilderFactory.newTransient( Some.class );
+        Some some = module.newTransient( Some.class );
         Assert.assertEquals( ",", some.doStuff1() );
         Assert.assertEquals( ",,..", some.doStuff2() );
         Assert.assertEquals( ",,,", some.doStuff3() );

@@ -43,11 +43,10 @@ public class NonQueryableTest
     @Test
     public void whenQuerableIsFalseOnPropertyThenExpectException()
     {
-        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork unitOfWork = module.newUnitOfWork();
         try
         {
-            QueryBuilderFactory factory = queryBuilderFactory;
-            QueryBuilder<Abc> builder = factory.newQueryBuilder( Abc.class );
+            QueryBuilder<Abc> builder = module.newQueryBuilder( Abc.class );
             Abc proto = templateFor( Abc.class );
             builder.where( eq( proto.isValid(), Boolean.TRUE ) );
             Assert.fail( "Exception was expected." );
@@ -65,11 +64,10 @@ public class NonQueryableTest
     @Test
     public void testQueryIterable()
     {
-        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork unitOfWork = module.newUnitOfWork();
         try
         {
-            QueryBuilderFactory factory = queryBuilderFactory;
-            factory.newQueryBuilder( Abc2.class );
+            module.newQueryBuilder( Abc2.class );
             Assert.fail( "Exception was expected." );
         }
         catch( QueryException e )

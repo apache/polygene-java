@@ -82,7 +82,7 @@ public class QI273Test
         throws Exception
     {
 /*
-        UnitOfWork uow = this.unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork uow = this.module.newUnitOfWork();
 
         EntityBuilder<SomeDomainEntity> builder = uow.newEntityBuilder( SomeDomainEntity.class );
         builder.instanceFor( RoleA.class ).theProperty().set( "a" );

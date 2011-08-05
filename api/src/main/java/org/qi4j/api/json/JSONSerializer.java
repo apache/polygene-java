@@ -6,11 +6,16 @@ import org.joda.time.LocalDateTime;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.qi4j.api.Qi4j;
+import org.qi4j.api.association.Association;
+import org.qi4j.api.association.AssociationDescriptor;
+import org.qi4j.api.association.AssociationStateHolder;
+import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.composite.CompositeInstance;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.api.property.PersistentPropertyDescriptor;
+import org.qi4j.api.entity.Identity;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.type.*;
 import org.qi4j.api.util.Dates;
@@ -154,23 +159,35 @@ public abstract class JSONSerializer
             objectStart();
             ValueComposite valueComposite = (ValueComposite) value;
 
-            Iterable<PersistentPropertyDescriptor> actualProperties = valueCompositeType.properties();
             if( !valueCompositeType.type().equals( Qi4j.DESCRIPTOR_FUNCTION.map( valueComposite ).type() ) )
             {
                 // Actual value is a subtype - use it instead
                 ValueDescriptor valueDescriptor = (ValueDescriptor) Qi4j.DESCRIPTOR_FUNCTION.map( valueComposite );
 
-                actualProperties = ((ValueCompositeType)valueDescriptor.valueType()).properties();
+                valueCompositeType = valueDescriptor.valueType();
 
                 if (includeTypeInformation)
                     key("_type").value( valueDescriptor.valueType().type().getName() );
             }
 
-            StateHolder state = Qi4j.INSTANCE_FUNCTION.map( valueComposite ).state();
-            for( PersistentPropertyDescriptor persistentProperty : actualProperties )
+            AssociationStateHolder state = (AssociationStateHolder) Qi4j.INSTANCE_FUNCTION.map( valueComposite ).state();
+            for( PropertyDescriptor persistentProperty : valueCompositeType.properties() )
             {
                 Property<?> property = state.propertyFor( persistentProperty.accessor() );
                 key( persistentProperty.qualifiedName().name() ).serialize( property.get(), persistentProperty.valueType() );
+            }
+            for( AssociationDescriptor associationDescriptor : valueCompositeType.associations() )
+            {
+                Association<?> association = state.associationFor( associationDescriptor.accessor() );
+
+                Object instance = association.get();
+                if (instance != null)
+                    key( associationDescriptor.qualifiedName().name() ).value( ((Identity)instance).identity().get() );
+            }
+            for( AssociationDescriptor associationDescriptor : valueCompositeType.manyAssociations() )
+            {
+                ManyAssociation<?> manyAssociation = state.manyAssociationFor( associationDescriptor.accessor() );
+                key( associationDescriptor.qualifiedName().name() ).serialize( manyAssociation.toList(), new CollectionType( List.class, new ValueType( String.class ) ) );
             }
             objectEnd();
         } else if( valueType instanceof CollectionType )

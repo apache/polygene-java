@@ -19,8 +19,8 @@ import org.junit.Test;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.entity.association.Association;
-import org.qi4j.api.entity.association.ManyAssociation;
+import org.qi4j.api.association.Association;
+import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.unitofwork.UnitOfWork;
@@ -47,7 +47,7 @@ public class StateFieldTest
     public void givenEntityWithFieldPropertiesWhenUpdatedThenReturnCorrect()
         throws Exception
     {
-        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork unitOfWork = module.newUnitOfWork();
         try
         {
             PersonEntity charles = unitOfWork.newEntity( PersonEntity.class );
@@ -68,7 +68,7 @@ public class StateFieldTest
 
             unitOfWork.complete();
 
-            unitOfWork = unitOfWorkFactory.newUnitOfWork(  );
+            unitOfWork = module.newUnitOfWork(  );
 
             charles = unitOfWork.get( charles );
             daniel = unitOfWork.get( daniel );

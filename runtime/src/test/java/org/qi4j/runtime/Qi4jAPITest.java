@@ -45,18 +45,18 @@ public class Qi4jAPITest
     public void testGetModuleOfComposite()
         throws Exception
     {
-        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork unitOfWork = module.newUnitOfWork();
         TestEntity testEntity = unitOfWork.newEntity( TestEntity.class );
 
         api.getModule( testEntity );
 
         unitOfWork.discard();
 
-        api.getModule( valueBuilderFactory.newValue( TestValue.class ) );
+        api.getModule( module.newValue( TestValue.class ) );
 
-        api.getModule( transientBuilderFactory.newTransient( TestTransient.class ) );
+        api.getModule( module.newTransient( TestTransient.class ) );
 
-        api.getModule( serviceLocator.findService( TestService.class ).get() );
+        api.getModule( module.findService( TestService.class ).get() );
     }
 
     public interface TestTransient

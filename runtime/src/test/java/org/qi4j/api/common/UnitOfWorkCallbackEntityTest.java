@@ -44,7 +44,7 @@ public class UnitOfWorkCallbackEntityTest
     @Ignore( "Validation is moved to sandbox, and UoW is under massive refactoring." )
     public void givenCompositeWithValidatableWhenUnitCompletesThenPerformValidation()
     {
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork uow = module.newUnitOfWork();
         TestCase test = uow.newEntity( TestCase.class );
 
         try

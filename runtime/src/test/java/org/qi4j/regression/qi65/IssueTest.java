@@ -24,7 +24,7 @@ public class IssueTest
     public void constraintOnMethodParameter()
             throws SecurityException, NoSuchMethodException
     {
-        TestComposite test = transientBuilderFactory.newTransient( TestComposite.class );
+        TestComposite test = module.newTransient( TestComposite.class );
 
         test.someMethod( null );
     }

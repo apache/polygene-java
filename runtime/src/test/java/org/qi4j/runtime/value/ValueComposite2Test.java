@@ -49,7 +49,7 @@ public class ValueComposite2Test
                 module.services( DummyService.class );
             }
         };
-        ValueBuilder<Some> builder = app.valueBuilderFactory().newValueBuilder( Some.class );
+        ValueBuilder<Some> builder = app.module().newValueBuilder( Some.class );
         Some prototype = builder.prototype();
         Property<String> otherProperty = prototype.other();
         otherProperty.set( "Abc" );

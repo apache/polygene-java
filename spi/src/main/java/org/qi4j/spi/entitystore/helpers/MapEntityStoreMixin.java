@@ -1,19 +1,18 @@
 package org.qi4j.spi.entitystore.helpers;
 
 import org.json.*;
+import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.cache.CacheOptions;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.api.entity.association.AssociationDescriptor;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.json.JSONDeserializer;
 import org.qi4j.api.json.JSONWriterSerializer;
-import org.qi4j.api.property.PersistentPropertyDescriptor;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceDescriptor;
@@ -268,7 +267,7 @@ public class MapEntityStoreMixin
                 key( "properties" ).object();
             EntityDescriptor entityType = state.entityDescriptor();
             JSONWriterSerializer serializer = new JSONWriterSerializer( json );
-            for( PersistentPropertyDescriptor persistentProperty : entityType.state().<PersistentPropertyDescriptor>properties() )
+            for( PropertyDescriptor persistentProperty : entityType.state().properties() )
             {
                 Object value = state.properties().get( persistentProperty.qualifiedName() );
                 json.key( persistentProperty.qualifiedName().name() );

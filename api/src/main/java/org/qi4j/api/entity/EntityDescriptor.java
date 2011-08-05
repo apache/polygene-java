@@ -14,6 +14,7 @@
 
 package org.qi4j.api.entity;
 
+import org.qi4j.api.association.AssociationStateDescriptor;
 import org.qi4j.api.composite.CompositeDescriptor;
 import org.qi4j.api.composite.StatefulCompositeDescriptor;
 
@@ -23,7 +24,7 @@ import org.qi4j.api.composite.StatefulCompositeDescriptor;
 public interface EntityDescriptor
     extends CompositeDescriptor, StatefulCompositeDescriptor
 {
-    EntityStateDescriptor state();
+    AssociationStateDescriptor state();
 
     boolean queryable();
 }

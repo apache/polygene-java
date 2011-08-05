@@ -80,7 +80,7 @@ public class TransientInstance
         return compositeModel.invoke( this, proxy, method, args, moduleInstance );
     }
 
-    public CompositeDescriptor descriptor()
+    public CompositeModel descriptor()
     {
         return compositeModel;
     }
@@ -98,11 +98,6 @@ public class TransientInstance
     public ModuleInstance module()
     {
         return moduleInstance;
-    }
-
-    public CompositeModel compositeModel()
-    {
-        return compositeModel;
     }
 
     public StateHolder state()
@@ -199,7 +194,7 @@ public class TransientInstance
                    "mixins=" + ( mixins == null ? null : Arrays.asList( mixins ) ) +
                    ", state=" + state +
                    ", compositeModel=" + compositeModel +
-                   ", moduleInstance=" + moduleInstance +
+                   ", module=" + moduleInstance +
                    '}';
         }
         return buffer.toString();

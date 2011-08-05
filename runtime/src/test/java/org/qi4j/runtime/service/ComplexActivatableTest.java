@@ -43,7 +43,7 @@ public class ComplexActivatableTest
     @Test
     public void validateThatApplicationGotAssembled()
     {
-        ServiceReference<SuperType> reference = serviceLocator.findService( SuperType.class );
+        ServiceReference<SuperType> reference = module.findService( SuperType.class );
         assertEquals( "Hello, World", reference.get().sayHello() );
     }
 

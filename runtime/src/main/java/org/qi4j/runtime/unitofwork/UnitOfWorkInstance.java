@@ -23,6 +23,7 @@ import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.*;
 import org.qi4j.api.usecase.Usecase;
+import org.qi4j.functional.Iterables;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.structure.ModelModule;
@@ -54,8 +55,7 @@ public final class UnitOfWorkInstance
     }
 
     private long currentTime;
-    final HashMap<EntityReference, EntityState> stateCache;
-    final HashMap<InstanceKey, EntityInstance> instanceCache;
+    final HashMap<EntityReference, EntityInstance> instanceCache;
     final HashMap<EntityStore, EntityStoreUnitOfWork> storeUnitOfWork;
 
     private boolean open;
@@ -75,8 +75,7 @@ public final class UnitOfWorkInstance
     {
         this.currentTime = currentTime;
         this.open = true;
-        stateCache = new HashMap<EntityReference, EntityState>();
-        instanceCache = new HashMap<InstanceKey, EntityInstance>();
+        instanceCache = new HashMap<EntityReference, EntityInstance>();
         storeUnitOfWork = new HashMap<EntityStore, EntityStoreUnitOfWork>();
         getCurrent().push( this );
         paused = false;
@@ -94,27 +93,27 @@ public final class UnitOfWorkInstance
         return uow;
     }
 
-    public EntityInstance get( EntityReference identity,
+    public <T> T get( EntityReference identity,
                                ModuleUnitOfWork uow,
                                Iterable<ModelModule<EntityModel>> potentialModels,
-                               Class mixinType
+                               Class<T> mixinType
     )
         throws EntityTypeNotFoundException, NoSuchEntityException
     {
         checkOpen();
 
-        EntityState entityState = stateCache.get( identity );
-        EntityInstance entityInstance;
-        if( entityState == null )
+        EntityInstance entityInstance = instanceCache.get( identity );
+        if( entityInstance == null )
         {   // Not yet in cache
 
             // Check if this is a root UoW, or if no parent UoW knows about this entity
+            EntityState entityState = null;
             EntityModel model = null;
             ModuleInstance module = null;
             // Figure out what EntityStore to use
             for( ModelModule<EntityModel> potentialModule : potentialModels )
             {
-                EntityStore store = potentialModule.module().entities().entityStore();
+                EntityStore store = potentialModule.module().entityStore();
                 EntityStoreUnitOfWork storeUow = getEntityStoreUnitOfWork( store, potentialModule.module() );
                 try
                 {
@@ -147,60 +146,18 @@ public final class UnitOfWorkInstance
             // Create instance
             entityInstance = new EntityInstance( uow, module, model, entityState );
 
-            stateCache.put( identity, entityState );
-            InstanceKey instanceKey = new InstanceKey( model.type(), identity );
-            instanceCache.put( instanceKey, entityInstance );
+            instanceCache.put( identity, entityInstance );
         }
         else
         {
             // Check if it has been removed
-            if( entityState.status() == EntityStatus.REMOVED )
+            if( entityInstance.status() == EntityStatus.REMOVED )
             {
                 throw new NoSuchEntityException( identity );
             }
-
-            // Find instance in cache
-            InstanceKey instanceKey = new InstanceKey();
-            for( ModelModule<EntityModel> potentialModel : potentialModels )
-            {
-                instanceKey.update( potentialModel.model().type(), identity );
-                EntityInstance instance = instanceCache.get( instanceKey );
-                if( instance != null )
-                {
-                    return instance; // Found it!
-                }
-            }
-
-            // State is in UoW, but no model for this mixin type has been used before
-            // See if any types match
-            EntityModel model = null;
-            ModuleInstance module = null;
-            for( ModelModule<EntityModel> potentialModel : potentialModels )
-            {
-                EntityModel entityModel = potentialModel.model();
-                Class<?> typeRef = potentialModel.model().type();
-                if( entityState.isAssignableTo( typeRef ) )
-                {
-                    // Found it!
-                    // Check for ambiguity
-                    if( model != null )
-                    {
-                        throw new AmbiguousTypeException( "More than one model matches the type "+mixinType.getName()+":"+potentialModel.model().type() );
-                    }
-
-                    model = entityModel;
-                    module = potentialModel.module();
-                }
-            }
-
-            // Create instance
-            entityInstance = new EntityInstance( uow, module, model, entityState );
-
-            instanceKey.update( model.type(), identity );
-            instanceCache.put( instanceKey, entityInstance );
         }
 
-        return entityInstance;
+        return entityInstance.<T>proxy();
     }
 
     public Usecase usecase()
@@ -224,6 +181,35 @@ public final class UnitOfWorkInstance
         {
             paused = true;
             getCurrent().pop();
+
+            UnitOfWorkOptions unitOfWorkOptions = metaInfo().get(UnitOfWorkOptions.class);
+            if ( unitOfWorkOptions == null)
+                unitOfWorkOptions = usecase().metaInfo( UnitOfWorkOptions.class );
+
+            if (unitOfWorkOptions != null)
+            {
+                if (unitOfWorkOptions.isPruneOnPause())
+                {
+                    List<EntityReference> prunedInstances = null;
+                    for( EntityInstance entityInstance : instanceCache.values() )
+                    {
+                        if (entityInstance.status() == EntityStatus.LOADED)
+                        {
+                            if (prunedInstances == null)
+                                prunedInstances = new ArrayList<EntityReference>(  );
+                            prunedInstances.add(entityInstance.identity());
+                        }
+                    }
+                    if (prunedInstances != null)
+                    {
+                        for( EntityReference prunedInstance : prunedInstances )
+                        {
+                            instanceCache.remove( prunedInstance );
+                        }
+                    }
+                }
+            }
+
         }
         else
         {
@@ -303,13 +289,6 @@ public final class UnitOfWorkInstance
             getCurrent().pop();
         }
         open = false;
-
-        for( EntityInstance entityInstance : instanceCache.values() )
-        {
-            entityInstance.discard();
-        }
-
-        stateCache.clear();
     }
 
     public boolean isOpen()
@@ -335,11 +314,9 @@ public final class UnitOfWorkInstance
         }
     }
 
-    public void createEntity( EntityInstance instance )
+    public void addEntity( EntityInstance instance )
     {
-        stateCache.put( instance.identity(), instance.entityState() );
-        InstanceKey instanceKey = new InstanceKey( instance.entityModel().type(), instance.identity() );
-        instanceCache.put( instanceKey, instance );
+        instanceCache.put( instance.identity(), instance );
     }
 
     private List<StateCommitter> applyChanges()
@@ -404,19 +381,15 @@ public final class UnitOfWorkInstance
         // Notify entities
         try
         {
-            new ForEachEntity()
+            for( EntityInstance instance : instanceCache.values() )
             {
-                protected void execute( EntityInstance instance )
-                    throws Exception
+                if( instance.<Object>proxy() instanceof UnitOfWorkCallback && !instance.status()
+                    .equals( EntityStatus.REMOVED ) )
                 {
-                    if( instance.<Object>proxy() instanceof UnitOfWorkCallback && !instance.status()
-                        .equals( EntityStatus.REMOVED ) )
-                    {
-                        UnitOfWorkCallback callback = UnitOfWorkCallback.class.cast( instance.proxy() );
-                        callback.beforeCompletion();
-                    }
+                    UnitOfWorkCallback callback = UnitOfWorkCallback.class.cast( instance.proxy() );
+                    callback.beforeCompletion();
                 }
-            }.execute();
+            }
         }
         catch( UnitOfWorkCompletionException e )
         {
@@ -450,29 +423,20 @@ public final class UnitOfWorkInstance
         // Notify entities
         try
         {
-            new ForEachEntity()
+            for( EntityInstance instance : instanceCache.values() )
             {
-                protected void execute( EntityInstance instance )
-                    throws Exception
+                if( instance.<Object>proxy() instanceof UnitOfWorkCallback && !instance.status()
+                    .equals( EntityStatus.REMOVED ) )
                 {
-                    if( instance.<Object>proxy() instanceof UnitOfWorkCallback && !instance.status()
-                        .equals( EntityStatus.REMOVED ) )
-                    {
-                        UnitOfWorkCallback callback = UnitOfWorkCallback.class.cast( instance.proxy() );
-                        callback.afterCompletion( status );
-                    }
+                    UnitOfWorkCallback callback = UnitOfWorkCallback.class.cast( instance.proxy() );
+                    callback.afterCompletion( status );
                 }
-            }.execute();
+            }
         }
         catch( Exception e )
         {
             // Ignore
         }
-    }
-
-    EntityState getCachedState( EntityReference entityId )
-    {
-        return stateCache.get( entityId );
     }
 
     public void checkOpen()
@@ -491,81 +455,11 @@ public final class UnitOfWorkInstance
     @Override
     public String toString()
     {
-        return "UnitOfWork " + hashCode() + "(" + usecase + "): entities:" + stateCache.size();
+        return "UnitOfWork " + hashCode() + "(" + usecase + "): entities:" + instanceCache.size();
     }
 
     public void remove( EntityReference entityReference )
     {
-        stateCache.remove( entityReference );
-    }
-
-    abstract class ForEachEntity
-    {
-        void execute()
-            throws Exception
-        {
-            for( EntityInstance entityInstance : instanceCache.values() )
-            {
-                execute( entityInstance );
-            }
-        }
-
-        protected abstract void execute( EntityInstance instance )
-            throws Exception;
-    }
-
-    private static class InstanceKey
-    {
-        private Class<?> type;
-        private EntityReference entityReference;
-
-        private InstanceKey()
-        {
-        }
-
-        private InstanceKey( Class<?> type, EntityReference entityReference )
-        {
-            this.type = type;
-            this.entityReference = entityReference;
-        }
-
-        public EntityReference entityReference()
-        {
-            return entityReference;
-        }
-
-        public void update( Class<?> type, EntityReference entityReference )
-        {
-            this.type = type;
-            this.entityReference = entityReference;
-        }
-
-        @Override
-        public boolean equals( Object o )
-        {
-            if( this == o )
-            {
-                return true;
-            }
-            if( o == null || getClass() != o.getClass() )
-            {
-                return false;
-            }
-
-            InstanceKey that = (InstanceKey) o;
-            if( !entityReference.equals( that.entityReference ) )
-            {
-                return false;
-            }
-            return type.equals( that.type );
-        }
-
-        @Override
-        public int hashCode()
-        {
-            int result = type.hashCode();
-            result = 31 * result + entityReference.hashCode();
-            return result;
-        }
+        instanceCache.remove( entityReference );
     }
 }

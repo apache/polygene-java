@@ -14,6 +14,8 @@
 
 package org.qi4j.api.composite;
 
+import org.qi4j.api.structure.Module;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -27,17 +29,19 @@ import java.lang.reflect.Proxy;
 public class CompositeContext<T extends TransientComposite>
     extends ThreadLocal<T>
 {
-    private final TransientBuilder<T> builder;
+    private Module module;
+    private Class<T> type;
 
-    public CompositeContext( TransientBuilder<T> builder )
+    public CompositeContext( Module module, Class<T> type)
     {
-        this.builder = builder;
+        this.module = module;
+        this.type = type;
     }
 
     @Override
     protected T initialValue()
     {
-        return builder.newInstance();
+        return module.newTransient( type );
     }
 
     @SuppressWarnings( "unchecked" )

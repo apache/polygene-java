@@ -15,16 +15,12 @@
 package org.qi4j.runtime.composite;
 
 import org.qi4j.api.common.ConstructionException;
-import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.CompositeInstance;
 import org.qi4j.api.composite.TransientBuilder;
-import org.qi4j.api.property.Property;
-import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.property.PropertyDescriptor;
+import org.qi4j.runtime.property.PropertyInfo;
+import org.qi4j.runtime.property.PropertyInstance;
 import org.qi4j.runtime.structure.ModelModule;
-
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.util.Iterator;
 
 /**
  * JAVADOC
@@ -40,18 +36,13 @@ public final class TransientBuilderInstance<T>
     // lazy initialized in accessor
     private CompositeInstance prototypeInstance;
 
-    // lazy initialized in accessor
-    private StateHolder state;
+    private TransientStateInstance state;
 
-    public TransientBuilderInstance( ModelModule<TransientModel> model, UsesInstance uses )
-    {
-        this( model );
-        this.uses = uses;
-    }
-
-    public TransientBuilderInstance( ModelModule<TransientModel> model )
+    public TransientBuilderInstance( ModelModule<TransientModel> model, TransientStateInstance state, UsesInstance uses )
     {
         this.model = model;
+        this.state = state;
+        this.uses = uses;
     }
 
     public Class<T> compositeType()
@@ -71,7 +62,7 @@ public final class TransientBuilderInstance<T>
         // Instantiate given value type
         if( prototypeInstance == null )
         {
-            prototypeInstance = model.model().newCompositeInstance( model.module(), uses, getState() );
+            prototypeInstance = model.model().newInstance( model.module(), uses, state );
         }
 
         return prototypeInstance.<T>proxy();
@@ -82,7 +73,7 @@ public final class TransientBuilderInstance<T>
         // Instantiate given value type
         if( prototypeInstance == null )
         {
-            prototypeInstance = model.model().newCompositeInstance( model.module(), uses, getState() );
+            prototypeInstance = model.model().newInstance( model.module(), uses, state );
         }
 
         return prototypeInstance.newProxy( mixinType );
@@ -91,51 +82,16 @@ public final class TransientBuilderInstance<T>
     public T newInstance()
         throws ConstructionException
     {
-        StateHolder instanceState;
-        if( state == null )
+        // Set correct info's (immutable) on the state
+        for( PropertyDescriptor propertyDescriptor : model.model().state().properties() )
         {
-            instanceState = model.model().newInitialState(model.module());
-        }
-        else
-        {
-            instanceState = model.model().newState( state );
+            ((PropertyInstance<Object>)state.propertyFor( propertyDescriptor.accessor() )).setPropertyInfo( (PropertyInfo) propertyDescriptor );
         }
 
-        model.model().state().checkConstraints( instanceState );
+        model.model().checkConstraints( state );
 
         CompositeInstance compositeInstance =
-            model.model().newCompositeInstance( model.module(), uses, instanceState );
+            model.model().newInstance( model.module(), uses, state );
         return compositeInstance.<T>proxy();
-    }
-
-    public Iterator<T> iterator()
-    {
-        return new Iterator<T>()
-        {
-            public boolean hasNext()
-            {
-                return true;
-            }
-
-            public T next()
-            {
-                return newInstance();
-            }
-
-            public void remove()
-            {
-                throw new UnsupportedOperationException();
-            }
-        };
-    }
-
-    private StateHolder getState()
-    {
-        if( state == null )
-        {
-            state = model.model().newBuilderState(model.module());
-        }
-
-        return state;
     }
 }

@@ -50,7 +50,7 @@ public class PassivationTest
             }
         };
 
-        Iterable<ServiceReference<DataAccess>> iterable = assembly.serviceFinder().findServices( DataAccess.class );
+        Iterable<ServiceReference<DataAccess>> iterable = assembly.module().findServices( DataAccess.class );
         for( ServiceReference<DataAccess> service : iterable )
         {
             assertTrue( "Service should not be Active before accessed", !service.isActive() );
@@ -87,7 +87,7 @@ public class PassivationTest
 
         ArrayList<Data> datas = new ArrayList<Data>();
 
-        Iterable<ServiceReference<DataAccess>> iterable = assembly.serviceFinder().findServices( DataAccess.class );
+        Iterable<ServiceReference<DataAccess>> iterable = assembly.module().findServices( DataAccess.class );
         for( ServiceReference<DataAccess> service : iterable )
         {
             assertTrue( "Service should not be Active before accessed", !service.isActive() );
@@ -130,7 +130,7 @@ public class PassivationTest
             }
         };
 
-        ServiceReference<DataAccess> service = assembly.serviceFinder().findService( DataAccess.class );
+        ServiceReference<DataAccess> service = assembly.module().findService( DataAccess.class );
         assertTrue( "Service should not be Active before accessed", !service.isActive() );
         assertTrue( service.get().data().activated );
         assertTrue( "Service should be Active after access.", service.isActive() );
@@ -160,7 +160,7 @@ public class PassivationTest
             }
         };
 
-        Iterable<ServiceReference<DataAccess>> iterable = assembly.serviceFinder().findServices( DataAccess.class );
+        Iterable<ServiceReference<DataAccess>> iterable = assembly.module().findServices( DataAccess.class );
         for( ServiceReference<DataAccess> service : iterable )
         {
             assertTrue( "Service should not be Active before accessed", !service.isActive() );

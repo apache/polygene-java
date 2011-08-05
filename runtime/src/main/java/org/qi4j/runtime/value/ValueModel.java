@@ -14,14 +14,20 @@
 
 package org.qi4j.runtime.value;
 
+import org.qi4j.api.association.AssociationDescriptor;
+import org.qi4j.api.association.AssociationStateHolder;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.constraint.ConstraintViolationException;
-import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.type.ValueCompositeType;
 import org.qi4j.api.value.ValueDescriptor;
+import org.qi4j.runtime.association.*;
 import org.qi4j.runtime.composite.*;
 import org.qi4j.runtime.injection.InjectionContext;
+import org.qi4j.runtime.property.PropertyInfo;
+import org.qi4j.runtime.property.PropertyInstance;
+import org.qi4j.runtime.property.PropertyModel;
 import org.qi4j.runtime.structure.ModuleInstance;
 
 /**
@@ -38,7 +44,7 @@ public final class ValueModel
                         final Visibility visibility,
                         final MetaInfo metaInfo,
                         final MixinsModel mixinsModel,
-                        final StateModel stateModel,
+                        final ValueStateModel stateModel,
                         final CompositeMethodsModel compositeMethodsModel
     )
     {
@@ -52,14 +58,33 @@ public final class ValueModel
         return valueType;
     }
 
-    public void checkConstraints( StateHolder state )
+    @Override
+    public ValueStateModel state()
+    {
+        return (ValueStateModel) super.state();
+    }
+
+    public void checkConstraints( ValueStateInstance state )
         throws ConstraintViolationException
     {
-        stateModel.checkConstraints( state );
+        for( PropertyModel propertyModel : stateModel.properties() )
+        {
+            propertyModel.checkConstraints( state.<Object>propertyFor( propertyModel.accessor() ).get() );
+        }
+
+        for( AssociationModel associationModel : ((ValueStateModel)stateModel).associations() )
+        {
+            associationModel.checkConstraints( state.<Object>associationFor( associationModel.accessor() ).get() );
+        }
+
+        for( ManyAssociationModel associationModel : ((ValueStateModel)stateModel).manyAssociations() )
+        {
+            associationModel.checkAssociationConstraints( state.<Object>manyAssociationFor( associationModel.accessor() ) );
+        }
     }
 
     public ValueInstance newValueInstance( ModuleInstance moduleInstance,
-                                           StateHolder state
+                                           ValueStateInstance state
     )
     {
         Object[] mixins = mixinsModel.newMixinHolder();

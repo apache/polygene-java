@@ -24,9 +24,11 @@ import java.util.Set;
  */
 public interface StateDescriptor
 {
-    <T extends PropertyDescriptor> T getPropertyByName( String name );
+    PropertyDescriptor getPropertyByName( String name )
+        throws IllegalArgumentException;
 
-    <T extends PropertyDescriptor> T getPropertyByQualifiedName( QualifiedName name );
+    PropertyDescriptor getPropertyByQualifiedName( QualifiedName name )
+        throws IllegalArgumentException;
 
-    <T extends PropertyDescriptor> Set<T> properties();
+    Iterable<? extends PropertyDescriptor> properties();
 }

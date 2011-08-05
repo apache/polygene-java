@@ -52,19 +52,20 @@ public class ValueTypeSerializationTest
     @Test
     public void testTypeSerialization()
     {
-        ValueBuilder<SomeValue> builder = valueBuilderFactory.newValueBuilder( SomeValue.class );
+        ValueBuilder<SomeValue> builder = module.newValueBuilder( SomeValue.class );
         SomeValue proto = builder.prototype();
-        proto.anotherList().get().add( valueBuilderFactory.newValue( AnotherValue.class ) );
+        proto.anotherList().get().add( module.newValue( AnotherValue.class ) );
 /*
-        proto.specificCollection().set(valueBuilderFactory.newValue(SpecificCollection.class));
+        proto.specificCollection().set(module.newValue(SpecificCollection.class));
         proto.specificCollection().get().genericList().get().add("Some");
         proto.specificCollection().get().genericList().get().add("String");
-        ValueBuilder<SpecificValue> specificValue = valueBuilderFactory.newValueBuilder(SpecificValue.class);
+        ValueBuilder<SpecificValue> specificValue = module.newValueBuilder(SpecificValue.class);
         specificValue.prototype().item().set("Foo");
         proto.specificValue().set(specificValue.newInstance());
 */
-        ValueBuilder<AnotherValue> valueBuilder = valueBuilderFactory.newValueBuilder( AnotherValue.class );
+        ValueBuilder<AnotherValue> valueBuilder = module.newValueBuilder( AnotherValue.class );
         valueBuilder.prototype().val1().set( "Foo" );
+        AnotherValue anotherValue = valueBuilder.newInstance();
 
         proto.string().set( "Foo\"Bar\"\nTest\f\t\b" );
         proto.string2().set( "/Foo/bar" );
@@ -73,13 +74,13 @@ public class ValueTypeSerializationTest
         proto.entityReference().set( EntityReference.parseEntityReference( "12345" ) );
         proto.stringIntMap().get().put( "foo", 42 );
         proto.stringIntMap().get().put( "bar", 67 );
-        proto.stringValueMap().get().put( "foo", valueBuilder.newInstance() );
-        proto.another().set( valueBuilder.newInstance() );
+        proto.stringValueMap().get().put( "foo", anotherValue );
+        proto.another().set( anotherValue );
         proto.serializable().set( new SerializableObject() );
-        proto.foo().set( valueBuilderFactory.newValue( FooValue.class ) );
-        proto.fooValue().set( valueBuilderFactory.newValue( FooValue.class ) );
-        proto.customFoo().set( valueBuilderFactory.newValue( CustomFooValue.class ) );
-        proto.customFooValue().set( valueBuilderFactory.newValue( CustomFooValue.class ) );
+        proto.foo().set( module.newValue( FooValue.class ) );
+        proto.fooValue().set( module.newValue( FooValue.class ) );
+        proto.customFoo().set( module.newValue( CustomFooValue.class ) );
+        proto.customFooValue().set( module.newValue( CustomFooValue.class ) );
         SomeValue some = builder.newInstance();
 
         // Serialize
@@ -89,22 +90,22 @@ public class ValueTypeSerializationTest
         LoggerFactory.getLogger( getClass() ).info( json );
 
         // Deserialize
-        SomeValue some2 = valueBuilderFactory.newValueFromJSON( SomeValue.class, json );
+        SomeValue some2 = module.newValueFromJSON( SomeValue.class, json );
 
         // Test date formats
         // ISO-6801 with timezone
         int idx1 = json.indexOf( "date\":\"" ) + 7;
         int idx2 = json.indexOf( '"', idx1 );
         String jsonTZ = json.substring( 0, idx1 ) + "2009-08-12T14:54:27.895+0800" + json.substring( idx2 );
-        SomeValue someTZ = valueBuilderFactory.newValueFromJSON( SomeValue.class, jsonTZ );
+        SomeValue someTZ = module.newValueFromJSON( SomeValue.class, jsonTZ );
 
         // @ format
         String jsonAt = json.substring( 0, idx1 ) + "@" + System.currentTimeMillis() + "@" + json.substring( idx2 );
-        SomeValue someAt = valueBuilderFactory.newValueFromJSON( SomeValue.class, jsonAt );
+        SomeValue someAt = module.newValueFromJSON( SomeValue.class, jsonAt );
 
         // Microsoft format
         String jsonMS = json.substring( 0, idx1 ) + "/Date(" + System.currentTimeMillis() + ")/" + json.substring( idx2 );
-        SomeValue someMS = valueBuilderFactory.newValueFromJSON( SomeValue.class, jsonMS );
+        SomeValue someMS = module.newValueFromJSON( SomeValue.class, jsonMS );
 
         System.out.println( some.toString() );
         System.out.println( some2.toString() );

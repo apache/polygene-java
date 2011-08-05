@@ -36,7 +36,7 @@ public class ObjectBuilderTest
     @Test( expected = ConstructionException.class )
     public void testMissingUses()
     {
-        objectBuilderFactory.newObjectBuilder( A.class ).newInstance();
+        module.newObject(A.class );
     }
 
     public static class A

@@ -49,7 +49,7 @@ public class FragmentAppliesToTest
     public void testMixin()
         throws Exception
     {
-        TransientBuilder<Composite1> builder = transientBuilderFactory.newTransientBuilder( Composite1.class );
+        TransientBuilder<Composite1> builder = module.newTransientBuilder( Composite1.class );
 
         Composite1 instance = builder.newInstance();
         assertNotNull( "DependencyOld not injected.", instance.getBuilderFactory() );

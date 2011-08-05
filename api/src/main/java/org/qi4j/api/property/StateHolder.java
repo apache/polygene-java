@@ -32,5 +32,5 @@ public interface StateHolder
     <T> Property<T> propertyFor( AccessibleObject accessor )
             throws IllegalArgumentException;
 
-    Iterable<Property<?>> properties();
+    Iterable<? extends Property<?>> properties();
 }

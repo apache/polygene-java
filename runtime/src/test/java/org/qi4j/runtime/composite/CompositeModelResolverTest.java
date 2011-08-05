@@ -24,6 +24,7 @@ import org.qi4j.api.composite.TransientBuilderFactory;
 import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.structure.Module;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
@@ -34,16 +35,16 @@ public class CompositeModelResolverTest
     public void testWhenDependentMixinsThenOrderMixins()
         throws Exception
     {
-        TransientBuilderFactory cbf = new SingletonAssembler()
+        Module module = new SingletonAssembler()
         {
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
                 module.transients( TestComposite1.class );
             }
-        }.transientBuilderFactory();
+        }.module();
 
-        Assert.assertEquals( "ok", cbf.newTransientBuilder( TestComposite1.class ).newInstance().testB() );
+        Assert.assertEquals( "ok", module.newTransient( TestComposite1.class ).testB() );
     }
 
     public void assemble( ModuleAssembly module )

@@ -45,43 +45,43 @@ public class QI247Test1
     @Test
     public void testWithMixinToString()
     {
-        ObjectMethods withMixin = transientBuilderFactory.newTransient( ObjectMethods.class );
+        ObjectMethods withMixin = module.newTransient( ObjectMethods.class );
         checkToString( withMixin );
     }
 
     @Test
     public void testWithMixinHashCode()
     {
-        ObjectMethods withMixin = transientBuilderFactory.newTransient( ObjectMethods.class );
+        ObjectMethods withMixin = module.newTransient( ObjectMethods.class );
         checkHashCode( withMixin );
     }
 
     @Test
     public void testWithMixinSelfEquals()
     {
-        ObjectMethods withMixin = transientBuilderFactory.newTransient( ObjectMethods.class );
+        ObjectMethods withMixin = module.newTransient( ObjectMethods.class );
         checkSelfEquals( withMixin );
     }
 
     @Test
     public void testWithMixinSelfEquals2()
     {
-        ObjectMethods withMixin = transientBuilderFactory.newTransient( ObjectMethods.class );
+        ObjectMethods withMixin = module.newTransient( ObjectMethods.class );
         assertTrue( withMixin.equals( withMixin ) );
     }
 
     @Test
     public void testWithMixinSelfSame()
     {
-        ObjectMethods withMixin = transientBuilderFactory.newTransient( ObjectMethods.class );
+        ObjectMethods withMixin = module.newTransient( ObjectMethods.class );
         assertSame( withMixin, withMixin );
     }
 
     @Test
     public void testWithMixinTwoNotEqual()
     {
-        ObjectMethods first = transientBuilderFactory.newTransient( ObjectMethods.class );
-        ObjectMethods second = transientBuilderFactory.newTransient( ObjectMethods.class );
+        ObjectMethods first = module.newTransient( ObjectMethods.class );
+        ObjectMethods second = module.newTransient( ObjectMethods.class );
         checkTwoNotEqual( first, second );
     }
 

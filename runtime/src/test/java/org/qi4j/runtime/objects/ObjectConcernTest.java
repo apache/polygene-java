@@ -41,7 +41,7 @@ public class ObjectConcernTest
             }
         };
 
-        TestObject object = assembler.objectBuilderFactory().newObject( TestObject.class );
+        TestObject object = assembler.module().newObject( TestObject.class );
 
         object.doStuff();
     }

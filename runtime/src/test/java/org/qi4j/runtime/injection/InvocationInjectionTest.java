@@ -50,7 +50,7 @@ public class InvocationInjectionTest
             }
         };
 
-        MyComposite composite = assembly.transientBuilderFactory().newTransient( MyComposite.class );
+        MyComposite composite = assembly.module().newTransient( MyComposite.class );
 
         composite.doStuff();
         composite.doStuff();

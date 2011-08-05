@@ -47,15 +47,15 @@ public class UnitOfWorkInjectionTest
         throws Exception
     {
         Usecase usecase = UsecaseBuilder.newUsecase( "usecase1" );
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( usecase );
+        UnitOfWork uow = module.newUnitOfWork( usecase );
         try
         {
             Trial trial = uow.newEntity( Trial.class, "123" );
             trial.doSomething();
             uow.complete();
-            uow = unitOfWorkFactory.newUnitOfWork( usecase );
+            uow = module.newUnitOfWork( usecase );
             usecase = UsecaseBuilder.newUsecase( "usecase2" );
-            UnitOfWork uow2 = unitOfWorkFactory.newUnitOfWork( usecase );
+            UnitOfWork uow2 = module.newUnitOfWork( usecase );
             trial = uow.get( trial );
             trial.doSomething();
             assertEquals( "123", ( (EntityComposite) trial ).identity().get() );
@@ -68,10 +68,16 @@ public class UnitOfWorkInjectionTest
         }
         finally
         {
-            while( uow != null )
+            try
             {
-                uow.discard();
-                uow = unitOfWorkFactory.currentUnitOfWork();
+                while( module.isUnitOfWorkActive())
+                {
+                    uow = module.currentUnitOfWork();
+                    uow.discard();
+                }
+            } catch( IllegalStateException e )
+            {
+                // Continue
             }
         }
     }

@@ -21,18 +21,15 @@ import org.junit.Test;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.entity.association.Association;
-import org.qi4j.api.entity.association.ManyAssociation;
+import org.qi4j.api.association.Association;
+import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
-
-import java.util.concurrent.Callable;
 
 public class UnitOfWorkFactoryTest
         extends AbstractQi4jTest
@@ -53,7 +50,7 @@ public class UnitOfWorkFactoryTest
     public void testUnitOfWork()
             throws Exception
     {
-        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork unitOfWork = module.newUnitOfWork();
 
         // Create product
         EntityBuilder<ProductEntity> cb = unitOfWork.newEntityBuilder( ProductEntity.class );

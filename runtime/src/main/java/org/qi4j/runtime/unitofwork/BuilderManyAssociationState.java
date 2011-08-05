@@ -30,15 +30,6 @@ public final class BuilderManyAssociationState
 {
     private List<EntityReference> references;
 
-    public BuilderManyAssociationState( ManyAssociationState state )
-    {
-        // Copy
-        for( int i = 0; i < state.count(); i++ )
-        {
-            references.add( state.get( i ) );
-        }
-    }
-
     public BuilderManyAssociationState()
     {
         references = new ArrayList<EntityReference>();

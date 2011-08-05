@@ -15,14 +15,19 @@
 package org.qi4j.runtime.property;
 
 import org.qi4j.api.property.Property;
-import org.qi4j.api.property.PropertyDescriptor;
-import org.qi4j.runtime.composite.ConstraintsCheck;
+import org.qi4j.api.type.CollectionType;
+import org.qi4j.api.type.MapType;
+import org.qi4j.api.type.ValueCompositeType;
+import org.qi4j.api.value.ValueComposite;
+import org.qi4j.runtime.value.ValueInstance;
+
+import java.util.*;
 
 /**
  * {@code PropertyInstance} represents a property.
  */
 public class PropertyInstance<T>
-    implements Property<T>
+        implements Property<T>
 {
     protected volatile T value;
     protected PropertyInfo model;
@@ -30,10 +35,10 @@ public class PropertyInstance<T>
     /**
      * Construct an instance of {@code PropertyInstance} with the specified arguments.
      *
-     * @param model The property model. This argument must not be {@code null}.
-     * @param aValue        The property value.
+     * @param model  The property model. This argument must not be {@code null}.
+     * @param aValue The property value.
      */
-    public PropertyInstance( PropertyInfo model, T aValue)
+    public PropertyInstance( PropertyInfo model, T aValue )
     {
         this.model = model;
         value = aValue;
@@ -42,6 +47,11 @@ public class PropertyInstance<T>
     public PropertyInfo getPropertyInfo()
     {
         return model;
+    }
+
+    public void setPropertyInfo( PropertyInfo model )
+    {
+        this.model = model;
     }
 
     /**
@@ -78,7 +88,6 @@ public class PropertyInstance<T>
      * equal, then the properties are equal
      *
      * @param o The other object to compare.
-     *
      * @return Returns a {@code boolean} indicator whether this object is equals the other.
      */
     public boolean equals( Object o )
@@ -133,5 +142,150 @@ public class PropertyInstance<T>
     {
         Object value = get();
         return value == null ? "" : value.toString();
+    }
+
+    public void prepareToBuild( PropertyModel propertyDescriptor )
+    {
+        // Check if state has to be modified
+        model = propertyDescriptor.getBuilderInfo();
+        if( propertyDescriptor.valueType() instanceof ValueCompositeType )
+        {
+            Object value = get();
+            if( value != null )
+            {
+                ValueInstance.getValueInstance( (ValueComposite) value ).prepareToBuild();
+            }
+        } else if( propertyDescriptor.valueType() instanceof CollectionType)
+        {
+            Object value = get();
+
+            if (value != null)
+            {
+                if (value instanceof List)
+                {
+                    value = new ArrayList((Collection) value);
+                } else if (value instanceof Set)
+                {
+                    value = new LinkedHashSet( (Collection) value);
+                }
+
+                // Check if items are Values
+                CollectionType collection = (CollectionType) propertyDescriptor.valueType();
+                if( collection.collectedType() instanceof ValueCompositeType )
+                {
+                    Collection coll = (Collection) value;
+                    for( Object instance : coll )
+                    {
+                        ValueInstance.getValueInstance( (ValueComposite) instance ).prepareToBuild();
+                    }
+                }
+
+                set( (T) value );
+            }
+        } else if ( propertyDescriptor.valueType() instanceof MapType )
+        {
+            Object value = get();
+
+            if (value != null)
+            {
+                Map map = new LinkedHashMap( (Map) value);
+
+                // Check if keys/values are Values
+                MapType mapType = (MapType) propertyDescriptor.valueType();
+                if( mapType.getKeyType() instanceof ValueCompositeType )
+                {
+                    for( Object instance : map.keySet() )
+                    {
+                        ValueInstance.getValueInstance( (ValueComposite) instance ).prepareToBuild();
+                    }
+                }
+                if( mapType.getValueType() instanceof ValueCompositeType )
+                {
+                    for( Object instance : map.values() )
+                    {
+                        ValueInstance.getValueInstance( (ValueComposite) instance ).prepareToBuild();
+                    }
+                }
+
+                set( (T) value );
+            }
+        }
+    }
+
+    public void prepareBuilderState( PropertyModel propertyDescriptor )
+    {
+        // Check if state has to be modified
+        if( propertyDescriptor.valueType() instanceof ValueCompositeType )
+        {
+            Object value = get();
+            if( value != null )
+            {
+                ValueInstance.getValueInstance( (ValueComposite) value ).prepareBuilderState();
+            }
+        } else if( propertyDescriptor.valueType() instanceof CollectionType )
+        {
+            T value = get();
+            if (value != null)
+            {
+                if (propertyDescriptor.isImmutable())
+                {
+                    if( value instanceof List )
+                    {
+                        value = (T) Collections.unmodifiableList( (List<? extends Object>) value );
+                        set( value );
+                    } else if( value instanceof Set )
+                    {
+                        value = (T) Collections.unmodifiableSet( (Set<? extends Object>) value );
+                        set( value );
+                    } else
+                    {
+                        value = (T) Collections.unmodifiableCollection( (Collection<? extends Object>) value );
+                        set( value );
+                    }
+                }
+
+                CollectionType collection = (CollectionType) propertyDescriptor.valueType();
+                if( collection.collectedType() instanceof ValueCompositeType )
+                {
+                    Collection coll = (Collection) value;
+                    for( Object instance : coll )
+                    {
+                        ValueInstance.getValueInstance( (ValueComposite) instance ).prepareBuilderState();
+                    }
+                }
+            }
+        } else if( propertyDescriptor.valueType() instanceof MapType )
+        {
+            T value = get();
+
+            if (value != null)
+            {
+                MapType mapType = (MapType) propertyDescriptor.valueType();
+                if( mapType.getKeyType() instanceof ValueCompositeType )
+                {
+                    Map map = (Map) value;
+                    for( Object instance : map.keySet() )
+                    {
+                        ValueInstance.getValueInstance( (ValueComposite) instance ).prepareBuilderState();
+                    }
+                }
+                if( mapType.getValueType() instanceof ValueCompositeType )
+                {
+                    Map map = (Map) value;
+                    for( Object instance : map.values() )
+                    {
+                        ValueInstance.getValueInstance( (ValueComposite) instance ).prepareBuilderState();
+                    }
+                }
+                if (propertyDescriptor.isImmutable())
+                {
+                    value = (T) Collections.unmodifiableMap( (Map<?, ?>) value );
+                }
+
+                set( value );
+            }
+        }
+
+        model = propertyDescriptor;
     }
 }

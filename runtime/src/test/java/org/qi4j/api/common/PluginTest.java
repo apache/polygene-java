@@ -206,7 +206,7 @@ public class PluginTest
                 app = runtime.newApplication( new PluginApplicationAssembler( finder ) );
 
                 app.activate();
-                ServiceFinder pluginFinder = app.findModule( "Plugin layer", "Plugin module" ).serviceFinder();
+                ServiceFinder pluginFinder = app.findModule( "Plugin layer", "Plugin module" );
 
                 // TODO: Niclas wrote: No clue how all this Test is supposed to work, and can't figure out to create a workaround for this.
 //                finder.findService(Plugin.class).metaInfo().add(ServiceFinder.class, pluginFinder);

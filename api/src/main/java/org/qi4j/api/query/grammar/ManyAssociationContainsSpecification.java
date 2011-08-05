@@ -1,7 +1,7 @@
 package org.qi4j.api.query.grammar;
 
 import org.qi4j.api.composite.Composite;
-import org.qi4j.api.entity.association.ManyAssociation;
+import org.qi4j.api.association.ManyAssociation;
 
 /**
  * TODO

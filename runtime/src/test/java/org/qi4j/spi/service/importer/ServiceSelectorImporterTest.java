@@ -47,7 +47,7 @@ public class ServiceSelectorImporterTest
             }
         };
 
-        TestService service = assembler.objectBuilderFactory().newObject( ServiceConsumer.class ).getService();
+        TestService service = assembler.module().newObject( ServiceConsumer.class ).getService();
 
         assertThat( "service is first one", service.test(), equalTo( "mixin1" ) );
     }
@@ -72,7 +72,7 @@ public class ServiceSelectorImporterTest
             }
         };
 
-        TestService service = assembler.objectBuilderFactory().newObject( ServiceConsumer.class ).getService();
+        TestService service = assembler.module().newObject( ServiceConsumer.class ).getService();
 
         assertThat( "service is specified one", service.test(), equalTo( "mixin2" ) );
     }
@@ -97,7 +97,7 @@ public class ServiceSelectorImporterTest
             }
         };
 
-        TestService service = assembler.objectBuilderFactory().newObject( ServiceConsumer.class ).getService();
+        TestService service = assembler.module().newObject( ServiceConsumer.class ).getService();
 
         assertThat( "service is specified one", service.test(), equalTo( "mixin2" ) );
     }

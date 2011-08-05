@@ -18,9 +18,9 @@
 package org.qi4j.regression.qi94;
 
 import org.junit.Test;
+import org.qi4j.api.association.Association;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.AssemblyException;
@@ -44,7 +44,7 @@ public class IssueTest
     @Test
     public void entityBuilderAssociationTypeIsNotNull()
     {
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork uow = module.newUnitOfWork();
         try
         {
             EntityBuilder<Item> builder = uow.newEntityBuilder( Item.class );

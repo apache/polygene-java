@@ -40,18 +40,18 @@ public class OperatorsTest
             }
         };
 
-        UnitOfWork uow = assembler.unitOfWorkFactory().newUnitOfWork();
+        UnitOfWork uow = assembler.module().newUnitOfWork();
 
         EntityBuilder<TestEntity> entityBuilder = uow.newEntityBuilder( TestEntity.class, "123" );
-        entityBuilder.instance().value().set( assembler.valueBuilderFactory().newValue( TestValue.class ) );
+        entityBuilder.instance().value().set( assembler.module().newValue( TestValue.class ) );
         TestEntity testEntity = entityBuilder.newInstance();
 
         uow.complete();
-        uow = assembler.unitOfWorkFactory().newUnitOfWork();
+        uow = assembler.module().newUnitOfWork();
 
         Iterable<TestEntity> entities = Iterables.iterable( testEntity = uow.get( testEntity ) );
 
-        QueryBuilder<TestEntity> builder = assembler.queryBuilderFactory().newQueryBuilder( TestEntity.class );
+        QueryBuilder<TestEntity> builder = assembler.module().newQueryBuilder( TestEntity.class );
 
         {
             Specification<Composite> where = QueryExpressions.eq( QueryExpressions.templateFor( TestEntity.class ).foo(), "Bar" );

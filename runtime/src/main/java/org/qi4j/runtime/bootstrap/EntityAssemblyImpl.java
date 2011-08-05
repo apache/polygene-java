@@ -14,12 +14,12 @@
 
 package org.qi4j.runtime.bootstrap;
 
+import org.qi4j.api.association.Association;
+import org.qi4j.api.association.GenericAssociationInfo;
+import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.common.*;
 import org.qi4j.api.constraint.Constraint;
 import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.entity.association.Association;
-import org.qi4j.api.entity.association.GenericAssociationInfo;
-import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.Property;
@@ -28,19 +28,18 @@ import org.qi4j.api.util.Classes;
 import org.qi4j.bootstrap.AssociationDeclarations;
 import org.qi4j.bootstrap.EntityAssembly;
 import org.qi4j.bootstrap.ManyAssociationDeclarations;
-import org.qi4j.bootstrap.PropertyDeclarations;
+import org.qi4j.bootstrap.StateDeclarations;
 import org.qi4j.functional.Iterables;
 import org.qi4j.runtime.composite.*;
 import org.qi4j.runtime.entity.EntityMixinsModel;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.entity.EntityStateModel;
-import org.qi4j.runtime.entity.association.AssociationModel;
-import org.qi4j.runtime.entity.association.AssociationsModel;
-import org.qi4j.runtime.entity.association.ManyAssociationModel;
-import org.qi4j.runtime.entity.association.ManyAssociationsModel;
+import org.qi4j.runtime.association.AssociationModel;
+import org.qi4j.runtime.association.AssociationsModel;
+import org.qi4j.runtime.association.ManyAssociationModel;
+import org.qi4j.runtime.association.ManyAssociationsModel;
 import org.qi4j.runtime.property.PropertiesModel;
 import org.qi4j.runtime.property.PropertyModel;
-import org.qi4j.runtime.property.PersistentPropertyModel;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
@@ -82,7 +81,7 @@ public final class EntityAssemblyImpl
     }
 
     EntityModel newEntityModel(
-            PropertyDeclarations propertyDeclarations,
+            StateDeclarations stateDeclarations,
             AssociationDeclarations associationDecs,
             ManyAssociationDeclarations manyAssociationDecs,
             AssemblyHelper helper
@@ -90,7 +89,7 @@ public final class EntityAssemblyImpl
     {
         this.associationDeclarations = associationDecs;
         this.manyAssociationDeclarations = manyAssociationDecs;
-        this.propertyDeclarations = propertyDeclarations;
+        this.stateDeclarations = stateDeclarations;
         try
         {
             this.helper = helper;
@@ -152,19 +151,24 @@ public final class EntityAssemblyImpl
 
     protected void addStateFor( AccessibleObject accessor, Iterable<Class<? extends Constraint<?, ?>>> constraintClasses )
     {
+        String stateName = QualifiedName.fromAccessor( accessor ).name();
+
+        if (registeredStateNames.contains( stateName ))
+            return; // Skip already registered names
+
         Class<?> accessorType = Classes.RAW_CLASS.map( Classes.TYPE_OF.map( accessor ) );
         if( Property.class.isAssignableFrom( accessorType ) )
         {
-            if (propertiesModel.getPropertyByName( QualifiedName.fromAccessor( accessor ).name() ) == null)
-                propertiesModel.addProperty( newPropertyModel( accessor, constraintClasses ) );
+            propertiesModel.addProperty( newPropertyModel( accessor, constraintClasses ) );
+            registeredStateNames.add( stateName );
         } else if( Association.class.isAssignableFrom( accessorType ) )
         {
-            if (associationsModel.getAssociationByName( QualifiedName.fromAccessor( accessor ).name() ) == null)
-                associationsModel.addAssociation( newAssociationModel( accessor, constraintClasses ) );
+            associationsModel.addAssociation( newAssociationModel( accessor, constraintClasses ) );
+            registeredStateNames.add( stateName );
         } else if( ManyAssociation.class.isAssignableFrom( accessorType ) )
         {
-            if (manyAssociationsModel.getManyAssociationByName( QualifiedName.fromAccessor( accessor ).name() ) == null)
-                manyAssociationsModel.addManyAssociation( newManyAssociationModel( accessor, constraintClasses ) );
+            manyAssociationsModel.addManyAssociation( newManyAssociationModel( accessor, constraintClasses ) );
+            registeredStateNames.add( stateName );
         }
     }
 
@@ -180,10 +184,10 @@ public final class EntityAssemblyImpl
         {
             valueConstraintsInstance = valueConstraintsModel.newInstance();
         }
-        MetaInfo metaInfo = propertyDeclarations.getMetaInfo( accessor );
-        Object defaultValue = propertyDeclarations.getInitialValue( accessor );
+        MetaInfo metaInfo = stateDeclarations.getMetaInfo( accessor );
+        Object defaultValue = stateDeclarations.getInitialValue( accessor );
         boolean immutable = this.immutable || metaInfo.get( Immutable.class ) != null;
-        PersistentPropertyModel propertyModel = new PersistentPropertyModel( accessor, immutable, valueConstraintsInstance, metaInfo, defaultValue );
+        PropertyModel propertyModel = new PropertyModel( accessor, immutable, valueConstraintsInstance, metaInfo, defaultValue );
         return propertyModel;
     }
 

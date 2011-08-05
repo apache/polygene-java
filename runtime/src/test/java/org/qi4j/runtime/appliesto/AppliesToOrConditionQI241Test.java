@@ -40,11 +40,11 @@ public class AppliesToOrConditionQI241Test
     @Test
     public void testMultiConcerns1()
     {
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork uow = module.newUnitOfWork();
 
         try
         {
-            ServiceReference<SomeServiceCompositeWithFirstAnnotation> refWithFirst = serviceLocator.findService(
+            ServiceReference<SomeServiceCompositeWithFirstAnnotation> refWithFirst = module.findService(
                 SomeServiceCompositeWithFirstAnnotation.class );
             SomeServiceCompositeWithFirstAnnotation someWithFirst = refWithFirst.get();
             someWithFirst.doStuff();
@@ -59,11 +59,11 @@ public class AppliesToOrConditionQI241Test
     @Test
     public void testMultiConcerns2()
     {
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork uow = module.newUnitOfWork();
 
         try
         {
-            ServiceReference<SomeServiceCompositeWithSecondAnnotation> refWithSecond = serviceLocator.findService(
+            ServiceReference<SomeServiceCompositeWithSecondAnnotation> refWithSecond = module.findService(
                 SomeServiceCompositeWithSecondAnnotation.class );
             SomeServiceCompositeWithSecondAnnotation someWithSecond = refWithSecond.get();
             someWithSecond.doStuff();
@@ -78,11 +78,11 @@ public class AppliesToOrConditionQI241Test
     @Test
     public void testMultiConcernsBoth()
     {
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork uow = module.newUnitOfWork();
 
         try
         {
-            ServiceReference<SomeServiceCompositeWithTwoAnnotations> refWithTwo = serviceLocator.findService(
+            ServiceReference<SomeServiceCompositeWithTwoAnnotations> refWithTwo = module.findService(
                 SomeServiceCompositeWithTwoAnnotations.class );
             SomeServiceCompositeWithTwoAnnotations someWithTwo = refWithTwo.get();
             someWithTwo.doStuff();

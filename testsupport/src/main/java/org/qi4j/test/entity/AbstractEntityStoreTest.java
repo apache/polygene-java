@@ -3,12 +3,12 @@ package org.qi4j.test.entity;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.qi4j.api.association.Association;
+import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.entity.association.Association;
-import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.property.Property;
@@ -44,9 +44,6 @@ public abstract class AbstractEntityStoreTest
     @Service
     private EntityStore store;
 
-    @Structure
-    private Module module;
-
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
@@ -59,7 +56,7 @@ public abstract class AbstractEntityStoreTest
     @Before
     public void init()
     {
-        objectBuilderFactory.newObjectBuilder( AbstractEntityStoreTest.class ).injectTo( this );
+        module.injectTo( this );
     }
 
     @Override
@@ -81,22 +78,23 @@ public abstract class AbstractEntityStoreTest
         instance.name().set( "Test" );
         instance.association().set( instance );
 
-        ValueBuilder<Tjabba> valueBuilder4 = valueBuilderFactory.newValueBuilder( Tjabba.class );
+        ValueBuilder<Tjabba> valueBuilder4 = module.newValueBuilder( Tjabba.class );
         final Tjabba prototype4 = valueBuilder4.prototype();
         prototype4.bling().set( "BlinkLjus" );
 
         // Set value
-        ValueBuilder<TestValue2> valueBuilder2 = valueBuilderFactory.newValueBuilder( TestValue2.class );
+        ValueBuilder<TestValue2> valueBuilder2 = module.newValueBuilder( TestValue2.class );
         TestValue2 prototype2 = valueBuilder2.prototype();
         prototype2.stringValue().set( "Bar" );
-        prototype2.anotherValue().set( valueBuilder4.newInstance() );
-        prototype2.anotherValue().set( valueBuilder4.newInstance() );
+        Tjabba newValue = valueBuilder4.newInstance();
+        prototype2.anotherValue().set( newValue );
+        prototype2.anotherValue().set( newValue );
 
-        ValueBuilder<Tjabba> valueBuilder3 = valueBuilderFactory.newValueBuilder( Tjabba.class );
+        ValueBuilder<Tjabba> valueBuilder3 = module.newValueBuilder( Tjabba.class );
         final Tjabba prototype3 = valueBuilder3.prototype();
         prototype3.bling().set( "Brakfis" );
 
-        ValueBuilder<TestValue> valueBuilder1 = valueBuilderFactory.newValueBuilder( TestValue.class );
+        ValueBuilder<TestValue> valueBuilder1 = module.newValueBuilder( TestValue.class );
         TestValue prototype = valueBuilder1.prototype();
         prototype.listProperty().get().add( "Foo" );
 
@@ -116,14 +114,14 @@ public abstract class AbstractEntityStoreTest
     public void whenNewEntityThenCanFindEntityAndCorrectValues()
         throws Exception
     {
-        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork unitOfWork = module.newUnitOfWork();
         try
         {
             TestEntity instance = createEntity( unitOfWork );
             unitOfWork.complete();
 
             // Find entity
-            unitOfWork = unitOfWorkFactory.newUnitOfWork();
+            unitOfWork = module.newUnitOfWork();
             instance = unitOfWork.get( instance );
 
             // Check state
@@ -173,19 +171,19 @@ public abstract class AbstractEntityStoreTest
     public void whenRemovedEntityThenCannotFindEntity()
         throws Exception
     {
-        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork unitOfWork = module.newUnitOfWork();
         TestEntity newInstance = createEntity( unitOfWork );
         String identity = newInstance.identity().get();
         unitOfWork.complete();
 
         // Remove entity
-        unitOfWork = unitOfWorkFactory.newUnitOfWork();
+        unitOfWork = module.newUnitOfWork();
         TestEntity instance = unitOfWork.get( newInstance );
         unitOfWork.remove( instance );
         unitOfWork.complete();
 
         // Find entity
-        unitOfWork = unitOfWorkFactory.newUnitOfWork();
+        unitOfWork = module.newUnitOfWork();
         try
         {
             unitOfWork.get( TestEntity.class, identity );
@@ -209,7 +207,7 @@ public abstract class AbstractEntityStoreTest
         String version;
 
         {
-            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+            UnitOfWork unitOfWork = module.newUnitOfWork();
             EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class );
 
             testEntity = builder.newInstance();
@@ -217,7 +215,7 @@ public abstract class AbstractEntityStoreTest
         }
 
         {
-            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+            UnitOfWork unitOfWork = module.newUnitOfWork();
             testEntity = unitOfWork.get( testEntity );
             version = spi.getEntityState( testEntity ).version();
 
@@ -225,7 +223,7 @@ public abstract class AbstractEntityStoreTest
         }
 
         {
-            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+            UnitOfWork unitOfWork = module.newUnitOfWork();
             testEntity = unitOfWork.get( testEntity );
             String newVersion = spi.getEntityState( testEntity ).version();
             assertThat( "version has not changed", newVersion, equalTo( version ) );
@@ -242,7 +240,7 @@ public abstract class AbstractEntityStoreTest
         String version;
 
         {
-            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+            UnitOfWork unitOfWork = module.newUnitOfWork();
             EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class );
 
             testEntity = builder.newInstance();
@@ -250,7 +248,7 @@ public abstract class AbstractEntityStoreTest
         }
 
         {
-            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+            UnitOfWork unitOfWork = module.newUnitOfWork();
             testEntity = unitOfWork.get( testEntity );
             testEntity.name().set( "Rickard" );
             version = spi.getEntityState( testEntity ).version();
@@ -259,7 +257,7 @@ public abstract class AbstractEntityStoreTest
         }
 
         {
-            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+            UnitOfWork unitOfWork = module.newUnitOfWork();
             testEntity = unitOfWork.get( testEntity );
             String newVersion = spi.getEntityState( testEntity ).version();
             assertThat( "version has changed", newVersion, not( equalTo( version ) ) );
@@ -276,7 +274,7 @@ public abstract class AbstractEntityStoreTest
         String version;
 
         {
-            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+            UnitOfWork unitOfWork = module.newUnitOfWork();
             EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class );
 
             testEntity = builder.newInstance();
@@ -284,7 +282,7 @@ public abstract class AbstractEntityStoreTest
         }
 
         {
-            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+            UnitOfWork unitOfWork = module.newUnitOfWork();
             testEntity = unitOfWork.get( testEntity );
             testEntity.manyAssociation().add( 0, testEntity );
             version = spi.getEntityState( testEntity ).version();
@@ -293,7 +291,7 @@ public abstract class AbstractEntityStoreTest
         }
 
         {
-            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+            UnitOfWork unitOfWork = module.newUnitOfWork();
             testEntity = unitOfWork.get( testEntity );
             String newVersion = spi.getEntityState( testEntity ).version();
             assertThat( "version has changed", newVersion, not( equalTo( version ) ) );
@@ -308,7 +306,7 @@ public abstract class AbstractEntityStoreTest
     {
         TestEntity testEntity;
         {
-            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+            UnitOfWork unitOfWork = module.newUnitOfWork();
             EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class );
 
             testEntity = builder.newInstance();
@@ -320,7 +318,7 @@ public abstract class AbstractEntityStoreTest
         String version;
         {
             // Start working with Entity in one UoW
-            unitOfWork1 = unitOfWorkFactory.newUnitOfWork();
+            unitOfWork1 = module.newUnitOfWork();
             testEntity1 = unitOfWork1.get( testEntity );
             version = spi.getEntityState( testEntity1 ).version();
             if( version.equals( "" ) )
@@ -334,7 +332,7 @@ public abstract class AbstractEntityStoreTest
 
         {
             // Start working with same Entity in another UoW, and complete it
-            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+            UnitOfWork unitOfWork = module.newUnitOfWork();
             TestEntity testEntity2 = unitOfWork.get( testEntity );
             assertThat( "version is correct", spi.getEntityState( testEntity1 ).version(), equalTo( version ) );
             testEntity2.name().set( "B" );
@@ -356,7 +354,7 @@ public abstract class AbstractEntityStoreTest
 
         {
             // Check values
-            unitOfWork1 = unitOfWorkFactory.newUnitOfWork();
+            unitOfWork1 = module.newUnitOfWork();
             testEntity1 = unitOfWork1.get( testEntity );
             assertThat( "property name has not been set", testEntity1.name().get(), equalTo( "B" ) );
             assertThat( "version is incorrect", spi.getEntityState( testEntity1 ).version(),

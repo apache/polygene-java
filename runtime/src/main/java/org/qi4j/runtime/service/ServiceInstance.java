@@ -21,6 +21,7 @@ import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.Availability;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.runtime.composite.TransientInstance;
+import org.qi4j.runtime.composite.TransientStateInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
 
 import java.lang.reflect.Proxy;
@@ -43,7 +44,7 @@ public class ServiceInstance
     public ServiceInstance( ServiceModel compositeModel,
                             ModuleInstance moduleInstance,
                             Object[] mixins,
-                            StateHolder state
+                            TransientStateInstance state
     )
     {
         super( compositeModel, moduleInstance, mixins, state );

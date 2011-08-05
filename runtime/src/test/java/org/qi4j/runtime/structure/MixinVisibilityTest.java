@@ -20,7 +20,7 @@ import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.*;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.object.ObjectBuilderFactory;
+import org.qi4j.api.object.ObjectFactory;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.structure.Application;
 import org.qi4j.bootstrap.*;
@@ -59,8 +59,7 @@ public class MixinVisibilityTest
         {
         } );
         app.activate();
-        ObjectBuilderFactory objectBuilderFactory = app.findModule( "Layer 1", "Module A" ).objectBuilderFactory();
-        ObjectA object = objectBuilderFactory.newObjectBuilder( ObjectA.class ).newInstance();
+        ObjectA object = app.findModule( "Layer 1", "Module A" ).newObject( ObjectA.class );
         assertEquals( "ok", object.test1() );
         assertEquals( "abc", object.test2() );
     }
@@ -92,8 +91,7 @@ public class MixinVisibilityTest
         {
         } );
         app.activate();
-        ObjectBuilderFactory objectBuilderFactory = app.findModule( "Layer 1", "Module A" ).objectBuilderFactory();
-        ObjectA object = objectBuilderFactory.newObjectBuilder( ObjectA.class ).newInstance();
+        ObjectA object = app.findModule( "Layer 1", "Module A" ).newObject( ObjectA.class );
         assertEquals( "ok", object.test1() );
         assertEquals( "abc", object.test2() );
     }
@@ -135,8 +133,7 @@ public class MixinVisibilityTest
         {
         } );
         app.activate();
-        ObjectBuilderFactory objectBuilderFactory = app.findModule( "Layer 1", "Module A" ).objectBuilderFactory();
-        ObjectA object = objectBuilderFactory.newObjectBuilder( ObjectA.class ).newInstance();
+        ObjectA object = app.findModule( "Layer 1", "Module A" ).newObject( ObjectA.class );
         assertEquals( "ok", object.test1() );
         assertEquals( "abc", object.test2() );
     }
@@ -178,8 +175,7 @@ public class MixinVisibilityTest
         {
         } );
         app.activate();
-        ObjectBuilderFactory objectBuilderFactory = app.findModule( "Layer 1", "Module A" ).objectBuilderFactory();
-        ObjectA object = objectBuilderFactory.newObjectBuilder( ObjectA.class ).newInstance();
+        ObjectA object = app.findModule( "Layer 1", "Module A" ).newObject( ObjectA.class );
         assertEquals( "ok", object.test1() );
         assertEquals( "abc", object.test2() );
     }
@@ -222,8 +218,7 @@ public class MixinVisibilityTest
         {
         } );
         app.activate();
-        ObjectBuilderFactory objectBuilderFactory = app.findModule( "Layer 1", "Module A" ).objectBuilderFactory();
-        ObjectA object = objectBuilderFactory.newObjectBuilder( ObjectA.class ).newInstance();
+        ObjectA object = app.findModule( "Layer 1", "Module A" ).newObject( ObjectA.class );
         assertEquals( "ok", object.test1() );
         assertEquals( "abc", object.test2() );
     }
@@ -276,8 +271,7 @@ public class MixinVisibilityTest
         {
         } );
         app.activate();
-        ObjectBuilderFactory objectBuilderFactory = app.findModule( "Layer 1", "Module A" ).objectBuilderFactory();
-        ObjectA object = objectBuilderFactory.newObjectBuilder( ObjectA.class ).newInstance();
+        ObjectA object = app.findModule( "Layer 1", "Module A" ).newObject( ObjectA.class );
         assertEquals( "ok", object.test1() );
         assertEquals( "abc", object.test2() );
     }
@@ -323,8 +317,7 @@ public class MixinVisibilityTest
         {
         } );
         app.activate();
-        ObjectBuilderFactory objectBuilderFactory = app.findModule( "Layer 1", "Module " ).objectBuilderFactory();
-        ObjectA object = objectBuilderFactory.newObjectBuilder( ObjectA.class ).newInstance();
+        ObjectA object = app.findModule( "Layer 1", "Module " ).newObject( ObjectA.class );
         assertEquals( "ok", object.test1() );
         assertEquals( "abc", object.test2() );
     }
@@ -368,8 +361,7 @@ public class MixinVisibilityTest
         {
         } );
         app.activate();
-        ObjectBuilderFactory objectBuilderFactory = app.findModule( "Layer 1", "Module A" ).objectBuilderFactory();
-        ObjectA object = objectBuilderFactory.newObjectBuilder( ObjectA.class ).newInstance();
+        ObjectA object = app.findModule( "Layer 1", "Module A" ).newObject( ObjectA.class );
         assertEquals( "ok", object.test1() );
         assertEquals( "abc", object.test2() );
     }

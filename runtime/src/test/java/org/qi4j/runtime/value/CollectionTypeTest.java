@@ -153,7 +153,7 @@ public class CollectionTypeTest
         ValueType collectedType = new ValueType( Byte.class );
         CollectionType collectionType = new CollectionType( List.class, collectedType );
         Object json = new JSONArray( byteJson() );
-        ArrayList<Byte> result = (ArrayList<Byte>) new JSONDeserializer( null ).deserialize( json, collectionType );
+        List<Byte> result = (List<Byte>) new JSONDeserializer( null ).deserialize( json, collectionType );
         ArrayList<Byte> bytes = byteCollection();
         for( int i = 0; i < result.size(); i++ )
         {
@@ -185,7 +185,7 @@ public class CollectionTypeTest
         ValueType collectedType = new ValueType( Byte.class );
         CollectionType collectionType = new CollectionType( Collection.class, collectedType );
         Object json = new JSONArray( byteJson() );
-        ArrayList<Byte> result = (ArrayList<Byte>) new JSONDeserializer( null ).deserialize( json, collectionType );
+        List<Byte> result = (List<Byte>) new JSONDeserializer( null ).deserialize( json, collectionType );
         assertEquals( byteCollection(), result );
     }
 
@@ -196,7 +196,7 @@ public class CollectionTypeTest
         ValueType collectedType = new ValueType( Short.class );
         CollectionType collectionType = new CollectionType( Collection.class, collectedType );
         Object json = new JSONArray( shortJson() );
-        ArrayList<Short> result = (ArrayList<Short>) new JSONDeserializer( null ).deserialize( json, collectionType );
+        List<Short> result = (List<Short>) new JSONDeserializer( null ).deserialize( json, collectionType );
         assertEquals( shortCollection(), result );
     }
 
@@ -207,7 +207,7 @@ public class CollectionTypeTest
         ValueType collectedType = new ValueType( Integer.class );
         CollectionType collectionType = new CollectionType( Collection.class, collectedType );
         Object json = new JSONArray( integerJson() );
-        ArrayList<Integer> result = (ArrayList<Integer>) new JSONDeserializer( null ).deserialize( json, collectionType );
+        List<Integer> result = (List<Integer>) new JSONDeserializer( null ).deserialize( json, collectionType );
         assertEquals( integerCollection(), result );
     }
 
@@ -218,7 +218,7 @@ public class CollectionTypeTest
         ValueType collectedType = new ValueType( Long.class );
         CollectionType collectionType = new CollectionType( Collection.class, collectedType );
         Object json = new JSONArray( longJson() );
-        ArrayList<Long> result = (ArrayList<Long>) new JSONDeserializer( null ).deserialize( json, collectionType );
+        List<Long> result = (List<Long>) new JSONDeserializer( null ).deserialize( json, collectionType );
         assertEquals( longCollection(), result );
     }
 
@@ -229,7 +229,7 @@ public class CollectionTypeTest
         ValueType collectedType = new ValueType( Float.class );
         CollectionType collectionType = new CollectionType( Collection.class, collectedType );
         Object json = new JSONArray( floatJson() );
-        ArrayList<Float> result = (ArrayList<Float>) new JSONDeserializer( null ).deserialize( json, collectionType );
+        List<Float> result = (List<Float>) new JSONDeserializer( null ).deserialize( json, collectionType );
         assertEquals( floatCollection(), result );
     }
 
@@ -240,7 +240,7 @@ public class CollectionTypeTest
         ValueType collectedType = new ValueType( Double.class );
         CollectionType collectionType = new CollectionType( Collection.class, collectedType );
         Object json = new JSONArray( doubleJson() );
-        ArrayList<Double> result = (ArrayList<Double>) new JSONDeserializer( null ).deserialize( json, collectionType );
+        List<Double> result = (List<Double>) new JSONDeserializer( null ).deserialize( json, collectionType );
         assertEquals( doubleCollection(), result );
     }
 
@@ -251,7 +251,7 @@ public class CollectionTypeTest
         ValueType collectedType = new ValueType( BigInteger.class );
         CollectionType collectionType = new CollectionType( Collection.class, collectedType );
         Object json = new JSONArray( bigIntegerJson() );
-        ArrayList<BigInteger> result = (ArrayList<BigInteger>) new JSONDeserializer( null ).deserialize( json, collectionType );
+        List<BigInteger> result = (List<BigInteger>) new JSONDeserializer( null ).deserialize( json, collectionType );
         assertEquals( bigIntegerCollection(), result );
     }
 
@@ -262,7 +262,7 @@ public class CollectionTypeTest
         ValueType collectedType = new ValueType( BigDecimal.class );
         CollectionType collectionType = new CollectionType( Collection.class, collectedType );
         Object json = new JSONArray( bigDecimalJson() );
-        ArrayList<BigDecimal> result = (ArrayList<BigDecimal>) new JSONDeserializer( null ).deserialize( json, collectionType );
+        List<BigDecimal> result = (List<BigDecimal>) new JSONDeserializer( null ).deserialize( json, collectionType );
         assertEquals( bigDecimalCollection(), result );
     }
 
@@ -273,7 +273,7 @@ public class CollectionTypeTest
         ValueType collectedType = new ValueType( BigInteger.class );
         CollectionType collectionType = new CollectionType( Collection.class, collectedType );
         Object json = new JSONArray( bigIntegerJsonWithQuotes() );
-        ArrayList<BigDecimal> result = (ArrayList<BigDecimal>) new JSONDeserializer( null ).deserialize( json, collectionType );
+        List<BigDecimal> result = (List<BigDecimal>) new JSONDeserializer( null ).deserialize( json, collectionType );
         assertEquals( bigIntegerCollection(), result );
     }
 
@@ -284,7 +284,7 @@ public class CollectionTypeTest
         ValueType collectedType = new ValueType( BigDecimal.class );
         CollectionType collectionType = new CollectionType( Collection.class, collectedType );
         Object json = new JSONArray( bigDecimalJsonWithQuotes() );
-        ArrayList<BigDecimal> result = (ArrayList<BigDecimal>) new JSONDeserializer( null ).deserialize( json, collectionType );
+        List<BigDecimal> result = (List<BigDecimal>) new JSONDeserializer( null ).deserialize( json, collectionType );
         assertEquals( bigDecimalCollection(), result );
     }
 

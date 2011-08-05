@@ -25,7 +25,7 @@ import java.util.Map;
  * Declaration of a Property or Association.
  */
 public final class MetaInfoDeclaration
-    implements PropertyDeclarations, AssociationDeclarations, ManyAssociationDeclarations
+    implements StateDeclarations, AssociationDeclarations, ManyAssociationDeclarations
 {
     Map<Class<?>, InfoHolder<?>> mixinPropertyDeclarations = new HashMap<Class<?>, InfoHolder<?>>();
 
@@ -79,7 +79,7 @@ public final class MetaInfoDeclaration
     }
 
     private static class InfoHolder<T>
-        implements InvocationHandler, PropertyDeclarations, MixinDeclaration<T>
+        implements InvocationHandler, StateDeclarations, MixinDeclaration<T>
     {
         private final static class MethodInfo
         {

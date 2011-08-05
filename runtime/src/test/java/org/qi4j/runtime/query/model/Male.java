@@ -18,9 +18,9 @@
  */
 package org.qi4j.runtime.query.model;
 
+import org.qi4j.api.association.Association;
+import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.common.Optional;
-import org.qi4j.api.entity.association.Association;
-import org.qi4j.api.entity.association.ManyAssociation;
 
 /**
  * JAVADOC Add JavaDoc

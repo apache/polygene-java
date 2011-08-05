@@ -49,10 +49,7 @@ public class PrivateCompositeVisibilityTest
         {
         } );
         app.activate();
-        ObjectA object = app.findModule( "Layer 1", "Module A" )
-            .objectBuilderFactory()
-            .newObjectBuilder( ObjectA.class )
-            .newInstance();
+        ObjectA object = app.findModule( "Layer 1", "Module A" ).newObject( ObjectA.class );
         object.test();
     }
 

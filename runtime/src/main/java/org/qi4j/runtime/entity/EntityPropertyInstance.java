@@ -24,8 +24,6 @@ import org.qi4j.spi.entity.EntityState;
 public class EntityPropertyInstance<T>
     extends PropertyInstance<T>
 {
-    private static final Object NOT_LOADED = new Object();
-
     private EntityState entityState;
 
     /**
@@ -36,23 +34,8 @@ public class EntityPropertyInstance<T>
      */
     public EntityPropertyInstance( PropertyInfo aPropertyInfo, EntityState entityState)
     {
-        super( aPropertyInfo, (T) NOT_LOADED );
+        super( aPropertyInfo, (T) entityState.getProperty(aPropertyInfo.qualifiedName()));
         this.entityState = entityState;
-    }
-
-    /**
-     * Returns this property value.
-     *
-     * @return This property value.
-     */
-    public T get()
-    {
-        if( value == NOT_LOADED )
-        {
-            value = (T) entityState.getProperty( model.qualifiedName() );
-        }
-
-        return value;
     }
 
     /**

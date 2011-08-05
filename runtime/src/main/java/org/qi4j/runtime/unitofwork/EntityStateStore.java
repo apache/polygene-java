@@ -14,7 +14,7 @@
 
 package org.qi4j.runtime.unitofwork;
 
-import org.qi4j.api.entity.association.EntityStateHolder;
+import org.qi4j.api.association.AssociationStateHolder;
 import org.qi4j.spi.entity.EntityState;
 
 /**
@@ -22,7 +22,7 @@ import org.qi4j.spi.entity.EntityState;
  */
 final class EntityStateStore
 {
-    EntityStateHolder stateHolder;
+    AssociationStateHolder stateHolder;
     EntityState state;
 
     @Override

@@ -14,12 +14,17 @@
 
 package org.qi4j.runtime.value;
 
+import org.qi4j.api.association.AssociationDescriptor;
+import org.qi4j.api.association.AssociationStateHolder;
 import org.qi4j.api.common.ConstructionException;
-import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.value.ValueBuilder;
+import org.qi4j.runtime.association.AssociationInfo;
+import org.qi4j.runtime.association.AssociationInstance;
+import org.qi4j.runtime.association.ManyAssociationInstance;
+import org.qi4j.runtime.property.PropertyInfo;
+import org.qi4j.runtime.property.PropertyInstance;
 import org.qi4j.runtime.structure.ModelModule;
-
-import java.util.Iterator;
 
 /**
  * Implementation of ValueBuilder
@@ -28,48 +33,35 @@ public final class ValueBuilderInstance<T>
     implements ValueBuilder<T>
 {
     private final ModelModule<ValueModel> model;
-
-    // lazy initialized in accessor
     private ValueInstance prototypeInstance;
 
-    // lazy initialized in accessor
-    private StateHolder state;
-
-    public ValueBuilderInstance( ModelModule<ValueModel> model, StateHolder state)
+    public ValueBuilderInstance( ModelModule<ValueModel> model, ValueInstance prototypeInstance)
     {
         this.model = model;
-        this.state = state;
+        this.prototypeInstance = prototypeInstance;
     }
 
     public T prototype()
     {
-        // Instantiate given value type
-        if( prototypeInstance == null )
-        {
-            prototypeInstance = model.model().newValueInstance( model.module(), state() );
-        }
+        if (prototypeInstance == null)
+            throw new IllegalStateException( "ValueBuilder instances cannot be reused" );
 
         return prototypeInstance.<T>proxy();
     }
 
     @Override
-    public StateHolder state()
+    public AssociationStateHolder state()
     {
-        if( state == null )
-        {
-            state = model.model().newBuilderState( model.module() );
-        }
+        if (prototypeInstance == null)
+            throw new IllegalStateException( "ValueBuilder instances cannot be reused" );
 
-        return state;
+        return prototypeInstance.state();
     }
 
     public <K> K prototypeFor( Class<K> mixinType )
     {
-        // Instantiate given value type
-        if( prototypeInstance == null )
-        {
-            prototypeInstance = model.model().newValueInstance( model.module(), state() );
-        }
+        if (prototypeInstance == null)
+            throw new IllegalStateException( "ValueBuilder instances cannot be reused" );
 
         return prototypeInstance.newProxy( mixinType );
     }
@@ -77,39 +69,22 @@ public final class ValueBuilderInstance<T>
     public T newInstance()
         throws ConstructionException
     {
-        StateHolder instanceState;
-        if( state == null )
+        if (prototypeInstance == null)
+            throw new IllegalStateException( "ValueBuilder instances cannot be reused" );
+
+        // Set correct info's (immutable) on the state
+        prototypeInstance.prepareBuilderState();
+
+        // Check that it is valid
+        model.model().checkConstraints( prototypeInstance.state() );
+
+        try
         {
-            instanceState = model.model().newInitialState(model.module());
+            return prototypeInstance.<T>proxy();
+        } finally
+        {
+            // Invalidate builder
+            prototypeInstance = null;
         }
-        else
-        {
-            instanceState = model.model().newState( state );
-        }
-
-        model.model().checkConstraints( instanceState );
-        ValueInstance valueInstance = model.model().newValueInstance( model.module(), instanceState );
-        return valueInstance.<T>proxy();
-    }
-
-    public Iterator<T> iterator()
-    {
-        return new Iterator<T>()
-        {
-            public boolean hasNext()
-            {
-                return true;
-            }
-
-            public T next()
-            {
-                return newInstance();
-            }
-
-            public void remove()
-            {
-                throw new UnsupportedOperationException();
-            }
-        };
     }
 }

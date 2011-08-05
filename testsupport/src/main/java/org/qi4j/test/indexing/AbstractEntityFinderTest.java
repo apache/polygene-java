@@ -56,14 +56,14 @@ public abstract class AbstractEntityFinderTest
         throws Exception
     {
         super.setUp();
-        entityFinder = this.serviceLocator.findService( EntityFinder.class ).get();
+        entityFinder = this.module.findService( EntityFinder.class ).get();
     }
 
     @Test
     public void showNetwork()
         throws IOException
     {
-        final ServiceReference<IndexExporter> indexerService = this.serviceLocator.findService( IndexExporter.class );
+        final ServiceReference<IndexExporter> indexerService = this.module.findService( IndexExporter.class );
         final IndexExporter exporter = indexerService.get();
         exporter.exportReadableToStream( System.out );
         // todo asserts

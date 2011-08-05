@@ -20,10 +20,8 @@ public class IssueTest
     @Test
     public void objectWithGenericUsage()
     {
-        assertEquals( "Using - Test string", objectBuilderFactory.
-            newObjectBuilder( AClass.class ).
-            use( "Test string" ).
-            newInstance().
+        assertEquals( "Using - Test string", module.
+            newObject( AClass.class, "Test string" ).
             uses() );
     }
 
