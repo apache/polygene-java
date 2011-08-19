@@ -132,6 +132,19 @@ public final class Classes
         };
     }
 
+
+    public static Specification<Class<?>> hasModifier( final int classModifier )
+    {
+        return new Specification<Class<?>>()
+        {
+            @Override
+            public boolean satisfiedBy( Class<?> item )
+            {
+                return (item.getModifiers() & classModifier) != 0;
+            }
+        };
+    }
+
     public static <T> Function<Type, Iterable<T>> forClassHierarchy( final Function<Class<?>, Iterable<T>> function )
     {
         return new Function<Type, Iterable<T>>()

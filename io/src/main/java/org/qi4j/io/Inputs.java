@@ -14,11 +14,16 @@
 
 package org.qi4j.io;
 
+import org.qi4j.functional.Visitor;
+
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.concurrent.Callable;
 import java.util.zip.GZIPInputStream;
 
 /**
@@ -151,7 +156,7 @@ public class Inputs
     }
 
     /**
-     * Read a file using ByteBuffer of a given size. Useful for transferring byte data form one input to another.
+     * Read a file using ByteBuffer of a given size. Useful for transferring raw data.
      *
      * @param source
      * @param bufferSize
@@ -281,6 +286,13 @@ public class Inputs
         };
     }
 
+    /**
+     * Create an Input that takes its items from the given Iterable.
+     *
+     * @param iterable
+     * @param <T>
+     * @return
+     */
     public static <T> Input<T, RuntimeException> iterable( final Iterable<T> iterable )
     {
         return new Input<T, RuntimeException>()
@@ -298,6 +310,65 @@ public class Inputs
                             receiver.receive( item );
                         }
                     }
+                } );
+            }
+        };
+    }
+
+    /**
+     * Create an Input that allows a Visitor to write to an OutputStream. The stream is a BufferedOutputStream, so when enough
+     * data has been gathered it will send this in chunks of the given size to the Output it is transferred to. The Visitor does not have to call
+     * close() on the OutputStream, but should ensure that any wrapper streams or writers are flushed so that all data is sent.
+     *
+     * @param outputVisitor
+     * @param bufferSize
+     * @return
+     */
+    public static Input<ByteBuffer, IOException> output( final Visitor<OutputStream, IOException> outputVisitor, final int bufferSize)
+    {
+        return new Input<ByteBuffer, IOException>()
+        {
+           @Override
+           public <ReceiverThrowableType extends Throwable> void transferTo(Output<? super ByteBuffer, ReceiverThrowableType> output) throws IOException, ReceiverThrowableType
+           {
+                output.receiveFrom( new Sender<ByteBuffer, IOException>()
+                {
+                   @Override
+                   public <ReceiverThrowableType extends Throwable> void sendTo( final Receiver<? super ByteBuffer, ReceiverThrowableType> receiver) throws ReceiverThrowableType, IOException
+                   {
+                       OutputStream out = new BufferedOutputStream(new OutputStream()
+                       {
+                           @Override
+                           public void write( int b ) throws IOException
+                           {
+                               // Ignore
+                           }
+
+                           @Override
+                           public void write( byte[] b, int off, int len ) throws IOException
+                           {
+                               try
+                               {
+                                   ByteBuffer byteBuffer = ByteBuffer.wrap( b, 0, len );
+                                   receiver.receive( byteBuffer );
+                               } catch( Throwable ex)
+                               {
+                                 throw new IOException( ex );
+                               }
+                           }
+                       }, bufferSize);
+
+                       try
+                       {
+                           outputVisitor.visit( out );
+                       } catch (IOException ex)
+                       {
+                          throw (ReceiverThrowableType) ex.getCause();
+                       } finally
+                       {
+                           out.close();
+                       }
+                   }
                 } );
             }
         };

@@ -19,9 +19,12 @@
 package org.qi4j.runtime.query;
 
 import org.qi4j.api.composite.Composite;
+import org.qi4j.api.property.Property;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryExecutionException;
+import org.qi4j.api.query.QueryExpressions;
 import org.qi4j.api.query.grammar.OrderBy;
+import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specification;
 import org.qi4j.spi.query.QuerySource;
 
@@ -49,7 +52,7 @@ class QueryImpl<T>
     /**
      * Order by clause segments.
      */
-    protected OrderBy[] orderBySegments;
+    protected Iterable<OrderBy> orderBySegments;
     /**
      * First result to be returned.
      */
@@ -84,7 +87,24 @@ class QueryImpl<T>
      */
     public Query<T> orderBy( final OrderBy... segments )
     {
-        orderBySegments = segments;
+        orderBySegments = Iterables.iterable(segments);
+        return this;
+    }
+
+    @Override
+    public Query<T> orderBy( Property<?> property, OrderBy.Order order )
+    {
+        if (orderBySegments == null)
+            orderBySegments = Iterables.iterable( new OrderBy( QueryExpressions.property( property ), order ) );
+        else
+            orderBySegments = Iterables.append( new OrderBy( QueryExpressions.property( property ), order ), orderBySegments );
+        return this;
+    }
+
+    @Override
+    public Query<T> orderBy( Property<?> property)
+    {
+        orderBy( property, OrderBy.Order.ASCENDING );
         return this;
     }
 

@@ -82,6 +82,11 @@ public final class UnitOfWorkInstance
         this.usecase = usecase;
     }
 
+    public long currentTime()
+    {
+        return currentTime;
+    }
+
     public EntityStoreUnitOfWork getEntityStoreUnitOfWork( EntityStore store, Module module )
     {
         EntityStoreUnitOfWork uow = storeUnitOfWork.get( store );

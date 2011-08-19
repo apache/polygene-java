@@ -14,6 +14,7 @@
 
 package org.qi4j.runtime.composite;
 
+import org.omg.CORBA.DynAnyPackage.Invalid;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
@@ -30,10 +31,7 @@ import org.qi4j.runtime.injection.Dependencies;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.structure.ModuleInstance;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
+import java.lang.reflect.*;
 
 /**
  * JAVADOC
@@ -48,7 +46,7 @@ public abstract class CompositeModel
     private final Visibility visibility;
     private final MetaInfo metaInfo;
     protected final StateModel stateModel;
-    protected final Class<? extends Composite> proxyClass;
+    protected Class<? extends Composite> proxyClass;
     protected Constructor<? extends Composite> proxyConstructor;
 
     protected CompositeModel( final Class<?> type,
@@ -69,15 +67,7 @@ public abstract class CompositeModel
         this.mixinsModel = mixinsModel;
 
         // Create proxy class
-        this.proxyClass = createProxyClass( types );
-        try
-        {
-            proxyConstructor = proxyClass.getConstructor( InvocationHandler.class );
-        } catch( NoSuchMethodException e )
-        {
-            throw (InvalidCompositeException) new InvalidCompositeException( "Could not get proxy constructor").initCause( e );
-        }
-        proxyConstructor.setAccessible( true );
+        createProxyClass( types );
 
         this.compositeMethodsModel = compositeMethodsModel;
     }
@@ -144,12 +134,34 @@ public abstract class CompositeModel
     }
 
     @SuppressWarnings( "unchecked" )
-    private Class<? extends Composite> createProxyClass( Iterable<Class<?>> types)
+    private void createProxyClass( Iterable<Class<?>> types)
     {
-        ClassLoader proxyClassloader = Iterables.first( types ).getClassLoader();
+        if (type.isInterface())
+        {
+            ClassLoader proxyClassloader = Iterables.first( types ).getClassLoader();
 
-        Class<?>[] interfaces = Iterables.toArray( Class.class, Iterables.<Class, Class<?>>cast( types) );
-        return (Class<? extends Composite>) Proxy.getProxyClass( proxyClassloader, interfaces );
+            Class<?>[] interfaces = Iterables.toArray( Class.class, Iterables.<Class, Class<?>>cast( types) );
+            proxyClass = (Class<? extends Composite>) Proxy.getProxyClass( proxyClassloader, interfaces );
+
+            try
+            {
+                proxyConstructor = proxyClass.getConstructor( InvocationHandler.class );
+            } catch( NoSuchMethodException e )
+            {
+                throw (InvalidCompositeException) new InvalidCompositeException( "Could not get proxy constructor").initCause( e );
+            }
+            proxyConstructor.setAccessible( true );
+        } else
+        {
+            try
+            {
+                proxyClass = new TransientClassLoader( getClass().getClassLoader() ).loadFragmentClass( type );
+                proxyConstructor = (Constructor<? extends Composite>) proxyClass.getConstructors()[0];
+            } catch( ClassNotFoundException e )
+            {
+                throw (InvalidCompositeException) new InvalidCompositeException( "Could not get proxy constructor").initCause( e );
+            }
+        }
     }
 
     // Context
@@ -167,13 +179,28 @@ public abstract class CompositeModel
     public Composite newProxy( InvocationHandler invocationHandler )
         throws ConstructionException
     {
-        try
+        if (type.isInterface())
         {
-            return Composite.class.cast( proxyConstructor.newInstance( invocationHandler ) );
-        }
-        catch( Exception e )
+
+            try
+            {
+                return Composite.class.cast( proxyConstructor.newInstance( invocationHandler ) );
+            }
+            catch( Exception e )
+            {
+                throw new ConstructionException( e );
+            }
+        } else
         {
-            throw new ConstructionException( e );
+            try
+            {
+                Composite composite = Composite.class.cast( proxyConstructor.newInstance(  ) );
+                proxyClass.getField( "_instance" ).set( composite, invocationHandler );
+                return composite;
+            } catch( Exception e )
+            {
+                throw new ConstructionException( e );
+            }
         }
     }
 

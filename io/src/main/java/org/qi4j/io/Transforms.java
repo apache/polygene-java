@@ -18,6 +18,7 @@ import org.qi4j.functional.Function;
 import org.qi4j.functional.Specification;
 import org.slf4j.Logger;
 
+import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.text.MessageFormat;
 import java.util.concurrent.TimeUnit;
@@ -289,6 +290,25 @@ public class Transforms
       public byte[] map(String s)
       {
          return s.getBytes(charSet);
+      }
+   }
+
+   /**
+    * Convert ByteBuffers to Strings using the given CharSet
+    */
+   public static class ByteBuffer2String
+           implements Function<ByteBuffer, String>
+   {
+      private Charset charSet;
+
+      public ByteBuffer2String(Charset charSet)
+      {
+         this.charSet = charSet;
+      }
+
+      public String map(ByteBuffer buffer)
+      {
+         return new String(buffer.array(), charSet);
       }
    }
 

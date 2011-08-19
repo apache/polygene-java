@@ -20,6 +20,7 @@
  */
 package org.qi4j.api.query;
 
+import org.qi4j.api.property.Property;
 import org.qi4j.api.query.grammar.OrderBy;
 
 import java.io.Serializable;
@@ -46,6 +47,10 @@ public interface Query<T>
      * @return the Query
      */
     Query<T> orderBy( OrderBy... segments );
+
+    Query<T> orderBy( final Property<?> property, final OrderBy.Order order );
+
+    Query<T> orderBy( Property<?> property);
 
     /**
      * Set the index of the first result. Default is 0 (zero).

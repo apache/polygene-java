@@ -43,7 +43,7 @@ public class IterableQuerySource
     }
 
     @Override
-    public <T> T find( Class<T> resultType, Specification<Composite> whereClause, OrderBy[] orderBySegments, Integer firstResult, Integer maxResults, Map<String, Object> variables )
+    public <T> T find( Class<T> resultType, Specification<Composite> whereClause, Iterable<OrderBy> orderBySegments, Integer firstResult, Integer maxResults, Map<String, Object> variables )
     {
         final Iterator<T> iterator = iterator(resultType, whereClause, orderBySegments, firstResult, maxResults, variables);
         if( iterator.hasNext() )
@@ -54,18 +54,18 @@ public class IterableQuerySource
     }
 
     @Override
-    public <T> long count( Class<T> resultType, Specification<Composite> whereClause, OrderBy[] orderBySegments, Integer firstResult, Integer maxResults, Map<String, Object> variables )
+    public <T> long count( Class<T> resultType, Specification<Composite> whereClause, Iterable<OrderBy> orderBySegments, Integer firstResult, Integer maxResults, Map<String, Object> variables )
     {
         return list( resultType, whereClause, orderBySegments, firstResult, maxResults, variables ).size();
     }
 
     @Override
-    public <T> Iterator<T> iterator( Class<T> resultType, Specification<Composite> whereClause, OrderBy[] orderBySegments, Integer firstResult, Integer maxResults, Map<String, Object> variables )
+    public <T> Iterator<T> iterator( Class<T> resultType, Specification<Composite> whereClause, Iterable<OrderBy> orderBySegments, Integer firstResult, Integer maxResults, Map<String, Object> variables )
     {
         return list(resultType, whereClause, orderBySegments, firstResult, maxResults, variables).iterator();  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    private <T> List<T> list(Class<T> resultType, Specification<Composite> whereClause, OrderBy[] orderBySegments, Integer firstResult, Integer maxResults, Map<String, Object> variables)
+    private <T> List<T> list(Class<T> resultType, Specification<Composite> whereClause, Iterable<OrderBy> orderBySegments, Integer firstResult, Integer maxResults, Map<String, Object> variables)
     {
         // Ensure it's a list first
         List<T> list = filter( this.<T>toList(), whereClause );
@@ -148,19 +148,17 @@ public class IterableQuerySource
         implements Comparator<T>
     {
 
-        private OrderBy[] orderBySegments;
+        private Iterable<OrderBy> orderBySegments;
 
-        private OrderByComparator( OrderBy[] orderBySegments )
+        private OrderByComparator( Iterable<OrderBy> orderBySegments )
         {
             this.orderBySegments = orderBySegments;
         }
 
         public int compare( T o1, T o2 )
         {
-            int i = 0;
-            while( i < orderBySegments.length )
+            for( OrderBy orderBySegment : orderBySegments )
             {
-                OrderBy orderBySegment = orderBySegments[ i ];
                 try
                 {
                     final Property prop1 = orderBySegment.getPropertyFunction().map( o1 );
@@ -211,7 +209,6 @@ public class IterableQuerySource
                 {
                     return 0;
                 }
-                i++;
             }
 
             return 0;

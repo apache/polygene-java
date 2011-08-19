@@ -11,6 +11,9 @@ import org.qi4j.runtime.injection.InjectionProviderFactory;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.structure.ModuleInstance;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * JAVADOC
  */
@@ -62,7 +65,24 @@ public final class UsesInjectionProviderFactory
                         usesObject = moduleInstance.newObject( injectionType, uses.toArray() );
                     } catch( NoSuchObjectException e1 )
                     {
-                        // Could not instantiate an instance - continue anyway
+                        // Could not instantiate an instance - to try instantiate as plain class
+                        try
+                        {
+                            usesObject = injectionType.newInstance();
+                        } catch( Throwable e2 )
+                        {
+                            // Could not instantiate - try with this as first argument
+                            try
+                            {
+                                Constructor constructor = injectionType.getDeclaredConstructor( context.instance().getClass() );
+                                if (!constructor.isAccessible())
+                                    constructor.setAccessible( true );
+                                usesObject = constructor.newInstance( context.instance() );
+                            } catch( Throwable e3 )
+                            {
+                                // Really can't instantiate it - ignore
+                            }
+                        }
                     }
                 }
 

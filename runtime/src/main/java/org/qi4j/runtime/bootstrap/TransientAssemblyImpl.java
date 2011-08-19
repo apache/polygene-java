@@ -80,6 +80,10 @@ public final class TransientAssemblyImpl
                 types.add( TransientComposite.class );
             }
 
+            // If type is a class, register it as a mixin
+            if (!compositeType.isInterface())
+                mixins.add( compositeType );
+
             // Implement composite methods
             Iterable<Class<? extends Constraint<?, ?>>> constraintClasses = constraintDeclarations( compositeType );
             Iterable<Class<?>> concernClasses = Iterables.<Class<?>, Iterable<Class<?>>>flatten( concerns, concernDeclarations( compositeType ) );

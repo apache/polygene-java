@@ -151,7 +151,8 @@ public final class CompositeMethodModel
                 }
                 catch( NoSuchMethodException e )
                 {
-                    throw new ConstructionException( "Could not find the subclass method", e );
+                    invocationMethod = method;
+//                    throw new ConstructionException( "Could not find the subclass method", e );
                 }
             }
             else

@@ -200,7 +200,9 @@ public final class ConstructorsModel
 
             if( messageBuilder.indexOf( "$" ) >= 0 )
             {
-                messageBuilder.append( "\nNon-static inner classes can not be used." );
+                // This could be ok if instance is created manually
+                return;
+//                messageBuilder.append( "\nNon-static inner classes can not be used." );
             }
 
             String message = messageBuilder.toString();

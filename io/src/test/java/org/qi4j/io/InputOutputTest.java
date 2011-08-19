@@ -18,10 +18,13 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 import org.qi4j.functional.Function;
+import org.qi4j.functional.Visitor;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.URL;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -271,6 +274,25 @@ public class InputOutputTest
 
       Inputs.iterable( objects ).transferTo( Outputs.systemOut());
    }
+
+    @Test
+    public void testOutputstreamInput() throws Throwable
+    {
+        Input<ByteBuffer, IOException> input = Inputs.output( new Visitor<OutputStream, IOException>()
+        {
+            @Override
+            public boolean visit( OutputStream visited ) throws IOException
+            {
+                PrintWriter writer = new PrintWriter( visited );
+                writer.print( "Hello World!" );
+                writer.close();
+                return true;
+            }
+        }, 256 );
+
+        input.transferTo( Transforms.map( new Transforms.ByteBuffer2String( Charset.defaultCharset()), Outputs.systemOut() ));
+        input.transferTo( Transforms.map( new Transforms.ByteBuffer2String( Charset.defaultCharset()), Outputs.systemOut() ));
+    }
 
    public Output<String, IOException> writerOutput(final Writer writer)
    {

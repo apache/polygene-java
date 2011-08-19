@@ -25,45 +25,44 @@ import org.qi4j.runtime.structure.ModuleInstance;
  */
 public final class InjectionContext
 {
-    private final CompositeInstance compositeInstance;
     private final ModuleInstance moduleInstance;
+    private CompositeInstance compositeInstance;
     private UsesInstance uses;
-    private final StateHolder state;
-    private final Object next;
-    private final ProxyReferenceInvocationHandler proxyHandler;
+    private StateHolder state;
+    private Object next; // Only used for concerns and side-effects
+    private ProxyReferenceInvocationHandler proxyHandler;
+    private Object instance; // Only used for inner classes
 
     // For mixins
 
     public InjectionContext( CompositeInstance compositeInstance, UsesInstance uses, StateHolder state )
     {
-        this.compositeInstance = compositeInstance;
         this.moduleInstance = (ModuleInstance) compositeInstance.module();
+        this.compositeInstance = compositeInstance;
         this.uses = uses;
         this.state = state;
-        this.next = null;
-        this.proxyHandler = null;
     }
 
     // For concerns and side-effects
-
     public InjectionContext( ModuleInstance moduleInstance, Object next, ProxyReferenceInvocationHandler proxyHandler )
     {
-        this.compositeInstance = null;
         this.moduleInstance = moduleInstance;
-        this.uses = null;
         this.next = next;
-        this.state = null;
         this.proxyHandler = proxyHandler;
     }
 
     public InjectionContext( ModuleInstance moduleInstance, UsesInstance uses )
     {
-        this.compositeInstance = null;
         this.moduleInstance = moduleInstance;
         this.uses = uses;
-        this.state = null;
-        this.next = null;
-        this.proxyHandler = null;
+    }
+
+    // For inner classes
+    public InjectionContext( ModuleInstance moduleInstance, UsesInstance uses, Object instance)
+    {
+        this.moduleInstance = moduleInstance;
+        this.uses = uses;
+        this.instance = instance;
     }
 
     public ModuleInstance module()
@@ -89,6 +88,11 @@ public final class InjectionContext
     public Object next()
     {
         return next;
+    }
+
+    public Object instance()
+    {
+        return instance;
     }
 
     public ProxyReferenceInvocationHandler proxyHandler()

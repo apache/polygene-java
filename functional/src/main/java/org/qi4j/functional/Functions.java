@@ -181,6 +181,26 @@ public final class Functions
     }
 
     /**
+     * Only apply given function on objects that satisfies the given specification.
+     *
+     * @param specification
+     * @param function
+     * @param <T>
+     * @return
+     */
+    public static <T> Function<T, T> filteredMap( final Specification<T> specification, final Function<T, T> function)
+    {
+        return new Function<T, T>()
+        {
+            @Override
+            public T map( T from )
+            {
+                return specification.satisfiedBy( from ) ? function.map( from ) : from;
+            }
+        };
+    }
+
+    /**
      * Creates a comparator that takes a function as input. The returned comparator will use the
      * function once for each item in the list to be sorted by Collections.sort.
      *

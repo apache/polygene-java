@@ -49,6 +49,9 @@ public interface UnitOfWork
      */
     UnitOfWorkFactory unitOfWorkFactory();
 
+    long currentTime();
+
+
     /**
      * Get the Usecase for this UnitOfWork
      *

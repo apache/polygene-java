@@ -12,9 +12,9 @@ import java.util.Map;
  */
 public interface QuerySource
 {
-    <T> T find( Class<T> resultType, Specification<Composite> whereClause, OrderBy[] orderBySegments, Integer firstResult, Integer maxResults, Map<String, Object> variables );
+    <T> T find( Class<T> resultType, Specification<Composite> whereClause, Iterable<OrderBy> orderBySegments, Integer firstResult, Integer maxResults, Map<String, Object> variables );
 
-    <T> long count( Class<T> resultType, Specification<Composite> whereClause, OrderBy[] orderBySegments, Integer firstResult, Integer maxResults, Map<String, Object> variables );
+    <T> long count( Class<T> resultType, Specification<Composite> whereClause, Iterable<OrderBy> orderBySegments, Integer firstResult, Integer maxResults, Map<String, Object> variables );
 
-    <T> Iterator<T> iterator( Class<T> resultType, Specification<Composite> whereClause, OrderBy[] orderBySegments, Integer firstResult, Integer maxResults, Map<String, Object> variables );
+    <T> Iterator<T> iterator( Class<T> resultType, Specification<Composite> whereClause, Iterable<OrderBy> orderBySegments, Integer firstResult, Integer maxResults, Map<String, Object> variables );
 }

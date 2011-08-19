@@ -105,6 +105,7 @@ public final class ObjectModel
         try
         {
             instance = constructorsModel.newInstance( injectionContext );
+            injectionContext = new InjectionContext( injectionContext.module(), injectionContext.uses(), instance  );
             injectedFieldsModel.inject( injectionContext, instance );
             injectedMethodsModel.inject( injectionContext, instance );
         }

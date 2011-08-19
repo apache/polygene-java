@@ -62,7 +62,7 @@ public class IterableQuerySourceTest
             public void assemble( ModuleAssembly module )
                     throws AssemblyException
             {
-                Iterable<Class> entities = ClassScanner.getClasses( DomainEntity.class );
+                Iterable<Class<?>> entities = ClassScanner.getClasses( DomainEntity.class );
 
                 for( Class entity : entities )
                 {

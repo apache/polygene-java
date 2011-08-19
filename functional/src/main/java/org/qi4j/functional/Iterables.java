@@ -533,6 +533,9 @@ public final class Iterables
 
     public static <T> T[] toArray(Class<T> componentType, Iterable<T> iterable)
     {
+        if (iterable == null)
+            return null;
+
         List<T> list = toList( iterable );
         return list.toArray( (T[]) Array.newInstance( componentType, list.size() ) );
     }

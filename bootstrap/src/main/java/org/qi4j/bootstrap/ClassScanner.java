@@ -46,11 +46,11 @@ public class ClassScanner
     * @param seedClass starting point for classpath scanning
     * @return iterable of all concrete classes in the same package as the seedclass, and also all classes in subpackages.
     */
-   public static Iterable<Class> getClasses(final Class seedClass)
+   public static Iterable<Class<?>> getClasses(final Class<?> seedClass)
    {
        CodeSource codeSource = seedClass.getProtectionDomain().getCodeSource();
        if (codeSource == null)
-           return Iterables.<Class,Class>iterable(  );
+           return Iterables.empty();
 
       URL location = codeSource.getLocation();
 
@@ -70,7 +70,7 @@ public class ClassScanner
             try
             {
                return Iterables.toList( filter( new NonAbstractClass(),
-                       map( new Function<JarEntry, Class>()
+                       map( new Function<JarEntry, Class<?>>()
                                {
                                    public Class map( JarEntry jarEntry )
                                    {
@@ -114,9 +114,9 @@ public class ClassScanner
          });
 
          return filter(new NonAbstractClass(),
-               map(new Function<File, Class>()
+               map(new Function<File, Class<?>>()
                {
-                  public Class map(File f)
+                  public Class<?> map(File f)
                   {
                      String fileName = f.getAbsolutePath().substring(file.toString().length() + 1);
                      fileName = fileName.replace(File.separatorChar, '.').substring(0, fileName.length() - 6);
@@ -142,13 +142,13 @@ public class ClassScanner
     * @param regex
     * @return
     */
-   public static Specification<Class> matches(String regex)
+   public static Specification<Class<?>> matches(String regex)
    {
       final Pattern pattern = Pattern.compile(regex);
 
-      return new Specification<Class>()
+      return new Specification<Class<?>>()
       {
-         public boolean satisfiedBy(Class aClass)
+         public boolean satisfiedBy(Class<?> aClass)
          {
             return pattern.matcher(aClass.getName()).matches();
          }
@@ -174,9 +174,9 @@ public class ClassScanner
    }
 
    private static class NonAbstractClass
-         implements Specification<Class>
+         implements Specification<Class<?>>
    {
-      public boolean satisfiedBy(Class item)
+      public boolean satisfiedBy(Class<?> item)
       {
          return item.isInterface() || !Modifier.isAbstract( item.getModifiers() );
       }

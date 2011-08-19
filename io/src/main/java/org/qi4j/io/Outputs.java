@@ -57,7 +57,9 @@ public class Outputs
            @Override
            public <SenderThrowableType extends Throwable> void receiveFrom(Sender<? extends String, SenderThrowableType> sender) throws IOException, SenderThrowableType
            {
-                OutputStream stream = new FileOutputStream( file );
+               File tmpFile = File.createTempFile( file.getName(), ".bin" );
+
+                OutputStream stream = new FileOutputStream( tmpFile );
 
                 // If file should be gzipped, do that automatically
                 if( file.getName().endsWith( ".gz" ) )
@@ -78,18 +80,22 @@ public class Outputs
                         }
                     } );
                     writer.close();
+
+                    // Replace file with temporary file
+                    if (!file.exists() || file.delete())
+                        tmpFile.renameTo( file );
                 }
                 catch( IOException e )
                 {
                     // We failed writing - close and delete
                     writer.close();
-                    file.delete();
+                    tmpFile.delete();
                 }
                 catch( Throwable senderThrowableType )
                 {
                     // We failed writing - close and delete
                     writer.close();
-                    file.delete();
+                    tmpFile.delete();
 
                     throw (SenderThrowableType) senderThrowableType;
                 }
@@ -112,7 +118,8 @@ public class Outputs
            @Override
            public <SenderThrowableType extends Throwable> void receiveFrom(Sender<? extends ByteBuffer, SenderThrowableType> sender) throws IOException, SenderThrowableType
            {
-                FileOutputStream stream = new FileOutputStream( file );
+                File tmpFile = File.createTempFile( file.getName(), ".bin" );
+                FileOutputStream stream = new FileOutputStream( tmpFile );
                 final FileChannel fco = stream.getChannel();
 
                 try
@@ -126,18 +133,22 @@ public class Outputs
                         }
                     } );
                     stream.close();
+
+                    // Replace file with temporary file
+                    if (!file.exists() || file.delete())
+                        tmpFile.renameTo( file );
                 }
                 catch( IOException e )
                 {
                     // We failed writing - close and delete
                     stream.close();
-                    file.delete();
+                    tmpFile.delete();
                 }
                 catch( Throwable senderThrowableType )
                 {
                     // We failed writing - close and delete
                     stream.close();
-                    file.delete();
+                    tmpFile.delete();
 
                     throw (SenderThrowableType) senderThrowableType;
                 }
@@ -205,7 +216,8 @@ public class Outputs
            @Override
            public <SenderThrowableType extends Throwable> void receiveFrom(Sender<? extends byte[], SenderThrowableType> sender) throws IOException, SenderThrowableType
            {
-                final OutputStream stream = new BufferedOutputStream( new FileOutputStream( file ), bufferSize );
+                File tmpFile = File.createTempFile( file.getName(),".bin" );
+                final OutputStream stream = new BufferedOutputStream( new FileOutputStream( tmpFile ), bufferSize );
 
                 try
                 {
@@ -218,6 +230,10 @@ public class Outputs
                         }
                     } );
                     stream.close();
+
+                    // Replace file with temporary file
+                    if (!file.exists() || file.delete())
+                        tmpFile.renameTo( file );
                 }
                 catch( IOException e )
                 {

@@ -89,6 +89,12 @@ public class ModuleUnitOfWork
         return moduleInstance;
     }
 
+    @Override
+    public long currentTime()
+    {
+        return uow.currentTime();
+    }
+
     public Usecase usecase()
     {
         return uow.usecase();
@@ -326,7 +332,7 @@ public class ModuleUnitOfWork
         }
 
         @Override
-        public <T> T find( Class<T> resultType, Specification<Composite> whereClause, OrderBy[] orderBySegments, Integer firstResult, Integer maxResults, Map<String, Object> variables )
+        public <T> T find( Class<T> resultType, Specification<Composite> whereClause, Iterable<OrderBy> orderBySegments, Integer firstResult, Integer maxResults, Map<String, Object> variables )
         {
             final EntityFinder entityFinder = moduleUnitOfWork.module().findService( EntityFinder.class ).get();
 
@@ -354,7 +360,7 @@ public class ModuleUnitOfWork
         }
 
         @Override
-        public <T> long count( Class<T> resultType, Specification<Composite> whereClause, OrderBy[] orderBySegments, Integer firstResult, Integer maxResults, Map<String, Object> variables )
+        public <T> long count( Class<T> resultType, Specification<Composite> whereClause, Iterable<OrderBy> orderBySegments, Integer firstResult, Integer maxResults, Map<String, Object> variables )
         {
             final EntityFinder entityFinder = moduleUnitOfWork.module().findService( EntityFinder.class ).get();
 
@@ -370,7 +376,7 @@ public class ModuleUnitOfWork
         }
 
         @Override
-        public <T> Iterator<T> iterator( final Class<T> resultType, Specification<Composite> whereClause, OrderBy[] orderBySegments, Integer firstResult, Integer maxResults, Map<String, Object> variables )
+        public <T> Iterator<T> iterator( final Class<T> resultType, Specification<Composite> whereClause, Iterable<OrderBy> orderBySegments, Integer firstResult, Integer maxResults, Map<String, Object> variables )
         {
             final EntityFinder entityFinder = moduleUnitOfWork.module().findService( EntityFinder.class ).get();
 
@@ -378,7 +384,7 @@ public class ModuleUnitOfWork
             {
                 final Iterator<EntityReference> foundEntities = entityFinder.findEntities( resultType,
                                                                                            whereClause,
-                                                                                           orderBySegments,
+                                                                                           Iterables.toArray( OrderBy.class, orderBySegments),
                                                                                            firstResult,
                                                                                            maxResults,
                                                                                            variables == null ? Collections.<String, Object>emptyMap() : variables)

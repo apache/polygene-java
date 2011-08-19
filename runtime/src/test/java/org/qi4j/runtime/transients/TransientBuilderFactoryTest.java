@@ -17,10 +17,17 @@ package org.qi4j.runtime.transients;
 import org.junit.Test;
 import org.qi4j.api.composite.NoSuchCompositeException;
 import org.qi4j.api.composite.TransientComposite;
+import org.qi4j.api.concern.Concerns;
+import org.qi4j.api.concern.GenericConcern;
+import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.structure.Module;
 import org.qi4j.api.util.NullArgumentException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
+import org.qi4j.library.constraints.annotation.MaxLength;
+
+import java.lang.reflect.Method;
 
 /**
  * Unit tests for CompositeBuilderFactory.
@@ -119,8 +126,53 @@ public class TransientBuilderFactoryTest
         assembler.module().newTransientBuilder( AnyComposite.class );
     }
 
+    @Test
+    public void testClassAsTransient()
+    {
+        SingletonAssembler assembler = new SingletonAssembler()
+        {
+            @Override
+            public void assemble( ModuleAssembly module ) throws AssemblyException
+            {
+                module.transients( AnyTransient.class );
+            }
+        };
+
+        assembler.module().newTransient( AnyTransient.class ).hello("World");
+
+        assembler.module().newTransient( AnyTransient.class ).hello("Universe");
+    }
+
     public static interface AnyComposite
         extends TransientComposite
     {
+    }
+
+    public static class CapitalizeConcern
+        extends GenericConcern
+    {
+        @Override
+        public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
+        {
+            if (args != null)
+            {
+                args[0] = ((String)args[0]).toUpperCase();
+                return next.invoke( proxy, method, args );
+            } else
+                return next.invoke( proxy, method, args );
+        }
+    }
+
+    @Concerns(CapitalizeConcern.class)
+    public static class AnyTransient
+        implements TransientComposite
+    {
+        @Structure
+        Module module;
+
+        public String hello(@MaxLength(5) String name)
+        {
+            return "Hello "+name+" from "+module.name();
+        }
     }
 }

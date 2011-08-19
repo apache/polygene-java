@@ -126,8 +126,21 @@ public interface Qi4j
         @Override
         public CompositeDescriptor map( Composite composite )
         {
-            InvocationHandler invocationHandler = Proxy.getInvocationHandler( composite );
-            return ((CompositeInstance) invocationHandler).descriptor();
+            if (composite instanceof Proxy)
+            {
+                InvocationHandler invocationHandler = Proxy.getInvocationHandler( composite );
+                return ((CompositeInstance) invocationHandler).descriptor();
+            } else
+            {
+                try
+                {
+                    CompositeInstance instance = (CompositeInstance) composite.getClass().getField( "_instance" ).get( composite );
+                    return instance.descriptor();
+                } catch( Exception e )
+                {
+                    throw (InvalidCompositeException) new InvalidCompositeException( "Could not get _instance field" ).initCause( e );
+                }
+            }
         }
     };
 
@@ -136,7 +149,20 @@ public interface Qi4j
         @Override
         public CompositeInstance map( Composite composite )
         {
-            return ((CompositeInstance) Proxy.getInvocationHandler( composite ));
+            if (composite instanceof Proxy)
+            {
+                return ((CompositeInstance) Proxy.getInvocationHandler( composite ));
+            } else
+            {
+                try
+                {
+                    CompositeInstance instance = (CompositeInstance) composite.getClass().getField( "_instance" ).get( composite );
+                    return instance;
+                } catch( Exception e )
+                {
+                    throw (InvalidCompositeException) new InvalidCompositeException( "Could not get _instance field" ).initCause( e );
+                }
+            }
         }
     };
 }

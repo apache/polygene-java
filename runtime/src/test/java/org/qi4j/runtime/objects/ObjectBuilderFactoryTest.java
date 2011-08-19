@@ -25,6 +25,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 
@@ -127,6 +128,21 @@ public class ObjectBuilderFactoryTest
             .newObject( ManyConstructorObject.class, new AnyObject() );
 
         Assert.assertThat( "ref is not null", object.anyObject, notNullValue() );
+    }
+
+    @Test
+    public void givenClassWithInnerClassesWhenInstantiateThenInstantiateInnerClass()
+    {
+        SingletonAssembler assembler = new SingletonAssembler()
+        {
+            @Override
+            public void assemble( ModuleAssembly module ) throws AssemblyException
+            {
+                module.objects( OuterClass.class );
+            }
+        };
+
+        Assert.assertThat( "inner class has been injected", assembler.module().newObject( OuterClass.class ).name(), equalTo("Module 1") );
     }
 
     public static final class AnyObject
