@@ -186,8 +186,9 @@ public final class EntityAssemblyImpl
         }
         MetaInfo metaInfo = stateDeclarations.getMetaInfo( accessor );
         Object defaultValue = stateDeclarations.getInitialValue( accessor );
+        boolean useDefaults = metaInfo.get( UseDefaults.class ) != null || stateDeclarations.isUseDefaults( accessor );
         boolean immutable = this.immutable || metaInfo.get( Immutable.class ) != null;
-        PropertyModel propertyModel = new PropertyModel( accessor, immutable, valueConstraintsInstance, metaInfo, defaultValue );
+        PropertyModel propertyModel = new PropertyModel( accessor, immutable, useDefaults, valueConstraintsInstance, metaInfo, defaultValue );
         return propertyModel;
     }
 

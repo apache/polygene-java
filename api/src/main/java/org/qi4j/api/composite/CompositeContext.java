@@ -14,6 +14,7 @@
 
 package org.qi4j.api.composite;
 
+import org.qi4j.api.Qi4j;
 import org.qi4j.api.structure.Module;
 
 import java.lang.reflect.InvocationHandler;
@@ -50,7 +51,7 @@ public class CompositeContext<T extends TransientComposite>
         TransientComposite composite = get();
 
         return (T) Proxy.newProxyInstance( composite.getClass()
-                                               .getClassLoader(), new Class[]{ ((CompositeInstance)Proxy.getInvocationHandler( composite)).type() }, new ContextInvocationhandler() );
+                                               .getClassLoader(), new Class[]{ Qi4j.INSTANCE_FUNCTION.map( composite ).type() }, new ContextInvocationhandler() );
     }
 
     private class ContextInvocationhandler

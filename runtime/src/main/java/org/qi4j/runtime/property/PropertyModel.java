@@ -70,7 +70,7 @@ public class PropertyModel
 
     private final boolean queryable;
 
-    public PropertyModel( AccessibleObject accessor, boolean immutable, ValueConstraintsInstance constraints,
+    public PropertyModel( AccessibleObject accessor, boolean immutable, boolean useDefaults, ValueConstraintsInstance constraints,
                           MetaInfo metaInfo, Object initialValue
     )
     {
@@ -80,8 +80,7 @@ public class PropertyModel
         this.accessor = accessor;
         qualifiedName = QualifiedName.fromAccessor( accessor );
 
-        // Check for @UseDefaults annotation
-        useDefaults = this.metaInfo.get( UseDefaults.class ) != null;
+        this.useDefaults = useDefaults;
 
         this.initialValue = initialValue;
 

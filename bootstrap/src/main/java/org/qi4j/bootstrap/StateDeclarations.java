@@ -27,4 +27,6 @@ public interface StateDeclarations
     MetaInfo getMetaInfo( AccessibleObject accessor );
 
     Object getInitialValue( AccessibleObject accessor );
+
+    boolean isUseDefaults(AccessibleObject accessor);
 }

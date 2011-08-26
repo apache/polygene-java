@@ -78,12 +78,27 @@ public final class MetaInfoDeclaration
         return null;
     }
 
+    @Override
+    public boolean isUseDefaults( AccessibleObject accessor )
+    {
+        for( InfoHolder<?> propertyDeclarationHolder : mixinPropertyDeclarations.values() )
+        {
+            final boolean useDefaults = propertyDeclarationHolder.isUseDefaults( accessor );
+            if( useDefaults)
+            {
+                return useDefaults;
+            }
+        }
+        return false;
+    }
+
     private static class InfoHolder<T>
         implements InvocationHandler, StateDeclarations, MixinDeclaration<T>
     {
         private final static class MethodInfo
         {
             Object initialValue;
+            boolean useDefaults;
             MetaInfo metaInfo;
 
             private MethodInfo( MetaInfo metaInfo )
@@ -106,6 +121,7 @@ public final class MetaInfoDeclaration
             throws Throwable
         {
             final MethodInfo methodInfo = new MethodInfo( metaInfo );
+            methodInfo.useDefaults = true;
             methodInfos.put( method, methodInfo );
             metaInfo = null; // reset
             final Class<?> returnType = method.getReturnType();
@@ -155,6 +171,17 @@ public final class MetaInfoDeclaration
                 return null;
             }
             return methodInfo.initialValue;
+        }
+
+        @Override
+        public boolean isUseDefaults( AccessibleObject accessor )
+        {
+            final MethodInfo methodInfo = matches( accessor );
+            if( methodInfo == null )
+            {
+                return false;
+            }
+            return methodInfo.useDefaults;
         }
 
         // DSL Interface

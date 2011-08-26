@@ -16,6 +16,7 @@
 
 package org.qi4j.runtime.composite;
 
+import org.qi4j.api.Qi4j;
 import org.qi4j.api.composite.CompositeDescriptor;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.CompositeInstance;
@@ -129,12 +130,7 @@ public class TransientInstance
         {
             return false;
         }
-        InvocationHandler handler = Proxy.getInvocationHandler( o );
-        if( !handler.getClass().equals( TransientInstance.class ) )
-        {
-            return false;
-        }
-        TransientInstance other = (TransientInstance) handler;
+        TransientInstance other = (TransientInstance) Qi4j.INSTANCE_FUNCTION.map( (Composite) o );
         if( other.mixins.length != mixins.length )
         {
             return false;

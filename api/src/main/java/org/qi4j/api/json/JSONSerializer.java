@@ -10,6 +10,7 @@ import org.qi4j.api.association.Association;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.association.AssociationStateHolder;
 import org.qi4j.api.association.ManyAssociation;
+import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.CompositeInstance;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
@@ -131,7 +132,7 @@ public abstract class JSONSerializer
 
     public void serialize( ValueComposite value ) throws JSONException
     {
-        ValueDescriptor valueDescriptor = (ValueDescriptor) ((CompositeInstance)Proxy.getInvocationHandler( value )).descriptor();
+        ValueDescriptor valueDescriptor = (ValueDescriptor) Qi4j.DESCRIPTOR_FUNCTION.map(value);
 
         ValueType valueType = valueDescriptor.valueType();
 
@@ -251,8 +252,7 @@ public abstract class JSONSerializer
 
                     JSONObject object = (JSONObject) JSONObjectSerializer.getRoot();
 
-                    CompositeInstance instance = (CompositeInstance) Proxy.getInvocationHandler( value );
-                    ValueDescriptor descriptor = (ValueDescriptor) instance.descriptor();
+                    ValueDescriptor descriptor = (ValueDescriptor) Qi4j.DESCRIPTOR_FUNCTION.map( (Composite)  value );
 
                     if (includeTypeInformation)
                         object.put( "_type", descriptor.type().getName() );

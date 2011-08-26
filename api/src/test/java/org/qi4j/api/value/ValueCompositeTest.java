@@ -231,6 +231,8 @@ public class ValueCompositeTest
         Assert.assertEquals( associationValue.some().get(), newAssociationValue.some().get() );
 
         unitOfWork.discard();
+
+        System.out.println( associationValue.toString() );
     }
 
     public enum TestEnum

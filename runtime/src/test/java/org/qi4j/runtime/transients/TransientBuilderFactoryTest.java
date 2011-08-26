@@ -15,11 +15,14 @@
 package org.qi4j.runtime.transients;
 
 import org.junit.Test;
+import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.composite.NoSuchCompositeException;
 import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.concern.GenericConcern;
 import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.property.Property;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.util.NullArgumentException;
 import org.qi4j.bootstrap.AssemblyException;
@@ -138,9 +141,12 @@ public class TransientBuilderFactoryTest
             }
         };
 
-        assembler.module().newTransient( AnyTransient.class ).hello("World");
+        AnyTransient anyTransient = assembler.module().newTransient( AnyTransient.class );
+        System.out.println( anyTransient.hello( "World" ) );
 
-        assembler.module().newTransient( AnyTransient.class ).hello("Universe");
+        System.out.println( anyTransient.hello( "Me" ) )
+        ;
+        System.out.println( anyTransient.hello( "Universe" ));
     }
 
     public static interface AnyComposite
@@ -172,7 +178,21 @@ public class TransientBuilderFactoryTest
 
         public String hello(@MaxLength(5) String name)
         {
-            return "Hello "+name+" from "+module.name();
+            try
+            {
+                return "Hello "+name+" from "+module.name()+" and"+data.foo().get();
+            } finally
+            {
+                data.foo().set( data.foo()+" "+name );
+            }
         }
+
+        @This AnyData data;
+    }
+
+    interface AnyData
+    {
+        @UseDefaults
+        Property<String> foo();
     }
 }

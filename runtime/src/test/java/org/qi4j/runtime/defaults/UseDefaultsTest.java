@@ -38,6 +38,7 @@ public class UseDefaultsTest
         throws AssemblyException
     {
         module.transients( TestComposite.class );
+        module.forMixin( TestComposite.class ).declareDefaults().assemblyString();
     }
 
     @Test
@@ -50,6 +51,7 @@ public class UseDefaultsTest
         assertThat( "zeroInt is zero", testComposite.defaultInt().get(), equalTo( 0 ) );
         assertThat( "nullString is null", testComposite.nullString().get(), nullValue() );
         assertThat( "defaultString is empty string", testComposite.defaultString().get(), equalTo( "" ) );
+        assertThat( "assemblyString is empty string", testComposite.assemblyString().get(), equalTo( "" ) );
     }
 
     interface TestComposite
@@ -68,5 +70,7 @@ public class UseDefaultsTest
         @Optional
         @UseDefaults
         Property<String> defaultString();
+
+        Property<String> assemblyString();
     }
 }

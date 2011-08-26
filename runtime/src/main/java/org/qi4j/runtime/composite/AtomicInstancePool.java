@@ -28,21 +28,22 @@ public final class AtomicInstancePool
 
     public CompositeMethodInstance getInstance()
     {
-        CompositeMethodInstance instance = first.getAndSet( null );
-        if( instance != null )
+        CompositeMethodInstance firstInstance;
+        do
         {
-            CompositeMethodInstance next = instance.getNext();
-            first.set( next );
-        }
-        return instance;
+            firstInstance = first.get();
+        } while(firstInstance != null && !first.compareAndSet( firstInstance, firstInstance.getNext() ));
+
+        return firstInstance;
     }
 
     public void returnInstance( CompositeMethodInstance compositeMethodInstance )
     {
-        CompositeMethodInstance previous = first.getAndSet( compositeMethodInstance );
-        if( previous != null )
+        CompositeMethodInstance firstInstance;
+        do
         {
-            compositeMethodInstance.setNext( previous );
-        }
+            firstInstance = first.get();
+            compositeMethodInstance.setNext( firstInstance );
+        } while(!first.compareAndSet( firstInstance, compositeMethodInstance ));
     }
 }

@@ -48,9 +48,8 @@ public final class CompositeMethodModel
     private AnnotatedElement annotations;
 
     // Context
-    private SynchronizedCompositeMethodInstancePool instancePool;
-    //    private final InstancePool instancePool = new AtomicInstancePool();
-    //    private final InstancePool instancePool = new ThreadLocalCompositeMethodInstancePool();
+//    private final SynchronizedCompositeMethodInstancePool instancePool = new SynchronizedCompositeMethodInstancePool();
+    private final AtomicInstancePool instancePool = new AtomicInstancePool();
     private ConstraintsInstance constraintsInstance;
 
     public CompositeMethodModel( Method method,
@@ -73,7 +72,7 @@ public final class CompositeMethodModel
     {
         annotations = new CompositeMethodAnnotatedElement();
         this.method.setAccessible( true );
-        instancePool = new SynchronizedCompositeMethodInstancePool();
+//        instancePool = new SynchronizedCompositeMethodInstancePool();
     }
 
     // Model
@@ -95,7 +94,6 @@ public final class CompositeMethodModel
     }
 
     // Context
-
     public Object invoke( Object composite, Object[] params, MixinsInstance mixins, ModuleInstance moduleInstance )
         throws Throwable
     {

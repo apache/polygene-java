@@ -17,7 +17,7 @@ package org.qi4j.api.entity;
 import java.io.Serializable;
 
 /**
- * An EntityIdentity is identity of a specific
+ * An EntityReference is identity of a specific
  * Entity instance. When stringified, the identity is used as-is. Example:
  * <pre>
  * 123456-abcde

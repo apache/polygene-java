@@ -29,6 +29,60 @@ import static org.qi4j.functional.Iterables.*;
  */
 public final class Classes
 {
+    private final static Map<Type, Type> wrapperClasses = new HashMap<Type, Type>();
+    static {
+        wrapperClasses.put(boolean.class, Boolean.class);
+        wrapperClasses.put(byte.class, Byte.class);
+        wrapperClasses.put(short.class, Short.class);
+        wrapperClasses.put(char.class, Character.class);
+        wrapperClasses.put(int.class, Integer.class);
+        wrapperClasses.put(long.class, Long.class);
+        wrapperClasses.put(float.class, Float.class);
+        wrapperClasses.put(double.class, Double.class);
+    }
+
+    private final static Map<Type, Type> primitiveClasses = new HashMap<Type, Type>();
+    static {
+        primitiveClasses.put(boolean.class, Boolean.class);
+        primitiveClasses.put(byte.class, Byte.class);
+        primitiveClasses.put(short.class, Short.class);
+        primitiveClasses.put(char.class, Character.class);
+        primitiveClasses.put(int.class, Integer.class);
+        primitiveClasses.put(long.class, Long.class);
+        primitiveClasses.put(float.class, Float.class);
+        primitiveClasses.put(double.class, Double.class);
+    }
+
+    /**
+     * Convert from primitive class (int, short, double, etc.) to wrapper class (Integer, Short, Double, etc.).
+     * Return the same class if it's not a primitive class. This can therefore safely be used on all types
+     * to ensure that they are not primitives.
+     */
+    public static final Function<Type, Type> WRAPPER_CLASS = new Function<Type, Type>()
+    {
+        @Override
+        public Type map( Type aClass )
+        {
+            Type wrapperClass = wrapperClasses.get( aClass );
+            return wrapperClass == null ? aClass : wrapperClass;
+        }
+    };
+
+    /**
+     * Convert from wrapper class (Integer, Short, Double, etc.) to primitive class (int, short, double, etc.).
+     * Return the same class if it's not a wrapper class. This can therefore safely be used on all types
+     * to ensure that they are primitives if possible.
+     */
+    public static final Function<Type, Type> PRIMITIVE_CLASS = new Function<Type, Type>()
+    {
+        @Override
+        public Type map( Type aClass )
+        {
+            Type primitiveClass = primitiveClasses.get( aClass );
+            return primitiveClass == null ? aClass : primitiveClass;
+        }
+    };
+
     public static final Function<Type, Class<?>> RAW_CLASS = new Function<Type, Class<?>>()
     {
         @Override

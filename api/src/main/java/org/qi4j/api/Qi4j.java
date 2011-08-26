@@ -14,12 +14,14 @@
 
 package org.qi4j.api;
 
+import org.qi4j.api.association.Association;
 import org.qi4j.api.association.AssociationStateHolder;
 import org.qi4j.api.composite.*;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.association.AbstractAssociation;
 import org.qi4j.api.association.AssociationDescriptor;
+import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.property.StateHolder;
@@ -50,27 +52,6 @@ public interface Qi4j
      * @return the dereferenced Composite
      */
     <T> T dereference( T composite );
-
-    /**
-     * Finds the Configuration instance of a service.
-     * <p>This is used by ConfigurationMixin to figure out the configuration instance used by
-     * a Service using {@link org.qi4j.api.configuration.Configuration}, and should not be
-     * used directly by client code.</p>
-     *
-     * <p>If the Configuration entity doesn't exist in the visible EntityStore, then a properties
-     * file with the name of the service identifier will be located on the classpath, and the
-     * values used to create the Configuration instance, which will then be saved to the EntityStore
-     * for future use. That means that the properties file is <b>only</b> used
-     *
-     * @param serviceComposite the service instance
-     * @param uow              the UnitOfWork from which the configuration will be loaded
-     *
-     * @return configuration instance
-     *
-     * @throws InstantiationException thrown if the configuration cannot be instantiated
-     */
-    <T> T getConfigurationInstance( ServiceComposite serviceComposite, UnitOfWork uow )
-        throws InstantiationException;
 
     /**
      * Returns the Module where the UnitOfWork belongs.

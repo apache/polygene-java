@@ -3,6 +3,7 @@ package org.qi4j.runtime.bootstrap;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.composite.InvalidCompositeException;
 import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.constraint.Constraint;
@@ -257,8 +258,9 @@ public abstract class CompositeAssemblyImpl
         }
         MetaInfo metaInfo = stateDeclarations.getMetaInfo( accessor );
         Object initialValue = stateDeclarations.getInitialValue( accessor );
+        boolean useDefaults = metaInfo.get( UseDefaults.class ) != null || stateDeclarations.isUseDefaults( accessor );
         boolean immutable = this.immutable || metaInfo.get( Immutable.class ) != null;
-        PropertyModel propertyModel = new PropertyModel( accessor, immutable, valueConstraintsInstance, metaInfo, initialValue );
+        PropertyModel propertyModel = new PropertyModel( accessor, immutable, useDefaults, valueConstraintsInstance, metaInfo, initialValue );
         return propertyModel;
     }
 
@@ -305,6 +307,8 @@ public abstract class CompositeAssemblyImpl
             Iterable<Class<? extends Constraint<?, ?>>> constraintClasses,
             AccessibleObject accessor )
     {
+        valueType = Classes.WRAPPER_CLASS.map( valueType );
+
         List<AbstractConstraintModel> constraintModels = new ArrayList<AbstractConstraintModel>();
         nextConstraint:
         for( Annotation constraintAnnotation : filter( translate( type(), hasAnnotation( org.qi4j.api.constraint.ConstraintDeclaration.class ) ), constraintAnnotations ) )

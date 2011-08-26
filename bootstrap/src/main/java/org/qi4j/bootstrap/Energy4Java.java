@@ -65,11 +65,11 @@ public final class Energy4Java
         return modelFactory.newApplicationModel( assembly );
     }
 
-    public Application newApplication( ApplicationAssembler assembler )
+    public Application newApplication( ApplicationAssembler assembler, Object... importedServiceInstances )
         throws AssemblyException
     {
         ApplicationDescriptor model = newApplicationModel( assembler );
-        return model.newInstance( runtime.spi() );
+        return model.newInstance( runtime.spi(), importedServiceInstances );
     }
 
     public Qi4jSPI spi()

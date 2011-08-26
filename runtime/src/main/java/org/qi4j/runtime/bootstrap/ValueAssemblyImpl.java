@@ -25,8 +25,6 @@ import org.qi4j.api.property.Property;
 import org.qi4j.api.util.Annotations;
 import org.qi4j.api.util.Classes;
 import org.qi4j.api.value.ValueComposite;
-import org.qi4j.bootstrap.AssociationDeclarations;
-import org.qi4j.bootstrap.ManyAssociationDeclarations;
 import org.qi4j.bootstrap.StateDeclarations;
 import org.qi4j.bootstrap.ValueAssembly;
 import org.qi4j.functional.Iterables;
@@ -178,8 +176,9 @@ public final class ValueAssemblyImpl
             valueConstraintsInstance = valueConstraintsModel.newInstance();
         }
         MetaInfo metaInfo = stateDeclarations.getMetaInfo( accessor );
+        boolean useDefaults = metaInfo.get( UseDefaults.class ) != null || stateDeclarations.isUseDefaults( accessor );
         Object initialValue = stateDeclarations.getInitialValue( accessor );
-        return new PropertyModel( accessor, true, valueConstraintsInstance, metaInfo, initialValue );
+        return new PropertyModel( accessor, true, useDefaults, valueConstraintsInstance, metaInfo, initialValue );
     }
 
     public AssociationModel newAssociationModel( AccessibleObject accessor, Iterable<Class<? extends Constraint<?, ?>>> constraintClasses )

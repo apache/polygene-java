@@ -35,6 +35,7 @@ import org.qi4j.bootstrap.ApplicationAssemblyFactory;
 import org.qi4j.bootstrap.ApplicationModelFactory;
 import org.qi4j.bootstrap.Qi4jRuntime;
 import org.qi4j.runtime.association.AbstractAssociationInstance;
+import org.qi4j.runtime.association.AssociationInstance;
 import org.qi4j.runtime.bootstrap.ApplicationAssemblyFactoryImpl;
 import org.qi4j.runtime.bootstrap.ApplicationModelFactoryImpl;
 import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
@@ -107,78 +108,6 @@ public final class Qi4jRuntimeImpl
             return composite;
         }
         return null;
-    }
-
-    public <T> T getConfigurationInstance( ServiceComposite serviceComposite, UnitOfWork uow )
-        throws InstantiationException
-    {
-        ServiceModel serviceModel = (ServiceModel) TransientInstance.getCompositeInstance( serviceComposite )
-            .descriptor();
-
-        String identity = serviceComposite.identity().get();
-        T configuration;
-        try
-        {
-            configuration = uow.get( serviceModel.<T>configurationType(), identity );
-            uow.pause();
-        }
-        catch( NoSuchEntityException e )
-        {
-            return (T) initializeConfigurationInstance( serviceComposite, uow, serviceModel, identity );
-        }
-        catch( EntityTypeNotFoundException e )
-        {
-            return (T) initializeConfigurationInstance( serviceComposite, uow, serviceModel, identity );
-        }
-        return (T) configuration;
-    }
-
-    private <T> T initializeConfigurationInstance( ServiceComposite serviceComposite,
-                                                   UnitOfWork uow,
-                                                   ServiceModel serviceModel,
-                                                   String identity
-    )
-        throws InstantiationException
-    {
-        T configuration;
-        Module module = ServiceInstance.getCompositeInstance( serviceComposite ).module();
-        UnitOfWork buildUow = module.newUnitOfWork();
-
-        EntityBuilder<T> configBuilder = buildUow.newEntityBuilder( serviceModel.<T>configurationType(), identity );
-
-        // Check for defaults
-        String s = identity + ".properties";
-        InputStream asStream = Qi4j.DESCRIPTOR_FUNCTION.map( serviceComposite).type().getResourceAsStream( s );
-        if( asStream != null )
-        {
-            try
-            {
-                PropertyMapper.map( asStream, (Composite) configBuilder.instance() );
-            }
-            catch( IOException e1 )
-            {
-                InstantiationException exception = new InstantiationException(
-                    "Could not read underlying Properties file." );
-                exception.initCause( e1 );
-                throw exception;
-            }
-        }
-
-        try
-        {
-            configuration = configBuilder.newInstance();
-            buildUow.complete();
-
-            // Try again
-            return (T) getConfigurationInstance( serviceComposite, uow );
-        }
-        catch( Exception e1 )
-        {
-            InstantiationException ex = new InstantiationException(
-                "Could not instantiate configuration, and no Properties file was found (" + s + ")" );
-            ex.initCause( e1 );
-            throw ex;
-        }
     }
 
     public Module getModule( UnitOfWork uow )
