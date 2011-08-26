@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.library.rest;
+package org.qi4j.library.rest.admin;
 
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.service.Activatable;

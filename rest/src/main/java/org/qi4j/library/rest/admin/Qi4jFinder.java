@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.library.rest;
+package org.qi4j.library.rest.admin;
 
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.object.ObjectFactory;

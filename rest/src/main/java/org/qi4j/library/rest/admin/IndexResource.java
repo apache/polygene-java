@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.library.rest;
+package org.qi4j.library.rest.admin;
 
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.index.rdf.indexing.RdfExporter;

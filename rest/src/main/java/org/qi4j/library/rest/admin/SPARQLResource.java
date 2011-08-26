@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.library.rest;
+package org.qi4j.library.rest.admin;
 
 import info.aduna.xml.XMLWriter;
 import org.openrdf.http.protocol.Protocol;

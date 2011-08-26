@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.library.rest;
+package org.qi4j.library.rest.admin;
 
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.injection.scope.Structure;

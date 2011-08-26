@@ -12,12 +12,14 @@
  *
  */
 
-package org.qi4j.library.rest;
+package org.qi4j.library.rest.admin;
 
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.library.rest.admin.Qi4jFinder;
+import org.qi4j.library.rest.admin.RestApplication;
 
 /**
  * JAVADOC

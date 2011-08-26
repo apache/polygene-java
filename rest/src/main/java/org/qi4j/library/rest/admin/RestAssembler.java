@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.library.rest;
+package org.qi4j.library.rest.admin;
 
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;

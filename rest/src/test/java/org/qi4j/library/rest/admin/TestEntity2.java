@@ -12,18 +12,14 @@
  *
  */
 
-package org.qi4j.library.rest;
+package org.qi4j.library.rest.admin;
 
-import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.ServiceComposite;
-
-import javax.servlet.Servlet;
+import org.qi4j.api.entity.EntityComposite;
 
 /**
  * JAVADOC
  */
-@Mixins( Qi4jServerServlet.class )
-public interface Qi4jServerServletService
-    extends Servlet, ServiceComposite
+public interface TestEntity2
+    extends Named, EntityComposite
 {
 }

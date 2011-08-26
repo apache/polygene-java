@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,16 +12,23 @@
  *
  */
 
-package org.qi4j.library.rest;
+package org.qi4j.library.rest.admin;
 
-import org.qi4j.api.common.UseDefaults;
-import org.qi4j.api.property.Property;
+import org.qi4j.api.common.Visibility;
+import org.qi4j.bootstrap.Assembler;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 
 /**
  * JAVADOC
  */
-public interface Named
+class MemoryEntityStoreServiceAssembler
+    implements Assembler
 {
-    @UseDefaults
-    Property<String> name();
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
+    {
+        module.services( MemoryEntityStoreService.class ).visibleIn( Visibility.application );
+    }
 }

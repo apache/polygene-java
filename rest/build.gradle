@@ -32,8 +32,8 @@ uploadArchives {
 
 dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.api"))
-  compile(project(":org.qi4j.core:org.qi4j.core.api"))
   compile(project(":org.qi4j.libraries:org.qi4j.library.rdf"))
+    compile(project(":org.qi4j.libraries:org.qi4j.library.rest-common"))
   compile(project(':org.qi4j.extensions:org.qi4j.extension.indexing-rdf'))
   compile(libraries.slf4j_api)
   compile('org.openrdf.sesame:sesame-queryresultio-sparqlxml:' + rdfVersion)
@@ -42,6 +42,7 @@ dependencies {
   compile('org.restlet.jee:org.restlet.ext.atom:' + restletVersion)
   compile('org.restlet.jee:org.restlet.ext.servlet:' + restletVersion)
   compile('org.restlet.jee:org.restlet.ext.xml:' + restletVersion)
+  compile('org.apache.velocity:velocity:' + velocityVersion)
   compile("javax.servlet:servlet-api:$servletVersion")
   testCompile(project(":org.qi4j.libraries:org.qi4j.library.http"))
   testCompile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))

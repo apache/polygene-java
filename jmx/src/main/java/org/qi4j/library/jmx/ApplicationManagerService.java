@@ -14,6 +14,7 @@
 
 package org.qi4j.library.jmx;
 
+import org.qi4j.api.composite.ModelDescriptor;
 import org.qi4j.api.composite.TransientDescriptor;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.injection.scope.Service;
@@ -97,12 +98,10 @@ public interface ApplicationManagerService
                         mbean.setManagedResource( layerBean, "ObjectReference" );
                         server.registerMBean( mbean, objectName );
                         mbeans.add( objectName );
-
-                        return true;
                     } else if (visited instanceof ModuleDescriptor)
                     {
                         ModuleDescriptor moduleDescriptor = (ModuleDescriptor) visited;
-                        module = (Module) application.findModule( layer.name(), moduleDescriptor.name() );
+                        module = application.findModule( layer.name(), moduleDescriptor.name() );
                         ObjectName objectName = new ObjectName( names.peek().toString()+",module="+moduleDescriptor.name() );
                         names.push( objectName );
                         RequiredModelMBean mbean = new ModelMBeanBuilder( objectName, moduleDescriptor.name(), moduleDescriptor.getClass().getName()).
@@ -113,17 +112,16 @@ public interface ApplicationManagerService
 
                         server.registerMBean( mbean, objectName );
                         mbeans.add( objectName );
-
-                        return true;
                     } else if (visited instanceof ServiceDescriptor)
                     {
                         ServiceDescriptor serviceDescriptor = (ServiceDescriptor) visited;
                         ObjectName objectName = new ObjectName( names.peek().toString()+",class=Service,service="+serviceDescriptor.identity() );
-                        names.push( objectName );
                         RequiredModelMBean mbean = new ModelMBeanBuilder( objectName, serviceDescriptor.identity(), ServiceBean.class.getName()).
                                 attribute( "Id", "Service id", String.class.getName(), "Id of service", "getId", null ).
                                 attribute( "Visibility", "Service visibility", String.class.getName(), "Visibility of service", "getVisibility", null ).
                                 attribute( "Type", "Service type", String.class.getName(), "Type of service", "getType", null ).
+                                attribute( "Active", "Service is active", Boolean.class.getName(), "Service is active", "isActive", null ).
+                                attribute( "Available", "Service is available", Boolean.class.getName(), "Service is available", "isAvailable", null ).
                                 operation( "restart", "Restart service", String.class.getName(), ModelMBeanOperationInfo.ACTION_INFO).
                                 newModelMBean();
 
@@ -135,7 +133,6 @@ public interface ApplicationManagerService
                     {
                         ImportedServiceDescriptor importedServiceDescriptor = (ImportedServiceDescriptor) visited;
                         ObjectName objectName = new ObjectName( names.peek().toString()+",class=Imported service,importedservice="+importedServiceDescriptor.identity() );
-                        names.push( objectName );
                         RequiredModelMBean mbean = new ModelMBeanBuilder( objectName, importedServiceDescriptor.identity(), ImportedServiceBean.class.getName()).
                                 attribute( "Id", "Service id", String.class.getName(), "Id of service", "getId", null ).
                                 attribute( "Visibility", "Service visibility", String.class.getName(), "Visibility of service", "getVisibility", null ).
@@ -146,71 +143,15 @@ public interface ApplicationManagerService
 
                         server.registerMBean( mbean, objectName );
                         mbeans.add( objectName );
-                    } else if (visited instanceof EntityDescriptor)
-                    {
-                        EntityDescriptor entityDescriptor = (EntityDescriptor) visited;
-                        ObjectName objectName = new ObjectName( "Qi4j:application="+application.name()+",layer="+layer.name()+",module="+module.name()+",class=Entity,entity="+entityDescriptor.type().getName() );
-                        names.push( objectName );
-                        RequiredModelMBean mbean = new ModelMBeanBuilder( objectName, entityDescriptor.type().getName(), EntityBean.class.getName()).
-                                attribute( "Type", "Entity type", String.class.getName(), "Type of entity", "getType", null ).
-                                attribute( "Visibility", "Visibility", String.class.getName(), "Type of entity", "getVisibility", null ).
-                                newModelMBean();
-
-                        mbean.setManagedResource( new EntityBean(entityDescriptor), "ObjectReference" );
-
-                        server.registerMBean( mbean, objectName );
-                        mbeans.add( objectName );
-                    } else if (visited instanceof TransientDescriptor)
-                    {
-                        TransientDescriptor transientDescriptor = (TransientDescriptor) visited;
-                        ObjectName objectName = new ObjectName( names.peek().toString()+",class=Transient,transient="+transientDescriptor.type().getName() );
-                        names.push( objectName );
-                        RequiredModelMBean mbean = new ModelMBeanBuilder( objectName, transientDescriptor.type().getName(), TransientBean.class.getName()).
-                                attribute( "Type", "Transient type", String.class.getName(), "Type of transient", "getType", null ).
-                                attribute( "Visibility", "Visibility", String.class.getName(), "Type of transient", "getVisibility", null ).
-                                newModelMBean();
-
-                        mbean.setManagedResource( new TransientBean(transientDescriptor), "ObjectReference" );
-
-                        server.registerMBean( mbean, objectName );
-                        mbeans.add( objectName );
-                    } else if (visited instanceof ValueDescriptor)
-                    {
-                        ValueDescriptor valueDescriptor = (ValueDescriptor) visited;
-                        ObjectName objectName = new ObjectName( names.peek().toString()+",class=Value,value="+valueDescriptor.type().getName() );
-                        names.push( objectName );
-                        RequiredModelMBean mbean = new ModelMBeanBuilder( objectName, valueDescriptor.type().getName(), ValueBean.class.getName()).
-                                attribute( "Type", "Value type", String.class.getName(), "Type of value", "getType", null ).
-                                attribute( "Visibility", "Visibility", String.class.getName(), "Type of transient", "getVisibility", null ).
-                                newModelMBean();
-
-                        mbean.setManagedResource( new ValueBean(valueDescriptor), "ObjectReference" );
-
-                        server.registerMBean( mbean, objectName );
-                        mbeans.add( objectName );
-                    } else if (visited instanceof ObjectDescriptor)
-                    {
-                        ObjectDescriptor objectDescriptor = (ObjectDescriptor) visited;
-                        ObjectName objectName = new ObjectName( "Qi4j:application="+application.name()+",layer="+layer.name()+",module="+module.name()+",class=Object,object="+objectDescriptor.type().getName() );
-                        names.push( objectName );
-                        RequiredModelMBean mbean = new ModelMBeanBuilder( objectName, objectDescriptor.type().getName(), ObjectBean.class.getName()).
-                                attribute( "Type", "Object type", String.class.getName(), "Type of object", "getType", null ).
-                                attribute( "Visibility", "Visibility", String.class.getName(), "Type of transient", "getVisibility", null ).
-                                newModelMBean();
-
-                        mbean.setManagedResource( new ObjectBean(objectDescriptor), "ObjectReference" );
-
-                        server.registerMBean( mbean, objectName );
-                        mbeans.add( objectName );
                     }
 
-                    return false;
+                    return !(visited instanceof ModelDescriptor);
                 }
 
                 @Override
                 public boolean visitLeave( Object visited ) throws Exception
                 {
-                    if (!names.isEmpty())
+                    if (visited instanceof ModuleDescriptor || visited instanceof LayerDescriptor)
                         names.pop();
 
                     return true;
@@ -291,6 +232,16 @@ public interface ApplicationManagerService
             return serviceDescriptor.type().getName();
         }
 
+        public boolean isActive()
+        {
+            return Iterables.first( Iterables.filter( ServiceQualifier.withId( serviceDescriptor.identity() ), module.findServices( serviceDescriptor.type() ))).isActive();
+        }
+
+        public boolean isAvailable()
+        {
+            return Iterables.first( Iterables.filter( ServiceQualifier.withId( serviceDescriptor.identity() ), module.findServices( serviceDescriptor.type() ))).isAvailable();
+        }
+
         public String restart()
         {
             Iterable services = module.findServices( Activatable.class );
@@ -335,85 +286,4 @@ public interface ApplicationManagerService
             return serviceDescriptor.type().getName();
         }
     }
-
-    public static class EntityBean
-    {
-        private final EntityDescriptor entityDescriptor;
-
-        public EntityBean( EntityDescriptor entityDescriptor)
-        {
-            this.entityDescriptor = entityDescriptor;
-        }
-
-        public String getType()
-        {
-            return entityDescriptor.type().getName();
-        }
-
-        public String getVisibility()
-        {
-            return entityDescriptor.visibility().name();
-        }
-    }
-
-    public static class ValueBean
-    {
-        private final ValueDescriptor valueDescriptor;
-
-        public ValueBean( ValueDescriptor valueDescriptor)
-        {
-            this.valueDescriptor = valueDescriptor;
-        }
-
-        public String getType()
-        {
-            return valueDescriptor.valueType().type().getName();
-        }
-
-        public String getVisibility()
-        {
-            return valueDescriptor.visibility().name();
-        }
-    }
-
-    public static class TransientBean
-    {
-        private final TransientDescriptor transientDescriptor;
-
-        public TransientBean( TransientDescriptor transientDescriptor )
-        {
-            this.transientDescriptor = transientDescriptor;
-        }
-
-        public String getType()
-        {
-            return transientDescriptor.type().getName();
-        }
-
-        public String getVisibility()
-        {
-            return transientDescriptor.visibility().name();
-        }
-    }
-
-    public static class ObjectBean
-    {
-        private final ObjectDescriptor objectDescriptor;
-
-        public ObjectBean( ObjectDescriptor objectDescriptor )
-        {
-            this.objectDescriptor = objectDescriptor;
-        }
-
-        public String getType()
-        {
-            return objectDescriptor.type().getName();
-        }
-
-        public String getVisibility()
-        {
-            return objectDescriptor.visibility().name();
-        }
-    }
-
 }

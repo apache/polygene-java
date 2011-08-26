@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.library.rest;
+package org.qi4j.library.rest.admin;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,8 +23,6 @@ import org.openrdf.model.Statement;
 import org.openrdf.rio.RDFHandlerException;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.common.MetaInfo;
-import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.common.TypeName;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;

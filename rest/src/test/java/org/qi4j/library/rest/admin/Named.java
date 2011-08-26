@@ -12,30 +12,16 @@
  *
  */
 
-package org.qi4j.library.rest;
+package org.qi4j.library.rest.admin;
 
-import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.property.Property;
-import org.qi4j.api.value.ValueComposite;
-
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * JAVADOC
  */
-public interface TestValue
-    extends ValueComposite
+public interface Named
 {
     @UseDefaults
-    Property<String> string();
-
-    @Optional
-    Property<TestValue2> testValue();
-
-    @UseDefaults
-    Property<List<Long>> longList();
-
-    Property<HashMap> map();
+    Property<String> name();
 }

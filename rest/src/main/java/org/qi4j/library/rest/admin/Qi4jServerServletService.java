@@ -12,16 +12,18 @@
  *
  */
 
-package org.qi4j.library.rest;
+package org.qi4j.library.rest.admin;
 
-import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.property.Property;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.service.ServiceComposite;
+
+import javax.servlet.Servlet;
 
 /**
  * JAVADOC
  */
-public interface TestRole
-    extends EntityComposite
+@Mixins( Qi4jServerServlet.class )
+public interface Qi4jServerServletService
+    extends Servlet, ServiceComposite
 {
-    Property<String> name();
 }

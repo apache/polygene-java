@@ -12,35 +12,16 @@
  *
  */
 
-package org.qi4j.library.rest;
+package org.qi4j.library.rest.admin;
 
-import org.qi4j.api.structure.Application;
-import org.qi4j.bootstrap.Energy4Java;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.property.Property;
 
 /**
  * JAVADOC
  */
-public class Main
+public interface TestRole
+    extends EntityComposite
 {
-    private Application application;
-
-    public static void main( String[] args )
-        throws Exception
-    {
-        new Main();
-    }
-
-    public Main()
-        throws Exception
-    {
-        Energy4Java qi4j = new Energy4Java();
-        application = qi4j.newApplication( new MainAssembler() );
-        application.activate();
-    }
-
-    public Application application()
-    {
-        return application;
-    }
+    Property<String> name();
 }
-

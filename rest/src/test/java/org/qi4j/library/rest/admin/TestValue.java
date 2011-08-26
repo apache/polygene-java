@@ -12,25 +12,30 @@
  *
  */
 
-package org.qi4j.library.rest;
+package org.qi4j.library.rest.admin;
 
-import org.qi4j.api.common.Visibility;
-import org.qi4j.bootstrap.Assembler;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.library.rdf.entity.EntityStateSerializer;
-import org.qi4j.library.rdf.entity.EntityTypeSerializer;
+import org.qi4j.api.common.Optional;
+import org.qi4j.api.common.UseDefaults;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.value.ValueComposite;
+
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * JAVADOC
  */
-class RDFAssembler
-    implements Assembler
+public interface TestValue
+    extends ValueComposite
 {
-    public void assemble( ModuleAssembly module )
-        throws AssemblyException
-    {
-        module.objects( EntityStateSerializer.class ).visibleIn( Visibility.application );
-        module.objects( EntityTypeSerializer.class ).visibleIn( Visibility.application );
-    }
+    @UseDefaults
+    Property<String> string();
+
+    @Optional
+    Property<TestValue2> testValue();
+
+    @UseDefaults
+    Property<List<Long>> longList();
+
+    Property<HashMap> map();
 }
