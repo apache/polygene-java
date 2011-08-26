@@ -16,8 +16,6 @@ package org.qi4j.dci.moneytransfer.context;
 
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.dci.Context;
-import org.qi4j.dci.Contexts;
 import org.qi4j.dci.moneytransfer.domain.data.BalanceData;
 
 /**
@@ -42,25 +40,13 @@ public class TransferMoneyContext
    // Interactions
    public Integer availableFunds()
    {
-      return Contexts.withContext( this, new Contexts.Query<Integer, TransferMoneyContext, RuntimeException>()
-      {
-          public Integer query( TransferMoneyContext transferMoneyContext ) throws RuntimeException
-          {
-              return sourceAccount.availableFunds();
-          }
-      });
+      return sourceAccount.availableFunds();
    }
 
-   public void transfer( final Integer amount )
+   public void transfer( int amount )
          throws IllegalArgumentException
    {
-       Contexts.withContext( this, new Contexts.Command<TransferMoneyContext,IllegalArgumentException>()
-       {
-           public void command( TransferMoneyContext transferMoneyContext ) throws IllegalArgumentException
-           {
-               sourceAccount.transfer( amount );
-           }
-       });
+       sourceAccount.transfer( amount, destinationAccount );
    }
 
    // More interactions could go here...
@@ -70,8 +56,7 @@ public class TransferMoneyContext
    public interface SourceAccountRole
    {
       // Role Methods
-
-      void transfer( Integer amount )
+       public void transfer( int amount, DestinationAccountRole destinationAccount )
             throws IllegalArgumentException;
 
       Integer availableFunds();
@@ -84,15 +69,13 @@ public class TransferMoneyContext
          @This
          BalanceData data;
 
-         @Context TransferMoneyContext context;
-
          public Integer availableFunds()
          {
             // Could be balance, or balance - non-confirmed transfers, or somesuch
             return data.getBalance();
          }
 
-         public void transfer( Integer amount )
+         public void transfer( int amount, DestinationAccountRole destinationAccount )
                throws IllegalArgumentException
          {
             // Validate command
@@ -103,7 +86,7 @@ public class TransferMoneyContext
             data.decreasedBalance( amount );
 
             // Look up the destination account from the current transfer context
-            context.destinationAccount.deposit( amount );
+            destinationAccount.deposit( amount );
          }
       }
    }
@@ -111,7 +94,7 @@ public class TransferMoneyContext
    @Mixins(DestinationAccountRole.Mixin.class)
    public interface DestinationAccountRole
    {
-      public void deposit( Integer amount );
+      public void deposit( int amount );
 
       class Mixin
             implements DestinationAccountRole
@@ -119,7 +102,7 @@ public class TransferMoneyContext
          @This
          BalanceData data;
 
-         public void deposit( Integer amount )
+         public void deposit( int amount )
          {
             data.increasedBalance( amount );
          }

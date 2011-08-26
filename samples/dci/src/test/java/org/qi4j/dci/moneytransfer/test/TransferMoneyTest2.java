@@ -18,23 +18,20 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.ClassScanner;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.dci.moneytransfer.context.PayBillsContext;
-import org.qi4j.dci.moneytransfer.context.TransferMoneyContext;
+import org.qi4j.dci.moneytransfer.context.PayBillsContext2;
 import org.qi4j.dci.moneytransfer.context.TransferMoneyContext2;
 import org.qi4j.dci.moneytransfer.domain.data.BalanceData;
 import org.qi4j.dci.moneytransfer.domain.entity.CheckingAccountEntity;
+import org.qi4j.dci.moneytransfer.domain.entity.CreditorEntity;
 import org.qi4j.dci.moneytransfer.domain.entity.SavingsAccountEntity;
-import org.qi4j.dci.moneytransfer.rolemap.CheckingAccountRolemap;
-import org.qi4j.dci.moneytransfer.rolemap.CreditorRolemap;
-import org.qi4j.dci.moneytransfer.rolemap.SavingsAccountRolemap;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
-import org.qi4j.functional.Iterables;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 
 import static org.qi4j.api.usecase.UsecaseBuilder.newUsecase;
@@ -42,9 +39,9 @@ import static org.qi4j.api.usecase.UsecaseBuilder.newUsecase;
 /**
  * Test of TransferMoneyContext
  */
-public class TransferMoneyTest
+public class TransferMoneyTest2
 {
-    private static SingletonAssembler assembler;
+    private static Module module;
     public static final String SAVINGS_ACCOUNT_ID = "SavingsAccountId";
     public static final String CHECKING_ACCOUNT_ID = "CheckingAccountId";
     public static final String CREDITOR_ID1 = "BakerAccount";
@@ -53,22 +50,27 @@ public class TransferMoneyTest
     @BeforeClass
     public static void setup() throws Exception
     {
-        assembler = new SingletonAssembler()
+        SingletonAssembler assembler = new SingletonAssembler()
         {
             public void assemble( ModuleAssembly module ) throws AssemblyException
             {
                 module.entities(
-                    CheckingAccountRolemap.class,
-                    SavingsAccountRolemap.class,
-                    CreditorRolemap.class );
+                    CheckingAccountEntity.class,
+                    SavingsAccountEntity.class,
+                    CreditorEntity.class );
 
                 module.services(
                     MemoryEntityStoreService.class,
                     UuidIdentityGeneratorService.class );
+
+                module.transients( TransferMoneyContext2.class );
+                module.objects( PayBillsContext2.class );
             }
         };
 
-        bootstrapData( assembler );
+        module = assembler.module();
+
+        bootstrapData( );
     }
 
     @Before
@@ -89,7 +91,7 @@ public class TransferMoneyTest
 
     public void printBalances()
     {
-        UnitOfWork uow = assembler.module().newUnitOfWork( UsecaseBuilder.newUsecase( "Print balances" ) );
+        UnitOfWork uow = module.newUnitOfWork( UsecaseBuilder.newUsecase( "Print balances" ) );
 
         try
         {
@@ -103,9 +105,9 @@ public class TransferMoneyTest
         }
     }
 
-    private static void bootstrapData( SingletonAssembler assembler ) throws Exception
+    private static void bootstrapData( ) throws Exception
     {
-        UnitOfWork uow = assembler.module().newUnitOfWork( newUsecase( "Bootstrap data" ) );
+        UnitOfWork uow = module.newUnitOfWork( newUsecase( "Bootstrap data" ) );
         try
         {
             SavingsAccountEntity account = uow.newEntity( SavingsAccountEntity.class, SAVINGS_ACCOUNT_ID );
@@ -114,10 +116,10 @@ public class TransferMoneyTest
             uow.newEntity( CheckingAccountEntity.class, CHECKING_ACCOUNT_ID );
 
             // Create some creditor debt
-            BalanceData bakerAccount = uow.newEntity( CreditorRolemap.class, CREDITOR_ID1 );
+            BalanceData bakerAccount = uow.newEntity( CreditorEntity.class, CREDITOR_ID1 );
             bakerAccount.decreasedBalance( 50 );
 
-            BalanceData butcherAccount = uow.newEntity( CreditorRolemap.class, CREDITOR_ID2 );
+            BalanceData butcherAccount = uow.newEntity( CreditorEntity.class, CREDITOR_ID2 );
             butcherAccount.decreasedBalance( 90 );
 
             // Save
@@ -132,7 +134,7 @@ public class TransferMoneyTest
     @Test
     public void transferHalfOfMoneyFromSavingsToChecking() throws Exception
     {
-        UnitOfWork uow = assembler.module().newUnitOfWork( UsecaseBuilder.newUsecase( "Transfer from savings to checking" ) );
+        UnitOfWork uow = module.newUnitOfWork( UsecaseBuilder.newUsecase( "Transfer from savings to checking" ) );
 
         try
         {
@@ -141,8 +143,7 @@ public class TransferMoneyTest
             BalanceData destination = uow.get( BalanceData.class, CHECKING_ACCOUNT_ID );
 
             // Instantiate context and execute enactments with that context
-            TransferMoneyContext context = new TransferMoneyContext();
-            context.bind( source, destination );
+            TransferMoneyContext2 context = module.newTransient( TransferMoneyContext2.class).bind( source, destination );
 
             // Query for half the balance
             final Integer amountToTransfer = context.availableFunds() / 2;
@@ -161,7 +162,7 @@ public class TransferMoneyTest
     @Test(expected = IllegalArgumentException.class)
     public void transferTwiceOfMoneyFromSavingsToChecking() throws Exception
     {
-        UnitOfWork uow = assembler.module().newUnitOfWork( UsecaseBuilder.newUsecase( "Transfer from savings to checking" ) );
+        UnitOfWork uow = module.newUnitOfWork( UsecaseBuilder.newUsecase( "Transfer from savings to checking" ) );
 
         try
         {
@@ -170,8 +171,7 @@ public class TransferMoneyTest
             BalanceData destination = uow.get( BalanceData.class, CHECKING_ACCOUNT_ID );
 
             // Instantiate context and execute enactments with that context
-            TransferMoneyContext context = new TransferMoneyContext();
-            context.bind( source, destination );
+            TransferMoneyContext2 context = module.newTransient( TransferMoneyContext2.class).bind( source, destination );
 
             // Query for double the balance
             final Integer amountToTransfer = context.availableFunds() * 2;
@@ -190,12 +190,12 @@ public class TransferMoneyTest
     @Test
     public void payAllBills() throws Exception
     {
-        UnitOfWork uow = assembler.module().newUnitOfWork( newUsecase( "Pay all bills from checking to creditors" ) );
+        UnitOfWork uow = module.newUnitOfWork( newUsecase( "Pay all bills from checking to creditors" ) );
         try
         {
             BalanceData source = uow.get( BalanceData.class, CHECKING_ACCOUNT_ID );
 
-            PayBillsContext context = new PayBillsContext();
+            PayBillsContext2 context = module.newObject(PayBillsContext2.class);
             context.bind( source ).payBills();
 
             uow.complete();

@@ -18,7 +18,6 @@ import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-import org.qi4j.dci.Contexts;
 import org.qi4j.dci.moneytransfer.domain.data.BalanceData;
 import org.qi4j.dci.moneytransfer.rolemap.CreditorRolemap;
 
@@ -44,13 +43,7 @@ public class PayBillsContext
     public void payBills()
             throws Exception
     {
-        Contexts.withContext( this, new Contexts.Command<PayBillsContext,Exception>()
-        {
-            public void command( PayBillsContext transferMoneyContext ) throws Exception
-            {
-                sourceAccount.payBills();
-            }
-        });
+        sourceAccount.payBills();
     }
 
     /**
