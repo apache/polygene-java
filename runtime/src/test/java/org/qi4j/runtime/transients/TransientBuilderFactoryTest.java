@@ -14,12 +14,15 @@
 
 package org.qi4j.runtime.transients;
 
+import java.lang.reflect.Method;
+import org.hamcrest.core.IsEqual;
 import org.junit.Test;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.composite.NoSuchCompositeException;
 import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.concern.GenericConcern;
+import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.property.Property;
@@ -30,7 +33,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.library.constraints.annotation.MaxLength;
 
-import java.lang.reflect.Method;
+import static org.junit.Assert.assertThat;
 
 /**
  * Unit tests for CompositeBuilderFactory.
@@ -129,24 +132,24 @@ public class TransientBuilderFactoryTest
         assembler.module().newTransientBuilder( AnyComposite.class );
     }
 
-    @Test
+    @Test(expected = ConstraintViolationException.class )
     public void testClassAsTransient()
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {
             @Override
-            public void assemble( ModuleAssembly module ) throws AssemblyException
+            public void assemble( ModuleAssembly module )
+                throws AssemblyException
             {
                 module.transients( AnyTransient.class );
             }
         };
 
         AnyTransient anyTransient = assembler.module().newTransient( AnyTransient.class );
-        System.out.println( anyTransient.hello( "World" ) );
+        assertThat( anyTransient.hello( "me" ), new IsEqual<String>("Hello ME from Module 1") );
 
-        System.out.println( anyTransient.hello( "Me" ) )
-        ;
-        System.out.println( anyTransient.hello( "Universe" ));
+        assertThat( anyTransient.hello( "World" ), new IsEqual<String>( "Hello WORLD from ME"  ) );
+        anyTransient.hello( "Universe" );
     }
 
     public static interface AnyComposite
@@ -158,36 +161,47 @@ public class TransientBuilderFactoryTest
         extends GenericConcern
     {
         @Override
-        public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
+        public Object invoke( Object proxy, Method method, Object[] args )
+            throws Throwable
         {
-            if (args != null)
+            if( args != null )
             {
-                args[0] = ((String)args[0]).toUpperCase();
+                args[ 0 ] = ( (String) args[ 0 ] ).toUpperCase();
                 return next.invoke( proxy, method, args );
-            } else
+            }
+            else
+            {
                 return next.invoke( proxy, method, args );
+            }
         }
     }
 
-    @Concerns(CapitalizeConcern.class)
+    @Concerns( CapitalizeConcern.class )
     public static class AnyTransient
         implements TransientComposite
     {
         @Structure
         Module module;
 
-        public String hello(@MaxLength(5) String name)
+        public String hello( @MaxLength( 5 ) String name )
         {
             try
             {
-                return "Hello "+name+" from "+module.name()+" and"+data.foo().get();
-            } finally
+                String from = data.foo().get();
+                if( from.length() == 0 )
+                {
+                    from = module.name();
+                }
+                return "Hello " + name + " from " + from;
+            }
+            finally
             {
-                data.foo().set( data.foo()+" "+name );
+                data.foo().set( name );
             }
         }
 
-        @This AnyData data;
+        @This
+        AnyData data;
     }
 
     interface AnyData

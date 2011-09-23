@@ -21,6 +21,8 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
 
+import static org.junit.Assert.assertNotNull;
+
 /**
  * JAVADOC
  */
@@ -30,13 +32,17 @@ public class ObjectBuilderTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.objects( A.class, B.class, C.class );
+        module.objects( A.class, B.class, C.class, D.class );
     }
 
-    @Test( expected = ConstructionException.class )
-    public void testMissingUses()
+    @Test
+    public void testNotProvidedUses()
     {
-        module.newObject(A.class );
+        A a = module.newObject(A.class );
+        assertNotNull(a);
+        assertNotNull(a.b);
+        assertNotNull(a.b.c);
+        assertNotNull(a.b.c.d);
     }
 
     public static class A

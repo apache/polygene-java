@@ -14,10 +14,20 @@
 
 package org.qi4j.runtime;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
 import org.qi4j.api.Qi4j;
-import org.qi4j.api.association.*;
-import org.qi4j.api.composite.*;
-import org.qi4j.api.entity.*;
+import org.qi4j.api.association.AbstractAssociation;
+import org.qi4j.api.association.AssociationDescriptor;
+import org.qi4j.api.association.AssociationStateHolder;
+import org.qi4j.api.association.AssociationWrapper;
+import org.qi4j.api.association.ManyAssociationWrapper;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.composite.CompositeInstance;
+import org.qi4j.api.composite.TransientComposite;
+import org.qi4j.api.composite.TransientDescriptor;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.property.PropertyWrapper;
@@ -26,8 +36,6 @@ import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Module;
-import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
-import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.api.value.ValueDescriptor;
@@ -35,7 +43,6 @@ import org.qi4j.bootstrap.ApplicationAssemblyFactory;
 import org.qi4j.bootstrap.ApplicationModelFactory;
 import org.qi4j.bootstrap.Qi4jRuntime;
 import org.qi4j.runtime.association.AbstractAssociationInstance;
-import org.qi4j.runtime.association.AssociationInstance;
 import org.qi4j.runtime.bootstrap.ApplicationAssemblyFactoryImpl;
 import org.qi4j.runtime.bootstrap.ApplicationModelFactoryImpl;
 import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
@@ -44,17 +51,11 @@ import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.property.PropertyInstance;
 import org.qi4j.runtime.service.ImportedServiceReferenceInstance;
 import org.qi4j.runtime.service.ServiceInstance;
-import org.qi4j.runtime.service.ServiceModel;
 import org.qi4j.runtime.service.ServiceReferenceInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.runtime.value.ValueInstance;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.EntityState;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Proxy;
 
 import static java.lang.reflect.Proxy.getInvocationHandler;
 import static org.qi4j.runtime.composite.TransientInstance.getCompositeInstance;
@@ -127,7 +128,7 @@ public final class Qi4jRuntimeImpl
         }
         else
         {
-            throw new IllegalArgumentException( "ServiceReference type is not known: "+service );
+            throw new IllegalArgumentException( "ServiceReference type is not known: " + service );
         }
     }
 
@@ -147,8 +148,12 @@ public final class Qi4jRuntimeImpl
         }
         else if( composite instanceof ServiceComposite )
         {
-            return ( (ServiceReferenceInstance.ServiceInvocationHandler) Proxy.getInvocationHandler(
-                composite ) ).module();
+            InvocationHandler handler = Proxy.getInvocationHandler( composite );
+            if( handler instanceof ServiceInstance )
+            {
+                return ( (ServiceInstance) handler ).module();
+            }
+            return ( (ServiceReferenceInstance.ServiceInvocationHandler) handler ).module();
         }
         else
         {
@@ -212,21 +217,27 @@ public final class Qi4jRuntimeImpl
     @Override
     public PropertyDescriptor getPropertyDescriptor( Property property )
     {
-        while (property instanceof PropertyWrapper)
-            property = ((PropertyWrapper)property).getNext();
+        while( property instanceof PropertyWrapper )
+        {
+            property = ( (PropertyWrapper) property ).getNext();
+        }
 
-        return (PropertyDescriptor) ((PropertyInstance)property).getPropertyInfo();
+        return (PropertyDescriptor) ( (PropertyInstance) property ).getPropertyInfo();
     }
 
-    public AssociationDescriptor getAssociationDescriptor( AbstractAssociation association)
+    public AssociationDescriptor getAssociationDescriptor( AbstractAssociation association )
     {
-        while (association instanceof AssociationWrapper )
-            association = ((AssociationWrapper)association).getNext();
+        while( association instanceof AssociationWrapper )
+        {
+            association = ( (AssociationWrapper) association ).getNext();
+        }
 
-        while (association instanceof ManyAssociationWrapper )
-            association = ((ManyAssociationWrapper)association).getNext();
+        while( association instanceof ManyAssociationWrapper )
+        {
+            association = ( (ManyAssociationWrapper) association ).getNext();
+        }
 
-        return (AssociationDescriptor) ((AbstractAssociationInstance)association).getAssociationInfo();
+        return (AssociationDescriptor) ( (AbstractAssociationInstance) association ).getAssociationInfo();
     }
 
     // SPI
