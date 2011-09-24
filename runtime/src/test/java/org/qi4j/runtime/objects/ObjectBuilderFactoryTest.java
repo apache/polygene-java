@@ -154,14 +154,14 @@ public class ObjectBuilderFactoryTest
         AnyObject anyObject;
         Module module;
 
-        public ManyConstructorObject( @Structure Module module )
-        {
-            this.module = module;
-        }
-
         public ManyConstructorObject( @Uses AnyObject anyObject, @Structure Module module )
         {
             this.anyObject = anyObject;
+            this.module = module;
+        }
+
+        public ManyConstructorObject( @Structure Module module )
+        {
             this.module = module;
         }
     }

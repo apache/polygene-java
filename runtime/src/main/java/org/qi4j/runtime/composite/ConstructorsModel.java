@@ -54,9 +54,8 @@ public final class ConstructorsModel
         constructorModels = new ArrayList<ConstructorModel>();
         Constructor[] realConstructors = this.fragmentClass.getDeclaredConstructors();
         Class injectionClass = FragmentClassLoader.getSourceClass( fragmentClass );
-        for( int i = 0; i < realConstructors.length; i++ )
+        for( Constructor constructor : realConstructors )
         {
-            Constructor constructor = realConstructors[ i ];
             try
             {
                 Constructor injectionConstructor = injectionClass.getConstructor( constructor.getParameterTypes() );
