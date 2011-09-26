@@ -87,16 +87,6 @@ public class EhCachePoolMixin
             name = "Qi4j Cache Extension";
         }
         configuration.setName( name );
-        List<String> terracottaConfigURLs = conf.terracottaConfigURLs().get();
-        if( terracottaConfigURLs != null )
-        {
-            for( String terracottaURL : terracottaConfigURLs )
-            {
-                TerracottaClientConfiguration terracottaConfig = new TerracottaClientConfiguration();
-                terracottaConfig.setUrl( terracottaURL );
-                configuration.addTerracottaConfig( terracottaConfig );
-            }
-        }
         CacheConfiguration cc = createCacheConfiguration( "qi4j.ehcache.config.default" );
         configuration.setDefaultCacheConfiguration( cc );
         cacheManager = new CacheManager( configuration );

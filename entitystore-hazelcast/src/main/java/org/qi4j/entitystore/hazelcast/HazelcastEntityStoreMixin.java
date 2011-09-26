@@ -30,9 +30,6 @@ import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.service.Activatable;
-import org.qi4j.entitystore.map.MapEntityStore;
-import org.qi4j.entitystore.map.MapEntityStoreMixin;
-import org.qi4j.spi.entity.EntityType;
 import org.qi4j.io.Input;
 import org.qi4j.io.Output;
 import org.qi4j.io.Receiver;
@@ -40,6 +37,7 @@ import org.qi4j.io.Sender;
 import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.helpers.MapEntityStore;
+import org.qi4j.spi.entitystore.helpers.MapEntityStoreMixin;
 
 import java.io.*;
 import java.util.Map;
@@ -108,7 +106,7 @@ public abstract class HazelcastEntityStoreMixin extends MapEntityStoreMixin
         changes.visitMap( new MapChanger()
         {
 
-            public Writer newEntity( final EntityReference ref, EntityType entityType )
+            public Writer newEntity( final EntityReference ref, EntityDescriptor entityDescriptor )
                 throws IOException
             {
                 return new StringWriter( 1000 )
@@ -124,13 +122,13 @@ public abstract class HazelcastEntityStoreMixin extends MapEntityStoreMixin
                 };
             }
 
-            public Writer updateEntity( EntityReference ref, EntityType entityType )
+            public Writer updateEntity( EntityReference ref, EntityDescriptor entityDescriptor )
                 throws IOException
             {
-                return newEntity( ref, entityType );
+                return newEntity( ref, entityDescriptor );
             }
 
-            public void removeEntity( EntityReference ref, EntityType entityType )
+            public void removeEntity( EntityReference ref, EntityDescriptor entityDescriptor )
                 throws EntityNotFoundException
             {
                 stringMap.remove( ref.identity() );

@@ -97,7 +97,7 @@ public interface RdfIndexingService
                 {
                     removeEntityStates( entityStates, connection );
                     connection.commit();
-                    final Set<EntityType> entityTypes = indexUpdates( entityStates, connection );
+                    final Set<EntityDescriptor> entityTypes = indexUpdates( entityStates, connection );
                     indexNewTypes( connection, entityTypes );
                 }
                 finally
@@ -113,11 +113,11 @@ public interface RdfIndexingService
             }
         }
 
-        private void indexNewTypes( RepositoryConnection connection, Set<EntityType> entityTypes )
+        private void indexNewTypes( RepositoryConnection connection, Set<EntityDescriptor> entityTypes )
             throws RepositoryException
         {
             // Index new types
-            for( EntityType entityType : entityTypes )
+            for( EntityDescriptor entityType : entityTypes )
             {
                 if( !indexedEntityTypes.contains( entityType ) )
                 {
@@ -127,22 +127,22 @@ public interface RdfIndexingService
             }
         }
 
-        private Set<EntityType> indexUpdates( Iterable<EntityState> entityStates, RepositoryConnection connection )
+        private Set<EntityDescriptor> indexUpdates( Iterable<EntityState> entityStates, RepositoryConnection connection )
             throws RepositoryException
         {
             // Figure out what to update
-            final Set<EntityType> entityTypes = new HashSet<EntityType>();
+            final Set<EntityDescriptor> entityTypes = new HashSet<EntityDescriptor>();
             for( EntityState entityState : entityStates )
             {
                 if( entityState.status().equals( EntityStatus.UPDATED ) )
                 {
                     indexEntityState( entityState, connection );
-                    entityTypes.add( entityState.entityDescriptor().entityType() );
+                    entityTypes.add( entityState.entityDescriptor() );
                 }
                 else if( entityState.status().equals( EntityStatus.NEW ) )
                 {
                     indexEntityState( entityState, connection );
-                    entityTypes.add( entityState.entityDescriptor().entityType() );
+                    entityTypes.add( entityState.entityDescriptor() );
                 }
             }
             return entityTypes;
