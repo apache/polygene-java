@@ -21,6 +21,7 @@ package org.qi4j.library.cxf.divs;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Date;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -44,7 +45,7 @@ public class DividendsTest
         "<issueId>PC10YZNZC100</issueId>" +
         "<divPoints>" +
         "<ns3:anyType xmlns:ns3=\"http://cxf.apache.org/arrays\" xsi:type=\"ns2:DivPoint\">" +
-        "<updateTS>Thu Nov 10 00:00:00 CST 3910</updateTS>" +
+        "<updateTS>" + new Date( 2010, 10, 10 ).toString() + "</updateTS>" +
         "<divTypeCD></divTypeCD>" +
         "<valCcy>USD</valCcy>" +
         "<recType>A</recType>" +
@@ -59,7 +60,7 @@ public class DividendsTest
         "<lastUpdater>niclas</lastUpdater>" +
         "</ns3:anyType>" +
         "<ns3:anyType xmlns:ns3=\"http://cxf.apache.org/arrays\" xsi:type=\"ns2:DivPoint\">" +
-        "<updateTS>Thu Nov 10 00:00:00 CST 3910</updateTS>" +
+        "<updateTS>" + new Date( 2010, 10, 10 ).toString() + "</updateTS>" +
         "<divTypeCD></divTypeCD>" +
         "<valCcy>USD</valCcy>" +
         "<recType>A</recType>" +
@@ -74,9 +75,9 @@ public class DividendsTest
         "<lastUpdater>niclas</lastUpdater>" +
         "</ns3:anyType>" +
         "</divPoints>" +
-        "<systemUpdateTS>Thu Nov 10 00:00:00 CST 3910</systemUpdateTS>" +
+        "<systemUpdateTS>" + new Date( 2010, 10, 10 ).toString() + "</systemUpdateTS>" +
         "<streamName>PRIVATE_niclas</streamName>" +
-        "<userUpdateTS>Thu Nov 10 00:00:00 CST 3910</userUpdateTS>" +
+        "<userUpdateTS>" + new Date( 2010, 10, 10 ).toString() + "</userUpdateTS>" +
         "<consolidate>N</consolidate>" +
         "<mdSymbol>bt.l</mdSymbol>" +
         "</ns1:value>" +

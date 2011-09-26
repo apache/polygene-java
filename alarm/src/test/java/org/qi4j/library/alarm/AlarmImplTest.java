@@ -233,7 +233,7 @@ public class AlarmImplTest
 
     private AlarmCategory createCategory( String name )
     {
-        ValueBuilder<AlarmCategory> builder = valueBuilderFactory.newValueBuilder( AlarmCategory.class );
+        ValueBuilder<AlarmCategory> builder = module.newValueBuilder( AlarmCategory.class );
         builder.prototype().name().set( name );
         return builder.newInstance();
     }

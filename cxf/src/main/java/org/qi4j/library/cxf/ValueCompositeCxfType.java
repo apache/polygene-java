@@ -18,11 +18,6 @@
 
 package org.qi4j.library.cxf;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.*;
-import javax.xml.namespace.QName;
 import org.apache.cxf.aegis.Context;
 import org.apache.cxf.aegis.DatabindingException;
 import org.apache.cxf.aegis.type.AegisType;
@@ -52,6 +47,11 @@ import org.qi4j.api.util.Classes;
 import org.qi4j.api.value.*;
 import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
+
+import javax.xml.namespace.QName;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.*;
 
 public class ValueCompositeCxfType extends AegisType
 {
@@ -210,8 +210,7 @@ public class ValueCompositeCxfType extends AegisType
 
     private AegisType getOrCreateNonQi4jType( Object value )
     {
-        AegisType type;
-        TypeMapping mapping = getTypeMapping();
+        AegisType type;TypeMapping mapping = getTypeMapping();
         Class<?> javaType = value.getClass();
         type = mapping.getType( javaType );
         if( type == null )
@@ -245,8 +244,7 @@ public class ValueCompositeCxfType extends AegisType
                 element.setNillable( p.metaInfo( Optional.class ) != null ); // see below
                 sequence.getItems().add( element );
                 AegisType nested = getOrCreateAegisType( p.type(), root );
-                QName schemaTypeName = nested.getSchemaType();
-                element.setSchemaTypeName( schemaTypeName );
+                element.setSchemaTypeName( nested.getSchemaType() );
             }
             else if( isCollectionOrMap( p ) )
             {

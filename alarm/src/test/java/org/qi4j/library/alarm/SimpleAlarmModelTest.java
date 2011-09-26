@@ -29,7 +29,7 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.core.testsupport.AbstractQi4jTest;
+import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 
@@ -70,14 +70,14 @@ public class SimpleAlarmModelTest
         throws Exception
     {
         super.setUp();
-        unitOfWorkFactory.newUnitOfWork();
+        module.unitOfWorkFactory().newUnitOfWork();
     }
 
     @Override
     public void tearDown()
         throws Exception
     {
-        UnitOfWork uow = unitOfWorkFactory.currentUnitOfWork();
+        UnitOfWork uow = module.unitOfWorkFactory().currentUnitOfWork();
         if( uow != null )
         {
             uow.discard();
@@ -116,7 +116,7 @@ public class SimpleAlarmModelTest
     public void testTriggers()
         throws Exception
     {
-        AlarmModel provider = (AlarmModel) serviceLocator.findService( AlarmModel.class ).get();
+        AlarmModel provider = (AlarmModel) module.findService( AlarmModel.class ).get();
         Alarm underTest = createAlarm( "Test Alarm" );
         List<String> triggers = provider.alarmTriggers();
         assertEquals( 2, triggers.size() );
@@ -160,7 +160,7 @@ public class SimpleAlarmModelTest
     public void testStateChangeFromNormal()
         throws Exception
     {
-        AlarmModel provider = (AlarmModel) serviceLocator.findService( AlarmModel.class ).get();
+        AlarmModel provider = (AlarmModel) module.findService( AlarmModel.class ).get();
         Alarm alarm = createAlarm( "Another 1" );
         AlarmEvent event1 = provider.evaluate( alarm, Alarm.TRIGGER_ACTIVATE );
         assertEquals( Alarm.EVENT_ACTIVATION, event1.systemName().get() );
@@ -186,7 +186,7 @@ public class SimpleAlarmModelTest
     public void testStateChangeFromActivated()
         throws Exception
     {
-        AlarmModel provider = (AlarmModel) serviceLocator.findService( AlarmModel.class ).get();
+        AlarmModel provider = (AlarmModel) module.findService( AlarmModel.class ).get();
         Alarm alarm = createAlarm( "Another 1" );
         alarm.activate();
 
@@ -205,7 +205,7 @@ public class SimpleAlarmModelTest
     {
         try
         {
-            AlarmModel provider = (AlarmModel) serviceLocator.findService( AlarmModel.class ).get();
+            AlarmModel provider = (AlarmModel) module.findService( AlarmModel.class ).get();
             Alarm underTest = createAlarm( "Test Alarm" );
             provider.evaluate( underTest, "my-trigger" );
             fail( "IllegalArgumentException not thrown." );
@@ -304,7 +304,7 @@ public class SimpleAlarmModelTest
     public void testComputeCondition()
         throws Exception
     {
-        AlarmModel provider = (AlarmModel) serviceLocator.findService( AlarmModel.class ).get();
+        AlarmModel provider = (AlarmModel) module.findService( AlarmModel.class ).get();
         AlarmStatus s1 = createStatus( Alarm.STATUS_NORMAL );
         assertFalse( provider.computeCondition( s1 ) );
         AlarmStatus s2 = createStatus( Alarm.STATUS_ACTIVATED );
@@ -315,7 +315,7 @@ public class SimpleAlarmModelTest
     public void testComputeTrigger()
         throws Exception
     {
-        AlarmModel provider = (AlarmModel) serviceLocator.findService( AlarmModel.class ).get();
+        AlarmModel provider = (AlarmModel) module.findService( AlarmModel.class ).get();
         AlarmStatus s1 = createStatus( Alarm.STATUS_NORMAL );
         AlarmStatus s2 = createStatus( Alarm.STATUS_ACTIVATED );
         String trigger1 = provider.computeTrigger( s1, true );
@@ -330,7 +330,7 @@ public class SimpleAlarmModelTest
 
     private Alarm createAlarm( String name )
     {
-        UnitOfWork uow = unitOfWorkFactory.currentUnitOfWork();
+        UnitOfWork uow = module.unitOfWorkFactory().currentUnitOfWork();
         EntityBuilder<Alarm> builder = uow.newEntityBuilder( Alarm.class );
         builder.instance().category().set( createCategory( "SimpleModelTest" ) );
         Alarm.AlarmState state = builder.instanceFor( Alarm.AlarmState.class );
@@ -342,20 +342,20 @@ public class SimpleAlarmModelTest
 
     private AlarmCategory createCategory( String name )
     {
-        ValueBuilder<AlarmCategory> builder = valueBuilderFactory.newValueBuilder( AlarmCategory.class );
+        ValueBuilder<AlarmCategory> builder = module.newValueBuilder( AlarmCategory.class );
         builder.prototype().name().set( name );
         return builder.newInstance();
     }
 
     private Alarm getAlarm( String identity )
     {
-        UnitOfWork uow = unitOfWorkFactory.currentUnitOfWork();
+        UnitOfWork uow = module.unitOfWorkFactory().currentUnitOfWork();
         return uow.get( Alarm.class, identity );
     }
 
     private AlarmStatus createStatus( String status )
     {
-        ValueBuilder<AlarmStatus> builder = valueBuilderFactory.newValueBuilder( AlarmStatus.class );
+        ValueBuilder<AlarmStatus> builder = module.newValueBuilder( AlarmStatus.class );
         builder.prototype().name().set( status );
         builder.prototype().creationDate().set( new Date() );
         return builder.newInstance();

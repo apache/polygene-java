@@ -25,6 +25,8 @@ import org.qi4j.api.property.Property;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceDescriptor;
+import org.qi4j.api.service.ServiceReference;
+import org.qi4j.api.service.qualifier.HasMetaInfo;
 import org.qi4j.api.structure.Application;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -180,7 +182,7 @@ public interface FileConfiguration
 
         private void applyOverride()
         {
-            FileConfigurationOverride override = metaInfo( FileConfigurationOverride.class );
+            FileConfigurationOverride override = descriptor.metaInfo( FileConfigurationOverride.class );
             if ( override != null ) {
                 if ( override.configuration() != null ) {
                     data.configuration().set( override.configuration() );

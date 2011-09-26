@@ -67,7 +67,7 @@ public class FileConfigurationTest
 
         };
 
-        FileConfiguration config = ( FileConfiguration ) assembler.serviceFinder().findService( FileConfiguration.class ).get();
+        FileConfiguration config = ( FileConfiguration ) assembler.module().findService( FileConfiguration.class ).get();
 
         assertEquals( testFile.getAbsolutePath(), config.configurationDirectory().getAbsolutePath() );
 

@@ -248,7 +248,7 @@ public interface AlarmSystem
         {
             UnitOfWork uow = uowf.currentUnitOfWork();
             QueryBuilder<Alarm> builder = qbf.newQueryBuilder( Alarm.class );
-            return builder.newQuery( uow );
+            return uow.newQuery( builder );
         }
 
         public List<AlarmListener> alarmListeners()
