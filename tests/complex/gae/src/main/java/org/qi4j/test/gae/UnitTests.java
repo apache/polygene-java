@@ -20,7 +20,7 @@ package org.qi4j.test.gae;
 
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.core.testsupport.AbstractEntityStoreTest;
+import org.qi4j.test.entity.AbstractEntityStoreTest;
 import org.qi4j.entitystore.gae.GaeEntityStoreService;
 import org.qi4j.entitystore.gae.GaeIdGeneratorService;
 
