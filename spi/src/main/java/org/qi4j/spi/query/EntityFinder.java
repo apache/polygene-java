@@ -20,6 +20,7 @@ package org.qi4j.spi.query;
 
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.composite.Composite;
+import org.qi4j.api.dataset.DataSet;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.functional.Specification;

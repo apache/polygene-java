@@ -30,9 +30,11 @@ import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.api.value.ValueDescriptor;
 import org.qi4j.functional.Function;
+import org.qi4j.functional.Visitor;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
