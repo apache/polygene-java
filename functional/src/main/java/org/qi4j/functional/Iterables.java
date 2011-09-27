@@ -212,6 +212,23 @@ public final class Iterables
         }
     }
 
+    public static <X> X single( Iterable<? extends X> i )
+    {
+        Iterator<? extends X> iter = i.iterator();
+        if( iter.hasNext() )
+        {
+            X result = iter.next();
+
+            if (iter.hasNext())
+                throw new IllegalArgumentException( "More than one element in iterable" );
+
+            return result;
+        } else
+        {
+            throw new IllegalArgumentException( "No elements in iterable" );
+        }
+    }
+
     public static <X> Iterable<X> skip( final int skip, final Iterable<X> iterable)
     {
         return new Iterable<X>()

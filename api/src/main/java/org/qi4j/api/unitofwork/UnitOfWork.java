@@ -15,11 +15,13 @@
 package org.qi4j.api.unitofwork;
 
 import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.dataset.DataSet;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.LifecycleException;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.usecase.Usecase;
+import org.qi4j.functional.Specification;
 
 /**
  * All operations on entities goes through an UnitOfWork.
@@ -68,6 +70,12 @@ public interface UnitOfWork
     MetaInfo metaInfo();
 
     <T> Query<T> newQuery(QueryBuilder<T> queryBuilder);
+
+    DataSet newDataSetBuilder(Specification<?>... constraints);
+
+    uow.newDataSetBuilder(entity(Case.class),
+                          eq(template(Status.class).status(), Status.OPEN),
+                          eq(template(Owner.class).owner(), variable("inbox")))
 
     /**
      * Create a new Entity which implements the given mixin type. An EntityComposite

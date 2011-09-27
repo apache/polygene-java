@@ -19,6 +19,7 @@ import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.functional.Function;
+import org.qi4j.functional.Visitor;
 
 /**
  * Factory for Values and ValueBuilders.
