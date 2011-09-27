@@ -55,7 +55,7 @@ public class InvocationPerformanceTest
             simple.test();
         }
 
-        int rounds = 3;
+        int rounds = 10;
         for (int i = 0; i < rounds; i++)
         {
             System.gc();

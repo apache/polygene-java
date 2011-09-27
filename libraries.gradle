@@ -27,7 +27,7 @@ vaadinVersion = '6.4.8'
 voldemortVersion = '0.81'
 c3p0Version = '0.9.1.2'
 liquibaseVersion = '2.0.1'
-velocityVersion = '1.6.3'
+velocityVersion = '1.6.2'
 
 antVersion = '1.8.1'
 junitVersion = '4.8.1'
