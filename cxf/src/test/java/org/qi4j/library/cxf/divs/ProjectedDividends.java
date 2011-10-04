@@ -18,17 +18,20 @@
 
 package org.qi4j.library.cxf.divs;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.jws.WebMethod;
+import javax.jws.WebParam;
+import javax.jws.WebResult;
+import javax.jws.WebService;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
 import org.qi4j.library.cxf.Subscription;
-
-import javax.jws.WebMethod;
-import javax.jws.WebParam;
-import javax.jws.WebResult;
-import javax.jws.WebService;
-import java.util.*;
 
 @WebService
 @Mixins( ProjectedDividends.ProjectedDividendsMixin.class )
@@ -45,6 +48,9 @@ public interface ProjectedDividends
     public class ProjectedDividendsMixin
         implements ProjectedDividends
     {
+        private static final double NINETY_PERCENT = 0.9;
+        private static final float BASE_OFFSET = 0.236f;
+
         @Structure
         private ValueBuilderFactory vbf;
 
@@ -69,8 +75,8 @@ public interface ProjectedDividends
             prototype.divPoints().set( divPoints );
             prototype.consolidate().set( "N" );
             prototype.streamName().set( "PRIVATE_niclas" );
-            prototype.systemUpdateTS().set( new Date(2010,10,10).toString() );
-            prototype.userUpdateTS().set( new Date(2010,10,10 ).toString() );
+            prototype.systemUpdateTS().set( new Date( 2010, 10, 10 ).toString() );
+            prototype.userUpdateTS().set( new Date( 2010, 10, 10 ).toString() );
             prototype.issueId().set( "PC10YZNZC100" );
             prototype.mdSymbol().set( "bt.l" );
             return builder.newInstance();
@@ -87,21 +93,20 @@ public interface ProjectedDividends
             prototype.valCcy().set( "USD" );
             prototype.divType().set( "REG" );
             prototype.recType().set( "A" );
-            prototype.net().set( "" + ( amount * 0.9 ) );
+            prototype.net().set( "" + ( amount * NINETY_PERCENT ) );
             prototype.netCcy().set( "USD" );
             prototype.recDate().set( createRandomDate() );
             prototype.paydate().set( createRandomDate() );
             prototype.divTypeCD().set( "" );
             prototype.comment().set( "Silly comment" );
-            prototype.updateTS().set( new Date(2010,10,10).toString() );
+            prototype.updateTS().set( new Date( 2010, 10, 10 ).toString() );
             prototype.lastUpdater().set( "niclas" );
             return builder.newInstance();
         }
 
         private float randomAmount()
         {
-            return 0.236f * counter++;
-
+            return BASE_OFFSET * counter++;
         }
 
         private String createRandomDate()

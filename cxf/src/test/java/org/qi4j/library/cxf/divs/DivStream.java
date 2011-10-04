@@ -18,10 +18,9 @@
 
 package org.qi4j.library.cxf.divs;
 
+import java.util.List;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueComposite;
-
-import java.util.List;
 
 public interface DivStream extends ValueComposite
 {

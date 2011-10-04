@@ -20,6 +20,8 @@ import org.qi4j.api.query.Query;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+
+import org.qi4j.library.scheduler.SchedulerService;
 import org.qi4j.library.scheduler.schedule.ScheduleEntity;
 import org.qi4j.library.scheduler.schedule.ScheduleRepository;
 
@@ -33,6 +35,8 @@ public class SchedulerGarbageCollector
     @Structure
     private UnitOfWorkFactory uowf;
     @Service
+    private SchedulerService scheduler;
+    @Service
     private ScheduleRepository scheduleRepository;
 
     public SchedulerGarbageCollector( @Uses Long rhythm )
@@ -45,7 +49,7 @@ public class SchedulerGarbageCollector
             throws UnitOfWorkCompletionException
     {
         UnitOfWork uow = uowf.newUnitOfWork();
-        Query<ScheduleEntity> toDelQuery = scheduleRepository.findNotDurableWithoutNextRun();
+        Query<ScheduleEntity> toDelQuery = scheduleRepository.findNotDurableWithoutNextRun( scheduler.identity().get() );
         long toDelCount = toDelQuery.count();
         if ( toDelCount > 0 ) {
             LOGGER.debug( "GC found {} not durable schedules without next run, removing them", toDelCount );

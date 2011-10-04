@@ -20,6 +20,7 @@ import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.service.Activatable;
+import org.qi4j.api.service.Availability;
 import org.qi4j.api.service.ServiceComposite;
 
 @Mixins( HttpRepositoryService.HttpRepositoryMixin.class )
@@ -45,6 +46,7 @@ public interface HttpRepositoryService
         {
             shutDown();
         }
+
 
         private static String getRepositoryUrl( HttpRepositoryConfiguration configuration )
         {

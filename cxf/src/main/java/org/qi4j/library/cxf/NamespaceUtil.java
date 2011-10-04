@@ -18,15 +18,19 @@
 
 package org.qi4j.library.cxf;
 
-import javax.xml.namespace.QName;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import javax.xml.namespace.QName;
 
 /**
  *
  */
-public class NamespaceUtil
+public final class NamespaceUtil
 {
+
+    private NamespaceUtil()
+    {
+    }
 
     public static QName convertJavaTypeToQName( Type type )
     {

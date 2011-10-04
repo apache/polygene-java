@@ -45,6 +45,7 @@ import static org.qi4j.api.common.Visibility.module;
  *      new SchedulerAssembler().
  *              visibleIn( Visibility.layer ).
  *              withConfigAssembly( configModuleAssembly ).
+ *              withConfigVisibility( Visibility.application ).
  *              withPulseRhythm( 60 ).
  *              withGarbageCollectorRhythm( 600 ).
  *              withTimeline().
@@ -57,6 +58,7 @@ public class SchedulerAssembler
 
     private Visibility visibility = module;
     private ModuleAssembly configAssembly;
+    private Visibility configVisibility = Visibility.application;
     private Integer pulseRhythm;
     private Integer garbageCollectorRhythm;
     private boolean timeline;
@@ -76,6 +78,18 @@ public class SchedulerAssembler
     public SchedulerAssembler withConfigAssembly( ModuleAssembly configAssembly )
     {
         this.configAssembly = configAssembly;
+        return this;
+    }
+
+    /**
+     * Set the configuration entity visibility.
+     *
+     * @param configVisibility  SchedulerConfiguration visibility
+     * @return                  SchedulerAssembler
+     */
+    public SchedulerAssembler withConfigVisibility( Visibility configVisibility )
+    {
+        this.configVisibility = configVisibility;
         return this;
     }
 
@@ -156,7 +170,7 @@ public class SchedulerAssembler
     private void assembleConfig( ModuleAssembly configAssembly )
             throws AssemblyException
     {
-        configAssembly.entities( SchedulerConfiguration.class );
+        configAssembly.entities( SchedulerConfiguration.class ).visibleIn( configVisibility );
         if ( pulseRhythm != null || garbageCollectorRhythm != null ) {
             SchedulerConfiguration config = configAssembly.forMixin( SchedulerConfiguration.class ).declareDefaults();
             if ( pulseRhythm != null ) {

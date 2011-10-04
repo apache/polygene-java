@@ -18,6 +18,8 @@
 
 package org.qi4j.library.cxf;
 
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Method;
 import org.apache.cxf.aegis.type.AbstractTypeCreator;
 import org.apache.cxf.aegis.type.AegisType;
 import org.apache.cxf.aegis.type.TypeClassInfo;
@@ -26,17 +28,10 @@ import org.qi4j.api.structure.Module;
 import org.qi4j.api.util.Classes;
 import org.qi4j.api.value.ValueComposite;
 
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Method;
-
 public class Qi4jTypeCreator extends AbstractTypeCreator
 {
     @Structure
     private Module module;
-
-    public Qi4jTypeCreator()
-    {
-    }
 
     @Override
     public TypeClassInfo createClassInfo( PropertyDescriptor pd )

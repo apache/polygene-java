@@ -116,7 +116,7 @@ public class SchedulerActivation
     {
         // Remove not durable schedules
         UnitOfWork uow = module.newUnitOfWork();
-        Query<ScheduleEntity> notDurableQuery = scheduleRepository.findNotDurable();
+        Query<ScheduleEntity> notDurableQuery = scheduleRepository.findNotDurable( me.identity().get() );
         long notDurableCount = notDurableQuery.count();
         if ( notDurableCount > 0 ) {
             LOGGER.debug( "Found {} not durable schedules at activation, removing them", notDurableCount );
@@ -132,7 +132,7 @@ public class SchedulerActivation
     {
         // Handling schedules that were running when last activated
         UnitOfWork uow = module.newUnitOfWork();
-        Query<ScheduleEntity> runningQuery = scheduleRepository.findRunning();
+        Query<ScheduleEntity> runningQuery = scheduleRepository.findRunning( me.identity().get() );
         long runningCount = runningQuery.count();
         if ( runningCount > 0 ) {
             LOGGER.debug( "Found {} running schedules at activation, setting them back to not running", runningCount );

@@ -1,0 +1,115 @@
+<!--
+  ~ Copyright (c) 2011, Niclas Hedhman. All Rights Reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<html>
+<body>
+<h1>Alarm Systems</h1>
+
+<p>
+    Alarm Systems are originally used in Industrial Automation and Process Control systems, to monitor the health
+    of external devices and software functions in large scale plants. The semantics in an Alarm system are well-defined
+    and allows for excellent aggregation and overviews, fine-grained workflow of system health issues and
+    rich data sets around any issues.
+</p>
+
+<p>
+    This Alarm System, that is based on Qi4j's excellent persistence support, is an attempt at bringing a first-class
+    model from the industrial automation world into the enterprise of large-scale software systems, that nowadays
+    are so large and un-wieldly that log files, syslog and emails can no longer cope with the burden of management
+    needs.
+</p>
+
+<h1>The Conceptual Model</h1>
+
+<p>
+    Although the inner details of an alarm system can be hard to fully understand, the conceptual model is fairly
+    straight forward, and can be described with <i>Alarm</i>,<i>Alarm Trigger</i>, <i>Alarm Status</i> and <i>
+    Alarm Event</i>. The behavior of the Alarm state machine, hence the workflow, is dictated by an <i>Alarm Model</i>.
+</p>
+
+<p>
+    Looking at each of these in greater detail.
+</p>
+
+<h2>Alarm</h2>
+
+<p>
+    An Alarm is a tiny state-machine that tracks the <i>Alarm Status</i> (see below). An Alarm has certain attributes
+    that
+    are always present and custom attributes that are suitable for the domain in which the Alarm is being used. The
+    <i>Alarm Class</i> and <i>Alarm Category</i> are attributes that are always present, together with an <i>Alarm
+    Name</i> and an <i>Alarm Description</i>.
+</p>
+
+<h2>Alarm Class</h2>
+
+<p>
+    There are 4 <i>Alarm Classes</i>, A to D, indicating the urgency if an <i>Alarm Event</i> is occurring on the Alarm.
+</p>
+
+<h2>Alarm Category</h2>
+
+<p>
+    <i>Alarm Category</i> is a required attribute on the Alarm to indicate the target audience that needs to be informed
+    about it. This can be used to differentiate between infrastructure concerns versus domain model issues, or direct
+    <i>Alarm Events</i> to different recipients.
+</p>
+
+<h2>Alarm Model</h2>
+<p>
+    The <i>Alarm Model</i> defines which <i>Alarm Status</i> types, <i>Alarm Event</i> types, <i>Alarm Triggers</i> and
+    the behavior of the state machine in the <i>Alarm</i> itself.
+</p>
+<p>
+    The <i>Alarm Model</i> is an Qi4j <code>Service</code> and located via the normal <code>Visibility</code> rules,
+    making it possible to have a different <i>Alarm Model</i> in each Qi4j module.
+</p>
+
+<h2>Alarm Status</h2>
+<p>
+    The <i>Alarm</i> always has an <i>Alarm Status</i>. Most <i>Alarm Models</i> will have a <b>Normal</b> status which
+    the <i>Alarm</i> is set to initially, and <b>Activated</b> is likely to be present as well. The <i>Alarm Status</i>
+    only changes from one status to another through the use of an <i>Alarm Trigger</i>, but all triggers doesn't
+    cause the <i>Alarm Status</i> to change.
+</p>
+<h2>Alarm Event</h2>
+<p>
+    Whenever an <i>Alarm</i> changes its <i>Alarm Status</i> an <i>Alarm Event</i> is sent to all <i>Alarm
+    Listeners</i>. <i>Alarm Listeners</i> are registered to the <i>Alarm System</i>. <i>Alarm Event</i> types are
+    defined by the <i>Alarm Model</i>. Some common <i>Alarm Event</i> types/names are "activation", "acknowledgement"
+    and "deactivation".
+
+</p>
+<h2>Alarm Trigger</h2>
+<p>
+    <i>Alarm Triggers</i> are used to forward the workflow. The <i>Alarm Model</i> defines the available <i>Alarm
+    Triggers</i> which are all plain Strings. <i>Alarm Triggers</i> are "commanding" such as "block", "activate" and
+    "disable".
+</p>
+<h1>State Management</h1>
+<p>
+    <i>Alarm</i> instances are Qi4j Entities, so the <i>Alarm Status</i> is preserved over time in persisted storage.
+    This in turn means that the <i>Alarm</i> must be accessed within a <code>UnitOfWork</code> and the Alarm is not valid
+    outside the <code>UnitOfWork</code>.
+    </p>
+<p>
+    For Entities that needs Alarms, this is fairly straight forward, by making an
+    <code>@Aggregated Association&lt;Alarm&gt; alarm;</code> and have it being created in the <i>Entity</i>
+    <code>LifeCycle</code>. For non-entities, this becomes a little bit trickier. After the <i>Alarm</i> is created
+    the <code>Identity</code> of the <i>Alarm</i> needs to be preserved and used to retrieve the <i>Alarm</i> when
+    it needs to be <i>Triggered</i>. It is NOT possible to put an <i>Alarm</i> <code>Association</code> in a Service's
+   <code>configuration</code>, since you will not be able to access the <code>Configuration</code> members within the
+    <code>UnitOfWork</code> managed by the configuration system.
+</p>
+</body>
+</html>

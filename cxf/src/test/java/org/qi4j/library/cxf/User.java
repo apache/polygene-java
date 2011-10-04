@@ -20,12 +20,12 @@ package org.qi4j.library.cxf;
 
 public class User
 {
+    private String name;
+
     public void setName( String name )
     {
         this.name = name;
     }
-
-    private String name;
 
     public String getName()
     {

@@ -11,37 +11,66 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.library.fileconfig;
 
+import java.io.File;
+import java.io.IOException;
+
+import static org.junit.Assert.*;
 import org.junit.Test;
+
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 
-import java.io.File;
-
-/**
- * JAVADOC
- */
 public class FileConfigurationTest
 {
+
     @Test
     public void testFileConfiguration()
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {
-            public void assemble( ModuleAssembly module ) throws AssemblyException
+
+            public void assemble( ModuleAssembly module )
+                    throws AssemblyException
             {
                 module.services( FileConfiguration.class );
             }
+
         };
 
         FileConfiguration config = (FileConfiguration) assembler.module().findService( FileConfiguration.class ).get();
 
         File confDir = config.configurationDirectory();
-        System.out.println(confDir);
+        System.out.println( confDir );
     }
 
+    @Test
+    public void testFileConfigurationOverride()
+            throws IOException
+    {
+        final File testFile = File.createTempFile( FileConfigurationTest.class.getName(), "" + System.currentTimeMillis() );
+        SingletonAssembler assembler = new SingletonAssembler()
+        {
+
+            public void assemble( ModuleAssembly module )
+                    throws AssemblyException
+            {
+                FileConfigurationOverride override = new FileConfigurationOverride().withConfiguration( testFile ).
+                        withData( testFile ).
+                        withTemporary( testFile ).
+                        withCache( testFile ).
+                        withLog( testFile );
+                module.services( FileConfiguration.class ).setMetaInfo( override );
+            }
+
+        };
+
+        FileConfiguration config = ( FileConfiguration ) assembler.module().findService( FileConfiguration.class ).get();
+
+        assertEquals( testFile.getAbsolutePath(), config.configurationDirectory().getAbsolutePath() );
+
+    }
 
 }

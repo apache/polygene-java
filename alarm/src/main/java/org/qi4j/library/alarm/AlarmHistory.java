@@ -1,5 +1,5 @@
 /*
- * Copyright 1996-2005 Niclas Hedhman.
+ * Copyright 1996-2011 Niclas Hedhman.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -133,10 +133,8 @@ public interface AlarmHistory
     void addEvent( AlarmEvent event, String trigger );
 
     abstract class AlarmHistoryMixin
-        implements java.io.Serializable, AlarmHistory
+        implements AlarmHistory
     {
-        private static final long serialVersionUID = 2L;
-
         public AlarmEvent firstEvent()
         {
             List<AlarmEvent> eventList = allAlarmEvents().get();

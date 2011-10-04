@@ -21,6 +21,7 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.library.scheduler.Scheduler;
+import org.qi4j.library.scheduler.SchedulerService;
 import org.qi4j.library.scheduler.schedule.ScheduleEntity;
 import org.qi4j.library.scheduler.schedule.ScheduleRepository;
 import org.qi4j.library.scheduler.task.Task;
@@ -37,6 +38,8 @@ public class SchedulerPulse
 
     @Structure
     private UnitOfWorkFactory uowf;
+    @Service
+    private SchedulerService scheduler;
     @Service
     private ScheduleRepository scheduleRepository;
     private final SchedulerWorkQueue workQueue;
@@ -65,7 +68,7 @@ public class SchedulerPulse
 
         UnitOfWork uow = uowf.newUnitOfWork();
 
-        Query<ScheduleEntity> toRun = scheduleRepository.findRunnables( lastCycleEnd + 1, cycleEnd );
+        Query<ScheduleEntity> toRun = scheduleRepository.findRunnables( scheduler.identity().get(), lastCycleEnd + 1, cycleEnd );
         Collection<String> schedulesIdentities = new ArrayList<String>();
         for ( ScheduleEntity eachSchedule : toRun ) {
             schedulesIdentities.add( eachSchedule.identity().get() );
