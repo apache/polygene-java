@@ -213,7 +213,12 @@ public class ModuleInstance
         try
         {
             Class<?> type = classLoader().loadClass( name );
-            return findValueModels( type ).model();
+            ModelModule<ValueModel> valueModel = findValueModels( type );
+            if( valueModel == null )
+            {
+                return null;
+            }
+            return valueModel.model();
         } catch( ClassNotFoundException e )
         {
             return null;
