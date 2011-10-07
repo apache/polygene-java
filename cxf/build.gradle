@@ -23,7 +23,7 @@ dependencies {
   compile('org.apache.ws.commons.schema:XmlSchema:' + xmlSchemaVersion)
   runtime('org.apache.cxf:cxf-rt-transports-http:' + cxfVersion)
   runtime('org.apache.cxf:cxf-rt-transports-http-jetty:' + cxfVersion)
-  testCompile('org.apache.httpcomponents:httpclient:4.1-alpha1')
+  testCompile('org.apache.httpcomponents:httpclient:$httpClientVersion')
   testCompile(libraries.junit)
   testRuntime(libraries.asm)
   testRuntime(libraries.asm_commons)
