@@ -67,9 +67,9 @@ public class CleanStackTraceTest
 
             String separator = System.getProperty( "line.separator" );
             String correctTrace = "java.lang.RuntimeException" + separator +
-                                  "\tat org.qi4j.test.composite.CleanStackTraceTest$DoStuffMixin.doStuff(CleanStackTraceTest.java:91)" + separator +
+                                  "\tat org.qi4j.test.composite.CleanStackTraceTest$DoStuffMixin.doStuff(CleanStackTraceTest.java:92)" + separator +
                                   "\tat org.qi4j.test.composite.CleanStackTraceTest$TestComposite.doStuff(Unknown Source)" + separator +
-                                  "\tat org.qi4j.test.composite.CleanStackTraceTest.cleanStackTraceOnApplicationException(CleanStackTraceTest.java:60)";
+                                  "\tat org.qi4j.test.composite.CleanStackTraceTest.cleanStackTraceOnApplicationException(CleanStackTraceTest.java:61)";
             String actual = actualTrace.toString();
             actual = actual.substring( 0, correctTrace.length() );
             assertEquals( correctTrace, actual );
