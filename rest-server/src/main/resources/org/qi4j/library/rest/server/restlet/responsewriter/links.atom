@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+ <title>Atom feed</title>
+ <link href="${request.resourceRef}"/>
+
+<#list result.links as link>
+ <entry>
+   <title>${link.text!}</title>
+   <link href="${link.href}"/>
+   <id>urn:uuid:${link.id}</id>
+ </entry>
+</#list>
+
+</feed>

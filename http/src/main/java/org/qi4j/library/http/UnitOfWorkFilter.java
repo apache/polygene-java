@@ -49,10 +49,7 @@ public class UnitOfWorkFilter
         }
         catch( Exception e )
         {
-            if( unitOfWork.isOpen() )
-            {
-                unitOfWork.discard();
-            }
+            unitOfWork.discard();
         }
 
     }

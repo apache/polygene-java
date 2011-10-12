@@ -1,0 +1,42 @@
+description = "Qi4j REST Server Library provides a server component for building REST API's based on usecases"
+
+jar { manifest { name = "Qi4j Library - REST server" }}
+
+repositories {
+   mavenRepo name: 'restlet-repo', urls: 'http://maven.restlet.org'
+}
+
+uploadArchives {
+  repositories.mavenDeployer {
+    pom {
+      project {
+        repositories {
+          repository {
+            id = 'restlet'
+            url = 'http://maven.restlet.org'
+          }
+        }
+      }
+      name = 'sshDeployer' // optional
+      configuration = configurations.deployerJars
+      repository(url: "scp://repository.ops4j.org/home/www/repository.ops4j.org/maven2/")
+    }
+  }
+}
+
+dependencies {
+  compile(project(":org.qi4j.core:org.qi4j.core.api"))
+  compile(project(":org.qi4j.libraries:org.qi4j.library.rest-common"))
+  compile(libraries.slf4j_api)
+  compile('org.restlet.jee:org.restlet:' + restletVersion)
+  compile('org.restlet.jee:org.restlet.ext.atom:' + restletVersion)
+  compile('org.restlet.jee:org.restlet.ext.servlet:' + restletVersion)
+  compile('org.restlet.jee:org.restlet.ext.xml:' + restletVersion)
+  compile('org.apache.velocity:velocity:' + velocityVersion)
+  compile('org.freemarker:freemarker:' + freemarkerVersion)
+  compile("javax.servlet:servlet-api:$servletVersion")
+  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
+  testCompile(libraries.junit)
+  testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
+  testRuntime(libraries.slf4j_simple)
+}

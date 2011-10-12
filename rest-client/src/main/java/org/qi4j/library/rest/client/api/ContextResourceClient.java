@@ -1,0 +1,467 @@
+/**
+ *
+ * Copyright 2009-2011 Rickard Öberg AB
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.qi4j.library.rest.client.api;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import org.qi4j.api.injection.scope.Uses;
+import org.qi4j.library.rest.client.spi.NullResponseHandler;
+import org.qi4j.library.rest.client.spi.ResponseHandler;
+import org.qi4j.library.rest.client.spi.ResultHandler;
+import org.qi4j.library.rest.common.Resource;
+import org.qi4j.library.rest.common.link.Link;
+import org.qi4j.library.rest.common.link.LinksUtil;
+import org.restlet.Request;
+import org.restlet.Response;
+import org.restlet.data.ChallengeResponse;
+import org.restlet.data.ChallengeScheme;
+import org.restlet.data.MediaType;
+import org.restlet.data.Method;
+import org.restlet.data.Reference;
+import org.restlet.data.Status;
+import org.restlet.representation.EmptyRepresentation;
+import org.restlet.representation.ObjectRepresentation;
+import org.restlet.resource.ResourceException;
+import org.restlet.security.User;
+
+/**
+ * Client-side context resources
+ */
+public class ContextResourceClient
+{
+    @Uses
+    private ContextResourceClientFactory contextResourceFactory;
+
+    @Uses
+    private Reference reference;
+
+    private Resource resource;
+
+    // Response handlers
+    private ResponseHandler errorHandler = NullResponseHandler.INSTANCE;
+    private ResponseHandler resourceHandler = NullResponseHandler.INSTANCE;
+    private ResponseHandler deleteHandler = NullResponseHandler.INSTANCE;
+    private Map<String, ResponseHandler> queryHandlers = new HashMap<String, ResponseHandler>(  );
+    private Map<String, ResponseHandler> commandHandlers = new HashMap<String, ResponseHandler>(  );
+    private Map<String, ResponseHandler> processingErrorHandlers = new HashMap<String, ResponseHandler>();
+
+    // DSL for registering rules
+    public ContextResourceClient onError(ResponseHandler handler)
+    {
+        errorHandler = handler;
+        return this;
+    }
+
+    public ContextResourceClient onResource( final ResultHandler<Resource> handler)
+    {
+        resourceHandler = new ResponseHandler()
+        {
+            @Override
+            public void handleResponse( Response response, ContextResourceClient client )
+            {
+                resource = contextResourceFactory.readResponse( response, Resource.class );
+                handler.handleResult( resource, client );
+            }
+        };
+        return this;
+    }
+
+    public ContextResourceClient onQuery( String relation, ResponseHandler handler )
+    {
+        queryHandlers.put( relation, handler );
+        return this;
+    }
+
+    public <T> ContextResourceClient onQuery( String relation,
+                                              final Class<T> resultType, final ResultHandler<T> handler
+    )
+    {
+        queryHandlers.put( relation,  new ResponseHandler()
+        {
+            @Override
+            public void handleResponse( Response response, ContextResourceClient client )
+            {
+                T result = contextResourceFactory.readResponse( response, resultType );
+                handler.handleResult( result, client );
+            }
+        });
+
+        return this;
+    }
+
+    public ContextResourceClient onCommand( String relation, ResponseHandler handler )
+    {
+        commandHandlers.put( relation, handler);
+        return this;
+    }
+
+    public <T> ContextResourceClient onCommand( String relation,
+                                                final Class<T> resultType, final ResultHandler<T> handler
+    )
+    {
+        commandHandlers.put( relation,  new ResponseHandler()
+        {
+            @Override
+            public void handleResponse( Response response, ContextResourceClient client )
+            {
+                T result = contextResourceFactory.readResponse( response, resultType );
+                handler.handleResult( result, client );
+            }
+        });
+
+        return this;
+    }
+
+    public ContextResourceClient onProcessingError( String relation, ResponseHandler handler )
+    {
+        processingErrorHandlers.put( relation, handler);
+        return this;
+    }
+
+    public <T> ContextResourceClient onProcessingError( String relation,
+                                                        final Class<T> resultType, final ResultHandler<T> handler
+    )
+    {
+        processingErrorHandlers.put( relation,  new ResponseHandler()
+        {
+            @Override
+            public void handleResponse( Response response, ContextResourceClient client )
+            {
+                T result = contextResourceFactory.readResponse( response, resultType );
+                handler.handleResult( result, client );
+            }
+        });
+
+        return this;
+    }
+
+    public ContextResourceClient onDelete(ResponseHandler handler)
+    {
+        deleteHandler = handler;
+        return this;
+    }
+
+    public ContextResourceClientFactory getContextResourceClientFactory()
+    {
+        return contextResourceFactory;
+    }
+
+    public Reference getReference()
+    {
+        return reference;
+    }
+
+    public Resource getResource()
+    {
+        return resource;
+    }
+
+    // Queries
+    public void refresh()
+    {
+        if (resourceHandler == null)
+            throw new IllegalStateException( "No handler set for resources" );
+
+        invokeQuery( reference, null, resourceHandler, null );
+    }
+
+    public void query( String relation, Object queryRequest )
+    {
+        query( resource.query( relation ), queryRequest );
+    }
+
+    public void query( Link link, Object queryRequest )
+    {
+        ResponseHandler handler = queryHandlers.get( link.rel().get() );
+        if (handler == null)
+            throw new IllegalArgumentException( "No handler set for relation "+link.rel().get() );
+
+        ResponseHandler processingErrorhandler = processingErrorHandlers.get( link.rel().get() );
+
+        Reference ref = new Reference( reference.toUri().toString() + link.href().get() );
+        invokeQuery( ref, queryRequest, handler, processingErrorhandler );
+    }
+
+    private void invokeQuery( Reference ref, Object queryRequest, ResponseHandler resourceHandler, ResponseHandler processingErrorHandler )
+    {
+        Request request = new Request( Method.GET, ref );
+
+        if( queryRequest != null )
+        {
+            contextResourceFactory.writeRequest( request, queryRequest );
+        }
+
+        contextResourceFactory.updateQueryRequest( request );
+
+        User user = request.getClientInfo().getUser();
+        if ( user != null)
+            request.setChallengeResponse( new ChallengeResponse( ChallengeScheme.HTTP_BASIC, user.getName(), user.getSecret() ) );
+
+        Response response = new Response( request );
+
+        contextResourceFactory.getClient().handle( request, response );
+
+        if( response.getStatus().isSuccess() )
+        {
+            contextResourceFactory.updateCache( response );
+
+            resourceHandler.handleResponse( response, this );
+        } else
+        {
+            if (response.getStatus().equals(Status.CLIENT_ERROR_UNPROCESSABLE_ENTITY) && processingErrorHandler != null)
+            {
+                processingErrorHandler.handleResponse( response, this );
+            } else
+            {
+                // TODO This needs to be expanded to allow custom handling of all the various cases
+                errorHandler.handleResponse( response, this );
+            }
+        }
+    }
+
+    // Commands
+    public void command( String relation, Object commandRequest )
+    {
+        command( resource.command( relation ), commandRequest );
+    }
+
+    public void command( Link link, Object commandRequest )
+    {
+        ResponseHandler handler = commandHandlers.get( link.rel().get() );
+        ResponseHandler processingErrorHandler = processingErrorHandlers.get( link.rel().get() );
+
+        // Check if we should do POST or PUT
+        Method method;
+        if( LinksUtil.withClass( "idempotent" ).satisfiedBy( link ) )
+        {
+            method = Method.PUT;
+        }
+        else
+        {
+            method = Method.POST;
+        }
+
+        Reference ref = new Reference( reference.toUri().toString() + link.href().get() );
+        invokeCommand( ref, method, commandRequest, handler, processingErrorHandler );
+    }
+
+    private void invokeCommand( Reference ref, Method method, Object requestObject, ResponseHandler responseHandler, ResponseHandler processingErrorHandler )
+    {
+        Request request = new Request( method, ref );
+
+        if (requestObject == null)
+            requestObject = new EmptyRepresentation();
+
+        contextResourceFactory.writeRequest( request, requestObject );
+
+        contextResourceFactory.updateCommandRequest( request );
+
+        User user = request.getClientInfo().getUser();
+        if ( user != null)
+            request.setChallengeResponse( new ChallengeResponse( ChallengeScheme.HTTP_BASIC, user.getName(), user.getSecret() ) );
+
+        Response response = new Response( request );
+        contextResourceFactory.getClient().handle( request, response );
+
+        try
+        {
+            if( response.getStatus().isSuccess() )
+            {
+                contextResourceFactory.updateCache( response );
+
+                if (responseHandler != null)
+                    responseHandler.handleResponse( response, this );
+            }
+            else
+            {
+                if (response.getStatus().equals(Status.CLIENT_ERROR_UNPROCESSABLE_ENTITY) && processingErrorHandler != null)
+                {
+                    processingErrorHandler.handleResponse( response, this );
+                } else
+                {
+                    // TODO This needs to be expanded to allow custom handling of all the various cases
+                    errorHandler.handleResponse( response, this );
+                }
+            }
+        }
+        finally
+        {
+            try
+            {
+                response.getEntity().exhaust();
+            }
+            catch( Throwable e )
+            {
+                // Ignore
+            }
+        }
+    }
+
+    // Delete
+    public synchronized void delete()
+        throws ResourceException
+    {
+        delete( deleteHandler );
+    }
+
+    public synchronized void delete( ResponseHandler responseHandler )
+        throws ResourceException
+    {
+        Request request = new Request( Method.DELETE, new Reference( reference.toUri() ).toString() );
+        contextResourceFactory.updateCommandRequest( request );
+
+        int tries = 3;
+        while( true )
+        {
+            Response response = new Response( request );
+            try
+            {
+                contextResourceFactory.getClient().handle( request, response );
+                if( !response.getStatus().isSuccess() )
+                {
+                    errorHandler.handleResponse( response, this );
+                }
+                else
+                {
+                    // Reset modification date
+                    contextResourceFactory.updateCache( response );
+
+                    responseHandler.handleResponse( response, this );
+                }
+
+                break;
+            }
+            catch( ResourceException e )
+            {
+                if( e.getStatus().equals( Status.CONNECTOR_ERROR_COMMUNICATION ) ||
+                    e.getStatus().equals( Status.CONNECTOR_ERROR_CONNECTION ) )
+                {
+                    if( tries == 0 )
+                    {
+                        throw e; // Give up
+                    }
+                    else
+                    {
+                        // Try again
+                        tries--;
+                        continue;
+                    }
+                }
+                else
+                {
+                    // Abort
+                    throw e;
+                }
+            }
+            finally
+            {
+                try
+                {
+                    response.getEntity().exhaust();
+                }
+                catch( Throwable e )
+                {
+                    // Ignore
+                }
+            }
+        }
+    }
+
+    // Browse to other resources
+    public synchronized ContextResourceClient newClient( Link link )
+    {
+        if( link == null )
+        {
+            throw new NullPointerException( "No link specified" );
+        }
+
+        return newClient( link.href().get() );
+    }
+
+    public synchronized ContextResourceClient newClient( String relativePath )
+    {
+        if( relativePath.startsWith( "http://" ) )
+        {
+            return contextResourceFactory.newClient( new Reference( relativePath ) );
+        }
+
+        Reference reference = this.reference.clone();
+        if( relativePath.startsWith( "/" ) )
+        {
+            reference.setPath( relativePath );
+        }
+        else
+        {
+            reference.setPath( reference.getPath() + relativePath );
+            reference = reference.normalize();
+        }
+
+        return contextResourceFactory.newClient( reference );
+    }
+
+    // Internal
+    private Object handlxeError( Response response )
+        throws ResourceException
+    {
+        if( response.getStatus().equals( Status.SERVER_ERROR_INTERNAL ) )
+        {
+            if( MediaType.APPLICATION_JAVA_OBJECT.equals( response.getEntity().getMediaType() ) )
+            {
+                try
+                {
+                    Object exception = new ObjectRepresentation( response.getEntity() ).getObject();
+                    throw new ResourceException( (Throwable) exception );
+                }
+                catch( IOException e )
+                {
+                    throw new ResourceException( e );
+                }
+                catch( ClassNotFoundException e )
+                {
+                    throw new ResourceException( e );
+                }
+            }
+
+            throw new ResourceException( Status.SERVER_ERROR_INTERNAL, response.getEntityAsText() );
+        }
+        else
+        {
+            if( response.getEntity() != null )
+            {
+                String text = response.getEntityAsText();
+                throw new ResourceException( response.getStatus().getCode(), response.getStatus()
+                    .getName(), text, response.getRequest().getResourceRef().toUri().toString() );
+            }
+            else
+            {
+                throw new ResourceException( response.getStatus().getCode(), response.getStatus()
+                    .getName(), response.getStatus().getDescription(), response.getRequest()
+                    .getResourceRef()
+                    .toUri()
+                    .toString() );
+            }
+        }
+    }
+
+    @Override
+    public String toString()
+    {
+        return reference.toString();
+    }
+}

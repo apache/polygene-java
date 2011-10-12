@@ -110,10 +110,9 @@ public class RestTest
 
             uow.complete();
         }
-        catch( Exception e )
+        finally
         {
             uow.discard();
-            throw e;
         }
     }
 
@@ -140,10 +139,9 @@ public class RestTest
             assertEquals( "LastName not changed.", "Doe", entity.lastname().get() );
             work.complete();
         }
-        catch( Throwable e )
+        finally
         {
             work.discard();
-            throw e;
         }
     }
 
@@ -168,10 +166,9 @@ public class RestTest
             assertNull( "Entity not removed.", entity );
             work.complete();
         }
-        catch( Throwable e )
+        finally
         {
             work.discard();
-            throw e;
         }
     }
 

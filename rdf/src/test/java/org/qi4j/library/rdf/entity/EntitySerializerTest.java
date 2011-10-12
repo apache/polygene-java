@@ -115,17 +115,10 @@ public class EntitySerializerTest
             builder2.newInstance();
             unitOfWork.complete();
         }
-        catch( RuntimeException e )
+        finally
         {
             unitOfWork.discard();
-            throw e;
         }
-        catch( UnitOfWorkCompletionException e )
-        {
-            unitOfWork.discard();
-            throw e;
-        }
-
     }
 }
 

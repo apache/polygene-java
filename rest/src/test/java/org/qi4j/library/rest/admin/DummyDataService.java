@@ -83,10 +83,9 @@ public interface DummyDataService
 
                 unitOfWork.complete();
             }
-            catch( Exception e )
+            finally
             {
                 unitOfWork.discard();
-                throw e;
             }
         }
 

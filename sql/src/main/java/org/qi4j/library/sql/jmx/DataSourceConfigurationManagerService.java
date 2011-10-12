@@ -15,6 +15,7 @@ import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.library.sql.datasource.DataSourceConfiguration;
 import org.qi4j.library.sql.datasource.DataSourceService;
@@ -144,8 +145,15 @@ public interface DataSourceConfigurationManagerService
                AccessibleObject accessor = propertyNames.get( attribute.getName() );
                Property<Object> property = state.propertyFor( accessor );
                property.set( attribute.getValue() );
-               uow.complete();
-            } catch (Exception ex)
+                try
+                {
+                    uow.complete();
+                }
+                catch( UnitOfWorkCompletionException e )
+                {
+                    throw new ReflectionException( e );
+                }
+            } finally
             {
                uow.discard();
             }

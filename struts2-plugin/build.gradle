@@ -7,6 +7,7 @@ dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
   compile(libraries.slf4j_api)
   compile('org.apache.struts:struts2-core:' + strutsVersion)
+  compile('org.freemarker:freemarker:' + freemarkerVersion)
   compile('javax.servlet:servlet-api:' + servletVersion)
   testCompile(libraries.junit)
   testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))

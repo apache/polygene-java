@@ -32,6 +32,7 @@ import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.type.EnumType;
 import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 
 import javax.management.*;
@@ -219,9 +220,16 @@ public interface ConfigurationManagerService
                         property.set( attribute.getValue() );
                     }
 
-                    uow.complete();
+                    try
+                    {
+                        uow.complete();
+                    }
+                    catch( UnitOfWorkCompletionException e )
+                    {
+                        throw new ReflectionException( e );
+                    }
                 }
-                catch( Exception ex )
+                finally
                 {
                     uow.discard();
                 }

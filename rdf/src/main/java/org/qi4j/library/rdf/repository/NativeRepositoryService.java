@@ -46,9 +46,6 @@ public interface NativeRepositoryService extends Repository, ServiceComposite, A
       @This
       private Configuration<NativeConfiguration> configuration;
 
-      @Structure
-      private UnitOfWorkFactory uowf;
-
       private SailRepository repo;
       private boolean isNotInitialized;
 
