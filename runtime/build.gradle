@@ -15,8 +15,6 @@ dependencies {
 
   testCompile project(":org.qi4j.libraries:org.qi4j.library.constraints")
   testCompile libraries.junit
-  testCompile libraries.easymock
 
   testRuntime libraries.slf4j_simple
 }
-

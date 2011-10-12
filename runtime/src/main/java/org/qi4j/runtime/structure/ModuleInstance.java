@@ -761,6 +761,9 @@ public class ModuleInstance
             }
         }
 
+        if (serviceReference == null)
+            throw new IllegalArgumentException( "No service of type '"+serviceType+"' found" );
+
         return serviceReference;
     }
 
@@ -776,6 +779,9 @@ public class ModuleInstance
                 serviceReferences.put( serviceType, serviceReference );
             }
         }
+
+        if (serviceReference == null)
+            throw new IllegalArgumentException( "No service of type '"+serviceType+"' found" );
 
         return serviceReference;
     }

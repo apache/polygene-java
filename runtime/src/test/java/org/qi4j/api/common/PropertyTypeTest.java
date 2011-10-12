@@ -65,10 +65,9 @@ public class PropertyTypeTest
 
             unitOfWork.complete();
         }
-        catch( Exception e )
+        finally
         {
             unitOfWork.discard();
-            throw e;
         }
     }
 

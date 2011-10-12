@@ -183,13 +183,20 @@ public final class ServiceInjectionProviderFactory
 
         protected ServiceReference<?> getServiceReference( InjectionContext context )
         {
-            if( serviceQualifier == null )
+            try
             {
-                return context.module().findService( serviceType );
+                if( serviceQualifier == null )
+                {
+                    return context.module().findService( serviceType );
+                }
+                else
+                {
+                    return Iterables.first( Iterables.filter( serviceQualifier, context.module().findServices( serviceType ) ) );
+                }
             }
-            else
+            catch( IllegalArgumentException e )
             {
-                return Iterables.first( Iterables.filter( serviceQualifier, context.module().findServices( serviceType ) ) );
+                return null;
             }
         }
 

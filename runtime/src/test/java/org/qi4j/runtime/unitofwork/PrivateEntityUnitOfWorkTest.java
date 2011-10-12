@@ -115,10 +115,9 @@ public class PrivateEntityUnitOfWorkTest
             id = ( (Identity) catalog.newProduct() ).identity().get();
             unitOfWork.complete();
         }
-        catch (Exception e)
+        finally
         {
             unitOfWork.discard();
-            throw e;
         }
 
         unitOfWork = module.newUnitOfWork();
@@ -129,10 +128,9 @@ public class PrivateEntityUnitOfWorkTest
             product.price().set( 100 );
             unitOfWork.complete();
         }
-        catch (Exception e)
+        finally
         {
             unitOfWork.discard();
-            throw e;
         }
     }
 

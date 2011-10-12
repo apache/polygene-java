@@ -101,10 +101,9 @@ public class AggregatedTest
 
                 unitOfWork.complete();
             }
-            catch( Exception e )
+            finally
             {
                 unitOfWork.discard();
-                throw e;
             }
         }
 
@@ -117,10 +116,9 @@ public class AggregatedTest
 
                 unitOfWork.complete();
             }
-            catch( Exception e )
+            finally
             {
                 unitOfWork.discard();
-                throw e;
             }
         }
 

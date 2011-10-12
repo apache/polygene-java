@@ -59,10 +59,7 @@ public class RemovalTest
         }
         finally
         {
-            if( uow.isOpen() )
-            {
-                uow.discard();
-            }
+            uow.discard();
         }
     }
 

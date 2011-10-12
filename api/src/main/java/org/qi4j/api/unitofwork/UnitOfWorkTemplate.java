@@ -33,30 +33,35 @@ public abstract class UnitOfWorkTemplate<RESULT, ThrowableType extends Throwable
         throws ThrowableType;
 
     public RESULT withModule(Module module)
-            throws ThrowableType
+            throws ThrowableType, UnitOfWorkCompletionException
     {
-        UnitOfWork uow = module.newUnitOfWork( usecase );
-
         int loop = 0;
-        Throwable ex;
+        ThrowableType ex = null;
         do
         {
+            UnitOfWork uow = module.newUnitOfWork( usecase );
+
             try
             {
                 RESULT result = withUnitOfWork( uow );
-                try
+                if (complete)
                 {
-                    uow.complete();
-                    return result;
-                } catch( ConcurrentEntityModificationException e )
-                {
-                    // Retry?
-                    ex = e;
+                    try
+                    {
+                        uow.complete();
+                        return result;
+                    } catch( ConcurrentEntityModificationException e )
+                    {
+                        // Retry?
+                        ex = (ThrowableType) e;
+                    }
                 }
-            } catch( Throwable e )
+            } catch (Throwable e)
+            {
+                ex = (ThrowableType) e;
+            } finally
             {
                 uow.discard();
-                throw (ThrowableType) e;
             }
         } while (loop++ < retries);
 

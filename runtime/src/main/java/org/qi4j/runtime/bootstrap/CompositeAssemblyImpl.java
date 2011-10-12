@@ -73,7 +73,8 @@ public abstract class CompositeAssemblyImpl
         {
             if( !compositeMethodsModel.isImplemented( method ) &&
                     !Proxy.class.equals( method.getDeclaringClass().getSuperclass() ) &&
-                    !Proxy.class.equals( method.getDeclaringClass() ) )
+                    !Proxy.class.equals( method.getDeclaringClass() ) &&
+                    !Modifier.isStatic( method.getModifiers() ))
             {
                 MixinModel mixinModel = implementMethod( method, mixinClasses);
                 ConcernsModel concernsModel = concernsFor( method, mixinModel.mixinClass(), Iterables.<Class<?>, Iterable<Class<?>>>flatten( concernDeclarations( mixinModel.mixinClass() ), concernClasses ));
@@ -137,7 +138,7 @@ public abstract class CompositeAssemblyImpl
             return implementMethodWithClass( method, mixinClass );
         }
 
-        throw new InvalidCompositeException( "No implementation found for method " + method.toGenericString() + " in " + type() );
+        throw new InvalidCompositeException( "No implementation found for method " + method.toGenericString() + " in " + compositeType.getName() );
     }
 
     private Class findTypedImplementation( final Method method, Iterable<Class<?>> mixins)
@@ -381,6 +382,22 @@ public abstract class CompositeAssemblyImpl
                     } catch( NoSuchMethodException e )
                     {
                         // Ignore
+                    }
+                }
+            }
+        }
+
+        // Check annotations on method that have @Concerns annotations themselves
+        for( Annotation annotation : method.getAnnotations() )
+        {
+            Concerns concerns = annotation.annotationType().getAnnotation( Concerns.class );
+            if ( concerns != null )
+            {
+                for( Class<?> concern : concerns.value() )
+                {
+                    if( helper.appliesTo( concern, method, compositeType, mixinClass ) )
+                    {
+                        concernsFor.add( helper.getConcernModel( concern ) );
                     }
                 }
             }

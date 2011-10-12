@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.api.unitofwork;
+package org.qi4j.api.unitofwork.concern;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Inherited;

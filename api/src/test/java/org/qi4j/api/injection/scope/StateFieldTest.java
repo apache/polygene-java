@@ -75,12 +75,10 @@ public class StateFieldTest
             Assert.assertTrue( charles.isFriend( daniel ) );
 
             unitOfWork.complete();
-
         }
-        catch( Exception e )
+        finally
         {
             unitOfWork.discard();
-            throw e;
         }
     }
 

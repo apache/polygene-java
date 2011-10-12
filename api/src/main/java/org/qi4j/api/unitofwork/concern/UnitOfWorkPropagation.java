@@ -12,7 +12,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.api.unitofwork;
+package org.qi4j.api.unitofwork.concern;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Inherited;
@@ -21,7 +21,6 @@ import java.lang.annotation.Target;
 
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
-import static org.qi4j.api.unitofwork.UnitOfWorkPropagation.Propagation.REQUIRED;
 
 /**
  * Annotation to denote the unit of work propagation.
@@ -54,7 +53,7 @@ import static org.qi4j.api.unitofwork.UnitOfWorkPropagation.Propagation.REQUIRED
 @Documented
 public @interface UnitOfWorkPropagation
 {
-    Propagation value() default REQUIRED;
+    Propagation value() default Propagation.REQUIRED;
 
     enum Propagation
     {

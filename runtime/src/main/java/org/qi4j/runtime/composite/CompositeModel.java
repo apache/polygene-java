@@ -14,6 +14,8 @@
 
 package org.qi4j.runtime.composite;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
 import org.omg.CORBA.DynAnyPackage.Invalid;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.MetaInfo;
@@ -42,7 +44,7 @@ public abstract class CompositeModel
     protected final MixinsModel mixinsModel;
     protected final CompositeMethodsModel compositeMethodsModel;
     private final Class<?> type;
-    private final Iterable<Class<?>> types;
+    private final Set<Class<?>> types;
     private final Visibility visibility;
     private final MetaInfo metaInfo;
     protected final StateModel stateModel;
@@ -59,7 +61,7 @@ public abstract class CompositeModel
     )
     {
         this.type = type;
-        this.types = types;
+        this.types = Iterables.addAll(new LinkedHashSet<Class<?>>(  ), types);
         this.visibility = visibility;
         this.metaInfo = metaInfo;
         this.stateModel = stateModel;
@@ -194,7 +196,8 @@ public abstract class CompositeModel
         {
             try
             {
-                Composite composite = Composite.class.cast( proxyConstructor.newInstance(  ) );
+                Object[] args = new Object[proxyConstructor.getParameterTypes().length];
+                Composite composite = Composite.class.cast( proxyConstructor.newInstance( args ) );
                 proxyClass.getField( "_instance" ).set( composite, invocationHandler );
                 return composite;
             } catch( Exception e )
@@ -206,6 +209,9 @@ public abstract class CompositeModel
 
     public <T> T newProxy( InvocationHandler invocationHandler, Class<T> mixinType )
     {
+        if (!types.contains( mixinType ))
+            throw new IllegalArgumentException( "Composite does not implement type "+mixinType.getName() );
+
         // Instantiate proxy for given mixin interface
         return mixinType.cast( Proxy.newProxyInstance( mixinType.getClassLoader(), new Class[]{mixinType}, invocationHandler ) );
     }

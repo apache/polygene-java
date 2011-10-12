@@ -63,10 +63,9 @@ public class Qi4jSPITest
 
             unitOfWork.complete();
         }
-        catch( Exception e )
+        finally
         {
             unitOfWork.discard();
-            throw e;
         }
 
         UnitOfWork uow = module.newUnitOfWork();
@@ -76,10 +75,9 @@ public class Qi4jSPITest
             validateState( spi.getState( testEntity ), spi.getEntityDescriptor( testEntity ) );
             uow.complete();
         }
-        catch( Exception e )
+        finally
         {
             uow.discard();
-            throw e;
         }
     }
 

@@ -80,10 +80,9 @@ public class ImmutableAssociationTest
 
             unitOfWork.complete();
         }
-        catch( Exception e )
+        finally
         {
             unitOfWork.discard();
-            throw e;
         }
     }
 
@@ -128,10 +127,9 @@ public class ImmutableAssociationTest
 
             unitOfWork.complete();
         }
-        catch( Exception e )
+        finally
         {
             unitOfWork.discard();
-            throw e;
         }
     }
 

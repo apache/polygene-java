@@ -49,10 +49,9 @@ public class PropertyErrorTest
 
             unitOfWork.complete();
         }
-        catch( Exception e )
+        finally
         {
             unitOfWork.discard();
-            throw e;
         }
     }
 

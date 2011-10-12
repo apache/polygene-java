@@ -47,11 +47,18 @@ public class RemovalTest
         throws Exception
     {
         UnitOfWork uow = module.newUnitOfWork();
-        EntityBuilder<TestEntity> builder = uow.newEntityBuilder( TestEntity.class, "123" );
-        builder.instance().test().set( "habba" );
-        TestEntity test = builder.newInstance();
-        uow.remove( test );
-        uow.complete();
+        try
+        {
+            EntityBuilder<TestEntity> builder = uow.newEntityBuilder( TestEntity.class, "123" );
+            builder.instance().test().set( "habba" );
+            TestEntity test = builder.newInstance();
+            uow.remove( test );
+            uow.complete();
+        }
+        finally
+        {
+            uow.discard();
+        }
     }
 
     @Test

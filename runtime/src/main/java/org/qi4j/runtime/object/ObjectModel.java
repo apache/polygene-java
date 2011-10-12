@@ -36,15 +36,6 @@ import org.qi4j.runtime.injection.InjectionContext;
 public final class ObjectModel
     implements ObjectDescriptor, VisitableHierarchy<Object, Object>
 {
-    public static final Function<ObjectDescriptor, Class<?>> MODEL_TYPE_FUNCTION = new Function<ObjectDescriptor, Class<?>>()
-    {
-        @Override
-        public Class<?> map( ObjectDescriptor objectDescriptor )
-        {
-            return objectDescriptor.type();
-        }
-    };
-
     private final Class<?> objectType;
     private final Visibility visibility;
     private final MetaInfo metaInfo;

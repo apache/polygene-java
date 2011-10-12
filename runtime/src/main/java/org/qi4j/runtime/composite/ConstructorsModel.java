@@ -17,6 +17,7 @@ package org.qi4j.runtime.composite;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.composite.CompositeDescriptor;
 import org.qi4j.api.injection.InjectionScope;
+import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.util.Annotations;
 import org.qi4j.api.util.Classes;
 import org.qi4j.bootstrap.BindingException;
@@ -58,7 +59,7 @@ public final class ConstructorsModel
         {
             try
             {
-                Constructor injectionConstructor = injectionClass.getConstructor( constructor.getParameterTypes() );
+                Constructor injectionConstructor = injectionClass.getDeclaredConstructor( constructor.getParameterTypes() );
                 ConstructorModel constructorModel = newConstructorModel( this.fragmentClass, constructor,
                                                                          injectionConstructor );
                 if( constructorModel != null )
@@ -69,6 +70,7 @@ public final class ConstructorsModel
             catch( NoSuchMethodException e )
             {
                 // Ignore and continue
+                e.printStackTrace();
             }
         }
     }
@@ -97,11 +99,22 @@ public final class ConstructorsModel
         Annotation[][] parameterAnnotations = injectedConstructor.getParameterAnnotations();
         for( Type type : injectedConstructor.getGenericParameterTypes() )
         {
-            final Annotation injectionAnnotation = first(
+            Annotation injectionAnnotation = first(
                 filter( Specifications.translate( Annotations.type(), Annotations.hasAnnotation( InjectionScope.class ) ), iterable( parameterAnnotations[idx] ) ) );
             if( injectionAnnotation == null )
             {
-                return null; // invalid constructor parameter
+                if (fragmentClass.getSuperclass().isMemberClass())
+                {
+                    injectionAnnotation = new Uses()
+                    {
+                        @Override
+                        public Class<? extends Annotation> annotationType()
+                        {
+                            return Uses.class;
+                        }
+                    };
+                } else
+                    return null; // invalid constructor parameter
             }
 
             boolean optional = DependencyModel.isOptional( injectionAnnotation, parameterAnnotations[ idx ] );

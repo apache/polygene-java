@@ -108,10 +108,9 @@ public class OptionalTest
 
             unitOfWork.complete();
         }
-        catch( Exception e )
+        finally
         {
             unitOfWork.discard();
-            throw e;
         }
     }
 
@@ -131,10 +130,9 @@ public class OptionalTest
 
             unitOfWork.complete();
         }
-        catch( Exception e )
+        finally
         {
             unitOfWork.discard();
-            throw e;
         }
     }
 
@@ -152,11 +150,9 @@ public class OptionalTest
             TestComposite3 testComposite3 = builder.newInstance();
 
             unitOfWork.complete();
-        }
-        catch( Exception e )
+        } finally
         {
             unitOfWork.discard();
-            throw e;
         }
     }
 

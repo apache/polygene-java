@@ -43,6 +43,7 @@ public class UnitOfWorkCallbackEntityTest
     @Test
     @Ignore( "Validation is moved to sandbox, and UoW is under massive refactoring." )
     public void givenCompositeWithValidatableWhenUnitCompletesThenPerformValidation()
+        throws UnitOfWorkCompletionException
     {
         UnitOfWork uow = module.newUnitOfWork();
         TestCase test = uow.newEntity( TestCase.class );
@@ -52,7 +53,7 @@ public class UnitOfWorkCallbackEntityTest
             uow.complete();
             fail( "Validation did not occur" );
         }
-        catch( UnitOfWorkCompletionException e )
+        finally
         {
             uow.discard();
         }

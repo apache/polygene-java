@@ -191,13 +191,20 @@ public class ValueCompositeTest
         SomeValue some = builder.newInstance();
 
         UnitOfWork unitOfWork = module.newUnitOfWork();
-        EntityBuilder<SomeEntity> entityBuilder = unitOfWork.newEntityBuilder( SomeEntity.class );
-        entityBuilder.instance().someValue().set( some );
-        SomeEntity entity = entityBuilder.newInstance();
+        try
+        {
+            EntityBuilder<SomeEntity> entityBuilder = unitOfWork.newEntityBuilder( SomeEntity.class );
+            entityBuilder.instance().someValue().set( some );
+            SomeEntity entity = entityBuilder.newInstance();
 
-        assertThat( "Value has been set", entity.someValue().get().another().get().val1().get(), equalTo( "Foo" ) );
+            assertThat( "Value has been set", entity.someValue().get().another().get().val1().get(), equalTo( "Foo" ) );
 
-        unitOfWork.complete();
+            unitOfWork.complete();
+        }
+        finally
+        {
+            unitOfWork.discard();
+        }
     }
 
     @Test
@@ -212,25 +219,31 @@ public class ValueCompositeTest
         SomeValue some = builder.newInstance();
 
         UnitOfWork unitOfWork = module.newUnitOfWork();
-        EntityBuilder<SomeEntity> entityBuilder = unitOfWork.newEntityBuilder( SomeEntity.class );
-        entityBuilder.instance().someValue().set( some );
-        SomeEntity entity = entityBuilder.newInstance();
+        AssociationValue associationValue;
+        try
+        {
+            EntityBuilder<SomeEntity> entityBuilder = unitOfWork.newEntityBuilder( SomeEntity.class );
+            entityBuilder.instance().someValue().set( some );
+            SomeEntity entity = entityBuilder.newInstance();
 
-        ValueBuilder<AssociationValue> associationBuilder = module.newValueBuilder( AssociationValue.class );
-        associationBuilder.prototype().some().set( entity );
-        AssociationValue associationValue = associationBuilder.newInstance();
+            ValueBuilder<AssociationValue> associationBuilder = module.newValueBuilder( AssociationValue.class );
+            associationBuilder.prototype().some().set( entity );
+            associationValue = associationBuilder.newInstance();
 
-        String json = associationValue.toString();
+            String json = associationValue.toString();
 
-        unitOfWork.complete();
+            unitOfWork.complete();
 
-        unitOfWork = module.newUnitOfWork();
+            unitOfWork = module.newUnitOfWork();
 
-        AssociationValue newAssociationValue = module.newValueFromJSON( AssociationValue.class, json );
+            AssociationValue newAssociationValue = module.newValueFromJSON( AssociationValue.class, json );
 
-        Assert.assertEquals( associationValue.some().get(), newAssociationValue.some().get() );
-
-        unitOfWork.discard();
+            Assert.assertEquals( associationValue.some().get(), newAssociationValue.some().get() );
+        }
+        finally
+        {
+            unitOfWork.discard();
+        }
 
         System.out.println( associationValue.toString() );
     }

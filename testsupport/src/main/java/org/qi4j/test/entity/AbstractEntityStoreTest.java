@@ -160,10 +160,9 @@ public abstract class AbstractEntityStoreTest
                 .iterator().next(), equalTo( instance ) );
             unitOfWork.discard();
         }
-        catch( Exception e )
+        finally
         {
             unitOfWork.discard();
-            throw e;
         }
     }
 

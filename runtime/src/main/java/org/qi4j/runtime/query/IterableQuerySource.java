@@ -18,8 +18,10 @@ import org.qi4j.api.composite.Composite;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.grammar.OrderBy;
+import org.qi4j.api.util.Classes;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specification;
+import org.qi4j.functional.Specifications;
 import org.qi4j.spi.query.QuerySource;
 
 import java.util.*;
@@ -68,7 +70,7 @@ public class IterableQuerySource
     private <T> List<T> list(Class<T> resultType, Specification<Composite> whereClause, Iterable<OrderBy> orderBySegments, Integer firstResult, Integer maxResults, Map<String, Object> variables)
     {
         // Ensure it's a list first
-        List<T> list = filter( this.<T>toList(), whereClause );
+        List<T> list = filter( this.<T>toList(resultType), whereClause );
 
         // Order list
         if( orderBySegments != null )
@@ -126,22 +128,9 @@ public class IterableQuerySource
         }
     }
 
-    private <T> List<T> toList()
+    private <T> List<T> toList( Class<T> resultType )
     {
-        List<T> list;
-        if( iterable instanceof List )
-        {
-            list = (List<T>) iterable;
-        }
-        else
-        {
-            list = new ArrayList<T>();
-            for( Object t : iterable )
-            {
-                list.add( (T) t );
-            }
-        }
-        return list;
+        return (List<T>) Iterables.filter( Classes.isAssignableFrom( resultType ), iterable );
     }
 
     private class OrderByComparator<T extends Composite>

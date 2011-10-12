@@ -21,11 +21,12 @@ public class UnitOfWorkTemplateTest
 
     @Test
     public void testTemplate()
+        throws UnitOfWorkCompletionException
     {
-        new UnitOfWorkTemplate()
+        new UnitOfWorkTemplate<Void, RuntimeException>()
         {
             @Override
-            protected void withUnitOfWork( UnitOfWork uow ) throws Exception
+            protected Void withUnitOfWork( UnitOfWork uow ) throws RuntimeException
             {
                 new EntityBuilderTemplate<TestEntity>(TestEntity.class)
                 {
@@ -35,6 +36,8 @@ public class UnitOfWorkTemplateTest
                         prototype.name().set( "Rickard" );
                     }
                 }.newInstance( module );
+
+                return null;
             }
         }.withModule( module );
     }

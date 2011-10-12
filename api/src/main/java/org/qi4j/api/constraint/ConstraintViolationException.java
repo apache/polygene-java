@@ -145,7 +145,7 @@ public class ConstraintViolationException
      */
     public String[] getLocalizedMessages( ResourceBundle bundle )
     {
-        String pattern = "Constraint violation in {0}.{1} for method {3} with constraint \"{4}({6})\", for value ''{5}''";
+        String pattern = "Constraint violation in {0}.{1} for method ''{3}'' with constraint \"{4}({6})\", for value ''{5}''";
 
         ArrayList<String> list = new ArrayList<String>();
         for( ConstraintViolation violation : constraintViolations )

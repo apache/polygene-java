@@ -34,9 +34,6 @@ public class IterableDataSetTest
         return module.newValueFromJSON( TestValue.class, "{name:'"+name+"'}" );
     }
 
-    @Test
-    public void
-
     interface TestValue
     {
         Property<String> name();

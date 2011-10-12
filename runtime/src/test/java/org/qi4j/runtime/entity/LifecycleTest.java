@@ -23,6 +23,7 @@ import org.qi4j.api.entity.Lifecycle;
 import org.qi4j.api.entity.LifecycleException;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
@@ -48,6 +49,7 @@ public class LifecycleTest
 
     @Test
     public void whenEntityHasLifecycleWhenInstantiatedThenInvokeCreate()
+        throws UnitOfWorkCompletionException
     {
         UnitOfWork unitOfWork = module.newUnitOfWork();
         try
@@ -56,7 +58,7 @@ public class LifecycleTest
             builder.newInstance();
             unitOfWork.complete();
         }
-        catch( Exception e )
+        finally
         {
             unitOfWork.discard();
         }
@@ -66,6 +68,7 @@ public class LifecycleTest
 
     @Test
     public void whenEntityHasLifecycleWhenRemovedThenInvokeRemove()
+        throws UnitOfWorkCompletionException
     {
         UnitOfWork unitOfWork = module.newUnitOfWork();
         try
@@ -75,7 +78,7 @@ public class LifecycleTest
             unitOfWork.remove( testEntity );
             unitOfWork.complete();
         }
-        catch( Exception e )
+        finally
         {
             unitOfWork.discard();
         }

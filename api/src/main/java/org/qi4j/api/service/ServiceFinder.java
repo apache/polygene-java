@@ -34,11 +34,15 @@ public interface ServiceFinder
      *
      * @param serviceType the type that the Service must implement
      *
-     * @return a ServiceReference if one is found, or null if none exists
+     * @return a ServiceReference if one is found
+     *
+     * @throws IllegalArgumentException if no service of serviceType is found
      */
-    <T> ServiceReference<T> findService( Class<T> serviceType );
+    <T> ServiceReference<T> findService( Class<T> serviceType )
+        throws IllegalArgumentException;
 
-    <T> ServiceReference<T> findService( Type serviceType );
+    <T> ServiceReference<T> findService( Type serviceType )
+        throws IllegalArgumentException;
 
     /**
      * Find ServiceReferences that implements the given type.

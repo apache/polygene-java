@@ -53,7 +53,7 @@ public abstract class AbstractQi4jTest
             // An AssemblyException has occurred that the Test wants to check for.
             return;
         }
-        application = applicationModel.newInstance( qi4j.spi() );
+        application = newApplicationInstance(applicationModel);
         initApplication( application );
         api = spi = qi4j.spi();
         application.activate();
@@ -63,6 +63,11 @@ public abstract class AbstractQi4jTest
 
         // Inject this test instance
         module.injectTo( this );
+    }
+
+    protected Application newApplicationInstance(ApplicationDescriptor applicationModel)
+    {
+        return applicationModel.newInstance( qi4j.api() );
     }
 
     protected ApplicationDescriptor newApplication()

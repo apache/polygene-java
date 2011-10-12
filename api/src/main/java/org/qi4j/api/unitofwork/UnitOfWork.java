@@ -40,6 +40,23 @@ import org.qi4j.functional.Specification;
  * A UoW can be associated with a Usecase. A Usecase describes the metainformation about the process
  * to be performed by the UoW.
  * </p>
+ * If a code block that uses a UoW throws an exception you need to ensure that this is handled properly,
+ * and that the UoW is closed before returning. Because discard() is a no-op if the UoW is closed, we therefore
+ * recommend the following template to be used:
+ * <pre>
+ *     UnitOfWork uow = uowf.newUnitOfWork();
+ *     try
+ *     {
+ *         ...
+ *         uow.complete();
+ *     } finally
+ *     {
+ *         uow.discard();
+ *     }
+ * </pre>
+ * This ensures that in the happy case the UoW is completed, and if any exception is thrown the UoW is discarded. After
+ * the UoW has completed the discard() method doesn't do anything, and so has no effect. You can choose to either add
+ * catch blocks for any exceptions, including exceptions from complete(), or skip them.
  */
 public interface UnitOfWork
 {
@@ -71,11 +88,7 @@ public interface UnitOfWork
 
     <T> Query<T> newQuery(QueryBuilder<T> queryBuilder);
 
-    DataSet newDataSetBuilder(Specification<?>... constraints);
-
-    uow.newDataSetBuilder(entity(Case.class),
-                          eq(template(Status.class).status(), Status.OPEN),
-                          eq(template(Owner.class).owner(), variable("inbox")))
+//    DataSet newDataSetBuilder(Specification<?>... constraints);
 
     /**
      * Create a new Entity which implements the given mixin type. An EntityComposite
@@ -202,7 +215,8 @@ public interface UnitOfWork
 
     /**
      * Discard thie UnitOfWork. Use this if a failure occurs that you cannot handle,
-     * or if the usecase was of a read-only character.
+     * or if the usecase was of a read-only character. This is a no-op of the UnitOfWork
+     * is already closed.
      */
     void discard();
 

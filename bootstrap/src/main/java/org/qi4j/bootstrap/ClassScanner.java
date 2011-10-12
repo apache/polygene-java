@@ -29,6 +29,7 @@ import java.util.regex.Pattern;
 import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specification;
+import sun.tools.util.ModifierFilter;
 
 import static org.qi4j.functional.Iterables.filter;
 import static org.qi4j.functional.Iterables.flatten;
@@ -86,7 +87,7 @@ public class ClassScanner
                 Iterable<JarEntry> entries = Iterables.iterable( jarFile.entries() );
                 try
                 {
-                    return Iterables.toList( filter( new NonAbstractClass(),
+                    return Iterables.toList( filter( new ValidClass(),
                                                      map( new Function<JarEntry, Class<?>>()
                                                      {
                                                          public Class map( JarEntry jarEntry )
@@ -135,7 +136,7 @@ public class ClassScanner
                 }
             } );
 
-            return filter( new NonAbstractClass(),
+            return filter( new ValidClass(),
                            map( new Function<File, Class<?>>()
                            {
                                public Class<?> map( File f )
@@ -198,12 +199,12 @@ public class ClassScanner
                         }, iterable( directory.listFiles() ) ) ) ) );
     }
 
-    private static class NonAbstractClass
+    private static class ValidClass
         implements Specification<Class<?>>
     {
         public boolean satisfiedBy( Class<?> item )
         {
-            return item.isInterface() || !Modifier.isAbstract( item.getModifiers() );
+            return item.isInterface() || !Modifier.isAbstract( item.getModifiers() ) || !item.isEnum();
         }
     }
 }

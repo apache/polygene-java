@@ -404,6 +404,18 @@ public final class Iterables
         return iter;
     }
 
+    public static <FROM, TO> Function<FROM, TO> cast()
+    {
+        return new Function<FROM, TO>()
+        {
+            @Override
+            public TO map( FROM from )
+            {
+                return (TO)from;
+            }
+        };
+    }
+
     public static <FROM, TO> TO fold( Function<? super FROM, TO> function, Iterable<? extends FROM> i )
     {
         return last( map( function, i ) );

@@ -42,28 +42,35 @@ public class OperatorsTest
 
         UnitOfWork uow = assembler.module().newUnitOfWork();
 
-        EntityBuilder<TestEntity> entityBuilder = uow.newEntityBuilder( TestEntity.class, "123" );
-        entityBuilder.instance().value().set( assembler.module().newValue( TestValue.class ) );
-        TestEntity testEntity = entityBuilder.newInstance();
-
-        uow.complete();
-        uow = assembler.module().newUnitOfWork();
-
-        Iterable<TestEntity> entities = Iterables.iterable( testEntity = uow.get( testEntity ) );
-
-        QueryBuilder<TestEntity> builder = assembler.module().newQueryBuilder( TestEntity.class );
-
+        try
         {
-            Specification<Composite> where = QueryExpressions.eq( QueryExpressions.templateFor( TestEntity.class ).foo(), "Bar" );
-            Assert.assertTrue( where.satisfiedBy( testEntity ) );
-            System.out.println(where);
+            EntityBuilder<TestEntity> entityBuilder = uow.newEntityBuilder( TestEntity.class, "123" );
+            entityBuilder.instance().value().set( assembler.module().newValue( TestValue.class ) );
+            TestEntity testEntity = entityBuilder.newInstance();
+
+            uow.complete();
+            uow = assembler.module().newUnitOfWork();
+
+            Iterable<TestEntity> entities = Iterables.iterable( testEntity = uow.get( testEntity ) );
+
+            QueryBuilder<TestEntity> builder = assembler.module().newQueryBuilder( TestEntity.class );
+
+            {
+                Specification<Composite> where = QueryExpressions.eq( QueryExpressions.templateFor( TestEntity.class ).foo(), "Bar" );
+                Assert.assertTrue( where.satisfiedBy( testEntity ) );
+                System.out.println(where);
+            }
+            {
+                Specification<Composite> where = QueryExpressions.eq( QueryExpressions.templateFor( TestEntity.class ).value().get().bar(), "Xyz" );
+                Assert.assertTrue( where.satisfiedBy( testEntity ) );
+                System.out.println(where);
+
+                Assert.assertTrue(builder.where(where ).newQuery( entities ).find().equals( testEntity ));
+            }
         }
+        finally
         {
-            Specification<Composite> where = QueryExpressions.eq( QueryExpressions.templateFor( TestEntity.class ).value().get().bar(), "Xyz" );
-            Assert.assertTrue( where.satisfiedBy( testEntity ) );
-            System.out.println(where);
-
-            Assert.assertTrue(builder.where(where ).newQuery( entities ).find().equals( testEntity ));
+            uow.discard();
         }
     }
 

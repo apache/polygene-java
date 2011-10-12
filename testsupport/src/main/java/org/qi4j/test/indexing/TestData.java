@@ -221,15 +221,9 @@ class TestData
                 unitOfWork.complete();
             }
         }
-        catch( UnitOfWorkCompletionException e )
+        finally
         {
             unitOfWork.discard();
-            throw e;
-        }
-        catch( RuntimeException re )
-        {
-            unitOfWork.discard();
-            throw re;
         }
     }
 }

@@ -19,14 +19,23 @@
 package org.qi4j.runtime.types;
 
 import org.qi4j.api.common.InvalidApplicationException;
+import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.type.*;
 import org.qi4j.api.util.Classes;
+import org.qi4j.api.value.ValueComposite;
 import org.qi4j.functional.HierarchicalVisitor;
+import org.qi4j.functional.Iterables;
+import org.qi4j.runtime.association.AssociationsModel;
+import org.qi4j.runtime.association.ManyAssociationsModel;
+import org.qi4j.runtime.composite.CompositeMethodsModel;
+import org.qi4j.runtime.composite.MixinsModel;
+import org.qi4j.runtime.property.PropertiesModel;
 import org.qi4j.runtime.structure.LayerModel;
 import org.qi4j.runtime.structure.ModuleModel;
 import org.qi4j.runtime.structure.UsedLayersModel;
 import org.qi4j.runtime.value.ValueModel;
+import org.qi4j.runtime.value.ValueStateModel;
 import org.qi4j.runtime.value.ValuesModel;
 
 import java.lang.reflect.ParameterizedType;
@@ -98,7 +107,15 @@ public class ValueTypeFactory
             ValueModel model = new ValueFinder(layer, module, Classes.RAW_CLASS.map( type )).getFoundModel();
 
             if (model == null)
-                throw new InvalidApplicationException("["+module.name()+"] Could not ValueComposite of type "+type);
+            {
+                if (type.equals( ValueComposite.class ))
+                {
+                    // Create default model
+                    MixinsModel mixinsModel = new MixinsModel();
+                    model = new ValueModel( ValueComposite.class, (Iterable) Iterables.iterable(ValueComposite.class), Visibility.application, new MetaInfo( ), mixinsModel, new ValueStateModel( new PropertiesModel(), new AssociationsModel(), new ManyAssociationsModel() ), new CompositeMethodsModel( mixinsModel ) );
+                } else
+                    throw new InvalidApplicationException("["+module.name()+"] Could not find ValueComposite of type "+type);
+            }
 
             return model.valueType();
         }
