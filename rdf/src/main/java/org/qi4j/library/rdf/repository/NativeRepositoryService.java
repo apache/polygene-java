@@ -26,6 +26,7 @@ import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.Activatable;
+import org.qi4j.api.service.Availability;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
@@ -34,10 +35,10 @@ import org.qi4j.library.fileconfig.FileConfiguration;
 import java.io.File;
 
 @Mixins({NativeRepositoryService.NativeRepositoryMixin.class})
-public interface NativeRepositoryService extends Repository, ServiceComposite, Activatable
+public interface NativeRepositoryService extends Repository, ServiceComposite, Activatable, Availability
 {
    public static class NativeRepositoryMixin
-           implements Repository, ResetableRepository, Activatable
+           implements Repository, ResetableRepository, Activatable, Availability
    {
       @Optional
       @Service
@@ -172,5 +173,11 @@ public interface NativeRepositoryService extends Repository, ServiceComposite, A
          repo.initialize();
          isNotInitialized = false;
       }
+
+       @Override
+       public boolean isAvailable()
+       {
+           return !isNotInitialized;
+       }
    }
 }

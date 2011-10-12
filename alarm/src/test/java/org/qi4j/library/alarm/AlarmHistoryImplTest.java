@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 Niclas Hedhman.
+ * Copyright 2005-2011 Niclas Hedhman.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -24,6 +24,7 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
@@ -51,12 +52,13 @@ public class AlarmHistoryImplTest
         module.services( MemoryEntityStoreService.class );
         module.services( UuidIdentityGeneratorService.class );
         module.values( AlarmStatus.class );
+        module.values( AlarmCategory.class );
         module.values( AlarmEvent.class );
         module.entities( AlarmEntity.class );
         module.forMixin( AlarmHistory.class ).declareDefaults().maxSize().set( 30 );
     }
 
-    @Mixins( SimpleAlarmModelMixin.class )
+    @Mixins( SimpleAlarmModelService.SimpleAlarmModelMixin.class )
     public interface TestAlarmModel
         extends AlarmModel, ServiceComposite
     {
@@ -286,6 +288,15 @@ public class AlarmHistoryImplTest
     {
         ServiceReference<AlarmSystem> ref = module.findService( AlarmSystem.class );
         alarmSystem = ref.get();
-        return alarmSystem.createAlarm( name );
+        return alarmSystem.createAlarm( name, createCategory( "AlarmHistoryTest" ) );
     }
+
+    private AlarmCategory createCategory( String name )
+    {
+        ValueBuilder<AlarmCategory> builder = module.newValueBuilder( AlarmCategory.class );
+        builder.prototype().name().set( name );
+        return builder.newInstance();
+    }
+
+
 }

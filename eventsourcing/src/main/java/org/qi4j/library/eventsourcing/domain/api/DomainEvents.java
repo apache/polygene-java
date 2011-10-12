@@ -16,7 +16,7 @@ package org.qi4j.library.eventsourcing.domain.api;
 
 /**
  * This gives access to the current domain event. This is only usable within methods
- * marked with @DomainEvent annotation.
+ * marked with &#64;DomainEvent annotation.
  */
 public class DomainEvents
 {

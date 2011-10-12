@@ -21,8 +21,8 @@ package org.qi4j.library.cxf;
 /**
  * The JaxWsServerFactoryInfo is a metaInfo type to set to services that wants to be exposed as
  * WebServices. Additionally, the service must have a {@code Visibility} set to {@code application}
- * otherwise the Apache CXF extension will not be able to detect the presence of the service.
- *
+ * otherwise the Apache CXF extension will not be able to detect the presence of the service (assuming it is in a
+ * higher layer).
  */
 public final class JaxWsServerFactoryInfo
 {

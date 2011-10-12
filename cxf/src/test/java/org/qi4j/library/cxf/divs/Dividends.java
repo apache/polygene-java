@@ -20,9 +20,7 @@ package org.qi4j.library.cxf.divs;
 
 import org.qi4j.api.property.Property;
 
-
 public interface Dividends
 {
     Property<DivStream> divStream();
-
 }

@@ -27,7 +27,7 @@ public class CurrentUserUoWPrincipal
     implements CurrentUser
 {
     @Structure
-    UnitOfWorkFactory uowf;
+    private UnitOfWorkFactory uowf;
 
     public String getCurrentUser()
     {

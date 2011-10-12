@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 Niclas Hedhman.
+ * Copyright 2005-2011 Niclas Hedhman.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -22,6 +22,7 @@ import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
@@ -45,18 +46,19 @@ public class AlarmServiceTest
         module.services( AlarmSystemService.class );
         module.entities( AlarmEntity.class );
         module.values( AlarmStatus.class );
+        module.values( AlarmCategory.class );
         module.values( AlarmEvent.class );
         module.services( MemoryEntityStoreService.class );
         module.services( UuidIdentityGeneratorService.class );
     }
 
-    @Mixins( SimpleAlarmModelMixin.class )
+    @Mixins( SimpleAlarmModelService.SimpleAlarmModelMixin.class )
     public interface TestAlarmModel1
         extends AlarmModel, ServiceComposite
     {
     }
 
-    @Mixins( StandardAlarmModel.class )
+    @Mixins( StandardAlarmModelService.StandardAlarmModelMixin.class )
     public interface TestAlarmModel2
         extends AlarmModel, ServiceComposite
     {
@@ -109,7 +111,7 @@ public class AlarmServiceTest
         throws Exception
     {
         AlarmSystem alarmService = (AlarmSystem) module.findService( AlarmSystem.class ).get();
-        Alarm alarm = alarmService.createAlarm( "TestAlarm" );
+        Alarm alarm = alarmService.createAlarm( "TestAlarm", createCategory("AlarmServiceTest") );
 
         CountingListener listener1 = new CountingListener();
         ExceptionThrowingListener listener2 = new ExceptionThrowingListener();
@@ -172,6 +174,15 @@ public class AlarmServiceTest
         listeners = alarmService.alarmListeners();
         assertEquals( "Listeners registered.", 0, listeners.size() );
     }
+
+    private AlarmCategory createCategory( String name )
+    {
+        ValueBuilder<AlarmCategory> builder = module.newValueBuilder( AlarmCategory.class );
+        builder.prototype().name().set( name );
+        return builder.newInstance();
+    }
+
+
 
     private class CountingListener
         implements AlarmListener

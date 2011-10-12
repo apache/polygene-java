@@ -1,5 +1,5 @@
 /*
- * Copyright 2006 Niclas Hedhman.
+ * Copyright 2006-2011 Niclas Hedhman.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -41,6 +41,7 @@ public class ExtendedAlarmModelTest
     extends AbstractQi4jTest
 {
 
+    @SuppressWarnings( { "unchecked" } )
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
@@ -50,12 +51,13 @@ public class ExtendedAlarmModelTest
         module.services( MemoryEntityStoreService.class );
         module.services( UuidIdentityGeneratorService.class );
         module.entities( AlarmEntity.class );
-        module.forMixin( AlarmHistory.class ).declareDefaults().maxSize().set(10);
+        module.forMixin( AlarmHistory.class ).declareDefaults().maxSize().set( 10 );
         module.values( AlarmEvent.class );
+        module.values( AlarmCategory.class );
         module.values( AlarmStatus.class );
     }
 
-    @Mixins( ExtendedAlarmModel.class )
+    @Mixins( ExtendedAlarmModelService.ExtendedAlarmModelMixin.class )
     public interface TestAlarmModel
         extends AlarmModel, ServiceComposite
     {
@@ -75,7 +77,9 @@ public class ExtendedAlarmModelTest
     {
         UnitOfWork uow = module.currentUnitOfWork();
         if( uow != null )
+        {
             uow.discard();
+        }
         super.tearDown();
     }
 
@@ -98,17 +102,17 @@ public class ExtendedAlarmModelTest
         assertTrue( test1 && test2 && test3 && test4 && test5 && test6 && test7 && test8 && test9 && test10 && test11 );
 
         Locale english = new Locale( "en" );
-        test1 = provider.modelDescription( english ).toLowerCase().indexOf( "normal" ) >= 0;
-        test2 = provider.modelDescription( english ).toLowerCase().indexOf( "activated" ) >= 0;
-        test3 = provider.modelDescription( english ).toLowerCase().indexOf( "deactivated" ) >= 0;
-        test4 = provider.modelDescription( english ).toLowerCase().indexOf( "acknowledged" ) >= 0;
-        test5 = provider.modelDescription( english ).toLowerCase().indexOf( "activation" ) >= 0;
-        test6 = provider.modelDescription( english ).toLowerCase().indexOf( "deactivation" ) >= 0;
-        test7 = provider.modelDescription( english ).toLowerCase().indexOf( "acknowledge" ) >= 0;
-        test8 = provider.modelDescription( english ).toLowerCase().indexOf( "block" ) >= 0;
-        test9 = provider.modelDescription( english ).toLowerCase().indexOf( "unblock" ) >= 0;
-        test10 = provider.modelDescription( english ).toLowerCase().indexOf( "disable" ) >= 0;
-        test11 = provider.modelDescription( english ).toLowerCase().indexOf( "enable" ) >= 0;
+        test1 = provider.modelDescription( english ).toLowerCase().contains( "normal" );
+        test2 = provider.modelDescription( english ).toLowerCase().contains( "activated" );
+        test3 = provider.modelDescription( english ).toLowerCase().contains( "deactivated" );
+        test4 = provider.modelDescription( english ).toLowerCase().contains( "acknowledged" );
+        test5 = provider.modelDescription( english ).toLowerCase().contains( "activation" );
+        test6 = provider.modelDescription( english ).toLowerCase().contains( "deactivation" );
+        test7 = provider.modelDescription( english ).toLowerCase().contains( "acknowledge" );
+        test8 = provider.modelDescription( english ).toLowerCase().contains( "block" );
+        test9 = provider.modelDescription( english ).toLowerCase().contains( "unblock" );
+        test10 = provider.modelDescription( english ).toLowerCase().contains( "disable" );
+        test11 = provider.modelDescription( english ).toLowerCase().contains( "enable" );
         assertTrue( test1 && test2 && test3 && test4 && test5 && test6 && test7 && test8 && test9 && test10 && test11 );
     }
 
@@ -941,10 +945,18 @@ public class ExtendedAlarmModelTest
     {
         UnitOfWork uow = module.currentUnitOfWork();
         EntityBuilder<Alarm> builder = uow.newEntityBuilder( Alarm.class );
-        AlarmState state = builder.instanceFor( AlarmState.class );
+        builder.instance().category().set( createCategory( "Testing" ) );
+        Alarm.AlarmState state = builder.instanceFor( Alarm.AlarmState.class );
         state.currentStatus().set( createStatus( Alarm.STATUS_NORMAL ) );
         state.description().set( "Test Description" );
         state.systemName().set( name );
+        return builder.newInstance();
+    }
+
+    private AlarmCategory createCategory( String name )
+    {
+        ValueBuilder<AlarmCategory> builder = module.newValueBuilder( AlarmCategory.class );
+        builder.prototype().name().set( name );
         return builder.newInstance();
     }
 

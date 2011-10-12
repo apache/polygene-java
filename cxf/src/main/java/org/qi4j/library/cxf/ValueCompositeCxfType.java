@@ -226,9 +226,8 @@ public class ValueCompositeCxfType extends AegisType
     @Override
     public void writeSchema( XmlSchema root )
     {
-        XmlSchemaComplexType complex = new XmlSchemaComplexType( root );
+        XmlSchemaComplexType complex = new XmlSchemaComplexType( root, true );
         complex.setName( getSchemaType().getLocalPart() );
-        root.addType( complex );
         root.getItems().add( complex );
 
         XmlSchemaSequence sequence = new XmlSchemaSequence(); // No clue why this?
@@ -240,25 +239,25 @@ public class ValueCompositeCxfType extends AegisType
         {
             if( isValueComposite( p.type() ) )
             {
-                XmlSchemaElement element = new XmlSchemaElement();
+                XmlSchemaElement element = new XmlSchemaElement( root, false );
                 element.setName( p.qualifiedName().name() );
                 element.setNillable( p.metaInfo( Optional.class ) != null ); // see below
                 sequence.getItems().add( element );
                 AegisType nested = getOrCreateAegisType( p.type(), root );
-                element.setRefName( nested.getSchemaType() );
+                element.setSchemaTypeName( nested.getSchemaType() );
             }
             else if( isCollectionOrMap( p ) )
             {
-                XmlSchemaElement element = new XmlSchemaElement();
+                XmlSchemaElement element = new XmlSchemaElement( root, false );
                 element.setName( p.qualifiedName().name() );
                 element.setNillable( p.metaInfo( Optional.class ) != null ); // see below
                 sequence.getItems().add( element );
                 AegisType nested = getOrCreateAegisType( p.type(), root );
-                element.setRefName( nested.getSchemaType() );
+                element.setSchemaTypeName( nested.getSchemaType() );
             }
             else
             {
-                XmlSchemaAttribute attribute = new XmlSchemaAttribute();
+                XmlSchemaAttribute attribute = new XmlSchemaAttribute( root, false );
                 complex.getAttributes().add( attribute );
                 attribute.setName( p.qualifiedName().name() );
                 AegisType nested = getTypeMapping().getType( p.type() );
