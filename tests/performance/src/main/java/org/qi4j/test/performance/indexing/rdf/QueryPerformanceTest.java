@@ -271,10 +271,9 @@ public class QueryPerformanceTest
             System.out.println( "Retrieval time of " + lead.name().get() + " by name: " + ( end - start ) );
             uow.complete();
         }
-        catch( Exception e )
+        finally
         {
             uow.discard();
-            throw e;
         }
     }
 
@@ -298,10 +297,9 @@ public class QueryPerformanceTest
             System.out.println( "Retrieval time of " + lead.name().get() + " by name: " + ( end - start ) );
             uow.complete();
         }
-        catch( Exception e )
+        finally
         {
             uow.discard();
-            throw e;
         }
     }
 

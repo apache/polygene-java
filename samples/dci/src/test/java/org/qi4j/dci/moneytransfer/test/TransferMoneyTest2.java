@@ -124,10 +124,9 @@ public class TransferMoneyTest2
 
             // Save
             uow.complete();
-        } catch (Exception e)
+        } finally
         {
             uow.discard();
-            throw e;
         }
     }
 
@@ -152,10 +151,9 @@ public class TransferMoneyTest2
             context.transfer( amountToTransfer );
 
             uow.complete();
-        } catch (Exception e)
+        } finally
         {
             uow.discard();
-            throw e;
         }
     }
 
@@ -180,10 +178,9 @@ public class TransferMoneyTest2
             context.transfer( amountToTransfer );
 
             uow.complete();
-        } catch (Exception e)
+        } finally
         {
             uow.discard();
-            throw e;
         }
     }
 
@@ -200,10 +197,9 @@ public class TransferMoneyTest2
 
             uow.complete();
         }
-        catch (Exception e)
+        finally
         {
             uow.discard();
-            throw e;
         }
     }
 }
