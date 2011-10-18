@@ -5,7 +5,7 @@ import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.structure.Module;
-import org.qi4j.library.rest.server.api.dci.IndexContext;
+import org.qi4j.library.rest.server.api.ResourceIndex;
 import org.qi4j.library.rest.server.api.dci.Role;
 import org.qi4j.samples.forum.data.entity.Forum;
 import org.qi4j.samples.forum.data.entity.Forums;
@@ -17,7 +17,7 @@ import static org.qi4j.api.query.QueryExpressions.templateFor;
  * TODO
  */
 public class ForumsAdministration
-    implements IndexContext<Query<Forum>>
+    implements ResourceIndex<Query<Forum>>
 {
     @Structure
     Module module;

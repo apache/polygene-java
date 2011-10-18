@@ -6,7 +6,7 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
-import org.qi4j.api.unitofwork.UnitOfWorkConcern;
+import org.qi4j.api.unitofwork.concern.UnitOfWorkConcern;
 import org.qi4j.samples.dddsample.application.remoting.BookingFacade;
 import org.qi4j.samples.dddsample.application.remoting.dto.CargoRoutingDTO;
 import org.qi4j.samples.dddsample.application.remoting.dto.LocationDTO;

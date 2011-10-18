@@ -2,8 +2,10 @@ package org.qi4j.samples.forum.context.signup;
 
 import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.entity.EntityBuilder;
+import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.samples.forum.context.Context;
+import org.qi4j.samples.forum.context.Events;
 import org.qi4j.samples.forum.data.entity.User;
 import org.qi4j.samples.forum.domainevent.DomainEvent;
 
@@ -16,9 +18,12 @@ public class Signup
     @Uses
     Users users;
 
+    @Service
+    Events events;
+
     public void signup(Registration registration)
     {
-        users.signedUp( registration );
+        users.signup( registration );
     }
 
     protected class Users
@@ -27,19 +32,7 @@ public class Signup
         public void signup(Registration registration)
         {
             // Check if user with this name already exists
-            signedUp( registration );
-        }
-
-        @DomainEvent
-        public void signedUp(Registration registration)
-        {
-            EntityBuilder<User> builder = module.currentUnitOfWork().newEntityBuilder( User.class );
-            builder.instance().name().set( registration.name().get() );
-            builder.instance().realName().set( registration.realName().get() );
-            builder.instance().email().set( registration.email().get() );
-            builder.instance().password().set( builder.instance().hashPassword(registration.password().get() ));
-
-            builder.newInstance();
+            events.signedup( registration );
         }
     }
 }

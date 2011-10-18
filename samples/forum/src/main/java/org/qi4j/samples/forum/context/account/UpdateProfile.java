@@ -2,7 +2,7 @@ package org.qi4j.samples.forum.context.account;
 
 import org.qi4j.api.constraint.Name;
 import org.qi4j.api.injection.scope.Uses;
-import org.qi4j.library.rest.server.api.dci.IndexContext;
+import org.qi4j.library.rest.server.api.ResourceIndex;
 import org.qi4j.library.rest.server.api.dci.Role;
 import org.qi4j.samples.forum.context.Context;
 import org.qi4j.samples.forum.data.entity.User;
@@ -12,7 +12,7 @@ import org.qi4j.samples.forum.data.entity.User;
  */
 public class UpdateProfile
     extends Context
-    implements IndexContext<UpdateProfile.Profile>
+    implements ResourceIndex<UpdateProfile.Profile>
 {
     Profile profile;
 

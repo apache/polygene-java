@@ -1,6 +1,6 @@
 package org.qi4j.samples.forum.context.view;
 
-import org.qi4j.library.rest.server.api.dci.IndexContext;
+import org.qi4j.library.rest.server.api.ResourceIndex;
 import org.qi4j.library.rest.server.api.dci.Role;
 import org.qi4j.samples.forum.data.entity.Topic;
 
@@ -8,7 +8,7 @@ import org.qi4j.samples.forum.data.entity.Topic;
  * TODO
  */
 public class ViewTopic
-    implements IndexContext<Topic>
+    implements ResourceIndex<Topic>
 {
     private TopicView topicView;
 

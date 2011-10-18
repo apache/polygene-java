@@ -3,7 +3,7 @@ package org.qi4j.samples.forum.context.view;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.structure.Module;
-import org.qi4j.library.rest.server.api.dci.IndexContext;
+import org.qi4j.library.rest.server.api.ResourceIndex;
 import org.qi4j.library.rest.server.api.dci.Role;
 import org.qi4j.samples.forum.data.entity.Board;
 import org.qi4j.samples.forum.data.entity.Forum;
@@ -18,7 +18,7 @@ import static org.qi4j.api.property.Numbers.*;
  * TODO
  */
 public class ViewBoard
-    implements IndexContext<Board>
+    implements ResourceIndex<Board>
 {
     private Posting posting;
     private BoardViewer viewer;

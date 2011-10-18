@@ -27,6 +27,7 @@ import org.qi4j.library.rest.server.restlet.RequestReaderDelegator;
 import org.qi4j.library.rest.server.restlet.ResponseWriterDelegator;
 import org.qi4j.library.rest.server.spi.CommandResult;
 import org.qi4j.samples.forum.context.Context;
+import org.qi4j.samples.forum.context.EventsService;
 import org.qi4j.samples.forum.data.entity.User;
 import org.qi4j.samples.forum.domainevent.DomainCommandResult;
 import org.qi4j.samples.forum.domainevent.DomainEventValue;
@@ -98,6 +99,8 @@ public class ForumAssembler
             {
                 contexts.values( valueClass ).visibleIn( Visibility.application );
             }
+
+            contexts.services( EventsService.class );
 
             context.module( "Domain events" ).values( DomainEventValue.class, ParameterValue.class ).visibleIn( Visibility.application );
         }

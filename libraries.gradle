@@ -12,6 +12,7 @@ ibatisVersion = "2.3.0"
 jclVersion = '1.1'
 jdbmVersion = '1.0'
 jettyVersion = '6.1.22'
+httpClientVersion = '4.1.2'
 jodaTimeVersion = '1.6.2'
 log4jVersion = '1.2.16'
 osgiVersion = '4.2.0'

@@ -5,7 +5,7 @@ import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.property.Numbers;
 import org.qi4j.api.structure.Module;
-import org.qi4j.library.rest.server.api.dci.IndexContext;
+import org.qi4j.library.rest.server.api.ResourceIndex;
 import org.qi4j.library.rest.server.api.dci.Role;
 import org.qi4j.samples.forum.data.entity.Post;
 import org.qi4j.samples.forum.data.entity.Topic;
@@ -15,7 +15,7 @@ import org.qi4j.samples.forum.data.entity.User;
  * TODO
  */
 public class ViewPost
-    implements IndexContext<Post>
+    implements ResourceIndex<Post>
 {
     PostView viewPost = new PostView();
     ReplyTopic replyTopic = new ReplyTopic();

@@ -4,7 +4,7 @@ import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.api.unitofwork.UnitOfWorkConcern;
+import org.qi4j.api.unitofwork.concern.UnitOfWorkConcern;
 import org.qi4j.samples.dddsample.domain.model.cargo.Cargo;
 import org.qi4j.samples.dddsample.domain.model.cargo.CargoRepository;
 import org.qi4j.samples.dddsample.domain.model.cargo.DeliveryHistory;

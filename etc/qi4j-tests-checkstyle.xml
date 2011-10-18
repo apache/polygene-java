@@ -56,7 +56,7 @@
     <module name="EmptyStatement"/>
 
     <module name="EqualsHashCode"/>
-    <module name="HiddenField"/>
+    <!--<module name="HiddenField"/>-->
     <module name="IllegalInstantiation"/>
     <module name="InnerAssignment"/>
     <module name="MagicNumber">
@@ -86,6 +86,7 @@
 
     <module name="SuperClone"/>
     <module name="SuperFinalize"/>
+    <!-- Ok in tests...
     <module name="IllegalCatch">
       <property name="illegalClassNames" value="java.lang.Exception, java.lang.Throwable, java.lang.Error"/>
     </module>
@@ -93,12 +94,13 @@
       <property name="illegalClassNames"
                 value="java.lang.Exception, java.lang.Throwable, java.lang.RuntimeException, java.lang.Error"/>
     </module>
+    -->
     <module name="PackageDeclaration"/>
 
     <module name="JUnitTestCase"/>
     <module name="DeclarationOrder"/>
     <module name="ParameterAssignment"/>
-    <module name="MissingCtor"/>
+    <!--<module name="MissingCtor"/>-->
     <module name="MultipleVariableDeclarations"/>
     <module name="DesignForExtension">
       <property name="severity" value="ignore"/>
@@ -114,9 +116,9 @@
     <module name="ImportOrder">
       <property name="groups" value=""/>
       <property name="ordered" value="true"/>
-
-      <property name="separated" value="true"/>
-      <property name="caseSensitive" value="false"/>
+      <property name="separated" value="false"/>
+      <property name="caseSensitive" value="true"/>
+      <property name="option" value="under"/>
     </module>
     <module name="ConstantName">
       <property name="format" value="^[A-Z0-9_$]*$"/>
@@ -150,7 +152,7 @@
     <module name="NoWhitespaceAfter">
       <property name="tokens" value="BNOT,DEC,DOT,INC,UNARY_MINUS,UNARY_PLUS"/>
     </module>
-    <module name="OperatorWrap"/>
+    <!--<module name="OperatorWrap"/>-->
     <module name="ParenPad">
       <property name="option" value="space"/>
       <property name="tokens" value="CTOR_CALL, LPAREN, METHOD_CALL, RPAREN, SUPER_CTOR_CALL"/>

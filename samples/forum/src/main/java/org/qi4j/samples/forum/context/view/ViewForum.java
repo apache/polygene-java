@@ -4,7 +4,7 @@ import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.structure.Module;
-import org.qi4j.library.rest.server.api.dci.IndexContext;
+import org.qi4j.library.rest.server.api.ResourceIndex;
 import org.qi4j.library.rest.server.api.dci.Role;
 import org.qi4j.samples.forum.data.entity.Board;
 import org.qi4j.samples.forum.data.entity.Forum;
@@ -14,7 +14,7 @@ import org.qi4j.samples.forum.data.entity.User;
  * TODO
  */
 public class ViewForum
-    implements IndexContext<Query<Board>>
+    implements ResourceIndex<Query<Board>>
 {
     private ForumView viewForum = new ForumView();
 

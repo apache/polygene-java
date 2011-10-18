@@ -3,8 +3,8 @@ package org.qi4j.samples.forum.context.administration;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.structure.Module;
-import org.qi4j.library.rest.server.api.dci.DeleteContext;
-import org.qi4j.library.rest.server.api.dci.IndexContext;
+import org.qi4j.library.rest.server.api.ResourceDelete;
+import org.qi4j.library.rest.server.api.ResourceIndex;
 import org.qi4j.library.rest.server.api.dci.Role;
 import org.qi4j.samples.forum.data.Moderators;
 import org.qi4j.samples.forum.data.entity.User;
@@ -13,7 +13,7 @@ import org.qi4j.samples.forum.data.entity.User;
  * TODO
  */
 public class ModeratorAdministration
-    implements IndexContext<User>, DeleteContext
+    implements ResourceIndex<User>, ResourceDelete
 {
     @Structure
     Module module;

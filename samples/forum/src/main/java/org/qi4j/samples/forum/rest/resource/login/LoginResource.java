@@ -12,11 +12,6 @@ import org.restlet.representation.Representation;
 public class LoginResource
     extends ContextResource
 {
-    public LoginResource( )
-    {
-        super( Login.class );
-    }
-
     public Representation login(String name, String password)
     {
         context( Login.class ).login( name, password );

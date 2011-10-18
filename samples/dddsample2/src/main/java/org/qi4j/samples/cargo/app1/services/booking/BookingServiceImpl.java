@@ -1,7 +1,7 @@
 package org.qi4j.samples.cargo.app1.services.booking;
 
 import org.qi4j.api.injection.scope.Service;
-import org.qi4j.api.unitofwork.UnitOfWorkPropagation;
+import org.qi4j.api.unitofwork.concern.UnitOfWorkPropagation;
 import org.qi4j.samples.cargo.app1.model.cargo.Cargo;
 import org.qi4j.samples.cargo.app1.model.cargo.Itinerary;
 import org.qi4j.samples.cargo.app1.model.cargo.RouteSpecification;
