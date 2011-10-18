@@ -27,8 +27,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ClassScanner;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.functional.Specifications;
-import org.qi4j.library.rest.server.api.InteractionConstraintsService;
-import org.qi4j.library.rest.server.restlet.DefaultContextResource;
+import org.qi4j.library.rest.server.restlet.InteractionConstraintsService;
 import org.qi4j.library.rest.server.restlet.RequestReaderDelegator;
 import org.qi4j.library.rest.server.restlet.ResponseWriterDelegator;
 import org.qi4j.library.rest.server.restlet.freemarker.ValueCompositeObjectWrapper;
@@ -40,8 +39,8 @@ import org.restlet.service.MetadataService;
 
 import static org.qi4j.api.util.Classes.*;
 import static org.qi4j.bootstrap.ImportedServiceDeclaration.*;
-import static org.qi4j.functional.Iterables.filter;
-import static org.qi4j.functional.Specifications.not;
+import static org.qi4j.functional.Iterables.*;
+import static org.qi4j.functional.Specifications.*;
 
 /**
  * JAVADOC
@@ -72,8 +71,6 @@ public class RestServerAssembler
         cfg.setObjectWrapper( new ValueCompositeObjectWrapper() );
 
         module.importedServices( freemarker.template.Configuration.class ).setMetaInfo( cfg );
-
-        module.objects( DefaultContextResource.class );
 
         module.importedServices( MetadataService.class );
 

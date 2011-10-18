@@ -15,20 +15,14 @@
  * limitations under the License.
  */
 
-package org.qi4j.library.rest.server.restlet;
+package org.qi4j.library.rest.server.spi;
 
-import org.qi4j.api.injection.scope.Uses;
-import org.qi4j.library.rest.server.api.ContextResource;
+import org.restlet.Request;
 
 /**
- * A default Usecase Restlet Resource in case you just need a context, and no special handling in the REST
- * resource.
+ * JAVADOC
  */
-public class DefaultContextResource
-   extends ContextResource
+public interface ResultConverter
 {
-   public DefaultContextResource( @Uses Class... contextClasses )
-   {
-      super( contextClasses );
-   }
+   Object convert( Object result, Request request, Object[] arguments );
 }

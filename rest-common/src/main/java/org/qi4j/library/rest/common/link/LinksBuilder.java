@@ -17,106 +17,115 @@
 
 package org.qi4j.library.rest.common.link;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 
 /**
  * Builder for making it easier to create LinksValue/LinkValue
  */
 public class LinksBuilder<T extends LinksBuilder>
 {
-   protected ValueBuilder<? extends Links> linksBuilder;
-   protected ValueBuilder<Link> linkBuilder;
-   protected ValueBuilderFactory vbf;
+    protected ValueBuilder<? extends Links> linksBuilder;
+    protected ValueBuilder<Link> linkBuilder;
+    protected ValueBuilderFactory vbf;
 
-   private String path;
-   private String rel;
-   private String classes;
-   private String command;
+    private String path;
+    private String rel;
+    private String classes;
+    private String command;
 
-   public LinksBuilder( ValueBuilderFactory vbf )
-   {
-      this.vbf = vbf;
-      linksBuilder = vbf.newValueBuilder( Links.class );
-      linkBuilder = vbf.newValueBuilder( Link.class );
-   }
+    public LinksBuilder( ValueBuilderFactory vbf )
+    {
+        this.vbf = vbf;
+        linksBuilder = vbf.newValueBuilder( Links.class );
+        linkBuilder = vbf.newValueBuilder( Link.class );
+    }
 
-   public T path( @Optional String subPath )
-   {
-      path = subPath;
+    public T path( @Optional String subPath )
+    {
+        path = subPath;
 
-      return (T) this;
-   }
+        return (T) this;
+    }
 
-   public T rel( String rel )
-   {
-      this.rel = rel;
+    public T rel( String rel )
+    {
+        this.rel = rel;
 
-      return (T) this;
-   }
+        return (T) this;
+    }
 
-   public T classes( String classes )
-   {
-      this.classes = classes;
+    public T classes( String classes )
+    {
+        this.classes = classes;
 
-      return (T) this;
-   }
+        return (T) this;
+    }
 
-   public T command( String commandName )
-   {
-      this.command = commandName;
-      this.rel = commandName;
-      return (T) this;
-   }
+    public T command( String commandName )
+    {
+        this.command = commandName;
+        this.rel = commandName;
+        return (T) this;
+    }
 
-   public T addLink( Link link )
-   {
-      linksBuilder.prototype().links().get().add( link );
-      return (T) this;
-   }
+    public T addLink( Link link )
+    {
+        linksBuilder.prototype().links().get().add( link );
 
-   public T addLink( String description, String id )
-   {
-      try
-      {
-         linkBuilder.prototype().text().set( description );
-         linkBuilder.prototype().id().set( id );
-         if (command != null)
-            linkBuilder.prototype().href().set( command + "?entity=" + id );
-         else
-            linkBuilder.prototype().href().set( (path == null ? "" : path + "/") + URLEncoder.encode( id, "UTF-8" ) + "/" );
-         linkBuilder.prototype().rel().set( rel );
-         linkBuilder.prototype().classes().set( classes );
+        linkBuilder = vbf.newValueBuilderWithPrototype( link );
 
-         addLink( linkBuilder.newInstance() );
+        return (T) this;
+    }
 
-         return (T) this;
-      } catch (UnsupportedEncodingException e)
-      {
-         e.printStackTrace();
-         return (T) this;
-      }
-   }
+    public T addLink( String description, String id )
+    {
+        try
+        {
+            linkBuilder.prototype().text().set( description );
+            linkBuilder.prototype().id().set( id );
+            if( command != null )
+            {
+                linkBuilder.prototype().href().set( command + "?entity=" + id );
+            }
+            else
+            {
+                linkBuilder.prototype()
+                    .href()
+                    .set( ( path == null ? "" : path + "/" ) + URLEncoder.encode( id, "UTF-8" ) + "/" );
+            }
+            linkBuilder.prototype().rel().set( rel );
+            linkBuilder.prototype().classes().set( classes );
 
-   public T addLink( String description, String id, String rel, String href, String classes )
-   {
-      linkBuilder.prototype().text().set( description );
-      linkBuilder.prototype().id().set( id );
-      linkBuilder.prototype().rel().set( rel );
-      linkBuilder.prototype().href().set( href );
-      linkBuilder.prototype().classes().set( classes );
+            addLink( linkBuilder.newInstance() );
 
-      addLink( linkBuilder.newInstance() );
+            return (T) this;
+        }
+        catch( UnsupportedEncodingException e )
+        {
+            e.printStackTrace();
+            return (T) this;
+        }
+    }
 
-      return (T) this;
-   }
+    public T addLink( String description, String id, String rel, String href, String classes )
+    {
+        linkBuilder.prototype().text().set( description );
+        linkBuilder.prototype().id().set( id );
+        linkBuilder.prototype().rel().set( rel );
+        linkBuilder.prototype().href().set( href );
+        linkBuilder.prototype().classes().set( classes );
 
-   public Links newLinks()
-   {
-      return linksBuilder.newInstance();
-   }
+        addLink( linkBuilder.newInstance() );
+
+        return (T) this;
+    }
+
+    public Links newLinks()
+    {
+        return linksBuilder.newInstance();
+    }
 }

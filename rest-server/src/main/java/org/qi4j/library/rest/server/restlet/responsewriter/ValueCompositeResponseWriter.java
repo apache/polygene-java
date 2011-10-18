@@ -23,6 +23,7 @@ import freemarker.template.TemplateException;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -87,6 +88,7 @@ public class ValueCompositeResponseWriter
                         context.put( "response", response );
 
                         context.put( "result", result );
+                        context.put("util", this);
 
                         try
                         {
@@ -96,6 +98,11 @@ public class ValueCompositeResponseWriter
                         {
                             throw new IOException( e );
                         }
+                    }
+
+                    public boolean isSequence(Object obj)
+                    {
+                        return obj instanceof Collection;
                     }
                 };
                 response.setEntity( rep );

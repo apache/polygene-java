@@ -15,12 +15,15 @@
  * limitations under the License.
  */
 
-package org.qi4j.library.rest.server.api.dci;
+package org.qi4j.library.rest.server.api;
+
+import java.io.IOException;
 
 /**
- * Standard interface for creation of new resources.
+ * Standard interface for deletion of resources
  */
-public interface CreateContext<INPUT, RESULT>
+public interface ResourceDelete
 {
-   RESULT create( INPUT value );
+   void delete()
+         throws IOException;
 }

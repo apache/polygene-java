@@ -10,14 +10,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.UseDefaults;
-import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.constraint.Name;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.property.Property;
-import org.qi4j.api.service.importer.NewObjectImporter;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.ApplicationDescriptor;
 import org.qi4j.api.structure.Module;
@@ -28,6 +26,7 @@ import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.functional.Iterables;
 import org.qi4j.library.rest.client.api.ContextResourceClient;
 import org.qi4j.library.rest.client.api.ContextResourceClientFactory;
 import org.qi4j.library.rest.client.api.ErrorHandler;
@@ -36,16 +35,19 @@ import org.qi4j.library.rest.client.spi.ResponseHandler;
 import org.qi4j.library.rest.client.spi.ResultHandler;
 import org.qi4j.library.rest.common.Resource;
 import org.qi4j.library.rest.common.ValueAssembler;
+import org.qi4j.library.rest.common.link.Link;
+import org.qi4j.library.rest.common.link.Links;
+import org.qi4j.library.rest.common.link.LinksBuilder;
+import org.qi4j.library.rest.common.link.LinksUtil;
 import org.qi4j.library.rest.server.api.ContextResource;
 import org.qi4j.library.rest.server.api.ContextRestlet;
-import org.qi4j.library.rest.server.api.InteractionConstraintsService;
-import org.qi4j.library.rest.server.api.InteractionValidation;
+import org.qi4j.library.rest.server.api.ResourceDelete;
+import org.qi4j.library.rest.server.api.constraint.InteractionValidation;
 import org.qi4j.library.rest.server.api.ObjectSelection;
-import org.qi4j.library.rest.server.api.Requires;
-import org.qi4j.library.rest.server.api.RequiresValid;
+import org.qi4j.library.rest.server.api.constraint.Requires;
+import org.qi4j.library.rest.server.api.constraint.RequiresValid;
 import org.qi4j.library.rest.server.api.SubResource;
 import org.qi4j.library.rest.server.api.SubResources;
-import org.qi4j.library.rest.server.api.dci.DeleteContext;
 import org.qi4j.library.rest.server.api.dci.Role;
 import org.qi4j.library.rest.server.assembler.RestServerAssembler;
 import org.qi4j.library.rest.server.restlet.NullCommandResult;
@@ -68,6 +70,8 @@ import org.restlet.security.User;
 import org.restlet.service.MetadataService;
 
 import static org.qi4j.bootstrap.ImportedServiceDeclaration.*;
+import static org.qi4j.functional.Iterables.*;
+import static org.qi4j.library.rest.common.link.LinksUtil.withId;
 
 /**
  * TODO
@@ -242,6 +246,37 @@ public class ContextResourceClientFactoryTest
         crc.refresh();
     }
 
+    @Test
+    public void testQueryListAndCommand()
+    {
+        crc.onResource( new ResultHandler<Resource>()
+        {
+            @Override
+            public void handleResult( Resource result, ContextResourceClient client )
+            {
+                client.query( "commandwithvalue" );
+            }
+        } ).onQuery( "commandwithvalue", Links.class, new ResultHandler<Links>()
+        {
+            @Override
+            public void handleResult( Links result, ContextResourceClient client )
+            {
+                Link link = LinksUtil.withId( "right", result);
+
+                client.command( link );
+            }
+        } ).onCommand( "commandwithvalue", new ResponseHandler()
+        {
+            @Override
+            public void handleResponse( Response response, ContextResourceClient client )
+            {
+                System.out.println( "Done" );
+            }
+        } );
+
+        crc.refresh();
+    }
+
     public interface TestQuery
         extends ValueComposite
     {
@@ -252,7 +287,7 @@ public class ContextResourceClientFactoryTest
     public interface TestCommand
         extends ValueComposite
     {
-        Property<String> abc();
+        Property<String> entity();
     }
 
     public interface TestResult
@@ -273,37 +308,56 @@ public class ContextResourceClientFactoryTest
 
     public static class RootResource
         extends ContextResource
-        implements SubResources
+        implements SubResources, ResourceDelete
     {
         private static TestComposite instance;
 
+        private RootContext rootContext()
+        {
+            return context( RootContext.class );
+        }
+
         public RootResource()
         {
-            super( RootContext.class );
         }
 
         public TestResult querywithvalue( TestQuery testQuery )
             throws Throwable
         {
-            return context( RootContext.class ).queryWithValue( testQuery );
+            return rootContext().queryWithValue( testQuery );
         }
 
         public TestResult querywithoutvalue()
             throws Throwable
         {
-            return context( RootContext.class ).queryWithoutValue();
+            return rootContext().queryWithoutValue();
         }
 
         public String querywithstringresult( TestQuery query )
             throws Throwable
         {
-            return context( RootContext.class ).queryWithStringResult( query );
+            return rootContext().queryWithStringResult( query );
         }
 
         public void commandwithvalue( TestCommand command )
             throws Throwable
         {
-            context( RootContext.class ).commandWithValue( command );
+            rootContext().commandWithValue( command );
+        }
+
+        public Links commandwithvalue()
+        {
+            return new LinksBuilder(module).
+                command( "commandwithvalue" ).
+                addLink( "Command ABC","right" ).
+                addLink( "Command XYZ", "wrong" ).newLinks();
+        }
+
+        @Override
+        public void delete()
+            throws IOException
+        {
+            rootContext().delete();
         }
 
         public void resource( String currentSegment )
@@ -327,10 +381,53 @@ public class ContextResourceClientFactoryTest
 
     public static class SubResource1
         extends ContextResource
+        implements InteractionValidation
     {
         public SubResource1()
         {
-            super( SubContext.class, SubContext2.class, DescribableContext.class );
+        }
+
+        @Requires( File.class )
+        public void commandWithRoleRequirement()
+        {
+            context( SubContext.class ).commandWithRoleRequirement();
+        }
+
+        // Interaction validation
+        private static boolean xyzValid = true;
+
+        @RequiresValid( "xyz" )
+        public void xyz( @Name( "valid" ) boolean valid )
+        {
+            xyzValid = valid;
+        }
+
+        @RequiresValid( "notxyz" )
+        public void notxyz( @Name( "valid" ) boolean valid )
+        {
+            xyzValid = valid;
+        }
+
+        public boolean isValid( String name )
+        {
+            if( name.equals( "xyz" ) )
+            {
+                return xyzValid;
+            }
+            else if( name.equals( "notxyz" ) )
+            {
+                return !xyzValid;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        @Requires( File.class )
+        public TestResult queryWithRoleRequirement(TestQuery query)
+        {
+            return context( SubContext.class ).queryWithRoleRequirement( query );
         }
 
         public TestResult genericquery( TestQuery query )
@@ -359,7 +456,6 @@ public class ContextResourceClientFactoryTest
     }
 
     public static class RootContext
-        implements DeleteContext
     {
         private static int count = 0;
 
@@ -388,7 +484,7 @@ public class ContextResourceClientFactoryTest
 
         public void commandWithValue( TestCommand command )
         {
-            if( !command.abc().get().equals( "right" ) )
+            if( !command.entity().get().equals( "right" ) )
             {
                 throw new IllegalArgumentException( "Wrong argument" );
             }
@@ -418,7 +514,7 @@ public class ContextResourceClientFactoryTest
                 } );
             }
 
-            if( !command.abc().get().equals( "right" ) )
+            if( !command.entity().get().equals( "right" ) )
             {
                 throw new IllegalArgumentException( "Wrong argument" );
             }
@@ -427,7 +523,6 @@ public class ContextResourceClientFactoryTest
         }
 
         public void delete()
-            throws ResourceException, IOException
         {
             // Ok!
             command = "delete";

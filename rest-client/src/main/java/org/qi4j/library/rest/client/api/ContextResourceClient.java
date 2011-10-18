@@ -181,9 +181,19 @@ public class ContextResourceClient
         invokeQuery( reference, null, resourceHandler, null );
     }
 
+    public void query( String relation )
+    {
+        query( resource.query( relation ), null );
+    }
+
     public void query( String relation, Object queryRequest )
     {
         query( resource.query( relation ), queryRequest );
+    }
+
+    public void query( Link link )
+    {
+        query( link, null );
     }
 
     public void query( Link link, Object queryRequest )
@@ -236,9 +246,19 @@ public class ContextResourceClient
     }
 
     // Commands
+    public void command( String relation )
+    {
+        command( relation, null );
+    }
+
     public void command( String relation, Object commandRequest )
     {
         command( resource.command( relation ), commandRequest );
+    }
+
+    public void command( Link link )
+    {
+        command( link, null );
     }
 
     public void command( Link link, Object commandRequest )

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.qi4j.library.rest.server.api;
+package org.qi4j.library.rest.server.api.constraint;
 
 import org.qi4j.api.constraint.Constraint;
 import org.qi4j.api.constraint.ConstraintDeclaration;
@@ -23,23 +23,42 @@ import org.qi4j.api.constraint.Constraints;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import org.qi4j.library.rest.server.api.ObjectSelection;
 
 /**
- * JAVADOC
+ * Annotation on interactions that requires objects of specific types
+ * to be available in the ObjectSelection.
+ *
+ * Example:
+ * <pre>
+ *     @Requires(File.class)
+ *     public Representation content() {...}
+ * </pre>
+ *
  */
 @ConstraintDeclaration
 @Retention(RetentionPolicy.RUNTIME)
-@Constraints(RequiresValid.RequiresValidConstraint.class)
-public @interface RequiresValid
+@Constraints(Requires.RequiresRoleConstraint.class)
+public @interface Requires
 {
-   String value();
+   Class<?>[] value();
 
-   class RequiresValidConstraint
-      implements Constraint<RequiresValid, InteractionValidation>
+   class RequiresRoleConstraint
+      implements Constraint<Requires, ObjectSelection>
    {
-      public boolean isValid( RequiresValid requiresValid, InteractionValidation validation)
+      public boolean isValid( Requires requires, ObjectSelection objectSelection )
       {
-         return validation.isValid( requiresValid.value() );
+         for (Class<?> roleClass : requires.value())
+         {
+            try
+            {
+               objectSelection.get( roleClass );
+            } catch (IllegalArgumentException ex)
+            {
+               return false;
+            }
+         }
+         return true;
       }
    }
 }

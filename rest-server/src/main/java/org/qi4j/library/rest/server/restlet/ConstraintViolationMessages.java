@@ -1,4 +1,4 @@
-package org.qi4j.library.rest.server.api;
+package org.qi4j.library.rest.server.restlet;
 
 import org.qi4j.api.constraint.ConstraintViolation;
 

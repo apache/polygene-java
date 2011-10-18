@@ -9,6 +9,9 @@ import org.qi4j.api.structure.Module;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import org.qi4j.library.rest.server.api.constraint.InteractionConstraintDeclaration;
+import org.qi4j.library.rest.server.api.constraint.RequiresValid;
+import org.qi4j.library.rest.server.restlet.InteractionConstraints;
 
 /**
  * Add this concern to all interaction methods that use constraints

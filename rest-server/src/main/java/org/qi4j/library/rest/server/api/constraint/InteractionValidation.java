@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
-package org.qi4j.library.rest.server.api;
+package org.qi4j.library.rest.server.api.constraint;
 
 /**
- * Interface that contexts can implement to achieve custom validation
+ * Interface that resources can implement to achieve custom validation
  * of whether an interaction is valid or not. If the logic only applies for one
  * method it is usually better to use this instead of creating a new annotation for it.
  * <p/>
@@ -27,7 +27,7 @@ package org.qi4j.library.rest.server.api;
  * @RequiresValid("xyz") public void xyz()
  * {...}
  * <p/>
- * This causes the context to be instantiated and isValid("xyz") is called. The isValid()
+ * This causes isValid("xyz") to be called. The isValid()
  * method can use the name to determine which set of logic is to be applied. Typically the provided
  * string will correspond to the name of the interaction, but this is not strictly necessary. It is
  * possible to combine several annotations on one method, if desired:
@@ -35,7 +35,7 @@ package org.qi4j.library.rest.server.api;
  * public void xyz()
  * {...}
  * <p/>
- * The validation occurs both when a ResourceValue is computed for the resource as a whole, and when an actual
+ * The validation occurs both when a Resource is computed for the resource as a whole, and when an actual
  * invocation of an interaction is made.
  */
 public interface InteractionValidation

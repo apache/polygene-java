@@ -37,11 +37,13 @@ public class ResourceValidity
 {
    EntityComposite entity;
    private final Qi4jSPI spi;
+    private Request request;
 
-   public ResourceValidity( EntityComposite entity, Qi4jSPI spi)
+    public ResourceValidity( EntityComposite entity, Qi4jSPI spi, Request request )
    {
       this.entity = entity;
       this.spi = spi;
+       this.request = request;
    }
 
    public void updateEntity(UnitOfWork current)
@@ -68,7 +70,7 @@ public class ResourceValidity
       }
    }
 
-   public void checkRequest(Request request)
+   public void checkRequest()
          throws ResourceException
    {
       // Check command rules

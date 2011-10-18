@@ -15,12 +15,15 @@
  * limitations under the License.
  */
 
-package org.qi4j.library.rest.server.api.dci;
+package org.qi4j.library.rest.server.api.constraint;
+
+import org.qi4j.library.rest.server.api.ObjectSelection;
 
 /**
  * JAVADOC
  */
-public interface IndexContext<T>
+
+public interface InteractionConstraint<ANNOTATION extends java.lang.annotation.Annotation>
 {
-   public T index();
+   boolean isValid(ANNOTATION annotation, ObjectSelection objectSelection );
 }

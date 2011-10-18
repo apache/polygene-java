@@ -18,17 +18,9 @@
 package org.qi4j.library.rest.server.api;
 
 /**
- * JAVADOC
+ * Standard interface for index of resources
  */
-public class InteractionException
-   extends RuntimeException
+public interface ResourceIndex<T>
 {
-   private String status;
-   private Object result;
-
-   public InteractionException( String status, Object result )
-   {
-      this.status = status;
-      this.result = result;
-   }
+   public T index();
 }

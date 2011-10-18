@@ -19,6 +19,7 @@ package org.qi4j.library.rest.server.api;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.qi4j.functional.Iterables;
 import org.restlet.Request;
 
 /**
@@ -80,5 +81,10 @@ public class ObjectSelection
     public Iterable<Object> selection()
     {
         return selection;
+    }
+
+    public Object[] toArray()
+    {
+        return Iterables.toArray( Object.class, selection );
     }
 }

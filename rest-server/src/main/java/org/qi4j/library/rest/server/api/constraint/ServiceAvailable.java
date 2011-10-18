@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.qi4j.library.rest.server.api;
+package org.qi4j.library.rest.server.api.constraint;
 
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.service.ServiceReference;
@@ -23,6 +23,7 @@ import org.qi4j.api.structure.Module;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import org.qi4j.library.rest.server.api.ObjectSelection;
 
 /**
  * Annotate interaction methods with ServiceAvailable. They will only be valid

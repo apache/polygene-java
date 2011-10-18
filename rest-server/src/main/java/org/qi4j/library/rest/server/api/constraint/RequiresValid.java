@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.qi4j.library.rest.server.api;
+package org.qi4j.library.rest.server.api.constraint;
 
 import org.qi4j.api.constraint.Constraint;
 import org.qi4j.api.constraint.ConstraintDeclaration;
@@ -29,27 +29,17 @@ import java.lang.annotation.RetentionPolicy;
  */
 @ConstraintDeclaration
 @Retention(RetentionPolicy.RUNTIME)
-@Constraints(Requires.RequiresRoleConstraint.class)
-public @interface Requires
+@Constraints(RequiresValid.RequiresValidConstraint.class)
+public @interface RequiresValid
 {
-   Class<?>[] value();
+   String value();
 
-   class RequiresRoleConstraint
-      implements Constraint<Requires, ObjectSelection>
+   class RequiresValidConstraint
+      implements Constraint<RequiresValid, InteractionValidation>
    {
-      public boolean isValid( Requires requires, ObjectSelection objectSelection )
+      public boolean isValid( RequiresValid requiresValid, InteractionValidation validation)
       {
-         for (Class<?> roleClass : requires.value())
-         {
-            try
-            {
-               objectSelection.get( roleClass );
-            } catch (IllegalArgumentException ex)
-            {
-               return false;
-            }
-         }
-         return true;
+         return validation.isValid( requiresValid.value() );
       }
    }
 }

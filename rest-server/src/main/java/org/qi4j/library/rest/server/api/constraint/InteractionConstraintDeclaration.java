@@ -15,13 +15,16 @@
  * limitations under the License.
  */
 
-package org.qi4j.library.rest.server.api;
+package org.qi4j.library.rest.server.api.constraint;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
  * JAVADOC
  */
-
-public interface InteractionConstraint<ANNOTATION extends java.lang.annotation.Annotation>
+@Retention(RetentionPolicy.RUNTIME)
+public @interface InteractionConstraintDeclaration
 {
-   boolean isValid(ANNOTATION annotation, ObjectSelection objectSelection );
+   Class<? extends InteractionConstraint<?>> value();
 }

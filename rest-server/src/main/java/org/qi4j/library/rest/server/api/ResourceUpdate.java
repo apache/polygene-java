@@ -18,9 +18,9 @@
 package org.qi4j.library.rest.server.api;
 
 /**
- * JAVADOC
+ * Standard interface for update of existing resoruces.
  */
-public class ContextNotFoundException
-   extends RuntimeException
+public interface ResourceUpdate<T>
 {
+   void update(T value);
 }

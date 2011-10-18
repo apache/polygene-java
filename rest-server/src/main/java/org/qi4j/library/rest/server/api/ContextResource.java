@@ -23,14 +23,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URLDecoder;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.common.Optional;
-import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.constraint.ConstraintViolation;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.constraint.Name;
@@ -45,12 +44,13 @@ import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.api.value.ValueDescriptor;
-import org.qi4j.functional.Specification;
 import org.qi4j.library.rest.common.Resource;
 import org.qi4j.library.rest.common.link.Link;
-import org.qi4j.library.rest.server.api.dci.DeleteContext;
+import org.qi4j.library.rest.server.restlet.ConstraintViolationMessages;
+import org.qi4j.library.rest.server.restlet.InteractionConstraints;
 import org.qi4j.library.rest.server.restlet.RequestReaderDelegator;
 import org.qi4j.library.rest.server.restlet.ResponseWriterDelegator;
+import org.qi4j.library.rest.server.spi.ResultConverter;
 import org.qi4j.spi.Qi4jSPI;
 import org.restlet.Request;
 import org.restlet.Response;
@@ -77,22 +77,29 @@ public class ContextResource
     implements Uniform
 {
     private static final String ARGUMENTS = "arguments";
-    private Map<String, Class> interactionClasses = new ConcurrentHashMap<String, Class>();
-    private Map<String, Method> resourceMethods = new ConcurrentHashMap<String, Method>();
-    private Map<String, Method> contextMethods = new ConcurrentHashMap<String, Method>();
+    public static final String RESOURCE_VALIDITY = "validity";
+
+    // API fields
+    protected
+    @Structure
+    Module module;
+
+    // Private state
+    private Map<String, Method> resourceMethodQueries = new HashMap<String, Method>();
+    private Map<String, Method> resourceMethodCommands = new HashMap<String, Method>();
+    private Map<String, Method> subResources = new LinkedHashMap<String, Method>();
+    private List<Method> resourceQueries = new ArrayList<Method>();
+    private List<Method> resourceCommands = new ArrayList<Method>();
 
     private
     @Structure
     Qi4jSPI spi;
 
-    protected
-    @Structure
-    Module module;
-
     private
     @Service
     ResponseWriterDelegator responseWriter;
 
+    private
     @Service
     RequestReaderDelegator requestReader;
 
@@ -109,39 +116,43 @@ public class ContextResource
     @Uses
     ContextRestlet restlet;
 
-    private Class[] contextClasses;
-
-    public ContextResource( @Uses Class... contextClasses )
+    public ContextResource()
     {
-        this.contextClasses = contextClasses;
-
         // Resource method mappings
         for( Method method : getClass().getMethods() )
         {
-            if( ContextResource.class.isAssignableFrom( method.getDeclaringClass() ) && !ContextResource.class.equals( method
-                                                                                                                           .getDeclaringClass() ) )
+            if( ContextResource.class.isAssignableFrom( method.getDeclaringClass() )
+                && !ContextResource.class.equals( method.getDeclaringClass() ) )
             {
-                Method oldMethod = resourceMethods.put( method.getName().toLowerCase(), method );
-
-                if( oldMethod != null )
+                if( method.getAnnotation( SubResource.class ) == null )
                 {
-                    throw new IllegalStateException( "Two methods in resource " + getClass().getName() + " with same name " + oldMethod
-                        .getName() + ", which is not allowed" );
-                }
-            }
-        }
+                    Method oldMethod = null;
 
-        // Context method mappings
-        for( Class contextClass : contextClasses )
-        {
-            for( Method method : contextClass.getMethods() )
-            {
-                if( !method.isSynthetic() )
-                {
-                    if( !interactionClasses.containsKey( method.getName().toLowerCase() ) )
+                    if( isCommand( method ) )
                     {
-                        interactionClasses.put( method.getName().toLowerCase(), contextClass );
-                        contextMethods.put( method.getName().toLowerCase(), method );
+                        oldMethod = resourceMethodCommands.put( method.getName().toLowerCase(), method );
+                        resourceCommands.add( method );
+                    }
+                    else
+                    {
+                        oldMethod = resourceMethodQueries.put( method.getName().toLowerCase(), method );
+                        resourceQueries.add( method );
+                    }
+
+                    if( oldMethod != null )
+                    {
+                        throw new IllegalStateException( "Two methods in resource " + getClass().getName() + " with same name " + oldMethod
+                            .getName() + ", which is not allowed" );
+                    }
+                }
+                else
+                {
+                    Method oldMethod = subResources.put( method.getName().toLowerCase(), method );
+
+                    if( oldMethod != null )
+                    {
+                        throw new IllegalStateException( "Two methods in resource " + getClass().getName() + " with same name " + oldMethod
+                            .getName() + ", which is not allowed" );
                     }
                 }
             }
@@ -180,30 +191,14 @@ public class ContextResource
     // API methods
     protected void setResourceValidity( EntityComposite entity )
     {
-        ResourceValidity validity = new ResourceValidity( entity, spi );
-        current().select( validity );
-    }
-
-    protected <T> T context( Class<T> contextClass )
-    {
-        if( TransientComposite.class.isAssignableFrom( contextClass ) )
-        {
-            return module.newTransient( contextClass, toArray( Object.class, current().selection() ) );
-        }
-        else
-        {
-            return module.newObject( contextClass, toArray( Object.class, current().selection() ) );
-        }
+        Request request = Request.getCurrent();
+        ResourceValidity validity = new ResourceValidity( entity, spi, request );
+        request.getAttributes().put( RESOURCE_VALIDITY, validity );
     }
 
     protected void subResource( Class<? extends ContextResource> subResourceClass )
     {
         restlet.subResource( subResourceClass );
-    }
-
-    protected void subResourceContexts( Class<?>... contextClasses )
-    {
-        restlet.subResourceContexts( contextClasses );
     }
 
     protected <T> T select( Class<T> entityClass, String id )
@@ -228,6 +223,13 @@ public class ContextResource
     protected <T> T selectFromManyAssociation( ManyAssociation<T> manyAssociation, String id )
         throws ResourceException
     {
+        T entity = (T) module.currentUnitOfWork().get( Object.class, id );
+        if (!manyAssociation.contains( entity ))
+            throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
+
+        current().select( entity );
+        return entity;
+/*
         for( T entity : manyAssociation )
         {
             if( entity.toString().equals( id ) )
@@ -238,9 +240,10 @@ public class ContextResource
         }
 
         throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
+*/
     }
 
-    protected void findList( List<?> list, String indexString )
+    protected void selectFromList( List<?> list, String indexString )
     {
         Integer index = Integer.decode( indexString );
 
@@ -288,6 +291,11 @@ public class ContextResource
         return locale;
     }
 
+    protected <T> T context( Class<T> contextClass )
+    {
+        return module.newObject( contextClass, ObjectSelection.current().toArray() );
+    }
+
     // Private implementation
     private void handleSubResource( String segment )
     {
@@ -325,13 +333,12 @@ public class ContextResource
     }
 
     private Method getSubResourceMethod( String resourceName )
+        throws ResourceException
     {
-        for( Method method : getClass().getMethods() )
+        Method method = subResources.get( resourceName );
+        if( method != null )
         {
-            if( method.getName().equalsIgnoreCase( resourceName ) && method.getAnnotation( SubResource.class ) != null )
-            {
-                return method;
-            }
+            return method;
         }
 
         throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
@@ -339,144 +346,102 @@ public class ContextResource
 
     private void resource()
     {
-        if( Request.getCurrent().getMethod().equals( org.restlet.data.Method.GET ) )
+        Request request = Request.getCurrent();
+        Response response = Response.getCurrent();
+        if( !request.getMethod().equals( org.restlet.data.Method.GET ) )
         {
-            ObjectSelection objectSelection = current();
+            response.setStatus( Status.CLIENT_ERROR_METHOD_NOT_ALLOWED );
+            return;
+        }
 
-            final List<Method> queries = new ArrayList<Method>();
-            final List<Method> commands = new ArrayList<Method>();
-            final List<Method> subResources = new ArrayList<Method>();
+        ObjectSelection objectSelection = current();
 
-            // Add commands+queries from the context classes
-            for( Class contextClass : contextClasses )
+        // Check for interaction->method mappings
+        if( ResourceDelete.class.isAssignableFrom( getClass() ) )
+        {
+            response.getAllowedMethods().add( org.restlet.data.Method.DELETE );
+        }
+        if( ResourceUpdate.class.isAssignableFrom( getClass() ) )
+        {
+            response.getAllowedMethods().add( org.restlet.data.Method.PUT );
+        }
+
+        // Construct resource
+        ValueBuilder<Resource> builder = module.newValueBuilder( Resource.class );
+
+        List<Link> queriesProperty = builder.prototype().queries().get();
+        for( Method query : resourceQueries )
+        {
+            if( constraints.isValid( query, objectSelection, module ) )
             {
-                // Check context class constraints
-                if( !constraints.isValid( contextClass, objectSelection, module ) )
-                {
-                    continue; // Skip this class entirely
-                }
-
-                // Filter out methods first.
-                // TODO Cache this
-                Iterable<Method> methods = filter( new Specification<Method>()
-                {
-                    public boolean satisfiedBy( Method method )
-                    {
-                        return !method.isSynthetic() &&
-                               !( method.getDeclaringClass().isAssignableFrom( TransientComposite.class ) ) &&
-                               !( method.getName().equals( "isValid" ) ) && !( method.getName().equals( "bind" ) );
-                    }
-                }, iterable( contextClass.getMethods() ) );
-
-                for( Method method : methods )
-                {
-                    if( constraints.isValid( method, objectSelection, module ) )
-                    {
-                        if( isCommand( method ) )
-                        {
-                            commands.add( method );
-                        }
-                        else
-                        {
-                            queries.add( method );
-                        }
-                    }
-                }
-
-                if ( DeleteContext.class.isAssignableFrom( contextClass ))
-                    Response.getCurrent().getAllowedMethods().add( org.restlet.data.Method.DELETE );
+                ValueBuilder<Link> linkBuilder = module.newValueBuilder( Link.class );
+                Link prototype = linkBuilder.prototype();
+                prototype.classes().set( "query" );
+                prototype.text().set( humanReadable( query.getName() ) );
+                prototype.href().set( query.getName().toLowerCase() );
+                prototype.rel().set( query.getName().toLowerCase() );
+                prototype.id().set( query.getName().toLowerCase() );
+                queriesProperty.add( linkBuilder.newInstance() );
             }
+        }
 
-            // Add subresources available from this resource
-            if( !SubResources.class.isAssignableFrom( getClass() ) )
+        List<Link> commandsProperty = builder.prototype().commands().get();
+        for( Method command : resourceCommands )
+        {
+            if( constraints.isValid( command, objectSelection, module ) )
             {
-                Iterable<Method> methods = resourceMethods.values();
-
-                for( Method method : methods )
-                {
-                    if( method.getAnnotation( SubResource.class ) != null && constraints.isValid( method, objectSelection, module ) )
-                    {
-                        subResources.add( method );
-                    }
-                }
+                ValueBuilder<Link> linkBuilder = module.newValueBuilder( Link.class );
+                Link prototype = linkBuilder.prototype();
+                prototype.classes().set( "command" );
+                prototype.text().set( humanReadable( command.getName() ) );
+                prototype.href().set( command.getName().toLowerCase() );
+                prototype.rel().set( command.getName().toLowerCase() );
+                prototype.id().set( command.getName().toLowerCase() );
+                commandsProperty.add( linkBuilder.newInstance() );
             }
+        }
 
-            ValueBuilder<Resource> builder = module.newValueBuilder( Resource.class );
-
-            if( queries.size() > 0 )
+        List<Link> resourcesProperty = builder.prototype().resources().get();
+        for( Method subResource : subResources.values() )
+        {
+            if( constraints.isValid( subResource, objectSelection, module ) )
             {
-                List<Link> queriesProperty = builder.prototype().queries().get();
-                for( Method query : queries )
-                {
-                    ValueBuilder<Link> linkBuilder = module.newValueBuilder( Link.class );
-                    Link prototype = linkBuilder.prototype();
-                    prototype.classes().set( "query" );
-                    prototype.text().set( humanReadable( query.getName() ) );
-                    prototype.href().set( query.getName().toLowerCase() );
-                    prototype.rel().set( query.getName().toLowerCase() );
-                    prototype.id().set( query.getName().toLowerCase() );
-                    queriesProperty.add( linkBuilder.newInstance() );
-                }
+                ValueBuilder<Link> linkBuilder = module.newValueBuilder( Link.class );
+                Link prototype = linkBuilder.prototype();
+                prototype.classes().set( "resource" );
+                prototype.text().set( humanReadable( subResource.getName() ) );
+                prototype.href().set( subResource.getName().toLowerCase() + "/" );
+                prototype.rel().set( subResource.getName().toLowerCase() );
+                prototype.id().set( subResource.getName().toLowerCase() );
+                resourcesProperty.add( linkBuilder.newInstance() );
             }
+        }
 
-            if( commands.size() > 0 )
+        try
+        {
+            Method indexMethod = resourceMethodQueries.get( "index" );
+            if( indexMethod != null )
             {
-                List<Link> commandsProperty = builder.prototype().commands().get();
-                for( Method command : commands )
-                {
-                    ValueBuilder<Link> linkBuilder = module.newValueBuilder( Link.class );
-                    Link prototype = linkBuilder.prototype();
-                    prototype.classes().set( "command" );
-                    prototype.text().set( humanReadable( command.getName() ) );
-                    prototype.href().set( command.getName().toLowerCase() );
-                    prototype.rel().set( command.getName().toLowerCase() );
-                    prototype.id().set( command.getName().toLowerCase() );
-                    commandsProperty.add( linkBuilder.newInstance() );
-                }
-            }
-
-            if( subResources.size() > 0 )
-            {
-                List<Link> resourcesProperty = builder.prototype().resources().get();
-                for( Method subResource : subResources )
-                {
-                    ValueBuilder<Link> linkBuilder = module.newValueBuilder( Link.class );
-                    Link prototype = linkBuilder.prototype();
-                    prototype.classes().set( "resource" );
-                    prototype.text().set( humanReadable( subResource.getName() ) );
-                    prototype.href().set( subResource.getName().toLowerCase() + "/" );
-                    prototype.rel().set( subResource.getName().toLowerCase() );
-                    prototype.id().set( subResource.getName().toLowerCase() );
-                    resourcesProperty.add( linkBuilder.newInstance() );
-                }
-            }
-
-            try
-            {
-                Object index = convert( invokeResource( getInteractionMethod( "index" ) ) );
+                Object index = convert( indexMethod.invoke( this ) );
 
                 if( index != null && index instanceof ValueComposite )
                 {
                     builder.prototype().index().set( (ValueComposite) index );
                 }
             }
-            catch( Throwable e )
-            {
-                // Ignore
-            }
-
-            try
-            {
-                responseWriter.writeResponse( builder.newInstance(), Response.getCurrent() );
-            }
-            catch( Throwable e )
-            {
-                handleException( Response.getCurrent(), e );
-            }
         }
-        else
+        catch( Throwable e )
         {
-            Response.getCurrent().setStatus( Status.CLIENT_ERROR_METHOD_NOT_ALLOWED );
+            // Ignore
+        }
+
+        try
+        {
+            responseWriter.writeResponse( builder.newInstance(), response );
+        }
+        catch( Throwable e )
+        {
+            handleException( response, e );
         }
     }
 
@@ -521,18 +486,6 @@ public class ContextResource
         return humanReadableString.toString();
     }
 
-    private Object createContext( final String interactionName )
-    {
-        Class contextClass = interactionClasses.get( interactionName );
-
-        if( contextClass == null )
-        {
-            throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
-        }
-
-        return context( contextClass );
-    }
-
     private void result( Object resultValue )
         throws Exception
     {
@@ -546,113 +499,6 @@ public class ContextResource
         }
     }
 
-    private Object invoke( Object target, Method method, Method contextMethod )
-        throws Throwable
-    {
-        Object[] arguments;
-
-        // Check context class constraints
-        if( !constraints.isValid( contextMethod.getDeclaringClass(), current(), module ) )
-        {
-            throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
-        }
-
-        // Check method constraints
-        if( !constraints.isValid( contextMethod, current(), module ) )
-        {
-            throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
-        }
-
-        if( isCommand( contextMethod ) )
-        {
-            // Command
-
-            // Create argument
-            arguments = requestReader.readRequest( Request.getCurrent(), method );
-            Request.getCurrent().getAttributes().put( ARGUMENTS, arguments );
-
-            // Invoke method
-            try
-            {
-                method.invoke( target, arguments );
-                return null; // TODO Get events here
-            }
-            catch( IllegalAccessException e )
-            {
-                throw e;
-            }
-            catch( IllegalArgumentException e )
-            {
-                throw e;
-            }
-            catch( InvocationTargetException e )
-            {
-                throw e.getCause();
-            }
-        }
-        else
-        {
-            // Query
-
-            // Create argument
-            if( method.getParameterTypes().length > 0 )
-            {
-                try
-                {
-                    arguments = requestReader.readRequest( Request.getCurrent(), method );
-
-                    if( arguments == null )
-                    {
-                        // Show form
-                        return formForMethod( method );
-                    }
-                }
-                catch( IllegalArgumentException e )
-                {
-                    // Still missing some values - show form
-                    return formForMethod( method );
-                }
-            }
-            else
-            {
-                // No arguments to this query
-                arguments = new Object[ 0 ];
-            }
-
-            // Invoke method
-            try
-            {
-                Request.getCurrent().getAttributes().put( ARGUMENTS, arguments );
-                return method.invoke( target, arguments );
-            }
-            catch( IllegalAccessException e )
-            {
-                throw e;
-            }
-            catch( IllegalArgumentException e )
-            {
-                throw e;
-            }
-            catch( InvocationTargetException e )
-            {
-                throw e.getCause();
-            }
-        }
-    }
-
-    private Method getInteractionMethod( String methodName )
-        throws ResourceException
-    {
-        Method method = contextMethods.get( methodName );
-
-        if( method == null )
-        {
-            throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
-        }
-
-        return method;
-    }
-
     private List<String> getSegments()
     {
         return (List<String>) Request.getCurrent().getAttributes().get( "segments" );
@@ -660,9 +506,10 @@ public class ContextResource
 
     private void handleResource( String segment )
     {
+        Request request = Request.getCurrent();
         if( segment.equals( "" ) || segment.equals( "." ) )
         {
-            StringBuilder template = (StringBuilder) Request.getCurrent().getAttributes().get( "template" );
+            StringBuilder template = (StringBuilder) request.getAttributes().get( "template" );
             template.append( "resource" );
 
             // Index for this resource
@@ -670,87 +517,83 @@ public class ContextResource
         }
         else
         {
-            StringBuilder template = (StringBuilder) Request.getCurrent().getAttributes().get( "template" );
+            StringBuilder template = (StringBuilder) request.getAttributes().get( "template" );
             template.append( segment );
 
-            Method contextMethod = null;
-            try
+            if( resourceMethodCommands.containsKey( segment ) )
             {
-                contextMethod = getInteractionMethod( segment );
-            }
-            catch( ResourceException e )
-            {
-                // Not found as interaction, try SubResource
-                Method resourceMethod = resourceMethods.get( segment );
-                if( resourceMethod != null && resourceMethod.getAnnotation( SubResource.class ) != null )
-                {
-                    Response.getCurrent().setStatus( Status.REDIRECTION_FOUND );
-                    Response.getCurrent()
-                        .setLocationRef( new Reference( Request.getCurrent()
-                                                            .getResourceRef()
-                                                            .toString() + "/" ).toString() );
-                    return;
-                }
-                else
-                {
-                    throw e;
-                }
-            }
-
-            if( isCommand( contextMethod ) )
-            {
-                handleCommand( contextMethod );
+                handleCommand( segment );
             }
             else
             {
-                handleQuery( contextMethod );
+                handleQuery( segment );
             }
         }
     }
 
-    private void handleCommand( Method contextMethod )
+    private void handleCommand( String segment )
     {
+        Request request = Request.getCurrent();
+        Response response = Response.getCurrent();
+
         // Check if this is a request to show the form for this command
-        if( shouldShowCommandForm( contextMethod ) )
+        Method interactionMethod = resourceMethodCommands.get( segment );
+        if( shouldShowCommandForm( interactionMethod ) )
         {
             // Show form
-            Request.getCurrent().setMethod( org.restlet.data.Method.POST );
-            Response.getCurrent().setStatus( Status.CLIENT_ERROR_UNPROCESSABLE_ENTITY );
 
             // TODO This should check if method is idempotent
-            Response.getCurrent().getAllowedMethods().add( org.restlet.data.Method.POST );
+            response.getAllowedMethods().add( org.restlet.data.Method.POST );
+
             try
             {
-                result( formForMethod( contextMethod ) );
+                // Check if there is a query with this name - if so invoke it
+                Method queryMethod = resourceMethodQueries.get( segment );
+                if (queryMethod != null)
+                {
+                    result( queryMethod.invoke( this ));
+                } else
+                {
+                    request.setMethod( org.restlet.data.Method.POST );
+                    response.setStatus( Status.CLIENT_ERROR_UNPROCESSABLE_ENTITY );
+                    result( formForMethod( interactionMethod ) );
+                }
             }
             catch( Exception e )
             {
-                handleException( Response.getCurrent(), e );
+                handleException( response, e );
             }
         }
         else
         {
-            try
+            // Check timestamps
+            ResourceValidity validity = (ResourceValidity) request.getAttributes().get( RESOURCE_VALIDITY );
+            if( validity != null )
             {
-                // Check timestamps
-                ResourceValidity validity = ObjectSelection.type( ResourceValidity.class );
-                validity.checkRequest( Request.getCurrent() );
-            }
-            catch( IllegalArgumentException e )
-            {
-                // Ignore
+                validity.checkRequest();
             }
 
             // We have input data - do command
+            // Check method constraints
+            if( !constraints.isValid( interactionMethod, current(), module ) )
+            {
+                throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
+            }
+
+            // Create argument
+            Object[] arguments = requestReader.readRequest( Request.getCurrent(), interactionMethod );
+            Request.getCurrent().getAttributes().put( ARGUMENTS, arguments );
+
+            // Invoke method
             try
             {
-                Object result = invokeResource( contextMethod );
+                Object result = interactionMethod.invoke( this, arguments );
 
                 if( result != null )
                 {
                     if( result instanceof Representation )
                     {
-                        Response.getCurrent().setEntity( (Representation) result );
+                        response.setEntity( (Representation) result );
                     }
                     else
                     {
@@ -760,28 +603,12 @@ public class ContextResource
             }
             catch( Throwable e )
             {
-                handleException( Response.getCurrent(), e );
+                handleException( response, e );
             }
         }
     }
 
-    private Object invokeResource( Method contextMethod )
-        throws Throwable
-    {
-        Method method = resourceMethods.get( contextMethod.getName().toLowerCase() );
-
-        if( method != null )
-        {
-            return invoke( this, method, contextMethod );  // Invoke on resource
-        }
-        else
-        {
-            Object context = createContext( contextMethod.getName().toLowerCase() );
-            return invoke( context, contextMethod, contextMethod ); // Invoke directly on context
-        }
-    }
-
-    private boolean shouldShowCommandForm( Method contextMethod )
+    private boolean shouldShowCommandForm( Method interactionMethod )
     {
         // Show form on GET/HEAD
         if( Request.getCurrent().getMethod().isSafe() )
@@ -789,9 +616,9 @@ public class ContextResource
             return true;
         }
 
-        if( contextMethod.getParameterTypes().length > 0 )
+        if( interactionMethod.getParameterTypes().length > 0 )
         {
-            return !( contextMethod.getParameterTypes()[ 0 ].equals( Response.class ) || Request.getCurrent()
+            return !( interactionMethod.getParameterTypes()[ 0 ].equals( Response.class ) || Request.getCurrent()
                 .getEntity()
                 .isAvailable() || Request.getCurrent().getEntityAsText() != null || Request.getCurrent()
                                                                                         .getResourceRef()
@@ -801,60 +628,124 @@ public class ContextResource
         return false;
     }
 
-    private void handleQuery( Method contextMethod )
+    private void handleQuery( String segment )
     {
+        Request request = Request.getCurrent();
+        Response response = Response.getCurrent();
+
         // Query
-        // Check if this is a Request.getCurrent() to show the form for this interaction
-        if( ( Request.getCurrent()
+
+        // Try to locate either the query method or command method that should be used
+        Method queryMethod = resourceMethodQueries.get( segment );
+        if( queryMethod == null )
+        {
+            queryMethod = resourceMethodCommands.get( segment );
+        }
+
+        if( queryMethod == null )
+        {
+            // Not found as interaction, try SubResource
+            Method resourceMethod = subResources.get( segment );
+            if( resourceMethod != null && resourceMethod.getAnnotation( SubResource.class ) != null )
+            {
+                // Found it! Redirect to it
+                response.setStatus( Status.REDIRECTION_FOUND );
+                response
+                    .setLocationRef( new Reference( request
+                                                        .getResourceRef()
+                                                        .toString() + "/" ).toString() );
+                return;
+            }
+            else
+            {
+                // 404
+                throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
+            }
+        }
+
+        // Check if this is a request to show the form for this interaction
+        if( ( request
                   .getMethod()
-                  .isSafe() && contextMethod.getParameterTypes().length != 0 && Request.getCurrent()
-                                                                                    .getResourceRef()
-                                                                                    .getQuery() == null ) ||
-            ( !Request.getCurrent()
+                  .isSafe() && queryMethod.getParameterTypes().length != 0 && request
+                                                                                  .getResourceRef()
+                                                                                  .getQuery() == null ) ||
+            ( !request
                 .getMethod()
-                .isSafe() && contextMethod.getParameterTypes().length != 0 && !( Request.getCurrent()
-                                                                                     .getEntity()
-                                                                                     .isAvailable() || Request.getCurrent()
-                                                                                                           .getResourceRef()
-                                                                                                           .getQuery() != null || contextMethod
+                .isSafe() && queryMethod.getParameterTypes().length != 0 && !( request
+                                                                                   .getEntity()
+                                                                                   .isAvailable() || request
+                                                                                                         .getResourceRef()
+                                                                                                         .getQuery() != null || queryMethod
                 .getParameterTypes()[ 0 ].equals( Response.class ) ) ) )
         {
             // Show form
             try
             {
                 // Tell client to try again
-                Response.getCurrent().setStatus( Status.CLIENT_ERROR_UNPROCESSABLE_ENTITY );
-                Response.getCurrent().getAllowedMethods().add( org.restlet.data.Method.GET );
-                Response.getCurrent().getAllowedMethods().add( org.restlet.data.Method.POST );
-                result( formForMethod( contextMethod ) );
+                response.setStatus( Status.CLIENT_ERROR_UNPROCESSABLE_ENTITY );
+                response.getAllowedMethods().add( org.restlet.data.Method.GET );
+                response.getAllowedMethods().add( org.restlet.data.Method.POST );
+                result( formForMethod( queryMethod ) );
             }
             catch( Exception e )
             {
-                handleException( Response.getCurrent(), e );
+                handleException( response, e );
             }
         }
         else
         {
-            try
+            // Check timestamps
+            ResourceValidity validity = (ResourceValidity) request.getAttributes().get( RESOURCE_VALIDITY );
+            if( validity != null )
             {
-                // Check timestamps
-                ResourceValidity validity = ObjectSelection.type( ResourceValidity.class );
-                validity.checkRequest( Request.getCurrent() );
-            }
-            catch( IllegalArgumentException e )
-            {
-                // Ignore
+                validity.checkRequest();
             }
 
             // We have input data - do query
+            // Check method constraints
+            if( !constraints.isValid( queryMethod, current(), module ) )
+            {
+                throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
+            }
+
             try
             {
-                Object result = invokeResource( contextMethod );
+                // Create argument
+                Object[] arguments;
+                if( queryMethod.getParameterTypes().length > 0 )
+                {
+                    try
+                    {
+                        arguments = requestReader.readRequest( Request.getCurrent(), queryMethod );
+
+                        if( arguments == null )
+                        {
+                            // Show form
+                            result( formForMethod( queryMethod ) );
+                            return;
+                        }
+                    }
+                    catch( IllegalArgumentException e )
+                    {
+                        // Still missing some values - show form
+                        result( formForMethod( queryMethod ) );
+                        return;
+                    }
+                }
+                else
+                {
+                    // No arguments to this query
+                    arguments = new Object[ 0 ];
+                }
+
+                // Invoke method
+                Request.getCurrent().getAttributes().put( ARGUMENTS, arguments );
+                Object result = queryMethod.invoke( this, arguments );
                 if( result != null )
                 {
                     if( result instanceof Representation )
                     {
-                        Response.getCurrent().setEntity( (Representation) result );
+                        response.setEntity( (Representation) result );
                     }
                     else
                     {
@@ -862,13 +753,9 @@ public class ContextResource
                     }
                 }
             }
-            catch( IllegalAccessException e )
-            {
-                Response.getCurrent().setStatus( Status.CLIENT_ERROR_NOT_FOUND );
-            }
             catch( Throwable e )
             {
-                handleException( Response.getCurrent(), e );
+                handleException( response, e );
             }
         }
     }
@@ -962,7 +849,7 @@ public class ContextResource
         }
     }
 
-    private Form formForMethod( Method contextMethod )
+    private Form formForMethod( Method interactionMethod )
     {
         Form form = new Form();
 
@@ -978,7 +865,7 @@ public class ContextResource
             entityAsForm = new Form();
         }
 
-        Class valueType = contextMethod.getParameterTypes()[ 0 ];
+        Class valueType = interactionMethod.getParameterTypes()[ 0 ];
         if( ValueComposite.class.isAssignableFrom( valueType ) )
         {
             ValueDescriptor valueDescriptor = module.valueDescriptor( valueType.getName() );
@@ -999,7 +886,7 @@ public class ContextResource
                 form.add( propertyDescriptor.qualifiedName().name(), value );
             }
         }
-        else if( valueType.isInterface() && contextMethod.getParameterTypes().length == 1 )
+        else if( valueType.isInterface() && interactionMethod.getParameterTypes().length == 1 )
         {
             // Single entity as input
             form.add( "entity", getValue( "entity", queryAsForm, entityAsForm ) );
@@ -1008,7 +895,7 @@ public class ContextResource
         {
             // Construct form out of individual parameters instead
             int idx = 0;
-            for( Annotation[] annotations : contextMethod.getParameterAnnotations() )
+            for( Annotation[] annotations : interactionMethod.getParameterAnnotations() )
             {
                 Name name = (Name) first( filter( isType( Name.class ), iterable( annotations ) ) );
 

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.qi4j.library.rest.server.api;
+package org.qi4j.library.rest.server.restlet;
 
 import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.constraint.Constraint;
@@ -24,6 +24,11 @@ import org.qi4j.api.constraint.Constraints;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.object.NoSuchObjectException;
 import org.qi4j.api.structure.Module;
+import org.qi4j.library.rest.server.api.ObjectSelection;
+import org.qi4j.library.rest.server.api.constraint.InteractionConstraint;
+import org.qi4j.library.rest.server.api.constraint.InteractionConstraintDeclaration;
+import org.qi4j.library.rest.server.api.constraint.InteractionValidation;
+import org.qi4j.library.rest.server.api.constraint.RequiresValid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

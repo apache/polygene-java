@@ -15,16 +15,19 @@
  * limitations under the License.
  */
 
-package org.qi4j.library.rest.server.api;
+package org.qi4j.library.rest.server.restlet;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import org.qi4j.api.structure.Module;
+
+import java.lang.reflect.Method;
+import org.qi4j.library.rest.server.api.ObjectSelection;
 
 /**
- * JAVADOC
+ * Service interface for checking whether a particular method or a whole class is not
+ * valid at this point, for whatever reason (application state or authorization rules usually).
  */
-@Retention(RetentionPolicy.RUNTIME)
-public @interface InteractionConstraintDeclaration
+public interface InteractionConstraints
 {
-   Class<? extends InteractionConstraint<?>> value();
+   public boolean isValid( Method method, ObjectSelection objectSelection, Module module );
+   public boolean isValid( Class resourceClass, ObjectSelection objectSelection, Module module );
 }

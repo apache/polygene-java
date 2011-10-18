@@ -15,12 +15,12 @@
  * limitations under the License.
  */
 
-package org.qi4j.library.rest.server.api.dci;
+package org.qi4j.library.rest.server.api;
 
 /**
- * Standard context for update of existing resoruces.
+ * Standard interface for creation of new resources.
  */
-public interface UpdateContext<T>
+public interface ResourceCreate<INPUT, RESULT>
 {
-   void update(T value);
+   RESULT create( INPUT value );
 }

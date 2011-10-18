@@ -5,8 +5,10 @@ import freemarker.template.TemplateCollectionModel;
 import freemarker.template.TemplateHashModelEx;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
+import freemarker.template.TemplateScalarModel;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.api.value.ValueDescriptor;
 import org.qi4j.functional.Function;
@@ -16,7 +18,7 @@ import org.qi4j.functional.Iterables;
  * TODO
  */
 public class ValueCompositeTemplateModel
-    implements TemplateHashModelEx
+    implements TemplateHashModelEx, TemplateScalarModel
 {
     private ValueComposite composite;
     private ObjectWrapper wrapper;
@@ -40,7 +42,16 @@ public class ValueCompositeTemplateModel
     public TemplateCollectionModel keys()
         throws TemplateModelException
     {
-        return (TemplateCollectionModel) wrapper.wrap( descriptor.state().properties() );
+        return (TemplateCollectionModel) wrapper.wrap( Iterables.map( new Function<PropertyDescriptor, String>()
+        {
+            @Override
+            public String map( PropertyDescriptor propertyDescriptor )
+            {
+                return propertyDescriptor.qualifiedName().name();
+            }
+
+
+        }, descriptor.state().properties()).iterator() );
     }
 
     @Override
@@ -52,9 +63,16 @@ public class ValueCompositeTemplateModel
             @Override
             public Object map( Property<?> objectProperty )
             {
-                return objectProperty.get();
+                try
+                {
+                    return wrapper.wrap( objectProperty.get() );
+                }
+                catch( TemplateModelException e )
+                {
+                    throw new IllegalStateException( e );
+                }
             }
-        }, Qi4j.INSTANCE_FUNCTION.map( composite ).state().properties()));
+        }, Qi4j.INSTANCE_FUNCTION.map( composite ).state().properties()).iterator());
     }
 
     @Override
@@ -80,5 +98,12 @@ public class ValueCompositeTemplateModel
         throws TemplateModelException
     {
         return size() == 0;
+    }
+
+    @Override
+    public String getAsString()
+        throws TemplateModelException
+    {
+        return composite.toString();
     }
 }

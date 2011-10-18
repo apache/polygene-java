@@ -29,7 +29,6 @@ import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.usecase.UsecaseBuilder;
-import org.qi4j.library.rest.server.restlet.DefaultContextResource;
 import org.qi4j.library.rest.server.restlet.ResponseWriterDelegator;
 import org.qi4j.library.rest.server.spi.CommandResult;
 import org.restlet.Request;
@@ -123,14 +122,12 @@ public abstract class ContextRestlet
                         if( response.getEntity().getModificationDate() == null )
                         {
 
-                            try
+                            ResourceValidity validity = (ResourceValidity) Request.getCurrent()
+                                .getAttributes()
+                                .get( ContextResource.RESOURCE_VALIDITY );
+                            if( validity != null )
                             {
-                                ResourceValidity validity = ObjectSelection.type( ResourceValidity.class );
                                 validity.updateResponse( response );
-                            }
-                            catch( IllegalArgumentException e )
-                            {
-                                // Ignore
                             }
                         }
 
@@ -230,7 +227,7 @@ public abstract class ContextRestlet
                     handleException( response, e );
                     return;
                 }
-            }
+            } // Try again
         }
         finally
         {
@@ -253,12 +250,6 @@ public abstract class ContextRestlet
         }
 
         subResource.handle( Request.getCurrent(), Response.getCurrent() );
-    }
-
-    public void subResourceContexts( Class<?>[] contextClasses )
-    {
-        module.newObject( DefaultContextResource.class, new Object[]{ contextClasses } )
-            .handle( Request.getCurrent(), Response.getCurrent() );
     }
 
     private String getUsecaseName( Request request )
