@@ -21,16 +21,15 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-import org.qi4j.api.unitofwork.UnitOfWorkPropagation;
+import org.qi4j.api.unitofwork.concern.UnitOfWorkPropagation;
 import org.qi4j.index.rdf.qi64.AccountComposite;
 
-import static org.qi4j.api.unitofwork.UnitOfWorkPropagation.Propagation.REQUIRES_NEW;
 import static org.qi4j.index.rdf.qi64.withPropagationRequiresNew.AccountService.AccountServiceMixin;
 
 @Mixins( AccountServiceMixin.class )
 public interface AccountService
 {
-    @UnitOfWorkPropagation( REQUIRES_NEW )
+    @UnitOfWorkPropagation( UnitOfWorkPropagation.Propagation.REQUIRES_NEW )
     AccountComposite getAccountById( String anId );
 
     public class AccountServiceMixin

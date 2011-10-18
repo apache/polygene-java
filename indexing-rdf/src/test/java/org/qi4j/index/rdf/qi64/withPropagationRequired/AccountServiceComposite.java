@@ -18,7 +18,7 @@ package org.qi4j.index.rdf.qi64.withPropagationRequired;
 
 import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.api.unitofwork.UnitOfWorkConcern;
+import org.qi4j.api.unitofwork.concern.UnitOfWorkConcern;
 
 @Concerns( UnitOfWorkConcern.class )
 public interface AccountServiceComposite
