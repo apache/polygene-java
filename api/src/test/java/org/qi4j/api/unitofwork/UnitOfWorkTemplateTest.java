@@ -2,10 +2,12 @@ package org.qi4j.api.unitofwork;
 
 import org.junit.Test;
 import org.qi4j.api.entity.EntityBuilderTemplate;
+import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.property.Property;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.test.EntityTestAssembler;
 
 /**
  * TODO
@@ -16,6 +18,7 @@ public class UnitOfWorkTemplateTest
     @Override
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
+        new EntityTestAssembler(  ).assemble( module );
         module.entities( TestEntity.class );
     }
 
@@ -43,6 +46,7 @@ public class UnitOfWorkTemplateTest
     }
 
     interface TestEntity
+        extends EntityComposite
     {
         Property<String> name();
     }

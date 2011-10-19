@@ -186,6 +186,18 @@ public final class Classes
         };
     }
 
+    public static Specification<Object> instanceOf( final Class clazz)
+    {
+        return new Specification<Object>()
+        {
+            @Override
+            public boolean satisfiedBy( Object item )
+            {
+                return clazz.isInstance( item );
+            }
+        };
+    }
+
 
     public static Specification<Class<?>> hasModifier( final int classModifier )
     {

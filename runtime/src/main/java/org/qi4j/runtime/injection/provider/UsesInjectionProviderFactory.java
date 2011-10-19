@@ -57,7 +57,8 @@ public final class UsesInjectionProviderFactory
 
                 try
                 {
-                    uses = uses.use( context.instance() );
+                    if (context.instance() != null)
+                        uses = uses.use( context.instance() );
                     usesObject = moduleInstance.newTransient( injectionType, uses.toArray() );
                 } catch( NoSuchCompositeException e )
                 {

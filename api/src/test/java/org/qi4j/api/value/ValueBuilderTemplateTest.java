@@ -38,6 +38,7 @@ public class ValueBuilderTemplateTest
     }
 
     interface TestValue
+        extends ValueComposite
     {
         Property<String> name();
     }

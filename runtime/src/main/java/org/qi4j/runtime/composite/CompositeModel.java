@@ -25,6 +25,7 @@ import org.qi4j.api.composite.CompositeDescriptor;
 import org.qi4j.api.composite.InvalidCompositeException;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.util.Classes;
 import org.qi4j.functional.Function;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.functional.Iterables;
@@ -34,6 +35,10 @@ import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.structure.ModuleInstance;
 
 import java.lang.reflect.*;
+
+import static java.lang.reflect.Proxy.newProxyInstance;
+import static org.qi4j.api.util.Classes.isAssignableFrom;
+import static org.qi4j.functional.Iterables.*;
 
 /**
  * JAVADOC
@@ -209,16 +214,18 @@ public abstract class CompositeModel
 
     public <T> T newProxy( InvocationHandler invocationHandler, Class<T> mixinType )
     {
-        if (!types.contains( mixinType ))
+
+//        if (!matchesAny( isAssignableFrom( mixinType ), types ))
+        if (!mixinsModel.isImplemented(mixinType))
             throw new IllegalArgumentException( "Composite does not implement type "+mixinType.getName() );
 
         // Instantiate proxy for given mixin interface
-        return mixinType.cast( Proxy.newProxyInstance( mixinType.getClassLoader(), new Class[]{mixinType}, invocationHandler ) );
+        return mixinType.cast( newProxyInstance( mixinType.getClassLoader(), new Class[]{ mixinType }, invocationHandler ) );
     }
 
     @Override
     public String toString()
     {
-        return Iterables.toList( types ).toString();
+        return toList( types ).toString();
     }
 }

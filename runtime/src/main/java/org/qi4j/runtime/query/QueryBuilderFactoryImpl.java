@@ -52,11 +52,15 @@ public final class QueryBuilderFactoryImpl
     {
         NotQueryableException.throwIfNotQueryable( resultType );
 
-        final ServiceReference<EntityFinder> serviceReference = finder.findService( EntityFinder.class );
-        if( serviceReference == null )
+        final ServiceReference<EntityFinder> serviceReference;
+        try
+        {
+            serviceReference = finder.findService( EntityFinder.class );
+            return new QueryBuilderImpl<T>( serviceReference.get(), resultType, null );
+        }
+        catch( IllegalArgumentException e )
         {
             return new QueryBuilderImpl<T>( null, resultType, null );
         }
-        return new QueryBuilderImpl<T>( serviceReference.get(), resultType, null );
     }
 }

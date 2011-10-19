@@ -64,13 +64,13 @@ public class IterableQuerySource
     @Override
     public <T> Iterator<T> iterator( Class<T> resultType, Specification<Composite> whereClause, Iterable<OrderBy> orderBySegments, Integer firstResult, Integer maxResults, Map<String, Object> variables )
     {
-        return list(resultType, whereClause, orderBySegments, firstResult, maxResults, variables).iterator();  //To change body of implemented methods use File | Settings | File Templates.
+        return list(resultType, whereClause, orderBySegments, firstResult, maxResults, variables).iterator();
     }
 
     private <T> List<T> list(Class<T> resultType, Specification<Composite> whereClause, Iterable<OrderBy> orderBySegments, Integer firstResult, Integer maxResults, Map<String, Object> variables)
     {
         // Ensure it's a list first
-        List<T> list = filter( this.<T>toList(resultType), whereClause );
+        List<T> list = filter( resultType, whereClause );
 
         // Order list
         if( orderBySegments != null )
@@ -117,20 +117,15 @@ public class IterableQuerySource
         return list;
     }
 
-    private <T> List<T> filter( final List<T> list, Specification<Composite> whereClause )
+    private <T> List<T> filter( Class<T> resultType, Specification whereClause )
     {
         if (whereClause == null)
         {
-            return Iterables.toList( list );
+            return Iterables.toList( Iterables.filter( Classes.instanceOf( resultType ), iterable ) );
         } else
         {
-            return Iterables.toList( Iterables.filter( (Specification<T>) whereClause, list ) );
+            return Iterables.toList( Iterables.filter( Specifications.and(Classes.instanceOf( resultType ), whereClause), iterable ) );
         }
-    }
-
-    private <T> List<T> toList( Class<T> resultType )
-    {
-        return (List<T>) Iterables.filter( Classes.isAssignableFrom( resultType ), iterable );
     }
 
     private class OrderByComparator<T extends Composite>

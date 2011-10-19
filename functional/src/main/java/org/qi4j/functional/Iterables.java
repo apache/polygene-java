@@ -550,6 +550,11 @@ public final class Iterables
                 }, iterable );
     }
 
+    public static <T> Iterable<T> cache(Iterable<T> iterable)
+    {
+        return new CacheIterable<T>(iterable);
+    }
+
     public static <T> List<T> toList( Iterable<T> iterable )
     {
         return addAll( new ArrayList<T>(), iterable );
@@ -770,6 +775,57 @@ public final class Iterables
 
                 currentIterator.remove();
             }
+        }
+    }
+
+    private static class CacheIterable<T>
+        implements Iterable<T>
+    {
+        private Iterable<T> iterable;
+        private Iterable<T> cache;
+
+        private CacheIterable( Iterable<T> iterable )
+        {
+            this.iterable = iterable;
+        }
+
+        @Override
+        public Iterator<T> iterator()
+        {
+            if (cache != null)
+                return cache.iterator();
+
+            final Iterator<T> source = iterable.iterator();
+
+            return new Iterator<T>()
+            {
+                List<T> iteratorCache = new ArrayList<T>();
+
+                @Override
+                public boolean hasNext()
+                {
+                    boolean hasNext = source.hasNext();
+                    if (!hasNext)
+                    {
+                        cache = iteratorCache;
+                    }
+                    return hasNext;
+                }
+
+                @Override
+                public T next()
+                {
+                    T next = source.next();
+                    iteratorCache.add( next );
+                    return next;
+                }
+
+                @Override
+                public void remove()
+                {
+
+                }
+            };
         }
     }
 }

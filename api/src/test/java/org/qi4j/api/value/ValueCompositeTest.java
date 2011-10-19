@@ -35,8 +35,7 @@ import org.qi4j.test.EntityTestAssembler;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 /**
  * Tests for ValueComposites
@@ -245,7 +244,15 @@ public class ValueCompositeTest
             unitOfWork.discard();
         }
 
-        System.out.println( associationValue.toString() );
+        try
+        {
+            System.out.println( associationValue.toString() );
+            fail( "Should have thrown an exception" );
+        }
+        catch( Exception e )
+        {
+            // Ok
+        }
     }
 
     public enum TestEnum

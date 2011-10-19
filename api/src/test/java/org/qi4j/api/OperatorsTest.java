@@ -33,6 +33,7 @@ public class OperatorsTest
             {
                 new EntityTestAssembler(  ).assemble( module );
 
+
                 module.entities( TestEntity.class );
                 module.values( TestValue.class );
                 module.forMixin( TestEntity.class ).declareDefaults().foo().set( "Bar" );

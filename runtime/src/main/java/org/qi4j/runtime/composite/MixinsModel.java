@@ -58,6 +58,11 @@ public class MixinsModel
         return mixinTypes;
     }
 
+    public <T> boolean isImplemented( Class<T> mixinType )
+    {
+        return mixinTypes.contains( mixinType );
+    }
+
     public List<MixinModel> mixinModels()
     {
         return mixinModels;

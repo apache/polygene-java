@@ -222,4 +222,30 @@ public class IterablesTest
             }
         } ) ) ) ), equalTo( "2" ) );
     }
+
+    @Test
+    public void testCache()
+    {
+        final int[] count = new int[1];
+
+        Iterable<String> b = Iterables.cache(Iterables.filter( Specifications.and( new Specification<String>()
+        {
+            @Override
+            public boolean satisfiedBy( String item )
+            {
+                count[0] = count[0]+1;
+                return true;
+            }
+        }, Specifications.in( "B" )), Iterables.iterable( "A", "B", "C" )));
+
+        assertThat( count[0], equalTo( 0 ) );
+
+        Iterables.toList( b );
+
+        assertThat( count[0], equalTo( 3 ) );
+
+        Iterables.toList( b );
+
+        assertThat( count[0], equalTo( 3 ) );
+    }
 }

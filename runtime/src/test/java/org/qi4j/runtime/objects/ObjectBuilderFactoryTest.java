@@ -14,6 +14,7 @@
 
 package org.qi4j.runtime.objects;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 import org.qi4j.api.injection.scope.Structure;
@@ -122,7 +123,7 @@ public class ObjectBuilderFactoryTest
         };
 
         ManyConstructorObject object = assembler.module().newObject( ManyConstructorObject.class );
-        Assert.assertThat( "ref is null", object.anyObject, nullValue() );
+        Assert.assertThat( "ref is not null", object.anyObject, notNullValue() );
 
         object = assembler.module()
             .newObject( ManyConstructorObject.class, new AnyObject() );
