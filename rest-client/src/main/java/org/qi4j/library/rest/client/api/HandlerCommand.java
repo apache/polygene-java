@@ -1,5 +1,7 @@
 package org.qi4j.library.rest.client.api;
 
+import java.lang.reflect.ParameterizedType;
+import org.qi4j.api.util.Classes;
 import org.qi4j.library.rest.client.spi.ResponseHandler;
 import org.qi4j.library.rest.client.spi.ResultHandler;
 import org.qi4j.library.rest.common.link.Link;
@@ -59,8 +61,9 @@ public abstract class HandlerCommand
         return this;
     }
 
-    public <T> HandlerCommand onSuccess(final Class<T> resultType, final ResultHandler resultHandler)
+    public <T> HandlerCommand onSuccess(final ResultHandler<T> resultHandler)
     {
+        final Class<T> resultType = (Class<T>) Classes.RAW_CLASS.map(( (ParameterizedType) resultHandler.getClass().getGenericInterfaces()[ 0 ] ).getActualTypeArguments()[0]);
         this.responseHandler = new ResponseHandler()
         {
             @Override
@@ -76,6 +79,21 @@ public abstract class HandlerCommand
     public HandlerCommand onProcessingError(ResponseHandler processingErrorHandler)
     {
         this.processingErrorHandler = processingErrorHandler;
+        return this;
+    }
+
+    public <T> HandlerCommand onProcessingError(final ResultHandler<T> resultHandler)
+    {
+        final Class<T> resultType = (Class<T>) Classes.RAW_CLASS.map(( (ParameterizedType) resultHandler.getClass().getGenericInterfaces()[ 0 ] ).getActualTypeArguments()[0]);
+        this.processingErrorHandler = new ResponseHandler()
+        {
+            @Override
+            public HandlerCommand handleResponse( Response response, ContextResourceClient client )
+            {
+                T result = client.getContextResourceClientFactory().readResponse( response, resultType );
+                return resultHandler.handleResult( result, client );
+            }
+        };
         return this;
     }
 

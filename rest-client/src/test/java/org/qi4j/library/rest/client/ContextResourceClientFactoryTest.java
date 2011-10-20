@@ -191,7 +191,7 @@ public class ContextResourceClientFactoryTest
                 return query( "querywithoutvalue" );
             }
         } ).
-        onQuery( "querywithoutvalue", TestResult.class, new ResultHandler<TestResult>()
+        onQuery( "querywithoutvalue", new ResultHandler<TestResult>()
         {
             @Override
             public HandlerCommand handleResult( TestResult result, ContextResourceClient client )
@@ -214,7 +214,7 @@ public class ContextResourceClientFactoryTest
             {
                 return query( "querywithvalue", null );
             }
-        } ).onProcessingError( "querywithvalue", TestQuery.class, new ResultHandler<TestQuery>()
+        } ).onProcessingError( "querywithvalue", new ResultHandler<TestQuery>()
         {
             @Override
             public HandlerCommand handleResult( TestQuery result, ContextResourceClient client )
@@ -225,14 +225,14 @@ public class ContextResourceClientFactoryTest
 
                 return query( "querywithvalue", builder.newInstance() );
             }
-        } ).onQuery( "querywithvalue", TestResult.class, new ResultHandler<TestResult>()
+        } ).onQuery( "querywithvalue", new ResultHandler<TestResult>()
         {
             @Override
             public HandlerCommand handleResult( TestResult result, ContextResourceClient client )
             {
                 return command( "commandwithvalue", null );
             }
-        } ).onProcessingError( "commandwithvalue", Form.class, new ResultHandler<Form>()
+        } ).onProcessingError( "commandwithvalue", new ResultHandler<Form>()
         {
             @Override
             public HandlerCommand handleResult( Form result, ContextResourceClient client )
@@ -256,7 +256,7 @@ public class ContextResourceClientFactoryTest
             {
                 return query( "commandwithvalue" );
             }
-        } ).onQuery( "commandwithvalue", Links.class, new ResultHandler<Links>()
+        } ).onQuery( "commandwithvalue", new ResultHandler<Links>()
         {
             @Override
             public HandlerCommand handleResult( Links result, ContextResourceClient client )
@@ -286,7 +286,7 @@ public class ContextResourceClientFactoryTest
             @Override
             public HandlerCommand handleResult( Resource result, ContextResourceClient client )
             {
-                return query( "commandwithvalue" ).onSuccess( Links.class, new ResultHandler<Links>()
+                return query( "commandwithvalue" ).onSuccess( new ResultHandler<Links>()
                 {
                     @Override
                     public HandlerCommand handleResult( Links result, ContextResourceClient client )

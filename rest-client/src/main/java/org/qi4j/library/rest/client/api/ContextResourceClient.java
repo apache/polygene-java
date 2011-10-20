@@ -18,9 +18,11 @@
 package org.qi4j.library.rest.client.api;
 
 import java.io.IOException;
+import java.lang.reflect.ParameterizedType;
 import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.api.injection.scope.Uses;
+import org.qi4j.api.util.Classes;
 import org.qi4j.library.rest.client.spi.NullResponseHandler;
 import org.qi4j.library.rest.client.spi.ResponseHandler;
 import org.qi4j.library.rest.client.spi.ResultHandler;
@@ -88,10 +90,11 @@ public class ContextResourceClient
         return this;
     }
 
-    public <T> ContextResourceClient onQuery( String relation,
-                                              final Class<T> resultType, final ResultHandler<T> handler
+    public <T> ContextResourceClient onQuery( String relation, final ResultHandler<T> handler
     )
     {
+        final Class<T> resultType = (Class<T>) Classes.RAW_CLASS.map(( (ParameterizedType) handler.getClass().getGenericInterfaces()[ 0 ] ).getActualTypeArguments()[0]);
+
         queryHandlers.put( relation,  new ResponseHandler()
         {
             @Override
@@ -111,10 +114,10 @@ public class ContextResourceClient
         return this;
     }
 
-    public <T> ContextResourceClient onCommand( String relation,
-                                                final Class<T> resultType, final ResultHandler<T> handler
-    )
+    public <T> ContextResourceClient onCommand( String relation, final ResultHandler<T> handler )
     {
+        final Class<T> resultType = (Class<T>) Classes.RAW_CLASS.map(( (ParameterizedType) handler.getClass().getGenericInterfaces()[ 0 ] ).getActualTypeArguments()[0]);
+
         commandHandlers.put( relation,  new ResponseHandler()
         {
             @Override
@@ -134,10 +137,10 @@ public class ContextResourceClient
         return this;
     }
 
-    public <T> ContextResourceClient onProcessingError( String relation,
-                                                        final Class<T> resultType, final ResultHandler<T> handler
-    )
+    public <T> ContextResourceClient onProcessingError( String relation, final ResultHandler<T> handler)
     {
+        final Class<T> resultType = (Class<T>) Classes.RAW_CLASS.map(( (ParameterizedType) handler.getClass().getGenericInterfaces()[ 0 ] ).getActualTypeArguments()[0]);
+
         processingErrorHandlers.put( relation,  new ResponseHandler()
         {
             @Override
