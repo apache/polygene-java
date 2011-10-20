@@ -73,10 +73,10 @@ public class ContextResourceClient
         resourceHandler = new ResponseHandler()
         {
             @Override
-            public void handleResponse( Response response, ContextResourceClient client )
+            public HandlerCommand handleResponse( Response response, ContextResourceClient client )
             {
                 resource = contextResourceFactory.readResponse( response, Resource.class );
-                handler.handleResult( resource, client );
+                return handler.handleResult( resource, client );
             }
         };
         return this;
@@ -95,10 +95,10 @@ public class ContextResourceClient
         queryHandlers.put( relation,  new ResponseHandler()
         {
             @Override
-            public void handleResponse( Response response, ContextResourceClient client )
+            public HandlerCommand handleResponse( Response response, ContextResourceClient client )
             {
                 T result = contextResourceFactory.readResponse( response, resultType );
-                handler.handleResult( result, client );
+                return handler.handleResult( result, client );
             }
         });
 
@@ -118,10 +118,10 @@ public class ContextResourceClient
         commandHandlers.put( relation,  new ResponseHandler()
         {
             @Override
-            public void handleResponse( Response response, ContextResourceClient client )
+            public HandlerCommand handleResponse( Response response, ContextResourceClient client )
             {
                 T result = contextResourceFactory.readResponse( response, resultType );
-                handler.handleResult( result, client );
+                return handler.handleResult( result, client );
             }
         });
 
@@ -141,10 +141,10 @@ public class ContextResourceClient
         processingErrorHandlers.put( relation,  new ResponseHandler()
         {
             @Override
-            public void handleResponse( Response response, ContextResourceClient client )
+            public HandlerCommand handleResponse( Response response, ContextResourceClient client )
             {
                 T result = contextResourceFactory.readResponse( response, resultType );
-                handler.handleResult( result, client );
+                return handler.handleResult( result, client );
             }
         });
 
@@ -172,43 +172,43 @@ public class ContextResourceClient
         return resource;
     }
 
-    // Queries
-    public void refresh()
+    public void start()
+    {
+        HandlerCommand command = refresh();
+        while (command != null)
+            command = command.execute( this );
+    }
+
+    // Callable from HandlerCommand
+    HandlerCommand refresh()
     {
         if (resourceHandler == null)
             throw new IllegalStateException( "No handler set for resources" );
 
-        invokeQuery( reference, null, resourceHandler, null );
+        return invokeQuery( reference, null, resourceHandler, null );
     }
 
-    public void query( String relation )
+    HandlerCommand query( String relation, Object queryRequest, ResponseHandler handler, ResponseHandler processingErrorHandler )
     {
-        query( resource.query( relation ), null );
+        return query( resource.query( relation ), queryRequest, handler, processingErrorHandler );
     }
 
-    public void query( String relation, Object queryRequest )
+    HandlerCommand query( Link link, Object queryRequest, ResponseHandler handler, ResponseHandler processingErrorHandler )
     {
-        query( resource.query( relation ), queryRequest );
-    }
+        if (handler == null)
+            handler = queryHandlers.get( link.rel().get() );
 
-    public void query( Link link )
-    {
-        query( link, null );
-    }
-
-    public void query( Link link, Object queryRequest )
-    {
-        ResponseHandler handler = queryHandlers.get( link.rel().get() );
         if (handler == null)
             throw new IllegalArgumentException( "No handler set for relation "+link.rel().get() );
 
-        ResponseHandler processingErrorhandler = processingErrorHandlers.get( link.rel().get() );
+        if (processingErrorHandler == null)
+            processingErrorHandler = processingErrorHandlers.get( link.rel().get() );
 
         Reference ref = new Reference( reference.toUri().toString() + link.href().get() );
-        invokeQuery( ref, queryRequest, handler, processingErrorhandler );
+        return invokeQuery( ref, queryRequest, handler, processingErrorHandler );
     }
 
-    private void invokeQuery( Reference ref, Object queryRequest, ResponseHandler resourceHandler, ResponseHandler processingErrorHandler )
+    private HandlerCommand invokeQuery( Reference ref, Object queryRequest, ResponseHandler resourceHandler, ResponseHandler processingErrorHandler )
     {
         Request request = new Request( Method.GET, ref );
 
@@ -231,40 +231,28 @@ public class ContextResourceClient
         {
             contextResourceFactory.updateCache( response );
 
-            resourceHandler.handleResponse( response, this );
+            return resourceHandler.handleResponse( response, this );
         } else
         {
             if (response.getStatus().equals(Status.CLIENT_ERROR_UNPROCESSABLE_ENTITY) && processingErrorHandler != null)
             {
-                processingErrorHandler.handleResponse( response, this );
+                return processingErrorHandler.handleResponse( response, this );
             } else
             {
                 // TODO This needs to be expanded to allow custom handling of all the various cases
-                errorHandler.handleResponse( response, this );
+                return errorHandler.handleResponse( response, this );
             }
         }
     }
 
     // Commands
-    public void command( String relation )
+    HandlerCommand command( Link link, Object commandRequest, ResponseHandler handler, ResponseHandler processingErrorHandler )
     {
-        command( relation, null );
-    }
+        if (handler == null)
+            handler = commandHandlers.get( link.rel().get() );
 
-    public void command( String relation, Object commandRequest )
-    {
-        command( resource.command( relation ), commandRequest );
-    }
-
-    public void command( Link link )
-    {
-        command( link, null );
-    }
-
-    public void command( Link link, Object commandRequest )
-    {
-        ResponseHandler handler = commandHandlers.get( link.rel().get() );
-        ResponseHandler processingErrorHandler = processingErrorHandlers.get( link.rel().get() );
+        if (processingErrorHandler == null)
+            processingErrorHandler = processingErrorHandlers.get( link.rel().get() );
 
         // Check if we should do POST or PUT
         Method method;
@@ -278,10 +266,10 @@ public class ContextResourceClient
         }
 
         Reference ref = new Reference( reference.toUri().toString() + link.href().get() );
-        invokeCommand( ref, method, commandRequest, handler, processingErrorHandler );
+        return invokeCommand( ref, method, commandRequest, handler, processingErrorHandler );
     }
 
-    private void invokeCommand( Reference ref, Method method, Object requestObject, ResponseHandler responseHandler, ResponseHandler processingErrorHandler )
+    private HandlerCommand invokeCommand( Reference ref, Method method, Object requestObject, ResponseHandler responseHandler, ResponseHandler processingErrorHandler )
     {
         Request request = new Request( method, ref );
 
@@ -306,19 +294,21 @@ public class ContextResourceClient
                 contextResourceFactory.updateCache( response );
 
                 if (responseHandler != null)
-                    responseHandler.handleResponse( response, this );
+                    return responseHandler.handleResponse( response, this );
             }
             else
             {
                 if (response.getStatus().equals(Status.CLIENT_ERROR_UNPROCESSABLE_ENTITY) && processingErrorHandler != null)
                 {
-                    processingErrorHandler.handleResponse( response, this );
+                    return processingErrorHandler.handleResponse( response, this );
                 } else
                 {
                     // TODO This needs to be expanded to allow custom handling of all the various cases
-                    errorHandler.handleResponse( response, this );
+                    return errorHandler.handleResponse( response, this );
                 }
             }
+
+            return null; // No handler found
         }
         finally
         {
@@ -334,15 +324,12 @@ public class ContextResourceClient
     }
 
     // Delete
-    public synchronized void delete()
+    public HandlerCommand delete( ResponseHandler responseHandler, ResponseHandler processingErrorHandler )
         throws ResourceException
     {
-        delete( deleteHandler );
-    }
+        if (responseHandler == null)
+            responseHandler = deleteHandler;
 
-    public synchronized void delete( ResponseHandler responseHandler )
-        throws ResourceException
-    {
         Request request = new Request( Method.DELETE, new Reference( reference.toUri() ).toString() );
         contextResourceFactory.updateCommandRequest( request );
 
@@ -355,17 +342,15 @@ public class ContextResourceClient
                 contextResourceFactory.getClient().handle( request, response );
                 if( !response.getStatus().isSuccess() )
                 {
-                    errorHandler.handleResponse( response, this );
+                    return errorHandler.handleResponse( response, this );
                 }
                 else
                 {
                     // Reset modification date
                     contextResourceFactory.updateCache( response );
 
-                    responseHandler.handleResponse( response, this );
+                    return responseHandler.handleResponse( response, this );
                 }
-
-                break;
             }
             catch( ResourceException e )
             {

@@ -18,6 +18,7 @@
 package org.qi4j.library.rest.client.spi;
 
 import org.qi4j.library.rest.client.api.ContextResourceClient;
+import org.qi4j.library.rest.client.api.HandlerCommand;
 import org.restlet.Response;
 import org.restlet.resource.ResourceException;
 
@@ -27,5 +28,5 @@ import org.restlet.resource.ResourceException;
  */
 public interface ResponseHandler
 {
-   void handleResponse( Response response, ContextResourceClient client);
+   HandlerCommand handleResponse( Response response, ContextResourceClient client);
 }

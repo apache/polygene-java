@@ -52,14 +52,13 @@ public class ErrorHandler
     }
 
     @Override
-    public void handleResponse( Response response, ContextResourceClient client )
+    public HandlerCommand handleResponse( Response response, ContextResourceClient client )
     {
         for( Map.Entry<Specification<Response>, ResponseHandler> specificationResponseHandlerEntry : handlers.entrySet() )
         {
             if (specificationResponseHandlerEntry.getKey().satisfiedBy( response ))
             {
-                specificationResponseHandlerEntry.getValue().handleResponse( response, client );
-                return;
+                return specificationResponseHandlerEntry.getValue().handleResponse( response, client );
             }
         }
 

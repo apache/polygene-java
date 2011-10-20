@@ -26,10 +26,10 @@ import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.functional.Iterables;
 import org.qi4j.library.rest.client.api.ContextResourceClient;
 import org.qi4j.library.rest.client.api.ContextResourceClientFactory;
 import org.qi4j.library.rest.client.api.ErrorHandler;
+import org.qi4j.library.rest.client.api.HandlerCommand;
 import org.qi4j.library.rest.client.spi.NullResponseHandler;
 import org.qi4j.library.rest.client.spi.ResponseHandler;
 import org.qi4j.library.rest.client.spi.ResultHandler;
@@ -41,13 +41,13 @@ import org.qi4j.library.rest.common.link.LinksBuilder;
 import org.qi4j.library.rest.common.link.LinksUtil;
 import org.qi4j.library.rest.server.api.ContextResource;
 import org.qi4j.library.rest.server.api.ContextRestlet;
-import org.qi4j.library.rest.server.api.ResourceDelete;
-import org.qi4j.library.rest.server.api.constraint.InteractionValidation;
 import org.qi4j.library.rest.server.api.ObjectSelection;
-import org.qi4j.library.rest.server.api.constraint.Requires;
-import org.qi4j.library.rest.server.api.constraint.RequiresValid;
+import org.qi4j.library.rest.server.api.ResourceDelete;
 import org.qi4j.library.rest.server.api.SubResource;
 import org.qi4j.library.rest.server.api.SubResources;
+import org.qi4j.library.rest.server.api.constraint.InteractionValidation;
+import org.qi4j.library.rest.server.api.constraint.Requires;
+import org.qi4j.library.rest.server.api.constraint.RequiresValid;
 import org.qi4j.library.rest.server.api.dci.Role;
 import org.qi4j.library.rest.server.assembler.RestServerAssembler;
 import org.qi4j.library.rest.server.restlet.NullCommandResult;
@@ -70,8 +70,7 @@ import org.restlet.security.User;
 import org.restlet.service.MetadataService;
 
 import static org.qi4j.bootstrap.ImportedServiceDeclaration.*;
-import static org.qi4j.functional.Iterables.*;
-import static org.qi4j.library.rest.common.link.LinksUtil.withId;
+import static org.qi4j.library.rest.client.api.HandlerCommand.*;
 
 /**
  * TODO
@@ -144,7 +143,7 @@ public class ContextResourceClientFactoryTest
             boolean tried = false;
 
             @Override
-            public void handleResponse( Response response, ContextResourceClient client )
+            public HandlerCommand handleResponse( Response response, ContextResourceClient client )
             {
                     if (tried)
                         throw new ResourceException( response.getStatus() );
@@ -153,15 +152,15 @@ public class ContextResourceClientFactoryTest
                     client.getContextResourceClientFactory().getInfo().setUser( new User("rickard", "secret") );
 
                     // Try again
-                    client.refresh();
+                    return refresh();
             }
         } ).onError( ErrorHandler.RECOVERABLE_ERROR, new ResponseHandler()
         {
             @Override
-            public void handleResponse( Response response, ContextResourceClient client )
+            public HandlerCommand handleResponse( Response response, ContextResourceClient client )
             {
                 // Try to restart
-                client.refresh();
+                return refresh();
             }
         } ) );
 
@@ -187,21 +186,22 @@ public class ContextResourceClientFactoryTest
         crc.onResource( new ResultHandler<Resource>()
         {
             @Override
-            public void handleResult( Resource result, ContextResourceClient client )
+            public HandlerCommand handleResult( Resource result, ContextResourceClient client )
             {
-                client.query( "querywithoutvalue", null );
+                return query( "querywithoutvalue" );
             }
         } ).
         onQuery( "querywithoutvalue", TestResult.class, new ResultHandler<TestResult>()
         {
             @Override
-            public void handleResult( TestResult result, ContextResourceClient client )
+            public HandlerCommand handleResult( TestResult result, ContextResourceClient client )
             {
                 Assert.assertThat( result.xyz().get(), CoreMatchers.equalTo( "bar" ) );
+                return null;
             }
         } );
 
-        crc.refresh();
+        crc.start();
     }
 
     @Test
@@ -210,40 +210,40 @@ public class ContextResourceClientFactoryTest
         crc.onResource( new ResultHandler<Resource>()
         {
             @Override
-            public void handleResult( Resource result, ContextResourceClient client )
+            public HandlerCommand handleResult( Resource result, ContextResourceClient client )
             {
-                client.query( "querywithvalue", null );
+                return query( "querywithvalue", null );
             }
         } ).onProcessingError( "querywithvalue", TestQuery.class, new ResultHandler<TestQuery>()
         {
             @Override
-            public void handleResult( TestQuery result, ContextResourceClient client )
+            public HandlerCommand handleResult( TestQuery result, ContextResourceClient client )
             {
                 ValueBuilder<TestQuery> builder = module.newValueBuilderWithPrototype( result );
 
                 builder.prototype().abc().set( "abc" + builder.prototype().abc().get() );
 
-                client.query( "querywithvalue", builder.newInstance() );
+                return query( "querywithvalue", builder.newInstance() );
             }
         } ).onQuery( "querywithvalue", TestResult.class, new ResultHandler<TestResult>()
         {
             @Override
-            public void handleResult( TestResult result, ContextResourceClient client )
+            public HandlerCommand handleResult( TestResult result, ContextResourceClient client )
             {
-                client.command( "commandwithvalue", null );
+                return command( "commandwithvalue", null );
             }
         } ).onProcessingError( "commandwithvalue", Form.class, new ResultHandler<Form>()
         {
             @Override
-            public void handleResult( Form result, ContextResourceClient client )
+            public HandlerCommand handleResult( Form result, ContextResourceClient client )
             {
                 result.set( "abc", "right" );
 
-                client.command( "commandwithvalue", result );
+                return command( "commandwithvalue", result );
             }
         } );
 
-        crc.refresh();
+        crc.start();
     }
 
     @Test
@@ -252,29 +252,62 @@ public class ContextResourceClientFactoryTest
         crc.onResource( new ResultHandler<Resource>()
         {
             @Override
-            public void handleResult( Resource result, ContextResourceClient client )
+            public HandlerCommand handleResult( Resource result, ContextResourceClient client )
             {
-                client.query( "commandwithvalue" );
+                return query( "commandwithvalue" );
             }
         } ).onQuery( "commandwithvalue", Links.class, new ResultHandler<Links>()
         {
             @Override
-            public void handleResult( Links result, ContextResourceClient client )
+            public HandlerCommand handleResult( Links result, ContextResourceClient client )
             {
-                Link link = LinksUtil.withId( "right", result);
+                Link link = LinksUtil.withId( "right", result );
 
-                client.command( link );
+                return command( link );
             }
         } ).onCommand( "commandwithvalue", new ResponseHandler()
         {
             @Override
-            public void handleResponse( Response response, ContextResourceClient client )
+            public HandlerCommand handleResponse( Response response, ContextResourceClient client )
             {
                 System.out.println( "Done" );
+                return null;
             }
         } );
 
-        crc.refresh();
+        crc.start();
+    }
+
+    @Test
+    public void testQueryListAndCommandProgressive()
+    {
+        crc.onResource( new ResultHandler<Resource>()
+        {
+            @Override
+            public HandlerCommand handleResult( Resource result, ContextResourceClient client )
+            {
+                return query( "commandwithvalue" ).onSuccess( Links.class, new ResultHandler<Links>()
+                {
+                    @Override
+                    public HandlerCommand handleResult( Links result, ContextResourceClient client )
+                    {
+                        Link link = LinksUtil.withId( "right", result );
+
+                        return command( link ).onSuccess( new ResponseHandler()
+                        {
+                            @Override
+                            public HandlerCommand handleResponse( Response response, ContextResourceClient client )
+                            {
+                                System.out.println( "Done" );
+                                return null;
+                            }
+                        } );
+                    }
+                } );
+            }
+        } );
+
+        crc.start();
     }
 
     public interface TestQuery

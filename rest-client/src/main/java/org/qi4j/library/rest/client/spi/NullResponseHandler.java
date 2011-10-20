@@ -18,6 +18,7 @@
 package org.qi4j.library.rest.client.spi;
 
 import org.qi4j.library.rest.client.api.ContextResourceClient;
+import org.qi4j.library.rest.client.api.HandlerCommand;
 import org.qi4j.library.rest.client.spi.ResponseHandler;
 import org.restlet.Response;
 import org.restlet.resource.ResourceException;
@@ -30,7 +31,8 @@ public class NullResponseHandler
     public static NullResponseHandler INSTANCE = new NullResponseHandler();
 
     @Override
-    public void handleResponse( Response response, ContextResourceClient client )
+    public HandlerCommand handleResponse( Response response, ContextResourceClient client )
     {
+        return null;
     }
 }
