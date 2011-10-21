@@ -14,6 +14,7 @@
 
 package org.qi4j.runtime.structure;
 
+import java.lang.reflect.WildcardType;
 import org.json.JSONException;
 import org.json.JSONTokener;
 import org.qi4j.api.association.AssociationDescriptor;
@@ -828,6 +829,9 @@ public class ModuleInstance
 
                         // All parameters are the same - ok!
                         return false;
+                    } else if (serviceType instanceof WildcardType)
+                    {
+                        return true;
                     } else
                         return false;
                 }

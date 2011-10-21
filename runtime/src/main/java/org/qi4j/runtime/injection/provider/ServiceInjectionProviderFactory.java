@@ -181,7 +181,7 @@ public final class ServiceInjectionProviderFactory
             this.serviceQualifier = serviceQualifier;
         }
 
-        protected ServiceReference<?> getServiceReference( InjectionContext context )
+        protected ServiceReference<Object> getServiceReference( InjectionContext context )
         {
             try
             {
@@ -200,15 +200,15 @@ public final class ServiceInjectionProviderFactory
             }
         }
 
-        protected Iterable<ServiceReference<?>> getServiceReferences( final InjectionContext context )
+        protected Iterable<ServiceReference<Object>> getServiceReferences( final InjectionContext context )
         {
             if( serviceQualifier == null )
             {
-                return context.module().findServices( (Class) serviceType );
+                return context.module().findServices( serviceType );
             }
             else
             {
-                return Iterables.filter( serviceQualifier, context.module().findServices( (Class) serviceType ) );
+                return Iterables.filter( serviceQualifier, context.module().findServices( serviceType ) );
             }
         }
     }

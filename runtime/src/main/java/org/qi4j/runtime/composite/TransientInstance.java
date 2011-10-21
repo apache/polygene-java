@@ -71,6 +71,7 @@ public class TransientInstance
     }
 
     public <T> T newProxy( Class<T> mixinType )
+        throws IllegalArgumentException
     {
         return compositeModel.newProxy( this, mixinType );
     }

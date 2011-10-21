@@ -179,8 +179,9 @@ public final class ServiceReferenceInstance<T>
 
         @Override
         public <T> T newProxy( Class<T> mixinType )
+            throws IllegalArgumentException
         {
-            return instance.newProxy( mixinType );
+            return getInstance().newProxy( mixinType );
         }
 
         @Override

@@ -27,7 +27,8 @@ public interface CompositeInstance
 {
     <T> T proxy();
 
-    <T> T newProxy( Class<T> mixinType );
+    <T> T newProxy( Class<T> mixinType )
+        throws IllegalArgumentException;
 
     Module module();
 

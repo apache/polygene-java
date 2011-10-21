@@ -96,6 +96,7 @@ public final class EntityInstance
     }
 
     public <T> T newProxy( Class<T> mixinType )
+        throws IllegalArgumentException
     {
         return entityModel.newProxy( this, mixinType );
     }

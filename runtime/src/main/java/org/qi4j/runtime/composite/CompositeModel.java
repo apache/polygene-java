@@ -213,6 +213,7 @@ public abstract class CompositeModel
     }
 
     public <T> T newProxy( InvocationHandler invocationHandler, Class<T> mixinType )
+        throws IllegalArgumentException
     {
 
 //        if (!matchesAny( isAssignableFrom( mixinType ), types ))
