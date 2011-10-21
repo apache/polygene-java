@@ -9,8 +9,6 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import org.junit.Test;
-import org.qi4j.api.structure.Application;
-import org.qi4j.api.structure.ApplicationDescriptor;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -27,11 +25,9 @@ import org.qi4j.library.rest.common.link.Link;
 import org.qi4j.test.AbstractQi4jTest;
 import org.restlet.Client;
 import org.restlet.Response;
-import org.restlet.Server;
 import org.restlet.data.Protocol;
 import org.restlet.data.Reference;
 import org.restlet.resource.ResourceException;
-import org.restlet.service.MetadataService;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -39,7 +35,8 @@ import org.w3c.dom.NodeList;
 import static org.qi4j.library.rest.client.api.HandlerCommand.*;
 
 /**
- * Reads my RSS feed and prints out all comments for each entry
+ * Reads my RSS feed and prints out all comments for each entry. This is an example of how
+ * to use the RSS client for something more generic that was not produced by Qi4j REST server library.
  */
 public class RssReaderTest
     extends AbstractQi4jTest
@@ -50,9 +47,8 @@ public class RssReaderTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        // General setup of client and server
+        // General setup of client
         new ClientAssembler().assemble( module );
-
         new ValueAssembler().assemble( module );
     }
 
