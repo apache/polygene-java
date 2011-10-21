@@ -27,7 +27,9 @@ import org.qi4j.library.rest.client.ClientCache;
 import org.qi4j.library.rest.client.spi.NullResponseHandler;
 import org.qi4j.library.rest.client.RequestWriterDelegator;
 import org.qi4j.library.rest.client.ResponseReaderDelegator;
+import org.qi4j.library.rest.client.spi.RequestWriter;
 import org.qi4j.library.rest.client.spi.ResponseHandler;
+import org.qi4j.library.rest.client.spi.ResponseReader;
 import org.restlet.Request;
 import org.restlet.Response;
 import org.restlet.Uniform;
@@ -171,5 +173,15 @@ public class ContextResourceClientFactory
         {
             throw new IllegalArgumentException( "Illegal query request type:" + queryRequest.getClass().getName() );
         }
+    }
+
+    public void registerResponseReader(ResponseReader reader)
+    {
+        readerDelegator.registerResponseReader( reader );
+    }
+
+    public void registerRequestWriter(RequestWriter writer)
+    {
+        requestWriterDelegator.registerRequestWriter( writer );
     }
 }

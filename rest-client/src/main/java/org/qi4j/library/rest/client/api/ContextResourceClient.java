@@ -70,15 +70,22 @@ public class ContextResourceClient
         return this;
     }
 
-    public ContextResourceClient onResource( final ResultHandler<Resource> handler)
+    public <T> ContextResourceClient onResource( final ResultHandler<T> handler)
     {
         resourceHandler = new ResponseHandler()
         {
             @Override
             public HandlerCommand handleResponse( Response response, ContextResourceClient client )
             {
-                resource = contextResourceFactory.readResponse( response, Resource.class );
-                return handler.handleResult( resource, client );
+                final Class<T> resultType = (Class<T>) Classes.RAW_CLASS.map(( (ParameterizedType) handler.getClass().getGenericInterfaces()[ 0 ] ).getActualTypeArguments()[0]);
+                T result = contextResourceFactory.readResponse( response, resultType );
+
+                if (result instanceof Resource)
+                {
+                    resource = (Resource) result;
+                }
+
+                return handler.handleResult( result, client );
             }
         };
         return this;
@@ -207,8 +214,10 @@ public class ContextResourceClient
         if (processingErrorHandler == null)
             processingErrorHandler = processingErrorHandlers.get( link.rel().get() );
 
-        Reference ref = new Reference( reference.toUri().toString() + link.href().get() );
-        return invokeQuery( ref, queryRequest, handler, processingErrorHandler );
+        Reference linkRef = new Reference(link.href().get());
+        if (linkRef.isRelative())
+            linkRef = new Reference( reference.toUri().toString() + link.href().get() );
+        return invokeQuery( linkRef, queryRequest, handler, processingErrorHandler );
     }
 
     private HandlerCommand invokeQuery( Reference ref, Object queryRequest, ResponseHandler resourceHandler, ResponseHandler processingErrorHandler )
@@ -235,6 +244,10 @@ public class ContextResourceClient
             contextResourceFactory.updateCache( response );
 
             return resourceHandler.handleResponse( response, this );
+        } else if (response.getStatus().isRedirection())
+        {
+            Reference redirectedTo = response.getLocationRef();
+            return invokeQuery( redirectedTo, queryRequest, resourceHandler, processingErrorHandler );
         } else
         {
             if (response.getStatus().equals(Status.CLIENT_ERROR_UNPROCESSABLE_ENTITY) && processingErrorHandler != null)

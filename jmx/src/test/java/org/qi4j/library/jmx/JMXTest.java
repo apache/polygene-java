@@ -57,7 +57,7 @@ public class JMXTest
 
                 new EntityTestAssembler().assemble( module );
 
-                module.services( TestService.class ).instantiateOnStartup();
+                module.services( TestService.class, TestService2.class, TestService3.class ).instantiateOnStartup();
                 module.entities( TestConfiguration.class );
 
                 module.values( TestValue.class );
@@ -85,6 +85,54 @@ public class JMXTest
     @Mixins( TestService.Mixin.class)
     interface TestService
         extends Configuration<TestConfiguration>, Activatable, ServiceComposite
+    {
+
+        class Mixin
+            implements Activatable
+        {
+            @This
+            Configuration<TestConfiguration> config;
+
+            public void activate()
+                throws Exception
+            {
+                System.out.println("Activate service:"+config.configuration().stringConfig().get());
+            }
+
+            public void passivate()
+                throws Exception
+            {
+            }
+        }
+    }
+
+    @Mixins( TestService.Mixin.class)
+    interface TestService2
+        extends Configuration, Activatable, ServiceComposite
+    {
+
+        class Mixin
+            implements Activatable
+        {
+            @This
+            Configuration<TestConfiguration> config;
+
+            public void activate()
+                throws Exception
+            {
+                System.out.println("Activate service:"+config.configuration().stringConfig().get());
+            }
+
+            public void passivate()
+                throws Exception
+            {
+            }
+        }
+    }
+
+    @Mixins( TestService.Mixin.class)
+    interface TestService3
+        extends Activatable, ServiceComposite
     {
 
         class Mixin

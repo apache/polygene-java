@@ -27,6 +27,11 @@ public abstract class HandlerCommand
         return new QueryCommand( relation, requestObject);
     }
 
+    public static HandlerCommand query(Link relation)
+    {
+        return new QueryLinkCommand( relation );
+    }
+
     public static HandlerCommand command(String relation)
     {
         return new CommandRelationCommand( relation, null );
@@ -124,7 +129,25 @@ public abstract class HandlerCommand
         @Override
         HandlerCommand execute( ContextResourceClient client )
         {
-            return client.query( client.getResource().query( relation ), requestObject, responseHandler, processingErrorHandler );
+            return client.query( client.getResource()
+                                     .query( relation ), requestObject, responseHandler, processingErrorHandler );
+        }
+    }
+
+    private static class QueryLinkCommand
+        extends HandlerCommand
+    {
+        private Link link;
+
+        private QueryLinkCommand( Link link)
+        {
+            this.link = link;
+        }
+
+        @Override
+        HandlerCommand execute( ContextResourceClient client )
+        {
+            return client.query( link, null, responseHandler, processingErrorHandler );
         }
     }
 
