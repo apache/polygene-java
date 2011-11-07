@@ -17,6 +17,9 @@
  */
 package org.qi4j.entitystore.mongodb;
 
+import com.mongodb.ServerAddress;
+import java.util.List;
+import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.configuration.ConfigurationComposite;
 import org.qi4j.api.property.Property;
@@ -25,14 +28,21 @@ public interface MongoEntityStoreConfiguration
         extends ConfigurationComposite
 {
 
-    Property<String> mongoUri();
-
     Property<String> database();
 
     Property<String> collection();
 
     @UseDefaults
     Property<WriteConcern> writeConcern();
+
+    @Optional
+    Property<String> hostname();
+
+    @Optional
+    Property<Integer> port();
+
+    @UseDefaults
+    Property<List<ServerAddress>> nodes();
 
     @UseDefaults
     Property<String> username();

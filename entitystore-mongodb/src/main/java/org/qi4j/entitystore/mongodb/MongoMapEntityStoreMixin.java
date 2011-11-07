@@ -23,14 +23,17 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.Mongo;
-import com.mongodb.MongoURI;
+import com.mongodb.ServerAddress;
 import com.mongodb.WriteConcern;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
@@ -56,8 +59,8 @@ public abstract class MongoMapEntityStoreMixin
     private static final String IDENTITY_COLUMN = "identity";
     private static final String STATE_COLUMN = "state";
     @This
-    private Configuration<MongoEntityStoreConfiguration> config;
-    private MongoURI mongoUri;
+    private Configuration<MongoEntityStoreConfiguration> configuration;
+    private List<ServerAddress> serverAddresses;
     private String databaseName;
     private String collectionName;
     private WriteConcern writeConcern;
@@ -74,13 +77,13 @@ public abstract class MongoMapEntityStoreMixin
         loadConfiguration();
 
         // Create Mongo driver and open the database
-        mongo = new Mongo( mongoUri );
+        mongo = new Mongo( serverAddresses );
         db = mongo.getDB( databaseName );
 
         // Authenticate if needed
         if ( !username.isEmpty() ) {
             if ( !db.authenticate( username, password ) ) {
-                LOGGER.warn( "Authentication against MongoDB at '" + mongoUri.toString() + "' with username '" + username + "' failed. Subsequent requests will be made 'anonymously'." );
+                LOGGER.warn( "Authentication against MongoDB with username '" + username + "' failed. Subsequent requests will be made 'anonymously'." );
             }
         }
 
@@ -94,12 +97,18 @@ public abstract class MongoMapEntityStoreMixin
     }
 
     private void loadConfiguration()
+            throws UnknownHostException
     {
-        config.refresh();
-        mongoUri = new MongoURI( config.configuration().mongoUri().get() );
-        databaseName = config.configuration().database().get();
-        collectionName = config.configuration().collection().get();
-        switch ( config.configuration().writeConcern().get() ) {
+        configuration.refresh();
+        MongoEntityStoreConfiguration config = configuration.configuration();
+        serverAddresses = new ArrayList<ServerAddress>();
+        if ( config.hostname().get() != null && !config.hostname().get().isEmpty() ) {
+            serverAddresses.add( new ServerAddress( config.hostname().get(), config.port().get() ) );
+        }
+        serverAddresses.addAll( config.nodes().get() );
+        databaseName = config.database().get();
+        collectionName = config.collection().get();
+        switch ( config.writeConcern().get() ) {
             case FSYNC_SAFE:
                 writeConcern = WriteConcern.FSYNC_SAFE;
                 break;
@@ -122,8 +131,8 @@ public abstract class MongoMapEntityStoreMixin
             default:
                 writeConcern = WriteConcern.NORMAL;
         }
-        username = config.configuration().username().get();
-        password = config.configuration().password().get().toCharArray();
+        username = config.username().get();
+        password = config.password().get().toCharArray();
     }
 
     @Override
@@ -132,7 +141,6 @@ public abstract class MongoMapEntityStoreMixin
     {
         mongo.close();
         mongo = null;
-        mongoUri = null;
         databaseName = null;
         collectionName = null;
         writeConcern = null;

@@ -17,6 +17,10 @@
  */
 package org.qi4j.entitystore.mongodb;
 
+import com.mongodb.ServerAddress;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
@@ -33,10 +37,12 @@ public class MongoMapEntityStoreAssembler
     private Visibility visibility = Visibility.application;
     private ModuleAssembly configModule;
     private Visibility configVisibility = Visibility.layer;
-    private String mongoUri = "mongodb://127.0.0.1:27017";
+    private String hostname = "127.0.0.1";
+    private Integer port = 27017;
     private String database = DEFAULT_DATABASE_NAME;
     private String collection = DEFAULT_COLLECTION_NAME;
     private WriteConcern writeConcern = WriteConcern.NORMAL;
+    private List<ServerAddress> serverAddresses = new ArrayList<ServerAddress>();
 
     public MongoMapEntityStoreAssembler withVisibility( Visibility visibility )
     {
@@ -56,9 +62,17 @@ public class MongoMapEntityStoreAssembler
         return this;
     }
 
-    public MongoMapEntityStoreAssembler withMongoUri( String mongoUri )
+    /**
+     * Add a MongoDB node's hostname and port.
+     * 
+     * Calling this method once disable the default behavior that use the MongoDB defaults: 127.0.0.1 27017
+     */
+    public MongoMapEntityStoreAssembler addHostnameAndPort( String hostname, Integer port )
+            throws UnknownHostException
     {
-        this.mongoUri = mongoUri;
+        this.hostname = null;
+        this.port = null;
+        serverAddresses.add( new ServerAddress( hostname, port ) );
         return this;
     }
 
@@ -97,10 +111,12 @@ public class MongoMapEntityStoreAssembler
 
         configModule.entities( MongoEntityStoreConfiguration.class ).visibleIn( configVisibility );
         MongoEntityStoreConfiguration mongoConfig = configModule.forMixin( MongoEntityStoreConfiguration.class ).declareDefaults();
-        mongoConfig.mongoUri().set( mongoUri );
+        mongoConfig.hostname().set( hostname );
+        mongoConfig.port().set( port );
         mongoConfig.database().set( database );
         mongoConfig.collection().set( collection );
         mongoConfig.writeConcern().set( writeConcern );
+        mongoConfig.nodes().set( serverAddresses );
     }
 
 }

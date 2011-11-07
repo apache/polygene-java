@@ -19,6 +19,7 @@ package org.qi4j.entitystore.mongodb;
 
 import com.mongodb.Mongo;
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
