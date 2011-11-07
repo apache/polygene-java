@@ -57,28 +57,39 @@ public abstract class MongoMapEntityStoreMixin
     private static final String STATE_COLUMN = "state";
     @This
     private Configuration<MongoEntityStoreConfiguration> config;
-    private Mongo mongo;
     private MongoURI mongoUri;
     private String databaseName;
     private String collectionName;
     private WriteConcern writeConcern;
     private String username;
     private char[] password;
+    // Mongo DB
+    private Mongo mongo;
+    private DB db;
 
     @Override
     public void activate()
             throws Exception
     {
         loadConfiguration();
+
+        // Create Mongo driver and open the database
         mongo = new Mongo( mongoUri );
+        db = mongo.getDB( databaseName );
 
-        DB db = newRequest();
+        // Authenticate if needed
+        if ( !username.isEmpty() ) {
+            if ( !db.authenticate( username, password ) ) {
+                LOGGER.warn( "Authentication against MongoDB at '" + mongoUri.toString() + "' with username '" + username + "' failed. Subsequent requests will be made 'anonymously'." );
+            }
+        }
 
+        // Create index if needed
+        db.requestStart();
         DBCollection entities = db.getCollection( collectionName );
         if ( entities.getIndexInfo().isEmpty() ) {
             entities.createIndex( new BasicDBObject( IDENTITY_COLUMN, 1 ) );
         }
-
         db.requestDone();
     }
 
@@ -128,6 +139,7 @@ public abstract class MongoMapEntityStoreMixin
         username = null;
         Arrays.fill( password, ' ' );
         password = null;
+        db = null;
     }
 
     @Override
@@ -140,7 +152,7 @@ public abstract class MongoMapEntityStoreMixin
     public Reader get( EntityReference entityReference )
             throws EntityStoreException
     {
-        DB db = newRequest();
+        db.requestStart();
 
         DBObject entity = db.getCollection( collectionName ).findOne( byIdentity( entityReference ) );
         if ( entity == null ) {
@@ -156,7 +168,7 @@ public abstract class MongoMapEntityStoreMixin
     public void applyChanges( MapChanges changes )
             throws IOException
     {
-        DB db = newRequest();
+        db.requestStart();
         final DBCollection entities = db.getCollection( collectionName );
 
         changes.visitMap( new MapChanger()
@@ -237,7 +249,7 @@ public abstract class MongoMapEntityStoreMixin
                     public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<? super Reader, ReceiverThrowableType> receiver )
                             throws ReceiverThrowableType, IOException
                     {
-                        DB db = newRequest();
+                        db.requestStart();
 
                         DBCursor cursor = db.getCollection( collectionName ).find();
                         while ( cursor.hasNext() ) {
@@ -253,18 +265,6 @@ public abstract class MongoMapEntityStoreMixin
             }
 
         };
-    }
-
-    private DB newRequest()
-    {
-        DB db = mongo.getDB( databaseName );
-        if ( !username.isEmpty() ) {
-            if ( !db.authenticate( username, password ) ) {
-                LOGGER.warn( "Authentication against MongoDB at '" + mongoUri.toString() + "' with username '" + username + "' failed. Subsequent requests will be made 'anonymously'." );
-            }
-        }
-        db.requestStart();
-        return db;
     }
 
     private DBObject byIdentity( EntityReference entityReference )
