@@ -1,0 +1,17 @@
+
+jar { manifest { description = "Qi4j Reindexer Extension" }}
+
+dependencies {
+  compile(project(":org.qi4j.core:org.qi4j.core.api"))
+  compile(project(":org.qi4j.core:org.qi4j.core.spi"))
+  compile(libraries.slf4j_api)
+  testCompile(libraries.junit)
+  testCompile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
+  testCompile(project(':org.qi4j.extensions:org.qi4j.extension.entitystore-jdbm'))
+  testCompile(project(':org.qi4j.extensions:org.qi4j.extension.indexing-rdf'))
+  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
+  testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
+  testRuntime(libraries.asm)
+  testRuntime(libraries.asm_commons)
+  testRuntime(libraries.slf4j_simple)
+}

@@ -1,0 +1,21 @@
+description = "Qi4j Solr Indexing Extension"
+
+jar { manifest {name = "Qi4j Extension - Indexing - Solr" }}
+
+dependencies {
+  compile(project(":org.qi4j.core:org.qi4j.core.api"))
+  compile(project(":org.qi4j.core:org.qi4j.core.spi"))
+  compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
+  compile(project(":org.qi4j.libraries:org.qi4j.library.fileconfig"))
+  compile(project(":org.qi4j.libraries:org.qi4j.library.rdf"))
+  compile(libraries.slf4j_api)
+  compile("org.apache.solr:solr-core:$solrVersion")
+  compile("org.apache.solr:solr-solrj:$solrVersion")
+  testCompile(libraries.junit)
+  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
+  testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
+  testRuntime("javax.servlet:servlet-api:$servletVersion")
+  testRuntime(libraries.asm)
+  testRuntime(libraries.asm_commons)
+  testRuntime(libraries.slf4j_simple)
+}

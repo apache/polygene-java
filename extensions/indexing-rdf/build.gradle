@@ -1,0 +1,57 @@
+description = "Qi4j RDF Indexing Extension"
+
+jar { manifest { name = "Qi4j Extension - Indexing - RDF" } }
+
+repositories {
+  mavenRepo name: 'aduna-repo', urls: "http://repo.aduna-software.org/maven2/releases/"
+}
+
+uploadArchives {
+  repositories.mavenDeployer {
+    pom {
+      project {
+        repositories {
+          repository {
+            id = 'aduna'
+            url = 'http://repo.aduna-software.org/maven2/releases/'
+          }
+        }
+      }
+      name = 'sshDeployer' // optional
+      configuration = configurations.deployerJars
+      repository(url: "scp://repository.ops4j.org/home/www/repository.ops4j.org/maven2/")
+    }
+  }
+}
+
+dependencies {
+  compile(project(":org.qi4j.core:org.qi4j.core.api"))
+  compile(project(":org.qi4j.core:org.qi4j.core.spi"))
+  compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
+  compile(project(":org.qi4j.core:org.qi4j.core.runtime"))  // TODO: Remove this dependency
+  compile(project(":org.qi4j.libraries:org.qi4j.library.rdf"))
+  compile(libraries.slf4j_api)
+  compile("org.openrdf.sesame:sesame-model:$rdfVersion")
+  compile("org.openrdf.sesame:sesame-queryparser-sparql:$rdfVersion")
+  compile("org.openrdf.sesame:sesame-repository-dataset:$rdfVersion")
+  compile("org.openrdf.sesame:sesame-repository-http:$rdfVersion")
+  compile("org.openrdf.sesame:sesame-rio-api:$rdfVersion")
+  compile("org.openrdf.sesame:sesame-rio-n3:$rdfVersion")
+  compile("org.openrdf.sesame:sesame-rio-ntriples:$rdfVersion")
+  compile("org.openrdf.sesame:sesame-rio-rdfxml:$rdfVersion")
+  compile("org.openrdf.sesame:sesame-rio-trig:$rdfVersion")
+  compile("org.openrdf.sesame:sesame-rio-trix:$rdfVersion")
+  compile("org.openrdf.sesame:sesame-rio-turtle:$rdfVersion")
+  compile("org.openrdf.sesame:sesame-sail-api:$rdfVersion")
+  compile("org.openrdf.sesame:sesame-sail-memory:$rdfVersion")
+  compile("org.openrdf.sesame:sesame-sail-nativerdf:$rdfVersion")
+  compile("org.openrdf.sesame:sesame-sail-rdbms:$rdfVersion")
+  testCompile(project(':org.qi4j.extensions:org.qi4j.extension.entitystore-preferences'))
+  testCompile(project(':org.qi4j.extensions:org.qi4j.extension.entitystore-jdbm'))
+  testCompile(libraries.junit)
+  testRuntime(libraries.slf4j_simple)
+  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
+  testRuntime(libraries.asm)
+  testRuntime(libraries.asm_commons)
+}
+

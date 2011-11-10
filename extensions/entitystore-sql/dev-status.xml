@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<module xmlns="http://www.qi4j.org/schemas/2008/dev-status/1">
+    <status>
+        <!--none,early,beta,stable,mature-->
+        <codebase>beta</codebase>
+
+        <!-- none, brief, good, complete -->
+        <documentation>none</documentation>
+
+        <!-- none, some, good, complete -->
+        <unittests>some</unittests>
+    </status>
+    <licenses>
+        <license>ALv2</license>
+    </licenses>
+</module>

@@ -1,0 +1,19 @@
+description = "Qi4j Ehcache Cache Extension"
+
+jar { manifest { name = "Qi4j Extension: EhCache"}}
+
+dependencies {
+  compile(project(':org.qi4j.core:org.qi4j.core.api'))
+  compile(project(':org.qi4j.core:org.qi4j.core.spi'))
+  compile(project(':org.qi4j.core:org.qi4j.core.bootstrap'))
+  compile(libraries.slf4j_api)
+  compile('net.sf.ehcache:ehcache-core:' + ehcacheVersion)
+//  compile('net.sf.ehcache:ehcache-terracotta:' + ehcacheVersion)
+  testCompile(project(':org.qi4j.core:org.qi4j.core.bootstrap'))
+  testCompile(libraries.junit)
+  testRuntime(libraries.slf4j_simple)
+  testCompile( project(':org.qi4j.core:org.qi4j.core.testsupport') )
+  testRuntime( project(':org.qi4j.core:org.qi4j.core.runtime'))
+  testRuntime(libraries.asm)
+  testRuntime(libraries.asm_commons)
+}

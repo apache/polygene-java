@@ -1,0 +1,68 @@
+
+Please note that this module has a dependency on a GNU Affero General Public License
+version 3 (AGPLv3), not to be mistaken for the GNU General Public License version 3
+(GPLv3). The main difference is that "distribution" in GPLv3 is extended to include
+"usage", for instance if an application can be used from a web service, the user
+has roughly the equivalent rights of "distribution" under GPLv3.
+
+To clarify the intent of Neo4j licensing in the context of Qi4j's Neo4j Entity Store
+the following mail from qi4j-dev@lists.ops4j.org captures the understanding of
+the license. Please note that this is not legal advice, and if in doubt, please
+consult your legal counsel.
+
+- o - o - o - o - o -
+
+On Mon, Jul 28, 2008 at 8:35 AM, Niclas Hedhman <niclas@hedhman.org> wrote:
+>
+> Everyone (especially Emil),
+>
+> Please READ the NOTICE.txt before using the "Entity Store - Neo4j". Although
+> the EnityStore itself is under the Apache License ver 2.0, it has a
+> dependency on Neo4j itself, which is licensed under GNU Affero General Public
+> License version 3 or later.
+>
+> In essence, this means that you are allowed to USE the combined work for
+> yourself without limitations, as long as noone else uses it, directly or
+> indirectly. That means, if you create an application and distribute, or if
+> you put an application on a web server, with users accessing it, then you
+> MUST provide the sources of the combined work to anyone asking for it.
+
+Correct.
+
+>
+> There is a "gray zone" which I would like to hear the clarification by Emil.
+>
+> <scenario>
+> Person A develops some funky closed-source web application, based on Qi4j.
+>
+> Person B buys that application, but configures it to use the Neo4j Entity
+> Store and the Neo4j Engine.
+> </scenario>
+>
+> Person A is not violating any license. Person B is not violating the license
+> received from Person A. But is Person B violating the GNU Affero General
+> Public License, by not having the authority to provide the sources for the
+> web application product itself???
+
+Yes.
+
+Person B is only allowed to use Neo4j if they follow the terms in the
+license under which they received it. In Neo4j's case, they have two
+choices: use it under the AGPLv3 license or the commercial license. If
+they use Neo4j under AGPLv3, then in order to comply with the terms of
+the AGPLv3 they must provide the full source code to the combined work
+(including the webapp's code) to any users of said webapp. In that
+case, they can't comply with one of the terms (freedom 1, access to
+source code) so they won't be granted the rights of any of the other
+terms in the license (for example freedom 0, the freedom to run).
+
+If they can't comply with that for whatever reason (in this case,
+because person A did not grant them that freedom), they're unable to
+use Neo4j under the AGPLv3. They can of course purchase Neo4j under a
+commercial license (which gives them the flexibility to e.g. use it
+with proprietary code, along with indemnification and support etc) or
+swap in something else.
+
+IANAL, but this captures our intent. I've bounced this scenario off of
+licensing@fsf.org and this is their interpretation as well (except
+it's not legal advice from them either, of course).

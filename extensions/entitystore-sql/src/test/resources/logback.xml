@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>[@%-10thread] %-5level %logger{42} - %msg%n</Pattern>
+        </layout>
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="stdout" />
+    </root>
+
+    <logger name="org.qi4j.entitystore.sql" level="trace"/>
+    <!-- Put this one to trace level to see all SQL strings -->
+    <logger name="org.qi4j.entitystore.sql.internal.database.DatabaseSQLStringsBuilder" level="debug"/>
+
+</configuration>
