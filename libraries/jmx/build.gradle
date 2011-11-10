@@ -1,0 +1,13 @@
+description = "Qi4j JMX Library provides Java Management Extension (JMX) integration for Qi4j applications."
+
+jar { manifest { name = "Qi4j Library - JMX" }}
+
+dependencies {
+  compile(project(":org.qi4j.core:org.qi4j.core.api"))
+  compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
+  compile(libraries.slf4j_api)
+  testCompile(libraries.junit)
+  testRuntime(libraries.slf4j_simple)
+  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
+  testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
+}

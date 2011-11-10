@@ -1,0 +1,116 @@
+Qi4j Library - Http Service
+Copyright 2007-2008, The Qi4j Development Team of individuals.
+
+See http://www.qi4j.org/contributors.html for list of of individuals.
+Also see each file for additional information of Copyright claims.
+
+Qi4j is a community aggregated works under Copyright law.
+All parts of the original works at Qi4j is licensed under the
+Apache License ver 2.0 http://www.apache.org/licenses
+
+Below follows a list of binary dependencies and their licenses;
+----------------------------------------------------------------
+
+
+libraries/http NOTICE
+This module uses Jetty, developed at Mortbay and Codehaus under Apache
+License 2.0. See LICENSE
+
+This module uses SLF4J, developed at slf4j.org under MIT License.
+See licenses/slf4j.license
+
+
+libraries/rdf NOTICE
+
+This module uses OpenRDF Sesame developed by Aduna Software.
+Copyright Aduna (http://www.aduna-software.com/) � 2001-2007
+See licenses/openrdf.license
+
+This module uses SLF4J, developed at slf4j.org under MIT License.
+See licenses/slf4j.license
+
+
+libraries/scripting/beanshell NOTICE
+
+This module uses Beanshell, developed at beanshell.org.
+It is developed under a dual licensing scheme, the Sun Public License
+and the "Lesser GNU Public License". The author says;
+<quote>
+Dual Licensing: Sun Public License / Gnu Lesser Public License
+BeanShell is dual licensed under both the SPL and LGPL.
+You may use and develop BeanShell under either license.
+
+Please see the Sun Public License for details.
+
+About the LGPL
+Note: the LGPL has become the "Lesser Gnu Public License" and
+BeanShell has adopted the new version...
+
+A quick note about the LGPL:
+
+The LGPL is less restrictive than the ordinary GNU Public License in
+that it does not force you to distribute your own applications under
+the terms of the GPL. It primarily requires that you include a notice
+that you are using the software in your documentation and provide
+access to the original source code. It also essentially requires that
+if you modify or extend BeanShell itself that you make those changes
+available separately, under the terms of either the LGPL or the GPL.
+I would ask that you accomodate this by simply sending me your bug
+fixes and improvement to allow me to incorporate them into the
+general BeanShell release. Please see the LGPL for the details.
+
+If you have a more precise, brief explanation please let me know!
+Thanks! - Pat
+
+Please also feel free to contact me: (Pat Niemeyer pat@pat.net) about
+other licensing arrangements.
+</quote>
+
+
+libraries/scripting/groocy NOTICE
+This module includes software developed by
+The Groovy community (http://groovy.codehaus.org/) under Apache
+License 2.0. Copyright 2003-2009. See LICENSE
+
+
+libraries/scripting/javascript NOTICE
+This module includes Rhino, software developed by
+The Mozilla community (http://mozilla.org/) under Mozilla Public
+License 1.1.Ssee licenses/rhino.license
+
+
+libraries/scripting/jruby NOTICE
+This module includes JRuby, which NOTICE is significantly large
+and can be found at https://github.com/Qi4j/qi4j-libraries/blob/develop/scripting/jruby/NOTICE
+
+
+libraries/servlet NOTICE
+This module uses SLF4J, developed at slf4j.org under MIT License.
+See licenses/slf4j.license
+
+
+libraries/shiro-core and libraries/shiro-web NOTICE
+This module uses JODA Time, developed at http://joda-time.sourceforge.net
+under Apache License 2.0. See LICENSE file.
+
+This module uses BouncyCastle, developed at http://www.bouncycastle.org/
+under a permissive license. See licenses/bouncycastle.license
+BouncyCastle usage may have additional export restrictions in USA and
+possibly other countries.
+
+This module uses Apache Shiro, software developed at Apache Software
+Foundation (http://shiro.apache.org) under Apache License 2.0.
+See LICENSE file.
+
+
+libraries/spring NOTICE
+This module uses Spring Framework, software developed at
+http://www.springsource.org, under Apache License 2.0. See LICENSE.
+
+
+libraries/struts-* NOTICE
+This module uses Apache Struts, developed at Apache Software Foundation
+(http://struts.apache.org), under Apache License 2.0. See LICENSE.
+
+
+END OF NOTICE

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:qi4j="http://www.qi4j.org/schema/qi4j/spring"
+    xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       http://www.qi4j.org/schema/qi4j/spring http://www.qi4j.org/schema/qi4j/spring/spring-0.5.xsd">
+
+    <qi4j:bootstrap class="org.qi4j.library.spring.bootstrap.Qi4jTestBootstrap" />
+    <qi4j:service id="commentService" />
+
+    <bean id="commentServiceHolder" class="org.qi4j.library.spring.bootstrap.CommentServiceHolder">
+        <constructor-arg ref="commentService" />
+    </bean>
+
+    <!-- This Spring bean is injected as a service to the qi4j application -->
+    <bean id="toUppercaseService" class="org.qi4j.library.spring.bootstrap.ToUppercaseService" />
+
+</beans>

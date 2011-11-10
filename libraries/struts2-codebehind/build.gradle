@@ -1,0 +1,17 @@
+description = "Qi4j Struts Library allows integration of Qi4j into Struts2 applications."
+
+jar { manifest { name = "Qi4j Library - Struts2 - Code Behind"}}
+
+dependencies {
+  compile( project( ':org.qi4j.libraries:org.qi4j.library.struts2-plugin' ) )
+  compile(project(":org.qi4j.core:org.qi4j.core.api"))
+  compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
+  compile(libraries.slf4j_api)
+  compile('org.apache.struts:struts2-codebehind-plugin:' + strutsVersion)
+  testCompile(libraries.junit)
+  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
+  testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
+  testRuntime(libraries.asm)
+  testRuntime(libraries.asm_commons)
+  testRuntime(libraries.slf4j_simple)
+}

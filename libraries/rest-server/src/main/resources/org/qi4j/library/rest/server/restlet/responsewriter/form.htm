@@ -1,0 +1,41 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>${request.resourceRef.lastSegment}</title>
+    <style type="text/css">
+        form
+        {
+        width: 600px;
+        }
+
+        form label
+        {
+        display: block; /* block float the labels to left column, set a width */
+        float: left;
+        width: 150px;
+        padding: 0;
+        margin: 5px 0 0; /* set top margin same as form input - textarea etc. elements */
+        text-align: right;
+        }
+
+        form br
+        {
+        clear:left;
+        }
+    </style>
+</head>
+
+<body>
+<form action="" method="${request.method.name}">
+    <fieldset>
+        <legend>${request.resourceRef.lastSegment}</legend>
+
+        <#list result as param>
+        <label for="${param.name}">${param.name}:</label>
+        <input type="text" name="${param.name}" value="${param.value!}"><br/>
+        </#list>
+        <input value="Submit" type="submit"/>
+        </fieldset>
+</form>
+</body>
+
+</html>

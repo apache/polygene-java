@@ -1,0 +1,47 @@
+description = "Qi4j RDF Library provides commonalities of various RDF based services in Qi4j, such as RDF Indexing."
+
+jar { manifest { name = "Qi4j Library - RDF" }}
+
+repositories {
+  mavenRepo name: 'aduna-repo', urls: "http://repo.aduna-software.org/maven2/releases/"
+}
+
+uploadArchives {
+  repositories.mavenDeployer {
+    pom {
+      project {
+        repositories {
+          repository {
+            id = 'aduna'
+            url = 'http://repo.aduna-software.org/maven2/releases/'
+          }
+        }
+      }
+      name = 'sshDeployer' // optional
+      configuration = configurations.deployerJars
+      repository(url: "scp://repository.ops4j.org/home/www/repository.ops4j.org/maven2/")
+    }
+  }
+}
+
+dependencies {
+  compile(project(':org.qi4j.libraries:org.qi4j.library.constraints'))
+  compile(project(":org.qi4j.core:org.qi4j.core.api"))
+  compile(project(":org.qi4j.core:org.qi4j.core.spi"))
+  compile(libraries.slf4j_api)
+  compile(project(":org.qi4j.libraries:org.qi4j.library.fileconfig"))
+  compile("org.openrdf.sesame:sesame-model:$rdfVersion")
+  compile("org.openrdf.sesame:sesame-repository-dataset:$rdfVersion")
+  compile("org.openrdf.sesame:sesame-repository-http:$rdfVersion")
+  compile("org.openrdf.sesame:sesame-rio-n3:$rdfVersion")
+  compile("org.openrdf.sesame:sesame-rio-rdfxml:$rdfVersion")
+  compile("org.openrdf.sesame:sesame-sail-memory:$rdfVersion")
+  compile("org.openrdf.sesame:sesame-sail-nativerdf:$rdfVersion")
+  compile("org.openrdf.sesame:sesame-sail-rdbms:$rdfVersion")
+  testCompile(libraries.junit)
+  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
+  testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
+  testRuntime(libraries.asm)
+  testRuntime(libraries.asm_commons)
+  testRuntime(libraries.slf4j_simple)
+}

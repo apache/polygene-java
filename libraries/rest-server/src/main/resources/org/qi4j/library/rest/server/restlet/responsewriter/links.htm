@@ -1,0 +1,19 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>${request.resourceRef.remainingPart}</title>
+    <link media="print" title="Atom feed"
+      type="application/atom+xml"
+      rel="alternate"
+      href="${request.resourceRef.path}.atom?$!{request.resourceRef.query}"/>
+</head>
+
+<body>
+<h3>Result for ${request.resourceRef.remainingPart}</h3>
+<ul>
+    <#list result.links as link>
+        <li><a href="${link.href}">${link.text}</a></li>
+    </#list>
+</ul>
+</body>
+
+</html>

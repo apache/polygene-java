@@ -1,0 +1,15 @@
+description = "Qi4j Circuit Breaker Library provides a framework for connecting external resources, so that they can be disabled during re-play of events."
+
+jar { manifest {name = "Qi4j Library - Circuit Breaker"}}
+
+dependencies {
+  compile( project(':org.qi4j.libraries:org.qi4j.library.jmx' ) )
+  compile(project(":org.qi4j.core:org.qi4j.core.api"))
+  compile(libraries.slf4j_api)
+  testCompile(libraries.junit)
+  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
+  testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
+  testRuntime(libraries.asm)
+  testRuntime(libraries.asm_commons)
+  testRuntime(libraries.slf4j_simple)
+}

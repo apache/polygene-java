@@ -1,0 +1,19 @@
+description = "Qi4j Shiro Library integrates Apache Shiro security framework into Qi4j. This bundle provides Servlet support."
+
+jar { manifest { name = "Qi4j Library - Shiro Web" }}
+
+dependencies {
+  compile( project( ':org.qi4j.libraries:org.qi4j.library.shiro-core' ) )
+  compile( project( ':org.qi4j.libraries:org.qi4j.library.servlet' ) )
+  compile(project(":org.qi4j.core:org.qi4j.core.api"))
+  compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
+  compile(libraries.slf4j_api)
+  compile("org.apache.shiro:shiro-web:$shiroVersion")
+  compile("javax.servlet:servlet-api:$servletVersion")
+  testCompile(libraries.junit)
+  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
+  testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
+  testRuntime(libraries.asm)
+  testRuntime(libraries.asm_commons)
+  testRuntime(libraries.slf4j_simple)
+}

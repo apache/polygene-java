@@ -1,0 +1,18 @@
+description = "Extension to the Qi4j Event Sourcing Library for providing a JDBM based event store."
+
+jar { manifest { name = "Qi4j Library - Event Sourcing - JDBM" }}
+
+dependencies {
+  compile(project(":org.qi4j.core:org.qi4j.core.api"))
+  compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
+  compile(project(":org.qi4j.libraries:org.qi4j.library.eventsourcing"))
+  compile(project(":org.qi4j.libraries:org.qi4j.library.fileconfig"))
+  compile(libraries.slf4j_api)
+  compile("jdbm:jdbm:$jdbmVersion")
+  testCompile(libraries.junit)
+  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
+  testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
+  testRuntime(libraries.asm)
+  testRuntime(libraries.asm_commons)
+  testRuntime(libraries.slf4j_simple)
+}

@@ -1,0 +1,17 @@
+description = "Qi4j Http Library provides embedded Jetty for Qi4j application use."
+
+jar { manifest { name = "Qi4j Library - Http" }}
+
+dependencies {
+  compile(project(":org.qi4j.core:org.qi4j.core.api"))
+  compile( project( ":org.qi4j.libraries:org.qi4j.library.constraints" ))
+  compile(libraries.slf4j_api)
+  compile('org.mortbay.jetty:jetty:' + jettyVersion)
+  compile('org.mortbay.jetty:jetty-util:' + jettyVersion)
+  testCompile(libraries.junit)
+  testRuntime(libraries.asm)
+  testRuntime(libraries.asm_commons)
+  testRuntime(libraries.slf4j_simple)
+  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
+  testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
+}
