@@ -1,0 +1,21 @@
+Qi4j Core
+Copyright 2007-2011, The Qi4j Development Team of individuals.
+
+See http://www.qi4j.org/contributors.html for list of of individuals.
+Also see each file for additional information of Copyright claims.
+
+Qi4j is a community aggregated works under Copyright law.
+All parts of the original works at Qi4j is licensed under the
+Apache License ver 2.0 http://www.apache.org/licenses
+
+Below follows a list of binary dependencies and their licenses;
+----------------------------------------------------------------
+
+This module uses ASM, Copyright (c) 2000-2005 INRIA, France Telecom,
+All rights reserved. See licenses/asm.license
+
+This module uses JUnit, under Common Public License 1.0 from the
+http://www.junit.org community. See http://www.junit.org/license
+
+
+END OF NOTICE

@@ -1,0 +1,234 @@
+/*
+ * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+package org.qi4j.runtime.association;
+
+import org.qi4j.api.association.AssociationDescriptor;
+import org.qi4j.api.association.GenericAssociationInfo;
+import org.qi4j.api.association.ManyAssociation;
+import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.constraint.ConstraintViolation;
+import org.qi4j.api.constraint.ConstraintViolationException;
+import org.qi4j.api.entity.Aggregated;
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.entity.Queryable;
+import org.qi4j.api.property.Immutable;
+import org.qi4j.api.util.Classes;
+import org.qi4j.bootstrap.BindingException;
+import org.qi4j.functional.Function2;
+import org.qi4j.functional.Visitable;
+import org.qi4j.functional.Visitor;
+import org.qi4j.runtime.composite.ValueConstraintsInstance;
+import org.qi4j.runtime.model.Binder;
+import org.qi4j.runtime.model.Resolution;
+import org.qi4j.runtime.structure.ModuleUnitOfWork;
+import org.qi4j.runtime.unitofwork.BuilderEntityState;
+import org.qi4j.spi.entity.EntityState;
+
+import java.lang.reflect.*;
+import java.util.List;
+
+/**
+ * JAVADOC
+ */
+public final class ManyAssociationModel
+    implements AssociationDescriptor, AssociationInfo, Binder, Visitable<ManyAssociationModel>
+{
+    private ValueConstraintsInstance associationConstraints;
+    private MetaInfo metaInfo;
+    private Type type;
+    private AccessibleObject accessor;
+    private QualifiedName qualifiedName;
+    private ValueConstraintsInstance constraints;
+    private boolean queryable;
+    private boolean immutable;
+    private boolean aggregated;
+    private AssociationInfo builderInfo;
+
+    public ManyAssociationModel( AccessibleObject accessor,
+                                 ValueConstraintsInstance valueConstraintsInstance,
+                                 ValueConstraintsInstance associationConstraintsInstance,
+                                 MetaInfo metaInfo
+    )
+    {
+        this.metaInfo = metaInfo;
+        this.constraints = valueConstraintsInstance;
+        this.associationConstraints = associationConstraintsInstance;
+        this.accessor = accessor;
+        initialize();
+    }
+
+    private void initialize()
+    {
+        this.type = GenericAssociationInfo.getAssociationType( accessor );
+        this.qualifiedName = QualifiedName.fromAccessor( accessor );
+        this.immutable = metaInfo.get( Immutable.class ) != null;
+        this.aggregated = metaInfo.get( Aggregated.class ) != null;
+
+        final Queryable queryable = accessor.getAnnotation( Queryable.class );
+        this.queryable = queryable == null || queryable.value();
+    }
+
+    public <T> T metaInfo( Class<T> infoType )
+    {
+        return metaInfo.get( infoType );
+    }
+
+    public QualifiedName qualifiedName()
+    {
+        return qualifiedName;
+    }
+
+    public Type type()
+    {
+        return type;
+    }
+
+    public boolean isImmutable()
+    {
+        return immutable;
+    }
+
+    public boolean isAggregated()
+    {
+        return aggregated;
+    }
+
+    public AccessibleObject accessor()
+    {
+        return accessor;
+    }
+
+    @Override
+    public boolean queryable()
+    {
+        return queryable;
+    }
+
+    public AssociationInfo getBuilderInfo()
+    {
+        return builderInfo;
+    }
+
+    public <T> ManyAssociation<T> newInstance( final ModuleUnitOfWork uow, EntityState state )
+    {
+        return new ManyAssociationInstance<T>( state instanceof BuilderEntityState ? builderInfo : this, new Function2<EntityReference, Type, Object>()
+        {
+            @Override
+            public Object map( EntityReference entityReference, Type type )
+            {
+                return uow.get( Classes.RAW_CLASS.map( type ), entityReference.identity() );
+            }
+        }, state.getManyAssociation( qualifiedName ));
+    }
+
+    public void checkConstraints( Object composite )
+        throws ConstraintViolationException
+    {
+        if( constraints != null )
+        {
+            List<ConstraintViolation> violations = constraints.checkConstraints( composite );
+            if( !violations.isEmpty() )
+            {
+                throw new ConstraintViolationException( "", "<unknown>", (Member) accessor, violations );
+            }
+        }
+    }
+
+    public void checkAssociationConstraints( ManyAssociation manyAssociation )
+        throws ConstraintViolationException
+    {
+        if( associationConstraints != null )
+        {
+            List<ConstraintViolation> violations = associationConstraints.checkConstraints( manyAssociation );
+            if( !violations.isEmpty() )
+            {
+                throw new ConstraintViolationException( "", "<unknown>", (Member) accessor, violations );
+            }
+        }
+    }
+
+    @Override
+    public <ThrowableType extends Throwable> boolean accept( Visitor<? super ManyAssociationModel, ThrowableType> visitor ) throws ThrowableType
+    {
+        return visitor.visit( this );
+    }
+
+    @Override
+    public void bind( Resolution resolution ) throws BindingException
+    {
+        builderInfo = new AssociationInfo()
+        {
+            @Override
+            public boolean isImmutable()
+            {
+                return false;
+            }
+
+            @Override
+            public QualifiedName qualifiedName()
+            {
+                return qualifiedName;
+            }
+
+            @Override
+            public Type type()
+            {
+                return type;
+            }
+
+            @Override
+            public void checkConstraints( Object value ) throws ConstraintViolationException
+            {
+                ManyAssociationModel.this.checkConstraints( value );
+            }
+        };
+
+        if (type instanceof TypeVariable)
+        {
+            type = Classes.resolveTypeVariable( (TypeVariable) type, ((Member) accessor).getDeclaringClass(), resolution.model().type() );
+        }
+    }
+
+    public boolean equals( Object o )
+    {
+        if( this == o )
+        {
+            return true;
+        }
+        if( o == null || getClass() != o.getClass() )
+        {
+            return false;
+        }
+
+        ManyAssociationModel that = (ManyAssociationModel) o;
+
+        return accessor.equals( that.accessor );
+    }
+
+    public int hashCode()
+    {
+        return accessor.hashCode();
+    }
+
+    @Override
+    public String toString()
+    {
+        if (accessor instanceof Field )
+          return ((Field)accessor).toGenericString();
+        else
+            return ((Method)accessor).toGenericString();
+    }
+}

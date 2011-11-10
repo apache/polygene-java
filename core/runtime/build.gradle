@@ -1,0 +1,20 @@
+jar { manifest { name = "Qi4j Core Runtime"}}
+
+dependencies {
+  provided libraries.osgi_core
+
+  compile project(":org.qi4j.core:org.qi4j.core.api")
+  compile project(":org.qi4j.core:org.qi4j.core.spi")
+  compile project(":org.qi4j.core:org.qi4j.core.bootstrap")
+  compile project(":org.qi4j.core:org.qi4j.core.testsupport")
+
+  compile libraries.slf4j_api
+  compile libraries.asm
+  compile libraries.asm_util
+  compile libraries.asm_commons
+
+  testCompile project(":org.qi4j.libraries:org.qi4j.library.constraints")
+  testCompile libraries.junit
+
+  testRuntime libraries.slf4j_simple
+}

@@ -1,0 +1,7 @@
+jar { manifest { name = "Qi4j Functional"}}
+
+dependencies {
+  compile(libraries.slf4j_api)
+  testCompile(libraries.junit)
+  testRuntime(libraries.slf4j_simple)
+}

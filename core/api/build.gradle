@@ -1,0 +1,14 @@
+jar { manifest { name = "Qi4j Core API"}}
+
+dependencies {
+  compile(project(':org.qi4j.core:org.qi4j.core.io'))
+  compile(libraries.slf4j_api)
+  compile "joda-time:joda-time:$jodaTimeVersion"
+  testCompile(libraries.ant)
+  testCompile(libraries.junit)
+  testCompile(project(':org.qi4j.libraries:org.qi4j.library.constraints'))
+  testCompile(project(':org.qi4j.core:org.qi4j.core.testsupport'))
+  testRuntime(project(':org.qi4j.core:org.qi4j.core.runtime'))
+  testRuntime(libraries.slf4j_simple)
+  testRuntime(libraries.asm)
+}
