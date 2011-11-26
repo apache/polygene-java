@@ -1,8 +1,10 @@
-
 title = "Qi4j SDK"
 description = "Qi4j™ is a framework for domain centric application development, including evolved concepts from AOP, DI and DDD."
 
 apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'signing'
+apply plugin:'application'
 apply from: 'maven-compat.gradle'
 apply plugin: 'project-report'
 apply from: 'libraries.gradle'
@@ -11,7 +13,7 @@ targetCompatibility = "1.6"
 sourceCompatibility = "1.6"
 
 testFailures = []
-
+mainClassName = 'org.qi4j.container.Main'
 groovycMain_mx = "512m"
 groovycMain_permSize = "64m"
 groovycMain_maxPermSize = "128m"
@@ -24,8 +26,11 @@ buildscript {
   repositories {
     mavenCentral()
   }
-  dependencies {
-    classpath 'de.huxhorn.gradle:de.huxhorn.gradle.pgp-plugin:0.0.3'
+}
+
+idea.project.ipr {
+  withXml { provider ->
+    provider.node.component.find { it.@name == 'VcsDirectoryMappings' }.mapping.@vcs = 'Git'
   }
 }
 
@@ -33,22 +38,25 @@ buildscript {
 allprojects {
   apply plugin: 'eclipse'
   apply plugin: 'idea'
+  apply plugin: 'signing'
   apply plugin: 'java'
   apply plugin: 'code-quality'
   apply plugin: 'project-report'
-  apply plugin: de.huxhorn.gradle.pgp.PgpPlugin
+  dependsOnChildren()
 
-  defaultTasks 'classes','test'
+  defaultTasks 'classes', 'test'
   project.Xslt = Xslt.class
 
   group = name.substring(0, name.lastIndexOf('.'))
   version = System.properties.version ?: "0"
-  idea.javaVersion = '1.6'
   [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
   repositories {
     mavenCentral()
-    mavenRepo name: 'ops4j-repo', urls: "http://repository.ops4j.org/maven2/"
+    mavenRepo id: 'ops4j-repo', url: "http://repository.ops4j.org/maven2/"
+    mavenRepo id: 'aduna-repo', urls: "http://repo.aduna-software.org/maven2/releases/"
+    mavenRepo id: 'restlet-repo', urls: 'http://maven.restlet.org'
+    mavenRepo id: 'maven2-repository.dev.java.net', urls: "http://download.java.net/maven/2"
   }
 
   configurations {
@@ -65,9 +73,27 @@ allprojects {
     deployerJars "org.apache.maven.wagon:wagon-ssh:1.0-beta-2"
   }
 
+  sourceSets {
+    docs {
+      resources {
+        srcDir 'src/docs'
+      }
+    }
+  }
+
+  test.onlyIf { !project.hasProperty('skipTests') }
 
   javaDir = new File("$projectDir/src/main/java")
-  testDir = new File("$projectDir/src/test/java")
+  documenationDir = new File("$projectDir/src/docs")
+  testDir = new File("$projectDir/src/tests/java")
+
+  if( documenationDir.isDirectory() )
+  {
+    task docsJar(type: Jar) {
+      classifier = "docs"
+      from sourceSets.docs.resources
+    }
+  }
 
   if( javaDir.isDirectory() || testDir.isDirectory() )
   {
@@ -108,9 +134,18 @@ allprojects {
       }
     }
 
+    signing {
+      sign configurations.archives
+    }
+
     task sourceJar(type: Jar) {
       classifier = "sources"
       from sourceSets.main.allSource
+    }
+
+    task testSourceJar(type: Jar) {
+      classifier = "testsources"
+      from sourceSets.test.allSource
     }
 
     task javadocJar(type: Jar) {
@@ -120,7 +155,7 @@ allprojects {
     }
 
     artifacts {
-      archives sourceJar, javadocJar
+      archives sourceJar, testSourceJar, javadocJar, docsJar
     }
 
     def testProperties = [
@@ -156,16 +191,17 @@ allprojects {
   }
 
   uploadArchives.doFirst {
-    if( System.properties[ 'version' ] == null )
+    if( version == 0 )
     {
       throw new GradleException("'version' must be given as a system property to perform a release.")
     }
   }
 
-  uploadArchives.onlyIf { releaseApprovedProjects.contains(project) || project == rootProject }
+  uploadArchives.onlyIf { (releaseApprovedProjects.contains(project) || project == rootProject) && !project.hasProperty('skipUpload') }
   uploadArchives {
     dependsOn check
     repositories.mavenDeployer {
+      beforeDeployment { MavenDeployment deployment -> signPom(deployment) }
       name = 'sshDeployer' // optional
       configuration = configurations.deployerJars
       repository(url: "scp://repository.ops4j.org/home/www/repository.ops4j.org/maven2/")
@@ -177,15 +213,16 @@ allprojects {
       module.dependencies*.exported = true
     }
   }
-  dependsOnChildren()
 }
 
 gradle.taskGraph.whenReady {taskGraph ->
   taskGraph.allTasks.last().doLast {
-    if( rootProject.testFailures ) {
+    if( rootProject.testFailures )
+    {
       println "\nTest failures in:"
       rootProject.testFailures.each { project -> println "  " + project.name }
-      throw new RuntimeException( "There was TEST FAILURES!! See list above." ) }
+      throw new RuntimeException("There was TEST FAILURES!! See list above.")
+    }
   }
 }
 
@@ -212,6 +249,7 @@ test.doLast() {
 }
 
 task javadocs(type: Javadoc) {
+  dependsOn allprojects*.javadoc
 
   options.docFilesSubDirs = true
   title = "${rootProject.title} ${version}"
@@ -224,7 +262,7 @@ task javadocs(type: Javadoc) {
   source apiSources.collect { project ->
     project.sourceSets.main.allJava
   }
-  destinationDir = new File("$buildDir/javadocs")
+  destinationDir = new File("$buildDir/docs/javadoc")
   // Might need a classpath
   classpath = files(apiSources.collect { project ->
     project.sourceSets.main.compileClasspath
@@ -235,16 +273,17 @@ task javadocs(type: Javadoc) {
                 "Core SPI": ["org.qi4j.spi", "org.qi4j.spi.*"],
                 "Libraries": ["org.qi4j.library.*", "org.qi4j.logging", "org.qi4j.logging.*", "org.qi4j.scripting.*"],
                 "Extensions": ["org.qi4j.entitystore.*", "org.qi4j.index.*", "org.qi4j.cache.*", "org.qi4j.migration", "org.qi4j.migration.*"],
-                "Test Support": ["org.qi4j.test", "org.qi4j.test.*"],
-
+                "Test Support": ["org.qi4j.test", "org.qi4j.test.*"]
                 ])
 
 }
 
-task distLayout {
+task distLayout( dependsOn: [javadocs, test, jar, subprojects*.build] ) {
+
   srcDistImage = copySpec {
     from '.'
     exclude '**/build/'     // build output
+    exclude '**/bin/'       // helper scripts
     exclude '**/out/'       // build output
     exclude '**/.git/'      // git directories
     exclude '**/.git*'      // git files
@@ -252,79 +291,88 @@ task distLayout {
     into "qi4j-sdk-$version/src/"
   }
 
-
   docsImage = copySpec {
-    into("docs")
     from "$buildDir/docs"
+    into("docs")
   }
+
   reportsImage = copySpec {
-    into("docs/reports")
     from "$buildDir/reports"
+    into("docs/reports")
   }
-  javadocsImage = copySpec {
-    into("javadocs")
-    from "$buildDir/javadocs"
-  }
+
   libsImage = copySpec {
-    releaseApprovedProjects.collect { project ->
-      if( project.group == 'org.qi4j.core' )
+    releaseApprovedProjects.collect { proj ->
+      if( proj.group == 'org.qi4j.core' )
       {
-        from project.configurations.runtime
-        into("libs/core")
+        from proj.configurations.runtime
+        into("libs")
       }
-      else if( project.group == 'org.qi4j.library' )
+      else if( proj.group == 'org.qi4j.library' )
       {
-        from project.configurations.runtime
-        into("libs/libraries/$project.name")
+        from proj.configurations.runtime
+        into("libs/libraries/$proj.name")
       }
-      else if( project.group == 'org.qi4j.extension' )
+      else if( proj.group == 'org.qi4j.extension' )
       {
-        from project.configurations.runtime
-        into("libs/extensions/$project.name")
+        from proj.configurations.runtime
+        into("libs/extensions/$proj.name")
       }
     }
   }
+
   samplesImage = copySpec {
-    into("samples")
-    from "$projectDir/samples"
-    exclude '**/build'
+    from("$projectDir/samples") {
+      into("samples")
+      exclude '**/build/**'
+    }
+    from( "$projectDir/samples/*/build/docs/javadoc" ){
+      into("samples/docs")
+    }
     exclude '**/*.iml'
   }
+
   tutorialsImage = copySpec {
-    into("tutorials")
-    from "$projectDir/tutorials"
+    from("$projectDir/tutorials") {
+      exclude '**/build/**'
+      into("tutorials")
+    }
+    from("$projectDir/tutorials/*/build/docs/javadoc") {
+      into("tutorials/docs")
+    }
+    exclude '**/*.iml'
   }
+
   binDistImage = copySpec {
     into "qi4j-sdk-$version"
     with docsImage
     with reportsImage
-    with javadocsImage
     with libsImage
     with samplesImage
     with tutorialsImage
   }
 }
 
-task zipSources(type: Zip) {
+task zipSources(type: Zip, dependsOn: distLayout) {
   baseName = 'qi4j-sdk'
   with distLayout.srcDistImage
   classifier = 'src'
 }
 
-task tarSources(type: Tar) {
+task tarSources(type: Tar, dependsOn: distLayout) {
   baseName = 'qi4j-sdk'
   with distLayout.srcDistImage
   compression = Compression.GZIP
   classifier = 'src'
 }
 
-task zipBinaries(type: Zip, dependsOn: [javadocs, test, distLayout]) {
+task zipBinaries(type: Zip, dependsOn: distLayout) {
   baseName = 'qi4j-sdk'
   classifier = 'bin'
   with distLayout.binDistImage
 }
 
-task tarBinaries(type: Tar, dependsOn: [javadocs, test, distLayout]) {
+task tarBinaries(type: Tar, dependsOn: distLayout) {
   baseName = 'qi4j-sdk'
   classifier = 'bin'
   compression = Compression.GZIP
@@ -335,6 +383,10 @@ artifacts {
   archives zipSources, tarSources, zipBinaries, tarBinaries
 }
 
+task dist( type: Copy, dependsOn: [zipBinaries,tarBinaries,tarSources,zipSources] ) {
+  with distLayout.binDistImage
+  into "$buildDir/dist"
+}
 
 task release {
   description = 'Builds, tests and uploads the release artifacts'
@@ -346,11 +398,6 @@ task release {
     }
   }
   dependsOn allprojects*.uploadArchives
-  dependsOn allprojects*.javadoc
-  dependsOn tarBinaries
-  dependsOn zipBinaries
-  dependsOn tarSources
-  dependsOn zipSources
 }
 
 //
@@ -361,7 +408,7 @@ task release {
 //  2) /gradlew.bat which is the windows bat script for for executing builds
 //  3) /wrapper which is a directory named by the "jarPath" config which contains other needed files.
 task wrapper(type: Wrapper) {
-  gradleVersion = '1.0-milestone-2'
-  jarPath = 'wrapper'
+  gradleVersion = '1.0-milestone-6'
+  jarFile = 'wrapper'
 }
 

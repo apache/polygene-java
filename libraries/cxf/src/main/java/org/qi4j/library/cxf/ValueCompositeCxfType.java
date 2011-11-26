@@ -197,7 +197,7 @@ public class ValueCompositeCxfType extends AegisType
                 String id = EntityReference.getEntityReference( entity ).identity();
                 if (ids != null)
                     ids+=",";
-                id+=id;
+                ids+=ids;
             }
             if (ids == null)
             {

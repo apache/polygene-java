@@ -1,0 +1,4 @@
+[[qi4j-introduction]]
+= Introduction to Qi4j =
+
+This introduction is meant for the Novice Qi4j developer, who has just noticed Qi4j and wants to learn the basics.

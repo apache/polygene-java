@@ -17,21 +17,16 @@
  */
 package org.qi4j.api.property;
 
-import org.qi4j.api.common.MetaInfo;
-import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.util.Classes;
-
-import java.io.Serializable;
 import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import org.qi4j.api.util.Classes;
 
 public final class GenericPropertyInfo
 {
     public static Type getPropertyType( AccessibleObject accessor )
     {
-        return getPropertyType( Classes.TYPE_OF.map(accessor) );
+        return getPropertyType( Classes.TYPE_OF.map( accessor ) );
     }
 
     public static Type getPropertyType( Type methodReturnType )

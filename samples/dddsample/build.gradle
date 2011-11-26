@@ -1,28 +1,6 @@
 description = "Conversion of the DDDsample project on SourceForge, converted to Qi4j."
 
-jar { manifest { name = "Qi4j Sample - DDD Sample, take 1" }}
-
-repositories {
-  mavenRepo id: 'maven2-repository.dev.java.net', name: "Java.net Repository for Maven", urls: "http://download.java.net/maven/2"
-}
-
-uploadArchives {
-  repositories.mavenDeployer {
-    pom {
-      project {
-        repositories {
-          repository {
-            id = 'maven2-repository.dev.java.net'
-            url = 'http://download.java.net/maven/2'
-          }
-        }
-      }
-      name = 'sshDeployer' // optional
-      configuration = configurations.deployerJars
-      repository(url: "scp://repository.ops4j.org/home/www/repository.ops4j.org/maven2/")
-    }
-  }
-}
+jar { manifest { name = "Qi4j Sample - DDD Sample" }}
 
 dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.api"))
@@ -56,17 +34,17 @@ dependencies {
   compile "org.slf4j:slf4j-simple:$slf4jVersion"
   compile "javax.jws:jsr181-api:1.0-MR1"
 
-  compile( "commons-logging:commons-logging:1.1" ) {
+  compile("commons-logging:commons-logging:1.1") {
     exclude module: 'avalon-framework:avalon-framework'
     exclude module: 'logkit:logkit'
   }
 
-  compile( "org.apache.activemq:activemq-core:5.3.0" ) {
+  compile("org.apache.activemq:activemq-core:5.3.0") {
     exclude module: 'org.apache.activemq:activeio-core'
     exclude module: 'javax.xml:jaxb-api'
   }
 
-  compile( "org.jvnet.jax-ws-commons.spring:jaxws-spring:1.8" ) {
+  compile("org.jvnet.jax-ws-commons.spring:jaxws-spring:1.8") {
     exclude module: 'streambuffer'
     exclude module: 'spring'
     exclude module: 'stax-ex'
@@ -77,11 +55,11 @@ dependencies {
   runtime "com.sun.xml.ws:jaxws-rt:2.2"
   runtime "com.sun.istack:istack-commons-runtime:2.2"
 
-  runtime( "org.jvnet.staxex:stax-ex:1.2" ) {
+  runtime("org.jvnet.staxex:stax-ex:1.2") {
     exclude module: 'activation'
   }
 
-  runtime( "com.sun.xml.stream.buffer:streambuffer:0.8" ) {
+  runtime("com.sun.xml.stream.buffer:streambuffer:0.8") {
     exclude module: 'activation'
   }
 

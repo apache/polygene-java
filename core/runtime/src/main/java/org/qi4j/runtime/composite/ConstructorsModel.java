@@ -129,7 +129,7 @@ public final class ConstructorsModel
                     Type typeArg = ((ParameterizedType) genericType).getActualTypeArguments()[i];
                     if (typeArg instanceof TypeVariable )
                     {
-                        typeArg = Classes.resolveTypeVariable( (TypeVariable) type, realConstructor.getDeclaringClass(), fragmentClass );
+                        typeArg = Classes.resolveTypeVariable( (TypeVariable) typeArg, realConstructor.getDeclaringClass(), fragmentClass );
                         ((ParameterizedType) genericType).getActualTypeArguments()[i] = typeArg;
                     }
                 }
