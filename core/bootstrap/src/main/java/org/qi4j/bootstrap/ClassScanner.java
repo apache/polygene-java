@@ -29,7 +29,6 @@ import java.util.regex.Pattern;
 import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specification;
-import sun.tools.util.ModifierFilter;
 
 import static org.qi4j.functional.Iterables.filter;
 import static org.qi4j.functional.Iterables.flatten;
