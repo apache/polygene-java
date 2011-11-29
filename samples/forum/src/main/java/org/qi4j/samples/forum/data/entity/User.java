@@ -4,10 +4,10 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.json.Base64Encoder;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.Property;
-import sun.misc.BASE64Encoder;
 
 /**
  * TODO
@@ -40,7 +40,8 @@ public interface User
               MessageDigest md = MessageDigest.getInstance( "SHA" );
               md.update( password.getBytes( "UTF-8" ) );
               byte raw[] = md.digest();
-              String hash = (new BASE64Encoder()).encode( raw );
+
+              String hash = new String(Base64Encoder.encode( raw, false ));
               return hash;
            }
            catch (NoSuchAlgorithmException e)
