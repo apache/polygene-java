@@ -4,7 +4,6 @@ description = "Qi4j™ is a framework for domain centric application development
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'signing'
-apply plugin:'application'
 apply from: 'maven-compat.gradle'
 apply plugin: 'project-report'
 apply from: 'libraries.gradle'
@@ -93,6 +92,9 @@ allprojects {
       classifier = "docs"
       from sourceSets.docs.resources
     }
+    artifacts {
+      archives docsJar
+    }
   }
 
   if( javaDir.isDirectory() || testDir.isDirectory() )
@@ -155,7 +157,7 @@ allprojects {
     }
 
     artifacts {
-      archives sourceJar, testSourceJar, javadocJar, docsJar
+      archives sourceJar, testSourceJar, javadocJar
     }
 
     def testProperties = [
