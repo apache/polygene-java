@@ -1,0 +1,23 @@
+[[community-support]]
+Community Support
+=================
+
+You can learn a lot about Qi4j on different _events._
+To get information on upcoming Qi4j events, have a look here:
+
+* http://www.qi4j.org/news
+
+Get help from the Qi4j open source community; here are some starting points.
+
+* http://www.mail-archive.com/qi4j-dev@lists.ops4j.org/info.html[archive], http://lists.ops4j.org/mailman/listinfo/qi4j-dev[sign up].
+* http://www.qi4j.org/[Web site].
+
+Report a _bug_ or add a _feature request_:
+
+* http://team.ops4j.org/browse/QI
+
+Questions regarding the _documentation:_
+The Qi4j Manual is published online with a comment function, please use that to post any questions or comments.
+
+
+

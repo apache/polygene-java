@@ -1,0 +1,5 @@
+description = "Qi4j Manual and Website."
+
+task manual( type: org.qi4j.gradle.plugin.documentation.Documentation ) {
+
+}

@@ -1,0 +1,14 @@
+[[reference-documentation]]
+Reference Manual
+:leveloffset: 1
+
+include::preface.txt[]
+
+include::../core/api/src/docs/index.txt[]
+
+include::../core/bootstrap/src/docs/index.txt[]
+
+include::../core/spi/src/docs/index.txt[]
+
+
+

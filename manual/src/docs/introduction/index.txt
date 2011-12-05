@@ -1,0 +1,17 @@
+
+:leveloffset: 1
+
+include::highlights.txt[]
+
+[[cop-concepts]]
+Composite Oriented Programming Concepts
+=======================
+
+:leveloffset: 2
+
+include::what-is-composite-oriented-programming.txt[]
+
+:leveloffset: 1
+
+include::qi4j-cop.txt[]
+

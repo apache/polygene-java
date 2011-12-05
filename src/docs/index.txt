@@ -1,3 +1,0 @@
-[[qi4j-home]]
-Welcome to Qi4j(tm)
-===================
