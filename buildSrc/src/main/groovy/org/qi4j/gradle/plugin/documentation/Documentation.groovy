@@ -18,6 +18,10 @@ package org.qi4j.gradle.plugin.documentation;
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
+// TODO: use proper project variables for 'build' and other locations
+// TODO: extract out every location into configurable property
+// TODO: try to use dependencies for FOP and execute within the same JVM.
+// TODO: move the bulk of resources into this plugin, instead of sitting in the project.
 class Documentation extends DefaultTask
 {
   String getVersion()
