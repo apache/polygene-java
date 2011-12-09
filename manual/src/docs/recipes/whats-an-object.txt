@@ -1,0 +1,193 @@
+[[what-s-an-object-anyway]]
+= What's an Object anyway? =
+In OOP the main idea is that we should model our reality by creating Objects. Objects have state, and they have methods.
+Methods in an object are used to operate on the internal state and understands the domain that is being modeled.
+
+By contrast, in procedural programming the focus is on algorithms, which can use several data structures to perform some
+task. The focus is on what is going on, rather than the "objects" involved.
+
+With OOP it becomes more difficult to "read" algorithms, as they are spread out in many objects that interact. With
+procedural programming it becomes difficult to encapsulate and reuse functionality. Both represent extremes, neither of
+which is "correct". The tendency to create anemic domain models is an indication that we have lost the algorithmic view
+in OOP, and there is a need for it.
+
+The main flaw of OOP, which COP addresses, is the answer to the fundamental question "What methods should an object
+have?". In traditional OOP, which really should be called "class oriented programming", the classes tend to have a
+rather narcissistic point of view. Classes are allowed to dictate what methods are in there - regardless of the
+algorithms which they are part of - and algorithms then need to be aware of these classes when object instances
+collaborate in an algorithm. Why? This seems like complete madness to me!! Keep in mind that if there were no
+algorithms, there would be no need for methods at all!! Algorithms, then, are primary, and objects are what we use as
+helper structures. In philosophical terms, if there is noone around to observe the universe, there would be no need for
+the universe itself!
+
+In COP the responsibility for defining the methods is reversed: algorithms which implement interactions between objects
+get to declare what roles it needs the objects to implement, and the composites can then implement these. For each role
+there will be an interface, and for each composite wanting to implement a role there will be a mixin in that composite.
+This mixin can be specific for that composite implementation, or it can be generic and reused. The key point is that it
+is the OBSERVER of the object, meaning, the algorithm, that gets to decide what the object should be able to do.
+
+This is the same in real life. I don't get to decide how I communicate with you. I have to use english, and I have to
+use email, and I have to send it to a specific mailing list. It is the algorithm of the interaction between us, the
+Qi4j dev mailing list, that has set these rules, not *I* as a participant in this interaction. The same should,
+obviously, be the case for objects.
+
+So, with the understanding that algorithms should define roles for collaborating objects, and objects should then
+implement these in order to participate in these algorithms, it should be trivial to realize that what has passed for
+OOP so far, in terms of "class oriented programming", where this role-focus of objects is difficult to achieve, if not
+even impossible, is just plain wrong. I mean seriously, catastrophically, terminally wrong.
+
+*Let that sink in.*
+
+The method that has been used so far to get around this has been the composite pattern, where one object has been
+designated as "coordinator", which then delegates to a number of other objects in order to implement the various roles.
+This "solution", which is caused by this fundamental flaw in "class oriented programming", is essentially a hack, and
+causes a number of other problems, such as the "self schizophrenia" problem, whereby there is no way to tell where the
+object really is. There is no "this" pointer that has any relevant meaning.
+
+The Composite pattern, as implemented in COP and Qi4j, gets around this by simply saying that the composite, as a
+whole, is an object. Tada, we now have a "this" pointer, and a coherent way to deal with the object graph as though it
+was a single object. We are now able to get back to the strengths of the procedural approach, which allows the
+implementer of the algorithm to define the roles needed for the algorithm. The roles can either be specific to an
+algorithm, or they can be shared between a number of algorithms if there is a generic way for them to be expressed.
+
+*Goodness!*
+
+The question now becomes: how can we use this insight to structure our composites, so that what is part of the
+algorithm is not too tightly encoded in the composites, thereby making the algorithms more reusable, and making it less
+necessary to read composite code when trying to understand algorithms. The assumption here is that we are going to write
+more algorithms than composites, therefore it has to be easy to ready algorithms, and only when necessary dive down into
+composite code.
+
+When talking about Composites as Objects in Qi4j it is most relevant to look at Entities, since these represent physical
+objects in a model, rather than algorithms or services, or other non-instance-oriented things.
+
+If Entities should implement roles, via mixins, in order to interact with each other through algorithms, then the
+majority of their behaviour should be put into those role-mixins. These are exposed publically for clients to use.
+However, the state that is required to implement these roles should not be exposed publically, as they represent
+implementation details that may change over time, may be different depending on role implementation, and usually has a
+lot of rules regarding how it may be changed. In short, the state needs to be private to the composite.
+
+This leads us to this typical implementation of an Entity
+
+[code,java]
+-----------
+@Mixins(SomeMixin.class)
+interface MyEntity
+   extends Some, Other, EntityComposite
+{}
+-----------
+
+where Some and Other are role interfaces defined by one or more algorithms. SomeMixin is the implementation of the Some
+interface. There is NO interface that is defined by the author of MyEntity. Algorithms first, objects second!
+
+The state needed for these mixins would then be put into separate interfaces, referred to by using the @This injection
+in the mixins.
+
+[code,java]
+-----------
+interface SomeState
+{
+   Property<String> someProperty();
+}
+-----------
+
+These interfaces will pretty much ONLY contain state declarations. There might be some methods in there, but I can't
+see right now what they would be.
+
+In order to be able to get an overview of all the state being implemented by the Entity we introduce a "superstate"
+interface:
+
+[code,java]
+-----------
+interface MyState
+   extends SomeState, OtherState, ...
+{}
+-----------
+
+This lets us see the totality of all the state that the Entity has, and can be used in the builder phase:
+
+[code,java]
+-----------
+EntityBuilder<MyEntity> builder = uow.newEntityBuilder(MyEntity.class);
+MyState state = builder.instanceFor(MyState.class);
+
+... init state ...
+
+MyEntity instance = builder.newInstance();
+-----------
+
+This lets us divide our Entity into two parts: the internal state and the external roles of the domain that the object
+takes part in. Due to the support for private mixins the state is not unnecessarily exposed, and the mixin support in
+general allow our role-oriented approach to modeling. The role interfaces are strongly reusable, the mixins are
+generally reusable, and the state interfaces are usually reusable. This minimizes the need for us to go into the mixin
+code and read it. If we have read the mixin code once, and the same mixin is reused between objects, then this makes
+it easier for us to understand it the next time we see it being used in another algorithm.
+
+To summarize thus far, we have looked at why OOP so far has not worked out, why this is the case, and how COP deals
+with it, and how we can implement a better solution of Entities using Qi4j. All is well!
+
+The next step is to start using these Entities in algorithms. Algorithms are usually stateless, or at least they don't
+have any state that survives the execution of the algorithm. There is input, some calculation, and then output. In
+other words, our notion of services fit perfectly here!
+
+Algorithms, then, should(/could?) be modeled using services. If an algorithm needs other algorithms to compute
+something, that is, if a service needs another service to do something, we can accomplish this using dependency
+injection, so that the user of the initial algorithm does not have to know about this implementation detail.
+
+In a "Getting Things Done" domain model, with Projects and Actions, you might then have an algorithm like so for task
+delegation:
+
+[code,java]
+-----------
+void delegate(TaskExecutor from, Completable completable, TaskExecutor to)
+{
+   to.inbox().createTask( createDelegatedTask( completable ) );
+
+   completable.complete(); // Delegated task is considered done
+
+   from.inbox().createTask( createWaitingTask( completable ) );
+}
+-----------
+
+In the above I don't know if "from" and "to" are human users or systems that automatically execute tasks. I also don't
+know if Completable is an entire Project or a single Action. From the point of view of the algorithm I don't need to
+know! All the algorithm cares about is that the roles it needs are fulfilled somehow. This means that I will be able to
+extend my domain model later on, and have it be a part of these kinds of algorithms, without having to change my
+algorithms. And as long as my composites implement the role interfaces, such as TaskExecutor and Completable, they can
+participate in many different algorithms that use these as a way to interact with the domain objects.
+
+This shows the place of services, as points of contact between objects in a domain model, or more generally,
+"interactions". These will change often, and will increase in number as the system grows, so it is important that they
+are easy to read, and that they are easy to participate in. With a focus on roles, rather than classes, this becomes
+much easier to accomplish!
+
+With the responsibilities of entities, as objects, and services, as algorithms, more clearly defined, the last part to
+deal with is how these are put together. The services, with the methods now being role-oriented, can obviously be
+applied to a wide variety of entities, but we now go from general to specific. In our software each general algorithm
+is typically applied to specific objects in specific use-cases.
+
+*How is this done?*
+
+This is done by implementing context objects, which pick specific objects and pass them into algorithms. This is
+typically a UI-centric thing, and as such is difficult to encapsulate into a single method. With the previous example we
+would need to get the three objects involved, and cast them to the specific roles we are interested in. The
+"TaskExecutor from" could be the user running the application, the "Completable completable" could be the currently
+selected item in a list, and "TaskExecutor to" could be a user designated from a popup dialog. These three are then
+taken by the context and used to execute the "delegate" interaction, which performs all the steps necessary.
+
+The interaction method "delegate" is testable, both with mocks of the input, and with specific instances of the various
+roles. The implementations are also testable, and if the same mixin is used over and over for the implementation, then
+only one set of tests is needed for each role interface.
+
+To summarize we have in COP/Qi4j a way to get the best from procedural and object-oriented programming. As we have seen
+the functionality falls into three categories, the entities implementing objects, the services implementing
+interactions, and the user interface implementing the context. This also maps well to the ideas of ModelViewController,
+which in turn maps well to the new ideas from Mr Reenskaug (inventor of MVC) called DCI: Data-Context-Interaction. As a
+side-effect of this discussion we have therefore also seen how COP/Qi4j can be used to implement DCI, which is an
+important next step in understanding objects and their interactions, the fundamentals of which (I believe) are captured
+on this page.
+
+That's it. Well done if you've read this far :-)
+
+Comments and thoughts to qi4j-dev@lists.ops4j.org on this are highly appreciated. This is very very important topics,
+and crucial to understanding/explaining why COP/Qi4j is so great! :-)

@@ -3,8 +3,6 @@
 
 This introduction is meant for the Novice Qi4j developer, who has just noticed Qi4j and wants to learn the basics.
 
-
-[[introduction]]
 Introduction
 ============
 
@@ -15,8 +13,8 @@ This part gives a bird's eye view of what Composite Oriented Programming is, and
 
 :leveloffset: 1
 
-include::twominutes/src/main/docs/index.txt[]
-include::tenminutes/src/main/docs/index.txt[]
-include::thirtyminutes/src/main/docs/index.txt[]
-include::twohours/src/main/docs/index.txt[]
+include::../../twominutes/src/docs/index.txt[]
+include::../../tenminutes/src/docs/index.txt[]
+include::../../thirtyminutes/src/docs/index.txt[]
+include::../../twohours/src/docs/index.txt[]
 

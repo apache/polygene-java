@@ -7,17 +7,7 @@ The Qi4j Manual v{revnumber}
 
 :leveloffset: 0
 
-include::../tutorials/introduction/src/docs/index.txt[]
-
-:leveloffset: 0
-
-[[tutorials]]
-Tutorials
-=========
-
-:leveloffset: 1
-
-include::../tutorials/composites/src/docs/index.txt[]
+include::../../../../tutorials/introduction/src/docs/index.txt[]
 
 :leveloffset: 0
 
@@ -39,10 +29,6 @@ include::community/index.txt[]
 
 :leveloffset: 0
 :numbered!:
-
-:leveloffset: 0
-
-include::qanda/index.txt[]
 
 ////
 :leveloffset: 0

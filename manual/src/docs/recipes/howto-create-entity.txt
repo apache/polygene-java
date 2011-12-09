@@ -1,0 +1,308 @@
+[[howto-create-entity]]
+= HowTo : Create an Entity =
+
+One of the most common tasks in Qi4j is the management of the life cycle of Entities. Since Qi4j is capable of
+delivering much higher performance than traditional Object-Relational Mapping technologies, we also expect that people
+use Entities more frequently in Qi4j applications, so it is a very important topic to cover.
+
+- Basics First -
+
+All Entity operations MUST be done within a UnitOfWork. UnitOfWorks can be nested and if underlying UnitOfWorks are not
+completed (method complete()) or at least applied (method apply()), then none of the operations will be persisted
+permanently.
+
+Entity composites are subtypes of the EntityComposite interface.
+
+Domain code typically don't need to know of the EntityComposite types directly, and is instead using the domain specific
+interface. The Visibility rules will be applied to associate the right EntityComposite when a domain type is requested.
+Ambiguities are not accepted and will result in runtime exceptions.
+
+Qi4j supports that each entity instance can have more than one entity type, and it is managed per instance. This feature
+is beyond the scope of this HowTO and will be covered subsequently.
+
+- Good Practice -
+
+We have made the observation that it is good practice to separate the internal state from the observable behavior. By
+this we mean that it is not a good practice to allow client code to manipulate or even view the internal states of
+objects, which is such a common (bad) practice in the so called POJO world.
+
+Instead, we recommend that the programmer defines the client requirement of what each participant within the client
+context needs to conform to, and then create composites accordingly and hide all the state internal to the composite in
+private mixins. By doing so, the same entity can participate in multiple contexts with different behavioral requirements
+but using the same internal state.
+
+We recommend limited use of primitive types for Properties and instead subtype the Property.
+
+And try to use ValueComposites instead of Entities.
+
+- The Entity -
+
+We need an entity to illustrate how we recommend to separate internal state from public behavior and observable state.
+We will for the sake of simplicity use a trivial example. Please refer to other (possibly future) HowTos on patterns on
+Entity management.
+
+[code,java]
+-----------
+public interface Car
+{
+    @Immutable
+    Association<Manufacturer> manufacturer();
+
+    @Immutable
+    ModelProperty model();
+
+    AccidentHistory accidents();
+}
+
+public interface ModelProperty extends Property<String>
+{}
+
+public interface Manufacturer
+{
+    NameProperty name();
+    CountryProperty country();
+
+    @UseDefaults
+    QuantityProperty carsProduced();
+}
+
+public interface QuantityProperty extends Property<Long>
+{}
+
+public interface NameProperty extends Property<String>
+{}
+
+public interface CountryProperty extends Property<String>
+{}
+
+public interface AccidentHistory extends ManyAssociation<Accident>
+{}
+
+public interface Accident extends Value
+{
+    DescriptionProperty description();
+    PointInTimeProperty occured();
+    PointInTimeProperty repaired();
+}
+
+public interface DescriptionProperty extends Property<String>
+{}
+
+public interface PointInTimeProperty extends Property<Date>
+{}
+-----------
+
+Above we define a Car domain object, which is of a particular Manufacturer (also an Entity), a model and a record of
+Accidents.
+
+We are using explicit types for properties, so that instead of saying Property<String> model(), we make it explicit that
+the Property is a ModelProperty, which is useful when passing the Model property instance around for processing and
+similar. It very effectively communicates intent in a typesafe manner.
+
+We will also need to define the composites for the above domain structure;
+
+[code,java]
+-----------
+public interface CarEntity extends Car, EntityComposite
+{}
+
+public interface ManufacturerEntity extends Manufacturer, EntityComposite
+{}
+
+public interface AccidentValue extends Accident, ValueComposite
+{}
+-----------
+
+For this case, we define both the Car and the Manufacturer as Entities, whereas the Accident is a Value, since it is an
+immutable event that can not be modified.
+
+- Assembly -
+
+All of the above must also be declared in the assembly. We MUST associate the EntityComposites with a relevant Module.
+We must also assemble an EntityStore for the entire application, but that is outside the scope of this HowTo.
+
+[code,java]
+-----------
+public class MyAssembler
+    implements Assembler
+{
+    public void assemble( ModuleAssembly module )
+    {
+        module.addEntities( CarEntity.class,
+                            ManufacturerEntity.class );
+
+        module.addValues( AccidentEntity.class );
+    }
+}
+-----------
+
+We have no other Composites involved yet, so we can proceed to look at the usage code.
+
+We recommend that the life cycle management of entities is placed inside domain factories, one for each type and made
+available as services.
+
+- The Entity Factory -
+
+The entity factory is something you need to write yourself, but as with most things in Qi4j it will end up being a
+fairly small implementation. So how is that done?
+
+[code,java]
+-----------
+public interface CarEntityFactory
+{
+    Car create( Manufacturer manufacturer, String model );
+}
+-----------
+
+That is just the domain interface. We now need to make the service interface, which Qi4j needs to identify services and
+make it possible for the service injection later.
+
+[code,java]
+-----------
+@Mixins( { CarEntityFactoryMixin.class } )
+public interface CarEntityFactoryService
+    extends CarEntityFactory, ServiceComposite
+{}
+-----------
+
+Then we need an implementation of the mixin.
+And doing that, first of all we need to request Qi4j runtime to give us the UnitOfWorkFactory associated with the Module
+that our code belongs to, and the UnitOfWork current context the execution is happening in.
+
+Injections that are related to the Visibility rules are handled by the @Structure annotation. And the easiest way for us
+to obtain a UnitOfWorkFactory is simply to;
+
+[code,java]
+-----------
+public class CarEntityFactoryMixin
+    implements CarEntityFactory
+{
+    @Structure UnitOfWorkFactory uowf;
+
+}
+-----------
+
+Here Qi4j will inject the member uowf with the correct UnitOfWorkFactory. In case we only need the UnitOfWorkFactory
+during the construction, we can also request it in the same manner as constructor argument.
+
+[code,java]
+-----------
+public class CarEntityFactoryMixin
+    implements CarEntityFactory
+{
+    public CarEntityFactoryMixin( @Structure UnitOfWorkFactory uowf )
+    {
+    }
+}
+-----------
+
+This is important to know, since the injected member will not be available until AFTER the constructor has been
+completed.
+
+We then need to provide the implementation for the create() method.
+
+[code,java]
+-----------
+public Car create( Manufacturer manufacturer, String model )
+{
+    UnitOfWork uow = uowf.currentUnitOfWork();
+    EntityBuilder<Car> builder = uow.newEntityBuilder( Car.class );
+
+    Car prototype = builder.instance();
+    prototype.manufacturer().set( manufacturer );
+    prototype.model().set( model );
+
+    return builder.newInstance();
+}
+-----------
+So far so good. But how about the Manufacturer input into the create() method?
+
+DDD promotes the use of Repositories. They are the type-safe domain interfaces into locating entities without getting
+bogged down with querying infrastructure details. And one Repository per Entity type, so we keep it nice, tidy and
+re-usable. So let's create one for the Manufacturer type.
+
+[code,java]
+-----------
+public interface ManufacturerRepository
+{
+    Manufacturer findByIdentity( String identity );
+
+    Manufacturer findByName( String name );
+}
+-----------
+
+And then we repeat the process for creating a Service and a Mixin that implements it...
+
+[code,java]
+-----------
+@Mixins( { ManfacturerRepositoryMixin.class } )
+public interface ManufacturerRepositoryService
+    extends ManufacturerRepository, ServiceComposite
+{}
+
+import static org.qi4j.api.query.QueryExpressions.eq;
+import static org.qi4j.api.query.QueryExpressions.templateFor;
+
+public class ManufacturerRepositoryMixin
+    implements ManufacturerRepository
+{
+    @Structure private UnitOfWorkFactory uowf;
+
+    public Manufacturer findByIdentity( String identity )
+    {
+        UnitOfWork uow = uowf.currentUnitOfWork();
+        return uow.find( identity, Manufacturer.class );
+    }
+
+    public Manufacturer findByName( String name )
+    {
+        UnitOfWork uow = uowf.currentUnitOfWork();
+        QueryBuilderFactory qbf = uow.queryBuilderFactory();
+        QueryBuilder<Manufacturer> builder =
+            qbf.newQueryBuilder( Manufacturer.class );
+        Manufacturer template = templateFor( Manufacturer.class );
+        builder.where( eq( template.name(), name ) );
+        Query<Manufacturer> query = builder.newQuery();
+        Iterator<Manufacturer> iterator = query.iterator();
+        if( iterator.hasNext() )
+        {
+            return query.iterator().next();
+        }
+        return null;
+    }
+}
+-----------
+
+But now we have introduced 2 services that also are required to be declared in the assembly. In this case, we want the
+Services to be available to the application layer above, and not restricted to within this domain model.
+
+[code,java]
+-----------
+public class MyAssembler
+    implements Assembler
+{
+    public void assemble( ModuleAssembly module )
+    {
+        module.addEntities( CarEntity.class,
+                            ManufacturerEntity.class );
+
+        module.addValues( AccidentEntity.class );
+
+        module.addServices(
+            ManufacturerRepositoryService.class,
+            CarEntityFactoryService.class
+        ).visibleIn( Visibility.application );
+    }
+}
+-----------
+
+- The UnitOfWork -
+
+If you notice, there is a couple of calls to UnitOfWorkFactory.currentUnitOfWork(), but what is current UnitOfWork, and
+who is setting that up?
+
+Well, the domain layer should not worry about UoW, it is probably the responsibility of the application/service layer
+sitting on top. That could be a web application creating and completing a UoW per request, or some other co-ordinator
+doing long-running UnitOfWorks.
+
+There are of course a lot more details to get all this completed, but that is beyond the scope of this HowTo.

@@ -1,4 +1,8 @@
 
+:leveloffset 0
+
+include::community.txt[]
+
 :leveloffset: 1
 
 include::help.txt[]

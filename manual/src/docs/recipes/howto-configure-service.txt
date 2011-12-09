@@ -1,0 +1,196 @@
+[[howto-configure-service]]
+= HowTo : Configure a Service =
+Qi4j supports a Configuration system for services. The configuration instance itself is an Entity and is therefor
+readable, writeable and queryable, just like other Entities. This should make Configuration management much simpler,
+since you can easily build GUI tools to allow editing of these in runtime. However, to simplify the initial values of
+the Configuration instance, Qi4j also does the initial bootstrapping of the Configuration entity for you. This HowTo is
+going to show how.
+
+- We need a Service -
+
+To illustrate these features we create an TravelPlan service, which allows clients to find and make Reservations to
+Destinations. For the sake of simplicity, we are leaving out the domain details...
+
+[code,java]
+-----------
+public interface TravelPlan
+{
+    // Domain methods, which are beyond the discussion at hand.
+}
+-----------
+
+So, then there is the ServiceComposite...
+
+[code,java]
+-----------
+// The package is relevant to the Initial Values discussed later.
+package org.niclas.hedhman.travel;
+
+@Mixins( { TravelPlanMixin.class } )
+public interface TravelPlanService extends TravelPlan, ServiceComposite
+{}
+-----------
+
+And then in the Mixin we actually need to connect to a foreign system to obtain the various details that the service
+can provide to the clients. For instance, it needs a host name and port and a protocol to use. We put these into a
+configuration interface.
+
+[code,java]
+-----------
+public interface TravelPlanConfiguration
+{
+    Hostname hostName();
+
+    PortNumber portNumber();
+
+    Protocol protocol();
+}
+
+public interface HostName extends Property<String>
+{}
+
+@Range( min=0, max=65535 )
+public interface PortNumber extends Property<Integer>
+{}
+
+@Matches( "(ssh|rlogin|telnet)" )
+public interface Protocol extends Property<String>
+{}
+-----------
+
+We used the recommended type-safe Property subtype pattern, and for each PortNumber and Protocol we have defined a
+Constraint required.
+
+Now we can access this configuration in the TravelPlanMixin like this;
+
+[code,java]
+-----------
+import org.qi4j.api.configuration.Configuration;
+
+public class TravelPlanMixin
+    implements TravelPlan
+{
+    @This Configuration<TravelPlanConfiguration> config;
+
+  :
+  :
+        TravelPlanConfiguration tpConf = config.configuration();
+        String hostName = tpConf.hostName().get();
+  :
+}
+-----------
+
+And from the Service point of view, it doesn't need to worry about where the configuration really comes from. But it may
+want to control when the Configuration should be refreshed, to ensure that atomic changes are happening. This is done
+with the refresh() method in the Configuration interface;
+
+[code,java]
+-----------
+public void doSomething()
+{
+    // Refresh Configuration before reading it.
+    config.refresh()
+
+    TravelPlanConfiguration tpConf = config.configuration();
+  :
+  :
+}
+-----------
+
+This ensures that any updates to the Configuration that has occurred will be retrieved and available to the Service.
+Since Configuration instance is an Entity, the UnitOfWork system will ensure that the Configuration is consistent and
+not in the middle of value changes.
+
+- Initial Values -
+
+The initial Configuration instance will be created automatically behind the scenes, by reading a properties file and
+create an Entity with the same identity as the identity of the service. That was a handful. Services are, as we know,
+singletons and have an identity specified at assembly. Even if it is not provided, one will automatically be assigned.
+The service's "identifiedBy" will be used as the identifier for the Configuration entity and stored in the visible
+EntityStore. This identity is also used to locate a properties file in the same package as the ServiceComposite belongs
+to.
+
+So, we create a properties file, where the keys are the names of the properties in TravelPlanConfiguration.
+
+[code,bash]
+-----------
+# Hostname to the TravelPlan service
+hostName=niclas.hedhman.org
+
+# Port number to use for the connection
+portNumber=5439
+
+# Protocol to use; Valid options "ssh", "rlogin", "telnet"
+protocol=ssh
+-----------
+File: org/hedhman/niclas/travel/TravelPlanService.properties
+
+Note that the file resides in the directory equivalent to the package name of the TravelPlanService.
+
+And this would work with the standard assembly.
+
+[code,java]
+-----------
+public void assemble( ModuleAssembly module )
+{
+    module.addServices( TravelPlanService.class ).instantiateOnStartup();
+}
+-----------
+
+- Non-default Identity -
+If you need to use multiple instances of the same service, or that the service has a non-default Identity, then you need
+to name the properties file according to the Identity of the service declaration, but the file will still need to be in
+the same package as the ServiceComposite sub type, the TravelPlanService in the above example. For instance;
+
+[code,java]
+-----------
+public void assemble( ModuleAssembly module )
+{
+    module.addServices( TravelPlanService.class )
+        .instantiateOnStartup()
+        .identifiedBy( "ExpediaService" );
+
+    module.addServices( TravelPlanService.class )
+        .instantiateOnStartup()
+        .identifiedBy( "OrbitzService" );
+}
+-----------
+
+And the two files for configuration,
+
+[code,bash]
+-----------
+# Hostname to the TravelPlan service
+hostName=expedia.hedhman.org
+
+# Port number to use for the connection
+portNumber=9251
+
+# Protocol to use; Valid options "ssh", "rlogin", "telnet"
+protocol=ssh
+-----------
+File: org/hedhman/niclas/travel/ExpediaService.properties
+
+
+[code,bash]
+-----------
+# Hostname to the TravelPlan service
+hostName=orbitz.hedhman.org
+
+# Port number to use for the connection
+portNumber=7412
+
+# Protocol to use; Valid options "ssh", "rlogin", "telnet"
+protocol=rlogin
+-----------
+File: org/hedhman/niclas/travel/OrbitzService.properties
+
+- Changing Configuration in runtime -
+Unlike most frameworks, the Configuration in Qi4j is an active Entity, and once the properties file has been read once
+at the first(!) startup, it no longer serves any purpose. The Configuration will always be retrieved from the
+EntityStore. Changes to the properties file are not taken into consideration if the Configuration entity is found in the
+entity store.
+
+But that also means that applications should not cache the configuration values, and instead read them from the
+Configuration instance every time needed, and do a refresh() method call when it is safe to update the Configuration
+Entity with new values.

@@ -24,14 +24,11 @@ import org.gradle.api.tasks.TaskAction
 // TODO: move the bulk of resources into this plugin, instead of sitting in the project.
 class Documentation extends DefaultTask
 {
-  String getVersion()
-  { return project.version }
-
   @TaskAction
   def void generate()
   {
-    new File('build/docs/manual').mkdirs()
-    new File('build/tmp/docs').mkdirs()
+    new File("build/docs/$docName").mkdirs()
+    new File("build/tmp/docs/$docName").mkdirs()
     generateXDoc()
     generateChunkedHtml()
     generateSingleHtml()
@@ -43,15 +40,15 @@ class Documentation extends DefaultTask
   {
     project.exec {
       executable = 'asciidoc'
-      def resourcesDir = 'src/docs/resources'
+      def commonResourcesDir = 'src/resources'
       def asciidocConfigFile = 'src/conf/asciidoc.conf'
       def docbookConfigFile = 'src/conf/docbook45.conf'
       def linkimagesConfigFile = 'src/conf/linkedimages.conf'
-      def xdocOutputFile = 'build/tmp/docs/xdoc-temp.xml'
-      def asciiDocFile = 'src/docs/index.txt'
+      def xdocOutputFile = "build/tmp/docs/$docName/xdoc-temp.xml"
+      def asciiDocFile = "src/docs/$docName/index.txt"
       args = [
-              '--attribute', 'revnumber=' + getVersion(),
-              '--attribute', 'importdir=' + resourcesDir,
+              '--attribute', 'revnumber=' + project.version,
+              '--attribute', 'importdir=' + commonResourcesDir,
               '--backend', 'docbook',
               '--attribute', 'docinfo1',
               '--doctype', 'book',
@@ -67,7 +64,12 @@ class Documentation extends DefaultTask
   def void generateChunkedHtml() {
     project.copy {
       from 'src/resources'
-      into 'build/docs/manual/'
+      into "build/docs/$docName/"
+      include '**'
+    }
+    project.copy {
+      from "src/docs/$docName/resources"
+      into "build/docs/$docName/"
       include '**'
     }
 
@@ -76,9 +78,9 @@ class Documentation extends DefaultTask
       executable = 'xsltproc'
       args = [
               '--nonet',
-              '--output', 'build/docs/manual/',
+              '--output', "build/docs/$docName/",
               xsltFile,
-              'build/tmp/docs/xdoc-temp.xml'
+              "build/tmp/docs/$docName/xdoc-temp.xml"
       ]
     }
   }
@@ -90,9 +92,9 @@ class Documentation extends DefaultTask
       executable = 'xsltproc'
       args = [
               '--nonet',
-              '--output', 'build/docs/manual/qi4j-manual.html',
+              '--output', "build/docs/$docName/$docName"+".html",
               xsltFile,
-              'build/tmp/docs/xdoc-temp.xml'
+              "build/tmp/docs/$docName/xdoc-temp.xml"
       ]
     }
   }
@@ -102,22 +104,22 @@ class Documentation extends DefaultTask
 // $ xsltproc --nonet ../docbook-xsl/fo.xsl article.xml > article.fo
 // $ fop article.fo article.pdf
 
-    project.exec {
-      String xsltFile = 'src/xsl/fo.xsl'
-      executable = 'xsltproc'
-      args = [
-              '--nonet',
-              '--output', 'build/tmp/docs/qi4j-manual.fo',
-              xsltFile,
-              'build/tmp/docs/xdoc-temp.xml'
-      ]
-    }
-    project.exec {
-      executable = 'fop'
-      args = [
-              'build/tmp/docs/qi4j-manual.fo',
-              'build/docs/manual/qi4j-manual.pdf'
-      ]
-    }
+//    project.exec {
+//      String xsltFile = 'src/xsl/fo.xsl'
+//      executable = 'xsltproc'
+//      args = [
+//              '--nonet',
+//              '--output', "build/tmp/docs/$docName/$docName"+".fo",
+//              xsltFile,
+//              "build/tmp/docs/$docName/xdoc-temp.xml"
+//      ]
+//    }
+//    project.exec {
+//      executable = 'fop'
+//      args = [
+//              "build/tmp/docs/$docName/$docName"+".fo",
+//              "build/docs/$docName/$docName" + ".pdf"
+//      ]
+//    }
   }
 }

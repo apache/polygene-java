@@ -1,0 +1,294 @@
+[[thirty-minutes-intro]]
+= Qi4j in 30 minutes =
+This introduction will deepen your understanding of Qi4j, as we touches on a couple of the common features of Qi4j. It
+is expected that you have gone through and understood the "Qi4j in 10 minutes" introduction.
+
+We will go back to the OrderEntity example;
+[code,java]
+-----------
+@Concerns({PurchaseLimitConcern.class, InventoryConcern.class})
+public interface OrderEntity
+    extends Order, HasSequenceNumber, HasCustomer,
+            HasLineItems, Confirmable, EntityComposite
+{
+}
+-----------
+
+Let's say that this is an existing Composite, perhaps found in a library or used in a previous object, but we want to
+add that it tracks all the changes to the order and the confirmation of such order.
+
+First we need to create (or also find in a library) the mechanics of the audit trail. It could be something like this;
+
+[code,java]
+-----------
+public interface HasAuditTrail<M>
+{
+    AuditTrail<M> auditTrail();
+}
+
+public interface AuditTrail<M> extends Property<List<Action<M>>>
+{}
+
+public interface Action<T> extends ValueComposite          [2][3]
+{
+    enum Type added, removed, completed;
+
+    Property<T> item();                                    [1]
+
+    Property<Type> action();                               [1]
+}
+
+public interface Trailable<M>
+{
+    void itemAdded( M item );
+    void itemRemoved( M item );
+    void completed();
+}
+
+public class TrailableMixin<M>
+    implements Trailable<M>
+{
+    private @This HasAuditTrail hasTrail;
+
+    public void itemAdded( M item )
+    {
+        addAction( item, Action.Type.added );
+    }
+
+    public void itemRemoved( M item )
+    {
+        addAction( item, Action.Type.removed );
+    }
+
+    public void completed( M item )
+    {
+        addAction( item, Action.Type.completed );
+    }
+
+    private Action<M> addAction( M item, Action.Type type )
+    {
+        CompositeBuilder<Action> builder =
+            factory.newCompositeBuilder( Action.class );       [4]
+        Action prototype = builder.stateFor( Action.class );
+        prototype.item().set( item );
+        prototype.action().set( action );
+        Action instance = builder.newInstance();
+        hasTrail.auditTrail().get().add( instance );
+     }
+}
+-----------
+
+Quite a lot of Qi4j features are leveraged above;
+[1] Property is a first class citizen in Qi4j, instead of getters/setters naming convention to declare properties.
+[2] ValueComposite for Action means that it is among other things Immutable.
+[3] The Action extends a Property. We call that Property subtyping and highly recommended.
+[4] The CompositeBuilder creates Immutable Action instances.
+
+We also need a Concern to hang into the methods of the Order interface.
+
+[code,java]
+-----------
+public abstract class OrderAuditTrailConcern
+    extends ConcernOf<Order>
+    implements Order
+{
+    @This Trailable<LineItem> trail;
+
+    public void addLineItem( LineItem item )
+    {
+        next.addLineItem( item );
+        trail.itemAdded( item );
+    }
+
+    public void removeLineItem( LineItem item )
+    {
+        next.removeLineItem( item );
+        trail.itemRemoved( item );
+    }
+
+    public void completed()
+    {
+        next.completed();
+        trail.completed();
+    }
+}
+-----------
+
+In this case, we have chosen to make an Order specific Concern for the more generic AuditTrail subsystem, and would
+belong in the client (Order) code and not with the library (AuditTrail).
+Pay attention to the @This annotation for a type that is not present in the Composite type interface. This is called a
+private Mixin, meaning the Mixin is only reachable from Fragments within the same Composite instance.
+
+But the AuditTrail subsystem could provide a Generic Concern, that operates on a naming pattern (for instance). In this
+case, we would move the coding of the concern from the application developer to the library developer, again increasing
+the re-use value. It could look like this;
+
+[code,java]
+-----------
+public class AuditTrailConcern
+    extends ConcernFor<InvocationHandler>
+    implements InvocationHandler
+{
+    @This Trailable trail;
+
+    public void invoke( Object proxy, Method m, Object[] args )
+       throws Exception
+    {
+        next.invoke( proxy, m, args );
+        String methodName = m.getName();
+        if( methodName.startsWith( "add" ) )
+        {
+            trail.itemAdded( args[0] );
+        }
+        else if( methodName.startsWith( "remove" ) )
+        {
+            trail.itemRemoved( args[0] );
+        }
+        else if( methodName.startsWith( "complete" ) ||
+                 methodName.startsWith( "commit" ) )
+        {
+            trail.completed();
+        }
+    }
+}
+-----------
+
+The above construct is called a Generic Concern, since it implements java.lang.reflect.InvocationHandler instead of the
+interface of the domain model. The ConcernOf baseclass will also need to be of InvocationHandler type, and the
+Qi4j Runtime will handle the chaining between domain model style and this generic style of interceptor call chain.
+
+Finally, we need to declare the Concern in the OrderEntity;
+
+[code,java]
+-----------
+@Concerns({
+    AuditTrailConcern.class,
+    PurchaseLimitConcern.class,
+    InventoryConcern.class
+})
+@Mixins( TrailableMixin.class )
+public interface OrderEntity
+    extends Order, HasSequenceNumber, HasCustomer,
+            HasLineItems, Confirmable, EntityComposite
+{
+}
+-----------
+
+We also place it first, so that the AuditTrailConcern will be the first Concern in the interceptor chain
+(a.k.a InvocationStack), so that in case any of the other Concerns throws an Exception, the AuditTrail is not updated
+(In fact, the AuditTrail should perhaps be a SideEffect rather than a Concern. It is largely depending on how we define
+SideEffect, since the side effect in this case is within the composite instance it is a border case.).
+
+So let's move on to something more complicated. As we have mentioned, EntityComposite is automatically persisted to an
+underlying store (provided the Runtime is setup with one at bootstrap initialization), but how do I locate an Order?
+
+Glad you asked. It is done via the Query API. It is important to understand that Indexing and Query are separated from
+the persistence concern of storage and retrieval. This enables many performance optimization opportunities as well as a
+more flexible Indexing strategy. The other thing to understand is that the Query API is using the domain model, in Java,
+and not some String based query language. We have made this choice to ensure refactoring safety. In rare cases, the
+Query API is not capable enough, in which case Qi4j still provides the ability to look up and execute native queries.
+
+Let's say that we want to find a particular Order from its SequenceNumber.
+
+[code,java]
+-----------
+import static org.qi4j.api.query.QueryExpressions.eq;
+import static org.qi4j.api.query.QueryExpressions.templateFor;
+
+import org.qi4j.api.query.QueryBuilder;
+import org.qi4j.api.query.QueryBuilderFactory;
+
+:
+
+@Structure private UnitOfWorkFactory uowFactory; //Injected
+
+:
+
+UnitOfWork uow = uowFactory.currentUnitOfWork();
+QueryBuilderFactory qbf = uow.queryBuilderFactory();
+QueryBuilder<Order> builder = qbf.newQueryBuilder( Order.class );
+
+String orderNumber = "12345";
+HasSequenceNumber template = templateFor( HasSequenceNumber.class );
+builder.where( eq( template.number(), orderNumber ) );
+Query<Order> query = builder.newQuery();
+
+Iterator<Order> result = query.iterator();
+
+if( result.hasNext() )
+{
+    Order order = result.next();
+}
+else
+{
+    // Deal with it wasn't found.
+}
+-----------
+
+The important bits are;
+
+    * The QueryExpressions.templateFor() method is used to define the template used in the query upon execution. In
+      this case, we choose to template only the HasSequenceNumber, an interface used in OrderEntity, but is not part of
+      Order (may or may not be a good design choice).
+
+    * The where() clause, which has a statically imported method eq(), which builds up the expression logic, and will
+      be translated into the underlying query language upon execution, which happens in the iterator() method.
+
+Another example,
+
+[code,java]
+-----------
+QueryBuilder<Order> builder =
+    qbf.newQueryBuilder( Order.class );
+
+Calendar cal = Calendar.getInstance();
+cal.setTime( new Date() );
+Date last90days = cal.roll( Calendar.DAY_OF_MONTH, -90 );
+Order template = templateFor( Order.class );
+builder.where( gt( template.createdDate(), last90days ) );
+Query<Order> query = builder.newQuery();
+
+for( Order order : query )
+{
+    report.addOrderToReport( order );
+}
+-----------
+
+In the above case, we find the Orders that has been created in the last 90 days, and add them to a report to be
+generated. This example assumes that the Order type has a Property<Date> createdDate() method.
+
+Now, Orders has a relation to the CustomerComposite which is also an Entity. Let's create a query for all customers
+that has made an Order in the last 30 days;
+
+[code,java]
+-----------
+QueryBuilder<HasCustomer> builder =
+    qbf.newQueryBuilder( HasCustomer.class );
+
+Calendar cal = Calendar.getInstance();
+cal.setTime( new Date() );
+Date lastMonth = cal.roll( Calendar.MONTH, -1 );
+Order template1 = templateFor( Order.class );
+builder.where( gt( template1.createdDate(), lastMonth ) );
+Query<HasCustomer> query = builder.newQuery();
+
+for( HasCustomer hasCustomer : query )
+{
+    report.addCustomerToReport( hasCustomer.customer().get() );
+}
+-----------
+
+This covers the most basic Query capabilities and how to use it. For Querying to work, an Indexing subsystem must be
+assembled during bootstrap. At the time of this writing, only an RDF indexing subsystem exist, and is added most easily
+by assembly.addAssembler( new RdfNativeSesameStoreAssembler() ).
+
+It can be a bit confusing to see Qi4j use Java itself as a Query language, but since we have practically killed the
+classes and only operate with interfaces, it is possible to do a lot of seemingly magic stuff. Just keep in mind that
+it is pure Java, albeit heavy use of dynamic proxies to capture the intent of the query.
+
+- Conclusion -
+
+We have now explored a couple more intricate features of Qi4j, hopefully without being overwhelmed with details on how
+to create applications from scratch, how to structure applications, and how the entire Qi4j Extension system works.
+We have looked at how to add a Concern that uses a private Mixin, we have touched a bit on Generic Concerns, and
+finally a short introduction to the Query API.

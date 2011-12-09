@@ -1,5 +1,25 @@
-description = "Qi4j Manual and Website."
+description = "Qi4j Manuals and Website."
 
-task manual( type: org.qi4j.gradle.plugin.documentation.Documentation ) {
 
+task userguide( type: org.qi4j.gradle.plugin.documentation.Documentation ) {
+  docName = 'userguide'
+}
+
+task recipes( type: org.qi4j.gradle.plugin.documentation.Documentation ) {
+  docName = 'recipes'
+}
+
+task referenceManual( type: org.qi4j.gradle.plugin.documentation.Documentation ) {
+  docName = 'reference'
+}
+
+task website( type: org.qi4j.gradle.plugin.documentation.Documentation ) {
+  docName = 'website'
+}
+
+task manuals() {
+  dependsOn website
+  dependsOn userguide
+  dependsOn referenceManual
+  dependsOn recipes
 }
