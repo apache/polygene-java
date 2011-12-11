@@ -1,0 +1,6 @@
+= Qi4j v{revnumber} User Guide =
+
+:qi4j-version: {revnumber}
+:qi4j-buildnumber: {revnumber}
+:qi4j-git-tag: {gitversion}
+

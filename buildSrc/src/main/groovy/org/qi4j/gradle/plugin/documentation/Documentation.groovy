@@ -27,8 +27,21 @@ class Documentation extends DefaultTask
   @TaskAction
   def void generate()
   {
-    new File("build/docs/$docName").mkdirs()
-    new File("build/tmp/docs/$docName").mkdirs()
+    userHome = new File(System.getProperty("user.home"))
+    snippetDir = new File(userHome, ".asciidoc/filters/snippet").absoluteFile
+    if( !snippetDir.exists() )
+    {
+      println "Installing [snippet] into $snippetDir"
+      snippetDir.mkdirs()
+      project.copy {
+        from "$project.rootDir/buildSrc/src/bin"
+        into snippetDir
+        include 'snippet.*'
+      }
+      ant.chmod(dir: snippetDir, perm: "755", includes: "snippet.py")
+    }
+    new File(project.buildDir, "docs/$docName").mkdirs()
+    new File(project.buildDir, "tmp/docs/$docName").mkdirs()
     generateXDoc()
     generateChunkedHtml()
     generateSingleHtml()
@@ -61,7 +74,8 @@ class Documentation extends DefaultTask
     }
   }
 
-  def void generateChunkedHtml() {
+  def void generateChunkedHtml()
+  {
     project.copy {
       from 'src/resources'
       into "build/docs/$docName/"
@@ -92,7 +106,7 @@ class Documentation extends DefaultTask
       executable = 'xsltproc'
       args = [
               '--nonet',
-              '--output', "build/docs/$docName/$docName"+".html",
+              '--output', "build/docs/$docName/$docName" + ".html",
               xsltFile,
               "build/tmp/docs/$docName/xdoc-temp.xml"
       ]
@@ -102,24 +116,24 @@ class Documentation extends DefaultTask
   def void generatePdf()
   {
 // $ xsltproc --nonet ../docbook-xsl/fo.xsl article.xml > article.fo
-// $ fop article.fo article.pdf
+    // $ fop article.fo article.pdf
 
-//    project.exec {
-//      String xsltFile = 'src/xsl/fo.xsl'
-//      executable = 'xsltproc'
-//      args = [
-//              '--nonet',
-//              '--output', "build/tmp/docs/$docName/$docName"+".fo",
-//              xsltFile,
-//              "build/tmp/docs/$docName/xdoc-temp.xml"
-//      ]
-//    }
-//    project.exec {
-//      executable = 'fop'
-//      args = [
-//              "build/tmp/docs/$docName/$docName"+".fo",
-//              "build/docs/$docName/$docName" + ".pdf"
-//      ]
-//    }
+    //    project.exec {
+    //      String xsltFile = 'src/xsl/fo.xsl'
+    //      executable = 'xsltproc'
+    //      args = [
+    //              '--nonet',
+    //              '--output', "build/tmp/docs/$docName/$docName"+".fo",
+    //              xsltFile,
+    //              "build/tmp/docs/$docName/xdoc-temp.xml"
+    //      ]
+    //    }
+    //    project.exec {
+    //      executable = 'fop'
+    //      args = [
+    //              "build/tmp/docs/$docName/$docName"+".fo",
+    //              "build/docs/$docName/$docName" + ".pdf"
+    //      ]
+    //    }
   }
 }

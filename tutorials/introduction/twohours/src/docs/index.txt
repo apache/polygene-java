@@ -1,4 +1,4 @@
-[[thirty-minutes-intro]]
+[[two-hours-intro]]
 = Qi4j in 2 hours =
 
 This introduction assumes that the "Qi4j in 10 minutes" and "Qi4j in 30 minutes" introductions has been read and

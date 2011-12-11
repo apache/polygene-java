@@ -1,0 +1,34 @@
+[[howto-contextual-fragments]]
+= HowTo : Use contextual fragments =
+Contextual fragments are fragments that are added to the composites during assembly time. That means that they are not
+present in the composite declarations, but a start-up decision what should be added. Once the application instance is
+created, it is no longer possible to modify which fragments are attached.
+
+Typical use-case is tracing and debugging. Other potential uses are additional security or context interfaces needing
+access to internal mixins not originally intended for, such as GUI frameworks doing reflection on certain composites.
+We strongly recommend against using this feature, as it is not needed as commonly as you may think.
+
+Note: Constraints are not supported to be contextual at the moment.
+
+The mixins, sideeffects and concerns are added during the bootstrap phase. It is very straight-forward;
+
+[source,java]
+-------------
+public void assemble( ModuleAssembly module )
+    throws AssemblyException
+{
+    ServiceDeclaration decl = module.addServices( PinSearchService.class )
+    if( Boolean.getBoolean( "trace.all", false ) )
+    {
+        decl.withConcerns( TraceAllConcern.class );
+    }
+}
+-------------
+
+In the example above, we add the TraceAllConcern from the Logging Library if the system property "trace.all" is true.
+If the system property is not set to true, there will be no TraceAllConcern on the PinSearchService.
+
+Concerns that are added in this way will be at the top of the method invocation stack, i.e. will be the first one to be
+called and last one to be completed.
+
+SideEffects that are added in this way will be the last one's to be executed.

@@ -11,7 +11,7 @@ going to show how.
 To illustrate these features we create an TravelPlan service, which allows clients to find and make Reservations to
 Destinations. For the sake of simplicity, we are leaving out the domain details...
 
-[code,java]
+[source,java]
 -----------
 public interface TravelPlan
 {
@@ -21,7 +21,7 @@ public interface TravelPlan
 
 So, then there is the ServiceComposite...
 
-[code,java]
+[source,java]
 -----------
 // The package is relevant to the Initial Values discussed later.
 package org.niclas.hedhman.travel;
@@ -35,7 +35,7 @@ And then in the Mixin we actually need to connect to a foreign system to obtain 
 can provide to the clients. For instance, it needs a host name and port and a protocol to use. We put these into a
 configuration interface.
 
-[code,java]
+[source,java]
 -----------
 public interface TravelPlanConfiguration
 {
@@ -63,7 +63,7 @@ Constraint required.
 
 Now we can access this configuration in the TravelPlanMixin like this;
 
-[code,java]
+[source,java]
 -----------
 import org.qi4j.api.configuration.Configuration;
 
@@ -84,7 +84,7 @@ And from the Service point of view, it doesn't need to worry about where the con
 want to control when the Configuration should be refreshed, to ensure that atomic changes are happening. This is done
 with the refresh() method in the Configuration interface;
 
-[code,java]
+[source,java]
 -----------
 public void doSomething()
 {
@@ -112,7 +112,7 @@ to.
 
 So, we create a properties file, where the keys are the names of the properties in TravelPlanConfiguration.
 
-[code,bash]
+[source,bash]
 -----------
 # Hostname to the TravelPlan service
 hostName=niclas.hedhman.org
@@ -129,7 +129,7 @@ Note that the file resides in the directory equivalent to the package name of th
 
 And this would work with the standard assembly.
 
-[code,java]
+[source,java]
 -----------
 public void assemble( ModuleAssembly module )
 {
@@ -142,7 +142,7 @@ If you need to use multiple instances of the same service, or that the service h
 to name the properties file according to the Identity of the service declaration, but the file will still need to be in
 the same package as the ServiceComposite sub type, the TravelPlanService in the above example. For instance;
 
-[code,java]
+[source,java]
 -----------
 public void assemble( ModuleAssembly module )
 {
@@ -158,7 +158,7 @@ public void assemble( ModuleAssembly module )
 
 And the two files for configuration,
 
-[code,bash]
+[source,bash]
 -----------
 # Hostname to the TravelPlan service
 hostName=expedia.hedhman.org
@@ -172,7 +172,7 @@ protocol=ssh
 File: org/hedhman/niclas/travel/ExpediaService.properties
 
 
-[code,bash]
+[source,bash]
 -----------
 # Hostname to the TravelPlan service
 hostName=orbitz.hedhman.org

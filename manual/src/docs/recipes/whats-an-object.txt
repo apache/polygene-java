@@ -69,7 +69,7 @@ lot of rules regarding how it may be changed. In short, the state needs to be pr
 
 This leads us to this typical implementation of an Entity
 
-[code,java]
+[source,java]
 -----------
 @Mixins(SomeMixin.class)
 interface MyEntity
@@ -83,7 +83,7 @@ interface. There is NO interface that is defined by the author of MyEntity. Algo
 The state needed for these mixins would then be put into separate interfaces, referred to by using the @This injection
 in the mixins.
 
-[code,java]
+[source,java]
 -----------
 interface SomeState
 {
@@ -97,7 +97,7 @@ see right now what they would be.
 In order to be able to get an overview of all the state being implemented by the Entity we introduce a "superstate"
 interface:
 
-[code,java]
+[source,java]
 -----------
 interface MyState
    extends SomeState, OtherState, ...
@@ -106,7 +106,7 @@ interface MyState
 
 This lets us see the totality of all the state that the Entity has, and can be used in the builder phase:
 
-[code,java]
+[source,java]
 -----------
 EntityBuilder<MyEntity> builder = uow.newEntityBuilder(MyEntity.class);
 MyState state = builder.instanceFor(MyState.class);
@@ -137,7 +137,7 @@ injection, so that the user of the initial algorithm does not have to know about
 In a "Getting Things Done" domain model, with Projects and Actions, you might then have an algorithm like so for task
 delegation:
 
-[code,java]
+[source,java]
 -----------
 void delegate(TaskExecutor from, Completable completable, TaskExecutor to)
 {

@@ -1,20 +1,24 @@
 [[introduction]]
 = Introduction to Qi4j =
 
-This introduction is meant for the Novice Qi4j developer, who has just noticed Qi4j and wants to learn the basics.
+include::highlights.txt[]
 
-Introduction
-============
+[[cop-concepts]]
+= Composite Oriented Programming Concepts =
 
-[partintro]
---
-This part gives a bird's eye view of what Composite Oriented Programming is, and then outlines some general specifics of Qi4j.
---
+:leveloffset: 0
+
+include::what-is-composite-oriented-programming.txt[]
+
+include::qi4j-cop.txt[]
+
+[[tutorials]]
+Tutorials
+=========
 
 :leveloffset: 1
 
-include::../../twominutes/src/docs/index.txt[]
-include::../../tenminutes/src/docs/index.txt[]
-include::../../thirtyminutes/src/docs/index.txt[]
-include::../../twohours/src/docs/index.txt[]
+include::introduction.txt[]
+
+include::../../../composites/src/docs/index.txt[]
 

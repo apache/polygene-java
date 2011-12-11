@@ -47,7 +47,7 @@ The Visibility rules are perhaps the most powerful aspect of the above. Visibili
 a Composite type need to be looked up. It defines both the scoping rules of the client as well as the provider. A lookup
 is either a direct reference, such as
 
-[code,java]
+[source,java]
 -----------
 EntityBuilderFactory factory = ...;
 PersonEntity p = factory.newEntity( PersonEntity.class );
@@ -55,7 +55,7 @@ PersonEntity p = factory.newEntity( PersonEntity.class );
 
 or an indirect lookup, such as
 
-[code,java]
+[source,java]
 -----------
 Person p = factory.newEntity( Person.class );
 -----------
@@ -98,7 +98,7 @@ Figure 1. Example of Layers
 
 So, lets see how we code up this bit in the actual code first.
 
-[code,java]
+[source,java]
 -----------
 public class Main
 {
@@ -155,7 +155,7 @@ this tutorial.
 Now, the createXyzLayer() methods were excluded to keep the sample crisp and easy to follow. Let's take a look at what
 it could be to create the Domain Layer.
 
-[code,java]
+[source,java]
 -----------
 private static LayerAssembly createDomainLayer( ApplicationAssembly app )
 {

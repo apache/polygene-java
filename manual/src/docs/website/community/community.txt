@@ -1,6 +1,11 @@
 [[community]]
 = Community =
+
+[partintro]
+--
 Qi4j is an open development community effort with an Apache ver 2.0 open source license.
+--
+
 
 - What does this really mean? -
 

@@ -1,9 +1,7 @@
-The Qi4j Manual v{revnumber}
-=============================
 
-:qi4j-version: {revnumber}
-:qi4j-buildnumber: {revnumber}
-:qi4j-git-tag: {gitversion}
+:leveloffset: 0
+
+include::community/index.txt[]
 
 :leveloffset: 0
 
@@ -11,21 +9,8 @@ include::../../../../tutorials/introduction/src/docs/index.txt[]
 
 :leveloffset: 0
 
-include::reference/index.txt[]
+include::../reference/index.txt[]
 
-[[community]]
-Community
-=========
-
-[partintro]
---
-The Qi4j project has a strong community around it.
-Read about how to get help from the community and how to contribute to it.
---
-
-:leveloffset: 1
-
-include::community/index.txt[]
 
 :leveloffset: 0
 :numbered!:

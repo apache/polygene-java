@@ -12,7 +12,7 @@ a "0" is used in the produced artifacts. This is due to our disagreement (with M
 name/number is known prior to the release. This is in our opinion a delayed decision. To build a particular version,
 you specify a "version" property on the command-line, like
 
-[code,bash]
+[source,bash]
 -----------
 ./gradlew -Dversion=2.0-alpha1 install
 -----------

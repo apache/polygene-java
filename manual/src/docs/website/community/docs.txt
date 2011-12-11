@@ -209,7 +209,7 @@ This is how to include a simple example graph:
 
 [source]
 ----
- ["dot", "community-docs-graphdb-rels.svg"]
+ ["graphviz", "community-docs-graphdb-rels.svg"]
  ----
  "Start node" -> "End node" [label="relationship"]
  ----
@@ -217,7 +217,7 @@ This is how to include a simple example graph:
 
 Which is rendered as:
 
-["dot", "community-docs-graphdb-rels.svg"]
+["graphviz", "community-docs-graphdb-rels.svg"]
 ----
 "Start node" -> "End node" [label="relationship"]
 ----
@@ -226,7 +226,7 @@ Here's an example using some predefined variables available in the build:
 
 [source]
 ----
- ["dot", "community-docs-graphdb-rels-overview.svg", "meta"]
+ ["graphiviz", "community-docs-graphdb-rels-overview.svg", "meta"]
  ----
  "A Relationship" [fillcolor="NODEHIGHLIGHT"]
  "Start node" [fillcolor="NODE2HIGHLIGHT"]
@@ -240,7 +240,7 @@ Here's an example using some predefined variables available in the build:
 
 Which is rendered as:
 
-["dot", "community-docs-graphdb-rels-overview.svg", "meta"]
+["graphviz", "community-docs-graphdb-rels-overview.svg", "meta"]
 ----
 "A Relationship" [fillcolor="NODEHIGHLIGHT"]
 "Start node" [fillcolor="NODE2HIGHLIGHT"]

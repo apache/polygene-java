@@ -1,6 +1,0 @@
-[[what-is-a-graphdb]]
-What is Composite Oriented Programming?
-=======================================
-
-----
-

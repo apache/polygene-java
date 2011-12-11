@@ -4,7 +4,7 @@ This introduction will deepen your understanding of Qi4j, as we touches on a cou
 is expected that you have gone through and understood the "Qi4j in 10 minutes" introduction.
 
 We will go back to the OrderEntity example;
-[code,java]
+[source,java]
 -----------
 @Concerns({PurchaseLimitConcern.class, InventoryConcern.class})
 public interface OrderEntity
@@ -19,7 +19,7 @@ add that it tracks all the changes to the order and the confirmation of such ord
 
 First we need to create (or also find in a library) the mechanics of the audit trail. It could be something like this;
 
-[code,java]
+[source,java]
 -----------
 public interface HasAuditTrail<M>
 {
@@ -86,7 +86,7 @@ Quite a lot of Qi4j features are leveraged above;
 
 We also need a Concern to hang into the methods of the Order interface.
 
-[code,java]
+[source,java]
 -----------
 public abstract class OrderAuditTrailConcern
     extends ConcernOf<Order>
@@ -123,7 +123,7 @@ But the AuditTrail subsystem could provide a Generic Concern, that operates on a
 case, we would move the coding of the concern from the application developer to the library developer, again increasing
 the re-use value. It could look like this;
 
-[code,java]
+[source,java]
 -----------
 public class AuditTrailConcern
     extends ConcernFor<InvocationHandler>
@@ -159,7 +159,7 @@ Qi4j Runtime will handle the chaining between domain model style and this generi
 
 Finally, we need to declare the Concern in the OrderEntity;
 
-[code,java]
+[source,java]
 -----------
 @Concerns({
     AuditTrailConcern.class,
@@ -190,7 +190,7 @@ Query API is not capable enough, in which case Qi4j still provides the ability t
 
 Let's say that we want to find a particular Order from its SequenceNumber.
 
-[code,java]
+[source,java]
 -----------
 import static org.qi4j.api.query.QueryExpressions.eq;
 import static org.qi4j.api.query.QueryExpressions.templateFor;
@@ -236,7 +236,7 @@ The important bits are;
 
 Another example,
 
-[code,java]
+[source,java]
 -----------
 QueryBuilder<Order> builder =
     qbf.newQueryBuilder( Order.class );
@@ -260,7 +260,7 @@ generated. This example assumes that the Order type has a Property<Date> created
 Now, Orders has a relation to the CustomerComposite which is also an Entity. Let's create a query for all customers
 that has made an Order in the last 30 days;
 
-[code,java]
+[source,java]
 -----------
 QueryBuilder<HasCustomer> builder =
     qbf.newQueryBuilder( HasCustomer.class );

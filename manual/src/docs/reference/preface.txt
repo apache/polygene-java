@@ -11,7 +11,7 @@ The main parts of the manual are:
 * <<tutorials>> -- learn how to use Qi4j.
 * <<reference-documentation>> -- detailed information on Qi4j.
 * <<community>> -- getting help from, contributing to.
-* <<questions>> -- common questions.
+* <<faq>> -- common questions.
 
 The material is practical, technical, and focused on answering specific questions. 
 It addresses how things work, what to do and what to avoid to successfully use Qi4j in domain rich applications.

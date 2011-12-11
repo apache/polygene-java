@@ -1,0 +1,11 @@
+[[recipes]]
+= Recipes & HOWTOs =
+
+include::whats-an-object.txt[]
+
+include::howto-configure-service.txt[]
+
+include::howto-create-entity.txt[]
+
+include::howto-assembly-application.txt[]
+

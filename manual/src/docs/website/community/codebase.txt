@@ -90,7 +90,7 @@ lot more clean and stable than a free-for-all repository has a tendency to becom
 Once you have commit access to a repository, you will access it differently. This is the clone command needed, and
 after that you will need to do the same as above for pubic access;
 
-[[code,bash]]
+[[source,bash]]
 --------
 git clone git@github.com:Qi4j/qi4j-sdk.git
 cd qi4j-sdk
@@ -145,7 +145,7 @@ perspective. Release Managers - Check the article for the details.
 We strongly encourage people to read up on Git basics at for instance kernel.org. But some basic commands are discussed
 here.
 
-[code,bash]
+[source,bash]
 -----------
 git status
 -----------
@@ -153,7 +153,7 @@ git status
 shows you what has not been committed.
 
 
-[code,bash]
+[source,bash]
 -----------
 git add <filename>
 -----------
@@ -161,7 +161,7 @@ all files(!) must be added. Directories are not considered and generally ignored
 some files have already been added.
 
 
-[code,bash]
+[source,bash]
 -----------
 git commit -a -m "<some message>"
 -----------
@@ -169,7 +169,7 @@ This commits the current branch to the local repository. The -a means commit all
 explicitly mentioned on this command. The message should be informative as it will follow the patch 'forever'.
 
 
-[code,bash]
+[source,bash]
 -----------
 git push origin develop
 -----------
@@ -177,21 +177,21 @@ Pushes the local commits back to the 'origin', i.e. the place the clone came fro
 moved the 'origin' to be instead (see above).
 
 
-[code,bash]
+[source,bash]
 -----------
 git pull origin develop
 -----------
 Pulls/downloads the changes of the 'develop' branch from the 'origin' of your local clone. In subversion terms, this
 roughly corresponds to a 'svn update' of the trunk.
 
-[code,bash]
+[source,bash]
 -----------
 git branch
 -----------
 Shows which branch we are working on.
 
 
-[code,bash]
+[source,bash]
 -----------
 git checkout -b my_new_feature_branch
 -----------

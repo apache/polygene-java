@@ -10,7 +10,7 @@
     * Only Mixins carry Composite state. The others are shared between Composite instances.
 
 Composition is done with Java interfaces and Annotations. Example;
-[code,java]
+[source,java]
 -----------
 @Concerns({PurchaseLimitConcern.class, InventoryConcern.class})
 public interface OrderComposite
@@ -24,7 +24,7 @@ This Composite is potentially complete. The Composite interface has a Mixin decl
 PropertyMixin, which will handle all properties we use. The two Concerns are interceptors that are placed on the
 methods that the Concerns declare, for instance;
 
-[code,java]
+[source,java]
 -----------
 public abstract class InventoryConcern extends ConcernOf<Order>
     implements Order
@@ -60,7 +60,7 @@ also supports dependency injection via constructors and methods.
 The above example is not that good, since it is obviously doing persistence, and we have no code handling this. But Qi4j
 supports persistence directly in its Core. So simply by changing the interface it extends to EntityComposite;
 
-[code,java]
+[source,java]
 -----------
 @Concerns({PurchaseLimitConcern.class, InventoryConcern.class})
 public interface OrderEntity
@@ -78,7 +78,7 @@ both to communicate intent as well as having more precisely defined functionalit
 Now, let's say that we want to send a mail to sales@mycompany.com when the order is confirmed. This is a SideEffect, and
 will execute after the Constraints, Concerns and Mixins. We add the SideEffect to the OrderEntity;
 
-[code,java]
+[source,java]
 -----------
 @SideEffects( MailNotifySideEffect.class )
 @Concerns({PurchaseLimitConcern.class, InventoryConcern.class})
@@ -91,7 +91,7 @@ public interface OrderEntity
 
 The SideEffect implementation is fairly simple.
 
-[code,java]
+[source,java]
 -----------
 public abstract class MailNotifySideEffect
     extends SideEffectOf<Confirmable>
