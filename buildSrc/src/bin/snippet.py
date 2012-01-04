@@ -2,13 +2,12 @@
 # -*- mode: Python; coding: utf-8 -*-
 """
 source=ignored
-component=ignored
 tag=self-test
 """
 
 import sys
 
-PATH_PATTERN="target/%(classifier)s/%(component)s-%(classifier)s-jar/%(source)s"
+PATH_PATTERN="%(source)s"
 
 def configuration(indata):
     config = {}
@@ -22,14 +21,11 @@ def configuration(indata):
         config[key] = value
     return config
 
-def snippet(source=None, component=None, classifier="test-sources", tag=None,
-            tablength="4", **other):
+def snippet(source=None, tag=None, tablength="4", **other):
     for key in other:
         sys.stderr.write("WARNING: unknown config key: '%s'\n" % key)
     if not tag: raise ValueError("'tag' must be specified")
     if not source: raise ValueError("'source' must be specified")
-    if not component: raise ValueError("'component' must be specified")
-    if not classifier: raise ValueError("'classifier' must be specified")
     try:
         tablength = ' ' * int(tablength)
     except:
@@ -43,28 +39,34 @@ def snippet(source=None, component=None, classifier="test-sources", tag=None,
     try:
         # START SNIPPET: self-test
         buff = []
-        mindent = 1<<32 # a large numer - no indentation is this long
+        mindent = 1<<32 # a large number - no indentation is this long
         emit = False
+        emitted = False
 
         for line in sourceFile:
             if END in line: emit = False
             if emit:
-                line = line.replace(']]>',']]>]]&gt;<![CDATA[')
-                meat = line.lstrip()
-                if meat:
-                    indent = line[:-len(meat)].replace('\t', tablength)
-                    mindent = min(mindent, len(indent))
-                    buff.append(indent + meat)
-                else:
-                    buff.append('')
-            if START in line: emit = True
+                emitted = True
+                if not "SNIPPET" in line:
+                    line = line.replace(']]>',']]>]]&gt;<![CDATA[')
+                    meat = line.lstrip()
+                    if meat:
+                        indent = line[:-len(meat)].replace('\t', tablength)
+                        mindent = min(mindent, len(indent))
+                        buff.append(indent + meat)
+                    else:
+                        buff.append('')
+            if START in line:
+                if emitted:
+                    buff.append(indent + "[...snip...]\n\n")
+                emit = True
         # END SNIPPET: self-test
 
     finally:
         sourceFile.close()
 
     if not buff:
-        raise ValueError('Missing snippet for tag "' + tag + '" in file "' + source + '" in component "' + component +'" with classifier "' + classifier + '".')
+        raise ValueError('Missing snippet for tag "' + tag + '" in file "' + source + '".')
     for line in buff:
         if line:
             yield line[mindent:]

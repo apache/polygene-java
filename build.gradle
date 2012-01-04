@@ -250,6 +250,38 @@ test.doLast() {
   }
 }
 
+//class TestReportAggregator extends Copy {
+//def projects
+//
+//File testResultsDir
+//
+//@OutputDirectory
+//File testReportDir
+//
+//def TestReportAggregator() {
+//dependsOn { testTasks }
+//from { inputTestResultDirs }
+//into { testResultsDir }
+//}
+//
+//@TaskAction
+//def aggregate() {
+//def report = new org.gradle.api.internal.tasks.testing.junit.report.DefaultTestReport(testReportDir: testReportDir, testResultsDir: testResultsDir)
+//report.generateReport()
+//}
+//
+//def getTestTasks() {
+//projects.collect { it.tasks.withType(Test) }.flatten()
+//}
+//
+//def getInputTestResultDirs() {
+//testTasks*.testResultsDir
+//}
+//
+//}
+
+
+
 task javadocs(type: Javadoc) {
   dependsOn allprojects*.javadoc
 

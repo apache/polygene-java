@@ -6,7 +6,7 @@ doesn't require any installation, there are gradlew and gradlew.bat in the root 
 bootstrap Gradle if not done so already.
 
 
-- Versions -
+== Versions ==
 By default, the build system produces a "zero build". It means that there is no version assigned to the build, and
 a "0" is used in the produced artifacts. This is due to our disagreement (with Maven community) that the "next" version
 name/number is known prior to the release. This is in our opinion a delayed decision. To build a particular version,
@@ -20,26 +20,26 @@ you specify a "version" property on the command-line, like
 If a "version" property is not defined, the build system will refuse to make a release and upload.
 
 
-- Tasks -
+== Tasks ==
 Gradle is very flexible, and we have defined (or in the process of defining) the following tasks (same as Ant's targets).
 
-~ clean ~
+=== clean ===
 Clean up of all build output and restoring the code base to a fresh state.
 
-~ minbuild ~
+=== minbuild ===
 This is the default build, which compiles the code and run the tests, but nothing else. A quick way to check that
 nothing broke.
 
-~ install ~
+=== install ===
 Is roughly the same as Maven's install goal. It produces the test reports and javadocs and installs all the Jars into
 the local disk repository, for consumption by other applications.
 
-~ allDocumentation ~
+=== allDocumentation ===
 Produces all the manuals and website content. The output is generated to qi4j-sdk/build/docs.
 
-~ release ~
+=== release ===
 Creates the release output into the qi4j-sdk/build/distributions directory.
 
-~ publish ~
+=== publish ===
 Uploads the release artifacts to the distribution servers, such as http://repository.ops4j.org/maven2 and
 http://www.qi4j.org website.

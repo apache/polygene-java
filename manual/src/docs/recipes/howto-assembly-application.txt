@@ -4,7 +4,7 @@ We receive a lot of questions about how applications should be assembled, and si
 and everything is to be done programmatically, it escalates the need to provide more hands-on explanation of how this is
 done.
 
-- Basics -
+== Basics ==
 
 First let's recap the structural requirements of Qi4j;
 
@@ -17,12 +17,12 @@ First let's recap the structural requirements of Qi4j;
 
 Ok, that was quite a handful. Let's look at them one by one.
 
-- Application -
+== Application ==
 
 The first one means that for each Qi4j Runtime you start, there will be exactly one application. As far as we know, Qi4j
 is fully isolated, meaning there are no static members being populated and such.
 
-- Layers -
+== Layers ==
 
 Layers are the super-structures of an application. We have been talking about them for decades, drawn them on paper and
 whiteboards (or even black boards for those old enough), and sometimes organized the codebases along such boundaries.
@@ -35,13 +35,13 @@ Layers have hierarchy, i.e. one layer is top of one or more layers, and is below
 layers at the top and bottom. You could have disjoint layers, which can't access each other, meaning a couple of layers
 that are both the top and bottom.
 
-- Modules -
+== Modules ==
 
 The Module concept has also been around forever. And in Qi4j we also makes the Modules explicit. Each Module belong to a
 Layer, and for each Module you declare the Composite and Object types for that Module, together with a Visibility rule,
 one of; application, layer, module.
 
-- Visibility -
+== Visibility ==
 
 The Visibility rules are perhaps the most powerful aspect of the above. Visibility is a mechanism that kicks in whenever
 a Composite type need to be looked up. It defines both the scoping rules of the client as well as the provider. A lookup
@@ -80,7 +80,7 @@ The underlying principle comes down to Rickard's "Speaker Analogy", you can hear
 conference) because you are in the same room. I.e. if something is really close by, it is very likely that this is what
 we want to use, and then the search expands outwards.
 
-- Combining The Above -
+== Combining The Above ==
 
 Ok, that was a whole lot of theory and probably take you more than one read-through to fully get into your veins (slow
 acting addiction).
@@ -168,7 +168,12 @@ private static LayerAssembly createDomainLayer( ApplicationAssembly app )
 }
 -----------
 
-We just call the layerAssembly() method, which will return either an existing Layer with that name or create a new one if one doesn't already exist, and then delegate to methods for creating the ModuleAssembly instances. In those method we need to declare which Composites, Entities, Services and Objects that is in each Module.
+We just call the layerAssembly() method, which will return either an existing Layer with that name or create a new one
+if one doesn't already exist, and then delegate to methods for creating the ModuleAssembly instances. In those method
+we need to declare which Composites, Entities, Services and Objects that is in each Module.
+
+[source,java]
+-----------
 private static void createAccountModule( LayerAssembly layer )
 {
     ModuleAssembly module = layer.moduleAssembly( "account-module" );
@@ -184,7 +189,13 @@ private static void createAccountModule( LayerAssembly layer )
         EntryRepositoryService.class
     ).visibleIn( Visibility.layer );
 }
-We also need to handle the shutdown case, so in the main() method we have a installShutdownHook() method call. It is actually very, very simple;
+-----------
+
+We also need to handle the shutdown case, so in the main() method we have a installShutdownHook() method call. It is
+actually very, very simple;
+
+[source,java]
+-----------
 private static void installShutdownHook()
 {
     Runtime.getRuntime().addShutdownHook( new Thread( new Runnable()
@@ -205,4 +216,7 @@ private static void installShutdownHook()
         }
     }) );
 }
-This concludes this tutorial. We have looked how to get the initial Qi4j runtime going, how to declare the assembly for application model creation and finally the activation of the model itself.
+-----------
+
+This concludes this tutorial. We have looked how to get the initial Qi4j runtime going, how to declare the assembly
+for application model creation and finally the activation of the model itself.

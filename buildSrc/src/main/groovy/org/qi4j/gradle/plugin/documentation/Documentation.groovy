@@ -18,7 +18,7 @@ package org.qi4j.gradle.plugin.documentation;
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
-// TODO: use proper project variables for 'build' and other locations
+// TODO: use proper project variables for 'src' and other locations
 // TODO: extract out every location into configurable property
 // TODO: try to use dependencies for FOP and execute within the same JVM.
 // TODO: move the bulk of resources into this plugin, instead of sitting in the project.
@@ -40,8 +40,8 @@ class Documentation extends DefaultTask
       }
       ant.chmod(dir: snippetDir, perm: "755", includes: "snippet.py")
     }
-    new File(project.buildDir, "docs/$docName").mkdirs()
-    new File(project.buildDir, "tmp/docs/$docName").mkdirs()
+    new File(project.buildDir, "docs/$docName".toString()).mkdirs()
+    new File(project.buildDir, "tmp/docs/$docName".toString()).mkdirs()
     generateXDoc()
     generateChunkedHtml()
     generateSingleHtml()
@@ -53,12 +53,13 @@ class Documentation extends DefaultTask
   {
     project.exec {
       executable = 'asciidoc'
-      def commonResourcesDir = 'src/resources'
-      def asciidocConfigFile = 'src/conf/asciidoc.conf'
-      def docbookConfigFile = 'src/conf/docbook45.conf'
-      def linkimagesConfigFile = 'src/conf/linkedimages.conf'
-      def xdocOutputFile = "build/tmp/docs/$docName/xdoc-temp.xml"
-      def asciiDocFile = "src/docs/$docName/index.txt"
+      workingDir = ".."
+      def commonResourcesDir = 'manual/src/resources'
+      def asciidocConfigFile = 'manual/src/conf/asciidoc.conf'
+      def docbookConfigFile = 'manual/src/conf/docbook45.conf'
+      def linkimagesConfigFile = 'manual/src/conf/linkedimages.conf'
+      def xdocOutputFile = "manual/build/tmp/docs/$docName/xdoc-temp.xml".toString()
+      def asciiDocFile = "manual/src/docs/$docName/index.txt".toString()
       args = [
               '--attribute', 'revnumber=' + project.version,
               '--attribute', 'importdir=' + commonResourcesDir,

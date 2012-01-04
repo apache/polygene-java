@@ -5,7 +5,7 @@ One of the most common tasks in Qi4j is the management of the life cycle of Enti
 delivering much higher performance than traditional Object-Relational Mapping technologies, we also expect that people
 use Entities more frequently in Qi4j applications, so it is a very important topic to cover.
 
-- Basics First -
+== Basics First ==
 
 All Entity operations MUST be done within a UnitOfWork. UnitOfWorks can be nested and if underlying UnitOfWorks are not
 completed (method complete()) or at least applied (method apply()), then none of the operations will be persisted
@@ -20,7 +20,7 @@ Ambiguities are not accepted and will result in runtime exceptions.
 Qi4j supports that each entity instance can have more than one entity type, and it is managed per instance. This feature
 is beyond the scope of this HowTO and will be covered subsequently.
 
-- Good Practice -
+== Good Practice ==
 
 We have made the observation that it is good practice to separate the internal state from the observable behavior. By
 this we mean that it is not a good practice to allow client code to manipulate or even view the internal states of
@@ -35,7 +35,7 @@ We recommend limited use of primitive types for Properties and instead subtype t
 
 And try to use ValueComposites instead of Entities.
 
-- The Entity -
+== The Entity ==
 
 We need an entity to illustrate how we recommend to separate internal state from public behavior and observable state.
 We will for the sake of simplicity use a trivial example. Please refer to other (possibly future) HowTos on patterns on
@@ -116,7 +116,7 @@ public interface AccidentValue extends Accident, ValueComposite
 For this case, we define both the Car and the Manufacturer as Entities, whereas the Accident is a Value, since it is an
 immutable event that can not be modified.
 
-- Assembly -
+== Assembly ==
 
 All of the above must also be declared in the assembly. We MUST associate the EntityComposites with a relevant Module.
 We must also assemble an EntityStore for the entire application, but that is outside the scope of this HowTo.
@@ -141,7 +141,7 @@ We have no other Composites involved yet, so we can proceed to look at the usage
 We recommend that the life cycle management of entities is placed inside domain factories, one for each type and made
 available as services.
 
-- The Entity Factory -
+== The Entity Factory ==
 
 The entity factory is something you need to write yourself, but as with most things in Qi4j it will end up being a
 fairly small implementation. So how is that done?
@@ -296,7 +296,7 @@ public class MyAssembler
 }
 -----------
 
-- The UnitOfWork -
+== The UnitOfWork ==
 
 If you notice, there is a couple of calls to UnitOfWorkFactory.currentUnitOfWork(), but what is current UnitOfWork, and
 who is setting that up?

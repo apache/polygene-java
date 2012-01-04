@@ -1,0 +1,6 @@
+[[qi4j-core-testsupport]]
+= Qi4j Core Test Support =
+
+
+
+

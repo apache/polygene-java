@@ -1,0 +1,6 @@
+[[qi4j-core-functional]]
+= Qi4j Core Functional API =
+
+
+
+

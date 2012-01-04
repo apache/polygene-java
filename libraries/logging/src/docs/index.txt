@@ -26,11 +26,11 @@ Another drastic difference from previous frameworks is that we don't have an App
 which are stored in a configured entity store. This means that especially the domain log can be more easily be given a
 user interface suitable for the domain, without complex parsing of message strings
 
-- Logging -
+== Logging ==
 
 Logging is still not finalized and will need a lot more thought before considered done.
 
-- Debugging -
+== Debugging ==
 
 To produce debugging output in your code you just need to add
 [source,java]
@@ -50,7 +50,7 @@ You will also need to declare a DebugService to be visible to the composite wher
 the DebugService in turn will use the default UnitOfWork and associated entity store, which must also be configured and
 visible.
 
-- Tracing -
+== Tracing ==
 
 Tracing is the process of tracking all the methods that has been called. There are two levels of tracing available in
 Qi4j. Either Trace All or trace where a annotation has been given.

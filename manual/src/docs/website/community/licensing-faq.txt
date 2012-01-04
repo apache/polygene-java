@@ -1,14 +1,14 @@
 [[licensing-faq]]
 = Licensing FAQ =
 
-~ Combined & Derived Work ~
+=== Combined & Derived Work ===
 
 *Q*: Can I use Qi4j Core in my commercial applications under a closed-source, proprietary license?
 
 *A*: Yes. The Apache License is very business-friendly. Please observe the obligations on your part, especially
-regarding notices and patent licensing terms.
+regarding notices, trademarks and patent licensing terms.
 
-~ Trademarks ~
+=== Trademarks ===
 
 *Q*: My company has invested a lot of time to learn and understand the Qi4j platform, and we think we are really good
 at writing Qi4j applications and would like to start training others. Can we advertise that we are "Qi4j experts" or

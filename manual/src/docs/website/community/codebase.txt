@@ -5,7 +5,7 @@ the 1 November 2010. This should simplify the learning, as not only does develop
 GitHub external link and the tools it provides, but also there are endless amount of documentation and user forums to
 support each individual, off-loading some of that burden from us. This page only contain rudimentary information.
 
-- Public Access Repository -
+== Public Access Repository ==
 
 Qi4j differs slightly from the regular project, due to our specific needs and style of development. the main differences
 are;
@@ -31,18 +31,18 @@ git clone git://github.com/Qi4j/qi4j-sandbox.git
 The Qi4j SDK is the main development codebase, and to start working with it you simply clone it;
 git clone git://github.com/Qi4j/qi4j-sdk.git
 
-- Web Access -
+== Web Access ==
 
 http://github.com/Qi4j/qi4j-sdk
 
 http://github.com/Qi4j/qi4j-sandbox
 
-- Committer Access -
+== Committer Access ==
 
 Qi4j has a 3 level committer access system. The groups are "Core", "Platform" and "Community" and the roles are very
 clear.
 
-- Core Developers -
+== Core Developers ==
 
 These are the guardians and stewards of the core technology and ultimate rulers of what is going on. The hope is that
 a small group of benevolent dictators will manage to make Qi4j the best platform out there, and not listen in on the
@@ -58,24 +58,24 @@ We welcome any suggestions that breaks out pluggable functionality. We apologize
 elitist, but the purpose is to ensure a high quality Qi4j Runtime, stable over time and not bloating with unnecessary
 features. Thanks for understanding.
 
-- Platform Developers -
+== Platform Developers ==
 
 These form the work force of Qi4j. They will work on the Extensions and Libraries, which eventually will make Qi4j the
 most efficient way of programming in Java.
 
-- Community Developers -
+== Community Developers ==
 
 Any person who is interested in helping out with Qi4j will be granted access to Sandbox, Tests, IDE support, Tutorials,
 Samples, HowTos, documentation and other (i.e. not Core, Libraries and Extensions). This will gauge their abilities
 and commitment to the project, with an aim to make them Platform Developers.
 
-- Independents -
+== Independents ==
 
 Of course, Git's distributed nature also allows anyone to fork our repositories, and have the patches find their way
 back to Qi4j's official repository. And GitHub's pull-request system makes the management of this a lot easier, and
 something that we encourage.
 
-- How to Join? -
+== How to Join? ==
 
 To become a Community Developer, just subscribe to the qi4j-dev@lists.ops4j.org mailing list and request it together
 with your GitHub user id. For Community Developer, the bar is really, really low and nothing more than a desire to help
@@ -85,7 +85,7 @@ Community Developers who are active and keep contributing feedback, patches and/
 invited as Platform Developers, who has access to everything except the delicate qi4j-core, which we intend to keep a
 lot more clean and stable than a free-for-all repository has a tendency to become over time.
 
-- How to get Access to the writable central repositories? -
+== How to get Access to the writable central repositories? ==
 
 Once you have commit access to a repository, you will access it differently. This is the clone command needed, and
 after that you will need to do the same as above for pubic access;
@@ -96,7 +96,7 @@ git clone git@github.com:Qi4j/qi4j-sdk.git
 cd qi4j-sdk
 ------
 
-- Commit Policy -
+== Commit Policy ==
 
 Qi4j generally uses a Commit-Then-Review policy on most changes. This allows a reasonable high velocity of development.
 
@@ -113,7 +113,7 @@ mailing list, prior to committing them to the 'develop' branch. We recommend tha
 changes, unless simply codesnippets are pasted to mail. This exists to ensure that we have a stable evolution of Qi4j
 Runtime, and no surprises will occur in existing applications with new versions.
 
-- Git Development Model -
+== Git Development Model ==
 Courtesy of Vincent Driessen, we borrowed the Git branching model from this web page;
 http://nvie.com/posts/a-successful-git-branching-model/
 
@@ -121,7 +121,7 @@ The most important part of that excellent article can be found below (click for 
 
 
 
-Git Branching Model used at Qi4j
+== Git Branching Model used at Qi4j ==
 
 It looks more complicated than it is. Here are the guidelines;
 
@@ -140,7 +140,7 @@ can be rolled back easily if needed.
 The release_ and hotfix_ branches are for release management only, and doesn't affect most contributors from a commit
 perspective. Release Managers - Check the article for the details.
 
-- How do I do my first commit? -
+== How do I do my first commit? ==
 
 We strongly encourage people to read up on Git basics at for instance kernel.org. But some basic commands are discussed
 here.
@@ -204,7 +204,7 @@ one switch back the changes are not there, now sitting in the 'my_new_feature_br
 forgets to create and move to a branch before modifying the 'develop' branch.
 
 
-~ What happened to the 'master' branch? ~
+== What happened to the 'master' branch? ==
 
 In case you missed it above, check the model that we used for development. The intent is that the 'master' branch is
 always in a good state and the HEAD is at a formal release (and has a tag for that).

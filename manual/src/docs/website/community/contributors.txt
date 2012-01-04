@@ -6,29 +6,29 @@ There are many types of contributors to open source projects, this one included,
 http://www.oss-watch.ac.uk/resources/rolesinopensource.xml to see how you can contribute, even if you don't have the
 expertise or time required for the source code evolution.
 
-- Core Dev Team-
+== Core Dev Team ==
 
 The Core Dev Team are the people who has shown significant commitment towards the project and act as the guardians of
 the project. The Core Dev Team are the only people who can modify the core system.
 
 The following people are currently in the Core Dev Team.
 
-- Contributors -
+== Contributors ==
 
 The rest of the Qi4j project, including extensions, libraries and applications are following the OPS4J definition of
 "Open Participation". That means that anyone who wants to contribute will automatically receive committer rights to
 the source code.
 
-People who has contributed over the years (and remembered to add themselves in the pom.xml) can be seen below.
+People who has contributed over the years (and remembered to add themselves) can be seen below.
 
-~ Libraries ~
+=== Libraries ===
 
-~ Extensions ~
+=== Extensions ===
 
-~ Tools ~
+=== Tools ===
 
-~ Tutorials ~
+=== Tutorials ===
 
-~ Samples ~
+=== Samples ===
 
-~ Manuals ~
+=== Manuals ===

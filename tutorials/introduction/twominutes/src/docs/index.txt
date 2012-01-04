@@ -8,23 +8,35 @@ Ready, Set, Go!
 Let's say we want to do the common HelloWorld example, but with a more domain-oriented setting. We have a Speaker
 interface that does the talking;
 
+[source,java]
+-----------
 include::../main/java/org/qi4j/demo/twominute/Speaker.java[]
+-----------
 
 Qi4j is an implementation of Composite Oriented Programming. So, we need a Composite for our domain model. We are
 creating a PoliticianComposite, that among other things can talk, via the Speaker interface. We create a
 PoliticianComposite that extends from the Composite interface and our Speaker interface. But we also need an
 implementation for Speaker, which we also declare in our Composite, the @Mixins( SpeakerMixin.class ).
 
+[source,java]
+-----------
 include::../main/java/org/qi4j/demo/twominute/PoliticianComposite.java[]
+-----------
 
 And of course, the simple implementation of the Speaker interface. In this case, return a String with the content
 "Hello, World!".
 
+[source,java]
+-----------
 include::../main/java/org/qi4j/demo/twominute/SpeakerMixin.java[]
+-----------
 
 So far so good. We now need to make this into something that can run. This can be done like this;
 
+[source,java]
+-----------
 include::../main/java/org/qi4j/demo/twominute/Main.java[]
+-----------
 
 The SingletonAssembler creates the simplest Qi4j Runtime. It provides access to a CompositeBuilderFactory, from which
 we can instantiate our PoliticianComposite as a Speaker.

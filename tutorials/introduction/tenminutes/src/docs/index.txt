@@ -10,43 +10,20 @@
     * Only Mixins carry Composite state. The others are shared between Composite instances.
 
 Composition is done with Java interfaces and Annotations. Example;
-[source,java]
+[snippet,java]
 -----------
-@Concerns({PurchaseLimitConcern.class, InventoryConcern.class})
-public interface OrderComposite
-    extends Order, HasSequenceNumber, HasCustomer,
-            HasLineItems, Confirmable, Composite
-{
-}
+source=tutorials/introduction/tenminutes/src/main/java/org/qi4j/demo/tenminute/OrderEntity.java
+tag=mainClass
 -----------
 
 This Composite is potentially complete. The Composite interface has a Mixin declared which is always present, the
 PropertyMixin, which will handle all properties we use. The two Concerns are interceptors that are placed on the
 methods that the Concerns declare, for instance;
 
-[source,java]
+[snippet,java]
 -----------
-public abstract class InventoryConcern extends ConcernOf<Order>
-    implements Order
-{
-    @Service private InventoryService inventory;
-
-    public void addLineItem( LineItem item )
-    {
-        String productCode = item.productCode().get();
-        int quantity = item.quantity().get();
-        inventory.remove( productCode, quantity );
-        next.addLineItem( item );
-    }
-
-    public void removeLineItem( LineItem item )
-    {
-        String productCode = item.productCode().get();
-        int quantity = item.quantity().get();
-        inventory.add( productCode, quantity );
-        next.removeLineItem( item );
-    }
-}
+source=tutorials/introduction/tenminutes/src/main/java/org/qi4j/demo/tenminute/InventoryConcern.java
+tag=allClass
 -----------
 
 The InventoryConcern is implemented as an abstract class, since we are not interested in the many other methods in the
@@ -58,19 +35,9 @@ We can also see that the InventoryService is provided to the concern, which is d
 also supports dependency injection via constructors and methods.
 
 The above example is not that good, since it is obviously doing persistence, and we have no code handling this. But Qi4j
-supports persistence directly in its Core. So simply by changing the interface it extends to EntityComposite;
+supports persistence directly in its Core, and it is taken care of by Qi4j, since it is declared as an EntityComposite.
 
-[source,java]
------------
-@Concerns({PurchaseLimitConcern.class, InventoryConcern.class})
-public interface OrderEntity
-    extends Order, HasSequenceNumber, HasCustomer,
-            HasLineItems, Confirmable, EntityComposite
-{
-}
------------
-
-No other changes are needed, provided that the Qi4j Runtime has been setup with one or more persisted entity stores. But
+Nothing else is needed, provided that the Qi4j Runtime has been setup with one or more persisted entity stores. But
 we have a naming convention that EntityComposites have "Entity" as the suffix in its name.
 There are other built-in Composite subtypes as well, such as ValueComposite and ServiceComposite. This distinction helps
 both to communicate intent as well as having more precisely defined functionality.
@@ -78,46 +45,18 @@ both to communicate intent as well as having more precisely defined functionalit
 Now, let's say that we want to send a mail to sales@mycompany.com when the order is confirmed. This is a SideEffect, and
 will execute after the Constraints, Concerns and Mixins. We add the SideEffect to the OrderEntity;
 
-[source,java]
+[snippet,java]
 -----------
-@SideEffects( MailNotifySideEffect.class )
-@Concerns({PurchaseLimitConcern.class, InventoryConcern.class})
-public interface OrderEntity
-    extends Order, HasSequenceNumber, HasCustomer,
-            HasLineItems, Confirmable, EntityComposite
-{
-}
+source=tutorials/introduction/tenminutes/src/main/java/org/qi4j/demo/tenminute/OrderEntity.java
+tag=sideEffect
 -----------
 
 The SideEffect implementation is fairly simple.
 
-[source,java]
+[snippet,java]
 -----------
-public abstract class MailNotifySideEffect
-    extends SideEffectOf<Confirmable>
-    implements Confirmable
-{
-    @Service private MailService mailer;
-    @This private HasLineItems hasItems;
-    @This private HasCustomer hasCustomer;
-
-    public void confirm()
-    {
-        StringBuilder builder = new StringBuilder();
-        builder.append( "An Order has been made.\n\n\n" );
-        builder.append( "Customer:" );
-        builder.append( hasCustomer.name().get() );
-        builder.append( "\n\nItems ordered:\n" );
-        for( LineItem item : items.lineItems() )
-        {
-            builder.append( item.name().get() );
-            builder.append( " : " );
-            builder.append( item.quantity().get() );
-            builder.append( "\n" );
-        }
-        mailer.send( "sales@mycompany.com", builder.toString() );
-    }
-}
+source=tutorials/introduction/tenminutes/src/main/java/org/qi4j/demo/tenminute/MailNotifySideEffect.java
+tag=allClass
 -----------
 The MailService is dependency injected, as we have seen before.
 
@@ -129,7 +68,7 @@ where the HasCustomer and HasLineItems combination is used, for instance in an I
 
 So, build the report, send it via the MailService.
 
-- Conclusion -
+== Conclusion ==
 
 In this short introduction, we have covered the essence of Qi4j. We have looked at what is a Composite, seen some of the
 Fragments in action, and how simple it is to turn a Composite into a persisted Composite, known as an EntityComposite.

@@ -7,7 +7,7 @@ Qi4j is an open development community effort with an Apache ver 2.0 open source 
 --
 
 
-- What does this really mean? -
+== What does this really mean? ==
 
 First of all, we work together to achieve the visions of Qi4j, based on technical merits alone in an open and friendly
 manner, mostly via e-mail to the mailing list. It means that everyone in the community are stake holders in the

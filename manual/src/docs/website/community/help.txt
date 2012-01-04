@@ -2,7 +2,6 @@
 Community Support
 =================
 
-You can learn a lot about Qi4j on different _events._
 To get information on upcoming Qi4j events, have a look here:
 
 * http://www.qi4j.org/news

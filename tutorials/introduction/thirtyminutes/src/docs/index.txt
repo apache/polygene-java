@@ -286,7 +286,7 @@ It can be a bit confusing to see Qi4j use Java itself as a Query language, but s
 classes and only operate with interfaces, it is possible to do a lot of seemingly magic stuff. Just keep in mind that
 it is pure Java, albeit heavy use of dynamic proxies to capture the intent of the query.
 
-- Conclusion -
+== Conclusion ==
 
 We have now explored a couple more intricate features of Qi4j, hopefully without being overwhelmed with details on how
 to create applications from scratch, how to structure applications, and how the entire Qi4j Extension system works.

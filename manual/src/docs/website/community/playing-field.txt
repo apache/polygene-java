@@ -3,14 +3,14 @@
 Qi4J is a collaborative effort of open development, and we need to have some rules in place to make that work. Below is
 an evolving list of rules and guidelines that we try to follow.
 
-- Coding Standard -
+== Coding Standard ==
 
 The coding standard at Qi4j promotes whitespace to aid in reading the code. Opening braces are placed on new lines,
 spaces are between operators and so forth. We are following the OPS4J coding standards, as they have IDEA, Eclipse and
 Checkstyle templates prepared or in the works. These are slowly evolving, and it is likely we will evolve with them.
 The coding standards can be found in https://scm.ops4j.org/repos/ops4j/projects/community/resources/
 
-- Design and Implementation work -
+== Design and Implementation work ==
 
 We want all discussions around the design and implementation to happen on the development mailing list,
 qi4j-dev@lists.ops4j.org. But we also recognize that instant messaging, voice and face-2-face are important tools to
@@ -18,7 +18,7 @@ increase productivity. The participants are expected to convey in a comprehensib
 the IM log) any new development, ideas and progress that occur during those sessions. The decisions for any multiple
 choices should be made on the mailing list only.
 
-- Committers -
+== Committers ==
 
 The term "committer" is often used in open development efforts, and in Qi4j it refers to the individuals who has commit
 rights to a particular part of the codebase. Some areas in Qi4j codebase are open to everyone, others are based on
@@ -28,14 +28,14 @@ the commit rights will not be revoked. Note that "rights" in this context is a s
 to stop a Community member to mess up the Qi4j Core. It is mostly a matter of loss of reputation at stake, since
 it is easy to revert these and if found to be malicious the member will have all commit rights revoked.
 
-- Votes on releases -
+== Votes on releases ==
 
 All committers agree that all releases should be voted upon before the release is made. Releases should happen early
 and often, to shorten the feedback loop. All committers of the subproject being released has a binding vote. Everyone
 else has a vote of recommendation. Releases can be vetoed for two reasons; Incompatibility and Legal.
 Incompatibility is not a reason within the 0.x series and not a reason between major versions, such as 1.3 -> 2.0.
 
-- Reverts of commits -
+== Reverts of commits ==
 
 There are cases when we need to revert commits made by people. Common sense should rule, but the above cases of
 incompatibility and legal reasons are two obvious examples. Sabotage, misunderstandings and mistakes are others.
@@ -43,12 +43,11 @@ When such cause arises, the issue should be brought to the mailing list, explain
 and if noone objects within 48 hours, the commit can be reverted. If the concern results in a debate, then the issue is
 resolved in a simple majority vote among the committers.
 
-- Infrastructure issues -
+== Infrastructure issues ==
 
-Any infrastructure requests or problems, should be directed to mailto:infra@lists.ops4j.org, except for the
-http://www.qi4j.org website, which Qi4j operate by itself.
+Any infrastructure requests or problems, should be directed to mailto:qi4j-dev@lists.ops4j.org.
 
-- Trademarks, Patents and Licenses -
+== Trademarks, Patents and Licenses ==
 
 Qi4J is licensed under the Apache License version 2.0. All committers agree that all their contributions are licensed
 under this license to Qi4j, other committers and the general public. The Copyright of each contribution is held by the

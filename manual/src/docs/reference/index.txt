@@ -13,21 +13,27 @@ include::preface.txt[]
 
 :leveloffset: 0
 
-- Core System -
+= Core System =
 
 :leveloffset: 1
 
-include::../../../../core/api/src/docs/index.txt[]
+include::../../../../core/api/src/docs/api.txt[]
 
-include::../../../../core/bootstrap/src/docs/index.txt[]
+include::../../../../core/bootstrap/src/docs/bootstrap.txt[]
 
-include::../../../../core/spi/src/docs/index.txt[]
+include::../../../../core/spi/src/docs/spi.txt[]
+
+include::../../../../core/functional/src/docs/functional.txt[]
+
+include::../../../../core/io/src/docs/io.txt[]
+
+include::../../../../core/testsupport/src/docs/testsupport.txt[]
 
 :leveloffset: 0
 
-- Libraries -
+= Libraries =
 
-:leveloffset: 2
+:leveloffset: 1
 
 include::../../../../libraries/alarm/src/docs/index.txt[]
 include::../../../../libraries/auth/src/docs/index.txt[]
@@ -69,9 +75,9 @@ include::../../../../libraries/vaadin/src/docs/index.txt[]
 
 :leveloffset: 0
 
-- Extensions -
+= Extensions =
 
-:leveloffset: 2
+:leveloffset: 1
 
 include::../../../../extensions/cache-ehcache/src/docs/index.txt[]
 include::../../../../extensions/entitystore-file/src/docs/index.txt[]

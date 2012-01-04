@@ -15,10 +15,11 @@ library is REQUIRED to clearly indicate this in the NOTICE file located in the s
 root of the released file AND in the dev-status.xml which will be rendered on the Qi4j website for each
 library/extension.
 
-- Trademarks -
+== Trademarks ==
 
 Qi4j and the Qi4j logos are trademarks of Rickard Öberg, Niclas Hedhman and all members of the Qi4j Core Team.
-The trademark owners hereby grant users a "fair use" license to use these trademarks to mark products and services related to the Qi4j project, provided that;
+The trademark owners hereby grant users a "fair use" license to use these trademarks to mark products and services
+related to the Qi4j project, provided that;
   a. the Qi4j project is notified of its use in advance,
   b. the Qi4j project is not misrepresented,
   c. the products and services allow to be listed as references on the Qi4j website.
@@ -26,7 +27,7 @@ The trademark owners hereby grant users a "fair use" license to use these tradem
 No license is provided to Qi4j and the Qi4j logo for products and services unrelated or only marginally related to
 the Qi4j project. Read the Licensing FAQ and/or contact the Qi4j community for details.
 
-- Apache License 2.0 -
+== Apache License 2.0 ==
 
 Version 2.0, January 2004
 http://www.apache.org/licenses/

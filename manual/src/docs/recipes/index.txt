@@ -1,6 +1,8 @@
 [[recipes]]
 = Recipes & HOWTOs =
 
+:leveloffset: 1
+
 include::whats-an-object.txt[]
 
 include::howto-configure-service.txt[]

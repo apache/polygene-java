@@ -3,7 +3,7 @@
 Qi4j is a community based on open development principles. That means we do the work in open, discussions happen on
 mailing lists and everyone is free to participate.
 
-- Principles of Participation -
+== Principles of Participation ==
 
 (not enforced yet)
 We borrow a lot of our principles in community building from OPS4J, which also provides us with the infrastructure
@@ -17,23 +17,23 @@ and integration solutions. By the introduction of Git, it is now much easier for
 system, even if they have no official commit rights and allow people to review the work, then commit it and the right
 person gets the credit.
 
-- Core Team -
+== Core Team ==
 
 The Core team are the Stewards and Guardians of the overall project. They ensure that all pieces of Qi4j are in good
 standing and assist in all matters of the project. Only the Core Team will modify the official Qi4j Core repository.
 
-- Platform Team -
+== Platform Team ==
 
 The Platform team are the work horses of the project, and are adding a lot of value to our libraries and extensions.
 These two repositories are where the bulk of the valuable code will eventually reside. The Platform Team consists of
 people who are showing dedication to the project.
 
-- Community -
+== Community ==
 
 All remaining areas are open to anyone who ask (politely). Send GitHub ID to qi4j-dev@lists.ops4j.org together with an
 introduction of yourself.
 
-- Additionally -
+== Additionally ==
 
 GitHub's community features should not be understated. You are encouraged to clone our repostories, work on your own
 features and do pull requests for Core and Platform teams to pick up. It is wise to send a mail to qi4j-dev@ before

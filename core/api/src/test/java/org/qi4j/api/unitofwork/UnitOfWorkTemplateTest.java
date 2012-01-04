@@ -26,7 +26,6 @@ public class UnitOfWorkTemplateTest
     public void testTemplate()
         throws UnitOfWorkCompletionException
     {
-        // START SNIPPET: exampleOfUowTemplate
         new UnitOfWorkTemplate<Void, RuntimeException>()
         {
             @Override
@@ -44,7 +43,6 @@ public class UnitOfWorkTemplateTest
                 return null;
             }
         }.withModule( module );
-        // END SNIPPET: exampleOfUowTemplate
     }
 
     interface TestEntity

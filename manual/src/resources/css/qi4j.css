@@ -31,7 +31,7 @@ body #toolbar_item command_help
 {
     font-size: 14px !important;
     font-family: Consolas, Monaco, "Bitstream Vera Sans Mono", monospace !important;
-    line-height: 18px !important;
+    line-height: 16px !important;
 }
 
 html
@@ -125,7 +125,6 @@ body > div.book h1,
 body > div.preface h2,
 body > div.appendix h2
 {
-    color: #ffffff;
     border-bottom: none;
     margin-top: 2.2em;
     margin-bottom: .7em;
@@ -138,7 +137,6 @@ div.legalnotice
 
 p.legalnotice-title b
 {
-    color: #ffffff;
     font-size: 1.5em;
     font-style: normal;
     font-weight: bold;
@@ -163,7 +161,6 @@ div.part h1.title
 
 div.titlepage h3.corpauthor
 {
-    color: #ffffff;
 }
 
 div.refnamediv
