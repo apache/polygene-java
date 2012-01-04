@@ -89,7 +89,7 @@ public interface ApplicationEventFactoryService
                 for (int i = 1; i < args.length; i++)
                 {
                     params.key( "param" + i );
-                    if (args == null)
+                    if (args[i] == null)
                         params.value( JSONObject.NULL );
                     else
                         params.value( args[i] );
