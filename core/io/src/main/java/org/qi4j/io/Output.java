@@ -17,8 +17,10 @@ package org.qi4j.io;
 /**
  * Output for data.
  */
+// START SNIPPET: output
 public interface Output<T, ReceiverThrowableType extends Throwable>
 {
+// END SNIPPET: output
     /**
      * This initiates a transfer from an Input. Implementations should open any resources to be written to
      * and then call sender.sendTo() when it is ready to receive data. When sendTo() returns the resource should be
@@ -30,6 +32,8 @@ public interface Output<T, ReceiverThrowableType extends Throwable>
      * @throws SenderThrowableType   the exception that the sender can throw
      * @throws ReceiverThrowableType the exception that this output can throw from receiveItem()
      */
+// START SNIPPET: output
     <SenderThrowableType extends Throwable> void receiveFrom( Sender<? extends T, SenderThrowableType> sender )
         throws ReceiverThrowableType, SenderThrowableType;
 }
+// END SNIPPET: output

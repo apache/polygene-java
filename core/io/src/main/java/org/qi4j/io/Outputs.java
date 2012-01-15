@@ -14,7 +14,13 @@
 
 package org.qi4j.io;
 
-import java.io.*;
+import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.Collection;
@@ -25,6 +31,8 @@ import java.util.zip.GZIPOutputStream;
  */
 public class Outputs
 {
+    // START SNIPPET:method
+
     /**
      * Write lines to a text file with UTF-8 encoding. Separate each line with a newline ("\n" character). If the writing or sending fails,
      * the file is deleted.
@@ -36,9 +44,12 @@ public class Outputs
      * @return an Output for storing text in a file
      */
     public static Output<String, IOException> text( final File file )
+    // END SNIPPET:method
     {
         return text( file, "UTF-8" );
     }
+
+    // START SNIPPET:method
 
     /**
      * Write lines to a text file. Separate each line with a newline ("\n" character). If the writing or sending fails,
@@ -51,13 +62,15 @@ public class Outputs
      * @return an Output for storing text in a file
      */
     public static Output<String, IOException> text( final File file, final String encoding )
+    // END SNIPPET:method
     {
         return new Output<String, IOException>()
         {
-           @Override
-           public <SenderThrowableType extends Throwable> void receiveFrom(Sender<? extends String, SenderThrowableType> sender) throws IOException, SenderThrowableType
-           {
-               File tmpFile = File.createTempFile( file.getName(), ".bin" );
+            @Override
+            public <SenderThrowableType extends Throwable> void receiveFrom( Sender<? extends String, SenderThrowableType> sender )
+                throws IOException, SenderThrowableType
+            {
+                File tmpFile = File.createTempFile( file.getName(), ".bin" );
 
                 OutputStream stream = new FileOutputStream( tmpFile );
 
@@ -82,8 +95,10 @@ public class Outputs
                     writer.close();
 
                     // Replace file with temporary file
-                    if (!file.exists() || file.delete())
+                    if( !file.exists() || file.delete() )
+                    {
                         tmpFile.renameTo( file );
+                    }
                 }
                 catch( IOException e )
                 {
@@ -103,6 +118,8 @@ public class Outputs
         };
     }
 
+    // START SNIPPET:method
+
     /**
      * Write ByteBuffer data to a file. If the writing or sending of data fails the file will be deleted.
      *
@@ -112,12 +129,14 @@ public class Outputs
      * @return
      */
     public static <T> Output<ByteBuffer, IOException> byteBuffer( final File file )
+    // END SNIPPET:method
     {
         return new Output<ByteBuffer, IOException>()
         {
-           @Override
-           public <SenderThrowableType extends Throwable> void receiveFrom(Sender<? extends ByteBuffer, SenderThrowableType> sender) throws IOException, SenderThrowableType
-           {
+            @Override
+            public <SenderThrowableType extends Throwable> void receiveFrom( Sender<? extends ByteBuffer, SenderThrowableType> sender )
+                throws IOException, SenderThrowableType
+            {
                 File tmpFile = File.createTempFile( file.getName(), ".bin" );
                 FileOutputStream stream = new FileOutputStream( tmpFile );
                 final FileChannel fco = stream.getChannel();
@@ -135,8 +154,10 @@ public class Outputs
                     stream.close();
 
                     // Replace file with temporary file
-                    if (!file.exists() || file.delete())
+                    if( !file.exists() || file.delete() )
+                    {
                         tmpFile.renameTo( file );
+                    }
                 }
                 catch( IOException e )
                 {
@@ -156,6 +177,8 @@ public class Outputs
         };
     }
 
+    // START SNIPPET:method
+
     /**
      * Write ByteBuffer data to an OutputStream.
      *
@@ -165,12 +188,14 @@ public class Outputs
      * @return
      */
     public static <T> Output<ByteBuffer, IOException> byteBuffer( final OutputStream stream )
+    // END SNIPPET:method
     {
         return new Output<ByteBuffer, IOException>()
         {
-           @Override
-           public <SenderThrowableType extends Throwable> void receiveFrom(Sender<? extends ByteBuffer, SenderThrowableType> sender) throws IOException, SenderThrowableType
-           {
+            @Override
+            public <SenderThrowableType extends Throwable> void receiveFrom( Sender<? extends ByteBuffer, SenderThrowableType> sender )
+                throws IOException, SenderThrowableType
+            {
                 try
                 {
                     sender.sendTo( new Receiver<ByteBuffer, IOException>()
@@ -200,6 +225,8 @@ public class Outputs
         };
     }
 
+    // START SNIPPET:method
+
     /**
      * Write byte array data to a file. If the writing or sending of data fails the file will be deleted.
      *
@@ -210,13 +237,15 @@ public class Outputs
      * @return
      */
     public static <T> Output<byte[], IOException> bytes( final File file, final int bufferSize )
+    // END SNIPPET:method
     {
         return new Output<byte[], IOException>()
         {
-           @Override
-           public <SenderThrowableType extends Throwable> void receiveFrom(Sender<? extends byte[], SenderThrowableType> sender) throws IOException, SenderThrowableType
-           {
-                File tmpFile = File.createTempFile( file.getName(),".bin" );
+            @Override
+            public <SenderThrowableType extends Throwable> void receiveFrom( Sender<? extends byte[], SenderThrowableType> sender )
+                throws IOException, SenderThrowableType
+            {
+                File tmpFile = File.createTempFile( file.getName(), ".bin" );
                 final OutputStream stream = new BufferedOutputStream( new FileOutputStream( tmpFile ), bufferSize );
 
                 try
@@ -232,8 +261,10 @@ public class Outputs
                     stream.close();
 
                     // Replace file with temporary file
-                    if (!file.exists() || file.delete())
+                    if( !file.exists() || file.delete() )
+                    {
                         tmpFile.renameTo( file );
+                    }
                 }
                 catch( IOException e )
                 {
@@ -253,6 +284,8 @@ public class Outputs
         };
     }
 
+    // START SNIPPET:method
+
     /**
      * Do nothing. Use this if you have all logic in filters and/or specifications
      *
@@ -261,6 +294,7 @@ public class Outputs
      * @return
      */
     public static <T> Output<T, RuntimeException> noop()
+    // END SNIPPET:method
     {
         return withReceiver( new Receiver<T, RuntimeException>()
         {
@@ -272,6 +306,8 @@ public class Outputs
         } );
     }
 
+    // START SNIPPET:method
+
     /**
      * Use given receiver as Output. Use this if there is no need to create a "transaction" for each transfer, and no need
      * to do batch writes or similar.
@@ -282,16 +318,20 @@ public class Outputs
      * @return
      */
     public static <T, ReceiverThrowableType extends Throwable> Output<T, ReceiverThrowableType> withReceiver( final Receiver<T, ReceiverThrowableType> receiver )
+    // END SNIPPET:method
     {
         return new Output<T, ReceiverThrowableType>()
         {
-           @Override
-           public <SenderThrowableType extends Throwable> void receiveFrom(Sender<? extends T, SenderThrowableType> sender) throws ReceiverThrowableType, SenderThrowableType
-           {
+            @Override
+            public <SenderThrowableType extends Throwable> void receiveFrom( Sender<? extends T, SenderThrowableType> sender )
+                throws ReceiverThrowableType, SenderThrowableType
+            {
                 sender.sendTo( receiver );
             }
         };
     }
+
+    // START SNIPPET:method
 
     /**
      * Write objects to System.out.println.
@@ -299,12 +339,14 @@ public class Outputs
      * @return
      */
     public static Output<Object, RuntimeException> systemOut()
+    // END SNIPPET:method
     {
         return new Output<Object, RuntimeException>()
         {
-           @Override
-           public <SenderThrowableType extends Throwable> void receiveFrom(Sender<? extends Object, SenderThrowableType> sender) throws RuntimeException, SenderThrowableType
-           {
+            @Override
+            public <SenderThrowableType extends Throwable> void receiveFrom( Sender<? extends Object, SenderThrowableType> sender )
+                throws RuntimeException, SenderThrowableType
+            {
                 sender.sendTo( new Receiver<Object, RuntimeException>()
                 {
                     public void receive( Object item )
@@ -316,16 +358,19 @@ public class Outputs
         };
     }
 
+    // START SNIPPET:method
     /**
      * Add items to a collection
      */
     public static <T> Output<T, RuntimeException> collection( final Collection<T> collection )
+    // END SNIPPET:method
     {
         return new Output<T, RuntimeException>()
         {
-           @Override
-           public <SenderThrowableType extends Throwable> void receiveFrom(Sender<? extends T, SenderThrowableType> sender) throws RuntimeException, SenderThrowableType
-           {
+            @Override
+            public <SenderThrowableType extends Throwable> void receiveFrom( Sender<? extends T, SenderThrowableType> sender )
+                throws RuntimeException, SenderThrowableType
+            {
                 sender.sendTo( new Receiver<T, RuntimeException>()
                 {
                     public void receive( T item )

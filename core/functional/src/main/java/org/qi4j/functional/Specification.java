@@ -19,8 +19,10 @@ package org.qi4j.functional;
  *
  * @param <T>
  */
+// START SNIPPET:specification
 public interface Specification<T>
 {
+// END SNIPPET:specification
     /**
      * Test whether an item matches the given specification
      *
@@ -28,5 +30,7 @@ public interface Specification<T>
      *
      * @return true if the item matches, false otherwise
      */
+// START SNIPPET:specification
     boolean satisfiedBy( T item );
 }
+// END SNIPPET:specification

@@ -23,8 +23,10 @@ package org.qi4j.io;
  * are closed. Any client code to transferTo calls should not have to bother with resource management,
  * but may catch exceptions anyway for logging and similar purposes.
  */
+// START-SNIPPET: input
 public interface Input<T, SenderThrowableType extends Throwable>
 {
     <ReceiverThrowableType extends Throwable> void transferTo( Output<? super T, ReceiverThrowableType> output )
         throws SenderThrowableType, ReceiverThrowableType;
 }
+// END-SNIPPET: input

@@ -29,6 +29,8 @@ include::../../../../core/io/src/docs/io.txt[]
 
 include::../../../../core/testsupport/src/docs/testsupport.txt[]
 
+include::../../../../core/io/src/docs/blog.txt[]
+
 :leveloffset: 0
 
 = Libraries =
