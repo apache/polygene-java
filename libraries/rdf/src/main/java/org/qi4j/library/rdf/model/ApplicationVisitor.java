@@ -21,14 +21,14 @@ import org.qi4j.api.object.ObjectDescriptor;
 import org.qi4j.api.structure.ApplicationDescriptor;
 import org.qi4j.api.structure.LayerDescriptor;
 import org.qi4j.api.structure.ModuleDescriptor;
-import org.qi4j.functional.HierarchicalVisitor;
+import org.qi4j.functional.HierarchicalVisitorAdapter;
 import org.qi4j.library.rdf.Qi4jRdf;
 import org.qi4j.library.rdf.serializer.SerializerContext;
 
 /**
  * JAVADOC
  */
-class ApplicationVisitor extends HierarchicalVisitor<Object, Object, RuntimeException>
+class ApplicationVisitor extends HierarchicalVisitorAdapter<Object, Object, RuntimeException>
 {
     private SerializerContext context;
 

@@ -1,6 +1,58 @@
 [[qi4j-core-functional]]
 = Qi4j Core Functional API =
 
+The Qi4j Core Functional API is a generic package to work with Iterables in a "functional programming language" style.
+
+This package is completely independent of everything else in Qi4j and may be used on its own in any kind of environment
+such as Spring or Java EE applications.
+
+== First Example ==
+Let's say that you have an Iterable of Integers and you want to sum them all up. Most people would create a loop and
+sum it all up in something like this;
+
+[source,java]
+-------------
+Iterable<Integer> data = ...;
+
+long sum = 0;
+for( Long point : data ) {
+    sum = sum + point;
+}
+System.out.println( "The sum is " + sum );
+-------------
+
+With the Qi4j Core Functional API, you go about it in a different way. The code ends up looking like this;
+
+[source,java]
+-------------
+Iterable<Number> data = ...;
+Long sum = forEach( data ).map( longSum() ).last();
+System.out.println( "The sum is " + sum );
+-------------
+
+And this is just the tip of the iceberg.
+
+== The Big Picture ==
+
+The Qi4j Core Functional API are divided a handful of powerful concepts, especially when used together;
+
+   * *Iterables* - many methods to deal with Iterable data, so that the loops in your programs can largely be removed.
+
+   * *Functions* - f(x) and f(x,y) are well-know from mathematics and used in functional programming languages. Qi4j is
+     not capable of introducing lambda calculus due to limitations in Java itself, but we can simulate a lot to allow
+     people to create more readable code.
+
+   * *Specification* - A simple concept to define the bounds of data. This is used for filtering, query and many other
+     higher level abstractions.
+
+   * *Visitor* pattern - A way to be handed the items in a collection, without having the loops. This could be for
+     end result handling, distribution of intermediary values, and many other things.
 
 
+== Specification ==
 
+== Function ==
+
+== Visitor Pattern ==
+
+== Iterables ==

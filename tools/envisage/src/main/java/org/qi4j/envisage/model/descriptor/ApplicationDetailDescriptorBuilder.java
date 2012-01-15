@@ -36,10 +36,10 @@ import org.qi4j.api.structure.LayerDescriptor;
 import org.qi4j.api.structure.ModuleDescriptor;
 import org.qi4j.api.structure.UsedLayersDescriptor;
 import org.qi4j.api.value.ValueDescriptor;
-import org.qi4j.functional.HierarchicalVisitor;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.qi4j.functional.HierarchicalVisitorAdapter;
 
 public final class ApplicationDetailDescriptorBuilder
 {
@@ -56,7 +56,7 @@ public final class ApplicationDetailDescriptorBuilder
     }
 
     static final class ApplicationDescriptorVisitor
-            extends HierarchicalVisitor<Object, Object, RuntimeException>
+            extends HierarchicalVisitorAdapter<Object, Object, RuntimeException>
     {
         // Temp: application
         private ApplicationDetailDescriptor applicationDescriptor;

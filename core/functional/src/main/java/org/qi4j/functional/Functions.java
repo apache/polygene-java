@@ -82,7 +82,7 @@ public final class Functions
         };
     }
 
-    public static final Function<Number, Long> longSum()
+    public static Function<Number, Long> longSum()
     {
         return new Function<Number, Long>()
         {

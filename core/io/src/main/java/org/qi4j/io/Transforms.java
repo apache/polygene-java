@@ -375,7 +375,7 @@ public class Transforms
      *
      * @param <T> type of items to be transferred
      */
-    // START SNIPPET:progress
+    // START SNIPPET: progress
     public static class ProgressLog<T>
         implements Function<T, T>
     {
@@ -418,5 +418,5 @@ public class Transforms
             }
         }
     }
-    // END SNIPPET:progress
+    // END SNIPPET: progress
 }

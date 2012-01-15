@@ -31,7 +31,7 @@ import java.util.zip.GZIPInputStream;
  */
 public class Inputs
 {
-    // START SNIPPET:method
+    // START SNIPPET: method
     /**
      * Read lines from a UTF-8 encoded textfile.
      *
@@ -42,12 +42,12 @@ public class Inputs
      * @return Input that provides lines from the textfiles as strings
      */
     public static Input<String, IOException> text( final File source )
-    // END SNIPPET:method
+    // END SNIPPET: method
     {
         return text( source, "UTF-8" );
     }
 
-    // START SNIPPET:method
+    // START SNIPPET: method
     /**
      * Read lines from a textfile with the given encoding.
      *
@@ -59,7 +59,7 @@ public class Inputs
      * @return Input that provides lines from the textfiles as strings
      */
     public static Input<String, IOException> text( final File source, final String encoding )
-    // END SNIPPET:method
+    // END SNIPPET: method
     {
         return new Input<String, IOException>()
         {
@@ -99,7 +99,7 @@ public class Inputs
         };
     }
 
-    // START SNIPPET:method
+    // START SNIPPET: method
     /**
      * Read lines from a textfile at a given URL.
      *
@@ -112,7 +112,7 @@ public class Inputs
      * @return Input that provides lines from the textfiles as strings
      */
     public static Input<String, IOException> text( final URL source )
-    // END SNIPPET:method
+    // END SNIPPET: method
     {
         return new Input<String, IOException>()
         {
@@ -161,7 +161,7 @@ public class Inputs
         };
     }
 
-    // START SNIPPET:method
+    // START SNIPPET: method
     /**
      * Read a file using ByteBuffer of a given size. Useful for transferring raw data.
      *
@@ -171,7 +171,7 @@ public class Inputs
      * @return
      */
     public static Input<ByteBuffer, IOException> byteBuffer( final File source, final int bufferSize )
-    // END SNIPPET:method
+    // END SNIPPET: method
     {
         return new Input<ByteBuffer, IOException>()
         {
@@ -207,7 +207,7 @@ public class Inputs
         };
     }
 
-    // START SNIPPET:method
+    // START SNIPPET: method
     /**
      * Read an inputstream using ByteBuffer of a given size.
      *
@@ -217,7 +217,7 @@ public class Inputs
      * @return
      */
     public static Input<ByteBuffer, IOException> byteBuffer( final InputStream source, final int bufferSize )
-    // END SNIPPET:method
+    // END SNIPPET: method
     {
         return new Input<ByteBuffer, IOException>()
         {
@@ -250,7 +250,7 @@ public class Inputs
         };
     }
 
-    // START SNIPPET:method
+    // START SNIPPET: method
     /**
      * Combine many Input into one single Input. When a transfer is initiated from it all items from all inputs will be transferred
      * to the given Output.
@@ -262,7 +262,7 @@ public class Inputs
      * @return
      */
     public static <T, SenderThrowableType extends Throwable> Input<T, SenderThrowableType> combine( final Iterable<Input<T, SenderThrowableType>> inputs )
-    // END SNIPPET:method
+    // END SNIPPET: method
     {
         return new Input<T, SenderThrowableType>()
         {
@@ -298,7 +298,7 @@ public class Inputs
         };
     }
 
-    // START SNIPPET:method
+    // START SNIPPET: method
     /**
      * Create an Input that takes its items from the given Iterable.
      *
@@ -307,7 +307,7 @@ public class Inputs
      * @return
      */
     public static <T> Input<T, RuntimeException> iterable( final Iterable<T> iterable )
-    // END SNIPPET:method
+    // END SNIPPET: method
     {
         return new Input<T, RuntimeException>()
         {
@@ -329,7 +329,7 @@ public class Inputs
         };
     }
 
-    // START SNIPPET:method
+    // START SNIPPET: method
     /**
      * Create an Input that allows a Visitor to write to an OutputStream. The stream is a BufferedOutputStream, so when enough
      * data has been gathered it will send this in chunks of the given size to the Output it is transferred to. The Visitor does not have to call
@@ -340,7 +340,7 @@ public class Inputs
      * @return
      */
     public static Input<ByteBuffer, IOException> output( final Visitor<OutputStream, IOException> outputVisitor, final int bufferSize)
-    // END SNIPPET:method
+    // END SNIPPET: method
     {
         return new Input<ByteBuffer, IOException>()
         {

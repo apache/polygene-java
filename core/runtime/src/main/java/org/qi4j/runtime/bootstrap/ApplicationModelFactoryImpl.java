@@ -14,14 +14,11 @@
 
 package org.qi4j.runtime.bootstrap;
 
-import org.qi4j.api.composite.InvalidCompositeException;
 import org.qi4j.api.composite.ModelDescriptor;
-import org.qi4j.api.object.ObjectDescriptor;
 import org.qi4j.api.structure.ApplicationDescriptor;
 import org.qi4j.bootstrap.*;
-import org.qi4j.functional.HierarchicalVisitor;
+import org.qi4j.functional.HierarchicalVisitorAdapter;
 import org.qi4j.runtime.composite.CompositeMethodModel;
-import org.qi4j.runtime.composite.CompositeModel;
 import org.qi4j.runtime.injection.InjectedFieldModel;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
@@ -101,7 +98,7 @@ public final class ApplicationModelFactoryImpl
         return applicationModel;
     }
 
-    private static class BindingVisitor extends HierarchicalVisitor<Object, Object, BindingException>
+    private static class BindingVisitor extends HierarchicalVisitorAdapter<Object, Object, BindingException>
     {
         private LayerModel layer;
         private ModuleModel module;

@@ -32,7 +32,7 @@ import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.structure.Application;
 import org.qi4j.entitystore.qrm.QrmEntityStoreDescriptor;
 import org.qi4j.entitystore.qrm.QrmMapper;
-import org.qi4j.functional.HierarchicalVisitor;
+import org.qi4j.functional.HierarchicalVisitorAdapter;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entitystore.DefaultEntityStoreUnitOfWork;
@@ -255,7 +255,7 @@ public interface QrmMapperService
         {
             final List<Class> types = cfg.types();
 
-            app.descriptor().accept( new HierarchicalVisitor<Object, Object, RuntimeException>()
+            app.descriptor().accept( new HierarchicalVisitorAdapter<Object, Object, RuntimeException>()
             {
                 @Override
                 public boolean visitEnter( Object visited ) throws RuntimeException

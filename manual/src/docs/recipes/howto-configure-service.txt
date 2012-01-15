@@ -6,7 +6,7 @@ since you can easily build GUI tools to allow editing of these in runtime. Howev
 the Configuration instance, Qi4j also does the initial bootstrapping of the Configuration entity for you. This HowTo is
 going to show how.
 
-=== We need a Service ===
+== We need a Service ==
 
 To illustrate these features we create an TravelPlan service, which allows clients to find and make Reservations to
 Destinations. For the sake of simplicity, we are leaving out the domain details...
@@ -137,7 +137,7 @@ public void assemble( ModuleAssembly module )
 }
 -----------
 
-=== Non-default Identity ===
+== Non-default Identity ==
 If you need to use multiple instances of the same service, or that the service has a non-default Identity, then you need
 to name the properties file according to the Identity of the service declaration, but the file will still need to be in
 the same package as the ServiceComposite sub type, the TravelPlanService in the above example. For instance;
@@ -185,7 +185,7 @@ protocol=rlogin
 -----------
 File: org/hedhman/niclas/travel/OrbitzService.properties
 
-=== Changing Configuration in runtime ===
+== Changing Configuration in runtime ==
 Unlike most frameworks, the Configuration in Qi4j is an active Entity, and once the properties file has been read once
 at the first(!) startup, it no longer serves any purpose. The Configuration will always be retrieved from the
 EntityStore. Changes to the properties file are not taken into consideration if the Configuration entity is found in the

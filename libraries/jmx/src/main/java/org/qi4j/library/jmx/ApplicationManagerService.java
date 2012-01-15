@@ -15,17 +15,13 @@
 package org.qi4j.library.jmx;
 
 import org.qi4j.api.composite.ModelDescriptor;
-import org.qi4j.api.composite.TransientDescriptor;
-import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.object.ObjectDescriptor;
 import org.qi4j.api.service.*;
 import org.qi4j.api.service.qualifier.ServiceQualifier;
 import org.qi4j.api.structure.*;
-import org.qi4j.api.value.ValueDescriptor;
-import org.qi4j.functional.HierarchicalVisitor;
+import org.qi4j.functional.HierarchicalVisitorAdapter;
 import org.qi4j.functional.Iterables;
 
 import javax.management.MBeanOperationInfo;
@@ -72,7 +68,7 @@ public interface ApplicationManagerService
 
         public void activate() throws Exception
         {
-            application.descriptor().accept( new HierarchicalVisitor<Object, Object, Exception>()
+            application.descriptor().accept( new HierarchicalVisitorAdapter<Object, Object, Exception>()
             {
                 Layer layer;
                 Module module;

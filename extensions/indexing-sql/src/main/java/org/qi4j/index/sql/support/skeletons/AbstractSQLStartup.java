@@ -29,7 +29,7 @@ import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.value.ValueDescriptor;
-import org.qi4j.functional.HierarchicalVisitor;
+import org.qi4j.functional.HierarchicalVisitorAdapter;
 import org.qi4j.index.reindexer.Reindexer;
 import org.qi4j.index.sql.support.api.SQLAppStartup;
 import org.qi4j.index.sql.support.api.SQLTypeInfo;
@@ -1093,7 +1093,7 @@ public abstract class AbstractSQLStartup
         throws SQLException
     {
         final List<ValueDescriptor> valueDescriptors = new ArrayList<ValueDescriptor>();
-        _app.descriptor().accept( new HierarchicalVisitor<Object, Object, RuntimeException>()
+        _app.descriptor().accept( new HierarchicalVisitorAdapter<Object, Object, RuntimeException>()
         {
             @Override
             public boolean visitEnter( Object visited ) throws RuntimeException

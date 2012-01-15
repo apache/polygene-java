@@ -14,29 +14,21 @@
 
 package org.qi4j.runtime.composite;
 
-import org.ietf.jgss.Oid;
-import org.qi4j.api.composite.InvalidCompositeException;
-import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.util.Annotations;
 import org.qi4j.api.util.Classes;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.functional.Function;
 import org.qi4j.functional.HierarchicalVisitor;
-import org.qi4j.functional.Iterables;
+import org.qi4j.functional.HierarchicalVisitorAdapter;
 import org.qi4j.functional.VisitableHierarchy;
-import org.qi4j.runtime.bootstrap.AssemblyHelper;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectedFieldModel;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.*;
 
-import static org.qi4j.api.util.Annotations.isType;
-import static org.qi4j.api.util.Annotations.type;
 import static org.qi4j.functional.Iterables.*;
 
 /**
@@ -136,7 +128,7 @@ public class MixinsModel
 
         for( MixinModel mixinModel : mixinModels )
         {
-            mixinModel.accept( new HierarchicalVisitor<Object, Object, BindingException>()
+            mixinModel.accept( new HierarchicalVisitorAdapter<Object, Object, BindingException>()
             {
                 @Override
                 public boolean visitEnter( Object visited ) throws BindingException

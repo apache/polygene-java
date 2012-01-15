@@ -139,8 +139,8 @@ public final class Iterables
 
                 return new Iterator<T>()
                 {
-                    Set<T> items = new HashSet<T>();
-                    T nextItem;
+                    private final Set<T> items = new HashSet<T>();
+                    private T nextItem;
 
                     @Override
                     public boolean hasNext()
@@ -179,17 +179,14 @@ public final class Iterables
         {
             collection.add( item );
         }
-
         return collection;
     }
 
     public static long count( Iterable<?> iterable )
     {
         long c = 0;
-        Iterator<?> iterator = iterable.iterator();
-        while( iterator.hasNext() )
+        for( Object anIterable : iterable )
         {
-            iterator.next();
             c++;
         }
         return c;

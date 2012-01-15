@@ -6,6 +6,7 @@ import java.util.*;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.qi4j.functional.ForEach.forEach;
 import static org.qi4j.functional.Functions.*;
 import static org.qi4j.functional.Functions.count;
 import static org.qi4j.functional.Iterables.*;
@@ -47,8 +48,9 @@ public class FunctionsTest
         Map<String,String> map = new HashMap<String, String>(  );
         map.put( "A","1" );
         map.put( "B","2" );
-        map.put( "C","3" );
-        assertThat( Iterables.toList( Iterables.filter( Specifications.notNull(), Iterables.map( Functions.fromMap( map ), Iterables.iterable( "A", "B", "D" ) ) ) ).toString(), equalTo( "[1, 2]" ));
+        map.put( "C", "3" );
+        assertThat( Iterables.toList( Iterables.filter( Specifications.notNull(), Iterables.map( Functions.fromMap( map ), Iterables
+            .iterable( "A", "B", "D" ) ) ) ).toString(), equalTo( "[1, 2]" ));
     }
 
     @Test
@@ -61,6 +63,12 @@ public class FunctionsTest
     public void testLongSum()
     {
         assertThat( last( map( longSum(), iterable( 1, 2L, 3F, 4D ) ) ), equalTo( 10L ) );
+    }
+
+    @Test
+    public void testLongSum2()
+    {
+        assertThat( forEach( iterable( 1, 2, 3, 4 ) ).map( longSum() ).last(), equalTo( 10L ) );
     }
 
     @Test

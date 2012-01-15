@@ -8,7 +8,7 @@ import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.structure.ApplicationDescriptor;
-import org.qi4j.functional.HierarchicalVisitor;
+import org.qi4j.functional.HierarchicalVisitorAdapter;
 import org.qi4j.functional.Specifications;
 
 /**
@@ -48,7 +48,7 @@ public class ApplicationAssemblerTest
             }
         } );
 
-        model.accept( new HierarchicalVisitor<Object, Object, RuntimeException>()
+        model.accept( new HierarchicalVisitorAdapter<Object, Object, RuntimeException>()
         {
             @Override
             public boolean visitEnter( Object visited ) throws RuntimeException

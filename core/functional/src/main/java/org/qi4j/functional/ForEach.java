@@ -34,7 +34,7 @@ public final class ForEach<T>
         return new ForEach<T>( Iterables.filter( specification, iterable ) );
     }
 
-    public <TO> ForEach<TO> map( Function<T, TO> function )
+    public <TO> ForEach<TO> map( Function<? super T, TO> function )
     {
         return new ForEach<TO>( Iterables.map( function, iterable ) );
     }
@@ -44,6 +44,14 @@ public final class ForEach<T>
         return new ForEach<TO>( Iterables.flattenIterables( ((Iterable<Iterable<TO>>)iterable ) ));
     }
 
+    public T last() {
+        T lastItem = null;
+        for( T item : iterable ) {
+            lastItem = item;
+        }
+        return lastItem;
+    }
+    
     public <ThrowableType extends Throwable> boolean visit( final Visitor<T, ThrowableType> visitor )
             throws ThrowableType
     {

@@ -11,3 +11,5 @@ include::howto-create-entity.txt[]
 
 include::howto-assembly-application.txt[]
 
+include::faq.txt[]
+

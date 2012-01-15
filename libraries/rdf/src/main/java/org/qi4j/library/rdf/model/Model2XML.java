@@ -8,7 +8,7 @@ import org.qi4j.api.structure.ApplicationDescriptor;
 import org.qi4j.api.structure.LayerDescriptor;
 import org.qi4j.api.structure.ModuleDescriptor;
 import org.qi4j.functional.Function;
-import org.qi4j.functional.HierarchicalVisitor;
+import org.qi4j.functional.HierarchicalVisitorAdapter;
 import org.w3c.dom.*;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -49,7 +49,7 @@ public class Model2XML
             final Stack<Node> current = new Stack<Node>();
             current.push( document );
 
-            Application.accept( new HierarchicalVisitor<Object, Object, DOMException>()
+            Application.accept( new HierarchicalVisitorAdapter<Object, Object, DOMException>()
             {
                 @Override
                 public boolean visitEnter( Object visited ) throws DOMException

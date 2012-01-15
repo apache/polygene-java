@@ -24,7 +24,7 @@ import org.qi4j.api.common.Visibility;
 import org.qi4j.api.type.*;
 import org.qi4j.api.util.Classes;
 import org.qi4j.api.value.ValueComposite;
-import org.qi4j.functional.HierarchicalVisitor;
+import org.qi4j.functional.HierarchicalVisitorAdapter;
 import org.qi4j.functional.Iterables;
 import org.qi4j.runtime.association.AssociationsModel;
 import org.qi4j.runtime.association.ManyAssociationsModel;
@@ -131,7 +131,7 @@ public class ValueTypeFactory
     }
 
     private class ValueFinder
-        extends HierarchicalVisitor<Object, Object, RuntimeException>
+        extends HierarchicalVisitorAdapter<Object, Object, RuntimeException>
     {
         private Class type;
         private ValueModel foundModel;

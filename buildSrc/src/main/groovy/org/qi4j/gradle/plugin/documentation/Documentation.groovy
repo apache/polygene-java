@@ -93,6 +93,7 @@ class Documentation extends DefaultTask
       executable = 'xsltproc'
       args = [
               '--nonet',
+              '--noout',
               '--output', "build/docs/$docName/",
               xsltFile,
               "build/tmp/docs/$docName/xdoc-temp.xml"
@@ -107,6 +108,7 @@ class Documentation extends DefaultTask
       executable = 'xsltproc'
       args = [
               '--nonet',
+              '--noout',
               '--output', "build/docs/$docName/$docName" + ".html",
               xsltFile,
               "build/tmp/docs/$docName/xdoc-temp.xml"

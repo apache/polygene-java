@@ -31,7 +31,7 @@ import java.util.zip.GZIPOutputStream;
  */
 public class Outputs
 {
-    // START SNIPPET:method
+    // START SNIPPET: method
 
     /**
      * Write lines to a text file with UTF-8 encoding. Separate each line with a newline ("\n" character). If the writing or sending fails,
@@ -44,12 +44,12 @@ public class Outputs
      * @return an Output for storing text in a file
      */
     public static Output<String, IOException> text( final File file )
-    // END SNIPPET:method
+    // END SNIPPET: method
     {
         return text( file, "UTF-8" );
     }
 
-    // START SNIPPET:method
+    // START SNIPPET: method
 
     /**
      * Write lines to a text file. Separate each line with a newline ("\n" character). If the writing or sending fails,
@@ -62,7 +62,7 @@ public class Outputs
      * @return an Output for storing text in a file
      */
     public static Output<String, IOException> text( final File file, final String encoding )
-    // END SNIPPET:method
+    // END SNIPPET: method
     {
         return new Output<String, IOException>()
         {
@@ -118,7 +118,7 @@ public class Outputs
         };
     }
 
-    // START SNIPPET:method
+    // START SNIPPET: method
 
     /**
      * Write ByteBuffer data to a file. If the writing or sending of data fails the file will be deleted.
@@ -129,7 +129,7 @@ public class Outputs
      * @return
      */
     public static <T> Output<ByteBuffer, IOException> byteBuffer( final File file )
-    // END SNIPPET:method
+    // END SNIPPET: method
     {
         return new Output<ByteBuffer, IOException>()
         {
@@ -177,7 +177,7 @@ public class Outputs
         };
     }
 
-    // START SNIPPET:method
+    // START SNIPPET: method
 
     /**
      * Write ByteBuffer data to an OutputStream.
@@ -188,7 +188,7 @@ public class Outputs
      * @return
      */
     public static <T> Output<ByteBuffer, IOException> byteBuffer( final OutputStream stream )
-    // END SNIPPET:method
+    // END SNIPPET: method
     {
         return new Output<ByteBuffer, IOException>()
         {
@@ -225,7 +225,7 @@ public class Outputs
         };
     }
 
-    // START SNIPPET:method
+    // START SNIPPET: method
 
     /**
      * Write byte array data to a file. If the writing or sending of data fails the file will be deleted.
@@ -237,7 +237,7 @@ public class Outputs
      * @return
      */
     public static <T> Output<byte[], IOException> bytes( final File file, final int bufferSize )
-    // END SNIPPET:method
+    // END SNIPPET: method
     {
         return new Output<byte[], IOException>()
         {
@@ -284,7 +284,7 @@ public class Outputs
         };
     }
 
-    // START SNIPPET:method
+    // START SNIPPET: method
 
     /**
      * Do nothing. Use this if you have all logic in filters and/or specifications
@@ -294,7 +294,7 @@ public class Outputs
      * @return
      */
     public static <T> Output<T, RuntimeException> noop()
-    // END SNIPPET:method
+    // END SNIPPET: method
     {
         return withReceiver( new Receiver<T, RuntimeException>()
         {
@@ -306,7 +306,7 @@ public class Outputs
         } );
     }
 
-    // START SNIPPET:method
+    // START SNIPPET: method
 
     /**
      * Use given receiver as Output. Use this if there is no need to create a "transaction" for each transfer, and no need
@@ -318,7 +318,7 @@ public class Outputs
      * @return
      */
     public static <T, ReceiverThrowableType extends Throwable> Output<T, ReceiverThrowableType> withReceiver( final Receiver<T, ReceiverThrowableType> receiver )
-    // END SNIPPET:method
+    // END SNIPPET: method
     {
         return new Output<T, ReceiverThrowableType>()
         {
@@ -331,7 +331,7 @@ public class Outputs
         };
     }
 
-    // START SNIPPET:method
+    // START SNIPPET: method
 
     /**
      * Write objects to System.out.println.
@@ -339,7 +339,7 @@ public class Outputs
      * @return
      */
     public static Output<Object, RuntimeException> systemOut()
-    // END SNIPPET:method
+    // END SNIPPET: method
     {
         return new Output<Object, RuntimeException>()
         {
@@ -358,12 +358,12 @@ public class Outputs
         };
     }
 
-    // START SNIPPET:method
+    // START SNIPPET: method
     /**
      * Add items to a collection
      */
     public static <T> Output<T, RuntimeException> collection( final Collection<T> collection )
-    // END SNIPPET:method
+    // END SNIPPET: method
     {
         return new Output<T, RuntimeException>()
         {

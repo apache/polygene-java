@@ -23,7 +23,7 @@ import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.ApplicationDescriptor;
 import org.qi4j.api.structure.LayerDescriptor;
 import org.qi4j.bootstrap.*;
-import org.qi4j.functional.HierarchicalVisitor;
+import org.qi4j.functional.HierarchicalVisitorAdapter;
 
 public class IssueTest
 {
@@ -52,7 +52,7 @@ public class IssueTest
             }
         } );
         ApplicationDescriptor model = app.descriptor();
-        model.accept( new HierarchicalVisitor<Object, Object, RuntimeException>()
+        model.accept( new HierarchicalVisitorAdapter<Object, Object, RuntimeException>()
         {
             @Override
             public boolean visitEnter( Object visited ) throws RuntimeException

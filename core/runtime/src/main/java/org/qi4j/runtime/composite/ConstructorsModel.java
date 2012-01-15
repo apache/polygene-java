@@ -177,7 +177,7 @@ public final class ConstructorsModel
         {
             try
             {
-                constructorModel.accept( new HierarchicalVisitor<Object, Object, BindingException>()
+                constructorModel.accept( new HierarchicalVisitorAdapter<Object, Object, BindingException>()
                 {
                     @Override
                     public boolean visit( Object visitor ) throws BindingException

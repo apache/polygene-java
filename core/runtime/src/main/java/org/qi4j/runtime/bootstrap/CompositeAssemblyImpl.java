@@ -186,7 +186,7 @@ public abstract class CompositeAssemblyImpl
     protected void addState( final Iterable<Class<? extends Constraint<?, ?>>> constraintClasses )
     {
         // Add method state
-        compositeMethodsModel.accept( new HierarchicalVisitor<Object, Object, RuntimeException>()
+        compositeMethodsModel.accept( new HierarchicalVisitorAdapter<Object, Object, RuntimeException>()
         {
             @Override
             public boolean visitEnter( Object visited ) throws RuntimeException
@@ -205,7 +205,7 @@ public abstract class CompositeAssemblyImpl
         });
 
         // Add field state
-        mixinsModel.accept( new HierarchicalVisitor<Object, Object, RuntimeException>()
+        mixinsModel.accept( new HierarchicalVisitorAdapter<Object, Object, RuntimeException>()
         {
             @Override
             public boolean visitEnter( Object visited ) throws RuntimeException

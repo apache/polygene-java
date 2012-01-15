@@ -43,7 +43,7 @@ public class Specifications
 
     public static <T> AndSpecification<T> and( final Specification<T>... specifications )
     {
-        return and( Iterables.iterable( specifications ));
+        return and( Iterables.iterable( specifications ) );
     }
 
     public static <T> AndSpecification<T> and( final Iterable<Specification<T>> specifications )
@@ -96,7 +96,9 @@ public class Specifications
         };
     }
 
-    public static <FROM,TO> Specification<FROM> translate( final Function<FROM,TO> function, final Specification<? super TO> specification)
+    public static <FROM, TO> Specification<FROM> translate( final Function<FROM, TO> function,
+                                                            final Specification<? super TO> specification
+    )
     {
         return new Specification<FROM>()
         {
@@ -108,7 +110,8 @@ public class Specifications
         };
     }
 
-    public static class AndSpecification<T> implements Specification<T>
+    public static class AndSpecification<T>
+        implements Specification<T>
     {
         private final Iterable<Specification<T>> specifications;
 
@@ -130,20 +133,21 @@ public class Specifications
             return true;
         }
 
-        public AndSpecification<T> and(Specification<T>... specifications)
+        public AndSpecification<T> and( Specification<T>... specifications )
         {
             Iterable<Specification<T>> iterable = Iterables.iterable( specifications );
             Iterable<Specification<T>> flatten = Iterables.flatten( this.specifications, iterable );
             return Specifications.and( flatten );
         }
 
-        public OrSpecification<T> or(Specification<T>... specifications)
+        public OrSpecification<T> or( Specification<T>... specifications )
         {
             return Specifications.or( Iterables.prepend( this, Iterables.iterable( specifications ) ) );
         }
     }
 
-    public static class OrSpecification<T> implements Specification<T>
+    public static class OrSpecification<T>
+        implements Specification<T>
     {
         private final Iterable<Specification<T>> specifications;
 
@@ -165,12 +169,12 @@ public class Specifications
             return false;
         }
 
-        public AndSpecification<T> and(Specification<T>... specifications)
+        public AndSpecification<T> and( Specification<T>... specifications )
         {
             return Specifications.and( Iterables.prepend( this, Iterables.iterable( specifications ) ) );
         }
 
-        public OrSpecification<T> or(Specification<T>... specifications)
+        public OrSpecification<T> or( Specification<T>... specifications )
         {
             Iterable<Specification<T>> iterable = Iterables.iterable( specifications );
             Iterable<Specification<T>> flatten = Iterables.flatten( this.specifications, iterable );

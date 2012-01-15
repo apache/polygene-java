@@ -52,7 +52,7 @@ Inputs.text( source ).transferTo( Transforms.map(counter, Outputs.text(destinati
 System.out.println( "Lines: " + counter.getCount() );
 -------------
 
-The Counter is a <<qi4j-core-function, Function>> which gets injected into the transfer.
+The Counter is a <<qi4j-core-functional, Function>> which gets injected into the transfer.
 
 == The 3 Parts ==
 Ok, so we have seen that the end result can become pretty compelling. How does it work?
@@ -90,7 +90,7 @@ The output interface is likewise fairly simple;
 [snippet,java]
 --------------
 source=core/io/src/main/java/org/qi4j/io/Output.java
-tag=input
+tag=output
 --------------
 
 It can simply receive data from a org.qi4j.io.Sender.
@@ -167,7 +167,7 @@ about that in <<qi4j-core-functional>>.
 [snippet,java]
 --------------
 source=core/functional/src/main/java/org/qi4j/functional/Specification.java
-tag=progress
+tag=specification
 --------------
 
 The only thing that the implementation need to do is return *true* or *false* for whether the item passed in is within
