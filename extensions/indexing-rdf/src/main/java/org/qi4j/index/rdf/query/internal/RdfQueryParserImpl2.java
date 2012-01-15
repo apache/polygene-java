@@ -17,12 +17,43 @@
  */
 package org.qi4j.index.rdf.query.internal;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.TimeZone;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.json.JSONObjectSerializer;
-import org.qi4j.api.query.grammar.*;
+import org.qi4j.api.query.grammar.AndSpecification;
+import org.qi4j.api.query.grammar.AssociationNotNullSpecification;
+import org.qi4j.api.query.grammar.AssociationNullSpecification;
+import org.qi4j.api.query.grammar.ComparisonSpecification;
+import org.qi4j.api.query.grammar.ContainsAllSpecification;
+import org.qi4j.api.query.grammar.ContainsSpecification;
+import org.qi4j.api.query.grammar.EqSpecification;
+import org.qi4j.api.query.grammar.GeSpecification;
+import org.qi4j.api.query.grammar.GtSpecification;
+import org.qi4j.api.query.grammar.LeSpecification;
+import org.qi4j.api.query.grammar.LtSpecification;
+import org.qi4j.api.query.grammar.ManyAssociationContainsSpecification;
+import org.qi4j.api.query.grammar.MatchesSpecification;
+import org.qi4j.api.query.grammar.NeSpecification;
+import org.qi4j.api.query.grammar.NotSpecification;
+import org.qi4j.api.query.grammar.OrSpecification;
+import org.qi4j.api.query.grammar.OrderBy;
+import org.qi4j.api.query.grammar.PropertyFunction;
+import org.qi4j.api.query.grammar.PropertyNotNullSpecification;
+import org.qi4j.api.query.grammar.PropertyNullSpecification;
+import org.qi4j.api.query.grammar.QuerySpecification;
+import org.qi4j.api.query.grammar.Variable;
 import org.qi4j.api.type.ValueType;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.api.value.ValueDescriptor;
@@ -31,10 +62,6 @@ import org.qi4j.functional.Specification;
 import org.qi4j.index.rdf.query.RdfQueryParser;
 import org.qi4j.spi.Qi4jSPI;
 import org.slf4j.LoggerFactory;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 import static java.lang.String.format;
 
@@ -83,7 +110,7 @@ public class RdfQueryParserImpl2
         ) );
     }
 
-    public RdfQueryParserImpl2(Qi4jSPI spi)
+    public RdfQueryParserImpl2( Qi4jSPI spi )
     {
         this.spi = spi;
     }
@@ -98,14 +125,14 @@ public class RdfQueryParserImpl2
     {
         this.variables = variables;
 
-        if (QuerySpecification.isQueryLanguage( "SPARQL", specification ))
+        if( QuerySpecification.isQueryLanguage( "SPARQL", specification ) )
         {
             // Custom query
-            StringBuilder queryBuilder = new StringBuilder( );
-            String query = ((QuerySpecification)specification).getQuery();
+            StringBuilder queryBuilder = new StringBuilder();
+            String query = ( (QuerySpecification) specification ).getQuery();
             queryBuilder.append( query );
 
-            if( orderBySegments != null)
+            if( orderBySegments != null )
             {
                 queryBuilder.append( "\nORDER BY " );
                 processOrderBy( orderBySegments, queryBuilder );
@@ -120,17 +147,18 @@ public class RdfQueryParserImpl2
             }
 
             return queryBuilder.toString();
-        } else
-
-
-        // Add type+identity triples last. This makes queries faster since the query engine can reduce the number of triples
-        // to check faster
-        triples.addDefaultTriples( resultType.getName() );
+        }
+        else
+        {
+            // Add type+identity triples last. This makes queries faster since the query engine can reduce the number of triples
+            // to check faster
+            triples.addDefaultTriples( resultType.getName() );
+        }
 
         // and collect namespaces
-        StringBuilder filter = new StringBuilder( );
+        StringBuilder filter = new StringBuilder();
         processFilter( specification, true, filter );
-        StringBuilder orderBy = new StringBuilder( );
+        StringBuilder orderBy = new StringBuilder();
         processOrderBy( orderBySegments, orderBy );
 
         StringBuilder query = new StringBuilder();
@@ -163,8 +191,10 @@ public class RdfQueryParserImpl2
             }
 
             // Add OPTIONAL statements last
-            if (optional.length() > 0)
+            if( optional.length() > 0 )
+            {
                 query.append( optional.toString() );
+            }
 
             if( filter.length() > 0 )
             {
@@ -185,14 +215,16 @@ public class RdfQueryParserImpl2
             query.append( "\nLIMIT " ).append( maxResults );
         }
 
-        LoggerFactory.getLogger( getClass()).debug( "Query:\n" + query );
+        LoggerFactory.getLogger( getClass() ).debug( "Query:\n" + query );
         return query.toString();
     }
 
     private void processFilter( final Specification<Composite> expression, boolean allowInline, StringBuilder builder )
     {
-        if (expression == null)
+        if( expression == null )
+        {
             return;
+        }
 
         if( expression instanceof AndSpecification )
         {
@@ -204,21 +236,26 @@ public class RdfQueryParserImpl2
             {
                 int size = builder.length();
                 processFilter( operand, allowInline, builder );
-                if (builder.length() > size)
+                if( builder.length() > size )
                 {
-                    if (first)
+                    if( first )
+                    {
                         first = false;
+                    }
                     else
+                    {
                         builder.insert( size, " && " );
+                    }
                 }
             }
 
-            if (builder.length() > start)
+            if( builder.length() > start )
             {
                 builder.insert( start, '(' );
                 builder.append( ')' );
             }
-        } else if ( expression instanceof OrSpecification )
+        }
+        else if( expression instanceof OrSpecification )
         {
             final OrSpecification disjunction = (OrSpecification) expression;
 
@@ -228,55 +265,71 @@ public class RdfQueryParserImpl2
             {
                 int size = builder.length();
                 processFilter( operand, false, builder );
-                if (builder.length() > size)
+                if( builder.length() > size )
                 {
-                    if (first)
+                    if( first )
+                    {
                         first = false;
+                    }
                     else
+                    {
                         builder.insert( size, "||" );
+                    }
                 }
             }
 
-            if (builder.length() > start)
+            if( builder.length() > start )
             {
                 builder.insert( start, '(' );
                 builder.append( ')' );
             }
-        } else if( expression instanceof NotSpecification )
+        }
+        else if( expression instanceof NotSpecification )
         {
             builder.insert( 0, "(!" );
-            processFilter( ((NotSpecification) expression).getOperand(), false, builder );
+            processFilter( ( (NotSpecification) expression ).getOperand(), false, builder );
             builder.append( ")" );
-        } else if (expression instanceof ComparisonSpecification )
+        }
+        else if( expression instanceof ComparisonSpecification )
         {
             processComparisonPredicate( expression, allowInline, builder );
-        } else if (expression instanceof ContainsAllSpecification)
+        }
+        else if( expression instanceof ContainsAllSpecification )
         {
             processContainsAllPredicate( (ContainsAllSpecification) expression, builder );
-        } else if( expression instanceof ContainsSpecification<?> )
+        }
+        else if( expression instanceof ContainsSpecification<?> )
         {
             processContainsPredicate( (ContainsSpecification<?>) expression, builder );
-        } else if( expression instanceof MatchesSpecification )
+        }
+        else if( expression instanceof MatchesSpecification )
         {
             processMatchesPredicate( (MatchesSpecification) expression, builder );
-        } else if (expression instanceof PropertyNotNullSpecification<?> )
+        }
+        else if( expression instanceof PropertyNotNullSpecification<?> )
         {
             processNotNullPredicate( (PropertyNotNullSpecification) expression, builder );
-        }else if (expression instanceof PropertyNullSpecification<?> )
+        }
+        else if( expression instanceof PropertyNullSpecification<?> )
         {
             processNullPredicate( (PropertyNullSpecification) expression, builder );
-        }else if (expression instanceof AssociationNotNullSpecification<?>)
+        }
+        else if( expression instanceof AssociationNotNullSpecification<?> )
         {
             processNotNullPredicate( (AssociationNotNullSpecification) expression, builder );
-        }else if (expression instanceof AssociationNullSpecification<?>)
+        }
+        else if( expression instanceof AssociationNullSpecification<?> )
         {
             processNullPredicate( (AssociationNullSpecification) expression, builder );
-        } else if( expression instanceof ManyAssociationContainsSpecification<?> )
+        }
+        else if( expression instanceof ManyAssociationContainsSpecification<?> )
         {
             processManyAssociationContainsPredicate( (ManyAssociationContainsSpecification) expression, allowInline, builder );
         }
         else
+        {
             throw new UnsupportedOperationException( "Expression " + expression + " is not supported" );
+        }
     }
 
     private static void join( String[] strings, String delimiter, StringBuilder builder )
@@ -298,16 +351,17 @@ public class RdfQueryParserImpl2
 
         ValueType valueType;
 
-        if (value instanceof ValueComposite)
+        if( value instanceof ValueComposite )
         {
             valueType = spi.getValueDescriptor( (ValueComposite) value ).valueType();
-        } else
+        }
+        else
         {
-            valueType = new ValueType(value.getClass());
+            valueType = new ValueType( value.getClass() );
         }
         serializer.serialize( value, valueType );
 
-        return escapeJSONString(serializer.getRoot().toString());
+        return escapeJSONString( serializer.getRoot().toString() );
 /* TODO Fix this by creating external JSON-er
         ValueType type = ValueTypeFactory.instance().newValueType(
             value.getClass(),
@@ -389,7 +443,7 @@ public class RdfQueryParserImpl2
         char[] chars = jsonStr.toCharArray();
         for( int i = 0; i < chars.length; i++ )
         {
-            char c = chars[i];
+            char c = chars[ i ];
 
 /*
             if ( reservedJsonChars.contains( c ))
@@ -406,7 +460,6 @@ public class RdfQueryParserImpl2
             {
                 builder.append( c );
             }
-
         }
 
         return builder.toString();
@@ -416,7 +469,8 @@ public class RdfQueryParserImpl2
     {
         Iterable<?> values = predicate.getValueCollection();
         String valueVariable = triples.addTriple( predicate.getCollectionProperty(), false ).getValue();
-        String[] strings = new String[( values instanceof Collection ? ((Collection<?>) values).size() : (int) Iterables.count( values ))];
+        String[] strings = new String[ ( values instanceof Collection ? ( (Collection<?>) values ).size() : (int) Iterables
+            .count( values ) ) ];
         Integer x = 0;
         for( Object item : (Collection<?>) values )
         {
@@ -427,26 +481,30 @@ public class RdfQueryParserImpl2
                 serializer.setIncludeType( false );
                 try
                 {
-                    if (item instanceof ValueComposite)
+                    if( item instanceof ValueComposite )
                     {
                         ValueDescriptor descriptor = spi.getValueDescriptor( (ValueComposite) item );
 
                         serializer.serialize( item, descriptor.valueType() );
-                    } else
+                    }
+                    else
                     {
                         ValueType valueType = new ValueType( item.getClass() );
-                        serializer.serialize( item,  valueType);
+                        serializer.serialize( item, valueType );
                     }
-                } catch( JSONException e )
+                }
+                catch( JSONException e )
                 {
-                    throw new UnsupportedOperationException(e);
+                    throw new UnsupportedOperationException( e );
                 }
                 Object value = serializer.getRoot();
 
-                if (value instanceof String)
+                if( value instanceof String )
+                {
                     value = JSONObject.quote( serializer.getRoot().toString() );
+                }
 
-                jsonStr = escapeJSONString(value.toString());
+                jsonStr = escapeJSONString( value.toString() );
             }
             strings[ x ] = this.createRegexStringForContaining( valueVariable, jsonStr );
             x++;
@@ -473,11 +531,11 @@ public class RdfQueryParserImpl2
         try
         {
             builder.append( this.createRegexStringForContaining(
-                    valueVariable,
-                    this.createAndEscapeJSONString(
-                            value,
-                            predicate.getCollectionProperty()
-                    )
+                valueVariable,
+                this.createAndEscapeJSONString(
+                    value,
+                    predicate.getCollectionProperty()
+                )
             ) );
         }
         catch( JSONException jsone )
@@ -486,13 +544,16 @@ public class RdfQueryParserImpl2
         }
     }
 
-    private void processMatchesPredicate( final MatchesSpecification predicate, StringBuilder builder)
+    private void processMatchesPredicate( final MatchesSpecification predicate, StringBuilder builder )
     {
         String valueVariable = triples.addTriple( predicate.getProperty(), false ).getValue();
         builder.append( format( "regex(%s,\"%s\")", valueVariable, predicate.getRegexp() ) );
     }
 
-    private void processComparisonPredicate( final Specification<Composite> predicate, boolean allowInline, StringBuilder builder )
+    private void processComparisonPredicate( final Specification<Composite> predicate,
+                                             boolean allowInline,
+                                             StringBuilder builder
+    )
     {
         if( predicate instanceof ComparisonSpecification )
         {
@@ -507,25 +568,27 @@ public class RdfQueryParserImpl2
             else
             {
                 String valueVariable = triple.getValue();
-                builder.append( String.format( "(%s %s \"%s\")", valueVariable, getOperator( comparisonSpecification.getClass() ), toString( comparisonSpecification.getValue() ) ) );
+                builder.append( String.format( "(%s %s \"%s\")", valueVariable, getOperator( comparisonSpecification.getClass() ), toString( comparisonSpecification
+                                                                                                                                                 .getValue() ) ) );
             }
         }
         else
         {
-            throw new UnsupportedOperationException( "Operator " + predicate.getClass().getName() + " is not supported" );
+            throw new UnsupportedOperationException( "Operator " + predicate.getClass()
+                .getName() + " is not supported" );
         }
     }
 
     private void processNullPredicate( final PropertyNullSpecification predicate, StringBuilder builder )
     {
         final String value = triples.addTriple( predicate.getProperty(), true ).getValue();
-        builder.append(format( "(! bound(%s))", value ));
+        builder.append( format( "(! bound(%s))", value ) );
     }
 
     private void processNotNullPredicate( final PropertyNotNullSpecification predicate, StringBuilder builder )
     {
         final String value = triples.addTriple( predicate.getProperty(), true ).getValue();
-        builder.append(format( "(bound(%s))", value ));
+        builder.append( format( "(bound(%s))", value ) );
     }
 
     private void processNullPredicate( final AssociationNullSpecification predicate, StringBuilder builder )
@@ -541,7 +604,7 @@ public class RdfQueryParserImpl2
     }
 
     private void processManyAssociationContainsPredicate( ManyAssociationContainsSpecification predicate,
-                                                            boolean allowInline, StringBuilder builder
+                                                          boolean allowInline, StringBuilder builder
     )
     {
         Triples.Triple triple = triples.addTripleManyAssociation( predicate.getManyAssociationFunction(), false );
@@ -563,19 +626,23 @@ public class RdfQueryParserImpl2
         {
             for( OrderBy orderBySegment : orderBySegments )
             {
-                if( orderBySegment != null )
-                {
-                    final String valueVariable = triples.addTriple( (PropertyFunction) orderBySegment.getPropertyFunction(), false )
-                        .getValue();
-                    if( orderBySegment.order() == OrderBy.Order.ASCENDING )
-                    {
-                        builder.append( format( "ASC(%s)", valueVariable ) );
-                    }
-                    else
-                    {
-                        builder.append( format( "DESC(%s)", valueVariable ) );
-                    }
-                }
+                processOrderBy( builder, orderBySegment );
+            }
+        }
+    }
+
+    private void processOrderBy( StringBuilder builder, OrderBy orderBySegment )
+    {
+        if( orderBySegment != null )
+        {
+            final String valueVariable = triples.addTriple( orderBySegment.getPropertyFunction(), false ).getValue();
+            if( orderBySegment.order() == OrderBy.Order.ASCENDING )
+            {
+                builder.append( format( "ASC(%s)", valueVariable ) );
+            }
+            else
+            {
+                builder.append( format( "DESC(%s)", valueVariable ) );
             }
         }
     }
@@ -583,8 +650,10 @@ public class RdfQueryParserImpl2
     private String getOperator( final Class<? extends ComparisonSpecification> predicateClass )
     {
         String operator = operators.get( predicateClass );
-        if (operator == null)
+        if( operator == null )
+        {
             throw new UnsupportedOperationException( "Predicate [" + predicateClass.getName() + "] is not supported" );
+        }
         return operator;
     }
 
@@ -605,10 +674,12 @@ public class RdfQueryParserImpl2
         }
         else if( value instanceof Variable )
         {
-            Object realValue = variables.get( ((Variable) value).getName() );
+            Object realValue = variables.get( ( (Variable) value ).getName() );
 
-            if (realValue == null)
-                throw new IllegalArgumentException( "Variable "+((Variable) value).getName()+" not bound" );
+            if( realValue == null )
+            {
+                throw new IllegalArgumentException( "Variable " + ( (Variable) value ).getName() + " not bound" );
+            }
 
             return toString( realValue );
         }

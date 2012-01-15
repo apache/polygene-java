@@ -80,7 +80,6 @@ include::../../../../libraries/vaadin/src/docs/index.txt[]
 = Extensions =
 
 :leveloffset: 1
-
 include::../../../../extensions/cache-ehcache/src/docs/index.txt[]
 include::../../../../extensions/entitystore-file/src/docs/index.txt[]
 include::../../../../extensions/entitystore-gae/src/docs/index.txt[]

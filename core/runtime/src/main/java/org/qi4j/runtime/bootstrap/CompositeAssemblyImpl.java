@@ -226,7 +226,6 @@ public abstract class CompositeAssemblyImpl
                             } );
                     return false;
                 }
-
                 return super.visitEnter( visited );
             }
         });

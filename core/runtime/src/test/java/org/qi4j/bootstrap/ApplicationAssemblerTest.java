@@ -69,9 +69,7 @@ public class ApplicationAssemblerTest
                 return true;
             }
         });
-
         model.newInstance( is.spi() );
-
     }
 
     interface TestService
