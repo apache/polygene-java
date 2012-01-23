@@ -24,9 +24,9 @@ import org.qi4j.api.constraint.ConstraintDeclaration;
 import org.qi4j.api.constraint.Constraints;
 
 /**
- * The definition of the format of Alarm system names.
+ * The definition of the format of AlarmPoint system names.
  * <p>
- * Alarm Names must contain characters. The default is 5 characters but can possibly be overridden. It must also
+ * AlarmPoint Names must contain characters. The default is 5 characters but can possibly be overridden. It must also
  * not only contain white spaces.
  *
  *
@@ -34,14 +34,14 @@ import org.qi4j.api.constraint.Constraints;
  * </p>
  * <pre><code>
  *
- * public interface ExpressiveAlarm extends Alarm
+ * public interface ExpressiveAlarm extends AlarmPoint
  * {
  *     &#64AlarmNameFormat(minimumLength=25)
  *     Property<String> systemName();
  * }
  * </code></pre>
  * <p>
- * The obvious downside is that the Property become publicly visible to the users of Alarm.
+ * The obvious downside is that the Property become publicly visible to the users of AlarmPoint.
  * </p>
  */
 @ConstraintDeclaration

@@ -44,7 +44,7 @@ public class AlarmServiceTest
         module.services( TestAlarmModel1.class ).setMetaInfo( new AlarmModelDescriptor("Simple", false) );
         module.services( TestAlarmModel2.class ).setMetaInfo( new AlarmModelDescriptor("Standard", true) );
         module.services( AlarmSystemService.class );
-        module.entities( AlarmEntity.class );
+        module.entities( AlarmPointEntity.class );
         module.values( AlarmStatus.class );
         module.values( AlarmCategory.class );
         module.values( AlarmEvent.class );
@@ -111,7 +111,7 @@ public class AlarmServiceTest
         throws Exception
     {
         AlarmSystem alarmService = (AlarmSystem) module.findService( AlarmSystem.class ).get();
-        Alarm alarm = alarmService.createAlarm( "TestAlarm", createCategory("AlarmServiceTest") );
+        AlarmPoint alarm = alarmService.createAlarm( "TestAlarm", createCategory("AlarmServiceTest") );
 
         CountingListener listener1 = new CountingListener();
         ExceptionThrowingListener listener2 = new ExceptionThrowingListener();

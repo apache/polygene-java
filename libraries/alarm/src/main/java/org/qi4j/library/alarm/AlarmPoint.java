@@ -31,9 +31,9 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
 
 /**
- * Defines the basic Alarm interface.
+ * Defines the basic AlarmPoint interface.
  * <p>
- * This is the basic interface for the whole Alarm System. The Alarm
+ * This is the basic interface for the whole AlarmPoint System. The AlarmPoint
  * is created by calling <code>createAlarm()</code> method in the
  * <code>AlarmSystem</code> or the <code>AlarmModel</code>.
  * </p>
@@ -42,8 +42,8 @@ import org.qi4j.api.property.Property;
  * <li>All alarms can be activated (on), deactivated (off) and acknowledged.</li>
  * <li>All alarms have an AlarmStatus.</li>
  * <li>All alarms generates AlarmEvents.</li>
- * <li>The behaviour of the Alarm is defined by an AlarmModel.</li>
- * <li>Every Alarm can have its own AlarmModel.</li>
+ * <li>The behaviour of the AlarmPoint is defined by an AlarmModel.</li>
+ * <li>Every AlarmPoint can have its own AlarmModel.</li>
  * <li>Any number of AlarmStates and AlarmEvents can be defined in an AlarmModel.</li>
  * </ul>
  * <p>
@@ -54,7 +54,7 @@ import org.qi4j.api.property.Property;
  * <p>
  * The basic usage looks like this;<code><pre>
  *     // Creation
- *     Alarm ala1 = alarmService.createAlarm( "My Alarm" );
+ *     AlarmPoint ala1 = alarmService.createAlarm( "My AlarmPoint" );
  *       :
  *       :
  *     // use
@@ -80,7 +80,7 @@ import org.qi4j.api.property.Property;
  * <code><pre>
  *     AlarmModel[] impl = alarmService.getAlarmModelsAvailable();
  *     // selection algorithm
- *     Alarm ala2 = impl[selected].createAlarm( "My Alarm" );
+ *     AlarmPoint ala2 = impl[selected].createAlarm( "My AlarmPoint" );
  * </pre></code>
  * </p>
  * <p>
@@ -88,20 +88,19 @@ import org.qi4j.api.property.Property;
  * <code>AlarmSystem.setDefaultAlarmModel()</code> and
  * ALL ALARMS that has the old AlarmModel assigned to it, will be
  * transferred to the new default AlarmModel. It is important to
- * understand that this is done irregardless of whether the Alarm was
+ * understand that this is done irregardless of whether the AlarmPoint was
  * created from the <code>AlarmSystem.createAlarm()</code> method or
  * the <code>AlarmModel.createAlarm()</code> method. If distinct different
  * behaviours are required for certain Alarms, and yet want to allow
  * users to freely select AlarmModel for all other Alarms, one need
  * to create two instances of the same AlarmModels, one used solely
- * for the pre-defined Alarm behaviours, and the others for the rest of
+ * for the pre-defined AlarmPoint behaviours, and the others for the rest of
  * the Alarms.
  * </p>
  *
  * @author Niclas Hedhman
  */
-@Mixins( Alarm.AlarmMixin.class )
-public interface Alarm
+public interface AlarmPoint
 {
 
     String STATUS_NORMAL = "Normal";
@@ -131,7 +130,7 @@ public interface Alarm
     /**
      * Trigger a state change.
      * <p>
-     * When the Alarm object receives a trigger, it must consult the
+     * When the AlarmPoint object receives a trigger, it must consult the
      * AlarmModel and figure out if there is an actual state change
      * occurring and if any AlarmEvents should be fired.
      * </p>
@@ -144,7 +143,7 @@ public interface Alarm
         throws IllegalArgumentException;
 
     /**
-     * Activates an Alarm.
+     * Activates an AlarmPoint.
      * <p>
      * Convinience method for:<pre>
      *       trigger( "activate" );
@@ -154,7 +153,7 @@ public interface Alarm
     void activate();
 
     /**
-     * Deactivates an Alarm.
+     * Deactivates an AlarmPoint.
      * Convinience method for:<pre>
      *     trigger( "deactivate" );
      * </pre>
@@ -162,7 +161,7 @@ public interface Alarm
     void deactivate();
 
     /**
-     * Acknowledges an Alarm.
+     * Acknowledges an AlarmPoint.
      * Convinience method for:<pre>
      *     trigger( source, "acknowledge" );
      * </pre>
@@ -170,23 +169,23 @@ public interface Alarm
     void acknowledge();
 
     /**
-     * Get Alarm condition.
-     * To reduce Alarm condition calculations for Implementors, each Alarm should
+     * Get AlarmPoint condition.
+     * To reduce AlarmPoint condition calculations for Implementors, each AlarmPoint should
      * be able to work with a "true/false" trigger. Only changes to this trigger
      * will cause an event.
      *
-     * @return The condition of the Alarm, which is used to simplify trigging of activate and deactivate.
+     * @return The condition of the AlarmPoint, which is used to simplify trigging of activate and deactivate.
      */
     boolean currentCondition();
 
     /**
-     * Set Alarm condition.
-     * To reduce Alarm condition calculations for Implementors, each Alarm should
+     * Set AlarmPoint condition.
+     * To reduce AlarmPoint condition calculations for Implementors, each AlarmPoint should
      * be able to work with a "true/false" trigger. Only changes to this trigger
      * will cause an event.
      * Causes an Activation or Deactivation if state of condition changes.
      *
-     * @param condition Sets the Alarm condition.
+     * @param condition Sets the AlarmPoint condition.
      */
     void updateCondition( boolean condition );
 
@@ -207,7 +206,7 @@ public interface Alarm
     /**
      * Return all attribute names
      *
-     * @return the names of the attributes of this Alarm.
+     * @return the names of the attributes of this AlarmPoint.
      */
     List<String> attributeNames();
 
@@ -216,7 +215,7 @@ public interface Alarm
      *
      * @param name The name of the attribute to return.
      *
-     * @return the named attribute of this Alarm.
+     * @return the named attribute of this AlarmPoint.
      */
     String attribute( String name );
 
@@ -229,38 +228,38 @@ public interface Alarm
     void setAttribute( String name, @Optional String value );
 
     /**
-     * Returns the Name of the Alarm.
-     * This normally returns the human readable technical name of the Alarm.
+     * Returns the Name of the AlarmPoint.
+     * This normally returns the human readable technical name of the AlarmPoint.
      *
-     * @return the name of the Alarm.
+     * @return the name of the AlarmPoint.
      */
     String name();
 
     /**
-     * Returns a Description of the Alarm.
-     * This normally returns a full Description of the Alarm in the
+     * Returns a Description of the AlarmPoint.
+     * This normally returns a full Description of the AlarmPoint in the
      * default Locale.
      *
-     * @return a human-readable description of the Alarm in the default locale.
+     * @return a human-readable description of the AlarmPoint in the default locale.
      */
     String descriptionInDefaultLocale();
 
     /**
-     * Returns a Description of the Alarm.
-     * This normally returns a full Description of the Alarm in the
+     * Returns a Description of the AlarmPoint.
+     * This normally returns a full Description of the AlarmPoint in the
      * Locale. If Locale is <code><b>null</b></code>, then the
      * default Locale is used.
      *
      * @param locale The locale to return the description in, or null to use default locale.
      *
-     * @return a human-readable description of the Alarm in the given locale.
+     * @return a human-readable description of the AlarmPoint in the given locale.
      */
     String description( Locale locale );
 
     /**
-     * The {@link AlarmClass} of the Alarm.
+     * The {@link AlarmClass} of the AlarmPoint.
      *
-     * The {@link AlarmClass} indicates the urgency of {@link AlarmEvent}s emitted from the Alarm. The property
+     * The {@link AlarmClass} indicates the urgency of {@link AlarmEvent}s emitted from the AlarmPoint. The property
      * has {@link UseDefaults} annotation so that the application developer can set the default during assembly.
      * The default {@link org.qi4j.bootstrap.Assembler} in this library defaults alarms to {@link AlarmClass} <b>B</b>.
      *
@@ -270,7 +269,7 @@ public interface Alarm
     Property<AlarmClass> alarmClass();
 
     /**
-     * The {@link AlarmCategory} of this Alarm.
+     * The {@link AlarmCategory} of this AlarmPoint.
      *
      * AlarmCategory is used to group Alarms together, which can be used to forward {@link AlarmEvent} to different
      * destinations, produce reports for different target audiences or separation of aggregation.
@@ -280,7 +279,7 @@ public interface Alarm
     Property<AlarmCategory> category();
 
     /**
-     * The AlarmState is an internal type, used inside the Alarm for all state that needs to be persisted on disk
+     * The AlarmState is an internal type, used inside the AlarmPoint for all state that needs to be persisted on disk
      * and/or transferred across networks.
      */
     interface AlarmState
@@ -297,8 +296,8 @@ public interface Alarm
         Property<AlarmStatus> currentStatus();
     }
 
-    abstract class AlarmMixin
-        implements Alarm
+    abstract class AlarmPointMixin
+        implements AlarmPoint
     {
         @Service
         private AlarmModel model;
@@ -307,7 +306,7 @@ public interface Alarm
         private AlarmSystem alarmSystem;
 
         @This
-        private Alarm me;
+        private AlarmPoint me;
 
         @This
         private AlarmState state;
@@ -363,7 +362,7 @@ public interface Alarm
 
         public String toString()
         {
-            return "Alarm[" + name() + " : " + state.currentStatus().get().name().get()
+            return "AlarmPoint[" + name() + " : " + state.currentStatus().get().name(null)
                    + "  : " + descriptionInDefaultLocale() + "]";
         }
 
@@ -385,17 +384,17 @@ public interface Alarm
 
         public void activate()
         {
-            trigger( Alarm.TRIGGER_ACTIVATE );
+            trigger( AlarmPoint.TRIGGER_ACTIVATE );
         }
 
         public void deactivate()
         {
-            trigger( Alarm.TRIGGER_DEACTIVATE );
+            trigger( AlarmPoint.TRIGGER_DEACTIVATE );
         }
 
         public void acknowledge()
         {
-            trigger( Alarm.TRIGGER_ACKNOWLEDGE );
+            trigger( AlarmPoint.TRIGGER_ACKNOWLEDGE );
         }
 
         public AlarmHistory history()
@@ -409,8 +408,8 @@ public interface Alarm
         }
 
         /**
-         * Returns the Name of the Alarm.
-         * This normally returns the human readable technical name of the Alarm.
+         * Returns the Name of the AlarmPoint.
+         * This normally returns the human readable technical name of the AlarmPoint.
          */
         public String name()
         {
@@ -418,8 +417,8 @@ public interface Alarm
         }
 
         /**
-         * Returns a Description of the Alarm.
-         * This normally returns a full Description of the Alarm in the
+         * Returns a Description of the AlarmPoint.
+         * This normally returns a full Description of the AlarmPoint in the
          * default Locale.
          */
         public String descriptionInDefaultLocale()
@@ -428,8 +427,8 @@ public interface Alarm
         }
 
         /**
-         * Returns a Description of the Alarm.
-         * This normally returns a full Description of the Alarm in the
+         * Returns a Description of the AlarmPoint.
+         * This normally returns a full Description of the AlarmPoint in the
          * Locale. If Locale is <code><b>null</b></code>, then the
          * default Locale is used.
          */

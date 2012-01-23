@@ -52,7 +52,7 @@ public class SimpleAlarmModelTest
         module.services( AlarmSystemService.class );
         module.services( MemoryEntityStoreService.class );
         module.services( UuidIdentityGeneratorService.class );
-        module.entities( AlarmEntity.class );
+        module.entities( AlarmPointEntity.class );
         module.values( AlarmEvent.class );
         module.values( AlarmCategory.class );
         module.values( AlarmStatus.class );
@@ -70,14 +70,14 @@ public class SimpleAlarmModelTest
         throws Exception
     {
         super.setUp();
-        module.unitOfWorkFactory().newUnitOfWork();
+        module.newUnitOfWork();
     }
 
     @Override
     public void tearDown()
         throws Exception
     {
-        UnitOfWork uow = module.unitOfWorkFactory().currentUnitOfWork();
+        UnitOfWork uow = module.currentUnitOfWork();
         if( uow != null )
         {
             uow.discard();
@@ -117,43 +117,43 @@ public class SimpleAlarmModelTest
         throws Exception
     {
         AlarmModel provider = (AlarmModel) module.findService( AlarmModel.class ).get();
-        Alarm underTest = createAlarm( "Test Alarm" );
+        AlarmPoint underTest = createAlarm( "Test AlarmPoint" );
         List<String> triggers = provider.alarmTriggers();
         assertEquals( 2, triggers.size() );
         int result = 0;
         for( String trigger : triggers )
         {
-            if( Alarm.TRIGGER_ACTIVATE.equals( trigger ) )
+            if( AlarmPoint.TRIGGER_ACTIVATE.equals( trigger ) )
             {
                 result |= 1;
             }
-            if( Alarm.TRIGGER_DEACTIVATE.equals( trigger ) )
+            if( AlarmPoint.TRIGGER_DEACTIVATE.equals( trigger ) )
             {
                 result |= 2;
             }
-            if( Alarm.TRIGGER_ACKNOWLEDGE.equals( trigger ) )
+            if( AlarmPoint.TRIGGER_ACKNOWLEDGE.equals( trigger ) )
             {
                 result |= 4;
             }
-            if( Alarm.TRIGGER_BLOCK.equals( trigger ) )
+            if( AlarmPoint.TRIGGER_BLOCK.equals( trigger ) )
             {
                 result |= 8;
             }
-            if( Alarm.TRIGGER_UNBLOCK.equals( trigger ) )
+            if( AlarmPoint.TRIGGER_UNBLOCK.equals( trigger ) )
             {
                 result |= 16;
             }
-            if( Alarm.TRIGGER_ENABLE.equals( trigger ) )
+            if( AlarmPoint.TRIGGER_ENABLE.equals( trigger ) )
             {
                 result |= 32;
             }
-            if( Alarm.TRIGGER_DISABLE.equals( trigger ) )
+            if( AlarmPoint.TRIGGER_DISABLE.equals( trigger ) )
             {
                 result |= 64;
             }
         }
         assertEquals( 3, result );
-        assertEquals( Alarm.STATUS_NORMAL, underTest.currentStatus().name().get() );
+        assertEquals( AlarmPoint.STATUS_NORMAL, underTest.currentStatus().name(null) );
     }
 
     @Test
@@ -161,18 +161,18 @@ public class SimpleAlarmModelTest
         throws Exception
     {
         AlarmModel provider = (AlarmModel) module.findService( AlarmModel.class ).get();
-        Alarm alarm = createAlarm( "Another 1" );
-        AlarmEvent event1 = provider.evaluate( alarm, Alarm.TRIGGER_ACTIVATE );
-        assertEquals( Alarm.EVENT_ACTIVATION, event1.systemName().get() );
+        AlarmPoint alarm = createAlarm( "Another 1" );
+        AlarmEvent event1 = provider.evaluate( alarm, AlarmPoint.TRIGGER_ACTIVATE );
+        assertEquals( AlarmPoint.EVENT_ACTIVATION, event1.systemName().get() );
 
         alarm = createAlarm( "Another 2" );
-        AlarmEvent event2 = provider.evaluate( alarm, Alarm.TRIGGER_DEACTIVATE );
+        AlarmEvent event2 = provider.evaluate( alarm, AlarmPoint.TRIGGER_DEACTIVATE );
         assertNull( event2 );
 
         try
         {
             alarm = createAlarm( "Another 3" );
-            AlarmEvent event3 = provider.evaluate( alarm, Alarm.TRIGGER_ACKNOWLEDGE );
+            AlarmEvent event3 = provider.evaluate( alarm, AlarmPoint.TRIGGER_ACKNOWLEDGE );
             assertNull( event3 );
             fail( "[Acknowledge] trigger should not be allowed on this model." );
         }
@@ -187,16 +187,16 @@ public class SimpleAlarmModelTest
         throws Exception
     {
         AlarmModel provider = (AlarmModel) module.findService( AlarmModel.class ).get();
-        Alarm alarm = createAlarm( "Another 1" );
+        AlarmPoint alarm = createAlarm( "Another 1" );
         alarm.activate();
 
-        AlarmEvent event1 = provider.evaluate( alarm, Alarm.TRIGGER_ACTIVATE );
+        AlarmEvent event1 = provider.evaluate( alarm, AlarmPoint.TRIGGER_ACTIVATE );
         assertNull( event1 );
 
         alarm = createAlarm( "Another 2" );
         alarm.activate();
-        AlarmEvent event2 = provider.evaluate( alarm, Alarm.TRIGGER_DEACTIVATE );
-        assertEquals( Alarm.EVENT_DEACTIVATION, event2.systemName().get() );
+        AlarmEvent event2 = provider.evaluate( alarm, AlarmPoint.TRIGGER_DEACTIVATE );
+        assertEquals( AlarmPoint.EVENT_DEACTIVATION, event2.systemName().get() );
     }
 
     @Test
@@ -206,7 +206,7 @@ public class SimpleAlarmModelTest
         try
         {
             AlarmModel provider = (AlarmModel) module.findService( AlarmModel.class ).get();
-            Alarm underTest = createAlarm( "Test Alarm" );
+            AlarmPoint underTest = createAlarm( "Test AlarmPoint" );
             provider.evaluate( underTest, "my-trigger" );
             fail( "IllegalArgumentException not thrown." );
         }
@@ -220,17 +220,17 @@ public class SimpleAlarmModelTest
     public void testNormalToActivated()
         throws Exception
     {
-        Alarm underTest = createAlarm( "Test Alarm" );
+        AlarmPoint underTest = createAlarm( "Test AlarmPoint" );
         underTest.activate();
         AlarmEvent event = underTest.history().lastEvent();
 
         AlarmStatus oldstate = event.oldStatus().get();
-        Assert.assertEquals( Alarm.STATUS_NORMAL, oldstate.name().get() );
+        Assert.assertEquals( AlarmPoint.STATUS_NORMAL, oldstate.name(null) );
 
         AlarmStatus newstate = event.newStatus().get();
-        Assert.assertEquals( Alarm.STATUS_ACTIVATED, newstate.name().get() );
+        Assert.assertEquals( AlarmPoint.STATUS_ACTIVATED, newstate.name(null) );
 
-        Alarm eventalarm = getAlarm( event.alarmIdentity().get() );
+        AlarmPoint eventalarm = getAlarm( event.alarmIdentity().get() );
         assertEquals( underTest, eventalarm );
     }
 
@@ -238,18 +238,18 @@ public class SimpleAlarmModelTest
     public void testActivatedToNormal()
         throws Exception
     {
-        Alarm underTest = createAlarm( "Test Alarm" );
+        AlarmPoint underTest = createAlarm( "Test AlarmPoint" );
         underTest.activate();
         underTest.deactivate();
         AlarmEvent event = underTest.history().lastEvent();
 
         AlarmStatus oldstate = event.oldStatus().get();
-        assertEquals( Alarm.STATUS_ACTIVATED, oldstate.name().get() );
+        assertEquals( AlarmPoint.STATUS_ACTIVATED, oldstate.name(null) );
 
         AlarmStatus newstate = event.newStatus().get();
-        Assert.assertEquals( Alarm.STATUS_NORMAL, newstate.name().get() );
+        Assert.assertEquals( AlarmPoint.STATUS_NORMAL, newstate.name(null) );
 
-        Alarm eventalarm = getAlarm( event.alarmIdentity().get() );
+        AlarmPoint eventalarm = getAlarm( event.alarmIdentity().get() );
         assertEquals( underTest, eventalarm );
     }
 
@@ -257,7 +257,7 @@ public class SimpleAlarmModelTest
     public void testConditionChanges1()
         throws Exception
     {
-        Alarm underTest = createAlarm( "Test Alarm" );
+        AlarmPoint underTest = createAlarm( "Test AlarmPoint" );
         underTest.updateCondition( false );
         AlarmEvent event = underTest.history().lastEvent();
         assertNull( "Generated an event but should have not.", event );
@@ -267,17 +267,17 @@ public class SimpleAlarmModelTest
     public void testConditionChanges2()
         throws Exception
     {
-        Alarm underTest = createAlarm( "Test Alarm" );
+        AlarmPoint underTest = createAlarm( "Test AlarmPoint" );
         underTest.updateCondition( true );
         AlarmEvent event = underTest.history().lastEvent();
 
         AlarmStatus oldstate = event.oldStatus().get();
-        assertEquals( Alarm.STATUS_NORMAL, oldstate.name().get() );
+        assertEquals( AlarmPoint.STATUS_NORMAL, oldstate.name(null) );
 
         AlarmStatus newstate = event.newStatus().get();
-        assertEquals( Alarm.STATUS_ACTIVATED, newstate.name().get() );
+        assertEquals( AlarmPoint.STATUS_ACTIVATED, newstate.name(null) );
 
-        Alarm eventalarm = getAlarm( event.alarmIdentity().get() );
+        AlarmPoint eventalarm = getAlarm( event.alarmIdentity().get() );
         assertEquals( underTest, eventalarm );
     }
 
@@ -285,18 +285,18 @@ public class SimpleAlarmModelTest
     public void testConditionChanges3()
         throws Exception
     {
-        Alarm underTest = createAlarm( "Test Alarm" );
+        AlarmPoint underTest = createAlarm( "Test AlarmPoint" );
         underTest.updateCondition( true );
         underTest.updateCondition( false );
         AlarmEvent event = underTest.history().lastEvent();
 
         AlarmStatus oldstate = event.oldStatus().get();
-        assertEquals( Alarm.STATUS_ACTIVATED, oldstate.name().get() );
+        assertEquals( AlarmPoint.STATUS_ACTIVATED, oldstate.name(null) );
 
         AlarmStatus newstate = event.newStatus().get();
-        assertEquals( Alarm.STATUS_NORMAL, newstate.name().get() );
+        assertEquals( AlarmPoint.STATUS_NORMAL, newstate.name(null) );
 
-        Alarm eventalarm = getAlarm( event.alarmIdentity().get() );
+        AlarmPoint eventalarm = getAlarm( event.alarmIdentity().get() );
         assertEquals( underTest, eventalarm );
     }
 
@@ -305,9 +305,9 @@ public class SimpleAlarmModelTest
         throws Exception
     {
         AlarmModel provider = (AlarmModel) module.findService( AlarmModel.class ).get();
-        AlarmStatus s1 = createStatus( Alarm.STATUS_NORMAL );
+        AlarmStatus s1 = createStatus( AlarmPoint.STATUS_NORMAL );
         assertFalse( provider.computeCondition( s1 ) );
-        AlarmStatus s2 = createStatus( Alarm.STATUS_ACTIVATED );
+        AlarmStatus s2 = createStatus( AlarmPoint.STATUS_ACTIVATED );
         assertTrue( provider.computeCondition( s2 ) );
     }
 
@@ -316,25 +316,25 @@ public class SimpleAlarmModelTest
         throws Exception
     {
         AlarmModel provider = (AlarmModel) module.findService( AlarmModel.class ).get();
-        AlarmStatus s1 = createStatus( Alarm.STATUS_NORMAL );
-        AlarmStatus s2 = createStatus( Alarm.STATUS_ACTIVATED );
+        AlarmStatus s1 = createStatus( AlarmPoint.STATUS_NORMAL );
+        AlarmStatus s2 = createStatus( AlarmPoint.STATUS_ACTIVATED );
         String trigger1 = provider.computeTrigger( s1, true );
         String trigger2 = provider.computeTrigger( s2, true );
         String trigger5 = provider.computeTrigger( s1, false );
         String trigger6 = provider.computeTrigger( s2, false );
-        assertEquals( Alarm.TRIGGER_ACTIVATE, trigger1 );
+        assertEquals( AlarmPoint.TRIGGER_ACTIVATE, trigger1 );
         assertEquals( null, trigger2 );
         assertEquals( null, trigger5 );
-        assertEquals( Alarm.TRIGGER_DEACTIVATE, trigger6 );
+        assertEquals( AlarmPoint.TRIGGER_DEACTIVATE, trigger6 );
     }
 
-    private Alarm createAlarm( String name )
+    private AlarmPoint createAlarm( String name )
     {
-        UnitOfWork uow = module.unitOfWorkFactory().currentUnitOfWork();
-        EntityBuilder<Alarm> builder = uow.newEntityBuilder( Alarm.class );
+        UnitOfWork uow = module.currentUnitOfWork();
+        EntityBuilder<AlarmPoint> builder = uow.newEntityBuilder( AlarmPoint.class );
         builder.instance().category().set( createCategory( "SimpleModelTest" ) );
-        Alarm.AlarmState state = builder.instanceFor( Alarm.AlarmState.class );
-        state.currentStatus().set( createStatus( Alarm.STATUS_NORMAL ) );
+        AlarmPoint.AlarmState state = builder.instanceFor( AlarmPoint.AlarmState.class );
+        state.currentStatus().set( createStatus( AlarmPoint.STATUS_NORMAL ) );
         state.description().set( "Test Description" );
         state.systemName().set( name );
         return builder.newInstance();
@@ -347,17 +347,18 @@ public class SimpleAlarmModelTest
         return builder.newInstance();
     }
 
-    private Alarm getAlarm( String identity )
+    private AlarmPoint getAlarm( String identity )
     {
-        UnitOfWork uow = module.unitOfWorkFactory().currentUnitOfWork();
-        return uow.get( Alarm.class, identity );
+        UnitOfWork uow = module.currentUnitOfWork();
+        return uow.get( AlarmPoint.class, identity );
     }
 
     private AlarmStatus createStatus( String status )
     {
         ValueBuilder<AlarmStatus> builder = module.newValueBuilder( AlarmStatus.class );
-        builder.prototype().name().set( status );
-        builder.prototype().creationDate().set( new Date() );
+        AlarmStatus.State statePrototype = builder.prototypeFor( AlarmStatus.State.class );
+        statePrototype.name().set( status );
+        statePrototype.creationDate().set( new Date() );
         return builder.newInstance();
     }
 }

@@ -29,7 +29,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
- * Event for indicating change of AlarmStatus of an Alarm.
+ * Event for indicating change of AlarmStatus of an AlarmPoint.
  *
  * @author Niclas Hedhman
  */
@@ -38,9 +38,9 @@ public interface AlarmEvent
     extends ValueComposite
 {
     /**
-     * Returns the identity of the Alarm that generated the event.
+     * Returns the identity of the AlarmPoint that generated the event.
      *
-     * @return the Alarm causing this event.
+     * @return the AlarmPoint causing this event.
      */
     Property<String> alarmIdentity();
 
@@ -54,7 +54,7 @@ public interface AlarmEvent
     /**
      * Returns the AlarmStatus after the Event.
      *
-     * @return the new AlarmStatus of the Alarm after this event.
+     * @return the new AlarmStatus of the AlarmPoint after this event.
      */
     Property<AlarmStatus> newStatus();
 
@@ -88,7 +88,7 @@ public interface AlarmEvent
     /**
      * Returns a Description of the event in the specified locale.
      * This normally returns a brief description of the event type, but could/should
-     * allow for Alarm specific descriptions for humans to be better informed.
+     * allow for AlarmPoint specific descriptions for humans to be better informed.
      *
      * @param locale the locale that the description should be returned in.
      *

@@ -26,9 +26,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * History of an Alarm.
- * Alarm system <i>should</i> implement <code>AlarmHistory</code> classes to
- * record the events of an <code>Alarm</code>.
+ * History of an AlarmPoint.
+ * AlarmPoint system <i>should</i> implement <code>AlarmHistory</code> classes to
+ * record the events of an <code>AlarmPoint</code>.
  *
  * @author Niclas Hedhman
  */
@@ -242,7 +242,7 @@ public interface AlarmHistory
 
         public int activateCounter()
         {
-            Integer counter = counters().get().get( Alarm.TRIGGER_ACTIVATE );
+            Integer counter = counters().get().get( AlarmPoint.TRIGGER_ACTIVATE );
             if( counter == null )
             {
                 return 0;
@@ -253,7 +253,7 @@ public interface AlarmHistory
         public void resetActivateCounter()
         {
             Map<String, Integer> counters = counters().get();
-            counters.remove( Alarm.TRIGGER_ACTIVATE );
+            counters.remove( AlarmPoint.TRIGGER_ACTIVATE );
             counters().set( counters );
         }
     }

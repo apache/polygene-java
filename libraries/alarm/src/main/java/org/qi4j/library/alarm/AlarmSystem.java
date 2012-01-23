@@ -41,18 +41,18 @@ import org.qi4j.api.value.ValueBuilderFactory;
  *
  * <p>
  * The <code>AlarmSystem</code> is a central registry/handler for all
- * <code>Alarm</code> objects. By registering <code>AlarmListener</code>s
+ * <code>AlarmPoint</code> objects. By registering <code>AlarmListener</code>s
  * to the AlarmSystem, objects are able to 'ignore' the fact that there
- * are many <code>Alarm</code> objects in the system.
+ * are many <code>AlarmPoint</code> objects in the system.
  * </p>
  * <p>
  * Also, new attributes registered with the AlarmSystem will propagate into
- * all existing and future <code>Alarm</code>s, whereas attributes at <code>
- * Alarm</code> level is individual to an <code>Alarm</code>.
+ * all existing and future <code>AlarmPoint</code>s, whereas attributes at <code>
+ * AlarmPoint</code> level is individual to an <code>AlarmPoint</code>.
  * </p>
  * <p>
  * Many different AlarmModels can co-exist in the same application.
- * In fact, every Alarm can have its own AlarmModel, and the AlarmModel
+ * In fact, every AlarmPoint can have its own AlarmModel, and the AlarmModel
  * can be changed in runtime, for unrivaled flexibility. However, typically
  * the AlarmModel is set in the AlarmSystem only, and all Alarms will
  * use the default model.
@@ -98,18 +98,18 @@ public interface AlarmSystem
      *
      * @return a list of all Alarms registered to the service.
      */
-    Query<Alarm> alarmList();
+    Query<AlarmPoint> alarmList();
 
     /**
-     * Creates an Alarm with the default AlarmModel.
+     * Creates an AlarmPoint with the default AlarmModel.
      *
-     * @param name the name of the Alarm to be created.
+     * @param name the name of the AlarmPoint to be created.
      *
-     * @param category The category the created Alarm should belong to.
+     * @param category The category the created AlarmPoint should belong to.
      *
-     * @return the created Alarm with the given name using the default AlarmModel.
+     * @return the created AlarmPoint with the given name using the default AlarmModel.
      */
-    Alarm createAlarm( String name, AlarmCategory category );
+    AlarmPoint createAlarm( String name, AlarmCategory category );
 
     /**
      * Register AlarmListener to recieve <code>AlarmEvents</code> from all
@@ -201,26 +201,27 @@ public interface AlarmSystem
         }
 
         /**
-         * Creates an Alarm with the default AlarmModel.
-         * @param name The system name of the Alarm.
-         * @param category The Alarm Category the created alarm should belong to.
+         * Creates an AlarmPoint with the default AlarmModel.
+         * @param name The system name of the AlarmPoint.
+         * @param category The AlarmPoint Category the created alarm should belong to.
          */
-        public Alarm createAlarm( String name, AlarmCategory category )
+        public AlarmPoint createAlarm( String name, AlarmCategory category )
         {
             UnitOfWork uow = uowf.currentUnitOfWork();
-            EntityBuilder<Alarm> builder = uow.newEntityBuilder( Alarm.class );
+            EntityBuilder<AlarmPoint> builder = uow.newEntityBuilder( AlarmPoint.class );
             builder.instance().category().set( category );
-            Alarm.AlarmState state = builder.instanceFor( Alarm.AlarmState.class );
+            AlarmPoint.AlarmState state = builder.instanceFor( AlarmPoint.AlarmState.class );
             state.systemName().set( name );
-            state.currentStatus().set( createStatus( Alarm.STATUS_NORMAL ) );
+            state.currentStatus().set( createStatus( AlarmPoint.STATUS_NORMAL ) );
             return builder.newInstance();
         }
 
         private AlarmStatus createStatus( String status )
         {
             ValueBuilder<AlarmStatus> builder = vbf.newValueBuilder( AlarmStatus.class );
-            builder.prototype().name().set( status );
-            builder.prototype().creationDate().set( new Date() );
+            AlarmStatus.State statePrototype = builder.prototypeFor( AlarmStatus.State.class );
+            statePrototype.name().set( status );
+            statePrototype.creationDate().set( new Date() );
             return builder.newInstance();
         }
 
@@ -244,10 +245,10 @@ public interface AlarmSystem
         /**
          * Returns a list of all Alarms registered to the service.
          */
-        public Query<Alarm> alarmList()
+        public Query<AlarmPoint> alarmList()
         {
             UnitOfWork uow = uowf.currentUnitOfWork();
-            QueryBuilder<Alarm> builder = qbf.newQueryBuilder( Alarm.class );
+            QueryBuilder<AlarmPoint> builder = qbf.newQueryBuilder( AlarmPoint.class );
             return uow.newQuery( builder );
         }
 

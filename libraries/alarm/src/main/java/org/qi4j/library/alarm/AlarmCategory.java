@@ -21,11 +21,10 @@ import org.qi4j.api.value.ValueComposite;
  * <p>
  * AlarmCategory is used to provide a categorization of Alarms for grouping purposes, which in turn can drive
  * {@link AlarmEvent} forwarding routed by category. Category can be extended to contain additional state, which
- * will be associated with the Alarm and related events.
+ * will be associated with the AlarmPoint and related events.
  * </p>
  */
-public interface AlarmCategory
-    extends ValueComposite
+public interface AlarmCategory extends ValueComposite
 {
     Property<String> name();
 }

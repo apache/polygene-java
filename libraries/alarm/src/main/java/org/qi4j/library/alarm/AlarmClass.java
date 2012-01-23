@@ -13,7 +13,7 @@
 
 package org.qi4j.library.alarm;
 
-/** AlarmClass is required attribute for Alarms, to indicate the urgency of the Alarm.
+/** AlarmClass is required attribute for Alarms, to indicate the urgency of the AlarmPoint.
  *
  */
 public enum AlarmClass

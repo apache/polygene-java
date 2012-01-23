@@ -18,19 +18,23 @@
 
 package org.qi4j.library.alarm;
 
+import java.util.Date;
+import java.util.Locale;
+import java.util.ResourceBundle;
+import org.qi4j.api.common.Optional;
+import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.mixin.Initializable;
+import org.qi4j.api.mixin.InitializationException;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueComposite;
 
-import java.util.Date;
-import java.util.Locale;
-
 /**
- * Status of an Alarm.
+ * Status of an AlarmPoint.
  *
  * @author Niclas Hedhman
  */
-@Mixins(AlarmStatus.AlarmStatusMixin.class)
+@Mixins( AlarmStatus.AlarmStatusMixin.class )
 public interface AlarmStatus extends ValueComposite
 {
 
@@ -43,37 +47,62 @@ public interface AlarmStatus extends ValueComposite
      *
      * @return the name of the AlarmStatus in the given locale.
      *
-     * @see #name()
+     * @see State#name()
      */
-    String name( Locale locale );
+    String name( @Optional Locale locale );
 
-    /**
-     * Returns the Date/Time of when this state was created.
-     *
-     * @return the timestamp of when the state was created.
-     */
-    Property<Date> creationDate();
+    interface State
+    {
 
-    /**
-     * Returns the Name of the AlarmStatus.
-     * This is the technical name of the AlarmStatus, such as Normal,
-     * Activated and so forth in non-locale specific form.
-     *
-     * @return the name of the AlarmStatus in the default locale.
-     *
-     * @see #name(Locale)
-     */
-    Property<String> name();
+        /**
+         * Returns the Date/Time of when this state was created.
+         *
+         * @return the timestamp of when the state was created.
+         */
+        @Optional
+        Property<Date> creationDate();
 
+        /**
+         * Returns the Name of the AlarmStatus.
+         * This is the technical name of the AlarmStatus, such as Normal,
+         * Activated and so forth in non-locale specific form.
+         *
+         * @return the name of the AlarmStatus in the default locale.
+         *
+         * @see #name(Locale)
+         */
+        Property<String> name();
+    }
 
     abstract class AlarmStatusMixin
-        implements AlarmStatus
+        implements AlarmStatus, Initializable
     {
+        @This
+        private State state;
+
         @Override
         public String name( Locale locale )
         {
-            // TODO:
-            return null;
+            if( locale == null )
+            {
+                return state.name().get();
+            }
+            ResourceBundle bundle = ResourceBundle.getBundle( "AlarmResources", locale );
+            if( bundle == null )
+            {
+                return state.name().get();
+            }
+            return bundle.getString( state.name().get() );
+        }
+
+        @Override
+        public void initialize()
+            throws InitializationException
+        {
+            if( state.creationDate().get() == null )
+            {
+                state.creationDate().set( new Date() );
+            }
         }
     }
 }

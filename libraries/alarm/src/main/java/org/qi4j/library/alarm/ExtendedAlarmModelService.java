@@ -89,9 +89,6 @@ public interface ExtendedAlarmModelService
     class ExtendedAlarmModelMixin
         implements AlarmModel
     {
-
-        private static String MODEL_BUNDLE_NAME = "org.qi4j.library.alarm.extended.AlarmResources";
-
         private final static List<String> TRIGGER_LIST;
 
         private static final List<String> STATUS_LIST;
@@ -102,23 +99,23 @@ public interface ExtendedAlarmModelService
         static
         {
             List<String> list1 = new ArrayList<String>();
-            list1.add( Alarm.STATUS_NORMAL );
-            list1.add( Alarm.STATUS_ACTIVATED );
-            list1.add( Alarm.STATUS_DEACTIVATED );
-            list1.add( Alarm.STATUS_ACKNOWLEDGED );
-            list1.add( Alarm.STATUS_REACTIVATED );
-            list1.add( Alarm.STATUS_BLOCKED );
-            list1.add( Alarm.STATUS_DISABLED );
+            list1.add( AlarmPoint.STATUS_NORMAL );
+            list1.add( AlarmPoint.STATUS_ACTIVATED );
+            list1.add( AlarmPoint.STATUS_DEACTIVATED );
+            list1.add( AlarmPoint.STATUS_ACKNOWLEDGED );
+            list1.add( AlarmPoint.STATUS_REACTIVATED );
+            list1.add( AlarmPoint.STATUS_BLOCKED );
+            list1.add( AlarmPoint.STATUS_DISABLED );
             STATUS_LIST = Collections.unmodifiableList( list1 );
 
             List<String> list2 = new ArrayList<String>();
-            list2.add( Alarm.TRIGGER_ACTIVATE );
-            list2.add( Alarm.TRIGGER_DEACTIVATE );
-            list2.add( Alarm.TRIGGER_ACKNOWLEDGE );
-            list2.add( Alarm.TRIGGER_BLOCK );
-            list2.add( Alarm.TRIGGER_UNBLOCK );
-            list2.add(Alarm.TRIGGER_DISABLE);
-            list2.add(Alarm.TRIGGER_ENABLE );
+            list2.add( AlarmPoint.TRIGGER_ACTIVATE );
+            list2.add( AlarmPoint.TRIGGER_DEACTIVATE );
+            list2.add( AlarmPoint.TRIGGER_ACKNOWLEDGE );
+            list2.add( AlarmPoint.TRIGGER_BLOCK );
+            list2.add( AlarmPoint.TRIGGER_UNBLOCK );
+            list2.add( AlarmPoint.TRIGGER_DISABLE);
+            list2.add( AlarmPoint.TRIGGER_ENABLE );
             TRIGGER_LIST = Collections.unmodifiableList( list2 );
         }
 
@@ -172,46 +169,46 @@ public interface ExtendedAlarmModelService
         public String modelDescription( Locale locale )
         {
             ResourceBundle rb = getResourceBundle( locale );
-            return rb.getString( "MODEL_DESCRIPTION" );
+            return rb.getString( "MODEL_DESCRIPTION_EXTENDED" );
         }
 
         /**
          * Execute the required changes upon an AlarmTrigger.
          * The AlarmSystem calls this method, for the AlarmStatus
-         * in the the Alarm to be updated, as well as an AlarmEvent
+         * in the the AlarmPoint to be updated, as well as an AlarmEvent
          * to be created.
          *
-         * @param alarm   the Alarm object to be updated.
+         * @param alarm   the AlarmPoint object to be updated.
          * @param trigger the AlarmTrigger that was used.
          */
         @Override
-        public AlarmEvent evaluate( Alarm alarm, String trigger )
+        public AlarmEvent evaluate( AlarmPoint alarm, String trigger )
         {
-            if( trigger.equals( Alarm.TRIGGER_ACTIVATE ) )
+            if( trigger.equals( AlarmPoint.TRIGGER_ACTIVATE ) )
             {
                 return activation( alarm );
             }
-            else if( trigger.equals( Alarm.TRIGGER_DEACTIVATE ) )
+            else if( trigger.equals( AlarmPoint.TRIGGER_DEACTIVATE ) )
             {
                 return deactivation( alarm );
             }
-            else if( trigger.equals( Alarm.TRIGGER_ACKNOWLEDGE ) )
+            else if( trigger.equals( AlarmPoint.TRIGGER_ACKNOWLEDGE ) )
             {
                 return acknowledge( alarm );
             }
-            else if( trigger.equals( Alarm.TRIGGER_BLOCK ) )
+            else if( trigger.equals( AlarmPoint.TRIGGER_BLOCK ) )
             {
                 return block( alarm );
             }
-            else if( trigger.equals( Alarm.TRIGGER_UNBLOCK ) )
+            else if( trigger.equals( AlarmPoint.TRIGGER_UNBLOCK ) )
             {
                 return unblock( alarm );
             }
-            else if( trigger.equals( Alarm.TRIGGER_ENABLE ) )
+            else if( trigger.equals( AlarmPoint.TRIGGER_ENABLE ) )
             {
                 return enable( alarm );
             }
-            else if( trigger.equals( Alarm.TRIGGER_DISABLE ) )
+            else if( trigger.equals( AlarmPoint.TRIGGER_DISABLE ) )
             {
                 return disable( alarm );
             }
@@ -222,9 +219,9 @@ public interface ExtendedAlarmModelService
         }
 
         /**
-         * Returns all the supported Alarm triggers.
+         * Returns all the supported AlarmPoint triggers.
          *
-         * @return The Alarm triggers that this AlarmModel supports.
+         * @return The AlarmPoint triggers that this AlarmModel supports.
          */
         public List<String> alarmTriggers()
         {
@@ -241,19 +238,19 @@ public interface ExtendedAlarmModelService
         {
             if( condition )
             {
-                if( ( status.name().get().equals( Alarm.STATUS_DEACTIVATED ) ) ||
-                    ( status.name().get().equals( Alarm.STATUS_NORMAL ) ) )
+                if( ( status.name(null).equals( AlarmPoint.STATUS_DEACTIVATED ) ) ||
+                    ( status.name(null).equals( AlarmPoint.STATUS_NORMAL ) ) )
                 {
-                    return Alarm.TRIGGER_ACTIVATE;
+                    return AlarmPoint.TRIGGER_ACTIVATE;
                 }
             }
             else
             {
-                if( ( status.name().get().equals( Alarm.STATUS_ACTIVATED ) ) ||
-                    ( status.name().get().equals( Alarm.STATUS_REACTIVATED ) ) ||
-                    ( status.name().get().equals( Alarm.STATUS_ACKNOWLEDGED ) ) )
+                if( ( status.name(null).equals( AlarmPoint.STATUS_ACTIVATED ) ) ||
+                    ( status.name(null).equals( AlarmPoint.STATUS_REACTIVATED ) ) ||
+                    ( status.name(null).equals( AlarmPoint.STATUS_ACKNOWLEDGED ) ) )
                 {
-                    return Alarm.TRIGGER_DEACTIVATE;
+                    return AlarmPoint.TRIGGER_DEACTIVATE;
                 }
             }
             return null;
@@ -261,9 +258,9 @@ public interface ExtendedAlarmModelService
 
         public boolean computeCondition( AlarmStatus status )
         {
-            return ( status.name().get().equals( Alarm.STATUS_ACTIVATED ) ) ||
-                   ( status.name().get().equals( Alarm.STATUS_REACTIVATED ) ) ||
-                   ( status.name().get().equals( Alarm.STATUS_ACKNOWLEDGED ) );
+            return ( status.name(null).equals( AlarmPoint.STATUS_ACTIVATED ) ) ||
+                   ( status.name(null).equals( AlarmPoint.STATUS_REACTIVATED ) ) ||
+                   ( status.name(null).equals( AlarmPoint.STATUS_ACKNOWLEDGED ) );
         }
 
         /**
@@ -273,14 +270,14 @@ public interface ExtendedAlarmModelService
          *
          * @return The event to be fired on activation.
          */
-        private AlarmEvent activation( Alarm alarm )
+        private AlarmEvent activation( AlarmPoint alarm )
         {
             AlarmStatus status = alarm.currentStatus();
-            if( ( status.name().get().equals( Alarm.STATUS_NORMAL ) ) ||
-                ( status.name().get().equals( Alarm.STATUS_DEACTIVATED ) ) )
+            if( ( status.name(null).equals( AlarmPoint.STATUS_NORMAL ) ) ||
+                ( status.name(null).equals( AlarmPoint.STATUS_DEACTIVATED ) ) )
             {
-                AlarmStatus newStatus = createStatus( Alarm.STATUS_ACTIVATED );
-                return createEvent( ( (Identity) alarm ), status, newStatus, Alarm.EVENT_ACTIVATION );
+                AlarmStatus newStatus = createStatus( AlarmPoint.STATUS_ACTIVATED );
+                return createEvent( ( (Identity) alarm ), status, newStatus, AlarmPoint.EVENT_ACTIVATION );
             }
             return null;
         }
@@ -292,18 +289,18 @@ public interface ExtendedAlarmModelService
          *
          * @return The event to be fired on deactivation.
          */
-        private AlarmEvent deactivation( Alarm alarm )
+        private AlarmEvent deactivation( AlarmPoint alarm )
         {
             AlarmStatus status = alarm.currentStatus();
-            if( status.name().get().equals( Alarm.STATUS_ACKNOWLEDGED ) )
+            if( status.name(null).equals( AlarmPoint.STATUS_ACKNOWLEDGED ) )
             {
-                AlarmStatus newStatus = createStatus( Alarm.STATUS_NORMAL );
-                return createEvent( ( (Identity) alarm ), status, newStatus, Alarm.EVENT_DEACTIVATION );
+                AlarmStatus newStatus = createStatus( AlarmPoint.STATUS_NORMAL );
+                return createEvent( ( (Identity) alarm ), status, newStatus, AlarmPoint.EVENT_DEACTIVATION );
             }
-            else if( status.name().get().equals( Alarm.STATUS_ACTIVATED ) )
+            else if( status.name(null).equals( AlarmPoint.STATUS_ACTIVATED ) )
             {
-                AlarmStatus newStatus = createStatus( Alarm.STATUS_DEACTIVATED );
-                return createEvent( ( (Identity) alarm ), status, newStatus, Alarm.EVENT_DEACTIVATION );
+                AlarmStatus newStatus = createStatus( AlarmPoint.STATUS_DEACTIVATED );
+                return createEvent( ( (Identity) alarm ), status, newStatus, AlarmPoint.EVENT_DEACTIVATION );
             }
             return null;
         }
@@ -315,18 +312,18 @@ public interface ExtendedAlarmModelService
          *
          * @return The event to be fired on acknowledge.
          */
-        private AlarmEvent acknowledge( Alarm alarm )
+        private AlarmEvent acknowledge( AlarmPoint alarm )
         {
             AlarmStatus status = alarm.currentStatus();
-            if( status.name().get().equals( Alarm.STATUS_DEACTIVATED ) )
+            if( status.name(null).equals( AlarmPoint.STATUS_DEACTIVATED ) )
             {
-                AlarmStatus newStatus = createStatus( Alarm.STATUS_NORMAL );
-                return createEvent( ( (Identity) alarm ), status, newStatus, Alarm.EVENT_ACKNOWLEDGEMENT );
+                AlarmStatus newStatus = createStatus( AlarmPoint.STATUS_NORMAL );
+                return createEvent( ( (Identity) alarm ), status, newStatus, AlarmPoint.EVENT_ACKNOWLEDGEMENT );
             }
-            else if( status.name().get().equals( Alarm.STATUS_ACTIVATED ) )
+            else if( status.name(null).equals( AlarmPoint.STATUS_ACTIVATED ) )
             {
-                AlarmStatus newStatus = createStatus( Alarm.STATUS_ACKNOWLEDGED );
-                return createEvent( ( (Identity) alarm ), status, newStatus, Alarm.EVENT_ACKNOWLEDGEMENT );
+                AlarmStatus newStatus = createStatus( AlarmPoint.STATUS_ACKNOWLEDGED );
+                return createEvent( ( (Identity) alarm ), status, newStatus, AlarmPoint.EVENT_ACKNOWLEDGEMENT );
             }
             return null;
         }
@@ -338,16 +335,16 @@ public interface ExtendedAlarmModelService
          *
          * @return The event to be fired on acknowledge.
          */
-        private AlarmEvent block( Alarm alarm )
+        private AlarmEvent block( AlarmPoint alarm )
         {
             AlarmStatus status = alarm.currentStatus();
-            if( status.name().get().equals( Alarm.STATUS_BLOCKED ) ||
-                status.name().get().equals( Alarm.STATUS_DISABLED ) )
+            if( status.name(null).equals( AlarmPoint.STATUS_BLOCKED ) ||
+                status.name(null).equals( AlarmPoint.STATUS_DISABLED ) )
             {
                 return null;
             }
-            AlarmStatus newStatus = createStatus( Alarm.STATUS_BLOCKED );
-            return createEvent( ( (Identity) alarm ), status, newStatus, Alarm.EVENT_BLOCKING );
+            AlarmStatus newStatus = createStatus( AlarmPoint.STATUS_BLOCKED );
+            return createEvent( ( (Identity) alarm ), status, newStatus, AlarmPoint.EVENT_BLOCKING );
         }
 
         /**
@@ -357,13 +354,13 @@ public interface ExtendedAlarmModelService
          *
          * @return The event to be fired on acknowledge.
          */
-        private AlarmEvent unblock( Alarm alarm )
+        private AlarmEvent unblock( AlarmPoint alarm )
         {
             AlarmStatus status = alarm.currentStatus();
-            if( status.name().get().equals( Alarm.STATUS_BLOCKED ) )
+            if( status.name(null).equals( AlarmPoint.STATUS_BLOCKED ) )
             {
-                AlarmStatus newStatus = createStatus( Alarm.STATUS_NORMAL );
-                return createEvent( ( (Identity) alarm ), status, newStatus, Alarm.EVENT_UNBLOCKING );
+                AlarmStatus newStatus = createStatus( AlarmPoint.STATUS_NORMAL );
+                return createEvent( ( (Identity) alarm ), status, newStatus, AlarmPoint.EVENT_UNBLOCKING );
             }
             return null;
         }
@@ -375,15 +372,15 @@ public interface ExtendedAlarmModelService
          *
          * @return The event to be fired on acknowledge.
          */
-        private AlarmEvent disable( Alarm alarm )
+        private AlarmEvent disable( AlarmPoint alarm )
         {
             AlarmStatus status = alarm.currentStatus();
-            if( status.name().get().equals( Alarm.STATUS_DISABLED ) )
+            if( status.name(null).equals( AlarmPoint.STATUS_DISABLED ) )
             {
                 return null;
             }
-            AlarmStatus newStatus = createStatus( Alarm.STATUS_DISABLED );
-            return createEvent( ( (Identity) alarm ), status, newStatus, Alarm.EVENT_DISABLING );
+            AlarmStatus newStatus = createStatus( AlarmPoint.STATUS_DISABLED );
+            return createEvent( ( (Identity) alarm ), status, newStatus, AlarmPoint.EVENT_DISABLING );
         }
 
         /**
@@ -393,13 +390,13 @@ public interface ExtendedAlarmModelService
          *
          * @return The event to be fired on acknowledge.
          */
-        private AlarmEvent enable( Alarm alarm )
+        private AlarmEvent enable( AlarmPoint alarm )
         {
             AlarmStatus status = alarm.currentStatus();
-            if( status.name().get().equals( Alarm.STATUS_DISABLED ) )
+            if( status.name(null).equals( AlarmPoint.STATUS_DISABLED ) )
             {
-                AlarmStatus newStatus = createStatus( Alarm.STATUS_NORMAL );
-                return createEvent( ( (Identity) alarm ), status, newStatus, Alarm.EVENT_ENABLING );
+                AlarmStatus newStatus = createStatus( AlarmPoint.STATUS_NORMAL );
+                return createEvent( ( (Identity) alarm ), status, newStatus, AlarmPoint.EVENT_ENABLING );
             }
             return null;
         }
@@ -407,7 +404,7 @@ public interface ExtendedAlarmModelService
         private AlarmStatus createStatus( String status )
         {
             ValueBuilder<AlarmStatus> builder = vbf.newValueBuilder( AlarmStatus.class );
-            AlarmStatus prototype = builder.prototype();
+            AlarmStatus.State prototype = builder.prototypeFor(AlarmStatus.State.class);
             prototype.name().set( status );
             prototype.creationDate().set( new Date() );
             return builder.newInstance();

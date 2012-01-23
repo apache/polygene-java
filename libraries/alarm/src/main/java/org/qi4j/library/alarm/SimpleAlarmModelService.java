@@ -35,7 +35,7 @@ public interface SimpleAlarmModelService extends AlarmModel, ServiceComposite
 {
     /**
      * <p>
-     * The Simple Alarm Model is centered around the Normal and Activated.
+     * The Simple AlarmPoint Model is centered around the Normal and Activated.
      * The triggers "activate" and "deactivate". The following matrix details the
      * resulting grid;
      * <p>
@@ -50,8 +50,6 @@ public interface SimpleAlarmModelService extends AlarmModel, ServiceComposite
     class SimpleAlarmModelMixin
         implements AlarmModel
     {
-        static String MODEL_BUNDLE_NAME = "org.qi4j.library.alarm.simple.AlarmResources";
-
         private static final List<String> ALARM_TRIGGERS;
         private static final List<String> ALARM_STATUSES;
 
@@ -59,13 +57,13 @@ public interface SimpleAlarmModelService extends AlarmModel, ServiceComposite
         {
             List<String> list1 = new ArrayList<String>();
 
-            list1.add( Alarm.TRIGGER_ACTIVATE );
-            list1.add( Alarm.TRIGGER_DEACTIVATE );
+            list1.add( AlarmPoint.TRIGGER_ACTIVATE );
+            list1.add( AlarmPoint.TRIGGER_DEACTIVATE );
             ALARM_TRIGGERS = Collections.unmodifiableList( list1 );
 
             List<String> list2 = new ArrayList<String>();
-            list2.add( Alarm.STATUS_NORMAL );
-            list2.add( Alarm.STATUS_ACTIVATED );
+            list2.add( AlarmPoint.STATUS_NORMAL );
+            list2.add( AlarmPoint.STATUS_ACTIVATED );
             ALARM_STATUSES = Collections.unmodifiableList( list2 );
         }
 
@@ -88,7 +86,7 @@ public interface SimpleAlarmModelService extends AlarmModel, ServiceComposite
          * This normally returns the human readable technical name of
          * the AlarmModel.
          *
-         * @return The system name of this Alarm Model.
+         * @return The system name of this AlarmPoint Model.
          */
         public String modelName()
         {
@@ -120,7 +118,7 @@ public interface SimpleAlarmModelService extends AlarmModel, ServiceComposite
         public String modelDescription( Locale locale )
         {
             ResourceBundle rb = getResourceBundle( locale );
-            return rb.getString( "MODEL_DESCRIPTION" );
+            return rb.getString( "MODEL_DESCRIPTION_SIMPLE" );
         }
 
         @Override
@@ -132,19 +130,19 @@ public interface SimpleAlarmModelService extends AlarmModel, ServiceComposite
         /**
          * Execute the required changes upon an AlarmTrigger.
          * The AlarmSystem calls this method, for the AlarmStatus
-         * in the the Alarm to be updated, as well as an AlarmEvent
+         * in the the AlarmPoint to be updated, as well as an AlarmEvent
          * to be created.
          *
          * @param trigger the AlarmTrigger that was used.
          */
         @Override
-        public AlarmEvent evaluate( Alarm alarm, String trigger )
+        public AlarmEvent evaluate( AlarmPoint alarm, String trigger )
         {
-            if( trigger.equals( Alarm.TRIGGER_ACTIVATE ) )
+            if( trigger.equals( AlarmPoint.TRIGGER_ACTIVATE ) )
             {
                 return activation( alarm );
             }
-            else if( trigger.equals( Alarm.TRIGGER_DEACTIVATE ) )
+            else if( trigger.equals( AlarmPoint.TRIGGER_DEACTIVATE ) )
             {
                 return deactivation( alarm );
             }
@@ -155,7 +153,7 @@ public interface SimpleAlarmModelService extends AlarmModel, ServiceComposite
         }
 
         /**
-         * Returns all the supported Alarm triggers.
+         * Returns all the supported AlarmPoint triggers.
          */
         public List<String> alarmTriggers()
         {
@@ -167,16 +165,16 @@ public interface SimpleAlarmModelService extends AlarmModel, ServiceComposite
         {
             if( condition )
             {
-                if( Alarm.STATUS_NORMAL.equals( status.name().get() ) )
+                if( AlarmPoint.STATUS_NORMAL.equals( status.name(null) ) )
                 {
-                    return Alarm.TRIGGER_ACTIVATE;
+                    return AlarmPoint.TRIGGER_ACTIVATE;
                 }
             }
             else
             {
-                if( Alarm.STATUS_ACTIVATED.equals( status.name().get() ) )
+                if( AlarmPoint.STATUS_ACTIVATED.equals( status.name(null) ) )
                 {
-                    return Alarm.TRIGGER_DEACTIVATE;
+                    return AlarmPoint.TRIGGER_DEACTIVATE;
                 }
             }
             return null;
@@ -185,23 +183,23 @@ public interface SimpleAlarmModelService extends AlarmModel, ServiceComposite
         @Override
         public boolean computeCondition( AlarmStatus status )
         {
-            return status.name().get().equals( Alarm.STATUS_ACTIVATED );
+            return status.name(null).equals( AlarmPoint.STATUS_ACTIVATED );
         }
 
         /**
          * StateMachine change for activate trigger.
          *
-         * @param alarm the Alarm that the activation is done on.
+         * @param alarm the AlarmPoint that the activation is done on.
          *
          * @return the resulting AlarmEvent of the activation, or null if no change.
          */
-        private AlarmEvent activation( Alarm alarm )
+        private AlarmEvent activation( AlarmPoint alarm )
         {
             AlarmStatus oldStatus = alarm.currentStatus();
-            if( oldStatus.name().get().equals( Alarm.STATUS_NORMAL ) )
+            if( oldStatus.name(null).equals( AlarmPoint.STATUS_NORMAL ) )
             {
-                AlarmStatus newStatus = createStatus( Alarm.STATUS_ACTIVATED );
-                return createEvent( (Identity) alarm, oldStatus, newStatus, Alarm.EVENT_ACTIVATION );
+                AlarmStatus newStatus = createStatus( AlarmPoint.STATUS_ACTIVATED );
+                return createEvent( (Identity) alarm, oldStatus, newStatus, AlarmPoint.EVENT_ACTIVATION );
             }
             return null;
         }
@@ -213,13 +211,13 @@ public interface SimpleAlarmModelService extends AlarmModel, ServiceComposite
          *
          * @return the resulting AlarmEvent of the activation.
          */
-        private AlarmEvent deactivation( Alarm alarm )
+        private AlarmEvent deactivation( AlarmPoint alarm )
         {
             AlarmStatus oldStatus = alarm.currentStatus();
-            if( oldStatus.name().get().equals( Alarm.STATUS_ACTIVATED ) )
+            if( oldStatus.name(null).equals( AlarmPoint.STATUS_ACTIVATED ) )
             {
-                AlarmStatus newStatus = createStatus( Alarm.STATUS_NORMAL );
-                return createEvent( (Identity) alarm, oldStatus, newStatus, Alarm.EVENT_DEACTIVATION );
+                AlarmStatus newStatus = createStatus( AlarmPoint.STATUS_NORMAL );
+                return createEvent( (Identity) alarm, oldStatus, newStatus, AlarmPoint.EVENT_DEACTIVATION );
             }
             return null;
         }
@@ -227,7 +225,7 @@ public interface SimpleAlarmModelService extends AlarmModel, ServiceComposite
         private AlarmStatus createStatus( String status )
         {
             ValueBuilder<AlarmStatus> builder = vbf.newValueBuilder( AlarmStatus.class );
-            AlarmStatus prototype = builder.prototype();
+            AlarmStatus.State prototype = builder.prototypeFor(AlarmStatus.State.class);
             prototype.name().set( status );
             prototype.creationDate().set( new Date() );
             return builder.newInstance();

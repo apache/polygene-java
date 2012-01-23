@@ -17,6 +17,8 @@
  */
 package org.qi4j.library.alarm;
 
+import java.util.List;
+import java.util.Locale;
 import org.junit.Test;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.mixin.Mixins;
@@ -30,13 +32,11 @@ import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
 
-import java.util.List;
-import java.util.Locale;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
-import static org.junit.Assert.*;
-
-public class AlarmImplTest
-    extends AbstractQi4jTest
+public class AlarmPointImplTest extends AbstractQi4jTest
     implements AlarmListener
 {
     private int fired;
@@ -48,7 +48,7 @@ public class AlarmImplTest
     {
         module.services( TestAlarmModel.class );
         module.services( AlarmSystemService.class );
-        module.entities( AlarmEntity.class );
+        module.entities( AlarmPointEntity.class );
         module.values( AlarmEvent.class );
         module.values( AlarmCategory.class );
         module.values( AlarmStatus.class );
@@ -73,7 +73,7 @@ public class AlarmImplTest
     public void tearDown()
         throws Exception
     {
-        if (module.isUnitOfWorkActive())
+        if( module.isUnitOfWorkActive() )
         {
             UnitOfWork uow = module.currentUnitOfWork();
             uow.discard();
@@ -88,7 +88,7 @@ public class AlarmImplTest
         try
         {
             createAlarm( null );
-            fail( "Alarm created with null name." );
+            fail( "AlarmPoint created with null name." );
         }
         catch( ConstraintViolationException e )
         {
@@ -97,7 +97,7 @@ public class AlarmImplTest
         try
         {
             createAlarm( "" );
-            fail( "Alarm created with empty string name." );
+            fail( "AlarmPoint created with empty string name." );
         }
         catch( ConstraintViolationException e )
         {
@@ -106,7 +106,7 @@ public class AlarmImplTest
         try
         {
             createAlarm( "\n \n" );
-            fail( "Alarm created with white space name." );
+            fail( "AlarmPoint created with white space name." );
         }
         catch( ConstraintViolationException e )
         {
@@ -118,29 +118,29 @@ public class AlarmImplTest
     public void testName()
         throws Exception
     {
-        Alarm underTest = createAlarm( "TestCase Alarm" );
-        assertEquals( "TestCase Alarm", underTest.name() );
+        AlarmPoint underTest = createAlarm( "TestCase AlarmPoint" );
+        assertEquals( "TestCase AlarmPoint", underTest.name() );
     }
 
     @Test
     public void testDescription()
         throws Exception
     {
-        Alarm underTest = createAlarm( "TestCase Alarm" );
-//        assertEquals( "This is a default Locale description of a testcase Alarm.", underTest.description() );
-
-        Locale english = Locale.UK;
-        assertEquals( "This is a UK Locale description of a testcase Alarm.", underTest.description( english ) );
+        AlarmPoint underTest = createAlarm( "TestCase AlarmPoint" );
+//        assertEquals( "This is a default Locale description of a testcase AlarmPoint.", underTest.description() );
 
         Locale swedish = new Locale( "sv" );
         assertEquals( "Detta \u00E5r en svensk beskrivning av ett testlarm.", underTest.description( swedish ) );
+
+        Locale english = Locale.UK;
+        assertEquals( "This is a UK Locale description of a testcase Alarm.", underTest.description( english ) );
     }
 
     @Test
     public void testState()
     {
-        Alarm underTest = createAlarm( "testState" );
-        assertEquals( Alarm.STATUS_NORMAL, underTest.currentStatus().name().get() );
+        AlarmPoint underTest = createAlarm( "testState" );
+        assertEquals( AlarmPoint.STATUS_NORMAL, underTest.currentStatus().name( null ) );
         boolean condition = underTest.currentCondition();
         assertEquals( false, condition );
     }
@@ -148,13 +148,13 @@ public class AlarmImplTest
     @Test
     public void testAttributes()
     {
-        Alarm underTest = createAlarm( "TestCase Alarm" );
+        AlarmPoint underTest = createAlarm( "TestCase AlarmPoint" );
 
         String alarmText = underTest.attribute( "text" );
         assertNull( alarmText );
 
-        underTest.setAttribute( "text", "TestCase Alarm" );
-        assertEquals( "TestCase Alarm", underTest.attribute( "text" ) );
+        underTest.setAttribute( "text", "TestCase AlarmPoint" );
+        assertEquals( "TestCase AlarmPoint", underTest.attribute( "text" ) );
 
         List<String> names = underTest.attributeNames();
         assertEquals( 1, names.size() );
@@ -170,7 +170,7 @@ public class AlarmImplTest
     {
         try
         {
-            Alarm underTest = createAlarm( "TestCase Alarm" );
+            AlarmPoint underTest = createAlarm( "TestCase AlarmPoint" );
             underTest.trigger( "my-special-trigger" );
             fail( "IllegalArgumentException was not thrown." );
         }
@@ -184,7 +184,7 @@ public class AlarmImplTest
     public void testNoEvent()
         throws Exception
     {
-        Alarm underTest = createAlarm( "TestCase Alarm" );
+        AlarmPoint underTest = createAlarm( "TestCase AlarmPoint" );
         alarmSystem.addAlarmListener( this );
         underTest.deactivate();
         assertEquals( 0, fired );
@@ -193,7 +193,7 @@ public class AlarmImplTest
     @Test
     public void testListener()
     {
-        Alarm underTest = createAlarm( "TestCase Alarm" );
+        AlarmPoint underTest = createAlarm( "TestCase AlarmPoint" );
         try
         {
             alarmSystem.removeAlarmListener( null );  // make sure it fails.
@@ -224,11 +224,11 @@ public class AlarmImplTest
         fired++;
     }
 
-    private Alarm createAlarm( String name )
+    private AlarmPoint createAlarm( String name )
     {
         ServiceReference<AlarmSystem> ref = module.findService( AlarmSystem.class );
         alarmSystem = ref.get();
-        return alarmSystem.createAlarm( name, createCategory( "AlarmImplTest" ) );
+        return alarmSystem.createAlarm( name, createCategory( "AlarmPointImplTest" ) );
     }
 
     private AlarmCategory createCategory( String name )
@@ -237,6 +237,4 @@ public class AlarmImplTest
         builder.prototype().name().set( name );
         return builder.newInstance();
     }
-
-
 }

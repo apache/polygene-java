@@ -48,13 +48,13 @@ public class AlarmHistoryImplTest
     {
         module.services( TestAlarmModel.class );
         module.services( AlarmSystemService.class );
-        module.entities( AlarmEntity.class );
+        module.entities( AlarmPointEntity.class );
         module.services( MemoryEntityStoreService.class );
         module.services( UuidIdentityGeneratorService.class );
         module.values( AlarmStatus.class );
         module.values( AlarmCategory.class );
         module.values( AlarmEvent.class );
-        module.entities( AlarmEntity.class );
+        module.entities( AlarmPointEntity.class );
         module.forMixin( AlarmHistory.class ).declareDefaults().maxSize().set( 30 );
     }
 
@@ -88,7 +88,7 @@ public class AlarmHistoryImplTest
     public void testEmpty()
         throws Exception
     {
-        Alarm underTest = createAlarm( "testEmpty" );
+        AlarmPoint underTest = createAlarm( "testEmpty" );
         AlarmHistory hist = underTest.history();
         AlarmEvent event1 = hist.firstEvent();
         AlarmEvent event2 = hist.lastEvent();
@@ -101,30 +101,30 @@ public class AlarmHistoryImplTest
     public void testFirstNotLast()
         throws Exception
     {
-        Alarm underTest = createAlarm( "testFirstNotLast" );
+        AlarmPoint underTest = createAlarm( "testFirstNotLast" );
         underTest.updateCondition( true );
         underTest.updateCondition( false );
         AlarmHistory hist = underTest.history();
         AlarmEvent event1 = hist.firstEvent();
         AlarmEvent event2 = hist.lastEvent();
         assertFalse( event1.equals( event2 ) );
-        Assert.assertEquals( Alarm.STATUS_ACTIVATED, event1.newStatus().get().name().get() );
-        Assert.assertEquals( Alarm.STATUS_NORMAL, event2.newStatus().get().name().get() );
+        Assert.assertEquals( AlarmPoint.STATUS_ACTIVATED, event1.newStatus().get().name(null) );
+        Assert.assertEquals( AlarmPoint.STATUS_NORMAL, event2.newStatus().get().name(null) );
     }
 
     @Test
     public void testGetPosition()
         throws Exception
     {
-        Alarm underTest = createAlarm( "testGetPosition" );
+        AlarmPoint underTest = createAlarm( "testGetPosition" );
         alarmSystem.addAlarmListener( this );
         AlarmHistory hist = underTest.history();
-        underTest.trigger( Alarm.TRIGGER_ACTIVATE );
-        underTest.trigger( Alarm.TRIGGER_DEACTIVATE );
-        underTest.trigger( Alarm.TRIGGER_ACTIVATE );
-        underTest.trigger( Alarm.TRIGGER_DEACTIVATE );
-        underTest.trigger( Alarm.TRIGGER_DEACTIVATE );
-        underTest.trigger( Alarm.TRIGGER_ACTIVATE );
+        underTest.trigger( AlarmPoint.TRIGGER_ACTIVATE );
+        underTest.trigger( AlarmPoint.TRIGGER_DEACTIVATE );
+        underTest.trigger( AlarmPoint.TRIGGER_ACTIVATE );
+        underTest.trigger( AlarmPoint.TRIGGER_DEACTIVATE );
+        underTest.trigger( AlarmPoint.TRIGGER_DEACTIVATE );
+        underTest.trigger( AlarmPoint.TRIGGER_ACTIVATE );
 
         assertEquals( 5, eventCounter );
         assertEquals( 5, hist.allAlarmEvents().get().size() );
@@ -149,15 +149,15 @@ public class AlarmHistoryImplTest
     public void testGetPositionFromLast()
         throws Exception
     {
-        Alarm underTest = createAlarm( "testGetPositionFromLast" );
+        AlarmPoint underTest = createAlarm( "testGetPositionFromLast" );
         alarmSystem.addAlarmListener( this );
         AlarmHistory hist = underTest.history();
-        underTest.trigger( Alarm.TRIGGER_ACTIVATE );
-        underTest.trigger( Alarm.TRIGGER_DEACTIVATE );
-        underTest.trigger( Alarm.TRIGGER_ACTIVATE );
-        underTest.trigger( Alarm.TRIGGER_DEACTIVATE );
-        underTest.trigger( Alarm.TRIGGER_DEACTIVATE );
-        underTest.trigger( Alarm.TRIGGER_ACTIVATE );
+        underTest.trigger( AlarmPoint.TRIGGER_ACTIVATE );
+        underTest.trigger( AlarmPoint.TRIGGER_DEACTIVATE );
+        underTest.trigger( AlarmPoint.TRIGGER_ACTIVATE );
+        underTest.trigger( AlarmPoint.TRIGGER_DEACTIVATE );
+        underTest.trigger( AlarmPoint.TRIGGER_DEACTIVATE );
+        underTest.trigger( AlarmPoint.TRIGGER_ACTIVATE );
 
         assertEquals( 5, eventCounter );
         assertEquals( 5, hist.allAlarmEvents().get().size() );
@@ -182,26 +182,26 @@ public class AlarmHistoryImplTest
     public void testCounters()
         throws Exception
     {
-        Alarm underTest = createAlarm( "testCounters" );
+        AlarmPoint underTest = createAlarm( "testCounters" );
         AlarmHistory hist = underTest.history();
         Map<String, Integer> counters = hist.counters().get();
 
-        underTest.trigger( Alarm.TRIGGER_ACTIVATE );
+        underTest.trigger( AlarmPoint.TRIGGER_ACTIVATE );
         verifyCounters( counters, 1, 0 );
 
-        underTest.trigger( Alarm.TRIGGER_DEACTIVATE );
+        underTest.trigger( AlarmPoint.TRIGGER_DEACTIVATE );
         verifyCounters( counters, 1, 1 );
 
-        underTest.trigger( Alarm.TRIGGER_ACTIVATE );
+        underTest.trigger( AlarmPoint.TRIGGER_ACTIVATE );
         verifyCounters( counters, 2, 1 );
 
-        underTest.trigger( Alarm.TRIGGER_DEACTIVATE );
+        underTest.trigger( AlarmPoint.TRIGGER_DEACTIVATE );
         verifyCounters( counters, 2, 2 );
 
-        underTest.trigger( Alarm.TRIGGER_DEACTIVATE );
+        underTest.trigger( AlarmPoint.TRIGGER_DEACTIVATE );
         verifyCounters( counters, 2, 2 );
 
-        underTest.trigger( Alarm.TRIGGER_ACTIVATE );
+        underTest.trigger( AlarmPoint.TRIGGER_ACTIVATE );
         verifyCounters( counters, 3, 2 );
 
         int activateCounters = hist.activateCounter();
@@ -216,8 +216,8 @@ public class AlarmHistoryImplTest
 
     private void verifyCounters( Map counters, int c1, int c2 )
     {
-        Number n1 = (Number) counters.get( Alarm.TRIGGER_ACTIVATE );
-        Number n2 = (Number) counters.get( Alarm.TRIGGER_DEACTIVATE );
+        Number n1 = (Number) counters.get( AlarmPoint.TRIGGER_ACTIVATE );
+        Number n2 = (Number) counters.get( AlarmPoint.TRIGGER_DEACTIVATE );
         if( n1 == null )
         {
             assertEquals( 0, c1 );
@@ -241,40 +241,40 @@ public class AlarmHistoryImplTest
     public void testSetMaxSize()
         throws Exception
     {
-        Alarm underTest = createAlarm( "testSetMaxSize" );
+        AlarmPoint underTest = createAlarm( "testSetMaxSize" );
         alarmSystem.addAlarmListener( this );
         AlarmHistory hist = underTest.history();
         assertEquals( 0, hist.allAlarmEvents().get().size() );
-        underTest.trigger( Alarm.TRIGGER_ACTIVATE );
+        underTest.trigger( AlarmPoint.TRIGGER_ACTIVATE );
         assertEquals( 1, hist.allAlarmEvents().get().size() );
-        underTest.trigger( Alarm.TRIGGER_DEACTIVATE );
+        underTest.trigger( AlarmPoint.TRIGGER_DEACTIVATE );
         assertEquals( 2, hist.allAlarmEvents().get().size() );
-        underTest.trigger( Alarm.TRIGGER_ACTIVATE );
+        underTest.trigger( AlarmPoint.TRIGGER_ACTIVATE );
         assertEquals( 3, hist.allAlarmEvents().get().size() );
-        underTest.trigger( Alarm.TRIGGER_DEACTIVATE );
+        underTest.trigger( AlarmPoint.TRIGGER_DEACTIVATE );
         assertEquals( 4, hist.allAlarmEvents().get().size() );
 
         int maxsize = hist.maxSize().get();
         assertEquals( 30, maxsize );
 
         hist.maxSize().set( 3 );    // The Qi4j version doesn't intercept the maxSize().set() method and purge the old
-        underTest.trigger( Alarm.TRIGGER_ACTIVATE ); // so we do another event to purge.
+        underTest.trigger( AlarmPoint.TRIGGER_ACTIVATE ); // so we do another event to purge.
         assertEquals( 3, hist.allAlarmEvents().get().size() );
 
         hist.maxSize().set( 0 );
-        underTest.trigger( Alarm.TRIGGER_DEACTIVATE ); // so we do another event to purge.
+        underTest.trigger( AlarmPoint.TRIGGER_DEACTIVATE ); // so we do another event to purge.
         assertEquals( 0, hist.allAlarmEvents().get().size() );
-        underTest.trigger( Alarm.TRIGGER_ACTIVATE );
+        underTest.trigger( AlarmPoint.TRIGGER_ACTIVATE );
         assertEquals( 0, hist.allAlarmEvents().get().size() );
-        underTest.trigger( Alarm.TRIGGER_DEACTIVATE );
+        underTest.trigger( AlarmPoint.TRIGGER_DEACTIVATE );
         assertEquals( 0, hist.allAlarmEvents().get().size() );
         hist.maxSize().set( 2 );
         assertEquals( 0, hist.allAlarmEvents().get().size() );
-        underTest.trigger( Alarm.TRIGGER_ACTIVATE );
+        underTest.trigger( AlarmPoint.TRIGGER_ACTIVATE );
         assertEquals( 1, hist.allAlarmEvents().get().size() );
-        underTest.trigger( Alarm.TRIGGER_DEACTIVATE );
+        underTest.trigger( AlarmPoint.TRIGGER_DEACTIVATE );
         assertEquals( 2, hist.allAlarmEvents().get().size() );
-        underTest.trigger( Alarm.TRIGGER_ACTIVATE );
+        underTest.trigger( AlarmPoint.TRIGGER_ACTIVATE );
         assertEquals( 2, hist.allAlarmEvents().get().size() );
         assertEquals( 11, eventCounter );
     }
@@ -284,7 +284,7 @@ public class AlarmHistoryImplTest
         eventCounter++;
     }
 
-    private Alarm createAlarm( String name )
+    private AlarmPoint createAlarm( String name )
     {
         ServiceReference<AlarmSystem> ref = module.findService( AlarmSystem.class );
         alarmSystem = ref.get();

@@ -26,7 +26,7 @@ import java.util.Locale;
 /**
  * Definition of the behaviour of the alarm model.
  * <p>
- * The AlarmModel is basically the state machine of the Alarm system,
+ * The AlarmModel is basically the state machine of the AlarmPoint system,
  * and it is possible to define different <code>AlarmModel</code>s
  * for each and every alarm. Alarms that are assigned the default
  * <code>AlarmModel</code> of the <code>AlarmSystem</code> can be
@@ -41,20 +41,21 @@ import java.util.Locale;
  */
 public interface AlarmModel
 {
+    String MODEL_BUNDLE_NAME = "org.qi4j.library.alarm.AlarmResources";
 
     /**
      * Execute the required changes upon an AlarmTrigger.
-     * The AlarmSystem calls this method. The AlarmModel must NOT update the Alarm itself, and only return the
+     * The AlarmSystem calls this method. The AlarmModel must NOT update the AlarmPoint itself, and only return the
      * resulting event, and the AlarmSystem will update the AlarmStatus accordingly.
      *
-     * @param alarm   The Alarm the trigger is for.
+     * @param alarm   The AlarmPoint the trigger is for.
      * @param trigger the AlarmTrigger that was used.
      *
      * @return An AlarmEvent representing the state change for the given trigger.
      *
      * @throws IllegalArgumentException If the trigger given is not supported by this alarm model.
      */
-    AlarmEvent evaluate( Alarm alarm, String trigger )
+    AlarmEvent evaluate( AlarmPoint alarm, String trigger )
         throws IllegalArgumentException;
 
     List<String> statusList();

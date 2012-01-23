@@ -29,12 +29,16 @@ public class AlarmSystemAssembler
         module.services( SimpleAlarmModelService.class ).setMetaInfo( new AlarmModelDescriptor( "Simple", false ) );
         module.services( StandardAlarmModelService.class ).setMetaInfo( new AlarmModelDescriptor( "Standard", true ) );
         module.services( ExtendedAlarmModelService.class ).setMetaInfo( new AlarmModelDescriptor( "Extended", false ) );
-        module.entities( AlarmEntity.class );
+        module.services( AlarmPointFactory.class );
+        module.entities( AlarmPointEntity.class );
 
         module.values( AlarmEvent.class );
         module.values( AlarmStatus.class );
+        module.values( AlarmCategory.class );
         module.values( SimpleAlarmCategory.class );
 
-        module.forMixin( Alarm.class ).declareDefaults().alarmClass().set( AlarmClass.B );
+        module.transients( AlarmProxy.class );
+        module.services( AlarmProxy.Factory.class );
+        module.forMixin( AlarmPoint.class ).declareDefaults().alarmClass().set( AlarmClass.B );
     }
 }
