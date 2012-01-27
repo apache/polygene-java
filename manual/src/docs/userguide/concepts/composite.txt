@@ -1,0 +1,6 @@
+[[Def Composite]]
+= Composite =
+A Composite is an instance of a Composite Type.
+
+However, we often speak of Composites when we actually mean Composite Type, similarly as we often speak of objects
+when we really are talking of classes in OOP.

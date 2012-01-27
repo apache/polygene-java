@@ -1,0 +1,6 @@
+[[Def Association]]
+= Association =
+An Association is a reference to an Entity.
+
+References to Entities must be maintained in Associations. It is illegal to define a Property that with an Entity as
+its type.

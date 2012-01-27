@@ -1,0 +1,16 @@
+[[ValueComposite]]
+= ValueComposite =
+Usage of value objects is one of the most ignored and best return-on-investment the programmer can do. Values are
+immutable and can be compared by value instead of memory reference. Concurrency is suddenly not an issue, since either
+the value exists or it doesn't, no need for synchronization. Values are typically very easy to test and very robust to
+refactoring.
+
+Qi4j defines values as a primary meta type through the ValueComposite, as we think the benefits of values are great.
+The ValueComposite is very light-weight compared to the EntityComposite, and its value can still be persisted as part
+of an EntityComposite via a Property.
+
+The characteristics of a ValueComposite compared to other Composite meta types are;
+
+    * It is Immutable.
+    * Its equals/hashCode works on the values of the ValueComposite.
+    * Can be used as Property types, but will not be indexed and searchable.

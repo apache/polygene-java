@@ -8,7 +8,3 @@
 
 :leveloffset: 1
 
-include::preface.txt[]
-include::core.txt[]
-include::extensions.txt[]
-include::libraries.txt[]

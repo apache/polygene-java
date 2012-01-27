@@ -1,4 +1,4 @@
-[[introducing]]
+[[Introduction]]
 = Introduction to Qi4j =
 
 [partintro]

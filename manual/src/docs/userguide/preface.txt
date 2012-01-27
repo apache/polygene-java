@@ -9,9 +9,9 @@ The main parts of the manual are:
 
 * <<introduction>> -- introducing Composite Oriented Programming concepts and Qi4j.
 * <<tutorials>> -- learn how to use Qi4j.
-* <<reference-documentation>> -- detailed information on Qi4j.
-* <<community>> -- getting help from, contributing to.
-* <<faq>> -- common questions.
+* <<Core>> -- detailed information on how to use Qi4j.
+* <<Libraries>> -- detailed information on the many libraries available for Qi4j.
+* <<Extensions>> -- detailed information each of the Qi4j extensions, such as entity stores, indexing and caching.
 
 The material is practical, technical, and focused on answering specific questions. 
 It addresses how things work, what to do and what to avoid to successfully use Qi4j in domain rich applications.
@@ -19,12 +19,10 @@ It addresses how things work, what to do and what to avoid to successfully use Q
 The goal is to be thumb-through and rule-of-thumb friendly.
 
 Each section should stand on its own, so you can hop right to whatever interests you.
-When possible, the sections distill "rules of thumb" which you can keep in mind whenever you wander out of the house without this manual in your back pocket.
+When possible, the sections distill "rules of thumb" which you can keep in mind whenever you wander out of the house
+without this manual in your back pocket.
 
 The included code examples are executed when Qi4j is built and tested.
-Also, the REST API request and response examples are captured from real interaction between a REST client and server.
-Thus, the examples are always in sync with Qi4j latest developments.
-
 
 _Who should read this?_
 

@@ -1,0 +1,11 @@
+[[Def Composite Meta Type]]
+== Composite Meta Type ==
+There are 5 Composite Meta Types defined in Qi4j, which each share the composition features but have distinct semantic
+differences.
+
+    * <<Def EntityComposite,EntityComposite>>
+    * <<Def ValueComposite,ValueComposite>>
+    * <<Def ServiceComposite,ServiceComposite>>
+    * <<Def ConfigurationComposite,ConfigurationComposite> (subtype of EntityComposite)
+    * <<Def TransientComposite,TransientComposite>>
+

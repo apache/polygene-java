@@ -1,0 +1,7 @@
+[[TransientComposite]]
+= TransientComposite =
+TransientComposite is a Composite meta type for all other cases. The main characteristics are;
+
+    * It can not be serialized nor persisted.
+    * hashcode/equals are not treated specially and will be delegated to fragment(s) implementing those methods.
+    * It can not be used as a Property type.

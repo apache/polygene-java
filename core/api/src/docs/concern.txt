@@ -1,0 +1,11 @@
+[[Concern]]
+= Concern =
+Concerns are the equivalent of "around advice" in Aspect Oriented Programming. They are chained into an invocation
+stack for each Mixin Type method and invoked after the Constraints have been executed. Since they are sitting "around"
+the Mixin implementation method, they also have a chance to modify the returned result, and even skip calling the
+underlying Mixin method implementation altogether.
+
+To create a concern, you need to create a class that,
+
+    * implements the Mixin Type (Typed Concerns) or java.lang.reflect.InvocationHandler (Generic Concerns),
+    * extend ConcernOf (Typed Concerns) or GenericConcern (Generic Concerns) [1]

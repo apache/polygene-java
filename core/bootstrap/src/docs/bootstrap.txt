@@ -1,6 +1,82 @@
-[[qi4j-core-bootstrap]]
+[[Assembly]]
 = Qi4j Core Bootstrap =
+Qi4j has a distinct bootstrap phase, also known as the _Assembly_ of an application, where the applications structure
+is defined programmatically. Once all the layers, modules and all the composite types in each module have been defined
+the model is instantiated into an application. This enables the entire _structure_ system in Qi4j, where types "belongs"
+to a module and visibility rules define default behaviors, enforcement of architectural integrity and much more.
 
+The _assembly_ is preceeded by the creation of the _Qi4j Runtime_. The _assembly_ can be declared fully by defining
+all modules and layers, and how the layers are sitting on top of each other, OR one can utilize one of the two
+convenience assemblies, one for a _pancake_ pattern, where all layers are top on each other, or one with a single module
+in a single layer, useful for small applications, spikes and tests.
+
+During _assembly_, the application (JVM level) architecture and the application model is defined. You define which
+layers exist and how they relate to each other. For each layer, you define which modules it contains. And for each
+module, you define which composites are in it, and what are the visibility rules for each of these composites.
+
+You can also;
+
+    * Define default values for properties.
+    * Add additional interfaces to composites dynamically.
+    * Add concerns, mixins, constraints and side effects dynamically.
+    * Set _meta information_ on composite types.
+    * Import external services to be available as Qi4j services.
+    * Tag services with markers
+    *
+
+== Defining Services ==
+
+== Defining Values ==
+
+== Defining Transients ==
+
+== Defining Entities ==
+
+== Using Assemblers ==
+Many libraries and extensions provides a cookie-cutter _Assembler_, to simplify the set up of such component. Often
+these are suitable, but sometimes they won't fit the application in hand, in which case the source code at least
+provides information of what is needed for the component to be used.
+
+Assemblers are typically just instantiated and then call the assemble() method with the ModuleAssembly instance,
+such as;
+
+[snippet,java]
+--------------
+source=../../../../libraries/rest-server/src/test/java/org/qi4j/library/rest/server/DocumentationSupport.java
+tag=UsingAssembler
+--------------
+
+== Defining an Entity Store ==
+Defining an _Entity Store_ is in principle as simple as defining a ServiceComposite implementing the EntityStore
+interface. The problem is that most Entity Stores require <<Configuration>>, and configuration requires an Entity Store.
+This chicken-and-egg problem is resolved by having an entity store available that does not require any
+<<Configuration>>. Many _Assemblers_ for entity store implementations uses the MemoryEntityStore, and effectively leaves
+the configuration in the properties file where <<Configuration>> bootstraps from. It is possible to chain this, so
+that for instance the Neo4J Entity Store uses the Preferences Entity Store for its configuration, and the Preferences
+Entity Store uses the Memory Entity Store (i.e. the properties file).
+
+The point is that the entity store used for the configuration of the primary entity store used in the application is
+that it must not be visible to the application itself. Sometimes it is easiest to put a Memory Entity Store in the
+same module, with Visibility set to _module_. Sometimes it makes sense to have an additional Configuration layer below
+the infrastructure layer, which has this setup.
+
+As mentioned above, most entity stores defines a reasonable default _Assembler_, possibly with some constructor
+arguments to define certain aspects. An example is the popular JdbmEntityStore, which _Assembler_ can be used like;
+
+[snippet,java]
+--------------
+source=../../../../extensions/entitystore-jdbm/src/test/java/org/qi4j/entitystore/jdbm/DocumentationSupport.java
+tag=UsingAssembler
+--------------
+
+
+
+
+== Singleton Assembler ==
+
+== Pancake Assembly ==
+
+== Application Assembler ==
 
 
 

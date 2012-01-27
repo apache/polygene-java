@@ -64,8 +64,11 @@ The _Simple Alarm Model_ is the most basic one, with only two _Alarm Status_, *_
 _Alarm Triggers_ are _activate_ and _deactivate_, where _activate_ on a _Normal_ status will bring it to _Activated_
 status and an _Activated Alarm Event_ is generated.
 
+[width="80%",options="header"]
+|=======
 | *Old Status* | *Trigger* | *Event* | *New Status* |
 | Normal       | activate  | Activated
+|=======
 
 === Standard Alarm Model ===
 

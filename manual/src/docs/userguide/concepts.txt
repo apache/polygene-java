@@ -1,0 +1,7 @@
+[[Concepts]]
+= Concepts =
+There are a lot of concepts in Qi4j which may have different meanings in other contexts. So in true DDD-style
+ubiquitous language, we are here listing the definitions of the terms and concepts that are being used.
+
+include:concepts/abstract-mixin.txt[]
+include:concepts/composite-metatype.txt[]

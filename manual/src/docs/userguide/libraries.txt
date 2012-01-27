@@ -1,6 +1,6 @@
 :leveloffset: 0
 
-[[libraries]]
+[[Libraries]]
 = Libraries =
 
 :leveloffset: 1

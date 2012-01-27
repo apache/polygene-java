@@ -1,0 +1,17 @@
+[[Structure]]
+= Structure =
+Qi4j promotes a conventional view of application structure, that computer science has been using for decades.
+
+The definition is as follows;
+
+    * One Application per Qi4j runtime instance.
+    * One or more Layers per Application.
+    * Zero, one or more Modules per Layer.
+    * Zero, one or more Assemblies per Module.
+
+The principle of this Structure is to assist the programmer to create well modularized applications, that are easily
+extended and maintained. Qi4j will restrict access between Modules, so that code can only reach Composites and Objects
+in Modules (including itself) of the same or lower Layers.
+
+Each Layer has to be declared which lower Layer(s) it uses, and it is not allowed that a lower Layer uses a higher
+Layer, i.e. cyclic references.

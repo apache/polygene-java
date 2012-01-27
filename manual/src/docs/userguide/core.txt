@@ -1,5 +1,5 @@
 :leveloffset: 0
-[[core]]
+[[Core]]
 = Core System =
 
 :leveloffset: 1

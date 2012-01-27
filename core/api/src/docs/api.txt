@@ -1,37 +1,22 @@
-[[qi4j-core-api]]
-= Qi4j Core API =
+[[Core API]]
+= Core API =
+The Qi4j Core API is the primary interface for client application code during the main exectution phase, i.e. after the
+application has been activated.
 
-The Qi4j Core API is main API that Qi4j developers interact with. In fact, if you need to use classes/interfaces
-in the Qi4j Core SPI or Qi4j Core Runtime, then please contact the Qi4j Community and explain your use-case.
-
-The Core API is strictly layered, with no _spaghetti_ cross packages. The package list is fairly long, and
-we will look at each one in detail further down.
-
-[width="80%",options="header"]
-|=======
-| Package       | Brief Description
-| association   | Associations between Entities.
-| cache         | Unit of Work caching options.
-| common        | Various low level annotations, enums and meta types.
-| composite     | Main package for Composites
-| concern       | Concern fragments.
-| configuration | Configuration system, integrated into entity system.
-| constraint    | Constraint fragments.
-| dataset       | Dataset and Query management.
-| entity        | Entity composites.
-| event         | System events.
-| injection     | Dependency Injection handling.
-| json          | JSON parsing and formatting.
-| mixin         | Mixin fragments.
-| object        | Java Object composition support.
-| property      | Property API
-| service       | Service composites
-| sideeffect    | SideEffect fragments.
-| structure     | Application structure types.
-| type          | Low level types, mostly internal requirements.
-| unitofwork    | Unit of work management.
-| usecase       | Use-case type and builder.
-| util          | Utility classes
-| value         | Value composites.
-|=======
-
+include:composition.txt[]
+include:structure.txt[]
+include:valuecomposite.txt[]
+include:servicecomposite.txt[]
+include:configuration.txt[]
+include:entitycomposite.txt[]
+include:unitofwork.txt[]
+include:transientcomposite.txt[]
+include:dependency-injection.txt[]
+include:property.txt[]
+include:association.txt[]
+include:mixin.txt[]
+include:concern.txt[]
+include:constraint.txt[]
+include:sideeffect.txt[]
+include:indexing.txt[]
+include:query.txt[]

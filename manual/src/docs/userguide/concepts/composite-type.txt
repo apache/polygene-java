@@ -1,0 +1,5 @@
+[[Def Composite Type]]
+= Composite Type =
+Composite Type is the Java interface that declares the composition, from which Composite instances can be created.
+
+Composite Type interfaces must be a sub-type of one of the Composite Meta Types otherwise it can not be instantiated.

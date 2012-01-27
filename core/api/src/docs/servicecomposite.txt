@@ -1,0 +1,67 @@
+[[ServiceComposite]]
+= Service Composite =
+Any service added, via the ModuleAssembly.addServices(), ModuleAssembly.services() and ModuleAssembly.importServices()
+methods, will have the ServiceComposite meta type added to it. In Qi4j, when we speak of _Services_ we mean instances
+of _ServiceComposite_.
+
+Most programmers are familiar with the term "Service", and after the failure of Object Oriented Programming's promise
+to encapsulate all the behavior together with the object's state, programmers learned that the only way to deal with
+decoupling and re-use was to make the objects into data containers and deploy services that acted upon those data
+containers. Very much what functions did on structs back in the C and Pascal days.
+
+Qi4j will bring a lot of the behavior back to the Composite itself, but we still need Services for cross-composite
+functionality. The Qi4j Service model is fairly simple, yet powerful and flexible enough to accommodate most
+service-oriented patterns and ability to integrate well with external systems whether they are in-JVM or remote,
+such as Spring, OSGi, WS-*, Rest and others.
+
+The characteristics of a ServiceComposite compared to other Composite meta types are;
+
+    * It is one singleton per declaration in bootstrap.
+    * It has an identity defined in bootstrap.
+    * It is Activatable, which is a kind of life cycle.
+    * It has an optional Configuration.
+
+
+_Services_ in Qi4j are _singletons_, one instance per definition. That means that there may exist multiple instances
+of the same service type, but they can not be created on the fly in runtime, but has to be explicitly defined during
+<<Assembly>>.
+
+== Service Configuration ==
+The configuration for a service is well supported in Qi4j. See the <<Configuration>> chapter for details.
+
+== Activation/Deactivation ==
+Services are instantiated and activated either on application start-up, or upon first use. This is controlled by calling
+instantiateOnStartup(), this way;
+
+[snippet,java]
+--------------
+source=../test/java/org/qi4j/api/service/DocumentationSupport.java
+tag=instantiateOnStartup
+--------------
+
+If the method is not called, the creation and activation will occur on first usage.
+
+If the service implements the org.qi4j.api.Activatable interface, the activate() method will be called after the
+constructor initialization, useful to have all the member injections already in place.
+
+When a <<Module>> is deactivated, typically because the whole application is shutting down, the deactivate() method in
+the service will be called. The deactivation occurs in the reverse order of the activation, to ensure that dependent
+services are still available for a deactivating service.
+
+== Identity and Tags ==
+Services has an Identity, which drives the <<Configuration>> system and can be used to lookup a particular service
+instance. Services can also be arbitrarily tagged, via the ServiceDescriptor. Example;
+
+[snippet,java]
+--------------
+source=../test/java/org/qi4j/api/service/DocumentationSupport.java
+tag=tag
+--------------
+
+Tags are useful inside the application code to locate a particular service instance, in case we have many. For instance;
+
+[snippet,java]
+--------------
+source=/Volumes/Qi4jDevelopment/qi4j-sdk/core/api/src/test/java/org/qi4j/api/service/DocumentationSupport.java
+tag=UseTag
+--------------

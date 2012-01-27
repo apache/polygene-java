@@ -1,6 +1,6 @@
 :leveloffset: 0
 
-[[extensions]]
+[[Extensions]]
 = Extensions =
 
 :leveloffset: 1
