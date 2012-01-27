@@ -1,0 +1,25 @@
+:leveloffset: 0
+
+[[extensions]]
+= Extensions =
+
+:leveloffset: 1
+
+include::../../../../extensions/cache-ehcache/src/docs/index.txt[]
+include::../../../../extensions/entitystore-file/src/docs/index.txt[]
+include::../../../../extensions/entitystore-gae/src/docs/index.txt[]
+include::../../../../extensions/entitystore-hazelcast/src/docs/index.txt[]
+include::../../../../extensions/entitystore-jdbm/src/docs/index.txt[]
+include::../../../../extensions/entitystore-mongdb/src/docs/index.txt[]
+include::../../../../extensions/entitystore-neo4j/src/docs/index.txt[]
+include::../../../../extensions/entitystore-preferences/src/docs/index.txt[]
+include::../../../../extensions/entitystore-qrm/src/docs/index.txt[]
+include::../../../../extensions/entitystore-sql/src/docs/index.txt[]
+include::../../../../extensions/entitystore-voldemort/src/docs/index.txt[]
+include::../../../../extensions/indexing-rdf/src/docs/index.txt[]
+include::../../../../extensions/indexing-solr/src/docs/index.txt[]
+include::../../../../extensions/indexing-sql/src/docs/index.txt[]
+include::../../../../extensions/migration/src/docs/index.txt[]
+include::../../../../extensions/reindexer/src/docs/index.txt[]
+
+

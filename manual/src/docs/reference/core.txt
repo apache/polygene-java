@@ -1,0 +1,14 @@
+:leveloffset: 0
+[[core]]
+= Core System =
+
+:leveloffset: 1
+
+include::../../../../core/api/src/docs/api.txt[]
+include::../../../../core/bootstrap/src/docs/bootstrap.txt[]
+include::../../../../core/spi/src/docs/spi.txt[]
+include::../../../../core/functional/src/docs/functional.txt[]
+include::../../../../core/io/src/docs/io.txt[]
+include::../../../../core/testsupport/src/docs/testsupport.txt[]
+include::../../../../core/io/src/docs/blog.txt[]
+
