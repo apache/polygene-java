@@ -75,6 +75,7 @@ public abstract class HazelcastEntityStoreMixin extends MapEntityStoreMixin
         throws Exception
     {
         stringMap = null;
+        hazelcastInstance.getLifecycleService().shutdown();
     }
 
     @Override

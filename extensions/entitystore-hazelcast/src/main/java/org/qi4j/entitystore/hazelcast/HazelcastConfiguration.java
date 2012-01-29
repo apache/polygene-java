@@ -25,8 +25,7 @@ import org.qi4j.api.property.Property;
 /**
  * @author Paul Merlin <paul@nosphere.org>
  */
-public interface HazelcastConfiguration
-    extends ConfigurationComposite
+public interface HazelcastConfiguration extends ConfigurationComposite
 {
     @UseDefaults
     Property<String> configXmlLocation();
