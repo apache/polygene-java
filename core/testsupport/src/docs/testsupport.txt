@@ -1,6 +1,47 @@
-[[qi4j-core-testsupport]]
+[[TestSupport]]
 = Qi4j Core Test Support =
+Qi4j comes with classes to help with testing. For general development, only a couple of classes are of interest as the
+others are mostly for EntityStore abnd Index/Query SPI implementations. There is also some mocking support, to allow
+some of Qi4j's unique aspects to be mocked, but since Qi4j is so flexible at a fine-granular level, we have found that
+mocking is seldom, if ever, needed.
 
+== Your First Testcase ==
+In most cases, you will probably use the AbstractQi4jTest class to simplify starting a Qi4j test instance.
 
+[snippet,java]
+--------------
+source=../../../../tutorials/hello/src/test/java/org/qi4j/tutorials/hello/HelloTest.java
+tag=step1
+--------------
 
+This will do all the initialization of a Qi4j runtime instance and create a single layer with a single module in it.
+What goes into that module is declared in the assembly() method;
+
+[snippet,java]
+--------------
+source=../../../../tutorials/hello/src/test/java/org/qi4j/tutorials/hello/HelloTest.java
+tag=step2
+--------------
+
+In this case we declare that we have a ValueComposite of type org.qi4j.tutorials.hello.Hello which looks like
+
+[snippet,java]
+--------------
+source=../../../../tutorials/hello/src/main/java/org/qi4j/tutorials/hello/Hello.java
+tag=body
+--------------
+
+The say() method will get the _phrase_ and _name_ from its internal state (the State interface is not magical, it could
+be named anything).
+
+And then we create the actual test;
+
+[snippet,java]
+--------------
+source=../../../../tutorials/hello/src/test/java/org/qi4j/tutorials/hello/HelloTest.java
+tag=step3
+--------------
+
+By using the prototypeFor() we can access the hidden, internal and very private state of the ValueComposite. Once the
+value is created we can reach this directly.
 

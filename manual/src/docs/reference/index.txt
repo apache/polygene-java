@@ -8,3 +8,7 @@
 
 :leveloffset: 1
 
+include:../../../core/api/src/docs/reference/api.txt[]
+include:../../../core/spi/src/docs/reference/spi.txt[]
+include:../../../core/bootstrap/src/docs/reference/bootstrap.txt[]
+include:../../../core/testsupport/src/docs/reference/testsupport.txt[]
