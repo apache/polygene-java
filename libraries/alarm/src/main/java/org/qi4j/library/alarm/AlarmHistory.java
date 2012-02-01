@@ -93,7 +93,7 @@ public interface AlarmHistory
     /**
      * Returns all the Counters of triggers.
      * Each time the <code>trigger()</code> method is called,
-     * a Counter is incremented. That means that after the first
+     * a MetricsCounter is incremented. That means that after the first
      * time the following the sequence is called
      * <pre>
      * <code>activate();
@@ -116,12 +116,12 @@ public interface AlarmHistory
     void resetAllCounters();
 
     /**
-     * Returns the Counter of activate triggers.
+     * Returns the MetricsCounter of activate triggers.
      * This method will return the number of times the
      * <code>activate()</code> method and the <code>trigger()</code>
      * method with an activate trigger is called.
      *
-     * @return the Counter of activate triggers.
+     * @return the MetricsCounter of activate triggers.
      */
     int activateCounter();
 

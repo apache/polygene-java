@@ -94,7 +94,7 @@ public class AlarmHistoryImplTest
         AlarmEvent event2 = hist.lastEvent();
         assertNull( event1 );
         assertNull( event2 );
-        assertEquals( "Activate Counter", 0, hist.activateCounter() );
+        assertEquals( "Activate MetricsCounter", 0, hist.activateCounter() );
     }
 
     @Test
