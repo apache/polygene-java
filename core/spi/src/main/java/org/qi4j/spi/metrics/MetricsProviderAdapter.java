@@ -16,7 +16,7 @@
 
 package org.qi4j.spi.metrics;
 
-public class NullMetricsProvider
+public class MetricsProviderAdapter
     implements MetricsProvider
 {
     private static final MetricsCounterFactory NULL_COUNTER_FACTORY = new NullMetricsFactory.NullCounterFactory();
@@ -26,33 +26,64 @@ public class NullMetricsProvider
     private static final MetricsTimerFactory NULL_TIMER_FACTORY = new NullMetricsFactory.NullTimerFactory();
     private static final MetricsHealthCheckFactory NULL_HEALTHCHECK_FACTORY = new NullMetricsFactory.NullHealthCheckFactory();
 
+    @SuppressWarnings( "unchecked" )
     @Override
     public <T extends MetricsFactory> T createFactory( Class<T> factoryType )
     {
         if( factoryType.equals( MetricsCounterFactory.class ) )
         {
-            return (T) NULL_COUNTER_FACTORY;
+            return (T) createMetricsCounterFactory();
         }
         else if( factoryType.equals( MetricsGaugeFactory.class ) )
         {
-            return (T) NULL_GAUGE_FACTORY;
+            return (T) createMetricsGaugeFactory();
         }
         else if( factoryType.equals( MetricsHealthCheckFactory.class ) )
         {
-            return (T) NULL_HEALTHCHECK_FACTORY;
+            return (T) createMetricsHealthCheckFactory();
         }
         else if( factoryType.equals( MetricsHistogramFactory.class ) )
         {
-            return (T) NULL_HISTOGRAM_FACTORY;
+            return (T) createMetricsHistogramFactory();
         }
         else if( factoryType.equals( MetricsMeterFactory.class ) )
         {
-            return (T) NULL_METER_FACTORY;
+            return (T) createMetricsMeterFactory();
         }
         else if( factoryType.equals( MetricsTimerFactory.class ) )
         {
-            return (T) NULL_TIMER_FACTORY;
+            return (T) createMetricsTimerFactory();
         }
         return null;
+    }
+
+    protected MetricsTimerFactory createMetricsTimerFactory()
+    {
+        return NULL_TIMER_FACTORY;
+    }
+
+    protected MetricsMeterFactory createMetricsMeterFactory()
+    {
+        return NULL_METER_FACTORY;
+    }
+
+    protected MetricsHistogramFactory createMetricsHistogramFactory()
+    {
+        return NULL_HISTOGRAM_FACTORY;
+    }
+
+    protected MetricsHealthCheckFactory createMetricsHealthCheckFactory()
+    {
+        return NULL_HEALTHCHECK_FACTORY;
+    }
+
+    protected MetricsGaugeFactory createMetricsGaugeFactory()
+    {
+        return NULL_GAUGE_FACTORY;
+    }
+
+    protected MetricsCounterFactory createMetricsCounterFactory()
+    {
+        return NULL_COUNTER_FACTORY;
     }
 }

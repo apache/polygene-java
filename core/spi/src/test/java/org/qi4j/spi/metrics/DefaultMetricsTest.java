@@ -26,7 +26,7 @@ public class DefaultMetricsTest
     @Test
     public void givenMetricsProviderWithoutSupportForCounterWhenRequestingCounterExpectDefaultNullImplementation()
     {
-        MetricsProvider underTest = new NullMetricsProvider();
+        MetricsProvider underTest = new MetricsProviderAdapter();
         MetricsCounterFactory factory = underTest.createFactory( MetricsCounterFactory.class );
         MetricsCounter test = factory.createCounter( getClass(), "test" );
         test.increment();
@@ -36,7 +36,7 @@ public class DefaultMetricsTest
     @Test
     public void givenMetricsProviderWithoutSupportForGaugeWhenRequestingGaugeExpectDefaultNullImplementation()
     {
-        MetricsProvider underTest = new NullMetricsProvider();
+        MetricsProvider underTest = new MetricsProviderAdapter();
         MetricsGaugeFactory factory = underTest.createFactory( MetricsGaugeFactory.class );
         MetricsGauge<Long> test = factory.registerGauge( getClass(), "test", new MetricsGauge<Long>()
         {
@@ -53,7 +53,7 @@ public class DefaultMetricsTest
     public void givenMetricsProviderWithoutSupportForHealthCheckWhenRequestingHealthCheckExpectDefaultNullImplementation()
         throws Exception
     {
-        MetricsProvider underTest = new NullMetricsProvider();
+        MetricsProvider underTest = new MetricsProviderAdapter();
         MetricsHealthCheckFactory factory = underTest.createFactory( MetricsHealthCheckFactory.class );
         MetricsHealthCheck test = factory.registerHealthCheck( getClass(), "test", new MetricsHealthCheck()
         {
@@ -70,7 +70,7 @@ public class DefaultMetricsTest
     @Test
     public void givenMetricsProviderWithoutSupportForHistogramWhenRequestingHistogramExpectDefaultNullImplementation()
     {
-        MetricsProvider underTest = new NullMetricsProvider();
+        MetricsProvider underTest = new MetricsProviderAdapter();
         MetricsHistogramFactory factory = underTest.createFactory( MetricsHistogramFactory.class );
         MetricsHistogram test = factory.createHistogram( getClass(), "test" );
         test.update( 5L );
@@ -81,7 +81,7 @@ public class DefaultMetricsTest
     @Test
     public void givenMetricsProviderWithoutSupportForMeterWhenRequestingMeterExpectDefaultNullImplementation()
     {
-        MetricsProvider underTest = new NullMetricsProvider();
+        MetricsProvider underTest = new MetricsProviderAdapter();
         MetricsMeterFactory factory = underTest.createFactory( MetricsMeterFactory.class );
         MetricsMeter test = factory.createMeter( getClass(), "test", "niclas", TimeUnit.MILLISECONDS );
         test.mark();
@@ -92,7 +92,7 @@ public class DefaultMetricsTest
     @Test
     public void givenMetricsProviderWithoutSupportForTimerWhenRequestingTimerExpectDefaultNullImplementation()
     {
-        MetricsProvider underTest = new NullMetricsProvider();
+        MetricsProvider underTest = new MetricsProviderAdapter();
         MetricsTimerFactory factory = underTest.createFactory( MetricsTimerFactory.class );
         MetricsTimer test = factory.createTimer( getClass(), "test", TimeUnit.MILLISECONDS, TimeUnit.DAYS );
         test.start().stop();
