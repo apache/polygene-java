@@ -40,17 +40,17 @@ import static org.qi4j.api.unitofwork.UnitOfWorkCallback.UnitOfWorkStatus.DISCAR
 
 public final class UnitOfWorkInstance
 {
-    private static final ThreadLocal<Stack<UnitOfWorkInstance>> current = new ThreadLocal<Stack<UnitOfWorkInstance>>();
+    private static final ThreadLocal<Stack<UnitOfWorkInstance>> current = new ThreadLocal<Stack<UnitOfWorkInstance>>(){
+        @Override
+        protected Stack<UnitOfWorkInstance> initialValue()
+        {
+            return new Stack<UnitOfWorkInstance>();
+        }
+    };
 
     public static Stack<UnitOfWorkInstance> getCurrent()
     {
         Stack<UnitOfWorkInstance> stack = current.get();
-        if( stack == null )
-        {
-            stack = new Stack<UnitOfWorkInstance>();
-            current.set( stack );
-        }
-
         return stack;
     }
 
