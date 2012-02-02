@@ -73,6 +73,8 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import org.qi4j.spi.metrics.MetricsProvider;
+import org.qi4j.spi.metrics.MetricsProviderAdapter;
 
 import static org.qi4j.functional.Iterables.*;
 
@@ -115,6 +117,7 @@ public class ModuleInstance
     private final Map<Class, ModelModule<TransientModel>> transientModels;
     private final Map<Class, Iterable<ModelModule<EntityModel>>> entityModels;
     private final Map<Class, ModelModule<ValueModel>> valueModels;
+    private MetricsProvider metrics;
 
     public ModuleInstance( ModuleModel moduleModel, LayerInstance layerInstance, TransientsModel transientsModel,
                            EntitiesModel entitiesModel, ObjectsModel objectsModel, ValuesModel valuesModel,
@@ -316,7 +319,7 @@ public class ModuleInstance
             };
 
             LinkedHashSet<ModelModule<EntityModel>> result = new LinkedHashSet<ModelModule<EntityModel>>(  );
-            Iterables.addAll( result, ambiguousCheck( type, findModels( exactTypeSpecification( type ), visibleEntities(Visibility.module), layerInstance().visibleEntities(Visibility.layer), layerInstance().visibleEntities(Visibility.application), layerInstance().usedLayersInstance().visibleEntities() ) ) );
+            Iterables.addAll( result, ambiguousCheck( type, findModels( exactTypeSpecification( type ), visibleEntities(Visibility.module), layerInstance().visibleEntities( Visibility.layer ), layerInstance().visibleEntities(Visibility.application), layerInstance().usedLayersInstance().visibleEntities() ) ) );
             Iterables.addAll( result, findModels( hasRole, visibleEntities( Visibility.module ), layerInstance().visibleEntities( Visibility.layer ), layerInstance().visibleEntities( Visibility.application ), layerInstance().usedLayersInstance().visibleEntities() ) );
 
             models = result;
@@ -333,8 +336,15 @@ public class ModuleInstance
 
         if( model == null )
         {
-            Iterable<ModelModule<TransientModel>> flatten = flatten( ambiguousCheck( type, findModels( exactTypeSpecification( type ), visibleTransients( Visibility.module ), layerInstance().visibleTransients( Visibility.layer ), layerInstance().visibleTransients( Visibility.application ), layerInstance().usedLayersInstance().visibleTransients() ) ),
-                    ambiguousCheck( type, findModels( assignableTypeSpecification( type ), visibleTransients( Visibility.module ), layerInstance().visibleTransients( Visibility.layer ), layerInstance().visibleTransients( Visibility.application ), layerInstance().usedLayersInstance().visibleTransients() ) ) );
+            Iterable<ModelModule<TransientModel>> flatten = flatten( ambiguousCheck( type, findModels( exactTypeSpecification( type ), visibleTransients( Visibility.module ), layerInstance()
+                .visibleTransients( Visibility.layer ), layerInstance().visibleTransients( Visibility.application ), layerInstance()
+                .usedLayersInstance()
+                .visibleTransients() ) ),
+                                                                     ambiguousCheck( type, findModels( assignableTypeSpecification( type ), visibleTransients( Visibility.module ), layerInstance()
+                                                                         .visibleTransients( Visibility.layer ), layerInstance()
+                                                                         .visibleTransients( Visibility.application ), layerInstance()
+                                                                         .usedLayersInstance()
+                                                                         .visibleTransients() ) ) );
             model = Iterables.first( flatten );
 
             if (model != null)
@@ -350,8 +360,15 @@ public class ModuleInstance
 
         if( model == null )
         {
-            Iterable<ModelModule<ObjectModel>> flatten = Iterables.flatten( ambiguousCheck( type, findModels( exactTypeSpecification( type ), visibleObjects( Visibility.module ), layerInstance().visibleObjects( Visibility.layer ), layerInstance().visibleObjects( Visibility.application ), layerInstance().usedLayersInstance().visibleObjects() ) ),
-                    ambiguousCheck( type, findModels( assignableTypeSpecification( type ), visibleObjects( Visibility.module ), layerInstance().visibleObjects( Visibility.layer ), layerInstance().visibleObjects( Visibility.application ), layerInstance().usedLayersInstance().visibleObjects() ) ) );
+            Iterable<ModelModule<ObjectModel>> flatten = Iterables.flatten( ambiguousCheck( type, findModels( exactTypeSpecification( type ), visibleObjects( Visibility.module ), layerInstance()
+                .visibleObjects( Visibility.layer ), layerInstance().visibleObjects( Visibility.application ), layerInstance()
+                .usedLayersInstance()
+                .visibleObjects() ) ),
+                                                                            ambiguousCheck( type, findModels( assignableTypeSpecification( type ), visibleObjects( Visibility.module ), layerInstance()
+                                                                                .visibleObjects( Visibility.layer ), layerInstance()
+                                                                                .visibleObjects( Visibility.application ), layerInstance()
+                                                                                .usedLayersInstance()
+                                                                                .visibleObjects() ) ) );
 
             model = Iterables.first( flatten );
 
@@ -372,13 +389,13 @@ public class ModuleInstance
                                             findModels( exactTypeSpecification( type ),
                                                     visibleValues( Visibility.module ),
                                                     layerInstance().visibleValues( Visibility.layer ),
-                                                    layerInstance().visibleValues(Visibility.application),
+                                                    layerInstance().visibleValues( Visibility.application ),
                                                     layerInstance().usedLayersInstance().visibleValues() )),
                                         ambiguousCheck( type,
                                             findModels( assignableTypeSpecification( type ),
                                                     visibleValues( Visibility.module ),
                                                     layerInstance().visibleValues( Visibility.layer ),
-                                                    layerInstance().visibleValues(Visibility.application),
+                                                    layerInstance().visibleValues( Visibility.application ),
                                                     layerInstance().usedLayersInstance().visibleValues() ) ) );
 
             model = Iterables.first( flatten );
@@ -399,7 +416,8 @@ public class ModuleInstance
 
     public Iterable<ModelModule<ObjectModel>> visibleObjects( Visibility visibility )
     {
-        return map( ModelModule.<ObjectModel>modelModuleFunction( this ), filter( new VisibilitySpecification( visibility ), objects.models() ) );
+        return map( ModelModule.<ObjectModel>modelModuleFunction( this ), filter( new VisibilitySpecification( visibility ), objects
+            .models() ) );
     }
 
     Iterable<ModelModule<TransientModel>> visibleTransients( Visibility visibility )
@@ -414,13 +432,14 @@ public class ModuleInstance
 
     Iterable<ModelModule<ValueModel>> visibleValues( Visibility visibility )
     {
-        return map( ModelModule.<ValueModel>modelModuleFunction( this ), filter( new VisibilitySpecification( visibility ), values.models() ) );
+        return map( ModelModule.<ValueModel>modelModuleFunction( this ), filter( new VisibilitySpecification( visibility ), values
+            .models() ) );
     }
 
     Iterable<ServiceReference> visibleServices(Visibility visibility)
     {
         return Iterables.flatten( services.visibleServices( visibility ),
-                importedServices.visibleServices( visibility ) );
+                                  importedServices.visibleServices( visibility ) );
     }
 
     public EntityStore entityStore()
@@ -455,6 +474,25 @@ public class ModuleInstance
             }
         }
         return generator;
+    }
+
+    public MetricsProvider metricsProvider()
+    {
+        synchronized( this )
+        {
+            if( metrics == null )
+            {
+                try
+                {
+                    ServiceReference<MetricsProvider> service = findService( MetricsProvider.class );
+                    metrics = service.get();
+                } catch( IllegalArgumentException e ) 
+                {
+                    metrics = new MetricsProviderAdapter();
+                }
+            }
+        }
+        return metrics;
     }
 
     // Implementation of TransientBuilderFactory
@@ -552,7 +590,8 @@ public class ModuleInstance
         Map<AccessibleObject, PropertyInstance<?>> properties = new LinkedHashMap<AccessibleObject, PropertyInstance<?>>();
         for( PropertyDescriptor propertyDescriptor : model.model().state().properties() )
         {
-            properties.put( propertyDescriptor.accessor(), new PropertyInstance<Object>( (PropertyInfo) propertyDescriptor, propertyDescriptor.initialValue( model.module() ) ) );
+            properties.put( propertyDescriptor.accessor(), new PropertyInstance<Object>( (PropertyInfo) propertyDescriptor, propertyDescriptor.initialValue( model
+                                                                                                                                                                 .module() ) ) );
         }
 
         Map<AccessibleObject, AssociationInstance<?>> associations = new LinkedHashMap<AccessibleObject, AssociationInstance<?>>();
@@ -587,7 +626,8 @@ public class ModuleInstance
         Map<AccessibleObject, PropertyInstance<?>> properties = new LinkedHashMap<AccessibleObject, PropertyInstance<?>>();
         for( PropertyDescriptor propertyDescriptor : model.model().state().properties() )
         {
-            properties.put( propertyDescriptor.accessor(), new PropertyInstance<Object>( ((PropertyModel) propertyDescriptor).getBuilderInfo(), propertyDescriptor.initialValue( model.module() ) ) );
+            properties.put( propertyDescriptor.accessor(), new PropertyInstance<Object>( ((PropertyModel) propertyDescriptor).getBuilderInfo(), propertyDescriptor.initialValue( model
+                                                                                                                                                                                     .module() ) ) );
         }
 
         Map<AccessibleObject, AssociationInstance<?>> associations = new LinkedHashMap<AccessibleObject, AssociationInstance<?>>();
@@ -676,7 +716,8 @@ public class ModuleInstance
         Map<AccessibleObject, ManyAssociationInstance<?>> manyAssociations = new LinkedHashMap<AccessibleObject, ManyAssociationInstance<?>>();
         for( AssociationDescriptor associationDescriptor : model.model().state().manyAssociations() )
         {
-            manyAssociations.put( associationDescriptor.accessor(), new ManyAssociationInstance<Object>( ((ManyAssociationModel) associationDescriptor).getBuilderInfo(), entityFunction, new ManyAssociationValueState(Iterables.toList( manyAssociationFunction.map( associationDescriptor ) )) ));
+            manyAssociations.put( associationDescriptor.accessor(), new ManyAssociationInstance<Object>( ((ManyAssociationModel) associationDescriptor).getBuilderInfo(), entityFunction, new ManyAssociationValueState(Iterables.toList( manyAssociationFunction
+                                                                                                                                                                                                                                              .map( associationDescriptor ) )) ));
         }
 
         ValueStateInstance state = new ValueStateInstance( properties, associations, manyAssociations );
@@ -725,7 +766,8 @@ public class ModuleInstance
     @Override
     public UnitOfWork newUnitOfWork( Usecase usecase, long currentTime )
     {
-        return new ModuleUnitOfWork( ModuleInstance.this, new UnitOfWorkInstance( usecase, currentTime ) );
+        UnitOfWorkInstance unitOfWorkInstance = new UnitOfWorkInstance( usecase, currentTime, metricsProvider() );
+        return new ModuleUnitOfWork( ModuleInstance.this, unitOfWorkInstance );
     }
 
     @Override

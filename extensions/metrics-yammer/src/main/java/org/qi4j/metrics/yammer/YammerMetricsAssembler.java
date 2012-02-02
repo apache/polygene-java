@@ -16,6 +16,7 @@
 
 package org.qi4j.metrics.yammer;
 
+import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -28,6 +29,8 @@ public class YammerMetricsAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices( MetricsProvider.class ).withMixins( YammerMetricsMixin.class );
+        module.services( MetricsProvider.class )
+            .withMixins( YammerMetricsMixin.class )
+            .visibleIn( Visibility.application );
     }
 }

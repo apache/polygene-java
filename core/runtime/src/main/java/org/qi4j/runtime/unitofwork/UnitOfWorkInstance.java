@@ -16,14 +16,24 @@
  */
 package org.qi4j.runtime.unitofwork;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Stack;
+import java.util.concurrent.TimeUnit;
 import org.qi4j.api.common.MetaInfo;
-import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.structure.Module;
-import org.qi4j.api.unitofwork.*;
+import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
+import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
+import org.qi4j.api.unitofwork.NoSuchEntityException;
+import org.qi4j.api.unitofwork.UnitOfWorkCallback;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
+import org.qi4j.api.unitofwork.UnitOfWorkException;
+import org.qi4j.api.unitofwork.UnitOfWorkOptions;
 import org.qi4j.api.usecase.Usecase;
-import org.qi4j.functional.Iterables;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.structure.ModelModule;
@@ -31,30 +41,40 @@ import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entitystore.*;
-
-import java.util.*;
+import org.qi4j.spi.entitystore.ConcurrentEntityStateModificationException;
+import org.qi4j.spi.entitystore.EntityNotFoundException;
+import org.qi4j.spi.entitystore.EntityStore;
+import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
+import org.qi4j.spi.entitystore.StateCommitter;
+import org.qi4j.spi.metrics.DefaultMetric;
+import org.qi4j.spi.metrics.MetricsCounter;
+import org.qi4j.spi.metrics.MetricsCounterFactory;
+import org.qi4j.spi.metrics.MetricsProvider;
+import org.qi4j.spi.metrics.MetricsTimer;
+import org.qi4j.spi.metrics.MetricsTimerFactory;
 
 import static org.qi4j.api.unitofwork.UnitOfWorkCallback.UnitOfWorkStatus.COMPLETED;
 import static org.qi4j.api.unitofwork.UnitOfWorkCallback.UnitOfWorkStatus.DISCARDED;
 
 public final class UnitOfWorkInstance
 {
-    private static final ThreadLocal<Stack<UnitOfWorkInstance>> current = new ThreadLocal<Stack<UnitOfWorkInstance>>(){
+    private static final ThreadLocal<Stack<UnitOfWorkInstance>> current = new ThreadLocal<Stack<UnitOfWorkInstance>>()
+    {
         @Override
         protected Stack<UnitOfWorkInstance> initialValue()
         {
             return new Stack<UnitOfWorkInstance>();
         }
     };
+    private MetricsTimer.Context metricsTimer;
 
     public static Stack<UnitOfWorkInstance> getCurrent()
     {
-        Stack<UnitOfWorkInstance> stack = current.get();
-        return stack;
+        return current.get();
     }
 
     private long currentTime;
+    private MetricsProvider metrics;
     final HashMap<EntityReference, EntityInstance> instanceCache;
     final HashMap<EntityStore, EntityStoreUnitOfWork> storeUnitOfWork;
 
@@ -71,7 +91,7 @@ public final class UnitOfWorkInstance
 
     private List<UnitOfWorkCallback> callbacks;
 
-    public UnitOfWorkInstance( Usecase usecase, long currentTime )
+    public UnitOfWorkInstance( Usecase usecase, long currentTime, MetricsProvider metrics )
     {
         this.currentTime = currentTime;
         this.open = true;
@@ -80,6 +100,7 @@ public final class UnitOfWorkInstance
         getCurrent().push( this );
         paused = false;
         this.usecase = usecase;
+        startCapture( metrics );
     }
 
     public long currentTime()
@@ -99,9 +120,9 @@ public final class UnitOfWorkInstance
     }
 
     public <T> T get( EntityReference identity,
-                               ModuleUnitOfWork uow,
-                               Iterable<ModelModule<EntityModel>> potentialModels,
-                               Class<T> mixinType
+                      ModuleUnitOfWork uow,
+                      Iterable<ModelModule<EntityModel>> potentialModels,
+                      Class<T> mixinType
     )
         throws EntityTypeNotFoundException, NoSuchEntityException
     {
@@ -162,7 +183,7 @@ public final class UnitOfWorkInstance
             }
         }
 
-        return entityInstance.<T>proxy();
+        return entityInstance.proxy();
     }
 
     public Usecase usecase()
@@ -187,25 +208,29 @@ public final class UnitOfWorkInstance
             paused = true;
             getCurrent().pop();
 
-            UnitOfWorkOptions unitOfWorkOptions = metaInfo().get(UnitOfWorkOptions.class);
-            if ( unitOfWorkOptions == null)
-                unitOfWorkOptions = usecase().metaInfo( UnitOfWorkOptions.class );
-
-            if (unitOfWorkOptions != null)
+            UnitOfWorkOptions unitOfWorkOptions = metaInfo().get( UnitOfWorkOptions.class );
+            if( unitOfWorkOptions == null )
             {
-                if (unitOfWorkOptions.isPruneOnPause())
+                unitOfWorkOptions = usecase().metaInfo( UnitOfWorkOptions.class );
+            }
+
+            if( unitOfWorkOptions != null )
+            {
+                if( unitOfWorkOptions.isPruneOnPause() )
                 {
                     List<EntityReference> prunedInstances = null;
                     for( EntityInstance entityInstance : instanceCache.values() )
                     {
-                        if (entityInstance.status() == EntityStatus.LOADED)
+                        if( entityInstance.status() == EntityStatus.LOADED )
                         {
-                            if (prunedInstances == null)
-                                prunedInstances = new ArrayList<EntityReference>(  );
-                            prunedInstances.add(entityInstance.identity());
+                            if( prunedInstances == null )
+                            {
+                                prunedInstances = new ArrayList<EntityReference>();
+                            }
+                            prunedInstances.add( entityInstance.identity() );
                         }
                     }
-                    if (prunedInstances != null)
+                    if( prunedInstances != null )
                     {
                         for( EntityReference prunedInstance : prunedInstances )
                         {
@@ -214,7 +239,6 @@ public final class UnitOfWorkInstance
                     }
                 }
             }
-
         }
         else
         {
@@ -293,6 +317,7 @@ public final class UnitOfWorkInstance
         {
             getCurrent().pop();
         }
+        endCapture();
         open = false;
     }
 
@@ -388,8 +413,9 @@ public final class UnitOfWorkInstance
         {
             for( EntityInstance instance : instanceCache.values() )
             {
-                if( instance.<Object>proxy() instanceof UnitOfWorkCallback && !instance.status()
-                    .equals( EntityStatus.REMOVED ) )
+                boolean isCallback = instance.proxy() instanceof UnitOfWorkCallback;
+                boolean isNotRemoved = !instance.status().equals( EntityStatus.REMOVED );
+                if( isCallback && isNotRemoved )
                 {
                     UnitOfWorkCallback callback = UnitOfWorkCallback.class.cast( instance.proxy() );
                     callback.beforeCompletion();
@@ -430,8 +456,9 @@ public final class UnitOfWorkInstance
         {
             for( EntityInstance instance : instanceCache.values() )
             {
-                if( instance.<Object>proxy() instanceof UnitOfWorkCallback && !instance.status()
-                    .equals( EntityStatus.REMOVED ) )
+                boolean isCallback = instance.proxy() instanceof UnitOfWorkCallback;
+                boolean isNotRemoved = !instance.status().equals( EntityStatus.REMOVED );
+                if( isCallback && isNotRemoved )
                 {
                     UnitOfWorkCallback callback = UnitOfWorkCallback.class.cast( instance.proxy() );
                     callback.afterCompletion( status );
@@ -466,5 +493,48 @@ public final class UnitOfWorkInstance
     public void remove( EntityReference entityReference )
     {
         instanceCache.remove( entityReference );
+    }
+
+    private void incrementCount()
+    {
+        MetricsCounter counter = getCounter();
+        counter.increment();
+    }
+
+    private void decrementCount()
+    {
+        MetricsCounter counter = getCounter();
+        counter.decrement();
+    }
+
+    private MetricsCounter getCounter()
+    {
+        if( metrics != null )
+        {
+            MetricsCounterFactory metricsFactory = metrics.createFactory( MetricsCounterFactory.class );
+            return metricsFactory.createCounter( getClass(), "UnitOfWork Counter" );
+        }
+        return new DefaultMetric();
+    }
+
+    private void endCapture()
+    {
+        decrementCount();
+        metricsTimer.stop();
+    }
+
+    private void startCapture( MetricsProvider metrics )
+    {
+        this.metrics = metrics;
+        incrementCount();
+        startTimer( metrics );
+    }
+
+    private void startTimer( MetricsProvider metrics )
+    {
+        MetricsTimerFactory metricsFactory = metrics.createFactory( MetricsTimerFactory.class );
+        String name = "UnitOfWork Timer";
+        MetricsTimer timer = metricsFactory.createTimer( getClass(), name, TimeUnit.MILLISECONDS, TimeUnit.SECONDS );
+        metricsTimer = timer.start();
     }
 }
