@@ -1,0 +1,18 @@
+Qi4j Entity Store Migration Extension
+Copyright 2007-2008, The Qi4j Development Team of individuals.
+
+See http://www.qi4j.org/contributors.html for list of of individuals.
+Also see each file for additional information of Copyright claims.
+
+Qi4j is a community aggregated works under Copyright law.
+All parts of the original works at Qi4j is licensed under the
+Apache License ver 2.0 http://www.apache.org/licenses
+
+Below follows a list of binary dependencies and their licenses;
+----------------------------------------------------------------
+
+<NONE>
+
+This component uses Metrics from http://metrics.codahale.com and
+https://github.com/codahale/metrics provided under Apache License v2.0.
+END OF NOTICE

@@ -16,22 +16,41 @@
 
 package org.qi4j.metrics.yammer;
 
-import com.yammer.metrics.core.Gauge;
-import org.qi4j.spi.metrics.MetricsGauge;
+import com.yammer.metrics.core.Counter;
+import org.qi4j.spi.metrics.MetricsCounter;
 
-public class YammerGauge<T>
-    implements MetricsGauge<T>
+public class YammerCounter
+    implements MetricsCounter
 {
-    private Gauge<T> gauge;
+    private Counter counter;
 
-    public YammerGauge( Gauge<T> gauge )
+    public YammerCounter( Counter counter )
     {
-        this.gauge = gauge;
+
+        this.counter = counter;
     }
 
     @Override
-    public T value()
+    public void increment()
     {
-        return gauge.value();
+        counter.inc();
+    }
+
+    @Override
+    public void increment( int steps )
+    {
+        counter.inc( steps );
+    }
+
+    @Override
+    public void decrement()
+    {
+        counter.dec();
+    }
+
+    @Override
+    public void decrement( int steps )
+    {
+        counter.dec( steps );
     }
 }

@@ -16,16 +16,14 @@
 
 package org.qi4j.metrics.yammer;
 
-import com.yammer.metrics.HealthChecks;
 import com.yammer.metrics.Metrics;
-import com.yammer.metrics.core.HealthCheck;
-import com.yammer.metrics.core.Meter;
-import com.yammer.metrics.core.Timer;
+import com.yammer.metrics.core.Counter;
+import com.yammer.metrics.core.Gauge;
 import java.util.concurrent.TimeUnit;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.structure.Application;
+import org.qi4j.spi.metrics.MetricsCounter;
 import org.qi4j.spi.metrics.MetricsCounterFactory;
-import org.qi4j.spi.metrics.MetricsFactory;
 import org.qi4j.spi.metrics.MetricsGauge;
 import org.qi4j.spi.metrics.MetricsGaugeFactory;
 import org.qi4j.spi.metrics.MetricsHealthCheck;
@@ -44,7 +42,7 @@ public class YammerMetricsMixin extends MetricsProviderAdapter
 {
     @Structure
     private Application app;
-    
+
     @Override
     protected MetricsTimerFactory createMetricsTimerFactory()
     {
@@ -53,7 +51,7 @@ public class YammerMetricsMixin extends MetricsProviderAdapter
             @Override
             public MetricsTimer createTimer( Class<?> origin, String name, TimeUnit duration, TimeUnit rate )
             {
-                return new YammerTimer( Metrics.newTimer( origin,name, app.name(), duration, rate ));
+                return new YammerTimer( Metrics.newTimer( origin, name, app.name(), duration, rate ) );
             }
         };
     }
@@ -66,7 +64,7 @@ public class YammerMetricsMixin extends MetricsProviderAdapter
             @Override
             public MetricsMeter createMeter( Class<?> origin, String name, String eventType, TimeUnit rate )
             {
-                return new YammerMeter( Metrics.newMeter( origin, name, app.name(), eventType, rate ));
+                return new YammerMeter( Metrics.newMeter( origin, name, app.name(), eventType, rate ) );
             }
         };
     }
@@ -79,7 +77,7 @@ public class YammerMetricsMixin extends MetricsProviderAdapter
             @Override
             public MetricsHistogram createHistogram( Class<?> origin, String name )
             {
-                return new YammerHistogram( Metrics.newHistogram( origin, name, app.name() ));
+                return new YammerHistogram( Metrics.newHistogram( origin, name, app.name() ) );
             }
         };
     }
@@ -92,7 +90,7 @@ public class YammerMetricsMixin extends MetricsProviderAdapter
             @Override
             public MetricsHealthCheck registerHealthCheck( Class<?> origin, String name, MetricsHealthCheck check )
             {
-                return new YammerHealthCheck(origin, name, check);
+                return new YammerHealthCheck( origin, name, check );
             }
         };
     }
@@ -103,9 +101,18 @@ public class YammerMetricsMixin extends MetricsProviderAdapter
         return new MetricsGaugeFactory()
         {
             @Override
-            public <T> MetricsGauge<T> registerGauge( Class<?> origin, String name, MetricsGauge<T> gauge )
+            public <T> MetricsGauge<T> registerGauge( Class<?> origin, String name, final MetricsGauge<T> gauge )
             {
-                return new YammerGauge(origin, name, gauge);
+                Gauge<T> yammer = Metrics.newGauge( origin, name, app.name(), new Gauge<T>()
+                {
+
+                    @Override
+                    public T value()
+                    {
+                        return gauge.value();
+                    }
+                } );
+                return new YammerGauge<T>( yammer );
             }
         };
     }
@@ -113,6 +120,14 @@ public class YammerMetricsMixin extends MetricsProviderAdapter
     @Override
     protected MetricsCounterFactory createMetricsCounterFactory()
     {
-        return super.createMetricsCounterFactory();    //To change body of overridden methods use File | Settings | File Templates.
+        return new MetricsCounterFactory()
+        {
+            @Override
+            public MetricsCounter createCounter( Class<?> origin, String name )
+            {
+                Counter counter = Metrics.newCounter( origin, name, app.name() );
+                return new YammerCounter( counter );
+            }
+        };
     }
 }
