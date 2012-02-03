@@ -34,6 +34,7 @@ import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entitystore.EntityStore;
+import org.qi4j.spi.metrics.MetricsCounter;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
 import org.qi4j.spi.query.QueryBuilderSPI;
@@ -68,7 +69,7 @@ public class ModuleUnitOfWork
     private UnitOfWorkInstance uow;
     private ModuleInstance moduleInstance;
 
-    ModuleUnitOfWork( ModuleInstance moduleInstance, UnitOfWorkInstance uow)
+    ModuleUnitOfWork( ModuleInstance moduleInstance, UnitOfWorkInstance uow )
     {
         this.moduleInstance = moduleInstance;
         this.uow = uow;
