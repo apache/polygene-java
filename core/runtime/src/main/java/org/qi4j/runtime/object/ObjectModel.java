@@ -92,7 +92,7 @@ public final class ObjectModel
 
     public Object newInstance( InjectionContext injectionContext )
     {
-        Object instance = null;
+        Object instance;
         try
         {
             instance = constructorsModel.newInstance( injectionContext );

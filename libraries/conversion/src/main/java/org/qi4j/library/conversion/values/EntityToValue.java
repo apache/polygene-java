@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import org.qi4j.spi.Qi4jSPI;
 
 @Mixins( EntityToValue.EntityToValueMixin.class )
 public interface EntityToValue
@@ -38,7 +39,7 @@ public interface EntityToValue
         private ValueBuilderFactory vbf;
 
         @Structure
-        private Qi4j api;
+        private Qi4jSPI spi;
 
         @Structure
         private Module module;
@@ -53,8 +54,8 @@ public interface EntityToValue
             Unqualified unqualified = valueDescriptor.metaInfo( Unqualified.class );
             Iterable<? extends PropertyDescriptor> properties = valueDescriptor.state().properties();
             final EntityComposite composite = (EntityComposite) entity;
-            final EntityDescriptor entityDescriptor = api.getEntityDescriptor( composite );
-            final AssociationStateHolder associationState = api.getState( composite );
+            final EntityDescriptor entityDescriptor = spi.getEntityDescriptor( composite );
+            final AssociationStateHolder associationState = spi.getState( composite );
             ValueBuilder builder;
 
             if( unqualified == null || !unqualified.value() )

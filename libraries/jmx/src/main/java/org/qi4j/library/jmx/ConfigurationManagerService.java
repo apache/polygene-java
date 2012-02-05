@@ -14,6 +14,33 @@
 
 package org.qi4j.library.jmx;
 
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.management.Attribute;
+import javax.management.AttributeList;
+import javax.management.AttributeNotFoundException;
+import javax.management.Descriptor;
+import javax.management.DynamicMBean;
+import javax.management.InstanceAlreadyExistsException;
+import javax.management.InvalidAttributeValueException;
+import javax.management.MBeanAttributeInfo;
+import javax.management.MBeanException;
+import javax.management.MBeanInfo;
+import javax.management.MBeanOperationInfo;
+import javax.management.MBeanParameterInfo;
+import javax.management.MBeanRegistrationException;
+import javax.management.MBeanServer;
+import javax.management.MalformedObjectNameException;
+import javax.management.NotCompliantMBeanException;
+import javax.management.ObjectName;
+import javax.management.ReflectionException;
+import javax.management.modelmbean.DescriptorSupport;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.association.AssociationStateHolder;
 import org.qi4j.api.composite.Composite;
@@ -36,12 +63,7 @@ import org.qi4j.api.type.EnumType;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-
-import javax.management.*;
-import javax.management.modelmbean.DescriptorSupport;
-import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.Field;
-import java.util.*;
+import org.qi4j.spi.Qi4jSPI;
 
 /**
  * Expose ConfigurationComposites through JMX. Allow configurations to be edited, and the services to be restarted.
@@ -63,7 +85,7 @@ public interface ConfigurationManagerService
         Application application;
 
         @Structure
-        Qi4j api;
+        Qi4jSPI spi;
 
         @Service
         Iterable<ServiceReference<?>> configurableServices;
@@ -84,8 +106,10 @@ public interface ConfigurationManagerService
             {
                 Object service = configurableService.get();
 
-                if (!(service instanceof Composite))
+                if( !( service instanceof Composite ) )
+                {
                     continue; // Skip imported services
+                }
 
                 // Check if service has configuration
                 CompositeInstance compositeInstance = Qi4j.INSTANCE_FUNCTION.map( (Composite) service );
@@ -101,10 +125,10 @@ public interface ConfigurationManagerService
 
                 String serviceClass = compositeInstance.type().getName();
                 String name = configurableService.identity();
-                ServiceDescriptor serviceDescriptor = api.getServiceDescriptor( configurableService );
-                Module module = api.getModule( configurableService );
+                ServiceDescriptor serviceDescriptor = spi.getServiceDescriptor( configurableService );
+                Module module = spi.getModule( configurableService );
                 Class<Object> configurationClass = serviceDescriptor.configurationType();
-                if (configurationClass != null)
+                if( configurationClass != null )
                 {
                     EntityDescriptor descriptor = module.entityDescriptor( configurationClass.getName() );
                     List<MBeanAttributeInfo> attributes = new ArrayList<MBeanAttributeInfo>();
@@ -117,8 +141,8 @@ public interface ConfigurationManagerService
                             String type = persistentProperty.valueType().type().getName();
 
                             Descriptor attrDescriptor = new DescriptorSupport();
-                            attrDescriptor.setField( "name",  propertyName);
-                            attrDescriptor.setField( "descriptorType",  "attribute");
+                            attrDescriptor.setField( "name", propertyName );
+                            attrDescriptor.setField( "descriptorType", "attribute" );
 
                             if( persistentProperty.valueType() instanceof EnumType )
                             {
@@ -128,13 +152,15 @@ public interface ConfigurationManagerService
                                 try
                                 {
                                     Set<String> legalValues = new LinkedHashSet();
-                                    Class<?> enumType = getClass().getClassLoader().loadClass( persistentProperty.valueType().type().getName() );
-                                    for (Field field : enumType.getFields())
+                                    Class<?> enumType = getClass().getClassLoader()
+                                        .loadClass( persistentProperty.valueType().type().getName() );
+                                    for( Field field : enumType.getFields() )
                                     {
                                         legalValues.add( field.getName() );
                                     }
-                                    attrDescriptor.setField( "legalValues",  legalValues);
-                                } catch (ClassNotFoundException e)
+                                    attrDescriptor.setField( "legalValues", legalValues );
+                                }
+                                catch( ClassNotFoundException e )
                                 {
                                     // Ignore
                                     e.printStackTrace();
@@ -148,20 +174,22 @@ public interface ConfigurationManagerService
                     List<MBeanOperationInfo> operations = new ArrayList<MBeanOperationInfo>();
                     if( configurableService instanceof Activatable )
                     {
-                        operations.add( new MBeanOperationInfo( "restart", "Restart service", new MBeanParameterInfo[0], "java.lang.String", MBeanOperationInfo.ACTION_INFO ) );
+                        operations.add( new MBeanOperationInfo( "restart", "Restart service", new MBeanParameterInfo[ 0 ], "java.lang.String", MBeanOperationInfo.ACTION_INFO ) );
                     }
 
-                    MBeanInfo mbeanInfo = new MBeanInfo( serviceClass, name, attributes.toArray( new MBeanAttributeInfo[attributes
-                        .size()] ), null, operations.toArray( new MBeanOperationInfo[operations.size()] ), null );
+                    MBeanInfo mbeanInfo = new MBeanInfo( serviceClass, name, attributes.toArray( new MBeanAttributeInfo[ attributes
+                        .size() ] ), null, operations.toArray( new MBeanOperationInfo[ operations.size() ] ), null );
                     Object mbean = new ConfigurableService( configurableService, mbeanInfo, name, properties );
                     ObjectName configurableServiceName;
-                    ObjectName serviceName = Qi4jMBeans.findServiceName( server, application.name(), name);
-                    if (serviceName != null)
+                    ObjectName serviceName = Qi4jMBeans.findServiceName( server, application.name(), name );
+                    if( serviceName != null )
                     {
-                       configurableServiceName = new ObjectName(serviceName.toString()+",name=Configuration");
-                    } else
-                       configurableServiceName = new ObjectName( "Configuration:name=" + name );
-
+                        configurableServiceName = new ObjectName( serviceName.toString() + ",name=Configuration" );
+                    }
+                    else
+                    {
+                        configurableServiceName = new ObjectName( "Configuration:name=" + name );
+                    }
 
                     server.registerMBean( mbean, configurableServiceName );
                     configurationNames.add( configurableServiceName );
@@ -199,7 +227,7 @@ public interface ConfigurationManagerService
                 try
                 {
                     EntityComposite configuration = uow.get( EntityComposite.class, identity );
-                    AssociationStateHolder state = api.getState( configuration );
+                    AssociationStateHolder state = spi.getState( configuration );
                     AccessibleObject accessor = propertyNames.get( name );
                     Property<Object> property = state.propertyFor( accessor );
                     Object object = property.get();
@@ -226,13 +254,14 @@ public interface ConfigurationManagerService
                 try
                 {
                     EntityComposite configuration = uow.get( EntityComposite.class, identity );
-                    AssociationStateHolder state = api.getState( (EntityComposite) configuration );
+                    AssociationStateHolder state = spi.getState( (EntityComposite) configuration );
                     AccessibleObject accessor = propertyNames.get( attribute.getName() );
                     Property<Object> property = state.propertyFor( accessor );
-                    PropertyDescriptor propertyDescriptor = api.getPropertyDescriptor( property );
-                    if( EnumType.isEnum( propertyDescriptor.type() ))
+                    PropertyDescriptor propertyDescriptor = spi.getPropertyDescriptor( property );
+                    if( EnumType.isEnum( propertyDescriptor.type() ) )
                     {
-                        property.set( Enum.valueOf( (Class<Enum>) propertyDescriptor.type(), attribute.getValue().toString() ) );
+                        property.set( Enum.valueOf( (Class<Enum>) propertyDescriptor.type(), attribute.getValue()
+                            .toString() ) );
                     }
                     else
                     {
@@ -346,7 +375,8 @@ public interface ConfigurationManagerService
                         if( service.isActive() )
                         {
                             // Refresh configuration
-                            CompositeInstance compositeInstance = Qi4j.INSTANCE_FUNCTION.map( (Composite) service.get() );
+                            CompositeInstance compositeInstance = Qi4j.INSTANCE_FUNCTION
+                                .map( (Composite) service.get() );
                             compositeInstance.newProxy( Configuration.class ).refresh();
 
                             ( (Activatable) service ).passivate();

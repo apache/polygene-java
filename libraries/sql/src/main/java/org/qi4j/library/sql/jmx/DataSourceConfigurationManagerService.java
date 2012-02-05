@@ -1,6 +1,5 @@
 package org.qi4j.library.sql.jmx;
 
-import org.qi4j.api.Qi4j;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.association.AssociationStateHolder;
@@ -27,6 +26,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import org.qi4j.spi.Qi4jSPI;
 
 /**
  * Expose DataSourceConfiguration through JMX. Allow configurations to be edited, and the services to be restarted.
@@ -45,7 +45,7 @@ public interface DataSourceConfigurationManagerService
       MBeanServer server;
 
       @Structure
-      Qi4j api;
+      Qi4jSPI spi;
 
       @Structure
       Application application;
@@ -68,7 +68,7 @@ public interface DataSourceConfigurationManagerService
          for (ServiceReference<DataSource> dataSource : dataSources)
          {
             String name = dataSource.identity();
-            Module module = (Module) api.getModule( dataSource );
+            Module module = (Module) spi.getModule( dataSource );
             EntityDescriptor descriptor = module.entityDescriptor( DataSourceConfiguration.class.getName() );
             List<MBeanAttributeInfo> attributes = new ArrayList<MBeanAttributeInfo>();
             Map<String, AccessibleObject> properties = new LinkedHashMap<String, AccessibleObject>();
@@ -122,7 +122,7 @@ public interface DataSourceConfigurationManagerService
             try
             {
                EntityComposite configuration = uow.get( EntityComposite.class, identity );
-               AssociationStateHolder state = api.getState( configuration );
+               AssociationStateHolder state = spi.getState( configuration );
                AccessibleObject accessor = propertyNames.get( name );
                Property<Object> property = state.propertyFor( accessor );
                return property.get();
@@ -141,7 +141,7 @@ public interface DataSourceConfigurationManagerService
             try
             {
                EntityComposite configuration = uow.get( EntityComposite.class, identity );
-               AssociationStateHolder state = api.getState( configuration );
+               AssociationStateHolder state = spi.getState( configuration );
                AccessibleObject accessor = propertyNames.get( attribute.getName() );
                Property<Object> property = state.propertyFor( accessor );
                property.set( attribute.getValue() );

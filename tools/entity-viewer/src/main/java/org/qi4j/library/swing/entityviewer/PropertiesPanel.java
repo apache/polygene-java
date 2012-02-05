@@ -28,6 +28,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import java.awt.*;
+import org.qi4j.spi.Qi4jSPI;
 
 /**
  * Entity Properties Viewer as Swing Component.
@@ -75,12 +76,12 @@ public class PropertiesPanel
     {
         DefaultTableModel model = new DefaultTableModel();
 
-        Qi4j api = qi4j.api();
+        Qi4jSPI spi = qi4j.spi();
 
         for( Object qObj : query )
         {
-            AssociationStateHolder state = api.getState( (EntityComposite) qObj );
-            EntityDescriptor descriptor = api.getEntityDescriptor( (EntityComposite) qObj );
+            AssociationStateHolder state = spi.getState( (EntityComposite) qObj );
+            EntityDescriptor descriptor = spi.getEntityDescriptor( (EntityComposite) qObj );
             // genereate column, first time only
             if( model.getColumnCount() < 1 )
             {

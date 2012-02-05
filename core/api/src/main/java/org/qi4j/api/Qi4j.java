@@ -56,53 +56,31 @@ public interface Qi4j
     <T> T dereference( T composite );
 
     /**
-     * Returns the Module where the UnitOfWork belongs.
+     * Returns the Module or UnitOfWork where the Composite belongs.
      *
-     * @param uow The UnitOfWork to be checked.
+     * @param compositeOrUow The Composite (Service, Value, Entity or Transient) or UnitOfWork to lookup the Module it
+     *                       belongs to.
      *
-     * @return The Module instance where the UnitOfWork belongs.
+     * @return The Module instance where the Composite or UnitOfWork belongs to.
      */
-    Module getModule( UnitOfWork uow );
+    Module getModule( Object compositeOrUow );
 
-    /**
-     * Returns the Module where the Composite belongs.
-     *
-     * @param composite The Composite to be checked.
-     *
-     * @return The Module instance where the Composite belongs.
-     */
-    Module getModule( Composite composite );
+    ModelDescriptor getModelDescriptor( Object compositeOrServiceReference );
 
-    /**
-     * Returns the Module where the service is located.
-     *
-     * @param service The service to be checked.
-     *
-     * @return The Module instance where the Composite belongs.
-     */
-    Module getModule( ServiceReference service );
+    CompositeDescriptor getCompositeDescriptor( Object compositeOrServiceReference );
 
-    TransientDescriptor getTransientDescriptor( TransientComposite composite );
+    TransientDescriptor getTransientDescriptor( Object transsient );
 
-    EntityDescriptor getEntityDescriptor( EntityComposite composite );
+    EntityDescriptor getEntityDescriptor( Object entity );
 
-    ValueDescriptor getValueDescriptor( ValueComposite value );
+    ValueDescriptor getValueDescriptor( Object value );
 
-    // Services
-    ServiceDescriptor getServiceDescriptor( ServiceReference service );
-
-    ServiceDescriptor getServiceDescriptor( ServiceComposite service );
+    ServiceDescriptor getServiceDescriptor( Object service );
 
     // State
     PropertyDescriptor getPropertyDescriptor( Property property );
 
     AssociationDescriptor getAssociationDescriptor( AbstractAssociation association);
-
-    StateHolder getState( TransientComposite composite );
-
-    AssociationStateHolder getState( EntityComposite composite );
-
-    AssociationStateHolder getState( ValueComposite composite );
 
     public static Function<Composite, CompositeDescriptor> DESCRIPTOR_FUNCTION = new Function<Composite, CompositeDescriptor>()
     {

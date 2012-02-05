@@ -14,8 +14,10 @@
 
 package org.qi4j.runtime.composite;
 
+import java.lang.reflect.Modifier;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.composite.CompositeDescriptor;
+import org.qi4j.api.composite.InvalidCompositeException;
 import org.qi4j.api.injection.InjectionScope;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.util.Annotations;
@@ -51,7 +53,7 @@ public final class ConstructorsModel
     public ConstructorsModel( Class fragmentClass )
     {
         this.fragmentClass = fragmentClass;
-
+        validate(fragmentClass);
         constructorModels = new ArrayList<ConstructorModel>();
         Constructor[] realConstructors = this.fragmentClass.getDeclaredConstructors();
         Class injectionClass = FragmentClassLoader.getSourceClass( fragmentClass );
@@ -73,6 +75,16 @@ public final class ConstructorsModel
                 e.printStackTrace();
             }
         }
+    }
+
+    private void validate( Class fragmentClass )
+    {
+        // Ensure that the fragment class is not an inner class, in which case we should give a reasonable exception
+        if( fragmentClass.getDeclaringClass() == null )
+            return;
+        if( Modifier.isStatic( fragmentClass.getModifiers() ))
+            return;
+        throw new InvalidCompositeException( "Inner classes can not be used. Use static nested classes instead: " + fragmentClass );
     }
 
     public Iterable<DependencyModel> dependencies()

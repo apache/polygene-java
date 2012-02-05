@@ -16,6 +16,7 @@ package org.qi4j.runtime;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
+import java.util.Arrays;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.association.AbstractAssociation;
 import org.qi4j.api.association.AssociationDescriptor;
@@ -23,7 +24,9 @@ import org.qi4j.api.association.AssociationStateHolder;
 import org.qi4j.api.association.AssociationWrapper;
 import org.qi4j.api.association.ManyAssociationWrapper;
 import org.qi4j.api.composite.Composite;
+import org.qi4j.api.composite.CompositeDescriptor;
 import org.qi4j.api.composite.CompositeInstance;
+import org.qi4j.api.composite.ModelDescriptor;
 import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.composite.TransientDescriptor;
 import org.qi4j.api.entity.EntityComposite;
@@ -45,6 +48,7 @@ import org.qi4j.bootstrap.Qi4jRuntime;
 import org.qi4j.runtime.association.AbstractAssociationInstance;
 import org.qi4j.runtime.bootstrap.ApplicationAssemblyFactoryImpl;
 import org.qi4j.runtime.bootstrap.ApplicationModelFactoryImpl;
+import org.qi4j.runtime.composite.ConcernsModel;
 import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
 import org.qi4j.runtime.composite.TransientInstance;
 import org.qi4j.runtime.entity.EntityInstance;
@@ -111,43 +115,26 @@ public final class Qi4jRuntimeImpl
         return null;
     }
 
-    public Module getModule( UnitOfWork uow )
+    public Module getModule( Object compositeOrServiceReferenceOrUow )
     {
-        return ( (ModuleUnitOfWork) uow ).module();
-    }
-
-    public Module getModule( ServiceReference service )
-    {
-        if( service instanceof ServiceReferenceInstance )
+        if( compositeOrServiceReferenceOrUow instanceof TransientComposite )
         {
-            return ( (ServiceReferenceInstance) service ).module();
-        }
-        else if( service instanceof ImportedServiceReferenceInstance )
-        {
-            return ( (ImportedServiceReferenceInstance) service ).module();
-        }
-        else
-        {
-            throw new IllegalArgumentException( "ServiceReference type is not known: " + service );
-        }
-    }
-
-    public Module getModule( Composite composite )
-    {
-        if( composite instanceof TransientComposite )
-        {
+            TransientComposite composite = (TransientComposite) compositeOrServiceReferenceOrUow;
             return TransientInstance.getCompositeInstance( composite ).module();
         }
-        else if( composite instanceof EntityComposite )
+        else if( compositeOrServiceReferenceOrUow instanceof EntityComposite )
         {
-            return EntityInstance.getEntityInstance( (EntityComposite) composite ).module();
+            EntityComposite composite = (EntityComposite) compositeOrServiceReferenceOrUow;
+            return EntityInstance.getEntityInstance( composite ).module();
         }
-        else if( composite instanceof ValueComposite )
+        else if( compositeOrServiceReferenceOrUow instanceof ValueComposite )
         {
-            return ValueInstance.getValueInstance( (ValueComposite) composite ).module();
+            ValueComposite composite = (ValueComposite) compositeOrServiceReferenceOrUow;
+            return ValueInstance.getValueInstance( composite ).module();
         }
-        else if( composite instanceof ServiceComposite )
+        else if( compositeOrServiceReferenceOrUow instanceof ServiceComposite )
         {
+            ServiceComposite composite = (ServiceComposite) compositeOrServiceReferenceOrUow;
             InvocationHandler handler = Proxy.getInvocationHandler( composite );
             if( handler instanceof ServiceInstance )
             {
@@ -155,18 +142,87 @@ public final class Qi4jRuntimeImpl
             }
             return ( (ServiceReferenceInstance.ServiceInvocationHandler) handler ).module();
         }
-        else
+        else if( compositeOrServiceReferenceOrUow instanceof UnitOfWork )
         {
-            return null;
+            ModuleUnitOfWork unitOfWork = (ModuleUnitOfWork) compositeOrServiceReferenceOrUow;
+            return unitOfWork.module();
         }
+        else if( compositeOrServiceReferenceOrUow instanceof ServiceReferenceInstance )
+        {
+            ServiceReferenceInstance reference = (ServiceReferenceInstance) compositeOrServiceReferenceOrUow;
+            return reference.module();
+        }
+        else if( compositeOrServiceReferenceOrUow instanceof ImportedServiceReferenceInstance )
+        {
+            ImportedServiceReferenceInstance importedServiceReference =
+                (ImportedServiceReferenceInstance) compositeOrServiceReferenceOrUow;
+            return importedServiceReference.module();
+        }
+        throw new IllegalArgumentException( "Wrong type. Must be one of " + Arrays.asList(
+            ValueComposite.class, ServiceComposite.class, TransientComposite.class,
+            ServiceComposite.class, ServiceReference.class, UnitOfWork.class ) );
+    }
+
+    @Override
+    public ModelDescriptor getModelDescriptor( Object compositeOrServiceReference )
+    {
+        if( compositeOrServiceReference instanceof TransientComposite )
+        {
+            TransientComposite composite = (TransientComposite) compositeOrServiceReference;
+            return TransientInstance.getCompositeInstance( composite ).descriptor();
+        }
+        else if( compositeOrServiceReference instanceof EntityComposite )
+        {
+            EntityComposite composite = (EntityComposite) compositeOrServiceReference;
+            return EntityInstance.getEntityInstance( composite ).descriptor();
+        }
+        else if( compositeOrServiceReference instanceof ValueComposite )
+        {
+            ValueComposite composite = (ValueComposite) compositeOrServiceReference;
+            return ValueInstance.getValueInstance( composite ).descriptor();
+        }
+        else if( compositeOrServiceReference instanceof ServiceComposite )
+        {
+            ServiceComposite composite = (ServiceComposite) compositeOrServiceReference;
+            InvocationHandler handler = Proxy.getInvocationHandler( composite );
+            if( handler instanceof ServiceInstance )
+            {
+                return ( (ServiceInstance) handler ).descriptor();
+            }
+            return ( (ServiceReferenceInstance.ServiceInvocationHandler) handler ).descriptor();
+        }
+        else if( compositeOrServiceReference instanceof ServiceReferenceInstance )
+        {
+            ServiceReferenceInstance reference = (ServiceReferenceInstance) compositeOrServiceReference;
+            return reference.serviceDescriptor();
+        }
+        else if( compositeOrServiceReference instanceof ImportedServiceReferenceInstance )
+        {
+            ImportedServiceReferenceInstance importedServiceReference =
+                (ImportedServiceReferenceInstance) compositeOrServiceReference;
+            return importedServiceReference.serviceDescriptor();
+        }
+        throw new IllegalArgumentException( "Wrong type. Must be one of " + Arrays.asList(
+            ValueComposite.class, ServiceComposite.class, TransientComposite.class,
+            ServiceComposite.class, ServiceReference.class ) );
+    }
+
+    @Override
+    public CompositeDescriptor getCompositeDescriptor( Object compositeOrServiceReference )
+    {
+        return (CompositeDescriptor) getModelDescriptor( compositeOrServiceReference );
     }
 
     // Descriptors
 
-    public TransientDescriptor getTransientDescriptor( TransientComposite composite )
+    public TransientDescriptor getTransientDescriptor( Object transsient )
     {
-        TransientInstance transientInstance = getCompositeInstance( composite );
-        return (TransientDescriptor) transientInstance.descriptor();
+        if( transsient instanceof TransientComposite )
+        {
+            TransientInstance transientInstance = getCompositeInstance( (Composite) transsient );
+            return (TransientDescriptor) transientInstance.descriptor();
+        }
+        throw new IllegalArgumentException( "Wrong type. Must be subtype of " + TransientComposite.class );
     }
 
     public StateHolder getState( TransientComposite composite )
@@ -174,10 +230,14 @@ public final class Qi4jRuntimeImpl
         return TransientInstance.getCompositeInstance( composite ).state();
     }
 
-    public EntityDescriptor getEntityDescriptor( EntityComposite composite )
+    public EntityDescriptor getEntityDescriptor( Object entity )
     {
-        EntityInstance entityInstance = (EntityInstance) getInvocationHandler( composite );
-        return entityInstance.entityModel();
+        if( entity instanceof EntityComposite )
+        {
+            EntityInstance entityInstance = (EntityInstance) getInvocationHandler( entity );
+            return entityInstance.entityModel();
+        }
+        throw new IllegalArgumentException( "Wrong type. Must be subtype of " + EntityComposite.class );
     }
 
     public AssociationStateHolder getState( EntityComposite composite )
@@ -185,10 +245,14 @@ public final class Qi4jRuntimeImpl
         return EntityInstance.getEntityInstance( composite ).state();
     }
 
-    public ValueDescriptor getValueDescriptor( ValueComposite value )
+    public ValueDescriptor getValueDescriptor( Object value )
     {
-        ValueInstance valueInstance = ValueInstance.getValueInstance( value );
-        return valueInstance.descriptor();
+        if( value instanceof ValueComposite )
+        {
+            ValueInstance valueInstance = ValueInstance.getValueInstance( (ValueComposite) value );
+            return valueInstance.descriptor();
+        }
+        throw new IllegalArgumentException( "Wrong type. Must be subtype of " + ValueComposite.class );
     }
 
     public AssociationStateHolder getState( ValueComposite composite )
@@ -196,22 +260,20 @@ public final class Qi4jRuntimeImpl
         return ValueInstance.getValueInstance( composite ).state();
     }
 
-    public ServiceDescriptor getServiceDescriptor( ServiceReference service )
+    public ServiceDescriptor getServiceDescriptor( Object service )
     {
         if( service instanceof ServiceReferenceInstance )
         {
             ServiceReferenceInstance ref = (ServiceReferenceInstance) service;
             return ref.serviceDescriptor();
         }
-        else
+        if( service instanceof ServiceComposite )
         {
-            return null;
+            ServiceComposite composite = (ServiceComposite) service;
+            return (ServiceDescriptor) ServiceInstance.getCompositeInstance( composite ).descriptor();
         }
-    }
-
-    public ServiceDescriptor getServiceDescriptor( ServiceComposite service )
-    {
-        return (ServiceDescriptor) ServiceInstance.getCompositeInstance( service ).descriptor();
+        String message = "Wrong type. Must be subtype of " + ServiceComposite.class + " or " + ServiceReference.class;
+        throw new IllegalArgumentException( message );
     }
 
     @Override

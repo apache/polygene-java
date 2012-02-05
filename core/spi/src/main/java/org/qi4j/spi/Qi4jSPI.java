@@ -15,7 +15,11 @@
 package org.qi4j.spi;
 
 import org.qi4j.api.Qi4j;
+import org.qi4j.api.association.AssociationStateHolder;
+import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.value.ValueComposite;
 import org.qi4j.spi.entity.EntityState;
 
 /**
@@ -24,6 +28,12 @@ import org.qi4j.spi.entity.EntityState;
 public interface Qi4jSPI
     extends Qi4j
 {
+    StateHolder getState( TransientComposite composite );
+
+    AssociationStateHolder getState( EntityComposite composite );
+
+    AssociationStateHolder getState( ValueComposite composite );
+
     // Entities
     EntityState getEntityState( EntityComposite composite );
 }

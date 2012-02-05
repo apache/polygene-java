@@ -36,7 +36,8 @@ public class TransientInstance
 {
     public static TransientInstance getCompositeInstance( Composite composite )
     {
-        return (TransientInstance) Proxy.getInvocationHandler( composite );
+        InvocationHandler handler = Proxy.getInvocationHandler( composite );
+        return (TransientInstance) handler;
     }
 
     private final Composite proxy;

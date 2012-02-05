@@ -16,6 +16,13 @@
 
 package org.qi4j.metrics.yammer;
 
+import com.yammer.metrics.Metrics;
+import com.yammer.metrics.reporting.AbstractPollingReporter;
+import com.yammer.metrics.reporting.ConsoleReporter;
+import com.yammer.metrics.reporting.CsvReporter;
+import java.io.File;
+import java.io.PrintStream;
+import java.util.concurrent.TimeUnit;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
@@ -25,6 +32,42 @@ import org.qi4j.spi.metrics.MetricsProvider;
 public class YammerMetricsAssembler
     implements Assembler
 {
+
+    private AbstractPollingReporter reporter;
+
+    /**
+     * Default constructor only creates a Yammer JMXReporter
+     */
+    public YammerMetricsAssembler()
+    {
+    }
+
+    /**
+     * Creates a ConsoleReporter and sends the output to the given PrintStream.
+     *
+     * @param out      The PrintStream to receive the output.
+     * @param period   The reporting interval.
+     * @param timeunit The TimeUnit for the reporting interval.
+     */
+    public YammerMetricsAssembler( PrintStream out, long period, TimeUnit timeunit )
+    {
+        reporter = new ConsoleReporter( out );
+        reporter.start( period, timeunit );
+    }
+
+    /**
+     * Creates a CSV reporter and writes the result to the given directory
+     *
+     * @param outDirectory The directory to write the result to.
+     * @param period       The reporting interval.
+     * @param timeunit     The TimeUnit for the reporting interval.
+     */
+    public YammerMetricsAssembler( File outDirectory, long period, TimeUnit timeunit )
+    {
+        reporter = new CsvReporter( Metrics.defaultRegistry(), outDirectory );
+        reporter.start( period, timeunit );
+    }
+
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException

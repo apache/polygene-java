@@ -52,6 +52,7 @@ import javax.xml.namespace.QName;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
+import org.qi4j.spi.Qi4jSPI;
 
 public class ValueCompositeCxfType extends AegisType
 {
@@ -59,7 +60,7 @@ public class ValueCompositeCxfType extends AegisType
     private Module module;
 
     @Structure
-    Qi4j api;
+    Qi4jSPI spi;
 
     public ValueCompositeCxfType( @Uses Type type, @Uses TypeMapping typeMapping )
     {
@@ -142,7 +143,7 @@ public class ValueCompositeCxfType extends AegisType
     {
         ValueComposite composite = (ValueComposite) object;
         writer.writeXsiType( NamespaceUtil.convertJavaTypeToQName( Qi4j.DESCRIPTOR_FUNCTION.map( composite ).type() ) );
-        AssociationStateHolder state = api.getState( composite );
+        AssociationStateHolder state = spi.getState( composite );
         for( Property<?> property : state.properties() )
         {
             Object value = property.get();
@@ -160,7 +161,7 @@ public class ValueCompositeCxfType extends AegisType
                 }
             }
 
-            QName childName = new QName( "", api.getPropertyDescriptor( property ).qualifiedName().name() );
+            QName childName = new QName( "", spi.getPropertyDescriptor( property ).qualifiedName().name() );
             MessageWriter cwriter = writer.getElementWriter( childName );
             if( type != null )
             {
@@ -176,7 +177,7 @@ public class ValueCompositeCxfType extends AegisType
         AegisType type = getTypeMapping().getType( NamespaceUtil.convertJavaTypeToQName( String.class ) );
         for( Association association: state.associations() )
         {
-            QName childName = new QName( "", api.getAssociationDescriptor( association ).qualifiedName().name() );
+            QName childName = new QName( "", spi.getAssociationDescriptor( association ).qualifiedName().name() );
             MessageWriter cwriter = writer.getElementWriter( childName );
 
             if (association.get() != null)
@@ -188,7 +189,7 @@ public class ValueCompositeCxfType extends AegisType
 
         for( ManyAssociation association: state.manyAssociations() )
         {
-            QName childName = new QName( "", api.getAssociationDescriptor( association ).qualifiedName().name() );
+            QName childName = new QName( "", spi.getAssociationDescriptor( association ).qualifiedName().name() );
             MessageWriter cwriter = writer.getElementWriter( childName );
 
             String ids = null;
