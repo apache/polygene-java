@@ -56,7 +56,10 @@ public class FragmentAppliesToTest
         assertNotNull( "This not injected.", instance.getMeAsMixin2() );
         assertEquals( 1, instance.getValue() );
         instance.getBuilderFactory();
+        instance.getMeAsMixin2();
         instance.getBuilderFactory();
+        instance.getMeAsMixin2();
+        instance.getMeAsMixin2();
         instance.getBuilderFactory();
         assertEquals( 4, instance.getValue() );
     }

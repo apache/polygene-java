@@ -27,7 +27,6 @@ import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.spi.metrics.MetricsProvider;
 
 public class YammerMetricsAssembler
     implements Assembler
@@ -52,7 +51,15 @@ public class YammerMetricsAssembler
     public YammerMetricsAssembler( PrintStream out, long period, TimeUnit timeunit )
     {
         reporter = new ConsoleReporter( out );
-        reporter.start( period, timeunit );
+        try
+        {
+            reporter.start( period, timeunit );
+        }
+        catch( RuntimeException e )
+        {
+            e.printStackTrace();
+            throw e;
+        }
     }
 
     /**
@@ -72,8 +79,16 @@ public class YammerMetricsAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.services( MetricsProvider.class )
-            .withMixins( YammerMetricsMixin.class )
+        module.services( YammerMetricsProvider.class )
+            .instantiateOnStartup()
             .visibleIn( Visibility.application );
+    }
+
+    /**
+     * Closing any Reporter that has been started.
+     */
+    public void shutdown()
+    {
+        reporter.shutdown();
     }
 }

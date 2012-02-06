@@ -37,4 +37,11 @@ public class TimingCaptureConcern extends TimingCaptureAllConcern
     {
         super( metrics, method );
     }
+
+    @Override
+    public Object invoke( Object proxy, Method method, Object[] args )
+        throws Throwable
+    {
+        return super.invoke( proxy, method, args );
+    }
 }
