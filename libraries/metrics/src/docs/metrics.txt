@@ -1,0 +1,21 @@
+[[library-metrics]]
+= Qi4j Metrics =
+The Merics library is available to application code to get production metrics from their applications. It allows
+applications to easily mark critical section for metrics gathering, without handling the details with the Metrics
+Extension.
+
+There are currently the following possibilities available;
+
+    * @TimingCapture
+    * @Counting
+
+Before looking at the details of these, we need to point out that there are some pre-conditions for Metrics to be
+working. First of all, you need to install a Metrics Extensions, most likely the
+<<extension-metrics-yammer, Yammer Metrics Extension>>. See your chosen extension for details on how to do that.
+
+Once the Metrics extension is installed, you will also need a suitable backend to gather all the data out of a
+production plant and likewise a good front-end to view this. See your chosen Metrics Extension for this as well.
+
+== TimingCaptureAll ==
+There is a TimingCaptureAllConcern, which when added to a composite will install a _Timer_ for every method call
+in the composite.

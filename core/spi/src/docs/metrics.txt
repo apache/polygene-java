@@ -1,0 +1,66 @@
+[[Metrics]]
+= Qi4j Metrics SPI =
+The Qi4j platform defines an advanced Metrics SPI to capture runtime metrics of Qi4j's internals as well be used by
+application code to provide production metrics for operations personnel, ensuring healthy state of the applications.
+
+
+== Metrics Components ==
+
+=== Gauge ===
+A Gauge is the simplest form of Metric. It is a value that the application sets, which is polled upon request. The
+application need to provide the implementation of the _value()_ method. Gauges are genericized for type-safe value
+handling.
+
+A Gauge can represent anything, for instance, thread pool levels, queue sizes and other resource allocations. It is
+useful to have separate gauges for percentage (%) and absolute numbers of the same resource. Operations are mainly
+interested in being alerted when threshold are reach as a percentage, as it is otherwise too many numbers to keep
+track of.
+
+To create a Gauge, you do something like;
+
+[snippet,java]
+--------------
+source=../test/java/org/qi4j/spi/metrics/DocumentationSupport.java
+tag=gauge
+--------------
+
+=== Counter ===
+
+[snippet,java]
+--------------
+source=../test/java/org/qi4j/spi/metrics/DocumentationSupport.java
+tag=counter
+--------------
+
+=== Histogram ===
+[snippet,java]
+--------------
+source=../test/java/org/qi4j/spi/metrics/DocumentationSupport.java
+tag=histogram
+--------------
+
+=== Meter ===
+
+[snippet,java]
+--------------
+source=../test/java/org/qi4j/spi/metrics/DocumentationSupport.java
+tag=meter
+--------------
+
+=== Timer ===
+Timers capture both the length of some execution as well as rate of calls. They can be used to time method calls, or
+critical sections, or even HTTP requests duration and similar.
+
+[snippet,java]
+--------------
+source=../test/java/org/qi4j/spi/metrics/DocumentationSupport.java
+tag=timer
+--------------
+
+=== HealthCheck ===
+
+[snippet,java]
+--------------
+source=../test/java/org/qi4j/spi/metrics/DocumentationSupport.java
+tag=healthcheck
+--------------
