@@ -2,19 +2,19 @@
 
 # Run clean test once and test repeatedly
 # Stop on first failure
-# cat target/num-repeats to see how many times it ran
+# cat build/num-repeats to see how many times it ran
 # Use time run-repeatedly.sh to get a time mesure
 #
 # Written because of milliseconds delays due to multithreading
 
 set -e
 
-mvn clean test 
-echo "x "`date` > target/num-repeats
+../../gradlew clean test -Dversion=2.0-SNAPSHOT
+echo "x "`date` > build/num-repeats
 
 while ( true ) ; do
-	mvn test
-	echo "x "`date` >> target/num-repeats
+	../../gradlew test -Dversion=2.0-SNAPSHOT
+	echo "x "`date` >> build/num-repeats
 done
 
 exit 0
