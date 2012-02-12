@@ -28,7 +28,7 @@ import org.qi4j.library.scheduler.task.Task;
  * 
  * Cron expression syntax is documented in {@link CronExpressionConstraint}.
  */
-@Mixins( { ScheduleMixin.class, ScheduleEntityMixin.class } )
+@Mixins( {ScheduleEntityMixin.class } )
 public interface ScheduleEntity
         extends Schedule, UnitOfWorkCallback, EntityComposite
 {

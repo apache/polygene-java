@@ -13,21 +13,25 @@
  */
 package org.qi4j.library.scheduler.schedule;
 
-import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
-import org.qi4j.api.query.QueryBuilderFactory;
-import static org.qi4j.api.query.QueryExpressions.*;
 import org.qi4j.api.query.grammar.EqSpecification;
 import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-import org.qi4j.library.scheduler.SchedulerService;
+import org.qi4j.api.structure.Module;
+
+import static org.qi4j.api.query.QueryExpressions.and;
+import static org.qi4j.api.query.QueryExpressions.eq;
+import static org.qi4j.api.query.QueryExpressions.ge;
+import static org.qi4j.api.query.QueryExpressions.isNull;
+import static org.qi4j.api.query.QueryExpressions.lt;
+import static org.qi4j.api.query.QueryExpressions.orderBy;
+import static org.qi4j.api.query.QueryExpressions.templateFor;
 
 @Mixins( ScheduleRepository.Mixin.class )
 public interface ScheduleRepository
-        extends ServiceComposite
+    extends ServiceComposite
 {
 
     Query<ScheduleEntity> findNotDurable( String schedulerIdentity );
@@ -39,58 +43,54 @@ public interface ScheduleRepository
     Query<ScheduleEntity> findNotDurableWithoutNextRun( String schedulerIdentity );
 
     abstract class Mixin
-            implements ScheduleRepository
+        implements ScheduleRepository
     {
 
         @Structure
-        private UnitOfWorkFactory uowf;
-        @Structure
-        private QueryBuilderFactory qbf;
+        private Module module;
 
         public Query<ScheduleEntity> findNotDurable( String schedulerIdentity )
         {
-            QueryBuilder<ScheduleEntity> builder = qbf.newQueryBuilder( ScheduleEntity.class );
+            QueryBuilder<ScheduleEntity> builder = module.newQueryBuilder( ScheduleEntity.class );
             ScheduleEntity template = templateFor( ScheduleEntity.class );
             builder = builder.where( and( eqSchedulerIdentity( schedulerIdentity, template ),
                                           eq( template.durable(), false ) ) );
-            return uowf.currentUnitOfWork().newQuery( builder );
+            return module.currentUnitOfWork().newQuery( builder );
         }
 
         public Query<ScheduleEntity> findRunning( String schedulerIdentity )
         {
-            QueryBuilder<ScheduleEntity> builder = qbf.newQueryBuilder( ScheduleEntity.class );
+            QueryBuilder<ScheduleEntity> builder = module.newQueryBuilder( ScheduleEntity.class );
             ScheduleEntity template = templateFor( ScheduleEntity.class );
             builder = builder.where( and( eqSchedulerIdentity( schedulerIdentity, template ),
                                           eq( template.running(), true ) ) );
-            return uowf.currentUnitOfWork().newQuery( builder );
+            return module.currentUnitOfWork().newQuery( builder );
         }
 
         public Query<ScheduleEntity> findRunnables( String schedulerIdentity, Long from, Long to )
         {
-            QueryBuilder<ScheduleEntity> builder = qbf.newQueryBuilder( ScheduleEntity.class );
+            QueryBuilder<ScheduleEntity> builder = module.newQueryBuilder( ScheduleEntity.class );
             ScheduleEntity template = templateFor( ScheduleEntity.class );
             builder = builder.where( and( eqSchedulerIdentity( schedulerIdentity, template ),
                                           eq( template.running(), false ),
                                           ge( template.nextRun(), from ),
                                           lt( template.nextRun(), to ) ) );
-            return uowf.currentUnitOfWork().newQuery( builder ).orderBy( orderBy( template.nextRun() ) );
+            return module.currentUnitOfWork().newQuery( builder ).orderBy( orderBy( template.nextRun() ) );
         }
 
         public Query<ScheduleEntity> findNotDurableWithoutNextRun( String schedulerIdentity )
         {
-            QueryBuilder<ScheduleEntity> builder = qbf.newQueryBuilder( ScheduleEntity.class );
+            QueryBuilder<ScheduleEntity> builder = module.newQueryBuilder( ScheduleEntity.class );
             ScheduleEntity template = templateFor( ScheduleEntity.class );
             builder = builder.where( and( eqSchedulerIdentity( schedulerIdentity, template ),
                                           eq( template.durable(), false ),
                                           isNull( template.nextRun() ) ) );
-            return uowf.currentUnitOfWork().newQuery( builder );
+            return module.currentUnitOfWork().newQuery( builder );
         }
 
-        private EqSpecification<String> eqSchedulerIdentity( String schedulerIdentity, ScheduleEntity template )
+        private EqSpecification<String> eqSchedulerIdentity( String schedulerIdentity, Schedule template )
         {
             return eq( template.schedulerIdentity(), schedulerIdentity );
         }
-
     }
-
 }

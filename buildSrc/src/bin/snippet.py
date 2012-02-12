@@ -21,7 +21,7 @@ def configuration(indata):
         config[key] = value
     return config
 
-def snippet(source=None, tag=None, tablength="4", **other):
+def snippet(source=None, tag=None, tablength="4", snipMarker="[...snip...]\n\n", **other):
     for key in other:
         sys.stderr.write("WARNING: unknown config key: '%s'\n" % key)
     if not tag: raise ValueError("'tag' must be specified")
@@ -58,7 +58,7 @@ def snippet(source=None, tag=None, tablength="4", **other):
                         buff.append('')
             if START in line:
                 if emitted:
-                    buff.append(indent + "[...snip...]\n\n")
+                    buff.append(indent + snipMarker)
                 emit = True
         # END SNIPPET: self-test
 

@@ -17,14 +17,13 @@ import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.library.scheduler.schedule.ScheduleRunner;
-import org.qi4j.library.scheduler.slaves.SchedulerWorkQueue;
 
 import java.util.List;
 
 /**
  * Compose an Entity using this type to be able to Schedule it.
  *
- * A Task is wrapped in a {@link ScheduleRunner} before being run by {@link SchedulerWorkQueue}.
+ * A Task is wrapped in a {@link ScheduleRunner} before being run by an executor.
  * {@link ScheduleRunner} wrap a {@link UnitOfWork} around the {@link Task#run()} invocation.
  *
  * Here is a simple example:
@@ -32,14 +31,14 @@ import java.util.List;
  *  interface MyTaskEntity
  *      extends Task, EntityComposite
  *  {
- *      Property<String> customState();
- *      Association<AnotherEntity> anotherEntity();
+ *      Property&lt;String customState();
+ *      Association&lt;AnotherEntity&gt; anotherEntity();
  *  }
  *
  *  abstract class MyTaskMixin
  *      implements Runnable
  *  {
- *      @This MyTaskEntity me;
+ *      &#64;This MyTaskEntity me;
  *      public void run()
  *      {
  *          me.customState().set( me.anotherEntity().get().doSomeStuff( me.customState().get() ) );

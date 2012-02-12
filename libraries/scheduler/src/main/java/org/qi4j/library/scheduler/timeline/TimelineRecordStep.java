@@ -19,5 +19,5 @@ public enum TimelineRecordStep
     RUNNING,
     SUCCESS,
     FAILURE,
-    FUTURE;
+    FUTURE
 }

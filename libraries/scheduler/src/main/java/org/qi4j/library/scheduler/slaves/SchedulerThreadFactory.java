@@ -15,9 +15,11 @@ package org.qi4j.library.scheduler.slaves;
 
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.qi4j.api.injection.scope.This;
+import org.qi4j.library.scheduler.SchedulerService;
 
-class SchedulerThreadFactory
-        implements ThreadFactory
+public class SchedulerThreadFactory
+    implements ThreadFactory
 {
 
     private static final AtomicInteger poolNumber = new AtomicInteger( 1 );
@@ -25,23 +27,24 @@ class SchedulerThreadFactory
     private final AtomicInteger threadNumber = new AtomicInteger( 1 );
     private final String namePrefix;
 
-    SchedulerThreadFactory( String schedulerIdentity )
+    public SchedulerThreadFactory(@This SchedulerService me)
     {
         SecurityManager sm = System.getSecurityManager();
         group = ( sm != null ) ? sm.getThreadGroup() : Thread.currentThread().getThreadGroup();
-        namePrefix = schedulerIdentity + "-P" + poolNumber.getAndIncrement() + "W";
+        namePrefix = me.identity().get() + "-P" + poolNumber.getAndIncrement() + "W";
     }
 
     public Thread newThread( Runnable runnable )
     {
         Thread thread = new Thread( group, runnable, namePrefix + threadNumber.getAndIncrement(), 0 );
-        if ( thread.isDaemon() ) {
+        if( thread.isDaemon() )
+        {
             thread.setDaemon( false );
         }
-        if ( thread.getPriority() != Thread.NORM_PRIORITY ) {
+        if( thread.getPriority() != Thread.NORM_PRIORITY )
+        {
             thread.setPriority( Thread.NORM_PRIORITY );
         }
         return thread;
     }
-
 }

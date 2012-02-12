@@ -86,4 +86,7 @@ public interface Scheduler
     @UnitOfWorkPropagation( MANDATORY )
     Schedule schedule( Task task, @CronExpression String cronExpression, Date start );
 
+
+    /** Internal method. Do not use. */
+    void enqueue( String scheduleIdentity );
 }

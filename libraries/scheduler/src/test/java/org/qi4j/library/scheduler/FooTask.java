@@ -22,7 +22,7 @@ import org.qi4j.library.scheduler.task.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Mixins( value = FooTask.Mixin.class )
+@Mixins( FooTask.Mixin.class )
 public interface FooTask
         extends Task,
                 EntityComposite
@@ -38,6 +38,7 @@ public interface FooTask
     {
 
         private static final Logger LOGGER = LoggerFactory.getLogger( FooTask.class );
+
         @This
         private FooTask me;
 

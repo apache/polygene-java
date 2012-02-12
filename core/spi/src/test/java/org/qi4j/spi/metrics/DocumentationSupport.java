@@ -19,9 +19,6 @@ package org.qi4j.spi.metrics;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import org.qi4j.api.injection.scope.Service;
-import org.qi4j.bootstrap.Assembler;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.ModuleAssembly;
 
 public class DocumentationSupport
 {
@@ -29,7 +26,7 @@ public class DocumentationSupport
     @Service
     private MetricsProvider provider;
     // END SNIPPET: common
-    
+
     public void forDocumentationOnly()
     {
         // START SNIPPET: gauge
@@ -46,21 +43,21 @@ public class DocumentationSupport
             }
         } );
         // END SNIPPET: gauge
-        
+
         // START SNIPPET: counter
         // END SNIPPET: counter
-        
+
         // START SNIPPET: histogram
         // END SNIPPET: histogram
-        
+
         // START SNIPPET: meter
         // END SNIPPET: meter
-        
+
         // START SNIPPET: timer
         // END SNIPPET: timer
-        
+
         // START SNIPPET: healthcheck
         // END SNIPPET: healthcheck
-        
+
     }
 }

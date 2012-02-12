@@ -29,29 +29,28 @@ import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.qi4j.api.common.Visibility.module;
 
 public class SchedulerTest
-        extends AbstractSchedulerTest
+    extends AbstractSchedulerTest
 {
 
     private static final Logger LOGGER = LoggerFactory.getLogger( SchedulerTest.class );
 
     protected void onAssembly( ModuleAssembly testAssembly )
-            throws AssemblyException
+        throws AssemblyException
     {
         new SchedulerAssembler().visibleIn( Visibility.module ).
-                withConfigAssembly( testAssembly ).
-                withPulseRhythm( Constants.PULSE_RHYTHM_SECS ).
-                withGarbageCollectorRhythm( Constants.GC_RHYTHM_SECS ).
-                withTimeline().
-                assemble( testAssembly );
+            withConfigAssembly( testAssembly ).
+            withPulseRhythm( Constants.PULSE_RHYTHM_SECS ).
+            withGarbageCollectorRhythm( Constants.GC_RHYTHM_SECS ).
+            withTimeline().
+            assemble( testAssembly );
     }
 
     @Test
     public void testTask()
-            throws UnitOfWorkCompletionException,
-            InterruptedException
+        throws UnitOfWorkCompletionException,
+               InterruptedException
     {
         UnitOfWork uow = module.newUnitOfWork();
         FooTask task = createFooTask( uow, "TestTask", Constants.BAZAR );
@@ -70,54 +69,63 @@ public class SchedulerTest
 
     @Test
     public void testMinutely()
-            throws InterruptedException,
-            UnitOfWorkCompletionException,
-            Exception
+        throws Exception
     {
         UnitOfWork uow = module.newUnitOfWork();
+        try
+        {
+            Scheduler scheduler = module.<Scheduler>findService( Scheduler.class ).get();
+            DateTime start = new DateTime();
 
-        Scheduler scheduler = module.<Scheduler>findService( Scheduler.class ).get();
-        DateTime start = new DateTime();
+            FooTask task = createFooTask( uow, "TestMinutely", Constants.BAZAR );
+            String taskIdentity = task.identity().get();
 
-        FooTask task = createFooTask( uow, "TestMinutely", Constants.BAZAR );
-        String taskIdentity = task.identity().get();
+            DateTime expectedRun = start.withMillisOfSecond( 0 ).withSecondOfMinute( 0 ).plusMinutes( 1 );
+            scheduler.schedule( task, "@minutely" );
 
-        DateTime expectedRun = start.withMillisOfSecond( 0 ).withSecondOfMinute( 0 ).plusMinutes( 1 );
-        scheduler.schedule( task, "@minutely" );
+            uow.complete();
 
-        uow.complete();
+            LOGGER.info( "Task scheduled on {} to be run at {}", start.getMillis(), expectedRun.getMillis() );
 
-        LOGGER.info( "Task scheduled on {} to be run at {}", start.getMillis(), expectedRun.getMillis() );
+            Thread.sleep( new Interval( start, expectedRun ).toDurationMillis() + 10000 ); // waiting a little more
 
-        Thread.sleep( new Interval( start, expectedRun ).toDurationMillis() + 15000 ); // waiting a little more
+            uow = module.newUnitOfWork();
 
-        uow = module.newUnitOfWork();
+            task = uow.get( FooTask.class, taskIdentity );
+            assertNotNull( task );
+            assertEquals( Constants.BAR, task.output().get() );
 
-        task = uow.get( FooTask.class, taskIdentity );
-        assertNotNull( task );
-        assertEquals( Constants.BAR, task.output().get() );
+            Timeline timeline = module.<Timeline>findService( Timeline.class ).get();
+            DateTime now = new DateTime();
 
-        Timeline timeline = module.<Timeline>findService( Timeline.class ).get();
-        DateTime now = new DateTime();
+            // Queries returning past records
+            assertEquals( 1, Iterables.count( timeline.getLastRecords( 5 ) ) );
+            assertEquals( 1, Iterables.count( timeline.getRecords( start.getMillis(), now.getMillis() ) ) );
 
-        // Queries returning past records
-        assertEquals( 1, Iterables.count( timeline.getLastRecords( 5 ) ) );
-        assertEquals( 1, Iterables.count( timeline.getRecords( start.getMillis(), now.getMillis() ) ) );
+            // Queries returning future records
+            assertEquals( 5, Iterables.count( timeline.getNextRecords( 5 ) ) );
+            assertEquals( 5, Iterables.count( timeline.getRecords( now.getMillis() + 100, now.plusMinutes( 5 )
+                .getMillis() ) ) );
 
-        // Queries returning future records
-        assertEquals( 5, Iterables.count( timeline.getNextRecords( 5 ) ) );
-        assertEquals( 5, Iterables.count( timeline.getRecords( now.getMillis() + 100, now.plusMinutes( 5 ).getMillis() ) ) );
+            // Queries returning mixed past and future records
+            assertEquals( 6, Iterables.count( timeline.getRecords( start.getMillis(), now.plusMinutes( 5 )
+                .getMillis() ) ) );
 
-        // Queries returning mixed past and future records
-        assertEquals( 6, Iterables.count( timeline.getRecords( start.getMillis(), now.plusMinutes( 5 ).getMillis() ) ) );
-
-        uow.complete();
+            uow.complete();
+        }
+        finally
+        {
+            if( uow.isOpen() )
+            {
+                uow.discard();
+            }
+        }
     }
 
     @Test
     public void testOnce()
-            throws UnitOfWorkCompletionException,
-            InterruptedException
+        throws UnitOfWorkCompletionException,
+               InterruptedException
     {
         UnitOfWork uow = module.newUnitOfWork();
 
@@ -140,5 +148,4 @@ public class SchedulerTest
 
         uow.complete();
     }
-
 }

@@ -13,18 +13,23 @@
  */
 package org.qi4j.library.scheduler.timeline;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
-import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.api.query.grammar.EqSpecification;
 import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+import org.qi4j.api.structure.Module;
 import org.qi4j.api.value.ValueBuilder;
-import org.qi4j.api.value.ValueBuilderFactory;
 import org.qi4j.functional.Iterables;
 import org.qi4j.library.scheduler.Scheduler;
 import org.qi4j.library.scheduler.SchedulerService;
@@ -33,44 +38,43 @@ import org.qi4j.library.scheduler.task.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
-
-import static org.qi4j.api.query.QueryExpressions.*;
+import static org.qi4j.api.query.QueryExpressions.and;
+import static org.qi4j.api.query.QueryExpressions.eq;
+import static org.qi4j.api.query.QueryExpressions.ge;
+import static org.qi4j.api.query.QueryExpressions.le;
+import static org.qi4j.api.query.QueryExpressions.orderBy;
+import static org.qi4j.api.query.QueryExpressions.templateFor;
 import static org.qi4j.api.query.grammar.OrderBy.Order.DESCENDING;
 import static org.qi4j.library.scheduler.timeline.TimelineRecordStep.FUTURE;
 import static org.qi4j.library.scheduler.timeline.TimelineRecordStep.RUNNING;
 
 @Mixins( TimelineService.Mixin.class )
 public interface TimelineService
-        extends Timeline,
-                ServiceComposite
+    extends Timeline,
+            ServiceComposite
 {
 
     /**
      * WARN TimelineService Mixin use SortedSets to keep records ordered and repeatedly search for the next run. Could be greedy with large intervals
      */
     abstract class Mixin
-            implements Timeline
+        implements Timeline
     {
 
         private static final Logger LOGGER = LoggerFactory.getLogger( Scheduler.class );
         @Structure
-        private UnitOfWorkFactory uowf;
-        @Structure
-        private ValueBuilderFactory vbf;
-        @Structure
-        private QueryBuilderFactory qbf;
+        private Module module;
         @Service
         private SchedulerService scheduler;
 
         public Iterable<TimelineRecord> getLastRecords( int maxResults )
         {
-            QueryBuilder<TimelineRecord> builder = qbf.newQueryBuilder( TimelineRecord.class );
+            QueryBuilder<TimelineRecord> builder = module.newQueryBuilder( TimelineRecord.class );
             TimelineRecord template = templateFor( TimelineRecord.class );
             builder = builder.where( eqSchedulerIdentity( template ) );
-            return uowf.currentUnitOfWork().newQuery( builder ).
-                    orderBy( orderBy( template.timestamp(), DESCENDING ) ).
-                    maxResults( maxResults );
+            return module.currentUnitOfWork().newQuery( builder ).
+                orderBy( orderBy( template.timestamp(), DESCENDING ) ).
+                maxResults( maxResults );
         }
 
         public Iterable<TimelineRecord> getNextRecords( int maxResults )
@@ -78,20 +82,22 @@ public interface TimelineService
             ScheduleEntity template = templateFor( ScheduleEntity.class );
             OrderBy orderByNextRun = orderBy( template.nextRun() );
 
-            QueryBuilder<ScheduleEntity> queryBuilder = qbf.newQueryBuilder( ScheduleEntity.class );
+            QueryBuilder<ScheduleEntity> queryBuilder = module.newQueryBuilder( ScheduleEntity.class );
             queryBuilder = queryBuilder.where( and( eqSchedulerIdentity( template ),
                                                     ge( template.nextRun(), System.currentTimeMillis() ) ) );
-            Query<ScheduleEntity> query = uowf.currentUnitOfWork().newQuery( queryBuilder );
+            Query<ScheduleEntity> query = module.currentUnitOfWork().newQuery( queryBuilder );
             query = query.orderBy( orderByNextRun ).maxResults( maxResults );
 
-            if ( query.count() == 0 ) {
+            if( query.count() == 0 )
+            {
                 return Collections.emptySet();
             }
 
             List<ScheduleEntity> queryAsList = new ArrayList<ScheduleEntity>();
             SortedSet<TimelineRecord> futureRuns = new TreeSet<TimelineRecord>();
 
-            for ( ScheduleEntity eachSchedule : query ) {
+            for( ScheduleEntity eachSchedule : query )
+            {
                 TimelineRecord record = buildRecordValue( eachSchedule, eachSchedule.nextRun().get() );
                 queryAsList.add( eachSchedule );
                 futureRuns.add( record );
@@ -100,9 +106,11 @@ public interface TimelineService
             boolean alreadyFilled = futureRuns.size() == maxResults;
             long alreadyFilledMax = futureRuns.last().timestamp().get();
 
-            for ( ScheduleEntity eachSchedule : queryAsList ) {
+            for( ScheduleEntity eachSchedule : queryAsList )
+            {
                 Long nextRun = eachSchedule.firstRunAfter( eachSchedule.nextRun().get() );
-                while ( nextRun != null && ( ( alreadyFilled && nextRun < alreadyFilledMax ) || futureRuns.size() < maxResults ) ) {
+                while( nextRun != null && ( ( alreadyFilled && nextRun < alreadyFilledMax ) || futureRuns.size() < maxResults ) )
+                {
                     TimelineRecord record = buildRecordValue( eachSchedule, nextRun );
                     futureRuns.add( record );
                     nextRun = eachSchedule.firstRunAfter( nextRun );
@@ -112,8 +120,10 @@ public interface TimelineService
             // Build final result in a list so that the order is kept
             List<TimelineRecord> result = new ArrayList<TimelineRecord>();
             Iterator<TimelineRecord> it = futureRuns.iterator();
-            for ( int idx = 0; idx < maxResults; idx++ ) {
-                if ( !it.hasNext() ) {
+            for( int idx = 0; idx < maxResults; idx++ )
+            {
+                if( !it.hasNext() )
+                {
                     break;
                 }
                 result.add( it.next() );
@@ -128,28 +138,33 @@ public interface TimelineService
 
         public Iterable<TimelineRecord> getRecords( long from, long to )
         {
-            if ( from > to ) {
+            if( from > to )
+            {
                 throw new IllegalArgumentException( "from (" + from + ") cannot be greater than to (" + to + ")" );
             }
             long now = System.currentTimeMillis();
-            if ( from > now ) {
+            if( from > now )
+            {
                 // Future runs only
                 LOGGER.trace( "TimelineService.getRecords( {}, {} ) Future runs only", from, to );
                 return future( from, to );
             }
-            QueryBuilder<TimelineRecord> builder = qbf.newQueryBuilder( TimelineRecord.class );
+            QueryBuilder<TimelineRecord> builder = module.newQueryBuilder( TimelineRecord.class );
             TimelineRecord template = templateFor( TimelineRecord.class );
             builder = builder.where( and( eqSchedulerIdentity( template ),
                                           ge( template.timestamp(), from ),
                                           le( template.timestamp(), to ) ) );
             OrderBy order = orderBy( template.timestamp() );
-            Iterable<TimelineRecord> pastRecords = uowf.currentUnitOfWork().newQuery( builder ).orderBy( order );
+            Iterable<TimelineRecord> pastRecords = module.currentUnitOfWork().newQuery( builder ).orderBy( order );
 
-            if ( to >= now ) {
+            if( to >= now )
+            {
                 // Mixed past records and future runs
                 LOGGER.trace( "TimelineService.getRecords( {}, {} ) Mixed past records and future runs", from, to );
                 return Iterables.flatten( pastRecords, future( now, to ) );
-            } else {
+            }
+            else
+            {
                 LOGGER.trace( "TimelineService.getRecords( {}, {} ) Past records only", from, to );
             }
 
@@ -158,25 +173,26 @@ public interface TimelineService
 
         private Iterable<TimelineRecord> future( long from, long to )
         {
-            QueryBuilder<ScheduleEntity> queryBuilder = qbf.newQueryBuilder( ScheduleEntity.class );
+            QueryBuilder<ScheduleEntity> queryBuilder = module.newQueryBuilder( ScheduleEntity.class );
             ScheduleEntity template = templateFor( ScheduleEntity.class );
             queryBuilder = queryBuilder.where( and( eqSchedulerIdentity( template ),
                                                     ge( template.nextRun(), from ),
                                                     le( template.nextRun(), to ) ) );
             OrderBy order = orderBy( template.nextRun() );
-            Query<ScheduleEntity> query = uowf.currentUnitOfWork().newQuery( queryBuilder ).orderBy( order );
+            Query<ScheduleEntity> query = module.currentUnitOfWork().newQuery( queryBuilder ).orderBy( order );
 
             SortedSet<TimelineRecord> futureRuns = new TreeSet<TimelineRecord>();
-            for ( ScheduleEntity eachSchedule : query ) {
+            for( ScheduleEntity eachSchedule : query )
+            {
 
                 Long nextRun = eachSchedule.nextRun().get();
-                while ( nextRun <= to ) {
+                while( nextRun <= to )
+                {
 
                     futureRuns.add( buildRecordValue( eachSchedule, nextRun ) );
 
                     nextRun = eachSchedule.firstRunAfter( nextRun );
                 }
-
             }
 
             return futureRuns;
@@ -184,7 +200,7 @@ public interface TimelineService
 
         private TimelineRecord buildRecordValue( ScheduleEntity schedule, long timestamp )
         {
-            ValueBuilder<TimelineRecordValue> recordBuilder = vbf.newValueBuilder( TimelineRecordValue.class );
+            ValueBuilder<TimelineRecordValue> recordBuilder = module.newValueBuilder( TimelineRecordValue.class );
             TimelineRecordValue record = recordBuilder.prototype();
 
             record.schedulerIdentity().set( scheduler.identity().get() );
@@ -197,8 +213,8 @@ public interface TimelineService
 
             StringBuilder details = new StringBuilder();
             details.append( schedule.durable().get() ? "Durable " : "Non durable " ).
-                    append( "Schedule " ).
-                    append( schedule.cronExpression().get() );
+                append( "Schedule " ).
+                append( schedule.cronExpression().get() );
             record.details().set( details.toString() );
 
             return recordBuilder.newInstance();
@@ -213,7 +229,5 @@ public interface TimelineService
         {
             return eq( template.schedulerIdentity(), scheduler.identity().get() );
         }
-
     }
-
 }

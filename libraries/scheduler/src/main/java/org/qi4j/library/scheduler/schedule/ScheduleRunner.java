@@ -31,13 +31,15 @@ import org.slf4j.LoggerFactory;
  * Handle {@link Task}'s {@link UnitOfWork} and {@link TimelineRecord}s creation.
  */
 public class ScheduleRunner
-        implements Runnable
+    implements Runnable
 {
 
     private static final Logger LOGGER = LoggerFactory.getLogger( Scheduler.class );
     private final String scheduleIdentity;
+
     @Structure
     private UnitOfWorkFactory uowf;
+
     @Optional
     @Service
     private TimelineRecorderService timelineRecorder;
@@ -51,75 +53,75 @@ public class ScheduleRunner
     public void run()
     {
         boolean taskRan = false;
-        try {
-
+        try
+        {
             UnitOfWork uow = uowf.newUnitOfWork();
-
             ScheduleEntity schedule = uow.get( ScheduleEntity.class, scheduleIdentity );
             Task task = schedule.task().get();
-
-            try {
-
+            try
+            {
                 task.run();
                 recordSuccess( task );
-
                 taskRan = true;
-
-            } catch ( Throwable ex ) {
-
-                recordFailure( task, ex );
-
             }
-
+            catch( Throwable ex )
+            {
+                recordFailure( task, ex );
+            }
             schedule.running().set( false );
-
             uow.complete();
-
-        } catch ( UnitOfWorkCompletionException ex ) {
-
-            if ( taskRan ) {
-
+        }
+        catch( UnitOfWorkCompletionException ex )
+        {
+            if( taskRan )
+            {
                 LOGGER.warn( "Task ran but UoW did not complete, setting the Schedule as not running: {}", ex.getMessage(), ex );
                 UnitOfWork uow = uowf.newUnitOfWork();
                 ScheduleEntity schedule = uow.get( ScheduleEntity.class, scheduleIdentity );
                 schedule.running().set( false );
                 recordSuccess( schedule.task().get() );
-                try {
+                try
+                {
                     uow.complete();
-                } catch ( UnitOfWorkCompletionException fault ) {
+                }
+                catch( UnitOfWorkCompletionException fault )
+                {
                     LOGGER.error( "Task ran but UoW did not complete, was unable to set the Schedule as not running, this must be serious", fault );
                 }
-
-            } else {
-
-                LOGGER.warn( "Task raised an exception and UoW did not complete, setting the Schedule as not running: {}", ex.getMessage(), ex );
+            }
+            else
+            {
+                String message = "Task raised an exception and UoW did not complete, setting the Schedule as not running: {}";
+                LOGGER.warn( message, ex.getMessage(), ex );
                 UnitOfWork uow = uowf.newUnitOfWork();
                 ScheduleEntity schedule = uow.get( ScheduleEntity.class, scheduleIdentity );
                 schedule.running().set( false );
                 recordFailure( schedule.task().get(), ex );
-                try {
+                try
+                {
                     uow.complete();
-                } catch ( UnitOfWorkCompletionException fault ) {
+                }
+                catch( UnitOfWorkCompletionException fault )
+                {
                     LOGGER.error( "Task raised an exception and UoW did not complete, was unable to set the Schedule as not running, this must be serious", fault );
                 }
-
             }
-
         }
     }
 
     private void recordSuccess( Task task )
     {
-        if ( timelineRecorder != null ) {
+        if( timelineRecorder != null )
+        {
             timelineRecorder.recordSuccess( task );
         }
     }
 
     private void recordFailure( Task task, Throwable cause )
     {
-        if ( timelineRecorder != null ) {
+        if( timelineRecorder != null )
+        {
             timelineRecorder.recordFailure( task, cause );
         }
     }
-
 }

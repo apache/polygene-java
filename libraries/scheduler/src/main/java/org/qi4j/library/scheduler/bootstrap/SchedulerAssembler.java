@@ -25,7 +25,6 @@ import org.qi4j.library.scheduler.schedule.ScheduleRepository;
 import org.qi4j.library.scheduler.schedule.ScheduleRunner;
 import org.qi4j.library.scheduler.slaves.SchedulerGarbageCollector;
 import org.qi4j.library.scheduler.slaves.SchedulerPulse;
-import org.qi4j.library.scheduler.slaves.SchedulerWorkQueue;
 import org.qi4j.library.scheduler.timeline.TimelineRecordEntity;
 import org.qi4j.library.scheduler.timeline.TimelineRecordValue;
 import org.qi4j.library.scheduler.timeline.TimelineRecorderService;
@@ -53,7 +52,7 @@ import static org.qi4j.api.common.Visibility.module;
  * </pre>
  */
 public class SchedulerAssembler
-        implements Assembler
+    implements Assembler
 {
 
     private Visibility visibility = module;
@@ -72,8 +71,9 @@ public class SchedulerAssembler
     /**
      * Set the ModuleAssembly to use for Configuration entities.
      *
-     * @param configAssembly    ModuleAssembly to use for Configuration entities
-     * @return                  SchedulerAssembler
+     * @param configAssembly ModuleAssembly to use for Configuration entities
+     *
+     * @return SchedulerAssembler
      */
     public SchedulerAssembler withConfigAssembly( ModuleAssembly configAssembly )
     {
@@ -84,8 +84,9 @@ public class SchedulerAssembler
     /**
      * Set the configuration entity visibility.
      *
-     * @param configVisibility  SchedulerConfiguration visibility
-     * @return                  SchedulerAssembler
+     * @param configVisibility SchedulerConfiguration visibility
+     *
+     * @return SchedulerAssembler
      */
     public SchedulerAssembler withConfigVisibility( Visibility configVisibility )
     {
@@ -95,9 +96,10 @@ public class SchedulerAssembler
 
     /**
      * Set the pulse rhythm.
-     * 
-     * @param pulseRhythm   Scheduler pulse rhythm in seconds
-     * @return                  SchedulerAssembler
+     *
+     * @param pulseRhythm Scheduler pulse rhythm in seconds
+     *
+     * @return SchedulerAssembler
      */
     public SchedulerAssembler withPulseRhythm( Integer pulseRhythm )
     {
@@ -108,8 +110,9 @@ public class SchedulerAssembler
     /**
      * Set the garbage collector rhythm.
      *
-     * @param garbageCollectorRhythm    Scheduler garbage collector rhythm in seconds
-     * @return                  SchedulerAssembler
+     * @param garbageCollectorRhythm Scheduler garbage collector rhythm in seconds
+     *
+     * @return SchedulerAssembler
      */
     public SchedulerAssembler withGarbageCollectorRhythm( Integer garbageCollectorRhythm )
     {
@@ -119,8 +122,8 @@ public class SchedulerAssembler
 
     /**
      * Activate the assembly of Timeline related services.
-     * 
-     * @return                  SchedulerAssembler
+     *
+     * @return SchedulerAssembler
      */
     public SchedulerAssembler withTimeline()
     {
@@ -129,74 +132,75 @@ public class SchedulerAssembler
     }
 
     public void assemble( ModuleAssembly assembly )
-            throws AssemblyException
+        throws AssemblyException
     {
         assembleInternals( assembly );
         assembleExposed( assembly );
-        if ( configAssembly != null ) {
+        if( configAssembly != null )
+        {
             assembleConfig( configAssembly );
         }
-        if ( timeline ) {
+        if( timeline )
+        {
             assembleTimeline( assembly );
         }
     }
 
     private void assembleInternals( ModuleAssembly assembly )
-            throws AssemblyException
+        throws AssemblyException
     {
         assembly.objects( SchedulerPulse.class,
                           SchedulerGarbageCollector.class,
-                          SchedulerWorkQueue.class,
-                          ScheduleRunner.class ).
-                visibleIn( module );
+                          ScheduleRunner.class )
+            .visibleIn( module );
 
         assembly.services( ScheduleFactory.class,
-                           ScheduleRepository.class ).
-                visibleIn( module );
+                           ScheduleRepository.class )
+            .visibleIn( module );
     }
 
     private void assembleExposed( ModuleAssembly assembly )
-            throws AssemblyException
+        throws AssemblyException
     {
-        assembly.services( SchedulerService.class ).
-                visibleIn( visibility ).
-                instantiateOnStartup();
+        assembly.services( SchedulerService.class )
+            .visibleIn( visibility )
+            .instantiateOnStartup();
 
-        assembly.entities( ScheduleEntity.class ).
-                visibleIn( visibility );
-
+        assembly.entities( ScheduleEntity.class )
+            .visibleIn( visibility );
     }
 
     private void assembleConfig( ModuleAssembly configAssembly )
-            throws AssemblyException
+        throws AssemblyException
     {
         configAssembly.entities( SchedulerConfiguration.class ).visibleIn( configVisibility );
-        if ( pulseRhythm != null || garbageCollectorRhythm != null ) {
+        if( pulseRhythm != null || garbageCollectorRhythm != null )
+        {
             SchedulerConfiguration config = configAssembly.forMixin( SchedulerConfiguration.class ).declareDefaults();
-            if ( pulseRhythm != null ) {
+            if( pulseRhythm != null )
+            {
                 config.pulseRhythmSeconds().set( pulseRhythm );
             }
-            if ( garbageCollectorRhythm != null ) {
+            if( garbageCollectorRhythm != null )
+            {
                 config.garbageCollectorRhythmSeconds().set( garbageCollectorRhythm );
             }
         }
     }
 
     private void assembleTimeline( ModuleAssembly assembly )
-            throws AssemblyException
+        throws AssemblyException
     {
         // Internal
-        assembly.services( TimelineRecorderService.class ).
-                visibleIn( module );
+        assembly.services( TimelineRecorderService.class )
+            .visibleIn( module );
 
         // Exposed
-        assembly.values( TimelineRecordValue.class ).
-                visibleIn( visibility );
-        assembly.entities( TimelineRecordEntity.class ).
-                visibleIn( visibility );
-        assembly.services( TimelineService.class ).
-                visibleIn( visibility );
-
+        assembly.values( TimelineRecordValue.class )
+            .visibleIn( visibility );
+        assembly.entities( TimelineRecordEntity.class )
+            .visibleIn( visibility );
+        assembly.services( TimelineService.class )
+            .visibleIn( visibility );
     }
-
 }

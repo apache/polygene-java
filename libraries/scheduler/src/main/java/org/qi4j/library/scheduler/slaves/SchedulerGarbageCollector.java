@@ -15,49 +15,67 @@ package org.qi4j.library.scheduler.slaves;
 
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
-import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.query.Query;
+import org.qi4j.api.structure.Module;
+import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
-import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-
 import org.qi4j.library.scheduler.SchedulerService;
 import org.qi4j.library.scheduler.schedule.ScheduleEntity;
 import org.qi4j.library.scheduler.schedule.ScheduleRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Continuously prune non-used and non-durable {@link ScheduleEntity}s.
  */
 public class SchedulerGarbageCollector
-        extends AbstractRhythmedSchedulerSlave
+    implements Runnable
 {
+    public static final Logger logger = LoggerFactory.getLogger( SchedulerGarbageCollector.class );
 
     @Structure
-    private UnitOfWorkFactory uowf;
+    private Module module;
+
     @Service
     private SchedulerService scheduler;
+
     @Service
     private ScheduleRepository scheduleRepository;
 
-    public SchedulerGarbageCollector( @Uses Long rhythm )
-    {
-        super( "GC", rhythm );
-    }
-
     @Override
-    void cycle()
-            throws UnitOfWorkCompletionException
+    public void run()
     {
-        UnitOfWork uow = uowf.newUnitOfWork();
-        Query<ScheduleEntity> toDelQuery = scheduleRepository.findNotDurableWithoutNextRun( scheduler.identity().get() );
-        long toDelCount = toDelQuery.count();
-        if ( toDelCount > 0 ) {
-            LOGGER.debug( "GC found {} not durable schedules without next run, removing them", toDelCount );
-            for ( ScheduleEntity eachToDel : toDelQuery ) {
-                uow.remove( eachToDel );
+        UnitOfWork uow = module.newUnitOfWork();
+        try
+        {
+            Query<ScheduleEntity> toDelQuery = scheduleRepository.findNotDurableWithoutNextRun( scheduler.identity()
+                                                                                                    .get() );
+            long toDelCount = toDelQuery.count();
+            if( toDelCount > 0 )
+            {
+                logger.debug( "GC found {} not durable schedules without next run, removing them", toDelCount );
+                for( ScheduleEntity eachToDel : toDelQuery )
+                {
+                    uow.remove( eachToDel );
+                }
+            }
+            uow.complete();
+        }
+        catch( ConcurrentEntityModificationException e )
+        {
+            logger.info( "Garbage Collection of Schedules failed. Should recover by itself." );
+        }
+        catch( UnitOfWorkCompletionException e )
+        {
+            logger.info( "Garbage Collection of Schedules failed. Should recover by itself." );
+        }
+        finally
+        {
+            if( uow.isOpen() )
+            {
+                uow.discard();
             }
         }
-        uow.complete();
     }
-
 }

@@ -18,8 +18,8 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.library.scheduler.SchedulerService;
 import org.qi4j.library.scheduler.schedule.ScheduleRunner;
 import org.qi4j.library.scheduler.task.Task;
@@ -61,13 +61,13 @@ public interface TimelineRecorderService
     {
 
         @Structure
-        private UnitOfWorkFactory uowf;
+        private Module module;
         @Service
         private SchedulerService scheduler;
 
         public TimelineRecord recordSuccess( Task task )
         {
-            UnitOfWork uow = uowf.currentUnitOfWork();
+            UnitOfWork uow = module.currentUnitOfWork();
             EntityBuilder<TimelineRecordEntity> builder = uow.newEntityBuilder( TimelineRecordEntity.class );
             TimelineRecordEntity record = builder.instance();
             record.schedulerIdentity().set( scheduler.identity().get() );
@@ -87,7 +87,7 @@ public interface TimelineRecorderService
 
         private TimelineRecord recordFailure( Task task, String details )
         {
-            UnitOfWork uow = uowf.currentUnitOfWork();
+            UnitOfWork uow = module.currentUnitOfWork();
             EntityBuilder<TimelineRecordEntity> builder = uow.newEntityBuilder( TimelineRecordEntity.class );
             TimelineRecordEntity record = builder.instance();
             record.schedulerIdentity().set( scheduler.identity().get() );

@@ -13,76 +13,84 @@
  */
 package org.qi4j.library.scheduler.slaves;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
-import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.query.Query;
+import org.qi4j.api.structure.Module;
+import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
-import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.library.scheduler.Scheduler;
 import org.qi4j.library.scheduler.SchedulerService;
 import org.qi4j.library.scheduler.schedule.ScheduleEntity;
 import org.qi4j.library.scheduler.schedule.ScheduleRepository;
 import org.qi4j.library.scheduler.task.Task;
-
-import java.util.ArrayList;
-import java.util.Collection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Heartbeat of the {@link Scheduler}, load runnable {@link Task}s and enqueue them in the {@link SchedulerWorkQueue}.
+ * Heartbeat of the {@link Scheduler}, load runnable {@link Task}s and enqueue them in the {@link Scheduler}.
  */
 public class SchedulerPulse
-        extends AbstractRhythmedSchedulerSlave
+    implements Runnable
 {
+    private static final Logger logger = LoggerFactory.getLogger( SchedulerPulse.class );
 
     @Structure
-    private UnitOfWorkFactory uowf;
+    private Module module;
+
     @Service
     private SchedulerService scheduler;
+
     @Service
     private ScheduleRepository scheduleRepository;
-    private final SchedulerWorkQueue workQueue;
+
     private long lastCycleEnd = -1;
 
-    public SchedulerPulse( @Uses Long rhythm, @Uses SchedulerWorkQueue workQueue )
-    {
-        super( "Pulse", rhythm );
-        this.workQueue = workQueue;
-    }
-
     @Override
-    protected void onRun()
+    public void run()
     {
-        lastCycleEnd = System.currentTimeMillis();
-    }
-
-    @Override
-    void cycle()
-            throws UnitOfWorkCompletionException
-    {
-        if ( lastCycleEnd == -1 ) {
-            throw new InternalError( "onRun has not been called, this must be a bug" );
-        }
         long cycleEnd = System.currentTimeMillis() + 1;
 
-        UnitOfWork uow = uowf.newUnitOfWork();
+        UnitOfWork uow = module.newUnitOfWork();
+        try
+        {
 
-        Query<ScheduleEntity> toRun = scheduleRepository.findRunnables( scheduler.identity().get(), lastCycleEnd + 1, cycleEnd );
-        Collection<String> schedulesIdentities = new ArrayList<String>();
-        for ( ScheduleEntity eachSchedule : toRun ) {
-            schedulesIdentities.add( eachSchedule.identity().get() );
-            eachSchedule.running().set( true );
+            Query<ScheduleEntity> toRun = scheduleRepository.findRunnables( scheduler.identity()
+                                                                                .get(), lastCycleEnd + 1, cycleEnd );
+            Collection<String> schedulesIdentities = new ArrayList<String>();
+            for( ScheduleEntity eachSchedule : toRun )
+            {
+                schedulesIdentities.add( eachSchedule.identity().get() );
+                eachSchedule.running().set( true );
+            }
+
+            uow.complete();
+
+            for( String eachScheduleIdentity : schedulesIdentities )
+            {
+                logger.info( "Queueing " + eachScheduleIdentity );
+                scheduler.enqueue( eachScheduleIdentity );
+            }
+
+            lastCycleEnd = cycleEnd;
         }
-
-        uow.complete();
-
-
-        for ( String eachScheduleIdentity : schedulesIdentities ) {
-            workQueue.enqueue( eachScheduleIdentity );
+        catch( ConcurrentEntityModificationException e )
+        {
+            logger.info( "Garbage Collection of Schedules failed. Should recover by itself." );
         }
-
-        lastCycleEnd = cycleEnd;
+        catch( UnitOfWorkCompletionException e )
+        {
+            logger.info( "Garbage Collection of Schedules failed. Should recover by itself." );
+        }
+        finally
+        {
+            if( uow.isOpen() )
+            {
+                uow.discard();
+            }
+        }
     }
-
 }

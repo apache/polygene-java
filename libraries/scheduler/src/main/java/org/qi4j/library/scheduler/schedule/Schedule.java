@@ -15,6 +15,8 @@ package org.qi4j.library.scheduler.schedule;
 
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.entity.Queryable;
+import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.structure.Application;
@@ -27,6 +29,7 @@ import org.qi4j.library.scheduler.task.Task;
 /**
  * Represent the scheduling of a {@link Task}.
  */
+@Mixins( Schedule.ScheduleMixin.class )
 public interface Schedule
 {
 
@@ -59,4 +62,18 @@ public interface Schedule
     @UseDefaults
     Property<Boolean> durable();
 
+
+    public abstract class ScheduleMixin
+        implements Schedule
+    {
+
+        @This
+        private ScheduleEntity me;
+
+        public boolean isTaskRunning()
+        {
+            return me.running().get();
+        }
+
+    }
 }
