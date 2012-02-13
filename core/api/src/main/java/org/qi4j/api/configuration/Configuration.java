@@ -29,6 +29,8 @@ import org.qi4j.api.unitofwork.*;
 
 import java.io.IOException;
 import java.io.InputStream;
+import org.qi4j.api.usecase.Usecase;
+import org.qi4j.api.usecase.UsecaseBuilder;
 
 /**
  * Provide Configurations for Services. A Service that wants to be configurable
@@ -145,7 +147,7 @@ public interface Configuration<T>
         private ServiceComposite me;
 
         @Structure
-        private UnitOfWorkFactory uowf;
+        private Module module;
 
         public ConfigurationMixin()
         {
@@ -155,7 +157,8 @@ public interface Configuration<T>
         {
             if( configuration == null )
             {
-                uow = uowf.newUnitOfWork();
+                Usecase usecase = UsecaseBuilder.newUsecase( "Configuration:" + me.identity().get() );
+                uow = module.newUnitOfWork(usecase);
                 try
                 {
                     configuration = this.<T>getConfigurationInstance( me, uow );
@@ -241,7 +244,8 @@ public interface Configuration<T>
     {
         T configuration;
         Module module = api.getModule( serviceComposite );
-        UnitOfWork buildUow = module.newUnitOfWork();
+        Usecase usecase = UsecaseBuilder.newUsecase( "Configuration:" + me.identity().get() );
+        UnitOfWork buildUow = module.newUnitOfWork(usecase);
 
         EntityBuilder<T> configBuilder = buildUow.newEntityBuilder( serviceModel.<T>configurationType(), identity );
 
