@@ -1,7 +1,5 @@
-[preface]
 [[preface]]
-Preface
-=======
+= Preface =
 
 This is the reference manual for Qi4j version {qi4j-version}, written by members of the Qi4j Community.
 

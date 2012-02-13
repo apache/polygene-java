@@ -34,26 +34,70 @@ body #toolbar_item command_help
     line-height: 16px !important;
 }
 
+.syntaxhighlighter {
+	background-color: rgba(11,117,188,0.1) !important;
+	overflow: visible !important;
+	border: 1px solid #0b75bc;
+	padding: 8px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+}
+
+.syntaxhighlighter .line.alt1 {
+	background-color: rgba(11,117,188,0.05) !important;
+}
+.syntaxhighlighter .line.alt2 {
+	background-color:  rgba(11,117,188,0.1)  !important;
+}
+
 html
 {
-    background-image: url(bg.jpg);
-    background-repeat: repeat-x;
     text-align: center;
 }
 
 html body
 {
-    background: url("header-base.jpg");
-    background-repeat: no-repeat;
+    background: url("bg.png");
     margin: 0 auto;
-    padding-top: 5px;
-    width: 92%;
     text-align: left;
+}
+
+div.navheader, div.navfooter {
+	padding: 0 5%;
 }
 
 body, div.navheader th, div.navheader td, div.navfooter td
 {
-    font-family: "Lucida Bright", Cambria, serif;
+    font-family: Georgia, "Times New Roman", Times, serif;
+	color: #4c4c4c;
+}
+
+a {
+	color: #0b75bc;
+}
+
+a:hover {
+	text-decoration: none;
+}
+
+a:visited {
+	color: #08568a;
+}
+
+hr {
+	border-color: #0b75bc;
+	border-style: solid;
+}
+
+.navheader a {
+	color: #acacac;
+	text-decoration: none;
+	font-family: Helvetica, Arial, sans-serif;
+}
+
+.navheader a:hover, .navfooter a:hover {
+	text-decoration: underline;
 }
 
 h1, h2, h3, h4, h5, h6,
@@ -67,8 +111,15 @@ th,
 div.table-contents td p span.strong strong,
 tr.question td b p
 {
-    color: #15708E;
-    font-family: Candara, Myriad Pro, Myriad, "Lucida Sans", "Trebuchet MS", sans-serif;
+    color: #0b75bc;
+    font-family: Helvetica, Arial, sans-serif;
+	text-shadow: 0 1px 0 #fff;
+}
+
+
+.book, .chapter, .part {
+	width:90%;
+	margin: 0 auto;
 }
 
 body h4.title
@@ -104,12 +155,8 @@ tr.answer td
 
 div.navheader
 {
-    position: absolute;
-    right: 26px;
-    top: 112px;
-    width: 4em;
-    text-align: right;
-    z-index: 10;
+	height: 50px;
+	background: url(navHead_bg.png) repeat-x;
 }
 
 div.navheader hr
@@ -149,7 +196,7 @@ p.legalnotice-title
 
 body > div.book h1.title
 {
-    margin-top: 0;
+    margin-top: 0.5em;
     padding-top: 0;
     margin-bottom: 0;
 }
@@ -157,6 +204,22 @@ body > div.book h1.title
 div.part h1.title
 {
     margin-top: 1.5em;
+}
+
+.book div.titlepage {
+	position: absolute;
+	top: 40px;
+	background: url(logo.png) no-repeat left top;
+	min-height: 250px;
+	padding-left: 150px;
+}
+
+.book div.titlepage .authorgroup {
+	font-size: 150%;
+}
+
+.book div.titlepage hr {
+	display: none;
 }
 
 div.titlepage h3.corpauthor
@@ -201,8 +264,9 @@ div.refnamediv p
 
 p, li, dt, div.navheader th, div.navheader td, div.navfooter td
 {
-    font-family: "Lucida Bright", Cambria, serif;
+    font-family: Georgia, "Times New Roman", Times, serif;
     font-size: .9375em;
+	text-shadow: 0 1px 0 #fff;
 }
 
 p, ul, ol
@@ -216,7 +280,7 @@ li p
     margin-bottom: 0.5em;
 }
 
-div.toc p, div.list-of-figures p, div.list-of-tables p
+div.list-of-figures p, div.list-of-tables p
 {
     margin-top: 1.5em;
 }
@@ -232,9 +296,47 @@ div.toc
     margin-bottom: 1em;
 }
 
+.book .toc {
+	margin-top: 220px;
+}
+
+div.toc p {
+	width: 100%;
+	font-family: Helvetica, Arial, sans-serif;
+	color: #0b75bc;
+	font-size: 120%;
+	border-bottom: 1px solid #0b75bc;
+}
+
+div.toc a, div.toc a:visited {
+	color: #0b75bc;
+}
+
+div.toc dt {
+	margin-bottom: 3px;
+}
+
+div.toc dl dl {
+	margin: 5px 0;
+}
+
 p.copyright
 {
-    margin-top: 20px;
+    margin: 0;
+	padding: 10px 0 5px 0;
+	text-align: center;
+	max-width: 100%;
+	background: #0b75bc url(copyright_bg.png) repeat-x top;
+	color: #fff;
+	text-shadow: none;
+	border-bottom: 1px solid #095e96;
+}
+
+.titlepage p.copyright {
+	background: none;
+	border: none;
+	text-align: left;
+	color: #0b75bc;
 }
 
 code.literal
@@ -257,6 +359,10 @@ p
 {
     line-height: 1.6em;
     max-width: 45em;
+}
+
+.toc p {
+	max-width: 100%;
 }
 
 ul, ol
@@ -398,5 +504,19 @@ div.slide h1
 div.slide p, div.slide li
 {
     font-size: 1.25em;
+}
+
+.navfooter{
+	background: #0b75bc;
+	border: 1px solid #0b75bc;
+	border-top: 1px solid #3c91c9;
+}
+
+.navfooter a {
+	color: #fff;
+	color: rgba(255,255,255,0.8);
+	text-decoration: none;
+	text-shadow: none;
+	font-family: Helvetica, Arial, sans-serif;
 }
 

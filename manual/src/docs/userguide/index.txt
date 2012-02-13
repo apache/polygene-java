@@ -7,6 +7,6 @@
 include::preface.txt[]
 include::../../../tutorials/introduction/src/docs/index.txt[]
 include::core.txt[]
-include::core.txt[]
 include::libaries.txt[]
 include::extensions.txt[]
+include::concepts.txt[]
