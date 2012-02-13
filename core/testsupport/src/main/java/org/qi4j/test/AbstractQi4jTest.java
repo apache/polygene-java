@@ -131,6 +131,7 @@ public abstract class AbstractQi4jTest
                 UnitOfWork uow = module.currentUnitOfWork();
                 if( uow.isOpen() )
                 {
+                    System.err.println( "UnitOfWork not cleaned up:" + uow.usecase().name() );
                     uow.discard();
                 }
                 else
