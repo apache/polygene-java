@@ -128,6 +128,12 @@ public class IterableQuerySource
         }
     }
 
+    @Override
+    public String toString()
+    {
+        return "IterableQuerySource{" + iterable + '}';
+    }
+
     private class OrderByComparator<T extends Composite>
         implements Comparator<T>
     {

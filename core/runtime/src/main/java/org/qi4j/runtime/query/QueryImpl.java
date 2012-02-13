@@ -18,6 +18,9 @@
  */
 package org.qi4j.runtime.query;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.query.Query;
@@ -27,10 +30,6 @@ import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specification;
 import org.qi4j.spi.query.QuerySource;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Default implementation of {@link org.qi4j.api.query.Query}
@@ -87,22 +86,26 @@ class QueryImpl<T>
      */
     public Query<T> orderBy( final OrderBy... segments )
     {
-        orderBySegments = Iterables.iterable(segments);
+        orderBySegments = Iterables.iterable( segments );
         return this;
     }
 
     @Override
     public Query<T> orderBy( Property<?> property, OrderBy.Order order )
     {
-        if (orderBySegments == null)
+        if( orderBySegments == null )
+        {
             orderBySegments = Iterables.iterable( new OrderBy( QueryExpressions.property( property ), order ) );
+        }
         else
+        {
             orderBySegments = Iterables.append( new OrderBy( QueryExpressions.property( property ), order ), orderBySegments );
+        }
         return this;
     }
 
     @Override
-    public Query<T> orderBy( Property<?> property)
+    public Query<T> orderBy( Property<?> property )
     {
         orderBy( property, OrderBy.Order.ASCENDING );
         return this;
@@ -132,8 +135,10 @@ class QueryImpl<T>
     @SuppressWarnings( "unchecked" )
     public Query<T> setVariable( final String name, final Object value )
     {
-        if (variables == null)
-            variables = new HashMap<String, Object>(  );
+        if( variables == null )
+        {
+            variables = new HashMap<String, Object>();
+        }
         variables.put( name, value );
 
         return this;
@@ -145,10 +150,14 @@ class QueryImpl<T>
     @SuppressWarnings( "unchecked" )
     public <V> V getVariable( final String name )
     {
-        if (variables == null)
+        if( variables == null )
+        {
             return null;
+        }
         else
+        {
             return (V) variables.get( name );
+        }
     }
 
     public Class<T> resultType()
@@ -157,20 +166,36 @@ class QueryImpl<T>
     }
 
     @Override
-    public T find() throws QueryExecutionException
+    public T find()
+        throws QueryExecutionException
     {
-        return querySource.find(resultType, whereClause, orderBySegments, firstResult, maxResults, variables);
+        return querySource.find( resultType, whereClause, orderBySegments, firstResult, maxResults, variables );
     }
 
     @Override
-    public long count() throws QueryExecutionException
+    public long count()
+        throws QueryExecutionException
     {
-        return querySource.count(resultType,  whereClause, orderBySegments, firstResult, maxResults, variables);
+        return querySource.count( resultType, whereClause, orderBySegments, firstResult, maxResults, variables );
     }
 
     @Override
     public Iterator<T> iterator()
     {
-        return querySource.iterator(resultType, whereClause, orderBySegments, firstResult, maxResults, variables);
+        return querySource.iterator( resultType, whereClause, orderBySegments, firstResult, maxResults, variables );
+    }
+
+    @Override
+    public String toString()
+    {
+        return "Query{" +
+               " FROM " + querySource +
+               " WHERE " + whereClause +
+               ( orderBySegments != null ? " ORDER BY " + orderBySegments : "" ) +
+               ( firstResult != null ? " FIRST " + firstResult : "" ) +
+               ( maxResults != null ? " MAX " + maxResults : "" ) +
+               " EXPECT " + resultType +
+               ( variables != null ? " WITH VARIABLES " + variables : "" ) +
+               '}';
     }
 }

@@ -423,5 +423,11 @@ public class ModuleUnitOfWork
                 throw new QueryExecutionException( "Query '" + toString() + "' could not be executed", e );
             }
         }
+
+        @Override
+        public String toString()
+        {
+            return "UnitOfWork( " + moduleUnitOfWork.usecase().name() + " )";
+        }
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2008-2011, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,31 @@
 
 package org.qi4j.runtime.structure;
 
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
+import java.util.concurrent.ConcurrentHashMap;
 import org.json.JSONException;
 import org.json.JSONTokener;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.composite.*;
+import org.qi4j.api.composite.AmbiguousTypeException;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.composite.ModelDescriptor;
+import org.qi4j.api.composite.NoSuchCompositeException;
+import org.qi4j.api.composite.TransientBuilder;
+import org.qi4j.api.composite.TransientBuilderFactory;
+import org.qi4j.api.composite.TransientDescriptor;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
@@ -30,8 +48,8 @@ import org.qi4j.api.event.ActivationEventListener;
 import org.qi4j.api.json.JSONDeserializer;
 import org.qi4j.api.json.JSONObjectSerializer;
 import org.qi4j.api.object.NoSuchObjectException;
-import org.qi4j.api.object.ObjectFactory;
 import org.qi4j.api.object.ObjectDescriptor;
+import org.qi4j.api.object.ObjectFactory;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.query.QueryBuilder;
@@ -46,10 +64,26 @@ import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.util.Classes;
 import org.qi4j.api.util.NullArgumentException;
-import org.qi4j.api.value.*;
-import org.qi4j.functional.*;
-import org.qi4j.runtime.association.*;
-import org.qi4j.runtime.composite.*;
+import org.qi4j.api.value.NoSuchValueException;
+import org.qi4j.api.value.ValueBuilder;
+import org.qi4j.api.value.ValueBuilderFactory;
+import org.qi4j.api.value.ValueComposite;
+import org.qi4j.api.value.ValueDescriptor;
+import org.qi4j.functional.Function;
+import org.qi4j.functional.Function2;
+import org.qi4j.functional.Iterables;
+import org.qi4j.functional.Specification;
+import org.qi4j.functional.Specifications;
+import org.qi4j.runtime.association.AssociationInfo;
+import org.qi4j.runtime.association.AssociationInstance;
+import org.qi4j.runtime.association.AssociationModel;
+import org.qi4j.runtime.association.ManyAssociationInstance;
+import org.qi4j.runtime.association.ManyAssociationModel;
+import org.qi4j.runtime.composite.TransientBuilderInstance;
+import org.qi4j.runtime.composite.TransientModel;
+import org.qi4j.runtime.composite.TransientStateInstance;
+import org.qi4j.runtime.composite.TransientsModel;
+import org.qi4j.runtime.composite.UsesInstance;
 import org.qi4j.runtime.entity.EntitiesModel;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
@@ -65,24 +99,28 @@ import org.qi4j.runtime.service.ImportedServicesModel;
 import org.qi4j.runtime.service.ServicesInstance;
 import org.qi4j.runtime.service.ServicesModel;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
-import org.qi4j.runtime.value.*;
+import org.qi4j.runtime.value.ManyAssociationValueState;
+import org.qi4j.runtime.value.ReferenceProperty;
+import org.qi4j.runtime.value.ValueBuilderInstance;
+import org.qi4j.runtime.value.ValueInstance;
+import org.qi4j.runtime.value.ValueModel;
+import org.qi4j.runtime.value.ValueStateInstance;
+import org.qi4j.runtime.value.ValuesModel;
 import org.qi4j.spi.entitystore.EntityStore;
-
-import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import org.qi4j.spi.metrics.MetricsProvider;
 import org.qi4j.spi.metrics.MetricsProviderAdapter;
 
-import static org.qi4j.functional.Iterables.*;
+import static org.qi4j.functional.Iterables.cast;
+import static org.qi4j.functional.Iterables.filter;
+import static org.qi4j.functional.Iterables.first;
+import static org.qi4j.functional.Iterables.flatten;
+import static org.qi4j.functional.Iterables.map;
 
 /**
  * Instance of a Qi4j Module. Contains the various composites for this Module.
  */
 public class ModuleInstance
-        implements Module, Activatable
+    implements Module, Activatable
 {
     private final ModuleModel moduleModel;
     private final LayerInstance layerInstance;
@@ -182,7 +220,8 @@ public class ModuleInstance
             Class<?> type = classLoader().loadClass( name );
             Iterable<ModelModule<EntityModel>> entityModels = findEntityModels( type );
             return first( map( ModelModule.<EntityModel>modelFunction(), entityModels ) );
-        } catch( ClassNotFoundException e )
+        }
+        catch( ClassNotFoundException e )
         {
             return null;
         }
@@ -194,7 +233,8 @@ public class ModuleInstance
         {
             Class<?> type = classLoader().loadClass( typeName );
             return findObjectModels( type ).model();
-        } catch( ClassNotFoundException e )
+        }
+        catch( ClassNotFoundException e )
         {
             return null;
         }
@@ -206,7 +246,8 @@ public class ModuleInstance
         {
             Class<?> type = classLoader().loadClass( name );
             return findTransientModels( type ).model();
-        } catch( ClassNotFoundException e )
+        }
+        catch( ClassNotFoundException e )
         {
             return null;
         }
@@ -223,7 +264,8 @@ public class ModuleInstance
                 return null;
             }
             return valueModel.model();
-        } catch( ClassNotFoundException e )
+        }
+        catch( ClassNotFoundException e )
         {
             return null;
         }
@@ -277,7 +319,7 @@ public class ModuleInstance
     }
 
     public void activate()
-            throws Exception
+        throws Exception
     {
         eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATING ) );
         services.activate();
@@ -285,7 +327,7 @@ public class ModuleInstance
     }
 
     public void passivate()
-            throws Exception
+        throws Exception
     {
         eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATING ) );
         services.passivate();
@@ -318,9 +360,13 @@ public class ModuleInstance
                 }
             };
 
-            LinkedHashSet<ModelModule<EntityModel>> result = new LinkedHashSet<ModelModule<EntityModel>>(  );
-            Iterables.addAll( result, ambiguousCheck( type, findModels( exactTypeSpecification( type ), visibleEntities(Visibility.module), layerInstance().visibleEntities( Visibility.layer ), layerInstance().visibleEntities(Visibility.application), layerInstance().usedLayersInstance().visibleEntities() ) ) );
-            Iterables.addAll( result, findModels( hasRole, visibleEntities( Visibility.module ), layerInstance().visibleEntities( Visibility.layer ), layerInstance().visibleEntities( Visibility.application ), layerInstance().usedLayersInstance().visibleEntities() ) );
+            LinkedHashSet<ModelModule<EntityModel>> result = new LinkedHashSet<ModelModule<EntityModel>>();
+            Iterables.addAll( result, ambiguousCheck( type, findModels( exactTypeSpecification( type ), visibleEntities( Visibility.module ), layerInstance()
+                .visibleEntities( Visibility.layer ), layerInstance().visibleEntities( Visibility.application ), layerInstance()
+                .usedLayersInstance()
+                .visibleEntities() ) ) );
+            Iterables.addAll( result, findModels( hasRole, visibleEntities( Visibility.module ), layerInstance().visibleEntities( Visibility.layer ), layerInstance()
+                .visibleEntities( Visibility.application ), layerInstance().usedLayersInstance().visibleEntities() ) );
 
             models = result;
 
@@ -347,8 +393,10 @@ public class ModuleInstance
                                                                          .visibleTransients() ) ) );
             model = Iterables.first( flatten );
 
-            if (model != null)
+            if( model != null )
+            {
                 transientModels.put( type, model );
+            }
         }
 
         return model;
@@ -372,8 +420,10 @@ public class ModuleInstance
 
             model = Iterables.first( flatten );
 
-            if (model != null)
+            if( model != null )
+            {
                 objectModels.put( type, model );
+            }
         }
 
         return model;
@@ -385,30 +435,36 @@ public class ModuleInstance
 
         if( model == null )
         {
-            Iterable<ModelModule<ValueModel>> flatten =  Iterables.flatten( ambiguousCheck( type,
-                                            findModels( exactTypeSpecification( type ),
-                                                    visibleValues( Visibility.module ),
-                                                    layerInstance().visibleValues( Visibility.layer ),
-                                                    layerInstance().visibleValues( Visibility.application ),
-                                                    layerInstance().usedLayersInstance().visibleValues() )),
-                                        ambiguousCheck( type,
-                                            findModels( assignableTypeSpecification( type ),
-                                                    visibleValues( Visibility.module ),
-                                                    layerInstance().visibleValues( Visibility.layer ),
-                                                    layerInstance().visibleValues( Visibility.application ),
-                                                    layerInstance().usedLayersInstance().visibleValues() ) ) );
+            Iterable<ModelModule<ValueModel>> flatten = Iterables.flatten(
+                ambiguousCheck( type,
+                                findModels( exactTypeSpecification( type ),
+                                            visibleValues( Visibility.module ),
+                                            layerInstance().visibleValues( Visibility.layer ),
+                                            layerInstance().visibleValues( Visibility.application ),
+                                            layerInstance().usedLayersInstance()
+                                                .visibleValues() ) ),
+                ambiguousCheck( type,
+                                findModels( assignableTypeSpecification( type ),
+                                            visibleValues( Visibility.module ),
+                                            layerInstance().visibleValues( Visibility.layer ),
+                                            layerInstance().visibleValues( Visibility.application ),
+                                            layerInstance().usedLayersInstance()
+                                                .visibleValues() ) ) );
 
             model = Iterables.first( flatten );
 
-            if (model != null)
+            if( model != null )
+            {
                 valueModels.put( type, model );
+            }
         }
 
         return model;
     }
 
     private <T extends ModelDescriptor> Iterable<ModelModule<T>> findModels( Specification<? super T> specification,
-                                                                              Iterable<ModelModule<T>>... models )
+                                                                             Iterable<ModelModule<T>>... models
+    )
     {
         Specification<ModelModule<T>> spec = Specifications.translate( ModelModule.<T>modelFunction(), specification );
         return Iterables.filter( spec, Iterables.flattenIterables( Iterables.iterable( models ) ) );
@@ -422,12 +478,14 @@ public class ModuleInstance
 
     Iterable<ModelModule<TransientModel>> visibleTransients( Visibility visibility )
     {
-        return map( ModelModule.<TransientModel>modelModuleFunction( this ), filter( new VisibilitySpecification( visibility ), transients.models() ) );
+        return map( ModelModule.<TransientModel>modelModuleFunction( this ), filter( new VisibilitySpecification( visibility ), transients
+            .models() ) );
     }
 
     public Iterable<ModelModule<EntityModel>> visibleEntities( Visibility visibility )
     {
-        return map( ModelModule.<EntityModel>modelModuleFunction( this ), filter( new VisibilitySpecification( visibility ), entities.models() ) );
+        return map( ModelModule.<EntityModel>modelModuleFunction( this ), filter( new VisibilitySpecification( visibility ), entities
+            .models() ) );
     }
 
     Iterable<ModelModule<ValueModel>> visibleValues( Visibility visibility )
@@ -436,7 +494,7 @@ public class ModuleInstance
             .models() ) );
     }
 
-    Iterable<ServiceReference> visibleServices(Visibility visibility)
+    Iterable<ServiceReference> visibleServices( Visibility visibility )
     {
         return Iterables.flatten( services.visibleServices( visibility ),
                                   importedServices.visibleServices( visibility ) );
@@ -486,7 +544,8 @@ public class ModuleInstance
                 {
                     ServiceReference<MetricsProvider> service = findService( MetricsProvider.class );
                     metrics = service.get();
-                } catch( IllegalArgumentException e ) 
+                }
+                catch( IllegalArgumentException e )
                 {
                     metrics = new MetricsProviderAdapter();
                 }
@@ -497,7 +556,7 @@ public class ModuleInstance
 
     // Implementation of TransientBuilderFactory
     public <T> TransientBuilder<T> newTransientBuilder( Class<T> mixinType )
-            throws NoSuchCompositeException
+        throws NoSuchCompositeException
     {
         NullArgumentException.validateNotNull( "mixinType", mixinType );
 
@@ -511,7 +570,8 @@ public class ModuleInstance
         Map<AccessibleObject, Property<?>> properties = new HashMap<AccessibleObject, Property<?>>();
         for( PropertyModel propertyModel : model.model().state().properties() )
         {
-            Property property = new PropertyInstance<Object>(propertyModel.getBuilderInfo(), propertyModel.initialValue( model.module() ) );
+            Property property = new PropertyInstance<Object>( propertyModel.getBuilderInfo(), propertyModel.initialValue( model
+                                                                                                                              .module() ) );
             properties.put( propertyModel.accessor(), property );
         }
 
@@ -521,7 +581,7 @@ public class ModuleInstance
     }
 
     public <T> T newTransient( final Class<T> mixinType, Object... uses )
-            throws NoSuchCompositeException, ConstructionException
+        throws NoSuchCompositeException, ConstructionException
     {
         NullArgumentException.validateNotNull( "mixinType", mixinType );
 
@@ -535,7 +595,7 @@ public class ModuleInstance
         Map<AccessibleObject, Property<?>> properties = new HashMap<AccessibleObject, Property<?>>();
         for( PropertyModel propertyModel : model.model().state().properties() )
         {
-            Property property = new PropertyInstance<Object>(propertyModel, propertyModel.initialValue( model.module() ) );
+            Property property = new PropertyInstance<Object>( propertyModel, propertyModel.initialValue( model.module() ) );
             properties.put( propertyModel.accessor(), property );
         }
 
@@ -547,7 +607,7 @@ public class ModuleInstance
 
     // Implementation of ObjectFactory
     public <T> T newObject( Class<T> mixinType, Object... uses )
-            throws NoSuchObjectException
+        throws NoSuchObjectException
     {
         NullArgumentException.validateNotNull( "mixinType", mixinType );
         ModelModule<ObjectModel> model = findObjectModels( mixinType );
@@ -562,7 +622,8 @@ public class ModuleInstance
     }
 
     @Override
-    public void injectTo( Object instance, Object... uses ) throws ConstructionException
+    public void injectTo( Object instance, Object... uses )
+        throws ConstructionException
     {
         NullArgumentException.validateNotNull( "instance", instance );
         ModelModule<ObjectModel> model = findObjectModels( instance.getClass() );
@@ -577,7 +638,7 @@ public class ModuleInstance
 
     // Implementation of ValueBuilderFactory
     public <T> T newValue( Class<T> mixinType )
-            throws NoSuchValueException, ConstructionException
+        throws NoSuchValueException, ConstructionException
     {
         NullArgumentException.validateNotNull( "mixinType", mixinType );
         ModelModule<ValueModel> model = findValueModels( mixinType );
@@ -590,8 +651,9 @@ public class ModuleInstance
         Map<AccessibleObject, PropertyInstance<?>> properties = new LinkedHashMap<AccessibleObject, PropertyInstance<?>>();
         for( PropertyDescriptor propertyDescriptor : model.model().state().properties() )
         {
-            properties.put( propertyDescriptor.accessor(), new PropertyInstance<Object>( (PropertyInfo) propertyDescriptor, propertyDescriptor.initialValue( model
-                                                                                                                                                                 .module() ) ) );
+            properties.put( propertyDescriptor.accessor(), new PropertyInstance<Object>( (PropertyInfo) propertyDescriptor, propertyDescriptor
+                .initialValue( model
+                                   .module() ) ) );
         }
 
         Map<AccessibleObject, AssociationInstance<?>> associations = new LinkedHashMap<AccessibleObject, AssociationInstance<?>>();
@@ -603,7 +665,7 @@ public class ModuleInstance
         Map<AccessibleObject, ManyAssociationInstance<?>> manyAssociations = new LinkedHashMap<AccessibleObject, ManyAssociationInstance<?>>();
         for( AssociationDescriptor associationDescriptor : model.model().state().manyAssociations() )
         {
-            manyAssociations.put( associationDescriptor.accessor(), new ManyAssociationInstance<Object>( (AssociationInfo) associationDescriptor, entityFunction, new ManyAssociationValueState(new ArrayList<EntityReference>() ) ));
+            manyAssociations.put( associationDescriptor.accessor(), new ManyAssociationInstance<Object>( (AssociationInfo) associationDescriptor, entityFunction, new ManyAssociationValueState( new ArrayList<EntityReference>() ) ) );
         }
 
         ValueStateInstance state = new ValueStateInstance( properties, associations, manyAssociations );
@@ -613,7 +675,7 @@ public class ModuleInstance
     }
 
     public <T> ValueBuilder<T> newValueBuilder( Class<T> mixinType )
-            throws NoSuchValueException
+        throws NoSuchValueException
     {
         NullArgumentException.validateNotNull( "mixinType", mixinType );
         ModelModule<ValueModel> model = findValueModels( mixinType );
@@ -626,20 +688,24 @@ public class ModuleInstance
         Map<AccessibleObject, PropertyInstance<?>> properties = new LinkedHashMap<AccessibleObject, PropertyInstance<?>>();
         for( PropertyDescriptor propertyDescriptor : model.model().state().properties() )
         {
-            properties.put( propertyDescriptor.accessor(), new PropertyInstance<Object>( ((PropertyModel) propertyDescriptor).getBuilderInfo(), propertyDescriptor.initialValue( model
-                                                                                                                                                                                     .module() ) ) );
+            properties.put( propertyDescriptor.accessor(), new PropertyInstance<Object>( ( (PropertyModel) propertyDescriptor )
+                                                                                             .getBuilderInfo(), propertyDescriptor
+                .initialValue( model
+                                   .module() ) ) );
         }
 
         Map<AccessibleObject, AssociationInstance<?>> associations = new LinkedHashMap<AccessibleObject, AssociationInstance<?>>();
         for( AssociationDescriptor associationDescriptor : model.model().state().associations() )
         {
-            associations.put( associationDescriptor.accessor(), new AssociationInstance<Object>( ((AssociationModel)associationDescriptor).getBuilderInfo(), entityFunction, new ReferenceProperty() ) );
+            associations.put( associationDescriptor.accessor(), new AssociationInstance<Object>( ( (AssociationModel) associationDescriptor )
+                                                                                                     .getBuilderInfo(), entityFunction, new ReferenceProperty() ) );
         }
 
         Map<AccessibleObject, ManyAssociationInstance<?>> manyAssociations = new LinkedHashMap<AccessibleObject, ManyAssociationInstance<?>>();
         for( AssociationDescriptor associationDescriptor : model.model().state().manyAssociations() )
         {
-            manyAssociations.put( associationDescriptor.accessor(), new ManyAssociationInstance<Object>( ((ManyAssociationModel) associationDescriptor).getBuilderInfo(), entityFunction, new ManyAssociationValueState(new ArrayList<EntityReference>() ) ));
+            manyAssociations.put( associationDescriptor.accessor(), new ManyAssociationInstance<Object>( ( (ManyAssociationModel) associationDescriptor )
+                                                                                                             .getBuilderInfo(), entityFunction, new ManyAssociationValueState( new ArrayList<EntityReference>() ) ) );
         }
 
         ValueStateInstance state = new ValueStateInstance( properties, associations, manyAssociations );
@@ -673,7 +739,8 @@ public class ModuleInstance
 
             JSONDeserializer deserializer = new JSONDeserializer( model.module() );
             value = deserializer.deserialize( object, model.model().valueType() );
-        } catch( JSONException e )
+        }
+        catch( JSONException e )
         {
             throw new IllegalStateException( "Could not JSON-copy Value", e );
         }
@@ -681,14 +748,15 @@ public class ModuleInstance
         valueInstance = ValueInstance.getValueInstance( (ValueComposite) value );
         valueInstance.prepareToBuild();
 
-        return new ValueBuilderInstance<T>( model, valueInstance);
+        return new ValueBuilderInstance<T>( model, valueInstance );
     }
 
     @Override
     public <T> ValueBuilder<T> newValueBuilderWithState( Class<T> mixinType,
                                                          Function<PropertyDescriptor, Object> propertyFunction,
                                                          Function<AssociationDescriptor, EntityReference> associationFunction,
-                                                         Function<AssociationDescriptor, Iterable<EntityReference>> manyAssociationFunction)
+                                                         Function<AssociationDescriptor, Iterable<EntityReference>> manyAssociationFunction
+    )
     {
         NullArgumentException.validateNotNull( "propertyFunction", propertyFunction );
         NullArgumentException.validateNotNull( "associationFunction", associationFunction );
@@ -704,20 +772,26 @@ public class ModuleInstance
         Map<AccessibleObject, PropertyInstance<?>> properties = new LinkedHashMap<AccessibleObject, PropertyInstance<?>>();
         for( PropertyDescriptor propertyDescriptor : model.model().state().properties() )
         {
-            properties.put( propertyDescriptor.accessor(), new PropertyInstance<Object>( ((PropertyModel) propertyDescriptor).getBuilderInfo(), propertyFunction.map( propertyDescriptor ) ));
+            properties.put( propertyDescriptor.accessor(), new PropertyInstance<Object>( ( (PropertyModel) propertyDescriptor )
+                                                                                             .getBuilderInfo(), propertyFunction
+                .map( propertyDescriptor ) ) );
         }
 
         Map<AccessibleObject, AssociationInstance<?>> associations = new LinkedHashMap<AccessibleObject, AssociationInstance<?>>();
         for( AssociationDescriptor associationDescriptor : model.model().state().associations() )
         {
-            associations.put( associationDescriptor.accessor(), new AssociationInstance<Object>( ((AssociationModel)associationDescriptor).getBuilderInfo(), entityFunction, new ReferenceProperty(associationFunction.map( associationDescriptor )) ) );
+            associations.put( associationDescriptor.accessor(), new AssociationInstance<Object>( ( (AssociationModel) associationDescriptor )
+                                                                                                     .getBuilderInfo(), entityFunction, new ReferenceProperty( associationFunction
+                                                                                                                                                                   .map( associationDescriptor ) ) ) );
         }
 
         Map<AccessibleObject, ManyAssociationInstance<?>> manyAssociations = new LinkedHashMap<AccessibleObject, ManyAssociationInstance<?>>();
         for( AssociationDescriptor associationDescriptor : model.model().state().manyAssociations() )
         {
-            manyAssociations.put( associationDescriptor.accessor(), new ManyAssociationInstance<Object>( ((ManyAssociationModel) associationDescriptor).getBuilderInfo(), entityFunction, new ManyAssociationValueState(Iterables.toList( manyAssociationFunction
-                                                                                                                                                                                                                                              .map( associationDescriptor ) )) ));
+            manyAssociations.put( associationDescriptor.accessor(), new ManyAssociationInstance<Object>( ( (ManyAssociationModel) associationDescriptor )
+                                                                                                             .getBuilderInfo(), entityFunction, new ManyAssociationValueState( Iterables
+                                                                                                                                                                                   .toList( manyAssociationFunction
+                                                                                                                                                                                                .map( associationDescriptor ) ) ) ) );
         }
 
         ValueStateInstance state = new ValueStateInstance( properties, associations, manyAssociations );
@@ -728,7 +802,7 @@ public class ModuleInstance
     }
 
     public <T> T newValueFromJSON( Class<T> mixinType, String jsonValue )
-            throws NoSuchValueException, ConstructionException
+        throws NoSuchValueException, ConstructionException
     {
         NullArgumentException.validateNotNull( "mixinType", mixinType );
         ModelModule<ValueModel> model = findValueModels( mixinType );
@@ -740,8 +814,11 @@ public class ModuleInstance
 
         try
         {
-            return (T) new JSONDeserializer( model.module() ).deserialize( new JSONTokener( jsonValue ).nextValue(), model.model().valueType() );
-        } catch( JSONException e )
+            return (T) new JSONDeserializer( model.module() ).deserialize( new JSONTokener( jsonValue ).nextValue(), model
+                .model()
+                .valueType() );
+        }
+        catch( JSONException e )
         {
             throw new ConstructionException( "Could not create value from JSON", e );
         }
@@ -760,6 +837,10 @@ public class ModuleInstance
 
     public UnitOfWork newUnitOfWork( Usecase usecase )
     {
+        if( usecase == null )
+        {
+            usecase = Usecase.DEFAULT;
+        }
         return newUnitOfWork( usecase, System.currentTimeMillis() );
     }
 
@@ -802,15 +883,17 @@ public class ModuleInstance
         ServiceReference serviceReference = serviceReferences.get( serviceType );
         if( serviceReference == null )
         {
-            serviceReference = Iterables.first( findServices( serviceType ));
+            serviceReference = Iterables.first( findServices( serviceType ) );
             if( serviceReference != null )
             {
                 serviceReferences.put( serviceType, serviceReference );
             }
         }
 
-        if (serviceReference == null)
-            throw new IllegalArgumentException( "No service of type '"+serviceType+"' found" );
+        if( serviceReference == null )
+        {
+            throw new IllegalArgumentException( "No service of type '" + serviceType + "' found" );
+        }
 
         return serviceReference;
     }
@@ -821,15 +904,17 @@ public class ModuleInstance
         ServiceReference serviceReference = serviceReferences.get( serviceType );
         if( serviceReference == null )
         {
-            serviceReference = Iterables.first( findServices( serviceType ));
+            serviceReference = Iterables.first( findServices( serviceType ) );
             if( serviceReference != null )
             {
                 serviceReferences.put( serviceType, serviceReference );
             }
         }
 
-        if (serviceReference == null)
-            throw new IllegalArgumentException( "No service of type '"+serviceType+"' found" );
+        if( serviceReference == null )
+        {
+            throw new IllegalArgumentException( "No service of type '" + serviceType + "' found" );
+        }
 
         return serviceReference;
     }
@@ -837,7 +922,7 @@ public class ModuleInstance
     @Override
     public <T> Iterable<ServiceReference<T>> findServices( Class<T> serviceType )
     {
-        return findServices( (Type)serviceType );
+        return findServices( (Type) serviceType );
     }
 
     public <T> Iterable<ServiceReference<T>> findServices( final Type serviceType )
@@ -850,32 +935,41 @@ public class ModuleInstance
                 @Override
                 public boolean satisfiedBy( Class item )
                 {
-                    if (serviceType instanceof Class)
+                    if( serviceType instanceof Class )
                     {
                         // Straight class assignability check
-                        return ((Class)serviceType).isAssignableFrom( item );
-                    } else if (serviceType instanceof ParameterizedType)
+                        return ( (Class) serviceType ).isAssignableFrom( item );
+                    }
+                    else if( serviceType instanceof ParameterizedType )
                     {
                         // Foo<Bar> check
                         // First check Foo
                         ParameterizedType parameterizedType = (ParameterizedType) serviceType;
-                        if (!((Class) parameterizedType.getRawType()).isAssignableFrom( item ))
+                        if( !( (Class) parameterizedType.getRawType() ).isAssignableFrom( item ) )
+                        {
                             return false;
+                        }
 
                         // Then check Bar
                         for( Type intf : Classes.INTERFACES_OF.map( item ) )
                         {
-                            if (intf.equals( serviceType ))
+                            if( intf.equals( serviceType ) )
+                            {
                                 return true;
+                            }
                         }
 
                         // All parameters are the same - ok!
                         return false;
-                    } else if (serviceType instanceof WildcardType)
+                    }
+                    else if( serviceType instanceof WildcardType )
                     {
                         return true;
-                    } else
+                    }
+                    else
+                    {
                         return false;
+                    }
                 }
             };
 
@@ -886,22 +980,23 @@ public class ModuleInstance
                 {
                     return serviceReference.type();
                 }
-            }, typeSpecification);
+            }, typeSpecification );
 
             Iterable<ServiceReference> matchingServices = Iterables.flatten(
-                    Iterables.filter( referenceTypeCheck, visibleServices(Visibility.module)),
-                    Iterables.filter( referenceTypeCheck, layerInstance.visibleServices( Visibility.layer ) ),
-                    Iterables.filter( referenceTypeCheck, layerInstance.visibleServices( Visibility.application ) ),
-                    Iterables.filter( referenceTypeCheck, layerInstance.usedLayersInstance().visibleServices() ));
+                Iterables.filter( referenceTypeCheck, visibleServices( Visibility.module ) ),
+                Iterables.filter( referenceTypeCheck, layerInstance.visibleServices( Visibility.layer ) ),
+                Iterables.filter( referenceTypeCheck, layerInstance.visibleServices( Visibility.application ) ),
+                Iterables.filter( referenceTypeCheck, layerInstance.usedLayersInstance().visibleServices() ) );
 
             iterable = Iterables.toList( matchingServices );
             servicesReferences.put( serviceType, iterable );
         }
 
-        return Iterables.cast( iterable);
+        return Iterables.cast( iterable );
     }
 
     // Implementation of QueryBuilderFactory
+
     /**
      * @see QueryBuilderFactory#newQueryBuilder(Class)
      */
@@ -912,7 +1007,7 @@ public class ModuleInstance
 
     // Module classloader
     private class ModuleClassLoader
-            extends ClassLoader
+        extends ClassLoader
     {
         Map<String, Class> classes = new ConcurrentHashMap<String, Class>();
 
@@ -923,7 +1018,7 @@ public class ModuleInstance
 
         @Override
         protected Class<?> findClass( String name )
-                throws ClassNotFoundException
+            throws ClassNotFoundException
         {
             Class clazz = classes.get( name );
             if( clazz == null )
@@ -933,10 +1028,10 @@ public class ModuleInstance
 
                 // Check module
                 {
-                    Iterable<ModelModule<ModelDescriptor>> i = cast( flatten( cast( visibleObjects(Visibility.module) ),
-                            cast( visibleEntities(Visibility.module) ),
-                            cast( visibleTransients(Visibility.module) ),
-                            cast( visibleValues(Visibility.module) ) ) );
+                    Iterable<ModelModule<ModelDescriptor>> i = cast( flatten( cast( visibleObjects( Visibility.module ) ),
+                                                                              cast( visibleEntities( Visibility.module ) ),
+                                                                              cast( visibleTransients( Visibility.module ) ),
+                                                                              cast( visibleValues( Visibility.module ) ) ) );
 
                     Iterable<ModelModule<ModelDescriptor>> moduleModels = filter( translate, i );
                     Iterator<ModelModule<ModelDescriptor>> iter = moduleModels.iterator();
@@ -947,7 +1042,8 @@ public class ModuleInstance
                         if( iter.hasNext() )
                         {
                             // Ambiguous exception
-                            throw new ClassNotFoundException( name, new AmbiguousTypeException( "More than one model matches the classname "+name+":"+Iterables.toList( moduleModels )) );
+                            throw new ClassNotFoundException( name, new AmbiguousTypeException( "More than one model matches the classname " + name + ":" + Iterables
+                                .toList( moduleModels ) ) );
                         }
                     }
                 }
@@ -956,14 +1052,14 @@ public class ModuleInstance
                 if( clazz == null )
                 {
                     Iterable<ModelModule<ModelDescriptor>> flatten = cast( flatten(
-                            cast( layerInstance().visibleObjects( Visibility.layer ) ),
-                            cast( layerInstance().visibleTransients( Visibility.layer ) ),
-                            cast( layerInstance().visibleEntities( Visibility.layer ) ),
-                            cast( layerInstance().visibleValues( Visibility.layer ) ),
-                            cast( layerInstance().visibleObjects( Visibility.application ) ),
-                            cast( layerInstance().visibleTransients( Visibility.application ) ),
-                            cast( layerInstance().visibleEntities( Visibility.application ) ),
-                            cast( layerInstance().visibleValues( Visibility.application ) ) ) );
+                        cast( layerInstance().visibleObjects( Visibility.layer ) ),
+                        cast( layerInstance().visibleTransients( Visibility.layer ) ),
+                        cast( layerInstance().visibleEntities( Visibility.layer ) ),
+                        cast( layerInstance().visibleValues( Visibility.layer ) ),
+                        cast( layerInstance().visibleObjects( Visibility.application ) ),
+                        cast( layerInstance().visibleTransients( Visibility.application ) ),
+                        cast( layerInstance().visibleEntities( Visibility.application ) ),
+                        cast( layerInstance().visibleValues( Visibility.application ) ) ) );
                     Iterable<ModelModule<ModelDescriptor>> layerModels = filter( translate, flatten );
                     Iterator<ModelModule<ModelDescriptor>> iter = layerModels.iterator();
                     if( iter.hasNext() )
@@ -973,7 +1069,8 @@ public class ModuleInstance
                         if( iter.hasNext() )
                         {
                             // Ambiguous exception
-                            throw new ClassNotFoundException( name, new AmbiguousTypeException( "More than one model matches the classname "+name+":"+Iterables.toList( layerModels )) );
+                            throw new ClassNotFoundException( name, new AmbiguousTypeException( "More than one model matches the classname " + name + ":" + Iterables
+                                .toList( layerModels ) ) );
                         }
                     }
                 }
@@ -982,10 +1079,10 @@ public class ModuleInstance
                 if( clazz == null )
                 {
                     Iterable<ModelModule<ModelDescriptor>> flatten = cast( flatten(
-                            cast( layerInstance().usedLayersInstance().visibleObjects() ),
-                            cast( layerInstance().usedLayersInstance().visibleTransients() ),
-                            cast( layerInstance().usedLayersInstance().visibleEntities() ),
-                            cast( layerInstance().usedLayersInstance().visibleValues() ) ) );
+                        cast( layerInstance().usedLayersInstance().visibleObjects() ),
+                        cast( layerInstance().usedLayersInstance().visibleTransients() ),
+                        cast( layerInstance().usedLayersInstance().visibleEntities() ),
+                        cast( layerInstance().usedLayersInstance().visibleValues() ) ) );
                     Iterable<ModelModule<ModelDescriptor>> usedLayersModels = filter( translate, flatten );
                     Iterator<ModelModule<ModelDescriptor>> iter = usedLayersModels.iterator();
                     if( iter.hasNext() )
@@ -995,7 +1092,8 @@ public class ModuleInstance
                         if( iter.hasNext() )
                         {
                             // Ambiguous exception
-                            throw new ClassNotFoundException( name, new AmbiguousTypeException( "More than one model matches the classname "+name+":"+ Iterables.toList( usedLayersModels )) );
+                            throw new ClassNotFoundException( name, new AmbiguousTypeException( "More than one model matches the classname " + name + ":" + Iterables
+                                .toList( usedLayersModels ) ) );
                         }
                     }
                 }
@@ -1018,9 +1116,12 @@ public class ModuleInstance
      * @param type   the type that was checked
      * @param models
      * @param <T>
+     *
      * @return
      */
-    private <T extends ModelDescriptor> Iterable<ModelModule<T>> ambiguousCheck( final Class type, final Iterable<ModelModule<T>> models )
+    private <T extends ModelDescriptor> Iterable<ModelModule<T>> ambiguousCheck( final Class type,
+                                                                                 final Iterable<ModelModule<T>> models
+    )
     {
         return new Iterable<ModelModule<T>>()
         {
@@ -1033,15 +1134,18 @@ public class ModuleInstance
 
                 for( ModelModule<T> model : models )
                 {
-                    if( current != null && !model.equals(current) )
+                    if( current != null && !model.equals( current ) )
                     {
                         if( model.model().visibility() == current.model().visibility() )
                         {
-                            if (ambiguous == null)
+                            if( ambiguous == null )
+                            {
                                 ambiguous = new ArrayList<ModelModule<T>>();
+                            }
                             ambiguous.add( model );
                         }
-                    } else
+                    }
+                    else
                     {
                         current = model;
                     }
@@ -1049,11 +1153,11 @@ public class ModuleInstance
                     results.add( model );
                 }
 
-                if (ambiguous != null)
+                if( ambiguous != null )
                 {
                     // Check if we had any ambiguities
                     ambiguous.add( current );
-                    throw new AmbiguousTypeException( "More than one type matches "+type.getName()+":"+ambiguous);
+                    throw new AmbiguousTypeException( "More than one type matches " + type.getName() + ":" + ambiguous );
                 }
 
                 // Ambiguity check done, and no ambiguities found. Return results
@@ -1062,38 +1166,38 @@ public class ModuleInstance
         };
     }
 
-    public Specification<ModelDescriptor> modelTypeSpecification( final String className)
+    public Specification<ModelDescriptor> modelTypeSpecification( final String className )
     {
         return new Specification<ModelDescriptor>()
         {
             @Override
             public boolean satisfiedBy( ModelDescriptor item )
             {
-                return item.type().getName().equals(className);
+                return item.type().getName().equals( className );
             }
         };
     }
 
-    public Specification<ModelDescriptor> exactTypeSpecification( final Class type)
+    public Specification<ModelDescriptor> exactTypeSpecification( final Class type )
     {
         return new Specification<ModelDescriptor>()
         {
             @Override
             public boolean satisfiedBy( ModelDescriptor item )
             {
-                return item.type().equals(type);
+                return item.type().equals( type );
             }
         };
     }
 
-    public Specification<ModelDescriptor> assignableTypeSpecification( final Class type)
+    public Specification<ModelDescriptor> assignableTypeSpecification( final Class type )
     {
         return new Specification<ModelDescriptor>()
         {
             @Override
             public boolean satisfiedBy( ModelDescriptor item )
             {
-                return !type.equals( item.type() ) && type.isAssignableFrom( item.type());
+                return !type.equals( item.type() ) && type.isAssignableFrom( item.type() );
             }
         };
     }
