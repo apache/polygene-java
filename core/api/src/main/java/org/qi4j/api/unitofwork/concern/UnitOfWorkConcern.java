@@ -17,15 +17,17 @@
  */
 package org.qi4j.api.unitofwork.concern;
 
+import java.lang.reflect.Method;
 import org.qi4j.api.common.AppliesTo;
 import org.qi4j.api.concern.GenericConcern;
 import org.qi4j.api.injection.scope.Invocation;
 import org.qi4j.api.injection.scope.Structure;
-
-import java.lang.reflect.Method;
+import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+import org.qi4j.api.usecase.Usecase;
+import org.qi4j.api.usecase.UsecaseBuilder;
 
 /**
  * {@code UnitOfWorkConcern} manages the unit of work complete and discard policy.
@@ -40,7 +42,8 @@ public class UnitOfWorkConcern
     private static final Class<?>[] DEFAULT_DISCARD_CLASSES = new Class[]{ Throwable.class };
 
     @Structure
-    UnitOfWorkFactory uowf;
+    Module module;
+
     @Invocation
     UnitOfWorkPropagation propagation;
 
@@ -61,27 +64,44 @@ public class UnitOfWorkConcern
         UnitOfWorkPropagation.Propagation propagationPolicy = propagation.value();
         if( propagationPolicy == UnitOfWorkPropagation.Propagation.REQUIRED )
         {
-            if( uowf.isUnitOfWorkActive())
+            if( module.isUnitOfWorkActive() )
             {
                 return next.invoke( proxy, method, args );
             }
             else
             {
-                return invokeWithCommit( proxy, method, args, uowf.newUnitOfWork() );
+                Usecase usecase = getUsecase();
+                return invokeWithCommit( proxy, method, args, module.newUnitOfWork(usecase) );
             }
         }
         else if( propagationPolicy == UnitOfWorkPropagation.Propagation.MANDATORY )
         {
-            if( !uowf.isUnitOfWorkActive() )
+            if( !module.isUnitOfWorkActive() )
             {
                 throw new IllegalStateException( "UnitOfWork was required but there is no available unit of work." );
             }
         }
         else if( propagationPolicy == UnitOfWorkPropagation.Propagation.REQUIRES_NEW )
         {
-            return invokeWithCommit( proxy, method, args, uowf.newUnitOfWork() );
+            Usecase usecase = getUsecase();
+            return invokeWithCommit( proxy, method, args, module.newUnitOfWork(usecase) );
         }
         return next.invoke( proxy, method, args );
+    }
+
+    private Usecase getUsecase()
+    {
+        String usecaseName = propagation.usecase();
+        Usecase usecase;
+        if( usecaseName == null )
+        {
+            usecase = Usecase.DEFAULT;
+        }
+        else
+        {
+            usecase = UsecaseBuilder.newUsecase( usecaseName );
+        }
+        return usecase;
     }
 
     protected Object invokeWithCommit( Object proxy, Method method, Object[] args, UnitOfWork currentUnitOfWork )
@@ -91,8 +111,8 @@ public class UnitOfWorkConcern
         {
             UnitOfWorkRetry retryAnnot = method.getAnnotation( UnitOfWorkRetry.class );
             int maxTries = 0;
-            long delayFactor=0;
-            long initialDelay=0;
+            long delayFactor = 0;
+            long initialDelay = 0;
             if( retryAnnot != null )
             {
                 maxTries = retryAnnot.retries();
@@ -114,10 +134,10 @@ public class UnitOfWorkConcern
                     {
                         throw e;
                     }
-                    uowf.currentUnitOfWork().discard();
+                    module.currentUnitOfWork().discard();
                     Thread.sleep( initialDelay + retry * delayFactor );
                     retry++;
-                    currentUnitOfWork = uowf.newUnitOfWork();
+                    currentUnitOfWork = module.newUnitOfWork(getUsecase());
                 }
             }
         }
