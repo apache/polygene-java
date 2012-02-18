@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2010, Paul Merlin. All Rights Reserved.
+ * Copyright (c) 2010-2012, Paul Merlin. All Rights Reserved.
+ * Copyright (c) 2012, Niclas Hedhman. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +17,14 @@ package org.qi4j.library.scheduler.task;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.library.scheduler.schedule.ScheduleRunner;
 
 import java.util.List;
 
 /**
  * Compose an Entity using this type to be able to Schedule it.
  *
- * A Task is wrapped in a {@link ScheduleRunner} before being run by an executor.
- * {@link ScheduleRunner} wrap a {@link UnitOfWork} around the {@link Task#run()} invocation.
+ * A Task is wrapped in a {@link org.qi4j.library.scheduler.SchedulerMixin.ScheduleRunner} before being run by an executor.
+ * {@link org.qi4j.library.scheduler.SchedulerMixin.ScheduleRunner} wrap a {@link UnitOfWork} around the {@link Task#run()} invocation.
  *
  * Here is a simple example:
  * <pre>

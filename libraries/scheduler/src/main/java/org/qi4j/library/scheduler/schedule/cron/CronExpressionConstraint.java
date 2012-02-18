@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2010, Paul Merlin. All Rights Reserved.
+ * Copyright (c) 2010-2012, Paul Merlin. All Rights Reserved.
+ * Copyright (c) 2012, Niclas Hedhman. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,10 +12,11 @@
  * limitations under the License.
  *
  */
-package org.qi4j.library.scheduler.constraints;
+package org.qi4j.library.scheduler.schedule.cron;
 
 import org.codeartisans.sked.crontab.schedule.CronSchedule;
 import org.qi4j.api.constraint.Constraint;
+import org.qi4j.library.scheduler.schedule.cron.CronExpression;
 
 public class CronExpressionConstraint
         implements Constraint<CronExpression, String>

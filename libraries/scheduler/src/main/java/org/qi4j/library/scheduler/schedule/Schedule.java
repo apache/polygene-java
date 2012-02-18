@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2010, Paul Merlin. All Rights Reserved.
+ * Copyright (c) 2010-2012, Paul Merlin. All Rights Reserved.
+ * Copyright (c) 2012, Niclas Hedhman. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,67 +14,67 @@
  */
 package org.qi4j.library.scheduler.schedule;
 
-import org.qi4j.api.common.UseDefaults;
+import org.joda.time.DateTime;
+import org.qi4j.api.association.Association;
+import org.qi4j.api.entity.Identity;
 import org.qi4j.api.entity.Queryable;
-import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.Property;
-import org.qi4j.api.structure.Application;
-import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.library.scheduler.Scheduler;
-import org.qi4j.library.scheduler.constraints.CronExpression;
-import org.qi4j.library.scheduler.slaves.SchedulerGarbageCollector;
 import org.qi4j.library.scheduler.task.Task;
 
 /**
  * Represent the scheduling of a {@link Task}.
  */
-@Mixins( Schedule.ScheduleMixin.class )
-public interface Schedule
+public interface Schedule extends Identity
 {
-
     /**
-     * @return Identity of the {@link Scheduler} used to create this Schedule, immutable.
+     * @return The Association to the Task to be executed when it is time.
+     */
+    Association<Task> task();
+
+    /** The first run of this Schedule.
+     *
+     * @return The property containing the first time this Schedule will be run.
      */
     @Immutable
-    Property<String> schedulerIdentity();
+    Property<DateTime> start();
 
     /**
-     * @return  True if the associated {@link Task} is currently running, false otherwise
+     * Called just before the {@link org.qi4j.library.scheduler.task.Task#run()} method is called.
+     */
+    void taskStarting();
+
+    /**
+     * Called directly after the {@link org.qi4j.library.scheduler.task.Task#run()} method has been completed and
+     * returned from the method normally.
+     */
+    void taskCompletedSuccessfully();
+
+    /**
+     * Called directly after the {@link org.qi4j.library.scheduler.task.Task#run()} method has been completed but
+     * threw a RuntimeException.
+     * @param ex
+     */
+    void taskCompletedWithException( RuntimeException ex );
+
+    /**
+     * @return True if the associated {@link Task} is currently running, false otherwise
      */
     boolean isTaskRunning();
 
     /**
-     * @return The cron expression that will be used on {@link UnitOfWork} completion to compute next run
+     * Compute the next time this schedule is to be run.
+     *
+     * @param from The starting time when to look for the next time it will run.
+     *
+     * @return The exact absolute time when this Schedule is to be run next time.
      */
-    @Queryable( false )
-    @CronExpression
-    Property<String> cronExpression();
+    long nextRun( long from );
 
     /**
-     * Denote the Schedule durability.
+     * Return a representation of the Schedule in a human understandable format.
      *
-     * On shutdown and on startup, non durable Schedules are pruned.
-     * Non durable Schedules with a cron expression with no next run are pruned by {@link SchedulerGarbageCollector}
-     *
-     * @return True if this Schedule will survice a Qi4j {@link Application} restart, false otherwise
+     * @return A String representing this schedule.
      */
-    @UseDefaults
-    Property<Boolean> durable();
-
-
-    public abstract class ScheduleMixin
-        implements Schedule
-    {
-
-        @This
-        private ScheduleEntity me;
-
-        public boolean isTaskRunning()
-        {
-            return me.running().get();
-        }
-
-    }
+    String presentationString();
 }

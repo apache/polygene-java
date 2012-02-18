@@ -36,7 +36,7 @@ public class HelloTest3 extends AbstractQi4jTest
         module.forMixin( Hello.State.class ).declareDefaults().name().set( "World" );
     }
 
-    @Test @Ignore("QI-355 needs to be resolved first")
+    @Test
     public void givenHelloValueInitializedToHelloWorldWhenCallingSayExpectHelloWorld()
     {
         ServiceReference<Hello> service = module.findService( Hello.class );

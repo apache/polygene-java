@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2010, Paul Merlin. All Rights Reserved.
+ * Copyright (c) 2010-2012, Paul Merlin. All Rights Reserved.
+ * Copyright (c) 2012, Niclas Hedhman. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,8 +24,7 @@ import org.qi4j.api.property.Property;
  *
  * Every property has a default value, you can use a {@link Scheduler} without providing any.
  */
-public interface SchedulerConfiguration
-        extends ConfigurationComposite
+public interface SchedulerConfiguration  extends ConfigurationComposite
 {
 
     /**
@@ -40,21 +40,8 @@ public interface SchedulerConfiguration
     Property<Integer> workQueueSize();
 
     /**
-     * @return SchedulerPulse rythm in seconds, optional and default to 60.
-     */
-    @Optional
-    Property<Integer> pulseRhythmSeconds();
-
-    /**
-     * @return SchedulerGarbageCollector rythm in seconds, optional and default to 600.
-     */
-    @Optional
-    Property<Integer> garbageCollectorRhythmSeconds();
-
-    /**
      * @return If the scheduler must stop without waiting for running tasks, optional and defaults to false.
      */
     @UseDefaults
     Property<Boolean> stopViolently();
-
 }

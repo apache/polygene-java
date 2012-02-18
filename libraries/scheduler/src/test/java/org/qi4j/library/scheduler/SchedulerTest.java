@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2010, Paul Merlin. All Rights Reserved.
+ * Copyright (c) 2010-2012, Paul Merlin. All Rights Reserved.
+ * Copyright (c) 2012, Niclas Hedhman. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +20,8 @@ import org.junit.Test;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
+import org.qi4j.api.usecase.Usecase;
+import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.functional.Iterables;
@@ -39,12 +42,10 @@ public class SchedulerTest
     protected void onAssembly( ModuleAssembly testAssembly )
         throws AssemblyException
     {
-        new SchedulerAssembler().visibleIn( Visibility.module ).
-            withConfigAssembly( testAssembly ).
-            withPulseRhythm( Constants.PULSE_RHYTHM_SECS ).
-            withGarbageCollectorRhythm( Constants.GC_RHYTHM_SECS ).
-            withTimeline().
-            assemble( testAssembly );
+        new SchedulerAssembler().visibleIn( Visibility.module )
+            .withConfigAssembly( testAssembly )
+            .withTimeline()
+            .assemble( testAssembly );
     }
 
     @Test
@@ -52,14 +53,16 @@ public class SchedulerTest
         throws UnitOfWorkCompletionException,
                InterruptedException
     {
-        UnitOfWork uow = module.newUnitOfWork();
+        Usecase usecase = UsecaseBuilder.newUsecase( "testTask" );
+        UnitOfWork uow = module.newUnitOfWork( usecase );
         FooTask task = createFooTask( uow, "TestTask", Constants.BAZAR );
 
         String taskId = task.identity().get();
         task.run();
         uow.complete();
 
-        uow = module.newUnitOfWork();
+        usecase = UsecaseBuilder.newUsecase( "testTask" );
+        uow = module.newUnitOfWork( usecase );
         task = uow.get( FooTask.class, taskId );
         assertEquals( Constants.BAR, task.output().get() );
 
@@ -71,7 +74,8 @@ public class SchedulerTest
     public void testMinutely()
         throws Exception
     {
-        UnitOfWork uow = module.newUnitOfWork();
+        Usecase usecase = UsecaseBuilder.newUsecase( "testMinutely" );
+        UnitOfWork uow = module.newUnitOfWork( usecase );
         try
         {
             Scheduler scheduler = module.<Scheduler>findService( Scheduler.class ).get();
@@ -81,15 +85,16 @@ public class SchedulerTest
             String taskIdentity = task.identity().get();
 
             DateTime expectedRun = start.withMillisOfSecond( 0 ).withSecondOfMinute( 0 ).plusMinutes( 1 );
-            scheduler.schedule( task, "@minutely" );
+            scheduler.scheduleCron( task, "@minutely", true );
 
             uow.complete();
 
             LOGGER.info( "Task scheduled on {} to be run at {}", start.getMillis(), expectedRun.getMillis() );
 
-            Thread.sleep( new Interval( start, expectedRun ).toDurationMillis() + 10000 ); // waiting a little more
+            Thread.sleep( new Interval( start, expectedRun ).toDurationMillis() + 5000 ); // waiting a little more
 
-            uow = module.newUnitOfWork();
+            usecase = UsecaseBuilder.newUsecase( "testMinutely" );
+            uow = module.newUnitOfWork( usecase );
 
             task = uow.get( FooTask.class, taskIdentity );
             assertNotNull( task );
@@ -127,25 +132,36 @@ public class SchedulerTest
         throws UnitOfWorkCompletionException,
                InterruptedException
     {
-        UnitOfWork uow = module.newUnitOfWork();
+        Usecase usecase = UsecaseBuilder.newUsecase( "testOnce" );
+        UnitOfWork uow = module.newUnitOfWork( usecase );
+        try
+        {
+            Scheduler scheduler = module.<Scheduler>findService( Scheduler.class ).get();
 
-        Scheduler scheduler = module.<Scheduler>findService( Scheduler.class ).get();
+            FooTask task = createFooTask( uow, "TestOnce", Constants.BAZAR );
+            String taskIdentity = task.identity().get();
 
-        FooTask task = createFooTask( uow, "TestOnce", Constants.BAZAR );
-        String taskIdentity = task.identity().get();
+            scheduler.scheduleOnce( task, 10, true );
 
-        scheduler.scheduleOnce( task, 10 );
+            uow.complete();
 
-        uow.complete();
+            Thread.sleep( 70000 );
 
-        Thread.sleep( 20000 );
+            usecase = UsecaseBuilder.newUsecase( "testOnce" );
+            uow = module.newUnitOfWork( usecase );
 
-        uow = module.newUnitOfWork();
+            task = uow.get( FooTask.class, taskIdentity );
+            assertNotNull( task );
+            assertEquals( Constants.BAR, task.output().get() );
 
-        task = uow.get( FooTask.class, taskIdentity );
-        assertNotNull( task );
-        assertEquals( Constants.BAR, task.output().get() );
-
-        uow.complete();
+            uow.complete();
+        }
+        finally
+        {
+            if( uow.isOpen() )
+            {
+                uow.discard();
+            }
+        }
     }
 }

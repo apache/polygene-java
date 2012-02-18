@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2010, Paul Merlin. All Rights Reserved.
+ * Copyright (c) 2010-2012, Paul Merlin. All Rights Reserved.
+ * Copyright (c) 2012, Niclas Hedhman. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +15,7 @@
 package org.qi4j.library.scheduler.timeline;
 
 import java.util.Date;
+import org.qi4j.api.unitofwork.concern.UnitOfWorkPropagation;
 
 /**
  * Timeline allow to browse in past and future Task runs.
@@ -25,12 +27,14 @@ public interface Timeline
      * @param maxResults    Maximum number of TimelineRecord to compute
      * @return              Last past records
      */
+    @UnitOfWorkPropagation( UnitOfWorkPropagation.Propagation.MANDATORY)
     Iterable<TimelineRecord> getLastRecords( int maxResults );
 
     /**
      * @param maxResults    Maximum number of TimelineRecord to compute
      * @return              Next running or future records
      */
+    @UnitOfWorkPropagation( UnitOfWorkPropagation.Propagation.MANDATORY)
     Iterable<TimelineRecord> getNextRecords( int maxResults );
 
     /**
@@ -38,6 +42,7 @@ public interface Timeline
      * @param to            Upper limit
      * @return              Records between the given dates
      */
+    @UnitOfWorkPropagation( UnitOfWorkPropagation.Propagation.MANDATORY)
     Iterable<TimelineRecord> getRecords( Date from, Date to );
 
     /**
@@ -45,6 +50,7 @@ public interface Timeline
      * @param to            Upper limit
      * @return              Records between the given dates
      */
+    @UnitOfWorkPropagation( UnitOfWorkPropagation.Propagation.MANDATORY)
     Iterable<TimelineRecord> getRecords( long from, long to );
 
 }

@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2010, Paul Merlin. All Rights Reserved.
+ * Copyright (c) 2010-2012, Paul Merlin. All Rights Reserved.
+ * Copyright (c) 2012, Niclas Hedhman. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +14,15 @@
  */
 package org.qi4j.library.scheduler.timeline;
 
+import java.util.List;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.entity.Queryable;
-import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.value.ValueComposite;
 import org.qi4j.library.scheduler.Scheduler;
 import org.qi4j.library.scheduler.task.Task;
-
-import java.util.List;
 
 /**
  * Record in {@link Scheduler}'s {@link Timeline}.
@@ -31,57 +31,46 @@ import java.util.List;
  */
 @Mixins( TimelineRecord.Mixin.class )
 public interface TimelineRecord
-        extends Comparable<TimelineRecord>
+    extends Comparable<TimelineRecord>, ValueComposite
 {
 
     /**
-     * @return  Identity of the associated {@link Scheduler}
+     * @return Identity of the associated {@link Scheduler}
      */
-    @Immutable
-    Property<String> schedulerIdentity();
+    Property<String> scheduleIdentity();
 
     /**
-     * @return  Timestamp of this record
+     * @return Timestamp of this record
      */
-    @Immutable
     Property<Long> timestamp();
 
     /**
-     * @return  Name of the associated {@link Task}
+     * @return Name of the associated {@link Task}
      */
-    @Immutable
     Property<String> taskName();
 
     /**
-     * @return  Tags of the associated {@link Task}
+     * @return Tags of the associated {@link Task}
      */
-    @Immutable
     @UseDefaults
     Property<List<String>> taskTags();
 
-    @Immutable
     Property<TimelineRecordStep> step();
 
     /**
-     * @return  Details text of this record
+     * @return Details text of this record
      */
-    @Immutable
     @Queryable( false )
     @UseDefaults
     Property<String> details();
 
     abstract class Mixin
-            implements Comparable<TimelineRecord>
+        implements TimelineRecord
     {
-
-        @This
-        private TimelineRecord me;
 
         public int compareTo( TimelineRecord o )
         {
-            return me.timestamp().get().compareTo( o.timestamp().get() );
+            return timestamp().get().compareTo( o.timestamp().get() );
         }
-
     }
-
 }

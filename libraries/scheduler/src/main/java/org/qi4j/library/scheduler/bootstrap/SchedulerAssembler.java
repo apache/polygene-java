@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2010, Paul Merlin. All Rights Reserved.
+ * Copyright (c) 2010-2012, Paul Merlin. All Rights Reserved.
+ * Copyright (c) 2012, Niclas Hedhman. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,18 +18,23 @@ import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.bootstrap.ValueAssembly;
+import org.qi4j.functional.Specification;
 import org.qi4j.library.scheduler.SchedulerConfiguration;
 import org.qi4j.library.scheduler.SchedulerService;
-import org.qi4j.library.scheduler.schedule.ScheduleEntity;
+import org.qi4j.library.scheduler.schedule.Schedule;
 import org.qi4j.library.scheduler.schedule.ScheduleFactory;
-import org.qi4j.library.scheduler.schedule.ScheduleRepository;
-import org.qi4j.library.scheduler.schedule.ScheduleRunner;
-import org.qi4j.library.scheduler.slaves.SchedulerGarbageCollector;
-import org.qi4j.library.scheduler.slaves.SchedulerPulse;
-import org.qi4j.library.scheduler.timeline.TimelineRecordEntity;
-import org.qi4j.library.scheduler.timeline.TimelineRecordValue;
-import org.qi4j.library.scheduler.timeline.TimelineRecorderService;
-import org.qi4j.library.scheduler.timeline.TimelineService;
+import org.qi4j.library.scheduler.schedule.Schedules;
+import org.qi4j.library.scheduler.schedule.cron.CronSchedule;
+import org.qi4j.library.scheduler.schedule.cron.CronScheduleEntity;
+import org.qi4j.library.scheduler.schedule.cron.CronScheduleValue;
+import org.qi4j.library.scheduler.schedule.once.OnceScheduleEntity;
+import org.qi4j.library.scheduler.schedule.once.OnceScheduleValue;
+import org.qi4j.library.scheduler.timeline.Timeline;
+import org.qi4j.library.scheduler.timeline.TimelineForScheduleConcern;
+import org.qi4j.library.scheduler.timeline.TimelineRecord;
+import org.qi4j.library.scheduler.timeline.TimelineScheduleMixin;
+import org.qi4j.library.scheduler.timeline.TimelineSchedulerServiceMixin;
 
 import static org.qi4j.api.common.Visibility.module;
 
@@ -45,9 +51,6 @@ import static org.qi4j.api.common.Visibility.module;
  *              visibleIn( Visibility.layer ).
  *              withConfigAssembly( configModuleAssembly ).
  *              withConfigVisibility( Visibility.application ).
- *              withPulseRhythm( 60 ).
- *              withGarbageCollectorRhythm( 600 ).
- *              withTimeline().
  *              assemble( module );
  * </pre>
  */
@@ -58,8 +61,6 @@ public class SchedulerAssembler
     private Visibility visibility = module;
     private ModuleAssembly configAssembly;
     private Visibility configVisibility = Visibility.application;
-    private Integer pulseRhythm;
-    private Integer garbageCollectorRhythm;
     private boolean timeline;
 
     public SchedulerAssembler visibleIn( Visibility visibility )
@@ -94,33 +95,7 @@ public class SchedulerAssembler
         return this;
     }
 
-    /**
-     * Set the pulse rhythm.
-     *
-     * @param pulseRhythm Scheduler pulse rhythm in seconds
-     *
-     * @return SchedulerAssembler
-     */
-    public SchedulerAssembler withPulseRhythm( Integer pulseRhythm )
-    {
-        this.pulseRhythm = pulseRhythm;
-        return this;
-    }
-
-    /**
-     * Set the garbage collector rhythm.
-     *
-     * @param garbageCollectorRhythm Scheduler garbage collector rhythm in seconds
-     *
-     * @return SchedulerAssembler
-     */
-    public SchedulerAssembler withGarbageCollectorRhythm( Integer garbageCollectorRhythm )
-    {
-        this.garbageCollectorRhythm = garbageCollectorRhythm;
-        return this;
-    }
-
-    /**
+        /**
      * Activate the assembly of Timeline related services.
      *
      * @return SchedulerAssembler
@@ -138,7 +113,7 @@ public class SchedulerAssembler
         assembleExposed( assembly );
         if( configAssembly != null )
         {
-            assembleConfig( configAssembly );
+            configAssembly.entities( SchedulerConfiguration.class ).visibleIn( configVisibility );
         }
         if( timeline )
         {
@@ -149,14 +124,9 @@ public class SchedulerAssembler
     private void assembleInternals( ModuleAssembly assembly )
         throws AssemblyException
     {
-        assembly.objects( SchedulerPulse.class,
-                          SchedulerGarbageCollector.class,
-                          ScheduleRunner.class )
-            .visibleIn( module );
-
-        assembly.services( ScheduleFactory.class,
-                           ScheduleRepository.class )
-            .visibleIn( module );
+        assembly.services( ScheduleFactory.class );
+        assembly.entities( Schedules.class, CronScheduleEntity.class, OnceScheduleEntity.class );
+        assembly.values( CronScheduleValue.class, OnceScheduleValue.class );
     }
 
     private void assembleExposed( ModuleAssembly assembly )
@@ -166,41 +136,31 @@ public class SchedulerAssembler
             .visibleIn( visibility )
             .instantiateOnStartup();
 
-        assembly.entities( ScheduleEntity.class )
+        assembly.entities( CronSchedule.class )
             .visibleIn( visibility );
-    }
-
-    private void assembleConfig( ModuleAssembly configAssembly )
-        throws AssemblyException
-    {
-        configAssembly.entities( SchedulerConfiguration.class ).visibleIn( configVisibility );
-        if( pulseRhythm != null || garbageCollectorRhythm != null )
-        {
-            SchedulerConfiguration config = configAssembly.forMixin( SchedulerConfiguration.class ).declareDefaults();
-            if( pulseRhythm != null )
-            {
-                config.pulseRhythmSeconds().set( pulseRhythm );
-            }
-            if( garbageCollectorRhythm != null )
-            {
-                config.garbageCollectorRhythmSeconds().set( garbageCollectorRhythm );
-            }
-        }
     }
 
     private void assembleTimeline( ModuleAssembly assembly )
         throws AssemblyException
     {
-        // Internal
-        assembly.services( TimelineRecorderService.class )
-            .visibleIn( module );
+        assembly.services( SchedulerService.class )
+            .withTypes( Timeline.class )
+            .withMixins( TimelineSchedulerServiceMixin.class );
 
-        // Exposed
-        assembly.values( TimelineRecordValue.class )
-            .visibleIn( visibility );
-        assembly.entities( TimelineRecordEntity.class )
-            .visibleIn( visibility );
-        assembly.services( TimelineService.class )
-            .visibleIn( visibility );
+        // Enable the concern.
+        assembly.values( new Specification<ValueAssembly>()
+        {
+            @Override
+            public boolean satisfiedBy( ValueAssembly item )
+            {
+                return Schedule.class.isAssignableFrom( item.type() );
+            }
+        } )
+            .withTypes( Timeline.class )
+            .withMixins( TimelineScheduleMixin.class )
+            .withConcerns( TimelineForScheduleConcern.class );
+
+        // Internal
+        assembly.values( TimelineRecord.class );
     }
 }

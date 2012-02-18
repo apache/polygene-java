@@ -38,7 +38,7 @@ public class HelloTest extends AbstractQi4jTest
     // END SNIPPET: step2
 
     // START SNIPPET: step3
-    @Test @Ignore("QI-355 needs to be resolved first")
+    @Test
     public void givenHelloValueInitializedToHelloWorldWhenCallingSayExpectHelloWorld()
     {
         ValueBuilder<Hello> builder = module.newValueBuilder( Hello.class );

@@ -33,7 +33,7 @@ public class HelloTest2 extends AbstractQi4jTest
         module.transients( Hello.class );
     }
 
-    @Test @Ignore("QI-355 needs to be resolved first")
+    @Test
     public void givenHelloValueInitializedToHelloWorldWhenCallingSayExpectHelloWorld()
     {
         TransientBuilder<Hello> builder = module.newTransientBuilder( Hello.class );

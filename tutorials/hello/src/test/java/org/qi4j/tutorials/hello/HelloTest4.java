@@ -37,7 +37,7 @@ public class HelloTest4 extends AbstractQi4jTest
         module.services( MemoryEntityStoreService.class );
     }
 
-    @Test @Ignore("QI-355 needs to be resolved first")
+    @Test
     public void givenHelloValueInitializedToHelloWorldWhenCallingSayExpectHelloWorld()
     {
         UnitOfWork uow = module.newUnitOfWork();
