@@ -232,16 +232,15 @@ public class PropertyInstance<T>
                     if( value instanceof List )
                     {
                         value = (T) Collections.unmodifiableList( (List<? extends Object>) value );
-                        set( value );
                     } else if( value instanceof Set )
                     {
                         value = (T) Collections.unmodifiableSet( (Set<? extends Object>) value );
-                        set( value );
                     } else
                     {
                         value = (T) Collections.unmodifiableCollection( (Collection<? extends Object>) value );
-                        set( value );
                     }
+
+                    this.value = value;
                 }
 
                 CollectionType collection = (CollectionType) propertyDescriptor.valueType();
@@ -282,7 +281,7 @@ public class PropertyInstance<T>
                     value = (T) Collections.unmodifiableMap( (Map<?, ?>) value );
                 }
 
-                set( value );
+                this.value = value;
             }
         }
 
