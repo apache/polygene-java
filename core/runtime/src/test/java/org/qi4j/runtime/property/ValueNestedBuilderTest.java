@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-package org.qipki.ca.tests.embedded;
+package org.qi4j.runtime.property;
 
 import java.util.ArrayList;
 import java.util.HashMap;
