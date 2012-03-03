@@ -133,17 +133,7 @@ public final class ConstructorsModel
         {
             Annotation injectionAnnotation = first(
                 filter( Specifications.translate( Annotations.type(), Annotations.hasAnnotation( InjectionScope.class ) ), iterable( parameterAnnotations[ idx ] ) ) );
-            // Refuse @This annotation in Constructors for Concern, Constraint and SideEffect, since the
-            // Composite invocation stack has not been built yet, and nowhere to delegate to. This should possibly be
-            // fixed in the future.
-            if( injectionAnnotation instanceof This     
-                && ( ConcernOf.class.isAssignableFrom( fragmentClass )
-                     || SideEffectOf.class.isAssignableFrom( fragmentClass )
-                     || Constraint.class.isAssignableFrom( fragmentClass )
-            ) )
-            {
-                throw new InvalidCompositeException( "@This is not allowed in constructors:" + realConstructor.toGenericString());
-            }
+
             if( injectionAnnotation == null )
             {
                 if( fragmentClass.getSuperclass().isMemberClass() )
