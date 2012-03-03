@@ -27,8 +27,12 @@ import java.util.List;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.composite.CompositeDescriptor;
 import org.qi4j.api.composite.InvalidCompositeException;
+import org.qi4j.api.concern.ConcernOf;
+import org.qi4j.api.constraint.Constraint;
 import org.qi4j.api.injection.InjectionScope;
+import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
+import org.qi4j.api.sideeffect.SideEffectOf;
 import org.qi4j.api.util.Annotations;
 import org.qi4j.api.util.Classes;
 import org.qi4j.bootstrap.BindingException;
@@ -129,6 +133,17 @@ public final class ConstructorsModel
         {
             Annotation injectionAnnotation = first(
                 filter( Specifications.translate( Annotations.type(), Annotations.hasAnnotation( InjectionScope.class ) ), iterable( parameterAnnotations[ idx ] ) ) );
+            // Refuse @This annotation in Constructors for Concern, Constraint and SideEffect, since the
+            // Composite invocation stack has not been built yet, and nowhere to delegate to. This should possibly be
+            // fixed in the future.
+            if( injectionAnnotation instanceof This     
+                && ( ConcernOf.class.isAssignableFrom( fragmentClass )
+                     || SideEffectOf.class.isAssignableFrom( fragmentClass )
+                     || Constraint.class.isAssignableFrom( fragmentClass )
+            ) )
+            {
+                throw new InvalidCompositeException( "@This is not allowed in constructors:" + realConstructor.toGenericString());
+            }
             if( injectionAnnotation == null )
             {
                 if( fragmentClass.getSuperclass().isMemberClass() )

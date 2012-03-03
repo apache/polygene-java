@@ -19,8 +19,7 @@ import org.qi4j.api.concern.ConcernDescriptor;
 /**
  * JAVADOC
  */
-public final class ConcernModel
-    extends AbstractModifierModel
+public final class ConcernModel extends AbstractModifierModel
     implements ConcernDescriptor
 {
     public ConcernModel( Class concernClass, Class instantiationClass )
