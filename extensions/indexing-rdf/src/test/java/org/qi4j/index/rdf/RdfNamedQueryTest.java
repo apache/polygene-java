@@ -242,14 +242,7 @@ public class RdfNamedQueryTest extends AbstractNamedQueryTest
             + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?identity\n"
             + "WHERE {\n" + "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.indexing.model.Domain>. \n"
             + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?identity. \n" + "?entity ns1:name ?v0. \n"
-            + "FILTER (?v0 = ?domain)\n" + "}", // script24
+            + "FILTER (?v0 = ?domain)\n" + "}" // script24
 
-        "", // script25
-        "", // script26
-        "", // script27
-        "", // script28
-        "", // script29
-        "", // script30
-        "" // script31
     };
 }

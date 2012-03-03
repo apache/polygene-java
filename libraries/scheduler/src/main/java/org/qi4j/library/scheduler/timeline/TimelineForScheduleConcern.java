@@ -71,7 +71,9 @@ public abstract class TimelineForScheduleConcern extends ConcernOf<Schedule>
         prototype.scheduleIdentity().set( this.identity().get() );
         prototype.details().set( details );
         TimelineRecord record = builder.newInstance();
-        state.history().get().add( record );
+        List<TimelineRecord> timelineRecords = state.history().get();
+        timelineRecords.add( record );
+        state.history().set( timelineRecords );
     }
 
     private String getStackTrace( RuntimeException ex )

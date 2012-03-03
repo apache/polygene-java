@@ -14,7 +14,6 @@ import org.qi4j.test.AbstractQi4jTest;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-@Ignore( "Wait for fix for QI-328" )
 public class ValueCompositeBasicsTest
     extends AbstractQi4jTest
 {
@@ -26,6 +25,7 @@ public class ValueCompositeBasicsTest
     }
 
     @Test
+    @Ignore("Wait for QI-361")
     public void testEqualsForValueComposite()
     {
         ValueBuilder<SomeValue> builder = module.newValueBuilder( SomeValue.class );
@@ -44,7 +44,7 @@ public class ValueCompositeBasicsTest
         ValueBuilder<SomeValue> builder = module.newValueBuilder( SomeValue.class );
         builder.prototypeFor( SomeInternalState.class ).name().set( "Niclas" );
         SomeValue underTest = builder.newInstance();
-        assertEquals( "{name: \"Niclas\"}", underTest.toString() );
+        assertEquals( "{\"name\":\"Niclas\"}", underTest.toString() );
     }
 
     @Test
@@ -53,7 +53,7 @@ public class ValueCompositeBasicsTest
         ValueBuilder<SomeValue> builder = module.newValueBuilder( SomeValue.class );
         builder.prototypeFor( SomeInternalState.class ).name().set( "Niclas" );
         SomeValue underTest = builder.newInstance();
-        assertEquals( "{name: \"Niclas\"}", underTest.toString() );
+        assertEquals( "{\"name\":\"Niclas\"}", underTest.toString() );
     }
 
     public abstract static class SomeMixin

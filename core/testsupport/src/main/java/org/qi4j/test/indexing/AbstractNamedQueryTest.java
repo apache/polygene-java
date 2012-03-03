@@ -371,18 +371,6 @@ public abstract class AbstractNamedQueryTest
         verifyUnorderedResults( query, "Jack Doe", "Joe Doe" );
     }
 
-    @Ignore( "Skip this one for now. It sporadically fails sometimes." )
-    @Test
-    public void script23()
-        throws EntityFinderException
-    {
-        final Query<Person> query = unitOfWork.newQuery( this.module
-                                                             .newQueryBuilder( Person.class )
-                                                             .where( queries.get( "script23" ) ) );
-        System.out.println( "*** script23: " + query );
-        verifyOrderedResults( query, "Jack Doe" );
-    }
-
     @Test
     public void script24()
         throws EntityFinderException
@@ -393,38 +381,5 @@ public abstract class AbstractNamedQueryTest
         query.setVariable( "domain", "Gaming" );
         System.out.println( "*** script24: " + query );
         assertThat( query.find().name().get(), is( equalTo( "Gaming" ) ) );
-    }
-
-    @Test
-    @Ignore( "Wait until indexing of complex values is implemented" )
-    public void script29()
-    {
-        final Query<Person> query = unitOfWork.newQuery( this.module
-                                                             .newQueryBuilder( Person.class )
-                                                             .where( queries.get( "script29" ) ) );
-        System.out.println( "*** script29: " + query );
-        verifyUnorderedResults( query, "Jack Doe" );
-    }
-
-    @Test
-    @Ignore( "Wait till 1.1?" )
-    public void script30()
-    {
-        final Query<Nameable> query = unitOfWork.newQuery( this.module
-                                                               .newQueryBuilder( Nameable.class )
-                                                               .where( queries.get( "script30" ) ) );
-        System.out.println( "*** script30: " + query );
-        verifyUnorderedResults( query, "Jack Doe" );
-    }
-
-    @Test
-    @Ignore( "Wait till 1.1?" )
-    public void script31()
-    {
-        final Query<Person> query = unitOfWork.newQuery( this.module
-                                                             .newQueryBuilder( Person.class )
-                                                             .where( queries.get( "script31" ) ) );
-        System.out.println( "*** script31: " + query );
-        verifyUnorderedResults( query, "Jack Doe" );
     }
 }

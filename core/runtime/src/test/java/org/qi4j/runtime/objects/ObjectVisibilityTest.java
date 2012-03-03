@@ -24,10 +24,10 @@ import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.object.NoSuchObjectException;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
-import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.ApplicationAssemblerAdapter;
@@ -121,7 +121,7 @@ public class ObjectVisibilityTest
         service.besideLayerVisible();
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchObjectException.class )
     public void givenFromServiceWhenAccessingBesideModuleVisibleExpectException()
     {
         FromService service = module.findService( FromService.class ).get();
@@ -135,35 +135,35 @@ public class ObjectVisibilityTest
         service.belowApplicationVisible();
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchObjectException.class )
     public void givenFromServiceWhenAccessingBelowLayerVisibleExpectException()
     {
         FromService service = module.findService( FromService.class ).get();
         service.belowLayerVisible();
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchObjectException.class )
     public void givenFromServiceWhenAccessingBelowModuleVisibleExpectException()
     {
         FromService service = module.findService( FromService.class ).get();
         service.belowModuleVisible();
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchObjectException.class )
     public void givenFromServiceWhenAccessingAboveApplicationVisibleExpectException()
     {
         FromService service = module.findService( FromService.class ).get();
         service.aboveApplicationVisible();
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchObjectException.class )
     public void givenFromServiceWhenAccessingAboveLayerVisibleExpectException()
     {
         FromService service = module.findService( FromService.class ).get();
         service.aboveLayerVisible();
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchObjectException.class )
     public void givenFromServiceWhenAccessingAboveModuleVisibleExpectException()
     {
         FromService service = module.findService( FromService.class ).get();
@@ -260,7 +260,7 @@ public class ObjectVisibilityTest
         }
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchObjectException.class )
     public void givenFromEntityWhenAccessingBesideModuleVisibleExpectException()
     {
         UnitOfWork unitOfWork = module.newUnitOfWork();
@@ -296,7 +296,7 @@ public class ObjectVisibilityTest
         }
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchObjectException.class )
     public void givenFromEntityWhenAccessingBelowLayerVisibleExpectException()
     {
         UnitOfWork unitOfWork = module.newUnitOfWork();
@@ -314,7 +314,7 @@ public class ObjectVisibilityTest
         }
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchObjectException.class )
     public void givenFromEntityWhenAccessingBelowModuleVisibleExpectException()
     {
         UnitOfWork unitOfWork = module.newUnitOfWork();
@@ -332,7 +332,7 @@ public class ObjectVisibilityTest
         }
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchObjectException.class )
     public void givenFromEntityWhenAccessingAboveApplicationVisibleExpectException()
     {
         UnitOfWork unitOfWork = module.newUnitOfWork();
@@ -350,7 +350,7 @@ public class ObjectVisibilityTest
         }
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchObjectException.class )
     public void givenFromEntityWhenAccessingAboveLayerVisibleExpectException()
     {
         UnitOfWork unitOfWork = module.newUnitOfWork();
@@ -368,7 +368,7 @@ public class ObjectVisibilityTest
         }
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchObjectException.class )
     public void givenFromEntityWhenAccessingAboveModuleVisibleExpectException()
     {
         UnitOfWork unitOfWork = module.newUnitOfWork();
@@ -421,7 +421,7 @@ public class ObjectVisibilityTest
         value.besideLayerVisible();
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchObjectException.class )
     public void givenFromValueWhenAccessingBesideModuleVisibleExpectException()
     {
         FromValue value = module.newValue( FromValue.class );
@@ -435,35 +435,35 @@ public class ObjectVisibilityTest
         value.belowApplicationVisible();
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchObjectException.class )
     public void givenFromValueWhenAccessingBelowLayerVisibleExpectException()
     {
         FromValue value = module.newValue( FromValue.class );
         value.belowLayerVisible();
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchObjectException.class )
     public void givenFromValueWhenAccessingBelowModuleVisibleExpectException()
     {
         FromValue value = module.newValue( FromValue.class );
         value.belowModuleVisible();
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchObjectException.class )
     public void givenFromValueWhenAccessingAboveApplicationVisibleExpectException()
     {
         FromValue value = module.newValue( FromValue.class );
         value.aboveApplicationVisible();
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchObjectException.class )
     public void givenFromValueWhenAccessingAboveLayerVisibleExpectException()
     {
         FromValue value = module.newValue( FromValue.class );
         value.aboveLayerVisible();
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchObjectException.class )
     public void givenFromValueWhenAccessingAboveModuleVisibleExpectException()
     {
         FromValue value = module.newValue( FromValue.class );
@@ -505,7 +505,7 @@ public class ObjectVisibilityTest
         transientt.besideLayerVisible();
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchObjectException.class )
     public void givenFromTransientWhenAccessingBesideModuleVisibleExpectException()
     {
         FromTransient transientt = module.newTransient( FromTransient.class );
@@ -519,35 +519,35 @@ public class ObjectVisibilityTest
         transientt.belowApplicationVisible();
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchObjectException.class )
     public void givenFromTransientWhenAccessingBelowLayerVisibleExpectException()
     {
         FromTransient transientt = module.newTransient( FromTransient.class );
         transientt.belowLayerVisible();
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchObjectException.class )
     public void givenFromTransientWhenAccessingBelowModuleVisibleExpectException()
     {
         FromTransient transientt = module.newTransient( FromTransient.class );
         transientt.belowModuleVisible();
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchObjectException.class )
     public void givenFromTransientWhenAccessingAboveApplicationVisibleExpectException()
     {
         FromTransient transientt = module.newTransient( FromTransient.class );
         transientt.aboveApplicationVisible();
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchObjectException.class )
     public void givenFromTransientWhenAccessingAboveLayerVisibleExpectException()
     {
         FromTransient transientt = module.newTransient( FromTransient.class );
         transientt.aboveLayerVisible();
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchObjectException.class )
     public void givenFromTransientWhenAccessingAboveModuleVisibleExpectException()
     {
         FromTransient transientt = module.newTransient( FromTransient.class );
@@ -589,7 +589,7 @@ public class ObjectVisibilityTest
         object.besideLayerVisible();
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchObjectException.class )
     public void givenFromObjectWhenAccessingBesideModuleVisibleExpectException()
     {
         FromObject object = module.newObject( FromObject.class );
@@ -603,35 +603,35 @@ public class ObjectVisibilityTest
         object.belowApplicationVisible();
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchObjectException.class )
     public void givenFromObjectWhenAccessingBelowLayerVisibleExpectException()
     {
         FromObject object = module.newObject( FromObject.class );
         object.belowLayerVisible();
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchObjectException.class )
     public void givenFromObjectWhenAccessingBelowModuleVisibleExpectException()
     {
         FromObject object = module.newObject( FromObject.class );
         object.belowModuleVisible();
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchObjectException.class )
     public void givenFromObjectWhenAccessingAboveApplicationVisibleExpectException()
     {
         FromObject object = module.newObject( FromObject.class );
         object.aboveApplicationVisible();
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchObjectException.class )
     public void givenFromObjectWhenAccessingAboveLayerVisibleExpectException()
     {
         FromObject object = module.newObject( FromObject.class );
         object.aboveLayerVisible();
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchObjectException.class )
     public void givenFromObjectWhenAccessingAboveModuleVisibleExpectException()
     {
         FromObject object = module.newObject( FromObject.class );
@@ -653,9 +653,9 @@ public class ObjectVisibilityTest
             module.values( FromValue.class );
             module.objects( FromObject.class );
 
-            module.entities( ModuleApplicationVisible.class ).visibleIn( Visibility.application );
-            module.entities( ModuleLayerVisible.class ).visibleIn( Visibility.layer );
-            module.entities( ModuleModuleVisible.class ).visibleIn( Visibility.module );
+            module.objects( ModuleApplicationVisible.class ).visibleIn( Visibility.application );
+            module.objects( ModuleLayerVisible.class ).visibleIn( Visibility.layer );
+            module.objects( ModuleModuleVisible.class ).visibleIn( Visibility.module );
         }
     }
 
@@ -668,9 +668,9 @@ public class ObjectVisibilityTest
         {
             module.layer().setName( "Below Layer" );
             module.setName( "Below" );
-            module.entities( BelowApplicationVisible.class ).visibleIn( Visibility.application );
-            module.entities( BelowLayerVisible.class ).visibleIn( Visibility.layer );
-            module.entities( BelowModuleVisible.class ).visibleIn( Visibility.module );
+            module.objects( BelowApplicationVisible.class ).visibleIn( Visibility.application );
+            module.objects( BelowLayerVisible.class ).visibleIn( Visibility.layer );
+            module.objects( BelowModuleVisible.class ).visibleIn( Visibility.module );
 
             module.services( MemoryEntityStoreService.class ).visibleIn( Visibility.application );
             module.services( UuidIdentityGeneratorService.class ).visibleIn( Visibility.application );
@@ -686,9 +686,9 @@ public class ObjectVisibilityTest
         {
             module.layer().setName( "Above Layer" );
             module.setName( "Above" );
-            module.entities( AboveApplicationVisible.class ).visibleIn( Visibility.application );
-            module.entities( AboveLayerVisible.class ).visibleIn( Visibility.layer );
-            module.entities( AboveModuleVisible.class ).visibleIn( Visibility.module );
+            module.objects( AboveApplicationVisible.class ).visibleIn( Visibility.application );
+            module.objects( AboveLayerVisible.class ).visibleIn( Visibility.layer );
+            module.objects( AboveModuleVisible.class ).visibleIn( Visibility.module );
         }
     }
 
@@ -700,9 +700,9 @@ public class ObjectVisibilityTest
             throws AssemblyException
         {
             module.setName( "Beside" );
-            module.entities( BesideApplicationVisible.class ).visibleIn( Visibility.application );
-            module.entities( BesideLayerVisible.class ).visibleIn( Visibility.layer );
-            module.entities( BesideModuleVisible.class ).visibleIn( Visibility.module );
+            module.objects( BesideApplicationVisible.class ).visibleIn( Visibility.application );
+            module.objects( BesideLayerVisible.class ).visibleIn( Visibility.layer );
+            module.objects( BesideModuleVisible.class ).visibleIn( Visibility.module );
         }
     }
 
@@ -763,253 +763,121 @@ public class ObjectVisibilityTest
         @Override
         public void moduleApplicationVisible()
         {
-            UnitOfWork uow = module.newUnitOfWork();
-            try
-            {
-                ModuleApplicationVisible entity = uow.newEntity( ModuleApplicationVisible.class );
-            }
-            finally
-            {
-                if( uow.isOpen() )
-                {
-                    uow.discard();
-                }
-            }
+            module.newObject( ModuleApplicationVisible.class );
         }
 
         @Override
         public void moduleLayerVisible()
         {
-            UnitOfWork uow = module.newUnitOfWork();
-            try
-            {
-                ModuleLayerVisible entity = uow.newEntity( ModuleLayerVisible.class );
-            }
-            finally
-            {
-                if( uow.isOpen() )
-                {
-                    uow.discard();
-                }
-            }
+            module.newObject( ModuleLayerVisible.class );
         }
 
         @Override
         public void moduleModuleVisible()
         {
-            UnitOfWork uow = module.newUnitOfWork();
-            try
-            {
-                ModuleModuleVisible entity = uow.newEntity( ModuleModuleVisible.class );
-            }
-            finally
-            {
-                if( uow.isOpen() )
-                {
-                    uow.discard();
-                }
-            }
+            module.newObject( ModuleModuleVisible.class );
         }
 
         @Override
         public void besideApplicationVisible()
         {
-            UnitOfWork uow = module.newUnitOfWork();
-            try
-            {
-                BesideApplicationVisible entity = uow.newEntity( BesideApplicationVisible.class );
-            }
-            finally
-            {
-                if( uow.isOpen() )
-                {
-                    uow.discard();
-                }
-            }
+            module.newObject( BesideApplicationVisible.class );
         }
 
         @Override
         public void besideLayerVisible()
         {
-            UnitOfWork uow = module.newUnitOfWork();
-            try
-            {
-                BesideLayerVisible entity = uow.newEntity( BesideLayerVisible.class );
-            }
-            finally
-            {
-                if( uow.isOpen() )
-                {
-                    uow.discard();
-                }
-            }
+            module.newObject( BesideLayerVisible.class );
         }
 
         @Override
         public void besideModuleVisible()
         {
-            UnitOfWork uow = module.newUnitOfWork();
-            try
-            {
-                BesideModuleVisible entity = uow.newEntity( BesideModuleVisible.class );
-            }
-            finally
-            {
-                if( uow.isOpen() )
-                {
-                    uow.discard();
-                }
-            }
+            module.newObject( BesideModuleVisible.class );
         }
 
         @Override
         public void belowApplicationVisible()
         {
-            UnitOfWork uow = module.newUnitOfWork();
-            try
-            {
-                BelowApplicationVisible entity = uow.newEntity( BelowApplicationVisible.class );
-            }
-            finally
-            {
-                if( uow.isOpen() )
-                {
-                    uow.discard();
-                }
-            }
+            module.newObject( BelowApplicationVisible.class );
         }
 
         @Override
         public void belowLayerVisible()
         {
-            UnitOfWork uow = module.newUnitOfWork();
-            try
-            {
-                BelowLayerVisible entity = uow.newEntity( BelowLayerVisible.class );
-            }
-            finally
-            {
-                if( uow.isOpen() )
-                {
-                    uow.discard();
-                }
-            }
+            module.newObject( BelowLayerVisible.class );
         }
 
         @Override
         public void belowModuleVisible()
         {
-            UnitOfWork uow = module.newUnitOfWork();
-            try
-            {
-                BelowModuleVisible entity = uow.newEntity( BelowModuleVisible.class );
-            }
-            finally
-            {
-                if( uow.isOpen() )
-                {
-                    uow.discard();
-                }
-            }
+            module.newObject( BelowModuleVisible.class );
         }
 
         @Override
         public void aboveApplicationVisible()
         {
-            UnitOfWork uow = module.newUnitOfWork();
-            try
-            {
-                AboveApplicationVisible entity = uow.newEntity( AboveApplicationVisible.class );
-            }
-            finally
-            {
-                if( uow.isOpen() )
-                {
-                    uow.discard();
-                }
-            }
+            module.newObject( AboveApplicationVisible.class );
         }
 
         @Override
         public void aboveLayerVisible()
         {
-            UnitOfWork uow = module.newUnitOfWork();
-            try
-            {
-                AboveLayerVisible entity = uow.newEntity( AboveLayerVisible.class );
-            }
-            finally
-            {
-                if( uow.isOpen() )
-                {
-                    uow.discard();
-                }
-            }
+            module.newObject( AboveLayerVisible.class );
         }
 
         @Override
         public void aboveModuleVisible()
         {
-            UnitOfWork uow = module.newUnitOfWork();
-            try
-            {
-                AboveModuleVisible entity = uow.newEntity( AboveModuleVisible.class );
-            }
-            finally
-            {
-                if( uow.isOpen() )
-                {
-                    uow.discard();
-                }
-            }
+            module.newObject( AboveModuleVisible.class );
         }
     }
 
-    public interface ModuleApplicationVisible extends EntityComposite
+    public static class ModuleApplicationVisible 
     {
     }
 
-    public interface ModuleLayerVisible extends EntityComposite
+    public static class ModuleLayerVisible
     {
     }
 
-    public interface ModuleModuleVisible extends EntityComposite
+    public static class ModuleModuleVisible
     {
     }
 
-    public interface BesideApplicationVisible extends EntityComposite
+    public static class BesideApplicationVisible
     {
     }
 
-    public interface BesideLayerVisible extends EntityComposite
+    public static class BesideLayerVisible
     {
     }
 
-    public interface BesideModuleVisible extends EntityComposite
+    public static class BesideModuleVisible
     {
     }
 
-    public interface BelowApplicationVisible extends EntityComposite
+    public static class BelowApplicationVisible
     {
     }
 
-    public interface BelowLayerVisible extends EntityComposite
+    public static class BelowLayerVisible
     {
     }
 
-    public interface BelowModuleVisible extends EntityComposite
+    public static class BelowModuleVisible
     {
     }
 
-    public interface AboveApplicationVisible extends EntityComposite
+    public static class AboveApplicationVisible
     {
     }
 
-    public interface AboveLayerVisible extends EntityComposite
+    public static class AboveLayerVisible
     {
     }
 
-    public interface AboveModuleVisible extends EntityComposite
+    public static class AboveModuleVisible
     {
     }
 }

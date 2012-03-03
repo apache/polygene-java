@@ -41,7 +41,6 @@ import org.qi4j.library.scheduler.schedule.ScheduleFactory;
 import org.qi4j.library.scheduler.schedule.ScheduleTime;
 import org.qi4j.library.scheduler.schedule.Schedules;
 import org.qi4j.library.scheduler.schedule.cron.CronExpression;
-import org.qi4j.library.scheduler.task.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,7 +83,7 @@ public class SchedulerMixin
         Schedule schedule = scheduleFactory.newOnceSchedule( task, new DateTime( now + initialSecondsDelay * 1000 ), durable );
         if( durable )
         {
-            Schedules schedules = module.currentUnitOfWork().get( Schedules.class, getSchedulesIdentity() );
+            Schedules schedules = module.currentUnitOfWork().get( Schedules.class, getSchedulesIdentity( me ) );
             schedules.schedules().add( schedule );
         }
         dispatchForExecution( schedule );
@@ -98,7 +97,7 @@ public class SchedulerMixin
         dispatchForExecution( schedule );
         if( durable )
         {
-            Schedules schedules = module.currentUnitOfWork().get( Schedules.class, getSchedulesIdentity() );
+            Schedules schedules = module.currentUnitOfWork().get( Schedules.class, getSchedulesIdentity( me ) );
             schedules.schedules().add( schedule );
         }
         return schedule;
@@ -111,7 +110,7 @@ public class SchedulerMixin
         Schedule schedule = scheduleFactory.newCronSchedule( task, cronExpression, now, durable );
         if( durable )
         {
-            Schedules schedules = module.currentUnitOfWork().get( Schedules.class, getSchedulesIdentity() );
+            Schedules schedules = module.currentUnitOfWork().get( Schedules.class, getSchedulesIdentity( me ) );
             schedules.schedules().add( schedule );
         }
         dispatchForExecution( schedule );
@@ -124,7 +123,7 @@ public class SchedulerMixin
         Schedule schedule = scheduleFactory.newCronSchedule( task, cronExpression, start, durable );
         if( durable )
         {
-            Schedules schedules = module.currentUnitOfWork().get( Schedules.class, getSchedulesIdentity() );
+            Schedules schedules = module.currentUnitOfWork().get( Schedules.class, getSchedulesIdentity( me ) );
             schedules.schedules().add( schedule );
         }
         dispatchForExecution( schedule );
@@ -138,7 +137,7 @@ public class SchedulerMixin
         Schedule schedule = scheduleFactory.newCronSchedule( task, cronExpression, start, durable );
         if( durable )
         {
-            Schedules schedules = module.currentUnitOfWork().get( Schedules.class, getSchedulesIdentity() );
+            Schedules schedules = module.currentUnitOfWork().get( Schedules.class, getSchedulesIdentity( me ) );
             schedules.schedules().add( schedule );
         }
         dispatchForExecution( schedule );
@@ -234,7 +233,7 @@ public class SchedulerMixin
         UnitOfWork uow = module.newUnitOfWork();
         try
         {
-            Schedules schedules = uow.get( Schedules.class, getSchedulesIdentity() );
+            Schedules schedules = uow.get( Schedules.class, getSchedulesIdentity( me ) );
             for( Schedule schedule : schedules.schedules() )
             {
                 dispatchForExecution( schedule );
@@ -243,7 +242,7 @@ public class SchedulerMixin
         catch( NoSuchEntityException e )
         {
             // Create a new Schedules entity for keeping track of them all.
-            uow.newEntity( Schedules.class, getSchedulesIdentity() );
+            uow.newEntity( Schedules.class, getSchedulesIdentity( me ) );
             uow.complete();
         }
         finally
@@ -255,9 +254,9 @@ public class SchedulerMixin
         }
     }
 
-    private String getSchedulesIdentity()
+    public static String getSchedulesIdentity( SchedulerService service )
     {
-        return "Schedules:" + me.identity().get();
+        return "Schedules:" + service.identity().get();
     }
 
     @Override
@@ -301,7 +300,7 @@ public class SchedulerMixin
     }
 
     /**
-     * Handle {@link org.qi4j.library.scheduler.task.Task}'s {@link org.qi4j.api.unitofwork.UnitOfWork} and {@link org.qi4j.library.scheduler.timeline.TimelineRecord}s creation.
+     * Handle {@link Task}'s {@link org.qi4j.api.unitofwork.UnitOfWork} and {@link org.qi4j.library.scheduler.timeline.TimelineRecord}s creation.
      */
     public static class ScheduleRunner
         implements Runnable

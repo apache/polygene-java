@@ -14,7 +14,7 @@
  */
 package org.qi4j.library.scheduler.timeline;
 
-import java.util.Date;
+import org.joda.time.DateTime;
 import org.qi4j.api.unitofwork.concern.UnitOfWorkPropagation;
 
 /**
@@ -24,33 +24,36 @@ public interface Timeline
 {
 
     /**
-     * @param maxResults    Maximum number of TimelineRecord to compute
-     * @return              Last past records
+     * @param maxResults Maximum number of TimelineRecord to compute
+     *
+     * @return Last past records
      */
-    @UnitOfWorkPropagation( UnitOfWorkPropagation.Propagation.MANDATORY)
+    @UnitOfWorkPropagation( UnitOfWorkPropagation.Propagation.MANDATORY )
     Iterable<TimelineRecord> getLastRecords( int maxResults );
 
     /**
-     * @param maxResults    Maximum number of TimelineRecord to compute
-     * @return              Next running or future records
+     * @param maxResults Maximum number of TimelineRecord to compute
+     *
+     * @return Next running or future records
      */
-    @UnitOfWorkPropagation( UnitOfWorkPropagation.Propagation.MANDATORY)
+    @UnitOfWorkPropagation( UnitOfWorkPropagation.Propagation.MANDATORY )
     Iterable<TimelineRecord> getNextRecords( int maxResults );
 
     /**
-     * @param from          Lower limit
-     * @param to            Upper limit
-     * @return              Records between the given dates
+     * @param from Lower limit
+     * @param to   Upper limit
+     *
+     * @return Records between the given dates
      */
-    @UnitOfWorkPropagation( UnitOfWorkPropagation.Propagation.MANDATORY)
-    Iterable<TimelineRecord> getRecords( Date from, Date to );
+    @UnitOfWorkPropagation( UnitOfWorkPropagation.Propagation.MANDATORY )
+    Iterable<TimelineRecord> getRecords( DateTime from, DateTime to );
 
     /**
-     * @param from          Lower limit
-     * @param to            Upper limit
-     * @return              Records between the given dates
+     * @param from Lower limit
+     * @param to   Upper limit
+     *
+     * @return Records between the given dates
      */
-    @UnitOfWorkPropagation( UnitOfWorkPropagation.Propagation.MANDATORY)
+    @UnitOfWorkPropagation( UnitOfWorkPropagation.Propagation.MANDATORY )
     Iterable<TimelineRecord> getRecords( long from, long to );
-
 }

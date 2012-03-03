@@ -13,7 +13,6 @@
  */
 package org.qi4j.tutorials.hello;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.bootstrap.AssemblyException;

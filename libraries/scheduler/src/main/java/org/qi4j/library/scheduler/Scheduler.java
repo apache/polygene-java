@@ -22,7 +22,6 @@ import org.qi4j.api.unitofwork.concern.UnitOfWorkPropagation;
 import org.qi4j.library.scheduler.bootstrap.SchedulerAssembler;
 import org.qi4j.library.scheduler.schedule.Schedule;
 import org.qi4j.library.scheduler.schedule.cron.CronExpression;
-import org.qi4j.library.scheduler.task.Task;
 import org.qi4j.library.scheduler.timeline.Timeline;
 
 import static org.qi4j.api.unitofwork.concern.UnitOfWorkPropagation.Propagation.MANDATORY;

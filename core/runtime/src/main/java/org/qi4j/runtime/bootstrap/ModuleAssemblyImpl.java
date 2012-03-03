@@ -223,11 +223,16 @@ public final class ModuleAssemblyImpl
     }
 
     public ObjectDeclaration objects( Class<?>... objectTypes )
+        throws AssemblyException
     {
         List<ObjectAssemblyImpl> assemblies = new ArrayList<ObjectAssemblyImpl>();
 
         for( Class<?> objectType : objectTypes )
         {
+            if( objectType.isInterface() )
+            {
+                throw new AssemblyException( "Interfaces can not be Qi4j Objects." );
+            }
             if( objectAssemblies.containsKey( objectType ) )
             {
                 assemblies.add( objectAssemblies.get( objectType ) );

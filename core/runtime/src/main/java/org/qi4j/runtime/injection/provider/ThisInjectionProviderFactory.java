@@ -14,6 +14,7 @@ import org.qi4j.runtime.injection.InjectionProviderFactory;
 import org.qi4j.runtime.model.Resolution;
 
 import static org.qi4j.functional.Iterables.first;
+import static org.qi4j.functional.Iterables.iterable;
 
 /**
  * JAVADOC
@@ -27,7 +28,7 @@ public final class ThisInjectionProviderFactory
         if( bindingContext.model() instanceof CompositeDescriptor )
         {
             // If Composite type then return real type, otherwise use the specified one
-            final Class thisType = dependencyModel.rawInjectionType();
+            final Class<?> thisType = dependencyModel.rawInjectionType();
 
             Iterable<Class<?>> injectionTypes = null;
             if( Classes.assignableTypeSpecification( thisType ).satisfiedBy( bindingContext.model() ) )
@@ -37,11 +38,12 @@ public final class ThisInjectionProviderFactory
             else
             {
                 CompositeDescriptor acd = ( (CompositeDescriptor) bindingContext.model() );
-                for( Class mixinType : acd.mixinTypes() )
+                for( Class<?> mixinType : acd.mixinTypes() )
                 {
                     if( thisType.isAssignableFrom( mixinType ) )
                     {
-                        injectionTypes = acd.types();
+                        Iterable<? extends Class<?>> iterable = iterable( thisType );
+                        injectionTypes = (Iterable<Class<?>>) iterable;
                         break;
                     }
                 }

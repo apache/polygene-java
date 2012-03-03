@@ -669,7 +669,6 @@ public final class Iterables
             public TO next()
             {
                 FROM from = fromIterator.next();
-
                 return function.map( from );
             }
 

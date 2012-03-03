@@ -29,21 +29,19 @@ import org.qi4j.test.entity.AbstractEntityStoreTest;
 
 /**
  * Test the MongoMapEntityStoreService.
- * 
- * FIXME This test is ignored because it needs a MongoDB instance
- * 
+ *
+ *
  * Installing mongodb and starting it should suffice as the test use mongodb defaults: 127.0.0.1:27017
- * 
+ *
  * Do we have a build-wise way to switch on/off theses kind of tests ?
  */
-@Ignore
-public class MongoMapEntityStoreTest
-        extends AbstractEntityStoreTest
+@Ignore( "This test is ignored because it needs a MongoDB instance" )
+public class MongoMapEntityStoreTest extends AbstractEntityStoreTest
 {
 
     @Override
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
         super.assemble( module );
 
@@ -52,7 +50,8 @@ public class MongoMapEntityStoreTest
 
         new MongoMapEntityStoreAssembler().withConfigModule( config ).assemble( module );
 
-        MongoEntityStoreConfiguration mongoConfig = config.forMixin( MongoEntityStoreConfiguration.class ).declareDefaults();
+        MongoEntityStoreConfiguration mongoConfig = config.forMixin( MongoEntityStoreConfiguration.class )
+            .declareDefaults();
         mongoConfig.writeConcern().set( MongoEntityStoreConfiguration.WriteConcern.FSYNC_SAFE );
     }
 
@@ -60,7 +59,7 @@ public class MongoMapEntityStoreTest
 
     @Override
     public void setUp()
-            throws Exception
+        throws Exception
     {
         super.setUp();
         mongo = module.findService( MongoMapEntityStoreService.class ).get().mongoInstanceUsed();
@@ -69,7 +68,7 @@ public class MongoMapEntityStoreTest
     @Test
     @Override
     public void givenConcurrentUnitOfWorksWhenUoWCompletesThenCheckConcurrentModification()
-            throws UnitOfWorkCompletionException
+        throws UnitOfWorkCompletionException
     {
         super.givenConcurrentUnitOfWorksWhenUoWCompletesThenCheckConcurrentModification();
     }
@@ -77,10 +76,9 @@ public class MongoMapEntityStoreTest
     @After
     @Override
     public void tearDown()
-            throws Exception
+        throws Exception
     {
         mongo.dropDatabase( MongoMapEntityStoreAssembler.DEFAULT_DATABASE_NAME );
         super.tearDown();
     }
-
 }

@@ -16,9 +16,9 @@
 
 package org.qi4j.library.scheduler.timeline;
 
-import java.util.Date;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import org.joda.time.DateTime;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.service.ServiceComposite;
@@ -26,6 +26,7 @@ import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.functional.Iterables;
 import org.qi4j.library.scheduler.Scheduler;
+import org.qi4j.library.scheduler.SchedulerMixin;
 import org.qi4j.library.scheduler.SchedulerService;
 import org.qi4j.library.scheduler.schedule.Schedule;
 import org.qi4j.library.scheduler.schedule.Schedules;
@@ -52,8 +53,8 @@ public abstract class TimelineSchedulerServiceMixin
         SortedSet<TimelineRecord> result = new TreeSet<TimelineRecord>();
 
         UnitOfWork uow = module.currentUnitOfWork();
-        String schedulesName = "Schedules: " + scheduler.identity();
-        Schedules schedules = uow.get( Schedules.class, schedulesName);
+        String schedulesName = SchedulerMixin.getSchedulesIdentity( scheduler );
+        Schedules schedules = uow.get( Schedules.class, schedulesName );
         for( Schedule schedule : schedules.schedules() )
         {
             Timeline timeline = (Timeline) schedule;
@@ -68,8 +69,8 @@ public abstract class TimelineSchedulerServiceMixin
     {
         SortedSet<TimelineRecord> result = new TreeSet<TimelineRecord>();
         UnitOfWork uow = module.currentUnitOfWork();
-        String schedulesName = "Schedules: " + scheduler.identity();
-        Schedules schedules = uow.get( Schedules.class, schedulesName);
+        String schedulesName = SchedulerMixin.getSchedulesIdentity( scheduler );
+        Schedules schedules = uow.get( Schedules.class, schedulesName );
         for( Schedule schedule : schedules.schedules() )
         {
             Timeline timeline = (Timeline) schedule;
@@ -80,13 +81,13 @@ public abstract class TimelineSchedulerServiceMixin
     }
 
     @Override
-    public Iterable<TimelineRecord> getRecords( Date from, Date to )
+    public Iterable<TimelineRecord> getRecords( DateTime from, DateTime to )
     {
         SortedSet<TimelineRecord> result = new TreeSet<TimelineRecord>();
 
         UnitOfWork uow = module.currentUnitOfWork();
-        String schedulesName = "Schedules: " + scheduler.identity();
-        Schedules schedules = uow.get( Schedules.class, schedulesName);
+        String schedulesName = SchedulerMixin.getSchedulesIdentity( scheduler );
+        Schedules schedules = uow.get( Schedules.class, schedulesName );
         for( Schedule schedule : schedules.schedules() )
         {
             Timeline timeline = (Timeline) schedule;
@@ -102,8 +103,8 @@ public abstract class TimelineSchedulerServiceMixin
         SortedSet<TimelineRecord> result = new TreeSet<TimelineRecord>();
 
         UnitOfWork uow = module.currentUnitOfWork();
-        String schedulesName = "Schedules: " + scheduler.identity();
-        Schedules schedules = uow.get( Schedules.class, schedulesName);
+        String schedulesName = SchedulerMixin.getSchedulesIdentity( scheduler );
+        Schedules schedules = uow.get( Schedules.class, schedulesName );
         for( Schedule schedule : schedules.schedules() )
         {
             Timeline timeline = (Timeline) schedule;

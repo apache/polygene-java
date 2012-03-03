@@ -25,18 +25,17 @@ import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.library.scheduler.SchedulerService;
+import org.qi4j.library.scheduler.Task;
 import org.qi4j.library.scheduler.schedule.cron.CronSchedule;
 import org.qi4j.library.scheduler.schedule.once.OnceSchedule;
-import org.qi4j.library.scheduler.task.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Mixins( ScheduleFactory.Mixin.class )
-public interface ScheduleFactory
-    extends ServiceComposite
+public interface ScheduleFactory extends ServiceComposite
 {
 
-    CronSchedule newCronSchedule( Task task, String cronExpression, DateTime start, boolean durable );
+    Schedule newCronSchedule( Task task, String cronExpression, DateTime start, boolean durable );
 
     Schedule newOnceSchedule( Task task, DateTime runAt, boolean durable );
 

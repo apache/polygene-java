@@ -46,7 +46,8 @@ public final class InjectedFieldsModel
 
     public InjectedFieldsModel( Class fragmentClass )
     {
-        for( Field field : Fields.FIELDS_OF.map( fragmentClass ) )
+        Iterable<Field> mappedFields = Fields.FIELDS_OF.map( fragmentClass );
+        for( Field field : mappedFields )
         {
             Annotation injectionAnnotation = first( filter( translate( type(), hasAnnotation( InjectionScope.class ) ), iterable( field
                                                                                                                                       .getAnnotations() ) ) );

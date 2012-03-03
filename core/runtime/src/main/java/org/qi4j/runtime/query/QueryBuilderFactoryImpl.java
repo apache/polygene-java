@@ -21,6 +21,7 @@ package org.qi4j.runtime.query;
 import org.qi4j.api.query.NotQueryableException;
 import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryBuilderFactory;
+import org.qi4j.api.service.NoSuchServiceException;
 import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.util.NullArgumentException;
@@ -58,7 +59,7 @@ public final class QueryBuilderFactoryImpl
             serviceReference = finder.findService( EntityFinder.class );
             return new QueryBuilderImpl<T>( serviceReference.get(), resultType, null );
         }
-        catch( IllegalArgumentException e )
+        catch( NoSuchServiceException e )
         {
             return new QueryBuilderImpl<T>( null, resultType, null );
         }

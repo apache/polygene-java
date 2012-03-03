@@ -104,17 +104,17 @@ public class SchedulerTest
             DateTime now = new DateTime();
 
             // Queries returning past records
-            assertEquals( 1, Iterables.count( timeline.getLastRecords( 5 ) ) );
-            assertEquals( 1, Iterables.count( timeline.getRecords( start.getMillis(), now.getMillis() ) ) );
+            assertEquals( 2, Iterables.count( timeline.getLastRecords( 5 ) ) );
+            assertEquals( 2, Iterables.count( timeline.getRecords( start.getMillis(), now.getMillis() ) ) );
 
             // Queries returning future records
-            assertEquals( 5, Iterables.count( timeline.getNextRecords( 5 ) ) );
-            assertEquals( 5, Iterables.count( timeline.getRecords( now.getMillis() + 100, now.plusMinutes( 5 )
-                .getMillis() ) ) );
+            assertEquals( 4, Iterables.count( timeline.getNextRecords( 4 ) ) );
+            assertEquals( 5, Iterables.count( timeline.getRecords( now.getMillis() + 100,
+                                                                   now.plusMinutes( 5 ).getMillis() ) ) );
 
             // Queries returning mixed past and future records
-            assertEquals( 6, Iterables.count( timeline.getRecords( start.getMillis(), now.plusMinutes( 5 )
-                .getMillis() ) ) );
+            assertEquals( 7, Iterables.count( timeline.getRecords( start.getMillis(),
+                                                                   now.plusMinutes( 5 ).getMillis() ) ) );
 
             uow.complete();
         }

@@ -1,5 +1,8 @@
 package org.qi4j.library.osgi;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Dictionary;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.qi4j.api.injection.scope.Structure;
@@ -10,13 +13,14 @@ import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Module;
-import org.qi4j.api.util.Classes;
 import org.qi4j.functional.Iterables;
 
-import java.lang.reflect.Type;
-import java.util.Dictionary;
-
+import static org.qi4j.api.util.Classes.toClassName;
+import static org.qi4j.api.util.Classes.typesOf;
+import static org.qi4j.functional.Iterables.cast;
 import static org.qi4j.functional.Iterables.first;
+import static org.qi4j.functional.Iterables.map;
+import static org.qi4j.functional.Iterables.toArray;
 
 @Mixins( OSGiEnabledService.OSGiEnabledServiceMixin.class )
 public interface OSGiEnabledService extends Activatable, ServiceComposite
@@ -45,7 +49,7 @@ public interface OSGiEnabledService extends Activatable, ServiceComposite
             {
                 if( ref.identity().equals( identity().get() ) )
                 {
-                    Iterable<Class<?>> classesSet = descriptor.types();
+                    Iterable<Type> classesSet = cast(descriptor.types());
                     Dictionary properties = descriptor.metaInfo( Dictionary.class );
                     String[] clazzes = fetchInterfacesImplemented( classesSet );
                     registration = context.registerService( clazzes, ref.get(), properties );
@@ -53,15 +57,9 @@ public interface OSGiEnabledService extends Activatable, ServiceComposite
             }
         }
 
-        private String[] fetchInterfacesImplemented( Iterable<Class<?>> classesSet )
+        private String[] fetchInterfacesImplemented( Iterable<Type> classesSet )
         {
-            String[] clazzes = new String[(int) Iterables.count( classesSet )];
-            int i = 0;
-            for( Type clazz : classesSet )
-            {
-                clazzes[ i++ ] = Classes.RAW_CLASS.map( clazz ).getName();
-            }
-            return clazzes;
+            return toArray( String.class, map( toClassName(), typesOf( classesSet ) ) );
         }
 
         public void passivate()

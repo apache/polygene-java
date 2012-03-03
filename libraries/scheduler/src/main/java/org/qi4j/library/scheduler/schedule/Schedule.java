@@ -17,10 +17,9 @@ package org.qi4j.library.scheduler.schedule;
 import org.joda.time.DateTime;
 import org.qi4j.api.association.Association;
 import org.qi4j.api.entity.Identity;
-import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.Property;
-import org.qi4j.library.scheduler.task.Task;
+import org.qi4j.library.scheduler.Task;
 
 /**
  * Represent the scheduling of a {@link Task}.
@@ -40,25 +39,25 @@ public interface Schedule extends Identity
     Property<DateTime> start();
 
     /**
-     * Called just before the {@link org.qi4j.library.scheduler.task.Task#run()} method is called.
+     * Called just before the {@link org.qi4j.library.scheduler.Task#run()} method is called.
      */
     void taskStarting();
 
     /**
-     * Called directly after the {@link org.qi4j.library.scheduler.task.Task#run()} method has been completed and
+     * Called directly after the {@link org.qi4j.library.scheduler.Task#run()} method has been completed and
      * returned from the method normally.
      */
     void taskCompletedSuccessfully();
 
     /**
-     * Called directly after the {@link org.qi4j.library.scheduler.task.Task#run()} method has been completed but
+     * Called directly after the {@link org.qi4j.library.scheduler.Task#run()} method has been completed but
      * threw a RuntimeException.
      * @param ex
      */
     void taskCompletedWithException( RuntimeException ex );
 
     /**
-     * @return True if the associated {@link Task} is currently running, false otherwise
+     * @return True if the associated {@link org.qi4j.library.scheduler.Task} is currently running, false otherwise
      */
     boolean isTaskRunning();
 

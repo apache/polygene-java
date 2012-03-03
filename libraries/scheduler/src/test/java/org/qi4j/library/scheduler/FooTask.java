@@ -18,14 +18,11 @@ import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
-import org.qi4j.library.scheduler.task.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Mixins( FooTask.Mixin.class )
-public interface FooTask
-        extends Task,
-                EntityComposite
+public interface FooTask extends Task, EntityComposite
 {
 
     Property<String> input();
@@ -34,7 +31,7 @@ public interface FooTask
     Property<String> output();
 
     public static abstract class Mixin
-            implements Runnable
+        implements Runnable
     {
 
         private static final Logger LOGGER = LoggerFactory.getLogger( FooTask.class );
@@ -45,15 +42,17 @@ public interface FooTask
         public void run()
         {
             LOGGER.info( "FooTaskEntity.run({})", me.input().get() );
-            if ( me.input().get().equals( Constants.BAZAR ) ) {
-                if ( me.output().get() == null ) {
+            if( me.input().get().equals( Constants.BAZAR ) )
+            {
+                if( me.output().get() == null )
+                {
                     me.output().set( Constants.BAR );
-                } else {
+                }
+                else
+                {
                     me.output().set( me.output().get() + Constants.BAR );
                 }
             }
         }
-
     }
-
 }

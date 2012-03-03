@@ -463,7 +463,6 @@ public abstract class AbstractQueryTest
     }
 
     @Test
-    @Ignore( "Wait for QI-58" )
     public void script32()
     {
         QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );

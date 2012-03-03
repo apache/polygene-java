@@ -13,12 +13,9 @@
  */
 package org.qi4j.tutorials.hello;
 
-import org.junit.Ignore;
 import org.junit.Test;
-import org.qi4j.api.composite.TransientBuilder;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
@@ -53,8 +50,8 @@ public class HelloTest4 extends AbstractQi4jTest
             String result = underTest.say();
             uow.complete();
             assertThat( result, equalTo( "Hello World" ) );
-            
-        } catch( Exception e )
+        }
+        catch( Exception e )
         {
             uow.discard();
         }

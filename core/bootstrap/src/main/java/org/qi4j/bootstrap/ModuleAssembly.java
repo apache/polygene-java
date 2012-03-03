@@ -119,7 +119,8 @@ public interface ModuleAssembly
      *
      * @return
      */
-    ObjectDeclaration objects( Class<?>... objectTypes );
+    ObjectDeclaration objects( Class<?>... objectTypes )
+        throws AssemblyException;
 
     /**
      * Given a Specification for ObjectAssembly's, returns a ObjectDeclaration that can

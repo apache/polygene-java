@@ -129,9 +129,9 @@ public class SchedulerAssembler
             scheduleValues.withTypes( Timeline.class )
                 .withMixins( TimelineScheduleMixin.class )
                 .withConcerns( TimelineForScheduleConcern.class );
+
             // Internal
             assembly.values( TimelineRecord.class );
-
             schedulerDeclaration.withTypes( Timeline.class ).withMixins( TimelineSchedulerServiceMixin.class );
         }
 

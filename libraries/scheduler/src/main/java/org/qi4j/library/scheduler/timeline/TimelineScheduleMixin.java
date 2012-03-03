@@ -18,10 +18,10 @@ package org.qi4j.library.scheduler.timeline;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import org.joda.time.DateTime;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.structure.Module;
@@ -71,9 +71,9 @@ public class TimelineScheduleMixin
     }
 
     @Override
-    public Iterable<TimelineRecord> getRecords( Date from, Date to )
+    public Iterable<TimelineRecord> getRecords( DateTime from, DateTime to )
     {
-        return getRecords( from.getTime(), to.getTime() );
+        return getRecords( from.getMillis(), to.getMillis() );
     }
 
     @Override
@@ -81,9 +81,9 @@ public class TimelineScheduleMixin
     {
         long now = System.currentTimeMillis();
         SortedSet<TimelineRecord> result = new TreeSet<TimelineRecord>();
-        result.addAll( getFutureRecords( now, to ) );
         result.addAll( getPastRecords( from ) );
-        return null;
+        result.addAll( getFutureRecords( now, to ) );
+        return result;
     }
 
     private Collection<? extends TimelineRecord> getPastRecords( long from )
@@ -113,7 +113,10 @@ public class TimelineScheduleMixin
         while( time <= to )
         {
             time = me.nextRun( time );
-            result.add( createFutureRecord( time ) );
+            if( time <= to )
+            {
+                result.add( createFutureRecord( time ) );
+            }
         }
         return result;
     }

@@ -526,14 +526,10 @@ public class ModuleInstance
             if( generator == null )
             {
                 ServiceReference<IdentityGenerator> service = findService( IdentityGenerator.class );
-                if( service == null )
-                {
-                    return null;
-                }
                 generator = service.get();
             }
+            return generator;
         }
-        return generator;
     }
 
     public MetricsProvider metricsProvider()
@@ -653,15 +649,16 @@ public class ModuleInstance
         Map<AccessibleObject, PropertyInstance<?>> properties = new LinkedHashMap<AccessibleObject, PropertyInstance<?>>();
         for( PropertyDescriptor propertyDescriptor : model.model().state().properties() )
         {
-            properties.put( propertyDescriptor.accessor(), new PropertyInstance<Object>( (PropertyInfo) propertyDescriptor, propertyDescriptor
-                .initialValue( model
-                                   .module() ) ) );
+            Object initialValue = propertyDescriptor.initialValue( model.module() );
+            PropertyInstance value = new PropertyInstance<Object>( (PropertyInfo) propertyDescriptor, initialValue );
+            properties.put( propertyDescriptor.accessor(), value );
         }
 
         Map<AccessibleObject, AssociationInstance<?>> associations = new LinkedHashMap<AccessibleObject, AssociationInstance<?>>();
         for( AssociationDescriptor associationDescriptor : model.model().state().associations() )
         {
-            associations.put( associationDescriptor.accessor(), new AssociationInstance<Object>( (AssociationInfo) associationDescriptor, entityFunction, new ReferenceProperty() ) );
+            AssociationInstance instance = new AssociationInstance<Object>( (AssociationInfo) associationDescriptor, entityFunction, new ReferenceProperty() );
+            associations.put( associationDescriptor.accessor(), instance );
         }
 
         Map<AccessibleObject, ManyAssociationInstance<?>> manyAssociations = new LinkedHashMap<AccessibleObject, ManyAssociationInstance<?>>();
@@ -885,7 +882,8 @@ public class ModuleInstance
         ServiceReference serviceReference = serviceReferences.get( serviceType );
         if( serviceReference == null )
         {
-            serviceReference = Iterables.first( findServices( serviceType ) );
+            Iterable<ServiceReference<T>> references = findServices( serviceType );
+            serviceReference = Iterables.first( references );
             if( serviceReference != null )
             {
                 serviceReferences.put( serviceType, serviceReference );

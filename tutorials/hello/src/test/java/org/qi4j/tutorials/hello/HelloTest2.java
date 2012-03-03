@@ -13,10 +13,8 @@
  */
 package org.qi4j.tutorials.hello;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.qi4j.api.composite.TransientBuilder;
-import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;

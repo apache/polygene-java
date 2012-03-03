@@ -18,11 +18,9 @@ import java.util.List;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.library.scheduler.Scheduler;
-import org.qi4j.library.scheduler.task.Task;
 
 /**
  * Record in {@link Scheduler}'s {@link Timeline}.
@@ -45,12 +43,12 @@ public interface TimelineRecord
     Property<Long> timestamp();
 
     /**
-     * @return Name of the associated {@link Task}
+     * @return Name of the associated {@link org.qi4j.library.scheduler.Task}
      */
     Property<String> taskName();
 
     /**
-     * @return Tags of the associated {@link Task}
+     * @return Tags of the associated {@link org.qi4j.library.scheduler.Task}
      */
     @UseDefaults
     Property<List<String>> taskTags();

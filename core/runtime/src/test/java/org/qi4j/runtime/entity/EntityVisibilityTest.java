@@ -29,6 +29,7 @@ import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.ApplicationAssemblerAdapter;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
@@ -672,7 +673,7 @@ public class EntityVisibilityTest
             module.entities( BelowModuleVisible.class ).visibleIn( Visibility.module );
 
             module.services( MemoryEntityStoreService.class ).visibleIn( Visibility.application );
-            module.services( UuidIdentityGeneratorService.class );
+            module.services( UuidIdentityGeneratorService.class ).visibleIn( Visibility.application );
         }
     }
 
@@ -733,7 +734,7 @@ public class EntityVisibilityTest
         void aboveModuleVisible();
     }
 
-    public interface FromValue extends From, EntityComposite
+    public interface FromValue extends From, ValueComposite
     {
     }
 

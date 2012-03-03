@@ -153,6 +153,10 @@ public final class Classes
         @Override
         public Iterable<Class<?>> map( Type type )
         {
+            if( type == null )
+            {
+                return empty();
+            }
             if( type.equals( Object.class ) )
             {
                 Class<?> aClass = (Class<?>) type;
@@ -161,7 +165,8 @@ public final class Classes
             else
             {
                 type = RAW_CLASS.map( type );
-                return prepend( ( (Class) type ), map( ( (Class) type ).getSuperclass() ) );
+                Class superclass = ( (Class) type ).getSuperclass();
+                return prepend( ( (Class) type ), map( superclass ) );
             }
         }
     };
@@ -185,8 +190,9 @@ public final class Classes
                 }
                 else
                 {
-                    return flatten( flattenIterables( Iterables.map( INTERFACES_OF, iterable( clazz.getGenericInterfaces() ) ) ), INTERFACES_OF
-                        .map( RAW_CLASS.map( type ).getSuperclass() ) );
+                    return flatten( flattenIterables( Iterables.map( INTERFACES_OF,
+                                                                     iterable( clazz.getGenericInterfaces() ) ) ),
+                                    INTERFACES_OF.map( RAW_CLASS.map( type ).getSuperclass() ) );
                 }
             }
         }
@@ -205,8 +211,8 @@ public final class Classes
             }
             else
             {
-                return flatten( CLASS_HIERARCHY.map( type ), flattenIterables( Iterables.map( INTERFACES_OF, CLASS_HIERARCHY
-                    .map( type ) ) ) );
+                return flatten( CLASS_HIERARCHY.map( type ),
+                                flattenIterables( Iterables.map( INTERFACES_OF, CLASS_HIERARCHY.map( type ) ) ) );
             }
         }
     };
@@ -214,6 +220,16 @@ public final class Classes
     public static Type typeOf( AccessibleObject from )
     {
         return TYPE_OF.map( from );
+    }
+
+    public static Iterable<Type> typesOf( Iterable<Type> types )
+    {
+        Iterable<Type> result = empty();
+        for( Type type : types )
+        {
+            result = flatten( result, typesOf( type ) );
+        }
+        return result;
     }
 
     public static Iterable<Type> typesOf( Type type )
@@ -635,4 +651,18 @@ public final class Classes
         builder.append( "]" );
         return builder.toString();
     }
+
+    public static Function<Type, String> toClassName()
+    {
+        return new Function<Type, String>()
+        {
+            @Override
+            public String map( Type type )
+            {
+                return RAW_CLASS.map( type ).getName();
+            }
+        };
+    }
 }
+
+

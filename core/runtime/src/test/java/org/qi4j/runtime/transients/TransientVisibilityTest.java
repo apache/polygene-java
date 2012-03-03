@@ -30,6 +30,7 @@ import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.ApplicationAssemblerAdapter;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
@@ -731,7 +732,7 @@ public class TransientVisibilityTest
         void aboveModuleVisible();
     }
 
-    public interface FromValue extends From, TransientComposite
+    public interface FromValue extends From, ValueComposite
     {
     }
 

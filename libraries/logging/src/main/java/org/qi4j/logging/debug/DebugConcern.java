@@ -27,7 +27,7 @@ import org.qi4j.logging.debug.service.DebuggingService;
 
 import java.io.Serializable;
 
-public final class DebugConcern
+public class DebugConcern
     implements Debug
 {
     @Structure private Qi4j api;

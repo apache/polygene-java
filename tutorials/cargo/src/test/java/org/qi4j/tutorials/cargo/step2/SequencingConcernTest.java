@@ -81,7 +81,7 @@ public class SequencingConcernTest
      */
     @Test
     @Ignore( "Expectations need to be figured out." )
-    public void succesfulBooking()
+    public void successfulBooking()
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {

@@ -60,7 +60,6 @@ public class DebuggingTest
     }
 
     @Test
-    @Ignore( "Needs QI-230 to be resolved." )
     public void whenCallingMethodThenExpectDebugEntityCreated()
     {
         UnitOfWork uow = module.newUnitOfWork();
