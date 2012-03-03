@@ -12,7 +12,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.library.scheduler.task;
+package org.qi4j.library.scheduler;
 
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.property.Property;

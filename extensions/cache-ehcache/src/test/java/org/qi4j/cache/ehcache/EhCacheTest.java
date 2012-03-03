@@ -1,4 +1,4 @@
-package org.qi4.cache.ehcache;
+package org.qi4j.cache.ehcache;
 
 import org.junit.Test;
 import org.qi4j.api.common.Visibility;
