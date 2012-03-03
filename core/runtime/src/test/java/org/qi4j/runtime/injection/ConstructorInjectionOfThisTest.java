@@ -16,19 +16,13 @@
 
 package org.qi4j.runtime.injection;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import org.junit.Test;
-import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.concern.ConcernOf;
-import org.qi4j.api.concern.Concerns;
-import org.qi4j.api.constraint.Constraint;
-import org.qi4j.api.constraint.ConstraintDeclaration;
-import org.qi4j.api.constraint.Constraints;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.mixin.NoopMixin;
 import org.qi4j.api.sideeffect.SideEffectOf;
+import org.qi4j.api.structure.Module;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
@@ -39,7 +33,7 @@ import org.qi4j.bootstrap.SingletonAssembler;
 public class ConstructorInjectionOfThisTest
 {
 
-    @Test( expected = InvalidApplicationException.class )
+    @Test
     public void givenConcernWithThisInConstructorWhenCreatingModelExpectException()
     {
         SingletonAssembler singletonAssembler = new SingletonAssembler()
@@ -52,9 +46,12 @@ public class ConstructorInjectionOfThisTest
                 module.values( Does.class ).withConcerns( DoesConcern.class );
             }
         };
+        Module module = singletonAssembler.application().findModule( "Layer 1", "Module 1" );
+        Does does = module.newValue( Does.class );
+        does.doSomething();
     }
 
-    @Test( expected = InvalidApplicationException.class )
+    @Test
     public void givenSideEffectWithThisInConstructorWhenCreatingModelExpectException()
     {
         SingletonAssembler singletonAssembler = new SingletonAssembler()
@@ -67,29 +64,21 @@ public class ConstructorInjectionOfThisTest
                 module.values( Does.class ).withSideEffects( DoesSideEffect.class );
             }
         };
-    }
-
-    @Test( expected = InvalidApplicationException.class )
-    public void givenConstraintWithThisInConstructorWhenCreatingModelExpectException()
-    {
-        SingletonAssembler singletonAssembler = new SingletonAssembler()
-        {
-
-            @Override
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
-            {
-                module.values( ConstrainedDoes.class );
-            }
-        };
+        Module module = singletonAssembler.application().findModule( "Layer 1", "Module 1" );
+        Does does = module.newValue( Does.class );
+        does.doSomething();
     }
 
     public static class DoesConcern extends ConcernOf<Does>
         implements Does
     {
 
-        public DoesConcern( @This Does notWork )
+        public DoesConcern( @This Does work )
         {
+            if( work == null )
+            {
+                throw new NullPointerException();
+            }
             System.out.print( "Niclas " );
         }
 
@@ -104,8 +93,12 @@ public class ConstructorInjectionOfThisTest
         implements Does
     {
 
-        public DoesSideEffect( @This Does notWork )
+        public DoesSideEffect( @This Does work )
         {
+            if( work == null )
+            {
+                throw new NullPointerException();
+            }
             System.out.print( "Niclas " );
         }
 
@@ -120,35 +113,5 @@ public class ConstructorInjectionOfThisTest
     public interface Does
     {
         void doSomething();
-    }
-
-    @Constraints(DoesConstraint.class)
-    @Mixins( NoopMixin.class )
-    public interface ConstrainedDoes
-    {
-        @DoesAnnotation
-        void doSomething();
-    }
-
-
-    @ConstraintDeclaration
-    @Retention( RetentionPolicy.RUNTIME )
-    public @interface DoesAnnotation
-    {
-    }
-
-    public static class DoesConstraint
-        implements Constraint<DoesAnnotation, String>
-    {
-
-        public DoesConstraint( @This Does notWork )
-        {
-        }
-
-        @Override
-        public boolean isValid( DoesAnnotation doesAnnotation, String value )
-        {
-            return false;
-        }
     }
 }
