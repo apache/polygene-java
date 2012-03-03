@@ -14,13 +14,12 @@
 
 package org.qi4j.spi.entitystore;
 
+import java.util.LinkedList;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.spi.entity.EntityState;
-
-import java.util.LinkedList;
 
 /**
  * JAVADOC
@@ -39,7 +38,8 @@ public final class DefaultEntityStoreUnitOfWork
                                          String identity,
                                          Module module,
                                          Usecase usecase,
-                                         long currentTime )
+                                         long currentTime
+    )
     {
         this.entityStoreSPI = entityStoreSPI;
         this.identity = identity;

@@ -20,13 +20,14 @@ package org.qi4j.api.property;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import org.qi4j.api.util.Classes;
+
+import static org.qi4j.api.util.Classes.typeOf;
 
 public final class GenericPropertyInfo
 {
     public static Type getPropertyType( AccessibleObject accessor )
     {
-        return getPropertyType( Classes.TYPE_OF.map( accessor ) );
+        return getPropertyType( typeOf( accessor ) );
     }
 
     public static Type getPropertyType( Type methodReturnType )

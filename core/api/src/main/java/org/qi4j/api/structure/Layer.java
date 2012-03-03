@@ -21,9 +21,7 @@ import org.qi4j.api.service.Activatable;
  * The Layer represents a single layer in a Qi4j application.
  */
 public interface Layer
-    extends ActivationEventListenerRegistration, Activatable
+    extends ActivationEventListenerRegistration, Activatable, MetaInfoHolder
 {
     String name();
-
-    <T> T metaInfo( Class<T> infoType );
 }

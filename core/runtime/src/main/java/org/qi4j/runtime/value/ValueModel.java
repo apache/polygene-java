@@ -14,19 +14,19 @@
 
 package org.qi4j.runtime.value;
 
-import org.qi4j.api.association.AssociationDescriptor;
-import org.qi4j.api.association.AssociationStateHolder;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.constraint.ConstraintViolationException;
-import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.type.ValueCompositeType;
 import org.qi4j.api.value.ValueDescriptor;
-import org.qi4j.runtime.association.*;
-import org.qi4j.runtime.composite.*;
+import org.qi4j.runtime.association.AssociationModel;
+import org.qi4j.runtime.association.ManyAssociationModel;
+import org.qi4j.runtime.composite.CompositeMethodsModel;
+import org.qi4j.runtime.composite.CompositeModel;
+import org.qi4j.runtime.composite.MixinModel;
+import org.qi4j.runtime.composite.MixinsModel;
+import org.qi4j.runtime.composite.UsesInstance;
 import org.qi4j.runtime.injection.InjectionContext;
-import org.qi4j.runtime.property.PropertyInfo;
-import org.qi4j.runtime.property.PropertyInstance;
 import org.qi4j.runtime.property.PropertyModel;
 import org.qi4j.runtime.structure.ModuleInstance;
 
@@ -39,16 +39,15 @@ public final class ValueModel
 {
     private ValueCompositeType valueType;
 
-    public ValueModel( final Class<?> compositeType,
-                        final Iterable<Class<?>> types,
-                        final Visibility visibility,
-                        final MetaInfo metaInfo,
-                        final MixinsModel mixinsModel,
-                        final ValueStateModel stateModel,
-                        final CompositeMethodsModel compositeMethodsModel
+    public ValueModel( final Iterable<Class<?>> types,
+                       final Visibility visibility,
+                       final MetaInfo metaInfo,
+                       final MixinsModel mixinsModel,
+                       final ValueStateModel stateModel,
+                       final CompositeMethodsModel compositeMethodsModel
     )
     {
-        super( compositeType, types, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
+        super( types, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
 
         valueType = new ValueCompositeType( this );
     }
@@ -72,12 +71,12 @@ public final class ValueModel
             propertyModel.checkConstraints( state.<Object>propertyFor( propertyModel.accessor() ).get() );
         }
 
-        for( AssociationModel associationModel : ((ValueStateModel)stateModel).associations() )
+        for( AssociationModel associationModel : ( (ValueStateModel) stateModel ).associations() )
         {
             associationModel.checkConstraints( state.<Object>associationFor( associationModel.accessor() ).get() );
         }
 
-        for( ManyAssociationModel associationModel : ((ValueStateModel)stateModel).manyAssociations() )
+        for( ManyAssociationModel associationModel : ( (ValueStateModel) stateModel ).manyAssociations() )
         {
             associationModel.checkAssociationConstraints( state.<Object>manyAssociationFor( associationModel.accessor() ) );
         }

@@ -7,7 +7,7 @@ public final class ActivationEvent
 {
     public enum EventType
     {
-        ACTIVATING,ACTIVATED,PASSIVATING,PASSIVATED
+        ACTIVATING, ACTIVATED, PASSIVATING, PASSIVATED
     }
 
     private long timestamp;
@@ -33,20 +33,19 @@ public final class ActivationEvent
 
     public String message()
     {
-        switch(type)
+        switch( type )
         {
-            case ACTIVATING:
-                return "Activating "+source;
-            case ACTIVATED:
-                return "Activated "+source;
-            case PASSIVATING:
-                return "Passivating "+source;
-            case PASSIVATED:
-                return "Passivated "+source;
+        case ACTIVATING:
+            return "Activating " + source;
+        case ACTIVATED:
+            return "Activated " + source;
+        case PASSIVATING:
+            return "Passivating " + source;
+        case PASSIVATED:
+            return "Passivated " + source;
         }
         return "";
     }
-
 
     @Override
     public String toString()

@@ -15,7 +15,6 @@
 package org.qi4j.api.object;
 
 import org.junit.Test;
-import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -38,11 +37,11 @@ public class ObjectBuilderTest
     @Test
     public void testNotProvidedUses()
     {
-        A a = module.newObject(A.class );
-        assertNotNull(a);
-        assertNotNull(a.b);
-        assertNotNull(a.b.c);
-        assertNotNull(a.b.c.d);
+        A a = module.newObject( A.class );
+        assertNotNull( a );
+        assertNotNull( a.b );
+        assertNotNull( a.b.c );
+        assertNotNull( a.b.c.d );
     }
 
     public static class A

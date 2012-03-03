@@ -79,14 +79,18 @@ public final class ValueStateModel
     }
 
     @Override
-    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor ) throws ThrowableType
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor )
+        throws ThrowableType
     {
-        if (visitor.visitEnter( this ))
+        if( visitor.visitEnter( this ) )
         {
-            if (((VisitableHierarchy<Object, Object>)propertiesModel).accept(visitor))
-                if (((VisitableHierarchy<AssociationsModel, AssociationModel>)associationsModel).accept(visitor))
-                    ((VisitableHierarchy<ManyAssociationsModel, ManyAssociationModel>)manyAssociationsModel).accept(visitor);
-
+            if( ( (VisitableHierarchy<Object, Object>) propertiesModel ).accept( visitor ) )
+            {
+                if( ( (VisitableHierarchy<AssociationsModel, AssociationModel>) associationsModel ).accept( visitor ) )
+                {
+                    ( (VisitableHierarchy<ManyAssociationsModel, ManyAssociationModel>) manyAssociationsModel ).accept( visitor );
+                }
+            }
         }
 
         return visitor.visitLeave( this );

@@ -14,19 +14,20 @@
 
 package org.qi4j.runtime.service;
 
+import java.lang.reflect.Method;
 import org.qi4j.api.composite.CompositeDescriptor;
-import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.CompositeInstance;
 import org.qi4j.api.event.ActivationEvent;
 import org.qi4j.api.event.ActivationEventListener;
 import org.qi4j.api.property.StateHolder;
-import org.qi4j.api.service.*;
+import org.qi4j.api.service.Activatable;
+import org.qi4j.api.service.ServiceDescriptor;
+import org.qi4j.api.service.ServiceImporterException;
+import org.qi4j.api.service.ServiceReference;
+import org.qi4j.api.service.ServiceUnavailableException;
 import org.qi4j.api.structure.Module;
 import org.qi4j.runtime.structure.ActivationEventListenerSupport;
 import org.qi4j.runtime.structure.ModuleInstance;
-
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 
 /**
  * Implementation of ServiceReference. This manages the actual instance of the service
@@ -59,9 +60,9 @@ public final class ServiceReferenceInstance<T>
     }
 
     @Override
-    public Class<T> type()
+    public Iterable<Class<?>> types()
     {
-        return (Class<T>) serviceModel.type();
+        return serviceModel.types();
     }
 
     public <T> T metaInfo( Class<T> infoType )
@@ -191,9 +192,9 @@ public final class ServiceReferenceInstance<T>
         }
 
         @Override
-        public Class<? extends Composite> type()
+        public Iterable<Class<?>> types()
         {
-            return (Class<Composite>) ServiceReferenceInstance.this.type();
+            return ServiceReferenceInstance.this.types();
         }
 
         @Override
@@ -203,7 +204,8 @@ public final class ServiceReferenceInstance<T>
         }
 
         @Override
-        public Object invokeComposite( Method method, Object[] args ) throws Throwable
+        public Object invokeComposite( Method method, Object[] args )
+            throws Throwable
         {
             return getInstance().invokeComposite( method, args );
         }

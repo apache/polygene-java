@@ -6,20 +6,23 @@ public final class ClassNameFilters
     {
     }
 
-    public static ClassNameFilter passThruFilter = new ClassNameFilter()
+    public static ClassNameMapper passThruMapper = new ClassNameMapper()
     {
-        public String filter( String className )
+        @Override
+        public String map( Class<?> type )
         {
-            return className;
+            return type.getName();
         }
     };
 
-    public static ClassNameFilter removeSuffixes( final String... suffixes )
+    public static ClassNameMapper removeSuffixes( final String... suffixes )
     {
-        return new ClassNameFilter()
+        return new ClassNameMapper()
         {
-            public String filter( String className )
+            @Override
+            public String map( Class<?> type )
             {
+                String className = type.getName();
                 for( String suffix : suffixes )
                 {
                     if( className.endsWith( suffix ) )

@@ -1,7 +1,5 @@
 package org.qi4j.api.association;
 
-import org.qi4j.api.association.ManyAssociation;
-
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;

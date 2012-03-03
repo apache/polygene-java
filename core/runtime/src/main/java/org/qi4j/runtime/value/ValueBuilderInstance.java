@@ -14,16 +14,9 @@
 
 package org.qi4j.runtime.value;
 
-import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.association.AssociationStateHolder;
 import org.qi4j.api.common.ConstructionException;
-import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.value.ValueBuilder;
-import org.qi4j.runtime.association.AssociationInfo;
-import org.qi4j.runtime.association.AssociationInstance;
-import org.qi4j.runtime.association.ManyAssociationInstance;
-import org.qi4j.runtime.property.PropertyInfo;
-import org.qi4j.runtime.property.PropertyInstance;
 import org.qi4j.runtime.structure.ModelModule;
 
 /**
@@ -35,7 +28,7 @@ public final class ValueBuilderInstance<T>
     private final ModelModule<ValueModel> model;
     private ValueInstance prototypeInstance;
 
-    public ValueBuilderInstance( ModelModule<ValueModel> model, ValueInstance prototypeInstance)
+    public ValueBuilderInstance( ModelModule<ValueModel> model, ValueInstance prototypeInstance )
     {
         this.model = model;
         this.prototypeInstance = prototypeInstance;
@@ -43,8 +36,10 @@ public final class ValueBuilderInstance<T>
 
     public T prototype()
     {
-        if (prototypeInstance == null)
+        if( prototypeInstance == null )
+        {
             throw new IllegalStateException( "ValueBuilder instances cannot be reused" );
+        }
 
         return prototypeInstance.<T>proxy();
     }
@@ -52,16 +47,20 @@ public final class ValueBuilderInstance<T>
     @Override
     public AssociationStateHolder state()
     {
-        if (prototypeInstance == null)
+        if( prototypeInstance == null )
+        {
             throw new IllegalStateException( "ValueBuilder instances cannot be reused" );
+        }
 
         return prototypeInstance.state();
     }
 
     public <K> K prototypeFor( Class<K> mixinType )
     {
-        if (prototypeInstance == null)
+        if( prototypeInstance == null )
+        {
             throw new IllegalStateException( "ValueBuilder instances cannot be reused" );
+        }
 
         return prototypeInstance.newProxy( mixinType );
     }
@@ -69,8 +68,10 @@ public final class ValueBuilderInstance<T>
     public T newInstance()
         throws ConstructionException
     {
-        if (prototypeInstance == null)
+        if( prototypeInstance == null )
+        {
             throw new IllegalStateException( "ValueBuilder instances cannot be reused" );
+        }
 
         // Set correct info's (immutable) on the state
         prototypeInstance.prepareBuilderState();
@@ -81,7 +82,8 @@ public final class ValueBuilderInstance<T>
         try
         {
             return prototypeInstance.<T>proxy();
-        } finally
+        }
+        finally
         {
             // Invalidate builder
             prototypeInstance = null;

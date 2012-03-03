@@ -4,17 +4,17 @@ package org.qi4j.api.query.grammar;
  * TODO
  */
 public class NeSpecification<T>
-        extends ComparisonSpecification<T>
+    extends ComparisonSpecification<T>
 {
     public NeSpecification( PropertyFunction<T> property, T value )
     {
-        super(property, value);
+        super( property, value );
     }
 
     @Override
     protected boolean compare( T value )
     {
-        return !value.equals(this.value);
+        return !value.equals( this.value );
     }
 
     @Override

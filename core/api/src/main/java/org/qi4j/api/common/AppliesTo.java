@@ -16,7 +16,11 @@
 
 package org.qi4j.api.common;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * Fragments that implement InvocationHandler and which should only be applied to methods that have a particular

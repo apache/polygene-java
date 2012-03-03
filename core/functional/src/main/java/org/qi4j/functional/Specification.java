@@ -23,6 +23,7 @@ package org.qi4j.functional;
 public interface Specification<T>
 {
 // END SNIPPET: specification
+
     /**
      * Test whether an item matches the given specification
      *

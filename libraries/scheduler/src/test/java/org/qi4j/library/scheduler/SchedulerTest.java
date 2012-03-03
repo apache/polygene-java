@@ -141,11 +141,11 @@ public class SchedulerTest
             FooTask task = createFooTask( uow, "TestOnce", Constants.BAZAR );
             String taskIdentity = task.identity().get();
 
-            scheduler.scheduleOnce( task, 10, true );
+            scheduler.scheduleOnce( task, 4, true );
 
             uow.complete();
 
-            Thread.sleep( 70000 );
+            Thread.sleep( 5000 );
 
             usecase = UsecaseBuilder.newUsecase( "testOnce" );
             uow = module.newUnitOfWork( usecase );

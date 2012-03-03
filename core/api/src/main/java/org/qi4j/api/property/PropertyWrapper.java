@@ -27,7 +27,8 @@ public class PropertyWrapper
     }
 
     @Override
-    public void set( Object newValue ) throws IllegalArgumentException, IllegalStateException
+    public void set( Object newValue )
+        throws IllegalArgumentException, IllegalStateException
     {
         next.set( newValue );
     }

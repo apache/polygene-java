@@ -54,6 +54,8 @@ import java.lang.reflect.Type;
 import java.util.*;
 import org.qi4j.spi.Qi4jSPI;
 
+import static org.qi4j.functional.Iterables.first;
+
 public class ValueCompositeCxfType extends AegisType
 {
     @Structure
@@ -142,7 +144,9 @@ public class ValueCompositeCxfType extends AegisType
         throws DatabindingException
     {
         ValueComposite composite = (ValueComposite) object;
-        writer.writeXsiType( NamespaceUtil.convertJavaTypeToQName( Qi4j.DESCRIPTOR_FUNCTION.map( composite ).type() ) );
+        writer.writeXsiType( NamespaceUtil.convertJavaTypeToQName( first( Qi4j.DESCRIPTOR_FUNCTION
+                                                                              .map( composite )
+                                                                              .types() ) ) );
         AssociationStateHolder state = spi.getState( composite );
         for( Property<?> property : state.properties() )
         {
@@ -151,7 +155,7 @@ public class ValueCompositeCxfType extends AegisType
             if( value instanceof ValueComposite )
             {
                 ValueComposite compositeValue = (ValueComposite) value;
-                type = getTypeMapping().getType( NamespaceUtil.convertJavaTypeToQName( Qi4j.DESCRIPTOR_FUNCTION.map( compositeValue ).type() ) );
+                type = getTypeMapping().getType( NamespaceUtil.convertJavaTypeToQName( first( Qi4j.DESCRIPTOR_FUNCTION.map( compositeValue ).types()) ) );
             }
             else
             {

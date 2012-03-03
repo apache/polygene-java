@@ -39,6 +39,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import static org.qi4j.functional.Iterables.first;
+
 /**
  * Implementation of Composite State Panel
  */
@@ -301,7 +303,7 @@ public class StatePane
 
             Icon icon = null;
             CompositeMethodDetailDescriptor descriptor = (CompositeMethodDetailDescriptor) value;
-            Class compositeClass = descriptor.composite().descriptor().type();
+            Class compositeClass = first( descriptor.composite().descriptor().types() );
             Class mixinMethodClass = descriptor.descriptor().method().getDeclaringClass();
             if( mixinMethodClass.isAssignableFrom( compositeClass ) )
             {

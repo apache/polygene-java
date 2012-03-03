@@ -14,10 +14,9 @@
 
 package org.qi4j.runtime.bootstrap;
 
+import java.util.Arrays;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.ValueDeclaration;
-
-import java.util.Arrays;
 
 /**
  * Declaration of a ValueComposite.
@@ -27,7 +26,7 @@ public final class ValueDeclarationImpl
 {
     private Iterable<ValueAssemblyImpl> assemblies;
 
-    public ValueDeclarationImpl( Iterable<ValueAssemblyImpl> assemblies)
+    public ValueDeclarationImpl( Iterable<ValueAssemblyImpl> assemblies )
     {
         this.assemblies = assemblies;
     }

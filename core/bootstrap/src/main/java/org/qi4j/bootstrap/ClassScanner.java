@@ -203,7 +203,7 @@ public class ClassScanner
     {
         public boolean satisfiedBy( Class<?> item )
         {
-            return (item.isInterface() || !Modifier.isAbstract( item.getModifiers() )) && (!item.isEnum() && !item.isAnonymousClass());
+            return ( item.isInterface() || !Modifier.isAbstract( item.getModifiers() ) ) && ( !item.isEnum() && !item.isAnonymousClass() );
         }
     }
 }

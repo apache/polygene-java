@@ -14,13 +14,12 @@
 
 package org.qi4j.runtime.composite;
 
-import org.qi4j.api.constraint.ConstraintsDescriptor;
-import org.qi4j.functional.HierarchicalVisitor;
-import org.qi4j.functional.VisitableHierarchy;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.qi4j.api.constraint.ConstraintsDescriptor;
+import org.qi4j.functional.HierarchicalVisitor;
+import org.qi4j.functional.VisitableHierarchy;
 
 /**
  * JAVADOC
@@ -30,7 +29,7 @@ public final class ConstraintsModel
 {
     private List<ValueConstraintsModel> parameterConstraintModels;
 
-    private static ConstraintsInstance EMPTY_CONSTRAINTS = new ConstraintsInstance(Collections.<ValueConstraintsInstance>emptyList());
+    private static ConstraintsInstance EMPTY_CONSTRAINTS = new ConstraintsInstance( Collections.<ValueConstraintsInstance>emptyList() );
 
     public ConstraintsModel( List<ValueConstraintsModel> parameterConstraintModels )
     {
@@ -39,11 +38,14 @@ public final class ConstraintsModel
 
     public ConstraintsInstance newInstance()
     {
-        if (parameterConstraintModels.isEmpty())
+        if( parameterConstraintModels.isEmpty() )
+        {
             return EMPTY_CONSTRAINTS;
+        }
         else
         {
-            List<ValueConstraintsInstance> parameterConstraintsInstances = new ArrayList<ValueConstraintsInstance>(parameterConstraintModels.size());
+            List<ValueConstraintsInstance> parameterConstraintsInstances = new ArrayList<ValueConstraintsInstance>( parameterConstraintModels
+                                                                                                                        .size() );
             for( ValueConstraintsModel parameterConstraintModel : parameterConstraintModels )
             {
                 parameterConstraintsInstances.add( parameterConstraintModel.newInstance() );
@@ -53,16 +55,19 @@ public final class ConstraintsModel
     }
 
     @Override
-    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> modelVisitor ) throws ThrowableType
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> modelVisitor )
+        throws ThrowableType
     {
-        if (modelVisitor.visitEnter( this ))
+        if( modelVisitor.visitEnter( this ) )
         {
             if( parameterConstraintModels != null )
             {
                 for( ValueConstraintsModel parameterConstraintModel : parameterConstraintModels )
                 {
-                    if (!parameterConstraintModel.accept( modelVisitor ))
+                    if( !parameterConstraintModel.accept( modelVisitor ) )
+                    {
                         break;
+                    }
                 }
             }
         }

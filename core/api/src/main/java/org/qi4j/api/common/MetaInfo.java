@@ -14,12 +14,6 @@
 
 package org.qi4j.api.common;
 
-import org.qi4j.api.concern.Concerns;
-import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.sideeffect.SideEffects;
-import org.qi4j.api.util.Classes;
-
-import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Type;
@@ -27,8 +21,13 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import org.qi4j.api.concern.Concerns;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.sideeffect.SideEffects;
+import org.qi4j.api.util.Classes;
 
 import static java.util.Arrays.asList;
+import static org.qi4j.api.util.Classes.typesOf;
 
 /**
  * Used to declare and access meta-info.
@@ -109,10 +108,10 @@ public final class MetaInfo
         else
         {
             Class<?> metaInfoclass = metaInfo.getClass();
-            Iterable<Type> types = Classes.TYPES_OF.map( metaInfoclass );
+            Iterable<Type> types = typesOf( metaInfoclass );
             for( Type type : types )
             {
-                metaInfoMap.put( Classes.RAW_CLASS.map( type), metaInfo );
+                metaInfoMap.put( Classes.RAW_CLASS.map( type ), metaInfo );
             }
         }
     }
@@ -132,7 +131,7 @@ public final class MetaInfo
         for( Annotation annotation : annotatedElement.getAnnotations() )
         {
             if( !ignored.contains( annotation.annotationType() )
-                && get(annotation.annotationType()) == null )
+                && get( annotation.annotationType() ) == null )
             {
                 set( annotation );
             }

@@ -28,6 +28,8 @@ import org.qi4j.logging.log.service.LoggingService;
 
 import java.io.Serializable;
 
+import static org.qi4j.functional.Iterables.first;
+
 public final class SimpleLogConcern
     implements SimpleLog
 {
@@ -39,7 +41,7 @@ public final class SimpleLogConcern
     public SimpleLogConcern( @This Composite composite )
     {
         this.composite = composite;
-        Class<?> type = Qi4j.DESCRIPTOR_FUNCTION.map( composite ).type();
+        Class<?> type = first( Qi4j.DESCRIPTOR_FUNCTION.map( composite ).types() );
         category = type.getName();
     }
 

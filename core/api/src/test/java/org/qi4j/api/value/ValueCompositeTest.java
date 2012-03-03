@@ -14,6 +14,7 @@
 
 package org.qi4j.api.value;
 
+import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 import org.qi4j.api.association.Association;
@@ -32,10 +33,10 @@ import org.qi4j.library.constraints.annotation.MaxLength;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
 
-import java.util.List;
-
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 /**
  * Tests for ValueComposites
@@ -71,7 +72,7 @@ public class ValueCompositeTest
         builder.newInstance();
 
         // Check that @UseDefaults works for ValueComposites
-        assertEquals("{\"val1\":\"\"}", some.another().get().toString());
+        assertEquals( "{\"val1\":\"\"}", some.another().get().toString() );
     }
 
     @Test
@@ -207,7 +208,8 @@ public class ValueCompositeTest
     }
 
     @Test
-    public void givenValueWithAssociationsWhenNewUoWThenCanRead() throws UnitOfWorkCompletionException
+    public void givenValueWithAssociationsWhenNewUoWThenCanRead()
+        throws UnitOfWorkCompletionException
     {
         ValueBuilder<SomeValue> builder = module.newValueBuilder( SomeValue.class );
         builder.prototype().anotherList().get().add( module.newValue( AnotherValue.class ) );

@@ -14,12 +14,16 @@
 
 package org.qi4j.bootstrap;
 
-import org.qi4j.api.common.MetaInfo;
-import org.qi4j.api.property.Property;
-
-import java.lang.reflect.*;
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
+import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.property.Property;
 
 /**
  * Declaration of a Property or Association.
@@ -55,14 +59,15 @@ public final class MetaInfoDeclaration
                 Class<?> mixinType = entry.getKey();
                 return metaInfo.withAnnotations( mixinType )
                     .withAnnotations( accessor )
-                    .withAnnotations( accessor instanceof Method ? ((Method)accessor).getReturnType() : ((Field)accessor).getType() );
+                    .withAnnotations( accessor instanceof Method ? ( (Method) accessor ).getReturnType() : ( (Field) accessor )
+                        .getType() );
             }
         }
         // TODO is this code reached at all??
-        Class<?> declaringType = ((Member)accessor).getDeclaringClass();
+        Class<?> declaringType = ( (Member) accessor ).getDeclaringClass();
         return new MetaInfo().withAnnotations( declaringType )
             .withAnnotations( accessor )
-            .withAnnotations( accessor instanceof Method ? ((Method)accessor).getReturnType() : ((Field)accessor).getType() );
+            .withAnnotations( accessor instanceof Method ? ( (Method) accessor ).getReturnType() : ( (Field) accessor ).getType() );
     }
 
     public Object getInitialValue( AccessibleObject accessor )
@@ -84,7 +89,7 @@ public final class MetaInfoDeclaration
         for( InfoHolder<?> propertyDeclarationHolder : mixinPropertyDeclarations.values() )
         {
             final boolean useDefaults = propertyDeclarationHolder.isUseDefaults( accessor );
-            if( useDefaults)
+            if( useDefaults )
             {
                 return useDefaults;
             }

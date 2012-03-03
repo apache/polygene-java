@@ -1,5 +1,9 @@
 package org.qi4j.library.struts2.util;
 
+import java.util.Arrays;
+import org.qi4j.functional.Function;
+import org.qi4j.functional.Iterables;
+
 import static java.lang.Character.isLowerCase;
 import static java.lang.Character.toLowerCase;
 
@@ -11,15 +15,38 @@ public final class ClassNames
 
     public static String classNameInDotNotation( Class<?> type )
     {
-        return ClassNames.classNameInDotNotation( type, ClassNameFilters.passThruFilter );
+        Function<Class<?>, String> mapper = ClassNameFilters.passThruMapper;
+        Iterable<String> map = Iterables.map( mapper, Arrays.asList( type ) );
+        return ClassNames.camelCaseToDotNotation( map );
     }
 
-    public static String classNameInDotNotation( Class<?> type, ClassNameFilter filter )
+    public static String classNameInDotNotation( Iterable<Class<?>> type, ClassNameMapper mapper )
     {
-        return ClassNames.camelCaseToDotNotation( filter.filter( type.getSimpleName() ) );
+        Iterable<String> map = Iterables.map( mapper, type );
+        return ClassNames.camelCaseToDotNotation( map );
     }
 
-    public static String camelCaseToDotNotation( String name )
+    public static String camelCaseToDotNotation( Iterable<String> names )
+    {
+        StringBuilder sb = new StringBuilder();
+        int count = 0;
+        for( String name : names )
+        {
+            if( count++ > 0 )
+            {
+                sb.append( "," );
+            }
+            sb.append( camelCaseToDotNotation( name ) );
+        }
+        if( count == 1 )
+        {
+            return sb.toString();
+        }
+        sb.append( "]" );
+        return "[" + sb.toString();
+    }
+
+    private static String camelCaseToDotNotation( String name )
     {
         StringBuilder sb = new StringBuilder( name.length() );
         sb.append( toLowerCase( name.charAt( 0 ) ) );

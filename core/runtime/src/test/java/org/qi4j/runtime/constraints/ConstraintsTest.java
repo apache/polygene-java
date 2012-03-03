@@ -17,19 +17,23 @@
  */
 package org.qi4j.runtime.constraints;
 
-import org.junit.Test;
-import org.qi4j.api.common.Optional;
-import org.qi4j.api.composite.TransientComposite;
-import org.qi4j.api.constraint.*;
-import org.qi4j.api.mixin.Mixins;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.test.AbstractQi4jTest;
-
 import java.lang.annotation.Retention;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.junit.Test;
+import org.qi4j.api.common.Optional;
+import org.qi4j.api.composite.TransientComposite;
+import org.qi4j.api.constraint.Constraint;
+import org.qi4j.api.constraint.ConstraintDeclaration;
+import org.qi4j.api.constraint.ConstraintViolation;
+import org.qi4j.api.constraint.ConstraintViolationException;
+import org.qi4j.api.constraint.Constraints;
+import org.qi4j.api.constraint.Name;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.test.AbstractQi4jTest;
 
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static org.junit.Assert.assertEquals;

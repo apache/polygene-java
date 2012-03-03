@@ -43,6 +43,7 @@ import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
 
 import static org.junit.Assert.assertEquals;
+import static org.qi4j.functional.Iterables.first;
 
 public class DebuggingTest
     extends AbstractQi4jTest
@@ -82,7 +83,7 @@ public class DebuggingTest
                         public EntityState map( EntityState entityState )
                         {
                             if( ServiceDebugRecordEntity.class.getName()
-                                    .equals( entityState.entityDescriptor().type().getName() ) )
+                                    .equals( first(entityState.entityDescriptor().types()).getName() ) )
                             {
                                 result[0] = entityState.identity().identity();
                             }

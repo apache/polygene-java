@@ -5,5 +5,5 @@ package org.qi4j.api.event;
  */
 public interface ActivationEventListener
 {
-    void onEvent(ActivationEvent event);
+    void onEvent( ActivationEvent event );
 }

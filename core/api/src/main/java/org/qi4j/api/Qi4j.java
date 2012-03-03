@@ -14,30 +14,23 @@
 
 package org.qi4j.api;
 
-import org.qi4j.api.association.Association;
-import org.qi4j.api.association.AssociationStateHolder;
-import org.qi4j.api.composite.*;
-import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.entity.EntityDescriptor;
-import org.qi4j.api.association.AbstractAssociation;
-import org.qi4j.api.association.AssociationDescriptor;
-import org.qi4j.api.entity.EntityReference;
-import org.qi4j.api.property.Property;
-import org.qi4j.api.property.PropertyDescriptor;
-import org.qi4j.api.property.StateHolder;
-import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.api.service.ServiceDescriptor;
-import org.qi4j.api.service.ServiceReference;
-import org.qi4j.api.structure.Module;
-import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.value.ValueBuilder;
-import org.qi4j.api.value.ValueComposite;
-import org.qi4j.api.value.ValueDescriptor;
-import org.qi4j.functional.Function;
-import org.qi4j.functional.Visitor;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
+import org.qi4j.api.association.AbstractAssociation;
+import org.qi4j.api.association.AssociationDescriptor;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.composite.CompositeDescriptor;
+import org.qi4j.api.composite.CompositeInstance;
+import org.qi4j.api.composite.InvalidCompositeException;
+import org.qi4j.api.composite.ModelDescriptor;
+import org.qi4j.api.composite.TransientDescriptor;
+import org.qi4j.api.entity.EntityDescriptor;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.property.PropertyDescriptor;
+import org.qi4j.api.service.ServiceDescriptor;
+import org.qi4j.api.structure.Module;
+import org.qi4j.api.value.ValueDescriptor;
+import org.qi4j.functional.Function;
 
 /**
  * Encapsulation of the Qi4j API.
@@ -80,24 +73,28 @@ public interface Qi4j
     // State
     PropertyDescriptor getPropertyDescriptor( Property property );
 
-    AssociationDescriptor getAssociationDescriptor( AbstractAssociation association);
+    AssociationDescriptor getAssociationDescriptor( AbstractAssociation association );
 
-    public static Function<Composite, CompositeDescriptor> DESCRIPTOR_FUNCTION = new Function<Composite, CompositeDescriptor>()
+    Function<Composite, CompositeDescriptor> DESCRIPTOR_FUNCTION = new Function<Composite, CompositeDescriptor>()
     {
         @Override
         public CompositeDescriptor map( Composite composite )
         {
-            if (composite instanceof Proxy)
+            if( composite instanceof Proxy )
             {
                 InvocationHandler invocationHandler = Proxy.getInvocationHandler( composite );
-                return ((CompositeInstance) invocationHandler).descriptor();
-            } else
+                return ( (CompositeInstance) invocationHandler ).descriptor();
+            }
+            else
             {
                 try
                 {
-                    CompositeInstance instance = (CompositeInstance) composite.getClass().getField( "_instance" ).get( composite );
+                    CompositeInstance instance = (CompositeInstance) composite.getClass()
+                        .getField( "_instance" )
+                        .get( composite );
                     return instance.descriptor();
-                } catch( Exception e )
+                }
+                catch( Exception e )
                 {
                     throw (InvalidCompositeException) new InvalidCompositeException( "Could not get _instance field" ).initCause( e );
                 }
@@ -105,21 +102,25 @@ public interface Qi4j
         }
     };
 
-    public static Function<Composite, CompositeInstance> INSTANCE_FUNCTION = new Function<Composite, CompositeInstance>()
+    Function<Composite, CompositeInstance> INSTANCE_FUNCTION = new Function<Composite, CompositeInstance>()
     {
         @Override
         public CompositeInstance map( Composite composite )
         {
-            if (composite instanceof Proxy)
+            if( composite instanceof Proxy )
             {
-                return ((CompositeInstance) Proxy.getInvocationHandler( composite ));
-            } else
+                return ( (CompositeInstance) Proxy.getInvocationHandler( composite ) );
+            }
+            else
             {
                 try
                 {
-                    CompositeInstance instance = (CompositeInstance) composite.getClass().getField( "_instance" ).get( composite );
+                    CompositeInstance instance = (CompositeInstance) composite.getClass()
+                        .getField( "_instance" )
+                        .get( composite );
                     return instance;
-                } catch( Exception e )
+                }
+                catch( Exception e )
                 {
                     throw (InvalidCompositeException) new InvalidCompositeException( "Could not get _instance field" ).initCause( e );
                 }

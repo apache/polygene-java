@@ -14,6 +14,13 @@
 
 package org.qi4j.runtime.association;
 
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Field;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.util.List;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.association.GenericAssociationInfo;
 import org.qi4j.api.association.ManyAssociation;
@@ -37,8 +44,8 @@ import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.runtime.unitofwork.BuilderEntityState;
 import org.qi4j.spi.entity.EntityState;
 
-import java.lang.reflect.*;
-import java.util.List;
+import static org.qi4j.functional.Iterables.empty;
+import static org.qi4j.functional.Iterables.first;
 
 /**
  * JAVADOC
@@ -131,7 +138,7 @@ public final class ManyAssociationModel
             {
                 return uow.get( Classes.RAW_CLASS.map( type ), entityReference.identity() );
             }
-        }, state.getManyAssociation( qualifiedName ));
+        }, state.getManyAssociation( qualifiedName ) );
     }
 
     public void checkConstraints( Object composite )
@@ -142,7 +149,8 @@ public final class ManyAssociationModel
             List<ConstraintViolation> violations = constraints.checkConstraints( composite );
             if( !violations.isEmpty() )
             {
-                throw new ConstraintViolationException( "", "<unknown>", (Member) accessor, violations );
+                Iterable<Class<?>> empty = empty();
+                throw new ConstraintViolationException( "", empty, (Member) accessor, violations );
             }
         }
     }
@@ -155,19 +163,22 @@ public final class ManyAssociationModel
             List<ConstraintViolation> violations = associationConstraints.checkConstraints( manyAssociation );
             if( !violations.isEmpty() )
             {
-                throw new ConstraintViolationException( "", "<unknown>", (Member) accessor, violations );
+                Iterable<Class<?>> empty = empty();
+                throw new ConstraintViolationException( "", empty, (Member) accessor, violations );
             }
         }
     }
 
     @Override
-    public <ThrowableType extends Throwable> boolean accept( Visitor<? super ManyAssociationModel, ThrowableType> visitor ) throws ThrowableType
+    public <ThrowableType extends Throwable> boolean accept( Visitor<? super ManyAssociationModel, ThrowableType> visitor )
+        throws ThrowableType
     {
         return visitor.visit( this );
     }
 
     @Override
-    public void bind( Resolution resolution ) throws BindingException
+    public void bind( Resolution resolution )
+        throws BindingException
     {
         builderInfo = new AssociationInfo()
         {
@@ -190,15 +201,17 @@ public final class ManyAssociationModel
             }
 
             @Override
-            public void checkConstraints( Object value ) throws ConstraintViolationException
+            public void checkConstraints( Object value )
+                throws ConstraintViolationException
             {
                 ManyAssociationModel.this.checkConstraints( value );
             }
         };
 
-        if (type instanceof TypeVariable)
+        if( type instanceof TypeVariable )
         {
-            type = Classes.resolveTypeVariable( (TypeVariable) type, ((Member) accessor).getDeclaringClass(), resolution.model().type() );
+            Class mainType = first( resolution.model().types() );
+            type = Classes.resolveTypeVariable( (TypeVariable) type, ( (Member) accessor ).getDeclaringClass(), mainType );
         }
     }
 
@@ -226,9 +239,13 @@ public final class ManyAssociationModel
     @Override
     public String toString()
     {
-        if (accessor instanceof Field )
-          return ((Field)accessor).toGenericString();
+        if( accessor instanceof Field )
+        {
+            return ( (Field) accessor ).toGenericString();
+        }
         else
-            return ((Method)accessor).toGenericString();
+        {
+            return ( (Method) accessor ).toGenericString();
+        }
     }
 }

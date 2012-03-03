@@ -22,7 +22,6 @@ import org.qi4j.api.composite.Composite;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryExpressions;
-import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.functional.Specification;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.QueryBuilderSPI;
@@ -82,7 +81,7 @@ final class QueryBuilderImpl<T>
 
     public Query<T> newQuery( Iterable<T> iterable )
     {
-        return new QueryImpl<T>(resultType, whereClause, new IterableQuerySource( iterable )  );
+        return new QueryImpl<T>( resultType, whereClause, new IterableQuerySource( iterable ) );
     }
 
     // SPI

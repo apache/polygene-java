@@ -17,6 +17,8 @@
  */
 package org.qi4j.runtime.appliesto;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import org.junit.Assert;
 import org.junit.Test;
 import org.qi4j.api.common.AppliesTo;
@@ -27,9 +29,6 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 
 /**
  * Test of the @AppliesTo annotation

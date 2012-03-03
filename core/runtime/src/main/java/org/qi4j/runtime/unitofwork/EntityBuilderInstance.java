@@ -95,7 +95,8 @@ public final class EntityBuilderInstance<T>
 
         // Figure out whether to use given or generated identity
         identity = (String) entityState.getProperty( identityStateName );
-        EntityState newEntityState = model.model().newEntityState( store, EntityReference.parseEntityReference( identity ) );
+        EntityState newEntityState = model.model()
+            .newEntityState( store, EntityReference.parseEntityReference( identity ) );
 
         prototypeInstance.invokeCreate();
 

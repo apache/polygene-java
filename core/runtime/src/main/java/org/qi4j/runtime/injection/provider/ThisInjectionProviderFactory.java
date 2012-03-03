@@ -1,16 +1,19 @@
 package org.qi4j.runtime.injection.provider;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
 import org.qi4j.api.composite.CompositeDescriptor;
+import org.qi4j.api.util.Classes;
 import org.qi4j.bootstrap.InvalidInjectionException;
+import org.qi4j.functional.Iterables;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.injection.InjectionProvider;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
 import org.qi4j.runtime.model.Resolution;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Proxy;
+import static org.qi4j.functional.Iterables.first;
 
 /**
  * JAVADOC
@@ -24,36 +27,34 @@ public final class ThisInjectionProviderFactory
         if( bindingContext.model() instanceof CompositeDescriptor )
         {
             // If Composite type then return real type, otherwise use the specified one
-            Class thisType = dependencyModel.rawInjectionType();
+            final Class thisType = dependencyModel.rawInjectionType();
 
-            if( thisType.isAssignableFrom( bindingContext.model().type() ) )
+            Iterable<Class<?>> injectionTypes = null;
+            if( Classes.assignableTypeSpecification( thisType ).satisfiedBy( bindingContext.model() ) )
             {
-                thisType = bindingContext.model().type();
+                injectionTypes = bindingContext.model().types();
             }
             else
             {
                 CompositeDescriptor acd = ( (CompositeDescriptor) bindingContext.model() );
-                boolean ok = false;
                 for( Class mixinType : acd.mixinTypes() )
                 {
                     if( thisType.isAssignableFrom( mixinType ) )
                     {
-                        ok = true;
+                        injectionTypes = acd.types();
                         break;
                     }
                 }
 
-                if( !ok )
+                if( injectionTypes == null )
                 {
                     throw new InvalidInjectionException( "Composite " + bindingContext.model()
-                        .type()
-                        .getName() + " does not implement @This type " + thisType.getName() + " in fragment " + dependencyModel
-                        .injectedClass()
-                        .getName() );
+                                                         + " does not implement @This type " + thisType.getName() + " in fragment "
+                                                         + dependencyModel.injectedClass().getName() );
                 }
             }
 
-            return new ThisInjectionProvider( thisType );
+            return new ThisInjectionProvider( injectionTypes );
         }
         else
         {
@@ -65,12 +66,23 @@ public final class ThisInjectionProviderFactory
         implements InjectionProvider
     {
         Constructor proxyConstructor;
+        private Class[] interfaces;
 
-        public ThisInjectionProvider( Class type )
+        public ThisInjectionProvider( Iterable<Class<?>> types )
         {
             try
             {
-                Class proxyClass = Proxy.class.isAssignableFrom( type ) ? type : Proxy.getProxyClass( type.getClassLoader(), new Class[]{ type } );
+                Class proxyClass;
+                if( Proxy.class.isAssignableFrom( first( types ) ) )
+                {
+                    proxyClass = first( types );
+                }
+                else
+                {
+                    Class<?> mainType = first( types );
+                    interfaces = Iterables.toArray( Class.class, types );
+                    proxyClass = Proxy.getProxyClass( mainType.getClassLoader(), interfaces );
+                }
 
                 proxyConstructor = proxyClass.getConstructor( InvocationHandler.class );
             }

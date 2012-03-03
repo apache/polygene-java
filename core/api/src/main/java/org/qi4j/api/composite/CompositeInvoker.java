@@ -14,8 +14,6 @@
 
 package org.qi4j.api.composite;
 
-import org.qi4j.api.property.StateHolder;
-
 import java.lang.reflect.Method;
 
 /**

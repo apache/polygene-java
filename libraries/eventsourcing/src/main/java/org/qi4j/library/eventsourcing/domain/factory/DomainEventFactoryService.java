@@ -31,6 +31,8 @@ import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
 import org.qi4j.library.eventsourcing.domain.api.DomainEventValue;
 
+import static org.qi4j.functional.Iterables.first;
+
 /**
  * DomainEventValue factory
  */
@@ -51,7 +53,7 @@ public interface DomainEventFactoryService
 
             DomainEventValue prototype = builder.prototype();
             prototype.name().set( name );
-            prototype.entityType().set( Qi4j.DESCRIPTOR_FUNCTION.map( entity ).type().getName() );
+            prototype.entityType().set( first(Qi4j.DESCRIPTOR_FUNCTION.map( entity ).types()).getName() );
             prototype.entityId().set( entity.identity().get() );
 
             // JSON-ify parameters

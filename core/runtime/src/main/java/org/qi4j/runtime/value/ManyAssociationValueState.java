@@ -1,10 +1,9 @@
 package org.qi4j.runtime.value;
 
-import org.qi4j.api.entity.EntityReference;
-import org.qi4j.spi.entity.ManyAssociationState;
-
 import java.util.Iterator;
 import java.util.List;
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.spi.entity.ManyAssociationState;
 
 /**
  * ManyAssociationState implementation for Value composites.

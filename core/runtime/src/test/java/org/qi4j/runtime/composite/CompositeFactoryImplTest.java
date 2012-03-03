@@ -12,20 +12,19 @@
  */
 package org.qi4j.runtime.composite;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.util.Properties;
 import org.junit.Test;
 import org.qi4j.api.common.AppliesTo;
 import org.qi4j.api.common.AppliesToFilter;
-import org.qi4j.api.composite.NoSuchCompositeException;
+import org.qi4j.api.composite.NoSuchTransientException;
 import org.qi4j.api.composite.TransientBuilder;
 import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
-
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.util.Properties;
 
 import static org.junit.Assert.fail;
 
@@ -40,23 +39,13 @@ public class CompositeFactoryImplTest
     }
 
     @SuppressWarnings( "unchecked" )
-    @Test
+    @Test( expected = NoSuchTransientException.class )
     public void testNewInstanceNotExtendingComposite()
         throws Exception
     {
-        try
-        {
-            Class aClass = FirstComposite.class;
-            TransientBuilder builder = module.newTransientBuilder( aClass );
-            builder.newInstance();
-            fail(
-                "CompositeBuilderFactory.newInstance() should return MixinTypeNotAvailableException when creating a new instance for "
-                + aClass.getName() );
-        }
-        catch( NoSuchCompositeException e )
-        {
-            // Correct
-        }
+        Class aClass = FirstComposite.class;
+        TransientBuilder builder = module.newTransientBuilder( aClass );
+        builder.newInstance();
     }
 
     @Test

@@ -16,6 +16,8 @@ import org.qi4j.functional.Iterables;
 import java.lang.reflect.Type;
 import java.util.Dictionary;
 
+import static org.qi4j.functional.Iterables.first;
+
 @Mixins( OSGiEnabledService.OSGiEnabledServiceMixin.class )
 public interface OSGiEnabledService extends Activatable, ServiceComposite
 {
@@ -39,11 +41,11 @@ public interface OSGiEnabledService extends Activatable, ServiceComposite
             {
                 return;
             }
-            for( ServiceReference ref : module.findServices( descriptor.type() ) )
+            for( ServiceReference ref : module.findServices( first( descriptor.types() ) ) )
             {
                 if( ref.identity().equals( identity().get() ) )
                 {
-                    Iterable<Type> classesSet = Classes.TYPES_OF.map( descriptor.type() );
+                    Iterable<Class<?>> classesSet = descriptor.types();
                     Dictionary properties = descriptor.metaInfo( Dictionary.class );
                     String[] clazzes = fetchInterfacesImplemented( classesSet );
                     registration = context.registerService( clazzes, ref.get(), properties );
@@ -51,7 +53,7 @@ public interface OSGiEnabledService extends Activatable, ServiceComposite
             }
         }
 
-        private String[] fetchInterfacesImplemented( Iterable<Type> classesSet )
+        private String[] fetchInterfacesImplemented( Iterable<Class<?>> classesSet )
         {
             String[] clazzes = new String[(int) Iterables.count( classesSet )];
             int i = 0;

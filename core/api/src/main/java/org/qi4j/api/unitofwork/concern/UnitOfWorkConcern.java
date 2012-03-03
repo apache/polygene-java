@@ -25,7 +25,6 @@ import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
 import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.usecase.UsecaseBuilder;
 
@@ -71,7 +70,7 @@ public class UnitOfWorkConcern
             else
             {
                 Usecase usecase = getUsecase();
-                return invokeWithCommit( proxy, method, args, module.newUnitOfWork(usecase) );
+                return invokeWithCommit( proxy, method, args, module.newUnitOfWork( usecase ) );
             }
         }
         else if( propagationPolicy == UnitOfWorkPropagation.Propagation.MANDATORY )
@@ -84,7 +83,7 @@ public class UnitOfWorkConcern
         else if( propagationPolicy == UnitOfWorkPropagation.Propagation.REQUIRES_NEW )
         {
             Usecase usecase = getUsecase();
-            return invokeWithCommit( proxy, method, args, module.newUnitOfWork(usecase) );
+            return invokeWithCommit( proxy, method, args, module.newUnitOfWork( usecase ) );
         }
         return next.invoke( proxy, method, args );
     }
@@ -137,7 +136,7 @@ public class UnitOfWorkConcern
                     module.currentUnitOfWork().discard();
                     Thread.sleep( initialDelay + retry * delayFactor );
                     retry++;
-                    currentUnitOfWork = module.newUnitOfWork(getUsecase());
+                    currentUnitOfWork = module.newUnitOfWork( getUsecase() );
                 }
             }
         }

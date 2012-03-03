@@ -32,9 +32,9 @@ public class EntityPropertyInstance<T>
      * @param aPropertyInfo The property info. This argument must not be {@code null}.
      * @param entityState
      */
-    public EntityPropertyInstance( PropertyInfo aPropertyInfo, EntityState entityState)
+    public EntityPropertyInstance( PropertyInfo aPropertyInfo, EntityState entityState )
     {
-        super( aPropertyInfo, (T) entityState.getProperty(aPropertyInfo.qualifiedName()));
+        super( aPropertyInfo, (T) entityState.getProperty( aPropertyInfo.qualifiedName() ) );
         this.entityState = entityState;
     }
 

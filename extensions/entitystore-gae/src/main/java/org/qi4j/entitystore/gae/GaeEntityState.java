@@ -21,6 +21,11 @@ package org.qi4j.entitystore.gae;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.Text;
+import java.lang.reflect.Proxy;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.qi4j.api.common.QualifiedName;
@@ -36,11 +41,7 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.ManyAssociationState;
 
-import java.lang.reflect.Proxy;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import static org.qi4j.functional.Iterables.first;
 
 public class GaeEntityState
     implements EntityState
@@ -63,7 +64,7 @@ public class GaeEntityState
         this.descriptor = descriptor;
         entity = new Entity( key );
         entity.setProperty( "$version", unitOfWork.identity() );
-        Class type = descriptor.type();
+        Class type = first( descriptor.types() );
         String name = type.getName();
         System.out.println( "New Entity\n" +
                             "    descriptor:" + descriptor + "\n  " +
@@ -187,8 +188,7 @@ public class GaeEntityState
                                  "\n          uri: " + uri +
                                  "\n         type: " + type +
                                  "\n        value: " + value +
-                                 "\n"
-                    ;
+                                 "\n";
                 InternalError error = new InternalError( message );
                 error.initCause( e );
                 throw error;
@@ -207,7 +207,7 @@ public class GaeEntityState
             ValueType type = valueTypes.get( stateName );
             try
             {
-                JSONWriterSerializer serializer = new JSONWriterSerializer(  );
+                JSONWriterSerializer serializer = new JSONWriterSerializer();
                 serializer.serialize( value, type );
                 value = serializer.getJSON().toString();
             }

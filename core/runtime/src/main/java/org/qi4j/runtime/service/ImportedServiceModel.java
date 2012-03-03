@@ -14,6 +14,8 @@
 
 package org.qi4j.runtime.service;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.ImportedServiceDescriptor;
@@ -23,8 +25,7 @@ import org.qi4j.api.structure.Module;
 import org.qi4j.functional.Visitable;
 import org.qi4j.functional.Visitor;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Proxy;
+import static org.qi4j.functional.Iterables.iterable;
 
 /**
  * JAVADOC
@@ -32,7 +33,7 @@ import java.lang.reflect.Proxy;
 public final class ImportedServiceModel
     implements ImportedServiceDescriptor, Visitable<ImportedServiceModel>
 {
-    private final Class type;
+    private final Class<?> type;
     private final Visibility visibility;
     private final Class<? extends ServiceImporter> serviceImporter;
     private final String identity;
@@ -54,9 +55,10 @@ public final class ImportedServiceModel
         this.moduleName = moduleName;
     }
 
-    public Class type()
+    public Iterable<Class<?>> types()
     {
-        return type;
+        Iterable<? extends Class<?>> iterable = iterable( type );
+        return (Iterable<Class<?>>) iterable;
     }
 
     public Visibility visibility()
@@ -72,6 +74,12 @@ public final class ImportedServiceModel
     public Class<? extends ServiceImporter> serviceImporter()
     {
         return serviceImporter;
+    }
+
+    @Override
+    public Class<?> type()
+    {
+        return type;
     }
 
     public String identity()
@@ -91,7 +99,8 @@ public final class ImportedServiceModel
     }
 
     @Override
-    public <ThrowableType extends Throwable> boolean accept( Visitor<? super ImportedServiceModel, ThrowableType> visitor ) throws ThrowableType
+    public <ThrowableType extends Throwable> boolean accept( Visitor<? super ImportedServiceModel, ThrowableType> visitor )
+        throws ThrowableType
     {
         return visitor.visit( this );
     }

@@ -20,6 +20,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import static org.qi4j.functional.Iterables.first;
+
 /**
  * TODO
  */
@@ -97,7 +99,7 @@ public class Model2XML
                         TransientDescriptor descriptor = (TransientDescriptor) visited;
                         Node node = document.createElement( "transient" );
 
-                        addAttribute( "type", descriptor.type().getName(), node );
+                        addAttribute( "type", first(descriptor.types()).getName(), node );
                         addAttribute( "visibility", descriptor.visibility().name(), node );
 
                         current.push( node );

@@ -17,9 +17,7 @@
 package org.qi4j.api.service;
 
 import java.util.List;
-import org.qi4j.api.Qi4j;
 import org.qi4j.api.injection.scope.Service;
-import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.service.qualifier.ServiceTags;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
@@ -53,13 +51,13 @@ public class DocumentationSupport
         // START SNIPPET: UseTag
         @Service
         private List<ServiceReference<MyDemoService>> services;
-        
+
         public MyDemoService locateImportantService()
         {
-            for( ServiceReference<MyDemoService> ref: services)
+            for( ServiceReference<MyDemoService> ref : services )
             {
                 ServiceTags serviceTags = ref.metaInfo( ServiceTags.class );
-                if( serviceTags.hasTag( "Important" ))
+                if( serviceTags.hasTag( "Important" ) )
                 {
                     return ref.get();
                 }

@@ -65,6 +65,8 @@ import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.spi.Qi4jSPI;
 
+import static org.qi4j.functional.Iterables.first;
+
 /**
  * Expose ConfigurationComposites through JMX. Allow configurations to be edited, and the services to be restarted.
  */
@@ -123,7 +125,7 @@ public interface ConfigurationManagerService
                     continue;
                 }
 
-                String serviceClass = compositeInstance.type().getName();
+                String serviceClass = first(compositeInstance.types()).getName();
                 String name = configurableService.identity();
                 ServiceDescriptor serviceDescriptor = spi.getServiceDescriptor( configurableService );
                 Module module = spi.getModule( configurableService );
@@ -138,7 +140,7 @@ public interface ConfigurationManagerService
                         if( !persistentProperty.isImmutable() )
                         {
                             String propertyName = persistentProperty.qualifiedName().name();
-                            String type = persistentProperty.valueType().type().getName();
+                            String type = persistentProperty.valueType().mainType().getName();
 
                             Descriptor attrDescriptor = new DescriptorSupport();
                             attrDescriptor.setField( "name", propertyName );
@@ -153,7 +155,7 @@ public interface ConfigurationManagerService
                                 {
                                     Set<String> legalValues = new LinkedHashSet();
                                     Class<?> enumType = getClass().getClassLoader()
-                                        .loadClass( persistentProperty.valueType().type().getName() );
+                                        .loadClass( persistentProperty.valueType().mainType().getName() );
                                     for( Field field : enumType.getFields() )
                                     {
                                         legalValues.add( field.getName() );

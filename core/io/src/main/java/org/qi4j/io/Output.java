@@ -21,6 +21,7 @@ package org.qi4j.io;
 public interface Output<T, ReceiverThrowableType extends Throwable>
 {
 // END SNIPPET: output
+
     /**
      * This initiates a transfer from an Input. Implementations should open any resources to be written to
      * and then call sender.sendTo() when it is ready to receive data. When sendTo() returns the resource should be

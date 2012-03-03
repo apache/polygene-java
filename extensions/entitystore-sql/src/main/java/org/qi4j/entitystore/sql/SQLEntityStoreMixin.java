@@ -58,6 +58,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
+import static org.qi4j.functional.Iterables.first;
+
 /**
  * Most of this code is copy-paste from {@link org.qi4j.spi.entitystore.helpers.MapEntityStoreMixin}. TODO refactor stuff that has to do with general
  * things than actual MapEntityStore from {@link org.qi4j.spi.entitystore.helpers.MapEntityStoreMixin} so that this class could extend some
@@ -235,7 +237,7 @@ public class SQLEntityStoreMixin
                         PreparedStatement ps = null;
                         ResultSet rs = null;
                         UsecaseBuilder builder = UsecaseBuilder.buildUsecase( "qi4j.entitystore.sql.visit" );
-                        Usecase usecase = builder.with( CacheOptions.NEVER ).newUsecase();
+                        Usecase usecase = builder.withMetaInfo( CacheOptions.NEVER ).newUsecase();
                         final DefaultEntityStoreUnitOfWork uow = new DefaultEntityStoreUnitOfWork( entityStoreSPI, newUnitOfWorkId(),
                                                                                                    module, usecase, System.currentTimeMillis() );
                         try
@@ -455,7 +457,7 @@ public class SQLEntityStoreMixin
             JSONWriter properties = json.object().
                 key( "identity" ).value( state.identity().identity() ).
                 key( "application_version" ).value( application.version() ).
-                key( "type" ).value( state.entityDescriptor().type().getName() ).
+                key( "type" ).value( first( state.entityDescriptor().types() ).getName() ).
                 key( "version" ).value( version ).
                 key( "modified" ).value( state.lastModified() ).
                 key( "properties" ).object();

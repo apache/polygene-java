@@ -17,17 +17,16 @@ package org.qi4j.test;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.qi4j.api.Qi4j;
-import org.qi4j.api.composite.TransientBuilderFactory;
-import org.qi4j.api.object.ObjectFactory;
-import org.qi4j.api.query.QueryBuilderFactory;
-import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.ApplicationDescriptor;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-import org.qi4j.api.value.ValueBuilderFactory;
-import org.qi4j.bootstrap.*;
+import org.qi4j.bootstrap.ApplicationAssembler;
+import org.qi4j.bootstrap.ApplicationAssembly;
+import org.qi4j.bootstrap.ApplicationAssemblyFactory;
+import org.qi4j.bootstrap.Assembler;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.spi.Qi4jSPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -120,9 +119,9 @@ public abstract class AbstractQi4jScenarioTest
     public void tearDown()
         throws Exception
     {
-        if( module != null && module.isUnitOfWorkActive())
+        if( module != null && module.isUnitOfWorkActive() )
         {
-            while( module.isUnitOfWorkActive())
+            while( module.isUnitOfWorkActive() )
             {
                 UnitOfWork uow = module.currentUnitOfWork();
                 if( uow.isOpen() )

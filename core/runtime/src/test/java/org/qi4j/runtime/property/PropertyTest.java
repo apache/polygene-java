@@ -14,6 +14,9 @@
 
 package org.qi4j.runtime.property;
 
+import java.io.Serializable;
+import java.lang.reflect.Method;
+import javax.swing.Icon;
 import org.junit.Test;
 import org.qi4j.api.common.AppliesTo;
 import org.qi4j.api.composite.TransientBuilder;
@@ -25,10 +28,6 @@ import org.qi4j.api.property.PropertyWrapper;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
-
-import javax.swing.*;
-import java.io.Serializable;
-import java.lang.reflect.Method;
 
 import static org.junit.Assert.assertEquals;
 
@@ -89,24 +88,26 @@ public class PropertyTest
         extends GenericConcern
     {
         @Override
-        public Object invoke( Object o, final Method method, Object[] objects ) throws Throwable
+        public Object invoke( Object o, final Method method, Object[] objects )
+            throws Throwable
         {
             final Property<Object> property = (Property<Object>) next.invoke( o, method, objects );
 
-            return new PropertyWrapper(property)
+            return new PropertyWrapper( property )
             {
                 @Override
                 public Object get()
                 {
                     Object result = next.get();
 
-                    System.out.println( "Property " + method.getName() + " accessed with value " + result);
+                    System.out.println( "Property " + method.getName() + " accessed with value " + result );
 
                     return result;
                 }
 
                 @Override
-                public void set( Object newValue ) throws IllegalArgumentException, IllegalStateException
+                public void set( Object newValue )
+                    throws IllegalArgumentException, IllegalStateException
                 {
                     Object current = next.get();
 

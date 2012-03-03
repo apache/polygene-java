@@ -40,6 +40,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.qi4j.functional.Iterables.first;
+
 public class DebuggingServiceMixin
     implements DebuggingService
 {
@@ -162,8 +164,13 @@ public class DebuggingServiceMixin
     {
         state.time().set( System.currentTimeMillis() );
         state.message().set( message );
-        state.compositeTypeName().set( Qi4j.DESCRIPTOR_FUNCTION.map( composite ).type().getName() );
+        state.compositeTypeName().set( getCompositeName( composite ) );
         state.threadName().set( Thread.currentThread().getName() );
         state.parameters().set( params );
+    }
+
+    private String getCompositeName( Composite composite )
+    {
+        return first(Qi4j.DESCRIPTOR_FUNCTION.map( composite ).types()).getName();
     }
 }

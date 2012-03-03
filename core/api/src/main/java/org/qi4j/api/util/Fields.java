@@ -1,11 +1,10 @@
 package org.qi4j.api.util;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import org.qi4j.functional.Function;
 import org.qi4j.functional.Function2;
 import org.qi4j.functional.Iterables;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Type;
 
 import static org.qi4j.functional.Iterables.iterable;
 
@@ -24,12 +23,11 @@ public final class Fields
     };
 
     public static final Function<Type, Iterable<Field>> FIELDS_OF = Classes.forClassHierarchy( new Function<Class<?>, Iterable<Field>>()
-                    {
-                        @Override
-                        public Iterable<Field> map( Class<?> type )
-                        {
-                            return iterable( type.getDeclaredFields() );
-                        }
-                    } );
-
+    {
+        @Override
+        public Iterable<Field> map( Class<?> type )
+        {
+            return iterable( type.getDeclaredFields() );
+        }
+    } );
 }

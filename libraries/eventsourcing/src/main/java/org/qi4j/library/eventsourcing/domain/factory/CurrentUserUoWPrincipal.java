@@ -33,7 +33,7 @@ public class CurrentUserUoWPrincipal
     {
         try
         {
-            return uowf.currentUnitOfWork().metaInfo().get( Principal.class ).getName();
+            return uowf.currentUnitOfWork().metaInfo( Principal.class ).getName();
         } catch (Exception e)
         {
             return "unknown";

@@ -22,7 +22,12 @@ import org.junit.Test;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.ApplicationDescriptor;
 import org.qi4j.api.structure.LayerDescriptor;
-import org.qi4j.bootstrap.*;
+import org.qi4j.bootstrap.ApplicationAssembler;
+import org.qi4j.bootstrap.ApplicationAssembly;
+import org.qi4j.bootstrap.ApplicationAssemblyFactory;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.Energy4Java;
+import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.functional.HierarchicalVisitorAdapter;
 
 public class IssueTest
@@ -55,23 +60,27 @@ public class IssueTest
         model.accept( new HierarchicalVisitorAdapter<Object, Object, RuntimeException>()
         {
             @Override
-            public boolean visitEnter( Object visited ) throws RuntimeException
+            public boolean visitEnter( Object visited )
+                throws RuntimeException
             {
                 return visited instanceof ApplicationDescriptor;
             }
 
             @Override
-            public boolean visitLeave( Object visited ) throws RuntimeException
+            public boolean visitLeave( Object visited )
+                throws RuntimeException
             {
                 return visited instanceof LayerDescriptor;
             }
 
             @Override
-            public boolean visit( Object visited ) throws RuntimeException
+            public boolean visit( Object visited )
+                throws RuntimeException
             {
-                if (visited instanceof LayerDescriptor)
+                if( visited instanceof LayerDescriptor )
                 {
-                    Iterable<? extends LayerDescriptor> usedLayers = ((LayerDescriptor)visited).usedLayers().layers();
+                    Iterable<? extends LayerDescriptor> usedLayers = ( (LayerDescriptor) visited ).usedLayers()
+                        .layers();
                     for( LayerDescriptor usedLayerModel : usedLayers )
                     {
                         Assert.assertNotNull( "Used layer model is null", usedLayerModel );
@@ -80,6 +89,6 @@ public class IssueTest
 
                 return false;
             }
-        });
+        } );
     }
 }

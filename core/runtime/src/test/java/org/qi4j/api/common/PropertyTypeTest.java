@@ -14,6 +14,8 @@
 
 package org.qi4j.api.common;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import org.junit.Test;
 import org.qi4j.api.composite.TransientBuilder;
 import org.qi4j.api.composite.TransientComposite;
@@ -29,9 +31,6 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 
 /**
  * Test for ability to set constraints on Properties
@@ -87,13 +86,15 @@ public class PropertyTypeTest
 
     @ConstraintDeclaration
     @Retention( RetentionPolicy.RUNTIME )
-    @MaxLength(50)
-    public @interface Name {}
-
+    @MaxLength( 50 )
+    public @interface Name
+    {
+    }
 
     @ConstraintDeclaration
     @Retention( RetentionPolicy.RUNTIME )
-    @NotEmpty @Name
+    @NotEmpty
+    @Name
     public @interface GivenName
     {
     }

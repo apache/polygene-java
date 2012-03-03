@@ -26,6 +26,8 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.qi4j.functional.Iterables.first;
+
 class ServiceUsageFinder
 {
     protected ServiceDetailDescriptor descriptor;
@@ -127,7 +129,7 @@ class ServiceUsageFinder
             if( Uses.class.equals( clazz ) || Service.class.equals( clazz ) )
             {
                 boolean used = false;
-                if( dependencyDescriptor.injectionType().equals( this.descriptor.descriptor().type() ) )
+                if( dependencyDescriptor.injectionType().equals( first( this.descriptor.descriptor().types() )) )
                 {
                     TableRow row = new TableRow( 5 );
                     if( ownerDescriptor instanceof MixinDetailDescriptor )

@@ -1,17 +1,15 @@
 package org.qi4j.api.composite;
 
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.structure.MetaInfoHolder;
+import org.qi4j.api.type.HasTypes;
 
 /**
  * TODO
  */
-public interface ModelDescriptor
+public interface ModelDescriptor extends HasTypes, MetaInfoHolder
 {
-    Class<?> type();
-
-    <T> T metaInfo( Class<T> infoType );
-
     Visibility visibility();
 
-    boolean isAssignableTo(Class<?> type);
+    boolean isAssignableTo( Class<?> type );
 }

@@ -21,7 +21,7 @@ import org.qi4j.functional.VisitableHierarchy;
  * JAVADOC
  */
 public interface ApplicationDescriptor
-        extends VisitableHierarchy<Object, Object>
+    extends VisitableHierarchy<Object, Object>
 {
     Application newInstance( Qi4j runtime, Object... importedServiceInstances );
 

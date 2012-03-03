@@ -57,7 +57,12 @@ public final class SideEffectsInstance
         }
     }
 
-    private void invokeSideEffects( Object proxy, Method method, Object[] params, Object result, Throwable originalThrowable )
+    private void invokeSideEffects( Object proxy,
+                                    Method method,
+                                    Object[] params,
+                                    Object result,
+                                    Throwable originalThrowable
+    )
         throws Throwable
     {
         proxyHandler.setProxy( proxy );

@@ -14,16 +14,29 @@
 
 package org.qi4j.runtime.structure;
 
-import org.qi4j.api.common.MetaInfo;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Map;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.composite.Composite;
-import org.qi4j.api.composite.NoSuchCompositeException;
-import org.qi4j.api.entity.*;
+import org.qi4j.api.entity.EntityBuilder;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.entity.Identity;
+import org.qi4j.api.entity.IdentityGenerator;
+import org.qi4j.api.entity.LifecycleException;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryExecutionException;
 import org.qi4j.api.query.grammar.OrderBy;
-import org.qi4j.api.unitofwork.*;
+import org.qi4j.api.service.NoSuchServiceException;
+import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
+import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
+import org.qi4j.api.unitofwork.NoSuchEntityException;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWorkCallback;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
+import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specification;
@@ -34,17 +47,13 @@ import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entitystore.EntityStore;
-import org.qi4j.spi.metrics.MetricsCounter;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
 import org.qi4j.spi.query.QueryBuilderSPI;
 import org.qi4j.spi.query.QuerySource;
 
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Map;
-
 import static org.qi4j.api.entity.EntityReference.parseEntityReference;
+import static org.qi4j.functional.Iterables.first;
 
 /**
  * JAVADOC
@@ -101,9 +110,16 @@ public class ModuleUnitOfWork
         return uow.usecase();
     }
 
-    public MetaInfo metaInfo()
+    @Override
+    public <T> T metaInfo( Class<T> infoType )
     {
-        return uow.metaInfo();
+        return uow.metaInfo().get( infoType );
+    }
+
+    @Override
+    public void setMetaInfo( Object metaInfo )
+    {
+        uow.metaInfo().set( metaInfo );
     }
 
     @Override
@@ -111,7 +127,7 @@ public class ModuleUnitOfWork
     {
         QueryBuilderSPI queryBuilderSPI = (QueryBuilderSPI) queryBuilder;
 
-        return queryBuilderSPI.newQuery( new UoWQuerySource(this) );
+        return queryBuilderSPI.newQuery( new UoWQuerySource( this ) );
     }
 
     public <T> T newEntity( Class<T> type )
@@ -123,7 +139,7 @@ public class ModuleUnitOfWork
     public <T> T newEntity( Class<T> type, String identity )
         throws EntityTypeNotFoundException, LifecycleException
     {
-        ModelModule<EntityModel> model = Iterables.first( moduleInstance.findEntityModels( type ));
+        ModelModule<EntityModel> model = Iterables.first( moduleInstance.findEntityModels( type ) );
 
         if( model == null )
         {
@@ -133,13 +149,13 @@ public class ModuleUnitOfWork
         // Generate id
         if( identity == null )
         {
-            identity = model.module().identityGenerator().generate( model.model().type() );
+            identity = model.module().identityGenerator().generate( first( model.model().types() ) );
         }
 
         EntityStore entityStore = model.module().entityStore();
 
         EntityState entityState = model.model().newEntityState( uow.getEntityStoreUnitOfWork( entityStore, module() ),
-                                                              parseEntityReference( identity ) );
+                                                                parseEntityReference( identity ) );
 
         // Init state
         model.model().initState( model.module(), entityState );
@@ -183,9 +199,9 @@ public class ModuleUnitOfWork
             IdentityGenerator idGen = model.module().identityGenerator();
             if( idGen == null )
             {
-                throw new NoSuchCompositeException(IdentityGenerator.class.getName(), model.module().name() );
+                throw new NoSuchServiceException( IdentityGenerator.class.getName(), model.module().name() );
             }
-            identity = idGen.generate( model.model().type() );
+            identity = idGen.generate( first( model.model().types() ) );
         }
         EntityBuilder<T> builder;
 
@@ -215,8 +231,8 @@ public class ModuleUnitOfWork
         EntityComposite entityComposite = (EntityComposite) entity;
         EntityInstance compositeInstance = EntityInstance.getEntityInstance( entityComposite );
         ModelModule<EntityModel> model = new ModelModule<EntityModel>( compositeInstance.module(), compositeInstance.entityModel() );
-        Class<T> type = (Class<T>) compositeInstance.type();
-        return uow.get( compositeInstance.identity(), this, Collections.singletonList( model), type );
+        Class<T> type = (Class<T>) first( compositeInstance.types() );
+        return uow.get( compositeInstance.identity(), this, Collections.singletonList( model ), type );
     }
 
     public void remove( Object entity )
@@ -333,13 +349,20 @@ public class ModuleUnitOfWork
         }
 
         @Override
-        public <T> T find( Class<T> resultType, Specification<Composite> whereClause, Iterable<OrderBy> orderBySegments, Integer firstResult, Integer maxResults, Map<String, Object> variables )
+        public <T> T find( Class<T> resultType,
+                           Specification<Composite> whereClause,
+                           Iterable<OrderBy> orderBySegments,
+                           Integer firstResult,
+                           Integer maxResults,
+                           Map<String, Object> variables
+        )
         {
             final EntityFinder entityFinder = moduleUnitOfWork.module().findService( EntityFinder.class ).get();
 
             try
             {
-                final EntityReference foundEntity = entityFinder.findEntity( resultType, whereClause, variables == null ? Collections.<String, Object>emptyMap() : variables );
+                final EntityReference foundEntity = entityFinder.findEntity( resultType, whereClause, variables == null ? Collections
+                    .<String, Object>emptyMap() : variables );
                 if( foundEntity != null )
                 {
                     try
@@ -361,7 +384,13 @@ public class ModuleUnitOfWork
         }
 
         @Override
-        public <T> long count( Class<T> resultType, Specification<Composite> whereClause, Iterable<OrderBy> orderBySegments, Integer firstResult, Integer maxResults, Map<String, Object> variables )
+        public <T> long count( Class<T> resultType,
+                               Specification<Composite> whereClause,
+                               Iterable<OrderBy> orderBySegments,
+                               Integer firstResult,
+                               Integer maxResults,
+                               Map<String, Object> variables
+        )
         {
             final EntityFinder entityFinder = moduleUnitOfWork.module().findService( EntityFinder.class ).get();
 
@@ -377,7 +406,13 @@ public class ModuleUnitOfWork
         }
 
         @Override
-        public <T> Iterator<T> iterator( final Class<T> resultType, Specification<Composite> whereClause, Iterable<OrderBy> orderBySegments, Integer firstResult, Integer maxResults, Map<String, Object> variables )
+        public <T> Iterator<T> iterator( final Class<T> resultType,
+                                         Specification<Composite> whereClause,
+                                         Iterable<OrderBy> orderBySegments,
+                                         Integer firstResult,
+                                         Integer maxResults,
+                                         Map<String, Object> variables
+        )
         {
             final EntityFinder entityFinder = moduleUnitOfWork.module().findService( EntityFinder.class ).get();
 
@@ -385,10 +420,11 @@ public class ModuleUnitOfWork
             {
                 final Iterator<EntityReference> foundEntities = entityFinder.findEntities( resultType,
                                                                                            whereClause,
-                                                                                           Iterables.toArray( OrderBy.class, orderBySegments),
+                                                                                           Iterables.toArray( OrderBy.class, orderBySegments ),
                                                                                            firstResult,
                                                                                            maxResults,
-                                                                                           variables == null ? Collections.<String, Object>emptyMap() : variables)
+                                                                                           variables == null ? Collections
+                                                                                               .<String, Object>emptyMap() : variables )
                     .iterator();
 
                 return new Iterator<T>()

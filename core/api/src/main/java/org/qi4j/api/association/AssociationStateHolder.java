@@ -17,9 +17,8 @@
  */
 package org.qi4j.api.association;
 
-import org.qi4j.api.property.StateHolder;
-
 import java.lang.reflect.AccessibleObject;
+import org.qi4j.api.property.StateHolder;
 
 /**
  * This represents the state of a entity (properties+associations).

@@ -14,12 +14,11 @@
 
 package org.qi4j.runtime.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.functional.VisitableHierarchy;
 import org.qi4j.runtime.structure.ModuleInstance;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * JAVADOC
@@ -47,14 +46,17 @@ public class ImportedServicesModel
     }
 
     @Override
-    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor ) throws ThrowableType
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor )
+        throws ThrowableType
     {
-        if (visitor.visitEnter( this ))
+        if( visitor.visitEnter( this ) )
         {
             for( ImportedServiceModel importedServiceModel : importedServiceModels )
             {
-                if (!importedServiceModel.accept( visitor ))
+                if( !importedServiceModel.accept( visitor ) )
+                {
                     break;
+                }
             }
         }
         return visitor.visitLeave( this );

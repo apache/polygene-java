@@ -1,10 +1,9 @@
 package org.qi4j.api.json;
 
+import java.io.Writer;
 import org.json.JSONException;
 import org.json.JSONStringer;
 import org.json.JSONWriter;
-
-import java.io.Writer;
 
 /**
  * Serialize values to JSON using json.org
@@ -30,42 +29,48 @@ public class JSONWriterSerializer
     }
 
     @Override
-    public JSONSerializer key( String value ) throws JSONException
+    public JSONSerializer key( String value )
+        throws JSONException
     {
         json.key( value );
         return this;
     }
 
     @Override
-    public JSONSerializer value( Object value ) throws JSONException
+    public JSONSerializer value( Object value )
+        throws JSONException
     {
         json.value( value );
         return this;
     }
 
     @Override
-    public JSONSerializer objectStart() throws JSONException
+    public JSONSerializer objectStart()
+        throws JSONException
     {
         json.object();
         return this;
     }
 
     @Override
-    public JSONSerializer objectEnd() throws JSONException
+    public JSONSerializer objectEnd()
+        throws JSONException
     {
         json.endObject();
         return this;
     }
 
     @Override
-    public JSONSerializer arrayStart() throws JSONException
+    public JSONSerializer arrayStart()
+        throws JSONException
     {
         json.array();
         return this;
     }
 
     @Override
-    public JSONSerializer arrayEnd() throws JSONException
+    public JSONSerializer arrayEnd()
+        throws JSONException
     {
         json.endArray();
         return this;

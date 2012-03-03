@@ -15,9 +15,6 @@ package org.qi4j.api.constraint;
 
 import org.qi4j.api.common.InvalidApplicationException;
 
-import java.lang.reflect.Type;
-import java.util.List;
-
 public class ConstraintImplementationNotFoundException
     extends InvalidApplicationException
 {

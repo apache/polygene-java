@@ -24,15 +24,16 @@ import org.qi4j.test.EntityTestAssembler;
 public class OperatorsTest
 {
     @Test
-    public void testOperators() throws UnitOfWorkCompletionException
+    public void testOperators()
+        throws UnitOfWorkCompletionException
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {
             @Override
-            public void assemble( ModuleAssembly module ) throws AssemblyException
+            public void assemble( ModuleAssembly module )
+                throws AssemblyException
             {
-                new EntityTestAssembler(  ).assemble( module );
-
+                new EntityTestAssembler().assemble( module );
 
                 module.entities( TestEntity.class );
                 module.values( TestValue.class );
@@ -57,16 +58,20 @@ public class OperatorsTest
             QueryBuilder<TestEntity> builder = assembler.module().newQueryBuilder( TestEntity.class );
 
             {
-                Specification<Composite> where = QueryExpressions.eq( QueryExpressions.templateFor( TestEntity.class ).foo(), "Bar" );
+                Specification<Composite> where = QueryExpressions.eq( QueryExpressions.templateFor( TestEntity.class )
+                                                                          .foo(), "Bar" );
                 Assert.assertTrue( where.satisfiedBy( testEntity ) );
-                System.out.println(where);
+                System.out.println( where );
             }
             {
-                Specification<Composite> where = QueryExpressions.eq( QueryExpressions.templateFor( TestEntity.class ).value().get().bar(), "Xyz" );
+                Specification<Composite> where = QueryExpressions.eq( QueryExpressions.templateFor( TestEntity.class )
+                                                                          .value()
+                                                                          .get()
+                                                                          .bar(), "Xyz" );
                 Assert.assertTrue( where.satisfiedBy( testEntity ) );
-                System.out.println(where);
+                System.out.println( where );
 
-                Assert.assertTrue(builder.where(where ).newQuery( entities ).find().equals( testEntity ));
+                Assert.assertTrue( builder.where( where ).newQuery( entities ).find().equals( testEntity ) );
             }
         }
         finally
@@ -79,6 +84,7 @@ public class OperatorsTest
         extends EntityComposite
     {
         Property<String> foo();
+
         Property<TestValue> value();
     }
 

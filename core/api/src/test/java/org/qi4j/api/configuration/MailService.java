@@ -20,9 +20,8 @@ import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.Activatable;
 
-
 // Documentation Support
-@Mixins(MailService.MailServiceMixin.class)
+@Mixins( MailService.MailServiceMixin.class )
 public interface MailService
 {
     // START SNIPPET: write
@@ -45,7 +44,7 @@ public interface MailService
             String hostName = conf.hostName().get();
             int port = conf.port().get();
             // END SNIPPET: read
-            
+
             // START SNIPPET: read        
         }
         // END SNIPPET: read        

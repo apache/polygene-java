@@ -15,14 +15,21 @@
 
 package org.qi4j.runtime.entity;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.HashSet;
+import java.util.Set;
 import org.qi4j.api.association.Association;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.association.AssociationStateDescriptor;
+import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.composite.CompositeDescriptor;
 import org.qi4j.api.composite.CompositeInstance;
 import org.qi4j.api.constraint.ConstraintViolationException;
-import org.qi4j.api.entity.*;
-import org.qi4j.api.association.ManyAssociation;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.entity.Identity;
+import org.qi4j.api.entity.LifecycleException;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkException;
@@ -32,11 +39,6 @@ import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
-
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Entity instance
@@ -117,9 +119,9 @@ public final class EntityInstance
         return entityModel;
     }
 
-    public Class<?> type()
+    public Iterable<Class<?>> types()
     {
-        return entityModel.type();
+        return entityModel.types();
     }
 
     public ModuleInstance module()
@@ -295,7 +297,8 @@ public final class EntityInstance
         }
         catch( ConstraintViolationException e )
         {
-            throw new ConstraintViolationException( identity.identity(), entityModel.type().getName(), e.mixinTypeName(), e.methodName(), e.constraintViolations() );
+            throw new ConstraintViolationException( identity.identity(), entityModel.types(), e.mixinTypeName(), e.methodName(), e
+                .constraintViolations() );
         }
     }
 }

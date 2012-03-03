@@ -14,16 +14,15 @@
 
 package org.qi4j.runtime.unitofwork;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.util.Classes;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.ManyAssociationState;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * JAVADOC
@@ -73,7 +72,7 @@ public final class BuilderEntityState
     @Override
     public boolean isAssignableTo( Class<?> type )
     {
-        return entityType.type().equals( type );
+        return Classes.exactTypeSpecification( type ).satisfiedBy( entityType );
     }
 
     public EntityDescriptor entityDescriptor()

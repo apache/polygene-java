@@ -1,14 +1,13 @@
 package org.qi4j.api.query.grammar;
 
-import org.qi4j.api.composite.Composite;
-
 import java.util.Collection;
+import org.qi4j.api.composite.Composite;
 
 /**
  * TODO
  */
 public class ContainsSpecification<T>
-        extends ExpressionSpecification
+    extends ExpressionSpecification
 {
     private PropertyFunction<? extends Collection<T>> collectionProperty;
     private T value;
@@ -34,8 +33,10 @@ public class ContainsSpecification<T>
     {
         Collection<T> collection = collectionProperty.map( item ).get();
 
-        if (collection == null)
+        if( collection == null )
+        {
             return false;
+        }
 
         return collection.contains( value );
     }

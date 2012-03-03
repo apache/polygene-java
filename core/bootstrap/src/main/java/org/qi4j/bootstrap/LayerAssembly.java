@@ -30,6 +30,7 @@ public interface LayerAssembly
      * is affected.
      *
      * @param name
+     *
      * @return
      */
     ModuleAssembly module( String name );
@@ -52,52 +53,58 @@ public interface LayerAssembly
      * be used to work with all of the assemblies in this Layer matched by the specification.
      *
      * @param specification
+     *
      * @return
      */
-    EntityDeclaration entities(Specification<? super EntityAssembly> specification);
+    EntityDeclaration entities( Specification<? super EntityAssembly> specification );
 
     /**
      * Given a Specification for ServiceAssembly's, returns a ServiceDeclaration that can
      * be used to work with all of the assemblies in this Layer matched by the specification.
      *
      * @param specification
+     *
      * @return
      */
-    ServiceDeclaration services( Specification<? super ServiceAssembly> specification);
+    ServiceDeclaration services( Specification<? super ServiceAssembly> specification );
 
     /**
      * Given a Specification for TransientAssembly's, returns a TransientDeclaration that can
      * be used to work with all of the assemblies in this Layer matched by the specification.
      *
      * @param specification
+     *
      * @return
      */
-    TransientDeclaration transients( Specification<? super TransientAssembly> specification);
+    TransientDeclaration transients( Specification<? super TransientAssembly> specification );
 
     /**
      * Given a Specification for ValueAssembly's, returns a ValueDeclaration that can
      * be used to work with all of the assemblies in this Layer matched by the specification.
      *
      * @param specification
+     *
      * @return
      */
-    ValueDeclaration values( Specification<? super ValueAssembly> specification);
+    ValueDeclaration values( Specification<? super ValueAssembly> specification );
 
     /**
      * Given a Specification for ObjectAssembly's, returns a ObjectDeclaration that can
      * be used to work with all of the assemblies in this Layer matched by the specification.
      *
      * @param specification
+     *
      * @return
      */
-    ObjectDeclaration objects(Specification<? super ObjectAssembly> specification);
+    ObjectDeclaration objects( Specification<? super ObjectAssembly> specification );
 
     /**
      * Given a Specification for ImportedServiceAssembly's, returns a ImportedServiceDeclaration that can
      * be used to work with all of the assemblies in this Layer matched by the specification.
      *
      * @param specification
+     *
      * @return
      */
-    ImportedServiceDeclaration importedServices(Specification<? super ImportedServiceAssembly> specification);
+    ImportedServiceDeclaration importedServices( Specification<? super ImportedServiceAssembly> specification );
 }

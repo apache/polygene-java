@@ -17,15 +17,17 @@
  */
 package org.qi4j.api.constraint;
 
-import org.qi4j.api.Qi4j;
-import org.qi4j.api.composite.Composite;
-import org.qi4j.api.composite.CompositeInstance;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
-import java.lang.reflect.Proxy;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Locale;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+import org.qi4j.api.Qi4j;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.functional.Iterables;
 
 /**
  * This Exception is thrown when there is one or more Constraint Violations in a method
@@ -49,37 +51,37 @@ public class ConstraintViolationException
     private String methodName;
     private String mixinTypeName;
     private String instanceToString;
-    private String instanceTypeName;
+    private Iterable<Class<?>> instanceTypes;
 
     public ConstraintViolationException( Composite instance, Member method,
                                          Collection<ConstraintViolation> constraintViolations
     )
     {
-        this( instance.toString(), Qi4j.DESCRIPTOR_FUNCTION.map( instance ).type().getName(), method, constraintViolations );
+        this( instance.toString(), Qi4j.DESCRIPTOR_FUNCTION.map( instance ).types(), method, constraintViolations );
     }
 
     public ConstraintViolationException( String instanceToString,
-                                         String instanceTypeName,
+                                         Iterable<Class<?>> instanceTypes,
                                          Member method,
                                          Collection<ConstraintViolation> violations
     )
     {
         this.instanceToString = instanceToString;
-        this.instanceTypeName = instanceTypeName;
+        this.instanceTypes = instanceTypes;
         mixinTypeName = method.getDeclaringClass().getName();
         methodName = method.getName();
         this.constraintViolations = violations;
     }
 
     public ConstraintViolationException( String instanceToString,
-                                         String instanceTypeName,
+                                         Iterable<Class<?>> instanceTypes,
                                          String mixinTypeName,
                                          String methodName,
                                          Collection<ConstraintViolation> violations
     )
     {
         this.instanceToString = instanceToString;
-        this.instanceTypeName = instanceTypeName;
+        this.instanceTypes = instanceTypes;
         this.mixinTypeName = mixinTypeName;
         this.methodName = methodName;
         this.constraintViolations = violations;
@@ -179,10 +181,11 @@ public class ConstraintViolationException
             Annotation annotation = violation.constraint();
             String name = violation.name();
             Object value = violation.value();
-            Object[] args = new String[]
+            Class[] classes = Iterables.toArray( Class.class, instanceTypes );
+            Object[] args = new Object[]
                 {
                     instanceToString,
-                    instanceTypeName,
+                    classes,
                     mixinTypeName,
                     methodName,
                     annotation.toString(),

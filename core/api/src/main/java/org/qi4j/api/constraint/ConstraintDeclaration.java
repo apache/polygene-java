@@ -14,7 +14,11 @@
 
 package org.qi4j.api.constraint;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * All annotations that are used to trigger Constraints must have this annotation.

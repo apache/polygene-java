@@ -14,10 +14,9 @@
 
 package org.qi4j.test;
 
-import org.qi4j.api.composite.CompositeInvoker;
-
 import java.lang.reflect.Method;
 import java.util.List;
+import org.qi4j.api.composite.CompositeInvoker;
 
 /**
  * JAVADOC

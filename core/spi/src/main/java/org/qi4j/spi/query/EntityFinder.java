@@ -18,14 +18,12 @@
  */
 package org.qi4j.spi.query;
 
+import java.util.Map;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.composite.Composite;
-import org.qi4j.api.dataset.DataSet;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.functional.Specification;
-
-import java.util.Map;
 
 /**
  * JAVADOC Add JavaDoc
@@ -37,13 +35,19 @@ public interface EntityFinder
                                             @Optional OrderBy[] orderBySegments,
                                             @Optional Integer firstResult,
                                             @Optional Integer maxResults,
-                                            Map<String,Object> variables
+                                            Map<String, Object> variables
     )
         throws EntityFinderException;
 
-    EntityReference findEntity( Class<?> resultType, @Optional Specification<Composite> whereClause, Map<String, Object> variables )
+    EntityReference findEntity( Class<?> resultType,
+                                @Optional Specification<Composite> whereClause,
+                                Map<String, Object> variables
+    )
         throws EntityFinderException;
 
-    long countEntities( Class<?> resultType, @Optional Specification<Composite> whereClause, Map<String, Object> variables )
+    long countEntities( Class<?> resultType,
+                        @Optional Specification<Composite> whereClause,
+                        Map<String, Object> variables
+    )
         throws EntityFinderException;
 }

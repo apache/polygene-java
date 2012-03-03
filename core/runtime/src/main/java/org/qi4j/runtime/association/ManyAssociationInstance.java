@@ -1,13 +1,16 @@
 package org.qi4j.runtime.association;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.functional.Function2;
 import org.qi4j.runtime.composite.ConstraintsCheck;
 import org.qi4j.spi.entity.ManyAssociationState;
-
-import java.lang.reflect.Type;
-import java.util.*;
 
 /**
  * JAVADOC
@@ -41,7 +44,7 @@ public class ManyAssociationInstance<T>
     {
         checkImmutable();
         checkType( entity );
-        ((ConstraintsCheck) associationInfo).checkConstraints( entity );
+        ( (ConstraintsCheck) associationInfo ).checkConstraints( entity );
         return manyAssociationState.add( i, getEntityReference( entity ) );
     }
 

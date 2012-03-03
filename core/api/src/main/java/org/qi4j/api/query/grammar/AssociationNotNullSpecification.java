@@ -28,11 +28,14 @@ public class AssociationNotNullSpecification<T>
         {
             Association<T> assoc = association.map( item );
 
-            if (assoc == null)
+            if( assoc == null )
+            {
                 return false;
+            }
 
             return assoc.get() != null;
-        } catch( IllegalArgumentException e )
+        }
+        catch( IllegalArgumentException e )
         {
             return false;
         }
@@ -41,6 +44,6 @@ public class AssociationNotNullSpecification<T>
     @Override
     public String toString()
     {
-        return association.toString()+ "is not null";
+        return association.toString() + "is not null";
     }
 }

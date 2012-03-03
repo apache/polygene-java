@@ -14,16 +14,17 @@
 
 package org.qi4j.api.composite;
 
-import org.qi4j.api.property.StateHolder;
-import org.qi4j.api.structure.Module;
-
 import java.lang.reflect.InvocationHandler;
+import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.structure.MetaInfoHolder;
+import org.qi4j.api.structure.Module;
+import org.qi4j.api.type.HasTypes;
 
 /**
  * JAVADOC
  */
 public interface CompositeInstance
-    extends InvocationHandler, CompositeInvoker
+    extends InvocationHandler, CompositeInvoker, HasTypes, MetaInfoHolder
 {
     <T> T proxy();
 
@@ -31,10 +32,6 @@ public interface CompositeInstance
         throws IllegalArgumentException;
 
     Module module();
-
-    <T> T metaInfo( Class<T> infoType );
-
-    Class<?> type();
 
     CompositeDescriptor descriptor();
 

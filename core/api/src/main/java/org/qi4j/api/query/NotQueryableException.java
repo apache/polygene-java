@@ -17,12 +17,11 @@
  */
 package org.qi4j.api.query;
 
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Member;
 import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.util.Classes;
-
-import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.Member;
 
 /**
  * Thrown in case that a non queryable type or accessor (marked with @Queriable(false)) is used during query building,
@@ -57,9 +56,9 @@ public class NotQueryableException
             throw new NotQueryableException(
                 String.format(
                     "%1$s \"%2$s\" (%3$s) is not queryable as has been marked with @Queryable(false)",
-                        Classes.RAW_CLASS.map(GenericPropertyInfo.getPropertyType(accessor)).getSimpleName(),
-                    ((Member)accessor).getName(),
-                    ((Member)accessor).getDeclaringClass().getName()
+                    Classes.RAW_CLASS.map( GenericPropertyInfo.getPropertyType( accessor ) ).getSimpleName(),
+                    ( (Member) accessor ).getName(),
+                    ( (Member) accessor ).getDeclaringClass().getName()
                 )
             );
         }

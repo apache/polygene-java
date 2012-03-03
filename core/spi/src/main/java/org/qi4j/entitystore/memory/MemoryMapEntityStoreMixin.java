@@ -1,5 +1,12 @@
 package org.qi4j.entitystore.memory;
 
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.HashMap;
+import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -14,10 +21,6 @@ import org.qi4j.spi.entitystore.EntityAlreadyExistsException;
 import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.helpers.MapEntityStore;
-
-import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * In-memory implementation of MapEntityStore.
@@ -60,14 +63,16 @@ public class MemoryMapEntityStoreMixin
     {
         return new Input<Reader, IOException>()
         {
-           @Override
-           public <ReceiverThrowableType extends Throwable> void transferTo(Output<? super Reader, ReceiverThrowableType> output) throws IOException, ReceiverThrowableType
-           {
+            @Override
+            public <ReceiverThrowableType extends Throwable> void transferTo( Output<? super Reader, ReceiverThrowableType> output )
+                throws IOException, ReceiverThrowableType
+            {
                 output.receiveFrom( new Sender<Reader, IOException>()
                 {
-                   @Override
-                   public <ReceiverThrowableType extends Throwable> void sendTo(Receiver<? super Reader, ReceiverThrowableType> receiver) throws ReceiverThrowableType, IOException
-                   {
+                    @Override
+                    public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<? super Reader, ReceiverThrowableType> receiver )
+                        throws ReceiverThrowableType, IOException
+                    {
                         for( String state : store.values() )
                         {
                             receiver.receive( new StringReader( state ) );
@@ -82,14 +87,16 @@ public class MemoryMapEntityStoreMixin
     {
         return new Input<String, IOException>()
         {
-           @Override
-           public <ReceiverThrowableType extends Throwable> void transferTo(Output<? super String, ReceiverThrowableType> output) throws IOException, ReceiverThrowableType
-           {
+            @Override
+            public <ReceiverThrowableType extends Throwable> void transferTo( Output<? super String, ReceiverThrowableType> output )
+                throws IOException, ReceiverThrowableType
+            {
                 output.receiveFrom( new Sender<String, IOException>()
                 {
-                   @Override
-                   public <ReceiverThrowableType extends Throwable> void sendTo(Receiver<? super String, ReceiverThrowableType> receiver) throws ReceiverThrowableType, IOException
-                   {
+                    @Override
+                    public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<? super String, ReceiverThrowableType> receiver )
+                        throws ReceiverThrowableType, IOException
+                    {
                         for( String state : store.values() )
                         {
                             receiver.receive( state );
@@ -104,9 +111,10 @@ public class MemoryMapEntityStoreMixin
     {
         return new Output<String, IOException>()
         {
-           @Override
-           public <SenderThrowableType extends Throwable> void receiveFrom(Sender<? extends String, SenderThrowableType> sender) throws IOException, SenderThrowableType
-           {
+            @Override
+            public <SenderThrowableType extends Throwable> void receiveFrom( Sender<? extends String, SenderThrowableType> sender )
+                throws IOException, SenderThrowableType
+            {
                 store.clear();
 
                 try

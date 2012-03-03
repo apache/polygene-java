@@ -14,12 +14,12 @@
 
 package org.qi4j.api.type;
 
-import org.qi4j.api.util.Classes;
-
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import org.qi4j.api.util.Classes;
+import org.qi4j.functional.Iterables;
 
 /**
  * Collection type. This handles Collection, List and Set types
@@ -37,7 +37,7 @@ public final class CollectionType
 
     public CollectionType( Class<?> type, ValueType collectedType )
     {
-        super( type );
+        super( Iterables.iterable( type ) );
         this.collectedType = collectedType;
     }
 
@@ -49,6 +49,6 @@ public final class CollectionType
     @Override
     public String toString()
     {
-        return type() + "<" + collectedType + ">";
+        return super.toString() + "<" + collectedType + ">";
     }
 }

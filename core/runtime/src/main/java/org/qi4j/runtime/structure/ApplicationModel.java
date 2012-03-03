@@ -14,6 +14,10 @@
 
 package org.qi4j.runtime.structure;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.common.MetaInfo;
@@ -23,11 +27,6 @@ import org.qi4j.bootstrap.Qi4jRuntime;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
 import org.qi4j.runtime.injection.provider.InjectionProviderFactoryStrategy;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * JAVADOC
@@ -79,14 +78,17 @@ public final class ApplicationModel
 
     // SPI
     @Override
-    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor ) throws ThrowableType
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor )
+        throws ThrowableType
     {
-        if (visitor.visitEnter( this ))
+        if( visitor.visitEnter( this ) )
         {
             for( LayerModel layer : layers )
             {
-                if (!layer.accept( visitor ))
+                if( !layer.accept( visitor ) )
+                {
                     break;
+                }
             }
         }
         return visitor.visitLeave( this );

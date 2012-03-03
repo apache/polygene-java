@@ -71,9 +71,9 @@ public class JMXTest
         };
 
         // This allows user to connect using VisualVM/JConsole
-        while(true)
+        while( true )
         {
-            Thread.sleep(10000);
+            Thread.sleep( 10000 );
         }
     }
 
@@ -82,7 +82,7 @@ public class JMXTest
     {
     }
 
-    @Mixins( TestService.Mixin.class)
+    @Mixins( TestService.Mixin.class )
     interface TestService
         extends Configuration<TestConfiguration>, Activatable, ServiceComposite
     {
@@ -96,7 +96,7 @@ public class JMXTest
             public void activate()
                 throws Exception
             {
-                System.out.println("Activate service:"+config.configuration().stringConfig().get());
+                System.out.println( "Activate service:" + config.configuration().stringConfig().get() );
             }
 
             public void passivate()
@@ -106,7 +106,7 @@ public class JMXTest
         }
     }
 
-    @Mixins( TestService.Mixin.class)
+    @Mixins( TestService.Mixin.class )
     interface TestService2
         extends Configuration, Activatable, ServiceComposite
     {
@@ -120,7 +120,7 @@ public class JMXTest
             public void activate()
                 throws Exception
             {
-                System.out.println("Activate service:"+config.configuration().stringConfig().get());
+                System.out.println( "Activate service:" + config.configuration().stringConfig().get() );
             }
 
             public void passivate()
@@ -130,7 +130,7 @@ public class JMXTest
         }
     }
 
-    @Mixins( TestService.Mixin.class)
+    @Mixins( TestService.Mixin.class )
     interface TestService3
         extends Activatable, ServiceComposite
     {
@@ -144,7 +144,7 @@ public class JMXTest
             public void activate()
                 throws Exception
             {
-                System.out.println("Activate service:"+config.configuration().stringConfig().get());
+                System.out.println( "Activate service:" + config.configuration().stringConfig().get() );
             }
 
             public void passivate()
@@ -166,12 +166,13 @@ public class JMXTest
 
     enum TestEnum
     {
-        Value1,Value2,Value3
+        Value1, Value2, Value3
     }
 
     interface TestValue
         extends ValueComposite
-    {}
+    {
+    }
 
     public static class TestObject
     {

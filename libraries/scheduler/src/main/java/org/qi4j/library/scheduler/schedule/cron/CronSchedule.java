@@ -35,7 +35,8 @@ public interface CronSchedule extends Schedule, EntityComposite
      *
      * @return The cron expression that will be used on {@link org.qi4j.api.unitofwork.UnitOfWork} completion to compute next run
      */
-    @CronExpression @Immutable
+    @CronExpression
+    @Immutable
     Property<String> cronExpression();
 
     abstract class CronScheduleMixin
@@ -77,9 +78,14 @@ public interface CronSchedule extends Schedule, EntityComposite
         @Override
         public long nextRun( long from )
         {
-            Long firstRun = new org.codeartisans.sked.crontab.schedule.CronSchedule( cronExpression().get() ).firstRunAfter( from );
+            long firstRun = start().get().getMillis();
+            if( firstRun > from )
+            {
+                from = firstRun;
+            }
+            Long nextRun = new org.codeartisans.sked.crontab.schedule.CronSchedule( cronExpression().get() ).firstRunAfter( from );
             LOGGER.info( "Schedule.firstRunAfter({}) CronSchedule result is {}", from, firstRun );
-            return firstRun;
+            return nextRun;
         }
     }
 }

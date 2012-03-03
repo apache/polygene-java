@@ -58,7 +58,7 @@ public final class InjectionContext
     }
 
     // For inner classes
-    public InjectionContext( ModuleInstance moduleInstance, UsesInstance uses, Object instance)
+    public InjectionContext( ModuleInstance moduleInstance, UsesInstance uses, Object instance )
     {
         this.moduleInstance = moduleInstance;
         this.uses = uses;

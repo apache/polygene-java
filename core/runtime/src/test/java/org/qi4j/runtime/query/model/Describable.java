@@ -8,7 +8,7 @@ import org.qi4j.api.property.Property;
 /**
  * TODO
  */
-@Mixins(Describable.Mixin.class)
+@Mixins( Describable.Mixin.class )
 public interface Describable
 {
     String getDescription();

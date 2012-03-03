@@ -18,7 +18,6 @@
 
 package org.qi4j.api.util;
 
-import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

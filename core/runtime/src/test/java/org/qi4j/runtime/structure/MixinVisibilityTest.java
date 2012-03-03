@@ -17,13 +17,20 @@ package org.qi4j.runtime.structure;
 import org.junit.Test;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.composite.*;
+import org.qi4j.api.composite.AmbiguousTypeException;
+import org.qi4j.api.composite.NoSuchTransientException;
+import org.qi4j.api.composite.TransientBuilder;
+import org.qi4j.api.composite.TransientBuilderFactory;
+import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.object.ObjectFactory;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.structure.Application;
-import org.qi4j.bootstrap.*;
+import org.qi4j.bootstrap.ApplicationAssemblerAdapter;
+import org.qi4j.bootstrap.Assembler;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.Energy4Java;
+import org.qi4j.bootstrap.ModuleAssembly;
 
 import static org.junit.Assert.assertEquals;
 
@@ -96,7 +103,7 @@ public class MixinVisibilityTest
         assertEquals( "abc", object.test2() );
     }
 
-    @Test( expected = NoSuchCompositeException.class )
+    @Test( expected = NoSuchTransientException.class )
     public void testMixinInLayerIsNotVisible()
         throws Exception
     {

@@ -14,15 +14,14 @@
 
 package org.qi4j.spi.entitystore.helpers;
 
+import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.io.Input;
 import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entitystore.EntityStoreException;
-
-import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
 
 /**
  * JAVADOC

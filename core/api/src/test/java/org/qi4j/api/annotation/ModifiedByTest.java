@@ -12,10 +12,9 @@
 */
 package org.qi4j.api.annotation;
 
+import java.lang.annotation.Annotation;
 import org.junit.Test;
 import org.qi4j.api.concern.Concerns;
-
-import java.lang.annotation.Annotation;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

@@ -14,17 +14,19 @@
 
 package org.qi4j.runtime.query;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.property.Property;
-import org.qi4j.api.query.Query;
 import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.api.util.Classes;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specification;
 import org.qi4j.functional.Specifications;
 import org.qi4j.spi.query.QuerySource;
-
-import java.util.*;
 
 /**
  * JAVADOC
@@ -37,7 +39,7 @@ public class IterableQuerySource
     /**
      * Constructor.
      *
-     * @param iterable    iterable
+     * @param iterable iterable
      */
     IterableQuerySource( final Iterable iterable )
     {
@@ -45,9 +47,15 @@ public class IterableQuerySource
     }
 
     @Override
-    public <T> T find( Class<T> resultType, Specification<Composite> whereClause, Iterable<OrderBy> orderBySegments, Integer firstResult, Integer maxResults, Map<String, Object> variables )
+    public <T> T find( Class<T> resultType,
+                       Specification<Composite> whereClause,
+                       Iterable<OrderBy> orderBySegments,
+                       Integer firstResult,
+                       Integer maxResults,
+                       Map<String, Object> variables
+    )
     {
-        final Iterator<T> iterator = iterator(resultType, whereClause, orderBySegments, firstResult, maxResults, variables);
+        final Iterator<T> iterator = iterator( resultType, whereClause, orderBySegments, firstResult, maxResults, variables );
         if( iterator.hasNext() )
         {
             return iterator.next();
@@ -56,18 +64,36 @@ public class IterableQuerySource
     }
 
     @Override
-    public <T> long count( Class<T> resultType, Specification<Composite> whereClause, Iterable<OrderBy> orderBySegments, Integer firstResult, Integer maxResults, Map<String, Object> variables )
+    public <T> long count( Class<T> resultType,
+                           Specification<Composite> whereClause,
+                           Iterable<OrderBy> orderBySegments,
+                           Integer firstResult,
+                           Integer maxResults,
+                           Map<String, Object> variables
+    )
     {
         return list( resultType, whereClause, orderBySegments, firstResult, maxResults, variables ).size();
     }
 
     @Override
-    public <T> Iterator<T> iterator( Class<T> resultType, Specification<Composite> whereClause, Iterable<OrderBy> orderBySegments, Integer firstResult, Integer maxResults, Map<String, Object> variables )
+    public <T> Iterator<T> iterator( Class<T> resultType,
+                                     Specification<Composite> whereClause,
+                                     Iterable<OrderBy> orderBySegments,
+                                     Integer firstResult,
+                                     Integer maxResults,
+                                     Map<String, Object> variables
+    )
     {
-        return list(resultType, whereClause, orderBySegments, firstResult, maxResults, variables).iterator();
+        return list( resultType, whereClause, orderBySegments, firstResult, maxResults, variables ).iterator();
     }
 
-    private <T> List<T> list(Class<T> resultType, Specification<Composite> whereClause, Iterable<OrderBy> orderBySegments, Integer firstResult, Integer maxResults, Map<String, Object> variables)
+    private <T> List<T> list( Class<T> resultType,
+                              Specification<Composite> whereClause,
+                              Iterable<OrderBy> orderBySegments,
+                              Integer firstResult,
+                              Integer maxResults,
+                              Map<String, Object> variables
+    )
     {
         // Ensure it's a list first
         List<T> list = filter( resultType, whereClause );
@@ -76,7 +102,7 @@ public class IterableQuerySource
         if( orderBySegments != null )
         {
             // Sort it
-            Collections.sort( list, new OrderByComparator(orderBySegments) );
+            Collections.sort( list, new OrderByComparator( orderBySegments ) );
         }
 
         // Cut results
@@ -119,12 +145,13 @@ public class IterableQuerySource
 
     private <T> List<T> filter( Class<T> resultType, Specification whereClause )
     {
-        if (whereClause == null)
+        if( whereClause == null )
         {
             return Iterables.toList( Iterables.filter( Classes.instanceOf( resultType ), iterable ) );
-        } else
+        }
+        else
         {
-            return Iterables.toList( Iterables.filter( Specifications.and(Classes.instanceOf( resultType ), whereClause), iterable ) );
+            return Iterables.toList( Iterables.filter( Specifications.and( Classes.instanceOf( resultType ), whereClause ), iterable ) );
         }
     }
 

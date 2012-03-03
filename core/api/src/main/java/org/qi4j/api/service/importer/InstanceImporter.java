@@ -20,7 +20,15 @@ import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.api.service.ServiceImporterException;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Layer;
+import org.qi4j.api.structure.MetaInfoHolder;
 import org.qi4j.api.structure.Module;
+import org.qi4j.functional.Function;
+import org.qi4j.functional.Iterables;
+
+import static org.qi4j.functional.Iterables.filter;
+import static org.qi4j.functional.Iterables.first;
+import static org.qi4j.functional.Iterables.map;
+import static org.qi4j.functional.Specifications.notNull;
 
 /**
  * Return a predefined service instance that was provided as meta-info. Search for meta-info in the following order:
@@ -30,32 +38,36 @@ public final class InstanceImporter<T>
     implements ServiceImporter<T>
 {
     @Structure
-    Application application;
-    @Structure
-    Layer layer;
-    @Structure
-    Module module;
+    private Application application;
 
-    public T importService( ImportedServiceDescriptor serviceDescriptor )
+    @Structure
+    private Layer layer;
+
+    @Structure
+    private Module module;
+
+    public T importService( final ImportedServiceDescriptor serviceDescriptor )
         throws ServiceImporterException
     {
-        Object instance = serviceDescriptor.metaInfo( serviceDescriptor.type() );
-        if( instance == null )
+        T instance = null;
+        Iterable<MetaInfoHolder> holders = Iterables.iterable( serviceDescriptor, module, layer, application );
+        for( final MetaInfoHolder metaInfoHolder : holders )
         {
-            instance = module.metaInfo( serviceDescriptor.type() );
-            if( instance == null )
+            Function<Class<?>, T> metaFinder = new Function<Class<?>, T>()
             {
-                instance = layer.metaInfo( serviceDescriptor.type() );
-            }
-            {
-                if( instance == null )
+                @Override
+                public T map( Class<?> type )
                 {
-                    instance = application.metaInfo( serviceDescriptor.type() );
+                    return (T) metaInfoHolder.metaInfo( type );
                 }
+            };
+            instance = first( filter( notNull(), map( metaFinder, serviceDescriptor.types() ) ) );
+            if( instance != null )
+            {
+                break;
             }
         }
-
-        return (T) instance;
+        return instance;
     }
 
     public boolean isActive( T instance )

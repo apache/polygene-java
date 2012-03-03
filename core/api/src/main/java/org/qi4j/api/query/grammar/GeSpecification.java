@@ -4,17 +4,17 @@ package org.qi4j.api.query.grammar;
  * TODO
  */
 public class GeSpecification<T>
-        extends ComparisonSpecification<T>
+    extends ComparisonSpecification<T>
 {
     public GeSpecification( PropertyFunction<T> property, T value )
     {
-        super(property, value);
+        super( property, value );
     }
 
     @Override
     protected boolean compare( T value )
     {
-        return ((Comparable) value).compareTo( this.value ) >= 0;
+        return ( (Comparable) value ).compareTo( this.value ) >= 0;
     }
 
     @Override

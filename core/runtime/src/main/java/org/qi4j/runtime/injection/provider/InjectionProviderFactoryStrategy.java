@@ -14,12 +14,19 @@
 
 package org.qi4j.runtime.injection.provider;
 
+import java.lang.annotation.Annotation;
+import java.util.HashMap;
+import java.util.Map;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.composite.InvalidValueCompositeException;
 import org.qi4j.api.composite.ModelDescriptor;
 import org.qi4j.api.concern.internal.ConcernFor;
-import org.qi4j.api.injection.scope.*;
-import org.qi4j.api.object.ObjectDescriptor;
+import org.qi4j.api.injection.scope.Invocation;
+import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.injection.scope.State;
+import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.sideeffect.internal.SideEffectFor;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.InvalidInjectionException;
@@ -28,9 +35,7 @@ import org.qi4j.runtime.injection.InjectionProvider;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
 import org.qi4j.runtime.model.Resolution;
 
-import java.lang.annotation.Annotation;
-import java.util.HashMap;
-import java.util.Map;
+import static org.qi4j.functional.Iterables.first;
 
 /**
  * JAVADOC
@@ -76,7 +81,7 @@ public final class InjectionProviderFactoryStrategy
             }
         }
         ModelDescriptor composite = resolution.model();
-        Class<?> compositeType = composite.type();
+        Class<?> compositeType = first( composite.types() );
         if( factory1 != null && ValueComposite.class.isAssignableFrom( compositeType ) )
         {
             throw new InvalidValueCompositeException( "@" + injectionAnnotationType.getSimpleName() + " is not allowed in ValueComposites: " + compositeType );

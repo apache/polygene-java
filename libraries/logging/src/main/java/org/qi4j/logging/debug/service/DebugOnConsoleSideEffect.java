@@ -30,6 +30,8 @@ import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
 
+import static org.qi4j.functional.Iterables.first;
+
 /**
  * The DebugOnConsoleSideEffect is just a temporary solution for logging output, until a more
  * robust framework has been designed.
@@ -54,14 +56,19 @@ public class DebugOnConsoleSideEffect extends SideEffectOf<LoggingService>
     public void debug( Composite composite, String message )
     {
         String localized = bundle.getString( message );
-        OUT.println( "DEBUG:" + Qi4j.DESCRIPTOR_FUNCTION.map( composite ).type().getName() + ": " + localized );
+        OUT.println( "DEBUG:" + getCompositeName( composite ) + ": " + localized );
+    }
+
+    private String getCompositeName( Composite composite )
+    {
+        return first(Qi4j.DESCRIPTOR_FUNCTION.map( composite ).types()).getName();
     }
 
     public void debug( Composite composite, String message, Serializable param1 )
     {
         String localized = bundle.getString( message );
         String formatted = MessageFormat.format( localized, param1 );
-        OUT.println( "DEBUG:" + Qi4j.DESCRIPTOR_FUNCTION.map( composite ).type().getName() + ": " + formatted );
+        OUT.println( "DEBUG:" + getCompositeName( composite ) + ": " + formatted );
         if( param1 instanceof Throwable )
         {
             handleException( (Throwable) param1 );
@@ -72,7 +79,7 @@ public class DebugOnConsoleSideEffect extends SideEffectOf<LoggingService>
     {
         String localized = bundle.getString( message );
         String formatted = MessageFormat.format( localized, param1, param2 );
-        OUT.println( "DEBUG:" + Qi4j.DESCRIPTOR_FUNCTION.map( composite ).type().getName() + ": " + formatted );
+        OUT.println( "DEBUG:" + getCompositeName( composite ) + ": " + formatted );
         if( param1 instanceof Throwable )
         {
             handleException( (Throwable) param1 );
@@ -83,7 +90,7 @@ public class DebugOnConsoleSideEffect extends SideEffectOf<LoggingService>
     {
         String localized = bundle.getString( message );
         String formatted = MessageFormat.format( localized, (Serializable) params );
-        OUT.println( "DEBUG:" + Qi4j.DESCRIPTOR_FUNCTION.map( composite ).type().getName() + ": " + formatted );
+        OUT.println( "DEBUG:" + getCompositeName( composite ) + ": " + formatted );
         if( params[ 0 ] instanceof Throwable )
         {
             handleException( (Throwable) params[ 0 ] );

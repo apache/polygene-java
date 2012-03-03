@@ -17,19 +17,23 @@
  */
 package org.qi4j.runtime.query;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
-import org.qi4j.runtime.query.model.*;
+import org.qi4j.runtime.query.model.City;
+import org.qi4j.runtime.query.model.Domain;
+import org.qi4j.runtime.query.model.Female;
+import org.qi4j.runtime.query.model.Male;
+import org.qi4j.runtime.query.model.Nameable;
+import org.qi4j.runtime.query.model.Person;
 import org.qi4j.runtime.query.model.entities.FemaleEntity;
 import org.qi4j.runtime.query.model.entities.MaleEntity;
 import org.qi4j.runtime.query.model.entities.PetEntity;
 import org.qi4j.runtime.query.model.values.ContactValue;
 import org.qi4j.runtime.query.model.values.ContactsValue;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * JAVADOC Add JavaDoc

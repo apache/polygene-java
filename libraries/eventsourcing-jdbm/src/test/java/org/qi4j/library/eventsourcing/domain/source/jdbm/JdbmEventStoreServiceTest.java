@@ -75,7 +75,7 @@ public class JdbmEventStoreServiceTest
             for (int i = 0; i < count; i++)
             {
                 uow = module.newUnitOfWork( UsecaseBuilder.newUsecase( "Change description" ));
-                uow.metaInfo().set( new Principal()
+                uow.setMetaInfo( new Principal()
                 {
                     public String getName()
                     {

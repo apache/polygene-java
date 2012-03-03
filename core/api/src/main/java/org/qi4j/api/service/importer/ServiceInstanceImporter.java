@@ -19,7 +19,11 @@ package org.qi4j.api.service.importer;
  */
 
 import org.qi4j.api.injection.scope.Structure;
-import org.qi4j.api.service.*;
+import org.qi4j.api.service.ImportedServiceDescriptor;
+import org.qi4j.api.service.ServiceFinder;
+import org.qi4j.api.service.ServiceImporter;
+import org.qi4j.api.service.ServiceImporterException;
+import org.qi4j.api.service.ServiceReference;
 
 /**
  * Use a registered service that implements ServiceImporter to do the actual

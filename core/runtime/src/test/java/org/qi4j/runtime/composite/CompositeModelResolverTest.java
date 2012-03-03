@@ -20,7 +20,6 @@ package org.qi4j.runtime.composite;
 import org.junit.Assert;
 import org.junit.Test;
 import org.qi4j.api.composite.Composite;
-import org.qi4j.api.composite.TransientBuilderFactory;
 import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;

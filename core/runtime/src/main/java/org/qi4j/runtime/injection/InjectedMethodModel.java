@@ -14,13 +14,12 @@
 
 package org.qi4j.runtime.injection;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import org.qi4j.api.composite.InjectedMethodDescriptor;
 import org.qi4j.bootstrap.InjectionException;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.functional.VisitableHierarchy;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 /**
  * JAVADOC
@@ -73,10 +72,13 @@ public final class InjectedMethodModel
     }
 
     @Override
-    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor ) throws ThrowableType
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor )
+        throws ThrowableType
     {
-        if (visitor.visitEnter( this ))
+        if( visitor.visitEnter( this ) )
+        {
             parameters.accept( visitor );
+        }
         return visitor.visitLeave( this );
     }
 }

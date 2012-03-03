@@ -14,10 +14,11 @@
 
 package org.qi4j.runtime.entity;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.MetaInfo;
-import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.CompositeInstance;
 import org.qi4j.api.constraint.ConstraintViolationException;
@@ -40,14 +41,10 @@ import org.qi4j.spi.entitystore.EntityAlreadyExistsException;
 import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-
 /**
  * JAVADOC
  */
-public final class EntityModel
-    extends CompositeModel
+public final class EntityModel extends CompositeModel
     implements EntityDescriptor
 {
     private static final Method IDENTITY_METHOD;
@@ -66,18 +63,19 @@ public final class EntityModel
 
     private final boolean queryable;
 
-    public EntityModel( Class<?> type,
-                        Iterable<Class<?>> types,
-                         Visibility visibility,
-                         MetaInfo info,
-                         EntityMixinsModel mixinsModel,
-                         EntityStateModel stateModel,
-                         CompositeMethodsModel compositeMethodsModel
+    public EntityModel( Iterable<Class<?>> types,
+                        Visibility visibility,
+                        MetaInfo info,
+                        EntityMixinsModel mixinsModel,
+                        EntityStateModel stateModel,
+                        CompositeMethodsModel compositeMethodsModel
     )
     {
-        super( type, types, visibility, info, mixinsModel, stateModel, compositeMethodsModel );
+        super( types, visibility, info, mixinsModel, stateModel, compositeMethodsModel );
 
-        final Queryable queryable = Iterables.first( Iterables.<Queryable, Annotation>cast(Iterables.filter( Annotations.isType( Queryable.class ), Iterables.flattenIterables( Iterables.map( Annotations.ANNOTATIONS_OF, types ) ) )));
+        final Queryable queryable = Iterables.first( Iterables.<Queryable, Annotation>cast( Iterables.filter( Annotations
+                                                                                                                  .isType( Queryable.class ), Iterables
+            .flattenIterables( Iterables.map( Annotations.ANNOTATIONS_OF, types ) ) ) ) );
         this.queryable = queryable == null || queryable.value();
     }
 
@@ -139,12 +137,6 @@ public final class EntityModel
         {
             throw new ConstructionException( "Could not create new entity in store", e );
         }
-    }
-
-    @Override
-    public String toString()
-    {
-        return type().getName();
     }
 
     public void initState( ModuleInstance module, EntityState entityState )

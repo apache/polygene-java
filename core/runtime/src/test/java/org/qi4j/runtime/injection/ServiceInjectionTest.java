@@ -14,6 +14,9 @@
 
 package org.qi4j.runtime.injection;
 
+import java.io.Serializable;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import org.junit.Test;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.Optional;
@@ -26,12 +29,13 @@ import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.service.qualifier.AnnotationQualifier;
 import org.qi4j.api.service.qualifier.IdentifiedBy;
 import org.qi4j.api.service.qualifier.Qualifier;
-import org.qi4j.bootstrap.*;
+import org.qi4j.bootstrap.ApplicationAssembly;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.LayerAssembly;
+import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.bootstrap.ServiceDeclaration;
+import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.functional.Specification;
-
-import java.io.Serializable;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 
 import static junit.framework.Assert.assertEquals;
 import static org.qi4j.api.common.Visibility.application;
@@ -51,8 +55,12 @@ public class ServiceInjectionTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.services( MyServiceComposite.class ).identifiedBy( "Foo" ).setMetaInfo( new ServiceName( "Foo" ) );
-                module.services( MyServiceComposite2.class ).identifiedBy( "Bar" ).setMetaInfo( new ServiceName( "Bar" ) );
+                module.services( MyServiceComposite.class )
+                    .identifiedBy( "Foo" )
+                    .setMetaInfo( new ServiceName( "Foo" ) );
+                module.services( MyServiceComposite2.class )
+                    .identifiedBy( "Bar" )
+                    .setMetaInfo( new ServiceName( "Bar" ) );
                 module.services( StringService.class, LongService.class );
                 module.objects( ServiceUser.class );
             }
@@ -73,7 +81,7 @@ public class ServiceInjectionTest
         assertEquals( "FooXBarX", user.testIterableServiceReferences() );
         assertEquals( "Bar", user.testQualifier() );
         assertEquals( "A", user.testStringIterable() );
-        assertEquals( new Long(1L), user.testLongIterable() );
+        assertEquals( new Long( 1L ), user.testLongIterable() );
     }
 
     @Test
@@ -84,7 +92,9 @@ public class ServiceInjectionTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.services( MyServiceComposite.class ).identifiedBy( "Foo" ).setMetaInfo( new ServiceName( "Foo" ) );
+                module.services( MyServiceComposite.class )
+                    .identifiedBy( "Foo" )
+                    .setMetaInfo( new ServiceName( "Foo" ) );
                 module.services( StringService.class, LongService.class );
                 module.objects( ServiceUser.class );
 
@@ -108,7 +118,9 @@ public class ServiceInjectionTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.services( MyServiceComposite.class ).identifiedBy( "Foo" ).setMetaInfo( new ServiceName( "Foo" ) );
+                module.services( MyServiceComposite.class )
+                    .identifiedBy( "Foo" )
+                    .setMetaInfo( new ServiceName( "Foo" ) );
                 module.services( StringService.class, LongService.class );
                 LayerAssembly layerAssembly = module.layer();
                 module.objects( ServiceUser.class );
@@ -147,9 +159,10 @@ public class ServiceInjectionTest
     {
     }
 
-   public static interface MyServiceComposite2
-      extends MyServiceComposite
-   {}
+    public static interface MyServiceComposite2
+        extends MyServiceComposite
+    {
+    }
 
     public static interface MyService
     {
@@ -168,7 +181,8 @@ public class ServiceInjectionTest
 
     public static class ServiceUser
         extends AbstractServiceUser<String>
-    {}
+    {
+    }
 
     public static class AbstractServiceUser<T>
     {
@@ -183,10 +197,12 @@ public class ServiceInjectionTest
         @Service
         Iterable<ServiceReference<MyService>> serviceRefs;
 
-        @Service @IdentifiedBy("Bar")
+        @Service
+        @IdentifiedBy( "Bar" )
         ServiceReference<MyService> qualifiedService;
 
-        @Service @IdentifiedBy("Bar")
+        @Service
+        @IdentifiedBy( "Bar" )
         Iterable<ServiceReference<MyService>> qualifiedServiceRefs;
 
         @Optional
@@ -237,7 +253,7 @@ public class ServiceInjectionTest
             }
             return str;
         }
-        
+
         public String testQualifier()
         {
             return qualifiedService.metaInfo( ServiceName.class ).getName();
@@ -265,7 +281,7 @@ public class ServiceInjectionTest
     }
 
     @Qualifier( NamedSelector.class )
-    @Retention( RetentionPolicy.RUNTIME)
+    @Retention( RetentionPolicy.RUNTIME )
     public @interface Named
     {
         public abstract String value();
@@ -281,7 +297,7 @@ public class ServiceInjectionTest
                 public boolean satisfiedBy( ServiceReference<?> service )
                 {
                     ServiceName serviceName = service.metaInfo( ServiceName.class );
-                    return ( serviceName != null && serviceName.getName().equals(named.value() ));
+                    return ( serviceName != null && serviceName.getName().equals( named.value() ) );
                 }
             };
         }
@@ -308,9 +324,9 @@ public class ServiceInjectionTest
         T get();
     }
 
-    @Mixins(StringService.Mixin.class)
+    @Mixins( StringService.Mixin.class )
     public static interface StringService
-            extends Foo<String>, ServiceComposite
+        extends Foo<String>, ServiceComposite
     {
         class Mixin
             implements Foo<String>
@@ -323,9 +339,9 @@ public class ServiceInjectionTest
         }
     }
 
-    @Mixins(LongService.Mixin.class)
+    @Mixins( LongService.Mixin.class )
     public static interface LongService
-            extends Foo<Long>, ServiceComposite
+        extends Foo<Long>, ServiceComposite
     {
         class Mixin
             implements Foo<Long>

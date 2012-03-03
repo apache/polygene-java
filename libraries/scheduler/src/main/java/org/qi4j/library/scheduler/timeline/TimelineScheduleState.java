@@ -17,9 +17,11 @@
 package org.qi4j.library.scheduler.timeline;
 
 import java.util.List;
+import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.property.Property;
 
 public interface TimelineScheduleState
 {
+    @UseDefaults
     Property<List<TimelineRecord>> history();
 }

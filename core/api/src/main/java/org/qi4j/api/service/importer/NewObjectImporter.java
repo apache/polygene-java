@@ -19,6 +19,7 @@ import org.qi4j.api.object.ObjectFactory;
 import org.qi4j.api.service.ImportedServiceDescriptor;
 import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.api.service.ServiceImporterException;
+import org.qi4j.functional.Iterables;
 
 /**
  * JAVADOC
@@ -32,7 +33,7 @@ public final class NewObjectImporter<T>
     public T importService( ImportedServiceDescriptor serviceDescriptor )
         throws ServiceImporterException
     {
-        return (T) obf.newObject( serviceDescriptor.type() );
+        return (T) obf.newObject( Iterables.first( serviceDescriptor.types() ) );
     }
 
     public boolean isActive( T instance )

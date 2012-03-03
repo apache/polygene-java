@@ -20,7 +20,7 @@ public class ApplicationAssemblerTest
     public void testApplicationAssembler()
         throws AssemblyException
     {
-        Energy4Java is = new Energy4Java(  );
+        Energy4Java is = new Energy4Java();
 
         ApplicationDescriptor model = is.newApplicationModel( new ApplicationAssembler()
         {
@@ -51,15 +51,17 @@ public class ApplicationAssemblerTest
         model.accept( new HierarchicalVisitorAdapter<Object, Object, RuntimeException>()
         {
             @Override
-            public boolean visitEnter( Object visited ) throws RuntimeException
+            public boolean visitEnter( Object visited )
+                throws RuntimeException
             {
-                if (visited instanceof ServiceDescriptor)
+                if( visited instanceof ServiceDescriptor )
                 {
                     ServiceDescriptor serviceDescriptor = (ServiceDescriptor) visited;
                     Assert.assertTrue( serviceDescriptor.isInstantiateOnStartup() );
                     Assert.assertTrue( serviceDescriptor.visibility() == Visibility.layer );
                     return false;
-                } else if (visited instanceof EntityDescriptor)
+                }
+                else if( visited instanceof EntityDescriptor )
                 {
                     EntityDescriptor entityDescriptor = (EntityDescriptor) visited;
                     Assert.assertTrue( entityDescriptor.visibility() == Visibility.application );
@@ -68,7 +70,7 @@ public class ApplicationAssemblerTest
 
                 return true;
             }
-        });
+        } );
         model.newInstance( is.spi() );
     }
 

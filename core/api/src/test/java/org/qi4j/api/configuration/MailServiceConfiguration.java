@@ -23,7 +23,7 @@ import org.qi4j.api.property.Property;
 public interface MailServiceConfiguration extends ConfigurationComposite
 {
     Property<String> hostName();
-    
+
     Property<Integer> port();
 }
 // START SNIPPET: configuration

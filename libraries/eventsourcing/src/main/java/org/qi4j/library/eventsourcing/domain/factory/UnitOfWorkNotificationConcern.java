@@ -86,11 +86,11 @@ public class UnitOfWorkNotificationConcern
         DomainEventValue eventValue = next.createEvent( api.dereference( entity ), name, args );
 
         // Add eventValue to list in UoW
-        UnitOfWorkEvents events = unitOfWork.metaInfo().get( UnitOfWorkEvents.class );
+        UnitOfWorkEvents events = unitOfWork.metaInfo(UnitOfWorkEvents.class );
         if (events == null)
         {
             events = new UnitOfWorkEvents();
-            unitOfWork.metaInfo().set( events );
+            unitOfWork.setMetaInfo( events );
 
             unitOfWork.addUnitOfWorkCallback( new UnitOfWorkCallback()
             {
@@ -104,7 +104,7 @@ public class UnitOfWorkNotificationConcern
                 {
                     if (status.equals( UnitOfWorkStatus.COMPLETED ))
                     {
-                        UnitOfWorkEvents events = unitOfWork.metaInfo().get( UnitOfWorkEvents.class );
+                        UnitOfWorkEvents events = unitOfWork.metaInfo( UnitOfWorkEvents.class );
 
                         ValueBuilder<UnitOfWorkDomainEventsValue> builder = vbf.newValueBuilder( UnitOfWorkDomainEventsValue.class );
                         builder.prototype().user().set( user );

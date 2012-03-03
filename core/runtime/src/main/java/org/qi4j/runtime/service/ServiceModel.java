@@ -14,29 +14,32 @@
 
 package org.qi4j.runtime.service;
 
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.util.HashMap;
+import java.util.Map;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.composite.Composite;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.property.Property;
-import org.qi4j.api.property.PropertyDescriptor;
-import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.util.Classes;
-import org.qi4j.functional.Function;
 import org.qi4j.functional.Specifications;
-import org.qi4j.runtime.composite.*;
+import org.qi4j.runtime.composite.CompositeMethodsModel;
+import org.qi4j.runtime.composite.CompositeModel;
+import org.qi4j.runtime.composite.MixinModel;
+import org.qi4j.runtime.composite.MixinsModel;
+import org.qi4j.runtime.composite.StateModel;
+import org.qi4j.runtime.composite.TransientStateInstance;
+import org.qi4j.runtime.composite.UsesInstance;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.property.PropertyInstance;
 import org.qi4j.runtime.property.PropertyModel;
 import org.qi4j.runtime.structure.ModuleInstance;
-
-import java.lang.reflect.*;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.qi4j.functional.Iterables.filter;
 import static org.qi4j.functional.Specifications.and;
@@ -45,17 +48,18 @@ import static org.qi4j.functional.Specifications.translate;
 /**
  * JAVADOC
  */
-public final class ServiceModel
-        extends CompositeModel
-        implements ServiceDescriptor
+public final class ServiceModel extends CompositeModel
+    implements ServiceDescriptor
 {
     private static Method identityMethod;
+
     static
     {
         try
         {
             identityMethod = Identity.class.getMethod( "identity" );
-        } catch( NoSuchMethodException e )
+        }
+        catch( NoSuchMethodException e )
         {
             e.printStackTrace();
         }
@@ -65,8 +69,7 @@ public final class ServiceModel
     private final boolean instantiateOnStartup;
     private final Class configurationType;
 
-    public ServiceModel( Class<?> compositeType,
-                         Iterable<Class<?>> types,
+    public ServiceModel( Iterable<Class<?>> types,
                          Visibility visibility,
                          MetaInfo metaInfo,
                          MixinsModel mixinsModel,
@@ -76,7 +79,7 @@ public final class ServiceModel
                          boolean instantiateOnStartup
     )
     {
-        super( compositeType, types, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
+        super( types, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
 
         this.identity = identity;
         this.instantiateOnStartup = instantiateOnStartup;
@@ -108,10 +111,12 @@ public final class ServiceModel
         for( PropertyModel propertyModel : stateModel.properties() )
         {
             Object initialValue = propertyModel.initialValue( module );
-            if (propertyModel.accessor().equals(identityMethod))
+            if( propertyModel.accessor().equals( identityMethod ) )
+            {
                 initialValue = identity;
+            }
 
-            Property property = new PropertyInstance<Object>(propertyModel, initialValue );
+            Property property = new PropertyInstance<Object>( propertyModel, initialValue );
             properties.put( propertyModel.accessor(), property );
         }
 
@@ -133,22 +138,26 @@ public final class ServiceModel
     @Override
     public String toString()
     {
-        return type().getName() + ":" + identity;
+        return super.toString() + ":" + identity;
     }
 
     public Class calculateConfigurationType()
     {
         Class injectionClass = null;
-        Iterable<DependencyModel> configurationThisDependencies = filter( and( translate( new DependencyModel.InjectionTypeFunction(), Specifications.<Class<?>>in( Configuration.class ) ), new DependencyModel.ScopeSpecification( This.class ) ), dependencies() );
+        Iterable<DependencyModel> configurationThisDependencies = filter( and( translate( new DependencyModel.InjectionTypeFunction(), Specifications
+            .<Class<?>>in( Configuration.class ) ), new DependencyModel.ScopeSpecification( This.class ) ), dependencies() );
         for( DependencyModel dependencyModel : configurationThisDependencies )
         {
-            if( dependencyModel.rawInjectionType().equals( Configuration.class ) && dependencyModel.injectionType() instanceof ParameterizedType )
+            if( dependencyModel.rawInjectionType()
+                    .equals( Configuration.class ) && dependencyModel.injectionType() instanceof ParameterizedType )
             {
-                Class<?> type = Classes.RAW_CLASS.map(((ParameterizedType)dependencyModel.injectionType()).getActualTypeArguments()[0]);
+                Class<?> type = Classes.RAW_CLASS
+                    .map( ( (ParameterizedType) dependencyModel.injectionType() ).getActualTypeArguments()[ 0 ] );
                 if( injectionClass == null )
                 {
                     injectionClass = type;
-                } else
+                }
+                else
                 {
                     if( injectionClass.isAssignableFrom( type ) )
                     {
@@ -161,13 +170,13 @@ public final class ServiceModel
     }
 
     public void activate( Object[] mixins )
-            throws Exception
+        throws Exception
     {
         mixinsModel.activate( mixins );
     }
 
     public void passivate( Object[] mixins )
-            throws Exception
+        throws Exception
     {
         mixinsModel.passivate( mixins );
     }

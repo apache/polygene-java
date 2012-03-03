@@ -14,6 +14,9 @@
 
 package org.qi4j.runtime.service;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.event.ActivationEventListener;
 import org.qi4j.api.event.ActivationEventListenerRegistration;
@@ -23,15 +26,11 @@ import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specification;
 import org.qi4j.runtime.structure.ActivationEventListenerSupport;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
  * JAVADOC
  */
 public class ServicesInstance
-        implements Activatable, ActivationEventListenerRegistration
+    implements Activatable, ActivationEventListenerRegistration
 {
     private final ServicesModel servicesModel;
     private final List<ServiceReference> serviceReferences;
@@ -53,7 +52,7 @@ public class ServicesInstance
     }
 
     public void activate()
-            throws Exception
+        throws Exception
     {
         for( final ServiceReference serviceReference : serviceReferences )
         {
@@ -62,15 +61,17 @@ public class ServicesInstance
                 Activatable eventActivatable = new Activatable()
                 {
                     @Override
-                    public void activate() throws Exception
+                    public void activate()
+                        throws Exception
                     {
-                        ((Activatable) serviceReference).activate();
+                        ( (Activatable) serviceReference ).activate();
                     }
 
                     @Override
-                    public void passivate() throws Exception
+                    public void passivate()
+                        throws Exception
                     {
-                        ((Activatable) serviceReference).passivate();
+                        ( (Activatable) serviceReference ).passivate();
                     }
                 };
 
@@ -80,7 +81,7 @@ public class ServicesInstance
     }
 
     public void passivate()
-            throws Exception
+        throws Exception
     {
         activator.passivate();
     }
@@ -105,13 +106,15 @@ public class ServicesInstance
     public Iterable<ServiceReference> visibleServices( final Visibility visibility )
     {
         return Iterables.filter( new Specification<ServiceReference>()
-                {
-                    @Override
-                    public boolean satisfiedBy( ServiceReference item )
-                    {
-                        return ((ServiceReferenceInstance) item).serviceDescriptor().visibility().ordinal() >= visibility.ordinal();
-                    }
-                }, serviceReferences );
+        {
+            @Override
+            public boolean satisfiedBy( ServiceReference item )
+            {
+                return ( (ServiceReferenceInstance) item ).serviceDescriptor()
+                           .visibility()
+                           .ordinal() >= visibility.ordinal();
+            }
+        }, serviceReferences );
     }
 
     @Override

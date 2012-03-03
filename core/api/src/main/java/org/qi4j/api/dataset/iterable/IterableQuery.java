@@ -1,14 +1,13 @@
 package org.qi4j.api.dataset.iterable;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.qi4j.api.dataset.Query;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.query.QueryException;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specification;
 import org.qi4j.functional.Visitor;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * TODO
@@ -18,7 +17,7 @@ public class IterableQuery<T> implements Query<T>
     private Iterable<T> iterable;
     private int skip;
     private int limit;
-    private Map<String, Object> variables = new HashMap<String, Object>(  );
+    private Map<String, Object> variables = new HashMap<String, Object>();
 
     public IterableQuery( Iterable<T> iterable )
     {
@@ -64,42 +63,47 @@ public class IterableQuery<T> implements Query<T>
     @Override
     public Object getVariable( String name )
     {
-        return variables.get(name);
+        return variables.get( name );
     }
 
     @Override
     public long count()
     {
-        return Iterables.count(Iterables.limit( limit, Iterables.skip( skip, iterable ) ));
+        return Iterables.count( Iterables.limit( limit, Iterables.skip( skip, iterable ) ) );
     }
 
     @Override
     public T first()
     {
-        return Iterables.first(Iterables.limit( limit, Iterables.skip( skip, iterable ) ));
+        return Iterables.first( Iterables.limit( limit, Iterables.skip( skip, iterable ) ) );
     }
 
     @Override
-    public T single() throws QueryException
+    public T single()
+        throws QueryException
     {
         return Iterables.single( Iterables.limit( limit, Iterables.skip( skip, iterable ) ) );
     }
 
     @Override
-    public <ThrowableType extends Throwable> boolean execute( Visitor<T, ThrowableType> resultVisitor ) throws ThrowableType
+    public <ThrowableType extends Throwable> boolean execute( Visitor<T, ThrowableType> resultVisitor )
+        throws ThrowableType
     {
         for( T t : toIterable() )
         {
-            if (!resultVisitor.visit( t ))
+            if( !resultVisitor.visit( t ) )
+            {
                 return false;
+            }
         }
 
         return true;
     }
 
     @Override
-    public Iterable<T> toIterable() throws QueryException
+    public Iterable<T> toIterable()
+        throws QueryException
     {
-        return Iterables.limit( limit, Iterables.skip( skip, iterable ));
+        return Iterables.limit( limit, Iterables.skip( skip, iterable ) );
     }
 }

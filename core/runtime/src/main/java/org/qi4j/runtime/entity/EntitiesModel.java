@@ -14,10 +14,9 @@
 
 package org.qi4j.runtime.entity;
 
+import java.util.List;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.functional.VisitableHierarchy;
-
-import java.util.List;
 
 /**
  * Model of entities in a particular Module.
@@ -38,14 +37,19 @@ public class EntitiesModel
     }
 
     @Override
-    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> modelVisitor ) throws ThrowableType
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> modelVisitor )
+        throws ThrowableType
     {
-        if (modelVisitor.visitEnter( this ))
+        if( modelVisitor.visitEnter( this ) )
+        {
             for( EntityModel entityModel : entityModels )
             {
-                if (!entityModel.accept( modelVisitor ))
+                if( !entityModel.accept( modelVisitor ) )
+                {
                     break;
+                }
             }
+        }
         return modelVisitor.visitLeave( this );
     }
 }

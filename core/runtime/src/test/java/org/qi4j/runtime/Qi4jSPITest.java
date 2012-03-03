@@ -16,12 +16,16 @@ package org.qi4j.runtime;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
-import org.qi4j.api.association.*;
+import org.qi4j.api.association.AbstractAssociation;
+import org.qi4j.api.association.Association;
+import org.qi4j.api.association.AssociationDescriptor;
+import org.qi4j.api.association.AssociationStateDescriptor;
+import org.qi4j.api.association.AssociationStateHolder;
+import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityDescriptor;
-import org.qi4j.api.association.AssociationStateDescriptor;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.unitofwork.UnitOfWork;

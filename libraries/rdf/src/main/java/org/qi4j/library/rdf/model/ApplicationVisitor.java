@@ -25,6 +25,8 @@ import org.qi4j.functional.HierarchicalVisitorAdapter;
 import org.qi4j.library.rdf.Qi4jRdf;
 import org.qi4j.library.rdf.serializer.SerializerContext;
 
+import static org.qi4j.functional.Iterables.first;
+
 /**
  * JAVADOC
  */
@@ -46,7 +48,8 @@ class ApplicationVisitor extends HierarchicalVisitorAdapter<Object, Object, Runt
     }
 
     @Override
-    public boolean visitEnter( Object visited ) throws RuntimeException
+    public boolean visitEnter( Object visited )
+        throws RuntimeException
     {
         if( visited instanceof ApplicationDescriptor )
         {
@@ -74,16 +77,16 @@ class ApplicationVisitor extends HierarchicalVisitorAdapter<Object, Object, Runt
 
         if( visited instanceof TransientDescriptor )
         {
-            TransientDescriptor transientDescriptor =(TransientDescriptor) visited;
-            compositeUri = context.createCompositeUri( moduleUri, transientDescriptor.type() );
+            TransientDescriptor transientDescriptor = (TransientDescriptor) visited;
+            compositeUri = context.createCompositeUri( moduleUri, first( transientDescriptor.types() ) );
             context.addType( compositeUri, Qi4jRdf.TYPE_COMPOSITE );
             context.addRelationship( moduleUri, Qi4jRdf.RELATIONSHIP_COMPOSITE, compositeUri );
         }
 
         if( visited instanceof EntityDescriptor )
         {
-            EntityDescriptor entityDescriptor =(EntityDescriptor) visited;
-            compositeUri = context.createCompositeUri( moduleUri, entityDescriptor.type() );
+            EntityDescriptor entityDescriptor = (EntityDescriptor) visited;
+            compositeUri = context.createCompositeUri( moduleUri, first( entityDescriptor.types() ) );
             context.addType( compositeUri, Qi4jRdf.TYPE_ENTITY );
             context.addRelationship( moduleUri, Qi4jRdf.RELATIONSHIP_ENTITY, compositeUri );
         }
@@ -91,7 +94,7 @@ class ApplicationVisitor extends HierarchicalVisitorAdapter<Object, Object, Runt
         if( visited instanceof ObjectDescriptor )
         {
             ObjectDescriptor objectDescriptor = (ObjectDescriptor) visited;
-            compositeUri = context.createCompositeUri( moduleUri, objectDescriptor.type() );
+            compositeUri = context.createCompositeUri( moduleUri, first( objectDescriptor.types() ) );
             context.addType( compositeUri, Qi4jRdf.TYPE_OBJECT );
             context.addRelationship( moduleUri, Qi4jRdf.RELATIONSHIP_OBJECT, compositeUri );
         }

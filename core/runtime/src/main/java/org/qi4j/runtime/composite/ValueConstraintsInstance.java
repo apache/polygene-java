@@ -14,13 +14,12 @@
 
 package org.qi4j.runtime.composite;
 
-import org.qi4j.api.common.Optional;
-import org.qi4j.api.constraint.ConstraintViolation;
-
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.qi4j.api.common.Optional;
+import org.qi4j.api.constraint.ConstraintViolation;
 
 /**
  * JAVADOC

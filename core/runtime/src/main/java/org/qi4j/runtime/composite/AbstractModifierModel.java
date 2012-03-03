@@ -14,19 +14,25 @@
 
 package org.qi4j.runtime.composite;
 
-import org.qi4j.api.common.ConstructionException;
-import org.qi4j.functional.HierarchicalVisitor;
-import org.qi4j.functional.VisitableHierarchy;
-import org.qi4j.runtime.injection.*;
-import org.qi4j.runtime.structure.ModuleInstance;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import org.qi4j.api.common.ConstructionException;
+import org.qi4j.functional.HierarchicalVisitor;
+import org.qi4j.functional.VisitableHierarchy;
+import org.qi4j.runtime.injection.Dependencies;
+import org.qi4j.runtime.injection.DependencyModel;
+import org.qi4j.runtime.injection.InjectedFieldsModel;
+import org.qi4j.runtime.injection.InjectedMethodsModel;
+import org.qi4j.runtime.injection.InjectionContext;
+import org.qi4j.runtime.structure.ModuleInstance;
 
-import static org.qi4j.api.util.Classes.INTERFACES_OF;
 import static org.qi4j.api.util.Classes.RAW_CLASS;
-import static org.qi4j.functional.Iterables.*;
+import static org.qi4j.api.util.Classes.interfacesOf;
+import static org.qi4j.functional.Iterables.flattenIterables;
+import static org.qi4j.functional.Iterables.iterable;
+import static org.qi4j.functional.Iterables.map;
+import static org.qi4j.functional.Iterables.toArray;
 
 /**
  * JAVADOC
@@ -49,7 +55,7 @@ public abstract class AbstractModifierModel
         injectedFieldsModel = new InjectedFieldsModel( declaredModifierClass );
         injectedMethodsModel = new InjectedMethodsModel( declaredModifierClass );
         Class<Class<?>> componentType = (Class<Class<?>>) Class.class.cast( Class.class );
-        nextInterfaces = toArray( componentType, map( RAW_CLASS, INTERFACES_OF.map( declaredModifierClass ) ) );
+        nextInterfaces = toArray( componentType, map( RAW_CLASS, interfacesOf( declaredModifierClass ) ) );
     }
 
     public Class modifierClass()
@@ -69,13 +75,18 @@ public abstract class AbstractModifierModel
     }
 
     @Override
-    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor ) throws ThrowableType
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor )
+        throws ThrowableType
     {
-        if (visitor.visitEnter( this ))
+        if( visitor.visitEnter( this ) )
         {
-            if (constructorsModel.accept( visitor ))
-                if (injectedFieldsModel.accept( visitor ))
+            if( constructorsModel.accept( visitor ) )
+            {
+                if( injectedFieldsModel.accept( visitor ) )
+                {
                     injectedMethodsModel.accept( visitor );
+                }
+            }
         }
 
         return visitor.visitLeave( this );

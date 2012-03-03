@@ -14,6 +14,9 @@
 
 package org.qi4j.runtime.injection.provider;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.service.qualifier.Qualifier;
 import org.qi4j.api.util.Annotations;
@@ -29,12 +32,10 @@ import org.qi4j.runtime.injection.InjectionProvider;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
 import org.qi4j.runtime.model.Resolution;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-
 import static org.qi4j.api.util.Annotations.hasAnnotation;
-import static org.qi4j.functional.Iterables.*;
+import static org.qi4j.functional.Iterables.filter;
+import static org.qi4j.functional.Iterables.first;
+import static org.qi4j.functional.Iterables.iterable;
 
 public final class ServiceInjectionProviderFactory
     implements InjectionProviderFactory
@@ -43,7 +44,8 @@ public final class ServiceInjectionProviderFactory
         throws InvalidInjectionException
     {
         // TODO This could be changed to allow multiple @Qualifier annotations
-        Annotation qualifierAnnotation = first( filter( Specifications.translate( Annotations.type(), hasAnnotation( Qualifier.class ) ), iterable( dependencyModel.annotations() ) ) );
+        Annotation qualifierAnnotation = first( filter( Specifications.translate( Annotations.type(), hasAnnotation( Qualifier.class ) ), iterable( dependencyModel
+                                                                                                                                                        .annotations() ) ) );
         Specification<ServiceReference<?>> serviceQualifier = null;
         if( qualifierAnnotation != null )
         {
@@ -60,7 +62,7 @@ public final class ServiceInjectionProviderFactory
 
         if( dependencyModel.rawInjectionType().equals( Iterable.class ) )
         {
-            Type iterableType = ( (ParameterizedType) dependencyModel.injectionType() ).getActualTypeArguments()[0];
+            Type iterableType = ( (ParameterizedType) dependencyModel.injectionType() ).getActualTypeArguments()[ 0 ];
             if( Classes.RAW_CLASS.map( iterableType ).equals( ServiceReference.class ) )
             {
                 // @Service Iterable<ServiceReference<MyService<Foo>> serviceRefs
@@ -77,7 +79,7 @@ public final class ServiceInjectionProviderFactory
         else if( dependencyModel.rawInjectionType().equals( ServiceReference.class ) )
         {
             // @Service ServiceReference<MyService<Foo>> serviceRef
-            Type referencedType = ( (ParameterizedType) dependencyModel.injectionType() ).getActualTypeArguments()[0];
+            Type referencedType = ( (ParameterizedType) dependencyModel.injectionType() ).getActualTypeArguments()[ 0 ];
             return new ServiceReferenceProvider( referencedType, serviceQualifier );
         }
         else
@@ -191,7 +193,8 @@ public final class ServiceInjectionProviderFactory
                 }
                 else
                 {
-                    return Iterables.first( Iterables.filter( serviceQualifier, context.module().findServices( serviceType ) ) );
+                    return Iterables.first( Iterables.filter( serviceQualifier, context.module()
+                        .findServices( serviceType ) ) );
                 }
             }
             catch( IllegalArgumentException e )

@@ -15,12 +15,12 @@
 package org.qi4j.api.common;
 
 import org.junit.Test;
+import org.qi4j.api.association.Association;
 import org.qi4j.api.composite.TransientBuilder;
 import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.association.Association;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.unitofwork.UnitOfWork;
@@ -150,7 +150,8 @@ public class OptionalTest
             TestComposite3 testComposite3 = builder.newInstance();
 
             unitOfWork.complete();
-        } finally
+        }
+        finally
         {
             unitOfWork.discard();
         }

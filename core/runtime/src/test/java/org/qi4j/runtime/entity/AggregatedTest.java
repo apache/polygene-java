@@ -15,11 +15,11 @@
 package org.qi4j.runtime.entity;
 
 import org.junit.Test;
+import org.qi4j.api.association.Association;
+import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.entity.Aggregated;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.association.Association;
-import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.unitofwork.UnitOfWork;

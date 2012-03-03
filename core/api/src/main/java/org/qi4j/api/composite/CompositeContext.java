@@ -14,13 +14,14 @@
 
 package org.qi4j.api.composite;
 
-import org.qi4j.api.Qi4j;
-import org.qi4j.api.structure.Module;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import org.qi4j.api.Qi4j;
+import org.qi4j.api.structure.Module;
+
+import static org.qi4j.functional.Iterables.toArray;
 
 /**
  * Thread-associated composites. This is basically a ThreadLocal which maintains a reference
@@ -33,7 +34,7 @@ public class CompositeContext<T extends TransientComposite>
     private Module module;
     private Class<T> type;
 
-    public CompositeContext( Module module, Class<T> type)
+    public CompositeContext( Module module, Class<T> type )
     {
         this.module = module;
         this.type = type;
@@ -50,8 +51,11 @@ public class CompositeContext<T extends TransientComposite>
     {
         TransientComposite composite = get();
 
-        return (T) Proxy.newProxyInstance( composite.getClass()
-                                               .getClassLoader(), new Class[]{ Qi4j.INSTANCE_FUNCTION.map( composite ).type() }, new ContextInvocationhandler() );
+        Iterable<Class<?>> types = Qi4j.INSTANCE_FUNCTION.map( composite ).types();
+        return (T) Proxy.newProxyInstance(
+            composite.getClass().getClassLoader(),
+            toArray( Class.class, types ),
+            new ContextInvocationhandler() );
     }
 
     private class ContextInvocationhandler

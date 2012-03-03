@@ -17,7 +17,6 @@
 package org.qi4j.spi.entity;
 
 import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
 

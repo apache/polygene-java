@@ -23,7 +23,10 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.qi4j.functional.Iterables.first;
 
 public class CompositeDescriptorTest
     extends AbstractQi4jTest
@@ -37,7 +40,7 @@ public class CompositeDescriptorTest
         TransientDescriptor addressDescriptor = spi.getTransientDescriptor( address );
 
         assertNotNull( addressDescriptor );
-        assertEquals( AddressComposite.class, addressDescriptor.type() );
+        assertEquals( AddressComposite.class, first( addressDescriptor.types() ) );
         assertTrue( TransientDescriptor.class.isAssignableFrom( addressDescriptor.getClass() ) );
     }
 
@@ -48,7 +51,7 @@ public class CompositeDescriptorTest
         TransientDescriptor addressDesc = module.transientDescriptor( AddressComposite.class.getName() );
         assertNotNull( addressDesc );
 
-        assertEquals( AddressComposite.class, addressDesc.type() );
+        assertEquals( AddressComposite.class, first( addressDesc.types() ) );
     }
 
     public final void assemble( ModuleAssembly aModule )

@@ -16,17 +16,15 @@
 
 package org.qi4j.runtime.composite;
 
-import org.qi4j.api.Qi4j;
-import org.qi4j.api.composite.CompositeDescriptor;
-import org.qi4j.api.composite.Composite;
-import org.qi4j.api.composite.CompositeInstance;
-import org.qi4j.api.property.StateHolder;
-import org.qi4j.runtime.structure.ModuleInstance;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
+import org.qi4j.api.Qi4j;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.composite.CompositeInstance;
+import org.qi4j.api.property.StateHolder;
+import org.qi4j.runtime.structure.ModuleInstance;
 
 /**
  * InvocationHandler for proxy objects.
@@ -93,9 +91,9 @@ public class TransientInstance
         return compositeModel.metaInfo( infoType );
     }
 
-    public Class<?> type()
+    public Iterable<Class<?>> types()
     {
-        return compositeModel.type();
+        return compositeModel.types();
     }
 
     public ModuleInstance module()
@@ -140,7 +138,7 @@ public class TransientInstance
 
         for( int i = 0; i < mixins.length; i++ )
         {
-            if( !mixins[ i ].equals( other.mixins[i] ) )
+            if( !mixins[ i ].equals( other.mixins[ i ] ) )
             {
                 return false;
             }
@@ -168,16 +166,20 @@ public class TransientInstance
         {
             try
             {
-                Method toStringMethod = mixin.getClass().getMethod( "toString" );
-                Class<?> declaringClass = toStringMethod.getDeclaringClass();
-                if( !declaringClass.equals( Object.class ) )
+                if( mixin != null )  // Can happen during construction of incorrect composites, during exception creation.
                 {
-                    if( !first )
+                    Class<?> type = mixin.getClass();
+                    Method toStringMethod = type.getMethod( "toString" );
+                    Class<?> declaringClass = toStringMethod.getDeclaringClass();
+                    if( !declaringClass.equals( Object.class ) )
                     {
-                        buffer.append( ", " );
+                        if( !first )
+                        {
+                            buffer.append( ", " );
+                        }
+                        first = false;
+                        buffer.append( mixin.toString() );
                     }
-                    first = false;
-                    buffer.append( mixin.toString() );
                 }
             }
             catch( NoSuchMethodException e )

@@ -14,6 +14,7 @@
 
 package org.qi4j.runtime.structure;
 
+import java.util.List;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.functional.Function;
@@ -22,8 +23,6 @@ import org.qi4j.runtime.composite.TransientModel;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.object.ObjectModel;
 import org.qi4j.runtime.value.ValueModel;
-
-import java.util.List;
 
 /**
  * JAVADOC
@@ -44,9 +43,9 @@ public final class UsedLayersInstance
             @Override
             public Iterable<ModelModule<ObjectModel>> map( LayerInstance layerInstance )
             {
-                return layerInstance.visibleObjects( Visibility.application);
+                return layerInstance.visibleObjects( Visibility.application );
             }
-        }, usedLayerInstances ));
+        }, usedLayerInstances ) );
     }
 
     Iterable<ModelModule<TransientModel>> visibleTransients()
@@ -56,9 +55,9 @@ public final class UsedLayersInstance
             @Override
             public Iterable<ModelModule<TransientModel>> map( LayerInstance layerInstance )
             {
-                return layerInstance.visibleTransients( Visibility.application);
+                return layerInstance.visibleTransients( Visibility.application );
             }
-        }, usedLayerInstances ));
+        }, usedLayerInstances ) );
     }
 
     Iterable<ModelModule<EntityModel>> visibleEntities()
@@ -68,9 +67,9 @@ public final class UsedLayersInstance
             @Override
             public Iterable<ModelModule<EntityModel>> map( LayerInstance layerInstance )
             {
-                return layerInstance.visibleEntities( Visibility.application);
+                return layerInstance.visibleEntities( Visibility.application );
             }
-        }, usedLayerInstances ));
+        }, usedLayerInstances ) );
     }
 
     Iterable<ModelModule<ValueModel>> visibleValues()
@@ -80,20 +79,20 @@ public final class UsedLayersInstance
             @Override
             public Iterable<ModelModule<ValueModel>> map( LayerInstance layerInstance )
             {
-                return layerInstance.visibleValues( Visibility.application);
+                return layerInstance.visibleValues( Visibility.application );
             }
-        }, usedLayerInstances ));
+        }, usedLayerInstances ) );
     }
 
     Iterable<ServiceReference> visibleServices()
     {
         return Iterables.flattenIterables( Iterables.map( new Function<LayerInstance, Iterable<ServiceReference>>()
-                {
-                    @Override
-                    public Iterable<ServiceReference> map( LayerInstance layerInstance )
-                    {
-                        return layerInstance.visibleServices( Visibility.application );
-                    }
-                }, usedLayerInstances ));
+        {
+            @Override
+            public Iterable<ServiceReference> map( LayerInstance layerInstance )
+            {
+                return layerInstance.visibleServices( Visibility.application );
+            }
+        }, usedLayerInstances ) );
     }
 }

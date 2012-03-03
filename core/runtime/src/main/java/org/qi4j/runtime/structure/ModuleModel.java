@@ -71,16 +71,27 @@ public class ModuleModel
     }
 
     @Override
-    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> modelVisitor ) throws ThrowableType
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> modelVisitor )
+        throws ThrowableType
     {
-        if (modelVisitor.visitEnter( this ))
+        if( modelVisitor.visitEnter( this ) )
         {
-            if (transientsModel.accept( modelVisitor ))
-                if (entitiesModel.accept( modelVisitor ))
-                    if (servicesModel.accept( modelVisitor ))
-                        if (importedServicesModel.accept( modelVisitor ))
-                            if (objectsModel.accept( modelVisitor ))
+            if( transientsModel.accept( modelVisitor ) )
+            {
+                if( entitiesModel.accept( modelVisitor ) )
+                {
+                    if( servicesModel.accept( modelVisitor ) )
+                    {
+                        if( importedServicesModel.accept( modelVisitor ) )
+                        {
+                            if( objectsModel.accept( modelVisitor ) )
+                            {
                                 valuesModel.accept( modelVisitor );
+                            }
+                        }
+                    }
+                }
+            }
         }
         return modelVisitor.visitLeave( this );
     }

@@ -14,10 +14,10 @@
 
 package org.qi4j.api.type;
 
-import org.qi4j.api.util.Classes;
-
 import java.lang.reflect.Type;
 import java.util.Map;
+import org.qi4j.api.util.Classes;
+import org.qi4j.functional.Iterables;
 
 /**
  * Map type. This handles instances of Map
@@ -36,7 +36,7 @@ public final class MapType
 
     public MapType( Class<?> type, ValueType keyType, ValueType valueType )
     {
-        super( type );
+        super( Iterables.iterable( type ) );
         this.keyType = keyType;
         this.valueType = valueType;
     }
@@ -54,6 +54,6 @@ public final class MapType
     @Override
     public String toString()
     {
-        return type().getName() + "<" + keyType + "," + valueType + ">";
+        return super.toString() + "<" + keyType + "," + valueType + ">";
     }
 }

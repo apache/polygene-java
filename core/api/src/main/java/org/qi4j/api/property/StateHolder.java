@@ -27,10 +27,11 @@ public interface StateHolder
      * @param accessor of the property
      *
      * @return the property
+     *
      * @throws IllegalArgumentException if no property for given accessor exists
      */
     <T> Property<T> propertyFor( AccessibleObject accessor )
-            throws IllegalArgumentException;
+        throws IllegalArgumentException;
 
     Iterable<? extends Property<?>> properties();
 }

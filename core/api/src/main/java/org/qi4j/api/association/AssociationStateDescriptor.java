@@ -21,19 +21,19 @@ import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.composite.StateDescriptor;
 
 public interface AssociationStateDescriptor
-        extends StateDescriptor
+    extends StateDescriptor
 {
     AssociationDescriptor getAssociationByName( String name )
-            throws IllegalArgumentException;
+        throws IllegalArgumentException;
 
     AssociationDescriptor getAssociationByQualifiedName( QualifiedName name )
-            throws IllegalArgumentException;
+        throws IllegalArgumentException;
 
     AssociationDescriptor getManyAssociationByName( String name )
-            throws IllegalArgumentException;
+        throws IllegalArgumentException;
 
     AssociationDescriptor getManyAssociationByQualifiedName( QualifiedName name )
-            throws IllegalArgumentException;
+        throws IllegalArgumentException;
 
     Iterable<? extends AssociationDescriptor> associations();
 

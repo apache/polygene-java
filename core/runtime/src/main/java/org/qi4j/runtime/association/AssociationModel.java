@@ -14,7 +14,15 @@
 
 package org.qi4j.runtime.association;
 
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Field;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.util.List;
 import org.qi4j.api.association.Association;
+import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.association.GenericAssociationInfo;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.QualifiedName;
@@ -23,7 +31,6 @@ import org.qi4j.api.constraint.ConstraintViolation;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.Aggregated;
 import org.qi4j.api.entity.Queryable;
-import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.property.Immutable;
 import org.qi4j.api.util.Classes;
 import org.qi4j.bootstrap.BindingException;
@@ -33,8 +40,8 @@ import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
 
-import java.lang.reflect.*;
-import java.util.List;
+import static org.qi4j.functional.Iterables.empty;
+import static org.qi4j.functional.Iterables.first;
 
 /**
  * JAVADOC
@@ -119,7 +126,8 @@ public final class AssociationModel
     }
 
     @Override
-    public <ThrowableType extends Throwable> boolean accept( Visitor<? super AssociationModel, ThrowableType> visitor ) throws ThrowableType
+    public <ThrowableType extends Throwable> boolean accept( Visitor<? super AssociationModel, ThrowableType> visitor )
+        throws ThrowableType
     {
         return visitor.visit( this );
     }
@@ -132,12 +140,13 @@ public final class AssociationModel
             List<ConstraintViolation> violations = constraints.checkConstraints( value );
             if( !violations.isEmpty() )
             {
-                throw new ConstraintViolationException( "", "<unknown>", (Member) accessor, violations );
+                Iterable<Class<?>> empty = empty();
+                throw new ConstraintViolationException( "", empty, (Member) accessor, violations );
             }
         }
     }
 
-    public void checkAssociationConstraints( Association<?> association)
+    public void checkAssociationConstraints( Association<?> association )
         throws ConstraintViolationException
     {
         if( associationConstraints != null )
@@ -151,7 +160,8 @@ public final class AssociationModel
     }
 
     @Override
-    public void bind( Resolution resolution ) throws BindingException
+    public void bind( Resolution resolution )
+        throws BindingException
     {
         builderInfo = new AssociationInfo()
         {
@@ -174,15 +184,18 @@ public final class AssociationModel
             }
 
             @Override
-            public void checkConstraints( Object value ) throws ConstraintViolationException
+            public void checkConstraints( Object value )
+                throws ConstraintViolationException
             {
                 AssociationModel.this.checkConstraints( value );
             }
         };
 
-        if (type instanceof TypeVariable)
+        if( type instanceof TypeVariable )
         {
-            type = Classes.resolveTypeVariable( (TypeVariable) type, ((Member)accessor).getDeclaringClass(), resolution.model().type());
+
+            Class mainType = first( resolution.model().types() );
+            type = Classes.resolveTypeVariable( (TypeVariable) type, ( (Member) accessor ).getDeclaringClass(), mainType );
         }
     }
 
@@ -215,9 +228,13 @@ public final class AssociationModel
     @Override
     public String toString()
     {
-        if (accessor instanceof Field )
-          return ((Field)accessor).toGenericString();
+        if( accessor instanceof Field )
+        {
+            return ( (Field) accessor ).toGenericString();
+        }
         else
-            return ((Method)accessor).toGenericString();
+        {
+            return ( (Method) accessor ).toGenericString();
+        }
     }
 }

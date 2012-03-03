@@ -14,8 +14,8 @@
 
 package org.qi4j.runtime.query.model;
 
-import org.qi4j.api.common.Optional;
 import org.qi4j.api.association.Association;
+import org.qi4j.api.common.Optional;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 

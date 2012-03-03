@@ -359,6 +359,7 @@ public class Outputs
     }
 
     // START SNIPPET: method
+
     /**
      * Add items to a collection
      */

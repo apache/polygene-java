@@ -27,7 +27,8 @@ public class ReferenceProperty
     }
 
     @Override
-    public void set( EntityReference newValue ) throws IllegalArgumentException, IllegalStateException
+    public void set( EntityReference newValue )
+        throws IllegalArgumentException, IllegalStateException
     {
         reference = newValue;
     }

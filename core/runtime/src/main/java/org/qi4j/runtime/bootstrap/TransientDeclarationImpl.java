@@ -14,10 +14,9 @@
 
 package org.qi4j.runtime.bootstrap;
 
+import java.util.Arrays;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.TransientDeclaration;
-
-import java.util.Arrays;
 
 /**
  * Declaration of a Composite. Created by {@link org.qi4j.bootstrap.ModuleAssembly#transients(Class[])}.
@@ -27,7 +26,7 @@ public final class TransientDeclarationImpl
 {
     private Iterable<TransientAssemblyImpl> assemblies;
 
-    public TransientDeclarationImpl( Iterable<TransientAssemblyImpl> assemblies)
+    public TransientDeclarationImpl( Iterable<TransientAssemblyImpl> assemblies )
     {
         this.assemblies = assemblies;
     }

@@ -1,15 +1,14 @@
 package org.qi4j.runtime.association;
 
-import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.entity.EntityReference;
-import org.qi4j.api.association.AbstractAssociation;
-import org.qi4j.functional.Function2;
-import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
-import org.qi4j.runtime.entity.EntityInstance;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
+import org.qi4j.api.association.AbstractAssociation;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.functional.Function2;
+import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
+import org.qi4j.runtime.entity.EntityInstance;
 
 /**
  * Implementation of AbstractAssociation. Includes helper methods for subclasses
@@ -33,7 +32,7 @@ public abstract class AbstractAssociationInstance<T>
         return associationInfo;
     }
 
-    public void setAssociationInfo(AssociationInfo newInfo)
+    public void setAssociationInfo( AssociationInfo newInfo )
     {
         this.associationInfo = newInfo;
     }
@@ -83,7 +82,8 @@ public abstract class AbstractAssociationInstance<T>
         }
     }
 
-    protected void checkImmutable() throws IllegalStateException
+    protected void checkImmutable()
+        throws IllegalStateException
     {
         if( associationInfo.isImmutable() )
         {

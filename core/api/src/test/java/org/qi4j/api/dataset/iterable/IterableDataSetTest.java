@@ -1,7 +1,6 @@
 package org.qi4j.api.dataset.iterable;
 
 import org.junit.Before;
-import org.junit.Test;
 import org.qi4j.api.dataset.DataSet;
 import org.qi4j.api.property.Property;
 import org.qi4j.bootstrap.AssemblyException;
@@ -18,7 +17,8 @@ public class IterableDataSetTest
     DataSet<TestValue> dataSet;
 
     @Override
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
         module.values( TestValue.class );
     }
@@ -26,12 +26,12 @@ public class IterableDataSetTest
     @Before
     public void setUp()
     {
-        dataSet = new IterableDataSet<TestValue>( Iterables.iterable( newTestValue("Rickard"),newTestValue("Niclas"), newTestValue("Paul") ) );
+        dataSet = new IterableDataSet<TestValue>( Iterables.iterable( newTestValue( "Rickard" ), newTestValue( "Niclas" ), newTestValue( "Paul" ) ) );
     }
 
     private TestValue newTestValue( String name )
     {
-        return module.newValueFromJSON( TestValue.class, "{name:'"+name+"'}" );
+        return module.newValueFromJSON( TestValue.class, "{name:'" + name + "'}" );
     }
 
     interface TestValue

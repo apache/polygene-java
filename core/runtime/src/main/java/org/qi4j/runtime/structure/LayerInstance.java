@@ -14,6 +14,8 @@
 
 package org.qi4j.runtime.structure;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.event.ActivationEvent;
 import org.qi4j.api.event.ActivationEventListener;
@@ -28,14 +30,11 @@ import org.qi4j.runtime.object.ObjectModel;
 import org.qi4j.runtime.service.Activator;
 import org.qi4j.runtime.value.ValueModel;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Instance of a Qi4j application layer. Contains a list of modules which are managed by this layer.
  */
 public class LayerInstance
-        implements Layer
+    implements Layer
 {
     private final LayerModel model;
     private final ApplicationInstance applicationInstance;
@@ -108,64 +107,64 @@ public class LayerInstance
         return usedLayersInstance;
     }
 
-    Iterable<ModelModule<ObjectModel>> visibleObjects(final Visibility visibility)
+    Iterable<ModelModule<ObjectModel>> visibleObjects( final Visibility visibility )
     {
         return Iterables.flattenIterables( Iterables.map( new Function<ModuleInstance, Iterable<ModelModule<ObjectModel>>>()
-                {
-                    @Override
-                    public Iterable<ModelModule<ObjectModel>> map( ModuleInstance moduleInstance )
-                    {
-                        return moduleInstance.visibleObjects( visibility );
-                    }
-                }, moduleInstances ) );
+        {
+            @Override
+            public Iterable<ModelModule<ObjectModel>> map( ModuleInstance moduleInstance )
+            {
+                return moduleInstance.visibleObjects( visibility );
+            }
+        }, moduleInstances ) );
     }
 
-    Iterable<ModelModule<TransientModel>> visibleTransients(final Visibility visibility)
+    Iterable<ModelModule<TransientModel>> visibleTransients( final Visibility visibility )
     {
         return Iterables.flattenIterables( Iterables.map( new Function<ModuleInstance, Iterable<ModelModule<TransientModel>>>()
-                {
-                    @Override
-                    public Iterable<ModelModule<TransientModel>> map( ModuleInstance moduleInstance )
-                    {
-                        return moduleInstance.visibleTransients( visibility );
-                    }
-                }, moduleInstances ) );
+        {
+            @Override
+            public Iterable<ModelModule<TransientModel>> map( ModuleInstance moduleInstance )
+            {
+                return moduleInstance.visibleTransients( visibility );
+            }
+        }, moduleInstances ) );
     }
 
-    Iterable<ModelModule<EntityModel>> visibleEntities(final Visibility visibility)
+    Iterable<ModelModule<EntityModel>> visibleEntities( final Visibility visibility )
     {
         return Iterables.flattenIterables( Iterables.map( new Function<ModuleInstance, Iterable<ModelModule<EntityModel>>>()
-                {
-                    @Override
-                    public Iterable<ModelModule<EntityModel>> map( ModuleInstance moduleInstance )
-                    {
-                        return moduleInstance.visibleEntities( visibility );
-                    }
-                }, moduleInstances ) );
+        {
+            @Override
+            public Iterable<ModelModule<EntityModel>> map( ModuleInstance moduleInstance )
+            {
+                return moduleInstance.visibleEntities( visibility );
+            }
+        }, moduleInstances ) );
     }
 
-    Iterable<ModelModule<ValueModel>> visibleValues(final Visibility visibility)
+    Iterable<ModelModule<ValueModel>> visibleValues( final Visibility visibility )
     {
         return Iterables.flattenIterables( Iterables.map( new Function<ModuleInstance, Iterable<ModelModule<ValueModel>>>()
-                {
-                    @Override
-                    public Iterable<ModelModule<ValueModel>> map( ModuleInstance moduleInstance )
-                    {
-                        return moduleInstance.visibleValues( visibility );
-                    }
-                }, moduleInstances ) );
+        {
+            @Override
+            public Iterable<ModelModule<ValueModel>> map( ModuleInstance moduleInstance )
+            {
+                return moduleInstance.visibleValues( visibility );
+            }
+        }, moduleInstances ) );
     }
 
     Iterable<ServiceReference> visibleServices( final Visibility visibility )
     {
         return Iterables.flattenIterables( Iterables.map( new Function<ModuleInstance, Iterable<ServiceReference>>()
-                {
-                    @Override
-                    public Iterable<ServiceReference> map( ModuleInstance moduleInstance )
-                    {
-                        return moduleInstance.visibleServices( visibility );
-                    }
-                }, moduleInstances ) );
+        {
+            @Override
+            public Iterable<ServiceReference> map( ModuleInstance moduleInstance )
+            {
+                return moduleInstance.visibleServices( visibility );
+            }
+        }, moduleInstances ) );
     }
 
     public ModuleInstance findModule( String moduleName )
@@ -178,11 +177,11 @@ public class LayerInstance
             }
         }
 
-        throw new IllegalArgumentException( "No such module:"+moduleName );
+        throw new IllegalArgumentException( "No such module:" + moduleName );
     }
 
     public void activate()
-            throws Exception
+        throws Exception
     {
         eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATING ) );
         moduleActivator.activate( moduleInstances );
@@ -190,7 +189,7 @@ public class LayerInstance
     }
 
     public void passivate()
-            throws Exception
+        throws Exception
     {
         eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATING ) );
         moduleActivator.passivate();

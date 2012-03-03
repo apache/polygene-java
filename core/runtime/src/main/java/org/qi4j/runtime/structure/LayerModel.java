@@ -14,12 +14,11 @@
 
 package org.qi4j.runtime.structure;
 
+import java.util.List;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.structure.LayerDescriptor;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.functional.VisitableHierarchy;
-
-import java.util.List;
 
 /**
  * JAVADOC
@@ -66,14 +65,17 @@ public final class LayerModel
     }
 
     @Override
-    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> modelVisitor ) throws ThrowableType
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> modelVisitor )
+        throws ThrowableType
     {
-        if (modelVisitor.visitEnter( this ))
+        if( modelVisitor.visitEnter( this ) )
         {
             for( ModuleModel module : modules )
             {
-                if (!module.accept( modelVisitor ))
+                if( !module.accept( modelVisitor ) )
+                {
                     break;
+                }
             }
         }
         return modelVisitor.visitLeave( this );

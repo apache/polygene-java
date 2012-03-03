@@ -16,9 +16,8 @@
  */
 package org.qi4j.spi.entitystore;
 
-import org.qi4j.api.entity.EntityReference;
-
 import java.util.Collection;
+import org.qi4j.api.entity.EntityReference;
 
 /**
  * This exception should be thrown if the EntityStore detects that the entities being saved have been changed

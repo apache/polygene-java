@@ -14,6 +14,10 @@
 
 package org.qi4j.spi.entitystore;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
@@ -21,11 +25,6 @@ import org.qi4j.api.structure.Module;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
 
 /**
  * JAVADOC
@@ -61,7 +60,10 @@ public interface EntityStateVersions
             versions.put( identity, version );
         }
 
-        public synchronized void checkForConcurrentModification( Iterable<EntityState> loaded, Module module, long currentTime )
+        public synchronized void checkForConcurrentModification( Iterable<EntityState> loaded,
+                                                                 Module module,
+                                                                 long currentTime
+        )
             throws ConcurrentEntityStateModificationException
         {
             List<EntityReference> changed = null;

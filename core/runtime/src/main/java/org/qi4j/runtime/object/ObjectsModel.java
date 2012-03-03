@@ -14,10 +14,9 @@
 
 package org.qi4j.runtime.object;
 
+import java.util.List;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.functional.VisitableHierarchy;
-
-import java.util.List;
 
 /**
  * JAVADOC
@@ -33,14 +32,17 @@ public class ObjectsModel
     }
 
     @Override
-    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor ) throws ThrowableType
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor )
+        throws ThrowableType
     {
-        if (visitor.visitEnter( this ))
+        if( visitor.visitEnter( this ) )
         {
             for( ObjectModel objectModel : objectModels )
             {
-                if (!objectModel.accept(visitor))
+                if( !objectModel.accept( visitor ) )
+                {
                     break;
+                }
             }
         }
         return visitor.visitLeave( this );

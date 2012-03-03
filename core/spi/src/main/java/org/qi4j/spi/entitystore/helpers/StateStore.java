@@ -14,9 +14,8 @@
 
 package org.qi4j.spi.entitystore.helpers;
 
-import org.json.JSONObject;
-
 import java.io.IOException;
+import org.json.JSONObject;
 
 /**
  * JAVADOC

@@ -1,5 +1,6 @@
 package org.qi4j.bootstrap;
 
+import org.qi4j.api.type.HasTypes;
 import org.qi4j.functional.Specification;
 import org.qi4j.functional.Specifications;
 
@@ -8,14 +9,22 @@ import org.qi4j.functional.Specifications;
  */
 public class AssemblySpecifications
 {
-    public static final Specification<TypeAssembly> types( final Class... types)
+    public static Specification<HasTypes> types( final Class... types )
     {
-        return new Specification<TypeAssembly>()
+        return new Specification<HasTypes>()
         {
             @Override
-            public boolean satisfiedBy( TypeAssembly item )
+            public boolean satisfiedBy( HasTypes item )
             {
-                return Specifications.in( types ).satisfiedBy( item.type() );
+
+                for( Class<?> type : item.types() )
+                {
+                    if( Specifications.in( types ).satisfiedBy( type ) )
+                    {
+                        return true;
+                    }
+                }
+                return false;
             }
         };
     }

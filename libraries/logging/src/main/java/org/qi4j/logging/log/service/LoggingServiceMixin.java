@@ -38,6 +38,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.qi4j.functional.Iterables.first;
+
 public abstract class LoggingServiceMixin
     implements LoggingService
 {
@@ -157,9 +159,13 @@ public abstract class LoggingServiceMixin
         state.time().set( System.currentTimeMillis() );
         state.category().set( category );
         state.message().set( message );
-        state.compositeTypeName().set( Qi4j.DESCRIPTOR_FUNCTION.map( composite ).type().getName() );
+        state.compositeTypeName().set( getCompositeName( composite ) );
         state.threadName().set( Thread.currentThread().getName() );
         state.parameters().set( params );
     }
 
+    private String getCompositeName( Composite composite )
+    {
+        return first(Qi4j.DESCRIPTOR_FUNCTION.map( composite ).types()).getName();
+    }
 }

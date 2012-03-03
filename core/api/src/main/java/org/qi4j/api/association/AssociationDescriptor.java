@@ -14,26 +14,16 @@
 
 package org.qi4j.api.association;
 
-import org.qi4j.api.common.QualifiedName;
-
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Type;
+import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.structure.MetaInfoHolder;
 
 /**
  * JAVADOC
  */
-public interface AssociationDescriptor
+public interface AssociationDescriptor extends MetaInfoHolder
 {
-    /**
-     * Get metadata that implements the given type
-     *
-     * @param infoType the type of metadata to be returned
-     *
-     * @return the metadata for the given type, or <code>null</code> if
-     *         no such metadata has been registered
-     */
-    <T> T metaInfo( Class<T> infoType );
-
     /**
      * Get the qualified name of the association. This is constructed by
      * concatenating the name of the declaring interface with the name

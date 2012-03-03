@@ -18,6 +18,7 @@ package org.qi4j.envisage.model.util;
 
 import org.qi4j.api.association.Association;
 import org.qi4j.api.association.ManyAssociation;
+import org.qi4j.api.composite.CompositeDescriptor;
 import org.qi4j.api.property.Property;
 import org.qi4j.envisage.model.descriptor.CompositeDetailDescriptor;
 import org.qi4j.envisage.model.descriptor.CompositeMethodDetailDescriptor;
@@ -49,8 +50,10 @@ public class MethodFinder
 
         for( CompositeMethodDetailDescriptor descriptor : iter )
         {
-            Class compositeClass = descriptor.composite().descriptor().type();
+            CompositeDescriptor compositeDescriptor = descriptor.composite().descriptor();
+            Iterable<Class<?>> compositeType = compositeDescriptor.types();
             Class mixinMethodClass = descriptor.descriptor().method().getDeclaringClass();
+            for( Class<?> compositeClass : compositeType )
             if( mixinMethodClass.isAssignableFrom( compositeClass ) )
             {
                 publicList.add( descriptor );

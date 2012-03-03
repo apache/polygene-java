@@ -14,10 +14,9 @@
 
 package org.qi4j.runtime.composite;
 
+import java.util.List;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.functional.VisitableHierarchy;
-
-import java.util.List;
 
 /**
  * JAVADOC
@@ -52,12 +51,15 @@ public final class ValueConstraintsModel
     }
 
     @Override
-    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> modelVisitor ) throws ThrowableType
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> modelVisitor )
+        throws ThrowableType
     {
         for( AbstractConstraintModel constraintModel : constraintModels )
         {
-            if (constraintModel.accept( modelVisitor ))
+            if( constraintModel.accept( modelVisitor ) )
+            {
                 return false;
+            }
         }
         return true;
     }

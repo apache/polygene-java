@@ -20,6 +20,8 @@ import org.qi4j.api.composite.ModelDescriptor;
 import org.qi4j.api.object.ObjectDescriptor;
 import org.qi4j.envisage.model.descriptor.*;
 
+import static org.qi4j.functional.Iterables.first;
+
 class ServiceConfigurationFinder
 {
     public Object findConfigurationDescriptor( ServiceDetailDescriptor descriptor )
@@ -133,7 +135,7 @@ class ServiceConfigurationFinder
                 descriptor = ( (CompositeDetailDescriptor) obj ).descriptor();
             }
 
-            if( configType.equals( descriptor.type() ) )
+            if( configType.equals( first( descriptor.types() ) ) )
             {
                 configDescriptor = obj;
                 break;

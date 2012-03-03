@@ -7,7 +7,7 @@ import org.qi4j.api.property.Property;
  * TODO
  */
 public class PropertyNotNullSpecification<T>
-        extends ExpressionSpecification
+    extends ExpressionSpecification
 {
     PropertyFunction<T> property;
 
@@ -26,8 +26,10 @@ public class PropertyNotNullSpecification<T>
     {
         Property<T> prop = property.map( item );
 
-        if (prop == null)
+        if( prop == null )
+        {
             return false;
+        }
 
         return prop.get() != null;
     }
@@ -35,6 +37,6 @@ public class PropertyNotNullSpecification<T>
     @Override
     public String toString()
     {
-        return property.toString()+ "is not null";
+        return property.toString() + "is not null";
     }
 }

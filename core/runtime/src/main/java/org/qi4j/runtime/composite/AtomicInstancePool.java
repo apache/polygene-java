@@ -32,7 +32,8 @@ public final class AtomicInstancePool
         do
         {
             firstInstance = first.get();
-        } while(firstInstance != null && !first.compareAndSet( firstInstance, firstInstance.getNext() ));
+        }
+        while( firstInstance != null && !first.compareAndSet( firstInstance, firstInstance.getNext() ) );
 
         return firstInstance;
     }
@@ -44,6 +45,7 @@ public final class AtomicInstancePool
         {
             firstInstance = first.get();
             compositeMethodInstance.setNext( firstInstance );
-        } while(!first.compareAndSet( firstInstance, compositeMethodInstance ));
+        }
+        while( !first.compareAndSet( firstInstance, compositeMethodInstance ) );
     }
 }

@@ -18,16 +18,19 @@
 
 package org.qi4j.runtime.value;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 import org.json.JSONArray;
 import org.junit.Test;
 import org.qi4j.api.json.JSONDeserializer;
 import org.qi4j.api.json.JSONObjectSerializer;
 import org.qi4j.api.type.CollectionType;
 import org.qi4j.api.type.ValueType;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 
@@ -95,7 +98,7 @@ public class CollectionTypeTest
         throws Exception
     {
         ValueType collectedType = new ValueType( Float.class );
-        CollectionType collectionType = new CollectionType( Collection.class , collectedType );
+        CollectionType collectionType = new CollectionType( Collection.class, collectedType );
 
         Collection<Float> value = floatCollection();
         JSONObjectSerializer serializer = new JSONObjectSerializer();

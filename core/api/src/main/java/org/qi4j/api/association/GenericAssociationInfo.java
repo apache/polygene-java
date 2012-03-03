@@ -17,17 +17,17 @@
  */
 package org.qi4j.api.association;
 
-import org.qi4j.api.util.Classes;
-
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+
+import static org.qi4j.api.util.Classes.typeOf;
 
 public final class GenericAssociationInfo
 {
     public static Type getAssociationType( AccessibleObject accessor )
     {
-        return getAssociationType( Classes.TYPE_OF.map( accessor ) );
+        return getAssociationType( typeOf( accessor ) );
     }
 
     public static Type getAssociationType( Type methodReturnType )
@@ -52,5 +52,4 @@ public final class GenericAssociationInfo
         }
         return null;
     }
-
 }

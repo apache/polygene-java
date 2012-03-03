@@ -42,7 +42,7 @@ public interface UnitOfWorkFactory
      *
      * @return a new UnitOfWork
      */
-    UnitOfWork newUnitOfWork(long currentTime);
+    UnitOfWork newUnitOfWork( long currentTime );
 
     /**
      * Create a new UnitOfWork for the given Usecase and

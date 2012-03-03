@@ -2,7 +2,6 @@ package org.qi4j.runtime.structure;
 
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.ModelDescriptor;
-import org.qi4j.api.object.ObjectDescriptor;
 import org.qi4j.functional.Specification;
 
 /**
@@ -17,7 +16,7 @@ public class VisibilitySpecification
 
     private Visibility visibility;
 
-    public VisibilitySpecification(Visibility visibility)
+    public VisibilitySpecification( Visibility visibility )
     {
         this.visibility = visibility;
     }

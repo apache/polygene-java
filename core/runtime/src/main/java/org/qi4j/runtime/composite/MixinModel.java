@@ -14,10 +14,11 @@
 
 package org.qi4j.runtime.composite;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.util.List;
 import org.qi4j.api.common.ConstructionException;
-import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.CompositeInstance;
-import org.qi4j.api.composite.InvalidCompositeException;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Initializable;
 import org.qi4j.api.mixin.InitializationException;
@@ -26,21 +27,14 @@ import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.functional.Iterables;
-import org.qi4j.functional.Specification;
 import org.qi4j.functional.VisitableHierarchy;
-import org.qi4j.runtime.bootstrap.AssemblyHelper;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectedFieldsModel;
 import org.qi4j.runtime.injection.InjectedMethodsModel;
 import org.qi4j.runtime.injection.InjectionContext;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import static org.qi4j.functional.Iterables.map;
+import static org.qi4j.functional.Iterables.toList;
 import static org.qi4j.functional.Iterables.unique;
 
 /**
@@ -85,17 +79,23 @@ public final class MixinModel
 
     public Iterable<DependencyModel> dependencies()
     {
-        return Iterables.flatten( constructorsModel.dependencies(), injectedFieldsModel.dependencies(), injectedMethodsModel.dependencies() );
+        return Iterables.flatten( constructorsModel.dependencies(), injectedFieldsModel.dependencies(), injectedMethodsModel
+            .dependencies() );
     }
 
     @Override
-    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor ) throws ThrowableType
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor )
+        throws ThrowableType
     {
-        if (visitor.visitEnter( this ))
+        if( visitor.visitEnter( this ) )
         {
-            if (constructorsModel.accept( visitor ))
-                if (injectedFieldsModel.accept( visitor ))
+            if( constructorsModel.accept( visitor ) )
+            {
+                if( injectedFieldsModel.accept( visitor ) )
+                {
                     injectedMethodsModel.accept( visitor );
+                }
+            }
         }
         return visitor.visitLeave( this );
     }
@@ -141,7 +141,7 @@ public final class MixinModel
             }
             catch( InitializationException e )
             {
-                Class<?> compositeType = compositeInstance.type();
+                List<Class<?>> compositeType = toList( compositeInstance.types() );
                 String message = "Unable to initialize " + mixinClass + " in composite " + compositeType;
                 throw new ConstructionException( message, e );
             }

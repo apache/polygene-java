@@ -14,12 +14,11 @@
 
 package org.qi4j.runtime.composite;
 
-import org.qi4j.api.constraint.Constraint;
-import org.qi4j.api.util.Classes;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import org.qi4j.api.constraint.Constraint;
+import org.qi4j.api.util.Classes;
 
 /**
  * JAVADOC
@@ -30,7 +29,7 @@ public final class ConstraintDeclaration
     private final Class constraintAnnotationType;
     private final Type constraintValueType;
 
-    public ConstraintDeclaration( Class<? extends Constraint<?, ?>> constraintClass)
+    public ConstraintDeclaration( Class<? extends Constraint<?, ?>> constraintClass )
     {
         this.constraintClass = constraintClass;
 

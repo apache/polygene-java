@@ -13,32 +13,13 @@
  */
 package org.qi4j.api.value;
 
-import org.qi4j.api.common.InvalidApplicationException;
+import org.qi4j.api.composite.NoSuchCompositeException;
 
-/**
- * This exception is thrown if client code tries to create a non-existing Composite type
- */
 public class NoSuchValueException
-    extends InvalidApplicationException
+    extends NoSuchCompositeException
 {
-    private final String valueType;
-    private final String moduleName;
-
     public NoSuchValueException( String valueType, String moduleName )
     {
-        super( "Could not find any visible ValueComposite of type [" + valueType + "] in module [" +
-               moduleName + "]." );
-        this.valueType = valueType;
-        this.moduleName = moduleName;
-    }
-
-    public String valueType()
-    {
-        return valueType;
-    }
-
-    public String moduleName()
-    {
-        return moduleName;
+        super( "ValueComposite", valueType, moduleName );
     }
 }

@@ -14,14 +14,13 @@
 
 package org.qi4j.runtime.objects;
 
+import java.lang.reflect.Method;
 import org.junit.Test;
 import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.concern.GenericConcern;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
-
-import java.lang.reflect.Method;
 
 /**
  * JAVADOC

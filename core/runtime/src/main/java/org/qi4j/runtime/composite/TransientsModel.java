@@ -14,10 +14,9 @@
 
 package org.qi4j.runtime.composite;
 
+import java.util.List;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.functional.VisitableHierarchy;
-
-import java.util.List;
 
 /**
  * JAVADOC
@@ -38,14 +37,17 @@ public class TransientsModel
     }
 
     @Override
-    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> modelVisitor ) throws ThrowableType
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> modelVisitor )
+        throws ThrowableType
     {
-        if (modelVisitor.visitEnter( this ))
+        if( modelVisitor.visitEnter( this ) )
         {
             for( TransientModel transientModel : transientModels )
             {
-                if (!transientModel.accept( modelVisitor ))
+                if( !transientModel.accept( modelVisitor ) )
+                {
                     break;
+                }
             }
         }
         return modelVisitor.visitLeave( this );

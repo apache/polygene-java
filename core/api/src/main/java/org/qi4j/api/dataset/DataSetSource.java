@@ -5,5 +5,5 @@ package org.qi4j.api.dataset;
  */
 public interface DataSetSource
 {
-    <T> DataSet<T> newDataSet(Class<T> type);
+    <T> DataSet<T> newDataSet( Class<T> type );
 }

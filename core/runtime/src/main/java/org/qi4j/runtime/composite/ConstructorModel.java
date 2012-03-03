@@ -14,6 +14,9 @@
 
 package org.qi4j.runtime.composite;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.composite.ConstructorDescriptor;
 import org.qi4j.api.composite.InvalidCompositeException;
@@ -22,10 +25,6 @@ import org.qi4j.functional.VisitableHierarchy;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectedParametersModel;
 import org.qi4j.runtime.injection.InjectionContext;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
 
 /**
  * JAVADOC
@@ -39,10 +38,9 @@ public final class ConstructorModel
 
     public ConstructorModel( Constructor constructor, InjectedParametersModel parameters )
     {
-        constructor.setAccessible( true );
         this.constructor = constructor;
-        constructor.setAccessible( true );
         this.parameters = parameters;
+        this.constructor.setAccessible( true );
     }
 
     public Constructor constructor()
@@ -56,10 +54,13 @@ public final class ConstructorModel
     }
 
     @Override
-    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> modelVisitor ) throws ThrowableType
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> modelVisitor )
+        throws ThrowableType
     {
-        if (modelVisitor.visitEnter( this ))
+        if( modelVisitor.visitEnter( this ) )
+        {
             parameters.accept( modelVisitor );
+        }
 
         return modelVisitor.visitLeave( this );
     }
@@ -78,11 +79,14 @@ public final class ConstructorModel
         }
         catch( InvocationTargetException e )
         {
-            if( e.getTargetException() instanceof InvalidCompositeException )
+            Throwable targetException = e.getTargetException();
+            if( targetException instanceof InvalidCompositeException )
             {
-                throw (InvalidCompositeException) e.getTargetException();
+                throw (InvalidCompositeException) targetException;
             }
-            throw new ConstructionException( "Could not instantiate " + constructor.getDeclaringClass(), e.getTargetException() );
+            String message = "Could not instantiate \n    " + constructor.getDeclaringClass() + "\nusing constructor:\n    " + constructor
+                .toGenericString();
+            throw new ConstructionException( message, targetException );
         }
         catch( Throwable e )
         {

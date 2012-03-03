@@ -105,7 +105,7 @@ public abstract class ContextRestlet
                 request.getAttributes().put( "template", new StringBuilder( "/rest/" ) );
 
                 Usecase usecase = UsecaseBuilder.buildUsecase( getUsecaseName( request ) )
-                    .with( request.getMethod().isSafe() ? CacheOptions.ALWAYS : CacheOptions.NEVER )
+                    .withMetaInfo( request.getMethod().isSafe() ? CacheOptions.ALWAYS : CacheOptions.NEVER )
                     .newUsecase();
                 UnitOfWork uow = module.newUnitOfWork( usecase );
 

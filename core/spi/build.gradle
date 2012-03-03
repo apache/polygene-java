@@ -1,4 +1,3 @@
-
 jar { manifest { name = "Qi4j Core SPI"}}
 
 dependencies {

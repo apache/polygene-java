@@ -13,7 +13,8 @@ public class ValueBuilderTemplateTest
     extends AbstractQi4jTest
 {
     @Override
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
         module.values( TestValue.class );
     }
@@ -21,13 +22,13 @@ public class ValueBuilderTemplateTest
     @Test
     public void testTemplate()
     {
-        new TestBuilder( "Rickard" ).newInstance( module);
+        new TestBuilder( "Rickard" ).newInstance( module );
     }
 
     @Test
     public void testAnonymousTemplate()
     {
-        new ValueBuilderTemplate<TestValue>(TestValue.class)
+        new ValueBuilderTemplate<TestValue>( TestValue.class )
         {
             @Override
             protected void build( TestValue prototype )
@@ -44,7 +45,7 @@ public class ValueBuilderTemplateTest
     }
 
     class TestBuilder
-            extends ValueBuilderTemplate<TestValue>
+        extends ValueBuilderTemplate<TestValue>
     {
         String name;
 
@@ -59,5 +60,7 @@ public class ValueBuilderTemplateTest
         {
             prototype.name().set( name );
         }
-    };
+    }
+
+    ;
 }

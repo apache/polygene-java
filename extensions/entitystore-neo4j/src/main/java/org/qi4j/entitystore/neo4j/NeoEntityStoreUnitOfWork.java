@@ -13,6 +13,8 @@ import org.qi4j.spi.entitystore.*;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 
+import static org.qi4j.functional.Iterables.first;
+
 public class NeoEntityStoreUnitOfWork
     implements EntityStoreUnitOfWork,
                StateCommitter
@@ -81,7 +83,7 @@ public class NeoEntityStoreUnitOfWork
     )
         throws EntityStoreException
     {
-        String type = entityDescriptor.type().getName();
+        String type = first(entityDescriptor.types()).getName();
         Node typeNode = indexService.getSingleNode( ENTITY_TYPE, type );
         if( typeNode == null )
         {

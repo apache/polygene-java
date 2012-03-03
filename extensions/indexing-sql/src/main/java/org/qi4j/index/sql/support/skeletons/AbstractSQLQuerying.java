@@ -60,6 +60,8 @@ import java.sql.ResultSet;
 import java.sql.Types;
 import java.util.*;
 
+import static org.qi4j.functional.Iterables.first;
+
 /**
  * 
  * @author Stanislav Muhametsin
@@ -1163,7 +1165,7 @@ public abstract class AbstractSQLQuerying
         List<Integer> result = new ArrayList<Integer>();
         for( Map.Entry<String, EntityTypeInfo> entry : this._state.entityTypeInfos().get().entrySet() )
         {
-            if( entityType.isAssignableFrom( entry.getValue().getEntityDescriptor().type() ) )
+            if( entityType.isAssignableFrom( first( entry.getValue().getEntityDescriptor().types() ) ) )
             {
                 result.add( entry.getValue().getEntityTypePK() );
             }

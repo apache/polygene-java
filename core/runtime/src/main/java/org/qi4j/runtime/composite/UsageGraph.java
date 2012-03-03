@@ -17,12 +17,11 @@
  */
 package org.qi4j.runtime.composite;
 
-import org.qi4j.bootstrap.BindingException;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import org.qi4j.bootstrap.BindingException;
 
 /**
  * This class is NOT thread-safe.
@@ -43,7 +42,8 @@ public final class UsageGraph<K>
         this.allowCyclic = allowCyclic;
     }
 
-    public boolean transitiveUse( K source, K other ) throws BindingException
+    public boolean transitiveUse( K source, K other )
+        throws BindingException
     {
         if( transitive == null )
         {
@@ -52,7 +52,8 @@ public final class UsageGraph<K>
         return transitive.containsKey( source ) && transitive.get( source ).contains( other );
     }
 
-    private void checkCyclic( List<K> visited, K sourceItem, K used ) throws BindingException
+    private void checkCyclic( List<K> visited, K sourceItem, K used )
+        throws BindingException
     {
         Collection<K> nextLevel = use.uses( used );
         for( K next : nextLevel )
@@ -83,7 +84,7 @@ public final class UsageGraph<K>
     }
 
     public List<K> resolveOrder()
-            throws BindingException
+        throws BindingException
     {
         if( resolved == null )
         {
@@ -106,7 +107,8 @@ public final class UsageGraph<K>
         return resolved;
     }
 
-    private void buildUsageGraph() throws BindingException
+    private void buildUsageGraph()
+        throws BindingException
     {
         transitive = new HashMap<K, List<K>>();
         for( K sourceItem : data )

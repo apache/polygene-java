@@ -32,6 +32,7 @@ public final class UsecaseBuilder
     }
 
     private MetaInfo metaInfo = new MetaInfo();
+
     private String name;
 
     private UsecaseBuilder( String name )
@@ -39,7 +40,7 @@ public final class UsecaseBuilder
         this.name = name;
     }
 
-    public UsecaseBuilder with( Object metaInfo )
+    public UsecaseBuilder withMetaInfo( Object metaInfo )
     {
         this.metaInfo.set( metaInfo );
         return this;

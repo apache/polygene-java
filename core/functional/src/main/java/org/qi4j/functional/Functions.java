@@ -9,7 +9,7 @@ import java.util.Map;
  */
 public final class Functions
 {
-    public static <A,B,C> Function2<Function<? super B,C>,Function<A,B>, Function<A,C>> compose()
+    public static <A, B, C> Function2<Function<? super B, C>, Function<A, B>, Function<A, C>> compose()
     {
         return new Function2<Function<? super B, C>, Function<A, B>, Function<A, C>>()
         {
@@ -29,23 +29,26 @@ public final class Functions
      * @param <FROM>
      * @param <MIDDLE>
      * @param <TO>
+     *
      * @return
      */
-    public static <FROM,MIDDLE,TO> Function<FROM,TO> compose( final Function<? super MIDDLE,TO> outer, final Function<FROM,MIDDLE> inner)
+    public static <FROM, MIDDLE, TO> Function<FROM, TO> compose( final Function<? super MIDDLE, TO> outer,
+                                                                 final Function<FROM, MIDDLE> inner
+    )
     {
-        return new Function<FROM,TO>()
+        return new Function<FROM, TO>()
         {
             @Override
             public TO map( FROM from )
             {
-                return outer.map( inner.map( from ));
+                return outer.map( inner.map( from ) );
             }
         };
     }
 
-    public static <TO, FROM extends TO> Function<FROM,TO> identity()
+    public static <TO, FROM extends TO> Function<FROM, TO> identity()
     {
-        return new Function<FROM,TO>()
+        return new Function<FROM, TO>()
         {
             @Override
             public TO map( FROM from )
@@ -55,9 +58,9 @@ public final class Functions
         };
     }
 
-    public static <FROM,TO> Function<FROM,TO> fromMap( final Map<FROM,TO> map)
+    public static <FROM, TO> Function<FROM, TO> fromMap( final Map<FROM, TO> map )
     {
-        return new Function<FROM,TO>()
+        return new Function<FROM, TO>()
         {
             @Override
             public TO map( FROM from )
@@ -67,17 +70,21 @@ public final class Functions
         };
     }
 
-    public static <T> Function<T,T> withDefault( final T defaultValue)
+    public static <T> Function<T, T> withDefault( final T defaultValue )
     {
         return new Function<T, T>()
         {
             @Override
             public T map( T from )
             {
-                if (from == null)
+                if( from == null )
+                {
                     return defaultValue;
+                }
                 else
+                {
                     return from;
+                }
             }
         };
     }
@@ -120,9 +127,10 @@ public final class Functions
      *
      * @param specification
      * @param <T>
+     *
      * @return
      */
-    public static <T> Function<T, Integer> count( final Specification<T> specification)
+    public static <T> Function<T, Integer> count( final Specification<T> specification )
     {
         return new Function<T, Integer>()
         {
@@ -131,8 +139,10 @@ public final class Functions
             @Override
             public Integer map( T item )
             {
-                if (specification.satisfiedBy( item ))
+                if( specification.satisfiedBy( item ) )
+                {
                     count++;
+                }
 
                 return count;
             }
@@ -145,9 +155,10 @@ public final class Functions
      *
      * @param specification
      * @param <T>
+     *
      * @return
      */
-    public static <T> Function<T, Integer> indexOf( final Specification<T> specification)
+    public static <T> Function<T, Integer> indexOf( final Specification<T> specification )
     {
         return new Function<T, Integer>()
         {
@@ -157,8 +168,10 @@ public final class Functions
             @Override
             public Integer map( T item )
             {
-                if (index == -1 && specification.satisfiedBy( item ))
+                if( index == -1 && specification.satisfiedBy( item ) )
+                {
                     index = current;
+                }
 
                 current++;
 
@@ -173,11 +186,13 @@ public final class Functions
      * @param item
      * @param iterable
      * @param <T>
+     *
      * @return
      */
-    public static <T> int indexOf(T item, Iterable<T> iterable)
+    public static <T> int indexOf( T item, Iterable<T> iterable )
     {
-        return Iterables.first( Iterables.filter( Specifications.not( Specifications.in( -1 ) ), Iterables.map( indexOf( Specifications.in( item ) ), iterable ) ) );
+        return Iterables.first( Iterables.filter( Specifications.not( Specifications.in( -1 ) ), Iterables.map( indexOf( Specifications
+                                                                                                                             .in( item ) ), iterable ) ) );
     }
 
     /**
@@ -186,9 +201,10 @@ public final class Functions
      * @param specification
      * @param function
      * @param <T>
+     *
      * @return
      */
-    public static <T> Function<T, T> filteredMap( final Specification<T> specification, final Function<T, T> function)
+    public static <T> Function<T, T> filteredMap( final Specification<T> specification, final Function<T, T> function )
     {
         return new Function<T, T>()
         {
@@ -209,9 +225,10 @@ public final class Functions
      *
      * @param comparableFunction
      * @param <T>
+     *
      * @return
      */
-    public static <T> Comparator<T> comparator( final Function<T, Comparable> comparableFunction)
+    public static <T> Comparator<T> comparator( final Function<T, Comparable> comparableFunction )
     {
         return new Comparator<T>()
         {
@@ -220,17 +237,17 @@ public final class Functions
             public int compare( T o1, T o2 )
             {
                 Comparable key1 = compareKeys.get( o1 );
-                if (key1 == null)
+                if( key1 == null )
                 {
                     key1 = comparableFunction.map( o1 );
-                    compareKeys.put(o1, key1);
+                    compareKeys.put( o1, key1 );
                 }
 
                 Comparable key2 = compareKeys.get( o2 );
-                if (key2 == null)
+                if( key2 == null )
                 {
                     key2 = comparableFunction.map( o2 );
-                    compareKeys.put(o2, key2);
+                    compareKeys.put( o2, key2 );
                 }
 
                 return key1.compareTo( key2 );

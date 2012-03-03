@@ -1,11 +1,11 @@
 package org.qi4j.library.conversion.values;
 
-import org.qi4j.api.Qi4j;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.association.AssociationStateHolder;
 import org.qi4j.api.association.ManyAssociation;
-import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.composite.NoSuchCompositeException;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
@@ -15,16 +15,12 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.type.CollectionType;
+import org.qi4j.api.value.NoSuchValueException;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
 import org.qi4j.api.value.ValueDescriptor;
 import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
 import org.qi4j.spi.Qi4jSPI;
 
 @Mixins( EntityToValue.EntityToValueMixin.class )
@@ -49,7 +45,7 @@ public interface EntityToValue
             ValueDescriptor valueDescriptor = module.valueDescriptor( valueType.getName() );
             if( valueDescriptor == null )
             {
-                throw new NoSuchCompositeException( valueType.getName(), module.name() );
+                throw new NoSuchValueException( valueType.getName(), module.name() );
             }
             Unqualified unqualified = valueDescriptor.metaInfo( Unqualified.class );
             Iterable<? extends PropertyDescriptor> properties = valueDescriptor.state().properties();
@@ -62,145 +58,204 @@ public interface EntityToValue
             {
                 // Copy state using qualified names
                 builder = vbf.newValueBuilderWithState( valueType, new Function<PropertyDescriptor, Object>()
-                {
-                    @Override
-                    public Object map( PropertyDescriptor descriptor )
-                    {
-                        try
-                        {
-                            return associationState.propertyFor( descriptor.accessor() ).get();
-                        } catch( IllegalArgumentException e )
-                        {
-                            if (descriptor.valueType().type().equals( String.class ))
-                            {
-                                // Find Association and convert to string
-                                AssociationDescriptor associationDescriptor = null;
-                                try
-                                {
-                                    associationDescriptor = entityDescriptor.state().getAssociationByName( descriptor.qualifiedName().name() );
-                                } catch( IllegalArgumentException e1 )
-                                {
-                                    return null;
-                                }
-                                Object entity = associationState.associationFor( associationDescriptor.accessor() ).get();
-                                if (entity != null)
-                                    return ((Identity)entity).identity().get();
-                                else
-                                    return null;
-                            } else if (descriptor.valueType() instanceof CollectionType && ((CollectionType)descriptor.valueType()).collectedType().type().equals( String.class ))
-                            {
-                                AssociationDescriptor associationDescriptor = null;
-                                try
-                                {
-                                    associationDescriptor = entityDescriptor.state().getManyAssociationByName( descriptor.qualifiedName().name() );
-                                } catch( IllegalArgumentException e1 )
-                                {
-                                    return Collections.emptyList();
-                                }
-                                
-                                ManyAssociation state = associationState.manyAssociationFor( associationDescriptor.accessor() );
-                                List<String> entities = new ArrayList<String>();
-                                for( Object entity : state )
-                                {
-                                    entities.add( ((Identity)entity).identity().get() );
-                                }
-                                return entities;
-                            }
+                                                        {
+                                                            @Override
+                                                            public Object map( PropertyDescriptor descriptor )
+                                                            {
+                                                                try
+                                                                {
+                                                                    return associationState.propertyFor( descriptor.accessor() )
+                                                                        .get();
+                                                                }
+                                                                catch( IllegalArgumentException e )
+                                                                {
+                                                                    if( descriptor.valueType()
+                                                                        .mainType()
+                                                                        .equals( String.class ) )
+                                                                    {
+                                                                        // Find Association and convert to string
+                                                                        AssociationDescriptor associationDescriptor = null;
+                                                                        try
+                                                                        {
+                                                                            associationDescriptor = entityDescriptor.state()
+                                                                                .getAssociationByName( descriptor.qualifiedName()
+                                                                                                           .name() );
+                                                                        }
+                                                                        catch( IllegalArgumentException e1 )
+                                                                        {
+                                                                            return null;
+                                                                        }
+                                                                        Object entity = associationState.associationFor( associationDescriptor
+                                                                                                                             .accessor() )
+                                                                            .get();
+                                                                        if( entity != null )
+                                                                        {
+                                                                            return ( (Identity) entity ).identity()
+                                                                                .get();
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            return null;
+                                                                        }
+                                                                    }
+                                                                    else if( descriptor.valueType() instanceof CollectionType && ( (CollectionType) descriptor
+                                                                        .valueType() ).collectedType()
+                                                                        .mainType()
+                                                                        .equals( String.class ) )
+                                                                    {
+                                                                        AssociationDescriptor associationDescriptor = null;
+                                                                        try
+                                                                        {
+                                                                            associationDescriptor = entityDescriptor.state()
+                                                                                .getManyAssociationByName( descriptor.qualifiedName()
+                                                                                                               .name() );
+                                                                        }
+                                                                        catch( IllegalArgumentException e1 )
+                                                                        {
+                                                                            return Collections.emptyList();
+                                                                        }
 
-                            return null;
-                        }
-                    }
-                }, new Function<AssociationDescriptor, EntityReference>()
-                {
-                    @Override
-                    public EntityReference map( AssociationDescriptor associationDescriptor )
-                    {
-                        return EntityReference.getEntityReference(associationState.associationFor( associationDescriptor.accessor() ).get());
-                    }
-                }, new Function<AssociationDescriptor, Iterable<EntityReference>>()
+                                                                        ManyAssociation state = associationState.manyAssociationFor( associationDescriptor
+                                                                                                                                         .accessor() );
+                                                                        List<String> entities = new ArrayList<String>();
+                                                                        for( Object entity : state )
+                                                                        {
+                                                                            entities.add( ( (Identity) entity ).identity()
+                                                                                              .get() );
+                                                                        }
+                                                                        return entities;
+                                                                    }
+
+                                                                    return null;
+                                                                }
+                                                            }
+                                                        }, new Function<AssociationDescriptor, EntityReference>()
+                                                        {
+                                                            @Override
+                                                            public EntityReference map( AssociationDescriptor associationDescriptor )
+                                                            {
+                                                                return EntityReference.getEntityReference( associationState
+                                                                                                               .associationFor( associationDescriptor
+                                                                                                                                    .accessor() )
+                                                                                                               .get() );
+                                                            }
+                                                        }, new Function<AssociationDescriptor, Iterable<EntityReference>>()
                 {
                     @Override
                     public Iterable<EntityReference> map( AssociationDescriptor associationDescriptor )
                     {
-                        List<EntityReference> refs = new ArrayList<EntityReference>(  );
+                        List<EntityReference> refs = new ArrayList<EntityReference>();
                         for( Object entity : associationState.manyAssociationFor( associationDescriptor.accessor() ) )
                         {
                             refs.add( EntityReference.getEntityReference( entity ) );
                         }
                         return refs;
                     }
-                });
+                }
+                );
             }
             else
             {
                 builder = vbf.newValueBuilderWithState( valueType, new Function<PropertyDescriptor, Object>()
-                {
-                    @Override
-                    public Object map( PropertyDescriptor descriptor )
-                    {
-                        try
-                        {
-                            PropertyDescriptor propertyDescriptor = entityDescriptor.state().getPropertyByName( descriptor.qualifiedName().name() );
-                            return associationState.propertyFor( propertyDescriptor.accessor() ).get();
-                        } catch( Exception e )
-                        {
-                            if (descriptor.valueType().type().equals( String.class ))
-                            {
-                                // Find Association and convert to string
-                                AssociationDescriptor associationDescriptor = null;
-                                try
-                                {
-                                    associationDescriptor = entityDescriptor.state().getAssociationByName( descriptor.qualifiedName().name() );
-                                } catch( IllegalArgumentException e1 )
-                                {
-                                    return null;
-                                }
+                                                        {
+                                                            @Override
+                                                            public Object map( PropertyDescriptor descriptor )
+                                                            {
+                                                                try
+                                                                {
+                                                                    PropertyDescriptor propertyDescriptor = entityDescriptor
+                                                                        .state()
+                                                                        .getPropertyByName( descriptor.qualifiedName()
+                                                                                                .name() );
+                                                                    return associationState.propertyFor( propertyDescriptor
+                                                                                                             .accessor() )
+                                                                        .get();
+                                                                }
+                                                                catch( Exception e )
+                                                                {
+                                                                    if( descriptor.valueType()
+                                                                        .mainType()
+                                                                        .equals( String.class ) )
+                                                                    {
+                                                                        // Find Association and convert to string
+                                                                        AssociationDescriptor associationDescriptor = null;
+                                                                        try
+                                                                        {
+                                                                            associationDescriptor = entityDescriptor.state()
+                                                                                .getAssociationByName( descriptor.qualifiedName()
+                                                                                                           .name() );
+                                                                        }
+                                                                        catch( IllegalArgumentException e1 )
+                                                                        {
+                                                                            return null;
+                                                                        }
 
-                                Object entity = associationState.associationFor( associationDescriptor.accessor() ).get();
-                                if (entity != null)
-                                    return ((Identity)entity).identity().get();
-                                else
-                                    return null;
-                            } else if (descriptor.valueType() instanceof CollectionType && ((CollectionType)descriptor.valueType()).collectedType().type().equals( String.class ))
-                            {
-                                AssociationDescriptor associationDescriptor = null;
-                                try
-                                {
-                                    associationDescriptor = entityDescriptor.state().getManyAssociationByName( descriptor.qualifiedName().name() );
-                                } catch( IllegalArgumentException e1 )
-                                {
-                                    return null;
-                                }
-                                
-                                ManyAssociation state = associationState.manyAssociationFor( associationDescriptor.accessor() );
-                                List<String> entities = new ArrayList<String>();
-                                for( Object entity : state )
-                                {
-                                    entities.add( ((Identity)entity).identity().get() );
-                                }
-                                return entities;
-                            }
-                            return null;
-                        }
+                                                                        Object entity = associationState.associationFor( associationDescriptor
+                                                                                                                             .accessor() )
+                                                                            .get();
+                                                                        if( entity != null )
+                                                                        {
+                                                                            return ( (Identity) entity ).identity()
+                                                                                .get();
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            return null;
+                                                                        }
+                                                                    }
+                                                                    else if( descriptor.valueType() instanceof CollectionType && ( (CollectionType) descriptor
+                                                                        .valueType() ).collectedType()
+                                                                        .mainType()
+                                                                        .equals( String.class ) )
+                                                                    {
+                                                                        AssociationDescriptor associationDescriptor = null;
+                                                                        try
+                                                                        {
+                                                                            associationDescriptor = entityDescriptor.state()
+                                                                                .getManyAssociationByName( descriptor.qualifiedName()
+                                                                                                               .name() );
+                                                                        }
+                                                                        catch( IllegalArgumentException e1 )
+                                                                        {
+                                                                            return null;
+                                                                        }
 
-                    }
-                }, new Function<AssociationDescriptor, EntityReference>()
-                {
-                    @Override
-                    public EntityReference map( AssociationDescriptor descriptor )
-                    {
-                        AssociationDescriptor associationDescriptor = null;
-                        try
-                        {
-                            associationDescriptor = entityDescriptor.state().getAssociationByName( descriptor.qualifiedName().name() );
-                        } catch( Exception e )
-                        {
-                            return null;
-                        }
+                                                                        ManyAssociation state = associationState.manyAssociationFor( associationDescriptor
+                                                                                                                                         .accessor() );
+                                                                        List<String> entities = new ArrayList<String>();
+                                                                        for( Object entity : state )
+                                                                        {
+                                                                            entities.add( ( (Identity) entity ).identity()
+                                                                                              .get() );
+                                                                        }
+                                                                        return entities;
+                                                                    }
+                                                                    return null;
+                                                                }
+                                                            }
+                                                        }, new Function<AssociationDescriptor, EntityReference>()
+                                                        {
+                                                            @Override
+                                                            public EntityReference map( AssociationDescriptor descriptor )
+                                                            {
+                                                                AssociationDescriptor associationDescriptor = null;
+                                                                try
+                                                                {
+                                                                    associationDescriptor = entityDescriptor.state()
+                                                                        .getAssociationByName( descriptor.qualifiedName()
+                                                                                                   .name() );
+                                                                }
+                                                                catch( Exception e )
+                                                                {
+                                                                    return null;
+                                                                }
 
-                        return EntityReference.getEntityReference(associationState.associationFor( associationDescriptor.accessor() ).get());
-                    }
-                }, new Function<AssociationDescriptor, Iterable<EntityReference>>()
+                                                                return EntityReference.getEntityReference( associationState
+                                                                                                               .associationFor( associationDescriptor
+                                                                                                                                    .accessor() )
+                                                                                                               .get() );
+                                                            }
+                                                        }, new Function<AssociationDescriptor, Iterable<EntityReference>>()
                 {
                     @Override
                     public Iterable<EntityReference> map( AssociationDescriptor descriptor )
@@ -208,22 +263,24 @@ public interface EntityToValue
                         AssociationDescriptor associationDescriptor = null;
                         try
                         {
-                            associationDescriptor = entityDescriptor.state().getManyAssociationByName( descriptor.qualifiedName().name() );
-                        } catch( IllegalArgumentException e )
+                            associationDescriptor = entityDescriptor.state()
+                                .getManyAssociationByName( descriptor.qualifiedName().name() );
+                        }
+                        catch( IllegalArgumentException e )
                         {
                             return Iterables.empty();
                         }
 
-                        List<EntityReference> refs = new ArrayList<EntityReference>(  );
+                        List<EntityReference> refs = new ArrayList<EntityReference>();
                         for( Object entity : associationState.manyAssociationFor( associationDescriptor.accessor() ) )
                         {
                             refs.add( EntityReference.getEntityReference( entity ) );
                         }
                         return refs;
                     }
-                });
+                }
+                );
             }
-
 
             return (T) builder.newInstance();
         }

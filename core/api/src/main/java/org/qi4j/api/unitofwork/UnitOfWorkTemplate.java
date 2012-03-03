@@ -29,11 +29,11 @@ public abstract class UnitOfWorkTemplate<RESULT, ThrowableType extends Throwable
         this.complete = complete;
     }
 
-    protected abstract RESULT withUnitOfWork(UnitOfWork uow)
+    protected abstract RESULT withUnitOfWork( UnitOfWork uow )
         throws ThrowableType;
 
-    public RESULT withModule(Module module)
-            throws ThrowableType, UnitOfWorkCompletionException
+    public RESULT withModule( Module module )
+        throws ThrowableType, UnitOfWorkCompletionException
     {
         int loop = 0;
         ThrowableType ex = null;
@@ -44,26 +44,30 @@ public abstract class UnitOfWorkTemplate<RESULT, ThrowableType extends Throwable
             try
             {
                 RESULT result = withUnitOfWork( uow );
-                if (complete)
+                if( complete )
                 {
                     try
                     {
                         uow.complete();
                         return result;
-                    } catch( ConcurrentEntityModificationException e )
+                    }
+                    catch( ConcurrentEntityModificationException e )
                     {
                         // Retry?
                         ex = (ThrowableType) e;
                     }
                 }
-            } catch (Throwable e)
+            }
+            catch( Throwable e )
             {
                 ex = (ThrowableType) e;
-            } finally
+            }
+            finally
             {
                 uow.discard();
             }
-        } while (loop++ < retries);
+        }
+        while( loop++ < retries );
 
         throw ex;
     }

@@ -33,7 +33,7 @@ public interface Association<T>
      * @param associated the entity
      *
      * @throws IllegalArgumentException thrown if the entity is not a valid reference for this association
-     * @throws IllegalStateException thrown if association is immutable
+     * @throws IllegalStateException    thrown if association is immutable
      */
     void set( T associated )
         throws IllegalArgumentException, IllegalStateException;

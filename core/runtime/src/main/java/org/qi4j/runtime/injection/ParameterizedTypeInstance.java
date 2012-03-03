@@ -42,6 +42,6 @@ public class ParameterizedTypeInstance
     @Override
     public String toString()
     {
-        return rawType.toString()+ Arrays.asList( actualTypeArguments );
+        return rawType.toString() + Arrays.asList( actualTypeArguments );
     }
 }

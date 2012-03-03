@@ -14,6 +14,9 @@
 
 package org.qi4j.runtime.injection;
 
+import java.lang.annotation.Retention;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Method;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
@@ -25,10 +28,6 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
-
-import java.lang.annotation.Retention;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Method;
 
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
@@ -132,7 +131,7 @@ public class InvocationInjectionTest
     }
 
     @Retention( RUNTIME )
-        @interface Foo
+    @interface Foo
     {
         String value();
     }

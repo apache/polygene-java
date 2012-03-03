@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import static org.qi4j.functional.Iterables.first;
+
 public class StateFinder
 {
     public List<CompositeMethodDetailDescriptor> findState( CompositeDetailDescriptor descriptor )
@@ -41,7 +43,7 @@ public class StateFinder
 
         for( CompositeMethodDetailDescriptor descriptor : iter )
         {
-            Class compositeClass = descriptor.composite().descriptor().type();
+            Class compositeClass = first( descriptor.composite().descriptor().types() );
             Class mixinMethodClass = descriptor.descriptor().method().getDeclaringClass();
             if( mixinMethodClass.isAssignableFrom( compositeClass ) )
             {

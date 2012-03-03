@@ -14,13 +14,11 @@
 
 package org.qi4j.runtime.association;
 
-import org.qi4j.api.entity.EntityReference;
+import java.lang.reflect.Type;
 import org.qi4j.api.association.Association;
+import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.property.Property;
 import org.qi4j.functional.Function2;
-import org.qi4j.runtime.composite.ConstraintsCheck;
-
-import java.lang.reflect.Type;
 
 /**
  * Implementation of Association to a single Entity.
@@ -36,7 +34,7 @@ public final class AssociationInstance<T>
                                 Property<EntityReference> associationState
     )
     {
-        super( associationInfo, entityFunction);
+        super( associationInfo, entityFunction );
         this.associationState = associationState;
     }
 
@@ -103,7 +101,8 @@ public final class AssociationInstance<T>
 
         AssociationInstance that = (AssociationInstance) o;
 
-        if( associationState.get() != null ? !associationState.get().equals( that.associationState.get() ) : that.associationState.get() != null )
+        if( associationState.get() != null ? !associationState.get()
+            .equals( that.associationState.get() ) : that.associationState.get() != null )
         {
             return false;
         }

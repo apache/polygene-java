@@ -14,30 +14,19 @@
 
 package org.qi4j.api.property;
 
-import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.structure.Module;
-import org.qi4j.api.type.ValueType;
-
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Type;
+import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.structure.MetaInfoHolder;
+import org.qi4j.api.structure.Module;
+import org.qi4j.api.type.ValueType;
 
 /**
  * JAVADOC
  */
-public interface PropertyDescriptor
+public interface PropertyDescriptor extends MetaInfoHolder
 {
     boolean isImmutable();
-
-    /**
-     * Access metadata about the property with a given type.
-     * The info is registered for the property during
-     * assembly of the application.
-     *
-     * @param infoType the type of the metadata to return
-     *
-     * @return a metadata object that implements the requested type or null if none is registered
-     */
-    <T> T metaInfo( Class<T> infoType );
 
     /**
      * Get the qualified name of the property which is equal to:<br/>

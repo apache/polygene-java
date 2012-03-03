@@ -17,19 +17,28 @@
  */
 package org.qi4j.test.indexing;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
-import org.qi4j.test.indexing.model.*;
+import org.qi4j.test.indexing.model.Account;
+import org.qi4j.test.indexing.model.Address;
+import org.qi4j.test.indexing.model.Cat;
+import org.qi4j.test.indexing.model.City;
+import org.qi4j.test.indexing.model.Domain;
+import org.qi4j.test.indexing.model.Female;
+import org.qi4j.test.indexing.model.Male;
+import org.qi4j.test.indexing.model.Person;
+import org.qi4j.test.indexing.model.Protocol;
+import org.qi4j.test.indexing.model.QueryParam;
+import org.qi4j.test.indexing.model.URL;
 import org.qi4j.test.indexing.model.entities.CatEntity;
 import org.qi4j.test.indexing.model.entities.FemaleEntity;
 import org.qi4j.test.indexing.model.entities.MaleEntity;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * JAVADOC Add JavaDoc

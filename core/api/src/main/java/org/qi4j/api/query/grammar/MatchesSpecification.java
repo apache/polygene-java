@@ -7,7 +7,7 @@ import org.qi4j.api.property.Property;
  * TODO
  */
 public class MatchesSpecification
-        extends ExpressionSpecification
+    extends ExpressionSpecification
 {
     private PropertyFunction<String> property;
     private String regexp;
@@ -33,17 +33,20 @@ public class MatchesSpecification
     {
         Property<String> prop = property.map( item );
 
-        if (prop == null)
+        if( prop == null )
+        {
             return false;
+        }
 
         String val = prop.get();
 
-        if (val == null)
+        if( val == null )
+        {
             return false;
+        }
 
         return val.matches( regexp );
     }
-
 
     @Override
     public String toString()

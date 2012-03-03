@@ -14,15 +14,15 @@
 
 package org.qi4j.runtime.bootstrap;
 
+import java.lang.reflect.Modifier;
+import java.util.List;
 import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.bootstrap.ObjectAssembly;
+import org.qi4j.functional.Iterables;
 import org.qi4j.runtime.object.ObjectModel;
-
-import java.lang.reflect.Modifier;
-import java.util.List;
 
 /**
  * Assembly of an Object.
@@ -46,9 +46,9 @@ public final class ObjectAssemblyImpl
     }
 
     @Override
-    public Class<?> type()
+    public Iterable<Class<?>> types()
     {
-        return objectType;
+        return Iterables.<Class<?>, Class<?>>iterable( objectType );
     }
 
     void addObjectModel( List<ObjectModel> objectModels )

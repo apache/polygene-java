@@ -17,6 +17,7 @@
  */
 package org.qi4j.constraints;
 
+import java.util.Collection;
 import org.qi4j.api.composite.TransientBuilder;
 import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.constraint.ConstraintViolation;
@@ -29,8 +30,6 @@ import org.qi4j.library.constraints.MinLengthConstraint;
 import org.qi4j.library.constraints.annotation.Matches;
 import org.qi4j.library.constraints.annotation.MinLength;
 import org.qi4j.test.AbstractQi4jTest;
-
-import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;

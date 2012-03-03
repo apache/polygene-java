@@ -33,6 +33,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.qi4j.functional.Iterables.first;
+
 /**
  * JAVADOC
  */
@@ -59,12 +61,12 @@ public class EntityTypeSerializer
     {
         Graph graph = new GraphImpl();
         ValueFactory values = graph.getValueFactory();
-        URI entityTypeUri = values.createURI(Classes.toURI( entityDescriptor.type()) );
+        URI entityTypeUri = values.createURI(Classes.toURI( first( entityDescriptor.types() )) );
 
         graph.add( entityTypeUri, Rdfs.TYPE, Rdfs.CLASS );
         graph.add( entityTypeUri, Rdfs.TYPE, OWL.CLASS );
 
-        graph.add(entityTypeUri, Qi4jEntityType.TYPE, values.createLiteral( entityDescriptor.type().toString() ));
+        graph.add(entityTypeUri, Qi4jEntityType.TYPE, values.createLiteral( first( entityDescriptor.types()).toString() ));
         graph.add(entityTypeUri, Qi4jEntityType.QUERYABLE, values.createLiteral( entityDescriptor.queryable() ));
 
         serializeMixinTypes( entityDescriptor, graph, entityTypeUri );
@@ -143,7 +145,7 @@ public class EntityTypeSerializer
             graph.add( propertyURI, Rdfs.TYPE, Rdfs.PROPERTY );
 
             // TODO Support more types
-            URI type = dataTypes.get( persistentProperty.valueType().type().getName() );
+            URI type = dataTypes.get( persistentProperty.valueType().mainType().getName() );
             if( type != null )
             {
                 graph.add( propertyURI, Rdfs.RANGE, type );

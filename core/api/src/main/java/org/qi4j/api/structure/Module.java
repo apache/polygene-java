@@ -19,8 +19,8 @@ import org.qi4j.api.composite.TransientDescriptor;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.event.ActivationEventListenerRegistration;
 import org.qi4j.api.injection.scope.Structure;
-import org.qi4j.api.object.ObjectFactory;
 import org.qi4j.api.object.ObjectDescriptor;
+import org.qi4j.api.object.ObjectFactory;
 import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
@@ -34,16 +34,15 @@ import org.qi4j.api.value.ValueDescriptor;
  */
 public interface Module
     extends ActivationEventListenerRegistration,
-        TransientBuilderFactory,
-        ObjectFactory,
-        ValueBuilderFactory,
-        UnitOfWorkFactory,
-        QueryBuilderFactory,
-        ServiceFinder
+            MetaInfoHolder,
+            TransientBuilderFactory,
+            ObjectFactory,
+            ValueBuilderFactory,
+            UnitOfWorkFactory,
+            QueryBuilderFactory,
+            ServiceFinder
 {
     String name();
-
-    <T> T metaInfo( Class<T> infoType );
 
     @Deprecated
     TransientBuilderFactory transientBuilderFactory();

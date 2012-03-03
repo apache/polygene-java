@@ -1,8 +1,7 @@
 package org.qi4j.runtime.composite;
 
-import org.qi4j.functional.Specification;
-
 import java.lang.reflect.InvocationHandler;
+import org.qi4j.functional.Specification;
 
 /**
  * Specification that checks whether a given class implements InvocationHandler or not.

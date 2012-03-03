@@ -49,8 +49,6 @@ public class SchedulerMixin
     implements Scheduler, Activatable
 {
     private static final Logger LOGGER = LoggerFactory.getLogger( Scheduler.class );
-    private static final int DEFAULT_PULSE_RHYTHM = 60;
-    private static final int DEFAULT_GC_RHYTHM = 600;
     private static final int DEFAULT_WORKERS_COUNT = Runtime.getRuntime().availableProcessors();
     private static final int DEFAULT_WORKQUEUE_SIZE = 10;
 
@@ -155,6 +153,10 @@ public class SchedulerMixin
             if( timingQueue.size() == 0 )
             {
                 long nextRun = schedule.nextRun( now );
+                if( nextRun < 0 )
+                {
+                    return;
+                }
                 System.out.println( "Next run at: " + new DateTime( nextRun ) );
                 timingQueue.add( new ScheduleTime( schedule.identity().get(), nextRun ) );
                 if( scheduleHandler == null )
@@ -166,6 +168,10 @@ public class SchedulerMixin
             {
                 ScheduleTime first = timingQueue.first();
                 long nextRun = schedule.nextRun( now );
+                if( nextRun < 0 )
+                {
+                    return;
+                }
                 System.out.println( "Next run at: " + new DateTime( nextRun ) );
                 timingQueue.add( new ScheduleTime( schedule.identity().get(), nextRun ) );
                 ScheduleTime newFirst = timingQueue.first();

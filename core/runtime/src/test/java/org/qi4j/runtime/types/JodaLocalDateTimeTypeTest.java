@@ -28,7 +28,7 @@ public class JodaLocalDateTimeTypeTest
         JSONObjectSerializer serializer = new JSONObjectSerializer();
         serializer.serialize( new LocalDateTime( "2020-03-04T13:23:00", DateTimeZone.UTC ), underTest );
         Object value = serializer.getRoot();
-        assertEquals( "2020-03-04T13:23:00.000", value.toString());
+        assertEquals( "2020-03-04T13:23:00.000", value.toString() );
     }
 
     @Test
@@ -36,6 +36,6 @@ public class JodaLocalDateTimeTypeTest
         throws Exception
     {
         Object value = new JSONDeserializer( null ).deserialize( "2020-03-04T12:23:09", underTest );
-        assertEquals( new LocalDateTime("2020-03-04T12:23:09", DateTimeZone.UTC ), value);
+        assertEquals( new LocalDateTime( "2020-03-04T12:23:09", DateTimeZone.UTC ), value );
     }
 }

@@ -14,6 +14,8 @@
 
 package org.qi4j.runtime.composite;
 
+import java.lang.reflect.Method;
+import java.util.HashMap;
 import org.qi4j.api.composite.MissingMethodException;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.functional.Iterables;
@@ -22,28 +24,23 @@ import org.qi4j.runtime.injection.Dependencies;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.structure.ModuleInstance;
 
-import java.lang.reflect.Method;
-import java.util.HashMap;
-
-import static org.qi4j.functional.Iterables.*;
-import static org.qi4j.functional.Specifications.in;
+import static org.qi4j.functional.Iterables.map;
 
 /**
  * Model for Composite methods. This includes both private and public methods.
  */
 public final class CompositeMethodsModel
-        implements VisitableHierarchy<Object, Object>
+    implements VisitableHierarchy<Object, Object>
 {
     private HashMap<Method, CompositeMethodModel> methods;
     private final MixinsModel mixinsModel;
 
-    public CompositeMethodsModel(MixinsModel mixinsModel
+    public CompositeMethodsModel( MixinsModel mixinsModel
     )
     {
         methods = new HashMap<Method, CompositeMethodModel>();
         this.mixinsModel = mixinsModel;
     }
-
 
     public Iterable<DependencyModel> dependencies()
     {
@@ -57,7 +54,7 @@ public final class CompositeMethodsModel
                           Object[] args,
                           ModuleInstance moduleInstance
     )
-            throws Throwable
+        throws Throwable
     {
         CompositeMethodModel compositeMethod = methods.get( method );
 
@@ -78,16 +75,19 @@ public final class CompositeMethodsModel
                         Method realMethod = aClass.getMethod( method.getName(), method.getParameterTypes() );
                         compositeMethod = methods.get( realMethod );
                         break;
-                    } catch( NoSuchMethodException e )
+                    }
+                    catch( NoSuchMethodException e )
                     {
-                    } catch( SecurityException e )
+                    }
+                    catch( SecurityException e )
                     {
                     }
                 }
             }
 //            return mixins.invokeObject( proxy, args, method );
             throw new MissingMethodException( "Method '" + method + "' is not implemented" );
-        } else
+        }
+        else
         {
             return compositeMethod.invoke( proxy, args, mixins, moduleInstance );
         }
@@ -170,12 +170,12 @@ public final class CompositeMethodsModel
     }
     */
 
-    public void addMethod(CompositeMethodModel methodModel)
+    public void addMethod( CompositeMethodModel methodModel )
     {
         methods.put( methodModel.method(), methodModel );
     }
 
-    public boolean isImplemented(Method method)
+    public boolean isImplemented( Method method )
     {
         return methods.containsKey( method );
     }
@@ -186,14 +186,17 @@ public final class CompositeMethodsModel
     }
 
     @Override
-    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> modelVisitor ) throws ThrowableType
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> modelVisitor )
+        throws ThrowableType
     {
-        if (modelVisitor.visitEnter( this ))
+        if( modelVisitor.visitEnter( this ) )
         {
             for( CompositeMethodModel compositeMethodModel : methods.values() )
             {
-                if (!compositeMethodModel.accept( modelVisitor ))
+                if( !compositeMethodModel.accept( modelVisitor ) )
+                {
                     break;
+                }
             }
         }
         return modelVisitor.visitLeave( this );

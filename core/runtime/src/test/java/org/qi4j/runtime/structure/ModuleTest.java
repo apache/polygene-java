@@ -16,13 +16,18 @@ package org.qi4j.runtime.structure;
 
 import org.junit.Test;
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.composite.TransientBuilderFactory;
 import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
-import org.qi4j.bootstrap.*;
+import org.qi4j.bootstrap.ApplicationAssembler;
+import org.qi4j.bootstrap.ApplicationAssembly;
+import org.qi4j.bootstrap.ApplicationAssemblyFactory;
+import org.qi4j.bootstrap.Assembler;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.Energy4Java;
+import org.qi4j.bootstrap.ModuleAssembly;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -43,30 +48,31 @@ public class ModuleTest
                 throws AssemblyException
             {
                 return applicationFactory.newApplicationAssembly( new Assembler[][][]
-                    {
-                        {
-                            {
-                                new Assembler()
-                                {
-                                    public void assemble( ModuleAssembly module )
-                                        throws AssemblyException
-                                    {
-                                        module.transients( TestComposite1.class );
-                                    }
-                                }
-                            },
-                            {
-                                new Assembler()
-                                {
-                                    public void assemble( ModuleAssembly module )
-                                        throws AssemblyException
-                                    {
-                                        module.transients( TestComposite2.class ).visibleIn( Visibility.layer );
-                                    }
-                                }
-                            }
-                        }
-                    } );
+                                                                  {
+                                                                      {
+                                                                          {
+                                                                              new Assembler()
+                                                                              {
+                                                                                  public void assemble( ModuleAssembly module )
+                                                                                      throws AssemblyException
+                                                                                  {
+                                                                                      module.transients( TestComposite1.class );
+                                                                                  }
+                                                                              }
+                                                                          },
+                                                                          {
+                                                                              new Assembler()
+                                                                              {
+                                                                                  public void assemble( ModuleAssembly module )
+                                                                                      throws AssemblyException
+                                                                                  {
+                                                                                      module.transients( TestComposite2.class )
+                                                                                          .visibleIn( Visibility.layer );
+                                                                                  }
+                                                                              }
+                                                                          }
+                                                                      }
+                                                                  } );
             }
         } );
     }

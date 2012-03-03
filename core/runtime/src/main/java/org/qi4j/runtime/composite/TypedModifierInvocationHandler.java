@@ -11,10 +11,9 @@
 */
 package org.qi4j.runtime.composite;
 
-import org.qi4j.api.composite.InvalidCompositeException;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import org.qi4j.api.composite.InvalidCompositeException;
 
 /**
  * JAVADOC
@@ -45,7 +44,7 @@ public final class TypedModifierInvocationHandler
         {
             if( fragment == null )
             {
-                throw new InvalidCompositeException("No fragment available for method "+method.getName());
+                throw new InvalidCompositeException( "No fragment available for method " + method.getName() );
             }
             throw cleanStackTrace( e, proxy, method );
         }

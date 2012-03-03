@@ -14,16 +14,20 @@
 
 package org.qi4j.runtime.injection;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
+import java.util.Collection;
 import org.qi4j.api.composite.InjectedFieldDescriptor;
+import org.qi4j.api.util.Classes;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.bootstrap.InjectionException;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.functional.Specification;
 import org.qi4j.functional.VisitableHierarchy;
+import org.qi4j.runtime.composite.TransientInstance;
 import org.qi4j.runtime.model.Resolution;
-
-import java.lang.reflect.Field;
-import java.util.Collection;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
@@ -73,18 +77,50 @@ public final class InjectedFieldModel
         }
         catch( IllegalArgumentException e )
         {
-            String fieldClassName = injectedField.getType().getName();
-            String valueClassName = value.getClass().getName();
-            String message = "Cannot inject field of type " + fieldClassName + " with value '" + value +
-                             "' of type " + valueClassName;
+            String valueClassName;
+            if( Proxy.isProxyClass( value.getClass() ) )
+            {
+                InvocationHandler invocationHandler = Proxy.getInvocationHandler( value );
+                if( invocationHandler instanceof TransientInstance )
+                {
+                    TransientInstance handler = (TransientInstance) invocationHandler;
+                    valueClassName = Classes.toString( handler.descriptor().types() )
+                                     + " in [" + handler.module().name() + "] of [" + handler.module()
+                        .layerInstance()
+                        .name() + "]";
+                }
+                else
+                {
+                    valueClassName = invocationHandler.toString();
+                }
+            }
+            else
+            {
+                valueClassName = value.getClass().getName();
+            }
+            StringBuilder annotBuilder = new StringBuilder();
+            for( Annotation annot : injectedField.getAnnotations() )
+            {
+                String s = annot.toString();
+                annotBuilder.append( "@" ).append( s.substring( s.lastIndexOf( '.' ) + 1, s.length() - 2 ) );
+                annotBuilder.append( " " );
+            }
+            String annots = annotBuilder.toString();
+            String message = "Can not inject the field\n    "
+                             + injectedField.getDeclaringClass()
+                             + "\n    {\n        " + annots + "\n        "
+                             + injectedField.getType().getSimpleName() + " " + injectedField.getName()
+                             + "\n    }\nwith value \n    " + value + "\nof type\n    "
+                             + valueClassName;
             throw new InjectionException( message, e );
         }
     }
 
     @Override
-    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super InjectedFieldModel, ? super DependencyModel, ThrowableType> visitor ) throws ThrowableType
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super InjectedFieldModel, ? super DependencyModel, ThrowableType> visitor )
+        throws ThrowableType
     {
-        if (visitor.visitEnter( this ))
+        if( visitor.visitEnter( this ) )
         {
             visitor.visit( dependencyModel );
         }

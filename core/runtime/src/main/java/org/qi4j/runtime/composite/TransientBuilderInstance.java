@@ -38,16 +38,14 @@ public final class TransientBuilderInstance<T>
 
     private TransientStateInstance state;
 
-    public TransientBuilderInstance( ModelModule<TransientModel> model, TransientStateInstance state, UsesInstance uses )
+    public TransientBuilderInstance( ModelModule<TransientModel> model,
+                                     TransientStateInstance state,
+                                     UsesInstance uses
+    )
     {
         this.model = model;
         this.state = state;
         this.uses = uses;
-    }
-
-    public Class<T> compositeType()
-    {
-        return (Class<T>) model.model().type();
     }
 
     public TransientBuilder<T> use( Object... usedObjects )
@@ -85,7 +83,7 @@ public final class TransientBuilderInstance<T>
         // Set correct info's (immutable) on the state
         for( PropertyDescriptor propertyDescriptor : model.model().state().properties() )
         {
-            ((PropertyInstance<Object>)state.propertyFor( propertyDescriptor.accessor() )).setPropertyInfo( (PropertyInfo) propertyDescriptor );
+            ( (PropertyInstance<Object>) state.propertyFor( propertyDescriptor.accessor() ) ).setPropertyInfo( (PropertyInfo) propertyDescriptor );
         }
 
         model.model().checkConstraints( state );

@@ -5,8 +5,8 @@ import org.qi4j.functional.Specification;
 import org.qi4j.functional.Specifications;
 
 /**
-* TODO
-*/
+ * TODO
+ */
 public class OrSpecification
     extends BinarySpecification
 {
@@ -28,10 +28,10 @@ public class OrSpecification
         String or = "";
         for( Specification<Composite> operand : operands )
         {
-            str += or+operand;
+            str += or + operand;
             or = " or ";
         }
-        str+=")";
+        str += ")";
 
         return str;
     }

@@ -29,11 +29,12 @@ import org.qi4j.test.AbstractQi4jTest;
 public class NewObjectImporterTest
     extends AbstractQi4jTest
 {
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
         module.importedServices( TestService.class ).
-                identifiedBy( "test" ).
-                importedBy( ImportedServiceDeclaration.NEW_OBJECT );
+            identifiedBy( "test" ).
+            importedBy( ImportedServiceDeclaration.NEW_OBJECT );
 
         module.objects( TestService.class, NewObjectImporterTest.class );
     }
@@ -46,7 +47,7 @@ public class NewObjectImporterTest
     {
         module.injectTo( this );
 
-        Assert.assertThat(service.helloWorld(), CoreMatchers.equalTo( "Hello World" ));
+        Assert.assertThat( service.helloWorld(), CoreMatchers.equalTo( "Hello World" ) );
     }
 
     public static class TestService

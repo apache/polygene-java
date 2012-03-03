@@ -16,6 +16,7 @@
 
 package org.qi4j.library.eventsourcing.application.factory;
 
+import java.io.IOException;
 import org.qi4j.api.concern.ConcernOf;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
@@ -29,14 +30,12 @@ import org.qi4j.library.eventsourcing.domain.factory.DomainEventFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-
 /**
  * Notify transaction listeners when a complete transaction of domain events is available.
  */
 public class TransactionNotificationConcern
-        extends ConcernOf<ApplicationEventFactory>
-        implements ApplicationEventFactory
+    extends ConcernOf<ApplicationEventFactory>
+    implements ApplicationEventFactory
 {
     @Service
     ApplicationEventStore eventStore;
@@ -53,28 +52,30 @@ public class TransactionNotificationConcern
         ApplicationEvent event = next.createEvent( name, args );
 
         // Add event to list in UoW
-        UnitOfWorkApplicationEvents events = unitOfWork.metaInfo().get( UnitOfWorkApplicationEvents.class );
-        if (events == null)
+        UnitOfWorkApplicationEvents events = unitOfWork.metaInfo( UnitOfWorkApplicationEvents.class );
+        if( events == null )
         {
             events = new UnitOfWorkApplicationEvents();
-            unitOfWork.metaInfo().set( events );
+            unitOfWork.setMetaInfo( events );
 
             unitOfWork.addUnitOfWorkCallback( new UnitOfWorkCallback()
             {
-                public void beforeCompletion() throws UnitOfWorkCompletionException
+                public void beforeCompletion()
+                    throws UnitOfWorkCompletionException
                 {
                 }
 
                 public void afterCompletion( UnitOfWorkStatus status )
                 {
-                    if (status.equals( UnitOfWorkStatus.COMPLETED ))
+                    if( status.equals( UnitOfWorkStatus.COMPLETED ) )
                     {
-                        UnitOfWorkApplicationEvents events = unitOfWork.metaInfo().get( UnitOfWorkApplicationEvents.class );
+                        UnitOfWorkApplicationEvents events = unitOfWork.metaInfo( UnitOfWorkApplicationEvents.class );
 
                         try
                         {
                             eventStore.storeEvents( events.getEvents() );
-                        } catch (IOException e)
+                        }
+                        catch( IOException e )
                         {
                             logger.error( "Could not store events", e );
                             // How do we handle this? This is a major error!

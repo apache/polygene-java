@@ -14,10 +14,9 @@
 
 package org.qi4j.api.service.qualifier;
 
+import java.lang.annotation.Annotation;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.functional.Specification;
-
-import java.lang.annotation.Annotation;
 
 /**
  * Constructs a Specification for a given qualifier annotation

@@ -52,6 +52,6 @@ public class AmbiguousTypeException
 
     public AmbiguousTypeException( String message )
     {
-        super(message);
+        super( message );
     }
 }

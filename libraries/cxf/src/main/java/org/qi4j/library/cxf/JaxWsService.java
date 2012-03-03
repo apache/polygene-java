@@ -36,6 +36,8 @@ import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Module;
 
+import static org.qi4j.functional.Iterables.first;
+
 /**
  *
  */
@@ -68,7 +70,7 @@ public interface JaxWsService extends Activatable, ServiceComposite
             createQi4jTypeCreator( dataBinding );
             JaxWsServerFactoryBean svrFactory = new JaxWsServerFactoryBean();
             svrFactory.setDataBinding( dataBinding );
-            svrFactory.setServiceClass( descriptor.type() );
+            svrFactory.setServiceClass( first( descriptor.types() ) );
             svrFactory.setServiceBean( findThisService() );
             if( info != null )
             {
@@ -103,7 +105,7 @@ public interface JaxWsService extends Activatable, ServiceComposite
 
         private Object findThisService()
         {
-            ServiceReference<?> reference = module.findService( descriptor.type() );
+            ServiceReference<?> reference = module.findService( first( descriptor.types()) );
             if( reference == null )
             {
                 System.err.println( "Internal Error?? JaxWsService.findThisService()" );

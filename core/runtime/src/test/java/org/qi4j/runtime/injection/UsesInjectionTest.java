@@ -20,7 +20,9 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -40,8 +42,10 @@ public class UsesInjectionTest
         throws Exception
     {
         ToBeInjected toBeInjected = new ToBeInjected();
-        assertThat( "Injected object", module.newObject( InjectionTarget.class, toBeInjected, true ).getUsedObject(), is( equalTo( toBeInjected ) ) );
-        assertThat( "Injected boolean", module.newObject( InjectionTarget.class, toBeInjected, true ).isUsedBoolean(), is( equalTo( true ) ) );
+        assertThat( "Injected object", module.newObject( InjectionTarget.class, toBeInjected, true )
+            .getUsedObject(), is( equalTo( toBeInjected ) ) );
+        assertThat( "Injected boolean", module.newObject( InjectionTarget.class, toBeInjected, true )
+            .isUsedBoolean(), is( equalTo( true ) ) );
     }
 
     @Test

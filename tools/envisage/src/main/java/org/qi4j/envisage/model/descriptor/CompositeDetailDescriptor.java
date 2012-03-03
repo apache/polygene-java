@@ -132,6 +132,6 @@ public class CompositeDetailDescriptor<T extends CompositeDescriptor>
 
     public String toString()
     {
-        return descriptor.type().getSimpleName();
+        return descriptor.toString();
     }
 }

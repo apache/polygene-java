@@ -16,15 +16,17 @@ public interface Query<T>
         ASCENDING, DESCENDING
     }
 
-    Query filter(Specification<T> filter);
+    Query filter( Specification<T> filter );
 
-    Query orderBy(final Property<?> property, final Order order);
+    Query orderBy( final Property<?> property, final Order order );
 
-    Query skip(int skipNrOfResults);
+    Query skip( int skipNrOfResults );
+
     Query limit( int maxNrOfResults );
 
     // Variables
     Query<T> setVariable( String name, Object value );
+
     Object getVariable( String name );
 
     long count()
@@ -36,7 +38,7 @@ public interface Query<T>
     T single()
         throws QueryException;
 
-    <ThrowableType extends Throwable> boolean execute(Visitor<T, ThrowableType> resultVisitor)
+    <ThrowableType extends Throwable> boolean execute( Visitor<T, ThrowableType> resultVisitor )
         throws ThrowableType, QueryExecutionException;
 
     Iterable<T> toIterable()

@@ -13,12 +13,11 @@
  */
 package org.qi4j.api.service.qualifier;
 
-import org.qi4j.api.service.ServiceReference;
-import org.qi4j.functional.Specification;
-
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import org.qi4j.api.service.ServiceReference;
+import org.qi4j.functional.Specification;
 
 /**
  * Filter services based on Meta Info being declared on the Service. Meta Info of any type can be set on the service

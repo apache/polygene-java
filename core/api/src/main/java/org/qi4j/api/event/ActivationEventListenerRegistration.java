@@ -6,5 +6,6 @@ package org.qi4j.api.event;
 public interface ActivationEventListenerRegistration
 {
     void registerActivationEventListener( ActivationEventListener listener );
+
     void deregisterActivationEventListener( ActivationEventListener listener );
 }

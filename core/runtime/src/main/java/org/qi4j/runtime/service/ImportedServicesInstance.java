@@ -14,12 +14,11 @@
 
 package org.qi4j.runtime.service;
 
+import java.util.List;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specification;
-
-import java.util.List;
 
 /**
  * JAVADOC
@@ -40,13 +39,15 @@ public class ImportedServicesInstance
     public Iterable<? extends ServiceReference> visibleServices( final Visibility visibility )
     {
         return Iterables.filter( new Specification<ServiceReference>()
-                {
-                    @Override
-                    public boolean satisfiedBy( ServiceReference item )
-                    {
-                        return ((ImportedServiceReferenceInstance) item).serviceDescriptor().visibility().ordinal() >= visibility.ordinal();
-                    }
-                }, serviceReferences );
+        {
+            @Override
+            public boolean satisfiedBy( ServiceReference item )
+            {
+                return ( (ImportedServiceReferenceInstance) item ).serviceDescriptor()
+                           .visibility()
+                           .ordinal() >= visibility.ordinal();
+            }
+        }, serviceReferences );
     }
 
     @Override

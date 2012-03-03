@@ -41,5 +41,6 @@ public interface ObjectFactory
      *
      * @throws ConstructionException
      */
-    void injectTo( Object instance, Object... uses ) throws ConstructionException;
+    void injectTo( Object instance, Object... uses )
+        throws ConstructionException;
 }

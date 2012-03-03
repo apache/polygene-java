@@ -5,8 +5,8 @@ import org.qi4j.api.property.Property;
 import org.qi4j.functional.Function;
 
 /**
-* TODO
-*/
+ * TODO
+ */
 public interface PropertyReference
 {
     <T> Function<Composite, Property<T>> reference();

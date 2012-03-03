@@ -14,13 +14,34 @@
 
 package org.qi4j.runtime.bootstrap;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.ServiceImporter;
-import org.qi4j.bootstrap.*;
+import org.qi4j.bootstrap.ApplicationAssembly;
+import org.qi4j.bootstrap.AssemblyVisitor;
+import org.qi4j.bootstrap.EntityAssembly;
+import org.qi4j.bootstrap.EntityDeclaration;
+import org.qi4j.bootstrap.ImportedServiceAssembly;
+import org.qi4j.bootstrap.ImportedServiceDeclaration;
+import org.qi4j.bootstrap.LayerAssembly;
+import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.bootstrap.ObjectAssembly;
+import org.qi4j.bootstrap.ObjectDeclaration;
+import org.qi4j.bootstrap.ServiceAssembly;
+import org.qi4j.bootstrap.ServiceDeclaration;
+import org.qi4j.bootstrap.TransientAssembly;
+import org.qi4j.bootstrap.TransientDeclaration;
+import org.qi4j.bootstrap.ValueAssembly;
+import org.qi4j.bootstrap.ValueDeclaration;
 import org.qi4j.functional.Specification;
-
-import java.util.*;
 
 /**
  * Assembly of a Layer. From here you can create more ModuleAssemblies for
@@ -98,11 +119,11 @@ public final class LayerAssemblyImpl
     @Override
     public EntityDeclaration entities( Specification<? super EntityAssembly> specification )
     {
-        final List<EntityDeclaration> declarations = new ArrayList<EntityDeclaration>(  );
+        final List<EntityDeclaration> declarations = new ArrayList<EntityDeclaration>();
 
         for( ModuleAssemblyImpl moduleAssembly : moduleAssemblies.values() )
         {
-            declarations.add(moduleAssembly.entities( specification ));
+            declarations.add( moduleAssembly.entities( specification ) );
         }
 
         return new EntityDeclaration()
@@ -172,11 +193,11 @@ public final class LayerAssemblyImpl
     @Override
     public ServiceDeclaration services( Specification<? super ServiceAssembly> specification )
     {
-        final List<ServiceDeclaration> declarations = new ArrayList<ServiceDeclaration>(  );
+        final List<ServiceDeclaration> declarations = new ArrayList<ServiceDeclaration>();
 
         for( ModuleAssemblyImpl moduleAssembly : moduleAssemblies.values() )
         {
-            declarations.add(moduleAssembly.services( specification ));
+            declarations.add( moduleAssembly.services( specification ) );
         }
 
         return new ServiceDeclaration()
@@ -277,11 +298,11 @@ public final class LayerAssemblyImpl
     @Override
     public TransientDeclaration transients( Specification<? super TransientAssembly> specification )
     {
-        final List<TransientDeclaration> declarations = new ArrayList<TransientDeclaration>(  );
+        final List<TransientDeclaration> declarations = new ArrayList<TransientDeclaration>();
 
         for( ModuleAssemblyImpl moduleAssembly : moduleAssemblies.values() )
         {
-            declarations.add(moduleAssembly.transients( specification ));
+            declarations.add( moduleAssembly.transients( specification ) );
         }
 
         return new TransientDeclaration()
@@ -351,11 +372,11 @@ public final class LayerAssemblyImpl
     @Override
     public ValueDeclaration values( Specification<? super ValueAssembly> specification )
     {
-        final List<ValueDeclaration> declarations = new ArrayList<ValueDeclaration>(  );
+        final List<ValueDeclaration> declarations = new ArrayList<ValueDeclaration>();
 
         for( ModuleAssemblyImpl moduleAssembly : moduleAssemblies.values() )
         {
-            declarations.add(moduleAssembly.values( specification ));
+            declarations.add( moduleAssembly.values( specification ) );
         }
         return new ValueDeclaration()
         {
@@ -424,11 +445,11 @@ public final class LayerAssemblyImpl
     @Override
     public ObjectDeclaration objects( Specification<? super ObjectAssembly> specification )
     {
-        final List<ObjectDeclaration> declarations = new ArrayList<ObjectDeclaration>(  );
+        final List<ObjectDeclaration> declarations = new ArrayList<ObjectDeclaration>();
 
         for( ModuleAssemblyImpl moduleAssembly : moduleAssemblies.values() )
         {
-            declarations.add(moduleAssembly.objects( specification ));
+            declarations.add( moduleAssembly.objects( specification ) );
         }
         return new ObjectDeclaration()
         {
@@ -458,11 +479,11 @@ public final class LayerAssemblyImpl
     @Override
     public ImportedServiceDeclaration importedServices( Specification<? super ImportedServiceAssembly> specification )
     {
-        final List<ImportedServiceDeclaration> declarations = new ArrayList<ImportedServiceDeclaration>(  );
+        final List<ImportedServiceDeclaration> declarations = new ArrayList<ImportedServiceDeclaration>();
 
         for( ModuleAssemblyImpl moduleAssembly : moduleAssemblies.values() )
         {
-            declarations.add(moduleAssembly.importedServices( specification ));
+            declarations.add( moduleAssembly.importedServices( specification ) );
         }
         return new ImportedServiceDeclaration()
         {

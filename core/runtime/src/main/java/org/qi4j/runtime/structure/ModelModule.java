@@ -1,7 +1,6 @@
 package org.qi4j.runtime.structure;
 
 import org.qi4j.api.composite.ModelDescriptor;
-import org.qi4j.api.object.ObjectDescriptor;
 import org.qi4j.functional.Function;
 
 /**
@@ -9,14 +8,14 @@ import org.qi4j.functional.Function;
  */
 public class ModelModule<T extends ModelDescriptor>
 {
-    public static <T extends ModelDescriptor> Function<T, ModelModule<T>> modelModuleFunction( final ModuleInstance module)
+    public static <T extends ModelDescriptor> Function<T, ModelModule<T>> modelModuleFunction( final ModuleInstance module )
     {
         return new Function<T, ModelModule<T>>()
         {
             @Override
             public ModelModule<T> map( T model )
             {
-                return new ModelModule<T>(module, model);
+                return new ModelModule<T>( module, model );
             }
         };
     }
@@ -55,13 +54,25 @@ public class ModelModule<T extends ModelDescriptor>
     @Override
     public boolean equals( Object o )
     {
-        if( this == o ) return true;
-        if( o == null || getClass() != o.getClass() ) return false;
+        if( this == o )
+        {
+            return true;
+        }
+        if( o == null || getClass() != o.getClass() )
+        {
+            return false;
+        }
 
         ModelModule that = (ModelModule) o;
 
-        if( model != null ? !model.equals( that.model ) : that.model != null ) return false;
-        if( module != null ? !module.equals( that.module ) : that.module != null ) return false;
+        if( model != null ? !model.equals( that.model ) : that.model != null )
+        {
+            return false;
+        }
+        if( module != null ? !module.equals( that.module ) : that.module != null )
+        {
+            return false;
+        }
 
         return true;
     }
@@ -70,13 +81,13 @@ public class ModelModule<T extends ModelDescriptor>
     public int hashCode()
     {
         int result = module != null ? module.hashCode() : 0;
-        result = 31 * result + (model != null ? model.hashCode() : 0);
+        result = 31 * result + ( model != null ? model.hashCode() : 0 );
         return result;
     }
 
     @Override
     public String toString()
     {
-        return module.name()+":"+model.type().getName();
+        return module.name() + ":" + model;
     }
 }

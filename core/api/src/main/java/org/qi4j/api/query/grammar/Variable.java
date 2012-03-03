@@ -1,8 +1,8 @@
 package org.qi4j.api.query.grammar;
 
 /**
-* TODO
-*/
+ * TODO
+ */
 public class Variable
 {
     String name;

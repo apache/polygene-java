@@ -14,7 +14,18 @@
 
 package org.qi4j.runtime.composite;
 
-import org.objectweb.asm.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.List;
+import org.objectweb.asm.AnnotationVisitor;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.FieldVisitor;
+import org.objectweb.asm.Label;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
 import org.qi4j.api.entity.Lifecycle;
 import org.qi4j.api.mixin.Initializable;
 import org.qi4j.api.service.Activatable;
@@ -22,20 +33,52 @@ import org.qi4j.api.util.Classes;
 import org.qi4j.api.util.Methods;
 import org.qi4j.functional.Iterables;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.objectweb.asm.Opcodes.*;
+import static org.objectweb.asm.Opcodes.AASTORE;
+import static org.objectweb.asm.Opcodes.ACC_PRIVATE;
+import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
+import static org.objectweb.asm.Opcodes.ACC_STATIC;
+import static org.objectweb.asm.Opcodes.ACC_SUPER;
+import static org.objectweb.asm.Opcodes.ACONST_NULL;
+import static org.objectweb.asm.Opcodes.ALOAD;
+import static org.objectweb.asm.Opcodes.ANEWARRAY;
+import static org.objectweb.asm.Opcodes.ARETURN;
+import static org.objectweb.asm.Opcodes.ASTORE;
+import static org.objectweb.asm.Opcodes.ATHROW;
+import static org.objectweb.asm.Opcodes.BIPUSH;
+import static org.objectweb.asm.Opcodes.CHECKCAST;
+import static org.objectweb.asm.Opcodes.DLOAD;
+import static org.objectweb.asm.Opcodes.DRETURN;
+import static org.objectweb.asm.Opcodes.DUP;
+import static org.objectweb.asm.Opcodes.FLOAD;
+import static org.objectweb.asm.Opcodes.FRETURN;
+import static org.objectweb.asm.Opcodes.GETFIELD;
+import static org.objectweb.asm.Opcodes.GETSTATIC;
+import static org.objectweb.asm.Opcodes.GOTO;
+import static org.objectweb.asm.Opcodes.ICONST_0;
+import static org.objectweb.asm.Opcodes.ICONST_1;
+import static org.objectweb.asm.Opcodes.ICONST_2;
+import static org.objectweb.asm.Opcodes.ICONST_3;
+import static org.objectweb.asm.Opcodes.ICONST_4;
+import static org.objectweb.asm.Opcodes.ICONST_5;
+import static org.objectweb.asm.Opcodes.ILOAD;
+import static org.objectweb.asm.Opcodes.INVOKEINTERFACE;
+import static org.objectweb.asm.Opcodes.INVOKESPECIAL;
+import static org.objectweb.asm.Opcodes.INVOKESTATIC;
+import static org.objectweb.asm.Opcodes.INVOKEVIRTUAL;
+import static org.objectweb.asm.Opcodes.IRETURN;
+import static org.objectweb.asm.Opcodes.LLOAD;
+import static org.objectweb.asm.Opcodes.LRETURN;
+import static org.objectweb.asm.Opcodes.POP;
+import static org.objectweb.asm.Opcodes.PUTSTATIC;
+import static org.objectweb.asm.Opcodes.RETURN;
 import static org.objectweb.asm.Type.getInternalName;
+import static org.qi4j.api.util.Classes.interfacesOf;
 
 /**
  * Generate subclasses of classes used for transients. All methods delegate to CompositeInvoker.
  */
 public class TransientClassLoader
-        extends ClassLoader
+    extends ClassLoader
 {
     private static int jdkVersion = Opcodes.V1_5;
     public static final String GENERATED_POSTFIX = "_Proxy";
@@ -47,7 +90,8 @@ public class TransientClassLoader
         if( jdkString.equals( "1.6" ) )
         {
             jdkVersion = Opcodes.V1_6;
-        } else if( jdkString.equals( "1.7" ) )
+        }
+        else if( jdkString.equals( "1.7" ) )
         {
             jdkVersion = Opcodes.V1_7;
         }
@@ -59,7 +103,7 @@ public class TransientClassLoader
     }
 
     protected Class findClass( String name )
-            throws ClassNotFoundException
+        throws ClassNotFoundException
     {
         if( name.endsWith( GENERATED_POSTFIX ) )
         {
@@ -68,7 +112,8 @@ public class TransientClassLoader
             try
             {
                 baseClass = loadClass( baseName );
-            } catch( ClassNotFoundException e )
+            }
+            catch( ClassNotFoundException e )
             {
                 // Try replacing the last _ with $
                 while( true )
@@ -81,11 +126,13 @@ public class TransientClassLoader
                         {
                             baseClass = loadClass( baseName );
                             break;
-                        } catch( ClassNotFoundException e1 )
+                        }
+                        catch( ClassNotFoundException e1 )
                         {
                             // Try again
                         }
-                    } else
+                    }
+                    else
                     {
                         throw e;
                     }
@@ -101,7 +148,7 @@ public class TransientClassLoader
     }
 
     public static byte[] generateClass( String name, Class baseClass )
-            throws ClassNotFoundException
+        throws ClassNotFoundException
     {
         String classSlash = name.replace( '.', '/' );
         String baseClassSlash = getInternalName( baseClass );
@@ -128,7 +175,7 @@ public class TransientClassLoader
                 if( isOverloaded( method, baseClass ) )
                 {
                     fv = cw.visitField( ACC_PRIVATE + ACC_STATIC, "m" + idx++, "Ljava/lang/reflect/Method;", null,
-                            null );
+                                        null );
                     fv.visitEnd();
                 }
             }
@@ -177,16 +224,17 @@ public class TransientClassLoader
                     {
                         // generate a NoOp method...
                         mv.visitInsn( RETURN );
-                    } else
+                    }
+                    else
                     {
                         Label endLabel = null; // Use this if return type is void
                         if( method.getExceptionTypes().length > 0 )
                         {
-                            exceptions = new String[method.getExceptionTypes().length];
+                            exceptions = new String[ method.getExceptionTypes().length ];
                             for( int i = 0; i < method.getExceptionTypes().length; i++ )
                             {
-                                Class<?> aClass = method.getExceptionTypes()[i];
-                                exceptions[i] = getInternalName( aClass );
+                                Class<?> aClass = method.getExceptionTypes()[ i ];
+                                exceptions[ i ] = getInternalName( aClass );
                             }
                         }
                         mv.visitCode();
@@ -209,7 +257,7 @@ public class TransientClassLoader
                         mv.visitLabel( l0 );
                         mv.visitVarInsn( ALOAD, 0 );
                         mv.visitFieldInsn( GETFIELD, classSlash, "_instance",
-                                "Lorg/qi4j/api/composite/CompositeInvoker;" );
+                                           "Lorg/qi4j/api/composite/CompositeInvoker;" );
                         mv.visitFieldInsn( GETSTATIC, classSlash, "m" + idx, "Ljava/lang/reflect/Method;" );
 
                         int paramCount = method.getParameterTypes().length;
@@ -218,7 +266,8 @@ public class TransientClassLoader
                         {
                             // Send in null as parameter
                             mv.visitInsn( ACONST_NULL );
-                        } else
+                        }
+                        else
                         {
                             insn( mv, paramCount );
                             mv.visitTypeInsn( ANEWARRAY, "java/lang/Object" );
@@ -234,14 +283,15 @@ public class TransientClassLoader
 
                         // Call method
                         mv.visitMethodInsn( INVOKEINTERFACE, "org/qi4j/api/composite/CompositeInvoker",
-                                "invokeComposite",
-                                "(Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;" );
+                                            "invokeComposite",
+                                            "(Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;" );
 
                         // Return value
                         if( !method.getReturnType().equals( Void.TYPE ) )
                         {
                             unwrapResult( mv, method.getReturnType(), l1 );
-                        } else
+                        }
+                        else
                         {
                             mv.visitInsn( POP );
                             mv.visitLabel( l1 );
@@ -257,7 +307,7 @@ public class TransientClassLoader
                         for( Class<?> aClass : method.getExceptionTypes() )
                         {
                             mv.visitLabel( exceptionLabels.get( exceptionIdx++ ) );
-                            mv.visitFrame( Opcodes.F_SAME1, 0, null, 1, new Object[]{getInternalName( aClass )} );
+                            mv.visitFrame( Opcodes.F_SAME1, 0, null, 1, new Object[]{ getInternalName( aClass ) } );
                             mv.visitVarInsn( ASTORE, stackIdx );
                             mv.visitVarInsn( ALOAD, stackIdx );
                             mv.visitInsn( ATHROW );
@@ -265,13 +315,13 @@ public class TransientClassLoader
 
                         // RuntimeException and Error catch-all
                         mv.visitLabel( lruntime );
-                        mv.visitFrame( Opcodes.F_SAME1, 0, null, 1, new Object[]{"java/lang/RuntimeException"} );
+                        mv.visitFrame( Opcodes.F_SAME1, 0, null, 1, new Object[]{ "java/lang/RuntimeException" } );
                         mv.visitVarInsn( ASTORE, stackIdx );
                         mv.visitVarInsn( ALOAD, stackIdx );
                         mv.visitInsn( ATHROW );
 
                         mv.visitLabel( lerror );
-                        mv.visitFrame( Opcodes.F_SAME1, 0, null, 1, new Object[]{"java/lang/Throwable"} );
+                        mv.visitFrame( Opcodes.F_SAME1, 0, null, 1, new Object[]{ "java/lang/Throwable" } );
                         mv.visitVarInsn( ASTORE, stackIdx );
                         mv.visitVarInsn( ALOAD, stackIdx );
                         mv.visitTypeInsn( CHECKCAST, "java/lang/Error" );
@@ -311,7 +361,8 @@ public class TransientClassLoader
                     if( !method.getReturnType().equals( Void.TYPE ) )
                     {
                         returnResult( mv, method.getReturnType() );
-                    } else
+                    }
+                    else
                     {
                         mv.visitInsn( RETURN );
                     }
@@ -359,7 +410,7 @@ public class TransientClassLoader
                     }
 
                     mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Class", "getMethod",
-                            "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;" );
+                                        "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;" );
                     mv.visitFieldInsn( PUTSTATIC, classSlash, "m" + midx, "Ljava/lang/reflect/Method;" );
                 }
             }
@@ -368,7 +419,7 @@ public class TransientClassLoader
             Label l3 = new Label();
             mv.visitJumpInsn( GOTO, l3 );
             mv.visitLabel( l2 );
-            mv.visitFrame( Opcodes.F_SAME1, 0, null, 1, new Object[]{"java/lang/NoSuchMethodException"} );
+            mv.visitFrame( Opcodes.F_SAME1, 0, null, 1, new Object[]{ "java/lang/NoSuchMethodException" } );
             mv.visitVarInsn( ASTORE, 0 );
             mv.visitVarInsn( ALOAD, 0 );
             mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/NoSuchMethodException", "printStackTrace", "()V" );
@@ -389,15 +440,18 @@ public class TransientClassLoader
         if( Modifier.isFinal( method.getModifiers() ) )
         {
             return false; // Cannot override final methods
-        } else
+        }
+        else
+        {
             return true;
+        }
     }
 
     private static boolean isInternalQi4jMethod( Method method, Class baseClass )
     {
         return isDeclaredIn( method, Activatable.class, baseClass )
-                || isDeclaredIn( method, Initializable.class, baseClass )
-                || isDeclaredIn( method, Lifecycle.class, baseClass );
+               || isDeclaredIn( method, Initializable.class, baseClass )
+               || isDeclaredIn( method, Lifecycle.class, baseClass );
     }
 
     private static boolean isDeclaredIn( Method method, Class clazz, Class baseClass )
@@ -411,23 +465,25 @@ public class TransientClassLoader
         {
             clazz.getMethod( method.getName(), method.getParameterTypes() );
             return true;
-        } catch( NoSuchMethodException e )
+        }
+        catch( NoSuchMethodException e )
         {
             return false;
         }
     }
 
     private static Class getInterfaceMethodDeclaration( Method method, Class clazz )
-            throws NoSuchMethodException
+        throws NoSuchMethodException
     {
-        Iterable<Class<?>> interfaces = Iterables.map( Classes.RAW_CLASS, Classes.INTERFACES_OF.map( clazz ) );
+        Iterable<Class<?>> interfaces = Iterables.map( Classes.RAW_CLASS, interfacesOf( clazz ) );
         for( Class<?> anInterface : interfaces )
         {
             try
             {
                 anInterface.getMethod( method.getName(), method.getParameterTypes() );
                 return anInterface;
-            } catch( NoSuchMethodException e )
+            }
+            catch( NoSuchMethodException e )
             {
                 // Try next
             }
@@ -438,14 +494,15 @@ public class TransientClassLoader
 
     private static boolean isInterfaceMethod( Method method, Class baseClass )
     {
-        for( Class aClass : Iterables.filter( Methods.HAS_METHODS, Iterables.map( Classes.RAW_CLASS, Classes.INTERFACES_OF.map( baseClass ) ) ) )
+        for( Class aClass : Iterables.filter( Methods.HAS_METHODS, Iterables.map( Classes.RAW_CLASS, interfacesOf( baseClass ) ) ) )
         {
             try
             {
                 Method m = aClass.getMethod( method.getName(), method.getParameterTypes() );
                 m.setAccessible( true );
                 return true;
-            } catch( NoSuchMethodException e )
+            }
+            catch( NoSuchMethodException e )
             {
                 // Ignore
             }
@@ -458,28 +515,36 @@ public class TransientClassLoader
         if( aClass.equals( Integer.TYPE ) )
         {
             mv.visitFieldInsn( GETSTATIC, "java/lang/Integer", "TYPE", "Ljava/lang/Class;" );
-        } else if( aClass.equals( Long.TYPE ) )
+        }
+        else if( aClass.equals( Long.TYPE ) )
         {
             mv.visitFieldInsn( GETSTATIC, "java/lang/Long", "TYPE", "Ljava/lang/Class;" );
-        } else if( aClass.equals( Short.TYPE ) )
+        }
+        else if( aClass.equals( Short.TYPE ) )
         {
             mv.visitFieldInsn( GETSTATIC, "java/lang/Short", "TYPE", "Ljava/lang/Class;" );
-        } else if( aClass.equals( Byte.TYPE ) )
+        }
+        else if( aClass.equals( Byte.TYPE ) )
         {
             mv.visitFieldInsn( GETSTATIC, "java/lang/Byte", "TYPE", "Ljava/lang/Class;" );
-        } else if( aClass.equals( Double.TYPE ) )
+        }
+        else if( aClass.equals( Double.TYPE ) )
         {
             mv.visitFieldInsn( GETSTATIC, "java/lang/Double", "TYPE", "Ljava/lang/Class;" );
-        } else if( aClass.equals( Float.TYPE ) )
+        }
+        else if( aClass.equals( Float.TYPE ) )
         {
             mv.visitFieldInsn( GETSTATIC, "java/lang/Float", "TYPE", "Ljava/lang/Class;" );
-        } else if( aClass.equals( Boolean.TYPE ) )
+        }
+        else if( aClass.equals( Boolean.TYPE ) )
         {
             mv.visitFieldInsn( GETSTATIC, "java/lang/Boolean", "TYPE", "Ljava/lang/Class;" );
-        } else if( aClass.equals( Character.TYPE ) )
+        }
+        else if( aClass.equals( Character.TYPE ) )
         {
             mv.visitFieldInsn( GETSTATIC, "java/lang/Character", "TYPE", "Ljava/lang/Class;" );
-        } else
+        }
+        else
         {
             mv.visitLdcInsn( Type.getType( aClass ) );
         }
@@ -491,37 +556,45 @@ public class TransientClassLoader
         {
             mv.visitVarInsn( ILOAD, idx );
             mv.visitMethodInsn( INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;" );
-        } else if( aClass.equals( Long.TYPE ) )
+        }
+        else if( aClass.equals( Long.TYPE ) )
         {
             mv.visitVarInsn( LLOAD, idx );
             mv.visitMethodInsn( INVOKESTATIC, "java/lang/Long", "valueOf", "(J)Ljava/lang/Long;" );
             idx++; // Extra jump
-        } else if( aClass.equals( Short.TYPE ) )
+        }
+        else if( aClass.equals( Short.TYPE ) )
         {
             mv.visitVarInsn( ILOAD, idx );
             mv.visitMethodInsn( INVOKESTATIC, "java/lang/Short", "valueOf", "(S)Ljava/lang/Short;" );
-        } else if( aClass.equals( Byte.TYPE ) )
+        }
+        else if( aClass.equals( Byte.TYPE ) )
         {
             mv.visitVarInsn( ILOAD, idx );
             mv.visitMethodInsn( INVOKESTATIC, "java/lang/Byte", "valueOf", "(B)Ljava/lang/Byte;" );
-        } else if( aClass.equals( Double.TYPE ) )
+        }
+        else if( aClass.equals( Double.TYPE ) )
         {
             mv.visitVarInsn( DLOAD, idx );
             idx++; // Extra jump
             mv.visitMethodInsn( INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;" );
-        } else if( aClass.equals( Float.TYPE ) )
+        }
+        else if( aClass.equals( Float.TYPE ) )
         {
             mv.visitVarInsn( FLOAD, idx );
             mv.visitMethodInsn( INVOKESTATIC, "java/lang/Float", "valueOf", "(F)Ljava/lang/Float;" );
-        } else if( aClass.equals( Boolean.TYPE ) )
+        }
+        else if( aClass.equals( Boolean.TYPE ) )
         {
             mv.visitVarInsn( ILOAD, idx );
             mv.visitMethodInsn( INVOKESTATIC, "java/lang/Boolean", "valueOf", "(Z)Ljava/lang/Boolean;" );
-        } else if( aClass.equals( Character.TYPE ) )
+        }
+        else if( aClass.equals( Character.TYPE ) )
         {
             mv.visitVarInsn( ILOAD, idx );
             mv.visitMethodInsn( INVOKESTATIC, "java/lang/Character", "valueOf", "(C)Ljava/lang/Character;" );
-        } else
+        }
+        else
         {
             mv.visitVarInsn( ALOAD, idx );
         }
@@ -537,49 +610,57 @@ public class TransientClassLoader
             mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Integer", "intValue", "()I" );
             mv.visitLabel( label );
             mv.visitInsn( IRETURN );
-        } else if( aClass.equals( Long.TYPE ) )
+        }
+        else if( aClass.equals( Long.TYPE ) )
         {
             mv.visitTypeInsn( CHECKCAST, "java/lang/Long" );
             mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Long", "longValue", "()J" );
             mv.visitLabel( label );
             mv.visitInsn( LRETURN );
-        } else if( aClass.equals( Short.TYPE ) )
+        }
+        else if( aClass.equals( Short.TYPE ) )
         {
             mv.visitTypeInsn( CHECKCAST, "java/lang/Short" );
             mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Short", "shortValue", "()S" );
             mv.visitLabel( label );
             mv.visitInsn( IRETURN );
-        } else if( aClass.equals( Byte.TYPE ) )
+        }
+        else if( aClass.equals( Byte.TYPE ) )
         {
             mv.visitTypeInsn( CHECKCAST, "java/lang/Byte" );
             mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Byte", "byteValue", "()B" );
             mv.visitLabel( label );
             mv.visitInsn( IRETURN );
-        } else if( aClass.equals( Double.TYPE ) )
+        }
+        else if( aClass.equals( Double.TYPE ) )
         {
             mv.visitTypeInsn( CHECKCAST, "java/lang/Double" );
             mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Double", "doubleValue", "()D" );
             mv.visitLabel( label );
             mv.visitInsn( DRETURN );
-        } else if( aClass.equals( Float.TYPE ) )
+        }
+        else if( aClass.equals( Float.TYPE ) )
         {
             mv.visitTypeInsn( CHECKCAST, "java/lang/Float" );
             mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Float", "floatValue", "()F" );
             mv.visitLabel( label );
             mv.visitInsn( FRETURN );
-        } else if( aClass.equals( Boolean.TYPE ) )
+        }
+        else if( aClass.equals( Boolean.TYPE ) )
         {
             mv.visitTypeInsn( CHECKCAST, "java/lang/Boolean" );
             mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Boolean", "booleanValue", "()Z" );
             mv.visitLabel( label );
             mv.visitInsn( IRETURN );
-        } else if( aClass.equals( Character.TYPE ) )
+        }
+        else if( aClass.equals( Character.TYPE ) )
         {
             mv.visitTypeInsn( CHECKCAST, "java/lang/Character" );
             mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Character", "charValue", "()C" );
             mv.visitLabel( label );
             mv.visitInsn( IRETURN );
-        } else
+        }
+        else
         {
             mv.visitTypeInsn( CHECKCAST, getInternalName( aClass ) );
             mv.visitLabel( label );
@@ -592,30 +673,38 @@ public class TransientClassLoader
         if( aClass.equals( Integer.TYPE ) )
         {
             mv.visitVarInsn( ILOAD, idx );
-        } else if( aClass.equals( Long.TYPE ) )
+        }
+        else if( aClass.equals( Long.TYPE ) )
         {
             mv.visitVarInsn( LLOAD, idx );
             idx++; // Extra jump
-        } else if( aClass.equals( Short.TYPE ) )
+        }
+        else if( aClass.equals( Short.TYPE ) )
         {
             mv.visitVarInsn( ILOAD, idx );
-        } else if( aClass.equals( Byte.TYPE ) )
+        }
+        else if( aClass.equals( Byte.TYPE ) )
         {
             mv.visitVarInsn( ILOAD, idx );
-        } else if( aClass.equals( Double.TYPE ) )
+        }
+        else if( aClass.equals( Double.TYPE ) )
         {
             mv.visitVarInsn( DLOAD, idx );
             idx++; // Extra jump
-        } else if( aClass.equals( Float.TYPE ) )
+        }
+        else if( aClass.equals( Float.TYPE ) )
         {
             mv.visitVarInsn( FLOAD, idx );
-        } else if( aClass.equals( Boolean.TYPE ) )
+        }
+        else if( aClass.equals( Boolean.TYPE ) )
         {
             mv.visitVarInsn( ILOAD, idx );
-        } else if( aClass.equals( Character.TYPE ) )
+        }
+        else if( aClass.equals( Character.TYPE ) )
         {
             mv.visitVarInsn( ILOAD, idx );
-        } else
+        }
+        else
         {
             mv.visitVarInsn( ALOAD, idx );
         }
@@ -628,28 +717,36 @@ public class TransientClassLoader
         if( aClass.equals( Integer.TYPE ) )
         {
             mv.visitInsn( IRETURN );
-        } else if( aClass.equals( Long.TYPE ) )
+        }
+        else if( aClass.equals( Long.TYPE ) )
         {
             mv.visitInsn( LRETURN );
-        } else if( aClass.equals( Short.TYPE ) )
+        }
+        else if( aClass.equals( Short.TYPE ) )
         {
             mv.visitInsn( IRETURN );
-        } else if( aClass.equals( Byte.TYPE ) )
+        }
+        else if( aClass.equals( Byte.TYPE ) )
         {
             mv.visitInsn( IRETURN );
-        } else if( aClass.equals( Double.TYPE ) )
+        }
+        else if( aClass.equals( Double.TYPE ) )
         {
             mv.visitInsn( DRETURN );
-        } else if( aClass.equals( Float.TYPE ) )
+        }
+        else if( aClass.equals( Float.TYPE ) )
         {
             mv.visitInsn( FRETURN );
-        } else if( aClass.equals( Boolean.TYPE ) )
+        }
+        else if( aClass.equals( Boolean.TYPE ) )
         {
             mv.visitInsn( IRETURN );
-        } else if( aClass.equals( Character.TYPE ) )
+        }
+        else if( aClass.equals( Character.TYPE ) )
         {
             mv.visitInsn( IRETURN );
-        } else
+        }
+        else
         {
             mv.visitTypeInsn( CHECKCAST, getInternalName( aClass ) );
             mv.visitInsn( ARETURN );
@@ -660,26 +757,26 @@ public class TransientClassLoader
     {
         switch( length )
         {
-            case 0:
-                mv.visitInsn( ICONST_0 );
-                return;
-            case 1:
-                mv.visitInsn( ICONST_1 );
-                return;
-            case 2:
-                mv.visitInsn( ICONST_2 );
-                return;
-            case 3:
-                mv.visitInsn( ICONST_3 );
-                return;
-            case 4:
-                mv.visitInsn( ICONST_4 );
-                return;
-            case 5:
-                mv.visitInsn( ICONST_5 );
-                return;
-            default:
-                mv.visitIntInsn( BIPUSH, length );
+        case 0:
+            mv.visitInsn( ICONST_0 );
+            return;
+        case 1:
+            mv.visitInsn( ICONST_1 );
+            return;
+        case 2:
+            mv.visitInsn( ICONST_2 );
+            return;
+        case 3:
+            mv.visitInsn( ICONST_3 );
+            return;
+        case 4:
+            mv.visitInsn( ICONST_4 );
+            return;
+        case 5:
+            mv.visitInsn( ICONST_5 );
+            return;
+        default:
+            mv.visitIntInsn( BIPUSH, length );
         }
     }
 
@@ -694,7 +791,7 @@ public class TransientClassLoader
     }
 
     public Class loadFragmentClass( Class fragmentClass )
-            throws ClassNotFoundException
+        throws ClassNotFoundException
     {
         return loadClass( fragmentClass.getName().replace( '$', '_' ) + GENERATED_POSTFIX );
     }

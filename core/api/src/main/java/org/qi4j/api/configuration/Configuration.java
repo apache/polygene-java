@@ -14,6 +14,8 @@
 
 package org.qi4j.api.configuration;
 
+import java.io.IOException;
+import java.io.InputStream;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.PropertyMapper;
@@ -25,12 +27,14 @@ import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.structure.Module;
-import org.qi4j.api.unitofwork.*;
-
-import java.io.IOException;
-import java.io.InputStream;
+import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
+import org.qi4j.api.unitofwork.NoSuchEntityException;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.usecase.UsecaseBuilder;
+
+import static org.qi4j.functional.Iterables.first;
 
 /**
  * Provide Configurations for Services. A Service that wants to be configurable
@@ -158,7 +162,7 @@ public interface Configuration<T>
             if( configuration == null )
             {
                 Usecase usecase = UsecaseBuilder.newUsecase( "Configuration:" + me.identity().get() );
-                uow = module.newUnitOfWork(usecase);
+                uow = module.newUnitOfWork( usecase );
                 try
                 {
                     configuration = this.<T>getConfigurationInstance( me, uow );
@@ -212,76 +216,77 @@ public interface Configuration<T>
         {
         }
 
-    public <T> T getConfigurationInstance( ServiceComposite serviceComposite, UnitOfWork uow )
-        throws InstantiationException
-    {
-        ServiceDescriptor serviceModel = api.getServiceDescriptor( serviceComposite );
-
-        String identity = serviceComposite.identity().get();
-        T configuration;
-        try
+        public <T> T getConfigurationInstance( ServiceComposite serviceComposite, UnitOfWork uow )
+            throws InstantiationException
         {
-            configuration = uow.get( serviceModel.<T>configurationType(), identity );
-            uow.pause();
-        }
-        catch( NoSuchEntityException e )
-        {
-            return (T) initializeConfigurationInstance( serviceComposite, uow, serviceModel, identity );
-        }
-        catch( EntityTypeNotFoundException e )
-        {
-            return (T) initializeConfigurationInstance( serviceComposite, uow, serviceModel, identity );
-        }
-        return (T) configuration;
-    }
+            ServiceDescriptor serviceModel = api.getServiceDescriptor( serviceComposite );
 
-    private <T> T initializeConfigurationInstance( ServiceComposite serviceComposite,
-                                                   UnitOfWork uow,
-                                                   ServiceDescriptor serviceModel,
-                                                   String identity
-    )
-        throws InstantiationException
-    {
-        T configuration;
-        Module module = api.getModule( serviceComposite );
-        Usecase usecase = UsecaseBuilder.newUsecase( "Configuration:" + me.identity().get() );
-        UnitOfWork buildUow = module.newUnitOfWork(usecase);
-
-        EntityBuilder<T> configBuilder = buildUow.newEntityBuilder( serviceModel.<T>configurationType(), identity );
-
-        // Check for defaults
-        String s = identity + ".properties";
-        InputStream asStream = api.getServiceDescriptor( serviceComposite).type().getResourceAsStream( s );
-        if( asStream != null )
-        {
+            String identity = serviceComposite.identity().get();
+            T configuration;
             try
             {
-                PropertyMapper.map( asStream, (Composite) configBuilder.instance() );
+                configuration = uow.get( serviceModel.<T>configurationType(), identity );
+                uow.pause();
             }
-            catch( IOException e1 )
+            catch( NoSuchEntityException e )
             {
-                InstantiationException exception = new InstantiationException(
-                    "Could not read underlying Properties file." );
-                exception.initCause( e1 );
-                throw exception;
+                return (T) initializeConfigurationInstance( serviceComposite, uow, serviceModel, identity );
+            }
+            catch( EntityTypeNotFoundException e )
+            {
+                return (T) initializeConfigurationInstance( serviceComposite, uow, serviceModel, identity );
+            }
+            return (T) configuration;
+        }
+
+        private <T> T initializeConfigurationInstance( ServiceComposite serviceComposite,
+                                                       UnitOfWork uow,
+                                                       ServiceDescriptor serviceModel,
+                                                       String identity
+        )
+            throws InstantiationException
+        {
+            T configuration;
+            Module module = api.getModule( serviceComposite );
+            Usecase usecase = UsecaseBuilder.newUsecase( "Configuration:" + me.identity().get() );
+            UnitOfWork buildUow = module.newUnitOfWork( usecase );
+
+            EntityBuilder<T> configBuilder = buildUow.newEntityBuilder( serviceModel.<T>configurationType(), identity );
+
+            // Check for defaults
+            String s = identity + ".properties";
+            Class<?> type = first( api.getServiceDescriptor( serviceComposite ).types() );
+            InputStream asStream = type.getResourceAsStream( s );
+            if( asStream != null )
+            {
+                try
+                {
+                    PropertyMapper.map( asStream, (Composite) configBuilder.instance() );
+                }
+                catch( IOException e1 )
+                {
+                    InstantiationException exception = new InstantiationException(
+                        "Could not read underlying Properties file." );
+                    exception.initCause( e1 );
+                    throw exception;
+                }
+            }
+
+            try
+            {
+                configuration = configBuilder.newInstance();
+                buildUow.complete();
+
+                // Try again
+                return (T) getConfigurationInstance( serviceComposite, uow );
+            }
+            catch( Exception e1 )
+            {
+                InstantiationException ex = new InstantiationException(
+                    "Could not instantiate configuration, and no Properties file was found (" + s + ")" );
+                ex.initCause( e1 );
+                throw ex;
             }
         }
-
-        try
-        {
-            configuration = configBuilder.newInstance();
-            buildUow.complete();
-
-            // Try again
-            return (T) getConfigurationInstance( serviceComposite, uow );
-        }
-        catch( Exception e1 )
-        {
-            InstantiationException ex = new InstantiationException(
-                "Could not instantiate configuration, and no Properties file was found (" + s + ")" );
-            ex.initCause( e1 );
-            throw ex;
-        }
-    }
     }
 }

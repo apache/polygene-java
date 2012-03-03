@@ -14,10 +14,13 @@
 
 package org.qi4j.functional;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.List;
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
-
-import java.util.*;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -49,7 +52,7 @@ public class IterablesTest
     {
         String str = "";
 
-        for( String string : Iterables.unique( Iterables.flatten( numbers, numbers, numbers ) ))
+        for( String string : Iterables.unique( Iterables.flatten( numbers, numbers, numbers ) ) )
         {
             str += string;
         }
@@ -108,7 +111,8 @@ public class IterablesTest
     @Test
     public void testAppend()
     {
-        assertThat( Iterables.toList(Iterables.append( "C", Iterables.iterable( "A","B" ) )).toString(), equalTo( "[A, B, C]" ) );
+        assertThat( Iterables.toList( Iterables.append( "C", Iterables.iterable( "A", "B" ) ) )
+                        .toString(), equalTo( "[A, B, C]" ) );
     }
 
     @Test
@@ -136,11 +140,11 @@ public class IterablesTest
     public void testFlatten()
     {
         assertThat( Iterables.toList( Iterables.flatten( numbers, numbers ) )
-                .toString(), equalTo( "[1, 2, 3, 1, 2, 3]" ) );
+                        .toString(), equalTo( "[1, 2, 3, 1, 2, 3]" ) );
 
         Iterable<? extends Number> flatten = Iterables.flatten( numberIntegers, numberLongs );
         assertThat( Iterables.toList( flatten )
-                .toString(), equalTo( "[1, 2, 3, 1, 2, 3]" ) );
+                        .toString(), equalTo( "[1, 2, 3, 1, 2, 3]" ) );
     }
 
     @Test
@@ -148,14 +152,15 @@ public class IterablesTest
     {
         Iterable<List<String>> iterable = Iterables.iterable( numbers, numbers );
         assertThat( Iterables.toList(
-                Iterables.flattenIterables( iterable ) )
-                .toString(), equalTo( "[1, 2, 3, 1, 2, 3]" ) );
+            Iterables.flattenIterables( iterable ) )
+                        .toString(), equalTo( "[1, 2, 3, 1, 2, 3]" ) );
     }
 
     @Test
     public void testMix()
     {
-        assertThat( Iterables.toList(Iterables.mix( Iterables.iterable( "A","B","C" ),Iterables.iterable( "1","2","3","4","5" ),Iterables.iterable( "X","Y","Z" ) )).toString(), equalTo( "[A, 1, X, B, 2, Y, C, 3, Z, 4, 5]" ));
+        assertThat( Iterables.toList( Iterables.mix( Iterables.iterable( "A", "B", "C" ), Iterables.iterable( "1", "2", "3", "4", "5" ), Iterables
+            .iterable( "X", "Y", "Z" ) ) ).toString(), equalTo( "[A, 1, X, B, 2, Y, C, 3, Z, 4, 5]" ) );
     }
 
     @Test
@@ -168,7 +173,6 @@ public class IterablesTest
                 return s + s;
             }
         }, numbers ) ).toString(), equalTo( "[11, 22, 33]" ) );
-
 
         Iterable<List<String>> numberIterable = Iterables.iterable( numbers, numbers, numbers );
         assertThat( Iterables.toList( Iterables.map( new Function<Collection, Integer>()
@@ -187,65 +191,67 @@ public class IterablesTest
 
         Enumeration<String> enumeration = Collections.enumeration( numbers );
         assertThat( Iterables.toList( Iterables.iterable( enumeration ) )
-                .toString(), equalTo( "[1, 2, 3]" ) );
+                        .toString(), equalTo( "[1, 2, 3]" ) );
     }
 
     @Test
     public void testIterableVarArg()
     {
         assertThat( Iterables.toList( Iterables.iterable( "1", "2", "3" ) )
-                .toString(), equalTo( "[1, 2, 3]" ) );
+                        .toString(), equalTo( "[1, 2, 3]" ) );
     }
 
     @Test
     public void testCast()
     {
         Iterable<Long> values = numberLongs;
-        Iterable<Number> numbers = Iterables.cast(values);
+        Iterable<Number> numbers = Iterables.cast( values );
     }
 
     @Test
     public void testDebug()
     {
-        assertThat( Iterables.first( Iterables.debug( "Filtered number:{0}", Iterables.filter( Specifications.in( "2" ), Iterables.debug( "Number:{0}", numbers ) ) ) ), equalTo( "2" ) );
+        assertThat( Iterables.first( Iterables.debug( "Filtered number:{0}", Iterables.filter( Specifications.in( "2" ), Iterables
+            .debug( "Number:{0}", numbers ) ) ) ), equalTo( "2" ) );
     }
 
     @Test
     public void testDebugWithFunctions()
     {
-        assertThat( Iterables.first( Iterables.debug( "Filtered number:{0}", Iterables.filter( Specifications.in( "2" ), Iterables.debug( "Number:{0}", numbers, new Function<String, String>()
-        {
-            @Override
-            public String map( String s )
+        assertThat( Iterables.first( Iterables.debug( "Filtered number:{0}", Iterables.filter( Specifications.in( "2" ), Iterables
+            .debug( "Number:{0}", numbers, new Function<String, String>()
             {
-                return s + ":" + s.length();
-            }
-        } ) ) ) ), equalTo( "2" ) );
+                @Override
+                public String map( String s )
+                {
+                    return s + ":" + s.length();
+                }
+            } ) ) ) ), equalTo( "2" ) );
     }
 
     @Test
     public void testCache()
     {
-        final int[] count = new int[1];
+        final int[] count = new int[ 1 ];
 
-        Iterable<String> b = Iterables.cache(Iterables.filter( Specifications.and( new Specification<String>()
+        Iterable<String> b = Iterables.cache( Iterables.filter( Specifications.and( new Specification<String>()
         {
             @Override
             public boolean satisfiedBy( String item )
             {
-                count[0] = count[0]+1;
+                count[ 0 ] = count[ 0 ] + 1;
                 return true;
             }
-        }, Specifications.in( "B" )), Iterables.iterable( "A", "B", "C" )));
+        }, Specifications.in( "B" ) ), Iterables.iterable( "A", "B", "C" ) ) );
 
-        assertThat( count[0], equalTo( 0 ) );
-
-        Iterables.toList( b );
-
-        assertThat( count[0], equalTo( 3 ) );
+        assertThat( count[ 0 ], equalTo( 0 ) );
 
         Iterables.toList( b );
 
-        assertThat( count[0], equalTo( 3 ) );
+        assertThat( count[ 0 ], equalTo( 3 ) );
+
+        Iterables.toList( b );
+
+        assertThat( count[ 0 ], equalTo( 3 ) );
     }
 }

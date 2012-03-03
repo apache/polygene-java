@@ -14,17 +14,20 @@
 
 package org.qi4j.api.util;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Type;
 import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specification;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-
-import static org.qi4j.functional.Iterables.*;
+import static org.qi4j.api.util.Classes.interfacesOf;
+import static org.qi4j.api.util.Classes.typeOf;
+import static org.qi4j.functional.Iterables.flatten;
+import static org.qi4j.functional.Iterables.flattenIterables;
+import static org.qi4j.functional.Iterables.iterable;
+import static org.qi4j.functional.Iterables.map;
 
 /**
  * Useful methods for handling Annotations.
@@ -38,7 +41,7 @@ public final class Annotations
         {
             return Iterables.iterable( Classes.RAW_CLASS.map( type ).getAnnotations() );
         }
-    });
+    } );
 
     public static Specification<AnnotatedElement> hasAnnotation( final Class<? extends Annotation> annotationType )
     {
@@ -63,7 +66,6 @@ public final class Annotations
         };
     }
 
-
     public static Specification<Annotation> isType( final Class<? extends Annotation> annotationType )
     {
         return new Specification<Annotation>()
@@ -83,6 +85,6 @@ public final class Annotations
     public static Iterable<Annotation> getAccessorAndTypeAnnotations( AccessibleObject accessor )
     {
         return flatten( iterable( accessor.getAnnotations() ),
-                        flattenIterables( map( Annotations.ANNOTATIONS_OF, Classes.INTERFACES_OF.map( Classes.TYPE_OF.map( accessor ) ))));
+                        flattenIterables( map( Annotations.ANNOTATIONS_OF, interfacesOf( typeOf( accessor ) ) ) ) );
     }
 }

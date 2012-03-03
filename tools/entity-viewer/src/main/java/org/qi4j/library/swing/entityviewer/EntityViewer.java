@@ -34,6 +34,8 @@ import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
+import static org.qi4j.functional.Iterables.first;
+
 /**
  * The Entity Viewer.
  */
@@ -161,7 +163,7 @@ public class EntityViewer
         }
 
         EntityDetailDescriptor entityDescriptor = (EntityDetailDescriptor) entitiesCombo.getSelectedItem();
-        Class clazz = entityDescriptor.descriptor().type();
+        Class clazz = first( entityDescriptor.descriptor().types() );
 
         Module module = findModule( entityDescriptor );
         Query query = createQuery( module, clazz );
@@ -194,7 +196,7 @@ public class EntityViewer
         if( EntityDetailDescriptor.class.isAssignableFrom( clazz ) )
         {
             EntityDetailDescriptor entityDesc = (EntityDetailDescriptor) obj;
-            Class entityType = entityDesc.descriptor().type();
+            Class entityType = first( entityDesc.descriptor().types());
 
             // Update the selected item on the combo box, which in turn update the properties table
             ComboBoxModel comboModel = entitiesCombo.getModel();
@@ -202,7 +204,7 @@ public class EntityViewer
             for( int i = 0; i < comboModel.getSize(); i++ )
             {
                 EntityDetailDescriptor entityDesc1 = (EntityDetailDescriptor) comboModel.getElementAt( i );
-                Class entityType1 = entityDesc1.descriptor().type();
+                Class entityType1 = first( entityDesc1.descriptor().types());
 
                 if( entityType1.equals( entityType ) )
                 {

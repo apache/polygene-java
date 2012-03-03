@@ -14,6 +14,13 @@
 
 package org.qi4j.runtime.injection;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.util.ArrayList;
+import java.util.List;
 import org.qi4j.api.injection.InjectionScope;
 import org.qi4j.api.util.Classes;
 import org.qi4j.api.util.Fields;
@@ -22,17 +29,11 @@ import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.VisitableHierarchy;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.qi4j.api.util.Annotations.hasAnnotation;
 import static org.qi4j.api.util.Annotations.type;
-import static org.qi4j.functional.Iterables.*;
+import static org.qi4j.functional.Iterables.filter;
+import static org.qi4j.functional.Iterables.first;
+import static org.qi4j.functional.Iterables.iterable;
 import static org.qi4j.functional.Specifications.translate;
 
 /**
@@ -47,7 +48,8 @@ public final class InjectedFieldsModel
     {
         for( Field field : Fields.FIELDS_OF.map( fragmentClass ) )
         {
-            Annotation injectionAnnotation = first( filter( translate( type(), hasAnnotation( InjectionScope.class ) ), iterable( field.getAnnotations() ) ) );
+            Annotation injectionAnnotation = first( filter( translate( type(), hasAnnotation( InjectionScope.class ) ), iterable( field
+                                                                                                                                      .getAnnotations() ) ) );
             if( injectionAnnotation != null )
             {
                 addModel( fragmentClass, field, injectionAnnotation );
@@ -58,17 +60,18 @@ public final class InjectedFieldsModel
     private void addModel( Class fragmentClass, Field field, Annotation injectionAnnotation )
     {
         Type genericType = field.getGenericType();
-        if (genericType instanceof ParameterizedType )
+        if( genericType instanceof ParameterizedType )
         {
-            genericType = new ParameterizedTypeInstance(((ParameterizedType) genericType).getActualTypeArguments(), ((ParameterizedType) genericType).getRawType(), ((ParameterizedType) genericType).getOwnerType());
+            genericType = new ParameterizedTypeInstance( ( (ParameterizedType) genericType ).getActualTypeArguments(), ( (ParameterizedType) genericType )
+                .getRawType(), ( (ParameterizedType) genericType ).getOwnerType() );
 
-            for( int i = 0; i < ((ParameterizedType) genericType).getActualTypeArguments().length; i++ )
+            for( int i = 0; i < ( (ParameterizedType) genericType ).getActualTypeArguments().length; i++ )
             {
-                Type type = ((ParameterizedType) genericType).getActualTypeArguments()[i];
-                if (type instanceof TypeVariable )
+                Type type = ( (ParameterizedType) genericType ).getActualTypeArguments()[ i ];
+                if( type instanceof TypeVariable )
                 {
                     type = Classes.resolveTypeVariable( (TypeVariable) type, field.getDeclaringClass(), fragmentClass );
-                    ((ParameterizedType) genericType).getActualTypeArguments()[i] = type;
+                    ( (ParameterizedType) genericType ).getActualTypeArguments()[ i ] = type;
                 }
             }
         }
@@ -83,24 +86,29 @@ public final class InjectedFieldsModel
     public Iterable<DependencyModel> dependencies()
     {
         return Iterables.map( new Function<InjectedFieldModel, DependencyModel>()
-                {
-                    @Override
-                    public DependencyModel map( InjectedFieldModel injectedFieldModel )
-                    {
-                        return injectedFieldModel.dependency();
-                    }
-                }, fields );
+        {
+            @Override
+            public DependencyModel map( InjectedFieldModel injectedFieldModel )
+            {
+                return injectedFieldModel.dependency();
+            }
+        }, fields );
     }
 
     @Override
-    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> modelVisitor ) throws ThrowableType
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> modelVisitor )
+        throws ThrowableType
     {
-        if (modelVisitor.visitEnter( this ))
+        if( modelVisitor.visitEnter( this ) )
+        {
             for( InjectedFieldModel field : fields )
             {
-                if (!field.accept( modelVisitor ))
+                if( !field.accept( modelVisitor ) )
+                {
                     break;
+                }
             }
+        }
         return modelVisitor.visitLeave( this );
     }
 

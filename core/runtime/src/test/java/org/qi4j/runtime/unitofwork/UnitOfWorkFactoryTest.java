@@ -18,11 +18,11 @@
 package org.qi4j.runtime.unitofwork;
 
 import org.junit.Test;
+import org.qi4j.api.association.Association;
+import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.association.Association;
-import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.unitofwork.UnitOfWork;
@@ -32,11 +32,11 @@ import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
 
 public class UnitOfWorkFactoryTest
-        extends AbstractQi4jTest
+    extends AbstractQi4jTest
 {
 
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
         module.entities( AccountComposite.class,
                          OrderComposite.class,
@@ -48,7 +48,7 @@ public class UnitOfWorkFactoryTest
 
     @Test
     public void testUnitOfWork()
-            throws Exception
+        throws Exception
     {
         UnitOfWork unitOfWork = module.newUnitOfWork();
 
@@ -65,9 +65,9 @@ public class UnitOfWorkFactoryTest
         unitOfWork.complete();
     }
 
-    @Mixins({AccountMixin.class})
+    @Mixins( { AccountMixin.class } )
     public interface AccountComposite
-            extends Account, EntityComposite
+        extends Account, EntityComposite
     {
     }
 
@@ -81,7 +81,7 @@ public class UnitOfWorkFactoryTest
     }
 
     public static abstract class AccountMixin
-            implements Account
+        implements Account
     {
         public void add( int amount )
         {
@@ -102,7 +102,7 @@ public class UnitOfWorkFactoryTest
     }
 
     public interface CustomerComposite
-            extends Customer, EntityComposite
+        extends Customer, EntityComposite
     {
     }
 
@@ -112,7 +112,7 @@ public class UnitOfWorkFactoryTest
     }
 
     public interface LineItemComposite
-            extends LineItem, EntityComposite
+        extends LineItem, EntityComposite
     {
     }
 
@@ -124,7 +124,7 @@ public class UnitOfWorkFactoryTest
     }
 
     public interface OrderComposite
-            extends Order, EntityComposite
+        extends Order, EntityComposite
     {
     }
 
@@ -138,7 +138,7 @@ public class UnitOfWorkFactoryTest
     }
 
     public interface ProductEntity
-            extends Product, EntityComposite
+        extends Product, EntityComposite
     {
     }
 }

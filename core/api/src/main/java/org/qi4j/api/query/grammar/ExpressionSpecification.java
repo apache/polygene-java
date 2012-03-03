@@ -12,23 +12,27 @@ import static org.qi4j.functional.Iterables.iterable;
 public abstract class ExpressionSpecification
     implements Specification<Composite>
 {
-    public AndSpecification and(Specification<Composite> specification)
+    public AndSpecification and( Specification<Composite> specification )
     {
-        if (this instanceof AndSpecification)
+        if( this instanceof AndSpecification )
         {
-            return new AndSpecification( Iterables.append( specification, ((AndSpecification)this).getOperands() ));
-
-        } else
+            return new AndSpecification( Iterables.append( specification, ( (AndSpecification) this ).getOperands() ) );
+        }
+        else
+        {
             return new AndSpecification( iterable( this, specification ) );
+        }
     }
 
-    public OrSpecification or(Specification<Composite> specification)
+    public OrSpecification or( Specification<Composite> specification )
     {
-        if (this instanceof OrSpecification)
+        if( this instanceof OrSpecification )
         {
-            return new OrSpecification( Iterables.append( specification, ((OrSpecification) this).getOperands() ));
-
-        } else
+            return new OrSpecification( Iterables.append( specification, ( (OrSpecification) this ).getOperands() ) );
+        }
+        else
+        {
             return new OrSpecification( iterable( this, specification ) );
+        }
     }
 }

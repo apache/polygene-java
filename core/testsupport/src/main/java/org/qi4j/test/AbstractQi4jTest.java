@@ -21,7 +21,13 @@ import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.ApplicationDescriptor;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.bootstrap.*;
+import org.qi4j.bootstrap.ApplicationAssembler;
+import org.qi4j.bootstrap.ApplicationAssembly;
+import org.qi4j.bootstrap.ApplicationAssemblyFactory;
+import org.qi4j.bootstrap.Assembler;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.Energy4Java;
+import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.spi.Qi4jSPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +36,7 @@ import org.slf4j.LoggerFactory;
  * Base class for Composite tests.
  */
 public abstract class AbstractQi4jTest
-        implements Assembler
+    implements Assembler
 {
     protected Qi4j api;
     protected Qi4jSPI spi;
@@ -44,7 +50,7 @@ public abstract class AbstractQi4jTest
 
     @Before
     public void setUp()
-            throws Exception
+        throws Exception
     {
         qi4j = new Energy4Java();
         applicationModel = newApplication();
@@ -53,7 +59,7 @@ public abstract class AbstractQi4jTest
             // An AssemblyException has occurred that the Test wants to check for.
             return;
         }
-        application = newApplicationInstance(applicationModel);
+        application = newApplicationInstance( applicationModel );
         initApplication( application );
         api = spi = qi4j.spi();
         application.activate();
@@ -65,23 +71,24 @@ public abstract class AbstractQi4jTest
         module.injectTo( this );
     }
 
-    protected Application newApplicationInstance(ApplicationDescriptor applicationModel)
+    protected Application newApplicationInstance( ApplicationDescriptor applicationModel )
     {
         return applicationModel.newInstance( qi4j.api() );
     }
 
     protected ApplicationDescriptor newApplication()
-            throws AssemblyException
+        throws AssemblyException
     {
         ApplicationAssembler assembler = new ApplicationAssembler()
         {
             public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
-                    throws AssemblyException
+                throws AssemblyException
             {
                 return applicationFactory.newApplicationAssembly( new Assembler()
                 {
                     @Override
-                    public void assemble( ModuleAssembly module ) throws AssemblyException
+                    public void assemble( ModuleAssembly module )
+                        throws AssemblyException
                     {
                         module.layer().application().setMode( Application.Mode.test );
                         module.objects( AbstractQi4jTest.this.getClass() ); // Register test class
@@ -94,7 +101,8 @@ public abstract class AbstractQi4jTest
         try
         {
             return qi4j.newApplicationModel( assembler );
-        } catch( AssemblyException e )
+        }
+        catch( AssemblyException e )
         {
             assemblyException( e );
             return null;
@@ -107,26 +115,27 @@ public abstract class AbstractQi4jTest
      * Override this method to catch valid failures to place into satisfiedBy suites.
      *
      * @param exception the exception thrown.
+     *
      * @throws AssemblyException The default implementation of this method will simply re-throw the exception.
      */
     protected void assemblyException( AssemblyException exception )
-            throws AssemblyException
+        throws AssemblyException
     {
         throw exception;
     }
 
     protected void initApplication( Application app )
-            throws Exception
+        throws Exception
     {
     }
 
     @After
     public void tearDown()
-            throws Exception
+        throws Exception
     {
-        if( module != null && module.isUnitOfWorkActive())
+        if( module != null && module.isUnitOfWorkActive() )
         {
-            while( module.isUnitOfWorkActive())
+            while( module.isUnitOfWorkActive() )
             {
                 UnitOfWork uow = module.currentUnitOfWork();
                 if( uow.isOpen() )

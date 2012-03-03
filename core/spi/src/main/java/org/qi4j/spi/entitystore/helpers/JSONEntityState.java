@@ -127,8 +127,10 @@ public final class JSONEntityState
                 Module module = unitOfWork.module();
                 PropertyDescriptor descriptor = entityDescriptor.state().getPropertyByQualifiedName( stateName );
 
-                if (descriptor == null)
+                if( descriptor == null )
+                {
                     return null;
+                }
 
                 JSONDeserializer deserializer = new JSONDeserializer( module );
 

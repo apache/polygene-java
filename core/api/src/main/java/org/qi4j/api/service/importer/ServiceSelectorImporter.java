@@ -14,13 +14,18 @@
 
 package org.qi4j.api.service.importer;
 
-import org.qi4j.api.injection.scope.Structure;
-import org.qi4j.api.service.*;
-import org.qi4j.api.service.qualifier.ServiceQualifier;
-import org.qi4j.functional.Specification;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.service.Availability;
+import org.qi4j.api.service.ImportedServiceDescriptor;
+import org.qi4j.api.service.ServiceFinder;
+import org.qi4j.api.service.ServiceImporter;
+import org.qi4j.api.service.ServiceImporterException;
+import org.qi4j.api.service.ServiceReference;
+import org.qi4j.api.service.qualifier.ServiceQualifier;
+import org.qi4j.functional.Iterables;
+import org.qi4j.functional.Specification;
 
 /**
  * If several services are available with a given type, and you want to constrain
@@ -41,7 +46,7 @@ public final class ServiceSelectorImporter<T>
         throws ServiceImporterException
     {
         Specification<ServiceReference<?>> selector = serviceDescriptor.metaInfo( Specification.class );
-        Class serviceType = serviceDescriptor.type();
+        Class serviceType = Iterables.first( serviceDescriptor.types() );
         Iterable<ServiceReference<T>> services = locator.findServices( serviceType );
         List<ServiceReference<T>> filteredServices = new ArrayList<ServiceReference<T>>();
         for( ServiceReference<T> service : services )
@@ -55,8 +60,11 @@ public final class ServiceSelectorImporter<T>
             filteredServices.add( service );
         }
         T service = ServiceQualifier.firstService( selector, filteredServices );
-        if (service == null)
-            throw new ServiceImporterException("Could not find any service to import that matches the given specification for "+serviceDescriptor.identity());
+        if( service == null )
+        {
+            throw new ServiceImporterException( "Could not find any service to import that matches the given specification for " + serviceDescriptor
+                .identity() );
+        }
         return service;
     }
 

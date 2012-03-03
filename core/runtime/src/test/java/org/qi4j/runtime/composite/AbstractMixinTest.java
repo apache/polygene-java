@@ -14,6 +14,7 @@
 
 package org.qi4j.runtime.composite;
 
+import java.lang.reflect.Method;
 import junit.framework.Assert;
 import org.junit.Test;
 import org.qi4j.api.common.Optional;
@@ -28,8 +29,6 @@ import org.qi4j.api.structure.Module;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
-
-import java.lang.reflect.Method;
 
 /**
  * JAVADOC

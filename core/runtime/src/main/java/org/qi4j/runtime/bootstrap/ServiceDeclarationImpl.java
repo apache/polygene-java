@@ -14,19 +14,18 @@
 
 package org.qi4j.runtime.bootstrap;
 
-import org.qi4j.api.common.Visibility;
-import org.qi4j.api.service.qualifier.ServiceTags;
-import org.qi4j.bootstrap.ServiceDeclaration;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.qi4j.api.common.Visibility;
+import org.qi4j.api.service.qualifier.ServiceTags;
+import org.qi4j.bootstrap.ServiceDeclaration;
 
 /**
  * Declaration of a Service. Created by {@link org.qi4j.runtime.bootstrap.ModuleAssemblyImpl#services(Class[])}.
  */
 public final class ServiceDeclarationImpl
-        implements ServiceDeclaration
+    implements ServiceDeclaration
 {
     private Iterable<ServiceAssemblyImpl> serviceAssemblies;
 
@@ -59,7 +58,7 @@ public final class ServiceDeclarationImpl
         for( ServiceAssemblyImpl serviceAssembly : serviceAssemblies )
         {
             ServiceTags previousTags = serviceAssembly.metaInfo.get( ServiceTags.class );
-            if (previousTags != null)
+            if( previousTags != null )
             {
                 List<String> tagList = new ArrayList<String>();
                 for( String tag : previousTags.tags() )
@@ -70,10 +69,11 @@ public final class ServiceDeclarationImpl
                 {
                     tagList.add( tag );
                 }
-                serviceAssembly.metaInfo.set( new ServiceTags( tagList.toArray( new String[tagList.size()] )) );
-            } else
+                serviceAssembly.metaInfo.set( new ServiceTags( tagList.toArray( new String[ tagList.size() ] ) ) );
+            }
+            else
             {
-                serviceAssembly.metaInfo.set( new ServiceTags(tags) );
+                serviceAssembly.metaInfo.set( new ServiceTags( tags ) );
             }
         }
 

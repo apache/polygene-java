@@ -16,20 +16,24 @@ package org.qi4j.runtime.structure;
 
 import org.junit.Test;
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.composite.NoSuchCompositeException;
+import org.qi4j.api.composite.NoSuchTransientException;
 import org.qi4j.api.composite.TransientBuilderFactory;
 import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.structure.Application;
-import org.qi4j.bootstrap.*;
+import org.qi4j.bootstrap.ApplicationAssemblerAdapter;
+import org.qi4j.bootstrap.Assembler;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.Energy4Java;
+import org.qi4j.bootstrap.ModuleAssembly;
 
 /**
  * JAVADOC
  */
 public class PrivateCompositeVisibilityTest
 {
-    @Test( expected = NoSuchCompositeException.class )
+    @Test( expected = NoSuchTransientException.class )
     public void testPrivateCompositeVisibility()
         throws Exception
     {

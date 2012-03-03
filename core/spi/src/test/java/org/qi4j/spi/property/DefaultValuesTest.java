@@ -14,13 +14,12 @@
 
 package org.qi4j.spi.property;
 
-import org.junit.Test;
-import org.qi4j.api.property.DefaultValues;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import org.junit.Test;
+import org.qi4j.api.property.DefaultValues;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;

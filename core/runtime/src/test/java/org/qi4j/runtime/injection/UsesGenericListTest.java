@@ -19,6 +19,7 @@
 
 package org.qi4j.runtime.injection;
 
+import java.util.ArrayList;
 import org.junit.Test;
 import org.qi4j.api.composite.TransientBuilder;
 import org.qi4j.api.composite.TransientComposite;
@@ -27,8 +28,6 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
-
-import java.util.ArrayList;
 
 /**
  * Test of generic list injection

@@ -14,6 +14,8 @@ import org.qi4j.functional.Iterables;
 import java.util.ArrayList;
 import java.util.Properties;
 
+import static org.qi4j.api.util.Classes.interfacesOf;
+
 @Mixins( OSGiServiceExporter.OSGiServiceExporterMixin.class )
 public interface OSGiServiceExporter extends Activatable, ServiceComposite
 {
@@ -34,7 +36,7 @@ public interface OSGiServiceExporter extends Activatable, ServiceComposite
                 Class<? extends BundleContext> type = BundleContext.class;
                 BundleContext context = ref.metaInfo( type );
                 ServiceComposite service = ref.get();
-                Iterable<Class<?>> interfaces = Iterables.map( Classes.RAW_CLASS, Classes.INTERFACES_OF.map( service.getClass() ));
+                Iterable<Class<?>> interfaces = Iterables.map( Classes.RAW_CLASS, interfacesOf( service.getClass() ));
                 String[] interfaceNames = new String[(int) Iterables.count( interfaces )];
                 Properties properties = ref.metaInfo( Properties.class );
                 if( properties == null )

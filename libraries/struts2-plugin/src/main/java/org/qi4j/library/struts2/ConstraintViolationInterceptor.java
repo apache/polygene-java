@@ -6,10 +6,13 @@ import com.opensymphony.xwork2.ValidationAware;
 import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
 import com.opensymphony.xwork2.interceptor.PreResultListener;
 import com.opensymphony.xwork2.util.ValueStack;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.constraint.ConstraintViolation;
-import org.qi4j.library.struts2.util.ClassNameFilter;
+import org.qi4j.library.struts2.util.ClassNameMapper;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -143,24 +146,26 @@ public class ConstraintViolationInterceptor
      */
     protected String messageKey( Object target, String propertyName, ConstraintViolation violation )
     {
-        Class<?> type;
+        Iterable<Class<?>> types;
         if( target instanceof Composite )
         {
             Composite composite = (Composite) target;
-            type = Qi4j.DESCRIPTOR_FUNCTION.map( composite ).type();
+            types = Qi4j.DESCRIPTOR_FUNCTION.map( composite ).types();
         }
         else
         {
-            type = target.getClass();
+            ArrayList<Class<?>> list = new ArrayList<Class<?>>( 1 );
+            list.add(target.getClass());
+            types = list;
         }
 
-        return classNameInDotNotation( type, withoutCompositeOrEntitySuffix )
+        return classNameInDotNotation( types, withoutCompositeOrEntitySuffix )
                + "." + propertyName
                + "." + constraintKeyPart( violation )
                + ".constraint.violated";
     }
 
-    private static final ClassNameFilter withoutCompositeOrEntitySuffix = removeSuffixes( "Composite", "Entity" );
+    private static final ClassNameMapper withoutCompositeOrEntitySuffix = removeSuffixes( "Composite", "Entity" );
 
     private String constraintKeyPart( ConstraintViolation constraintViolation )
     {

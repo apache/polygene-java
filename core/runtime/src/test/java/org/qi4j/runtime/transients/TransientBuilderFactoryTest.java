@@ -18,7 +18,7 @@ import java.lang.reflect.Method;
 import org.hamcrest.core.IsEqual;
 import org.junit.Test;
 import org.qi4j.api.common.UseDefaults;
-import org.qi4j.api.composite.NoSuchCompositeException;
+import org.qi4j.api.composite.NoSuchTransientException;
 import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.concern.GenericConcern;
@@ -46,7 +46,7 @@ public class TransientBuilderFactoryTest
      *
      * @throws Exception expected
      */
-    @Test( expected = NoSuchCompositeException.class )
+    @Test( expected = NoSuchTransientException.class )
     public void newBuilderForUnregisteredComposite()
         throws Exception
     {
@@ -132,7 +132,7 @@ public class TransientBuilderFactoryTest
         assembler.module().newTransientBuilder( AnyComposite.class );
     }
 
-    @Test(expected = ConstraintViolationException.class )
+    @Test( expected = ConstraintViolationException.class )
     public void testClassAsTransient()
     {
         SingletonAssembler assembler = new SingletonAssembler()
@@ -146,9 +146,9 @@ public class TransientBuilderFactoryTest
         };
 
         AnyTransient anyTransient = assembler.module().newTransient( AnyTransient.class );
-        assertThat( anyTransient.hello( "me" ), new IsEqual<String>("Hello ME from Module 1") );
+        assertThat( anyTransient.hello( "me" ), new IsEqual<String>( "Hello ME from Module 1" ) );
 
-        assertThat( anyTransient.hello( "World" ), new IsEqual<String>( "Hello WORLD from ME"  ) );
+        assertThat( anyTransient.hello( "World" ), new IsEqual<String>( "Hello WORLD from ME" ) );
         anyTransient.hello( "Universe" );
     }
 

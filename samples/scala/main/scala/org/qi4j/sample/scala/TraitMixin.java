@@ -108,7 +108,7 @@ public class TraitMixin
 
                                 return current;
                             }
-                        }, Iterables.map( Classes.RAW_CLASS, Classes.INTERFACES_OF.map( compositeType ) ) ) );
+                        }, Iterables.map( Classes.RAW_CLASS, interfacesOf( compositeType ) ) ) );
 
                 if (traitClass == null)
                     return false;

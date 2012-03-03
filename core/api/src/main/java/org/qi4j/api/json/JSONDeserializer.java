@@ -1,5 +1,20 @@
 package org.qi4j.api.json;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
@@ -13,7 +28,11 @@ import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.property.DefaultValues;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.structure.Module;
-import org.qi4j.api.type.*;
+import org.qi4j.api.type.CollectionType;
+import org.qi4j.api.type.EnumType;
+import org.qi4j.api.type.MapType;
+import org.qi4j.api.type.ValueCompositeType;
+import org.qi4j.api.type.ValueType;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.util.Dates;
 import org.qi4j.api.value.ValueBuilder;
@@ -21,12 +40,7 @@ import org.qi4j.api.value.ValueDescriptor;
 import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.*;
+import static org.qi4j.functional.Iterables.first;
 
 /**
  * TODO
@@ -40,17 +54,22 @@ public class JSONDeserializer
      * by clients to figure out whether to add "" around a string to be deserialized.
      *
      * @param valueType
+     *
      * @return
      */
-    public static boolean isString(ValueType valueType)
+    public static boolean isString( ValueType valueType )
     {
-        if (!valueType.getClass().equals( ValueType.class ))
+        if( !valueType.getClass().equals( ValueType.class ) )
+        {
             return false;
+        }
         else
-            return !nonStringClasses.contains( valueType.type()  );
+        {
+            return !nonStringClasses.contains( first( valueType.types() ) );
+        }
     }
 
-    private static Map<Class<?>, Function<Object, Object>> typeFunctions = new HashMap<Class<?>, Function<Object, Object>>(  );
+    private static Map<Class<?>, Function<Object, Object>> typeFunctions = new HashMap<Class<?>, Function<Object, Object>>();
 
     public static <T> void registerDeserializer( Class<T> type, Function<Object, T> typeFunction )
     {
@@ -95,7 +114,7 @@ public class JSONDeserializer
             @Override
             public Integer map( Object o )
             {
-                return ((Number) o).intValue();
+                return ( (Number) o ).intValue();
             }
         } );
 
@@ -104,7 +123,7 @@ public class JSONDeserializer
             @Override
             public Long map( Object o )
             {
-                return ((Number) o).longValue();
+                return ( (Number) o ).longValue();
             }
         } );
 
@@ -113,7 +132,7 @@ public class JSONDeserializer
             @Override
             public Short map( Object o )
             {
-                return ((Number) o).shortValue();
+                return ( (Number) o ).shortValue();
             }
         } );
 
@@ -122,7 +141,7 @@ public class JSONDeserializer
             @Override
             public Byte map( Object o )
             {
-                return ((Number) o).byteValue();
+                return ( (Number) o ).byteValue();
             }
         } );
 
@@ -131,7 +150,7 @@ public class JSONDeserializer
             @Override
             public Float map( Object o )
             {
-                return ((Number) o).floatValue();
+                return ( (Number) o ).floatValue();
             }
         } );
 
@@ -140,7 +159,7 @@ public class JSONDeserializer
             @Override
             public Double map( Object o )
             {
-                return ((Number) o).doubleValue();
+                return ( (Number) o ).doubleValue();
             }
         } );
 
@@ -215,15 +234,20 @@ public class JSONDeserializer
     }
 
     public Object deserialize( Object json, ValueType valueType )
-            throws JSONException
+        throws JSONException
     {
-        if (json == JSONObject.NULL)
+        if( json == JSONObject.NULL )
+        {
             return null;
+        }
 
-        Function<Object, ? extends Object> typeFunction = typeFunctions.get( valueType.type() );
+        Class<?> first = first( valueType.types() );
+        Function<Object, ? extends Object> typeFunction = typeFunctions.get( first );
 
-        if (typeFunction != null)
+        if( typeFunction != null )
+        {
             return typeFunction.map( json );
+        }
 
         if( valueType instanceof CollectionType )
         {
@@ -232,40 +256,44 @@ public class JSONDeserializer
             JSONArray array = (JSONArray) json;
 
             Collection<Object> coll;
-            if( valueType.type().equals( Set.class ) )
+            if( first.equals( Set.class ) )
             {
                 coll = new LinkedHashSet<Object>();
 
                 for( int i = 0; i < array.length(); i++ )
                 {
                     Object value = array.get( i );
-                    coll.add( deserialize( value, collectionType.collectedType() ));
+                    coll.add( deserialize( value, collectionType.collectedType() ) );
                 }
-            } else
+            }
+            else
             {
                 coll = new ArrayList<Object>();
 
                 for( int i = 0; i < array.length(); i++ )
                 {
                     Object value = array.get( i );
-                    coll.add( deserialize( value, collectionType.collectedType() ));
+                    coll.add( deserialize( value, collectionType.collectedType() ) );
                 }
             }
 
             return coll;
-        } else if( valueType instanceof EnumType )
+        }
+        else if( valueType instanceof EnumType )
         {
             try
             {
-                Class enumType = valueType.type();
+                Class enumType = first;
 
                 // Get enum value
                 return Enum.valueOf( enumType, (String) json );
-            } catch( Exception e )
+            }
+            catch( Exception e )
             {
                 throw new IllegalArgumentException( e );
             }
-        } else if( valueType instanceof MapType )
+        }
+        else if( valueType instanceof MapType )
         {
             if( json instanceof String )
             {
@@ -281,14 +309,17 @@ public class JSONDeserializer
                     oin.close();
 
                     return result;
-                } catch( IOException e )
+                }
+                catch( IOException e )
                 {
                     throw new IllegalStateException( "Could not deserialize value", e );
-                } catch( ClassNotFoundException e )
+                }
+                catch( ClassNotFoundException e )
                 {
                     throw new IllegalStateException( "Could not find class for serialized value", e );
                 }
-            } else
+            }
+            else
             {
                 MapType mapType = (MapType) valueType;
 
@@ -301,13 +332,14 @@ public class JSONDeserializer
                 {
                     JSONObject entry = array.getJSONObject( i );
                     Object key = deserialize( entry.get( "key" ), mapType.getKeyType() );
-                    Object value = deserialize(entry.get( "value" ), mapType.getValueType());
+                    Object value = deserialize( entry.get( "value" ), mapType.getValueType() );
                     map.put( key, value );
                 }
 
                 return map;
             }
-        } else if( valueType instanceof ValueCompositeType )
+        }
+        else if( valueType instanceof ValueCompositeType )
         {
             JSONObject jsonObject = (JSONObject) json;
 
@@ -338,30 +370,35 @@ public class JSONDeserializer
                     {
                         value = deserialize( valueJson, persistentProperty.valueType() );
 
-                        if (persistentProperty.isImmutable())
+                        if( persistentProperty.isImmutable() )
                         {
-                            if (value instanceof Set)
+                            if( value instanceof Set )
                             {
-                                value = Collections.unmodifiableSet( (Set<? extends Object>) value);
-                            } else if (value instanceof List)
+                                value = Collections.unmodifiableSet( (Set<? extends Object>) value );
+                            }
+                            else if( value instanceof List )
                             {
-                                value = Collections.unmodifiableList( (List<? extends Object>) value);
-                            } else if (value instanceof Map)
+                                value = Collections.unmodifiableList( (List<? extends Object>) value );
+                            }
+                            else if( value instanceof Map )
                             {
-                                value = Collections.unmodifiableMap( (Map<? extends Object, ? extends Object>) value);
+                                value = Collections.unmodifiableMap( (Map<? extends Object, ? extends Object>) value );
                             }
                         }
                     }
 
                     values.put( persistentProperty.qualifiedName(), value );
-                } catch( JSONException e )
+                }
+                catch( JSONException e )
                 {
                     // Not found in JSON or wrong format - try defaulting it
                     try
                     {
-                        Object defaultValue = DefaultValues.getDefaultValue( persistentProperty.valueType().type() );
+                        Class<?> type = first( persistentProperty.valueType().types() );
+                        Object defaultValue = DefaultValues.getDefaultValue( type );
                         values.put( persistentProperty.qualifiedName(), defaultValue );
-                    } catch( RuntimeException e1 )
+                    }
+                    catch( RuntimeException e1 )
                     {
                         // Didn't work, throw the exception
                         throw e;
@@ -372,57 +409,74 @@ public class JSONDeserializer
             for( AssociationDescriptor associationDescriptor : actualValueType.associations() )
             {
                 Object valueJson = jsonObject.optString( associationDescriptor.qualifiedName().name() );
-                if (valueJson != null)
+                if( valueJson != null )
+                {
                     values.put( associationDescriptor.qualifiedName(), EntityReference.parseEntityReference( valueJson.toString() ) );
+                }
             }
 
             for( AssociationDescriptor associationDescriptor : actualValueType.manyAssociations() )
             {
                 JSONArray jsonArray = jsonObject.optJSONArray( associationDescriptor.qualifiedName().name() );
-                if (jsonArray != null)
+                if( jsonArray != null )
                 {
                     List<EntityReference> refs = new ArrayList<EntityReference>();
-                    for (int i = 0; i < jsonArray.length(); i++)
+                    for( int i = 0; i < jsonArray.length(); i++ )
                     {
                         refs.add( EntityReference.parseEntityReference( jsonArray.getString( i ) ) );
                     }
                 }
             }
 
-            ValueBuilder valueBuilder = module
-                    .newValueBuilderWithState( actualValueType.type(), new Function<PropertyDescriptor, Object>()
+            Class<?> type = first( actualValueType.types() );
+            ValueBuilder valueBuilder = module.newValueBuilderWithState(
+                type,
+                new Function<PropertyDescriptor, Object>()
+                {
+                    @Override
+                    public Object map( PropertyDescriptor descriptor )
                     {
-                        @Override
-                        public Object map( PropertyDescriptor descriptor )
-                        {
-                            return values.get( descriptor.qualifiedName() );
-                        }
-                    },new Function<AssociationDescriptor, EntityReference>()
+                        return values.get( descriptor.qualifiedName() );
+                    }
+                }, new Function<AssociationDescriptor, EntityReference>()
+                {
+                    @Override
+                    public EntityReference map(
+                        AssociationDescriptor associationDescriptor
+                    )
                     {
-                        @Override
-                        public EntityReference map( AssociationDescriptor associationDescriptor )
+                        Object ref = values.get( associationDescriptor
+                                                     .qualifiedName() );
+                        if( ref == null )
                         {
-                            Object ref = values.get( associationDescriptor.qualifiedName() );
-                            if (ref == null)
-                                return null;
-                            else
-                                return (EntityReference) ref;
+                            return null;
                         }
-                    },new Function<AssociationDescriptor, Iterable<EntityReference>>()
+                        else
+                        {
+                            return (EntityReference) ref;
+                        }
+                    }
+                }, new Function<AssociationDescriptor, Iterable<EntityReference>>()
+            {
+                @Override
+                public Iterable<EntityReference> map( AssociationDescriptor associationDescriptor )
+                {
+                    Object ref = values.get( associationDescriptor.qualifiedName() );
+                    if( ref == null )
                     {
-                        @Override
-                        public Iterable<EntityReference> map( AssociationDescriptor associationDescriptor )
-                        {
-                            Object ref = values.get( associationDescriptor.qualifiedName() );
-                            if (ref == null)
-                                return Iterables.empty();
-                            else
-                                return (Iterable<EntityReference>) ref;
-                        }
-                    });
+                        return Iterables.empty();
+                    }
+                    else
+                    {
+                        return (Iterable<EntityReference>) ref;
+                    }
+                }
+            }
+            );
 
             return valueBuilder.newInstance();
-        } else
+        }
+        else
         {
             try
             {
@@ -434,7 +488,8 @@ public class JSONDeserializer
 
                     ValueDescriptor valueDescriptor = module.valueDescriptor( type );
                     return deserialize( json, valueDescriptor.valueType() );
-                } else
+                }
+                else
                 {
                     String serializedString = (String) json;
                     byte[] bytes = serializedString.getBytes( "UTF-8" );
@@ -447,10 +502,11 @@ public class JSONDeserializer
                     if( result instanceof EntityReference )
                     {
                         EntityReference ref = (EntityReference) result;
-                        if( !valueType.type().equals( EntityReference.class ) )
+                        Class<?> type = first( valueType.types() );
+                        if( !type.equals( EntityReference.class ) )
                         {
-                            Class mixinType = valueType.type();
-                            if (module.isUnitOfWorkActive())
+                            Class mixinType = type;
+                            if( module.isUnitOfWorkActive() )
                             {
                                 UnitOfWork unitOfWork = module.currentUnitOfWork();
                                 result = unitOfWork.get( mixinType, ref.identity() );
@@ -460,10 +516,12 @@ public class JSONDeserializer
 
                     return result;
                 }
-            } catch( IOException e )
+            }
+            catch( IOException e )
             {
                 throw new IllegalStateException( "Could not deserialize value", e );
-            } catch( ClassNotFoundException e )
+            }
+            catch( ClassNotFoundException e )
             {
                 throw new IllegalStateException( "Could not find class for serialized value", e );
             }

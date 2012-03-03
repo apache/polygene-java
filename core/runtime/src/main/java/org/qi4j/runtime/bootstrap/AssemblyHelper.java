@@ -14,12 +14,6 @@
 
 package org.qi4j.runtime.bootstrap;
 
-import org.qi4j.api.common.AppliesTo;
-import org.qi4j.api.common.AppliesToFilter;
-import org.qi4j.api.common.ConstructionException;
-import org.qi4j.api.constraint.Constraint;
-import org.qi4j.runtime.composite.*;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -27,6 +21,15 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
+import org.qi4j.api.common.AppliesTo;
+import org.qi4j.api.common.AppliesToFilter;
+import org.qi4j.api.common.ConstructionException;
+import org.qi4j.api.constraint.Constraint;
+import org.qi4j.runtime.composite.ConcernModel;
+import org.qi4j.runtime.composite.ConstraintDeclaration;
+import org.qi4j.runtime.composite.FragmentClassLoader;
+import org.qi4j.runtime.composite.MixinModel;
+import org.qi4j.runtime.composite.SideEffectModel;
 
 /**
  * This helper is used when building the application model. It keeps track
@@ -35,9 +38,9 @@ import java.util.Map;
 public class AssemblyHelper
 {
     Map<Class, Class> instantiationClasses = new HashMap<Class, Class>();
-    Map<Class, ConstraintDeclaration> constraintDeclarations = new HashMap<Class, ConstraintDeclaration>(  );
+    Map<Class, ConstraintDeclaration> constraintDeclarations = new HashMap<Class, ConstraintDeclaration>();
     Map<ClassLoader, FragmentClassLoader> modifierClassLoaders = new HashMap<ClassLoader, FragmentClassLoader>();
-    Map<Class<?>, AppliesToFilter> appliesToInstances = new HashMap<Class<?>, AppliesToFilter>(  );
+    Map<Class<?>, AppliesToFilter> appliesToInstances = new HashMap<Class<?>, AppliesToFilter>();
 
     public MixinModel getMixinModel( Class mixinClass )
     {
@@ -93,16 +96,22 @@ public class AssemblyHelper
         return cl;
     }
 
-    public boolean appliesTo( Class<?> fragmentClass, Method method, Class<?> compositeType, Class<?> mixinClass )
+    public boolean appliesTo( Class<?> fragmentClass, Method method, Iterable<Class<?>> types, Class<?> mixinClass )
     {
         AppliesToFilter appliesToFilter = appliesToInstances.get( fragmentClass );
-        if (appliesToFilter == null)
+        if( appliesToFilter == null )
         {
             appliesToFilter = createAppliesToFilter( fragmentClass );
             appliesToInstances.put( fragmentClass, appliesToFilter );
         }
-
-        return appliesToFilter.appliesTo( method, mixinClass, compositeType, fragmentClass );
+        for( Class<?> compositeType : types )
+        {
+            if( appliesToFilter.appliesTo( method, mixinClass, compositeType, fragmentClass ) )
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     public AppliesToFilter createAppliesToFilter( Class<?> fragmentClass )
@@ -176,10 +185,13 @@ public class AssemblyHelper
         return existing;
     }
 
-    public boolean appliesTo( Class<? extends Constraint<?, ?>> constraint, Class<? extends Annotation> annotationType, Type valueType )
+    public boolean appliesTo( Class<? extends Constraint<?, ?>> constraint,
+                              Class<? extends Annotation> annotationType,
+                              Type valueType
+    )
     {
         ConstraintDeclaration constraintDeclaration = constraintDeclarations.get( constraint );
-        if (constraintDeclaration == null)
+        if( constraintDeclaration == null )
         {
             constraintDeclaration = new ConstraintDeclaration( constraint );
             constraintDeclarations.put( constraint, constraintDeclaration );

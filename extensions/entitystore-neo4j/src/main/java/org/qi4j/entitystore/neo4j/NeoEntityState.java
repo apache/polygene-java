@@ -160,7 +160,7 @@ public class NeoEntityState
                 else
                 {
                     PropertyDescriptor persistentProperty = entityDescriptor().state().getPropertyByQualifiedName( stateName );
-                    if( prop instanceof String && persistentProperty.valueType().type().equals( String.class ) )
+                    if( prop instanceof String && persistentProperty.valueType().mainType().equals( String.class ) )
                     {
                         underlyingNode.setProperty( "prop::" + stateName.toString(), prop );
                     }

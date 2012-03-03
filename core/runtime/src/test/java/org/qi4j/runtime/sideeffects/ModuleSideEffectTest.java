@@ -14,6 +14,8 @@
 
 package org.qi4j.runtime.sideeffects;
 
+import java.lang.reflect.Method;
+import java.util.Arrays;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
@@ -23,9 +25,6 @@ import org.qi4j.api.sideeffect.GenericSideEffect;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
-
-import java.lang.reflect.Method;
-import java.util.Arrays;
 
 /**
  * Test of declaring sideeffect in assembly

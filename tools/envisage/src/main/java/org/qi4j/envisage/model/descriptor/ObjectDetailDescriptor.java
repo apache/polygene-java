@@ -128,6 +128,6 @@ public final class ObjectDetailDescriptor
 
     public String toString()
     {
-        return descriptor.type().getSimpleName();
+        return descriptor.toString();
     }
 }

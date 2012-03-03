@@ -18,17 +18,16 @@ package org.qi4j.functional;
  * Generic function interface to map from two parameters to a third.
  *
  * This can be used with the Iterables methods to transform lists of objects.
- *
  */
 public interface Function2<First, Second, To>
 {
     /**
      * Map a single item from one type to another
      *
-     *
      * @param first
      * @param second
+     *
      * @return the mapped item
      */
-    To map( First first, Second second);
+    To map( First first, Second second );
 }

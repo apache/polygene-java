@@ -40,6 +40,8 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.*;
 
+import static org.qi4j.functional.Iterables.first;
+
 /**
  * JAVADOC
  */
@@ -134,7 +136,7 @@ public class SolrEntityIndexerMixin
 
         SolrInputDocument input = new SolrInputDocument();
         input.addField( "id", entityState.identity().identity() );
-        input.addField( "type", entityState.entityDescriptor().type().getName() );
+        input.addField( "type", first(entityState.entityDescriptor().types()).getName() );
         input.addField( "lastModified", new Date( entityState.lastModified() ) );
 
         for( Statement statement : graph )

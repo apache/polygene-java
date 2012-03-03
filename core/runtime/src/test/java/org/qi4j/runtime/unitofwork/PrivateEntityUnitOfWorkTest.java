@@ -15,11 +15,11 @@
 package org.qi4j.runtime.unitofwork;
 
 import org.junit.Test;
+import org.qi4j.api.association.Association;
+import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.Identity;
-import org.qi4j.api.association.Association;
-import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
@@ -31,7 +31,13 @@ import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
 import org.qi4j.api.value.ValueComposite;
-import org.qi4j.bootstrap.*;
+import org.qi4j.bootstrap.ApplicationAssembler;
+import org.qi4j.bootstrap.ApplicationAssembly;
+import org.qi4j.bootstrap.ApplicationAssemblyFactory;
+import org.qi4j.bootstrap.Assembler;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.Energy4Java;
+import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.EntityTestAssembler;
 
 import static org.junit.Assert.fail;
@@ -47,7 +53,7 @@ public class PrivateEntityUnitOfWorkTest
 
     @Test
     public void givenAppWithPrivateEntityWhenUnitOfWorkCanSeeItThenCanCommit()
-            throws Exception
+        throws Exception
     {
         System.setProperty( "qi4j.compacttrace", "off" );
 
@@ -55,36 +61,36 @@ public class PrivateEntityUnitOfWorkTest
         Application app = is.newApplication( new ApplicationAssembler()
         {
             public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
-                    throws AssemblyException
+                throws AssemblyException
             {
                 return applicationFactory.newApplicationAssembly( new Assembler[][][]{
+                    {
                         {
+                            new Assembler()
+                            {
+                                public void assemble( ModuleAssembly module )
+                                    throws AssemblyException
                                 {
-                                        new Assembler()
-                                        {
-                                            public void assemble( ModuleAssembly module )
-                                                    throws AssemblyException
-                                            {
-                                                module.objects( PrivateEntityUnitOfWorkTest.class );
-                                            }
-                                        }
+                                    module.objects( PrivateEntityUnitOfWorkTest.class );
                                 }
-                        },
-                        {
-                                {
-                                        new Assembler()
-                                        {
-                                            public void assemble( ModuleAssembly module )
-                                                    throws AssemblyException
-                                            {
-                                                module.entities( ProductEntity.class );
-                                                module.entities( ProductCatalogEntity.class ).visibleIn( application );
-                                                module.values( ProductInfo.class );
-                                                new EntityTestAssembler().assemble( module );
-                                            }
-                                        }
-                                }
+                            }
                         }
+                    },
+                    {
+                        {
+                            new Assembler()
+                            {
+                                public void assemble( ModuleAssembly module )
+                                    throws AssemblyException
+                                {
+                                    module.entities( ProductEntity.class );
+                                    module.entities( ProductCatalogEntity.class ).visibleIn( application );
+                                    module.values( ProductInfo.class );
+                                    new EntityTestAssembler().assemble( module );
+                                }
+                            }
+                        }
+                    }
                 } );
             }
         } );
@@ -100,7 +106,7 @@ public class PrivateEntityUnitOfWorkTest
             unitOfWork.newEntity( ProductEntity.class );
             fail( "Should not be able to create product here" );
         }
-        catch (EntityTypeNotFoundException e)
+        catch( EntityTypeNotFoundException e )
         {
             // Ok
             ProductCatalog catalog = unitOfWork.newEntity( ProductCatalog.class, "1" );
@@ -141,12 +147,12 @@ public class PrivateEntityUnitOfWorkTest
         Product findProduct( String id );
     }
 
-    @Mixins(ProductCatalogEntity.ProductRepositoryMixin.class)
+    @Mixins( ProductCatalogEntity.ProductRepositoryMixin.class )
     interface ProductCatalogEntity
-            extends ProductCatalog, EntityComposite
+        extends ProductCatalog, EntityComposite
     {
         abstract class ProductRepositoryMixin
-                implements ProductCatalog
+            implements ProductCatalog
         {
             @Structure
             private UnitOfWorkFactory uowf;
@@ -177,9 +183,9 @@ public class PrivateEntityUnitOfWorkTest
         }
     }
 
-    @Mixins({AccountMixin.class})
+    @Mixins( { AccountMixin.class } )
     public interface AccountComposite
-            extends Account, EntityComposite
+        extends Account, EntityComposite
     {
     }
 
@@ -193,7 +199,7 @@ public class PrivateEntityUnitOfWorkTest
     }
 
     public static abstract class AccountMixin
-            implements Account
+        implements Account
     {
         public void add( int amount )
         {
@@ -214,7 +220,7 @@ public class PrivateEntityUnitOfWorkTest
     }
 
     public interface CustomerComposite
-            extends Customer, EntityComposite
+        extends Customer, EntityComposite
     {
     }
 
@@ -224,7 +230,7 @@ public class PrivateEntityUnitOfWorkTest
     }
 
     public interface LineItemComposite
-            extends LineItem, EntityComposite
+        extends LineItem, EntityComposite
     {
     }
 
@@ -236,12 +242,12 @@ public class PrivateEntityUnitOfWorkTest
     }
 
     public interface OrderComposite
-            extends Order, EntityComposite
+        extends Order, EntityComposite
     {
     }
 
     public interface ProductInfo
-            extends ValueComposite
+        extends ValueComposite
     {
         Property<String> description();
 
@@ -258,7 +264,7 @@ public class PrivateEntityUnitOfWorkTest
     }
 
     public interface ProductEntity
-            extends Product, EntityComposite
+        extends Product, EntityComposite
     {
     }
 }

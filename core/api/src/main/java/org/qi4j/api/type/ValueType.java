@@ -14,26 +14,56 @@
 
 package org.qi4j.api.type;
 
+import org.qi4j.functional.Function;
+import org.qi4j.functional.Iterables;
+
+import static org.qi4j.functional.Iterables.first;
+
 /**
  * Base class for types of values in ValueComposites and Properties.
+ *
+ * TODO I think the ValueType system requires some major re-thinking.
  */
 public class ValueType
+    implements HasTypes
 {
-    protected final Class<?> type;
+    protected final Iterable<Class<?>> types;
 
     public ValueType( Class<?> type )
     {
-        this.type = type;
+        this( Iterables.iterable( type ) );
     }
 
-    public Class<?> type()
+    public ValueType( Iterable<? extends Class<?>> types )
     {
-        return type;
+        this.types = (Iterable<Class<?>>) types;
+    }
+
+    public Class<?> mainType()
+    {
+        return first( types );
+    }
+
+    public Iterable<Class<?>> types()
+    {
+        return types;
     }
 
     @Override
     public String toString()
     {
-        return type.getName();
+        String name = Iterables.toString( types, new Function<Class<?>, String>()
+        {
+            @Override
+            public String map( Class<?> item )
+            {
+                return item.getName();
+            }
+        }, "," );
+        if( name.contains( "," ) )
+        {
+            name = "{" + name + "}";
+        }
+        return name;
     }
 }

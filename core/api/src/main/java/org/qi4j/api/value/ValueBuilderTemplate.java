@@ -4,8 +4,6 @@ import org.qi4j.api.structure.Module;
 
 /**
  * TODO
- *
- *
  */
 public abstract class ValueBuilderTemplate<T>
 {
@@ -16,9 +14,9 @@ public abstract class ValueBuilderTemplate<T>
         this.type = type;
     }
 
-    protected abstract void build(T prototype);
+    protected abstract void build( T prototype );
 
-    public T newInstance(Module module)
+    public T newInstance( Module module )
     {
         ValueBuilder<T> builder = module.newValueBuilder( type );
         build( builder.prototype() );

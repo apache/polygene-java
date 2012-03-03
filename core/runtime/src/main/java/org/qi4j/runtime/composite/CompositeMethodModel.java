@@ -14,6 +14,12 @@
 
 package org.qi4j.runtime.composite;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.composite.MethodDescriptor;
 import org.qi4j.functional.HierarchicalVisitor;
@@ -22,14 +28,9 @@ import org.qi4j.runtime.injection.Dependencies;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.structure.ModuleInstance;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.qi4j.functional.Iterables.*;
+import static org.qi4j.functional.Iterables.filter;
+import static org.qi4j.functional.Iterables.flattenIterables;
+import static org.qi4j.functional.Iterables.iterable;
 import static org.qi4j.functional.Specifications.notNull;
 
 /**
@@ -97,7 +98,7 @@ public final class CompositeMethodModel
     public Object invoke( Object composite, Object[] params, MixinsInstance mixins, ModuleInstance moduleInstance )
         throws Throwable
     {
-        constraintsInstance.checkValid( composite, method,  params );
+        constraintsInstance.checkValid( composite, method, params );
 
         CompositeMethodInstance methodInstance = getInstance( moduleInstance );
         try
@@ -170,9 +171,10 @@ public final class CompositeMethodModel
     }
 
     @Override
-    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> modelVisitor ) throws ThrowableType
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> modelVisitor )
+        throws ThrowableType
     {
-        if (modelVisitor.visitEnter( this ))
+        if( modelVisitor.visitEnter( this ) )
         {
             constraints.accept( modelVisitor );
             concerns.accept( modelVisitor );

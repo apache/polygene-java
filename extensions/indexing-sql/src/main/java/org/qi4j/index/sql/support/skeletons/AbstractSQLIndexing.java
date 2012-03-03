@@ -14,11 +14,24 @@
 
 package org.qi4j.index.sql.support.skeletons;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.sql.Types;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import org.qi4j.api.Qi4j;
+import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.Identity;
-import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
@@ -45,7 +58,12 @@ import org.sql.generation.api.grammar.builders.modification.ColumnSourceByValues
 import org.sql.generation.api.grammar.builders.modification.DeleteBySearchBuilder;
 import org.sql.generation.api.grammar.builders.modification.UpdateBySearchBuilder;
 import org.sql.generation.api.grammar.builders.query.QuerySpecificationBuilder;
-import org.sql.generation.api.grammar.factories.*;
+import org.sql.generation.api.grammar.factories.BooleanFactory;
+import org.sql.generation.api.grammar.factories.ColumnsFactory;
+import org.sql.generation.api.grammar.factories.LiteralFactory;
+import org.sql.generation.api.grammar.factories.ModificationFactory;
+import org.sql.generation.api.grammar.factories.QueryFactory;
+import org.sql.generation.api.grammar.factories.TableReferenceFactory;
 import org.sql.generation.api.grammar.modification.DeleteStatement;
 import org.sql.generation.api.grammar.modification.InsertStatement;
 import org.sql.generation.api.grammar.modification.UpdateSourceByExpression;
@@ -53,15 +71,10 @@ import org.sql.generation.api.grammar.modification.UpdateStatement;
 import org.sql.generation.api.grammar.query.QueryExpression;
 import org.sql.generation.api.vendor.SQLVendor;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.sql.*;
-import java.util.*;
-
+import static org.qi4j.functional.Iterables.first;
 import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_NAME;
 
 /**
- * 
  * @author Stanislav Muhametsin
  */
 public class AbstractSQLIndexing
@@ -132,7 +145,7 @@ public class AbstractSQLIndexing
             updateEntityTablePS = connection.prepareStatement( vendor.toString( this.createUpdateEntityTableStatement(
                 schemaName, vendor ) ) );
             queryEntityPKPS = connection.prepareStatement( vendor.toString( this
-                .createQueryEntityPkByIdentityStatement( schemaName, vendor ) ) );
+                                                                                .createQueryEntityPkByIdentityStatement( schemaName, vendor ) ) );
             removeEntityPS = connection.prepareStatement( vendor.toString( this.createDeleteFromEntityTableStatement(
                 schemaName, vendor ) ) );
             insertToPropertyQNamesPS = connection.prepareStatement( vendor.toString( this.createInsertStatement(
@@ -152,13 +165,13 @@ public class AbstractSQLIndexing
                     if( status.equals( EntityStatus.NEW ) )
                     {
                         pk = this.insertEntityInfoAndProperties( connection, qNameInsertPSs, insertToPropertyQNamesPS,
-                            insertToEntityTablePS, eState, qNamePKs );
+                                                                 insertToEntityTablePS, eState, qNamePKs );
                     }
                     else if( status.equals( EntityStatus.UPDATED ) )
                     {
                         pk = this.updateEntityInfoAndProperties( connection, qNameInsertPSs, insertToPropertyQNamesPS,
-                            clearQNamesPS, queryEntityPKPS, updateEntityTablePS, insertToEntityTablePS, eState,
-                            qNamePKs );
+                                                                 clearQNamesPS, queryEntityPKPS, updateEntityTablePS, insertToEntityTablePS, eState,
+                                                                 qNamePKs );
                     }
                     else if( status.equals( EntityStatus.REMOVED ) )
                     {
@@ -193,7 +206,7 @@ public class AbstractSQLIndexing
                     if( status.equals( EntityStatus.NEW ) || status.equals( EntityStatus.UPDATED ) )
                     {
                         this.insertAssoAndManyAssoQNames( qNameInsertPSs, insertToPropertyQNamesPS, eState,
-                            qNamePKs.get( pk ), pk );
+                                                          qNamePKs.get( pk ), pk );
                     }
                 }
             }
@@ -206,7 +219,6 @@ public class AbstractSQLIndexing
             }
 
             connection.commit();
-
         }
         catch( SQLException sqle )
         {
@@ -225,12 +237,12 @@ public class AbstractSQLIndexing
             {
                 SQLUtil.closeQuietly( ps );
             }
-
         }
     }
 
     protected InsertStatement createInsertStatement( String schemaName, String tableName, Integer amountOfColumns,
-        SQLVendor vendor )
+                                                     SQLVendor vendor
+    )
     {
         ModificationFactory m = vendor.getModificationFactory();
         LiteralFactory l = vendor.getLiteralFactory();
@@ -267,13 +279,13 @@ public class AbstractSQLIndexing
         builder
             .setTargetTable( m.createTargetTable( t.tableName( schemaName, DBNames.ENTITY_TABLE_NAME ) ) )
             .addSetClauses( m.setClause( DBNames.ENTITY_TABLE_IDENTITY_COLUMN_NAME, paramSource ),
-                m.setClause( DBNames.ENTITY_TABLE_MODIFIED_COLUMN_NAME, paramSource ),
-                m.setClause( DBNames.ENTITY_TABLE_VERSION_COLUMN_NAME, paramSource ),
-                m.setClause( DBNames.ENTITY_TABLE_APPLICATION_VERSION_COLUMN_NAME, paramSource ) ).getWhereBuilder()
+                            m.setClause( DBNames.ENTITY_TABLE_MODIFIED_COLUMN_NAME, paramSource ),
+                            m.setClause( DBNames.ENTITY_TABLE_VERSION_COLUMN_NAME, paramSource ),
+                            m.setClause( DBNames.ENTITY_TABLE_APPLICATION_VERSION_COLUMN_NAME, paramSource ) )
+            .getWhereBuilder()
             .reset( b.eq( c.colName( DBNames.ENTITY_TABLE_PK_COLUMN_NAME ), l.param() ) );
 
         return builder.createExpression();
-
     }
 
     protected QueryExpression createQueryEntityPkByIdentityStatement( String schemaName, SQLVendor vendor )
@@ -295,23 +307,23 @@ public class AbstractSQLIndexing
         query.getWhere().reset( b.eq( c.colName( DBNames.ENTITY_TABLE_IDENTITY_COLUMN_NAME ), l.param() ) );
 
         return q.createQuery( query.createExpression() );
-
     }
 
     protected DeleteStatement createDeleteFromEntityTableStatement( String schemaName, SQLVendor vendor )
     {
         return this.createDeleteFromTableStatement( schemaName, DBNames.ENTITY_TABLE_NAME,
-            DBNames.ENTITY_TABLE_IDENTITY_COLUMN_NAME, vendor );
+                                                    DBNames.ENTITY_TABLE_IDENTITY_COLUMN_NAME, vendor );
     }
 
     protected DeleteStatement createClearEntityDataStatement( String schemaName, SQLVendor vendor )
     {
         return this.createDeleteFromTableStatement( schemaName, DBNames.ALL_QNAMES_TABLE_NAME,
-            DBNames.ENTITY_TABLE_PK_COLUMN_NAME, vendor );
+                                                    DBNames.ENTITY_TABLE_PK_COLUMN_NAME, vendor );
     }
 
     protected DeleteStatement createDeleteFromTableStatement( String schemaName, String tableName, String columnName,
-        SQLVendor vendor )
+                                                              SQLVendor vendor
+    )
     {
         ModificationFactory m = vendor.getModificationFactory();
         BooleanFactory b = vendor.getBooleanFactory();
@@ -380,7 +392,8 @@ public class AbstractSQLIndexing
     }
 
     private void syncQNamesInsertPSs( Connection connection, Map<QualifiedName, PreparedStatement> qNameInsertPSs,
-        Set<QualifiedName> qNames )
+                                      Set<QualifiedName> qNames
+    )
         throws SQLException
     {
         Set<QualifiedName> copy = new HashSet<QualifiedName>( qNames );
@@ -425,7 +438,7 @@ public class AbstractSQLIndexing
     {
         SQLVendor vendor = this._vendor;
         return connection.prepareStatement( vendor.toString( this.createAssoInsert( qNameInfo, vendor,
-            AMOUNT_OF_COLUMNS_IN_ASSO_TABLE ) ) );
+                                                                                    AMOUNT_OF_COLUMNS_IN_ASSO_TABLE ) ) );
     }
 
     private PreparedStatement createInsertManyAssociationPS( Connection connection, QNameInfo qNameInfo )
@@ -433,7 +446,7 @@ public class AbstractSQLIndexing
     {
         SQLVendor vendor = this._vendor;
         return connection.prepareStatement( vendor.toString( this.createAssoInsert( qNameInfo, vendor,
-            AMOUNT_OF_COLUMNS_IN_MANY_ASSO_TABLE ) ) );
+                                                                                    AMOUNT_OF_COLUMNS_IN_MANY_ASSO_TABLE ) ) );
     }
 
     private void clearAllEntitysQNames( PreparedStatement clearPropertiesPS, Long pk )
@@ -444,11 +457,12 @@ public class AbstractSQLIndexing
     }
 
     private Integer insertPropertyQNames( Connection connection, Map<QualifiedName, PreparedStatement> qNameInsertPSs,
-        PreparedStatement insertAllQNamesPS, EntityState state, Long entityPK )
+                                          PreparedStatement insertAllQNamesPS, EntityState state, Long entityPK
+    )
         throws SQLException
     {
-        Set<QualifiedName> qNames = this._state.entityUsedQNames().get()
-            .get( state.entityDescriptor().type().getName() );
+        String mainTypeName = first( state.entityDescriptor().types() ).getName();
+        Set<QualifiedName> qNames = this._state.entityUsedQNames().get().get( mainTypeName );
         this.syncQNamesInsertPSs( connection, qNameInsertPSs, qNames );
         Integer propertyPK = 0;
         for( PropertyDescriptor pDesc : state.entityDescriptor().state().properties() )
@@ -456,14 +470,14 @@ public class AbstractSQLIndexing
             if( SQLUtil.isQueryable( pDesc.accessor() ) )
             {
                 propertyPK = this.insertProperty( //
-                    qNameInsertPSs, //
-                    insertAllQNamesPS, //
-                    propertyPK, //
-                    entityPK, //
-                    pDesc.qualifiedName(), //
-                    state.getProperty( pDesc.qualifiedName() ), //
-                    null //
-                    );
+                                                  qNameInsertPSs, //
+                                                  insertAllQNamesPS, //
+                                                  propertyPK, //
+                                                  entityPK, //
+                                                  pDesc.qualifiedName(), //
+                                                  state.getProperty( pDesc.qualifiedName() ), //
+                                                  null //
+                );
             }
         }
 
@@ -471,7 +485,11 @@ public class AbstractSQLIndexing
     }
 
     private void insertAssoAndManyAssoQNames( Map<QualifiedName, PreparedStatement> qNameInsertPSs,
-        PreparedStatement insertToAllQNamesPS, EntityState state, Integer qNamePK, Long entityPK )
+                                              PreparedStatement insertToAllQNamesPS,
+                                              EntityState state,
+                                              Integer qNamePK,
+                                              Long entityPK
+    )
         throws SQLException
     {
         for( AssociationDescriptor aDesc : state.entityDescriptor().state().associations() )
@@ -520,7 +538,6 @@ public class AbstractSQLIndexing
                         ps.setString( 4, ref.identity() );
                         ps.addBatch();
                         ++qNamePK;
-
                     }
                     ++index;
                 }
@@ -529,13 +546,13 @@ public class AbstractSQLIndexing
     }
 
     private Integer insertProperty( //
-        Map<QualifiedName, PreparedStatement> qNameInsertPSs, //
-        PreparedStatement insertAllQNamesPS, //
-        Integer propertyPK, //
-        Long entityPK, //
-        QualifiedName qName, //
-        Object property, //
-        Integer parentQNameID //
+                                    Map<QualifiedName, PreparedStatement> qNameInsertPSs, //
+                                    PreparedStatement insertAllQNamesPS, //
+                                    Integer propertyPK, //
+                                    Long entityPK, //
+                                    QualifiedName qName, //
+                                    Object property, //
+                                    Integer parentQNameID //
     )
         throws SQLException
     {
@@ -548,17 +565,17 @@ public class AbstractSQLIndexing
                 if( info.getCollectionDepth() > 0 )
                 {
                     result = this.storeCollectionProperty( qNameInsertPSs, insertAllQNamesPS, propertyPK, entityPK,
-                        qName, (Collection<?>) property, parentQNameID );
+                                                           qName, (Collection<?>) property, parentQNameID );
                 }
                 else if( info.isFinalTypePrimitive() )
                 {
                     result = this.storePrimitiveProperty( qNameInsertPSs, insertAllQNamesPS, propertyPK, entityPK,
-                        qName, property, parentQNameID );
+                                                          qName, property, parentQNameID );
                 }
                 else
                 {
                     result = this.storeValueCompositeProperty( qNameInsertPSs, insertAllQNamesPS, propertyPK, entityPK,
-                        qName, property, parentQNameID );
+                                                               qName, property, parentQNameID );
                 }
             }
         }
@@ -566,13 +583,13 @@ public class AbstractSQLIndexing
     }
 
     private Integer storeCollectionProperty( //
-        Map<QualifiedName, PreparedStatement> qNameInsertPSs, //
-        PreparedStatement insertAllQNamesPS, //
-        Integer propertyPK, //
-        Long entityPK, //
-        QualifiedName qName, //
-        Collection<?> property, //
-        Integer parentQNameID //
+                                             Map<QualifiedName, PreparedStatement> qNameInsertPSs, //
+                                             PreparedStatement insertAllQNamesPS, //
+                                             Integer propertyPK, //
+                                             Long entityPK, //
+                                             QualifiedName qName, //
+                                             Collection<?> property, //
+                                             Integer parentQNameID //
     )
         throws SQLException
     {
@@ -581,14 +598,15 @@ public class AbstractSQLIndexing
         propertyPK = this.storeCollectionInfo( insertAllQNamesPS, propertyPK, entityPK, parentQNameID, ps, info );
 
         propertyPK = this.storeCollectionItems( qNameInsertPSs, property, insertAllQNamesPS,
-            DBNames.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME, ps, info.getTableName(), propertyPK, entityPK,
-            parentQNameID, info.getFinalType(), info.isFinalTypePrimitive() );
+                                                DBNames.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME, ps, info.getTableName(), propertyPK, entityPK,
+                                                parentQNameID, info.getFinalType(), info.isFinalTypePrimitive() );
 
         return propertyPK;
     }
 
     private Integer storeCollectionInfo( PreparedStatement insertAllQNamesPS, Integer propertyPK, Long entityPK,
-        Integer parentQNameID, PreparedStatement ps, QNameInfo info )
+                                         Integer parentQNameID, PreparedStatement ps, QNameInfo info
+    )
         throws SQLException
     {
         insertAllQNamesPS.setInt( 1, propertyPK );
@@ -613,9 +631,17 @@ public class AbstractSQLIndexing
     }
 
     private Integer storeCollectionItems( Map<QualifiedName, PreparedStatement> qNameInsertPSs,
-        Collection<?> collection, PreparedStatement insertAllQNamesPS, String path, PreparedStatement ps,
-        String tableName, Integer propertyPK, Long entityPK, Integer parentPK, Type finalType,
-        Boolean isFinalTypePrimitive )
+                                          Collection<?> collection,
+                                          PreparedStatement insertAllQNamesPS,
+                                          String path,
+                                          PreparedStatement ps,
+                                          String tableName,
+                                          Integer propertyPK,
+                                          Long entityPK,
+                                          Integer parentPK,
+                                          Type finalType,
+                                          Boolean isFinalTypePrimitive
+    )
         throws SQLException
     {
         Integer index = 0;
@@ -625,12 +651,12 @@ public class AbstractSQLIndexing
             if( o instanceof Collection<?> )
             {
                 propertyPK = this.storeCollectionItems( qNameInsertPSs, (Collection<?>) o, insertAllQNamesPS, itemPath,
-                    ps, tableName, propertyPK, entityPK, parentPK, finalType, isFinalTypePrimitive );
+                                                        ps, tableName, propertyPK, entityPK, parentPK, finalType, isFinalTypePrimitive );
             }
             else
             {
                 propertyPK = this.storeCollectionItem( qNameInsertPSs, ps, insertAllQNamesPS, propertyPK, entityPK,
-                    parentPK, itemPath, o, isFinalTypePrimitive, finalType );
+                                                       parentPK, itemPath, o, isFinalTypePrimitive, finalType );
 
                 ps.addBatch();
             }
@@ -640,15 +666,15 @@ public class AbstractSQLIndexing
     }
 
     private Integer storeCollectionItem( //
-        Map<QualifiedName, PreparedStatement> qNameInsertPSs, PreparedStatement ps, //
-        PreparedStatement insertAllQNamesPS, //
-        Integer propertyPK, //
-        Long entityPK, //
-        Integer parentPK, //
-        String path, //
-        Object item, //
-        Boolean isFinalTypePrimitive, //
-        Type finalType //
+                                         Map<QualifiedName, PreparedStatement> qNameInsertPSs, PreparedStatement ps, //
+                                         PreparedStatement insertAllQNamesPS, //
+                                         Integer propertyPK, //
+                                         Long entityPK, //
+                                         Integer parentPK, //
+                                         String path, //
+                                         Object item, //
+                                         Boolean isFinalTypePrimitive, //
+                                         Type finalType //
     )
         throws SQLException
     {
@@ -675,13 +701,13 @@ public class AbstractSQLIndexing
     }
 
     private Integer storePrimitiveProperty( //
-        Map<QualifiedName, PreparedStatement> qNameInsertPSs, //
-        PreparedStatement insertAllQNamesPS, //
-        Integer propertyPK, //
-        Long entityPK, //
-        QualifiedName qName, //
-        Object property, //
-        Integer parentQNameID //
+                                            Map<QualifiedName, PreparedStatement> qNameInsertPSs, //
+                                            PreparedStatement insertAllQNamesPS, //
+                                            Integer propertyPK, //
+                                            Long entityPK, //
+                                            QualifiedName qName, //
+                                            Object property, //
+                                            Integer parentQNameID //
     )
         throws SQLException
     {
@@ -702,13 +728,13 @@ public class AbstractSQLIndexing
     }
 
     private Integer storeValueCompositeProperty( //
-        Map<QualifiedName, PreparedStatement> qNameInsertPSs, //
-        PreparedStatement insertAllQNamesPS, //
-        Integer propertyPK, //
-        Long entityPK, //
-        QualifiedName qName, //
-        Object property, //
-        Integer parentQNameID //
+                                                 Map<QualifiedName, PreparedStatement> qNameInsertPSs, //
+                                                 PreparedStatement insertAllQNamesPS, //
+                                                 Integer propertyPK, //
+                                                 Long entityPK, //
+                                                 QualifiedName qName, //
+                                                 Object property, //
+                                                 Integer parentQNameID //
     )
         throws SQLException
     {
@@ -728,10 +754,10 @@ public class AbstractSQLIndexing
     }
 
     private Integer storePropertiesOfVC( Map<QualifiedName, PreparedStatement> qNameInsertPSs, //
-        PreparedStatement insertAllQNamesPS, //
-        Integer propertyPK, //
-        Long entityPK, //
-        Object property //
+                                         PreparedStatement insertAllQNamesPS, //
+                                         Integer propertyPK, //
+                                         Long entityPK, //
+                                         Object property //
     )
         throws SQLException
     {
@@ -743,26 +769,27 @@ public class AbstractSQLIndexing
         {
 
             propertyPK = this.insertProperty( //
-                qNameInsertPSs, //
-                insertAllQNamesPS, //
-                propertyPK, //
-                entityPK, //
-                pDesc.qualifiedName(), //
-                state.propertyFor( pDesc.accessor() ).get(), //
-                originalPropertyPK //
-                );
+                                              qNameInsertPSs, //
+                                              insertAllQNamesPS, //
+                                              propertyPK, //
+                                              entityPK, //
+                                              pDesc.qualifiedName(), //
+                                              state.propertyFor( pDesc.accessor() ).get(), //
+                                              originalPropertyPK //
+            );
         }
 
         return propertyPK;
     }
 
     private void storePrimitiveUsingPS( PreparedStatement ps, Integer nextFreeIndex, Object primitive,
-        Type primitiveType )
+                                        Type primitiveType
+    )
         throws SQLException
     {
         if( primitiveType instanceof ParameterizedType )
         {
-            primitiveType = ((ParameterizedType) primitiveType).getRawType();
+            primitiveType = ( (ParameterizedType) primitiveType ).getRawType();
         }
 
         if( primitiveType instanceof Class<?> && Enum.class.isAssignableFrom( (Class<?>) primitiveType ) )
@@ -787,23 +814,29 @@ public class AbstractSQLIndexing
         }
         else
         {
-            ValueDescriptor vDesc = this._qi4SPI.getValueDescriptor( (ValueComposite) vc );
-            String vType = vDesc.type().getName();
+            ValueDescriptor vDesc = this._qi4SPI.getValueDescriptor( vc );
+            String vType = first( vDesc.types() ).getName();
             Integer classID = this._state.usedClassesPKs().get().get( vType );
             ps.setInt( nextFreeIndex, classID );
         }
     }
 
     private Long updateEntityInfoAndProperties( Connection connection,
-        Map<QualifiedName, PreparedStatement> qNameInsertPSs, PreparedStatement insertAllQNamesPS,
-        PreparedStatement clearPropertiesPS, PreparedStatement queryPKPS, PreparedStatement ps,
-        PreparedStatement insertEntityInfoPS, EntityState state, Map<Long, Integer> qNamePKs )
+                                                Map<QualifiedName, PreparedStatement> qNameInsertPSs,
+                                                PreparedStatement insertAllQNamesPS,
+                                                PreparedStatement clearPropertiesPS,
+                                                PreparedStatement queryPKPS,
+                                                PreparedStatement ps,
+                                                PreparedStatement insertEntityInfoPS,
+                                                EntityState state,
+                                                Map<Long, Integer> qNamePKs
+    )
         throws SQLException
     {
         Long entityPK = null;
         if( state instanceof SQLEntityState )
         {
-            entityPK = ((SQLEntityState) state).getEntityPK();
+            entityPK = ( (SQLEntityState) state ).getEntityPK();
         }
         else
         {
@@ -837,29 +870,32 @@ public class AbstractSQLIndexing
             ps.addBatch();
 
             Integer nextUsableQNamePK = this.insertPropertyQNames( connection, qNameInsertPSs, insertAllQNamesPS,
-                state, entityPK );
+                                                                   state, entityPK );
             qNamePKs.put( entityPK, nextUsableQNamePK );
-
         }
         else
         {
             // Most likely re-indexing
             entityPK = this.insertEntityInfoAndProperties( connection, qNameInsertPSs, insertAllQNamesPS,
-                insertEntityInfoPS, state, qNamePKs );
+                                                           insertEntityInfoPS, state, qNamePKs );
         }
 
         return entityPK;
     }
 
     private Long insertEntityInfoAndProperties( Connection connection,
-        Map<QualifiedName, PreparedStatement> qNameInsertPSs, PreparedStatement insertAllQNamesPS,
-        PreparedStatement ps, EntityState state, Map<Long, Integer> qNamePKs )
+                                                Map<QualifiedName, PreparedStatement> qNameInsertPSs,
+                                                PreparedStatement insertAllQNamesPS,
+                                                PreparedStatement ps,
+                                                EntityState state,
+                                                Map<Long, Integer> qNamePKs
+    )
         throws SQLException
     {
         Long entityPK = null;
         if( state instanceof SQLEntityState )
         {
-            entityPK = ((SQLEntityState) state).getEntityPK();
+            entityPK = ( (SQLEntityState) state ).getEntityPK();
         }
         else
         {
@@ -867,11 +903,13 @@ public class AbstractSQLIndexing
         }
 
         ps.setLong( 1, entityPK );
-        String entityType = state.entityDescriptor().type().getName();
+        String entityType = first( state.entityDescriptor().types() ).getName();
         if( this._state.entityTypeInfos().get().get( entityType ) == null )
         {
             throw new InternalError( "Tried to get entity : " + entityType
-                + ", but only aware of the following entities: " + this._state.entityTypeInfos().get() );
+                                     + ", but only aware of the following entities: " + this._state
+                .entityTypeInfos()
+                .get() );
         }
 
         ps.setInt( 2, this._state.entityTypeInfos().get().get( entityType ).getEntityTypePK() );
@@ -901,5 +939,4 @@ public class AbstractSQLIndexing
         this._state.tablePKs().get().put( tableName, result + 1 );
         return result;
     }
-
 }

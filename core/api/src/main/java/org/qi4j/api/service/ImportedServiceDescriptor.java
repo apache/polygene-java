@@ -23,4 +23,6 @@ public interface ImportedServiceDescriptor
     extends ModelDescriptor, IdentityDescriptor
 {
     Class<? extends ServiceImporter> serviceImporter();
+
+    Class<?> type();
 }

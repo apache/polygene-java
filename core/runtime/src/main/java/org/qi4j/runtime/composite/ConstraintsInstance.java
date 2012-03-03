@@ -15,14 +15,15 @@
 
 package org.qi4j.runtime.composite;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.CompositeInstance;
 import org.qi4j.api.constraint.ConstraintViolation;
 import org.qi4j.api.constraint.ConstraintViolationException;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
+import static org.qi4j.functional.Iterables.iterable;
 
 /**
  * JAVADOC
@@ -39,7 +40,7 @@ public final class ConstraintsInstance
     public void checkValid( Object instance, Method method, Object[] params )
         throws ConstraintViolationException
     {
-        if( valueConstraintsInstances.isEmpty())
+        if( valueConstraintsInstances.isEmpty() )
         {
             return; // No constraints to check
         }
@@ -71,8 +72,8 @@ public final class ConstraintsInstance
             {
                 throw new ConstraintViolationException( (Composite) ( (CompositeInstance) instance ).proxy(), method, violations );
             }
-            throw new ConstraintViolationException( instance.toString(), instance.getClass()
-                .getName(), method, violations );
+            Iterable<? extends Class<?>> types = iterable( instance.getClass() );
+            throw new ConstraintViolationException( instance.toString(), (Iterable<Class<?>>) types, method, violations );
         }
     }
 }

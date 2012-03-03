@@ -14,6 +14,14 @@
  */
 package org.qi4j.runtime.property;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.type.CollectionType;
 import org.qi4j.api.type.MapType;
@@ -21,13 +29,11 @@ import org.qi4j.api.type.ValueCompositeType;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.runtime.value.ValueInstance;
 
-import java.util.*;
-
 /**
  * {@code PropertyInstance} represents a property.
  */
 public class PropertyInstance<T>
-        implements Property<T>
+    implements Property<T>
 {
     protected volatile T value;
     protected PropertyInfo model;
@@ -88,6 +94,7 @@ public class PropertyInstance<T>
      * equal, then the properties are equal
      *
      * @param o The other object to compare.
+     *
      * @return Returns a {@code boolean} indicator whether this object is equals the other.
      */
     public boolean equals( Object o )
@@ -155,18 +162,20 @@ public class PropertyInstance<T>
             {
                 ValueInstance.getValueInstance( (ValueComposite) value ).prepareToBuild();
             }
-        } else if( propertyDescriptor.valueType() instanceof CollectionType)
+        }
+        else if( propertyDescriptor.valueType() instanceof CollectionType )
         {
             Object value = get();
 
-            if (value != null)
+            if( value != null )
             {
-                if (value instanceof List)
+                if( value instanceof List )
                 {
-                    value = new ArrayList((Collection) value);
-                } else if (value instanceof Set)
+                    value = new ArrayList( (Collection) value );
+                }
+                else if( value instanceof Set )
                 {
-                    value = new LinkedHashSet( (Collection) value);
+                    value = new LinkedHashSet( (Collection) value );
                 }
 
                 // Check if items are Values
@@ -182,13 +191,14 @@ public class PropertyInstance<T>
 
                 set( (T) value );
             }
-        } else if ( propertyDescriptor.valueType() instanceof MapType )
+        }
+        else if( propertyDescriptor.valueType() instanceof MapType )
         {
             Object value = get();
 
-            if (value != null)
+            if( value != null )
             {
-                Map map = new LinkedHashMap( (Map) value);
+                Map map = new LinkedHashMap( (Map) value );
 
                 // Check if keys/values are Values
                 MapType mapType = (MapType) propertyDescriptor.valueType();
@@ -222,20 +232,23 @@ public class PropertyInstance<T>
             {
                 ValueInstance.getValueInstance( (ValueComposite) value ).prepareBuilderState();
             }
-        } else if( propertyDescriptor.valueType() instanceof CollectionType )
+        }
+        else if( propertyDescriptor.valueType() instanceof CollectionType )
         {
             T value = get();
-            if (value != null)
+            if( value != null )
             {
-                if (propertyDescriptor.isImmutable())
+                if( propertyDescriptor.isImmutable() )
                 {
                     if( value instanceof List )
                     {
                         value = (T) Collections.unmodifiableList( (List<? extends Object>) value );
-                    } else if( value instanceof Set )
+                    }
+                    else if( value instanceof Set )
                     {
                         value = (T) Collections.unmodifiableSet( (Set<? extends Object>) value );
-                    } else
+                    }
+                    else
                     {
                         value = (T) Collections.unmodifiableCollection( (Collection<? extends Object>) value );
                     }
@@ -253,11 +266,12 @@ public class PropertyInstance<T>
                     }
                 }
             }
-        } else if( propertyDescriptor.valueType() instanceof MapType )
+        }
+        else if( propertyDescriptor.valueType() instanceof MapType )
         {
             T value = get();
 
-            if (value != null)
+            if( value != null )
             {
                 MapType mapType = (MapType) propertyDescriptor.valueType();
                 if( mapType.getKeyType() instanceof ValueCompositeType )
@@ -276,7 +290,7 @@ public class PropertyInstance<T>
                         ValueInstance.getValueInstance( (ValueComposite) instance ).prepareBuilderState();
                     }
                 }
-                if (propertyDescriptor.isImmutable())
+                if( propertyDescriptor.isImmutable() )
                 {
                     value = (T) Collections.unmodifiableMap( (Map<?, ?>) value );
                 }

@@ -1,19 +1,15 @@
 package org.qi4j.runtime.value;
 
-import org.qi4j.api.association.Association;
-import org.qi4j.api.association.ManyAssociation;
+import java.lang.reflect.AccessibleObject;
+import java.util.Map;
 import org.qi4j.api.association.AssociationStateHolder;
-import org.qi4j.api.property.Property;
 import org.qi4j.runtime.association.AssociationInstance;
 import org.qi4j.runtime.association.ManyAssociationInstance;
 import org.qi4j.runtime.property.PropertyInstance;
 
-import java.lang.reflect.AccessibleObject;
-import java.util.Map;
-
 /**
-* TODO
-*/
+ * TODO
+ */
 public final class ValueStateInstance
     implements AssociationStateHolder
 {
@@ -32,12 +28,14 @@ public final class ValueStateInstance
     }
 
     public <T> PropertyInstance<T> propertyFor( AccessibleObject accessor )
-            throws IllegalArgumentException
+        throws IllegalArgumentException
     {
         PropertyInstance<T> property = (PropertyInstance<T>) properties.get( accessor );
 
-        if (property == null)
-            throw new IllegalArgumentException( "No such property:"+accessor );
+        if( property == null )
+        {
+            throw new IllegalArgumentException( "No such property:" + accessor );
+        }
 
         return property;
     }
@@ -52,8 +50,10 @@ public final class ValueStateInstance
     {
         AssociationInstance<T> association = (AssociationInstance<T>) associations.get( accessor );
 
-        if (association == null)
-            throw new IllegalArgumentException( "No such association:"+accessor );
+        if( association == null )
+        {
+            throw new IllegalArgumentException( "No such association:" + accessor );
+        }
 
         return association;
     }
@@ -68,8 +68,10 @@ public final class ValueStateInstance
     {
         ManyAssociationInstance<T> manyAssociation = (ManyAssociationInstance<T>) manyAssociations.get( accessor );
 
-        if (manyAssociation == null)
-            throw new IllegalArgumentException( "No such many-association:"+accessor );
+        if( manyAssociation == null )
+        {
+            throw new IllegalArgumentException( "No such many-association:" + accessor );
+        }
 
         return manyAssociation;
     }
@@ -84,12 +86,18 @@ public final class ValueStateInstance
     public boolean equals( Object obj )
     {
         ValueStateInstance state = (ValueStateInstance) obj;
-        if (!properties.equals( state.properties ))
+        if( !properties.equals( state.properties ) )
+        {
             return false;
-        if (!associations.equals( state.associations ))
+        }
+        if( !associations.equals( state.associations ) )
+        {
             return false;
-        if (!manyAssociations.equals( state.manyAssociations ))
+        }
+        if( !manyAssociations.equals( state.manyAssociations ) )
+        {
             return false;
+        }
 
         return true;
     }

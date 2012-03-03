@@ -14,11 +14,30 @@
 
 package org.qi4j.index.sql.support.skeletons;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Types;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Pattern;
+import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.Identity;
-import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
@@ -48,26 +67,48 @@ import org.sql.generation.api.grammar.common.datatypes.SQLDataType;
 import org.sql.generation.api.grammar.definition.table.ConstraintCharacteristics;
 import org.sql.generation.api.grammar.definition.table.ReferentialAction;
 import org.sql.generation.api.grammar.definition.table.UniqueSpecification;
-import org.sql.generation.api.grammar.factories.*;
+import org.sql.generation.api.grammar.factories.DataTypeFactory;
+import org.sql.generation.api.grammar.factories.DefinitionFactory;
+import org.sql.generation.api.grammar.factories.LiteralFactory;
+import org.sql.generation.api.grammar.factories.ModificationFactory;
+import org.sql.generation.api.grammar.factories.QueryFactory;
+import org.sql.generation.api.grammar.factories.TableReferenceFactory;
 import org.sql.generation.api.grammar.manipulation.DropBehaviour;
 import org.sql.generation.api.grammar.manipulation.ObjectType;
 import org.sql.generation.api.grammar.modification.DeleteBySearch;
 import org.sql.generation.api.grammar.query.QueryExpression;
 import org.sql.generation.api.vendor.SQLVendor;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.sql.*;
-import java.util.*;
-import java.util.Date;
-import java.util.regex.Pattern;
-
-import static org.qi4j.index.sql.support.common.DBNames.*;
+import static org.qi4j.functional.Iterables.first;
+import static org.qi4j.index.sql.support.common.DBNames.ALL_QNAMES_TABLE_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ALL_QNAMES_TABLE_PK_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.APP_VERSION_PK_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.APP_VERSION_TABLE_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_APPLICATION_VERSION_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_IDENTITY_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_MODIFIED_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_PK_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_VERSION_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TYPES_TABLE_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TYPES_TABLE_PK_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TYPES_TABLE_TYPE_NAME_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENUM_LOOKUP_TABLE_ENUM_VALUE_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENUM_LOOKUP_TABLE_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENUM_LOOKUP_TABLE_PK_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.QNAME_TABLE_ASSOCIATION_INDEX_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.QNAME_TABLE_COLLECTION_PATH_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.QNAME_TABLE_NAME_PREFIX;
+import static org.qi4j.index.sql.support.common.DBNames.QNAME_TABLE_PARENT_QNAME_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.QNAME_TABLE_VALUE_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.USED_CLASSES_TABLE_CLASS_NAME_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.USED_CLASSES_TABLE_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.USED_CLASSES_TABLE_PK_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.USED_QNAMES_TABLE_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.USED_QNAMES_TABLE_QNAME_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.USED_QNAMES_TABLE_TABLE_NAME_COLUMN_NAME;
 
 /**
- * 
  * @author Stanislav Muhametsin
  */
 public abstract class AbstractSQLStartup
@@ -158,7 +199,6 @@ public abstract class AbstractSQLStartup
         {
             connection.setAutoCommit( wasAutoCommit );
         }
-
     }
 
     private void initTypes()
@@ -197,35 +237,35 @@ public abstract class AbstractSQLStartup
 
         this._customizableTypes = new HashMap<Class<?>, SQLTypeCustomizer>();
         this._customizableTypes.put( //
-            String.class, //
-            new SQLTypeCustomizer()
-            {
-                public SQLDataType customizeType( Type propertyType, SQLTypeInfo sqlTypeInfo )
-                {
-                    return _vendor.getDataTypeFactory().sqlVarChar( sqlTypeInfo.maxLength() );
-                }
-            } //
-            );
+                                     String.class, //
+                                     new SQLTypeCustomizer()
+                                     {
+                                         public SQLDataType customizeType( Type propertyType, SQLTypeInfo sqlTypeInfo )
+                                         {
+                                             return _vendor.getDataTypeFactory().sqlVarChar( sqlTypeInfo.maxLength() );
+                                         }
+                                     } //
+        );
         this._customizableTypes.put( //
-            BigInteger.class, //
-            new SQLTypeCustomizer()
-            {
-                public SQLDataType customizeType( Type propertyType, SQLTypeInfo sqlTypeInfo )
-                {
-                    return _vendor.getDataTypeFactory().decimal( sqlTypeInfo.maxLength() );
-                }
-            } //
-            );
+                                     BigInteger.class, //
+                                     new SQLTypeCustomizer()
+                                     {
+                                         public SQLDataType customizeType( Type propertyType, SQLTypeInfo sqlTypeInfo )
+                                         {
+                                             return _vendor.getDataTypeFactory().decimal( sqlTypeInfo.maxLength() );
+                                         }
+                                     } //
+        );
         this._customizableTypes.put( //
-            BigDecimal.class, //
-            new SQLTypeCustomizer()
-            {
-                public SQLDataType customizeType( Type propertyType, SQLTypeInfo sqlTypeInfo )
-                {
-                    return _vendor.getDataTypeFactory().decimal( sqlTypeInfo.maxLength() );
-                }
-            } //
-            );
+                                     BigDecimal.class, //
+                                     new SQLTypeCustomizer()
+                                     {
+                                         public SQLDataType customizeType( Type propertyType, SQLTypeInfo sqlTypeInfo )
+                                         {
+                                             return _vendor.getDataTypeFactory().decimal( sqlTypeInfo.maxLength() );
+                                         }
+                                     } //
+        );
     }
 
     protected void checkSchemaName( String schemaName )
@@ -261,7 +301,7 @@ public abstract class AbstractSQLStartup
         Set<String> usedClassNames = new HashSet<String>();
         Set<String> enumValues = new HashSet<String>();
         Boolean reindexingRequired = this.isReindexingNeeded( schemaFound, entityDescriptors, usedClassNames,
-            enumValues );
+                                                              enumValues );
 
         if( schemaFound && !reindexingRequired )
         {
@@ -305,8 +345,8 @@ public abstract class AbstractSQLStartup
                             .createSchemaDefinitionBuilder()
                             .setSchemaName( schemaName )
                             .createExpression()
-                        )
-                    );
+                    )
+                );
             }
             this.testRequiredCapabilities();
             stmt.execute(
@@ -315,23 +355,26 @@ public abstract class AbstractSQLStartup
                         .setTableName( t.tableName( schemaName, USED_CLASSES_TABLE_NAME ) )
                         .setTableContentsSource(
                             d.createTableElementListBuilder()
-                                .addTableElement( d.createColumnDefinition( USED_CLASSES_TABLE_PK_COLUMN_NAME, this._primitiveTypes.get( Integer.class ), false ) )
-                                .addTableElement( d.createColumnDefinition( USED_CLASSES_TABLE_CLASS_NAME_COLUMN_NAME, this._primitiveTypes.get( String.class ), false ) )
+                                .addTableElement( d.createColumnDefinition( USED_CLASSES_TABLE_PK_COLUMN_NAME, this._primitiveTypes
+                                    .get( Integer.class ), false ) )
+                                .addTableElement( d.createColumnDefinition( USED_CLASSES_TABLE_CLASS_NAME_COLUMN_NAME, this
+                                    ._primitiveTypes
+                                    .get( String.class ), false ) )
                                 .addTableElement( d.createTableConstraintDefinition( d.createUniqueConstraintBuilder()
-                                    .setUniqueness( UniqueSpecification.PRIMARY_KEY )
-                                    .addColumns( USED_CLASSES_TABLE_PK_COLUMN_NAME )
-                                    .createExpression()
+                                                                                         .setUniqueness( UniqueSpecification.PRIMARY_KEY )
+                                                                                         .addColumns( USED_CLASSES_TABLE_PK_COLUMN_NAME )
+                                                                                         .createExpression()
                                 ) )
                                 .addTableElement( d.createTableConstraintDefinition( d.createUniqueConstraintBuilder()
-                                    .setUniqueness( UniqueSpecification.UNIQUE )
-                                    .addColumns( USED_CLASSES_TABLE_CLASS_NAME_COLUMN_NAME )
-                                    .createExpression()
+                                                                                         .setUniqueness( UniqueSpecification.UNIQUE )
+                                                                                         .addColumns( USED_CLASSES_TABLE_CLASS_NAME_COLUMN_NAME )
+                                                                                         .createExpression()
                                 ) )
                                 .createExpression()
-                            )
+                        )
                         .createExpression()
-                    )
-                );
+                )
+            );
 
             this._state.tablePKs().get().put( USED_CLASSES_TABLE_NAME, 0L );
 
@@ -341,23 +384,26 @@ public abstract class AbstractSQLStartup
                         .setTableName( t.tableName( schemaName, ENTITY_TYPES_TABLE_NAME ) )
                         .setTableContentsSource(
                             d.createTableElementListBuilder()
-                                .addTableElement( d.createColumnDefinition( ENTITY_TYPES_TABLE_PK_COLUMN_NAME, this._primitiveTypes.get( Integer.class ), false ) )
-                                .addTableElement( d.createColumnDefinition( ENTITY_TYPES_TABLE_TYPE_NAME_COLUMN_NAME, this._primitiveTypes.get( String.class ), false ) )
+                                .addTableElement( d.createColumnDefinition( ENTITY_TYPES_TABLE_PK_COLUMN_NAME, this._primitiveTypes
+                                    .get( Integer.class ), false ) )
+                                .addTableElement( d.createColumnDefinition( ENTITY_TYPES_TABLE_TYPE_NAME_COLUMN_NAME, this
+                                    ._primitiveTypes
+                                    .get( String.class ), false ) )
                                 .addTableElement( d.createTableConstraintDefinition( d.createUniqueConstraintBuilder()
-                                    .setUniqueness( UniqueSpecification.PRIMARY_KEY )
-                                    .addColumns( ENTITY_TYPES_TABLE_PK_COLUMN_NAME )
-                                    .createExpression()
-                                    ) )
+                                                                                         .setUniqueness( UniqueSpecification.PRIMARY_KEY )
+                                                                                         .addColumns( ENTITY_TYPES_TABLE_PK_COLUMN_NAME )
+                                                                                         .createExpression()
+                                ) )
                                 .addTableElement( d.createTableConstraintDefinition( d.createUniqueConstraintBuilder()
-                                    .setUniqueness( UniqueSpecification.UNIQUE )
-                                    .addColumns( ENTITY_TYPES_TABLE_TYPE_NAME_COLUMN_NAME )
-                                    .createExpression()
-                                    ) )
+                                                                                         .setUniqueness( UniqueSpecification.UNIQUE )
+                                                                                         .addColumns( ENTITY_TYPES_TABLE_TYPE_NAME_COLUMN_NAME )
+                                                                                         .createExpression()
+                                ) )
                                 .createExpression()
-                            )
-                            .createExpression()
                         )
-                   );
+                        .createExpression()
+                )
+            );
 
             this._state.tablePKs().get().put( ENTITY_TYPES_TABLE_NAME, 0L );
 
@@ -365,9 +411,9 @@ public abstract class AbstractSQLStartup
             try
             {
                 rs = connection.getMetaData().getTables( null, schemaName, ENTITY_TABLE_NAME, new String[]
-                {
-                    "TABLE"
-                } );
+                                                         {
+                                                             "TABLE"
+                                                         } );
                 if( !rs.next() )
                 {
                     stmt.execute(
@@ -376,35 +422,46 @@ public abstract class AbstractSQLStartup
                                 .setTableName( t.tableName( schemaName, ENTITY_TABLE_NAME ) )
                                 .setTableContentsSource(
                                     d.createTableElementListBuilder()
-                                        .addTableElement( d.createColumnDefinition( ENTITY_TABLE_PK_COLUMN_NAME, this._primitiveTypes.get( Long.class ), false ) )
-                                        .addTableElement( d.createColumnDefinition( ENTITY_TYPES_TABLE_PK_COLUMN_NAME, this._primitiveTypes.get( Integer.class ), false ) )
-                                        .addTableElement( d.createColumnDefinition( ENTITY_TABLE_IDENTITY_COLUMN_NAME, this._primitiveTypes.get( String.class ), false ) )
-                                        .addTableElement( d.createColumnDefinition( ENTITY_TABLE_MODIFIED_COLUMN_NAME, this._primitiveTypes.get( Date.class ), false ) )
-                                        .addTableElement( d.createColumnDefinition( ENTITY_TABLE_VERSION_COLUMN_NAME, this._primitiveTypes.get( String.class ), false ) )
-                                        .addTableElement( d.createColumnDefinition( ENTITY_TABLE_APPLICATION_VERSION_COLUMN_NAME, this._primitiveTypes.get( String.class ), false ) )
+                                        .addTableElement( d.createColumnDefinition( ENTITY_TABLE_PK_COLUMN_NAME, this._primitiveTypes
+                                            .get( Long.class ), false ) )
+                                        .addTableElement( d.createColumnDefinition( ENTITY_TYPES_TABLE_PK_COLUMN_NAME, this
+                                            ._primitiveTypes
+                                            .get( Integer.class ), false ) )
+                                        .addTableElement( d.createColumnDefinition( ENTITY_TABLE_IDENTITY_COLUMN_NAME, this
+                                            ._primitiveTypes
+                                            .get( String.class ), false ) )
+                                        .addTableElement( d.createColumnDefinition( ENTITY_TABLE_MODIFIED_COLUMN_NAME, this
+                                            ._primitiveTypes
+                                            .get( Date.class ), false ) )
+                                        .addTableElement( d.createColumnDefinition( ENTITY_TABLE_VERSION_COLUMN_NAME, this
+                                            ._primitiveTypes
+                                            .get( String.class ), false ) )
+                                        .addTableElement( d.createColumnDefinition( ENTITY_TABLE_APPLICATION_VERSION_COLUMN_NAME, this
+                                            ._primitiveTypes
+                                            .get( String.class ), false ) )
                                         .addTableElement( d.createTableConstraintDefinition( d.createUniqueConstraintBuilder()
-                                            .setUniqueness( UniqueSpecification.PRIMARY_KEY )
-                                            .addColumns( ENTITY_TABLE_PK_COLUMN_NAME )
-                                            .createExpression()
-                                            ) )
+                                                                                                 .setUniqueness( UniqueSpecification.PRIMARY_KEY )
+                                                                                                 .addColumns( ENTITY_TABLE_PK_COLUMN_NAME )
+                                                                                                 .createExpression()
+                                        ) )
                                         .addTableElement( d.createTableConstraintDefinition( d.createUniqueConstraintBuilder()
-                                            .setUniqueness( UniqueSpecification.UNIQUE )
-                                            .addColumns( ENTITY_TABLE_IDENTITY_COLUMN_NAME )
-                                            .createExpression()
-                                            ) )
+                                                                                                 .setUniqueness( UniqueSpecification.UNIQUE )
+                                                                                                 .addColumns( ENTITY_TABLE_IDENTITY_COLUMN_NAME )
+                                                                                                 .createExpression()
+                                        ) )
                                         .addTableElement( d.createTableConstraintDefinition( d.createForeignKeyConstraintBuilder()
-                                            .addSourceColumns( ENTITY_TYPES_TABLE_PK_COLUMN_NAME )
-                                            .setTargetTableName( t.tableName( schemaName, ENTITY_TYPES_TABLE_NAME ) )
-                                            .addTargetColumns( ENTITY_TYPES_TABLE_PK_COLUMN_NAME )
-                                            .setOnDelete( ReferentialAction.RESTRICT )
-                                            .setOnUpdate( ReferentialAction.CASCADE )
-                                            .createExpression()
-                                            ) )
+                                                                                                 .addSourceColumns( ENTITY_TYPES_TABLE_PK_COLUMN_NAME )
+                                                                                                 .setTargetTableName( t.tableName( schemaName, ENTITY_TYPES_TABLE_NAME ) )
+                                                                                                 .addTargetColumns( ENTITY_TYPES_TABLE_PK_COLUMN_NAME )
+                                                                                                 .setOnDelete( ReferentialAction.RESTRICT )
+                                                                                                 .setOnUpdate( ReferentialAction.CASCADE )
+                                                                                                 .createExpression()
+                                        ) )
                                         .createExpression()
-                                   )
-                                   .createExpression()
-                              )
-                         );
+                                )
+                                .createExpression()
+                        )
+                    );
                     this._state.tablePKs().get().put( ENTITY_TABLE_NAME, 0L );
                 }
                 else
@@ -415,7 +472,7 @@ public abstract class AbstractSQLStartup
                         .put(
                             ENTITY_TABLE_NAME,
                             this.getNextPK( stmt, schemaName, ENTITY_TABLE_PK_COLUMN_NAME,
-                                ENTITY_TABLE_NAME, 0L ) );
+                                            ENTITY_TABLE_NAME, 0L ) );
                 }
             }
             finally
@@ -429,18 +486,20 @@ public abstract class AbstractSQLStartup
                         .setTableName( t.tableName( schemaName, ENUM_LOOKUP_TABLE_NAME ) )
                         .setTableContentsSource(
                             d.createTableElementListBuilder()
-                                .addTableElement( d.createColumnDefinition( ENUM_LOOKUP_TABLE_PK_COLUMN_NAME, this._primitiveTypes.get( Integer.class ), false ) )
-                                .addTableElement( d.createColumnDefinition( ENUM_LOOKUP_TABLE_ENUM_VALUE_NAME, this._primitiveTypes.get( String.class ), false ) )
+                                .addTableElement( d.createColumnDefinition( ENUM_LOOKUP_TABLE_PK_COLUMN_NAME, this._primitiveTypes
+                                    .get( Integer.class ), false ) )
+                                .addTableElement( d.createColumnDefinition( ENUM_LOOKUP_TABLE_ENUM_VALUE_NAME, this._primitiveTypes
+                                    .get( String.class ), false ) )
                                 .addTableElement( d.createTableConstraintDefinition( d.createUniqueConstraintBuilder()
-                                    .setUniqueness( UniqueSpecification.PRIMARY_KEY )
-                                    .addColumns( ENUM_LOOKUP_TABLE_PK_COLUMN_NAME )
-                                    .createExpression()
-                                    ) )
+                                                                                         .setUniqueness( UniqueSpecification.PRIMARY_KEY )
+                                                                                         .addColumns( ENUM_LOOKUP_TABLE_PK_COLUMN_NAME )
+                                                                                         .createExpression()
+                                ) )
                                 .createExpression()
-                           )
-                           .createExpression()
-                      )
-                 );
+                        )
+                        .createExpression()
+                )
+            );
 
             this._state.tablePKs().get().put( ENUM_LOOKUP_TABLE_NAME, 0L );
 
@@ -450,45 +509,50 @@ public abstract class AbstractSQLStartup
                         .setTableName( t.tableName( schemaName, USED_QNAMES_TABLE_NAME ) )
                         .setTableContentsSource(
                             d.createTableElementListBuilder()
-                                .addTableElement( d.createColumnDefinition( USED_QNAMES_TABLE_QNAME_COLUMN_NAME, this._primitiveTypes.get( String.class ), false ) )
-                                .addTableElement( d.createColumnDefinition( USED_QNAMES_TABLE_TABLE_NAME_COLUMN_NAME, this._primitiveTypes.get( String.class ), false ) )
+                                .addTableElement( d.createColumnDefinition( USED_QNAMES_TABLE_QNAME_COLUMN_NAME, this._primitiveTypes
+                                    .get( String.class ), false ) )
+                                .addTableElement( d.createColumnDefinition( USED_QNAMES_TABLE_TABLE_NAME_COLUMN_NAME, this
+                                    ._primitiveTypes
+                                    .get( String.class ), false ) )
                                 .addTableElement( d.createTableConstraintDefinition( d.createUniqueConstraintBuilder()
-                                    .setUniqueness( UniqueSpecification.PRIMARY_KEY )
-                                    .addColumns( USED_QNAMES_TABLE_QNAME_COLUMN_NAME, USED_QNAMES_TABLE_TABLE_NAME_COLUMN_NAME )
-                                    .createExpression()
-                                    ) )
+                                                                                         .setUniqueness( UniqueSpecification.PRIMARY_KEY )
+                                                                                         .addColumns( USED_QNAMES_TABLE_QNAME_COLUMN_NAME, USED_QNAMES_TABLE_TABLE_NAME_COLUMN_NAME )
+                                                                                         .createExpression()
+                                ) )
                                 .createExpression()
-                           )
-                           .createExpression()
-                      )
-                 );
-            
+                        )
+                        .createExpression()
+                )
+            );
+
             stmt.execute(
                 vendor.toString(
                     d.createTableDefinitionBuilder()
                         .setTableName( t.tableName( schemaName, ALL_QNAMES_TABLE_NAME ) )
                         .setTableContentsSource(
                             d.createTableElementListBuilder()
-                                .addTableElement( d.createColumnDefinition( ALL_QNAMES_TABLE_PK_COLUMN_NAME, this._primitiveTypes.get( Integer.class ), false ) )
-                                .addTableElement( d.createColumnDefinition( ENTITY_TABLE_PK_COLUMN_NAME, this._primitiveTypes.get( Long.class ), false ) )
+                                .addTableElement( d.createColumnDefinition( ALL_QNAMES_TABLE_PK_COLUMN_NAME, this._primitiveTypes
+                                    .get( Integer.class ), false ) )
+                                .addTableElement( d.createColumnDefinition( ENTITY_TABLE_PK_COLUMN_NAME, this._primitiveTypes
+                                    .get( Long.class ), false ) )
                                 .addTableElement( d.createTableConstraintDefinition( d.createUniqueConstraintBuilder()
-                                    .setUniqueness( UniqueSpecification.PRIMARY_KEY )
-                                    .addColumns( ALL_QNAMES_TABLE_PK_COLUMN_NAME, ENTITY_TABLE_PK_COLUMN_NAME )
-                                    .createExpression()
-                                    ) )
+                                                                                         .setUniqueness( UniqueSpecification.PRIMARY_KEY )
+                                                                                         .addColumns( ALL_QNAMES_TABLE_PK_COLUMN_NAME, ENTITY_TABLE_PK_COLUMN_NAME )
+                                                                                         .createExpression()
+                                ) )
                                 .addTableElement( d.createTableConstraintDefinition( d.createForeignKeyConstraintBuilder()
-                                    .addSourceColumns( ENTITY_TABLE_PK_COLUMN_NAME )
-                                    .setTargetTableName( t.tableName( schemaName, ENTITY_TABLE_NAME ) )
-                                    .addTargetColumns( ENTITY_TABLE_PK_COLUMN_NAME )
-                                    .setOnUpdate( ReferentialAction.CASCADE )
-                                    .setOnDelete( ReferentialAction.CASCADE )
-                                    .createExpression(), ConstraintCharacteristics.INITIALLY_DEFERRED_DEFERRABLE
-                                    ) )
+                                                                                         .addSourceColumns( ENTITY_TABLE_PK_COLUMN_NAME )
+                                                                                         .setTargetTableName( t.tableName( schemaName, ENTITY_TABLE_NAME ) )
+                                                                                         .addTargetColumns( ENTITY_TABLE_PK_COLUMN_NAME )
+                                                                                         .setOnUpdate( ReferentialAction.CASCADE )
+                                                                                         .setOnDelete( ReferentialAction.CASCADE )
+                                                                                         .createExpression(), ConstraintCharacteristics.INITIALLY_DEFERRED_DEFERRABLE
+                                ) )
                                 .createExpression()
-                           )
-                           .createExpression()
-                      )
-                 );
+                        )
+                        .createExpression()
+                )
+            );
 
             this._state.tablePKs().get().put( ALL_QNAMES_TABLE_NAME, 0L );
 
@@ -498,33 +562,33 @@ public abstract class AbstractSQLStartup
                         .setTableName( t.tableName( schemaName, APP_VERSION_TABLE_NAME ) )
                         .setTableContentsSource(
                             d.createTableElementListBuilder()
-                                .addTableElement( d.createColumnDefinition( APP_VERSION_PK_COLUMN_NAME, this._primitiveTypes.get( String.class ), false ) )
+                                .addTableElement( d.createColumnDefinition( APP_VERSION_PK_COLUMN_NAME, this._primitiveTypes
+                                    .get( String.class ), false ) )
                                 .addTableElement( d.createTableConstraintDefinition( d.createUniqueConstraintBuilder()
-                                    .setUniqueness( UniqueSpecification.PRIMARY_KEY )
-                                    .addColumns( APP_VERSION_PK_COLUMN_NAME )
-                                    .createExpression()
-                                    ) )
+                                                                                         .setUniqueness( UniqueSpecification.PRIMARY_KEY )
+                                                                                         .addColumns( APP_VERSION_PK_COLUMN_NAME )
+                                                                                         .createExpression()
+                                ) )
                                 .createExpression()
-                           )
-                           .createExpression()
-                      )
-                 );
-            
+                        )
+                        .createExpression()
+                )
+            );
+
             ModificationFactory m = vendor.getModificationFactory();
-            
 
             PreparedStatement ps = connection.prepareStatement(
                 vendor.toString(
                     m.insert()
-                    .setTableName( t.tableName( schemaName, APP_VERSION_TABLE_NAME ) )
-                    .setColumnSource(
-                        m.columnSourceByValues()
-                            .addValues( vendor.getLiteralFactory().param() )
-                            .createExpression()
+                        .setTableName( t.tableName( schemaName, APP_VERSION_TABLE_NAME ) )
+                        .setColumnSource(
+                            m.columnSourceByValues()
+                                .addValues( vendor.getLiteralFactory().param() )
+                                .createExpression()
                         )
-                    .createExpression()
-                    )
-                );
+                        .createExpression()
+                )
+            );
             ps.setString( 1, this._app.version() );
             ps.execute();
 
@@ -534,7 +598,7 @@ public abstract class AbstractSQLStartup
         {
             stmt.close();
         }
-        
+
         // @formatter:on
     }
 
@@ -550,9 +614,9 @@ public abstract class AbstractSQLStartup
                     this._vendor.getTableReferenceFactory().tableName(
                         this._state.schemaName().get(),
                         ENTITY_TABLE_NAME
-                     )
-                 )
-             ).createExpression();
+                    )
+                )
+            ).createExpression();
         connection.prepareStatement( this._vendor.toString( clearEntityData ) ).execute();
         // @formatter:on
 
@@ -577,7 +641,7 @@ public abstract class AbstractSQLStartup
             // @formatter:off
             Map<String, Long> pks = this._state.tablePKs().get();
             pks.put( ENTITY_TABLE_NAME, this.getNextPK( stmt, schemaName,
-                DBNames.ENTITY_TABLE_PK_COLUMN_NAME, DBNames.ENTITY_TABLE_NAME, 0L ) );
+                                                        DBNames.ENTITY_TABLE_PK_COLUMN_NAME, DBNames.ENTITY_TABLE_NAME, 0L ) );
 
             q.simpleQueryBuilder()
                 .select( ENTITY_TYPES_TABLE_PK_COLUMN_NAME, ENTITY_TYPES_TABLE_TYPE_NAME_COLUMN_NAME )
@@ -587,11 +651,11 @@ public abstract class AbstractSQLStartup
             ResultSet rs = stmt.executeQuery(
                 vendor.toString(
                     q.simpleQueryBuilder()
-                    .select( ENTITY_TYPES_TABLE_PK_COLUMN_NAME, ENTITY_TYPES_TABLE_TYPE_NAME_COLUMN_NAME )
-                    .from( t.tableName( schemaName, ENTITY_TYPES_TABLE_NAME ) )
-                    .createExpression()
-                    )
-                );
+                        .select( ENTITY_TYPES_TABLE_PK_COLUMN_NAME, ENTITY_TYPES_TABLE_TYPE_NAME_COLUMN_NAME )
+                        .from( t.tableName( schemaName, ENTITY_TYPES_TABLE_NAME ) )
+                        .createExpression()
+                )
+            );
 
             long pk = 0L;
             while( rs.next() )
@@ -612,11 +676,11 @@ public abstract class AbstractSQLStartup
             rs = stmt.executeQuery(
                 vendor.toString(
                     q.simpleQueryBuilder()
-                    .select( USED_CLASSES_TABLE_PK_COLUMN_NAME, USED_CLASSES_TABLE_CLASS_NAME_COLUMN_NAME )
-                    .from( t.tableName( schemaName, USED_CLASSES_TABLE_NAME ) )
-                    .createExpression()
-                    )
-                );
+                        .select( USED_CLASSES_TABLE_PK_COLUMN_NAME, USED_CLASSES_TABLE_CLASS_NAME_COLUMN_NAME )
+                        .from( t.tableName( schemaName, USED_CLASSES_TABLE_NAME ) )
+                        .createExpression()
+                )
+            );
 
             while( rs.next() )
             {
@@ -633,11 +697,11 @@ public abstract class AbstractSQLStartup
             rs = stmt.executeQuery(
                 vendor.toString(
                     q.simpleQueryBuilder()
-                    .select( ENUM_LOOKUP_TABLE_PK_COLUMN_NAME, ENUM_LOOKUP_TABLE_ENUM_VALUE_NAME )
-                    .from( t.tableName( schemaName, ENUM_LOOKUP_TABLE_NAME ) )
-                    .createExpression()
-                    )
-                );
+                        .select( ENUM_LOOKUP_TABLE_PK_COLUMN_NAME, ENUM_LOOKUP_TABLE_ENUM_VALUE_NAME )
+                        .from( t.tableName( schemaName, ENUM_LOOKUP_TABLE_NAME ) )
+                        .createExpression()
+                )
+            );
 
             while( rs.next() )
             {
@@ -656,11 +720,11 @@ public abstract class AbstractSQLStartup
         {
             SQLUtil.closeQuietly( stmt );
         }
-
     }
 
     private void writeAppMetadataToDB( Map<String, EntityDescriptor> entityDescriptors, Set<String> usedClassNames,
-        Set<String> allEnums )
+                                       Set<String> allEnums
+    )
         throws SQLException
     {
         Connection connection = this._dataSource.getDataSource().getConnection();
@@ -675,20 +739,20 @@ public abstract class AbstractSQLStartup
         PreparedStatement ps = connection.prepareStatement(
             vendor.toString(
                 m.insert()
-                .setTableName( t.tableName( schemaName, ENTITY_TYPES_TABLE_NAME ) )
-                .setColumnSource( m.columnSourceByValues()
-                    .addValues( l.param(), l.param() )
-                    .createExpression()
+                    .setTableName( t.tableName( schemaName, ENTITY_TYPES_TABLE_NAME ) )
+                    .setColumnSource( m.columnSourceByValues()
+                                          .addValues( l.param(), l.param() )
+                                          .createExpression()
                     )
-                .createExpression()
-                )
-            );
-        
+                    .createExpression()
+            )
+        );
+
         try
         {
             for( EntityDescriptor descriptor : entityDescriptors.values() )
             {
-                String entityTypeName = descriptor.type().getName();
+                String entityTypeName = first( descriptor.types() ).getName();
                 long pk = this._state.tablePKs().get().get( ENTITY_TYPES_TABLE_NAME );
                 ps.setInt( 1, (int) pk );
                 ps.setString( 2, entityTypeName );
@@ -705,14 +769,14 @@ public abstract class AbstractSQLStartup
         ps = connection.prepareStatement(
             vendor.toString(
                 m.insert()
-                .setTableName( t.tableName( schemaName, USED_CLASSES_TABLE_NAME ) )
-                .setColumnSource( m.columnSourceByValues()
-                    .addValues( l.param(), l.param() )
-                    .createExpression()
+                    .setTableName( t.tableName( schemaName, USED_CLASSES_TABLE_NAME ) )
+                    .setColumnSource( m.columnSourceByValues()
+                                          .addValues( l.param(), l.param() )
+                                          .createExpression()
                     )
-                .createExpression()
-                )
-            );
+                    .createExpression()
+            )
+        );
 
         try
         {
@@ -734,14 +798,14 @@ public abstract class AbstractSQLStartup
         ps = connection.prepareStatement(
             vendor.toString(
                 m.insert()
-                .setTableName( t.tableName( schemaName, ENUM_LOOKUP_TABLE_NAME ) )
-                .setColumnSource( m.columnSourceByValues()
-                    .addValues( l.param(), l.param() )
-                    .createExpression()
+                    .setTableName( t.tableName( schemaName, ENUM_LOOKUP_TABLE_NAME ) )
+                    .setColumnSource( m.columnSourceByValues()
+                                          .addValues( l.param(), l.param() )
+                                          .createExpression()
                     )
-                .createExpression()
-                )
-            );
+                    .createExpression()
+            )
+        );
 
         try
         {
@@ -764,15 +828,15 @@ public abstract class AbstractSQLStartup
         ps = connection.prepareStatement(
             vendor.toString(
                 m.insert()
-                .setTableName( t.tableName( schemaName, USED_QNAMES_TABLE_NAME ) )
-                .setColumnSource( m.columnSourceByValues()
-                    .addValues( l.param(), l.param() )
-                    .createExpression()
+                    .setTableName( t.tableName( schemaName, USED_QNAMES_TABLE_NAME ) )
+                    .setColumnSource( m.columnSourceByValues()
+                                          .addValues( l.param(), l.param() )
+                                          .createExpression()
                     )
-                .createExpression()
-                )
-            );
-        
+                    .createExpression()
+            )
+        );
+
         try
         {
             DefinitionFactory d = vendor.getDefinitionFactory();
@@ -783,99 +847,102 @@ public abstract class AbstractSQLStartup
 
                 TableElementListBuilder builder = d.createTableElementListBuilder();
                 builder
-                    .addTableElement( d.createColumnDefinition( ALL_QNAMES_TABLE_PK_COLUMN_NAME, this._primitiveTypes.get( Integer.class ), false ))
-                    .addTableElement( d.createColumnDefinition( ENTITY_TABLE_PK_COLUMN_NAME, this._primitiveTypes.get( Long.class ), false ));
+                    .addTableElement( d.createColumnDefinition( ALL_QNAMES_TABLE_PK_COLUMN_NAME, this._primitiveTypes
+                        .get( Integer.class ), false ) )
+                    .addTableElement( d.createColumnDefinition( ENTITY_TABLE_PK_COLUMN_NAME, this._primitiveTypes
+                        .get( Long.class ), false ) );
 
                 if( type.equals( QNameType.PROPERTY ) )
                 {
-                    builder.addTableElement( d.createColumnDefinition( QNAME_TABLE_PARENT_QNAME_COLUMN_NAME, this._primitiveTypes.get( Integer.class ), true ) );
+                    builder.addTableElement( d.createColumnDefinition( QNAME_TABLE_PARENT_QNAME_COLUMN_NAME, this._primitiveTypes
+                        .get( Integer.class ), true ) );
 
                     if( qNameInfo.getCollectionDepth() > 0 )
                     {
-                        builder.addTableElement( d.createColumnDefinition( QNAME_TABLE_COLLECTION_PATH_COLUMN_NAME, this.getCollectionPathDataType(), false ) );
+                        builder.addTableElement( d.createColumnDefinition( QNAME_TABLE_COLLECTION_PATH_COLUMN_NAME, this
+                            .getCollectionPathDataType(), false ) );
                     }
-                    
-                    this.appendColumnDefinitionsForProperty( builder, qNameInfo );
-                    
-                    builder.addTableElement( d.createTableConstraintDefinition( d.createForeignKeyConstraintBuilder()
-                        .addSourceColumns( QNAME_TABLE_PARENT_QNAME_COLUMN_NAME, ENTITY_TABLE_PK_COLUMN_NAME )
-                        .setTargetTableName( t.tableName( schemaName, ALL_QNAMES_TABLE_NAME ) )
-                        .addTargetColumns( ALL_QNAMES_TABLE_PK_COLUMN_NAME, ENTITY_TABLE_PK_COLUMN_NAME )
-                        .setOnUpdate( ReferentialAction.CASCADE )
-                        .setOnDelete( ReferentialAction.CASCADE )
-                        .createExpression(), ConstraintCharacteristics.INITIALLY_DEFERRED_DEFERRABLE
-                        ) );
 
+                    this.appendColumnDefinitionsForProperty( builder, qNameInfo );
+
+                    builder.addTableElement( d.createTableConstraintDefinition( d.createForeignKeyConstraintBuilder()
+                                                                                    .addSourceColumns( QNAME_TABLE_PARENT_QNAME_COLUMN_NAME, ENTITY_TABLE_PK_COLUMN_NAME )
+                                                                                    .setTargetTableName( t.tableName( schemaName, ALL_QNAMES_TABLE_NAME ) )
+                                                                                    .addTargetColumns( ALL_QNAMES_TABLE_PK_COLUMN_NAME, ENTITY_TABLE_PK_COLUMN_NAME )
+                                                                                    .setOnUpdate( ReferentialAction.CASCADE )
+                                                                                    .setOnDelete( ReferentialAction.CASCADE )
+                                                                                    .createExpression(), ConstraintCharacteristics.INITIALLY_DEFERRED_DEFERRABLE
+                    ) );
                 }
                 else
                 {
                     if( type.equals( QNameType.ASSOCIATION ) )
                     {
                         builder
-                            .addTableElement( d.createColumnDefinition( QNAME_TABLE_VALUE_COLUMN_NAME, this._primitiveTypes.get( Long.class ), false ))
+                            .addTableElement( d.createColumnDefinition( QNAME_TABLE_VALUE_COLUMN_NAME, this._primitiveTypes
+                                .get( Long.class ), false ) )
                             .addTableElement( d.createTableConstraintDefinition( d.createUniqueConstraintBuilder()
-                                .setUniqueness( UniqueSpecification.PRIMARY_KEY )
-                                .addColumns( ALL_QNAMES_TABLE_PK_COLUMN_NAME, ENTITY_TABLE_PK_COLUMN_NAME )
-                                .createExpression()
-                                ) );
-
+                                                                                     .setUniqueness( UniqueSpecification.PRIMARY_KEY )
+                                                                                     .addColumns( ALL_QNAMES_TABLE_PK_COLUMN_NAME, ENTITY_TABLE_PK_COLUMN_NAME )
+                                                                                     .createExpression()
+                            ) );
                     }
                     else if( type.equals( QNameType.MANY_ASSOCIATION ) )
                     {
                         builder
-                            .addTableElement( d.createColumnDefinition( QNAME_TABLE_ASSOCIATION_INDEX_COLUMN_NAME, this._primitiveTypes.get( Integer.class ), false ) )
-                            .addTableElement( d.createColumnDefinition( QNAME_TABLE_VALUE_COLUMN_NAME, this._primitiveTypes.get( Long.class ), false ) )
+                            .addTableElement( d.createColumnDefinition( QNAME_TABLE_ASSOCIATION_INDEX_COLUMN_NAME, this._primitiveTypes
+                                .get( Integer.class ), false ) )
+                            .addTableElement( d.createColumnDefinition( QNAME_TABLE_VALUE_COLUMN_NAME, this._primitiveTypes
+                                .get( Long.class ), false ) )
                             .addTableElement( d.createTableConstraintDefinition( d.createUniqueConstraintBuilder()
-                                .setUniqueness( UniqueSpecification.PRIMARY_KEY )
-                                .addColumns( ALL_QNAMES_TABLE_PK_COLUMN_NAME, ENTITY_TABLE_PK_COLUMN_NAME )
-                                .createExpression()
-                                ) );
+                                                                                     .setUniqueness( UniqueSpecification.PRIMARY_KEY )
+                                                                                     .addColumns( ALL_QNAMES_TABLE_PK_COLUMN_NAME, ENTITY_TABLE_PK_COLUMN_NAME )
+                                                                                     .createExpression()
+                            ) );
                     }
                     else
                     {
                         throw new IllegalArgumentException( "Did not how to create table for qName type: " + type + "." );
                     }
-                    
+
                     builder
                         .addTableElement( d.createTableConstraintDefinition( d.createForeignKeyConstraintBuilder()
-                            .addSourceColumns( QNAME_TABLE_VALUE_COLUMN_NAME )
-                            .setTargetTableName( t.tableName( schemaName, ENTITY_TABLE_NAME ) )
-                            .addTargetColumns( ENTITY_TABLE_PK_COLUMN_NAME )
-                            .setOnUpdate( ReferentialAction.CASCADE )
-                            .setOnDelete( ReferentialAction.CASCADE )
-                            .createExpression(), ConstraintCharacteristics.INITIALLY_DEFERRED_DEFERRABLE
-                            )
+                                                                                 .addSourceColumns( QNAME_TABLE_VALUE_COLUMN_NAME )
+                                                                                 .setTargetTableName( t.tableName( schemaName, ENTITY_TABLE_NAME ) )
+                                                                                 .addTargetColumns( ENTITY_TABLE_PK_COLUMN_NAME )
+                                                                                 .setOnUpdate( ReferentialAction.CASCADE )
+                                                                                 .setOnDelete( ReferentialAction.CASCADE )
+                                                                                 .createExpression(), ConstraintCharacteristics.INITIALLY_DEFERRED_DEFERRABLE
+                        )
                         );
 
                     this._state.tablePKs().get().put( qNameInfo.getTableName(), 0L );
-
                 }
 
                 builder
                     .addTableElement(
                         d.createTableConstraintDefinition( d.createForeignKeyConstraintBuilder()
-                            .addSourceColumns( ALL_QNAMES_TABLE_PK_COLUMN_NAME, ENTITY_TABLE_PK_COLUMN_NAME )
-                            .setTargetTableName( t.tableName( schemaName, ALL_QNAMES_TABLE_NAME ) )
-                            .addTargetColumns( ALL_QNAMES_TABLE_PK_COLUMN_NAME, ENTITY_TABLE_PK_COLUMN_NAME )
-                            .setOnUpdate( ReferentialAction.CASCADE )
-                            .setOnDelete( ReferentialAction.CASCADE )
-                            .createExpression(), ConstraintCharacteristics.INITIALLY_DEFERRED_DEFERRABLE
-                            )
+                                                               .addSourceColumns( ALL_QNAMES_TABLE_PK_COLUMN_NAME, ENTITY_TABLE_PK_COLUMN_NAME )
+                                                               .setTargetTableName( t.tableName( schemaName, ALL_QNAMES_TABLE_NAME ) )
+                                                               .addTargetColumns( ALL_QNAMES_TABLE_PK_COLUMN_NAME, ENTITY_TABLE_PK_COLUMN_NAME )
+                                                               .setOnUpdate( ReferentialAction.CASCADE )
+                                                               .setOnDelete( ReferentialAction.CASCADE )
+                                                               .createExpression(), ConstraintCharacteristics.INITIALLY_DEFERRED_DEFERRABLE
+                        )
                     );
 
                 stmt.execute( this._vendor.toString( d.createTableDefinitionBuilder()
-                    .setTableName( t.tableName( schemaName, qNameInfo.getTableName() ) )
-                    .setTableContentsSource( builder.createExpression() )
-                    .createExpression()
-                    ) );
-                
+                                                         .setTableName( t.tableName( schemaName, qNameInfo.getTableName() ) )
+                                                         .setTableContentsSource( builder.createExpression() )
+                                                         .createExpression()
+                ) );
+
 //                stmt.execute( "COMMENT ON TABLE " + schemaName + "." + qNameInfo.getTableName() + " IS '"
 //                    + qNameInfo.getQName() + "'" );
 
                 ps.setString( 1, qNameInfo.getQName().toString() );
                 ps.setString( 2, qNameInfo.getTableName() );
                 ps.execute();
-
             }
         }
         finally
@@ -883,7 +950,7 @@ public abstract class AbstractSQLStartup
             stmt.close();
             ps.close();
         }
-        
+
         // @formatter:off
     }
 
@@ -892,7 +959,7 @@ public abstract class AbstractSQLStartup
         Type finalType = qNameInfo.getFinalType();
         if( finalType instanceof ParameterizedType )
         {
-            finalType = ((ParameterizedType) finalType).getRawType();
+            finalType = ( (ParameterizedType) finalType ).getRawType();
         }
         Class<?> finalClass = (Class<?>) finalType;
         SQLDataType sqlType = null;
@@ -905,8 +972,9 @@ public abstract class AbstractSQLStartup
                 && qNameInfo.getPropertyDescriptor().accessor().isAnnotationPresent( SQLTypeInfo.class ) )
             {
                 sqlType = this._customizableTypes.get( finalClass ).customizeType( finalClass,
-                    qNameInfo.getPropertyDescriptor().accessor().getAnnotation( SQLTypeInfo.class ) );
-
+                                                                                   qNameInfo.getPropertyDescriptor()
+                                                                                       .accessor()
+                                                                                       .getAnnotation( SQLTypeInfo.class ) );
             }
             else if( Enum.class.isAssignableFrom( finalClass ) )
             {
@@ -937,32 +1005,34 @@ public abstract class AbstractSQLStartup
         SQLVendor vendor = this._vendor;
         DefinitionFactory d = vendor.getDefinitionFactory();
         TableReferenceFactory t = vendor.getTableReferenceFactory();
-        
+
         builder
-            .addTableElement( d.createColumnDefinition( QNAME_TABLE_VALUE_COLUMN_NAME, sqlType, qNameInfo.getCollectionDepth() > 0 ))
+            .addTableElement( d.createColumnDefinition( QNAME_TABLE_VALUE_COLUMN_NAME, sqlType, qNameInfo.getCollectionDepth() > 0 ) )
             .addTableElement( d.createTableConstraintDefinition( d.createUniqueConstraintBuilder()
-                .setUniqueness( UniqueSpecification.PRIMARY_KEY )
-                .addColumns( ALL_QNAMES_TABLE_PK_COLUMN_NAME, ENTITY_TABLE_PK_COLUMN_NAME )
-                .createExpression()
-                ) );
+                                                                     .setUniqueness( UniqueSpecification.PRIMARY_KEY )
+                                                                     .addColumns( ALL_QNAMES_TABLE_PK_COLUMN_NAME, ENTITY_TABLE_PK_COLUMN_NAME )
+                                                                     .createExpression()
+            ) );
 
         if( valueRefTableName != null && valueRefTablePKColumnName != null )
         {
             builder
                 .addTableElement( d.createTableConstraintDefinition( d.createForeignKeyConstraintBuilder()
-                    .addSourceColumns( QNAME_TABLE_VALUE_COLUMN_NAME )
-                    .setTargetTableName( t.tableName( this._state.schemaName().get(), valueRefTableName ) )
-                    .addTargetColumns( valueRefTablePKColumnName )
-                    .setOnUpdate( ReferentialAction.CASCADE )
-                    .setOnDelete( ReferentialAction.RESTRICT )
-                    .createExpression(), ConstraintCharacteristics.NOT_DEFERRABLE
-                    ) );
+                                                                         .addSourceColumns( QNAME_TABLE_VALUE_COLUMN_NAME )
+                                                                         .setTargetTableName( t.tableName( this._state
+                                                                                                               .schemaName()
+                                                                                                               .get(), valueRefTableName ) )
+                                                                         .addTargetColumns( valueRefTablePKColumnName )
+                                                                         .setOnUpdate( ReferentialAction.CASCADE )
+                                                                         .setOnDelete( ReferentialAction.RESTRICT )
+                                                                         .createExpression(), ConstraintCharacteristics.NOT_DEFERRABLE
+                ) );
         }
-
     }
 
-    protected  Long getNextPK( Statement stmt, String schemaName, String columnName,
-        String tableName, Long defaultPK )
+    protected Long getNextPK( Statement stmt, String schemaName, String columnName,
+                              String tableName, Long defaultPK
+    )
         throws SQLException
     {
         ResultSet rs = null;
@@ -979,8 +1049,8 @@ public abstract class AbstractSQLStartup
                         .select( "COUNT(" + columnName + ")", "MAX(" + columnName + ") + 1" )
                         .from( vendor.getTableReferenceFactory().tableName( schemaName, tableName ) )
                         .createExpression()
-                    )
-                );
+                )
+            );
             if( rs.next() )
             {
                 Long count = rs.getLong( 1 );
@@ -999,7 +1069,8 @@ public abstract class AbstractSQLStartup
     }
 
     private Boolean isReindexingNeeded( Boolean schemaExists, Map<String, EntityDescriptor> entityDescriptors,
-        Set<String> usedClassNames, Set<String> enumValues )
+                                        Set<String> usedClassNames, Set<String> enumValues
+    )
         throws SQLException
     {
         Boolean result = true;
@@ -1011,33 +1082,33 @@ public abstract class AbstractSQLStartup
             try
             {
                 QueryExpression getAppVersionQuery = this._vendor.getQueryFactory().simpleQueryBuilder()
-                        .select( APP_VERSION_PK_COLUMN_NAME )
-                        .from( this._vendor.getTableReferenceFactory().tableName( schemaName, APP_VERSION_TABLE_NAME ) )
-                        .createExpression();
-                    ResultSet rs = null;
-                    try
-                    {
-                        rs = stmt.executeQuery( this._vendor.toString( getAppVersionQuery ) );
-                    } catch (SQLException sqle)
-                    {
-                        // Sometimes meta data claims table exists, even when it really doesn't exist
-                    }
+                    .select( APP_VERSION_PK_COLUMN_NAME )
+                    .from( this._vendor.getTableReferenceFactory().tableName( schemaName, APP_VERSION_TABLE_NAME ) )
+                    .createExpression();
+                ResultSet rs = null;
+                try
+                {
+                    rs = stmt.executeQuery( this._vendor.toString( getAppVersionQuery ) );
+                }
+                catch( SQLException sqle )
+                {
+                    // Sometimes meta data claims table exists, even when it really doesn't exist
+                }
 
-                    if (rs != null)
-                    {
-                        result = !rs.next();
+                if( rs != null )
+                {
+                    result = !rs.next();
 
-                        if( !result )
+                    if( !result )
+                    {
+
+                        String dbAppVersion = rs.getString( 1 );
+                        if( this._reindexingStrategy != null )
                         {
-
-                            String dbAppVersion = rs.getString( 1 );
-                            if( this._reindexingStrategy != null )
-                            {
-                                result = this._reindexingStrategy.reindexingNeeded( dbAppVersion, this._app.version() );
-                            }
+                            result = this._reindexingStrategy.reindexingNeeded( dbAppVersion, this._app.version() );
                         }
                     }
-
+                }
             }
             finally
             {
@@ -1075,67 +1146,76 @@ public abstract class AbstractSQLStartup
             this.dropTablesIfExist( metaData, schemaName, USED_QNAMES_TABLE_NAME, stmt );
 
             Integer x = 0;
-            while (this.dropTablesIfExist( metaData, schemaName, DBNames.QNAME_TABLE_NAME_PREFIX + x, stmt ))
+            while( this.dropTablesIfExist( metaData, schemaName, DBNames.QNAME_TABLE_NAME_PREFIX + x, stmt ) )
             {
                 ++x;
             }
-
         }
         finally
         {
             stmt.close();
         }
-
     }
 
     private void constructApplicationInfo( final Map<String, EntityDescriptor> entityDescriptors,
-        Set<String> usedClassNames, Set<String> enumValues, Boolean setQNameTableNameToNull )
+                                           Set<String> usedClassNames,
+                                           Set<String> enumValues,
+                                           Boolean setQNameTableNameToNull
+    )
         throws SQLException
     {
         final List<ValueDescriptor> valueDescriptors = new ArrayList<ValueDescriptor>();
         _app.descriptor().accept( new HierarchicalVisitorAdapter<Object, Object, RuntimeException>()
         {
             @Override
-            public boolean visitEnter( Object visited ) throws RuntimeException
+            public boolean visitEnter( Object visited )
+                throws RuntimeException
             {
-                if (visited instanceof ObjectDescriptor )
+                if( visited instanceof ObjectDescriptor )
                 {
-                    if (visited instanceof EntityDescriptor)
+                    if( visited instanceof EntityDescriptor )
                     {
                         EntityDescriptor entityDescriptor = (EntityDescriptor) visited;
                         if( entityDescriptor.queryable() )
                         {
-                            entityDescriptors.put( entityDescriptor.type().getName(), entityDescriptor );
+                            entityDescriptors.put( first( entityDescriptor.types() ).getName(), entityDescriptor );
                         }
-                    } else if (visited instanceof ValueDescriptor)
+                    }
+                    else if( visited instanceof ValueDescriptor )
+                    {
                         valueDescriptors.add( (ValueDescriptor) visited );
+                    }
 
                     return false;
                 }
 
                 return true;
             }
-        });
+        } );
 
         Set<String> usedVCClassNames = new HashSet<String>();
         for( EntityDescriptor descriptor : entityDescriptors.values() )
         {
             Set<QualifiedName> newQNames = new HashSet<QualifiedName>();
             this.extractPropertyQNames( descriptor, this._state.qNameInfos().get(), newQNames, valueDescriptors,
-                usedVCClassNames, enumValues, setQNameTableNameToNull );
+                                        usedVCClassNames, enumValues, setQNameTableNameToNull );
             this.extractAssociationQNames( descriptor, this._state.qNameInfos().get(), newQNames,
-                setQNameTableNameToNull );
+                                           setQNameTableNameToNull );
             this.extractManyAssociationQNames( descriptor, this._state.qNameInfos().get(), newQNames,
-                setQNameTableNameToNull );
-            this._state.entityUsedQNames().get().put( descriptor.type().getName(), newQNames );
+                                               setQNameTableNameToNull );
+            this._state.entityUsedQNames().get().put( first( descriptor.types() ).getName(), newQNames );
         }
 
         usedClassNames.addAll( usedVCClassNames );
     }
 
     private void processPropertyTypeForQNames( PropertyDescriptor pType, Map<QualifiedName, QNameInfo> qNameInfos,
-        Set<QualifiedName> newQNames, List<ValueDescriptor> vDescriptors, Set<String> usedVCClassNames,
-        Set<String> enumValues, Boolean setQNameTableNameToNull )
+                                               Set<QualifiedName> newQNames,
+                                               List<ValueDescriptor> vDescriptors,
+                                               Set<String> usedVCClassNames,
+                                               Set<String> enumValues,
+                                               Boolean setQNameTableNameToNull
+    )
     {
         QualifiedName qName = pType.qualifiedName();
         if( !newQNames.contains( qName ) && !qName.name().equals( Identity.class.getName() ) )
@@ -1146,39 +1226,39 @@ public abstract class AbstractSQLStartup
             if( info == null )
             {
                 info = QNameInfo.fromProperty( //
-                    qName, //
-                    setQNameTableNameToNull ? null : (QNAME_TABLE_NAME_PREFIX + qNameInfos.size()), //
-                    pType//
-                    );
+                                               qName, //
+                                               setQNameTableNameToNull ? null : ( QNAME_TABLE_NAME_PREFIX + qNameInfos.size() ), //
+                                               pType//
+                );
                 qNameInfos.put( qName, info );
             }
             Type vType = info.getFinalType();
 
             while( vType instanceof ParameterizedType )
             {
-                vType = ((ParameterizedType) vType).getRawType();
+                vType = ( (ParameterizedType) vType ).getRawType();
             }
             if( vType instanceof Class<?> ) //
             {
-                if( ((Class<?>) vType).isInterface() )
+                if( ( (Class<?>) vType ).isInterface() )
                 {
                     for( ValueDescriptor vDesc : vDescriptors )
                     {
-                        String vcTypeName = vDesc.type().getName();
+                        String vcTypeName = first( vDesc.types() ).getName();
                         // TODO this doesn't understand, say, Map<String, String>, or indeed, any other Serializable
-                        if( ((Class<?>) vType).isAssignableFrom( vDesc.type() ) )
+                        if( ( (Class<?>) vType ).isAssignableFrom( first( vDesc.types() ) ) )
                         {
                             usedVCClassNames.add( vcTypeName );
                             for( PropertyDescriptor subPDesc : vDesc.state().properties() )
                             {
                                 this.processPropertyTypeForQNames( //
-                                    subPDesc, //
-                                    qNameInfos, //
-                                    newQNames, //
-                                    vDescriptors, //
-                                    usedVCClassNames, //
-                                    enumValues, //
-                                    setQNameTableNameToNull //
+                                                                   subPDesc, //
+                                                                   qNameInfos, //
+                                                                   newQNames, //
+                                                                   vDescriptors, //
+                                                                   usedVCClassNames, //
+                                                                   enumValues, //
+                                                                   setQNameTableNameToNull //
                                 );
                             }
                         }
@@ -1186,40 +1266,43 @@ public abstract class AbstractSQLStartup
                 }
                 else if( Enum.class.isAssignableFrom( (Class<?>) vType ) )
                 {
-                    for( Object value : ((Class<?>) vType).getEnumConstants() )
+                    for( Object value : ( (Class<?>) vType ).getEnumConstants() )
                     {
                         enumValues.add( QualifiedName.fromClass( (Class<?>) vType, value.toString() ).toString() );
                     }
                 }
             }
-
         }
     }
 
     private void extractPropertyQNames( EntityDescriptor entityDesc, Map<QualifiedName, QNameInfo> qNameInfos,
-        Set<QualifiedName> newQNames, List<ValueDescriptor> vDescriptors, Set<String> usedVCClassNames,
-        Set<String> enumValues, Boolean setQNameTableNameToNull )
+                                        Set<QualifiedName> newQNames,
+                                        List<ValueDescriptor> vDescriptors,
+                                        Set<String> usedVCClassNames,
+                                        Set<String> enumValues,
+                                        Boolean setQNameTableNameToNull
+    )
     {
         for( PropertyDescriptor pDesc : entityDesc.state().properties() )
         {
             if( SQLUtil.isQueryable( pDesc.accessor() ) )
             {
                 this.processPropertyTypeForQNames( //
-                    pDesc, //
-                    qNameInfos, //
-                    newQNames, //
-                    vDescriptors, //
-                    usedVCClassNames, //
-                    enumValues, //
-                    setQNameTableNameToNull //
+                                                   pDesc, //
+                                                   qNameInfos, //
+                                                   newQNames, //
+                                                   vDescriptors, //
+                                                   usedVCClassNames, //
+                                                   enumValues, //
+                                                   setQNameTableNameToNull //
                 );
             }
         }
-
     }
 
     private void extractAssociationQNames( EntityDescriptor entityDesc, Map<QualifiedName, QNameInfo> extractedQNames,
-        Set<QualifiedName> newQNames, Boolean setQNameTableNameToNull )
+                                           Set<QualifiedName> newQNames, Boolean setQNameTableNameToNull
+    )
     {
         for( AssociationDescriptor assoDesc : entityDesc.state().associations() )
         {
@@ -1229,12 +1312,13 @@ public abstract class AbstractSQLStartup
                 if( !extractedQNames.containsKey( qName ) )
                 {
                     extractedQNames.put( qName,//
-                        QNameInfo.fromAssociation( //
-                            qName, //
-                            setQNameTableNameToNull ? null : (QNAME_TABLE_NAME_PREFIX + extractedQNames.size()), //
-                            assoDesc //
-                            ) //
-                        );
+                                         QNameInfo.fromAssociation( //
+                                                                    qName, //
+                                                                    setQNameTableNameToNull ? null : ( QNAME_TABLE_NAME_PREFIX + extractedQNames
+                                                                        .size() ), //
+                                                                    assoDesc //
+                                         ) //
+                    );
                     newQNames.add( qName );
                 }
             }
@@ -1242,7 +1326,10 @@ public abstract class AbstractSQLStartup
     }
 
     private void extractManyAssociationQNames( EntityDescriptor entityDesc,
-        Map<QualifiedName, QNameInfo> extractedQNames, Set<QualifiedName> newQNames, Boolean setQNameTableNameToNull )
+                                               Map<QualifiedName, QNameInfo> extractedQNames,
+                                               Set<QualifiedName> newQNames,
+                                               Boolean setQNameTableNameToNull
+    )
     {
         for( AssociationDescriptor mAssoDesc : entityDesc.state().manyAssociations() )
         {
@@ -1252,13 +1339,14 @@ public abstract class AbstractSQLStartup
                 if( !extractedQNames.containsKey( qName ) )
                 {
                     extractedQNames.put( //
-                        qName, //
-                        QNameInfo.fromManyAssociation( //
-                            qName, //
-                            setQNameTableNameToNull ? null : (QNAME_TABLE_NAME_PREFIX + extractedQNames.size()), //
-                            mAssoDesc //
-                            ) //
-                        );
+                                         qName, //
+                                         QNameInfo.fromManyAssociation( //
+                                                                        qName, //
+                                                                        setQNameTableNameToNull ? null : ( QNAME_TABLE_NAME_PREFIX + extractedQNames
+                                                                            .size() ), //
+                                                                        mAssoDesc //
+                                         ) //
+                    );
                     newQNames.add( qName );
                 }
             }
@@ -1268,28 +1356,36 @@ public abstract class AbstractSQLStartup
     protected abstract void testRequiredCapabilities()
         throws SQLException;
 
-    protected boolean dropTablesIfExist( DatabaseMetaData metaData, String schemaName, String tableName, Statement stmt )
+    protected boolean dropTablesIfExist( DatabaseMetaData metaData,
+                                         String schemaName,
+                                         String tableName,
+                                         Statement stmt
+    )
         throws SQLException
     {
         boolean result = false;
         try
         {
             stmt.execute( this._vendor.toString( this._vendor.getManipulationFactory()
-                .createDropTableOrViewStatement(
-                   this._vendor.getTableReferenceFactory().tableName( schemaName, tableName ), ObjectType.TABLE, DropBehaviour.CASCADE
-                   ) ) );
+                                                     .createDropTableOrViewStatement(
+                                                         this._vendor
+                                                             .getTableReferenceFactory()
+                                                             .tableName( schemaName, tableName ), ObjectType.TABLE, DropBehaviour.CASCADE
+                                                     ) ) );
             result = true;
-        } catch (SQLException sqle)
+        }
+        catch( SQLException sqle )
         {
             // Ignore
         }
         return result;
     }
 
-    protected abstract void modifyPrimitiveTypes( Map<Class<?>, SQLDataType> primitiveTypes, Map<Class<?>, Integer> jdbcTypes );
-    
-    protected abstract SQLDataType getCollectionPathDataType();
-    
-    protected abstract void setVendor(SQLVendor vendor);
+    protected abstract void modifyPrimitiveTypes( Map<Class<?>, SQLDataType> primitiveTypes,
+                                                  Map<Class<?>, Integer> jdbcTypes
+    );
 
+    protected abstract SQLDataType getCollectionPathDataType();
+
+    protected abstract void setVendor( SQLVendor vendor );
 }

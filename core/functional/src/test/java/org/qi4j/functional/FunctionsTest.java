@@ -1,15 +1,23 @@
 package org.qi4j.functional;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.junit.Test;
-
-import java.util.*;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.qi4j.functional.ForEach.forEach;
-import static org.qi4j.functional.Functions.*;
+import static org.qi4j.functional.Functions.compose;
 import static org.qi4j.functional.Functions.count;
-import static org.qi4j.functional.Iterables.*;
+import static org.qi4j.functional.Functions.indexOf;
+import static org.qi4j.functional.Functions.intSum;
+import static org.qi4j.functional.Functions.longSum;
+import static org.qi4j.functional.Iterables.iterable;
+import static org.qi4j.functional.Iterables.last;
+import static org.qi4j.functional.Iterables.map;
 import static org.qi4j.functional.Specifications.in;
 
 /**
@@ -38,25 +46,28 @@ public class FunctionsTest
     @Test
     public void testCompose()
     {
-        assertThat( Functions.<Object, String, Integer>compose().map( length, stringifier ).map( 12345L ), equalTo( 5 ) );
+        assertThat( Functions.<Object, String, Integer>compose()
+                        .map( length, stringifier )
+                        .map( 12345L ), equalTo( 5 ) );
         assertThat( compose( length, stringifier ).map( 12345L ), equalTo( 5 ) );
     }
 
     @Test
     public void testFromMap()
     {
-        Map<String,String> map = new HashMap<String, String>(  );
-        map.put( "A","1" );
-        map.put( "B","2" );
+        Map<String, String> map = new HashMap<String, String>();
+        map.put( "A", "1" );
+        map.put( "B", "2" );
         map.put( "C", "3" );
         assertThat( Iterables.toList( Iterables.filter( Specifications.notNull(), Iterables.map( Functions.fromMap( map ), Iterables
-            .iterable( "A", "B", "D" ) ) ) ).toString(), equalTo( "[1, 2]" ));
+            .iterable( "A", "B", "D" ) ) ) ).toString(), equalTo( "[1, 2]" ) );
     }
 
     @Test
     public void testWithDefault()
     {
-        assertThat( Iterables.toList( Iterables.map( Functions.withDefault( "DEFAULT" ), Iterables.iterable( "123", null, "456" ) ) ).toString(), equalTo( "[123, DEFAULT, 456]" ) );
+        assertThat( Iterables.toList( Iterables.map( Functions.withDefault( "DEFAULT" ), Iterables.iterable( "123", null, "456" ) ) )
+                        .toString(), equalTo( "[123, DEFAULT, 456]" ) );
     }
 
     @Test
@@ -80,19 +91,19 @@ public class FunctionsTest
     @Test
     public void testCount()
     {
-        assertThat( last( map( count( in( "X" ) ), iterable( "X","Y","X","X","Y" ) ) ), equalTo( 3 ) );
+        assertThat( last( map( count( in( "X" ) ), iterable( "X", "Y", "X", "X", "Y" ) ) ), equalTo( 3 ) );
     }
 
     @Test
     public void testIndexOf()
     {
-        assertThat( last( map( indexOf( in( "D" ) ), iterable( "A","B","C","D","D" ) ) ), equalTo( 3 ) );
+        assertThat( last( map( indexOf( in( "D" ) ), iterable( "A", "B", "C", "D", "D" ) ) ), equalTo( 3 ) );
     }
 
     @Test
     public void testIndexOf2()
     {
-        assertThat( indexOf( "D", iterable( "A","B","C","D","D" )), equalTo( 3 ) );
+        assertThat( indexOf( "D", iterable( "A", "B", "C", "D", "D" ) ), equalTo( 3 ) );
     }
 
     @Test
@@ -109,6 +120,6 @@ public class FunctionsTest
 
         List<Integer> integers = Iterables.toList( Iterables.iterable( 1, 5, 3, 6, 8 ) );
         Collections.sort( integers, comparator );
-        assertThat( integers.toString(), equalTo( "[1, 3, 5, 6, 8]" ));
+        assertThat( integers.toString(), equalTo( "[1, 3, 5, 6, 8]" ) );
     }
 }

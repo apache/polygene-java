@@ -20,7 +20,6 @@
 package org.qi4j.api.query;
 
 import org.qi4j.api.composite.Composite;
-import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.functional.Specification;
 
 /**

@@ -14,7 +14,6 @@
 
 package org.qi4j.runtime.objects;
 
-import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 import org.qi4j.api.injection.scope.Structure;
@@ -28,7 +27,6 @@ import org.qi4j.bootstrap.SingletonAssembler;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
 
 /**
  * Unit tests for ObjectBuilderFactory.
@@ -137,13 +135,16 @@ public class ObjectBuilderFactoryTest
         SingletonAssembler assembler = new SingletonAssembler()
         {
             @Override
-            public void assemble( ModuleAssembly module ) throws AssemblyException
+            public void assemble( ModuleAssembly module )
+                throws AssemblyException
             {
                 module.objects( OuterClass.class );
             }
         };
 
-        Assert.assertThat( "inner class has been injected", assembler.module().newObject( OuterClass.class ).name(), equalTo("Module 1") );
+        Assert.assertThat( "inner class has been injected", assembler.module()
+            .newObject( OuterClass.class )
+            .name(), equalTo( "Module 1" ) );
     }
 
     public static final class AnyObject

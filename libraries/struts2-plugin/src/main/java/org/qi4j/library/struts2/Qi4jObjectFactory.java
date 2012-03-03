@@ -20,7 +20,7 @@ import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.inject.Inject;
 import org.apache.struts2.util.ObjectFactoryDestroyable;
 import org.qi4j.api.common.ConstructionException;
-import org.qi4j.api.composite.NoSuchCompositeException;
+import org.qi4j.api.composite.NoSuchTransientException;
 import org.qi4j.api.composite.TransientBuilderFactory;
 import org.qi4j.api.object.NoSuchObjectException;
 import org.qi4j.api.object.ObjectFactory;
@@ -193,7 +193,7 @@ public class Qi4jObjectFactory
         {
             obj = compositeBuilderFactory.newTransient( aClass );
         }
-        catch( NoSuchCompositeException e )
+        catch( NoSuchTransientException e )
         {
             return null;
         }

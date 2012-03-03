@@ -42,6 +42,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static org.qi4j.functional.Iterables.first;
+
 @Mixins( RdfIndexingService.RdfEntityIndexerMixin.class )
 public interface RdfIndexingService
     extends StateChangeListener, Activatable
@@ -192,7 +194,7 @@ public interface RdfIndexingService
         {
             if( entityType.queryable() )
             {
-                final URI compositeURI = getValueFactory().createURI( Classes.toURI(entityType.type()) );
+                final URI compositeURI = getValueFactory().createURI( Classes.toURI(first( entityType.types() )) );
                 // remove composite type if already present
                 connection.clear( compositeURI );
 

@@ -12,14 +12,16 @@ import org.qi4j.bootstrap.SingletonAssembler;
 public class EventTest
 {
     @Test
-    public void testActivationEvents() throws Exception
+    public void testActivationEvents()
+        throws Exception
     {
         final StringBuffer events = new StringBuffer();
 
         SingletonAssembler assembler = new SingletonAssembler()
         {
             @Override
-            public void assemble( ModuleAssembly module ) throws AssemblyException
+            public void assemble( ModuleAssembly module )
+                throws AssemblyException
             {
                 module.services( TestService.class ).instantiateOnStartup();
             }
@@ -39,7 +41,7 @@ public class EventTest
         assembler.application().activate();
         assembler.application().passivate();
 
-        System.out.println(events);
+        System.out.println( events );
     }
 
     interface TestService

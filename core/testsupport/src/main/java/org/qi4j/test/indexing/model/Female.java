@@ -17,8 +17,8 @@
  */
 package org.qi4j.test.indexing.model;
 
-import org.qi4j.api.common.Optional;
 import org.qi4j.api.association.Association;
+import org.qi4j.api.common.Optional;
 
 /**
  * JAVADOC Add JavaDoc

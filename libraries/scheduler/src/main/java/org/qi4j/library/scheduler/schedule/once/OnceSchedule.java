@@ -19,10 +19,9 @@ package org.qi4j.library.scheduler.schedule.once;
 
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.property.Property;
 import org.qi4j.library.scheduler.schedule.Schedule;
 
-@Mixins(OnceSchedule.OnceScheduleMixin.class)
+@Mixins( OnceSchedule.OnceScheduleMixin.class )
 public interface OnceSchedule extends Schedule, EntityComposite
 {
     abstract class OnceScheduleMixin
@@ -58,6 +57,11 @@ public interface OnceSchedule extends Schedule, EntityComposite
         @Override
         public long nextRun( long from )
         {
+            long runAt = start().get().getMillis();
+            if( runAt >= from )
+            {
+                return runAt;
+            }
             return -1;
         }
 

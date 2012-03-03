@@ -14,16 +14,16 @@
 
 package org.qi4j.runtime.association;
 
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Member;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import org.qi4j.api.association.Association;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.association.AssociationStateHolder;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.functional.VisitableHierarchy;
-
-import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.Member;
-import java.util.*;
 
 /**
  * JAVADOC
@@ -33,11 +33,11 @@ public final class AssociationsModel
 {
     private final Map<AccessibleObject, AssociationModel> mapAccessorAssociationModel = new LinkedHashMap<AccessibleObject, AssociationModel>();
 
-    public AssociationsModel(  )
+    public AssociationsModel()
     {
     }
 
-    public void addAssociation(AssociationModel associationModel)
+    public void addAssociation( AssociationModel associationModel )
     {
         mapAccessorAssociationModel.put( associationModel.accessor(), associationModel );
     }
@@ -48,28 +48,35 @@ public final class AssociationsModel
     }
 
     @Override
-    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super AssociationsModel, ? super AssociationModel, ThrowableType> visitor ) throws ThrowableType
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super AssociationsModel, ? super AssociationModel, ThrowableType> visitor )
+        throws ThrowableType
     {
-        if (visitor.visitEnter( this ))
+        if( visitor.visitEnter( this ) )
         {
             for( AssociationModel associationModel : mapAccessorAssociationModel.values() )
             {
-                if (!associationModel.accept(visitor))
+                if( !associationModel.accept( visitor ) )
+                {
                     break;
+                }
             }
         }
         return visitor.visitLeave( this );
     }
 
-    public AssociationModel getAssociation(AccessibleObject accessor) throws IllegalArgumentException
+    public AssociationModel getAssociation( AccessibleObject accessor )
+        throws IllegalArgumentException
     {
         AssociationModel associationModel = mapAccessorAssociationModel.get( accessor );
-        if (associationModel == null)
-            throw new IllegalArgumentException( "No association found with name:"+((Member)accessor).getName() );
+        if( associationModel == null )
+        {
+            throw new IllegalArgumentException( "No association found with name:" + ( (Member) accessor ).getName() );
+        }
         return associationModel;
     }
 
-    public AssociationDescriptor getAssociationByName( String name ) throws IllegalArgumentException
+    public AssociationDescriptor getAssociationByName( String name )
+        throws IllegalArgumentException
     {
         for( AssociationModel associationModel : mapAccessorAssociationModel.values() )
         {
@@ -79,10 +86,11 @@ public final class AssociationsModel
             }
         }
 
-        throw new IllegalArgumentException( "No association found with name:"+name );
+        throw new IllegalArgumentException( "No association found with name:" + name );
     }
 
-    public AssociationDescriptor getAssociationByQualifiedName( QualifiedName name ) throws IllegalArgumentException
+    public AssociationDescriptor getAssociationByQualifiedName( QualifiedName name )
+        throws IllegalArgumentException
     {
         for( AssociationModel associationModel : mapAccessorAssociationModel.values() )
         {
@@ -92,7 +100,7 @@ public final class AssociationsModel
             }
         }
 
-        throw new IllegalArgumentException( "No association found with qualified name:"+name );
+        throw new IllegalArgumentException( "No association found with qualified name:" + name );
     }
 
     public void checkConstraints( AssociationStateHolder state )

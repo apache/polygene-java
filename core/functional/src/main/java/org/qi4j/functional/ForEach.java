@@ -10,7 +10,7 @@ import java.util.Iterator;
  * Example: forEach(iterable).filter(specification).map(function).visit(visitor)
  */
 public final class ForEach<T>
-        implements Iterable<T>
+    implements Iterable<T>
 {
     public static <T> ForEach<T> forEach( Iterable<T> iterable )
     {
@@ -41,24 +41,28 @@ public final class ForEach<T>
 
     public <TO> ForEach<TO> flatten()
     {
-        return new ForEach<TO>( Iterables.flattenIterables( ((Iterable<Iterable<TO>>)iterable ) ));
+        return new ForEach<TO>( Iterables.flattenIterables( ( (Iterable<Iterable<TO>>) iterable ) ) );
     }
 
-    public T last() {
+    public T last()
+    {
         T lastItem = null;
-        for( T item : iterable ) {
+        for( T item : iterable )
+        {
             lastItem = item;
         }
         return lastItem;
     }
-    
+
     public <ThrowableType extends Throwable> boolean visit( final Visitor<T, ThrowableType> visitor )
-            throws ThrowableType
+        throws ThrowableType
     {
         for( T item : iterable )
         {
             if( !visitor.visit( item ) )
+            {
                 return false;
+            }
         }
 
         return true;

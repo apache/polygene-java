@@ -70,12 +70,13 @@ public class UnitOfWorkInjectionTest
         {
             try
             {
-                while( module.isUnitOfWorkActive())
+                while( module.isUnitOfWorkActive() )
                 {
                     uow = module.currentUnitOfWork();
                     uow.discard();
                 }
-            } catch( IllegalStateException e )
+            }
+            catch( IllegalStateException e )
             {
                 // Continue
             }

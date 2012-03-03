@@ -15,14 +15,8 @@
 package org.qi4j.bootstrap;
 
 import org.qi4j.api.Qi4j;
-import org.qi4j.api.composite.TransientBuilderFactory;
-import org.qi4j.api.object.ObjectFactory;
-import org.qi4j.api.query.QueryBuilderFactory;
-import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
-import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-import org.qi4j.api.value.ValueBuilderFactory;
 
 /**
  * Base class for Assembler that creates an Application

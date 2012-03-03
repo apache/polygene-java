@@ -14,19 +14,18 @@
 
 package org.qi4j.runtime.entity;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 import org.qi4j.api.composite.CompositeInstance;
 import org.qi4j.api.entity.Lifecycle;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.bootstrap.BindingException;
-import org.qi4j.runtime.composite.MixinsModel;
 import org.qi4j.runtime.composite.MixinModel;
+import org.qi4j.runtime.composite.MixinsModel;
 import org.qi4j.runtime.composite.UsesInstance;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.model.Resolution;
-
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * JAVADOC

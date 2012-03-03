@@ -39,6 +39,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.qi4j.functional.Iterables.first;
+
 public class TraceServiceMixin
     implements TraceService
 {
@@ -99,7 +101,7 @@ public class TraceServiceMixin
         {
             EntityComposite entity = (EntityComposite) object;
             String identity = entity.identity().get();
-            EntityComposite source = (EntityComposite) uow.get( Qi4j.DESCRIPTOR_FUNCTION.map( entity ).type(), identity);
+            EntityComposite source = (EntityComposite) uow.get( first( Qi4j.DESCRIPTOR_FUNCTION.map( entity ).types() ), identity);
             EntityBuilder<EntityTraceRecordEntity> builder = uow.newEntityBuilder( EntityTraceRecordEntity.class );
             EntityTraceRecordEntity state = builder.instance();
             setStandardStuff( compositeType, method, args, entryTime, durationNano, state, exception );

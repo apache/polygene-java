@@ -14,13 +14,13 @@
 
 package org.qi4j.runtime.property;
 
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Member;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.functional.VisitableHierarchy;
-
-import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.Member;
-import java.util.*;
 
 /**
  * Base class for properties model
@@ -28,26 +28,29 @@ import java.util.*;
 public class PropertiesModel
     implements VisitableHierarchy<Object, Object>
 {
-    protected final Map<AccessibleObject, PropertyModel> mapAccessiblePropertyModel = new LinkedHashMap<AccessibleObject,PropertyModel>();
+    protected final Map<AccessibleObject, PropertyModel> mapAccessiblePropertyModel = new LinkedHashMap<AccessibleObject, PropertyModel>();
 
     public PropertiesModel()
     {
     }
 
-    public void addProperty(PropertyModel property)
+    public void addProperty( PropertyModel property )
     {
         mapAccessiblePropertyModel.put( property.accessor(), property );
     }
 
     @Override
-    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor ) throws ThrowableType
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor )
+        throws ThrowableType
     {
-        if (visitor.visitEnter( this ))
+        if( visitor.visitEnter( this ) )
         {
             for( PropertyModel propertyModel : mapAccessiblePropertyModel.values() )
             {
-                if (!propertyModel.accept(visitor))
+                if( !propertyModel.accept( visitor ) )
+                {
                     break;
+                }
             }
         }
 
@@ -59,16 +62,19 @@ public class PropertiesModel
         return mapAccessiblePropertyModel.values();
     }
 
-    public PropertyModel getProperty(AccessibleObject accessor)
+    public PropertyModel getProperty( AccessibleObject accessor )
     {
         PropertyModel propertyModel = mapAccessiblePropertyModel.get( accessor );
-        if (propertyModel == null)
-            throw new IllegalArgumentException( "No property found with name:"+((Member)accessor).getName() );
+        if( propertyModel == null )
+        {
+            throw new IllegalArgumentException( "No property found with name:" + ( (Member) accessor ).getName() );
+        }
 
         return propertyModel;
     }
 
-    public PropertyModel getPropertyByName( String name ) throws IllegalArgumentException
+    public PropertyModel getPropertyByName( String name )
+        throws IllegalArgumentException
     {
         for( PropertyModel propertyModel : mapAccessiblePropertyModel.values() )
         {
@@ -77,10 +83,11 @@ public class PropertiesModel
                 return propertyModel;
             }
         }
-        throw new IllegalArgumentException( "No property found with name:"+name );
+        throw new IllegalArgumentException( "No property found with name:" + name );
     }
 
-    public PropertyModel getPropertyByQualifiedName( QualifiedName name ) throws IllegalArgumentException
+    public PropertyModel getPropertyByQualifiedName( QualifiedName name )
+        throws IllegalArgumentException
     {
         for( PropertyModel propertyModel : mapAccessiblePropertyModel.values() )
         {
@@ -89,6 +96,6 @@ public class PropertiesModel
                 return propertyModel;
             }
         }
-        throw new IllegalArgumentException( "No property found with ualified name:"+name );
+        throw new IllegalArgumentException( "No property found with ualified name:" + name );
     }
 }

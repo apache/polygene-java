@@ -11,7 +11,6 @@ import static org.qi4j.functional.Iterables.filter;
 
 /**
  * Test and showcase of the ClassScanner assembly utility.
- *
  */
 public class ClassScannerTest
 {
@@ -21,13 +20,14 @@ public class ClassScannerTest
         SingletonAssembler singleton = new SingletonAssembler()
         {
             @Override
-            public void assemble( ModuleAssembly module ) throws AssemblyException
+            public void assemble( ModuleAssembly module )
+                throws AssemblyException
             {
                 // Find all classes starting from TestValue, but include only the ones that are named *Value
 
-                for( Class aClass : filter( matches( ".*Value" ), getClasses( TestValue.class ) ))
+                for( Class aClass : filter( matches( ".*Value" ), getClasses( TestValue.class ) ) )
                 {
-                    module.values(aClass);
+                    module.values( aClass );
                 }
             }
         };
@@ -39,6 +39,6 @@ public class ClassScannerTest
     @Test
     public void testClassScannerJar()
     {
-        Assert.assertEquals( 121, Iterables.count( getClasses( Test.class ) ));
+        Assert.assertEquals( 121, Iterables.count( getClasses( Test.class ) ) );
     }
 }

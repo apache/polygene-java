@@ -53,6 +53,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.TreeMap;
 
+import static org.qi4j.functional.Iterables.first;
+
 public class QuikitServlet
     extends HttpServlet
 {
@@ -191,7 +193,10 @@ public class QuikitServlet
     private void renderPage( Page page, String path, PrintWriter output, HttpServletRequest httpRequest )
         throws ParserConfigurationException, SAXException, IOException, RenderException, TransformerException
     {
-        Class<? extends Composite> pageClass = (Class<Composite>) Qi4j.DESCRIPTOR_FUNCTION.map( page ).type();
+        Class<? extends Composite> pageClass = (Class<Composite>) first( Qi4j.DESCRIPTOR_FUNCTION
+                                                                                 .map( page )
+                                                                                 .types() );
+
         String pageName = pageClass.getSimpleName() + ".html";
         DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
         documentBuilder.setEntityResolver( quickitResolver );

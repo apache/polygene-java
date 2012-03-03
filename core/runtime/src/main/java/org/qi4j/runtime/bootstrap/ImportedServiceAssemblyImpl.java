@@ -14,15 +14,15 @@
 
 package org.qi4j.runtime.bootstrap;
 
+import java.util.List;
 import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.api.service.importer.InstanceImporter;
 import org.qi4j.bootstrap.ImportedServiceAssembly;
+import org.qi4j.functional.Iterables;
 import org.qi4j.runtime.service.ImportedServiceModel;
-
-import java.util.List;
 
 /**
  * Declaration of an imported Service. Created by {@link org.qi4j.runtime.bootstrap.ModuleAssemblyImpl#importedServices(Class[])}.
@@ -30,14 +30,14 @@ import java.util.List;
 public final class ImportedServiceAssemblyImpl
     implements ImportedServiceAssembly
 {
-    private Class serviceType;
+    private Class<?> serviceType;
     private ModuleAssemblyImpl moduleAssembly;
     Class<? extends ServiceImporter> serviceProvider = InstanceImporter.class;
     String identity;
     MetaInfo metaInfo = new MetaInfo();
     Visibility visibility = Visibility.module;
 
-    public ImportedServiceAssemblyImpl( Class serviceType,
+    public ImportedServiceAssemblyImpl( Class<?> serviceType,
                                         ModuleAssemblyImpl moduleAssembly
     )
     {
@@ -46,9 +46,9 @@ public final class ImportedServiceAssemblyImpl
     }
 
     @Override
-    public Class<?> type()
+    public Iterable<Class<?>> types()
     {
-        return serviceType;
+        return Iterables.<Class<?>, Class<?>>iterable( serviceType );
     }
 
     void addImportedServiceModel( List<ImportedServiceModel> serviceModels )

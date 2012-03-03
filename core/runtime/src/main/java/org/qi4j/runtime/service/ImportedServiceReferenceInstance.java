@@ -46,9 +46,9 @@ public final class ImportedServiceReferenceInstance<T>
     }
 
     @Override
-    public Class<T> type()
+    public Iterable<Class<?>> types()
     {
-        return serviceModel.type();
+        return serviceModel.types();
     }
 
     public <T> T metaInfo( Class<T> infoType )

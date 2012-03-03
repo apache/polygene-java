@@ -14,7 +14,7 @@ public class IterableDataSet<T>
 {
     private Iterable<T> iterable;
 
-    public IterableDataSet( Iterable<T> iterable)
+    public IterableDataSet( Iterable<T> iterable )
     {
         this.iterable = iterable;
     }
@@ -28,12 +28,12 @@ public class IterableDataSet<T>
     @Override
     public <U> DataSet<U> project( Function<T, U> conversion )
     {
-        return new IterableDataSet<U>( Iterables.map( conversion , iterable) );
+        return new IterableDataSet<U>( Iterables.map( conversion, iterable ) );
     }
 
     @Override
     public Query<T> newQuery()
     {
-        return new IterableQuery<T>(iterable);
+        return new IterableQuery<T>( iterable );
     }
 }

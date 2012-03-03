@@ -1,10 +1,14 @@
 package org.qi4j.runtime.injection.provider;
 
-import org.qi4j.api.association.*;
+import org.qi4j.api.association.AbstractAssociation;
+import org.qi4j.api.association.Association;
+import org.qi4j.api.association.AssociationDescriptor;
+import org.qi4j.api.association.AssociationStateDescriptor;
+import org.qi4j.api.association.AssociationStateHolder;
+import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.composite.StateDescriptor;
 import org.qi4j.api.composite.StatefulCompositeDescriptor;
 import org.qi4j.api.entity.EntityDescriptor;
-import org.qi4j.api.association.AssociationStateDescriptor;
 import org.qi4j.api.injection.scope.State;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyDescriptor;
@@ -158,7 +162,7 @@ public final class StateInjectionProviderFactory
             throws InjectionProviderException
         {
             AbstractAssociation abstractAssociation = ( (AssociationStateHolder) context.state() ).associationFor( associationDescriptor
-                    .accessor() );
+                                                                                                                       .accessor() );
             if( abstractAssociation != null )
             {
                 return abstractAssociation;
@@ -184,7 +188,7 @@ public final class StateInjectionProviderFactory
             throws InjectionProviderException
         {
             ManyAssociation abstractAssociation = ( (AssociationStateHolder) context.state() ).manyAssociationFor( manyAssociationDescriptor
-                    .accessor() );
+                                                                                                                       .accessor() );
             if( abstractAssociation != null )
             {
                 return abstractAssociation;

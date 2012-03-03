@@ -14,10 +14,9 @@
 
 package org.qi4j.runtime.bootstrap;
 
+import java.util.Arrays;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.EntityDeclaration;
-
-import java.util.Arrays;
 
 /**
  * Declaration of a Composite. Created by {@link org.qi4j.bootstrap.ModuleAssembly#transients(Class[])}.
@@ -27,7 +26,7 @@ public final class EntityDeclarationImpl
 {
     private Iterable<EntityAssemblyImpl> entities;
 
-    public EntityDeclarationImpl( Iterable<EntityAssemblyImpl> entities)
+    public EntityDeclarationImpl( Iterable<EntityAssemblyImpl> entities )
     {
         this.entities = entities;
     }

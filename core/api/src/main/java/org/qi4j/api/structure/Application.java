@@ -21,7 +21,7 @@ import org.qi4j.api.service.Activatable;
  * The Application represents a whole Qi4j application.
  */
 public interface Application
-    extends ActivationEventListenerRegistration, Activatable
+    extends ActivationEventListenerRegistration, Activatable, MetaInfoHolder
 {
     public enum Mode
     {
@@ -43,8 +43,6 @@ public interface Application
     String version();
 
     Mode mode();
-
-    <T> T metaInfo( Class<T> infoType );
 
     Layer findLayer( String layerName )
         throws IllegalArgumentException;

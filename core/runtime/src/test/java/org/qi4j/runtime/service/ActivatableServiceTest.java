@@ -56,7 +56,14 @@ public class ActivatableServiceTest
                     @Override
                     public boolean satisfiedBy( ServiceAssembly item )
                     {
-                        return Activatable.class.isAssignableFrom( item.type() );
+                        for( Class<?> type : item.types() )
+                        {
+                            if( Activatable.class.isAssignableFrom( type ) )
+                            {
+                                return true;
+                            }
+                        }
+                        return false;
                     }
                 } ).instantiateOnStartup();
             }

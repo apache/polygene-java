@@ -48,7 +48,6 @@ import org.qi4j.bootstrap.Qi4jRuntime;
 import org.qi4j.runtime.association.AbstractAssociationInstance;
 import org.qi4j.runtime.bootstrap.ApplicationAssemblyFactoryImpl;
 import org.qi4j.runtime.bootstrap.ApplicationModelFactoryImpl;
-import org.qi4j.runtime.composite.ConcernsModel;
 import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
 import org.qi4j.runtime.composite.TransientInstance;
 import org.qi4j.runtime.entity.EntityInstance;

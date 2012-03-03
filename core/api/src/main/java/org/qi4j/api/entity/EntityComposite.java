@@ -14,9 +14,9 @@
  */
 package org.qi4j.api.entity;
 
+import org.qi4j.api.association.AssociationMixin;
 import org.qi4j.api.association.ManyAssociationMixin;
 import org.qi4j.api.composite.Composite;
-import org.qi4j.api.association.AssociationMixin;
 import org.qi4j.api.mixin.Mixins;
 
 /**

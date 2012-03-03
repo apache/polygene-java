@@ -77,7 +77,7 @@ public interface DataSourceConfigurationManagerService
                if ( !persistentProperty.isImmutable())
                {
                   String propertyName = persistentProperty.qualifiedName().name();
-                  String type = persistentProperty.valueType().type().getName();
+                  String type = persistentProperty.valueType().mainType().getName();
                   attributes.add( new MBeanAttributeInfo( propertyName, type, propertyName, true, true, type.equals( "java.lang.Boolean" ) ) );
                   properties.put( propertyName, persistentProperty.accessor() );
                }

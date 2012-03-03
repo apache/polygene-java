@@ -17,6 +17,7 @@
  */
 package org.qi4j.runtime.value;
 
+import java.security.Guard;
 import org.junit.Assert;
 import org.junit.Test;
 import org.qi4j.api.composite.InvalidValueCompositeException;
@@ -32,8 +33,6 @@ import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
-
-import java.security.Guard;
 
 public class ValueComposite2Test
 {

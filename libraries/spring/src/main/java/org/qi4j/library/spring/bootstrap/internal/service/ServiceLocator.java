@@ -27,6 +27,8 @@ import org.qi4j.api.structure.Module;
 import org.qi4j.api.structure.ModuleDescriptor;
 import org.qi4j.functional.HierarchicalVisitor;
 
+import static org.qi4j.functional.Iterables.first;
+
 final class ServiceLocator
     implements HierarchicalVisitor<Object, Object, RuntimeException>
 {
@@ -69,7 +71,7 @@ final class ServiceLocator
             {
                 layerName = tempLayerName;
                 moduleName = tempModuleName;
-                serviceType = aDescriptor.type();
+                serviceType = first( aDescriptor.types() );
             }
         }
         else if( visited instanceof ObjectDescriptor )

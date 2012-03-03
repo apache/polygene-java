@@ -14,17 +14,16 @@
 
 package org.qi4j.runtime.service;
 
+import java.lang.reflect.Proxy;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.configuration.Enabled;
-import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.Availability;
 import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.util.Classes;
 import org.qi4j.runtime.composite.TransientInstance;
 import org.qi4j.runtime.composite.TransientStateInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
-
-import java.lang.reflect.Proxy;
 
 /**
  * JAVADOC
@@ -49,9 +48,10 @@ public class ServiceInstance
     {
         super( compositeModel, moduleInstance, mixins, state );
 
-        implementsServiceAvailable = Availability.class.isAssignableFrom( type() );
-        hasEnabledConfiguration = compositeModel.configurationType() != null && Enabled.class.isAssignableFrom( compositeModel
-                                                                                                                    .configurationType() );
+        implementsServiceAvailable =
+            Classes.assignableTypeSpecification( Availability.class ).satisfiedBy( descriptor() );
+        hasEnabledConfiguration = compositeModel.configurationType() != null
+                                  && Enabled.class.isAssignableFrom( compositeModel.configurationType() );
     }
 
     public void activate()

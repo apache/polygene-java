@@ -1,13 +1,13 @@
 package org.qi4j.api.query.grammar;
 
-import org.qi4j.api.composite.Composite;
 import org.qi4j.api.association.Association;
+import org.qi4j.api.composite.Composite;
 
 /**
  * TODO
  */
 public class AssociationNullSpecification<T>
-        extends ExpressionSpecification
+    extends ExpressionSpecification
 {
     AssociationFunction<T> association;
 
@@ -28,11 +28,14 @@ public class AssociationNullSpecification<T>
         {
             Association<T> assoc = association.map( item );
 
-            if (assoc == null)
+            if( assoc == null )
+            {
                 return true;
+            }
 
             return assoc.get() == null;
-        } catch( IllegalArgumentException e )
+        }
+        catch( IllegalArgumentException e )
         {
             return true;
         }
@@ -41,6 +44,6 @@ public class AssociationNullSpecification<T>
     @Override
     public String toString()
     {
-        return association.toString()+ "is null";
+        return association.toString() + "is null";
     }
 }

@@ -30,6 +30,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ResourceBundle;
 
+import static org.qi4j.functional.Iterables.first;
+
 /**
  * Implementation of Service Configuration Panel
  */
@@ -146,9 +148,10 @@ public class ServiceConfigurationPane
             typeString = "Transient";
         }
 
-        String simpleName = spiDescriptor.type().getSimpleName();
+        Class<?> type = first( spiDescriptor.types() );
+        String simpleName = type.getSimpleName();
         nameLabel.setText( "<html><a href='" + simpleName + "'>" + simpleName + "</a></html>" );
-        classLabel.setText( spiDescriptor.type().getName() );
+        classLabel.setText( type.getName() );
         typeLabel.setText( typeString );
         linkButton.setEnabled( true );
     }

@@ -14,18 +14,18 @@
 
 package org.qi4j.runtime.association;
 
-import org.qi4j.api.association.ManyAssociation;
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Member;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import org.qi4j.api.association.AssociationDescriptor;
+import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.functional.VisitableHierarchy;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.runtime.value.ValueStateInstance;
 import org.qi4j.spi.entity.EntityState;
-
-import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.Member;
-import java.util.*;
 
 /**
  * JAVADOC
@@ -46,24 +46,30 @@ public final class ManyAssociationsModel
     }
 
     @Override
-    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super ManyAssociationsModel, ? super ManyAssociationModel, ThrowableType> visitor ) throws ThrowableType
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super ManyAssociationsModel, ? super ManyAssociationModel, ThrowableType> visitor )
+        throws ThrowableType
     {
-        if (visitor.visitEnter( this ))
+        if( visitor.visitEnter( this ) )
         {
             for( ManyAssociationModel associationModel : mapAccessorAssociationModel.values() )
             {
-                if (!associationModel.accept(visitor))
+                if( !associationModel.accept( visitor ) )
+                {
                     break;
+                }
             }
         }
         return visitor.visitLeave( this );
     }
 
-    public ManyAssociationModel getManyAssociation(AccessibleObject accessor) throws IllegalArgumentException
+    public ManyAssociationModel getManyAssociation( AccessibleObject accessor )
+        throws IllegalArgumentException
     {
         ManyAssociationModel manyAssociationModel = mapAccessorAssociationModel.get( accessor );
-        if (manyAssociationModel == null)
-            throw new IllegalArgumentException( "No many-association found with name:"+((Member)accessor).getName() );
+        if( manyAssociationModel == null )
+        {
+            throw new IllegalArgumentException( "No many-association found with name:" + ( (Member) accessor ).getName() );
+        }
         return manyAssociationModel;
     }
 
@@ -72,12 +78,16 @@ public final class ManyAssociationsModel
         return mapAccessorAssociationModel.values();
     }
 
-    public <T> ManyAssociation<T> newInstance( AccessibleObject accessor, EntityState entityState, ModuleUnitOfWork uow )
+    public <T> ManyAssociation<T> newInstance( AccessibleObject accessor,
+                                               EntityState entityState,
+                                               ModuleUnitOfWork uow
+    )
     {
         return mapAccessorAssociationModel.get( accessor ).newInstance( uow, entityState );
     }
 
-    public AssociationDescriptor getManyAssociationByName( String name ) throws IllegalArgumentException
+    public AssociationDescriptor getManyAssociationByName( String name )
+        throws IllegalArgumentException
     {
         for( ManyAssociationModel associationModel : mapAccessorAssociationModel.values() )
         {
@@ -87,10 +97,11 @@ public final class ManyAssociationsModel
             }
         }
 
-        throw new IllegalArgumentException( "No many-association found with name:"+name );
+        throw new IllegalArgumentException( "No many-association found with name:" + name );
     }
 
-    public AssociationDescriptor getManyAssociationByQualifiedName( QualifiedName name ) throws IllegalArgumentException
+    public AssociationDescriptor getManyAssociationByQualifiedName( QualifiedName name )
+        throws IllegalArgumentException
     {
         for( ManyAssociationModel associationModel : mapAccessorAssociationModel.values() )
         {
@@ -100,7 +111,7 @@ public final class ManyAssociationsModel
             }
         }
 
-        throw new IllegalArgumentException( "No many-association found with qualified name:"+name );
+        throw new IllegalArgumentException( "No many-association found with qualified name:" + name );
     }
 
     public void checkConstraints( ValueStateInstance state )

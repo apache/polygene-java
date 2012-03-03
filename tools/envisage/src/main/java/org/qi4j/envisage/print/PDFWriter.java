@@ -306,7 +306,7 @@ public class PDFWriter
         {
             ServiceDescriptor descriptor = ( (ServiceDetailDescriptor) objectDesciptor ).descriptor();
             writeString( "- identity: " + descriptor.identity() );
-            writeString( "- class: " + descriptor.type().getSimpleName() );
+            writeString( "- class: " + descriptor.toString() );
             writeString( "- visibility: " + descriptor.visibility().toString() );
             writeString( "- startup: " + ( (ServiceDetailDescriptor) objectDesciptor ).descriptor()
                 .isInstantiateOnStartup() );
@@ -314,29 +314,29 @@ public class PDFWriter
         else if( objectDesciptor instanceof EntityDetailDescriptor )
         {
             EntityDescriptor descriptor = ( (EntityDetailDescriptor) objectDesciptor ).descriptor();
-            writeString( "- name: " + descriptor.type().getSimpleName() );
-            writeString( "- class: " + descriptor.type().getSimpleName() );
+            writeString( "- name: " + descriptor.toString());
+            writeString( "- class: " + descriptor.toString() );
             writeString( "- visibility: " + descriptor.visibility().toString() );
         }
         else if( objectDesciptor instanceof ValueDetailDescriptor )
         {
             ValueDescriptor descriptor = ( (ValueDetailDescriptor) objectDesciptor ).descriptor();
-            writeString( "- name: " + descriptor.type().getSimpleName() );
-            writeString( "- class: " + descriptor.type().getSimpleName() );
+            writeString( "- name: " + descriptor.toString());
+            writeString( "- class: " + descriptor.toString() );
             writeString( "- visibility: " + descriptor.visibility().toString() );
         }
         else if( objectDesciptor instanceof ObjectDetailDescriptor )
         {
             ObjectDescriptor descriptor = ( (ObjectDetailDescriptor) objectDesciptor ).descriptor();
-            writeString( "- name: " + descriptor.type().getSimpleName() );
-            writeString( "- class: " + descriptor.type().getSimpleName() );
+            writeString( "- name: " + descriptor.toString());
+            writeString( "- class: " + descriptor.toString());
             writeString( "- visibility: " + descriptor.visibility().toString() );
         }
         else if( objectDesciptor instanceof CompositeDetailDescriptor )
         {
             CompositeDescriptor descriptor = ( (CompositeDetailDescriptor) objectDesciptor ).descriptor();
-            writeString( "- name: " + descriptor.type().getSimpleName() );
-            writeString( "- class: " + descriptor.type().getSimpleName() );
+            writeString( "- name: " + descriptor.toString());
+            writeString( "- class: " + descriptor.toString());
             writeString( "- visibility: " + descriptor.visibility().toString() );
         }
     }
@@ -604,8 +604,8 @@ public class PDFWriter
         }
 
         setFont( normalFont, normalFontSize );
-        writeString( "- name: " + spiDescriptor.type().getSimpleName() );
-        writeString( "- class: " + spiDescriptor.type().getName() );
+        writeString( "- name: " + spiDescriptor.toString());
+        writeString( "- class: " + spiDescriptor.toString() );
         writeString( "- type: " + typeString );
     }
 

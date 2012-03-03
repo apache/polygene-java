@@ -40,7 +40,7 @@ public class UsesGraphTest
     public void givenGraphDependenciesWhenInstantiateAThenGetSameReferences()
     {
         D d = new D();
-        A a = module.newObject( A.class, module.newObject( C.class, d ), d);
+        A a = module.newObject( A.class, module.newObject( C.class, d ), d );
 
         Assert.assertThat( "Same reference expected", a.c, equalTo( a.b.c ) );
         Assert.assertThat( "Same reference expected", a.d, equalTo( a.b.c.d ) );

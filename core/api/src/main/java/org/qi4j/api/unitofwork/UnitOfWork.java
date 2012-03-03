@@ -14,14 +14,12 @@
  */
 package org.qi4j.api.unitofwork;
 
-import org.qi4j.api.common.MetaInfo;
-import org.qi4j.api.dataset.DataSet;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.LifecycleException;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
+import org.qi4j.api.structure.MetaInfoHolder;
 import org.qi4j.api.usecase.Usecase;
-import org.qi4j.functional.Specification;
 
 /**
  * All operations on entities goes through an UnitOfWork.
@@ -58,7 +56,7 @@ import org.qi4j.functional.Specification;
  * the UoW has completed the discard() method doesn't do anything, and so has no effect. You can choose to either add
  * catch blocks for any exceptions, including exceptions from complete(), or skip them.
  */
-public interface UnitOfWork
+public interface UnitOfWork extends MetaInfoHolder
 {
 
     /**
@@ -70,7 +68,6 @@ public interface UnitOfWork
 
     long currentTime();
 
-
     /**
      * Get the Usecase for this UnitOfWork
      *
@@ -78,15 +75,9 @@ public interface UnitOfWork
      */
     Usecase usecase();
 
-    /**
-     * Get the MetaInfo for this UnitOfWork. This can be used to associate arbitrary information
-     * with this UnitOfWork.
-     *
-     * @return the MetaInfo
-     */
-    MetaInfo metaInfo();
+    void setMetaInfo( Object metaInfo );
 
-    <T> Query<T> newQuery(QueryBuilder<T> queryBuilder);
+    <T> Query<T> newQuery( QueryBuilder<T> queryBuilder );
 
 //    DataSet newDataSetBuilder(Specification<?>... constraints);
 

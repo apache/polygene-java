@@ -16,9 +16,10 @@ public class UnitOfWorkTemplateTest
     extends AbstractQi4jTest
 {
     @Override
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
-        new EntityTestAssembler(  ).assemble( module );
+        new EntityTestAssembler().assemble( module );
         module.entities( TestEntity.class );
     }
 
@@ -29,9 +30,10 @@ public class UnitOfWorkTemplateTest
         new UnitOfWorkTemplate<Void, RuntimeException>()
         {
             @Override
-            protected Void withUnitOfWork( UnitOfWork uow ) throws RuntimeException
+            protected Void withUnitOfWork( UnitOfWork uow )
+                throws RuntimeException
             {
-                new EntityBuilderTemplate<TestEntity>(TestEntity.class)
+                new EntityBuilderTemplate<TestEntity>( TestEntity.class )
                 {
                     @Override
                     protected void build( TestEntity prototype )

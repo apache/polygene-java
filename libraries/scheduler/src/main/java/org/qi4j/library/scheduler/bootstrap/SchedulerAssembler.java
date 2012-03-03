@@ -15,17 +15,18 @@
 package org.qi4j.library.scheduler.bootstrap;
 
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.type.MatchTypeSpecification;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.EntityDeclaration;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.bootstrap.ValueAssembly;
-import org.qi4j.functional.Specification;
+import org.qi4j.bootstrap.ServiceDeclaration;
+import org.qi4j.bootstrap.ValueDeclaration;
 import org.qi4j.library.scheduler.SchedulerConfiguration;
 import org.qi4j.library.scheduler.SchedulerService;
 import org.qi4j.library.scheduler.schedule.Schedule;
 import org.qi4j.library.scheduler.schedule.ScheduleFactory;
 import org.qi4j.library.scheduler.schedule.Schedules;
-import org.qi4j.library.scheduler.schedule.cron.CronSchedule;
 import org.qi4j.library.scheduler.schedule.cron.CronScheduleEntity;
 import org.qi4j.library.scheduler.schedule.cron.CronScheduleValue;
 import org.qi4j.library.scheduler.schedule.once.OnceScheduleEntity;
@@ -95,7 +96,7 @@ public class SchedulerAssembler
         return this;
     }
 
-        /**
+    /**
      * Activate the assembly of Timeline related services.
      *
      * @return SchedulerAssembler
@@ -109,58 +110,34 @@ public class SchedulerAssembler
     public void assemble( ModuleAssembly assembly )
         throws AssemblyException
     {
-        assembleInternals( assembly );
-        assembleExposed( assembly );
+        assembly.services( ScheduleFactory.class );
+        assembly.entities( Schedules.class );
+        EntityDeclaration scheduleEntities = assembly.entities( CronScheduleEntity.class, OnceScheduleEntity.class );
+
+        ValueDeclaration scheduleValues = assembly.values( CronScheduleValue.class, OnceScheduleValue.class );
+
+        ServiceDeclaration schedulerDeclaration = assembly.services( SchedulerService.class )
+            .visibleIn( visibility )
+            .instantiateOnStartup();
+
+        if( timeline )
+        {
+            scheduleEntities.withTypes( Timeline.class )
+                .withMixins( TimelineScheduleMixin.class )
+                .withConcerns( TimelineForScheduleConcern.class );
+
+            scheduleValues.withTypes( Timeline.class )
+                .withMixins( TimelineScheduleMixin.class )
+                .withConcerns( TimelineForScheduleConcern.class );
+            // Internal
+            assembly.values( TimelineRecord.class );
+
+            schedulerDeclaration.withTypes( Timeline.class ).withMixins( TimelineSchedulerServiceMixin.class );
+        }
+
         if( configAssembly != null )
         {
             configAssembly.entities( SchedulerConfiguration.class ).visibleIn( configVisibility );
         }
-        if( timeline )
-        {
-            assembleTimeline( assembly );
-        }
-    }
-
-    private void assembleInternals( ModuleAssembly assembly )
-        throws AssemblyException
-    {
-        assembly.services( ScheduleFactory.class );
-        assembly.entities( Schedules.class, CronScheduleEntity.class, OnceScheduleEntity.class );
-        assembly.values( CronScheduleValue.class, OnceScheduleValue.class );
-    }
-
-    private void assembleExposed( ModuleAssembly assembly )
-        throws AssemblyException
-    {
-        assembly.services( SchedulerService.class )
-            .visibleIn( visibility )
-            .instantiateOnStartup();
-
-        assembly.entities( CronSchedule.class )
-            .visibleIn( visibility );
-    }
-
-    private void assembleTimeline( ModuleAssembly assembly )
-        throws AssemblyException
-    {
-        assembly.services( SchedulerService.class )
-            .withTypes( Timeline.class )
-            .withMixins( TimelineSchedulerServiceMixin.class );
-
-        // Enable the concern.
-        assembly.values( new Specification<ValueAssembly>()
-        {
-            @Override
-            public boolean satisfiedBy( ValueAssembly item )
-            {
-                return Schedule.class.isAssignableFrom( item.type() );
-            }
-        } )
-            .withTypes( Timeline.class )
-            .withMixins( TimelineScheduleMixin.class )
-            .withConcerns( TimelineForScheduleConcern.class );
-
-        // Internal
-        assembly.values( TimelineRecord.class );
     }
 }

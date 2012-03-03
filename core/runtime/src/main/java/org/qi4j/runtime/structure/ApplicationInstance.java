@@ -14,6 +14,8 @@
 
 package org.qi4j.runtime.structure;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.event.ActivationEvent;
 import org.qi4j.api.event.ActivationEventListener;
@@ -24,9 +26,6 @@ import org.qi4j.api.structure.Module;
 import org.qi4j.bootstrap.Qi4jRuntime;
 import org.qi4j.runtime.service.Activator;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Instance of a Qi4j application. Contains a list of layers which are managed by this application
  */
@@ -36,7 +35,7 @@ public class ApplicationInstance
     private final org.qi4j.runtime.structure.ApplicationModel model;
     private final Qi4jRuntime runtime;
     private MetaInfo instanceMetaInfo;
-    private final List<LayerInstance> layerInstances = new ArrayList<LayerInstance>(  );
+    private final List<LayerInstance> layerInstances = new ArrayList<LayerInstance>();
     private final Activator layerActivator;
     private final ActivationEventListenerSupport eventListenerSupport = new ActivationEventListenerSupport();
 
@@ -48,9 +47,9 @@ public class ApplicationInstance
         layerActivator = new Activator();
     }
 
-    void addLayer(LayerInstance layer)
+    void addLayer( LayerInstance layer )
     {
-        layerInstances.add(layer);
+        layerInstances.add( layer );
         layer.registerActivationEventListener( eventListenerSupport );
     }
 
@@ -99,7 +98,7 @@ public class ApplicationInstance
             }
         }
 
-        throw new IllegalArgumentException( "No such layer:"+layerName );
+        throw new IllegalArgumentException( "No such layer:" + layerName );
     }
 
     public Module findModule( String layerName, String moduleName )
@@ -112,7 +111,7 @@ public class ApplicationInstance
             }
         }
 
-        throw new IllegalArgumentException( "No such layer:"+layerName );
+        throw new IllegalArgumentException( "No such layer:" + layerName );
     }
 
     @Override
@@ -130,7 +129,7 @@ public class ApplicationInstance
     public void activate()
         throws Exception
     {
-        eventListenerSupport.fireEvent( new ActivationEvent(this, ActivationEvent.EventType.ACTIVATING) );
+        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATING ) );
         layerActivator.activate( layerInstances );
         eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATED ) );
     }
@@ -138,7 +137,7 @@ public class ApplicationInstance
     public void passivate()
         throws Exception
     {
-        eventListenerSupport.fireEvent( new ActivationEvent(this, ActivationEvent.EventType.PASSIVATING) );
+        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATING ) );
         layerActivator.passivate();
         eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATED ) );
     }

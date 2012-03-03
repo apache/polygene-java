@@ -5,14 +5,14 @@ import org.qi4j.functional.Specification;
 import org.qi4j.functional.Specifications;
 
 /**
-* TODO
-*/
+ * TODO
+ */
 public class AndSpecification
     extends BinarySpecification
 {
     public AndSpecification( Iterable<Specification<Composite>> operands )
     {
-        super(operands);
+        super( operands );
     }
 
     @Override
@@ -28,10 +28,10 @@ public class AndSpecification
         String and = "";
         for( Specification<Composite> operand : operands )
         {
-            str += and+operand;
+            str += and + operand;
             and = " and ";
         }
-        str+=")";
+        str += ")";
 
         return str;
     }

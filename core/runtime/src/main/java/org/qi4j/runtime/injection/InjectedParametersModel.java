@@ -14,14 +14,13 @@
 
 package org.qi4j.runtime.injection;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import org.qi4j.api.composite.InjectedParametersDescriptor;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.functional.Specification;
 import org.qi4j.functional.VisitableHierarchy;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * JAVADOC
@@ -63,14 +62,17 @@ public final class InjectedParametersModel
     }
 
     @Override
-    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor ) throws ThrowableType
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor )
+        throws ThrowableType
     {
-        if (visitor.visitEnter( this ))
+        if( visitor.visitEnter( this ) )
         {
             for( DependencyModel parameterDependency : parameterDependencies )
             {
-                if (!visitor.visit( parameterDependency ))
+                if( !visitor.visit( parameterDependency ) )
+                {
                     break;
+                }
             }
         }
         return visitor.visitLeave( this );

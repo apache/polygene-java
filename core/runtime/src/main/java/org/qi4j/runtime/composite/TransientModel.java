@@ -29,15 +29,14 @@ public class TransientModel
     extends CompositeModel
     implements TransientDescriptor
 {
-    public TransientModel( final Class<?> compositeType,
-                           Iterable<Class<?>> types, final Visibility visibility,
+    public TransientModel( Iterable<Class<?>> types, final Visibility visibility,
                            final MetaInfo metaInfo,
                            final MixinsModel mixinsModel,
                            final StateModel stateModel,
                            final CompositeMethodsModel compositeMethodsModel
     )
     {
-        super( compositeType, types, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
+        super( types, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
     }
 
     public TransientInstance newInstance( ModuleInstance moduleInstance,
@@ -60,14 +59,8 @@ public class TransientModel
         return compositeInstance;
     }
 
-    @Override
-    public String toString()
-    {
-        return type().getName();
-    }
-
     public void checkConstraints( TransientStateInstance instanceState )
-            throws ConstraintViolationException
+        throws ConstraintViolationException
     {
         for( PropertyModel propertyModel : stateModel.properties() )
         {

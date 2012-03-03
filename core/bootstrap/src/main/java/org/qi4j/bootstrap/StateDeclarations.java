@@ -14,9 +14,8 @@
 
 package org.qi4j.bootstrap;
 
-import org.qi4j.api.common.MetaInfo;
-
 import java.lang.reflect.AccessibleObject;
+import org.qi4j.api.common.MetaInfo;
 
 /**
  * This provides declared property information that
@@ -28,5 +27,5 @@ public interface StateDeclarations
 
     Object getInitialValue( AccessibleObject accessor );
 
-    boolean isUseDefaults(AccessibleObject accessor);
+    boolean isUseDefaults( AccessibleObject accessor );
 }
