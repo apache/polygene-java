@@ -108,7 +108,7 @@ public class FragmentClassLoader
     {
         if( name.endsWith( GENERATED_POSTFIX ) )
         {
-            Class baseClass = null;
+            Class baseClass;
             String baseName = name.substring( 0, name.length() - 5 );
             try
             {
@@ -139,6 +139,9 @@ public class FragmentClassLoader
                     }
                 }
             }
+//  To Allow JDK classes to be composed.
+//            if( name.startsWith( "java." ))
+//                name = "qi4j." + name;
 
             byte[] b = generateClass( name, baseClass );
             return defineClass( name, b, 0, b.length, baseClass.getProtectionDomain() );
