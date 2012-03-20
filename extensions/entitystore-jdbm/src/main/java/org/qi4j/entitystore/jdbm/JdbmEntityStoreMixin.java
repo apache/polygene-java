@@ -333,6 +333,8 @@ public class JdbmEntityStoreMixin
 
             // Import went ok - continue
             recordManager.commit();
+            // close file handles otherwise Microsoft Windows will fail to rename database files.
+            recordManager.close();
 
             lock.writeLock().lock();
             try
