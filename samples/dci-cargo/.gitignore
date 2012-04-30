@@ -8,3 +8,4 @@ dcisample_b/target/
 *.iws
 *.ipr
 *.iml
+.DS_Store
