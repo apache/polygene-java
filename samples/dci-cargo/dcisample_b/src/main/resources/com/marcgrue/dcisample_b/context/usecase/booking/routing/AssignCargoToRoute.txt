@@ -1,0 +1,42 @@
+
+USE CASE	    Assign Cargo to Route [subfunction]
+===========================================================================
+Cargo Inspector assigns cargo to a route. A route is described by an itinerary.
+
+
+Primary actor.. Cargo Inspector
+Scope.......... Shipping application
+Preconditions.. Cargo has not been claimed yet.
+Trigger........ Cargo Inspector receives new itinerary to be assigned to cargo.
+
+
+Main Success Scenario
+---------------------------------------------------------------------------
+1. Cargo Inspector <derives updated route specification>.
+2. Cargo Inspector verifies that route satisfies route specification.
+3. Cargo Inspector assigns cargo to route.
+4. Cargo Inspector assigns route specification to cargo.
+5. Cargo Inspector determines next expected handling event.
+6. Cargo Inspector updates cargo delivery status.
+
+
+Deviations
+---------------------------------------------------------------------------
+*1. Cargo has been claimed:
+    1. Failure. Can't re-route claimed cargo.
+
+1a. Route doesn't satisfy route specification:
+    1. Failure.
+
+3a. Route doesn't satisfy new route specification:
+    1. Failure.
+
+5a. Cargo has not been handled (initial routing):
+    1. Cargo Inspector expects receipt in route origin.
+
+5b. Cargo is on board carrier (re-routing):
+    1. Cargo Inspector expects unload in arrival location of current carrier movement.
+
+5c. Cargo is in port (re-routing):
+    1. Cargo Inspector expects load in route origin.
+

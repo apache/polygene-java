@@ -1,0 +1,15 @@
+<html xmlns:wicket>
+<wicket:head>
+    <link href="css/tabs.css" rel="stylesheet" type="text/css"/>
+</wicket:head>
+<wicket:panel>
+    <div id="tabs">
+        <ul>
+            <li wicket:id="tabsView"><a href="#" wicket:id="link"><span wicket:id="label"></span></a></li>
+        </ul>
+    </div>
+
+    <!-- Clear floating to force subsequent containers to draw beneath the tabs -->
+    <div style="clear:both"></div>
+</wicket:panel>
+</html>

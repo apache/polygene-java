@@ -1,0 +1,44 @@
+<html xmlns:wicket>
+<wicket:extend>
+
+    <div class="headerMenu">
+        Change destination for cargo <span wicket:id="trackingId">[trackingId]</span>
+        <wicket:link>
+            <a href="CargoListPage.html">List of Cargos</a>
+            <a href="BookNewCargoPage.html">Book new cargo</a>
+        </wicket:link>
+    </div>
+
+    <form wicket:id="form">
+        <div wicket:id="usecaseFeedback"></div>
+        <table>
+            <tbody>
+            <tr>
+                <td>Origin</td>
+                <td wicket:id="origin"></td>
+            </tr>
+            <tr>
+                <td>Old destination</td>
+                <td wicket:id="destination"></td>
+            </tr>
+            <tr>
+                <td>New destination</td>
+                <td>
+                    <select wicket:id="destinationSelector"></select>
+                </td>
+                <td wicket:id="destinationFeedback"></td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td></td>
+                <td>
+                    <input type="submit" value="Change destination" wicket:id="submit"/>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </form>
+
+</wicket:extend>
+</html>

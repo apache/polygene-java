@@ -1,0 +1,32 @@
+
+.prevNextIcons {
+  /* Modify custom positioning here */
+  float:left;
+  margin-top: 17px;
+  margin-right: 10px;
+}
+
+.prevNextIcons a {
+  padding:8px;
+  background-repeat:no-repeat;
+}
+
+.prevNextIcons .prev  {
+  background-image: url("../../graphics/icon/prev.png");
+}
+.prevNextIcons .prevDisabled {
+  background-image: url("../../graphics/icon/prev_disabled.png");
+  pointer-events: none;
+  cursor: default;
+}
+
+.prevNextIcons .next  {
+  margin-left:8px;
+  background-image: url("../../graphics/icon/next.png");
+}
+.prevNextIcons .nextDisabled {
+  margin-left:8px;
+  background-image: url("../../graphics/icon/next_disabled.png");
+  pointer-events: none;
+  cursor: default;
+}

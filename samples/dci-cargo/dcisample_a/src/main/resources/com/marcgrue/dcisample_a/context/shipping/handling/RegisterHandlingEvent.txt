@@ -1,0 +1,79 @@
+
+USE CASE	    Register Handling Event [subfunction]
+===========================================================================
+System registers cargo handling event data received from handling authority (port, shipper etc).
+
+Scope.......... Booking application ("system")
+Level.......... subfunction
+Primary actor.. System
+Preconditions.. Cargo trackingId is know by system and handler.
+Trigger........ Handling authority ("handler") submits handling event data for one or more cargos to system.
+
+Main Success Scenario
+---------------------------------------------------------------------------
+1. System publishes event stating that handling event registration attempt has been received.
+2. System verifies that submitted data is complete.
+3. System verifies that submitted data can represent a valid handling event.
+4. System creates and saves handling event from submitted data.
+5. System <inspects cargo> to verify that handling event was expected
+6. System publishes event stating that handling event has been registered.
+
+
+Deviations
+---------------------------------------------------------------------------
+2-5a. System couldn't create handling event:
+    1. System publishes event stating unsuccessful registration.
+
+2a. Submitted completion time, tracking id, event type or unLocode is null or empty:
+    1. Failure.
+
+3a. Handling event type string is not recognized:
+    1. Failure.
+3b. Tracking id doesn't represent a cargo in system:
+    1. Failure.
+3c. Tracking id doesn't represent a routed cargo in system:
+    1. Failure.
+3d. Location is not recognized in system:
+    1. Failure.
+3e. Handling event type requires voyage:
+    1. System finds voyage in store with voyage number.
+        a. Voyage number is null:
+            1. Failure.
+        b. Voyage number doesn't represent a voyage in system:
+            1. Failure.
+3f. Handling event type prohibits voyage:
+    1. System sets voyage to null.
+
+We could also check that a new event is not older than the last registered one...
+
+
+---------------------------------------------------------------------------
+Success guarantees:
+    Handling event is registered in system.
+    Cargo is successfully updated.
+    Handler is notified of successful handling event registration.
+    Customer is notified if cargo is misdirected or has arrived.
+
+Minimal guarantees:
+    System data is in a valid state.
+    Registration attempt data is logged.
+
+Stakeholders/Interests:
+    Customer - wants notification when cargo has arrived or is misdirected.
+    Handler - wants confirmation that handling event registration was successful.
+    Booking - wants all data to be in a valid and updated state and have a logger of all events.
+
+
+Comments
+---------------------------------------------------------------------------
+I think the execution flow in RegisterHandlingEvent is easier to follow compared to that of DDDSample:
+
+1. HandlingReportServiceImpl -> JmsApplicationEventsImpl -> HandlingEventRegistrationAttemptConsumer
+2. HandlingReportServiceImpl -> HandlingReportParser
+3. HandlingReportServiceImpl -> JmsApplicationEventsImpl -> HandlingEventRegistrationAttemptConsumer
+4. HandlingEventRegistrationAttemptConsumer -> HandlingEventServiceImpl -> HandlingEventFactory
+5. HandlingEventServiceImpl -> HandlingEventRepositoryHibernate
+6. HandlingEventServiceImpl -> JmsApplicationEventsImpl -> CargoHandledConsumer
+7. CargoHandledConsumer -> CargoInspectionServiceImpl
+8. CargoInspectionServiceImpl -> CargoRepositoryHibernate
+

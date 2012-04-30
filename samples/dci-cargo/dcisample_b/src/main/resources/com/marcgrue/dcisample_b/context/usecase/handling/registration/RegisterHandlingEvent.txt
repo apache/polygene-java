@@ -1,0 +1,76 @@
+
+USE CASE	    Register Handling Event [subfunction]
+===========================================================================
+Event Registrar registers handling event in system.
+
+Primary actor.. Event Registrar
+Scope.......... Handling Monitoring System in booking application
+Preconditions.. None
+Trigger........ Event Registrar receives parsed handling event data.
+
+
+Main Success Scenario
+---------------------------------------------------------------------------
+1. Event Registrar finds cargo from tracking id string.
+2. Event Registrar finds location from UnLocode string.
+3. Event Registrar finds voyage from voyage number string.
+4. Event Registrar verifies that cargo is not received, in customs or claimed more than once.
+5. Event Registrar verifies that cargo is not handled after being claimed.
+6. Event Registrar creates a handling event in the system.
+
+
+Deviations
+---------------------------------------------------------------------------
+1a. Tracking id string doesn't represent a Cargo in Handling System:
+    1. Failure.
+
+2a. UnLocode string doesn't represent a Location in Handling System:
+    1. Failure.
+
+3a. Handling event type doesn't require a Voyage:
+    1. Continue.
+
+3b. Voyage number string is missing:
+    1. Failure.
+
+3c. Voyage number string doesn't represent a Voyage in Handling System:
+    1. Failure.
+
+4a. Cargo is received, in customs or claimed more than once:
+    1. Failure.
+
+5a. Cargo is handled after being claimed by cargo owner:
+    1. Failure (can't continue handling after claim).
+
+
+Technology & Data variations *)
+---------------------------------------------------------------------------
+The same business scenario can be implemented with various combinations of
+technologies:
+
+5a. Return handling event object
+    1. synchronously (return value)
+    2. asynchronously (JMS, event sourcing, other?)
+
+
+---------------------------------------------------------------------------
+Success guarantees:
+    Verified handling event object is returned.
+
+    Handling event is registered in Handling System.
+    Cargo delivery status is successfully inspected.
+    Handler is notified of successful handling event registration.
+    Cargo Owner is notified if cargo is misdirected or has arrived.
+
+Minimal guarantees:
+    Data consistency: invalid handling events are not created.
+    Handling authorities are notified of unrecognized handling event data.
+
+Stakeholders/Interests:
+    Handling System - wants data consistency
+    Handling authority - wants notification of rejected handling event data submission.
+
+
+
+
+*) See A. Cockburn: "Writing Effective Use Cases", pp 111

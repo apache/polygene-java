@@ -1,0 +1,75 @@
+
+USE CASE	    Book New Cargo
+===========================================================================
+Customer books shipping of Cargo from one destination to another with an arrival deadline.
+
+Scope.......... Booking application ("system")
+Level.......... User-goal
+Primary actor.. Customer (can be Sales Rep/Manager or Booking clerk on behalf of Customer).
+Preconditions.. Customer is logged in.
+Trigger........ Customer wants to book cargo shipping.
+
+Main Success Scenario
+---------------------------------------------------------------------------
+1. Customer provides origin/destination location and arrival deadline of cargo to system.
+2. System creates cargo with unique tracking id from route specification.
+3. System calculates one or more routes for cargo and presents itineraries for those routes to customer.
+4. Customer chooses preferred route.
+5. System assigns cargo to selected route.
+6. System confirms booking completion to customer.
+7. System notifies booking clerk to <initiate cargo transport>#3.
+
+Deviations
+---------------------------------------------------------------------------
+Can happen anytime in the booking process:
+*a. Customer logs out or cancels booking:
+    1. System asks customer if he/she wants to save booking for later completion:
+        a. System saves/deletes cargo.
+*b. Customer session times out.
+    1. System offers customer to logger in again and continue with same booking.
+*c. Customer closes browser:
+    1. System deletes cargo.
+
+Deviations of main success scenario steps:
+1a. Customer has unfinished booking from earlier session:
+    1. System asks customer if he/she wants to continue with this booking or to delete it.
+        a. System presents next step in booking process to customer.
+        b. System deletes cargo and starts new booking.
+2a. Origin location equals destination location:
+    1. Ask customer to choose different locations (or better: prevent in UI)
+2b. Arrival deadline is in the past or Today:
+    1. Ask customer to correct (or better: prevent in UI).
+3a. No routes satisfy route specification:
+    1. System logs unsatisfied route specification.
+    2. system shows failure message to customer.
+
+---------------------------------------------------------------------------
+Success guarantees:
+    Booking is saved and awaits handling by Booking clerk
+
+Minimal guarantees:
+    Data entered is logged.
+
+Stakeholders/Interests:
+    Customer - wants cargo delivered within chosen deadline.
+    Handling dep - wants correct data to handle shipping.
+    Sales dep - wants customer satisfaction and overbooking of vessels to maximize profit.
+    Financial dep - wants payment settlement with customer.
+
+
+Tests
+---------------------------------------------------------------------------
+*a: UI
+*b: UI
+*c: UI
+
+1a: UI
+2a: BookNewCargoTest
+2b: BookNewCargoTest
+2:  BookNewCargoTest
+3a: BookNewCargoTest
+3b: UI
+4:  UI
+5:  BookNewCargoTest
+6:  UI
+7:  UI
