@@ -1,0 +1,28 @@
+<html xmlns:wicket>
+<wicket:panel>
+    <h4 wicket:id="routeHeader"></h4>
+    <span wicket:id="routeFeedback"></span>
+
+    <table>
+        <thead>
+        <tr>
+            <td>Voyage</td>
+            <td colspan="2">From</td>
+            <td colspan="2">To</td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr wicket:id="legs">
+            <td wicket:id="voyage"></td>
+            <td wicket:id="loadLocation"></td>
+            <td wicket:id="loadTime"></td>
+            <td wicket:id="unloadLocation"></td>
+            <td wicket:id="unloadTime"></td>
+        </tr>
+        </tbody>
+    </table>
+    <form wicket:id="form">
+        <input type="submit" value="Assign cargo to this route" wicket:id="assign"/>
+    </form>
+</wicket:panel>
+</html>

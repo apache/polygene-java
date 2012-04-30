@@ -1,0 +1,57 @@
+
+USE CASE        Inspect Cargo Delivery Status [subfunction]
+===========================================================================
+A Delivery Inspector inspects and updates the delivery status of a cargo.
+
+If the cargo has been handled, the handling event data is used to derive the
+delivery status.
+
+(This can hardly be called a use case...)
+
+
+Primary actor.. Delivery Inspector
+Scope.......... Handling Monitoring System in shipping application
+Preconditions.. Cargo has a route specification.
+Trigger........ Delivery Inspector receives request to inspect the cargo delivery status.
+
+
+Main Success Scenario
+---------------------------------------------------------------------------
+1. Delivery Inspector determines the handling event type.
+2. Delivery Inspector delegates inspection according to handling event type.
+
+
+Deviations
+---------------------------------------------------------------------------
+1a. Cargo hasn't been handled yet:
+    1. Delivery Inspector <inspects unhandled cargo>.
+
+2a. Cargo was received:
+    1. Delivery Inspector <inspects received cargo>.
+
+2b. Cargo was loaded:
+    1. Delivery Inspector <inspects loaded cargo>.
+
+2c. Cargo was unloaded in final destination:
+    1. Delivery Inspector <inspects arrived cargo>.
+
+2d. Cargo was unloaded:
+    1. Delivery Inspector <inspects unloaded cargo>.
+
+2e. Cargo is being handled by customs authorities:
+    1. Delivery Inspector <inspects cargo in customs>.
+
+2f. Cargo was claimed by cargo owner:
+    1. Delivery Inspector <inspects claimed cargo>.
+
+
+---------------------------------------------------------------------------
+Success guarantees:
+    All information we know about a Cargo delivery is derived.
+
+Minimal guarantees:
+    Persisted data is consistent (?)...
+
+Stakeholders/Interests:
+    Cargo owner - wants reliable tracking information
+    Shipping company - wants precise handling monitoring to prevent further (expensive) misdirection

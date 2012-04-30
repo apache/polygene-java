@@ -1,0 +1,54 @@
+<html xmlns:wicket>
+<wicket:extend>
+    <div id="box">
+
+        <div class="headerMenu">Register handling event</div>
+
+        <form wicket:id="form">
+            <div wicket:id="feedback"></div>
+            <table>
+                <tbody>
+                <tr>
+                    <td>Completion</td>
+                    <td>
+                        <input type="text" wicket:id="completion"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Cargo</td>
+                    <td>
+                        <select wicket:id="trackingIdSelector"></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Event type</td>
+                    <td>
+                        <select wicket:id="eventTypeSelector"></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Voyage</td>
+                    <td>
+                        <select wicket:id="voyageNumberSelector"></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Location</td>
+                    <td>
+                        <select wicket:id="unLocodeSelector"></select>
+                    </td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td></td>
+                    <td>
+                        <input type="submit" value="Register" wicket:id="register"/>
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+        </form>
+    </div>
+</wicket:extend>
+</html>

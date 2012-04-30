@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.marcgrue</groupId>
+    <artifactId>dcisample</artifactId>
+    <version>1.0</version>
+    <packaging>pom</packaging>
+
+    <name>DCI sample</name>
+    <description>
+        Port of the DDD sample application to the DCI paradigm
+        using Java, Qi4j and Wicket.
+    </description>
+
+    <url>http://marcgrue.com/dci/dci-sample</url>
+    <inceptionYear>2011</inceptionYear>
+    <developers>
+        <developer>
+            <id>marcgrue</id>
+            <name>Marc Grue</name>
+            <email>marc@grue.info</email>
+            <timezone>UTC+2</timezone>
+        </developer>
+    </developers>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <modules>
+        <module>dcisample_a</module>
+        <module>dcisample_b</module>
+    </modules>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <version.qi4j>1.4.1</version.qi4j>
+        <version.wicket>1.5.1</version.wicket>
+        <version.slf4j>1.6.0</version.slf4j>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>qi4j-official</id>
+            <url>http://repository.ops4j.org/maven2/</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+
+        <!-- Qi4j -->
+        <dependency>
+            <groupId>org.qi4j.core</groupId>
+            <artifactId>org.qi4j.core.api</artifactId>
+            <version>${version.qi4j}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.qi4j.core</groupId>
+            <artifactId>org.qi4j.core.spi</artifactId>
+            <version>${version.qi4j}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.qi4j.core</groupId>
+            <artifactId>org.qi4j.core.bootstrap</artifactId>
+            <version>${version.qi4j}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.qi4j.core</groupId>
+            <artifactId>org.qi4j.core.runtime</artifactId>
+            <version>${version.qi4j}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.qi4j.core</groupId>
+            <artifactId>org.qi4j.core.testsupport</artifactId>
+            <version>${version.qi4j}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.qi4j.library</groupId>
+            <artifactId>org.qi4j.library.constraints</artifactId>
+            <version>${version.qi4j}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.qi4j.library</groupId>
+            <artifactId>org.qi4j.library.values</artifactId>
+            <version>1.3.0.RC1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.qi4j.library</groupId>
+            <artifactId>org.qi4j.library.rdf</artifactId>
+            <version>${version.qi4j}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.qi4j.extension</groupId>
+            <artifactId>org.qi4j.extension.indexing-rdf</artifactId>
+            <version>${version.qi4j}</version>
+        </dependency>
+
+        <!--Qi4j tools-->
+        <dependency>
+            <groupId>org.qi4j.tool</groupId>
+            <artifactId>org.qi4j.tool.envisage</artifactId>
+            <version>${version.qi4j}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.qi4j.tool</groupId>
+            <artifactId>org.qi4j.tool.entity-viewer</artifactId>
+            <version>${version.qi4j}</version>
+        </dependency>
+
+
+        <!--Server-->
+        <dependency>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jetty</artifactId>
+            <version>6.1.4</version>
+            <scope>provided</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+        </dependency>
+
+        <!-- Logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${version.slf4j}</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8.2</version>
+            <scope>test</scope>
+        </dependency>
+
+
+        <!-- Wicket-->
+        <dependency>
+            <groupId>org.apache.wicket</groupId>
+            <artifactId>wicket-core</artifactId>
+            <version>${version.wicket}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.wicket</groupId>
+            <artifactId>wicket-datetime</artifactId>
+            <version>${version.wicket}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.wicket</groupId>
+            <artifactId>wicket-extensions</artifactId>
+            <version>${version.wicket}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.wicket</groupId>
+            <artifactId>wicket-devutils</artifactId>
+            <version>${version.wicket}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.jolira</groupId>
+            <artifactId>wicket-stateless</artifactId>
+            <version>1.5.0</version>
+        </dependency>
+
+    </dependencies>
+
+</project>
