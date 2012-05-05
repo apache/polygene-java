@@ -20,5 +20,5 @@ Tutorials
 
 include::introduction.txt[]
 
-include::../../../composites/src/docs/index.txt[]
+include::../../../composites/src/docs/compositeTutorial.txt[]
 

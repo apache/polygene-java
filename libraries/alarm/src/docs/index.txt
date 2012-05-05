@@ -1,4 +1,4 @@
-[[library-logging]]
+[[library-alarm]]
 = Qi4j Alarms =
 
 The process control and industrial automation industry has for decades been struggling with a large number of unreliable
@@ -51,7 +51,7 @@ provide an _Identity_ of the Alarm, which must survive restarts. The code could 
 
 [snippet,java]
 --------------
-source=../test/java/org/qi4j/library/alarm/AlarmProxyTest.java
+source=libraries/alarm/src/test/java/org/qi4j/library/alarm/AlarmProxyTest.java
 tag=documentation
 --------------
 

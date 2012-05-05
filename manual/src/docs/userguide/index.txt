@@ -5,8 +5,8 @@
 :qi4j-git-tag: {gitversion}
 
 include::preface.txt[]
-include::../../../tutorials/introduction/src/docs/index.txt[]
+include::../../../../tutorials/introduction/src/docs/index.txt[]
 include::core.txt[]
-include::libaries.txt[]
+include::libraries.txt[]
 include::extensions.txt[]
 include::concepts.txt[]
