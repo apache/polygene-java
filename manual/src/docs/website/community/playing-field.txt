@@ -1,4 +1,4 @@
-[[playing-field]]
+[[playing-field,Playing Field Section]]
 = Playing Field =
 Qi4J is a collaborative effort of open development, and we need to have some rules in place to make that work. Below is
 an evolving list of rules and guidelines that we try to follow.

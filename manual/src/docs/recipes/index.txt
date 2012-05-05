@@ -1,7 +1,7 @@
 [[recipes]]
-= Recipes & HOWTOs =
+= Recipes =
 
-:leveloffset: 1
+:leveloffset: 2
 
 include::whats-an-object.txt[]
 

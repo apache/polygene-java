@@ -1,24 +1,39 @@
-[[introduction]]
-= Introduction to Qi4j =
+[[tutorials]]
+= Tutorials =
+
+:leveloffset: {level2}
 
 include::highlights.txt[]
 
-[[cop-concepts]]
-= Composite Oriented Programming Concepts =
+:leveloffset: {level2}
 
-:leveloffset: 0
+include::background.txt[]
+
+:leveloffset: {level2}
 
 include::what-is-composite-oriented-programming.txt[]
 
+:leveloffset: {level2}
+
 include::qi4j-cop.txt[]
 
-[[tutorials]]
-Tutorials
-=========
+:leveloffset: {level2}
 
-:leveloffset: 1
+include::../../twominutes/src/docs/index.txt[]
 
-include::introduction.txt[]
+:leveloffset: {level2}
+
+include::../../tenminutes/src/docs/index.txt[]
+
+:leveloffset: {level2}
+
+include::../../thirtyminutes/src/docs/index.txt[]
+
+:leveloffset: {level2}
+
+include::../../twohours/src/docs/index.txt[]
+
+:leveloffset: {level2}
 
 include::../../../composites/src/docs/compositeTutorial.txt[]
 

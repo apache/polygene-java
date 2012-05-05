@@ -1,5 +1,5 @@
-[[community]]
-= Community =
+
+= Introduction =
 
 [partintro]
 --
@@ -20,4 +20,4 @@ Qi4j" and such. See the License text for exact details, and please consult with 
 Open Source licenses.
 
 Thirdly, Qi4j invites everyone to participate. There are many ways to participate, not only by writing code. See list
-on Participate page.
+in <<participate>>.

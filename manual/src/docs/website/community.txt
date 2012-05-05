@@ -1,0 +1,34 @@
+
+:leveloffset: 1
+
+[[community,Community Section]]
+=  Community =
+
+:leveloffset: 2
+
+include::community/intro.txt[]
+
+include::community/codebase.txt[]
+
+include::community/participate.txt[]
+
+include::community/playing-field.txt[]
+
+include::community/contributing.txt[]
+
+include::community/mailing-list.txt[]
+
+include::community/build-system.txt[]
+
+include::community/contributors.txt[]
+
+include::community/licensing.txt[]
+
+include::community/licensing-faq.txt[]
+
+include::community/help.txt[]
+
+include::community/docs.txt[]
+
+
+

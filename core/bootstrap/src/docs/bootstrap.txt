@@ -52,12 +52,12 @@ tag=UsingAssembler
 
 == Defining an Entity Store ==
 Defining an _Entity Store_ is in principle as simple as defining a ServiceComposite implementing the EntityStore
-interface. The problem is that most Entity Stores require <<Configuration>>, and configuration requires an Entity Store.
-This chicken-and-egg problem is resolved by having an entity store available that does not require any
-<<Configuration>>. Many _Assemblers_ for entity store implementations uses the MemoryEntityStore, and effectively leaves
-the configuration in the properties file where <<Configuration>> bootstraps from. It is possible to chain this, so
-that for instance the Neo4J Entity Store uses the Preferences Entity Store for its configuration, and the Preferences
-Entity Store uses the Memory Entity Store (i.e. the properties file).
+interface. The problem is that most Entity Stores require <<service-configuration>>, and configuration requires an
+Entity Store. This chicken-and-egg problem is resolved by having an entity store available that does not require any
+<<service-configuration>>. Many _Assemblers_ for entity store implementations uses the MemoryEntityStore, and
+effectively leaves the configuration in the properties file where <<service-configuration>> bootstraps from. It is
+possible to chain this, so that for instance the Neo4J Entity Store uses the Preferences Entity Store for its
+configuration, and the Preferences Entity Store uses the Memory Entity Store (i.e. the properties file).
 
 The point is that the entity store used for the configuration of the primary entity store used in the application is
 that it must not be visible to the application itself. Sometimes it is easiest to put a Memory Entity Store in the

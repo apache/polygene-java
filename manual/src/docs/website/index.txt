@@ -1,22 +1,27 @@
 
-:leveloffset: 0
+:leveloffset: 1
 
-include::community/index.txt[]
+include::home.txt[]
 
-:leveloffset: 0
+:leveloffset: 1
+
+include::community.txt[]
+
+:leveloffset: 1
+
+include::../userguide/site-inline.txt[]
+
+:leveloffset: 1
+
+include::../reference/site-inline.txt[]
+
+:leveloffset: 1
 
 include::../../../../tutorials/introduction/src/docs/index.txt[]
 
-:leveloffset: 0
+:leveloffset: 1
 
-include::../reference/index.txt[]
+include::../recipes/index.txt[]
 
-
-:leveloffset: 0
-:numbered!:
-
-////
-:leveloffset: 0
-include::glossary.txt[]
-////
+:leveloffset: 1
 

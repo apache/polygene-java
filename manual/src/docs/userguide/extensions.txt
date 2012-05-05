@@ -1,9 +1,5 @@
-:leveloffset: 0
-
 [[Extensions]]
 = Extensions =
-
-:leveloffset: 1
 
 include::../../../../extensions/cache-ehcache/src/docs/index.txt[]
 include::../../../../extensions/entitystore-file/src/docs/index.txt[]

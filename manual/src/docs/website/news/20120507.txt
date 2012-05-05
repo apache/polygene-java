@@ -1,0 +1,16 @@
+[[news-20120507,Qi4j launches a new website]]
+= Qi4j Community launches new website =
+
+After years with SiteVision from Senselogic, the Qi4j community has decided that SiteVision does not fulfill the needs
+of this community. Primarily, SiteVision can not satisfy some really central needs of open source communities;
+
+* Learning curve for SiteVision is higher than plain text tool chains.
+
+* Offline editing is not possible.
+
+* Distance between Sitevision server and users introduce network latencies that makes the SiteVision experience less
+than optimal.
+
+* Versioning is non-trivial. Keeping old versions of the site up and running in parallel will be important as users
+seek information about older versions of the Qi4j SDK online.
+

@@ -1,9 +1,5 @@
-:leveloffset: 0
-
 [[Libraries]]
 = Libraries =
-
-:leveloffset: 1
 
 include::../../../../libraries/alarm/src/docs/index.txt[]
 include::../../../../libraries/auth/src/docs/index.txt[]

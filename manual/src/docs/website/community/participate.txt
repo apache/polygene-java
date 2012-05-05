@@ -1,4 +1,4 @@
-[[participate]]
+[[participate,Participation Section]]
 = Participate =
 Qi4j is a community based on open development principles. That means we do the work in open, discussions happen on
 mailing lists and everyone is free to participate.

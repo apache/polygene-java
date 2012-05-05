@@ -35,7 +35,7 @@ instantiateOnStartup(), this way;
 
 [snippet,java]
 --------------
-source=../test/java/org/qi4j/api/service/DocumentationSupport.java
+source=core/api/src/test/java/org/qi4j/api/service/DocumentationSupport.java
 tag=instantiateOnStartup
 --------------
 
@@ -54,7 +54,7 @@ instance. Services can also be arbitrarily tagged, via the ServiceDescriptor. Ex
 
 [snippet,java]
 --------------
-source=../test/java/org/qi4j/api/service/DocumentationSupport.java
+source=core/api/src/test/java/org/qi4j/api/service/DocumentationSupport.java
 tag=tag
 --------------
 
@@ -62,6 +62,6 @@ Tags are useful inside the application code to locate a particular service insta
 
 [snippet,java]
 --------------
-source=/Volumes/Qi4jDevelopment/qi4j-sdk/core/api/src/test/java/org/qi4j/api/service/DocumentationSupport.java
+source=core/api/src/test/java/org/qi4j/api/service/DocumentationSupport.java
 tag=UseTag
 --------------

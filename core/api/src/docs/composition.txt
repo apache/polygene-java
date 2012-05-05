@@ -14,10 +14,10 @@ on that later.
 
 There are 4 types of Fragments in Qi4j;
 
-    * <<Mixin>> - The state carrying part of a Composite.
-    * <<Constraint>> - Rules for in and out arguments, typically used for validation.
-    * <<Concern>> - Interceptor of method calls. General purpose use, often for cross-cutting behaviors.
-    * <<Side Effect>> - Executed after the method call has been completed, and unable to influence the outcome of the
+    * <<mixin>> - The state carrying part of a Composite.
+    * <<constraint>> - Rules for in and out arguments, typically used for validation.
+    * <<concern>> - Interceptor of method calls. General purpose use, often for cross-cutting behaviors.
+    * <<sideeffect>> - Executed after the method call has been completed, and unable to influence the outcome of the
       method call.
 
 == Composites ==

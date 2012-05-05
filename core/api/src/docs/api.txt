@@ -1,23 +1,43 @@
+
+:leveloffset: {level2}
+
 [[core-api]]
 = Core API =
 
 The Qi4j Core API is the primary interface for client application code during the main exectution phase, i.e. after the
 application has been activated.
 
-include:composition.txt[]
-include:structure.txt[]
-include:valuecomposite.txt[]
-include:servicecomposite.txt[]
-include:configuration.txt[]
-include:entitycomposite.txt[]
-include:unitofwork.txt[]
-include:transientcomposite.txt[]
-include:dependency-injection.txt[]
-include:property.txt[]
-include:association.txt[]
-include:mixin.txt[]
-include:concern.txt[]
-include:constraint.txt[]
-include:sideeffect.txt[]
-include:indexing.txt[]
-include:query.txt[]
+include::composition.txt[]
+
+include::structure.txt[]
+
+include::valuecomposite.txt[]
+
+include::servicecomposite.txt[]
+
+include::configuration.txt[]
+
+include::entitycomposite.txt[]
+
+include::unitofwork.txt[]
+
+include::transientcomposite.txt[]
+
+include::dependency-injection.txt[]
+
+include::property.txt[]
+
+include::association.txt[]
+
+include::mixin.txt[]
+
+include::concern.txt[]
+
+include::constraint.txt[]
+
+include::sideeffect.txt[]
+
+include::indexing.txt[]
+
+include::query.txt[]
+

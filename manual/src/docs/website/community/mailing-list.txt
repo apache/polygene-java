@@ -1,2 +1,3 @@
-Mailing Lists
+[[mailing-lists,Mailing Lists]]
+= Mailing Lists =
 To participate in the Qi4j development, please subscribe to the qi4j-dev-subscribe@lists.ops4j.org mailing list.

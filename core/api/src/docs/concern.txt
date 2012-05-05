@@ -1,4 +1,4 @@
-[[Concern]]
+[[concern,Concern]]
 = Concern =
 Concerns are the equivalent of "around advice" in Aspect Oriented Programming. They are chained into an invocation
 stack for each Mixin Type method and invoked after the Constraints have been executed. Since they are sitting "around"

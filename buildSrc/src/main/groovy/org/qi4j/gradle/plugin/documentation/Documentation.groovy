@@ -62,10 +62,14 @@ class Documentation extends DefaultTask
       def asciiDocFile = "manual/src/docs/$docName/index.txt".toString()
       args = [
               '--attribute', 'revnumber=' + project.version,
+              '--attribute', 'level1=' + (docType.equals('article') ? 1 : 0),
+              '--attribute', 'level2=' + (docType.equals('article') ? 2 : 1),
+              '--attribute', 'level3=' + (docType.equals('article') ? 3 : 2),
+              '--attribute', 'level4=' + (docType.equals('article') ? 4 : 3),
               '--attribute', 'importdir=' + commonResourcesDir,
               '--backend', 'docbook',
               '--attribute', 'docinfo1',
-              '--doctype', 'book',
+              '--doctype', docType,
               '--conf-file=' + asciidocConfigFile,
               '--conf-file=' + docbookConfigFile,
               '--conf-file=' + linkimagesConfigFile,
@@ -89,7 +93,7 @@ class Documentation extends DefaultTask
     }
 
     project.exec {
-      String xsltFile = 'src/xsl/chunked.xsl'
+      String xsltFile = "src/docs/$docName/xsl/chunked.xsl"
       executable = 'xsltproc'
       args = [
               '--nonet',
@@ -104,6 +108,7 @@ class Documentation extends DefaultTask
   def void generateSingleHtml()
   {
     project.exec {
+      // XML_CATALOG_FILES=
       String xsltFile = 'src/xsl/xhtml.xsl'
       executable = 'xsltproc'
       args = [
