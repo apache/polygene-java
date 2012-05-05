@@ -39,7 +39,7 @@ allprojects {
   apply plugin: 'idea'
   apply plugin: 'signing'
   apply plugin: 'java'
-  apply plugin: 'code-quality'
+  apply plugin: 'checkstyle'
   apply plugin: 'project-report'
   dependsOnChildren()
 
@@ -53,9 +53,9 @@ allprojects {
   repositories {
     mavenCentral()
     mavenRepo id: 'ops4j-repo', url: "http://repository.ops4j.org/maven2/"
-    mavenRepo id: 'aduna-repo', urls: "http://repo.aduna-software.org/maven2/releases/"
-    mavenRepo id: 'restlet-repo', urls: 'http://maven.restlet.org'
-    mavenRepo id: 'maven2-repository.dev.java.net', urls: "http://download.java.net/maven/2"
+    mavenRepo id: 'aduna-repo', url: "http://repo.aduna-software.org/maven2/releases/"
+    mavenRepo id: 'restlet-repo', url: 'http://maven.restlet.org'
+    mavenRepo id: 'maven2-repository.dev.java.net', url: "http://download.java.net/maven/2"
   }
 
   configurations {
@@ -179,7 +179,7 @@ allprojects {
 
     // Create checkstyle report
     task checkstyleReport(type: Xslt, dependsOn: check) {
-      source project.checkstyleResultsDir
+      source project.checkstyle.reportsDir
       include '*.xml'
       destDir = file("build/reports/checkstyle/")
       extension = 'html'
@@ -190,6 +190,17 @@ allprojects {
       dependsOn classes
       dependsOn test
     }
+  }
+
+  task createDependencyList << {
+    def depList = ""
+    configurations.runtime.each { file ->
+      if( ! file.name.startsWith("org.qi4j.core")) {
+        depList = depList + "$file.name\n"
+      }
+    }
+    def destFile = new File(buildDir, "downloads.sh")
+    destFile.text = depList
   }
 
   uploadArchives.doFirst {
@@ -210,8 +221,8 @@ allprojects {
     }
   }
 
-  ideaModule {
-    whenConfigured { module ->
+  idea.module.iml {
+    whenMerged { module ->
       module.dependencies*.exported = true
     }
   }
@@ -250,38 +261,6 @@ test.doLast() {
   }
 }
 
-//class TestReportAggregator extends Copy {
-//def projects
-//
-//File testResultsDir
-//
-//@OutputDirectory
-//File testReportDir
-//
-//def TestReportAggregator() {
-//dependsOn { testTasks }
-//from { inputTestResultDirs }
-//into { testResultsDir }
-//}
-//
-//@TaskAction
-//def aggregate() {
-//def report = new org.gradle.api.internal.tasks.testing.junit.report.DefaultTestReport(testReportDir: testReportDir, testResultsDir: testResultsDir)
-//report.generateReport()
-//}
-//
-//def getTestTasks() {
-//projects.collect { it.tasks.withType(Test) }.flatten()
-//}
-//
-//def getInputTestResultDirs() {
-//testTasks*.testResultsDir
-//}
-//
-//}
-
-
-
 task javadocs(type: Javadoc) {
   dependsOn allprojects*.javadoc
 
@@ -312,7 +291,8 @@ task javadocs(type: Javadoc) {
 
 }
 
-task distLayout( dependsOn: [javadocs, test, jar, subprojects*.build] ) {
+task distLayout( dependsOn: [javadocs, test, jar, subprojects*.build, ':org.qi4j.manual:manuals'] ) {
+
 
   srcDistImage = copySpec {
     from '.'
@@ -330,27 +310,27 @@ task distLayout( dependsOn: [javadocs, test, jar, subprojects*.build] ) {
     into("docs")
   }
 
+  manualsImage = copySpec {
+    from "manual/$buildDir/docs"
+    into("docs/manual")
+  }
+
   reportsImage = copySpec {
     from "$buildDir/reports"
     into("docs/reports")
   }
 
+  downloadListImage = copySpec {
+    releaseApprovedProjects.collect { proj ->
+      from "$proj.buildDir/downloads.sh"
+      into( "libs/downsloads/dl-$proj.name")
+    }
+  }
+
   libsImage = copySpec {
     releaseApprovedProjects.collect { proj ->
-      if( proj.group == 'org.qi4j.core' )
-      {
-        from proj.configurations.runtime
-        into("libs")
-      }
-      else if( proj.group == 'org.qi4j.library' )
-      {
-        from proj.configurations.runtime
-        into("libs/libraries/$proj.name")
-      }
-      else if( proj.group == 'org.qi4j.extension' )
-      {
-        from proj.configurations.runtime
-        into("libs/extensions/$proj.name")
+      into( "libs/") {
+        from proj.configurations.archives
       }
     }
   }
@@ -380,8 +360,16 @@ task distLayout( dependsOn: [javadocs, test, jar, subprojects*.build] ) {
   binDistImage = copySpec {
     into "qi4j-sdk-$version"
     with docsImage
-    with reportsImage
+    with downloadListImage
     with libsImage
+    with samplesImage
+    with tutorialsImage
+  }
+
+  siteDocDistImage = copySpec {
+    into "qi4j/$version"
+    with docsImage
+    with reportsImage
     with samplesImage
     with tutorialsImage
   }
@@ -413,8 +401,21 @@ task tarBinaries(type: Tar, dependsOn: distLayout) {
   with distLayout.binDistImage
 }
 
+task zipSiteDoc(type: Zip, dependsOn: distLayout) {
+  baseName = 'qi4j-sdk'
+  classifier = 'site'
+  with distLayout.siteDocDistImage
+}
+
+task tarSiteDoc(type: Tar, dependsOn: distLayout) {
+  baseName = 'qi4j-sdk'
+  classifier = 'site'
+  compression = Compression.GZIP
+  with distLayout.siteDocDistImage
+}
+
 artifacts {
-  archives zipSources, tarSources, zipBinaries, tarBinaries
+  archives zipSources, tarSources, zipBinaries, tarBinaries, zipSiteDoc, tarSiteDoc
 }
 
 task dist( type: Copy, dependsOn: [zipBinaries,tarBinaries,tarSources,zipSources] ) {

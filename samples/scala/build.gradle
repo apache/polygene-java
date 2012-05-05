@@ -13,7 +13,7 @@ sourceSets {
 }
 
 repositories {
-    mavenRepo urls: 'http://scala-tools.org/repo-releases/'
+    mavenRepo url: 'http://scala-tools.org/repo-releases/'
 }
 
 dependencies {
