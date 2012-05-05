@@ -27,7 +27,7 @@ of the same service type, but they can not be created on the fly in runtime, but
 <<Assembly>>.
 
 == Service Configuration ==
-The configuration for a service is well supported in Qi4j. See the <<Configuration>> chapter for details.
+The configuration for a service is well supported in Qi4j. See the <<service-configuration>> chapter for details.
 
 == Activation/Deactivation ==
 Services are instantiated and activated either on application start-up, or upon first use. This is controlled by calling
@@ -49,7 +49,7 @@ the service will be called. The deactivation occurs in the reverse order of the 
 services are still available for a deactivating service.
 
 == Identity and Tags ==
-Services has an Identity, which drives the <<Configuration>> system and can be used to lookup a particular service
+Services has an Identity, which drives the <<service-configuration>> system and can be used to lookup a particular service
 instance. Services can also be arbitrarily tagged, via the ServiceDescriptor. Example;
 
 [snippet,java]

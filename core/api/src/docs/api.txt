@@ -1,4 +1,4 @@
-[[Core API]]
+[[core-api]]
 = Core API =
 
 The Qi4j Core API is the primary interface for client application code during the main exectution phase, i.e. after the

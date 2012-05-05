@@ -1,5 +1,5 @@
-[[Configuration]]
-= Configuration =
+[[service-configuration,Service Configuration]]
+= Service Configuration =
 Configuration is Qi4j is for <<ServiceComposite, Qi4j Services>> only. The Configuration is stored in a visible Entity
 Store and is therefor runtime modifiable and not static in properties or XML files as in most other dependency
 injection frameworks.
