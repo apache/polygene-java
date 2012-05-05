@@ -1,0 +1,38 @@
+
+USE CASE        Inspect Cargo In Customs [subfunction]
+===========================================================================
+A Delivery Inspector inspects and updates the delivery status of a cargo being
+handled in customs.
+
+It seems from the DDD sample code that a cargo can be handled by customs authorities
+in any location. So even if this is different from the last known location - or even
+not in the itinerary - the cargo will still be on track.
+
+In the DDD sample we can have additional transportation after a customs handling event,
+but isn't a claim a more logical expected next step? Can a cargo be handled by customs
+authorities and then continue its travel to other locations?!
+
+For now we don't predict any next handling event - a domain expert opinion on this
+would be interesting.
+
+
+Primary actor.. Delivery Inspector
+Scope.......... Handling Monitoring System in shipping application
+Preconditions.. Cargo is in port (??) and handled by customs authorities.
+Trigger........ Delivery Inspector receives request to inspect the delivery status of cargo in customs.
+
+
+Main Success Scenario
+---------------------------------------------------------------------------
+1. Delivery Inspector collects known delivery data.
+2. Delivery Inspector determines that cargo is routed (for internal reference).
+3. Delivery Inspector saves cargo delivery snapshot.
+
+
+Deviations
+---------------------------------------------------------------------------
+2a. Cargo has no itinerary:
+    1. Delivery Inspector marks cargo as non-routed.
+
+2b. RouteSpecification is not satisfied by Itinerary:
+    1. Delivery Inspector marks cargo as misrouted.

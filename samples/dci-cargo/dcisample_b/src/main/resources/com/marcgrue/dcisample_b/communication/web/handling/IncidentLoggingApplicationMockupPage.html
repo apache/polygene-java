@@ -1,0 +1,75 @@
+<html xmlns:wicket>
+<wicket:extend>
+    <div id="box">
+
+        <div class="headerMenu" style="color:purple">Incident Logging Application mockup</div>
+        <h3 style="color:purple">Report Handling Event</h3>
+
+        <form wicket:id="form">
+            <table>
+                <tbody>
+                <tr>
+                    <td>Completion</td>
+                    <td nowrap><input type="text" wicket:id="completion"/></td>
+                    <!--<td rowspan="7" style="padding-left:30px">-->
+                          <!--<span style="font-style:italic;font-family: 'Lucida Sans', 'Helvetica'"> External cargo handling authorities (ports, shippers,-->
+                              <!--customs etc) continuously send handling event messages through incident logging-->
+                              <!--applications as they handle cargos in order to inform shippers (like us) of what-->
+                              <!--has happened to a certain cargo.<br>-->
+                              <!--<br>-->
+                              <!--It's outside the scope of our incident logging application mockup to validate the-->
+                              <!--data since our perspective is the booking application receiving raw data that we-->
+                              <!--have no control over.<br>-->
+                              <!--<br>-->
+                              <!--It's first when the data hit our booking application (below) that we can validate-->
+                              <!--and process it...-->
+                        <!--</span>-->
+                    <!--</td>-->
+                </tr>
+                <tr>
+                    <td nowrap>Cargo Tracking Id</td>
+                    <td nowrap>
+                        <input type="text" wicket:id="trackingIdInput"/> <select
+                            wicket:id="trackingIdSelector"></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Event type</td>
+                    <td nowrap>
+                        <input type="text" wicket:id="eventTypeInput"/> <select wicket:id="eventTypeSelector"></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Voyage</td>
+                    <td nowrap>
+                        <input type="text" wicket:id="voyageInput"/> <select wicket:id="voyageSelector"></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Location</td>
+                    <td nowrap>
+                        <input type="text" wicket:id="locationInput"/> <select wicket:id="locationSelector"></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <input type="submit" value="Send" wicket:id="register"/>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <hr>
+
+            <div class="headerMenu">Booking Application</div>
+            <h3>Process Handling Event</h3>
+            <span style="font-style:italic">Result of our processing:
+            </span>
+
+            <div wicket:id="feedback"></div>
+        </form>
+
+    </div>
+</wicket:extend>
+</html>

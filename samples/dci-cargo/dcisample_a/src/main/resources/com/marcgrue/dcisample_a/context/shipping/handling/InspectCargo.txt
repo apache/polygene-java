@@ -1,0 +1,24 @@
+
+USE CASE        Inspect Cargo [subfunction]
+===========================================================================
+System updates delivery snapshot of cargo based on registered handling event and saves cargo.
+
+Scope.......... Booking application ("system")
+Level.......... Subfunction
+Primary actor.. System
+Preconditions.. Cargo delivery snapshot is not up do date with registered handling event.
+Trigger........ Handling event has been registered.
+
+Main Success Scenario
+---------------------------------------------------------------------------
+1. System <builds delivery snapshot> for cargo with registered handling event.
+2. System assigns new delivery snapshot to cargo.
+3. System checks that cargo is correctly in transit.
+4. System saves cargo.
+
+Deviations
+---------------------------------------------------------------------------
+3a. Cargo is misdirected:
+    1. System notifies customer to reroute cargo.
+3b. Cargo has arrived:
+    1. System notifies customer to claim cargo (?)

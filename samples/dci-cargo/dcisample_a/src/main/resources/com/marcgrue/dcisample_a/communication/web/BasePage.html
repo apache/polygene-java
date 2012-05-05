@@ -1,0 +1,92 @@
+<html xmlns:wicket>
+<head>
+    <title>DCI sample (version A)</title>
+    <link href="css/style.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+
+<div class="left">
+    <div class="headline"><a href="/">DCI sample</a></div>
+    <div id="toggle">
+        <a href="#" class="closed" wicket:id="toggleLinks">Qi4j/Wicket port of the DDD sample application to the DCI
+            paradigm.</a>
+    </div>
+
+    <div id="links" wicket:id="links"></div>
+    <wicket:fragment wicket:id="linksFragment">
+        <br>
+        <table>
+            <thead>
+            <tr>
+                <td>DCI</td>
+                <td>DDD</td>
+                <td>Qi4j</td>
+                <td>Wicket</td>
+                <td>Marc Grue</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td valign="top">
+                    <a href="http://groups.google.com/group/object-composition/topics?hl=en"
+                       target="_blank">Forum</a><br>
+                    <a href="https://github.com/DCI/dci-sample" target="_blank">Github</a><br>
+                    <a href="http://en.wikipedia.org/wiki/Data,_Context,_and_Interaction" target="_blank">Wiki</a><br>
+                    <a href="http://folk.uio.no/trygver/2010/DCIExecutionModel.pdf" target="_blank">Execution Model</a>
+                </td>
+                <td valign="top">
+                    <a href="http://dddsample.sourceforge.net/" target="_blank">Sample</a><br>
+                    <a href="http://tech.groups.yahoo.com/group/domaindrivendesign/" target="_blank">Forum</a>
+                </td>
+                <td valign="top">
+                    <a href="http://www.qi4j.org/" target="_blank">Website</a><br>
+                    <a href="http://old.nabble.com/Qi4j-dev-f33137.html" target="_blank">Forum</a><br>
+                    <a href="http://www.qi4j.org/qi4j/downloads.html" target="_blank">Download</a><br>
+                    <a href="http://repository.ops4j.org/maven2/org/qi4j/" target="_blank">Maven</a><br>
+                    <a href="https://github.com/qi4j" target="_blank">Github</a>
+                </td>
+                <td valign="top">
+                    <a href="http://wicket.apache.org/" target="_blank">Website</a><br>
+                    <a href="http://apache-wicket.1842946.n4.nabble.com/Users-forum-f1842947.html"
+                       target="_blank">Forum</a><br>
+                    <a href="http://wicketstuff.org/wicket/index.html" target="_blank">Examples</a><br>
+                    <a href="https://cwiki.apache.org/WICKET/" target="_blank">Wiki</a><br>
+                    <a href="http://apache.dataphone.se/wicket/1.5.1/" target="_blank">Download</a>
+                </td>
+                <td valign="top">
+                    <a href="http://marcgrue.com/" target="_blank">Overview</a><br>
+                    <a href="http://marcgrue.com/dci/dci-sample/what-the-system-is" target="_blank">What-the-system-is</a><br>
+                    <a href="http://marcgrue.com/dci/process-thinking" target="_blank">Process Thinking</a><br>
+                </td>
+                <td valign="top">
+                    <a href="http://www.amazon.co.uk/gp/product/0470684208/ref=as_li_ss_tl?ie=UTF8&tag=doubtrol-21&linkCode=as2&camp=1634&creative=19450&creativeASIN=0470684208"
+                       target="_blank">Lean Architecture</a><img
+                        src="http://www.assoc-amazon.co.uk/e/ir?t=&l=as2&o=2&a=0470684208" width="1" height="1"
+                        border="0" alt="" style="border:none !important; margin:0px !important;"/><br>
+                    <a href="http://www.amazon.co.uk/gp/product/0201702258/ref=as_li_ss_tl?ie=UTF8&tag=doubtrol-21&linkCode=as2&camp=1634&creative=19450&creativeASIN=0201702258"
+                       target="_blank">Writing Effective Use Cases</a><img
+                        src="http://www.assoc-amazon.co.uk/e/ir?t=doubtrol-21&l=as2&o=2&a=0201702258" width="1"
+                        height="1" border="0" alt="" style="border:none !important; margin:0px !important;"/>
+
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </wicket:fragment>
+</div>
+
+<div class="right">
+    <b>Java-Qi4j-Wicket<br>
+        Version <span wicket:id="version">[X.Y.Z]</span></b><br>
+    Created 2011-10-04<br>
+    Modified 2011-10-04<br>
+    by Marc Grue
+</div>
+
+<div wicket:id="tabsPanel">[tabs]</div>
+
+<!--Inherited pages go here-->
+<wicket:child/>
+
+</body>
+</html>

@@ -190,7 +190,11 @@ public class ValueTypeFactory
             {
                 return true;
             }
-            else if( visited instanceof UsedLayersModel )
+            else if (visited instanceof LayerModel )
+            {
+                return true;
+            }
+            else if (visited instanceof UsedLayersModel )
             {
                 return true;
             }

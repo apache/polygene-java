@@ -1,0 +1,159 @@
+body {
+    margin: 2em;
+    font-family: 'Lucida Sans', 'Helvetica', 'Sans-serif', 'sans', sans-serif;
+    font-size: 9pt;
+    line-height: 1.2em;
+    background-color: #f5f5f5;
+}
+
+h1, h2, h3, h4, h6 {
+    color: #E9601A;
+}
+h4 {
+    margin-bottom: 5px;
+}
+a{
+    text-decoration:none;
+}
+a:hover{
+    text-decoration:underline;
+}
+a:visited{
+    color:blue;
+}
+
+.left {
+	float: left;
+	width: 75%;
+}
+.right {
+    font-family: 'Verdana', Arial, Helvetica, serif;
+    text-align:right;
+    color: #666;
+    font-size: 8pt;
+    font-style: italic;
+    font-weight: normal;
+    line-height: 1.5em;
+    margin-bottom: -50px;
+}
+.headline {
+    margin-bottom:17px;
+}
+.headline a {
+  text-decoration:none;
+    color: #E9601A;
+    font-size: 2em;
+    font-weight: bold;
+}
+
+#box {
+    border-width: 0px 1px 1px;
+    border-style: solid;
+    border-color: 484a4a;
+    padding: 1em;
+    overflow: hidden;
+    background-color: white;
+}
+
+.headerMenu {
+    margin-top:10px;
+    margin-bottom:20px;
+    color: #E9601A;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+.headerMenu a {
+    margin-left:15px;
+    font-size: 9pt;
+    font-weight: normal;
+}
+
+pre, table, td {
+    font-family: 'Verdana', Arial, Helvetica, serif;
+    font-size: 9pt;
+    line-height: 1.1em;
+}
+
+table td, th {
+    padding: 4 18 4 0;
+    align: left;
+    vertical-align: top;
+}
+
+table thead {
+    font-weight: bold;
+}
+
+.styleLeftColumn td:first-child {
+    font-weight: bold;
+}
+
+.errorColor {
+    color: red;
+    font-weight: bold;
+}
+.correctColor {
+    color: green;
+    font-weight: bold;
+}
+
+.notifyError {
+    border: 2px solid red;
+    padding: 5px;
+    font-weight: bold;
+}
+.notifySuccess {
+    border: 2px solid green;
+    padding: 5px;
+    font-weight: bold;
+}
+.notifySuccess {
+    border: 2px solid green;
+    padding: 5px;
+    font-weight: bold;
+}
+
+
+
+#toggle a {
+        padding-left: 17px;
+        text-decoration:none;
+        color:black;
+}
+
+#toggle a:hover {
+        color:blue;
+}
+
+#toggle .closed  {
+        background: url(/graphics/icon/triangle-closed.png)  no-repeat;
+        background-position: 4 2px;
+}
+#toggle .open  {
+        background: url(/graphics/icon/triangle-open.png)  no-repeat;
+        background-position: 2 4px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

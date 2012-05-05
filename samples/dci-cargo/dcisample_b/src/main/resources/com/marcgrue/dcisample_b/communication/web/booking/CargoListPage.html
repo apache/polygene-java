@@ -1,0 +1,33 @@
+<html xmlns:wicket>
+<wicket:extend>
+    <div class="headerMenu">
+        List of Cargos
+        <wicket:link><a href="BookNewCargoPage.html">Book new cargo</a></wicket:link>
+    </div>
+
+    <table>
+        <thead>
+        <tr>
+            <td>Tracking Id</td>
+            <td>Origin</td>
+            <td>Destination</td>
+            <td>Arrival deadline</td>
+            <td>Routing status</td>
+            <td>Transport status</td>
+            <td>Delivery status</td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr wicket:id="list">
+            <td wicket:id="trackingId"></td>
+            <td wicket:id="origin"></td>
+            <td align="center" wicket:id="destination"></td>
+            <td align="center" wicket:id="deadline"></td>
+            <td wicket:id="routingStatus"></td>
+            <td wicket:id="transportStatus"></td>
+            <td wicket:id="deliveryStatus"></td>
+        </tr>
+        </tbody>
+    </table>
+</wicket:extend>
+</html>

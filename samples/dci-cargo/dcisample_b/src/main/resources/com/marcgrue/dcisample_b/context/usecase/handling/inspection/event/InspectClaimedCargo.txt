@@ -1,0 +1,38 @@
+
+USE CASE        Inspect Claimed Cargo [subfunction]
+===========================================================================
+A Delivery Inspector inspects and updates the delivery status of a claimed cargo.
+
+The cargo owner can claim the cargo in any location along the route or even in an
+unexpected location if it was misdirected! Whenever it gets picked up it marks the
+end of the cargo delivery cycle.
+
+From this point our job is done and we have no reason to determine a next handling
+event or notify the cargo owner of the cargo eventually being misdirected or
+misrouted (we though calculate it for internal reference).
+
+
+Primary actor.. Delivery Inspector
+Scope.......... Handling Monitoring System in shipping application
+Preconditions.. Cargo has been claimed by cargo owner.
+Trigger........ Delivery Inspector receives request to inspect the delivery status of claimed cargo.
+
+
+Main Success Scenario
+---------------------------------------------------------------------------
+1. Delivery Inspector collects known delivery data.
+2. Delivery Inspector determines that cargo was routed (for internal reference).
+3. Delivery Inspector determines that cargo was on track according to itinerary (for internal reference).
+4. Delivery Inspector saves cargo delivery snapshot.
+
+
+Deviations
+---------------------------------------------------------------------------
+2a. Cargo has no itinerary:
+    1. Delivery Inspector marks cargo as non-routed.
+
+2b. RouteSpecification was not satisfied by Itinerary:
+    1. Delivery Inspector marks cargo as misrouted.
+
+3a. Claim location was not the same as itinerary destination:
+    1. Delivery Inspector marks cargo as misdirected.

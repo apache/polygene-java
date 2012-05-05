@@ -1,0 +1,32 @@
+
+USE CASE	    Derive Updated Route Specification [subfunction]
+===========================================================================
+A Cargo Inspector is asked for an updated route specification for a cargo
+according to the current delivery status.
+
+
+Primary actor.. Cargo Inspector
+Scope.......... Booking System
+Preconditions.. Cargo is routed.
+Trigger........ Booking System wants an updated route specification for a cargo.
+
+
+Main Success Scenario
+---------------------------------------------------------------------------
+1. Cargo Inspector collects destination and arrival deadline from old route specification.
+2. Cargo Inspector sets new origin to current location and new earliest departure date to last completion time.
+3. Cargo Inspector builds and returns new route specification.
+
+
+Deviations
+---------------------------------------------------------------------------
+1a. Cargo is going to a new destination:
+    1. Cargo Inspector uses new given destination.
+
+2a. Cargo is not received yet:
+    1. Cargo Inspector sets new origin to cargo origin.
+    2. Cargo Inspector leaves earliest departure time unchanged.
+
+2b. Cargo is on board carrier:
+    1. Cargo Inspector sets new origin to arrival location of current carrier movement.
+    2. Cargo Inspector sets new earliest departure date to arrival time of current carrier movement.
