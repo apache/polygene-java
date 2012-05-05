@@ -42,7 +42,7 @@ such as;
 
 [snippet,java]
 --------------
-source=../../../../libraries/rest-server/src/test/java/org/qi4j/library/rest/server/DocumentationSupport.java
+source=libraries/rest-server/src/test/java/org/qi4j/library/rest/server/DocumentationSupport.java
 tag=UsingAssembler
 --------------
 
@@ -65,7 +65,7 @@ arguments to define certain aspects. An example is the popular JdbmEntityStore, 
 
 [snippet,java]
 --------------
-source=../../../../extensions/entitystore-jdbm/src/test/java/org/qi4j/entitystore/jdbm/DocumentationSupport.java
+source=extensions/entitystore-jdbm/src/test/java/org/qi4j/entitystore/jdbm/DocumentationSupport.java
 tag=UsingAssembler
 --------------
 
