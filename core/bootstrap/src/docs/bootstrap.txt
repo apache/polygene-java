@@ -25,12 +25,16 @@ You can also;
     *
 
 == Defining Services ==
+TODO
 
 == Defining Values ==
+TODO
 
 == Defining Transients ==
+TODO
 
 == Defining Entities ==
+TODO
 
 == Using Assemblers ==
 Many libraries and extensions provides a cookie-cutter _Assembler_, to simplify the set up of such component. Often
@@ -73,10 +77,12 @@ tag=UsingAssembler
 
 
 == Singleton Assembler ==
+TODO
 
 == Pancake Assembly ==
+TODO
 
 == Application Assembler ==
-
+TODO
 
 

@@ -50,9 +50,14 @@ The Qi4j Core Functional API are divided a handful of powerful concepts, especia
 
 
 == Specification ==
+TODO
 
 == Function ==
+TODO
 
 == Visitor Pattern ==
+TODO
 
 == Iterables ==
+TODO
+
