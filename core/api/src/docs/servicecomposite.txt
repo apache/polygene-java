@@ -1,3 +1,18 @@
+//////////////////////
+ * Copyright (c) 2007-2012, Niclas Hedhman. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied.
+ * See the License for the specific language governing permissions
+ * and limitations under the License.
+//////////////////////
+
 [[ServiceComposite]]
 = Service Composite =
 Any service added, via the ModuleAssembly.addServices(), ModuleAssembly.services() and ModuleAssembly.importServices()
@@ -44,7 +59,7 @@ If the method is not called, the creation and activation will occur on first usa
 If the service implements the org.qi4j.api.Activatable interface, the activate() method will be called after the
 constructor initialization, useful to have all the member injections already in place.
 
-When a <<Module>> is deactivated, typically because the whole application is shutting down, the deactivate() method in
+When a <<Module,Module>> is deactivated, typically because the whole application is shutting down, the deactivate() method in
 the service will be called. The deactivation occurs in the reverse order of the activation, to ensure that dependent
 services are still available for a deactivating service.
 

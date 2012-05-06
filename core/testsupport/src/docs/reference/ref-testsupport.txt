@@ -1,0 +1,7 @@
+
+include::AbstractQi4jTest.txt
+
+include::AbstractQi4jScenarioTest.txt
+
+include::AbstractEntityStoreTest.txt
+

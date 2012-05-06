@@ -1,2 +1,0 @@
-[[extension-ehcache]]
-= Ehcache Cache Extension =

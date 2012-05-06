@@ -28,13 +28,11 @@
 
   <xsl:import href="http://docbook.sourceforge.net/release/xsl/current/xhtml/chunkfast.xsl"/>
 
-  <!--<xsl:import href="http://docbook.sourceforge.net/release/xsl/current/xhtml/chunk.xsl"/>-->
-
   <!--<xsl:import href="common.xsl"/>-->
 
   <!--<xsl:import href="html-params.xsl"/>-->
 
-  <!--<xsl:import href="head.xsl"/>-->
+  <xsl:import href="head.xsl"/>
 
   <xsl:import href="syntaxhighlight.xsl"/>
 

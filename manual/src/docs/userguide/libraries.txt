@@ -1,40 +1,151 @@
+
+:leveloffset: {level1}
+
 [[Libraries]]
 = Libraries =
 
-include::../../../../libraries/alarm/src/docs/index.txt[]
-include::../../../../libraries/auth/src/docs/index.txt[]
-include::../../../../libraries/cache/src/docs/index.txt[]
-include::../../../../libraries/circuitbreaker/src/docs/index.txt[]
-include::../../../../libraries/constraints/src/docs/index.txt[]
-include::../../../../libraries/conversion/src/docs/index.txt[]
-include::../../../../libraries/cxf/src/docs/index.txt[]
-include::../../../../libraries/eventsourcing/src/docs/index.txt[]
-include::../../../../libraries/eventsourcing-jdbm/src/docs/index.txt[]
-include::../../../../libraries/eventsourcing-rest/src/docs/index.txt[]
-include::../../../../libraries/fileconfig/src/docs/index.txt[]
-include::../../../../libraries/http/src/docs/index.txt[]
-include::../../../../libraries/jmx/src/docs/index.txt[]
-include::../../../../libraries/locking/src/docs/index.txt[]
-include::../../../../libraries/logging/src/docs/index.txt[]
-include::../../../../libraries/neo4j/src/docs/index.txt[]
-include::../../../../libraries/osgi/src/docs/index.txt[]
-include::../../../../libraries/rdf/src/docs/index.txt[]
-include::../../../../libraries/rest/src/docs/index.txt[]
-include::../../../../libraries/rest-client/src/docs/index.txt[]
-include::../../../../libraries/rest-common/src/docs/index.txt[]
-include::../../../../libraries/rest-server/src/docs/index.txt[]
-include::../../../../libraries/scheduler/src/docs/index.txt[]
-include::../../../../libraries/scripting/beanshell/src/docs/index.txt[]
-include::../../../../libraries/scripting/groovy/src/docs/index.txt[]
-include::../../../../libraries/scripting/javascript/src/docs/index.txt[]
-include::../../../../libraries/scripting/jruby/src/docs/index.txt[]
-include::../../../../libraries/servlet/src/docs/index.txt[]
-include::../../../../libraries/shiro-core/src/docs/index.txt[]
-include::../../../../libraries/shiro-web/src/docs/index.txt[]
-include::../../../../libraries/spring/src/docs/index.txt[]
-include::../../../../libraries/sql/src/docs/index.txt[]
-include::../../../../libraries/struts2-codebehind/src/docs/index.txt[]
-include::../../../../libraries/struts2-convention/src/docs/index.txt[]
-include::../../../../libraries/struts2-plugin/src/docs/index.txt[]
-include::../../../../libraries/uid/src/docs/index.txt[]
+:leveloffset: {level2}
 
+include::../../../../libraries/alarm/src/docs/alarm.txt[]
+
+:leveloffset: {level2}
+
+// include::../../../../libraries/auth/src/docs/auth.txt[]
+
+:leveloffset: {level2}
+
+// include::../../../../libraries/cache/src/docs/cache.txt[]
+
+:leveloffset: {level2}
+
+// include::../../../../libraries/circuitbreaker/src/docs/circuitbreaker.txt[]
+
+:leveloffset: {level2}
+
+// include::../../../../libraries/constraints/src/docs/constraints.txt[]
+
+:leveloffset: {level2}
+
+// include::../../../../libraries/conversion/src/docs/conversion.txt[]
+
+:leveloffset: {level2}
+
+// include::../../../../libraries/cxf/src/docs/cxf.txt[]
+
+:leveloffset: {level2}
+
+// include::../../../../libraries/eventsourcing/src/docs/eventsourcing.txt[]
+
+:leveloffset: {level2}
+
+// include::../../../../libraries/eventsourcing-jdbm/src/docs/eventsourcing-jdbm.txt[]
+
+:leveloffset: {level2}
+
+// include::../../../../libraries/eventsourcing-rest/src/docs/event-sourcing-rest.txt[]
+
+:leveloffset: {level2}
+
+// include::../../../../libraries/fileconfig/src/docs/fileconfig.txt[]
+
+:leveloffset: {level2}
+
+// include::../../../../libraries/http/src/docs/http.txt[]
+
+:leveloffset: {level2}
+
+// include::../../../../libraries/jmx/src/docs/jmx.txt[]
+
+:leveloffset: {level2}
+
+// include::../../../../libraries/locking/src/docs/locking.txt[]
+
+:leveloffset: {level2}
+
+include::../../../../libraries/logging/src/docs/logging.txt[]
+
+:leveloffset: {level2}
+
+// include::../../../../libraries/neo4j/src/docs/neo4j.txt[]
+
+:leveloffset: {level2}
+
+// include::../../../../libraries/osgi/src/docs/osgi.txt[]
+
+:leveloffset: {level2}
+
+// include::../../../../libraries/rdf/src/docs/rdf.txt[]
+
+:leveloffset: {level2}
+
+// include::../../../../libraries/rest/src/docs/rest.txt[]
+
+:leveloffset: {level2}
+
+// include::../../../../libraries/rest-client/src/docs/rest-client.txt[]
+
+:leveloffset: {level2}
+
+// include::../../../../libraries/rest-common/src/docs/rest-common.txt[]
+
+:leveloffset: {level2}
+
+// include::../../../../libraries/rest-server/src/docs/rest-server.txt[]
+
+:leveloffset: {level2}
+
+// include::../../../../libraries/scheduler/src/docs/scheduler.txt[]
+
+:leveloffset: {level2}
+
+// include::../../../../libraries/scripting/beanshell/src/docs/script-beanshell.txt[]
+
+:leveloffset: {level2}
+
+// include::../../../../libraries/scripting/groovy/src/docs/script-groovy.txt[]
+
+:leveloffset: {level2}
+
+// include::../../../../libraries/scripting/javascript/src/docs/script-javascript.txt[]
+
+:leveloffset: {level2}
+
+// include::../../../../libraries/scripting/jruby/src/docs/script-jruby.txt[]
+
+:leveloffset: {level2}
+
+// include::../../../../libraries/servlet/src/docs/servlet.txt[]
+
+:leveloffset: {level2}
+
+// include::../../../../libraries/shiro-core/src/docs/shiro.txt[]
+
+:leveloffset: {level2}
+
+// include::../../../../libraries/shiro-web/src/docs/shiro-web.txt[]
+
+:leveloffset: {level2}
+
+// include::../../../../libraries/spring/src/docs/spring.txt[]
+
+:leveloffset: {level2}
+
+// include::../../../../libraries/sql/src/docs/sql.txt[]
+
+:leveloffset: {level2}
+
+// include::../../../../libraries/struts2-codebehind/src/docs/struts-codebehind.txt[]
+
+:leveloffset: {level2}
+
+// include::../../../../libraries/struts2-convention/src/docs/struts-convention.txt[]
+
+:leveloffset: {level2}
+
+// include::../../../../libraries/struts2-plugin/src/docs/struts-plugin.txt[]
+
+:leveloffset: {level2}
+
+// include::../../../../libraries/uid/src/docs/uid.txt[]
+
+:leveloffset: {level2}

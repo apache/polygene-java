@@ -1,0 +1,24 @@
+
+
+:leveloffset: 1
+
+[[news,Newsworthy]]
+=  News =
+
+== News & Events ==
+
+[width="80%",options="header"]
+|=========================================================
+|Date |Announcement
+
+|2012-May-07 |<<news-20120507>>
+|2012-May-07 |<<news-20120502>>
+|=========================================================
+
+:leveloffset: 2
+
+include::20120507.txt[]
+
+include::20120502.txt[]
+
+

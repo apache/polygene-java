@@ -9,15 +9,23 @@
 
 include::preface.txt[]
 
-include::../../../../tutorials/introduction/src/docs/index.txt[]
+:leveloffset: {level2}
 
 include::tutorials.txt[]
 
+:leveloffset: {level2}
+
 include::core.txt[]
+
+:leveloffset: {level2}
 
 include::libraries.txt[]
 
+:leveloffset: {level2}
+
 include::extensions.txt[]
+
+:leveloffset: {level2}
 
 include::concepts.txt[]
 

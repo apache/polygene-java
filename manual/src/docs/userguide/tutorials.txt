@@ -1,5 +1,0 @@
-[[Tutorials]]
-= Tutorials =
-
-include:../../../tutorials/composites/docs/compositeTutorial.txt
-

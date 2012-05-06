@@ -1,9 +1,10 @@
+
+:leveloffset: 1
+
 [[recipes]]
 = Recipes =
 
 :leveloffset: 2
-
-include::whats-an-object.txt[]
 
 include::howto-configure-service.txt[]
 
@@ -11,5 +12,4 @@ include::howto-create-entity.txt[]
 
 include::howto-assembly-application.txt[]
 
-include::faq.txt[]
-
+:leveloffset: 2

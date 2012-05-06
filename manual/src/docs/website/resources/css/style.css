@@ -14,79 +14,76 @@
  * limitations under the License.
  */
 
-body {
-	margin: 0;
-	padding: 0;
-	font-family: Helvetica, Arial, sans-serif;
-	color: #343434;
-	line-height: 1.2em;
+body
+{
+    background: url("bg.png");
+    margin: 0;
+    padding: 0;
+    font-family: Helvetica, Arial, sans-serif;
+    color: #343434;
+    line-height: 1.2em;
 }
 
 .section p
 {
-    margin-right:85px;
+    margin-right: 85px;
 }
 
 .literal, .literallayout, .screen
 {
-    background:#DEDEDE;
+    background: #DEDEDE;
 }
 
-.literallayout {
-	padding: 7px;
+.literallayout
+{
+    padding: 7px;
 }
 
 a
 {
-    color:#00009A;
+    color: #00009A;
 }
 
 h2.title
 {
-    display:none;
+    display: none;
 }
 
 .logo
 {
     float: left;
-	margin: 10px 0px 10px 20px;
+    margin: 10px 0 10px 20px;
 }
 
 .top-nav .toc dl
 {
     margin: 0;
-	padding: 0;
-	text-align:center;
-	float: right;
-	background-image: linear-gradient(bottom, rgb(49,105,165) 100%, rgb(255,255,255) 0%);
-	background-image: -o-linear-gradient(bottom, rgb(49,105,165) 100%, rgb(255,255,255) 0%);
-	background: -moz-linear-gradient(top, #3d8ac9 0%, #ffffff 100%);
-	background-image: -webkit-linear-gradient(bottom, rgb(49,105,165) 100%, rgb(255,255,255) 0%);
-	background-image: -ms-linear-gradient(bottom, rgb(49,105,165) 100%, rgb(255,255,255) 0%);
-	
-	background-image: -webkit-gradient(
-		linear,
-		left bottom,
-		left top,
-		color-stop(1, rgb(49,105,165)),
-		color-stop(0, rgb(255,255,255))
-	);
+    padding: 0;
+    text-align: center;
+    float: right;
+    background-image: linear-gradient(bottom, rgb(49, 105, 165) 100%, rgb(255, 255, 255) 0%);
+    background-image: -o-linear-gradient(bottom, rgb(49, 105, 165) 100%, rgb(255, 255, 255) 0%);
+    background: -moz-linear-gradient(top, #3d8ac9 0%, #ffffff 100%);
+    background-image: -webkit-linear-gradient(bottom, rgb(49, 105, 165) 100%, rgb(255, 255, 255) 0%);
+    background-image: -ms-linear-gradient(bottom, rgb(49, 105, 165) 100%, rgb(255, 255, 255) 0%);
+
+    background-image: -webkit-gradient(linear, left bottom, left top, color-stop(1, rgb(49, 105, 165)), color-stop(0, rgb(255, 255, 255)));
 }
 
 .top-nav .toc dt
 {
-    display:inline;
-    font-size:14pt;
-    display:inline;
-    margin-right:1px;
+    display: inline;
+    font-size: 14pt;
+    display: inline;
+    margin-right: 1px;
 }
 
 /* selected */
 .top-nav .toc dt span span
 {
-	color: red;
-	border-right: 1px solid white;
-	margin-right: 1px;
+    color: red;
+    border-right: 1px solid white;
+    margin-right: 1px;
 }
 
 .top-nav .toc .toc-spacer span span
@@ -97,92 +94,80 @@ h2.title
     border-right:0px;
     border-bottom:1px solid #005500;
     */
-    border:0px;
-    padding-bottom:7px;
+    border: 0px;
+    padding-bottom: 7px;
 }
 
 #top-nav-hr
 {
-    height:1px;
-    color:#005500;
-    border:0px;
-    border-bottom:1px solid #005500;
-    position:absolute;
-    bottom:15px;
-    z-index:-5;
-    padding:0px;
+    height: 1px;
+    color: #000055;
+    border: 0px;
+    border-bottom: 1px solid #000055;
+    position: absolute;
+    bottom: 15px;
+    z-index: -5;
+    padding: 0px;
 }
 
 /* unselected */
 .top-nav .toc dt a
 {
-	margin-right: 1px;
-    border-right:1px solid #fff;
-    border-left:1px solid #fff;
-    color:#3D8AC9;
+    margin-right: 1px;
+    border-right: 1px solid #fff;
+    border-left: 1px solid #fff;
+    color: #3D8AC9;
 }
 
 /* hover */
 .top-nav .toc dt a,
 .top-nav .toc dt span span
 {
-	display: block;
-	float: left;
-    padding: 80px 25px 0 25px;
-    text-decoration:none;
-	height: 20px;
-	background-image: linear-gradient(bottom, rgb(191,191,191) 100%, rgb(255,255,255) 0%);
-	background-image: -o-linear-gradient(bottom, rgb(191,191,191) 100%, rgb(255,255,255) 0%);
-	background: -moz-linear-gradient(top, #bfbfbf 0%, #ffffff 100%);
-	background-image: -webkit-linear-gradient(bottom, rgb(191,191,191) 100%, rgb(255,255,255) 0%);
-	background-image: -ms-linear-gradient(bottom, rgb(191,191,191) 100%, rgb(255,255,255) 0%);
-	
-	background-image: -webkit-gradient(
-		linear,
-		left bottom,
-		left top,
-		color-stop(1, rgb(191,191,191)),
-		color-stop(0, rgb(255,255,255))
-	);
+    display: block;
+    float: left;
+    padding: 80px 15px 0 15px;
+    text-decoration: none;
+    height: 20px;
+    background-image: linear-gradient(bottom, rgb(191, 191, 191) 100%, rgb(255, 255, 255) 0%);
+    background-image: -o-linear-gradient(bottom, rgb(191, 191, 191) 100%, rgb(255, 255, 255) 0%);
+    background: -moz-linear-gradient(top, #bfbfbf 0%, #ffffff 100%);
+    background-image: -webkit-linear-gradient(bottom, rgb(191, 191, 191) 100%, rgb(255, 255, 255) 0%);
+    background-image: -ms-linear-gradient(bottom, rgb(191, 191, 191) 100%, rgb(255, 255, 255) 0%);
+
+    background-image: -webkit-gradient(linear, left bottom, left top, color-stop(1, rgb(191, 191, 191)), color-stop(0, rgb(255, 255, 255)));
 }
 
 .top-nav .toc dt a:hover,
 .top-nav .toc dt span span
 {
-	background-image: linear-gradient(bottom, rgb(49,105,165) 100%, rgb(255,255,255) 0%);
-	background-image: -o-linear-gradient(bottom, rgb(49,105,165) 100%, rgb(255,255,255) 0%);
-	background: -moz-linear-gradient(top, #3d8ac9 0%, #ffffff 100%);
-	background-image: -webkit-linear-gradient(bottom, rgb(49,105,165) 100%, rgb(255,255,255) 0%);
-	background-image: -ms-linear-gradient(bottom, rgb(49,105,165) 100%, rgb(255,255,255) 0%);
-	
-	background-image: -webkit-gradient(
-		linear,
-		left bottom,
-		left top,
-		color-stop(1, rgb(49,105,165)),
-		color-stop(0, rgb(255,255,255))
-	);
+    background-image: linear-gradient(bottom, rgb(49, 105, 165) 100%, rgb(255, 255, 255) 0%);
+    background-image: -o-linear-gradient(bottom, rgb(49, 105, 165) 100%, rgb(255, 255, 255) 0%);
+    background: -moz-linear-gradient(top, #3d8ac9 0%, #ffffff 100%);
+    background-image: -webkit-linear-gradient(bottom, rgb(49, 105, 165) 100%, rgb(255, 255, 255) 0%);
+    background-image: -ms-linear-gradient(bottom, rgb(49, 105, 165) 100%, rgb(255, 255, 255) 0%);
+
+    background-image: -webkit-gradient(linear, left bottom, left top, color-stop(1, rgb(49, 105, 165)), color-stop(0, rgb(255, 255, 255)));
 }
 
 .sub-nav
 {
     margin-top: 160px;
-	clear: both;
+    clear: both;
 }
 
 .sub-nav .toc
 {
-    float:left;
+    float: left;
 }
 
 .sub-nav .toc dl
 {
-    font-family:sans-serif;
+    font-family: sans-serif;
     /* border:1px dotted #005500; */
-    width:150px;
-    margin-right:25px;
-    margin-left:0px;
-    margin-bottom:40px;
+    width: 150px;
+    margin-right: 25px;
+    margin-left: 0px;
+    margin-bottom: 40px;
 }
 
 div.article
@@ -190,92 +175,130 @@ div.article
     margin: 0 20px;
 }
 
-div.article hr {
-	display: none;
+div.article hr
+{
+    display: none;
 }
 
 body > div.section
 {
-    margin-left:175px;
+    margin-left: 175px;
 }
 
 .sub-nav .toc dl a
 {
-    display:none;
+    display: none;
 }
 
 .sub-nav .toc dt a,
 .sub-nav .toc dt span
 {
-    display:table;
-    margin-top:5px;
-    margin-bottom:5px;
-    margin-left:3px;
-    margin-right:2px;
+    display: table;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: 3px;
+    margin-right: 2px;
 }
 
 .sub-nav .toc dt span
 {
-    color:black;
+    color: black;
 }
-
 
 .sub-nav .toc dt a
 {
-    color:#005500;
+    color: #000055;
 }
 
 .hlabeledlist tr > td:first-child
 {
-    width:136px;
+    width: 136px;
 }
 
 .footer
 {
-    clear:both;
-    text-align:center;
-	padding: 10px 0;
-	background: #343434;
-	color: #9a9a9a;
-	font-size: 80%;
+    clear: both;
+    text-align: center;
+    padding: 10px 0;
+    background: #343434;
+    color: #9a9a9a;
+    font-size: 80%;
 }
 
-.note {
-	width: 500px;
-	float: left;
-	font-size: 22px;
-	line-height: 1.3em;
-	font-weight: bold;
-	margin: 0 20px 0 0 !important;
+.note
+{
+    width: 500px;
+    float: left;
+    font-size: 22px;
+    line-height: 1.3em;
+    font-weight: bold;
+    margin: 0 20px 0 0 !important;
 }
 
-.note h3 {
-	display: none;
+.note h3
+{
+    display: none;
 }
 
-.note p {
-	margin: 0 10px 20px 0;
+.note p
+{
+    margin: 0 10px 20px 0;
 }
 
 #flash
 {
-    margin:40px;
-    float:right;
+    margin: 40px;
+    float: right;
     width: 320px;
-    text-align:right;
+    text-align: right;
 }
 
 .extra-content
 {
-    display:none;
+    display: none;
 }
 
-#F { position:relative; left:18px;  top:3px;}
-#K { position:relative; left:84px;  top:3px;}
-#P { position:relative; left:-65px; top:3px;}
-#S { position:relative; left:8px;   top:3px;}
-#W { position:relative; left:-42px; top:6px; }
-#Z { position:relative; left:-26px; top:4px;}
+#F
+{
+    position: relative;
+    left: 18px;
+    top: 3px;
+}
+
+#K
+{
+    position: relative;
+    left: 84px;
+    top: 3px;
+}
+
+#P
+{
+    position: relative;
+    left: -65px;
+    top: 3px;
+}
+
+#S
+{
+    position: relative;
+    left: 8px;
+    top: 3px;
+}
+
+#W
+{
+    position: relative;
+    left: -42px;
+    top: 6px;
+}
+
+#Z
+{
+    position: relative;
+    left: -26px;
+    top: 4px;
+}
 
 /*
 #J { position:relative; }

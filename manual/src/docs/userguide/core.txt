@@ -1,33 +1,17 @@
 
-[[Core]]
-= Core System =
+= Core API =
 
-:leveloffset: {level3}
+:leveloffset: {level2}
 
 include::../../../../core/api/src/docs/api.txt[]
 
-:leveloffset: {level3}
-
 include::../../../../core/bootstrap/src/docs/bootstrap.txt[]
-
-:leveloffset: {level3}
 
 include::../../../../core/spi/src/docs/spi.txt[]
 
-:leveloffset: {level3}
-
 include::../../../../core/functional/src/docs/functional.txt[]
-
-:leveloffset: {level3}
 
 include::../../../../core/io/src/docs/io.txt[]
 
-:leveloffset: {level3}
-
 include::../../../../core/testsupport/src/docs/testsupport.txt[]
 
-:leveloffset: {level3}
-
-include::../../../../core/io/src/docs/blog.txt[]
-
-:leveloffset: {level3}

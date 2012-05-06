@@ -1,0 +1,19 @@
+
+:leveloffset: 1
+
+[[recipes]]
+= Recipes =
+
+:leveloffset: 2
+
+include::howto-assembly-application.txt[]
+
+include::howto-configure-service.txt[]
+
+include::howto-create-entity.txt[]
+
+include::howto-contextual-fragments.txt[]
+
+include::howto-use-io.txt[]
+
+:leveloffset: 2

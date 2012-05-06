@@ -5,11 +5,12 @@ This is the reference manual for Qi4j version {qi4j-version}, written by members
 
 The main parts of the manual are:
 
-* <<introduction>> -- introducing Composite Oriented Programming concepts and Qi4j.
-* <<tutorials>> -- learn how to use Qi4j.
-* <<Core>> -- detailed information on how to use Qi4j.
-* <<Libraries>> -- detailed information on the many libraries available for Qi4j.
-* <<Extensions>> -- detailed information each of the Qi4j extensions, such as entity stores, indexing and caching.
+* <<introduction,Introduction>> -- introducing Composite Oriented Programming concepts and Qi4j.
+* <<tutorials,Tutorials>> -- learn how to use Qi4j.
+* <<Core,Core API>> -- detailed information on how to use Qi4j.
+* <<Libraries,Libraries>> -- detailed information on the many libraries available for Qi4j.
+* <<Extensions,Runtime Extensions>> -- detailed information each of the Qi4j extensions, such as entity stores,
+indexing, caching and runtime metrics.
 
 The material is practical, technical, and focused on answering specific questions. 
 It addresses how things work, what to do and what to avoid to successfully use Qi4j in domain rich applications.

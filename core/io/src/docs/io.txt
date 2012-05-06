@@ -1,3 +1,18 @@
+//////////////////////
+ * Copyright (c) 2007-2012, Niclas Hedhman. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied.
+ * See the License for the specific language governing permissions
+ * and limitations under the License.
+//////////////////////
+
 [[qi4j-core-io]]
 = Qi4j Core I/O API =
 
@@ -7,7 +22,7 @@ independently of Qi4j, together with the Qi4j Core Functional API, which the Cor
 The Qi4j Core I/O API tries to address the problem around shuffling data around from various I/O inputs and outputs,
 possibly with transformations and filtering along the way. It was identified that there is a general mix-up of concerns
 in the stereotypical I/O handling codebases that people deal with all the time. The reasoning around this, can be found
-in the <<appendix-io-blog>>, and is recommended reading.
+in the <<howto-use-io,HowTO Use I/O API>>, and is recommended reading.
 
 == The Problem ==
 Why does I/O operations in Java have to be so complicated, with nested try/catch/finally and loops? Don't you wish
@@ -185,7 +200,7 @@ Input and Output implementations at first glance look quite scary. Taking a clos
 simplify for users, the org.qi4j.io.Inputs and org.qi4h.io.Outputs contains static factory methods for many useful
 sources and destinations.
 
-=== org.qi4j.io.Inputs ===
+== org.qi4j.io.Inputs ==
 The current set of ready-to-use Input implementations are;
 
 [snippet,java]
@@ -194,7 +209,7 @@ source=core/io/src/main/java/org/qi4j/io/Inputs.java
 tag=method
 --------------
 
-=== org.qi4j.io.Outputs ===
+== org.qi4j.io.Outputs ==
 The current set of ready-to-use Input implementations are;
 
 [snippet,java]

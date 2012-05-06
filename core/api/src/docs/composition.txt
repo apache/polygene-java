@@ -1,3 +1,17 @@
+//////////////////////
+ * Copyright (c) 2007-2012, Niclas Hedhman. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied.
+ * See the License for the specific language governing permissions
+ * and limitations under the License.
+//////////////////////
 
 = Composition =
 Composition is at the heart of COP, and refers to two different levels of constructs;
@@ -14,11 +28,11 @@ on that later.
 
 There are 4 types of Fragments in Qi4j;
 
-    * <<mixin>> - The state carrying part of a Composite.
-    * <<constraint>> - Rules for in and out arguments, typically used for validation.
-    * <<concern>> - Interceptor of method calls. General purpose use, often for cross-cutting behaviors.
-    * <<sideeffect>> - Executed after the method call has been completed, and unable to influence the outcome of the
-      method call.
+    * <<mixin,Mixin>> - The state carrying part of a Composite.
+    * <<constraint,Constraint>> - Rules for in and out arguments, typically used for validation.
+    * <<concern,Concern>> - Interceptor of method calls. General purpose use, often for cross-cutting behaviors.
+    * <<sideeffect,Side Effect>> - Executed after the method call has been completed, and unable to influence the
+    outcome of the method call.
 
 == Composites ==
 

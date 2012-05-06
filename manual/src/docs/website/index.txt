@@ -3,25 +3,33 @@
 
 include::home.txt[]
 
+:leveloffset: 2
+
+include::news/news.txt[]
+
 :leveloffset: 1
 
 include::community.txt[]
 
 :leveloffset: 1
 
-include::../userguide/site-inline.txt[]
+include::../userguide/core.txt[]
 
 :leveloffset: 1
 
-include::../reference/site-inline.txt[]
+include::../userguide/libraries.txt[]
 
 :leveloffset: 1
 
-include::../../../../tutorials/introduction/src/docs/index.txt[]
+include::../userguide/extensions.txt[]
 
 :leveloffset: 1
 
-include::../recipes/index.txt[]
+include::../../../../tutorials/introduction/src/docs/introduction.txt[]
+
+:leveloffset: 1
+
+include::../recipes/recipes.txt[]
 
 :leveloffset: 1
 
