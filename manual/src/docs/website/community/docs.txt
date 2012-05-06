@@ -193,12 +193,12 @@ To include an image file, make sure it resides in the 'images/' directory relati
 
 [source]
 ----
-image::qi4j-logo.png[]
+image::logo-standard.png[]
 ----
 
 Which is rendered as:
 
-image::qi4j-logo.png[]
+image::logo-standard.png[]
 
 == Code Snippets ==
 
