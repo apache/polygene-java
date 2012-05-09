@@ -18,7 +18,7 @@ include::../../../../libraries/alarm/src/docs/alarm.txt[]
 
 :leveloffset: {level2}
 
-// include::../../../../libraries/circuitbreaker/src/docs/circuitbreaker.txt[]
+include::../../../../libraries/circuitbreaker/src/docs/circuitbreaker.txt[]
 
 :leveloffset: {level2}
 

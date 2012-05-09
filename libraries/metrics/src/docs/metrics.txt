@@ -15,7 +15,7 @@
 
 [[library-metrics]]
 = Qi4j Metrics =
-The Merics library is available to application code to get production metrics from their applications. It allows
+The Metrics library is available to application code to get production metrics from their applications. It allows
 applications to easily mark critical section for metrics gathering, without handling the details with the Metrics
 Extension.
 
@@ -34,3 +34,4 @@ production plant and likewise a good front-end to view this. See your chosen Met
 == TimingCaptureAll ==
 There is a TimingCaptureAllConcern, which when added to a composite will install a _Timer_ for every method call
 in the composite.
+
