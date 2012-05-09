@@ -1,5 +1,6 @@
 /*
  * Copyright 2008 Richard Wallace.
+ * Copyright (c) 2011, Paul Merlin. All Rights Reserved.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -18,7 +19,9 @@
 package org.qi4j.library.http;
 
 import java.io.Serializable;
+import java.util.EnumSet;
 import java.util.Map;
+import javax.servlet.DispatcherType;
 
 public class FilterInfo
     implements Serializable
@@ -27,9 +30,9 @@ public class FilterInfo
 
     private final String path;
     private final Map<String, String> initParameters;
-    private final Dispatchers dispatchers;
+    private final EnumSet<DispatcherType> dispatchers;
 
-    public FilterInfo( String path, Map<String, String> initParameters, Dispatchers dispatchers )
+    public FilterInfo( String path, Map<String, String> initParameters, EnumSet<DispatcherType> dispatchers )
     {
         this.dispatchers = dispatchers;
         this.initParameters = initParameters;
@@ -46,7 +49,7 @@ public class FilterInfo
         return initParameters;
     }
 
-    public Dispatchers dispatchers()
+    public EnumSet<DispatcherType> dispatchers()
     {
         return dispatchers;
     }

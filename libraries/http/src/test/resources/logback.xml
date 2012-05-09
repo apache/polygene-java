@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>[QI4J] @%-20thread %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="stdout" />
+    </root>
+
+    <logger name="org.qi4j.library.http" level="trace"/>
+    <logger name="org.eclipse.jetty" level="info"/>
+    <logger name="org.jetty" level="info"/>
+    
+</configuration>

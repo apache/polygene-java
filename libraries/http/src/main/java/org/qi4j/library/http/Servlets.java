@@ -1,5 +1,6 @@
 /*
- * Copyright 2008 Richard Wallace.
+ * Copyright (c) 2008, Richard Wallace. All Rights Reserved.
+ * Copyright (c) 2011, Paul Merlin. All Rights Reserved.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -17,19 +18,26 @@
  */
 package org.qi4j.library.http;
 
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.Map;
+import java.util.UUID;
+
+import javax.servlet.DispatcherType;
+import javax.servlet.Filter;
+import javax.servlet.Servlet;
+
+import static org.qi4j.api.common.Visibility.layer;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.library.http.ConstraintInfo.Constraint;
+import org.qi4j.library.http.ConstraintInfo.HttpMethod;
 import org.qi4j.library.http.Dispatchers.Dispatcher;
-
-import javax.servlet.Filter;
-import javax.servlet.Servlet;
-import java.util.Map;
-
-import static org.qi4j.api.common.Visibility.layer;
 
 public final class Servlets
 {
+
     private Servlets()
     {
     }
@@ -46,6 +54,7 @@ public final class Servlets
 
     public static class ServletAssembler
     {
+
         final ServletDeclaration[] servletDeclarations;
 
         ServletAssembler( ServletDeclaration... servletDeclarations )
@@ -54,23 +63,24 @@ public final class Servlets
         }
 
         @SuppressWarnings( "unchecked" )
-        public void to( ModuleAssembly module ) throws AssemblyException
+        public void to( ModuleAssembly module )
+                throws AssemblyException
         {
-            for( ServletDeclaration servletDeclaration : servletDeclarations )
-            {
-                module.services( servletDeclaration.servlet() )
-                    .setMetaInfo( servletDeclaration.servletInfo() )
-                    .instantiateOnStartup()
-                    .visibleIn( layer );
+            for ( ServletDeclaration servletDeclaration : servletDeclarations ) {
+                module.services( servletDeclaration.servlet() ).
+                        setMetaInfo( servletDeclaration.servletInfo() ).
+                        instantiateOnStartup().visibleIn( layer );
             }
         }
+
     }
 
     public static class ServletDeclaration
     {
+
         String path;
         Class<? extends ServiceComposite> servlet;
-        Map<String, String> initParams;
+        Map<String, String> initParams = Collections.emptyMap();
 
         ServletDeclaration( String path )
         {
@@ -98,6 +108,7 @@ public final class Servlets
         {
             return new ServletInfo( path, initParams );
         }
+
     }
 
     public static FilterAssembler filter( String path )
@@ -112,6 +123,7 @@ public final class Servlets
 
     public static class FilterDeclaration
     {
+
         final FilterAssembler[] filterAssemblers;
 
         FilterDeclaration( FilterAssembler... filterAssemblers )
@@ -120,13 +132,13 @@ public final class Servlets
         }
 
         @SuppressWarnings( "unchecked" )
-        public void to( ModuleAssembly module ) throws AssemblyException
+        public void to( ModuleAssembly module )
+                throws AssemblyException
         {
-            for( FilterAssembler filterAssembler : filterAssemblers )
-            {
-                module.services( filterAssembler.filter() ).setMetaInfo(
-                    filterAssembler.filterInfo() ).instantiateOnStartup()
-                    .visibleIn( layer );
+            for ( FilterAssembler filterAssembler : filterAssemblers ) {
+                module.services( filterAssembler.filter() ).
+                        setMetaInfo( filterAssembler.filterInfo() ).
+                        instantiateOnStartup().visibleIn( layer );
             }
         }
 
@@ -134,10 +146,11 @@ public final class Servlets
 
     public static class FilterAssembler
     {
+
         String path;
         Class<? extends ServiceComposite> filter;
-        Dispatchers dispatchers;
-        Map<String, String> initParams;
+        EnumSet<DispatcherType> dispatchers;
+        Map<String, String> initParams = Collections.emptyMap();
 
         FilterAssembler( String path )
         {
@@ -145,15 +158,33 @@ public final class Servlets
         }
 
         public <T extends Filter & ServiceComposite> FilterAssembler through(
-            Class<T> filter )
+                Class<T> filter )
         {
             this.filter = filter;
             return this;
         }
 
+        public FilterAssembler on( DispatcherType first, DispatcherType... rest )
+        {
+            dispatchers = EnumSet.of( first, rest );
+            return this;
+        }
+        
+        @Deprecated
         public FilterAssembler on( Dispatcher first, Dispatcher... rest )
         {
-            dispatchers = Dispatchers.dispatchers( first, rest );
+            EnumSet<DispatcherType> dispatch = EnumSet.noneOf( DispatcherType.class );
+            for ( Dispatcher each : Dispatchers.dispatchers( first, rest ) ) {
+                switch ( each ) {
+                    case FORWARD:
+                        dispatch.add( DispatcherType.FORWARD );
+                        break;
+                    case REQUEST:
+                        dispatch.add( DispatcherType.REQUEST );
+                        break;
+                }
+            }
+            dispatchers = dispatch;
             return this;
         }
 
@@ -172,6 +203,70 @@ public final class Servlets
         {
             return new FilterInfo( path, initParams, dispatchers );
         }
+
+    }
+
+    public static ConstraintAssembler constrain( String path )
+    {
+        return new ConstraintAssembler( path );
+    }
+
+    public static ConstraintDeclaration addConstraints( ConstraintAssembler... constraintAssemblers )
+    {
+        return new ConstraintDeclaration( constraintAssemblers );
+    }
+
+    public static class ConstraintDeclaration
+    {
+
+        private final ConstraintAssembler[] constraintAssemblers;
+
+        private ConstraintDeclaration( ConstraintAssembler[] constraintAssemblers )
+        {
+            this.constraintAssemblers = constraintAssemblers;
+        }
+
+        public void to( ModuleAssembly module )
+                throws AssemblyException
+        {
+            // TODO Refactor adding Map<ServiceAssembly,T> ServiceDeclaration.getMetaInfos( Class<T> type ); in bootstrap & runtime
+            // This would allow removing the ConstraintServices instances and this horrible hack with random UUIDs
+            for ( ConstraintAssembler eachAssembler : constraintAssemblers ) {
+                module.addServices( ConstraintService.class ).identifiedBy( UUID.randomUUID().toString() ).setMetaInfo( eachAssembler.constraintInfo() );
+            }
+        }
+
+    }
+
+    public static class ConstraintAssembler
+    {
+
+        private final String path;
+        private Constraint constraint;
+        private HttpMethod[] ommitedHttpMethods = new HttpMethod[]{};
+
+        private ConstraintAssembler( String path )
+        {
+            this.path = path;
+        }
+
+        public ConstraintAssembler by( Constraint constraint )
+        {
+            this.constraint = constraint;
+            return this;
+        }
+
+        public ConstraintAssembler butNotOn( HttpMethod... ommitedHttpMethods )
+        {
+            this.ommitedHttpMethods = ommitedHttpMethods;
+            return this;
+        }
+
+        ConstraintInfo constraintInfo()
+        {
+            return new ConstraintInfo( path, constraint, ommitedHttpMethods );
+        }
+
     }
 
 }

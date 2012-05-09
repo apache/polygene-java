@@ -11,19 +11,36 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.library.http;
 
-import javax.servlet.Filter;
-import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.ServiceComposite;
-
-/**
- * JAVADOC
- */
-// START SNIPPET: filterservice
-@Mixins( UnitOfWorkFilter.class )
-public interface UnitOfWorkFilterService extends Filter, ServiceComposite
+class InterfaceImpl
+        implements Interface
 {
+
+    private final String host;
+    private final int port;
+    private final Protocol protocol;
+
+    public InterfaceImpl( String host, int port, Protocol protocol )
+    {
+        this.host = host;
+        this.port = port;
+        this.protocol = protocol;
+    }
+
+    public String hostName()
+    {
+        return host;
+    }
+
+    public int port()
+    {
+        return port;
+    }
+
+    public Protocol protocol()
+    {
+        return protocol;
+    }
+
 }
-// END SNIPPET: filterservice

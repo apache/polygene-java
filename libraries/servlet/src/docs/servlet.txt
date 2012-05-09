@@ -1,11 +1,10 @@
 [[library-servlet]]
-= Servlet =
+= Servlet Library =
 
-This library provide the necessary mechanism to bootstrap a Qi4j Application in a Servlet container plus some facilities.
+This library provide the necessary boilerplate code to bootstrap a Qi4j Application in a Servlet container plus some facilities.
+It aims at a very simple need and is provided as an example integration.
 
-== Logging ==
-
-The SLF4J logger used by this library is named "org.qi4j.library.servlet".
+If instead you want to run a servlet container inside a Qi4j Application, see <<library-http>>.
 
 == Application Bootstrap ==
 
@@ -16,4 +15,8 @@ Use _Qi4jServletSupport#application(javax.servlet.ServletContext)_ to get a hand
 == Facilities ==
 
 _Qi4jServlet_ and _Qi4jFilter_ respectively provide base class for easy access to the _Application_ from the _ServletContext_.
+
+== Logging ==
+
+The SLF4J logger used by this library is named "org.qi4j.library.servlet".
 

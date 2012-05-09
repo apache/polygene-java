@@ -16,10 +16,9 @@
  */
 package org.qi4j.library.http;
 
+import javax.servlet.Servlet;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
-
-import javax.servlet.Servlet;
 
 // START SNIPPET: servletservice
 @Mixins( HelloWorldServlet.class )

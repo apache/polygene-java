@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2011, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,19 +11,12 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.library.http;
 
-import javax.servlet.Filter;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.ServiceComposite;
 
-/**
- * JAVADOC
- */
-// START SNIPPET: filterservice
-@Mixins( UnitOfWorkFilter.class )
-public interface UnitOfWorkFilterService extends Filter, ServiceComposite
+@Mixins( SecureJettyMixin.class )
+public interface SecureJettyService
+        extends JettyService
 {
 }
-// END SNIPPET: filterservice

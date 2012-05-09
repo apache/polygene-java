@@ -1,5 +1,4 @@
 /*
- * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
  * Copyright (c) 2011, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,14 +11,32 @@
  * limitations under the License.
  *
  */
-package org.qi4j.library.http;
+package org.qi4j.library.http.dns;
 
-import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.Activatable;
-import org.qi4j.api.service.ServiceComposite;
+import sun.net.spi.nameservice.NameService;
+import sun.net.spi.nameservice.NameServiceDescriptor;
 
-@Mixins( JettyMixin.class )
-public interface JettyService
-        extends HttpService, Activatable, ServiceComposite
+public class LocalManagedDnsDescriptor
+        implements NameServiceDescriptor
 {
+
+    public static final String PROVIDER_NAME = "LocalManagedDns";
+    private static final NameService nameService = new LocalManagedDns();
+
+    public NameService createNameService()
+            throws Exception
+    {
+        return nameService;
+    }
+
+    public String getProviderName()
+    {
+        return PROVIDER_NAME;
+    }
+
+    public String getType()
+    {
+        return "dns";
+    }
+
 }
