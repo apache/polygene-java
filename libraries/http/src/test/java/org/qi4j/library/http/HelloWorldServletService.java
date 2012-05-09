@@ -21,7 +21,9 @@ import org.qi4j.api.service.ServiceComposite;
 
 import javax.servlet.Servlet;
 
+// START SNIPPET: servletservice
 @Mixins( HelloWorldServlet.class )
 public interface HelloWorldServletService extends Servlet, ServiceComposite
 {
 }
+// END SNIPPET: servletservice

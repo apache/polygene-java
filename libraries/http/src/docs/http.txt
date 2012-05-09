@@ -1,0 +1,53 @@
+[[library-http]]
+= HTTP =
+
+The HTTP library provide a Jetty based embedded HTTP service with support for easy servlets and filters assembly.
+
+== Configuration ==
+
+When activated, the HttpService will run according to the JettyConfiguration properties:
+
+[snippet,java]
+----
+source=libraries/http/src/main/java/org/qi4j/library/http/JettyConfiguration.java
+tag=config
+----
+
+== Writing a ServletService ==
+
+Plain old servlet are usable with the HttpService. Here is a simple example from the tests:
+
+[snippet,java]
+----
+source=libraries/http/src/test/java/org/qi4j/library/http/HelloWorldServlet.java
+tag=servlet
+----
+
+Servlets in HttpService are Services, so you have to declare a ServiceComposite like this one:
+
+[snippet,java]
+----
+source=libraries/http/src/test/java/org/qi4j/library/http/HelloWorldServletService.java
+tag=servletservice
+----
+
+== Writing a FilterService ==
+
+It's the same for Filters. As an example here is the bundled UnitOfWorkFilterService declaration:
+
+[snippet,java]
+----
+source=libraries/http/src/main/java/org/qi4j/library/http/UnitOfWorkFilterService.java
+tag=filterservice
+----
+
+== Assembly ==
+
+The HTTP library provide a JettyServiceAssembler and a fluent API to easily assemble Servlets and Filters:
+
+[snippet,java]
+----
+source=libraries/http/src/test/java/org/qi4j/library/http/JettyServiceTest.java
+tag=assembly
+----
+

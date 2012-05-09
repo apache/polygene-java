@@ -23,6 +23,7 @@ import org.qi4j.library.constraints.annotation.Range;
 /**
  * JAVADOC
  */
+// START SNIPPET: config
 public interface JettyConfiguration
     extends ConfigurationComposite
 {
@@ -32,3 +33,5 @@ public interface JettyConfiguration
 
     @NotEmpty Property<String> resourcePath();
 }
+// END SNIPPET: config
+

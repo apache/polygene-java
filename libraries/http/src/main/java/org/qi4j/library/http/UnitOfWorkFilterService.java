@@ -22,7 +22,9 @@ import javax.servlet.Filter;
 /**
  * JAVADOC
  */
+// START SNIPPET: filterservice
 @Mixins( UnitOfWorkFilter.class )
 public interface UnitOfWorkFilterService extends Filter, ServiceComposite
 {
 }
+// END SNIPPET: filterservice

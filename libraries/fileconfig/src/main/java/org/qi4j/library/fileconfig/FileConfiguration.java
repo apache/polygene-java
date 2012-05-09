@@ -58,9 +58,12 @@ import java.util.regex.Pattern;
  * </p>
  */
 @Mixins(FileConfiguration.Mixin.class)
+// START SNIPPET: fileconfig
 public interface FileConfiguration
         extends ServiceComposite, Activatable
 {
+// END SNIPPET: fileconfig
+
     public enum OS
     {
         windows, unix, mac
@@ -70,6 +73,7 @@ public interface FileConfiguration
 
     File user();
 
+    // START SNIPPET: fileconfig
     File configurationDirectory();
 
     File dataDirectory();
@@ -79,6 +83,7 @@ public interface FileConfiguration
     File cacheDirectory();
 
     File logDirectory();
+    // END SNIPPET: fileconfig
 
     interface Data
     {
@@ -332,5 +337,7 @@ public interface FileConfiguration
         }
 
     }
-    
+// START SNIPPET: fileconfig    
 }
+// END SNIPPET: fileconfig
+

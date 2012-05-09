@@ -46,11 +46,11 @@ include::../../../../libraries/alarm/src/docs/alarm.txt[]
 
 :leveloffset: {level2}
 
-// include::../../../../libraries/fileconfig/src/docs/fileconfig.txt[]
+include::../../../../libraries/fileconfig/src/docs/fileconfig.txt[]
 
 :leveloffset: {level2}
 
-// include::../../../../libraries/http/src/docs/http.txt[]
+include::../../../../libraries/http/src/docs/http.txt[]
 
 :leveloffset: {level2}
 

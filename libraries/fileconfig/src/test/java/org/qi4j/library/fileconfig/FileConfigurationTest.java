@@ -35,7 +35,9 @@ public class FileConfigurationTest
             public void assemble( ModuleAssembly module )
                     throws AssemblyException
             {
+                // START SNIPPET: simple
                 module.services( FileConfiguration.class );
+                // END SNIPPET: simple
             }
 
         };
@@ -50,19 +52,27 @@ public class FileConfigurationTest
     public void testFileConfigurationOverride()
             throws IOException
     {
-        final File testFile = File.createTempFile( FileConfigurationTest.class.getName(), "" + System.currentTimeMillis() );
+        File testFile = File.createTempFile( FileConfigurationTest.class.getName(), "" + System.currentTimeMillis() );
+        final File confDir = testFile;
+        final File dataDir = testFile;
+        final File tempDir = testFile;
+        final File cacheDir = testFile;
+        final File logDir = testFile;
         SingletonAssembler assembler = new SingletonAssembler()
         {
 
             public void assemble( ModuleAssembly module )
                     throws AssemblyException
             {
-                FileConfigurationOverride override = new FileConfigurationOverride().withConfiguration( testFile ).
-                        withData( testFile ).
-                        withTemporary( testFile ).
-                        withCache( testFile ).
-                        withLog( testFile );
+                // START SNIPPET: override
+                FileConfigurationOverride override = new FileConfigurationOverride().
+                        withConfiguration( confDir ).
+                        withData( dataDir ).
+                        withTemporary( tempDir ).
+                        withCache( cacheDir ).
+                        withLog( logDir );
                 module.services( FileConfiguration.class ).setMetaInfo( override );
+                // END SNIPPET: override
             }
 
         };

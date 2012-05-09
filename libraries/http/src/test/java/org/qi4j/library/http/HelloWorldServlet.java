@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+// START SNIPPET: servlet
 public class HelloWorldServlet extends HttpServlet
 {
     private static final long serialVersionUID = 1L;
@@ -35,3 +36,4 @@ public class HelloWorldServlet extends HttpServlet
         writer.append( "Hello World" );
     }
 }
+// END SNIPPET: servlet

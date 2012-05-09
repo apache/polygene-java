@@ -32,21 +32,27 @@ import java.net.URLConnection;
 import java.util.Iterator;
 
 import static junit.framework.Assert.*;
+// START SNIPPET: assembly
 import static org.qi4j.library.http.Dispatchers.Dispatcher.REQUEST;
 import static org.qi4j.library.http.Servlets.*;
-
+// END SNIPPET: assembly
+//
 public final class JettyServiceTest extends AbstractQi4jTest
 {
-    public final void assemble( ModuleAssembly aModule )
+    public final void assemble( ModuleAssembly moduleAssembly )
         throws AssemblyException
     {
-        new ApplicationName( "Jetty test" ).assemble( aModule );
-        aModule.services( MemoryEntityStoreService.class );
-        new JettyServiceAssembler().assemble( aModule );
+        new ApplicationName( "Jetty test" ).assemble( moduleAssembly );
+        moduleAssembly.services( MemoryEntityStoreService.class );
+        // START SNIPPET: assembly
+        new JettyServiceAssembler().assemble( moduleAssembly );
+        // END SNIPPET: assembly
 
         // Hello world servlet related assembly
-        addServlets( serve( "/helloWorld" ).with( HelloWorldServletService.class ) ).to( aModule );
-        addFilters( filter( "/*" ).through( UnitOfWorkFilterService.class ).on( REQUEST ) ).to( aModule );
+        // START SNIPPET: assembly
+        addServlets( serve( "/helloWorld" ).with( HelloWorldServletService.class ) ).to( moduleAssembly );
+        addFilters( filter( "/*" ).through( UnitOfWorkFilterService.class ).on( REQUEST ) ).to( moduleAssembly );
+        // END SNIPPET: assembly
     }
 
     @Test
