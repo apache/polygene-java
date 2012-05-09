@@ -46,6 +46,7 @@ import java.util.List;
  *  }
  * </pre>
  */
+// START SNIPPET: task
 public interface Task
         extends Runnable
 {
@@ -56,3 +57,4 @@ public interface Task
     Property<List<String>> tags();
 
 }
+// END SNIPPET: task

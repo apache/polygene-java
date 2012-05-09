@@ -1,0 +1,153 @@
+[[library-scheduler]]
+= Scheduler =
+
+The Scheduler library provides an easy way to schedule tasks using cron expressions if needed.
+
+An optional Timeline allows you to browse past and future task runs.
+
+== Logging ==
+
+The SLF4J Logger used by this library is named "org.qi4j.library.scheduler".
+
+== Assembly ==
+
+Use SchedulerAssembler to add the Scheduler service to your Application. This
+Assembler provide a fluent api to programmatically configure configuration defaults and activate the 
+Timeline service assembly that allow to browse in past and future Task runs.
+
+Here is a full example:
+
+[snippet,java]
+----
+source=libraries/scheduler/src/test/java/org/qi4j/library/scheduler/SchedulerTest.java
+tag=assembly
+----
+
+== Configuration ==
+
+SchedulerConfiguration defines configuration properties details:
+
+[snippet,java]
+----
+source=libraries/scheduler/src/main/java/org/qi4j/library/scheduler/SchedulerConfiguration.java
+tag=configuration
+----
+
+== Writing Tasks ==
+
+To write a schedulable Task, compose an EntityComposite using Task to be able to schedule it.
+
+The Task contract is quite simple:
+
+[snippet,java]
+----
+source=libraries/scheduler/src/main/java/org/qi4j/library/scheduler/Task.java
+tag=task
+----
+
+Tasks have a mandatory name property and an optional tags property. Theses properties get copied in
+each TimelineRecord created when the Timeline feature is activated.
+
+The run() method of Tasks is wrapped in a UnitOfWork when called by the Scheduler.
+Thanks to the UnitOfWork handling in Qi4j, you can split the work done in your Tasks in
+several UnitOfWorks, the one around the Task#run() invocation will then be paused.
+
+Here is a simple example:
+
+[source,java]
+----
+interface MyTaskEntity
+    extends Task, EntityComposite
+{
+    Property<String>; customState();
+    Association<AnotherEntity> anotherEntity();
+}
+
+abstract class MyTaskMixin
+    implements Runnable
+{
+    @This MyTaskEntity me;
+    public void run()
+    {
+        me.customState().set( me.anotherEntity().get().doSomeStuff( me.customState().get() ) );
+    }
+}
+----
+
+== Scheduling Tasks ==
+
+Tasks are scheduled using the Scheduler service. This creates a Schedule associated to
+the Task that allows you to know if it is running, to change it's cron expression and set it's
+durability.
+
+By default, a Schedule is not durable. In other words, it do not survive an Application
+restart. To make a Schedule durable, set it's durable property to true once its scheduled.
+        
+There are two ways to schedule a Task using the Scheduler service: once or with a cron
+expression.
+
+=== Scheduling once ===
+
+This is the easiest way to run a background Task once after a given initial delay in seconds.
+
+[source,java]
+----        
+@Service Scheduler scheduler;
+public void function() {
+    MyTaskEntity myTask = ...;
+    Schedule schedule = scheduler.scheduleOnce( myTask, 10 ); // myTask will be run in 10 seconds from now
+}
+----
+        
+Note that there is no point in making such a Schedule durable because it won't be run repeatedly.
+
+
+=== Scheduling using a cron expression ===
+
+Cron expression parsing is based on the GNU crontab manpage that can be found here:
+http://unixhelp.ed.ac.uk/CGI/man-cgi?crontab+5 .
+
+The following extensions are used:
+
+- a mandatory field is added at the begining: seconds.
+- a special string is added: @minutely
+- a special character is added: ? to choose between dayOfMonth and dayOfWeek
+
+The ? special char has the same behavior as in the Quartz Scheduler expression. The wikipedia page
+http://en.wikipedia.org/wiki/CRON_expression
+explains Quartz Scheduler expression, not simple cron expressions. You'll find there about the ? special
+char and maybe that some other extensions you would like to use are missing in this project.
+
+To sum up, cron expressions used here have a precision of one second. The following special strings can be used:
+
+- @minutely
+- @hourly
+- @midnight or @daily
+- @weekly
+- @monthly
+- @annualy or @yearly
+
+
+== Observing the Timeline ==
+
+Timeline allow to browse in past and future Task runs. This feature is available only if you activate
+the Timeline assembly in the SchedulerAssembler}, see above.
+
+Once activated, Task success and failures are recorded. Then, the Timeline
+service allow to browse in past (recorded) and in anticipated (future) Task runs.
+
+Use the following in your code to get a Timeline Service injected:
+
+[source,java]
+----
+@Service Timeline timeline;
+----
+
+Here is the actual Timeline contract:
+
+[snippet,java]
+----
+source=libraries/scheduler/src/main/java/org/qi4j/library/scheduler/timeline/Timeline.java
+tag=timeline
+----
+

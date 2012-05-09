@@ -26,7 +26,7 @@ import org.qi4j.api.property.Property;
  */
 public interface SchedulerConfiguration  extends ConfigurationComposite
 {
-
+// START SNIPPET: configuration
     /**
      * @return Number of worker threads, optional and defaults to the number of available cores.
      */
@@ -44,4 +44,5 @@ public interface SchedulerConfiguration  extends ConfigurationComposite
      */
     @UseDefaults
     Property<Boolean> stopViolently();
+// END SNIPPET: configuration
 }

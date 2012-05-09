@@ -104,13 +104,6 @@
 
         <h4>Things to know</h4>
         <ul>
-            <li>The pulse rhythm configuration sets the pace of the {@link Scheduler} heartbeat. If you run several
-                schedulers in the same application with the same pulse rhythm they will be synchronous. Plus, if you run
-                several schedulers in several applications in different computers with the same pulse rhythm they will
-                be synchronous if the computers clocks are synchronous.</li>
-            <li>Remember that the pulse rhythm dictate the precision of the scheduler, by default it is set at 60
-                seconds and allow to schedule with a minutely precision, if you want to go seconds, change it
-                accordingly.</li>
             <li>Thanks to the {@link UnitOfWork} handling in Qi4j, you can split the work done in your {@link Task}s in
                 several {@link UnitOfWork}s, the one around the {@link Task#run()} invocation will then be paused.</li>
         </ul>

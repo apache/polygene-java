@@ -20,8 +20,10 @@ import org.qi4j.api.unitofwork.concern.UnitOfWorkPropagation;
 /**
  * Timeline allow to browse in past and future Task runs.
  */
+// START SNIPPET: timeline
 public interface Timeline
 {
+// END SNIPPET: timeline
 
     /**
      * @param maxResults Maximum number of TimelineRecord to compute
@@ -29,7 +31,9 @@ public interface Timeline
      * @return Last past records
      */
     @UnitOfWorkPropagation( UnitOfWorkPropagation.Propagation.MANDATORY )
+// START SNIPPET: timeline
     Iterable<TimelineRecord> getLastRecords( int maxResults );
+// END SNIPPET: timeline
 
     /**
      * @param maxResults Maximum number of TimelineRecord to compute
@@ -37,7 +41,9 @@ public interface Timeline
      * @return Next running or future records
      */
     @UnitOfWorkPropagation( UnitOfWorkPropagation.Propagation.MANDATORY )
+// START SNIPPET: timeline
     Iterable<TimelineRecord> getNextRecords( int maxResults );
+// END SNIPPET: timeline
 
     /**
      * @param from Lower limit
@@ -46,7 +52,9 @@ public interface Timeline
      * @return Records between the given dates
      */
     @UnitOfWorkPropagation( UnitOfWorkPropagation.Propagation.MANDATORY )
+// START SNIPPET: timeline
     Iterable<TimelineRecord> getRecords( DateTime from, DateTime to );
+// END SNIPPET: timeline
 
     /**
      * @param from Lower limit
@@ -55,5 +63,7 @@ public interface Timeline
      * @return Records between the given dates
      */
     @UnitOfWorkPropagation( UnitOfWorkPropagation.Propagation.MANDATORY )
+// START SNIPPET: timeline
     Iterable<TimelineRecord> getRecords( long from, long to );
 }
+// END SNIPPET: timeline

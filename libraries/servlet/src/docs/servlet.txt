@@ -1,5 +1,5 @@
 [[library-servlet]]
-= Qi4j Servlet Support =
+= Servlet =
 
 This library provide the necessary mechanism to bootstrap a Qi4j Application in a Servlet container plus some facilities.
 

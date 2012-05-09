@@ -94,7 +94,7 @@ include::../../../../libraries/logging/src/docs/logging.txt[]
 
 :leveloffset: {level2}
 
-// include::../../../../libraries/scheduler/src/docs/scheduler.txt[]
+include::../../../../libraries/scheduler/src/docs/scheduler.txt[]
 
 :leveloffset: {level2}
 
@@ -114,7 +114,7 @@ include::../../../../libraries/logging/src/docs/logging.txt[]
 
 :leveloffset: {level2}
 
-// include::../../../../libraries/servlet/src/docs/servlet.txt[]
+include::../../../../libraries/servlet/src/docs/servlet.txt[]
 
 :leveloffset: {level2}
 

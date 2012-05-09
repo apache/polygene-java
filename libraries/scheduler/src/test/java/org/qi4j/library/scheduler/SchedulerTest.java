@@ -42,10 +42,14 @@ public class SchedulerTest
     protected void onAssembly( ModuleAssembly testAssembly )
         throws AssemblyException
     {
-        new SchedulerAssembler().visibleIn( Visibility.module )
-            .withConfigAssembly( testAssembly )
+        ModuleAssembly moduleAssembly = testAssembly;
+        ModuleAssembly configModuleAssembly = testAssembly;
+// START SNIPPET: assembly
+        new SchedulerAssembler().visibleIn( Visibility.layer )
+            .withConfigAssembly( configModuleAssembly )
             .withTimeline()
-            .assemble( testAssembly );
+            .assemble( moduleAssembly );
+// END SNIPPET: assembly
     }
 
     @Test
