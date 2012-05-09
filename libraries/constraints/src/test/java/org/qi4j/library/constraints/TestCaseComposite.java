@@ -26,6 +26,7 @@ import java.util.List;
 @Mixins( TestCaseComposite.TestCaseMixin.class)
 public interface TestCaseComposite extends TransientComposite
 {
+    // START SNIPPET: constraints
     @Contains( "foo" ) Property<String> containsString();
 
     @Email Property<String> email();
@@ -53,6 +54,7 @@ public interface TestCaseComposite extends TransientComposite
     @OneOf( { "Bar", "Xyzzy" } ) Property<String> oneOf();
 
     void testParameters(@GreaterThan(10) Integer greaterThan);
+    // END SNIPPET: constraints
 
     abstract class TestCaseMixin
         implements TestCaseComposite

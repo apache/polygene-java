@@ -22,7 +22,7 @@ include::../../../../libraries/circuitbreaker/src/docs/circuitbreaker.txt[]
 
 :leveloffset: {level2}
 
-// include::../../../../libraries/constraints/src/docs/constraints.txt[]
+include::../../../../libraries/constraints/src/docs/constraints.txt[]
 
 :leveloffset: {level2}
 

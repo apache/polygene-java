@@ -1,0 +1,31 @@
+[[library-constraints]]
+= Constraints =
+
+The Constraints library provide a bunch of often used Constraints based on the Qi4j Constraints api.
+
+Remeber that you are not limited to constraints presents in this library, you are encouraged to write
+your own constraints. Looking at this library source code can help you doing so.
+
+Here are the provided constraints:
+
+- @Contains( ... )
+- @Email
+- @GreaterThan( ... )
+- @InstanceOf( ... )
+- @LessThan( ... )
+- @Matches( ... )
+- @MaxLength( ... )
+- @MinLength( ... )
+- @NotEmpty
+- @OneOf( ... )
+- @Range( ... )
+
+You can use theses constraints on Properties or on method arguments.
+Here are some examples:
+
+[snippet,java]
+----
+source=libraries/constraints/src/test/java/org/qi4j/library/constraints/TestCaseComposite.java
+tag=constraints
+----
+
