@@ -25,7 +25,9 @@ import org.qi4j.spi.entitystore.helpers.DefaultEntityState;
 
 /**
  * If entitystore will use this class, the need to create and query the primary keys of entities will be removed from indexing, thus improving performance, possibly a lot.
- *
+ * 
+ * TODO QueryEntityPK
+ * 
  * @author Stanislav Muhametsin
  */
 public interface SQLEntityState

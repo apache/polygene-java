@@ -15,7 +15,6 @@ import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
-import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.library.sql.datasource.DataSourceConfiguration;
 import org.qi4j.library.sql.datasource.DataSourceService;
 
@@ -39,7 +38,7 @@ public interface DataSourceConfigurationManagerService
          implements Activatable
    {
       @Structure
-      UnitOfWorkFactory uowf;
+      Module module;
 
       @Service
       MBeanServer server;
@@ -118,7 +117,7 @@ public interface DataSourceConfigurationManagerService
 
          public Object getAttribute( String name ) throws AttributeNotFoundException, MBeanException, ReflectionException
          {
-            UnitOfWork uow = uowf.newUnitOfWork();
+            UnitOfWork uow = module.newUnitOfWork();
             try
             {
                EntityComposite configuration = uow.get( EntityComposite.class, identity );
@@ -137,7 +136,7 @@ public interface DataSourceConfigurationManagerService
 
          public void setAttribute( Attribute attribute ) throws AttributeNotFoundException, InvalidAttributeValueException, MBeanException, ReflectionException
          {
-            UnitOfWork uow = uowf.newUnitOfWork();
+            UnitOfWork uow = module.newUnitOfWork();
             try
             {
                EntityComposite configuration = uow.get( EntityComposite.class, identity );

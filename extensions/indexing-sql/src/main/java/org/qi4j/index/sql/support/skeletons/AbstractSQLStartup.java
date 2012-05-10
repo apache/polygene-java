@@ -1285,7 +1285,7 @@ public abstract class AbstractSQLStartup
     {
         for( PropertyDescriptor pDesc : entityDesc.state().properties() )
         {
-            if( SQLUtil.isQueryable( pDesc.accessor() ) )
+            if( SQLSkeletonUtil.isQueryable( pDesc.accessor() ) )
             {
                 this.processPropertyTypeForQNames( //
                                                    pDesc, //
@@ -1306,7 +1306,7 @@ public abstract class AbstractSQLStartup
     {
         for( AssociationDescriptor assoDesc : entityDesc.state().associations() )
         {
-            if( SQLUtil.isQueryable( assoDesc.accessor() ) )
+            if( SQLSkeletonUtil.isQueryable( assoDesc.accessor() ) )
             {
                 QualifiedName qName = assoDesc.qualifiedName();
                 if( !extractedQNames.containsKey( qName ) )
@@ -1334,7 +1334,7 @@ public abstract class AbstractSQLStartup
         for( AssociationDescriptor mAssoDesc : entityDesc.state().manyAssociations() )
         {
             QualifiedName qName = mAssoDesc.qualifiedName();
-            if( SQLUtil.isQueryable( mAssoDesc.accessor() ) )
+            if( SQLSkeletonUtil.isQueryable( mAssoDesc.accessor() ) )
             {
                 if( !extractedQNames.containsKey( qName ) )
                 {

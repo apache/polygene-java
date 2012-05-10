@@ -73,7 +73,7 @@ public class PostgreSQLDBIntegrityTest extends AbstractQi4jTest
     public void tearDown()
         throws Exception
     {
-        SQLTestHelper.tearDownTest( module, module, getLog() );
+        SQLTestHelper.tearDownTest( module, getLog() );
         super.tearDown();
     }
 

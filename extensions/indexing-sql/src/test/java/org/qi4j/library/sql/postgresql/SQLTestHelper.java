@@ -15,9 +15,7 @@ package org.qi4j.library.sql.postgresql;
 
 import org.junit.Assume;
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
@@ -39,6 +37,8 @@ import org.slf4j.Logger;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import org.qi4j.api.structure.Module;
 
 /**
  * @author Stanislav Muhametsin
@@ -89,22 +89,22 @@ public class SQLTestHelper
             Visibility.application );
     }
 
-    public static void tearDownTest( UnitOfWorkFactory uowf, ServiceFinder finder, Logger log )
+    public static void tearDownTest( Module module, Logger log )
     {
         UnitOfWork uow;
         Boolean created = false;
-        if( !uowf.isUnitOfWorkActive())
+        if( !module.isUnitOfWorkActive())
         {
-            uow = uowf.newUnitOfWork();
+            uow = module.newUnitOfWork();
             created = true;
         } else
         {
-            uow = uowf.currentUnitOfWork();
+            uow = module.currentUnitOfWork();
         }
 
         try
         {
-            SQLTestHelper.deleteTestData( uow, finder );
+            SQLTestHelper.deleteTestData( uow, module );
         }
         catch( Throwable t )
         {
@@ -120,12 +120,12 @@ public class SQLTestHelper
         }
     }
 
-    private static void deleteTestData( UnitOfWork uow, ServiceFinder finder )
+    private static void deleteTestData( UnitOfWork uow, Module module )
         throws SQLException
     {
 
         SQLConfiguration config = uow.get( SQLConfiguration.class, SQL_INDEXING_SERVICE_NAME );
-        Connection connection = SQLUtil.getConnection( finder );
+        Connection connection = module.findService( DataSourceService.class ).get().getDataSource().getConnection();
         String schemaName = config.schemaName().get();
         if( schemaName == null )
         {
@@ -145,11 +145,11 @@ public class SQLTestHelper
         }
     }
 
-    public static void setUpTest( ServiceFinder finder )
+    public static void setUpTest( Module module )
     {
         try
         {
-            DataSourceService ds = finder.findService( DataSourceService.class ).get();
+            DataSourceService ds = module.findService( DataSourceService.class ).get();
             Assume.assumeNotNull( ds.getDataSource().getConnection() );
         }
         catch( Throwable t )

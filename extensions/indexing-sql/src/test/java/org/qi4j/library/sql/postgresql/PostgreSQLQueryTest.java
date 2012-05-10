@@ -58,7 +58,7 @@ public class PostgreSQLQueryTest extends AbstractQueryTest
     public void tearDown()
         throws Exception
     {
-        SQLTestHelper.tearDownTest( module, module, getLog() );
+        SQLTestHelper.tearDownTest( module, getLog() );
         super.tearDown();
     }
 

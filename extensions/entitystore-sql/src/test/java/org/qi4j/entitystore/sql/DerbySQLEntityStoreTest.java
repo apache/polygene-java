@@ -29,6 +29,8 @@ import org.qi4j.test.entity.AbstractEntityStoreTest;
 import java.sql.Connection;
 import java.sql.Statement;
 
+import org.qi4j.library.sql.ds.DataSourceService;
+
 /**
  * @author Stanislav Muhametsin
  * @author Paul Merlin
@@ -63,7 +65,7 @@ public class DerbySQLEntityStoreTest extends AbstractEntityStoreTest
         {
             SQLConfiguration config = uow.get( SQLConfiguration.class,
                                                DerbySQLEntityStoreAssembler.ENTITYSTORE_SERVICE_NAME );
-            Connection connection = SQLUtil.getConnection( module );
+            Connection connection = module.findService( DataSourceService.class ).get().getDataSource().getConnection();
             String schemaName = config.schemaName().get();
             if( schemaName == null )
             {

@@ -29,6 +29,8 @@ import org.qi4j.test.entity.AbstractEntityStoreTest;
 import java.sql.Connection;
 import java.sql.Statement;
 
+import org.qi4j.library.sql.ds.DataSourceService;
+
 /**
  * WARN This test is deactivated on purpose, please do not commit it activated.
  * 
@@ -72,7 +74,7 @@ public class PostgreSQLEntityStoreTest extends AbstractEntityStoreTest
         {
             SQLConfiguration config = uow.get( SQLConfiguration.class,
                 PostgreSQLEntityStoreAssembler.ENTITYSTORE_SERVICE_NAME );
-            Connection connection = SQLUtil.getConnection( this.module );
+            Connection connection = module.findService( DataSourceService.class ).get().getDataSource().getConnection();
             String schemaName = config.schemaName().get();
             if( schemaName == null )
             {

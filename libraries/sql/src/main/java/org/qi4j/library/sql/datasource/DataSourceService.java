@@ -15,7 +15,6 @@ import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
-import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.library.circuitbreaker.CircuitBreaker;
 import org.slf4j.Logger;
@@ -50,9 +49,6 @@ public interface DataSourceService
         Map<String, DataSourceConfiguration> configs = new HashMap<String, DataSourceConfiguration>();
         Map<ComboPooledDataSource, CircuitBreaker> circuitBreakers = new HashMap<ComboPooledDataSource, CircuitBreaker>();
 
-        @Structure
-        UnitOfWorkFactory uowf;
-
         Logger logger = LoggerFactory.getLogger( DataSourceService.class );
 
         public void activate() throws Exception
@@ -69,7 +65,7 @@ public interface DataSourceService
 
             for( DataSourceConfiguration dataSourceConfiguration : configs.values() )
             {
-                uowf.getUnitOfWork( dataSourceConfiguration ).discard();
+                module.getUnitOfWork( dataSourceConfiguration ).discard();
             }
             configs.clear();
 
@@ -200,7 +196,7 @@ public interface DataSourceService
             DataSourceConfiguration config = configs.get( identity );
             if( config == null )
             {
-                UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "Create DataSource pool configuration" ) );
+                UnitOfWork uow = module.newUnitOfWork( UsecaseBuilder.newUsecase( "Create DataSource pool configuration" ) );
 
                 try
                 {
@@ -234,7 +230,7 @@ public interface DataSourceService
                         // save
                         uow.complete();
                         // create new uow and fetch entity
-                        uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "Create DataSource pool configuration" ) );
+                        uow = module.newUnitOfWork( UsecaseBuilder.newUsecase( "Create DataSource pool configuration" ) );
                         config = uow.get( DataSourceConfiguration.class, identity );
                     } catch( UnitOfWorkCompletionException e2 )
                     {

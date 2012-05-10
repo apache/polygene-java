@@ -467,7 +467,7 @@ public class AbstractSQLIndexing
         Integer propertyPK = 0;
         for( PropertyDescriptor pDesc : state.entityDescriptor().state().properties() )
         {
-            if( SQLUtil.isQueryable( pDesc.accessor() ) )
+            if( SQLSkeletonUtil.isQueryable( pDesc.accessor() ) )
             {
                 propertyPK = this.insertProperty( //
                                                   qNameInsertPSs, //
@@ -494,7 +494,7 @@ public class AbstractSQLIndexing
     {
         for( AssociationDescriptor aDesc : state.entityDescriptor().state().associations() )
         {
-            if( SQLUtil.isQueryable( aDesc.accessor() ) )
+            if( SQLSkeletonUtil.isQueryable( aDesc.accessor() ) )
             {
                 QualifiedName qName = aDesc.qualifiedName();
                 PreparedStatement ps = qNameInsertPSs.get( qName );
@@ -518,7 +518,7 @@ public class AbstractSQLIndexing
 
         for( AssociationDescriptor mDesc : state.entityDescriptor().state().manyAssociations() )
         {
-            if( SQLUtil.isQueryable( mDesc.accessor() ) )
+            if( SQLSkeletonUtil.isQueryable( mDesc.accessor() ) )
             {
                 QualifiedName qName = mDesc.qualifiedName();
                 PreparedStatement ps = qNameInsertPSs.get( qName );
