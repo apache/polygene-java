@@ -23,8 +23,8 @@ dependencies {
   testRuntime('commons-dbcp:commons-dbcp:1.2.2' )
   testRuntime('commons-io:commons-io:1.4' )
   testRuntime('commons-lang:commons-lang:2.4' )
-  testRuntime('org.mortbay.jetty:jetty:' + jettyVersion )
-  testRuntime('org.mortbay.jetty:jetty-util:' + jettyVersion )
+  testRuntime('org.mortbay.jetty:jetty:6.1.22' )        // WARN Voldemort did not move to Eclipse Jetty yet.
+  testRuntime('org.mortbay.jetty:jetty-util:6.1.22' )   // WARN Voldemort did not move to Eclipse Jetty yet.
   testCompile(libraries.junit)
   testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
   testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
