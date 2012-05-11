@@ -1,5 +1,2 @@
----
-env:
-  - QI4J_VERSION=2.0
-language: java
+script: ./gradlew check
 
