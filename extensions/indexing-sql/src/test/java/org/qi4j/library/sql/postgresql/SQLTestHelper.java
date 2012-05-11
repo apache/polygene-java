@@ -19,7 +19,6 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
-import org.qi4j.index.reindexer.ReindexerConfiguration;
 import org.qi4j.index.sql.assembly.SQLIndexingAssembler;
 import org.qi4j.index.sql.support.common.DBNames;
 import org.qi4j.index.sql.support.common.ReindexingStrategy;
@@ -27,10 +26,6 @@ import org.qi4j.index.sql.support.postgresql.PostgreSQLAppStartup;
 import org.qi4j.index.sql.support.postgresql.assembly.PostgreSQLAssembler;
 import org.qi4j.library.sql.common.SQLConfiguration;
 import org.qi4j.library.sql.common.SQLUtil;
-import org.qi4j.library.sql.ds.DataSourceService;
-import org.qi4j.library.sql.ds.PGDataSourceConfiguration;
-import org.qi4j.library.sql.ds.PGSQLDataSourceServiceMixin;
-import org.qi4j.library.sql.ds.assembly.DataSourceAssembler;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.slf4j.Logger;
 
@@ -38,7 +33,10 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import javax.sql.DataSource;
 import org.qi4j.api.structure.Module;
+import org.qi4j.library.sql.assembly.DataSourceAssembler;
+import org.qi4j.library.sql.assembly.DataSourceServiceAssembler;
 
 /**
  * @author Stanislav Muhametsin
@@ -46,8 +44,6 @@ import org.qi4j.api.structure.Module;
 public class SQLTestHelper
 {
     public static final String SQL_INDEXING_SERVICE_NAME = PostgreSQLAssembler.INDEXING_SERVICE_NAME;
-
-    public static final String CONFIG_MODULE_NAME = "config_module";
 
     public static final String SEPARATE_MODULE_NAME = "actual_module";
 
@@ -67,15 +63,8 @@ public class SQLTestHelper
     protected static void doCommonAssembling( ModuleAssembly mainModule )
         throws AssemblyException
     {
-        ModuleAssembly configModule = mainModule.layer().module( CONFIG_MODULE_NAME );
-        configModule
-            .entities( PGDataSourceConfiguration.class, SQLConfiguration.class, ReindexerConfiguration.class )
-            .visibleIn( Visibility.application );
-        configModule.services( MemoryEntityStoreService.class );
-
-        PostgreSQLAssembler pgAss = new PostgreSQLAssembler( Visibility.module, new DataSourceAssembler(
-            PGSQLDataSourceServiceMixin.class ).setDataSourceServiceName( PostgreSQLAssembler.DATASOURCE_SERVICE_NAME ) )
-            .setServiceName( SQL_INDEXING_SERVICE_NAME );
+        new DataSourceServiceAssembler( PostgreSQLAssembler.DATASOURCE_SERVICE_NAME, mainModule.layer().module( "config" ) ).assemble( mainModule );
+        PostgreSQLAssembler pgAss = new PostgreSQLAssembler( Visibility.module, new DataSourceAssembler( PostgreSQLAssembler.DATASOURCE_SERVICE_NAME, PostgreSQLAssembler.DATASOURCE_NAME ) );
         pgAss.assemble( mainModule );
 
         SQLIndexingAssembler ass = new SQLIndexingAssembler( Visibility.module );
@@ -125,7 +114,7 @@ public class SQLTestHelper
     {
 
         SQLConfiguration config = uow.get( SQLConfiguration.class, SQL_INDEXING_SERVICE_NAME );
-        Connection connection = module.findService( DataSourceService.class ).get().getDataSource().getConnection();
+        Connection connection = module.findService( DataSource.class ).get().getConnection();
         String schemaName = config.schemaName().get();
         if( schemaName == null )
         {
@@ -149,8 +138,8 @@ public class SQLTestHelper
     {
         try
         {
-            DataSourceService ds = module.findService( DataSourceService.class ).get();
-            Assume.assumeNotNull( ds.getDataSource().getConnection() );
+            DataSource ds = module.findService( DataSource.class ).get();
+            Assume.assumeNotNull( ds.getConnection() );
         }
         catch( Throwable t )
         {

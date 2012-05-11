@@ -23,9 +23,9 @@ import org.qi4j.bootstrap.*;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.entitystore.sql.assembly.PostgreSQLEntityStoreAssembler;
 import org.qi4j.entitystore.sql.internal.SQLs;
+import org.qi4j.library.sql.assembly.DataSourceAssembler;
 import org.qi4j.library.sql.common.SQLConfiguration;
 import org.qi4j.library.sql.common.SQLUtil;
-import org.qi4j.library.sql.ds.PGDataSourceConfiguration;
 import org.qi4j.test.performance.entitystore.model.AbstractEntityStorePerformanceTest;
 
 import java.sql.Connection;
@@ -60,11 +60,7 @@ public class PostgreSQLEntityStorePerformanceTest extends AbstractEntityStorePer
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                new PostgreSQLEntityStoreAssembler().assemble( module );
-                ModuleAssembly configModule = module.layer().module( "config" );
-                configModule.services( MemoryEntityStoreService.class );
-                configModule.entities( PGDataSourceConfiguration.class, SQLConfiguration.class ).visibleIn(
-                    Visibility.layer );
+                new PostgreSQLEntityStoreAssembler( new DataSourceAssembler( "postgresql-datasource-service", "postgresql-datasource" ) ).assemble( module );
             }
 
         };

@@ -27,12 +27,13 @@ import org.qi4j.index.sql.support.common.GenericDatabaseExplorer;
 import org.qi4j.index.sql.support.common.GenericDatabaseExplorer.DatabaseProcessorAdapter;
 import org.qi4j.index.sql.support.postgresql.PostgreSQLAppStartup;
 import org.qi4j.library.sql.common.SQLConfiguration;
-import org.qi4j.library.sql.ds.DataSourceService;
 import org.qi4j.test.AbstractQi4jTest;
 import org.sql.generation.api.vendor.PostgreSQLVendor;
 import org.sql.generation.api.vendor.SQLVendorProvider;
 
 import java.sql.Connection;
+
+import javax.sql.DataSource;
 
 /**
  * 
@@ -96,8 +97,7 @@ public class PostgreSQLDBIntegrityTest extends AbstractQi4jTest
         uow.remove( entity );
         uow.complete();
 
-        Connection connection = ((DataSourceService) this.module.findService( DataSourceService.class ).get())
-            .getDataSource().getConnection();
+        Connection connection = ((DataSource) this.module.findService( DataSource.class ).get()).getConnection();
         GenericDatabaseExplorer.visitDatabaseTables( connection, null, schemaName, null, new DatabaseProcessorAdapter()
         {
 

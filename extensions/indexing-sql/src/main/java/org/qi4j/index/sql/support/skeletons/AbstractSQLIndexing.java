@@ -27,6 +27,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import javax.sql.DataSource;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.common.QualifiedName;
@@ -50,7 +52,6 @@ import org.qi4j.index.sql.support.common.QNameInfo.QNameType;
 import org.qi4j.index.sql.support.postgresql.PostgreSQLTypeHelper;
 import org.qi4j.library.sql.api.SQLEntityState;
 import org.qi4j.library.sql.common.SQLUtil;
-import org.qi4j.library.sql.ds.DataSourceService;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
@@ -118,12 +119,12 @@ public class AbstractSQLIndexing
     }
 
     @Service
-    private DataSourceService _dataSource;
+    private DataSource _dataSource;
 
     public void indexEntities( Iterable<EntityState> changedStates )
         throws SQLException
     {
-        Connection connection = this._dataSource.getDataSource().getConnection();
+        Connection connection = this._dataSource.getConnection();
         Boolean wasAutoCommit = connection.getAutoCommit();
         connection.setAutoCommit( false );
         connection.setReadOnly( false );

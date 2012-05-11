@@ -14,6 +14,8 @@
  */
 package org.qi4j.entitystore.sql.assembly;
 
+import java.io.IOException;
+
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -23,37 +25,27 @@ import org.qi4j.entitystore.sql.internal.DatabaseSQLServiceCoreMixin;
 import org.qi4j.entitystore.sql.internal.DatabaseSQLServiceSpi;
 import org.qi4j.entitystore.sql.internal.DatabaseSQLServiceStatementsMixin;
 import org.qi4j.entitystore.sql.internal.DatabaseSQLStringsBuilder;
+import org.qi4j.library.sql.assembly.DataSourceAssembler;
 import org.qi4j.library.sql.common.AbstractSQLAssembler;
-import org.qi4j.library.sql.ds.assembly.DataSourceAssembler;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
+
 import org.sql.generation.api.vendor.SQLVendor;
 import org.sql.generation.api.vendor.SQLVendorProvider;
 
-import java.io.IOException;
-
-abstract class AbstractSQLEntityStoreAssembler extends AbstractSQLAssembler
+abstract class AbstractSQLEntityStoreAssembler
+        extends AbstractSQLAssembler
 {
 
     private static final Visibility DEFAULT_VISIBILITY = Visibility.module;
 
-    public AbstractSQLEntityStoreAssembler()
+    public AbstractSQLEntityStoreAssembler( DataSourceAssembler dataSourceAssembler )
     {
-        this( DEFAULT_VISIBILITY, new DataSourceAssembler() );
+        this( DEFAULT_VISIBILITY, dataSourceAssembler );
     }
 
-    public AbstractSQLEntityStoreAssembler( Visibility visibility )
+    public AbstractSQLEntityStoreAssembler( Visibility visibility, DataSourceAssembler dataSourceAssembler )
     {
-        this( visibility, new DataSourceAssembler() );
-    }
-
-    public AbstractSQLEntityStoreAssembler( DataSourceAssembler assembler )
-    {
-        this( DEFAULT_VISIBILITY, assembler );
-    }
-
-    public AbstractSQLEntityStoreAssembler( Visibility visibility, DataSourceAssembler assembler )
-    {
-        super( visibility, assembler );
+        super( visibility, dataSourceAssembler );
     }
 
     protected abstract String getEntityStoreServiceName();
@@ -66,34 +58,30 @@ abstract class AbstractSQLEntityStoreAssembler extends AbstractSQLAssembler
     }
 
     protected SQLVendor getSQLVendor()
-        throws IOException
+            throws IOException
     {
         return SQLVendorProvider.createVendor( SQLVendor.class );
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings( "unchecked" )
     public final void doAssemble( ModuleAssembly module )
-        throws AssemblyException
+            throws AssemblyException
     {
 
         module.services( SQLEntityStoreService.class ).visibleIn( this.getVisibility() );
 
-        try
-        {
+        try {
             SQLVendor sqlVendor = this.getSQLVendor();
-            if( sqlVendor == null )
-            {
-                throw new AssemblyException("SQL Vendor could not be determined." );
+            if ( sqlVendor == null ) {
+                throw new AssemblyException( "SQL Vendor could not be determined." );
             }
-            module
-                .services( DatabaseSQLServiceComposite.class )
-                .withMixins( DatabaseSQLServiceCoreMixin.class, DatabaseSQLServiceSpi.CommonMixin.class,
-                             getDatabaseStringBuilderMixin(), DatabaseSQLServiceStatementsMixin.class,
-                             getDatabaseSQLServiceSpecializationMixin() ).identifiedBy( getEntityStoreServiceName() )
-                .visibleIn( Visibility.module ).setMetaInfo( sqlVendor );
-        }
-        catch( IOException ioe )
-        {
+            module.services( DatabaseSQLServiceComposite.class ).withMixins( DatabaseSQLServiceCoreMixin.class,
+                                                                             DatabaseSQLServiceSpi.CommonMixin.class,
+                                                                             getDatabaseStringBuilderMixin(),
+                                                                             DatabaseSQLServiceStatementsMixin.class,
+                                                                             getDatabaseSQLServiceSpecializationMixin() ).
+                    identifiedBy( getEntityStoreServiceName() ).visibleIn( Visibility.module ).setMetaInfo( sqlVendor );
+        } catch ( IOException ioe ) {
             throw new AssemblyException( ioe );
         }
         module.services( UuidIdentityGeneratorService.class ).visibleIn( this.getVisibility() );

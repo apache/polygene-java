@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2010, Stanislav Muhametsin. All Rights Reserved.
+ * Copyright (c) 2010, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,22 +12,18 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.library.sql.common;
 
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.configuration.ConfigurationComposite;
 import org.qi4j.api.property.Property;
-import org.qi4j.library.sql.ds.DataSourceService;
 
 /**
- * Typical configuration for service, which uses data source (through {@link DataSourceService} ) as connection to SQL
+ * Typical configuration for service, which uses a {@link DataSource} as connection to SQL
  * database, and given schema name as schema to create tables in.
- * 
- * @author Stanislav Muhametsin
  */
 public interface SQLConfiguration
-    extends ConfigurationComposite // DataSourceConfiguration
+        extends ConfigurationComposite
 {
 
     /**
@@ -34,4 +31,5 @@ public interface SQLConfiguration
      */
     @Optional
     Property<String> schemaName();
+
 }

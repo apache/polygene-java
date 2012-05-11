@@ -29,7 +29,10 @@ import org.qi4j.test.entity.AbstractEntityStoreTest;
 import java.sql.Connection;
 import java.sql.Statement;
 
-import org.qi4j.library.sql.ds.DataSourceService;
+import javax.sql.DataSource;
+
+import org.qi4j.library.sql.assembly.DataSourceAssembler;
+import org.qi4j.library.sql.assembly.DataSourceServiceAssembler;
 
 /**
  * WARN This test is deactivated on purpose, please do not commit it activated.
@@ -39,64 +42,69 @@ import org.qi4j.library.sql.ds.DataSourceService;
  * 
  * Use 'password' as password for the jdbc_test_login user.
  * 
- * createuser -A -D -P -E -W jdbc_test_login createdb -O jdbc_test_login -W jdbc_test_db
+ * <pre>
+ * createuser -A -D -P -E -W jdbc_test_login
+ * createdb -O jdbc_test_login -W jdbc_test_db
+ * </pre>
  * 
- * dropdb -W jdbc_test_db dropuser -W jdbc_test_login
+ * To clear the data:
+ * 
+ * <pre>
+ * dropdb -W jdbc_test_db
+ * dropuser -W jdbc_test_login
+ * </pre>
  * 
  * @author Stanislav Muhametsin
  * @author Paul Merlin
  */
-@Ignore
-public class PostgreSQLEntityStoreTest extends AbstractEntityStoreTest
+//@Ignore
+public class PostgreSQLEntityStoreTest
+        extends AbstractEntityStoreTest
 {
 
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings( "unchecked" )
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
+            throws AssemblyException
     {
         super.assemble( module );
-
-        new PostgreSQLEntityStoreAssembler().assemble( module );
-
         ModuleAssembly config = module.layer().module( "config" );
         config.services( MemoryEntityStoreService.class );
-        config.entities( PGDataSourceConfiguration.class, SQLConfiguration.class ).visibleIn( Visibility.layer );
+
+        // DataSourceService + EntityStore's DataSource
+        new DataSourceServiceAssembler( "postgresql-datasource-service", config ).assemble( module );
+
+        // EntityStore
+        new PostgreSQLEntityStoreAssembler( new DataSourceAssembler( "postgresql-datasource-service", "postgresql-datasource" ) ).assemble( module );
+        config.entities( SQLConfiguration.class ).visibleIn( Visibility.layer );
     }
 
     @Override
     public void tearDown()
-        throws Exception
+            throws Exception
     {
 
         UnitOfWork uow = this.module.newUnitOfWork();
-        try
-        {
+        try {
             SQLConfiguration config = uow.get( SQLConfiguration.class,
-                PostgreSQLEntityStoreAssembler.ENTITYSTORE_SERVICE_NAME );
-            Connection connection = module.findService( DataSourceService.class ).get().getDataSource().getConnection();
+                                               PostgreSQLEntityStoreAssembler.ENTITYSTORE_SERVICE_NAME );
+            Connection connection = module.findService( DataSource.class ).get().getConnection();
             String schemaName = config.schemaName().get();
-            if( schemaName == null )
-            {
+            if ( schemaName == null ) {
                 schemaName = SQLs.DEFAULT_SCHEMA_NAME;
             }
 
             Statement stmt = null;
-            try
-            {
+            try {
                 stmt = connection.createStatement();
                 stmt.execute( String.format( "DELETE FROM %s." + SQLs.TABLE_NAME, schemaName ) );
                 connection.commit();
-            }
-            finally
-            {
+            } finally {
                 SQLUtil.closeQuietly( stmt );
             }
-        }
-        finally
-        {
+        } finally {
             uow.discard();
-            super.tearDown();
+            // super.tearDown(); // TODO FIXME QI-363
         }
     }
 

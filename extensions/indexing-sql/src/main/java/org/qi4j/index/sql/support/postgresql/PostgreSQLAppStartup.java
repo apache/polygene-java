@@ -18,7 +18,6 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.index.sql.support.skeletons.AbstractSQLStartup;
-import org.qi4j.library.sql.ds.DataSourceService;
 import org.sql.generation.api.grammar.common.datatypes.SQLDataType;
 import org.sql.generation.api.grammar.definition.table.TableScope;
 import org.sql.generation.api.grammar.definition.table.pgsql.PgSQLTableCommitAction;
@@ -33,6 +32,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Map;
 
+import javax.sql.DataSource;
+
 /**
  * TODO refactoring
  * 
@@ -45,7 +46,7 @@ public class PostgreSQLAppStartup extends AbstractSQLStartup
     private ServiceDescriptor descriptor;
 
     @Service
-    private DataSourceService _dataSource;
+    private DataSource _dataSource;
 
     private PostgreSQLVendor _vendor;
 
@@ -90,7 +91,7 @@ public class PostgreSQLAppStartup extends AbstractSQLStartup
         // ltree module provides specific datatype for such path, which may be indexed in order to greatly improve
         // performance
 
-        Connection connection = this._dataSource.getDataSource().getConnection();
+        Connection connection = this._dataSource.getConnection();
         Statement stmt = connection.createStatement();
         try
         {

@@ -13,7 +13,11 @@
  */
 package org.qi4j.entitystore.sql;
 
-import org.apache.derby.iapi.services.io.FileUtil;
+import java.sql.Connection;
+import java.sql.Statement;
+
+import javax.sql.DataSource;
+
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.AssemblyException;
@@ -21,66 +25,61 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.entitystore.sql.assembly.DerbySQLEntityStoreAssembler;
 import org.qi4j.entitystore.sql.internal.SQLs;
+import org.qi4j.library.sql.assembly.DataSourceAssembler;
+import org.qi4j.library.sql.assembly.DataSourceServiceAssembler;
 import org.qi4j.library.sql.common.SQLConfiguration;
 import org.qi4j.library.sql.common.SQLUtil;
-import org.qi4j.library.sql.ds.DBCPDataSourceConfiguration;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
 
-import java.sql.Connection;
-import java.sql.Statement;
-
-import org.qi4j.library.sql.ds.DataSourceService;
+import org.apache.derby.iapi.services.io.FileUtil;
 
 /**
  * @author Stanislav Muhametsin
  * @author Paul Merlin
  */
-public class DerbySQLEntityStoreTest extends AbstractEntityStoreTest
+public class DerbySQLEntityStoreTest
+        extends AbstractEntityStoreTest
 {
 
     @Override
-    @SuppressWarnings( "unchecked" )
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
+            throws AssemblyException
     {
         super.assemble( module );
-
-        new DerbySQLEntityStoreAssembler().assemble( module );
-
         ModuleAssembly config = module.layer().module( "config" );
         config.services( MemoryEntityStoreService.class );
-        config.entities( DBCPDataSourceConfiguration.class, SQLConfiguration.class ).visibleIn( Visibility.layer );
+
+        // DataSourceService + EntityStore's DataSource
+        new DataSourceServiceAssembler( "derby-datasource-service", config ).assemble( module );
+
+        // EntityStore
+        new DerbySQLEntityStoreAssembler( new DataSourceAssembler( "derby-datasource-service", "derby-datasource" ) ).assemble( module );
+        config.entities( SQLConfiguration.class ).visibleIn( Visibility.layer );
+
     }
 
     @Override
     public void tearDown()
-        throws Exception
+            throws Exception
     {
-        if( module == null )
-        {
+        if ( module == null ) {
             return;
         }
         UnitOfWork uow = this.module.newUnitOfWork();
-        try
-        {
-            SQLConfiguration config = uow.get( SQLConfiguration.class,
-                                               DerbySQLEntityStoreAssembler.ENTITYSTORE_SERVICE_NAME );
-            Connection connection = module.findService( DataSourceService.class ).get().getDataSource().getConnection();
+        try {
+            SQLConfiguration config = uow.get( SQLConfiguration.class, DerbySQLEntityStoreAssembler.ENTITYSTORE_SERVICE_NAME );
+            Connection connection = module.findService( DataSource.class ).get().getConnection();
             String schemaName = config.schemaName().get();
-            if( schemaName == null )
-            {
+            if ( schemaName == null ) {
                 schemaName = SQLs.DEFAULT_SCHEMA_NAME;
             }
 
             Statement stmt = null;
-            try
-            {
+            try {
                 stmt = connection.createStatement();
                 stmt.execute( String.format( "DELETE FROM %s." + SQLs.TABLE_NAME, schemaName ) );
                 connection.commit();
-            }
-            finally
-            {
+            } finally {
                 SQLUtil.closeQuietly( stmt );
             }
 
@@ -94,11 +93,9 @@ public class DerbySQLEntityStoreTest extends AbstractEntityStoreTest
 
             FileUtil.removeDirectory( "target/qi4j-data" );
 
-        }
-        finally
-        {
+        } finally {
             uow.discard();
-            super.tearDown();
+            // super.tearDown(); // TODO FIXME QI-363
         }
     }
 

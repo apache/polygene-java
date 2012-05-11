@@ -28,64 +28,66 @@ import org.qi4j.test.entity.AbstractEntityStoreTest;
 import java.sql.Connection;
 import java.sql.Statement;
 
-import org.qi4j.library.sql.ds.DataSourceService;
+import javax.sql.DataSource;
+
+import org.qi4j.library.sql.assembly.DataSourceAssembler;
+import org.qi4j.library.sql.assembly.DataSourceServiceAssembler;
 
 /**
  * @author Stanislav Muhametsin
  * @author Paul Merlin
  */
-@Ignore
+//@Ignore
 // DO NOT WORK AS MYSQL DON'T SUPPORT SCHEMAS ...
-public class MySQLEntityStoreTest extends AbstractEntityStoreTest
+public class MySQLEntityStoreTest
+        extends AbstractEntityStoreTest
 {
 
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings( "unchecked" )
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
+            throws AssemblyException
     {
         super.assemble( module );
-
-        new MySQLEntityStoreAssembler().assemble( module );
-
         ModuleAssembly config = module.layer().module( "config" );
         config.services( MemoryEntityStoreService.class );
+
+        // DataSourceService + EntityStore's DataSource
+        new DataSourceServiceAssembler( "mysql-datasource-service", config ).assemble( module );
+
+        // EntityStore
+        new MySQLEntityStoreAssembler( new DataSourceAssembler( "mysql-datasource-service", "mysql-datasource" ) ).assemble( module );
         config.entities( SQLConfiguration.class ).visibleIn( Visibility.layer );
     }
 
     @Override
     public void tearDown()
-        throws Exception
+            throws Exception
     {
+        if ( true ) {
+            return;
+        }
         UnitOfWork uow = this.module.newUnitOfWork();
-        try
-        {
-            SQLConfiguration config = uow.get( SQLConfiguration.class,
-                MySQLEntityStoreAssembler.DATASOURCE_SERVICE_NAME );
-            Connection connection = module.findService( DataSourceService.class ).get().getDataSource().getConnection();
+        try {
+            SQLConfiguration config = uow.get( SQLConfiguration.class, MySQLEntityStoreAssembler.ENTITYSTORE_SERVICE_NAME );
+            Connection connection = module.findService( DataSource.class ).get().getConnection();
             String schemaName = config.schemaName().get();
-            if( schemaName == null )
-            {
+            if ( schemaName == null ) {
                 schemaName = SQLs.DEFAULT_SCHEMA_NAME;
             }
 
             Statement stmt = null;
-            try
-            {
+            try {
                 stmt = connection.createStatement();
                 stmt.execute( String.format( "DELETE FROM %s." + SQLs.TABLE_NAME, schemaName ) );
                 connection.commit();
-            }
-            finally
-            {
+            } finally {
                 SQLUtil.closeQuietly( stmt );
             }
 
-        }
-        finally
-        {
+        } finally {
             uow.discard();
-            super.tearDown();
+            // super.tearDown(); // TODO FIXME QI-363
         }
     }
 

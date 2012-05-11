@@ -11,38 +11,34 @@
  * limitations under the License.
  *
  */
-package org.qi4j.entitystore.sql;
-
-import org.junit.Test;
-import org.qi4j.api.common.Visibility;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
-import org.qi4j.entitystore.sql.assembly.DerbySQLEntityStoreAssembler;
-import org.qi4j.library.sql.common.SQLConfiguration;
-import org.qi4j.library.sql.common.SQLUtil;
-import org.qi4j.library.sql.ds.DBCPBasicDataSourceServiceMixin;
-import org.qi4j.library.sql.ds.DBCPDataSourceConfiguration;
-import org.qi4j.library.sql.ds.DataSourceService;
-import org.qi4j.library.sql.ds.DataSourceServiceComposite;
-import org.qi4j.test.AbstractQi4jTest;
+package org.qi4j.library.sql.ds;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-/**
- * @author Stanislav Muhametsin
- * @author Paul Merlin
- */
-public class DBCPBasicDataSourceServiceTest extends AbstractQi4jTest
+import javax.sql.DataSource;
+
+import org.junit.Test;
+
+import org.qi4j.api.common.Visibility;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.entitystore.memory.MemoryEntityStoreService;
+import org.qi4j.library.sql.common.SQLConfiguration;
+import org.qi4j.library.sql.common.SQLUtil;
+import org.qi4j.test.AbstractQi4jTest;
+
+public class DBCPBasicDataSourceServiceTest
+        extends AbstractQi4jTest
 {
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings( "unchecked" )
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
+            throws AssemblyException
     {
-        module.services( DataSourceServiceComposite.class ).withMixins( DBCPBasicDataSourceServiceMixin.class )
-            .identifiedBy( DerbySQLEntityStoreAssembler.DATASOURCE_SERVICE_NAME ).instantiateOnStartup();
+        module.services( DataSourceServiceComposite.class ).
+                withMixins( DBCPBasicDataSourceServiceMixin.class ).
+                instantiateOnStartup();
 
         ModuleAssembly config = module.layer().module( "config" );
         config.services( MemoryEntityStoreService.class );
@@ -51,16 +47,13 @@ public class DBCPBasicDataSourceServiceTest extends AbstractQi4jTest
 
     @Test
     public void test()
-        throws SQLException
+            throws SQLException
     {
-        DataSourceService dsService = module.findService( DataSourceService.class ).get();
+        DataSource dataSource = module.findService( DataSource.class ).get();
         Connection connection = null;
-        try
-        {
-            connection = dsService.getDataSource().getConnection();
-        }
-        catch( SQLException ex )
-        {
+        try {
+            connection = dataSource.getConnection();
+        } catch ( SQLException ex ) {
             SQLUtil.closeQuietly( connection );
             throw ex;
         }

@@ -20,7 +20,6 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.index.reindexer.ReindexerConfiguration;
 import org.qi4j.index.sql.assembly.SQLIndexingAssembler;
 import org.qi4j.index.sql.support.common.DBNames;
 import org.qi4j.index.sql.support.common.ReindexingStrategy;
@@ -28,17 +27,18 @@ import org.qi4j.index.sql.support.postgresql.PostgreSQLAppStartup;
 import org.qi4j.index.sql.support.postgresql.assembly.PostgreSQLAssembler;
 import org.qi4j.library.sql.common.SQLConfiguration;
 import org.qi4j.library.sql.common.SQLUtil;
-import org.qi4j.library.sql.ds.DataSourceService;
-import org.qi4j.library.sql.ds.PGDataSourceConfiguration;
-import org.qi4j.library.sql.ds.PGSQLDataSourceServiceMixin;
-import org.qi4j.library.sql.ds.assembly.DataSourceAssembler;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
-import org.qi4j.test.performance.entitystore.memory.MemoryEntityStoreService;
 import org.slf4j.Logger;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import javax.sql.DataSource;
+import org.qi4j.api.structure.Module;
+import org.qi4j.entitystore.memory.MemoryEntityStoreService;
+import org.qi4j.library.sql.assembly.DataSourceAssembler;
+import org.qi4j.library.sql.assembly.DataSourceServiceAssembler;
 
 /**
  * @author Stanislav Muhametsin
@@ -67,15 +67,8 @@ public class SQLTestHelper
     protected static void doCommonAssembling( ModuleAssembly mainModule )
         throws AssemblyException
     {
-        ModuleAssembly configModule = mainModule.layerAssembly().moduleAssembly( CONFIG_MODULE_NAME );
-        configModule
-            .addEntities( PGDataSourceConfiguration.class, SQLConfiguration.class, ReindexerConfiguration.class )
-            .visibleIn( Visibility.application );
-        configModule.addServices( MemoryEntityStoreService.class );
-
-        PostgreSQLAssembler pgAss = new PostgreSQLAssembler( Visibility.module, new DataSourceAssembler(
-            PGSQLDataSourceServiceMixin.class ).setDataSourceServiceName(
-            PostgreSQLAssembler.DATASOURCE_SERVICE_NAME ) )
+        new DataSourceServiceAssembler( "postgresql-datasource-service", mainModule.layer().module( "config" ) ).assemble( mainModule );
+        PostgreSQLAssembler pgAss = new PostgreSQLAssembler( Visibility.module, new DataSourceAssembler("postgresql-datasource-service","postgresql-datasource") )
             .setServiceName( SQL_INDEXING_SERVICE_NAME );
         pgAss.assemble( mainModule );
 
@@ -83,14 +76,14 @@ public class SQLTestHelper
         ass.assemble( mainModule );
 
         // Always re-index because of possible different app structure of multiple tests.
-        mainModule.addServices( ReindexingStrategy.ReindexingStrategyService.class ).withMixins(
+        mainModule.services( ReindexingStrategy.ReindexingStrategyService.class ).withMixins(
             ReindexingStrategy.AlwaysNeed.class );
 
-        mainModule.addServices( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class ).visibleIn(
+        mainModule.services( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class ).visibleIn(
             Visibility.application );
     }
 
-    public static void tearDownTest( UnitOfWorkFactory uowf, ServiceFinder finder, Logger log )
+    public static void tearDownTest( UnitOfWorkFactory uowf, Module module, Logger log )
     {
         if( uowf == null )
         {
@@ -101,7 +94,7 @@ public class SQLTestHelper
             UnitOfWork uow = uowf.newUnitOfWork();
             try
             {
-                SQLTestHelper.deleteTestData( uow, finder );
+                SQLTestHelper.deleteTestData( uow, module );
             }
             catch( Throwable t )
             {
@@ -115,12 +108,12 @@ public class SQLTestHelper
         }
     }
 
-    private static void deleteTestData( UnitOfWork uow, ServiceFinder finder )
+    private static void deleteTestData( UnitOfWork uow, Module module )
         throws SQLException
     {
 
         SQLConfiguration config = uow.get( SQLConfiguration.class, SQL_INDEXING_SERVICE_NAME );
-        Connection connection = SQLUtil.getConnection( finder );
+        Connection connection = module.serviceFinder().findService( DataSource.class).get().getConnection();
         String schemaName = config.schemaName().get();
         if( schemaName == null )
         {
@@ -144,8 +137,8 @@ public class SQLTestHelper
     {
         try
         {
-            DataSourceService ds = (DataSourceService) finder.findService( DataSourceService.class ).get();
-            Assume.assumeNotNull( ds.getDataSource().getConnection() );
+            DataSource ds = (DataSource) finder.findService( DataSource.class ).get();
+            Assume.assumeNotNull( ds.getConnection() );
         }
         catch( Throwable t )
         {

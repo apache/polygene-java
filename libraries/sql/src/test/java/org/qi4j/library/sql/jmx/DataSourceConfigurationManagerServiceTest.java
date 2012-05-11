@@ -16,7 +16,7 @@ import org.qi4j.io.Outputs;
 import org.qi4j.io.Receiver;
 import org.qi4j.library.circuitbreaker.CircuitBreaker;
 import org.qi4j.library.jmx.JMXAssembler;
-import org.qi4j.library.sql.assembler.DataSourceAssembler;
+import org.qi4j.library.sql.assembly.DataSourceAssembler;
 import org.qi4j.library.sql.datasource.DataSourceConfiguration;
 import org.qi4j.library.sql.datasource.DataSourceService;
 import org.qi4j.library.sql.datasource.Databases;
@@ -27,6 +27,8 @@ import javax.sql.DataSource;
 import java.beans.PropertyVetoException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import org.qi4j.library.sql.assembly.DataSourceServiceAssembler;
 
 /**
  * Test of export of DataSources to JMX, and some other stuff

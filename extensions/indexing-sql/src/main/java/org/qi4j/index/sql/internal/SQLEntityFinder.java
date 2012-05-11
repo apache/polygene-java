@@ -22,7 +22,6 @@ import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.functional.Specification;
 import org.qi4j.index.sql.support.api.SQLQuerying;
 import org.qi4j.library.sql.common.SQLUtil;
-import org.qi4j.library.sql.ds.DataSourceService;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
 
@@ -34,6 +33,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.sql.DataSource;
+
 /**
  * @author Stanislav Muhametsin
  */
@@ -44,7 +45,7 @@ public class SQLEntityFinder
     private SQLQuerying parser;
 
     @Service
-    private DataSourceService _dataSource;
+    private DataSource _dataSource;
 
     /**
      * Helper interface to perform some SQL query. Using this simplifies the structure of some of the methods.
@@ -202,7 +203,7 @@ public class SQLEntityFinder
         Integer resultSetType, Integer resultSetHoldability )
         throws SQLException
     {
-        PreparedStatement ps = this._dataSource.getDataSource().getConnection()
+        PreparedStatement ps = this._dataSource.getConnection()
             .prepareStatement( query, resultSetType, ResultSet.CONCUR_READ_ONLY, resultSetHoldability );
         if( values.size() != valueSQLTypes.size() )
         {
@@ -227,7 +228,7 @@ public class SQLEntityFinder
         Connection connection = null;
         try
         {
-            connection = this._dataSource.getDataSource().getConnection();
+            connection = this._dataSource.getConnection();
             connection.setReadOnly( true );
 
             result = doQuery.doIt();

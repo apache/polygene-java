@@ -24,7 +24,6 @@ import org.qi4j.index.sql.support.common.GenericDatabaseExplorer.ColumnInfo;
 import org.qi4j.index.sql.support.common.GenericDatabaseExplorer.DatabaseProcessor;
 import org.qi4j.index.sql.support.common.GenericDatabaseExplorer.ForeignKeyInfo;
 import org.qi4j.index.sql.support.skeletons.SQLDBState;
-import org.qi4j.library.sql.ds.DataSourceService;
 import org.qi4j.spi.query.IndexExporter;
 import org.sql.generation.api.vendor.SQLVendor;
 
@@ -35,6 +34,8 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.sql.DataSource;
 
 /**
  * 
@@ -53,7 +54,7 @@ public class PostgreSQLIndexExporter
     private SQLVendor _vendor;
 
     @Service
-    private DataSourceService _dataSource;
+    private DataSource _dataSource;
 
     public void activate()
         throws Exception
@@ -97,7 +98,7 @@ public class PostgreSQLIndexExporter
     {
         try
         {
-            GenericDatabaseExplorer.visitDatabaseTables( this._dataSource.getDataSource().getConnection(), null,
+            GenericDatabaseExplorer.visitDatabaseTables( this._dataSource.getConnection(), null,
                 this._state.schemaName().get(), null, new DatabaseProcessor()
                 {
 
@@ -203,7 +204,7 @@ public class PostgreSQLIndexExporter
     {
         try
         {
-            GenericDatabaseExplorer.visitDatabaseTables( this._dataSource.getDataSource().getConnection(), null,
+            GenericDatabaseExplorer.visitDatabaseTables( this._dataSource.getConnection(), null,
                 this._state.schemaName().get(), null, new DatabaseProcessor()
                 {
 

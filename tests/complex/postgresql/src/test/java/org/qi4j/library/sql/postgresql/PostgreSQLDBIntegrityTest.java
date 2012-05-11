@@ -57,7 +57,7 @@ public class PostgreSQLDBIntegrityTest extends AbstractQi4jTest
         throws AssemblyException
     {
         SQLTestHelper.assembleWithMemoryEntityStore( module );
-        module.addEntities( TestEntity.class );
+        module.entities( TestEntity.class );
     }
 
     @Override
@@ -65,14 +65,14 @@ public class PostgreSQLDBIntegrityTest extends AbstractQi4jTest
         throws Exception
     {
         super.setUp();
-        SQLTestHelper.setUpTest( this.serviceLocator );
+        SQLTestHelper.setUpTest( module );
     }
 
     @Override
     public void tearDown()
         throws Exception
     {
-        SQLTestHelper.tearDownTest( unitOfWorkFactory, serviceLocator, getLog() );
+        SQLTestHelper.tearDownTest( module, module, getLog() );
         super.tearDown();
     }
 

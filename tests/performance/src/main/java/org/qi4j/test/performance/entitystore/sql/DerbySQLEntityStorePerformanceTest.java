@@ -14,22 +14,17 @@
 package org.qi4j.test.performance.entitystore.sql;
 
 import org.apache.derby.iapi.services.io.FileUtil;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.sql.assembly.DerbySQLEntityStoreAssembler;
-import org.qi4j.library.sql.common.SQLConfiguration;
-import org.qi4j.library.sql.ds.DBCPDataSourceConfiguration;
-import org.qi4j.test.EntityTestAssembler;
+import org.qi4j.library.sql.assembly.DataSourceAssembler;
 import org.qi4j.test.performance.entitystore.model.AbstractEntityStorePerformanceTest;
 
 /**
  * Performance test for SQLEntityStoreComposite
  */
-@Ignore
 public class DerbySQLEntityStorePerformanceTest extends AbstractEntityStorePerformanceTest
 {
 
@@ -47,12 +42,7 @@ public class DerbySQLEntityStorePerformanceTest extends AbstractEntityStorePerfo
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                new DerbySQLEntityStoreAssembler( Visibility.application ).assemble( module );
-
-                ModuleAssembly configModule = module.layer().module( "Config" );
-                configModule.entities( DBCPDataSourceConfiguration.class, SQLConfiguration.class ).visibleIn(
-                    Visibility.layer );
-                new EntityTestAssembler( Visibility.module ).assemble( configModule );
+                new DerbySQLEntityStoreAssembler( new DataSourceAssembler( "derby-datasource-service", "derby-datasource" ) ).assemble( module );
             }
 
         };

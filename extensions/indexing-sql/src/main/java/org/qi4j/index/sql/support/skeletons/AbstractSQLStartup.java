@@ -33,6 +33,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
+
+import javax.sql.DataSource;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.configuration.Configuration;
@@ -59,7 +61,6 @@ import org.qi4j.index.sql.support.common.QNameInfo.QNameType;
 import org.qi4j.index.sql.support.common.ReindexingStrategy;
 import org.qi4j.library.sql.common.SQLConfiguration;
 import org.qi4j.library.sql.common.SQLUtil;
-import org.qi4j.library.sql.ds.DataSourceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sql.generation.api.grammar.builders.definition.TableElementListBuilder;
@@ -136,7 +137,7 @@ public abstract class AbstractSQLStartup
     private ReindexingStrategy _reindexingStrategy;
 
     @Service
-    private DataSourceService _dataSource;
+    private DataSource _dataSource;
 
     @Service
     private Reindexer _reindexer;
@@ -167,7 +168,7 @@ public abstract class AbstractSQLStartup
     public void initConnection()
         throws SQLException
     {
-        Connection connection = this._dataSource.getDataSource().getConnection();
+        Connection connection = this._dataSource.getConnection();
 
         connection.setAutoCommit( false );
 
@@ -280,7 +281,7 @@ public abstract class AbstractSQLStartup
     private Boolean syncDB()
         throws SQLException
     {
-        Connection connection = this._dataSource.getDataSource().getConnection();
+        Connection connection = this._dataSource.getConnection();
         String schemaName = this._state.schemaName().get();
         ResultSet rs = connection.getMetaData().getSchemas();
 
@@ -325,7 +326,7 @@ public abstract class AbstractSQLStartup
     private void createSchema( Boolean schemaFound )
         throws SQLException
     {
-        Connection connection = this._dataSource.getDataSource().getConnection();
+        Connection connection = this._dataSource.getConnection();
         String schemaName = this._state.schemaName().get();
 
         SQLVendor vendor = this._vendor;
@@ -629,7 +630,7 @@ public abstract class AbstractSQLStartup
     {
 
         String schemaName = this._state.schemaName().get();
-        Connection connection = this._dataSource.getDataSource().getConnection();
+        Connection connection = this._dataSource.getConnection();
         Statement stmt = connection.createStatement();
 
         SQLVendor vendor = this._vendor;
@@ -727,7 +728,7 @@ public abstract class AbstractSQLStartup
     )
         throws SQLException
     {
-        Connection connection = this._dataSource.getDataSource().getConnection();
+        Connection connection = this._dataSource.getConnection();
         String schemaName = this._state.schemaName().get();
 
         SQLVendor vendor = this._vendor;
@@ -1076,7 +1077,7 @@ public abstract class AbstractSQLStartup
         Boolean result = true;
         if( schemaExists )
         {
-            Connection connection = this._dataSource.getDataSource().getConnection();
+            Connection connection = this._dataSource.getConnection();
             String schemaName = this._state.schemaName().get();
             Statement stmt = connection.createStatement();
             try
@@ -1129,7 +1130,7 @@ public abstract class AbstractSQLStartup
     private void clearSchema()
         throws SQLException
     {
-        Connection connection = this._dataSource.getDataSource().getConnection();
+        Connection connection = this._dataSource.getConnection();
         String schemaName = this._state.schemaName().get();
         DatabaseMetaData metaData = connection.getMetaData();
 

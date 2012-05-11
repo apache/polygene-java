@@ -11,60 +11,57 @@
  * limitations under the License.
  *
  */
-package org.qi4j.entitystore.sql;
+package org.qi4j.library.sql.ds;
 
-import org.apache.commons.dbcp.BasicDataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
+
+import javax.sql.DataSource;
+
 import org.junit.Assume;
 import org.junit.Test;
+
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.sql.assembly.DerbySQLEntityStoreAssembler;
 import org.qi4j.library.sql.common.SQLUtil;
-import org.qi4j.library.sql.ds.DataSourceService;
 import org.qi4j.library.sql.ds.assembly.DataSourceAssembler;
 import org.qi4j.library.sql.ds.assembly.ImportableDataSourceService;
 import org.qi4j.test.AbstractQi4jTest;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import org.apache.commons.dbcp.BasicDataSource;
 
 /**
  * @author Stanislav Muhametsin
  * @author Paul Merlin
  */
-public class ImportedDataSourceServiceTest extends AbstractQi4jTest
+public class ImportedDataSourceServiceTest
+        extends AbstractQi4jTest
 {
 
     private static final String CONNECTION_STRING = "jdbc:derby:build/qi4jdata;create=true";
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings( "unchecked" )
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
+            throws AssemblyException
     {
         BasicDataSource dataSource = new BasicDataSource();
         dataSource.setUrl( CONNECTION_STRING );
-        try
-        {
-            new DerbySQLEntityStoreAssembler( new DataSourceAssembler( new ImportableDataSourceService( dataSource ) ) )
-            .assemble( module );
-        } catch( AssemblyException e )
-        {
+        try {
+            new DataSourceAssembler( new ImportableDataSourceService( dataSource ) ).assemble( module );
+        } catch ( AssemblyException e ) {
             Assume.assumeNoException( e );
         }
     }
 
     @Test
     public void test()
-        throws SQLException
+            throws SQLException
     {
-        DataSourceService dsService = module.findService( DataSourceService.class ).get();
+        DataSource dataSource = module.findService( DataSource.class ).get();
         Connection connection = null;
-        try
-        {
-            connection = dsService.getDataSource().getConnection();
-        }
-        catch( SQLException ex )
-        {
+        try {
+            connection = dataSource.getConnection();
+        } catch ( SQLException ex ) {
             SQLUtil.closeQuietly( connection );
             throw ex;
         }
