@@ -20,6 +20,7 @@ import javax.sql.DataSource;
 
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
@@ -65,7 +66,7 @@ public class DerbySQLEntityStoreTest
         if ( module == null ) {
             return;
         }
-        UnitOfWork uow = this.module.newUnitOfWork();
+        UnitOfWork uow = this.module.newUnitOfWork( UsecaseBuilder.newUsecase( "Delete " + getClass().getSimpleName() + " test data" ) );
         try {
             SQLConfiguration config = uow.get( SQLConfiguration.class, DerbySQLEntityStoreAssembler.ENTITYSTORE_SERVICE_NAME );
             Connection connection = module.findService( DataSource.class ).get().getConnection();

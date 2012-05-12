@@ -37,8 +37,8 @@ import org.qi4j.library.sql.assembly.DataSourceServiceAssembler;
  * @author Stanislav Muhametsin
  * @author Paul Merlin
  */
-//@Ignore
-// DO NOT WORK AS MYSQL DON'T SUPPORT SCHEMAS ...
+@Ignore
+// DO NOT WORK AS MYSQL DON'T SUPPORT SCHEMAS ... AND WE DON'T SUPPORT SCHEMALESS JDBC ... YET
 public class MySQLEntityStoreTest
         extends AbstractEntityStoreTest
 {

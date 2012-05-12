@@ -1,26 +1,19 @@
+/*
+ * Copyright (c) 2011, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 package org.qi4j.library.sql.datasource;
 
-/**
- * TODO
- */
-
-import com.mchange.v2.c3p0.ComboPooledDataSource;
-import com.mchange.v2.c3p0.DataSources;
-import org.qi4j.api.composite.PropertyMapper;
-import org.qi4j.api.entity.EntityBuilder;
-import org.qi4j.api.injection.scope.Structure;
-import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.*;
-import org.qi4j.api.structure.Module;
-import org.qi4j.api.unitofwork.NoSuchEntityException;
-import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
-import org.qi4j.api.usecase.UsecaseBuilder;
-import org.qi4j.library.circuitbreaker.CircuitBreaker;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationHandler;
@@ -32,8 +25,37 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.sql.DataSource;
+
+import org.qi4j.api.composite.PropertyMapper;
+import org.qi4j.api.entity.EntityBuilder;
+import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.service.Activatable;
+import org.qi4j.api.service.ImportedServiceDescriptor;
+import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.service.ServiceImporter;
+import org.qi4j.api.service.ServiceImporterException;
+import org.qi4j.api.structure.Module;
+import org.qi4j.api.unitofwork.NoSuchEntityException;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
+import org.qi4j.api.usecase.UsecaseBuilder;
+import org.qi4j.library.circuitbreaker.CircuitBreaker;
+
+import com.mchange.v2.c3p0.ComboPooledDataSource;
+import com.mchange.v2.c3p0.DataSources;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
- * DataSource service implemented as a ServiceImporter. Sets up and exposes DataSources that can be used in the application.
+ * DataSource service implemented as a ServiceImporter.
+ * 
+ * Import visible DataSources as Services. The default Mixin use the C3P0
+ * pooling system optionaly wrapped with CircuitBreaker using a proxy.
+ * 
+ * TODO Rename to C3P0DataSourceServiceImporter
  */
 @Mixins(DataSourceService.Mixin.class)
 public interface DataSourceService
@@ -48,7 +70,7 @@ public interface DataSourceService
         Map<String, ComboPooledDataSource> pools = new HashMap<String, ComboPooledDataSource>();
         Map<String, DataSourceConfiguration> configs = new HashMap<String, DataSourceConfiguration>();
         Map<ComboPooledDataSource, CircuitBreaker> circuitBreakers = new HashMap<ComboPooledDataSource, CircuitBreaker>();
-
+        
         Logger logger = LoggerFactory.getLogger( DataSourceService.class );
 
         public void activate() throws Exception
@@ -63,6 +85,7 @@ public interface DataSourceService
             }
             pools.clear();
 
+            // WARN Closes all configuration UoWs
             for( DataSourceConfiguration dataSourceConfiguration : configs.values() )
             {
                 module.getUnitOfWork( dataSourceConfiguration ).discard();
@@ -191,7 +214,7 @@ public interface DataSourceService
                 return pool;
         }
 
-        public synchronized DataSourceConfiguration getConfiguration( String identity ) throws InstantiationException
+        private DataSourceConfiguration getConfiguration( String identity ) throws InstantiationException
         {
             DataSourceConfiguration config = configs.get( identity );
             if( config == null )
@@ -224,20 +247,21 @@ public interface DataSourceService
 
                     config = configBuilder.newInstance();
 
-
+                    // save
                     try
                     {
-                        // save
                         uow.complete();
-                        // create new uow and fetch entity
-                        uow = module.newUnitOfWork( UsecaseBuilder.newUsecase( "Create DataSource pool configuration" ) );
-                        config = uow.get( DataSourceConfiguration.class, identity );
                     } catch( UnitOfWorkCompletionException e2 )
                     {
                         InstantiationException exception = new InstantiationException( "Could not save configuration in JavaPreferences." );
                         exception.initCause( e2 );
                         throw exception;
                     }
+                    
+                    // Create new uow and fetch entity
+                    // WARN This UoW is closed on Service passivation
+                    uow = module.newUnitOfWork( UsecaseBuilder.newUsecase( "Read DataSource pool configuration" ) );
+                    config = uow.get( DataSourceConfiguration.class, identity );
                 }
 
                 configs.put( identity, config );

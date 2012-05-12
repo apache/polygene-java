@@ -57,7 +57,7 @@ import org.qi4j.library.sql.assembly.DataSourceServiceAssembler;
  * @author Stanislav Muhametsin
  * @author Paul Merlin
  */
-//@Ignore
+@Ignore
 public class PostgreSQLEntityStoreTest
         extends AbstractEntityStoreTest
 {
