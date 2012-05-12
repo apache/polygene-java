@@ -49,6 +49,11 @@ h2.title
     display: none;
 }
 
+.listitem
+{
+    padding:3px;
+}
+
 .logo
 {
     float: left;
@@ -58,6 +63,7 @@ h2.title
 .top-nav .toc dl
 {
     margin: 0;
+    margin-top: 30px;
     padding: 0;
     text-align: center;
     float: right;

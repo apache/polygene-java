@@ -54,7 +54,6 @@
 <!-- Version Switcher -->
 
 <script type="text/javascript" src="js/versionswitcher.js"></script>
-
 ]]>
   </xsl:text>
   </xsl:template>

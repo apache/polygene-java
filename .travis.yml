@@ -1,3 +1,4 @@
 
-script: ./gradlew -d test
+language: java
+
 

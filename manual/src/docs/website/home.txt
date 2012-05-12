@@ -8,12 +8,10 @@ Qi4j™ is an implementation of Composite Oriented Programming, using the standa
 any pre-processors or new language elements. Everything you know from Java 5 still applies and you can leverage both
 your experience and toolkits to become more productive with Composite Oriented Programming today.
 
-image:intro-qi.gif[float="left"]
-
 == Introducing Qi4j™ ==
 
-Qi4j™ is pronounced "chee for jay". This website is out of scope to explain the many facets and history of Qi, so we
-refer the interested to read the lengthy articleexternal link at Wikipedia. For us, Qi is the force/energy within the
+image:intro-qi.gif[float="left"] Qi4j™ is pronounced "chee for jay". This website is out of scope to explain the many
+facets and history of Qi, so we refer the interested to read the lengthy articleexternal link at Wikipedia. For us, Qi is the force/energy within the
 body, in this case the Java platform. Something that makes Java so much better, if it is found and channeled into a
 greater good.
 

@@ -1,6 +1,6 @@
 [[codebase]]
 = Codebase =
-After the first 3 years of depending on the OPS4J external link project, the Qi4j community finally moved to GitHub on
+After the first 3 years of depending on the OPS4J project, the Qi4j community finally moved to GitHub on
 the 1 November 2010. This should simplify the learning, as not only does developers have plenty of experience with
 GitHub external link and the tools it provides, but also there are endless amount of documentation and user forums to
 support each individual, off-loading some of that burden from us. This page only contain rudimentary information.
@@ -29,7 +29,11 @@ ship the coherence extension). The sandbox is a normal GitHub repository availab
 git clone git://github.com/Qi4j/qi4j-sandbox.git
 
 The Qi4j SDK is the main development codebase, and to start working with it you simply clone it;
+
+[source,bash]
+--------
 git clone git://github.com/Qi4j/qi4j-sdk.git
+--------
 
 == Web Access ==
 
@@ -90,7 +94,7 @@ lot more clean and stable than a free-for-all repository has a tendency to becom
 Once you have commit access to a repository, you will access it differently. This is the clone command needed, and
 after that you will need to do the same as above for pubic access;
 
-[[source,bash]]
+[source,bash]
 --------
 git clone git@github.com:Qi4j/qi4j-sdk.git
 cd qi4j-sdk
@@ -117,8 +121,9 @@ Runtime, and no surprises will occur in existing applications with new versions.
 Courtesy of Vincent Driessen, we borrowed the Git branching model from this web page;
 http://nvie.com/posts/a-successful-git-branching-model/
 
-The most important part of that excellent article can be found below (click for larger image).
+image:git-model.png["Git Development Model"]
 
+The most important part of that excellent article can be found below.
 
 
 == Git Branching Model used at Qi4j ==
