@@ -45,12 +45,22 @@ import org.qi4j.library.sql.assembly.DataSourceServiceAssembler;
  * <pre>
  * createuser -A -D -P -E -W jdbc_test_login
  * createdb -O jdbc_test_login -W jdbc_test_db
+ * psql -d jdbc_testdb
+ * CREATE EXTENSION ltree;
  * </pre>
  * 
  * To clear the data:
  * 
  * <pre>
  * dropdb -W jdbc_test_db
+ * createdb -O jdbc_test_login -W jdbc_test_db
+ * psql -d jdbc_testdb
+ * CREATE EXTENSION ltree;
+ * </pre>
+ * 
+ * To remove the test user:
+ * 
+ * <pre>
  * dropuser -W jdbc_test_login
  * </pre>
  * 
