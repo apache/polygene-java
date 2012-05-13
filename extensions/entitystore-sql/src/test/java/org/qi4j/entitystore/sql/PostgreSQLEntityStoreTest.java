@@ -54,7 +54,7 @@ import org.qi4j.test.entity.AbstractEntityStoreTest;
  * <pre>
  * dropdb -W jdbc_test_db
  * createdb -O jdbc_test_login -W jdbc_test_db
- * psql -d jdbc_testdb
+ * psql -d jdbc_test_db
  * CREATE EXTENSION ltree;
  * </pre>
  * 
