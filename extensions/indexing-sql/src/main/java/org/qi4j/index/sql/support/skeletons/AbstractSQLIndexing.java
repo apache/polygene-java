@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2010, Stanislav Muhametsin. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +30,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.sql.DataSource;
+
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.common.QualifiedName;
@@ -45,8 +47,10 @@ import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.api.value.ValueDescriptor;
+import static org.qi4j.functional.Iterables.first;
 import org.qi4j.index.sql.support.api.SQLIndexing;
 import org.qi4j.index.sql.support.common.DBNames;
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_NAME;
 import org.qi4j.index.sql.support.common.QNameInfo;
 import org.qi4j.index.sql.support.common.QNameInfo.QNameType;
 import org.qi4j.index.sql.support.postgresql.PostgreSQLTypeHelper;
@@ -55,6 +59,7 @@ import org.qi4j.library.sql.common.SQLUtil;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
+
 import org.sql.generation.api.grammar.builders.modification.ColumnSourceByValuesBuilder;
 import org.sql.generation.api.grammar.builders.modification.DeleteBySearchBuilder;
 import org.sql.generation.api.grammar.builders.modification.UpdateBySearchBuilder;
@@ -72,12 +77,6 @@ import org.sql.generation.api.grammar.modification.UpdateStatement;
 import org.sql.generation.api.grammar.query.QueryExpression;
 import org.sql.generation.api.vendor.SQLVendor;
 
-import static org.qi4j.functional.Iterables.first;
-import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_NAME;
-
-/**
- * @author Stanislav Muhametsin
- */
 public class AbstractSQLIndexing
     implements SQLIndexing, Activatable
 {

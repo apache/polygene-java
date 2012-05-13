@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2010, Stanislav Muhametsin. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +15,13 @@
 
 package org.qi4j.library.sql.postgresql;
 
-import junit.framework.Assert;
+import java.sql.Connection;
+
+import javax.sql.DataSource;
+
+import org.junit.Ignore;
 import org.junit.Test;
+
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.property.Property;
@@ -28,17 +34,13 @@ import org.qi4j.index.sql.support.common.GenericDatabaseExplorer.DatabaseProcess
 import org.qi4j.index.sql.support.postgresql.PostgreSQLAppStartup;
 import org.qi4j.library.sql.common.SQLConfiguration;
 import org.qi4j.test.AbstractQi4jTest;
+
 import org.sql.generation.api.vendor.PostgreSQLVendor;
 import org.sql.generation.api.vendor.SQLVendorProvider;
 
-import java.sql.Connection;
+import junit.framework.Assert;
 
-import javax.sql.DataSource;
-
-/**
- * 
- * @author Stanislav Muhametsin
- */
+@Ignore
 public class PostgreSQLDBIntegrityTest extends AbstractQi4jTest
 {
 
