@@ -15,14 +15,20 @@
 package org.qi4j.library.sql.postgresql;
 
 import org.junit.Ignore;
+
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.indexing.AbstractComplexQueryTest;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //@Ignore
 public class PostgreSQLComplexQueryTest
         extends AbstractComplexQueryTest
 {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger( PostgreSQLComplexQueryTest.class );
 
     @Override
     public void assemble( ModuleAssembly mainModule )
@@ -53,84 +59,8 @@ public class PostgreSQLComplexQueryTest
     public void tearDown()
             throws Exception
     {
-        SQLTestHelper.tearDownTest( module, getLog() );
+        SQLTestHelper.tearDownTest( module, LOGGER );
         super.tearDown();
-    }
-
-    @Override
-    public void script01()
-    {
-        super.script01();
-    }
-
-    @Ignore
-    @Override
-    public void script02()
-    {
-        super.script02();
-    }
-
-    @Ignore
-    @Override
-    public void script03()
-    {
-        super.script03();
-    }
-
-    @Ignore
-    @Override
-    public void script04()
-    {
-        super.script04();
-    }
-
-    @Ignore
-    @Override
-    public void script05()
-    {
-        super.script05();
-    }
-
-    @Ignore
-    @Override
-    public void script06()
-    {
-        super.script06();
-    }
-
-    @Ignore
-    @Override
-    public void script07()
-    {
-        super.script07();
-    }
-
-    @Ignore
-    @Override
-    public void script08()
-    {
-        super.script08();
-    }
-
-    @Ignore
-    @Override
-    public void script09()
-    {
-        super.script09();
-    }
-
-    @Ignore
-    @Override
-    public void script10()
-    {
-        super.script10();
-    }
-
-    @Ignore
-    @Override
-    public void script11()
-    {
-        super.script11();
     }
 
 }

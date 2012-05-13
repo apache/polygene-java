@@ -152,6 +152,7 @@ public abstract class AbstractSQLStartup
         {
             this.checkSchemaName( schemaName );
         }
+        _log.debug( "Will use '{}' as schema name", schemaName );
 
         this._state.schemaName().set( schemaName );
         this._state.tablePKs().set( new HashMap<String, Long>() );
@@ -297,6 +298,17 @@ public abstract class AbstractSQLStartup
             throw new IllegalStateException( "Illegal schema name: " + schemaName + "." );
         }
     }
+    
+    private static class ApplicationInfo
+    {
+
+        private Map<String, EntityDescriptor> entityDescriptors = new HashMap<String, EntityDescriptor>();
+
+        private Set<String> usedClassNames = new HashSet<String>();
+
+        private Set<String> enumValues = new HashSet<String>();
+
+    }
 
     private void syncDB()
         throws SQLException
@@ -313,12 +325,8 @@ public abstract class AbstractSQLStartup
                 schemaFound = rs.getString( 1 ).equals( schemaName );
             }
 
-            Map<String, EntityDescriptor> entityDescriptors = new HashMap<String, EntityDescriptor>();
-            Set<String> usedClassNames = new HashSet<String>();
-            Set<String> enumValues = new HashSet<String>();
-
             Boolean reindexingRequired = schemaFound ? this.isReindexingNeeded() : false;
-            this.constructApplicationInfo( entityDescriptors, usedClassNames, enumValues, !reindexingRequired );
+            ApplicationInfo appInfo = this.constructApplicationInfo( false ); // !reindexingRequired );
 
             if( schemaFound && reindexingRequired )
             {
@@ -331,14 +339,14 @@ public abstract class AbstractSQLStartup
                 _log.debug( "Schema Found & Reindexing NOT Required" );
                 this.testRequiredCapabilities();
                 _log.debug( "Underlying database fullfill required capabilities" );
-                this.readAppMetadataFromDB( entityDescriptors );
+                this.readAppMetadataFromDB( appInfo.entityDescriptors );
                 _log.debug( "Application metadata loaded from database" );
             }
             else
             {
                 _log.debug( "Schema {}Found & Reindexing {}Required", schemaFound ? "" : "NOT ", reindexingRequired ? "" : "NOT " );
                 this.createSchema( schemaFound );
-                this.writeAppMetadataToDB( entityDescriptors, usedClassNames, enumValues );
+                this.writeAppMetadataToDB( appInfo );
 
                 if( reindexingRequired )
                 {
@@ -760,9 +768,7 @@ public abstract class AbstractSQLStartup
         }
     }
 
-    private void writeAppMetadataToDB( Map<String, EntityDescriptor> entityDescriptors, Set<String> usedClassNames,
-                                       Set<String> allEnums
-    )
+    private void writeAppMetadataToDB( ApplicationInfo appInfo )
         throws SQLException
     {
         Connection connection = this._dataSource.getConnection();
@@ -790,7 +796,7 @@ public abstract class AbstractSQLStartup
 
             try
             {
-                for( EntityDescriptor descriptor : entityDescriptors.values() )
+                for( EntityDescriptor descriptor : appInfo.entityDescriptors.values() )
                 {
                     String entityTypeName = first( descriptor.types() ).getName();
                     long pk = this._state.tablePKs().get().get( ENTITY_TYPES_TABLE_NAME );
@@ -820,7 +826,7 @@ public abstract class AbstractSQLStartup
 
             try
             {
-                for( String usedClass : usedClassNames )
+                for( String usedClass : appInfo.usedClassNames )
                 {
                     long pk = this._state.tablePKs().get().get( USED_CLASSES_TABLE_NAME );
                     ps.setInt( 1, (int) pk );
@@ -849,7 +855,7 @@ public abstract class AbstractSQLStartup
 
             try
             {
-                for( String enumValue : allEnums )
+                for( String enumValue : appInfo.enumValues )
                 {
                     long pk = this._state.tablePKs().get().get( ENUM_LOOKUP_TABLE_NAME );
                     ps.setInt( 1, (int) pk );
@@ -1195,13 +1201,10 @@ public abstract class AbstractSQLStartup
         }
     }
 
-    private void constructApplicationInfo( final Map<String, EntityDescriptor> entityDescriptors,
-                                           Set<String> usedClassNames,
-                                           Set<String> enumValues,
-                                           Boolean setQNameTableNameToNull
-    )
+    private ApplicationInfo constructApplicationInfo( Boolean setQNameTableNameToNull )
         throws SQLException
     {
+        final ApplicationInfo appInfo = new ApplicationInfo();
         final List<ValueDescriptor> valueDescriptors = new ArrayList<ValueDescriptor>();
         _app.descriptor().accept( new HierarchicalVisitorAdapter<Object, Object, RuntimeException>()
         {
@@ -1217,7 +1220,7 @@ public abstract class AbstractSQLStartup
                         if( entityDescriptor.queryable() )
                         {
                             _log.debug( "THIS ONE WORKS: {}",entityDescriptor );
-                            entityDescriptors.put( first( entityDescriptor.types() ).getName(), entityDescriptor );
+                            appInfo.entityDescriptors.put( first( entityDescriptor.types() ).getName(), entityDescriptor );
                         }
                     }
                     else
@@ -1233,11 +1236,11 @@ public abstract class AbstractSQLStartup
         } );
 
         Set<String> usedVCClassNames = new HashSet<String>();
-        for( EntityDescriptor descriptor : entityDescriptors.values() )
+        for( EntityDescriptor descriptor : appInfo.entityDescriptors.values() )
         {
             Set<QualifiedName> newQNames = new HashSet<QualifiedName>();
             this.extractPropertyQNames( descriptor, this._state.qNameInfos().get(), newQNames, valueDescriptors,
-                                        usedVCClassNames, enumValues, setQNameTableNameToNull );
+                                        usedVCClassNames, appInfo.enumValues, setQNameTableNameToNull );
             this.extractAssociationQNames( descriptor, this._state.qNameInfos().get(), newQNames,
                                            setQNameTableNameToNull );
             this.extractManyAssociationQNames( descriptor, this._state.qNameInfos().get(), newQNames,
@@ -1245,7 +1248,8 @@ public abstract class AbstractSQLStartup
             this._state.entityUsedQNames().get().put( first( descriptor.types() ).getName(), newQNames );
         }
 
-        usedClassNames.addAll( usedVCClassNames );
+        appInfo.usedClassNames.addAll( usedVCClassNames );
+        return appInfo;
     }
 
     private void processPropertyTypeForQNames( PropertyDescriptor pType, Map<QualifiedName, QNameInfo> qNameInfos,

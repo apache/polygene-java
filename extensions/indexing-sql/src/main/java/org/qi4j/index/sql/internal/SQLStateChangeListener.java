@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2010, Stanislav Muhametsin. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,50 +12,46 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.index.sql.internal;
+
+import java.sql.SQLException;
 
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.unitofwork.UnitOfWorkException;
 import org.qi4j.index.sql.support.api.SQLIndexing;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entitystore.StateChangeListener;
+
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.SQLException;
-
-/**
- * @author Stanislav Muhametsin
- */
 public class SQLStateChangeListener
-    implements StateChangeListener
+        implements StateChangeListener
 {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger( SQLStateChangeListener.class );
 
     @Service
     private SQLIndexing _indexing;
 
     public void notifyChanges( Iterable<EntityState> changedStates )
     {
-        try
-        {
+        try {
+
             this._indexing.indexEntities( changedStates );
-        }
-        catch( SQLException sqle )
-        {
-            LoggerFactory.getLogger( this.getClass() ).error( "Error when indexing entities:\n" + sqle );
-            SQLException e = sqle;
-            while( e != null )
-            {
-                e.printStackTrace();
-                e = e.getNextException();
+
+        } catch ( SQLException sqle ) {
+
+            SQLException lastException = sqle;
+            while ( sqle.getNextException() != null ) {
+                sqle = sqle.getNextException();
             }
+            LOGGER.error( "Error when indexing entities", sqle );
 
             // TODO is UoWException right one for this?
-            throw new UnitOfWorkException( sqle );
-        }
-        catch( RuntimeException re )
-        {
-            throw re;
+            throw new UnitOfWorkException( lastException );
+
         }
     }
+
 }

@@ -76,7 +76,7 @@ public class SQLTestHelper
         // Index/Query
         new DataSourceServiceAssembler( "datasource-service-postgres", config ).assemble( mainModule );
         new PostgreSQLAssembler( Visibility.module, new DataSourceAssembler( "datasource-service-postgres", "datasource-postgres" ) ).assemble( mainModule );
-        new SQLIndexingAssembler( Visibility.module ).assemble( mainModule );
+        // new SQLIndexingAssembler( Visibility.module, "indexing-sql" ).assemble( mainModule );
         config.entities( SQLConfiguration.class ).visibleIn( Visibility.layer );
 
         // Always re-index because of possible different app structure of multiple tests.
@@ -99,12 +99,12 @@ public class SQLTestHelper
 
         try
         {
-            SQLTestHelper.deleteTestData( uow, module );
+            SQLTestHelper.deleteTestData( log, uow, module );
         }
         catch( Throwable t )
         {
             // Ignore, for now. Happens when assumptions are not true (no DB connection)
-            // log.error( "Error when deleting test data.", t );
+            log.error( "Error when deleting test data.", t );
         }
         finally
         {
@@ -115,7 +115,7 @@ public class SQLTestHelper
         }
     }
 
-    private static void deleteTestData( UnitOfWork uow, Module module )
+    private static void deleteTestData( Logger log, UnitOfWork uow, Module module )
         throws SQLException
     {
 
@@ -126,6 +126,7 @@ public class SQLTestHelper
         {
             schemaName = PostgreSQLAppStartup.DEFAULT_SCHEMA_NAME;
         }
+        log.debug( "Will use '{}' as schema name", schemaName );
 
         Statement stmt = null;
         try
@@ -137,20 +138,29 @@ public class SQLTestHelper
         finally
         {
             SQLUtil.closeQuietly( stmt );
+            SQLUtil.closeQuietly( connection );
         }
+        log.info( "Test data deleted" );
     }
 
     public static void setUpTest( Module module )
     {
-        try
-        {
+        Connection connection = null;
+        try {
+            
             DataSource ds = module.findService( DataSource.class ).get();
-            Assume.assumeNotNull( ds.getConnection() );
-        }
-        catch( Throwable t )
-        {
+            connection = ds.getConnection();
+            Assume.assumeNotNull( connection );
+            
+        } catch ( Throwable t ) {
+            
             t.printStackTrace();
             Assume.assumeNoException( t );
+            
+        } finally {
+
+            SQLUtil.closeQuietly( connection );
+
         }
     }
 

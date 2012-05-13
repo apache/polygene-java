@@ -33,6 +33,7 @@ import org.qi4j.index.sql.support.common.GenericDatabaseExplorer;
 import org.qi4j.index.sql.support.common.GenericDatabaseExplorer.DatabaseProcessorAdapter;
 import org.qi4j.index.sql.support.postgresql.PostgreSQLAppStartup;
 import org.qi4j.library.sql.common.SQLConfiguration;
+import org.qi4j.library.sql.common.SQLUtil;
 import org.qi4j.test.AbstractQi4jTest;
 
 import org.sql.generation.api.vendor.PostgreSQLVendor;
@@ -100,20 +101,24 @@ public class PostgreSQLDBIntegrityTest extends AbstractQi4jTest
         uow.complete();
 
         Connection connection = ((DataSource) this.module.findService( DataSource.class ).get()).getConnection();
-        GenericDatabaseExplorer.visitDatabaseTables( connection, null, schemaName, null, new DatabaseProcessorAdapter()
-        {
-
-            @Override
-            public void beginProcessRowInfo( String schemaNamee, String tableName, Object[] rowContents )
+        try {
+            GenericDatabaseExplorer.visitDatabaseTables( connection, null, schemaName, null, new DatabaseProcessorAdapter()
             {
-                if( tableName.startsWith( DBNames.QNAME_TABLE_NAME_PREFIX )
-                    || tableName.equals( DBNames.ALL_QNAMES_TABLE_NAME )
-                    || tableName.equals( DBNames.ENTITY_TABLE_NAME ) )
+
+                @Override
+                public void beginProcessRowInfo( String schemaNamee, String tableName, Object[] rowContents )
                 {
-                    throw new RuntimeException( "Table: " + schemaNamee + "." + tableName );
+                    if( tableName.startsWith( DBNames.QNAME_TABLE_NAME_PREFIX )
+                        || tableName.equals( DBNames.ALL_QNAMES_TABLE_NAME )
+                        || tableName.equals( DBNames.ENTITY_TABLE_NAME ) )
+                    {
+                        throw new RuntimeException( "Table: " + schemaNamee + "." + tableName );
+                    }
                 }
-            }
-        }, SQLVendorProvider.createVendor( PostgreSQLVendor.class ) );
+            }, SQLVendorProvider.createVendor( PostgreSQLVendor.class ) );
+        } finally {
+            SQLUtil.closeQuietly( connection );
+        }
     }
 
     @Test

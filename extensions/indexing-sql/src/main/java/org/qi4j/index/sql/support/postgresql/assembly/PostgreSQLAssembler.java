@@ -38,7 +38,7 @@ public class PostgreSQLAssembler extends AbstractSQLAssembler
     /**
      * The default name for the service.
      */
-    public static final String INDEXING_SERVICE_NAME = "indexing-postgres";
+    public static final String INDEXING_SERVICE_NAME = "indexing-sql";
 
     public static final String DATASOURCE_SERVICE_NAME = "datasource-service-postgres";
     

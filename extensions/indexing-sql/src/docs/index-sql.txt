@@ -9,7 +9,7 @@ terms of performance if they use vendor specific extensions.
 
 The ltree extension is needed.
 
-=== PostgreSQL >= 9.1 ==
+=== Installing ltree on PostgreSQL >= 9.1 ==
 
 It's bundled with PostgreSQL but you need to activate it on your database:
 
@@ -18,7 +18,7 @@ It's bundled with PostgreSQL but you need to activate it on your database:
 CREATE EXTENSION ltree;
 ----
 
-=== PostgreSQL <= 9.0 ===
+=== Installing ltree on PostgreSQL <= 9.0 ===
 
 You need to install postgresql-contrib and import the module in your database.
 The following applies to Debian based distributions, adapt it to yours:
