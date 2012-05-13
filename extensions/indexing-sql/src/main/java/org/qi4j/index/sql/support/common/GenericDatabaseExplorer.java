@@ -26,6 +26,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.qi4j.library.sql.common.SQLUtil;
+
 /**
  * This is a helper class to traverse through all content in specified tables in database. Typical usecase would be by
  * {@link IndexExporter} implementation.
@@ -419,8 +421,7 @@ public final class GenericDatabaseExplorer
         }
         finally
         {
-            rs.close();
-            connection.rollback();
+            SQLUtil.closeQuietly( rs );
         }
     }
 }

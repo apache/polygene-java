@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2010, Stanislav Muhametsin. All Rights Reserved.
+ * Copyright (c) 2010, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +14,13 @@
  */
 package org.qi4j.entitystore.sql;
 
+import java.sql.Connection;
+import java.sql.Statement;
+
+import javax.sql.DataSource;
+
 import org.junit.Ignore;
+
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.AssemblyException;
@@ -21,18 +28,11 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.entitystore.sql.assembly.PostgreSQLEntityStoreAssembler;
 import org.qi4j.entitystore.sql.internal.SQLs;
-import org.qi4j.library.sql.common.SQLConfiguration;
-import org.qi4j.library.sql.common.SQLUtil;
-import org.qi4j.library.sql.ds.PGDataSourceConfiguration;
-import org.qi4j.test.entity.AbstractEntityStoreTest;
-
-import java.sql.Connection;
-import java.sql.Statement;
-
-import javax.sql.DataSource;
-
 import org.qi4j.library.sql.assembly.DataSourceAssembler;
 import org.qi4j.library.sql.assembly.DataSourceServiceAssembler;
+import org.qi4j.library.sql.common.SQLConfiguration;
+import org.qi4j.library.sql.common.SQLUtil;
+import org.qi4j.test.entity.AbstractEntityStoreTest;
 
 /**
  * WARN This test is deactivated on purpose, please do not commit it activated.
@@ -63,9 +63,6 @@ import org.qi4j.library.sql.assembly.DataSourceServiceAssembler;
  * <pre>
  * dropuser -W jdbc_test_login
  * </pre>
- * 
- * @author Stanislav Muhametsin
- * @author Paul Merlin
  */
 @Ignore
 public class PostgreSQLEntityStoreTest

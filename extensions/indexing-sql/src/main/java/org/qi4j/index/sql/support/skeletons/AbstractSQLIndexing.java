@@ -237,6 +237,7 @@ public class AbstractSQLIndexing
             {
                 SQLUtil.closeQuietly( ps );
             }
+            SQLUtil.closeQuietly( connection );
         }
     }
 

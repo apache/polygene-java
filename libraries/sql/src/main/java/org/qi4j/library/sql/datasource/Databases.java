@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2011, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +26,7 @@ import org.qi4j.io.Input;
 import org.qi4j.io.Output;
 import org.qi4j.io.Receiver;
 import org.qi4j.io.Sender;
+import org.qi4j.library.sql.common.SQLUtil;
 
 /**
  * Utility methods for performing SQL calls wrapping a given DataSource.
@@ -48,16 +50,15 @@ public class Databases
     public int update( String sql )
             throws SQLException
     {
-        Connection connection = source.getConnection();
+        Connection connection = null;
+        PreparedStatement stmt = null;
         try {
-            PreparedStatement stmt = connection.prepareStatement( sql );
-            try {
-                return stmt.executeUpdate();
-            } finally {
-                stmt.close();
-            }
+            connection = source.getConnection();
+            stmt = connection.prepareStatement( sql );
+            return stmt.executeUpdate();
         } finally {
-            connection.close();
+            SQLUtil.closeQuietly( stmt );
+            SQLUtil.closeQuietly( connection );
         }
     }
 
@@ -70,17 +71,16 @@ public class Databases
     public int update( String sql, StatementVisitor visitor )
             throws SQLException
     {
-        Connection connection = source.getConnection();
+        Connection connection = null;
+        PreparedStatement stmt = null;
         try {
-            PreparedStatement stmt = connection.prepareStatement( sql );
-            try {
-                visitor.visit( stmt );
-                return stmt.executeUpdate();
-            } finally {
-                stmt.close();
-            }
+            connection = source.getConnection();
+            stmt = connection.prepareStatement( sql );
+            visitor.visit( stmt );
+            return stmt.executeUpdate();
         } finally {
-            connection.close();
+            SQLUtil.closeQuietly( stmt );
+            SQLUtil.closeQuietly( connection );
         }
     }
 
@@ -102,28 +102,26 @@ public class Databases
     public void query( String sql, StatementVisitor statement, ResultSetVisitor resultsetVisitor )
             throws SQLException
     {
-        Connection connection = source.getConnection();
+        Connection connection = null;
+        PreparedStatement stmt = null;
+        ResultSet resultSet = null;
         try {
-            PreparedStatement stmt = connection.prepareStatement( sql );
+            connection = source.getConnection();
+            stmt = connection.prepareStatement( sql );
             if ( statement != null ) {
                 statement.visit( stmt );
             }
-            try {
-                ResultSet resultSet = stmt.executeQuery();
-                try {
-                    while ( resultSet.next() ) {
-                        if ( !resultsetVisitor.visit( resultSet ) ) {
-                            return;
-                        }
-                    }
-                } finally {
-                    resultSet.close();
+            resultSet = stmt.executeQuery();
+            while ( resultSet.next() ) {
+                if ( !resultsetVisitor.visit( resultSet ) ) {
+                    return;
                 }
-            } finally {
-                stmt.close();
             }
+            resultSet.close();
         } finally {
-            connection.close();
+            SQLUtil.closeQuietly( resultSet );
+            SQLUtil.closeQuietly( stmt );
+            SQLUtil.closeQuietly( connection );
         }
     }
 

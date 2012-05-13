@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2010, Paul Merlin. All Rights Reserved.
+ * Copyright (c) 2010, Stanislav Muhametsin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,10 +35,6 @@ import org.qi4j.test.entity.AbstractEntityStoreTest;
 
 import org.apache.derby.iapi.services.io.FileUtil;
 
-/**
- * @author Stanislav Muhametsin
- * @author Paul Merlin
- */
 public class DerbySQLEntityStoreTest
         extends AbstractEntityStoreTest
 {

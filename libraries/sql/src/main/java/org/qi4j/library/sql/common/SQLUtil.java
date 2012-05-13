@@ -55,9 +55,7 @@ public class SQLUtil
     {
         if ( connection != null ) {
             try {
-                if ( !connection.getAutoCommit() ) {
-                    connection.rollback();
-                }
+                connection.rollback();
             } catch ( SQLException ignored ) {
             }
         }

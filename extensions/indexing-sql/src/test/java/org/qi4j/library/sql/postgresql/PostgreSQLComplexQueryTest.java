@@ -12,22 +12,21 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.library.sql.postgresql;
 
 import org.junit.Ignore;
-
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.indexing.AbstractComplexQueryTest;
 
-@Ignore
-public class PostgreSQLComplexQueryTest extends AbstractComplexQueryTest
+//@Ignore
+public class PostgreSQLComplexQueryTest
+        extends AbstractComplexQueryTest
 {
 
     @Override
     public void assemble( ModuleAssembly mainModule )
-        throws AssemblyException
+            throws AssemblyException
     {
         super.assemble( mainModule );
         SQLTestHelper.assembleWithMemoryEntityStore( mainModule );
@@ -35,17 +34,13 @@ public class PostgreSQLComplexQueryTest extends AbstractComplexQueryTest
 
     @Override
     public void setUp()
-        throws Exception
+            throws Exception
     {
-        try
-        {
+        try {
             super.setUp();
-        }
-        catch( Exception e )
-        {
+        } catch ( Exception e ) {
             // Let's check if exception was because database was not available
-            if( this.module != null )
-            {
+            if ( this.module != null ) {
                 SQLTestHelper.setUpTest( this.module );
             }
 
@@ -56,10 +51,86 @@ public class PostgreSQLComplexQueryTest extends AbstractComplexQueryTest
 
     @Override
     public void tearDown()
-        throws Exception
+            throws Exception
     {
         SQLTestHelper.tearDownTest( module, getLog() );
         super.tearDown();
+    }
+
+    @Override
+    public void script01()
+    {
+        super.script01();
+    }
+
+    @Ignore
+    @Override
+    public void script02()
+    {
+        super.script02();
+    }
+
+    @Ignore
+    @Override
+    public void script03()
+    {
+        super.script03();
+    }
+
+    @Ignore
+    @Override
+    public void script04()
+    {
+        super.script04();
+    }
+
+    @Ignore
+    @Override
+    public void script05()
+    {
+        super.script05();
+    }
+
+    @Ignore
+    @Override
+    public void script06()
+    {
+        super.script06();
+    }
+
+    @Ignore
+    @Override
+    public void script07()
+    {
+        super.script07();
+    }
+
+    @Ignore
+    @Override
+    public void script08()
+    {
+        super.script08();
+    }
+
+    @Ignore
+    @Override
+    public void script09()
+    {
+        super.script09();
+    }
+
+    @Ignore
+    @Override
+    public void script10()
+    {
+        super.script10();
+    }
+
+    @Ignore
+    @Override
+    public void script11()
+    {
+        super.script11();
     }
 
 }

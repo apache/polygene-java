@@ -1,6 +1,10 @@
 [[extension-indexing-sql]]
 = Indexing SQL Extension =
 
+Implementations per database Vendor share a generic codebase but can override
+about everything SQL. As a consequence they can have strong differences in
+terms of performance if they use vendor specific extensions.
+
 == PostgreSQL ==
 
 The ltree extension is needed.
