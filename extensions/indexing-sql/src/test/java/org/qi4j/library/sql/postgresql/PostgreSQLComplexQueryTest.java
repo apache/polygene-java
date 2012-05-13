@@ -23,7 +23,7 @@ import org.qi4j.test.indexing.AbstractComplexQueryTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-//@Ignore
+@Ignore
 public class PostgreSQLComplexQueryTest
         extends AbstractComplexQueryTest
 {

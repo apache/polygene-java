@@ -21,7 +21,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.indexing.AbstractEntityFinderTest;
 
-@Ignore
+//@Ignore
 public class PostgreSQLEntityFinderTest extends AbstractEntityFinderTest
 {
     @Override

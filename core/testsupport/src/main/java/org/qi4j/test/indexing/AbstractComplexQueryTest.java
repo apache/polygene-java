@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2010, Stanislav Muhametsin. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,9 +43,6 @@ import static org.qi4j.api.query.QueryExpressions.eq;
 import static org.qi4j.api.query.QueryExpressions.not;
 import static org.qi4j.api.query.QueryExpressions.templateFor;
 
-/**
- * @author Stanislav Muhametsin
- */
 public abstract class AbstractComplexQueryTest
     extends AbstractAnyQueryTest
 {
@@ -136,6 +134,9 @@ public abstract class AbstractComplexQueryTest
         param.name().set( "user" );
         param.value().set( "jackdoe" );
         queryParams.add( queryParamBuilder.newInstance() );
+        
+        queryParamBuilder = this.module.newValueBuilder( QueryParam.class );
+        param = queryParamBuilder.prototype();
         param.name().set( "password" );
         param.value().set( "somepassword" );
         queryParams.add( queryParamBuilder.newInstance() );
@@ -159,6 +160,9 @@ public abstract class AbstractComplexQueryTest
         param.name().set( "password" );
         param.value().set( "somepassword" );
         queryParams.add( queryParamBuilder.newInstance() );
+        
+        queryParamBuilder = this.module.newValueBuilder( QueryParam.class );
+        param = queryParamBuilder.prototype();
         param.name().set( "user" );
         param.value().set( "jackdoe" );
         queryParams.add( queryParamBuilder.newInstance() );
@@ -181,6 +185,9 @@ public abstract class AbstractComplexQueryTest
         param.name().set( "user" );
         param.value().set( "jackdoe" );
         queryParams.add( queryParamBuilder.newInstance() );
+        
+        queryParamBuilder = this.module.newValueBuilder( QueryParam.class );
+        param = queryParamBuilder.prototype();
         param.name().set( "password" );
         param.value().set( "somepassword" );
         queryParams.add( queryParamBuilder.newInstance() );
@@ -209,6 +216,9 @@ public abstract class AbstractComplexQueryTest
         param.name().set( "user" );
         param.value().set( "jackdoe" );
         queryParams.add( queryParamBuilder.newInstance() );
+
+        queryParamBuilder = this.module.newValueBuilder( QueryParam.class );
+        param = queryParamBuilder.prototype();
         param.name().set( "password" );
         param.value().set( "somepassword" );
         queryParams.add( queryParamBuilder.newInstance() );
@@ -241,6 +251,9 @@ public abstract class AbstractComplexQueryTest
         param.name().set( "user" );
         param.value().set( "jackdoe" );
         queryParams.add( queryParamBuilder.newInstance() );
+
+        queryParamBuilder = this.module.newValueBuilder( QueryParam.class );
+        param = queryParamBuilder.prototype();
         param.name().set( "password" );
         param.value().set( "somepassword" );
         queryParams.add( queryParamBuilder.newInstance() );
@@ -301,6 +314,9 @@ public abstract class AbstractComplexQueryTest
         param.name().set( "user" );
         param.value().set( "jackdoe" );
         queryParams.add( queryParamBuilder.newInstance() );
+        
+        queryParamBuilder = this.module.newValueBuilder( QueryParam.class );
+        param = queryParamBuilder.prototype();
         param.name().set( "password" );
         param.value().set( "somepassword" );
         queryParams.add( queryParamBuilder.newInstance() );
@@ -323,6 +339,9 @@ public abstract class AbstractComplexQueryTest
         param.name().set( "user" );
         param.value().set( "jackdoe" );
         queryParams.add( queryParamBuilder.newInstance() );
+        
+        queryParamBuilder = this.module.newValueBuilder( QueryParam.class );
+        param = queryParamBuilder.prototype();
         param.name().set( "password" );
         param.value().set( "somepassword" );
         queryParams.add( queryParamBuilder.newInstance() );
