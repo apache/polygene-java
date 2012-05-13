@@ -13,7 +13,7 @@ import org.qi4j.functional.Function;
 import org.qi4j.io.Inputs;
 import org.qi4j.io.Outputs;
 import org.qi4j.library.sql.datasource.DataSourceConfiguration;
-import org.qi4j.library.sql.datasource.DataSourceService;
+import org.qi4j.library.sql.datasource.C3P0DataSourceServiceImporter;
 import org.qi4j.library.sql.datasource.Databases;
 
 import javax.sql.DataSource;
@@ -45,7 +45,7 @@ public class LiquibaseServiceTest
                 module.values( SomeValue.class );
 
                 // Set up DataSource service that will manage the connection pools
-                module.services( DataSourceService.class ).identifiedBy( "datasource" );
+                module.services( C3P0DataSourceServiceImporter.class ).identifiedBy( "datasource" );
                 module.entities( DataSourceConfiguration.class );
 
                 // Create a specific DataSource that uses the "datasource" service to do the main work

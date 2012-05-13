@@ -17,8 +17,8 @@ import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.library.sql.datasource.C3P0DataSourceServiceImporter;
 import org.qi4j.library.sql.datasource.DataSourceConfiguration;
-import org.qi4j.library.sql.datasource.DataSourceService;
 
 /**
  * Use this Assembler to register a DataSourceService and its Configuration entity.
@@ -40,7 +40,7 @@ public class DataSourceServiceAssembler
     public void assemble( ModuleAssembly module )
             throws AssemblyException
     {
-        module.services( DataSourceService.class ).identifiedBy( dataSourceServiceId );
+        module.services( C3P0DataSourceServiceImporter.class ).identifiedBy( dataSourceServiceId );
         if ( configModuleAssembly == null ) {
             module.entities( DataSourceConfiguration.class ).visibleIn( Visibility.layer );
         } else {

@@ -57,13 +57,15 @@ import org.slf4j.LoggerFactory;
  * 
  * TODO Rename to C3P0DataSourceServiceImporter
  */
-@Mixins(DataSourceService.Mixin.class)
-public interface DataSourceService
+@Mixins(C3P0DataSourceServiceImporter.Mixin.class)
+public interface C3P0DataSourceServiceImporter
         extends ServiceImporter, Activatable, ServiceComposite
 {
     class Mixin
             implements Activatable, ServiceImporter
     {
+        private static final Logger LOGGER = LoggerFactory.getLogger( C3P0DataSourceServiceImporter.class );
+        
         @Structure
         Module module;
 
@@ -71,8 +73,6 @@ public interface DataSourceService
         Map<String, DataSourceConfiguration> configs = new HashMap<String, DataSourceConfiguration>();
         Map<ComboPooledDataSource, CircuitBreaker> circuitBreakers = new HashMap<ComboPooledDataSource, CircuitBreaker>();
         
-        Logger logger = LoggerFactory.getLogger( DataSourceService.class );
-
         public void activate() throws Exception
         {
         }
@@ -133,7 +133,7 @@ public interface DataSourceService
                         }
                         pool.setMaxConnectionAge( 60 * 60 ); // One hour max age
 
-                        logger.info( "Starting up DataSource '" + importedServiceDescriptor.identity() + "' for:{}", pool.getUser() + "@" + pool.getJdbcUrl() );
+                        LOGGER.info( "Starting up DataSource '" + importedServiceDescriptor.identity() + "' for:{}", pool.getUser() + "@" + pool.getJdbcUrl() );
                     } else
                     {
                         // Not started
@@ -152,10 +152,10 @@ public interface DataSourceService
                 try
                 {
                     pool.getConnection().close();
-                    logger.info( "Database for DataSource is up!" );
+                    LOGGER.info( "Database for DataSource is up!" );
                 } catch( SQLException e )
                 {
-                    logger.warn( "Database for DataSource " + importedServiceDescriptor.identity() + " is not currently available" );
+                    LOGGER.warn( "Database for DataSource " + importedServiceDescriptor.identity() + " is not currently available" );
                     throw new ServiceImporterException( "Database for DataSource " + importedServiceDescriptor.identity() + " is not currently available", e );
                 } finally
                 {

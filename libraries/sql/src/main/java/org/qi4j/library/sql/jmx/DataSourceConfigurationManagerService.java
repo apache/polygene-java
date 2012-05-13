@@ -16,7 +16,7 @@ import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.library.sql.datasource.DataSourceConfiguration;
-import org.qi4j.library.sql.datasource.DataSourceService;
+import org.qi4j.library.sql.datasource.C3P0DataSourceServiceImporter;
 
 import javax.management.*;
 import javax.sql.DataSource;
@@ -52,7 +52,7 @@ public interface DataSourceConfigurationManagerService
       @Service
       Iterable<ServiceReference<DataSource>> dataSources;
       @Service
-      ServiceReference<DataSourceService> dataSourceService;
+      ServiceReference<C3P0DataSourceServiceImporter> dataSourceService;
 
       private List<ObjectName> configurationNames = new ArrayList<ObjectName>();
 
@@ -220,9 +220,9 @@ public interface DataSourceConfigurationManagerService
       class ConfigurableDataSource
          extends EditableConfiguration
       {
-         private ServiceReference<DataSourceService> service;
+         private ServiceReference<C3P0DataSourceServiceImporter> service;
 
-         ConfigurableDataSource( ServiceReference<DataSourceService> service, MBeanInfo info, String identity, Map<String, AccessibleObject> propertyNames )
+         ConfigurableDataSource( ServiceReference<C3P0DataSourceServiceImporter> service, MBeanInfo info, String identity, Map<String, AccessibleObject> propertyNames )
          {
             super( info, identity, propertyNames );
             this.service = service;

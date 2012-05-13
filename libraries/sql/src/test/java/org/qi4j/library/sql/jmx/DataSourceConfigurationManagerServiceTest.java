@@ -18,7 +18,7 @@ import org.qi4j.library.circuitbreaker.CircuitBreaker;
 import org.qi4j.library.jmx.JMXAssembler;
 import org.qi4j.library.sql.assembly.DataSourceAssembler;
 import org.qi4j.library.sql.datasource.DataSourceConfiguration;
-import org.qi4j.library.sql.datasource.DataSourceService;
+import org.qi4j.library.sql.datasource.C3P0DataSourceServiceImporter;
 import org.qi4j.library.sql.datasource.Databases;
 import org.qi4j.library.sql.liquibase.LiquibaseConfiguration;
 import org.qi4j.library.sql.liquibase.LiquibaseService;
@@ -65,7 +65,7 @@ public class DataSourceConfigurationManagerServiceTest
                 new JMXAssembler().assemble( module );
 
                 // Set up DataSource service that will manage the connection pools
-                module.services( DataSourceService.class ).identifiedBy( "datasource" ).visibleIn( Visibility.layer );
+                module.services( C3P0DataSourceServiceImporter.class ).identifiedBy( "datasource" ).visibleIn( Visibility.layer );
 
                 module.entities( DataSourceConfiguration.class ).visibleIn( Visibility.layer );
 
