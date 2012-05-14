@@ -1,8 +1,32 @@
+/*
+ * Copyright (c) 2011, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 package org.qi4j.library.sql.liquibase;
 
+import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.sql.DataSource;
+
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
+
 import org.qi4j.api.property.Property;
-import org.qi4j.api.service.importer.ServiceInstanceImporter;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.AssemblyException;
@@ -12,22 +36,13 @@ import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.functional.Function;
 import org.qi4j.io.Inputs;
 import org.qi4j.io.Outputs;
-import org.qi4j.library.sql.datasource.DataSourceConfiguration;
-import org.qi4j.library.sql.datasource.C3P0DataSourceServiceImporter;
-import org.qi4j.library.sql.datasource.Databases;
-
-import javax.sql.DataSource;
-import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.qi4j.io.Outputs.collection;
 import static org.qi4j.io.Transforms.map;
+import org.qi4j.library.sql.assembly.DataSourceAssembler;
+import org.qi4j.library.sql.assembly.DataSourceServiceAssembler;
+import org.qi4j.library.sql.datasource.Databases;
+
+import static org.hamcrest.CoreMatchers.equalTo;
 
 /**
  * Test DataSource and Liquibase services
@@ -42,17 +57,10 @@ public class LiquibaseServiceTest
             @Override
             public void assemble( ModuleAssembly module ) throws AssemblyException
             {
+                new DataSourceServiceAssembler( "datasource-service", module ).assemble( module );
+                new DataSourceAssembler( "datasource-service", "testds3" ).assemble( module );
+                
                 module.values( SomeValue.class );
-
-                // Set up DataSource service that will manage the connection pools
-                module.services( C3P0DataSourceServiceImporter.class ).identifiedBy( "datasource" );
-                module.entities( DataSourceConfiguration.class );
-
-                // Create a specific DataSource that uses the "datasource" service to do the main work
-                module.importedServices( DataSource.class ).
-                        importedBy( ServiceInstanceImporter.class ).
-                        setMetaInfo( "datasource" ).
-                        identifiedBy( "testds3" );
 
                 // Set up Liquibase service that will create the tables
                 module.services( LiquibaseService.class ).instantiateOnStartup();

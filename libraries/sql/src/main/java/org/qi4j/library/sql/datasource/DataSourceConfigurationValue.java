@@ -1,5 +1,4 @@
 /*
- * Copyright (c) 2011, Rickard Öberg. All Rights Reserved.
  * Copyright (c) 2012, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,12 +13,12 @@
  */
 package org.qi4j.library.sql.datasource;
 
-import org.qi4j.api.configuration.ConfigurationComposite;
+import org.qi4j.api.value.ValueComposite;
 
 /**
- * Configuration Entity for a DataSource.
+ * DataSource configuration as a Value to be used outside of UoWs.
  */
-public interface DataSourceConfiguration
-        extends ConfigurationComposite, DataSourceConfigurationState
+public interface DataSourceConfigurationValue
+        extends ValueComposite, DataSourceConfigurationState
 {
 }

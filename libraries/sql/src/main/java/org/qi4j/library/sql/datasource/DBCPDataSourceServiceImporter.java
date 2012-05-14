@@ -31,7 +31,7 @@ public interface DBCPDataSourceServiceImporter
     {
 
         @Override
-        protected BasicDataSource setupDataSourcePool( DataSourceConfiguration config )
+        protected BasicDataSource setupDataSourcePool( DataSourceConfigurationValue config )
                 throws ClassNotFoundException
         {
             BasicDataSource pool = new BasicDataSource();

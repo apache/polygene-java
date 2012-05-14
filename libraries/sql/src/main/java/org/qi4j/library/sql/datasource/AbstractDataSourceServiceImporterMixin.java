@@ -28,6 +28,7 @@ import javax.sql.DataSource;
 
 import org.qi4j.api.composite.PropertyMapper;
 import org.qi4j.api.entity.EntityBuilder;
+import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.service.ImportedServiceDescriptor;
 import org.qi4j.api.service.ServiceImporterException;
@@ -37,6 +38,7 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.library.circuitbreaker.CircuitBreaker;
+import org.qi4j.library.conversion.values.EntityToValue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +48,7 @@ public abstract class AbstractDataSourceServiceImporterMixin<PooledDataSourceTyp
 
     protected static final Logger LOGGER = LoggerFactory.getLogger( AbstractDataSourceServiceImporterMixin.class );
 
-    protected final Map<String, DataSourceConfiguration> configs = new HashMap<String, DataSourceConfiguration>();
+    protected final Map<String, DataSourceConfigurationValue> configs = new HashMap<String, DataSourceConfigurationValue>();
 
     protected final Map<String, PooledDataSourceType> pools = new HashMap<String, PooledDataSourceType>();
 
@@ -54,6 +56,9 @@ public abstract class AbstractDataSourceServiceImporterMixin<PooledDataSourceTyp
 
     @Structure
     protected Module module;
+
+    @Service
+    private EntityToValue entityToValue;
 
     public final void activate()
             throws Exception
@@ -72,14 +77,9 @@ public abstract class AbstractDataSourceServiceImporterMixin<PooledDataSourceTyp
         for ( PooledDataSourceType pool : pools.values() ) {
             passivateDataSourcePool( pool );
         }
+
         pools.clear();
-
-        // WARN Closes all configuration UoWs
-        for ( DataSourceConfiguration dataSourceConfiguration : configs.values() ) {
-            module.getUnitOfWork( dataSourceConfiguration ).discard();
-        }
         configs.clear();
-
         circuitBreakers.clear();
 
         onPassivate();
@@ -98,7 +98,7 @@ public abstract class AbstractDataSourceServiceImporterMixin<PooledDataSourceTyp
 
             try {
 
-                DataSourceConfiguration config = getConfiguration( importedServiceDescriptor.identity() );
+                DataSourceConfigurationValue config = getConfiguration( importedServiceDescriptor.identity() );
                 if ( !config.enabled().get() ) {
                     // Not started
                     throw new ServiceImporterException( "DataSource not enabled" );
@@ -183,15 +183,16 @@ public abstract class AbstractDataSourceServiceImporterMixin<PooledDataSourceTyp
         return Proxy.newProxyInstance( DataSource.class.getClassLoader(), new Class[]{ DataSource.class }, handler );
     }
 
-    private DataSourceConfiguration getConfiguration( String identity )
+    private DataSourceConfigurationValue getConfiguration( String identity )
             throws InstantiationException
     {
-        DataSourceConfiguration config = configs.get( identity );
+        DataSourceConfigurationValue config = configs.get( identity );
         if ( config == null ) {
             UnitOfWork uow = module.newUnitOfWork( UsecaseBuilder.newUsecase( "Create DataSource pool configuration" ) );
 
             try {
-                config = uow.get( DataSourceConfiguration.class, identity );
+                DataSourceConfiguration configEntity = uow.get( DataSourceConfiguration.class, identity );
+                config = entityToValue.convert( DataSourceConfigurationValue.class, configEntity );
             } catch ( NoSuchEntityException e ) {
                 EntityBuilder<DataSourceConfiguration> configBuilder = uow.newEntityBuilder( DataSourceConfiguration.class, identity );
 
@@ -208,8 +209,9 @@ public abstract class AbstractDataSourceServiceImporterMixin<PooledDataSourceTyp
                         throw exception;
                     }
                 }
-
-                config = configBuilder.newInstance();
+                
+                DataSourceConfiguration configEntity = configBuilder.newInstance();
+                config = entityToValue.convert( DataSourceConfigurationValue.class, configEntity );
 
                 // save
                 try {
@@ -220,10 +222,6 @@ public abstract class AbstractDataSourceServiceImporterMixin<PooledDataSourceTyp
                     throw exception;
                 }
 
-                // Create new uow and fetch entity
-                // WARN This UoW is closed on Service passivation
-                uow = module.newUnitOfWork( UsecaseBuilder.newUsecase( "Read DataSource pool configuration" ) );
-                config = uow.get( DataSourceConfiguration.class, identity );
             }
 
             configs.put( identity, config );
@@ -251,7 +249,7 @@ public abstract class AbstractDataSourceServiceImporterMixin<PooledDataSourceTyp
         }
     }
 
-    protected abstract PooledDataSourceType setupDataSourcePool( DataSourceConfiguration configuration )
+    protected abstract PooledDataSourceType setupDataSourcePool( DataSourceConfigurationValue configuration )
             throws Exception;
 
     protected abstract void passivateDataSourcePool( PooledDataSourceType dataSourcePool )

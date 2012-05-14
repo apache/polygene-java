@@ -42,7 +42,7 @@ public interface C3P0DataSourceServiceImporter
     {
 
         @Override
-        protected ComboPooledDataSource setupDataSourcePool( DataSourceConfiguration config )
+        protected ComboPooledDataSource setupDataSourcePool( DataSourceConfigurationValue config )
                 throws Exception
         {
             ComboPooledDataSource pool = new ComboPooledDataSource();

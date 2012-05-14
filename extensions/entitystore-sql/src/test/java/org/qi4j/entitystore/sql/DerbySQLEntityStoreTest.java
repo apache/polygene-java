@@ -93,7 +93,7 @@ public class DerbySQLEntityStoreTest
 
         } finally {
             uow.discard();
-            // super.tearDown(); // TODO FIXME QI-363
+            super.tearDown();
         }
     }
 
