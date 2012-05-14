@@ -40,6 +40,7 @@ import static org.junit.Assert.assertThat;
  * Note that keySet(), values() and entrySet() would ALSO require overloading, but this has been left out for
  * clarity reasons.
  */
+@Ignore("Subclassing can not occur in java.* packages, and need to be prefixed.")
 public class MapOverrideTest
     extends AbstractQi4jTest
 {

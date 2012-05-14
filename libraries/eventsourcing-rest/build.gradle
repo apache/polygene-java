@@ -8,11 +8,7 @@ dependencies {
   compile(project(":org.qi4j.libraries:org.qi4j.library.eventsourcing"))
   compile(libraries.slf4j_api)
 
-  compile("org.restlet.jee:org.restlet:$restletVersion")
-  compile("org.restlet.jee:org.restlet.ext.atom:$restletVersion")
-  compile("org.restlet.jee:org.restlet.ext.servlet:$restletVersion")
-  compile("org.restlet.jee:org.restlet.ext.slf4j:$restletVersion")
-  compile("org.restlet.jee:org.restlet.ext.xml:$restletVersion")
+  compile(libraries.restlet)
 
   testCompile(libraries.junit)
   testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))

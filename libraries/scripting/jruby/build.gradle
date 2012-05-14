@@ -2,14 +2,13 @@ description = "Qi4j JRuby Library allows for Mixins to be implemented in JRuby s
 
 jar { manifest { name = "Qi4j Library - Scripting - JRuby" }}
 
-jrubyVersion = '1.5.6'
 
 dependencies {
   compile( project( ':org.qi4j.libraries:org.qi4j.library.scripting:org.qi4j.library.scripting.common' ))
   compile(project(":org.qi4j.core:org.qi4j.core.api"))
   compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
+  compile(libraries.jruby)
   compile(libraries.slf4j_api)
-  compile('org.jruby:jruby:' + jrubyVersion )
   testCompile(libraries.junit)
   testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
   testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))

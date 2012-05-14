@@ -1,72 +1,232 @@
-
 // Versions of Dependencies;
-asmVersion = '3.3.1'
-bouncyVersion = '1.45'
-c3p0Version = '0.9.1.2'
-derbyVersion = '10.8.1.2'
-ehcacheVersion = '2.4.2'
-freemarkerVersion = '2.3.18'
-googleCollectionsVersion = '1.0'
-hazelcastVersion = '1.9.4.4'
-hibernateVersion = "3.5.4-Final"
-ibatisVersion = "2.3.0"
-jclVersion = '1.1'
-jdbmVersion = '1.0'
-jettyVersion = '8.0.2.v20111006'
-httpClientVersion = '4.1.2'
-jodaTimeVersion = '1.6.2'
-liquibaseVersion = '2.0.1'
-log4jVersion = '1.2.16'
-osgiVersion = '4.2.0'
-rdfVersion = '2.6.1'
-restletVersion = '2.0.9'
-servletVersion = '2.5'
-shiroVersion = '1.1.0'
-sleepycatVersion = '4.0.103'
-slf4jVersion = '1.6.1'
-solrVersion = "1.4.1"
-springVersion = '2.5.6'
-strutsVersion = '2.1.8.1'
-velocityVersion = '1.6.2'
-voldemortVersion = '0.81'
+def asmVersion = '3.3.1'
+def beanshellVersion = '2.0b4'
+def bouncyVersion = '1.45'
+def c3p0Version = '0.9.1.2'
+def commonsCodecVersion = '1.3'
+def commonsDbcpVersion = '1.2.2'
+def commonsIoVersion = '1.4'
+def commonsLangVersion = '2.4'
+def cxfVersion = '2.4.7'
+def derbyVersion = '10.8.1.2'
+def dnsJavaVersion = '2.1.1'
+def ehcacheVersion = '2.4.2'
+def freemarkerVersion = '2.3.18'
+def gaeVersion = '1.3.3.1'
+def googleCollectionsVersion = '1.0'
+def groovyVersion = '1.7.8'
+def hazelcastVersion = '1.9.4.4'
+def hibernateVersion = "3.5.4-Final"
+def httpClientVersion = '4.1.2'
+def ibatisVersion = "2.3.0"
+def javascriptVersion = '1.7R2'
+def javasqlgeneratorVersion = '0.2.2'
+def jdbmVersion = '2.0.0'
+def jclVersion = '1.1'
+def jdomVersion = '1.1'
+ext.jettyVersion = '8.1.3.v20120416'
+def jodaTimeVersion = '1.6.2'
+def jrubyVersion = '1.5.6'
+def jtaVersion = '1.1'
+def liquibaseVersion = '2.0.1'
+def log4jVersion = '1.2.16'
+def mongodbVersion = '2.7.0'
+def neoVersion = '1.3'
+def neoIndexVersion = '1.3-1.3.M01'
+def osgiVersion = '4.2.0'
+def postgresqlVersion = '8.4-701.jdbc4'
+def rdfVersion = '2.6.1'
+def restletVersion = '2.0.9'
+ext.servletVersion = '3.0.1'
+def shiroVersion = '1.1.0'
+def skedVersion = '1.2'
+def sleepycatVersion = '4.0.103'
+def slf4jVersion = '1.6.1'
+def solrVersion = "1.4.1"
+def springVersion = '2.5.6'
+def strutsVersion = '2.1.8.1'
+def velocityVersion = '1.6.2'
+def voldemortVersion = '0.81'
+def wicketVersion = '1.5.1'
+def woodstoxVersion = '4.1.0'
+def wsdl4jVersion = '1.6.2'
+def xmlSchemaVersion = '1.4.7'
 
-antVersion = '1.8.1'
-junitVersion = '4.8.1'
-testNgVersion = '5.8'
-jmockVersion = '2.5.1'
-mockitoVersion = '1.8.5'
-easyMockVersion = '3.0'
-
+def antVersion = '1.8.1'
+def junitVersion = '4.8.1'
+def testNgVersion = '5.8'
+def jmockVersion = '2.5.1'
+def mockitoVersion = '1.8.5'
+def easyMockVersion = '3.0'
 
 // build a map of the dependency artifacts to use.  Allows centralized definition of the version of artifacts to
 // use.  In that respect it serves a role similar to <dependencyManagement> in Maven
 
-libraries = [
-        // Ant
-        ant: "org.apache.ant:ant:$antVersion",
+rootProject.ext {
+  libraries = [
+          // Ant
+          ant: "org.apache.ant:ant:$antVersion",
+          ant_junit: "org.apache.ant:ant-junit:$antVersion",
 
-        // ASM
-        asm: "asm:asm:$asmVersion",
-        asm_util: "asm:asm-util:$asmVersion",
-        asm_commons: "asm:asm-commons:$asmVersion",
+          // ASM
+          asm: "asm:asm:$asmVersion",
+          asm_util: "asm:asm-util:$asmVersion",
+          asm_commons: "asm:asm-commons:$asmVersion",
 
-        // OSGi
-        osgi_core: "org.osgi:org.osgi.core:$osgiVersion",
-        osgi_compendium: "org.osgi:org.osgi.compendium:$osgiVersion",
-        osgi_enterprise: "org.osgi:org.osgi.enterprise:$osgiVersion",
+          // OSGi
+          osgi_core: "org.osgi:org.osgi.core:$osgiVersion",
+          osgi_compendium: "org.osgi:org.osgi.compendium:$osgiVersion",
+          osgi_enterprise: "org.osgi:org.osgi.enterprise:$osgiVersion",
 
-        // logging
-        slf4j_api: "org.slf4j:slf4j-api:$slf4jVersion",
-        slf4j_simple: "org.slf4j:slf4j-simple:$slf4jVersion",
-        jcl_slf4j: "org.slf4j:jcl-over-slf4j:$slf4jVersion",
-        jcl_api: 'commons-logging:commons-logging-api:99.0-does-not-exist',  //ensure it is never used.
-        jcl: 'commons-logging:commons-logging:99.0-does-not-exist',  // ensure it is never used.
+          // logging
+          slf4j_api: "org.slf4j:slf4j-api:$slf4jVersion",
+          slf4j_simple: "org.slf4j:slf4j-simple:$slf4jVersion",
+          log4j: 'log4j:log4j:' + log4jVersion,
+          jcl_slf4j: "org.slf4j:jcl-over-slf4j:$slf4jVersion",
+          jcl_api: 'commons-logging:commons-logging-api:99.0-does-not-exist',  //ensure it is never used.
+          jcl: 'commons-logging:commons-logging:99.0-does-not-exist',  // ensure it is never used.
 
-        // testing
-        junit: "junit:junit:$junitVersion",
-        easymock: "org.easymock:easymock:$easyMockVersion",
-        mockito: "org.mockito:mockito-core:$mockitoVersion",
-        jmock: "org.jmock:jmock:$jmockVersion",
-        testng: "org.testng:testng:$testNgVersion:jdk15"
-]
+          // Restlet
+          restlet: [
+                  "org.restlet.jee:org.restlet:$restletVersion",
+                  "org.restlet.jee:org.restlet.ext.atom:$restletVersion",
+                  "org.restlet.jee:org.restlet.ext.servlet:$restletVersion",
+                  "org.restlet.jee:org.restlet.ext.slf4j:$restletVersion"
+          ],
+
+          // Spring
+          spring_core: [
+                  "org.springframework:spring-beans:$springVersion",
+                  "org.springframework:spring-context:$springVersion"
+          ],
+
+          spring_testsupport: [
+                  "org.springframework:spring-test:$springVersion"
+          ],
+
+          // RDF
+          sesame: [ "org.openrdf.sesame:sesame-model:$rdfVersion",
+                  "org.openrdf.sesame:sesame-queryparser-sparql:$rdfVersion",
+                  "org.openrdf.sesame:sesame-repository-dataset:$rdfVersion",
+                  "org.openrdf.sesame:sesame-repository-http:$rdfVersion",
+                  "org.openrdf.sesame:sesame-rio-api:$rdfVersion",
+                  "org.openrdf.sesame:sesame-rio-n3:$rdfVersion",
+                  "org.openrdf.sesame:sesame-rio-ntriples:$rdfVersion",
+                  "org.openrdf.sesame:sesame-rio-rdfxml:$rdfVersion",
+                  "org.openrdf.sesame:sesame-rio-trig:$rdfVersion",
+                  "org.openrdf.sesame:sesame-rio-trix:$rdfVersion",
+                  "org.openrdf.sesame:sesame-rio-turtle:$rdfVersion",
+                  "org.openrdf.sesame:sesame-sail-api:$rdfVersion",
+                  "org.openrdf.sesame:sesame-sail-memory:$rdfVersion",
+                  "org.openrdf.sesame:sesame-sail-nativerdf:$rdfVersion",
+                  "org.openrdf.sesame:sesame-sail-rdbms:$rdfVersion"
+          ],
+          sparql: [
+                  "org.openrdf.sesame:sesame-queryresultio-sparqlxml:$rdfVersion",
+                  "org.openrdf.sesame:sesame-queryresultio-sparqljson:$rdfVersion"
+          ],
+
+          // SOLR
+          solr: [ "org.apache.solr:solr-core:$solrVersion",
+                  "org.apache.solr:solr-solrj:$solrVersion"
+          ],
+
+          // Jetty  Needs http://issues.gradle.org/browse/GRADLE-2188 to be fixed.
+          jetty_server: "org.eclipse.jetty:jetty-server:$jettyVersion",
+          jetty_webapp: "org.eclipse.jetty:jetty-webapp:$jettyVersion",
+          jetty_servlet: "org.eclipse.jetty:jetty-servlet:$jettyVersion",
+          jetty_http: "org.eclipse.jetty:jetty-http:$jettyVersion",
+          jetty_io: "org.eclipse.jetty:jetty-io:$jettyVersion",
+          jetty_jmx: "org.eclipse.jetty:jetty-jmx:$jettyVersion",
+          jetty_security: "org.eclipse.jetty:jetty-security:$jettyVersion",
+          jetty_jsp: "org.eclipse.jetty:jetty-jsp:$jettyVersion",
+          jetty_util: "org.eclipse.jetty:jetty-util:$jettyVersion",
+          jetty_continuation: "org.eclipse.jetty:jetty-continuation:$jettyVersion",
+          jetty_client: "org.eclipse.jetty:jetty-client:$jettyVersion",
+
+          // Struts
+          struts_codebehind: "org.apache.struts:struts2-codebehind-plugin:$strutsVersion",
+          struts_convention: "org.apache.struts:struts2-convention-plugin:$strutsVersion",
+          struts_core: "org.apache.struts:struts2-core:$strutsVersion",
+
+          // Scripting
+          groovy: "org.codehaus.groovy:groovy-all:$groovyVersion",
+
+          jruby: "org.jruby:jruby:$jrubyVersion",
+
+          beanshell: [ "org.beanshell:bsh-core:$beanshellVersion",
+                  "org.beanshell:bsh-classpath:$beanshellVersion",
+                  "org.beanshell:bsh-classgen:$beanshellVersion",
+                  "org.beanshell:bsh-reflect:$beanshellVersion"
+
+          ],
+          javascript: "rhino:js:$javascriptVersion",
+
+          // Wicket
+          wicket: [ "org.apache.wicket:wicket-core:$wicketVersion",
+                  "org.apache.wicket:wicket-datetime:$wicketVersion",
+                  "org.apache.wicket:wicket-extensions:$wicketVersion"
+          ],
+          wicket_devutils: "org.apache.wicket:wicket-devutils:$wicketVersion",
+          wicket_stateless: "com.jolira:wicket-stateless:$wicketVersion",
+
+          // Library & Extension dependencies
+          jodatime: "joda-time:joda-time:$jodaTimeVersion",
+          ehcache: "net.sf.ehcache:ehcache-core:$ehcacheVersion",
+          hazelcast: "com.hazelcast:hazelcast:$hazelcastVersion",
+          jdbm: "org.fusesource.jdbm:jdbm:$jdbmVersion",
+          appengine: "com.google.appengine:appengine-api:$gaeVersion",
+          mongodb: "org.mongodb:mongo-java-driver:$mongodbVersion",
+          neo4j: [ "org.neo4j:neo4j:$neoVersion",
+                  "org.neo4j:neo4j-index:$neoIndexVersion"
+          ],
+          jta: "javax.transaction:jta:$jtaVersion",
+          ibatis: "org.apache.ibatis:ibatis-sqlmap:$ibatisVersion",
+          hibernate: "org.hibernate:hibernate-core:$hibernateVersion",
+          javaSqlGenerator: "org.java-sql-generator:org.java-sql-generator.api:$javasqlgeneratorVersion",
+          javaSqlGeneratorImpl: 'org.java-sql-generator:org.java-sql-generator.implementation:' + javasqlgeneratorVersion,
+          voldemort: "voldemort:voldemort:$voldemortVersion",
+          googlecollections: "com.google.collections:google-collections:$googleCollectionsVersion",
+          sleepycat: "com.sleepycat:je:$sleepycatVersion",
+          jdom: "org.jdom:jdom:$jdomVersion",
+          velocity: "org.apache.velocity:velocity:$velocityVersion",
+          commons_codec: "commons-codec:commons-codec:$commonsCodecVersion",
+          commons_dbcp: "commons-dbcp:commons-dbcp:$commonsDbcpVersion",
+          commons_io: "commons-io:commons-io:$commonsIoVersion",
+          commons_lang: "commons-lang:commons-lang:$commonsLangVersion",
+          servlet_api: "javax.servlet:javax.servlet-api:$servletVersion",
+          cxf_api: 'org.apache.cxf:cxf-api:' + cxfVersion,
+          cxf_util: "org.apache.cxf:cxf-common-utilities:$cxfVersion",
+          cxf_rt_core: "org.apache.cxf:cxf-rt-core:$cxfVersion",
+          cxf_rt_soap: "org.apache.cxf:cxf-rt-bindings-soap:$cxfVersion",
+          cxf_rt_jaxws: "org.apache.cxf:cxf-rt-frontend-jaxws:$cxfVersion",
+          cxf_rt_aegis: "org.apache.cxf:cxf-rt-databinding-aegis:$cxfVersion",
+          cxf_rt_local: "org.apache.cxf:cxf-rt-transports-local:$cxfVersion",
+          cxf_rt_http: "org.apache.cxf:cxf-rt-transports-http:$cxfVersion",
+          cxf_rt_http_jetty: "org.apache.cxf:cxf-rt-transports-http-jetty:$cxfVersion",
+          wsdl4j: 'wsdl4j:wsdl4j:' + wsdl4jVersion,
+          http_client: "org.apache.httpcomponents:httpclient:$httpClientVersion",
+          woodstox: "org.codehaus.woodstox:woodstox-core-asl:$woodstoxVersion",
+          restlet_xml: "org.restlet.jee:org.restlet.ext.xml:$restletVersion",
+          bouncy_castle: "org.bouncycastle:bcprov-jdk15:$bouncyVersion",
+          dnsjava: "dnsjava:dnsjava:$dnsJavaVersion",
+          freemarker: "org.freemarker:freemarker:$freemarkerVersion",
+          shiro: "org.apache.shiro:shiro-core:$shiroVersion",
+          shiro_web: "org.apache.shiro:shiro-web:$shiroVersion",
+          c3p0: "c3p0:c3p0:$c3p0Version",
+          liquibase: "org.liquibase:liquibase-core:$liquibaseVersion",
+          sked: "org.codeartisans:sked:$skedVersion",
+
+          // testing
+          derby: "org.apache.derby:derby:$derbyVersion",
+          derbyclient: "org.apache.derby:derbyclient:$derbyVersion",
+          derbynet: "org.apache.derby:derbynet:$derbyVersion",
+          postgres: "postgresql:postgresql:$postgresqlVersion",
+          junit: "junit:junit:$junitVersion",
+          easymock: "org.easymock:easymock:$easyMockVersion",
+          mockito: "org.mockito:mockito-core:$mockitoVersion",
+          jmock: "org.jmock:jmock:$jmockVersion",
+          testng: "org.testng:testng:$testNgVersion:jdk15"
+  ]
+}
 

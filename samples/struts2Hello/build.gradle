@@ -10,10 +10,13 @@ dependencies {
   compile(project(":org.qi4j.extensions:org.qi4j.extension.indexing-rdf"))
   compile(project(":org.qi4j.libraries:org.qi4j.library.constraints"))
   compile(project(":org.qi4j.libraries:org.qi4j.library.rdf"))
-  compile("org.eclipse.jetty:jetty-server:$jettyVersion")
-  compile("org.eclipse.jetty:jetty-servlet:$jettyVersion")
-  compile("org.eclipse.jetty:jetty-webapp:$jettyVersion")
-  compile("org.eclipse.jetty:jetty-jsp-2.1:7.5.2.v20111006")
+
+  compile(libraries.jetty_server) { transitive = false }
+  compile(libraries.jetty_webapp) { transitive = false }
+  compile(libraries.jetty_servlet) { transitive = false }
+  compile(libraries.jetty_util) { transitive = false }
+  compile(libraries.jetty_http) { transitive = false }
+
   compile(libraries.slf4j_api)
   testCompile(libraries.junit)
   testRuntime(libraries.asm)

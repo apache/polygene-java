@@ -2,23 +2,21 @@ description = "Qi4j SQL Library provides SQL support."
 
 jar { manifest { name = "Qi4j Library - SQL" }}
 
-postgresqlVersion='8.4-701.jdbc4'
-
 dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.api"))
   compile(project(":org.qi4j.core:org.qi4j.core.spi"))
   compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
   compile(project(":org.qi4j.libraries:org.qi4j.library.circuitbreaker"))
-  compile('commons-dbcp:commons-dbcp:1.4')
-  compile('postgresql:postgresql:' + postgresqlVersion)
-  compile('c3p0:c3p0:'+c3p0Version)
-  compile('org.liquibase:liquibase-core:'+liquibaseVersion)
+  compile(libraries.liquibase)
+  compile(libraries.c3p0)
+  compile(libraries.commons_dbcp)
+  compile(libraries.postgres)
   compile(libraries.slf4j_api)
   testCompile(libraries.junit)
   testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
   testCompile(project(":org.qi4j.core:org.qi4j.core.runtime"))
   testCompile(project(":org.qi4j.libraries:org.qi4j.library.jmx"))
   testCompile(project(":org.qi4j.extensions:org.qi4j.extension.entitystore-preferences"))
-  testRuntime('org.apache.derby:derby:'+derbyVersion)
+  testRuntime(libraries.derby)
   testRuntime(libraries.slf4j_simple)
 }

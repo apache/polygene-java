@@ -11,15 +11,25 @@ dependencies {
   compile( project( ":org.qi4j.core:org.qi4j.core.api" ) )
   compile( project( ":org.qi4j.libraries:org.qi4j.library.constraints" ) )
   compile( project( ":org.qi4j.libraries:org.qi4j.library.jmx" ) )
-  compile( libraries.slf4j_api)
-  compile( "org.eclipse.jetty:jetty-server:$jettyVersion" )
-  compile( "org.eclipse.jetty:jetty-servlet:$jettyVersion" )
-  compile( "org.eclipse.jetty:jetty-jmx:$jettyVersion" )
-  compile( "org.bouncycastle:bcprov-jdk15:$bouncyVersion" )
+  compile( libraries.slf4j_api )
+  compile( libraries.servlet_api )
+  compile( libraries.bouncy_castle )
+  compile module( libraries.jetty_server ) {transitive = false}
+  compile module( libraries.jetty_servlet ) {transitive = false}
+  compile module( libraries.jetty_util ) {transitive = false}
+  compile module( libraries.jetty_webapp ) {transitive = false}
+  compile module( libraries.jetty_jmx ) {transitive = false}
+  compile module( libraries.jetty_http ) {transitive = false}
+  compile module( libraries.jetty_continuation ) {transitive = false}
+  compile module( libraries.jetty_security ) {transitive = false}
+
+  runtime( libraries.jetty_io ) { transitive = false }
+
   testCompile( project( ":org.qi4j.core:org.qi4j.core.testsupport" ) )
   testCompile( libraries.junit )
-  testCompile( "org.apache.httpcomponents:httpclient:$httpClientVersion" )
-  testCompile( "dnsjava:dnsjava:2.1.1" )
+  testCompile( libraries.http_client )
+  testCompile( libraries.dnsjava )
+
   testRuntime( libraries.asm )
   testRuntime( libraries.asm_commons )
   testRuntime( libraries.slf4j_simple )

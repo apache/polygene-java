@@ -2,13 +2,12 @@ description = "Qi4j JavaScript Library allows for Mixins to be implemented in Ja
 
 jar { manifest { name = "Qi4j Library - Scripting - JavaScript" }}
 
-javascriptVersion = '1.7R2'
 
 dependencies {
   compile( project( ':org.qi4j.libraries:org.qi4j.library.scripting:org.qi4j.library.scripting.common' ))
   compile(project(":org.qi4j.core:org.qi4j.core.api"))
   compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
-  compile( 'rhino:js:'+ javascriptVersion )
+  compile(libraries.javascript)
   compile(libraries.slf4j_api)
   testCompile(libraries.junit)
   testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))

@@ -1,0 +1,26 @@
+
+description = "Sample of how DCI (Data, Context & Interaction) pattern is implemented with Qi4j, for Eric Evans DDD sample."
+
+jar { manifest { name = "Qi4j Sample - DCI Cargo" }}
+
+dependencies {
+  compile(project(":org.qi4j.core:org.qi4j.core.api"))
+  compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
+  compile(project(":org.qi4j.core:org.qi4j.core.spi"))
+  compile(project(":org.qi4j.libraries:org.qi4j.library.constraints"))
+  compile(libraries.slf4j_api)
+  provided(libraries.servlet_api)
+//  compile(libraries.jetty)
+  compile(libraries.wicket)
+  compile(libraries.wicket_devutils)
+
+  runtime(project(":org.qi4j.core:org.qi4j.core.runtime"))
+
+  testCompile(libraries.junit)
+  testCompile(libraries.easymock)
+  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
+
+  testRuntime(libraries.asm)
+  testRuntime(libraries.asm_commons)
+  testRuntime(libraries.slf4j_simple)
+}

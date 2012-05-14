@@ -2,28 +2,23 @@ description = "Qi4j CXF Library integrates Apache CXF with Qi4j."
 
 jar { manifest { name = "Qi4j Library - CXF" }}
 
-cxfVersion = '2.4.1'
-wsdl4jVersion = '1.6.2'
-woodstoxVersion = '4.1.0'
-xmlSchemaVersion = '1.4.7'
-
 dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.api"))
   compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
   compile(libraries.slf4j_api)
-  compile('org.apache.cxf:cxf-api:' + cxfVersion)
-  compile('org.apache.cxf:cxf-common-utilities:' + cxfVersion)
-  compile('org.apache.cxf:cxf-rt-core:' + cxfVersion)
-  compile('org.apache.cxf:cxf-rt-bindings-soap:' + cxfVersion)
-  compile('org.apache.cxf:cxf-rt-frontend-jaxws:' + cxfVersion)
-  compile('org.apache.cxf:cxf-rt-databinding-aegis:' + cxfVersion)
-  compile('org.apache.cxf:cxf-rt-transports-local:' + cxfVersion)
-  compile('wsdl4j:wsdl4j:' + wsdl4jVersion)
-  compile('org.codehaus.woodstox:woodstox-core-asl:' + woodstoxVersion)
+  compile(libraries.cxf_api)
+  compile(libraries.cxf_util)
+  compile(libraries.cxf_rt_core)
+  compile(libraries.cxf_rt_soap)
+  compile(libraries.cxf_rt_jaxws)
+  compile(libraries.cxf_rt_aegis)
+  compile(libraries.cxf_rt_local)
+  compile(libraries.wsdl4j)
+  compile(libraries.woodstox)
 //  compile('org.apache.ws.commons.schema:XmlSchema:' + xmlSchemaVersion)
-  runtime('org.apache.cxf:cxf-rt-transports-http:' + cxfVersion)
-  runtime('org.apache.cxf:cxf-rt-transports-http-jetty:' + cxfVersion)
-  testCompile("org.apache.httpcomponents:httpclient:$httpClientVersion")
+  runtime(libraries.cxf_rt_http)
+  runtime(libraries.cxf_rt_http_jetty)
+  testCompile(libraries.http_client)
   testCompile(libraries.junit)
   testRuntime(libraries.asm)
   testRuntime(libraries.asm_commons)

@@ -2,18 +2,17 @@ description = "Qi4j Schduler Library for long term timing functionalities."
 
 jar { manifest { name = "Qi4j Library - Scheduler" }}
 
-skedVersion='1.2'
 
 dependencies {
-  compile("org.codeartisans:sked:$skedVersion")
-  compile(project(':org.qi4j.libraries:org.qi4j.library.constraints'))
-  compile(project(":org.qi4j.core:org.qi4j.core.api"))
-  compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
-  testCompile(libraries.junit)
-  testCompile(project(":org.qi4j.extensions:org.qi4j.extension.indexing-rdf"))
-  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
-  testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
-  testRuntime(libraries.asm)
-  testRuntime(libraries.asm_commons)
-  testRuntime(libraries.slf4j_simple)
+  compile( libraries.sked )
+  compile( project( ':org.qi4j.libraries:org.qi4j.library.constraints' ) )
+  compile( project( ":org.qi4j.core:org.qi4j.core.api" ) )
+  compile( project( ":org.qi4j.core:org.qi4j.core.bootstrap" ) )
+  testCompile( libraries.junit )
+  testCompile( project( ":org.qi4j.extensions:org.qi4j.extension.indexing-rdf" ) )
+  testCompile( project( ":org.qi4j.core:org.qi4j.core.testsupport" ) )
+  testRuntime( project( ":org.qi4j.core:org.qi4j.core.runtime" ) )
+  testRuntime( libraries.asm )
+  testRuntime( libraries.asm_commons )
+  testRuntime( libraries.slf4j_simple )
 }

@@ -21,6 +21,8 @@
  */
 package org.qi4j.library.shiro;
 
+import java.util.EnumSet;
+import javax.servlet.DispatcherType;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.ResponseHandler;
@@ -69,7 +71,8 @@ public class UsernamePasswordHttpBasicTest
         filterHolder.setInitParameter( Qi4jShiroServletFilter.REALM_MODULE_PARAM, TEST_MODULE );
         filterHolder.setInitParameter( Qi4jShiroServletFilter.FILTER_CHAINS_PARAM, "{\"" + SECURED_SERVLET_PATH + "\":\"authcBasic\"}" );
 
-        sch.addFilter( filterHolder, SECURED_SERVLET_PATH, FilterMapping.DEFAULT );
+        EnumSet<DispatcherType> dispatches = EnumSet.of( DispatcherType.REQUEST );
+        sch.addFilter( filterHolder, SECURED_SERVLET_PATH, dispatches );
     }
 
     @Test

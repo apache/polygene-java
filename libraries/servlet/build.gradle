@@ -5,8 +5,8 @@ jar { manifest { name = "Qi4j Library - Servlet" }}
 dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.api"))
   compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
-  compile("javax.servlet:servlet-api:$servletVersion")
   compile(libraries.slf4j_api)
+  compile(libraries.servlet_api)
   testCompile(libraries.junit)
   testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
   testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))

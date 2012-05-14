@@ -16,8 +16,11 @@
  */
 package org.qi4j.entitystore.qrm.internal;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -38,8 +41,8 @@ import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entitystore.DefaultEntityStoreUnitOfWork;
 import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entitystore.helpers.DefaultEntityState;
-
-import java.util.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Mixins( { QrmMapperService.QrmMapperServiceMixin.class } )
 public interface QrmMapperService
@@ -50,7 +53,7 @@ public interface QrmMapperService
         implements QrmMapper
     {
 
-        private final static Log LOG = LogFactory.getLog( QrmMapperService.class );
+        private final static Logger LOG = LoggerFactory.getLogger( QrmMapperService.class );
 
         private SessionFactory sessoinFactory;
 
@@ -168,9 +171,9 @@ public interface QrmMapperService
 
             dbState.put( mapping.identity().name(), state.identity().identity() );
 
-            dbState.put( mapping.createdOn().name(), new Date(lastModified) );
+            dbState.put( mapping.createdOn().name(), new Date( lastModified ) );
 
-            dbState.put( mapping.updatedOn().name(), new Date(lastModified) );
+            dbState.put( mapping.updatedOn().name(), new Date( lastModified ) );
 
             Session session = sessoinFactory.getCurrentSession();
 
@@ -240,7 +243,7 @@ public interface QrmMapperService
 
             dbState.put( mapping.identity().name(), state.identity().identity() );
 
-            dbState.put( mapping.updatedOn().name(), new Date(lastModified) );
+            dbState.put( mapping.updatedOn().name(), new Date( lastModified ) );
 
             session.save( entityName, dbState );
 
@@ -258,11 +261,12 @@ public interface QrmMapperService
             app.descriptor().accept( new HierarchicalVisitorAdapter<Object, Object, RuntimeException>()
             {
                 @Override
-                public boolean visitEnter( Object visited ) throws RuntimeException
+                public boolean visitEnter( Object visited )
+                    throws RuntimeException
                 {
-                    if (visited instanceof ObjectDescriptor )
+                    if( visited instanceof ObjectDescriptor )
                     {
-                        if (visited instanceof EntityDescriptor)
+                        if( visited instanceof EntityDescriptor )
                         {
                             EntityDescriptor entityDescriptor = (EntityDescriptor) visited;
                             for( Class mixinClazz : entityDescriptor.mixinTypes() )
@@ -291,7 +295,7 @@ public interface QrmMapperService
             {
                 String name = pPersistent.qualifiedName().name();
 
-                String hibType = ((Class) pPersistent.type()).getName();
+                String hibType = ( (Class) pPersistent.type() ).getName();
 
                 if( "identity".equals( name ) )
                 {

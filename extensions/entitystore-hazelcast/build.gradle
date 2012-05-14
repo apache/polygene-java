@@ -8,7 +8,7 @@ dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
   compile(project(":org.qi4j.libraries:org.qi4j.library.locking"))
   compile(libraries.slf4j_api)
-  compile('com.hazelcast:hazelcast:' + hazelcastVersion)
+  compile(libraries.hazelcast)
   testCompile(libraries.junit)
   testRuntime(libraries.slf4j_simple)
   testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))

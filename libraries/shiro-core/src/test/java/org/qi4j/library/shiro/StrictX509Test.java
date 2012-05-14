@@ -21,6 +21,8 @@
  */
 package org.qi4j.library.shiro;
 
+import java.util.EnumSet;
+import javax.servlet.DispatcherType;
 import org.apache.http.HttpHost;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
@@ -32,7 +34,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ssl.SslSelectChannelConnector;
 import org.eclipse.jetty.servlet.FilterHolder;
-import org.eclipse.jetty.servlet.FilterMapping;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
@@ -85,7 +86,8 @@ public class StrictX509Test
         filterHolder.setInitParameter( Qi4jShiroServletFilter.REALM_MODULE_PARAM, TEST_MODULE );
         filterHolder.setInitParameter( Qi4jShiroServletFilter.FILTER_CHAINS_PARAM, "{\"" + SECURED_SERVLET_PATH + "\":\"authcX509\"}" );
 
-        sch.addFilter( filterHolder, SECURED_SERVLET_PATH, FilterMapping.DEFAULT );
+        EnumSet<DispatcherType> dispatches = EnumSet.of( DispatcherType.REQUEST );
+        sch.addFilter( filterHolder, SECURED_SERVLET_PATH, dispatches);
     }
 
     @Test

@@ -17,11 +17,20 @@
 
 package org.qi4j.library.eventsourcing.domain.source.jdbm;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.util.Properties;
 import jdbm.RecordManager;
 import jdbm.RecordManagerFactory;
 import jdbm.RecordManagerOptions;
+import jdbm.Serializer;
 import jdbm.btree.BTree;
-import jdbm.helper.*;
+import jdbm.helper.ByteArrayComparator;
+import jdbm.helper.DefaultSerializer;
+import jdbm.helper.Tuple;
+import jdbm.helper.TupleBrowser;
 import jdbm.recman.CacheRecordManager;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,27 +41,29 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.functional.Function;
-import org.qi4j.io.*;
+import org.qi4j.io.Input;
+import org.qi4j.io.Output;
+import org.qi4j.io.Receiver;
+import org.qi4j.io.Sender;
+import org.qi4j.io.Transforms;
 import org.qi4j.library.eventsourcing.domain.api.UnitOfWorkDomainEventsValue;
-import org.qi4j.library.eventsourcing.domain.source.*;
+import org.qi4j.library.eventsourcing.domain.source.AbstractEventStoreMixin;
+import org.qi4j.library.eventsourcing.domain.source.EventManagement;
+import org.qi4j.library.eventsourcing.domain.source.EventSource;
+import org.qi4j.library.eventsourcing.domain.source.EventStore;
+import org.qi4j.library.eventsourcing.domain.source.EventStream;
 import org.qi4j.library.fileconfig.FileConfiguration;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
-import java.util.Properties;
 
 /**
  * JAVADOC
  */
-@Mixins(JdbmEventStoreService.JdbmEventStoreMixin.class)
+@Mixins( JdbmEventStoreService.JdbmEventStoreMixin.class )
 public interface JdbmEventStoreService
-        extends EventSource, EventStore, EventStream, EventManagement, Activatable, ServiceComposite
+    extends EventSource, EventStore, EventStream, EventManagement, Activatable, ServiceComposite
 {
     class JdbmEventStoreMixin
-            extends AbstractEventStoreMixin
-            implements EventManagement, EventSource
+        extends AbstractEventStoreMixin
+        implements EventManagement, EventSource
     {
         @Service
         FileConfiguration fileConfig;
@@ -64,7 +75,8 @@ public interface JdbmEventStoreService
 
         private long currentCount;
 
-        public void activate() throws IOException
+        public void activate()
+            throws IOException
         {
             super.activate();
 
@@ -78,7 +90,8 @@ public interface JdbmEventStoreService
             initialize( name, properties );
         }
 
-        public void passivate() throws Exception
+        public void passivate()
+            throws Exception
         {
             super.passivate();
             recordManager.close();
@@ -95,7 +108,8 @@ public interface JdbmEventStoreService
                     try
                     {
                         recordManager.commit(); // Commit every 1000 transactions to avoid OutOfMemory issues
-                    } catch( IOException e )
+                    }
+                    catch( IOException e )
                     {
                         throw new IllegalStateException( "Could not commit data", e );
                     }
@@ -109,7 +123,8 @@ public interface JdbmEventStoreService
                     {
                         JSONObject json = (JSONObject) new JSONTokener( item ).nextValue();
                         return (UnitOfWorkDomainEventsValue) deserializer.deserialize( json, eventsType );
-                    } catch( JSONException e )
+                    }
+                    catch( JSONException e )
                     {
                         throw new IllegalArgumentException( e );
                     }
@@ -117,7 +132,7 @@ public interface JdbmEventStoreService
             }, storeEvents0() ) );
 
             return Transforms.lock( JdbmEventStoreMixin.this.lock,
-                    map );
+                                    map );
         }
 
         // EventStore implementation
@@ -125,38 +140,41 @@ public interface JdbmEventStoreService
         {
             return new Input<UnitOfWorkDomainEventsValue, IOException>()
             {
-               @Override
-               public <ReceiverThrowableType extends Throwable> void transferTo(Output<? super UnitOfWorkDomainEventsValue, ReceiverThrowableType> output) throws IOException, ReceiverThrowableType
-               {
+                @Override
+                public <ReceiverThrowableType extends Throwable> void transferTo( Output<? super UnitOfWorkDomainEventsValue, ReceiverThrowableType> output )
+                    throws IOException, ReceiverThrowableType
+                {
                     output.receiveFrom( new Sender<UnitOfWorkDomainEventsValue, IOException>()
                     {
-                       @Override
-                       public <ReceiverThrowableType extends Throwable> void sendTo(Receiver<? super UnitOfWorkDomainEventsValue, ReceiverThrowableType> receiver) throws ReceiverThrowableType, IOException
-                       {
+                        @Override
+                        public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<? super UnitOfWorkDomainEventsValue, ReceiverThrowableType> receiver )
+                            throws ReceiverThrowableType, IOException
+                        {
                             // Lock datastore first
                             lock();
 
                             try
                             {
-                                final TupleBrowser browser = index.browse( offset+1 );
+                                final TupleBrowser browser = index.browse( offset + 1 );
 
                                 Tuple tuple = new Tuple();
 
-                                while (browser.getNext( tuple ))
+                                while( browser.getNext( tuple ) )
                                 {
                                     // Get next transaction
                                     UnitOfWorkDomainEventsValue domainEvents = readTransactionEvents( tuple );
 
                                     receiver.receive( domainEvents );
                                 }
-                            } catch (Exception e)
+                            }
+                            catch( Exception e )
                             {
                                 logger.warn( "Could not iterate events", e );
-                            } finally
+                            }
+                            finally
                             {
                                 lock.unlock();
                             }
-
                         }
                     } );
                 }
@@ -174,16 +192,18 @@ public interface JdbmEventStoreService
             return new Output<UnitOfWorkDomainEventsValue, IOException>()
             {
                 @Override
-                public <SenderThrowableType extends Throwable> void receiveFrom( Sender<? extends UnitOfWorkDomainEventsValue, SenderThrowableType> sender ) throws IOException, SenderThrowableType
+                public <SenderThrowableType extends Throwable> void receiveFrom( Sender<? extends UnitOfWorkDomainEventsValue, SenderThrowableType> sender )
+                    throws IOException, SenderThrowableType
                 {
                     try
                     {
                         sender.sendTo( new Receiver<UnitOfWorkDomainEventsValue, IOException>()
                         {
                             @Override
-                            public void receive( UnitOfWorkDomainEventsValue item ) throws IOException
+                            public void receive( UnitOfWorkDomainEventsValue item )
+                                throws IOException
                             {
-                                StringWriter string = new StringWriter( );
+                                StringWriter string = new StringWriter();
                                 try
                                 {
                                     JSONWriterSerializer jsonWriterSerializer = new JSONWriterSerializer( string );
@@ -198,13 +218,15 @@ public interface JdbmEventStoreService
                                     throw new IllegalStateException( "Could not JSON serialize value", e );
                                 }
                             }
-                        });
+                        } );
                         recordManager.commit();
-                    } catch( IOException e )
+                    }
+                    catch( IOException e )
                     {
                         recordManager.rollback();
                         throw e;
-                    } catch( Throwable e )
+                    }
+                    catch( Throwable e )
                     {
                         recordManager.rollback();
                         throw (SenderThrowableType) e;
@@ -214,21 +236,21 @@ public interface JdbmEventStoreService
         }
 
         private void initialize( String name, Properties properties )
-                throws IOException
+            throws IOException
         {
             recordManager = RecordManagerFactory.createRecordManager( name, properties );
-            serializer = new ByteArraySerializer();
-            recordManager = new CacheRecordManager( recordManager, new MRU( 1000 ) );
+            serializer = DefaultSerializer.INSTANCE;
+            recordManager = new CacheRecordManager( recordManager, 1000, false );
             long recid = recordManager.getNamedObject( "index" );
-            if (recid != 0)
+            if( recid != 0 )
             {
                 index = BTree.load( recordManager, recid );
-
                 currentCount = index.size();
-            } else
+            }
+            else
             {
-                LongComparator comparator = new LongComparator();
-                index = BTree.createInstance( recordManager, comparator, new LongSerializer(), serializer, 16 );
+                ByteArrayComparator comparator = new ByteArrayComparator();
+                index = BTree.createInstance( recordManager, comparator, serializer, DefaultSerializer.INSTANCE, 16 );
                 recordManager.setNamedObject( "index", index.getRecid() );
                 currentCount = 0;
             }
@@ -236,7 +258,7 @@ public interface JdbmEventStoreService
         }
 
         private UnitOfWorkDomainEventsValue readTransactionEvents( Tuple tuple )
-                throws UnsupportedEncodingException, JSONException
+            throws UnsupportedEncodingException, JSONException
         {
             byte[] eventData = (byte[]) tuple.getValue();
             String eventJson = new String( eventData, "UTF-8" );

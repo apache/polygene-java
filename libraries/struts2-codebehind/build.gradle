@@ -7,7 +7,7 @@ dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.api"))
   compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
   compile(libraries.slf4j_api)
-  compile('org.apache.struts:struts2-codebehind-plugin:' + strutsVersion)
+  compile(libraries.struts_codebehind)
   testCompile(libraries.junit)
   testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
   testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))

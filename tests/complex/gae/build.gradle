@@ -6,7 +6,7 @@ dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.api"))
   compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
   compile(project(":org.qi4j.extensions:org.qi4j.extension.entitystore-gae"))
-  compile("javax.servlet:servlet-api:$servletVersion")
+  compile(libraries.servlet_api)
   compile(libraries.slf4j_api)
   compile(libraries.junit)
   testRuntime(libraries.asm)

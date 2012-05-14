@@ -13,9 +13,9 @@
  */
 package org.qi4j.library.http;
 
-import org.eclipse.jetty.http.security.Constraint;
 import org.eclipse.jetty.security.ConstraintMapping;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.util.security.Constraint;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;

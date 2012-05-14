@@ -2,16 +2,11 @@ description = "Qi4j BeanShell Library allows for Mixins to be implemented in Bea
 
 jar { manifest { name = "Qi4j Library - Scripting - BeanShell" }}
 
-beanshellVersion = '2.0b4'
-
 dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.api"))
   compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
   compile( project( ':org.qi4j.libraries:org.qi4j.library.scripting:org.qi4j.library.scripting.common' ))
-  compile( 'org.beanshell:bsh-core:' + beanshellVersion );
-  compile( 'org.beanshell:bsh-classpath:' + beanshellVersion );
-  compile( 'org.beanshell:bsh-classgen:' + beanshellVersion );
-  compile( 'org.beanshell:bsh-reflect:' + beanshellVersion );
+  compile(libraries.beanshell)
   compile(libraries.slf4j_api)
   testCompile(libraries.junit)
   testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))

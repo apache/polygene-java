@@ -3,24 +3,31 @@ description = "Qi4j Shiro Library integrates Apache Shiro security framework int
 jar { manifest { name = "Qi4j Library - Shiro" }}
 
 dependencies {
-  compile(project(":org.qi4j.core:org.qi4j.core.api"))
-  compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
-  compile(libraries.slf4j_api)
-  compile('org.apache.shiro:shiro-core:' + shiroVersion)
-  compile('org.bouncycastle:bcprov-jdk15:' + bouncyVersion)
-  compile('joda-time:joda-time:' + jodaTimeVersion)
-  testCompile(libraries.junit)
-  testCompile("javax.servlet:servlet-api:$servletVersion")
-  testCompile("org.eclipse.jetty:jetty-server:7.0.1.v20091125")
-  testCompile("org.eclipse.jetty:jetty-servlet:7.0.1.v20091125")
-  testCompile("org.apache.httpcomponents:httpclient:$httpClientVersion")
-  testCompile(project(":org.qi4j.libraries:org.qi4j.library.shiro-web"))
-  testCompile(project(":org.qi4j.libraries:org.qi4j.library.servlet"))
-  testCompile(project(":org.qi4j.extensions:org.qi4j.extension.indexing-rdf"))
-  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
-  testRuntime(project(":org.qi4j.core:org.qi4j.core.spi"))
-  testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
-  testRuntime(libraries.asm)
-  testRuntime(libraries.asm_commons)
-  testRuntime(libraries.slf4j_simple)
+  compile( project( ":org.qi4j.core:org.qi4j.core.api" ) )
+  compile( project( ":org.qi4j.core:org.qi4j.core.bootstrap" ) )
+  compile( libraries.slf4j_api )
+  compile( libraries.bouncy_castle )
+  compile( libraries.shiro )
+  compile( libraries.jodatime )
+  testCompile( libraries.junit )
+  testCompile( libraries.servlet_api )
+
+  testCompile module( libraries.jetty_server ) { transitive = false }
+  testCompile module( libraries.jetty_servlet ) { transitive = false }
+  testCompile(libraries.jetty_webapp) { transitive = false }
+  testCompile module( libraries.jetty_util ) { transitive = false }
+  testCompile module( libraries.jetty_http ) { transitive = false }
+  testRuntime( libraries.jetty_io ) { transitive = false }
+  testRuntime( libraries.jetty_security ) { transitive = false }
+
+  testCompile( libraries.http_client )
+  testCompile( project( ":org.qi4j.libraries:org.qi4j.library.shiro-web" ) )
+  testCompile( project( ":org.qi4j.libraries:org.qi4j.library.servlet" ) )
+  testCompile( project( ":org.qi4j.extensions:org.qi4j.extension.indexing-rdf" ) )
+  testCompile( project( ":org.qi4j.core:org.qi4j.core.testsupport" ) )
+  testRuntime( project( ":org.qi4j.core:org.qi4j.core.spi" ) )
+  testRuntime( project( ":org.qi4j.core:org.qi4j.core.runtime" ) )
+  testRuntime( libraries.asm )
+  testRuntime( libraries.asm_commons )
+  testRuntime( libraries.slf4j_simple )
 }

@@ -10,7 +10,7 @@ dependencies {
   compile(project(":org.qi4j.libraries:org.qi4j.library.locking"))
   compile(project(":org.qi4j.libraries:org.qi4j.library.fileconfig"))
 //  compile('jdbm:jdbm:1.0')
-  compile('org.fusesource.jdbm:jdbm:2.0.0')
+  compile(libraries.jdbm)
   compile(libraries.slf4j_api)
   testCompile(libraries.junit)
   testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))

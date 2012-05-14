@@ -9,7 +9,7 @@ dependencies {
   compile(project(":org.qi4j.extensions:org.qi4j.extension.entitystore-jdbm"))
   compile(project(":org.qi4j.extensions:org.qi4j.extension.entitystore-sql"))
   compile(project(":org.qi4j.extensions:org.qi4j.extension.cache-ehcache"))
-  compile("org.apache.derby:derby:$derbyVersion")
+  compile(libraries.derby)
   compile(project(":org.qi4j.extensions:org.qi4j.extension.indexing-rdf"))
   compile(libraries.slf4j_api)
 
