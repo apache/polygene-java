@@ -466,7 +466,7 @@ public abstract class AbstractSQLQuerying
             }
             else
             {
-                throw new UnsupportedOperationException( "Expression " + expression + " is not supported" );
+                throw new UnsupportedOperationException( "Expression " + expression + " of type " + expression.getClass() + " is not supported" );
             }
         }
         else

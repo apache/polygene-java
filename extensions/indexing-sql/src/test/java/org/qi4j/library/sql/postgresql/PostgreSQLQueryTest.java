@@ -22,7 +22,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.indexing.AbstractQueryTest;
 
-//@Ignore
+@Ignore // DO NOT PASS YET
 public class PostgreSQLQueryTest extends AbstractQueryTest
 {
     @Override

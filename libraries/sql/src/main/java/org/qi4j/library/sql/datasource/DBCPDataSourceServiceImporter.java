@@ -13,19 +13,12 @@
  */
 package org.qi4j.library.sql.datasource;
 
-import java.util.HashMap;
-import java.util.Map;
-import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.Activatable;
-import org.qi4j.api.service.ImportedServiceDescriptor;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceImporter;
-import org.qi4j.api.service.ServiceImporterException;
-import org.qi4j.api.structure.Module;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.dbcp.BasicDataSource;
 
 @Mixins( DBCPDataSourceServiceImporter.Mixin.class )
 public interface DBCPDataSourceServiceImporter
@@ -33,45 +26,33 @@ public interface DBCPDataSourceServiceImporter
 {
 
     class Mixin
+            extends AbstractDataSourceServiceImporterMixin<BasicDataSource>
             implements Activatable, ServiceImporter
     {
 
-        private static final Logger LOGGER = LoggerFactory.getLogger( DBCPDataSourceServiceImporter.class );
-
-        @Structure
-        private Module module;
-
-        private Map<String, DataSourceConfiguration> configs = new HashMap<String, DataSourceConfiguration>();
-
-        public void activate()
-                throws Exception
+        @Override
+        protected BasicDataSource setupDataSourcePool( DataSourceConfiguration config )
+                throws ClassNotFoundException
         {
-        }
+            BasicDataSource pool = new BasicDataSource();
 
-        public void passivate()
-                throws Exception
-        {
-            // WARN Closes all configuration UoWs
-            for ( DataSourceConfiguration dataSourceConfiguration : configs.values() ) {
-                module.getUnitOfWork( dataSourceConfiguration ).discard();
+            Class.forName( config.driver().get() );
+            pool.setDriverClassName( config.driver().get() );
+            pool.setUrl( config.url().get() );
+
+            if ( !config.username().get().equals( "" ) ) {
+                pool.setUsername( config.username().get() );
+                pool.setPassword( config.password().get() );
             }
-            configs.clear();
+
+            return pool;
         }
 
-        public Object importService( ImportedServiceDescriptor serviceDescriptor )
-                throws ServiceImporterException
+        @Override
+        protected void passivateDataSourcePool( BasicDataSource dataSourcePool )
+                throws Exception
         {
-            throw new UnsupportedOperationException( "Not supported yet." );
-        }
-
-        public boolean isActive( Object instance )
-        {
-            throw new UnsupportedOperationException( "Not supported yet." );
-        }
-
-        public boolean isAvailable( Object instance )
-        {
-            throw new UnsupportedOperationException( "Not supported yet." );
+            dataSourcePool.close();
         }
 
     }
