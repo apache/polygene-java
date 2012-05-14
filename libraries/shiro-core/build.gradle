@@ -17,6 +17,7 @@ dependencies {
   testCompile(libraries.jetty_webapp) { transitive = false }
   testCompile module( libraries.jetty_util ) { transitive = false }
   testCompile module( libraries.jetty_http ) { transitive = false }
+  testCompile module( libraries.jetty_continuation ) {transitive = false}
   testRuntime( libraries.jetty_io ) { transitive = false }
   testRuntime( libraries.jetty_security ) { transitive = false }
 
