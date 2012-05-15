@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2010, Stanislav Muhametsin. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +28,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import javax.sql.DataSource;
+
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.common.QualifiedName;
@@ -43,17 +47,19 @@ import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.api.value.ValueDescriptor;
+import static org.qi4j.functional.Iterables.first;
 import org.qi4j.index.sql.support.api.SQLIndexing;
 import org.qi4j.index.sql.support.common.DBNames;
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_NAME;
 import org.qi4j.index.sql.support.common.QNameInfo;
 import org.qi4j.index.sql.support.common.QNameInfo.QNameType;
 import org.qi4j.index.sql.support.postgresql.PostgreSQLTypeHelper;
 import org.qi4j.library.sql.api.SQLEntityState;
 import org.qi4j.library.sql.common.SQLUtil;
-import org.qi4j.library.sql.ds.DataSourceService;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
+
 import org.sql.generation.api.grammar.builders.modification.ColumnSourceByValuesBuilder;
 import org.sql.generation.api.grammar.builders.modification.DeleteBySearchBuilder;
 import org.sql.generation.api.grammar.builders.modification.UpdateBySearchBuilder;
@@ -71,12 +77,6 @@ import org.sql.generation.api.grammar.modification.UpdateStatement;
 import org.sql.generation.api.grammar.query.QueryExpression;
 import org.sql.generation.api.vendor.SQLVendor;
 
-import static org.qi4j.functional.Iterables.first;
-import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_NAME;
-
-/**
- * @author Stanislav Muhametsin
- */
 public class AbstractSQLIndexing
     implements SQLIndexing, Activatable
 {
@@ -118,12 +118,12 @@ public class AbstractSQLIndexing
     }
 
     @Service
-    private DataSourceService _dataSource;
+    private DataSource _dataSource;
 
     public void indexEntities( Iterable<EntityState> changedStates )
         throws SQLException
     {
-        Connection connection = this._dataSource.getDataSource().getConnection();
+        Connection connection = this._dataSource.getConnection();
         Boolean wasAutoCommit = connection.getAutoCommit();
         connection.setAutoCommit( false );
         connection.setReadOnly( false );
@@ -237,6 +237,7 @@ public class AbstractSQLIndexing
             {
                 SQLUtil.closeQuietly( ps );
             }
+            SQLUtil.closeQuietly( connection );
         }
     }
 
@@ -467,7 +468,7 @@ public class AbstractSQLIndexing
         Integer propertyPK = 0;
         for( PropertyDescriptor pDesc : state.entityDescriptor().state().properties() )
         {
-            if( SQLUtil.isQueryable( pDesc.accessor() ) )
+            if( SQLSkeletonUtil.isQueryable( pDesc.accessor() ) )
             {
                 propertyPK = this.insertProperty( //
                                                   qNameInsertPSs, //
@@ -494,7 +495,7 @@ public class AbstractSQLIndexing
     {
         for( AssociationDescriptor aDesc : state.entityDescriptor().state().associations() )
         {
-            if( SQLUtil.isQueryable( aDesc.accessor() ) )
+            if( SQLSkeletonUtil.isQueryable( aDesc.accessor() ) )
             {
                 QualifiedName qName = aDesc.qualifiedName();
                 PreparedStatement ps = qNameInsertPSs.get( qName );
@@ -518,7 +519,7 @@ public class AbstractSQLIndexing
 
         for( AssociationDescriptor mDesc : state.entityDescriptor().state().manyAssociations() )
         {
-            if( SQLUtil.isQueryable( mDesc.accessor() ) )
+            if( SQLSkeletonUtil.isQueryable( mDesc.accessor() ) )
             {
                 QualifiedName qName = mDesc.qualifiedName();
                 PreparedStatement ps = qNameInsertPSs.get( qName );

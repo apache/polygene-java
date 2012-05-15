@@ -16,29 +16,19 @@ package org.qi4j.entitystore.sql.assembly;
 
 import org.qi4j.api.common.Visibility;
 import org.qi4j.entitystore.sql.internal.MySQLDatabaseSQLServiceMixin;
-import org.qi4j.library.sql.ds.assembly.DataSourceAssembler;
 import org.sql.generation.api.vendor.MySQLVendor;
 import org.sql.generation.api.vendor.SQLVendor;
 import org.sql.generation.api.vendor.SQLVendorProvider;
 
 import java.io.IOException;
 
-public class MySQLEntityStoreAssembler extends AbstractSQLEntityStoreAssembler
+import org.qi4j.library.sql.assembly.DataSourceAssembler;
+
+public class MySQLEntityStoreAssembler
+        extends AbstractSQLEntityStoreAssembler
 {
 
     public static final String ENTITYSTORE_SERVICE_NAME = "entitystore-mysql";
-
-    public static final String DATASOURCE_SERVICE_NAME = "datasource-mysql";
-
-    public MySQLEntityStoreAssembler()
-    {
-        super( new DataSourceAssembler().setDataSourceServiceName( DATASOURCE_SERVICE_NAME ) );
-    }
-
-    public MySQLEntityStoreAssembler( Visibility visibility )
-    {
-        super( visibility, new DataSourceAssembler().setDataSourceServiceName( DATASOURCE_SERVICE_NAME ) );
-    }
 
     public MySQLEntityStoreAssembler( DataSourceAssembler assembler )
     {
@@ -64,7 +54,7 @@ public class MySQLEntityStoreAssembler extends AbstractSQLEntityStoreAssembler
 
     @Override
     protected SQLVendor getSQLVendor()
-        throws IOException
+            throws IOException
     {
         return SQLVendorProvider.createVendor( MySQLVendor.class );
     }

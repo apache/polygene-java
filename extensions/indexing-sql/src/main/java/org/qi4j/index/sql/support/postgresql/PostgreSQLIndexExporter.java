@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2010, Stanislav Muhametsin. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +15,17 @@
 
 package org.qi4j.index.sql.support.postgresql;
 
+import java.io.IOException;
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Types;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.sql.DataSource;
+
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
@@ -24,22 +36,11 @@ import org.qi4j.index.sql.support.common.GenericDatabaseExplorer.ColumnInfo;
 import org.qi4j.index.sql.support.common.GenericDatabaseExplorer.DatabaseProcessor;
 import org.qi4j.index.sql.support.common.GenericDatabaseExplorer.ForeignKeyInfo;
 import org.qi4j.index.sql.support.skeletons.SQLDBState;
-import org.qi4j.library.sql.ds.DataSourceService;
+import org.qi4j.library.sql.common.SQLUtil;
 import org.qi4j.spi.query.IndexExporter;
+
 import org.sql.generation.api.vendor.SQLVendor;
 
-import java.io.IOException;
-import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.sql.SQLException;
-import java.sql.Types;
-import java.util.HashMap;
-import java.util.Map;
-
-/**
- * 
- * @author Stanislav Muhametsin
- */
 public class PostgreSQLIndexExporter
     implements IndexExporter, Activatable
 {
@@ -53,7 +54,7 @@ public class PostgreSQLIndexExporter
     private SQLVendor _vendor;
 
     @Service
-    private DataSourceService _dataSource;
+    private DataSource _dataSource;
 
     public void activate()
         throws Exception
@@ -95,9 +96,11 @@ public class PostgreSQLIndexExporter
         throws IOException,
         UnsupportedOperationException
     {
+        Connection connection = null;
         try
         {
-            GenericDatabaseExplorer.visitDatabaseTables( this._dataSource.getDataSource().getConnection(), null,
+            connection = this._dataSource.getConnection();
+            GenericDatabaseExplorer.visitDatabaseTables( connection, null,
                 this._state.schemaName().get(), null, new DatabaseProcessor()
                 {
 
@@ -194,6 +197,8 @@ public class PostgreSQLIndexExporter
         {
             // TODO Just wrap around for now...
             throw new IOException( sqle );
+        } finally {
+            SQLUtil.closeQuietly( connection );
         }
     }
 
@@ -201,9 +206,11 @@ public class PostgreSQLIndexExporter
         throws IOException,
         UnsupportedOperationException
     {
+        Connection connection = null;
         try
         {
-            GenericDatabaseExplorer.visitDatabaseTables( this._dataSource.getDataSource().getConnection(), null,
+            connection = this._dataSource.getConnection();
+            GenericDatabaseExplorer.visitDatabaseTables( connection, null,
                 this._state.schemaName().get(), null, new DatabaseProcessor()
                 {
 
@@ -314,6 +321,8 @@ public class PostgreSQLIndexExporter
         {
             // TODO Just wrap around for now...
             throw new IOException( sqle );
+        } finally {
+            SQLUtil.closeQuietly( connection );
         }
     }
 }

@@ -148,6 +148,7 @@ public interface DatabaseSQLStringsBuilder
             return new SQLStatement[] {};
         }
 
+        // TODO QueryEntityPK
         protected SQLStatement[] createTableStatements( SQLVendor vendor )
         {
             DefinitionFactory d = vendor.getDefinitionFactory();

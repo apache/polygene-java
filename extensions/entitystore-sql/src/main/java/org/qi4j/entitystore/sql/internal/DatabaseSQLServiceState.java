@@ -16,6 +16,7 @@ package org.qi4j.entitystore.sql.internal;
 
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.property.Property;
+
 import org.sql.generation.api.vendor.SQLVendor;
 
 public interface DatabaseSQLServiceState

@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2010, Stanislav Muhametsin. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,23 +12,27 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.library.sql.postgresql;
+
+import org.junit.Ignore;
 
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.indexing.AbstractComplexQueryTest;
 
-/**
- * 
- * @author Stanislav Muhametsin
- */
-public class PostgreSQLComplexQueryTest extends AbstractComplexQueryTest
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+@Ignore
+public class PostgreSQLComplexQueryTest
+        extends AbstractComplexQueryTest
 {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger( PostgreSQLComplexQueryTest.class );
 
     @Override
     public void assemble( ModuleAssembly mainModule )
-        throws AssemblyException
+            throws AssemblyException
     {
         super.assemble( mainModule );
         SQLTestHelper.assembleWithMemoryEntityStore( mainModule );
@@ -35,17 +40,13 @@ public class PostgreSQLComplexQueryTest extends AbstractComplexQueryTest
 
     @Override
     public void setUp()
-        throws Exception
+            throws Exception
     {
-        try
-        {
+        try {
             super.setUp();
-        }
-        catch( Exception e )
-        {
+        } catch ( Exception e ) {
             // Let's check if exception was because database was not available
-            if( this.module != null )
-            {
+            if ( this.module != null ) {
                 SQLTestHelper.setUpTest( this.module );
             }
 
@@ -56,9 +57,9 @@ public class PostgreSQLComplexQueryTest extends AbstractComplexQueryTest
 
     @Override
     public void tearDown()
-        throws Exception
+            throws Exception
     {
-        SQLTestHelper.tearDownTest( module, module, getLog() );
+        SQLTestHelper.tearDownTest( module, LOGGER );
         super.tearDown();
     }
 

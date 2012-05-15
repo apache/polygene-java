@@ -14,40 +14,30 @@
  */
 package org.qi4j.entitystore.sql.assembly;
 
+import java.io.IOException;
+
 import org.qi4j.api.common.Visibility;
 import org.qi4j.entitystore.sql.internal.DerbySQLDatabaseSQLServiceMixin;
-import org.qi4j.library.sql.ds.assembly.DataSourceAssembler;
+import org.qi4j.library.sql.assembly.DataSourceAssembler;
+
 import org.sql.generation.api.vendor.DerbyVendor;
 import org.sql.generation.api.vendor.SQLVendor;
 import org.sql.generation.api.vendor.SQLVendorProvider;
 
-import java.io.IOException;
-
-public class DerbySQLEntityStoreAssembler extends AbstractSQLEntityStoreAssembler
+public class DerbySQLEntityStoreAssembler
+        extends AbstractSQLEntityStoreAssembler
 {
 
     public static final String ENTITYSTORE_SERVICE_NAME = "entitystore-derby";
-
-    public static final String DATASOURCE_SERVICE_NAME = "datasource-derby";
-
-    public DerbySQLEntityStoreAssembler()
-    {
-        super( new DataSourceAssembler().setDataSourceServiceName( DATASOURCE_SERVICE_NAME ) );
-    }
-
-    public DerbySQLEntityStoreAssembler( Visibility visibility )
-    {
-        super( visibility, new DataSourceAssembler().setDataSourceServiceName( DATASOURCE_SERVICE_NAME ) );
-    }
 
     public DerbySQLEntityStoreAssembler( DataSourceAssembler assembler )
     {
         super( assembler );
     }
 
-    public DerbySQLEntityStoreAssembler( Visibility visibility, DataSourceAssembler assembler )
+    public DerbySQLEntityStoreAssembler( Visibility visibility, DataSourceAssembler dataSourceAssembler )
     {
-        super( visibility, assembler );
+        super( visibility, dataSourceAssembler );
     }
 
     @Override
@@ -64,7 +54,7 @@ public class DerbySQLEntityStoreAssembler extends AbstractSQLEntityStoreAssemble
 
     @Override
     protected SQLVendor getSQLVendor()
-        throws IOException
+            throws IOException
     {
         return SQLVendorProvider.createVendor( DerbyVendor.class );
     }

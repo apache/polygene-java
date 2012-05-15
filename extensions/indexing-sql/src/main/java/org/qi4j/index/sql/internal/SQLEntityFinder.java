@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2010, Stanislav Muhametsin. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +15,6 @@
 
 package org.qi4j.index.sql.internal;
 
-import org.qi4j.api.common.Optional;
-import org.qi4j.api.composite.Composite;
-import org.qi4j.api.entity.EntityReference;
-import org.qi4j.api.injection.scope.Service;
-import org.qi4j.api.query.grammar.OrderBy;
-import org.qi4j.functional.Specification;
-import org.qi4j.index.sql.support.api.SQLQuerying;
-import org.qi4j.library.sql.common.SQLUtil;
-import org.qi4j.library.sql.ds.DataSourceService;
-import org.qi4j.spi.query.EntityFinder;
-import org.qi4j.spi.query.EntityFinderException;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -34,9 +23,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author Stanislav Muhametsin
- */
+import javax.sql.DataSource;
+
+import org.qi4j.api.common.Optional;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.query.grammar.OrderBy;
+import org.qi4j.functional.Specification;
+import org.qi4j.index.sql.support.api.SQLQuerying;
+import org.qi4j.library.sql.common.SQLUtil;
+import org.qi4j.spi.query.EntityFinder;
+import org.qi4j.spi.query.EntityFinderException;
+
 public class SQLEntityFinder
     implements EntityFinder
 {
@@ -44,7 +43,7 @@ public class SQLEntityFinder
     private SQLQuerying parser;
 
     @Service
-    private DataSourceService _dataSource;
+    private DataSource _dataSource;
 
     /**
      * Helper interface to perform some SQL query. Using this simplifies the structure of some of the methods.
@@ -53,7 +52,7 @@ public class SQLEntityFinder
      */
     private interface DoQuery<ReturnType>
     {
-        ReturnType doIt()
+        ReturnType doIt( Connection connection )
             throws SQLException;
     }
 
@@ -68,23 +67,22 @@ public class SQLEntityFinder
         return this.performQuery( new DoQuery<Long>()
         {
 
-            public Long doIt()
+            public Long doIt( Connection connection )
                 throws SQLException
             {
                 PreparedStatement ps = null;
+                ResultSet rs = null;
                 try
                 {
-                    ps = createPS( query, values, valueSQLTypes );
-                    ResultSet rs = ps.executeQuery();
+                    ps = createPS( connection, query, values, valueSQLTypes );
+                    rs = ps.executeQuery();
                     rs.next();
                     return rs.getLong( 1 );
                 }
                 finally
                 {
-                    if( ps != null )
-                    {
-                        ps.close();
-                    }
+                    SQLUtil.closeQuietly( rs );
+                    SQLUtil.closeQuietly( ps );
                 }
             }
         } );
@@ -105,18 +103,19 @@ public class SQLEntityFinder
 
             result = this.performQuery( new DoQuery<Iterable<EntityReference>>()
             {
-                public Iterable<EntityReference> doIt()
+                public Iterable<EntityReference> doIt( Connection connection )
                     throws SQLException
                 {
                     PreparedStatement ps = null;
+                    ResultSet rs = null;
                     List<EntityReference> resultList = new ArrayList<EntityReference>( maxResults == null ? 100
                         : maxResults );
                     try
                     {
                         // TODO possibility to further optimize by setting fetch size (not too small not too little).
                         Integer rsType = parser.getResultSetType( firstResult, maxResults );
-                        ps = createPS( query, values, valueSQLTypes, rsType, ResultSet.CLOSE_CURSORS_AT_COMMIT );
-                        ResultSet rs = ps.executeQuery();
+                        ps = createPS( connection, query, values, valueSQLTypes, rsType, ResultSet.CLOSE_CURSORS_AT_COMMIT );
+                        rs = ps.executeQuery();
                         if( firstResult != null && !parser.isFirstResultSettingSupported()
                             && rsType != ResultSet.TYPE_FORWARD_ONLY )
                         {
@@ -131,10 +130,8 @@ public class SQLEntityFinder
                     }
                     finally
                     {
-                        if( ps != null )
-                        {
-                            ps.close();
-                        }
+                        SQLUtil.closeQuietly( rs );
+                        SQLUtil.closeQuietly( ps );
                     }
 
                     return resultList;
@@ -162,17 +159,18 @@ public class SQLEntityFinder
 
         return this.performQuery( new DoQuery<EntityReference>()
         {
-            public EntityReference doIt()
+            public EntityReference doIt( Connection connection )
                 throws SQLException
             {
                 PreparedStatement ps = null;
+                ResultSet rs = null;
                 EntityReference result = null;
                 try
                 {
-                    ps = createPS( query, values, valueSQLTypes );
+                    ps = createPS( connection, query, values, valueSQLTypes );
                     ps.setFetchSize( 1 );
                     ps.setMaxRows( 1 );
-                    ResultSet rs = ps.executeQuery();
+                    rs = ps.executeQuery();
                     if( rs.next() )
                     {
                         result = new EntityReference( rs.getString( 1 ) );
@@ -180,10 +178,8 @@ public class SQLEntityFinder
                 }
                 finally
                 {
-                    if( ps != null )
-                    {
-                        ps.close();
-                    }
+                    SQLUtil.closeQuietly( rs );
+                    SQLUtil.closeQuietly( ps );
                 }
 
                 return result;
@@ -191,18 +187,18 @@ public class SQLEntityFinder
         } );
     }
 
-    private PreparedStatement createPS( String query, List<Object> values, List<Integer> valueSQLTypes )
+    private PreparedStatement createPS( Connection connection, String query, List<Object> values, List<Integer> valueSQLTypes )
         throws SQLException
     {
-        return this.createPS( query, values, valueSQLTypes, ResultSet.TYPE_FORWARD_ONLY,
+        return this.createPS( connection, query, values, valueSQLTypes, ResultSet.TYPE_FORWARD_ONLY,
             ResultSet.CLOSE_CURSORS_AT_COMMIT );
     }
 
-    private PreparedStatement createPS( String query, List<Object> values, List<Integer> valueSQLTypes,
+    private PreparedStatement createPS( Connection connection,  String query, List<Object> values, List<Integer> valueSQLTypes,
         Integer resultSetType, Integer resultSetHoldability )
         throws SQLException
     {
-        PreparedStatement ps = this._dataSource.getDataSource().getConnection()
+        PreparedStatement ps = this._dataSource.getConnection()
             .prepareStatement( query, resultSetType, ResultSet.CONCUR_READ_ONLY, resultSetHoldability );
         if( values.size() != valueSQLTypes.size() )
         {
@@ -227,10 +223,10 @@ public class SQLEntityFinder
         Connection connection = null;
         try
         {
-            connection = this._dataSource.getDataSource().getConnection();
+            connection = this._dataSource.getConnection();
             connection.setReadOnly( true );
 
-            result = doQuery.doIt();
+            result = doQuery.doIt( connection );
 
         }
         catch( SQLException sqle )
@@ -239,7 +235,7 @@ public class SQLEntityFinder
         }
         finally
         {
-            SQLUtil.rollbackQuietly( connection );
+            SQLUtil.closeQuietly( connection );
         }
 
         return result;

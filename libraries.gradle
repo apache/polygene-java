@@ -30,7 +30,9 @@ def jrubyVersion = '1.5.6'
 def jtaVersion = '1.1'
 def liquibaseVersion = '2.0.1'
 def log4jVersion = '1.2.16'
+def logbackVersion = '1.0.3'
 def mongodbVersion = '2.7.0'
+def mysqlVersion = '5.1.20'
 def neoVersion = '1.3'
 def neoIndexVersion = '1.3-1.3.M01'
 def osgiVersion = '4.2.0'
@@ -82,6 +84,7 @@ rootProject.ext {
           slf4j_api: "org.slf4j:slf4j-api:$slf4jVersion",
           slf4j_simple: "org.slf4j:slf4j-simple:$slf4jVersion",
           log4j: 'log4j:log4j:' + log4jVersion,
+          logback: 'ch.qos.logback:logback-classic:' + logbackVersion,
           jcl_slf4j: "org.slf4j:jcl-over-slf4j:$slf4jVersion",
           jcl_api: 'commons-logging:commons-logging-api:99.0-does-not-exist',  //ensure it is never used.
           jcl: 'commons-logging:commons-logging:99.0-does-not-exist',  // ensure it is never used.
@@ -222,6 +225,7 @@ rootProject.ext {
           derbyclient: "org.apache.derby:derbyclient:$derbyVersion",
           derbynet: "org.apache.derby:derbynet:$derbyVersion",
           postgres: "postgresql:postgresql:$postgresqlVersion",
+          mysql_connector: "mysql:mysql-connector-java:$mysqlVersion",
           junit: "junit:junit:$junitVersion",
           easymock: "org.easymock:easymock:$easyMockVersion",
           mockito: "org.mockito:mockito-core:$mockitoVersion",

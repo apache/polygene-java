@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, Paul Merlin. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,17 +11,28 @@
  * limitations under the License.
  *
  */
-package org.qi4j.library.sql.ds;
+package org.qi4j.library.sql.datasource;
 
-import javax.sql.DataSource;
+import org.qi4j.api.common.UseDefaults;
+import org.qi4j.api.configuration.Enabled;
+import org.qi4j.api.property.Property;
 
 /**
- * @author Stanislav Muhametsin
- * @author Paul Merlin
+ * Describe DataSourceConfiguration properties.
  */
-public interface DataSourceService
+public interface DataSourceConfigurationState
+        extends Enabled
 {
 
-    DataSource getDataSource();
+    Property<String> driver();
+
+    Property<String> url();
+
+    Property<String> username();
+
+    Property<String> password();
+
+    @UseDefaults
+    Property<String> properties();
 
 }

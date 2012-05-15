@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2010, Stanislav Muhametsin. All Rights Reserved.
+ * Copyright (c) 2010, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,14 +19,10 @@ import org.qi4j.api.util.NullArgumentException;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.library.sql.ds.assembly.DataSourceAssembler;
+import org.qi4j.library.sql.assembly.DataSourceAssembler;
 
-/**
- * @author Stanislav Muhametsin
- * @author Paul Merlin
- */
 public abstract class AbstractSQLAssembler
-    implements Assembler
+        implements Assembler
 {
 
     private static final Visibility DEFAULT_VISIBILITY = Visibility.module;
@@ -33,16 +30,6 @@ public abstract class AbstractSQLAssembler
     private final Visibility visibility;
 
     private final DataSourceAssembler dsAss;
-
-    public AbstractSQLAssembler()
-    {
-        this( DEFAULT_VISIBILITY, new DataSourceAssembler() );
-    }
-
-    public AbstractSQLAssembler( Visibility visibility )
-    {
-        this( visibility, new DataSourceAssembler() );
-    }
 
     public AbstractSQLAssembler( DataSourceAssembler assembler )
     {
@@ -69,14 +56,13 @@ public abstract class AbstractSQLAssembler
     }
 
     public final void assemble( ModuleAssembly module )
-        throws AssemblyException
+            throws AssemblyException
     {
 
         DataSourceAssembler dataSourceAssembler = this.getDataSourceAssembler();
-        if( dataSourceAssembler == null )
-        {
+        if ( dataSourceAssembler == null ) {
             throw new IllegalStateException(
-                "Unable to assemble SQLEntityStore, no importable DataSourceService nor DataSourceServiceMixin provided" );
+                    "Unable to assemble SQLEntityStore, no importable DataSourceService nor DataSourceServiceMixin provided" );
         }
 
         dataSourceAssembler.assemble( module );
@@ -86,6 +72,6 @@ public abstract class AbstractSQLAssembler
     }
 
     protected abstract void doAssemble( ModuleAssembly module )
-        throws AssemblyException;
+            throws AssemblyException;
 
 }

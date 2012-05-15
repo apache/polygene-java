@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2010, Stanislav Muhametsin. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +15,13 @@
 
 package org.qi4j.library.sql.postgresql;
 
-import junit.framework.Assert;
+import java.sql.Connection;
+
+import javax.sql.DataSource;
+
 import org.junit.Ignore;
 import org.junit.Test;
+
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.property.Property;
@@ -28,12 +33,12 @@ import org.qi4j.index.sql.support.common.GenericDatabaseExplorer;
 import org.qi4j.index.sql.support.common.GenericDatabaseExplorer.DatabaseProcessorAdapter;
 import org.qi4j.index.sql.support.postgresql.PostgreSQLAppStartup;
 import org.qi4j.library.sql.common.SQLConfiguration;
-import org.qi4j.library.sql.ds.DataSourceService;
 import org.qi4j.test.AbstractQi4jTest;
+
 import org.sql.generation.api.vendor.PostgreSQLVendor;
 import org.sql.generation.api.vendor.SQLVendorProvider;
 
-import java.sql.Connection;
+import junit.framework.Assert;
 
 /**
  * 
@@ -57,7 +62,7 @@ public class PostgreSQLDBIntegrityTest extends AbstractQi4jTest
         throws AssemblyException
     {
         SQLTestHelper.assembleWithMemoryEntityStore( module );
-        module.addEntities( TestEntity.class );
+        module.entities( TestEntity.class );
     }
 
     @Override
@@ -65,14 +70,14 @@ public class PostgreSQLDBIntegrityTest extends AbstractQi4jTest
         throws Exception
     {
         super.setUp();
-        SQLTestHelper.setUpTest( this.serviceLocator );
+        SQLTestHelper.setUpTest( module );
     }
 
     @Override
     public void tearDown()
         throws Exception
     {
-        SQLTestHelper.tearDownTest( unitOfWorkFactory, serviceLocator, getLog() );
+        SQLTestHelper.tearDownTest( module, module, getLog() );
         super.tearDown();
     }
 
@@ -95,8 +100,8 @@ public class PostgreSQLDBIntegrityTest extends AbstractQi4jTest
         uow.remove( entity );
         uow.complete();
 
-        Connection connection = ((DataSourceService) this.module.findService( DataSourceService.class ).get())
-            .getDataSource().getConnection();
+        Connection connection = ((DataSource) this.module.findService( DataSource.class ).get())
+            .getConnection();
         GenericDatabaseExplorer.visitDatabaseTables( connection, null, schemaName, null, new DatabaseProcessorAdapter()
         {
 

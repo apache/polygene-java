@@ -27,7 +27,7 @@ import org.qi4j.api.query.grammar.*;
 import org.qi4j.api.query.grammar.OrderBy.Order;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceDescriptor;
-import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+import org.qi4j.api.structure.Module;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specification;
@@ -77,7 +77,7 @@ public abstract class AbstractSQLQuerying
     private PostgreSQLTypeHelper _typeHelper;
 
     @Structure
-    private UnitOfWorkFactory _uowf;
+    private Module module;
 
     @Structure
     private Qi4jSPI spi;
@@ -466,7 +466,7 @@ public abstract class AbstractSQLQuerying
             }
             else
             {
-                throw new UnsupportedOperationException( "Expression " + expression + " is not supported" );
+                throw new UnsupportedOperationException( "Expression " + expression + " of type " + expression.getClass() + " is not supported" );
             }
         }
         else
@@ -601,7 +601,7 @@ public abstract class AbstractSQLQuerying
                     // TODO Is it really certain that this value is always instance of EntityComposite?
                     if( value instanceof EntityComposite )
                     {
-                        value = _uowf.currentUnitOfWork().get( (EntityComposite) value ).identity().get();
+                        value = module.currentUnitOfWork().get( (EntityComposite) value ).identity().get();
                     }
                     else
                     {

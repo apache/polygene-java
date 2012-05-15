@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2010, Stanislav Muhametsin. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +15,19 @@
 
 package org.qi4j.index.sql.support.postgresql;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Map;
+
+import javax.sql.DataSource;
+
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.index.sql.support.skeletons.AbstractSQLStartup;
-import org.qi4j.library.sql.ds.DataSourceService;
+import org.qi4j.library.sql.common.SQLUtil;
+
 import org.sql.generation.api.grammar.common.datatypes.SQLDataType;
 import org.sql.generation.api.grammar.definition.table.TableScope;
 import org.sql.generation.api.grammar.definition.table.pgsql.PgSQLTableCommitAction;
@@ -28,16 +37,6 @@ import org.sql.generation.api.grammar.factories.TableReferenceFactory;
 import org.sql.generation.api.vendor.PostgreSQLVendor;
 import org.sql.generation.api.vendor.SQLVendor;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Map;
-
-/**
- * TODO refactoring
- * 
- * @author Stanislav Muhametsin
- */
 public class PostgreSQLAppStartup extends AbstractSQLStartup
 {
 
@@ -45,7 +44,7 @@ public class PostgreSQLAppStartup extends AbstractSQLStartup
     private ServiceDescriptor descriptor;
 
     @Service
-    private DataSourceService _dataSource;
+    private DataSource _dataSource;
 
     private PostgreSQLVendor _vendor;
 
@@ -90,7 +89,7 @@ public class PostgreSQLAppStartup extends AbstractSQLStartup
         // ltree module provides specific datatype for such path, which may be indexed in order to greatly improve
         // performance
 
-        Connection connection = this._dataSource.getDataSource().getConnection();
+        Connection connection = this._dataSource.getConnection();
         Statement stmt = connection.createStatement();
         try
         {
@@ -112,6 +111,9 @@ public class PostgreSQLAppStartup extends AbstractSQLStartup
         {
             throw new InternalError(
                 "It seems that your database doesn't have ltree as type. It is needed to store collections. Please refer to hopefully supplied instructions on how to add ltree type (hint: run <pg_install_dir>/share/contrib/ltree.sql script)." );
+        } finally {
+            SQLUtil.closeQuietly( stmt );
+            SQLUtil.closeQuietly( connection );
         }
     }
 

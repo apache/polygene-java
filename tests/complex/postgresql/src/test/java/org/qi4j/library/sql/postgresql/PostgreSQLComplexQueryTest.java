@@ -44,7 +44,7 @@ public class PostgreSQLComplexQueryTest extends AbstractComplexQueryTest
         catch( Exception e )
         {
             // Let's check if exception was because database was not available
-            SQLTestHelper.setUpTest( this.serviceLocator );
+            SQLTestHelper.setUpTest( module );
 
             // If we got this far, the database must have been available, and exception must have had other reason!
             throw e;
@@ -55,7 +55,7 @@ public class PostgreSQLComplexQueryTest extends AbstractComplexQueryTest
     public void tearDown()
         throws Exception
     {
-        SQLTestHelper.tearDownTest( unitOfWorkFactory, serviceLocator, getLog() );
+        SQLTestHelper.tearDownTest( module, module, getLog() );
         super.tearDown();
     }
 

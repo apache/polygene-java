@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2010, Stanislav Muhametsin. All Rights Reserved.
+ * Copyright (c) 2010, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +14,21 @@
  */
 package org.qi4j.entitystore.sql;
 
-import org.json.*;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Reader;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.cache.CacheOptions;
 import org.qi4j.api.common.Optional;
@@ -34,6 +49,8 @@ import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.entitystore.sql.internal.DatabaseSQLService;
 import org.qi4j.entitystore.sql.internal.DatabaseSQLService.EntityValueResult;
+import static org.qi4j.functional.Iterables.first;
+import org.qi4j.functional.Visitor;
 import org.qi4j.io.Input;
 import org.qi4j.io.Output;
 import org.qi4j.io.Receiver;
@@ -43,22 +60,25 @@ import org.qi4j.library.sql.api.SQLEntityState.DefaultSQLEntityState;
 import org.qi4j.library.sql.common.SQLUtil;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entitystore.*;
+import org.qi4j.spi.entitystore.DefaultEntityStoreUnitOfWork;
+import org.qi4j.spi.entitystore.EntityNotFoundException;
+import org.qi4j.spi.entitystore.EntityStore;
+import org.qi4j.spi.entitystore.EntityStoreException;
+import org.qi4j.spi.entitystore.EntityStoreSPI;
+import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
+import org.qi4j.spi.entitystore.StateCommitter;
 import org.qi4j.spi.entitystore.helpers.DefaultEntityState;
 import org.qi4j.spi.entitystore.helpers.MapEntityStore;
 import org.qi4j.spi.entitystore.helpers.Migration;
 import org.qi4j.spi.entitystore.helpers.StateStore;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+import org.json.JSONWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.*;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.*;
-
-import static org.qi4j.functional.Iterables.first;
 
 /**
  * Most of this code is copy-paste from {@link org.qi4j.spi.entitystore.helpers.MapEntityStoreMixin}. TODO refactor stuff that has to do with general
@@ -225,47 +245,84 @@ public class SQLEntityStoreMixin
     {
         return new Input<EntityState, EntityStoreException>()
         {
-           @Override
-           public <ReceiverThrowableType extends Throwable> void transferTo(Output<? super EntityState, ReceiverThrowableType> output) throws EntityStoreException, ReceiverThrowableType
-           {
+
+            @Override
+            public <ReceiverThrowableType extends Throwable> void transferTo( Output<? super EntityState, ReceiverThrowableType> output )
+                    throws EntityStoreException, ReceiverThrowableType
+            {
                 output.receiveFrom( new Sender<EntityState, EntityStoreException>()
                 {
-                   @Override
-                   public <ReceiverThrowableType extends Throwable> void sendTo(Receiver<? super EntityState, ReceiverThrowableType> receiver) throws ReceiverThrowableType, EntityStoreException
-                   {
-                        Connection connection = null;
-                        PreparedStatement ps = null;
-                        ResultSet rs = null;
-                        UsecaseBuilder builder = UsecaseBuilder.buildUsecase( "qi4j.entitystore.sql.visit" );
-                        Usecase usecase = builder.withMetaInfo( CacheOptions.NEVER ).newUsecase();
-                        final DefaultEntityStoreUnitOfWork uow = new DefaultEntityStoreUnitOfWork( entityStoreSPI, newUnitOfWorkId(),
-                                                                                                   module, usecase, System.currentTimeMillis() );
-                        try
+
+                    @Override
+                    public <ReceiverThrowableType extends Throwable> void sendTo( final Receiver<? super EntityState, ReceiverThrowableType> receiver )
+                            throws ReceiverThrowableType, EntityStoreException
+                    {
+
+                        queryAllEntities( module, new EntityStatesVisitor()
                         {
-                            connection = database.getConnection();
-                            ps = database.prepareGetAllEntitiesStatement( connection );
-                            database.populateGetAllEntitiesStatement( ps );
-                            rs = ps.executeQuery();
-                            while( rs.next() )
+
+                            public boolean visit( EntityState visited )
+                                    throws SQLException
                             {
-                                receiver.receive( readEntityState( uow, database.getEntityValue( rs ).getReader() ) );
+
+                                try {
+                                    receiver.receive( visited );
+                                } catch ( Throwable receiverThrowableType ) {
+                                    throw new SQLException( receiverThrowableType );
+                                }
+                                return true;
+
                             }
-                        }
-                        catch( SQLException sqle )
-                        {
-                            throw new EntityStoreException( sqle );
-                        }
-                        finally
-                        {
-                            SQLUtil.closeQuietly( rs );
-                            SQLUtil.closeQuietly( ps );
-                            SQLUtil.closeQuietly( connection );
-                        }
+
+                        } );
 
                     }
-                });
+
+                } );
             }
+
         };
+    }
+
+    private void queryAllEntities( Module module, EntityStatesVisitor entityStatesVisitor )
+    {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        UsecaseBuilder builder = UsecaseBuilder.buildUsecase( "qi4j.entitystore.sql.visit" );
+        Usecase usecase = builder.withMetaInfo( CacheOptions.NEVER ).newUsecase();
+        final DefaultEntityStoreUnitOfWork uow = new DefaultEntityStoreUnitOfWork( entityStoreSPI,
+                                                                                   newUnitOfWorkId(), module, usecase,
+                                                                                   System.currentTimeMillis() );
+        try {
+
+            connection = database.getConnection();
+            ps = database.prepareGetAllEntitiesStatement( connection );
+            database.populateGetAllEntitiesStatement( ps );
+            rs = ps.executeQuery();
+            while ( rs.next() ) {
+                DefaultEntityState entityState = readEntityState( uow, database.getEntityValue( rs ).getReader() );
+                if ( !entityStatesVisitor.visit( entityState ) ) {
+                    return;
+                }
+            }
+
+        } catch ( SQLException ex ) {
+            
+            throw new EntityStoreException( ex );
+            
+        } finally {
+
+            SQLUtil.closeQuietly( rs );
+            SQLUtil.closeQuietly( ps );
+            SQLUtil.closeQuietly( connection );
+
+        }
+    }
+
+    private interface EntityStatesVisitor
+            extends Visitor<EntityState, SQLException>
+    {
     }
 
     @SuppressWarnings( "ValueOfIncrementOrDecrementUsed" )

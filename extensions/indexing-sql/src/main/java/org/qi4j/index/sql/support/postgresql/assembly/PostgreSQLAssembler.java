@@ -20,11 +20,12 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.index.reindexer.ReindexerService;
 import org.qi4j.index.sql.support.postgresql.PostgreSQLService;
 import org.qi4j.library.sql.common.AbstractSQLAssembler;
-import org.qi4j.library.sql.ds.assembly.DataSourceAssembler;
 import org.sql.generation.api.vendor.PostgreSQLVendor;
 import org.sql.generation.api.vendor.SQLVendorProvider;
 
 import java.io.IOException;
+
+import org.qi4j.library.sql.assembly.DataSourceAssembler;
 
 /**
  * This is the assembler class to use when PostgreSQL is database for SQL Indexing in your application.
@@ -37,9 +38,11 @@ public class PostgreSQLAssembler extends AbstractSQLAssembler
     /**
      * The default name for the service.
      */
-    public static final String INDEXING_SERVICE_NAME = "indexing_pgsql";
+    public static final String INDEXING_SERVICE_NAME = "indexing-sql";
 
-    public static final String DATASOURCE_SERVICE_NAME = "datasource_pgsql_indexing";
+    public static final String DATASOURCE_SERVICE_NAME = "datasource-service-postgres";
+    
+    public static final String DATASOURCE_NAME = "datasource-postgres";
 
     /**
      * The default visibility for the service.
@@ -47,16 +50,6 @@ public class PostgreSQLAssembler extends AbstractSQLAssembler
     public static final Visibility DEFAULT_VISIBILITY = Visibility.application;
 
     private String _serviceName;
-
-    public PostgreSQLAssembler()
-    {
-        this( DEFAULT_VISIBILITY, new DataSourceAssembler().setDataSourceServiceName( DATASOURCE_SERVICE_NAME ) );
-    }
-
-    public PostgreSQLAssembler( Visibility visibility )
-    {
-        this( visibility, new DataSourceAssembler().setDataSourceServiceName( DATASOURCE_SERVICE_NAME ) );
-    }
 
     public PostgreSQLAssembler( DataSourceAssembler assembler )
     {

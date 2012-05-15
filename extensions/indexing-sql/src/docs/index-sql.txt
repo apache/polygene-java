@@ -1,0 +1,38 @@
+[[extension-indexing-sql]]
+= Indexing SQL Extension =
+
+Implementations per database Vendor share a generic codebase but can override
+about everything SQL. As a consequence they can have strong differences in
+terms of performance if they use vendor specific extensions.
+
+== PostgreSQL ==
+
+The ltree extension is needed.
+
+=== Installing ltree on PostgreSQL >= 9.1 ==
+
+It's bundled with PostgreSQL but you need to activate it on your database:
+
+[source,sql]
+----
+CREATE EXTENSION ltree;
+----
+
+=== Installing ltree on PostgreSQL <= 9.0 ===
+
+You need to install postgresql-contrib and import the module in your database.
+The following applies to Debian based distributions, adapt it to yours:
+
+1. Install the contrib package: sudo apt-get install postgresql-contrib
+2. Restart the database: sudo /etc/init.d/postgresql-8.4 restart
+3. Change to the database owner account (e.g., postgres).
+4. Change to the contrib modules' directory: /usr/share/postgresql/8.4/contrib/
+5. Load the SQL files using: psql -U user_name -d database_name -f module_name.sql
+
+For example to install the needed ltree module:
+
+[source,bash]
+----
+psql -U postgres -d storage -f cube.sql
+----
+

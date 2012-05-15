@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2010, Stanislav Muhametsin. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,23 +14,30 @@
  */
 package org.qi4j.test.performance.entitystore.sql;
 
+import java.sql.Connection;
+import java.sql.Statement;
+
 import org.junit.Ignore;
+
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-import org.qi4j.bootstrap.*;
+import org.qi4j.bootstrap.ApplicationAssemblerAdapter;
+import org.qi4j.bootstrap.Assembler;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.Energy4Java;
+import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.entitystore.sql.assembly.PostgreSQLEntityStoreAssembler;
 import org.qi4j.entitystore.sql.internal.SQLs;
+import org.qi4j.library.sql.assembly.DBCPDataSourceServiceAssembler;
+import org.qi4j.library.sql.assembly.DataSourceAssembler;
 import org.qi4j.library.sql.common.SQLConfiguration;
 import org.qi4j.library.sql.common.SQLUtil;
-import org.qi4j.library.sql.ds.PGDataSourceConfiguration;
+import org.qi4j.library.sql.datasource.DataSources;
 import org.qi4j.test.performance.entitystore.model.AbstractEntityStorePerformanceTest;
-
-import java.sql.Connection;
-import java.sql.Statement;
 
 /**
  * WARN This test is deactivated on purpose, please do not commit it activated.
@@ -38,12 +46,10 @@ import java.sql.Statement;
  * 
  * FIXME ES Performance tests seem to be pretty broken at the moment. At least if I want to delete test data after
  * running tests, and also by not waiting for Runnables to finish running.
- * 
- * @author Stanislav Muhametsin
- * @author Paul Merlin
  */
 @Ignore
-public class PostgreSQLEntityStorePerformanceTest extends AbstractEntityStorePerformanceTest
+public class PostgreSQLEntityStorePerformanceTest
+        extends AbstractEntityStorePerformanceTest
 {
 
     public PostgreSQLEntityStorePerformanceTest()
@@ -56,15 +62,25 @@ public class PostgreSQLEntityStorePerformanceTest extends AbstractEntityStorePer
         return new Assembler()
         {
 
-            @SuppressWarnings("unchecked")
             public void assemble( ModuleAssembly module )
-                throws AssemblyException
+                    throws AssemblyException
             {
-                new PostgreSQLEntityStoreAssembler().assemble( module );
-                ModuleAssembly configModule = module.layer().module( "config" );
-                configModule.services( MemoryEntityStoreService.class );
-                configModule.entities( PGDataSourceConfiguration.class, SQLConfiguration.class ).visibleIn(
-                    Visibility.layer );
+                ModuleAssembly config = module.layer().module( "config" );
+                config.services( MemoryEntityStoreService.class );
+
+                // DataSourceService + EntityStore's DataSource
+                new DBCPDataSourceServiceAssembler( "postgresql-datasource-service",
+                                                    Visibility.module,
+                                                    config,
+                                                    Visibility.layer ).assemble( module );
+                DataSourceAssembler dsAssembler = new DataSourceAssembler( "postgresql-datasource-service",
+                                                                           "postgresql-datasource",
+                                                                           Visibility.module,
+                                                                           DataSources.newDataSourceCircuitBreaker() );
+
+                // EntityStore
+                new PostgreSQLEntityStoreAssembler( dsAssembler ).assemble( module );
+                config.entities( SQLConfiguration.class ).visibleIn( Visibility.layer );
             }
 
         };
@@ -72,18 +88,14 @@ public class PostgreSQLEntityStorePerformanceTest extends AbstractEntityStorePer
 
     @Override
     protected void cleanUp()
-        throws Exception
+            throws Exception
     {
-        try
-        {
+        try {
             super.cleanUp();
-        }
-        finally
-        {
+        } finally {
 
             Energy4Java qi4j = new Energy4Java();
-            Assembler[][][] assemblers = new Assembler[][][]
-            {
+            Assembler[][][] assemblers = new Assembler[][][]{
                 {
                     {
                         createAssembler()
@@ -98,32 +110,25 @@ public class PostgreSQLEntityStorePerformanceTest extends AbstractEntityStorePer
             Module moduleInstance = application.findModule( "Layer 1", "config" );
             UnitOfWorkFactory uowf = moduleInstance;
             UnitOfWork uow = uowf.newUnitOfWork();
-            try
-            {
+            try {
                 SQLConfiguration config = uow.get( SQLConfiguration.class,
-                    PostgreSQLEntityStoreAssembler.ENTITYSTORE_SERVICE_NAME );
+                                                   PostgreSQLEntityStoreAssembler.ENTITYSTORE_SERVICE_NAME );
                 // TODO fix AbstractEntityStorePerformanceTest to extend from AbstractQi4jTest
                 Connection connection = null; // SQLUtil.getConnection( this.serviceLocator );
                 String schemaName = config.schemaName().get();
-                if( schemaName == null )
-                {
+                if ( schemaName == null ) {
                     schemaName = SQLs.DEFAULT_SCHEMA_NAME;
                 }
 
                 Statement stmt = null;
-                try
-                {
+                try {
                     stmt = connection.createStatement();
                     stmt.execute( String.format( "DELETE FROM %s." + SQLs.TABLE_NAME, schemaName ) );
                     connection.commit();
-                }
-                finally
-                {
+                } finally {
                     SQLUtil.closeQuietly( stmt );
                 }
-            }
-            finally
-            {
+            } finally {
                 uow.discard();
             }
         }

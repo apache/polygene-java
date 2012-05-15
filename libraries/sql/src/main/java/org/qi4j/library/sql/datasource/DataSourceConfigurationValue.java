@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, Paul Merlin. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,24 +11,14 @@
  * limitations under the License.
  *
  */
-package org.qi4j.library.sql.ds;
+package org.qi4j.library.sql.datasource;
+
+import org.qi4j.api.value.ValueComposite;
 
 /**
- * @author Stanislav Muhametsin
- * @author Paul Merlin
+ * DataSource configuration as a Value to be used outside of UoWs.
  */
-public abstract class AbstractImportedDataSourceService
-    implements DataSourceService
+public interface DataSourceConfigurationValue
+        extends ValueComposite, DataSourceConfigurationState
 {
-
-    public void activate()
-        throws Exception
-    {
-    }
-
-    public void passivate()
-        throws Exception
-    {
-    }
-
 }
