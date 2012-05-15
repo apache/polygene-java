@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2010, Stanislav Muhametsin. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,36 +14,36 @@
  */
 package org.qi4j.library.sql.postgresql;
 
-import org.junit.Assume;
-import org.qi4j.api.common.Visibility;
-import org.qi4j.api.service.ServiceFinder;
-import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.index.sql.assembly.SQLIndexingAssembler;
-import org.qi4j.index.sql.support.common.DBNames;
-import org.qi4j.index.sql.support.common.ReindexingStrategy;
-import org.qi4j.index.sql.support.postgresql.PostgreSQLAppStartup;
-import org.qi4j.index.sql.support.postgresql.assembly.PostgreSQLAssembler;
-import org.qi4j.library.sql.common.SQLConfiguration;
-import org.qi4j.library.sql.common.SQLUtil;
-import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
-import org.slf4j.Logger;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 import javax.sql.DataSource;
-import org.qi4j.api.structure.Module;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
-import org.qi4j.library.sql.assembly.DataSourceAssembler;
-import org.qi4j.library.sql.assembly.DataSourceServiceAssembler;
 
-/**
- * @author Stanislav Muhametsin
- */
+import org.junit.Assume;
+
+import org.qi4j.api.common.Visibility;
+import org.qi4j.api.service.ServiceFinder;
+import org.qi4j.api.structure.Module;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.entitystore.memory.MemoryEntityStoreService;
+import org.qi4j.index.reindexer.ReindexerConfiguration;
+import org.qi4j.index.sql.support.common.DBNames;
+import org.qi4j.index.sql.support.common.ReindexingStrategy;
+import org.qi4j.index.sql.support.postgresql.PostgreSQLAppStartup;
+import org.qi4j.index.sql.support.postgresql.assembly.PostgreSQLAssembler;
+import org.qi4j.library.sql.assembly.C3P0DataSourceServiceAssembler;
+import org.qi4j.library.sql.assembly.DataSourceAssembler;
+import org.qi4j.library.sql.common.SQLConfiguration;
+import org.qi4j.library.sql.common.SQLUtil;
+import org.qi4j.library.sql.datasource.DataSources;
+import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
+
+import org.slf4j.Logger;
+
 public class SQLTestHelper
 {
     public static final String SQL_INDEXING_SERVICE_NAME = PostgreSQLAssembler.INDEXING_SERVICE_NAME;
@@ -67,20 +68,29 @@ public class SQLTestHelper
     protected static void doCommonAssembling( ModuleAssembly mainModule )
         throws AssemblyException
     {
-        new DataSourceServiceAssembler( "postgresql-datasource-service", mainModule.layer().module( "config" ) ).assemble( mainModule );
-        PostgreSQLAssembler pgAss = new PostgreSQLAssembler( Visibility.module, new DataSourceAssembler("postgresql-datasource-service","postgresql-datasource") )
-            .setServiceName( SQL_INDEXING_SERVICE_NAME );
-        pgAss.assemble( mainModule );
+        ModuleAssembly config = mainModule.layer().module( "config" );
+        config.services( MemoryEntityStoreService.class ).visibleIn( Visibility.module );
+        
+        // EntityStore
+        mainModule.services( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class ).visibleIn( Visibility.application );
 
-        SQLIndexingAssembler ass = new SQLIndexingAssembler( Visibility.module );
-        ass.assemble( mainModule );
+        // DataSourceService + Index/Query's DataSource
+        new C3P0DataSourceServiceAssembler( "datasource-service-postgres",
+                                            Visibility.module,
+                                            config,
+                                            Visibility.layer ).assemble( mainModule );
+        DataSourceAssembler dsAssembler = new DataSourceAssembler( "datasource-service-postgres",
+                                                                   "datasource-postgres",
+                                                                   Visibility.module,
+                                                                   DataSources.newDataSourceCircuitBreaker() );
+
+        // Index/Query
+        new PostgreSQLAssembler( Visibility.module, dsAssembler ).assemble( mainModule );
+        config.entities( SQLConfiguration.class ).visibleIn( Visibility.layer );
 
         // Always re-index because of possible different app structure of multiple tests.
-        mainModule.services( ReindexingStrategy.ReindexingStrategyService.class ).withMixins(
-            ReindexingStrategy.AlwaysNeed.class );
-
-        mainModule.services( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class ).visibleIn(
-            Visibility.application );
+        mainModule.services( ReindexingStrategy.ReindexingStrategyService.class ).withMixins( ReindexingStrategy.AlwaysNeed.class ).identifiedBy( "reindexer" );
+        config.entities( ReindexerConfiguration.class ).visibleIn( Visibility.layer );
     }
 
     public static void tearDownTest( UnitOfWorkFactory uowf, Module module, Logger log )

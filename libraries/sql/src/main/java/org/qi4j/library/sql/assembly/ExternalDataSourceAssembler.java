@@ -1,6 +1,5 @@
 /*
- * Copyright (c) 2011, Rickard Öberg. All Rights Reserved.
- * Copyright (c) 2012, Paul Merlin. All Rights Reserved.
+ * Copyright (c) 2010, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,56 +16,49 @@ package org.qi4j.library.sql.assembly;
 import javax.sql.DataSource;
 
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.service.importer.ServiceInstanceImporter;
 import org.qi4j.api.util.NullArgumentException;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.circuitbreaker.CircuitBreaker;
+import org.qi4j.library.sql.datasource.DataSources;
 
-/**
- * Use this Assembler to register a javax.sql.DataSource.
- */
-public class DataSourceAssembler
+public class ExternalDataSourceAssembler
         implements Assembler
 {
-
-    private final String dataSourceServiceId;
 
     private final String dataSourceId;
 
     private final Visibility visibility;
 
-    private final CircuitBreaker circuitBreaker;
+    private final DataSource externalDataSource;
 
-    public DataSourceAssembler( String dataSourceServiceId, String dataSourceId, Visibility visibility )
+    public ExternalDataSourceAssembler( String dataSourceId, Visibility visibility, DataSource externalDataSource )
     {
-        this( dataSourceServiceId, dataSourceId, visibility, null );
+        this( dataSourceId, visibility, externalDataSource, null );
     }
 
-    public DataSourceAssembler( String dataSourceServiceId, String dataSourceId, Visibility visibility, CircuitBreaker circuitBreaker )
+    public ExternalDataSourceAssembler( String dataSourceId, Visibility visibility, DataSource externalDataSource, CircuitBreaker circuitBreaker )
     {
-        NullArgumentException.validateNotNull( "DataSourceService identity", dataSourceServiceId );
         NullArgumentException.validateNotNull( "DataSource identity", dataSourceId );
         NullArgumentException.validateNotNull( "DataSource visibility", visibility );
-        this.dataSourceServiceId = dataSourceServiceId;
+        NullArgumentException.validateNotNull( "DataSource", externalDataSource );
         this.dataSourceId = dataSourceId;
         this.visibility = visibility;
-        this.circuitBreaker = circuitBreaker;
+        if ( circuitBreaker != null ) {
+            this.externalDataSource = DataSources.wrapWithCircuitBreaker( dataSourceId, externalDataSource, circuitBreaker );
+        } else {
+            this.externalDataSource = externalDataSource;
+        }
     }
 
-    @Override
     public void assemble( ModuleAssembly module )
             throws AssemblyException
     {
         module.importedServices( DataSource.class ).
-                importedBy( ServiceInstanceImporter.class ).
-                setMetaInfo( dataSourceServiceId ).
                 identifiedBy( dataSourceId ).
-                visibleIn( visibility );
-        if ( circuitBreaker != null ) {
-            module.importedServices( DataSource.class ).identifiedBy( dataSourceId ).setMetaInfo( circuitBreaker );
-        }
+                visibleIn( visibility ).
+                setMetaInfo( externalDataSource );
     }
 
 }

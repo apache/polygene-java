@@ -31,7 +31,8 @@ import java.sql.Statement;
 import javax.sql.DataSource;
 
 import org.qi4j.library.sql.assembly.DataSourceAssembler;
-import org.qi4j.library.sql.assembly.DataSourceServiceAssembler;
+import org.qi4j.library.sql.assembly.C3P0DataSourceServiceAssembler;
+import org.qi4j.library.sql.datasource.DataSources;
 
 /**
  * @author Stanislav Muhametsin
@@ -44,7 +45,6 @@ public class MySQLEntityStoreTest
 {
 
     @Override
-    @SuppressWarnings( "unchecked" )
     public void assemble( ModuleAssembly module )
             throws AssemblyException
     {
@@ -53,10 +53,17 @@ public class MySQLEntityStoreTest
         config.services( MemoryEntityStoreService.class );
 
         // DataSourceService + EntityStore's DataSource
-        new DataSourceServiceAssembler( "mysql-datasource-service", config ).assemble( module );
+        new C3P0DataSourceServiceAssembler( "mysql-datasource-service",
+                                            Visibility.module,
+                                            config,
+                                            Visibility.layer ).assemble( module );
+        DataSourceAssembler dsAssembler = new DataSourceAssembler( "mysql-datasource-service",
+                                                                   "mysql-datasource",
+                                                                   Visibility.module,
+                                                                   DataSources.newDataSourceCircuitBreaker() );
 
         // EntityStore
-        new MySQLEntityStoreAssembler( new DataSourceAssembler( "mysql-datasource-service", "mysql-datasource" ) ).assemble( module );
+        new MySQLEntityStoreAssembler( dsAssembler ).assemble( module );
         config.entities( SQLConfiguration.class ).visibleIn( Visibility.layer );
     }
 

@@ -26,6 +26,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
+import org.qi4j.api.common.Visibility;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueComposite;
@@ -38,8 +39,9 @@ import org.qi4j.io.Inputs;
 import org.qi4j.io.Outputs;
 import static org.qi4j.io.Outputs.collection;
 import static org.qi4j.io.Transforms.map;
+import org.qi4j.library.sql.assembly.C3P0DataSourceServiceAssembler;
 import org.qi4j.library.sql.assembly.DataSourceAssembler;
-import org.qi4j.library.sql.assembly.DataSourceServiceAssembler;
+import org.qi4j.library.sql.datasource.DataSources;
 import org.qi4j.library.sql.datasource.Databases;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -57,8 +59,11 @@ public class LiquibaseServiceTest
             @Override
             public void assemble( ModuleAssembly module ) throws AssemblyException
             {
-                new DataSourceServiceAssembler( "datasource-service", module ).assemble( module );
-                new DataSourceAssembler( "datasource-service", "testds3" ).assemble( module );
+                new C3P0DataSourceServiceAssembler( "datasource-service", Visibility.module, module, Visibility.module ).assemble( module );
+                new DataSourceAssembler( "datasource-service",
+                                         "testds3",
+                                         Visibility.module,
+                                         DataSources.newDataSourceCircuitBreaker() ).assemble( module );
                 
                 module.values( SomeValue.class );
 

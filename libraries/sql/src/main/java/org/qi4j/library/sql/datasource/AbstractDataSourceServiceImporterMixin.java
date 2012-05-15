@@ -16,10 +16,6 @@ package org.qi4j.library.sql.datasource;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
@@ -132,55 +128,15 @@ public abstract class AbstractDataSourceServiceImporterMixin<PooledDataSourceTyp
         final CircuitBreaker circuitBreaker = importedServiceDescriptor.metaInfo( CircuitBreaker.class );
         if ( circuitBreaker != null ) {
 
+            DataSource wrappedDataSource = DataSources.wrapWithCircuitBreaker( importedServiceDescriptor.identity(), pool, circuitBreaker );
             circuitBreakers.put( pool, circuitBreaker );
-            return wrapWithCircuitBreaker( importedServiceDescriptor, pool, circuitBreaker );
+            return wrappedDataSource;
 
         } else {
 
             return pool;
 
         }
-    }
-
-    private Object wrapWithCircuitBreaker( final ImportedServiceDescriptor importedServiceDescriptor, final PooledDataSourceType pool, final CircuitBreaker circuitBreaker )
-    {
-        // Create wrapper
-        InvocationHandler handler = new InvocationHandler()
-        {
-
-            @Override
-            public Object invoke( Object proxy, Method method, Object[] args )
-                    throws Throwable
-            {
-                if ( !circuitBreaker.isOn() ) {
-                    Throwable throwable = circuitBreaker.getLastThrowable();
-                    if ( throwable != null ) {
-                        throw throwable;
-                    } else {
-                        throw new ServiceImporterException( "Circuit breaker for DataSource " + importedServiceDescriptor.identity() + " is not on" );
-                    }
-                }
-
-                try {
-                    Object result = method.invoke( pool, args );
-                    circuitBreaker.success();
-                    return result;
-                } catch ( IllegalAccessException e ) {
-                    circuitBreaker.throwable( e );
-                    throw e;
-                } catch ( IllegalArgumentException e ) {
-                    circuitBreaker.throwable( e );
-                    throw e;
-                } catch ( InvocationTargetException e ) {
-                    circuitBreaker.throwable( e.getCause() );
-                    throw e.getCause();
-                }
-            }
-
-        };
-
-        // Create proxy with circuit breaker
-        return Proxy.newProxyInstance( DataSource.class.getClassLoader(), new Class[]{ DataSource.class }, handler );
     }
 
     private DataSourceConfigurationValue getConfiguration( String identity )
@@ -209,7 +165,7 @@ public abstract class AbstractDataSourceServiceImporterMixin<PooledDataSourceTyp
                         throw exception;
                     }
                 }
-                
+
                 DataSourceConfiguration configEntity = configBuilder.newInstance();
                 config = entityToValue.convert( DataSourceConfigurationValue.class, configEntity );
 

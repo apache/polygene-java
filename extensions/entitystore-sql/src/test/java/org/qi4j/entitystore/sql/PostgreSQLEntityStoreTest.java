@@ -28,10 +28,11 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.entitystore.sql.assembly.PostgreSQLEntityStoreAssembler;
 import org.qi4j.entitystore.sql.internal.SQLs;
+import org.qi4j.library.sql.assembly.C3P0DataSourceServiceAssembler;
 import org.qi4j.library.sql.assembly.DataSourceAssembler;
-import org.qi4j.library.sql.assembly.DataSourceServiceAssembler;
 import org.qi4j.library.sql.common.SQLConfiguration;
 import org.qi4j.library.sql.common.SQLUtil;
+import org.qi4j.library.sql.datasource.DataSources;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
 
 /**
@@ -70,7 +71,6 @@ public class PostgreSQLEntityStoreTest
 {
 
     @Override
-    @SuppressWarnings( "unchecked" )
     public void assemble( ModuleAssembly module )
             throws AssemblyException
     {
@@ -79,10 +79,17 @@ public class PostgreSQLEntityStoreTest
         config.services( MemoryEntityStoreService.class );
 
         // DataSourceService + EntityStore's DataSource
-        new DataSourceServiceAssembler( "postgresql-datasource-service", config ).assemble( module );
-
+        new C3P0DataSourceServiceAssembler( "postgresql-datasource-service",
+                                            Visibility.module,
+                                            config,
+                                            Visibility.layer ).assemble( module );
+        DataSourceAssembler dsAssembler = new DataSourceAssembler( "postgresql-datasource-service",
+                                                                   "postgresql-datasource",
+                                                                   Visibility.module,
+                                                                   DataSources.newDataSourceCircuitBreaker() );
+        
         // EntityStore
-        new PostgreSQLEntityStoreAssembler( new DataSourceAssembler( "postgresql-datasource-service", "postgresql-datasource" ) ).assemble( module );
+        new PostgreSQLEntityStoreAssembler( dsAssembler ).assemble( module );
         config.entities( SQLConfiguration.class ).visibleIn( Visibility.layer );
     }
 

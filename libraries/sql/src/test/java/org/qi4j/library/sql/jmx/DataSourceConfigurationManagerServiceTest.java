@@ -35,8 +35,9 @@ import org.qi4j.io.Outputs;
 import org.qi4j.io.Receiver;
 import org.qi4j.library.circuitbreaker.CircuitBreaker;
 import org.qi4j.library.jmx.JMXAssembler;
+import org.qi4j.library.sql.assembly.C3P0DataSourceServiceAssembler;
 import org.qi4j.library.sql.assembly.DataSourceAssembler;
-import org.qi4j.library.sql.assembly.DataSourceServiceAssembler;
+import org.qi4j.library.sql.datasource.DataSources;
 import org.qi4j.library.sql.datasource.Databases;
 import org.qi4j.library.sql.liquibase.LiquibaseConfiguration;
 import org.qi4j.library.sql.liquibase.LiquibaseService;
@@ -75,14 +76,20 @@ public class DataSourceConfigurationManagerServiceTest
             {
                 new JMXAssembler().assemble( module );
 
+                // Create in-memory store for configurations
+                module.services( MemoryEntityStoreService.class ).visibleIn( Visibility.layer );
+
                 // Set up DataSource service that will manage the connection pools
-                new DataSourceServiceAssembler( "datasource-service", module ).assemble( module );
+                new C3P0DataSourceServiceAssembler( "datasource-service", Visibility.layer, module, Visibility.module ).assemble( module );
 
                 {
                     ModuleAssembly testModule = module.layer().module( "TestDS" );
 
                     // Create a specific DataSource that uses the "datasource" service to do the main work
-                    new DataSourceAssembler( "datasource-service", "testds" ).assemble( testModule );
+                    new DataSourceAssembler( "datasource-service",
+                                             "testds",
+                                             Visibility.module,
+                                             DataSources.newDataSourceCircuitBreaker() ).assemble( testModule );
 
                     // Set up Liquibase service that will create the tables
                     testModule.services( LiquibaseService.class ).identifiedBy( "liquibase1" ).instantiateOnStartup();
@@ -96,7 +103,10 @@ public class DataSourceConfigurationManagerServiceTest
 
                     // Create another specific DataSource that uses the "datasource" service to do the main work
                     // Use DataSourceAssembler to assemble the DataSource.
-                    new DataSourceAssembler( "datasource-service", "testds2" ).assemble( testModule2 );
+                    new DataSourceAssembler( "datasource-service",
+                                             "testds2",
+                                             Visibility.module,
+                                             DataSources.newDataSourceCircuitBreaker() ).assemble( testModule2 );
 
                     // Set up Liquibase service that will create the tables
                     testModule2.services( LiquibaseService.class ).identifiedBy( "liquibase2" ).instantiateOnStartup();
@@ -105,12 +115,8 @@ public class DataSourceConfigurationManagerServiceTest
                     testModule2.forMixin( LiquibaseConfiguration.class ).declareDefaults().changeLog().set( "changelog.xml" );
                 }
 
-                // Create in-memory store for configurations
-                module.services( MemoryEntityStoreService.class ).visibleIn( Visibility.layer );
-
                 module.services(DataSourceConfigurationManagerService.class).instantiateOnStartup();
 
-//                module.layer().module( "Test" ).objects( DataSourceConfigurationManagerServiceTest.class );
             }
         };
 

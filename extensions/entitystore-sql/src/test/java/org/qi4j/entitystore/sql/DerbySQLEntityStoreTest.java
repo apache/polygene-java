@@ -27,10 +27,11 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.entitystore.sql.assembly.DerbySQLEntityStoreAssembler;
 import org.qi4j.entitystore.sql.internal.SQLs;
+import org.qi4j.library.sql.assembly.C3P0DataSourceServiceAssembler;
 import org.qi4j.library.sql.assembly.DataSourceAssembler;
-import org.qi4j.library.sql.assembly.DataSourceServiceAssembler;
 import org.qi4j.library.sql.common.SQLConfiguration;
 import org.qi4j.library.sql.common.SQLUtil;
+import org.qi4j.library.sql.datasource.DataSources;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
 
 import org.apache.derby.iapi.services.io.FileUtil;
@@ -48,12 +49,18 @@ public class DerbySQLEntityStoreTest
         config.services( MemoryEntityStoreService.class );
 
         // DataSourceService + EntityStore's DataSource
-        new DataSourceServiceAssembler( "derby-datasource-service", config ).assemble( module );
+        new C3P0DataSourceServiceAssembler( "derby-datasource-service",
+                                            Visibility.module,
+                                            config,
+                                            Visibility.layer ).assemble( module );
+        DataSourceAssembler dsAssembler = new DataSourceAssembler( "derby-datasource-service",
+                                                                   "derby-datasource",
+                                                                   Visibility.module,
+                                                                   DataSources.newDataSourceCircuitBreaker() );
 
         // EntityStore
-        new DerbySQLEntityStoreAssembler( new DataSourceAssembler( "derby-datasource-service", "derby-datasource" ) ).assemble( module );
+        new DerbySQLEntityStoreAssembler( dsAssembler ).assemble( module );
         config.entities( SQLConfiguration.class ).visibleIn( Visibility.layer );
-
     }
 
     @Override
