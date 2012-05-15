@@ -130,7 +130,7 @@ public abstract class AbstractQi4jScenarioTest
                 }
                 else
                 {
-                    throw new InternalError( "I have seen a case where a UoW is on the stack, but not opened." );
+                    throw new InternalError( "I have seen a case where a UoW is on the stack, but not opened. First is" + uow.usecase().name() );
                 }
             }
             new Exception( "UnitOfWork not properly cleaned up" ).printStackTrace();
