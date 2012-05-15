@@ -33,7 +33,7 @@ import org.qi4j.index.sql.support.common.DBNames;
 import org.qi4j.index.sql.support.common.ReindexingStrategy;
 import org.qi4j.index.sql.support.postgresql.PostgreSQLAppStartup;
 import org.qi4j.index.sql.support.postgresql.assembly.PostgreSQLAssembler;
-import org.qi4j.library.sql.assembly.C3P0DataSourceServiceAssembler;
+import org.qi4j.library.sql.assembly.DBCPDataSourceServiceAssembler;
 import org.qi4j.library.sql.assembly.DataSourceAssembler;
 import org.qi4j.library.sql.common.SQLConfiguration;
 import org.qi4j.library.sql.common.SQLUtil;
@@ -71,7 +71,7 @@ public class SQLTestHelper
         mainModule.services( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class ).visibleIn( Visibility.application );
 
         // DataSourceService + Index/Query's DataSource
-        new C3P0DataSourceServiceAssembler( "datasource-service-postgres",
+        new DBCPDataSourceServiceAssembler( "datasource-service-postgres",
                                             Visibility.module,
                                             config,
                                             Visibility.layer ).assemble( mainModule );

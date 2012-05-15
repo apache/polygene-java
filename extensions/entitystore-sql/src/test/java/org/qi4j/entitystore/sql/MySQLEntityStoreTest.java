@@ -13,7 +13,13 @@
  */
 package org.qi4j.entitystore.sql;
 
+import java.sql.Connection;
+import java.sql.Statement;
+
+import javax.sql.DataSource;
+
 import org.junit.Ignore;
+
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.AssemblyException;
@@ -21,18 +27,12 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.entitystore.sql.assembly.MySQLEntityStoreAssembler;
 import org.qi4j.entitystore.sql.internal.SQLs;
+import org.qi4j.library.sql.assembly.DBCPDataSourceServiceAssembler;
+import org.qi4j.library.sql.assembly.DataSourceAssembler;
 import org.qi4j.library.sql.common.SQLConfiguration;
 import org.qi4j.library.sql.common.SQLUtil;
-import org.qi4j.test.entity.AbstractEntityStoreTest;
-
-import java.sql.Connection;
-import java.sql.Statement;
-
-import javax.sql.DataSource;
-
-import org.qi4j.library.sql.assembly.DataSourceAssembler;
-import org.qi4j.library.sql.assembly.C3P0DataSourceServiceAssembler;
 import org.qi4j.library.sql.datasource.DataSources;
+import org.qi4j.test.entity.AbstractEntityStoreTest;
 
 /**
  * @author Stanislav Muhametsin
@@ -53,7 +53,7 @@ public class MySQLEntityStoreTest
         config.services( MemoryEntityStoreService.class );
 
         // DataSourceService + EntityStore's DataSource
-        new C3P0DataSourceServiceAssembler( "mysql-datasource-service",
+        new DBCPDataSourceServiceAssembler( "mysql-datasource-service",
                                             Visibility.module,
                                             config,
                                             Visibility.layer ).assemble( module );

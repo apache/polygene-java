@@ -27,7 +27,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.entitystore.sql.assembly.DerbySQLEntityStoreAssembler;
 import org.qi4j.entitystore.sql.internal.SQLs;
-import org.qi4j.library.sql.assembly.C3P0DataSourceServiceAssembler;
+import org.qi4j.library.sql.assembly.DBCPDataSourceServiceAssembler;
 import org.qi4j.library.sql.assembly.DataSourceAssembler;
 import org.qi4j.library.sql.common.SQLConfiguration;
 import org.qi4j.library.sql.common.SQLUtil;
@@ -49,7 +49,7 @@ public class DerbySQLEntityStoreTest
         config.services( MemoryEntityStoreService.class );
 
         // DataSourceService + EntityStore's DataSource
-        new C3P0DataSourceServiceAssembler( "derby-datasource-service",
+        new DBCPDataSourceServiceAssembler( "derby-datasource-service",
                                             Visibility.module,
                                             config,
                                             Visibility.layer ).assemble( module );
