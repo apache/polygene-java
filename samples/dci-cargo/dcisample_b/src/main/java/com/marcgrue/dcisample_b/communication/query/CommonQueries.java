@@ -8,6 +8,7 @@ import com.marcgrue.dcisample_b.infrastructure.model.Queries;
 import com.marcgrue.dcisample_b.infrastructure.model.QueryModel;
 import org.apache.wicket.model.IModel;
 import org.qi4j.api.query.Query;
+import org.qi4j.api.query.QueryBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,16 +36,18 @@ public class CommonQueries extends Queries
         {
             public Query<CargoEntity> getQuery()
             {
-                return qbf.newQueryBuilder( CargoEntity.class ).newQuery( uowf.currentUnitOfWork() )
-                      .orderBy( orderBy( templateFor( CargoEntity.class ).trackingId().get().id() ) );
+                QueryBuilder<CargoEntity> qb = qbf.newQueryBuilder(CargoEntity.class);
+                return uowf.currentUnitOfWork().newQuery( qb)
+                        .orderBy(orderBy(templateFor(CargoEntity.class).trackingId().get().id()));
             }
         };
     }
 
     public List<String> unLocodes()
     {
-        Query<Location> locations = qbf.newQueryBuilder( Location.class ).newQuery( uowf.currentUnitOfWork() )
-              .orderBy( orderBy( templateFor( Location.class ).unLocode().get().code() ) );
+        QueryBuilder<Location> qb = qbf.newQueryBuilder(Location.class);
+        Query<Location> locations = uowf.currentUnitOfWork().newQuery(qb)
+                .orderBy( orderBy( templateFor( Location.class ).unLocode().get().code() ) );
         List<String> unLocodeList = new ArrayList<String>();
         for (Location location : locations)
             unLocodeList.add( location.getCode() );

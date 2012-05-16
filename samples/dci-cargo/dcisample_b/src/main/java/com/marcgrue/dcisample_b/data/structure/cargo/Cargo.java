@@ -5,7 +5,7 @@ import com.marcgrue.dcisample_b.data.structure.itinerary.Itinerary;
 import com.marcgrue.dcisample_b.data.structure.location.Location;
 import com.marcgrue.dcisample_b.data.structure.tracking.TrackingId;
 import org.qi4j.api.common.Optional;
-import org.qi4j.api.entity.association.Association;
+import org.qi4j.api.association.Association;
 import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.Property;
 

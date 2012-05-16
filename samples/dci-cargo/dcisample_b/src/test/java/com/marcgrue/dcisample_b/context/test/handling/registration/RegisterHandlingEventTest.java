@@ -124,7 +124,7 @@ public class RegisterHandlingEventTest extends TestApplication {
     public void successfull_Registration() throws Exception {
         // Delete handling events from memory
         tempUow = uowf.newUnitOfWork();
-        Query<HandlingEventEntity> events = qbf.newQueryBuilder(HandlingEventEntity.class).newQuery(tempUow);
+        Query<HandlingEventEntity> events = tempUow.newQuery( qbf.newQueryBuilder(HandlingEventEntity.class));
         for (HandlingEvent event : events)
             tempUow.remove(event);
         tempUow.complete();
