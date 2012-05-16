@@ -7,6 +7,7 @@ import com.marcgrue.dcisample_a.data.shipping.handling.HandlingEventType;
 import com.marcgrue.dcisample_a.data.shipping.voyage.Voyage;
 import com.marcgrue.dcisample_a.infrastructure.model.Queries;
 import org.qi4j.api.query.Query;
+import org.qi4j.api.query.QueryBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,8 +24,8 @@ public class HandlingQueries extends Queries
 {
     public List<String> voyages()
     {
-        Query<Voyage> voyages = qbf.newQueryBuilder( Voyage.class )
-              .newQuery( uowf.currentUnitOfWork() )
+        QueryBuilder<Voyage> qb = qbf.newQueryBuilder(Voyage.class);
+        Query<Voyage> voyages = uowf.currentUnitOfWork().newQuery(qb)
               .orderBy( orderBy( templateFor( Voyage.class ).voyageNumber() ) );
 
         List<String> voyageList = new ArrayList<String>();
@@ -35,7 +36,8 @@ public class HandlingQueries extends Queries
 
     public List<String> cargoIds()
     {
-        Query<CargoEntity> cargos = qbf.newQueryBuilder( CargoEntity.class ).newQuery( uowf.currentUnitOfWork() )
+        QueryBuilder<CargoEntity> qb = qbf.newQueryBuilder(CargoEntity.class);
+        Query<CargoEntity> cargos = uowf.currentUnitOfWork().newQuery(qb)
               .orderBy( orderBy( templateFor( CargoEntity.class ).trackingId().get().id() ) );
         List<String> cargoList = new ArrayList<String>();
         for (CargoEntity cargo : cargos)

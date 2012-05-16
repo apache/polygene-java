@@ -14,6 +14,7 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.query.Query;
+import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
@@ -66,7 +67,8 @@ public interface SampleDataService
             try
             {
                 int i = 11; // starting at 11 for sortable tracking id prefix in lists
-                for (Cargo cargo : qbf.newQueryBuilder( Cargo.class ).newQuery( uow ))
+                QueryBuilder<Cargo> qb = qbf.newQueryBuilder(Cargo.class);
+                for (Cargo cargo : uow.newQuery(qb))
                 {
                     String trackingId = cargo.trackingId().get().id().get();
                     ExpectedHandlingEvent nextEvent;
@@ -230,7 +232,8 @@ public interface SampleDataService
 
             CargosEntity cargos = uow.get( CargosEntity.class, CargosEntity.CARGOS_ID );
 
-            Query<Location> allLocations = qbf.newQueryBuilder( Location.class ).newQuery( uow );
+            QueryBuilder<Location> qb = qbf.newQueryBuilder(Location.class);
+            Query<Location> allLocations = uow.newQuery(qb);
             int locationSize = (int) allLocations.count();
 
             // Make array for selection of location with random index

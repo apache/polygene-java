@@ -2,6 +2,8 @@ package com.marcgrue.dcisample_a.infrastructure.model;
 
 import com.marcgrue.dcisample_a.infrastructure.conversion.EntityToDTOService;
 import org.apache.wicket.model.IModel;
+import org.qi4j.api.Qi4j;
+import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.value.ValueBuilderFactory;
 
@@ -13,9 +15,9 @@ public abstract class ReadOnlyModel<T>
 {
     private static final long serialVersionUID = 1L;
 
-    static protected UnitOfWorkFactory uowf;
-    static protected ValueBuilderFactory vbf;
     static protected EntityToDTOService valueConverter;
+    static protected Qi4j qi4j;
+    static protected Module module;
 
     /**
      * This default implementation of setObject unconditionally throws an
@@ -39,12 +41,12 @@ public abstract class ReadOnlyModel<T>
         return sb.toString();
     }
 
-    public static void prepareModelBaseClass( UnitOfWorkFactory unitOfWorkFactory,
-                                              ValueBuilderFactory valueBuilderFactory,
+    public static void prepareModelBaseClass( Module m,
+                                              Qi4j api,
                                               EntityToDTOService entityToDTO )
     {
-        uowf = unitOfWorkFactory;
-        vbf = valueBuilderFactory;
+        module = m;
+        qi4j = api;
         valueConverter = entityToDTO;
     }
 }

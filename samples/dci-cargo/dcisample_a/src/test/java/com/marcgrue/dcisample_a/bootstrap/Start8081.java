@@ -1,9 +1,9 @@
 package com.marcgrue.dcisample_a.bootstrap;
 
-import org.mortbay.jetty.Connector;
-import org.mortbay.jetty.Server;
-import org.mortbay.jetty.bio.SocketConnector;
-import org.mortbay.jetty.webapp.WebAppContext;
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.bio.SocketConnector;
+import org.eclipse.jetty.webapp.WebAppContext;
 
 /**
  * Javadoc
@@ -27,14 +27,14 @@ public class Start8081
         jetty.setConnectors( new Connector[]{connector} );
 
         WebAppContext webAppContext = new WebAppContext();
-        webAppContext.setServer( jetty );
         webAppContext.setContextPath( "/" );
         webAppContext.setWar( "src/main/webapp" );
-        jetty.addHandler( webAppContext );
+        jetty.setHandler( webAppContext );
 
         try
         {
             jetty.start();
+            jetty.join();
         }
         catch (Exception e)
         {

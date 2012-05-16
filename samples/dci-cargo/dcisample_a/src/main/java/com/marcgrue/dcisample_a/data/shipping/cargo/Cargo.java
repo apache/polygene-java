@@ -4,7 +4,7 @@ import com.marcgrue.dcisample_a.data.shipping.itinerary.Itinerary;
 import com.marcgrue.dcisample_a.data.shipping.location.Location;
 import com.marcgrue.dcisample_a.data.shipping.delivery.Delivery;
 import org.qi4j.api.common.Optional;
-import org.qi4j.api.entity.association.Association;
+import org.qi4j.api.association.Association;
 import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.Property;
 

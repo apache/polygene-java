@@ -10,7 +10,7 @@ import org.junit.rules.TestName;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.bootstrap.Energy4Java;
-import org.qi4j.spi.structure.ApplicationSPI;
+import org.qi4j.api.structure.Application;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +23,7 @@ public class TestApplication
     // Logger for sub classes
     protected Logger logger = LoggerFactory.getLogger( getClass() );
 
-    protected static ApplicationSPI app;
+    protected static Application app;
     protected static UnitOfWorkFactory uowf;
 
     @BeforeClass

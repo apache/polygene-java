@@ -47,7 +47,7 @@ public class EntityModel<T extends DTO, U extends EntityComposite>
 
     private U loadEntity()
     {
-        U entity = uowf.currentUnitOfWork().get( entityClass, identity );
+        U entity = module.currentUnitOfWork().get( entityClass, identity );
         if (entity == null)
         {
             throw new NoSuchEntityException( EntityReference.parseEntityReference( identity ) );
