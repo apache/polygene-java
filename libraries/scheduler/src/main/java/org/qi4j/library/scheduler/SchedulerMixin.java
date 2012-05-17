@@ -48,9 +48,9 @@ public class SchedulerMixin
     implements Scheduler, Activatable
 {
     private static final Logger LOGGER = LoggerFactory.getLogger( Scheduler.class );
-    private static final int DEFAULT_WORKERS_COUNT = Runtime.getRuntime().availableProcessors();
+    private static final int DEFAULT_WORKERS_COUNT = Runtime.getRuntime().availableProcessors() + 1;
     private static final int DEFAULT_WORKQUEUE_SIZE = 10;
-
+    
     @Service
     private ScheduleFactory scheduleFactory;
 
@@ -217,6 +217,7 @@ public class SchedulerMixin
         {
             corePoolSize = workersCount / 4;
         }
+        // Throws IllegalArgument if corePoolSize or keepAliveTime less than zero, or if workersCount less than or equal to zero, or if corePoolSize greater than workersCount.
         taskExecutor = new ThreadPoolExecutor( corePoolSize, workersCount,
                                                0, TimeUnit.MILLISECONDS,
                                                new LinkedBlockingQueue<Runnable>( workQueueSize ),
