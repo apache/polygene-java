@@ -20,6 +20,7 @@ dependencies {
   runtime(libraries.cxf_rt_http_jetty)
   testCompile(libraries.http_client)
   testCompile(libraries.junit)
+  testCompile(libraries.xmlunit)
   testRuntime(libraries.asm)
   testRuntime(libraries.asm_commons)
   testRuntime(libraries.slf4j_simple)

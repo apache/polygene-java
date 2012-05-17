@@ -32,6 +32,8 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
+import org.custommonkey.xmlunit.XMLAssert;
+
 public class DividendsTest
 {
     private static final String EXPECTED =
@@ -132,6 +134,6 @@ public class DividendsTest
                 line = br.readLine();
             }
         }
-        assertEquals( EXPECTED, result );
+        XMLAssert.assertXMLEqual( EXPECTED, result );
     }
 }

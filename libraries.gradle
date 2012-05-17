@@ -60,6 +60,7 @@ def testNgVersion = '5.8'
 def jmockVersion = '2.5.1'
 def mockitoVersion = '1.8.5'
 def easyMockVersion = '3.0'
+def xmlunitVersion = '1.3'
 
 // build a map of the dependency artifacts to use.  Allows centralized definition of the version of artifacts to
 // use.  In that respect it serves a role similar to <dependencyManagement> in Maven
@@ -230,7 +231,8 @@ rootProject.ext {
           easymock: "org.easymock:easymock:$easyMockVersion",
           mockito: "org.mockito:mockito-core:$mockitoVersion",
           jmock: "org.jmock:jmock:$jmockVersion",
-          testng: "org.testng:testng:$testNgVersion:jdk15"
+          testng: "org.testng:testng:$testNgVersion:jdk15",
+          xmlunit: "xmlunit:xmlunit:$xmlunitVersion"
   ]
 }
 
