@@ -44,11 +44,15 @@ public abstract class AbstractSecureJettyTest
         extends AbstractJettyTest
 {
 
-    protected static final int HTTPS_PORT = 8441;
-    private static final String KS_PASSWORD = "changeit";
     private static final String HTTPS = "https";
-    private static final File KEYSTORE_FILE = new File( "src/test/resources/org/qi4j/library/http/qi4j-lib-http-unittests-client-cert.p12" );
-    private static final File TRUSTSTORE_FILE = new File( "src/test/resources/org/qi4j/library/http/qi4j-lib-http-unittests-ca.jceks" );
+    protected static final int HTTPS_PORT = 8441;
+    protected static final String KS_PASSWORD = "changeit";
+    protected static final String CLIENT_KEYSTORE_PATH = "src/test/resources/org/qi4j/library/http/qi4j-lib-http-unittests-client-cert.jceks";
+    protected static final File CLIENT_KEYSTORE_FILE = new File( CLIENT_KEYSTORE_PATH );
+    protected static final String SERVER_KEYSTORE_PATH = "src/test/resources/org/qi4j/library/http/qi4j-lib-http-unittests-server-cert.jceks";
+    protected static final File SERVER_KEYSTORE_FILE = new File( SERVER_KEYSTORE_PATH );
+    protected static final String TRUSTSTORE_PATH = "src/test/resources/org/qi4j/library/http/qi4j-lib-http-unittests-ca.jceks";
+    protected static final File TRUSTSTORE_FILE = new File( TRUSTSTORE_PATH );
     // These two clients use a HostnameVerifier that don't do any check, don't do this in production code
     protected HttpClient trustHttpClient;
     protected HttpClient mutualHttpClient;
@@ -72,8 +76,8 @@ public abstract class AbstractSecureJettyTest
         trustHttpClient = trustClient;
 
         // Mutual HTTP Client
-        KeyStore keystore = KeyStore.getInstance( "PKCS12" );
-        keystore.load( new FileInputStream( KEYSTORE_FILE ), KS_PASSWORD.toCharArray() );
+        KeyStore keystore = KeyStore.getInstance( "JCEKS" );
+        keystore.load( new FileInputStream( CLIENT_KEYSTORE_FILE ), KS_PASSWORD.toCharArray() );
 
         DefaultHttpClient mutualClient = new DefaultHttpClient();
         SSLSocketFactory mutualSslFactory = new SSLSocketFactory( keystore, KS_PASSWORD, truststore );
@@ -103,7 +107,7 @@ public abstract class AbstractSecureJettyTest
 
         } );
         KeyStore truststore = KeyStore.getInstance( "JCEKS" );
-        truststore.load( new FileInputStream( new File( "src/test/resources/org/qi4j/library/http/qi4j-lib-http-unittests-ca.jceks" ) ), "changeit".toCharArray() );
+        truststore.load( new FileInputStream( TRUSTSTORE_FILE ), KS_PASSWORD.toCharArray() );
         SSLContext sslCtx = SSLContext.getInstance( "TLS" );
         TrustManagerFactory caTrustManagerFactory = TrustManagerFactory.getInstance( "SunX509" );
         caTrustManagerFactory.init( truststore );

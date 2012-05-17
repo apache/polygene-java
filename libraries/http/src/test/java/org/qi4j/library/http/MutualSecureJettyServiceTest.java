@@ -38,13 +38,13 @@ public class MutualSecureJettyServiceTest
         SecureJettyConfiguration config = module.forMixin( SecureJettyConfiguration.class ).declareDefaults();
         config.port().set( HTTPS_PORT );
 
-        config.keystorePath().set( "src/test/resources/org/qi4j/library/http/qi4j-lib-http-unittests-server-cert.p12" );
-        config.keystoreType().set( "PKCS12" );
-        config.keystorePassword().set( "changeit" );
+        config.keystorePath().set( SERVER_KEYSTORE_PATH );
+        config.keystoreType().set( "JCEKS" );
+        config.keystorePassword().set( KS_PASSWORD );
 
-        config.truststorePath().set( "src/test/resources/org/qi4j/library/http/qi4j-lib-http-unittests-ca.jceks" );
+        config.truststorePath().set( TRUSTSTORE_PATH );
         config.truststoreType().set( "JCEKS" );
-        config.truststorePassword().set( "changeit" );
+        config.truststorePassword().set( KS_PASSWORD );
 
         config.wantClientAuth().set( Boolean.TRUE );
         // END SNIPPET: config

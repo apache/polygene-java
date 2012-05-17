@@ -43,9 +43,9 @@ public class SecureJettyServiceTest
         // START SNIPPET: configssl
         SecureJettyConfiguration config = module.forMixin( SecureJettyConfiguration.class ).declareDefaults();
         config.port().set( HTTPS_PORT );
-        config.keystorePath().set( "src/test/resources/org/qi4j/library/http/qi4j-lib-http-unittests-server-cert.p12" );
-        config.keystoreType().set( "PKCS12" );
-        config.keystorePassword().set( "changeit" );
+        config.keystorePath().set( SERVER_KEYSTORE_PATH );
+        config.keystoreType().set( "JCEKS" );
+        config.keystorePassword().set( KS_PASSWORD );
         // END SNIPPET: configssl
 
         // START SNIPPET: assemblyssl
