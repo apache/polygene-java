@@ -17,15 +17,6 @@ import javax.management.MBeanServer;
 import javax.servlet.Filter;
 import javax.servlet.Servlet;
 
-import org.eclipse.jetty.http.ssl.SslContextFactory;
-import org.eclipse.jetty.security.ConstraintMapping;
-import org.eclipse.jetty.security.ConstraintSecurityHandler;
-import org.eclipse.jetty.security.SecurityHandler;
-import org.eclipse.jetty.server.Connector;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.ssl.SslConnector;
-import org.eclipse.jetty.server.ssl.SslSelectChannelConnector;
-
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.Identity;
@@ -33,7 +24,15 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.library.http.Interface.Protocol;
-import static org.qi4j.library.http.JettyConfigurationHelper.*;
+
+import org.eclipse.jetty.security.ConstraintMapping;
+import org.eclipse.jetty.security.ConstraintSecurityHandler;
+import org.eclipse.jetty.security.SecurityHandler;
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ssl.SslConnector;
+import org.eclipse.jetty.server.ssl.SslSelectChannelConnector;
+import org.eclipse.jetty.util.ssl.SslContextFactory;
 
 public class SecureJettyMixin
         extends AbstractJettyMixin
@@ -41,6 +40,7 @@ public class SecureJettyMixin
 
     @This
     private Configuration<SecureJettyConfiguration> configuration;
+
     @Optional
     @Service
     private Iterable<ConstraintService> constraintServices;
@@ -82,7 +82,7 @@ public class SecureJettyMixin
     protected Connector buildConnector()
     {
         SslConnector connector = new SslSelectChannelConnector( new SslContextFactory() );
-        configureSslConnector( connector, configuration.configuration() );
+        JettyConfigurationHelper.configureSslConnector( connector, configuration.configuration() );
         return connector;
     }
 

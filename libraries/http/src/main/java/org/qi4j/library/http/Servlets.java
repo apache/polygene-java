@@ -79,7 +79,9 @@ public final class Servlets
     {
 
         String path;
+
         Class<? extends ServiceComposite> servlet;
+
         Map<String, String> initParams = Collections.emptyMap();
 
         ServletDeclaration( String path )
@@ -148,8 +150,11 @@ public final class Servlets
     {
 
         String path;
+
         Class<? extends ServiceComposite> filter;
+
         EnumSet<DispatcherType> dispatchers;
+
         Map<String, String> initParams = Collections.emptyMap();
 
         FilterAssembler( String path )
@@ -169,7 +174,7 @@ public final class Servlets
             dispatchers = EnumSet.of( first, rest );
             return this;
         }
-        
+
         @Deprecated
         public FilterAssembler on( Dispatcher first, Dispatcher... rest )
         {
@@ -242,8 +247,10 @@ public final class Servlets
     {
 
         private final String path;
+
         private Constraint constraint;
-        private HttpMethod[] ommitedHttpMethods = new HttpMethod[]{};
+
+        private HttpMethod[] omittedHttpMethods = new HttpMethod[]{};
 
         private ConstraintAssembler( String path )
         {
@@ -256,15 +263,15 @@ public final class Servlets
             return this;
         }
 
-        public ConstraintAssembler butNotOn( HttpMethod... ommitedHttpMethods )
+        public ConstraintAssembler butNotOn( HttpMethod... omittedHttpMethods )
         {
-            this.ommitedHttpMethods = ommitedHttpMethods;
+            this.omittedHttpMethods = omittedHttpMethods;
             return this;
         }
 
         ConstraintInfo constraintInfo()
         {
-            return new ConstraintInfo( path, constraint, ommitedHttpMethods );
+            return new ConstraintInfo( path, constraint, omittedHttpMethods );
         }
 
     }

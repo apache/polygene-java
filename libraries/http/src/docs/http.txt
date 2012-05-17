@@ -73,15 +73,6 @@ source=libraries/http/src/test/java/org/qi4j/library/http/SecureJettyServiceTest
 tag=assemblyssl
 ----
 
-If you want, or need, to do client certificate authentication you'll need to declare
-servlet constraints with the help of the provided fluent API:
-
-[snippet,java]
-----
-source=libraries/http/src/test/java/org/qi4j/library/http/MutualSecureJettyServiceTest.java
-tag=assembly
-----
-
 === Configuration ===
 
 You must at least configure a KeyStore using the three related properties. All the other

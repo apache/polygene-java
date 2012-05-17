@@ -15,15 +15,16 @@ package org.qi4j.library.http;
 
 import java.io.IOException;
 
-import org.apache.http.client.methods.HttpGet;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
-import static org.qi4j.library.http.Servlets.*;
+import static org.qi4j.library.http.Servlets.addServlets;
+import static org.qi4j.library.http.Servlets.serve;
+
+import org.apache.http.client.methods.HttpGet;
 
 public class MutualSecureJettyServiceTest
         extends AbstractSecureJettyTest
@@ -50,21 +51,23 @@ public class MutualSecureJettyServiceTest
         // END SNIPPET: config
 
         addServlets( serve( "/hello" ).with( HelloWorldServletService.class ) ).to( module );
-        // START SNIPPET: assembly
-        addConstraints( constrain( "/hello" ).by( ConstraintInfo.Constraint.CLIENT_CERT ) ).to( module );
-        // END SNIPPET: assembly
     }
 
     @Test
-    public void testMutual()
+    public void testWithoutClientCertificate()
             throws IOException
     {
         // As we set wantClientAuth we can request without a client certificate ...
         String output = trustHttpClient.execute( new HttpGet( "https://localhost:8441/hello" ), stringResponseHandler );
         assertEquals( "Hello World", output );
+    }
 
+    @Test
+    public void testWithClientCertificate()
+            throws IOException
+    {
         // ... and with one
-        output = mutualHttpClient.execute( new HttpGet( "https://localhost:8441/hello" ), stringResponseHandler );
+        String output = mutualHttpClient.execute( new HttpGet( "https://localhost:8441/hello" ), stringResponseHandler );
         assertEquals( "Hello Mutual World", output );
     }
 

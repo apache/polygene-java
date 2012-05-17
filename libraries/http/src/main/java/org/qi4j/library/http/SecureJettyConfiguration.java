@@ -101,7 +101,7 @@ public interface SecureJettyConfiguration
     /**
      * The algorithm used by {@link SecureRandom} for SSL operations.
      * 
-     * Default JVM algorithm is used if ommited.
+     * Default JVM algorithm is used if omitted.
      * 
      * @return The algorithm used by {@link SecureRandom} for SSL operations.
      */

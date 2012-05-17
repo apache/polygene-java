@@ -13,13 +13,14 @@
  */
 package org.qi4j.library.http;
 
-import org.eclipse.jetty.security.ConstraintMapping;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.util.security.Constraint;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceReference;
+import org.qi4j.library.http.ConstraintInfo.HttpMethod;
+
+import org.eclipse.jetty.security.ConstraintMapping;
+import org.eclipse.jetty.util.security.Constraint;
 
 @Mixins( ConstraintService.Mixin.class )
 public interface ConstraintService
@@ -42,22 +43,15 @@ public interface ConstraintService
             if ( constraintInfo != null && constraintInfo.getConstraint() != null ) {
                 Constraint constraint = new Constraint();
                 switch ( constraintInfo.getConstraint() ) {
-                    case CLIENT_CERT:
-                        constraint.setName( Constraint.__CERT_AUTH2 );
-                        constraint.setAuthenticate( true );
                 }
                 csMapping = new ConstraintMapping();
                 csMapping.setConstraint( constraint );
                 csMapping.setPathSpec( constraintInfo.getPath() );
-                if ( constraintInfo.getOmmitedHttpMethods() != null && constraintInfo.getOmmitedHttpMethods().length > 0 ) {
-                    csMapping.setMethodOmissions( ConstraintInfo.HttpMethod.toStringArray( constraintInfo.getOmmitedHttpMethods() ) );
+                if ( constraintInfo.getOmittedHttpMethods() != null && constraintInfo.getOmittedHttpMethods().length > 0 ) {
+                    csMapping.setMethodOmissions( HttpMethod.toStringArray( constraintInfo.getOmittedHttpMethods() ) );
                 }
             }
             return csMapping;
-        }
-
-        public void applyConstraints( Server server )
-        {
         }
 
     }

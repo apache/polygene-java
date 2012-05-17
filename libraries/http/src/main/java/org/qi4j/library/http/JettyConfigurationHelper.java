@@ -16,20 +16,22 @@ package org.qi4j.library.http;
 import java.security.Provider;
 import java.security.Security;
 
+import org.qi4j.api.common.InvalidApplicationException;
+
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ssl.SslConnector;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
-
 import org.eclipse.jetty.util.ssl.SslContextFactory;
-import org.qi4j.api.common.InvalidApplicationException;
 
 final class JettyConfigurationHelper
 {
 
     private static final Integer DEFAULT_PORT = 8080;
+
     private static final String[] DEFAULT_WELCOME_FILES = new String[]{ "index.html" };
+
     private static final String COMA = ",";
 
     static void configureContext( ServletContextHandler root, JettyConfiguration config )
@@ -134,7 +136,7 @@ final class JettyConfigurationHelper
             ssl.setKeyStoreProvider( "BC" ); // WARN This one needs BouncyCastle on the classpath
             needBouncyCastle = true;
         }
-        ssl.setKeyStore( keystorePath );
+        ssl.setKeyStorePath( keystorePath );
         ssl.setKeyStorePassword( keystorePassword );
 
         // Certificate alias
@@ -231,10 +233,6 @@ final class JettyConfigurationHelper
 
     static void configureServer( Server server, JettyConfiguration config )
     {
-        Integer maxCookieVersion = config.maxCookieVersion().get();
-        if ( maxCookieVersion != null ) {
-            server.setMaxCookieVersion( maxCookieVersion );
-        }
         Boolean sendDateHeader = config.sendDateHeader().get();
         if ( sendDateHeader != null ) {
             server.setSendDateHeader( sendDateHeader );

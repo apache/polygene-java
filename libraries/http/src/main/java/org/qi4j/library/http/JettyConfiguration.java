@@ -151,14 +151,6 @@ public interface JettyConfiguration
 
     // ## Server Configuration Properties #####################################
     /**
-     * Default to 1 as specified in RFC2109.
-     * @see http://www.ietf.org/rfc/rfc2109.txt
-     */
-    @Optional
-    @GreaterThan( 0 )
-    Property<Integer> maxCookieVersion();
-
-    /**
      * @return If {@link JettyService} populates http header with server date.
      */
     @Optional

@@ -21,8 +21,6 @@ public class ConstraintInfo
 
     public static enum Constraint
     {
-
-        CLIENT_CERT
     }
 
     public static enum HttpMethod
@@ -42,14 +40,16 @@ public class ConstraintInfo
     }
 
     private final String path;
-    private final Constraint constraint;
-    private final HttpMethod[] ommitedHttpMethods;
 
-    ConstraintInfo( String path, Constraint constraint, HttpMethod[] ommitedHttpMethods )
+    private final Constraint constraint;
+
+    private final HttpMethod[] omittedHttpMethods;
+
+    ConstraintInfo( String path, Constraint constraint, HttpMethod[] omittedHttpMethods )
     {
         this.path = path;
         this.constraint = constraint;
-        this.ommitedHttpMethods = ommitedHttpMethods;
+        this.omittedHttpMethods = omittedHttpMethods;
     }
 
     public Constraint getConstraint()
@@ -57,9 +57,9 @@ public class ConstraintInfo
         return constraint;
     }
 
-    public HttpMethod[] getOmmitedHttpMethods()
+    public HttpMethod[] getOmittedHttpMethods()
     {
-        return ommitedHttpMethods;
+        return omittedHttpMethods;
     }
 
     public String getPath()
