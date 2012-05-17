@@ -136,6 +136,7 @@ public class TestApplication
         Context.prepareContextBaseClass( uowf, vbf );
 
         populateTestData();
+        uow.complete();
 
         // Separate test suites in console output
         System.out.println();
@@ -170,27 +171,26 @@ public class TestApplication
             uow.discard();
             uow = null;
         }
-
-        if (uowf != null && uowf.currentUnitOfWork() != null)
-        {
-            UnitOfWork current;
-            while (( current = uowf.currentUnitOfWork() ) != null)
-            {
-                if (current.isOpen())
-                {
-                    current.discard();
-                }
+        if( uowf != null && uowf.isUnitOfWorkActive() )
+        {   
+            while( uowf.isUnitOfWorkActive() )
+            {   
+                UnitOfWork uow = uowf.currentUnitOfWork();
+                if( uow.isOpen() )
+                {   
+                    System.err.println( "UnitOfWork not cleaned up:" + uow.usecase().name() );
+                    uow.discard();
+                }   
                 else
-                {
-                    throw new InternalError( "UoW is on the stack, but not opened." );
-                }
-            }
-
+                {   
+                    throw new InternalError( "I have seen a case where a UoW is on the stack, but not opened. First is: " + uow.usecase().name() );
+                }   
+            }   
             new Exception( "UnitOfWork not properly cleaned up" ).printStackTrace();
-        }
+        }   
 
-        if (app != null)
-        {
+        if( app != null )
+        {   
             app.passivate();
         }
     }
