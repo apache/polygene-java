@@ -136,7 +136,6 @@ public class TestApplication
         Context.prepareContextBaseClass( uowf, vbf );
 
         populateTestData();
-        uow.complete();
 
         // Separate test suites in console output
         System.out.println();
