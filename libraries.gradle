@@ -50,6 +50,7 @@ def strutsVersion = '2.1.8.1'
 def velocityVersion = '1.6.2'
 def voldemortVersion = '0.81'
 def wicketVersion = '1.5.1'
+def wicketStatelessVersion = '1.5.0'
 def woodstoxVersion = '4.1.0'
 def wsdl4jVersion = '1.6.2'
 def xmlSchemaVersion = '1.4.7'
@@ -147,6 +148,7 @@ rootProject.ext {
           jetty_util: "org.eclipse.jetty:jetty-util:$jettyVersion",
           jetty_continuation: "org.eclipse.jetty:jetty-continuation:$jettyVersion",
           jetty_client: "org.eclipse.jetty:jetty-client:$jettyVersion",
+          jetty_xml: "org.eclipse.jetty:jetty-xml:$jettyVersion",
 
           // Struts
           struts_codebehind: "org.apache.struts:struts2-codebehind-plugin:$strutsVersion",
@@ -172,7 +174,7 @@ rootProject.ext {
                   "org.apache.wicket:wicket-extensions:$wicketVersion"
           ],
           wicket_devutils: "org.apache.wicket:wicket-devutils:$wicketVersion",
-          wicket_stateless: "com.jolira:wicket-stateless:$wicketVersion",
+          wicket_stateless: "com.jolira:wicket-stateless:$wicketStatelessVersion",
 
           // Library & Extension dependencies
           jodatime: "joda-time:joda-time:$jodaTimeVersion",

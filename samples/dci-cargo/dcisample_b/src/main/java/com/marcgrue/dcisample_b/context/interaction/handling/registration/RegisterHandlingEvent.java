@@ -18,6 +18,7 @@ import com.marcgrue.dcisample_b.infrastructure.dci.RoleMixin;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.query.Query;
+import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 
@@ -146,14 +147,14 @@ public class RegisterHandlingEvent extends Context
 
                 if (c.eventType.equals( RECEIVE ) || c.eventType.equals( CUSTOMS ) || c.eventType.equals( CLAIM ))
                 {
-                    Query<HandlingEventEntity> duplicates = qbf.newQueryBuilder( HandlingEventEntity.class )
-                          .where(
-                                and(
-                                      eq( templateFor( HandlingEvent.class ).trackingId().get().id(), c.trackingIdString ),
-                                      eq( templateFor( HandlingEvent.class ).handlingEventType(), c.eventType )
-                                )
-                          )
-                          .newQuery( uowf.currentUnitOfWork() );
+                    QueryBuilder<HandlingEventEntity> qb = qbf.newQueryBuilder(HandlingEventEntity.class)
+                            .where(
+                                    and(
+                                            eq(templateFor(HandlingEvent.class).trackingId().get().id(), c.trackingIdString),
+                                            eq(templateFor(HandlingEvent.class).handlingEventType(), c.eventType)
+                                    )
+                            );
+                    Query<HandlingEventEntity> duplicates = uowf.currentUnitOfWork().newQuery(qb);
                     if (duplicates.count() > 0)
                         throw new DuplicateEventException( c.eventData );
                 }
@@ -164,14 +165,14 @@ public class RegisterHandlingEvent extends Context
                 if (!c.eventType.equals( CLAIM ))
                 {
                     HandlingEvent eventTemplate = templateFor( HandlingEvent.class );
-                    Query<HandlingEventEntity> alreadyClaimed = qbf.newQueryBuilder( HandlingEventEntity.class )
-                          .where(
-                                and(
-                                      eq( eventTemplate.trackingId().get().id(), c.trackingIdString ),
-                                      eq( eventTemplate.handlingEventType(), CLAIM )
-                                )
-                          )
-                          .newQuery( uowf.currentUnitOfWork() );
+                    QueryBuilder<HandlingEventEntity> qb = qbf.newQueryBuilder(HandlingEventEntity.class)
+                            .where(
+                                    and(
+                                            eq(eventTemplate.trackingId().get().id(), c.trackingIdString),
+                                            eq(eventTemplate.handlingEventType(), CLAIM)
+                                    )
+                            );
+                    Query<HandlingEventEntity> alreadyClaimed = uowf.currentUnitOfWork().newQuery( qb);
                     if (alreadyClaimed.count() > 0)
                         throw new AlreadyClaimedException( c.eventData );
                 }

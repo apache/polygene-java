@@ -3,7 +3,7 @@ package com.marcgrue.dcisample_a.bootstrap;
 import com.marcgrue.dcisample_a.bootstrap.assembly.Assembler;
 import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.envisage.Envisage;
-import org.qi4j.spi.structure.ApplicationModelSPI;
+import org.qi4j.api.structure.ApplicationDescriptor;
 
 /**
  * Visualize the application assemblage structure.
@@ -14,7 +14,7 @@ public class VisualizeApplicationStructure
    {
       Energy4Java qi4j = new Energy4Java();
       Assembler assembler = new Assembler();
-      ApplicationModelSPI applicationModel = qi4j.newApplicationModel( assembler );
+      ApplicationDescriptor applicationModel = qi4j.newApplicationModel( assembler );
       applicationModel.newInstance( qi4j.spi() );
 
       /*

@@ -9,10 +9,12 @@ import org.apache.wicket.Page;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.cycle.AbstractRequestCycleListener;
 import org.apache.wicket.request.cycle.RequestCycle;
+import org.qi4j.api.Qi4j;
 import org.qi4j.api.composite.TransientBuilderFactory;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.query.QueryBuilderFactory;
+import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
 import org.qi4j.api.unitofwork.UnitOfWork;
@@ -22,7 +24,6 @@ import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
 import org.qi4j.bootstrap.ApplicationAssembler;
 import org.qi4j.bootstrap.Energy4Java;
-import org.qi4j.spi.structure.ApplicationSPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +37,7 @@ public class WicketQi4jApplication
 {
     public Logger logger = LoggerFactory.getLogger( WicketQi4jApplication.class );
 
-    protected ApplicationSPI qi4jApp;
+    protected Application qi4jApp;
     protected Module qi4jModule;
 
     @Structure
@@ -50,6 +51,9 @@ public class WicketQi4jApplication
 
     @Structure
     protected TransientBuilderFactory tbf;
+
+    @Structure
+    protected Qi4j qi4j;
 
     @Service
     protected EntityToDTOService valueConverter;
@@ -109,7 +113,7 @@ public class WicketQi4jApplication
 
         Context.prepareContextBaseClass( uowf );
         BaseWebPage.prepareBaseWebPageClass( tbf );
-        ReadOnlyModel.prepareModelBaseClass( uowf, vbf, valueConverter );
+        ReadOnlyModel.prepareModelBaseClass( qi4jModule, qi4j, valueConverter );
         Queries.prepareQueriesBaseClass( uowf, qbf );
 
         wicketInit();
@@ -126,7 +130,8 @@ public class WicketQi4jApplication
             qi4jModule = qi4jApp.findModule( defaultLayerName(), defaultModuleName() );
 
             // Qi4j injects @Structure and @Service elements into this application instance
-            qi4jModule.objectBuilderFactory().newObjectBuilder( WicketQi4jApplication.class ).injectTo( this );
+            //qi4jModule.newObject( WicketQi4jApplication.class );
+            qi4jModule.injectTo( this);
 
             logger.info( "Started Qi4j application" );
         }

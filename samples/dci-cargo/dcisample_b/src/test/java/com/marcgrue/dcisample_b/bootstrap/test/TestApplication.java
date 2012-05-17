@@ -28,7 +28,7 @@ import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.bootstrap.Energy4Java;
-import org.qi4j.spi.structure.ApplicationSPI;
+import org.qi4j.api.structure.Application;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +49,7 @@ public class TestApplication
     // Logger for sub classes
     protected Logger logger = LoggerFactory.getLogger( getClass() );
 
-    protected static ApplicationSPI app;
+    protected static Application app;
     protected static Module module;
     protected static UnitOfWorkFactory uowf;
     protected static TransientBuilderFactory tbf;
@@ -170,27 +170,26 @@ public class TestApplication
             uow.discard();
             uow = null;
         }
-
-        if (uowf != null && uowf.currentUnitOfWork() != null)
-        {
-            UnitOfWork current;
-            while (( current = uowf.currentUnitOfWork() ) != null)
-            {
-                if (current.isOpen())
-                {
-                    current.discard();
-                }
+        if( uowf != null && uowf.isUnitOfWorkActive() )
+        {   
+            while( uowf.isUnitOfWorkActive() )
+            {   
+                UnitOfWork uow = uowf.currentUnitOfWork();
+                if( uow.isOpen() )
+                {   
+                    System.err.println( "UnitOfWork not cleaned up:" + uow.usecase().name() );
+                    uow.discard();
+                }   
                 else
-                {
-                    throw new InternalError( "UoW is on the stack, but not opened." );
-                }
-            }
-
+                {   
+                    throw new InternalError( "I have seen a case where a UoW is on the stack, but not opened. First is: " + uow.usecase().name() );
+                }   
+            }   
             new Exception( "UnitOfWork not properly cleaned up" ).printStackTrace();
-        }
+        }   
 
-        if (app != null)
-        {
+        if( app != null )
+        {   
             app.passivate();
         }
     }

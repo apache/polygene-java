@@ -10,6 +10,7 @@ import com.marcgrue.dcisample_a.infrastructure.model.Queries;
 import com.marcgrue.dcisample_a.infrastructure.model.QueryModel;
 import org.apache.wicket.model.IModel;
 import org.qi4j.api.query.Query;
+import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryExpressions;
 
 import java.util.ArrayList;
@@ -28,10 +29,9 @@ public class TrackingQueries extends Queries
     {
         Cargo cargoEntity = templateFor( CargoEntity.class );
 
-        Query<CargoEntity> cargos = qbf.newQueryBuilder( CargoEntity.class )
-              .where( isNotNull( cargoEntity.itinerary() ) )
-              .newQuery( uowf.currentUnitOfWork() )
-              .orderBy( orderBy( cargoEntity.trackingId().get().id() ) );
+        QueryBuilder<CargoEntity> qb = qbf.newQueryBuilder(CargoEntity.class).where(isNotNull(cargoEntity.itinerary()));
+        Query<CargoEntity> cargos = uowf.currentUnitOfWork().newQuery(qb)
+              .orderBy(orderBy(cargoEntity.trackingId().get().id()));
 
         List<String> cargoList = new ArrayList<String>();
         for (CargoEntity cargo : cargos)
@@ -48,9 +48,9 @@ public class TrackingQueries extends Queries
             {
                 HandlingEvent eventTemplate = templateFor( HandlingEvent.class );
 
-                return qbf.newQueryBuilder( HandlingEventEntity.class )
-                      .where( QueryExpressions.eq( eventTemplate.trackingId().get().id(), trackingIdString ) )
-                      .newQuery( uowf.currentUnitOfWork() )
+                QueryBuilder<HandlingEventEntity> qb = qbf.newQueryBuilder(HandlingEventEntity.class)
+                        .where(QueryExpressions.eq(eventTemplate.trackingId().get().id(), trackingIdString));
+                return uowf.currentUnitOfWork().newQuery(qb)
                       .orderBy( orderBy( eventTemplate.completionTime() ) );
             }
         };

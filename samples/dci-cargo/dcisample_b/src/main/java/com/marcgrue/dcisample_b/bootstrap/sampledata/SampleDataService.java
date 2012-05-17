@@ -24,6 +24,7 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.query.Query;
+import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
@@ -93,7 +94,9 @@ public interface SampleDataService
             try
             {
                 int i = 11; // starting at 11 for sortable tracking id prefix in lists
-                for (Cargo cargo : qbf.newQueryBuilder( Cargo.class ).newQuery( uow ))
+                QueryBuilder<Cargo> qb = qbf.newQueryBuilder(Cargo.class);
+                for (Cargo cargo : uow.newQuery(qb))
+
                 {
                     final String trackingId = cargo.trackingId().get().id().get();
                     final RouteSpecification routeSpec = cargo.routeSpecification().get();
@@ -124,7 +127,7 @@ public interface SampleDataService
                         Location origin = routeSpec.origin().get();
                         Location dest = routeSpec.destination().get();
                         Location badDest = null;
-                        Query<Location> locations = qbf.newQueryBuilder( Location.class ).newQuery( uow );
+                        Query<Location> locations = uow.newQuery( qbf.newQueryBuilder( Location.class ));
                         for (Location loc : locations)
                         {
                             if (!origin.equals( loc ) && !dest.equals( loc ))
@@ -159,7 +162,7 @@ public interface SampleDataService
                         voyageNumber = nextEvent.voyage().get().voyageNumber().get().number().get();
 
                         // Find earliest wrong carrier movement (voyage) with same departure location
-                        final Query<Voyage> voyages = qbf.newQueryBuilder( Voyage.class ).newQuery( uowf.currentUnitOfWork() );
+                        final Query<Voyage> voyages = uowf.currentUnitOfWork().newQuery(qbf.newQueryBuilder( Voyage.class ) );
                         int depth = 0;
                         do
                         {
@@ -299,7 +302,7 @@ public interface SampleDataService
 
             CargoAggregateRoot cargos = uow.get( CargoAggregateRoot.class, CargoAggregateRoot.CARGOS_ID );
 
-            Query<Location> allLocations = qbf.newQueryBuilder( Location.class ).newQuery( uow );
+            Query<Location> allLocations = uow.newQuery( qbf.newQueryBuilder( Location.class ));
             int locationSize = (int) allLocations.count();
 
             // Make array for selection of location with random index

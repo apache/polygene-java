@@ -17,7 +17,7 @@ import org.junit.runners.model.Statement;
  * NOTE!
  * 1. the check for the expected exception must be immediately above the code that is expected to throw such exception
  * 2. the line of code that is expected to throw an exception should be the last line in the test method
- * {@see http://java.dzone.com/articles/unexpected-behavior-junit’s}
+ * {@see http://java.dzone.com/articles/unexpected-behavior-junits}
  */
 public class ExpectedException implements MethodRule
 {

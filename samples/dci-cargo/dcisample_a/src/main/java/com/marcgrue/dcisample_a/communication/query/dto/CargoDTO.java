@@ -8,7 +8,7 @@ import com.marcgrue.dcisample_a.data.shipping.cargo.TrackingId;
 import com.marcgrue.dcisample_a.infrastructure.conversion.DTO;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.property.Property;
-import org.qi4j.library.values.Unqualified;
+import org.qi4j.library.conversion.values.Unqualified;
 
 /**
  * Cargo DTO

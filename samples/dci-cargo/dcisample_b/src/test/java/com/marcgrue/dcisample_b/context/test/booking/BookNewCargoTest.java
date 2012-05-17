@@ -101,8 +101,8 @@ public class BookNewCargoTest extends TestApplication
     @Test
     public void deviation_4a_TrackingIdWithWrongCharacter() throws Exception
     {
-        thrown.expect( ConstraintViolationException.class, "for value 'Gšteborg1234'" );
-        new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, DAY24 ).withTrackingId( "Gšteborg1234" );
+        thrown.expect( ConstraintViolationException.class, "for value 'GÃ¶teborg1234'" );
+        new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, DAY24 ).withTrackingId( "GÃ¶teborg1234" );
     }
 
     @Test

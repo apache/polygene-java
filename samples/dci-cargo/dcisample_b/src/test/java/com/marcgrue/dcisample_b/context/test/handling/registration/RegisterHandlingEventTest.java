@@ -76,10 +76,12 @@ public class RegisterHandlingEventTest extends TestApplication {
     @Test
     public void deviation_4a_DuplicateEvent_Receive() throws Exception {
         // Receive 1st time (store event so that it turns up in query)
+        uow.complete();
         tempUow = uowf.newUnitOfWork();
         handlingEvent = HANDLING_EVENTS.createHandlingEvent(DAY1, DAY1, trackingId, RECEIVE, HONGKONG, noVoyage);
         tempUow.complete();
 
+        uow = uowf.newUnitOfWork();
         // Receive 2nd time
         parsedEventData = parsedHandlingEventData(DAY2, DAY2, "ABC", RECEIVE, "CNHKG", null);
         thrown.expect(DuplicateEventException.class, "Cargo can't be received more than once");
@@ -88,12 +90,14 @@ public class RegisterHandlingEventTest extends TestApplication {
 
     @Test
     public void deviation_4a_DuplicateEvent_Customs() throws Exception {
+        uow.complete();
         // In customs 1st time
         tempUow = uowf.newUnitOfWork();
         handlingEvent = HANDLING_EVENTS.createHandlingEvent(DAY1, DAY1, trackingId, CUSTOMS, HONGKONG, noVoyage);
         tempUow.complete();
 
         // In customs 2nd time
+        uow = uowf.newUnitOfWork();
         parsedEventData = parsedHandlingEventData(DAY2, DAY2, "ABC", CUSTOMS, "CNHKG", null);
         thrown.expect(DuplicateEventException.class, "Cargo can't be in customs more than once");
         handlingEvent = new RegisterHandlingEvent(parsedEventData).getEvent();
@@ -101,12 +105,14 @@ public class RegisterHandlingEventTest extends TestApplication {
 
     @Test
     public void deviation_4a_DuplicateEvent_Claim() throws Exception {
+        uow.complete();
         // Claimed 1st time
         tempUow = uowf.newUnitOfWork();
         handlingEvent = HANDLING_EVENTS.createHandlingEvent(DAY1, DAY1, trackingId, CLAIM, HONGKONG, noVoyage);
         tempUow.complete();
 
         // Claimed 2nd time
+        uow = uowf.newUnitOfWork();
         parsedEventData = parsedHandlingEventData(DAY2, DAY2, "ABC", CLAIM, "CNHKG", null);
         thrown.expect(DuplicateEventException.class, "Cargo can't be claimed more than once");
         new RegisterHandlingEvent(parsedEventData).getEvent();
@@ -124,7 +130,7 @@ public class RegisterHandlingEventTest extends TestApplication {
     public void successfull_Registration() throws Exception {
         // Delete handling events from memory
         tempUow = uowf.newUnitOfWork();
-        Query<HandlingEventEntity> events = qbf.newQueryBuilder(HandlingEventEntity.class).newQuery(tempUow);
+        Query<HandlingEventEntity> events = tempUow.newQuery( qbf.newQueryBuilder(HandlingEventEntity.class));
         for (HandlingEvent event : events)
             tempUow.remove(event);
         tempUow.complete();

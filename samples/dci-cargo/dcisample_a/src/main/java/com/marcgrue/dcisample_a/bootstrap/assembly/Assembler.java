@@ -1,5 +1,6 @@
 package com.marcgrue.dcisample_a.bootstrap.assembly;
 
+import com.marcgrue.dcisample_a.bootstrap.DCISampleApplication_a;
 import com.marcgrue.dcisample_a.bootstrap.sampledata.BaseDataService;
 import com.marcgrue.dcisample_a.bootstrap.sampledata.SampleDataService;
 import com.marcgrue.dcisample_a.communication.query.BookingQueries;
@@ -116,7 +117,7 @@ public class Assembler
         ModuleAssembly bootstrapModule = bootstrapLayer.module( "BOOTSTRAP-Bootstrap" );
         bootstrapModule
               .objects(
-                    WicketQi4jApplication.class );
+                      DCISampleApplication_a.class);
 
         // Load sample data on startup
         bootstrapModule

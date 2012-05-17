@@ -1,5 +1,7 @@
 package com.marcgrue.dcisample_b.infrastructure.model;
 
+import org.json.JSONException;
+import org.qi4j.api.json.JSONObjectSerializer;
 import org.qi4j.api.value.ValueComposite;
 
 /**
@@ -17,7 +19,13 @@ public class JSONModel<T, U extends ValueComposite>
     @SuppressWarnings( "unchecked" )
     public JSONModel( T valueComposite, Class<U> valueCompositeClass )
     {
-        json = ( (U) valueComposite ).toJSON();   // Unchecked cast
+        JSONObjectSerializer jsonSerializer = new JSONObjectSerializer();
+        try {
+            jsonSerializer.serialize((U) valueComposite);
+        } catch (JSONException e) {
+            throw new RuntimeException( "Cannot serialize ValueComposite: " + valueComposite );
+        }
+        json = jsonSerializer.getRoot().toString();
         this.valueCompositeClass = valueCompositeClass;
     }
 
@@ -28,7 +36,7 @@ public class JSONModel<T, U extends ValueComposite>
             throw new RuntimeException( value + " has to be an instance of a ValueComposite." );
 
         // Get ValueComposite interface
-        Class<U> valueCompositeClass =  (Class<U>) ( (ValueComposite) value ).type();   // Unchecked cast
+        Class<U> valueCompositeClass =  (Class<U>) qi4j.getValueDescriptor(value).valueType().mainType();
 
         return new JSONModel<T, U>( value, valueCompositeClass);
     }
@@ -39,7 +47,7 @@ public class JSONModel<T, U extends ValueComposite>
         if (valueComposite == null && json != null)
         {
             // De-serialize
-            valueComposite = (T) vbf.newValueFromJSON( valueCompositeClass, json ); // Unchecked cast
+            valueComposite = (T) module.newValueFromJSON( valueCompositeClass, json ); // Unchecked cast
         }
         return valueComposite;
     }
