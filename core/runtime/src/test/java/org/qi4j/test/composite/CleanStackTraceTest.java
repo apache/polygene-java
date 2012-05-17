@@ -29,6 +29,8 @@ import static org.junit.Assert.assertEquals;
  * Test if the stacktrace is cleaned up properly.
  * <p/>
  * NOTE: This satisfiedBy MUST NOT be inside package org.qi4j.runtime, or it will fail.
+ * 
+ * TODO Make this test more resistent to changes.
  */
 public class CleanStackTraceTest
     extends AbstractQi4jTest
@@ -66,9 +68,9 @@ public class CleanStackTraceTest
 
             String separator = System.getProperty( "line.separator" );
             String correctTrace = "java.lang.RuntimeException" + separator +
-                                  "\tat org.qi4j.test.composite.CleanStackTraceTest$DoStuffMixin.doStuff(CleanStackTraceTest.java:92)" + separator +
+                                  "\tat org.qi4j.test.composite.CleanStackTraceTest$DoStuffMixin.doStuff(CleanStackTraceTest.java:101)" + separator +
                                   "\tat org.qi4j.test.composite.CleanStackTraceTest$TestComposite.doStuff(Unknown Source)" + separator +
-                                  "\tat org.qi4j.test.composite.CleanStackTraceTest.cleanStackTraceOnApplicationException(CleanStackTraceTest.java:61)";
+                                  "\tat org.qi4j.test.composite.CleanStackTraceTest.cleanStackTraceOnApplicationException(CleanStackTraceTest.java:60)";
             String actual = actualTrace.toString();
             actual = actual.substring( 0, correctTrace.length() );
             assertEquals( correctTrace, actual );
