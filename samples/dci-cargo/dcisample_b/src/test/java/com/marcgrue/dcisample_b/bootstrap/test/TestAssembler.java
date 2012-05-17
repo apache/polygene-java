@@ -168,7 +168,8 @@ public class TestAssembler
               .addServices(
                     MemoryRepositoryService.class,
                     RdfIndexingEngineService.class )
-              .visibleIn( application );
+              .visibleIn( application )
+              .instantiateOnStartup();
 
 
         ModuleAssembly entityStoreModule = infrastructureLayer.module( "INFRASTRUCTURE-EntityStore" );
