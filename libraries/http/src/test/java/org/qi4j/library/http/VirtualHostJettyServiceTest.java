@@ -40,6 +40,7 @@ public class VirtualHostJettyServiceTest
         new JettyServiceAssembler().assemble( module );
 
         SecureJettyConfiguration config = module.forMixin( SecureJettyConfiguration.class ).declareDefaults();
+        config.hostName().set( "127.0.0.1" );
         config.port().set( HTTP_PORT );
         config.virtualHosts().set( HOST1 + "," + HOST2 );
 

@@ -43,7 +43,9 @@ public final class JettyServiceTest
         new JettyServiceAssembler().assemble( module );
 
         // Set HTTP port as JettyConfiguration default
-        module.forMixin( JettyConfiguration.class ).declareDefaults().port().set( HTTP_PORT );
+        JettyConfiguration config = module.forMixin( JettyConfiguration.class ).declareDefaults();
+        config.hostName().set( "127.0.0.1" );
+        config.port().set( HTTP_PORT );
 
         // Serve /helloWorld with HelloWorldServletService
         addServlets( serve( "/helloWorld" ).with( HelloWorldServletService.class ) ).to( module );
@@ -69,7 +71,7 @@ public final class JettyServiceTest
         JettyService jettyService = serviceRef.get();
         assertNotNull( jettyService );
 
-        String output = defaultHttpClient.execute( new HttpGet( "http://localhost:8041/helloWorld" ), stringResponseHandler );
+        String output = defaultHttpClient.execute( new HttpGet( "http://127.0.0.1:8041/helloWorld" ), stringResponseHandler );
         assertEquals( "Hello World", output );
     }
 
