@@ -20,7 +20,5 @@ package org.qi4j.api.composite;
 public interface CompositeDescriptor
     extends ModelDescriptor
 {
-    Iterable<Class<?>> types();
-
     Iterable<Class<?>> mixinTypes();
 }
