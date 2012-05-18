@@ -14,18 +14,7 @@
 
 package org.qi4j.runtime.composite;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.List;
-import org.objectweb.asm.AnnotationVisitor;
-import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.FieldVisitor;
-import org.objectweb.asm.Label;
-import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.Type;
+import org.objectweb.asm.*;
 import org.qi4j.api.entity.Lifecycle;
 import org.qi4j.api.mixin.Initializable;
 import org.qi4j.api.service.Activatable;
@@ -33,44 +22,13 @@ import org.qi4j.api.util.Classes;
 import org.qi4j.api.util.Methods;
 import org.qi4j.functional.Iterables;
 
-import static org.objectweb.asm.Opcodes.AASTORE;
-import static org.objectweb.asm.Opcodes.ACC_PRIVATE;
-import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
-import static org.objectweb.asm.Opcodes.ACC_STATIC;
-import static org.objectweb.asm.Opcodes.ACC_SUPER;
-import static org.objectweb.asm.Opcodes.ACONST_NULL;
-import static org.objectweb.asm.Opcodes.ALOAD;
-import static org.objectweb.asm.Opcodes.ANEWARRAY;
-import static org.objectweb.asm.Opcodes.ARETURN;
-import static org.objectweb.asm.Opcodes.ASTORE;
-import static org.objectweb.asm.Opcodes.ATHROW;
-import static org.objectweb.asm.Opcodes.BIPUSH;
-import static org.objectweb.asm.Opcodes.CHECKCAST;
-import static org.objectweb.asm.Opcodes.DLOAD;
-import static org.objectweb.asm.Opcodes.DRETURN;
-import static org.objectweb.asm.Opcodes.DUP;
-import static org.objectweb.asm.Opcodes.FLOAD;
-import static org.objectweb.asm.Opcodes.FRETURN;
-import static org.objectweb.asm.Opcodes.GETFIELD;
-import static org.objectweb.asm.Opcodes.GETSTATIC;
-import static org.objectweb.asm.Opcodes.GOTO;
-import static org.objectweb.asm.Opcodes.ICONST_0;
-import static org.objectweb.asm.Opcodes.ICONST_1;
-import static org.objectweb.asm.Opcodes.ICONST_2;
-import static org.objectweb.asm.Opcodes.ICONST_3;
-import static org.objectweb.asm.Opcodes.ICONST_4;
-import static org.objectweb.asm.Opcodes.ICONST_5;
-import static org.objectweb.asm.Opcodes.ILOAD;
-import static org.objectweb.asm.Opcodes.INVOKEINTERFACE;
-import static org.objectweb.asm.Opcodes.INVOKESPECIAL;
-import static org.objectweb.asm.Opcodes.INVOKESTATIC;
-import static org.objectweb.asm.Opcodes.INVOKEVIRTUAL;
-import static org.objectweb.asm.Opcodes.IRETURN;
-import static org.objectweb.asm.Opcodes.LLOAD;
-import static org.objectweb.asm.Opcodes.LRETURN;
-import static org.objectweb.asm.Opcodes.POP;
-import static org.objectweb.asm.Opcodes.PUTSTATIC;
-import static org.objectweb.asm.Opcodes.RETURN;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.objectweb.asm.Opcodes.*;
 import static org.objectweb.asm.Type.getInternalName;
 import static org.qi4j.api.util.Classes.interfacesOf;
 
@@ -140,8 +98,8 @@ public class FragmentClassLoader
                 }
             }
 //  To Allow JDK classes to be composed.
-//            if( name.startsWith( "java." ))
-//                name = "qi4j." + name;
+            if( name.startsWith( "java." ))
+                name = "qi4j." + name;
 
             byte[] b = generateClass( name, baseClass );
             return defineClass( name, b, 0, b.length, baseClass.getProtectionDomain() );
@@ -158,17 +116,13 @@ public class FragmentClassLoader
         String baseClassSlash = getInternalName( baseClass );
 
         ClassWriter cw = new ClassWriter( ClassWriter.COMPUTE_MAXS );
-        FieldVisitor fv;
-        MethodVisitor mv;
-        AnnotationVisitor av0;
 
         // Class definition start
         cw.visit( jdkVersion, ACC_PUBLIC + ACC_SUPER, classSlash, null, baseClassSlash, null );
 
         // Composite reference
         {
-            fv = cw.visitField( ACC_PUBLIC, "_instance", "Lorg/qi4j/api/composite/CompositeInvoker;", null, null );
-            fv.visitEnd();
+            cw.visitField( ACC_PUBLIC, "_instance", "Lorg/qi4j/api/composite/CompositeInvoker;", null, null ).visitEnd();
         }
 
         // Static Method references
@@ -177,11 +131,10 @@ public class FragmentClassLoader
             int idx = 1;
             for( Method method : baseClass.getMethods() )
             {
-                if( isOverloaded( method, baseClass ) )
+                if( isOverridden(method, baseClass) )
                 {
-                    fv = cw.visitField( ACC_PRIVATE + ACC_STATIC, "m" + idx++, "Ljava/lang/reflect/Method;", null,
-                                        null );
-                    fv.visitEnd();
+                    cw.visitField( ACC_PRIVATE + ACC_STATIC, "m" + idx++, "Ljava/lang/reflect/Method;", null,
+                                        null ).visitEnd();
                     hasProxyMethods = true;
                 }
             }
@@ -193,23 +146,35 @@ public class FragmentClassLoader
             if( Modifier.isPublic( constructor.getModifiers() ) || Modifier.isProtected( constructor.getModifiers() ) )
             {
                 String desc = org.objectweb.asm.commons.Method.getMethod( constructor ).getDescriptor();
-                mv = cw.visitMethod( ACC_PUBLIC, "<init>", desc, null, null );
-                mv.visitCode();
-                mv.visitVarInsn( ALOAD, 0 );
+                MethodVisitor cmv = cw.visitMethod( ACC_PUBLIC, "<init>", desc, null, null );
+                cmv.visitCode();
+                cmv.visitVarInsn(ALOAD, 0);
 
                 int idx = 1;
                 for( Class aClass : constructor.getParameterTypes() )
                 {
-                    // TODO Handle other types than objects (?)
-                    mv.visitVarInsn( ALOAD, idx++ );
+                    final int opcode;
+                    if (aClass.equals(Integer.TYPE)) {
+                        opcode = ILOAD;
+                    } else if (aClass.equals(Long.TYPE)) {
+                        opcode = LLOAD;
+                    } else if (aClass.equals(Float.TYPE)) {
+                        opcode = FLOAD;
+                    } else if (aClass.equals(Double.TYPE)) {
+                        opcode = DLOAD;
+                    } else {
+                        opcode = ALOAD;
+                    }
+                    cmv.visitVarInsn(opcode, idx++);
                 }
 
-                mv.visitMethodInsn( INVOKESPECIAL, baseClassSlash, "<init>", desc );
-                mv.visitInsn( RETURN );
-                mv.visitMaxs( idx, idx );
-                mv.visitEnd();
+                cmv.visitMethodInsn(INVOKESPECIAL, baseClassSlash, "<init>", desc);
+                cmv.visitInsn(RETURN);
+                cmv.visitMaxs(idx, idx);
+                cmv.visitEnd();
             }
         }
+
 
         // Overloaded and unimplemented methods
         if( hasProxyMethods )
@@ -219,7 +184,7 @@ public class FragmentClassLoader
             List<Label> exceptionLabels = new ArrayList<Label>();
             for( Method method : methods )
             {
-                if( isOverloaded( method, baseClass ) )
+                if( isOverridden(method, baseClass) )
                 {
                     idx++;
                     String methodName = method.getName();
@@ -227,7 +192,7 @@ public class FragmentClassLoader
 
                     String[] exceptions = null;
                     {
-                        mv = cw.visitMethod( ACC_PUBLIC, methodName, desc, null, exceptions );
+                        MethodVisitor mv = cw.visitMethod( ACC_PUBLIC, methodName, desc, null, exceptions );
                         if( isInternalQi4jMethod( method, baseClass ) )
                         {
                             // generate a NoOp method...
@@ -351,6 +316,7 @@ public class FragmentClassLoader
                     if( !Modifier.isAbstract( method.getModifiers() ) )
                     {
                         // Add method with _ as prefix
+                        MethodVisitor mv;
                         mv = cw.visitMethod( ACC_PUBLIC, "_" + method.getName(), desc, null, exceptions );
                         mv.visitCode();
                         mv.visitVarInsn( ALOAD, 0 );
@@ -383,6 +349,7 @@ public class FragmentClassLoader
 
             // Class initializer
             {
+                MethodVisitor mv;
                 mv = cw.visitMethod( ACC_STATIC, "<clinit>", "()V", null, null );
                 mv.visitCode();
                 Label l0 = new Label();
@@ -395,7 +362,7 @@ public class FragmentClassLoader
                 int midx = 0;
                 for( Method method : methods )
                 {
-                    if( isOverloaded( method, baseClass ) )
+                    if( isOverridden(method, baseClass) )
                     {
                         method.setAccessible( true );
                         Class methodClass;
@@ -457,7 +424,7 @@ public class FragmentClassLoader
         return cw.toByteArray();
     }
 
-    private static boolean isOverloaded( Method method, Class baseClass )
+    private static boolean isOverridden(Method method, Class baseClass)
     {
         if( Modifier.isAbstract( method.getModifiers() ) )
         {
