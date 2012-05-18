@@ -14,12 +14,6 @@
 
 package org.qi4j.runtime.composite;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.util.LinkedHashSet;
-import java.util.Set;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
@@ -32,6 +26,12 @@ import org.qi4j.functional.VisitableHierarchy;
 import org.qi4j.runtime.injection.Dependencies;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.structure.ModuleInstance;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import static java.lang.reflect.Proxy.newProxyInstance;
 import static org.qi4j.functional.Iterables.first;
@@ -141,7 +141,7 @@ public abstract class CompositeModel
             ClassLoader proxyClassloader = mainType.getClassLoader();
 
             Class<?>[] interfaces = Iterables.toArray( Class.class, Iterables.<Class, Class<?>>cast( types ) );
-            proxyClass = (Class<? extends Composite>) Proxy.getProxyClass( proxyClassloader, interfaces );
+            proxyClass = (Class<? extends Composite>) ProxyGenerator.createProxyClass(proxyClassloader, interfaces);
 
             try
             {
