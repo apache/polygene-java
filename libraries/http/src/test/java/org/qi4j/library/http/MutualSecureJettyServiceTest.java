@@ -37,6 +37,7 @@ public class MutualSecureJettyServiceTest
         new SecureJettyServiceAssembler().assemble( module );
         // START SNIPPET: config
         SecureJettyConfiguration config = module.forMixin( SecureJettyConfiguration.class ).declareDefaults();
+        config.hostName().set( "127.0.0.1" );
         config.port().set( HTTPS_PORT );
 
         config.keystorePath().set( SERVER_KEYSTORE_PATH );
@@ -58,7 +59,7 @@ public class MutualSecureJettyServiceTest
             throws IOException
     {
         // As we set wantClientAuth we can request without a client certificate ...
-        String output = trustHttpClient.execute( new HttpGet( "https://localhost:8441/hello" ), stringResponseHandler );
+        String output = trustHttpClient.execute( new HttpGet( "https://127.0.0.1:8441/hello" ), stringResponseHandler );
         assertEquals( "Hello World", output );
     }
 
@@ -67,7 +68,7 @@ public class MutualSecureJettyServiceTest
             throws IOException
     {
         // ... and with one
-        String output = mutualHttpClient.execute( new HttpGet( "https://localhost:8441/hello" ), stringResponseHandler );
+        String output = mutualHttpClient.execute( new HttpGet( "https://127.0.0.1:8441/hello" ), stringResponseHandler );
         assertEquals( "Hello Mutual World", output );
     }
 

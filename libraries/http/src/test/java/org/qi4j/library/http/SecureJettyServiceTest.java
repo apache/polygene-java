@@ -42,6 +42,7 @@ public class SecureJettyServiceTest
 
         // START SNIPPET: configssl
         SecureJettyConfiguration config = module.forMixin( SecureJettyConfiguration.class ).declareDefaults();
+        config.hostName().set( "127.0.0.1" );
         config.port().set( HTTPS_PORT );
         config.keystorePath().set( SERVER_KEYSTORE_PATH );
         config.keystoreType().set( "JCEKS" );
@@ -60,7 +61,7 @@ public class SecureJettyServiceTest
             throws IOException
     {
         try {
-            HttpGet get = new HttpGet( "http://localhost:8441/hello" );
+            HttpGet get = new HttpGet( "http://127.0.0.1:8441/hello" );
             defaultHttpClient.execute( get );
             fail( "We could reach the HTTPS connector using a HTTP url, that's no good" );
         } catch ( NoHttpResponseException ex ) {
@@ -74,7 +75,7 @@ public class SecureJettyServiceTest
             throws IOException
     {
         try {
-            defaultHttpClient.execute( new HttpGet( "https://localhost:8441/hello" ) );
+            defaultHttpClient.execute( new HttpGet( "https://127.0.0.1:8441/hello" ) );
             fail( "We could reach the HTTPS connector without proper truststore, this should not happen" );
         } catch ( SSLPeerUnverifiedException ex ) {
             // Expected
@@ -85,7 +86,7 @@ public class SecureJettyServiceTest
     public void testTrust()
             throws IOException, InterruptedException
     {
-        String output = trustHttpClient.execute( new HttpGet( "https://localhost:8441/hello" ), stringResponseHandler );
+        String output = trustHttpClient.execute( new HttpGet( "https://127.0.0.1:8441/hello" ), stringResponseHandler );
         assertEquals( "Hello World", output );
     }
 

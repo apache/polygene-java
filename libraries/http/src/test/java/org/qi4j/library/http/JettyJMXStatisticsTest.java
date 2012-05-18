@@ -35,6 +35,7 @@ public class JettyJMXStatisticsTest
         new JMXAssembler().assemble( module ); // Assemble both JettyService and JMX
 
         JettyConfiguration config = module.forMixin( JettyConfiguration.class ).declareDefaults();
+        config.hostName().set( "127.0.0.1" );
         config.port().set( 8441 );
         config.statistics().set( Boolean.TRUE ); // Set statistics default to TRUE in configuration
 

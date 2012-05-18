@@ -1,17 +1,19 @@
 package org.qi4j.runtime.injection.provider;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Proxy;
 import org.qi4j.api.composite.CompositeDescriptor;
 import org.qi4j.api.util.Classes;
 import org.qi4j.bootstrap.InvalidInjectionException;
 import org.qi4j.functional.Iterables;
+import org.qi4j.runtime.composite.ProxyGenerator;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.injection.InjectionProvider;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
 import org.qi4j.runtime.model.Resolution;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
 
 import static org.qi4j.functional.Iterables.first;
 import static org.qi4j.functional.Iterables.iterable;
@@ -83,7 +85,7 @@ public final class ThisInjectionProviderFactory
                 {
                     Class<?> mainType = first( types );
                     interfaces = Iterables.toArray( Class.class, types );
-                    proxyClass = Proxy.getProxyClass( mainType.getClassLoader(), interfaces );
+                    proxyClass = ProxyGenerator.createProxyClass(mainType.getClassLoader(), interfaces);
                 }
 
                 proxyConstructor = proxyClass.getConstructor( InvocationHandler.class );
