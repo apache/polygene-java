@@ -29,8 +29,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import static org.qi4j.library.http.Servlets.*;
 
-public final class JettyServiceTest
-        extends AbstractJettyTest
+public final class JettyServiceTest extends AbstractJettyTest
 {
 
     public final void assemble( ModuleAssembly module )
