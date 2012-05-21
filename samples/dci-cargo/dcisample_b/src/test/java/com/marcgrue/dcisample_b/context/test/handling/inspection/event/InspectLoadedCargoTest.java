@@ -389,8 +389,6 @@ public class InspectLoadedCargoTest extends TestApplication
                             TransportStatus.UNKNOWN, notArrived,
                             ROUTED, directed, itinerary.eta(), leg1,
                             UNLOAD, MOGADISHU, DAY2, V205 );
-            // Show bad situation
-            throw e;
         }
     }
 
@@ -422,8 +420,6 @@ public class InspectLoadedCargoTest extends TestApplication
                             TransportStatus.UNKNOWN, notArrived,
                             ROUTED, directed, itinerary.eta(), leg2,
                             UNLOAD, ROTTERDAM, DAY4, V205 );
-            // Show bad situation
-            throw e;
         }
     }
 }
