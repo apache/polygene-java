@@ -56,20 +56,29 @@ public class HasUoWFileTest
 {
 
     private static final Logger LOGGER = LoggerFactory.getLogger( HasUoWFileTest.class );
+
     private static final URL CREATION_CONTENT_URL = HasUoWFileTest.class.getResource( "creation.txt" );
+
     private static final URL MODIFICATION_CONTENT_URL = HasUoWFileTest.class.getResource( "modification.txt" );
 
-    @Mixins( HasUoWFileTest.TestedEntityMixin.class )
+    // START SNIPPET: entity
+    // START SNIPPET: uowfile
     public interface TestedEntity
-            extends HasUoWFileLifecycle, EntityComposite
+            extends EntityComposite,
+                    // END SNIPPET: entity
+                    HasUoWFileLifecycle
+    // START SNIPPET: entity
     {
 
         Property<String> name();
 
     }
+    // END SNIPPET: entity
+    // END SNIPPET: uowfile
 
-    public static abstract class TestedEntityMixin
-            implements TestedEntity, UoWFileLocator
+    // START SNIPPET: locator
+    public static abstract class TestedFileLocatorMixin
+            implements UoWFileLocator
     {
 
         @This
@@ -82,6 +91,7 @@ public class HasUoWFileTest
         }
 
     }
+    // END SNIPPET: locator
 
     @Mixins( HasUoWFileTest.TestServiceMixin.class )
     @Concerns( UnitOfWorkConcern.class )
@@ -140,20 +150,29 @@ public class HasUoWFileTest
                 throws IOException
         {
             TestedEntity entity = module.currentUnitOfWork().get( TestedEntity.class, entityId );
-            Inputs.text( MODIFICATION_CONTENT_URL ).transferTo( Outputs.text( entity.managedFile() ) );
+            // START SNIPPET: api
+            File attachedFile = entity.attachedFile();
+            File managedFile = entity.managedFile();
+            // END SNIPPET: api
+            Inputs.text( MODIFICATION_CONTENT_URL ).transferTo( Outputs.text( managedFile ) );
         }
 
     }
 
     @Override
+    // START SNIPPET: assembly
     public void assemble( ModuleAssembly module )
             throws AssemblyException
     {
-        module.entities( TestedEntity.class );
-        module.services( TestService.class );
         new UoWFileAssembler().assemble( module );
+
+        module.entities( TestedEntity.class ).withMixins( TestedFileLocatorMixin.class );
+        // END SNIPPET: assembly
+        module.services( TestService.class );
         new EntityTestAssembler().assemble( module );
+        // START SNIPPET: assembly
     }
+    // END SNIPPET: assembly
 
     private TestService testService;
 

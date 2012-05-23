@@ -22,9 +22,9 @@ import java.util.List;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
+
 import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.entity.EntityBuilder;
-
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.injection.scope.Structure;
@@ -56,27 +56,36 @@ public class HasUoWFilesTest
 {
 
     private static final Logger LOGGER = LoggerFactory.getLogger( HasUoWFilesTest.class );
+
     private static final URL CREATION_CONTENT_URL = HasUoWFilesTest.class.getResource( "creation.txt" );
+
     private static final URL MODIFICATION_CONTENT_URL = HasUoWFilesTest.class.getResource( "modification.txt" );
 
+    // START SNIPPET: uowfile
     public enum MyEnum
     {
 
-        fileOne, // Used for the tests
-        fileTwo // Unused in the tests
+        fileOne, fileTwo
+
     }
 
-    @Mixins( HasUoWFilesTest.OneEntityTwoFilesMixin.class )
-    public interface OneEntityTwoFilesEntity
-            extends HasUoWFilesLifecycle<MyEnum>, EntityComposite
+    // START SNIPPET: entity
+    public interface TestedEntity
+            extends EntityComposite,
+                    // END SNIPPET: entity
+                    HasUoWFilesLifecycle<MyEnum>
+    // START SNIPPET: entity
     {
 
         Property<String> name();
 
     }
+    // END SNIPPET: entity
+    // END SNIPPET: uowfile
 
-    public static abstract class OneEntityTwoFilesMixin
-            implements OneEntityTwoFilesEntity, UoWFilesLocator<MyEnum>
+    // START SNIPPET: locator
+    public static abstract class TestedFilesLocatorMixin
+            implements UoWFilesLocator<MyEnum>
     {
 
         @This
@@ -99,6 +108,7 @@ public class HasUoWFilesTest
         }
 
     }
+    // END SNIPPET: locator
 
     @Mixins( TestServiceMixin.class )
     @Concerns( UnitOfWorkConcern.class )
@@ -156,21 +166,30 @@ public class HasUoWFilesTest
         private void modifyFileImmediatly( String entityId )
                 throws IOException
         {
-            OneEntityTwoFilesEntity entity = module.currentUnitOfWork().get( OneEntityTwoFilesEntity.class, entityId );
-            Inputs.text( MODIFICATION_CONTENT_URL ).transferTo( Outputs.text( entity.managedFile( MyEnum.fileOne ) ) );
+            TestedEntity entity = module.currentUnitOfWork().get( TestedEntity.class, entityId );
+            // START SNIPPET: api
+            File attachedFileTwo = entity.attachedFile( MyEnum.fileTwo );
+            File managedFileOne = entity.managedFile( MyEnum.fileOne );
+            // END SNIPPET: api
+            Inputs.text( MODIFICATION_CONTENT_URL ).transferTo( Outputs.text( managedFileOne ) );
         }
 
     }
 
     @Override
+    // START SNIPPET: assembly
     public void assemble( ModuleAssembly module )
             throws AssemblyException
     {
-        module.entities( OneEntityTwoFilesEntity.class );
-        module.services( TestService.class );
         new UoWFileAssembler().assemble( module );
+
+        module.entities( TestedEntity.class ).withMixins( TestedFilesLocatorMixin.class );
+        // END SNIPPET: assembly
+        module.services( TestService.class );
         new EntityTestAssembler().assemble( module );
+        // START SNIPPET: assembly
     }
+    // END SNIPPET: assembly
 
     private TestService testService;
 
@@ -188,7 +207,7 @@ public class HasUoWFilesTest
 
         // Test discarded creation
         UnitOfWork uow = module.newUnitOfWork();
-        OneEntityTwoFilesEntity entity = createTestedOneEntityTwoFilesEntity( uow, "Testing Creation Rollback" );
+        TestedEntity entity = createTestedOneEntityTwoFilesEntity( uow, "Testing Creation Rollback" );
         File attachedFile = entity.attachedFile( MyEnum.fileOne );
         uow.discard();
         assertFalse( "File still exists after discarded creation UoW", attachedFile.exists() );
@@ -209,7 +228,7 @@ public class HasUoWFilesTest
 
         // Create new
         UnitOfWork uow = module.newUnitOfWork();
-        OneEntityTwoFilesEntity entity = createTestedOneEntityTwoFilesEntity( uow, "Testing Modification" );
+        TestedEntity entity = createTestedOneEntityTwoFilesEntity( uow, "Testing Modification" );
         String entityId = entity.identity().get();
         File attachedFile = entity.attachedFile( MyEnum.fileOne );
         uow.complete();
@@ -235,21 +254,21 @@ public class HasUoWFilesTest
 
         // Create new
         UnitOfWork uow = module.newUnitOfWork();
-        OneEntityTwoFilesEntity entity = createTestedOneEntityTwoFilesEntity( uow, "Testing Deletion" );
+        TestedEntity entity = createTestedOneEntityTwoFilesEntity( uow, "Testing Deletion" );
         String entityId = entity.identity().get();
         File attachedFile = entity.attachedFile( MyEnum.fileOne );
         uow.complete();
 
         // Testing discarded deletion
         uow = module.newUnitOfWork();
-        entity = uow.get( OneEntityTwoFilesEntity.class, entityId );
+        entity = uow.get( TestedEntity.class, entityId );
         uow.remove( entity );
         uow.discard();
         assertTrue( "File do not exists after discarded deletion", attachedFile.exists() );
 
         // Testing completed deletion
         uow = module.newUnitOfWork();
-        entity = uow.get( OneEntityTwoFilesEntity.class, entityId );
+        entity = uow.get( TestedEntity.class, entityId );
         uow.remove( entity );
         uow.complete();
         assertFalse( "File still exists after deletion", attachedFile.exists() );
@@ -263,16 +282,16 @@ public class HasUoWFilesTest
 
         // Create new
         UnitOfWork uow = module.newUnitOfWork();
-        OneEntityTwoFilesEntity entity = createTestedOneEntityTwoFilesEntity( uow, "Testing Concurrent Modification" );
+        TestedEntity entity = createTestedOneEntityTwoFilesEntity( uow, "Testing Concurrent Modification" );
         String entityId = entity.identity().get();
         uow.complete();
 
         // Testing concurrent modification
         uow = module.newUnitOfWork();
-        entity = uow.get( OneEntityTwoFilesEntity.class, entityId );
+        entity = uow.get( TestedEntity.class, entityId );
         Inputs.text( MODIFICATION_CONTENT_URL ).transferTo( Outputs.text( entity.managedFile( MyEnum.fileOne ) ) );
         UnitOfWork uow2 = module.newUnitOfWork();
-        entity = uow2.get( OneEntityTwoFilesEntity.class, entityId );
+        entity = uow2.get( TestedEntity.class, entityId );
         Inputs.text( MODIFICATION_CONTENT_URL ).transferTo( Outputs.text( entity.managedFile( MyEnum.fileOne ) ) );
         uow.complete();
         try {
@@ -291,7 +310,7 @@ public class HasUoWFilesTest
 
         // Create new
         UnitOfWork uow = module.newUnitOfWork();
-        OneEntityTwoFilesEntity entity = createTestedOneEntityTwoFilesEntity( uow, "Testing Concurrent Modification" );
+        TestedEntity entity = createTestedOneEntityTwoFilesEntity( uow, "Testing Concurrent Modification" );
         final String entityId = entity.identity().get();
         File attachedFile = entity.attachedFile( MyEnum.fileOne );
         uow.complete();
@@ -340,11 +359,11 @@ public class HasUoWFilesTest
         assertTrue( "Modified file content was not the good one", isFileFirstLineEqualsTo( attachedFile, "Modification" ) );
     }
 
-    private OneEntityTwoFilesEntity createTestedOneEntityTwoFilesEntity( UnitOfWork uow, String name )
+    private TestedEntity createTestedOneEntityTwoFilesEntity( UnitOfWork uow, String name )
             throws IOException
     {
-        EntityBuilder<OneEntityTwoFilesEntity> builder = uow.newEntityBuilder( OneEntityTwoFilesEntity.class );
-        OneEntityTwoFilesEntity entity = builder.instance();
+        EntityBuilder<TestedEntity> builder = uow.newEntityBuilder( TestedEntity.class );
+        TestedEntity entity = builder.instance();
         entity.name().set( name );
         entity = builder.newInstance();
         Inputs.text( CREATION_CONTENT_URL ).transferTo( Outputs.text( entity.managedFile( MyEnum.fileOne ) ) );

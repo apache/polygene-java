@@ -149,3 +149,7 @@ include::../../../../libraries/servlet/src/docs/servlet.txt[]
 // include::../../../../libraries/uid/src/docs/uid.txt[]
 
 :leveloffset: {level2}
+
+include::../../../../libraries/uowfile/src/docs/uowfile.txt[]
+
+:leveloffset: {level2}

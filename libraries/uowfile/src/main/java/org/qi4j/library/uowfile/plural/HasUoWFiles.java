@@ -24,6 +24,7 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.library.uowfile.internal.UoWFileFactory;
 
 @Mixins( HasUoWFiles.Mixin.class )
+// START SNIPPET: contract
 public interface HasUoWFiles<T extends Enum<T>>
 {
 
@@ -40,6 +41,7 @@ public interface HasUoWFiles<T extends Enum<T>>
     File managedFile( T key );
 
     Iterable<File> managedFiles();
+    // END SNIPPET: contract
 
     abstract class Mixin<R extends Enum<R>>
             implements HasUoWFiles<R>
@@ -80,4 +82,6 @@ public interface HasUoWFiles<T extends Enum<T>>
 
     }
 
+    // START SNIPPET: contract
 }
+// END SNIPPET: contract

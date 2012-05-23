@@ -22,6 +22,7 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.library.uowfile.internal.UoWFileFactory;
 
 @Mixins( HasUoWFile.Mixin.class )
+// START SNIPPET: contract
 public interface HasUoWFile
 {
 
@@ -31,6 +32,7 @@ public interface HasUoWFile
     File attachedFile();
 
     File managedFile();
+    // END SNIPPET: contract
 
     class Mixin
             implements HasUoWFile
@@ -38,6 +40,7 @@ public interface HasUoWFile
 
         @Service
         private UoWFileFactory uowFileFactory;
+
         @This
         private UoWFileLocator locator;
 
@@ -54,5 +57,6 @@ public interface HasUoWFile
         }
 
     }
-
+    // START SNIPPET: contract
 }
+// END SNIPPET: contract
