@@ -1,0 +1,5 @@
+[[def-transientcomposite]]
+= Transient Composite =
+
+Transient Composites are used when non-persisted and mutable composites are
+needed. Transients can not be stored or serialized across JVM boundaries.

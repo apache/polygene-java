@@ -1,0 +1,5 @@
+[[def-private-mixin]]
+= Private Mixin =
+
+When a @This injection refers to a Mixin Type which is not extended by the
+Composite type that becomes a private Mixin Type.

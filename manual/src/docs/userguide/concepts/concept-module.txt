@@ -1,0 +1,6 @@
+[[def-module]]
+= Module =
+
+Modules defines the scope of the Composites. Modules are wired with Assemblies,
+and can expose Composites as visible. Non-visible Composite are not reachable
+from other Modules.

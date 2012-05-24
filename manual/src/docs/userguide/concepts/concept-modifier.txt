@@ -1,0 +1,14 @@
+[[def-modifier]]
+= Modifier =
+
+Modifiers are stateless interceptors of method calls, that forms an
+<<def-invocation-stack>>. The top of the Invocation Stack is linked to the
+Composite invocation handler and the bottom of the Invocation Stack is linked
+to the Mixins. Invocation Stacks are shared, so Modifiers must assume that the
+member fields will only be valid within a single method invocation.
+
+There are 3 kinds of Modifiers;
+
+- <<def-constraint>>s
+- <<def-concern>>s
+- <<def-sideeffect>>s

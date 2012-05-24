@@ -1,0 +1,7 @@
+[[def-mixin]]
+= Mixin =
+
+The Mixin is the instance providing the stateful representation of the Mixin
+Type. This can either be a class implementing the Mixin Type or a
+java.lang.reflect.InvocationHandler that is generic to handle any or a subset
+of Mixin Types.

@@ -1,0 +1,5 @@
+[[def-mixin-type]]
+= Mixin Type =
+
+The Mixin Type is the static type of a part of the Composite. The Mixin Type is
+an interface that defines the methods to be exposed in the Composite.

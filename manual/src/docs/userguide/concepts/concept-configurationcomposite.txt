@@ -1,0 +1,11 @@
+[[def-configurationcomposite]]
+= Configuration Composite Meta Type =
+
+Service Composites can have configuration associated to it and that is done via
+Configuration Composites, which are a subtype of Entity Composite, as they are
+stored permanently in configured Entity Stores. Configuration Composites are
+also initialized automatically from properties files first time. Note that on
+consequent start-ups the properties file is not read, as the configuration is
+read from the entity store.
+
+See <<howto-configure-service>> to learn how to use Configuration Composites.

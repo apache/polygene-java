@@ -1,0 +1,5 @@
+[[def-layer]]
+= Layer =
+
+Qi4j promotes a Layered application design, where Layers can only access lower
+Layers and not higher Layers or Layers at the same level.

@@ -21,6 +21,10 @@ include::concepts/concept-association.txt[]
 
 :leveloffset: {level2}
 
+include::concepts/concept-composite.txt[]
+
+:leveloffset: {level2}
+
 include::concepts/concept-composite-context.txt[]
 
 :leveloffset: {level2}
@@ -30,10 +34,6 @@ include::concepts/concept-composite-metatype.txt[]
 :leveloffset: {level2}
 
 include::concepts/concept-composite-type.txt[]
-
-:leveloffset: {level2}
-
-include::concepts/concept-composite.txt[]
 
 :leveloffset: {level2}
 
@@ -65,6 +65,10 @@ include::concepts/concept-generic-mixin.txt[]
 
 :leveloffset: {level2}
 
+include::concepts/concept-identity.txt[]
+
+:leveloffset: {level2}
+
 include::concepts/concept-invocation-stack.txt[]
 
 :leveloffset: {level2}
@@ -74,5 +78,49 @@ include::concepts/concept-layer.txt[]
 :leveloffset: {level2}
 
 include::concepts/concept-manyassociation.txt[]
+
+:leveloffset: {level2}
+
+include::concepts/concept-mixin.txt[]
+
+:leveloffset: {level2}
+
+include::concepts/concept-mixin-type.txt[]
+
+:leveloffset: {level2}
+
+include::concepts/concept-modifier.txt[]
+
+:leveloffset: {level2}
+
+include::concepts/concept-module.txt[]
+
+:leveloffset: {level2}
+
+include::concepts/concept-private-mixin.txt[]
+
+:leveloffset: {level2}
+
+include::concepts/concept-property.txt[]
+
+:leveloffset: {level2}
+
+include::concepts/concept-servicecomposite.txt[]
+
+:leveloffset: {level2}
+
+include::concepts/concept-sideeffect.txt[]
+
+:leveloffset: {level2}
+
+include::concepts/concept-transientcomposite.txt[]
+
+:leveloffset: {level2}
+
+include::concepts/concept-unitofwork.txt[]
+
+:leveloffset: {level2}
+
+include::concepts/concept-valuecomposite.txt[]
 
 
