@@ -6,11 +6,13 @@ import org.qi4j.api.configuration.ConfigurationComposite;
 import org.qi4j.api.property.Property;
 
 /**
- * Configuration for the JdbmEntityStoreService
+ * Configuration for the JdbmEntityStoreService.
  */
+// START SNIPPET: config
 public interface JdbmConfiguration
         extends ConfigurationComposite
 {
+    // END SNIPPET: config
    /**
     * The file where the JDBM data will be stored
     * <p/>
@@ -18,6 +20,7 @@ public interface JdbmConfiguration
     *
     * @return path to data file relative to current path
     */
+    // START SNIPPET: config
    @Optional
    Property<String> file();
 
@@ -29,3 +32,4 @@ public interface JdbmConfiguration
    @UseDefaults
    Property<Boolean> disableTransactions();
 }
+// END SNIPPET: config

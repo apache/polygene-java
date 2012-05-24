@@ -52,7 +52,9 @@ public class SolrQueryServiceTest
         module.services( FileConfiguration.class ).instantiateOnStartup();
 
         new EntityTestAssembler().assemble( module );
+        // START SNIPPET: assembly
         new SolrAssembler().assemble( module );
+        // END SNIPPET: assembly
 
         module.entities( TestEntity.class );
     }

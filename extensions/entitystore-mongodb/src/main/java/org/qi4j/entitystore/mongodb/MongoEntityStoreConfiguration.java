@@ -24,6 +24,7 @@ import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.configuration.ConfigurationComposite;
 import org.qi4j.api.property.Property;
 
+// START SNIPPET: config
 public interface MongoEntityStoreConfiguration
         extends ConfigurationComposite
 {
@@ -70,3 +71,4 @@ public interface MongoEntityStoreConfiguration
     }
 
 }
+// END SNIPPET: config

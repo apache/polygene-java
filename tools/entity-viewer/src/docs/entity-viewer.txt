@@ -1,5 +1,8 @@
-[[tools-entity-viewer]]
+[[tools-entity-viewer,EntityViewer Tool]]
 = Entity Viewer =
+
+EntityViewer is a Swing based Entities browser. It allows you to browse
+Entities persisted in EntityStores.
 
 == Usage ==
 

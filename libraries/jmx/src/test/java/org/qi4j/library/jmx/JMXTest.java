@@ -50,11 +50,11 @@ public class JMXTest
 
         SingletonAssembler assembler = new SingletonAssembler()
         {
+            // START SNIPPET: assembly
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                new JMXAssembler().assemble( module );
-
+                // END SNIPPET: assembly
                 new EntityTestAssembler().assemble( module );
 
                 module.services( TestService.class, TestService2.class, TestService3.class ).instantiateOnStartup();
@@ -64,10 +64,14 @@ public class JMXTest
 
                 module.objects( TestObject.class );
 
+                // START SNIPPET: assembly
+                new JMXAssembler().assemble( module );
+                
                 module.services( JMXConnectorService.class ).instantiateOnStartup();
                 module.entities( JMXConnectorConfiguration.class );
                 module.forMixin( JMXConnectorConfiguration.class ).declareDefaults().port().set( 1099 );
             }
+            // END SNIPPET: assembly
         };
 
         // This allows user to connect using VisualVM/JConsole

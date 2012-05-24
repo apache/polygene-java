@@ -21,23 +21,26 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.library.fileconfig.FileConfiguration;
-import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
 
-/**
- * JAVADOC
- */
 public class FileEntityStoreTest
-    extends AbstractEntityStoreTest
+        extends AbstractEntityStoreTest
 {
-    public void assemble( ModuleAssembly module )
-        throws AssemblyException
-    {
-        super.assemble( module );
-        module.services( FileConfiguration.class, FileEntityStoreService.class, UuidIdentityGeneratorService.class );
 
+    @Override
+    // START SNIPPET: assembly
+    public void assemble( ModuleAssembly module )
+            throws AssemblyException
+    {
+        // END SNIPPET: assembly
+        super.assemble( module );
+        module.services( FileConfiguration.class );
         ModuleAssembly config = module.layer().module( "config" );
-        config.entities( FileEntityStoreConfiguration.class ).visibleIn( Visibility.layer );
         config.services( MemoryEntityStoreService.class );
+        // START SNIPPET: assembly
+        module.services( FileEntityStoreService.class );
+        config.entities( FileEntityStoreConfiguration.class ).visibleIn( Visibility.layer );
     }
+    // END SNIPPET: assembly
+
 }

@@ -22,14 +22,16 @@ import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.configuration.ConfigurationComposite;
 import org.qi4j.api.property.Property;
 
-/**
- * @author Paul Merlin <paul@nosphere.org>
- */
-public interface HazelcastConfiguration extends ConfigurationComposite
+// START SNIPPET: config
+public interface HazelcastConfiguration
+        extends ConfigurationComposite
 {
+
     @UseDefaults
     Property<String> configXmlLocation();
 
     @UseDefaults
     Property<String> mapName();
+
 }
+// END SNIPPET: config

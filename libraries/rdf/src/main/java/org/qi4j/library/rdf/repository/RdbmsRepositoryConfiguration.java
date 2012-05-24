@@ -20,6 +20,7 @@ package org.qi4j.library.rdf.repository;
 
 import org.qi4j.api.property.Property;
 
+// START SNIPPET: config
 public interface RdbmsRepositoryConfiguration
 {
     Property<String> jdbcDriver();
@@ -27,3 +28,4 @@ public interface RdbmsRepositoryConfiguration
     Property<String> user();
     Property<String> password();
 }
+// END SNIPPET: config

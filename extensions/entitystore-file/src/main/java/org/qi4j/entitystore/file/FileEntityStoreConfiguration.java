@@ -8,9 +8,11 @@ import org.qi4j.library.constraints.annotation.Range;
 /**
  * Configuration for the FileEntityStoreService
  */
+// START SNIPPET: config
 public interface FileEntityStoreConfiguration
     extends ConfigurationComposite
 {
+    // END SNIPPET: config
     /**
      * The directory where the File Entity Store will be keep its persisted state.
      * <p>
@@ -24,8 +26,10 @@ public interface FileEntityStoreConfiguration
      *
      * @return path to data file relative to current path
      */
+    // START SNIPPET: config
     @Optional
     Property<String> directory();
+    // END SNIPPET: config
 
     /** Defines how many slice directories the store should use.
      * <p>
@@ -47,6 +51,8 @@ public interface FileEntityStoreConfiguration
      * </p>
      * @return the number of slices for the file entity store.
      */
+    // START SNIPPET: config
     @Optional @Range(min=1, max=10000)
     Property<Integer> slices();
 }
+// END SNIPPET: config

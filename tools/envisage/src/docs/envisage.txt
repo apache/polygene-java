@@ -1,4 +1,4 @@
-[[tools-envisage]]
+[[tools-envisage,Envisage Tool]]
 = Envisage =
 
 Envisage is a Swing based visualization tool for the Qi4j Application model.

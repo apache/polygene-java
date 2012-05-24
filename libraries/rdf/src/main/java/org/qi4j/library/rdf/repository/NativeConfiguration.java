@@ -24,6 +24,7 @@ import org.qi4j.library.constraints.annotation.Matches;
  * JAVADOC Add JavaDoc
  */
 @Queryable( false )
+// START SNIPPET: config
 public interface NativeConfiguration extends ConfigurationComposite
 {
     @Optional @Matches( "([spoc][spoc][spoc][spoc],?)*" ) Property<String> tripleIndexes();
@@ -32,3 +33,4 @@ public interface NativeConfiguration extends ConfigurationComposite
 
     @UseDefaults Property<Boolean> forceSync();
 }
+// END SNIPPET: config

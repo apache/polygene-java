@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Paul Merlin <paul@nosphere.org>.
+ * Copyright 2009 Paul Merlin.
  * Copyright 2011 Niclas Hedhman.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");

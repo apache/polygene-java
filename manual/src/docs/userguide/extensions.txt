@@ -9,7 +9,7 @@
 
 :leveloffset: {level2}
 
-// include::../../../../extensions/entitystore-file/src/docs/es-file.txt[]
+include::../../../../extensions/entitystore-file/src/docs/es-file.txt[]
 
 :leveloffset: {level2}
 
@@ -17,15 +17,15 @@
 
 :leveloffset: {level2}
 
-// include::../../../../extensions/entitystore-hazelcast/src/docs/es-hazelcast.txt[]
+include::../../../../extensions/entitystore-hazelcast/src/docs/es-hazelcast.txt[]
 
 :leveloffset: {level2}
 
-// include::../../../../extensions/entitystore-jdbm/src/docs/es-jdbm.txt[]
+include::../../../../extensions/entitystore-jdbm/src/docs/es-jdbm.txt[]
 
 :leveloffset: {level2}
 
-// include::../../../../extensions/entitystore-mongdb/src/docs/es-mongodb.txt[]
+include::../../../../extensions/entitystore-mongodb/src/docs/es-mongodb.txt[]
 
 :leveloffset: {level2}
 
@@ -33,7 +33,7 @@
 
 :leveloffset: {level2}
 
-// include::../../../../extensions/entitystore-preferences/src/docs/es-preferences.txt[]
+include::../../../../extensions/entitystore-preferences/src/docs/es-preferences.txt[]
 
 :leveloffset: {level2}
 
@@ -49,11 +49,11 @@
 
 :leveloffset: {level2}
 
-// include::../../../../extensions/indexing-rdf/src/docs/index-rdf.txt[]
+include::../../../../extensions/indexing-rdf/src/docs/index-rdf.txt[]
 
 :leveloffset: {level2}
 
-// include::../../../../extensions/indexing-solr/src/docs/index-solr.txt[]
+include::../../../../extensions/indexing-solr/src/docs/index-solr.txt[]
 
 :leveloffset: {level2}
 
