@@ -1,0 +1,29 @@
+[[tools-envisage]]
+= Envisage =
+
+Envisage is a Swing based visualization tool for the Qi4j Application model.
+Visualizations can be printed to PDFs.
+
+== Screenshots ==
+
+image:tools-envisage-structure.png[width="800px"]
+
+image:tools-envisage-type.png[width="800px"]
+
+image:tools-envisage-stacked.png[width="800px"]
+
+image:tools-envisage-stacked-collapsed.png[width="800px"]
+
+
+== Usage ==
+
+Envisage can be easily used directly and prior your Application activation:
+
+[snippet,java]
+----
+source=tools/envisage/src/test/java/org/qi4j/envisage/school/EnvisageSchoolSample.java
+tag=envisage
+----
+
+As you can see, Envisage operates on the ApplicationModel, this means that you
+can easily embedd it in your own Applications too.

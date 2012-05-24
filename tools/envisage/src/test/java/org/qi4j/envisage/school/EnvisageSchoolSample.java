@@ -22,6 +22,7 @@ import org.qi4j.envisage.Envisage;
 
 public class EnvisageSchoolSample
 {
+    // START SNIPPET: envisage
     public static void main( String[] args )
         throws Exception
     {
@@ -32,4 +33,5 @@ public class EnvisageSchoolSample
 
         new Envisage().run( applicationModel );
     }
+    // END SNIPPET: envisage
 }

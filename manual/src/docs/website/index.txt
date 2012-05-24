@@ -37,6 +37,10 @@ include::samples.txt[]
 
 :leveloffset: 1
 
+include::../userguide/tools.txt[]
+
+:leveloffset: 1
+
 include::community.txt[]
 
 :leveloffset: 1

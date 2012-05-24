@@ -27,5 +27,9 @@ include::extensions.txt[]
 
 :leveloffset: {level2}
 
+include::tools.txt[]
+
+:leveloffset: {level2}
+
 include::concepts.txt[]
 
