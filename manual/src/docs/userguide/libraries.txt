@@ -54,7 +54,7 @@ include::../../../../libraries/http/src/docs/http.txt[]
 
 :leveloffset: {level2}
 
-// include::../../../../libraries/jmx/src/docs/jmx.txt[]
+include::../../../../libraries/jmx/src/docs/jmx.txt[]
 
 :leveloffset: {level2}
 
