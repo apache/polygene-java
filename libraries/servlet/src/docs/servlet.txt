@@ -1,5 +1,5 @@
-[[library-servlet]]
-= Servlet Library =
+[[library-servlet,Servlet Library]]
+= Servlet =
 
 This library provide the necessary boilerplate code to bootstrap a Qi4j Application in a Servlet container plus some facilities.
 It aims at a very simple need and is provided as an example integration.

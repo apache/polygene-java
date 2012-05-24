@@ -1,5 +1,5 @@
-[[library-scheduler]]
-= Scheduler Library =
+[[library-scheduler,Scheduler Library]]
+= Scheduler =
 
 The Scheduler library provides an easy way to schedule tasks using cron expressions if needed.
 

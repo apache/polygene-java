@@ -1,10 +1,12 @@
-[[library-constraints]]
+[[library-constraints,Constraints Library]]
 = Constraints =
 
-The Constraints library provide a bunch of often used Constraints based on the Qi4j Constraints api.
+The Constraints library provide a bunch of often used Constraints based on the
+Qi4j Constraints api described in <<def-constraint>>.
 
-Remeber that you are not limited to constraints presents in this library, you are encouraged to write
-your own constraints. Looking at this library source code can help you doing so.
+Remember that you are not limited to constraints presents in this library, you
+are encouraged to write your own constraints. See <<howto-create-constraint>>
+or take a look at this library source code to learn how to write your own.
 
 Here are the provided constraints:
 

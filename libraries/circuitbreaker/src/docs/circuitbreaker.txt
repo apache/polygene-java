@@ -1,4 +1,4 @@
-[[library-circuitbreaker]]
+[[library-circuitbreaker,Circuit Breaker Library]]
 = Circuit Breaker =
 
 The Circuit Breaker library provides a way to guard your application

@@ -1,5 +1,5 @@
-[[library-uowfile]]
-= UoWFile Library =
+[[library-uowfile,UoWFile Library]]
+= UoWFile =
 
 The UoWFile Library provides an easy way to bind file operations to UnitOfWorks.
 

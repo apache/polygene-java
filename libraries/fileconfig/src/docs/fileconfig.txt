@@ -1,7 +1,7 @@
-[[library-fileconfig]]
-= FileConfiguration =
+[[library-fileconfig, FileConfig Library]]
+= FileConfig =
 
-The FileConfiguration library provide a service for accessing application-specific directories.
+The FileConfig library provide a service for accessing application-specific directories.
 
 [snippet,java]
 ----

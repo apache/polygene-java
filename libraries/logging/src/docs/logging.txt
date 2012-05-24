@@ -13,7 +13,7 @@
  * and limitations under the License.
 //////////////////////
 
-[[library-logging]]
+[[library-logging, Logging Library]]
 = Logging =
 
 First of all, Qi4j is taking a fresh look at all things that we take for granted. Logging is one such thing.

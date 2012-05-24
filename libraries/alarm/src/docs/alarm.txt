@@ -13,7 +13,7 @@
  * and limitations under the License.
 //////////////////////
 
-[[library-alarm]]
+[[library-alarm, Alarm Library]]
 = Alarms =
 
 The process control and industrial automation industry has for decades been struggling with a large number of unreliable

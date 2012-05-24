@@ -1,5 +1,5 @@
-[[library-http]]
-= HTTP Library =
+[[library-http, HTTP Library]]
+= HTTP =
 
 The HTTP library provides a Jetty based embedded HTTP service with support for easy servlets and filters assembly as Services.
 
