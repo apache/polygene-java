@@ -56,30 +56,46 @@ h2.title
 
 .logo
 {
-    float: left;
-    margin: 10px 0 10px 20px;
+    position: fixed;
+    top: 55px;
+    left: 20px;
+    z-index: 18;
+}
+
+.top-nav
+{
+    position: fixed;
+    top: 7px;
+    width: 100%;
+    z-index: 20;
+}
+
+.top-nav .toc
+{
+    margin: 0;
+    margin-top: -7px;
+    padding: 0;
+    height: 40px;
 }
 
 .top-nav .toc dl
 {
     margin: 0;
-    margin-top: 30px;
-    padding: 0;
+    padding: 30px 0 5px 0;
     text-align: center;
-    float: right;
     background-image: linear-gradient(bottom, rgb(49, 105, 165) 100%, rgb(255, 255, 255) 0%);
     background-image: -o-linear-gradient(bottom, rgb(49, 105, 165) 100%, rgb(255, 255, 255) 0%);
     background: -moz-linear-gradient(top, #3d8ac9 0%, #ffffff 100%);
     background-image: -webkit-linear-gradient(bottom, rgb(49, 105, 165) 100%, rgb(255, 255, 255) 0%);
     background-image: -ms-linear-gradient(bottom, rgb(49, 105, 165) 100%, rgb(255, 255, 255) 0%);
-
     background-image: -webkit-gradient(linear, left bottom, left top, color-stop(1, rgb(49, 105, 165)), color-stop(0, rgb(255, 255, 255)));
+    border-bottom: 1px solid #3d8ac9;
 }
 
 .top-nav .toc dt
 {
     display: inline;
-    font-size: 14pt;
+    font-size: 12pt;
     display: inline;
     margin-right: 1px;
 }
@@ -104,22 +120,11 @@ h2.title
     padding-bottom: 7px;
 }
 
-#top-nav-hr
-{
-    height: 1px;
-    color: #000055;
-    border: 0px;
-    border-bottom: 1px solid #000055;
-    position: absolute;
-    bottom: 15px;
-    z-index: -5;
-    padding: 0px;
-}
-
 /* unselected */
 .top-nav .toc dt a
 {
     margin-right: 1px;
+    border-top: 1px solid #fff;
     border-right: 1px solid #fff;
     border-left: 1px solid #fff;
     color: #3D8AC9;
@@ -129,56 +134,54 @@ h2.title
 .top-nav .toc dt a,
 .top-nav .toc dt span span
 {
-    display: block;
-    float: left;
-    padding: 80px 15px 0 15px;
+    padding: 25px 25px 5px 25px;
     text-decoration: none;
-    height: 20px;
     background-image: linear-gradient(bottom, rgb(191, 191, 191) 100%, rgb(255, 255, 255) 0%);
     background-image: -o-linear-gradient(bottom, rgb(191, 191, 191) 100%, rgb(255, 255, 255) 0%);
     background: -moz-linear-gradient(top, #bfbfbf 0%, #ffffff 100%);
     background-image: -webkit-linear-gradient(bottom, rgb(191, 191, 191) 100%, rgb(255, 255, 255) 0%);
     background-image: -ms-linear-gradient(bottom, rgb(191, 191, 191) 100%, rgb(255, 255, 255) 0%);
-
     background-image: -webkit-gradient(linear, left bottom, left top, color-stop(1, rgb(191, 191, 191)), color-stop(0, rgb(255, 255, 255)));
 }
 
-.top-nav .toc dt a:hover,
-.top-nav .toc dt span span
+.top-nav .toc dt a:hover /* ,.top-nav .toc dt span span*/
 {
     background-image: linear-gradient(bottom, rgb(49, 105, 165) 100%, rgb(255, 255, 255) 0%);
     background-image: -o-linear-gradient(bottom, rgb(49, 105, 165) 100%, rgb(255, 255, 255) 0%);
     background: -moz-linear-gradient(top, #3d8ac9 0%, #ffffff 100%);
     background-image: -webkit-linear-gradient(bottom, rgb(49, 105, 165) 100%, rgb(255, 255, 255) 0%);
     background-image: -ms-linear-gradient(bottom, rgb(49, 105, 165) 100%, rgb(255, 255, 255) 0%);
-
     background-image: -webkit-gradient(linear, left bottom, left top, color-stop(1, rgb(49, 105, 165)), color-stop(0, rgb(255, 255, 255)));
 }
 
 .sub-nav
 {
-    margin-top: 160px;
-    clear: both;
 }
 
 .sub-nav .toc
 {
-    float: left;
+    position: absolute;
+    top: 65px;
+    left: 160px;
 }
 
 .sub-nav .toc dl
 {
     font-family: sans-serif;
-    /* border:1px dotted #005500; */
-    width: 150px;
+    width: 180px;
     margin-right: 25px;
     margin-left: 0px;
     margin-bottom: 40px;
 }
 
+.sub-nav .toc dl dt
+{
+    font-size: 0.85em;
+}
+
 div.article
 {
-    margin: 0 20px;
+    padding: 2px;
 }
 
 div.article hr
@@ -186,9 +189,11 @@ div.article hr
     display: none;
 }
 
+body > div.article,
 body > div.section
 {
-    margin-left: 175px;
+    margin: 80px 20px 20px 360px;
+    min-height: 1000px;
 }
 
 .sub-nav .toc dl a
@@ -200,20 +205,17 @@ body > div.section
 .sub-nav .toc dt span
 {
     display: table;
-    margin-top: 5px;
-    margin-bottom: 5px;
-    margin-left: 3px;
-    margin-right: 2px;
+    margin: 3px;
+    text-decoration: none;
 }
-
+.sub-nav .toc dt a:before,
+.sub-nav .toc dt span span:before
+{
+    content: "\00bb\00a0";
+}
 .sub-nav .toc dt span
 {
-    color: black;
-}
-
-.sub-nav .toc dt a
-{
-    color: #000055;
+    color: red;
 }
 
 .hlabeledlist tr > td:first-child

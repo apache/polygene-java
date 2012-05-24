@@ -18,6 +18,11 @@ body #toolbar_item command_help
     /* display: none !important; */
 }
 
+pre {
+    max-width: 55em;
+    overflow: scroll;
+}
+
 .syntaxhighlighter a,
 .syntaxhighlighter div,
 .syntaxhighlighter code,
@@ -29,19 +34,22 @@ body #toolbar_item command_help
 .syntaxhighlighter table caption,
 .syntaxhighlighter textarea
 {
-    font-size: 14px !important;
+    font-size: 12px !important;
     font-family: Consolas, Monaco, "Bitstream Vera Sans Mono", monospace !important;
-    line-height: 16px !important;
+    line-height: 14px !important;
 }
 
 .syntaxhighlighter {
 	background-color: rgba(11,117,188,0.1) !important;
+        /*
 	overflow: visible !important;
+        */
 	border: 1px solid #0b75bc;
 	padding: 8px;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
 	border-radius: 5px;
+        max-width: 45em;
 }
 
 .syntaxhighlighter .line.alt1 {
@@ -82,7 +90,8 @@ a:hover {
 }
 
 a:visited {
-	color: #08568a;
+	color: #0b75bc;
+	/* color: #08568a; */
 }
 
 hr {
@@ -120,11 +129,6 @@ tr.question td b p
 .book, .chapter, .part {
 	width:90%;
 	margin: 0 auto;
-}
-
-body h4.title
-{
-    margin-bottom: 0;
 }
 
 td p strong
@@ -520,3 +524,8 @@ div.slide p, div.slide li
 	font-family: Helvetica, Arial, sans-serif;
 }
 
+h1 { font-size: 1.8em; margin-bottom: 1em; }
+h2 { font-size: 1.6em; margin-bottom: 1em; }
+h3 { font-size: 1.4em; margin-bottom: 1em; }
+h4 { font-size: 1.2em; margin-bottom: 0.5em; }
+h5 { font-size: 1em; margin-bottom: 0.5em; }
