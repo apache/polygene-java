@@ -13,14 +13,14 @@
  * and limitations under the License.
 //////////////////////
 
-[[def-composite-metatype]]
+[[def-composite-metatype,Composite Meta Type]]
 = Composite Meta Type =
 There are 5 Composite Meta Types defined in Qi4j, which each share the composition features but have distinct semantic
 differences.
 
-    * <<def-entity-composite,EntityComposite>>
-    * <<def-value-composite,ValueComposite>>
-    * <<def-service-composite,ServiceComposite>>
-    * <<def-configuration-composite,ConfigurationComposite> (subtype of EntityComposite)
-    * <<def-transient-composite,TransientComposite>>
+    * <<def-entitycomposite,EntityComposite>>
+    * <<def-valuecomposite,ValueComposite>>
+    * <<def-servicecomposite,ServiceComposite>>
+    * <<def-configurationcomposite,ConfigurationComposite> (subtype of EntityComposite)
+    * <<def-transientcomposite,TransientComposite>>
 

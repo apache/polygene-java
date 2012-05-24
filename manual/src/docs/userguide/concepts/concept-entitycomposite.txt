@@ -13,7 +13,7 @@
  * and limitations under the License.
 //////////////////////
 
-[[def-entity-composite,Entity Composite Meta Type]]
+[[def-entitycomposite,Entity Composite]]
 = Entity Composite Meta Type =
 An Entity Composite, or just Entity for short, is a persisted composite with an <<def-identity,Identity>>. An entity
 only has scope within an <<def-unit-of-work,UnitOfWork>> and is therefor inherently thread-safe.

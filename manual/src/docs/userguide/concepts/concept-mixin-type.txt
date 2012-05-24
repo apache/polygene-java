@@ -1,4 +1,4 @@
-[[def-mixin-type]]
+[[def-mixin-type,Mixin Type]]
 = Mixin Type =
 
 The Mixin Type is the static type of a part of the Composite. The Mixin Type is

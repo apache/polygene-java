@@ -1,4 +1,4 @@
-[[def-invocation-stack]]
+[[def-invocation-stack,Invocation Stack]]
 = Invocation Stack =
 
 For each method, Qi4J will create and re-use an Invocation Stack. It will be

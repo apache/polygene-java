@@ -1,4 +1,4 @@
-[[def-sideeffect]]
+[[def-sideeffect,SideEffect]]
 = SideEffect =
 
 SideEffects are executed after the completion of the method invocation.

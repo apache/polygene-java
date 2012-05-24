@@ -13,7 +13,7 @@
  * and limitations under the License.
 //////////////////////
 
-[[def-concern]]
+[[def-concern,Concern]]
 = Concern =
 A concern is a stateless Fragment, shared between invocations, that acts as an interceptor of the call to the Mixin.
 The Concern is a Java class, that either implements the MixinType it can be used on, or

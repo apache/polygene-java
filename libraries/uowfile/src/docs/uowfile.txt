@@ -5,13 +5,12 @@ The UoWFile Library provides an easy way to bind file operations to UnitOfWorks.
 
 In other words, using this library you can easily attach files to your
 Composites, mostly EntityComposites, so that if the UoW gets discarded, changes
-to files are discarded too. It needed to handle concurrent modifications
-too.
+to files are discarded too. Concurrent modifications are properly handled.
 
 Note that it has a performance impact relative to the files size as it
 duplicates the file to keep a backup for eventual rollback. However, the API
-provides a way to get non-managed handles on the files to keep your read-only
-operations fast.
+provides a way to get non-managed handles on the attached files to keep your
+read-only operations fast.
 
 The location of files is left to the developer using a private mixin.
 

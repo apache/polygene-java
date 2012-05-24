@@ -1,4 +1,4 @@
-[[def-fragment]]
+[[def-fragment,Fragment]]
 = Fragment =
 
 A part of the implementation of a Composite. There are 4 fragment types:

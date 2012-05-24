@@ -50,7 +50,7 @@ public interface LiquibaseService
             implements Activatable
     {
 
-        private static final Logger LOGGER = LoggerFactory.getLogger( LiquibaseService.class );
+        private static final Logger LOGGER = LoggerFactory.getLogger( "org.qi4j.library.sql" );
 
         @This
         Configuration<LiquibaseConfiguration> config;

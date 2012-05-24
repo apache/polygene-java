@@ -1,4 +1,4 @@
-[[def-modifier]]
+[[def-modifier,Modifier]]
 = Modifier =
 
 Modifiers are stateless interceptors of method calls, that forms an

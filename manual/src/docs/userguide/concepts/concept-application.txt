@@ -13,7 +13,7 @@
  * and limitations under the License.
 //////////////////////
 
-[[def-application]]
+[[def-application,Application]]
 = Application =
 Application is the top level concept handled by the Qi4j runtime instance. It holds the information about the Layers
 in the application architecture. See the Application in the Structure section for more information.

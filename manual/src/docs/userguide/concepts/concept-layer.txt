@@ -1,4 +1,4 @@
-[[def-layer]]
+[[def-layer,Layer]]
 = Layer =
 
 Qi4j promotes a Layered application design, where Layers can only access lower

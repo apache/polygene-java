@@ -39,10 +39,12 @@ public class ExternalDataSourceTest
         BasicDataSource externalDataSource = new BasicDataSource();
         externalDataSource.setDriverClassName( "org.apache.derby.jdbc.EmbeddedDriver" );
         externalDataSource.setUrl( "jdbc:derby:memory:testdbexternal;create=true" );
-        new ExternalDataSourceAssembler( "datasource-external",
+        // START SNIPPET: assembly
+        new ExternalDataSourceAssembler( "datasource-external-id",
                                          Visibility.module,
                                          externalDataSource,
                                          DataSources.newDataSourceCircuitBreaker() ).assemble( module );
+        // END SNIPPET: assembly
     }
 
     @Test

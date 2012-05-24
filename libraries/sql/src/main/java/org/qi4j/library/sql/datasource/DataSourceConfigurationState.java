@@ -20,19 +20,14 @@ import org.qi4j.api.property.Property;
 /**
  * Describe DataSourceConfiguration properties.
  */
+// START SNIPPET: config
 public interface DataSourceConfigurationState
         extends Enabled
 {
-
     Property<String> driver();
-
     Property<String> url();
-
     Property<String> username();
-
     Property<String> password();
-
-    @UseDefaults
-    Property<String> properties();
-
+    @UseDefaults Property<String> properties();
 }
+// END SNIPPET: config

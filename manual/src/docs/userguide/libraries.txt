@@ -130,7 +130,7 @@ include::../../../../libraries/servlet/src/docs/servlet.txt[]
 
 :leveloffset: {level2}
 
-// include::../../../../libraries/sql/src/docs/sql.txt[]
+include::../../../../libraries/sql/src/docs/sql.txt[]
 
 :leveloffset: {level2}
 

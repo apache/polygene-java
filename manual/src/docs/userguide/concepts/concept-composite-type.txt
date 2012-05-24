@@ -13,7 +13,7 @@
  * and limitations under the License.
 //////////////////////
 
-[[def-composite-type]]
+[[def-composite-type,Composite Type]]
 = Composite Type =
 Composite Type is the Java interface that declares the composition, from which Composite instances can be created.
 

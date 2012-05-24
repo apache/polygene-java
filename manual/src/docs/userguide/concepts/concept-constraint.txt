@@ -1,4 +1,4 @@
-[[def-constraint]]
+[[def-constraint,Constraint]]
 = Constraint =
 
 Constraints are a kind of validators, which are consulted prior to invoking the

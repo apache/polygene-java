@@ -13,7 +13,7 @@
  * and limitations under the License.
 //////////////////////
 
-[[qi4j-core-io]]
+[[qi4j-core-io,Qi4j Core I/O API]]
 = Qi4j Core I/O API =
 
 The Qi4j Core I/O API is completely generic and not tied to the Qi4j programming model as a whole. It can be used

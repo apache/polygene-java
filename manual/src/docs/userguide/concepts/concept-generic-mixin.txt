@@ -1,4 +1,4 @@
-[[def-generic-mixin]]
+[[def-generic-mixin,Generic Mixin]]
 = Generic Mixin =
 
 A Generic Mixin implements the java.lang.reflect.InvocationHandler. The

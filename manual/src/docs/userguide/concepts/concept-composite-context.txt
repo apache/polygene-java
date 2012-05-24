@@ -13,7 +13,7 @@
  * and limitations under the License.
 //////////////////////
 
-[[def-composite-context]]
+[[def-composite-context,Composite Context]]
 = Composite Context =
 A Composite Context is a mechanism to separate the state of a TransientComposite across two or more threads.
 If a thread modifies a value, only that thread will see the changes, another thread will have its values protected

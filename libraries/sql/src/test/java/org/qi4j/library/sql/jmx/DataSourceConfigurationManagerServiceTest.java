@@ -37,6 +37,7 @@ import org.qi4j.library.circuitbreaker.CircuitBreaker;
 import org.qi4j.library.jmx.JMXAssembler;
 import org.qi4j.library.sql.assembly.C3P0DataSourceServiceAssembler;
 import org.qi4j.library.sql.assembly.DataSourceAssembler;
+import org.qi4j.library.sql.assembly.DataSourceJMXAssembler;
 import org.qi4j.library.sql.datasource.DataSources;
 import org.qi4j.library.sql.datasource.Databases;
 import org.qi4j.library.sql.liquibase.LiquibaseConfiguration;
@@ -115,7 +116,9 @@ public class DataSourceConfigurationManagerServiceTest
                     testModule2.forMixin( LiquibaseConfiguration.class ).declareDefaults().changeLog().set( "changelog.xml" );
                 }
 
-                module.services(DataSourceConfigurationManagerService.class).instantiateOnStartup();
+                // START SNIPPET: jmx
+                new DataSourceJMXAssembler( Visibility.module ).assemble( module );
+                // END SNIPPET: jmx
 
             }
         };

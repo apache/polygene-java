@@ -1,4 +1,4 @@
-[[def-mixin]]
+[[def-mixin,Mixin]]
 = Mixin =
 
 The Mixin is the instance providing the stateful representation of the Mixin

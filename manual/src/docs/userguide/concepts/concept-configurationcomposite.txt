@@ -1,4 +1,4 @@
-[[def-configurationcomposite]]
+[[def-configurationcomposite,Configuration Composite]]
 = Configuration Composite Meta Type =
 
 Service Composites can have configuration associated to it and that is done via

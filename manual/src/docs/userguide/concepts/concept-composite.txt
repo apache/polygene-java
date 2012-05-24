@@ -13,7 +13,7 @@
  * and limitations under the License.
 //////////////////////
 
-[[def-composite]]
+[[def-composite,Composite]]
 = Composite =
 A Composite is an instance of a Composite Type.
 

@@ -1,4 +1,4 @@
-[[def-property]]
+[[def-property,Property]]
 = Property =
 
 Qi4j does not follow the JavaBeans standard for property support. Instead, a much more explicit concept is in place. The advantages are enormous, and the only real downside is that people are already destroyed, thinking in so called POJO terms.

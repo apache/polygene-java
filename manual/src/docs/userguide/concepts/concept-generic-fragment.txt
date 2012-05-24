@@ -1,4 +1,4 @@
-[[def-generic-fragment]]
+[[def-generic-fragment,Generic Fragment]]
 = Generic Fragment =
 
 Generic Fragments are <<def-fragment>>s that implements

@@ -28,6 +28,7 @@ import org.junit.Test;
 
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.structure.Module;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.AssemblyException;
@@ -41,6 +42,7 @@ import static org.qi4j.io.Outputs.collection;
 import static org.qi4j.io.Transforms.map;
 import org.qi4j.library.sql.assembly.C3P0DataSourceServiceAssembler;
 import org.qi4j.library.sql.assembly.DataSourceAssembler;
+import org.qi4j.library.sql.assembly.LiquibaseAssembler;
 import org.qi4j.library.sql.datasource.DataSources;
 import org.qi4j.library.sql.datasource.Databases;
 
@@ -68,8 +70,12 @@ public class LiquibaseServiceTest
                 module.values( SomeValue.class );
 
                 // Set up Liquibase service that will create the tables
-                module.services( LiquibaseService.class ).instantiateOnStartup();
-                module.entities( LiquibaseConfiguration.class );
+                ModuleAssembly configModule = module;
+                // START SNIPPET: assembly
+                new LiquibaseAssembler( Visibility.module ).
+                        withConfigIn( configModule, Visibility.layer ).
+                        assemble( module );
+                // END SNIPPET: assembly
                 module.forMixin( LiquibaseConfiguration.class ).declareDefaults().enabled().set( true );
                 module.forMixin( LiquibaseConfiguration.class ).declareDefaults().changeLog().set( "changelog.xml" );
 
@@ -77,14 +83,19 @@ public class LiquibaseServiceTest
                 module.services( MemoryEntityStoreService.class );
             }
         };
+        
+        Module module = assembler.module();
 
+        // START SNIPPET: io
         // Look up the DataSource
-        DataSource ds = assembler.module().<DataSource>findService( DataSource.class ).get();
+        DataSource ds = module.findService( DataSource.class ).get();
 
-        // Insert and query for data to check that it's working
+        // Instanciate Databases helper
         Databases database = new Databases( ds );
 
+        // Assert that insertion works
         assertTrue( database.update( "insert into test values ('someid', 'bar')" ) == 1 );
+        // END SNIPPET: io
 
         database.query( "select * from test", new Databases.ResultSetVisitor()
         {
@@ -117,11 +128,14 @@ public class LiquibaseServiceTest
             }
         };
 
+        // START SNIPPET: io
+        // Select rows and load them in a List
         List<SomeValue> rows = new ArrayList<SomeValue>();
         database.query( "select * from test" ).transferTo( map( toValue, collection( rows ) ) );
 
+        // Transfer all rows to System.out
         Inputs.iterable( rows ).transferTo( Outputs.systemOut() );
-
+        // END SNIPPET: io
     }
 
     interface SomeValue

@@ -1,2 +1,2 @@
-[[def-valuecomposite]]
+[[def-valuecomposite,Value Composite]]
 = Value Composite =

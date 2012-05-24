@@ -1,2 +1,2 @@
-[[def-manyassociation]]
+[[def-manyassociation,ManyAssociation]]
 = ManyAssociation =
