@@ -5,4 +5,8 @@
 
 :leveloffset: {level2}
 
+include::../../../../tools/entity-viewer/src/docs/entity-viewer.txt[]
+
+:leveloffset: {level2}
+
 include::../../../../tools/envisage/src/docs/envisage.txt[]

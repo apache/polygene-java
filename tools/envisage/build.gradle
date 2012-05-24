@@ -27,3 +27,13 @@ dependencies {
   compile "com.jgoodies:looks:2.2.2"
   compile "org.apache.pdfbox:pdfbox:0.8.0-incubating"
 }
+
+task(runSample, dependsOn: 'testClasses', type: JavaExec) {
+    main = 'org.qi4j.envisage.sample.EnvisageSample'
+    classpath = sourceSets.test.runtimeClasspath
+}
+
+task(runSchool, dependsOn: 'testClasses', type: JavaExec) {
+    main = 'org.qi4j.envisage.school.EnvisageSchoolSample'
+    classpath = sourceSets.test.runtimeClasspath
+}

@@ -105,8 +105,9 @@ public class ApplicationSample
         setUp();
         createTestData();
         //testQuery();
-
+        // START SNIPPET: entity-viewer
         new EntityViewer().show( qi4j, applicationModel, application );
+        // END SNIPPET: entity-viewer
     }
 
     private String createCar( String manufacturer, String model, int year )
