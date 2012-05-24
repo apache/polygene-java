@@ -12,6 +12,8 @@ include::howto-configure-service.txt[]
 
 include::howto-create-entity.txt[]
 
+include::howto-create-constraint.txt[]
+
 include::howto-contextual-fragments.txt[]
 
 include::howto-use-io.txt[]

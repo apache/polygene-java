@@ -1,0 +1,117 @@
+[[howto-create-constraint]]
+= Create a Constraint =
+
+Constraints are defined in <<def-constraint>>.
+
+== Method Constraint ==
+
+Method Constraints are declared with annotations on the method argument. The annotation itself is custom, and it is possible to make your own.
+
+[source,java]
+----
+public interface Dialer
+{
+    void callPhoneNumber( @PhoneNumber String phoneNo );
+}
+----
+
+In the code above we say that we want the argument to the callPhoneNumber() method to be a valid phone number. This annotation is not built-in, so we need to declare it.
+
+[source,java]
+----
+@ConstraintDeclaration
+@Retention( RetentionPolicy.RUNTIME )
+@Target( { ElementType.PARAMETER, ElementType.ANNOTATION_TYPE, ElementType.METHOD } )
+public @interface PhoneNumber
+{
+}
+----
+
+We then need to provide the Constraint implementation.
+
+[source,java]
+----
+public class PhoneNumberConstraint
+    implements Constraint<PhoneNumber, String>
+{
+    @ThisCompositeAs(optional=true) Country country;
+    public boolean isValid( PhoneNumber annotation, String number )
+    {
+        boolean validPhoneNumber = ....;
+        return validPhoneNumber;  // return true if valid phone number.
+    }
+}
+----
+
+We also need to include the Constraint on the Composites we want to have them present.
+
+[source,java]
+----
+@Constraints( PhoneNumberConstraint.class )
+public interface DialerComposite extends ServiceComposite, Dialer
+{}
+----
+
+Constraints doesn't throw any exceptions, as violation of constraints are domain specific. Instead, the Qi4j runtime will record all the violations in the InvocationContext, which is available to Concerns and Mixins. For instance;
+
+[source,java]
+----
+public class ParameterViolationConcern
+    implements InvocationHandler
+{
+    @Structure private InvocationContext invocation;
+    @ConcernFor private InvocationHandler next;
+    public Object invoke( Object proxy, Method method, Object[] args )
+        throws Exception
+    {
+        Collection<ConstraintViolation> violations =
+            invocation.getConstraintViolations();
+        if( violations.size() > 0 )
+        {
+            throw new MyConstraintVioaltionException( violations );
+        }
+        return next.invoke( proxy, method, args );
+    }
+}
+----
+
+== Property Constraint ==
+
+Property Constraints are declared on the Property method.
+
+[source,java]
+----
+public interface HasPhoneNumber
+{
+    @PhoneNumber Property<String> phoneNumber();
+}
+----
+
+In this case, the Constraint associated with the phoneNumber() method, will be called before the set() method on that Property is called. And any ConstraintViolations will be available to Concerns declared for the Property itself. For instance;
+
+[source,java]
+----
+public class ParameterViolationConcern
+    implements HasPhoneNumber
+{
+    @Structure private InvocationContext invocation;
+    @ConcernFor private HasPhoneNumber next;
+    @Concerns( CheckViolation.class )
+    public abstract Property<String> phoneNumber();
+    private abstract class CheckViolation
+        implements Property<String>
+    {
+        @ConcernFor Property<String> next;
+        public void set( String number )
+        {
+            Collection<ConstraintViolation> violations =
+                invocation.getConstraintViolations();
+            if( violations.size() > 0 )
+            {
+                throw new MyConstraintVioaltionException( violations );
+            }
+            return next.set( number );
+        }
+    }
+}
+----

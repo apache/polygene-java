@@ -1,0 +1,55 @@
+:leveloffset: 1
+
+[[samples,Samples Section]]
+=  Samples =
+
+:leveloffset: 2
+
+== DCI Sample ==
+
+Sample of how DCI (Data, Context & Interaction) pattern is implemented using
+Qi4j core only.
+
+https://github.com/Qi4j/qi4j-sdk/tree/develop/samples/dci[Browse Source]
+
+== DCI Cargo Sample ==
+
+Sample of how DCI (Data, Context & Interaction) pattern is implemented with
+Qi4j, for Eric Evans DDD sample.
+
+This sample, contributed by Marc Grue, is described in details on his
+website: http://marcgrue.com/
+
+https://github.com/Qi4j/qi4j-sdk/tree/develop/samples/dci-cargo[Browse Source]
+
+== Forum Sample ==
+
+Sample of how to build a web forum using <<library-rest-server>>, 
+<<extension-entitystore-neo4j>> and <<library-fileconfig>>.
+
+https://github.com/Qi4j/qi4j-sdk/tree/develop/samples/forum[Browse Source]
+
+== Car Rental Sample ==
+
+Sample of implementation of a Car Rental application implemented as a Servlet
+based Webapp packaged as a WAR.
+
+https://github.com/Qi4j/qi4j-sdk/tree/develop/samples/rental[Browse Source]
+
+== Scala Sample ==
+
+Sample of how to use Scala with Qi4j.
+
+https://github.com/Qi4j/qi4j-sdk/tree/develop/samples/scala[Browse Source]
+
+== Struts2 Sample ==
+
+Sample of how to use the Struts2 integration.
+
+https://github.com/Qi4j/qi4j-sdk/tree/develop/samples/struts2Hello[Browse Source]
+
+== Swing Bindings Sample ==
+
+Sample of how to write custom binders.
+
+https://github.com/Qi4j/qi4j-sdk/tree/develop/samples/swing[Browse Source]

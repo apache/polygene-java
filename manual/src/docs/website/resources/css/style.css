@@ -134,7 +134,7 @@ h2.title
 .top-nav .toc dt a,
 .top-nav .toc dt span span
 {
-    padding: 25px 25px 5px 25px;
+    padding: 25px 20px 5px 20px;
     text-decoration: none;
     background-image: linear-gradient(bottom, rgb(191, 191, 191) 100%, rgb(255, 255, 255) 0%);
     background-image: -o-linear-gradient(bottom, rgb(191, 191, 191) 100%, rgb(255, 255, 255) 0%);

@@ -9,7 +9,15 @@ include::news/news.txt[]
 
 :leveloffset: 1
 
-include::community.txt[]
+include::../userguide/concepts.txt[]
+
+:leveloffset: 1
+
+include::../../../../tutorials/introduction/src/docs/introduction.txt[]
+
+:leveloffset: 1
+
+include::../recipes/recipes.txt[]
 
 :leveloffset: 1
 
@@ -25,11 +33,11 @@ include::../userguide/extensions.txt[]
 
 :leveloffset: 1
 
-include::../../../../tutorials/introduction/src/docs/introduction.txt[]
+include::samples.txt[]
 
 :leveloffset: 1
 
-include::../recipes/recipes.txt[]
+include::community.txt[]
 
 :leveloffset: 1
 
