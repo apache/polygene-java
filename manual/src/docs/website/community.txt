@@ -16,8 +16,6 @@ include::community/playing-field.txt[]
 
 include::community/contributing.txt[]
 
-include::community/mailing-list.txt[]
-
 include::community/build-system.txt[]
 
 include::community/contributors.txt[]
