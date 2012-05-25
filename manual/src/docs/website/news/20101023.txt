@@ -1,0 +1,73 @@
+[[news-20101023,Qi4j SDK 1.2 Released]]
+= Qi4j SDK 1.2 Released =
+
+The Qi4j community today announced the 3rd installment of the innovative Java
+framework, Qi4j. The main new features includes, SQL EntityStore, SQL
+Indexing/Querying, Caching SPI and a Service Qualifier API.
+
+Additional to the new features, numerous improvements were made along side with
+significant internal changes. Here is a break down of the more important issues;
+
+The Cache SPI is another important new feature. The pluggable Cache SPI means
+that it is equally simple to add new caching implementations as it is to add
+Entity Store implementations, in fact even easier since the SPI is very simple.
+The entity stores implementations that leverages the MapEntityStore layer in
+the Qi4j Runtime (which most do), will automatically benefit from the plugged
+in Cache.
+
+The support of SQL has been a long-standing requested item, and thanks to new
+community blood, we now have the first generation of both EntityStore
+implementation as well as using SQL backends for querying and indexing. These
+two implementations is a testament that the Qi4j data model is truly flexible.
+The current implementation does not, however, support mapping of existing
+tables and expect to 'own' the tables it needs. PostgreSQL and MySQL are the
+first support RDBMSes, and more are bound to follow in upcoming releases.
+
+SLF4J was introduced as a dependency in Qi4j Core, and slowly starting to add
+additional debug and trace statements in the internals of Qi4j Runtime to aid
+in troubleshooting.
+
+Qi4j community has also noted a JDK bug, which surface as a
+java.lang.ArrayStoreException, but is really a
+java.lang.TypeNotPresentException that gets treated incorrectly deep inside
+com.sun packages. This release did not manage to work around this, but we will
+in the next release.
+
+The bugs fixed are of various nature. Some of the bugs listed in the release
+notes are possibly fixed prior to Qi4j 1.1, but not identified correctly. The
+two most important bug fixes are QI-247, Incorrect delegation of Object methods
+in TransientComposite, and QI-241 regarding the matching algorithm for
+@AppliesTo. The latter may seriously affect existing applications to include
+fragments when it previously didn't.
+
+== Release Notes - Qi4j SDK 1.2 ==
+
+*New Features*
+
+- [QI-192] - Support indexing/querying of collection properties
+- [QI-260] - Introduce advanced cache (ehcache?) as a general purpose caching layer for all EntityStores
+- [QI-266] - Introduction of Service Qualifier API
+- [QI-268] - Cache SPI introduced in Core.
+- [QI-269] - Cache Extension - Ehcache
+
+*Improvements*
+
+- [QI-58] - Property -> Property .. -> .. Querying
+- [QI-232] - Entity Type resolution is flawed
+- [QI-249] - Visitor-pattern to work with throws -declaration
+- [QI-263] - Replace JDK logging with SLF4J
+- [QI-264] - Use exception handling pattern in visitors
+- [QI-265] - Introduce SLF4J as logging framework.
+- [QI-267] - EntityStoreSPI.applyChanges() should have the EntityStoreUnitOfWork passed along.
+
+*Bugs Fixed*
+
+- [QI-214] - Missing implementations of newEqualsPredicate
+- [QI-241] - AppliesTo match algorithm should be a OR condition in the targeted elements list
+- [QI-247] - Broken delegation of Object methods in TransientComposite
+- [QI-253] - Remaining bugs on moving to ASM
+- [QI-254] - FragmentClassLoader causes UnsupportedClassVersionError in most tests
+- [QI-255] - Qi4j tests do not take @Queryable(false) into account
+- [QI-256] - UndeclaredThrowableException - possibly related to new class-generation
+- [QI-257] - ConcernOf/SideEffectOf not working with <Property<SomeType>>
+- [QI-259] - JSONMapEntityStore did not update lastModified in entitystate

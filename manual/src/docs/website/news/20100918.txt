@@ -1,0 +1,6 @@
+[[news-20100918,Qi4j at JavaZone 2010]]
+= Qi4j at JavaZone 2010 =
+
+Qi4j at JavaZone 2010, Oslo, Norway. Rickard Öberg presented "Implementing a Rest API with DCI and Qi4j" at JavaZone on the 8 Sept 2010.
+
+http://streaming.java.no/tcs/#page:recordingList&pageNumber:1&id:DD3955BC-997B-40C1-A7DC-421DB8EE6512[Watch the video]

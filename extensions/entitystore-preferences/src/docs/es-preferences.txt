@@ -2,7 +2,7 @@
 = Preferences EntityStore =
 
 EntityStore service backed by java.​util.​prefs.​Preferences. It can be a good
-candidate to store <<def-configurationcomposite>>[Configuration Entities].
+candidate to store <<def-configurationcomposite>>s.
 
 == Assembly ==
 

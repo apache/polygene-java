@@ -194,6 +194,7 @@ body > div.section
 {
     margin: 80px 20px 20px 360px;
     min-height: 1000px;
+    max-width: 50em;
 }
 
 .sub-nav .toc dl a
@@ -231,6 +232,21 @@ body > div.section
     background: #343434;
     color: #9a9a9a;
     font-size: 80%;
+}
+
+div.informaltable
+{
+    width: 100%;
+}
+div.informaltable table,
+div.table table
+{
+    background: transparent;
+}
+div.informaltable table thead,
+div.table table thead
+{
+    border-bottom: 1px solid black;
 }
 
 .note

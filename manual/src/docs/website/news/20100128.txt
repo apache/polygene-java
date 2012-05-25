@@ -1,0 +1,20 @@
+[[news-20100128,Qi4j SDK 1.0 has been released!]]
+= Qi4j SDK 1.0 has been released! =
+
+Qi4j SDK 1.0 has now been released. After 2 years of hard work, we have finally
+made an official release available. It contains all the core features of Qi4j,
+such as composites made from fragments like mixins, concerns, side-effects and
+constraints, and also the libraries and extensions that are useful for most
+application development.
+
+During this weeks JFokus conference in Stockholm, Sweden, the Qi4j community
+released Qi4j SDK 1.0. Rickard Öberg made two presentations in association with
+the conference, focusing on how Qi4j and Composite Oriented Programming makes
+working with domain models on the Java platform easier compared to the usual
+POJO approach typically used in todays application development.
+
+Qi4j is a significant step forward for the Java platform, with its focus on
+Domain Driven Design and support for the 
+http://www.artima.com/articles/dci_vision.html[Data-Context-Interaction]
+paradigm that is currently being worked on by Trygve Reenskaug as a way to
+revive object-orientation.
