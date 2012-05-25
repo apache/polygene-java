@@ -1,0 +1,33 @@
+[[extension-es-jclouds,JClouds EntityStore]]
+= JClouds EntityStore =
+
+EntityStore service backed by a http://www.jclouds.org/[JClouds] BlobStore.
+
+It means you get access to a growing list of providers available at the 
+http://www.jclouds.org/[JClouds] website that includes Amazon, VMWare, Azure,
+and Rackspace.
+
+For testing purpose theses providers are supported too:
+
+- Transient
+- Filesystem
+
+== Assembly ==
+
+Assembly is done using the provided Assembler:
+
+[snippet,java]
+----
+source=extensions/entitystore-jclouds/src/test/java/org/qi4j/entitystore/jclouds/JCloudsTransientTest.java
+tag=assembly
+----
+
+== Configuration ==
+
+Here are the configuration properties for the JClouds EntityStore:
+
+[snippet,java]
+----
+source=extensions/entitystore-jclouds/src/main/java/org/qi4j/entitystore/jclouds/JCloudsMapEntityStoreConfiguration.java
+tag=config
+----

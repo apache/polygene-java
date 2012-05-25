@@ -21,6 +21,10 @@ include::../../../../extensions/entitystore-hazelcast/src/docs/es-hazelcast.txt[
 
 :leveloffset: {level2}
 
+// include::../../../../extensions/entitystore-jclouds/src/docs/es-jclouds.txt[]
+
+:leveloffset: {level2}
+
 include::../../../../extensions/entitystore-jdbm/src/docs/es-jdbm.txt[]
 
 :leveloffset: {level2}
