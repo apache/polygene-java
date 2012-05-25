@@ -14,7 +14,7 @@ dependencies {
   compile(project(":org.qi4j.libraries:org.qi4j.library.locking"))
   compile(libraries.slf4j_api)
   compile(libraries.voldemort )
-  compile(libraries.googlecollections )
+  compile(libraries.guava )
   testRuntime(libraries.sleepycat )
   testRuntime(libraries.log4j )
   testRuntime( libraries.jdom )
