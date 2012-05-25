@@ -9,3 +9,5 @@ types for checking complete method calls and return values.
 See <<library-constraints>> for ready to use Constraints.
 
 See <<howto-create-constraint>> to learn how to write your own Constraints.
+
+Constraint is one of the 3 kinds of <<def-modifier,Modifiers>> defined in Qi4j.

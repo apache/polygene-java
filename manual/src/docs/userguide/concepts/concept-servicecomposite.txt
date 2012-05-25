@@ -1,8 +1,11 @@
 [[def-servicecomposite,Service Composite]]
-= Service Composite Meta Type=
+= Service Composite =
 
 Service Composite is a subtype of Composite, and has a range of features built
 into it.
+
+ServiceComposite is one of the 5
+<<def-composite-metatype,Composite Meta Types>> defined in Qi4j.
 
 == Composites ==
 

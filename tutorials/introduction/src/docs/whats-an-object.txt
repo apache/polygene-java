@@ -1,4 +1,4 @@
-[[what-s-an-object-anyway]]
+[[what-s-an-object-anyway,What's an Object anyway?]]
 = What's an Object anyway? =
 In OOP the main idea is that we should model our reality by creating Objects. Objects have state, and they have methods.
 Methods in an object are used to operate on the internal state and understands the domain that is being modeled.

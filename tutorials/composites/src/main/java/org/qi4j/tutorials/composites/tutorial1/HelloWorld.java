@@ -1,5 +1,6 @@
 package org.qi4j.tutorials.composites.tutorial1;
 
+// START SNIPPET: initial
 /**
  * Initial HelloWorld implementation. Everything is mixed up
  * into one class, and no interface is used.
@@ -46,3 +47,4 @@ public class HelloWorld
         return phrase + " " + name;
     }
 }
+// END SNIPPET: initial

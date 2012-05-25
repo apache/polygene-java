@@ -1,4 +1,4 @@
-[[what-is-cop]]
+[[what-is-cop,What is Composite Oriented Programming?]]
 = What is Composite Oriented Programming? =
 
 

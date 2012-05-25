@@ -1,46 +1,18 @@
+[[tutorials-intro,Introduction to Qi4j]]
+= Introduction to Qi4j =
 
-:leveloffset: {level1}
+This quite long introduction to Qi4j will start by brushing up an overview of the problems Qi4j solve, teach you what
+Composite Oriented Programming is and guide you through the process of writing a complete Application around an adapted
+Hello World example.
 
-[[tutorials]]
-= Tutorials =
+:leveloffset: 2
 
-:leveloffset: {level2}
-
-include::highlights.txt[]
-
-:leveloffset: {level2}
-
+// include::highlights.txt[]
 include::background.txt[]
-
-:leveloffset: {level2}
-
 include::what-is-composite-oriented-programming.txt[]
-
-:leveloffset: {level2}
-
 include::qi4j-cop.txt[]
-
-:leveloffset: {level2}
-
 include::whats-an-object.txt[]
-
-:leveloffset: {level2}
-
 include::../../twominutes/src/docs/two-minutes.txt[]
-
-:leveloffset: {level2}
-
 include::../../tenminutes/src/docs/ten-minutes.txt[]
-
-:leveloffset: {level2}
-
 include::../../thirtyminutes/src/docs/thirty-minutes.txt[]
-
-:leveloffset: {level2}
-
 include::../../twohours/src/docs/two-hours.txt[]
-
-:leveloffset: {level2}
-
-include::../../../composites/src/docs/tut-composites.txt[]
-

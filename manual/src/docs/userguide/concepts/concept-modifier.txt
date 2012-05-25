@@ -9,6 +9,6 @@ member fields will only be valid within a single method invocation.
 
 There are 3 kinds of Modifiers;
 
-- <<def-constraint>>s
-- <<def-concern>>s
-- <<def-sideeffect>>s
+- <<def-constraint,Constraints>>
+- <<def-concern,Concerns>>
+- <<def-sideeffect,Side Effects>>

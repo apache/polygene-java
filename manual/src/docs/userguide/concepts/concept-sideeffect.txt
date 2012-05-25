@@ -2,3 +2,5 @@
 = SideEffect =
 
 SideEffects are executed after the completion of the method invocation.
+
+SideEffect is one of the 3 kinds of <<def-modifier,Modifiers>> defined in Qi4j.

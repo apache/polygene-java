@@ -3,6 +3,7 @@ package org.qi4j.tutorials.composites.tutorial5;
 import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.injection.scope.This;
 
+// START SNIPPET: solution
 /**
  * This is the implementation of the HelloWorld
  * behaviour interface.
@@ -25,3 +26,4 @@ public class HelloWorldBehaviourMixin
         return state.getPhrase() + " " + state.getName();
     }
 }
+// END SNIPPET: solution

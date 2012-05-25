@@ -1,5 +1,6 @@
 [[def-fragment,Fragment]]
 = Fragment =
 
-A part of the implementation of a Composite. There are 4 fragment types:
-Mixins, Concerns, Constraints and Side Effects.
+A part of the implementation of a <<def-composite>>. There are 4 fragment types:
+<<def-mixin,Mixins>>, <<def-concern,Concerns>>, <<def-constraint,Constraints>>
+and <<def-sideeffect,Side Effects>>.

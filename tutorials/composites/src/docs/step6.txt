@@ -1,0 +1,71 @@
+[[tut-composites-step6,Step 6 - SideEffects]]
+= Step 6 - SideEffects =
+
+Previous step was <<tut-composites-step5>>.
+
+The current say() method has a Concern that modifies its value. What if we instead want the value to be intact, but log 
+that value to System.out? That would be considered a side-effect of the say() method, and should hence not be done in a 
+Concern. It would be better to implement this in a SideEffect. SideEffects are executed after the Mixin and all Concerns
+for a method are done, which means that the final result has been computed. A SideEffect can access this result value, 
+and then use that for further computation, but it should not change the value or throw an exception.
+
+SideEffects can be either typed or generic, just like Concerns. In the typed case we are interested in specifying 
+SideEffects for one or more particular methods, whereas in the generic case the SideEffect is not really relying on what
+method is being invoked. Both are useful in different scenarios.
+
+The easiest way to implement a typed SideEffect is to subclass the SideEffectOf class. This gives you access to the 
+result of the real method invocation by using the "next" field, which has the same type as the interface of the method 
+you want the code to be a side-effect of. Note that calling "next" does not actually do anything, it only returns the 
+value (or throws the exception, if one was thrown from the original method) that has already been computed. Similarly, 
+since the method is already done, you can return anything from the SideEffect method. The framework will simply throw it
+away, and also ignore any exceptions that you throw in your code.
+
+To declare that the SideEffect should be used you add the @SideEffects annotation to either the TransientComposite type,
+the Mixin type, or the Mixin implementation. Either works.
+
+Steps for this tutorial:
+
+- Create the SideEffect class that logs the result of say() to System.out.
+- Add a @SideEffects annotation with the SideEffect to the HelloWorldComposite interface.
+- Remove the Concern from the previous step.
+- Move the HelloWorldStateMixin from the HelloWorldState to the HelloWorldComposite interface.
+
+== Solution ==
+
+If you have successfully completed the task, you should end up with the following artifacts;
+
+These ones remain unchanged:
+
+- +HelloWorld.java+
+- +HelloWorldBehaviourMixin.java+
+- +HelloWorldStateMixin.java+
+
+*HelloWorldBehaviour.java*
+[snippet,java]
+----
+source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial7/HelloWorldBehaviour.java
+tag=solution
+----
+
+*HelloWorldBehaviourSideEffect.java*
+[snippet,java]
+----
+source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial7/HelloWorldBehaviourSideEffect.java
+tag=solution
+----
+
+*HelloWorldComposite.java*
+[snippet,java]
+----
+source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial7/HelloWorldComposite.java
+tag=solution
+----
+
+*HelloWorldState.java*
+[snippet,java]
+----
+source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial7/HelloWorldState.java
+tag=solution
+----
+
+Next step is <<tut-composites-step7>>

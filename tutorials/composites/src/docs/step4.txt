@@ -1,0 +1,58 @@
+[[tut-composites-step4,Step 4 - Concerns]]
+= Step 4 - Concerns =
+
+Previous step was <<tut-composites-step3>>.
+
+In this step we refactor the mixin from the previous steps so that the result of the say() method is modified to be 
+prefixed with "Simon says:". To do this we need to implement a Concern for the say() method. Concerns are a type of 
+Modifier which modify the behaviour of the methods in Mixins. They do this by intercepting the invocation of the 
+TransientComposite. This allows them to change the invocation parameters, return their own values or throw their own 
+exceptions, and do other things which directly affect the invocation of the method.
+
+Concerns should not perform any side-effects, such as updating state in another TransientComposite, Mixin or similar. 
+Any side-effects are done in SideEffects, which is another type of Modifier, which are allowed to perform side-effects 
+but, in contrast to Concerns, cannot change the parameters or in any other way change the result of the invocation.
+
+Concerns are implemented in one of two ways: either create a class which directly implements the interface whose 
+methods should be modified, or create a generic Modifier by implementing the InvocationHandler interface (or subclass 
+GenericConcern which does this for you). Add an @ConcernFor dependency injection, as a field, constructor parameter 
+or method parameter, which has the same type as the interface the Concern implements. When the TransientComposite is 
+invoked the Concern will be called, allowing it to perform it's work. If the call should proceed, then invoke the 
+method again on the injected object. The preferred way to do all of this is to subclass ConcernOf which does all of 
+this for you.
+
+Concerns are applied by adding an @Concerns annotation on the TransientComposite, the domain interface, or the Mixin 
+implementation. Any of these works, and where to put it is a matter of design choice.
+
+Steps for this tutorial:
+
+- Create a typed concern, implement the HelloWorldBehaviour and let it modify the result of the base method by prefix the result with "Simon says:".
+- Add an @Concerns annotation on the HelloWorldBehaviourMixin which references the Concern class.
+
+== Solution ==
+
+If you have successfully completed the task, you should end up with the following artifacts;
+
+These ones remain unchanged:
+
+- +HelloWorld.java+
+- +HelloWorldBehavior.java+
+- +HelloWorldComposite.java+
+- +HelloWorldState.java+
+- +HelloWorldStateMixin.java+
+
+*HelloWorldBehaviourMixin.java*
+[snippet,java]
+----
+source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial5/HelloWorldBehaviourMixin.java
+tag=solution
+----
+
+*HelloWorldBehaviourConcern.java*
+[snippet,java]
+----
+source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial5/HelloWorldBehaviourConcern.java
+tag=solution
+----
+
+Next step is <<tut-composites-step5>>

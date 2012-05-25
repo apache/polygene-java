@@ -1,0 +1,44 @@
+[[tut-composites-step2,Step 2 - Creating a Transient Composite]]
+= Step 2 - Creating a Transient Composite =
+
+Previous step was <<tut-composites-step1>>.
+
+In this step we will create a TransientComposite interface that ties all pieces together. The TransientComposite 
+interface is a regular Java interface which extends the interfaces you want to expose from your domain model, and which 
+uses various annotations to declare what Fragments to include. Fragments include Mixins, Concerns, SideEffects and 
+Constraints. In this tutorial we will only use Mixins. When a TransientComposite is instantiated at runtime the 
+framework will inspect the interface to determine what the TransientComposite instance should look like in terms of 
+used Fragments.
+
+In Qi4j all method parameters are considered mandatory unless marked as @Optional. Therefore you can remove the null 
+checks in the Mixin. If a null value is passed in an exception will be thrown by Qi4j.
+
+Steps for this tutorial:
+
+- Create an interface that extends the domain interface HelloWorld and org.qi4j.api.composite.TransientComposite.
+- Add a @Mixins annotation to it with the name of the Mixin as argument.
+
+== Solution ==
+
+These ones remain unchanged:
+
+- +HelloWorld.java+
+- +HelloWorldBehaviour.java+
+- +HelloWorldState.java+
+
+*HelloWorldComposite.java*
+[snippet,java]
+----
+source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial3/HelloWorldComposite.java
+tag=solution
+----
+
+*HelloWorldMixin.java*
+[snippet,java]
+----
+source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial2/HelloWorldMixin.java
+tag=solution
+----
+
+
+Next step is <<tut-composites-step3>>

@@ -1,4 +1,4 @@
-[[ten-minutes-intro]]
+[[ten-minutes-intro,Qi4j in 10 minutes]]
 = Qi4j in 10 minutes =
 
     * Qi4j does not introduce any new programming language, no additional compilers needed and all your existing tools

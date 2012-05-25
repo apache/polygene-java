@@ -1,5 +1,6 @@
 package org.qi4j.tutorials.composites.tutorial4;
 
+// START SNIPPET: solution
 /**
  * This is the implementation of the HelloWorld
  * state interface.
@@ -30,3 +31,4 @@ public class HelloWorldStateMixin
         this.name = name;
     }
 }
+// END SNIPPET: solution

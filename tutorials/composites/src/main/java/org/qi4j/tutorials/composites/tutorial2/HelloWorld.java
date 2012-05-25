@@ -1,5 +1,6 @@
 package org.qi4j.tutorials.composites.tutorial2;
 
+// START SNIPPET: solution
 /**
  * This interface aggregates the behaviour and state
  * of the HelloWorld sub-interfaces. To a client
@@ -11,3 +12,4 @@ public interface HelloWorld
     extends HelloWorldBehaviour, HelloWorldState
 {
 }
+// END SNIPPET: solution

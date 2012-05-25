@@ -1,4 +1,4 @@
-[[qi4j-introduction-background]]
+[[qi4j-introduction-background,Background]]
 Background
 ==========
 Qi4j is the first Composite Oriented Programming implementation leveraging the Java 5 platform, so that everything you

@@ -1,0 +1,17 @@
+[[def-application-mode,Application Mode]]
+= Application Mode =
+
+During the Bootstrap phase an Application is given a Mode:
+
+[source,java]
+----
+public enum Mode
+{
+    // Application modes
+    test,           // Should be used for unit test runs. Created files etc. should be cleaned up between runs
+    development,    // Should be used during development. Typically create in-memory databases etc.
+    staging,        // Should be used in QA environments, and other production-like settings where different set of external resources are utilized.
+    production      // Should be used in production. All databases are persistent on disk etc.
+}
+----
+

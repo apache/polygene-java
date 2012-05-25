@@ -1,4 +1,4 @@
-[[thirty-minutes-intro]]
+[[thirty-minutes-intro,Qi4j in 30 minutes]]
 = Qi4j in 30 minutes =
 This introduction will deepen your understanding of Qi4j, as we touches on a couple of the common features of Qi4j. It
 is expected that you have gone through and understood the "Qi4j in 10 minutes" introduction.

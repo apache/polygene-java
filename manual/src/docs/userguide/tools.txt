@@ -1,12 +1,17 @@
-:leveloffset: {level1}
+:leveloffset: 1
 
-[[tools]]
+[[tools,Tools Section]]
 = Tools =
 
-:leveloffset: {level2}
+:leveloffset: 2
 
-include::../../../../tools/entity-viewer/src/docs/entity-viewer.txt[]
+== Introduction ==
 
-:leveloffset: {level2}
+The Qi4j SDK comes with usefull development tools. Theses tools can come in
+handy when assembled into your <<def-application,Application>> in development
+<<def-application-mode,Mode>>.
+
+The tools are available in the +tools/+ directory of the Qi4j SDK.
 
 include::../../../../tools/envisage/src/docs/envisage.txt[]
+include::../../../../tools/entity-viewer/src/docs/entity-viewer.txt[]

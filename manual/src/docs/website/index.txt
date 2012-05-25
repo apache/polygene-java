@@ -13,7 +13,7 @@ include::../userguide/concepts.txt[]
 
 :leveloffset: 1
 
-include::../../../../tutorials/introduction/src/docs/introduction.txt[]
+include::tutorials.txt[]
 
 :leveloffset: 1
 

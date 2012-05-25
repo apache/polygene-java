@@ -1,130 +1,44 @@
-[[Concepts]]
+:leveloffset: 1
+
+[[concepts,Concepts Section]]
 = Concepts =
+
+:leveloffset: 2
+
+== Introduction ==
+
 There are a lot of concepts in Qi4j which may have different meanings in other contexts. So in true DDD-style
 ubiquitous language, we are here listing the definitions of the terms and concepts that are being used.
 
-:leveloffset: {level2}
-
 include::concepts/concept-abstract-mixin.txt[]
-
-:leveloffset: {level2}
-
 include::concepts/concept-abstract-modifier.txt[]
-
-:leveloffset: {level2}
-
 include::concepts/concept-application.txt[]
-
-:leveloffset: {level2}
-
+include::concepts/concept-application-mode.txt[]
 include::concepts/concept-association.txt[]
-
-:leveloffset: {level2}
-
 include::concepts/concept-composite.txt[]
-
-:leveloffset: {level2}
-
 include::concepts/concept-composite-context.txt[]
-
-:leveloffset: {level2}
-
 include::concepts/concept-composite-metatype.txt[]
-
-:leveloffset: {level2}
-
 include::concepts/concept-composite-type.txt[]
-
-:leveloffset: {level2}
-
 include::concepts/concept-concern.txt[]
-
-:leveloffset: {level2}
-
 include::concepts/concept-configurationcomposite.txt[]
-
-:leveloffset: {level2}
-
 include::concepts/concept-constraint.txt[]
-
-:leveloffset: {level2}
-
 include::concepts/concept-entitycomposite.txt[]
-
-:leveloffset: {level2}
-
 include::concepts/concept-fragment.txt[]
-
-:leveloffset: {level2}
-
 include::concepts/concept-generic-fragment.txt[]
-
-:leveloffset: {level2}
-
 include::concepts/concept-generic-mixin.txt[]
-
-:leveloffset: {level2}
-
 include::concepts/concept-identity.txt[]
-
-:leveloffset: {level2}
-
 include::concepts/concept-invocation-stack.txt[]
-
-:leveloffset: {level2}
-
 include::concepts/concept-layer.txt[]
-
-:leveloffset: {level2}
-
 include::concepts/concept-metainfo.txt[]
-
-:leveloffset: {level2}
-
 include::concepts/concept-manyassociation.txt[]
-
-:leveloffset: {level2}
-
 include::concepts/concept-mixin.txt[]
-
-:leveloffset: {level2}
-
 include::concepts/concept-mixin-type.txt[]
-
-:leveloffset: {level2}
-
 include::concepts/concept-modifier.txt[]
-
-:leveloffset: {level2}
-
 include::concepts/concept-module.txt[]
-
-:leveloffset: {level2}
-
 include::concepts/concept-private-mixin.txt[]
-
-:leveloffset: {level2}
-
 include::concepts/concept-property.txt[]
-
-:leveloffset: {level2}
-
 include::concepts/concept-servicecomposite.txt[]
-
-:leveloffset: {level2}
-
 include::concepts/concept-sideeffect.txt[]
-
-:leveloffset: {level2}
-
 include::concepts/concept-transientcomposite.txt[]
-
-:leveloffset: {level2}
-
 include::concepts/concept-unitofwork.txt[]
-
-:leveloffset: {level2}
-
 include::concepts/concept-valuecomposite.txt[]
-
-
