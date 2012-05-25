@@ -1,7 +1,7 @@
-[[news-20100125-2,Video: DCI in Practice]]
-= Video: DCI in Practice =
+[[news-20100125-2,Qi4j at Øredev 2009 : DCI in practice]]
+= Qi4j at Øredev 2009 =
 
-In this presentation that was recorded during Öredev 2009, Rickard Öberg
+In this presentation that was recorded during Øredev 2009, Rickard Öberg
 presents how to use Qi4j to implement the DCI principles. DCI, or 
 Data-Context-Interaction, is a new paradigm created by Trygve Reenskug,
 inventor of the MVC pattern.

@@ -1,0 +1,3 @@
+[[news-20080606,Qi4j 0.2 Released]]
+
+Full Unit Test & Javadoc on Core API

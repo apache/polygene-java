@@ -1,5 +1,5 @@
-[[news-20090510,Interview about Composite Oriented Programming and Qi4j]]
-= Interview about Composite Oriented Programming and Qi4j =
+[[news-20090510,Qi4j at JFokus 2009]]
+= Qi4j at JFokus 2009 =
 
 At JFokus earlier this year Rickard Öberg was interviewed by Dan Bergh Johnsson
 about Composite Oriented Programming and Qi4j.

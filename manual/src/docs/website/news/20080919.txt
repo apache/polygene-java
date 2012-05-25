@@ -1,0 +1,4 @@
+[[news-20080919,Qi4j 0.4 Released]]
+= Qi4j 0.4 Released =
+
+CleanUp after the 0.3 changes.

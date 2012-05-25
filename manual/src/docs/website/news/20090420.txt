@@ -1,0 +1,4 @@
+[[news-20090420,Qi4j 0.7 Released]]
+= Qi4j 0.7 Released =
+
+Query Cleanup.
