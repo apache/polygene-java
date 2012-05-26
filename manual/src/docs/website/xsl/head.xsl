@@ -54,6 +54,10 @@
 <!-- Version Switcher -->
 
 <script type="text/javascript" src="js/versionswitcher.js"></script>
+
+<!-- Qi4j WebSite Progressive Enhancement -->
+
+<script type="text/javascript" src="js/progressive-enhancement.js"></script>
 ]]>
   </xsl:text>
   </xsl:template>
