@@ -1,6 +1,10 @@
 [[library-sql, SQL Library]]
 = SQL =
 
+[devstatus]
+--------------
+source=libraries/sql/dev-status.xml
+--------------
 
 
 The SQL Library provides facilities for working with SQL databases.

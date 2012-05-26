@@ -1,6 +1,11 @@
 [[extension-es-file,File EntityStore]]
 = File EntityStore =
 
+[devstatus]
+--------------
+source=extensions/entitystore-file/dev-status.xml
+--------------
+
 EntityStore service backed by a source control friendly file system format.
 
 Note that content should not be modified directly, and doing so may corrupt the data.

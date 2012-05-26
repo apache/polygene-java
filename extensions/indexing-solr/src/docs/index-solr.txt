@@ -1,6 +1,11 @@
 [[extension-index-solr,Solr Index/Query]]
 = Apache Solr Index/Query =
 
+[devstatus]
+--------------
+source=extensions/indexing-solr/dev-status.xml
+--------------
+
 Index/Query services backed by Index/Query services backed by an embedded http://lucene.apache.org/solr/[Apache Solr Search].
 
 == Assembly ==

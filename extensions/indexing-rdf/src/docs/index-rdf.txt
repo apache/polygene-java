@@ -1,6 +1,11 @@
 [[extension-index-rdf]]
 = OpenRDF Index/Query =
 
+[devstatus]
+--------------
+source=extensions/indexing-rdf/dev-status.xml
+--------------
+
 Index/Query services backed by http://www.openrdf.org/[OpenRDF Sesame] framework for processing RDF data.
 
 == In Memory ==

@@ -1,6 +1,11 @@
 [[library-http, HTTP Library]]
 = HTTP =
 
+[devstatus]
+--------------
+source=libraries/http/dev-status.xml
+--------------
+
 The HTTP library provides a Jetty based embedded HTTP service with support for easy servlets and filters assembly as Services.
 
 It's an easy way to embedd a servlet container and reuse everything that can be run in it (JAX-*, Restlet, Wicket, Vaadin, GWT etc..).

@@ -1,6 +1,11 @@
 [[library-circuitbreaker,Circuit Breaker Library]]
 = Circuit Breaker =
 
+[devstatus]
+--------------
+source=libraries/circuitbreaker/dev-status.xml
+--------------
+
 The Circuit Breaker library provides a way to guard your application
 against faulty external systems (e.g. mail servers  being down, web
 services being down).

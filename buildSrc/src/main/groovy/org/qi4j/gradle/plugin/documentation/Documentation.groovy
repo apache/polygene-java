@@ -40,8 +40,23 @@ class Documentation extends DefaultTask
       }
       ant.chmod(dir: snippetDir, perm: "755", includes: "snippet.py")
     }
+
+    devstatusDir = new File(userHome, ".asciidoc/filters/devstatus").absoluteFile
+    if( !devstatusDir.exists() )
+    {
+      println "Installing [devstatus] into $devstatusDir"
+      snippetDir.mkdirs()
+      project.copy {
+        from "$project.rootDir/buildSrc/src/bin"
+        into devstatusDir
+        include 'devstatus.*'
+      }
+      ant.chmod(dir: devstatusDir, perm: "755", includes: "devstatus.py")
+    }
+
     new File(project.buildDir, "docs/$docName".toString()).mkdirs()
     new File(project.buildDir, "tmp/docs/$docName".toString()).mkdirs()
+
     generateXDoc()
     generateChunkedHtml()
     generateSingleHtml()

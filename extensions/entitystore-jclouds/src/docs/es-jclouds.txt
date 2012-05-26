@@ -1,6 +1,11 @@
 [[extension-es-jclouds,JClouds EntityStore]]
 = JClouds EntityStore =
 
+[devstatus]
+--------------
+source=extensions/entitystore-jclouds/dev-status.xml
+--------------
+
 EntityStore service backed by a http://www.jclouds.org/[JClouds] BlobStore.
 
 It means you get access to a growing list of providers available at the 

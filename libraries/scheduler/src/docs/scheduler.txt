@@ -1,6 +1,11 @@
 [[library-scheduler,Scheduler Library]]
 = Scheduler =
 
+[devstatus]
+--------------
+source=libraries/scheduler/dev-status.xml
+--------------
+
 The Scheduler library provides an easy way to schedule tasks using cron expressions if needed.
 
 An optional Timeline allows you to browse past and future task runs.

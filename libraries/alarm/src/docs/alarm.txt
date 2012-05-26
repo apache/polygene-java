@@ -16,6 +16,12 @@
 [[library-alarm, Alarm Library]]
 = Alarms =
 
+[devstatus]
+--------------
+source=libraries/alarm/dev-status.xml
+--------------
+
+
 The process control and industrial automation industry has for decades been struggling with a large number of unreliable
 data points, such as sensors, fuses and potentially malfunctioning valves and actuators. This industry quickly developed
 the concept of *Alarm Point* as an abstraction for indication that something is not working correctly. These

@@ -1,6 +1,11 @@
 [[extension-es-jdbm, JDBM EntityStore]]
 = JDBM EntityStore =
 
+[devstatus]
+--------------
+source=extensions/entitystore-jdbm/dev-status.xml
+--------------
+
 EntityStore service backed by an embedded http://code.google.com/p/jdbm2/[JDBM2] database.
 
 == Assembly ==

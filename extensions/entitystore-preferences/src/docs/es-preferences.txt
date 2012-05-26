@@ -1,6 +1,11 @@
 [[extension-es-preferences,Preferences EntityStore]]
 = Preferences EntityStore =
 
+[devstatus]
+--------------
+source=extensions/entitystore-preferences/dev-status.xml
+--------------
+
 EntityStore service backed by java.​util.​prefs.​Preferences. It can be a good
 candidate to store <<def-configurationcomposite>>s.
 

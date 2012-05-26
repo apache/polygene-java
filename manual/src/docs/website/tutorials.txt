@@ -3,8 +3,6 @@
 [[tutorials,Tutorials Section]]
 = Tutorials =
 
-:leveloffset: 2
-
 == Tutorials ==
 
 In this section you will find a comprehensive set of tutorials about Composite
@@ -67,5 +65,10 @@ activation and Configuration Entities management.
 - Step 3 - Activatable
 - Step 4 - Read Configuration
 
+:leveloffset: 2
+
 include::../../../../tutorials/introduction/src/docs/introduction.txt[]
+
+:leveloffset: 2
+
 include::../../../../tutorials/composites/src/docs/tut-composites.txt[]

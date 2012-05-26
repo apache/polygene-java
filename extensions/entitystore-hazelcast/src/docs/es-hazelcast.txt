@@ -1,6 +1,11 @@
 [[extension-es-hazelcast, Hazelcast EntityStore]]
 = Hazelcast EntityStore =
 
+[devstatus]
+--------------
+source=extensions/entitystore-hazelcast/dev-status.xml
+--------------
+
 EntityStore service backed by the http://www.hazelcast.com/[Hazelcast] in-memory data grid.
 
 == Assembly ==

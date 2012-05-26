@@ -3,8 +3,6 @@
 [[samples,Samples Section]]
 =  Samples =
 
-:leveloffset: 2
-
 == Introduction ==
 
 The Qi4j SDK comes with several sample applications. This is a very good place

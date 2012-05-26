@@ -1,6 +1,11 @@
 [[library-uowfile,UoWFile Library]]
 = UoWFile =
 
+[devstatus]
+--------------
+source=libraries/uowfile/dev-status.xml
+--------------
+
 The UoWFile Library provides an easy way to bind file operations to UnitOfWorks.
 
 In other words, using this library you can easily attach files to your

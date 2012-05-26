@@ -1,6 +1,11 @@
 [[extension-es-mongodb,MongoDB EntityStore]]
 = MongoDB EntityStore =
 
+[devstatus]
+--------------
+source=extensions/entitystore-mongodb/dev-status.xml
+--------------
+
 EntityStore service backed by a http://www.mongodb.org/[MongoDB] collection.
 
 == Assembly ==

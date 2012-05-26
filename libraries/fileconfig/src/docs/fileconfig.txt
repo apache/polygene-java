@@ -1,6 +1,11 @@
 [[library-fileconfig, FileConfig Library]]
 = FileConfig =
 
+[devstatus]
+--------------
+source=libraries/fileconfig/dev-status.xml
+--------------
+
 The FileConfig library provide a service for accessing application-specific directories.
 
 [snippet,java]

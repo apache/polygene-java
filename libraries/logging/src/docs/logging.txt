@@ -16,6 +16,11 @@
 [[library-logging, Logging Library]]
 = Logging =
 
+[devstatus]
+--------------
+source=libraries/logging/dev-status.xml
+--------------
+
 First of all, Qi4j is taking a fresh look at all things that we take for granted. Logging is one such thing.
 
 It should (but is not) obvious that Logging are used for three very distinct purposes, and in our opinion the concepts

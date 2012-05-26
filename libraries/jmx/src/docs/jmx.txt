@@ -1,6 +1,11 @@
 [[library-jmx, JMX Library]]
 = JMX =
 
+[devstatus]
+--------------
+source=libraries/jmx/dev-status.xml
+--------------
+
 The JMX library provides a service that exposes a Qi4j app in 
 JMX automatically, giving you an opportunity to inspect the app much as 
 you would with the <<tools-envisage>> tool.
