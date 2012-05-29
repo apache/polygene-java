@@ -23,13 +23,11 @@ The Mixin Type is the interface that declares the Mixin methods. Each Mixin impl
 the @Mixins annotation of a Composite declaration) implements one or more methods from one or more Mixin Types.
 
 Mixin Type can be very simple, like;
-[source,java]
--------------
-public interface BankAccount
-{
-    Money checkBalance();
-}
--------------
+[snippet,java]
+-----------
+source=core/api/src/test/java/org/qi4j/api/mixin/BankAccount.java
+tag=mixinType
+-----------
 
 Or contain hundreds of methods, subclassed from dozens of super interfaces.
 
@@ -68,82 +66,62 @@ world via the CompositeType interface.
 
 Mixins are declared as annotations on the composite interface.
 
-[source,java]
--------------
-@Mixins( SomethingMixin.class )
-public interface Something
-{}
-
-public class SomethingMixin
-    implements Something
-{
-    // State is allowed.
-
-    public void doSomething()
-    {
-        // do stuff...
-    }
-}
--------------
+[snippet,java]
+-----------
+source=core/api/src/test/java/org/qi4j/api/mixin/Something.java
+tag=something
+-----------
+[snippet,java]
+-----------
+source=core/api/src/test/java/org/qi4j/api/mixin/SomethingMixin.java
+tag=something
+-----------
 In the above sample, the SomethingMixin will be made part of the Something composite.
 
 If we have many interfaces defining many methods, that all must be backed by a mixin implementation, we simply list all
 the mixins required.
 
-[source,java]
--------------
-@Mixins( { StartMixin.class, VehicleMixin.class } )
-public interface Car extends Startable, Vehicle
-{}
-
-public interface Startable
-{
-    boolean start();
-    void stop();
-}
-
-public interface Vehicle
-{
-    void turn( float angle );
-
-    void accelerate( float acceleration );
-
-   // more methods
-}
--------------
+[snippet,java]
+-----------
+source=core/api/src/test/java/org/qi4j/api/mixin/Car.java
+tag=mixin
+-----------
+[snippet,java]
+-----------
+source=core/api/src/test/java/org/qi4j/api/mixin/Startable.java
+tag=mixin
+-----------
+[snippet,java]
+-----------
+source=core/api/src/test/java/org/qi4j/api/mixin/Vehicle.java
+tag=mixin
+-----------
 
 In the example above, the VehicleMixin would need to deal with all methods defined in the Vehicle interface. That
 interface could be very large, and could be totally independent concerns. So, instead we should use abstract mixins,
 which are ordinary mixins but are lacking some methods. This is simply done by declaring the class abstract.
 
-[source,java]
--------------
-@Mixins( { StartMixin.class, SpeedMixin.class, CrashResultMixin.class } )
-public interface Car extends Startable, Vehicle
-{}
+[snippet,java]
+-----------
+source=core/api/src/test/java/org/qi4j/api/mixin/partial/Car.java
+tag=partial
+-----------
+[snippet,java]
+-----------
+source=core/api/src/test/java/org/qi4j/api/mixin/partial/Vehicle.java
+tag=partial
+-----------
+[snippet,java]
+-----------
+source=core/api/src/test/java/org/qi4j/api/mixin/partial/SpeedLocation.java
+tag=partial
+-----------
+[snippet,java]
+-----------
+source=core/api/src/test/java/org/qi4j/api/mixin/partial/SpeedMixin.java
+tag=partial
+-----------
 
-public interface Vehicle extends SpeedLocation, Crashable
-{
-}
-
-public interface SpeedLocation
-{
-    void turn( float angle );
-
-    void accelerate( float acceleration );
-}
-
-public abstract class SpeedMixin
-    implements SpeedLocation
-{
-    // state for speed
-
-    public void accelerate( float acceleration )
-    {
-        // logic
-    }
-}
--------------
 Above the SpeedMixin only implements the accelerate() method, and Qi4j will only map that method to this mixin. The
 other method of the SpeedLocation interface is not satisfied as the example is written and will generate a runtime
 exception.
@@ -162,51 +140,26 @@ This is particularly useful in Domain Driven Design, where you only want to expo
 the context where they are used. But the state of the Mixin should not be exposed out at all. For instance, if we have
 the Cargo interface like;
 
-[source,java]
--------------
-@Mixins( CargoMixin.class )
-public interface Cargo
-{
-    Location origin();
+[snippet,java]
+-----------
+source=core/api/src/test/java/org/qi4j/api/mixin/privateMixin/Cargo.java
+tag=private
+-----------
 
-    Location destination();
-
-    void changeDestination( Location newDestination );
-}
--------------
 
 The interface is defined by its context, and not really exposing the internal state. So in the implementation we
 probably do something like;
 
-[source,java]
--------------
-public class CargoMixin
-    implements Cargo
-{
-    @This private CargoState state;
-
-    public Location origin()
-    {
-        return state.origin().get();
-    }
-
-    public Location destination()
-    {
-        return state.destination().get();
-    }
-
-    public void changeDestination( Location newDestination )
-    {
-        state.destination().set( newDestination );
-    }
-}
-
-public interface CargoState
-{
-    Property<Location> origin();
-    Property<Location> destination();
-}
--------------
+[snippet,java]
+-----------
+source=core/api/src/test/java/org/qi4j/api/mixin/privateMixin/CargoMixin.java
+tag=private
+-----------
+[snippet,java]
+-----------
+source=core/api/src/test/java/org/qi4j/api/mixin/privateMixin/CargoState.java
+tag=private
+-----------
 
 So, in this typical case, we don't need to declare the Mixin for the CargoState, as it only defines Property methods,
 which are handled by the standard PropertyMixin always present.

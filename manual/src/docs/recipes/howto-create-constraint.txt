@@ -7,53 +7,36 @@ Constraints are defined in <<def-constraint>>.
 
 Method Constraints are declared with annotations on the method argument. The annotation itself is custom, and it is possible to make your own.
 
-[source,java]
-----
-public interface Dialer
-{
-    void callPhoneNumber( @PhoneNumber String phoneNo );
-}
-----
+[snippet,java]
+-----------
+source=manual/src/java/org/qi4j/manual/recipes/createConstraint/Dialer.java
+tag=dialer
+-----------
 
 In the code above we say that we want the argument to the callPhoneNumber() method to be a valid phone number. This annotation is not built-in, so we need to declare it.
 
-[source,java]
-----
-@ConstraintDeclaration
-@Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.PARAMETER, ElementType.ANNOTATION_TYPE, ElementType.METHOD } )
-public @interface PhoneNumber
-{
-}
-----
+[snippet,java]
+-----------
+source=manual/src/java/org/qi4j/manual/recipes/createConstraint/PhoneNumber.java
+tag=annotation
+-----------
 
 We then need to provide the Constraint implementation.
 
-[source,java]
-----
-public class PhoneNumberConstraint
-    implements Constraint<PhoneNumber, String>
-{
-    @ThisCompositeAs(optional=true) Country country;
-    public boolean isValid( PhoneNumber annotation, String number )
-    {
-        boolean validPhoneNumber = ....;
-        return validPhoneNumber;  // return true if valid phone number.
-    }
-}
-----
+[snippet,java]
+-----------
+source=manual/src/java/org/qi4j/manual/recipes/createConstraint/PhoneNumberConstraint.java
+tag=constraint
+-----------
 
 We also need to include the Constraint on the Composites we want to have them present.
 
-[source,java]
-----
-@Constraints( PhoneNumberConstraint.class )
-public interface DialerComposite extends ServiceComposite, Dialer
-{}
-----
-
-Constraints doesn't throw any exceptions, as violation of constraints are domain specific. Instead, the Qi4j runtime will record all the violations in the InvocationContext, which is available to Concerns and Mixins. For instance;
-
+[snippet,java]
+-----------
+source=manual/src/java/org/qi4j/manual/recipes/createConstraint/DialerComposite.java
+tag=composite
+-----------
+[line-through]*Constraints doesn't throw any exceptions, as violation of constraints are domain specific. Instead, the Qi4j runtime will record all the violations in the InvocationContext, which is available to Concerns and Mixins. For instance;*
 [source,java]
 ----
 public class ParameterViolationConcern
@@ -79,13 +62,11 @@ public class ParameterViolationConcern
 
 Property Constraints are declared on the Property method.
 
-[source,java]
-----
-public interface HasPhoneNumber
-{
-    @PhoneNumber Property<String> phoneNumber();
-}
-----
+[snippet,java]
+-----------
+source=manual/src/java/org/qi4j/manual/recipes/createConstraint/HasPhoneNumber.java
+tag=property
+-----------
 
 In this case, the Constraint associated with the phoneNumber() method, will be called before the set() method on that Property is called. And any ConstraintViolations will be available to Concerns declared for the Property itself. For instance;
 

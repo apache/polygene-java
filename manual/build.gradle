@@ -1,5 +1,11 @@
 description = "Qi4j Manuals and Website."
 
+dependencies {
+    compile(project(":org.qi4j.core:org.qi4j.core.api"))
+    compile(project(":org.qi4j.libraries:org.qi4j.library.constraints"))
+    compile(project(":org.qi4j.libraries:org.qi4j.library.logging"))
+    compile(libraries.slf4j_api)
+}
 
 //task userguide( type: org.qi4j.gradle.plugin.documentation.Documentation ) {
 //  docName = 'userguide'
@@ -15,6 +21,14 @@ description = "Qi4j Manuals and Website."
 //  docName = 'reference'
 //  docType = 'book'
 //}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/java'
+        }
+    }
+}
 
 task website( type: org.qi4j.gradle.plugin.documentation.Documentation ) {
   docName = 'website'

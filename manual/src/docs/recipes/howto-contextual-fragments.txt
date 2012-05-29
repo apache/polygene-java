@@ -27,18 +27,11 @@ Note: Constraints are not supported to be contextual at the moment.
 
 The mixins, sideeffects and concerns are added during the bootstrap phase. It is very straight-forward;
 
-[source,java]
--------------
-public void assemble( ModuleAssembly module )
-    throws AssemblyException
-{
-    ServiceDeclaration decl = module.addServices( PinSearchService.class )
-    if( Boolean.getBoolean( "trace.all", false ) )
-    {
-        decl.withConcerns( TraceAllConcern.class );
-    }
-}
--------------
+[snippet,java]
+-----------
+source=manual/src/java/org/qi4j/manual/recipes/contextualFragments/TraceAll.java
+tag=assemble
+-----------
 
 In the example above, we add the TraceAllConcern from the Logging Library if the system property "trace.all" is true.
 If the system property is not set to true, there will be no TraceAllConcern on the PinSearchService.

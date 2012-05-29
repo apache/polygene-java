@@ -26,51 +26,28 @@ going to show how.
 To illustrate these features we create an TravelPlan service, which allows clients to find and make Reservations to
 Destinations. For the sake of simplicity, we are leaving out the domain details...
 
-[source,java]
+[snippet,java]
 -----------
-public interface TravelPlan
-{
-    // Domain methods, which are beyond the discussion at hand.
-}
+source=manual/src/java/org/niclas/hedhman/travel/TravelPlan.java
+tag=service
 -----------
 
 So, then there is the ServiceComposite...
 
-[source,java]
+[snippet,java]
 -----------
-// The package is relevant to the Initial Values discussed later.
-package org.niclas.hedhman.travel;
-
-@Mixins( { TravelPlanMixin.class } )
-public interface TravelPlanService extends TravelPlan, ServiceComposite
-{}
+source=manual/src/java/org/niclas/hedhman/travel/TravelPlanService.java
+tag=serviceComposite
 -----------
 
 And then in the Mixin we actually need to connect to a foreign system to obtain the various details that the service
 can provide to the clients. For instance, it needs a host name and port and a protocol to use. We put these into a
 configuration interface.
 
-[source,java]
+[snippet,java]
 -----------
-public interface TravelPlanConfiguration
-{
-    Hostname hostName();
-
-    PortNumber portNumber();
-
-    Protocol protocol();
-}
-
-public interface HostName extends Property<String>
-{}
-
-@Range( min=0, max=65535 )
-public interface PortNumber extends Property<Integer>
-{}
-
-@Matches( "(ssh|rlogin|telnet)" )
-public interface Protocol extends Property<String>
-{}
+source=manual/src/java/org/niclas/hedhman/travel/TravelPlanConfiguration.java
+tag=configuration
 -----------
 
 We used the recommended type-safe Property subtype pattern, and for each PortNumber and Protocol we have defined a
@@ -78,38 +55,21 @@ Constraint required.
 
 Now we can access this configuration in the TravelPlanMixin like this;
 
-[source,java]
+[snippet,java]
 -----------
-import org.qi4j.api.configuration.Configuration;
-
-public class TravelPlanMixin
-    implements TravelPlan
-{
-    @This Configuration<TravelPlanConfiguration> config;
-
-  :
-  :
-        TravelPlanConfiguration tpConf = config.configuration();
-        String hostName = tpConf.hostName().get();
-  :
-}
+source=manual/src/java/org/niclas/hedhman/travel/TravelPlanMixin.java
+tag=mixin
 -----------
+
 
 And from the Service point of view, it doesn't need to worry about where the configuration really comes from. But it may
 want to control when the Configuration should be refreshed, to ensure that atomic changes are happening. This is done
 with the refresh() method in the Configuration interface;
 
-[source,java]
+[snippet,java]
 -----------
-public void doSomething()
-{
-    // Refresh Configuration before reading it.
-    config.refresh()
-
-    TravelPlanConfiguration tpConf = config.configuration();
-  :
-  :
-}
+source=manual/src/java/org/niclas/hedhman/travel/TravelPlanMixin.java
+tag=refresh
 -----------
 
 This ensures that any updates to the Configuration that has occurred will be retrieved and available to the Service.
@@ -127,16 +87,10 @@ to.
 
 So, we create a properties file, where the keys are the names of the properties in TravelPlanConfiguration.
 
-[source,bash]
+[snippet,bash]
 -----------
-# Hostname to the TravelPlan service
-hostName=niclas.hedhman.org
-
-# Port number to use for the connection
-portNumber=5439
-
-# Protocol to use; Valid options "ssh", "rlogin", "telnet"
-protocol=ssh
+source=manual/src/java/org/niclas/hedhman/travel/TravelPlanService.properties
+tag=params
 -----------
 File: org/hedhman/niclas/travel/TravelPlanService.properties
 
@@ -144,12 +98,10 @@ Note that the file resides in the directory equivalent to the package name of th
 
 And this would work with the standard assembly.
 
-[source,java]
+[snippet,java]
 -----------
-public void assemble( ModuleAssembly module )
-{
-    module.addServices( TravelPlanService.class ).instantiateOnStartup();
-}
+source=manual/src/java/org/niclas/hedhman/travel/Main.java
+tag=simple
 -----------
 
 == Non-default Identity ==
@@ -157,46 +109,26 @@ If you need to use multiple instances of the same service, or that the service h
 to name the properties file according to the Identity of the service declaration, but the file will still need to be in
 the same package as the ServiceComposite sub type, the TravelPlanService in the above example. For instance;
 
-[source,java]
+[snippet,java]
 -----------
-public void assemble( ModuleAssembly module )
-{
-    module.addServices( TravelPlanService.class )
-        .instantiateOnStartup()
-        .identifiedBy( "ExpediaService" );
-
-    module.addServices( TravelPlanService.class )
-        .instantiateOnStartup()
-        .identifiedBy( "OrbitzService" );
-}
+source=manual/src/java/org/niclas/hedhman/travel/Main.java
+tag=assemble
 -----------
 
 And the two files for configuration,
 
-[source,bash]
+[snippet,bash]
 -----------
-# Hostname to the TravelPlan service
-hostName=expedia.hedhman.org
-
-# Port number to use for the connection
-portNumber=9251
-
-# Protocol to use; Valid options "ssh", "rlogin", "telnet"
-protocol=ssh
+source=manual/src/java/org/niclas/hedhman/travel/ExpediaService.properties
+tag=params
 -----------
 File: org/hedhman/niclas/travel/ExpediaService.properties
 
 
-[source,bash]
+[snippet,bash]
 -----------
-# Hostname to the TravelPlan service
-hostName=orbitz.hedhman.org
-
-# Port number to use for the connection
-portNumber=7412
-
-# Protocol to use; Valid options "ssh", "rlogin", "telnet"
-protocol=rlogin
+source=manual/src/java/org/niclas/hedhman/travel/OrbitzService.properties
+tag=params
 -----------
 File: org/hedhman/niclas/travel/OrbitzService.properties
 
