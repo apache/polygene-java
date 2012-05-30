@@ -16,8 +16,12 @@ package org.qi4j.runtime.value;
 
 import org.qi4j.api.association.AssociationStateHolder;
 import org.qi4j.api.common.ConstructionException;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.value.NoSuchValueException;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.runtime.structure.ModelModule;
+
+import static org.qi4j.functional.Iterables.first;
 
 /**
  * Implementation of ValueBuilder
@@ -36,57 +40,31 @@ public final class ValueBuilderInstance<T>
 
     public T prototype()
     {
-        if( prototypeInstance == null )
-        {
-            throw new IllegalStateException( "ValueBuilder instances cannot be reused" );
-        }
-
         return prototypeInstance.<T>proxy();
     }
 
     @Override
     public AssociationStateHolder state()
     {
-        if( prototypeInstance == null )
-        {
-            throw new IllegalStateException( "ValueBuilder instances cannot be reused" );
-        }
-
         return prototypeInstance.state();
     }
 
     public <K> K prototypeFor( Class<K> mixinType )
     {
-        if( prototypeInstance == null )
-        {
-            throw new IllegalStateException( "ValueBuilder instances cannot be reused" );
-        }
-
-        return prototypeInstance.newProxy( mixinType );
+        return prototypeInstance.newProxy(mixinType);
     }
 
     public T newInstance()
         throws ConstructionException
     {
-        if( prototypeInstance == null )
-        {
-            throw new IllegalStateException( "ValueBuilder instances cannot be reused" );
-        }
+        Class<Composite> valueType = (Class<Composite>) first( prototypeInstance.types() );
 
-        // Set correct info's (immutable) on the state
-        prototypeInstance.prepareBuilderState();
+        ModelModule<ValueModel> model = this.model.module().findValueModels(valueType);
 
-        // Check that it is valid
-        model.model().checkConstraints( prototypeInstance.state() );
-
-        try
+        if( model == null )
         {
-            return prototypeInstance.<T>proxy();
+            throw new NoSuchValueException( valueType.getName(), model.module().name() );
         }
-        finally
-        {
-            // Invalidate builder
-            prototypeInstance = null;
-        }
+        return new ValueBuilderWithPrototype<T>( model, prototype()).newInstance();
     }
 }

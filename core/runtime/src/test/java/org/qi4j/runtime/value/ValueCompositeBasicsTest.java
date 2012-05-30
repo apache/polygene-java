@@ -1,12 +1,10 @@
 package org.qi4j.runtime.value;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueBuilder;
-import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
@@ -25,11 +23,12 @@ public class ValueCompositeBasicsTest
     }
 
     @Test
-    @Ignore("Wait for QI-361")
+    //@Ignore("Wait for QI-361")
     public void testEqualsForValueComposite()
     {
         ValueBuilder<SomeValue> builder = module.newValueBuilder( SomeValue.class );
         builder.prototypeFor( SomeInternalState.class ).name().set( "Niclas" );
+        assertEquals("Niclas", builder.prototype().name());
         SomeValue value1 = builder.newInstance();
         SomeValue value2 = builder.newInstance();
         builder.prototypeFor( SomeInternalState.class ).name().set( "Niclas2" );
@@ -71,7 +70,7 @@ public class ValueCompositeBasicsTest
 
     @Mixins( SomeMixin.class )
     public interface SomeValue
-        extends ValueComposite
+        //extends ValueComposite
     {
         String name();
     }

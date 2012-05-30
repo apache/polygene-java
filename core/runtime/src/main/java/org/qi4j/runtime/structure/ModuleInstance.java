@@ -14,31 +14,12 @@
 
 package org.qi4j.runtime.structure;
 
-import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.lang.reflect.WildcardType;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
-import java.util.concurrent.ConcurrentHashMap;
 import org.json.JSONException;
 import org.json.JSONTokener;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.composite.AmbiguousTypeException;
-import org.qi4j.api.composite.Composite;
-import org.qi4j.api.composite.ModelDescriptor;
-import org.qi4j.api.composite.NoSuchTransientException;
-import org.qi4j.api.composite.TransientBuilder;
-import org.qi4j.api.composite.TransientBuilderFactory;
-import org.qi4j.api.composite.TransientDescriptor;
+import org.qi4j.api.composite.*;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
@@ -46,7 +27,6 @@ import org.qi4j.api.entity.IdentityGenerator;
 import org.qi4j.api.event.ActivationEvent;
 import org.qi4j.api.event.ActivationEventListener;
 import org.qi4j.api.json.JSONDeserializer;
-import org.qi4j.api.json.JSONObjectSerializer;
 import org.qi4j.api.object.NoSuchObjectException;
 import org.qi4j.api.object.ObjectDescriptor;
 import org.qi4j.api.object.ObjectFactory;
@@ -65,26 +45,10 @@ import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.util.Classes;
 import org.qi4j.api.util.NullArgumentException;
-import org.qi4j.api.value.NoSuchValueException;
-import org.qi4j.api.value.ValueBuilder;
-import org.qi4j.api.value.ValueBuilderFactory;
-import org.qi4j.api.value.ValueComposite;
-import org.qi4j.api.value.ValueDescriptor;
-import org.qi4j.functional.Function;
-import org.qi4j.functional.Function2;
-import org.qi4j.functional.Iterables;
-import org.qi4j.functional.Specification;
-import org.qi4j.functional.Specifications;
-import org.qi4j.runtime.association.AssociationInfo;
-import org.qi4j.runtime.association.AssociationInstance;
-import org.qi4j.runtime.association.AssociationModel;
-import org.qi4j.runtime.association.ManyAssociationInstance;
-import org.qi4j.runtime.association.ManyAssociationModel;
-import org.qi4j.runtime.composite.TransientBuilderInstance;
-import org.qi4j.runtime.composite.TransientModel;
-import org.qi4j.runtime.composite.TransientStateInstance;
-import org.qi4j.runtime.composite.TransientsModel;
-import org.qi4j.runtime.composite.UsesInstance;
+import org.qi4j.api.value.*;
+import org.qi4j.functional.*;
+import org.qi4j.runtime.association.*;
+import org.qi4j.runtime.composite.*;
 import org.qi4j.runtime.entity.EntitiesModel;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
@@ -100,23 +64,20 @@ import org.qi4j.runtime.service.ImportedServicesModel;
 import org.qi4j.runtime.service.ServicesInstance;
 import org.qi4j.runtime.service.ServicesModel;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
-import org.qi4j.runtime.value.ManyAssociationValueState;
-import org.qi4j.runtime.value.ReferenceProperty;
-import org.qi4j.runtime.value.ValueBuilderInstance;
-import org.qi4j.runtime.value.ValueInstance;
-import org.qi4j.runtime.value.ValueModel;
-import org.qi4j.runtime.value.ValueStateInstance;
-import org.qi4j.runtime.value.ValuesModel;
+import org.qi4j.runtime.value.*;
 import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.metrics.MetricsProvider;
 import org.qi4j.spi.metrics.MetricsProviderAdapter;
 
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.WildcardType;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+
 import static org.qi4j.api.util.Classes.interfacesOf;
-import static org.qi4j.functional.Iterables.cast;
-import static org.qi4j.functional.Iterables.filter;
-import static org.qi4j.functional.Iterables.first;
-import static org.qi4j.functional.Iterables.flatten;
-import static org.qi4j.functional.Iterables.map;
+import static org.qi4j.functional.Iterables.*;
 
 /**
  * Instance of a Qi4j Module. Contains the various composites for this Module.
@@ -727,27 +688,7 @@ public class ModuleInstance
         {
             throw new NoSuchValueException( valueType.getName(), name() );
         }
-
-        // Use JSON serialization-deserialization to make a copy of it
-        Object value = null;
-        try
-        {
-            JSONObjectSerializer serializer = new JSONObjectSerializer();
-            serializer.serialize( prototype, model.model().valueType() );
-            Object object = serializer.getRoot();
-
-            JSONDeserializer deserializer = new JSONDeserializer( model.module() );
-            value = deserializer.deserialize( object, model.model().valueType() );
-        }
-        catch( JSONException e )
-        {
-            throw new IllegalStateException( "Could not JSON-copy Value", e );
-        }
-
-        valueInstance = ValueInstance.getValueInstance( (ValueComposite) value );
-        valueInstance.prepareToBuild();
-
-        return new ValueBuilderInstance<T>( model, valueInstance );
+        return new ValueBuilderWithPrototype<T>( model, prototype);
     }
 
     @Override
@@ -797,7 +738,7 @@ public class ModuleInstance
         ValueInstance instance = model.model().newValueInstance( model.module(), state );
         instance.prepareToBuild();
 
-        return new ValueBuilderInstance<T>( model, instance );
+        return new ValueBuilderWithState<T>( model, instance );
     }
 
     public <T> T newValueFromJSON( Class<T> mixinType, String jsonValue )

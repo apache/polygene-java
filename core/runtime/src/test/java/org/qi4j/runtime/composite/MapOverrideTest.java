@@ -42,7 +42,7 @@ import static org.junit.Assert.assertThat;
  * Note that keySet(), values() and entrySet() would ALSO require overloading, but this has been left out for
  * clarity reasons.
  */
-//@Ignore("Subclassing can not occur in java.* packages, and need to be prefixed.")
+@Ignore("Awaiting complete fix of Qi-361.")
 public class MapOverrideTest
     extends AbstractQi4jTest
 {
@@ -55,7 +55,7 @@ public class MapOverrideTest
         module.values( Map.class ).withMixins( HashMap.class );//.withConcerns(ReadOnlyMapConcern.class);
     }
 
-    @Test @Ignore
+    @Test
     public void givenReadOnlyAnnotatedHashMapWhenCallingSizeExpectSuccess()
     {
         ValueBuilder<Map> builder = module.newValueBuilder( Map.class );
