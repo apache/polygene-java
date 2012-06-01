@@ -9,11 +9,11 @@ include::news/news.txt[]
 
 :leveloffset: 1
 
-include::../userguide/concepts.txt[]
+include::tutorials.txt[]
 
 :leveloffset: 1
 
-include::tutorials.txt[]
+include::samples.txt[]
 
 :leveloffset: 1
 
@@ -33,11 +33,11 @@ include::../userguide/extensions.txt[]
 
 :leveloffset: 1
 
-include::samples.txt[]
+include::../userguide/tools.txt[]
 
 :leveloffset: 1
 
-include::../userguide/tools.txt[]
+include::../userguide/concepts.txt[]
 
 :leveloffset: 1
 

@@ -1,9 +1,0 @@
-[[glossary]]
-[glossary]
-Glossary
-========
-
-[glossary]
-Fragment::
-  A part of the implementation of a Composite. There are 4 fragment types; Mixins, Concerns, Constraints and Side Effects.
-

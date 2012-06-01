@@ -1,7 +1,7 @@
 :leveloffset: 1
 
-[[concepts,Concepts Section]]
-= Concepts =
+[[concepts,Glossary Section]]
+= Glossary&nbsp; =
 
 
 == Introduction ==
