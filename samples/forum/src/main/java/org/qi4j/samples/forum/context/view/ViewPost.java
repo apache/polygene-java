@@ -21,7 +21,7 @@ public class ViewPost
     ReplyTopic replyTopic = new ReplyTopic();
     Poster poster = new Poster();
 
-    public org.qi4j.samples.forum.context.view.ViewPost bind( @Uses Topic topic, @Uses Post post, @Uses User user )
+    public ViewPost bind( @Uses Topic topic, @Uses Post post, @Uses User user )
     {
         viewPost.bind( post );
         replyTopic.bind( topic );
