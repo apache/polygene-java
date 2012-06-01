@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified"
+           elementFormDefault="qualified"
+           targetNamespace="http://www.qi4j.org/schemas/2008/dev-status/1"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="module" type="ns:moduleType" xmlns:ns="http://www.qi4j.org/schemas/2008/dev-status/1"/>
+  <xs:complexType name="licensesType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="license">
+        <xs:annotation>
+          <xs:documentation>
+            Qi4j itself only uses Apache License ver 2.0 for all its own developed code. We also try to list
+            all dependencies' licenses here, so automated tools can bring that into the documentation.
+            If the license is OTHER, the documentation will highlight this as a warning, and instruct users
+            to carefully examine NOTICE file as well as the dependencies themselves.
+          </xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="ALv2"/>
+            <xs:enumeration value="MIT"/>
+            <xs:enumeration value="BSD"/>
+            <xs:enumeration value="LGPL"/>
+            <xs:enumeration value="OTHER"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="moduleType">
+    <xs:sequence>
+      <xs:element type="ns:statusType" name="status" xmlns:ns="http://www.qi4j.org/schemas/2008/dev-status/1"/>
+      <xs:element type="ns:licensesType" name="licenses" xmlns:ns="http://www.qi4j.org/schemas/2008/dev-status/1"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="statusType">
+    <xs:sequence>
+      <xs:element name="codebase">
+        <xs:annotation>
+          <xs:documentation>none,early,beta,stable,mature</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="none"/>
+            <xs:enumeration value="early"/>
+            <xs:enumeration value="beta"/>
+            <xs:enumeration value="stable"/>
+            <xs:enumeration value="mature"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="documentation">
+        <xs:annotation>
+          <xs:documentation>none, brief, good, complete</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="none"/>
+            <xs:enumeration value="brief"/>
+            <xs:enumeration value="good"/>
+            <xs:enumeration value="complete"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="unittests">
+        <xs:annotation>
+          <xs:documentation>
+            none=0-10%, some=10-40%, good=40-75%, complete=75-100% test coverage of codebase.
+            This number is likely to be manually maintained, but future tools may update this automatically.
+          </xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="none"/>
+            <xs:enumeration value="some"/>
+            <xs:enumeration value="good"/>
+            <xs:enumeration value="complete"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>
