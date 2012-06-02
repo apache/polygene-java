@@ -2,9 +2,6 @@
 Writing Qi4j Documentation
 ===========================
 
-For how to build the manual see:
-https://github.com/qi4j/manual/blob/master/README.asciidoc[readme]
-
 The documents use the asciidoc format, see:
 
 * http://www.methods.co.nz/asciidoc/[Aciidoc Reference]
@@ -15,30 +12,16 @@ The cheatsheet is really useful!
 [[community-docs-overall-flow]]
 == Overall Flow ==
 
-Each (sub)project has its own documentation, which will produce a 'docs.jar' file.
-By default this file is assembled from the contents in 'src/docs/'.
-Asciidoc documents have the +.txt+ file extension.
+Each (sub)project has its own documentation, in 'src/docs/' and all the Asciidoc documents have the +.txt+ file extension.
 
-The documents can use code snippets which will extract code from the project.
-The corresponding code must be deployed to the 'sources.jar' or 'test-sources.jar' file.
+The documents can use code snippets which will extract code from the project. This is preferred way to include
+source code in the documentation, since any refactoring will be reflected in the documentation.
 
 The above files are all consumed by the build of the manual (by adding them as dependencies).
 To get content included in the manual, it has to be explicitly included by a document in the manual as well.
 
-== File Structure in 'docs.jar' ==
-
-[options="header", cols="e,d"]
-|========================
-| Directory | Contents
-| dev/ | content aimed at developers
-| dev/images/ | images used by the dev docs
-| ops/ | content aimed at operations
-| ops/images/ | images used by the ops docs
-| man/ | manpages
-|========================
-
-Additional subdirectories are used as needed to structure the documents,
-like 'dev/tutorial/', 'ops/tutorial/' etc.
+The whole documentation set is generated from the _*manual*_ module in the +qi4j-sdk+, and we are currently only creating the website.
+The User Guide and Reference Manual are future projects.
 
 == Headings and document structure ==
 
@@ -46,15 +29,14 @@ Each document starts over with headings from level zero (the document title).
 Each document should have an id.
 In some cases sections in the document need to have id's as well, this depends on where they fit in the overall structure.
 To be able to link to content, it has to have an id.
-Missing id's in mandatory places will fail the build.
+Missing id's in mandatory places will produce warnings, or even fail (depending on severity), the build.
 
 This is how a document should start:
 
 [source]
 ----
 [[unique-id-verbose-is-ok]]
-The Document Title
-==================
+= The Document Title =
 ----
 
 To push the headings down to the right level in the output, the +leveloffset+ 
@@ -78,7 +60,8 @@ Asciidoc comes with one more syntax for headings, but in this project it's not u
 
 == Writing ==
 
-Put one sentence on each line.
+Try to put one sentence on each line.
+Lines without empty lines between them still belongs to the same paragraph.
 This makes it easy to move content around, and also easy to spot (too) long sentences.
 
 == Gotchas ==
@@ -135,7 +118,14 @@ http://www.qi4j.org/
 
 Which renders like: http://www.qi4j.org/
 
-NOTE: It's ok to have a dot right after the URL, it won't be part of the link.
+It's ok to have a dot right after the URL, it won't be part of the link.
+
+[source]
+----
+http://www.qi4j.org/.
+----
+
+Which renders like: http://www.qi4j.org/.
 
 == Text Formatting ==
 
@@ -185,11 +175,11 @@ Line 2.
 == Images ==
 
 IMPORTANT: _All images in the entire manual share the same namespace._
-  You know how to handle that.
 
 === Images Files ===
 
-To include an image file, make sure it resides in the 'images/' directory relative to the document you're including it from. Then go:
+To include an image file, make sure it resides in the 'images/' directory relative to the document you're including it from.
+Then go:
 
 [source]
 ----
@@ -200,7 +190,61 @@ Which is rendered as:
 
 image::logo-standard.png[]
 
+Please note that the 'images/' directory is added automatically and not part of the link.
+
+There are also global resources, residing in 'manual/src/resources', which will be copied to the root of the documentation.
+
 == Code Snippets ==
+
+=== Import from codebase ===
+Most source code that is included in the documentation should be extract via +SNIPPET+ markers and then included in document with;
+
+[source]
+----
+ [snippet,java]
+ -----------
+ source=tutorials/introduction/tenminutes/src/main/java/org/qi4j/demo/tenminute/OrderEntity.java
+ tag=mainClass
+ -----------
+----
+
+The source file is relative to the +qi4j-sdk+ root, and the 'tag' is defined in the source file.
+The above could be bringing in content that looks like;
+
+[source]
+----
+package org.qi4j.demo.tenminute;
+
+import org.qi4j.api.concern.Concerns;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.sideeffect.SideEffects;
+
+// START SNIPPET: sideEffect
+@SideEffects( MailNotifySideEffect.class )
+// START SNIPPET: mainClass
+@Concerns({PurchaseLimitConcern.class, InventoryConcern.class})
+public interface OrderEntity
+    extends Order, HasSequenceNumber, HasCustomer,
+            HasLineItems, Confirmable, EntityComposite
+{
+// END SNIPPET: sideEffect
+}
+// END SNIPPET: mainClass
+----
+
+which will be rendered as;
+
+[snippet,java]
+-----------
+source=tutorials/introduction/tenminutes/src/main/java/org/qi4j/demo/tenminute/OrderEntity.java
+tag=mainClass
+-----------
+
+Note that
+1. The START and END doesn't need to be matching.
+1. The AsciiDoc plugin will remove the 'START SNIPPET' and 'END SNIPPET' lines.
+1. If you have more than one START/END section with the same tag, the plugin will insert a "[...snip...]" for the excluded lines.
+
 
 === Explicitly defined in the document ===
 
@@ -234,6 +278,7 @@ Which is rendered as:
  }
 ----
 
+=== Source code Highlighting ===
 If there's no suitable syntax highlighter, just omit the language: +[source]+.
 
 Currently the following syntax highlighters are enabled:
@@ -244,57 +289,29 @@ Currently the following syntax highlighters are enabled:
 * JavaScript
 * Python
 * Ruby
+* Scala
 * XML
 
 For other highlighters we could add see http://alexgorbatchev.com/SyntaxHighlighter/manual/brushes/.
 
 
-=== Fetched from source code ===
-
-TBD.
-
 == Attributes ==
 
 Common attributes you can use in documents:
 
-* \{qi4j-version} - rendered as "{qi4j-version}"
-* \{qi4j-git-tag} - rendered as "{qi4j-git-tag}"
+* \{qi4j-revnumber} - rendered as "{qi4j-revnumber}"
+* \{qi4j-importdir} - rendered as "{qi4j-importdir}"
 
 These can substitute part of URLs that point to for example APIdocs or source code.
-Note that qi4j-git-tag also handles the case of snapshot/master.
-
-== Comments ==
-
-There's a separate build including comments.
-The comments show up with a yellow background.
-It's located at http://www.qi4j.org/annotated/.
-You can also use this page to search for content, as the full manual is on a single page.
-CAUTION: This version isn't intended for users in general, as the Disqus feature isn't available there.
-
-Here's how to write a comment:
-
-[source]
-----
-// this is a comment
-----
-
-The comments are not visible in the normal build.
-Comment blocks won't be included in the output of any build at all.
-Here's a comment block:
-
-[source]
-----
-////
-Note that includes in here will still be processed, but not make it into the output.
-That is, missing includes here will still break the build!
-////
-----
 
 
 == Toolchain ==
 
 Useful links when configuring the docbook toolchain:
 
+* http://www.methods.co.nz/asciidoc
+* http://powerman.name/doc/asciidoc
+* alexgorbatchev.com/SyntaxHighlighter/manual/brushes/
 * http://www.docbook.org/tdg/en/html/docbook.html
 * http://www.sagehill.net/docbookxsl/index.html
 * http://docbook.sourceforge.net/release/xsl/1.76.1/doc/html/index.html

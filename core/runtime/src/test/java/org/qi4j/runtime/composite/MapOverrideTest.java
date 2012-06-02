@@ -42,7 +42,7 @@ import static org.junit.Assert.assertThat;
  * Note that keySet(), values() and entrySet() would ALSO require overloading, but this has been left out for
  * clarity reasons.
  */
-@Ignore("Awaiting complete fix of Qi-361.")
+//@Ignore("Awaiting complete fix of Qi-361.")
 public class MapOverrideTest
     extends AbstractQi4jTest
 {
@@ -52,7 +52,7 @@ public class MapOverrideTest
     {
         // unable to add the concern, since it is applied on the prototype too!
         // this seems to be a generic problem with prototypes.
-        module.values( Map.class ).withMixins( HashMap.class );//.withConcerns(ReadOnlyMapConcern.class);
+        module.values( Map.class ).withMixins( HashMap.class ).withConcerns(ReadOnlyMapConcern.class);
     }
 
     @Test
