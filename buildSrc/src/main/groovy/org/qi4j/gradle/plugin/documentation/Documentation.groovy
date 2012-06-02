@@ -57,12 +57,24 @@ class Documentation extends DefaultTask
     new File(project.buildDir, "docs/$docName".toString()).mkdirs()
     new File(project.buildDir, "tmp/docs/$docName".toString()).mkdirs()
 
+    copyResources()
     generateXDoc()
     generateChunkedHtml()
     generateSingleHtml()
     generatePdf()
   }
 
+
+  def void copyResources()
+  {
+    project.parent.subprojects.each { p ->
+      p.copy {
+        from 'src/docs/resources'
+        into "build/docs/$docName/"
+        include '**'
+      }
+    }
+  }
 
   def void generateXDoc()
   {
