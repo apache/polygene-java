@@ -35,8 +35,7 @@ public final class CompositeMethodsModel
     private HashMap<Method, CompositeMethodModel> methods;
     private final MixinsModel mixinsModel;
 
-    public CompositeMethodsModel( MixinsModel mixinsModel
-    )
+    public CompositeMethodsModel( MixinsModel mixinsModel )
     {
         methods = new HashMap<Method, CompositeMethodModel>();
         this.mixinsModel = mixinsModel;

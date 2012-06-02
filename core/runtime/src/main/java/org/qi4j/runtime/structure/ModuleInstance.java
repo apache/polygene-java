@@ -648,24 +648,28 @@ public class ModuleInstance
         Map<AccessibleObject, PropertyInstance<?>> properties = new LinkedHashMap<AccessibleObject, PropertyInstance<?>>();
         for( PropertyDescriptor propertyDescriptor : model.model().state().properties() )
         {
-            properties.put( propertyDescriptor.accessor(), new PropertyInstance<Object>( ( (PropertyModel) propertyDescriptor )
-                                                                                             .getBuilderInfo(), propertyDescriptor
-                .initialValue( model
-                                   .module() ) ) );
+            PropertyInfo builderInfo = ( (PropertyModel) propertyDescriptor ).getBuilderInfo();
+            Object initialValue = propertyDescriptor.initialValue( model.module() );
+            PropertyInstance<Object> propertyInstance = new PropertyInstance<Object>( builderInfo, initialValue );
+            properties.put( propertyDescriptor.accessor(), propertyInstance );
         }
 
         Map<AccessibleObject, AssociationInstance<?>> associations = new LinkedHashMap<AccessibleObject, AssociationInstance<?>>();
         for( AssociationDescriptor associationDescriptor : model.model().state().associations() )
         {
-            associations.put( associationDescriptor.accessor(), new AssociationInstance<Object>( ( (AssociationModel) associationDescriptor )
-                                                                                                     .getBuilderInfo(), entityFunction, new ReferenceProperty() ) );
+            AssociationInfo builderInfo = ( (AssociationModel) associationDescriptor ).getBuilderInfo();
+            ReferenceProperty referenceProperty = new ReferenceProperty();
+            AssociationInstance<Object> associationInstance = new AssociationInstance<Object>( builderInfo, entityFunction, referenceProperty );
+            associations.put( associationDescriptor.accessor(), associationInstance );
         }
 
         Map<AccessibleObject, ManyAssociationInstance<?>> manyAssociations = new LinkedHashMap<AccessibleObject, ManyAssociationInstance<?>>();
         for( AssociationDescriptor associationDescriptor : model.model().state().manyAssociations() )
         {
-            manyAssociations.put( associationDescriptor.accessor(), new ManyAssociationInstance<Object>( ( (ManyAssociationModel) associationDescriptor )
-                                                                                                             .getBuilderInfo(), entityFunction, new ManyAssociationValueState( new ArrayList<EntityReference>() ) ) );
+            AssociationInfo builderInfo = ( (ManyAssociationModel) associationDescriptor ).getBuilderInfo();
+            ManyAssociationValueState manyAssociationState = new ManyAssociationValueState( new ArrayList<EntityReference>() );
+            ManyAssociationInstance<Object> associationInstance = new ManyAssociationInstance<Object>( builderInfo, entityFunction, manyAssociationState );
+            manyAssociations.put( associationDescriptor.accessor(), associationInstance );
         }
 
         ValueStateInstance state = new ValueStateInstance( properties, associations, manyAssociations );

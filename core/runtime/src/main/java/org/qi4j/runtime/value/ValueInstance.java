@@ -92,8 +92,8 @@ public final class ValueInstance extends TransientInstance
     {
         for( PropertyModel propertyDescriptor : descriptor().state().properties() )
         {
-            PropertyInstance<Object> propertyInstance = (PropertyInstance<Object>) state.propertyFor( propertyDescriptor
-                                                                                                          .accessor() );
+            PropertyInstance<Object> propertyInstance =
+                (PropertyInstance<Object>) state.propertyFor( propertyDescriptor.accessor() );
 
             propertyInstance.prepareToBuild( propertyDescriptor );
         }
