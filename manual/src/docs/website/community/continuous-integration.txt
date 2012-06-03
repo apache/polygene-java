@@ -1,0 +1,11 @@
+[[continuous-integration]]
+= Continuous Integration =
+
+Qi4j community uses CloudBees Jenkins service to automate the Qi4j SDK build and allow developers to detect and fix 
+integration problems, broken/incompatible code, conflicting changes continuously.
+
+The dedicated Jenkins instance can be found at https://qi4j.ci.cloudbees.com/.
+
+Distributions jobs make it easy to get the latest deliverables.
+
+image:cloudbees.png[]

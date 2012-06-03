@@ -24,12 +24,84 @@ $( document ).ready( function($){
             }
         } );
     }
+    
+    /**
+     * Community/Continuous Integration.
+     */
+    function continuous_integration( $section ) {
+        // Add Jenkins Jobs
+        var ci_url = 'https://qi4j.ci.cloudbees.com/';
+        var ci_images_url = ci_url + 'images/16x16/';
+        var $target = $section.find('a.ulink[href=' + ci_url + ']');
+                
+        $.getJSON( ci_url + 'api/json?depth=2&jsonp=?&callback=?', function( data ) {
+            if ( data.jobs.length > 0 ) {
+                var widget = document.createElement( "div" );
+                widget.className = "jenkins-widget";
+                var ul = document.createElement( "ul" );
+                ul.className = "jenkins-jobs";
+                for( var idx_job = 0; idx_job < data.jobs.length; idx_job++ ) {
+                    var job = data.jobs[ idx_job ];
+                    if ( job.buildable ) {
+                        var li = document.createElement( "li" );
+                        li.className = 'jenkins-job';
+                                
+                        var title = '<div class="title">';
+                        if (job.color.indexOf('_anime') != -1) {
+                            title += '<img src="' + ci_images_url + job.color + '.gif" style="float:left"/>';
+                        } else {
+                            title += '<img src="' + ci_images_url + job.color + '.png" style="float:left"/>';
+                        }
+                        title += '<p><strong>' + job.displayName + '</strong></p>';
+                        title += "</div>";
+                                
+                        var health = '<div class="health">';
+                        for( var idx_health = 0; idx_health < job.healthReport.length; idx_health++ ) {
+                            var health_data = job.healthReport[ idx_health ];
+                            health += '<div class="health-item">';
+                            health += '<p><img src="' + ci_images_url + health_data.iconUrl + '"/>' + health_data.description + '</p>';
+                            health += '</div>';
+                        }
+                        for( var idx_artifacts = 0; idx_artifacts < job.lastCompletedBuild.artifacts.length; idx_artifacts++ ) {
+                            var artifact = job.lastCompletedBuild.artifacts[ idx_artifacts ];
+                            console.log( artifact );
+                        // TODO Add artifacts download
+                        }
+                        health += "</div>";
+                                
+                        var links = '<div class="links">';
+                        var last = new Date(job.lastCompletedBuild.timestamp * 1000);
+                        links += '<p> Latest <strong>completed</strong> build <a href="' + job.lastCompletedBuild.url + '" target="_blank">#' + job.lastCompletedBuild.number + '</a> on ' + last + '</p>';
+                        links += '<a href="' + job.url + '" target="_blank">Open</a>';
+                        links += "</div>";
 
+                        li.innerHTML = title + health + links;
+                        ul.appendChild( li );
+                    }
+                }
+                widget.appendChild( ul );
+                $target.after( widget );
+            }
+            
+            // Add relationship to builds RSS
+            $('<link rel="alternate" type="application/rss+xml" title="Qi4j CI RSS"  href="https://qi4j.ci.cloudbees.com/rssAll" />').appendTo( $('head') );
+            
+        });
+    }
+
+    // Global enhancements
+    $("a.ulink[href^='http:']").attr('target','_blank'); // Open external user links in a new window/tab
+    $("a.ulink[href^='https:']").attr('target','_blank'); // Open external user links in a new window/tab
+
+    // Section specific enhancements
     var $section = $( 'body > div.section' );
     var section_title = $section.attr( 'title' );
     switch( section_title ) {
         case "Codebase":
             codebase( $section );
+            break;
+        case "Continuous Integration":
+            continuous_integration( $section );
             break;
         default:
             break;

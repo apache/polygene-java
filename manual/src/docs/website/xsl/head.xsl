@@ -57,6 +57,7 @@
 
 <!-- Qi4j WebSite Progressive Enhancement -->
 
+<link href="css/progressive-enhancement.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="js/progressive-enhancement.js"></script>
 ]]>
   </xsl:text>
