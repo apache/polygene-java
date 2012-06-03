@@ -1,14 +1,17 @@
 package pathfinder.internal;
 
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
 import pathfinder.api.GraphTraversalService;
 import pathfinder.api.TransitEdge;
 import pathfinder.api.TransitPath;
 
-import java.rmi.RemoteException;
-import java.util.*;
-
 public class GraphTraversalServiceImpl
-      implements GraphTraversalService
+    implements GraphTraversalService
 {
     private GraphDAO dao;
     private Random random;
@@ -22,7 +25,8 @@ public class GraphTraversalServiceImpl
     // Combine existing voyages to create a route.
     public List<TransitPath> findShortestPath( final Date departureDate,
                                                final String originUnLocode,
-                                               final String destinationUnLocode )
+                                               final String destinationUnLocode
+    )
     {
         // Transit paths (itineraries)
         final int candidateCount = getRandomNumberOfCandidates();
@@ -51,10 +55,12 @@ public class GraphTraversalServiceImpl
 //                for (int i = 0; i < voyages.size(); i++)
 //                    System.out.println( i + " " + voyages.get( i ).print() );
 
-                for (TransitPath voyage : voyages)
+                for( TransitPath voyage : voyages )
                 {
-                    if (depth >= voyage.getTransitEdges().size())
+                    if( depth >= voyage.getTransitEdges().size() )
+                    {
                         continue;
+                    }
 
                     final TransitEdge voyageEdge = voyage.getTransitEdges().get( depth );
 
@@ -63,13 +69,12 @@ public class GraphTraversalServiceImpl
                     final Date departureTime = voyageEdge.getFromDate();
                     final Date arrivalTime = voyageEdge.getToDate();
 
-
                     boolean expectsDeparture = departure.equals( expectedDeparture );
                     boolean uniqueDeparture = !oldDepartures.contains( departure );
                     boolean uniqueArrival = !oldDepartures.contains( arrival );
                     boolean afterLastArrivalTime = departureTime.after( lastArrivalTime );
 
-                    if (expectsDeparture && uniqueDeparture && uniqueArrival && afterLastArrivalTime)
+                    if( expectsDeparture && uniqueDeparture && uniqueArrival && afterLastArrivalTime )
                     {
                         // Visited departure locations
                         oldDepartures.add( departure );
@@ -86,13 +91,15 @@ public class GraphTraversalServiceImpl
                     }
                 }
             }
-            while (!expectedDeparture.equals( destinationUnLocode ) && depth++ < 10);
+            while( !expectedDeparture.equals( destinationUnLocode ) && depth++ < 10 );
 
             // Satisfying routes with at least 2 legs (nextDeparture is the last arrival location)
-            if (expectedDeparture.equals( destinationUnLocode ) && routeEdges.size() > 1)
+            if( expectedDeparture.equals( destinationUnLocode ) && routeEdges.size() > 1 )
+            {
                 routeCandidates.add( new TransitPath( routeEdges ) );
+            }
         }
-        while (routeCandidates.size() < candidateCount && tries++ < maxTries);
+        while( routeCandidates.size() < candidateCount && tries++ < maxTries );
 
         return routeCandidates;
     }
@@ -103,7 +110,8 @@ public class GraphTraversalServiceImpl
         return voyages;
     }
 
-    public List<TransitPath> getVoyages() throws RemoteException
+    public List<TransitPath> getVoyages()
+        throws RemoteException
     {
         return dao.voyages();
     }

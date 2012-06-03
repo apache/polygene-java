@@ -4,11 +4,10 @@ import com.marcgrue.dcisample_a.data.shipping.cargo.TrackingId;
 import com.marcgrue.dcisample_a.data.shipping.handling.HandlingEvent;
 import com.marcgrue.dcisample_a.data.shipping.handling.HandlingEventType;
 import com.marcgrue.dcisample_a.infrastructure.conversion.DTO;
+import java.util.Date;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.property.Property;
 import org.qi4j.library.conversion.values.Unqualified;
-
-import java.util.Date;
 
 /**
  * HandlingEvent DTO

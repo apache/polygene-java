@@ -1,5 +1,7 @@
 package com.marcgrue.dcisample_b.infrastructure.wicket.tabs;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import org.apache.wicket.Application;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.MetaDataKey;
@@ -10,9 +12,6 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * TabsPanel
@@ -31,14 +30,22 @@ public class TabsPanel extends Panel
     {
         registerTab( app, clazz, ref, label, null );
     }
-    public static <T extends Page> void registerTab( Application app, Class<T> clazz, String ref, String label, String cssClass )
+
+    public static <T extends Page> void registerTab( Application app,
+                                                     Class<T> clazz,
+                                                     String ref,
+                                                     String label,
+                                                     String cssClass
+    )
     {
         Map<Class, String[]> tabsInfo = app.getMetaData( TABS_PANEL_KEY );
 
-        if (tabsInfo == null || tabsInfo.isEmpty())
+        if( tabsInfo == null || tabsInfo.isEmpty() )
+        {
             tabsInfo = new LinkedHashMap<Class, String[]>();
+        }
 
-        tabsInfo.put( clazz, new String[]{ref, label} );
+        tabsInfo.put( clazz, new String[]{ ref, label } );
         app.setMetaData( TABS_PANEL_KEY, tabsInfo );
     }
 
@@ -48,21 +55,25 @@ public class TabsPanel extends Panel
         super( "tabsPanel" );
 
         Map<Class, String[]> tabs = getApplication().getMetaData( TABS_PANEL_KEY );
-        if (tabs == null || tabs.isEmpty())
+        if( tabs == null || tabs.isEmpty() )
+        {
             throw new RuntimeException( "Please register one or more tabs." );
+        }
 
         RepeatingView tabsView = new RepeatingView( "tabsView" );
 
         // Loop "mounted" tabs
-        for (Map.Entry<Class, String[]> tab : tabs.entrySet())
+        for( Map.Entry<Class, String[]> tab : tabs.entrySet() )
         {
             Class pageClass = tab.getKey();
-            String tabReference = tab.getValue()[0];
-            String tabLabel = tab.getValue()[1];
+            String tabReference = tab.getValue()[ 0 ];
+            String tabLabel = tab.getValue()[ 1 ];
 
             WebMarkupContainer tabView = new WebMarkupContainer( tabsView.newChildId() );
-            if (tabReference.equals( activeTab ))
+            if( tabReference.equals( activeTab ) )
+            {
                 tabView.add( new AttributeModifier( "id", "current" ) );
+            }
 
             BookmarkablePageLink link = new BookmarkablePageLink( "link", pageClass );  // unchecked
 

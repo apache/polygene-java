@@ -3,20 +3,20 @@ package com.marcgrue.dcisample_a.communication.query;
 import com.marcgrue.dcisample_a.communication.query.dto.HandlingEventDTO;
 import com.marcgrue.dcisample_a.data.entity.CargoEntity;
 import com.marcgrue.dcisample_a.data.entity.HandlingEventEntity;
-import com.marcgrue.dcisample_a.data.shipping.handling.HandlingEvent;
 import com.marcgrue.dcisample_a.data.shipping.cargo.Cargo;
 import com.marcgrue.dcisample_a.data.shipping.handling.HandlingEvent;
 import com.marcgrue.dcisample_a.infrastructure.model.Queries;
 import com.marcgrue.dcisample_a.infrastructure.model.QueryModel;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.wicket.model.IModel;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryExpressions;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.qi4j.api.query.QueryExpressions.*;
+import static org.qi4j.api.query.QueryExpressions.isNotNull;
+import static org.qi4j.api.query.QueryExpressions.orderBy;
+import static org.qi4j.api.query.QueryExpressions.templateFor;
 
 /**
  * Tracking queries
@@ -29,13 +29,16 @@ public class TrackingQueries extends Queries
     {
         Cargo cargoEntity = templateFor( CargoEntity.class );
 
-        QueryBuilder<CargoEntity> qb = qbf.newQueryBuilder(CargoEntity.class).where(isNotNull(cargoEntity.itinerary()));
-        Query<CargoEntity> cargos = uowf.currentUnitOfWork().newQuery(qb)
-              .orderBy(orderBy(cargoEntity.trackingId().get().id()));
+        QueryBuilder<CargoEntity> qb = qbf.newQueryBuilder( CargoEntity.class )
+            .where( isNotNull( cargoEntity.itinerary() ) );
+        Query<CargoEntity> cargos = uowf.currentUnitOfWork().newQuery( qb )
+            .orderBy( orderBy( cargoEntity.trackingId().get().id() ) );
 
         List<String> cargoList = new ArrayList<String>();
-        for (CargoEntity cargo : cargos)
+        for( CargoEntity cargo : cargos )
+        {
             cargoList.add( cargo.trackingId().get().id().get() );
+        }
 
         return cargoList;
     }
@@ -48,10 +51,10 @@ public class TrackingQueries extends Queries
             {
                 HandlingEvent eventTemplate = templateFor( HandlingEvent.class );
 
-                QueryBuilder<HandlingEventEntity> qb = qbf.newQueryBuilder(HandlingEventEntity.class)
-                        .where(QueryExpressions.eq(eventTemplate.trackingId().get().id(), trackingIdString));
-                return uowf.currentUnitOfWork().newQuery(qb)
-                      .orderBy( orderBy( eventTemplate.completionTime() ) );
+                QueryBuilder<HandlingEventEntity> qb = qbf.newQueryBuilder( HandlingEventEntity.class )
+                    .where( QueryExpressions.eq( eventTemplate.trackingId().get().id(), trackingIdString ) );
+                return uowf.currentUnitOfWork().newQuery( qb )
+                    .orderBy( orderBy( eventTemplate.completionTime() ) );
             }
         };
     }

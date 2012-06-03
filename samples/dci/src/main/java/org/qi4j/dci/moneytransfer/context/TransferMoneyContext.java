@@ -24,88 +24,90 @@ import org.qi4j.dci.moneytransfer.domain.data.BalanceData;
  */
 public class TransferMoneyContext
 {
-   // Object->Role mappings
-   public SourceAccountRole sourceAccount;
-   public DestinationAccountRole destinationAccount;
+    // Object->Role mappings
+    public SourceAccountRole sourceAccount;
+    public DestinationAccountRole destinationAccount;
 
-   // Context setup
-   // Objects are specified using their data interface, and then cast to the role interfaces
-   public TransferMoneyContext bind( BalanceData source, BalanceData destination )
-   {
-      this.sourceAccount = (SourceAccountRole) source;
-      this.destinationAccount = (DestinationAccountRole) destination;
-       return this;
-   }
+    // Context setup
+    // Objects are specified using their data interface, and then cast to the role interfaces
+    public TransferMoneyContext bind( BalanceData source, BalanceData destination )
+    {
+        this.sourceAccount = (SourceAccountRole) source;
+        this.destinationAccount = (DestinationAccountRole) destination;
+        return this;
+    }
 
-   // Interactions
-   public Integer availableFunds()
-   {
-      return sourceAccount.availableFunds();
-   }
+    // Interactions
+    public Integer availableFunds()
+    {
+        return sourceAccount.availableFunds();
+    }
 
-   public void transfer( int amount )
-         throws IllegalArgumentException
-   {
-       sourceAccount.transfer( amount, destinationAccount );
-   }
+    public void transfer( int amount )
+        throws IllegalArgumentException
+    {
+        sourceAccount.transfer( amount, destinationAccount );
+    }
 
-   // More interactions could go here...
+    // More interactions could go here...
 
-   // Roles defined by this context, with default implementations
-   @Mixins(SourceAccountRole.Mixin.class)
-   public interface SourceAccountRole
-   {
-      // Role Methods
-       public void transfer( int amount, DestinationAccountRole destinationAccount )
+    // Roles defined by this context, with default implementations
+    @Mixins( SourceAccountRole.Mixin.class )
+    public interface SourceAccountRole
+    {
+        // Role Methods
+        public void transfer( int amount, DestinationAccountRole destinationAccount )
             throws IllegalArgumentException;
 
-      Integer availableFunds();
+        Integer availableFunds();
 
-      // Default implementation
+        // Default implementation
 
-      class Mixin
+        class Mixin
             implements SourceAccountRole
-      {
-         @This
-         BalanceData data;
+        {
+            @This
+            BalanceData data;
 
-         public Integer availableFunds()
-         {
-            // Could be balance, or balance - non-confirmed transfers, or somesuch
-            return data.getBalance();
-         }
+            public Integer availableFunds()
+            {
+                // Could be balance, or balance - non-confirmed transfers, or somesuch
+                return data.getBalance();
+            }
 
-         public void transfer( int amount, DestinationAccountRole destinationAccount )
-               throws IllegalArgumentException
-         {
-            // Validate command
-            if (!(data.getBalance() >= amount))
-               throw new IllegalArgumentException( "Not enough available funds" );
+            public void transfer( int amount, DestinationAccountRole destinationAccount )
+                throws IllegalArgumentException
+            {
+                // Validate command
+                if( !( data.getBalance() >= amount ) )
+                {
+                    throw new IllegalArgumentException( "Not enough available funds" );
+                }
 
-            // Command is ok - create events in the data
-            data.decreasedBalance( amount );
+                // Command is ok - create events in the data
+                data.decreasedBalance( amount );
 
-            // Look up the destination account from the current transfer context
-            destinationAccount.deposit( amount );
-         }
-      }
-   }
+                // Look up the destination account from the current transfer context
+                destinationAccount.deposit( amount );
+            }
+        }
+    }
 
-   @Mixins(DestinationAccountRole.Mixin.class)
-   public interface DestinationAccountRole
-   {
-      public void deposit( int amount );
+    @Mixins( DestinationAccountRole.Mixin.class )
+    public interface DestinationAccountRole
+    {
+        public void deposit( int amount );
 
-      class Mixin
+        class Mixin
             implements DestinationAccountRole
-      {
-         @This
-         BalanceData data;
+        {
+            @This
+            BalanceData data;
 
-         public void deposit( int amount )
-         {
-            data.increasedBalance( amount );
-         }
-      }
-   }
+            public void deposit( int amount )
+            {
+                data.increasedBalance( amount );
+            }
+        }
+    }
 }

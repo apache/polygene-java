@@ -22,7 +22,13 @@ import org.qi4j.api.structure.Application;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.sample.rental.domain.*;
+import org.qi4j.sample.rental.domain.Address;
+import org.qi4j.sample.rental.domain.Booking;
+import org.qi4j.sample.rental.domain.Car;
+import org.qi4j.sample.rental.domain.CarCategory;
+import org.qi4j.sample.rental.domain.Customer;
+import org.qi4j.sample.rental.domain.Period;
+import org.qi4j.sample.rental.domain.RentalShop;
 import org.qi4j.sample.rental.domain.dev.InitialData;
 
 import static org.qi4j.api.common.Visibility.application;

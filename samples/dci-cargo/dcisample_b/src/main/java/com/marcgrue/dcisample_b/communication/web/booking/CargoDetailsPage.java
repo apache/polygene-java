@@ -13,6 +13,8 @@ import com.marcgrue.dcisample_b.infrastructure.wicket.color.CorrectColor;
 import com.marcgrue.dcisample_b.infrastructure.wicket.color.ErrorColor;
 import com.marcgrue.dcisample_b.infrastructure.wicket.link.LinkPanel;
 import com.marcgrue.dcisample_b.infrastructure.wicket.prevnext.PrevNext;
+import java.util.Date;
+import java.util.List;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.devutils.stateless.StatelessComponent;
 import org.apache.wicket.markup.html.basic.Label;
@@ -24,9 +26,6 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
-
-import java.util.Date;
-import java.util.List;
 
 import static com.marcgrue.dcisample_b.data.structure.delivery.RoutingStatus.MISROUTED;
 import static com.marcgrue.dcisample_b.data.structure.delivery.RoutingStatus.NOT_ROUTED;
@@ -66,11 +65,13 @@ public class CargoDetailsPage extends BookingBasePage
         add( new Label( "trackingId", trackingId ) );
 
         // Show both cargo origin and new route spec origin when re-routed during transport
-        if (isReRouted)
+        if( isReRouted )
         {
             Fragment originFragment = new Fragment( "origin", "re-routed-originFragment", this );
             originFragment.add( new Label( "cargoOrigin", cargo.origin().get().getString() ) );
-            originFragment.add( new Label( "routeOrigin", routeSpecification.origin().get().getString() ).add( new CorrectColor( isMisrouted ) ) );
+            originFragment.add( new Label( "routeOrigin", routeSpecification.origin()
+                .get()
+                .getString() ).add( new CorrectColor( isMisrouted ) ) );
             add( originFragment );
         }
         else
@@ -81,19 +82,21 @@ public class CargoDetailsPage extends BookingBasePage
         }
 
         add( new Label( "departure", Model.of( routeSpecification.earliestDeparture().get() ) ) );
-        add( new Label( "destination", routeSpecification.destination().get().getString() ).add( new CorrectColor( isMisrouted ) ) );
+        add( new Label( "destination", routeSpecification.destination()
+            .get()
+            .getString() ).add( new CorrectColor( isMisrouted ) ) );
         add( new Label( "deadline", Model.of( routeSpecification.arrivalDeadline().get() ) ) );
         add( new Label( "routingStatus", routingStatus.toString() ).add( new ErrorColor( isMisrouted ) ) );
         add( new LinkPanel( "changeDestination", ChangeDestinationPage.class, trackingId, "Change destination" ) );
 
-        if (transportStatus.equals( CLAIMED ))
+        if( transportStatus.equals( CLAIMED ) )
         {
             // Can't re-route claimed cargo
             add( new Label( "routingAction" ) );
             add( new DeliveryFragment( delivery ) );
             add( new ItineraryFragment( cargoModel, routingStatus ) );
         }
-        else if (routingStatus.equals( NOT_ROUTED ))
+        else if( routingStatus.equals( NOT_ROUTED ) )
         {
             add( new LinkPanel( "routingAction", RouteCargoPage.class, trackingId, "Route" ) );
             add( new Label( "delivery" ) );
@@ -106,10 +109,14 @@ public class CargoDetailsPage extends BookingBasePage
             add( new ItineraryFragment( cargoModel, routingStatus ) );
         }
 
-        if (delivery.lastHandlingEvent().get() == null)
+        if( delivery.lastHandlingEvent().get() == null )
+        {
             add( new Label( "handlingHistoryPanel" ) );
+        }
         else
+        {
             add( new HandlingHistoryPanel( "handlingHistoryPanel", cargoModel, trackingId ) );
+        }
 
         add( new NextHandlingEventPanel( "nextHandlingEventPanel", cargoModel ) );
     }
@@ -142,7 +149,7 @@ public class CargoDetailsPage extends BookingBasePage
 
                     Boolean isMisrouted = routingStatus == MISROUTED && item.getIndex() == ( getList().size() - 1 );
                     item.add( new Label( "unloadLocation", leg.unloadLocation().get().getCode() )
-                                    .add( new ErrorColor( isMisrouted ) ) );
+                                  .add( new ErrorColor( isMisrouted ) ) );
 
                     item.add( new Label( "unloadTime", new Model<Date>( leg.unloadTime().get() ) ) );
                 }
@@ -156,7 +163,7 @@ public class CargoDetailsPage extends BookingBasePage
         {
             super( "delivery", "deliveryFragment", CargoDetailsPage.this );
 
-            if (delivery.transportStatus().get().equals( UNKNOWN ))
+            if( delivery.transportStatus().get().equals( UNKNOWN ) )
             {
                 String msg = "UNKNOWN \n(Could be hi-jacked)";
                 add( new MultiLineLabel( "transportStatus", msg ).add( new AttributeModifier( "class", "errorColor" ) ) );
@@ -166,12 +173,13 @@ public class CargoDetailsPage extends BookingBasePage
                 add( new Label( "transportStatus", delivery.transportStatus().get().toString() ) );
             }
 
-
-            if (delivery.isMisdirected().get())
+            if( delivery.isMisdirected().get() )
             {
                 String msg = "Cargo is misdirected \nPlease reroute cargo";
-                if (delivery.transportStatus().get().equals( CLAIMED ))
+                if( delivery.transportStatus().get().equals( CLAIMED ) )
+                {
                     msg = "Cargo is misdirected \n(Can't re-route claimed cargo)";
+                }
 
                 add( new MultiLineLabel( "deliveryStatus", msg ).add( new AttributeModifier( "class", "errorColor" ) ) );
             }

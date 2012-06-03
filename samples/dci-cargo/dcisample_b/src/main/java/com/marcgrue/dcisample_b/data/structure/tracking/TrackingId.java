@@ -16,7 +16,7 @@ import org.qi4j.library.constraints.annotation.Matches;
  * - is maximum 30 characters long.
  */
 public interface TrackingId
-      extends ValueComposite
+    extends ValueComposite
 {
     @Matches( "[a-zA-Z0-9]{1}[a-zA-Z0-9_-]{2,29}" )
     Property<String> id();

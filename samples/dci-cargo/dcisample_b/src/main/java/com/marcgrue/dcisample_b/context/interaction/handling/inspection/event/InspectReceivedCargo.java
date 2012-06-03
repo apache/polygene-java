@@ -14,13 +14,14 @@ import com.marcgrue.dcisample_b.data.structure.location.Location;
 import com.marcgrue.dcisample_b.data.structure.voyage.Voyage;
 import com.marcgrue.dcisample_b.infrastructure.dci.Context;
 import com.marcgrue.dcisample_b.infrastructure.dci.RoleMixin;
+import java.util.Date;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.value.ValueBuilder;
 
-import java.util.Date;
-
-import static com.marcgrue.dcisample_b.data.structure.delivery.RoutingStatus.*;
+import static com.marcgrue.dcisample_b.data.structure.delivery.RoutingStatus.MISROUTED;
+import static com.marcgrue.dcisample_b.data.structure.delivery.RoutingStatus.NOT_ROUTED;
+import static com.marcgrue.dcisample_b.data.structure.delivery.RoutingStatus.ROUTED;
 import static com.marcgrue.dcisample_b.data.structure.delivery.TransportStatus.IN_PORT;
 import static com.marcgrue.dcisample_b.data.structure.handling.HandlingEventType.LOAD;
 import static com.marcgrue.dcisample_b.data.structure.handling.HandlingEventType.RECEIVE;
@@ -62,38 +63,44 @@ public class InspectReceivedCargo extends Context
         itineraryProgressIndex = cargo.delivery().get().itineraryProgressIndex().get();
     }
 
-    public void inspect() throws InspectionException
+    public void inspect()
+        throws InspectionException
     {
         // Pre-conditions
 
         // Cargo has already been received before
-        if (previousEvent != null && !previousEvent.equals( receiveEvent ))
+        if( previousEvent != null && !previousEvent.equals( receiveEvent ) )
+        {
             throw new InspectionFailedException( "Can't receive cargo again." );
+        }
 
-        if (receiveEvent == null || !receiveEvent.handlingEventType().get().equals( RECEIVE ))
+        if( receiveEvent == null || !receiveEvent.handlingEventType().get().equals( RECEIVE ) )
+        {
             throw new InspectionFailedException( "Can only inspect received cargo." );
+        }
 
         deliveryInspector.inspectReceivedCargo();
     }
-
 
     @Mixins( DeliveryInspectorRole.Mixin.class )
     public interface DeliveryInspectorRole
     {
         void setContext( InspectReceivedCargo context );
 
-        void inspectReceivedCargo() throws InspectionException;
+        void inspectReceivedCargo()
+            throws InspectionException;
 
         class Mixin
-              extends RoleMixin<InspectReceivedCargo>
-              implements DeliveryInspectorRole
+            extends RoleMixin<InspectReceivedCargo>
+            implements DeliveryInspectorRole
         {
             @This
             Cargo cargo;
 
             Delivery newDelivery;
 
-            public void inspectReceivedCargo() throws InspectionException
+            public void inspectReceivedCargo()
+                throws InspectionException
             {
                 // Step 1 - Collect known delivery data
 
@@ -105,33 +112,38 @@ public class InspectReceivedCargo extends Context
                 newDelivery.isUnloadedAtDestination().set( false );
                 newDelivery.itineraryProgressIndex().set( 0 );
 
-
                 // Step 2 - Verify cargo is routed
 
-                if (c.itinerary == null)
+                if( c.itinerary == null )
+                {
                     newDelivery.routingStatus().set( NOT_ROUTED );
-                else if (!c.routeSpecification.isSatisfiedBy( c.itinerary ))
+                }
+                else if( !c.routeSpecification.isSatisfiedBy( c.itinerary ) )
+                {
                     newDelivery.routingStatus().set( MISROUTED );
+                }
                 else
+                {
                     newDelivery.routingStatus().set( ROUTED );
+                }
 
-
-                if (newDelivery.routingStatus().get().equals( ROUTED ))
+                if( newDelivery.routingStatus().get().equals( ROUTED ) )
                 {
                     // Step 3 - Verify cargo is received in origin
 
                     Leg firstLeg = c.itinerary.firstLeg();
-                    if (!firstLeg.loadLocation().get().equals( c.receiveEvent.location().get() ))
+                    if( !firstLeg.loadLocation().get().equals( c.receiveEvent.location().get() ) )
                     {
                         newDelivery.isMisdirected().set( true );
                         cargo.delivery().set( newDeliveryBuilder.newInstance() );
                         throw new CargoMisdirectedException( c.receiveEvent, "Itinerary expected receipt in "
-                              + firstLeg.loadLocation().get().getString() );
+                                                                             + firstLeg.loadLocation()
+                            .get()
+                            .getString() );
                     }
 
                     newDelivery.isMisdirected().set( false );
                     newDelivery.eta().set( c.itinerary.eta() );
-
 
                     // Step 4 - Determine next expected handling event
 

@@ -6,6 +6,11 @@ import com.marcgrue.dcisample_b.data.structure.itinerary.Itinerary;
 import com.marcgrue.dcisample_b.data.structure.itinerary.Leg;
 import com.marcgrue.dcisample_b.data.structure.location.Location;
 import com.marcgrue.dcisample_b.data.structure.voyage.Voyage;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 import org.joda.time.LocalDate;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
@@ -21,12 +26,6 @@ import pathfinder.api.GraphTraversalService;
 import pathfinder.api.TransitEdge;
 import pathfinder.api.TransitPath;
 
-import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
 /**
  * Routing service.
  *
@@ -35,17 +34,18 @@ import java.util.List;
  */
 @Mixins( RoutingService.Mixin.class )
 public interface RoutingService
-      extends ServiceComposite
+    extends ServiceComposite
 {
     /**
      * @param routeSpecification route specification
+     *
      * @return A list of itineraries that satisfy the specification. May be an empty list if no route is found.
      */
     List<Itinerary> fetchRoutesForSpecification( RouteSpecification routeSpecification )
-          throws FoundNoRoutesException;
+        throws FoundNoRoutesException;
 
     abstract class Mixin
-          implements RoutingService
+        implements RoutingService
     {
         private static final Logger logger = LoggerFactory.getLogger( RoutingService.class );
 
@@ -59,7 +59,7 @@ public interface RoutingService
         GraphTraversalService graphTraversalService;
 
         public List<Itinerary> fetchRoutesForSpecification( RouteSpecification routeSpecification )
-              throws FoundNoRoutesException
+            throws FoundNoRoutesException
         {
             final Date departureDate = routeSpecification.earliestDeparture().get();
             final Location origin = routeSpecification.origin().get();
@@ -72,26 +72,30 @@ public interface RoutingService
             {
                 transitPaths = graphTraversalService.findShortestPath( departureDate, origin.getCode(), destination.getCode() );
             }
-            catch (RemoteException e)
+            catch( RemoteException e )
             {
                 logger.error( e.getMessage(), e );
                 return Collections.emptyList();
             }
 
             // The returned result is then translated back into our domain model.
-            for (TransitPath transitPath : transitPaths)
+            for( TransitPath transitPath : transitPaths )
             {
                 final Itinerary itinerary = toItinerary( transitPath );
 
                 // Use the specification to safe-guard against invalid itineraries
                 // We can use the side-effects free method of the RouteSpecification data object
-                if (routeSpecification.isSatisfiedBy( itinerary ))
+                if( routeSpecification.isSatisfiedBy( itinerary ) )
+                {
                     itineraries.add( itinerary );
+                }
             }
 
-            if (itineraries.size() == 0)
+            if( itineraries.size() == 0 )
+            {
                 throw new FoundNoRoutesException( destination.name().get(),
                                                   new LocalDate( routeSpecification.arrivalDeadline().get() ) );
+            }
 
             return itineraries;
         }
@@ -100,7 +104,7 @@ public interface RoutingService
         {
             ValueBuilder<Itinerary> itinerary = vbf.newValueBuilder( Itinerary.class );
             List<Leg> legs = new ArrayList<Leg>();
-            for (TransitEdge edge : transitPath.getTransitEdges())
+            for( TransitEdge edge : transitPath.getTransitEdges() )
             {
                 legs.add( toLeg( edge ) );
             }

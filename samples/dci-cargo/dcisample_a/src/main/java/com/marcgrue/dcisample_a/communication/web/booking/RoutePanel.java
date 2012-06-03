@@ -3,6 +3,8 @@ package com.marcgrue.dcisample_a.communication.web.booking;
 import com.marcgrue.dcisample_a.context.shipping.booking.BookNewCargo;
 import com.marcgrue.dcisample_a.data.shipping.itinerary.Itinerary;
 import com.marcgrue.dcisample_a.data.shipping.itinerary.Leg;
+import java.util.Date;
+import java.util.List;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxFallbackButton;
 import org.apache.wicket.markup.html.basic.Label;
@@ -16,9 +18,6 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 
-import java.util.Date;
-import java.util.List;
-
 /**
  * Route Panel - shows a suggested route a Cargo can take.
  *
@@ -27,7 +26,11 @@ import java.util.List;
  */
 public class RoutePanel extends Panel
 {
-    public RoutePanel( String id, final String trackingIdString, final IModel<Itinerary> candidateRouteModel, int index )
+    public RoutePanel( String id,
+                       final String trackingIdString,
+                       final IModel<Itinerary> candidateRouteModel,
+                       int index
+    )
     {
         super( id, candidateRouteModel );
         Itinerary itinerary = candidateRouteModel.getObject();
@@ -72,9 +75,9 @@ public class RoutePanel extends Panel
                 {
                     // The candidate route is sent as the chosen Itinerary
                     new BookNewCargo( trackingIdString, candidateRouteModel.getObject() ).assignCargoToRoute();
-                    setResponsePage( CargoDetailsPage.class,  new PageParameters().set( 0, trackingIdString )  );
+                    setResponsePage( CargoDetailsPage.class, new PageParameters().set( 0, trackingIdString ) );
                 }
-                catch (Exception e)
+                catch( Exception e )
                 {
                     String msg = "Problem assigning this route to cargo: " + e.getMessage();
                     routeFeedback.error( msg );

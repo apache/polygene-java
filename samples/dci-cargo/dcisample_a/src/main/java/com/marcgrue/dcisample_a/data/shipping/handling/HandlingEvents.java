@@ -1,17 +1,15 @@
 package com.marcgrue.dcisample_a.data.shipping.handling;
 
+import com.marcgrue.dcisample_a.data.shipping.cargo.TrackingId;
 import com.marcgrue.dcisample_a.data.shipping.location.Location;
 import com.marcgrue.dcisample_a.data.shipping.voyage.Voyage;
-import com.marcgrue.dcisample_a.data.shipping.cargo.TrackingId;
-import com.marcgrue.dcisample_a.data.shipping.voyage.Voyage;
+import java.util.Date;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-
-import java.util.Date;
 
 /**
  * HandlingEvent "collection" - could have had a many-association to
@@ -26,10 +24,11 @@ public interface HandlingEvents
                                        HandlingEventType handlingEventType,
                                        Location location,
                                        @Optional Voyage voyage
-    ) throws IllegalArgumentException;
+    )
+        throws IllegalArgumentException;
 
     public abstract class Mixin
-          implements HandlingEvents
+        implements HandlingEvents
     {
         @Structure
         UnitOfWorkFactory uowf;
@@ -39,14 +38,19 @@ public interface HandlingEvents
                                                   TrackingId trackingId,
                                                   HandlingEventType handlingEventType,
                                                   Location location,
-                                                  Voyage voyage )
-              throws IllegalArgumentException
+                                                  Voyage voyage
+        )
+            throws IllegalArgumentException
         {
-            if (voyage == null && handlingEventType.requiresVoyage())
+            if( voyage == null && handlingEventType.requiresVoyage() )
+            {
                 throw new IllegalArgumentException( "Voyage is required for handling event type " + handlingEventType );
+            }
 
-            else if (voyage != null && handlingEventType.prohibitsVoyage())
+            else if( voyage != null && handlingEventType.prohibitsVoyage() )
+            {
                 throw new IllegalArgumentException( "Voyage is not allowed with handling event type " + handlingEventType );
+            }
 
             UnitOfWork uow = uowf.currentUnitOfWork();
             EntityBuilder<HandlingEvent> handlingEventBuilder = uow.newEntityBuilder( HandlingEvent.class );

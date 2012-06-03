@@ -11,11 +11,10 @@ import com.marcgrue.dcisample_b.data.structure.handling.HandlingEvent;
 import com.marcgrue.dcisample_b.data.structure.itinerary.Itinerary;
 import com.marcgrue.dcisample_b.infrastructure.dci.Context;
 import com.marcgrue.dcisample_b.infrastructure.dci.RoleMixin;
+import java.util.Date;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.value.ValueBuilder;
-
-import java.util.Date;
 
 import static com.marcgrue.dcisample_b.data.structure.delivery.RoutingStatus.NOT_ROUTED;
 import static com.marcgrue.dcisample_b.data.structure.delivery.TransportStatus.IN_PORT;
@@ -60,36 +59,42 @@ public class InspectCargoInCustoms extends Context
         transportStatus = cargo.delivery().get().transportStatus().get();
     }
 
-    public void inspect() throws InspectionException
+    public void inspect()
+        throws InspectionException
     {
         // Pre-conditions
-        if (customsEvent == null || !customsEvent.handlingEventType().get().equals( CUSTOMS ))
+        if( customsEvent == null || !customsEvent.handlingEventType().get().equals( CUSTOMS ) )
+        {
             throw new InspectionFailedException( "Can only inspect cargo in customs." );
+        }
 
-        if (transportStatus.equals( ONBOARD_CARRIER ))
+        if( transportStatus.equals( ONBOARD_CARRIER ) )
+        {
             throw new InspectionFailedException( "Cannot handle cargo in customs on board a carrier." );
+        }
 
         deliveryInspector.inspectCargoInCustoms();
     }
-
 
     @Mixins( DeliveryInspectorRole.Mixin.class )
     public interface DeliveryInspectorRole
     {
         void setContext( InspectCargoInCustoms context );
 
-        void inspectCargoInCustoms() throws InspectionException;
+        void inspectCargoInCustoms()
+            throws InspectionException;
 
         class Mixin
-              extends RoleMixin<InspectCargoInCustoms>
-              implements DeliveryInspectorRole
+            extends RoleMixin<InspectCargoInCustoms>
+            implements DeliveryInspectorRole
         {
             @This
             Cargo cargo;
 
             Delivery newDelivery;
 
-            public void inspectCargoInCustoms() throws InspectionException
+            public void inspectCargoInCustoms()
+                throws InspectionException
             {
                 // Step 1 - Collect known delivery data
 
@@ -106,16 +111,15 @@ public class InspectCargoInCustoms extends Context
                 // We can't predict the next handling event from the customs event
                 newDelivery.nextHandlingEvent().set( null );
 
-
                 // Step 2 - Verify cargo is routed
 
-                if (c.itinerary == null)
+                if( c.itinerary == null )
                 {
                     newDelivery.routingStatus().set( NOT_ROUTED );
                     newDelivery.itineraryProgressIndex().set( 0 );
                     newDelivery.eta().set( null );
                 }
-                else if (!c.routeSpecification.isSatisfiedBy( c.itinerary ))
+                else if( !c.routeSpecification.isSatisfiedBy( c.itinerary ) )
                 {
                     newDelivery.routingStatus().set( RoutingStatus.MISROUTED );
                     newDelivery.itineraryProgressIndex().set( 0 );
@@ -127,7 +131,6 @@ public class InspectCargoInCustoms extends Context
                     newDelivery.itineraryProgressIndex().set( c.itineraryProgressIndex );
                     newDelivery.eta().set( c.itinerary.eta() );
                 }
-
 
                 // Step 3 - Save cargo delivery snapshot
 

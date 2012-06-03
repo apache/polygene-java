@@ -7,8 +7,8 @@ import com.marcgrue.dcisample_a.data.entity.CargosEntity;
  * Cargos Role Map
  */
 public interface CargosRoleMap
-      extends CargosEntity,
+    extends CargosEntity,
 
-      BookNewCargo.CargoFactoryRole
+            BookNewCargo.CargoFactoryRole
 {
 }

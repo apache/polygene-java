@@ -12,6 +12,8 @@ import com.marcgrue.dcisample_a.infrastructure.wicket.color.CorrectColor;
 import com.marcgrue.dcisample_a.infrastructure.wicket.color.ErrorColor;
 import com.marcgrue.dcisample_a.infrastructure.wicket.link.LinkPanel;
 import com.marcgrue.dcisample_a.infrastructure.wicket.prevnext.PrevNext;
+import java.util.Date;
+import java.util.List;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.devutils.stateless.StatelessComponent;
 import org.apache.wicket.markup.html.basic.Label;
@@ -23,9 +25,6 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
-
-import java.util.Date;
-import java.util.List;
 
 /**
  * Cargo details - an overview of all data available about a cargo.
@@ -53,24 +52,26 @@ public class CargoDetailsPage extends BookingBasePage
 
         add( new Label( "trackingId", trackingId ) );
         add( new Label( "origin", cargo.origin().get().getString() ) );
-        add( new Label( "destination", routeSpecification.destination().get().getString() ).add( new CorrectColor( isMisrouted ) ) );
+        add( new Label( "destination", routeSpecification.destination()
+            .get()
+            .getString() ).add( new CorrectColor( isMisrouted ) ) );
         add( new Label( "deadline", Model.of( routeSpecification.arrivalDeadline().get() ) ) );
         add( new Label( "routingStatus", routingStatus.toString() ).add( new ErrorColor( isMisrouted ) ) );
         add( new LinkPanel( "changeDestination", ChangeDestinationPage.class, trackingId, "Change destination" ) );
 
-        if (routingStatus == RoutingStatus.NOT_ROUTED)
+        if( routingStatus == RoutingStatus.NOT_ROUTED )
         {
             add( new LinkPanel( "routingAction", RouteCargoPage.class, trackingId, "Route" ) );
             add( new Label( "delivery" ) );
             add( new Label( "itinerary" ) );
         }
-        else if (routingStatus == RoutingStatus.ROUTED)
+        else if( routingStatus == RoutingStatus.ROUTED )
         {
             add( new LinkPanel( "routingAction", RouteCargoPage.class, trackingId, "Re-route" ) );
             add( new DeliveryFragment( delivery ) );
             add( new ItineraryFragment( cargoModel, routingStatus ) );
         }
-        else if (routingStatus == RoutingStatus.MISROUTED)
+        else if( routingStatus == RoutingStatus.MISROUTED )
         {
             add( new LinkPanel( "routingAction", RouteCargoPage.class, trackingId, "Re-route" ) );
             add( new DeliveryFragment( delivery ) );
@@ -81,10 +82,14 @@ public class CargoDetailsPage extends BookingBasePage
             throw new RuntimeException( "Unknown routing status." );
         }
 
-        if (delivery.lastHandlingEvent().get() == null)
+        if( delivery.lastHandlingEvent().get() == null )
+        {
             add( new Label( "handlingHistoryPanel" ) );
+        }
         else
+        {
             add( new HandlingHistoryPanel( "handlingHistoryPanel", cargoModel, trackingId ) );
+        }
 
         add( new NextHandlingEventPanel( "nextHandlingEventPanel", cargoModel ) );
     }
@@ -123,7 +128,7 @@ public class CargoDetailsPage extends BookingBasePage
 
                     Boolean isMisrouted = routingStatus == RoutingStatus.MISROUTED && item.getIndex() == ( getList().size() - 1 );
                     item.add( new Label( "unloadLocation", leg.unloadLocation().get().getCode() )
-                                    .add( new ErrorColor( isMisrouted ) ) );
+                                  .add( new ErrorColor( isMisrouted ) ) );
 
                     item.add( new Label( "unloadTime", new Model<Date>( leg.unloadTime().get() ) ) );
                 }
@@ -139,7 +144,7 @@ public class CargoDetailsPage extends BookingBasePage
 
             add( new Label( "transportStatus", delivery.transportStatus().get().toString() ) );
 
-            if (delivery.isMisdirected().get())
+            if( delivery.isMisdirected().get() )
             {
                 String msg = "Cargo is misdirected. \nPlease reroute cargo.";
                 add( new MultiLineLabel( "deliveryStatus", msg ).add( new AttributeModifier( "class", "errorColor" ) ) );

@@ -3,6 +3,7 @@ package org.qi4j.tutorials.composites.tutorial4;
 import org.qi4j.api.mixin.Mixins;
 
 // START SNIPPET: solution
+
 /**
  * This interface contains only the state
  * of the HelloWorld object.

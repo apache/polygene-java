@@ -1,44 +1,38 @@
 [[two-minutes-intro,Qi4j in 2 minutes]]
 = Qi4j in 2 minutes =
-To show that Qi4j is not necessarily complex, not hard to get going with and easy to deploy, we are first showing the
-classic HelloWorld, as small as it can get and still be Composite Oriented Programming and not only standard OOP.
+To show that Qi4j is not necessarily complex, not hard to get going with and easy to deploy, we are first showing the classic HelloWorld, as small as it can get and still be Composite Oriented Programming and not only standard OOP.
 
 Ready, Set, Go!
 
-Let's say we want to do the common HelloWorld example, but with a more domain-oriented setting. We have a Speaker
-interface that does the talking;
+Let's say we want to do the common HelloWorld example, but with a more domain-oriented setting.
+We have a Speaker interface that does the talking.
+But we also need an implementation for Speaker, which we declare here via the =@Mixins( SpeakerMixin.class )=.
 
-[source,java]
------------
-include::../main/java/org/qi4j/demo/twominute/Speaker.java[]
------------
 
-Qi4j is an implementation of Composite Oriented Programming. So, we need a Composite for our domain model. We are
-creating a PoliticianComposite, that among other things can talk, via the Speaker interface. We create a
-PoliticianComposite that extends from the Composite interface and our Speaker interface. But we also need an
-implementation for Speaker, which we also declare in our Composite, the @Mixins( SpeakerMixin.class ).
-
-[source,java]
+[snippet,java]
 -----------
-include::../main/java/org/qi4j/demo/twominute/PoliticianComposite.java[]
+source=tutorials/introduction/twominutes/src/main/java/org/qi4j/demo/twominute/Speaker.java
+tag=documentation
 -----------
 
-And of course, the simple implementation of the Speaker interface. In this case, return a String with the content
-"Hello, World!".
+And of course, the simple implementation of the Speaker interface.
+In this case, return a String with the content "Hello, World!".
 
-[source,java]
+[snippet,java]
 -----------
-include::../main/java/org/qi4j/demo/twominute/SpeakerMixin.java[]
+source=tutorials/introduction/twominutes/src/main/java/org/qi4j/demo/twominute/SpeakerMixin.java
+tag=documentation
 -----------
 
 So far so good. We now need to make this into something that can run. This can be done like this;
 
-[source,java]
+[snippet,java]
 -----------
-include::../main/java/org/qi4j/demo/twominute/Main.java[]
+source=tutorials/introduction/twominutes/src/main/java/org/qi4j/demo/twominute/Main.java
+tag=documentation
 -----------
-
-The SingletonAssembler creates the simplest Qi4j Runtime. It provides access to a CompositeBuilderFactory, from which
-we can instantiate our PoliticianComposite as a Speaker.
+1. The SingletonAssembler is a convenience class that creates a Qi4j Runtime instance with one layer and one module in it.
+1. We declare a TransientComposite of type =Speaker=.
+1. We create the Composite instance from the Module.
 
 *Done!*

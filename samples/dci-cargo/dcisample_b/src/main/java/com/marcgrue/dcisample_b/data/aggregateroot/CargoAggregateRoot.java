@@ -11,9 +11,9 @@ import org.qi4j.api.entity.EntityComposite;
  * Cargos are only allowed to be created through this aggregate root. Can we enforce this?
  */
 public interface CargoAggregateRoot
-      extends EntityComposite,
+    extends EntityComposite,
 
-      CargoFactory
+            CargoFactory
 {
     public static final String CARGOS_ID = "Cargos_id";
 }

@@ -4,6 +4,7 @@ import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.mixin.Mixins;
 
 // START SNIPPET: solution
+
 /**
  * This interface contains only the behaviour
  * of the HelloWorld object.

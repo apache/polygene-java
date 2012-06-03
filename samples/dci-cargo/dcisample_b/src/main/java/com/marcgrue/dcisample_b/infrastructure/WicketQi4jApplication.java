@@ -5,6 +5,7 @@ import com.marcgrue.dcisample_b.infrastructure.dci.Context;
 import com.marcgrue.dcisample_b.infrastructure.model.Queries;
 import com.marcgrue.dcisample_b.infrastructure.model.ReadOnlyModel;
 import com.marcgrue.dcisample_b.infrastructure.wicket.page.BaseWebPage;
+import javax.servlet.http.HttpServletRequest;
 import org.apache.wicket.Page;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.cycle.AbstractRequestCycleListener;
@@ -14,6 +15,7 @@ import org.qi4j.api.composite.TransientBuilderFactory;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.query.QueryBuilderFactory;
+import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
 import org.qi4j.api.unitofwork.UnitOfWork;
@@ -23,11 +25,8 @@ import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
 import org.qi4j.bootstrap.ApplicationAssembler;
 import org.qi4j.bootstrap.Energy4Java;
-import org.qi4j.api.structure.Application;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * WicketQi4jApplication
@@ -35,7 +34,7 @@ import javax.servlet.http.HttpServletRequest;
  * Base Wicket Web Application containing the Qi4j application.
  */
 public class WicketQi4jApplication
-      extends WebApplication
+    extends WebApplication
 {
     public Logger logger = LoggerFactory.getLogger( WicketQi4jApplication.class );
 
@@ -60,7 +59,6 @@ public class WicketQi4jApplication
     @Service
     protected EntityToDTOService valueConverter;
 
-
     /**
      * Qi4j Assembler
      *
@@ -75,12 +73,12 @@ public class WicketQi4jApplication
      * If you like, you can also override this method in the custom application class and simply
      * return an instance of YourAssembler:
      *
-     * @Override
-     * protected ApplicationAssembler getAssembler() {
-     *     return new YourAssemblerInAnyPath();
+     * @Override protected ApplicationAssembler getAssembler() {
+     * return new YourAssemblerInAnyPath();
      * }
      */
-    protected ApplicationAssembler getAssembler() throws Exception
+    protected ApplicationAssembler getAssembler()
+        throws Exception
     {
         String appPath = getClass().getCanonicalName();
         String expectedPathFromApplication = ".assembly.Assembler";
@@ -89,15 +87,17 @@ public class WicketQi4jApplication
         {
             return (ApplicationAssembler) Class.forName( assemblerPath ).newInstance();
         }
-        catch (ClassNotFoundException e)
+        catch( ClassNotFoundException e )
         {
             throw new Exception( "Couldn't find Qi4j assembler in path '" + assemblerPath + "'" );
         }
     }
+
     protected String defaultLayerName()
     {
         return "BOOTSTRAP";
     }
+
     protected String defaultModuleName()
     {
         return "BOOTSTRAP-Bootstrap";
@@ -105,7 +105,8 @@ public class WicketQi4jApplication
 
     // Override this to bootstrap the wicket application
     protected void wicketInit()
-    {}
+    {
+    }
 
     @Override
     protected void init()
@@ -132,11 +133,11 @@ public class WicketQi4jApplication
             qi4jModule = qi4jApp.findModule( defaultLayerName(), defaultModuleName() );
 
             // Qi4j injects @Structure and @Service elements into this application instance
-            qi4jModule.injectTo( this);
+            qi4jModule.injectTo( this );
 
             logger.info( "Started Qi4j application" );
         }
-        catch (Exception e)
+        catch( Exception e )
         {
             logger.error( "Could not start Qi4j application." );
             e.printStackTrace();
@@ -166,11 +167,12 @@ public class WicketQi4jApplication
             public void onEndRequest( final RequestCycle requestCycle )
             {
                 UnitOfWork uow = uowf.currentUnitOfWork();
-                if (uow != null)
+                if( uow != null )
                 {
                     try
                     {
-                        if ("POST".equals( ( (HttpServletRequest) requestCycle.getRequest().getContainerRequest() ).getMethod() ))
+                        if( "POST".equals( ( (HttpServletRequest) requestCycle.getRequest()
+                            .getContainerRequest() ).getMethod() ) )
                         {
                             // "Save"
                             logger.debug( "  ### COMPLETE " + uow + "   ### MODULE: " + qi4jModule );
@@ -183,13 +185,13 @@ public class WicketQi4jApplication
                             uow.discard();
                         }
                     }
-                    catch (ConcurrentEntityModificationException e)
+                    catch( ConcurrentEntityModificationException e )
                     {
                         logger.error( "  ### DISCARD " + uow + "   ### MODULE: " + qi4jModule );
                         uow.discard();
                         e.printStackTrace();
                     }
-                    catch (UnitOfWorkCompletionException e)
+                    catch( UnitOfWorkCompletionException e )
                     {
                         logger.error( "  ### DISCARD " + uow + "   ### MODULE: " + qi4jModule );
                         uow.discard();
@@ -213,15 +215,17 @@ public class WicketQi4jApplication
     @Override
     protected void onDestroy()
     {
-        if (qi4jApp == null)
+        if( qi4jApp == null )
+        {
             return;
+        }
 
         try
         {
             logger.info( "Passivating Qi4j application" );
             qi4jApp.passivate();
         }
-        catch (Exception e)
+        catch( Exception e )
         {
             e.printStackTrace();
         }

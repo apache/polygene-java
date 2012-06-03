@@ -3,11 +3,16 @@ package com.marcgrue.dcisample_a.bootstrap.sampledata;
 import com.marcgrue.dcisample_a.context.shipping.booking.BookNewCargo;
 import com.marcgrue.dcisample_a.context.shipping.handling.RegisterHandlingEvent;
 import com.marcgrue.dcisample_a.data.entity.CargosEntity;
+import com.marcgrue.dcisample_a.data.shipping.cargo.Cargo;
+import com.marcgrue.dcisample_a.data.shipping.delivery.ExpectedHandlingEvent;
 import com.marcgrue.dcisample_a.data.shipping.handling.HandlingEventType;
 import com.marcgrue.dcisample_a.data.shipping.itinerary.Itinerary;
 import com.marcgrue.dcisample_a.data.shipping.location.Location;
-import com.marcgrue.dcisample_a.data.shipping.cargo.Cargo;
-import com.marcgrue.dcisample_a.data.shipping.delivery.ExpectedHandlingEvent;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
+import java.util.UUID;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.qi4j.api.injection.scope.Service;
@@ -25,8 +30,6 @@ import org.qi4j.api.usecase.UsecaseBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
-
 import static com.marcgrue.dcisample_a.infrastructure.dci.Context.prepareContextBaseClass;
 import static org.qi4j.api.usecase.UsecaseBuilder.newUsecase;
 
@@ -35,10 +38,10 @@ import static org.qi4j.api.usecase.UsecaseBuilder.newUsecase;
  */
 @Mixins( SampleDataService.Mixin.class )
 public interface SampleDataService
-      extends ServiceComposite, Activatable
+    extends ServiceComposite, Activatable
 {
     public abstract class Mixin
-          implements SampleDataService, Activatable
+        implements SampleDataService, Activatable
     {
         @Structure
         QueryBuilderFactory qbf;
@@ -51,7 +54,8 @@ public interface SampleDataService
 
         private static final Logger logger = LoggerFactory.getLogger( SampleDataService.class );
 
-        public void activate() throws Exception
+        public void activate()
+            throws Exception
         {
             baseDataService.create();
 
@@ -67,8 +71,8 @@ public interface SampleDataService
             try
             {
                 int i = 11; // starting at 11 for sortable tracking id prefix in lists
-                QueryBuilder<Cargo> qb = qbf.newQueryBuilder(Cargo.class);
-                for (Cargo cargo : uow.newQuery(qb))
+                QueryBuilder<Cargo> qb = qbf.newQueryBuilder( Cargo.class );
+                for( Cargo cargo : uow.newQuery( qb ) )
                 {
                     String trackingId = cargo.trackingId().get().id().get();
                     ExpectedHandlingEvent nextEvent;
@@ -80,14 +84,14 @@ public interface SampleDataService
                     // BOOK cargo with no handling (i == 11)
 
                     // ROUTE
-                    if (i > 11)
+                    if( i > 11 )
                     {
                         Itinerary itinerary = new BookNewCargo( cargo ).routeCandidates().get( 0 );
                         new BookNewCargo( cargo, itinerary ).assignCargoToRoute();
                     }
 
                     // RECEIVE
-                    if (i > 12)
+                    if( i > 12 )
                     {
                         nextEvent = cargo.delivery().get().nextExpectedHandlingEvent().get();
                         port = nextEvent.location().get().getCode();
@@ -96,7 +100,7 @@ public interface SampleDataService
                     }
 
                     // LOAD
-                    if (i > 13)
+                    if( i > 13 )
                     {
                         nextEvent = cargo.delivery().get().nextExpectedHandlingEvent().get();
                         time = nextEvent.time().get();
@@ -106,7 +110,7 @@ public interface SampleDataService
                     }
 
                     // UNLOAD
-                    if (i > 14)
+                    if( i > 14 )
                     {
                         nextEvent = cargo.delivery().get().nextExpectedHandlingEvent().get();
                         time = nextEvent.time().get();
@@ -122,19 +126,19 @@ public interface SampleDataService
                     type = nextEvent.handlingEventType().get();
 
                     // MISDIRECTED: Unexpected customs handling before reaching destination
-                    if (i == 16)
+                    if( i == 16 )
                     {
                         new RegisterHandlingEvent( time, time, trackingId, "CUSTOMS", port, null ).register();
                     }
 
                     // MISDIRECTED: Unexpected claim before reaching destination
-                    if (i == 17)
+                    if( i == 17 )
                     {
                         new RegisterHandlingEvent( time, time, trackingId, "CLAIM", port, null ).register();
                     }
 
                     // MISDIRECTED: LOAD in wrong port
-                    if (i == 18)
+                    if( i == 18 )
                     {
                         String wrongPort = port.equals( "USDAL" ) ? "USCHI" : "USDAL";
                         voyage = nextEvent.voyage().get().voyageNumber().get().number().get();
@@ -142,7 +146,7 @@ public interface SampleDataService
                     }
 
                     // MISDIRECTED: LOAD onto wrong carrier
-                    if (i == 19)
+                    if( i == 19 )
                     {
                         voyage = nextEvent.voyage().get().voyageNumber().get().number().get();
                         String wrongVoyage = voyage.equals( "V100S" ) ? "V200T" : "V100S";
@@ -150,7 +154,7 @@ public interface SampleDataService
                     }
 
                     // MISDIRECTED: LOAD onto wrong carrier in wrong port
-                    if (i == 20)
+                    if( i == 20 )
                     {
                         String wrongPort = port.equals( "USDAL" ) ? "USCHI" : "USDAL";
                         voyage = nextEvent.voyage().get().voyageNumber().get().number().get();
@@ -159,7 +163,7 @@ public interface SampleDataService
                     }
 
                     // MISDIRECTED: UNLOAD in wrong port
-                    if (i == 21)
+                    if( i == 21 )
                     {
                         String wrongPort = port.equals( "USDAL" ) ? "USCHI" : "USDAL";
                         voyage = nextEvent.voyage().get().voyageNumber().get().number().get();
@@ -167,7 +171,7 @@ public interface SampleDataService
                     }
 
                     // MISDIRECTED: UNLOAD from wrong carrier
-                    if (i == 22)
+                    if( i == 22 )
                     {
                         voyage = nextEvent.voyage().get().voyageNumber().get().number().get();
                         String wrongVoyage = voyage.equals( "V100S" ) ? "V200T" : "V100S";
@@ -175,7 +179,7 @@ public interface SampleDataService
                     }
 
                     // MISDIRECTED: UNLOAD from wrong carrier in wrong port
-                    if (i == 23)
+                    if( i == 23 )
                     {
                         String wrongPort = port.equals( "USDAL" ) ? "USCHI" : "USDAL";
                         voyage = nextEvent.voyage().get().voyageNumber().get().number().get();
@@ -184,7 +188,7 @@ public interface SampleDataService
                     }
 
                     // Complete all LOAD/UNLOADS
-                    if (i > 23)
+                    if( i > 23 )
                     {
                         do
                         {
@@ -196,12 +200,14 @@ public interface SampleDataService
                             port = nextEvent.location().get().getCode();
                             type = nextEvent.handlingEventType().get();
                         }
-                        while (type != HandlingEventType.CLAIM);
+                        while( type != HandlingEventType.CLAIM );
                     }
 
                     // CLAIM at destination - this ends the life cycle of the cargo delivery
-                    if (i == 25)
+                    if( i == 25 )
+                    {
                         new RegisterHandlingEvent( time, time, trackingId, "CLAIM", port, null ).register();
+                    }
 
                     // Add more cases if needed...
 
@@ -210,7 +216,7 @@ public interface SampleDataService
 
                 uow.complete();
             }
-            catch (Exception e)
+            catch( Exception e )
             {
                 uow.discard();
                 logger.error( "Problem handling cargos: " + e.getMessage() );
@@ -220,7 +226,8 @@ public interface SampleDataService
             logger.info( "######  SAMPLE DATA CREATED  ##############################################" );
         }
 
-        public void passivate() throws Exception
+        public void passivate()
+            throws Exception
         {
             // Do nothing
         }
@@ -232,14 +239,16 @@ public interface SampleDataService
 
             CargosEntity cargos = uow.get( CargosEntity.class, CargosEntity.CARGOS_ID );
 
-            QueryBuilder<Location> qb = qbf.newQueryBuilder(Location.class);
-            Query<Location> allLocations = uow.newQuery(qb);
+            QueryBuilder<Location> qb = qbf.newQueryBuilder( Location.class );
+            Query<Location> allLocations = uow.newQuery( qb );
             int locationSize = (int) allLocations.count();
 
             // Make array for selection of location with random index
             final List<Location> locationList = new ArrayList<Location>();
-            for (Location location : allLocations)
+            for( Location location : allLocations )
+            {
                 locationList.add( location );
+            }
 
             Location origin;
             Location destination;
@@ -249,15 +258,20 @@ public interface SampleDataService
             String id;
             try
             {
-                for (int i = 0; i < numberOfCargos; i++)
+                for( int i = 0; i < numberOfCargos; i++ )
                 {
                     origin = locationList.get( random.nextInt( locationSize ) );
 
                     // Find destination different from origin
-                    do destination = locationList.get( random.nextInt( locationSize ) );
-                    while (destination.equals( origin ));
+                    do
+                    {
+                        destination = locationList.get( random.nextInt( locationSize ) );
+                    }
+                    while( destination.equals( origin ) );
 
-                    deadline = new LocalDate().plusDays( 15 + random.nextInt( 10 ) ).toDateTime( new LocalTime() ).toDate();
+                    deadline = new LocalDate().plusDays( 15 + random.nextInt( 10 ) )
+                        .toDateTime( new LocalTime() )
+                        .toDate();
 
                     // Build sortable random tracking ids
                     uuid = UUID.randomUUID().toString().toUpperCase();
@@ -267,7 +281,7 @@ public interface SampleDataService
                 }
                 uow.complete();
             }
-            catch (Exception e)
+            catch( Exception e )
             {
                 uow.discard();
                 logger.error( "Problem booking a new cargo: " + e.getMessage() );

@@ -1,6 +1,5 @@
 package com.marcgrue.dcisample_b.data.structure.handling;
 
-
 /**
  * HandlingEventType
  *

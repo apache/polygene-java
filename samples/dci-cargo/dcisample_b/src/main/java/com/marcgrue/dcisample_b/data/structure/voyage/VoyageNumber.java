@@ -11,7 +11,7 @@ import org.qi4j.api.value.ValueComposite;
  * Voyage number is mandatory and immutable.
  */
 public interface VoyageNumber
-      extends ValueComposite
+    extends ValueComposite
 {
     Property<String> number();
 }

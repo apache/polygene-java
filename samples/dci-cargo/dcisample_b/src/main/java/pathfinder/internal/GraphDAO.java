@@ -1,9 +1,13 @@
 package pathfinder.internal;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
 import pathfinder.api.TransitEdge;
 import pathfinder.api.TransitPath;
-
-import java.util.*;
 
 public class GraphDAO
 {
@@ -18,17 +22,19 @@ public class GraphDAO
     public List<String> listLocations()
     {
         return new ArrayList<String>( Arrays.asList(
-              "CNHKG", "AUMEL", "SESTO", "FIHEL", "USCHI", "JNTKO", "DEHAM", "CNSHA", "NLRTM", "SEGOT", "CNHGH", "SOMGQ", "USNYC", "USDAL"
+            "CNHKG", "AUMEL", "SESTO", "FIHEL", "USCHI", "JNTKO", "DEHAM", "CNSHA", "NLRTM", "SEGOT", "CNHGH", "SOMGQ", "USNYC", "USDAL"
         ) );
     }
 
     public List<TransitPath> voyages()
     {
-        if (voyages.size() > 0)
+        if( voyages.size() > 0 )
+        {
             return voyages;
+        }
 
         Date departureDate = new Date();
-        for (int i = 0; i < 50; i++)
+        for( int i = 0; i < 50; i++ )
         {
             List<String> locations = getRandomChunkOfLocations( listLocations() );
             final List<TransitEdge> transitEdges = new ArrayList<TransitEdge>( locations.size() - 1 );
@@ -43,7 +49,7 @@ public class GraphDAO
             Date toDate;
 
             // Carrier movements
-            for (final String to : locations)
+            for( final String to : locations )
             {
                 fromDate = nextDate( date );
                 toDate = nextDate( fromDate );

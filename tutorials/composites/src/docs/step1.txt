@@ -42,6 +42,13 @@ source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial
 tag=solution
 ----
 
+*HelloWorldState.java*
+[snippet,java]
+----
+source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial2/HelloWorldState.java
+tag=solution
+----
+
 *HelloWorldBehaviour.java*
 [snippet,java]
 ----
@@ -53,13 +60,6 @@ tag=solution
 [snippet,java]
 ----
 source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial2/HelloWorldMixin.java
-tag=solution
-----
-
-*HelloWorldState.java*
-[snippet,java]
-----
-source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial2/HelloWorldState.java
 tag=solution
 ----
 

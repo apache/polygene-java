@@ -4,6 +4,8 @@ import com.marcgrue.dcisample_b.communication.query.TrackingQueries;
 import com.marcgrue.dcisample_b.communication.query.dto.CargoDTO;
 import com.marcgrue.dcisample_b.communication.query.dto.HandlingEventDTO;
 import com.marcgrue.dcisample_b.infrastructure.wicket.color.ErrorColor;
+import java.util.Date;
+import java.util.List;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.devutils.stateless.StatelessComponent;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -15,9 +17,6 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.util.value.ValueMap;
-
-import java.util.Date;
-import java.util.List;
 
 /**
  * Handling history
@@ -55,12 +54,14 @@ public class HandlingHistoryPanel extends Panel
                 ValueMap map = new ValueMap();
                 map.put( "type", event.handlingEventType().get().name() );
                 map.put( "location", event.location().get().getString() );
-                if (event.voyage().get() != null)
+                if( event.voyage().get() != null )
+                {
                     map.put( "voyage", event.voyage().get().voyageNumber().get().number().get() );
+                }
                 IModel text = new StringResourceModel( "handlingEvent.${type}", this, new Model<ValueMap>( map ) );
                 item.add( new Label( "event", text )
-                                .add( new ErrorColor( isLast && isMisdirected ) )
-                                .setEscapeModelStrings( false ) );
+                              .add( new ErrorColor( isLast && isMisdirected ) )
+                              .setEscapeModelStrings( false ) );
             }
         } );
     }

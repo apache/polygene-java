@@ -1,5 +1,8 @@
 package com.marcgrue.dcisample_a.infrastructure.wicket.prevnext;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.MetaDataKey;
 import org.apache.wicket.Page;
@@ -9,10 +12,6 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * Previous/Next arrows navigation panel with list of ids in session.
@@ -29,8 +28,10 @@ public class PrevNext extends Panel
 
     public static void registerIds( Session session, ArrayList<String> ids )
     {
-        if (ids == null || ids.isEmpty())
+        if( ids == null || ids.isEmpty() )
+        {
             throw new RuntimeException( "Please register a list of ids." );
+        }
 
         session.setMetaData( PREV_NEXT_PANEL_KEY, ids );
         session.bind();
@@ -38,12 +39,16 @@ public class PrevNext extends Panel
 
     public static void addId( Session session, String id )
     {
-        if (id == null || id.isEmpty() )
+        if( id == null || id.isEmpty() )
+        {
             throw new RuntimeException( "Can't register empty id." );
+        }
 
         ArrayList<String> ids = session.getMetaData( PREV_NEXT_PANEL_KEY );
-        if (ids == null || ids.isEmpty())
-            ids = new ArrayList<String>( );
+        if( ids == null || ids.isEmpty() )
+        {
+            ids = new ArrayList<String>();
+        }
 
         ids.add( id );
         session.setMetaData( PREV_NEXT_PANEL_KEY, ids );
@@ -56,7 +61,7 @@ public class PrevNext extends Panel
 
         List<String> ids = getSession().getMetaData( PREV_NEXT_PANEL_KEY );
 
-        if (ids == null || ids.size() == 0)
+        if( ids == null || ids.size() == 0 )
         {
             setEnabled( false );
             setVisible( false );
@@ -65,20 +70,28 @@ public class PrevNext extends Panel
 
         String prev = null;
         String current;
-        for (Iterator<String> it = ids.iterator(); it.hasNext(); )
+        for( Iterator<String> it = ids.iterator(); it.hasNext(); )
         {
             current = it.next();
-            if (current.equals( actualId ))
+            if( current.equals( actualId ) )
             {
-                if (prev == null)
+                if( prev == null )
+                {
                     add( new WebMarkupContainer( "prev" ).add( new AttributeModifier( "class", "prevDisabled" ) ) );
+                }
                 else
+                {
                     add( new BookmarkablePageLink<Void>( "prev", pageClass, new PageParameters().set( 0, prev ) ) );
+                }
 
-                if (!it.hasNext())
+                if( !it.hasNext() )
+                {
                     add( new WebMarkupContainer( "next" ).add( new AttributeModifier( "class", "nextDisabled" ) ) );
+                }
                 else
+                {
                     add( new BookmarkablePageLink<Void>( "next", pageClass, new PageParameters().set( 0, it.next() ) ) );
+                }
 
                 return;
             }

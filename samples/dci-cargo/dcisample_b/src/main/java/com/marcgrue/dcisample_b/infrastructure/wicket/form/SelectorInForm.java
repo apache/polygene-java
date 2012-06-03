@@ -1,12 +1,11 @@
 package com.marcgrue.dcisample_b.infrastructure.wicket.form;
 
+import java.util.List;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.util.ListModel;
-
-import java.util.List;
 
 /**
  * SelectorInForm
@@ -35,11 +34,15 @@ public class SelectorInForm extends DropDownChoice<String>
 
     private void setNonEmptyLabel( String label )
     {
-        if (label == null)
+        if( label == null )
+        {
             return;
+        }
 
-        if (label.isEmpty())
+        if( label.isEmpty() )
+        {
             throw new IllegalArgumentException( "Can't set an empty label on the drop down selector." );
+        }
 
         setLabel( Model.of( label ) );
     }
@@ -47,8 +50,10 @@ public class SelectorInForm extends DropDownChoice<String>
     @Override
     protected boolean isDisabled( final String currentValue, int index, String selected )
     {
-        if (disablingPropertyModel != null)
+        if( disablingPropertyModel != null )
+        {
             disablingValue = disablingPropertyModel.getObject();
+        }
 
         return currentValue.equals( disablingValue );
     }

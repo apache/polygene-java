@@ -29,7 +29,7 @@ The mixins, sideeffects and concerns are added during the bootstrap phase. It is
 
 [snippet,java]
 -----------
-source=manual/src/java/org/qi4j/manual/recipes/contextualFragments/TraceAll.java
+source=manual/src/main/java/org/qi4j/manual/recipes/contextualFragments/TraceAll.java
 tag=assemble
 -----------
 

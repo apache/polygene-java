@@ -3,6 +3,7 @@ package org.qi4j.tutorials.composites.tutorial7;
 import org.qi4j.api.sideeffect.SideEffectOf;
 
 // START SNIPPET: solution
+
 /**
  * As a side-effect of calling say, output the result.
  */

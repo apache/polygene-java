@@ -9,7 +9,7 @@ Method Constraints are declared with annotations on the method argument. The ann
 
 [snippet,java]
 -----------
-source=manual/src/java/org/qi4j/manual/recipes/createConstraint/Dialer.java
+source=manual/src/main/java/org/qi4j/manual/recipes/createConstraint/Dialer.java
 tag=dialer
 -----------
 
@@ -17,7 +17,7 @@ In the code above we say that we want the argument to the callPhoneNumber() meth
 
 [snippet,java]
 -----------
-source=manual/src/java/org/qi4j/manual/recipes/createConstraint/PhoneNumber.java
+source=manual/src/main/java/org/qi4j/manual/recipes/createConstraint/PhoneNumber.java
 tag=annotation
 -----------
 
@@ -25,7 +25,7 @@ We then need to provide the Constraint implementation.
 
 [snippet,java]
 -----------
-source=manual/src/java/org/qi4j/manual/recipes/createConstraint/PhoneNumberConstraint.java
+source=manual/src/main/java/org/qi4j/manual/recipes/createConstraint/PhoneNumberConstraint.java
 tag=constraint
 -----------
 
@@ -33,7 +33,7 @@ We also need to include the Constraint on the Composites we want to have them pr
 
 [snippet,java]
 -----------
-source=manual/src/java/org/qi4j/manual/recipes/createConstraint/DialerComposite.java
+source=manual/src/main/java/org/qi4j/manual/recipes/createConstraint/DialerComposite.java
 tag=composite
 -----------
 [line-through]*Constraints doesn't throw any exceptions, as violation of constraints are domain specific. Instead, the Qi4j runtime will record all the violations in the InvocationContext, which is available to Concerns and Mixins. For instance;*
@@ -64,7 +64,7 @@ Property Constraints are declared on the Property method.
 
 [snippet,java]
 -----------
-source=manual/src/java/org/qi4j/manual/recipes/createConstraint/HasPhoneNumber.java
+source=manual/src/main/java/org/qi4j/manual/recipes/createConstraint/HasPhoneNumber.java
 tag=property
 -----------
 

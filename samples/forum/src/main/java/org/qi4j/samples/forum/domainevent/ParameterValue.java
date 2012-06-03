@@ -10,5 +10,6 @@ public interface ParameterValue
     extends ValueComposite
 {
     Property<String> name();
+
     Property<Object> value();
 }

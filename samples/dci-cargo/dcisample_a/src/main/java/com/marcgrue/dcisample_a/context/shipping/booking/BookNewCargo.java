@@ -5,15 +5,17 @@ import com.marcgrue.dcisample_a.context.support.RoutingService;
 import com.marcgrue.dcisample_a.data.entity.CargoEntity;
 import com.marcgrue.dcisample_a.data.entity.CargosEntity;
 import com.marcgrue.dcisample_a.data.entity.LocationEntity;
-import com.marcgrue.dcisample_a.data.shipping.itinerary.Itinerary;
-import com.marcgrue.dcisample_a.data.shipping.location.Location;
 import com.marcgrue.dcisample_a.data.shipping.cargo.Cargo;
 import com.marcgrue.dcisample_a.data.shipping.cargo.Cargos;
 import com.marcgrue.dcisample_a.data.shipping.cargo.RouteSpecification;
 import com.marcgrue.dcisample_a.data.shipping.cargo.TrackingId;
 import com.marcgrue.dcisample_a.data.shipping.delivery.Delivery;
+import com.marcgrue.dcisample_a.data.shipping.itinerary.Itinerary;
+import com.marcgrue.dcisample_a.data.shipping.location.Location;
 import com.marcgrue.dcisample_a.infrastructure.dci.Context;
 import com.marcgrue.dcisample_a.infrastructure.dci.RoleMixin;
+import java.util.Date;
+import java.util.List;
 import org.joda.time.DateMidnight;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.injection.scope.Service;
@@ -21,9 +23,6 @@ import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
-
-import java.util.Date;
-import java.util.List;
 
 /**
  * Book New Cargo use case
@@ -42,13 +41,14 @@ public class BookNewCargo extends Context
     private Date arrivalDeadline;
     private Itinerary itinerary;
 
-
     // CONTEXT CONSTRUCTORS ------------------------------------------------------
 
     public BookNewCargo( Cargos cargos,
                          Location origin,
                          Location destination,
-                         Date arrivalDeadline ) throws Exception
+                         Date arrivalDeadline
+    )
+        throws Exception
     {
         cargoFactory = rolePlayer( CargoFactoryRole.class, cargos );
         this.origin = origin;
@@ -69,7 +69,8 @@ public class BookNewCargo extends Context
 
     // Constructor proxies for communication layer
 
-    public BookNewCargo( String originId, String destinationId, Date deadline ) throws Exception
+    public BookNewCargo( String originId, String destinationId, Date deadline )
+        throws Exception
     {
         this( loadEntity( CargosEntity.class, CargosEntity.CARGOS_ID ),
               loadEntity( Location.class, originId ),
@@ -86,7 +87,6 @@ public class BookNewCargo extends Context
     {
         this( loadEntity( Cargo.class, trackingIdString ), itinerary );
     }
-
 
     // INTERACTIONS --------------------------------------------------------------
 
@@ -105,7 +105,8 @@ public class BookNewCargo extends Context
         routingFacade.changeDestination( loadEntity( LocationEntity.class, destination ) );
     }
 
-    public List<Itinerary> routeCandidates() throws FoundNoRoutesException
+    public List<Itinerary> routeCandidates()
+        throws FoundNoRoutesException
     {
         return routingFacade.routeCandidates();
     }
@@ -114,7 +115,6 @@ public class BookNewCargo extends Context
     {
         routingFacade.assignCargoToRoute();
     }
-
 
     // METHODFUL ROLE IMPLEMENTATIONS --------------------------------------------
 
@@ -126,8 +126,8 @@ public class BookNewCargo extends Context
         TrackingId createCargo( @Optional String trackingIdString );
 
         class Mixin
-              extends RoleMixin<BookNewCargo>
-              implements CargoFactoryRole
+            extends RoleMixin<BookNewCargo>
+            implements CargoFactoryRole
         {
             @This
             Cargos cargos;
@@ -136,7 +136,7 @@ public class BookNewCargo extends Context
             {
                 // New route specification
                 RouteSpecification routeSpec = context.buildRouteSpecification(
-                      vbf, context.origin, context.destination, context.arrivalDeadline );
+                    vbf, context.origin, context.destination, context.arrivalDeadline );
 
                 // Build delivery snapshot from route specification
                 Delivery delivery = new BuildDeliverySnapshot( routeSpec ).get();
@@ -154,14 +154,16 @@ public class BookNewCargo extends Context
     {
         void setContext( BookNewCargo context );
 
-        List<Itinerary> routeCandidates() throws FoundNoRoutesException;
+        List<Itinerary> routeCandidates()
+            throws FoundNoRoutesException;
 
         void assignCargoToRoute();
+
         void changeDestination( Location destination );
 
         class Mixin
-              extends RoleMixin<BookNewCargo>
-              implements RoutingFacadeRole
+            extends RoleMixin<BookNewCargo>
+            implements RoutingFacadeRole
         {
             @This
             Cargo cargo;
@@ -171,7 +173,7 @@ public class BookNewCargo extends Context
 
             // Use case step 3 - system calculates possible routes
             public List<Itinerary> routeCandidates()
-                  throws FoundNoRoutesException  // Deviation 3a
+                throws FoundNoRoutesException  // Deviation 3a
             {
                 return routingService.fetchRoutesForSpecification( cargo.routeSpecification().get() );
             }
@@ -180,7 +182,7 @@ public class BookNewCargo extends Context
             {
                 cargo.itinerary().set( context.itinerary );
 
-                if (cargo.delivery().get().lastHandlingEvent().get() != null)
+                if( cargo.delivery().get().lastHandlingEvent().get() != null )
                 {
                     // We treat subsequent route assignments as reroutes of misdirected cargo
                     cargo.delivery().get().lastHandlingEvent().get().wasUnexpected().set( true );
@@ -196,7 +198,7 @@ public class BookNewCargo extends Context
                 Date currentDeadline = cargo.routeSpecification().get().arrivalDeadline().get();
 
                 RouteSpecification newRouteSpecification =
-                      context.buildRouteSpecification( vbf, currentOrigin, newDestination, currentDeadline );
+                    context.buildRouteSpecification( vbf, currentOrigin, newDestination, currentDeadline );
 
                 cargo.routeSpecification().set( newRouteSpecification );
 
@@ -207,19 +209,26 @@ public class BookNewCargo extends Context
     }
 
     public RouteSpecification buildRouteSpecification(
-          ValueBuilderFactory vbf, Location origin, Location destination, Date deadline )
+        ValueBuilderFactory vbf, Location origin, Location destination, Date deadline
+    )
     {
-        if (origin == destination)
+        if( origin == destination )
+        {
             throw new RuntimeException( "Origin location can't be same as destination location." );
+        }
 
-        if (deadline == null)
+        if( deadline == null )
+        {
             throw new RuntimeException( "Arrival deadline cannot be null." );
+        }
 
         Date endOfToday = new DateMidnight().plusDays( 1 ).toDate();
-        if (deadline.before( endOfToday ))
+        if( deadline.before( endOfToday ) )
+        {
             throw new RuntimeException( "Arrival deadline is in the past or Today." +
-                                              "\nDeadline           " + deadline +
-                                              "\nToday (midnight)   " + endOfToday );
+                                        "\nDeadline           " + deadline +
+                                        "\nToday (midnight)   " + endOfToday );
+        }
 
         ValueBuilder<RouteSpecification> routeSpec = vbf.newValueBuilder( RouteSpecification.class );
         routeSpec.prototype().origin().set( origin );

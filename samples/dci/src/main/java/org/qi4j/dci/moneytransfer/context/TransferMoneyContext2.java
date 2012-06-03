@@ -17,8 +17,6 @@ package org.qi4j.dci.moneytransfer.context;
 import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.dci.moneytransfer.domain.data.BalanceData;
 import org.qi4j.library.constraints.annotation.GreaterThan;
-import org.qi4j.library.constraints.annotation.MinLength;
-import org.qi4j.library.constraints.annotation.Range;
 
 /**
  * Context for transfer of money between two accounts. Roles are defined within the context,
@@ -45,8 +43,8 @@ public class TransferMoneyContext2
         return sourceAccount.availableFunds();
     }
 
-    public void transfer( @GreaterThan(0) int amount )
-            throws IllegalArgumentException
+    public void transfer( @GreaterThan( 0 ) int amount )
+        throws IllegalArgumentException
     {
         sourceAccount.transfer( amount );
     }
@@ -64,11 +62,13 @@ public class TransferMoneyContext2
         }
 
         void transfer( int amount )
-                throws IllegalArgumentException
+            throws IllegalArgumentException
         {
             // Validate command
-            if( !(self.getBalance() >= amount) )
+            if( !( self.getBalance() >= amount ) )
+            {
                 throw new IllegalArgumentException( "Not enough available funds" );
+            }
 
             // Command is ok - create events in the data
             self.decreasedBalance( amount );

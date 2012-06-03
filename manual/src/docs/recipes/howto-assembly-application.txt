@@ -115,7 +115,7 @@ So, lets see how we code up this bit in the actual code first.
 
 [snippet,java]
 -----------
-source=manual/src/java/org/qi4j/manual/recipes/assemble/Main.java
+source=manual/src/main/java/org/qi4j/manual/recipes/assemble/Main.java
 tag=main
 -----------
 
@@ -128,7 +128,7 @@ it could be to create the Domain Layer.
 
 [snippet,java]
 -----------
-source=manual/src/java/org/qi4j/manual/recipes/assemble/Main.java
+source=manual/src/main/java/org/qi4j/manual/recipes/assemble/Main.java
 tag=domainLayer
 -----------
 
@@ -138,7 +138,7 @@ we need to declare which Composites, Entities, Services and Objects that is in e
 
 [snippet,java]
 -----------
-source=manual/src/java/org/qi4j/manual/recipes/assemble/Main.java
+source=manual/src/main/java/org/qi4j/manual/recipes/assemble/Main.java
 tag=accountModule
 -----------
 
@@ -147,7 +147,7 @@ actually very, very simple;
 
 [snippet,java]
 -----------
-source=manual/src/java/org/qi4j/manual/recipes/assemble/Main.java
+source=manual/src/main/java/org/qi4j/manual/recipes/assemble/Main.java
 tag=shutdown
 -----------
 

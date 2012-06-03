@@ -55,7 +55,7 @@ public class ViewPost
             post.replyTo().set( viewPost.self() );
 
             self().lastPost().set( post );
-            Numbers.add( self().postCount(), 1);
+            Numbers.add( self().postCount(), 1 );
 
             return post;
         }

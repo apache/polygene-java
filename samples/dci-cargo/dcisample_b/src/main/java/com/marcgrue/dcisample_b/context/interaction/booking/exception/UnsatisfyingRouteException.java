@@ -16,6 +16,7 @@ public class UnsatisfyingRouteException extends Exception
         this.routeSpec = routeSpec;
         this.itinerary = itinerary;
     }
+
     @Override
     public String getMessage()
     {

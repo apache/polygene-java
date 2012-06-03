@@ -1,4 +1,4 @@
-package org.qi4j.sample.scala;
+package org.qi4j.sample.scala
 
 trait HelloWorldMixin
 {

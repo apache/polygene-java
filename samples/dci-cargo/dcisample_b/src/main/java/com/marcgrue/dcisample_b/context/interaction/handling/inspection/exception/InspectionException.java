@@ -1,7 +1,6 @@
 package com.marcgrue.dcisample_b.context.interaction.handling.inspection.exception;
 
 import com.marcgrue.dcisample_b.data.structure.handling.HandlingEvent;
-
 import java.text.SimpleDateFormat;
 
 /**
@@ -28,8 +27,10 @@ public class InspectionException extends Exception
         unloc = handlingEvent.location().get().getCode();
         location = handlingEvent.location().get().getString();
 
-        if (handlingEvent.voyage().get() != null)
+        if( handlingEvent.voyage().get() != null )
+        {
             voyage = handlingEvent.voyage().get().voyageNumber().get().number().get();
+        }
     }
 
     public InspectionException( HandlingEvent handlingEvent, String message )

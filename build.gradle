@@ -2,6 +2,11 @@
 project.ext {
   title = "Qi4j SDK"
   description = "Qi4j™ is a framework for domain centric application development, including evolved concepts from AOP, DI and DDD."
+  testFailures = [ ]
+  mainClassName = 'org.qi4j.container.Main'
+  groovycMain_mx = "512m"
+  groovycMain_permSize = "128m"
+  groovycMain_maxPermSize = "256m"
 }
 
 apply plugin: 'java'
@@ -13,15 +18,6 @@ apply from: 'libraries.gradle'
 
 targetCompatibility = "1.6"
 sourceCompatibility = "1.6"
-
-project.ext {
-    testFailures = [ ]
-    mainClassName = 'org.qi4j.container.Main'
-    groovycMain_mx = "512m"
-    groovycMain_permSize = "64m"
-    groovycMain_maxPermSize = "128m"
-}
-
 
 // Collect the modules that fulfills the Release Criteria.
 project.ext {
@@ -92,6 +88,7 @@ allprojects {
 
   project.ext {
     javaDir = new File( "$projectDir/src/main/java" )
+    scalaDir = new File( "$projectDir/src/main/scala" )
     documenationDir = new File( "$projectDir/src/docs" )
     testDir = new File( "$projectDir/src/tests/java" )
   }
@@ -107,7 +104,7 @@ allprojects {
     }
   }
 
-  if( ext.javaDir.isDirectory() || ext.testDir.isDirectory() )
+  if( ext.javaDir.isDirectory() || ext.scalaDir.isDirectory() || ext.testDir.isDirectory() )
   {
     apply plugin: 'osgi'
     apply plugin: VersionClass

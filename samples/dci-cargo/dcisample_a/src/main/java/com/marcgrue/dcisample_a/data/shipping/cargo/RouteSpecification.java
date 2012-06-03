@@ -2,11 +2,9 @@ package com.marcgrue.dcisample_a.data.shipping.cargo;
 
 import com.marcgrue.dcisample_a.data.shipping.itinerary.Itinerary;
 import com.marcgrue.dcisample_a.data.shipping.location.Location;
-import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.property.Immutable;
-import org.qi4j.api.property.Property;
-
 import java.util.Date;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.property.Property;
 
 /**
  * A route specification describes:
@@ -43,15 +41,15 @@ public interface RouteSpecification
     boolean isSatisfiedBy( Itinerary itinerary );
 
     abstract class Mixin
-          implements RouteSpecification
+        implements RouteSpecification
     {
         public boolean isSatisfiedBy( Itinerary itinerary )
         {
             return itinerary != null &&
-                  !itinerary.legs().get().isEmpty() &&
-                  origin().get().equals( itinerary.firstLeg().loadLocation().get() ) &&
-                  destination().get().equals( itinerary.lastLeg().unloadLocation().get() ) &&
-                  arrivalDeadline().get().after( itinerary.finalArrivalDate() );
+                   !itinerary.legs().get().isEmpty() &&
+                   origin().get().equals( itinerary.firstLeg().loadLocation().get() ) &&
+                   destination().get().equals( itinerary.lastLeg().unloadLocation().get() ) &&
+                   arrivalDeadline().get().after( itinerary.finalArrivalDate() );
         }
     }
 }

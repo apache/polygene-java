@@ -3,13 +3,12 @@ package com.marcgrue.dcisample_a.context.support;
 import com.marcgrue.dcisample_a.data.shipping.cargo.Cargo;
 import com.marcgrue.dcisample_a.data.shipping.handling.HandlingEvent;
 import com.marcgrue.dcisample_a.data.shipping.voyage.Voyage;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * "Messaging"
@@ -19,7 +18,7 @@ import java.util.Date;
  */
 @Mixins( ApplicationEvents.SynchronousApplicationEventsStub.class )
 public interface ApplicationEvents
-      extends ServiceComposite
+    extends ServiceComposite
 {
     /**
      * A cargo has been handled.
@@ -51,10 +50,9 @@ public interface ApplicationEvents
 
     void unsuccessfulHandlingEventRegistration( RegisterHandlingEventAttemptDTO attempt );
 
-
     // Default implementation (could be substituted in assembly)
     abstract class SynchronousApplicationEventsStub
-          implements ApplicationEvents
+        implements ApplicationEvents
     {
         String id;
         String time;
@@ -76,7 +74,7 @@ public interface ApplicationEvents
             voyage = voy != null ? ", voyage " + voy.voyageNumber().get().number().get() : "";
 
             logger.info( "  Cargo '" + id + "' was handled " + time
-                            + " (" + type + " in " + loc + "/" + unloc + voyage + ")." );
+                         + " (" + type + " in " + loc + "/" + unloc + voyage + ")." );
         }
 
         public void cargoWasMisdirected( Cargo cargo )
@@ -87,9 +85,9 @@ public interface ApplicationEvents
             type = cargo.delivery().get().lastHandlingEvent().get().handlingEventType().get().name();
 
             logger.info( "  Unexpected " + type + " of cargo '" + id
-                            + "' in " + loc + "/" + unloc + "." );
+                         + "' in " + loc + "/" + unloc + "." );
             logger.info( "  NOTIFICATION TO CUSTOMER: Please re-route misdirected cargo '"
-                            + id + "' (now in " + loc + ")." );
+                         + id + "' (now in " + loc + ")." );
         }
 
         public void cargoHasArrived( Cargo cargo )
@@ -111,7 +109,7 @@ public interface ApplicationEvents
             voyage = parse( attempt.voyageNumberString().get() );
 
             logger.info( "  Handling registration attempt received ("
-                            + time + ", " + id + ", " + type + ", " + unloc + ", " + voyage + ")." );
+                         + time + ", " + id + ", " + type + ", " + unloc + ", " + voyage + ")." );
         }
 
         public void unsuccessfulHandlingEventRegistration( RegisterHandlingEventAttemptDTO attempt )
@@ -121,7 +119,7 @@ public interface ApplicationEvents
             unloc = attempt.unLocodeString().get();
 
             logger.info( "  Unsuccessful handling event registration for cargo '"
-                            + id + "' (handling event '" + type + "' in '" + unloc + "')." );
+                         + id + "' (handling event '" + type + "' in '" + unloc + "')." );
         }
 
         private String parse( String str )

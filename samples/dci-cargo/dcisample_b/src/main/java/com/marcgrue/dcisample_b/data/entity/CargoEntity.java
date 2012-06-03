@@ -7,8 +7,8 @@ import org.qi4j.api.entity.EntityComposite;
  * Cargo entity
  */
 public interface CargoEntity
-      extends EntityComposite,
+    extends EntityComposite,
 
-      Cargo
+            Cargo
 {
 }

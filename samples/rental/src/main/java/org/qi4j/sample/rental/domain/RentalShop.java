@@ -18,6 +18,12 @@
 
 package org.qi4j.sample.rental.domain;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
@@ -28,13 +34,6 @@ import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
-
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 @Mixins( RentalShop.RentalShopMixin.class )
 public interface RentalShop

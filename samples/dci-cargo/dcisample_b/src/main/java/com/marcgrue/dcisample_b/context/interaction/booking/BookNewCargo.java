@@ -13,13 +13,12 @@ import com.marcgrue.dcisample_b.data.structure.location.Location;
 import com.marcgrue.dcisample_b.data.structure.tracking.TrackingId;
 import com.marcgrue.dcisample_b.infrastructure.dci.Context;
 import com.marcgrue.dcisample_b.infrastructure.dci.RoleMixin;
+import java.util.Date;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.value.ValueBuilder;
-
-import java.util.Date;
 
 import static com.marcgrue.dcisample_b.data.structure.handling.HandlingEventType.RECEIVE;
 
@@ -41,8 +40,8 @@ public class BookNewCargo extends Context
     private Location destination;
     private Date arrivalDeadline;
 
-
-    public BookNewCargo( CargoFactory cargoFactory, Location origin, Location destination, Date arrivalDeadline ) throws Exception
+    public BookNewCargo( CargoFactory cargoFactory, Location origin, Location destination, Date arrivalDeadline )
+        throws Exception
     {
         bookingSystem = rolePlayer( BookingSystemRole.class, cargoFactory );
         this.origin = origin;
@@ -50,7 +49,8 @@ public class BookNewCargo extends Context
         this.arrivalDeadline = arrivalDeadline;
     }
 
-    public BookNewCargo( String originId, String destinationId, Date deadline ) throws Exception
+    public BookNewCargo( String originId, String destinationId, Date deadline )
+        throws Exception
     {
         this( loadEntity( CargoAggregateRoot.class, CargoAggregateRoot.CARGOS_ID ),
               loadEntity( Location.class, originId ),
@@ -58,28 +58,29 @@ public class BookNewCargo extends Context
               deadline );
     }
 
-
-    public TrackingId getTrackingId() throws Exception
+    public TrackingId getTrackingId()
+        throws Exception
     {
         return bookingSystem.createCargo( null );
     }
 
-    public TrackingId withTrackingId( String trackingIdString ) throws Exception
+    public TrackingId withTrackingId( String trackingIdString )
+        throws Exception
     {
         return bookingSystem.createCargo( trackingIdString );
     }
-
 
     @Mixins( BookingSystemRole.Mixin.class )
     public interface BookingSystemRole
     {
         void setContext( BookNewCargo context );
 
-        TrackingId createCargo( @Optional String trackingIdString ) throws Exception;
+        TrackingId createCargo( @Optional String trackingIdString )
+            throws Exception;
 
         class Mixin
-              extends RoleMixin<BookNewCargo>
-              implements BookingSystemRole
+            extends RoleMixin<BookNewCargo>
+            implements BookingSystemRole
         {
             @This
             CargoFactory cargoFactory;
@@ -87,9 +88,10 @@ public class BookNewCargo extends Context
             @Service
             RouteSpecificationFactoryService routeSpecFactory;
 
-            public TrackingId createCargo( String trackingIdString ) throws Exception
+            public TrackingId createCargo( String trackingIdString )
+                throws Exception
             {
-                Date earliestDeparture = new Date( );
+                Date earliestDeparture = new Date();
                 RouteSpecification routeSpec = routeSpecFactory.build( c.origin,
                                                                        c.destination,
                                                                        earliestDeparture,

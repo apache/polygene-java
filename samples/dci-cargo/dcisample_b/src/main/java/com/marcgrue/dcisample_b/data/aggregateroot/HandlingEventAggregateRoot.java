@@ -11,9 +11,9 @@ import org.qi4j.api.entity.EntityComposite;
  * HandlingEvents are only allowed to be created through this aggregate root. Can we enforce this?
  */
 public interface HandlingEventAggregateRoot
-      extends EntityComposite,
+    extends EntityComposite,
 
-      HandlingEventFactory
+            HandlingEventFactory
 {
     public static final String HANDLING_EVENTS_ID = "Handling_events_id";
 }

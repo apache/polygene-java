@@ -26,13 +26,13 @@ import static org.qi4j.api.usecase.UsecaseBuilder.newUsecase;
  */
 @Mixins( BaseDataService.Mixin.class )
 public interface BaseDataService
-      extends ServiceComposite, Activatable
+    extends ServiceComposite, Activatable
 {
     void create();
 
     public abstract class Mixin
-          extends BaseData
-          implements BaseDataService, Activatable
+        extends BaseData
+        implements BaseDataService, Activatable
     {
         @Structure
         ValueBuilderFactory valueBuilderFactory;
@@ -83,27 +83,27 @@ public interface BaseDataService
 
             // Voyage entity objects
             V100S = voyage( "V100S", schedule(
-                  carrierMovement( NEWYORK, CHICAGO, day( 1 ), day( 2 ) ),
-                  carrierMovement( CHICAGO, DALLAS, day( 8 ), day( 9 ) )
+                carrierMovement( NEWYORK, CHICAGO, day( 1 ), day( 2 ) ),
+                carrierMovement( CHICAGO, DALLAS, day( 8 ), day( 9 ) )
             ) );
             V200T = voyage( "V200T", schedule(
-                  carrierMovement( NEWYORK, CHICAGO, day( 7 ), day( 8 ) ),
-                  carrierMovement( CHICAGO, DALLAS, day( 8 ), day( 9 ) )
+                carrierMovement( NEWYORK, CHICAGO, day( 7 ), day( 8 ) ),
+                carrierMovement( CHICAGO, DALLAS, day( 8 ), day( 9 ) )
             ) );
             V300A = voyage( "V300A", schedule(
-                  carrierMovement( DALLAS, HAMBURG, day( 10 ), day( 14 ) ),
-                  carrierMovement( HAMBURG, STOCKHOLM, day( 15 ), day( 16 ) ),
-                  carrierMovement( STOCKHOLM, HELSINKI, day( 17 ), day( 18 ) )
+                carrierMovement( DALLAS, HAMBURG, day( 10 ), day( 14 ) ),
+                carrierMovement( HAMBURG, STOCKHOLM, day( 15 ), day( 16 ) ),
+                carrierMovement( STOCKHOLM, HELSINKI, day( 17 ), day( 18 ) )
             ) );
             V400S = voyage( "V400S", schedule(
-                  carrierMovement( TOKYO, ROTTERDAM, day( 9 ), day( 15 ) ),
-                  carrierMovement( ROTTERDAM, HAMBURG, day( 15 ), day( 16 ) ),
-                  carrierMovement( HAMBURG, MELBOURNE, day( 17 ), day( 26 ) ),
-                  carrierMovement( MELBOURNE, TOKYO, day( 27 ), day( 33 ) )
+                carrierMovement( TOKYO, ROTTERDAM, day( 9 ), day( 15 ) ),
+                carrierMovement( ROTTERDAM, HAMBURG, day( 15 ), day( 16 ) ),
+                carrierMovement( HAMBURG, MELBOURNE, day( 17 ), day( 26 ) ),
+                carrierMovement( MELBOURNE, TOKYO, day( 27 ), day( 33 ) )
             ) );
             V500S = voyage( "V500S", schedule(
-                  carrierMovement( HAMBURG, STOCKHOLM, day( 17 ), day( 19 ) ),
-                  carrierMovement( STOCKHOLM, HELSINKI, day( 20 ), day( 21 ) )
+                carrierMovement( HAMBURG, STOCKHOLM, day( 17 ), day( 19 ) ),
+                carrierMovement( STOCKHOLM, HELSINKI, day( 20 ), day( 21 ) )
             ) );
 
             // Cargo and HandlingEvent factories
@@ -113,7 +113,8 @@ public interface BaseDataService
             logger.debug( "BASIC DATA CREATED" );
         }
 
-        public void passivate() throws Exception
+        public void passivate()
+            throws Exception
         {
             // Do nothing
         }
@@ -151,7 +152,7 @@ public interface BaseDataService
                 // Save entities in (memory) store
                 uow.complete();
             }
-            catch (Exception e)
+            catch( Exception e )
             {
                 uow.discard();
                 logger.error( "Problem creating basic data: " + e.getMessage() );

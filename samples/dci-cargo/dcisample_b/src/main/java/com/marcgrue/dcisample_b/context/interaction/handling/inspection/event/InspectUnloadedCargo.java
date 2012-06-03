@@ -1,6 +1,10 @@
 package com.marcgrue.dcisample_b.context.interaction.handling.inspection.event;
 
-import com.marcgrue.dcisample_b.context.interaction.handling.inspection.exception.*;
+import com.marcgrue.dcisample_b.context.interaction.handling.inspection.exception.CargoMisdirectedException;
+import com.marcgrue.dcisample_b.context.interaction.handling.inspection.exception.CargoMisroutedException;
+import com.marcgrue.dcisample_b.context.interaction.handling.inspection.exception.CargoNotRoutedException;
+import com.marcgrue.dcisample_b.context.interaction.handling.inspection.exception.InspectionException;
+import com.marcgrue.dcisample_b.context.interaction.handling.inspection.exception.InspectionFailedException;
 import com.marcgrue.dcisample_b.data.structure.cargo.Cargo;
 import com.marcgrue.dcisample_b.data.structure.cargo.RouteSpecification;
 import com.marcgrue.dcisample_b.data.structure.delivery.Delivery;
@@ -12,13 +16,14 @@ import com.marcgrue.dcisample_b.data.structure.location.Location;
 import com.marcgrue.dcisample_b.data.structure.voyage.Voyage;
 import com.marcgrue.dcisample_b.infrastructure.dci.Context;
 import com.marcgrue.dcisample_b.infrastructure.dci.RoleMixin;
+import java.util.Date;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.value.ValueBuilder;
 
-import java.util.Date;
-
-import static com.marcgrue.dcisample_b.data.structure.delivery.RoutingStatus.*;
+import static com.marcgrue.dcisample_b.data.structure.delivery.RoutingStatus.MISROUTED;
+import static com.marcgrue.dcisample_b.data.structure.delivery.RoutingStatus.NOT_ROUTED;
+import static com.marcgrue.dcisample_b.data.structure.delivery.RoutingStatus.ROUTED;
 import static com.marcgrue.dcisample_b.data.structure.delivery.TransportStatus.IN_PORT;
 import static com.marcgrue.dcisample_b.data.structure.handling.HandlingEventType.LOAD;
 import static com.marcgrue.dcisample_b.data.structure.handling.HandlingEventType.UNLOAD;
@@ -59,33 +64,39 @@ public class InspectUnloadedCargo extends Context
         itineraryProgressIndex = cargo.delivery().get().itineraryProgressIndex().get();
     }
 
-    public void inspect() throws InspectionException
+    public void inspect()
+        throws InspectionException
     {
         // Pre-conditions
-        if (unloadEvent == null || !unloadEvent.handlingEventType().get().equals( UNLOAD ) || unloadLocation.equals( destination ))
+        if( unloadEvent == null || !unloadEvent.handlingEventType()
+            .get()
+            .equals( UNLOAD ) || unloadLocation.equals( destination ) )
+        {
             throw new InspectionFailedException( "Can only inspect unloaded cargo that hasn't arrived at destination." );
+        }
 
         deliveryInspector.inspectUnloadedCargo();
     }
-
 
     @Mixins( DeliveryInspectorRole.Mixin.class )
     public interface DeliveryInspectorRole
     {
         void setContext( InspectUnloadedCargo context );
 
-        void inspectUnloadedCargo() throws InspectionException;
+        void inspectUnloadedCargo()
+            throws InspectionException;
 
         class Mixin
-              extends RoleMixin<InspectUnloadedCargo>
-              implements DeliveryInspectorRole
+            extends RoleMixin<InspectUnloadedCargo>
+            implements DeliveryInspectorRole
         {
             @This
             Cargo cargo;
 
             Delivery newDelivery;
 
-            public void inspectUnloadedCargo() throws InspectionException
+            public void inspectUnloadedCargo()
+                throws InspectionException
             {
                 // Step 1 - Collect known delivery data
 
@@ -96,17 +107,16 @@ public class InspectUnloadedCargo extends Context
                 newDelivery.transportStatus().set( IN_PORT );
                 newDelivery.isUnloadedAtDestination().set( false );
 
-
                 // Step 2 - Verify cargo is routed
 
-                if (c.itinerary == null)
+                if( c.itinerary == null )
                 {
                     newDelivery.routingStatus().set( NOT_ROUTED );
                     newDelivery.itineraryProgressIndex().set( 0 );
                     cargo.delivery().set( newDeliveryBuilder.newInstance() );
                     throw new CargoNotRoutedException( c.unloadEvent );
                 }
-                if (!c.routeSpecification.isSatisfiedBy( c.itinerary ))
+                if( !c.routeSpecification.isSatisfiedBy( c.itinerary ) )
                 {
                     newDelivery.routingStatus().set( MISROUTED );
                     newDelivery.itineraryProgressIndex().set( 0 );
@@ -119,17 +129,17 @@ public class InspectUnloadedCargo extends Context
                 // Current itinerary progress
                 newDelivery.itineraryProgressIndex().set( c.itineraryProgressIndex );
 
-
                 // Step 3 - Verify cargo is on track
 
                 Leg plannedCarrierMovement = c.itinerary.leg( c.itineraryProgressIndex );
-                if (plannedCarrierMovement == null)
+                if( plannedCarrierMovement == null )
+                {
                     throw new InspectionFailedException( "Itinerary progress index '" + c.itineraryProgressIndex + "' is invalid!" );
-
+                }
 
                 Integer itineraryProgressIndex;
 //                if (c.wasMisdirected && c.unloadLocation.equals( c.routeSpecification.origin().get() ))
-                if (c.unloadLocation.equals( c.routeSpecification.origin().get() ))
+                if( c.unloadLocation.equals( c.routeSpecification.origin().get() ) )
 //                if (c.itineraryProgressIndex == -1)
                 {
                     /**
@@ -145,14 +155,15 @@ public class InspectUnloadedCargo extends Context
                      * */
                     itineraryProgressIndex = 0;
                 }
-                else if (!plannedCarrierMovement.unloadLocation().get().equals( c.unloadLocation ))
+                else if( !plannedCarrierMovement.unloadLocation().get().equals( c.unloadLocation ) )
                 {
                     newDelivery.isMisdirected().set( true );
                     cargo.delivery().set( newDeliveryBuilder.newInstance() );
                     throw new CargoMisdirectedException( c.unloadEvent, "Itinerary expected unload in "
-                          + plannedCarrierMovement.unloadLocation().get() );
+                                                                        + plannedCarrierMovement.unloadLocation()
+                        .get() );
                 }
-                else if (!plannedCarrierMovement.voyage().get().equals( c.voyage ))
+                else if( !plannedCarrierMovement.voyage().get().equals( c.voyage ) )
                 {
                     // Do we care if cargo unloads from an unexpected carrier?
                     itineraryProgressIndex = c.itineraryProgressIndex + 1;
@@ -168,7 +179,6 @@ public class InspectUnloadedCargo extends Context
                 // Modify itinerary progress index according to misdirection status
                 newDelivery.itineraryProgressIndex().set( itineraryProgressIndex );
 
-
                 // Step 4 - Determine next expected handling event
 
                 Leg nextCarrierMovement = c.itinerary.leg( itineraryProgressIndex );
@@ -179,7 +189,6 @@ public class InspectUnloadedCargo extends Context
                 nextHandlingEvent.prototype().time().set( nextCarrierMovement.loadTime().get() );
                 nextHandlingEvent.prototype().voyage().set( nextCarrierMovement.voyage().get() );
                 newDelivery.nextHandlingEvent().set( nextHandlingEvent.newInstance() );
-
 
                 // Step 5 - Save cargo delivery snapshot
 

@@ -1,16 +1,20 @@
 package com.marcgrue.dcisample_b.bootstrap;
 
-import com.marcgrue.dcisample_b.communication.web.booking.*;
+import com.marcgrue.dcisample_b.communication.web.booking.BookNewCargoPage;
+import com.marcgrue.dcisample_b.communication.web.booking.CargoDetailsPage;
+import com.marcgrue.dcisample_b.communication.web.booking.CargoListPage;
+import com.marcgrue.dcisample_b.communication.web.booking.ChangeDestinationPage;
+import com.marcgrue.dcisample_b.communication.web.booking.ReRouteCargoPage;
+import com.marcgrue.dcisample_b.communication.web.booking.RouteCargoPage;
 import com.marcgrue.dcisample_b.communication.web.handling.IncidentLoggingApplicationMockupPage;
 import com.marcgrue.dcisample_b.communication.web.tracking.TrackCargoPage;
 import com.marcgrue.dcisample_b.infrastructure.WicketQi4jApplication;
 import com.marcgrue.dcisample_b.infrastructure.wicket.tabs.TabsPanel;
+import java.util.Date;
 import org.apache.wicket.ConverterLocator;
 import org.apache.wicket.Page;
 import org.apache.wicket.datetime.PatternDateConverter;
 import org.apache.wicket.devutils.stateless.StatelessChecker;
-
-import java.util.Date;
 
 /**
  * DCI Sample application instance
@@ -18,7 +22,7 @@ import java.util.Date;
  * A Wicket application backed by Qi4j.
  */
 public class DCISampleApplication_b
-      extends WicketQi4jApplication
+    extends WicketQi4jApplication
 {
     public void wicketInit()
     {

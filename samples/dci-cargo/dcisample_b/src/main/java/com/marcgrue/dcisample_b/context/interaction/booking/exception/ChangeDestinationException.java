@@ -9,10 +9,9 @@ import com.marcgrue.dcisample_b.data.structure.itinerary.Itinerary;
 public class ChangeDestinationException extends Exception
 {
 
-//    private RouteSpecification routeSpec;
+    //    private RouteSpecification routeSpec;
 //    private Itinerary itinerary;
     protected String msg = "";
-
 
     public ChangeDestinationException( String s, RouteSpecification routeSpec, Itinerary itinerary )
     {
@@ -28,16 +27,11 @@ public class ChangeDestinationException extends Exception
 //        return "Couldn't change destination of cargo: " + msg;
     }
 
-
-
-
-
-
-
     public ChangeDestinationException( Throwable e )
     {
-        super(e);
+        super( e );
     }
+
     public ChangeDestinationException()
     {
         super();

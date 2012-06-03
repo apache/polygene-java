@@ -1,15 +1,14 @@
 package com.marcgrue.dcisample_a.infrastructure.model;
 
+import java.io.Serializable;
 import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-
-import java.io.Serializable;
 
 /**
  * Queries base class
  */
 public class Queries
-      implements Serializable // For Wicket (don't remove)
+    implements Serializable // For Wicket (don't remove)
 {
     static protected UnitOfWorkFactory uowf;
     static protected QueryBuilderFactory qbf;

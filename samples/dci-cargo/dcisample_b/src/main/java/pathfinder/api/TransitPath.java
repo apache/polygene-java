@@ -31,14 +31,16 @@ public final class TransitPath implements Serializable
         return Collections.unmodifiableList( transitEdges );
     }
 
-
     public String print()
     {
         StringBuilder sb = new StringBuilder( "\nTRANSIT PATH -----------------------------------------------------" );
-        for (int i = 0; i < transitEdges.size(); i++)
+        for( int i = 0; i < transitEdges.size(); i++ )
+        {
             printLeg( i, sb, transitEdges.get( i ) );
+        }
         return sb.append( "\n---------------------------------------------------------------\n" ).toString();
     }
+
     private void printLeg( int i, StringBuilder sb, TransitEdge edge )
     {
         sb.append( "\n  Leg " ).append( i );

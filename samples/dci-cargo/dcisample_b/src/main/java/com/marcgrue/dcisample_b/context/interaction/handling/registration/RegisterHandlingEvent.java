@@ -2,7 +2,13 @@ package com.marcgrue.dcisample_b.context.interaction.handling.registration;
 
 import com.marcgrue.dcisample_b.context.interaction.handling.ProcessHandlingEvent;
 import com.marcgrue.dcisample_b.context.interaction.handling.parsing.dto.ParsedHandlingEventData;
-import com.marcgrue.dcisample_b.context.interaction.handling.registration.exception.*;
+import com.marcgrue.dcisample_b.context.interaction.handling.registration.exception.AlreadyClaimedException;
+import com.marcgrue.dcisample_b.context.interaction.handling.registration.exception.CannotRegisterHandlingEventException;
+import com.marcgrue.dcisample_b.context.interaction.handling.registration.exception.DuplicateEventException;
+import com.marcgrue.dcisample_b.context.interaction.handling.registration.exception.MissingVoyageNumberException;
+import com.marcgrue.dcisample_b.context.interaction.handling.registration.exception.UnknownCargoException;
+import com.marcgrue.dcisample_b.context.interaction.handling.registration.exception.UnknownLocationException;
+import com.marcgrue.dcisample_b.context.interaction.handling.registration.exception.UnknownVoyageException;
 import com.marcgrue.dcisample_b.data.aggregateroot.HandlingEventAggregateRoot;
 import com.marcgrue.dcisample_b.data.entity.HandlingEventEntity;
 import com.marcgrue.dcisample_b.data.factory.HandlingEventFactory;
@@ -23,8 +29,12 @@ import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 
 import static com.marcgrue.dcisample_b.data.aggregateroot.HandlingEventAggregateRoot.HANDLING_EVENTS_ID;
-import static com.marcgrue.dcisample_b.data.structure.handling.HandlingEventType.*;
-import static org.qi4j.api.query.QueryExpressions.*;
+import static com.marcgrue.dcisample_b.data.structure.handling.HandlingEventType.CLAIM;
+import static com.marcgrue.dcisample_b.data.structure.handling.HandlingEventType.CUSTOMS;
+import static com.marcgrue.dcisample_b.data.structure.handling.HandlingEventType.RECEIVE;
+import static org.qi4j.api.query.QueryExpressions.and;
+import static org.qi4j.api.query.QueryExpressions.eq;
+import static org.qi4j.api.query.QueryExpressions.templateFor;
 
 /**
  * Register Handling Event (subfunction use case)
@@ -73,45 +83,44 @@ public class RegisterHandlingEvent extends Context
         voyageNumberString = parsedEventData.voyageNumberString().get();
     }
 
-
-    public HandlingEvent getEvent() throws CannotRegisterHandlingEventException
+    public HandlingEvent getEvent()
+        throws CannotRegisterHandlingEventException
     {
         return eventRegistrar.registerAndGetHandlingEvent();
     }
-
 
     @Mixins( EventRegistrarRole.Mixin.class )
     public interface EventRegistrarRole
     {
         void setContext( RegisterHandlingEvent context );
 
-        HandlingEvent registerAndGetHandlingEvent() throws CannotRegisterHandlingEventException;
+        HandlingEvent registerAndGetHandlingEvent()
+            throws CannotRegisterHandlingEventException;
 
         class Mixin
-              extends RoleMixin<RegisterHandlingEvent>
-              implements EventRegistrarRole
+            extends RoleMixin<RegisterHandlingEvent>
+            implements EventRegistrarRole
         {
             @This
             HandlingEventFactory eventFactory;
 
-            public HandlingEvent registerAndGetHandlingEvent() throws CannotRegisterHandlingEventException
+            public HandlingEvent registerAndGetHandlingEvent()
+                throws CannotRegisterHandlingEventException
             {
                 UnitOfWork uow = uowf.currentUnitOfWork();
                 TrackingId trackingId;
                 Location location;
                 Voyage voyage = null;
 
-
                 // Step 1 - Find Cargo from tracking id string
                 try
                 {
                     trackingId = uow.get( Cargo.class, c.trackingIdString ).trackingId().get();
                 }
-                catch (NoSuchEntityException e)
+                catch( NoSuchEntityException e )
                 {
                     throw new UnknownCargoException( c.eventData );
                 }
-
 
                 // Step 2 - Find Location from UnLocode string
 
@@ -119,64 +128,66 @@ public class RegisterHandlingEvent extends Context
                 {
                     location = uow.get( Location.class, c.unLocodeString );
                 }
-                catch (NoSuchEntityException e)
+                catch( NoSuchEntityException e )
                 {
                     throw new UnknownLocationException( c.eventData );
                 }
 
-
                 // Step 3 - Find Voyage from voyage number string
 
-                if (c.eventType.requiresVoyage())
+                if( c.eventType.requiresVoyage() )
                 {
-                    if (c.voyageNumberString == null)
+                    if( c.voyageNumberString == null )
+                    {
                         throw new MissingVoyageNumberException( c.eventData );
+                    }
 
                     try
                     {
                         voyage = uow.get( Voyage.class, c.voyageNumberString );
                     }
-                    catch (NoSuchEntityException e)
+                    catch( NoSuchEntityException e )
                     {
                         throw new UnknownVoyageException( c.eventData );
                     }
                 }
 
-
                 // Step 4 - Verify that cargo is not received, in customs or claimed more than once
 
-                if (c.eventType.equals( RECEIVE ) || c.eventType.equals( CUSTOMS ) || c.eventType.equals( CLAIM ))
+                if( c.eventType.equals( RECEIVE ) || c.eventType.equals( CUSTOMS ) || c.eventType.equals( CLAIM ) )
                 {
-                    QueryBuilder<HandlingEventEntity> qb = qbf.newQueryBuilder(HandlingEventEntity.class)
-                            .where(
-                                    and(
-                                            eq(templateFor(HandlingEvent.class).trackingId().get().id(), c.trackingIdString),
-                                            eq(templateFor(HandlingEvent.class).handlingEventType(), c.eventType)
-                                    )
-                            );
-                    Query<HandlingEventEntity> duplicates = uowf.currentUnitOfWork().newQuery(qb);
-                    if (duplicates.count() > 0)
+                    QueryBuilder<HandlingEventEntity> qb = qbf.newQueryBuilder( HandlingEventEntity.class )
+                        .where(
+                            and(
+                                eq( templateFor( HandlingEvent.class ).trackingId().get().id(), c.trackingIdString ),
+                                eq( templateFor( HandlingEvent.class ).handlingEventType(), c.eventType )
+                            )
+                        );
+                    Query<HandlingEventEntity> duplicates = uowf.currentUnitOfWork().newQuery( qb );
+                    if( duplicates.count() > 0 )
+                    {
                         throw new DuplicateEventException( c.eventData );
+                    }
                 }
-
 
                 // Step 5 - Verify that cargo is not handled after being claimed
 
-                if (!c.eventType.equals( CLAIM ))
+                if( !c.eventType.equals( CLAIM ) )
                 {
                     HandlingEvent eventTemplate = templateFor( HandlingEvent.class );
-                    QueryBuilder<HandlingEventEntity> qb = qbf.newQueryBuilder(HandlingEventEntity.class)
-                            .where(
-                                    and(
-                                            eq(eventTemplate.trackingId().get().id(), c.trackingIdString),
-                                            eq(eventTemplate.handlingEventType(), CLAIM)
-                                    )
-                            );
-                    Query<HandlingEventEntity> alreadyClaimed = uowf.currentUnitOfWork().newQuery( qb);
-                    if (alreadyClaimed.count() > 0)
+                    QueryBuilder<HandlingEventEntity> qb = qbf.newQueryBuilder( HandlingEventEntity.class )
+                        .where(
+                            and(
+                                eq( eventTemplate.trackingId().get().id(), c.trackingIdString ),
+                                eq( eventTemplate.handlingEventType(), CLAIM )
+                            )
+                        );
+                    Query<HandlingEventEntity> alreadyClaimed = uowf.currentUnitOfWork().newQuery( qb );
+                    if( alreadyClaimed.count() > 0 )
+                    {
                         throw new AlreadyClaimedException( c.eventData );
+                    }
                 }
-
 
                 // Step 6 - Create Handling Event in the system
 
@@ -189,7 +200,7 @@ public class RegisterHandlingEvent extends Context
                                                              location,
                                                              voyage );
                 }
-                catch (CannotCreateHandlingEventException e)
+                catch( CannotCreateHandlingEventException e )
                 {
                     throw new CannotRegisterHandlingEventException( c.eventData );
                 }

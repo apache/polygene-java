@@ -13,13 +13,13 @@ public class Context
     @Structure
     protected Module module;
 
-    protected <T> T role(Class<T> roleType, Object data)
+    protected <T> T role( Class<T> roleType, Object data )
     {
-        return module.newObject( roleType, data);
+        return module.newObject( roleType, data );
     }
 
-    protected <T> T role(Object object, Class<T> roleType)
+    protected <T> T role( Object object, Class<T> roleType )
     {
-        return Qi4j.INSTANCE_FUNCTION.map( ( Composite) object).newProxy( roleType );
+        return Qi4j.INSTANCE_FUNCTION.map( (Composite) object ).newProxy( roleType );
     }
 }

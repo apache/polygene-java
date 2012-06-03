@@ -14,12 +14,11 @@ import com.marcgrue.dcisample_a.data.shipping.location.Location;
 import com.marcgrue.dcisample_a.data.shipping.voyage.Voyage;
 import com.marcgrue.dcisample_a.infrastructure.dci.Context;
 import com.marcgrue.dcisample_a.infrastructure.dci.RoleMixin;
+import java.util.Date;
+import java.util.Iterator;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.value.ValueBuilder;
-
-import java.util.Date;
-import java.util.Iterator;
 
 /**
  * Build Delivery Snapshot use case.
@@ -53,20 +52,23 @@ public class BuildDeliverySnapshot extends Context
 
     private Delivery newDeliverySnapshot;
 
-
     // CONTEXT CONSTRUCTORS ------------------------------------------------------
 
     public BuildDeliverySnapshot( RouteSpecification routeSpecification )
     {
         // Deviation 2a
-        if (routeSpecification.origin().get() == routeSpecification.destination().get())
+        if( routeSpecification.origin().get() == routeSpecification.destination().get() )
+        {
             throw new RuntimeException( "Route specification is invalid. Origin equals destination." );
+        }
 
         // Deviation 2b
-        if (routeSpecification.arrivalDeadline().get().before( new Date() ))
+        if( routeSpecification.arrivalDeadline().get().before( new Date() ) )
+        {
             throw new RuntimeException( "Arrival deadline is in the past or Today." +
-                                              "\nDeadline " + routeSpecification.arrivalDeadline().get() +
-                                              "\nToday    " + new Date() );
+                                        "\nDeadline " + routeSpecification.arrivalDeadline().get() +
+                                        "\nToday    " + new Date() );
+        }
 
         factory = rolePlayer( FactoryRole.class, routeSpecification );
         itinerary = null;
@@ -94,7 +96,6 @@ public class BuildDeliverySnapshot extends Context
         return factory.deriveDeliverySnapshot();
     }
 
-
     // METHODFUL ROLE IMPLEMENTATIONS --------------------------------------------
 
     /**
@@ -111,8 +112,8 @@ public class BuildDeliverySnapshot extends Context
         Delivery deriveDeliverySnapshot();
 
         class Mixin
-              extends RoleMixin<BuildDeliverySnapshot>
-              implements FactoryRole
+            extends RoleMixin<BuildDeliverySnapshot>
+            implements FactoryRole
         {
             @This
             RouteSpecification routeSpecification;
@@ -140,10 +141,12 @@ public class BuildDeliverySnapshot extends Context
                 context.newDeliverySnapshot.timestamp().set( new Date() );
 
                 // Deviation 2c: Cargo is not routed yet
-                if (context.itinerary == null)
+                if( context.itinerary == null )
+                {
                     return deriveWithRouteSpecification();
+                }
 
-                if (!routeSpecification.isSatisfiedBy( (Itinerary) context.itinerary ))
+                if( !routeSpecification.isSatisfiedBy( (Itinerary) context.itinerary ) )
                 {
                     // Deviation 2d: Itinerary not satisfying
                     context.newDeliverySnapshot.routingStatus().set( RoutingStatus.MISROUTED );
@@ -156,8 +159,10 @@ public class BuildDeliverySnapshot extends Context
                 }
 
                 // Deviation 3a: Cargo has no handling history yet
-                if (context.handlingEvent == null)
+                if( context.handlingEvent == null )
+                {
                     return deriveWithItinerary();
+                }
 
                 // Step 4: Cargo has a handling history
                 context.handlingEvent.deriveWithHandlingEvent();
@@ -180,7 +185,7 @@ public class BuildDeliverySnapshot extends Context
                 context.newDeliverySnapshot.transportStatus().set( TransportStatus.NOT_RECEIVED );
 
                 // Deviation 3a.1.a
-                if (context.newDeliverySnapshot.routingStatus().get() == RoutingStatus.ROUTED)
+                if( context.newDeliverySnapshot.routingStatus().get() == RoutingStatus.ROUTED )
                 {
                     context.newDeliverySnapshot.nextExpectedHandlingEvent().set( buildExpectedReceiveEvent() );
                 }
@@ -218,8 +223,8 @@ public class BuildDeliverySnapshot extends Context
         void deriveWithHandlingEvent();
 
         class Mixin
-              extends RoleMixin<BuildDeliverySnapshot>
-              implements HandlingEventRole
+            extends RoleMixin<BuildDeliverySnapshot>
+            implements HandlingEventRole
         {
             /*
            * HandlingEvent can be from last Delivery snapshot (last expected HandlingEvent) or
@@ -250,30 +255,30 @@ public class BuildDeliverySnapshot extends Context
                 context.newDeliverySnapshot.lastKnownLocation().set( lastKnownLocation );
 
                 // Step 4
-                switch (handlingEvent.handlingEventType().get())
+                switch( handlingEvent.handlingEventType().get() )
                 {
-                    case RECEIVE:
-                        cargoReceived();        // Deviation 4a
-                        return;
+                case RECEIVE:
+                    cargoReceived();        // Deviation 4a
+                    return;
 
-                    case LOAD:
-                        cargoLoaded();          // Deviation 4b
-                        return;
+                case LOAD:
+                    cargoLoaded();          // Deviation 4b
+                    return;
 
-                    case UNLOAD:
-                        cargoUnloaded();        // Deviation 4c
-                        return;
+                case UNLOAD:
+                    cargoUnloaded();        // Deviation 4c
+                    return;
 
-                    case CUSTOMS:
-                        cargoInCustoms();       // Deviation 4d
-                        return;
+                case CUSTOMS:
+                    cargoInCustoms();       // Deviation 4d
+                    return;
 
-                    case CLAIM:
-                        cargoClaimed();         // Deviation 4e
-                        return;
+                case CLAIM:
+                    cargoClaimed();         // Deviation 4e
+                    return;
 
-                    default:
-                        unknownHandlingEvent(); // Deviation 4f
+                default:
+                    unknownHandlingEvent(); // Deviation 4f
                 }
             }
 
@@ -282,12 +287,12 @@ public class BuildDeliverySnapshot extends Context
             {
                 context.newDeliverySnapshot.transportStatus().set( TransportStatus.IN_PORT );
 
-                if (!cargoIsRerouted && !context.itinerary.expectsOrigin( lastKnownLocation ))
+                if( !cargoIsRerouted && !context.itinerary.expectsOrigin( lastKnownLocation ) )
                 {
                     context.newDeliverySnapshot.eta().set( null );
                     context.newDeliverySnapshot.isMisdirected().set( true );
                 }
-                else if (cargoIsNotMisrouted)
+                else if( cargoIsNotMisrouted )
                 {
                     ExpectedHandlingEvent expectedEvent = context.itinerary.expectedEventAfterReceive();
                     context.newDeliverySnapshot.nextExpectedHandlingEvent().set( expectedEvent );
@@ -300,21 +305,23 @@ public class BuildDeliverySnapshot extends Context
                 context.newDeliverySnapshot.transportStatus().set( TransportStatus.ONBOARD_CARRIER );
                 context.newDeliverySnapshot.currentVoyage().set( currentVoyage );
 
-                if (cargoIsRerouted)
+                if( cargoIsRerouted )
                 {
                     // After a reroute following a load in an unexpected location, we expected the cargo to be
                     // unloaded at the unload location of the first leg of the new itinerary.
-                    ExpectedHandlingEvent expectedEvent = context.itinerary.expectedEventAfterLoadAt( lastKnownLocation );
+                    ExpectedHandlingEvent expectedEvent = context.itinerary
+                        .expectedEventAfterLoadAt( lastKnownLocation );
                     context.newDeliverySnapshot.nextExpectedHandlingEvent().set( expectedEvent );
                 }
-                else if (!context.itinerary.expectsLoad( lastKnownLocation, currentVoyage ))
+                else if( !context.itinerary.expectsLoad( lastKnownLocation, currentVoyage ) )
                 {
                     context.newDeliverySnapshot.eta().set( null );
                     context.newDeliverySnapshot.isMisdirected().set( true );
                 }
-                else if (cargoIsNotMisrouted)
+                else if( cargoIsNotMisrouted )
                 {
-                    ExpectedHandlingEvent expectedEvent = context.itinerary.expectedEventAfterLoadAt( lastKnownLocation );
+                    ExpectedHandlingEvent expectedEvent = context.itinerary
+                        .expectedEventAfterLoadAt( lastKnownLocation );
                     context.newDeliverySnapshot.nextExpectedHandlingEvent().set( expectedEvent );
                 }
             }
@@ -324,25 +331,28 @@ public class BuildDeliverySnapshot extends Context
             {
                 context.newDeliverySnapshot.transportStatus().set( TransportStatus.IN_PORT );
 
-                if (cargoIsRerouted)
+                if( cargoIsRerouted )
                 {
                     // After a reroute following an unload in an unexpected location, we expected the cargo
                     // to be loaded onto a carrier at the first location of the new route specification.
                     ExpectedHandlingEvent expectedEvent = context.itinerary.expectedEventAfterReceive();
                     context.newDeliverySnapshot.nextExpectedHandlingEvent().set( expectedEvent );
                 }
-                else if (!context.itinerary.expectsUnload( lastKnownLocation, currentVoyage ))
+                else if( !context.itinerary.expectsUnload( lastKnownLocation, currentVoyage ) )
                 {
                     context.newDeliverySnapshot.eta().set( null );
                     context.newDeliverySnapshot.isMisdirected().set( true );
                 }
-                else if (cargoIsNotMisrouted)
+                else if( cargoIsNotMisrouted )
                 {
-                    ExpectedHandlingEvent expectedEvent = context.itinerary.expectedEventAfterUnloadAt( lastKnownLocation );
+                    ExpectedHandlingEvent expectedEvent = context.itinerary
+                        .expectedEventAfterUnloadAt( lastKnownLocation );
                     context.newDeliverySnapshot.nextExpectedHandlingEvent().set( expectedEvent );
 
                     Location expectedDestination = ( (RouteSpecification) context.factory ).destination().get();
-                    context.newDeliverySnapshot.isUnloadedAtDestination().set( lastKnownLocation.equals( expectedDestination ) );
+                    context.newDeliverySnapshot
+                        .isUnloadedAtDestination()
+                        .set( lastKnownLocation.equals( expectedDestination ) );
                 }
             }
 
@@ -352,8 +362,9 @@ public class BuildDeliverySnapshot extends Context
                 context.newDeliverySnapshot.transportStatus().set( TransportStatus.IN_PORT );
 
                 Location expectedDestination = ( (RouteSpecification) context.factory ).destination().get();
-                context.newDeliverySnapshot.isUnloadedAtDestination().set( lastKnownLocation.equals( expectedDestination ) );
-
+                context.newDeliverySnapshot
+                    .isUnloadedAtDestination()
+                    .set( lastKnownLocation.equals( expectedDestination ) );
             }
 
             // Deviation 4e
@@ -362,10 +373,11 @@ public class BuildDeliverySnapshot extends Context
                 context.newDeliverySnapshot.transportStatus().set( TransportStatus.CLAIMED );
 
                 Location expectedDestination = ( (RouteSpecification) context.factory ).destination().get();
-                context.newDeliverySnapshot.isUnloadedAtDestination().set( lastKnownLocation.equals( expectedDestination ) );
+                context.newDeliverySnapshot
+                    .isUnloadedAtDestination()
+                    .set( lastKnownLocation.equals( expectedDestination ) );
 
-
-                if (!context.itinerary.expectsDestination( lastKnownLocation ))
+                if( !context.itinerary.expectsDestination( lastKnownLocation ) )
                 {
                     context.newDeliverySnapshot.eta().set( null );
                     context.newDeliverySnapshot.isMisdirected().set( true );
@@ -391,17 +403,22 @@ public class BuildDeliverySnapshot extends Context
         Date eta();
 
         boolean expectsOrigin( Location location );
+
         boolean expectsLoad( Location location, Voyage voyage );
+
         boolean expectsUnload( Location location, Voyage voyage );
+
         boolean expectsDestination( Location location );
 
         ExpectedHandlingEvent expectedEventAfterReceive();
+
         ExpectedHandlingEvent expectedEventAfterLoadAt( Location lastLoadLocation );
+
         ExpectedHandlingEvent expectedEventAfterUnloadAt( Location lastUnloadLocation );
 
         class Mixin
-              extends RoleMixin<BuildDeliverySnapshot>
-              implements ItineraryRole
+            extends RoleMixin<BuildDeliverySnapshot>
+            implements ItineraryRole
         {
             @This
             Itinerary itinerary;
@@ -421,18 +438,26 @@ public class BuildDeliverySnapshot extends Context
             public boolean expectsLoad( Location location, Voyage voyage )
             {
                 // One leg with same load location and voyage
-                for (Leg leg : itinerary.legs().get())
-                    if (leg.loadLocation().get().equals( location ) && leg.voyage().get().equals( voyage ))
+                for( Leg leg : itinerary.legs().get() )
+                {
+                    if( leg.loadLocation().get().equals( location ) && leg.voyage().get().equals( voyage ) )
+                    {
                         return true;
+                    }
+                }
                 return false;
             }
 
             public boolean expectsUnload( Location location, Voyage voyage )
             {
                 // One leg with same unload location and voyage
-                for (Leg leg : itinerary.legs().get())
-                    if (leg.unloadLocation().get().equals( location ) && leg.voyage().get().equals( voyage ))
+                for( Leg leg : itinerary.legs().get() )
+                {
+                    if( leg.unloadLocation().get().equals( location ) && leg.voyage().get().equals( voyage ) )
+                    {
                         return true;
+                    }
+                }
                 return false;
             }
 
@@ -448,40 +473,48 @@ public class BuildDeliverySnapshot extends Context
             {
                 // After RECEIVE, expect LOAD location and voyage of first itinerary leg
                 final Leg firstLeg = itinerary.legs().get().iterator().next();
-                return buildEvent( HandlingEventType.LOAD, firstLeg.loadLocation().get(), firstLeg.loadTime().get(), firstLeg.voyage().get() );
+                return buildEvent( HandlingEventType.LOAD, firstLeg.loadLocation().get(), firstLeg.loadTime()
+                    .get(), firstLeg.voyage().get() );
             }
 
             public ExpectedHandlingEvent expectedEventAfterLoadAt( Location lastLoadLocation )
             {
                 // After LOAD, expect UNLOAD location and voyage of same itinerary leg as LOAD
-                for (Leg leg : itinerary.legs().get())
-                    if (leg.loadLocation().get().equals( lastLoadLocation ))
-                        return buildEvent( HandlingEventType.UNLOAD, leg.unloadLocation().get(), leg.unloadTime().get(), leg.voyage().get() );
+                for( Leg leg : itinerary.legs().get() )
+                {
+                    if( leg.loadLocation().get().equals( lastLoadLocation ) )
+                    {
+                        return buildEvent( HandlingEventType.UNLOAD, leg.unloadLocation().get(), leg.unloadTime()
+                            .get(), leg.voyage().get() );
+                    }
+                }
                 return null;
             }
 
             public ExpectedHandlingEvent expectedEventAfterUnloadAt( Location lastUnloadLocation )
             {
                 // After UNLOAD, expect LOAD location and voyage of following itinerary leg, or CLAIM if no more legs
-                for (Iterator<Leg> it = itinerary.legs().get().iterator(); it.hasNext(); )
+                for( Iterator<Leg> it = itinerary.legs().get().iterator(); it.hasNext(); )
                 {
                     final Leg leg = it.next();
-                    if (leg.unloadLocation().get().equals( lastUnloadLocation ))
+                    if( leg.unloadLocation().get().equals( lastUnloadLocation ) )
                     {
                         // Cargo has a matching unload location in itinerary
 
-                        if (it.hasNext())
+                        if( it.hasNext() )
                         {
                             // Cargo has not arrived yet (uncompleted legs in itinerary)
                             // We expect it to be loaded onto some Carrier
                             final Leg nextLeg = it.next();
-                            return buildEvent( HandlingEventType.LOAD, nextLeg.loadLocation().get(), nextLeg.loadTime().get(), nextLeg.voyage().get() );
+                            return buildEvent( HandlingEventType.LOAD, nextLeg.loadLocation().get(), nextLeg.loadTime()
+                                .get(), nextLeg.voyage().get() );
                         }
                         else
                         {
                             // Cargo has arrived (no more legs in itinerary)
                             // We expect it to be claimed by the customer
-                            return buildEvent( HandlingEventType.CLAIM, leg.unloadLocation().get(), leg.unloadTime().get(), null );
+                            return buildEvent( HandlingEventType.CLAIM, leg.unloadLocation().get(), leg.unloadTime()
+                                .get(), null );
                         }
                     }
                 }
@@ -490,7 +523,11 @@ public class BuildDeliverySnapshot extends Context
                 return null;
             }
 
-            private ExpectedHandlingEvent buildEvent( HandlingEventType eventType, Location location, Date time, Voyage voyage )
+            private ExpectedHandlingEvent buildEvent( HandlingEventType eventType,
+                                                      Location location,
+                                                      Date time,
+                                                      Voyage voyage
+            )
             {
                 ValueBuilder<ExpectedHandlingEvent> builder = vbf.newValueBuilder( ExpectedHandlingEvent.class );
                 builder.prototype().handlingEventType().set( eventType );

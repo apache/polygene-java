@@ -21,7 +21,8 @@ import org.qi4j.dci.moneytransfer.domain.data.BalanceData;
  * You can transfer money to and from a checking account
  */
 public interface CheckingAccountEntity
-   extends EntityComposite,
-   // Data
-      BalanceData
-{}
+    extends EntityComposite,
+    // Data
+            BalanceData
+{
+}

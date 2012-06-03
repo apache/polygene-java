@@ -10,10 +10,10 @@ import org.qi4j.api.value.ValueComposite;
  * Note that this is a Value Composite (and not an entity) capable of playing different Roles.
  */
 public interface ItineraryRoleMap
-      extends ValueComposite,
+    extends ValueComposite,
 
-      Itinerary,
+            Itinerary,
 
-      BuildDeliverySnapshot.ItineraryRole
+            BuildDeliverySnapshot.ItineraryRole
 {
 }

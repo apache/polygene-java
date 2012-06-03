@@ -1,6 +1,7 @@
 package com.marcgrue.dcisample_a.data.shipping.cargo;
 
 import com.marcgrue.dcisample_a.data.shipping.delivery.Delivery;
+import java.util.UUID;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.injection.scope.Structure;
@@ -9,8 +10,6 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
-
-import java.util.UUID;
 
 /**
  * Cargo "collection" - could have had a many-association to cargos if it was part of the domain model.
@@ -21,7 +20,7 @@ public interface Cargos
     Cargo createCargo( RouteSpecification routeSpecification, Delivery delivery, @Optional String id );
 
     class Mixin
-          implements Cargos
+        implements Cargos
     {
         @Structure
         UnitOfWorkFactory uowf;
@@ -45,7 +44,7 @@ public interface Cargos
 
         private TrackingId buildTrackingId( String id )
         {
-            if (id == null || id.trim().equals( "" ))
+            if( id == null || id.trim().equals( "" ) )
             {
                 // Build random tracking id
                 final String uuid = UUID.randomUUID().toString().toUpperCase();

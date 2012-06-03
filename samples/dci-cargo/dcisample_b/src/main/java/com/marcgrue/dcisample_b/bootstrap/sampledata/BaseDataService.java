@@ -7,6 +7,9 @@ import com.marcgrue.dcisample_b.data.structure.location.Location;
 import com.marcgrue.dcisample_b.data.structure.location.UnLocode;
 import com.marcgrue.dcisample_b.data.structure.voyage.CarrierMovement;
 import com.marcgrue.dcisample_b.data.structure.voyage.Schedule;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.List;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
@@ -23,10 +26,6 @@ import pathfinder.api.GraphTraversalService;
 import pathfinder.api.TransitEdge;
 import pathfinder.api.TransitPath;
 
-import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.qi4j.api.usecase.UsecaseBuilder.newUsecase;
 
 /**
@@ -34,13 +33,13 @@ import static org.qi4j.api.usecase.UsecaseBuilder.newUsecase;
  */
 @Mixins( BaseDataService.Mixin.class )
 public interface BaseDataService
-      extends ServiceComposite, Activatable
+    extends ServiceComposite, Activatable
 {
     void create();
 
     public abstract class Mixin
-          extends BaseData
-          implements BaseDataService, Activatable
+        extends BaseData
+        implements BaseDataService, Activatable
     {
         @Structure
         ValueBuilderFactory valueBuilderFactory;
@@ -50,7 +49,6 @@ public interface BaseDataService
 
         @Service
         GraphTraversalService graphTraversalService;
-
 
         @Structure
         QueryBuilderFactory qbf;
@@ -85,11 +83,11 @@ public interface BaseDataService
             // Create voyages
             try
             {
-                for (TransitPath voyagePath : graphTraversalService.getVoyages())
+                for( TransitPath voyagePath : graphTraversalService.getVoyages() )
                 {
                     String voyageNumber = null;
                     List<CarrierMovement> carrierMovements = new ArrayList<CarrierMovement>();
-                    for (TransitEdge voyageEdge : voyagePath.getTransitEdges())
+                    for( TransitEdge voyageEdge : voyagePath.getTransitEdges() )
                     {
                         voyageNumber = voyageEdge.getVoyageNumber();
                         Location from = uow.get( Location.class, voyageEdge.getFromUnLocode() );
@@ -102,7 +100,7 @@ public interface BaseDataService
                     voyage( voyageNumber, schedule.newInstance() );
                 }
             }
-            catch (RemoteException e)
+            catch( RemoteException e )
             {
                 e.printStackTrace();
             }
@@ -114,7 +112,8 @@ public interface BaseDataService
             logger.debug( "BASIC DATA CREATED" );
         }
 
-        public void passivate() throws Exception
+        public void passivate()
+            throws Exception
         {
             // Do nothing
         }
@@ -128,7 +127,8 @@ public interface BaseDataService
 
         protected static Location location( UnLocode unlocode, String locationStr )
         {
-            EntityBuilder<LocationEntity> location = uow.newEntityBuilder( LocationEntity.class, unlocode.code().get() );
+            EntityBuilder<LocationEntity> location = uow.newEntityBuilder( LocationEntity.class, unlocode.code()
+                .get() );
             location.instance().unLocode().set( unlocode );
             location.instance().name().set( locationStr );
             return location.newInstance();
@@ -141,7 +141,7 @@ public interface BaseDataService
                 // Save entities in (memory) store
                 uow.complete();
             }
-            catch (Exception e)
+            catch( Exception e )
             {
                 uow.discard();
                 logger.error( "Problem creating basic data: " + e.getMessage() );

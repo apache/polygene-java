@@ -14,15 +14,14 @@
 
 package org.qi4j.dci.moneytransfer.context;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.dci.moneytransfer.domain.data.BalanceData;
 import org.qi4j.dci.moneytransfer.rolemap.CreditorRolemap;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Context for paying bills from an account to a list of creditor accounts.
@@ -41,7 +40,7 @@ public class PayBillsContext
     }
 
     public void payBills()
-            throws Exception
+        throws Exception
     {
         sourceAccount.payBills();
     }
@@ -70,13 +69,14 @@ public class PayBillsContext
      * 4b) Make a MoneyTransfer of the amount owed to each creditor
      */
 
-    @Mixins(SourceAccountRole.Mixin.class)
+    @Mixins( SourceAccountRole.Mixin.class )
     public interface SourceAccountRole
     {
-        void payBills() throws Exception;
+        void payBills()
+            throws Exception;
 
         class Mixin
-                implements SourceAccountRole
+            implements SourceAccountRole
         {
             @Structure
             UnitOfWorkFactory uowf;
@@ -84,26 +84,29 @@ public class PayBillsContext
             @This
             BalanceData data;
 
-            public void payBills() throws IllegalArgumentException
+            public void payBills()
+                throws IllegalArgumentException
             {
                 List<BalanceData> creditors = getCreditors();                                             // 1a
 
                 Integer sumOwed = getSumOwedTo( creditors );                                              // 2a
 
-                if (data.getBalance() - sumOwed < 0)                                                      // 3a
+                if( data.getBalance() - sumOwed < 0 )                                                      // 3a
+                {
                     throw new IllegalArgumentException( "Insufficient funds to pay bills." );
+                }
 
                 final TransferMoneyContext transferMoney = new TransferMoneyContext();
-                for (BalanceData creditor : creditors)                                                    // 4a
+                for( BalanceData creditor : creditors )                                                    // 4a
                 {
-                    if (creditor.getBalance() < 0)
+                    if( creditor.getBalance() < 0 )
                     {
                         final Integer amountOwed = -creditor.getBalance();
 
                         // Bind nested context and execute enactment
                         transferMoney.bind( data, creditor ).transfer( amountOwed );                      // 4b
                     }
-                }                                                                                         
+                }
             }
 
             // Internal helper methods to make the code above more readable / comparable to the algorithm text
@@ -120,7 +123,7 @@ public class PayBillsContext
             private Integer getSumOwedTo( List<BalanceData> creditors )
             {
                 Integer sumOwed = 0;
-                for (BalanceData creditor : creditors)
+                for( BalanceData creditor : creditors )
                 {
                     sumOwed += creditor.getBalance() < 0 ? -creditor.getBalance() : 0;
                 }

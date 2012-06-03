@@ -1,7 +1,6 @@
 package com.marcgrue.dcisample_a.data.entity;
 
 import com.marcgrue.dcisample_a.data.shipping.voyage.Voyage;
-import com.marcgrue.dcisample_a.data.shipping.voyage.Voyage;
 import org.qi4j.api.entity.EntityComposite;
 
 /**
@@ -11,8 +10,8 @@ import org.qi4j.api.entity.EntityComposite;
  * separate aggregate root to create those from.
  */
 public interface VoyageEntity
-      extends EntityComposite,
+    extends EntityComposite,
 
-      Voyage
+            Voyage
 {
 }

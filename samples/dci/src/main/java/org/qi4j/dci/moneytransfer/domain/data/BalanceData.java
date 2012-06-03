@@ -16,48 +16,46 @@ package org.qi4j.dci.moneytransfer.domain.data;
 
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.injection.scope.State;
-import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
 import org.qi4j.library.constraints.annotation.GreaterThan;
-
 
 /**
  * Maintain a balance for an account, of any type. Methods are in past tense,
  * and are considered events. Only minimal sanity checks are performed.
  * The roles invoking these methods decide if it's ok to perform the change or not.
  */
-@Mixins(BalanceData.Mixin.class)
+@Mixins( BalanceData.Mixin.class )
 public interface BalanceData
 {
-   void increasedBalance( @GreaterThan(0) Integer amount );
+    void increasedBalance( @GreaterThan( 0 ) Integer amount );
 
-   void decreasedBalance( @GreaterThan(0) Integer amount );
+    void decreasedBalance( @GreaterThan( 0 ) Integer amount );
 
-   Integer getBalance();
+    Integer getBalance();
 
-   // Default implementation
+    // Default implementation
 
-   class Mixin
-         implements BalanceData
-   {
-      @State
-      @UseDefaults
-      Property<Integer> balance;
+    class Mixin
+        implements BalanceData
+    {
+        @State
+        @UseDefaults
+        Property<Integer> balance;
 
-      public void increasedBalance( Integer amount )
-      {
-         balance.set( balance.get() + amount );
-      }
+        public void increasedBalance( Integer amount )
+        {
+            balance.set( balance.get() + amount );
+        }
 
-      public void decreasedBalance( Integer amount )
-      {
-         balance.set( balance.get() - amount );
-      }
+        public void decreasedBalance( Integer amount )
+        {
+            balance.set( balance.get() - amount );
+        }
 
-      public Integer getBalance()
-      {
-         return balance.get();
-      }
-   }
+        public Integer getBalance()
+        {
+            return balance.get();
+        }
+    }
 }

@@ -1,6 +1,5 @@
 package org.qi4j.samples.forum.rest.resource.signup;
 
-import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.library.rest.server.api.ContextResource;
 import org.qi4j.samples.forum.context.signup.Registration;
 import org.qi4j.samples.forum.context.signup.Signup;
@@ -12,7 +11,7 @@ import org.restlet.data.Form;
 public class SignupResource
     extends ContextResource
 {
-    public void signup(Registration registration)
+    public void signup( Registration registration )
     {
         context( Signup.class ).signup( registration );
     }

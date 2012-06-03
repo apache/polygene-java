@@ -2,7 +2,6 @@ package com.marcgrue.dcisample_b.context.interaction.handling.registration.excep
 
 import com.marcgrue.dcisample_b.context.interaction.handling.parsing.dto.ParsedHandlingEventData;
 import com.marcgrue.dcisample_b.data.structure.handling.HandlingEventType;
-
 import java.util.Arrays;
 
 /**
@@ -19,6 +18,6 @@ public final class UnknownEventTypeException extends CannotRegisterHandlingEvent
     public String getMessage()
     {
         return "'" + type + "' is not a valid handling event type. Valid types are: "
-              + Arrays.toString( HandlingEventType.values() );
+               + Arrays.toString( HandlingEventType.values() );
     }
 }

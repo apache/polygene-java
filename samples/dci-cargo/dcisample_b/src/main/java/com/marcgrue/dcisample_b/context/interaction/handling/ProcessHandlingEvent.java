@@ -42,28 +42,29 @@ import org.slf4j.LoggerFactory;
  */
 @Mixins( ProcessHandlingEvent.SynchronousProcessingStub.class )
 public interface ProcessHandlingEvent
-      extends TransientComposite
+    extends TransientComposite
 {
 
-    void parse( String completion, String trackingId, String eventType, String unLocode, @Optional String voyage ) throws ProcessHandlingEventException;
+    void parse( String completion, String trackingId, String eventType, String unLocode, @Optional String voyage )
+        throws ProcessHandlingEventException;
 
-    void register( ParsedHandlingEventData parsedHandlingEventData ) throws ProcessHandlingEventException;
+    void register( ParsedHandlingEventData parsedHandlingEventData )
+        throws ProcessHandlingEventException;
 
     void inspect( HandlingEvent handlingEvent );
 
-
     abstract class SynchronousProcessingStub
-          implements ProcessHandlingEvent
+        implements ProcessHandlingEvent
     {
         Logger logger = LoggerFactory.getLogger( ProcessHandlingEvent.class );
 
         @Service
         ParseHandlingEventData parser;
 
-
         // Step 1 - Parse handling event data
 
-        public void parse( String completion, String trackingId, String eventType, String unLocode, String voyage ) throws ProcessHandlingEventException
+        public void parse( String completion, String trackingId, String eventType, String unLocode, String voyage )
+            throws ProcessHandlingEventException
         {
             logger.debug( "Received handling event registration attempt " );
             try
@@ -73,17 +74,17 @@ public interface ProcessHandlingEvent
 
                 register( parsedData );
             }
-            catch (InvalidHandlingEventDataException e)
+            catch( InvalidHandlingEventDataException e )
             {
                 logger.info( e.getMessage() ); // Notify handling authority...
                 throw new ProcessHandlingEventException( e.getMessage() );
             }
         }
 
-
         // Step 2 - Register handling event
 
-        public void register( ParsedHandlingEventData parsedHandlingEventData ) throws ProcessHandlingEventException
+        public void register( ParsedHandlingEventData parsedHandlingEventData )
+            throws ProcessHandlingEventException
         {
             try
             {
@@ -92,13 +93,12 @@ public interface ProcessHandlingEvent
 
                 inspect( handlingEvent );
             }
-            catch (CannotRegisterHandlingEventException e)
+            catch( CannotRegisterHandlingEventException e )
             {
                 logger.info( e.getMessage() ); // Notify handling authority...
                 throw new ProcessHandlingEventException( e.getMessage() );
             }
         }
-
 
         // Step 3 - Update cargo delivery status
 
@@ -109,15 +109,15 @@ public interface ProcessHandlingEvent
                 new InspectCargoDeliveryStatus( handlingEvent ).update();
                 logger.info( "Inspected handled cargo '" + handlingEvent.trackingId().get().id().get() + "'." );
             }
-            catch (InspectionFailedException e)
+            catch( InspectionFailedException e )
             {
                 logger.error( e.getMessage() ); // Unexpected error
             }
-            catch (CargoArrivedException e)
+            catch( CargoArrivedException e )
             {
                 logger.info( e.getMessage() );  // Request Cargo Owner to claim cargo at destination...
             }
-            catch (InspectionException e)
+            catch( InspectionException e )
             {
                 logger.info( e.getMessage() );  // Request Cargo Owner to re-route cargo...
             }

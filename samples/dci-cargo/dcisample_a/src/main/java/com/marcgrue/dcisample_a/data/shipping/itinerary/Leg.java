@@ -2,12 +2,9 @@ package com.marcgrue.dcisample_a.data.shipping.itinerary;
 
 import com.marcgrue.dcisample_a.data.shipping.location.Location;
 import com.marcgrue.dcisample_a.data.shipping.voyage.Voyage;
-import com.marcgrue.dcisample_a.data.shipping.voyage.Voyage;
-import org.qi4j.api.property.Immutable;
+import java.util.Date;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueComposite;
-
-import java.util.Date;
 
 /**
  * A leg describes an expected segment of a route:
@@ -17,7 +14,7 @@ import java.util.Date;
  * All properties are mandatory and immutable.
  */
 public interface Leg
-      extends ValueComposite
+    extends ValueComposite
 {
     Property<Location> loadLocation();
 

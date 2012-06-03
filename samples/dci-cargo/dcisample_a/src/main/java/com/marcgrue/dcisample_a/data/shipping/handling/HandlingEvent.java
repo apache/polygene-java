@@ -3,13 +3,12 @@ package com.marcgrue.dcisample_a.data.shipping.handling;
 import com.marcgrue.dcisample_a.data.shipping.cargo.TrackingId;
 import com.marcgrue.dcisample_a.data.shipping.location.Location;
 import com.marcgrue.dcisample_a.data.shipping.voyage.Voyage;
+import java.util.Date;
+import org.qi4j.api.association.Association;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.UseDefaults;
-import org.qi4j.api.association.Association;
 import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.Property;
-
-import java.util.Date;
 
 /**
  * A HandlingEvent is used to register the event when, for instance,

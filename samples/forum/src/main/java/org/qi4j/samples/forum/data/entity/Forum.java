@@ -19,5 +19,6 @@ public interface Forum
     ManyAssociation<Board> boards();
 
     Property<Integer> topicCount();
+
     Property<Integer> postCount();
 }

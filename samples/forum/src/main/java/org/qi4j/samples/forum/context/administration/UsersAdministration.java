@@ -2,9 +2,7 @@ package org.qi4j.samples.forum.context.administration;
 
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
-import org.qi4j.api.query.Query;
 import org.qi4j.api.structure.Module;
-import org.qi4j.library.rest.server.api.ResourceIndex;
 import org.qi4j.library.rest.server.api.dci.Role;
 import org.qi4j.samples.forum.data.entity.User;
 import org.qi4j.samples.forum.data.entity.Users;
@@ -20,7 +18,7 @@ public class UsersAdministration
     UsersAdmin usersAdmin = new UsersAdmin();
     Administrator administrator = new Administrator();
 
-    public UsersAdministration bind(@Uses Users users, @Uses User user)
+    public UsersAdministration bind( @Uses Users users, @Uses User user )
     {
         usersAdmin.bind( users );
         administrator.bind( user );

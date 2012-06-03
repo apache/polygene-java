@@ -8,6 +8,9 @@ import com.marcgrue.dcisample_a.data.shipping.handling.HandlingEvent;
 import com.marcgrue.dcisample_a.data.shipping.handling.HandlingEventType;
 import com.marcgrue.dcisample_a.infrastructure.wicket.form.AbstractForm;
 import com.marcgrue.dcisample_a.infrastructure.wicket.form.SelectorInForm;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxFallbackButton;
@@ -23,10 +26,6 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.util.value.ValueMap;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Track a cargo
@@ -77,7 +76,7 @@ public class TrackCargoPage extends BasePage
             // Drop down selector (for convenience when testing)
             List<String> cargoIds = new TrackingQueries().routedCargos();
             add( selectedTrackingIdSelector = new SelectorInForm(
-                  "selectedTrackingId", "Selected Tracking id", cargoIds, this ) );
+                "selectedTrackingId", "Selected Tracking id", cargoIds, this ) );
             selectedTrackingIdSelector.add( new AjaxFormComponentUpdatingBehavior( "onchange" )
             {
                 @Override
@@ -100,13 +99,13 @@ public class TrackCargoPage extends BasePage
                 statusFragment = (Fragment) statusFragment.replaceWith( new StatusFragment( cargoModel, false ) );
                 target.add( feedback, trackingIdInput, selectedTrackingIdSelector, statusFragment.setVisible( true ) );
             }
-            catch (NoSuchEntityException e)
+            catch( NoSuchEntityException e )
             {
                 e.printStackTrace();
                 error( "Cargo '" + trackingId + "' wasn't found in the system. Please check the tracking number." );
                 target.add( feedback, trackingIdInput, selectedTrackingIdSelector, statusFragment.setVisible( false ) );
             }
-            catch (Exception e)
+            catch( Exception e )
             {
                 e.printStackTrace();
                 error( "Problem retrieving status for cargo '" + trackingId + "': " + e.getMessage() );
@@ -128,10 +127,15 @@ public class TrackCargoPage extends BasePage
                 map.put( "status", cargo.delivery().get().transportStatus().get().name() );
                 map.put( "trackingId", trackingId );
                 HandlingEvent lastEvent = cargo.delivery().get().lastHandlingEvent().get();
-                if (lastEvent != null)
+                if( lastEvent != null )
                 {
                     String voyageString = lastEvent.voyage().get() != null ?
-                          lastEvent.voyage().get().voyageNumber().get().number().get() : "UNKNOWN_VOYAGE";
+                                          lastEvent.voyage()
+                                              .get()
+                                              .voyageNumber()
+                                              .get()
+                                              .number()
+                                              .get() : "UNKNOWN_VOYAGE";
                     map.put( "voyage", voyageString );
                     map.put( "location", lastEvent.location().get().getString() );
                 }
@@ -141,32 +145,36 @@ public class TrackCargoPage extends BasePage
                     map.put( "location", cargo.origin().get().getString() );
                 }
                 add( new Label( "transportStatus", new StringResourceModel(
-                      "transportStatus.${status}", this, new Model<ValueMap>( map ) ) ) );
-
+                    "transportStatus.${status}", this, new Model<ValueMap>( map ) ) ) );
 
                 // ETA ----------------------------------------------------------------------
                 String destination = cargo.routeSpecification().get().destination().get().getString();
                 Date eta = cargo.delivery().get().eta().get();
                 String etaString = eta == null ? "?" : new SimpleDateFormat( "yyyy-MM-dd" ).format( eta );
                 add( new Label( "eta", new StringResourceModel(
-                      "eta", this, null, Model.of( destination ), Model.of( etaString ) ) ) );
-
+                    "eta", this, null, Model.of( destination ), Model.of( etaString ) ) ) );
 
                 // Warning/Notifier ----------------------------------------------------------------------
-                add( new WebMarkupContainer( "isMisdirected" ).setVisible( cargo.delivery().get().isMisdirected().get() ) );
+                add( new WebMarkupContainer( "isMisdirected" ).setVisible( cargo.delivery()
+                                                                               .get()
+                                                                               .isMisdirected()
+                                                                               .get() ) );
                 add( new WebMarkupContainer( "isClaimed" ).setVisible(
-                      !cargo.delivery().get().isMisdirected().get()
-                            && cargo.delivery().get().isUnloadedAtDestination().get()
-                            && lastEvent != null
-                            && lastEvent.handlingEventType().get() == HandlingEventType.CLAIM
+                    !cargo.delivery().get().isMisdirected().get()
+                    && cargo.delivery().get().isUnloadedAtDestination().get()
+                    && lastEvent != null
+                    && lastEvent.handlingEventType().get() == HandlingEventType.CLAIM
                 ) );
 
-
                 // Handling history ----------------------------------------------------------------------
-                if (cargo.delivery().get().lastHandlingEvent().get() == null)
+                if( cargo.delivery().get().lastHandlingEvent().get() == null )
+                {
                     add( new Label( "handlingHistoryPanel" ) );
+                }
                 else
+                {
                     add( new HandlingHistoryPanel( "handlingHistoryPanel", cargoModel, trackingId ) );
+                }
             }
         }
     }

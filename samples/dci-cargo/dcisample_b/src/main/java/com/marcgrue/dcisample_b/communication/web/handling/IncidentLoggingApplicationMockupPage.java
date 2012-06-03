@@ -7,6 +7,8 @@ import com.marcgrue.dcisample_b.context.interaction.handling.ProcessHandlingEven
 import com.marcgrue.dcisample_b.data.structure.handling.HandlingEventType;
 import com.marcgrue.dcisample_b.infrastructure.wicket.form.AbstractForm;
 import com.marcgrue.dcisample_b.infrastructure.wicket.form.DateTextFieldWithPicker;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxFallbackButton;
@@ -20,9 +22,6 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.util.value.ValueMap;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * Incident Logging Application mockup page
@@ -89,7 +88,6 @@ public class IncidentLoggingApplicationMockupPage extends BasePage
 
             HandlingQueries fetch = new HandlingQueries();
 
-
             // Tracking id
 
             trackingIdInput = new TextField<String>( "trackingIdInput", new PropertyModel<String>( this, "trackingId" ) );
@@ -108,7 +106,6 @@ public class IncidentLoggingApplicationMockupPage extends BasePage
                 }
             } );
             add( trackingIdSelector.setOutputMarkupId( true ) );
-
 
             // Event Type
 
@@ -129,7 +126,6 @@ public class IncidentLoggingApplicationMockupPage extends BasePage
             } );
             add( eventTypeSelector.setOutputMarkupId( true ) );
 
-
             // Voyage (optional in some cases)
 
             voyageInput = new TextField<String>( "voyageInput", new PropertyModel<String>( this, "voyageNumber" ) );
@@ -148,7 +144,6 @@ public class IncidentLoggingApplicationMockupPage extends BasePage
                 }
             } );
             add( voyageSelector.setOutputMarkupId( true ) );
-
 
             // Location
 
@@ -169,7 +164,6 @@ public class IncidentLoggingApplicationMockupPage extends BasePage
             } );
             add( locationSelector.setOutputMarkupId( true ) );
 
-
             // Submit and process
 
             add( new AjaxFallbackButton( "register", this )
@@ -180,8 +174,10 @@ public class IncidentLoggingApplicationMockupPage extends BasePage
                     try
                     {
                         // We want to allow making multiple _unique_ handling event registrations
-                        if (sameDataIsSubmitted())
+                        if( sameDataIsSubmitted() )
+                        {
                             throw new Exception( "Can't re-submit the same data." );
+                        }
 
                         // We simulate receiving raw text data from incident logging applications
                         // Add current time to date to have same-dates in processing order (would register full time in real app)
@@ -190,7 +186,7 @@ public class IncidentLoggingApplicationMockupPage extends BasePage
 
                         // Parse "incoming" data (step 1 of ProcessHandlingEvent use case)
                         tbf.newTransient( ProcessHandlingEvent.class ).parse(
-                              completionTimeString, trackingId, eventType, unLocode, voyageNumber );
+                            completionTimeString, trackingId, eventType, unLocode, voyageNumber );
 
                         /**
                          * We could redirect to Details, but it's more fun to update details in a separate
@@ -202,7 +198,7 @@ public class IncidentLoggingApplicationMockupPage extends BasePage
                         {
                             HandlingEventType.valueOf( eventType );
                         }
-                        catch (Exception e)
+                        catch( Exception e )
                         {
                             throw new Exception( "'" + eventType + "' is not a valid handling event type" );
                         }
@@ -210,13 +206,17 @@ public class IncidentLoggingApplicationMockupPage extends BasePage
                         ValueMap map = new ValueMap();
                         map.put( "type", eventType );
                         map.put( "location", unLocode );
-                        if (voyageNumber != null) map.put( "voyage", voyageNumber );
-                        String msg = new StringResourceModel( "handlingEvent.${type}", this, new Model<ValueMap>( map ) ).getObject();
+                        if( voyageNumber != null )
+                        {
+                            map.put( "voyage", voyageNumber );
+                        }
+                        String msg = new StringResourceModel( "handlingEvent.${type}", this, new Model<ValueMap>( map ) )
+                            .getObject();
 
                         feedback.info( "Registered handling event for cargo '" + trackingId + "': " + msg );
                         target.add( feedback );
                     }
-                    catch (Exception e)
+                    catch( Exception e )
                     {
                         logger.warn( "Problem registering handling event: " + e.getMessage() );
                         feedback.error( e.getMessage() );
@@ -233,13 +233,14 @@ public class IncidentLoggingApplicationMockupPage extends BasePage
             } );
         }
 
-
         private boolean sameDataIsSubmitted()
         {
             String submittedData = completion.toString() + trackingId + unLocode + voyageNumber + eventType;
 
-            if (submittedData.equals( lastSubmittedData ))
+            if( submittedData.equals( lastSubmittedData ) )
+            {
                 return true;
+            }
 
             // Valid new data submitted
             lastSubmittedData = submittedData;

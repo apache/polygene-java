@@ -14,14 +14,13 @@
 
 package org.qi4j.tutorials.composites.tutorial9;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 import org.qi4j.api.common.AppliesTo;
 import org.qi4j.api.common.AppliesToFilter;
 import org.qi4j.api.injection.scope.State;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.StateHolder;
-
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 
 /**
  * JAVADOC

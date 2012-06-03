@@ -18,6 +18,13 @@ Steps for this tutorial:
 
 Only *HelloWorld.java* remains unchanged.
 
+*HelloWorldComposite.java*
+[snippet,java]
+----
+source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial4/HelloWorldComposite.java
+tag=solution
+----
+
 *HelloWorldBehaviour.java*
 [snippet,java]
 ----
@@ -29,13 +36,6 @@ tag=solution
 [snippet,java]
 ----
 source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial4/HelloWorldBehaviourMixin.java
-tag=solution
-----
-
-*HelloWorldComposite.java*
-[snippet,java]
-----
-source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial4/HelloWorldComposite.java
 tag=solution
 ----
 

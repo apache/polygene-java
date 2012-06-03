@@ -4,6 +4,7 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.library.constraints.annotation.NotEmpty;
 
 // START SNIPPET: solution
+
 /**
  * This interface contains only the state
  * of the HelloWorld object.

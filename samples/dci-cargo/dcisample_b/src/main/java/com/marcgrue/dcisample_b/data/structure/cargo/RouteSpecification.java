@@ -2,12 +2,11 @@ package com.marcgrue.dcisample_b.data.structure.cargo;
 
 import com.marcgrue.dcisample_b.data.structure.itinerary.Itinerary;
 import com.marcgrue.dcisample_b.data.structure.location.Location;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueComposite;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * RouteSpecification
@@ -35,7 +34,7 @@ import java.util.Date;
  */
 @Mixins( RouteSpecification.Mixin.class )
 public interface RouteSpecification
-      extends ValueComposite
+    extends ValueComposite
 {
     Property<Location> origin();
 
@@ -45,34 +44,37 @@ public interface RouteSpecification
 
     Property<Date> arrivalDeadline();
 
-
     // Side-effects free and UI agnostic convenience methods
     boolean isSatisfiedBy( Itinerary itinerary );
 
     String print();
 
     abstract class Mixin
-          implements RouteSpecification
+        implements RouteSpecification
     {
         public boolean isSatisfiedBy( Itinerary itinerary )
         {
             return itinerary != null &&
-                  !itinerary.legs().get().isEmpty() &&
-                  origin().get().equals( itinerary.firstLeg().loadLocation().get() ) &&
-                  earliestDeparture().get().before( itinerary.firstLeg().loadTime().get() ) &&
-                  destination().get().equals( itinerary.lastLeg().unloadLocation().get() ) &&
-                  arrivalDeadline().get().after( itinerary.eta() );
+                   !itinerary.legs().get().isEmpty() &&
+                   origin().get().equals( itinerary.firstLeg().loadLocation().get() ) &&
+                   earliestDeparture().get().before( itinerary.firstLeg().loadTime().get() ) &&
+                   destination().get().equals( itinerary.lastLeg().unloadLocation().get() ) &&
+                   arrivalDeadline().get().after( itinerary.eta() );
         }
 
         public String print()
         {
             StringBuilder sb = new StringBuilder(
-                  "\nROUTE SPECIFICATION ------------" ).
-                  append( "\n  Origin               " ).append( origin().get() ).
-                  append( "\n  Destination          " ).append( destination().get() ).
-                  append( "\n  Earliest departure   " ).append( new SimpleDateFormat( "yyyy-MM-dd" ).format( earliestDeparture().get() ) ).
-                  append( "\n  Arrival deadline     " ).append( new SimpleDateFormat( "yyyy-MM-dd" ).format( arrivalDeadline().get() ) ).
-                  append( "\n--------------------------------" );
+                "\nROUTE SPECIFICATION ------------" ).
+                append( "\n  Origin               " ).append( origin().get() ).
+                append( "\n  Destination          " ).append( destination().get() ).
+                append( "\n  Earliest departure   " )
+                .append( new SimpleDateFormat( "yyyy-MM-dd" ).format( earliestDeparture().get() ) )
+                .
+                    append( "\n  Arrival deadline     " )
+                .append( new SimpleDateFormat( "yyyy-MM-dd" ).format( arrivalDeadline().get() ) )
+                .
+                    append( "\n--------------------------------" );
             return sb.toString();
         }
     }

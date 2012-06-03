@@ -12,13 +12,14 @@ import com.marcgrue.dcisample_b.data.structure.itinerary.Itinerary;
 import com.marcgrue.dcisample_b.data.structure.location.Location;
 import com.marcgrue.dcisample_b.infrastructure.dci.Context;
 import com.marcgrue.dcisample_b.infrastructure.dci.RoleMixin;
+import java.util.Date;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.value.ValueBuilder;
 
-import java.util.Date;
-
-import static com.marcgrue.dcisample_b.data.structure.delivery.RoutingStatus.*;
+import static com.marcgrue.dcisample_b.data.structure.delivery.RoutingStatus.MISROUTED;
+import static com.marcgrue.dcisample_b.data.structure.delivery.RoutingStatus.NOT_ROUTED;
+import static com.marcgrue.dcisample_b.data.structure.delivery.RoutingStatus.ROUTED;
 import static com.marcgrue.dcisample_b.data.structure.delivery.TransportStatus.IN_PORT;
 import static com.marcgrue.dcisample_b.data.structure.handling.HandlingEventType.CLAIM;
 import static com.marcgrue.dcisample_b.data.structure.handling.HandlingEventType.UNLOAD;
@@ -56,35 +57,39 @@ public class InspectArrivedCargo extends Context
         itineraryProgressIndex = cargo.delivery().get().itineraryProgressIndex().get();
     }
 
-    public void inspect() throws InspectionException
+    public void inspect()
+        throws InspectionException
     {
         // Pre-conditions
-        if (arrivalEvent == null ||
-              !arrivalEvent.handlingEventType().get().equals( UNLOAD ) ||
-              !arrivalLocation.equals( destination ))
+        if( arrivalEvent == null ||
+            !arrivalEvent.handlingEventType().get().equals( UNLOAD ) ||
+            !arrivalLocation.equals( destination ) )
+        {
             throw new InspectionFailedException( "Can only inspect arrived cargo." );
+        }
 
         deliveryInspector.inspectArrivedCargo();
     }
-
 
     @Mixins( DeliveryInspectorRole.Mixin.class )
     public interface DeliveryInspectorRole
     {
         void setContext( InspectArrivedCargo context );
 
-        void inspectArrivedCargo() throws InspectionException;
+        void inspectArrivedCargo()
+            throws InspectionException;
 
         class Mixin
-              extends RoleMixin<InspectArrivedCargo>
-              implements DeliveryInspectorRole
+            extends RoleMixin<InspectArrivedCargo>
+            implements DeliveryInspectorRole
         {
             @This
             Cargo cargo;
 
             Delivery newDelivery;
 
-            public void inspectArrivedCargo() throws InspectionException
+            public void inspectArrivedCargo()
+                throws InspectionException
             {
                 // Step 1 - Collect known delivery data
 
@@ -98,16 +103,15 @@ public class InspectArrivedCargo extends Context
                 newDelivery.isUnloadedAtDestination().set( true );
                 newDelivery.isMisdirected().set( false );
 
-
                 // Step 2 - Determine that cargo is routed (for internal reference)
 
-                if (c.itinerary == null)
+                if( c.itinerary == null )
                 {
                     newDelivery.routingStatus().set( NOT_ROUTED );
                     newDelivery.eta().set( null );
                     newDelivery.itineraryProgressIndex().set( 0 );
                 }
-                else if (!c.routeSpecification.isSatisfiedBy( c.itinerary ))
+                else if( !c.routeSpecification.isSatisfiedBy( c.itinerary ) )
                 {
                     newDelivery.routingStatus().set( MISROUTED );
                     newDelivery.eta().set( null );
@@ -120,7 +124,6 @@ public class InspectArrivedCargo extends Context
                     newDelivery.itineraryProgressIndex().set( c.itineraryProgressIndex );
                 }
 
-
                 // Step 3 - Set next expected handling event to claim
 
                 ValueBuilder<NextHandlingEvent> nextHandlingEvent = vbf.newValueBuilder( NextHandlingEvent.class );
@@ -130,11 +133,9 @@ public class InspectArrivedCargo extends Context
                 nextHandlingEvent.prototype().voyage().set( null );
                 newDelivery.nextHandlingEvent().set( nextHandlingEvent.newInstance() );
 
-
                 // Step 4 - Save cargo delivery snapshot
 
                 cargo.delivery().set( newDeliveryBuilder.newInstance() );
-
 
                 // Step 5 - Notify cargo owner of arrival at final destination
 

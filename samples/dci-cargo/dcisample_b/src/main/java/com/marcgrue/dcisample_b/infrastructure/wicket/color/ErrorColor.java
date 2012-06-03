@@ -3,7 +3,6 @@ package com.marcgrue.dcisample_b.infrastructure.wicket.color;
 import org.apache.wicket.AttributeModifier;
 
 /**
- *
  * ErrorColor
  *
  * Convenience method for adding an AttributeModifier based on a boolean value.

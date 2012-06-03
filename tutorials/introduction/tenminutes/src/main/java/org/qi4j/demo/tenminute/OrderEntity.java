@@ -23,7 +23,7 @@ import org.qi4j.api.sideeffect.SideEffects;
 // START SNIPPET: sideEffect
 @SideEffects( MailNotifySideEffect.class )
 // START SNIPPET: mainClass
-@Concerns({PurchaseLimitConcern.class, InventoryConcern.class})
+@Concerns( { PurchaseLimitConcern.class, InventoryConcern.class } )
 public interface OrderEntity
     extends Order, HasSequenceNumber, HasCustomer,
             HasLineItems, Confirmable, EntityComposite

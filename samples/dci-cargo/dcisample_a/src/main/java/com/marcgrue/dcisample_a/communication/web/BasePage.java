@@ -43,7 +43,7 @@ public class BasePage extends BaseWebPage
                 links.setVisible( showLInks = !showLInks );
 
                 // Update with ajax if browser allows
-                if (target != null)
+                if( target != null )
                 {
                     target.add( links, toggleLinks );
                 }

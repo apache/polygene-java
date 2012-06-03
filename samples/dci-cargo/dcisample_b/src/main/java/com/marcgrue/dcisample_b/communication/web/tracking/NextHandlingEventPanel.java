@@ -5,6 +5,7 @@ import com.marcgrue.dcisample_b.data.structure.delivery.NextHandlingEvent;
 import com.marcgrue.dcisample_b.data.structure.handling.HandlingEvent;
 import com.marcgrue.dcisample_b.data.structure.handling.HandlingEventType;
 import com.marcgrue.dcisample_b.data.structure.location.Location;
+import java.text.SimpleDateFormat;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.devutils.stateless.StatelessComponent;
 import org.apache.wicket.markup.html.basic.Label;
@@ -13,8 +14,6 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.util.value.ValueMap;
-
-import java.text.SimpleDateFormat;
 
 /**
  * Next handling event
@@ -30,20 +29,20 @@ public class NextHandlingEventPanel extends Panel
 
         ValueMap map = new ValueMap();
         Label label = new Label( "text", new StringResourceModel(
-              "nextEvent.${nextEvent}", this, new Model<ValueMap>( map ) ) );
+            "nextEvent.${nextEvent}", this, new Model<ValueMap>( map ) ) );
         add( label );
 
         CargoDTO cargo = cargoModel.getObject();
         Location destination = cargo.routeSpecification().get().destination().get();
 
-        if (cargo.itinerary().get() == null)
+        if( cargo.itinerary().get() == null )
         {
             map.put( "nextEvent", "ROUTE" );
             return;
         }
 
         HandlingEvent previousEvent = cargo.delivery().get().lastHandlingEvent().get();
-        if (previousEvent == null)
+        if( previousEvent == null )
         {
             map.put( "nextEvent", "RECEIVE" );
             map.put( "location", cargo.routeSpecification().get().origin().get().getString() );
@@ -51,7 +50,7 @@ public class NextHandlingEventPanel extends Panel
         }
 
         Location lastLocation = previousEvent.location().get();
-        if (previousEvent.handlingEventType().get() == HandlingEventType.CLAIM && lastLocation == destination)
+        if( previousEvent.handlingEventType().get() == HandlingEventType.CLAIM && lastLocation == destination )
         {
             map.put( "nextEvent", "END_OF_CYCLE" );
             map.put( "location", destination.getString() );
@@ -60,7 +59,7 @@ public class NextHandlingEventPanel extends Panel
         }
 
         NextHandlingEvent nextEvent = cargo.delivery().get().nextHandlingEvent().get();
-        if (nextEvent == null)
+        if( nextEvent == null )
         {
             map.put( "nextEvent", "UNKNOWN" );
             label.add( new AttributeModifier( "class", "errorColor" ) );
@@ -70,10 +69,14 @@ public class NextHandlingEventPanel extends Panel
         map.put( "nextEvent", nextEvent.handlingEventType().get().name() );
         map.put( "location", nextEvent.location().get().getString() );
 
-        if (nextEvent.time() != null)
+        if( nextEvent.time() != null )
+        {
             map.put( "time", new SimpleDateFormat( "yyyy-MM-dd" ).format( nextEvent.time().get() ) );
+        }
 
-        if (nextEvent.voyage().get() != null)
+        if( nextEvent.voyage().get() != null )
+        {
             map.put( "voyage", nextEvent.voyage().get().voyageNumber().get().number().get() );
+        }
     }
 }

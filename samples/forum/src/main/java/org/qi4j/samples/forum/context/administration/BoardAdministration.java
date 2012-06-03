@@ -34,7 +34,7 @@ public class BoardAdministration
 
     public void updateName( @Name( "name" ) String name )
     {
-        boardAdmin.updateName(name);
+        boardAdmin.updateName( name );
     }
 
     protected class BoardAdmin

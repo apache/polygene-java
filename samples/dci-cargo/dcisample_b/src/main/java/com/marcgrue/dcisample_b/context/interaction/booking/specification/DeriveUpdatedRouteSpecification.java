@@ -12,13 +12,14 @@ import com.marcgrue.dcisample_b.data.structure.voyage.CarrierMovement;
 import com.marcgrue.dcisample_b.data.structure.voyage.Voyage;
 import com.marcgrue.dcisample_b.infrastructure.dci.Context;
 import com.marcgrue.dcisample_b.infrastructure.dci.RoleMixin;
+import java.util.Date;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 
-import java.util.Date;
-
-import static com.marcgrue.dcisample_b.data.structure.delivery.TransportStatus.*;
+import static com.marcgrue.dcisample_b.data.structure.delivery.TransportStatus.CLAIMED;
+import static com.marcgrue.dcisample_b.data.structure.delivery.TransportStatus.NOT_RECEIVED;
+import static com.marcgrue.dcisample_b.data.structure.delivery.TransportStatus.ONBOARD_CARRIER;
 
 /**
  * Derive Updated Route Specification (subfunction use case)
@@ -37,7 +38,6 @@ public class DeriveUpdatedRouteSpecification extends Context
     TransportStatus transportStatus;
     HandlingEvent lastHandlingEvent;
     Location newDestination;
-
 
     public DeriveUpdatedRouteSpecification( Cargo cargo )
     {
@@ -59,26 +59,29 @@ public class DeriveUpdatedRouteSpecification extends Context
         this.newDestination = newDestination;
     }
 
-    public RouteSpecification getRouteSpec() throws CannotCreateRouteSpecificationException, UnexpectedCarrierException
+    public RouteSpecification getRouteSpec()
+        throws CannotCreateRouteSpecificationException, UnexpectedCarrierException
     {
         // Pre-conditions
-        if (transportStatus.equals( CLAIMED ))
+        if( transportStatus.equals( CLAIMED ) )
+        {
             throw new CannotCreateRouteSpecificationException( "Can't derive new route specification for a claimed cargo." );
+        }
 
         return cargoInspector.getUpdatedRouteSpecification();
     }
-
 
     @Mixins( CargoInspectorRole.Mixin.class )
     public interface CargoInspectorRole
     {
         void setContext( DeriveUpdatedRouteSpecification context );
 
-        RouteSpecification getUpdatedRouteSpecification() throws CannotCreateRouteSpecificationException, UnexpectedCarrierException;
+        RouteSpecification getUpdatedRouteSpecification()
+            throws CannotCreateRouteSpecificationException, UnexpectedCarrierException;
 
         class Mixin
-              extends RoleMixin<DeriveUpdatedRouteSpecification>
-              implements CargoInspectorRole
+            extends RoleMixin<DeriveUpdatedRouteSpecification>
+            implements CargoInspectorRole
         {
             @This
             Cargo cargo;
@@ -92,28 +95,29 @@ public class DeriveUpdatedRouteSpecification extends Context
             Date newArrivalDeadline;
 
             public RouteSpecification getUpdatedRouteSpecification()
-                  throws CannotCreateRouteSpecificationException, UnexpectedCarrierException
+                throws CannotCreateRouteSpecificationException, UnexpectedCarrierException
             {
                 // Step 1 - Collect destination and deadline
 
                 newDestination = c.newDestination == null ? c.routeSpecification.destination().get() : c.newDestination;
                 newArrivalDeadline = c.routeSpecification.arrivalDeadline().get();
 
-
                 // Step 2 - Derive origin and earliest departure date
 
-                if (c.transportStatus.equals( NOT_RECEIVED ))
+                if( c.transportStatus.equals( NOT_RECEIVED ) )
                 {
                     newOrigin = cargo.origin().get();
                     newEarliestDeparture = c.routeSpecification.earliestDeparture().get();
                 }
-                else if (c.transportStatus.equals( ONBOARD_CARRIER ))
+                else if( c.transportStatus.equals( ONBOARD_CARRIER ) )
                 {
                     Voyage voyage = c.lastHandlingEvent.voyage().get();
                     Location departureLocation = c.lastHandlingEvent.location().get();
                     CarrierMovement carrierMovement = voyage.carrierMovementDepartingFrom( departureLocation );
-                    if (carrierMovement == null)
-                        throw new UnexpectedCarrierException( c.lastHandlingEvent);
+                    if( carrierMovement == null )
+                    {
+                        throw new UnexpectedCarrierException( c.lastHandlingEvent );
+                    }
 
                     newOrigin = carrierMovement.arrivalLocation().get();
                     newEarliestDeparture = carrierMovement.arrivalTime().get();
@@ -123,7 +127,6 @@ public class DeriveUpdatedRouteSpecification extends Context
                     newOrigin = c.lastHandlingEvent.location().get();
                     newEarliestDeparture = c.lastHandlingEvent.completionTime().get();
                 }
-
 
                 // Step 3 - Build and return new route specification
 

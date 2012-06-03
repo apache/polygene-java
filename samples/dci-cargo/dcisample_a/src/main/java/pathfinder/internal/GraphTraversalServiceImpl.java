@@ -1,13 +1,16 @@
 package pathfinder.internal;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
 import pathfinder.api.GraphTraversalService;
 import pathfinder.api.TransitEdge;
 import pathfinder.api.TransitPath;
 
-import java.util.*;
-
 public class GraphTraversalServiceImpl
-      implements GraphTraversalService
+    implements GraphTraversalService
 {
     private GraphDAO dao;
     private Random random;
@@ -31,7 +34,7 @@ public class GraphTraversalServiceImpl
         final int candidateCount = getRandomNumberOfCandidates();
         final List<TransitPath> candidates = new ArrayList<TransitPath>( candidateCount );
 
-        for (int i = 0; i < candidateCount; i++)
+        for( int i = 0; i < candidateCount; i++ )
         {
             allVertices = getRandomChunkOfLocations( allVertices );
             final List<TransitEdge> transitEdges = new ArrayList<TransitEdge>( allVertices.size() - 1 );
@@ -42,10 +45,10 @@ public class GraphTraversalServiceImpl
             date = nextDate( toDate );
 
             transitEdges.add( new TransitEdge(
-                  dao.getVoyageNumber( originUnLocode, firstLegTo ),
-                  originUnLocode, firstLegTo, fromDate, toDate ) );
+                dao.getVoyageNumber( originUnLocode, firstLegTo ),
+                originUnLocode, firstLegTo, fromDate, toDate ) );
 
-            for (int j = 0; j < allVertices.size() - 1; j++)
+            for( int j = 0; j < allVertices.size() - 1; j++ )
             {
                 final String curr = allVertices.get( j );
                 final String next = allVertices.get( j + 1 );
@@ -59,8 +62,8 @@ public class GraphTraversalServiceImpl
             fromDate = nextDate( date );
             toDate = nextDate( fromDate );
             transitEdges.add( new TransitEdge(
-                  dao.getVoyageNumber( lastLegFrom, destinationUnLocode ),
-                  lastLegFrom, destinationUnLocode, fromDate, toDate ) );
+                dao.getVoyageNumber( lastLegFrom, destinationUnLocode ),
+                lastLegFrom, destinationUnLocode, fromDate, toDate ) );
 
             candidates.add( new TransitPath( transitEdges ) );
         }
@@ -85,5 +88,4 @@ public class GraphTraversalServiceImpl
         final int chunk = total > 4 ? 1 + new Random().nextInt( 5 ) : total;
         return allLocations.subList( 0, chunk );
     }
-
 }

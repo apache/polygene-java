@@ -3,6 +3,7 @@ package org.qi4j.dci.moneytransfer.context;
 /**
  * TODO
  */
+
 /**
  * Base class for methodful roles
  */

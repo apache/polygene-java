@@ -1,10 +1,9 @@
 package com.marcgrue.dcisample_b.data.structure.voyage;
 
 import com.marcgrue.dcisample_b.data.structure.location.Location;
+import java.util.Date;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueComposite;
-
-import java.util.Date;
 
 /**
  * CarrierMovement
@@ -14,7 +13,7 @@ import java.util.Date;
  * All properties are mandatory and immutable.
  */
 public interface CarrierMovement
-      extends ValueComposite
+    extends ValueComposite
 {
     Property<Location> departureLocation();
 

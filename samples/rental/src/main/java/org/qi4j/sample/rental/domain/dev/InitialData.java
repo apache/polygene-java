@@ -18,6 +18,9 @@
 
 package org.qi4j.sample.rental.domain.dev;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
@@ -31,10 +34,6 @@ import org.qi4j.sample.rental.domain.Customer;
 import org.qi4j.sample.rental.domain.Period;
 import org.qi4j.sample.rental.domain.RentalShop;
 import org.qi4j.sample.rental.web.DataInitializer;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 
 @Mixins( InitialData.Mixin.class )
 public interface InitialData

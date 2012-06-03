@@ -7,8 +7,8 @@ import org.qi4j.api.entity.EntityComposite;
  * Handling Event entity
  */
 public interface HandlingEventEntity
-      extends EntityComposite,
+    extends EntityComposite,
 
-      HandlingEvent
+            HandlingEvent
 {
 }

@@ -18,7 +18,7 @@ public final class MissingVoyageNumberException extends CannotRegisterHandlingEv
         msg = "Unsuccessful handling event registration for cargo '" + id + "' (handling event '" + type + "' in '" + unloc + "')." +
               "\nMissing voyage number. Handling event " + type + " requires a voyage.";
 
-        msg+= "\nMOCKUP NOTIFICATION TO HANDLING AUTHORITY: Please check submitted invalid handling event data:";
+        msg += "\nMOCKUP NOTIFICATION TO HANDLING AUTHORITY: Please check submitted invalid handling event data:";
         msg += getParsedHandlingEventData();
 
         return msg;

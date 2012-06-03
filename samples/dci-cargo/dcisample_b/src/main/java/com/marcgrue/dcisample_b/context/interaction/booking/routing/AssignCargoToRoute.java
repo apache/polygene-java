@@ -16,15 +16,18 @@ import com.marcgrue.dcisample_b.data.structure.voyage.CarrierMovement;
 import com.marcgrue.dcisample_b.data.structure.voyage.Voyage;
 import com.marcgrue.dcisample_b.infrastructure.dci.Context;
 import com.marcgrue.dcisample_b.infrastructure.dci.RoleMixin;
+import java.util.Date;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.value.ValueBuilder;
 
-import java.util.Date;
-
 import static com.marcgrue.dcisample_b.data.structure.delivery.RoutingStatus.ROUTED;
-import static com.marcgrue.dcisample_b.data.structure.delivery.TransportStatus.*;
-import static com.marcgrue.dcisample_b.data.structure.handling.HandlingEventType.*;
+import static com.marcgrue.dcisample_b.data.structure.delivery.TransportStatus.CLAIMED;
+import static com.marcgrue.dcisample_b.data.structure.delivery.TransportStatus.NOT_RECEIVED;
+import static com.marcgrue.dcisample_b.data.structure.delivery.TransportStatus.ONBOARD_CARRIER;
+import static com.marcgrue.dcisample_b.data.structure.handling.HandlingEventType.LOAD;
+import static com.marcgrue.dcisample_b.data.structure.handling.HandlingEventType.RECEIVE;
+import static com.marcgrue.dcisample_b.data.structure.handling.HandlingEventType.UNLOAD;
 
 /**
  * Assign Cargo to Route (subfunction use case)
@@ -61,15 +64,16 @@ public class AssignCargoToRoute extends Context
     }
 
     public void assign()
-          throws CannotCreateRouteSpecificationException, UnsatisfyingRouteException, InspectionException, RoutingException
+        throws CannotCreateRouteSpecificationException, UnsatisfyingRouteException, InspectionException, RoutingException
     {
         // Pre-conditions
-        if (transportStatus.equals( CLAIMED ))
+        if( transportStatus.equals( CLAIMED ) )
+        {
             throw new RoutingException( "Can't re-route claimed cargo" );
+        }
 
         cargoInspector.assignCargoToRoute();
     }
-
 
     @Mixins( CargoInspectorRole.Mixin.class )
     public interface CargoInspectorRole
@@ -77,11 +81,11 @@ public class AssignCargoToRoute extends Context
         void setContext( AssignCargoToRoute context );
 
         void assignCargoToRoute()
-              throws CannotCreateRouteSpecificationException, UnsatisfyingRouteException, InspectionException;
+            throws CannotCreateRouteSpecificationException, UnsatisfyingRouteException, InspectionException;
 
         class Mixin
-              extends RoleMixin<AssignCargoToRoute>
-              implements CargoInspectorRole
+            extends RoleMixin<AssignCargoToRoute>
+            implements CargoInspectorRole
         {
             @This
             Cargo cargo;
@@ -91,54 +95,57 @@ public class AssignCargoToRoute extends Context
             Delivery newDelivery;
 
             public void assignCargoToRoute()
-                  throws CannotCreateRouteSpecificationException, UnsatisfyingRouteException, InspectionException
+                throws CannotCreateRouteSpecificationException, UnsatisfyingRouteException, InspectionException
             {
                 // Step 1 - Derive updated route specification
 
                 newRouteSpec = new DeriveUpdatedRouteSpecification( cargo ).getRouteSpec();
 
-
                 // Step 2 - Verify that route satisfies route specification
 
-                if (!newRouteSpec.isSatisfiedBy( c.itinerary ))
+                if( !newRouteSpec.isSatisfiedBy( c.itinerary ) )
+                {
                     throw new UnsatisfyingRouteException( newRouteSpec, c.itinerary );
-
+                }
 
                 // Step 3 - Assign new route specification to cargo
 
                 cargo.routeSpecification().set( newRouteSpec );
 
-
                 // Step 4 - Assign cargo to route
 
                 cargo.itinerary().set( c.itinerary );
-
 
                 // Step 5 - Determine next handling event
 
                 ValueBuilder<NextHandlingEvent> nextHandlingEventBuilder = vbf.newValueBuilder( NextHandlingEvent.class );
                 nextHandlingEvent = nextHandlingEventBuilder.prototype();
 
-                if (c.transportStatus.equals( NOT_RECEIVED ))
+                if( c.transportStatus.equals( NOT_RECEIVED ) )
                 {
                     // Routed unhandled cargo is expected to be received in origin.
                     nextHandlingEvent.handlingEventType().set( RECEIVE );
                     nextHandlingEvent.location().set( c.itinerary.firstLeg().loadLocation().get() );
                 }
-                else if (c.transportStatus.equals( ONBOARD_CARRIER ))
+                else if( c.transportStatus.equals( ONBOARD_CARRIER ) )
                 {
                     // Re-routed cargo onboard carrier is expected to be unloaded in next port (regardless of new itinerary).
                     Voyage voyage = c.lastHandlingEvent.voyage().get();
-                    CarrierMovement carrierMovement = voyage.carrierMovementDepartingFrom( c.lastHandlingEvent.location().get() );
+                    CarrierMovement carrierMovement = voyage.carrierMovementDepartingFrom( c.lastHandlingEvent
+                                                                                               .location()
+                                                                                               .get() );
 
                     // Estimate carrier arrival time
                     Date estimatedArrivalDate = carrierMovement.arrivalTime().get();
-                    if (c.lastHandlingEvent.completionTime().get().after( carrierMovement.departureTime().get() ))
+                    if( c.lastHandlingEvent.completionTime().get().after( carrierMovement.departureTime().get() ) )
                     {
                         long start = carrierMovement.departureTime().get().getTime();
                         long end = carrierMovement.arrivalTime().get().getTime();
                         long duration = end - start;
-                        estimatedArrivalDate = new Date( c.lastHandlingEvent.completionTime().get().getTime() + duration );
+                        estimatedArrivalDate = new Date( c.lastHandlingEvent
+                                                             .completionTime()
+                                                             .get()
+                                                             .getTime() + duration );
                     }
 
                     nextHandlingEvent.handlingEventType().set( UNLOAD );
@@ -154,7 +161,6 @@ public class AssignCargoToRoute extends Context
                     nextHandlingEvent.time().set( c.itinerary.firstLeg().loadTime().get() );
                     nextHandlingEvent.voyage().set( c.itinerary.firstLeg().voyage().get() );
                 }
-
 
                 // Step 6 - Update cargo delivery status
 

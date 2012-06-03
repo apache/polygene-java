@@ -14,7 +14,10 @@ public class CargoMisroutedException extends InspectionException
     private RouteSpecification routeSpecification;
     private Itinerary itinerary;
 
-    public CargoMisroutedException( HandlingEvent handlingEvent, RouteSpecification routeSpecification, Itinerary itinerary )
+    public CargoMisroutedException( HandlingEvent handlingEvent,
+                                    RouteSpecification routeSpecification,
+                                    Itinerary itinerary
+    )
     {
         super( handlingEvent );
         this.routeSpecification = routeSpecification;
@@ -25,7 +28,7 @@ public class CargoMisroutedException extends InspectionException
     public String getMessage()
     {
         return "\nCargo is MISROUTED! Route specification is not satisfied with itinerary:\n"
-              + routeSpecification.print() + itinerary.print()
-              + "MOCKUP REQUEST TO CARGO OWNER: Please re-route misrouted cargo '" + id + "' (now in " + city + ").";
+               + routeSpecification.print() + itinerary.print()
+               + "MOCKUP REQUEST TO CARGO OWNER: Please re-route misrouted cargo '" + id + "' (now in " + city + ").";
     }
 }

@@ -9,8 +9,8 @@ import com.marcgrue.dcisample_b.data.aggregateroot.HandlingEventAggregateRoot;
  * shows what Roles the HandlingEventAggregateRoot can play.
  */
 public interface HandlingEventsRoleMap
-      extends HandlingEventAggregateRoot,
+    extends HandlingEventAggregateRoot,
 
-      RegisterHandlingEvent.EventRegistrarRole
+            RegisterHandlingEvent.EventRegistrarRole
 {
 }

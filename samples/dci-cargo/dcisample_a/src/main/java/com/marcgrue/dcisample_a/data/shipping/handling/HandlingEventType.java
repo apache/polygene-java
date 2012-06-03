@@ -1,6 +1,5 @@
 package com.marcgrue.dcisample_a.data.shipping.handling;
 
-
 /**
  * A handling event type either requires or prohibits a voyage association.
  */

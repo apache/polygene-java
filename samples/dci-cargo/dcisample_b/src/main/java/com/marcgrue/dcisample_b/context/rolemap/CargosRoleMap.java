@@ -9,8 +9,8 @@ import com.marcgrue.dcisample_b.data.aggregateroot.CargoAggregateRoot;
  * Shows what Roles the CargoAggregateRoot can play.
  */
 public interface CargosRoleMap
-      extends CargoAggregateRoot,
+    extends CargoAggregateRoot,
 
-      BookNewCargo.BookingSystemRole
+            BookNewCargo.BookingSystemRole
 {
 }

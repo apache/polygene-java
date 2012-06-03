@@ -10,6 +10,9 @@ import com.marcgrue.dcisample_b.data.structure.handling.HandlingEvent;
 import com.marcgrue.dcisample_b.infrastructure.wicket.color.ErrorColor;
 import com.marcgrue.dcisample_b.infrastructure.wicket.link.LinkPanel;
 import com.marcgrue.dcisample_b.infrastructure.wicket.prevnext.PrevNext;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import org.apache.wicket.Session;
 import org.apache.wicket.devutils.stateless.StatelessComponent;
 import org.apache.wicket.markup.html.basic.Label;
@@ -17,10 +20,6 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 import static com.marcgrue.dcisample_b.data.structure.delivery.TransportStatus.UNKNOWN;
 import static com.marcgrue.dcisample_b.data.structure.handling.HandlingEventType.CUSTOMS;
@@ -37,8 +36,10 @@ public class CargoListPage extends BookingBasePage
 
         // Save current trackingIds in session (for prev/next buttons on details page)
         ArrayList<String> ids = new ArrayList<String>();
-        for (CargoDTO cargo : cargoList.getObject())
+        for( CargoDTO cargo : cargoList.getObject() )
+        {
             ids.add( cargo.trackingId().get().id().get() );
+        }
         PrevNext.registerIds( Session.get(), ids );
 
         add( new ListView<CargoDTO>( "list", cargoList )
@@ -69,7 +70,6 @@ public class CargoListPage extends BookingBasePage
                 boolean isMisdirected = delivery.isMisdirected().get();
                 HandlingEvent event = delivery.lastHandlingEvent().get();
                 boolean inCustoms = event != null && event.handlingEventType().get() == CUSTOMS;
-
 
                 // Output
 

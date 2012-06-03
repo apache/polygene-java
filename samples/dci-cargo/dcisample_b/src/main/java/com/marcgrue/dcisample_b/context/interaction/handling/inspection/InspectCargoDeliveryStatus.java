@@ -1,6 +1,12 @@
 package com.marcgrue.dcisample_b.context.interaction.handling.inspection;
 
-import com.marcgrue.dcisample_b.context.interaction.handling.inspection.event.*;
+import com.marcgrue.dcisample_b.context.interaction.handling.inspection.event.InspectArrivedCargo;
+import com.marcgrue.dcisample_b.context.interaction.handling.inspection.event.InspectCargoInCustoms;
+import com.marcgrue.dcisample_b.context.interaction.handling.inspection.event.InspectClaimedCargo;
+import com.marcgrue.dcisample_b.context.interaction.handling.inspection.event.InspectLoadedCargo;
+import com.marcgrue.dcisample_b.context.interaction.handling.inspection.event.InspectReceivedCargo;
+import com.marcgrue.dcisample_b.context.interaction.handling.inspection.event.InspectUnhandledCargo;
+import com.marcgrue.dcisample_b.context.interaction.handling.inspection.event.InspectUnloadedCargo;
 import com.marcgrue.dcisample_b.context.interaction.handling.inspection.exception.InspectionException;
 import com.marcgrue.dcisample_b.data.structure.cargo.Cargo;
 import com.marcgrue.dcisample_b.data.structure.handling.HandlingEvent;
@@ -39,7 +45,6 @@ public class InspectCargoDeliveryStatus extends Context
     HandlingEvent handlingEvent;
     Location handlingLocation;
 
-
     public InspectCargoDeliveryStatus( HandlingEvent handlingEvent )
     {
         this.handlingEvent = handlingEvent;
@@ -57,11 +62,14 @@ public class InspectCargoDeliveryStatus extends Context
         destination = cargo.routeSpecification().get().destination().get();
 
         handlingEvent = cargo.delivery().get().lastHandlingEvent().get();
-        if (handlingEvent != null)
+        if( handlingEvent != null )
+        {
             handlingLocation = handlingEvent.location().get();
+        }
     }
 
-    public void update() throws InspectionException
+    public void update()
+        throws InspectionException
     {
         deliveryInspector.delegateInspection();
     }
@@ -71,57 +79,62 @@ public class InspectCargoDeliveryStatus extends Context
     {
         void setContext( InspectCargoDeliveryStatus context );
 
-        void delegateInspection() throws InspectionException;
+        void delegateInspection()
+            throws InspectionException;
 
         class Mixin
-              extends RoleMixin<InspectCargoDeliveryStatus>
-              implements DeliveryInspectorRole
+            extends RoleMixin<InspectCargoDeliveryStatus>
+            implements DeliveryInspectorRole
         {
             @This
             Cargo cargo;
 
-            public void delegateInspection() throws InspectionException
+            public void delegateInspection()
+                throws InspectionException
             {
 
                 // Step 1 - Determine handling event type
 
-                if (c.handlingEvent == null)
+                if( c.handlingEvent == null )
                 {
                     new InspectUnhandledCargo( cargo ).inspect();
                     return;
                 }
                 HandlingEventType handlingEventType = c.handlingEvent.handlingEventType().get();
 
-
                 // Step 2 - Delegate inspection
 
-                switch (handlingEventType)
+                switch( handlingEventType )
                 {
-                    case RECEIVE:
-                        new InspectReceivedCargo( cargo, c.handlingEvent ).inspect();
-                        break;
+                case RECEIVE:
+                    new InspectReceivedCargo( cargo, c.handlingEvent ).inspect();
+                    break;
 
-                    case LOAD:
-                        new InspectLoadedCargo( cargo, c.handlingEvent ).inspect();
-                        break;
+                case LOAD:
+                    new InspectLoadedCargo( cargo, c.handlingEvent ).inspect();
+                    break;
 
-                    case UNLOAD:
-                        if (c.handlingLocation.equals( c.destination ))
-                            new InspectArrivedCargo( cargo, c.handlingEvent ).inspect();
-                        else
-                            new InspectUnloadedCargo( cargo, c.handlingEvent ).inspect();
-                        break;
+                case UNLOAD:
+                    if( c.handlingLocation.equals( c.destination ) )
+                    {
+                        new InspectArrivedCargo( cargo, c.handlingEvent ).inspect();
+                    }
+                    else
+                    {
+                        new InspectUnloadedCargo( cargo, c.handlingEvent ).inspect();
+                    }
+                    break;
 
-                    case CUSTOMS:
-                        new InspectCargoInCustoms( cargo, c.handlingEvent ).inspect();
-                        break;
+                case CUSTOMS:
+                    new InspectCargoInCustoms( cargo, c.handlingEvent ).inspect();
+                    break;
 
-                    case CLAIM:
-                        new InspectClaimedCargo( cargo, c.handlingEvent ).inspect();
-                        break;
+                case CLAIM:
+                    new InspectClaimedCargo( cargo, c.handlingEvent ).inspect();
+                    break;
 
-                    default:
-                        // No other handling event types
+                default:
+                    // No other handling event types
                 }
             }
         }

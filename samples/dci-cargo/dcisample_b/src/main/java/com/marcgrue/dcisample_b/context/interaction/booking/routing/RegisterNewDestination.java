@@ -29,7 +29,6 @@ public class RegisterNewDestination extends Context
     TransportStatus transportStatus;
 //    HandlingEvent lastHandlingEvent;
 
-
     public RegisterNewDestination( Cargo cargo )
     {
         this.cargoInspector = rolePlayer( CargoInspectorRole.class, cargo );
@@ -43,27 +42,29 @@ public class RegisterNewDestination extends Context
         this( loadEntity( Cargo.class, trackingIdString ) );
     }
 
-
-    public void to( String destinationUnLocodeString ) throws Exception
+    public void to( String destinationUnLocodeString )
+        throws Exception
     {
         // Pre-conditions
-        if (transportStatus.equals( CLAIMED ))
+        if( transportStatus.equals( CLAIMED ) )
+        {
             throw new ChangeDestinationException( "Can't change destination of claimed cargo." );
+        }
 
         cargoInspector.registerNewDestination( destinationUnLocodeString );
     }
-
 
     @Mixins( CargoInspectorRole.Mixin.class )
     public interface CargoInspectorRole
     {
         void setContext( RegisterNewDestination context );
 
-        void registerNewDestination( String destination ) throws Exception;
+        void registerNewDestination( String destination )
+            throws Exception;
 
         class Mixin
-              extends RoleMixin<RegisterNewDestination>
-              implements CargoInspectorRole
+            extends RoleMixin<RegisterNewDestination>
+            implements CargoInspectorRole
         {
             @This
             Cargo cargo;
@@ -72,7 +73,7 @@ public class RegisterNewDestination extends Context
             RouteSpecification newRouteSpec;
 
             public void registerNewDestination( String newDestinationString )
-                  throws ChangeDestinationException, CannotCreateRouteSpecificationException, InspectionException
+                throws ChangeDestinationException, CannotCreateRouteSpecificationException, InspectionException
             {
                 // Step 1 - Verify new destination
 
@@ -80,23 +81,22 @@ public class RegisterNewDestination extends Context
                 {
                     newDestination = uowf.currentUnitOfWork().get( Location.class, newDestinationString );
                 }
-                catch (NoSuchEntityException e)
+                catch( NoSuchEntityException e )
                 {
                     throw new ChangeDestinationException( "Didn't recognize location '" + newDestinationString + "'" );
                 }
-                if (newDestination.equals( cargo.routeSpecification().get().destination().get() ))
+                if( newDestination.equals( cargo.routeSpecification().get().destination().get() ) )
+                {
                     throw new ChangeDestinationException( "New destination is same as old destination." );
-
+                }
 
                 // Step 2 - Derive new route specification
 
                 newRouteSpec = new DeriveUpdatedRouteSpecification( cargo, newDestination ).getRouteSpec();
 
-
                 // Step 3 - Assign new route specification to cargo
 
                 cargo.routeSpecification().set( newRouteSpec );
-
 
                 // Step 4 - Update cargo delivery status
 

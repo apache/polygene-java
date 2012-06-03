@@ -16,7 +16,7 @@ public class ForumsResource
     public void resource( String segment )
         throws ResourceException
     {
-        select( Forum.class, segment);
+        select( Forum.class, segment );
         subResource( ForumResource.class );
     }
 }

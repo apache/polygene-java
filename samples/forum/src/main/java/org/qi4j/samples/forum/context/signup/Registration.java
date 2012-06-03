@@ -10,7 +10,10 @@ public interface Registration
     extends ValueComposite
 {
     Property<String> name();
+
     Property<String> realName();
+
     Property<String> email();
+
     Property<String> password();
 }

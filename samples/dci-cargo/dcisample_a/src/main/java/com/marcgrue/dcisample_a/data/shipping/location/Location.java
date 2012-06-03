@@ -22,15 +22,17 @@ public interface Location
 
     // Side-effects free and UI agnostic convenience methods
     String getCode();
+
     String getString();
 
     abstract class Mixin
-          implements Location
+        implements Location
     {
         public String getCode()
         {
             return unLocode().get().code().get();
         }
+
         public String getString()
         {
             return name().get() + " (" + getCode() + ")";

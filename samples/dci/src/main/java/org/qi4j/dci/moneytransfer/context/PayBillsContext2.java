@@ -14,13 +14,11 @@
 
 package org.qi4j.dci.moneytransfer.context;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.dci.moneytransfer.domain.data.BalanceData;
-import org.qi4j.dci.moneytransfer.rolemap.CreditorRolemap;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Context for paying bills from an account to a list of creditor accounts.
@@ -42,7 +40,7 @@ public class PayBillsContext2
     }
 
     public void payBills()
-            throws Exception
+        throws Exception
     {
         sourceAccount.payBills();
     }
@@ -73,19 +71,22 @@ public class PayBillsContext2
     class SourceAccountRole
         extends Role<BalanceData>
     {
-        void payBills() throws IllegalArgumentException
+        void payBills()
+            throws IllegalArgumentException
         {
             List<BalanceData> creditors = getCreditors();                                             // 1a
 
             Integer sumOwed = getSumOwedTo( creditors );                                              // 2a
 
-            if (self.getBalance() - sumOwed < 0)                                                      // 3a
+            if( self.getBalance() - sumOwed < 0 )                                                      // 3a
+            {
                 throw new IllegalArgumentException( "Insufficient funds to pay bills." );
+            }
 
             final TransferMoneyContext2 transferMoney = new TransferMoneyContext2();
-            for (BalanceData creditor : creditors)                                                    // 4a
+            for( BalanceData creditor : creditors )                                                    // 4a
             {
-                if (creditor.getBalance() < 0)
+                if( creditor.getBalance() < 0 )
                 {
                     final Integer amountOwed = -creditor.getBalance();
 
@@ -109,7 +110,7 @@ public class PayBillsContext2
         private Integer getSumOwedTo( List<BalanceData> creditors )
         {
             Integer sumOwed = 0;
-            for (BalanceData creditor : creditors)
+            for( BalanceData creditor : creditors )
             {
                 sumOwed += creditor.getBalance() < 0 ? -creditor.getBalance() : 0;
             }

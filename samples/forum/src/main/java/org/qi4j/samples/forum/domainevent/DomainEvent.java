@@ -20,7 +20,7 @@ import org.restlet.Request;
 /**
  * TODO
  */
-@Concerns(DomainEvent.DomainEventConcern.class)
+@Concerns( DomainEvent.DomainEventConcern.class )
 @Retention( RetentionPolicy.RUNTIME )
 public @interface DomainEvent
 {
@@ -45,14 +45,14 @@ public @interface DomainEvent
             DomainEventValue prototype = builder.prototype();
             prototype.version().set( application.version() );
             prototype.timestamp().set( unitOfWork.currentTime() );
-            prototype.context().set( proxy.getClass().getSuperclass().getName().split( "\\$" )[0] );
+            prototype.context().set( proxy.getClass().getSuperclass().getName().split( "\\$" )[ 0 ] );
             prototype.name().set( method.getName() );
 
             int idx = 0;
             for( Object arg : args )
             {
                 idx++;
-                String name = "param"+idx;
+                String name = "param" + idx;
                 ValueBuilder<ParameterValue> parameterBuilder = module.newValueBuilder( ParameterValue.class );
                 parameterBuilder.prototype().name().set( name );
                 parameterBuilder.prototype().value().set( arg );
@@ -81,8 +81,10 @@ public @interface DomainEvent
                 @Override
                 public void afterCompletion( UnitOfWorkStatus status )
                 {
-                    if (status.equals( UnitOfWorkStatus.COMPLETED ))
+                    if( status.equals( UnitOfWorkStatus.COMPLETED ) )
+                    {
                         Request.getCurrent().getAttributes().put( "event", domainEvent );
+                    }
                 }
             } );
 

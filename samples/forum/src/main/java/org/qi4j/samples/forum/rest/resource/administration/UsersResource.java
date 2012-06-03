@@ -4,7 +4,6 @@ import org.qi4j.api.query.Query;
 import org.qi4j.library.rest.server.api.ContextResource;
 import org.qi4j.library.rest.server.api.ObjectSelection;
 import org.qi4j.library.rest.server.api.ResourceIndex;
-import org.qi4j.samples.forum.context.administration.UsersAdministration;
 import org.qi4j.samples.forum.data.entity.User;
 import org.qi4j.samples.forum.data.entity.Users;
 

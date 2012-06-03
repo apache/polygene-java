@@ -2,7 +2,6 @@ package com.marcgrue.dcisample_a.context.shipping.handling;
 
 import com.marcgrue.dcisample_a.context.shipping.booking.BuildDeliverySnapshot;
 import com.marcgrue.dcisample_a.context.support.ApplicationEvents;
-import com.marcgrue.dcisample_a.data.shipping.handling.HandlingEvent;
 import com.marcgrue.dcisample_a.data.shipping.cargo.Cargo;
 import com.marcgrue.dcisample_a.data.shipping.delivery.Delivery;
 import com.marcgrue.dcisample_a.data.shipping.handling.HandlingEvent;
@@ -25,7 +24,6 @@ public class InspectCargo extends Context
     private Cargo cargo;
     private Delivery delivery;
 
-
     // CONTEXT CONSTRUCTORS ------------------------------------------------------
 
     public InspectCargo( HandlingEvent registeredHandlingEvent )
@@ -35,14 +33,12 @@ public class InspectCargo extends Context
         delivery = cargo.delivery().get();
     }
 
-
     // INTERACTIONS --------------------------------------------------------------
 
     public void inspect()
     {
         cargoInspector.inspect();
     }
-
 
     // METHODFUL ROLE IMPLEMENTATIONS --------------------------------------------
 
@@ -57,8 +53,8 @@ public class InspectCargo extends Context
         void inspect();
 
         class Mixin
-              extends RoleMixin<InspectCargo>
-              implements CargoInspectorRole
+            extends RoleMixin<InspectCargo>
+            implements CargoInspectorRole
         {
             @This
             HandlingEvent registeredHandlingEvent;
@@ -75,12 +71,16 @@ public class InspectCargo extends Context
                 context.cargo.delivery().set( context.delivery );
 
                 // Deviation 3a: Publish that cargo was misdirected
-                if (context.delivery.isMisdirected().get())
+                if( context.delivery.isMisdirected().get() )
+                {
                     applicationEvents.cargoWasMisdirected( context.cargo );
+                }
 
                 // Deviation 3b: Publish that cargo has arrived
-                if (context.delivery.isUnloadedAtDestination().get())
+                if( context.delivery.isUnloadedAtDestination().get() )
+                {
                     applicationEvents.cargoHasArrived( context.cargo );
+                }
 
                 // Step 4: Updated cargo is saved when UnitOfWork completes.
             }

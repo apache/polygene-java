@@ -8,5 +8,5 @@ import org.qi4j.api.service.ServiceComposite
 trait TestService
   extends ServiceComposite
 {
-  def repeat(str: String) : String = str+str;
+  def repeat(input: String ): String = input + input
 }

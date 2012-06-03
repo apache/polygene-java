@@ -13,6 +13,6 @@ public class CargoNotRoutedException extends InspectionException
     public String getMessage()
     {
         return "\nCargo is NOT ROUTED while being handled!" + handlingEvent.print()
-              + "MOCKUP REQUEST TO CARGO OWNER: Please re-route cargo '" + id + "' (now in " + city + ").";
+               + "MOCKUP REQUEST TO CARGO OWNER: Please re-route cargo '" + id + "' (now in " + city + ").";
     }
 }

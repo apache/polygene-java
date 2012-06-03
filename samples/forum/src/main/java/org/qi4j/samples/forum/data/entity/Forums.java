@@ -12,7 +12,7 @@ import static org.qi4j.api.query.QueryExpressions.templateFor;
 /**
  * TODO
  */
-@Mixins(Forums.Mixin.class)
+@Mixins( Forums.Mixin.class )
 public interface Forums
     extends Administrators, EntityComposite
 {
@@ -28,7 +28,9 @@ public interface Forums
 
         public Query<Forum> forums()
         {
-            return module.currentUnitOfWork().newQuery( module.newQueryBuilder( Forum.class ) ).orderBy( templateFor( Forum.class ).name()  );
+            return module.currentUnitOfWork()
+                .newQuery( module.newQueryBuilder( Forum.class ) )
+                .orderBy( templateFor( Forum.class ).name() );
         }
     }
 }

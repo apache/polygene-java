@@ -6,14 +6,13 @@ import com.marcgrue.dcisample_b.data.structure.handling.HandlingEventType;
 import com.marcgrue.dcisample_b.data.structure.location.Location;
 import com.marcgrue.dcisample_b.data.structure.tracking.TrackingId;
 import com.marcgrue.dcisample_b.data.structure.voyage.Voyage;
+import java.util.Date;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-
-import java.util.Date;
 
 /**
  * HandlingEventFactory
@@ -34,10 +33,11 @@ public interface HandlingEventFactory
                                        HandlingEventType handlingEventType,
                                        Location location,
                                        @Optional Voyage voyage
-    ) throws CannotCreateHandlingEventException;
+    )
+        throws CannotCreateHandlingEventException;
 
     public abstract class Mixin
-          implements HandlingEventFactory
+        implements HandlingEventFactory
     {
         @Structure
         UnitOfWorkFactory uowf;
@@ -47,14 +47,19 @@ public interface HandlingEventFactory
                                                   TrackingId trackingId,
                                                   HandlingEventType handlingEventType,
                                                   Location location,
-                                                   Voyage voyage )
-              throws CannotCreateHandlingEventException
+                                                  Voyage voyage
+        )
+            throws CannotCreateHandlingEventException
         {
-            if (voyage == null && handlingEventType.requiresVoyage())
+            if( voyage == null && handlingEventType.requiresVoyage() )
+            {
                 throw new CannotCreateHandlingEventException( "Voyage is required for handling event type " + handlingEventType );
+            }
 
-            else if (voyage != null && handlingEventType.prohibitsVoyage())
+            else if( voyage != null && handlingEventType.prohibitsVoyage() )
+            {
                 throw new CannotCreateHandlingEventException( "Voyage is not allowed with handling event type " + handlingEventType );
+            }
 
             UnitOfWork uow = uowf.currentUnitOfWork();
             EntityBuilder<HandlingEvent> handlingEventBuilder = uow.newEntityBuilder( HandlingEvent.class );

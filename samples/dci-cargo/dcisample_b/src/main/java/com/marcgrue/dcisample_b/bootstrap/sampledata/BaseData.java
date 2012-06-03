@@ -17,15 +17,14 @@ import com.marcgrue.dcisample_b.data.structure.voyage.CarrierMovement;
 import com.marcgrue.dcisample_b.data.structure.voyage.Schedule;
 import com.marcgrue.dcisample_b.data.structure.voyage.Voyage;
 import com.marcgrue.dcisample_b.data.structure.voyage.VoyageNumber;
-import org.qi4j.api.entity.EntityBuilder;
-import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.value.ValueBuilder;
-import org.qi4j.api.value.ValueBuilderFactory;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import org.qi4j.api.entity.EntityBuilder;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.value.ValueBuilder;
+import org.qi4j.api.value.ValueBuilderFactory;
 
 /**
  * Test base class with shared data and factory methods.
@@ -68,7 +67,6 @@ public abstract class BaseData
     protected static CargoAggregateRoot CARGOS;
     protected static HandlingEventAggregateRoot HANDLING_EVENTS;
 
-
     protected static UnLocode unlocode( String unlocodeString )
     {
         ValueBuilder<UnLocode> unlocode = vbf.newValueBuilder( UnLocode.class );
@@ -83,7 +81,6 @@ public abstract class BaseData
         location.instance().name().set( locationStr );
         return location.newInstance();
     }
-
 
     protected static Voyage voyage( String voyageNumberStr, Schedule schedule )
     {
@@ -138,16 +135,15 @@ public abstract class BaseData
         return itinerary.newInstance();
     }
 
-
     protected static Delivery delivery(
-          HandlingEvent lastHandlingEvent,
-          TransportStatus transportStatus,
-          Boolean isUnloadedAtDestination,
-          RoutingStatus routingStatus,
-          Boolean isMisdirected,
-          Date eta,
-          Integer itineraryProgressIndex,
-          NextHandlingEvent nextHandlingEvent
+        HandlingEvent lastHandlingEvent,
+        TransportStatus transportStatus,
+        Boolean isUnloadedAtDestination,
+        RoutingStatus routingStatus,
+        Boolean isMisdirected,
+        Date eta,
+        Integer itineraryProgressIndex,
+        NextHandlingEvent nextHandlingEvent
     )
     {
         ValueBuilder<Delivery> delivery = vbf.newValueBuilder( Delivery.class );
@@ -167,7 +163,8 @@ public abstract class BaseData
     protected static Delivery delivery( Date date,
                                         TransportStatus transportStatus,
                                         RoutingStatus routingStatus,
-                                        Integer itineraryProgressIndex )
+                                        Integer itineraryProgressIndex
+    )
     {
         ValueBuilder<Delivery> delivery = vbf.newValueBuilder( Delivery.class );
         delivery.prototype().timestamp().set( date );
@@ -180,7 +177,8 @@ public abstract class BaseData
     protected static NextHandlingEvent nextHandlingEvent( HandlingEventType handlingEventType,
                                                           Location location,
                                                           Date time,
-                                                          Voyage voyage )
+                                                          Voyage voyage
+    )
     {
         ValueBuilder<NextHandlingEvent> nextHandlingEvent = vbf.newValueBuilder( NextHandlingEvent.class );
         nextHandlingEvent.prototype().handlingEventType().set( handlingEventType );
@@ -195,7 +193,9 @@ public abstract class BaseData
                                                                       String trackingIdString,
                                                                       HandlingEventType handlingEventType,
                                                                       String unLocodeString,
-                                                                      String voyageNumberString ) throws Exception
+                                                                      String voyageNumberString
+    )
+        throws Exception
     {
         ValueBuilder<ParsedHandlingEventData> attempt = vbf.newValueBuilder( ParsedHandlingEventData.class );
         attempt.prototype().registrationTime().set( registrationTime );

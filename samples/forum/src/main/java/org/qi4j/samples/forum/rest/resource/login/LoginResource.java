@@ -12,7 +12,7 @@ import org.restlet.representation.Representation;
 public class LoginResource
     extends ContextResource
 {
-    public Representation login(String name, String password)
+    public Representation login( String name, String password )
     {
         context( Login.class ).login( name, password );
 

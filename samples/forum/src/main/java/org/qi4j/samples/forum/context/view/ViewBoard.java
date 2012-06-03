@@ -5,14 +5,14 @@ import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.structure.Module;
 import org.qi4j.library.rest.server.api.ResourceIndex;
 import org.qi4j.library.rest.server.api.dci.Role;
+import org.qi4j.samples.forum.data.Moderators;
 import org.qi4j.samples.forum.data.entity.Board;
 import org.qi4j.samples.forum.data.entity.Forum;
-import org.qi4j.samples.forum.data.Moderators;
 import org.qi4j.samples.forum.data.entity.Post;
 import org.qi4j.samples.forum.data.entity.Topic;
 import org.qi4j.samples.forum.data.entity.User;
 
-import static org.qi4j.api.property.Numbers.*;
+import static org.qi4j.api.property.Numbers.add;
 
 /**
  * TODO
@@ -78,7 +78,7 @@ public class ViewBoard
         @Structure
         Module module;
 
-        Topic createTopic( String subject, String message, BoardViewer poster)
+        Topic createTopic( String subject, String message, BoardViewer poster )
         {
             Topic topic = module.currentUnitOfWork().newEntity( Topic.class );
 
@@ -94,7 +94,7 @@ public class ViewBoard
 
                 self.lastPost().set( post );
                 add( self.topicCount(), 1 );
-                add( self.postCount(), 1);
+                add( self.postCount(), 1 );
 
                 return topic;
             }

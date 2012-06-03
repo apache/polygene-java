@@ -21,7 +21,8 @@ import org.qi4j.dci.moneytransfer.domain.data.BalanceData;
  * A savings account can be a source account, but not a destination account
  */
 public interface SavingsAccountEntity
-   extends EntityComposite,
-   // Data
-      BalanceData
-{}
+    extends EntityComposite,
+    // Data
+            BalanceData
+{
+}

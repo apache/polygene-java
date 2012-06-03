@@ -24,7 +24,6 @@ import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
-import org.qi4j.dci.moneytransfer.context.PayBillsContext;
 import org.qi4j.dci.moneytransfer.context.PayBillsContext2;
 import org.qi4j.dci.moneytransfer.context.TransferMoneyContext2;
 import org.qi4j.dci.moneytransfer.domain.data.BalanceData;
@@ -48,11 +47,13 @@ public class TransferMoneyTest2
     public static final String CREDITOR_ID2 = "ButcherAccount";
 
     @BeforeClass
-    public static void setup() throws Exception
+    public static void setup()
+        throws Exception
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {
-            public void assemble( ModuleAssembly module ) throws AssemblyException
+            public void assemble( ModuleAssembly module )
+                throws AssemblyException
             {
                 module.entities(
                     CheckingAccountEntity.class,
@@ -70,7 +71,7 @@ public class TransferMoneyTest2
 
         module = assembler.module();
 
-        bootstrapData( );
+        bootstrapData();
     }
 
     @Before
@@ -95,17 +96,21 @@ public class TransferMoneyTest2
 
         try
         {
-            System.out.println( SAVINGS_ACCOUNT_ID + ":" + uow.get( BalanceData.class, SAVINGS_ACCOUNT_ID ).getBalance() );
-            System.out.println( CHECKING_ACCOUNT_ID + ":" + uow.get( BalanceData.class, CHECKING_ACCOUNT_ID ).getBalance() );
+            System.out
+                .println( SAVINGS_ACCOUNT_ID + ":" + uow.get( BalanceData.class, SAVINGS_ACCOUNT_ID ).getBalance() );
+            System.out
+                .println( CHECKING_ACCOUNT_ID + ":" + uow.get( BalanceData.class, CHECKING_ACCOUNT_ID ).getBalance() );
             System.out.println( CREDITOR_ID1 + ":" + uow.get( BalanceData.class, CREDITOR_ID1 ).getBalance() );
             System.out.println( CREDITOR_ID2 + ":" + uow.get( BalanceData.class, CREDITOR_ID2 ).getBalance() );
-        } finally
+        }
+        finally
         {
             uow.discard();
         }
     }
 
-    private static void bootstrapData( ) throws Exception
+    private static void bootstrapData()
+        throws Exception
     {
         UnitOfWork uow = module.newUnitOfWork( newUsecase( "Bootstrap data" ) );
         try
@@ -124,14 +129,16 @@ public class TransferMoneyTest2
 
             // Save
             uow.complete();
-        } finally
+        }
+        finally
         {
             uow.discard();
         }
     }
 
     @Test
-    public void transferHalfOfMoneyFromSavingsToChecking() throws Exception
+    public void transferHalfOfMoneyFromSavingsToChecking()
+        throws Exception
     {
         UnitOfWork uow = module.newUnitOfWork( UsecaseBuilder.newUsecase( "Transfer from savings to checking" ) );
 
@@ -142,7 +149,8 @@ public class TransferMoneyTest2
             BalanceData destination = uow.get( BalanceData.class, CHECKING_ACCOUNT_ID );
 
             // Instantiate context and execute enactments with that context
-            TransferMoneyContext2 context = module.newTransient( TransferMoneyContext2.class).bind( source, destination );
+            TransferMoneyContext2 context = module.newTransient( TransferMoneyContext2.class )
+                .bind( source, destination );
 
             // Query for half the balance
             final Integer amountToTransfer = context.availableFunds() / 2;
@@ -151,14 +159,16 @@ public class TransferMoneyTest2
             context.transfer( amountToTransfer );
 
             uow.complete();
-        } finally
+        }
+        finally
         {
             uow.discard();
         }
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void transferTwiceOfMoneyFromSavingsToChecking() throws Exception
+    @Test( expected = IllegalArgumentException.class )
+    public void transferTwiceOfMoneyFromSavingsToChecking()
+        throws Exception
     {
         UnitOfWork uow = module.newUnitOfWork( UsecaseBuilder.newUsecase( "Transfer from savings to checking" ) );
 
@@ -169,7 +179,8 @@ public class TransferMoneyTest2
             BalanceData destination = uow.get( BalanceData.class, CHECKING_ACCOUNT_ID );
 
             // Instantiate context and execute enactments with that context
-            TransferMoneyContext2 context = module.newTransient( TransferMoneyContext2.class).bind( source, destination );
+            TransferMoneyContext2 context = module.newTransient( TransferMoneyContext2.class )
+                .bind( source, destination );
 
             // Query for double the balance
             final Integer amountToTransfer = context.availableFunds() * 2;
@@ -178,21 +189,23 @@ public class TransferMoneyTest2
             context.transfer( amountToTransfer );
 
             uow.complete();
-        } finally
+        }
+        finally
         {
             uow.discard();
         }
     }
 
     @Test
-    public void payAllBills() throws Exception
+    public void payAllBills()
+        throws Exception
     {
         UnitOfWork uow = module.newUnitOfWork( newUsecase( "Pay all bills from checking to creditors" ) );
         try
         {
             BalanceData source = uow.get( BalanceData.class, CHECKING_ACCOUNT_ID );
 
-            PayBillsContext2 context = module.newObject(PayBillsContext2.class);
+            PayBillsContext2 context = module.newObject( PayBillsContext2.class );
             context.bind( source ).payBills();
 
             uow.complete();

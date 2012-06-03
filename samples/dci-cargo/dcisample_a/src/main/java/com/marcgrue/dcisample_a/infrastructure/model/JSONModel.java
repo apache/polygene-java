@@ -8,7 +8,7 @@ import org.qi4j.api.value.ValueComposite;
  * Model that can serialize/de-serialize an object to/from a JSON string.
  */
 public class JSONModel<T, U extends ValueComposite>
-      extends ReadOnlyModel<T>
+    extends ReadOnlyModel<T>
 {
     private Class<U> valueCompositeClass;
     private String json;
@@ -18,9 +18,12 @@ public class JSONModel<T, U extends ValueComposite>
     public JSONModel( T valueComposite, Class<U> valueCompositeClass )
     {
         JSONObjectSerializer jsonSerializer = new JSONObjectSerializer();
-        try {
-            jsonSerializer.serialize((U) valueComposite);
-        } catch (JSONException e) {
+        try
+        {
+            jsonSerializer.serialize( (U) valueComposite );
+        }
+        catch( JSONException e )
+        {
             throw new RuntimeException( "Cannot serialize ValueComposite: " + valueComposite );
         }
         json = jsonSerializer.getRoot().toString();
@@ -30,19 +33,21 @@ public class JSONModel<T, U extends ValueComposite>
     @SuppressWarnings( "unchecked" )
     public static <T, U extends ValueComposite> JSONModel<T, U> of( T value )
     {
-        if (!(value instanceof ValueComposite))
+        if( !( value instanceof ValueComposite ) )
+        {
             throw new RuntimeException( value + " has to be an instance of a ValueComposite." );
+        }
 
         // Get ValueComposite interface
-        Class<U> valueCompositeClass =  (Class<U>) qi4j.getValueDescriptor(value).valueType().mainType();
+        Class<U> valueCompositeClass = (Class<U>) qi4j.getValueDescriptor( value ).valueType().mainType();
 
-        return new JSONModel<T, U>( value, valueCompositeClass);
+        return new JSONModel<T, U>( value, valueCompositeClass );
     }
 
     @SuppressWarnings( "unchecked" )
     public T getObject()
     {
-        if (valueComposite == null && json != null)
+        if( valueComposite == null && json != null )
         {
             // De-serialize
             valueComposite = (T) module.newValueFromJSON( valueCompositeClass, json ); // Unchecked cast

@@ -7,6 +7,8 @@ import com.marcgrue.dcisample_a.infrastructure.wicket.form.AbstractForm;
 import com.marcgrue.dcisample_a.infrastructure.wicket.form.DateTextFieldWithPicker;
 import com.marcgrue.dcisample_a.infrastructure.wicket.form.SelectorInForm;
 import com.marcgrue.dcisample_a.infrastructure.wicket.prevnext.PrevNext;
+import java.util.Date;
+import java.util.List;
 import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -16,9 +18,6 @@ import org.apache.wicket.markup.html.panel.ComponentFeedbackPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.joda.time.LocalDate;
-
-import java.util.Date;
-import java.util.List;
 
 /**
  * Book new cargo
@@ -51,24 +50,21 @@ public class BookNewCargoPage extends BookingBasePage
             final FeedbackPanel feedback = new FeedbackPanel( "feedback" );
             add( feedback.setOutputMarkupId( true ) );
 
-
             final SelectorInForm originSelector = new SelectorInForm(
-                  "origin", "Origin", locations, this, "destination" );
+                "origin", "Origin", locations, this, "destination" );
             originSelector.setRequired( true );
 
             final ComponentFeedbackPanel originFeedback = new ComponentFeedbackPanel(
-                  "originFeedback", originSelector );
+                "originFeedback", originSelector );
             add( originFeedback.setOutputMarkupId( true ) );
 
-
             final SelectorInForm destinationSelector = new SelectorInForm(
-                  "destination", "Destinatin", locations, this, "origin" );
+                "destination", "Destinatin", locations, this, "origin" );
             destinationSelector.setRequired( true );
 
             final ComponentFeedbackPanel destinationFeedback = new ComponentFeedbackPanel(
-                  "destinationFeedback", destinationSelector );
+                "destinationFeedback", destinationSelector );
             add( destinationFeedback.setOutputMarkupId( true ) );
-
 
             // Disable equal locations
             originSelector.add( new AjaxFormComponentUpdatingBehavior( "onchange" )
@@ -98,7 +94,7 @@ public class BookNewCargoPage extends BookingBasePage
             deadlineField.earliestDate( new LocalDate().plusDays( 1 ) );
 
             final ComponentFeedbackPanel deadlineFeedback = new ComponentFeedbackPanel(
-                  "deadlineFeedback", deadlineField );
+                "deadlineFeedback", deadlineField );
             add( deadlineFeedback.setOutputMarkupId( true ) );
 
             add( originSelector, destinationSelector, deadlineField );
@@ -119,7 +115,7 @@ public class BookNewCargoPage extends BookingBasePage
                         // Show created cargo
                         setResponsePage( CargoDetailsPage.class, new PageParameters().set( 0, trackingId.id().get() ) );
                     }
-                    catch (Exception e)
+                    catch( Exception e )
                     {
                         logger.warn( "Problem booking a new cargo: " + e.getMessage() );
                         feedback.error( e.getMessage() );

@@ -1,7 +1,11 @@
 package com.marcgrue.dcisample_a.infrastructure.wicket.form;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.markup.html.form.*;
+import org.apache.wicket.markup.html.form.Button;
+import org.apache.wicket.markup.html.form.CheckBox;
+import org.apache.wicket.markup.html.form.FormComponent;
+import org.apache.wicket.markup.html.form.RadioChoice;
+import org.apache.wicket.markup.html.form.StatelessForm;
 import org.apache.wicket.util.visit.IVisit;
 import org.apache.wicket.util.visit.IVisitor;
 
@@ -15,6 +19,7 @@ public abstract class AbstractForm<T> extends StatelessForm<T>
     {
         super( id );
     }
+
     public AbstractForm()
     {
         super( "form" );
@@ -26,8 +31,10 @@ public abstract class AbstractForm<T> extends StatelessForm<T>
         {
             public void component( FormComponent<?> fc, IVisit<Void> visit )
             {
-                if (isOtherComponent( fc ) || fc.isValid())
+                if( isOtherComponent( fc ) || fc.isValid() )
+                {
                     return;
+                }
 
                 target.focusComponent( fc );
                 visit.stop();

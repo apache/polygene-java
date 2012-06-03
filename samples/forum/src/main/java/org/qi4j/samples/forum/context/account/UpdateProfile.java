@@ -16,9 +16,9 @@ public class UpdateProfile
 {
     Profile profile;
 
-    public UpdateProfile bind(@Uses User user)
+    public UpdateProfile bind( @Uses User user )
     {
-        profile = role(Profile.class, user);
+        profile = role( Profile.class, user );
         return this;
     }
 
@@ -27,9 +27,12 @@ public class UpdateProfile
         return profile;
     }
 
-    public void updateProfile(@Name("name") String name, @Name("realname") String realName, @Name("email") String email)
+    public void updateProfile( @Name( "name" ) String name,
+                               @Name( "realname" ) String realName,
+                               @Name( "email" ) String email
+    )
     {
-        profile.updateProfile(name, realName, email);
+        profile.updateProfile( name, realName, email );
     }
 
     protected class Profile

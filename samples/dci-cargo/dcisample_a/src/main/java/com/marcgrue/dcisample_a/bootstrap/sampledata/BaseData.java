@@ -2,7 +2,6 @@ package com.marcgrue.dcisample_a.bootstrap.sampledata;
 
 import com.marcgrue.dcisample_a.data.entity.CargosEntity;
 import com.marcgrue.dcisample_a.data.entity.HandlingEventsEntity;
-import com.marcgrue.dcisample_a.data.shipping.*;
 import com.marcgrue.dcisample_a.data.shipping.cargo.Cargo;
 import com.marcgrue.dcisample_a.data.shipping.cargo.RouteSpecification;
 import com.marcgrue.dcisample_a.data.shipping.cargo.TrackingId;
@@ -15,14 +14,13 @@ import com.marcgrue.dcisample_a.data.shipping.location.UnLocode;
 import com.marcgrue.dcisample_a.data.shipping.voyage.CarrierMovement;
 import com.marcgrue.dcisample_a.data.shipping.voyage.Schedule;
 import com.marcgrue.dcisample_a.data.shipping.voyage.Voyage;
-import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.value.ValueBuilder;
-import org.qi4j.api.value.ValueBuilderFactory;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.value.ValueBuilder;
+import org.qi4j.api.value.ValueBuilderFactory;
 
 /**
  * Test base class with shared Locations, Voyages etc.
@@ -80,7 +78,6 @@ public abstract class BaseData
 
     protected static CargosEntity CARGOS;
     protected static HandlingEventsEntity HANDLING_EVENTS;
-
 
     protected static UnLocode unlocode( String unlocodeString )
     {

@@ -10,8 +10,8 @@ import org.qi4j.api.entity.EntityComposite;
  * separate aggregate root to create those from.
  */
 public interface VoyageEntity
-      extends EntityComposite,
+    extends EntityComposite,
 
-      Voyage
+            Voyage
 {
 }

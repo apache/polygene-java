@@ -3,6 +3,7 @@ package org.qi4j.sample.scala;
 import org.junit.Assert;
 import org.junit.Test;
 import org.qi4j.api.constraint.ConstraintViolationException;
+import org.qi4j.api.scala.TraitMixin;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;

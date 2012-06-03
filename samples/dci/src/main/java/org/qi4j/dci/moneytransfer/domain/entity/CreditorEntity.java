@@ -21,7 +21,8 @@ import org.qi4j.dci.moneytransfer.domain.data.BalanceData;
  * You can transfer money to a creditor, but not get money out from it
  */
 public interface CreditorEntity
-   extends EntityComposite,
-   // Data
-      BalanceData
-{}
+    extends EntityComposite,
+    // Data
+            BalanceData
+{
+}

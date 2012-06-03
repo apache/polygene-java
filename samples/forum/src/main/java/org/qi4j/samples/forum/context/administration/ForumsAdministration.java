@@ -11,8 +11,6 @@ import org.qi4j.samples.forum.data.entity.Forum;
 import org.qi4j.samples.forum.data.entity.Forums;
 import org.qi4j.samples.forum.data.entity.User;
 
-import static org.qi4j.api.query.QueryExpressions.templateFor;
-
 /**
  * TODO
  */
@@ -25,7 +23,7 @@ public class ForumsAdministration
     ForumsAdmin forumsAdmin = new ForumsAdmin();
     Administrator administrator = new Administrator();
 
-    public ForumsAdministration bind(@Uses Forums forums, @Uses User user)
+    public ForumsAdministration bind( @Uses Forums forums, @Uses User user )
     {
         forumsAdmin.bind( forums );
         administrator.bind( user );
@@ -37,24 +35,24 @@ public class ForumsAdministration
         return forumsAdmin.forums();
     }
 
-    public Forum createForum(@Name("name") String name)
+    public Forum createForum( @Name( "name" ) String name )
     {
-        return forumsAdmin.createForum(name);
+        return forumsAdmin.createForum( name );
     }
 
     protected class ForumsAdmin
         extends Role<Forums>
     {
-            public Query<Forum> forums()
-            {
-                return self.forums();
-            }
+        public Query<Forum> forums()
+        {
+            return self.forums();
+        }
 
-        public Forum createForum(String name)
+        public Forum createForum( String name )
         {
             Forum forum = module.currentUnitOfWork().newEntity( Forum.class );
             forum.name().set( name );
-            administrator.makeModerator(forum);
+            administrator.makeModerator( forum );
             return forum;
         }
     }

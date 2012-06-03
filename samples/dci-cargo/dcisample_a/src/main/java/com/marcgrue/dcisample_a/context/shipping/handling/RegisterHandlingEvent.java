@@ -12,15 +12,14 @@ import com.marcgrue.dcisample_a.data.shipping.location.Location;
 import com.marcgrue.dcisample_a.data.shipping.voyage.Voyage;
 import com.marcgrue.dcisample_a.infrastructure.dci.Context;
 import com.marcgrue.dcisample_a.infrastructure.dci.RoleMixin;
+import java.util.Arrays;
+import java.util.Date;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.value.ValueBuilder;
-
-import java.util.Arrays;
-import java.util.Date;
 
 import static com.marcgrue.dcisample_a.data.entity.HandlingEventsEntity.HANDLING_EVENTS_ID;
 
@@ -42,7 +41,6 @@ public class RegisterHandlingEvent extends Context
     private String unLocodeString;
     private String voyageNumberString;
 
-
     // CONTEXT CONSTRUCTORS ------------------------------------------------------
 
     public RegisterHandlingEvent( Date registrationTime,
@@ -50,7 +48,8 @@ public class RegisterHandlingEvent extends Context
                                   String trackingIdString,
                                   String eventTypeString,
                                   String unLocodeString,
-                                  String voyageNumberString )
+                                  String voyageNumberString
+    )
     {
         handlingEventFactory = rolePlayer( HandlingEventFactoryRole.class, HandlingEventsEntity.class, HANDLING_EVENTS_ID );
 
@@ -62,14 +61,12 @@ public class RegisterHandlingEvent extends Context
         this.voyageNumberString = voyageNumberString;
     }
 
-
     // INTERACTIONS --------------------------------------------------------------
 
     public void register()
     {
         handlingEventFactory.registerHandlingEvent();
     }
-
 
     // METHODFUL ROLE IMPLEMENTATIONS --------------------------------------------
 
@@ -81,8 +78,8 @@ public class RegisterHandlingEvent extends Context
         void registerHandlingEvent();
 
         class Mixin
-              extends RoleMixin<RegisterHandlingEvent>
-              implements HandlingEventFactoryRole
+            extends RoleMixin<RegisterHandlingEvent>
+            implements HandlingEventFactoryRole
         {
             @Service
             ApplicationEvents applicationEvents;
@@ -95,7 +92,6 @@ public class RegisterHandlingEvent extends Context
             HandlingEventType handlingEventType;
             Location location;
             Voyage voyage;
-
 
             public void registerHandlingEvent()
             {
@@ -115,9 +111,9 @@ public class RegisterHandlingEvent extends Context
 
                     // Step 4: Create and save handling event
                     handlingEvent = handlingEvents.createHandlingEvent(
-                          context.registrationTime, context.completionTime, trackingId, handlingEventType, location, voyage );
+                        context.registrationTime, context.completionTime, trackingId, handlingEventType, location, voyage );
                 }
-                catch (IllegalArgumentException e)
+                catch( IllegalArgumentException e )
                 {
                     // Deviation 2-5a: Publish event if registration is unsuccessful
                     applicationEvents.unsuccessfulHandlingEventRegistration( registrationAttempt );
@@ -134,7 +130,7 @@ public class RegisterHandlingEvent extends Context
             private RegisterHandlingEventAttemptDTO buildRegistrationAttempt()
             {
                 ValueBuilder<RegisterHandlingEventAttemptDTO> builder =
-                      vbf.newValueBuilder( RegisterHandlingEventAttemptDTO.class );
+                    vbf.newValueBuilder( RegisterHandlingEventAttemptDTO.class );
                 builder.prototype().registrationTime().set( context.registrationTime );
                 builder.prototype().completionTime().set( context.completionTime );
                 builder.prototype().trackingIdString().set( context.trackingIdString );
@@ -146,10 +142,14 @@ public class RegisterHandlingEvent extends Context
 
             private void verifyExistingData()
             {
-                if (context.registrationTime == null)
+                if( context.registrationTime == null )
+                {
                     throw new IllegalArgumentException( "Registration time was null. All parameters have to be passed." );
-                if (context.completionTime == null)
+                }
+                if( context.completionTime == null )
+                {
                     throw new IllegalArgumentException( "Completion time was null. All parameters have to be passed." );
+                }
 
                 context.trackingIdString = getClean( "Tracking id", context.trackingIdString );
                 context.eventTypeString = getClean( "Event type", context.eventTypeString );
@@ -160,11 +160,15 @@ public class RegisterHandlingEvent extends Context
 
             private String getClean( String parameter, String value )
             {
-                if (value == null)
+                if( value == null )
+                {
                     throw new IllegalArgumentException( parameter + " was null. All parameters have to be passed." );
+                }
 
-                if (value.trim().length() == 0)
+                if( value.trim().length() == 0 )
+                {
                     throw new IllegalArgumentException( parameter + " cannot be empty." );
+                }
 
                 return value.trim();
             }
@@ -176,11 +180,11 @@ public class RegisterHandlingEvent extends Context
                 {
                     handlingEventType = HandlingEventType.valueOf( context.eventTypeString );
                 }
-                catch (Exception e)
+                catch( Exception e )
                 {
                     throw new IllegalArgumentException(
-                          "'" + context.eventTypeString + "' is not a valid handling event type. Valid types are: "
-                                + Arrays.toString( HandlingEventType.values() ) );
+                        "'" + context.eventTypeString + "' is not a valid handling event type. Valid types are: "
+                        + Arrays.toString( HandlingEventType.values() ) );
                 }
 
                 // Verifications against data store
@@ -194,11 +198,13 @@ public class RegisterHandlingEvent extends Context
                     trackingId = cargo.trackingId().get();
 
                     // Deviation 3c
-                    if (cargo.itinerary().get() == null)
+                    if( cargo.itinerary().get() == null )
+                    {
                         throw new IllegalArgumentException( "Can't create handling event for non-routed cargo '"
-                                                                  + context.trackingIdString + "'." );
+                                                            + context.trackingIdString + "'." );
+                    }
                 }
-                catch (NoSuchEntityException e)
+                catch( NoSuchEntityException e )
                 {
                     throw new IllegalArgumentException( "Found no cargo with tracking id '" + context.trackingIdString + "'." );
                 }
@@ -208,28 +214,30 @@ public class RegisterHandlingEvent extends Context
                 {
                     location = uow.get( Location.class, context.unLocodeString );
                 }
-                catch (NoSuchEntityException e)
+                catch( NoSuchEntityException e )
                 {
                     throw new IllegalArgumentException( "Unknown location: " + context.unLocodeString );
                 }
 
                 // Deviation 3e
-                if (handlingEventType.requiresVoyage())
+                if( handlingEventType.requiresVoyage() )
                 {
                     // Deviation 3e1a
-                    if (context.voyageNumberString == null)
+                    if( context.voyageNumberString == null )
+                    {
                         throw new IllegalArgumentException( "Handling event " + handlingEventType.toString() +
-                                                                  " requires a voyage. No voyage number submitted." );
+                                                            " requires a voyage. No voyage number submitted." );
+                    }
 
                     // Deviation 3e1b
                     try
                     {
                         voyage = uow.get( Voyage.class, context.voyageNumberString );
                     }
-                    catch (NoSuchEntityException e)
+                    catch( NoSuchEntityException e )
                     {
                         throw new IllegalArgumentException(
-                              "Found no voyage with voyage number '" + context.voyageNumberString + "'." );
+                            "Found no voyage with voyage number '" + context.voyageNumberString + "'." );
                     }
                 }
                 else

@@ -5,6 +5,7 @@ import com.marcgrue.dcisample_b.data.structure.cargo.Cargo;
 import com.marcgrue.dcisample_b.data.structure.cargo.RouteSpecification;
 import com.marcgrue.dcisample_b.data.structure.delivery.Delivery;
 import com.marcgrue.dcisample_b.data.structure.tracking.TrackingId;
+import java.util.UUID;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.EntityBuilder;
@@ -15,8 +16,6 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
-
-import java.util.UUID;
 
 /**
  * Cargo factory
@@ -29,10 +28,10 @@ import java.util.UUID;
 public interface CargoFactory
 {
     Cargo createCargo( RouteSpecification routeSpecification, Delivery delivery, @Optional String id )
-          throws CannotCreateCargoException;
+        throws CannotCreateCargoException;
 
     class Mixin
-          implements CargoFactory
+        implements CargoFactory
     {
         @Structure
         UnitOfWorkFactory uowf;
@@ -41,7 +40,7 @@ public interface CargoFactory
         ValueBuilderFactory vbf;
 
         public Cargo createCargo( RouteSpecification routeSpecification, Delivery delivery, String id )
-              throws ConstraintViolationException, CannotCreateCargoException
+            throws ConstraintViolationException, CannotCreateCargoException
         {
             TrackingId trackingId = buildTrackingId( id );
 
@@ -55,9 +54,10 @@ public interface CargoFactory
             return cargoBuilder.newInstance();
         }
 
-        private TrackingId buildTrackingId( String id ) throws CannotCreateCargoException
+        private TrackingId buildTrackingId( String id )
+            throws CannotCreateCargoException
         {
-            if (id == null || id.trim().equals( "" ))
+            if( id == null || id.trim().equals( "" ) )
             {
                 // Build random tracking id
                 final String uuid = UUID.randomUUID().toString().toUpperCase();
@@ -71,7 +71,7 @@ public interface CargoFactory
                     uowf.currentUnitOfWork().get( Cargo.class, id );
                     throw new CannotCreateCargoException( "Tracking id '" + id + "' is not unique." );
                 }
-                catch (NoSuchEntityException e)
+                catch( NoSuchEntityException e )
                 {
                     // Ok: tracking id is unique
                 }

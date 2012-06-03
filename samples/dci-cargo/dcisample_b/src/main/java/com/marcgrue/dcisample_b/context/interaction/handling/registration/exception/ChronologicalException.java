@@ -1,7 +1,6 @@
 package com.marcgrue.dcisample_b.context.interaction.handling.registration.exception;
 
 import com.marcgrue.dcisample_b.context.interaction.handling.parsing.dto.ParsedHandlingEventData;
-
 import java.util.Date;
 
 /**

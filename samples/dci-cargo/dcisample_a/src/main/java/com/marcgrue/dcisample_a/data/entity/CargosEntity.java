@@ -7,9 +7,9 @@ import org.qi4j.api.entity.EntityComposite;
  * Cargo aggregate root?
  */
 public interface CargosEntity
-      extends EntityComposite,
+    extends EntityComposite,
 
-      Cargos
+            Cargos
 {
     public static final String CARGOS_ID = "Cargos_id";
 }

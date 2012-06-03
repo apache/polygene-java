@@ -7,6 +7,7 @@ import com.marcgrue.dcisample_a.context.shipping.handling.RegisterHandlingEvent;
 import com.marcgrue.dcisample_a.infrastructure.wicket.form.AbstractForm;
 import com.marcgrue.dcisample_a.infrastructure.wicket.form.DateTextFieldWithPicker;
 import com.marcgrue.dcisample_a.infrastructure.wicket.form.SelectorInForm;
+import java.util.Date;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxFallbackButton;
 import org.apache.wicket.markup.html.form.Form;
@@ -15,8 +16,6 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.util.value.ValueMap;
 import org.joda.time.LocalDate;
-
-import java.util.Date;
 
 /**
  * Register Handling Events
@@ -50,13 +49,13 @@ public class RegisterHandlingEventPage extends BasePage
             final FeedbackPanel feedback = new FeedbackPanel( "feedback" );
             add( feedback.setOutputMarkupId( true ) );
 
-            final DateTextFieldWithPicker completionDateInput = new DateTextFieldWithPicker(  "completion", "Completion", this );
+            final DateTextFieldWithPicker completionDateInput = new DateTextFieldWithPicker( "completion", "Completion", this );
             completionDateInput.earliestDate( new LocalDate() );
 
             HandlingQueries fetch = new HandlingQueries();
             add( completionDateInput.setLabel( Model.of( "Completion" ) ) );
             add( new SelectorInForm( "trackingId", "Tracking Id", fetch.cargoIds(), this ).setRequired( true ) );
-            add( new SelectorInForm( "eventType","Event Type", fetch.eventTypes(), this ).setRequired( true ));
+            add( new SelectorInForm( "eventType", "Event Type", fetch.eventTypes(), this ).setRequired( true ) );
             add( new SelectorInForm( "unLocode", "Location", new CommonQueries().unLocodes(), this ).setRequired( true ) );
             add( new SelectorInForm( "voyageNumber", "Voyage number", fetch.voyages(), this ) );
 
@@ -68,12 +67,14 @@ public class RegisterHandlingEventPage extends BasePage
                     try
                     {
                         // We want to allow making multiple _unique_ handling event registrations
-                        if (sameDataIsSubmitted())
+                        if( sameDataIsSubmitted() )
+                        {
                             throw new Exception( "Can't re-submit the same data." );
+                        }
 
                         // Perform use case
                         new RegisterHandlingEvent(
-                              new Date(), completion, trackingId, eventType, unLocode, voyageNumber ).register();
+                            new Date(), completion, trackingId, eventType, unLocode, voyageNumber ).register();
 
                         // We could redirect to Details, but it's more fun to update details in a separate
                         // window to follow the successive handling event registrations you make...
@@ -82,16 +83,20 @@ public class RegisterHandlingEventPage extends BasePage
                         ValueMap map = new ValueMap();
                         map.put( "type", eventType );
                         map.put( "location", unLocode );
-                        if (voyageNumber != null) map.put( "voyage", voyageNumber );
-                        String msg = new StringResourceModel( "handlingEvent.${type}", this, new Model<ValueMap>( map ) ).getObject();
+                        if( voyageNumber != null )
+                        {
+                            map.put( "voyage", voyageNumber );
+                        }
+                        String msg = new StringResourceModel( "handlingEvent.${type}", this, new Model<ValueMap>( map ) )
+                            .getObject();
 
                         feedback.info( "Registered handling event for cargo '" + trackingId + "': " + msg );
                         target.add( feedback );
                     }
-                    catch (Exception e)
+                    catch( Exception e )
                     {
-                        logger.warn( "Problem registering handling event: " +  e.getMessage() );
-                        feedback.error(  e.getMessage() );
+                        logger.warn( "Problem registering handling event: " + e.getMessage() );
+                        feedback.error( e.getMessage() );
                         target.add( feedback );
                     }
                 }
@@ -109,8 +114,10 @@ public class RegisterHandlingEventPage extends BasePage
         {
             String submittedData = completion.toString() + trackingId + unLocode + voyageNumber + eventType;
 
-            if (submittedData.equals( lastSubmittedData ))
+            if( submittedData.equals( lastSubmittedData ) )
+            {
                 return true;
+            }
 
             // Valid new data submitted
             lastSubmittedData = submittedData;

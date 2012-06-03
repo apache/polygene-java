@@ -1,11 +1,10 @@
 package com.marcgrue.dcisample_a.infrastructure.dci;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 
 /**
  * Context
@@ -33,8 +32,10 @@ public abstract class Context
     */
     protected <T> T rolePlayer( Class<T> roleClass, Object dataObject )
     {
-        if (dataObject == null)
+        if( dataObject == null )
+        {
             return null;
+        }
 
         objectCanPlayRole( roleClass, dataObject );
         T rolePlayer = roleClass.cast( dataObject );
@@ -44,17 +45,23 @@ public abstract class Context
 
     private <T> void objectCanPlayRole( Class<T> roleClass, Object dataObject )
     {
-        if (roleClass.isAssignableFrom( dataObject.getClass() ))
+        if( roleClass.isAssignableFrom( dataObject.getClass() ) )
+        {
             return;
+        }
 
         String className;
-        if (dataObject instanceof Proxy)
+        if( dataObject instanceof Proxy )
+        {
             className = Proxy.getInvocationHandler( dataObject ).getClass().getSimpleName();
+        }
         else
+        {
             className = dataObject.getClass().getSimpleName();
+        }
 
         throw new IllegalArgumentException(
-              "Object '" + className + "' can't play Role of '" + roleClass.getSimpleName() + "'" );
+            "Object '" + className + "' can't play Role of '" + roleClass.getSimpleName() + "'" );
     }
 
     /*
@@ -69,14 +76,14 @@ public abstract class Context
             // Set Context in Role
             setContextMethod.invoke( rolePlayer, context );
         }
-        catch (Exception e)
+        catch( Exception e )
         {
             String c = context.getClass().getSimpleName();
             String r = rolePlayer.getClass().getSimpleName();
             String msg = "Couldn't invoke 'void setContext( " + c + " context);' on " + r + "." +
-                  "\nPlease check the following requirements: " +
-                  "\n1) 'void setContext( " + c + " context);' is declared in " + r + " interface." +
-                  "\n2) " + r + " extends RoleMixin<" + c + ">";
+                         "\nPlease check the following requirements: " +
+                         "\n1) 'void setContext( " + c + " context);' is declared in " + r + " interface." +
+                         "\n2) " + r + " extends RoleMixin<" + c + ">";
             logger.error( msg, e.getMessage() );
             e.printStackTrace();
             throw new RuntimeException( msg );

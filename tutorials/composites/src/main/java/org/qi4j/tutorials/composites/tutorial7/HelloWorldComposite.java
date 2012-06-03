@@ -5,6 +5,7 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.sideeffect.SideEffects;
 
 // START SNIPPET: solution
+
 /**
  * This Composite interface declares transitively
  * all the Fragments of the HelloWorld composite.

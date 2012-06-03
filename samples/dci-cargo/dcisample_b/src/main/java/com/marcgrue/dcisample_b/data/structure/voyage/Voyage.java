@@ -1,10 +1,9 @@
 package com.marcgrue.dcisample_b.data.structure.voyage;
 
 import com.marcgrue.dcisample_b.data.structure.location.Location;
+import java.text.SimpleDateFormat;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
-
-import java.text.SimpleDateFormat;
 
 /**
  * Voyage
@@ -25,28 +24,35 @@ public interface Voyage
 
     // Side-effects free and UI agnostic convenience methods
     CarrierMovement carrierMovementDepartingFrom( Location departure );
+
     String print();
 
     public abstract class Mixin
-          implements Voyage
+        implements Voyage
     {
         public CarrierMovement carrierMovementDepartingFrom( Location departure )
         {
-            for (CarrierMovement carrierMovement : schedule().get().carrierMovements().get())
-                if (carrierMovement.departureLocation().get().equals( departure ))
+            for( CarrierMovement carrierMovement : schedule().get().carrierMovements().get() )
+            {
+                if( carrierMovement.departureLocation().get().equals( departure ) )
+                {
                     return carrierMovement;
+                }
+            }
 
             return null;
         }
 
         public String print()
         {
-            StringBuilder sb = new StringBuilder( "\nVOYAGE ")
-                  .append( voyageNumber().get().number().get())
-                  .append( " -----------------------------------------------------" );
+            StringBuilder sb = new StringBuilder( "\nVOYAGE " )
+                .append( voyageNumber().get().number().get() )
+                .append( " -----------------------------------------------------" );
 
-            for (int i = 0; i < schedule().get().carrierMovements().get().size(); i++)
+            for( int i = 0; i < schedule().get().carrierMovements().get().size(); i++ )
+            {
                 printLeg( i, sb, schedule().get().carrierMovements().get().get( i ) );
+            }
 
             return sb.append( "\n---------------------------------------------------------------\n" ).toString();
         }

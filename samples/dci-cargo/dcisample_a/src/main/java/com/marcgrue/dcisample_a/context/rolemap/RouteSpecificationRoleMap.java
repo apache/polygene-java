@@ -10,10 +10,10 @@ import org.qi4j.api.value.ValueComposite;
  * Note that this is a Value Composite (and not an entity) capable of playing different Roles.
  */
 public interface RouteSpecificationRoleMap
-      extends ValueComposite,
+    extends ValueComposite,
 
-      RouteSpecification,
+            RouteSpecification,
 
-      BuildDeliverySnapshot.FactoryRole
+            BuildDeliverySnapshot.FactoryRole
 {
 }

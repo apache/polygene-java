@@ -1,6 +1,5 @@
 package com.marcgrue.dcisample_a.data.shipping.voyage;
 
-import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueComposite;
 
@@ -10,7 +9,7 @@ import org.qi4j.api.value.ValueComposite;
  * Voyage number is mandatory and immutable.
  */
 public interface VoyageNumber
-      extends ValueComposite
+    extends ValueComposite
 {
     Property<String> number();
 }

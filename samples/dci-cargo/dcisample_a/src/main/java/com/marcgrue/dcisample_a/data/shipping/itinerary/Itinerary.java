@@ -1,15 +1,12 @@
 package com.marcgrue.dcisample_a.data.shipping.itinerary;
 
-import com.marcgrue.dcisample_a.data.shipping.itinerary.Leg;
+import java.util.Date;
+import java.util.List;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.Property;
 import org.qi4j.library.constraints.annotation.NotEmpty;
-
-import java.util.Date;
-import java.util.List;
 
 /**
  * An itinerary is a description of a planned route for a cargo.
@@ -27,33 +24,42 @@ public interface Itinerary
 
     // Side-effects free and UI agnostic convenience methods
     Leg firstLeg();
+
     Leg lastLeg();
+
     Date finalArrivalDate();
+
     int days();
 
     public abstract class Mixin
-          implements Itinerary
+        implements Itinerary
     {
         public Leg firstLeg()
         {
-            if (legs().get().isEmpty())
+            if( legs().get().isEmpty() )
+            {
                 return null;
+            }
 
             return legs().get().get( 0 );
         }
 
         public Leg lastLeg()
         {
-            if (legs().get().isEmpty())
+            if( legs().get().isEmpty() )
+            {
                 return null;
+            }
 
             return legs().get().get( legs().get().size() - 1 );
         }
 
         public Date finalArrivalDate()
         {
-            if (lastLeg() == null)
+            if( lastLeg() == null )
+            {
                 return new Date( new Date( Long.MAX_VALUE ).getTime() );
+            }
 
             return new Date( lastLeg().unloadTime().get().getTime() );
         }

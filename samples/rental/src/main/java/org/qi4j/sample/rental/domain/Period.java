@@ -18,10 +18,9 @@
 
 package org.qi4j.sample.rental.domain;
 
+import java.util.Date;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueComposite;
-
-import java.util.Date;
 
 public interface Period
     extends ValueComposite

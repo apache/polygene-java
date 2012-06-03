@@ -3,14 +3,13 @@ package com.marcgrue.dcisample_b.data.factory;
 import com.marcgrue.dcisample_b.data.factory.exception.CannotCreateRouteSpecificationException;
 import com.marcgrue.dcisample_b.data.structure.cargo.RouteSpecification;
 import com.marcgrue.dcisample_b.data.structure.location.Location;
+import java.util.Date;
 import org.joda.time.DateMidnight;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
-
-import java.util.Date;
 
 /**
  * Route Specification factory
@@ -24,33 +23,39 @@ import java.util.Date;
  */
 @Mixins( RouteSpecificationFactoryService.Mixin.class )
 public interface RouteSpecificationFactoryService
-      extends ServiceComposite
+    extends ServiceComposite
 {
     RouteSpecification build( Location origin, Location destination, Date earliestDeparture, Date deadline )
-          throws CannotCreateRouteSpecificationException;
+        throws CannotCreateRouteSpecificationException;
 
     abstract class Mixin
-          implements RouteSpecificationFactoryService
+        implements RouteSpecificationFactoryService
     {
         @Structure
         ValueBuilderFactory vbf;
 
         public RouteSpecification build( Location origin, Location destination, Date earliestDeparture, Date deadline )
-              throws CannotCreateRouteSpecificationException
+            throws CannotCreateRouteSpecificationException
         {
-            if (origin == destination)
+            if( origin == destination )
+            {
                 throw new CannotCreateRouteSpecificationException( "Origin location can't be same as destination location." );
+            }
 
             Date endOfToday = new DateMidnight().plusDays( 1 ).toDate();
-            if (deadline.before( endOfToday ))
+            if( deadline.before( endOfToday ) )
+            {
                 throw new CannotCreateRouteSpecificationException( "Arrival deadline is in the past or Today." +
-                                                                    "\nDeadline           " + deadline +
-                                                                    "\nToday (midnight)   " + endOfToday );
+                                                                   "\nDeadline           " + deadline +
+                                                                   "\nToday (midnight)   " + endOfToday );
+            }
 
-            if (deadline.before( earliestDeparture ))
+            if( deadline.before( earliestDeparture ) )
+            {
                 throw new CannotCreateRouteSpecificationException( "Deadline can't be before departure:" +
-                                                                    "\nDeparture   " + earliestDeparture +
-                                                                    "\nDeadline    " + deadline );
+                                                                   "\nDeparture   " + earliestDeparture +
+                                                                   "\nDeadline    " + deadline );
+            }
 
             ValueBuilder<RouteSpecification> routeSpec = vbf.newValueBuilder( RouteSpecification.class );
             routeSpec.prototype().origin().set( origin );

@@ -3,7 +3,6 @@ package org.qi4j.samples.forum.rest.resource;
 import java.util.Collections;
 import org.qi4j.api.query.QueryExpressions;
 import org.qi4j.library.rest.server.api.ContextResource;
-import org.qi4j.library.rest.server.api.constraint.Requires;
 import org.qi4j.library.rest.server.api.SubResource;
 import org.qi4j.library.rest.server.api.constraint.Requires;
 import org.qi4j.samples.forum.data.entity.User;
@@ -38,18 +37,23 @@ public class RootResource
     public void administration()
     {
         ChallengeResponse challenge = Request.getCurrent().getChallengeResponse();
-        if (challenge == null)
+        if( challenge == null )
         {
-            Response.getCurrent().setChallengeRequests( Collections.singletonList( new ChallengeRequest( ChallengeScheme.HTTP_BASIC, "Forum" ) ) );
+            Response.getCurrent()
+                .setChallengeRequests( Collections.singletonList( new ChallengeRequest( ChallengeScheme.HTTP_BASIC, "Forum" ) ) );
             throw new ResourceException( Status.CLIENT_ERROR_UNAUTHORIZED );
         }
 
         User user = module.currentUnitOfWork().newQuery( module.newQueryBuilder( User.class ).where( QueryExpressions
                                                                                                          .eq( QueryExpressions
                                                                                                                   .templateFor( User.class )
-                                                                                                                  .name(), challenge.getIdentifier() ) ) ).find();
-        if (user == null || !user.isCorrectPassword( new String(challenge.getSecret() )))
+                                                                                                                  .name(), challenge
+                                                                                                             .getIdentifier() ) ) )
+            .find();
+        if( user == null || !user.isCorrectPassword( new String( challenge.getSecret() ) ) )
+        {
             throw new ResourceException( Status.CLIENT_ERROR_UNAUTHORIZED );
+        }
 
         current().select( user );
 

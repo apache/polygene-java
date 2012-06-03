@@ -8,14 +8,13 @@ import org.qi4j.api.query.Query;
 import org.qi4j.api.structure.Module;
 import org.qi4j.samples.forum.context.Events;
 import org.qi4j.samples.forum.context.signup.Registration;
-import org.qi4j.samples.forum.data.Administrators;
 
-import static org.qi4j.api.query.QueryExpressions.*;
+import static org.qi4j.api.query.QueryExpressions.templateFor;
 
 /**
  * TODO
  */
-@Mixins(Users.Mixin.class)
+@Mixins( Users.Mixin.class )
 public interface Users
     extends EntityComposite, Events
 {
@@ -31,7 +30,9 @@ public interface Users
 
         public Query<User> users()
         {
-            return module.currentUnitOfWork().newQuery( module.newQueryBuilder( User.class ) ).orderBy( templateFor( User.class ).realName()  );
+            return module.currentUnitOfWork()
+                .newQuery( module.newQueryBuilder( User.class ) )
+                .orderBy( templateFor( User.class ).realName() );
         }
 
         @Override
@@ -41,7 +42,7 @@ public interface Users
             builder.instance().name().set( registration.name().get() );
             builder.instance().realName().set( registration.realName().get() );
             builder.instance().email().set( registration.email().get() );
-            builder.instance().password().set( builder.instance().hashPassword(registration.password().get() ));
+            builder.instance().password().set( builder.instance().hashPassword( registration.password().get() ) );
 
             builder.newInstance();
         }

@@ -40,11 +40,11 @@ public class RouteCargoPage extends BookingBasePage
                 }
             } );
         }
-        catch (FoundNoRoutesException e)
+        catch( FoundNoRoutesException e )
         {
             error( e.getMessage() );
 
-            add( new WebMarkupContainer( "routes" ).add( new Label("route" ) ) );
+            add( new WebMarkupContainer( "routes" ).add( new Label( "route" ) ) );
         }
     }
 }

@@ -1,6 +1,8 @@
 package com.marcgrue.dcisample_b.infrastructure.wicket.form;
 
 import com.google.code.joliratools.StatelessAjaxEventBehavior;
+import java.util.Date;
+import java.util.Map;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.datetime.DateConverter;
@@ -17,9 +19,6 @@ import org.apache.wicket.validation.validator.DateValidator;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
-
-import java.util.Date;
-import java.util.Map;
 
 /**
  * DateTextFieldWithPicker
@@ -41,7 +40,6 @@ public class DateTextFieldWithPicker extends DateTextField
     {
 //      this( id, new PropertyModel<Date>( model, id ), new StyleDateConverter( "S-", true ) );
         this( id, label, new PropertyModel<Date>( model, id ), new PatternDateConverter( "yyyy-MM-dd", true ) );
-
     }
 
     public DateTextFieldWithPicker( String id, String label, IModel<Date> model, DateConverter converter )
@@ -68,10 +66,10 @@ public class DateTextFieldWithPicker extends DateTextField
                 String componentId = getComponent().getMarkupId();
                 String widgetId = componentId + "DpJs";
                 target.appendJavaScript(
-                      "Wicket.DateTime.showCalendar(" +
-                            "YAHOO.wicket['" + widgetId + "'], " +
-                            "document.getElementById('" + componentId + "').value, " +
-                            "'yyyy-MM-dd');"
+                    "Wicket.DateTime.showCalendar(" +
+                    "YAHOO.wicket['" + widgetId + "'], " +
+                    "document.getElementById('" + componentId + "').value, " +
+                    "'yyyy-MM-dd');"
                 );
             }
 
@@ -107,15 +105,18 @@ public class DateTextFieldWithPicker extends DateTextField
 
     private void setNonEmptyLabel( String label )
     {
-        if (label == null)
+        if( label == null )
+        {
             return;
+        }
 
-        if (label.isEmpty())
+        if( label.isEmpty() )
+        {
             throw new IllegalArgumentException( "Can't set an empty label on the drop down selector." );
+        }
 
         setLabel( Model.of( label ) );
     }
-
 
     /**
      * The DatePicker that gets added to the DateTextField component. Users may override this method
@@ -131,7 +132,8 @@ public class DateTextFieldWithPicker extends DateTextField
 
             @Override
             protected void configure( final Map<String, Object> widgetProperties,
-                                      final IHeaderResponse response, final Map<String, Object> initVariables )
+                                      final IHeaderResponse response, final Map<String, Object> initVariables
+            )
             {
                 super.configure( widgetProperties, response, initVariables );
 
@@ -139,7 +141,6 @@ public class DateTextFieldWithPicker extends DateTextField
             }
         };
     }
-
 
     /**
      * Gives overriding classes the option of adding (or even changing/ removing) configuration
@@ -160,8 +161,10 @@ public class DateTextFieldWithPicker extends DateTextField
 
     public DateTextFieldWithPicker earliestDate( LocalDate newEarliestDate )
     {
-        if (selectedDate != null && newEarliestDate.isAfter( selectedDate ))
+        if( selectedDate != null && newEarliestDate.isAfter( selectedDate ) )
+        {
             throw new IllegalArgumentException( "Earliest date can't be before selected day." );
+        }
 
         earliestDate = newEarliestDate;
 
@@ -177,8 +180,10 @@ public class DateTextFieldWithPicker extends DateTextField
 
     public DateTextFieldWithPicker selectedDate( LocalDate newSelectedDate )
     {
-        if (earliestDate != null && newSelectedDate.isBefore( earliestDate ))
+        if( earliestDate != null && newSelectedDate.isBefore( earliestDate ) )
+        {
             throw new IllegalArgumentException( "Selected date can't be before earliest day." );
+        }
 
         selectedDate = newSelectedDate;
 
@@ -187,13 +192,15 @@ public class DateTextFieldWithPicker extends DateTextField
 
     private String getSelectedDateStr()
     {
-        if (selectedDate != null)
+        if( selectedDate != null )
+        {
             return selectedDate.toString( YUI_DATE_FORMAT );
+        }
 
         // Select today or earliest date (if later) as default
         return earliestDate == null ?
-              new LocalDate().toString( YUI_DATE_FORMAT ) :
-              earliestDate.toString( YUI_DATE_FORMAT );
+               new LocalDate().toString( YUI_DATE_FORMAT ) :
+               earliestDate.toString( YUI_DATE_FORMAT );
     }
 
     private String getEarliestDateStr()

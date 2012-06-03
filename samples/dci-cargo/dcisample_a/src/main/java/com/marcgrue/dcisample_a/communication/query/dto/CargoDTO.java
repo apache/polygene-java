@@ -1,10 +1,10 @@
 package com.marcgrue.dcisample_a.communication.query.dto;
 
 import com.marcgrue.dcisample_a.data.shipping.cargo.Cargo;
-import com.marcgrue.dcisample_a.data.shipping.delivery.Delivery;
-import com.marcgrue.dcisample_a.data.shipping.itinerary.Itinerary;
 import com.marcgrue.dcisample_a.data.shipping.cargo.RouteSpecification;
 import com.marcgrue.dcisample_a.data.shipping.cargo.TrackingId;
+import com.marcgrue.dcisample_a.data.shipping.delivery.Delivery;
+import com.marcgrue.dcisample_a.data.shipping.itinerary.Itinerary;
 import com.marcgrue.dcisample_a.infrastructure.conversion.DTO;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.property.Property;

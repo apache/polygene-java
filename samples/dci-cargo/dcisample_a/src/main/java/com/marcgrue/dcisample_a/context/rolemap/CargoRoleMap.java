@@ -7,8 +7,8 @@ import com.marcgrue.dcisample_a.data.entity.CargoEntity;
  * Cargo Role Map
  */
 public interface CargoRoleMap
-      extends CargoEntity,
+    extends CargoEntity,
 
-      BookNewCargo.RoutingFacadeRole
+            BookNewCargo.RoutingFacadeRole
 {
 }

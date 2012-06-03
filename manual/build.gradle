@@ -22,14 +22,6 @@ dependencies {
 //  docType = 'book'
 //}
 
-sourceSets {
-    main {
-        java {
-            srcDir 'src/java'
-        }
-    }
-}
-
 task website( type: org.qi4j.gradle.plugin.documentation.Documentation ) {
   docName = 'website'
   docType = 'article'

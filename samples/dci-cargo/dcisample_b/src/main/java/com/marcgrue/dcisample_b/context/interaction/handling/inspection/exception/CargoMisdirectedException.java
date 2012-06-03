@@ -11,6 +11,7 @@ import com.marcgrue.dcisample_b.data.structure.itinerary.Itinerary;
 public class CargoMisdirectedException extends InspectionException
 {
     private Itinerary itinerary;
+
     public CargoMisdirectedException( HandlingEvent handlingEvent, String msg )
     {
         super( handlingEvent, msg );
@@ -26,10 +27,12 @@ public class CargoMisdirectedException extends InspectionException
     public String getMessage()
     {
         String itineraryString = "";
-        if(itinerary != null)
+        if( itinerary != null )
+        {
             itineraryString = itinerary.print();
+        }
 
         return "\nCargo is MISDIRECTED! " + msg + "\n" + handlingEvent.print() + itineraryString
-              + "MOCKUP REQUEST TO CARGO OWNER: Please re-route misdirected cargo '" + id + "' (now in " + city + ").";
+               + "MOCKUP REQUEST TO CARGO OWNER: Please re-route misdirected cargo '" + id + "' (now in " + city + ").";
     }
 }

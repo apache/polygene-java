@@ -4,25 +4,17 @@ description = "Sample of how to use Scala with Qi4j."
 
 jar { manifest { name = "Qi4j Sample - Scala" }}
 
-sourceSets {
-    main {
-        scala {
-            srcDir 'src/scala'
-        }
-    }
-}
-
 repositories {
     mavenRepo url: 'http://scala-tools.org/repo-releases/'
 }
 
 dependencies {
   // Libraries needed to run the scala tools
-  scalaTools 'org.scala-lang:scala-compiler:2.9.0-1'
-  scalaTools 'org.scala-lang:scala-library:2.9.0-1'
+  scalaTools 'org.scala-lang:scala-compiler:2.9.2'
+  scalaTools 'org.scala-lang:scala-library:2.9.2'
 
   // Libraries needed for scala API
-  compile 'org.scala-lang:scala-library:2.9.0-1'
+  compile 'org.scala-lang:scala-library:2.9.2'
 
   compile(project(":org.qi4j.core:org.qi4j.core.api"))
   compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))

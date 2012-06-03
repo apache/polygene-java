@@ -18,7 +18,7 @@ public class ViewForum
 {
     private ForumView viewForum = new ForumView();
 
-    public org.qi4j.samples.forum.context.view.ViewForum bind(@Uses Forum forum, @Uses User user)
+    public org.qi4j.samples.forum.context.view.ViewForum bind( @Uses Forum forum, @Uses User user )
     {
         viewForum.bind( forum );
         return this;

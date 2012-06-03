@@ -1,15 +1,14 @@
 package com.marcgrue.dcisample_b.data.structure.itinerary;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.library.constraints.annotation.NotEmpty;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Itinerary
@@ -21,21 +20,26 @@ import java.util.List;
  */
 @Mixins( Itinerary.Mixin.class )
 public interface Itinerary
-      extends ValueComposite
+    extends ValueComposite
 {
     @NotEmpty
     Property<List<Leg>> legs();
 
     // Side-effects free and UI agnostic convenience methods
     Leg firstLeg();
+
     Leg leg( Integer current );
+
     Leg lastLeg();
+
     Date eta();
+
     int days();
+
     String print();
 
     public abstract class Mixin
-          implements Itinerary
+        implements Itinerary
     {
         public Leg firstLeg()
         {
@@ -44,8 +48,10 @@ public interface Itinerary
 
         public Leg leg( Integer index )
         {
-            if (index < 0 || index + 1 > legs().get().size())
+            if( index < 0 || index + 1 > legs().get().size() )
+            {
                 return null;
+            }
 
             return legs().get().get( index );
         }
@@ -59,6 +65,7 @@ public interface Itinerary
         {
             return lastLeg().unloadTime().get();
         }
+
         public int days()
         {
             Date dep = firstLeg().loadTime().get();
@@ -69,10 +76,13 @@ public interface Itinerary
         public String print()
         {
             StringBuilder sb = new StringBuilder( "\nITINERARY -----------------------------------------------------" );
-            for (int i = 0; i < legs().get().size(); i++)
+            for( int i = 0; i < legs().get().size(); i++ )
+            {
                 printLeg( i, sb, legs().get().get( i ) );
+            }
             return sb.append( "\n---------------------------------------------------------------\n" ).toString();
         }
+
         private void printLeg( int i, StringBuilder sb, Leg leg )
         {
             sb.append( "\n  Leg " ).append( i );

@@ -2,7 +2,6 @@ package com.marcgrue.dcisample_b.context.interaction.handling.registration.excep
 
 import com.marcgrue.dcisample_b.context.interaction.handling.parsing.dto.ParsedHandlingEventData;
 import com.marcgrue.dcisample_b.data.structure.handling.HandlingEvent;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -36,6 +35,7 @@ public class CannotRegisterHandlingEventException extends Exception
     {
         return parsedHandlingEventData;
     }
+
     private String parse( String str )
     {
         return str == null ? "null" : str;

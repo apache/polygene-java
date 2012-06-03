@@ -21,7 +21,8 @@ import org.qi4j.dci.moneytransfer.domain.entity.CreditorEntity;
  * You can transfer money to a creditor, but not get money out from it
  */
 public interface CreditorRolemap
-   extends CreditorEntity,
-   // Roles
-   TransferMoneyContext.DestinationAccountRole
-{}
+    extends CreditorEntity,
+    // Roles
+            TransferMoneyContext.DestinationAccountRole
+{
+}

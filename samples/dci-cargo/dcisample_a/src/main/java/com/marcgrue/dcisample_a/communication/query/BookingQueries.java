@@ -2,18 +2,17 @@ package com.marcgrue.dcisample_a.communication.query;
 
 import com.marcgrue.dcisample_a.context.support.FoundNoRoutesException;
 import com.marcgrue.dcisample_a.context.support.RoutingService;
-import com.marcgrue.dcisample_a.data.shipping.itinerary.Itinerary;
 import com.marcgrue.dcisample_a.data.shipping.cargo.Cargo;
+import com.marcgrue.dcisample_a.data.shipping.itinerary.Itinerary;
 import com.marcgrue.dcisample_a.infrastructure.model.JSONModel;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.wicket.model.IModel;
 import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Booking queries
@@ -25,12 +24,13 @@ import java.util.List;
  */
 @Mixins( BookingQueries.Mixin.class )
 public interface BookingQueries
-      extends TransientComposite
+    extends TransientComposite
 {
-    List<IModel<Itinerary>> routeCandidates( String trackingIdString ) throws FoundNoRoutesException;
+    List<IModel<Itinerary>> routeCandidates( String trackingIdString )
+        throws FoundNoRoutesException;
 
     abstract class Mixin
-          implements BookingQueries
+        implements BookingQueries
     {
         @Structure
         UnitOfWorkFactory uowf;
@@ -38,14 +38,17 @@ public interface BookingQueries
         @Service
         RoutingService routingService;
 
-        public List<IModel<Itinerary>> routeCandidates( final String trackingIdString ) throws FoundNoRoutesException
+        public List<IModel<Itinerary>> routeCandidates( final String trackingIdString )
+            throws FoundNoRoutesException
         {
             Cargo cargo = uowf.currentUnitOfWork().get( Cargo.class, trackingIdString );
             List<Itinerary> routes = routingService.fetchRoutesForSpecification( cargo.routeSpecification().get() );
 
             List<IModel<Itinerary>> modelList = new ArrayList<IModel<Itinerary>>();
-            for (Itinerary itinerary : routes)
+            for( Itinerary itinerary : routes )
+            {
                 modelList.add( JSONModel.of( itinerary ) );
+            }
 
             return modelList;
         }

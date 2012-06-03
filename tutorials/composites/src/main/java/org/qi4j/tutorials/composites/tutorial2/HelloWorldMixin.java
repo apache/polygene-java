@@ -1,6 +1,7 @@
 package org.qi4j.tutorials.composites.tutorial2;
 
 // START SNIPPET: solution
+
 /**
  * This is the implementation of the HelloWorld
  * interface. The behaviour and state is mixed.

@@ -18,6 +18,9 @@
 
 package org.qi4j.sample.rental.web;
 
+import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
@@ -29,10 +32,6 @@ import org.qi4j.sample.rental.domain.RentalShop;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-
-import java.text.MessageFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 
 @Mixins( { MainPage.BodyContributorMixin.class } )
 public interface MainPage
@@ -73,7 +72,7 @@ public interface MainPage
                 listItem.appendChild( dom.createTextNode( createPeriod( booking.period().get() ) ) );
                 nodes.add( listItem );
             }
-            Node[] bookingList = new Node[nodes.size()];
+            Node[] bookingList = new Node[ nodes.size() ];
             nodes.toArray( bookingList );
             return bookingList;
         }

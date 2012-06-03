@@ -9,7 +9,7 @@ import org.qi4j.api.value.ValueComposite;
  * TODO
  */
 public interface DomainEventValue
-        extends ValueComposite
+    extends ValueComposite
 {
     // Version of the application that created these events
     Property<String> version();
@@ -20,7 +20,7 @@ public interface DomainEventValue
     // Selected objects
     @UseDefaults
     Property<List<String>> selection();
-    
+
     // Type of the entity being invoked
     Property<String> context();
 

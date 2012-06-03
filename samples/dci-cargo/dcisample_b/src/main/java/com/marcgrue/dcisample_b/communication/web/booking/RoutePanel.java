@@ -3,6 +3,8 @@ package com.marcgrue.dcisample_b.communication.web.booking;
 import com.marcgrue.dcisample_b.context.interaction.booking.routing.AssignCargoToRoute;
 import com.marcgrue.dcisample_b.data.structure.itinerary.Itinerary;
 import com.marcgrue.dcisample_b.data.structure.itinerary.Leg;
+import java.util.Date;
+import java.util.List;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxFallbackButton;
 import org.apache.wicket.markup.html.basic.Label;
@@ -17,9 +19,6 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 
-import java.util.Date;
-import java.util.List;
-
 /**
  * Route Panel
  *
@@ -31,7 +30,11 @@ import java.util.List;
  */
 public class RoutePanel extends Panel
 {
-    public RoutePanel( String id, final String trackingIdString, final IModel<Itinerary> candidateRouteModel, int index )
+    public RoutePanel( String id,
+                       final String trackingIdString,
+                       final IModel<Itinerary> candidateRouteModel,
+                       int index
+    )
     {
         super( id, candidateRouteModel );
         Itinerary itinerary = candidateRouteModel.getObject();
@@ -76,9 +79,9 @@ public class RoutePanel extends Panel
                 {
                     Itinerary itinerary = candidateRouteModel.getObject();
                     new AssignCargoToRoute( trackingIdString, itinerary ).assign();
-                    setResponsePage( CargoDetailsPage.class,  new PageParameters().set( 0, trackingIdString )  );
+                    setResponsePage( CargoDetailsPage.class, new PageParameters().set( 0, trackingIdString ) );
                 }
-                catch (Exception e)
+                catch( Exception e )
                 {
                     String msg = "Problem assigning this route to cargo: " + e.getMessage();
                     routeFeedback.error( msg );

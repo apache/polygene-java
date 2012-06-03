@@ -6,12 +6,11 @@ import com.marcgrue.dcisample_a.data.shipping.handling.HandlingEvent;
 import com.marcgrue.dcisample_a.data.shipping.itinerary.Itinerary;
 import com.marcgrue.dcisample_a.data.shipping.location.Location;
 import com.marcgrue.dcisample_a.data.shipping.voyage.Voyage;
+import java.util.Date;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueComposite;
-
-import java.util.Date;
 
 /**
  * The Delivery describes the actual transportation of the cargo, as opposed to
@@ -57,7 +56,7 @@ import java.util.Date;
  * The life cycle of a cargo ends when the cargo is claimed by the customer.
  */
 public interface Delivery
-      extends ValueComposite
+    extends ValueComposite
 {
     Property<Date> timestamp();
 

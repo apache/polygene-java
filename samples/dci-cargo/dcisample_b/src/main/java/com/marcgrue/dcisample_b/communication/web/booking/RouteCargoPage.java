@@ -38,7 +38,7 @@ public class RouteCargoPage extends BookingBasePage
                 }
             } );
         }
-        catch (Exception e)
+        catch( Exception e )
         {
             logger.info( e.getMessage() );
             error( "Unexpected error happened." );

@@ -1,5 +1,6 @@
 package org.qi4j.demo.twominute;
 
+// START SNIPPET: documentation
 public class SpeakerMixin
     implements Speaker
 {
@@ -8,3 +9,4 @@ public class SpeakerMixin
         return "Hello, World!";
     }
 }
+// END SNIPPET: documentation

@@ -21,7 +21,7 @@ import org.restlet.Request;
 /**
  * TODO
  */
-@Mixins(EventsService.Mixin.class)
+@Mixins( EventsService.Mixin.class )
 public interface EventsService
     extends Events, ServiceComposite
 {
@@ -71,7 +71,7 @@ public interface EventsService
             // Send event to all interested parties in the ObjectSelection
             for( Object selectedObject : ObjectSelection.current().selection() )
             {
-                if (selectedObject instanceof Events)
+                if( selectedObject instanceof Events )
                 {
                     method.invoke( selectedObject, args );
                 }

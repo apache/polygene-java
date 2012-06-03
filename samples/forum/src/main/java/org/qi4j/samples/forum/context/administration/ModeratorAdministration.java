@@ -21,10 +21,10 @@ public class ModeratorAdministration
     ModeratorAdmin moderatorAdmin = new ModeratorAdmin();
     Moderator moderator = new Moderator();
 
-    public ModeratorAdministration bind( @Uses Moderators moderators, @Uses User user)
+    public ModeratorAdministration bind( @Uses Moderators moderators, @Uses User user )
     {
         moderatorAdmin.bind( moderators );
-        moderator.bind(user);
+        moderator.bind( user );
         return this;
     }
 
@@ -40,7 +40,8 @@ public class ModeratorAdministration
 
     protected class Moderator
         extends Role<User>
-    {}
+    {
+    }
 
     protected class ModeratorAdmin
         extends Role<Moderators>
@@ -48,7 +49,7 @@ public class ModeratorAdministration
         @Structure
         Module module;
 
-        public void removeModerator( )
+        public void removeModerator()
         {
             self().moderators().remove( moderator.self() );
         }

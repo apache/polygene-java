@@ -7,5 +7,5 @@ import org.qi4j.samples.forum.context.signup.Registration;
  */
 public interface Events
 {
-    void signedup(Registration registration);
+    void signedup( Registration registration );
 }

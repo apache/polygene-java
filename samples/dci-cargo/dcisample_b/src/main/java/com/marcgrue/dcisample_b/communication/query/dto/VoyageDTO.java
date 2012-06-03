@@ -1,7 +1,6 @@
 package com.marcgrue.dcisample_b.communication.query.dto;
 
 import com.marcgrue.dcisample_b.data.structure.voyage.Voyage;
-import com.marcgrue.dcisample_b.data.structure.voyage.Voyage;
 import com.marcgrue.dcisample_b.infrastructure.conversion.DTO;
 
 /**

@@ -10,13 +10,14 @@ import com.marcgrue.dcisample_b.data.structure.itinerary.Itinerary;
 import com.marcgrue.dcisample_b.data.structure.location.Location;
 import com.marcgrue.dcisample_b.infrastructure.dci.Context;
 import com.marcgrue.dcisample_b.infrastructure.dci.RoleMixin;
+import java.util.Date;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.value.ValueBuilder;
 
-import java.util.Date;
-
-import static com.marcgrue.dcisample_b.data.structure.delivery.RoutingStatus.*;
+import static com.marcgrue.dcisample_b.data.structure.delivery.RoutingStatus.MISROUTED;
+import static com.marcgrue.dcisample_b.data.structure.delivery.RoutingStatus.NOT_ROUTED;
+import static com.marcgrue.dcisample_b.data.structure.delivery.RoutingStatus.ROUTED;
 import static com.marcgrue.dcisample_b.data.structure.delivery.TransportStatus.CLAIMED;
 import static com.marcgrue.dcisample_b.data.structure.handling.HandlingEventType.CLAIM;
 
@@ -54,33 +55,37 @@ public class InspectClaimedCargo extends Context
         itineraryProgressIndex = cargo.delivery().get().itineraryProgressIndex().get();
     }
 
-    public void inspect() throws InspectionException
+    public void inspect()
+        throws InspectionException
     {
         // Pre-conditions
-        if (claimEvent == null || !claimEvent.handlingEventType().get().equals( CLAIM ))
+        if( claimEvent == null || !claimEvent.handlingEventType().get().equals( CLAIM ) )
+        {
             throw new InspectionFailedException( "Can only inspect claimed cargo." );
+        }
 
         deliveryInspector.inspectClaimedCargo();
     }
-
 
     @Mixins( DeliveryInspectorRole.Mixin.class )
     public interface DeliveryInspectorRole
     {
         void setContext( InspectClaimedCargo context );
 
-        void inspectClaimedCargo() throws InspectionException;
+        void inspectClaimedCargo()
+            throws InspectionException;
 
         class Mixin
-              extends RoleMixin<InspectClaimedCargo>
-              implements DeliveryInspectorRole
+            extends RoleMixin<InspectClaimedCargo>
+            implements DeliveryInspectorRole
         {
             @This
             Cargo cargo;
 
             Delivery newDelivery;
 
-            public void inspectClaimedCargo() throws InspectionException
+            public void inspectClaimedCargo()
+                throws InspectionException
             {
                 // Step 1 - Collect known delivery data
 
@@ -94,16 +99,15 @@ public class InspectClaimedCargo extends Context
                 // Claim is end of delivery cycle
                 newDelivery.nextHandlingEvent().set( null );
 
-
                 // Step 2 - Determine that cargo was routed (for internal reference)
 
-                if (c.itinerary == null)
+                if( c.itinerary == null )
                 {
                     newDelivery.routingStatus().set( NOT_ROUTED );
                     newDelivery.eta().set( null );
                     newDelivery.itineraryProgressIndex().set( 0 );
                 }
-                else if (!c.routeSpecification.isSatisfiedBy( c.itinerary ))
+                else if( !c.routeSpecification.isSatisfiedBy( c.itinerary ) )
                 {
                     newDelivery.routingStatus().set( MISROUTED );
                     newDelivery.eta().set( null );
@@ -116,14 +120,17 @@ public class InspectClaimedCargo extends Context
                     newDelivery.itineraryProgressIndex().set( c.itineraryProgressIndex );
                 }
 
-
                 // Step 3 - Determine that cargo was on track according to itinerary (for internal reference)
 
-                if (newDelivery.routingStatus().get().equals( ROUTED ))
-                    newDelivery.isMisdirected().set( !c.claimLocation.equals( c.itinerary.lastLeg().unloadLocation().get() ) );
+                if( newDelivery.routingStatus().get().equals( ROUTED ) )
+                {
+                    newDelivery.isMisdirected()
+                        .set( !c.claimLocation.equals( c.itinerary.lastLeg().unloadLocation().get() ) );
+                }
                 else
+                {
                     newDelivery.isMisdirected().set( false );
-
+                }
 
                 // Step 4 - Save cargo delivery snapshot
 

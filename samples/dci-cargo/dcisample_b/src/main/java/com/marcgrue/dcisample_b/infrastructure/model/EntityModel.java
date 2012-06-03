@@ -16,7 +16,7 @@ import org.qi4j.api.unitofwork.NoSuchEntityException;
  * and then converted to a DTO ValueComposite.
  */
 public class EntityModel<T extends DTO, U extends EntityComposite>
-      extends ReadOnlyModel<T>
+    extends ReadOnlyModel<T>
 {
     private Class<U> entityClass;
     private String identity;
@@ -32,14 +32,15 @@ public class EntityModel<T extends DTO, U extends EntityComposite>
     }
 
     public static <T extends DTO, U extends EntityComposite> IModel<T> of(
-          Class<U> entityClass, String identity, Class<T> dtoClass )
+        Class<U> entityClass, String identity, Class<T> dtoClass
+    )
     {
         return new EntityModel<T, U>( entityClass, identity, dtoClass );
     }
 
     public T getObject()
     {
-        if (dtoComposite == null && identity != null)
+        if( dtoComposite == null && identity != null )
         {
             dtoComposite = valueConverter.convert( dtoClass, loadEntity() );
         }
@@ -54,7 +55,7 @@ public class EntityModel<T extends DTO, U extends EntityComposite>
     private U loadEntity()
     {
         U entity = module.currentUnitOfWork().get( entityClass, identity );
-        if (entity == null)
+        if( entity == null )
         {
             throw new NoSuchEntityException( EntityReference.parseEntityReference( identity ) );
         }

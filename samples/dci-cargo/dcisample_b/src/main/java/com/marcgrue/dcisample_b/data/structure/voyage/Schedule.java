@@ -1,9 +1,8 @@
 package com.marcgrue.dcisample_b.data.structure.voyage;
 
+import java.util.List;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueComposite;
-
-import java.util.List;
 
 /**
  * Schedule
@@ -13,7 +12,7 @@ import java.util.List;
  * List of carrier movements is mandatory and immutable.
  */
 public interface Schedule
-      extends ValueComposite
+    extends ValueComposite
 {
     Property<List<CarrierMovement>> carrierMovements();
 }

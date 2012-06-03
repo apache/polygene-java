@@ -20,7 +20,7 @@ public class ModeratorsAdministration
 
     ModeratorsAdmin moderatorsAdmin = new ModeratorsAdmin();
 
-    public ModeratorsAdministration bind( @Uses Moderators moderators)
+    public ModeratorsAdministration bind( @Uses Moderators moderators )
     {
         moderatorsAdmin.bind( moderators );
         return this;
@@ -31,14 +31,14 @@ public class ModeratorsAdministration
         return moderatorsAdmin.moderators();
     }
 
-    public void addModerator(User user)
+    public void addModerator( User user )
     {
-        moderatorsAdmin.addModerator(user);
+        moderatorsAdmin.addModerator( user );
     }
 
-    public void removeModerator(User user)
+    public void removeModerator( User user )
     {
-        moderatorsAdmin.removeModerator(user);
+        moderatorsAdmin.removeModerator( user );
     }
 
     protected class ModeratorsAdmin

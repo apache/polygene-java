@@ -3,12 +3,11 @@ package com.marcgrue.dcisample_b.data.structure.delivery;
 import com.marcgrue.dcisample_b.data.structure.cargo.RouteSpecification;
 import com.marcgrue.dcisample_b.data.structure.handling.HandlingEvent;
 import com.marcgrue.dcisample_b.data.structure.itinerary.Itinerary;
+import java.util.Date;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueComposite;
-
-import java.util.Date;
 
 /**
  * Delivery
@@ -72,7 +71,7 @@ import java.util.Date;
  * the lastHandlingEvent, so we removed those.
  */
 public interface Delivery
-      extends ValueComposite
+    extends ValueComposite
 {
     Property<Date> timestamp();
 

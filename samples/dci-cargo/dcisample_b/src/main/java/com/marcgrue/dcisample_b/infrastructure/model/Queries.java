@@ -1,9 +1,8 @@
 package com.marcgrue.dcisample_b.infrastructure.model;
 
+import java.io.Serializable;
 import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-
-import java.io.Serializable;
 
 /**
  * Queries
@@ -11,7 +10,7 @@ import java.io.Serializable;
  * Base class for Queries objects in our query package in the communication layer.
  */
 public class Queries
-      implements Serializable // For Wicket (don't remove)
+    implements Serializable // For Wicket (don't remove)
 {
     static protected UnitOfWorkFactory uowf;
     static protected QueryBuilderFactory qbf;

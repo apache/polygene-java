@@ -3,6 +3,7 @@ package org.qi4j.tutorials.composites.tutorial4;
 import org.qi4j.api.injection.scope.This;
 
 // START SNIPPET: solution
+
 /**
  * This is the implementation of the HelloWorld
  * behaviour interface.

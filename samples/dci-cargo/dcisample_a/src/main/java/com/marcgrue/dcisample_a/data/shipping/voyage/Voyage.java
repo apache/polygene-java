@@ -1,6 +1,5 @@
 package com.marcgrue.dcisample_a.data.shipping.voyage;
 
-import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.Property;
 
 /**

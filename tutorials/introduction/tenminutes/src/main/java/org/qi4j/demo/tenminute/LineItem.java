@@ -21,6 +21,8 @@ import org.qi4j.api.property.Property;
 public interface LineItem
 {
     Property<String> name();
+
     Property<String> productCode();
+
     Property<Integer> quantity();
 }

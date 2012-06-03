@@ -3,6 +3,7 @@ package org.qi4j.tutorials.composites.tutorial6;
 import org.qi4j.api.concern.ConcernOf;
 
 // START SNIPPET: solution
+
 /**
  * This Concern validates the parameters
  * to the HelloWorldState interface.
