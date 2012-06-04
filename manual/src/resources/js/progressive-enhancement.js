@@ -62,10 +62,13 @@ $( document ).ready( function($){
                             health += '<p><img src="' + ci_images_url + health_data.iconUrl + '"/>' + health_data.description + '</p>';
                             health += '</div>';
                         }
-                        for( var idx_artifacts = 0; idx_artifacts < job.lastCompletedBuild.artifacts.length; idx_artifacts++ ) {
-                            var artifact = job.lastCompletedBuild.artifacts[ idx_artifacts ];
-                            console.log( artifact );
-                        // TODO Add artifacts download
+                        if( job.lastCompletedBuild.artifacts.length > 0 ) {
+                            health += '<p><strong>Build artifacts:</strong></p><ul>';
+                            for( var idx_artifacts = 0; idx_artifacts < job.lastCompletedBuild.artifacts.length; idx_artifacts++ ) {
+                                var artifact = job.lastCompletedBuild.artifacts[ idx_artifacts ];
+                                health += '<li><a href="'+job.lastCompletedBuild.url+'artifact/'+artifact.relativePath+'">'+artifact.fileName+'</a></li>';
+                            }
+                            health += '</ul>';
                         }
                         health += "</div>";
                                 

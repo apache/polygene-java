@@ -44,6 +44,9 @@ li.jenkins-job div.health {
     color: #666;
     font-weight: 300;            
 }
+li.jenkins-job div.health p {
+    margin: 2px 0;
+}
 li.jenkins-job div.health div.health-item {
     position: relative;
 }
