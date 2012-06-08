@@ -1,0 +1,10 @@
+[[mailing-list]]
+Mailing List
+============
+
+To get help from the Qi4j open source community; browse and subscribe to the mailing list.
+
+* The list is hosted at http://lists.ops4j.org/mailman/listinfo/qi4j-dev
+* To subscribe, send an email to qi4j-dev-subscribe@lists.ops4j.org
+* To unsubscribe, send an email to qi4j-dev-unsubscribe@lists.ops4j.org
+* The mailing list archive can be browsed at http://www.mail-archive.com/qi4j-dev@lists.ops4j.org[Mail Archive] and http://qi4j-dev.23929.n6.nabble.com/[Nabble].
