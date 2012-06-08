@@ -8,6 +8,13 @@ repositories {
     mavenRepo url: 'http://scala-tools.org/repo-releases/'
 }
 
+compileScala {
+  scalaCompileOptions.useCompileDaemon =
+
+  // optionally specify host and port of the daemon:
+//  scalaCompileOptions.daemonServer = "localhost:4243"
+}
+
 dependencies {
   // Libraries needed to run the scala tools
   scalaTools 'org.scala-lang:scala-compiler:2.9.2'

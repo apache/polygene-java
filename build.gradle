@@ -269,8 +269,7 @@ test.doLast() {
   }
 }
 
-task javadocs( type: Javadoc ) {
-  dependsOn allprojects*.javadoc
+task javadocs( type: Javadoc, dependsOn: allprojects*.javadoc ) {
 
   options.docFilesSubDirs = true
   title = "${rootProject.title} ${version}"
@@ -283,17 +282,17 @@ task javadocs( type: Javadoc ) {
   source apiSources.collect { project ->
     project.sourceSets.main.allJava
   }
-  destinationDir = new File( "$buildDir/docs/javadoc" )
+  destinationDir = new File( "manual/$buildDir/docs/website/javadoc" )
   // Might need a classpath
   classpath = files( apiSources.collect { project ->
     project.sourceSets.main.compileClasspath
   } )
   options.links( "http://java.sun.com/j2se/1.6.0/docs/api" )
-  options.group( [ "Core API": [ "org.qi4j.api", "org.qi4j.api.*" ],
+  options.group( [ "Core API": [ "org.qi4j.api", "org.qi4j.api.*", "org.qi4j.io", "org.qi4j.functional" ],
                          "Core Bootstrap": [ "org.qi4j.bootstrap" ],
                          "Core SPI": [ "org.qi4j.spi", "org.qi4j.spi.*" ],
                          "Libraries": [ "org.qi4j.library.*", "org.qi4j.logging", "org.qi4j.logging.*", "org.qi4j.scripting.*" ],
-                         "Extensions": [ "org.qi4j.entitystore.*", "org.qi4j.index.*", "org.qi4j.cache.*", "org.qi4j.migration", "org.qi4j.migration.*" ],
+                         "Extensions": [ "org.qi4j.entitystore.*", "org.qi4j.index.*", "org.qi4j.metrics.*", "org.qi4j.cache.*", "org.qi4j.migration", "org.qi4j.migration.*" ],
                          "Test Support": [ "org.qi4j.test", "org.qi4j.test.*" ]
                  ] )
 
@@ -305,6 +304,9 @@ task distLayout( dependsOn: [ javadocs, test, jar, subprojects*.build, ':org.qi4
     from '.'
     exclude '**/build/'     // build output
     exclude '**/bin/'       // helper scripts
+    exclude '**/*.iml'      // IDEA files
+    exclude 'org.qi4j.ipr'  // IDEA files
+    exclude 'org.qi4j.iws'  // IDEA files
     exclude '**/out/'       // build output
     exclude '**/.git/'      // git directories
     exclude '**/.git*'      // git files
@@ -318,8 +320,8 @@ task distLayout( dependsOn: [ javadocs, test, jar, subprojects*.build, ':org.qi4
   }
 
   manualsImage = copySpec {
-    from "manual/$buildDir/docs"
-    into( "docs/manual" )
+    from "manual/$buildDir/docs/userguide"
+    into( "docs/userguide" )
   }
 
   reportsImage = copySpec {
