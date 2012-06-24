@@ -26,6 +26,81 @@ $( document ).ready( function($){
     }
     
     /**
+     * Community/Mailing List
+     */
+    function mailing_list( $section ) {
+        // Add Nabble forum
+        $section.append('<iframe id="qi4j-dev-iframe" class="qi4j-iframe"\
+                src="http://qi4j-dev.23929.n6.nabble.com/"\
+                frameborder="0" scrolling="no" allowtransparency="true">\
+        </iframe>');
+    }
+    
+    /**
+     * Community/Issue Tracker
+     */
+    function issue_tracker( $section ) {
+        // Add Jira Roadmap
+        var jira_base_url = 'http://team.ops4j.org/';
+        var jira_api = jira_base_url + 'rest/api/latest/';
+        var jira_url = jira_base_url + 'browse/QI';
+                
+        $.getJSON( jira_api + 'project/QI?jsonp-callback=?&callback=?', function( data ) {
+            if ( data.versions.length > 0 ) {
+                var widget = document.createElement( "div" );
+                widget.className = "jira-versions-widget";
+                var ul = document.createElement( "ul" );
+                ul.className = "jira-versions";
+                for( var idx_version = data.versions.length - 1; idx_version >= 0; idx_version-- ) {
+                    var version = data.versions[ idx_version ];
+                    var li = document.createElement( "li" );
+                    li.className = 'jira-version';
+                                
+                    var title = '<div class="title">';
+                    if( version.archived || version.released ) {
+                        title += '<img src="http://team.ops4j.org/images/icons/package_16.gif" style="float:left"/>';
+                    } else {
+                        title += '<img src="http://team.ops4j.org/images/icons/box_16.gif" style="float:left"/>';
+                    }
+                    title += '<p><strong><a href="' + version.self + '">' + version.name + '</a></strong> - ' + version.description + '</p>';
+                    title += "</div>";
+                                
+                    var issues = '<div class="issues" id="' + version.id + '-issues">';
+                    issues += "</div>";
+                                
+                    var links = '<div class="links">';
+                    if ( version.archived || version.released ) {
+                        links += '<p>Release date: <strong>' + version.userReleaseDate + '</strong></p>';
+                    } else {
+                        links += '<p>Not released yet.</p>';
+                    }
+                    links += '<a href="' + version.self + '">Open</a>';
+                    links += "</div>";
+
+                    li.innerHTML = title + issues + links;
+                    ul.appendChild( li );
+                    // Fetch issues count - The Jira rest api does not provide a roadmap view ...
+                    var version_url = version.self;
+                    $.getJSON( version_url + '/unresolvedIssueCount?jsonp-callback=?&callback=?', function(data) {
+                        var $issues = $( '#' + data.self.substring( data.self.lastIndexOf( '/' ) + 1 ) + '-issues' );
+                        if (data.issuesUnresolvedCount) {
+                            $issues.append('<p>' + data.issuesUnresolvedCount + ' unresolved issue(s).</p>');
+                        }
+                    });
+                    $.getJSON( version_url + '/relatedIssueCounts?jsonp-callback=?&callback=?', function(data) {
+                        var $issues = $( '#' + data.self.substring( data.self.lastIndexOf( '/' ) + 1 ) + '-issues' );
+                        if(data.issuesFixedCount) {
+                            $issues.append('<p>' + data.issuesFixedCount + ' fixed issue(s).</p>');
+                        }
+                    });
+                }
+                widget.appendChild( ul );
+                $section.append( widget );
+            }
+        });
+    }
+    
+    /**
      * Community/Continuous Integration.
      */
     function continuous_integration( $section ) {
@@ -102,6 +177,12 @@ $( document ).ready( function($){
     switch( section_title ) {
         case "Codebase":
             codebase( $section );
+            break;
+        case "Mailing List":
+            mailing_list( $section );
+            break;
+        case "Issue Tracker":
+            issue_tracker( $section );
             break;
         case "Continuous Integration":
             continuous_integration( $section );
