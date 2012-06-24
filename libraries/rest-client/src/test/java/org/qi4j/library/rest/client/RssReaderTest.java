@@ -57,7 +57,7 @@ public class RssReaderTest
     {
         Client client = new Client( Protocol.HTTP );
         Reference ref = new Reference( "http://rickardoberg.wordpress.com/feed/" );
-        ContextResourceClientFactory contextResourceClientFactory = module.newObject( ContextResourceClientFactory.class, client, new NullResponseHandler() );
+        ContextResourceClientFactory contextResourceClientFactory = module.newObject( ContextResourceClientFactory.class, client );
 
         contextResourceClientFactory.registerResponseReader( new ResponseReader()
         {

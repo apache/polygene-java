@@ -40,7 +40,7 @@ public class ResponseReaderDelegator
    List<ResponseReader> responseReaders = new ArrayList<ResponseReader>( );
 
    @Structure
-   Module module;
+   private Module module;
 
    public void initialize() throws InitializationException
    {

@@ -43,7 +43,7 @@ public class RequestWriterDelegator
    List<RequestWriter> requestWriters = new ArrayList<RequestWriter>( );
 
    @Structure
-   Module module;
+   private Module module;
 
    public void initialize() throws InitializationException
    {

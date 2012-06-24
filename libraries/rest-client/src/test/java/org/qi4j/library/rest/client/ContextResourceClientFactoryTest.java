@@ -133,11 +133,14 @@ public class ContextResourceClientFactoryTest
         server.setNext( guard );
         server.start();
 
+        //START-SNIPPET: client-create1
         Client client = new Client( Protocol.HTTP );
-        Reference ref = new Reference( "http://localhost:8888/" );
-        ContextResourceClientFactory contextResourceClientFactory = module.newObject( ContextResourceClientFactory.class, client, new NullResponseHandler() );
-        contextResourceClientFactory.setAcceptedMediaTypes( MediaType.APPLICATION_JSON );
 
+        ContextResourceClientFactory contextResourceClientFactory = module.newObject( ContextResourceClientFactory.class, client );
+        contextResourceClientFactory.setAcceptedMediaTypes( MediaType.APPLICATION_JSON );
+        //END-SNIPPET: client-create1
+
+        //START-SNIPPET: client-create2
         contextResourceClientFactory.setErrorHandler( new ErrorHandler().onError( ErrorHandler.AUTHENTICATION_REQUIRED, new ResponseHandler()
         {
             boolean tried = false;
@@ -163,8 +166,12 @@ public class ContextResourceClientFactoryTest
                 return refresh();
             }
         } ) );
+        //END-SNIPPET: client-create2
 
+        //START-SNIPPET: client-create3
+        Reference ref = new Reference( "http://localhost:8888/" );
         crc = contextResourceClientFactory.newClient( ref );
+        //END-SNIPPET: client-create3
     }
 
     @After
@@ -183,6 +190,7 @@ public class ContextResourceClientFactoryTest
     @Test
     public void testQueryWithoutValue()
     {
+        //START-SNIPPET: query-without-value
         crc.onResource( new ResultHandler<Resource>()
         {
             @Override
@@ -202,11 +210,13 @@ public class ContextResourceClientFactoryTest
         } );
 
         crc.start();
+        //END-SNIPPET: query-without-value
     }
 
     @Test
     public void testQueryAndCommand()
     {
+        //START-SNIPPET: query-and-command
         crc.onResource( new ResultHandler<Resource>()
         {
             @Override
@@ -244,11 +254,13 @@ public class ContextResourceClientFactoryTest
         } );
 
         crc.start();
+        //END-SNIPPET: query-and-command
     }
 
     @Test
     public void testQueryListAndCommand()
     {
+        //START-SNIPPET: query-list-and-command
         crc.onResource( new ResultHandler<Resource>()
         {
             @Override
@@ -276,11 +288,13 @@ public class ContextResourceClientFactoryTest
         } );
 
         crc.start();
+        //END-SNIPPET: query-list-and-command
     }
 
     @Test
     public void testQueryListAndCommandProgressive()
     {
+        //START-SNIPPET: query-list-and-command-progressive
         crc.onResource( new ResultHandler<Resource>()
         {
             @Override
@@ -308,6 +322,7 @@ public class ContextResourceClientFactoryTest
         } );
 
         crc.start();
+        //END-SNIPPET: query-list-and-command-progressive
     }
 
     public interface TestQuery
