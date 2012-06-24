@@ -22,7 +22,12 @@ import com.marcgrue.dcisample_b.data.structure.tracking.TrackingId;
 import com.marcgrue.dcisample_b.data.structure.voyage.CarrierMovement;
 import com.marcgrue.dcisample_b.data.structure.voyage.Schedule;
 import com.marcgrue.dcisample_b.data.structure.voyage.VoyageNumber;
-import org.qi4j.bootstrap.*;
+import org.qi4j.bootstrap.ApplicationAssembler;
+import org.qi4j.bootstrap.ApplicationAssembly;
+import org.qi4j.bootstrap.ApplicationAssemblyFactory;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.LayerAssembly;
+import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.index.rdf.RdfIndexingEngineService;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
@@ -43,10 +48,10 @@ import static org.qi4j.api.structure.Application.Mode.test;
  */
 @SuppressWarnings( "unchecked" )
 public class TestAssembler
-      implements ApplicationAssembler
+    implements ApplicationAssembler
 {
     public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
-          throws AssemblyException
+        throws AssemblyException
     {
         // Application assembly
         ApplicationAssembly assembly = applicationFactory.newApplicationAssembly();
@@ -62,16 +67,16 @@ public class TestAssembler
 
         // Layer dependencies
         bootstrapLayer.uses(
-              contextLayer,
-              dataLayer,
-              infrastructureLayer );
+            contextLayer,
+            dataLayer,
+            infrastructureLayer );
 
         contextLayer.uses(
-              dataLayer,
-              infrastructureLayer );
+            dataLayer,
+            infrastructureLayer );
 
         dataLayer.uses(
-              infrastructureLayer
+            infrastructureLayer
         );
 
         // Assemble
@@ -83,108 +88,109 @@ public class TestAssembler
         return assembly;
     }
 
-    private void assembleBootstrapLayer( LayerAssembly bootstrapLayer ) throws AssemblyException
+    private void assembleBootstrapLayer( LayerAssembly bootstrapLayer )
+        throws AssemblyException
     {
         ModuleAssembly bootstrapModule = bootstrapLayer.module( "BOOTSTRAP-Bootstrap" );
 
         // Load base data on startup
         bootstrapModule
-              .addServices(
-                    BaseDataService.class )
-              .visibleIn( application )
-              .instantiateOnStartup();
+            .addServices(
+                BaseDataService.class )
+            .visibleIn( application )
+            .instantiateOnStartup();
     }
 
-    private void assembleContextLayer( LayerAssembly contextLayer ) throws AssemblyException
+    private void assembleContextLayer( LayerAssembly contextLayer )
+        throws AssemblyException
     {
         ModuleAssembly roleMapModule = contextLayer.module( "CONTEXT-RoleMap" );
 
         // Role-playing entities
         roleMapModule
-              .entities(
-                    CargoRoleMap.class,
-                    CargosRoleMap.class,
-                    HandlingEventsRoleMap.class )
-              .visibleIn( application );
+            .entities(
+                CargoRoleMap.class,
+                CargosRoleMap.class,
+                HandlingEventsRoleMap.class )
+            .visibleIn( application );
 
         // Non-role-playing entities
         roleMapModule
-              .entities(
-                    HandlingEventEntity.class,
-                    LocationEntity.class,
-                    VoyageEntity.class )
-              .visibleIn( application );
-
+            .entities(
+                HandlingEventEntity.class,
+                LocationEntity.class,
+                VoyageEntity.class )
+            .visibleIn( application );
 
         ModuleAssembly interactionModule = contextLayer.module( "CONTEXT-Interaction" );
         interactionModule
-              .transients(
-                    ProcessHandlingEvent.class )
-              .visibleIn( application );
-
+            .transients(
+                ProcessHandlingEvent.class )
+            .visibleIn( application );
 
         ModuleAssembly contextServiceModule = contextLayer.module( "CONTEXT-Service" );
         contextServiceModule
-              .addServices(
-                    ParseHandlingEventData.class,
-                    RoutingService.class,
-                    RouteSpecificationFactoryService.class )
-              .visibleIn( application );
+            .addServices(
+                ParseHandlingEventData.class,
+                RoutingService.class,
+                RouteSpecificationFactoryService.class )
+            .visibleIn( application );
 
         contextServiceModule
-              .values(
-                    ParsedHandlingEventData.class )
-              .visibleIn( application );
+            .values(
+                ParsedHandlingEventData.class )
+            .visibleIn( application );
     }
 
-    private void assembleDomainLayer( LayerAssembly dataLayer ) throws AssemblyException
+    private void assembleDomainLayer( LayerAssembly dataLayer )
+        throws AssemblyException
     {
         // Non-role-playing values
         ModuleAssembly structureModule = dataLayer.module( "DATA-Structure" );
         structureModule
-              .values(
-                    TrackingId.class,
-                    RouteSpecification.class,
-                    Delivery.class,
-                    NextHandlingEvent.class,
-                    UnLocode.class,
-                    Itinerary.class,
-                    Leg.class,
-                    CarrierMovement.class,
-                    Schedule.class,
-                    VoyageNumber.class )
-              .visibleIn( application );
+            .values(
+                TrackingId.class,
+                RouteSpecification.class,
+                Delivery.class,
+                NextHandlingEvent.class,
+                UnLocode.class,
+                Itinerary.class,
+                Leg.class,
+                CarrierMovement.class,
+                Schedule.class,
+                VoyageNumber.class )
+            .visibleIn( application );
+        structureModule.entities( LocationEntity.class, VoyageEntity.class );
     }
 
-    private void assembleInfrastructureLayer( LayerAssembly infrastructureLayer ) throws AssemblyException
+    private void assembleInfrastructureLayer( LayerAssembly infrastructureLayer )
+        throws AssemblyException
     {
         ModuleAssembly indexingModule = infrastructureLayer.module( "INFRASTRUCTURE-Indexing" );
         indexingModule
-              .objects(
-                    EntityStateSerializer.class,
-                    EntityTypeSerializer.class );
+            .objects(
+                EntityStateSerializer.class,
+                EntityTypeSerializer.class );
 
         indexingModule
-              .addServices(
-                    MemoryRepositoryService.class,
-                    RdfIndexingEngineService.class )
-              .visibleIn( application )
-              .instantiateOnStartup();
-
+            .addServices(
+                MemoryRepositoryService.class,
+                RdfIndexingEngineService.class )
+            .visibleIn( application )
+            .instantiateOnStartup();
 
         ModuleAssembly entityStoreModule = infrastructureLayer.module( "INFRASTRUCTURE-EntityStore" );
         entityStoreModule
-              .addServices(
-                    MemoryEntityStoreService.class,
-                    UuidIdentityGeneratorService.class )
-              .visibleIn( application );
-
+            .addServices(
+                MemoryEntityStoreService.class,
+                UuidIdentityGeneratorService.class )
+            .visibleIn( application );
 
         ModuleAssembly externalServiceModule = infrastructureLayer.module( "INFRASTRUCTURE-ExternalService" );
         externalServiceModule
-              .importedServices(
-                    GraphTraversalService.class )
-              .setMetaInfo( new GraphTraversalServiceImpl( new GraphDAO() ) )
-              .visibleIn( application );
+            .importedServices(
+                GraphTraversalService.class )
+            .setMetaInfo( new GraphTraversalServiceImpl( new GraphDAO() ) )
+            .visibleIn( application );
     }
 }
