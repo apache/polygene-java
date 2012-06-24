@@ -160,7 +160,7 @@ public class TestAssembler
                 Schedule.class,
                 VoyageNumber.class )
             .visibleIn( application );
-        structureModule.entities( LocationEntity.class, VoyageEntity.class );
+//        structureModule.entities( LocationEntity.class, VoyageEntity.class, HandlingEventEntity.class );
     }
 
     private void assembleInfrastructureLayer( LayerAssembly infrastructureLayer )
