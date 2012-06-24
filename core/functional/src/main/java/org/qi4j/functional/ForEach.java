@@ -41,7 +41,14 @@ public final class ForEach<T>
 
     public <TO> ForEach<TO> flatten()
     {
-        return new ForEach<TO>( Iterables.flattenIterables( ( (Iterable<Iterable<TO>>) iterable ) ) );
+        Iterable<Iterable<TO>> original = getIterable();
+        Iterable<TO> iterable1 = Iterables.flattenIterables( original );
+        return new ForEach<TO>( iterable1 );
+    }
+
+    private <TO> Iterable<Iterable<TO>> getIterable()
+    {
+        return (Iterable<Iterable<TO>>) iterable;
     }
 
     public T last()
