@@ -70,7 +70,7 @@ public class Outputs
             public <SenderThrowableType extends Throwable> void receiveFrom( Sender<? extends String, SenderThrowableType> sender )
                 throws IOException, SenderThrowableType
             {
-                File tmpFile = File.createTempFile( file.getName(), ".bin" );
+                File tmpFile = Files.createTemporayFileOf( file );
 
                 OutputStream stream = new FileOutputStream( tmpFile );
 
@@ -137,7 +137,7 @@ public class Outputs
             public <SenderThrowableType extends Throwable> void receiveFrom( Sender<? extends ByteBuffer, SenderThrowableType> sender )
                 throws IOException, SenderThrowableType
             {
-                File tmpFile = File.createTempFile( file.getName(), ".bin" );
+                File tmpFile = Files.createTemporayFileOf( file );
                 FileOutputStream stream = new FileOutputStream( tmpFile );
                 final FileChannel fco = stream.getChannel();
 
@@ -245,7 +245,7 @@ public class Outputs
             public <SenderThrowableType extends Throwable> void receiveFrom( Sender<? extends byte[], SenderThrowableType> sender )
                 throws IOException, SenderThrowableType
             {
-                File tmpFile = File.createTempFile( file.getName(), ".bin" );
+                File tmpFile = Files.createTemporayFileOf( file );
                 final OutputStream stream = new BufferedOutputStream( new FileOutputStream( tmpFile ), bufferSize );
 
                 try

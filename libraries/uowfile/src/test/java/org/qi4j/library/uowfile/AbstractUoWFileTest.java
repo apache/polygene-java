@@ -36,7 +36,7 @@ public abstract class AbstractUoWFileTest
     public static void beforeClass()
             throws IOException
     {
-        File testDir = new File( "build/" + System.getProperty( "test" ) );
+        File testDir = new File( "build/uowfiletest");
         if ( !testDir.exists() ) {
             if ( !testDir.mkdirs() ) {
                 throw new IOException( "Unable to create directory: " + testDir );

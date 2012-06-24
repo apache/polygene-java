@@ -391,7 +391,7 @@ public class FileEntityStoreMixin
         BufferedOutputStream bos = null;
 
         // Write to tempfile first
-        File tempFile = File.createTempFile( "data",".json" );
+        File tempFile = Files.createTemporayFileOf( dataFile );
         tempFile.deleteOnExit();
 
         try

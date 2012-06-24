@@ -30,7 +30,6 @@ import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCallback;
-import org.qi4j.api.unitofwork.UnitOfWorkCallback.UnitOfWorkStatus;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.library.fileconfig.FileConfiguration;
 
@@ -54,15 +53,20 @@ public interface UoWFileFactory
         }
 
         private static final Logger LOGGER = LoggerFactory.getLogger( "org.qi4j.library.uowfile" );
+
         @Structure
         private Application app;
+
         @Structure
         private Module module;
+
         @This
         private ServiceComposite me;
+
         @Optional
         @Service
         private FileConfiguration fileConfig;
+
         private File workDir;
 
         @Override
@@ -71,7 +75,7 @@ public interface UoWFileFactory
         {
             File tmp;
             if ( fileConfig == null ) {
-                tmp = new File( System.getProperty( "java.io.tmpdir" ), app.name() + "-" + app.version() );
+                tmp = new File( "qi4j", app.name() + "-" + app.version() );
             } else {
                 tmp = fileConfig.temporaryDirectory();
             }
