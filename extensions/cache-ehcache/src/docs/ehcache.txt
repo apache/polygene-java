@@ -1,4 +1,1 @@
-[[extension-ehcache]]
-= Ehcache Cache Extension =
-// TODO
 

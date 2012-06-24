@@ -13,7 +13,8 @@ import org.qi4j.runtime.structure.ModuleInstance;
 /**
  * Implementation of ValueBuilder with a prototype supplied
  */
-public class ValueBuilderWithPrototype<T> implements ValueBuilder<T>
+public class ValueBuilderWithPrototype<T>
+    implements ValueBuilder<T>
 {
     private ValueInstance prototypeInstance;
     private final ValueModel valueModel;
