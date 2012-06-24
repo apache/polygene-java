@@ -300,7 +300,7 @@ task javadocs( type: Javadoc, dependsOn: allprojects*.javadoc ) {
 
 task distLayout( dependsOn: [ javadocs, test, jar, subprojects*.build, ':org.qi4j.manual:manuals' ] ) {
 
-  srcDistImage = copySpec {
+  ext.srcDistImage = copySpec {
     from '.'
     exclude '**/build/'     // build output
     exclude '**/bin/'       // helper scripts
@@ -314,29 +314,29 @@ task distLayout( dependsOn: [ javadocs, test, jar, subprojects*.build, ':org.qi4
     into "qi4j-sdk-$version/src/"
   }
 
-  docsImage = copySpec {
+  ext.docsImage = copySpec {
     from "$buildDir/docs"
     into( "docs" )
   }
 
-  manualsImage = copySpec {
+  ext.manualsImage = copySpec {
     from "manual/$buildDir/docs/userguide"
     into( "docs/userguide" )
   }
 
-  reportsImage = copySpec {
+  ext.reportsImage = copySpec {
     from "$buildDir/reports"
     into( "docs/reports" )
   }
 
-  downloadListImage = copySpec {
+  ext.downloadListImage = copySpec {
     releaseApprovedProjects.collect { proj ->
       from "$proj.buildDir/downloads.sh"
       into( "libs/downsloads/dl-$proj.name" )
     }
   }
 
-  libsImage = copySpec {
+  ext.libsImage = copySpec {
     releaseApprovedProjects.collect { proj ->
       into( "libs/" ) {
         from proj.configurations.archives
@@ -344,7 +344,7 @@ task distLayout( dependsOn: [ javadocs, test, jar, subprojects*.build, ':org.qi4
     }
   }
 
-  samplesImage = copySpec {
+  ext.samplesImage = copySpec {
     from( "$projectDir/samples" ) {
       into( "samples" )
       exclude '**/build/**'
@@ -355,7 +355,7 @@ task distLayout( dependsOn: [ javadocs, test, jar, subprojects*.build, ':org.qi4
     exclude '**/*.iml'
   }
 
-  tutorialsImage = copySpec {
+  ext.tutorialsImage = copySpec {
     from( "$projectDir/tutorials" ) {
       exclude '**/build/**'
       into( "tutorials" )
@@ -366,33 +366,33 @@ task distLayout( dependsOn: [ javadocs, test, jar, subprojects*.build, ':org.qi4
     exclude '**/*.iml'
   }
 
-  binDistImage = copySpec {
+  ext.binDistImage = copySpec {
     into "qi4j-sdk-$version"
-    with docsImage
-    with downloadListImage
-    with libsImage
-    with samplesImage
-    with tutorialsImage
+    with ext.docsImage
+    with ext.downloadListImage
+    with ext.libsImage
+    with ext.samplesImage
+    with ext.tutorialsImage
   }
 
-  siteDocDistImage = copySpec {
+  ext.siteDocDistImage = copySpec {
     into "qi4j/$version"
-    with docsImage
-    with reportsImage
-    with samplesImage
-    with tutorialsImage
+    with ext.docsImage
+    with ext.reportsImage
+    with ext.samplesImage
+    with ext.tutorialsImage
   }
 }
 
 task zipSources( type: Zip, dependsOn: distLayout ) {
   baseName = 'qi4j-sdk'
-  with distLayout.srcDistImage
+  with distLayout.ext.srcDistImage
   classifier = 'src'
 }
 
 task tarSources( type: Tar, dependsOn: distLayout ) {
   baseName = 'qi4j-sdk'
-  with distLayout.srcDistImage
+  with distLayout.ext.srcDistImage
   compression = Compression.GZIP
   classifier = 'src'
 }
@@ -400,27 +400,27 @@ task tarSources( type: Tar, dependsOn: distLayout ) {
 task zipBinaries( type: Zip, dependsOn: distLayout ) {
   baseName = 'qi4j-sdk'
   classifier = 'bin'
-  with distLayout.binDistImage
+  with distLayout.ext.binDistImage
 }
 
 task tarBinaries( type: Tar, dependsOn: distLayout ) {
   baseName = 'qi4j-sdk'
   classifier = 'bin'
   compression = Compression.GZIP
-  with distLayout.binDistImage
+  with distLayout.ext.binDistImage
 }
 
 task zipSiteDoc( type: Zip, dependsOn: distLayout ) {
   baseName = 'qi4j-sdk'
   classifier = 'site'
-  with distLayout.siteDocDistImage
+  with distLayout.ext.siteDocDistImage
 }
 
 task tarSiteDoc( type: Tar, dependsOn: distLayout ) {
   baseName = 'qi4j-sdk'
   classifier = 'site'
   compression = Compression.GZIP
-  with distLayout.siteDocDistImage
+  with distLayout.ext.siteDocDistImage
 }
 
 artifacts {
@@ -428,7 +428,7 @@ artifacts {
 }
 
 task dist( type: Copy, dependsOn: [ zipBinaries, tarBinaries, tarSources, zipSources ] ) {
-  with distLayout.binDistImage
+  with distLayout.ext.binDistImage
   into "$buildDir/dist"
 }
 
@@ -441,7 +441,7 @@ task release {
       throw new GradleException( "'version' must be given as a system property to perform a release." )
     }
   }
-  dependsOn allprojects*.uploadArchives
+  dependsOn allprojects*.uploadArchives, dist
 }
 
 //
