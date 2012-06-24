@@ -20,6 +20,7 @@ import org.qi4j.api.composite.Composite;
 import org.qi4j.api.value.NoSuchValueException;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.runtime.structure.ModelModule;
+import org.qi4j.runtime.structure.ModuleInstance;
 
 import static org.qi4j.functional.Iterables.first;
 
@@ -29,13 +30,14 @@ import static org.qi4j.functional.Iterables.first;
 public final class ValueBuilderInstance<T>
     implements ValueBuilder<T>
 {
-    private final ModelModule<ValueModel> model;
+    private final ModuleInstance currentModule;
     private ValueInstance prototypeInstance;
 
-    public ValueBuilderInstance( ModelModule<ValueModel> model, ValueInstance prototypeInstance )
+    public ValueBuilderInstance(ModelModule<ValueModel> compositeModelModule, ModuleInstance currentModule, ValueStateInstance state)
     {
-        this.model = model;
-        this.prototypeInstance = prototypeInstance;
+        prototypeInstance = compositeModelModule.model().newValueInstance(compositeModelModule.module(), state);
+        prototypeInstance.prepareToBuild();
+        this.currentModule = currentModule;
     }
 
     public T prototype()
@@ -59,12 +61,12 @@ public final class ValueBuilderInstance<T>
     {
         Class<Composite> valueType = (Class<Composite>) first( prototypeInstance.types() );
 
-        ModelModule<ValueModel> model = this.model.module().findValueModels(valueType);
+        ModelModule<ValueModel> valueModel = currentModule.findValueModels(valueType);
 
-        if( model == null )
+        if( valueModel == null )
         {
-            throw new NoSuchValueException( valueType.getName(), model.module().name() );
+            throw new NoSuchValueException( valueType.getName(), currentModule.name() );
         }
-        return new ValueBuilderWithPrototype<T>( model, prototype()).newInstance();
+        return new ValueBuilderWithPrototype<T>( valueModel, currentModule, prototype()).newInstance();
     }
 }

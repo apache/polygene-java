@@ -8,29 +8,30 @@ import org.qi4j.api.json.JSONObjectSerializer;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.runtime.structure.ModelModule;
+import org.qi4j.runtime.structure.ModuleInstance;
 
 /**
  * Implementation of ValueBuilder with a prototype supplied
  */
 public class ValueBuilderWithPrototype<T> implements ValueBuilder<T>
 {
-    private final ModelModule<ValueModel> model;
     private ValueInstance prototypeInstance;
+    private final ValueModel valueModel;
 
-    public ValueBuilderWithPrototype( ModelModule<ValueModel> model, T prototype )
+    public ValueBuilderWithPrototype(ModelModule<ValueModel> compositeModelModule, ModuleInstance currentModule, T prototype)
     {
+        valueModel = compositeModelModule.model();
         // Use JSON serialization-deserialization to make a copy of it
         final Object value;
         try
         {
-            // @TODO avoid using the serializer/deserializer pair.
-            // it is inefficient, and they throw away state hidden outside of properties/associations (in other mixins)
+            // @TODO there is probably a more efficient way to do this
             JSONObjectSerializer serializer = new JSONObjectSerializer();
-            serializer.serialize( prototype, model.model().valueType() );
+            serializer.serialize(prototype, valueModel.valueType());
             Object object = serializer.getRoot();
 
-            JSONDeserializer deserializer = new JSONDeserializer( model.module() );
-            value = deserializer.deserialize( object, model.model().valueType() );
+            JSONDeserializer deserializer = new JSONDeserializer( currentModule );
+            value = deserializer.deserialize(object, valueModel.valueType());
         }
         catch( JSONException e )
         {
@@ -39,7 +40,6 @@ public class ValueBuilderWithPrototype<T> implements ValueBuilder<T>
 
         ValueInstance valueInstance = ValueInstance.getValueInstance( (ValueComposite) value );
         valueInstance.prepareToBuild();
-        this.model = model;
         this.prototypeInstance = valueInstance;
     }
 
@@ -71,7 +71,7 @@ public class ValueBuilderWithPrototype<T> implements ValueBuilder<T>
         prototypeInstance.prepareBuilderState();
 
         // Check that it is valid
-        model.model().checkConstraints( prototypeInstance.state() );
+        valueModel.checkConstraints( prototypeInstance.state() );
 
         try
         {

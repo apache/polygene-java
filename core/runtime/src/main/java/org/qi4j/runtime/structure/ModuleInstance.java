@@ -638,24 +638,25 @@ public class ModuleInstance
         throws NoSuchValueException
     {
         NullArgumentException.validateNotNull( "mixinType", mixinType );
-        ModelModule<ValueModel> model = findValueModels( mixinType );
+        ModelModule<ValueModel> modelModule = findValueModels( mixinType );
 
-        if( model == null )
+        if( modelModule == null )
         {
             throw new NoSuchValueException( mixinType.getName(), name() );
         }
 
+        ValueModel valueModel = modelModule.model();
         Map<AccessibleObject, PropertyInstance<?>> properties = new LinkedHashMap<AccessibleObject, PropertyInstance<?>>();
-        for( PropertyDescriptor propertyDescriptor : model.model().state().properties() )
+        for( PropertyDescriptor propertyDescriptor : valueModel.state().properties() )
         {
             PropertyInfo builderInfo = ( (PropertyModel) propertyDescriptor ).getBuilderInfo();
-            Object initialValue = propertyDescriptor.initialValue( model.module() );
+            Object initialValue = propertyDescriptor.initialValue( modelModule.module() );
             PropertyInstance<Object> propertyInstance = new PropertyInstance<Object>( builderInfo, initialValue );
             properties.put( propertyDescriptor.accessor(), propertyInstance );
         }
 
         Map<AccessibleObject, AssociationInstance<?>> associations = new LinkedHashMap<AccessibleObject, AssociationInstance<?>>();
-        for( AssociationDescriptor associationDescriptor : model.model().state().associations() )
+        for( AssociationDescriptor associationDescriptor : valueModel.state().associations() )
         {
             AssociationInfo builderInfo = ( (AssociationModel) associationDescriptor ).getBuilderInfo();
             ReferenceProperty referenceProperty = new ReferenceProperty();
@@ -664,7 +665,7 @@ public class ModuleInstance
         }
 
         Map<AccessibleObject, ManyAssociationInstance<?>> manyAssociations = new LinkedHashMap<AccessibleObject, ManyAssociationInstance<?>>();
-        for( AssociationDescriptor associationDescriptor : model.model().state().manyAssociations() )
+        for( AssociationDescriptor associationDescriptor : valueModel.state().manyAssociations() )
         {
             AssociationInfo builderInfo = ( (ManyAssociationModel) associationDescriptor ).getBuilderInfo();
             ManyAssociationValueState manyAssociationState = new ManyAssociationValueState( new ArrayList<EntityReference>() );
@@ -673,9 +674,7 @@ public class ModuleInstance
         }
 
         ValueStateInstance state = new ValueStateInstance( properties, associations, manyAssociations );
-        ValueInstance instance = model.model().newValueInstance( model.module(), state );
-        instance.prepareToBuild();
-        return new ValueBuilderInstance<T>( model, instance );
+        return new ValueBuilderInstance<T>( modelModule , this, state);
     }
 
     @Override
@@ -692,7 +691,7 @@ public class ModuleInstance
         {
             throw new NoSuchValueException( valueType.getName(), name() );
         }
-        return new ValueBuilderWithPrototype<T>( model, prototype);
+        return new ValueBuilderWithPrototype<T>( model, this, prototype);
     }
 
     @Override
