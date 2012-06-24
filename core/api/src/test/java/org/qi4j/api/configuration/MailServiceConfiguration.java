@@ -26,4 +26,4 @@ public interface MailServiceConfiguration extends ConfigurationComposite
 
     Property<Integer> port();
 }
-// START SNIPPET: configuration
+// END SNIPPET: configuration
