@@ -35,7 +35,7 @@ import org.qi4j.api.metrics.MetricsHistogram;
 import org.qi4j.api.metrics.MetricsHistogramFactory;
 import org.qi4j.api.metrics.MetricsMeter;
 import org.qi4j.api.metrics.MetricsMeterFactory;
-import org.qi4j.spi.metrics.MetricsProvider;
+import org.qi4j.api.metrics.MetricsProvider;
 import org.qi4j.spi.metrics.MetricsProviderAdapter;
 import org.qi4j.api.metrics.MetricsTimer;
 import org.qi4j.api.metrics.MetricsTimerFactory;

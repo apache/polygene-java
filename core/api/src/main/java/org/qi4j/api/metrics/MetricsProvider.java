@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.qi4j.spi.metrics;
+package org.qi4j.api.metrics;
 
 import org.qi4j.api.metrics.MetricsFactory;
 

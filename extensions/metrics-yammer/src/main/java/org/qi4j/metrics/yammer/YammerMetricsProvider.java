@@ -18,7 +18,7 @@ package org.qi4j.metrics.yammer;
 
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.Activatable;
-import org.qi4j.spi.metrics.MetricsProvider;
+import org.qi4j.api.metrics.MetricsProvider;
 
 @Mixins(YammerMetricsMixin.class)
 public interface YammerMetricsProvider extends MetricsProvider, Activatable

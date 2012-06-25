@@ -23,7 +23,7 @@ import org.qi4j.api.common.Optional;
 import org.qi4j.api.concern.ConcernOf;
 import org.qi4j.api.injection.scope.Invocation;
 import org.qi4j.api.injection.scope.Service;
-import org.qi4j.spi.metrics.MetricsProvider;
+import org.qi4j.api.metrics.MetricsProvider;
 import org.qi4j.api.metrics.MetricsTimer;
 import org.qi4j.api.metrics.MetricsTimerFactory;
 

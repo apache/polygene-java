@@ -24,7 +24,7 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.metrics.MetricsProvider;
+import org.qi4j.api.metrics.MetricsProvider;
 import org.qi4j.api.metrics.MetricsTimerFactory;
 
 public class CaptureTimingConcern

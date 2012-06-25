@@ -13,5 +13,5 @@
  * and limitations under the License.
 //////////////////////
 
-[[constraint,Cnstraint]]
+[[constraint,Constraint]]
 = Constraint =

@@ -106,7 +106,7 @@
 
 // GA
   var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-1192232-16']);
+  _gaq.push(['_setAccount', 'UA-3118496-1']);
   _gaq.push(['_trackPageview']);
 
   (function() {

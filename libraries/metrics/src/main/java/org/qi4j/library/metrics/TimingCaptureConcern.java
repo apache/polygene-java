@@ -17,15 +17,11 @@
 package org.qi4j.library.metrics;
 
 import java.lang.reflect.Method;
-import org.qi4j.api.Qi4j;
 import org.qi4j.api.common.AppliesTo;
 import org.qi4j.api.common.Optional;
-import org.qi4j.api.composite.Composite;
 import org.qi4j.api.injection.scope.Invocation;
 import org.qi4j.api.injection.scope.Service;
-import org.qi4j.api.injection.scope.Structure;
-import org.qi4j.api.injection.scope.This;
-import org.qi4j.spi.metrics.MetricsProvider;
+import org.qi4j.api.metrics.MetricsProvider;
 
 @AppliesTo( TimingCapture.class )
 public class TimingCaptureConcern extends TimingCaptureAllConcern
