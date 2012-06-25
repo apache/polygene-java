@@ -33,7 +33,7 @@ public class TestApplication
         app = new Energy4Java().newApplication( new TestAssembler() );
         app.activate();
 
-        uowf = app.findModule( "BOOTSTRAP", "BOOTSTRAP-Bootstrap" ).unitOfWorkFactory();
+        uowf = app.findModule( "BOOTSTRAP", "BOOTSTRAP-Bootstrap" );
 
         Context.prepareContextBaseClass( uowf );
 

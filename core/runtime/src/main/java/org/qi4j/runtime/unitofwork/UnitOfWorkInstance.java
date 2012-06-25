@@ -47,11 +47,11 @@ import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 import org.qi4j.spi.entitystore.StateCommitter;
 import org.qi4j.spi.metrics.DefaultMetric;
-import org.qi4j.spi.metrics.MetricsCounter;
-import org.qi4j.spi.metrics.MetricsCounterFactory;
+import org.qi4j.api.metrics.MetricsCounter;
+import org.qi4j.api.metrics.MetricsCounterFactory;
 import org.qi4j.spi.metrics.MetricsProvider;
-import org.qi4j.spi.metrics.MetricsTimer;
-import org.qi4j.spi.metrics.MetricsTimerFactory;
+import org.qi4j.api.metrics.MetricsTimer;
+import org.qi4j.api.metrics.MetricsTimerFactory;
 
 import static org.qi4j.api.unitofwork.UnitOfWorkCallback.UnitOfWorkStatus.COMPLETED;
 import static org.qi4j.api.unitofwork.UnitOfWorkCallback.UnitOfWorkStatus.DISCARDED;

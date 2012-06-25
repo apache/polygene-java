@@ -44,24 +44,6 @@ public interface Module
 {
     String name();
 
-    @Deprecated
-    TransientBuilderFactory transientBuilderFactory();
-
-    @Deprecated
-    ObjectFactory objectFactory();
-
-    @Deprecated
-    ValueBuilderFactory valueBuilderFactory();
-
-    @Deprecated
-    UnitOfWorkFactory unitOfWorkFactory();
-
-    @Deprecated
-    QueryBuilderFactory queryBuilderFactory();
-
-    @Deprecated
-    ServiceFinder serviceFinder();
-
     ClassLoader classLoader();
 
     TransientDescriptor transientDescriptor( String typeName );

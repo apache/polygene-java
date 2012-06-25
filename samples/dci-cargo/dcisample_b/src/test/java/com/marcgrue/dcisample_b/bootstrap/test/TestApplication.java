@@ -125,12 +125,12 @@ public class TestApplication
         app.activate();
 
         module = app.findModule( "BOOTSTRAP", "BOOTSTRAP-Bootstrap" );
-        uowf = module.unitOfWorkFactory();
-        tbf = module.transientBuilderFactory();
-        qbf = module.queryBuilderFactory();
+        uowf = module;
+        tbf = module;
+        qbf = module;
 
         ServiceReference<RouteSpecificationFactoryService> routeSpecFactoryServiceRef =
-              module.serviceFinder().findService( RouteSpecificationFactoryService.class );
+              module.findService( RouteSpecificationFactoryService.class );
         routeSpecFactory = routeSpecFactoryServiceRef.get();
 
         Context.prepareContextBaseClass( uowf, vbf );

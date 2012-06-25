@@ -40,7 +40,6 @@ public abstract class AbstractQi4jBaseTest
         initApplication( application );
         api = spi = qi4j.spi();
         application.activate();
-
     }
 
     /** Called by the superclass for the test to define the entire application, every layer, every module and all

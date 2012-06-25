@@ -234,36 +234,6 @@ public class ModuleInstance
         }
     }
 
-    public TransientBuilderFactory transientBuilderFactory()
-    {
-        return this;
-    }
-
-    public ObjectFactory objectFactory()
-    {
-        return this;
-    }
-
-    public ValueBuilderFactory valueBuilderFactory()
-    {
-        return this;
-    }
-
-    public UnitOfWorkFactory unitOfWorkFactory()
-    {
-        return this;
-    }
-
-    public QueryBuilderFactory queryBuilderFactory()
-    {
-        return this;
-    }
-
-    public ServiceFinder serviceFinder()
-    {
-        return this;
-    }
-
     public ClassLoader classLoader()
     {
         return classLoader;

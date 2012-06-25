@@ -38,7 +38,7 @@ public class ParseHandlingEventDataTest extends TestApplication
 
         // Start ParseHandlingEventData service
         ServiceReference<ParseHandlingEventData> ParseHandlingEventDataRef =
-              module.serviceFinder().findService( ParseHandlingEventData.class );
+              module.findService( ParseHandlingEventData.class );
         handlingEventParser = ParseHandlingEventDataRef.get();
     }
 
