@@ -24,7 +24,9 @@ class ModuleReleaseSpecification
       return false
     }
     def module = new XmlSlurper().parse(devStatusFile)
-    def status = module.status.codebase.text()
-    return status != 'none' && status != 'early'
+    def codebase = module.status.codebase.text()
+    def docs = module.status.documentation.text()
+    def tests = module.status.unittests.text()
+    return codebase == 'none' && codebase != 'early' && docs != 'none' && tests != 'none'
   }
 }
