@@ -1,5 +1,4 @@
 
-
 project.ext {
   title = "Qi4j SDK"
   description = "Qi4j™ is a framework for domain centric application development, including evolved concepts from AOP, DI and DDD."
@@ -166,6 +165,8 @@ allprojects {
       maxHeapSize = "1024m"
       systemProperties = testProperties
       ignoreFailures = true
+      testReport = false
+      testResultsDir = file( "$rootProject.testResultsDir" )
       afterSuite { descriptor, result ->
         if( result.resultType == TestResult.ResultType.FAILURE )
         {
@@ -239,28 +240,7 @@ gradle.taskGraph.whenReady {taskGraph ->
 
 test {
   dependsOn subprojects*.test
-}
-
-test.doLast() {
-  ant {
-    taskdef( name: 'junitreport',
-             classname: 'org.apache.tools.ant.taskdefs.optional.junit.XMLResultAggregator',
-             classpath: configurations.testRuntime.asPath )
-
-    // create Junit report
-    def junitReportDir = "$buildDir/reports/junit"
-    mkdir( dir: junitReportDir )
-    mkdir( dir: "$buildDir/test-results" )
-    junitreport( todir: junitReportDir ) {
-      report( format: 'frames', todir: junitReportDir )
-      allprojects.each { module ->
-        fileset( dir: "$module.buildDir/test-results" ) {
-          include( name: "TEST-*.xml" )
-        }
-      }
-    }
-
-  }
+  testReport = true
 }
 
 task javadocs( type: Javadoc, dependsOn: allprojects*.javadoc ) {
