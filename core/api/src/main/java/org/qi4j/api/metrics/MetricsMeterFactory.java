@@ -30,8 +30,6 @@ public interface MetricsMeterFactory extends MetricsFactory
      * @param rate      the scale unit for this timer's rate metrics
      *
      * @return A Metric instance to be used, OR org.qi4j.spi.metrics.DefaultMetric.NULL if not supported.
-     *
-     * @see DefaultMetric
      */
     MetricsMeter createMeter( Class<?> origin, String name, String eventType, TimeUnit rate );
 }
