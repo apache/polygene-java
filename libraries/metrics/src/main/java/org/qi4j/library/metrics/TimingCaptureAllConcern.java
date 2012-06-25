@@ -24,8 +24,8 @@ import org.qi4j.api.concern.ConcernOf;
 import org.qi4j.api.injection.scope.Invocation;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.spi.metrics.MetricsProvider;
-import org.qi4j.spi.metrics.MetricsTimer;
-import org.qi4j.spi.metrics.MetricsTimerFactory;
+import org.qi4j.api.metrics.MetricsTimer;
+import org.qi4j.api.metrics.MetricsTimerFactory;
 
 public class TimingCaptureAllConcern extends ConcernOf<InvocationHandler>
     implements InvocationHandler

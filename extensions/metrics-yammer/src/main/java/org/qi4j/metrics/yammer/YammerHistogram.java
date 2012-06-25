@@ -17,7 +17,7 @@
 package org.qi4j.metrics.yammer;
 
 import com.yammer.metrics.core.Histogram;
-import org.qi4j.spi.metrics.MetricsHistogram;
+import org.qi4j.api.metrics.MetricsHistogram;
 
 public class YammerHistogram
     implements MetricsHistogram

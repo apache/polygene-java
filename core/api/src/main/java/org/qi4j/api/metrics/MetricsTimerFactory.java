@@ -4,7 +4,7 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  *
- *     You may obtain a copy of the License at 
+ *     You may obtain a copy of the License at
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -14,21 +14,24 @@
  * limitations under the License.
  */
 
-package org.qi4j.spi.metrics;
+package org.qi4j.api.metrics;
 
-public interface MetricsHealthCheckFactory extends MetricsFactory
+import java.util.concurrent.TimeUnit;
+
+public interface MetricsTimerFactory extends MetricsFactory
 {
     /**
-     * Create a MetricsHealthCheck instance.
+     * Create a MetricsTimer instance.
      * If the same arguments are given twice, the same instance must be returned.
      *
-     * @param origin The class that instantiate the metric
-     * @param name   A human readable, short name of the metric.
-     * @param check  The health check to be performed regularly.
+     * @param origin   The class that instantiate the metric
+     * @param name     A human readable, short name of the metric.
+     * @param duration the scale unit for this timer's duration metrics
+     * @param rate     the scale unit for this timer's rate metrics
      *
-     * @return A MetricsHealthCheck instance to be used, OR org.qi4j.spi.metrics.DefaultMetric.NULL if not supported.
+     * @return A Metric instance to be used, OR org.qi4j.spi.metrics.DefaultMetric.NULL if not supported.
      *
      * @see DefaultMetric
      */
-    MetricsHealthCheck registerHealthCheck( Class<?> origin, String name, MetricsHealthCheck check );
+    MetricsTimer createTimer( Class<?> origin, String name, TimeUnit duration, TimeUnit rate );
 }

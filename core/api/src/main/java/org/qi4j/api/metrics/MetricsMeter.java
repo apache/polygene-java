@@ -14,8 +14,22 @@
  * limitations under the License.
  */
 
-package org.qi4j.spi.metrics;
+package org.qi4j.api.metrics;
 
-public interface MetricsFactory
+/**
+ * A meter metric which measures mean throughput and one-, five-, and fifteen-minute
+ * exponentially-weighted moving average throughputs.
+ *
+ * @see <a href="http://en.wikipedia.org/wiki/Moving_average#Exponential_moving_average">EMA</a>
+ */
+public interface MetricsMeter extends Metric
 {
+    void mark();
+
+    /**
+     * Mark the occurrence of a given number of events.
+     *
+     * @param numberOfEvents the number of events
+     */
+    void mark( int numberOfEvents );
 }

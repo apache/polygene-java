@@ -19,6 +19,8 @@ package org.qi4j.spi.metrics;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.metrics.MetricsGauge;
+import org.qi4j.api.metrics.MetricsGaugeFactory;
 
 public class DocumentationSupport
 {

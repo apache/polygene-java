@@ -14,21 +14,11 @@
  * limitations under the License.
  */
 
-package org.qi4j.spi.metrics;
+package org.qi4j.api.metrics;
 
 /**
- * MetricsGauge is the most basic Metric type, and is completely flexible and therefor handled slightly differently in
- * the MetricsFactory than all other Gauges. It needs to pass on custom code, so the implementation is typically
- * an anonymous class, inlined at the implementation.
- *
- * @param <T> Any type holding the MetricsGauge's current value.
+ * Marker interface for all Metric types.
  */
-public interface MetricsGauge<T> extends Metric
+public interface Metric
 {
-    /**
-     * Returns the metric's current value.
-     *
-     * @return the metric's current value
-     */
-    T value();
 }

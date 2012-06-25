@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package org.qi4j.spi.metrics;
+package org.qi4j.api.metrics;
 
-public interface MetricsGaugeFactory extends MetricsFactory
+public interface MetricsCounterFactory extends MetricsFactory
 {
     /**
-     * Register a MetricsGauge with the underlying Metrics system.
+     * Create a MetricsCounter instance.
+     * If the same arguments are given twice, the same instance must be returned.
      *
-     * @param origin The class where the MetricsGauge is created.
+     * @param origin The class that instantiate the metric
      * @param name   A human readable, short name of the metric.
-     * @param gauge  The implementation of the MetricsGauge.
-     * @param <T>    Any type holding the MetricsGauge's current value.
      *
-     * @return The same MetricsGauge or the DefaultMetric.NULL MetricsGauge instance.
+     * @return A Metric instance to be used, OR org.qi4j.spi.metrics.DefaultMetric.NULL if not supported.
+     *
+     * @see DefaultMetric
      */
-    <T> MetricsGauge<T> registerGauge( Class<?> origin, String name, MetricsGauge<T> gauge );
+    MetricsCounter createCounter( Class<?> origin, String name );
 }

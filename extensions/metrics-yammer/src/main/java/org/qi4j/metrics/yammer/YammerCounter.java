@@ -17,7 +17,7 @@
 package org.qi4j.metrics.yammer;
 
 import com.yammer.metrics.core.Counter;
-import org.qi4j.spi.metrics.MetricsCounter;
+import org.qi4j.api.metrics.MetricsCounter;
 
 public class YammerCounter
     implements MetricsCounter

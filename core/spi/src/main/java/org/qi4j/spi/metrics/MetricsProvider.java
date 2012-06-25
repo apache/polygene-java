@@ -16,6 +16,8 @@
 
 package org.qi4j.spi.metrics;
 
+import org.qi4j.api.metrics.MetricsFactory;
+
 public interface MetricsProvider
 {
     /**

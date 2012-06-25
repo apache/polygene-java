@@ -14,11 +14,19 @@
  * limitations under the License.
  */
 
-package org.qi4j.spi.metrics;
+package org.qi4j.api.metrics;
 
-/**
- * Marker interface for all Metric types.
- */
-public interface Metric
+public interface MetricsGaugeFactory extends MetricsFactory
 {
+    /**
+     * Register a MetricsGauge with the underlying Metrics system.
+     *
+     * @param origin The class where the MetricsGauge is created.
+     * @param name   A human readable, short name of the metric.
+     * @param gauge  The implementation of the MetricsGauge.
+     * @param <T>    Any type holding the MetricsGauge's current value.
+     *
+     * @return The same MetricsGauge or the DefaultMetric.NULL MetricsGauge instance.
+     */
+    <T> MetricsGauge<T> registerGauge( Class<?> origin, String name, MetricsGauge<T> gauge );
 }

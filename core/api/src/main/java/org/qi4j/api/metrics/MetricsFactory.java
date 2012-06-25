@@ -14,14 +14,9 @@
  * limitations under the License.
  */
 
-package org.qi4j.spi.metrics;
+package org.qi4j.api.metrics;
 
-public interface MetricsTimer extends Metric
+public interface MetricsFactory
 {
-    Context start();
-
-    public interface Context
-    {
-        void stop();
-    }
+    Iterable<Metric> registered();
 }

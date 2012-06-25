@@ -14,24 +14,20 @@
  * limitations under the License.
  */
 
-package org.qi4j.spi.metrics;
+package org.qi4j.api.metrics;
 
-import java.util.concurrent.TimeUnit;
-
-public interface MetricsTimerFactory extends MetricsFactory
+public interface MetricsHistogramFactory extends MetricsFactory
 {
     /**
-     * Create a MetricsTimer instance.
+     * Create a MetricsHistogram instance.
      * If the same arguments are given twice, the same instance must be returned.
      *
-     * @param origin   The class that instantiate the metric
-     * @param name     A human readable, short name of the metric.
-     * @param duration the scale unit for this timer's duration metrics
-     * @param rate     the scale unit for this timer's rate metrics
+     * @param origin The class that instantiate the metric
+     * @param name   A human readable, short name of the metric.
      *
      * @return A Metric instance to be used, OR org.qi4j.spi.metrics.DefaultMetric.NULL if not supported.
      *
      * @see DefaultMetric
      */
-    MetricsTimer createTimer( Class<?> origin, String name, TimeUnit duration, TimeUnit rate );
+    MetricsHistogram createHistogram( Class<?> origin, String name );
 }

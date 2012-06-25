@@ -16,6 +16,13 @@
 
 package org.qi4j.spi.metrics;
 
+import org.qi4j.api.metrics.MetricsCounter;
+import org.qi4j.api.metrics.MetricsGauge;
+import org.qi4j.api.metrics.MetricsHealthCheck;
+import org.qi4j.api.metrics.MetricsHistogram;
+import org.qi4j.api.metrics.MetricsMeter;
+import org.qi4j.api.metrics.MetricsTimer;
+
 public final class DefaultMetric
     implements MetricsGauge, MetricsCounter, MetricsHistogram, MetricsHealthCheck, MetricsMeter, MetricsTimer
 {

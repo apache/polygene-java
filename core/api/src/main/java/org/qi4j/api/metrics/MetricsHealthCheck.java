@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.qi4j.spi.metrics;
+package org.qi4j.api.metrics;
 
 public interface MetricsHealthCheck extends Metric
 {

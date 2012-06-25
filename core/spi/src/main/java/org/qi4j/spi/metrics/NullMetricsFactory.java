@@ -17,6 +17,20 @@
 package org.qi4j.spi.metrics;
 
 import java.util.concurrent.TimeUnit;
+import org.qi4j.api.metrics.Metric;
+import org.qi4j.api.metrics.MetricsCounter;
+import org.qi4j.api.metrics.MetricsCounterFactory;
+import org.qi4j.api.metrics.MetricsGauge;
+import org.qi4j.api.metrics.MetricsGaugeFactory;
+import org.qi4j.api.metrics.MetricsHealthCheck;
+import org.qi4j.api.metrics.MetricsHealthCheckFactory;
+import org.qi4j.api.metrics.MetricsHistogram;
+import org.qi4j.api.metrics.MetricsHistogramFactory;
+import org.qi4j.api.metrics.MetricsMeter;
+import org.qi4j.api.metrics.MetricsMeterFactory;
+import org.qi4j.api.metrics.MetricsTimer;
+import org.qi4j.api.metrics.MetricsTimerFactory;
+import org.qi4j.functional.Iterables;
 
 public final class NullMetricsFactory
 {
@@ -27,6 +41,12 @@ public final class NullMetricsFactory
         {
             return DefaultMetric.NULL;
         }
+
+        @Override
+        public Iterable<Metric> registered()
+        {
+            return Iterables.iterable( (Metric) DefaultMetric.NULL );
+        }
     }
 
     static class NullGaugeFactory implements MetricsGaugeFactory
@@ -35,6 +55,12 @@ public final class NullMetricsFactory
         public <T> MetricsGauge<T> registerGauge( Class<?> origin, String name, MetricsGauge<T> gauge )
         {
             return DefaultMetric.NULL;
+        }
+
+        @Override
+        public Iterable<Metric> registered()
+        {
+            return Iterables.iterable( (Metric) DefaultMetric.NULL );
         }
     }
 
@@ -45,6 +71,12 @@ public final class NullMetricsFactory
         {
             return DefaultMetric.NULL;
         }
+
+        @Override
+        public Iterable<Metric> registered()
+        {
+            return Iterables.iterable( (Metric) DefaultMetric.NULL );
+        }
     }
 
     static class NullHistogramFactory implements MetricsHistogramFactory
@@ -53,6 +85,12 @@ public final class NullMetricsFactory
         public MetricsHistogram createHistogram( Class<?> origin, String name )
         {
             return DefaultMetric.NULL;
+        }
+
+        @Override
+        public Iterable<Metric> registered()
+        {
+            return Iterables.iterable( (Metric) DefaultMetric.NULL );
         }
     }
 
@@ -64,6 +102,12 @@ public final class NullMetricsFactory
 
             return DefaultMetric.NULL;
         }
+
+        @Override
+        public Iterable<Metric> registered()
+        {
+            return Iterables.iterable( (Metric) DefaultMetric.NULL );
+        }
     }
 
     static class NullTimerFactory implements MetricsTimerFactory
@@ -72,6 +116,12 @@ public final class NullMetricsFactory
         public MetricsTimer createTimer( Class<?> origin, String name, TimeUnit duration, TimeUnit rate )
         {
             return DefaultMetric.NULL;
+        }
+
+        @Override
+        public Iterable<Metric> registered()
+        {
+            return Iterables.iterable( (Metric) DefaultMetric.NULL );
         }
     }
 }

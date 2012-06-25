@@ -16,6 +16,14 @@
 
 package org.qi4j.spi.metrics;
 
+import org.qi4j.api.metrics.MetricsCounterFactory;
+import org.qi4j.api.metrics.MetricsFactory;
+import org.qi4j.api.metrics.MetricsGaugeFactory;
+import org.qi4j.api.metrics.MetricsHealthCheckFactory;
+import org.qi4j.api.metrics.MetricsHistogramFactory;
+import org.qi4j.api.metrics.MetricsMeterFactory;
+import org.qi4j.api.metrics.MetricsTimerFactory;
+
 public class MetricsProviderAdapter
     implements MetricsProvider
 {

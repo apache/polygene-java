@@ -18,7 +18,7 @@ package org.qi4j.metrics.yammer;
 
 import com.yammer.metrics.HealthChecks;
 import com.yammer.metrics.core.HealthCheck;
-import org.qi4j.spi.metrics.MetricsHealthCheck;
+import org.qi4j.api.metrics.MetricsHealthCheck;
 
 public class YammerHealthCheck
     implements MetricsHealthCheck

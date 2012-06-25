@@ -17,7 +17,7 @@
 package org.qi4j.metrics.yammer;
 
 import com.yammer.metrics.core.Gauge;
-import org.qi4j.spi.metrics.MetricsGauge;
+import org.qi4j.api.metrics.MetricsGauge;
 
 public class YammerGauge<T>
     implements MetricsGauge<T>

@@ -14,15 +14,21 @@
  * limitations under the License.
  */
 
-package org.qi4j.spi.metrics;
+package org.qi4j.api.metrics;
 
 /**
- * A metric which calculates the distribution of a value.
+ * MetricsGauge is the most basic Metric type, and is completely flexible and therefor handled slightly differently in
+ * the MetricsFactory than all other Gauges. It needs to pass on custom code, so the implementation is typically
+ * an anonymous class, inlined at the implementation.
  *
- * @see <a href="http://www.johndcook.com/standard_deviation.html">Accurately computing running
- *      variance</a>
+ * @param <T> Any type holding the MetricsGauge's current value.
  */
-public interface MetricsHistogram extends Metric
+public interface MetricsGauge<T> extends Metric
 {
-    void update( long newValue );
+    /**
+     * Returns the metric's current value.
+     *
+     * @return the metric's current value
+     */
+    T value();
 }

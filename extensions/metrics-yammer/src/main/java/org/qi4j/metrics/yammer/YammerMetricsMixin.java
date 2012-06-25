@@ -23,20 +23,22 @@ import java.util.concurrent.TimeUnit;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.structure.Application;
-import org.qi4j.spi.metrics.MetricsCounter;
-import org.qi4j.spi.metrics.MetricsCounterFactory;
-import org.qi4j.spi.metrics.MetricsGauge;
-import org.qi4j.spi.metrics.MetricsGaugeFactory;
-import org.qi4j.spi.metrics.MetricsHealthCheck;
-import org.qi4j.spi.metrics.MetricsHealthCheckFactory;
-import org.qi4j.spi.metrics.MetricsHistogram;
-import org.qi4j.spi.metrics.MetricsHistogramFactory;
-import org.qi4j.spi.metrics.MetricsMeter;
-import org.qi4j.spi.metrics.MetricsMeterFactory;
+import org.qi4j.functional.Iterables;
+import org.qi4j.api.metrics.Metric;
+import org.qi4j.api.metrics.MetricsCounter;
+import org.qi4j.api.metrics.MetricsCounterFactory;
+import org.qi4j.api.metrics.MetricsGauge;
+import org.qi4j.api.metrics.MetricsGaugeFactory;
+import org.qi4j.api.metrics.MetricsHealthCheck;
+import org.qi4j.api.metrics.MetricsHealthCheckFactory;
+import org.qi4j.api.metrics.MetricsHistogram;
+import org.qi4j.api.metrics.MetricsHistogramFactory;
+import org.qi4j.api.metrics.MetricsMeter;
+import org.qi4j.api.metrics.MetricsMeterFactory;
 import org.qi4j.spi.metrics.MetricsProvider;
 import org.qi4j.spi.metrics.MetricsProviderAdapter;
-import org.qi4j.spi.metrics.MetricsTimer;
-import org.qi4j.spi.metrics.MetricsTimerFactory;
+import org.qi4j.api.metrics.MetricsTimer;
+import org.qi4j.api.metrics.MetricsTimerFactory;
 
 public class YammerMetricsMixin extends MetricsProviderAdapter
     implements MetricsProvider, Activatable
@@ -54,6 +56,12 @@ public class YammerMetricsMixin extends MetricsProviderAdapter
             {
                 return new YammerTimer( Metrics.newTimer( origin, name, app.name(), duration, rate ) );
             }
+
+            @Override
+            public Iterable<Metric> registered()
+            {
+                return Iterables.empty();
+            }
         };
     }
 
@@ -66,6 +74,12 @@ public class YammerMetricsMixin extends MetricsProviderAdapter
             public MetricsMeter createMeter( Class<?> origin, String name, String eventType, TimeUnit rate )
             {
                 return new YammerMeter( Metrics.newMeter( origin, name, app.name(), eventType, rate ) );
+            }
+
+            @Override
+            public Iterable<Metric> registered()
+            {
+                return Iterables.empty();
             }
         };
     }
@@ -80,6 +94,12 @@ public class YammerMetricsMixin extends MetricsProviderAdapter
             {
                 return new YammerHistogram( Metrics.newHistogram( origin, name, app.name() ) );
             }
+
+            @Override
+            public Iterable<Metric> registered()
+            {
+                return Iterables.empty();
+            }
         };
     }
 
@@ -92,6 +112,12 @@ public class YammerMetricsMixin extends MetricsProviderAdapter
             public MetricsHealthCheck registerHealthCheck( Class<?> origin, String name, MetricsHealthCheck check )
             {
                 return new YammerHealthCheck( origin, name, check );
+            }
+
+            @Override
+            public Iterable<Metric> registered()
+            {
+                return Iterables.empty();
             }
         };
     }
@@ -115,6 +141,12 @@ public class YammerMetricsMixin extends MetricsProviderAdapter
                 } );
                 return new YammerGauge<T>( yammer );
             }
+
+            @Override
+            public Iterable<Metric> registered()
+            {
+                return Iterables.empty();
+            }
         };
     }
 
@@ -128,6 +160,12 @@ public class YammerMetricsMixin extends MetricsProviderAdapter
             {
                 Counter counter = Metrics.newCounter( origin, name, app.name() );
                 return new YammerCounter( counter );
+            }
+
+            @Override
+            public Iterable<Metric> registered()
+            {
+                return Iterables.empty();
             }
         };
     }

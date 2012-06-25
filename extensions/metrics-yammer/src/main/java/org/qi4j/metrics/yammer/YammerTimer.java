@@ -18,7 +18,7 @@ package org.qi4j.metrics.yammer;
 
 import com.yammer.metrics.core.Timer;
 import com.yammer.metrics.core.TimerContext;
-import org.qi4j.spi.metrics.MetricsTimer;
+import org.qi4j.api.metrics.MetricsTimer;
 
 public class YammerTimer
     implements MetricsTimer

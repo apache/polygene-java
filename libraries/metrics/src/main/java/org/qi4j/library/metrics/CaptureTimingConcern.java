@@ -18,7 +18,6 @@ package org.qi4j.library.metrics;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import org.qi4j.api.Qi4j;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.injection.scope.Service;
@@ -26,7 +25,7 @@ import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.metrics.MetricsProvider;
-import org.qi4j.spi.metrics.MetricsTimerFactory;
+import org.qi4j.api.metrics.MetricsTimerFactory;
 
 public class CaptureTimingConcern
     implements InvocationHandler

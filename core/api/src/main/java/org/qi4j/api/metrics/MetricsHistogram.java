@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package org.qi4j.spi.metrics;
+package org.qi4j.api.metrics;
 
-public interface MetricsCounter extends Metric
+/**
+ * A metric which calculates the distribution of a value.
+ *
+ * @see <a href="http://www.johndcook.com/standard_deviation.html">Accurately computing running
+ *      variance</a>
+ */
+public interface MetricsHistogram extends Metric
 {
-    void increment();
-
-    void increment( int steps );
-
-    void decrement();
-
-    void decrement( int steps );
+    void update( long newValue );
 }
