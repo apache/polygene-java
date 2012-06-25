@@ -46,13 +46,12 @@ allprojects {
   apply plugin: 'java'
   apply plugin: 'checkstyle'
   apply plugin: 'project-report'
-  dependsOnChildren()
 
   defaultTasks 'classes', 'test'
 
   group = name.substring( 0, name.lastIndexOf( '.' ) )
   version = System.properties.version ?: "0"
-  [ compileJava, compileTestJava ]*.options*.encoding = 'UTF-8'
+  [ compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
 
   repositories {
     mavenCentral()
@@ -91,17 +90,6 @@ allprojects {
     scalaDir = new File( "$projectDir/src/main/scala" )
     documenationDir = new File( "$projectDir/src/docs" )
     testDir = new File( "$projectDir/src/tests/java" )
-  }
-
-  if( ext.documenationDir.isDirectory() )
-  {
-    task docsJar( type: Jar ) {
-      classifier = "docs"
-      from sourceSets.docs.resources
-    }
-    artifacts {
-      archives docsJar
-    }
   }
 
   if( ext.javaDir.isDirectory() || ext.scalaDir.isDirectory() || ext.testDir.isDirectory() )
@@ -272,6 +260,7 @@ test.doLast() {
 task javadocs( type: Javadoc, dependsOn: allprojects*.javadoc ) {
 
   options.docFilesSubDirs = true
+  options.encoding = "UTF-8"
   title = "${rootProject.title} ${version}"
   def apiSources = releaseApprovedProjects.findAll( { project ->
     ( project.name.startsWith( 'org.qi4j.core' ) &&
