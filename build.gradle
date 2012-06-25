@@ -277,7 +277,7 @@ task javadocs( type: Javadoc, dependsOn: allprojects*.javadoc ) {
   source apiSources.collect { project ->
     project.sourceSets.main.allJava
   }
-  destinationDir = new File( "$buildDir/docs/website/javadoc" )
+  destinationDir = new File( "$buildDir/docs/javadoc" )
   // Might need a classpath
   classpath = files( apiSources.collect { project ->
     project.sourceSets.main.compileClasspath
