@@ -63,12 +63,8 @@ public class UoWFile
 
     void copyOriginalToCurrent()
     {
-        try {
-            if ( original.exists() ) {
-                Inputs.byteBuffer( original, FILE_BUFFER_SIZE ).transferTo( Outputs.byteBuffer( current ) );
-            }
-        } catch ( IOException ex ) {
-            throw new UoWFileException( ex );
+        if ( original.exists() ) {
+            copy( original, current );
         }
     }
 
@@ -119,6 +115,15 @@ public class UoWFile
     {
         return file.length() + file.lastModified();
     }
+    
+    private void copy( File source, File dest )
+    {
+        try {
+            Inputs.byteBuffer( source, FILE_BUFFER_SIZE ).transferTo( Outputs.byteBuffer( dest ) );
+        } catch ( IOException ex ) {
+            throw new UoWFileException( ex );
+        }
+    }
 
     private void delete( File file )
     {
@@ -129,8 +134,17 @@ public class UoWFile
 
     private void move( File source, File dest )
     {
+        // Atomic move attempt
         if ( !source.renameTo( dest ) ) {
-            throw new UoWFileException( new IOException( "Unable to move file " + source + " to " + dest ) );
+            // source and dest are probably on different filesystem, fallback to a non atomic copy/move operation
+            copy( source, dest );
+            if ( !source.delete() ) {
+                throw new UoWFileException( new IOException( "Unable to delete source file " + source
+                                                             + " after copy(move) to " + dest
+                                                             + " (rename failed before that)." ) );
+            }
+            LOGGER.warn( "Moved {} to {} using a copy/delete operation instead of an atomic move. "
+                         + "Are they on different filesystems?", source, dest );
         }
     }
 
