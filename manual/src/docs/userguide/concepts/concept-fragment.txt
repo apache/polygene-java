@@ -1,6 +1,0 @@
-[[def-fragment,Fragment]]
-= Fragment =
-
-A part of the implementation of a <<def-composite>>. There are 4 fragment types:
-<<def-mixin>>, <<def-concern>>, <<def-constraint>>
-and <<def-sideeffect>>.

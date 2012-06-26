@@ -41,6 +41,10 @@ _Services_ in Qi4j are _singletons_, one instance per definition. That means tha
 of the same service type, but they can not be created on the fly in runtime, but has to be explicitly defined during
 <<core-bootstrap-assembly>>.
 
+By default, _Services_ are not instantiated until they are used. This means that the _ServiceComposite_ instance itself
+will not exist until someone calls a method. If a _Service_ needs to be instantiated when the _Module_ is activated, one
+need to declare/call the instantiateOnStartup() method on the _ServiceDescriptor_ during the bootstrap.
+
 == Service Configuration ==
 The configuration for a service is well supported in Qi4j. See the <<core-api-service-configuration>> chapter for details.
 

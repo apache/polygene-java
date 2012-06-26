@@ -6,6 +6,38 @@
 $( document ).ready( function($){
 
     /**
+     * Glossary.
+     */
+    function glossary( $section ) {
+        
+        // Better style
+        var $dts = $section.find('dt');
+        $dts.css('margin','2em 0 1em 0');
+        $dts.css('padding','0 0 0.3em 0.5em');
+        $dts.css('border-bottom','1px solid #ddd');
+        $dts.css('color','#0B75BC');
+        
+        // Better behavior
+        function highlight( hash ) {
+            if ( hash ) {
+                var target = $dts.find(hash);
+                var dt = target.parent();
+                var dd = dt.next();
+                console.log(dt);
+                console.log(dd);
+                // Scroll
+                $.scrollTo( dt, 200, { 'offset': -96 });
+                // Highlight
+                dd.fadeOut(50).fadeIn(200);
+            }
+        }
+        $( window ).bind( 'hashchange', function() {
+            highlight( window.location.hash );
+        });
+        highlight( window.location.hash );
+    }
+
+    /**
      * Community/Codebase.
      */
     function codebase( $section ) {
@@ -173,8 +205,11 @@ $( document ).ready( function($){
 
     // Section specific enhancements
     var $section = $( 'body > div.section' );
-    var section_title = $section.attr( 'title' );
+    var section_title = $section.attr( 'title' ).trim();
     switch( section_title ) {
+        case "Glossary":
+            glossary( $section );
+            break;
         case "Codebase":
             codebase( $section );
             break;

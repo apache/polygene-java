@@ -1,2 +1,0 @@
-[[def-metainfo,MetaInfo]]
-= MetaInfo =

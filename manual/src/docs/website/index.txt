@@ -41,7 +41,7 @@ include::../userguide/tools.txt[]
 
 :leveloffset: 1
 
-include::../userguide/concepts.txt[]
+include::../userguide/glossary.txt[]
 
 :leveloffset: 1
 

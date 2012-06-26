@@ -31,5 +31,5 @@ include::tools.txt[]
 
 :leveloffset: {level2}
 
-include::concepts.txt[]
+include::glossary.txt[]
 

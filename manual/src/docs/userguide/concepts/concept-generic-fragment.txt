@@ -1,7 +1,0 @@
-[[def-generic-fragment,Generic Fragment]]
-= Generic Fragment =
-
-Generic Fragments are <<def-fragment>> that implements
-java.lang.reflect.InvocationHandler and potentially capable of being used for
-all Mixin Types. This is the direct opposite of the Typed Fragments, which
-implements the MixinType interface.
