@@ -1,4 +1,297 @@
 [[what-is-cop,What is Composite Oriented Programming?]]
 = What is Composite Oriented Programming? =
 
+We found this very well written blog entry on the Internet, which very well describes what Composite Oriented
+Programming really is. It is re-published here allowed by an dunder the Microsoft Permissive License
 
+
+
+== http://iridescence.no/post/composite-oriented-programming.aspx[Composite Oriented Programming] ==
+
+I've written a series of post on AOP lately (here, here and here), and in the last part I promised to tackle mixins
+and introductions in a future post. When I was doing my research for just that, I came cross a Java framework (just
+humor me :p) called Qi4j (that's 'chee for jay'), written by Swedish Richard Öberg, pioneering the idea of Composite
+Oriented Programming, which instantly put a spell on me. Essentially, it takes the concepts from Aspect Oriented
+Programming to the extreme, and for the past week I’ve dug into it with a passion. This post is the first fruits of
+my labor.
+
+=== OOP is Not Object Oriented! ===
+
+One of the things that Richard Öberg argues, is that OOP is not really object oriented at all, but rather class
+oriented. As the Qi4j website proclaims, "class is the first class citizen that objects are derived from. Not objects
+being the first-class citizen to which one or many classes are assigned". Composite oriented programming (COP) then,
+tries to work around this limitation by building on a set of core principles; that behavior depends on context, that
+decoupling is a virtue, and that business rules matter more. For a short and abstract explanation of COP,
+<<introduction-background,see this page>>. In the rest of this post I'll try and explain some of its easily graspable
+benefits through a set of code examples, and then in a future post we'll look at how I've morphed the AOP framework
+I started developing in the previous posts in this series into a lightweight COP framework that can actually make
+it compile and run.
+
+=== Lead by Example ===
+
+__Lets pause for a short aside: obviously the examples presented here are going to be architectured beyond any rational
+sense, but the interesting part lies in seeing the bigger picture; imagine the principles presented here applied on a
+much larger scale and I'm sure you can see the benefits quite clearly when we reach the end.__
+
+Imagine that we have a class Division, which knows how to divide one number by another:
+
+[source,CSharp]
+-----------------
+public class Division
+{
+    public Int64 Dividend { get; set; }
+    private long _divisor = 1;
+
+    public Int64 Divisor
+    {
+        get { return _divisor; }
+        set
+        {
+            if(value == 0)
+            {
+                throw new ArgumentException("Cannot set the divisor to 0; division by 0 is not allowed.");
+            }
+            _divisor = value;
+        }
+    }
+
+    public Int64 Calculate()
+    {
+        Trace.WriteLine("Calculating the division of " + this.Dividend + " by " + this.Divisor);
+        Int64 result = this.Dividend/this.Divisor;
+        Trace.WriteLine("Returning result: " + result);
+        return result;
+    }
+}
+-----------------
+
+Consider the code presented above. Do you like it? If you've followed the discussion on AOP in the previous posts,
+then you should immediately be able to identify that there are several aspects tangled together in the above class.
+We've got data storage (the Dividend and Divisor properties), data validation (the argument check on the Divisor
+setter), business logic (the actual calculation in the Calculate method) and diagnostics (the Trace calls), all
+intertwined. To what extent is this class reusable if I wanted to implement addition, subtraction or multiplication
+calculations? Not very, at least not unless we refactored it. We could make the Calculate method and the properties
+virtual, and thus use inheritance to modify the logic of the calculation - and since this is a tiny example, it would
+probably look OK. But again, think bigger - how would this apply to a huge API? It would easily become quite difficult
+to manage as things got more and more complex.
+
+=== Design by Composition ===
+
+With a COP framework, we can implement each aspect as a separate object and then treat them as __mixins__ which blend
+together into a meaningful __composite__. Sounds confusing? Lets refactor the above example using an as of yet imaginary
+COP framework for .NET (which I’m currently developing and will post the source code for in a follow-up post), and
+it'll all make sense (hopefully!).
+
+Above, we identified the four different aspects in the Division class - so let's implement each of them. First, we
+have the data storage:
+
+[source,CSharp]
+-----------------
+public interface ICalculationDataAspect // aspect contract
+{
+    long Number1 { get; set; }
+    long Number2 { get; set; }
+}
+
+public class CalculationDataAspect : ICalculationDataAspect // aspect implementation
+{
+    public long Number1 { get; set; }
+    public long Number2 { get; set; }
+}
+-----------------
+
+In this example, the data storage is super easy – we just provide a set of properties (using the C# 3.0 automatic
+properties notation) that can hold the values in-memory. The second aspect we found, was the business logic – the
+actual calculation:
+
+[source,CSharp]
+-----------------
+public interface ICalculationLogicAspect
+{
+    long Calculate();
+}
+
+public class DivisionLogicAspect : ICalculationLogicAspect
+{
+    [AspectRef] ICalculationDataAspect _data;
+
+    public long Calculate()
+    {
+        return _data.Number1 / _data.Number2;
+    }
+}
+-----------------
+
+Here we follow the same structure again, by defining the aspect as an interface and providing an implementation of it.
+In order to perform the calculation however, we need access to the data storage aspect so that we can read out the
+numbers we should perform the calculation on. Using attributes, we can tell the COP framework that we require this
+reference, and it will provide it for us at runtime using some dependency injection trickery behind the scenes. It is
+important to notice that we’ve now placed a __constraint__ on any possible composition of these aspects – the
+DivisionLogicAspect now requires an ICalculationDataAspect to be present in any composition it is part of (our COP
+framework will be able to validate such constraints, and tell us up front should we break any). It is still loosely
+coupled however, because we only hold a constraint on the __contract__ of that aspect, not any specific implementation of
+it. We'll see the benefit of that distinction later.
+
+The third aspect we have, is validation. We want to ensure that the divisor is never set to 0, because trying to divide
+by zero is not a pleasant experience. Validation is a type of advice, which was introduced at length earlier in my AOP
+series. We've seen it implemented using the IAdvice interface of my AOP framework, allowing us to dynamically hook up
+to a method invocation. However, the advice we’re implementing here is specific to the data aspect, so with our COP
+framework we can define it as __concern__ for that particular aspect, which gives us a much nicer implementation than an
+AOP framework could - in particular because of its type safety. Just look at this:
+
+[source,CSharp]
+-----------------
+public abstract class DivisionValidationConcern : ICalculationDataAspect
+{
+    [ConcernFor] protected ICalculationDataAspect _proceed;
+
+    public abstract long Number1 { get; set; }
+
+    public long Number2
+    {
+        get { return _proceed.Number2; }
+        set
+        {
+            if (value == 0)
+            {
+                throw new ArgumentException("Cannot set the Divisor to 0 - division by zero not allowed.");
+            }
+            _proceed.Number2 = value; // here, we tell the framework to proceed with the call to the *real* Number2 property
+        }
+    }
+}
+-----------------
+
+I just love that, it's so friggin' elegant ;). Remember that an advice is allowed to control the actual method
+invocation by telling the target when to proceed – we’re doing the exact same thing above, only instead of dealing with
+a generic method invocation we're actually using the interface of the aspect we're advising to control the specific
+invocation directly. In our validation, we validate the value passed into the Divisor setter, and if we find it valid
+then we tell the target (represented by a field annotated with an attribute which tells the COP framework to inject the
+reference into it for us, much like we did with aspects earlier) to proceed with the invocation; otherwise we throw an
+exception. This particular concern is abstract, because we only wanted to advise a subset of the methods in the
+interface. That's merely a convenience offered us by the framework - under the covers it will automatically complete
+our implementation of the members we left abstract.
+
+Only one aspect remains now, and that is the logging:
+
+[source,CSharp]
+-----------------
+public class LoggingAdvice : IAdvice
+{
+    public object Execute(AdviceTarget target)
+    {
+        Trace.WriteLine("Invoking method " + target.TargetInfo.Name + " on " + target.TargetInfo.DeclaringType.FullName);
+
+        object retValue;
+
+        try
+        {
+            retValue = target.Proceed();
+        }
+        catch(Exception ex)
+        {
+            Trace.WriteLine("Method threw exception: " + ex.Message);
+            throw;
+        }
+        Trace.WriteLine("Method returned " + retValue);
+        return retValue;
+    }
+}
+-----------------
+
+We’ve implement it as a regular advice, like we've seen earlier in AOP, because it lends itself to much wider reuse
+than the validation concern did.
+
+Having defined all our aspects separately, it is now time to put them back together again into something that can
+actually do something. We call this the composite, and it is defined as follows:
+
+[source,CSharp]
+-----------------
+[Mixin(typeof(ICalculationDataAspect), typeof(CalculationDataAspect))]
+[Mixin(typeof(ICalculationLogicAspect), typeof(DivisionLogicAspect))]
+[Concern(typeof(DivisionValidationConcern))]
+[Concern(typeof(LoggingAdvice))]
+public interface IDivision : ICalculationDataAspect, ICalculationLogicAspect
+{ }
+-----------------
+
+Basically, we’ve just defined the implementation of an interface IDivision as a composition of the data and logic
+aspects, and sprinkled it with the two concerns (the validation concern and the logging advice). We can now use it to
+perform divisions:
+
+[source,CSharp]
+-----------------
+IDivision division = Composer.Compose<IDivision>().Instantiate();
+division.Number1 = 10;
+division.Number2 = 2;
+
+Int64 sum = division.Calculate();
+-----------------
+
+That’s pretty cool, no? Take a moment to just think about what doors this opens. To what extent do you think our code
+is reusable __now__, if we wanted to implement addition, subtraction and so forth? That’s right – all we’d need to do is
+substitute the implementation of the calculation aspect with one that performs the required calculation instead of
+division, and we're done. Let’s do subtraction, for example:
+
+[source,CSharp]
+-----------------
+public class SubtractionLogicAspect : ICalculationLogicAspect
+{
+    [AspectRef] ICalculationDataAspect _data;
+
+    public long Calculate()
+    {
+        return _data.Number1 - _data.Number2;
+    }
+}
+-----------------
+
+That’s it! The rest we can reuse as is, building a new composite:
+
+[source,CSharp]
+-----------------
+[Mixin(typeof(ICalculationDataAspect), typeof(CalculationDataAspect))]
+[Mixin(typeof(ICalculationLogicAspect), typeof(SubtractionLogicAspect))]
+[Pointcut(typeof(LoggingAdvice))]
+public interface ISubtraction : ICalculationDataAspect, ICalculationLogicAspect
+{ }
+-----------------
+
+Notice that we just left out the validation concern in this composite, as it is no longer needed. What if we wanted
+our subtraction to only ever return positive numbers? Easy! We’ll just implement an absolute number concern:
+
+[source,CSharp]
+-----------------
+public class AbsoluteNumberConcern : ICalculationLogicAspect
+{
+    [ConcernFor] protected ICalculationLogicAspect _proceed;
+
+    public long Calculate()
+    {
+        long result = _proceed.Calculate();
+
+        return Math.Abs(result);
+    }
+}
+-----------------
+
+And then update the composition to include it:
+
+[source,CSharp]
+-----------------
+[Mixin(typeof(ICalculationDataAspect), typeof(CalculationDataAspect))]
+[Mixin(typeof(ICalculationLogicAspect), typeof(SubtractionLogicAspect))]
+[Concern(typeof(AbsoluteNumberConcern))]
+[Pointcut(typeof(LoggingAdvice))]
+public interface ISubtraction : ICalculationDataAspect, ICalculationLogicAspect
+{ }
+-----------------
+
+To Be Continued…
+
+I hope this post has whet your appetite for more on this subject, as I will certainly pursue it further in future
+posts. I’ve already implemented a prototype framework that supports the above examples, which builds on my
+http://www.iridescence.no/Posts/Implementing-an-AOP-Framework-Part-2.aspx[previously posted AOP framework], and I’ll
+post the source code for that soon. If you want to dig deeper right now (and don’t mind
+a bit of Java), then I suggest you head over to the Qi4j website and poke about there.
+http://rickardoberg.wordpress.com/[Richard Öbergs blog] also provides great insight.

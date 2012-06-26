@@ -27,10 +27,7 @@
 <script type="text/javascript" src="js/shBrushGroovy.js"></script>
 <script type="text/javascript" src="js/shBrushPython.js"></script>
 <script type="text/javascript" src="js/shBrushRuby.js"></script>
-
-<!-- activate when needed
 <script type="text/javascript" src="js/shBrushCSharp.js"></script>
--->
 
 <script type="text/javascript">
   SyntaxHighlighter.defaults['tab-size'] = 4;
