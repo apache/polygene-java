@@ -19,19 +19,19 @@
 <body>
 
 <ul>
-<#list result?keys as name>
-    <#assign val = result[name]>
-    <li>
-    <#attempt>
-        ${name}: ${val}
-    <#recover>
-        ${name}:
-        <#list val as v>
-            ${v}
-        </#list>
-    </#attempt>
-    </li>
-</#list>
+    <#list result?keys as name>
+        <#assign val = result[name]>
+            <li>
+                <#attempt>
+                    ${name}: ${val}
+                    <#recover>
+                        ${name}:
+                        <#list val as v>
+                            ${v}
+                        </#list>
+                </#attempt>
+            </li>
+    </#list>
 </ul>
 </body>
 </html>

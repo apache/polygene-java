@@ -23,8 +23,8 @@ import java.lang.annotation.RetentionPolicy;
 /**
  * JAVADOC
  */
-@Retention(RetentionPolicy.RUNTIME)
+@Retention( RetentionPolicy.RUNTIME )
 public @interface InteractionConstraintDeclaration
 {
-   Class<? extends InteractionConstraint<?>> value();
+    Class<? extends InteractionConstraint<?>> value();
 }

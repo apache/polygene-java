@@ -26,7 +26,7 @@ import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ClassScanner;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.functional.Specifications;
+import org.qi4j.functional.Specification;
 import org.qi4j.library.rest.server.restlet.InteractionConstraintsService;
 import org.qi4j.library.rest.server.restlet.RequestReaderDelegator;
 import org.qi4j.library.rest.server.restlet.ResponseWriterDelegator;
@@ -37,10 +37,13 @@ import org.qi4j.library.rest.server.restlet.responsewriter.DefaultResponseWriter
 import org.qi4j.library.rest.server.spi.ResponseWriter;
 import org.restlet.service.MetadataService;
 
-import static org.qi4j.api.util.Classes.*;
-import static org.qi4j.bootstrap.ImportedServiceDeclaration.*;
-import static org.qi4j.functional.Iterables.*;
-import static org.qi4j.functional.Specifications.*;
+import static org.qi4j.api.util.Classes.hasModifier;
+import static org.qi4j.api.util.Classes.isAssignableFrom;
+import static org.qi4j.bootstrap.ImportedServiceDeclaration.INSTANCE;
+import static org.qi4j.bootstrap.ImportedServiceDeclaration.NEW_OBJECT;
+import static org.qi4j.functional.Iterables.filter;
+import static org.qi4j.functional.Specifications.and;
+import static org.qi4j.functional.Specifications.not;
 
 /**
  * JAVADOC
@@ -92,8 +95,11 @@ public class RestServerAssembler
         module.objects( InteractionConstraintsService.class );
 
         // Standard response writers
-        for( Class<?> responseWriter : filter( Specifications.and(not( hasModifier( Modifier.ABSTRACT ) ), isAssignableFrom( ResponseWriter.class ) ), ClassScanner
-            .getClasses( DefaultResponseWriter.class ) ))
+        Iterable<Class<?>> writers = ClassScanner.getClasses( DefaultResponseWriter.class );
+        Specification<Class<?>> responseWriterClass = isAssignableFrom( ResponseWriter.class );
+        Specification<Class<?>> isNotAnAbstract = not( hasModifier( Modifier.ABSTRACT ) );
+        Iterable<Class<?>> candidates = filter( and( isNotAnAbstract, responseWriterClass ), writers );
+        for( Class<?> responseWriter : candidates )
         {
             module.objects( responseWriter );
         }

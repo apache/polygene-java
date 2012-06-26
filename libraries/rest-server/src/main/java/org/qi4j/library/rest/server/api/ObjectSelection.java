@@ -74,7 +74,6 @@ public class ObjectSelection
                 return (T) object;
             }
         }
-
         throw new IllegalArgumentException( "No object in selection for type:" + type.getSimpleName() );
     }
 

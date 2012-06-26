@@ -17,34 +17,33 @@
 
 package org.qi4j.library.rest.server.api.constraint;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Module;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import org.qi4j.library.rest.server.api.ObjectSelection;
 
 /**
  * Annotate interaction methods with ServiceAvailable. They will only be valid
  * if a service with the given type is available.
  */
-@InteractionConstraintDeclaration(ServiceAvailable.ServiceAvailableConstraint.class)
-@Retention(RetentionPolicy.RUNTIME)
+@InteractionConstraintDeclaration( ServiceAvailable.ServiceAvailableConstraint.class )
+@Retention( RetentionPolicy.RUNTIME )
 public @interface ServiceAvailable
 {
-   Class value();
+    Class value();
 
-   public class ServiceAvailableConstraint
-         implements InteractionConstraint<ServiceAvailable>
-   {
-      @Structure
-      Module module;
+    public class ServiceAvailableConstraint
+        implements InteractionConstraint<ServiceAvailable>
+    {
+        @Structure
+        Module module;
 
-      public boolean isValid( ServiceAvailable serviceAvailable, ObjectSelection objectSelection )
-      {
-         ServiceReference ref = module.findService( serviceAvailable.value() );
-         return ref != null && ref.isAvailable();
-      }
-   }
+        public boolean isValid( ServiceAvailable serviceAvailable, ObjectSelection objectSelection )
+        {
+            ServiceReference ref = module.findService( serviceAvailable.value() );
+            return ref != null && ref.isAvailable();
+        }
+    }
 }

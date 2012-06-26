@@ -18,9 +18,9 @@
 package org.qi4j.library.rest.server.api;
 
 /**
- * Standard interface for update of existing resoruces.
+ * Standard interface for update of existing resources.
  */
 public interface ResourceUpdate<T>
 {
-   void update(T value);
+    void update( T value );
 }

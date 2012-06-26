@@ -23,10 +23,10 @@ import org.qi4j.library.rest.server.spi.CommandResult;
  * The command has no result at all (ignore it).
  */
 public class NullCommandResult
-   implements CommandResult
+    implements CommandResult
 {
-   public Object getResult()
-   {
-      return null;
-   }
+    public Object getResult()
+    {
+        return null;
+    }
 }

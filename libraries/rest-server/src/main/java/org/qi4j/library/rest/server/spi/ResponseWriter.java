@@ -8,5 +8,6 @@ import org.restlet.resource.ResourceException;
  */
 public interface ResponseWriter
 {
-    boolean writeResponse( final Object result, final Response response ) throws ResourceException;
+    boolean writeResponse( final Object result, final Response response )
+        throws ResourceException;
 }

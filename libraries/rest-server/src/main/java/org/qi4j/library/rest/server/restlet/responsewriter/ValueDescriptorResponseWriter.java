@@ -42,18 +42,15 @@ import org.restlet.resource.ResourceException;
 /**
  * JAVADOC
  */
-public class ValueDescriptorResponseWriter
-    extends AbstractResponseWriter
+public class ValueDescriptorResponseWriter extends AbstractResponseWriter
 {
     private static final List<MediaType> supportedMediaTypes = Arrays.asList( MediaType.TEXT_HTML, MediaType.APPLICATION_JSON );
 
-    private
     @Structure
-    Module module;
+    private Module module;
 
-    private
     @Service
-    Configuration cfg;
+    private Configuration cfg;
 
     public boolean writeResponse( final Object result, final Response response )
         throws ResourceException
@@ -64,9 +61,7 @@ public class ValueDescriptorResponseWriter
             if( MediaType.APPLICATION_JSON.equals( type ) )
             {
                 JSONObject json = new JSONObject();
-
                 ValueDescriptor vd = (ValueDescriptor) result;
-
                 try
                 {
                     for( PropertyDescriptor propertyDescriptor : vd.state().properties() )
@@ -86,10 +81,8 @@ public class ValueDescriptorResponseWriter
                 {
                     e.printStackTrace();
                 }
-
-                StringRepresentation representation = new StringRepresentation( json.toString(),
-                                                                                MediaType.APPLICATION_JSON );
-
+                StringRepresentation representation
+                    = new StringRepresentation( json.toString(), MediaType.APPLICATION_JSON );
                 response.setEntity( representation );
 
                 return true;
@@ -105,9 +98,7 @@ public class ValueDescriptorResponseWriter
                         Map<String, Object> context = new HashMap<String, Object>();
                         context.put( "request", response.getRequest() );
                         context.put( "response", response );
-
                         context.put( "result", result );
-
                         try
                         {
                             cfg.getTemplate( "form.htm" ).process( context, writer );
@@ -122,7 +113,6 @@ public class ValueDescriptorResponseWriter
                 return true;
             }
         }
-
         return false;
     }
 }

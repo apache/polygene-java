@@ -9,6 +9,6 @@ import org.restlet.resource.ResourceException;
  */
 public interface RequestReader
 {
-    Object[] readRequest(Request request, Method method)
+    Object[] readRequest( Request request, Method method )
         throws ResourceException;
 }

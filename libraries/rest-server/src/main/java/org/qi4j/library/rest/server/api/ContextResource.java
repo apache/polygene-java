@@ -66,9 +66,11 @@ import org.restlet.representation.StringRepresentation;
 import org.restlet.resource.ResourceException;
 import org.slf4j.LoggerFactory;
 
-import static org.qi4j.api.util.Annotations.*;
-import static org.qi4j.functional.Iterables.*;
-import static org.qi4j.library.rest.server.api.ObjectSelection.*;
+import static org.qi4j.api.util.Annotations.isType;
+import static org.qi4j.functional.Iterables.filter;
+import static org.qi4j.functional.Iterables.first;
+import static org.qi4j.functional.Iterables.iterable;
+import static org.qi4j.library.rest.server.api.ObjectSelection.current;
 
 /**
  * JAVADOC
@@ -80,9 +82,8 @@ public class ContextResource
     public static final String RESOURCE_VALIDITY = "validity";
 
     // API fields
-    protected
     @Structure
-    Module module;
+    protected Module module;
 
     // Private state
     private Map<String, Method> resourceMethodQueries = new HashMap<String, Method>();
@@ -91,30 +92,24 @@ public class ContextResource
     private List<Method> resourceQueries = new ArrayList<Method>();
     private List<Method> resourceCommands = new ArrayList<Method>();
 
-    private
     @Structure
-    Qi4jSPI spi;
+    private Qi4jSPI spi;
 
-    private
     @Service
-    ResponseWriterDelegator responseWriter;
+    private ResponseWriterDelegator responseWriter;
 
-    private
     @Service
-    RequestReaderDelegator requestReader;
+    private RequestReaderDelegator requestReader;
 
-    private
     @Service
-    InteractionConstraints constraints;
+    private InteractionConstraints constraints;
 
-    private
     @Optional
     @Service
-    ResultConverter converter;
+    private ResultConverter converter;
 
-    private
     @Uses
-    ContextRestlet restlet;
+    private ContextRestlet restlet;
 
     public ContextResource()
     {
@@ -224,8 +219,10 @@ public class ContextResource
         throws ResourceException
     {
         T entity = (T) module.currentUnitOfWork().get( Object.class, id );
-        if (!manyAssociation.contains( entity ))
+        if( !manyAssociation.contains( entity ) )
+        {
             throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
+        }
 
         current().select( entity );
         return entity;
@@ -549,10 +546,11 @@ public class ContextResource
             {
                 // Check if there is a query with this name - if so invoke it
                 Method queryMethod = resourceMethodQueries.get( segment );
-                if (queryMethod != null)
+                if( queryMethod != null )
                 {
-                    result( queryMethod.invoke( this ));
-                } else
+                    result( queryMethod.invoke( this ) );
+                }
+                else
                 {
                     request.setMethod( org.restlet.data.Method.POST );
                     response.setStatus( Status.CLIENT_ERROR_UNPROCESSABLE_ENTITY );

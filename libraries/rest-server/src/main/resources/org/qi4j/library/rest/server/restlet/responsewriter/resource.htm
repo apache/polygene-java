@@ -9,46 +9,47 @@
 <h1>${request.resourceRef.remainingPart}</h1>
 
 <div class="block">
-<h2>Queries</h2>
-<ul>
-    <#list result.queries as query>
-        <li>
-            <a rel="${query.rel}" href="${query.href}">${query.text}</a></li>
-    </#list>
-</ul>
+    <h2>Queries</h2>
+    <ul>
+        <#list result.queries as query>
+            <li>
+                <a rel="${query.rel}" href="${query.href}">${query.text}</a></li>
+        </#list>
+    </ul>
 </div>
 
 <div class="block">
-<h2>Commands</h2>
+    <h2>Commands</h2>
     <#list result.commands as command>
-        <form name="${command.id}" action="${command.href}" method="POST" ><input type="submit" value="${command.text}"/> </form>
+        <form name="${command.id}" action="${command.href}" method="POST"><input type="submit" value="${command.text}"/>
+        </form>
     </#list>
 </div>
 
 <div class="block">
-<h2>Resources</h2>
-<ul>
-    <#list result.resources as resource>
-        <li>
-            <a rel="${resource.rel}" href="${resource.href}">${resource.text}</a>
-        </li>
-    </#list>
-</ul>
+    <h2>Resources</h2>
+    <ul>
+        <#list result.resources as resource>
+            <li>
+                <a rel="${resource.rel}" href="${resource.href}">${resource.text}</a>
+            </li>
+        </#list>
+    </ul>
 </div>
 
 <#if result.index??>
     <h2>Index</h2>
     <#if result.index.links??>
         <div class="block">
-        <ul>
-        <#list result.index.links as link>
-            <li><a href="${link.href}" rel="${link.rel!}" title="${link.title!}">${link.text}</a></li>
-        </#list>
-        </ul>
+            <ul>
+                <#list result.index.links as link>
+                    <li><a href="${link.href}" rel="${link.rel!}" title="${link.title!}">${link.text}</a></li>
+                </#list>
+            </ul>
         </div>
-    <#else>
-        <h2>Index</h2>
-        <pre>$result.index</pre>
+        <#else>
+            <h2>Index</h2>
+            <pre>$result.index</pre>
     </#if>
 </#if>
 

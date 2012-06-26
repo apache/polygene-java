@@ -22,5 +22,5 @@ package org.qi4j.library.rest.server.api;
  */
 public interface ResourceCreate<INPUT, RESULT>
 {
-   RESULT create( INPUT value );
+    RESULT create( INPUT value );
 }

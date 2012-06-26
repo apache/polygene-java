@@ -25,5 +25,5 @@ import org.qi4j.library.rest.server.api.ObjectSelection;
 
 public interface InteractionConstraint<ANNOTATION extends java.lang.annotation.Annotation>
 {
-   boolean isValid(ANNOTATION annotation, ObjectSelection objectSelection );
+    boolean isValid( ANNOTATION annotation, ObjectSelection objectSelection );
 }

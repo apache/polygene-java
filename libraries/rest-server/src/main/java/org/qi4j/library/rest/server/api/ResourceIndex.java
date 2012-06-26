@@ -22,5 +22,5 @@ package org.qi4j.library.rest.server.api;
  */
 public interface ResourceIndex<T>
 {
-   public T index();
+    public T index();
 }

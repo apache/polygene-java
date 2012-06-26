@@ -22,9 +22,9 @@
 
 <table border="1">
     <tr>
-    <#list result.cols as column>
-        <th id="${column.id}">${column.label}</th>
-    </#list>
+        <#list result.cols as column>
+            <th id="${column.id}">${column.label}</th>
+        </#list>
     </tr>
     <#list result.rows as row>
         <tr>
@@ -33,13 +33,13 @@
                     <#if cell.f??>
                         <#if cell.v.startsWith("/")>
                             <a href="$cell.v">$cell.v</a>
-                        <#else>
-                            ${cell.f}
+                            <#else>
+                                ${cell.f}
                         </#if>
-                    <#elseif cell.v??>
-                        ${cell.v}
-                    <#else>
-                        &nbsp;
+                        <#elseif cell.v??>
+                            ${cell.v}
+                            <#else>
+                                &nbsp;
                     </#if>
                 </td>
 

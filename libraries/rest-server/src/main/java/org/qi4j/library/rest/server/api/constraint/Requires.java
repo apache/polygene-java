@@ -17,12 +17,11 @@
 
 package org.qi4j.library.rest.server.api.constraint;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import org.qi4j.api.constraint.Constraint;
 import org.qi4j.api.constraint.ConstraintDeclaration;
 import org.qi4j.api.constraint.Constraints;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import org.qi4j.library.rest.server.api.ObjectSelection;
 
 /**
@@ -31,34 +30,34 @@ import org.qi4j.library.rest.server.api.ObjectSelection;
  *
  * Example:
  * <pre>
- *     @Requires(File.class)
+ *     &#64;Requires(File.class)
  *     public Representation content() {...}
  * </pre>
- *
  */
 @ConstraintDeclaration
-@Retention(RetentionPolicy.RUNTIME)
-@Constraints(Requires.RequiresRoleConstraint.class)
+@Retention( RetentionPolicy.RUNTIME )
+@Constraints( Requires.RequiresRoleConstraint.class )
 public @interface Requires
 {
-   Class<?>[] value();
+    Class<?>[] value();
 
-   class RequiresRoleConstraint
-      implements Constraint<Requires, ObjectSelection>
-   {
-      public boolean isValid( Requires requires, ObjectSelection objectSelection )
-      {
-         for (Class<?> roleClass : requires.value())
-         {
-            try
+    class RequiresRoleConstraint
+        implements Constraint<Requires, ObjectSelection>
+    {
+        public boolean isValid( Requires requires, ObjectSelection objectSelection )
+        {
+            for( Class<?> roleClass : requires.value() )
             {
-               objectSelection.get( roleClass );
-            } catch (IllegalArgumentException ex)
-            {
-               return false;
+                try
+                {
+                    objectSelection.get( roleClass );
+                }
+                catch( IllegalArgumentException ex )
+                {
+                    return false;
+                }
             }
-         }
-         return true;
-      }
-   }
+            return true;
+        }
+    }
 }

@@ -48,19 +48,7 @@ public class Role<T>
     @Override
     public boolean equals( Object obj )
     {
-        if( obj == null )
-        {
-            return false;
-        }
-
-        if( obj instanceof Role )
-        {
-            return self.equals( ( (Role) obj ).self );
-        }
-        else
-        {
-            return false;
-        }
+        return obj != null && obj instanceof Role && self.equals( ( (Role) obj ).self );
     }
 
     public int compareTo( Role<T> role )

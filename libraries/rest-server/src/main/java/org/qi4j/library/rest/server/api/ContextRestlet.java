@@ -52,15 +52,14 @@ import org.slf4j.MDC;
 public abstract class ContextRestlet
     extends Restlet
 {
-    protected
     @Structure
-    Module module;
+    protected Module module;
 
     @Service
-    CommandResult commandResult;
+    private CommandResult commandResult;
 
     @Service
-    ResponseWriterDelegator responseWriter;
+    private ResponseWriterDelegator responseWriter;
 
     private Map<Class, Uniform> subResources = Collections.synchronizedMap( new HashMap<Class, Uniform>() );
 

@@ -35,7 +35,7 @@ public class ValueCompositeTemplateModel
     public int size()
         throws TemplateModelException
     {
-        return (int) Iterables.count(descriptor.state().properties());
+        return (int) Iterables.count( descriptor.state().properties() );
     }
 
     @Override
@@ -49,16 +49,14 @@ public class ValueCompositeTemplateModel
             {
                 return propertyDescriptor.qualifiedName().name();
             }
-
-
-        }, descriptor.state().properties()).iterator() );
+        }, descriptor.state().properties() ).iterator() );
     }
 
     @Override
     public TemplateCollectionModel values()
         throws TemplateModelException
     {
-        return (TemplateCollectionModel) wrapper.wrap(Iterables.map( new Function<Property<?>, Object>()
+        return (TemplateCollectionModel) wrapper.wrap( Iterables.map( new Function<Property<?>, Object>()
         {
             @Override
             public Object map( Property<?> objectProperty )
@@ -72,7 +70,7 @@ public class ValueCompositeTemplateModel
                     throw new IllegalStateException( e );
                 }
             }
-        }, Qi4j.INSTANCE_FUNCTION.map( composite ).state().properties()).iterator());
+        }, Qi4j.INSTANCE_FUNCTION.map( composite ).state().properties() ).iterator() );
     }
 
     @Override
