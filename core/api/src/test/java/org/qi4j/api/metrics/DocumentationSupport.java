@@ -35,8 +35,8 @@ public class DocumentationSupport
     {
         // START SNIPPET: gauge
         final BlockingQueue queue = new LinkedBlockingQueue( 20 );
-        // START SNIPPET: gauge
         // END SNIPPET: gauge
+        // START SNIPPET: gauge
         MetricsGaugeFactory gaugeFactory = provider.createFactory( MetricsGaugeFactory.class );
         MetricsGauge<Integer> gauge = gaugeFactory.registerGauge( getClass(), "Sample Gauge", new MetricsGauge<Integer>()
         {

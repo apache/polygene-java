@@ -27,6 +27,8 @@ public interface MetricsProvider
      * @param <T>         The metric type requested.
      *
      * @return A factory instance
+     * @throws MetricsNotSupportedException when the MetricsProvider is not supporting the factory type requested.
      */
-    <T extends MetricsFactory> T createFactory( Class<T> factoryType );
+    <T extends MetricsFactory> T createFactory( Class<T> factoryType )
+        throws MetricsNotSupportedException;
 }

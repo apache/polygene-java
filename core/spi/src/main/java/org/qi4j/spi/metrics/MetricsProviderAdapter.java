@@ -22,6 +22,7 @@ import org.qi4j.api.metrics.MetricsGaugeFactory;
 import org.qi4j.api.metrics.MetricsHealthCheckFactory;
 import org.qi4j.api.metrics.MetricsHistogramFactory;
 import org.qi4j.api.metrics.MetricsMeterFactory;
+import org.qi4j.api.metrics.MetricsNotSupportedException;
 import org.qi4j.api.metrics.MetricsProvider;
 import org.qi4j.api.metrics.MetricsTimerFactory;
 
@@ -63,7 +64,7 @@ public class MetricsProviderAdapter
         {
             return (T) createMetricsTimerFactory();
         }
-        return null;
+        throw new MetricsNotSupportedException( factoryType, getClass() );
     }
 
     protected MetricsTimerFactory createMetricsTimerFactory()
