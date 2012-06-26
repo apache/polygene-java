@@ -2,8 +2,20 @@
 = What is Composite Oriented Programming? =
 
 We found this very well written blog entry on the Internet, which very well describes what Composite Oriented
-Programming really is. It is re-published here allowed by an dunder the Microsoft Permissive License
+Programming really is.
 
+The article uses C# and a "show by example" approach to explaining COP, and this shows clearly that COP is not
+Java specific, and although Qi4j was (to our knowledge) first to introduce the name, it applies across languages and
+potentially deserves one or more languages on its own.
+
+
+The article is re-published here, as allowed by the
+http://msdn.microsoft.com/en-us/windowsmobile/bb264332.aspx[Microsoft Permissive License]
+, more recently known as
+http://www.opensource.org/licenses/MS-PL[Microsoft Public License]. The content below
+is NOT under the usual http://www.opensource.org/licenses/Apache-2.0[Apache License].
+
+We would like to thank Fredrik Kalseth for his explicit approval as well.
 
 
 == http://iridescence.no/post/composite-oriented-programming.aspx[Composite Oriented Programming] ==
@@ -35,7 +47,7 @@ much larger scale and I'm sure you can see the benefits quite clearly when we re
 
 Imagine that we have a class Division, which knows how to divide one number by another:
 
-[source,CSharp]
+[source,c#]
 -----------------
 public class Division
 {
@@ -85,7 +97,7 @@ it'll all make sense (hopefully!).
 Above, we identified the four different aspects in the Division class - so let's implement each of them. First, we
 have the data storage:
 
-[source,CSharp]
+[source,c#]
 -----------------
 public interface ICalculationDataAspect // aspect contract
 {
@@ -104,7 +116,7 @@ In this example, the data storage is super easy – we just provide a set of pro
 properties notation) that can hold the values in-memory. The second aspect we found, was the business logic – the
 actual calculation:
 
-[source,CSharp]
+[source,c#]
 -----------------
 public interface ICalculationLogicAspect
 {
@@ -139,7 +151,7 @@ to a method invocation. However, the advice we’re implementing here is specifi
 framework we can define it as __concern__ for that particular aspect, which gives us a much nicer implementation than an
 AOP framework could - in particular because of its type safety. Just look at this:
 
-[source,CSharp]
+[source,c#]
 -----------------
 public abstract class DivisionValidationConcern : ICalculationDataAspect
 {
@@ -174,7 +186,7 @@ our implementation of the members we left abstract.
 
 Only one aspect remains now, and that is the logging:
 
-[source,CSharp]
+[source,c#]
 -----------------
 public class LoggingAdvice : IAdvice
 {
@@ -205,7 +217,7 @@ than the validation concern did.
 Having defined all our aspects separately, it is now time to put them back together again into something that can
 actually do something. We call this the composite, and it is defined as follows:
 
-[source,CSharp]
+[source,c#]
 -----------------
 [Mixin(typeof(ICalculationDataAspect), typeof(CalculationDataAspect))]
 [Mixin(typeof(ICalculationLogicAspect), typeof(DivisionLogicAspect))]
@@ -219,7 +231,7 @@ Basically, we’ve just defined the implementation of an interface IDivision as 
 aspects, and sprinkled it with the two concerns (the validation concern and the logging advice). We can now use it to
 perform divisions:
 
-[source,CSharp]
+[source,c#]
 -----------------
 IDivision division = Composer.Compose<IDivision>().Instantiate();
 division.Number1 = 10;
@@ -233,7 +245,7 @@ is reusable __now__, if we wanted to implement addition, subtraction and so fort
 substitute the implementation of the calculation aspect with one that performs the required calculation instead of
 division, and we're done. Let’s do subtraction, for example:
 
-[source,CSharp]
+[source,c#]
 -----------------
 public class SubtractionLogicAspect : ICalculationLogicAspect
 {
@@ -248,7 +260,7 @@ public class SubtractionLogicAspect : ICalculationLogicAspect
 
 That’s it! The rest we can reuse as is, building a new composite:
 
-[source,CSharp]
+[source,c#]
 -----------------
 [Mixin(typeof(ICalculationDataAspect), typeof(CalculationDataAspect))]
 [Mixin(typeof(ICalculationLogicAspect), typeof(SubtractionLogicAspect))]
@@ -260,7 +272,7 @@ public interface ISubtraction : ICalculationDataAspect, ICalculationLogicAspect
 Notice that we just left out the validation concern in this composite, as it is no longer needed. What if we wanted
 our subtraction to only ever return positive numbers? Easy! We’ll just implement an absolute number concern:
 
-[source,CSharp]
+[source,c#]
 -----------------
 public class AbsoluteNumberConcern : ICalculationLogicAspect
 {
@@ -277,7 +289,7 @@ public class AbsoluteNumberConcern : ICalculationLogicAspect
 
 And then update the composition to include it:
 
-[source,CSharp]
+[source,c#]
 -----------------
 [Mixin(typeof(ICalculationDataAspect), typeof(CalculationDataAspect))]
 [Mixin(typeof(ICalculationLogicAspect), typeof(SubtractionLogicAspect))]
