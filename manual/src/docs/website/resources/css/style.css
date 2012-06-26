@@ -26,7 +26,7 @@ body
 
 .section p
 {
-    margin-right: 85px;
+    /* margin-right: 85px; */
 }
 
 .literal, .literallayout, .screen
@@ -193,8 +193,8 @@ body > div.article,
 body > div.section
 {
     margin: 80px 20px 20px 360px;
-    min-height: 1000px;
-    max-width: 50em;
+    min-height: 1280px;
+    max-width: 45em;
 }
 
 .sub-nav .toc dl a
@@ -247,26 +247,6 @@ div.informaltable table thead,
 div.table table thead
 {
     border-bottom: 1px solid black;
-}
-
-.note
-{
-    width: 500px;
-    float: left;
-    font-size: 22px;
-    line-height: 1.3em;
-    font-weight: bold;
-    margin: 0 20px 0 0 !important;
-}
-
-.note h3
-{
-    display: none;
-}
-
-.note p
-{
-    margin: 0 10px 20px 0;
 }
 
 #flash
