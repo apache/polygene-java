@@ -13,7 +13,7 @@
  * and limitations under the License.
 //////////////////////
 
-[[howto-configure-service]]
+[[howto-configure-service,Configure a Service]]
 = Configure a Service =
 Qi4j supports a Configuration system for services. The configuration instance itself is an Entity and is therefor
 readable, writeable and queryable, just like other Entities. This should make Configuration management much simpler,

@@ -1,0 +1,8 @@
+[[library-script-beanshell, Beanshell Scripting Library]]
+= Beanshell Scripting =
+
+[devstatus]
+--------------
+source=libraries/scripting/beanshell/dev-status.xml
+--------------
+

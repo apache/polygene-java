@@ -1,4 +1,4 @@
-[[build-system]]
+[[build-system,Build System]]
 = Build System =
 Qi4j community migrated away from Maven after several years of frustration, especially around release management,
 versioning and cross-module dependency resolution issues, in Feb 2011. The tool of choice is now Gradle, and it

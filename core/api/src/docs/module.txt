@@ -13,7 +13,7 @@
  * and limitations under the License.
 //////////////////////
 
-[[Module]]
+[[core-api-module,Module]]
 = Module =
 Modules are logical compartments to assist developers in creating and maintaining well modularized code. A Module only
 belongs to a single Layer, but many Modules can exist in the same Layer. Composite access is limited to;

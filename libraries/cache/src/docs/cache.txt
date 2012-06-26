@@ -1,0 +1,8 @@
+[[library-caching, Caching Library]]
+= Caching =
+
+[devstatus]
+--------------
+source=libraries/cache/dev-status.xml
+--------------
+

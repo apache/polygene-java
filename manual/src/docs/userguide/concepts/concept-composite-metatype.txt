@@ -19,9 +19,9 @@
 There are 5 Composite Meta Types defined in Qi4j, which each share the composition features but have distinct semantic
 differences.
 
-    * <<def-entitycomposite,EntityComposite>>
-    * <<def-valuecomposite,ValueComposite>>
-    * <<def-servicecomposite,ServiceComposite>>
-    * <<def-configurationcomposite,ConfigurationComposite>> (subtype of EntityComposite)
-    * <<def-transientcomposite,TransientComposite>>
+    * <<def-entitycomposite>>
+    * <<def-valuecomposite>>
+    * <<def-servicecomposite>>
+    * <<def-configurationcomposite>> (subtype of EntityComposite)
+    * <<def-transientcomposite>>
 

@@ -1,0 +1,8 @@
+[[library-struts-codebehind, Struts Code Behind Library]]
+= Struts - Code Behind =
+
+[devstatus]
+--------------
+source=libraries/struts2-codebehind/dev-status.xml
+--------------
+

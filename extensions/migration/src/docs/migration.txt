@@ -1,0 +1,8 @@
+[[extension-migration, Migration]]
+= Migration =
+
+[devstatus]
+--------------
+source=extensions/migration/dev-status.xml
+--------------
+

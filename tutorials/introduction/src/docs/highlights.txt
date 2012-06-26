@@ -1,4 +1,4 @@
-[[highlights]]
+[[highlights,Highlights]]
 = Highlights =
 
 Qi4j enables Composite Oriented Programming on the Java platform, including both Java and Scala as primary languages

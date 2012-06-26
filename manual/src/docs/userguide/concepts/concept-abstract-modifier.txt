@@ -15,7 +15,7 @@
 
 [[def-abstract-modifier,Abstract Modifier]]
 = Abstract Modifier =
-Abstract Modifiers are <<def-modifier,Modifiers>> that do not implement all the methods of
+Abstract Modifiers are <<def-modifier>> that do not implement all the methods of
 the MixinType interface.
 
 This works essentially in the same manner as the <<def-abstract-mixin>>. And the methods that are not implemented will not

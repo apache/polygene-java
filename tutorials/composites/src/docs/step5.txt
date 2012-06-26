@@ -29,7 +29,7 @@ Steps for this tutorial:
 
 - Add @NotEmpty to the state parameters.
 
-Note: The previous steps had a dependency to the <<qi4j-core-api>> only. The constraints you've used in this step, 
+Note: The previous steps had a dependency to the <<core-api>> only. The constraints you've used in this step,
 introduce a new dependency to the <<library-constraints>>, where all the constraint related classes reside. So 
 update your classpath settings accordingly.
 

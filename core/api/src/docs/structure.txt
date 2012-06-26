@@ -13,7 +13,7 @@
  * and limitations under the License.
 //////////////////////
 
-[[Structure]]
+[[core-api-structure,Structure]]
 = Structure =
 Qi4j promotes a conventional view of application structure, that computer science has been using for decades.
 

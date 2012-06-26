@@ -13,5 +13,5 @@
  * and limitations under the License.
 //////////////////////
 
-[[constraint,Constraint]]
+[[core-api-constraint,Constraint]]
 = Constraint =

@@ -13,7 +13,7 @@
  * and limitations under the License.
 //////////////////////
 
-[[howto-contextual-fragments]]
+[[howto-contextual-fragments,User Contextual Fragments]]
 = Use contextual fragments =
 Contextual fragments are fragments that are added to the composites during assembly time. That means that they are not
 present in the composite declarations, but a start-up decision what should be added. Once the application instance is

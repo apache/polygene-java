@@ -13,8 +13,13 @@
  * and limitations under the License.
 //////////////////////
 
-[[qi4j-core-functional]]
-= Qi4j Core Functional API =
+[[core-functional,Function]]
+= Core Functional API =
+
+[devstatus]
+--------------
+source=core/functional/dev-status.xml
+--------------
 
 The Qi4j Core Functional API is a generic package to work with Iterables in a "functional programming language" style.
 

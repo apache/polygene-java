@@ -20,5 +20,5 @@ CompositeType is the Java interface that declares the composition, from which
 <<def-composite>> instances can be created.
 
 Composite Type interfaces must be a sub-type of one of the 5
-<<def-composite-meta-type,Composite Meta Types>> defined in Qi4j otherwise it
+<<def-composite-metatype>> defined in Qi4j otherwise it
 can not be instantiated.

@@ -1,4 +1,4 @@
-[[library-fileconfig, FileConfig Library]]
+[[library-fileconfig,FileConfig Library]]
 = FileConfig =
 
 [devstatus]

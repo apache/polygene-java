@@ -1,0 +1,8 @@
+[[library-rest-common, Rest Common Library]]
+= ReST Common =
+
+[devstatus]
+--------------
+source=libraries/rest-common/dev-status.xml
+--------------
+

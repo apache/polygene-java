@@ -3,13 +3,17 @@
 
 include::home.txt[]
 
-:leveloffset: 2
+:leveloffset: 1
 
 include::news/news.txt[]
 
 :leveloffset: 1
 
 include::tutorials.txt[]
+
+:leveloffset: 1
+
+include::javadocs.txt[]
 
 :leveloffset: 1
 

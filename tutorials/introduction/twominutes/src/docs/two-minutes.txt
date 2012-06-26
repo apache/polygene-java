@@ -31,8 +31,11 @@ So far so good. We now need to make this into something that can run. This can b
 source=tutorials/introduction/twominutes/src/main/java/org/qi4j/demo/twominute/Main.java
 tag=documentation
 -----------
-1. The SingletonAssembler is a convenience class that creates a Qi4j Runtime instance with one layer and one module in it.
-1. We declare a TransientComposite of type =Speaker=.
-1. We create the Composite instance from the Module.
+
+. The SingletonAssembler is a convenience class that creates a Qi4j Runtime instance with one layer and one module in it.
+
+. We declare a TransientComposite of type =Speaker=.
+
+. We create the Composite instance from the Module.
 
 *Done!*

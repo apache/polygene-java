@@ -1,0 +1,8 @@
+[[library-eventsourcing, Event Sourcing Library]]
+= Event Sourcing =
+
+[devstatus]
+--------------
+source=libraries/eventsourcing/dev-status.xml
+--------------
+

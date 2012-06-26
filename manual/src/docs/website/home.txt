@@ -19,7 +19,7 @@ facets and history of Qi, so we refer the interested to read the http://en.wikip
 Wikipedia. For us, Qi is the force/energy within the body, in this case the Java platform. Something that makes Java
 so much better, if it is found and channeled into a greater good.
 
-We strongly recommend the <<qi4j-introduction-background,background>> article found in the introduction.
+We strongly recommend the <<introduction-background>> article found in the introduction.
 
 == Principles ==
 

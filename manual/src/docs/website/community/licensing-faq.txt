@@ -1,4 +1,4 @@
-[[licensing-faq]]
+[[licensing-faq,Licensing FAQ]]
 = Licensing FAQ =
 
 == Combined & Derived Work ==

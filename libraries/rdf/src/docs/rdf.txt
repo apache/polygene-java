@@ -1,0 +1,8 @@
+[[library-rdf, RDF Library]]
+= RDF =
+
+[devstatus]
+--------------
+source=libraries/rdf/dev-status.xml
+--------------
+

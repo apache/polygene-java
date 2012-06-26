@@ -6,15 +6,52 @@
 :leveloffset: 2
 
 include::community/intro.txt[]
+
+:leveloffset: 2
+
 include::community/codebase.txt[]
+
+:leveloffset: 2
+
 include::community/participate.txt[]
+
+:leveloffset: 2
+
 include::community/playing-field.txt[]
+
+:leveloffset: 2
+
 include::community/contributing.txt[]
+
+:leveloffset: 2
+
 include::community/mailing-list.txt[]
+
+:leveloffset: 2
+
 include::community/issue-tracker.txt[]
+
+:leveloffset: 2
+
 include::community/build-system.txt[]
+
+:leveloffset: 2
+
 include::community/continuous-integration.txt[]
+
+:leveloffset: 2
+
 include::community/contributors.txt[]
+
+:leveloffset: 2
+
 include::community/licensing.txt[]
+
+:leveloffset: 2
+
 include::community/licensing-faq.txt[]
+
+:leveloffset: 2
+
 include::community/docs.txt[]
+

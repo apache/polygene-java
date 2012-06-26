@@ -1,0 +1,7 @@
+[[extension-es-gae,AppEngine EntityStore]]
+= Google AppEngine EntityStore =
+
+[devstatus]
+--------------
+source=extensions/entitystore-gae/dev-status.xml
+--------------

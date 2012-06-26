@@ -1,0 +1,18 @@
+[[library-auth, Authentication and Authorization Library]]
+= Authentication & Authorization =
+
+[devstatus]
+--------------
+source=libraries/cache/dev-status.xml
+--------------
+
+Many applications need authentication of users and authorization of what those users can do. One commong model is a
+_role based_ authorization, so that;
+
+. _User_ is assigned a _Role_.
+. _Permissions_ are assigned to each _Role_.
+. Each _Operation_ require one or more _Permissions_.
+. If the _User_ has a _Role_ that contains the required _Permissions_ the _Operation_ is allowed.
+
+Since Java methods are equivalents of _Operations_, and Qi4j is very method centric (See <<def-invocation-stack>>), it
+is very natural for Qi4j to support this Authorization model.

@@ -1,12 +1,15 @@
 [[library-rest-client, ReST Client Library]]
 = ReST Client =
 
-Rickard wrote the following to the mailing list in October 2011, as the starting point for the renovation of the
-ReST Client Library. If you are not interested in the background, jump to the <<library-rest-client-usage>> section below.
+[devstatus]
+--------------
+source=libraries/rest-client/dev-status.xml
+--------------
 
-include::intro.txt[]
+Rickard sent a very interesting <<library-rest-client-primer>> to the mailing list in October 2011, as the starting
+point for the renovation of the ReST Client Library. You should read that to get the full background on the choices
+made in this library.
 
-[[library-rest-client-usage, ReST Client Library Usage]]
 == Usage ==
 This library leverages the http://restlet.org[Restlet library], so keep its documentation nearby as well.
 
@@ -83,10 +86,12 @@ source=libraries/rest-client/src/test/java/org/qi4j/library/rest/client/ContextR
 tag=query-list-and-command
 -------------
 
-=== Query List and Command Progressive===
+=== Query List and Command Progressive ===
 [snippet,java]
 -------------
 source=libraries/rest-client/src/test/java/org/qi4j/library/rest/client/ContextResourceClientFactoryTest.java
 tag=query-list-and-command-progressive
 -------------
+
+include::primer.txt[]
 

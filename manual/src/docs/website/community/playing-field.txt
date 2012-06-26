@@ -52,10 +52,17 @@ Any infrastructure requests or problems, should be directed to mailto:qi4j-dev@l
 Qi4J is licensed under the Apache License version 2.0. All committers agree that all their contributions are licensed
 under this license to Qi4j, other committers and the general public. The Copyright of each contribution is held by the
 contributor, and no Copyright assigns are required.
+
 All committers assert that no patents are hidden within their contributions or that if such patent exists then such
 patent is freely licensed to Qi4j, other committers and the general public.
-Qi4j is not trademarked anywhere in the world. If Qi4j is trademarked by anyone and not freely licensed to Qi4j, other
-committers and the general public, the person or organization that make such trademark looses all stakes in the Qi4j
-community, looses the license to the codebase and risk legal actions.
+
+All contributors agree that the Qi4j project may change to a later version of the Apache License, if/when such license
+becomes available and the Core Dev Team at that time finds it appropriate.
+
+"Qi4j" is a trademark of the Qi4j Community, Niclas Hedhman, Rickard Öberg, and all copyright owners of the Qi4j
+codebase. If Qi4j is registered as a trademark, then that person/entity agrees that such registration is to the benefit
+of the Qi4j Community and all copyright owners of the Qi4j codebase, and only acts as an agent on their behalf. Failure
+to do so, the registrant looses the right to participate in the Qi4j effort, and potentially face legal actions.
+
 Qi4j is a community effort and is currently no organization. This may change into a non-profit, membership organization
 at some later point in time.

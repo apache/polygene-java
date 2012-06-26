@@ -13,7 +13,8 @@
  * and limitations under the License.
 //////////////////////
 
-= Fragments =
+[[core-api-fragment,Fragment]]
+= Fragment =
 Composites should be perceived as single units, although they consist of many Java classes and instances. Some of
 those Java instances are not even belonging to a particular instance in runtime, but such details can and should
 be ignored by the developer. Developers should think of the Composite as a single concept, and not be concerned

@@ -1,4 +1,4 @@
-[[continuous-integration]]
+[[continuous-integration,Continuous Integration]]
 = Continuous Integration =
 
 Qi4j community uses CloudBees Jenkins service to automate the Qi4j SDK build and allow developers to detect and fix 

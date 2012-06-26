@@ -1,4 +1,4 @@
-[[reference-documentation]]
+[[reference-documentation,Reference Manual]]
 = Qi4jv{revnumber} Reference Manual =
 
 :qi4j-version: {revnumber}

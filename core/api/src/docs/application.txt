@@ -13,7 +13,7 @@
  * and limitations under the License.
 //////////////////////
 
-[[Application]]
+[[core-api-application,Application]]
 = Application =
 There is one and only one Application instance per Qi4j runtime instance. But there is nothing preventing code to
 create additional Qi4j Runtime instances inside the same JVM. However, these runtimes are isolated from each other.
@@ -27,7 +27,7 @@ separation in your project as well.
 
 == Assembly ==
 
-<<Assembly>> is the part of the bootstrap phase where the application Structure is declared (programmatically). The
+<<core-bootstrap-assembly>> is the part of the bootstrap phase where the application Structure is declared (programmatically). The
 Assembly will be consumed by the ApplicationBuilder, which produces an ApplicationInstance. This instance does not
 contain any custom objects, and is fully serializable. All the application structure has been built, all the layers
 and modules been wired up, and all the sub-composite structures are in place to quickly instantiate the various parts

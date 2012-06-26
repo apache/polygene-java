@@ -1,0 +1,8 @@
+[[library-locking, Locking Library]]
+= Locking =
+
+[devstatus]
+--------------
+source=libraries/locking/dev-status.xml
+--------------
+

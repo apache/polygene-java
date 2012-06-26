@@ -1,0 +1,8 @@
+[[library-script-javascript, Javascript Scripting Library]]
+= Javascript Scripting =
+
+[devstatus]
+--------------
+source=libraries/scripting/javascript/dev-status.xml
+--------------
+

@@ -1,0 +1,8 @@
+[[library-script-groovy, Groovy Scripting Library]]
+= Groovy Scripting =
+
+[devstatus]
+--------------
+source=libraries/scripting/groovy/dev-status.xml
+--------------
+

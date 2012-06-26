@@ -1,0 +1,8 @@
+[[library-struts-convention, Struts Convention Library]]
+= Struts - Convention =
+
+[devstatus]
+--------------
+source=libraries/struts2-convention/dev-status.xml
+--------------
+

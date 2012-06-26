@@ -1,0 +1,8 @@
+[[library-osgi, OSGi Library]]
+= OSGi =
+
+[devstatus]
+--------------
+source=libraries/osgi/dev-status.xml
+--------------
+

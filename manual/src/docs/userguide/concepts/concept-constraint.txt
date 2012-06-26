@@ -6,8 +6,10 @@ method call. Qi4j currently only supports ParameterConstraints on methods and
 value constraints on Properties, but future versions will include Constraint
 types for checking complete method calls and return values.
 
+See <<core-api-constraint>> for better understanding of its details.
+
 See <<library-constraints>> for ready to use Constraints.
 
 See <<howto-create-constraint>> to learn how to write your own Constraints.
 
-Constraint is one of the 3 kinds of <<def-modifier,Modifiers>> defined in Qi4j.
+Constraint is one of the 3 kinds of <<def-modifier>>s defined in Qi4j.

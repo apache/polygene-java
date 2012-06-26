@@ -13,7 +13,7 @@
  * and limitations under the License.
 //////////////////////
 
-[[mixin,Mixin]]
+[[core-api-mixin,Mixin]]
 = Mixin =
 Mixins are the state-carrying part of a Composite instance. The other Fragments can not retain state between method
 invocations as they are shared across Composite instances.

@@ -13,7 +13,7 @@
  * and limitations under the License.
 //////////////////////
 
-[[qi4j-core-api]]
+[[ref-core-api, Core API]]
 = Qi4j Core API =
 
 The Qi4j Core API is main API that Qi4j developers interact with. In fact, if you need to use classes/interfaces

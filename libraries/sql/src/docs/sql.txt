@@ -1,4 +1,4 @@
-[[library-sql, SQL Library]]
+[[library-sql,SQL Library]]
 = SQL =
 
 [devstatus]
@@ -12,7 +12,7 @@ The SQL Library provides facilities for working with SQL databases.
 The center piece is the DataSource support that comes with
 <<library-circuitbreaker>> and <<library-jmx>> support.
 Moreover, this library helps dealing with schema migrations and doing SQL I/O
-with the <<qi4j-core-io>>.
+with the <<core-io>>.
 
 
 

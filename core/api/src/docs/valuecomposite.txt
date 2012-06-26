@@ -13,7 +13,7 @@
  * and limitations under the License.
 //////////////////////
 
-[[ValueComposite]]
+[[core-api-value,ValueComposite]]
 = ValueComposite =
 Usage of value objects is one of the most ignored and best return-on-investment the programmer can do. Values are
 immutable and can be compared by value instead of memory reference. Concurrency is suddenly not an issue, since either

@@ -15,7 +15,7 @@
 
 [[def-association,Association]]
 = Association =
-An Association is a reference to an <<def-entitycomposite,Entity>>.
+An Association is a reference to an <<def-entitycomposite>>.
 
 References to Entities must be maintained in Associations. It is illegal to define a Property with an Entity as
 its type.

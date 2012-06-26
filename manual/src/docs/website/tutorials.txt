@@ -21,7 +21,7 @@ This quite long introduction to Qi4j will start by brushing up an overview of th
 Composite Oriented Programming is and guide you through the process of writing a complete Application around an adapted
 Hello World example.
 
-- <<qi4j-introduction-background>>
+- <<introduction-background>>
 - <<what-is-cop>>
 - <<what-s-an-object-anyway>>
 - <<two-minutes-intro>>

@@ -13,8 +13,9 @@
  * and limitations under the License.
 //////////////////////
 
-[[library-metrics]]
-= Qi4j Metrics =
+[[library-metrics,Metrics Library]]
+= Metrics Library=
+
 The Metrics library is available to application code to get production metrics from their applications. It allows
 applications to easily mark critical section for metrics gathering, without handling the details with the Metrics
 Extension.

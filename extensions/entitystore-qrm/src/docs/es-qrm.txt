@@ -1,0 +1,8 @@
+[[extension-es-qrm, QRM EntityStore]]
+= QRM EntityStore =
+
+[devstatus]
+--------------
+source=extensions/entitystore-qrm/dev-status.xml
+--------------
+

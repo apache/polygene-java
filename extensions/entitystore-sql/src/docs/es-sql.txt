@@ -1,0 +1,8 @@
+[[extension-es-sql, SQL EntityStore]]
+= SQL EntityStore =
+
+[devstatus]
+--------------
+source=extensions/entitystore-sql/dev-status.xml
+--------------
+

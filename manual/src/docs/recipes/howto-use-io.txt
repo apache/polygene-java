@@ -13,8 +13,8 @@
  * and limitations under the License.
 //////////////////////
 
-[[howto-use-io,HowTo Use I/O API]]
-= HowTo Use I/O API =
+[[howto-use-io,Use I/O API]]
+= Use I/O API =
 
 NOTE: This article was written on Rickard Öberg's blog, 6 Nov 2010
 

@@ -1,0 +1,8 @@
+[[extension-es-voldemort, Voldemort EntityStore]]
+= Voldemort EntityStore =
+
+[devstatus]
+--------------
+source=extensions/entitystore-voldemort/dev-status.xml
+--------------
+

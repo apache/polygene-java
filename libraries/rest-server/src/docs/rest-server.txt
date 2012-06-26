@@ -1,0 +1,8 @@
+[[library-rest-server, ReST Server Library]]
+= ReST Server =
+
+[devstatus]
+--------------
+source=libraries/rest-server/dev-status.xml
+--------------
+

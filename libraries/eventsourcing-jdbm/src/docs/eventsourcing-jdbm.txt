@@ -1,0 +1,8 @@
+[[library-eventsourcing-jdbm, Event Sourcing JDBM Library]]
+= Event Sourcing - JDBM backend =
+
+[devstatus]
+--------------
+source=libraries/eventsourcing-jdbm/dev-status.xml
+--------------
+

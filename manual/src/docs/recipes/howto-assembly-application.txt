@@ -13,7 +13,7 @@
  * and limitations under the License.
 //////////////////////
 
-[[howto-assemble-application]]
+[[howto-assemble-application,Assemble an Application]]
 = Assemble an Application =
 We receive a lot of questions about how applications should be assembled, and since we don't have any XML to "fill in"
 and everything is to be done programmatically, it escalates the need to provide more hands-on explanation of how this is

@@ -1,1 +1,10 @@
 
+[[extension-cache-ehcache, Ehcache Cache]]
+= Ehcache Cache =
+
+[devstatus]
+--------------
+source=extensions/cache-ehcache/dev-status.xml
+--------------
+
+

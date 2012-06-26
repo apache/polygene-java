@@ -1,5 +1,10 @@
-[[extension-indexing-sql]]
+[[extension-indexing-sql,SQL Index/Query]]
 = Indexing SQL Extension =
+
+[devstatus]
+--------------
+source=extensions/indexing-sql/dev-status.xml
+--------------
 
 Implementations per database Vendor share a generic codebase but can override
 about everything SQL. As a consequence they can have strong differences in

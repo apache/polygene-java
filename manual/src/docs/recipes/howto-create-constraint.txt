@@ -1,4 +1,4 @@
-[[howto-create-constraint]]
+[[howto-create-constraint,Create a Constraint]]
 = Create a Constraint =
 
 Constraints are defined in <<def-constraint>>.

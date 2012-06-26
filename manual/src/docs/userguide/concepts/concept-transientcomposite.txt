@@ -5,4 +5,4 @@ Transient Composites are used when non-persisted and mutable composites are
 needed. Transients can not be stored or serialized across JVM boundaries.
 
 TransientComposite is one of the 5
-<<def-composite-metatype,Composite Meta Types>> defined in Qi4j.
+<<def-composite-metatype>>s defined in Qi4j.

@@ -13,8 +13,14 @@
  * and limitations under the License.
 //////////////////////
 
-[[qi4j-core-spi]]
-= Qi4j Core Extension SPI =
+[[core-spi,Extension SPI]]
+= Core Extension SPI =
+
+[devstatus]
+--------------
+source=core/spi/dev-status.xml
+--------------
+
 The Qi4j Core Runtime has a number of extension points, which we call the _Qi4j Core Extension SPI_. These are defined
 interfaces used *only* by the Core Runtime and *never* directly by application code.
 
@@ -32,6 +38,10 @@ be solved in a support manner, or that we need to extend the Core API to support
 
 
 include::entitystore.txt[]
+
 include::cache.txt[]
+
 include::indexing.txt[]
+
 include::metrics.txt[]
+

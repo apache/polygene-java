@@ -1,0 +1,8 @@
+[[library-spring, Spring Integration Library]]
+= Spring Integration =
+
+[devstatus]
+--------------
+source=libraries/spring/dev-status.xml
+--------------
+

@@ -1,4 +1,4 @@
-[[faq]]
+[[faq,FAQ]]
 = Frequently Asked Questions =
 
 Is it possible to use Scala with Qi4j?::

@@ -1,0 +1,8 @@
+[[library-script-jruby, JRuby Scripting Library]]
+= JRuby Scripting =
+
+[devstatus]
+--------------
+source=libraries/scripting/jruby/dev-status.xml
+--------------
+

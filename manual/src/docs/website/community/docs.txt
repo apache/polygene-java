@@ -1,4 +1,4 @@
-[[community-docs]]
+[[community-docs,Writing Documentation]]
 Writing Qi4j Documentation
 ===========================
 
@@ -9,7 +9,7 @@ The documents use the asciidoc format, see:
 
 The cheatsheet is really useful!
 
-[[community-docs-overall-flow]]
+[[community-docs-overall-flow,Documentation Flow]]
 == Overall Flow ==
 
 Each (sub)project has its own documentation, in 'src/docs/' and all the Asciidoc documents have the +.txt+ file extension.
@@ -35,7 +35,7 @@ This is how a document should start:
 
 [source]
 ----
-[[unique-id-verbose-is-ok]]
+[[unique-id-verbose-is-ok,Remember This Caption]]
 = The Document Title =
 ----
 

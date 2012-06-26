@@ -1,0 +1,8 @@
+[[library-shiro-web, Shiro Web Security Library]]
+= Shiro Security - Web =
+
+[devstatus]
+--------------
+source=libraries/shiro-web/dev-status.xml
+--------------
+

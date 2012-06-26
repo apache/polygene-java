@@ -13,8 +13,14 @@
  * and limitations under the License.
 //////////////////////
 
-[[Assembly]]
-= Qi4j Core Bootstrap =
+[[core-bootstrap-assembly,Assembly]]
+= Core Bootstrap =
+
+[devstatus]
+--------------
+source=core/bootstrap/dev-status.xml
+--------------
+
 Qi4j has a distinct bootstrap phase, also known as the _Assembly_ of an application, where the applications structure
 is defined programmatically. Once all the layers, modules and all the composite types in each module have been defined
 the model is instantiated into an application. This enables the entire _structure_ system in Qi4j, where types "belongs"
@@ -67,10 +73,10 @@ tag=UsingAssembler
 
 == Defining an Entity Store ==
 Defining an _Entity Store_ is in principle as simple as defining a ServiceComposite implementing the EntityStore
-interface. The problem is that most Entity Stores require <<service-configuration>>, and configuration requires an
+interface. The problem is that most Entity Stores require <<core-api-service-configuration>>, and configuration requires an
 Entity Store. This chicken-and-egg problem is resolved by having an entity store available that does not require any
-<<service-configuration>>. Many _Assemblers_ for entity store implementations uses the MemoryEntityStore, and
-effectively leaves the configuration in the properties file where <<service-configuration>> bootstraps from. It is
+<<core-api-service-configuration>>. Many _Assemblers_ for entity store implementations uses the MemoryEntityStore, and
+effectively leaves the configuration in the properties file where <<core-api-service-configuration>> bootstraps from. It is
 possible to chain this, so that for instance the Neo4J Entity Store uses the Preferences Entity Store for its
 configuration, and the Preferences Entity Store uses the Memory Entity Store (i.e. the properties file).
 

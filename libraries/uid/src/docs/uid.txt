@@ -1,0 +1,8 @@
+[[library-uid, UID Library]]
+= UID =
+
+[devstatus]
+--------------
+source=libraries/uid/dev-status.xml
+--------------
+

@@ -17,7 +17,7 @@ and integration solutions. By the introduction of Git, it is now much easier for
 system, even if they have no official commit rights and allow people to review the work, then commit it and the right
 person gets the credit.
 
-== Core Team ==
+== Core Dev Team ==
 
 The Core team are the Stewards and Guardians of the overall project. They ensure that all pieces of Qi4j are in good
 standing and assist in all matters of the project. Only the Core Team will modify the official Qi4j Core repository.

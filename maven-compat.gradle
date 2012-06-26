@@ -198,7 +198,7 @@ allprojects {
           name "Paul Merlin"
           email "paul@nosphere.org"
           roles {
-            role 'Platform Team'
+            role 'Core Team'
           }
           timezone "CET"
         }

@@ -27,4 +27,4 @@ Concerns have many purposes, but they are not intended to produce side effects (
 
 Concerns are established by the use of the @Concerns annotation on composites.
 
-Concern is one of the 3 kinds of <<def-modifier,Modifiers>> defined in Qi4j.
+Concern is one of the 3 kinds of <<def-modifier>>s defined in Qi4j.

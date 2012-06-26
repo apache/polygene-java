@@ -13,7 +13,7 @@
  * and limitations under the License.
 //////////////////////
 
-[[ServiceComposite]]
+[[core-api-service,ServiceComposite]]
 = Service Composite =
 Any service added, via the ModuleAssembly.addServices(), ModuleAssembly.services() and ModuleAssembly.importServices()
 methods, will have the ServiceComposite meta type added to it. In Qi4j, when we speak of _Services_ we mean instances
@@ -39,10 +39,10 @@ The characteristics of a ServiceComposite compared to other Composite meta types
 
 _Services_ in Qi4j are _singletons_, one instance per definition. That means that there may exist multiple instances
 of the same service type, but they can not be created on the fly in runtime, but has to be explicitly defined during
-<<Assembly>>.
+<<core-bootstrap-assembly>>.
 
 == Service Configuration ==
-The configuration for a service is well supported in Qi4j. See the <<service-configuration>> chapter for details.
+The configuration for a service is well supported in Qi4j. See the <<core-api-service-configuration>> chapter for details.
 
 == Activation/Deactivation ==
 Services are instantiated and activated either on application start-up, or upon first use. This is controlled by calling
@@ -59,12 +59,12 @@ If the method is not called, the creation and activation will occur on first usa
 If the service implements the org.qi4j.api.Activatable interface, the activate() method will be called after the
 constructor initialization, useful to have all the member injections already in place.
 
-When a <<Module,Module>> is deactivated, typically because the whole application is shutting down, the deactivate() method in
+When a <<core-api-module>> is deactivated, typically because the whole application is shutting down, the deactivate() method in
 the service will be called. The deactivation occurs in the reverse order of the activation, to ensure that dependent
 services are still available for a deactivating service.
 
 == Identity and Tags ==
-Services has an Identity, which drives the <<service-configuration>> system and can be used to lookup a particular service
+Services has an Identity, which drives the <<core-api-service-configuration>> system and can be used to lookup a particular service
 instance. Services can also be arbitrarily tagged, via the ServiceDescriptor. Example;
 
 [snippet,java]

@@ -1,0 +1,8 @@
+[[library-cxf, CXF Library]]
+= CXF WebService =
+
+[devstatus]
+--------------
+source=libraries/cxf/dev-status.xml
+--------------
+

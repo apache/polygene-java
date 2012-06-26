@@ -8,11 +8,36 @@ Hello World example.
 :leveloffset: 2
 
 // include::highlights.txt[]
+
 include::background.txt[]
+
+:leveloffset: 2
+
 include::what-is-composite-oriented-programming.txt[]
+
+:leveloffset: 2
+
 include::qi4j-cop.txt[]
+
+:leveloffset: 2
+
 include::whats-an-object.txt[]
+
+:leveloffset: 2
+
 include::../../twominutes/src/docs/two-minutes.txt[]
+
+:leveloffset: 2
+
 include::../../tenminutes/src/docs/ten-minutes.txt[]
+
+:leveloffset: 2
+
 include::../../thirtyminutes/src/docs/thirty-minutes.txt[]
+
+:leveloffset: 2
+
 include::../../twohours/src/docs/two-hours.txt[]
+
+:leveloffset: 2
+

@@ -1,0 +1,8 @@
+[[extension-metrics-yammer, Yammer Metrics]]
+= Yammer Metrics =
+
+[devstatus]
+--------------
+source=extensions/metrics-yammer/dev-status.xml
+--------------
+

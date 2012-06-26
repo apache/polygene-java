@@ -1,0 +1,8 @@
+[[extension-reindexer,Reindexer]]
+= Reindexer =
+
+[devstatus]
+--------------
+source=extensions/reindexer/dev-status.xml
+--------------
+

@@ -13,8 +13,13 @@
  * and limitations under the License.
 //////////////////////
 
-[[qi4j-core-io,Qi4j Core I/O API]]
-= Qi4j Core I/O API =
+[[core-io,I/O API]]
+= Core I/O API =
+
+[devstatus]
+--------------
+source=core/io/dev-status.xml
+--------------
 
 The Qi4j Core I/O API is completely generic and not tied to the Qi4j programming model as a whole. It can be used
 independently of Qi4j, together with the Qi4j Core Functional API, which the Core I/O API depends on.
@@ -22,7 +27,7 @@ independently of Qi4j, together with the Qi4j Core Functional API, which the Cor
 The Qi4j Core I/O API tries to address the problem around shuffling data around from various I/O inputs and outputs,
 possibly with transformations and filtering along the way. It was identified that there is a general mix-up of concerns
 in the stereotypical I/O handling codebases that people deal with all the time. The reasoning around this, can be found
-in the <<howto-use-io,HowTO Use I/O API>>, and is recommended reading.
+in the <<howto-use-io>>, and is recommended reading.
 
 == The Problem ==
 Why does I/O operations in Java have to be so complicated, with nested try/catch/finally and loops? Don't you wish
@@ -67,7 +72,7 @@ Inputs.text( source ).transferTo( Transforms.map(counter, Outputs.text(destinati
 System.out.println( "Lines: " + counter.getCount() );
 -------------
 
-The Counter is a <<qi4j-core-functional, Function>> which gets injected into the transfer.
+The Counter is a <<core-functional>> which gets injected into the transfer.
 
 == The 3 Parts ==
 Ok, so we have seen that the end result can become pretty compelling. How does it work?
@@ -177,7 +182,7 @@ how you can combine the general principles found in the Qi4j Core API package.
 
 == How to write a filter specification? ==
 The filter transform takes a specification implementation which has a very simple method, isSatisfiedBy() (read more
-about that in <<qi4j-core-functional>>.
+about that in <<core-functional>>.
 
 [snippet,java]
 --------------

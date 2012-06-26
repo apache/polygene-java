@@ -1,4 +1,4 @@
-[[extension-index-rdf]]
+[[extension-index-rdf,RDF Index/Query]]
 = OpenRDF Index/Query =
 
 [devstatus]

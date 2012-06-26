@@ -24,11 +24,15 @@ import org.gradle.api.tasks.TaskAction
 // TODO: move the bulk of resources into this plugin, instead of sitting in the project.
 class Documentation extends DefaultTask
 {
+  private String docName
+
+  private String docType
+
   @TaskAction
   def void generate()
   {
-    userHome = new File(System.getProperty("user.home"))
-    snippetDir = new File(userHome, ".asciidoc/filters/snippet").absoluteFile
+    def userHome = new File(System.getProperty("user.home"))
+    def snippetDir = new File(userHome, ".asciidoc/filters/snippet").absoluteFile
     if( !snippetDir.exists() )
     {
       println "Installing [snippet] into $snippetDir"
@@ -41,7 +45,7 @@ class Documentation extends DefaultTask
       ant.chmod(dir: snippetDir, perm: "755", includes: "snippet.py")
     }
 
-    devstatusDir = new File(userHome, ".asciidoc/filters/devstatus").absoluteFile
+    def devstatusDir = new File(userHome, ".asciidoc/filters/devstatus").absoluteFile
     if( !devstatusDir.exists() )
     {
       println "Installing [devstatus] into $devstatusDir"
@@ -170,5 +174,25 @@ class Documentation extends DefaultTask
     //              "build/docs/$docName/$docName" + ".pdf"
     //      ]
     //    }
+  }
+
+  String getDocName( )
+  {
+    return docName
+  }
+
+  void setDocName( String docName )
+  {
+    this.docName = docName
+  }
+
+  String getDocType( )
+  {
+    return docType
+  }
+
+  void setDocType( String docType )
+  {
+    this.docType = docType
   }
 }

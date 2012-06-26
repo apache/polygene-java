@@ -1,4 +1,4 @@
-[[codebase]]
+[[codebase,Codebase]]
 = Codebase =
 After the first 3 years of depending on the OPS4J project, the Qi4j community finally moved to GitHub on
 the 1 November 2010. This should simplify the learning, as not only does developers have plenty of experience with

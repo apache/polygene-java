@@ -13,7 +13,7 @@
  * and limitations under the License.
 //////////////////////
 
-[[howto-create-entity]]
+[[howto-create-entity,Create an Entity]]
 = Create an Entity =
 One of the most common tasks in Qi4j is the management of the life cycle of Entities. Since Qi4j is capable of
 delivering much higher performance than traditional Object-Relational Mapping technologies, we also expect that people

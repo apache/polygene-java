@@ -1,9 +1,13 @@
-[[community-contributing]]
+[[community-contributing,Contributing]]
 Contributing to Qi4j
 =====================
 
-The Qi4j community is an open source community centered around software and components for Composite Oriented Programming on Java/Scala, and related design methodologies that are enhanced by using Qi4j, like Domain Driven Design, DCI (Data, Context, Interaction) and HATEOAS REST.
-The Qi4j community is an open community, in so far as it welcomes any member that accepts the basic criteria of contribution and adheres to the community's Code of Conduct.
+The Qi4j community is an open source community centered around software and components for Composite Oriented
+Programming on Java/Scala, and related design methodologies that are enhanced by using Qi4j, like Domain Driven
+Design, DCI (Data, Context, Interaction) and HATEOAS REST.
+
+The Qi4j community is an open community, in so far as it welcomes any member that accepts the basic criteria of
+contribution and adheres to the community's Code of Conduct.
 
 Note that you can contribute to Qi4j also by contributing documentation or giving feedback on the current documentation.
 Basically, at all the places where you can get help, there's also room for contributions.

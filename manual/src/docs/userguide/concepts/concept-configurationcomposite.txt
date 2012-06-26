@@ -9,6 +9,6 @@ consequent start-ups the properties file is not read, as the configuration is
 read from the entity store.
 
 ConfigurationComposite is one of the 5
-<<def-composite-metatype,Composite Meta Types>> defined in Qi4j.
+<<def-composite-metatype>> defined in Qi4j.
 
 See <<howto-configure-service>> to learn how to use Configuration Composites.

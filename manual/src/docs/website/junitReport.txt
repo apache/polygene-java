@@ -1,0 +1,10 @@
+//////////////////////
+This file is simply a placeholder.
+
+The Apache Web Server is configured to rewrite the URL from javadocs.html to javadoc/index.html
+
+//////////////////////
+
+[[junitReport, Junit Report]]
+= DO NOT REMOVE THIS FILE =
+

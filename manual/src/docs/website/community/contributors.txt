@@ -1,6 +1,6 @@
-[[contributors]]
+[[contributors,Contributors]]
 = People behind Qi4j =
-Qi4j was started by Rickard Öberg and Niclas Hedhman, a.k.a "The Founders".
+Qi4j was started by Niclas Hedhman and Rickard Öberg, a.k.a "The Founders".
 
 There are many types of contributors to open source projects, this one included, and we urge you to take a look at
 http://www.oss-watch.ac.uk/resources/rolesinopensource.xml to see how you can contribute, even if you don't have the
@@ -9,26 +9,41 @@ expertise or time required for the source code evolution.
 == Core Dev Team ==
 
 The Core Dev Team are the people who has shown significant commitment towards the project and act as the guardians of
-the project. The Core Dev Team are the only people who can modify the core system.
+the project. The following people are currently in the Core Dev Team.
 
-The following people are currently in the Core Dev Team.
+   * Kent Sølvsten
+   * Marc Grue
+   * Niclas Hedhman
+   * Paul Merlin
+   * Phillipe van Dyck
+   * Rickard Öberg
+   * Stanislav Muhametsin
+   * Tibor Mlynarik
 
 == Contributors ==
 
-The rest of the Qi4j project, including extensions, libraries and applications are following the OPS4J definition of
-"Open Participation". That means that anyone who wants to contribute will automatically receive committer rights to
-the source code.
+People who has contributed over the years (and remembered to add themselves) can be seen below. For a more accurate
+list, please use GitHub's commit tracking tool chain. These people are largely inactive now.
 
-People who has contributed over the years (and remembered to add themselves) can be seen below.
+   * Alex Shneyderman
+   * Alin Dreghiciu
+   * Arvid Huss
+   * Chris Chapman
+   * David Leangen
+   * Edward Yakop
+   * Georg Ragaller
+   * Jan Kronquist
+   * Johan Svensson
+   * Lan Boon Ping
+   * Michael Hunger
+   * Muhd Kamil bin Mohd Baki
+   * Nino Saturnino Martinez Vazquez Wael
+   * Peter Neubauer
+   * Richard Wallace
+   * Sianny Halim
+   * Sonny Gill
+   * Tao Wen
+   * Tobias Ivarsson
+   * Tonny Kohar
 
-=== Libraries ===
 
-=== Extensions ===
-
-=== Tools ===
-
-=== Tutorials ===
-
-=== Samples ===
-
-=== Manuals ===

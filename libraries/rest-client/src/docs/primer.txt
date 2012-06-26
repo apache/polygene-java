@@ -1,11 +1,11 @@
-[[library-rest-client-intro, Introduction to the new ReST Client Library ]]
-= ReST Client Introduction & Background=
+[[library-rest-client-primer, HATEOAS Primer]]
+= ReST Client Introduction & Background =
 
 The Qi4j ReST Client implements HATEOAS (Hypermedia As The Engine Of Application State) to the full extent intended
 by Roy Fielding. The ReST Client Library enables the creation of HATEOAS applications that are NOT using the URL space,
 and it is NOT about doing RPC calls over HTTP using a common exchange format (like JSON).
 
-The [[library-rest-server]] is a corresponding library for creating usecase-driven ReST servers, and with that the
+The <<library-rest-server>> is a corresponding library for creating usecase-driven ReST servers, and with that the
 corresponding client becomes very thin, as all business rules remain on the server where they belong.
 
 *The main point is to support exposing REST resources that focus on use cases and hypermedia.*

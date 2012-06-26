@@ -13,5 +13,5 @@
  * and limitations under the License.
 //////////////////////
 
-[[sideeffect,Side Effect]]
-= Side Effect =
+[[core-api-sideeffect,SideEffect]]
+= SideEffect =

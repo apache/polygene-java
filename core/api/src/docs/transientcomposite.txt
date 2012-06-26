@@ -13,7 +13,7 @@
  * and limitations under the License.
 //////////////////////
 
-[[TransientComposite]]
+[[core-api-transient,TransientComposite]]
 = TransientComposite =
 TransientComposite is a Composite meta type for all other cases. The main characteristics are;
 

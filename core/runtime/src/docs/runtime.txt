@@ -13,7 +13,14 @@
  * and limitations under the License.
 //////////////////////
 
+[[core-runtime,Core Runtime]]
 = Core Runtime =
+
+[devstatus]
+--------------
+source=core/runtime/dev-status.xml
+--------------
+
 First of all, your code should never, ever, have a dependency on Core Runtime. If you think you need this, you should
 probably contact _Qi4j Dev_ mailing list and see if your usecase can either be solved in a existing way or perhaps
 that a new Core SPI Extension is needed.
