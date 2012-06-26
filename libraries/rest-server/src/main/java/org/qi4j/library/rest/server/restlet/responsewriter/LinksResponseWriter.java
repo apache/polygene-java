@@ -65,7 +65,6 @@ public class LinksResponseWriter
                 response.setStatus( Status.REDIRECTION_TEMPORARY );
                 Link link = (Link) result;
                 Reference reference = new Reference( response.getRequest().getResourceRef(), link.href().get() );
-
                 response.setLocationRef( reference );
                 return true;
             }
@@ -73,65 +72,79 @@ public class LinksResponseWriter
         else if( result instanceof LinksUtil )
         {
             MediaType type = getVariant( response.getRequest(), ENGLISH, supportedLinksMediaTypes ).getMediaType();
+            Representation rep;
             if( MediaType.APPLICATION_JSON.equals( type ) )
             {
-                response.setEntity( new StringRepresentation( ( (LinksUtil) result ).toString(), MediaType.APPLICATION_JSON ) );
-                return true;
+                rep = createJsonRepresentation( (LinksUtil) result );
             }
             else if( MediaType.TEXT_HTML.equals( type ) )
             {
-                Representation rep = new WriterRepresentation( MediaType.TEXT_HTML )
-                {
-                    @Override
-                    public void write( Writer writer )
-                        throws IOException
-                    {
-                        Map<String, Object> context = new HashMap<String, Object>();
-                        context.put( "request", response.getRequest() );
-                        context.put( "response", response );
-
-                        context.put( "result", result);
-                        try
-                        {
-                            cfg.getTemplate( "links.htm" ).process( context, writer );
-                        }
-                        catch( TemplateException e )
-                        {
-                            throw new IOException( e );
-                        }
-                    }
-                };
-                response.setEntity( rep );
-                return true;
+                rep = createTextHtmlRepresentation( result, response );
             }
             else if( MediaType.APPLICATION_ATOM.equals( type ) )
             {
-                Representation rep = new WriterRepresentation( MediaType.APPLICATION_ATOM )
-                {
-                    @Override
-                    public void write( Writer writer )
-                        throws IOException
-                    {
-                        Map<String, Object> context = new HashMap<String, Object>();
-                        context.put( "request", response.getRequest() );
-                        context.put( "response", response );
-
-                        context.put( "result", result );
-                        try
-                        {
-                            cfg.getTemplate( "links.atom" ).process( context, writer );
-                        }
-                        catch( TemplateException e )
-                        {
-                            throw new IOException( e );
-                        }
-                    }
-                };
-                response.setEntity( rep );
-                return true;
+                rep = createAtomRepresentation( result, response );
             }
+            else
+            {
+                return false;
+            }
+            response.setEntity( rep );
+            return true;
         }
-
         return false;
+    }
+
+    private StringRepresentation createJsonRepresentation( LinksUtil result )
+    {
+        return new StringRepresentation( ( (LinksUtil) result ).toString(), MediaType.APPLICATION_JSON );
+    }
+
+    private Representation createTextHtmlRepresentation( final Object result, final Response response )
+    {
+        return new WriterRepresentation( MediaType.TEXT_HTML )
+                    {
+                        @Override
+                        public void write( Writer writer )
+                            throws IOException
+                        {
+                            Map<String, Object> context = new HashMap<String, Object>();
+                            context.put( "request", response.getRequest() );
+                            context.put( "response", response );
+                            context.put( "result", result );
+                            try
+                            {
+                                cfg.getTemplate( "links.htm" ).process( context, writer );
+                            }
+                            catch( TemplateException e )
+                            {
+                                throw new IOException( e );
+                            }
+                        }
+                    };
+    }
+
+    private Representation createAtomRepresentation( final Object result, final Response response )
+    {
+        return new WriterRepresentation( MediaType.APPLICATION_ATOM )
+        {
+            @Override
+            public void write( Writer writer )
+                throws IOException
+            {
+                Map<String, Object> context = new HashMap<String, Object>();
+                context.put( "request", response.getRequest() );
+                context.put( "response", response );
+                context.put( "result", result );
+                try
+                {
+                    cfg.getTemplate( "links.atom" ).process( context, writer );
+                }
+                catch( TemplateException e )
+                {
+                    throw new IOException( e );
+                }
+            }
+        };
     }
 }

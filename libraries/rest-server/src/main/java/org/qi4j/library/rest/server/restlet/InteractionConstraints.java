@@ -17,9 +17,8 @@
 
 package org.qi4j.library.rest.server.restlet;
 
-import org.qi4j.api.structure.Module;
-
 import java.lang.reflect.Method;
+import org.qi4j.api.structure.Module;
 import org.qi4j.library.rest.server.api.ObjectSelection;
 
 /**
@@ -28,6 +27,7 @@ import org.qi4j.library.rest.server.api.ObjectSelection;
  */
 public interface InteractionConstraints
 {
-   public boolean isValid( Method method, ObjectSelection objectSelection, Module module );
-   public boolean isValid( Class resourceClass, ObjectSelection objectSelection, Module module );
+    public boolean isValid( Method method, ObjectSelection objectSelection, Module module );
+
+    public boolean isValid( Class resourceClass, ObjectSelection objectSelection, Module module );
 }

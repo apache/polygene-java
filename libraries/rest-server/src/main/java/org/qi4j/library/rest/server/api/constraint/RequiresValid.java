@@ -17,29 +17,28 @@
 
 package org.qi4j.library.rest.server.api.constraint;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import org.qi4j.api.constraint.Constraint;
 import org.qi4j.api.constraint.ConstraintDeclaration;
 import org.qi4j.api.constraint.Constraints;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 
 /**
  * JAVADOC
  */
 @ConstraintDeclaration
-@Retention(RetentionPolicy.RUNTIME)
-@Constraints(RequiresValid.RequiresValidConstraint.class)
+@Retention( RetentionPolicy.RUNTIME )
+@Constraints( RequiresValid.RequiresValidConstraint.class )
 public @interface RequiresValid
 {
-   String value();
+    String value();
 
-   class RequiresValidConstraint
-      implements Constraint<RequiresValid, InteractionValidation>
-   {
-      public boolean isValid( RequiresValid requiresValid, InteractionValidation validation)
-      {
-         return validation.isValid( requiresValid.value() );
-      }
-   }
+    class RequiresValidConstraint
+        implements Constraint<RequiresValid, InteractionValidation>
+    {
+        public boolean isValid( RequiresValid requiresValid, InteractionValidation validation )
+        {
+            return validation.isValid( requiresValid.value() );
+        }
+    }
 }

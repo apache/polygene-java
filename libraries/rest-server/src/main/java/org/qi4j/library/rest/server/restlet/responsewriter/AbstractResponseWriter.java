@@ -17,6 +17,9 @@
 
 package org.qi4j.library.rest.server.restlet.responsewriter;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import org.qi4j.library.rest.server.spi.ResponseWriter;
 import org.restlet.Request;
 import org.restlet.data.CharacterSet;
@@ -24,36 +27,37 @@ import org.restlet.data.Language;
 import org.restlet.data.MediaType;
 import org.restlet.representation.Variant;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 /**
  * Helper methods for ResponseWriters
  */
 public abstract class AbstractResponseWriter
-   implements ResponseWriter
+    implements ResponseWriter
 {
-   protected static List<Language> ENGLISH = Arrays.asList( Language.ENGLISH );
+    protected static List<Language> ENGLISH = Arrays.asList( Language.ENGLISH );
 
-   protected Variant getVariant( Request request, List<Language> possibleLanguages, List<MediaType> possibleMediaTypes )
-   {
-      Language language = request.getClientInfo().getPreferredLanguage( possibleLanguages );
+    protected Variant getVariant( Request request,
+                                  List<Language> possibleLanguages,
+                                  List<MediaType> possibleMediaTypes
+    )
+    {
+        Language language = request.getClientInfo().getPreferredLanguage( possibleLanguages );
 
-      if (language == null)
-         language = possibleLanguages.get( 0 );
+        if( language == null )
+        {
+            language = possibleLanguages.get( 0 );
+        }
 
-      MediaType responseType = request.getClientInfo().getPreferredMediaType( possibleMediaTypes );
+        MediaType responseType = request.getClientInfo().getPreferredMediaType( possibleMediaTypes );
 
-      if (responseType == null && request.getClientInfo().getPreferredMediaType( Collections.singletonList( MediaType.ALL)) == MediaType.ALL)
-      {
-         responseType = possibleMediaTypes.get( 0 );
-      }
+        if( responseType == null && request.getClientInfo()
+                                        .getPreferredMediaType( Collections.singletonList( MediaType.ALL ) ) == MediaType.ALL )
+        {
+            responseType = possibleMediaTypes.get( 0 );
+        }
 
-      Variant variant = new Variant( responseType, language );
-      variant.setCharacterSet( CharacterSet.UTF_8 );
+        Variant variant = new Variant( responseType, language );
+        variant.setCharacterSet( CharacterSet.UTF_8 );
 
-      return variant;
-   }
-
+        return variant;
+    }
 }

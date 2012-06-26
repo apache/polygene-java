@@ -15,10 +15,13 @@ public class ValueCompositeObjectWrapper
     public TemplateModel wrap( Object obj )
         throws TemplateModelException
     {
-        if (obj instanceof ValueComposite )
+        if( obj instanceof ValueComposite )
         {
-            return new ValueCompositeTemplateModel((ValueComposite) obj, this);
-        } else
+            return new ValueCompositeTemplateModel( (ValueComposite) obj, this );
+        }
+        else
+        {
             return super.wrap( obj );
+        }
     }
 }

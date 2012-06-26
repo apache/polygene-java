@@ -17,6 +17,9 @@
 
 package org.qi4j.library.rest.server.restlet;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.InitializationException;
@@ -27,66 +30,66 @@ import org.restlet.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
-
 /**
  * Delegates to a list of potential writers. Register writers on startup.
  */
 public class ResponseWriterDelegator
-        implements ResponseWriter
+    implements ResponseWriter
 {
-   List<ResponseWriter> responseWriters = new ArrayList<ResponseWriter>();
+    List<ResponseWriter> responseWriters = new ArrayList<ResponseWriter>();
 
-   @Structure
-   Module module;
+    @Structure
+    Module module;
 
-   public void init(@Service Iterable<ServiceReference<ResponseWriter>> resultWriters) throws InitializationException
-   {
-      Logger logger = LoggerFactory.getLogger(getClass());
+    public void init( @Service Iterable<ServiceReference<ResponseWriter>> resultWriters )
+        throws InitializationException
+    {
+        Logger logger = LoggerFactory.getLogger( getClass() );
 
-      // Add custom writers first
-      for (ServiceReference<ResponseWriter> resultWriter : resultWriters)
-      {
-         if (!resultWriter.identity().equals("responsewriterdelegator"))
-         {
-            logger.info("Registered result writer:" + resultWriter.identity());
-            registerResultWriter(resultWriter.get());
-         }
-      }
+        // Add custom writers first
+        for( ServiceReference<ResponseWriter> resultWriter : resultWriters )
+        {
+            if( !resultWriter.identity().equals( "responsewriterdelegator" ) )
+            {
+                logger.info( "Registered result writer:" + resultWriter.identity() );
+                registerResultWriter( resultWriter.get() );
+            }
+        }
 
-      // Add defaults
-      ResourceBundle defaultResultWriters = ResourceBundle.getBundle("org.qi4j.library.rest.server.rest-server");
+        // Add defaults
+        ResourceBundle defaultResultWriters = ResourceBundle.getBundle( "org.qi4j.library.rest.server.rest-server" );
 
-      String resultWriterClasses = defaultResultWriters.getString("responsewriters");
-      logger.info("Using response writers:" + resultWriterClasses);
-      for (String className : resultWriterClasses.split(","))
-      {
-         try
-         {
-            Class writerClass = module.classLoader().loadClass(className.trim());
-            ResponseWriter writer = (ResponseWriter) module.newObject(writerClass);
-            registerResultWriter(writer);
-         } catch (ClassNotFoundException e)
-         {
-            logger.warn("Could not register response writer " + className, e);
-         }
-      }
-   }
+        String resultWriterClasses = defaultResultWriters.getString( "responsewriters" );
+        logger.info( "Using response writers:" + resultWriterClasses );
+        for( String className : resultWriterClasses.split( "," ) )
+        {
+            try
+            {
+                Class writerClass = module.classLoader().loadClass( className.trim() );
+                ResponseWriter writer = (ResponseWriter) module.newObject( writerClass );
+                registerResultWriter( writer );
+            }
+            catch( ClassNotFoundException e )
+            {
+                logger.warn( "Could not register response writer " + className, e );
+            }
+        }
+    }
 
-   public void registerResultWriter(ResponseWriter writer)
-   {
-      responseWriters.add(writer);
-   }
+    public void registerResultWriter( ResponseWriter writer )
+    {
+        responseWriters.add( writer );
+    }
 
-   public boolean writeResponse(Object result, Response response)
-   {
-      for (ResponseWriter responseWriter : responseWriters)
-      {
-         if (responseWriter.writeResponse(result, response))
-            return true;
-      }
-      return false;
-   }
+    public boolean writeResponse( Object result, Response response )
+    {
+        for( ResponseWriter responseWriter : responseWriters )
+        {
+            if( responseWriter.writeResponse( result, response ) )
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 }

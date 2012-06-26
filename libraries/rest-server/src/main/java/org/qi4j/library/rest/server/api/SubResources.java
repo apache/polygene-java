@@ -24,13 +24,15 @@ import org.restlet.resource.ResourceException;
  */
 public interface SubResources
 {
-   /**
-    * Instantiate the sub-resource, perform any RoleMap bindings based on
-    * the given segment, and then call handle(Request,Response) on the subresource.
-    *
-    * @param segment the current segment that the sub-resource will correspond to
-    * @throws org.restlet.resource.ResourceException if the subresource could not be lookup up, typically a 404
-    */
-   void resource( String segment )
-      throws ResourceException;
+    /**
+     * Instantiate the sub-resource, perform any RoleMap bindings based on
+     * the given segment, and then call handle(Request,Response) on the subresource.
+     *
+     * @param segment the current segment that the sub-resource will correspond to
+     *
+     * @throws org.restlet.resource.ResourceException
+     *          if the subresource could not be lookup up, typically a 404
+     */
+    void resource( String segment )
+        throws ResourceException;
 }

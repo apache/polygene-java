@@ -17,6 +17,10 @@
 
 package org.qi4j.library.rest.server.restlet;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.InitializationException;
@@ -27,75 +31,76 @@ import org.restlet.Request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
-
 /**
  * Delegates to a list of potential readers. Register readers on startup.
  */
 public class RequestReaderDelegator
-        implements RequestReader
+    implements RequestReader
 {
-   private static final Object[] NULL_PARAMS = new Object[0];
+    private static final Object[] NULL_PARAMS = new Object[ 0 ];
 
-   List<RequestReader> requestReaders = new ArrayList<RequestReader>();
+    List<RequestReader> requestReaders = new ArrayList<RequestReader>();
 
-   @Structure
-   Module module;
+    @Structure
+    Module module;
 
-   public void init(@Service Iterable<ServiceReference<RequestReader>> requestReaderReferences) throws InitializationException
-   {
-      Logger logger = LoggerFactory.getLogger(getClass());
+    public void init( @Service Iterable<ServiceReference<RequestReader>> requestReaderReferences )
+        throws InitializationException
+    {
+        Logger logger = LoggerFactory.getLogger( getClass() );
 
-      // Add custom readers first
-      for (ServiceReference<RequestReader> requestReader : requestReaderReferences)
-      {
-         if (!requestReader.identity().equals("requestreaderdelegator"))
-         {
-            logger.info("Registered request reader:" + requestReader.identity());
-            registerRequestReader(requestReader.get());
-         }
-      }
+        // Add custom readers first
+        for( ServiceReference<RequestReader> requestReader : requestReaderReferences )
+        {
+            if( !requestReader.identity().equals( "requestreaderdelegator" ) )
+            {
+                logger.info( "Registered request reader:" + requestReader.identity() );
+                registerRequestReader( requestReader.get() );
+            }
+        }
 
-      // Add defaults
-      ResourceBundle defaultRequestReaders = ResourceBundle.getBundle("org.qi4j.library.rest.server.rest-server");
+        // Add defaults
+        ResourceBundle defaultRequestReaders = ResourceBundle.getBundle( "org.qi4j.library.rest.server.rest-server" );
 
-      String requestReaderClasses = defaultRequestReaders.getString("requestreaders");
-      logger.info("Using request readers:" + requestReaderClasses);
-      for (String className : requestReaderClasses.split(","))
-      {
-         try
-         {
-            Class readerClass = module.classLoader().loadClass(className.trim());
-            RequestReader writer = (RequestReader) module.newObject(readerClass);
-            registerRequestReader(writer);
-         } catch (ClassNotFoundException e)
-         {
-            logger.warn("Could not register request reader " + className, e);
-         }
-      }
-   }
+        String requestReaderClasses = defaultRequestReaders.getString( "requestreaders" );
+        logger.info( "Using request readers:" + requestReaderClasses );
+        for( String className : requestReaderClasses.split( "," ) )
+        {
+            try
+            {
+                Class readerClass = module.classLoader().loadClass( className.trim() );
+                RequestReader writer = (RequestReader) module.newObject( readerClass );
+                registerRequestReader( writer );
+            }
+            catch( ClassNotFoundException e )
+            {
+                logger.warn( "Could not register request reader " + className, e );
+            }
+        }
+    }
 
-   public void registerRequestReader(RequestReader reader)
-   {
-      requestReaders.add(reader);
-   }
+    public void registerRequestReader( RequestReader reader )
+    {
+        requestReaders.add( reader );
+    }
 
-   public Object[] readRequest(Request request, Method method)
-   {
-      if (method.getParameterTypes().length == 0)
-         return NULL_PARAMS;
+    public Object[] readRequest( Request request, Method method )
+    {
+        if( method.getParameterTypes().length == 0 )
+        {
+            return NULL_PARAMS;
+        }
 
-      for (RequestReader requestReader : requestReaders)
-      {
-         Object[] arguments = requestReader.readRequest(request, method);
+        for( RequestReader requestReader : requestReaders )
+        {
+            Object[] arguments = requestReader.readRequest( request, method );
 
-         if (arguments != null)
-            return arguments;
-      }
+            if( arguments != null )
+            {
+                return arguments;
+            }
+        }
 
-      return null;
-   }
+        return null;
+    }
 }

@@ -4,22 +4,22 @@
     <style type="text/css">
         form
         {
-        width: 600px;
+            width: 600px;
         }
 
         form label
         {
-        display: block; /* block float the labels to left column, set a width */
-        float: left;
-        width: 150px;
-        padding: 0;
-        margin: 5px 0 0; /* set top margin same as form input - textarea etc. elements */
-        text-align: right;
+            display: block; /* block float the labels to left column, set a width */
+            float: left;
+            width: 150px;
+            padding: 0;
+            margin: 5px 0 0; /* set top margin same as form input - textarea etc. elements */
+            text-align: right;
         }
 
         form br
         {
-        clear:left;
+            clear: left;
         }
     </style>
 </head>
@@ -30,11 +30,11 @@
         <legend>${request.resourceRef.lastSegment}</legend>
 
         <#list result as param>
-        <label for="${param.name}">${param.name}:</label>
-        <input type="text" name="${param.name}" value="${param.value!}"><br/>
+            <label for="${param.name}">${param.name}:</label>
+            <input type="text" name="${param.name}" value="${param.value!}"><br/>
         </#list>
         <input value="Submit" type="submit"/>
-        </fieldset>
+    </fieldset>
 </form>
 </body>
 

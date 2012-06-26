@@ -39,14 +39,12 @@ import org.restlet.resource.ResourceException;
 /**
  * JAVADOC
  */
-public class ValueCompositeResponseWriter
-    extends AbstractResponseWriter
+public class ValueCompositeResponseWriter extends AbstractResponseWriter
 {
     private static final List<MediaType> supportedMediaTypes = Arrays.asList( MediaType.TEXT_HTML, MediaType.APPLICATION_JSON );
 
-    private
     @Service
-    Configuration cfg;
+    private Configuration cfg;
 
     public boolean writeResponse( final Object result, final Response response )
         throws ResourceException
@@ -86,10 +84,8 @@ public class ValueCompositeResponseWriter
                         Map<String, Object> context = new HashMap<String, Object>();
                         context.put( "request", response.getRequest() );
                         context.put( "response", response );
-
                         context.put( "result", result );
-                        context.put("util", this);
-
+                        context.put( "util", this );
                         try
                         {
                             template.process( context, writer );
@@ -100,7 +96,7 @@ public class ValueCompositeResponseWriter
                         }
                     }
 
-                    public boolean isSequence(Object obj)
+                    public boolean isSequence( Object obj )
                     {
                         return obj instanceof Collection;
                     }
@@ -109,7 +105,6 @@ public class ValueCompositeResponseWriter
                 return true;
             }
         }
-
         return false;
     }
 }
