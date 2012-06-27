@@ -3,7 +3,7 @@
 [[samples,Samples Section]]
 =  Samples =
 
-== Introduction ==
+== Overview ==
 
 The Qi4j SDK comes with several sample applications. This is a very good place
 to look for code examples and recipes.

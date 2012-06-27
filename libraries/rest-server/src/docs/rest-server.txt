@@ -6,3 +6,6 @@
 source=libraries/rest-server/dev-status.xml
 --------------
 
+ReST Server Library
+
+NOTE: This Library has no documentation yet. Learn how to contribute in <<community-docs>>.

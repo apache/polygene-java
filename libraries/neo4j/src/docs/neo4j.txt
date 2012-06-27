@@ -6,3 +6,6 @@
 source=libraries/neo4j/dev-status.xml
 --------------
 
+Neo4j Library
+
+NOTE: This Library has no documentation yet. Learn how to contribute in <<community-docs>>.

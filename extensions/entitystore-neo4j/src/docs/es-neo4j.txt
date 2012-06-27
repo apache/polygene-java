@@ -6,3 +6,6 @@
 source=extensions/entitystore-neo4j/dev-status.xml
 --------------
 
+Neo4j EntityStore
+
+NOTE: This Extension has no documentation yet. Learn how to contribute in <<community-docs>>.

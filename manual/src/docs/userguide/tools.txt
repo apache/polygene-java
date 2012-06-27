@@ -3,8 +3,7 @@
 [[tools,Tools Section]]
 = Tools =
 
-
-== Introduction ==
+== Overview ==
 
 The Qi4j SDK comes with usefull development tools. Theses tools can come in
 handy when assembled into your <<def-application>> in development

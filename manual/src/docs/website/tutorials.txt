@@ -3,7 +3,7 @@
 [[tutorials,Tutorials Section]]
 = Tutorials =
 
-== Tutorials ==
+== Overview ==
 
 In this section you will find a comprehensive set of tutorials about Composite
 Oriented Programming using Qi4j.

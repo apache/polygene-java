@@ -6,3 +6,6 @@
 source=libraries/uid/dev-status.xml
 --------------
 
+UID Library
+
+NOTE: This Library has no documentation yet. Learn how to contribute in <<community-docs>>.

@@ -6,3 +6,6 @@
 source=extensions/migration/dev-status.xml
 --------------
 
+Migration
+
+NOTE: This Extension has no documentation yet. Learn how to contribute in <<community-docs>>.
