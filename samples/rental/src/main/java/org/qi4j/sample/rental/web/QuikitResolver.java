@@ -18,15 +18,23 @@
 
 package org.qi4j.sample.rental.web;
 
-import com.sun.org.apache.xerces.internal.impl.xs.XSImplementationImpl;
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
+import org.w3c.dom.bootstrap.DOMImplementationRegistry;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSInput;
+import org.w3c.dom.ls.LSOutput;
 import org.w3c.dom.ls.LSResourceResolver;
+import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -35,9 +43,11 @@ public class QuikitResolver
     implements LSResourceResolver, EntityResolver
 {
     private Properties local;
+    private final DocumentBuilder builder;
 
-    public QuikitResolver()
+    public QuikitResolver( DocumentBuilder builder )
     {
+        this.builder = builder;
         local = new Properties();
         try
         {
@@ -82,11 +92,41 @@ public class QuikitResolver
         }
 
         InputStream resource = getClass().getClassLoader().getResourceAsStream( resourceName );
-        LSInput input = ( (DOMImplementationLS) XSImplementationImpl.getDOMImplementation() ).createLSInput();
+        LSInput input;
+        try
+        {
+            input = getLSInput();
+        }
+        catch( Exception e )
+        {
+            throw new UnsupportedOperationException( "Internal problem. Please report to qi4j-dev@lists.ops4j.org", e  );
+        }
         input.setBaseURI( baseURI );
         input.setByteStream( resource );
         input.setPublicId( publicId );
         input.setSystemId( systemId );
         return input;
     }
+
+    private LSInput getLSInput() throws Exception {
+        DOMImplementationLS impl;
+        DOMImplementation docImpl = builder.getDOMImplementation();
+        // Try to get the DOMImplementation from doc first before
+        // defaulting to the sun implementation.
+        if (docImpl != null && docImpl.hasFeature("LS", "3.0")) {
+            impl = (DOMImplementationLS)docImpl.getFeature("LS", "3.0");
+        } else {
+            DOMImplementationRegistry registry = DOMImplementationRegistry.newInstance();
+            impl = (DOMImplementationLS)registry.getDOMImplementation("LS");
+            if (impl == null) {
+                System.setProperty(DOMImplementationRegistry.PROPERTY,
+                                   "com.sun.org.apache.xerces.internal.dom.DOMImplementationSourceImpl");
+                registry = DOMImplementationRegistry.newInstance();
+                impl = (DOMImplementationLS)registry.getDOMImplementation("LS");
+            }
+        }
+        return impl.createLSInput();
+    }
+
+
 }
