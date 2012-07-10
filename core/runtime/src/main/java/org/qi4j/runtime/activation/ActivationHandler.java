@@ -18,8 +18,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-
-import org.qi4j.api.event.ActivationEventListener;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.PassivationException;
 import org.qi4j.api.service.ServiceReference;
@@ -169,16 +167,6 @@ public final class ActivationHandler
         public Iterable<Class<?>> types()
         {
             return delegate.types();
-        }
-
-        public void registerActivationEventListener( ActivationEventListener listener )
-        {
-            delegate.registerActivationEventListener( listener );
-        }
-
-        public void deregisterActivationEventListener( ActivationEventListener listener )
-        {
-            delegate.deregisterActivationEventListener( listener );
         }
 
         public <T> T metaInfo( Class<T> infoType )

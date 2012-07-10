@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +15,13 @@
 
 package org.qi4j.api.structure;
 
-import org.qi4j.api.event.ActivationEventListenerRegistration;
 import org.qi4j.api.service.Activatable;
 
 /**
  * The Layer represents a single layer in a Qi4j application.
  */
 public interface Layer
-    extends ActivationEventListenerRegistration, Activatable, MetaInfoHolder
+    extends Activatable, MetaInfoHolder
 {
     String name();
 }

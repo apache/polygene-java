@@ -12,14 +12,11 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.runtime.structure;
 
 import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.api.common.MetaInfo;
-import org.qi4j.api.event.ActivationEvent;
-import org.qi4j.api.event.ActivationEventListener;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.ApplicationDescriptor;
 import org.qi4j.api.structure.Layer;
@@ -38,7 +35,6 @@ public class ApplicationInstance
     private MetaInfo instanceMetaInfo;
     private final List<LayerInstance> layerInstances = new ArrayList<LayerInstance>();
     private final ActivationHandler activationHandler = new ActivationHandler();
-    private final ActivationEventListenerSupport eventListenerSupport = new ActivationEventListenerSupport();
 
     public ApplicationInstance( ApplicationModel model, Qi4jRuntime runtime, MetaInfo instanceMetaInfo )
     {
@@ -50,7 +46,6 @@ public class ApplicationInstance
     void addLayer( LayerInstance layer )
     {
         layerInstances.add( layer );
-        layer.registerActivationEventListener( eventListenerSupport );
     }
 
     public ApplicationDescriptor descriptor()
@@ -114,32 +109,16 @@ public class ApplicationInstance
         throw new IllegalArgumentException( "No such layer:" + layerName );
     }
 
-    @Override
-    public void registerActivationEventListener( ActivationEventListener listener )
-    {
-        eventListenerSupport.registerActivationEventListener( listener );
-    }
-
-    @Override
-    public void deregisterActivationEventListener( ActivationEventListener listener )
-    {
-        eventListenerSupport.deregisterActivationEventListener( listener );
-    }
-
     public void activate()
         throws Exception
     {
-        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATING ) );
         activationHandler.activate( this, applicationModel.newActivatorsInstance(), layerInstances );
-        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATED ) );
     }
 
     public void passivate()
         throws Exception
     {
-        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATING ) );
         activationHandler.passivate( this );
-        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATED ) );
     }
 
     @Override

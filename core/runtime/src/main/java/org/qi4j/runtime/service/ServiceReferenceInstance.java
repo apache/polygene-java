@@ -12,14 +12,11 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.runtime.service;
 
 import java.lang.reflect.Method;
 import org.qi4j.api.composite.CompositeDescriptor;
 import org.qi4j.api.composite.CompositeInstance;
-import org.qi4j.api.event.ActivationEvent;
-import org.qi4j.api.event.ActivationEventListener;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceDescriptor;
@@ -28,7 +25,6 @@ import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.service.ServiceUnavailableException;
 import org.qi4j.api.structure.Module;
 import org.qi4j.runtime.activation.ActivationHandler;
-import org.qi4j.runtime.structure.ActivationEventListenerSupport;
 import org.qi4j.runtime.structure.ModuleInstance;
 
 /**
@@ -46,7 +42,6 @@ public final class ServiceReferenceInstance<T>
     private final ModuleInstance module;
     private final ServiceModel serviceModel;
     private final ActivationHandler activationHandler = new ActivationHandler();
-    private final ActivationEventListenerSupport eventListenerSupport = new ActivationEventListenerSupport();
     private boolean active = false;
 
     public ServiceReferenceInstance( ServiceModel serviceModel, ModuleInstance module )
@@ -93,27 +88,13 @@ public final class ServiceReferenceInstance<T>
         return module;
     }
 
-    @Override
-    public void registerActivationEventListener( ActivationEventListener listener )
-    {
-        eventListenerSupport.registerActivationEventListener( listener );
-    }
-
-    @Override
-    public void deregisterActivationEventListener( ActivationEventListener listener )
-    {
-        eventListenerSupport.deregisterActivationEventListener( listener );
-    }
-
     public void activate()
         throws Exception
     {
-        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATING ) );
         if( serviceModel.isInstantiateOnStartup() )
         {
             getInstance();
         }
-        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATED ) );
     }
 
     public void passivate()
@@ -121,7 +102,6 @@ public final class ServiceReferenceInstance<T>
     {
         if( instance != null )
         {
-            eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATING ) );
             try {
                 activationHandler.passivate( this, new Runnable()
                 {
@@ -136,7 +116,6 @@ public final class ServiceReferenceInstance<T>
                 instance = null;
                 active = false;
             }
-            eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATED ) );
         }
     }
 

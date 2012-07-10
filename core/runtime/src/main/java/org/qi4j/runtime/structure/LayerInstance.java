@@ -12,14 +12,11 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.runtime.structure;
 
 import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.event.ActivationEvent;
-import org.qi4j.api.event.ActivationEventListener;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Layer;
 import org.qi4j.api.structure.Module;
@@ -42,7 +39,6 @@ public class LayerInstance
     private final List<ModuleInstance> moduleInstances = new ArrayList<ModuleInstance>();
     private final ActivationHandler activationHandler = new ActivationHandler();
     private final UsedLayersInstance usedLayersInstance;
-    private final ActivationEventListenerSupport eventListenerSupport = new ActivationEventListenerSupport();
 
     public LayerInstance( LayerModel model,
                           ApplicationInstance applicationInstance,
@@ -57,7 +53,6 @@ public class LayerInstance
     void addModule( ModuleInstance module )
     {
         moduleInstances.add( module );
-        module.registerActivationEventListener( eventListenerSupport );
     }
 
     public LayerModel model()
@@ -78,18 +73,6 @@ public class LayerInstance
     public <T> T metaInfo( Class<T> infoType )
     {
         return layerModel.metaInfo( infoType );
-    }
-
-    @Override
-    public void registerActivationEventListener( ActivationEventListener listener )
-    {
-        eventListenerSupport.registerActivationEventListener( listener );
-    }
-
-    @Override
-    public void deregisterActivationEventListener( ActivationEventListener listener )
-    {
-        eventListenerSupport.deregisterActivationEventListener( listener );
     }
 
     public List<Module> modules()
@@ -183,17 +166,13 @@ public class LayerInstance
     public void activate()
         throws Exception
     {
-        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATING ) );
         activationHandler.activate( this, layerModel.newActivatorsInstance(), moduleInstances );
-        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATED ) );
     }
 
     public void passivate()
         throws Exception
     {
-        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATING ) );
         activationHandler.passivate( this );
-        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATED ) );
     }
 
     @Override

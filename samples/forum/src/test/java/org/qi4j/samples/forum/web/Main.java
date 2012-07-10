@@ -1,7 +1,5 @@
 package org.qi4j.samples.forum.web;
 
-import org.qi4j.api.event.ActivationEvent;
-import org.qi4j.api.event.ActivationEventListener;
 import org.qi4j.api.structure.Application;
 import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.library.rest.server.api.ContextRestlet;
@@ -26,15 +24,6 @@ public class Main
         Server server = new Server( Protocol.HTTP, 8888 );
 
         Application app = is.newApplication( new ForumAssembler(), new MetadataService() );
-
-        app.registerActivationEventListener( new ActivationEventListener()
-        {
-            @Override
-            public void onEvent( ActivationEvent event )
-            {
-                System.out.println( event );
-            }
-        } );
 
         app.activate();
 

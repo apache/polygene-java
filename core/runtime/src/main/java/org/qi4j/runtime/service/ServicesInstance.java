@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,27 +20,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.event.ActivationEventListener;
-import org.qi4j.api.event.ActivationEventListenerRegistration;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specification;
 import org.qi4j.runtime.activation.ActivationHandler;
 import org.qi4j.runtime.activation.ActivatorsInstance;
-import org.qi4j.runtime.structure.ActivationEventListenerSupport;
 
 /**
  * JAVADOC
  */
 public class ServicesInstance
-    implements Activatable, ActivationEventListenerRegistration
+    implements Activatable
 {
     private final ServicesModel servicesModel;
     private final List<ServiceReference> serviceReferences;
     private final ActivationHandler activationHandler = new ActivationHandler();
     private final Map<String, ServiceReference> mapIdentityServiceReference = new HashMap<String, ServiceReference>();
-    private final ActivationEventListenerSupport eventListenerSupport = new ActivationEventListenerSupport();
 
     public ServicesInstance( ServicesModel servicesModel, List<ServiceReference> serviceReferences )
     {
@@ -49,7 +46,6 @@ public class ServicesInstance
         for( ServiceReference serviceReference : serviceReferences )
         {
             mapIdentityServiceReference.put( serviceReference.identity(), serviceReference );
-            serviceReference.registerActivationEventListener( eventListenerSupport );
         }
     }
 
@@ -91,18 +87,6 @@ public class ServicesInstance
     public <T> ServiceReference<T> getServiceWithIdentity( String serviceIdentity )
     {
         return mapIdentityServiceReference.get( serviceIdentity );
-    }
-
-    @Override
-    public void registerActivationEventListener( ActivationEventListener listener )
-    {
-        eventListenerSupport.registerActivationEventListener( listener );
-    }
-
-    @Override
-    public void deregisterActivationEventListener( ActivationEventListener listener )
-    {
-        eventListenerSupport.deregisterActivationEventListener( listener );
     }
 
     public Iterable<ServiceReference> visibleServices( final Visibility visibility )

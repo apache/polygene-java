@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +15,6 @@
 
 package org.qi4j.api.service;
 
-import org.qi4j.api.event.ActivationEventListenerRegistration;
 import org.qi4j.api.structure.MetaInfoHolder;
 import org.qi4j.api.type.HasTypes;
 
@@ -23,7 +23,7 @@ import org.qi4j.api.type.HasTypes;
  * You can also access the actual service through get(), that can then be invoked.
  */
 public interface ServiceReference<T>
-    extends HasTypes, ActivationEventListenerRegistration, MetaInfoHolder
+    extends HasTypes, MetaInfoHolder
 {
     String identity();
 
