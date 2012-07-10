@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +16,12 @@
 package org.qi4j.runtime.structure;
 
 import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.structure.Module;
 import org.qi4j.api.structure.ModuleDescriptor;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.functional.VisitableHierarchy;
+import org.qi4j.runtime.activation.ActivatorsInstance;
+import org.qi4j.runtime.activation.ActivatorsModel;
 import org.qi4j.runtime.composite.TransientsModel;
 import org.qi4j.runtime.entity.EntitiesModel;
 import org.qi4j.runtime.object.ObjectsModel;
@@ -31,6 +35,7 @@ import org.qi4j.runtime.value.ValuesModel;
 public class ModuleModel
     implements ModuleDescriptor, VisitableHierarchy<Object, Object>
 {
+    private final ActivatorsModel<Module> activatorsModel;
     private final TransientsModel transientsModel;
     private final EntitiesModel entitiesModel;
     private final ObjectsModel objectsModel;
@@ -42,7 +47,9 @@ public class ModuleModel
     private MetaInfo metaInfo;
 
     public ModuleModel( String name,
-                        MetaInfo metaInfo, TransientsModel transientsModel,
+                        MetaInfo metaInfo,
+                        ActivatorsModel<Module> activatorsModel,
+                        TransientsModel transientsModel,
                         EntitiesModel entitiesModel,
                         ObjectsModel objectsModel,
                         ValuesModel valuesModel,
@@ -52,6 +59,7 @@ public class ModuleModel
     {
         this.name = name;
         this.metaInfo = metaInfo;
+        this.activatorsModel = activatorsModel;
         this.transientsModel = transientsModel;
         this.entitiesModel = entitiesModel;
         this.objectsModel = objectsModel;
@@ -68,6 +76,11 @@ public class ModuleModel
     public <T> T metaInfo( Class<T> infoType )
     {
         return metaInfo.get( infoType );
+    }
+    
+    public ActivatorsInstance<Module> newActivatorsInstance() throws Exception
+    {
+        return new ActivatorsInstance<Module>( activatorsModel.newInstances() );
     }
 
     @Override

@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +25,7 @@ import org.qi4j.api.structure.ApplicationDescriptor;
 import org.qi4j.api.structure.Layer;
 import org.qi4j.api.structure.Module;
 import org.qi4j.bootstrap.Qi4jRuntime;
-import org.qi4j.runtime.service.Activator;
+import org.qi4j.runtime.activation.ActivationHandler;
 
 /**
  * Instance of a Qi4j application. Contains a list of layers which are managed by this application
@@ -32,19 +33,18 @@ import org.qi4j.runtime.service.Activator;
 public class ApplicationInstance
     implements Application
 {
-    private final org.qi4j.runtime.structure.ApplicationModel model;
+    private final org.qi4j.runtime.structure.ApplicationModel applicationModel;
     private final Qi4jRuntime runtime;
     private MetaInfo instanceMetaInfo;
     private final List<LayerInstance> layerInstances = new ArrayList<LayerInstance>();
-    private final Activator layerActivator;
+    private final ActivationHandler activationHandler = new ActivationHandler();
     private final ActivationEventListenerSupport eventListenerSupport = new ActivationEventListenerSupport();
 
     public ApplicationInstance( ApplicationModel model, Qi4jRuntime runtime, MetaInfo instanceMetaInfo )
     {
-        this.model = model;
+        this.applicationModel = model;
         this.runtime = runtime;
         this.instanceMetaInfo = instanceMetaInfo;
-        layerActivator = new Activator();
     }
 
     void addLayer( LayerInstance layer )
@@ -55,7 +55,7 @@ public class ApplicationInstance
 
     public ApplicationDescriptor descriptor()
     {
-        return model;
+        return applicationModel;
     }
 
     public Qi4jRuntime runtime()
@@ -65,17 +65,17 @@ public class ApplicationInstance
 
     public String name()
     {
-        return model.name();
+        return applicationModel.name();
     }
 
     public String version()
     {
-        return model.version();
+        return applicationModel.version();
     }
 
     public Mode mode()
     {
-        return model.mode();
+        return applicationModel.mode();
     }
 
     public <T> T metaInfo( Class<T> infoType )
@@ -130,7 +130,7 @@ public class ApplicationInstance
         throws Exception
     {
         eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATING ) );
-        layerActivator.activate( layerInstances );
+        activationHandler.activate( this, applicationModel.newActivatorsInstance(), layerInstances );
         eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATED ) );
     }
 
@@ -138,7 +138,7 @@ public class ApplicationInstance
         throws Exception
     {
         eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATING ) );
-        layerActivator.passivate();
+        activationHandler.passivate( this );
         eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATED ) );
     }
 

@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +27,7 @@ import org.qi4j.api.service.ServiceImporterException;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.service.ServiceUnavailableException;
 import org.qi4j.api.structure.Module;
+import org.qi4j.runtime.activation.ActivationHandler;
 import org.qi4j.runtime.structure.ActivationEventListenerSupport;
 import org.qi4j.runtime.structure.ModuleInstance;
 
@@ -43,8 +45,9 @@ public final class ServiceReferenceInstance<T>
     private final T serviceProxy;
     private final ModuleInstance module;
     private final ServiceModel serviceModel;
-    private final Activator activator = new Activator();
+    private final ActivationHandler activationHandler = new ActivationHandler();
     private final ActivationEventListenerSupport eventListenerSupport = new ActivationEventListenerSupport();
+    private boolean active = false;
 
     public ServiceReferenceInstance( ServiceModel serviceModel, ModuleInstance module )
     {
@@ -77,7 +80,7 @@ public final class ServiceReferenceInstance<T>
 
     public boolean isActive()
     {
-        return instance != null;
+        return active;
     }
 
     public boolean isAvailable()
@@ -116,13 +119,25 @@ public final class ServiceReferenceInstance<T>
     public void passivate()
         throws Exception
     {
-        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATING ) );
         if( instance != null )
         {
-            activator.passivate();
-            instance = null;
+            eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATING ) );
+            try {
+                activationHandler.passivate( this, new Runnable()
+                {
+
+                    public void run()
+                    {
+                        active = false;
+                    }
+
+                } );
+            } finally {
+                instance = null;
+                active = false;
+            }
+            eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATED ) );
         }
-        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATED ) );
     }
 
     private ServiceInstance getInstance()
@@ -139,7 +154,15 @@ public final class ServiceReferenceInstance<T>
 
                     try
                     {
-                        activator.activate( instance );
+                        activationHandler.activate( this, serviceModel.newActivatorsInstance(), instance, new Runnable()
+                        {
+
+                            public void run()
+                            {
+                                active = true;
+                            }
+
+                        } );
                     }
                     catch( Exception e )
                     {

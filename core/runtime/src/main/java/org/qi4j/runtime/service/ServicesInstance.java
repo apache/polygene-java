@@ -14,6 +14,7 @@
 
 package org.qi4j.runtime.service;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,8 @@ import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specification;
+import org.qi4j.runtime.activation.ActivationHandler;
+import org.qi4j.runtime.activation.ActivatorsInstance;
 import org.qi4j.runtime.structure.ActivationEventListenerSupport;
 
 /**
@@ -34,7 +37,7 @@ public class ServicesInstance
 {
     private final ServicesModel servicesModel;
     private final List<ServiceReference> serviceReferences;
-    private final Activator activator;
+    private final ActivationHandler activationHandler = new ActivationHandler();
     private final Map<String, ServiceReference> mapIdentityServiceReference = new HashMap<String, ServiceReference>();
     private final ActivationEventListenerSupport eventListenerSupport = new ActivationEventListenerSupport();
 
@@ -42,13 +45,12 @@ public class ServicesInstance
     {
         this.servicesModel = servicesModel;
         this.serviceReferences = serviceReferences;
-
+        
         for( ServiceReference serviceReference : serviceReferences )
         {
             mapIdentityServiceReference.put( serviceReference.identity(), serviceReference );
             serviceReference.registerActivationEventListener( eventListenerSupport );
         }
-        activator = new Activator();
     }
 
     public void activate()
@@ -74,8 +76,8 @@ public class ServicesInstance
                         ( (Activatable) serviceReference ).passivate();
                     }
                 };
-
-                activator.activate( eventActivatable );
+ 
+                activationHandler.activate( this, new ActivatorsInstance( Collections.emptyList() ), eventActivatable );
             }
         }
     }
@@ -83,7 +85,7 @@ public class ServicesInstance
     public void passivate()
         throws Exception
     {
-        activator.passivate();
+        activationHandler.passivate( this );
     }
 
     public <T> ServiceReference<T> getServiceWithIdentity( String serviceIdentity )

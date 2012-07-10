@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright 2012, Paul Merlin.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,26 +15,34 @@
 
 package org.qi4j.runtime.service;
 
+import org.qi4j.api.event.ActivationEvent;
 import org.qi4j.api.event.ActivationEventListener;
+import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceImporterException;
 import org.qi4j.api.service.ServiceReference;
+import org.qi4j.api.service.ServiceUnavailableException;
 import org.qi4j.api.structure.Module;
+import org.qi4j.runtime.activation.ActivationHandler;
+import org.qi4j.runtime.structure.ActivationEventListenerSupport;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implementation of ServiceReference. This manages the reference to the imported service
+ * Implementation of ServiceReference. This manages the reference to the imported service.
  * <p/>
  * Whenever the service is requested it is returned directly to the client. That means that
  * to handle service passivation and unavailability correctly, any proxying must be done in the
  * service importer.
  */
 public final class ImportedServiceReferenceInstance<T>
-    implements ServiceReference<T>
+    implements ServiceReference<T>, Activatable
 {
     private volatile ImportedServiceInstance<T> serviceInstance;
     private T instance;
     private final Module module;
     private final ImportedServiceModel serviceModel;
+    private final ActivationHandler activationHandler = new ActivationHandler();
+    private final ActivationEventListenerSupport eventListenerSupport = new ActivationEventListenerSupport();
+    private boolean active = false;
 
     public ImportedServiceReferenceInstance( ImportedServiceModel serviceModel, Module module )
     {
@@ -70,27 +79,53 @@ public final class ImportedServiceReferenceInstance<T>
     @Override
     public void registerActivationEventListener( ActivationEventListener listener )
     {
-        // TODO What to do here?
+        eventListenerSupport.registerActivationEventListener( listener );
     }
 
     @Override
     public void deregisterActivationEventListener( ActivationEventListener listener )
     {
-        // TODO What to do here?
+        eventListenerSupport.deregisterActivationEventListener( listener );
+    }
+
+    public void activate()
+        throws Exception
+    {
+        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATING ) );
+        if( serviceModel.isImportOnStartup() )
+        {
+            getInstance();
+        }
+        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATED ) );
+    }
+
+    public void passivate()
+            throws Exception
+    {
+        if( serviceInstance != null )
+        {
+            eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATING ) );
+            try {
+                activationHandler.passivate( this, new Runnable()
+                {
+
+                    public void run()
+                    {
+                        active = false;
+                    }
+
+                } );
+            } finally {
+                serviceInstance = null;
+                active = false;
+            }
+            eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATED ) );
+        }
     }
 
     public boolean isActive()
     {
-        try
-        {
-            getInstance();
-            return serviceInstance.isActive();
-        }
-        catch( ServiceImporterException e )
-        {
-            LoggerFactory.getLogger( getClass() ).warn( "Imported service throwed an exception on isActive(), will return false.", e );
-            return false;
-        }
+        return active;
     }
 
     public boolean isAvailable()
@@ -111,7 +146,7 @@ public final class ImportedServiceReferenceInstance<T>
     {
         return module;
     }
-
+    
     private T getInstance()
         throws ServiceImporterException
     {
@@ -124,6 +159,24 @@ public final class ImportedServiceReferenceInstance<T>
                 {
                     serviceInstance = (ImportedServiceInstance<T>) serviceModel.<T>importInstance( module );
                     instance = serviceInstance.instance();
+
+                    try
+                    {
+                        activationHandler.activate( this, serviceModel.newActivatorsInstance(), serviceInstance, new Runnable()
+                        {
+
+                            public void run()
+                            {
+                                active = true;
+                            }
+
+                        } );
+                    }
+                    catch( Exception e )
+                    {
+                        serviceInstance = null;
+                        throw new ServiceUnavailableException( "Could not activate service " + serviceModel.identity(), e );
+                    }
                 }
             }
         }

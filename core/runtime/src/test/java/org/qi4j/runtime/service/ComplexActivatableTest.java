@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2010, Niclas Hedhman. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.qi4j.runtime.service;
 
 import org.junit.Test;
+import org.qi4j.api.activation.ActivatorAdapter;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Initializable;
 import org.qi4j.api.mixin.InitializationException;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.bootstrap.AssemblyException;
@@ -31,13 +31,13 @@ import org.qi4j.test.AbstractQi4jTest;
 import static org.junit.Assert.assertEquals;
 
 public class ComplexActivatableTest
-    extends AbstractQi4jTest
+        extends AbstractQi4jTest
 {
 
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
+            throws AssemblyException
     {
-        module.services( SuperType.class ).instantiateOnStartup();
+        module.services( SuperType.class ).withActivators( TestActivator.class ).instantiateOnStartup();
     }
 
     @Test
@@ -47,47 +47,56 @@ public class ComplexActivatableTest
         assertEquals( "Hello, World", reference.get().sayHello() );
     }
 
-    @Mixins( { DomainType.class, ActivationMixin.class } )
+    @Mixins( { DomainType.class, InitializationMixin.class } )
     public interface SuperType
-        extends Activatable, ServiceComposite
+            extends ServiceComposite, Initializable
     {
+
         String sayHello();
 
         Property<String> greeting();
 
         Property<String> recepient();
+
     }
 
     public abstract static class DomainType
-        implements SuperType, Activatable
+            implements SuperType
     {
+
         public String sayHello()
         {
             return greeting().get() + ", " + recepient().get();
         }
+
     }
 
-    public static class ActivationMixin
-        implements Activatable, Initializable
+    public static class InitializationMixin
+            implements Initializable
     {
+
         @This
         private SuperType me;
 
-        public void activate()
-            throws Exception
+        public void initialize()
+                throws InitializationException
         {
             me.greeting().set( "Hello" );
         }
 
-        public void passivate()
-            throws Exception
+    }
+
+    public static class TestActivator
+            extends ActivatorAdapter<ServiceReference<SuperType>>
+    {
+
+        @Override
+        public void afterActivation( ServiceReference<SuperType> activated )
+                throws Exception
         {
+            activated.get().recepient().set( "World" );
         }
 
-        public void initialize()
-            throws InitializationException
-        {
-            me.recepient().set( "World" );
-        }
     }
+
 }

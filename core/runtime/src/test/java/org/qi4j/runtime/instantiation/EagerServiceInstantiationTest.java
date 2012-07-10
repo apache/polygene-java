@@ -1,5 +1,6 @@
 /*
  * Copyright 2009 Niclas Hedhman.
+ * Copyright 2012 Paul Merlin.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -21,7 +22,6 @@ package org.qi4j.runtime.instantiation;
 import org.junit.Test;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.bootstrap.AssemblyException;
@@ -60,25 +60,16 @@ public class EagerServiceInstantiationTest
     }
 
     public static class MyMixin
-        implements My, Activatable
+        implements My
     {
-        @Uses
-        ServiceDescriptor descriptor;
-
-        public MyMixin()
-        {
-            System.out.println( "Constructor" );
-        }
-
-        public void activate()
-            throws Exception
+        public MyMixin( @Uses ServiceDescriptor descriptor )
         {
             descriptor.metaInfo( TestInfo.class ).test = "123";
         }
 
-        public void passivate()
-            throws Exception
+        public MyMixin()
         {
+            System.out.println( "Constructor" );
         }
 
         public void doSomething()

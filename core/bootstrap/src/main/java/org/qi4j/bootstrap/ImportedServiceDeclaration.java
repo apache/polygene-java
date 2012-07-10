@@ -1,5 +1,6 @@
 /*
  * Copyright 2008 Niclas Hedhman. All rights Reserved.
+ * Copyright 2012, Paul Merlin.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -18,6 +19,7 @@
 
 package org.qi4j.bootstrap;
 
+import org.qi4j.api.activation.Activator;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.api.service.importer.InstanceImporter;
@@ -46,4 +48,8 @@ public interface ImportedServiceDeclaration
     ImportedServiceDeclaration taggedWith( String... tags );
 
     ImportedServiceDeclaration setMetaInfo( Object serviceAttribute );
+    
+    ImportedServiceDeclaration importOnStartup();
+
+    ImportedServiceDeclaration withActivators( Class<? extends Activator<?>>... activators );
 }

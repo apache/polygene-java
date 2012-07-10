@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2008-2011, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,6 +45,7 @@ import org.qi4j.api.util.Classes;
 import org.qi4j.api.util.NullArgumentException;
 import org.qi4j.api.value.*;
 import org.qi4j.functional.*;
+import org.qi4j.runtime.activation.ActivationHandler;
 import org.qi4j.runtime.association.*;
 import org.qi4j.runtime.composite.*;
 import org.qi4j.runtime.entity.EntitiesModel;
@@ -82,6 +84,7 @@ import static org.qi4j.functional.Iterables.*;
 public class ModuleInstance
     implements Module, Activatable
 {
+    private final ActivationHandler activationHandler = new ActivationHandler();
     private final ModuleModel moduleModel;
     private final LayerInstance layerInstance;
     private final TransientsModel transients;
@@ -252,7 +255,7 @@ public class ModuleInstance
         throws Exception
     {
         eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATING ) );
-        services.activate();
+        activationHandler.activate( this, moduleModel.newActivatorsInstance(), services );
         eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATED ) );
     }
 
@@ -260,7 +263,7 @@ public class ModuleInstance
         throws Exception
     {
         eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATING ) );
-        services.passivate();
+        activationHandler.passivate( this );
         eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATED ) );
     }
 

@@ -54,7 +54,7 @@ import static org.qi4j.functional.Iterables.toArray;
 public class PluginTest
 {
     @Test
-    @Ignore( "Must fix the TODOs below." )
+    @Ignore( "Must fix the TODOs below. This example relied on ability to set Service MetaInfo at runtime, it seems it's not possible anymore." )
     public void testPlugins()
         throws Exception
     {

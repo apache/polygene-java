@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,9 +23,12 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.qi4j.api.activation.Activator;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.ServiceImporter;
+import org.qi4j.api.structure.Layer;
 import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.bootstrap.AssemblyVisitor;
 import org.qi4j.bootstrap.EntityAssembly;
@@ -57,6 +61,7 @@ public final class LayerAssemblyImpl
 
     private String name;
     private MetaInfo metaInfo = new MetaInfo();
+    private List<Class<? extends Activator<Layer>>> activators = new ArrayList<Class<? extends Activator<Layer>>>();
 
     public LayerAssemblyImpl( ApplicationAssembly applicationAssembly, String name )
     {
@@ -103,6 +108,12 @@ public final class LayerAssemblyImpl
         throws IllegalArgumentException
     {
         uses.addAll( Arrays.asList( layerAssembly ) );
+        return this;
+    }
+
+    public LayerAssembly withActivators( Class<? extends Activator<Layer>>... activators )
+    {
+        this.activators.addAll( Arrays.asList( activators ) );
         return this;
     }
 
@@ -258,6 +269,16 @@ public final class LayerAssemblyImpl
                 for( ServiceDeclaration declaration : declarations )
                 {
                     declaration.withTypes( types );
+                }
+                return this;
+            }
+
+            @Override
+            public ServiceDeclaration withActivators( Class<? extends Activator<?>>... activators )
+            {
+                for( ServiceDeclaration declaration : declarations )
+                {
+                    declaration.withActivators( activators );
                 }
                 return this;
             }
@@ -487,6 +508,17 @@ public final class LayerAssemblyImpl
         }
         return new ImportedServiceDeclaration()
         {
+
+            @Override
+            public ImportedServiceDeclaration importOnStartup()
+            {
+                for( ImportedServiceDeclaration declaration : declarations )
+                {
+                    declaration.importOnStartup();
+                }
+                return this;
+            }
+            
             @Override
             public ImportedServiceDeclaration visibleIn( Visibility visibility )
             {
@@ -494,7 +526,6 @@ public final class LayerAssemblyImpl
                 {
                     declaration.visibleIn( visibility );
                 }
-
                 return this;
             }
 
@@ -537,6 +568,17 @@ public final class LayerAssemblyImpl
                 }
                 return this;
             }
+
+            @Override
+            public ImportedServiceDeclaration withActivators( Class<? extends Activator<?>>... activators )
+            {
+                for( ImportedServiceDeclaration declaration : declarations )
+                {
+                    declaration.withActivators( activators );
+                }
+                return this;
+            }
+            
         };
     }
 
@@ -558,6 +600,11 @@ public final class LayerAssemblyImpl
     public String name()
     {
         return name;
+    }
+
+    public List<Class<? extends Activator<Layer>>> activators()
+    {
+        return activators;
     }
 
     @Override

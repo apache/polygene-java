@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +17,11 @@ package org.qi4j.runtime.service;
 
 import org.junit.Test;
 import org.qi4j.api.injection.scope.Service;
-import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.bootstrap.ServiceAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
-import org.qi4j.functional.Specification;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -35,7 +32,7 @@ import static org.junit.Assert.assertTrue;
 public class ActivatableServiceTest
 {
     @Service
-    ServiceReference<Activatable> service;
+    ServiceReference<ActivatableComposite> service;
 
     public static boolean isActive;
 
@@ -49,23 +46,7 @@ public class ActivatableServiceTest
                 throws AssemblyException
             {
                 module.objects( ActivatableServiceTest.class );
-                module.services( ActivatableComposite.class );
-
-                module.services( new Specification<ServiceAssembly>()
-                {
-                    @Override
-                    public boolean satisfiedBy( ServiceAssembly item )
-                    {
-                        for( Class<?> type : item.types() )
-                        {
-                            if( Activatable.class.isAssignableFrom( type ) )
-                            {
-                                return true;
-                            }
-                        }
-                        return false;
-                    }
-                } ).instantiateOnStartup();
+                module.services( ActivatableComposite.class ).withActivators( TestActivator.class).instantiateOnStartup();
             }
         };
 
@@ -84,30 +65,31 @@ public class ActivatableServiceTest
         assertFalse( isActive );
     }
 
-    @Mixins( ActivatableMixin.class )
     public static interface ActivatableComposite
-        extends Activatable, ServiceComposite
+        extends ServiceComposite
     {
     }
 
-    public static class ActivatableMixin
-        implements Activatable
+    public static class TestActivator
+            extends org.qi4j.api.activation.ActivatorAdapter<Object>
     {
-        public void activate()
-            throws Exception
+
+        @Override
+        public void afterActivation( Object activated )
         {
             isActive = true;
         }
 
-        public void passivate()
-            throws Exception
+        @Override
+        public void afterPassivation( Object passivated )
+                throws Exception
         {
-            if( !isActive )
-            {
+            if ( !isActive ) {
                 throw new Exception( "Not active!" );
             }
 
             isActive = false;
         }
+
     }
 }

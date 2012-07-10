@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright 2012, Paul Merlin.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +29,8 @@ import org.qi4j.api.property.Property;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.util.Classes;
 import org.qi4j.functional.Specifications;
+import org.qi4j.runtime.activation.ActivatorsInstance;
+import org.qi4j.runtime.activation.ActivatorsModel;
 import org.qi4j.runtime.composite.CompositeMethodsModel;
 import org.qi4j.runtime.composite.CompositeModel;
 import org.qi4j.runtime.composite.MixinModel;
@@ -67,11 +70,13 @@ public final class ServiceModel extends CompositeModel
 
     private final String identity;
     private final boolean instantiateOnStartup;
+    private final ActivatorsModel<?> activatorsModel;
     private final Class configurationType;
 
     public ServiceModel( Iterable<Class<?>> types,
                          Visibility visibility,
                          MetaInfo metaInfo,
+                         ActivatorsModel<?> activatorsModel,
                          MixinsModel mixinsModel,
                          StateModel stateModel,
                          CompositeMethodsModel compositeMethodsModel,
@@ -83,6 +88,7 @@ public final class ServiceModel extends CompositeModel
 
         this.identity = identity;
         this.instantiateOnStartup = instantiateOnStartup;
+        this.activatorsModel = activatorsModel;
 
         // Calculate configuration type
         this.configurationType = calculateConfigurationType();
@@ -96,6 +102,11 @@ public final class ServiceModel extends CompositeModel
     public String identity()
     {
         return identity;
+    }
+    
+    public ActivatorsInstance<?> newActivatorsInstance() throws Exception
+    {
+        return new ActivatorsInstance( activatorsModel.newInstances() );
     }
 
     public <T> Class<T> configurationType()

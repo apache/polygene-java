@@ -1,5 +1,6 @@
 /*
  * Copyright 2009 Niclas Hedhman.
+ * Copyright 2012 Paul Merlin.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -20,8 +21,8 @@ package org.qi4j.runtime.service;
 
 import java.util.ArrayList;
 import org.junit.Test;
+import org.qi4j.api.activation.ActivatorAdapter;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.PassivationException;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceReference;
@@ -29,6 +30,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -37,15 +39,15 @@ public class PassivationTest
 
     @Test
     public void givenSuccessPassivationWhenPassivatingExpectNoExceptions()
-        throws Exception
+        throws Throwable
     {
         SingletonAssembler assembly = new SingletonAssembler()
         {
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.addServices( SuccessDataService.class );
-                module.addServices( SuccessDataService.class );
+                module.addServices( DataAccessService.class ).withActivators( PassivationSuccessActivator.class );
+                module.addServices( DataAccessService.class ).withActivators( PassivationSuccessActivator.class );
             }
         };
 
@@ -68,19 +70,19 @@ public class PassivationTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.addServices( SuccessDataService.class );
-                module.addServices( SuccessDataService.class );
-                module.addServices( SuccessDataService.class );
-                module.addServices( FailingDataService.class );
-                module.addServices( SuccessDataService.class );
-                module.addServices( SuccessDataService.class );
-                module.addServices( FailingDataService.class );
-                module.addServices( SuccessDataService.class );
-                module.addServices( SuccessDataService.class );
-                module.addServices( FailingDataService.class );
-                module.addServices( SuccessDataService.class );
-                module.addServices( SuccessDataService.class );
-                module.addServices( FailingDataService.class );
+                module.addServices( DataAccessService.class ).withActivators( PassivationSuccessActivator.class );
+                module.addServices( DataAccessService.class ).withActivators( PassivationSuccessActivator.class );
+                module.addServices( DataAccessService.class ).withActivators( PassivationSuccessActivator.class );
+                module.addServices( DataAccessService.class ).withActivators( PassivationFailureActivator.class );
+                module.addServices( DataAccessService.class ).withActivators( PassivationSuccessActivator.class );
+                module.addServices( DataAccessService.class ).withActivators( PassivationSuccessActivator.class );
+                module.addServices( DataAccessService.class ).withActivators( PassivationFailureActivator.class );
+                module.addServices( DataAccessService.class ).withActivators( PassivationSuccessActivator.class );
+                module.addServices( DataAccessService.class ).withActivators( PassivationSuccessActivator.class );
+                module.addServices( DataAccessService.class ).withActivators( PassivationFailureActivator.class );
+                module.addServices( DataAccessService.class ).withActivators( PassivationSuccessActivator.class );
+                module.addServices( DataAccessService.class ).withActivators( PassivationSuccessActivator.class );
+                module.addServices( DataAccessService.class ).withActivators( PassivationFailureActivator.class );
             }
         };
 
@@ -91,12 +93,12 @@ public class PassivationTest
         {
             assertTrue( "Service should not be Active before accessed", !service.isActive() );
             Data data = service.get().data();
-            if( SuccessDataService.class.isInstance( service.get() ) )
+            if( DataAccessService.class.isInstance( service.get() ) )
             {
                 // Collect the expected successes.
                 datas.add( data );
             }
-            assertTrue( data.activated );
+            assertTrue( "Data should indicate that the service is activated", data.activated );
             assertTrue( "Service should be Active after access.", service.isActive() );
         }
         try
@@ -109,10 +111,10 @@ public class PassivationTest
             // Expected
         }
 
-        // Still ensure that all services has been shutdown.
-        for( Data data : datas )
+        // Still ensure that all services have been shutdown.
+        for( ServiceReference<DataAccess> service : iterable )
         {
-            assertTrue( !data.activated );
+            assertFalse( "All services should have been shutdown", service.isActive() );
         }
     }
 
@@ -125,7 +127,7 @@ public class PassivationTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.addServices( FailingDataService.class );
+                module.addServices( DataAccessService.class ).withActivators( PassivationFailureActivator.class );
             }
         };
 
@@ -154,8 +156,8 @@ public class PassivationTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.addServices( FailingDataService.class );
-                module.addServices( FailingDataService.class );
+                module.addServices( DataAccessService.class ).withActivators( PassivationFailureActivator.class );
+                module.addServices( DataAccessService.class ).withActivators( PassivationFailureActivator.class );
             }
         };
 
@@ -177,14 +179,8 @@ public class PassivationTest
         }
     }
 
-    @Mixins( PassivationFailureMixin.class )
-    public interface FailingDataService
-        extends DataAccess, ServiceComposite
-    {
-    }
-
-    @Mixins( PassivationSuccessMixin.class )
-    public interface SuccessDataService
+    @Mixins( DataAccessMixin.class )
+    public interface DataAccessService
         extends DataAccess, ServiceComposite
     {
     }
@@ -194,50 +190,55 @@ public class PassivationTest
         Data data();
     }
 
-    public static class PassivationFailureMixin
-        implements DataAccess, Activatable
+    public static class DataAccessMixin
+        implements DataAccess
     {
         Data data = new Data();
-
-        public void activate()
-            throws Exception
-        {
-            data.activated = true;
-        }
-
-        public void passivate()
-            throws Exception
-        {
-            throw new IllegalStateException();
-        }
 
         public Data data()
         {
             return data;
         }
     }
-
-    public static class PassivationSuccessMixin
-        implements DataAccess, Activatable
+    
+    public static class PassivationSuccessActivator
+            extends ActivatorAdapter<ServiceReference<DataAccess>>
     {
-        Data data = new Data();
 
-        public void activate()
-            throws Exception
+        @Override
+        public void afterActivation( ServiceReference<DataAccess> activated )
+                throws Exception
         {
-            data.activated = true;
+            activated.get().data().activated = true;
         }
 
-        public void passivate()
-            throws Exception
+        @Override
+        public void beforePassivation( ServiceReference<DataAccess> passivating )
+                throws Exception
         {
-            data.activated = false;
+            passivating.get().data().activated = false;
         }
 
-        public Data data()
+    }
+
+    public static class PassivationFailureActivator
+            extends ActivatorAdapter<ServiceReference<DataAccess>>
+    {
+
+        @Override
+        public void afterActivation( ServiceReference<DataAccess> activated )
+                throws Exception
         {
-            return data;
+            activated.get().data().activated = true;
         }
+
+        @Override
+        public void beforePassivation( ServiceReference<DataAccess> passivating )
+                throws Exception
+        {
+            throw new IllegalStateException();
+        }
+
     }
 
     public static class Data

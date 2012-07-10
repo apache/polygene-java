@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +16,11 @@
 package org.qi4j.runtime.bootstrap;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import org.qi4j.api.activation.Activator;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.api.service.qualifier.ServiceTags;
@@ -35,6 +39,15 @@ public final class ImportedServiceDeclarationImpl
         this.assemblies = assemblies;
     }
 
+    public ImportedServiceDeclaration importOnStartup()
+    {
+        for( ImportedServiceAssemblyImpl assembly : assemblies )
+        {
+            assembly.importOnStartup = true;
+        }
+        return this;
+    }
+    
     public ImportedServiceDeclaration visibleIn( Visibility visibility )
     {
         for( ImportedServiceAssemblyImpl assembly : assemblies )
@@ -88,6 +101,14 @@ public final class ImportedServiceDeclarationImpl
         for( ImportedServiceAssemblyImpl assembly : assemblies )
         {
             assembly.metaInfo.set( serviceAttribute );
+        }
+        return this;
+    }
+    
+    public ImportedServiceDeclaration withActivators( Class<? extends Activator<?>>... activators )
+    {
+        for ( ImportedServiceAssemblyImpl serviceAssembly : assemblies ) {
+            serviceAssembly.activators.addAll( Arrays.asList( activators ) );
         }
         return this;
     }

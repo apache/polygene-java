@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +15,13 @@
 
 package org.qi4j.runtime.bootstrap;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import org.qi4j.api.activation.Activator;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.structure.Application;
 import org.qi4j.bootstrap.ApplicationAssembly;
@@ -36,6 +41,7 @@ public final class ApplicationAssemblyImpl
     private String version = "1.0"; // Default version
     private Application.Mode mode;
     private MetaInfo metaInfo = new MetaInfo();
+    private List<Class<? extends Activator<Application>>> activators = new ArrayList<Class<? extends Activator<Application>>>();
 
     public ApplicationAssemblyImpl()
     {
@@ -81,6 +87,12 @@ public final class ApplicationAssemblyImpl
         return this;
     }
 
+    public ApplicationAssembly withActivators( Class<? extends Activator<Application>>... activators )
+    {
+        this.activators.addAll( Arrays.asList( activators ) );
+        return this;
+    }
+    
     public <ThrowableType extends Throwable> void visit( AssemblyVisitor<ThrowableType> visitor )
         throws ThrowableType
     {
@@ -94,6 +106,11 @@ public final class ApplicationAssemblyImpl
     public Collection<LayerAssemblyImpl> layerAssemblies()
     {
         return layerAssemblies.values();
+    }
+
+    public List<Class<? extends Activator<Application>>> activators()
+    {
+        return activators;
     }
 
     public MetaInfo metaInfo()
