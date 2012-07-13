@@ -14,10 +14,6 @@
 
 package org.qi4j.api.service.importer;
 
-/**
- * JAVADOC
- */
-
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.service.ImportedServiceDescriptor;
 import org.qi4j.api.service.ServiceFinder;
@@ -48,11 +44,6 @@ public class ServiceInstanceImporter<T>
         serviceId = importedServiceDescriptor.metaInfo( String.class );
 
         return getServiceImporter().importService( importedServiceDescriptor );
-    }
-
-    public boolean isActive( T o )
-    {
-        return getServiceImporter().isActive( o );
     }
 
     public boolean isAvailable( T instance )

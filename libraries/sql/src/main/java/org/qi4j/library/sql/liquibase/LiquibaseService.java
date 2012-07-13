@@ -61,8 +61,9 @@ public interface LiquibaseService
         public void activate()
                 throws Exception
         {
+            config.refresh();
             boolean enabled = config.configuration().enabled().get();
-            if ( !enabled || !dataSource.isAvailable() ) {
+            if ( !enabled ) {
                 return;
             }
 

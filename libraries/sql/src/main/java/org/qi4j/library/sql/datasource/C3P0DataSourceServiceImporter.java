@@ -17,6 +17,7 @@ package org.qi4j.library.sql.datasource;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import javax.sql.DataSource;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
@@ -33,12 +34,12 @@ import com.mchange.v2.c3p0.DataSources;
  */
 @Mixins( C3P0DataSourceServiceImporter.Mixin.class )
 public interface C3P0DataSourceServiceImporter
-        extends ServiceImporter, Activatable, ServiceComposite
+        extends ServiceImporter<DataSource>, Activatable, ServiceComposite
 {
 
     class Mixin
             extends AbstractDataSourceServiceImporterMixin<ComboPooledDataSource>
-            implements Activatable, ServiceImporter
+            implements Activatable
     {
 
         @Override

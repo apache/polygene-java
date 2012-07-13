@@ -25,9 +25,10 @@ public final class ImportedServiceInstance<T>
     implements Activatable
 {
     private final T instance;
-    private final ServiceImporter importer;
+    private final ServiceImporter<T> importer;
+    private boolean active = false;
 
-    public ImportedServiceInstance( T instance, ServiceImporter importer )
+    public ImportedServiceInstance( T instance, ServiceImporter<T> importer )
     {
         this.importer = importer;
         this.instance = instance;
@@ -45,7 +46,7 @@ public final class ImportedServiceInstance<T>
 
     public boolean isActive()
     {
-        return importer.isActive( instance );
+        return active;
     }
 
     public boolean isAvailable()
@@ -56,12 +57,18 @@ public final class ImportedServiceInstance<T>
     public void activate()
             throws Exception
     {
-        // NOOP See ImportedServiceReferenceInstance
+        if ( instance instanceof Activatable ) {
+            ( ( Activatable ) instance ).activate();
+        }
+        active = true;
     }
 
     public void passivate()
             throws Exception
     {
-        // NOOP See ImportedServiceReferenceInstance
+        if ( instance instanceof Activatable ) {
+            ( ( Activatable ) instance ).passivate();
+        }
+        active = false;
     }
 }

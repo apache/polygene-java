@@ -315,11 +315,6 @@ public class PluginTest
                 } );
         }
 
-        public boolean isActive( Object instance )
-        {
-            return true;
-        }
-
         public boolean isAvailable( Object instance )
         {
             return true;

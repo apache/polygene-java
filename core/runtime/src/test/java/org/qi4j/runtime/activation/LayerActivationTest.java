@@ -15,7 +15,6 @@ package org.qi4j.runtime.activation;
 
 import org.junit.Assert;
 import org.junit.Test;
-
 import org.qi4j.api.activation.Activator;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Layer;
@@ -30,33 +29,7 @@ public class LayerActivationTest
 
     private static int passivationLevel = 0;
 
-    public static class TestedActivator1
-            implements Activator<Layer>
-    {
-
-        public void beforeActivation( Layer activating )
-        {
-            activationLevel++;
-        }
-
-        public void afterActivation( Layer activated )
-        {
-            activationLevel++;
-        }
-
-        public void beforePassivation( Layer passivating )
-        {
-            passivationLevel++;
-        }
-
-        public void afterPassivation( Layer passivated )
-        {
-            passivationLevel++;
-        }
-
-    }
-
-    public static class TestedActivator2
+    public static class TestedActivator
             implements Activator<Layer>
     {
 
@@ -92,7 +65,7 @@ public class LayerActivationTest
             public void assemble( ModuleAssembly module )
                     throws AssemblyException
             {
-                module.layer().withActivators( TestedActivator1.class, TestedActivator2.class );
+                module.layer().withActivators( TestedActivator.class );
             }
 
         };
@@ -100,13 +73,13 @@ public class LayerActivationTest
         Application application = assembly.application();
 
         // Assert activated
-        Assert.assertEquals( "Activation Level", 4, activationLevel );
+        Assert.assertEquals( "Activation Level", 2, activationLevel );
 
         // Passivate
         application.passivate();
 
         // Assert passivated
-        Assert.assertEquals( "Passivation Level", 4, passivationLevel );
+        Assert.assertEquals( "Passivation Level", 2, passivationLevel );
     }
 
 }

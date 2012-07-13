@@ -15,15 +15,17 @@
 
 package org.qi4j.runtime.service;
 
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.event.ActivationEventListener;
+import org.qi4j.api.event.ActivationEventListenerRegistration;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specification;
+import org.qi4j.runtime.activation.ActivationEventListenerSupport;
 import org.qi4j.runtime.activation.ActivationHandler;
 import org.qi4j.runtime.activation.ActivatorsInstance;
 
@@ -31,62 +33,41 @@ import org.qi4j.runtime.activation.ActivatorsInstance;
  * JAVADOC
  */
 public class ServicesInstance
-    implements Activatable
+    implements Activatable, ActivationEventListenerRegistration
 {
     private final ServicesModel servicesModel;
     private final List<ServiceReference> serviceReferences;
-    private final ActivationHandler activationHandler = new ActivationHandler();
-    private final Map<String, ServiceReference> mapIdentityServiceReference = new HashMap<String, ServiceReference>();
+    private final ActivationHandler activationHandler = new ActivationHandler( this );
+    private final ActivationEventListenerSupport eventListenerSupport = new ActivationEventListenerSupport();
 
     public ServicesInstance( ServicesModel servicesModel, List<ServiceReference> serviceReferences )
     {
         this.servicesModel = servicesModel;
         this.serviceReferences = serviceReferences;
-        
         for( ServiceReference serviceReference : serviceReferences )
         {
-            mapIdentityServiceReference.put( serviceReference.identity(), serviceReference );
+            serviceReference.registerActivationEventListener( eventListenerSupport );
         }
     }
 
     public void activate()
         throws Exception
     {
+        List<Activatable> activatableServiceReferences = new LinkedList<Activatable>();
         for( final ServiceReference serviceReference : serviceReferences )
         {
             if( serviceReference instanceof Activatable )
             {
-                Activatable eventActivatable = new Activatable()
-                {
-                    @Override
-                    public void activate()
-                        throws Exception
-                    {
-                        ( (Activatable) serviceReference ).activate();
-                    }
-
-                    @Override
-                    public void passivate()
-                        throws Exception
-                    {
-                        ( (Activatable) serviceReference ).passivate();
-                    }
-                };
- 
-                activationHandler.activate( this, new ActivatorsInstance( Collections.emptyList() ), eventActivatable );
+                activatableServiceReferences.add( ( Activatable ) serviceReference );
             }
         }
+        activationHandler.activate( ActivatorsInstance.EMPTY, activatableServiceReferences );
     }
 
     public void passivate()
         throws Exception
     {
-        activationHandler.passivate( this );
-    }
-
-    public <T> ServiceReference<T> getServiceWithIdentity( String serviceIdentity )
-    {
-        return mapIdentityServiceReference.get( serviceIdentity );
+        activationHandler.passivate();
     }
 
     public Iterable<ServiceReference> visibleServices( final Visibility visibility )
@@ -106,13 +87,23 @@ public class ServicesInstance
     @Override
     public String toString()
     {
-        String str = "{";
-        String sep = "";
+        String str = "Services{";
+        String sep = " ";
         for( ServiceReference serviceReference : serviceReferences )
         {
-            str += sep + serviceReference.identity() + ",active=" + serviceReference.isActive();
+            str += sep + serviceReference.identity() + "(active=" + serviceReference.isActive() + ')';
             sep = ", ";
         }
-        return str += "}";
+        return str += " }";
+    }
+
+    public void registerActivationEventListener( ActivationEventListener listener )
+    {
+        eventListenerSupport.registerActivationEventListener( listener );
+    }
+
+    public void deregisterActivationEventListener( ActivationEventListener listener )
+    {
+        eventListenerSupport.deregisterActivationEventListener( listener );
     }
 }

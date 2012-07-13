@@ -68,11 +68,6 @@ public final class ServiceSelectorImporter<T>
         return service;
     }
 
-    public boolean isActive( T instance )
-    {
-        return true;
-    }
-
     public boolean isAvailable( T instance )
     {
         return !( instance instanceof Availability ) || ( (Availability) instance ).isAvailable();

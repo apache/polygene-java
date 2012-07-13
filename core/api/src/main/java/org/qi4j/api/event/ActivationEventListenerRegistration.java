@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
- * Copyright (c) 2008, Niclas Hedhman.
+ * Copyright (c) 2011, Rickard Öberg.
+ * Copyright (c) 2012, Niclas Hedhman.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,17 +12,14 @@
  * limitations under the License.
  *
  */
-
-package org.qi4j.api.structure;
-
-import org.qi4j.api.event.ActivationEventListenerRegistration;
-import org.qi4j.api.service.Activatable;
+package org.qi4j.api.event;
 
 /**
- * The Layer represents a single layer in a Qi4j application.
+ * Use this to register listeners for ActivationEvents. This is implemented by Application, Layer, Module, for example.
  */
-public interface Layer
-    extends ActivationEventListenerRegistration, Activatable, MetaInfoHolder
+public interface ActivationEventListenerRegistration
 {
-    String name();
+    void registerActivationEventListener( ActivationEventListener listener );
+
+    void deregisterActivationEventListener( ActivationEventListener listener );
 }

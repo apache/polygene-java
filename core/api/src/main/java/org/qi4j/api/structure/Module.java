@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
- * Copyright (c) 2012, Paul Merlin.
+ * Copyright (c) 2008, Niclas Hedhman.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.qi4j.api.structure;
 import org.qi4j.api.composite.TransientBuilderFactory;
 import org.qi4j.api.composite.TransientDescriptor;
 import org.qi4j.api.entity.EntityDescriptor;
+import org.qi4j.api.event.ActivationEventListenerRegistration;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.object.ObjectDescriptor;
 import org.qi4j.api.object.ObjectFactory;
@@ -33,7 +34,8 @@ import org.qi4j.api.value.ValueDescriptor;
  * injection scope.
  */
 public interface Module
-    extends MetaInfoHolder,
+    extends ActivationEventListenerRegistration,
+            MetaInfoHolder,
             TransientBuilderFactory,
             ObjectFactory,
             ValueBuilderFactory,

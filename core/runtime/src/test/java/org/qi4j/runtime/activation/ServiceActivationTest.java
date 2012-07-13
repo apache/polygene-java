@@ -32,33 +32,7 @@ public class ServiceActivationTest
 
     private static int passivationLevel = 0;
 
-    public static class TestedActivator1
-            implements Activator<ServiceReference<TestedService>>
-    {
-
-        public void beforeActivation( ServiceReference<TestedService> activating )
-        {
-            activationLevel++;
-        }
-
-        public void afterActivation( ServiceReference<TestedService> activated )
-        {
-            activationLevel++;
-        }
-
-        public void beforePassivation( ServiceReference<TestedService> passivating )
-        {
-            passivationLevel++;
-        }
-
-        public void afterPassivation( ServiceReference<TestedService> passivated )
-        {
-            passivationLevel++;
-        }
-
-    }
-
-    public static class TestedActivator2
+    public static class TestedActivator
             implements Activator<ServiceReference<TestedService>>
     {
 
@@ -141,10 +115,10 @@ public class ServiceActivationTest
                     throws AssemblyException
             {
                 module.addServices( TestedServiceComposite.class ).
-                        withActivators( TestedActivator1.class, TestedActivator2.class ).
+                        withActivators( TestedActivator.class ).
                         instantiateOnStartup();
                 module.addServices( TestedServiceComposite2.class ).
-                        withActivators( TestedActivator1.class, TestedActivator2.class ).
+                        withActivators( TestedActivator.class ).
                         instantiateOnStartup();
             }
 
@@ -153,13 +127,13 @@ public class ServiceActivationTest
         Application application = assembly.application();
 
         // Assert activated
-        Assert.assertEquals( "Activation Level", 8, activationLevel );
+        Assert.assertEquals( "Activation Level", 4, activationLevel );
 
         // Passivate
         application.passivate();
 
         // Assert passivated
-        Assert.assertEquals( "Passivation Level", 8, passivationLevel );
+        Assert.assertEquals( "Passivation Level", 4, passivationLevel );
     }
 
 }

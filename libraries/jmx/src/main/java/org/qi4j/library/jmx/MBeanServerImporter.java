@@ -32,11 +32,6 @@ public class MBeanServerImporter
         return ManagementFactory.getPlatformMBeanServer();
     }
 
-    public boolean isActive( Object instance )
-    {
-        return true;
-    }
-
     public boolean isAvailable( Object instance )
     {
         return true;

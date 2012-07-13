@@ -72,8 +72,11 @@ import java.lang.reflect.WildcardType;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.qi4j.api.event.ActivationEvent;
+import org.qi4j.api.event.ActivationEventListener;
 import static org.qi4j.api.util.Classes.interfacesOf;
 import static org.qi4j.functional.Iterables.*;
+import org.qi4j.runtime.activation.ActivationEventListenerSupport;
 
 /**
  * Instance of a Qi4j Module. Contains the various composites for this Module.
@@ -81,7 +84,8 @@ import static org.qi4j.functional.Iterables.*;
 public class ModuleInstance
     implements Module, Activatable
 {
-    private final ActivationHandler activationHandler = new ActivationHandler();
+    private final ActivationHandler activationHandler = new ActivationHandler( this );
+    private final ActivationEventListenerSupport eventListenerSupport = new ActivationEventListenerSupport();
     private final ModuleModel moduleModel;
     private final LayerInstance layerInstance;
     private final TransientsModel transients;
@@ -95,6 +99,8 @@ public class ModuleInstance
     private EntityStore store;
     //lazy assigned on accessor
     private IdentityGenerator generator;
+    //lazy assigned on accessor
+    private MetricsProvider metrics;
 
     private final QueryBuilderFactory queryBuilderFactory;
 
@@ -114,7 +120,6 @@ public class ModuleInstance
     private final Map<Class, ModelModule<TransientModel>> transientModels;
     private final Map<Class, Iterable<ModelModule<EntityModel>>> entityModels;
     private final Map<Class, ModelModule<ValueModel>> valueModels;
-    private MetricsProvider metrics;
 
     public ModuleInstance( ModuleModel moduleModel, LayerInstance layerInstance, TransientsModel transientsModel,
                            EntitiesModel entitiesModel, ObjectsModel objectsModel, ValuesModel valuesModel,
@@ -128,7 +133,9 @@ public class ModuleInstance
         objects = objectsModel;
         entities = entitiesModel;
         services = servicesModel.newInstance( this );
+        services.registerActivationEventListener( eventListenerSupport );
         importedServices = importedServicesModel.newInstance( this );
+        importedServices.registerActivationEventListener( eventListenerSupport );
 
         queryBuilderFactory = new QueryBuilderFactoryImpl( this );
 
@@ -236,13 +243,18 @@ public class ModuleInstance
     public void activate()
         throws Exception
     {
-        activationHandler.activate( this, moduleModel.newActivatorsInstance(), services );
+        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATING ) );
+        activationHandler.activate( moduleModel.newActivatorsInstance(), 
+                                    Iterables.<Activatable, Activatable>iterable( services, importedServices ) );
+        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATED ) );
     }
 
     public void passivate()
         throws Exception
     {
-        activationHandler.passivate( this );
+        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATING ) );
+        activationHandler.passivate();
+        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATED ) );
     }
 
     @Override
@@ -1069,5 +1081,15 @@ public class ModuleInstance
                 return results.iterator();
             }
         };
+    }
+
+    public void registerActivationEventListener( ActivationEventListener listener )
+    {
+        eventListenerSupport.registerActivationEventListener( listener );
+    }
+
+    public void deregisterActivationEventListener( ActivationEventListener listener )
+    {
+        eventListenerSupport.deregisterActivationEventListener( listener );
     }
 }
