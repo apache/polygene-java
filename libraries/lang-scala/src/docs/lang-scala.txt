@@ -1,4 +1,4 @@
-[[library-script-scala, Scala Library]]
+[[lang-scala, Scala Library]]
 = Scala Support =
 
 [devstatus]
