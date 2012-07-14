@@ -62,7 +62,7 @@ public class SolrEntityQueryMixin
 
             SolrServer server = solr.getSolrServer();
 
-            NamedList list = new NamedList();
+            NamedList<Object> list = new NamedList<Object>();
 
             list.add( "q", expr.getQuery() );
             list.add( "rows", maxResults != 0 ? maxResults : 10000 );
@@ -120,12 +120,11 @@ public class SolrEntityQueryMixin
     {
         SolrServer server = solr.getSolrServer();
 
-        NamedList list = new NamedList();
+        NamedList<Object> list = new NamedList<Object>();
 
         list.add( "q", queryString );
 
         QueryResponse query = server.query( SolrParams.toSolrParams( list ) );
-        SolrDocumentList results = query.getResults();
-        return results;
+        return query.getResults();
     }
 }
