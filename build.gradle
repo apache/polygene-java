@@ -266,7 +266,7 @@ task javadocs( type: Javadoc, dependsOn: allprojects*.javadoc ) {
   options.group( [ "Core API": [ "org.qi4j.api", "org.qi4j.api.*", "org.qi4j.io", "org.qi4j.functional" ],
                          "Core Bootstrap": [ "org.qi4j.bootstrap" ],
                          "Core SPI": [ "org.qi4j.spi", "org.qi4j.spi.*" ],
-                         "Libraries": [ "org.qi4j.library.*", "org.qi4j.logging", "org.qi4j.logging.*", "org.qi4j.scripting.*" ],
+                         "Libraries": [ "org.qi4j.library.*", "org.qi4j.logging", "org.qi4j.logging.*", "org.qi4j.lang.*" ],
                          "Extensions": [ "org.qi4j.entitystore.*", "org.qi4j.index.*", "org.qi4j.metrics.*", "org.qi4j.cache.*", "org.qi4j.migration", "org.qi4j.migration.*" ],
                          "Test Support": [ "org.qi4j.test", "org.qi4j.test.*" ]
                  ] )
