@@ -1,4 +1,4 @@
-[[library-rest-common, Rest Common Library]]
+[[library-rest-common, ReST Common Library]]
 = ReST Common =
 
 [devstatus]
@@ -6,3 +6,6 @@
 source=libraries/rest-common/dev-status.xml
 --------------
 
+ReST Common Library
+
+NOTE: This Library has no documentation yet. Learn how to contribute in <<community-docs>>.

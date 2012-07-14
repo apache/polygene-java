@@ -7,4 +7,6 @@
 source=extensions/cache-ehcache/dev-status.xml
 --------------
 
+Ehcache Cache
 
+NOTE: This Extension has no documentation yet. Learn how to contribute in <<community-docs>>.

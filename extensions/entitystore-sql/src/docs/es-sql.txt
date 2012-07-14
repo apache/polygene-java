@@ -6,3 +6,6 @@
 source=extensions/entitystore-sql/dev-status.xml
 --------------
 
+SQL EntityStore
+
+NOTE: This Extension has no documentation yet. Learn how to contribute in <<community-docs>>.

@@ -6,3 +6,6 @@
 source=libraries/osgi/dev-status.xml
 --------------
 
+OSGi Library
+
+NOTE: This Library has no documentation yet. Learn how to contribute in <<community-docs>>.

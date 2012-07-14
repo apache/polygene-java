@@ -84,6 +84,10 @@ include::../../../../extensions/indexing-sql/src/docs/index-sql.txt[]
 
 :leveloffset: 2
 
+include::../../../../extensions/metrics-yammer/src/docs/metrics-yammer.txt[]
+
+:leveloffset: 2
+
 include::../../../../extensions/migration/src/docs/migration.txt[]
 
 :leveloffset: 2

@@ -6,3 +6,6 @@
 source=extensions/reindexer/dev-status.xml
 --------------
 
+Reindexer
+
+NOTE: This Extension has no documentation yet. Learn how to contribute in <<community-docs>>.

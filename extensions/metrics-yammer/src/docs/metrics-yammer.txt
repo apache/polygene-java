@@ -6,3 +6,6 @@
 source=extensions/metrics-yammer/dev-status.xml
 --------------
 
+Yammer Metrics
+
+NOTE: This Extension has no documentation yet. Learn how to contribute in <<community-docs>>.

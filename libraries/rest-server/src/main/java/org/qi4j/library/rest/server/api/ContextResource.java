@@ -117,7 +117,8 @@ public class ContextResource
         for( Method method : getClass().getMethods() )
         {
             if( ContextResource.class.isAssignableFrom( method.getDeclaringClass() )
-                && !ContextResource.class.equals( method.getDeclaringClass() ) )
+                && !ContextResource.class.equals( method.getDeclaringClass() )
+                && !method.isSynthetic() )
             {
                 if( method.getAnnotation( SubResource.class ) == null )
                 {

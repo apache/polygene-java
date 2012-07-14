@@ -6,3 +6,7 @@
 source=libraries/eventsourcing-rest/dev-status.xml
 --------------
 
+Event Sourcing - ReST Library
+
+NOTE: This Library has no documentation yet. Learn how to contribute in <<community-docs>>.
+
