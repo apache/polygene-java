@@ -25,4 +25,9 @@ public class MissingMethodException
     {
         super( message );
     }
+
+    public MissingMethodException( String message, NoSuchMethodException e )
+    {
+        super(message,e);
+    }
 }
