@@ -595,6 +595,18 @@ public final class Iterables
         return new CacheIterable<T>( iterable );
     }
 
+    public static <T> String toString( Iterable<T> iterable )
+    {
+        return toString( iterable, new Function<T, String>()
+        {
+            @Override
+            public String map( T t )
+            {
+                return t == null ?"[null]" : t.toString();
+            }
+        }, "," );
+    }
+
     public static <T> String toString( Iterable<T> iterable, Function<T, String> toStringFunction, String separator )
     {
         StringBuilder builder = new StringBuilder();
