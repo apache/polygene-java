@@ -28,6 +28,7 @@ import org.qi4j.bootstrap.BindingException;
 import org.qi4j.functional.Function;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.functional.HierarchicalVisitorAdapter;
+import org.qi4j.functional.Specification;
 import org.qi4j.functional.VisitableHierarchy;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectedFieldModel;
@@ -35,6 +36,7 @@ import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
 
 import static org.qi4j.api.util.Classes.interfacesOf;
+import static org.qi4j.functional.Iterables.filter;
 import static org.qi4j.functional.Iterables.flattenIterables;
 import static org.qi4j.functional.Iterables.map;
 
@@ -249,6 +251,26 @@ public class MixinsModel
                 return mixinModel.dependencies();
             }
         }, mixinModels ) );
+    }
+
+    public Iterable<Method> invocationsFor( final Class<?> mixinClass )
+    {
+        return map( new Function<Map.Entry<Method, MixinModel>, Method>()
+        {
+            @Override
+            public Method map( Map.Entry<Method, MixinModel> entry )
+            {
+                return entry.getKey();
+            }
+        }, filter( new Specification<Map.Entry<Method, MixinModel>>()
+        {
+            @Override
+            public boolean satisfiedBy( Map.Entry<Method, MixinModel> item )
+            {
+                MixinModel model = item.getValue();
+                return model.mixinClass().equals( mixinClass );
+            }
+        }, methodImplementation.entrySet() ) );
     }
 
     private class Uses
