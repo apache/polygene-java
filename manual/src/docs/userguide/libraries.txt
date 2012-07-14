@@ -103,19 +103,23 @@ include::../../../../libraries/scheduler/src/docs/scheduler.txt[]
 
 :leveloffset: 2
 
-include::../../../../libraries/scripting/beanshell/src/docs/script-beanshell.txt[]
+include::../../../../libraries/lang-beanshell/src/docs/lang-beanshell.txt[]
 
 :leveloffset: 2
 
-include::../../../../libraries/scripting/groovy/src/docs/script-groovy.txt[]
+include::../../../../libraries/lang-groovy/src/docs/lang-groovy.txt[]
 
 :leveloffset: 2
 
-include::../../../../libraries/scripting/javascript/src/docs/script-javascript.txt[]
+include::../../../../libraries/lang-javascript/src/docs/lang-javascript.txt[]
 
 :leveloffset: 2
 
-include::../../../../libraries/scripting/jruby/src/docs/script-jruby.txt[]
+include::../../../../libraries/lang-jruby/src/docs/lang-jruby.txt[]
+
+:leveloffset: 2
+
+include::../../../../libraries/lang-scala/src/docs/lang-scala.txt[]
 
 :leveloffset: 2
 

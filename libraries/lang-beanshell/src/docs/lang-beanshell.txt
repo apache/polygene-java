@@ -3,6 +3,6 @@
 
 [devstatus]
 --------------
-source=libraries/scripting/beanshell/dev-status.xml
+source=libraries/lang-beanshell/dev-status.xml
 --------------
 

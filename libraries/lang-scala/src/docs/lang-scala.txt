@@ -1,0 +1,8 @@
+[[library-script-scala, Scala Library]]
+= Scala Support =
+
+[devstatus]
+--------------
+source=libraries/lang-scala/dev-status.xml
+--------------
+

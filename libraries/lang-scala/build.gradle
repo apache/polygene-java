@@ -1,13 +1,11 @@
-description = "Qi4j JavaScript Library allows for Mixins to be implemented in JavaScript instead of directly in compiled Java."
+description = "Qi4j BeanShell Library allows for Mixins to be implemented in BeanShell (Java) scripts instead of directly in compiled Java."
 
-jar { manifest { name = "Qi4j Library - Scripting - JavaScript" }}
-
+jar { manifest { name = "Qi4j Library - Scripting - BeanShell" }}
 
 dependencies {
-  compile( project( ':org.qi4j.libraries:org.qi4j.library.scripting:org.qi4j.library.scripting.common' ))
   compile(project(":org.qi4j.core:org.qi4j.core.api"))
   compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
-  compile(libraries.javascript)
+  compile(libraries.beanshell)
   compile(libraries.slf4j_api)
   testCompile(libraries.junit)
   testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))

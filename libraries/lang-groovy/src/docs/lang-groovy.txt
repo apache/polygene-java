@@ -3,6 +3,6 @@
 
 [devstatus]
 --------------
-source=libraries/scripting/groovy/dev-status.xml
+source=libraries/lang-groovy/dev-status.xml
 --------------
 

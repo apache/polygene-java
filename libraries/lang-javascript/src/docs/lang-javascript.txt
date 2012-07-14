@@ -3,6 +3,6 @@
 
 [devstatus]
 --------------
-source=libraries/scripting/javascript/dev-status.xml
+source=libraries/lang-javascript/dev-status.xml
 --------------
 

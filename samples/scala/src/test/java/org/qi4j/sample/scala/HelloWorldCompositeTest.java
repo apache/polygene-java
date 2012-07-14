@@ -1,19 +1,18 @@
 package org.qi4j.sample.scala;
 
+import java.io.IOException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.qi4j.api.constraint.ConstraintViolationException;
-import org.qi4j.api.scala.TraitMixin;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.index.rdf.assembly.RdfMemoryStoreAssembler;
+import org.qi4j.lang.scala.TraitMixin;
 import org.qi4j.spi.query.IndexExporter;
 import org.qi4j.test.EntityTestAssembler;
-
-import java.io.IOException;
 
 import static org.qi4j.api.query.QueryExpressions.eq;
 import static org.qi4j.api.query.QueryExpressions.templateFor;
@@ -29,11 +28,12 @@ public class HelloWorldCompositeTest
         SingletonAssembler assembler = new SingletonAssembler()
         {
             @Override
-            public void assemble( ModuleAssembly module ) throws AssemblyException
+            public void assemble( ModuleAssembly module )
+                throws AssemblyException
             {
                 module.transients( HelloWorldComposite.class, HelloWorldComposite2.class ).
-                        withMixins( TraitMixin.class ).
-                        withConcerns( ExclamationGenericConcern.class );
+                    withMixins( TraitMixin.class ).
+                    withConcerns( ExclamationGenericConcern.class );
             }
         };
 
@@ -44,28 +44,31 @@ public class HelloWorldCompositeTest
         try
         {
             composite.sayHello( "AReallyReallyLongName" );
-        } catch( ConstraintViolationException e )
+        }
+        catch( ConstraintViolationException e )
         {
             // Ok!
         }
 
-        HelloWorldComposite2 composite2 = assembler.module().newTransient( HelloWorldComposite2.class);
-        Assert.assertEquals( "Do custom stuff!", composite2.doStuff());
+        HelloWorldComposite2 composite2 = assembler.module().newTransient( HelloWorldComposite2.class );
+        Assert.assertEquals( "Do custom stuff!", composite2.doStuff() );
     }
 
     @Test
-    public void testEntity() throws UnitOfWorkCompletionException, IOException
+    public void testEntity()
+        throws UnitOfWorkCompletionException, IOException
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {
             @Override
-            public void assemble( ModuleAssembly module ) throws AssemblyException
+            public void assemble( ModuleAssembly module )
+                throws AssemblyException
             {
                 module.entities( TestEntity.class ).withMixins( TraitMixin.class );
                 module.services( TestService.class ).withMixins( TraitMixin.class );
 
-                new EntityTestAssembler(  ).assemble( module );
-                new RdfMemoryStoreAssembler().assemble(module);
+                new EntityTestAssembler().assemble( module );
+                new RdfMemoryStoreAssembler().assemble( module );
             }
         };
 
@@ -79,7 +82,8 @@ public class HelloWorldCompositeTest
             Data data = uow.get( Data.class, entity.toString() );
 
             Assert.assertEquals( "FooFoo", data.foo().get() );
-        } finally
+        }
+        finally
         {
             uow.complete();
         }
@@ -90,9 +94,12 @@ public class HelloWorldCompositeTest
         uow = assembler.module().newUnitOfWork();
         try
         {
-            Data data = uow.newQuery( assembler.module().newQueryBuilder( Data.class ).where( eq( templateFor( Data.class ).foo(), "FooFoo" ) )).find();
+            Data data = uow.newQuery( assembler.module()
+                                          .newQueryBuilder( Data.class )
+                                          .where( eq( templateFor( Data.class ).foo(), "FooFoo" ) ) ).find();
             Assert.assertEquals( "FooFoo", data.foo().get() );
-        } finally
+        }
+        finally
         {
             uow.discard();
         }

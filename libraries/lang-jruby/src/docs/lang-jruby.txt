@@ -3,6 +3,6 @@
 
 [devstatus]
 --------------
-source=libraries/scripting/jruby/dev-status.xml
+source=libraries/lang-jruby/dev-status.xml
 --------------
 
