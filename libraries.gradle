@@ -39,6 +39,7 @@ def osgiVersion = '4.2.0'
 def postgresqlVersion = '8.4-701.jdbc4'
 def rdfVersion = '2.6.1'
 def restletVersion = '2.0.9'
+def scalaVersion = '2.9.2'
 ext.servletVersion = '3.0.1'
 def shiroVersion = '1.1.0'
 def skedVersion = '1.2'
@@ -98,6 +99,9 @@ rootProject.ext {
                   "org.restlet.jee:org.restlet.ext.servlet:$restletVersion",
                   "org.restlet.jee:org.restlet.ext.slf4j:$restletVersion"
           ],
+
+          // Scala
+          scala:  "org.scala-lang:scala-library:$scalaVersion",
 
           // Spring
           spring_core: [
