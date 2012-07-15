@@ -13,6 +13,9 @@
  */
 package org.qi4j.entitystore.jclouds;
 
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Maps;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,7 +27,16 @@ import java.io.Writer;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-
+import org.jclouds.ContextBuilder;
+import org.jclouds.apis.ApiMetadata;
+import org.jclouds.apis.Apis;
+import org.jclouds.blobstore.BlobMap;
+import org.jclouds.blobstore.BlobStore;
+import org.jclouds.blobstore.BlobStoreContext;
+import org.jclouds.blobstore.InputStreamMap;
+import org.jclouds.blobstore.domain.Blob;
+import org.jclouds.providers.ProviderMetadata;
+import org.jclouds.providers.Providers;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
@@ -40,51 +52,40 @@ import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.helpers.MapEntityStore;
 import org.qi4j.spi.entitystore.helpers.MapEntityStoreMixin;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
-import static com.google.common.collect.Iterables.contains;
-import com.google.common.collect.Maps;
-
-import org.jclouds.ContextBuilder;
-import org.jclouds.apis.ApiMetadata;
-import org.jclouds.apis.Apis;
-import org.jclouds.blobstore.BlobMap;
-import org.jclouds.blobstore.BlobStore;
-import org.jclouds.blobstore.BlobStoreContext;
-import org.jclouds.blobstore.InputStreamMap;
-import org.jclouds.blobstore.domain.Blob;
-import org.jclouds.providers.ProviderMetadata;
-import org.jclouds.providers.Providers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.collect.Iterables.contains;
+
 /**
  * JClouds Map EntityStore Mixin.
- * 
+ *
  * TODO Expose Location in configuration
- * 
- *      To be done once JClouds 1.5 has stabilized their Location API.
- * 
- *      /**
- *       * A list of ISO-3166 country codes.
- *       * It defines where your entities are allowed to be stored.
- *       *
- *      @UseDefaults Property<List<String>> geopoliticalBoundaries(); ???
- * 
+ *
+ * To be done once JClouds 1.5 has stabilized their Location API.
+ *
+ * /**
+ * * A list of ISO-3166 country codes.
+ * * It defines where your entities are allowed to be stored.
+ * *
+ *
+ * &#64;UseDefaults Property<List<String>> geopoliticalBoundaries(); ???
+ *
  * SEE  http://www.jclouds.org/documentation/reference/location-metadata-design
  */
 public abstract class JCloudsMapEntityStoreMixin
-        extends MapEntityStoreMixin
-        implements Activatable, JCloudsMapEntityStoreService, MapEntityStore
+    extends MapEntityStoreMixin
+    implements Activatable, JCloudsMapEntityStoreService, MapEntityStore
 {
 
     private static final Logger LOGGER = LoggerFactory.getLogger( "org.qi4j.entitystore.jclouds" );
 
-    private static final Map<String, ApiMetadata> allApis = Maps.uniqueIndex( Apis.viewableAs( BlobStoreContext.class ), Apis.idFunction() );
+    private static final Map<String, ApiMetadata> allApis = Maps.uniqueIndex( Apis.viewableAs( BlobStoreContext.class ), Apis
+        .idFunction() );
 
-    private static final Map<String, ProviderMetadata> appProviders = Maps.uniqueIndex( Providers.viewableAs( BlobStoreContext.class ), Providers.idFunction() );
+    private static final Map<String, ProviderMetadata> appProviders = Maps.uniqueIndex( Providers.viewableAs( BlobStoreContext.class ), Providers
+        .idFunction() );
 
     private static final Set<String> allKeys = ImmutableSet.copyOf( Iterables.concat( appProviders.keySet(), allApis.keySet() ) );
 
@@ -97,7 +98,7 @@ public abstract class JCloudsMapEntityStoreMixin
 
     @Override
     public void activate()
-            throws Exception
+        throws Exception
     {
         configuration.refresh();
         String provider = configuration.configuration().provider().get();
@@ -105,23 +106,31 @@ public abstract class JCloudsMapEntityStoreMixin
         String credentials = configuration.configuration().credential().get();
         Map<String, String> properties = configuration.configuration().properties().get();
         container = configuration.configuration().container().get();
-        if ( provider != null ) {
+        if( provider != null )
+        {
             checkArgument( contains( allKeys, provider ), "provider %s not in supported list: %s", provider, allKeys );
-        } else {
+        }
+        else
+        {
             provider = "transient";
         }
-        if ( container == null ) {
+        if( container == null )
+        {
             container = "qi4j-entities";
         }
         storeContext = ContextBuilder.newBuilder( provider ).
-                credentials( identifier, credentials ).
-                overrides( asProperties( properties ) ).
-                buildView( BlobStoreContext.class );
+            credentials( identifier, credentials ).
+            overrides( asProperties( properties ) ).
+            buildView( BlobStoreContext.class );
         BlobStore blobStore = storeContext.getBlobStore();
-        if ( !blobStore.containerExists( container ) ) {
-            if ( !blobStore.createContainerInLocation( null, container ) ) {
+        if( !blobStore.containerExists( container ) )
+        {
+            if( !blobStore.createContainerInLocation( null, container ) )
+            {
                 throw new EntityStoreException( "Unable to create JClouds Blob Container, cannot continue." );
-            } else {
+            }
+            else
+            {
                 LOGGER.debug( "Created new container: {}", container );
             }
         }
@@ -131,7 +140,8 @@ public abstract class JCloudsMapEntityStoreMixin
     private Properties asProperties( Map<String, String> map )
     {
         Properties props = new Properties();
-        for ( Map.Entry<String, String> eachEntry : map.entrySet() ) {
+        for( Map.Entry<String, String> eachEntry : map.entrySet() )
+        {
             props.put( eachEntry.getKey(), eachEntry.getValue() );
         }
         return props;
@@ -139,9 +149,10 @@ public abstract class JCloudsMapEntityStoreMixin
 
     @Override
     public void passivate()
-            throws Exception
+        throws Exception
     {
-        if ( storeContext != null ) {
+        if( storeContext != null )
+        {
             storeContext.close();
             storeContext = null;
             container = null;
@@ -149,32 +160,39 @@ public abstract class JCloudsMapEntityStoreMixin
     }
 
     public Reader get( EntityReference entityReference )
-            throws EntityStoreException
+        throws EntityStoreException
     {
         InputStreamMap isMap = storeContext.createInputStreamMap( container );
         InputStream input = isMap.get( entityReference.identity() );
 
-        if ( input == null ) {
+        if( input == null )
+        {
             throw new EntityNotFoundException( entityReference );
         }
-        try {
+        try
+        {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             Inputs.byteBuffer( input, 4096 ).transferTo( Outputs.byteBuffer( baos ) );
             return new StringReader( baos.toString( "UTF-8" ) );
-        } catch ( IOException ex ) {
+        }
+        catch( IOException ex )
+        {
             throw new EntityStoreException( "Unable to read entity state for: " + entityReference, ex );
-        } finally {
-            if ( input != null ) {
-                try {
-                    input.close();
-                } catch ( IOException ignored ) {
-                }
+        }
+        finally
+        {
+            try
+            {
+                input.close();
+            }
+            catch( IOException ignored )
+            {
             }
         }
     }
 
     public void applyChanges( MapChanges changes )
-            throws IOException
+        throws IOException
     {
         final BlobMap blobMap = storeContext.createBlobMap( container );
 
@@ -182,27 +200,27 @@ public abstract class JCloudsMapEntityStoreMixin
         {
 
             public Writer newEntity( final EntityReference ref, EntityDescriptor entityDescriptor )
-                    throws IOException
+                throws IOException
             {
                 return new StringWriter()
                 {
 
                     @Override
                     public void close()
-                            throws IOException
+                        throws IOException
                     {
                         super.close();
                         Blob blob = blobMap.blobBuilder().payload( toString() ).build();
                         blobMap.put( ref.identity(), blob );
                     }
-
                 };
             }
 
             public Writer updateEntity( final EntityReference ref, EntityDescriptor entityDescriptor )
-                    throws IOException
+                throws IOException
             {
-                if ( !blobMap.containsKey( ref.identity() ) ) {
+                if( !blobMap.containsKey( ref.identity() ) )
+                {
                     throw new EntityNotFoundException( ref );
                 }
                 return new StringWriter()
@@ -210,25 +228,24 @@ public abstract class JCloudsMapEntityStoreMixin
 
                     @Override
                     public void close()
-                            throws IOException
+                        throws IOException
                     {
                         super.close();
                         Blob blob = blobMap.blobBuilder().payload( toString() ).build();
                         blobMap.put( ref.identity(), blob );
                     }
-
                 };
             }
 
             public void removeEntity( EntityReference ref, EntityDescriptor entityDescriptor )
-                    throws EntityNotFoundException
+                throws EntityNotFoundException
             {
-                if ( !blobMap.containsKey( ref.identity() ) ) {
+                if( !blobMap.containsKey( ref.identity() ) )
+                {
                     throw new EntityNotFoundException( ref );
                 }
                 blobMap.remove( ref.identity() );
             }
-
         } );
     }
 
@@ -238,31 +255,35 @@ public abstract class JCloudsMapEntityStoreMixin
         {
 
             public <ReceiverThrowableType extends Throwable> void transferTo( Output<? super Reader, ReceiverThrowableType> output )
-                    throws IOException, ReceiverThrowableType
+                throws IOException, ReceiverThrowableType
             {
                 output.receiveFrom( new Sender<Reader, IOException>()
                 {
 
                     public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<? super Reader, ReceiverThrowableType> receiver )
-                            throws ReceiverThrowableType, IOException
+                        throws ReceiverThrowableType, IOException
                     {
                         InputStreamMap isMap = storeContext.createInputStreamMap( container );
-                        for ( InputStream eachInput : isMap.values() ) {
-                            try {
+                        for( InputStream eachInput : isMap.values() )
+                        {
+                            try
+                            {
                                 receiver.receive( new InputStreamReader( eachInput, "UTF-8" ) );
-                            } finally {
-                                try {
+                            }
+                            finally
+                            {
+                                try
+                                {
                                     eachInput.close();
-                                } catch ( IOException ignored ) {
+                                }
+                                catch( IOException ignored )
+                                {
                                 }
                             }
                         }
                     }
-
                 } );
             }
-
         };
     }
-
 }

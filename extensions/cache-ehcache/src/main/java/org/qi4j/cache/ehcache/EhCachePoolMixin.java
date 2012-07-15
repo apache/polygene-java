@@ -2,7 +2,6 @@ package org.qi4j.cache.ehcache;
 
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.config.CacheConfiguration;
-import net.sf.ehcache.config.TerracottaClientConfiguration;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.injection.scope.This;
@@ -11,7 +10,6 @@ import org.qi4j.api.util.NullArgumentException;
 import org.qi4j.spi.cache.Cache;
 import org.qi4j.spi.cache.CachePool;
 
-import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class EhCachePoolMixin
@@ -36,6 +34,7 @@ public class EhCachePoolMixin
         //       you try to remove the Cache instance from the CacheManager, at which point it is silently
         //       ignored but not removed so there is an follow up problem of too much in the CacheManager.
         NullArgumentException.validateNotEmpty( "cacheId", cacheId );
+        @SuppressWarnings( "unchecked" )
         EhCacheImpl<T> cache = caches.get( cacheId );
         if( cache == null )
         {
