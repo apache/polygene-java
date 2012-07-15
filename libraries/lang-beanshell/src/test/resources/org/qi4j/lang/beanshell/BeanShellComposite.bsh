@@ -1,5 +1,5 @@
 
-import org.qi4j.scripting.beanshell.Mixin1;
+import org.qi4j.lang.beanshell.Mixin1;
 
 public class Mixin1Impl
     implements Mixin1

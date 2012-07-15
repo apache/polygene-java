@@ -1,6 +1,6 @@
 package org.qi4j.lang.javascript;
 
-public interface Mixin1
+public interface DomainType
 {
     String do1();
 }

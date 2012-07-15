@@ -1,9 +1,9 @@
 package org.qi4j.sample.scala
 
 import org.qi4j.api.entity.EntityComposite
-import org.qi4j.api.property.Property
-import org.qi4j.api.common.UseDefaults
 import org.qi4j.api.injection.scope.Service
+import org.qi4j.api.common.UseDefaults
+import org.qi4j.api.property.Property
 
 /**
  * Test entity
@@ -28,16 +28,6 @@ trait Commands
   def testService: TestService
 }
 
-trait Events
-{
-  self: Data =>
-  def updatedFoo(newValue: String )
-  {
-    // Register change by modifying state
-    foo = newValue
-  }
-}
-
 // Raw data of entity goes here
 trait Data
 {
@@ -46,4 +36,14 @@ trait Data
 
   // Define property
   def foo_=(v: String ) { foo.set(v)  } // Operator overloading for =
+}
+
+trait Events
+{
+  self: Data =>
+  def updatedFoo(newValue: String )
+  {
+    // Register change by modifying state
+    foo = newValue
+  }
 }

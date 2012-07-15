@@ -43,23 +43,12 @@ public class JavaScriptMixin
 {
     @This private Composite me;
 
-    public static class AppliesTo
-        implements AppliesToFilter
-    {
-
-        public boolean appliesTo( Method method, Class compositeType, Class mixin, Class modelClass )
-        {
-            return getFunctionResoure( method ) != null;
-        }
-
-    }
-
     static private Scriptable standardScope;
 
     private HashMap<String, Function> cachedScripts;
+
     @Structure private TransientBuilderFactory factory;
     private Scriptable instanceScope;
-
     static
     {
         Context cx = Context.enter();
@@ -134,7 +123,7 @@ public class JavaScriptMixin
     private void compileScripts( Context cx, Scriptable scope, Method method )
         throws IOException
     {
-        URL scriptUrl = getFunctionResoure( method );
+        URL scriptUrl = getFunctionResource( method );
         if( scriptUrl == null )
         {
             throw new IOException( "No script found for method " + method.getName() );
@@ -296,7 +285,7 @@ public class JavaScriptMixin
         return fragment;
     }
 
-    private static URL getFunctionResoure( Method method )
+    private static URL getFunctionResource( Method method )
     {
         String scriptName = getScriptName( method );
         Class<?> declaringClass = method.getDeclaringClass();
@@ -311,10 +300,20 @@ public class JavaScriptMixin
         return classname.replace( '.', '/' ) + ".js";
     }
 
-
     private static class ScriptFragment
     {
         String script = "";
         int numberOfLines = 0;
+    }
+
+    public static class AppliesTo
+        implements AppliesToFilter
+    {
+
+        public boolean appliesTo( Method method, Class compositeType, Class mixin, Class modelClass )
+        {
+            return getFunctionResource( method ) != null;
+        }
+
     }
 }

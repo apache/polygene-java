@@ -25,7 +25,7 @@ public class JRubyMixinTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.transients( JRubyComposite.class );
+        module.transients( MyDomainType.class ).withMixins( JRubyMixin.class );
 
         Ruby ruby = Ruby.newInstance();
         module.importedServices( Ruby.class ).importedBy( InstanceImporter.class ).setMetaInfo( ruby );

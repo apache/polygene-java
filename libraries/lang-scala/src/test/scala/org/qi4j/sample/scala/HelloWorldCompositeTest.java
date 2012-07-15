@@ -10,7 +10,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.index.rdf.assembly.RdfMemoryStoreAssembler;
-import org.qi4j.lang.scala.TraitMixin;
+import org.qi4j.lang.scala.ScalaTraitMixin;
 import org.qi4j.spi.query.IndexExporter;
 import org.qi4j.test.EntityTestAssembler;
 
@@ -32,7 +32,7 @@ public class HelloWorldCompositeTest
                 throws AssemblyException
             {
                 module.transients( HelloWorldComposite.class, HelloWorldComposite2.class ).
-                    withMixins( TraitMixin.class ).
+                    withMixins( ScalaTraitMixin.class ).
                     withConcerns( ExclamationGenericConcern.class );
             }
         };
@@ -64,8 +64,8 @@ public class HelloWorldCompositeTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.entities( TestEntity.class ).withMixins( TraitMixin.class );
-                module.services( TestService.class ).withMixins( TraitMixin.class );
+                module.entities( TestEntity.class ).withMixins( ScalaTraitMixin.class );
+                module.services( TestService.class ).withMixins( ScalaTraitMixin.class );
 
                 new EntityTestAssembler().assemble( module );
                 new RdfMemoryStoreAssembler().assemble( module );

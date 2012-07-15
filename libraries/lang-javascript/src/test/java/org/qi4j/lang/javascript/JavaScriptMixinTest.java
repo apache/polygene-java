@@ -23,13 +23,13 @@ public class JavaScriptMixinTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.transients( JavaScriptComposite.class );
+        module.transients( DomainType.class ).withMixins( JavaScriptMixin.class );
     }
 
     @Test
     public void testInvoke() throws Throwable
     {
-        JavaScriptComposite domain = module.newTransient( JavaScriptComposite.class );
+        DomainType domain = module.newTransient( DomainType.class );
         Assert.assertEquals( "do1 script \" and ' for many cases is harder.", domain.do1() );
     }
 }

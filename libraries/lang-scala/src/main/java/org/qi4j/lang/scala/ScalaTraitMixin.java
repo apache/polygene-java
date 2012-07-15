@@ -42,15 +42,15 @@ import static org.qi4j.api.util.Classes.interfacesOf;
 /**
  * Generic mixin that handles delegation to Scala trait implementations.
  */
-@AppliesTo(TraitMixin.TraitFilter.class)
-public class TraitMixin
+@AppliesTo(ScalaTraitMixin.TraitFilter.class)
+public class ScalaTraitMixin
     implements InvocationHandler
 {
     private static Map<Class<?>, Map<Method, InvocationHandler>> methods = new HashMap<Class<?>, Map<Method, InvocationHandler>>();
 
     private Class<?> compositeType;
 
-    public TraitMixin(@This Composite composite)
+    public ScalaTraitMixin( @This Composite composite )
     {
         compositeType = Qi4j.DESCRIPTOR_FUNCTION.map( composite).primaryType();
     }

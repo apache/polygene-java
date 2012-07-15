@@ -18,6 +18,6 @@ import org.qi4j.api.mixin.Mixins;
  * JAVADOC
  */
 @Mixins( JRubyMixin.class )
-public interface JRubyComposite extends Mixin1, TransientComposite
+public interface JRubyComposite extends MyDomainType, TransientComposite
 {
 }
