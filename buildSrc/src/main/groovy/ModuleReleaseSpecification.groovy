@@ -17,16 +17,23 @@ import org.gradle.api.Project
 
 class ModuleReleaseSpecification
 {
-  def boolean satisfiedBy( Project project ) {
-    def devStatusFile = new File(project.projectDir, "dev-status.xml")
+  def boolean satisfiedBy( Project project )
+  {
+    def devStatusFile = new File( project.projectDir, "dev-status.xml" )
     if( !devStatusFile.exists() )
     {
       return false
     }
-    def module = new XmlSlurper().parse(devStatusFile)
+    def module = new XmlSlurper().parse( devStatusFile )
     def codebase = module.status.codebase.text()
     def docs = module.status.documentation.text()
     def tests = module.status.unittests.text()
-    return codebase == 'none' && codebase != 'early' && docs != 'none' && tests != 'none'
+    def satisfied = ( codebase == 'none' && docs == 'complete' && tests != 'complete' )
+    satisfied |= ( codebase != 'early' && docs == 'good' && tests == 'good' )
+    satisfied |= ( codebase != 'beta' && docs == 'brief' && tests == 'some' )
+    satisfied |= ( codebase == 'stable' )
+    satisfied |= ( codebase == 'mature' )
+    println "$project.name($satisfied) -> $codebase, $docs, $tests"
+    return satisfied
   }
 }

@@ -13,6 +13,7 @@ project.ext {
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'signing'
+apply plugin: 'maven'
 apply from: 'maven-compat.gradle'
 apply plugin: 'project-report'
 apply from: 'libraries.gradle'
@@ -47,6 +48,8 @@ allprojects {
   apply plugin: 'java'
   apply plugin: 'checkstyle'
   apply plugin: 'project-report'
+  apply plugin: 'maven'
+
 
   defaultTasks 'classes', 'test'
 
@@ -100,27 +103,28 @@ allprojects {
 
     if( name == "org.qi4j.core.runtime" )
     {
-      checkstyleMain {
-        configFile = new File( "$rootProject.projectDir.absolutePath/etc/qi4j-runtime-checkstyle.xml" )
-        ignoreFailures = true
-      }
+//      checkstyleMain {
+//        configFile = new File( "$rootProject.projectDir.absolutePath/etc/qi4j-runtime-checkstyle.xml" )
+//        ignoreFailures = true
+//      }
     }
     else
     {
       checkstyleMain {
-        configFile = new File( "$rootProject.projectDir.absolutePath/etc/qi4j-api-checkstyle.xml" )
+        configFile = new File( rootProject.projectDir.absolutePath.toString() + '/etc/qi4j-api-checkstyle.xml' )
         ignoreFailures = true
+        reportsDir = "$rootProject.reportsDir/checkstyle"
       }
     }
-    checkstyleTest {
-      configFile = new File( "$rootProject.projectDir.absolutePath/etc/qi4j-tests-checkstyle.xml" )
-      ignoreFailures = true
-    }
+//    checkstyleTest {
+//      configFile = new File( "$rootProject.projectDir.absolutePath/etc/qi4j-tests-checkstyle.xml" )
+//      ignoreFailures = true
+//    }
 
-    checkstyleVersion {
-      configFile = new File( "$rootProject.projectDir.absolutePath/etc/qi4j-tests-checkstyle.xml" )
-      ignoreFailures = true
-    }
+//    checkstyleVersion {
+//      configFile = new File( "$rootProject.projectDir.absolutePath/etc/qi4j-tests-checkstyle.xml" )
+//      ignoreFailures = true
+//    }
 
     jar {
       manifest {
@@ -175,14 +179,15 @@ allprojects {
       }
     }
 
-    // Create checkstyle report
-    task checkstyleReport( type: Xslt, dependsOn: check ) {
-      source project.checkstyle.reportsDir
-      include '*.xml'
-      destDir = file( "build/reports/checkstyle/" )
-      extension = 'html'
-      stylesheetFile = file( "$rootProject.projectDir/etc/checkstyle-noframes.xsl" )
-    }
+//    // Create checkstyle report
+//    task checkstyleReport( type: Xslt, dependsOn: check ) {
+//      source project.checkstyle.reportsDir
+//      include '*.xml'
+//      destDir = file( "build/reports/checkstyle/" )
+//      extension = 'html'
+//      stylesheetFile = file( "$rootProject.projectDir/etc/checkstyle-noframes.xsl" )
+//    }
+//
 
     task minBuild {
       dependsOn classes
@@ -243,12 +248,13 @@ test {
   testReport = true
 }
 
-task javadocs( type: Javadoc, dependsOn: allprojects*.javadoc ) {
+task javadocs( type: Javadoc ) {
 
   options.docFilesSubDirs = true
   options.encoding = "UTF-8"
   title = "${rootProject.title} ${version}"
   def apiSources = releaseApprovedProjects.findAll( { project ->
+
     ( project.name.startsWith( 'org.qi4j.core' ) &&
       !project.name.startsWith( 'org.qi4j.core.runtime' ) ) ||
     project.name.startsWith( 'org.qi4j.library' ) ||
@@ -257,7 +263,7 @@ task javadocs( type: Javadoc, dependsOn: allprojects*.javadoc ) {
   source apiSources.collect { project ->
     project.sourceSets.main.allJava
   }
-  destinationDir = new File( "$buildDir/docs/javadoc" )
+  destinationDir = new File( "" + buildDir + '/docs/javadoc' )
   // Might need a classpath
   classpath = files( apiSources.collect { project ->
     project.sourceSets.main.compileClasspath
@@ -273,7 +279,7 @@ task javadocs( type: Javadoc, dependsOn: allprojects*.javadoc ) {
 
 }
 
-task distLayout( dependsOn: [ javadocs, test, jar, subprojects*.build, ':org.qi4j.manual:manuals' ] ) {
+task distLayout( dependsOn: [ javadocs, test, jar,  subprojects*.assemble, ':org.qi4j.manual:manuals' ] ) {
 
   ext.srcDistImage = copySpec {
     from '.'
@@ -291,13 +297,13 @@ task distLayout( dependsOn: [ javadocs, test, jar, subprojects*.build, ':org.qi4
   }
 
   ext.docsImage = copySpec {
-    from "$buildDir/docs"
+    from "manual/build/docs"
     into( "docs" )
   }
 
   ext.reportsImage = copySpec {
-    from "$buildDir/reports"
     into( "docs/reports" )
+    from "$buildDir/reports"
   }
 
   ext.downloadListImage = copySpec {
@@ -309,9 +315,10 @@ task distLayout( dependsOn: [ javadocs, test, jar, subprojects*.build, ':org.qi4
 
   ext.libsImage = copySpec {
     releaseApprovedProjects.collect { proj ->
-      into( "libs/" ) {
-        from proj.configurations.archives
-      }
+      println "Niclas!!!!!!!!!!!!!!!!"
+      into( "libs/" )
+      from proj.configurations.archives
+      proj.configurations.archives.files.each { println it }
     }
   }
 
@@ -377,7 +384,7 @@ artifacts {
   archives zipSources, tarSources, zipBinaries, tarBinaries
 }
 
-task dist( type: Copy, dependsOn: [ zipBinaries, tarBinaries, tarSources, zipSources, test, install ] ) {
+task dist( type: Copy, dependsOn: [ distLayout, install ] ) {
   with distLayout.ext.binDistImage
   into "$buildDir/dist"
 }
@@ -391,7 +398,7 @@ task release {
       throw new GradleException( "'version' must be given as a system property to perform a release." )
     }
   }
-  dependsOn allprojects*.uploadArchives, dist
+  dependsOn allprojects*.uploadArchives, dist, zipBinaries, tarBinaries, tarSources, zipSources
 }
 
 //
