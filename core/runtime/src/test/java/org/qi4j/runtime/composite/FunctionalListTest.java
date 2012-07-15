@@ -20,25 +20,25 @@ public class FunctionalListTest extends AbstractQi4jTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.transients( List.class ).withTypes( MapOp.class ).withMixins( ArrayList.class );
+        module.transients( List.class ).withTypes( FList.class ).withMixins( ArrayList.class );
     }
 
     @Test
     public void givenArrayListWithMapOpCapabilityWhenMappingIntegerToStringExpectCorrectResult()
     {
-        List<Integer> list = module.newTransient( List.class );
-        list.add( 5 );
-        list.add( 15 );
-        list.add( 45 );
-        list.add( 85 );
-        MapOp<Integer> op = (MapOp<Integer>) list;
+        List<Integer> integers = module.newTransient( List.class );
+        integers.add( 5 );
+        integers.add( 15 );
+        integers.add( 45 );
+        integers.add( 85 );
+        FList<Integer> list = (FList<Integer>) integers;
 
-        List<String> strings = op.map( new Function<Integer, String>()
+        List<String> strings = list.translate( new Function<Integer, String>()
         {
             @Override
-            public String map( Integer integer )
+            public String map( Integer x )
             {
-                return integer.toString();
+                return x.toString();
             }
         } );
 
@@ -50,20 +50,20 @@ public class FunctionalListTest extends AbstractQi4jTest
         assertThat( strings, equalTo( expected ) );
     }
 
-    @Mixins( ListMapOpMixin.class )
-    public interface MapOp<FROM>
+    @Mixins( FListMixin.class )
+    public interface FList<FROM>
     {
-        <TO> List<TO> map( Function<FROM, TO> function );
+        <TO> List<TO> translate( Function<FROM, TO> function );
     }
 
-    public class ListMapOpMixin<FROM>
-        implements MapOp<FROM>
+    public class FListMixin<FROM>
+        implements FList<FROM>
     {
         @This
         private List<FROM> list;
 
         @Override
-        public <TO> List<TO> map( Function<FROM, TO> function )
+        public <TO> List<TO> translate( Function<FROM, TO> function )
         {
             ArrayList<TO> result = new ArrayList<TO>();
             for( FROM data : list )
