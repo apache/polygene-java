@@ -3,8 +3,10 @@ package org.qi4j.runtime.composite;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
+import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.structure.Module;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.functional.Function;
@@ -56,16 +58,19 @@ public class FunctionalListTest extends AbstractQi4jTest
         <TO> List<TO> translate( Function<FROM, TO> function );
     }
 
-    public class FListMixin<FROM>
+    public static class FListMixin<FROM>
         implements FList<FROM>
     {
         @This
         private List<FROM> list;
 
+        @Structure
+        private Module module;
+
         @Override
         public <TO> List<TO> translate( Function<FROM, TO> function )
         {
-            ArrayList<TO> result = new ArrayList<TO>();
+            List<TO> result = module.newTransient( List.class );
             for( FROM data : list )
             {
                 result.add( function.map( data ) );
