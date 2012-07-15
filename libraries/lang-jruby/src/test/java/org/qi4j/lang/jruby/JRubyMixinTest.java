@@ -19,8 +19,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
 
-public class JRubyMixinTest
-    extends AbstractQi4jTest
+public class JRubyMixinTest extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException
@@ -35,7 +34,7 @@ public class JRubyMixinTest
     public void testInvoke()
         throws Throwable
     {
-        JRubyComposite domain = module.newTransientBuilder( JRubyComposite.class ).newInstance();
+        MyDomainType domain = module.newTransientBuilder( MyDomainType.class ).newInstance();
 
         Assert.assertEquals( "do1() in Ruby mixin.", domain.do1() );
     }
