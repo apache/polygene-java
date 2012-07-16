@@ -22,6 +22,7 @@ import org.qi4j.spi.entitystore.ConcurrentModificationCheckConcern;
 import org.qi4j.spi.entitystore.EntityStateVersions;
 import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.entitystore.StateChangeNotificationConcern;
+import org.qi4j.spi.entitystore.helpers.JSONMapEntityStoreActivation;
 import org.qi4j.spi.entitystore.helpers.JSONMapEntityStoreMixin;
 import org.qi4j.spi.entitystore.helpers.StateStore;
 
@@ -32,6 +33,6 @@ import org.qi4j.spi.entitystore.helpers.StateStore;
 @Concerns( { StateChangeNotificationConcern.class, ConcurrentModificationCheckConcern.class } )
 @Mixins( { JSONMapEntityStoreMixin.class, MemoryMapEntityStoreMixin.class } )
 public interface MemoryEntityStoreService
-    extends EntityStore, EntityStateVersions, BackupRestore, StateStore, ServiceComposite
+    extends EntityStore, EntityStateVersions, BackupRestore, StateStore, ServiceComposite, JSONMapEntityStoreActivation
 {
 }
