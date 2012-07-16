@@ -337,12 +337,12 @@ public class ContextResourceClientFactoryTest
             {
                 return query( "index" );
             }
-        } ).onQuery( "index", new ResultHandler<List<String>>()
+        } ).onQuery( "index", new ResultHandler<Links>()
                 {
                     @Override
-                    public HandlerCommand handleResult( List<String> result, ContextResourceClient client )
+                    public HandlerCommand handleResult( Links result, ContextResourceClient client )
                     {
-                        Assert.assertEquals( result.size(), 3 );
+                        Assert.assertEquals( result.links().get().size(), 3 );
                         return null;
                     }
                 } )
@@ -675,12 +675,16 @@ public class ContextResourceClientFactoryTest
     }
 
     public static class PagesResource extends ContextResource
-        implements ResourceIndex<List<String>>
+        implements ResourceIndex<Links>
     {
         @Override
-        public List<String> index()
+        public Links index()
         {
-            return Arrays.asList( "page1", "page2" , "page3");
+            return new LinksBuilder(module)
+                    .addLink( "Page1", "page1")
+                    .addLink( "Page2", "page2")
+                    .addLink( "Page3", "page3")
+                    .newLinks();
         }
     }
 
