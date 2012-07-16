@@ -19,31 +19,30 @@ package org.qi4j.entitystore.jdbm;
 import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.library.locking.LockingAbstractComposite;
 import org.qi4j.library.locking.ReadLockConcern;
 import org.qi4j.library.locking.WriteLockConcern;
 import org.qi4j.spi.entitystore.*;
+import org.qi4j.spi.entitystore.helpers.JSONMapEntityStoreActivation;
 import org.qi4j.spi.entitystore.helpers.JSONMapEntityStoreMixin;
-import org.qi4j.spi.entitystore.helpers.MapEntityStoreMixin;
 import org.qi4j.spi.entitystore.helpers.StateStore;
 
 /**
  * EntityStore service backed by JDBM store.
  */
-
 @Concerns({StateChangeNotificationConcern.class, ConcurrentModificationCheckConcern.class, ReadLockConcern.class, WriteLockConcern.class})
 @Mixins({JSONMapEntityStoreMixin.class, JdbmEntityStoreMixin.class})
 public interface JdbmEntityStoreService
-        extends EntityStore,
+        extends
+        JdbmEntityStoreActivation,
+        JSONMapEntityStoreActivation,
+        EntityStore,
         EntityStateVersions,
         StateStore,
         BackupRestore,
         ServiceComposite,
-        Activatable,
         LockingAbstractComposite,
         Configuration<JdbmConfiguration>
-
 {
 }
