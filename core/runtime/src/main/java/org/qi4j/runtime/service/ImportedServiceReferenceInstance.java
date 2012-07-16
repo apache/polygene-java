@@ -23,6 +23,7 @@ import org.qi4j.api.service.ServiceUnavailableException;
 import org.qi4j.api.structure.Module;
 import org.qi4j.runtime.activation.ActivationEventListenerSupport;
 import org.qi4j.runtime.activation.ActivationHandler;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of ServiceReference. This manages the reference to the imported service.
@@ -114,7 +115,16 @@ public final class ImportedServiceReferenceInstance<T>
 
     public boolean isAvailable()
     {
-        return serviceInstance != null && serviceInstance.isAvailable();
+        try
+        {
+            getInstance();
+            return serviceInstance.isAvailable();
+        }
+        catch( ServiceImporterException ex )
+        {
+            LoggerFactory.getLogger( getClass() ).warn( "Imported service throwed an exception on isAvailable(), will return false.", ex );
+            return false;
+        }
     }
 
     public Module module()
