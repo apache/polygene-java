@@ -184,7 +184,7 @@ public class GraphBuilder
                 parent = addChild( parent, name, name );
                 first = false;
             }
-            addChild( parent, descriptor.descriptor().type().getSimpleName(), descriptor );
+            addChild( parent, descriptor.descriptor().primaryType().getSimpleName(), descriptor );
         }
     }
 

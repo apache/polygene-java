@@ -138,8 +138,8 @@ public class GeneralPane
             else if( objectDesciptor instanceof ImportedServiceDetailDescriptor )
             {
                 ImportedServiceCompositeDescriptor descriptor = ( (ImportedServiceDetailDescriptor) objectDesciptor ).descriptor();
-                rows.add( new TableRow( 2, new Object[]{ nameRow, descriptor.type().getSimpleName() } ) );
-                rows.add( new TableRow( 2, new Object[]{ classRow, descriptor.type().getName() } ) );
+                rows.add( new TableRow( 2, new Object[]{ nameRow, descriptor.primaryType().getSimpleName() } ) );
+                rows.add( new TableRow( 2, new Object[]{ classRow, descriptor.primaryType().getName() } ) );
                 rows.add( new TableRow( 2, new Object[]{ visibilityRow, descriptor.visibility().toString() } ) );
                 rows.add( new TableRow( 2, new Object[]{ moduleRow, ( (ImportedServiceDetailDescriptor) objectDesciptor ).module() } ) );
                 rows.add( new TableRow( 2, new Object[]{

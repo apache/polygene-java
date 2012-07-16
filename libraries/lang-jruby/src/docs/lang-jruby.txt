@@ -1,0 +1,11 @@
+[[library-script-jruby, JRuby Scripting Library]]
+= JRuby Scripting =
+
+[devstatus]
+--------------
+source=libraries/lang-jruby/dev-status.xml
+--------------
+
+JRuby Scripting Library
+
+NOTE: This Library has no documentation yet. Learn how to contribute in <<community-docs>>.

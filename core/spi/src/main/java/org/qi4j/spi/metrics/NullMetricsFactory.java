@@ -52,6 +52,7 @@ public final class NullMetricsFactory
     static class NullGaugeFactory implements MetricsGaugeFactory
     {
         @Override
+        @SuppressWarnings( "unchecked" )
         public <T> MetricsGauge<T> registerGauge( Class<?> origin, String name, MetricsGauge<T> gauge )
         {
             return DefaultMetric.NULL;

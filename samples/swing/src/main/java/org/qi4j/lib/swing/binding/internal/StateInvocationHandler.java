@@ -25,8 +25,8 @@ import org.qi4j.api.association.Association;
 import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
-import org.qi4j.api.object.ObjectFactory;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.structure.Module;
 
 /**
  * @author edward.yakop@gmail.com
@@ -36,7 +36,8 @@ public final class StateInvocationHandler<T>
 {
 
     @Structure
-    private ObjectFactory objectBuilderFactory;
+    private Module module;
+
     private final HashMap<Method, BoundProperty> properties;
     private final HashMap<Method, BoundAssociation> associations;
     private final HashMap<Method, BoundManyAssociation> manyassociations;
@@ -63,7 +64,7 @@ public final class StateInvocationHandler<T>
             BoundProperty property = properties.get( aMethod );
             if( property == null )
             {
-                property = objectBuilderFactory.newObject( BoundProperty.class, aMethod );
+                property = module.newObject( BoundProperty.class, aMethod );
                 properties.put( aMethod, property );
             }
 
@@ -74,7 +75,7 @@ public final class StateInvocationHandler<T>
             BoundManyAssociation association = manyassociations.get( aMethod );
             if( association == null )
             {
-                association = objectBuilderFactory.newObject( BoundManyAssociation.class, aMethod );
+                association = module.newObject( BoundManyAssociation.class, aMethod );
                 manyassociations.put( aMethod, association );
             }
             return association;
@@ -84,7 +85,7 @@ public final class StateInvocationHandler<T>
             BoundAssociation association = associations.get( aMethod );
             if( association == null )
             {
-                association = objectBuilderFactory.newObject( BoundAssociation.class, aMethod );
+                association = module.newObject( BoundAssociation.class, aMethod );
                 associations.put( aMethod, association );
             }
             return association;
@@ -104,17 +105,18 @@ public final class StateInvocationHandler<T>
                 try
                 {
                     actualProperty = (Property) method.invoke( actualData );
-                } catch( IllegalAccessException e )
+                }
+                catch( IllegalAccessException e )
                 {
                     e.printStackTrace();  //TODO: Auto-generated, need attention.
-                } catch( InvocationTargetException e )
+                }
+                catch( InvocationTargetException e )
                 {
                     e.printStackTrace();  //TODO: Auto-generated, need attention.
                 }
             }
             bound.use( actualProperty );
         }
-
     }
 }
 

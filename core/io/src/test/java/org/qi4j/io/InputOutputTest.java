@@ -31,6 +31,7 @@ import java.nio.charset.Charset;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import org.hamcrest.CoreMatchers;
@@ -65,7 +66,7 @@ public class InputOutputTest
             BufferedWriter writer = new BufferedWriter( new FileWriter( destination ) );
             try
             {
-                String line = null;
+                String line;
                 while( ( line = reader.readLine() ) != null )
                 {
                     count++;
@@ -154,9 +155,10 @@ public class InputOutputTest
         Arrays.fill( data, 42 );
 
         Inputs.iterable( iterable( data ) ).transferTo(
-            Transforms.map( new Transforms.ProgressLog<Integer>( LoggerFactory.getLogger( InputOutputTest.class ),
-                                                                 "Data transferred: {0}", 10 ),
-                            Outputs.<Integer>noop() ) );
+            Transforms.map(
+                new Transforms.ProgressLog<Integer>(
+                    LoggerFactory.getLogger( InputOutputTest.class ), "Data transferred: {0}", 10 ),
+                Outputs.<Integer>noop() ) );
     }
 
     @Test
@@ -168,16 +170,18 @@ public class InputOutputTest
         File sourceFile = getSourceFile();
         Transforms.Counter<String> stringCounter = new Transforms.Counter<String>();
         text( sourceFile ).transferTo(
-            Transforms.map( stringCounter,
-                            Transforms.map( new Function<String, String>()
-                            {
-                                public String map( String s )
-                                {
-                                    System.out.println( s );
-                                    return s;
-                                }
-                            },
-                                            Outputs.text( tempFile ) ) ) );
+            Transforms.map(
+                stringCounter,
+                Transforms.map( new Function<String, String>()
+                {
+                    public String map( String s )
+                    {
+                        System.out.println( s );
+                        return s;
+                    }
+                }, Outputs.text( tempFile ) )
+            )
+        );
 
         Assert.assertThat( tempFile.length(), CoreMatchers.equalTo( sourceFile.length() ) );
         Assert.assertThat( stringCounter.getCount(), CoreMatchers.equalTo( 4L ) );
@@ -191,20 +195,33 @@ public class InputOutputTest
         tempFile.deleteOnExit();
         File sourceFile = getSourceFile();
         Transforms.Counter<String> stringCounter = new Transforms.Counter<String>();
-        Inputs.combine( asList( text( sourceFile ), text( sourceFile ) ) ).transferTo(
-            Transforms.map( stringCounter,
-                            Transforms.map( new Function<String, String>()
-                            {
-                                public String map( String s )
-                                {
-                                    System.out.println( s );
-                                    return s;
-                                }
-                            },
-                                            Outputs.text( tempFile ) ) ) );
+        Input<String, IOException> text1 = text( sourceFile );
+        Input<String, IOException> text2 = text( sourceFile );
+        List<Input<String, IOException>> list = createList( text1, text2 );
+        Inputs.combine( list ).transferTo(
+            Transforms.map(
+                stringCounter,
+                Transforms.map( new Function<String, String>()
+                {
+                    public String map( String s )
+                    {
+                        System.out.println( s );
+                        return s;
+                    }
+                }, Outputs.text( tempFile ) )
+            )
+        );
 
         Assert.assertThat( tempFile.length(), CoreMatchers.equalTo( sourceFile.length() * 2 ) );
         Assert.assertThat( stringCounter.getCount(), CoreMatchers.equalTo( 8L ) );
+    }
+
+    @SuppressWarnings( "unchecked" )
+    private List<Input<String, IOException>> createList( Input<String, IOException> text1,
+                                                         Input<String, IOException> text2
+    )
+    {
+        return asList( text1, text2 );
     }
 
     @Test( expected = IOException.class )
@@ -261,8 +278,11 @@ public class InputOutputTest
         };
 
         input.transferTo(
-            Transforms.map( new Transforms.Log<String>( LoggerFactory.getLogger( getClass() ), "Line: {0}" ),
-                            Outputs.systemOut() ) );
+            Transforms.map(
+                new Transforms.Log<String>( LoggerFactory.getLogger( getClass() ), "Line: {0}" ),
+                Outputs.systemOut()
+            )
+        );
     }
 
     @Test

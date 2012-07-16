@@ -29,10 +29,12 @@ import org.qi4j.runtime.structure.ModuleInstance;
 
 import static org.qi4j.api.util.Classes.RAW_CLASS;
 import static org.qi4j.api.util.Classes.interfacesOf;
+import static org.qi4j.functional.Iterables.filter;
 import static org.qi4j.functional.Iterables.flattenIterables;
 import static org.qi4j.functional.Iterables.iterable;
 import static org.qi4j.functional.Iterables.map;
 import static org.qi4j.functional.Iterables.toArray;
+import static org.qi4j.functional.Iterables.unique;
 
 /**
  * JAVADOC
@@ -55,7 +57,7 @@ public abstract class AbstractModifierModel
         injectedFieldsModel = new InjectedFieldsModel( declaredModifierClass );
         injectedMethodsModel = new InjectedMethodsModel( declaredModifierClass );
         Class<Class<?>> componentType = (Class<Class<?>>) Class.class.cast( Class.class );
-        nextInterfaces = toArray( componentType, map( RAW_CLASS, interfacesOf( declaredModifierClass ) ) );
+        nextInterfaces = toArray( componentType, unique( map( RAW_CLASS, interfacesOf( declaredModifierClass ) ) ));
     }
 
     public Class modifierClass()

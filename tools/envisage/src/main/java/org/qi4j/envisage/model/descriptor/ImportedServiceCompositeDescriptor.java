@@ -52,7 +52,7 @@ public class ImportedServiceCompositeDescriptor
         return mixins;
     }
 
-    public Class<?> type()
+    public Class<?> primaryType()
     {
         return importedService.type();
     }
@@ -86,6 +86,6 @@ public class ImportedServiceCompositeDescriptor
 
     public String toURI()
     {
-        return Classes.toURI( type() );
+        return Classes.toURI( primaryType() );
     }
 }

@@ -189,6 +189,11 @@ public final class CompositeMethodModel
         return method.toGenericString();
     }
 
+    public Iterable<Method> invocationsFor( Class<?> mixinClass )
+    {
+        return mixins.invocationsFor(mixinClass);
+    }
+
     public class CompositeMethodAnnotatedElement
         implements AnnotatedElement
     {

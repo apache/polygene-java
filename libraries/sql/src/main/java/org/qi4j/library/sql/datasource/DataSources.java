@@ -24,6 +24,8 @@ import javax.sql.DataSource;
 
 import org.qi4j.api.service.ServiceImporterException;
 import static org.qi4j.functional.Specifications.not;
+
+import org.qi4j.functional.Specification;
 import org.qi4j.library.circuitbreaker.CircuitBreaker;
 import static org.qi4j.library.circuitbreaker.CircuitBreakers.in;
 import static org.qi4j.library.circuitbreaker.CircuitBreakers.rootCause;
@@ -39,7 +41,9 @@ public class DataSources
 
     public static CircuitBreaker newDataSourceCircuitBreaker( int threshold, long timeout )
     {
-        return new CircuitBreaker( threshold, timeout, not( rootCause( in( ConnectException.class ) ) ) );
+        @SuppressWarnings( "unchecked" )
+        Specification<Throwable> in = in( ConnectException.class );
+        return new CircuitBreaker( threshold, timeout, not( rootCause( in ) ) );
     }
 
     public static DataSource wrapWithCircuitBreaker( final String dataSourceIdentity, final DataSource pool, final CircuitBreaker circuitBreaker )
