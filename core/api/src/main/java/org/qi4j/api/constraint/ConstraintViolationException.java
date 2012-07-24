@@ -27,6 +27,7 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.composite.Composite;
+import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
 
 /**
@@ -181,7 +182,21 @@ public class ConstraintViolationException
             Annotation annotation = violation.constraint();
             String name = violation.name();
             Object value = violation.value();
-            Class[] classes = Iterables.toArray( Class.class, instanceTypes );
+            String classes;
+            if( Iterables.count( instanceTypes) == 1 )
+            {
+                classes = Iterables.first( instanceTypes ).getSimpleName();
+            }
+            else
+            {
+                classes = "[" + Iterables.<Class<?>>toString( instanceTypes, new Function<Class<?>, String>()
+                {
+                    public String map( Class<?> from )
+                    {
+                        return from.getSimpleName();
+                    }
+                }, "," ) + "]";
+            }
             Object[] args = new Object[]
                 {
                     instanceToString,
