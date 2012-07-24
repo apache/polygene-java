@@ -26,8 +26,8 @@ public interface DataSourceConfigurationState
 {
     Property<String> driver();
     Property<String> url();
-    Property<String> username();
-    Property<String> password();
+    @UseDefaults Property<String> username();
+    @UseDefaults Property<String> password();
     @UseDefaults Property<String> properties();
 }
 // END SNIPPET: config
