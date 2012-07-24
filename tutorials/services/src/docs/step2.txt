@@ -1,0 +1,21 @@
+[[tut-services-step2,Step 2 - Hooking into the Service Activation]]
+= Step 2 - Hooking into the Service Activation =
+
+Services can be "activated" and "passivated". Applications can be notified of this occurring
+by Qi4j runtime by assembling them with an Activator. 
+
+Activators methods are called around "activation" and "passivation": beforeActivation,
+afterActivation, beforeActivation, afterPassivation. The
+ActivatorAdapter class help you keeping your code short when you only need one or two hooks.
+
+To showcase how this works, we refactor the code to create a number of copies of the books, to be lend out
+upon call to the borrowBook method, which will return null if no copy is available. The book
+copies are created in the activate method.
+
+Steps to do:
+
+- Add a createInitialData method to Library.
+- In the implementation, create a couple of books of each title and store each copy in a HashMap<String,ArrayList<Book>>.
+- Write an Activator<ServiceReference<Library>> class extending ActivatorAdapter.
+- Override the afterActivation method, use the ServiceReference to get a handle on the Library and call its createInitialData method.
+- Add the @Activators annotation to the LibraryService declaring the new LibraryActivator.

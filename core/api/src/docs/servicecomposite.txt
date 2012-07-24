@@ -33,7 +33,7 @@ The characteristics of a ServiceComposite compared to other Composite meta types
 
     * It is one singleton per declaration in bootstrap.
     * It has an identity defined in bootstrap.
-    * It is Activatable, which is a kind of life cycle.
+    * It has an Activation life cycle into which Activators hook.
     * It has an optional Configuration.
 
 
@@ -48,9 +48,9 @@ need to declare/call the instantiateOnStartup() method on the _ServiceDescriptor
 == Service Configuration ==
 The configuration for a service is well supported in Qi4j. See the <<core-api-service-configuration>> chapter for details.
 
-== Activation/Deactivation ==
-Services are instantiated and activated either on application start-up, or upon first use. This is controlled by calling
-instantiateOnStartup(), this way;
+== Service Activation ==
+Services are activated (injected and instantiated) either on application start-up, or upon first use. This is controlled
+by calling instantiateOnStartup(), this way;
 
 [snippet,java]
 --------------
@@ -58,14 +58,16 @@ source=core/api/src/test/java/org/qi4j/api/service/DocumentationSupport.java
 tag=instantiateOnStartup
 --------------
 
-If the method is not called, the creation and activation will occur on first usage.
+If this method is not called during assembly, the activation will occur on first service usage.
 
-If the service implements the org.qi4j.api.Activatable interface, the activate() method will be called after the
-constructor initialization, useful to have all the member injections already in place.
+Passivation occurs when a <<core-api-module>> is deactivated, typically because the whole application is shutting down.
+Passivation occurs in the reverse order of the activation, to ensure that dependent services are still available for a
+passivating service.
 
-When a <<core-api-module>> is deactivated, typically because the whole application is shutting down, the deactivate() method in
-the service will be called. The deactivation occurs in the reverse order of the activation, to ensure that dependent
-services are still available for a deactivating service.
+Activators assembled with the service will get their beforeActivation and afterActivation methods called around the
+ServiceComposite activation and their beforePassivation and afterPassivation around the ServiceComposite passivation.
+Member injection and constructor initialization occur during the activation. The ServiceComposite can be used from the
+afterActivation to the beforePassivation method.
 
 == Identity and Tags ==
 Services has an Identity, which drives the <<core-api-service-configuration>> system and can be used to lookup a particular service

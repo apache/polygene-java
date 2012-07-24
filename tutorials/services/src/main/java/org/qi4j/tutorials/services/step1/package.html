@@ -1,26 +1,31 @@
 <body>
-<h1>Step 1 - Interface refactoring</h1>
+    <h1>Step 1 - Creating a ServiceComposite</h1>
 
-In this tutorial we start with basic Java classes, to simulate a very simple Library where you can borrow
-and return books.
-<p/>
-Qi4j relies heavily on the use of interfaces. This makes it possible for an object
-to externally implement a number of interfaces which internally is backed by a number
-of Mixins, some of which you may have written yourself, and some of which may have been
-reused. This is also true for services, which we are to cover in this tutorial.
-<p/>
-The first task is therefore to refactor the code so that the methods are implemented from an
-interface instead, and to essentially make the identical "application" into a Qi4j application.
-We also want the Book to be a ValueComposite.
-<p/>
-Steps for this tutorial:
-<ol>
-    <li>Make the Book into a ValueComposite.</li>
-    <li>Make the Library an interface with the same methods. We call this a <i>Mixin Type</i></li>
-    <li>Create a LibraryMixin class, which implements the Library interface.</li>
-    <li>Create a LibraryService that binds the LibraryMixin.</li>
-    <li>The LibraryMixin will need to be injected with the <code>ValueBuilderFactory</code> in the
-        <code>@Structure</code> scope.
-    </li>
-</ol>
+    <p>
+        In this tutorial we start with basic Java classes, to simulate a very simple Library where you can borrow
+        and return books.
+    </p>
+    <p>
+        Qi4j relies heavily on the use of interfaces. This makes it possible for an object
+        to externally implement a number of interfaces which internally is backed by a number
+        of Mixins, some of which you may have written yourself, and some of which may have been
+        reused. This is also true for services, which we are to cover in this tutorial.
+    </p>
+    <p>
+        The first task is therefore to refactor the code so that the methods are implemented from an
+        interface instead, and to essentially make the identical "application" into a Qi4j application.
+        We also want the Book to be a ValueComposite.
+    </p>
+    
+    <p>Steps for this tutorial:</p>
+    <ol>
+        <li>Make the Book into a ValueComposite.</li>
+        <li>Make the Library an interface with the same methods. We call this a <i>Mixin Type</i></li>
+        <li>Create a LibraryMixin class, which implements the Library interface.</li>
+        <li>Create a LibraryService that binds the LibraryMixin.</li>
+        <li>The LibraryMixin will need to be injected with the <code>ValueBuilderFactory</code> in the
+            <code>@Structure</code> scope.
+        </li>
+    </ol>
+    
 </body>

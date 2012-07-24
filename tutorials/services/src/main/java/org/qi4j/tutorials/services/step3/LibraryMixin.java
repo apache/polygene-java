@@ -1,5 +1,6 @@
 /*
  * Copyright 2009 Niclas Hedhman.
+ * Copyright 2012 Paul Merlin.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -17,16 +18,14 @@
  */
 package org.qi4j.tutorials.services.step3;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import org.qi4j.api.injection.scope.Structure;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 public class LibraryMixin
-    implements Library, Activatable
+    implements Library
 {
     @Structure
     ValueBuilderFactory factory;
@@ -35,6 +34,13 @@ public class LibraryMixin
     public LibraryMixin()
     {
         books = new HashMap<String, ArrayList<Book>>();
+    }
+
+    public void createInitialData()
+    {
+        createBook( "Eric Evans", "Domain Driven Design", 2 );
+        createBook( "Andy Hunt", "Pragmatic Programmer", 3 );
+        createBook( "Kent Beck", "Extreme Programming Explained", 5 );
     }
 
     public Book borrowBook( String author, String title )
@@ -66,19 +72,6 @@ public class LibraryMixin
             throw new IllegalStateException( "Book " + book + " was not borrowed here." );
         }
         copies.add( book );
-    }
-
-    public void activate()
-        throws Exception
-    {
-        createBook( "Eric Evans", "Domain Driven Design", 2 );
-        createBook( "Andy Hunt", "Pragmatic Programmer", 3 );
-        createBook( "Kent Beck", "Extreme Programming Explained", 5 );
-    }
-
-    public void passivate()
-        throws Exception
-    {
     }
 
     private void createBook( String author, String title, int copies )
