@@ -13,13 +13,11 @@
  */
 package org.qi4j.library.http;
 
-import javax.management.MBeanServer;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-
+import javax.management.MBeanServer;
 import javax.servlet.Filter;
 import javax.servlet.Servlet;
-
 import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.security.SecurityHandler;
 import org.eclipse.jetty.server.Connector;
@@ -31,14 +29,13 @@ import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.library.http.Interface.Protocol;
+
 import static org.qi4j.library.http.JettyConfigurationHelper.*;
 
 public abstract class AbstractJettyMixin
-        implements Activatable, HttpService
+        implements HttpService, JettyActivation
 {
 
     private final String identity;
@@ -70,7 +67,7 @@ public abstract class AbstractJettyMixin
 
     protected abstract Protocol servedProtocol();
 
-    public final void activate()
+    public final void startJetty()
             throws Exception
     {
         // server = new Server();
@@ -104,7 +101,7 @@ public abstract class AbstractJettyMixin
         server.start();
     }
 
-    public final void passivate()
+    public final void stopJetty()
             throws Exception
     {
         server.stop();
