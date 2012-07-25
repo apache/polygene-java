@@ -16,22 +16,51 @@ package org.qi4j.library.neo4j;
 import java.io.File;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
+import org.qi4j.api.activation.ActivatorAdapter;
+import org.qi4j.api.activation.Activators;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceDescriptor;
+import org.qi4j.api.service.ServiceReference;
 import org.qi4j.library.fileconfig.FileConfiguration;
 
 /**
  * TODO
  */
 @Mixins(EmbeddedDatabaseService.Mixin.class)
+@Activators( EmbeddedDatabaseService.Activator.class )
 public interface EmbeddedDatabaseService
-    extends ServiceComposite, Activatable
+    extends ServiceComposite
 {
+    void startDatabase()
+            throws Exception;
+    
+    void stopDatabase()
+            throws Exception;
+    
     GraphDatabaseService database();
+    
+    class Activator
+            extends ActivatorAdapter<ServiceReference<EmbeddedDatabaseService>>
+    {
+
+        @Override
+        public void afterActivation( ServiceReference<EmbeddedDatabaseService> activated )
+                throws Exception
+        {
+            activated.get().startDatabase();
+        }
+
+        @Override
+        public void beforePassivation( ServiceReference<EmbeddedDatabaseService> passivating )
+                throws Exception
+        {
+            passivating.get().stopDatabase();
+        }
+        
+    }
 
     abstract class Mixin
         implements EmbeddedDatabaseService
@@ -45,13 +74,7 @@ public interface EmbeddedDatabaseService
         EmbeddedGraphDatabase db;
 
         @Override
-        public GraphDatabaseService database()
-        {
-            return db;
-        }
-
-        @Override
-        public void activate()
+        public void startDatabase()
             throws Exception
         {
             String path = new File( config.dataDirectory(), identity().get() ).getAbsolutePath();
@@ -59,10 +82,17 @@ public interface EmbeddedDatabaseService
         }
 
         @Override
-        public void passivate()
+        public void stopDatabase()
             throws Exception
         {
             db.shutdown();
         }
+        
+        @Override
+        public GraphDatabaseService database()
+        {
+            return db;
+        }
+
     }
 }
