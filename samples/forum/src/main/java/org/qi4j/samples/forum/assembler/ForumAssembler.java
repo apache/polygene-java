@@ -14,7 +14,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.entitystore.neo4j.NeoConfiguration;
 import org.qi4j.entitystore.neo4j.NeoEntityStoreService;
-import org.qi4j.library.fileconfig.FileConfiguration;
+import org.qi4j.library.fileconfig.FileConfigurationService;
 import org.qi4j.library.rest.common.ValueAssembler;
 import org.qi4j.library.rest.server.assembler.RestServerAssembler;
 import org.qi4j.library.rest.server.restlet.RequestReaderDelegator;
@@ -62,7 +62,7 @@ public class ForumAssembler
         LayerAssembly infrastructure = assembly.layer( "Infrastructure" ).uses( configuration );
         {
             ModuleAssembly entityStore = infrastructure.module( "EntityStore" );
-            entityStore.services( FileConfiguration.class );
+            entityStore.services( FileConfigurationService.class );
             entityStore.services( NeoEntityStoreService.class ).visibleIn( Visibility.application );
             entityStore.services( UuidIdentityGeneratorService.class ).visibleIn( Visibility.application );
         }

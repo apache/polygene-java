@@ -24,7 +24,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.index.rdf.query.RdfQueryParserFactory;
-import org.qi4j.library.fileconfig.FileConfiguration;
+import org.qi4j.library.fileconfig.FileConfigurationService;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.entity.EntityTypeSerializer;
 import org.qi4j.library.rdf.repository.NativeConfiguration;
@@ -40,7 +40,7 @@ public class RdfQueryTest extends AbstractQueryTest
         throws AssemblyException
     {
         super.assemble( module );
-        module.services( FileConfiguration.class );
+        module.services( FileConfigurationService.class );
         module.services( NativeRepositoryService.class, RdfQueryParserFactory.class ).instantiateOnStartup();
         module.services( RdfIndexingEngineService.class ).instantiateOnStartup();
         module.objects( EntityStateSerializer.class, EntityTypeSerializer.class );

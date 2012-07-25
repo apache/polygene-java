@@ -15,7 +15,7 @@ import org.qi4j.index.rdf.ContainsAllTest.ExampleEntity;
 import org.qi4j.index.rdf.ContainsAllTest.ExampleValue;
 import org.qi4j.index.rdf.ContainsAllTest.ExampleValue2;
 import org.qi4j.index.rdf.assembly.RdfNativeSesameStoreAssembler;
-import org.qi4j.library.fileconfig.FileConfiguration;
+import org.qi4j.library.fileconfig.FileConfigurationService;
 import org.qi4j.library.rdf.repository.NativeConfiguration;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
@@ -28,7 +28,7 @@ public class ContainsTest extends AbstractQi4jTest
 {
    public void assemble(ModuleAssembly module) throws AssemblyException
    {
-       module.services( FileConfiguration.class );
+       module.services( FileConfigurationService.class );
       ModuleAssembly prefModule = module.layer().module( "PrefModule" );
       prefModule.entities( NativeConfiguration.class ).visibleIn(Visibility.application);
        prefModule.services( MemoryEntityStoreService.class );

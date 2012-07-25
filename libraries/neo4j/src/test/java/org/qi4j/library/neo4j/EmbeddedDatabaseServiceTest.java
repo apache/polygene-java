@@ -7,7 +7,7 @@ import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.Transaction;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.library.fileconfig.FileConfiguration;
+import org.qi4j.library.fileconfig.FileConfigurationService;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**
@@ -25,7 +25,7 @@ public class EmbeddedDatabaseServiceTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.services( FileConfiguration.class );
+        module.services( FileConfigurationService.class );
         module.services( EmbeddedDatabaseService.class );
     }
 

@@ -23,7 +23,7 @@ import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
-import org.qi4j.library.fileconfig.FileConfiguration;
+import org.qi4j.library.fileconfig.FileConfigurationService;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
 
@@ -39,7 +39,7 @@ public class JdbmEntityStoreTest
            throws AssemblyException
    {
       super.assemble(module);
-      module.services(FileConfiguration.class).instantiateOnStartup();
+      module.services(FileConfigurationService.class).instantiateOnStartup();
       module.services(JdbmEntityStoreService.class, UuidIdentityGeneratorService.class);
 
       ModuleAssembly config = module.layer().module("config");

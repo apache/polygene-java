@@ -36,7 +36,7 @@ public class FileConfigurationTest
                     throws AssemblyException
             {
                 // START SNIPPET: simple
-                module.services( FileConfiguration.class );
+                module.services( FileConfigurationService.class );
                 // END SNIPPET: simple
             }
 
@@ -71,7 +71,7 @@ public class FileConfigurationTest
                         withTemporary( tempDir ).
                         withCache( cacheDir ).
                         withLog( logDir );
-                module.services( FileConfiguration.class ).setMetaInfo( override );
+                module.services( FileConfigurationService.class ).setMetaInfo( override );
                 // END SNIPPET: override
             }
 

@@ -18,7 +18,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.functional.Iterables;
 import org.qi4j.index.rdf.assembly.RdfNativeSesameStoreAssembler;
-import org.qi4j.library.fileconfig.FileConfiguration;
+import org.qi4j.library.fileconfig.FileConfigurationService;
 import org.qi4j.library.rdf.repository.NativeConfiguration;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
@@ -64,7 +64,7 @@ public class ContainsAllTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.services( FileConfiguration.class );
+        module.services( FileConfigurationService.class );
         ModuleAssembly prefModule = module.layer().module( "PrefModule" );
         prefModule.entities( NativeConfiguration.class ).visibleIn( Visibility.application );
         prefModule.services( MemoryEntityStoreService.class );
