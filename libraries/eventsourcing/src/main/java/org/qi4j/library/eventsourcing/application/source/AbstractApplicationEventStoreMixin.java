@@ -16,10 +16,18 @@
 
 package org.qi4j.library.eventsourcing.application.source;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.type.ValueType;
 import org.qi4j.api.value.ValueBuilder;
@@ -33,23 +41,13 @@ import org.qi4j.library.eventsourcing.application.api.TransactionApplicationEven
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
 import static java.util.Collections.synchronizedList;
 
 /**
  * Base implementation for ApplicationEventStores.
  */
 public abstract class AbstractApplicationEventStoreMixin
-        implements ApplicationEventStore, ApplicationEventStream, Activatable
+        implements ApplicationEventStore, ApplicationEventStream, ApplicationEventStoreActivation
 {
     @This
     protected Identity identity;
@@ -72,7 +70,8 @@ public abstract class AbstractApplicationEventStoreMixin
 
     private long lastTimestamp = 0;
 
-    public void activate() throws IOException
+    public void activateApplicationEventStore()
+            throws Exception
     {
         logger = LoggerFactory.getLogger( identity.identity().get() );
 
@@ -82,7 +81,8 @@ public abstract class AbstractApplicationEventStoreMixin
         transactionNotifier = Executors.newSingleThreadExecutor();
     }
 
-    public void passivate() throws Exception
+    public void passivateApplicationEventStore()
+            throws Exception
     {
         transactionNotifier.shutdown();
         transactionNotifier.awaitTermination( 10000, TimeUnit.MILLISECONDS );

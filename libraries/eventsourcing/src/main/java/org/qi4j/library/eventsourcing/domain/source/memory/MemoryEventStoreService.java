@@ -14,12 +14,13 @@
 
 package org.qi4j.library.eventsourcing.domain.source.memory;
 
-/**
- * JAVADOC
- */
-
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
+import org.qi4j.api.activation.Activators;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.io.Input;
 import org.qi4j.io.Output;
@@ -29,39 +30,25 @@ import org.qi4j.library.eventsourcing.domain.api.UnitOfWorkDomainEventsValue;
 import org.qi4j.library.eventsourcing.domain.source.AbstractEventStoreMixin;
 import org.qi4j.library.eventsourcing.domain.source.EventSource;
 import org.qi4j.library.eventsourcing.domain.source.EventStore;
+import org.qi4j.library.eventsourcing.domain.source.EventStoreActivation;
 import org.qi4j.library.eventsourcing.domain.source.EventStream;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
 
 /**
  * In-Memory EventStore. Mainly used for testing.
  */
 @Mixins(MemoryEventStoreService.MemoryEventStoreMixin.class)
+@Activators( EventStoreActivation.Activator.class )
 public interface MemoryEventStoreService
-        extends EventSource, EventStore, EventStream, Activatable, ServiceComposite
+        extends EventSource, EventStore, EventStream, EventStoreActivation, ServiceComposite
 {
     abstract class MemoryEventStoreMixin
             extends AbstractEventStoreMixin
-            implements EventSource
+            implements EventSource, EventStoreActivation
     {
         // This list holds all transactions
         private LinkedList<UnitOfWorkDomainEventsValue> store = new LinkedList<UnitOfWorkDomainEventsValue>();
 
         private long currentCount = 0;
-
-        public void activate() throws IOException
-        {
-            super.activate();
-        }
-
-        public void passivate() throws Exception
-        {
-            super.passivate();
-        }
 
         public Input<UnitOfWorkDomainEventsValue, IOException> events( final long offset, final long limit )
         {
