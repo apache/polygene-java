@@ -1,19 +1,18 @@
 package org.qi4j.library.osgi;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Dictionary;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
+import org.qi4j.api.activation.ActivatorAdapter;
+import org.qi4j.api.activation.Activators;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Module;
-import org.qi4j.functional.Iterables;
 
 import static org.qi4j.api.util.Classes.toClassName;
 import static org.qi4j.api.util.Classes.typesOf;
@@ -23,8 +22,36 @@ import static org.qi4j.functional.Iterables.map;
 import static org.qi4j.functional.Iterables.toArray;
 
 @Mixins( OSGiEnabledService.OSGiEnabledServiceMixin.class )
-public interface OSGiEnabledService extends Activatable, ServiceComposite
+@Activators( OSGiEnabledService.Activator.class )
+public interface OSGiEnabledService extends ServiceComposite
 {
+    
+    void registerServices()
+            throws Exception;
+
+    void unregisterServices()
+            throws Exception;
+    
+    class Activator
+            extends ActivatorAdapter<ServiceReference<OSGiEnabledService>>
+    {
+
+        @Override
+        public void afterActivation( ServiceReference<OSGiEnabledService> activated )
+                throws Exception
+        {
+            activated.get().registerServices();
+        }
+
+        @Override
+        public void beforePassivation( ServiceReference<OSGiEnabledService> passivating )
+                throws Exception
+        {
+            passivating.get().unregisterServices();
+        }
+        
+    }
+
 
     public abstract class OSGiEnabledServiceMixin
         implements OSGiEnabledService
@@ -37,7 +64,7 @@ public interface OSGiEnabledService extends Activatable, ServiceComposite
 
         private ServiceRegistration registration;
 
-        public void activate()
+        public void registerServices()
             throws Exception
         {
             BundleContext context = descriptor.metaInfo( BundleContext.class );
@@ -62,7 +89,7 @@ public interface OSGiEnabledService extends Activatable, ServiceComposite
             return toArray( String.class, map( toClassName(), typesOf( classesSet ) ) );
         }
 
-        public void passivate()
+        public void unregisterServices()
             throws Exception
         {
             if( registration != null )
