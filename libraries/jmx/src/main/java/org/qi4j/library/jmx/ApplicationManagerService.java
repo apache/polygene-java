@@ -22,6 +22,8 @@ import javax.management.MBeanServer;
 import javax.management.ObjectName;
 import javax.management.modelmbean.ModelMBeanOperationInfo;
 import javax.management.modelmbean.RequiredModelMBean;
+import org.qi4j.api.activation.ActivatorAdapter;
+import org.qi4j.api.activation.Activators;
 import org.qi4j.api.composite.ModelDescriptor;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
@@ -61,11 +63,39 @@ import static org.qi4j.functional.Iterables.first;
  * </pre>
  */
 @Mixins( ApplicationManagerService.Mixin.class )
+@Activators( ApplicationManagerService.Activator.class )
 public interface ApplicationManagerService
-    extends ServiceComposite, Activatable
+    extends ServiceComposite
 {
-    class Mixin
-        implements Activatable
+    
+    void exportApplicationStructure()
+            throws Exception;
+
+    void unexportApplicationStructure()
+            throws Exception;
+
+    static class Activator
+            extends ActivatorAdapter<ServiceReference<ApplicationManagerService>>
+    {
+
+        @Override
+        public void afterActivation( ServiceReference<ApplicationManagerService> activated )
+                throws Exception
+        {
+            activated.get().exportApplicationStructure();
+        }
+
+        @Override
+        public void beforePassivation( ServiceReference<ApplicationManagerService> passivating )
+                throws Exception
+        {
+            passivating.get().unexportApplicationStructure();
+        }
+        
+    }
+    
+    static abstract class Mixin
+        implements ApplicationManagerService
     {
         @Service
         public MBeanServer server;
@@ -75,7 +105,7 @@ public interface ApplicationManagerService
 
         private List<ObjectName> mbeans = new ArrayList<ObjectName>();
 
-        public void activate()
+        public void exportApplicationStructure()
             throws Exception
         {
             application.descriptor().accept( new HierarchicalVisitorAdapter<Object, Object, Exception>()
@@ -192,7 +222,7 @@ public interface ApplicationManagerService
             } );
         }
 
-        public void passivate()
+        public void unexportApplicationStructure()
             throws Exception
         {
             for( ObjectName mbean : mbeans )
@@ -283,10 +313,8 @@ public interface ApplicationManagerService
 
         public String restart()
         {
-            Iterable services = module.findServices( Activatable.class );
-            ServiceReference<Activatable> serviceRef = (ServiceReference<Activatable>) Iterables.first( Iterables.filter( ServiceQualifier
-                                                                                                                              .withId( serviceDescriptor
-                                                                                                                                           .identity() ), services ) );
+            Iterable services = module.findServices( first( serviceDescriptor.types() ) );
+            ServiceReference serviceRef = ( ServiceReference ) Iterables.first( Iterables.filter( ServiceQualifier.withId( serviceDescriptor.identity() ), services ) );
             if( serviceRef != null )
             {
                 try

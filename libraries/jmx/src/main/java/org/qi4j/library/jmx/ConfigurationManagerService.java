@@ -42,6 +42,8 @@ import javax.management.ObjectName;
 import javax.management.ReflectionException;
 import javax.management.modelmbean.DescriptorSupport;
 import org.qi4j.api.Qi4j;
+import org.qi4j.api.activation.ActivatorAdapter;
+import org.qi4j.api.activation.Activators;
 import org.qi4j.api.association.AssociationStateHolder;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.CompositeInstance;
@@ -68,14 +70,42 @@ import org.qi4j.spi.Qi4jSPI;
 import static org.qi4j.functional.Iterables.first;
 
 /**
- * Expose ConfigurationComposites through JMX. Allow configurations to be edited, and the services to be restarted.
+ * Expose ConfigurationComposites through JMX.
+ * Allow configurations to be edited, and the services to be restarted.
  */
 @Mixins( ConfigurationManagerService.Mixin.class )
+@Activators( ConfigurationManagerService.Activator.class )
 public interface ConfigurationManagerService
-    extends ServiceComposite, Activatable
+    extends ServiceComposite
 {
-    class Mixin
-        implements Activatable
+    void exportConfigurableServices()
+            throws Exception;
+
+    void unexportConfigurableServices()
+            throws Exception;
+    
+    class Activator
+            extends ActivatorAdapter<ServiceReference<ConfigurationManagerService>>
+    {
+
+        @Override
+        public void afterActivation( ServiceReference<ConfigurationManagerService> activated )
+                throws Exception
+        {
+            activated.get().exportConfigurableServices();
+        }
+
+        @Override
+        public void beforePassivation( ServiceReference<ConfigurationManagerService> passivating )
+                throws Exception
+        {
+            passivating.get().unexportConfigurableServices();
+        }
+
+    }
+    
+    abstract class Mixin
+        implements ConfigurationManagerService
     {
         @Structure
         UnitOfWorkFactory uowf;
@@ -94,14 +124,7 @@ public interface ConfigurationManagerService
 
         private List<ObjectName> configurationNames = new ArrayList<ObjectName>();
 
-        public void activate()
-            throws Exception
-        {
-            // Expose configurable services
-            exportConfigurableServices();
-        }
-
-        private void exportConfigurableServices()
+        public void exportConfigurableServices()
             throws NotCompliantMBeanException, MBeanRegistrationException, InstanceAlreadyExistsException, MalformedObjectNameException
         {
             for( ServiceReference<?> configurableService : configurableServices )
@@ -174,10 +197,7 @@ public interface ConfigurationManagerService
                     }
 
                     List<MBeanOperationInfo> operations = new ArrayList<MBeanOperationInfo>();
-                    if( configurableService instanceof Activatable )
-                    {
-                        operations.add( new MBeanOperationInfo( "restart", "Restart service", new MBeanParameterInfo[ 0 ], "java.lang.String", MBeanOperationInfo.ACTION_INFO ) );
-                    }
+                    operations.add( new MBeanOperationInfo( "restart", "Restart service", new MBeanParameterInfo[ 0 ], "java.lang.String", MBeanOperationInfo.ACTION_INFO ) );
 
                     MBeanInfo mbeanInfo = new MBeanInfo( serviceClass, name, attributes.toArray( new MBeanAttributeInfo[ attributes
                         .size() ] ), null, operations.toArray( new MBeanOperationInfo[ operations.size() ] ), null );
@@ -199,7 +219,7 @@ public interface ConfigurationManagerService
             }
         }
 
-        public void passivate()
+        public void unexportConfigurableServices()
             throws Exception
         {
             for( ObjectName configurableServiceName : configurationNames )
