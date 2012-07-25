@@ -13,3 +13,9 @@ dependencies {
   testRuntime(libraries.asm_commons)
   testRuntime(libraries.slf4j_simple)
 }
+
+task(runSample, dependsOn: 'testClasses', type: JavaExec) {
+    main = 'org.qi4j.library.circuitbreaker.jmx.CircuitBreakerManagementTest'
+    classpath = sourceSets.test.runtimeClasspath
+}
+
