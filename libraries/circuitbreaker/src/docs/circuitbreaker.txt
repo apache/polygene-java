@@ -41,6 +41,8 @@ delegates to a circuit breaker and the Enabled configuration flag, which
 is what we'd suspect will be used in most cases where external systems 
 are invoked. 
 
-
-
+A gradle task runSample is defined in this library as a shortcut to run a
+simple interactive example. You'll need a MBean client to connect to the 
+sample, VisualVM with its MBean plugin does the job. See <<build-system>>
+if you need some guidance.
 

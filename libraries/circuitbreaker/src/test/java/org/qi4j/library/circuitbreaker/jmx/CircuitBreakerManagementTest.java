@@ -34,15 +34,25 @@ public class CircuitBreakerManagementTest
       };
 
       TestService service = assembler.module().<TestService>findService(TestService.class).get();
-
+      
+      int interval = 1; // Seconds
+      System.out.println( "CircuitBreaker JMX Support sample is now started." );
+      System.out.println();
+      System.out.println( "A Service that randomly output some text or fail is called through a CircuitBreaker every " + interval + " seconds." );
+      System.out.println( "In a few interval the CircuitBreaker will be turned off." );
+      System.out.println( "Connect with a MBean browser (eg. VisualVM + MBean plugin) to use the turnOn operation on the CircuitBreakers." );
+      System.out.println();
+      System.out.println( "Hit Ctrl-C to stop." );
+      System.out.println();
+      
       while (true)
       {
          try
          {
-            Thread.sleep(1000);
+            Thread.sleep(interval*1000);
          } catch (InterruptedException e)
          {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
          }
 
          service.helloWorld();
