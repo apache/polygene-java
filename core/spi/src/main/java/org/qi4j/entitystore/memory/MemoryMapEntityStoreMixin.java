@@ -21,18 +21,25 @@ import org.qi4j.spi.entitystore.EntityAlreadyExistsException;
 import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.helpers.MapEntityStore;
+import org.qi4j.spi.entitystore.helpers.MapEntityStoreActivation;
 
 /**
  * In-memory implementation of MapEntityStore.
  */
 public class MemoryMapEntityStoreMixin
-    implements MapEntityStore, BackupRestore
+    implements MapEntityStore, BackupRestore, MapEntityStoreActivation
 {
     private final Map<EntityReference, String> store;
 
     public MemoryMapEntityStoreMixin()
     {
         store = new HashMap<EntityReference, String>();
+    }
+
+    public void activateMapEntityStore()
+        throws Exception
+    {
+        // NOOP
     }
 
     public boolean contains( EntityReference entityReference, EntityDescriptor descriptor )
