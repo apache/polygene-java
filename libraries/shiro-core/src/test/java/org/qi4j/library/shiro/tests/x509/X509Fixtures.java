@@ -21,12 +21,15 @@
  */
 package org.qi4j.library.shiro.tests.x509;
 
+import java.util.Arrays;
+import org.qi4j.api.activation.ActivatorAdapter;
+import org.qi4j.api.activation.Activators;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.library.shiro.domain.permissions.Permission;
@@ -37,31 +40,52 @@ import org.qi4j.library.shiro.domain.x509.X509LightFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
-
 @Mixins( X509Fixtures.Mixin.class )
+@Activators( X509Fixtures.Activator.class )
 public interface X509Fixtures
-        extends ServiceComposite, Activatable
+        extends ServiceComposite
 {
 
     String PERMISSION = "gizmo";
+
     String ROLE = "admin";
+
+    void insertFixtures()
+            throws Exception;
+
+    class Activator
+            extends ActivatorAdapter<ServiceReference<X509Fixtures>>
+    {
+
+        @Override
+        public void afterActivation( ServiceReference<X509Fixtures> activated )
+                throws Exception
+        {
+            activated.get().insertFixtures();
+        }
+
+    }
 
     abstract class Mixin
             implements X509Fixtures
     {
 
         private static final Logger LOGGER = LoggerFactory.getLogger( X509Fixtures.Mixin.class );
+
         @Structure
         private UnitOfWorkFactory uowf;
+
         @Service
         private PermissionFactory permissionFactory;
+
         @Service
         private RoleFactory roleFactory;
+
         @Service
         private X509LightFactory x509Factory;
 
-        public void activate()
+        @Override
+        public void insertFixtures()
                 throws Exception
         {
 
@@ -81,11 +105,6 @@ public interface X509Fixtures
             role.assignTo( user );
 
             uow.complete();
-        }
-
-        public void passivate()
-                throws Exception
-        {
         }
 
     }

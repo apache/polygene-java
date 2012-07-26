@@ -21,12 +21,15 @@
  */
 package org.qi4j.library.shiro.tests.username;
 
+import java.util.Arrays;
+import org.qi4j.api.activation.ActivatorAdapter;
+import org.qi4j.api.activation.Activators;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.library.shiro.domain.permissions.Permission;
@@ -35,17 +38,35 @@ import org.qi4j.library.shiro.domain.permissions.Role;
 import org.qi4j.library.shiro.domain.permissions.RoleFactory;
 import org.qi4j.library.shiro.domain.securehash.SecureHashFactory;
 
-import java.util.Arrays;
-
 @Mixins( UsernameFixtures.Mixin.class )
+@Activators( UsernameFixtures.Activator.class )
 public interface UsernameFixtures
-        extends ServiceComposite, Activatable
+        extends ServiceComposite
 {
 
     String USERNAME = "root";
+
     char[] PASSWORD = "secret".toCharArray();
+
     String PERMISSION = "gizmo";
+
     String ROLE = "admin";
+
+    void insertFixtures()
+            throws Exception;
+
+    class Activator
+            extends ActivatorAdapter<ServiceReference<UsernameFixtures>>
+    {
+
+        @Override
+        public void afterActivation( ServiceReference<UsernameFixtures> activated )
+                throws Exception
+        {
+            activated.get().insertFixtures();
+        }
+
+    }
 
     abstract class Mixin
             implements UsernameFixtures
@@ -53,14 +74,17 @@ public interface UsernameFixtures
 
         @Structure
         private UnitOfWorkFactory uowf;
+
         @Service
         private PermissionFactory permissionFactory;
+
         @Service
         private RoleFactory roleFactory;
+
         @Service
         private SecureHashFactory hashFactory;
 
-        public void activate()
+        public void insertFixtures()
                 throws Exception
         {
             // Create Test User
@@ -78,11 +102,6 @@ public interface UsernameFixtures
             role.assignTo( user );
 
             uow.complete();
-        }
-
-        public void passivate()
-                throws Exception
-        {
         }
 
     }
