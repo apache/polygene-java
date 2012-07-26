@@ -5,7 +5,6 @@ import org.qi4j.api.configuration.ConfigurationComposite;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.property.Property;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
 
@@ -14,7 +13,7 @@ import java.util.HashMap;
 import java.util.StringTokenizer;
 
 public class LibraryService
-    implements Library, Activatable
+    implements Library
 {
     public static interface LibraryConfiguration
         extends ConfigurationComposite
@@ -75,16 +74,6 @@ public class LibraryService
             throw new IllegalStateException( "Book " + book + " was not borrowed here." );
         }
         copies.add( book );
-    }
-
-    public void activate()
-        throws Exception
-    {
-    }
-
-    public void passivate()
-        throws Exception
-    {
     }
 
     private void createBook( ValueBuilderFactory factory, String author, String title, int copies )
