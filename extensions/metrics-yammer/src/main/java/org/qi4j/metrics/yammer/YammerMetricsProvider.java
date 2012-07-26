@@ -13,14 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.qi4j.metrics.yammer;
 
-import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.Activatable;
+import org.qi4j.api.activation.ActivatorAdapter;
+import org.qi4j.api.activation.Activators;
 import org.qi4j.api.metrics.MetricsProvider;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.service.ServiceReference;
 
-@Mixins(YammerMetricsMixin.class)
-public interface YammerMetricsProvider extends MetricsProvider, Activatable
+@Mixins( YammerMetricsMixin.class )
+@Activators( YammerMetricsProvider.Activator.class )
+public interface YammerMetricsProvider
+        extends MetricsProvider
 {
+
+    void shutdownMetrics()
+            throws Exception;
+
+    class Activator
+            extends ActivatorAdapter<ServiceReference<YammerMetricsProvider>>
+    {
+
+        @Override
+        public void beforePassivation( ServiceReference<YammerMetricsProvider> passivating )
+                throws Exception
+        {
+            passivating.get().shutdownMetrics();
+        }
+
+    }
+
 }
