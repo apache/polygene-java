@@ -14,21 +14,20 @@
 package org.qi4j.library.sql.datasource;
 
 import javax.sql.DataSource;
+import org.apache.commons.dbcp.BasicDataSource;
+import org.qi4j.api.activation.Activators;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceImporter;
 
-import org.apache.commons.dbcp.BasicDataSource;
-
 @Mixins( DBCPDataSourceServiceImporter.Mixin.class )
+@Activators( DataSourceServiceImporterActivation.Activator.class )
 public interface DBCPDataSourceServiceImporter
-        extends ServiceImporter<DataSource>, Activatable, ServiceComposite
+        extends ServiceImporter<DataSource>, DataSourceServiceImporterActivation, ServiceComposite
 {
 
     class Mixin
             extends AbstractDataSourceServiceImporterMixin<BasicDataSource>
-            implements Activatable
     {
 
         @Override

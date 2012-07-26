@@ -17,37 +17,51 @@ package org.qi4j.library.sql.liquibase;
 import java.net.ConnectException;
 import java.sql.Connection;
 import java.sql.SQLException;
-
 import javax.sql.DataSource;
-
-import org.qi4j.api.configuration.Configuration;
-import org.qi4j.api.injection.scope.Service;
-import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.Activatable;
-import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.api.service.ServiceImporterException;
-import org.qi4j.api.service.ServiceReference;
-import org.qi4j.library.sql.common.SQLUtil;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import liquibase.Liquibase;
 import liquibase.database.DatabaseConnection;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.resource.ClassLoaderResourceAccessor;
+import org.qi4j.api.activation.ActivatorAdapter;
+import org.qi4j.api.activation.Activators;
+import org.qi4j.api.configuration.Configuration;
+import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.service.ServiceImporterException;
+import org.qi4j.api.service.ServiceReference;
+import org.qi4j.library.sql.common.SQLUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Wrapper service for Liquibase.
  */
 @Mixins( LiquibaseService.Mixin.class )
+@Activators( LiquibaseService.Activator.class )
 public interface LiquibaseService
-        extends Activatable, ServiceComposite
+        extends ServiceComposite
 {
 
-    class Mixin
-            implements Activatable
+    void activateLiquibase()
+            throws Exception;
+
+    class Activator
+            extends ActivatorAdapter<ServiceReference<LiquibaseService>>
+    {
+
+        @Override
+        public void afterActivation( ServiceReference<LiquibaseService> activated )
+                throws Exception
+        {
+            activated.get().activateLiquibase();
+        }
+
+    }
+
+    abstract class Mixin
+            implements LiquibaseService
     {
 
         private static final Logger LOGGER = LoggerFactory.getLogger( "org.qi4j.library.sql" );
@@ -58,7 +72,8 @@ public interface LiquibaseService
         @Service
         ServiceReference<DataSource> dataSource;
 
-        public void activate()
+        @Override
+        public void activateLiquibase()
                 throws Exception
         {
             config.refresh();
@@ -99,11 +114,6 @@ public interface LiquibaseService
                 SQLUtil.closeQuietly( connection );
 
             }
-        }
-
-        public void passivate()
-                throws Exception
-        {
         }
 
     }

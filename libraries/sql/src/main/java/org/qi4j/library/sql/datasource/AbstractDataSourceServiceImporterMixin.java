@@ -19,14 +19,11 @@ import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.sql.DataSource;
-
 import org.qi4j.api.composite.PropertyMapper;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ImportedServiceDescriptor;
 import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.api.service.ServiceImporterException;
@@ -37,12 +34,11 @@ import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.library.circuitbreaker.CircuitBreaker;
 import org.qi4j.library.conversion.values.EntityToValue;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public abstract class AbstractDataSourceServiceImporterMixin<PooledDataSourceType extends DataSource>
-        implements ServiceImporter<DataSource>, Activatable
+        implements ServiceImporter<DataSource>, DataSourceServiceImporterActivation
 {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger( AbstractDataSourceServiceImporterMixin.class );
@@ -59,34 +55,15 @@ public abstract class AbstractDataSourceServiceImporterMixin<PooledDataSourceTyp
     @Service
     private EntityToValue entityToValue;
 
-    public final void activate()
-            throws Exception
-    {
-        onActivate();
-    }
-
-    protected void onActivate()
-            throws Exception
-    {
-    }
-
-    public final void passivate()
+    public final void passivateDataSourceService()
             throws Exception
     {
         for ( PooledDataSourceType pool : pools.values() ) {
             passivateDataSourcePool( pool );
         }
-
         pools.clear();
         configs.clear();
         circuitBreakers.clear();
-
-        onPassivate();
-    }
-
-    protected void onPassivate()
-            throws Exception
-    {
     }
 
     public final synchronized DataSource importService( final ImportedServiceDescriptor importedServiceDescriptor )
