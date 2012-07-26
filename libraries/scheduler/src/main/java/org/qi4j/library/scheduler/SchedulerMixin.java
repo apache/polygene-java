@@ -29,7 +29,6 @@ import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.unitofwork.UnitOfWork;
@@ -45,7 +44,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SchedulerMixin
-    implements Scheduler, Activatable
+    implements Scheduler, SchedulerActivation
 {
     private static final Logger LOGGER = LoggerFactory.getLogger( Scheduler.class );
     private static final int DEFAULT_WORKERS_COUNT = Runtime.getRuntime().availableProcessors() + 1;
@@ -192,7 +191,7 @@ public class SchedulerMixin
     }
 
     @Override
-    public void activate()
+    public void activateScheduler()
         throws Exception
     {
 
@@ -261,7 +260,7 @@ public class SchedulerMixin
     }
 
     @Override
-    public void passivate()
+    public void passivateScheduler()
         throws Exception
     {
         LOGGER.debug( "Passivated" );
