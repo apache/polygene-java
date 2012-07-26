@@ -18,30 +18,47 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
+import org.qi4j.api.activation.ActivatorAdapter;
+import org.qi4j.api.activation.Activators;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCallback;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.library.fileconfig.FileConfiguration;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Mixins( UoWFileFactory.Mixin.class )
+@Activators( UoWFileFactory.Activator.class )
 public interface UoWFileFactory
-        extends ServiceComposite, Activatable
+        extends ServiceComposite
 {
 
     UoWFile createCurrentUoWFile( File file );
+
+    void ensureWorkDirsExist()
+            throws IOException;
+
+    class Activator
+            extends ActivatorAdapter<ServiceReference<UoWFileFactory>>
+    {
+
+        @Override
+        public void afterActivation( ServiceReference<UoWFileFactory> activated )
+                throws Exception
+        {
+            activated.get().ensureWorkDirsExist();
+        }
+
+    }
 
     abstract class Mixin
             implements UoWFileFactory
@@ -70,8 +87,8 @@ public interface UoWFileFactory
         private File workDir;
 
         @Override
-        public void activate()
-                throws Exception
+        public void ensureWorkDirsExist()
+                throws IOException
         {
             File tmp;
             if ( fileConfig == null ) {
@@ -83,13 +100,6 @@ public interface UoWFileFactory
             if ( !workDir.exists() && !workDir.mkdirs() ) {
                 throw new IOException( "Unable to create temporary directory: " + workDir );
             }
-        }
-
-        @Override
-        public void passivate()
-                throws Exception
-        {
-            // NOOP
         }
 
         @Override
