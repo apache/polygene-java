@@ -14,28 +14,43 @@
 
 package org.qi4j.library.rest.admin;
 
+import java.util.HashMap;
+import org.qi4j.api.activation.ActivatorAdapter;
+import org.qi4j.api.activation.Activators;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
 
-import java.util.HashMap;
-
-/**
- * JAVADOC
- */
 @Mixins( DummyDataService.DummyDataMixin.class )
+@Activators( DummyDataService.Activator.class )
 public interface DummyDataService
-    extends ServiceComposite, Activatable
+    extends ServiceComposite
 {
+    
+    void insertInitialData()
+            throws Exception;
 
-    class DummyDataMixin
-        implements Activatable
+    static class Activator
+            extends ActivatorAdapter<ServiceReference<DummyDataService>>
+    {
+
+        @Override
+        public void afterActivation( ServiceReference<DummyDataService> activated )
+                throws Exception
+        {
+            activated.get().insertInitialData();
+        }
+
+    }
+    
+    abstract class DummyDataMixin
+        implements DummyDataService
     {
         @Structure
         UnitOfWorkFactory uowf;
@@ -43,7 +58,7 @@ public interface DummyDataService
         @Structure
         ValueBuilderFactory vbf;
 
-        public void activate()
+        public void insertInitialData()
             throws Exception
         {
             UnitOfWork unitOfWork = uowf.newUnitOfWork();
@@ -89,9 +104,5 @@ public interface DummyDataService
             }
         }
 
-        public void passivate()
-            throws Exception
-        {
-        }
     }
 }
