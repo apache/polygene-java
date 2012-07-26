@@ -20,7 +20,6 @@ import com.google.appengine.api.datastore.*;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.entity.IdentityGenerator;
 import org.qi4j.api.injection.scope.Service;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.io.Input;
@@ -36,7 +35,7 @@ import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
  * GAE implementation of SerializationStore
  */
 public class GaeEntityStoreMixin
-        implements Activatable, EntityStore
+        implements GaeEntityStoreActivation, EntityStore
 {
    private DatastoreService datastoreService;
    private String uuid;
@@ -49,15 +48,11 @@ public class GaeEntityStoreMixin
       counter = 0L;
    }
 
-   public void activate()
+   @Override
+   public void activateGaeEntityStore()
            throws Exception
    {
       datastoreService = DatastoreServiceFactory.getDatastoreService();
-   }
-
-   public void passivate()
-           throws Exception
-   {
    }
 
    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, Module module, long currentTime )

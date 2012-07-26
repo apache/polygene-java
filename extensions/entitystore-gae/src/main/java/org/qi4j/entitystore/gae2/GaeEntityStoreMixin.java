@@ -40,7 +40,6 @@ import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.util.Classes;
 import org.qi4j.io.Input;
 import org.qi4j.io.Output;
@@ -54,7 +53,7 @@ import static com.google.appengine.api.datastore.DatastoreServiceConfig.Builder.
 import static org.qi4j.functional.Iterables.first;
 
 public class GaeEntityStoreMixin
-    implements Activatable, MapEntityStore
+    implements GaeEntityStoreActivation, MapEntityStore
 {
     @This
     private ReadWriteLock lock;
@@ -65,7 +64,8 @@ public class GaeEntityStoreMixin
     private DatastoreService datastore;
     private String entityKind;
 
-    public void activate()
+    @Override
+    public void activateGaeEntityStore()
         throws Exception
     {
         GaeEntityStoreConfiguration conf = config.configuration();
@@ -84,12 +84,6 @@ public class GaeEntityStoreMixin
                             "\n    Configuration: " + configuration +
                             "\n"
         );
-    }
-
-    public void passivate()
-        throws Exception
-    {
-        // TODO; How to shutdown gracefully?
     }
 
     public Reader get( EntityReference ref )
