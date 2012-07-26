@@ -13,23 +13,52 @@
  */
 package org.qi4j.library.rdf.repository;
 
+import java.io.File;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.memory.MemoryStore;
+import org.qi4j.api.activation.ActivatorAdapter;
+import org.qi4j.api.activation.Activators;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
-
-import java.io.File;
+import org.qi4j.api.service.ServiceReference;
 
 @Mixins( MemoryRepositoryService.MemoryRepositoryMixin.class )
-public interface MemoryRepositoryService extends Repository, ServiceComposite, Activatable
+@Activators( MemoryRepositoryService.Activator.class )
+public interface MemoryRepositoryService extends Repository, ServiceComposite
 {
-    public static class MemoryRepositoryMixin
-        implements Repository, ResetableRepository, Activatable
+    
+    void initialize()
+            throws RepositoryException;
+
+    void shutDown()
+            throws RepositoryException;
+
+    public static class Activator
+            extends ActivatorAdapter<ServiceReference<MemoryRepositoryService>>
+    {
+
+        @Override
+        public void afterActivation( ServiceReference<MemoryRepositoryService> activated )
+                throws Exception
+        {
+            activated.get().initialize();
+        }
+
+        @Override
+        public void beforePassivation( ServiceReference<MemoryRepositoryService> passivating )
+                throws Exception
+        {
+            passivating.get().shutDown();
+        }
+
+    }
+
+    public static abstract class MemoryRepositoryMixin
+        implements MemoryRepositoryService, ResetableRepository
     {
         SailRepository repo;
 
@@ -38,14 +67,14 @@ public interface MemoryRepositoryService extends Repository, ServiceComposite, A
             repo = new SailRepository( new MemoryStore() );
         }
 
-        public void activate()
-            throws Exception
+        public void initialize()
+            throws RepositoryException
         {
             repo.initialize();
         }
 
-        public void passivate()
-            throws Exception
+        public void shutDown()
+            throws RepositoryException
         {
             repo.shutDown();
         }
@@ -58,16 +87,6 @@ public interface MemoryRepositoryService extends Repository, ServiceComposite, A
         public File getDataDir()
         {
             return repo.getDataDir();
-        }
-
-        public void initialize()
-            throws RepositoryException
-        {
-        }
-
-        public void shutDown()
-            throws RepositoryException
-        {
         }
 
         public boolean isWritable()

@@ -14,39 +14,56 @@
 package org.qi4j.library.rdf.repository;
 
 import org.openrdf.repository.Repository;
+import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.http.HTTPRepository;
+import org.qi4j.api.activation.ActivatorAdapter;
+import org.qi4j.api.activation.Activators;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
-import org.qi4j.api.service.Activatable;
-import org.qi4j.api.service.Availability;
 import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.service.ServiceReference;
 
 @Mixins( HttpRepositoryService.HttpRepositoryMixin.class )
+@Activators( HttpRepositoryService.Activator.class )
 public interface HttpRepositoryService
-    extends Repository, ServiceComposite, Activatable
+    extends Repository, ServiceComposite
 {
+    void initialize()
+            throws RepositoryException;
+    
+    void shutDown()
+            throws RepositoryException;
+
+    public static class Activator
+            extends ActivatorAdapter<ServiceReference<HttpRepositoryService>>
+    {
+
+        @Override
+        public void afterActivation( ServiceReference<HttpRepositoryService> activated )
+                throws Exception
+        {
+            activated.get().initialize();
+        }
+
+        @Override
+        public void beforePassivation( ServiceReference<HttpRepositoryService> passivating )
+                throws Exception
+        {
+            passivating.get().shutDown();
+        }
+
+    }
+
     public static class HttpRepositoryMixin
         extends HTTPRepository
-        implements Repository, Activatable
+        implements Repository
     {
         public HttpRepositoryMixin( @This Configuration<HttpRepositoryConfiguration> configuration )
         {
             super( getRepositoryUrl( configuration.configuration() ), getRepositoryId( configuration.configuration() ) );
         }
-
-        public void activate()
-            throws Exception
-        {
-        }
-
-        public void passivate()
-            throws Exception
-        {
-            shutDown();
-        }
-
 
         private static String getRepositoryUrl( HttpRepositoryConfiguration configuration )
         {
