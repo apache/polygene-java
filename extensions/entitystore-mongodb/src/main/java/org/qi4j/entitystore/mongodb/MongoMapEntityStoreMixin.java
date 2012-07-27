@@ -38,7 +38,7 @@ import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.service.Activatable;
+import org.qi4j.api.service.ServiceActivation;
 import org.qi4j.io.Input;
 import org.qi4j.io.Output;
 import org.qi4j.io.Receiver;
@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory;
 
 public abstract class MongoMapEntityStoreMixin
         extends MapEntityStoreMixin
-        implements Activatable, MongoMapEntityStoreService, MapEntityStore
+        implements ServiceActivation, MongoMapEntityStoreService, MapEntityStore
 {
 
     private static final Logger LOGGER = LoggerFactory.getLogger( "org.qi4j.entitystore.mongodb" );
@@ -71,7 +71,7 @@ public abstract class MongoMapEntityStoreMixin
     private DB db;
 
     @Override
-    public void activate()
+    public void activateService()
             throws Exception
     {
         loadConfiguration();
@@ -136,7 +136,7 @@ public abstract class MongoMapEntityStoreMixin
     }
 
     @Override
-    public void passivate()
+    public void passivateService()
             throws Exception
     {
         mongo.close();

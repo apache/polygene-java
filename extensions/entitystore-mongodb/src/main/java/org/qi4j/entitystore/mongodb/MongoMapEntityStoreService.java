@@ -21,7 +21,7 @@ import com.mongodb.Mongo;
 import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.Activatable;
+import org.qi4j.api.service.ServiceActivation;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.library.locking.LockingAbstractComposite;
 import org.qi4j.spi.entitystore.ConcurrentModificationCheckConcern;
@@ -36,7 +36,7 @@ public interface MongoMapEntityStoreService
         extends EntityStore,
                 EntityStateVersions,
                 ServiceComposite,
-                Activatable,
+                ServiceActivation,
                 LockingAbstractComposite,
                 Configuration
 {
