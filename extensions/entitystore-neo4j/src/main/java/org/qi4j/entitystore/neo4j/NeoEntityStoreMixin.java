@@ -12,7 +12,6 @@ import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.io.Input;
@@ -27,9 +26,10 @@ import org.qi4j.spi.entitystore.*;
 import java.io.File;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.qi4j.api.service.ServiceActivation;
 
 public class NeoEntityStoreMixin
-        implements Activatable, EntityStore, EntityStoreSPI
+        implements ServiceActivation, EntityStore, EntityStoreSPI
 {
    @Optional
    @Service
@@ -44,7 +44,8 @@ public class NeoEntityStoreMixin
    private AtomicInteger count = new AtomicInteger(0);
    private String uuid;
 
-   public void activate()
+   @Override
+   public void activateService()
            throws Exception
    {
       String path = config.configuration().path().get();
@@ -60,7 +61,8 @@ public class NeoEntityStoreMixin
       uuid = UUID.randomUUID().toString() + "-";
    }
 
-   public void passivate()
+   @Override
+   public void passivateService()
            throws Exception
    {
       indexService.shutdown();
