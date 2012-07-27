@@ -39,7 +39,7 @@ import org.qi4j.api.json.JSONDeserializer;
 import org.qi4j.api.json.JSONObjectSerializer;
 import org.qi4j.api.json.JSONWriterSerializer;
 import org.qi4j.api.property.PropertyDescriptor;
-import org.qi4j.api.service.Activatable;
+import org.qi4j.api.service.ServiceActivation;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
@@ -76,7 +76,7 @@ import static org.qi4j.functional.Iterables.first;
  * @see Preferences
  */
 public class PreferencesEntityStoreMixin
-    implements Activatable, EntityStore, EntityStoreSPI
+    implements ServiceActivation, EntityStore, EntityStoreSPI
 {
     @This
     private EntityStoreSPI entityStoreSpi;
@@ -93,7 +93,8 @@ public class PreferencesEntityStoreMixin
     public Logger logger;
     public ScheduledThreadPoolExecutor reloadExecutor;
 
-    public void activate()
+    @Override
+    public void activateService()
         throws Exception
     {
         root = getApplicationRoot();
@@ -143,7 +144,8 @@ public class PreferencesEntityStoreMixin
         return preferences;
     }
 
-    public void passivate()
+    @Override
+    public void passivateService()
         throws Exception
     {
         reloadExecutor.shutdown();
