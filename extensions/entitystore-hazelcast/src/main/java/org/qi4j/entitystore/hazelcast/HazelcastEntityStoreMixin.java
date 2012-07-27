@@ -24,12 +24,17 @@ import com.hazelcast.config.UrlXmlConfig;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
-
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.Map;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.service.Activatable;
+import org.qi4j.api.service.ServiceActivation;
 import org.qi4j.io.Input;
 import org.qi4j.io.Output;
 import org.qi4j.io.Receiver;
@@ -39,14 +44,11 @@ import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.helpers.MapEntityStore;
 import org.qi4j.spi.entitystore.helpers.MapEntityStoreMixin;
 
-import java.io.*;
-import java.util.Map;
-
 /**
  *
  */
 public abstract class HazelcastEntityStoreMixin extends MapEntityStoreMixin
-    implements Activatable, HazelcastEntityStoreService, MapEntityStore
+    implements ServiceActivation, HazelcastEntityStoreService, MapEntityStore
 {
 
     private static final String DEFAULT_MAPNAME = "qi4j:entitystore:data";
@@ -57,7 +59,8 @@ public abstract class HazelcastEntityStoreMixin extends MapEntityStoreMixin
     private IMap<String, String> stringMap;
     private HazelcastInstance hazelcastInstance;
 
-    public void activate()
+    @Override
+    public void activateService()
         throws Exception
     {
         HazelcastConfiguration configuration = config.configuration();
@@ -71,7 +74,8 @@ public abstract class HazelcastEntityStoreMixin extends MapEntityStoreMixin
         stringMap = hazelcastInstance.getMap( mapName );
     }
 
-    public void passivate()
+    @Override
+    public void passivateService()
         throws Exception
     {
         stringMap = null;
