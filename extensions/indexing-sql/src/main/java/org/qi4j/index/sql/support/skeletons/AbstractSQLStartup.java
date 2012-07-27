@@ -12,7 +12,6 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.index.sql.support.skeletons;
 
 import java.lang.reflect.ParameterizedType;
@@ -34,9 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
-
 import javax.sql.DataSource;
-
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.configuration.Configuration;
@@ -47,24 +44,20 @@ import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.property.PropertyDescriptor;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.value.ValueDescriptor;
 import org.qi4j.functional.HierarchicalVisitorAdapter;
-import static org.qi4j.functional.Iterables.first;
 import org.qi4j.index.reindexer.Reindexer;
 import org.qi4j.index.sql.support.api.SQLAppStartup;
 import org.qi4j.index.sql.support.api.SQLTypeInfo;
 import org.qi4j.index.sql.support.common.DBNames;
-import static org.qi4j.index.sql.support.common.DBNames.*;
 import org.qi4j.index.sql.support.common.EntityTypeInfo;
 import org.qi4j.index.sql.support.common.QNameInfo;
 import org.qi4j.index.sql.support.common.QNameInfo.QNameType;
 import org.qi4j.index.sql.support.common.ReindexingStrategy;
 import org.qi4j.library.sql.common.SQLConfiguration;
 import org.qi4j.library.sql.common.SQLUtil;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sql.generation.api.grammar.builders.definition.TableElementListBuilder;
@@ -84,11 +77,14 @@ import org.sql.generation.api.grammar.modification.DeleteBySearch;
 import org.sql.generation.api.grammar.query.QueryExpression;
 import org.sql.generation.api.vendor.SQLVendor;
 
+import static org.qi4j.functional.Iterables.first;
+import static org.qi4j.index.sql.support.common.DBNames.*;
+
 /**
  * @author Stanislav Muhametsin
  */
 public abstract class AbstractSQLStartup
-    implements SQLAppStartup, Activatable
+    implements SQLAppStartup
 {
     private interface SQLTypeCustomizer
     {
@@ -126,23 +122,16 @@ public abstract class AbstractSQLStartup
 
     private Map<Class<?>, SQLDataType> _primitiveTypes;
 
-    public void activate()
-        throws Exception
+    public void initConnection()
+        throws SQLException
     {
+        this._configuration.refresh();
+        
         this._vendor = this.descriptor.metaInfo( SQLVendor.class );
         this.setVendor( this._vendor );
         this.initTypes();
         this.modifyPrimitiveTypes( this._primitiveTypes, this._state.javaTypes2SQLTypes().get() );
-    }
-
-    public void passivate()
-        throws Exception
-    {
-    }
-
-    public void initConnection()
-        throws SQLException
-    {
+        
         String schemaName = this._configuration.configuration().schemaName().get();
         if( schemaName == null )
         {

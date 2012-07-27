@@ -14,9 +14,8 @@
 
 package org.qi4j.index.sql.support.api;
 
-import org.qi4j.spi.entity.EntityState;
-
 import java.sql.SQLException;
+import org.qi4j.spi.entity.EntityState;
 
 /**
  * This is the interface used by SQL-Indexing whenever

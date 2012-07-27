@@ -12,7 +12,6 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.index.sql.support.skeletons;
 
 import java.lang.reflect.ParameterizedType;
@@ -28,9 +27,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
 import javax.sql.DataSource;
-
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.common.QualifiedName;
@@ -42,15 +39,12 @@ import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.property.StateHolder;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.api.value.ValueDescriptor;
-import static org.qi4j.functional.Iterables.first;
 import org.qi4j.index.sql.support.api.SQLIndexing;
 import org.qi4j.index.sql.support.common.DBNames;
-import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_NAME;
 import org.qi4j.index.sql.support.common.QNameInfo;
 import org.qi4j.index.sql.support.common.QNameInfo.QNameType;
 import org.qi4j.index.sql.support.postgresql.PostgreSQLTypeHelper;
@@ -59,7 +53,6 @@ import org.qi4j.library.sql.common.SQLUtil;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
-
 import org.sql.generation.api.grammar.builders.modification.ColumnSourceByValuesBuilder;
 import org.sql.generation.api.grammar.builders.modification.DeleteBySearchBuilder;
 import org.sql.generation.api.grammar.builders.modification.UpdateBySearchBuilder;
@@ -77,8 +70,11 @@ import org.sql.generation.api.grammar.modification.UpdateStatement;
 import org.sql.generation.api.grammar.query.QueryExpression;
 import org.sql.generation.api.vendor.SQLVendor;
 
+import static org.qi4j.functional.Iterables.first;
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_NAME;
+
 public class AbstractSQLIndexing
-    implements SQLIndexing, Activatable
+    implements SQLIndexing
 {
 
     public static final Integer AMOUNT_OF_COLUMNS_IN_ENTITY_TABLE = 6;
@@ -104,19 +100,6 @@ public class AbstractSQLIndexing
     @Uses
     private ServiceDescriptor descriptor;
 
-    private SQLVendor _vendor;
-
-    public void activate()
-        throws Exception
-    {
-        this._vendor = this.descriptor.metaInfo( SQLVendor.class );
-    }
-
-    public void passivate()
-        throws Exception
-    {
-    }
-
     @Service
     private DataSource _dataSource;
 
@@ -135,7 +118,7 @@ public class AbstractSQLIndexing
         PreparedStatement clearQNamesPS = null;
         Map<QualifiedName, PreparedStatement> qNameInsertPSs = new HashMap<QualifiedName, PreparedStatement>();
         String schemaName = this._state.schemaName().get();
-        SQLVendor vendor = this._vendor;
+        SQLVendor vendor = this.descriptor.metaInfo( SQLVendor.class );
 
         try
         {
@@ -430,14 +413,14 @@ public class AbstractSQLIndexing
     private PreparedStatement createInsertPropertyPS( Connection connection, QNameInfo qNameInfo )
         throws SQLException
     {
-        SQLVendor vendor = this._vendor;
+        SQLVendor vendor = this.descriptor.metaInfo( SQLVendor.class );
         return connection.prepareStatement( vendor.toString( this.createPropertyInsert( qNameInfo, vendor ) ) );
     }
 
     private PreparedStatement createInsertAssociationPS( Connection connection, QNameInfo qNameInfo )
         throws SQLException
     {
-        SQLVendor vendor = this._vendor;
+        SQLVendor vendor = this.descriptor.metaInfo( SQLVendor.class );
         return connection.prepareStatement( vendor.toString( this.createAssoInsert( qNameInfo, vendor,
                                                                                     AMOUNT_OF_COLUMNS_IN_ASSO_TABLE ) ) );
     }
@@ -445,7 +428,7 @@ public class AbstractSQLIndexing
     private PreparedStatement createInsertManyAssociationPS( Connection connection, QNameInfo qNameInfo )
         throws SQLException
     {
-        SQLVendor vendor = this._vendor;
+        SQLVendor vendor = this.descriptor.metaInfo( SQLVendor.class );
         return connection.prepareStatement( vendor.toString( this.createAssoInsert( qNameInfo, vendor,
                                                                                     AMOUNT_OF_COLUMNS_IN_MANY_ASSO_TABLE ) ) );
     }

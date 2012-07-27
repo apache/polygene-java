@@ -17,7 +17,6 @@ package org.qi4j.index.sql.support.postgresql;
 
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.index.sql.SQLIndexingEngineService;
-import org.qi4j.index.sql.internal.SQLActivatable;
 import org.qi4j.index.sql.internal.SQLEntityFinder;
 import org.qi4j.index.sql.internal.SQLStateChangeListener;
 import org.qi4j.index.sql.support.api.SQLAppStartup;
@@ -36,7 +35,6 @@ import org.qi4j.spi.query.IndexExporter;
 @Mixins(
 {
     SQLEntityFinder.class,
-    SQLActivatable.class,
     SQLStateChangeListener.class,
     PostgreSQLAppStartup.class,//
     PostgreSQLIndexing.class,//

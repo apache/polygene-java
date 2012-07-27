@@ -11,13 +11,10 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.index.sql;
 
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.index.sql.internal.SQLActivatable;
 import org.qi4j.index.sql.internal.SQLEntityFinder;
 import org.qi4j.index.sql.internal.SQLStateChangeListener;
 import org.qi4j.spi.entitystore.StateChangeListener;
@@ -35,10 +32,9 @@ import org.qi4j.spi.query.EntityFinder;
  */
 @Mixins( {
     SQLEntityFinder.class,
-    SQLActivatable.class,
     SQLStateChangeListener.class
 } )
-public interface SQLIndexingEngineService extends StateChangeListener, EntityFinder, Activatable, ServiceComposite
+public interface SQLIndexingEngineService
+        extends StateChangeListener, EntityFinder, ServiceComposite
 {
-
 }
