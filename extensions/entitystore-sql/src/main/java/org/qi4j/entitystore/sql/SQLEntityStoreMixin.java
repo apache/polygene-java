@@ -28,7 +28,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+import org.json.JSONWriter;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.cache.CacheOptions;
 import org.qi4j.api.common.Optional;
@@ -41,7 +45,7 @@ import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.json.JSONDeserializer;
 import org.qi4j.api.json.JSONWriterSerializer;
 import org.qi4j.api.property.PropertyDescriptor;
-import org.qi4j.api.service.Activatable;
+import org.qi4j.api.service.ServiceActivation;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
@@ -49,7 +53,6 @@ import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.entitystore.sql.internal.DatabaseSQLService;
 import org.qi4j.entitystore.sql.internal.DatabaseSQLService.EntityValueResult;
-import static org.qi4j.functional.Iterables.first;
 import org.qi4j.functional.Visitor;
 import org.qi4j.io.Input;
 import org.qi4j.io.Output;
@@ -71,14 +74,10 @@ import org.qi4j.spi.entitystore.helpers.DefaultEntityState;
 import org.qi4j.spi.entitystore.helpers.MapEntityStore;
 import org.qi4j.spi.entitystore.helpers.Migration;
 import org.qi4j.spi.entitystore.helpers.StateStore;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
-import org.json.JSONWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.qi4j.functional.Iterables.first;
 
 /**
  * Most of this code is copy-paste from {@link org.qi4j.spi.entitystore.helpers.MapEntityStoreMixin}. TODO refactor stuff that has to do with general
@@ -87,7 +86,7 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class SQLEntityStoreMixin
-    implements EntityStore, EntityStoreSPI, StateStore, Activatable
+    implements EntityStore, EntityStoreSPI, StateStore, ServiceActivation
 {
 
     private static final Logger LOGGER = LoggerFactory.getLogger( SQLEntityStoreMixin.class );
@@ -109,7 +108,8 @@ public class SQLEntityStoreMixin
 
     private Integer count;
 
-    public void activate()
+    @Override
+    public void activateService()
         throws Exception
     {
         uuid = UUID.randomUUID().toString() + "-";
@@ -117,7 +117,8 @@ public class SQLEntityStoreMixin
         database.startDatabase();
     }
 
-    public void passivate()
+    @Override
+    public void passivateService()
         throws Exception
     {
         database.stopDatabase();
