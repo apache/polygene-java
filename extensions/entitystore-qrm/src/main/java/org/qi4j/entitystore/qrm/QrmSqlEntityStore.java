@@ -16,7 +16,6 @@
  */
 package org.qi4j.entitystore.qrm;
 
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.io.Input;
@@ -30,7 +29,7 @@ import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
  * JAVADOC: identity is a keyword in SQL. We need to have an alias for this identity property for query purposes.
  */
 public class QrmSqlEntityStore
-    implements EntityStore, Activatable
+    implements EntityStore
 {
     public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, Module module, long currentTime )
     {
@@ -40,18 +39,6 @@ public class QrmSqlEntityStore
     public Input<EntityState, EntityStoreException> entityStates( Module module )
     {
         return null;
-    }
-
-    public void activate()
-        throws Exception
-    {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public void passivate()
-        throws Exception
-    {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 }
 //    private static final QualifiedName VERSION = QualifiedName.fromQN( "VERSION" );

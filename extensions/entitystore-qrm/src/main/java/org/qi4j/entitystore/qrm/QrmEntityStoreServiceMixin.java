@@ -16,15 +16,15 @@
  */
 package org.qi4j.entitystore.qrm;
 
+import java.util.UUID;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.api.entity.Identity;
 import org.qi4j.api.entity.IdentityGenerator;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
-import org.qi4j.api.service.Activatable;
+import org.qi4j.api.service.ServiceActivation;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
@@ -33,13 +33,16 @@ import org.qi4j.io.Input;
 import org.qi4j.io.Output;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entitystore.*;
+import org.qi4j.spi.entitystore.DefaultEntityStoreUnitOfWork;
+import org.qi4j.spi.entitystore.EntityStore;
+import org.qi4j.spi.entitystore.EntityStoreException;
+import org.qi4j.spi.entitystore.EntityStoreSPI;
+import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
+import org.qi4j.spi.entitystore.StateCommitter;
 import org.qi4j.spi.entitystore.helpers.DefaultEntityState;
 
-import java.util.UUID;
-
 public class QrmEntityStoreServiceMixin
-    implements Activatable, EntityStore, EntityStoreSPI, IdentityGenerator
+    implements ServiceActivation, EntityStore, EntityStoreSPI, IdentityGenerator
 {
 
     @Uses
@@ -58,7 +61,8 @@ public class QrmEntityStoreServiceMixin
 
     private int uowCount;
 
-    public void activate()
+    @Override
+    public void activateService()
         throws Exception
     {
         QrmEntityStoreDescriptor cfg = descriptor.metaInfo( QrmEntityStoreDescriptor.class );
@@ -75,7 +79,8 @@ public class QrmEntityStoreServiceMixin
         uowCount = 1;
     }
 
-    public void passivate()
+    @Override
+    public void passivateService()
         throws Exception
     {
     }
