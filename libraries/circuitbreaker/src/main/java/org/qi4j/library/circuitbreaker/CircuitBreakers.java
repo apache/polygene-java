@@ -69,8 +69,8 @@ public class CircuitBreakers
    /**
     * Allow all throwables that are equal to or subclasses of given list of throwables.
     *
-    * @param throwables
-    * @return
+    * @param throwables The Throwable types that are allowed.
+    * @return A Specification that specifies the allowed Throwables.
     */
    public static Specification<Throwable> in( final Class<? extends Throwable>... throwables)
    {

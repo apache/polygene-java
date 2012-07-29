@@ -116,11 +116,11 @@ public final class ModuleAssemblyImpl
         return this;
     }
 
-    public ValueDeclaration values( Class<?>... compositeTypes )
+    public ValueDeclaration values( Class<?>... valueTypes )
     {
         List<ValueAssemblyImpl> assemblies = new ArrayList<ValueAssemblyImpl>();
 
-        for( Class valueType : compositeTypes )
+        for( Class valueType : valueTypes )
         {
             if( valueAssemblies.containsKey( valueType ) )
             {
@@ -152,11 +152,11 @@ public final class ModuleAssemblyImpl
         return new ValueDeclarationImpl( assemblies );
     }
 
-    public TransientDeclaration transients( Class<?>... compositeTypes )
+    public TransientDeclaration transients( Class<?>... transientTypes )
     {
         List<TransientAssemblyImpl> assemblies = new ArrayList<TransientAssemblyImpl>();
 
-        for( Class valueType : compositeTypes )
+        for( Class valueType : transientTypes )
         {
             if( transientAssemblies.containsKey( valueType ) )
             {
@@ -187,11 +187,11 @@ public final class ModuleAssemblyImpl
         return new TransientDeclarationImpl( assemblies );
     }
 
-    public EntityDeclaration entities( Class<?>... compositeTypes )
+    public EntityDeclaration entities( Class<?>... entityTypes )
     {
         List<EntityAssemblyImpl> assemblies = new ArrayList<EntityAssemblyImpl>();
 
-        for( Class entityType : compositeTypes )
+        for( Class entityType : entityTypes )
         {
             if( entityAssemblies.containsKey( entityType ) )
             {

@@ -64,7 +64,7 @@ public interface LayerAssembly
      *
      * @param specification The Specification that specifies the ServiceComposite types of interest.
      *
-     * @return An EntityDeclaration for the specified ServiceComposite types.
+     * @return An ServiceDeclaration for the specified ServiceComposite types.
      */
     ServiceDeclaration services( Specification<? super ServiceAssembly> specification );
 
@@ -74,7 +74,7 @@ public interface LayerAssembly
      *
      * @param specification The Specification that specifies the TransientComposite types of interest.
      *
-     * @return An EntityDeclaration for the specified TransientComposite types.
+     * @return An TransientDeclaration for the specified TransientComposite types.
      */
     TransientDeclaration transients( Specification<? super TransientAssembly> specification );
 
@@ -84,7 +84,7 @@ public interface LayerAssembly
      *
      * @param specification The Specification that specifies the ValueComposite types of interest.
      *
-     * @return An EntityDeclaration for the specified ValueComposite types.
+     * @return An ValueDeclaration for the specified ValueComposite types.
      */
     ValueDeclaration values( Specification<? super ValueAssembly> specification );
 
@@ -94,7 +94,7 @@ public interface LayerAssembly
      *
      * @param specification The Specification that specifies the Object types of interest.
      *
-     * @return An EntityDeclaration for the specified Object types.
+     * @return An ObjectDeclaration for the specified Object types.
      */
     ObjectDeclaration objects( Specification<? super ObjectAssembly> specification );
 
@@ -104,7 +104,7 @@ public interface LayerAssembly
      *
      * @param specification The Specification that specifies the Imported Service types of interest.
      *
-     * @return An EntityDeclaration for the specified Imported Service types.
+     * @return An ImportedServiceDeclaration for the specified Imported Service types.
      */
     ImportedServiceDeclaration importedServices( Specification<? super ImportedServiceAssembly> specification );
 }
