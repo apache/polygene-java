@@ -29,7 +29,7 @@ import java.util.Date;
 /**
  * A little helper interface to convert java types to SQL types when inserting objects to prepared statements. It will
  * first preprocess the object and possibly convert it to something else (like Character to Integer). Then it will use
- * the {@link SQLIndexingState#javaTypes2SQLTypes()} mapping to determine which SQL datatype to use when inserting the
+ * the {@link SQLDBState#javaTypes2SQLTypes()} mapping to determine which SQL datatype to use when inserting the
  * object to prepared statement.
  * 
  * @author Stanislav Muhametsin

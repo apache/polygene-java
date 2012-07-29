@@ -26,7 +26,7 @@ public interface EventManagement
     /**
      * Output used to restore events from a backup
      *
-     * @return
+     * @return The Output function to restore events from a backup.
      */
     Output<String, IOException> restore();
 }

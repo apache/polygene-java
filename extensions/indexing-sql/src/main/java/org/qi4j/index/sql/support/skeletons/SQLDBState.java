@@ -27,8 +27,8 @@ import java.util.Set;
 
 /**
  * The state-type interface containing some important database-related data, in order to create proper SQL statements in
- * indexing ({@link SQLIndexing}), querying ({@link SQLQuery}) and parsing queries ({@link SQLQueryParser}), and
- * application startup ({@link SQLStartup}.
+ * indexing ({@link SQLIndexing}), querying ({@link org.qi4j.index.sql.support.api.SQLQuerying}) and application
+ * startup ({@link org.qi4j.index.sql.support.api.SQLAppStartup}.
  * 
  * @author Stanislav Muhametsin
  */

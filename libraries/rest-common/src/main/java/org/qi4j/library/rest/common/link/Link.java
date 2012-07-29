@@ -30,7 +30,7 @@ public interface Link
    /**
     * This is typically the description of the entity
     *
-    * @return
+    * @return The text attribute of the Link.
     */
    @Optional
    Property<String> text();
@@ -38,13 +38,14 @@ public interface Link
    /**
     * This is typically the id of the entity
     *
-    * @return
+    * @return The id attribute of the Link.
     */
    Property<String> id();
 
    /**
     * This is the href of the entity, relative to the producer of the LinkValue
-    * @return
+    *
+    * @return The href attribute of the Link.
     */
    Property<String> href();
 
@@ -52,13 +53,15 @@ public interface Link
     * This is the type of the link, typically to help differentiate between
     * different types of resources.
     *
-    * @return
+    * @return The rel attribute of the Link.
     */
    @Optional
    Property<String> rel();
 
    /**
     * These are the classes of the link, typically to help categorize the link. Space-separated list.
+    *
+    * @return A space-separated list of classes of the Link.
     */
    @Optional
    Property<String> classes();

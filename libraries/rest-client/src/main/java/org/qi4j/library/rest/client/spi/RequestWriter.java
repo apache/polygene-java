@@ -28,9 +28,9 @@ public interface RequestWriter
    /**
     * Write the given request object to the request.
     *
-    * @param requestObject
-    * @param request
-    * @return
+    * @param requestObject The object to be written.
+    * @param request The Request destination of the requestObject
+    * @return true if the object was written to the Request instance, false if handler can not write the object.
     * @throws org.restlet.resource.ResourceException
     */
    public boolean writeRequest(Object requestObject, Request request)

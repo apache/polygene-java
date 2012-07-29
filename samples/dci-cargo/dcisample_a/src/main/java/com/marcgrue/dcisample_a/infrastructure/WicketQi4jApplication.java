@@ -71,7 +71,7 @@ public class WicketQi4jApplication
      * If you like, you can also override this method in the custom application class and simply
      * return an instance of YourAssembler:
      *
-     * @Override protected ApplicationAssembler getAssembler() {
+     * &#64;Override protected ApplicationAssembler getAssembler() {
      * return new YourAssemblerInAnyPath();
      * }
      */

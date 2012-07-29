@@ -33,7 +33,7 @@ public interface DomainEventTrackerConfiguration
      * A count of how many events have been read already. Call EventStore.events(lastOffset,{limit}) to get
      * the next set of events.
      *
-     * @return
+     * @return count of how many events have been read already.
      */
     @UseDefaults
     Property<Long> lastOffset();
