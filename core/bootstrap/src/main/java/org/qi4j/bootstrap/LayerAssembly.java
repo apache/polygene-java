@@ -29,9 +29,9 @@ public interface LayerAssembly
      * Get an assembly for a particular Module. If this is called many times with the same name, then the same module
      * is affected.
      *
-     * @param name
+     * @param name The name of the Module to retrieve or create.
      *
-     * @return
+     * @return The ModuleAssembly for the Module.
      */
     ModuleAssembly module( String name );
 
@@ -52,9 +52,9 @@ public interface LayerAssembly
      * Given a Specification for EntityAssembly's, returns a EntityDeclaration that can
      * be used to work with all of the assemblies in this Layer matched by the specification.
      *
-     * @param specification
+     * @param specification The Specification that specifies the EntityComposite types of interest.
      *
-     * @return
+     * @return An EntityDeclaration for the specified EntityComposite types.
      */
     EntityDeclaration entities( Specification<? super EntityAssembly> specification );
 
@@ -62,9 +62,9 @@ public interface LayerAssembly
      * Given a Specification for ServiceAssembly's, returns a ServiceDeclaration that can
      * be used to work with all of the assemblies in this Layer matched by the specification.
      *
-     * @param specification
+     * @param specification The Specification that specifies the ServiceComposite types of interest.
      *
-     * @return
+     * @return An EntityDeclaration for the specified ServiceComposite types.
      */
     ServiceDeclaration services( Specification<? super ServiceAssembly> specification );
 
@@ -72,9 +72,9 @@ public interface LayerAssembly
      * Given a Specification for TransientAssembly's, returns a TransientDeclaration that can
      * be used to work with all of the assemblies in this Layer matched by the specification.
      *
-     * @param specification
+     * @param specification The Specification that specifies the TransientComposite types of interest.
      *
-     * @return
+     * @return An EntityDeclaration for the specified TransientComposite types.
      */
     TransientDeclaration transients( Specification<? super TransientAssembly> specification );
 
@@ -82,9 +82,9 @@ public interface LayerAssembly
      * Given a Specification for ValueAssembly's, returns a ValueDeclaration that can
      * be used to work with all of the assemblies in this Layer matched by the specification.
      *
-     * @param specification
+     * @param specification The Specification that specifies the ValueComposite types of interest.
      *
-     * @return
+     * @return An EntityDeclaration for the specified ValueComposite types.
      */
     ValueDeclaration values( Specification<? super ValueAssembly> specification );
 
@@ -92,9 +92,9 @@ public interface LayerAssembly
      * Given a Specification for ObjectAssembly's, returns a ObjectDeclaration that can
      * be used to work with all of the assemblies in this Layer matched by the specification.
      *
-     * @param specification
+     * @param specification The Specification that specifies the Object types of interest.
      *
-     * @return
+     * @return An EntityDeclaration for the specified Object types.
      */
     ObjectDeclaration objects( Specification<? super ObjectAssembly> specification );
 
@@ -102,9 +102,9 @@ public interface LayerAssembly
      * Given a Specification for ImportedServiceAssembly's, returns a ImportedServiceDeclaration that can
      * be used to work with all of the assemblies in this Layer matched by the specification.
      *
-     * @param specification
+     * @param specification The Specification that specifies the Imported Service types of interest.
      *
-     * @return
+     * @return An EntityDeclaration for the specified Imported Service types.
      */
     ImportedServiceDeclaration importedServices( Specification<? super ImportedServiceAssembly> specification );
 }
