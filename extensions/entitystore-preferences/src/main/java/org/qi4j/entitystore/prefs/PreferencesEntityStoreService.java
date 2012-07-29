@@ -39,7 +39,7 @@ import org.qi4j.spi.entitystore.EntityStore;
  * <p/>
  * The main use of the EntityStore is for storage of ConfigurationComposites for ServiceComposites.
  *
- * @see ServiceComposite
+ * @see org.qi4j.api.service.ServiceComposite
  * @see org.qi4j.api.configuration.Configuration
  */
 @Concerns( ConcurrentModificationCheckConcern.class )

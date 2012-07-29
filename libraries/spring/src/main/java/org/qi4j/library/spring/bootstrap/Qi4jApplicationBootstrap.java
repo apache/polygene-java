@@ -60,7 +60,7 @@ import org.springframework.context.ApplicationContextAware;
  * <li>Application bootstrap class must implement interface
  * {@link ApplicationContextAware}.</li>
  * <li>In the application bootstrap import service to the module using method
- * {@link ModuleAssembly#importServices(Class...)}.</li>
+ * {@link ModuleAssembly#importedServices(Class...)}.</li>
  * <li>Set concrete Spring bean as meta-data of the imported service.</li>
  * </ol>
  * </p>

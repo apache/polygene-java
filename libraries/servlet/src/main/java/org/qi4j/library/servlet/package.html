@@ -14,14 +14,16 @@
         <p>The SLF4J logger used by this library is named "org.qi4j.library.servlet".</p>
 
         <h3>Application Bootstrap</h3>
-        <p>Extends {@link AbstractQi4jServletBootstrap} to easily bind a Qi4j {@link Application} activation/passivation
+        <p>Extends {@link org.qi4j.library.servlet.lifecycle.AbstractQi4jServletBootstrap} to easily bind a Qi4j
+            {@link org.qi4j.api.structure.Application} activation/passivation
             to your webapp lifecycle.</p>
         <p>Use {@link Qi4jServletSupport#application(javax.servlet.ServletContext)} to get a handle on the
-            {@link Application} from the {@link ServletContext}.</p>
+            {@link org.qi4j.api.structure.Application} from the {@link javax.servlet.ServletContext}.</p>
 
         <h3>Facilities</h3>
-        <p>{@link Qi4jServlet} and {@link Qi4jFilter} respectively provide base class for easy access to the
-            {@link Application} from the {@link ServletContext}.</p>
+        <p>{@link Qi4jServlet} and {@link org.qi4j.library.servlet.Qi4jFilter} respectively provide base class for
+            easy access to the {@link org.qi4j.api.structure.Application}} from the
+            {@link javax.servlet.ServletContext}.</p>
 
     </body>
 </html>
