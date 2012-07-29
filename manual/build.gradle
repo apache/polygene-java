@@ -22,7 +22,7 @@ dependencies {
 //  docType = 'book'
 //}
 
-task website( type: org.qi4j.gradle.plugin.documentation.Documentation ) {
+task website( type: org.qi4j.gradle.plugin.Documentation ) {
   docName = 'website'
   docType = 'article'
 }

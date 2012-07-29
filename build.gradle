@@ -22,7 +22,7 @@ sourceCompatibility = "1.6"
 
 // Collect the modules that fulfills the Release Criteria.
 project.ext {
-  releaseSpec = new ModuleReleaseSpecification()
+  releaseSpec = new org.qi4j.gradle.plugin.ModuleReleaseSpecification()
 }
 
 def releaseApprovedProjects = allprojects.findAll( { project ->  rootProject.ext.releaseSpec.satisfiedBy( project ) } )
@@ -114,7 +114,7 @@ allprojects {
       checkstyleMain {
         configFile = new File( rootProject.projectDir.absolutePath.toString() + '/etc/qi4j-api-checkstyle.xml' )
         ignoreFailures = true
-        reportsDir = "$rootProject.reportsDir/checkstyle"
+        reporting.baseDir = "$rootProject.reporting.baseDir/checkstyle"
       }
     }
 //    checkstyleTest {
@@ -184,10 +184,10 @@ allprojects {
     test << {
       def depList = ""
       configurations.runtime.allDependencies.each { dep ->
-        if( !dep.group.startsWith("org.qi4j") )
-          depList = depList + "http://central.maven.org/maven2/" + dep.group.replace(".","/") + "/"+ dep.name + "/" + dep.version + +"/" + dep.name + "-" + dep.version + ".jar\n"
+        if( !dep.group.startsWith("org.qi4j") ) {
+          depList = depList + "http://central.maven.org/maven2/" + dep.group.replace(".","/") + "/" + dep.name + "/" + dep.version + "/" + dep.name + "-" + dep.version + ".jar\n"
+        }
       }
-      println "Niclas: $depList"
       def downloadsFile = new File( buildDir.toString(), "download.deps" )
       downloadsFile.text = depList
     }
@@ -309,9 +309,10 @@ def docsImage = copySpec {
 }
 
 def downloadListImage = copySpec {
-  releaseApprovedProjects.collect { proj ->
+  releaseApprovedProjects.each { proj ->
     from "$proj.buildDir/download.deps"
-    into( "libs/downsloads/dl-${proj.name}.deps" )
+    into( "libs/dependencies/" )
+    rename 'download.deps', proj.name + '.deps'
   }
 }
 
