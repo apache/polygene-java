@@ -21,11 +21,14 @@ import org.qi4j.functional.Specification;
 
 /**
  * Filter services based on identity. Identity can be set during assembly, like so:
+ * <pre><code>
  * module.addService(MyService.class).identifiedBy("myservice1");
+ * </code></pre>
  *
  * and then at an injection point you can do this:
- *
- * @Service @IdentifiedBy("myservice1") MyService service;
+ * <pre><code>
+ * &#64;Service @IdentifiedBy("myservice1") MyService service;
+ * </code></pre>
  * to get only a service identified "myservice1".
  */
 @Retention( RetentionPolicy.RUNTIME )

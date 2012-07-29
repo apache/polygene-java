@@ -21,11 +21,15 @@ import org.qi4j.functional.Specification;
 
 /**
  * Filter services based on tags. Tags can be set using the ServiceTags meta-info, like so:
+ * <pre><code>
  * module.addService(MyService.class).setMetaInfo(ServiceTags.tags("onetag","twotag"));
+ * </code></pre>
  *
  * and then at an injection point you can do this:
  *
- * @Service @Tagged("onetag") MyService service;
+ * <pre><code>
+ * &#64;Service @Tagged("onetag") MyService service;
+ * </code></pre>
  * to get only a service tagged with MyService. If several match only the first match is used.
  */
 @Retention( RetentionPolicy.RUNTIME )

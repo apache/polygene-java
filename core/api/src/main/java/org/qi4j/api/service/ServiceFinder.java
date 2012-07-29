@@ -19,11 +19,13 @@ import java.lang.reflect.Type;
 /**
  * Interface used to query for ServiceReferences. Each ServiceFinder is
  * obtained from a specific Module, and the lookup rules are the following:
- * 1) First look in the same Module as the ServiceFinder
- * 2) Then look in the same Layer as the ServiceFinder. Any Services declared
- * with Visibility Layer and Application should be included
- * 3) Then look in the extended Layers. Any Services declared with Visibility Application
- * should be included
+ * <ol>
+ * <li>First look in the same Module as the ServiceFinder</li>
+ * <li>Then look in the same Layer as the ServiceFinder. Any Services declared
+ * with Visibility Layer and Application should be included</li>
+ * <li>Then look in the extended Layers. Any Services declared with Visibility Application
+ * should be included</li>
+ * </ol>
  *
  * Both native Qi4j services and imported services are considered, with preference to native services.
  */

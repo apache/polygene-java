@@ -24,7 +24,9 @@ import org.qi4j.functional.Specification;
  *
  * At an injection point you can do this:
  *
- * @Service @Available MyService service;
+ * <pre><code>
+ * &#64;Service @Available MyService service;
+ * </code></pre>
  * to get only a service that is currently available.
  */
 @Retention( RetentionPolicy.RUNTIME )

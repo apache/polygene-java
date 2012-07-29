@@ -18,7 +18,7 @@ import java.io.Serializable;
 
 /**
  * Use this as metainfo about a Service to specify tags. Easiest way to set them on a service
- * is to use the ServiceDeclaration.taggedWith(String...) method.
+ * is to use the <code>ServiceDeclaration.taggedWith(String...)</code> method.
  *
  * These can be used in conjunction with the withTags() Service
  * Selector.

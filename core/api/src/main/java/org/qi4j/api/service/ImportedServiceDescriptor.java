@@ -17,7 +17,7 @@ package org.qi4j.api.service;
 import org.qi4j.api.composite.ModelDescriptor;
 
 /**
- * {@code ServiceDescriptor} provides meta informations of a service.
+ * {@code ServiceDescriptor} provides meta information of a service.
  */
 public interface ImportedServiceDescriptor
     extends ModelDescriptor, IdentityDescriptor
