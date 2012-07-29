@@ -31,34 +31,34 @@ public interface EntityDeclaration
      *
      * @param info metainfo that can be retrieved from the EntityDescriptor.
      *
-     * @return
+     * @return This instance for a fluid DSL
      */
     EntityDeclaration setMetaInfo( Object info );
 
     /**
      * Set visibility for declared entities.
      *
-     * @param visibility
+     * @param visibility The {@link Visibility} that this EntityComposite will have.
      *
-     * @return
+     * @return This instance for a fluid DSL
      */
     EntityDeclaration visibleIn( Visibility visibility );
 
     /**
      * Declare additional concerns for these entities.
      *
-     * @param concerns
+     * @param concerns The concerns that are to be added to the EntityComposite beyond the statically declared ones.
      *
-     * @return
+     * @return This instance for a fluid DSL
      */
     EntityDeclaration withConcerns( Class<?>... concerns );
 
     /**
      * Declare additional side-effects for these entitites.
      *
-     * @param sideEffects
+     * @param sideEffects The sideeffects that are to be added to the EntityComposite beyond the statically declared ones.
      *
-     * @return
+     * @return This instance for a fluid DSL
      */
     EntityDeclaration withSideEffects( Class<?>... sideEffects );
 
@@ -67,9 +67,9 @@ public interface EntityDeclaration
      * <p/>
      * This can be useful to override any default mixins from the entity interface.
      *
-     * @param mixins
+     * @param mixins The mixins that are to be added to the EntityComposite beyond the statically declared ones.
      *
-     * @return
+     * @return This instance for a fluid DSL
      */
     EntityDeclaration withMixins( Class<?>... mixins );
 
@@ -81,7 +81,7 @@ public interface EntityDeclaration
      *
      * @param types list of interfaces to add
      *
-     * @return
+     * @return This instance for a fluid DSL
      */
     EntityDeclaration withTypes( Class<?>... types );
 }
