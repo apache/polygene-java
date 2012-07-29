@@ -1,4 +1,3 @@
-
 project.ext {
   title = "Qi4j SDK"
   description = "Qi4j™ is a framework for domain centric application development, including evolved concepts from AOP, DI and DDD."
@@ -66,9 +65,11 @@ allprojects {
   }
 
   configurations {
+    archives
     deployerJars
     provided
     compile.extendsFrom provided
+    runtime.extendsFrom compile
   }
 
   dependencies {
@@ -179,6 +180,18 @@ allprojects {
       }
     }
 
+    // TODO: Is there some better way to do this??
+    test << {
+      def depList = ""
+      configurations.runtime.allDependencies.each { dep ->
+        if( !dep.group.startsWith("org.qi4j") )
+          depList = depList + "http://central.maven.org/maven2/" + dep.group.replace(".","/") + "/"+ dep.name + "/" + dep.version + +"/" + dep.name + "-" + dep.version + ".jar\n"
+      }
+      println "Niclas: $depList"
+      def downloadsFile = new File( buildDir.toString(), "download.deps" )
+      downloadsFile.text = depList
+    }
+
 //    // Create checkstyle report
 //    task checkstyleReport( type: Xslt, dependsOn: check ) {
 //      source project.checkstyle.reportsDir
@@ -193,18 +206,6 @@ allprojects {
       dependsOn classes
       dependsOn test
     }
-  }
-
-  task createDependencyList << {
-    def depList = ""
-    configurations.runtime.each { file ->
-      if( !file.name.startsWith( "org.qi4j.core" ) )
-      {
-        depList = depList + "$file.name\n"
-      }
-    }
-    def destFile = new File( buildDir, "downloads.sh" )
-    destFile.text = depList
   }
 
   uploadArchives.doFirst {
@@ -278,114 +279,111 @@ task javadocs( type: Javadoc ) {
                  ] )
 
 }
+task buildAll( dependsOn: [ javadocs, test, jar, subprojects*.assemble, ':org.qi4j.manual:manuals' ] ) {}
 
-task distLayout( dependsOn: [ javadocs, test, jar,  subprojects*.assemble, ':org.qi4j.manual:manuals' ] ) {
+def srcDistImage = copySpec {
+  from '.'
+  exclude '**/build/'     // build output
+  exclude '**/bin/'       // helper scripts
+  exclude 'derby.log'     // Derby test garbage
+  exclude '**/*.iml'      // IDEA files
+  exclude 'org.qi4j.ipr'  // IDEA files
+  exclude 'org.qi4j.iws'  // IDEA files
+  exclude '**/out/*'       // build output
+  exclude '**/.git/'      // git directories
+  exclude '**/.git*'      // git files
+  exclude '**/.gradle/'   // gradle management files
+  into "qi4j-sdk-$version/src/"
 
-  ext.srcDistImage = copySpec {
-    from '.'
-    exclude '**/build/'     // build output
-    exclude '**/bin/'       // helper scripts
-    exclude 'derby.log'     // Derby test grabage
-    exclude '**/*.iml'      // IDEA files
-    exclude 'org.qi4j.ipr'  // IDEA files
-    exclude 'org.qi4j.iws'  // IDEA files
-    exclude '**/out/'       // build output
-    exclude '**/.git/'      // git directories
-    exclude '**/.git*'      // git files
-    exclude '**/.gradle/'   // gradle management files
-    into "qi4j-sdk-$version/src/"
-  }
+}
 
-  ext.docsImage = copySpec {
-    from "manual/build/docs"
-    into( "docs" )
-  }
+def reportsDistImage = copySpec {
+  from "$buildDir/reports"
+  into( "docs/reports" )
+}
 
-  ext.reportsImage = copySpec {
-    into( "docs/reports" )
-    from "$buildDir/reports"
-  }
+def docsImage = copySpec {
+  from "build/docs"
+  from "manual/build/docs/website"
+  into( "docs" )
+}
 
-  ext.downloadListImage = copySpec {
-    releaseApprovedProjects.collect { proj ->
-      from "$proj.buildDir/downloads.sh"
-      into( "libs/downsloads/dl-$proj.name" )
-    }
-  }
-
-  ext.libsImage = copySpec {
-    releaseApprovedProjects.collect { proj ->
-      println "Niclas!!!!!!!!!!!!!!!!"
-      into( "libs/" )
-      from proj.configurations.archives
-      proj.configurations.archives.files.each { println it }
-    }
-  }
-
-  ext.samplesImage = copySpec {
-    from( "$projectDir/samples" ) {
-      into( "samples" )
-      exclude '**/build/**'
-    }
-    from( "$projectDir/samples/*/build/docs/javadoc" ) {
-      into( "samples/docs" )
-    }
-    exclude '**/*.iml'
-  }
-
-  ext.tutorialsImage = copySpec {
-    from( "$projectDir/tutorials" ) {
-      exclude '**/build/**'
-      into( "tutorials" )
-    }
-    from( "$projectDir/tutorials/*/build/docs/javadoc" ) {
-      into( "tutorials/docs" )
-    }
-    exclude '**/*.iml'
-  }
-
-  ext.binDistImage = copySpec {
-    into "qi4j-sdk-$version"
-    with ext.docsImage
-    with ext.downloadListImage
-    with ext.libsImage
-    with ext.samplesImage
-    with ext.tutorialsImage
+def downloadListImage = copySpec {
+  releaseApprovedProjects.collect { proj ->
+    from "$proj.buildDir/download.deps"
+    into( "libs/downsloads/dl-${proj.name}.deps" )
   }
 }
 
-task zipSources( type: Zip, dependsOn: distLayout ) {
+def libsImage = copySpec {
+  releaseApprovedProjects.collect { proj ->
+    into( "libs/" ) {
+      from proj.configurations.archives.artifacts.files
+      exclude '**-testsources.jar'
+      exclude '**-javadoc.jar'
+      exclude '**/*.asc'
+    }
+  }
+}
+
+def samplesImage = copySpec {
+  from( "$projectDir/samples" )
+  from( "$projectDir/samples/*/build/docs/javadoc" )
+  into( "samples" )
+  exclude '**/*.iml'
+  exclude '**/build/'     // build output
+}
+
+def tutorialsImage = copySpec {
+  from( "$projectDir/tutorials" )
+  exclude '**/build/'
+  into( "tutorials" )
+  from( "$projectDir/tutorials/*/build/docs/javadoc" )
+  exclude '**/*.iml'
+}
+
+def binDistImage = copySpec {
+  into "qi4j-sdk-$version"
+  with docsImage
+  with reportsDistImage
+  with downloadListImage
+  with libsImage
+  with samplesImage
+  with tutorialsImage
+}
+
+task zipSources( type: Zip, dependsOn: [ buildAll ] ) {
   baseName = 'qi4j-sdk'
-  with distLayout.ext.srcDistImage
+  with srcDistImage
   classifier = 'src'
 }
 
-task tarSources( type: Tar, dependsOn: distLayout ) {
+task tarSources( type: Tar, dependsOn: [ buildAll ] ) {
   baseName = 'qi4j-sdk'
-  with distLayout.ext.srcDistImage
+  with srcDistImage
   compression = Compression.GZIP
   classifier = 'src'
 }
 
-task zipBinaries( type: Zip, dependsOn: distLayout ) {
+task zipBinaries( type: Zip, dependsOn: [ buildAll ] ) {
   baseName = 'qi4j-sdk'
   classifier = 'bin'
-  with distLayout.ext.binDistImage
+  with binDistImage
 }
 
-task tarBinaries( type: Tar, dependsOn: distLayout ) {
+task tarBinaries( type: Tar, dependsOn: [ buildAll ] ) {
   baseName = 'qi4j-sdk'
   classifier = 'bin'
   compression = Compression.GZIP
-  with distLayout.ext.binDistImage
+  with binDistImage
 }
 
 artifacts {
   archives zipSources, tarSources, zipBinaries, tarBinaries
 }
 
-task dist( type: Copy, dependsOn: [ distLayout, install ] ) {
-  with distLayout.ext.binDistImage
+task dist( type: Copy, dependsOn: install ) {
+  with binDistImage
   into "$buildDir/dist"
 }
 
