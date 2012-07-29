@@ -245,7 +245,6 @@ public class DependencyPane
      * >>> IMPORTANT!! <<<
      * DO NOT edit this method OR call it in your code!
      *
-     * @noinspection ALL
      */
     private void $$$setupUI$$$()
     {
@@ -393,9 +392,6 @@ public class DependencyPane
         detailPane.add( separator1, gbc );
     }
 
-    /**
-     * @noinspection ALL
-     */
     private void $$$loadLabelText$$$( JLabel component, String text )
     {
         StringBuffer result = new StringBuffer();
@@ -428,9 +424,6 @@ public class DependencyPane
         }
     }
 
-    /**
-     * @noinspection ALL
-     */
     public JComponent $$$getRootComponent$$$()
     {
         return contentPane;

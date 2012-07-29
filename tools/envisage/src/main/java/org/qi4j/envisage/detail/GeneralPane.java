@@ -82,7 +82,6 @@ public class GeneralPane
      * >>> IMPORTANT!! <<<
      * DO NOT edit this method OR call it in your code!
      *
-     * @noinspection ALL
      */
     private void $$$setupUI$$$()
     {
@@ -94,9 +93,6 @@ public class GeneralPane
         scrollPane1.setViewportView( table );
     }
 
-    /**
-     * @noinspection ALL
-     */
     public JComponent $$$getRootComponent$$$()
     {
         return contentPane;

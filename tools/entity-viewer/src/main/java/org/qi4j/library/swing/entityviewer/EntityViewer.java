@@ -232,7 +232,6 @@ public class EntityViewer
      * >>> IMPORTANT!! <<<
      * DO NOT edit this method OR call it in your code!
      *
-     * @noinspection ALL
      */
     private void $$$setupUI$$$()
     {
@@ -271,9 +270,6 @@ public class EntityViewer
         panel1.add( spacer1, gbc );
     }
 
-    /**
-     * @noinspection ALL
-     */
     public JComponent $$$getRootComponent$$$()
     {
         return mainPane;

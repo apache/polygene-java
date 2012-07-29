@@ -168,7 +168,6 @@ public class ServiceConfigurationPane
      * >>> IMPORTANT!! <<<
      * DO NOT edit this method OR call it in your code!
      *
-     * @noinspection ALL
      */
     private void $$$setupUI$$$()
     {
@@ -264,9 +263,6 @@ public class ServiceConfigurationPane
         contentPane.add( spacer6, gbc );
     }
 
-    /**
-     * @noinspection ALL
-     */
     private void $$$loadLabelText$$$( JLabel component, String text )
     {
         StringBuffer result = new StringBuffer();
@@ -299,9 +295,6 @@ public class ServiceConfigurationPane
         }
     }
 
-    /**
-     * @noinspection ALL
-     */
     private void $$$loadButtonText$$$( AbstractButton component, String text )
     {
         StringBuffer result = new StringBuffer();
@@ -334,9 +327,6 @@ public class ServiceConfigurationPane
         }
     }
 
-    /**
-     * @noinspection ALL
-     */
     public JComponent $$$getRootComponent$$$()
     {
         return contentPane;

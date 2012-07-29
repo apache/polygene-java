@@ -162,7 +162,6 @@ public class SPIPane
      * >>> IMPORTANT!! <<<
      * DO NOT edit this method OR call it in your code!
      *
-     * @noinspection ALL
      */
     private void $$$setupUI$$$()
     {
@@ -174,9 +173,6 @@ public class SPIPane
         scrollPane1.setViewportView( spiTable );
     }
 
-    /**
-     * @noinspection ALL
-     */
     public JComponent $$$getRootComponent$$$()
     {
         return contentPane;

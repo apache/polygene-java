@@ -217,7 +217,6 @@ public class EnvisageFrame
      * >>> IMPORTANT!! <<<
      * DO NOT edit this method OR call it in your code!
      *
-     * @noinspection ALL
      */
     private void $$$setupUI$$$()
     {
@@ -225,9 +224,6 @@ public class EnvisageFrame
         contentPane.setLayout( new BorderLayout( 0, 0 ) );
     }
 
-    /**
-     * @noinspection ALL
-     */
     public JComponent $$$getRootComponent$$$()
     {
         return contentPane;

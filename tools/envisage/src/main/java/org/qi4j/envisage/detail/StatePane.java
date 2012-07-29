@@ -145,7 +145,6 @@ public class StatePane
      * >>> IMPORTANT!! <<<
      * DO NOT edit this method OR call it in your code!
      *
-     * @noinspection ALL
      */
     private void $$$setupUI$$$()
     {
@@ -163,9 +162,6 @@ public class StatePane
         scrollPane2.setViewportView( methodDetailTable );
     }
 
-    /**
-     * @noinspection ALL
-     */
     public JComponent $$$getRootComponent$$$()
     {
         return contentPane;

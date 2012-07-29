@@ -171,7 +171,6 @@ public class ServiceUsagePane
      * >>> IMPORTANT!! <<<
      * DO NOT edit this method OR call it in your code!
      *
-     * @noinspection ALL
      */
     private void $$$setupUI$$$()
     {
@@ -183,9 +182,6 @@ public class ServiceUsagePane
         scrollPane1.setViewportView( usageTable );
     }
 
-    /**
-     * @noinspection ALL
-     */
     public JComponent $$$getRootComponent$$$()
     {
         return contentPane;

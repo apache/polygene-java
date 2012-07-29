@@ -141,7 +141,6 @@ public class MethodPane
      * >>> IMPORTANT!! <<<
      * DO NOT edit this method OR call it in your code!
      *
-     * @noinspection ALL
      */
     private void $$$setupUI$$$()
     {
@@ -159,9 +158,6 @@ public class MethodPane
         scrollPane2.setViewportView( methodDetailTable );
     }
 
-    /**
-     * @noinspection ALL
-     */
     public JComponent $$$getRootComponent$$$()
     {
         return contentPane;
