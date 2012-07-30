@@ -180,15 +180,4 @@ public final class ServiceModel extends CompositeModel
         return injectionClass;
     }
 
-    public void activate( Object[] mixins )
-        throws Exception
-    {
-        mixinsModel.activate( mixins );
-    }
-
-    public void passivate( Object[] mixins )
-        throws Exception
-    {
-        mixinsModel.passivate( mixins );
-    }
 }

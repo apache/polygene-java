@@ -57,13 +57,13 @@ public class ServiceInstance
     public void activate()
         throws Exception
     {
-        ( (ServiceModel) compositeModel ).activate( mixins );
+        // NOOP
     }
 
     public void passivate()
         throws Exception
     {
-        ( (ServiceModel) compositeModel ).passivate( mixins );
+        // NOOP
     }
 
     public boolean isAvailable()
