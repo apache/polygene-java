@@ -25,7 +25,7 @@ import org.qi4j.api.structure.Layer;
 import org.qi4j.api.structure.Module;
 import org.qi4j.bootstrap.Qi4jRuntime;
 import org.qi4j.runtime.activation.ActivationEventListenerSupport;
-import org.qi4j.runtime.activation.ActivationHandler;
+import org.qi4j.runtime.activation.ActivationDelegate;
 
 /**
  * Instance of a Qi4j application. Contains a list of layers which are managed by this application
@@ -37,8 +37,8 @@ public class ApplicationInstance
     private final Qi4jRuntime runtime;
     private final MetaInfo instanceMetaInfo;
     private final List<LayerInstance> layerInstances = new ArrayList<LayerInstance>();
-    private final ActivationHandler activationHandler = new ActivationHandler( this );
-    private final ActivationEventListenerSupport eventListenerSupport = new ActivationEventListenerSupport();
+    private final ActivationDelegate activation = new ActivationDelegate( this );
+    private final ActivationEventListenerSupport activationEventSupport = new ActivationEventListenerSupport();
 
     public ApplicationInstance( ApplicationModel model, Qi4jRuntime runtime, MetaInfo instanceMetaInfo )
     {
@@ -49,7 +49,7 @@ public class ApplicationInstance
 
     void addLayer( LayerInstance layer )
     {
-        layer.registerActivationEventListener( eventListenerSupport );
+        layer.registerActivationEventListener( activationEventSupport );
         layerInstances.add( layer );
     }
 
@@ -117,17 +117,17 @@ public class ApplicationInstance
     public void activate()
         throws Exception
     {
-        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATING ) );
-        activationHandler.activate( applicationModel.newActivatorsInstance(), layerInstances );
-        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATED ) );
+        activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATING ) );
+        activation.activate( applicationModel.newActivatorsInstance(), layerInstances );
+        activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATED ) );
     }
 
     public void passivate()
         throws Exception
     {
-        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATING ) );
-        activationHandler.passivate();
-        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATED ) );
+        activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATING ) );
+        activation.passivate();
+        activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATED ) );
     }
 
     @Override
@@ -138,11 +138,11 @@ public class ApplicationInstance
 
     public void registerActivationEventListener( ActivationEventListener listener )
     {
-        eventListenerSupport.registerActivationEventListener( listener );
+        activationEventSupport.registerActivationEventListener( listener );
     }
 
     public void deregisterActivationEventListener( ActivationEventListener listener )
     {
-        eventListenerSupport.deregisterActivationEventListener( listener );
+        activationEventSupport.deregisterActivationEventListener( listener );
     }
 }

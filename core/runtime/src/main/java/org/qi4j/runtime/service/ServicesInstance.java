@@ -18,27 +18,27 @@ package org.qi4j.runtime.service;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import org.qi4j.api.activation.Activation;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.event.ActivationEventListener;
 import org.qi4j.api.event.ActivationEventListenerRegistration;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specification;
 import org.qi4j.runtime.activation.ActivationEventListenerSupport;
-import org.qi4j.runtime.activation.ActivationHandler;
+import org.qi4j.runtime.activation.ActivationDelegate;
 import org.qi4j.runtime.activation.ActivatorsInstance;
 
 /**
  * JAVADOC
  */
 public class ServicesInstance
-    implements Activatable, ActivationEventListenerRegistration
+    implements Activation, ActivationEventListenerRegistration
 {
     private final ServicesModel servicesModel;
     private final List<ServiceReference> serviceReferences;
-    private final ActivationHandler activationHandler = new ActivationHandler( this );
-    private final ActivationEventListenerSupport eventListenerSupport = new ActivationEventListenerSupport();
+    private final ActivationDelegate activation = new ActivationDelegate( this );
+    private final ActivationEventListenerSupport activationEventSupport = new ActivationEventListenerSupport();
 
     public ServicesInstance( ServicesModel servicesModel, List<ServiceReference> serviceReferences )
     {
@@ -46,28 +46,28 @@ public class ServicesInstance
         this.serviceReferences = serviceReferences;
         for( ServiceReference serviceReference : serviceReferences )
         {
-            serviceReference.registerActivationEventListener( eventListenerSupport );
+            serviceReference.registerActivationEventListener( activationEventSupport );
         }
     }
 
     public void activate()
         throws Exception
     {
-        List<Activatable> activatableServiceReferences = new LinkedList<Activatable>();
+        List<Activation> activatableServiceReferences = new LinkedList<Activation>();
         for( final ServiceReference serviceReference : serviceReferences )
         {
-            if( serviceReference instanceof Activatable )
+            if( serviceReference instanceof Activation )
             {
-                activatableServiceReferences.add( ( Activatable ) serviceReference );
+                activatableServiceReferences.add( ( Activation ) serviceReference );
             }
         }
-        activationHandler.activate( ActivatorsInstance.EMPTY, activatableServiceReferences );
+        activation.activate( ActivatorsInstance.EMPTY, activatableServiceReferences );
     }
 
     public void passivate()
         throws Exception
     {
-        activationHandler.passivate();
+        activation.passivate();
     }
 
     public Iterable<ServiceReference> visibleServices( final Visibility visibility )
@@ -99,11 +99,11 @@ public class ServicesInstance
 
     public void registerActivationEventListener( ActivationEventListener listener )
     {
-        eventListenerSupport.registerActivationEventListener( listener );
+        activationEventSupport.registerActivationEventListener( listener );
     }
 
     public void deregisterActivationEventListener( ActivationEventListener listener )
     {
-        eventListenerSupport.deregisterActivationEventListener( listener );
+        activationEventSupport.deregisterActivationEventListener( listener );
     }
 }

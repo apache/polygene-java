@@ -31,7 +31,6 @@ import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryBuilderFactory;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.NoSuchServiceException;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Module;
@@ -42,7 +41,7 @@ import org.qi4j.api.util.Classes;
 import org.qi4j.api.util.NullArgumentException;
 import org.qi4j.api.value.*;
 import org.qi4j.functional.*;
-import org.qi4j.runtime.activation.ActivationHandler;
+import org.qi4j.runtime.activation.ActivationDelegate;
 import org.qi4j.runtime.association.*;
 import org.qi4j.runtime.composite.*;
 import org.qi4j.runtime.entity.EntitiesModel;
@@ -71,6 +70,7 @@ import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import org.qi4j.api.activation.Activation;
 
 import org.qi4j.api.event.ActivationEvent;
 import org.qi4j.api.event.ActivationEventListener;
@@ -82,10 +82,10 @@ import org.qi4j.runtime.activation.ActivationEventListenerSupport;
  * Instance of a Qi4j Module. Contains the various composites for this Module.
  */
 public class ModuleInstance
-    implements Module, Activatable
+    implements Module, Activation
 {
-    private final ActivationHandler activationHandler = new ActivationHandler( this );
-    private final ActivationEventListenerSupport eventListenerSupport = new ActivationEventListenerSupport();
+    private final ActivationDelegate activation = new ActivationDelegate( this );
+    private final ActivationEventListenerSupport activationEventSupport = new ActivationEventListenerSupport();
     private final ModuleModel moduleModel;
     private final LayerInstance layerInstance;
     private final TransientsModel transients;
@@ -133,9 +133,9 @@ public class ModuleInstance
         objects = objectsModel;
         entities = entitiesModel;
         services = servicesModel.newInstance( this );
-        services.registerActivationEventListener( eventListenerSupport );
+        services.registerActivationEventListener( activationEventSupport );
         importedServices = importedServicesModel.newInstance( this );
-        importedServices.registerActivationEventListener( eventListenerSupport );
+        importedServices.registerActivationEventListener( activationEventSupport );
 
         queryBuilderFactory = new QueryBuilderFactoryImpl( this );
 
@@ -243,18 +243,18 @@ public class ModuleInstance
     public void activate()
         throws Exception
     {
-        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATING ) );
-        activationHandler.activate( moduleModel.newActivatorsInstance(), 
-                                    Iterables.<Activatable, Activatable>iterable( services, importedServices ) );
-        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATED ) );
+        activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATING ) );
+        activation.activate( moduleModel.newActivatorsInstance(), 
+                                    Iterables.<Activation, Activation>iterable( services, importedServices ) );
+        activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATED ) );
     }
 
     public void passivate()
         throws Exception
     {
-        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATING ) );
-        activationHandler.passivate();
-        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATED ) );
+        activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATING ) );
+        activation.passivate();
+        activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATED ) );
     }
 
     @Override
@@ -1085,11 +1085,11 @@ public class ModuleInstance
 
     public void registerActivationEventListener( ActivationEventListener listener )
     {
-        eventListenerSupport.registerActivationEventListener( listener );
+        activationEventSupport.registerActivationEventListener( listener );
     }
 
     public void deregisterActivationEventListener( ActivationEventListener listener )
     {
-        eventListenerSupport.deregisterActivationEventListener( listener );
+        activationEventSupport.deregisterActivationEventListener( listener );
     }
 }

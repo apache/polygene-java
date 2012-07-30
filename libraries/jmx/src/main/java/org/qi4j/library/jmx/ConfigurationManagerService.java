@@ -42,6 +42,7 @@ import javax.management.ObjectName;
 import javax.management.ReflectionException;
 import javax.management.modelmbean.DescriptorSupport;
 import org.qi4j.api.Qi4j;
+import org.qi4j.api.activation.Activation;
 import org.qi4j.api.activation.ActivatorAdapter;
 import org.qi4j.api.activation.Activators;
 import org.qi4j.api.association.AssociationStateHolder;
@@ -55,7 +56,6 @@ import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyDescriptor;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.service.ServiceReference;
@@ -374,16 +374,16 @@ public interface ConfigurationManagerService
         class ConfigurableService
             extends EditableConfiguration
         {
-            private ServiceReference<?> service;
+            private ServiceReference<?> serviceRef;
 
-            ConfigurableService( ServiceReference<?> service,
+            ConfigurableService( ServiceReference<?> serviceReference,
                                  MBeanInfo info,
                                  String identity,
                                  Map<String, AccessibleObject> propertyNames
             )
             {
                 super( info, identity, propertyNames );
-                this.service = service;
+                this.serviceRef = serviceReference;
             }
 
             public Object invoke( String s, Object[] objects, String[] strings )
@@ -394,15 +394,15 @@ public interface ConfigurationManagerService
                     try
                     {
                         // Refresh and restart
-                        if( service.isActive() )
+                        if( serviceRef.isActive() )
                         {
                             // Refresh configuration
                             CompositeInstance compositeInstance = Qi4j.INSTANCE_FUNCTION
-                                .map( (Composite) service.get() );
+                                .map( (Composite) serviceRef.get() );
                             compositeInstance.newProxy( Configuration.class ).refresh();
 
-                            ( (Activatable) service ).passivate();
-                            ( (Activatable) service ).activate();
+                            ( (Activation) serviceRef ).passivate();
+                            ( (Activation) serviceRef ).activate();
                         }
 
                         return "Service restarted";

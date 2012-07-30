@@ -37,6 +37,7 @@ import javax.management.NotCompliantMBeanException;
 import javax.management.ObjectName;
 import javax.management.ReflectionException;
 import javax.sql.DataSource;
+import org.qi4j.api.activation.Activation;
 import org.qi4j.api.activation.ActivatorAdapter;
 import org.qi4j.api.activation.Activators;
 import org.qi4j.api.association.AssociationStateHolder;
@@ -47,7 +48,6 @@ import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyDescriptor;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Application;
@@ -279,8 +279,8 @@ public interface DataSourceConfigurationManagerService
                     try {
                         // Refresh and restart
                         if ( service.isActive() ) {
-                            ( ( Activatable ) service ).passivate();
-                            ( ( Activatable ) service ).activate();
+                            ( ( Activation ) service ).passivate();
+                            ( ( Activation ) service ).activate();
                         }
 
                         return "Restarted DataSource";

@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2011, Rickard Öberg.
+ * Copyright (c) 2012, Niclas Hedhman.
+ * Copyright (c) 2012, Paul Merlin.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,27 +13,15 @@
  * limitations under the License.
  *
  */
+package org.qi4j.api.activation;
 
-package org.qi4j.api.service;
-
-/**
- * Instances that want to get callbacks on activation and passivation should implement this.
- */
-public interface Activatable
+public interface Activation
 {
-    /**
-     * This is invoked on the service when the instance is being activated
-     *
-     * @throws Exception if service could not be activated
-     */
-    void activate()
-        throws Exception;
 
-    /**
-     * This is invoked on the service when the instance is being passivated
-     *
-     * @throws Exception if the service could not be passivated
-     */
+    void activate()
+            throws Exception;
+
     void passivate()
-        throws Exception;
+            throws Exception;
+
 }

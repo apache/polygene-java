@@ -15,19 +15,19 @@
 package org.qi4j.runtime.service;
 
 import java.lang.reflect.Method;
+import org.qi4j.api.activation.Activation;
 import org.qi4j.api.composite.CompositeDescriptor;
 import org.qi4j.api.composite.CompositeInstance;
 import org.qi4j.api.event.ActivationEvent;
 import org.qi4j.api.event.ActivationEventListener;
 import org.qi4j.api.property.StateHolder;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.service.ServiceImporterException;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.service.ServiceUnavailableException;
 import org.qi4j.api.structure.Module;
 import org.qi4j.runtime.activation.ActivationEventListenerSupport;
-import org.qi4j.runtime.activation.ActivationHandler;
+import org.qi4j.runtime.activation.ActivationDelegate;
 import org.qi4j.runtime.structure.ModuleInstance;
 
 /**
@@ -38,14 +38,14 @@ import org.qi4j.runtime.structure.ModuleInstance;
  * that the instance can be passivated even though a client is holding on to a service proxy.
  */
 public final class ServiceReferenceInstance<T>
-    implements ServiceReference<T>, Activatable
+    implements ServiceReference<T>, Activation
 {
     private volatile ServiceInstance instance;
     private final T serviceProxy;
     private final ModuleInstance module;
     private final ServiceModel serviceModel;
-    private final ActivationHandler activationHandler = new ActivationHandler( this );
-    private final ActivationEventListenerSupport eventListenerSupport = new ActivationEventListenerSupport();
+    private final ActivationDelegate activation = new ActivationDelegate( this );
+    private final ActivationEventListenerSupport activationEventSupport = new ActivationEventListenerSupport();
     private boolean active = false;
 
     public ServiceReferenceInstance( ServiceModel serviceModel, ModuleInstance module )
@@ -107,8 +107,8 @@ public final class ServiceReferenceInstance<T>
         if( instance != null )
         {
             try {
-                eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATING ) );
-                activationHandler.passivate( new Runnable()
+                activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATING ) );
+                activation.passivate( new Runnable()
                 {
 
                     public void run()
@@ -117,7 +117,7 @@ public final class ServiceReferenceInstance<T>
                     }
 
                 } );
-                eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATED ) );
+                activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATED ) );
             } finally {
                 instance = null;
                 active = false;
@@ -139,8 +139,8 @@ public final class ServiceReferenceInstance<T>
 
                     try
                     {
-                        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATING ) );
-                        activationHandler.activate( serviceModel.newActivatorsInstance(), instance, new Runnable()
+                        activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATING ) );
+                        activation.activate( serviceModel.newActivatorsInstance(), instance, new Runnable()
                         {
 
                             public void run()
@@ -149,7 +149,7 @@ public final class ServiceReferenceInstance<T>
                             }
 
                         } );
-                        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATED ) );
+                        activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATED ) );
                     }
                     catch( Exception e )
                     {
@@ -272,11 +272,11 @@ public final class ServiceReferenceInstance<T>
 
     public void registerActivationEventListener( ActivationEventListener listener )
     {
-        eventListenerSupport.registerActivationEventListener( listener );
+        activationEventSupport.registerActivationEventListener( listener );
     }
 
     public void deregisterActivationEventListener( ActivationEventListener listener )
     {
-        eventListenerSupport.deregisterActivationEventListener( listener );
+        activationEventSupport.deregisterActivationEventListener( listener );
     }
 }

@@ -25,7 +25,7 @@ import org.qi4j.api.structure.Module;
 import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
 import org.qi4j.runtime.activation.ActivationEventListenerSupport;
-import org.qi4j.runtime.activation.ActivationHandler;
+import org.qi4j.runtime.activation.ActivationDelegate;
 import org.qi4j.runtime.composite.TransientModel;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.object.ObjectModel;
@@ -40,8 +40,8 @@ public class LayerInstance
     private final LayerModel layerModel;
     private final ApplicationInstance applicationInstance;
     private final List<ModuleInstance> moduleInstances = new ArrayList<ModuleInstance>();
-    private final ActivationHandler activationHandler = new ActivationHandler( this );
-    private final ActivationEventListenerSupport eventListenerSupport = new ActivationEventListenerSupport();
+    private final ActivationDelegate activation = new ActivationDelegate( this );
+    private final ActivationEventListenerSupport activationEventSupport = new ActivationEventListenerSupport();
     private final UsedLayersInstance usedLayersInstance;
 
     public LayerInstance( LayerModel model,
@@ -56,7 +56,7 @@ public class LayerInstance
 
     void addModule( ModuleInstance module )
     {
-        module.registerActivationEventListener( eventListenerSupport );
+        module.registerActivationEventListener( activationEventSupport );
         moduleInstances.add( module );
     }
 
@@ -171,17 +171,17 @@ public class LayerInstance
     public void activate()
         throws Exception
     {
-        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATING ) );
-        activationHandler.activate( layerModel.newActivatorsInstance(), moduleInstances );
-        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATED ) );
+        activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATING ) );
+        activation.activate( layerModel.newActivatorsInstance(), moduleInstances );
+        activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATED ) );
     }
 
     public void passivate()
         throws Exception
     {
-        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATING ) );
-        activationHandler.passivate();
-        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATED ) );
+        activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATING ) );
+        activation.passivate();
+        activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATED ) );
     }
 
     @Override
@@ -192,11 +192,11 @@ public class LayerInstance
 
     public void registerActivationEventListener( ActivationEventListener listener )
     {
-        eventListenerSupport.registerActivationEventListener( listener );
+        activationEventSupport.registerActivationEventListener( listener );
     }
 
     public void deregisterActivationEventListener( ActivationEventListener listener )
     {
-        eventListenerSupport.deregisterActivationEventListener( listener );
+        activationEventSupport.deregisterActivationEventListener( listener );
     }
 }

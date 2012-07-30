@@ -14,15 +14,15 @@
  */
 package org.qi4j.runtime.service;
 
+import org.qi4j.api.activation.Activation;
 import org.qi4j.api.event.ActivationEvent;
 import org.qi4j.api.event.ActivationEventListener;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceImporterException;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.service.ServiceUnavailableException;
 import org.qi4j.api.structure.Module;
 import org.qi4j.runtime.activation.ActivationEventListenerSupport;
-import org.qi4j.runtime.activation.ActivationHandler;
+import org.qi4j.runtime.activation.ActivationDelegate;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -33,14 +33,14 @@ import org.slf4j.LoggerFactory;
  * service importer.
  */
 public final class ImportedServiceReferenceInstance<T>
-    implements ServiceReference<T>, Activatable
+    implements ServiceReference<T>, Activation
 {
     private volatile ImportedServiceInstance<T> serviceInstance;
     private T instance;
     private final Module module;
     private final ImportedServiceModel serviceModel;
-    private final ActivationHandler activationHandler = new ActivationHandler( this );
-    private final ActivationEventListenerSupport eventListenerSupport = new ActivationEventListenerSupport();
+    private final ActivationDelegate activation = new ActivationDelegate( this );
+    private final ActivationEventListenerSupport activationEventSupport = new ActivationEventListenerSupport();
     private boolean active = false;
 
     public ImportedServiceReferenceInstance( ImportedServiceModel serviceModel, Module module )
@@ -90,8 +90,8 @@ public final class ImportedServiceReferenceInstance<T>
         if( serviceInstance != null )
         {
             try {
-                eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATING ) );
-                activationHandler.passivate( new Runnable()
+                activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATING ) );
+                activation.passivate( new Runnable()
                 {
 
                     public void run()
@@ -100,7 +100,7 @@ public final class ImportedServiceReferenceInstance<T>
                     }
 
                 } );
-                eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATED ) );
+                activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATED ) );
             } finally {
                 serviceInstance = null;
                 active = false;
@@ -142,13 +142,13 @@ public final class ImportedServiceReferenceInstance<T>
             {
                 if( serviceInstance == null )
                 {
-                    eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATING ) );
+                    activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATING ) );
                     serviceInstance = serviceModel.<T>importInstance( module );
                     instance = serviceInstance.instance();
 
                     try
                     {
-                        activationHandler.activate( serviceModel.newActivatorsInstance(), serviceInstance, new Runnable()
+                        activation.activate( serviceModel.newActivatorsInstance(), serviceInstance, new Runnable()
                         {
 
                             public void run()
@@ -157,7 +157,7 @@ public final class ImportedServiceReferenceInstance<T>
                             }
 
                         } );
-                        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATED ) );
+                        activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATED ) );
                     }
                     catch( Exception e )
                     {
@@ -179,11 +179,11 @@ public final class ImportedServiceReferenceInstance<T>
 
     public void registerActivationEventListener( ActivationEventListener listener )
     {
-        eventListenerSupport.registerActivationEventListener( listener );
+        activationEventSupport.registerActivationEventListener( listener );
     }
 
     public void deregisterActivationEventListener( ActivationEventListener listener )
     {
-        eventListenerSupport.deregisterActivationEventListener( listener );
+        activationEventSupport.deregisterActivationEventListener( listener );
     }
 }

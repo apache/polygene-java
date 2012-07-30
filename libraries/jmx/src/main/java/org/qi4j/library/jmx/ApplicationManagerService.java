@@ -22,13 +22,13 @@ import javax.management.MBeanServer;
 import javax.management.ObjectName;
 import javax.management.modelmbean.ModelMBeanOperationInfo;
 import javax.management.modelmbean.RequiredModelMBean;
+import org.qi4j.api.activation.Activation;
 import org.qi4j.api.activation.ActivatorAdapter;
 import org.qi4j.api.activation.Activators;
 import org.qi4j.api.composite.ModelDescriptor;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ImportedServiceDescriptor;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceDescriptor;
@@ -319,8 +319,8 @@ public interface ApplicationManagerService
             {
                 try
                 {
-                    ( (Activatable) serviceRef ).passivate();
-                    ( (Activatable) serviceRef ).activate();
+                    ( (Activation) serviceRef ).passivate();
+                    ( (Activation) serviceRef ).activate();
                     return "Restarted service";
                 }
                 catch( Exception e )

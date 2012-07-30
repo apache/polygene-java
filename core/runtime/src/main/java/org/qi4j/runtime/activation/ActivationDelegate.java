@@ -19,44 +19,44 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import org.qi4j.api.activation.Activation;
 import org.qi4j.api.activation.PassivationException;
 import org.qi4j.api.event.ActivationEventListener;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceReference;
 
 /**
- * This class will manage activation of a target and propagates to children.
+ * This class will manage Activation of a target and propagates to children.
  */
-public final class ActivationHandler
+public final class ActivationDelegate
 {
     private final Object target;
     private ActivatorsInstance targetActivators = null;
-    private final LinkedList<Activatable> activeChildren = new LinkedList<Activatable>();
+    private final LinkedList<Activation> activeChildren = new LinkedList<Activation>();
 
-    public ActivationHandler( Object target )
+    public ActivationDelegate( Object target )
     {
         this.target = target;
     }
     
-    public void activate( ActivatorsInstance targetActivators, Activatable child )
+    public void activate( ActivatorsInstance targetActivators, Activation child )
             throws Exception
     {
         activate( targetActivators, Collections.singleton( child ), null );
     }
     
-    public void activate( ActivatorsInstance targetActivators, Activatable child, Runnable internalActivationCallback )
+    public void activate( ActivatorsInstance targetActivators, Activation child, Runnable internalActivationCallback )
         throws Exception
     {
         activate( targetActivators, Collections.singleton( child ), internalActivationCallback );
     }
     
-    public void activate( ActivatorsInstance targetActivators,  Iterable<? extends Activatable> children )
+    public void activate( ActivatorsInstance targetActivators,  Iterable<? extends Activation> children )
         throws Exception
     {
         activate( targetActivators, children, null );
     }
     
-    public void activate( ActivatorsInstance targetActivators,  Iterable<? extends Activatable> children, Runnable internalActivationCallback )
+    public void activate( ActivatorsInstance targetActivators,  Iterable<? extends Activation> children, Runnable internalActivationCallback )
         throws Exception
     {
         if ( this.targetActivators != null ) {
@@ -71,7 +71,7 @@ public final class ActivationHandler
         try
         {
             // Activation
-            for( Activatable child : children )
+            for( Activation child : children )
             {
                 if( ! activeChildren.contains( child ) )
                 {
@@ -184,7 +184,7 @@ public final class ActivationHandler
 
     private void passivateOneChild( List<Exception> exceptions )
     {
-        Activatable activeChild = activeChildren.removeFirst();
+        Activation activeChild = activeChildren.removeFirst();
         try
         {
             activeChild.passivate();
