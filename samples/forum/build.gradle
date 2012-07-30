@@ -19,3 +19,8 @@ dependencies {
   testRuntime(project(":org.qi4j.core:org.qi4j.core.spi"))
   testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
 }
+
+task(runSample, dependsOn: 'testClasses', type: JavaExec) {
+    main = 'org.qi4j.samples.forum.web.Main'
+    classpath = sourceSets.test.runtimeClasspath
+}

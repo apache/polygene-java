@@ -60,13 +60,17 @@ public final class ActivationHandler
         throws Exception
     {
         if ( this.targetActivators != null ) {
-            throw new IllegalStateException( "ActivationHandler.activate() called multiple times or without passivation first!" );
+            throw new IllegalStateException( "Activation.activate() called multiple times or without calling passivate() first!" );
         }
+
+        // Before Activation
         targetActivators.beforeActivation( target instanceof ServiceReference
                                             ? new InactiveServiceReference( ( ServiceReference ) target )
                                             : target );
+
         try
         {
+            // Activation
             for( Activatable child : children )
             {
                 if( ! activeChildren.contains( child ) )
@@ -75,10 +79,14 @@ public final class ActivationHandler
                 }
                 activeChildren.addFirst( child );
             }
+
+            // Internal Activation Callback
             if( internalActivationCallback != null )
             {
                 internalActivationCallback.run();
             }
+
+            // After Activation
             targetActivators.afterActivation( target );
             this.targetActivators = targetActivators;
         }
@@ -106,6 +114,8 @@ public final class ActivationHandler
         throws Exception
     {
         List<Exception> exceptions = new ArrayList<Exception>();
+
+        // Before Passivation
         if ( targetActivators != null )
         {
             try
@@ -124,14 +134,20 @@ public final class ActivationHandler
                 }
             }
         }
+
+        // Passivation
         while( !activeChildren.isEmpty() )
         {
             passivateOneChild( exceptions );
         }
+
+        // Internal Passivation Callback
         if( internalPassivationCallback != null )
         {
             internalPassivationCallback.run();
         }
+
+        // After Passivation
         if ( targetActivators != null )
         {
             try
@@ -153,6 +169,8 @@ public final class ActivationHandler
             }
         }
         targetActivators = null;
+
+        // Error handling
         if( exceptions.isEmpty() )
         {
             return;
