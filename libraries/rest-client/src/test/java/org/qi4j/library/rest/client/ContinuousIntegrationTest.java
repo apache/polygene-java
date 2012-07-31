@@ -50,7 +50,9 @@ import org.restlet.security.User;
 import org.restlet.service.MetadataService;
 
 import static org.qi4j.bootstrap.ImportedServiceDeclaration.NEW_OBJECT;
-import static org.qi4j.library.rest.client.api.HandlerCommand.*;
+import static org.qi4j.library.rest.client.api.HandlerCommand.command;
+import static org.qi4j.library.rest.client.api.HandlerCommand.query;
+import static org.qi4j.library.rest.client.api.HandlerCommand.refresh;
 
 /**
  * ReST Client libraries documentation source snippets.
@@ -80,8 +82,7 @@ public class ContinuousIntegrationTest
         // Test specific setup
         module.values( BuildSpec.class, BuildResult.class, ServerStatus.class, TagBuildCommand.class, RunBuildCommand.class );
 
-        module.objects( RootRestlet.class, RootResource.class, RootContext.class);
-
+        module.objects( RootRestlet.class, RootResource.class, RootContext.class );
     }
 
     @Override
@@ -97,18 +98,18 @@ public class ContinuousIntegrationTest
         server = new Server( Protocol.HTTP, 8888 );
         ContextRestlet restlet = module.newObject( ContextRestlet.class, new org.restlet.Context() );
 
-        ChallengeAuthenticator guard = new ChallengeAuthenticator(null, ChallengeScheme.HTTP_BASIC, "testRealm");
+        ChallengeAuthenticator guard = new ChallengeAuthenticator( null, ChallengeScheme.HTTP_BASIC, "testRealm" );
         MapVerifier mapVerifier = new MapVerifier();
-        mapVerifier.getLocalSecrets().put("rickard", "secret".toCharArray());
-        guard.setVerifier(mapVerifier);
+        mapVerifier.getLocalSecrets().put( "rickard", "secret".toCharArray() );
+        guard.setVerifier( mapVerifier );
 
-        guard.setNext(restlet);
+        guard.setNext( restlet );
 
         server.setNext( guard );
         server.start();
 
         //START SNIPPET: client-create1
-        Client client =   new Client( Protocol.HTTP );
+        Client client = new Client( Protocol.HTTP );
 
         ContextResourceClientFactory contextResourceClientFactory = module.newObject( ContextResourceClientFactory.class, client );
         contextResourceClientFactory.setAcceptedMediaTypes( MediaType.APPLICATION_JSON );
@@ -122,14 +123,16 @@ public class ContinuousIntegrationTest
             @Override
             public HandlerCommand handleResponse( Response response, ContextResourceClient client )
             {
-                    if (tried)
-                        throw new ResourceException( response.getStatus() );
+                if( tried )
+                {
+                    throw new ResourceException( response.getStatus() );
+                }
 
-                    tried = true;
-                    client.getContextResourceClientFactory().getInfo().setUser( new User("rickard", "secret") );
+                tried = true;
+                client.getContextResourceClientFactory().getInfo().setUser( new User( "rickard", "secret" ) );
 
-                    // Try again
-                    return refresh();
+                // Try again
+                return refresh();
             }
         } ).onError( ErrorHandler.RECOVERABLE_ERROR, new ResponseHandler()
         {
@@ -172,16 +175,15 @@ public class ContinuousIntegrationTest
             {
                 return query( "status" );
             }
-        } ).
-        onQuery( "status", new ResultHandler<ServerStatus>()
-        {
-            @Override
-            public HandlerCommand handleResult( ServerStatus result, ContextResourceClient client )
+        } ).onQuery( "status", new ResultHandler<ServerStatus>()
             {
-                Assert.assertThat( result.currentStatus().get(), CoreMatchers.equalTo( "Idle" ) );
-                return null;
-            }
-        } );
+                @Override
+                public HandlerCommand handleResult( ServerStatus result, ContextResourceClient client )
+                {
+                    Assert.assertThat( result.currentStatus().get(), CoreMatchers.equalTo( "Idle" ) );
+                    return null;
+                }
+            } );
 
         crc.start();
         //END SNIPPET: query-without-value
@@ -301,9 +303,10 @@ public class ContinuousIntegrationTest
     }
 
     public interface TagBuildCommand
-            extends ValueComposite
+        extends ValueComposite
     {
         Property<String> buildNo();
+
         Property<String> tag();
 
         @Optional
@@ -314,12 +317,14 @@ public class ContinuousIntegrationTest
         extends ValueComposite
     {
         Property<String> buildNo();
+
         Property<Integer> testsPassed();
+
         Property<Integer> testsFailed();
     }
 
     public interface BuildSpec
-            extends ValueComposite
+        extends ValueComposite
     {
         @Optional
         Property<String> buildNo();
@@ -329,20 +334,20 @@ public class ContinuousIntegrationTest
     }
 
     public interface ServerStatus
-            extends ValueComposite
+        extends ValueComposite
     {
         Property<String> currentStatus();
+
         Property<Integer> availableAgents();
     }
 
     public interface RunBuildCommand
-            extends ValueComposite
+        extends ValueComposite
     {
-            Property<String> entity();
+        Property<String> entity();
     }
 
-
-public static class RootRestlet
+    public static class RootRestlet
         extends ContextRestlet
     {
         @Override
@@ -368,7 +373,7 @@ public static class RootRestlet
         public BuildResult buildstatus( BuildSpec build )
             throws Throwable
         {
-            return rootContext().buildStatus(build);
+            return rootContext().buildStatus( build );
         }
 
         public ServerStatus status()
@@ -380,24 +385,22 @@ public static class RootRestlet
         public void tagbuild( TagBuildCommand command )
             throws Throwable
         {
-            rootContext().tagBuild(command);
+            rootContext().tagBuild( command );
         }
 
-        public void runbuild(RunBuildCommand run)
+        public void runbuild( RunBuildCommand run )
         {
-            rootContext().runBuildOn(run.entity().get());
-
+            rootContext().runBuildOn( run.entity().get() );
         }
 
         public Links runbuild()
         {
-            return new LinksBuilder(module).
+            return new LinksBuilder( module ).
                 command( "runbuild" ).
-                addLink("On available agent", "any").
-                addLink("On LinuxAgent", "LinuxAgent").
-                addLink("On WinAgent", "WinAgent").newLinks();
+                addLink( "On available agent", "any" ).
+                addLink( "On LinuxAgent", "LinuxAgent" ).
+                addLink( "On WinAgent", "WinAgent" ).newLinks();
         }
-
     }
 
     public static class RootContext
@@ -406,10 +409,10 @@ public static class RootRestlet
         @Structure
         Module module;
 
-        public BuildResult buildStatus(BuildSpec build)
+        public BuildResult buildStatus( BuildSpec build )
         {
             String buildNo = build.buildNo().get(); // or lookup by tag
-            return module.newValueFromJSON( BuildResult.class, "{ 'buildNo':'" +  buildNo + "', 'testsPassed': 37, 'testsFailed': 1}" );
+            return module.newValueFromJSON( BuildResult.class, "{ 'buildNo':'" + buildNo + "', 'testsPassed': 37, 'testsFailed': 1}" );
         }
 
         public ServerStatus serverStatus()
@@ -427,5 +430,4 @@ public static class RootRestlet
             // build started
         }
     }
-
 }
