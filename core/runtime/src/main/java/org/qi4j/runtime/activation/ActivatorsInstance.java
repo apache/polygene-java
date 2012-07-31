@@ -20,39 +20,45 @@ import org.qi4j.api.activation.Activator;
 import org.qi4j.api.activation.PassivationException;
 import org.qi4j.functional.Iterables;
 
-public class ActivatorsInstance<T>
-        implements Activator<T>
+/**
+ * Instance of a Qi4j Activators of one Activation target. Contains ordered
+ * Activators and roll the Activation on the target.
+ * 
+ * @param <ActivateeType> Type of the activation target
+ */
+public class ActivatorsInstance<ActivateeType>
+        implements Activator<ActivateeType>
 {
     public static final ActivatorsInstance EMPTY = new ActivatorsInstance( Collections.emptyList() );
 
-    private final Iterable<Activator<T>> activators;
+    private final Iterable<Activator<ActivateeType>> activators;
 
-    public ActivatorsInstance( Iterable<Activator<T>> activators )
+    public ActivatorsInstance( Iterable<Activator<ActivateeType>> activators )
     {
         this.activators = activators;
     }
 
-    public void beforeActivation( T activating )
+    public void beforeActivation( ActivateeType activating )
             throws Exception
     {
-        for( Activator<T> activator : activators ) {
+        for( Activator<ActivateeType> activator : activators ) {
             activator.beforeActivation( activating );
         }
     }
 
-    public void afterActivation( T activated )
+    public void afterActivation( ActivateeType activated )
             throws Exception
     {
-        for( Activator<T> activator : activators ) {
+        for( Activator<ActivateeType> activator : activators ) {
             activator.afterActivation( activated );
         }
     }
 
-    public void beforePassivation( T passivating )
+    public void beforePassivation( ActivateeType passivating )
             throws Exception
     {
         List<Exception> exceptions = new ArrayList<Exception>();
-        for( Activator<T> activator : Iterables.reverse( activators ) ) {
+        for( Activator<ActivateeType> activator : Iterables.reverse( activators ) ) {
             try
             {
                 activator.beforePassivation( passivating );
@@ -72,11 +78,11 @@ public class ActivatorsInstance<T>
         throw new PassivationException( exceptions );
     }
 
-    public void afterPassivation( T passivated )
+    public void afterPassivation( ActivateeType passivated )
             throws Exception
     {
         List<Exception> exceptions = new ArrayList<Exception>();
-        for( Activator<T> activator : Iterables.reverse( activators ) ) {
+        for( Activator<ActivateeType> activator : Iterables.reverse( activators ) ) {
             try
             {
                 activator.afterPassivation( passivated );

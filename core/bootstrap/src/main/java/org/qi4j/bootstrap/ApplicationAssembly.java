@@ -79,12 +79,19 @@ public interface ApplicationAssembly
      *
      * @param mode the application mode
      *
-     * @return the current application mode
+     * @return the assembly
      */
     ApplicationAssembly setMode( Application.Mode mode );
 
     ApplicationAssembly setMetaInfo( Object info );
-    
+
+    /**
+     * Set the application activators. Activators are executed in order around the
+     * Application activation and passivation.
+     *
+     * @param activators the application activators
+     * @return the assembly
+     */    
     ApplicationAssembly withActivators( Class<? extends Activator<Application>>... activators );
 
     <ThrowableType extends Throwable> void visit( AssemblyVisitor<ThrowableType> visitor )

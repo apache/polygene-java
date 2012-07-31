@@ -54,6 +54,13 @@ public interface ModuleAssembly
      */
     String name();
 
+    /**
+     * Set the module activators. Activators are executed in order around the
+     * Module activation and passivation.
+     *
+     * @param activators the module activators
+     * @return the assembly
+     */    
     ModuleAssembly withActivators( Class<? extends Activator<Module>>... activators );
 
     /**

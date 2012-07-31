@@ -46,5 +46,12 @@ public interface ServiceDeclaration
 
     ServiceDeclaration instantiateOnStartup();
 
+    /**
+     * Set the service activators. Activators are executed in order around the
+     * ServiceReference activation and passivation.
+     *
+     * @param activators the service activators
+     * @return the assembly
+     */    
     ServiceDeclaration withActivators( Class<? extends Activator<?>>... activators );
 }

@@ -48,6 +48,13 @@ public interface LayerAssembly
 
     LayerAssembly uses( LayerAssembly... layerAssembly );
 
+    /**
+     * Set the layer activators. Activators are executed in order around the
+     * Layer activation and passivation.
+     *
+     * @param activators the layer activators
+     * @return the assembly
+     */    
     LayerAssembly withActivators( Class<? extends Activator<Layer>>... activators );
 
     <ThrowableType extends Throwable> void visit( AssemblyVisitor<ThrowableType> visitor )

@@ -20,18 +20,18 @@ import org.qi4j.api.activation.Activator;
 public class ActivatorsModel<T>
 {
 
-    private final Iterable<Class<? extends Activator<T>>> activatorClasses;
+    private final Iterable<Class<? extends Activator<T>>> activatorsClasses;
 
-    public ActivatorsModel( Iterable<Class<? extends Activator<T>>> activatorClasses )
+    public ActivatorsModel( Iterable<Class<? extends Activator<T>>> activatorsClasses )
     {
-        this.activatorClasses = activatorClasses;
+        this.activatorsClasses = activatorsClasses;
     }
 
     public Iterable<Activator<T>> newInstances()
             throws Exception
     {
         List<Activator<T>> activators = new ArrayList<Activator<T>>();
-        for ( Class<? extends Activator<T>> activatorClass : activatorClasses ) {
+        for ( Class<? extends Activator<T>> activatorClass : activatorsClasses ) {
             activators.add( activatorClass.newInstance() );
         }
         return activators;

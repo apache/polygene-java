@@ -18,7 +18,10 @@
 package org.qi4j.api.activation;
 
 /**
- * Activators are used to hook in the Activation.
+ * Assemble Activators to hook Services Activation.
+ *
+ * @see ActivatorAdapter
+ * @see ServiceActivation
  * 
  * @param ActivateeType Type of the activatee.
  */

@@ -44,10 +44,10 @@ public final class ActivationDelegate
         activate( targetActivators, Collections.singleton( child ), null );
     }
     
-    public void activate( ActivatorsInstance targetActivators, Activation child, Runnable internalActivationCallback )
+    public void activate( ActivatorsInstance targetActivators, Activation child, Runnable callback )
         throws Exception
     {
-        activate( targetActivators, Collections.singleton( child ), internalActivationCallback );
+        activate( targetActivators, Collections.singleton( child ), callback );
     }
     
     public void activate( ActivatorsInstance targetActivators,  Iterable<? extends Activation> children )
@@ -56,7 +56,7 @@ public final class ActivationDelegate
         activate( targetActivators, children, null );
     }
     
-    public void activate( ActivatorsInstance targetActivators,  Iterable<? extends Activation> children, Runnable internalActivationCallback )
+    public void activate( ActivatorsInstance targetActivators,  Iterable<? extends Activation> children, Runnable callback )
         throws Exception
     {
         if ( this.targetActivators != null ) {
@@ -65,7 +65,7 @@ public final class ActivationDelegate
 
         // Before Activation
         targetActivators.beforeActivation( target instanceof ServiceReference
-                                            ? new InactiveServiceReference( ( ServiceReference ) target )
+                                            ? new PassiveServiceReference( ( ServiceReference ) target )
                                             : target );
 
         try
@@ -81,9 +81,9 @@ public final class ActivationDelegate
             }
 
             // Internal Activation Callback
-            if( internalActivationCallback != null )
+            if( callback != null )
             {
-                internalActivationCallback.run();
+                callback.run();
             }
 
             // After Activation
@@ -110,7 +110,7 @@ public final class ActivationDelegate
         passivate( ( Runnable ) null );
     }
     
-    public void passivate( Runnable internalPassivationCallback  )
+    public void passivate( Runnable callback  )
         throws Exception
     {
         List<Exception> exceptions = new ArrayList<Exception>();
@@ -142,9 +142,9 @@ public final class ActivationDelegate
         }
 
         // Internal Passivation Callback
-        if( internalPassivationCallback != null )
+        if( callback != null )
         {
-            internalPassivationCallback.run();
+            callback.run();
         }
 
         // After Passivation
@@ -153,7 +153,7 @@ public final class ActivationDelegate
             try
             {
                 targetActivators.afterPassivation( target instanceof ServiceReference
-                                                ? new InactiveServiceReference( ( ServiceReference ) target )
+                                                ? new PassiveServiceReference( ( ServiceReference ) target )
                                                 : target );
             }
             catch( Exception ex )
@@ -202,25 +202,26 @@ public final class ActivationDelegate
         }
     }
 
-    private static class InactiveServiceReference
+    private static class PassiveServiceReference
             implements ServiceReference
     {
 
-        private final ServiceReference delegate;
+        private final ServiceReference reference;
 
-        private InactiveServiceReference( ServiceReference delegate )
+        private PassiveServiceReference( ServiceReference reference )
         {
-            this.delegate = delegate;
+            this.reference = reference;
         }
 
         public String identity()
         {
-            return delegate.identity();
+            return reference.identity();
         }
 
         public Object get()
         {
-            throw new IllegalStateException( "Service is activating and can't be used yet." );
+            throw new IllegalStateException( "Service is passive, either activating and"
+                    + " cannot be used yet or passivating and cannot be used anymore." );
         }
 
         public boolean isActive()
@@ -235,22 +236,22 @@ public final class ActivationDelegate
 
         public Iterable<Class<?>> types()
         {
-            return delegate.types();
+            return reference.types();
         }
 
         public <T> T metaInfo( Class<T> infoType )
         {
-            return delegate.metaInfo( infoType );
+            return reference.metaInfo( infoType );
         }
 
         public void registerActivationEventListener( ActivationEventListener listener )
         {
-            delegate.registerActivationEventListener( listener );
+            reference.registerActivationEventListener( listener );
         }
 
         public void deregisterActivationEventListener( ActivationEventListener listener )
         {
-            delegate.deregisterActivationEventListener( listener );
+            reference.deregisterActivationEventListener( listener );
         }
 
     }

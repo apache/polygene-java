@@ -12,21 +12,19 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.runtime.service;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import org.qi4j.api.activation.Activation;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.event.ActivationEventListener;
 import org.qi4j.api.event.ActivationEventListenerRegistration;
 import org.qi4j.api.service.ServiceReference;
+import org.qi4j.api.util.Classes;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specification;
-import org.qi4j.runtime.activation.ActivationEventListenerSupport;
 import org.qi4j.runtime.activation.ActivationDelegate;
+import org.qi4j.runtime.activation.ActivationEventListenerSupport;
 import org.qi4j.runtime.activation.ActivatorsInstance;
 
 /**
@@ -53,15 +51,9 @@ public class ServicesInstance
     public void activate()
         throws Exception
     {
-        List<Activation> activatableServiceReferences = new LinkedList<Activation>();
-        for( final ServiceReference serviceReference : serviceReferences )
-        {
-            if( serviceReference instanceof Activation )
-            {
-                activatableServiceReferences.add( ( Activation ) serviceReference );
-            }
-        }
-        activation.activate( ActivatorsInstance.EMPTY, activatableServiceReferences );
+        Iterable<Activation> activatees = ( Iterable<Activation> ) ( Iterable<?> ) 
+                Iterables.filter( Classes.instanceOf( Activation.class ), serviceReferences );
+        activation.activate( ActivatorsInstance.EMPTY, activatees );
     }
 
     public void passivate()

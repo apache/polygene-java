@@ -51,5 +51,12 @@ public interface ImportedServiceDeclaration
     
     ImportedServiceDeclaration importOnStartup();
 
+    /**
+     * Set the imported service activators. Activators are executed in order around
+     * the ServiceReference activation and passivation.
+     *
+     * @param activators the imported service activators
+     * @return the assembly
+     */    
     ImportedServiceDeclaration withActivators( Class<? extends Activator<?>>... activators );
 }

@@ -20,16 +20,16 @@ import java.util.Iterator;
 import java.util.List;
 import org.junit.Test;
 import org.qi4j.api.event.ActivationEvent.EventType;
+import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.structure.Application;
+import org.qi4j.api.structure.Module;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 
 import static junit.framework.Assert.*;
 import static org.qi4j.api.event.ActivationEvent.EventType.*;
-import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.structure.Module;
 
 public class ActivationEventsTest
 {
@@ -258,6 +258,7 @@ public class ActivationEventsTest
 
     }
 
+    // WARN This assertion depends on ApplicationInstance, LayerInstance, ModuleInstance and ServiceReferenceInstance toString() method.
     private static void assertEvent( ActivationEvent event, EventType expectedType, String expected )
     {
         boolean wrongEvent = expectedType != event.type();
