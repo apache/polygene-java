@@ -23,7 +23,6 @@ dependencies {
 //}
 
 task website( type: org.qi4j.gradle.plugin.Documentation ) {
-  dependsOn rootProject.children.test
 
   docName = 'website'
   docType = 'article'
