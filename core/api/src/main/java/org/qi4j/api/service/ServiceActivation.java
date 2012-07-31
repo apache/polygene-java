@@ -23,7 +23,8 @@ import org.qi4j.api.activation.Activators;
 /**
  * Convenience interface for simple Service Activation.
  * 
- * Let your ServiceComposite extends ServiceActivation and implement it in on of its Mixins.
+ * Let your ServiceComposite extends ServiceActivation and implement it in one of its Mixins.
+ * A corresponding Activator is automatically registered.
  */
 @Activators( ServiceActivation.ServiceActivator.class )
 public interface ServiceActivation

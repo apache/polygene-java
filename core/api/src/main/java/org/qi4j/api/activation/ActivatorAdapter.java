@@ -17,26 +17,43 @@
  */
 package org.qi4j.api.activation;
 
-public class ActivatorAdapter<T>
-        implements Activator<T>
+/**
+ * Activation Adapter.
+ * 
+ * @param ActivateeType Type of the activatee.
+ */
+public class ActivatorAdapter<ActivateeType>
+        implements Activator<ActivateeType>
 {
 
-    public void beforeActivation( T activating )
+    /**
+     * Called before activatee activation.
+     */
+    public void beforeActivation( ActivateeType activating )
             throws Exception
     {
     }
 
-    public void afterActivation( T activated )
+    /**
+     * Called after activatee activation.
+     */
+    public void afterActivation( ActivateeType activated )
             throws Exception
     {
     }
 
-    public void beforePassivation( T passivating )
+    /**
+     * Called before activatee passivation.
+     */
+    public void beforePassivation( ActivateeType passivating )
             throws Exception
     {
     }
 
-    public void afterPassivation( T passivated )
+    /**
+     * Called after activatee passivation.
+     */
+    public void afterPassivation( ActivateeType passivated )
             throws Exception
     {
     }

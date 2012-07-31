@@ -15,12 +15,24 @@
  */
 package org.qi4j.api.activation;
 
+/**
+ * Interface used by Structure elements and Services that can be activated and passivated.
+ * 
+ * Application, Layer expose this interface so you can activate and passivate them.
+ * Modules and Services activation/passivation is handled by the code runtime..
+ */
 public interface Activation
 {
 
+    /**
+     * Called on activation.
+     */
     void activate()
             throws Exception;
 
+    /**
+     * Called on passivation.
+     */
     void passivate()
             throws Exception;
 

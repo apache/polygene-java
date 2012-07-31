@@ -22,6 +22,9 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.List;
 
+/**
+ * Thrown when unable to passivate.
+ */
 public class PassivationException
     extends Exception
 {

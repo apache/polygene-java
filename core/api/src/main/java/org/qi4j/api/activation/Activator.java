@@ -17,19 +17,36 @@
  */
 package org.qi4j.api.activation;
 
-public interface Activator<T>
+/**
+ * Activators are used to hook in the Activation.
+ * 
+ * @param ActivateeType Type of the activatee.
+ */
+public interface Activator<ActivateeType>
 {
 
-    void beforeActivation( T activating )
+    /**
+     * Called before activatee activation.
+     */
+    void beforeActivation( ActivateeType activating )
             throws Exception;
 
-    void afterActivation( T activated )
+    /**
+     * Called after activatee activation.
+     */
+    void afterActivation( ActivateeType activated )
             throws Exception;
 
-    void beforePassivation( T passivating )
+    /**
+     * Called before activatee passivation.
+     */
+    void beforePassivation( ActivateeType passivating )
             throws Exception;
 
-    void afterPassivation( T passivated )
+    /**
+     * Called after activatee passivation.
+     */
+    void afterPassivation( ActivateeType passivated )
             throws Exception;
 
 }

@@ -24,7 +24,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * This annotation is used in Services to declare Activator implementation classes.
+ * This annotation is used in ServiceComposites to declare Activator implementation classes.
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( ElementType.TYPE )
