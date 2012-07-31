@@ -182,14 +182,27 @@ allprojects {
 
     // TODO: Is there some better way to do this??
     test << {
+      def mavenDep = "<dependencies>\n\n"
       def depList = ""
       configurations.runtime.allDependencies.each { dep ->
         if( !dep.group.startsWith("org.qi4j") ) {
           depList = depList + "http://central.maven.org/maven2/" + dep.group.replace(".","/") + "/" + dep.name + "/" + dep.version + "/" + dep.name + "-" + dep.version + ".jar\n"
+          mavenDep = mavenDep + "<dependency>\n"
+          mavenDep = mavenDep + "  <groupId>$dep.group</groupId>\n"
+          mavenDep = mavenDep + "  <artifactId>$dep.group</artifactId>\n"
+          mavenDep = mavenDep + "  <version>$dep.group</version>\n"
+          mavenDep = mavenDep + "</dependency>\n\n"
         }
       }
+      mavenDep = mavenDep + "</dependencies>\n"
+
       def downloadsFile = new File( buildDir.toString(), "download.deps" )
       downloadsFile.text = depList
+
+      def mavenDepDir = new File( buildDir.toString(), "maven" );
+      mavenDepDir.mkdirs()
+      def mavenDepFile = new File( mavenDepDir, "dependencies.xml" )
+      mavenDepFile.text = mavenDep
     }
 
 //    // Create checkstyle report
@@ -309,10 +322,10 @@ def docsImage = copySpec {
 }
 
 def downloadListImage = copySpec {
-  releaseApprovedProjects.each { proj ->
-    from "$proj.buildDir/download.deps"
+  releaseApprovedProjects.collect { p ->
+    from "$p.buildDir/download.deps"
     into( "libs/dependencies/" )
-    rename 'download.deps', proj.name + '.deps'
+    rename 'download.deps', p.name + '.deps'
   }
 }
 
@@ -397,7 +410,7 @@ task release {
       throw new GradleException( "'version' must be given as a system property to perform a release." )
     }
   }
-  dependsOn allprojects*.uploadArchives, dist, zipBinaries, tarBinaries, tarSources, zipSources
+  dependsOn allprojects*.uploadArchives, dist
 }
 
 //
