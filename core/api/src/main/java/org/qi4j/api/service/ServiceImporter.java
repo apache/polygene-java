@@ -32,15 +32,6 @@ public interface ServiceImporter<T>
         throws ServiceImporterException;
 
     /**
-     * Ask if the underlying service is currently active or not.
-     *
-     * @param instance the instance to be checked
-     *
-     * @return true if the service is active, false if not
-     */
-    boolean isActive( T instance );
-
-    /**
      * Ask if the service is available or not.
      *
      * @param instance the instance to be checked

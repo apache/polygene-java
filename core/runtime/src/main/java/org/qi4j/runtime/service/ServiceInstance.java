@@ -15,9 +15,9 @@
 package org.qi4j.runtime.service;
 
 import java.lang.reflect.Proxy;
+import org.qi4j.api.activation.Activation;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.configuration.Enabled;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.Availability;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.util.Classes;
@@ -30,7 +30,7 @@ import org.qi4j.runtime.structure.ModuleInstance;
  */
 public class ServiceInstance
     extends TransientInstance
-    implements Activatable
+    implements Activation
 {
     public static TransientInstance getCompositeInstance( ServiceComposite composite )
     {
@@ -57,13 +57,13 @@ public class ServiceInstance
     public void activate()
         throws Exception
     {
-        ( (ServiceModel) compositeModel ).activate( mixins );
+        // NOOP
     }
 
     public void passivate()
         throws Exception
     {
-        ( (ServiceModel) compositeModel ).passivate( mixins );
+        // NOOP
     }
 
     public boolean isAvailable()

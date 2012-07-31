@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,40 +12,41 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.runtime.service;
 
 import java.lang.reflect.Method;
+import org.qi4j.api.activation.Activation;
 import org.qi4j.api.composite.CompositeDescriptor;
 import org.qi4j.api.composite.CompositeInstance;
 import org.qi4j.api.event.ActivationEvent;
 import org.qi4j.api.event.ActivationEventListener;
 import org.qi4j.api.property.StateHolder;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.service.ServiceImporterException;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.service.ServiceUnavailableException;
 import org.qi4j.api.structure.Module;
-import org.qi4j.runtime.structure.ActivationEventListenerSupport;
+import org.qi4j.runtime.activation.ActivationEventListenerSupport;
+import org.qi4j.runtime.activation.ActivationDelegate;
 import org.qi4j.runtime.structure.ModuleInstance;
 
 /**
  * Implementation of ServiceReference. This manages the actual instance of the service
- * and implements the invocation of the Activatable interface on the service.
+ * and implements the service Activation.
  * <p/>
  * Whenever the service is requested a proxy is returned which points to this class. This means
  * that the instance can be passivated even though a client is holding on to a service proxy.
  */
 public final class ServiceReferenceInstance<T>
-    implements ServiceReference<T>, Activatable
+    implements ServiceReference<T>, Activation
 {
     private volatile ServiceInstance instance;
     private final T serviceProxy;
     private final ModuleInstance module;
     private final ServiceModel serviceModel;
-    private final Activator activator = new Activator();
-    private final ActivationEventListenerSupport eventListenerSupport = new ActivationEventListenerSupport();
+    private final ActivationDelegate activation = new ActivationDelegate( this );
+    private final ActivationEventListenerSupport activationEventSupport = new ActivationEventListenerSupport();
+    private boolean active = false;
 
     public ServiceReferenceInstance( ServiceModel serviceModel, ModuleInstance module )
     {
@@ -77,7 +79,7 @@ public final class ServiceReferenceInstance<T>
 
     public boolean isActive()
     {
-        return instance != null;
+        return active;
     }
 
     public boolean isAvailable()
@@ -90,39 +92,37 @@ public final class ServiceReferenceInstance<T>
         return module;
     }
 
-    @Override
-    public void registerActivationEventListener( ActivationEventListener listener )
-    {
-        eventListenerSupport.registerActivationEventListener( listener );
-    }
-
-    @Override
-    public void deregisterActivationEventListener( ActivationEventListener listener )
-    {
-        eventListenerSupport.deregisterActivationEventListener( listener );
-    }
-
     public void activate()
         throws Exception
     {
-        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATING ) );
         if( serviceModel.isInstantiateOnStartup() )
         {
             getInstance();
         }
-        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATED ) );
     }
 
     public void passivate()
         throws Exception
     {
-        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATING ) );
         if( instance != null )
         {
-            activator.passivate();
-            instance = null;
+            try {
+                activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATING ) );
+                activation.passivate( new Runnable()
+                {
+
+                    public void run()
+                    {
+                        active = false;
+                    }
+
+                } );
+                activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATED ) );
+            } finally {
+                instance = null;
+                active = false;
+            }
         }
-        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATED ) );
     }
 
     private ServiceInstance getInstance()
@@ -139,7 +139,17 @@ public final class ServiceReferenceInstance<T>
 
                     try
                     {
-                        activator.activate( instance );
+                        activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATING ) );
+                        activation.activate( serviceModel.newActivatorsInstance(), instance, new Runnable()
+                        {
+
+                            public void run()
+                            {
+                                active = true;
+                            }
+
+                        } );
+                        activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATED ) );
                     }
                     catch( Exception e )
                     {
@@ -156,7 +166,7 @@ public final class ServiceReferenceInstance<T>
     @Override
     public String toString()
     {
-        return serviceModel.identity() + ", active=" + isActive() + ", module='" + module.name() + "'";
+        return serviceModel.identity() + "(active=" + isActive() + ",module='" + module.name() + "')";
     }
 
     public T newProxy()
@@ -258,5 +268,15 @@ public final class ServiceReferenceInstance<T>
         {
             return module;
         }
+    }
+
+    public void registerActivationEventListener( ActivationEventListener listener )
+    {
+        activationEventSupport.registerActivationEventListener( listener );
+    }
+
+    public void deregisterActivationEventListener( ActivationEventListener listener )
+    {
+        activationEventSupport.deregisterActivationEventListener( listener );
     }
 }

@@ -14,18 +14,22 @@
 
 package org.qi4j.migration;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.qi4j.api.activation.ActivatorAdapter;
+import org.qi4j.api.activation.Activators;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceDescriptor;
+import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.migration.assembly.EntityMigrationRule;
@@ -37,9 +41,6 @@ import org.qi4j.spi.entitystore.helpers.Migration;
 import org.qi4j.spi.entitystore.helpers.StateStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Migration service. This is used by MapEntityStore EntityStore implementations to
@@ -53,11 +54,29 @@ import java.util.List;
  * that is visible by this MigrationService.
  */
 @Mixins( MigrationService.MigrationMixin.class )
+@Activators( MigrationService.Activator.class )
 public interface MigrationService
-    extends Migration, Activatable, ServiceComposite
+    extends Migration, ServiceComposite
 {
-    public class MigrationMixin
-        implements Migration, Migrator, Activatable
+
+    void initialize()
+            throws Exception;
+
+    class Activator
+            extends ActivatorAdapter<ServiceReference<MigrationService>>
+    {
+
+        @Override
+        public void afterActivation( ServiceReference<MigrationService> activated )
+                throws Exception
+        {
+            activated.get().initialize();
+        }
+
+    }
+
+    public abstract class MigrationMixin
+        implements MigrationService, Migrator
     {
         @Structure
         Application app;
@@ -116,7 +135,8 @@ public interface MigrationService
             return changed;
         }
 
-        public void activate()
+        @Override
+        public void initialize()
             throws Exception
         {
             builder = descriptor.metaInfo( MigrationBuilder.class );
@@ -159,11 +179,6 @@ public interface MigrationService
                     }
                 }
             }
-        }
-
-        public void passivate()
-            throws Exception
-        {
         }
 
         // Migrator implementation

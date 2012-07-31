@@ -1,24 +1,51 @@
 package org.qi4j.library.osgi;
 
+import java.util.ArrayList;
+import java.util.Properties;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.service.qualifier.HasMetaInfo;
 import org.qi4j.api.util.Classes;
 import org.qi4j.functional.Iterables;
-
-import java.util.ArrayList;
-import java.util.Properties;
+import org.qi4j.api.activation.ActivatorAdapter;
+import org.qi4j.api.activation.Activators;
 
 import static org.qi4j.api.util.Classes.interfacesOf;
 
 @Mixins( OSGiServiceExporter.OSGiServiceExporterMixin.class )
-public interface OSGiServiceExporter extends Activatable, ServiceComposite
+@Activators( OSGiServiceExporter.Activator.class )
+public interface OSGiServiceExporter extends ServiceComposite
 {
+    
+    void registerServices()
+            throws Exception;
+
+    void unregisterServices()
+            throws Exception;
+    
+    class Activator
+            extends ActivatorAdapter<ServiceReference<OSGiServiceExporter>>
+    {
+
+        @Override
+        public void afterActivation( ServiceReference<OSGiServiceExporter> activated )
+                throws Exception
+        {
+            activated.get().registerServices();
+        }
+
+        @Override
+        public void beforePassivation( ServiceReference<OSGiServiceExporter> passivating )
+                throws Exception
+        {
+            passivating.get().unregisterServices();
+        }
+        
+    }
 
     public static abstract class OSGiServiceExporterMixin
         implements OSGiServiceExporter
@@ -28,7 +55,7 @@ public interface OSGiServiceExporter extends Activatable, ServiceComposite
         private Iterable<ServiceReference<ServiceComposite>> services;
         private ArrayList<ServiceRegistration> registrations = new ArrayList<ServiceRegistration>();
 
-        public void activate()
+        public void registerServices()
             throws Exception
         {
             for( ServiceReference<ServiceComposite> ref : services )
@@ -56,7 +83,7 @@ public interface OSGiServiceExporter extends Activatable, ServiceComposite
             }
         }
 
-        public void passivate()
+        public void unregisterServices()
             throws Exception
         {
             for( ServiceRegistration reg : registrations )

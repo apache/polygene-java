@@ -17,7 +17,6 @@ package org.qi4j.runtime.composite;
 import org.objectweb.asm.*;
 import org.qi4j.api.entity.Lifecycle;
 import org.qi4j.api.mixin.Initializable;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.util.Classes;
 import org.qi4j.api.util.Methods;
 import org.qi4j.functional.Iterables;
@@ -455,8 +454,7 @@ public class FragmentClassLoader
 
     private static boolean isInternalQi4jMethod( Method method, Class baseClass )
     {
-        return isDeclaredIn( method, Activatable.class, baseClass )
-               || isDeclaredIn( method, Initializable.class, baseClass )
+        return isDeclaredIn( method, Initializable.class, baseClass )
                || isDeclaredIn( method, Lifecycle.class, baseClass );
     }
 

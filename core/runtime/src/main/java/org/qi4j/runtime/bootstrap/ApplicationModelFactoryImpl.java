@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,13 +21,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.qi4j.api.composite.ModelDescriptor;
+import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.ApplicationDescriptor;
+import org.qi4j.api.structure.Layer;
 import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.bootstrap.ApplicationModelFactory;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.functional.HierarchicalVisitor;
+import org.qi4j.runtime.activation.ActivatorsModel;
 import org.qi4j.runtime.composite.CompositeMethodModel;
 import org.qi4j.runtime.injection.InjectedFieldModel;
 import org.qi4j.runtime.model.Binder;
@@ -48,11 +52,13 @@ public final class ApplicationModelFactoryImpl
         AssemblyHelper helper = new AssemblyHelper();
 
         ApplicationAssemblyImpl applicationAssembly = (ApplicationAssemblyImpl) assembly;
+        ActivatorsModel<Application> applicationActivators = new ActivatorsModel<Application>( applicationAssembly.activators() );
         List<LayerModel> layerModels = new ArrayList<LayerModel>();
         final ApplicationModel applicationModel = new ApplicationModel( applicationAssembly.name(),
                                                                         applicationAssembly.version(),
                                                                         applicationAssembly.mode(),
                                                                         applicationAssembly.metaInfo(),
+                                                                        applicationActivators,
                                                                         layerModels );
         Map<LayerAssembly, LayerModel> mapAssemblyModel = new HashMap<LayerAssembly, LayerModel>();
         Map<LayerAssembly, List<LayerModel>> mapUsedLayers = new HashMap<LayerAssembly, List<LayerModel>>();
@@ -71,7 +77,8 @@ public final class ApplicationModelFactoryImpl
             {
                 throw new AssemblyException( "Layer must have name set" );
             }
-            LayerModel layerModel = new LayerModel( name, layerAssembly.metaInfo(), usedLayersModel, moduleModels );
+            ActivatorsModel<Layer> layerActivators = new ActivatorsModel<Layer>( layerAssembly.activators() );
+            LayerModel layerModel = new LayerModel( name, layerAssembly.metaInfo(), usedLayersModel, layerActivators, moduleModels );
 
             for( ModuleAssemblyImpl moduleAssembly : layerAssembly.moduleAssemblies() )
             {

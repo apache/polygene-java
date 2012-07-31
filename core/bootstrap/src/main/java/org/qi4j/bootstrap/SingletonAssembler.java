@@ -64,6 +64,7 @@ public abstract class SingletonAssembler
 
         try
         {
+            beforeActivation( applicationInstance );
             applicationInstance.activate();
         }
         catch( Exception e )
@@ -87,5 +88,9 @@ public abstract class SingletonAssembler
     public final Module module()
     {
         return moduleInstance;
+    }
+    
+    protected void beforeActivation( Application application )
+    {
     }
 }

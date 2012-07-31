@@ -32,6 +32,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.fileconfig.FileConfiguration;
+import org.qi4j.library.fileconfig.FileConfigurationService;
 import org.qi4j.library.rdf.model.ApplicationSerializer;
 import org.qi4j.test.AbstractQi4jTest;
 
@@ -51,7 +52,7 @@ public class ApplicationXmlTest extends AbstractQi4jTest
         LayerAssembly layerAssembly = module.layer();
         layerAssembly.application().setName( "testapp" );
         module.transients( TestComposite.class );
-        module.services( FileConfiguration.class );
+        module.services( FileConfigurationService.class );
     }
 
     @Test

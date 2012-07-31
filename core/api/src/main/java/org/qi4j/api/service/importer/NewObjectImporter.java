@@ -36,11 +36,6 @@ public final class NewObjectImporter<T>
         return (T) obf.newObject( Iterables.first( serviceDescriptor.types() ) );
     }
 
-    public boolean isActive( T instance )
-    {
-        return true;
-    }
-
     public boolean isAvailable( T instance )
     {
         return true;

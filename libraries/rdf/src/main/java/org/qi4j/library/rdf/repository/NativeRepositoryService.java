@@ -13,32 +13,58 @@
  */
 package org.qi4j.library.rdf.repository;
 
+import java.io.File;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.nativerdf.NativeStore;
+import org.qi4j.api.activation.ActivatorAdapter;
+import org.qi4j.api.activation.Activators;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.injection.scope.Service;
-import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.Availability;
 import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
-import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+import org.qi4j.api.service.ServiceReference;
 import org.qi4j.library.fileconfig.FileConfiguration;
 
-import java.io.File;
-
 @Mixins({NativeRepositoryService.NativeRepositoryMixin.class})
-public interface NativeRepositoryService extends Repository, ServiceComposite, Activatable, Availability
+@Activators( NativeRepositoryService.Activator.class )
+public interface NativeRepositoryService extends Repository, ServiceComposite, Availability
 {
-   public static class NativeRepositoryMixin
-           implements Repository, ResetableRepository, Activatable, Availability
+    void initialize()
+            throws RepositoryException;
+
+    void shutDown()
+            throws RepositoryException;
+    
+    public static class Activator
+            extends ActivatorAdapter<ServiceReference<NativeRepositoryService>>
+    {
+
+        @Override
+        public void afterActivation( ServiceReference<NativeRepositoryService> activated )
+                throws Exception
+        {
+            activated.get().initialize();
+        }
+
+        @Override
+        public void beforePassivation( ServiceReference<NativeRepositoryService> passivating )
+                throws Exception
+        {
+            passivating.get().shutDown();
+        }
+
+    }
+
+
+    public static abstract class NativeRepositoryMixin
+           implements NativeRepositoryService, ResetableRepository
    {
       @Optional
       @Service
@@ -56,8 +82,18 @@ public interface NativeRepositoryService extends Repository, ServiceComposite, A
          repo = new SailRepository(new NativeStore());
       }
 
-      public void activate()
-              throws UnitOfWorkCompletionException, RepositoryException
+      public void setDataDir(File dataDir)
+      {
+         repo.setDataDir(dataDir);
+      }
+
+      public File getDataDir()
+      {
+         return repo.getDataDir();
+      }
+
+      public void initialize()
+              throws RepositoryException
       {
          String dataDir = configuration.configuration().dataDirectory().get();
          if (dataDir == null || "".equals(dataDir))
@@ -82,31 +118,10 @@ public interface NativeRepositoryService extends Repository, ServiceComposite, A
          initializeRepository(new File(dataDir));
       }
 
-      public void passivate()
-              throws Exception
-      {
-         repo.shutDown();
-      }
-
-      public void setDataDir(File dataDir)
-      {
-         repo.setDataDir(dataDir);
-      }
-
-      public File getDataDir()
-      {
-         return repo.getDataDir();
-      }
-
-      public void initialize()
-              throws RepositoryException
-      {
-         repo.initialize();
-      }
-
       public void shutDown()
               throws RepositoryException
       {
+          repo.shutDown();
       }
 
       public boolean isWritable()

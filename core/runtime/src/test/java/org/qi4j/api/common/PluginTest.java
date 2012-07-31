@@ -24,8 +24,8 @@ import org.junit.Test;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ImportedServiceDescriptor;
+import org.qi4j.api.service.ServiceActivation;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.service.ServiceImporter;
@@ -54,7 +54,7 @@ import static org.qi4j.functional.Iterables.toArray;
 public class PluginTest
 {
     @Test
-    @Ignore( "Must fix the TODOs below." )
+    @Ignore( "Must fix the TODOs below. This example relied on ability to set Service MetaInfo at runtime, it seems it's not possible anymore." )
     public void testPlugins()
         throws Exception
     {
@@ -107,10 +107,10 @@ public class PluginTest
 
     @Mixins( PluginTesterService.PluginTesterMixin.class )
     interface PluginTesterService
-        extends Activatable, ServiceComposite
+        extends ServiceActivation, ServiceComposite
     {
         class PluginTesterMixin
-            implements Activatable
+            implements ServiceActivation
         {
             @Service
             Plugin plugin;
@@ -118,14 +118,14 @@ public class PluginTest
             @Service
             PluginsService plugins;
 
-            public void activate()
+            public void activateService()
                 throws Exception
             {
                 // Use plugin
                 System.out.println( plugin.say( "Hello", "World" ) );
 
                 // Restart plugin
-                plugins.passivate();
+                plugins.passivateService();
 
                 // Plugin is now unavailable
                 try
@@ -137,13 +137,13 @@ public class PluginTest
                     // Ignore
                 }
 
-                plugins.activate();
+                plugins.activateService();
 
                 // Use plugin
                 System.out.println( plugin.say( "Hello", "World" ) );
             }
 
-            public void passivate()
+            public void passivateService()
                 throws Exception
             {
             }
@@ -205,10 +205,10 @@ public class PluginTest
 
     @Mixins( PluginsService.PluginsMixin.class )
     interface PluginsService
-        extends Activatable, ServiceComposite
+        extends ServiceComposite, ServiceActivation
     {
         class PluginsMixin
-            implements Activatable
+            implements ServiceActivation
         {
             @Structure
             ServiceFinder finder;
@@ -216,7 +216,7 @@ public class PluginTest
             ServiceReference<Plugin> plugin;
             private Application app;
 
-            public void activate()
+            public void activateService()
                 throws Exception
             {
                 Energy4Java runtime = new Energy4Java();
@@ -229,7 +229,7 @@ public class PluginTest
 //                finder.findService(Plugin.class).metaInfo().add(ServiceFinder.class, pluginFinder);
             }
 
-            public void passivate()
+            public void passivateService()
                 throws Exception
             {
                 // TODO: Niclas wrote: No clue how all this Test is supposed to work, and can't figure out to create a workaround for this.
@@ -313,11 +313,6 @@ public class PluginTest
                         return method.invoke( service, args );
                     }
                 } );
-        }
-
-        public boolean isActive( Object instance )
-        {
-            return true;
         }
 
         public boolean isAvailable( Object instance )

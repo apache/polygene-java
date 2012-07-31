@@ -24,7 +24,7 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
-import org.qi4j.library.fileconfig.FileConfiguration;
+import org.qi4j.library.fileconfig.FileConfigurationService;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**
@@ -39,7 +39,7 @@ public class NativeRepositoryTest
    public void assemble(ModuleAssembly module) throws AssemblyException
    {
       module.services(MemoryEntityStoreService.class);
-      module.services(FileConfiguration.class).instantiateOnStartup();
+      module.services(FileConfigurationService.class).instantiateOnStartup();
       module.services(NativeRepositoryService.class).instantiateOnStartup();
       module.entities(NativeConfiguration.class);
       module.objects(getClass());

@@ -14,6 +14,12 @@
 
 package org.qi4j.index.solr.internal;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.common.SolrInputDocument;
@@ -22,31 +28,33 @@ import org.apache.solr.schema.SchemaField;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.openrdf.model.*;
+import org.openrdf.model.BNode;
+import org.openrdf.model.Graph;
+import org.openrdf.model.Literal;
+import org.openrdf.model.Resource;
+import org.openrdf.model.Statement;
+import org.openrdf.model.URI;
+import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.GraphImpl;
 import org.openrdf.model.impl.URIImpl;
 import org.openrdf.model.impl.ValueFactoryImpl;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Uses;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.index.solr.EmbeddedSolrService;
+import org.qi4j.index.solr.SolrQueryService;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entitystore.StateChangeListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.util.*;
 
 import static org.qi4j.functional.Iterables.first;
 
 /**
  * JAVADOC
  */
-public class SolrEntityIndexerMixin
-        implements StateChangeListener, Activatable
+public abstract class SolrEntityIndexerMixin
+        implements SolrQueryService
 {
     @Service
     private EmbeddedSolrService solr;
@@ -61,7 +69,8 @@ public class SolrEntityIndexerMixin
 
     Logger logger = LoggerFactory.getLogger( getClass() );
 
-    public void activate() throws Exception
+    @Override
+    public void inflateSolrSchema()
     {
         server = solr.getSolrServer();
         SolrCore solrCore = solr.getSolrCore();
@@ -74,7 +83,8 @@ public class SolrEntityIndexerMixin
         }
     }
 
-    public void passivate() throws Exception
+    @Override
+    public void releaseSolrSchema()
     {
         server = null;
         indexedFields = null;

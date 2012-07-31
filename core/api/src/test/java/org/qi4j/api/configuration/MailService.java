@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2012, Niclas Hedhman. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,26 +19,28 @@ package org.qi4j.api.configuration;
 
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.Activatable;
+import org.qi4j.library.constraints.annotation.Email;
+import org.qi4j.library.constraints.annotation.MinLength;
 
 // Documentation Support
 @Mixins( MailService.MailServiceMixin.class )
 public interface MailService
 {
+    void sendMail( @Email String to, @MinLength( 8 ) String subject, String body );
+    
     // START SNIPPET: write
     void changeExternalMailService( String hostName, int port );
     // END SNIPPET: write
-
+    
     public class MailServiceMixin
-        implements MailService, Activatable
+        implements MailService
     {
         // START SNIPPET: read        
         @This
         private Configuration<MailServiceConfiguration> config;
 
         @Override
-        public void activate()
-            throws Exception
+        public void sendMail( @Email String to, @MinLength( 8 ) String subject, String body )
         {
             config.refresh();
             MailServiceConfiguration conf = config.configuration();
@@ -48,12 +51,6 @@ public interface MailService
             // START SNIPPET: read        
         }
         // END SNIPPET: read        
-
-        @Override
-        public void passivate()
-            throws Exception
-        {
-        }
 
         // START SNIPPET: write        
         @Override

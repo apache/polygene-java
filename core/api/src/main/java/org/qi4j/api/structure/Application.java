@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2008, Niclas Hedhman.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +15,14 @@
 
 package org.qi4j.api.structure;
 
+import org.qi4j.api.activation.Activation;
 import org.qi4j.api.event.ActivationEventListenerRegistration;
-import org.qi4j.api.service.Activatable;
 
 /**
  * The Application represents a whole Qi4j application.
  */
 public interface Application
-    extends ActivationEventListenerRegistration, Activatable, MetaInfoHolder
+    extends ActivationEventListenerRegistration, Activation, MetaInfoHolder
 {
     public enum Mode
     {

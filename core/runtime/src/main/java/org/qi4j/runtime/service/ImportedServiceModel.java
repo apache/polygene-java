@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright 2012, Paul Merlin.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +25,8 @@ import org.qi4j.api.service.ServiceImporterException;
 import org.qi4j.api.structure.Module;
 import org.qi4j.functional.Visitable;
 import org.qi4j.functional.Visitor;
+import org.qi4j.runtime.activation.ActivatorsInstance;
+import org.qi4j.runtime.activation.ActivatorsModel;
 
 import static org.qi4j.functional.Iterables.iterable;
 
@@ -37,22 +40,34 @@ public final class ImportedServiceModel
     private final Visibility visibility;
     private final Class<? extends ServiceImporter> serviceImporter;
     private final String identity;
+    private final boolean importOnStartup;
     private final MetaInfo metaInfo;
+    private final ActivatorsModel<?> activatorsModel;
     private String moduleName;
 
     public ImportedServiceModel( Class serviceType,
                                  Visibility visibility,
                                  Class<? extends ServiceImporter> serviceImporter,
                                  String identity,
-                                 MetaInfo metaInfo, String moduleName
+                                 boolean importOnStartup,
+                                 MetaInfo metaInfo,
+                                 ActivatorsModel<?> activatorsModel,
+                                 String moduleName
     )
     {
         type = serviceType;
         this.visibility = visibility;
         this.serviceImporter = serviceImporter;
         this.identity = identity;
+        this.importOnStartup = importOnStartup;
         this.metaInfo = metaInfo;
+        this.activatorsModel = activatorsModel;
         this.moduleName = moduleName;
+    }
+
+    public boolean isImportOnStartup()
+    {
+        return importOnStartup;
     }
 
     public Iterable<Class<?>> types()
@@ -90,6 +105,11 @@ public final class ImportedServiceModel
     public String moduleName()
     {
         return moduleName;
+    }
+
+    public ActivatorsInstance<?> newActivatorsInstance() throws Exception
+    {
+        return new ActivatorsInstance( activatorsModel.newInstances() );
     }
 
     @Override

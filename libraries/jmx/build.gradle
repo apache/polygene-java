@@ -11,3 +11,9 @@ dependencies {
   testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
   testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
 }
+
+task(runSample, dependsOn: 'testClasses', type: JavaExec) {
+    main = 'org.qi4j.library.jmx.JMXTest'
+    classpath = sourceSets.test.runtimeClasspath
+}
+

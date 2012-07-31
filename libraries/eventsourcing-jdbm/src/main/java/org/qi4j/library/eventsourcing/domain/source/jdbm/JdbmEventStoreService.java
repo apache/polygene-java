@@ -35,10 +35,10 @@ import jdbm.recman.CacheRecordManager;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import org.qi4j.api.activation.Activators;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.json.JSONWriterSerializer;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.functional.Function;
 import org.qi4j.io.Input;
@@ -51,6 +51,7 @@ import org.qi4j.library.eventsourcing.domain.source.AbstractEventStoreMixin;
 import org.qi4j.library.eventsourcing.domain.source.EventManagement;
 import org.qi4j.library.eventsourcing.domain.source.EventSource;
 import org.qi4j.library.eventsourcing.domain.source.EventStore;
+import org.qi4j.library.eventsourcing.domain.source.EventStoreActivation;
 import org.qi4j.library.eventsourcing.domain.source.EventStream;
 import org.qi4j.library.fileconfig.FileConfiguration;
 
@@ -58,9 +59,11 @@ import org.qi4j.library.fileconfig.FileConfiguration;
  * JAVADOC
  */
 @Mixins( JdbmEventStoreService.JdbmEventStoreMixin.class )
+@Activators( EventStoreActivation.Activator.class )
 public interface JdbmEventStoreService
-    extends EventSource, EventStore, EventStream, EventManagement, Activatable, ServiceComposite
+    extends EventSource, EventStore, EventStream, EventManagement, EventStoreActivation, ServiceComposite
 {
+    
     class JdbmEventStoreMixin
         extends AbstractEventStoreMixin
         implements EventManagement, EventSource
@@ -75,11 +78,11 @@ public interface JdbmEventStoreService
 
         private long currentCount;
 
-        public void activate()
-            throws IOException
+        @Override
+        public void activateEventStore()
+            throws Exception
         {
-            super.activate();
-
+            super.activateEventStore();
             dataFile = new File( fileConfig.dataDirectory(), identity.identity() + "/events" );
             File directory = dataFile.getAbsoluteFile().getParentFile();
             directory.mkdirs();
@@ -90,10 +93,11 @@ public interface JdbmEventStoreService
             initialize( name, properties );
         }
 
-        public void passivate()
-            throws Exception
+        @Override
+        public void passivateEventStore()
+                throws Exception
         {
-            super.passivate();
+            super.passivateEventStore();
             recordManager.close();
         }
 

@@ -1,5 +1,6 @@
 /*
  * Copyright 2008 Niclas Hedhman. All rights Reserved.
+ * Copyright 2012 Paul Merlin.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -18,6 +19,8 @@
 
 package org.qi4j.bootstrap;
 
+import org.qi4j.api.activation.Activator;
+import org.qi4j.api.structure.Layer;
 import org.qi4j.functional.Specification;
 
 /**
@@ -44,6 +47,8 @@ public interface LayerAssembly
     LayerAssembly setMetaInfo( Object info );
 
     LayerAssembly uses( LayerAssembly... layerAssembly );
+
+    LayerAssembly withActivators( Class<? extends Activator<Layer>>... activators );
 
     <ThrowableType extends Throwable> void visit( AssemblyVisitor<ThrowableType> visitor )
         throws ThrowableType;

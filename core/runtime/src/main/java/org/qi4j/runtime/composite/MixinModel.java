@@ -24,7 +24,6 @@ import org.qi4j.api.mixin.Initializable;
 import org.qi4j.api.mixin.InitializationException;
 import org.qi4j.api.mixin.MixinDescriptor;
 import org.qi4j.api.property.StateHolder;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.VisitableHierarchy;
@@ -178,21 +177,4 @@ public final class MixinModel
         return mixinClass.getName();
     }
 
-    public void activate( Object mixin )
-        throws Exception
-    {
-        if( mixin instanceof Activatable )
-        {
-            ( (Activatable) mixin ).activate();
-        }
-    }
-
-    public void passivate( Object mixin )
-        throws Exception
-    {
-        if( mixin instanceof Activatable )
-        {
-            ( (Activatable) mixin ).passivate();
-        }
-    }
 }

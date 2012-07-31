@@ -35,7 +35,7 @@ import org.qi4j.library.eventsourcing.domain.factory.CurrentUserUoWPrincipal;
 import org.qi4j.library.eventsourcing.domain.factory.DomainEventCreationConcern;
 import org.qi4j.library.eventsourcing.domain.factory.DomainEventFactoryService;
 import org.qi4j.library.eventsourcing.domain.source.EventSource;
-import org.qi4j.library.fileconfig.FileConfiguration;
+import org.qi4j.library.fileconfig.FileConfigurationService;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
 
@@ -55,7 +55,7 @@ public class JdbmEventStoreServiceTest
             new EntityTestAssembler(  ).assemble( module );
 
             module.values( DomainEventValue.class, UnitOfWorkDomainEventsValue.class );
-            module.services( FileConfiguration.class );
+            module.services( FileConfigurationService.class );
             module.services( JdbmEventStoreService.class );
             module.services( DomainEventFactoryService.class );
             module.importedServices( CurrentUserUoWPrincipal.class ).importedBy( ImportedServiceDeclaration.NEW_OBJECT );

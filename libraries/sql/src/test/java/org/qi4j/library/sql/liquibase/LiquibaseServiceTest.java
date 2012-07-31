@@ -27,7 +27,10 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.event.ActivationEvent;
+import org.qi4j.api.event.ActivationEventListener;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueComposite;
@@ -82,6 +85,21 @@ public class LiquibaseServiceTest
                 // Create in-memory store for configurations
                 module.services( MemoryEntityStoreService.class );
             }
+
+            @Override
+            public void beforeActivation( Application application )
+            {
+                application.registerActivationEventListener( new ActivationEventListener()
+                {
+
+                    public void onEvent( ActivationEvent event )
+                    {
+                        System.out.println( event );
+                    }
+
+                } );
+            }
+            
         };
         
         Module module = assembler.module();

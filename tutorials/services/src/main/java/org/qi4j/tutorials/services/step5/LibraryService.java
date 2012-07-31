@@ -6,7 +6,6 @@ import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
@@ -30,7 +29,7 @@ public interface LibraryService
     }
 
     public static class LibraryMixin
-        implements Library, Activatable
+        implements Library
     {
 
         private HashMap<String, ArrayList<Book>> books;
@@ -82,16 +81,6 @@ public interface LibraryService
                 throw new IllegalStateException( "Book " + book + " was not borrowed here." );
             }
             copies.add( book );
-        }
-
-        public void activate()
-            throws Exception
-        {
-        }
-
-        public void passivate()
-            throws Exception
-        {
         }
 
         private void createBook( ValueBuilderFactory factory, String author, String title, int copies )

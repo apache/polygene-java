@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2008-2011, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,7 +12,6 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.runtime.structure;
 
 import org.json.JSONException;
@@ -24,8 +24,6 @@ import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.IdentityGenerator;
-import org.qi4j.api.event.ActivationEvent;
-import org.qi4j.api.event.ActivationEventListener;
 import org.qi4j.api.json.JSONDeserializer;
 import org.qi4j.api.object.NoSuchObjectException;
 import org.qi4j.api.object.ObjectDescriptor;
@@ -33,7 +31,6 @@ import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryBuilderFactory;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.NoSuchServiceException;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Module;
@@ -44,6 +41,7 @@ import org.qi4j.api.util.Classes;
 import org.qi4j.api.util.NullArgumentException;
 import org.qi4j.api.value.*;
 import org.qi4j.functional.*;
+import org.qi4j.runtime.activation.ActivationDelegate;
 import org.qi4j.runtime.association.*;
 import org.qi4j.runtime.composite.*;
 import org.qi4j.runtime.entity.EntitiesModel;
@@ -72,16 +70,22 @@ import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import org.qi4j.api.activation.Activation;
 
+import org.qi4j.api.event.ActivationEvent;
+import org.qi4j.api.event.ActivationEventListener;
 import static org.qi4j.api.util.Classes.interfacesOf;
 import static org.qi4j.functional.Iterables.*;
+import org.qi4j.runtime.activation.ActivationEventListenerSupport;
 
 /**
  * Instance of a Qi4j Module. Contains the various composites for this Module.
  */
 public class ModuleInstance
-    implements Module, Activatable
+    implements Module, Activation
 {
+    private final ActivationDelegate activation = new ActivationDelegate( this );
+    private final ActivationEventListenerSupport activationEventSupport = new ActivationEventListenerSupport();
     private final ModuleModel moduleModel;
     private final LayerInstance layerInstance;
     private final TransientsModel transients;
@@ -95,11 +99,12 @@ public class ModuleInstance
     private EntityStore store;
     //lazy assigned on accessor
     private IdentityGenerator generator;
+    //lazy assigned on accessor
+    private MetricsProvider metrics;
 
     private final QueryBuilderFactory queryBuilderFactory;
 
     private final ClassLoader classLoader;
-    private final ActivationEventListenerSupport eventListenerSupport = new ActivationEventListenerSupport();
 
     private final Function2<EntityReference, Type, Object> entityFunction = new Function2<EntityReference, Type, Object>()
     {
@@ -115,7 +120,6 @@ public class ModuleInstance
     private final Map<Class, ModelModule<TransientModel>> transientModels;
     private final Map<Class, Iterable<ModelModule<EntityModel>>> entityModels;
     private final Map<Class, ModelModule<ValueModel>> valueModels;
-    private MetricsProvider metrics;
 
     public ModuleInstance( ModuleModel moduleModel, LayerInstance layerInstance, TransientsModel transientsModel,
                            EntitiesModel entitiesModel, ObjectsModel objectsModel, ValuesModel valuesModel,
@@ -129,7 +133,9 @@ public class ModuleInstance
         objects = objectsModel;
         entities = entitiesModel;
         services = servicesModel.newInstance( this );
+        services.registerActivationEventListener( activationEventSupport );
         importedServices = importedServicesModel.newInstance( this );
+        importedServices.registerActivationEventListener( activationEventSupport );
 
         queryBuilderFactory = new QueryBuilderFactoryImpl( this );
 
@@ -139,8 +145,6 @@ public class ModuleInstance
         valueModels = new ConcurrentHashMap<Class, ModelModule<ValueModel>>();
 
         this.classLoader = new ModuleClassLoader( Thread.currentThread().getContextClassLoader() );
-
-        services.registerActivationEventListener( eventListenerSupport );
     }
 
     public String name()
@@ -236,32 +240,21 @@ public class ModuleInstance
         return classLoader;
     }
 
-    @Override
-    public void registerActivationEventListener( ActivationEventListener listener )
-    {
-        eventListenerSupport.registerActivationEventListener( listener );
-    }
-
-    @Override
-    public void deregisterActivationEventListener( ActivationEventListener listener )
-    {
-        eventListenerSupport.deregisterActivationEventListener( listener );
-    }
-
     public void activate()
         throws Exception
     {
-        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATING ) );
-        services.activate();
-        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATED ) );
+        activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATING ) );
+        activation.activate( moduleModel.newActivatorsInstance(), 
+                                    Iterables.<Activation, Activation>iterable( services, importedServices ) );
+        activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATED ) );
     }
 
     public void passivate()
         throws Exception
     {
-        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATING ) );
-        services.passivate();
-        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATED ) );
+        activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATING ) );
+        activation.passivate();
+        activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATED ) );
     }
 
     @Override
@@ -1088,5 +1081,15 @@ public class ModuleInstance
                 return results.iterator();
             }
         };
+    }
+
+    public void registerActivationEventListener( ActivationEventListener listener )
+    {
+        activationEventSupport.registerActivationEventListener( listener );
+    }
+
+    public void deregisterActivationEventListener( ActivationEventListener listener )
+    {
+        activationEventSupport.deregisterActivationEventListener( listener );
     }
 }

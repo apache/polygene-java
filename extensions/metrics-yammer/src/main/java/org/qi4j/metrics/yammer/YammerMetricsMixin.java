@@ -21,7 +21,6 @@ import com.yammer.metrics.core.Counter;
 import com.yammer.metrics.core.Gauge;
 import java.util.concurrent.TimeUnit;
 import org.qi4j.api.injection.scope.Structure;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.structure.Application;
 import org.qi4j.functional.Iterables;
 import org.qi4j.api.metrics.Metric;
@@ -35,13 +34,12 @@ import org.qi4j.api.metrics.MetricsHistogram;
 import org.qi4j.api.metrics.MetricsHistogramFactory;
 import org.qi4j.api.metrics.MetricsMeter;
 import org.qi4j.api.metrics.MetricsMeterFactory;
-import org.qi4j.api.metrics.MetricsProvider;
 import org.qi4j.spi.metrics.MetricsProviderAdapter;
 import org.qi4j.api.metrics.MetricsTimer;
 import org.qi4j.api.metrics.MetricsTimerFactory;
 
 public class YammerMetricsMixin extends MetricsProviderAdapter
-    implements MetricsProvider, Activatable
+    implements YammerMetricsProvider
 {
     @Structure
     private Application app;
@@ -171,13 +169,7 @@ public class YammerMetricsMixin extends MetricsProviderAdapter
     }
 
     @Override
-    public void activate()
-        throws Exception
-    {
-    }
-
-    @Override
-    public void passivate()
+    public void shutdownMetrics()
         throws Exception
     {
         Metrics.shutdown();

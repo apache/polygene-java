@@ -14,12 +14,13 @@
  */
 package org.qi4j.library.http;
 
+import org.qi4j.api.activation.Activators;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
 
 @Mixins( JettyMixin.class )
+@Activators( JettyActivation.Activator.class )
 public interface JettyService
-        extends HttpService, Activatable, ServiceComposite
+        extends HttpService, JettyActivation, ServiceComposite
 {
 }

@@ -6,7 +6,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.entitystore.neo4j.NeoConfiguration;
 import org.qi4j.entitystore.neo4j.NeoEntityStoreService;
-import org.qi4j.library.fileconfig.FileConfiguration;
+import org.qi4j.library.fileconfig.FileConfigurationService;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
 
@@ -19,7 +19,7 @@ public class SimpleNeoStoreTest
       module.layer().application().setName("SimpleNeoTest");
 
       super.assemble(module);
-      module.services(FileConfiguration.class);
+      module.services(FileConfigurationService.class);
       module.services(NeoEntityStoreService.class);
 
       ModuleAssembly configModule = module.layer().module("config");

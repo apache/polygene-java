@@ -35,7 +35,6 @@ public class OSGiServiceTest extends AbstractQi4jTest
         assertEquals( (Integer) 15, service.value().get() );
         String[] expectedClasses = new String[]{ "org.qi4j.library.osgi.OSGiServiceTest$MyService",
                                                  "org.qi4j.library.osgi.OSGiEnabledService",
-                                                 "org.qi4j.api.service.Activatable",
                                                  "org.qi4j.api.service.ServiceComposite",
                                                  "org.qi4j.api.entity.Identity",
                                                  "org.qi4j.api.composite.Composite"

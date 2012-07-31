@@ -1,59 +1,58 @@
 <body>
-<h1>Step 3 - Read Configuration</h1>
+    <h1>Step 3 - Reading the Service Configuration</h1>
 
-<p>
-    Services typically have configuration. Configurations are directly supported in Qi4j. A
-    <code>ConfigurationComposite</code> is a subtype of <code>EntityComposite</code>. That is because
-    configurations are stored in EntityStores, can be modified in runtime by client code and has
-    the same semantics as regular entities.
-</p>
+    <p>
+        Services typically have configuration. Configurations are directly supported in Qi4j. A
+        <code>ConfigurationComposite</code> is a subtype of <code>EntityComposite</code>. That is because
+        configurations are stored in EntityStores, can be modified in runtime by client code and has
+        the same semantics as regular entities.
+    </p>
+    <p>
+        Qi4j also handles the bootstrapping of configuration for the services. If the ConfigurationComposite is
+        not found in the configured entity store, then Qi4j will automatically locate a properties file for each
+        service instance, read those properties into a ConfigurationComposite instance, save that to the
+        entity store and provide the values to the service. The properties file must be with the same name as
+        the service instance with the extension <code>"properties"</code> in the same package as the service.
+    </p>
+    <p>
+        For this exercise, create a <code>LibraryConfiguration</code> that contains "titles", "authors" and "copies".
+        The first two are a string with a comma separated list, and the "copies" is just an Integer with how many
+        copies are made of each title.
+    </p>
 
-<p>
-    Qi4j also handles the bootstrapping of configuration for the services. If the ConfigurationComposite is
-    not found in the configured entity store, then Qi4j will automatically locate a properties file for each
-    service instance, read those properties into a ConfigurationComposite instance, save that to the
-    entity store and provide the values to the service. The properties file must be with the same name as
-    the service instance with the extension <code>"properties"</code> in the same package as the service.
-</p>
-
-<p>
-    For this exercise, create a <code>LibraryConfiguration</code> that contains "titles", "authors" and "copies".
-    The first two are a string with a comma separated list, and the "copies" is just an Integer with how many
-    copies are made of each title.
-</p>
-
-<p>
-<ol>
-    <li>Create a <code>LibraryConfiguration</code> interface that extends <code>ConfigurationComposite</code>,
-        and has three <code>Property</code> instances named <code>"titles"</code>, <code>"authors"</code> and
-        <code>"copies"</code>, where the first two are of <code>String</code> type and the last is of
-        <code>Integer</code> type.
-    </li>
-    <li>Remove the <code>Activatable</code> interface from the <code>LibraryMixin</code> and the corresponding
-        methods.
-    </li>
-    <li>
-        Remove the member injection of the <code>ValueBuilderFactory</code>, and instead inject the
-        <code>ValueBuilderFactory</code> in the constructor.
-    </li>
-    <li>
-        Inject the <code>LibraryConfiguration</code> via the constructor. The injection scope is
-        <code>@This</code>.
-    </li>
-    <li>
-        Create a resource called <code>LibraryService.properties</code> and place it in the directory
-        <code>org/qi4j/tutorials/services/step4</code> in the classpath (for instance, <code>src/main/resources</code>
-        ).
-        Put something like;
-        <span class="javaxcode"><pre>titles=Domain Driven Design, Pragmatic Programmer, Extreme Programming Explained
+    <p>Steps to do.</p>
+    <ol>
+        <li>Create a <code>LibraryConfiguration</code> interface that extends <code>ConfigurationComposite</code>,
+            and has three <code>Property</code> instances named <code>"titles"</code>, <code>"authors"</code> and
+            <code>"copies"</code>, where the first two are of <code>String</code> type and the last is of
+            <code>Integer</code> type.
+        </li>
+        <li>Delete the <code>LibraryActivator</code> and remove the <code>@Activators</code> annotation from the
+            <code>LibraryService</code> and the corresponding <code>createInitialData</code> method.
+        </li>
+        <li>
+            In the <code>LibraryMixin</code> remove the member injection of the <code>ValueBuilderFactory</code>, and
+            instead inject the <code>ValueBuilderFactory</code> in the constructor.
+        </li>
+        <li>
+            Inject the <code>LibraryConfiguration</code> via the constructor. The injection scope is <code>@This</code>.
+        </li>
+        <li>
+            Create a resource called <code>LibraryService.properties</code> and place it in the directory
+            <code>org/qi4j/tutorials/services/step4</code> in the classpath (for instance, <code>src/main/resources</code>
+            ).
+            Put something like;
+            <span class="javaxcode"><pre>titles=Domain Driven Design, Pragmatic Programmer, Extreme Programming Explained
 authors=Eric Evans, Andy Hunt, Kent Beck
 
 #Number of copies of each book.
 copies=3
-            </pre>
-        </span>
-        in this file.
-    </li>
-</ol>
-</p>
+                </pre>
+            </span>
+            in this file.
+        </li>
+        <li>
+            Load initial data from the <code>LibraryConfiguration</code> in the <code>LibraryMixin</code> constructor.
+        </li>
+    </ol>
 </body>

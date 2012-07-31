@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +16,21 @@
 package org.qi4j.runtime.bootstrap;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.qi4j.api.activation.Activator;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.service.DuplicateServiceIdentityException;
 import org.qi4j.api.service.ServiceImporter;
+import org.qi4j.api.structure.Module;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.AssemblySpecifications;
@@ -64,6 +69,7 @@ import org.qi4j.runtime.value.ValuesModel;
 
 import static org.qi4j.functional.Iterables.first;
 import static org.qi4j.functional.Iterables.iterable;
+import org.qi4j.runtime.activation.ActivatorsModel;
 
 /**
  * Assembly of a Module. This is where you register all objects, Composites,
@@ -78,6 +84,7 @@ public final class ModuleAssemblyImpl
     private LayerAssembly layerAssembly;
     private String name;
     private MetaInfo metaInfo = new MetaInfo();
+    private List<Class<? extends Activator<Module>>> activators = new ArrayList<Class<? extends Activator<Module>>>();
 
     private final List<ServiceAssemblyImpl> serviceAssemblies = new ArrayList<ServiceAssemblyImpl>();
     private final Map<Class<?>, ImportedServiceAssemblyImpl> importedServiceAssemblies = new LinkedHashMap<Class<?>, ImportedServiceAssemblyImpl>();
@@ -113,6 +120,12 @@ public final class ModuleAssemblyImpl
     public ModuleAssembly setMetaInfo( Object info )
     {
         metaInfo.set( info );
+        return this;
+    }
+
+    public ModuleAssembly withActivators( Class<? extends Activator<Module>>... activators )
+    {
+        this.activators.addAll( Arrays.asList( activators ) );
         return this;
     }
 
@@ -439,7 +452,9 @@ public final class ModuleAssemblyImpl
         }
 
         ModuleModel moduleModel = new ModuleModel( name,
-                                                   metaInfo, new TransientsModel( transientModels ),
+                                                   metaInfo,
+                                                   new ActivatorsModel<Module>( activators ),
+                                                   new TransientsModel( transientModels ),
                                                    new EntitiesModel( entityModels ),
                                                    new ObjectsModel( objectModels ),
                                                    new ValuesModel( valueModels ),

@@ -26,12 +26,6 @@ public class OSGiServiceImporter
         return Proxy.newProxyInstance( serviceDescriptor.type().getClassLoader(), info.interfaces(), handler );
     }
 
-    public boolean isActive( Object instance )
-    {
-        ServiceTrackerHandler handler = (ServiceTrackerHandler) Proxy.getInvocationHandler( instance );
-        return handler.isActive();
-    }
-
     public boolean isAvailable( Object instance )
     {
         ServiceTrackerHandler handler = (ServiceTrackerHandler) Proxy.getInvocationHandler( instance );
@@ -93,11 +87,6 @@ public class OSGiServiceImporter
         }
 
         public boolean isAvailable()
-        {
-            return service != null;
-        }
-
-        public boolean isActive()
         {
             return service != null;
         }

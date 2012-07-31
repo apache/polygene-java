@@ -16,27 +16,43 @@
  */
 package org.qi4j.entitystore.file;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.Writer;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.service.Activatable;
-import org.qi4j.io.*;
+import org.qi4j.io.Files;
+import org.qi4j.io.Input;
+import org.qi4j.io.Output;
+import org.qi4j.io.Receiver;
+import org.qi4j.io.Sender;
 import org.qi4j.library.fileconfig.FileConfiguration;
 import org.qi4j.spi.entitystore.BackupRestore;
 import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.helpers.MapEntityStore;
 
-import java.io.*;
-
 /**
  * JDBM implementation of MapEntityStore
  */
 public class FileEntityStoreMixin
-    implements Activatable, MapEntityStore, BackupRestore
+    implements FileEntityStoreActivation, MapEntityStore, BackupRestore
 {
     @Optional
     @Service
@@ -49,7 +65,8 @@ public class FileEntityStoreMixin
     private int slices;
 
     @SuppressWarnings( { "ResultOfMethodCallIgnored" } )
-    public void activate()
+    @Override
+    public void initialize()
         throws Exception
     {
         String pathName = config.configuration().directory().get();
@@ -140,11 +157,6 @@ public class FileEntityStoreMixin
                 fis.close();
             }
         }
-    }
-
-    public void passivate()
-        throws Exception
-    {
     }
 
     public Reader get( EntityReference entityReference )

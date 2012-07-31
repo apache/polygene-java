@@ -16,7 +16,7 @@ package org.qi4j.entitystore.jclouds;
 import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.Activatable;
+import org.qi4j.api.service.ServiceActivation;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.library.locking.LockingAbstractComposite;
 import org.qi4j.spi.entitystore.ConcurrentModificationCheckConcern;
@@ -27,10 +27,10 @@ import org.qi4j.spi.entitystore.StateChangeNotificationConcern;
 @Concerns( { StateChangeNotificationConcern.class, ConcurrentModificationCheckConcern.class } )
 @Mixins( { org.qi4j.spi.entitystore.helpers.MapEntityStoreMixin.class, JCloudsMapEntityStoreMixin.class } )
 public interface JCloudsMapEntityStoreService
-        extends EntityStore,
+        extends ServiceActivation,
+                EntityStore,
                 EntityStateVersions,
                 ServiceComposite,
-                Activatable,
                 LockingAbstractComposite,
                 Configuration
 {

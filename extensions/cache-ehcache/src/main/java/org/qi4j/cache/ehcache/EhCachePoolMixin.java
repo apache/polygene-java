@@ -1,19 +1,16 @@
 package org.qi4j.cache.ehcache;
 
+import java.util.concurrent.ConcurrentHashMap;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.config.CacheConfiguration;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.util.NullArgumentException;
 import org.qi4j.spi.cache.Cache;
-import org.qi4j.spi.cache.CachePool;
 
-import java.util.concurrent.ConcurrentHashMap;
-
-public class EhCachePoolMixin
-    implements CachePool, Activatable
+public abstract class EhCachePoolMixin
+    implements EhCachePoolService
 {
     private ConcurrentHashMap<String, EhCacheImpl> caches;
 
@@ -67,7 +64,8 @@ public class EhCachePoolMixin
         }
     }
 
-    public void activate()
+    @Override
+    public void activateCache()
         throws Exception
     {
         net.sf.ehcache.config.Configuration configuration = new net.sf.ehcache.config.Configuration();
@@ -91,7 +89,8 @@ public class EhCachePoolMixin
         cacheManager = new CacheManager( configuration );
     }
 
-    public void passivate()
+    @Override
+    public void passivateCache()
         throws Exception
     {
         cacheManager.shutdown();

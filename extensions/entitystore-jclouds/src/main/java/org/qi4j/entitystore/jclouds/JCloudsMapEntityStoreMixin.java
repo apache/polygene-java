@@ -41,7 +41,7 @@ import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.service.Activatable;
+import org.qi4j.api.service.ServiceActivation;
 import org.qi4j.io.Input;
 import org.qi4j.io.Inputs;
 import org.qi4j.io.Output;
@@ -76,7 +76,7 @@ import static com.google.common.collect.Iterables.contains;
  */
 public abstract class JCloudsMapEntityStoreMixin
     extends MapEntityStoreMixin
-    implements Activatable, JCloudsMapEntityStoreService, MapEntityStore
+    implements ServiceActivation, JCloudsMapEntityStoreService, MapEntityStore
 {
 
     private static final Logger LOGGER = LoggerFactory.getLogger( "org.qi4j.entitystore.jclouds" );
@@ -97,7 +97,7 @@ public abstract class JCloudsMapEntityStoreMixin
     private String container;
 
     @Override
-    public void activate()
+    public void activateService()
         throws Exception
     {
         configuration.refresh();
@@ -148,7 +148,7 @@ public abstract class JCloudsMapEntityStoreMixin
     }
 
     @Override
-    public void passivate()
+    public void passivateService()
         throws Exception
     {
         if( storeContext != null )

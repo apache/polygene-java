@@ -5,39 +5,39 @@ This quite long introduction to Qi4j will start by brushing up an overview of th
 Composite Oriented Programming is and guide you through the process of writing a complete Application around an adapted
 Hello World example.
 
-:leveloffset: 2
+:leveloffset: 3
 
 // include::highlights.txt[]
 
 include::background.txt[]
 
-:leveloffset: 2
+:leveloffset: 3
 
 include::what-is-composite-oriented-programming.txt[]
 
-:leveloffset: 2
+:leveloffset: 3
 
 include::qi4j-cop.txt[]
 
-:leveloffset: 2
+:leveloffset: 3
 
 include::whats-an-object.txt[]
 
-:leveloffset: 2
+:leveloffset: 3
 
 include::../../twominutes/src/docs/two-minutes.txt[]
 
-:leveloffset: 2
+:leveloffset: 3
 
 include::../../tenminutes/src/docs/ten-minutes.txt[]
 
-:leveloffset: 2
+:leveloffset: 3
 
 include::../../thirtyminutes/src/docs/thirty-minutes.txt[]
 
-:leveloffset: 2
+:leveloffset: 3
 
 include::../../twohours/src/docs/two-hours.txt[]
 
-:leveloffset: 2
+:leveloffset: 3
 

@@ -11,9 +11,18 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.index.sql.support.skeletons;
 
+import java.lang.reflect.Member;
+import java.sql.ResultSet;
+import java.sql.Types;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Stack;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.composite.Composite;
@@ -23,9 +32,8 @@ import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.property.Property;
-import org.qi4j.api.query.grammar.*;
 import org.qi4j.api.query.grammar.OrderBy.Order;
-import org.qi4j.api.service.Activatable;
+import org.qi4j.api.query.grammar.*;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.value.ValueComposite;
@@ -49,16 +57,19 @@ import org.sql.generation.api.grammar.builders.query.TableReferenceBuilder;
 import org.sql.generation.api.grammar.common.NonBooleanExpression;
 import org.sql.generation.api.grammar.common.SQLFunctions;
 import org.sql.generation.api.grammar.common.SetQuantifier;
-import org.sql.generation.api.grammar.factories.*;
-import org.sql.generation.api.grammar.query.*;
+import org.sql.generation.api.grammar.factories.BooleanFactory;
+import org.sql.generation.api.grammar.factories.ColumnsFactory;
+import org.sql.generation.api.grammar.factories.LiteralFactory;
+import org.sql.generation.api.grammar.factories.QueryFactory;
+import org.sql.generation.api.grammar.factories.TableReferenceFactory;
+import org.sql.generation.api.grammar.query.ColumnReference;
+import org.sql.generation.api.grammar.query.ColumnReferenceByName;
+import org.sql.generation.api.grammar.query.Ordering;
+import org.sql.generation.api.grammar.query.QueryExpression;
 import org.sql.generation.api.grammar.query.QuerySpecification;
+import org.sql.generation.api.grammar.query.TableReferenceByName;
 import org.sql.generation.api.grammar.query.joins.JoinType;
 import org.sql.generation.api.vendor.SQLVendor;
-
-import java.lang.reflect.Member;
-import java.sql.ResultSet;
-import java.sql.Types;
-import java.util.*;
 
 import static org.qi4j.functional.Iterables.first;
 
@@ -67,7 +78,7 @@ import static org.qi4j.functional.Iterables.first;
  * @author Stanislav Muhametsin
  */
 public abstract class AbstractSQLQuerying
-    implements SQLQuerying, Activatable
+    implements SQLQuerying
 {
 
     @This
@@ -88,11 +99,11 @@ public abstract class AbstractSQLQuerying
             NonBooleanExpression left, NonBooleanExpression right );
     }
 
-    private static Map<Class<? extends Specification>, SQLBooleanCreator> _sqlOperators;
+    private static final Map<Class<? extends Specification>, SQLBooleanCreator> _sqlOperators;
 
-    private static Map<Class<? extends Specification>, JoinType> _joinStyles;
+    private static final Map<Class<? extends Specification>, JoinType> _joinStyles;
 
-    private static Map<Class<? extends Specification>, JoinType> _negatedJoinStyles;
+    private static final Map<Class<? extends Specification>, JoinType> _negatedJoinStyles;
 
     private static final String TABLE_NAME_PREFIX = "t";
 
@@ -298,22 +309,8 @@ public abstract class AbstractSQLQuerying
         return true;
     }
 
-    private SQLVendor _vendor;
-
     @Uses
     private ServiceDescriptor descriptor;
-
-    public void activate()
-        throws Exception
-    {
-        this._vendor = this.descriptor.metaInfo( SQLVendor.class );
-    }
-
-    public void passivate()
-        throws Exception
-    {
-
-    }
 
     public String constructQuery( Class<?> resultType, //
         Specification<Composite> whereClause, //
@@ -326,7 +323,7 @@ public abstract class AbstractSQLQuerying
     )
         throws EntityFinderException
     {
-        SQLVendor vendor = this._vendor;
+        SQLVendor vendor = this.descriptor.metaInfo( SQLVendor.class );
 
         QueryFactory q = vendor.getQueryFactory();
         TableReferenceFactory t = vendor.getTableReferenceFactory();

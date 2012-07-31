@@ -12,7 +12,6 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.index.sql.support.postgresql;
 
 import java.io.IOException;
@@ -23,13 +22,10 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.sql.DataSource;
-
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.index.sql.support.common.GenericDatabaseExplorer;
 import org.qi4j.index.sql.support.common.GenericDatabaseExplorer.ColumnInfo;
@@ -38,11 +34,10 @@ import org.qi4j.index.sql.support.common.GenericDatabaseExplorer.ForeignKeyInfo;
 import org.qi4j.index.sql.support.skeletons.SQLDBState;
 import org.qi4j.library.sql.common.SQLUtil;
 import org.qi4j.spi.query.IndexExporter;
-
 import org.sql.generation.api.vendor.SQLVendor;
 
 public class PostgreSQLIndexExporter
-    implements IndexExporter, Activatable
+    implements IndexExporter
 {
 
     @This
@@ -51,21 +46,8 @@ public class PostgreSQLIndexExporter
     @Uses
     private ServiceDescriptor descriptor;
 
-    private SQLVendor _vendor;
-
     @Service
     private DataSource _dataSource;
-
-    public void activate()
-        throws Exception
-    {
-        this._vendor = this.descriptor.metaInfo( SQLVendor.class );
-    }
-
-    public void passivate()
-        throws Exception
-    {
-    }
 
     private static final String SEPARATOR = "-----------------------------------------------";
 
@@ -191,7 +173,7 @@ public class PostgreSQLIndexExporter
                             out.write( "<value index=\"" + x + "\" >" + rowContents[x] + "</value>" + "\n" );
                         }
                     }
-                }, this._vendor );
+                }, this.descriptor.metaInfo( SQLVendor.class ) );
         }
         catch( SQLException sqle )
         {
@@ -315,7 +297,7 @@ public class PostgreSQLIndexExporter
                     {
 
                     }
-                }, this._vendor );
+                }, this.descriptor.metaInfo( SQLVendor.class ) );
         }
         catch( SQLException sqle )
         {

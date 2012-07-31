@@ -41,7 +41,6 @@ import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.io.Files;
 import org.qi4j.io.Input;
@@ -60,7 +59,7 @@ import org.qi4j.spi.entitystore.helpers.MapEntityStore;
  * JDBM implementation of SerializationStore
  */
 public class JdbmEntityStoreMixin
-    implements Activatable, MapEntityStore, BackupRestore
+    implements JdbmEntityStoreActivation, MapEntityStore, BackupRestore
 {
     @Optional
     @Service
@@ -78,17 +77,15 @@ public class JdbmEntityStoreMixin
 
     @This
     ReadWriteLock lock;
-
-    // Activatable implementation
-
+    
     @SuppressWarnings( { "ResultOfMethodCallIgnored" } )
-    public void activate()
+    public void setUpJdbm()
         throws Exception
     {
         initialize();
     }
 
-    public void passivate()
+    public void tearDownJdbm()
         throws Exception
     {
         recordManager.close();
@@ -187,6 +184,7 @@ public class JdbmEntityStoreMixin
         }
         catch( Exception e )
         {
+            e.printStackTrace();
             recordManager.rollback();
             if( e instanceof IOException )
             {

@@ -14,7 +14,11 @@
 
 package org.qi4j.library.eventsourcing.domain.source.helper;
 
+import java.io.IOException;
+import java.security.Principal;
 import org.junit.Test;
+import org.qi4j.api.activation.ActivatorAdapter;
+import org.qi4j.api.activation.Activators;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.EntityComposite;
@@ -22,8 +26,8 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.usecase.UsecaseBuilder;
@@ -46,12 +50,6 @@ import org.qi4j.library.eventsourcing.domain.source.memory.MemoryEventStoreServi
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
 
-import java.io.IOException;
-import java.security.Principal;
-
-/**
- * JAVADOC
- */
 public class DomainEventTrackerTest
     extends AbstractQi4jTest
 {
@@ -117,11 +115,36 @@ public class DomainEventTrackerTest
     }
 
     @Mixins(EventLoggingService.Mixin.class)
+    @Activators( EventLoggingService.Activator.class )
     public interface EventLoggingService
-        extends ServiceComposite, Activatable, Configuration<DomainEventTrackerConfiguration>
+        extends ServiceComposite, Configuration<DomainEventTrackerConfiguration>
     {
-        public class Mixin
-            implements Activatable
+        
+        void startTracker();
+        
+        void stopTracker();
+        
+        public class Activator
+                extends ActivatorAdapter<ServiceReference<EventLoggingService>>
+        {
+
+            @Override
+            public void afterActivation( ServiceReference<EventLoggingService> activated )
+                    throws Exception
+            {
+                activated.get().startTracker();
+            }
+
+            @Override
+            public void beforePassivation( ServiceReference<EventLoggingService> passivating )
+                    throws Exception
+            {
+                passivating.get().stopTracker();
+            }
+
+        }
+        
+        public abstract class Mixin implements EventLoggingService
         {
             DomainEventTracker tracker;
 
@@ -134,7 +157,7 @@ public class DomainEventTrackerTest
             @Service
             EventSource eventSource;
 
-            public void activate() throws Exception
+            public void startTracker()
             {
                 config.configuration().enabled().set( true );
 
@@ -150,7 +173,7 @@ public class DomainEventTrackerTest
                 tracker.start();
             }
 
-            public void passivate() throws Exception
+            public void stopTracker()
             {
                 tracker.stop();
             }

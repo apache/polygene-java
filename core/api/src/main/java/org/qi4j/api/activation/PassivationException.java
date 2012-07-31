@@ -16,12 +16,15 @@
  * limitations under the License.
  */
 
-package org.qi4j.api.service;
+package org.qi4j.api.activation;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.List;
 
+/**
+ * Thrown when unable to passivate.
+ */
 public class PassivationException
     extends Exception
 {
@@ -38,6 +41,7 @@ public class PassivationException
         return causes;
     }
 
+    @Override
     public void printStackTrace( PrintStream stream )
     {
         synchronized( stream )
@@ -52,6 +56,7 @@ public class PassivationException
         }
     }
 
+    @Override
     public void printStackTrace( PrintWriter writer )
     {
         synchronized( writer )

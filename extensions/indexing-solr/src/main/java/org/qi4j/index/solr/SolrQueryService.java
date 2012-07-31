@@ -11,12 +11,13 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.index.solr;
 
+import org.qi4j.api.activation.ActivatorAdapter;
+import org.qi4j.api.activation.Activators;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.service.ServiceReference;
 import org.qi4j.index.solr.internal.SolrEntityIndexerMixin;
 import org.qi4j.index.solr.internal.SolrEntityQueryMixin;
 import org.qi4j.spi.entitystore.StateChangeListener;
@@ -25,8 +26,34 @@ import org.qi4j.spi.query.EntityFinder;
 /**
  * JAVADOC
  */
-@Mixins({SolrEntityIndexerMixin.class, SolrEntityQueryMixin.class})
+@Mixins( { SolrEntityIndexerMixin.class, SolrEntityQueryMixin.class } )
+@Activators( SolrQueryService.Activator.class )
 public interface SolrQueryService
-   extends EntityFinder, StateChangeListener, SolrSearch, ServiceComposite, Activatable
+        extends EntityFinder, StateChangeListener, SolrSearch, ServiceComposite
 {
+
+    void inflateSolrSchema();
+
+    void releaseSolrSchema();
+
+    class Activator
+            extends ActivatorAdapter<ServiceReference<SolrQueryService>>
+    {
+
+        @Override
+        public void afterActivation( ServiceReference<SolrQueryService> activated )
+                throws Exception
+        {
+            activated.get().inflateSolrSchema();
+        }
+
+        @Override
+        public void beforePassivation( ServiceReference<SolrQueryService> passivating )
+                throws Exception
+        {
+            passivating.get().releaseSolrSchema();
+        }
+
+    }
+
 }

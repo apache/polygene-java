@@ -70,11 +70,6 @@ public final class InstanceImporter<T>
         return instance;
     }
 
-    public boolean isActive( T instance )
-    {
-        return true;
-    }
-
     public boolean isAvailable( T instance )
     {
         return true;

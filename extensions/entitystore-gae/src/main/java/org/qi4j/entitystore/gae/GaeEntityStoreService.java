@@ -18,7 +18,6 @@ package org.qi4j.entitystore.gae;
 
 import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.library.locking.LockingAbstractComposite;
 import org.qi4j.spi.entitystore.ConcurrentModificationCheckConcern;
@@ -29,14 +28,13 @@ import org.qi4j.spi.entitystore.StateChangeNotificationConcern;
 /**
  * EntityStore service backed by Google AppEngine's low-level store.
  */
-
 @Concerns( { StateChangeNotificationConcern.class, ConcurrentModificationCheckConcern.class } )
 @Mixins( { GaeEntityStoreMixin.class } )
 public interface GaeEntityStoreService
-    extends EntityStore,
+    extends GaeEntityStoreActivation,
+            EntityStore,
             EntityStateVersions,
             ServiceComposite,
-            Activatable,
             LockingAbstractComposite
 {
 }

@@ -17,12 +17,40 @@
  */
 package org.qi4j.library.rest.admin;
 
+import org.qi4j.api.activation.ActivatorAdapter;
+import org.qi4j.api.activation.Activators;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.service.ServiceReference;
 
 @Mixins( { RestServerMixin.class } )
+@Activators( RestServerComposite.Activator.class )
 public interface RestServerComposite
-    extends ServiceComposite, RestServer, Activatable
+    extends ServiceComposite, RestServer
 {
+    
+    void startServer()
+            throws Exception;
+    
+    void stopServer()
+            throws Exception;
+    
+    static class Activator extends ActivatorAdapter<ServiceReference<RestServerComposite>>
+    {
+
+        @Override
+        public void afterActivation( ServiceReference<RestServerComposite> activated )
+                throws Exception
+        {
+            activated.get().startServer();
+        }
+
+        @Override
+        public void beforePassivation( ServiceReference<RestServerComposite> passivating )
+                throws Exception
+        {
+            passivating.get().stopServer();
+        }
+        
+    }
 }

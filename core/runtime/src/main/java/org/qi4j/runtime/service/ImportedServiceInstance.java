@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +15,19 @@
 
 package org.qi4j.runtime.service;
 
+import org.qi4j.api.activation.Activation;
 import org.qi4j.api.service.ServiceImporter;
 
 /**
  * JAVADOC
  */
 public final class ImportedServiceInstance<T>
+    implements Activation
 {
     private final T instance;
-    private final ServiceImporter importer;
+    private final ServiceImporter<T> importer;
 
-    public ImportedServiceInstance( T instance,
-                                    ServiceImporter importer
-    )
+    public ImportedServiceInstance( T instance, ServiceImporter<T> importer )
     {
         this.importer = importer;
         this.instance = instance;
@@ -42,13 +43,20 @@ public final class ImportedServiceInstance<T>
         return importer;
     }
 
-    public boolean isActive()
-    {
-        return importer.isActive( instance );
-    }
-
     public boolean isAvailable()
     {
         return importer.isAvailable( instance );
+    }
+
+    public void activate()
+            throws Exception
+    {
+        // NOOP
+    }
+
+    public void passivate()
+            throws Exception
+    {
+        // NOOP
     }
 }

@@ -12,22 +12,16 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.index.sql.support.postgresql;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Map;
-
 import javax.sql.DataSource;
-
 import org.qi4j.api.injection.scope.Service;
-import org.qi4j.api.injection.scope.Uses;
-import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.index.sql.support.skeletons.AbstractSQLStartup;
 import org.qi4j.library.sql.common.SQLUtil;
-
 import org.sql.generation.api.grammar.common.datatypes.SQLDataType;
 import org.sql.generation.api.grammar.definition.table.TableScope;
 import org.sql.generation.api.grammar.definition.table.pgsql.PgSQLTableCommitAction;
@@ -40,45 +34,24 @@ import org.sql.generation.api.vendor.SQLVendor;
 public class PostgreSQLAppStartup extends AbstractSQLStartup
 {
 
-    @Uses
-    private ServiceDescriptor descriptor;
-
     @Service
     private DataSource _dataSource;
 
     private PostgreSQLVendor _vendor;
 
     @Override
-    public void activate()
-        throws Exception
+    protected void setVendor( SQLVendor vendor )
     {
-        super.activate();
-        this._vendor = this.descriptor.metaInfo( PostgreSQLVendor.class );
+        this._vendor = (PostgreSQLVendor) vendor;
     }
 
-    //    @Override
-    //    protected void dropTablesIfExist( DatabaseMetaData metaData, String schemaName, String tableName, Statement stmt )
-    //        throws SQLException
-    //    {
-    //        ResultSet rs = metaData.getTables( null, schemaName, tableName, new String[]
-    //        {
-    //            "TABLE"
-    //        } );
-    //        try
-    //        {
-    //            while( rs.next() )
-    //            {
-    //                stmt.execute( this._vendor.toString( this._vendor.getManipulationFactory()
-    //                    .createDropTableOrViewStatement(
-    //                        this._vendor.getTableReferenceFactory().tableName( schemaName, tableName ), ObjectType.TABLE,
-    //                        DropBehaviour.CASCADE, true ) ) );
-    //            }
-    //        }
-    //        finally
-    //        {
-    //            rs.close();
-    //        }
-    //    }
+    @Override
+    protected void modifyPrimitiveTypes( Map<Class<?>, SQLDataType> primitiveTypes, Map<Class<?>, Integer> jdbcTypes )
+    {
+        // Set TEXT as default type for strings, since PgSQL can optimize that better than some VARCHAR with weird max
+        // length
+        primitiveTypes.put( String.class, this._vendor.getDataTypeFactory().text() );
+    }
 
     @Override
     protected void testRequiredCapabilities()
@@ -118,22 +91,9 @@ public class PostgreSQLAppStartup extends AbstractSQLStartup
     }
 
     @Override
-    protected void modifyPrimitiveTypes( Map<Class<?>, SQLDataType> primitiveTypes, Map<Class<?>, Integer> jdbcTypes )
-    {
-        // Set TEXT as default type for strings, since PgSQL can optimize that better than some VARCHAR with weird max
-        // length
-        primitiveTypes.put( String.class, this._vendor.getDataTypeFactory().text() );
-    }
-
-    @Override
     protected SQLDataType getCollectionPathDataType()
     {
         return this._vendor.getDataTypeFactory().userDefined( "ltree" );
     }
 
-    @Override
-    protected void setVendor( SQLVendor vendor )
-    {
-        this._vendor = (PostgreSQLVendor) vendor;
-    }
 }

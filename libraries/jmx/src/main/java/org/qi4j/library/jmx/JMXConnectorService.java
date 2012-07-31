@@ -14,18 +14,6 @@
 
 package org.qi4j.library.jmx;
 
-import org.qi4j.api.configuration.Configuration;
-import org.qi4j.api.injection.scope.Service;
-import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.Activatable;
-import org.qi4j.api.service.ServiceComposite;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.management.MBeanServer;
-import javax.management.remote.*;
-import javax.security.auth.Subject;
 import java.net.InetAddress;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -33,6 +21,19 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import javax.management.MBeanServer;
+import javax.management.remote.*;
+import javax.security.auth.Subject;
+import org.qi4j.api.activation.ActivatorAdapter;
+import org.qi4j.api.activation.Activators;
+import org.qi4j.api.configuration.Configuration;
+import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.service.ServiceReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This service starts a JMX RMI connector. It also creates an RMI-registry
@@ -42,12 +43,39 @@ import java.util.Map;
  * Authentication is done with an optional username+password in the configuration.
  */
 @Mixins(JMXConnectorService.JmxConnectorMixin.class)
+@Activators( JMXConnectorService.Activator.class )
 public interface JMXConnectorService
-        extends Configuration, ServiceComposite, Activatable
+        extends ServiceComposite
 {
 
-    class JmxConnectorMixin
-            implements Activatable
+    void startJMXConnector()
+            throws Exception;
+
+    void stopJMXConnector()
+            throws Exception;
+
+    static class Activator
+            extends ActivatorAdapter<ServiceReference<JMXConnectorService>>
+    {
+
+        @Override
+        public void afterActivation( ServiceReference<JMXConnectorService> activated )
+                throws Exception
+        {
+            activated.get().startJMXConnector();
+        }
+
+        @Override
+        public void beforePassivation( ServiceReference<JMXConnectorService> passivating )
+                throws Exception
+        {
+            passivating.get().stopJMXConnector();
+        }
+
+    }
+    
+    abstract class JmxConnectorMixin
+            implements JMXConnectorService
     {
         final Logger logger = LoggerFactory.getLogger( JMXConnectorService.class.getName() );
 
@@ -60,7 +88,7 @@ public interface JMXConnectorService
         Registry registry;
         JMXConnectorServer connector;
 
-        public void activate() throws Exception
+        public void startJMXConnector() throws Exception
         {
             if (config.configuration().enabled().get())
             {
@@ -91,7 +119,7 @@ public interface JMXConnectorService
             }
         }
 
-        public void passivate() throws Exception
+        public void stopJMXConnector() throws Exception
         {
             // Stop connector
             if (connector != null)

@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2008, Rickard �berg. All Rights Reserved.
+ * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +24,6 @@ import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.structure.Module;
@@ -61,8 +61,7 @@ import static org.qi4j.functional.Iterables.first;
  * a request.
  * </p>
  * <p>
- * The Configuration will be automatically refreshed when the Service is activated through the
- * {@link org.qi4j.api.service.Activatable#activate()} method by the Qi4j runtime.
+ * The Configuration will be automatically refreshed when the Service is activated by the Qi4j runtime.
  * Any refreshes at other points will have to be done manually or triggered through some other
  * mechanism.
  * </p>
@@ -139,7 +138,7 @@ public interface Configuration<T>
      * @param <T>
      */
     public class ConfigurationMixin<T>
-        implements Configuration<T>, Activatable
+        implements Configuration<T>
     {
         private T configuration;
         private UnitOfWork uow;
@@ -203,17 +202,6 @@ public interface Configuration<T>
 
                 configuration = null; // Force refresh
             }
-        }
-
-        public void activate()
-            throws Exception
-        {
-            refresh();
-        }
-
-        public void passivate()
-            throws Exception
-        {
         }
 
         public <T> T getConfigurationInstance( ServiceComposite serviceComposite, UnitOfWork uow )

@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +26,8 @@ import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.ApplicationDescriptor;
 import org.qi4j.bootstrap.Qi4jRuntime;
 import org.qi4j.functional.HierarchicalVisitor;
+import org.qi4j.runtime.activation.ActivatorsInstance;
+import org.qi4j.runtime.activation.ActivatorsModel;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
 import org.qi4j.runtime.injection.provider.InjectionProviderFactoryStrategy;
 
@@ -38,6 +41,7 @@ public final class ApplicationModel
     private final String version;
     private Application.Mode mode;
     private MetaInfo metaInfo;
+    private final ActivatorsModel<Application> activatorsModel;
     private final List<LayerModel> layers;
     private final InjectionProviderFactory ipf;
 
@@ -45,6 +49,7 @@ public final class ApplicationModel
                              String version,
                              Application.Mode mode,
                              MetaInfo metaInfo,
+                             ActivatorsModel<Application> activatorsModel,
                              List<LayerModel> layers
     )
     {
@@ -52,6 +57,7 @@ public final class ApplicationModel
         this.version = version;
         this.mode = mode;
         this.metaInfo = metaInfo;
+        this.activatorsModel = activatorsModel;
         this.layers = layers;
         ipf = new InjectionProviderFactoryStrategy( metaInfo );
     }
@@ -74,6 +80,12 @@ public final class ApplicationModel
     public MetaInfo metaInfo()
     {
         return metaInfo;
+    }
+
+    public ActivatorsInstance<Application> newActivatorsInstance()
+            throws Exception
+    {
+        return new ActivatorsInstance<Application>( activatorsModel.newInstances() );
     }
 
     // SPI

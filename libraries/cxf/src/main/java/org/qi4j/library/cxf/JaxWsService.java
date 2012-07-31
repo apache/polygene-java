@@ -26,11 +26,12 @@ import org.apache.cxf.aegis.type.TypeMapping;
 import org.apache.cxf.interceptor.LoggingInInterceptor;
 import org.apache.cxf.interceptor.LoggingOutInterceptor;
 import org.apache.cxf.jaxws.JaxWsServerFactoryBean;
+import org.qi4j.api.activation.ActivatorAdapter;
+import org.qi4j.api.activation.Activators;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.object.ObjectFactory;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.service.ServiceReference;
@@ -38,12 +39,26 @@ import org.qi4j.api.structure.Module;
 
 import static org.qi4j.functional.Iterables.first;
 
-/**
- *
- */
 @Mixins( JaxWsService.JaxWsMixin.class )
-public interface JaxWsService extends Activatable, ServiceComposite
+@Activators( JaxWsService.Activator.class )
+public interface JaxWsService extends ServiceComposite
 {
+
+
+    void initializeJaxWsFactory();
+
+    public static class Activator
+            extends ActivatorAdapter<ServiceReference<JaxWsService>>
+    {
+
+        @Override
+        public void afterActivation( ServiceReference<JaxWsService> activated )
+                throws Exception
+        {
+            activated.get().initializeJaxWsFactory();
+        }
+
+    }
 
     public abstract static class JaxWsMixin
         implements JaxWsService
@@ -57,13 +72,7 @@ public interface JaxWsService extends Activatable, ServiceComposite
         @Uses
         ServiceDescriptor descriptor;
 
-        /**
-         * This is invoked on the service when the instance is being activated
-         *
-         * @throws Exception if service could not be activated
-         */
-        public void activate()
-            throws Exception
+        public void initializeJaxWsFactory()
         {
             final JaxWsServerFactoryInfo info = descriptor.metaInfo( JaxWsServerFactoryInfo.class );
             AegisDatabinding dataBinding = new AegisDatabinding();
@@ -114,14 +123,5 @@ public interface JaxWsService extends Activatable, ServiceComposite
             return reference.get();
         }
 
-        /**
-         * This is invoked on the service when the instance is being passivated
-         *
-         * @throws Exception if the service could not be passivated
-         */
-        public void passivate()
-            throws Exception
-        {
-        }
     }
 }

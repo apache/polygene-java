@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +16,9 @@
 package org.qi4j.runtime.service;
 
 import junit.framework.TestCase;
+import org.qi4j.api.activation.ActivatorAdapter;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.bootstrap.AssemblyException;
@@ -44,7 +45,7 @@ public class LazyActivatedServiceTest
                 throws AssemblyException
             {
                 module.objects( LazyActivatedServiceTest.class );
-                module.services( LazyActivatedServiceTest.ActivatableComposite.class );
+                module.services( LazyActivatedServiceTest.MyServiceComposite.class ).withActivators( TestActivator.class );
             }
         };
 
@@ -67,9 +68,9 @@ public class LazyActivatedServiceTest
         assertFalse( isActive );
     }
 
-    @Mixins( { LazyActivatedServiceTest.ActivatableMixin.class, MyServiceMixin.class } )
-    public static interface ActivatableComposite
-        extends Activatable, MyService, ServiceComposite
+    @Mixins( { MyServiceMixin.class } )
+    public static interface MyServiceComposite
+        extends MyService, ServiceComposite
     {
     }
 
@@ -88,24 +89,26 @@ public class LazyActivatedServiceTest
         }
     }
 
-    public static class ActivatableMixin
-        implements Activatable
+    public static class TestActivator
+            extends ActivatorAdapter<Object>
     {
-        public void activate()
-            throws Exception
+
+        @Override
+        public void afterActivation( Object activated )
         {
             isActive = true;
         }
 
-        public void passivate()
-            throws Exception
+        @Override
+        public void afterPassivation( Object passivated )
+                throws Exception
         {
-            if( !isActive )
-            {
+            if ( !isActive ) {
                 throw new Exception( "Not active!" );
             }
 
             isActive = false;
         }
+
     }
 }

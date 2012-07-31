@@ -20,7 +20,6 @@ import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.io.Input;
 import org.qi4j.io.Output;
 import org.qi4j.spi.entitystore.EntityNotFoundException;
@@ -36,12 +35,13 @@ import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReadWriteLock;
+import org.qi4j.api.service.ServiceActivation;
 
 /**
  * JDBM implementation of SerializationStore
  */
 public class VoldemortEntityStoreMixin
-        implements Activatable, MapEntityStore
+        implements ServiceActivation, MapEntityStore
 {
    @This
    private ReadWriteLock lock;
@@ -52,9 +52,8 @@ public class VoldemortEntityStoreMixin
    private StoreClient<String, byte[]> client;
    private StoreClientFactory factory;
 
-   // Activatable implementation
-
-   public void activate()
+   @Override
+   public void activateService()
            throws Exception
    {
       VoldemortConfiguration conf = config.configuration();
@@ -234,7 +233,8 @@ public class VoldemortEntityStoreMixin
 
    }
 
-   public void passivate()
+   @Override
+   public void passivateService()
            throws Exception
    {
       factory.close();

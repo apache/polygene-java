@@ -78,11 +78,6 @@ public class ServiceInstanceImporterTest
                 return new TestService();
             }
 
-            public boolean isActive( TestService instance )
-            {
-                return true;
-            }
-
             public boolean isAvailable( TestService instance )
             {
                 return true;

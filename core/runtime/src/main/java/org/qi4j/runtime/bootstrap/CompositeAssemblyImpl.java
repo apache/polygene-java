@@ -34,7 +34,6 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.Property;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.sideeffect.SideEffects;
 import org.qi4j.api.type.HasTypes;
 import org.qi4j.api.util.Annotations;
@@ -209,7 +208,7 @@ public abstract class CompositeAssemblyImpl
                         .dependencies() ) );
                     Iterable<Class<?>> filter = filter(
                         not(
-                            in( Activatable.class, Initializable.class, Lifecycle.class, InvocationHandler.class )
+                            in( Initializable.class, Lifecycle.class, InvocationHandler.class )
                         ),
                         map( Classes.RAW_CLASS, interfacesOf( mixinModel.mixinClass() ) )
                     );

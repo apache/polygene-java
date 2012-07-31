@@ -17,13 +17,13 @@
 package org.qi4j.entitystore.qrm;
 
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.Activatable;
+import org.qi4j.api.service.ServiceActivation;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.entitystore.EntityStoreSPI;
 
 @Mixins( { QrmEntityStoreServiceMixin.class } )
 public interface QrmEntityStoreService
-    extends ServiceComposite, Activatable, EntityStore, EntityStoreSPI
+    extends ServiceComposite, ServiceActivation, EntityStore, EntityStoreSPI
 {
 }

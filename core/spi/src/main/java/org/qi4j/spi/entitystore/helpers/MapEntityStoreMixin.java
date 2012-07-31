@@ -26,7 +26,6 @@ import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.json.JSONDeserializer;
 import org.qi4j.api.json.JSONWriterSerializer;
 import org.qi4j.api.property.PropertyDescriptor;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
@@ -56,7 +55,7 @@ import static org.qi4j.functional.Iterables.first;
  * See {@link org.qi4j.entitystore.memory.MemoryMapEntityStoreMixin} for reference.
  */
 public class MapEntityStoreMixin
-    implements EntityStore, EntityStoreSPI, StateStore, Activatable
+    implements EntityStore, EntityStoreSPI, StateStore, MapEntityStoreActivation
 {
     @This
     private MapEntityStore mapEntityStore;
@@ -79,17 +78,13 @@ public class MapEntityStoreMixin
 
     private Logger logger;
 
-    public void activate()
+    @Override
+    public void activateMapEntityStore()
         throws Exception
     {
         uuid = UUID.randomUUID().toString() + "-";
 
         logger = LoggerFactory.getLogger( descriptor.identity() );
-    }
-
-    public void passivate()
-        throws Exception
-    {
     }
 
     // EntityStore

@@ -19,14 +19,13 @@ import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.sql.DataSource;
-
 import org.qi4j.api.composite.PropertyMapper;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.service.ImportedServiceDescriptor;
+import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.api.service.ServiceImporterException;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
@@ -35,20 +34,20 @@ import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.library.circuitbreaker.CircuitBreaker;
 import org.qi4j.library.conversion.values.EntityToValue;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public abstract class AbstractDataSourceServiceImporterMixin<PooledDataSourceType extends DataSource>
+        implements ServiceImporter<DataSource>, DataSourceServiceImporterActivation
 {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger( AbstractDataSourceServiceImporterMixin.class );
 
-    protected final Map<String, DataSourceConfigurationValue> configs = new HashMap<String, DataSourceConfigurationValue>();
+    private final Map<String, DataSourceConfigurationValue> configs = new HashMap<String, DataSourceConfigurationValue>();
 
-    protected final Map<String, PooledDataSourceType> pools = new HashMap<String, PooledDataSourceType>();
+    private final Map<String, PooledDataSourceType> pools = new HashMap<String, PooledDataSourceType>();
 
-    protected final Map<PooledDataSourceType, CircuitBreaker> circuitBreakers = new HashMap<PooledDataSourceType, CircuitBreaker>();
+    private final Map<DataSource, CircuitBreaker> circuitBreakers = new HashMap<DataSource, CircuitBreaker>();
 
     @Structure
     protected Module module;
@@ -56,37 +55,18 @@ public abstract class AbstractDataSourceServiceImporterMixin<PooledDataSourceTyp
     @Service
     private EntityToValue entityToValue;
 
-    public final void activate()
-            throws Exception
-    {
-        onActivate();
-    }
-
-    protected void onActivate()
-            throws Exception
-    {
-    }
-
-    public final void passivate()
+    public final void passivateDataSourceService()
             throws Exception
     {
         for ( PooledDataSourceType pool : pools.values() ) {
             passivateDataSourcePool( pool );
         }
-
         pools.clear();
         configs.clear();
         circuitBreakers.clear();
-
-        onPassivate();
     }
 
-    protected void onPassivate()
-            throws Exception
-    {
-    }
-
-    public final synchronized Object importService( final ImportedServiceDescriptor importedServiceDescriptor )
+    public final synchronized DataSource importService( final ImportedServiceDescriptor importedServiceDescriptor )
             throws ServiceImporterException
     {
         PooledDataSourceType pool = pools.get( importedServiceDescriptor.identity() );
@@ -186,12 +166,7 @@ public abstract class AbstractDataSourceServiceImporterMixin<PooledDataSourceTyp
         return config;
     }
 
-    public final boolean isActive( Object instance )
-    {
-        return pools.containsValue( instance );
-    }
-
-    public final boolean isAvailable( Object instance )
+    public final boolean isAvailable( DataSource instance )
     {
         if ( pools.containsValue( instance ) ) {
             CircuitBreaker circuitBreaker = circuitBreakers.get( instance );

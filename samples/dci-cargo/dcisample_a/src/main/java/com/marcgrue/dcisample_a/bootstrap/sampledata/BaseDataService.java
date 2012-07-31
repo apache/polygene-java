@@ -7,11 +7,13 @@ import com.marcgrue.dcisample_a.data.shipping.location.UnLocode;
 import com.marcgrue.dcisample_a.data.shipping.voyage.Schedule;
 import com.marcgrue.dcisample_a.data.shipping.voyage.Voyage;
 import com.marcgrue.dcisample_a.data.shipping.voyage.VoyageNumber;
+import org.qi4j.api.activation.ActivatorAdapter;
+import org.qi4j.api.activation.Activators;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.value.ValueBuilder;
@@ -25,14 +27,29 @@ import static org.qi4j.api.usecase.UsecaseBuilder.newUsecase;
  * Create basic sample data
  */
 @Mixins( BaseDataService.Mixin.class )
+@Activators( BaseDataService.Activator.class )
 public interface BaseDataService
-    extends ServiceComposite, Activatable
+    extends ServiceComposite
 {
-    void create();
+
+    void createBaseData();
+
+    class Activator
+            extends ActivatorAdapter<ServiceReference<BaseDataService>>
+    {
+
+        @Override
+        public void afterActivation( ServiceReference<BaseDataService> activated )
+                throws Exception
+        {
+            activated.get().createBaseData();
+        }
+
+    }
 
     public abstract class Mixin
         extends BaseData
-        implements BaseDataService, Activatable
+        implements BaseDataService
     {
         @Structure
         ValueBuilderFactory valueBuilderFactory;
@@ -42,7 +59,8 @@ public interface BaseDataService
 
         private static final Logger logger = LoggerFactory.getLogger( BaseDataService.class );
 
-        public void activate()
+        @Override
+        public void createBaseData()
         {
             logger.debug( "CREATING BASIC DATA..." );
 
@@ -113,12 +131,6 @@ public interface BaseDataService
             logger.debug( "BASIC DATA CREATED" );
         }
 
-        public void passivate()
-            throws Exception
-        {
-            // Do nothing
-        }
-
         private Location location( UnLocode unlocode, String locationStr )
         {
             UnitOfWork uow = uowf.currentUnitOfWork();
@@ -143,20 +155,5 @@ public interface BaseDataService
             return voyage.newInstance();
         }
 
-        public void create()
-        {
-            try
-            {
-                activate();
-
-                // Save entities in (memory) store
-                uow.complete();
-            }
-            catch( Exception e )
-            {
-                uow.discard();
-                logger.error( "Problem creating basic data: " + e.getMessage() );
-            }
-        }
     }
 }

@@ -15,14 +15,16 @@ import java.util.Random;
 import java.util.UUID;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
+import org.qi4j.api.activation.ActivatorAdapter;
+import org.qi4j.api.activation.Activators;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryBuilderFactory;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.usecase.Usecase;
@@ -37,11 +39,29 @@ import static org.qi4j.api.usecase.UsecaseBuilder.newUsecase;
  * Create sample Cargos in different delivery stages
  */
 @Mixins( SampleDataService.Mixin.class )
+@Activators( SampleDataService.Activator.class )
 public interface SampleDataService
-    extends ServiceComposite, Activatable
+    extends ServiceComposite
 {
+
+    void insertSampleData()
+            throws Exception;
+
+    class Activator
+            extends ActivatorAdapter<ServiceReference<SampleDataService>>
+    {
+
+        @Override
+        public void afterActivation( ServiceReference<SampleDataService> activated )
+                throws Exception
+        {
+            activated.get().insertSampleData();
+        }
+
+    }
+
     public abstract class Mixin
-        implements SampleDataService, Activatable
+        implements SampleDataService
     {
         @Structure
         QueryBuilderFactory qbf;
@@ -49,16 +69,15 @@ public interface SampleDataService
         @Structure
         UnitOfWorkFactory uowf;
 
-        @Service
+        @Service // We depend on BaseData to be inserted
         BaseDataService baseDataService;
 
         private static final Logger logger = LoggerFactory.getLogger( SampleDataService.class );
 
-        public void activate()
+        @Override
+        public void insertSampleData()
             throws Exception
         {
-            baseDataService.create();
-
             prepareContextBaseClass( uowf );
 
             logger.info( "######  CREATING SAMPLE DATA...  ##########################################" );
@@ -224,12 +243,6 @@ public interface SampleDataService
             }
 
             logger.info( "######  SAMPLE DATA CREATED  ##############################################" );
-        }
-
-        public void passivate()
-            throws Exception
-        {
-            // Do nothing
         }
 
         private void populateRandomCargos( int numberOfCargos )

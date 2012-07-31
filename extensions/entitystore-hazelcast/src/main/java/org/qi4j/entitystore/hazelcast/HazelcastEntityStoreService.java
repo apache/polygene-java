@@ -23,7 +23,7 @@ import com.hazelcast.core.IMap;
 import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.Activatable;
+import org.qi4j.api.service.ServiceActivation;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.library.locking.LockingAbstractComposite;
 import org.qi4j.spi.entitystore.ConcurrentModificationCheckConcern;
@@ -35,10 +35,10 @@ import org.qi4j.spi.entitystore.helpers.MapEntityStoreMixin;
 @Concerns( { StateChangeNotificationConcern.class, ConcurrentModificationCheckConcern.class } )
 @Mixins( { MapEntityStoreMixin.class, HazelcastEntityStoreMixin.class } )
 public interface HazelcastEntityStoreService
-    extends EntityStore,
+    extends ServiceActivation,
+            EntityStore,
             EntityStateVersions,
             ServiceComposite,
-            Activatable,
             LockingAbstractComposite,
             Configuration
 {

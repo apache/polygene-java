@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,93 +15,59 @@
 
 package org.qi4j.runtime.service;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
+import org.qi4j.api.activation.Activation;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.event.ActivationEventListener;
 import org.qi4j.api.event.ActivationEventListenerRegistration;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specification;
-import org.qi4j.runtime.structure.ActivationEventListenerSupport;
+import org.qi4j.runtime.activation.ActivationEventListenerSupport;
+import org.qi4j.runtime.activation.ActivationDelegate;
+import org.qi4j.runtime.activation.ActivatorsInstance;
 
 /**
  * JAVADOC
  */
 public class ServicesInstance
-    implements Activatable, ActivationEventListenerRegistration
+    implements Activation, ActivationEventListenerRegistration
 {
     private final ServicesModel servicesModel;
     private final List<ServiceReference> serviceReferences;
-    private final Activator activator;
-    private final Map<String, ServiceReference> mapIdentityServiceReference = new HashMap<String, ServiceReference>();
-    private final ActivationEventListenerSupport eventListenerSupport = new ActivationEventListenerSupport();
+    private final ActivationDelegate activation = new ActivationDelegate( this );
+    private final ActivationEventListenerSupport activationEventSupport = new ActivationEventListenerSupport();
 
     public ServicesInstance( ServicesModel servicesModel, List<ServiceReference> serviceReferences )
     {
         this.servicesModel = servicesModel;
         this.serviceReferences = serviceReferences;
-
         for( ServiceReference serviceReference : serviceReferences )
         {
-            mapIdentityServiceReference.put( serviceReference.identity(), serviceReference );
-            serviceReference.registerActivationEventListener( eventListenerSupport );
+            serviceReference.registerActivationEventListener( activationEventSupport );
         }
-        activator = new Activator();
     }
 
     public void activate()
         throws Exception
     {
+        List<Activation> activatableServiceReferences = new LinkedList<Activation>();
         for( final ServiceReference serviceReference : serviceReferences )
         {
-            if( serviceReference instanceof Activatable )
+            if( serviceReference instanceof Activation )
             {
-                Activatable eventActivatable = new Activatable()
-                {
-                    @Override
-                    public void activate()
-                        throws Exception
-                    {
-                        ( (Activatable) serviceReference ).activate();
-                    }
-
-                    @Override
-                    public void passivate()
-                        throws Exception
-                    {
-                        ( (Activatable) serviceReference ).passivate();
-                    }
-                };
-
-                activator.activate( eventActivatable );
+                activatableServiceReferences.add( ( Activation ) serviceReference );
             }
         }
+        activation.activate( ActivatorsInstance.EMPTY, activatableServiceReferences );
     }
 
     public void passivate()
         throws Exception
     {
-        activator.passivate();
-    }
-
-    public <T> ServiceReference<T> getServiceWithIdentity( String serviceIdentity )
-    {
-        return mapIdentityServiceReference.get( serviceIdentity );
-    }
-
-    @Override
-    public void registerActivationEventListener( ActivationEventListener listener )
-    {
-        eventListenerSupport.registerActivationEventListener( listener );
-    }
-
-    @Override
-    public void deregisterActivationEventListener( ActivationEventListener listener )
-    {
-        eventListenerSupport.deregisterActivationEventListener( listener );
+        activation.passivate();
     }
 
     public Iterable<ServiceReference> visibleServices( final Visibility visibility )
@@ -120,13 +87,23 @@ public class ServicesInstance
     @Override
     public String toString()
     {
-        String str = "{";
-        String sep = "";
+        String str = "Services{";
+        String sep = " ";
         for( ServiceReference serviceReference : serviceReferences )
         {
-            str += sep + serviceReference.identity() + ",active=" + serviceReference.isActive();
+            str += sep + serviceReference.identity() + "(active=" + serviceReference.isActive() + ')';
             sep = ", ";
         }
-        return str += "}";
+        return str += " }";
+    }
+
+    public void registerActivationEventListener( ActivationEventListener listener )
+    {
+        activationEventSupport.registerActivationEventListener( listener );
+    }
+
+    public void deregisterActivationEventListener( ActivationEventListener listener )
+    {
+        activationEventSupport.deregisterActivationEventListener( listener );
     }
 }

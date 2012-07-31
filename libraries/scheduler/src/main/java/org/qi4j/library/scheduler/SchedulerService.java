@@ -17,16 +17,17 @@ package org.qi4j.library.scheduler;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.qi4j.api.activation.Activators;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Mixins( { SchedulerMixin.class, SchedulerService.ThreadFactory.class, SchedulerService.RejectionHandler.class } )
-public interface SchedulerService extends Scheduler, Activatable, Configuration, ServiceComposite
+@Activators( SchedulerActivation.Activator.class )
+public interface SchedulerService extends Scheduler, SchedulerActivation, Configuration, ServiceComposite
 {
     class RejectionHandler
         implements RejectedExecutionHandler

@@ -13,19 +13,37 @@
  */
 package org.qi4j.library.shiro.bootstrap;
 
+import java.security.Security;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.qi4j.api.activation.ActivatorAdapter;
+import org.qi4j.api.activation.Activators;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.object.ObjectFactory;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
-
-import java.security.Security;
+import org.qi4j.api.service.ServiceReference;
 
 @Mixins( ShiroLifecycleService.Mixin.class )
+@Activators( ShiroLifecycleService.Activator.class )
 public interface ShiroLifecycleService
-        extends Activatable, ServiceComposite
+        extends ServiceComposite
 {
+
+    void initialize()
+            throws Exception;
+
+    class Activator
+            extends ActivatorAdapter<ServiceReference<ShiroLifecycleService>>
+    {
+
+        @Override
+        public void afterActivation( ServiceReference<ShiroLifecycleService> activated )
+                throws Exception
+        {
+            activated.get().initialize();
+        }
+
+    }
 
     abstract class Mixin
             implements ShiroLifecycleService
@@ -34,18 +52,14 @@ public interface ShiroLifecycleService
         @Structure
         private ObjectFactory obf;
 
-        public void activate()
+        @Override
+        public void initialize()
                 throws Exception
         {
             if ( Security.getProvider( BouncyCastleProvider.PROVIDER_NAME ) == null ) {
                 Security.addProvider( new BouncyCastleProvider() );
             }
             obf.newObject( RealmActivator.class ).activateRealm();
-        }
-
-        public void passivate()
-                throws Exception
-        {
         }
 
     }

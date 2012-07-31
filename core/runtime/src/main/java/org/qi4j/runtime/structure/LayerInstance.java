@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,7 +12,6 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.runtime.structure;
 
 import java.util.ArrayList;
@@ -24,10 +24,11 @@ import org.qi4j.api.structure.Layer;
 import org.qi4j.api.structure.Module;
 import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
+import org.qi4j.runtime.activation.ActivationEventListenerSupport;
+import org.qi4j.runtime.activation.ActivationDelegate;
 import org.qi4j.runtime.composite.TransientModel;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.object.ObjectModel;
-import org.qi4j.runtime.service.Activator;
 import org.qi4j.runtime.value.ValueModel;
 
 /**
@@ -36,33 +37,32 @@ import org.qi4j.runtime.value.ValueModel;
 public class LayerInstance
     implements Layer
 {
-    private final LayerModel model;
+    private final LayerModel layerModel;
     private final ApplicationInstance applicationInstance;
     private final List<ModuleInstance> moduleInstances = new ArrayList<ModuleInstance>();
-    private final Activator moduleActivator;
+    private final ActivationDelegate activation = new ActivationDelegate( this );
+    private final ActivationEventListenerSupport activationEventSupport = new ActivationEventListenerSupport();
     private final UsedLayersInstance usedLayersInstance;
-    private final ActivationEventListenerSupport eventListenerSupport = new ActivationEventListenerSupport();
 
     public LayerInstance( LayerModel model,
                           ApplicationInstance applicationInstance,
                           UsedLayersInstance usedLayersInstance
     )
     {
-        this.model = model;
+        this.layerModel = model;
         this.applicationInstance = applicationInstance;
         this.usedLayersInstance = usedLayersInstance;
-        this.moduleActivator = new Activator();
     }
 
     void addModule( ModuleInstance module )
     {
+        module.registerActivationEventListener( activationEventSupport );
         moduleInstances.add( module );
-        module.registerActivationEventListener( eventListenerSupport );
     }
 
     public LayerModel model()
     {
-        return model;
+        return layerModel;
     }
 
     public ApplicationInstance applicationInstance()
@@ -72,24 +72,12 @@ public class LayerInstance
 
     public String name()
     {
-        return model.name();
+        return layerModel.name();
     }
 
     public <T> T metaInfo( Class<T> infoType )
     {
-        return model.metaInfo( infoType );
-    }
-
-    @Override
-    public void registerActivationEventListener( ActivationEventListener listener )
-    {
-        eventListenerSupport.registerActivationEventListener( listener );
-    }
-
-    @Override
-    public void deregisterActivationEventListener( ActivationEventListener listener )
-    {
-        eventListenerSupport.deregisterActivationEventListener( listener );
+        return layerModel.metaInfo( infoType );
     }
 
     public List<Module> modules()
@@ -183,22 +171,32 @@ public class LayerInstance
     public void activate()
         throws Exception
     {
-        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATING ) );
-        moduleActivator.activate( moduleInstances );
-        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATED ) );
+        activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATING ) );
+        activation.activate( layerModel.newActivatorsInstance(), moduleInstances );
+        activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATED ) );
     }
 
     public void passivate()
         throws Exception
     {
-        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATING ) );
-        moduleActivator.passivate();
-        eventListenerSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATED ) );
+        activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATING ) );
+        activation.passivate();
+        activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATED ) );
     }
 
     @Override
     public String toString()
     {
-        return model.toString();
+        return layerModel.toString();
+    }
+
+    public void registerActivationEventListener( ActivationEventListener listener )
+    {
+        activationEventSupport.registerActivationEventListener( listener );
+    }
+
+    public void deregisterActivationEventListener( ActivationEventListener listener )
+    {
+        activationEventSupport.deregisterActivationEventListener( listener );
     }
 }

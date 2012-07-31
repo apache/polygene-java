@@ -1,0 +1,30 @@
+[[tut-services-step3,Step 3 - Reading the Service Configuration]]
+= Step 3 - Reading the Service Configuration =
+
+Services typically have configuration. Configurations are directly supported in Qi4j. A
+ConfigurationComposite is a subtype of EntityComposite. That is because
+configurations are stored in EntityStores, can be modified in runtime by client code and has
+the same semantics as regular entities.
+
+Qi4j also handles the bootstrapping of configuration for the services. If the ConfigurationComposite is
+not found in the configured entity store, then Qi4j will automatically locate a properties file for each
+service instance, read those properties into a ConfigurationComposite instance, save that to the
+entity store and provide the values to the service. The properties file must be with the same name as
+the service instance with the extension "properties" in the same package as the service.
+
+For this exercise, create a LibraryConfiguration that contains "titles", "authors" and "copies".
+The first two are a string with a comma separated list, and the "copies" is just an Integer with how many
+copies are made of each title.
+
+Steps to do.
+
+- Create a LibraryConfiguration interface that extends ConfigurationComposite, and has three Property instances named "titles", "authors" and "copies", where the first two are of String type and the last is of Integer type.
+- Delete the LibraryActivator and remove the @Activators annotation from the LibraryService and the corresponding createInitialData method.
+- In the LibraryMixin remove the member injection of the ValueBuilderFactory, and instead inject the ValueBuilderFactory in the constructor.
+- Inject the LibraryConfiguration via the constructor. The injection scope is @This.
+- Create a resource called LibraryService.properties and place it in the directory org/qi4j/tutorials/services/step4 in the classpath (for instance, src/main/resources ). Put something like this in:
+    titles=Domain Driven Design, Pragmatic Programmer, Extreme Programming Explained
+    authors=Eric Evans, Andy Hunt, Kent Beck
+    #Number of copies of each book.
+    copies=3
+- Load initial data from the LibraryConfiguration in the LibraryMixin constructor.

@@ -17,26 +17,45 @@
 */
 package org.qi4j.envisage.school.domain.person.initialdata;
 
+import org.qi4j.api.activation.ActivatorAdapter;
+import org.qi4j.api.activation.Activators;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.envisage.school.domain.person.Person;
 import org.qi4j.envisage.school.domain.person.assembly.PersonEntity;
 
 @Mixins( SamplePersonInitialData.SamplePersonBootstrapMixin.class )
+@Activators( SamplePersonInitialData.Activator.class )
 public interface SamplePersonInitialData
-    extends Activatable, ServiceComposite
+    extends ServiceComposite
 {
     String EDWARD = "edward";
     String NICLAS = "niclas";
     String RICKARD = "rickard";
+    
+    void insertInitialData()
+            throws Exception;
 
-    public class SamplePersonBootstrapMixin
-        implements Activatable
+    class Activator
+            extends ActivatorAdapter<ServiceReference<SamplePersonInitialData>>
+    {
+
+        @Override
+        public void afterActivation( ServiceReference<SamplePersonInitialData> activated )
+                throws Exception
+        {
+            activated.get().insertInitialData();
+        }
+
+    }
+
+    public abstract class SamplePersonBootstrapMixin
+        implements SamplePersonInitialData
     {
         private static final String[][] DATAS =
             {
@@ -48,7 +67,8 @@ public interface SamplePersonInitialData
         @Structure
         private UnitOfWorkFactory uowf;
 
-        public void activate()
+        @Override
+        public void insertInitialData()
             throws Exception
         {
             UnitOfWork uow = uowf.currentUnitOfWork();
@@ -75,9 +95,5 @@ public interface SamplePersonInitialData
             person.newInstance();
         }
 
-        public void passivate()
-            throws Exception
-        {
-        }
     }
 }
