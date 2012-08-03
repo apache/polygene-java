@@ -61,7 +61,7 @@ public class ClassesTest
         Iterable<Type> types = Iterables.filter( Methods.HAS_METHODS, interfacesOf( C.class ) );
         assertThat( "one interface returned", count( types ), equalTo( 1L ) );
         assertThat( "correct interface returned", Iterables.matchesAny( (Specification) Specifications.in( B.class ), Iterables
-            .<Class<?>, Type>cast( types ) ), is( true ) );
+            .<Class<?>>cast( types ) ), is( true ) );
     }
 
     @Test

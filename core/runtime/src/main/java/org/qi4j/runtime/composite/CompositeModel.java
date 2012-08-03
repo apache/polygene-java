@@ -161,7 +161,7 @@ public abstract class CompositeModel
         {
             ClassLoader proxyClassloader = mainType.getClassLoader();
 
-            Class<?>[] interfaces = Iterables.toArray( Class.class, Iterables.<Class, Class<?>>cast( types ) );
+            Class<?>[] interfaces = Iterables.toArray( Class.class, Iterables.<Class>cast( types ) );
             proxyClass = (Class<? extends Composite>) ProxyGenerator.createProxyClass( proxyClassloader, interfaces );
 
             try

@@ -42,6 +42,7 @@ import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.bootstrap.LayerName;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.ModuleName;
+import org.qi4j.functional.Iterables;
 
 import static org.qi4j.functional.Iterables.first;
 import static org.qi4j.functional.Iterables.toArray;
@@ -294,7 +295,8 @@ public class PluginTest
             throws ServiceImporterException
         {
             final Class<?> mainType = first( serviceDescriptor.types() );
-            Class<?>[] interfaces = toArray( Class.class, serviceDescriptor.types() );
+            
+            Class[] interfaces = toArray( Class.class, Iterables.<Class>cast( serviceDescriptor.types() ) );
             return Proxy.newProxyInstance(
                 mainType.getClassLoader(),
                 interfaces,

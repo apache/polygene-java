@@ -166,7 +166,7 @@ public final class Classes
             {
                 type = RAW_CLASS.map( type );
                 Class superclass = ( (Class) type ).getSuperclass();
-                return prepend( ( (Class) type ), map( superclass ) );
+                return prepend( ( Class<?> ) type, map( superclass ) );
             }
         }
     };
@@ -180,7 +180,9 @@ public final class Classes
 
             if( clazz.isInterface() )
             {
-                return prepend( type, flattenIterables( Iterables.map( INTERFACES_OF, iterable( clazz.getGenericInterfaces() ) ) ) );
+                Iterable<Type> genericInterfaces = iterable( clazz.getGenericInterfaces() );
+                Iterable<Type> flattenIterables = flattenIterables( Iterables.map( INTERFACES_OF, genericInterfaces ) );
+                return prepend( type, flattenIterables );
             }
             else
             {
@@ -207,7 +209,9 @@ public final class Classes
 
             if( clazz.isInterface() )
             {
-                return prepend( clazz, flattenIterables( Iterables.map( INTERFACES_OF, iterable( clazz.getGenericInterfaces() ) ) ) );
+                Iterable<Type> genericInterfaces = iterable( clazz.getGenericInterfaces() );
+                Iterable<Type> flattenIterables = flattenIterables( Iterables.map( INTERFACES_OF, genericInterfaces ) );
+                return prepend( clazz, flattenIterables );
             }
             else
             {

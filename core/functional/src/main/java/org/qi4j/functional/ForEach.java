@@ -34,7 +34,7 @@ public final class ForEach<T>
         return new ForEach<T>( Iterables.filter( specification, iterable ) );
     }
 
-    public <TO> ForEach<TO> map( Function<? super T, TO> function )
+    public <TO> ForEach<TO> map( Function<? /* super T */, TO> function )
     {
         return new ForEach<TO>( Iterables.map( function, iterable ) );
     }

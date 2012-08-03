@@ -117,8 +117,8 @@ public class FunctionsTest
                 return integer.toString();
             }
         } );
-
-        List<Integer> integers = Iterables.toList( Iterables.iterable( 1, 5, 3, 6, 8 ) );
+        Iterable<Integer> iterable = Iterables.iterable( 1, 5, 3, 6, 8 );
+        List<Integer> integers = Iterables.toList( iterable );
         Collections.sort( integers, comparator );
         assertThat( integers.toString(), equalTo( "[1, 3, 5, 6, 8]" ) );
     }

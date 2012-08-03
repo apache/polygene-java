@@ -55,7 +55,7 @@ public final class ImportedServiceAssemblyImpl
     @Override
     public Iterable<Class<?>> types()
     {
-        return Iterables.<Class<?>, Class<?>>iterable( serviceType );
+        return Iterables.<Class<?>>iterable( serviceType );
     }
 
     void addImportedServiceModel( List<ImportedServiceModel> serviceModels )

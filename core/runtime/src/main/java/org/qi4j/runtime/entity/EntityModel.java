@@ -14,7 +14,6 @@
 
 package org.qi4j.runtime.entity;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.common.ConstructionException;
@@ -73,9 +72,9 @@ public final class EntityModel extends CompositeModel
     {
         super( types, visibility, info, mixinsModel, stateModel, compositeMethodsModel );
 
-        final Queryable queryable = Iterables.first( Iterables.<Queryable, Annotation>cast( Iterables.filter( Annotations
-                                                                                                                  .isType( Queryable.class ), Iterables
-            .flattenIterables( Iterables.map( Annotations.ANNOTATIONS_OF, types ) ) ) ) );
+        final Queryable queryable = Iterables.first( Iterables.<Queryable>cast( 
+            Iterables.filter( Annotations.isType( Queryable.class ), 
+            Iterables.flattenIterables( Iterables.map( Annotations.ANNOTATIONS_OF, types ) ) ) ) );
         this.queryable = queryable == null || queryable.value();
     }
 
