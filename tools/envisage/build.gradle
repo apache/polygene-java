@@ -25,7 +25,7 @@ dependencies {
       </exclusion>
   } */
   compile "com.jgoodies:looks:2.2.2"
-  compile "org.apache.pdfbox:pdfbox:0.8.0-incubating"
+  compile "org.apache.pdfbox:pdfbox:1.7.1"
 }
 
 task(runSample, dependsOn: 'testClasses', type: JavaExec) {
