@@ -18,7 +18,7 @@ package org.qi4j.envisage.detail;
 
 import org.qi4j.api.service.ImportedServiceDescriptor;
 import org.qi4j.api.service.ServiceImporter;
-import org.qi4j.envisage.model.descriptor.ImportedServiceDetailDescriptor;
+import org.qi4j.tools.model.descriptor.ImportedServiceDetailDescriptor;
 
 import javax.swing.*;
 import java.awt.*;

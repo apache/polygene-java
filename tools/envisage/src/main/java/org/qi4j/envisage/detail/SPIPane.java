@@ -17,10 +17,10 @@
 package org.qi4j.envisage.detail;
 
 import org.qi4j.envisage.event.LinkEvent;
-import org.qi4j.envisage.model.descriptor.LayerDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.ModuleDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.ServiceDetailDescriptor;
-import org.qi4j.envisage.model.util.DescriptorUtilities;
+import org.qi4j.tools.model.descriptor.LayerDetailDescriptor;
+import org.qi4j.tools.model.descriptor.ModuleDetailDescriptor;
+import org.qi4j.tools.model.descriptor.ServiceDetailDescriptor;
+import org.qi4j.tools.model.util.DescriptorUtilities;
 import org.qi4j.envisage.util.TableRow;
 
 import javax.swing.*;

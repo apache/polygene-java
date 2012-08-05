@@ -18,7 +18,7 @@ package org.qi4j.envisage.detail;
 
 import org.qi4j.envisage.event.LinkEvent;
 import org.qi4j.envisage.event.LinkListener;
-import org.qi4j.envisage.model.descriptor.*;
+import org.qi4j.tools.model.descriptor.*;
 
 import javax.swing.*;
 import java.awt.*;

@@ -21,8 +21,8 @@ import org.qi4j.envisage.detail.DetailModelPane;
 import org.qi4j.envisage.event.LinkEvent;
 import org.qi4j.envisage.event.LinkListener;
 import org.qi4j.envisage.graph.GraphPane;
-import org.qi4j.envisage.model.descriptor.ApplicationDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.ApplicationDetailDescriptorBuilder;
+import org.qi4j.tools.model.descriptor.ApplicationDetailDescriptor;
+import org.qi4j.tools.model.descriptor.ApplicationDetailDescriptorBuilder;
 import org.qi4j.envisage.print.PDFWriter;
 import org.qi4j.envisage.tree.TreeModelPane;
 

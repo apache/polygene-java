@@ -21,7 +21,7 @@ import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.object.ObjectDescriptor;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.value.ValueDescriptor;
-import org.qi4j.envisage.model.descriptor.*;
+import org.qi4j.tools.model.descriptor.*;
 import org.qi4j.envisage.util.TableRow;
 
 import javax.swing.*;

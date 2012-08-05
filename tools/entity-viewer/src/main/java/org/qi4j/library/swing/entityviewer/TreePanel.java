@@ -18,7 +18,7 @@ package org.qi4j.library.swing.entityviewer;
 
 import org.qi4j.api.structure.ApplicationDescriptor;
 import org.qi4j.bootstrap.Energy4Java;
-import org.qi4j.envisage.model.descriptor.*;
+import org.qi4j.tools.model.descriptor.*;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;

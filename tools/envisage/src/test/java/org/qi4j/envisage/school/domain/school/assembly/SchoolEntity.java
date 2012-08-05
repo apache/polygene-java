@@ -19,6 +19,7 @@ package org.qi4j.envisage.school.domain.school.assembly;
 
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.Identity;
+import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
@@ -32,6 +33,7 @@ import org.qi4j.envisage.school.domain.person.Person;
 import org.qi4j.envisage.school.domain.school.School;
 import org.qi4j.envisage.school.domain.school.Student;
 import org.qi4j.envisage.school.domain.school.Subject;
+import org.qi4j.envisage.school.infrastructure.mail.MailService;
 
 import static org.qi4j.api.query.QueryExpressions.eq;
 import static org.qi4j.api.query.QueryExpressions.templateFor;
@@ -49,6 +51,8 @@ public interface SchoolEntity
         private QueryBuilderFactory qbf;
         @This
         private SchoolState state;
+        @Service
+        private MailService mailer;
         private String schoolId;
 
         public SchoolMixin( @This Identity identity )

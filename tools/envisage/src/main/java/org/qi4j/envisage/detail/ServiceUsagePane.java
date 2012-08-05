@@ -18,10 +18,12 @@ package org.qi4j.envisage.detail;
 
 import org.qi4j.api.composite.DependencyDescriptor;
 import org.qi4j.envisage.event.LinkEvent;
-import org.qi4j.envisage.model.descriptor.InjectedFieldDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.ServiceDetailDescriptor;
-import org.qi4j.envisage.model.util.DescriptorUtilities;
+import org.qi4j.tools.model.descriptor.InjectedFieldDetailDescriptor;
+import org.qi4j.tools.model.descriptor.ServiceDetailDescriptor;
+import org.qi4j.tools.model.descriptor.ServiceUsage;
+import org.qi4j.tools.model.util.DescriptorUtilities;
 import org.qi4j.envisage.util.TableRow;
+import org.qi4j.envisage.util.TableRowUtilities;
 
 import javax.swing.*;
 import javax.swing.event.MouseInputAdapter;
@@ -149,8 +151,8 @@ public class ServiceUsagePane
 
         ServiceDetailDescriptor descriptor = (ServiceDetailDescriptor) objectDesciptor;
 
-        List<TableRow> rows = DescriptorUtilities.findServiceUsage( descriptor );
-        usageTableModel.addRows( rows );
+        List<ServiceUsage> serviceUsages = DescriptorUtilities.findServiceUsage( descriptor );
+        usageTableModel.addRows( TableRowUtilities.toTableRows( serviceUsages ) );
     }
 
     private void clear()

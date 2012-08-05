@@ -16,8 +16,8 @@
 */
 package org.qi4j.envisage.graph;
 
-import org.qi4j.envisage.model.descriptor.*;
-import org.qi4j.envisage.model.util.DescriptorNameComparator;
+import org.qi4j.tools.model.descriptor.*;
+import org.qi4j.tools.model.util.DescriptorNameComparator;
 import prefuse.data.Edge;
 import prefuse.data.Graph;
 import prefuse.data.Node;

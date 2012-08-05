@@ -21,10 +21,10 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.util.Classes;
 import org.qi4j.envisage.event.LinkEvent;
-import org.qi4j.envisage.model.descriptor.CompositeDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.InjectedFieldDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.MixinDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.ObjectDetailDescriptor;
+import org.qi4j.tools.model.descriptor.CompositeDetailDescriptor;
+import org.qi4j.tools.model.descriptor.InjectedFieldDetailDescriptor;
+import org.qi4j.tools.model.descriptor.MixinDetailDescriptor;
+import org.qi4j.tools.model.descriptor.ObjectDetailDescriptor;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;

@@ -17,8 +17,8 @@
 package org.qi4j.envisage.detail;
 
 import org.qi4j.api.util.Classes;
-import org.qi4j.envisage.model.descriptor.*;
-import org.qi4j.envisage.model.util.DescriptorUtilities;
+import org.qi4j.tools.model.descriptor.*;
+import org.qi4j.tools.model.util.DescriptorUtilities;
 import org.qi4j.envisage.util.TableRow;
 
 import javax.swing.*;

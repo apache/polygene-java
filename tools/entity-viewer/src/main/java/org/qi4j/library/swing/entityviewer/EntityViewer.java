@@ -23,7 +23,7 @@ import org.qi4j.api.structure.ApplicationDescriptor;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.Energy4Java;
-import org.qi4j.envisage.model.descriptor.*;
+import org.qi4j.tools.model.descriptor.*;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;

@@ -16,7 +16,7 @@
 */
 package org.qi4j.envisage.tree;
 
-import org.qi4j.envisage.model.descriptor.*;
+import org.qi4j.tools.model.descriptor.*;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;

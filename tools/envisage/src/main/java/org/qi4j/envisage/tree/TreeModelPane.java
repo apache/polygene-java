@@ -16,7 +16,7 @@
 */
 package org.qi4j.envisage.tree;
 
-import org.qi4j.envisage.model.descriptor.ApplicationDetailDescriptor;
+import org.qi4j.tools.model.descriptor.ApplicationDetailDescriptor;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;

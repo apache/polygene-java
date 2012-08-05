@@ -34,9 +34,10 @@ import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.api.value.ValueDescriptor;
 import org.qi4j.envisage.graph.GraphDisplay;
-import org.qi4j.envisage.model.descriptor.*;
-import org.qi4j.envisage.model.util.DescriptorUtilities;
+import org.qi4j.tools.model.descriptor.*;
+import org.qi4j.tools.model.util.DescriptorUtilities;
 import org.qi4j.envisage.util.TableRow;
+import org.qi4j.envisage.util.TableRowUtilities;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -615,7 +616,8 @@ public class PDFWriter
         writeString( "Usage: ", headerLineSpace );
 
         setFont( normalFont, normalFontSize );
-        List<TableRow> rows = DescriptorUtilities.findServiceUsage( (ServiceDetailDescriptor) objectDesciptor );
+        List<ServiceUsage> serviceUsages = DescriptorUtilities.findServiceUsage( (ServiceDetailDescriptor) objectDesciptor );
+        List<TableRow> rows = TableRowUtilities.toTableRows( serviceUsages );
         for( TableRow row : rows )
         {
 

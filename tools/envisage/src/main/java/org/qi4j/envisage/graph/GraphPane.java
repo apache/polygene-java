@@ -18,7 +18,7 @@ package org.qi4j.envisage.graph;
 
 import org.qi4j.envisage.event.LinkEvent;
 import org.qi4j.envisage.event.LinkListener;
-import org.qi4j.envisage.model.descriptor.ApplicationDetailDescriptor;
+import org.qi4j.tools.model.descriptor.ApplicationDetailDescriptor;
 import prefuse.data.Graph;
 
 import javax.swing.*;
