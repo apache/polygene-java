@@ -1,11 +1,24 @@
 package org.qi4j.runtime.value;
 
-import java.lang.reflect.AccessibleObject;
-import java.util.Map;
+import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.association.AssociationStateHolder;
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.property.PropertyDescriptor;
+import org.qi4j.runtime.association.AssociationInfo;
 import org.qi4j.runtime.association.AssociationInstance;
+import org.qi4j.runtime.association.AssociationModel;
 import org.qi4j.runtime.association.ManyAssociationInstance;
+import org.qi4j.runtime.association.ManyAssociationModel;
+import org.qi4j.runtime.property.PropertyInfo;
 import org.qi4j.runtime.property.PropertyInstance;
+import org.qi4j.runtime.property.PropertyModel;
+import org.qi4j.runtime.structure.ModelModule;
+import org.qi4j.runtime.structure.ModuleInstance;
+
+import java.lang.reflect.AccessibleObject;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * TODO
@@ -25,6 +38,42 @@ public final class ValueStateInstance
         this.properties = properties;
         this.associations = associations;
         this.manyAssociations = manyAssociations;
+    }
+
+    public ValueStateInstance( ModelModule<ValueModel> compositeModelModule,
+                                                            ModuleInstance currentModule,
+                                                            ValueStateModel.StateResolver stateResolver )
+    {
+        ValueModel valueModel = compositeModelModule.model();
+        this.properties = new LinkedHashMap<AccessibleObject, PropertyInstance<?>>();
+        for( PropertyDescriptor propertyDescriptor : valueModel.state().properties() )
+        {
+            PropertyInfo builderInfo = ( (PropertyModel) propertyDescriptor ).getBuilderInfo();
+            Object value = stateResolver.getPropertyState( propertyDescriptor );
+            PropertyInstance<Object> propertyInstance = new PropertyInstance<Object>( builderInfo, value );
+            properties.put( propertyDescriptor.accessor(), propertyInstance );
+        }
+
+        this.associations = new LinkedHashMap<AccessibleObject, AssociationInstance<?>>();
+        for( AssociationDescriptor associationDescriptor : valueModel.state().associations() )
+        {
+            AssociationInfo builderInfo = ( (AssociationModel) associationDescriptor ).getBuilderInfo();
+            EntityReference value = stateResolver.getAssociationState( associationDescriptor );
+            AssociationInstance<Object> associationInstance1 =
+                new AssociationInstance<Object>( builderInfo, currentModule.getEntityFunction(), new ReferenceProperty( value ) );
+            associations.put( associationDescriptor.accessor(), associationInstance1 );
+        }
+
+        this.manyAssociations = new LinkedHashMap<AccessibleObject, ManyAssociationInstance<?>>();
+        for( AssociationDescriptor associationDescriptor : valueModel.state().manyAssociations() )
+        {
+            AssociationInfo builderInfo = ( (ManyAssociationModel) associationDescriptor ).getBuilderInfo();
+            List<EntityReference> value = stateResolver.getManyAssociationState( associationDescriptor );
+            ManyAssociationValueState manyAssociationState = new ManyAssociationValueState( value );
+            ManyAssociationInstance<Object> associationInstance = new ManyAssociationInstance<Object>( builderInfo, currentModule.getEntityFunction(),
+                                                                                                       manyAssociationState );
+            manyAssociations.put( associationDescriptor.accessor(), associationInstance );
+        }
     }
 
     public <T> PropertyInstance<T> propertyFor( AccessibleObject accessor )

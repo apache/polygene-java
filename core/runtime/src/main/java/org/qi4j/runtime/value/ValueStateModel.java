@@ -17,6 +17,8 @@ package org.qi4j.runtime.value;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.association.AssociationStateDescriptor;
 import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.functional.VisitableHierarchy;
 import org.qi4j.runtime.association.AssociationModel;
@@ -25,6 +27,8 @@ import org.qi4j.runtime.association.ManyAssociationModel;
 import org.qi4j.runtime.association.ManyAssociationsModel;
 import org.qi4j.runtime.composite.StateModel;
 import org.qi4j.runtime.property.PropertiesModel;
+
+import java.util.List;
 
 /**
  * JAVADOC
@@ -94,5 +98,14 @@ public final class ValueStateModel
         }
 
         return visitor.visitLeave( this );
+    }
+
+    public interface StateResolver
+    {
+        public Object getPropertyState( PropertyDescriptor propertyDescriptor );
+
+        public EntityReference getAssociationState( AssociationDescriptor associationDescriptor );
+
+        public List<EntityReference> getManyAssociationState( AssociationDescriptor associationDescriptor );
     }
 }

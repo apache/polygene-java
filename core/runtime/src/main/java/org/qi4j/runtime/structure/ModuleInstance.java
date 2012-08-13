@@ -61,9 +61,7 @@ import org.qi4j.runtime.activation.ActivationDelegate;
 import org.qi4j.runtime.activation.ActivationEventListenerSupport;
 import org.qi4j.runtime.association.AssociationInfo;
 import org.qi4j.runtime.association.AssociationInstance;
-import org.qi4j.runtime.association.AssociationModel;
 import org.qi4j.runtime.association.ManyAssociationInstance;
-import org.qi4j.runtime.association.ManyAssociationModel;
 import org.qi4j.runtime.composite.TransientBuilderInstance;
 import org.qi4j.runtime.composite.TransientModel;
 import org.qi4j.runtime.composite.TransientStateInstance;
@@ -92,6 +90,7 @@ import org.qi4j.runtime.value.ValueBuilderWithState;
 import org.qi4j.runtime.value.ValueInstance;
 import org.qi4j.runtime.value.ValueModel;
 import org.qi4j.runtime.value.ValueStateInstance;
+import org.qi4j.runtime.value.ValueStateModel;
 import org.qi4j.runtime.value.ValuesModel;
 import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.metrics.MetricsProviderAdapter;
@@ -279,8 +278,8 @@ public class ModuleInstance
         throws Exception
     {
         activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATING ) );
-        activation.activate( moduleModel.newActivatorsInstance(), 
-                                    Iterables.<Activation, Activation>iterable( services, importedServices ) );
+        activation.activate( moduleModel.newActivatorsInstance(),
+                             Iterables.<Activation, Activation>iterable( services, importedServices ) );
         activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATED ) );
     }
 
@@ -340,15 +339,15 @@ public class ModuleInstance
 
         if( model == null )
         {
-            Iterable<ModelModule<TransientModel>> flatten = flatten( ambiguousCheck( type, findModels( Classes.exactTypeSpecification( type ), visibleTransients( Visibility.module ), layerInstance()
-                .visibleTransients( Visibility.layer ), layerInstance().visibleTransients( Visibility.application ), layerInstance()
-                .usedLayersInstance()
-                .visibleTransients() ) ),
-                                                                     ambiguousCheck( type, findModels( Classes.assignableTypeSpecification( type ), visibleTransients( Visibility.module ), layerInstance()
-                                                                         .visibleTransients( Visibility.layer ), layerInstance()
-                                                                         .visibleTransients( Visibility.application ), layerInstance()
-                                                                         .usedLayersInstance()
-                                                                         .visibleTransients() ) ) );
+            Iterable<ModelModule<TransientModel>> flatten = flatten( ambiguousCheck( type, findModels(
+                Classes.exactTypeSpecification( type ), visibleTransients( Visibility.module ),
+                layerInstance().visibleTransients( Visibility.layer ),
+                layerInstance().visibleTransients( Visibility.application ),
+                layerInstance().usedLayersInstance().visibleTransients() ) ), ambiguousCheck( type, findModels(
+                Classes.assignableTypeSpecification( type ), visibleTransients( Visibility.module ),
+                layerInstance().visibleTransients( Visibility.layer ),
+                layerInstance().visibleTransients( Visibility.application ),
+                layerInstance().usedLayersInstance().visibleTransients() ) ) );
             model = Iterables.first( flatten );
 
             if( model != null )
@@ -366,13 +365,16 @@ public class ModuleInstance
 
         if( model == null )
         {
-            Iterable<ModelModule<ObjectModel>> flatten = Iterables.flatten( ambiguousCheck( type, findModels( Classes.exactTypeSpecification( type ), visibleObjects( Visibility.module ), layerInstance()
+            Iterable<ModelModule<ObjectModel>> flatten = Iterables.flatten( ambiguousCheck( type, findModels( Classes.exactTypeSpecification( type ), visibleObjects(
+                Visibility.module ), layerInstance()
                 .visibleObjects( Visibility.layer ), layerInstance().visibleObjects( Visibility.application ), layerInstance()
                 .usedLayersInstance()
                 .visibleObjects() ) ),
-                                                                            ambiguousCheck( type, findModels( Classes.assignableTypeSpecification( type ), visibleObjects( Visibility.module ), layerInstance()
+                                                                            ambiguousCheck( type, findModels( Classes.assignableTypeSpecification( type ), visibleObjects(
+                                                                                Visibility.module ), layerInstance()
                                                                                 .visibleObjects( Visibility.layer ), layerInstance()
-                                                                                .visibleObjects( Visibility.application ), layerInstance()
+                                                                                .visibleObjects(
+                                                                                    Visibility.application ), layerInstance()
                                                                                 .usedLayersInstance()
                                                                                 .visibleObjects() ) ) );
 
@@ -448,8 +450,8 @@ public class ModuleInstance
 
     Iterable<ModelModule<ValueModel>> visibleValues( Visibility visibility )
     {
-        return map( ModelModule.<ValueModel>modelModuleFunction( this ), filter( new VisibilitySpecification( visibility ), values
-            .models() ) );
+        return map( ModelModule.<ValueModel>modelModuleFunction( this ),
+                    filter( new VisibilitySpecification( visibility ), values.models() ) );
     }
 
     Iterable<ServiceReference> visibleServices( Visibility visibility )
@@ -633,43 +635,15 @@ public class ModuleInstance
         throws NoSuchValueException
     {
         NullArgumentException.validateNotNull( "mixinType", mixinType );
-        ModelModule<ValueModel> modelModule = findValueModels( mixinType );
+        ModelModule<ValueModel> compositeModelModule = findValueModels( mixinType );
 
-        if( modelModule == null )
+        if( compositeModelModule == null )
         {
             throw new NoSuchValueException( mixinType.getName(), name() );
         }
 
-        ValueModel valueModel = modelModule.model();
-        Map<AccessibleObject, PropertyInstance<?>> properties = new LinkedHashMap<AccessibleObject, PropertyInstance<?>>();
-        for( PropertyDescriptor propertyDescriptor : valueModel.state().properties() )
-        {
-            PropertyInfo builderInfo = ( (PropertyModel) propertyDescriptor ).getBuilderInfo();
-            Object initialValue = propertyDescriptor.initialValue( modelModule.module() );
-            PropertyInstance<Object> propertyInstance = new PropertyInstance<Object>( builderInfo, initialValue );
-            properties.put( propertyDescriptor.accessor(), propertyInstance );
-        }
-
-        Map<AccessibleObject, AssociationInstance<?>> associations = new LinkedHashMap<AccessibleObject, AssociationInstance<?>>();
-        for( AssociationDescriptor associationDescriptor : valueModel.state().associations() )
-        {
-            AssociationInfo builderInfo = ( (AssociationModel) associationDescriptor ).getBuilderInfo();
-            ReferenceProperty referenceProperty = new ReferenceProperty();
-            AssociationInstance<Object> associationInstance = new AssociationInstance<Object>( builderInfo, entityFunction, referenceProperty );
-            associations.put( associationDescriptor.accessor(), associationInstance );
-        }
-
-        Map<AccessibleObject, ManyAssociationInstance<?>> manyAssociations = new LinkedHashMap<AccessibleObject, ManyAssociationInstance<?>>();
-        for( AssociationDescriptor associationDescriptor : valueModel.state().manyAssociations() )
-        {
-            AssociationInfo builderInfo = ( (ManyAssociationModel) associationDescriptor ).getBuilderInfo();
-            ManyAssociationValueState manyAssociationState = new ManyAssociationValueState( new ArrayList<EntityReference>() );
-            ManyAssociationInstance<Object> associationInstance = new ManyAssociationInstance<Object>( builderInfo, entityFunction, manyAssociationState );
-            manyAssociations.put( associationDescriptor.accessor(), associationInstance );
-        }
-
-        ValueStateInstance state = new ValueStateInstance( properties, associations, manyAssociations );
-        return new ValueBuilderInstance<T>( modelModule , this, state);
+        ValueStateModel.StateResolver stateResolver = new InitialStateResolver( compositeModelModule.module() );
+        return new ValueBuilderInstance<T>( compositeModelModule , this, stateResolver);
     }
 
     @Override
@@ -683,43 +657,77 @@ public class ModuleInstance
         NullArgumentException.validateNotNull( "associationFunction", associationFunction );
         NullArgumentException.validateNotNull( "manyAssociationFunction", manyAssociationFunction );
 
-        ModelModule<ValueModel> model = findValueModels( mixinType );
+        ModelModule<ValueModel> compositeModelModule = findValueModels( mixinType );
 
-        if( model == null )
+        if( compositeModelModule == null )
         {
             throw new NoSuchValueException( mixinType.getName(), name() );
         }
 
-        Map<AccessibleObject, PropertyInstance<?>> properties = new LinkedHashMap<AccessibleObject, PropertyInstance<?>>();
-        for( PropertyDescriptor propertyDescriptor : model.model().state().properties() )
+        ValueStateModel.StateResolver stateResolver = new FunctionStateResolver( propertyFunction, associationFunction, manyAssociationFunction );
+        return new ValueBuilderWithState<T>( compositeModelModule, this, stateResolver );
+    }
+
+    protected class InitialStateResolver implements ValueStateModel.StateResolver
+    {
+        private final ModuleInstance module;
+
+        public InitialStateResolver( ModuleInstance module )
         {
-            properties.put( propertyDescriptor.accessor(), new PropertyInstance<Object>( ( (PropertyModel) propertyDescriptor )
-                                                                                             .getBuilderInfo(), propertyFunction
-                .map( propertyDescriptor ) ) );
+            this.module = module;
         }
 
-        Map<AccessibleObject, AssociationInstance<?>> associations = new LinkedHashMap<AccessibleObject, AssociationInstance<?>>();
-        for( AssociationDescriptor associationDescriptor : model.model().state().associations() )
+        @Override
+        public Object getPropertyState( PropertyDescriptor propertyDescriptor )
         {
-            associations.put( associationDescriptor.accessor(), new AssociationInstance<Object>( ( (AssociationModel) associationDescriptor )
-                                                                                                     .getBuilderInfo(), entityFunction, new ReferenceProperty( associationFunction
-                                                                                                                                                                   .map( associationDescriptor ) ) ) );
+            return propertyDescriptor.initialValue( module );
         }
 
-        Map<AccessibleObject, ManyAssociationInstance<?>> manyAssociations = new LinkedHashMap<AccessibleObject, ManyAssociationInstance<?>>();
-        for( AssociationDescriptor associationDescriptor : model.model().state().manyAssociations() )
+        @Override
+        public EntityReference getAssociationState( AssociationDescriptor associationDescriptor )
         {
-            manyAssociations.put( associationDescriptor.accessor(), new ManyAssociationInstance<Object>( ( (ManyAssociationModel) associationDescriptor )
-                                                                                                             .getBuilderInfo(), entityFunction, new ManyAssociationValueState( Iterables
-                                                                                                                                                                                   .toList( manyAssociationFunction
-                                                                                                                                                                                                .map( associationDescriptor ) ) ) ) );
+            return null;
         }
 
-        ValueStateInstance state = new ValueStateInstance( properties, associations, manyAssociations );
-        ValueInstance instance = model.model().newValueInstance( model.module(), state );
-        instance.prepareToBuild();
+        @Override
+        public List<EntityReference> getManyAssociationState( AssociationDescriptor associationDescriptor )
+        {
+            return new ArrayList<EntityReference>(  );
+        }
+    }
 
-        return new ValueBuilderWithState<T>( model, instance );
+    protected class FunctionStateResolver implements ValueStateModel.StateResolver
+    {
+        private final Function<PropertyDescriptor, Object> propertyFunction;
+        private final Function<AssociationDescriptor, EntityReference> associationFunction;
+        private final Function<AssociationDescriptor, Iterable<EntityReference>> manyAssociationFunction;
+
+        private FunctionStateResolver( Function<PropertyDescriptor, Object> propertyFunction,
+                                       Function<AssociationDescriptor, EntityReference> associationFunction,
+                                       Function<AssociationDescriptor, Iterable<EntityReference>> manyAssociationFunction )
+        {
+            this.propertyFunction = propertyFunction;
+            this.associationFunction = associationFunction;
+            this.manyAssociationFunction = manyAssociationFunction;
+        }
+
+        @Override
+        public Object getPropertyState( PropertyDescriptor propertyDescriptor )
+        {
+            return propertyFunction.map( propertyDescriptor );
+        }
+
+        @Override
+        public EntityReference getAssociationState( AssociationDescriptor associationDescriptor )
+        {
+            return associationFunction.map( associationDescriptor );
+        }
+
+        @Override
+        public List<EntityReference> getManyAssociationState( AssociationDescriptor associationDescriptor )
+        {
+            return Iterables.toList( manyAssociationFunction.map( associationDescriptor ) );
+        }
     }
 
     @Override

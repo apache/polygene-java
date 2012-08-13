@@ -33,8 +33,9 @@ public final class ValueBuilderInstance<T>
     private final ModuleInstance currentModule;
     private ValueInstance prototypeInstance;
 
-    public ValueBuilderInstance(ModelModule<ValueModel> compositeModelModule, ModuleInstance currentModule, ValueStateInstance state)
+    public ValueBuilderInstance(ModelModule<ValueModel> compositeModelModule, ModuleInstance currentModule, ValueStateModel.StateResolver stateResolver)
     {
+        ValueStateInstance state = new ValueStateInstance( compositeModelModule, currentModule, stateResolver );
         prototypeInstance = compositeModelModule.model().newValueInstance(compositeModelModule.module(), state);
         prototypeInstance.prepareToBuild();
         this.currentModule = currentModule;

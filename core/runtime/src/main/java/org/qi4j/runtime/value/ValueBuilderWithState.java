@@ -4,16 +4,19 @@ import org.qi4j.api.association.AssociationStateHolder;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.runtime.structure.ModelModule;
+import org.qi4j.runtime.structure.ModuleInstance;
 
 public class ValueBuilderWithState<T> implements ValueBuilder<T>
 {
     private final ModelModule<ValueModel> model;
     private ValueInstance prototypeInstance;
 
-    public ValueBuilderWithState( ModelModule<ValueModel> model, ValueInstance prototypeInstance )
-    {
-        this.model = model;
-        this.prototypeInstance = prototypeInstance;
+    public ValueBuilderWithState( ModelModule<ValueModel> compositeModelModule, ModuleInstance currentModule, ValueStateModel.StateResolver stateResolver ) {
+        ValueStateInstance state = new ValueStateInstance( compositeModelModule, currentModule, stateResolver );
+        ValueInstance instance = compositeModelModule.model().newValueInstance( compositeModelModule.module(), state );
+        instance.prepareToBuild();
+        this.model = compositeModelModule;
+        this.prototypeInstance = instance;
     }
 
     public T prototype()
