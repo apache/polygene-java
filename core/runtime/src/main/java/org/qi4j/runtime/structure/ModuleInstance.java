@@ -16,15 +16,24 @@ package org.qi4j.runtime.structure;
 
 import org.json.JSONException;
 import org.json.JSONTokener;
+import org.qi4j.api.activation.Activation;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.composite.*;
+import org.qi4j.api.composite.AmbiguousTypeException;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.composite.ModelDescriptor;
+import org.qi4j.api.composite.NoSuchTransientException;
+import org.qi4j.api.composite.TransientBuilder;
+import org.qi4j.api.composite.TransientDescriptor;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.IdentityGenerator;
+import org.qi4j.api.event.ActivationEvent;
+import org.qi4j.api.event.ActivationEventListener;
 import org.qi4j.api.json.JSONDeserializer;
+import org.qi4j.api.metrics.MetricsProvider;
 import org.qi4j.api.object.NoSuchObjectException;
 import org.qi4j.api.object.ObjectDescriptor;
 import org.qi4j.api.property.Property;
@@ -39,11 +48,27 @@ import org.qi4j.api.unitofwork.UnitOfWorkException;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.util.Classes;
 import org.qi4j.api.util.NullArgumentException;
-import org.qi4j.api.value.*;
-import org.qi4j.functional.*;
+import org.qi4j.api.value.NoSuchValueException;
+import org.qi4j.api.value.ValueBuilder;
+import org.qi4j.api.value.ValueComposite;
+import org.qi4j.api.value.ValueDescriptor;
+import org.qi4j.functional.Function;
+import org.qi4j.functional.Function2;
+import org.qi4j.functional.Iterables;
+import org.qi4j.functional.Specification;
+import org.qi4j.functional.Specifications;
 import org.qi4j.runtime.activation.ActivationDelegate;
-import org.qi4j.runtime.association.*;
-import org.qi4j.runtime.composite.*;
+import org.qi4j.runtime.activation.ActivationEventListenerSupport;
+import org.qi4j.runtime.association.AssociationInfo;
+import org.qi4j.runtime.association.AssociationInstance;
+import org.qi4j.runtime.association.AssociationModel;
+import org.qi4j.runtime.association.ManyAssociationInstance;
+import org.qi4j.runtime.association.ManyAssociationModel;
+import org.qi4j.runtime.composite.TransientBuilderInstance;
+import org.qi4j.runtime.composite.TransientModel;
+import org.qi4j.runtime.composite.TransientStateInstance;
+import org.qi4j.runtime.composite.TransientsModel;
+import org.qi4j.runtime.composite.UsesInstance;
 import org.qi4j.runtime.entity.EntitiesModel;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
@@ -59,24 +84,34 @@ import org.qi4j.runtime.service.ImportedServicesModel;
 import org.qi4j.runtime.service.ServicesInstance;
 import org.qi4j.runtime.service.ServicesModel;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
-import org.qi4j.runtime.value.*;
+import org.qi4j.runtime.value.ManyAssociationValueState;
+import org.qi4j.runtime.value.ReferenceProperty;
+import org.qi4j.runtime.value.ValueBuilderInstance;
+import org.qi4j.runtime.value.ValueBuilderWithPrototype;
+import org.qi4j.runtime.value.ValueBuilderWithState;
+import org.qi4j.runtime.value.ValueInstance;
+import org.qi4j.runtime.value.ValueModel;
+import org.qi4j.runtime.value.ValueStateInstance;
+import org.qi4j.runtime.value.ValuesModel;
 import org.qi4j.spi.entitystore.EntityStore;
-import org.qi4j.api.metrics.MetricsProvider;
 import org.qi4j.spi.metrics.MetricsProviderAdapter;
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
 import java.util.concurrent.ConcurrentHashMap;
-import org.qi4j.api.activation.Activation;
 
-import org.qi4j.api.event.ActivationEvent;
-import org.qi4j.api.event.ActivationEventListener;
 import static org.qi4j.api.util.Classes.interfacesOf;
 import static org.qi4j.functional.Iterables.*;
-import org.qi4j.runtime.activation.ActivationEventListenerSupport;
 
 /**
  * Instance of a Qi4j Module. Contains the various composites for this Module.
@@ -638,23 +673,6 @@ public class ModuleInstance
     }
 
     @Override
-    public <T> ValueBuilder<T> newValueBuilderWithPrototype( T prototype )
-    {
-        NullArgumentException.validateNotNull( "prototype", prototype );
-
-        ValueInstance valueInstance = ValueInstance.getValueInstance( (ValueComposite) prototype );
-        Class<Composite> valueType = (Class<Composite>) first( valueInstance.types() );
-
-        ModelModule<ValueModel> model = findValueModels( valueType );
-
-        if( model == null )
-        {
-            throw new NoSuchValueException( valueType.getName(), name() );
-        }
-        return new ValueBuilderWithPrototype<T>( model, this, prototype);
-    }
-
-    @Override
     public <T> ValueBuilder<T> newValueBuilderWithState( Class<T> mixinType,
                                                          Function<PropertyDescriptor, Object> propertyFunction,
                                                          Function<AssociationDescriptor, EntityReference> associationFunction,
@@ -702,6 +720,23 @@ public class ModuleInstance
         instance.prepareToBuild();
 
         return new ValueBuilderWithState<T>( model, instance );
+    }
+
+    @Override
+    public <T> ValueBuilder<T> newValueBuilderWithPrototype( T prototype )
+    {
+        NullArgumentException.validateNotNull( "prototype", prototype );
+
+        ValueInstance valueInstance = ValueInstance.getValueInstance( (ValueComposite) prototype );
+        Class<Composite> valueType = (Class<Composite>) first( valueInstance.types() );
+
+        ModelModule<ValueModel> model = findValueModels( valueType );
+
+        if( model == null )
+        {
+            throw new NoSuchValueException( valueType.getName(), name() );
+        }
+        return new ValueBuilderWithPrototype<T>( model, this, prototype);
     }
 
     public <T> T newValueFromJSON( Class<T> mixinType, String jsonValue )
