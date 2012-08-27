@@ -56,18 +56,33 @@ public abstract class MongoMapEntityStoreMixin
 {
 
     private static final Logger LOGGER = LoggerFactory.getLogger( "org.qi4j.entitystore.mongodb" );
+
+    private static final String DEFAULT_DATABASE_NAME = "qi4j:entitystore";
+
+    private static final String DEFAULT_COLLECTION_NAME = "qi4j:entitystore:entities";
+
     private static final String IDENTITY_COLUMN = "identity";
+
     private static final String STATE_COLUMN = "state";
+
     @This
     private Configuration<MongoEntityStoreConfiguration> configuration;
+
     private List<ServerAddress> serverAddresses;
+
     private String databaseName;
+
     private String collectionName;
+
     private WriteConcern writeConcern;
+
     private String username;
+
     private char[] password;
+
     // Mongo DB
     private Mongo mongo;
+
     private DB db;
 
     @Override
@@ -101,13 +116,27 @@ public abstract class MongoMapEntityStoreMixin
     {
         configuration.refresh();
         MongoEntityStoreConfiguration config = configuration.configuration();
+
+        // Combine hostname, port and nodes configuration properties
         serverAddresses = new ArrayList<ServerAddress>();
         if ( config.hostname().get() != null && !config.hostname().get().isEmpty() ) {
             serverAddresses.add( new ServerAddress( config.hostname().get(), config.port().get() ) );
         }
         serverAddresses.addAll( config.nodes().get() );
+
+        // If database name not configured, set it to qi4j:entitystore
         databaseName = config.database().get();
+        if ( databaseName == null ) {
+            databaseName = DEFAULT_DATABASE_NAME;
+        }
+
+        // If collection name not configured, set it to qi4j:entitystore:entities
         collectionName = config.collection().get();
+        if ( collectionName == null ) {
+            collectionName = DEFAULT_COLLECTION_NAME;
+        }
+
+        // If write concern not configured, set it to normal
         switch ( config.writeConcern().get() ) {
             case FSYNC_SAFE:
                 writeConcern = WriteConcern.FSYNC_SAFE;
@@ -131,6 +160,8 @@ public abstract class MongoMapEntityStoreMixin
             default:
                 writeConcern = WriteConcern.NORMAL;
         }
+
+        // Username and password are defaulted to empty strings
         username = config.username().get();
         password = config.password().get().toCharArray();
     }
@@ -154,6 +185,18 @@ public abstract class MongoMapEntityStoreMixin
     public Mongo mongoInstanceUsed()
     {
         return mongo;
+    }
+
+    @Override
+    public DB dbInstanceUsed()
+    {
+        return db;
+    }
+
+    @Override
+    public String collectionUsed()
+    {
+        return collectionName;
     }
 
     @Override

@@ -29,13 +29,6 @@ public interface MongoEntityStoreConfiguration
         extends ConfigurationComposite
 {
 
-    Property<String> database();
-
-    Property<String> collection();
-
-    @UseDefaults
-    Property<WriteConcern> writeConcern();
-
     @Optional
     Property<String> hostname();
 
@@ -50,6 +43,15 @@ public interface MongoEntityStoreConfiguration
 
     @UseDefaults
     Property<String> password();
+
+    @Optional
+    Property<String> database();
+
+    @Optional
+    Property<String> collection();
+
+    @UseDefaults
+    Property<WriteConcern> writeConcern();
 
     enum WriteConcern
     {
@@ -68,6 +70,7 @@ public interface MongoEntityStoreConfiguration
         JOURNAL_SAFE,
         /** Exceptions are raised for network issues, and server errors; waits for at least 2 servers for the write operation*/
         REPLICAS_SAFE;
+
     }
 
 }

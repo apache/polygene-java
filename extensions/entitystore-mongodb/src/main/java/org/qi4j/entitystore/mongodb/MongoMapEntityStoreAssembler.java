@@ -32,17 +32,23 @@ public class MongoMapEntityStoreAssembler
         implements Assembler
 {
 
-    public static final String DEFAULT_DATABASE_NAME = "qi4j:entitystore:data";
-    public static final String DEFAULT_COLLECTION_NAME = "qi4j:entitystore:entities";
     private Visibility visibility = Visibility.application;
+
     private ModuleAssembly configModule;
+
     private Visibility configVisibility = Visibility.layer;
+
     private String hostname = "127.0.0.1";
+
     private Integer port = 27017;
-    private String database = DEFAULT_DATABASE_NAME;
-    private String collection = DEFAULT_COLLECTION_NAME;
-    private WriteConcern writeConcern = WriteConcern.NORMAL;
-    private List<ServerAddress> serverAddresses = new ArrayList<ServerAddress>();
+
+    private String database;
+
+    private String collection;
+
+    private WriteConcern writeConcern;
+
+    private List<ServerAddress> serverAddresses;
 
     public MongoMapEntityStoreAssembler withVisibility( Visibility visibility )
     {
@@ -64,7 +70,7 @@ public class MongoMapEntityStoreAssembler
 
     /**
      * Add a MongoDB node's hostname and port.
-     * 
+     *
      * Calling this method once disable the default behavior that use the MongoDB defaults: 127.0.0.1 27017
      */
     public MongoMapEntityStoreAssembler addHostnameAndPort( String hostname, Integer port )
@@ -72,6 +78,9 @@ public class MongoMapEntityStoreAssembler
     {
         this.hostname = null;
         this.port = null;
+        if ( serverAddresses == null ) {
+            serverAddresses = new ArrayList<ServerAddress>();
+        }
         serverAddresses.add( new ServerAddress( hostname, port ) );
         return this;
     }
@@ -111,12 +120,24 @@ public class MongoMapEntityStoreAssembler
 
         configModule.entities( MongoEntityStoreConfiguration.class ).visibleIn( configVisibility );
         MongoEntityStoreConfiguration mongoConfig = configModule.forMixin( MongoEntityStoreConfiguration.class ).declareDefaults();
-        mongoConfig.hostname().set( hostname );
-        mongoConfig.port().set( port );
-        mongoConfig.database().set( database );
-        mongoConfig.collection().set( collection );
-        mongoConfig.writeConcern().set( writeConcern );
-        mongoConfig.nodes().set( serverAddresses );
+        if ( hostname != null ) {
+            mongoConfig.hostname().set( hostname );
+        }
+        if ( port != null ) {
+            mongoConfig.port().set( port );
+        }
+        if ( database != null ) {
+            mongoConfig.database().set( database );
+        }
+        if ( collection != null ) {
+            mongoConfig.collection().set( collection );
+        }
+        if ( writeConcern != null ) {
+            mongoConfig.writeConcern().set( writeConcern );
+        }
+        if ( serverAddresses != null ) {
+            mongoConfig.nodes().set( serverAddresses );
+        }
     }
 
 }

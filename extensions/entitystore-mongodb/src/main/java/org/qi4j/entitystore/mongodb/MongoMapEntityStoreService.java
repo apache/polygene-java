@@ -17,6 +17,7 @@
  */
 package org.qi4j.entitystore.mongodb;
 
+import com.mongodb.DB;
 import com.mongodb.Mongo;
 import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.configuration.Configuration;
@@ -42,5 +43,9 @@ public interface MongoMapEntityStoreService
 {
 
     Mongo mongoInstanceUsed();
+
+    DB dbInstanceUsed();
+
+    String collectionUsed();
 
 }

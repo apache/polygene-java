@@ -57,18 +57,25 @@ public class MongoMapEntityStoreTest
 
         MongoEntityStoreConfiguration mongoConfig = config.forMixin( MongoEntityStoreConfiguration.class ).declareDefaults();
         mongoConfig.writeConcern().set( MongoEntityStoreConfiguration.WriteConcern.FSYNC_SAFE );
+        mongoConfig.database().set( "qi4j:test" );
+        mongoConfig.collection().set( "qi4j:test:entities" );
         // START SNIPPET: assembly
     }
     // END SNIPPET: assembly
 
     private Mongo mongo;
 
+    private String dbName;
+
     @Override
     public void setUp()
             throws Exception
     {
         super.setUp();
-        mongo = module.findService( MongoMapEntityStoreService.class ).get().mongoInstanceUsed();
+        MongoMapEntityStoreService es = module.findService( MongoMapEntityStoreService.class ).get();
+        mongo = es.mongoInstanceUsed();
+        dbName = es.dbInstanceUsed().getName();
+
     }
 
     @Test
@@ -84,7 +91,7 @@ public class MongoMapEntityStoreTest
     public void tearDown()
             throws Exception
     {
-        mongo.dropDatabase( MongoMapEntityStoreAssembler.DEFAULT_DATABASE_NAME );
+        mongo.dropDatabase( dbName );
         super.tearDown();
     }
 
