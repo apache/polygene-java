@@ -116,7 +116,7 @@ public class MongoMapEntityStoreAssembler
     private void onAssemble( ModuleAssembly module, Visibility visibility, ModuleAssembly configModule, Visibility configVisibility )
     {
         module.services( MongoMapEntityStoreService.class ).visibleIn( visibility );
-        module.services( UuidIdentityGeneratorService.class );
+        module.services( UuidIdentityGeneratorService.class ).visibleIn( visibility );
 
         configModule.entities( MongoEntityStoreConfiguration.class ).visibleIn( configVisibility );
         MongoEntityStoreConfiguration mongoConfig = configModule.forMixin( MongoEntityStoreConfiguration.class ).declareDefaults();
