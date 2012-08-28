@@ -38,6 +38,7 @@ import org.qi4j.library.rdf.repository.NativeConfiguration;
 import org.qi4j.test.AbstractQi4jTest;
 
 import java.io.File;
+import org.apache.tools.ant.util.FileUtils;
 
 import static org.junit.Assert.assertEquals;
 import static org.qi4j.api.query.QueryExpressions.eq;
@@ -82,9 +83,11 @@ public class ReindexerTest
     }
 
     @Test
-    public void createDataAndWipeIndex()
+    public void createDataWipeIndexReindexAndAssertData()
             throws UnitOfWorkCompletionException
     {
+        // ----> Create data and wipe index
+
         UnitOfWork uow = module.newUnitOfWork();
 
         EntityBuilder<MyEntity> eBuilder = uow.newEntityBuilder( MyEntity.class );
@@ -94,16 +97,14 @@ public class ReindexerTest
 
         uow.complete();
 
-        deleteIndexData(); // Here we wipe the index data on disk so that the next test can reindex
-    }
+        deleteIndexData(); // Wipe the index data on disk
 
-    @Test
-    public void reindexAndAssertData()
-            throws UnitOfWorkCompletionException
-    {
-        module.<ReindexerService>findService( ReindexerService.class ).get().reindex();
 
-        UnitOfWork uow = module.newUnitOfWork();
+        // ----> Reindex and assert data
+
+        module.<ReindexerService>findService( ReindexerService.class ).get().reindex(); // Reindex
+
+        uow = module.newUnitOfWork();
 
         QueryBuilder<MyEntity> qBuilder = module.newQueryBuilder( MyEntity.class );
         qBuilder = qBuilder.where( eq( templateFor( MyEntity.class ).name(), TEST_NAME ) );
@@ -144,6 +145,7 @@ public class ReindexerTest
         boolean success = true;
         File rdfDir = new File( "build/testdata/qi4j-index" );
         if ( rdfDir.exists() ) {
+            FileUtils.delete( rdfDir );
             success = FileUtil.deltree( rdfDir );
         }
         return success;
