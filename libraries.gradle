@@ -57,7 +57,7 @@ def wsdl4jVersion = '1.6.2'
 def xmlSchemaVersion = '1.4.7'
 
 def antVersion = '1.8.1'
-def junitVersion = '4.8.1'
+def junitVersion = '4.10'
 def testNgVersion = '5.8'
 def jmockVersion = '2.5.1'
 def mockitoVersion = '1.8.5'
