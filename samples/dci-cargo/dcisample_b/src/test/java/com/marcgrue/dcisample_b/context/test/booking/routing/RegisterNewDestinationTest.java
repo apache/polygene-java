@@ -1,9 +1,25 @@
+/*
+ * Copyright 2011 Marc Grue.
+ *
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
+ * implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.marcgrue.dcisample_b.context.test.booking.routing;
 
 import com.marcgrue.dcisample_b.bootstrap.test.TestApplication;
 import com.marcgrue.dcisample_b.context.interaction.booking.exception.ChangeDestinationException;
 import com.marcgrue.dcisample_b.context.interaction.booking.routing.RegisterNewDestination;
-import com.marcgrue.dcisample_b.context.interaction.handling.inspection.event.*;
 import com.marcgrue.dcisample_b.context.interaction.handling.inspection.exception.CargoMisroutedException;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -15,6 +31,8 @@ import static org.junit.Assert.fail;
 
 /**
  * {@link RegisterNewDestination} tests
+ * 
+ * FIXME: Every test method call the one above to allow ordered execution, ie. tests are not indepedants !
  */
 public class RegisterNewDestinationTest extends TestApplication
 {
@@ -42,6 +60,8 @@ public class RegisterNewDestinationTest extends TestApplication
     @Test
     public void deviation_1a_UnrecognizedLocation() throws Exception
     {
+        precondition_x1_CannotChangeDestinationOfClaimedCargo();
+
         cargo.delivery().set( delivery( DAY1, IN_PORT, ROUTED, leg1 ) );
         thrown.expect( ChangeDestinationException.class, "Didn't recognize location 'XXXXX'" );
         new RegisterNewDestination( cargo ).to( "XXXXX" );
@@ -50,6 +70,8 @@ public class RegisterNewDestinationTest extends TestApplication
     @Test
     public void deviation_1b_NewDestinationSameAsOldDestination() throws Exception
     {
+        deviation_1a_UnrecognizedLocation();
+
         cargo.delivery().set( delivery( DAY1, IN_PORT, ROUTED, leg1 ) );
         thrown.expect( ChangeDestinationException.class, "New destination is same as old destination." );
         new RegisterNewDestination( cargo ).to( "SESTO" );
@@ -58,6 +80,8 @@ public class RegisterNewDestinationTest extends TestApplication
     @Test
     public void step_2_NotRouted() throws Exception
     {
+        deviation_1b_NewDestinationSameAsOldDestination();
+
         cargo.routeSpecification().set( routeSpec );
         cargo.delivery().set( delivery( DAY1, NOT_RECEIVED, NOT_ROUTED, leg1 ) );
 
@@ -79,6 +103,8 @@ public class RegisterNewDestinationTest extends TestApplication
     @Test
     public void step_2_NotReceived() throws Exception
     {
+        step_2_NotRouted();
+
         cargo.routeSpecification().set( routeSpec );
         cargo.itinerary().set( itinerary );
         cargo.delivery().set( delivery( null, NOT_RECEIVED, notArrived,
@@ -111,6 +137,8 @@ public class RegisterNewDestinationTest extends TestApplication
     @Test
     public void step_2_Received() throws Exception
     {
+        step_2_NotReceived();
+
         cargo.routeSpecification().set( routeSpec );
         cargo.itinerary().set( itinerary );
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( DAY1, DAY1, trackingId, RECEIVE, HONGKONG, noVoyage );
@@ -144,6 +172,8 @@ public class RegisterNewDestinationTest extends TestApplication
     @Test
     public void deviation_2a_OnBoardCarrier() throws Exception
     {
+        step_2_Received();
+
         cargo.routeSpecification().set( routeSpec );
         cargo.itinerary().set( itinerary );
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( DAY1, DAY1, trackingId, LOAD, HONGKONG, V201 );
@@ -183,6 +213,8 @@ public class RegisterNewDestinationTest extends TestApplication
     @Test
     public void deviation_2b_InPort_Unloaded() throws Exception
     {
+        deviation_2a_OnBoardCarrier();
+
         cargo.routeSpecification().set( routeSpec );
         cargo.itinerary().set( itinerary );
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( DAY5, DAY5, trackingId, UNLOAD, CHICAGO, V201 );
@@ -222,6 +254,8 @@ public class RegisterNewDestinationTest extends TestApplication
     @Test
     public void deviation_2b_InPort_InCustoms() throws Exception
     {
+        deviation_2b_InPort_Unloaded();
+
         cargo.routeSpecification().set( routeSpec );
         cargo.itinerary().set( itinerary );
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( DAY5, DAY5, trackingId, CUSTOMS, CHICAGO, noVoyage );

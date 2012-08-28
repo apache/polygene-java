@@ -1,14 +1,35 @@
+/*
+ * Copyright 2011 Marc Grue.
+ *
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
+ * implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.marcgrue.dcisample_b.context.test.handling.inspection.event;
 
 import com.marcgrue.dcisample_b.bootstrap.test.TestApplication;
 import com.marcgrue.dcisample_b.context.interaction.handling.inspection.event.InspectLoadedCargo;
-import com.marcgrue.dcisample_b.context.interaction.handling.inspection.exception.*;
+import com.marcgrue.dcisample_b.context.interaction.handling.inspection.exception.CargoHijackedException;
+import com.marcgrue.dcisample_b.context.interaction.handling.inspection.exception.CargoMisdirectedException;
+import com.marcgrue.dcisample_b.context.interaction.handling.inspection.exception.CargoMisroutedException;
+import com.marcgrue.dcisample_b.context.interaction.handling.inspection.exception.CargoNotRoutedException;
+import com.marcgrue.dcisample_b.context.interaction.handling.inspection.exception.InspectionFailedException;
+import com.marcgrue.dcisample_b.context.interaction.handling.inspection.exception.UnexpectedCarrierException;
 import com.marcgrue.dcisample_b.data.structure.delivery.TransportStatus;
 import com.marcgrue.dcisample_b.data.structure.itinerary.Leg;
+import java.util.Date;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.util.Date;
 
 import static com.marcgrue.dcisample_b.data.structure.delivery.RoutingStatus.*;
 import static com.marcgrue.dcisample_b.data.structure.delivery.TransportStatus.IN_PORT;
@@ -22,6 +43,8 @@ import static org.junit.Assert.fail;
 
 /**
  * {@link InspectLoadedCargo} tests
+ *
+ * FIXME: Every test method call the one above to allow ordered execution, ie. tests are not indepedants !
  */
 public class InspectLoadedCargoTest extends TestApplication
 {
@@ -64,6 +87,8 @@ public class InspectLoadedCargoTest extends TestApplication
     @Test
     public void deviation_2a_CarrierOnTime_ArrivalDate_Planned() throws Exception
     {
+        deviation_2a_WrongCarrierSchedule();
+
         cargo.itinerary().set( itinerary );
         cargo.delivery().set( delivery( TODAY, IN_PORT, ROUTED, leg1 ) );
 
@@ -79,6 +104,8 @@ public class InspectLoadedCargoTest extends TestApplication
     @Test
     public void deviation_2a_CarrierDelayed_ArrivalDate_Estimated() throws Exception
     {
+        deviation_2a_CarrierOnTime_ArrivalDate_Planned();
+
         cargo.itinerary().set( itinerary );
         cargo.delivery().set( delivery( TODAY, IN_PORT, ROUTED, leg1 ) );
 
@@ -94,6 +121,8 @@ public class InspectLoadedCargoTest extends TestApplication
     @Test
     public void deviation_3a_NotRouted_MissingItinerary() throws Exception
     {
+        deviation_2a_CarrierDelayed_ArrivalDate_Estimated();
+
         // Cargo not routed
         cargo.itinerary().set( null );
         cargo.delivery().set( delivery( TODAY, IN_PORT, NOT_ROUTED, leg1 ) );
@@ -118,6 +147,8 @@ public class InspectLoadedCargoTest extends TestApplication
     @Test
     public void deviation_3b_Misrouted_LoadLocationOfWrongItinerary_Origin() throws Exception
     {
+        deviation_3a_NotRouted_MissingItinerary();
+
         // Misroute cargo - assign unsatisfying itinerary not going to Stockholm
         cargo.itinerary().set( wrongItinerary );
         cargo.delivery().set( delivery( TODAY, IN_PORT, MISROUTED, leg1 ) );
@@ -143,6 +174,8 @@ public class InspectLoadedCargoTest extends TestApplication
     @Test
     public void deviation_3b_Misrouted_LoadLocationOfWrongItinerary_Midpoint() throws Exception
     {
+        deviation_3b_Misrouted_LoadLocationOfWrongItinerary_Origin();
+
         cargo.itinerary().set( wrongItinerary );
         cargo.delivery().set( delivery( TODAY, IN_PORT, MISROUTED, leg1 ) );
 
@@ -154,6 +187,8 @@ public class InspectLoadedCargoTest extends TestApplication
     @Test
     public void deviation_3b_Misrouted_LoadLocationOfWrongItinerary_UnplannedLocation() throws Exception
     {
+        deviation_3b_Misrouted_LoadLocationOfWrongItinerary_Midpoint();
+
         cargo.itinerary().set( wrongItinerary );
         cargo.delivery().set( delivery( TODAY, IN_PORT, MISROUTED, leg1 ) );
 
@@ -165,6 +200,8 @@ public class InspectLoadedCargoTest extends TestApplication
     @Test
     public void step_3_Routed() throws Exception
     {
+        deviation_3b_Misrouted_LoadLocationOfWrongItinerary_UnplannedLocation();
+
         // Assign satisfying route going to Stockholm
         cargo.itinerary().set( itinerary );
         cargo.delivery().set( delivery( TODAY, IN_PORT, ROUTED, leg1 ) );
@@ -181,6 +218,8 @@ public class InspectLoadedCargoTest extends TestApplication
     @Test
     public void deviation_4x_InternalError_InvalidItineraryProgressIndex() throws Exception
     {
+        step_3_Routed();
+
         cargo.itinerary().set( itinerary );
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( DAY1, DAY1, trackingId, LOAD, HONGKONG, V201 );
 
@@ -204,6 +243,8 @@ public class InspectLoadedCargoTest extends TestApplication
     @Test
     public void deviation_4a_Misdirected_UnexpectedLoadLocation() throws Exception
     {
+        deviation_4x_InternalError_InvalidItineraryProgressIndex();
+
         // Move the cargo ahead on the route. Third leg of itinerary expects load in Dallas.
         cargo.itinerary().set( itinerary );
         cargo.delivery().set( delivery( TODAY, IN_PORT, ROUTED, leg3 ) );
@@ -228,6 +269,8 @@ public class InspectLoadedCargoTest extends TestApplication
     @Test
     public void deviation_4b_Misdirected_UnexpectedLoadVoyage_PreviousInItinerary() throws Exception
     {
+        deviation_4a_Misdirected_UnexpectedLoadLocation();
+
         cargo.itinerary().set( itinerary );
         cargo.delivery().set( delivery( TODAY, IN_PORT, ROUTED, leg3 ) );
 
@@ -251,6 +294,8 @@ public class InspectLoadedCargoTest extends TestApplication
     @Test
     public void deviation_4b_Misdirected_UnexpectedLoadVoyage_NextInItinerary() throws Exception
     {
+        deviation_4b_Misdirected_UnexpectedLoadVoyage_PreviousInItinerary();
+
         cargo.itinerary().set( itinerary );
         cargo.delivery().set( delivery( TODAY, IN_PORT, ROUTED, leg3 ) );
 
@@ -263,6 +308,8 @@ public class InspectLoadedCargoTest extends TestApplication
     @Test
     public void deviation_4b_Misdirected_UnexpectedLoadVoyage_VoyageNotInItinerary() throws Exception
     {
+        deviation_4b_Misdirected_UnexpectedLoadVoyage_NextInItinerary();
+
         cargo.itinerary().set( itinerary );
         cargo.delivery().set( delivery( TODAY, IN_PORT, ROUTED, leg3 ) );
 
@@ -275,6 +322,8 @@ public class InspectLoadedCargoTest extends TestApplication
     @Test
     public void deviation_4c_Misdirected_UnexpectedLoadVoyage_Unplanned_ButGoingToWantedLocation() throws Exception
     {
+        deviation_4b_Misdirected_UnexpectedLoadVoyage_VoyageNotInItinerary();
+
         cargo.itinerary().set( itinerary );
         cargo.delivery().set( delivery( TODAY, IN_PORT, ROUTED, leg3 ) );
 
@@ -298,6 +347,8 @@ public class InspectLoadedCargoTest extends TestApplication
     @Test
     public void deviation_4d_Misdirected_ExpectedLoadVoyage_UnexpectedNewVoyageSchedule() throws Exception
     {
+        deviation_4c_Misdirected_UnexpectedLoadVoyage_Unplanned_ButGoingToWantedLocation();
+
         cargo.itinerary().set( itinerary );
         cargo.delivery().set( delivery( TODAY, IN_PORT, ROUTED, leg3 ) );
 
@@ -329,6 +380,8 @@ public class InspectLoadedCargoTest extends TestApplication
     @Test
     public void success_Load() throws Exception
     {
+        deviation_4d_Misdirected_ExpectedLoadVoyage_UnexpectedNewVoyageSchedule();
+
         cargo.itinerary().set( itinerary );
         cargo.delivery().set( delivery( TODAY, IN_PORT, ROUTED, leg3 ) );
 
@@ -358,6 +411,8 @@ public class InspectLoadedCargoTest extends TestApplication
     @Test
     public void riskZoneDestination() throws Exception
     {
+        success_Load();
+
         // Risk zone destination
         routeSpec = routeSpecFactory.build( HANGZHOU, ROTTERDAM, new Date(), deadline = DAY24 );
         delivery = delivery( TODAY, ONBOARD_CARRIER, ROUTED, leg1 );
@@ -395,6 +450,8 @@ public class InspectLoadedCargoTest extends TestApplication
     @Test
     public void riskZoneDeparture() throws Exception
     {
+        riskZoneDestination();
+
         // Risk zone departure (they know you now, so risk is higher)
         cargo = CARGOS.createCargo( routeSpec, delivery, "Hopeful" );
         trackingId = cargo.trackingId().get();
