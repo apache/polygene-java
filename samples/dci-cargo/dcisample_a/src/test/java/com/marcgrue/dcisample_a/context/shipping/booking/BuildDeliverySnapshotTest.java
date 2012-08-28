@@ -1,3 +1,20 @@
+/*
+ * Copyright 2011 Marc Grue.
+ *
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
+ * implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.marcgrue.dcisample_a.context.shipping.booking;
 
 import com.marcgrue.dcisample_a.bootstrap.test.TestApplication;
@@ -18,6 +35,8 @@ import static org.junit.Assert.*;
  * analyst haven't foreseen a deviation in the use case, it's his responsibility that it's not tested.
  *
  * Test method names describe the test purpose. The prefix refers to the step in the use case.
+ *
+ * FIXME: Test methods call each other to allow ordered execution, ie. tests are not indepedants !
  */
 public class BuildDeliverySnapshotTest
       extends TestApplication
@@ -64,6 +83,8 @@ public class BuildDeliverySnapshotTest
     @Test
     public void deviation_2c_ItineraryIsUnknown_buildFromNonRoutedCargo() throws Exception
     {
+        deviation_2c_ItineraryIsUnknown_buildFromRouteSpecification();
+
         cargo = CARGOS.createCargo( routeSpec, delivery, "ABCD" );
         trackingId = cargo.trackingId().get();
         delivery = new BuildDeliverySnapshot( cargo ).get();
@@ -89,6 +110,8 @@ public class BuildDeliverySnapshotTest
     @Test
     public void deviation_2d_UnsatisfyingItinerary_wrongOrigin() throws Exception
     {
+        deviation_2c_ItineraryIsUnknown_buildFromNonRoutedCargo();
+
         itinerary = itinerary(
               leg( V100S, HONGKONG, NEWYORK, day( 1 ), day( 8 ) ),
               leg( V200T, NEWYORK, DALLAS, day( 9 ), day( 12 ) ),
@@ -109,6 +132,8 @@ public class BuildDeliverySnapshotTest
     @Test
     public void deviation_2d_UnsatisfyingItinerary_wrongDestination() throws Exception
     {
+        deviation_2d_UnsatisfyingItinerary_wrongOrigin();
+
         // Helsinki not in itinerary last leg
         routeSpec = routeSpecification( HONGKONG, HELSINKI, day( 20 ) );
         cargo.routeSpecification().set( routeSpec );
@@ -122,6 +147,8 @@ public class BuildDeliverySnapshotTest
     @Test
     public void deviation_2d_UnsatisfyingItinerary_missedDeadline() throws Exception
     {
+        deviation_2d_UnsatisfyingItinerary_wrongDestination();
+
         // Arrival on day 12 according to itinerary is not meeting deadline
         routeSpec = routeSpecification( HONGKONG, STOCKHOLM, deadline = day( 14 ) );
         cargo.routeSpecification().set( routeSpec );
@@ -135,6 +162,8 @@ public class BuildDeliverySnapshotTest
     @Test
     public void deviation_3a_CargoHasNoHandlingHistory() throws Exception
     {
+        deviation_2d_UnsatisfyingItinerary_missedDeadline();
+
         // Itinerary will satisfy route specification
         routeSpec = routeSpecification( HONGKONG, STOCKHOLM, deadline = day( 20 ) );
         cargo.routeSpecification().set( routeSpec );
@@ -165,6 +194,8 @@ public class BuildDeliverySnapshotTest
     @Test
     public void deviation_4a_RECEIVE_1a_UnexpectedPort() throws Exception
     {
+        deviation_3a_CargoHasNoHandlingHistory();
+
         // Unexpected receipt in Shanghai
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( day( 1 ), day( 1 ), trackingId, HandlingEventType.RECEIVE, SHANGHAI, null );
         delivery = new BuildDeliverySnapshot( cargo, handlingEvent ).get();
@@ -187,6 +218,8 @@ public class BuildDeliverySnapshotTest
     @Test
     public void deviation_4a_RECEIVE_1b_ExpectedPort() throws Exception
     {
+        deviation_4a_RECEIVE_1a_UnexpectedPort();
+
         // Expected receipt in Hong Kong
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( day( 1 ), day( 1 ), trackingId, HandlingEventType.RECEIVE, HONGKONG, null );
         delivery = new BuildDeliverySnapshot( cargo, handlingEvent ).get();
@@ -207,6 +240,8 @@ public class BuildDeliverySnapshotTest
     @Test
     public void deviation_4b_LOAD_2a_UnexpectedPort() throws Exception
     {
+        deviation_4a_RECEIVE_1b_ExpectedPort();
+
         // Unexpected load in Tokyo
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( day( 1 ), day( 1 ), trackingId, LOAD, TOKYO, V100S );
         delivery = new BuildDeliverySnapshot( cargo, handlingEvent ).get();
@@ -225,6 +260,8 @@ public class BuildDeliverySnapshotTest
     @Test
     public void deviation_4b_LOAD_2b_ExpectedPort() throws Exception
     {
+        deviation_4b_LOAD_2a_UnexpectedPort();
+
         // Expected load in Hong Kong
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( day( 1 ), day( 1 ), trackingId, LOAD, HONGKONG, V100S );
         delivery = new BuildDeliverySnapshot( cargo, handlingEvent ).get();
@@ -245,6 +282,8 @@ public class BuildDeliverySnapshotTest
     @Test
     public void deviation_4b_LOAD_2c_UnexpectedVoyageNotFromItinerary() throws Exception
     {
+        deviation_4b_LOAD_2b_ExpectedPort();
+
         // Load onto unexpected voyage
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( day( 1 ), day( 1 ), trackingId, LOAD, HONGKONG, V400S );
         delivery = new BuildDeliverySnapshot( cargo, handlingEvent ).get();
@@ -263,10 +302,10 @@ public class BuildDeliverySnapshotTest
     @Test
     public void deviation_4b_LOAD_2c_ExpectedButLaterVoyageInItinerary() throws Exception
     {
-        /*
-       * The system doesn't currently check if handling events happen in the right order, so
-       * a cargo can now suddenly load in New York, even though it hasn't got there yet.
-       * */
+        deviation_4b_LOAD_2c_UnexpectedVoyageNotFromItinerary();
+
+        // The system doesn't currently check if handling events happen in the right order, so
+        // a cargo can now suddenly load in New York, even though it hasn't got there yet.
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( day( 5 ), day( 5 ), trackingId, LOAD, NEWYORK, V200T );
         delivery = new BuildDeliverySnapshot( cargo, handlingEvent ).get();
 
@@ -289,6 +328,8 @@ public class BuildDeliverySnapshotTest
     @Test
     public void deviation_4c_UNLOAD_1a_UnexpectedPort() throws Exception
     {
+        deviation_4b_LOAD_2c_ExpectedButLaterVoyageInItinerary();
+
         // Unexpected unload in Tokyo
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( day( 5 ), day( 5 ), trackingId, UNLOAD, TOKYO, V100S );
         delivery = new BuildDeliverySnapshot( cargo, handlingEvent ).get();
@@ -361,10 +402,8 @@ public class BuildDeliverySnapshotTest
         assertThat( delivery.eta().get(), is( equalTo( arrival ) ) );
         assertThat( delivery.isUnloadedAtDestination().get(), is( equalTo( false ) ) );
 
-        /*
-       * When a cargo is rerouted the (often misdirected) last handling event is flagged as disregarded
-       * since it doesn't have to be part of the new itinerary (this isn't in the Citerus version).
-       * */
+        // When a cargo is rerouted the (often misdirected) last handling event is flagged as disregarded
+        // since it doesn't have to be part of the new itinerary (this isn't in the Citerus version).
 
         // We now expect the cargo to be loaded onto voyage V400S in Tokyo heading to Hamburg
         assertThat( delivery.isMisdirected().get(), is( equalTo( false ) ) );
@@ -378,6 +417,8 @@ public class BuildDeliverySnapshotTest
     @Test
     public void deviation_4c_UNLOAD_1b_ExpectedMidpointLocation() throws Exception
     {
+        deviation_4c_UNLOAD_1a_UnexpectedPort();
+
         // Unload at midpoint location of itinerary
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( day( 8 ), day( 8 ), trackingId, UNLOAD, HAMBURG, V400S );
         delivery = new BuildDeliverySnapshot( cargo, handlingEvent ).get();
@@ -399,6 +440,8 @@ public class BuildDeliverySnapshotTest
     @Test
     public void deviation_4c_UNLOAD_1c_Destination() throws Exception
     {
+        deviation_4c_UNLOAD_1b_ExpectedMidpointLocation();
+
         // Unload at destination
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( day( 16 ), day( 16 ), trackingId, UNLOAD, STOCKHOLM, V500S );
         delivery = new BuildDeliverySnapshot( cargo, handlingEvent ).get();
@@ -423,6 +466,8 @@ public class BuildDeliverySnapshotTest
     @Test
     public void deviation_4d_CUSTOMS_1a_CargoIsInDestinationPort() throws Exception
     {
+        deviation_4c_UNLOAD_1c_Destination();
+
         // Cargo was handled by the customs authorities
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( day( 16 ), day( 16 ), trackingId, CUSTOMS, STOCKHOLM, null );
         delivery = new BuildDeliverySnapshot( cargo, handlingEvent ).get();
@@ -445,6 +490,8 @@ public class BuildDeliverySnapshotTest
     @Test
     public void deviation_4e_CLAIM_1a_CargoIsNotInDestinationPort() throws Exception
     {
+        deviation_4d_CUSTOMS_1a_CargoIsInDestinationPort();
+
         // Cargo was claimed but not at destination location
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( day( 1 ), day( 16 ), trackingId, CLAIM, HELSINKI, null );
         delivery = new BuildDeliverySnapshot( cargo, handlingEvent ).get();
@@ -466,6 +513,8 @@ public class BuildDeliverySnapshotTest
     @Test
     public void deviation_4e_CLAIM_1b_CargoIsInDestinationPort() throws Exception
     {
+        deviation_4e_CLAIM_1a_CargoIsNotInDestinationPort();
+
         // Cargo was claimed by customer at destination location
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( day( 16 ), day( 16 ), trackingId, CLAIM, STOCKHOLM, null );
         delivery = new BuildDeliverySnapshot( cargo, handlingEvent ).get();

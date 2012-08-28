@@ -1,3 +1,20 @@
+/*
+ * Copyright 2011 Marc Grue.
+ *
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
+ * implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.marcgrue.dcisample_a.context.shipping.handling;
 
 import com.marcgrue.dcisample_a.bootstrap.test.TestApplication;
@@ -6,9 +23,9 @@ import com.marcgrue.dcisample_a.data.shipping.cargo.Cargo;
 import com.marcgrue.dcisample_a.data.shipping.cargo.TrackingId;
 import com.marcgrue.dcisample_a.data.shipping.delivery.RoutingStatus;
 import com.marcgrue.dcisample_a.data.shipping.delivery.TransportStatus;
-import org.junit.Test;
-
 import java.util.Date;
+import org.junit.Before;
+import org.junit.Test;
 
 import static com.marcgrue.dcisample_a.data.shipping.handling.HandlingEventType.UNLOAD;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -27,12 +44,8 @@ public class RegisterHandlingEventTest
     static String trackId;
     String msg;
 
-    // INPUT EXISTENCE VALIDATION ==================================================================
-
-    @Test
-    public void deviation_2a_MissingRegistrationTime() throws Exception
-    {
-        // Setup
+    @Before
+    public void beforeEachTest() throws Exception {
         trackingId = new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, day( 17 ) ).createCargo( "ABC" );
         cargo = uow.get( Cargo.class, trackingId.id().get() );
         itinerary = itinerary(
@@ -43,7 +56,13 @@ public class RegisterHandlingEventTest
         new BookNewCargo( cargo, itinerary ).assignCargoToRoute();
         time = day( 1 );
         trackId = trackingId.id().get();
+    }
 
+    // INPUT EXISTENCE VALIDATION ==================================================================
+
+    @Test
+    public void deviation_2a_MissingRegistrationTime() throws Exception
+    {
         msg = register( null, time, trackId, "RECEIVE", "CNHKG", null );
         assertThat( msg, is( equalTo( "Registration time was null. All parameters have to be passed." ) ) );
     }
