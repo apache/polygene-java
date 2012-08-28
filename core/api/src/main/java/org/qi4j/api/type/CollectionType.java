@@ -19,7 +19,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import org.qi4j.api.util.Classes;
-import org.qi4j.functional.Iterables;
 
 /**
  * Collection type. This handles Collection, List and Set types
@@ -37,7 +36,7 @@ public final class CollectionType
 
     public CollectionType( Class<?> type, ValueType collectedType )
     {
-        super( Iterables.iterable( type ) );
+        super( type );
         this.collectedType = collectedType;
     }
 

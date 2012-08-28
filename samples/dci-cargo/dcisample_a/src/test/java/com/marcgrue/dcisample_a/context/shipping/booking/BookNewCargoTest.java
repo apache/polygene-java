@@ -1,19 +1,35 @@
+/*
+ * Copyright 2011 Marc Grue.
+ *
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
+ * implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.marcgrue.dcisample_a.context.shipping.booking;
 
 import com.marcgrue.dcisample_a.bootstrap.test.TestApplication;
 import com.marcgrue.dcisample_a.context.support.FoundNoRoutesException;
 import com.marcgrue.dcisample_a.data.entity.CargoEntity;
-import com.marcgrue.dcisample_a.data.shipping.handling.HandlingEventType;
-import com.marcgrue.dcisample_a.data.shipping.itinerary.Itinerary;
 import com.marcgrue.dcisample_a.data.shipping.cargo.Cargo;
 import com.marcgrue.dcisample_a.data.shipping.delivery.RoutingStatus;
 import com.marcgrue.dcisample_a.data.shipping.delivery.TransportStatus;
+import com.marcgrue.dcisample_a.data.shipping.handling.HandlingEventType;
+import com.marcgrue.dcisample_a.data.shipping.itinerary.Itinerary;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * Test of Book New Cargo use case.
@@ -125,9 +141,13 @@ public class BookNewCargoTest
     @Test
     public void step_5_AssignCargoToRoute() throws Exception
     {
+        // Create valid cargo
+        trackingId = new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, deadline = day( 30 ) ).book();
         cargo = uow.get( Cargo.class, trackingId.id().get() );
 
-        // Get first route found in last test
+        routeCandidates = new BookNewCargo( cargo ).routeCandidates();
+
+        // Get first route found
         // Would normally be found with an Itinerary id from customer selection
         itinerary = routeCandidates.get( 0 );
 

@@ -48,7 +48,7 @@ public final class ObjectAssemblyImpl
     @Override
     public Iterable<Class<?>> types()
     {
-        return Iterables.<Class<?>, Class<?>>iterable( objectType );
+        return Iterables.<Class<?>>iterable( objectType );
     }
 
     void addObjectModel( List<ObjectModel> objectModels )

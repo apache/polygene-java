@@ -20,12 +20,14 @@ import org.qi4j.api.common.Visibility;
 import org.qi4j.api.event.ActivationEventListener;
 import org.qi4j.api.event.ActivationEventListenerRegistration;
 import org.qi4j.api.service.ServiceReference;
-import org.qi4j.api.util.Classes;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specification;
 import org.qi4j.runtime.activation.ActivationDelegate;
 import org.qi4j.runtime.activation.ActivationEventListenerSupport;
 import org.qi4j.runtime.activation.ActivatorsInstance;
+
+import static org.qi4j.api.util.Classes.instanceOf;
+import static org.qi4j.functional.Iterables.filter;
 
 /**
  * JAVADOC
@@ -51,8 +53,7 @@ public class ServicesInstance
     public void activate()
         throws Exception
     {
-        Iterable<Activation> activatees = ( Iterable<Activation> ) ( Iterable<?> ) 
-                Iterables.filter( Classes.instanceOf( Activation.class ), serviceReferences );
+        Iterable<Activation> activatees = Iterables.<Activation>cast( filter( instanceOf( Activation.class ), serviceReferences ) );
         activation.activate( ActivatorsInstance.EMPTY, activatees );
     }
 

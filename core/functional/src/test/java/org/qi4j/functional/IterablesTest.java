@@ -52,7 +52,7 @@ public class IterablesTest
     {
         String str = "";
 
-        for( String string : Iterables.unique( Iterables.flatten( numbers, numbers, numbers ) ) )
+        for( String string : Iterables.unique( Iterables.<String>flatten( numbers, numbers, numbers ) ) )
         {
             str += string;
         }

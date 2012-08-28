@@ -1,15 +1,31 @@
+/*
+ * Copyright 2011 Marc Grue.
+ *
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
+ * implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.marcgrue.dcisample_b.context.test.handling.parsing;
 
 import com.marcgrue.dcisample_b.bootstrap.test.TestApplication;
 import com.marcgrue.dcisample_b.context.interaction.handling.parsing.ParseHandlingEventData;
 import com.marcgrue.dcisample_b.context.interaction.handling.parsing.exception.InvalidHandlingEventDataException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.service.ServiceReference;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import static com.marcgrue.dcisample_b.data.structure.delivery.RoutingStatus.ROUTED;
 import static com.marcgrue.dcisample_b.data.structure.delivery.TransportStatus.NOT_RECEIVED;
@@ -99,7 +115,7 @@ public class ParseHandlingEventDataTest extends TestApplication
     @Test
     public void deviation_3a_TypeConversion_HandlingEventTypeString() throws Exception
     {
-        thrown.expect( InvalidHandlingEventDataException.class, "No enum const class" );
+        thrown.expect( InvalidHandlingEventDataException.class, "No enum const" );
         handlingEventParser.parse( completionTime, trackingIdString, "HAND_OVER", "CNHKG", null );
     }
 

@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.structure.Module;
+import org.qi4j.functional.Iterables;
 
 import static org.qi4j.functional.Iterables.toArray;
 
@@ -54,7 +55,7 @@ public class CompositeContext<T extends TransientComposite>
         Iterable<Class<?>> types = Qi4j.INSTANCE_FUNCTION.map( composite ).types();
         return (T) Proxy.newProxyInstance(
             composite.getClass().getClassLoader(),
-            toArray( Class.class, types ),
+            toArray( Class.class, Iterables.<Class>cast( types ) ),
             new ContextInvocationhandler() );
     }
 

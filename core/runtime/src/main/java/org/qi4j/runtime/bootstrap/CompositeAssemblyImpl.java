@@ -67,25 +67,10 @@ import org.qi4j.runtime.property.PropertiesModel;
 import org.qi4j.runtime.property.PropertyModel;
 
 import static java.util.Arrays.asList;
-import static org.qi4j.api.util.Annotations.hasAnnotation;
-import static org.qi4j.api.util.Annotations.isType;
-import static org.qi4j.api.util.Annotations.type;
-import static org.qi4j.api.util.Classes.classHierarchy;
-import static org.qi4j.api.util.Classes.interfacesOf;
-import static org.qi4j.api.util.Classes.isAssignableFrom;
-import static org.qi4j.api.util.Classes.typeOf;
-import static org.qi4j.api.util.Classes.typesOf;
-import static org.qi4j.api.util.Classes.wrapperClass;
-import static org.qi4j.functional.Iterables.filter;
-import static org.qi4j.functional.Iterables.first;
-import static org.qi4j.functional.Iterables.flatten;
-import static org.qi4j.functional.Iterables.iterable;
-import static org.qi4j.functional.Iterables.map;
-import static org.qi4j.functional.Specifications.and;
-import static org.qi4j.functional.Specifications.in;
-import static org.qi4j.functional.Specifications.not;
-import static org.qi4j.functional.Specifications.or;
-import static org.qi4j.functional.Specifications.translate;
+import static org.qi4j.api.util.Annotations.*;
+import static org.qi4j.api.util.Classes.*;
+import static org.qi4j.functional.Iterables.*;
+import static org.qi4j.functional.Specifications.*;
 
 /**
  * TODO
@@ -151,9 +136,9 @@ public abstract class CompositeAssemblyImpl
 
         // Implement composite methods
         Iterable<Class<? extends Constraint<?, ?>>> constraintClasses = constraintDeclarations( this.types );
-        Iterable<Class<?>> concernClasses = Iterables.<Class<?>, Iterable<Class<?>>>flatten( concerns, concernDeclarations( this.types ) );
-        Iterable<Class<?>> sideEffectClasses = Iterables.<Class<?>, Iterable<Class<?>>>flatten( sideEffects, sideEffectDeclarations( this.types ) );
-        Iterable<Class<?>> mixinClasses = Iterables.<Class<?>, Iterable<Class<?>>>flatten( mixins, mixinDeclarations( this.types ) );
+        Iterable<Class<?>> concernClasses = Iterables.flatten( concerns, concernDeclarations( this.types ) );
+        Iterable<Class<?>> sideEffectClasses = Iterables.flatten( sideEffects, sideEffectDeclarations( this.types ) );
+        Iterable<Class<?>> mixinClasses = Iterables.flatten( mixins, mixinDeclarations( this.types ) );
         implementMixinType( types, constraintClasses, concernClasses, sideEffectClasses, mixinClasses );
 
         // Add state from methods and fields
@@ -188,18 +173,28 @@ public abstract class CompositeAssemblyImpl
                     !Modifier.isStatic( method.getModifiers() ) )
                 {
                     MixinModel mixinModel = implementMethod( method, mixinClasses );
-                    ConcernsModel concernsModel = concernsFor( method, mixinModel.mixinClass(), Iterables.<Class<?>, Iterable<Class<?>>>flatten( concernDeclarations( mixinModel
-                                                                                                                                                                          .mixinClass() ), concernClasses ) );
-                    SideEffectsModel sideEffectsModel = sideEffectsFor( method, mixinModel.mixinClass(), Iterables.<Class<?>, Iterable<Class<?>>>flatten( sideEffectDeclarations( mixinModel
-                                                                                                                                                                                      .mixinClass() ), sideEffectClasses ) );
+                    ConcernsModel concernsModel = concernsFor(
+                        method, 
+                        mixinModel.mixinClass(), 
+                        Iterables.<Class<?>>flatten( concernDeclarations( mixinModel.mixinClass() ), concernClasses )
+                    );
+                    SideEffectsModel sideEffectsModel = sideEffectsFor(
+                        method, 
+                        mixinModel.mixinClass(), 
+                        Iterables.<Class<?>>flatten( sideEffectDeclarations( mixinModel.mixinClass() ), sideEffectClasses )
+                    );
                     method.setAccessible( true );
-                    ConstraintsModel constraints = constraintsFor( method, Iterables.<Class<? extends Constraint<?, ?>>, Iterable<Class<? extends Constraint<?, ?>>>>flatten( constraintDeclarations( mixinModel
-                                                                                                                                                                                                          .mixinClass() ), constraintClasses ) );
-                    CompositeMethodModel methodComposite = new CompositeMethodModel( method,
-                                                                                     constraints,
-                                                                                     concernsModel,
-                                                                                     sideEffectsModel,
-                                                                                     mixinsModel );
+                    ConstraintsModel constraints = constraintsFor(
+                        method, 
+                        Iterables.<Class<? extends Constraint<?, ?>>>flatten( constraintDeclarations( mixinModel.mixinClass() ), constraintClasses )
+                    );
+                    CompositeMethodModel methodComposite = new CompositeMethodModel(
+                        method,
+                        constraints,
+                        concernsModel,
+                        sideEffectsModel,
+                        mixinsModel
+                    );
 
                     // Implement @This references
                     Iterable<Class<?>> map = map( new DependencyModel.InjectionTypeFunction(), filter( new DependencyModel.ScopeSpecification( This.class ), methodComposite
@@ -212,9 +207,8 @@ public abstract class CompositeAssemblyImpl
                         ),
                         map( Classes.RAW_CLASS, interfacesOf( mixinModel.mixinClass() ) )
                     );
-                    Iterables.addAll( thisDependencies, (Iterable<? extends Class<?>>) flatten( map,
-                                                                                                map1,
-                                                                                                filter ) );
+                    Iterable<? extends Class<?>> flatten = flatten( map, map1, filter );
+                    Iterables.addAll( thisDependencies, flatten );
 
                     compositeMethodsModel.addMethod( methodComposite );
                 }
@@ -227,10 +221,10 @@ public abstract class CompositeAssemblyImpl
         for( Class<?> thisDependency : thisDependencies )
         {
             // Add additional declarations from the @This type
-            Iterable<Class<? extends Constraint<?, ?>>> typeConstraintClasses = Iterables.<Class<? extends Constraint<?, ?>>, Iterable<Class<? extends Constraint<?, ?>>>>flatten( constraintClasses, constraintDeclarations( thisDependency ) );
-            Iterable<Class<?>> typeConcernClasses = Iterables.<Class<?>, Iterable<Class<?>>>flatten( concernClasses, concernDeclarations( thisDependency ) );
-            Iterable<Class<?>> typeSideEffectClasses = Iterables.<Class<?>, Iterable<Class<?>>>flatten( sideEffectClasses, sideEffectDeclarations( thisDependency ) );
-            Iterable<Class<?>> typeMixinClasses = Iterables.<Class<?>, Iterable<Class<?>>>flatten( mixinClasses, mixinDeclarations( thisDependency ) );
+            Iterable<Class<? extends Constraint<?, ?>>> typeConstraintClasses = Iterables.flatten( constraintClasses, constraintDeclarations( thisDependency ) );
+            Iterable<Class<?>> typeConcernClasses = Iterables.flatten( concernClasses, concernDeclarations( thisDependency ) );
+            Iterable<Class<?>> typeSideEffectClasses = Iterables.flatten( sideEffectClasses, sideEffectDeclarations( thisDependency ) );
+            Iterable<Class<?>> typeMixinClasses = Iterables.flatten( mixinClasses, mixinDeclarations( thisDependency ) );
 
             Iterable<? extends Class<?>> singleton = Iterables.iterable( thisDependency );
             implementMixinType( singleton, typeConstraintClasses, typeConcernClasses, typeSideEffectClasses, typeMixinClasses );
@@ -477,11 +471,10 @@ public abstract class CompositeAssemblyImpl
             // No implementation found!
 
             // Check if if it's a composite constraints
-            if( Iterables.matchesAny( translate( type(), hasAnnotation( ConstraintDeclaration.class ) ),
-                                      asList( constraintAnnotation.annotationType().getAnnotations() ) ) )
+            Iterable<Annotation> annotations = iterable( annotationType.getAnnotations() );
+            if( Iterables.matchesAny( translate( type(), hasAnnotation( ConstraintDeclaration.class ) ), annotations ) )
             {
-                ValueConstraintsModel valueConstraintsModel = constraintsFor( iterable( constraintAnnotation.annotationType()
-                                                                                            .getAnnotations() ), valueType, name, optional, constraintClasses, accessor );
+                ValueConstraintsModel valueConstraintsModel = constraintsFor( annotations, valueType, name, optional, constraintClasses, accessor );
                 CompositeConstraintModel compositeConstraintModel = new CompositeConstraintModel( constraintAnnotation, valueConstraintsModel );
                 constraintModels.add( compositeConstraintModel );
                 continue nextConstraint;
@@ -489,7 +482,7 @@ public abstract class CompositeAssemblyImpl
 
             throw new InvalidCompositeException(
                 "Cannot find implementation of constraint @"
-                + constraintAnnotation.annotationType().getSimpleName()
+                + annotationType.getSimpleName()
                 + " for "
                 + valueType
                 + " in method "
@@ -611,7 +604,7 @@ public abstract class CompositeAssemblyImpl
     private Iterable<Class<? extends Constraint<?, ?>>> constraintDeclarations( Iterable<? extends Class<?>> typess )
     {
         // Find constraint declarations
-        ArrayList<Type> allTypes = new ArrayList<Type>();
+        List<Type> allTypes = new ArrayList<Type>();
         for( Class<?> type : typess )
         {
             Iterable<Type> types = typesOf( type );
@@ -635,7 +628,8 @@ public abstract class CompositeAssemblyImpl
                 }
             }
         };
-        return Iterables.toList( Iterables.flattenIterables( Iterables.map( function, allTypes ) ) );
+        Iterable<Class<? extends Constraint<?,?>>> flatten = Iterables.flattenIterables( Iterables.map( function, allTypes ) );
+        return Iterables.toList( flatten );
     }
 
     private Iterable<Class<?>> concernDeclarations( Class<?> type )
@@ -657,7 +651,7 @@ public abstract class CompositeAssemblyImpl
             }
             else
             {
-                types = Iterables.<Type, Class<?>>cast( classHierarchy( type ) );
+                types = Iterables.<Type>cast( classHierarchy( type ) );
             }
             Iterables.addAll( allTypes, types );
         }
@@ -679,7 +673,8 @@ public abstract class CompositeAssemblyImpl
                 }
             }
         };
-        return Iterables.toList( Iterables.flattenIterables( Iterables.map( function, allTypes ) ) );
+        Iterable<Class<?>> flatten = Iterables.flattenIterables( Iterables.map( function, allTypes ) );
+        return Iterables.toList( flatten );
     }
 
     protected Iterable<Class<?>> sideEffectDeclarations( Class<?> type )
@@ -715,7 +710,8 @@ public abstract class CompositeAssemblyImpl
                 }
             }
         };
-        return Iterables.toList( Iterables.flattenIterables( Iterables.map( function, allTypes ) ) );
+        Iterable<Class<?>> flatten = Iterables.flattenIterables( Iterables.map( function, allTypes ) );
+        return Iterables.toList( flatten );
     }
 
     protected Iterable<Class<?>> mixinDeclarations( Class<?> type )
@@ -735,7 +731,7 @@ public abstract class CompositeAssemblyImpl
         }
 
         // Find all mixins and flattern them into an iterable
-        return Iterables.toList( Iterables.flattenIterables( Iterables.map( new Function<Type, Iterable<Class<?>>>()
+        Function<Type, Iterable<Class<?>>> function = new Function<Type, Iterable<Class<?>>>()
         {
             @Override
             public Iterable<Class<?>> map( Type type )
@@ -750,6 +746,8 @@ public abstract class CompositeAssemblyImpl
                     return iterable( mixins.value() );
                 }
             }
-        }, allTypes ) ) );
+        };
+        Iterable<Class<?>> flatten = Iterables.flattenIterables( Iterables.map( function, allTypes ) );
+        return Iterables.toList( flatten );
     }
 }

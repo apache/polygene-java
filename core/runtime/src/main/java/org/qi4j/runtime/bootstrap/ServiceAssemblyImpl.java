@@ -62,8 +62,7 @@ public final class ServiceAssemblyImpl extends CompositeAssemblyImpl
         {
             buildComposite( helper, stateDeclarations );
             List<Class<? extends Activator<?>>> activatorClasses = Iterables.toList(
-                    Iterables.<Class<? extends Activator<?>>, Iterable<Class<? extends Activator<?>>>>flatten( 
-                        activators, activatorsDeclarations( types ) ) );
+                    Iterables.<Class<? extends Activator<?>>>flatten( activators, activatorsDeclarations( types ) ) );
             return new ServiceModel( types, visibility, metaInfo,
                                      new ActivatorsModel( activatorClasses ),
                                      mixinsModel, stateModel, compositeMethodsModel,
@@ -84,9 +83,8 @@ public final class ServiceAssemblyImpl extends CompositeAssemblyImpl
             Iterable<Type> types = Classes.typesOf( type );
             Iterables.addAll( allTypes, types );
         }
-
         // Find all activators and flattern them into an iterable
-        return Iterables.toList( Iterables.flattenIterables( Iterables.map( new Function<Type, Iterable<Class<? extends Activator<?>>>>()
+        Function<Type, Iterable<Class<? extends Activator<?>>>> function = new Function<Type, Iterable<Class<? extends Activator<?>>>>()
         {
             @Override
             public Iterable<Class<? extends Activator<?>>> map( Type type )
@@ -101,7 +99,9 @@ public final class ServiceAssemblyImpl extends CompositeAssemblyImpl
                     return Iterables.iterable( activators.value() );
                 }
             }
-        }, allTypes ) ) );
+        };
+        Iterable<Class<? extends Activator<?>>> flatten = Iterables.flattenIterables( Iterables.map( function, allTypes ) );
+        return Iterables.toList( flatten );
     }
 
 }

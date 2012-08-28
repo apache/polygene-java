@@ -278,8 +278,7 @@ public class ModuleInstance
         throws Exception
     {
         activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATING ) );
-        activation.activate( moduleModel.newActivatorsInstance(),
-                             Iterables.<Activation, Activation>iterable( services, importedServices ) );
+        activation.activate( moduleModel.newActivatorsInstance(), Iterables.iterable( services, importedServices ) );
         activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATED ) );
     }
 
@@ -427,7 +426,8 @@ public class ModuleInstance
     )
     {
         Specification<ModelModule<T>> spec = Specifications.translate( ModelModule.<T>modelFunction(), specification );
-        return Iterables.filter( spec, Iterables.flattenIterables( Iterables.iterable( models ) ) );
+        Iterable<ModelModule<T>> flatten = Iterables.flattenIterables( Iterables.iterable( models ) );
+        return Iterables.filter( spec, flatten );
     }
 
     public Iterable<ModelModule<ObjectModel>> visibleObjects( Visibility visibility )

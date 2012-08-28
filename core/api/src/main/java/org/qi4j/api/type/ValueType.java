@@ -14,6 +14,7 @@
 
 package org.qi4j.api.type;
 
+import java.util.Collections;
 import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
 
@@ -31,7 +32,7 @@ public class ValueType
 
     public ValueType( Class<?> type )
     {
-        this( Iterables.iterable( type ) );
+        this( Collections.singleton( type ) );
     }
 
     public ValueType( Iterable<? extends Class<?>> types )

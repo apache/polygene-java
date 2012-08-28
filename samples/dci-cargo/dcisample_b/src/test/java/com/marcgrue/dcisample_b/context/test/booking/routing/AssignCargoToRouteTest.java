@@ -1,3 +1,20 @@
+/*
+ * Copyright 2011 Marc Grue.
+ *
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
+ * implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.marcgrue.dcisample_b.context.test.booking.routing;
 
 import com.marcgrue.dcisample_b.bootstrap.test.TestApplication;
@@ -5,10 +22,9 @@ import com.marcgrue.dcisample_b.context.interaction.booking.exception.RoutingExc
 import com.marcgrue.dcisample_b.context.interaction.booking.exception.UnsatisfyingRouteException;
 import com.marcgrue.dcisample_b.context.interaction.booking.routing.AssignCargoToRoute;
 import com.marcgrue.dcisample_b.data.structure.itinerary.Itinerary;
+import java.util.Date;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.util.Date;
 
 import static com.marcgrue.dcisample_b.data.structure.delivery.RoutingStatus.NOT_ROUTED;
 import static com.marcgrue.dcisample_b.data.structure.delivery.RoutingStatus.ROUTED;
@@ -17,6 +33,8 @@ import static com.marcgrue.dcisample_b.data.structure.handling.HandlingEventType
 
 /**
  * {@link AssignCargoToRoute} tests
+ * 
+ * FIXME: Every test method call the one above to allow ordered execution, ie. tests are not indepedants !
  */
 public class AssignCargoToRouteTest extends TestApplication
 {
@@ -46,6 +64,8 @@ public class AssignCargoToRouteTest extends TestApplication
     @Test
     public void deviation_1a_UnsatisfyingItinerary() throws Exception
     {
+        precondition_x1_CannotReRouteClaimedCargo();
+
         cargo.delivery().set( delivery( TODAY, NOT_RECEIVED, NOT_ROUTED, unknownLeg ) );
         thrown.expect( UnsatisfyingRouteException.class, "Route specification was not satisfied with itinerary" );
         new AssignCargoToRoute( cargo, wrongItinerary ).assign();
@@ -54,6 +74,8 @@ public class AssignCargoToRouteTest extends TestApplication
     @Test
     public void deviation_3a_Routing_UnhandledCargo() throws Exception
     {
+        deviation_1a_UnsatisfyingItinerary();
+
         cargo.delivery().set( delivery( TODAY, NOT_RECEIVED, NOT_ROUTED, unknownLeg ) );
         new AssignCargoToRoute( cargo, itinerary ).assign();
         assertDelivery( null, null, null, null,
@@ -65,6 +87,8 @@ public class AssignCargoToRouteTest extends TestApplication
     @Test
     public void deviation_3b_ReRouting_OnBoard() throws Exception
     {
+        deviation_3a_Routing_UnhandledCargo();
+
         // Load cargo
         cargo.itinerary().set( itinerary );
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( DAY5, DAY5, trackingId, LOAD, CHICAGO, V201 );
@@ -87,6 +111,8 @@ public class AssignCargoToRouteTest extends TestApplication
     @Test
     public void deviation_3c_ReRouting_InPort_Received() throws Exception
     {
+        deviation_3b_ReRouting_OnBoard();
+
         // Receive cargo
         cargo.itinerary().set( itinerary );
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( DAY1, DAY1, trackingId, RECEIVE, HONGKONG, noVoyage );
@@ -108,6 +134,8 @@ public class AssignCargoToRouteTest extends TestApplication
     @Test
     public void deviation_3c_ReRouting_InPort_Unloaded() throws Exception
     {
+        deviation_3c_ReRouting_InPort_Received();
+
         // Unload cargo
         cargo.itinerary().set( itinerary );
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( DAY5, DAY5, trackingId, UNLOAD, CHICAGO, V201 );
@@ -127,6 +155,8 @@ public class AssignCargoToRouteTest extends TestApplication
     @Test
     public void deviation_3c_ReRouting_InPort_InCustoms() throws Exception
     {
+        deviation_3c_ReRouting_InPort_Unloaded();
+
         // Receive cargo
         cargo.itinerary().set( itinerary );
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( DAY6, DAY6, trackingId, CUSTOMS, NEWYORK, noVoyage );

@@ -25,6 +25,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.Collection;
 import org.qi4j.api.association.Association;
 import org.qi4j.api.association.GenericAssociationInfo;
@@ -190,7 +191,7 @@ public final class QueryExpressions
                                         Specification<Composite>... optionalRight
     )
     {
-        return new AndSpecification( prepend( left, prepend( right, iterable( optionalRight ) ) ) );
+        return new AndSpecification( prepend( left, prepend( right, Arrays.asList( optionalRight ) ) ) );
     }
 
     public static OrSpecification or( Specification<Composite> left,
@@ -198,7 +199,7 @@ public final class QueryExpressions
                                       Specification<Composite>... optionalRight
     )
     {
-        return new OrSpecification( prepend( left, prepend( right, iterable( optionalRight ) ) ) );
+        return new OrSpecification( prepend( left, prepend( right, Arrays.asList( optionalRight ) ) ) );
     }
 
     public static NotSpecification not( Specification<Composite> operand )
