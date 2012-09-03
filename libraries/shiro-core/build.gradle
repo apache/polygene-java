@@ -12,14 +12,11 @@ dependencies {
   testCompile( libraries.junit )
   testCompile( libraries.servlet_api )
 
-  testCompile module( libraries.jetty_server ) { transitive = false }
-  testCompile module( libraries.jetty_servlet ) { transitive = false }
-  testCompile( module( libraries.jetty_webapp ) ) { transitive = false }
-  testCompile module( libraries.jetty_util ) { transitive = false }
-  testCompile module( libraries.jetty_http ) { transitive = false }
-  testCompile module( libraries.jetty_continuation ) {transitive = false}
-  testRuntime( module( libraries.jetty_io ) ) { transitive = false }
-  testRuntime( module( libraries.jetty_security ) ) { transitive = false }
+  testCompile( libraries.jetty_webapp )
+  testCompile( libraries.jetty_security )
+  testCompile( libraries.jetty_util )
+  testCompile( libraries.jetty_jmx )
+  testRuntime( libraries.jetty_io )
 
   testCompile( libraries.http_client )
   testCompile( project( ":org.qi4j.libraries:org.qi4j.library.shiro-web" ) )
