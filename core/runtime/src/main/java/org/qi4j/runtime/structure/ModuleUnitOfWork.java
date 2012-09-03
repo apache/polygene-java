@@ -44,7 +44,6 @@ import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.unitofwork.EntityBuilderInstance;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
-import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.query.EntityFinder;
@@ -139,38 +138,7 @@ public class ModuleUnitOfWork
     public <T> T newEntity( Class<T> type, String identity )
         throws EntityTypeNotFoundException, LifecycleException
     {
-        ModelModule<EntityModel> model = Iterables.first( moduleInstance.findEntityModels( type ) );
-
-        if( model == null )
-        {
-            throw new EntityTypeNotFoundException( type.getName() );
-        }
-
-        // Generate id
-        if( identity == null )
-        {
-            identity = model.module().identityGenerator().generate( first( model.model().types() ) );
-        }
-
-        EntityStore entityStore = model.module().entityStore();
-
-        EntityState entityState = model.model().newEntityState( uow.getEntityStoreUnitOfWork( entityStore, module() ),
-                                                                parseEntityReference( identity ) );
-
-        // Init state
-        model.model().initState( model.module(), entityState );
-
-        entityState.setProperty( IDENTITY_STATE_NAME, identity );
-
-        EntityInstance instance = new EntityInstance( this, model.module(), model.model(), entityState );
-
-        instance.invokeCreate();
-
-        instance.checkConstraints();
-
-        addEntity( instance );
-
-        return instance.<T>proxy();
+        return newEntityBuilder( type, identity ).newInstance();
     }
 
     public <T> EntityBuilder<T> newEntityBuilder( Class<T> type )
