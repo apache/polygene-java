@@ -25,6 +25,7 @@ import com.mongodb.DBObject;
 import com.mongodb.Mongo;
 import com.mongodb.ServerAddress;
 import com.mongodb.WriteConcern;
+import com.mongodb.util.JSON;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
@@ -209,10 +210,12 @@ public abstract class MongoMapEntityStoreMixin
         if ( entity == null ) {
             throw new EntityNotFoundException( entityReference );
         }
-        String state = ( String ) entity.get( STATE_COLUMN );
+        DBObject bsonState = ( DBObject ) entity.get( STATE_COLUMN );
 
         db.requestDone();
-        return new StringReader( state );
+
+        String jsonState = JSON.serialize( bsonState );
+        return new StringReader( jsonState );
     }
 
     @Override
@@ -237,9 +240,12 @@ public abstract class MongoMapEntityStoreMixin
                             throws IOException
                     {
                         super.close();
+
+                        DBObject bsonState = ( DBObject ) JSON.parse( toString() );
+
                         BasicDBObject entity = new BasicDBObject();
                         entity.put( IDENTITY_COLUMN, ref.identity() );
-                        entity.put( STATE_COLUMN, toString() );
+                        entity.put( STATE_COLUMN, bsonState );
                         entities.save( entity, writeConcern );
                     }
 
@@ -258,9 +264,12 @@ public abstract class MongoMapEntityStoreMixin
                             throws IOException
                     {
                         super.close();
+
+                        DBObject bsonState = ( DBObject ) JSON.parse( toString() );
+
                         BasicDBObject entity = new BasicDBObject();
                         entity.put( IDENTITY_COLUMN, ref.identity() );
-                        entity.put( STATE_COLUMN, toString() );
+                        entity.put( STATE_COLUMN, bsonState );
                         entities.update( byIdentity( ref ), entity, true, false, writeConcern );
                     }
 
@@ -305,8 +314,9 @@ public abstract class MongoMapEntityStoreMixin
                         DBCursor cursor = db.getCollection( collectionName ).find();
                         while ( cursor.hasNext() ) {
                             DBObject eachEntity = cursor.next();
-                            String state = ( String ) eachEntity.get( STATE_COLUMN );
-                            receiver.receive( new StringReader( state ) );
+                            DBObject bsonState = ( DBObject ) eachEntity.get( STATE_COLUMN );
+                            String jsonState = JSON.serialize( bsonState );
+                            receiver.receive( new StringReader( jsonState ) );
                         }
 
                         db.requestDone();
