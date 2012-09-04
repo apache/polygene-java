@@ -111,10 +111,11 @@ public class TransferMoneyTest
         UnitOfWork uow = assembler.module().newUnitOfWork( newUsecase( "Bootstrap data" ) );
         try
         {
-            SavingsAccountEntity account = uow.newEntity( SavingsAccountEntity.class, SAVINGS_ACCOUNT_ID );
-            account.increasedBalance( 1000 );
+            SavingsAccountEntity savingsAccount = uow.newEntity( SavingsAccountEntity.class, SAVINGS_ACCOUNT_ID );
+            savingsAccount.increasedBalance(1000);
 
-            uow.newEntity( CheckingAccountEntity.class, CHECKING_ACCOUNT_ID );
+            CheckingAccountEntity checkingAccount = uow.newEntity(CheckingAccountEntity.class, CHECKING_ACCOUNT_ID);
+            checkingAccount.increasedBalance(200);
 
             // Create some creditor debt
             BalanceData bakerAccount = uow.newEntity( CreditorRolemap.class, CREDITOR_ID1 );
@@ -154,8 +155,6 @@ public class TransferMoneyTest
 
             // Transfer from savings to checking
             context.transfer( amountToTransfer );
-
-            uow.complete();
         }
         finally
         {
@@ -185,8 +184,6 @@ public class TransferMoneyTest
 
             // Transfer from savings to checking
             context.transfer( amountToTransfer );
-
-            uow.complete();
         }
         finally
         {
@@ -205,8 +202,6 @@ public class TransferMoneyTest
 
             PayBillsContext context = new PayBillsContext();
             context.bind( source ).payBills();
-
-            uow.complete();
         }
         finally
         {
