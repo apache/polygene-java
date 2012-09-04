@@ -90,7 +90,7 @@ public class TransferMoneyTest2
         System.out.println( "-----------------" );
     }
 
-    public void printBalances()
+    private void printBalances()
     {
         UnitOfWork uow = module.newUnitOfWork( UsecaseBuilder.newUsecase( "Print balances" ) );
 
@@ -118,7 +118,8 @@ public class TransferMoneyTest2
             SavingsAccountEntity account = uow.newEntity( SavingsAccountEntity.class, SAVINGS_ACCOUNT_ID );
             account.increasedBalance( 1000 );
 
-            uow.newEntity( CheckingAccountEntity.class, CHECKING_ACCOUNT_ID );
+            CheckingAccountEntity checkingAccount = uow.newEntity(CheckingAccountEntity.class, CHECKING_ACCOUNT_ID);
+            checkingAccount.increasedBalance(200);
 
             // Create some creditor debt
             BalanceData bakerAccount = uow.newEntity( CreditorEntity.class, CREDITOR_ID1 );
@@ -157,8 +158,6 @@ public class TransferMoneyTest2
 
             // Transfer from savings to checking
             context.transfer( amountToTransfer );
-
-            uow.complete();
         }
         finally
         {
@@ -187,8 +186,6 @@ public class TransferMoneyTest2
 
             // Transfer from savings to checking
             context.transfer( amountToTransfer );
-
-            uow.complete();
         }
         finally
         {
@@ -207,8 +204,6 @@ public class TransferMoneyTest2
 
             PayBillsContext2 context = module.newObject( PayBillsContext2.class );
             context.bind( source ).payBills();
-
-            uow.complete();
         }
         finally
         {
