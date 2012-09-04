@@ -481,22 +481,7 @@ div.table table tbody, div.informaltable table tbody,
 div.table table thead, div.informaltable table thead,
 div.table table tfoot, div.informaltable table tfoot
 {
-    border: 1px solid #999;
-}
-
-div.table table thead, div.informaltable table thead
-{
-    border-bottom-width: 2px
-}
-
-div.table table tfoot, div.informaltable table tfoot
-{
-    border-top-width: 2px;
-}
-
-div.table table, div.informaltable table
-{
-    /* background: #d7e3e6 url("table-bg.png"); */
+    border:none;
 }
 
 div.queryresult table tbody td p code.literal
