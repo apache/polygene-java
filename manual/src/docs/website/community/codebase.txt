@@ -118,6 +118,7 @@ changes, unless simply codesnippets are pasted to mail. This exists to ensure th
 Runtime, and no surprises will occur in existing applications with new versions.
 
 == Git Development Model ==
+
 Courtesy of Vincent Driessen, we borrowed the Git branching model from this web page;
 http://nvie.com/posts/a-successful-git-branching-model/
 
@@ -133,7 +134,7 @@ It looks more complicated than it is. Here are the guidelines;
     Never commit to the 'master' branch while developing!!
     The 'develop' branch is the equivalent of trunk in subversion.
     Any changes that are not trivial, start a feature branch.
-    The following names are reserved for not feature branches; master, develop, hotfix_, release_
+    The following names are reserved for not feature branches; master, develop, hotfix/*, release/*
 
 Day-to-day development revolves around the develop branch and it is this branch that you typically clone from our
 repository if you intend to contribute to Qi4j itself. If you create a new feature, or make some larger piece of
@@ -142,8 +143,11 @@ refactoring, then please create a 'feature branch' (see article for details).
 Please try to remember the --no-fast-forward option during merge, so the feature branch is preserved in one piece and
 can be rolled back easily if needed.
 
-The release_ and hotfix_ branches are for release management only, and doesn't affect most contributors from a commit
+The release/* and hotfix/* branches are for release management only, and doesn't affect most contributors from a commit
 perspective. Release Managers - Check the article for the details.
+
+For convenience you should install and use the gitflow git extension that implement this branching model by adding git
+commands. See the gitflow web page; https://github.com/nvie/gitflow
 
 == How do I do my first commit? ==
 
@@ -208,11 +212,21 @@ are also 'moved along' to the new branch. And if those changes are then committe
 one switch back the changes are not there, now sitting in the 'my_new_feature_branch' only. This is very handy if one
 forgets to create and move to a branch before modifying the 'develop' branch.
 
+== Using Github Pull Requests ==
+
+Pull requests let you tell others about changes you've pushed to a GitHub repository. Once a pull request is sent,
+interested parties can review the set of changes, discuss potential modifications, and even push follow-up commits if
+necessary.
+
+Github's guide to Pull Requests walks through the process of sending a hypothetical pull request and using the various
+code review and management tools to take the change to completion. This guide can be found here;
+https://help.github.com/articles/using-pull-requests
+
 
 == What happened to the 'master' branch? ==
 
 In case you missed it above, check the model that we used for development. The intent is that the 'master' branch is
 always in a good state and the HEAD is at a formal release (and has a tag for that).
 
-Patches only enters the 'master' branch either from a 'hotfix_xyz' or a 'release_' branch, never directly from 'develop'
+Patches only enters the 'master' branch either from a 'hotfix/*' or a 'release/*' branch, never directly from 'develop'
 or feature branches.
