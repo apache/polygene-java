@@ -4,7 +4,7 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  *
- *     You may obtain a copy of the License at 
+ *     You may obtain a copy of the License at
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -24,7 +24,6 @@ import org.junit.Test;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.property.Property;
-import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
@@ -41,7 +40,7 @@ public class NoMetricsInstalledTest extends AbstractQi4jTest
         module.entities( Person.class );
         module.services( MemoryEntityStoreService.class );
     }
-    
+
     @Test
     public void givenMetricsEnabledQi4jWhenManyEntityChangesExpectCounterToBeOneOrZeroAndChangeRateHigh()
         throws UnitOfWorkCompletionException
@@ -92,6 +91,6 @@ public class NoMetricsInstalledTest extends AbstractQi4jTest
     {
         @Optional
         Property<String> name();
-        
+
     }
 }
