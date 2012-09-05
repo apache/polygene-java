@@ -1,6 +1,7 @@
 // Versions of Dependencies;
 def asmVersion = '3.3.1'
 def beanshellVersion = '2.0b4'
+def bonecpVersion = '0.7.1.RELEASE'
 def bouncyVersion = '1.45'
 def c3p0Version = '0.9.1.2'
 def commonsCodecVersion = '1.3'
@@ -223,6 +224,7 @@ rootProject.ext {
           freemarker: "org.freemarker:freemarker:$freemarkerVersion",
           shiro: "org.apache.shiro:shiro-core:$shiroVersion",
           shiro_web: "org.apache.shiro:shiro-web:$shiroVersion",
+          bonecp: "com.jolbox:bonecp:$bonecpVersion",
           c3p0: "c3p0:c3p0:$c3p0Version",
           liquibase: "org.liquibase:liquibase-core:$liquibaseVersion",
           sked: "org.codeartisans:sked:$skedVersion",
