@@ -21,15 +21,18 @@
  */
 package org.qi4j.library.shiro.tests.x509;
 
-import org.apache.shiro.crypto.CryptoException;
-import org.bouncycastle.openssl.PEMReader;
-
-import javax.net.ssl.*;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.security.cert.X509Certificate;
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
+import org.apache.shiro.crypto.CryptoException;
+import org.bouncycastle.openssl.PEMReader;
 
 /**
  * User, service and authorities certificates are valid til 2020/03, should be enough for qi4j unit tests : )
@@ -129,10 +132,10 @@ public class X509FixturesData
     public static SSLContext createSSLContext( KeyStore ks, char[] password, KeyStore ts )
     {
         try {
-            KeyManagerFactory kmf = KeyManagerFactory.getInstance( "SunX509" );
+            KeyManagerFactory kmf = KeyManagerFactory.getInstance( getX509Algorithm() );
             kmf.init( ks, password );
 
-            TrustManagerFactory tmf = TrustManagerFactory.getInstance( "SunX509" );
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance( getX509Algorithm() );
             tmf.init( ts );
 
             KeyManager[] keyManagers = kmf.getKeyManagers();
@@ -153,6 +156,11 @@ public class X509FixturesData
         } catch ( IOException ex ) {
             throw new CryptoException( "Unable to read the test user X509Certificate PEM", ex );
         }
+    }
+
+    private static String getX509Algorithm()
+    {
+        return System.getProperty( "java.vendor" ).contains( "IBM" ) ? "IbmX509" : "SunX509";
     }
 
 }

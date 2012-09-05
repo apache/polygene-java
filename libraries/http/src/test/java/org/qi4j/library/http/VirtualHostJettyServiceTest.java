@@ -16,15 +16,17 @@ package org.qi4j.library.http;
 import java.io.IOException;
 import org.apache.http.client.methods.HttpGet;
 import org.junit.AfterClass;
-import static org.junit.Assert.assertEquals;
+import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
+import org.qi4j.library.http.dns.LocalManagedDns;
+
+import static org.junit.Assert.assertEquals;
 import static org.qi4j.library.http.Servlets.addServlets;
 import static org.qi4j.library.http.Servlets.serve;
-import org.qi4j.library.http.dns.LocalManagedDns;
 
 public class VirtualHostJettyServiceTest
         extends AbstractJettyTest
@@ -50,6 +52,9 @@ public class VirtualHostJettyServiceTest
     @BeforeClass
     public static void beforeVirtualHostsClass()
     {
+        // Ignore this test on IBM JDK
+        Assume.assumeTrue( !( System.getProperty( "java.vendor" ).contains( "IBM" ) ) );
+
         LocalManagedDns.putName( HOST1, "127.0.0.1" );
         LocalManagedDns.putName( HOST2, "127.0.0.1" );
     }

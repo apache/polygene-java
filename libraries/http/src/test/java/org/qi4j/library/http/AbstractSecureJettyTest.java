@@ -18,23 +18,20 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
-
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManagerFactory;
-
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-
 import org.apache.http.client.HttpClient;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
 
 /**
  * Base class for SecureJettyMixin tests.
@@ -110,7 +107,7 @@ public abstract class AbstractSecureJettyTest
         KeyStore truststore = KeyStore.getInstance( "JCEKS" );
         truststore.load( new FileInputStream( TRUSTSTORE_FILE ), KS_PASSWORD.toCharArray() );
         SSLContext sslCtx = SSLContext.getInstance( "TLS" );
-        TrustManagerFactory caTrustManagerFactory = TrustManagerFactory.getInstance( "SunX509" );
+        TrustManagerFactory caTrustManagerFactory = TrustManagerFactory.getInstance( getX509Algorithm() );
         caTrustManagerFactory.init( truststore );
         sslCtx.init( null, caTrustManagerFactory.getTrustManagers(), null );
         HttpsURLConnection.setDefaultSSLSocketFactory( sslCtx.getSocketFactory() );
@@ -121,6 +118,11 @@ public abstract class AbstractSecureJettyTest
     {
         HttpsURLConnection.setDefaultHostnameVerifier( defaultHostnameVerifier );
         HttpsURLConnection.setDefaultSSLSocketFactory( defaultSSLSocketFactory );
+    }
+
+    protected static String getX509Algorithm()
+    {
+        return System.getProperty( "java.vendor" ).contains( "IBM" ) ? "IbmX509" : "SunX509";
     }
 
 }
