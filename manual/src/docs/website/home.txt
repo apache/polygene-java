@@ -1,5 +1,9 @@
 = Home =
 
+NOTE: Qi4j™ SDK 2.0 is under development. Six alphas versions later we are aiming at the first release candidate. If you
+want to use 2.0 you can download nightly builds from Qi4j™ <<continuous-integration,continuous integration>> or
+<<build-system,build>> the Qi4j™ SDK from <<codebase,source>>
+
 == What is Qi4j™? ==
 The short answer is that Qi4j™ is a framework for domain centric application development, including evolved concepts
 from http://en.wikipedia.org/wiki/Aspect-oriented_programming[AOP],
@@ -12,14 +16,17 @@ your experience and toolkits to become more productive with Composite Oriented P
 Moreover, Qi4j™ enables Composite Oriented Programming on the Java platform, including both Java and Scala as primary
 languages as well as many of the plethora of languages running on the JVM as bridged languages.
 
-== Introducing Qi4j™ ==
+CAUTION: This website relates to the upcoming Qi4j™ SDK 2.0. The website related to stable
+http://www2.qi4j.org/[Qi4j™ SDK 1.4.x] is still available.
 
-image:intro-qi.gif["Qi",align="left"] Qi4j™ is pronounced "chee for jay". This website is out of scope to explain the many
-facets and history of Qi, so we refer the interested to read the http://en.wikipedia.org/wiki/Qi[lengthy article] at 
+image:intro-qi.png["Qi",align="center"]
+
+Qi4j™ is pronounced "chee for jay". This website is out of scope to explain the many
+facets and history of Qi, so we refer the interested to read the http://en.wikipedia.org/wiki/Qi[lengthy article] at
 Wikipedia. For us, Qi is the force/energy within the body, in this case the Java platform. Something that makes Java
 so much better, if it is found and channeled into a greater good.
 
-We strongly recommend the <<introduction-background>> article found in the introduction.
+We strongly recommend the Background article found in the <<tutorials-intro>>.
 
 == Principles ==
 
