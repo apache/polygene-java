@@ -12,6 +12,7 @@ dependencies {
   compile(libraries.mysql_connector)
   compile(libraries.postgres)
   compile(libraries.c3p0)
+  compile(libraries.bonecp)
   compile(libraries.liquibase)
   compile(libraries.slf4j_api)
   testCompile(libraries.junit)
