@@ -21,13 +21,14 @@
  */
 package org.qi4j.library.shiro;
 
+import java.io.IOException;
+import java.net.InetAddress;
 import java.util.EnumSet;
 import javax.servlet.DispatcherType;
 import org.apache.http.HttpHost;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -35,6 +36,7 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ssl.SslSelectChannelConnector;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -44,10 +46,8 @@ import org.qi4j.library.shiro.web.servlet.Qi4jShiroServletFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.net.InetAddress;
-
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assume.assumeTrue;
 
 public class StrictX509Test
         extends AbstractServletTestSupport
@@ -59,6 +59,13 @@ public class StrictX509Test
             throws AssemblyException
     {
         new StrictX509TestAssembler().assemble( module );
+    }
+
+    @BeforeClass
+    public static void beforeTestClass()
+    {
+        // Deactivated on IBM JDK because Apache HttpClient and IBM JSSE don't work well when doing mutual X509 auth
+        assumeTrue( !System.getProperty( "java.vendor" ).contains( "IBM" ) );
     }
 
     @Override
@@ -87,7 +94,7 @@ public class StrictX509Test
         filterHolder.setInitParameter( Qi4jShiroServletFilter.FILTER_CHAINS_PARAM, "{\"" + SECURED_SERVLET_PATH + "\":\"authcX509\"}" );
 
         EnumSet<DispatcherType> dispatches = EnumSet.of( DispatcherType.REQUEST );
-        sch.addFilter( filterHolder, SECURED_SERVLET_PATH, dispatches);
+        sch.addFilter( filterHolder, SECURED_SERVLET_PATH, dispatches );
     }
 
     @Test
@@ -98,9 +105,9 @@ public class StrictX509Test
         ResponseHandler<String> responseHandler = new BasicResponseHandler();
 
         DefaultHttpClient client = new DefaultHttpClient();
-        SSLSocketFactory sslsf = new SSLSocketFactory( X509FixturesData.clientSSLContext() );
-        sslsf.setHostnameVerifier( new AllowAllHostnameVerifier() ); // For unit testing convenience only, do not use in production
-        Scheme https = new Scheme( "https", sslsf, httpHost.getPort() );
+        SSLSocketFactory sslsf = new SSLSocketFactory( X509FixturesData.clientSSLContext(),
+                                                       SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER );
+        Scheme https = new Scheme( "https", httpHost.getPort(), sslsf );
         client.getConnectionManager().getSchemeRegistry().register( https );
 
         String response = client.execute( httpHost, get, responseHandler );
