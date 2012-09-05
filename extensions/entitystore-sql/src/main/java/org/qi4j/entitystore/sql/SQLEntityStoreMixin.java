@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -106,14 +107,14 @@ public class SQLEntityStoreMixin
 
     private String uuid;
 
-    private Integer count;
+    private AtomicInteger count = new AtomicInteger();
 
     @Override
     public void activateService()
         throws Exception
     {
         uuid = UUID.randomUUID().toString() + "-";
-        count = 0;
+        count.set( 0 );
         database.startDatabase();
     }
 
@@ -309,9 +310,9 @@ public class SQLEntityStoreMixin
             }
 
         } catch ( SQLException ex ) {
-            
+
             throw new EntityStoreException( ex );
-            
+
         } finally {
 
             SQLUtil.closeQuietly( rs );
@@ -329,7 +330,7 @@ public class SQLEntityStoreMixin
     @SuppressWarnings( "ValueOfIncrementOrDecrementUsed" )
     protected String newUnitOfWorkId()
     {
-        return uuid + Integer.toHexString( count++ );
+        return uuid + Integer.toHexString( count.incrementAndGet() );
     }
 
     protected DefaultEntityState readEntityState( DefaultEntityStoreUnitOfWork unitOfWork, Reader entityState )
@@ -346,8 +347,7 @@ public class SQLEntityStoreMixin
             String identity = jsonObject.getString( "identity" );
 
             // Check if version is correct
-            String currentAppVersion = jsonObject.optString( MapEntityStore.JSONKeys.application_version.name(),
-                                                             "0.0" );
+            String currentAppVersion = jsonObject.optString( MapEntityStore.JSONKeys.application_version.name(), "0.0" );
             if( !currentAppVersion.equals( application.version() ) )
             {
                 if( migration != null )
