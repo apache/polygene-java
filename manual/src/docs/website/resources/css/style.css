@@ -176,7 +176,7 @@ h2.title
 
 .sub-nav .toc dl dt
 {
-    font-size: 0.85em;
+    font-size: 0.75em;
 }
 
 div.article
@@ -206,7 +206,7 @@ body > div.section
 .sub-nav .toc dt span
 {
     display: table;
-    margin: 3px;
+    margin: 0;
     text-decoration: none;
 }
 .sub-nav .toc dt a:before,
