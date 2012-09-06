@@ -49,12 +49,12 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
-import org.qi4j.library.sql.datasource.C3P0DataSourceServiceImporter;
 import org.qi4j.library.sql.datasource.DataSourceConfiguration;
 import org.qi4j.spi.Qi4jSPI;
 
@@ -114,7 +114,7 @@ public interface DataSourceConfigurationManagerService
         Iterable<ServiceReference<DataSource>> dataSources;
 
         @Service
-        ServiceReference<C3P0DataSourceServiceImporter> dataSourceService;
+        ServiceReference<ServiceImporter<DataSource>> dataSourceService;
 
         private List<ObjectName> configurationNames = new ArrayList<ObjectName>();
 
@@ -264,9 +264,9 @@ public interface DataSourceConfigurationManagerService
                 extends EditableConfiguration
         {
 
-            private ServiceReference<C3P0DataSourceServiceImporter> service;
+            private ServiceReference<ServiceImporter<DataSource>> service;
 
-            ConfigurableDataSource( ServiceReference<C3P0DataSourceServiceImporter> service, MBeanInfo info, String identity, Map<String, AccessibleObject> propertyNames )
+            ConfigurableDataSource( ServiceReference<ServiceImporter<DataSource>> service, MBeanInfo info, String identity, Map<String, AccessibleObject> propertyNames )
             {
                 super( info, identity, propertyNames );
                 this.service = service;

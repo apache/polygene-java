@@ -10,10 +10,10 @@ source=libraries/sql/dev-status.xml
 The SQL Library provides facilities for working with SQL databases.
 
 The center piece is the DataSource support that comes with
-<<library-circuitbreaker>> and <<library-jmx>> support.
-Moreover, this library helps dealing with schema migrations and doing SQL I/O
-with the <<core-io>>.
+<<library-circuitbreaker>> and <<library-jmx>> support. Facilities for doing SQL I/O with the <<core-io>> are provided.
 
+Moreover, supplementary libraries helps dealing with different connection pool implementations and schema migrations.
+None of theses libraries depends on an actual JDBC driver, you are free to use the one that suits your needs.
 
 
 
@@ -21,8 +21,9 @@ with the <<core-io>>.
 
 == DataSource and connection pools ==
 
-DataSource support comes in three flavors:
+DataSource support comes in four flavors:
 
+- using the http://jolbox.com/[BoneCP] connection pool
 - using the http://sourceforge.net/projects/c3p0/[C3P0] connection pool
 - using the http://commons.apache.org/dbcp/[Apache DBCP] connection pool
 - importing an existing DataSource provided at assembly time
@@ -33,7 +34,31 @@ DataSource support comes in three flavors:
 
 === Connection Pools ===
 
+Connection Pools support is provided by supplementary libraries.
+
+*BoneCP*
+
+[devstatus]
+--------------
+source=libraries/sql-bonecp/dev-status.xml
+--------------
+
+BoneCP support resides in the *sql-bonecp* module.
+
+[snippet,java]
+----
+source=libraries/sql/src/test/java/org/qi4j/library/sql/DocumentationSupport.java
+tag=bonecp
+----
+
 *C3P0*
+
+[devstatus]
+--------------
+source=libraries/sql-bonecp/dev-status.xml
+--------------
+
+C3P0 support resides in the *sql-c3p0* module.
 
 [snippet,java]
 ----
@@ -42,6 +67,13 @@ tag=c3p0
 ----
 
 *Apache DBCP*
+
+[devstatus]
+--------------
+source=libraries/sql-dbcp/dev-status.xml
+--------------
+
+Apache DBCP support resides in the *sql-dbcp* module.
 
 [snippet,java]
 ----
@@ -127,41 +159,9 @@ Here is a simple example:
 
 [snippet,java]
 ----
-source=libraries/sql/src/test/java/org/qi4j/library/sql/liquibase/LiquibaseServiceTest.java
+source=libraries/sql-liquibase/src/test/java/org/qi4j/library/sql/liquibase/LiquibaseServiceTest.java
 tag=io
 ----
-
-
-
-
-
-== Liquibase ==
-
-Database schema migration can be delegated to http://www.liquibase.org/[Liquibase].
-
-*Assembly*
-
-[snippet,java]
-----
-source=libraries/sql/src/test/java/org/qi4j/library/sql/liquibase/LiquibaseServiceTest.java
-tag=assembly
-----
-
-The LiquibaseService is activated on Application startup and if enabled it
-applies the configured changelog.
-
-*Configuration*
-
-[snippet,java]
-----
-source=libraries/sql/src/main/java/org/qi4j/library/sql/liquibase/LiquibaseConfiguration.java
-tag=config
-----
-
-For the Liquibase service to be enabled you must set it's Configuration
-+enabled+ Property to TRUE. *contexts* and *changeLog* are optional.
-
-
 
 
 
@@ -181,4 +181,40 @@ will get its Configuration available using a JMX client.
 
 Note that the JMX support does not apply to existing DataSource imported as
 described above.
+
+
+
+
+== Schema migration ==
+
+Database schema migration can be delegated to http://www.liquibase.org/[Liquibase].
+
+[devstatus]
+--------------
+source=libraries/sql-liquibase/dev-status.xml
+--------------
+
+Liquibase support resides in the *sql-liquibase* module.
+
+*Assembly*
+
+[snippet,java]
+----
+source=libraries/sql-liquibase/src/test/java/org/qi4j/library/sql/liquibase/LiquibaseServiceTest.java
+tag=assembly
+----
+
+The LiquibaseService is activated on Application startup and if enabled it
+applies the configured changelog.
+
+*Configuration*
+
+[snippet,java]
+----
+source=libraries/sql-liquibase/src/main/java/org/qi4j/library/sql/liquibase/LiquibaseConfiguration.java
+tag=config
+----
+
+For the Liquibase service to be enabled you must set it's Configuration
++enabled+ Property to TRUE. *contexts* and *changeLog* are optional.
 

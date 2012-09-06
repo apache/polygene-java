@@ -1,0 +1,9 @@
+description = "Qi4j SQL BoneCP Library provides BoneCP support."
+
+jar { manifest { name = "Qi4j Library - SQL BoneCP" }}
+
+dependencies {
+  compile(project(":org.qi4j.libraries:org.qi4j.library.sql"))
+  compile(libraries.bonecp)
+}
+

@@ -12,14 +12,12 @@
  * limitations under the License.
  *
  */
-package org.qi4j.library.sql.assembly;
+package org.qi4j.library.sql.liquibase;
 
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.library.sql.liquibase.LiquibaseConfiguration;
-import org.qi4j.library.sql.liquibase.LiquibaseService;
 
 public class LiquibaseAssembler
         implements Assembler

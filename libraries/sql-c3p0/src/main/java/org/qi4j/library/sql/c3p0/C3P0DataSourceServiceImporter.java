@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2011, Rickard Öberg. All Rights Reserved.
  * Copyright (c) 2012, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -11,33 +12,42 @@
  * limitations under the License.
  *
  */
-package org.qi4j.library.sql.datasource;
+package org.qi4j.library.sql.c3p0;
 
-import com.jolbox.bonecp.BoneCPDataSource;
+import com.mchange.v2.c3p0.ComboPooledDataSource;
+import com.mchange.v2.c3p0.DataSources;
+import java.sql.SQLException;
 import java.util.Properties;
+import javax.sql.DataSource;
 import org.qi4j.api.activation.Activators;
 import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.service.ServiceImporter;
+import org.qi4j.library.sql.datasource.AbstractDataSourceServiceImporterMixin;
+import org.qi4j.library.sql.datasource.DataSourceConfigurationValue;
+import org.qi4j.library.sql.datasource.DataSourceServiceImporterActivation;
 
 /**
  * DataSource service implemented as a ServiceImporter.
  *
- * Import visible DataSources as Services. The default Mixin use the BoneCP
+ * Import visible DataSources as Services. The default Mixin use the C3P0
  * pooling system optionaly wrapped with CircuitBreaker using a proxy.
  */
-@Mixins( BoneCPDataSourceServiceImporter.Mixin.class )
+@Mixins( C3P0DataSourceServiceImporter.Mixin.class )
 @Activators( DataSourceServiceImporterActivation.Activator.class )
-public class BoneCPDataSourceServiceImporter
+public interface C3P0DataSourceServiceImporter
+        extends ServiceImporter<DataSource>, DataSourceServiceImporterActivation, ServiceComposite
 {
 
     class Mixin
-            extends AbstractDataSourceServiceImporterMixin<BoneCPDataSource>
+            extends AbstractDataSourceServiceImporterMixin<ComboPooledDataSource>
     {
 
         @Override
-        protected BoneCPDataSource setupDataSourcePool( DataSourceConfigurationValue config )
+        protected ComboPooledDataSource setupDataSourcePool( DataSourceConfigurationValue config )
                 throws Exception
         {
-            BoneCPDataSource pool = new BoneCPDataSource();
+            ComboPooledDataSource pool = new ComboPooledDataSource();
 
             Class.forName( config.driver().get() );
             pool.setDriverClass( config.driver().get() );
@@ -55,19 +65,19 @@ public class BoneCPDataSourceServiceImporter
             pool.setProperties( poolProperties );
 
             if ( !config.username().get().equals( "" ) ) {
-                pool.setUsername( config.username().get() );
+                pool.setUser( config.username().get() );
                 pool.setPassword( config.password().get() );
             }
-            pool.setMaxConnectionAgeInSeconds( 60 * 60 ); // One hour max age
+            pool.setMaxConnectionAge( 60 * 60 ); // One hour max age
 
             return pool;
         }
 
         @Override
-        protected void passivateDataSourcePool( BoneCPDataSource dataSourcePool )
-                throws Exception
+        protected void passivateDataSourcePool( ComboPooledDataSource dataSourcePool )
+                throws SQLException
         {
-            dataSourcePool.close();
+            DataSources.destroy( dataSourcePool );
         }
 
     }

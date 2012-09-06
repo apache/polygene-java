@@ -1,0 +1,9 @@
+description = "Qi4j SQL C3P0 Library provides C3P0 support."
+
+jar { manifest { name = "Qi4j Library - SQL C3P0" }}
+
+dependencies {
+  compile(project(":org.qi4j.libraries:org.qi4j.library.sql"))
+  compile(libraries.c3p0)
+}
+

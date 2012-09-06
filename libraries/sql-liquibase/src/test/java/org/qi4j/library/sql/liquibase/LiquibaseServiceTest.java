@@ -19,13 +19,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.sql.DataSource;
-
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import org.junit.Test;
-
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.event.ActivationEvent;
 import org.qi4j.api.event.ActivationEventListener;
@@ -41,15 +36,16 @@ import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.functional.Function;
 import org.qi4j.io.Inputs;
 import org.qi4j.io.Outputs;
-import static org.qi4j.io.Outputs.collection;
-import static org.qi4j.io.Transforms.map;
-import org.qi4j.library.sql.assembly.C3P0DataSourceServiceAssembler;
 import org.qi4j.library.sql.assembly.DataSourceAssembler;
-import org.qi4j.library.sql.assembly.LiquibaseAssembler;
+import org.qi4j.library.sql.c3p0.C3P0DataSourceServiceAssembler;
 import org.qi4j.library.sql.datasource.DataSources;
 import org.qi4j.library.sql.datasource.Databases;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.qi4j.io.Outputs.collection;
+import static org.qi4j.io.Transforms.map;
 
 /**
  * Test DataSource and Liquibase services
@@ -66,10 +62,10 @@ public class LiquibaseServiceTest
             {
                 new C3P0DataSourceServiceAssembler( "datasource-service", Visibility.module, module, Visibility.module ).assemble( module );
                 new DataSourceAssembler( "datasource-service",
-                                         "testds3",
+                                         "testds-liquibase",
                                          Visibility.module,
                                          DataSources.newDataSourceCircuitBreaker() ).assemble( module );
-                
+
                 module.values( SomeValue.class );
 
                 // Set up Liquibase service that will create the tables
@@ -99,9 +95,9 @@ public class LiquibaseServiceTest
 
                 } );
             }
-            
+
         };
-        
+
         Module module = assembler.module();
 
         // START SNIPPET: io

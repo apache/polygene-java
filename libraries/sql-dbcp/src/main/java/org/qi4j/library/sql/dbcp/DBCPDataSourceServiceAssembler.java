@@ -11,14 +11,14 @@
  * limitations under the License.
  *
  */
-package org.qi4j.library.sql.assembly;
+package org.qi4j.library.sql.dbcp;
 
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.library.sql.datasource.DBCPDataSourceServiceImporter;
+import org.qi4j.library.sql.assembly.AbstractPooledDataSourceServiceAssembler;
 
 /**
- * Use this Assembler to register a DataSourceService based on C3P0 and its Configuration entity.
+ * Use this Assembler to register a DataSourceService based on DBCP and its Configuration entity.
  */
 public class DBCPDataSourceServiceAssembler
         extends AbstractPooledDataSourceServiceAssembler
