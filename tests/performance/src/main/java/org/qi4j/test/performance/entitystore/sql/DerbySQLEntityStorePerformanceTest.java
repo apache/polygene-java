@@ -21,7 +21,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.entitystore.sql.assembly.DerbySQLEntityStoreAssembler;
-import org.qi4j.library.sql.assembly.DBCPDataSourceServiceAssembler;
+import org.qi4j.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.qi4j.library.sql.assembly.DataSourceAssembler;
 import org.qi4j.library.sql.common.SQLConfiguration;
 import org.qi4j.library.sql.datasource.DataSources;

@@ -22,7 +22,7 @@ import org.qi4j.library.conversion.values.EntityToValueService;
 import org.qi4j.library.sql.datasource.DataSourceConfiguration;
 import org.qi4j.library.sql.datasource.DataSourceConfigurationValue;
 
-/* package */ abstract class AbstractPooledDataSourceServiceAssembler
+public abstract class AbstractPooledDataSourceServiceAssembler
         implements Assembler
 {
 

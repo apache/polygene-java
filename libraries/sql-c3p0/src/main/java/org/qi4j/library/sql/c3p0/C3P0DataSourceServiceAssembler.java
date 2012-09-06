@@ -11,11 +11,11 @@
  * limitations under the License.
  *
  */
-package org.qi4j.library.sql.assembly;
+package org.qi4j.library.sql.c3p0;
 
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.library.sql.datasource.C3P0DataSourceServiceImporter;
+import org.qi4j.library.sql.assembly.AbstractPooledDataSourceServiceAssembler;
 
 /**
  * Use this Assembler to register a DataSourceService based on C3P0 and its Configuration entity.

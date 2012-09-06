@@ -17,12 +17,9 @@ package org.qi4j.library.sql.jmx;
 import java.beans.PropertyVetoException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import javax.sql.DataSource;
-
 import org.junit.Assert;
 import org.junit.Test;
-
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.service.ServiceReference;
@@ -35,7 +32,7 @@ import org.qi4j.io.Outputs;
 import org.qi4j.io.Receiver;
 import org.qi4j.library.circuitbreaker.CircuitBreaker;
 import org.qi4j.library.jmx.JMXAssembler;
-import org.qi4j.library.sql.assembly.C3P0DataSourceServiceAssembler;
+import org.qi4j.library.sql.c3p0.C3P0DataSourceServiceAssembler;
 import org.qi4j.library.sql.assembly.DataSourceAssembler;
 import org.qi4j.library.sql.assembly.DataSourceJMXAssembler;
 import org.qi4j.library.sql.datasource.DataSources;

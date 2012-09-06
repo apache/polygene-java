@@ -14,17 +14,18 @@
 package org.qi4j.library.sql;
 
 import javax.sql.DataSource;
-
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.circuitbreaker.CircuitBreaker;
-import static org.qi4j.library.sql.DocumentationSupport.Constants.*;
-import org.qi4j.library.sql.assembly.C3P0DataSourceServiceAssembler;
-import org.qi4j.library.sql.assembly.DBCPDataSourceServiceAssembler;
 import org.qi4j.library.sql.assembly.DataSourceAssembler;
+import org.qi4j.library.sql.bonecp.BoneCPDataSourceServiceAssembler;
+import org.qi4j.library.sql.c3p0.C3P0DataSourceServiceAssembler;
+import org.qi4j.library.sql.dbcp.DBCPDataSourceServiceAssembler;
+
+import static org.qi4j.library.sql.DocumentationSupport.Constants.*;
 import static org.qi4j.library.sql.datasource.DataSources.newDataSourceCircuitBreaker;
 
 class DocumentationSupport
@@ -72,6 +73,12 @@ class DocumentationSupport
                 throws AssemblyException
         {
             ModuleAssembly config = module;
+
+            // START SNIPPET: bonecp
+            // Assemble the BoneCP based Service Importer
+            new BoneCPDataSourceServiceAssembler( DS_SERVICE_ID, Visibility.module,
+                                                config, Visibility.layer ).assemble( module );
+            // END SNIPPET: bonecp
 
             // START SNIPPET: c3p0
             // Assemble the C3P0 based Service Importer

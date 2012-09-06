@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.library.sql.datasource;
+package org.qi4j.library.sql.dbcp;
 
 import javax.sql.DataSource;
 import org.apache.commons.dbcp.BasicDataSource;
@@ -19,6 +19,9 @@ import org.qi4j.api.activation.Activators;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceImporter;
+import org.qi4j.library.sql.datasource.AbstractDataSourceServiceImporterMixin;
+import org.qi4j.library.sql.datasource.DataSourceConfigurationValue;
+import org.qi4j.library.sql.datasource.DataSourceServiceImporterActivation;
 
 @Mixins( DBCPDataSourceServiceImporter.Mixin.class )
 @Activators( DataSourceServiceImporterActivation.Activator.class )

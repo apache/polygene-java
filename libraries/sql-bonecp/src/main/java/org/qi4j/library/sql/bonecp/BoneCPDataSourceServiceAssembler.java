@@ -11,11 +11,11 @@
  * limitations under the License.
  *
  */
-package org.qi4j.library.sql.assembly;
+package org.qi4j.library.sql.bonecp;
 
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.library.sql.datasource.BoneCPDataSourceServiceImporter;
+import org.qi4j.library.sql.assembly.AbstractPooledDataSourceServiceAssembler;
 
 /**
  * Use this Assembler to register a DataSourceService based on BoneCP and its Configuration entity.

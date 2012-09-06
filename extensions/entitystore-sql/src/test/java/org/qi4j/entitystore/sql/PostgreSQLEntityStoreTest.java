@@ -28,7 +28,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.entitystore.sql.assembly.PostgreSQLEntityStoreAssembler;
 import org.qi4j.entitystore.sql.internal.SQLs;
-import org.qi4j.library.sql.assembly.DBCPDataSourceServiceAssembler;
+import org.qi4j.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.qi4j.library.sql.assembly.DataSourceAssembler;
 import org.qi4j.library.sql.common.SQLConfiguration;
 import org.qi4j.library.sql.common.SQLUtil;
@@ -37,30 +37,30 @@ import org.qi4j.test.entity.AbstractEntityStoreTest;
 
 /**
  * WARN This test is deactivated on purpose, please do not commit it activated.
- * 
+ *
  * To run it you need to have a user & database set up in postgresql. Here are two snippets to create and drop the
  * needed test environment.
- * 
+ *
  * Use 'password' as password for the jdbc_test_login user.
- * 
+ *
  * <pre>
  * createuser -A -D -P -E -W jdbc_test_login
  * createdb -O jdbc_test_login -W jdbc_test_db
  * psql -d jdbc_testdb
  * CREATE EXTENSION ltree;
  * </pre>
- * 
+ *
  * To clear the data:
- * 
+ *
  * <pre>
  * dropdb -W jdbc_test_db
  * createdb -O jdbc_test_login -W jdbc_test_db
  * psql -d jdbc_test_db
  * CREATE EXTENSION ltree;
  * </pre>
- * 
+ *
  * To remove the test user:
- * 
+ *
  * <pre>
  * dropuser -W jdbc_test_login
  * </pre>
@@ -87,7 +87,7 @@ public class PostgreSQLEntityStoreTest
                                                                    "postgresql-datasource",
                                                                    Visibility.module,
                                                                    DataSources.newDataSourceCircuitBreaker() );
-        
+
         // EntityStore
         new PostgreSQLEntityStoreAssembler( dsAssembler ).assemble( module );
         config.entities( SQLConfiguration.class ).visibleIn( Visibility.layer );

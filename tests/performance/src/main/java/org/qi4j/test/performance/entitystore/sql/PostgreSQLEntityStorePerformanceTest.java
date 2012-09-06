@@ -32,7 +32,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.entitystore.sql.assembly.PostgreSQLEntityStoreAssembler;
 import org.qi4j.entitystore.sql.internal.SQLs;
-import org.qi4j.library.sql.assembly.DBCPDataSourceServiceAssembler;
+import org.qi4j.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.qi4j.library.sql.assembly.DataSourceAssembler;
 import org.qi4j.library.sql.common.SQLConfiguration;
 import org.qi4j.library.sql.common.SQLUtil;
@@ -41,9 +41,9 @@ import org.qi4j.test.performance.entitystore.model.AbstractEntityStorePerformanc
 
 /**
  * WARN This test is deactivated on purpose, please do not commit it activated.
- * 
+ *
  * To run it see {@link PostgreSQLEntityStorePerformanceTest}.
- * 
+ *
  * FIXME ES Performance tests seem to be pretty broken at the moment. At least if I want to delete test data after
  * running tests, and also by not waiting for Runnables to finish running.
  */
