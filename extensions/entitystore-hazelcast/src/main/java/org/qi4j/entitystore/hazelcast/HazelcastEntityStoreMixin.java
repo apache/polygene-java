@@ -63,7 +63,7 @@ public abstract class HazelcastEntityStoreMixin extends MapEntityStoreMixin
     public void activateService()
         throws Exception
     {
-        HazelcastConfiguration configuration = config.configuration();
+        HazelcastConfiguration configuration = config.get();
         Config conf = createConfig( configuration );
         hazelcastInstance = Hazelcast.newHazelcastInstance( conf );
         String mapName = DEFAULT_MAPNAME;

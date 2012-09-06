@@ -196,7 +196,7 @@ public class SchedulerMixin
     {
 
         // Handle configuration defaults
-        SchedulerConfiguration configuration = config.configuration();
+        SchedulerConfiguration configuration = config.get();
         Integer workersCount = configuration.workersCount().get();
         Integer workQueueSize = configuration.workQueueSize().get();
 

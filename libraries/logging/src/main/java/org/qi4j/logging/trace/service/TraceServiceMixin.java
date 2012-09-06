@@ -54,7 +54,7 @@ public class TraceServiceMixin
         if( counter++ % 100 == 0 )
         {
             counter = 0;
-            traceLevel = configuration.configuration().traceLevel().get();
+            traceLevel = configuration.get().traceLevel().get();
         }
         return traceLevel;
     }

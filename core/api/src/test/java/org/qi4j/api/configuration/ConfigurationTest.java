@@ -1,6 +1,5 @@
 package org.qi4j.api.configuration;
 
-import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
@@ -56,7 +55,7 @@ public class ConfigurationTest extends AbstractQi4jTest
         @Override
         public PersonDetails details()
         {
-            return myconf.configuration().me().get();
+            return myconf.get().me().get();
         }
     }
 

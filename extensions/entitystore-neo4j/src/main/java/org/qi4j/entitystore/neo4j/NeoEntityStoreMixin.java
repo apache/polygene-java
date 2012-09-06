@@ -48,11 +48,11 @@ public class NeoEntityStoreMixin
    public void activateService()
            throws Exception
    {
-      String path = config.configuration().path().get();
+      String path = config.get().path().get();
       if (path == null)
       {
          if (fileConfiguration != null)
-            path = new File(fileConfiguration.dataDirectory(), config.configuration().identity().get()).getAbsolutePath();
+            path = new File(fileConfiguration.dataDirectory(), config.get().identity().get()).getAbsolutePath();
          else
             path = "build/neodb";
       }

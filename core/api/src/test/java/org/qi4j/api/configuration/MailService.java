@@ -43,7 +43,7 @@ public interface MailService
         public void sendMail( @Email String to, @MinLength( 8 ) String subject, String body )
         {
             config.refresh();
-            MailServiceConfiguration conf = config.configuration();
+            MailServiceConfiguration conf = config.get();
             String hostName = conf.hostName().get();
             int port = conf.port().get();
             // END SNIPPET: read
@@ -56,7 +56,7 @@ public interface MailService
         @Override
         public void changeExternalMailService( String hostName, int port )
         {
-            MailServiceConfiguration conf = config.configuration();
+            MailServiceConfiguration conf = config.get();
             conf.hostName().set( hostName );
             conf.port().set( port );
             config.save();

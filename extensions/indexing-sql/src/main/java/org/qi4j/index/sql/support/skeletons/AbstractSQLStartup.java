@@ -132,7 +132,7 @@ public abstract class AbstractSQLStartup
         this.initTypes();
         this.modifyPrimitiveTypes( this._primitiveTypes, this._state.javaTypes2SQLTypes().get() );
         
-        String schemaName = this._configuration.configuration().schemaName().get();
+        String schemaName = this._configuration.get().schemaName().get();
         if( schemaName == null )
         {
             schemaName = DEFAULT_SCHEMA_NAME;

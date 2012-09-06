@@ -69,7 +69,7 @@ public class ServiceInstance
     public boolean isAvailable()
     {
         // Check Enabled in configuration first
-        if( hasEnabledConfiguration && !( (Configuration<Enabled>) proxy() ).configuration().enabled().get() )
+        if( hasEnabledConfiguration && !( (Configuration<Enabled>) proxy() ).get().enabled().get() )
         {
             return false;
         }

@@ -69,7 +69,7 @@ public abstract class EhCachePoolMixin
         throws Exception
     {
         net.sf.ehcache.config.Configuration configuration = new net.sf.ehcache.config.Configuration();
-        EhCacheConfiguration conf = config.configuration();
+        EhCacheConfiguration conf = config.get();
         Boolean updateCheck = conf.updateCheck().get();
         configuration.setUpdateCheck( updateCheck );
         configuration.setDynamicConfig( true );
@@ -98,7 +98,7 @@ public abstract class EhCachePoolMixin
 
     private CacheConfiguration createCacheConfiguration( String cacheId )
     {
-        EhCacheConfiguration conf = config.configuration();
+        EhCacheConfiguration conf = config.get();
         Integer maxElementsInMemory = conf.maxElementsInMemory().get();
         if( maxElementsInMemory <= 0 )
         {

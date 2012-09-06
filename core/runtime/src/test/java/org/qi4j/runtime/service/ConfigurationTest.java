@@ -145,7 +145,7 @@ public class ConfigurationTest
 
         public String sayHello()
         {
-            return config.configuration().phrase() + " " + config.configuration().name();
+            return config.get().phrase() + " " + config.get().name();
         }
     }
 }

@@ -57,7 +57,7 @@ public class SecureJettyMixin
     @Override
     protected JettyConfiguration configuration()
     {
-        return configuration.configuration();
+        return configuration.get();
     }
 
     @Override
@@ -82,7 +82,7 @@ public class SecureJettyMixin
     protected Connector buildConnector()
     {
         SslConnector connector = new SslSelectChannelConnector( new SslContextFactory() );
-        JettyConfigurationHelper.configureSslConnector( connector, configuration.configuration() );
+        JettyConfigurationHelper.configureSslConnector( connector, configuration.get() );
         return connector;
     }
 

@@ -116,7 +116,7 @@ public abstract class MongoMapEntityStoreMixin
             throws UnknownHostException
     {
         configuration.refresh();
-        MongoEntityStoreConfiguration config = configuration.configuration();
+        MongoEntityStoreConfiguration config = configuration.get();
 
         // Combine hostname, port and nodes configuration properties
         serverAddresses = new ArrayList<ServerAddress>();

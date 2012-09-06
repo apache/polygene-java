@@ -77,7 +77,7 @@ public interface LiquibaseService
                 throws Exception
         {
             config.refresh();
-            boolean enabled = config.configuration().enabled().get();
+            boolean enabled = config.get().enabled().get();
             if ( !enabled ) {
                 return;
             }
@@ -87,8 +87,8 @@ public interface LiquibaseService
 
                 connection = dataSource.get().getConnection();
                 DatabaseConnection dc = new JdbcConnection( connection );
-                Liquibase liquibase = new Liquibase( config.configuration().changeLog().get(), new ClassLoaderResourceAccessor(), dc );
-                liquibase.update( config.configuration().contexts().get() );
+                Liquibase liquibase = new Liquibase( config.get().changeLog().get(), new ClassLoaderResourceAccessor(), dc );
+                liquibase.update( config.get().contexts().get() );
 
             } catch ( SQLException e ) {
 

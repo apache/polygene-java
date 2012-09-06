@@ -46,7 +46,7 @@ public class JettyMixin
     @Override
     protected JettyConfiguration configuration()
     {
-        return configuration.configuration();
+        return configuration.get();
     }
 
     @Override

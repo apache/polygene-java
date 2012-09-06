@@ -62,7 +62,7 @@ public interface HttpRepositoryService
     {
         public HttpRepositoryMixin( @This Configuration<HttpRepositoryConfiguration> configuration )
         {
-            super( getRepositoryUrl( configuration.configuration() ), getRepositoryId( configuration.configuration() ) );
+            super( getRepositoryUrl( configuration.get() ), getRepositoryId( configuration.get() ) );
         }
 
         private static String getRepositoryUrl( HttpRepositoryConfiguration configuration )

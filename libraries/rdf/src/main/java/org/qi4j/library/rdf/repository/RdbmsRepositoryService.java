@@ -85,7 +85,7 @@ public interface RdbmsRepositoryService extends Repository, ServiceComposite
         public void initialize()
             throws RepositoryException
         {
-            RdbmsRepositoryConfiguration conf = configuration.configuration();
+            RdbmsRepositoryConfiguration conf = configuration.get();
             String jdbcDriver = conf.jdbcDriver().get();
             String jdbcUrl = conf.jdbcUrl().get();
             String user = conf.user().get();

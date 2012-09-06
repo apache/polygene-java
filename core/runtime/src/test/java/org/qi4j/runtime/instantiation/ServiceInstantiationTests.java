@@ -80,7 +80,7 @@ public class ServiceInstantiationTests
 
         public String doSomething()
         {
-            return config.configuration().data().get();
+            return config.get().data().get();
         }
     }
 }

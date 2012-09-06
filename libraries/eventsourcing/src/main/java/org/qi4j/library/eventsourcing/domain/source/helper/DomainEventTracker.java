@@ -56,7 +56,7 @@ public class DomainEventTracker
         this.output = output;
         this.source = source;
 
-        logger = LoggerFactory.getLogger( configuration.configuration().identity().get() );
+        logger = LoggerFactory.getLogger( configuration.get().identity().get() );
     }
 
     public synchronized void start()
@@ -83,16 +83,16 @@ public class DomainEventTracker
     public synchronized void run()
     {
         // TODO This should optionally use a CircuitBreaker
-        if (started && configuration.configuration().enabled().get())
+        if (started && configuration.get().enabled().get())
         {
             Transforms.Counter counter = new Transforms.Counter();
             try
             {
-                long currentOffset = configuration.configuration().lastOffset().get();
+                long currentOffset = configuration.get().lastOffset().get();
                 source.events( currentOffset, Long.MAX_VALUE ).transferTo( Transforms.map( counter, output ) );
 
                 // Save new offset, to be used in next round
-                configuration.configuration().lastOffset().set( currentOffset+counter.getCount() );
+                configuration.get().lastOffset().set( currentOffset+counter.getCount() );
                 configuration.save();
             } catch (Throwable throwable)
             {

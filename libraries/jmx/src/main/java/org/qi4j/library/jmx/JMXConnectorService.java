@@ -90,12 +90,12 @@ public interface JMXConnectorService
 
         public void startJMXConnector() throws Exception
         {
-            if (config.configuration().enabled().get())
+            if (config.get().enabled().get())
             {
                 // see java.rmi.server.ObjID
                 System.setProperty( "java.rmi.server.randomIDs", "true" );
 
-                int jmxAgentPort = config.configuration().port().get();
+                int jmxAgentPort = config.get().port().get();
 
                 registry = LocateRegistry.createRegistry( jmxAgentPort );
 
@@ -105,7 +105,7 @@ public interface JMXConnectorService
                                 + "/jndi/rmi://" + hostName + ":" + jmxAgentPort + "/jmxrmi" );
                 Map env = new HashMap();
 
-                if(config.configuration().username().get() != null)
+                if(config.get().username().get() != null)
                     env.put( JMXConnectorServer.AUTHENTICATOR, new ConfigurationJmxAuthenticator() );
 
                 try
@@ -163,9 +163,9 @@ public interface JMXConnectorService
                 String username = aCredentials[0];
                 String password = aCredentials[1];
 
-                String configUsername = config.configuration().username().get();
+                String configUsername = config.get().username().get();
 
-                if (!(configUsername == null || (configUsername.equals( username ) && !password.equals( config.configuration().password().get() ))))
+                if (!(configUsername == null || (configUsername.equals( username ) && !password.equals( config.get().password().get() ))))
                 {
                     throw new SecurityException( "User/password combination not valid." );
                 }

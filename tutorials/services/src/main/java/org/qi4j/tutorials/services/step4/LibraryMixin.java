@@ -35,9 +35,9 @@ public class LibraryMixin
     public LibraryMixin( @This Configuration<LibraryConfiguration> config, @Structure ValueBuilderFactory factory )
     {
         books = new HashMap<String, ArrayList<Book>>();
-        String titles = config.configuration().titles().get();
-        String authors = config.configuration().authors().get();
-        int copies = config.configuration().copies().get();
+        String titles = config.get().titles().get();
+        String authors = config.get().authors().get();
+        int copies = config.get().copies().get();
         StringTokenizer titlesSt = new StringTokenizer( titles, ",", false );
         StringTokenizer authorSt = new StringTokenizer( authors, ",", false );
         while( titlesSt.hasMoreTokens() )

@@ -50,7 +50,7 @@ public class DebuggingServiceMixin
 
     public int debugLevel()
     {
-        return configuration.configuration().debugLevel().get();
+        return configuration.get().debugLevel().get();
     }
 
     public void debug( Composite composite, String message )

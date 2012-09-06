@@ -69,12 +69,12 @@ public class FileEntityStoreMixin
     public void initialize()
         throws Exception
     {
-        String pathName = config.configuration().directory().get();
+        String pathName = config.get().directory().get();
         if( pathName == null )
         {
             if( fileConfiguration != null )
             {
-                pathName = new File( fileConfiguration.dataDirectory(), config.configuration()
+                pathName = new File( fileConfiguration.dataDirectory(), config.get()
                     .identity()
                     .get() ).getAbsolutePath();
             }
@@ -97,7 +97,7 @@ public class FileEntityStoreMixin
         }
         if( slices < 1 )
         {
-            Integer slicesConf = config.configuration().slices().get();
+            Integer slicesConf = config.get().slices().get();
             if( slicesConf == null )
             {
                 slices = 10;

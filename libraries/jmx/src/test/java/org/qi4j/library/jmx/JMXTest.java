@@ -124,7 +124,7 @@ public class JMXTest
 
             public void printConfig()
             {
-                System.out.println( "Activate service:" + config.configuration().stringConfig().get() );
+                System.out.println( "Activate service:" + config.get().stringConfig().get() );
             }
 
         }
@@ -146,7 +146,7 @@ public class JMXTest
 
             public void printConfig()
             {
-                System.out.println( "Activate service:" + config.configuration().stringConfig().get() );
+                System.out.println( "Activate service:" + config.get().stringConfig().get() );
             }
 
         }
@@ -168,7 +168,7 @@ public class JMXTest
 
             public void printConfig()
             {
-                System.out.println( "Activate service:" + config.configuration().stringConfig().get() );
+                System.out.println( "Activate service:" + config.get().stringConfig().get() );
             }
 
         }

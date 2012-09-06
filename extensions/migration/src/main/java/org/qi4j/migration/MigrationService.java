@@ -144,7 +144,7 @@ public interface MigrationService
             log = LoggerFactory.getLogger( MigrationService.class );
 
             String version = app.version();
-            String lastVersion = config.configuration().lastStartupVersion().get();
+            String lastVersion = config.get().lastStartupVersion().get();
 
             // Run general rules if version has changed
             if( !app.version().equals( lastVersion ) )
@@ -165,7 +165,7 @@ public interface MigrationService
                         log.info( "Migrated to " + version );
                     }
 
-                    config.configuration().lastStartupVersion().set( version );
+                    config.get().lastStartupVersion().set( version );
                     config.save();
                 }
                 catch( Exception e )

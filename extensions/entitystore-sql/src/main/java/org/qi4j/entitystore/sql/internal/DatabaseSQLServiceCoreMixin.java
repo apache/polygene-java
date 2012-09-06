@@ -159,7 +159,7 @@ public abstract class DatabaseSQLServiceCoreMixin
             NullArgumentException.validateNotNull( "default schema name", defaultSchemaName );
             return defaultSchemaName;
         }
-        String result = this.configuration.configuration().schemaName().get();
+        String result = this.configuration.get().schemaName().get();
         if ( result == null ) {
             NullArgumentException.validateNotNull( "default schema name", defaultSchemaName );
             result = defaultSchemaName;

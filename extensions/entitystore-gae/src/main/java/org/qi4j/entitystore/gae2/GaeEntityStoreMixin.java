@@ -68,7 +68,7 @@ public class GaeEntityStoreMixin
     public void activateGaeEntityStore()
         throws Exception
     {
-        GaeEntityStoreConfiguration conf = config.configuration();
+        GaeEntityStoreConfiguration conf = config.get();
         // eventually consistent reads with a 5 second deadline
         DatastoreServiceConfig configuration =
             withReadPolicy( new ReadPolicy( ReadPolicy.Consistency.valueOf( conf.readPolicy().get().toUpperCase() ) ) )

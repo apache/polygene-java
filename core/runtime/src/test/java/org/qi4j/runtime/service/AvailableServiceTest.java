@@ -78,7 +78,7 @@ public class AvailableServiceTest
 
         assertThat( "service is unavailable", serviceRef.isAvailable(), equalTo( false ) );
 
-        serviceRef.get().configuration().enabled().set( true );
+        serviceRef.get().get().enabled().set( true );
         serviceRef.get().save();
 
         assertThat( "service is available", serviceRef.isAvailable(), equalTo( true ) );
@@ -106,7 +106,7 @@ public class AvailableServiceTest
 
         ServiceReference<TestServiceComposite2> serviceRef = assembler.module()
             .findService( TestServiceComposite2.class );
-        serviceRef.get().configuration().enabled().set( true );
+        serviceRef.get().get().enabled().set( true );
         serviceRef.get().save();
 
         object = assembler.module().newObject( TestObject.class );

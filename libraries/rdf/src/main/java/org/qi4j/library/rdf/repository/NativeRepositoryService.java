@@ -95,15 +95,15 @@ public interface NativeRepositoryService extends Repository, ServiceComposite, A
       public void initialize()
               throws RepositoryException
       {
-         String dataDir = configuration.configuration().dataDirectory().get();
+         String dataDir = configuration.get().dataDirectory().get();
          if (dataDir == null || "".equals(dataDir))
          {
             if (fileConfiguration != null)
             {
-               dataDir = new File(fileConfiguration.dataDirectory(), configuration.configuration().identity().get()).getAbsolutePath();
+               dataDir = new File(fileConfiguration.dataDirectory(), configuration.get().identity().get()).getAbsolutePath();
             } else
             {
-               String id = configuration.configuration().identity().get();
+               String id = configuration.get().identity().get();
                if (id == null || "".equals(id))
                {
                   dataDir = "./rdf/repositories/qi4j";
@@ -112,7 +112,7 @@ public interface NativeRepositoryService extends Repository, ServiceComposite, A
                   dataDir = "./rdf/repositories/" + id;
                }
             }
-            configuration.configuration().dataDirectory().set(dataDir);
+            configuration.get().dataDirectory().set(dataDir);
             configuration.save();
          }
          initializeRepository(new File(dataDir));
@@ -173,13 +173,13 @@ public interface NativeRepositoryService extends Repository, ServiceComposite, A
       private void initializeRepository(File dataDir)
               throws RepositoryException
       {
-         String tripleIndexes = configuration.configuration().tripleIndexes().get();
+         String tripleIndexes = configuration.get().tripleIndexes().get();
          if (tripleIndexes == null)
          {
             tripleIndexes = "";
-            configuration.configuration().tripleIndexes().set(tripleIndexes);
+            configuration.get().tripleIndexes().set(tripleIndexes);
          }
-         boolean forceSync = configuration.configuration().forceSync().get();
+         boolean forceSync = configuration.get().forceSync().get();
 
          NativeStore store = (NativeStore) repo.getSail();
          store.setDataDir(dataDir);

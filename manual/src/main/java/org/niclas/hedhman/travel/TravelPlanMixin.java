@@ -11,7 +11,7 @@ public class TravelPlanMixin implements TravelPlan
 
     private void foo()
     {
-        TravelPlanConfiguration tpConf = config.configuration();
+        TravelPlanConfiguration tpConf = config.get();
         String hostName = tpConf.hostName().get();
         // ...
     }
@@ -23,7 +23,7 @@ public class TravelPlanMixin implements TravelPlan
         // Refresh Configuration before reading it.
         config.refresh();
 
-        TravelPlanConfiguration tpConf = config.configuration();
+        TravelPlanConfiguration tpConf = config.get();
         // ...
     }
     // END SNIPPET: refresh

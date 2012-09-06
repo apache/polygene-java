@@ -45,7 +45,7 @@ public class PersistedSequencingMixin
                 {
                     try
                     {
-                        Property<Long> property = sequence.configuration().currentValue();
+                        Property<Long> property = sequence.get().currentValue();
                         long value = property.get();
                         value = value + 1;
                         property.set( value );
@@ -71,7 +71,7 @@ public class PersistedSequencingMixin
     {
         synchronized( this )
         {
-            return sequence.configuration().currentValue().get();
+            return sequence.get().currentValue().get();
         }
     }
 }

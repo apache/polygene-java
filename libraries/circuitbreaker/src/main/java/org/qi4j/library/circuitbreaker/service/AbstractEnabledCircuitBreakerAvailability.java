@@ -45,7 +45,7 @@ public interface AbstractEnabledCircuitBreakerAvailability
 
       public boolean isAvailable()
       {
-         return config.configuration().enabled().get() && circuitBreaker.getCircuitBreaker().getStatus() == CircuitBreaker.Status.on;
+         return config.get().enabled().get() && circuitBreaker.getCircuitBreaker().getStatus() == CircuitBreaker.Status.on;
       }
    }
 }

@@ -70,7 +70,7 @@ public class ReindexerMixin
    public void reindex()
    {
       configuration.refresh();
-      ReindexerConfiguration conf = configuration.configuration();
+      ReindexerConfiguration conf = configuration.get();
       Integer loadValue = conf.loadValue().get();
       if (loadValue == null)
       {

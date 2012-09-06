@@ -101,11 +101,11 @@ public abstract class JCloudsMapEntityStoreMixin
         throws Exception
     {
         configuration.refresh();
-        String provider = configuration.configuration().provider().get();
-        String identifier = configuration.configuration().identifier().get();
-        String credentials = configuration.configuration().credential().get();
-        Map<String, String> properties = configuration.configuration().properties().get();
-        container = configuration.configuration().container().get();
+        String provider = configuration.get().provider().get();
+        String identifier = configuration.get().identifier().get();
+        String credentials = configuration.get().credential().get();
+        Map<String, String> properties = configuration.get().properties().get();
+        container = configuration.get().container().get();
         if( provider != null )
         {
             checkArgument( contains( allKeys, provider ), "provider %s not in supported list: %s", provider, allKeys );

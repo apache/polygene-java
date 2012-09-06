@@ -51,7 +51,7 @@ public class DeclareConfigurationDefaultsTest
 
         public String configuredFoo()
         {
-            return config.configuration().foo().get();
+            return config.get().foo().get();
         }
 
     }

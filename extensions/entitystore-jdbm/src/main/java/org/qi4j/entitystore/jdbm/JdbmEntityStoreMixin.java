@@ -396,7 +396,7 @@ public class JdbmEntityStoreMixin
 
     private String getDatabaseName()
     {
-        String pathname = config.configuration().file().get();
+        String pathname = config.get().file().get();
         if( pathname == null )
         {
             if( fileConfiguration != null )
@@ -419,7 +419,7 @@ public class JdbmEntityStoreMixin
 
     private Properties getProperties()
     {
-        JdbmConfiguration config = this.config.configuration();
+        JdbmConfiguration config = this.config.get();
 
         Properties properties = new Properties();
 

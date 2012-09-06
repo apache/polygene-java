@@ -56,7 +56,7 @@ public class VoldemortEntityStoreMixin
    public void activateService()
            throws Exception
    {
-      VoldemortConfiguration conf = config.configuration();
+      VoldemortConfiguration conf = config.get();
       ClientConfig config = new ClientConfig();
       {
          List<String> value = conf.bootstrapUrl().get();

@@ -237,7 +237,7 @@ public class QrmSqlEntityStore
 //    {
 //        iBatisConfiguration.refresh();
 //        initializeDatabase();
-//        QrmSqlConfiguration configuration = iBatisConfiguration.configuration();
+//        QrmSqlConfiguration configuration = iBatisConfiguration.get();
 //        config = new QrmSqlClient( configuration.sqlMapConfigURL().get(), configuration.configProperties().get() );
 //        config.activate();
 //    }
@@ -246,7 +246,7 @@ public class QrmSqlEntityStore
 //        throws SQLException, IOException
 //    {
 //        final DBInitializer dbInitializer = new DBInitializer();
-//        QrmSqlConfiguration configuration = iBatisConfiguration.configuration();
+//        QrmSqlConfiguration configuration = iBatisConfiguration.get();
 //        Properties connectionProperties = configuration.connectionProperties().get();
 //        String schemaUrl = configuration.schemaUrl().get();
 //        String dataUrl = configuration.dataUrl().get();

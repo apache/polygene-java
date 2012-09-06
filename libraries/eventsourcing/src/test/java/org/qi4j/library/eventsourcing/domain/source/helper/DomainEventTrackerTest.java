@@ -159,7 +159,7 @@ public class DomainEventTrackerTest
 
             public void startTracker()
             {
-                config.configuration().enabled().set( true );
+                config.get().enabled().set( true );
 
                Output<UnitOfWorkDomainEventsValue,RuntimeException> map = Transforms.map( new Function<UnitOfWorkDomainEventsValue, String>()
                        {

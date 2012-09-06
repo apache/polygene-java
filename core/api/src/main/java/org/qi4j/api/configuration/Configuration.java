@@ -84,7 +84,7 @@ import static org.qi4j.functional.Iterables.first;
  * :
  * private void setTimeoutConfiguration( long timeout )
  * {
- *     config.configuration().timeout().set( timeout );
+ *     config.get().timeout().set( timeout );
  *     config.save();
  * }
  * </code></pre>
@@ -112,7 +112,7 @@ public interface Configuration<T>
      *
      * @return The fully initialized and ready-to-use user configuration instance.
      */
-    T configuration();
+    T get();
 
     /**
      * Updates the values of the managed user ConfigurationComposite instance from the underlying
@@ -156,7 +156,7 @@ public interface Configuration<T>
         {
         }
 
-        public synchronized T configuration()
+        public synchronized T get()
         {
             if( configuration == null )
             {
