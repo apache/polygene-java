@@ -1,3 +1,3 @@
-[[qi4j-cop,Qi4j - Composite Oriented Programming on Java platform]]
-= Qi4j - Composite Oriented Programming on Java platform =
+[[qi4j-cop,COP with Java and Qi4j]]
+= COP with Java and Qi4j =
 

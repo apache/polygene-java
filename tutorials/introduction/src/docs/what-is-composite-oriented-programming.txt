@@ -1,5 +1,5 @@
-[[what-is-cop,What is Composite Oriented Programming?]]
-= What is Composite Oriented Programming? =
+[[what-is-cop,What is COP?]]
+= What is COP? =
 
 We found this very well written blog entry on the Internet, which very well describes what Composite Oriented
 Programming really is.

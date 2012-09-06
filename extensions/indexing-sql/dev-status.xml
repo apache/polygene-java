@@ -11,7 +11,7 @@
         <documentation>none</documentation>
 
         <!-- none, some, good, complete -->
-        <unittests>some</unittests>
+        <unittests>good</unittests>
     </status>
     <licenses>
         <license>ALv2</license>

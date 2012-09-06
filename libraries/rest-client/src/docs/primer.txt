@@ -1,5 +1,5 @@
 [[library-rest-client-primer, HATEOAS Primer]]
-= ReST Client Introduction & Background =
+= ReST - HATEOAS Primer
 
 The Qi4j ReST Client implements HATEOAS (Hypermedia As The Engine Of Application State) to the full extent intended
 by Roy Fielding. The ReST Client Library enables the creation of HATEOAS applications that are NOT using the URL space,

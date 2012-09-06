@@ -1,6 +1,5 @@
-
 [[news-20120525,Qi4j launches new website]]
-= Qi4j Community launches new website =
+= New Qi4j website! =
 
 After years with SiteVision from Senselogic, the Qi4j community has decided that SiteVision does not fulfill the needs
 of this community. Primarily, SiteVision can not satisfy some really central needs of open source communities;

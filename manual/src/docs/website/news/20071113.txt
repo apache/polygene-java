@@ -1,5 +1,5 @@
-[[news-20071113,Qi4j at Øredev 2007]]
-= Qi4j at Øredev 2007 =
+[[news-20071113,Qi4j at Øredev 2007 - COP]]
+= @ Øredev 2007 - COP =
 
 Qi4J - Composite Oriented Programming Today
 

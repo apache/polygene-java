@@ -162,21 +162,21 @@ h2.title
 {
     position: absolute;
     top: 65px;
-    left: 160px;
+    left: 155px;
 }
 
 .sub-nav .toc dl
 {
     font-family: sans-serif;
-    width: 180px;
-    margin-right: 25px;
+    width: 200px;
+    margin-right: 0px;
     margin-left: 0px;
     margin-bottom: 40px;
 }
 
 .sub-nav .toc dl dt
 {
-    font-size: 0.75em;
+    font-size: 0.8em;
 }
 
 div.article

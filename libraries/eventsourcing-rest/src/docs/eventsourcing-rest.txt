@@ -1,5 +1,5 @@
 [[library-eventsourcing-rest, Event Sourcing ReST Library]]
-= Event Sourcing - ReST backend =
+= Event Sourcing - ReST =
 
 [devstatus]
 --------------

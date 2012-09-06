@@ -1,4 +1,4 @@
-[[news-20100125,Quicker Frameworks]]
+[[news-20100125,Rickard about Quicker Frameworks on the DDD website]]
 = Quicker Frameworks =
 
 Usually, a framework is created to make development faster by hiding the
