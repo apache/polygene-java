@@ -69,18 +69,15 @@ import static org.qi4j.functional.Iterables.first;
  * The user configuration entity is part of a long running {@link UnitOfWork}, and to persist changes to it the
  * {@link #save()} method must be called. No other actions are required. Example;
  * <pre><code>
- * <p/>
+ *
  * public interface MyConfiguration extends ConfigurationComposite
  * {
  *     Property&lt;Long&gt; timeout();
  * }
- * <p/>
+ *
  * :
- * <p/>
- * <p/>
+ *
  * &#64;This Configuration&lt;MyConfiguration&gt; config;
- * <p/>
- * <p/>
  * :
  * private void setTimeoutConfiguration( long timeout )
  * {
@@ -92,7 +89,19 @@ import static org.qi4j.functional.Iterables.first;
  * {@link UnitOfWork} isolation will ensure that the other thread is not affected. That thread, on the other hand
  * will need to do a {@link #refresh()} at an appropriate time to pick up the timeout change. For instance;
  * <code><pre>
- * <p/>
+ *
+ * &#64;Service InventoryService remoteInventoryService;
+ *
+ * public void restockInventoryItem( InventoryItemId id, int itemCount )
+ * {
+ *     config.refresh();
+ *     long timeout = config.get().timeout().get();
+ *
+ *     remoteInventoryService.restock( id, itemCount, timeout );
+ *
+ *     :
+ *     :
+ * }
  * </pre></code>
  * </p>
  */
