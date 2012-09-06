@@ -60,10 +60,6 @@ include::../../../../extensions/entitystore-preferences/src/docs/es-preferences.
 
 :leveloffset: 2
 
-include::../../../../extensions/entitystore-qrm/src/docs/es-qrm.txt[]
-
-:leveloffset: 2
-
 include::../../../../extensions/entitystore-sql/src/docs/es-sql.txt[]
 
 :leveloffset: 2
