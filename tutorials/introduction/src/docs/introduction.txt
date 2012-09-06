@@ -1,43 +1,68 @@
+[[tutorials,Tutorials Section]]
+= Tutorials =
+
+== Overview ==
+
+In this section you will find a comprehensive set of tutorials about Composite
+Oriented Programming using Qi4j.
+
+Theses tutorials are based on actual code found in the Qi4j SDK sources. You
+should start your favorite editor and find the code related to the tutorial you
+choosed to follow, run it and play with it.
+
+The code of theses tutorials is available in the +tutorials/+ directory of the
+Qi4j SDK source.
+
 [[tutorials-intro,Introduction to Qi4j]]
-= Introduction to Qi4j =
+=== Introduction to Qi4j ===
 
 This quite long introduction to Qi4j will start by brushing up an overview of the problems Qi4j solve, teach you what
 Composite Oriented Programming is and guide you through the process of writing a complete Application around an adapted
 Hello World example.
 
-:leveloffset: 3
+- <<two-minutes-intro>>
+- <<ten-minutes-intro>>
+- <<thirty-minutes-intro>>
+- <<two-hours-intro>>
+- <<introduction-background>>
+- <<what-is-cop>>
+- <<what-s-an-object-anyway>>
+- <<state-modeling>>
 
-// include::highlights.txt[]
+=== Transient Composites Tutorial ===
 
-include::background.txt[]
+Throughout this set of tutorials it will be shown how to create and work with Transient Composites, which is the basic
+element in Qi4j. We will refactor one HelloWorld class to take advantage of the various features in Qi4j. These
+refactorings will make it easier to reuse parts of the class, and introduce new features without having to change
+existing code. We will also look at some of the existing classes, or Fragments, available in Qi4j that you can reuse
+so that you don't have to write everything yourself.
 
-:leveloffset: 3
+- <<tut-composites-step1>>
+- <<tut-composites-step2>>
+- <<tut-composites-step3>>
+- <<tut-composites-step4>>
+- <<tut-composites-step5>>
+- <<tut-composites-step6>>
+- <<tut-composites-step7>>
+- <<tut-composites-step8>>
+- <<tut-composites-step9>>
 
-include::what-is-composite-oriented-programming.txt[]
+Each tutorial step in this series starts with the result from the previous tutorial, so you can
+always look at the next tutorial step for guidance on what to do.
 
-:leveloffset: 3
+At the bottom of each tutorial step, the is Solutions section, which list the files you should have come to if you
+have followed the instructions.
 
-include::qi4j-cop.txt[]
+=== Services Composites Tutorial ===
 
-:leveloffset: 3
+CAUTION: This tutorial is still work-in-progress!
 
-include::whats-an-object.txt[]
+In this other set of tutorials it will be shown how to create and work with Service Composites, which are composites
+that extends from the ServiceComposite class. We will refactor one a very simple Library where you can borrow and
+return books to take advantage of the various features in Qi4j. These refactorings will benefit from automatic Service
+activation and Configuration Entities management.
 
-:leveloffset: 3
-
-include::../../twominutes/src/docs/two-minutes.txt[]
-
-:leveloffset: 3
-
-include::../../tenminutes/src/docs/ten-minutes.txt[]
-
-:leveloffset: 3
-
-include::../../thirtyminutes/src/docs/thirty-minutes.txt[]
-
-:leveloffset: 3
-
-include::../../twohours/src/docs/two-hours.txt[]
-
-:leveloffset: 3
+- <<tut-services-step1>>
+- <<tut-services-step2>>
+- <<tut-services-step3>>
 

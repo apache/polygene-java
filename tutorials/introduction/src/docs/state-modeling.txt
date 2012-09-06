@@ -1,0 +1,213 @@
+[[state-modeling,State Modeling]]
+= Qi4j and state modeling =
+
+(From Rickard Oberg's blog, http://www.jroller.com/rickard/entry/qi4j_and_state_modeling, 2009-02-19)
+
+In the Qi4j project we strive to being able to express our domain as directly as possible, with as little translation
+as possible between how we think about a domain and how it is actually coded.
+This then affects our entire view of how application frameworks should be constructed, and what we consider good and
+bad ways of implementing certain features.
+
+One part which is a good example of this is persistent state modeling. In other approaches and frameworks one would
+typically use POJOs for the objects, and then plain class fields for references, collections and properties.
+But during modeling these are not the words we use.
+If POJOs are used for both Entities and Values, which have radically different semantics, we have to always translate
+in our heads when talking about them, always keeping mind what the POJO is doing in any particular context.
+In Domain Driven Design terms, POJOs are not in our Ubiquitous Language.
+
+From a DDD perspective we want to talk about Entities and Values, Properties and Associations.
+If our code does not reflect this, then there is translation going on, and translation inevitably leads to information loss.
+In Qi4j, where Composites and not Objects, are the basic construct, we have created specialized forms to model these
+concepts more explicitly.
+We have EntityComposites and ValueComposites, each with different ways of creating them and managing them.
+Both EntityComposites and ValueComposites can then have Properties, as first-class objects, but Properties in
+ValueComposites are always immutable.
+
+== Entities ==
+
+Here's an example of how you could define an EntityComposite:
+
+[source,java]
+--------------
+interface PersonEntity
+  extends EntityComposite
+{
+  Property<String> givenName();
+  Property<String> surName();
+}
+--------------
+
+With these few lines you have done what would have taken a whole lot more effort using POJOs, and what you want to
+express is very explicit.
+To define a property you would have had to write a field and two accessors, and if you use interfaces then those
+accessors would have to be duplicated.
+
+The EntityComposite base interface also includes an identity property for you, as that's an intrinsic feature of
+Entities, so that's all taken care of.
+So if you speak about Entities in your domain discussions, each having Properties, then you can put that down in
+code pretty much as-is.
+This is, to me, a huge advantage over other ways of doing it, including POJO modeling (which lose clarity), UML
+modeling (which has roundtrip problems), DSL modeling (which lose tools support), and whatnot.
+
+== Roles ==
+
+If you want to get picky about it, the above example is probably not how you would model Person. Having a name is
+just one role that a Person has to play, and since Composite Oriented Programming is all about using roles and
+context instead of classes you would probably do something like this instead:
+
+[source,java]
+--------------
+interface Nameable
+{
+   @UseDefaults Property<String> givenName();
+   @UseDefaults @Optional Property<String> surName();
+}
+
+interface PersonEntity
+extends Nameable, EntityComposite
+{}
+--------------
+
+I've extracted the ability to be Named to its own interface, and let my domain Entity extend it.
+This way client code can check for "x instanceof Nameable" rather than "x instanceof PersonEntity", and then do
+something intelligent with it.
+By doing this, not only has Nameable become a reusable interface, but the client code that understands it has also
+become reusable for all domain objects in your model that uses it!
+
+I've also marked both properties as @UseDefaults.
+What does this do?
+Well, if you have string properties they have the annoying property of being null to begin with, compared to ints
+and longs which default to 0.
+We figured that this was such a useful thing that we wanted to be able to mark our properties as being able to have
+their initial values be set to a default, for the type.
+For Strings this is the empty string, for primitives they are what you would expect.
+For Collections they are set to empty collections of the type indicated.
+"@UseDefaults Property<List<String>> addresses();" would be initialized to an empty ArrayList, for example.
+
+In addition I have set surName() to be @Optional.
+In Qi4j we have defined all properties to be not-null as the default, and the same goes for all parameters in method
+invocations.
+If you explicitly want to allow properties to be null, so that for example "Madonna" would be an acceptable name,
+then you can mark it as @Optional.
+We prefer @Optional to @Nullable since it better expresses the intent from a domain perspective.
+Avoiding technical terms as much as possible is a another goal (which is damn hard to reach!).
+
+== Values ==
+
+If you want to get really picky about it, not even the above would be a real example.
+You may want to encapsulate the two properties into one value instead, so that you can more easily perform validation
+checks when they are updated. What you want are ValueComposites:
+
+[source,java]
+--------------
+interface NameValue
+   extends ValueComposite
+{
+   @UseDefaults Property<String> givenName();
+   @UseDefaults @Optional Property<String> surName();
+}
+
+interface Nameable
+{
+   Property<NameValue> name();
+}
+--------------
+
+Normally if you want a property to be immutable, meaning, you can set an initial value but not change it later, you
+would have to mark the Property as @Immutable.
+But since NameValue extends ValueComposite, which itself is marked with @Immutable, this is implicit for all subtypes
+of ValueComposite, and there's no way to "opt out" of it.
+
+By introducing one more level in the state model you have created an easy way to access the name as a whole and hand
+it around the system, instead of as two separate properties.
+Since it is immutable you are also ensured that noone can change it without going through the Entity, and you can
+also share instances of the name without having to worry about thread-safety.
+
+== Privatizing state ==
+
+The above is already a great step ahead in terms of how you can model your state more easily than having to use POJOs
+to sort of "fake" the features I'm describing above, and there's also a ton of cool features and consequences of the
+whole thing I'm skipping here, for brevity.
+One of the problems with POJO models that usually come up is that your getters and setters get exposed to clients,
+and so functionality tend to not be put in the Entities, but rather in services and helper code, thereby scattering
+the Entity into a bunch of places.
+What should have been a neat and tidy little package is instead a anorectic little thing whose guts lay splashed
+around your code, looking all soggy and unappetizing.
+
+What to do about this?
+One of the great inventions of Qi4j, I believe, is the notion of private mixins.
+That we can have mixins in an object which are explicitly HIDDEN from usage outside of it.
+How can we use this for state modeling?
+What you'd want to do is to model the state of an Entity as a private mixin, which is hidden from clients, and then
+you write role mixins which map domain methods to that internal state. Here's an example:
+
+[source,java]
+--------------
+@Mixins(ListablePersonMixin.class)
+interface PersonEntity
+   extends Listable, EntityComposite {}
+
+interface PersonState
+   extends Nameable {}
+
+public class ListablePersonMixin
+   implements Listable
+{
+   @This PersonState person;
+
+   public String listName()
+   {
+      String fullName = person.name().get().givenName().get();
+      String sn = name().get().surName().get();
+      if (sn != null) fullName += " "+sn;
+      return fullName;
+   }
+}
+--------------
+
+Neat huh?
+@This is a dependency injection annotation, but rather than the usual generic annotations like "@Inject" and friends,
+this one actually has a meaningful scope, that is, it requires that "this Entity" implements PersonState.
+The reference, as it is not extended by PersonEntity, is not visible to clients of the Entity and is hence a
+private mixin.
+Furthermore, all of a sudden your client code doesn't even care if your domain object is Nameable, but rather if it
+is Listable.
+Cool!
+So you can make a UI widget for listing "stuff" that only requires that your thingie is Listable, rather than being
+a PersonEntity or Nameable.
+
+For extra credit you could move the construction of "fullName" into a method on the NameValue, so that the value is
+not only a dumb data container, but can also perform useful operations on itself.
+And for the performance aware, don't worry, the mixin is lazy-loaded, so if the particular usecase handling the
+Entity doesn't need the "Listable" interface the mixin will never be instantiated.
+
+And so much more...
+
+The above is just a small taste of what you can do with state modeling in Qi4j.
+There is also support for associations and many-associations, the notion of aggregates, and a complete pluggable
+system for persistence and indexing/querying of data.
+To end with, here's a sample of how some other state modeling concepts can be expressed in Qi4j:
+
+[source,java]
+--------------
+interface PersonEntity
+   extends EntityComposite
+{
+   Association<PersonEntity> father();
+   @Optional Association<PersonEntity> spouse();
+   SetAssociation<PersonEntity> children();
+   @Aggregated ListAssociation<BookNoteEntity> favouriteBooks();
+}
+
+interface BookNoteEntity
+   extends EntityComposite
+{
+  Property<String> note();
+  Association<BookEntity> book();
+}
+--------------
+
+I hope they are self-explanatory.
+
+My hope is that with Composite Oriented Programming and Qi4j we can come one step closer to being able to express our
+domain as clearly as possible in code.
