@@ -17,6 +17,8 @@ import static org.junit.Assert.assertThat;
 
 /**
  * {@link BookNewCargo} tests
+ * 
+ * FIXME: Every test method call the one above to allow ordered execution, ie. tests are not indepedants !
  */
 public class BookNewCargoTest extends TestApplication
 {
@@ -30,6 +32,7 @@ public class BookNewCargoTest extends TestApplication
     @Test
     public void deviation_2b_DeadlineInThePastNotAccepted() throws Exception
     {
+        deviation_2a_OriginAndDestinationSame();
         thrown.expect( CannotCreateRouteSpecificationException.class, "Arrival deadline is in the past or Today." );
         new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, day( -1 ) ).getTrackingId();
     }
@@ -37,6 +40,7 @@ public class BookNewCargoTest extends TestApplication
     @Test
     public void deviation_2b_DeadlineTodayIsTooEarly() throws Exception
     {
+        deviation_2b_DeadlineInThePastNotAccepted();
         thrown.expect( CannotCreateRouteSpecificationException.class, "Arrival deadline is in the past or Today." );
         new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, day( 0 ) ).getTrackingId();
     }
@@ -44,12 +48,14 @@ public class BookNewCargoTest extends TestApplication
     @Test
     public void deviation_2b_DeadlineTomorrowIsOkay() throws Exception
     {
+        deviation_2b_DeadlineTodayIsTooEarly();
         new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, DAY1 ).getTrackingId();
     }
 
     @Test
     public void step_2_CanCreateRouteSpecification() throws Exception
     {
+        deviation_2b_DeadlineTomorrowIsOkay();
         trackingId = new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, DAY24 ).getTrackingId();
         cargo = uow.get( CargoEntity.class, trackingId.id().get() );
         assertThat( cargo.routeSpecification().get().origin().get(), is( equalTo( HONGKONG ) ) );
@@ -60,6 +66,7 @@ public class BookNewCargoTest extends TestApplication
     @Test
     public void step_3_CanDeriveInitialDeliveryData() throws Exception
     {
+        step_2_CanCreateRouteSpecification();
         trackingId = new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, DAY24 ).getTrackingId();
         cargo = uow.get( CargoEntity.class, trackingId.id().get() );
         assertDelivery( null, null, null, null,
@@ -71,6 +78,7 @@ public class BookNewCargoTest extends TestApplication
     @Test
     public void deviation_4a_TrackingIdTooShort() throws Exception
     {
+        step_3_CanDeriveInitialDeliveryData();
         thrown.expect( ConstraintViolationException.class, "for value 'no'" );
         new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, DAY24 ).withTrackingId( "no" );
     }
@@ -78,6 +86,7 @@ public class BookNewCargoTest extends TestApplication
     @Test
     public void deviation_4a_TrackingIdNotTooShort() throws Exception
     {
+        deviation_4a_TrackingIdTooShort();
         trackingId = new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, DAY24 ).withTrackingId( "yes" );
         cargo = uow.get( CargoEntity.class, trackingId.id().get() );
         assertThat( cargo.trackingId().get().id().get(), is( equalTo( "yes" ) ) );
@@ -86,6 +95,7 @@ public class BookNewCargoTest extends TestApplication
     @Test
     public void deviation_4a_TrackingIdTooLong() throws Exception
     {
+        deviation_4a_TrackingIdNotTooShort();
         thrown.expect( ConstraintViolationException.class, "for value '1234567890123456789012345678901'" );
         new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, DAY24 ).withTrackingId( "1234567890123456789012345678901" );
     }
@@ -93,6 +103,7 @@ public class BookNewCargoTest extends TestApplication
     @Test
     public void deviation_4a_TrackingIdNotTooLong() throws Exception
     {
+        deviation_4a_TrackingIdTooLong();
         trackingId = new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, DAY24 ).withTrackingId( "123456789012345678901234567890" );
         cargo = uow.get( CargoEntity.class, trackingId.id().get() );
         assertThat( cargo.trackingId().get().id().get(), is( equalTo( "123456789012345678901234567890" ) ) );
@@ -101,6 +112,7 @@ public class BookNewCargoTest extends TestApplication
     @Test
     public void deviation_4a_TrackingIdWithWrongCharacter() throws Exception
     {
+        deviation_4a_TrackingIdNotTooLong();
         thrown.expect( ConstraintViolationException.class, "for value 'Göteborg1234'" );
         new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, DAY24 ).withTrackingId( "Göteborg1234" );
     }
@@ -108,6 +120,7 @@ public class BookNewCargoTest extends TestApplication
     @Test
     public void deviation_4b_TrackingIdNotUnique() throws Exception
     {
+        deviation_4a_TrackingIdWithWrongCharacter();
         thrown.expect( CannotCreateCargoException.class, "Tracking id 'yes' is not unique." );
         new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, DAY24 ).withTrackingId( "yes" );
     }
@@ -115,18 +128,21 @@ public class BookNewCargoTest extends TestApplication
     @Test
     public void step_4_CanAutoCreateTrackingIdFromEmptyString() throws Exception
     {
+        deviation_4b_TrackingIdNotUnique();
         new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, DAY24 ).withTrackingId( "" );
     }
 
     @Test
     public void step_4_CanAutoCreateTrackingIdFromNull() throws Exception
     {
+        step_4_CanAutoCreateTrackingIdFromEmptyString();
         new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, DAY24 ).withTrackingId( null );
     }
 
     @Test
     public void success_BookNewCargo() throws Exception
     {
+        step_4_CanAutoCreateTrackingIdFromNull();
         trackingId = new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, DAY24 ).withTrackingId( "ABC" );
         cargo = uow.get( CargoEntity.class, trackingId.id().get() );
 
