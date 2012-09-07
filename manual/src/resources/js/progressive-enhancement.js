@@ -9,22 +9,20 @@ $( document ).ready( function($){
      * Glossary.
      */
     function glossary( $section ) {
-        
+
         // Better style
         var $dts = $section.find('dt');
         $dts.css('margin','2em 0 1em 0');
         $dts.css('padding','0 0 0.3em 0.5em');
         $dts.css('border-bottom','1px solid #ddd');
         $dts.css('color','#0B75BC');
-        
+
         // Better behavior
         function highlight( hash ) {
             if ( hash ) {
                 var target = $dts.find(hash);
                 var dt = target.parent();
                 var dd = dt.next();
-                console.log(dt);
-                console.log(dd);
                 // Scroll
                 $.scrollTo( dt, 200, { 'offset': -96 });
                 // Highlight
@@ -48,7 +46,6 @@ $( document ).ready( function($){
             switch( each_li_text ) {
                 case 'qi4j-sdk':
                 case 'qi4j-sandbox':
-                    console.log( each_li_text );
                     $each_li.empty();
                     $each_li.css( 'list-style-position', 'inside' );
                     $each_li.html( '<div class="github-widget" data-repo="Qi4j/' + each_li_text + '"></div>' );
@@ -56,18 +53,35 @@ $( document ).ready( function($){
             }
         } );
     }
-    
+
     /**
-     * Community/Mailing List
+     * Community/Get Help
      */
-    function mailing_list( $section ) {
+    function get_help( $section ) {
+
+        // Add StackOverflow info
+        if( false ) { // DEACTIVATED
+            var stack_search_api = 'https://api.stackexchange.com/2.1/search?order=desc&sort=activity&tagged=qi4j&site=stackoverflow'
+            console.log(stack_search_api)
+            $.getJSON( stack_search_api +'&callback=?', function( data ) {
+                console.log( data );
+                if ( data.items.length > 0 ) {
+                    for( var idx_item = 0 ; idx_item < data.items.length ; idx_item++ ) {
+                        var question = data.items[idx_item];
+                        console.log( question.title );
+                    }
+                }
+            } );
+        }
+
         // Add Nabble forum
         $section.append('<iframe id="qi4j-dev-iframe" class="qi4j-iframe"\
                 src="http://qi4j-dev.23929.n6.nabble.com/"\
                 frameborder="0" scrolling="no" allowtransparency="true">\
         </iframe>');
+
     }
-    
+
     /**
      * Community/Issue Tracker
      */
@@ -76,7 +90,7 @@ $( document ).ready( function($){
         var jira_base_url = 'http://team.ops4j.org/';
         var jira_api = jira_base_url + 'rest/api/latest/';
         var jira_url = jira_base_url + 'browse/QI';
-                
+
         $.getJSON( jira_api + 'project/QI?jsonp-callback=?&callback=?', function( data ) {
             if ( data.versions.length > 0 ) {
                 var widget = document.createElement( "div" );
@@ -87,7 +101,7 @@ $( document ).ready( function($){
                     var version = data.versions[ idx_version ];
                     var li = document.createElement( "li" );
                     li.className = 'jira-version';
-                                
+
                     var title = '<div class="title">';
                     if( version.archived || version.released ) {
                         title += '<img src="http://team.ops4j.org/images/icons/package_16.gif" style="float:left"/>';
@@ -96,10 +110,10 @@ $( document ).ready( function($){
                     }
                     title += '<p><strong><a href="' + version.self + '">' + version.name + '</a></strong> - ' + version.description + '</p>';
                     title += "</div>";
-                                
+
                     var issues = '<div class="issues" id="' + version.id + '-issues">';
                     issues += "</div>";
-                                
+
                     var links = '<div class="links">';
                     if ( version.archived || version.released ) {
                         links += '<p>Release date: <strong>' + version.userReleaseDate + '</strong></p>';
@@ -131,7 +145,7 @@ $( document ).ready( function($){
             }
         });
     }
-    
+
     /**
      * Community/Continuous Integration.
      */
@@ -140,7 +154,7 @@ $( document ).ready( function($){
         var ci_url = 'https://qi4j.ci.cloudbees.com/';
         var ci_images_url = ci_url + 'images/16x16/';
         var $target = $section.find('a.ulink[href=' + ci_url + ']');
-                
+
         $.getJSON( ci_url + 'api/json?depth=2&jsonp=?&callback=?', function( data ) {
             if ( data.jobs.length > 0 ) {
                 var widget = document.createElement( "div" );
@@ -152,7 +166,7 @@ $( document ).ready( function($){
                     if ( job.buildable ) {
                         var li = document.createElement( "li" );
                         li.className = 'jenkins-job';
-                                
+
                         var title = '<div class="title">';
                         if (job.color.indexOf('_anime') != -1) {
                             title += '<img src="' + ci_images_url + job.color + '.gif" style="float:left"/>';
@@ -161,7 +175,7 @@ $( document ).ready( function($){
                         }
                         title += '<p><strong>' + job.displayName + '</strong></p>';
                         title += "</div>";
-                                
+
                         var health = '<div class="health">';
                         for( var idx_health = 0; idx_health < job.healthReport.length; idx_health++ ) {
                             var health_data = job.healthReport[ idx_health ];
@@ -178,7 +192,7 @@ $( document ).ready( function($){
                             health += '</ul>';
                         }
                         health += "</div>";
-                                
+
                         var links = '<div class="links">';
                         var last = new Date(job.lastCompletedBuild.timestamp * 1000);
                         links += '<p> Latest <strong>completed</strong> build <a href="' + job.lastCompletedBuild.url + '" target="_blank">#' + job.lastCompletedBuild.number + '</a> on ' + last + '</p>';
@@ -192,16 +206,35 @@ $( document ).ready( function($){
                 widget.appendChild( ul );
                 $target.after( widget );
             }
-            
+
             // Add relationship to builds RSS
             $('<link rel="alternate" type="application/rss+xml" title="Qi4j CI RSS"  href="https://qi4j.ci.cloudbees.com/rssAll" />').appendTo( $('head') );
-            
+
         });
     }
 
     // Global enhancements
-    $("a.ulink[href^='http:']").attr('target','_blank'); // Open external user links in a new window/tab
-    $("a.ulink[href^='https:']").attr('target','_blank'); // Open external user links in a new window/tab
+
+    // Open external user links in a new window/tab
+    $("a.ulink[href^='http:']").attr('target','_blank');
+    $("a.ulink[href^='https:']").attr('target','_blank');
+
+    // Add links to different versions
+    if( false ) { // DEACTIVATED
+        $("div.logo").append('\
+            <p style="margin-top:2em; text-align: center"> \
+                <select style="font-size: 0.5em">\
+                    <option value="2.0" selected="selected">2.0-DEV</option>\
+                    <option value="1.4">1.4-STABLE</option>\
+                </select>\
+            </p>');
+        $("div.logo select").change(function() {
+            switch( $(this).val() ) {
+                case "1.4":
+                    window.location = "http://www2.qi4j.org/";
+            }
+        });
+    }
 
     // Section specific enhancements
     var $section = $( 'body > div.section' );
@@ -213,8 +246,8 @@ $( document ).ready( function($){
         case "Codebase":
             codebase( $section );
             break;
-        case "Mailing List":
-            mailing_list( $section );
+        case "Get Help":
+            get_help( $section );
             break;
         case "Issue Tracker":
             issue_tracker( $section );
@@ -265,7 +298,7 @@ $( document ).ready( function($){
 					</div> \
 				');
                     $widget.appendTo($container);
-                } 
+                }
             })
         });
     });

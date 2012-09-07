@@ -9,6 +9,10 @@ include::community/intro.txt[]
 
 :leveloffset: 2
 
+include::community/help.txt[]
+
+:leveloffset: 2
+
 include::community/codebase.txt[]
 
 :leveloffset: 2
@@ -22,10 +26,6 @@ include::community/playing-field.txt[]
 :leveloffset: 2
 
 include::community/contributing.txt[]
-
-:leveloffset: 2
-
-include::community/mailing-list.txt[]
 
 :leveloffset: 2
 
