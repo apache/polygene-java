@@ -23,7 +23,6 @@ dependencies {
   testRuntime(libraries.commons_dbcp )
   testRuntime(libraries.commons_io )
   testRuntime(libraries.commons_lang )
-//  testRuntime(libraries.jetty)
   testCompile(libraries.junit)
   testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
   testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))

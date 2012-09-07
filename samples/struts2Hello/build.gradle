@@ -11,11 +11,7 @@ dependencies {
   compile(project(":org.qi4j.libraries:org.qi4j.library.constraints"))
   compile(project(":org.qi4j.libraries:org.qi4j.library.rdf"))
 
-  compile(libraries.jetty_server) { transitive = false }
-  compile(libraries.jetty_webapp) { transitive = false }
-  compile(libraries.jetty_servlet) { transitive = false }
-  compile(libraries.jetty_util) { transitive = false }
-  compile(libraries.jetty_http) { transitive = false }
+  compile(libraries.jetty_webapp)
 
   compile(libraries.slf4j_api)
   testCompile(libraries.junit)

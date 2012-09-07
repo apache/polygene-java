@@ -8,26 +8,19 @@ test {
 }
 
 dependencies {
+
   compile( project( ":org.qi4j.core:org.qi4j.core.api" ) )
   compile( project( ":org.qi4j.libraries:org.qi4j.library.constraints" ) )
   compile( project( ":org.qi4j.libraries:org.qi4j.library.jmx" ) )
-  compile( libraries.slf4j_api )
-  compile( libraries.servlet_api )
   compile( libraries.bouncy_castle )
   compile( libraries.jetty_webapp )
-  compile( libraries.jetty_security )
-  compile( libraries.jetty_util )
   compile( libraries.jetty_jmx )
 
-  runtime( libraries.jetty_io )
-
   testCompile( project( ":org.qi4j.core:org.qi4j.core.testsupport" ) )
-  testCompile( libraries.junit )
   testCompile( libraries.http_client )
   testCompile( libraries.dnsjava )
 
-  testRuntime( libraries.asm )
-  testRuntime( libraries.asm_commons )
-  testRuntime( libraries.slf4j_simple )
   testRuntime( project( ":org.qi4j.core:org.qi4j.core.runtime" ) )
+  testRuntime( libraries.logback )
+
 }

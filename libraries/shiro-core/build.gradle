@@ -3,29 +3,21 @@ description = "Qi4j Shiro Library integrates Apache Shiro security framework int
 jar { manifest { name = "Qi4j Library - Shiro" }}
 
 dependencies {
+
   compile( project( ":org.qi4j.core:org.qi4j.core.api" ) )
   compile( project( ":org.qi4j.core:org.qi4j.core.bootstrap" ) )
-  compile( libraries.slf4j_api )
   compile( libraries.bouncy_castle )
   compile( libraries.shiro )
-  compile( libraries.jodatime )
-  testCompile( libraries.junit )
-  testCompile( libraries.servlet_api )
 
-  testCompile( libraries.jetty_webapp )
-  testCompile( libraries.jetty_security )
-  testCompile( libraries.jetty_util )
-  testCompile( libraries.jetty_jmx )
-  testRuntime( libraries.jetty_io )
-
-  testCompile( libraries.http_client )
   testCompile( project( ":org.qi4j.libraries:org.qi4j.library.shiro-web" ) )
   testCompile( project( ":org.qi4j.libraries:org.qi4j.library.servlet" ) )
   testCompile( project( ":org.qi4j.extensions:org.qi4j.extension.indexing-rdf" ) )
   testCompile( project( ":org.qi4j.core:org.qi4j.core.testsupport" ) )
+  testCompile( libraries.jetty_webapp )
+  testCompile( libraries.http_client )
+
   testRuntime( project( ":org.qi4j.core:org.qi4j.core.spi" ) )
   testRuntime( project( ":org.qi4j.core:org.qi4j.core.runtime" ) )
-  testRuntime( libraries.asm )
-  testRuntime( libraries.asm_commons )
-  testRuntime( libraries.slf4j_simple )
+  testRuntime( libraries.logback )
+
 }
