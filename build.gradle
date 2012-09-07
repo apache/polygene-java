@@ -181,6 +181,14 @@ allprojects {
     }
 
     // TODO: Is there some better way to do this??
+    // I could not find any way to get handles on DependencyArtifacts
+    // See: http://www.gradle.org/docs/current/javadoc/org/gradle/api/artifacts/DependencyArtifact.html
+    // It's easy to get handles on artifact files but not on their download url ...
+    // I think it's simply not possible as when artifacts are available locally the underlying IVY resolver
+    // won't try to search remote repositories and so won't resolve remote download URLs.
+    // The only ways to provide a list of download urls would be to provide a Qi4j repository that proxy other ones
+    // so that we have all needed artifacts in a center place, OR, to go down and instrument IVY directly but I'm not
+    // even sure it would allows us to gather resoled download URLs.
     test << {
       def mavenDep = "<dependencies>\n\n"
       def depList = ""
