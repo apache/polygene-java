@@ -1,6 +1,6 @@
 description = "Sample of how DCI (Data, Context & Interaction) pattern is implemented with Qi4j, for Eric Evans DDD sample."
 
-jar { manifest { name = "Qi4j Sample A - DCI Cargo" }}
+jar { manifest { name = "Qi4j Sample DCI Cargo - Sample A" }}
 
 dependencies {
 
