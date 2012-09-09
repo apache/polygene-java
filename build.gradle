@@ -45,7 +45,7 @@ allprojects {
   apply plugin: 'idea'
   apply plugin: 'signing'
   apply plugin: 'java'
-  apply plugin: 'checkstyle'
+//  apply plugin: 'checkstyle'
   apply plugin: 'project-report'
   apply plugin: 'maven'
 
@@ -64,6 +64,39 @@ allprojects {
     mavenRepo name: 'maven2-repository.dev.java.net', url: "http://download.java.net/maven/2"
   }
 
+  // Artifact upload global configuration -----------------------------
+  def uploadSnapshots = version.contains("SNAPSHOT")
+  def uploadReleases = ! uploadSnapshots
+  // By default RELEASES are signed, SNAPSHOTS are not
+  // Signing can be turned on or off by setting the uploadSigned property
+  def uploadSigned = rootProject.hasProperty('uploadSigned') \
+                        ? rootProject.uploadSigned : uploadReleases \
+                        ? true : false
+  // By default RELEASES must satisfy ReleaseSpecification, SNAPSHOT don't
+  // ReleaseSpecification usage can be turned on or off by setting the uploadReleaseSpec property
+  def uploadReleaseSpec = rootProject.hasProperty('uploadReleaseSpec') \
+                             ? rootProject.uploadReleaseSpec : uploadReleases \
+                             ? true : false
+  // By default RELEASES are uploaded using SSH, SNAPSHOTS using WEBDAV
+  // Used Wagon can be overriden by setting the uploadWagon property
+  def wagonSSH = "org.apache.maven.wagon:wagon-ssh:1.0-beta-2"
+  def wagonWEBDAV = "org.apache.maven.wagon:wagon-webdav:1.0-beta-2"
+  def uploadWagon = rootProject.hasProperty('uploadWagon') \
+                        ? rootProject.uploadWagon : uploadReleases \
+                        ? wagonSSH : wagonWEBDAV
+  // By default RELEASES are uploaded to OPS4J, SNAPSHOTS to Cloudbees
+  // Target repository can be overriden by setting the uploadRepository property
+  def releasesRepository = "scp://repository.ops4j.org/home/www/repository.ops4j.org/maven2/"
+  def snapshotsRepository = "dav:https://repository-qi4j.forge.cloudbees.com/snapshot/"
+  def uploadRepository = rootProject.hasProperty('uploadRepository') \
+                            ? rootProject.uploadRepository : uploadReleases \
+                            ? releasesRepository : snapshotsRepository
+  // No username/password is provided by default
+  // If needed set them using the uploadUsername and uploadPassword properties
+  def uploadUsername = rootProject.hasProperty('uploadUsername') ? rootProject.uploadUsername : null
+  def uploadPassword = rootProject.hasProperty('uploadPassword') ? rootProject.uploadPassword : null
+
+
   configurations {
     archives
     deployerJars
@@ -77,7 +110,7 @@ allprojects {
     testCompile( libraries.ant_junit )
     testCompile( libraries.junit )
     testRuntime( libraries.asm, libraries.asm_commons, libraries.asm_util )
-    deployerJars "org.apache.maven.wagon:wagon-ssh:1.0-beta-2"
+    deployerJars( uploadWagon )
   }
 
   sourceSets {
@@ -102,26 +135,26 @@ allprojects {
     apply plugin: 'osgi'
     apply plugin: VersionClass
 
-    if( name == "org.qi4j.core.runtime" )
-    {
+//    if( name == "org.qi4j.core.runtime" )
+//    {
 //      checkstyleMain {
 //        configFile = new File( "$rootProject.projectDir.absolutePath/etc/qi4j-runtime-checkstyle.xml" )
 //        ignoreFailures = true
 //      }
-    }
-    else
-    {
-      checkstyleMain {
-        configFile = new File( rootProject.projectDir.absolutePath.toString() + '/etc/qi4j-api-checkstyle.xml' )
-        ignoreFailures = true
-        reporting.baseDir = "$rootProject.reporting.baseDir/checkstyle"
-      }
-    }
+//    }
+//    else
+//    {
+//      checkstyleMain {
+//        configFile = new File( rootProject.projectDir.absolutePath.toString() + '/etc/qi4j-api-checkstyle.xml' )
+//        ignoreFailures = true
+//        reporting.baseDir = "$rootProject.reporting.baseDir/checkstyle"
+//      }
+//    }
 //    checkstyleTest {
 //      configFile = new File( "$rootProject.projectDir.absolutePath/etc/qi4j-tests-checkstyle.xml" )
 //      ignoreFailures = true
 //    }
-
+//
 //    checkstyleVersion {
 //      configFile = new File( "$rootProject.projectDir.absolutePath/etc/qi4j-tests-checkstyle.xml" )
 //      ignoreFailures = true
@@ -138,6 +171,7 @@ allprojects {
     }
 
     signing {
+      required { uploadSigned }
       sign configurations.archives
     }
 
@@ -229,6 +263,7 @@ allprojects {
     }
   }
 
+  // Upload Archives - Artifact Deployment
   uploadArchives.doFirst {
     if( version == 0 )
     {
@@ -236,14 +271,21 @@ allprojects {
     }
   }
 
-  uploadArchives.onlyIf { ( releaseApprovedProjects.contains( project ) || project == rootProject ) && !project.hasProperty( 'skipUpload' ) }
+  uploadArchives.onlyIf { ( !uploadReleaseSpec || ( releaseApprovedProjects.contains( project ) || project == rootProject ) ) && !project.hasProperty( 'skipUpload' ) }
   uploadArchives {
     dependsOn check
     repositories.mavenDeployer {
-      beforeDeployment { MavenDeployment deployment -> signPom( deployment ) }
-      name = 'sshDeployer' // optional
+      if( uploadSigned )
+        beforeDeployment { MavenDeployment deployment -> signing.signPom( deployment ) }
       configuration = configurations.deployerJars
-      repository( url: "scp://repository.ops4j.org/home/www/repository.ops4j.org/maven2/" )
+      repository(url: uploadRepository) {
+        if( uploadUsername )
+          authentication(userName: uploadUsername, password: uploadPassword)
+      }
+      snapshotRepository(url: uploadRepository) {
+        if( uploadUsername )
+          authentication(userName: uploadUsername, password: uploadPassword)
+      }
     }
   }
 
