@@ -40,6 +40,7 @@ def osgiVersion = '4.2.0'
 def postgresqlVersion = '8.4-701.jdbc4'
 def rdfVersion = '2.6.1'
 def restletVersion = '2.0.9'
+def riakVersion = '1.0.5'
 def scalaVersion = '2.9.2'
 ext.servletVersion = '3.0.1'
 def shiroVersion = '1.1.0'
@@ -188,6 +189,7 @@ rootProject.ext {
           jdbm: "org.fusesource.jdbm:jdbm:$jdbmVersion",
           appengine: "com.google.appengine:appengine-api:$gaeVersion",
           mongodb: "org.mongodb:mongo-java-driver:$mongodbVersion",
+          riak: "com.basho.riak:riak-client:$riakVersion",
           neo4j: [ "org.neo4j:neo4j:$neoVersion",
                   "org.neo4j:neo4j-index:$neoIndexVersion"
           ],
