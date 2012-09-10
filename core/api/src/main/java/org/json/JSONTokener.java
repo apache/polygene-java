@@ -107,6 +107,11 @@ public final class JSONTokener
         return -1;
     }
 
+    public boolean end()
+    {
+        return this.lastChar == 0 && !this.useLastChar;
+    }
+
     /**
      * Determine if the source string still contains characters that next()
      * can consume.
@@ -116,8 +121,8 @@ public final class JSONTokener
     public boolean more()
         throws JSONException
     {
-        char nextChar = next();
-        if( nextChar == 0 )
+        next();
+        if( end() )
         {
             return false;
         }
