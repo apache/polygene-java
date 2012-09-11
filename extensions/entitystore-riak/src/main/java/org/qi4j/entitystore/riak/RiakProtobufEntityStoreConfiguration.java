@@ -24,17 +24,20 @@ import org.qi4j.api.configuration.ConfigurationComposite;
 import org.qi4j.api.property.Property;
 
 // START SNIPPET: config
-public interface RiakHttpEntityStoreConfiguration
+public interface RiakProtobufEntityStoreConfiguration
         extends ConfigurationComposite
 {
 
     /**
-     * List of Riak URLs.
+     * List of Riak Protocol Buffer hosts.
      *
-     * Defaulted to http://127.0.0.1:8098/riak if empty.
+     * Each entry can contain either an IP address / hostname
+     * or an IP address / hostname followed by a column and the host's port.
+     *
+     * Defaulted to 127.0.0.1 if empty.
      */
     @UseDefaults
-    Property<List<String>> urls();
+    Property<List<String>> hosts();
 
     /**
      * Riak Bucket where Entities state will be stored.
@@ -53,12 +56,44 @@ public interface RiakHttpEntityStoreConfiguration
     Property<Integer> maxConnections();
 
     /**
-     * The connection, socket read and pooled connection acquisition timeout in milliseconds.
+     * The connection timeout in milliseconds.
      *
-     * Defaulted to 0 (infinite).
+     * Defaulted to 1000.
+     */
+    @Optional
+    Property<Integer> connectionTimeout();
+
+    /**
+     * Idle connection time to live in milliseconds.
+     *
+     * Defaulted to 1000.
+     */
+    @Optional
+    Property<Integer> idleConnectionTTL();
+
+    /**
+     * Max pool size.
+     *
+     * Defaulted to 0 (unlimited).
      */
     @UseDefaults
-    Property<Integer> timeout();
+    Property<Integer> maxPoolSize();
+
+    /**
+     * Initial pool size.
+     *
+     * Defaulted to 0.
+     */
+    @UseDefaults
+    Property<Integer> initialPoolSize();
+
+    /**
+     * Socket buffer size in KB.
+     *
+     * Defaulted to 16.
+     */
+    @Optional
+    Property<Integer> socketBufferSizeKb();
 
 }
 // END SNIPPET: config

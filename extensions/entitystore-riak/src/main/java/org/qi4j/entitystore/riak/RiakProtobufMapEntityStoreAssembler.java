@@ -23,7 +23,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 
-public class RiakHttpMapEntityStoreAssembler
+public class RiakProtobufMapEntityStoreAssembler
         implements Assembler
 {
 
@@ -33,19 +33,19 @@ public class RiakHttpMapEntityStoreAssembler
 
     private Visibility configVisibility = Visibility.layer;
 
-    public RiakHttpMapEntityStoreAssembler withVisibility( Visibility visibility )
+    public RiakProtobufMapEntityStoreAssembler withVisibility( Visibility visibility )
     {
         this.visibility = visibility;
         return this;
     }
 
-    public RiakHttpMapEntityStoreAssembler withConfigModule( ModuleAssembly configModule )
+    public RiakProtobufMapEntityStoreAssembler withConfigModule( ModuleAssembly configModule )
     {
         this.configModule = configModule;
         return this;
     }
 
-    public RiakHttpMapEntityStoreAssembler withConfigVisibility( Visibility configVisibility )
+    public RiakProtobufMapEntityStoreAssembler withConfigVisibility( Visibility configVisibility )
     {
         this.configVisibility = configVisibility;
         return this;
@@ -57,15 +57,15 @@ public class RiakHttpMapEntityStoreAssembler
         if ( configModule == null ) {
             configModule = module;
         }
-
+        
         module.services( UuidIdentityGeneratorService.class ).
                 visibleIn( visibility );
 
         module.services( RiakMapEntityStoreService.class ).
-                withMixins( RiakHttpMapEntityStoreMixin.class ).
+                withMixins( RiakProtobufMapEntityStoreMixin.class ).
                 visibleIn( visibility );
 
-        configModule.entities( RiakHttpEntityStoreConfiguration.class ).
+        configModule.entities( RiakProtobufEntityStoreConfiguration.class ).
                 visibleIn( configVisibility );
     }
 

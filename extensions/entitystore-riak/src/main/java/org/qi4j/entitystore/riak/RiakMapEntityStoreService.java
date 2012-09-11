@@ -31,8 +31,8 @@ import org.qi4j.spi.entitystore.StateChangeNotificationConcern;
 import org.qi4j.spi.entitystore.helpers.MapEntityStoreMixin;
 
 @Concerns( { StateChangeNotificationConcern.class, ConcurrentModificationCheckConcern.class } )
-@Mixins( { MapEntityStoreMixin.class, RiakHttpMapEntityStoreMixin.class } )
-public interface RiakHttpMapEntityStoreService
+@Mixins( { MapEntityStoreMixin.class } )
+public interface RiakMapEntityStoreService
         extends EntityStore,
                 EntityStateVersions,
                 ServiceComposite,

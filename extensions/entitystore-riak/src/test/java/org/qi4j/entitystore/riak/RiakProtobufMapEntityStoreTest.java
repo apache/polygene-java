@@ -26,7 +26,7 @@ import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
 
 @Ignore( "This test is ignored because it needs a Riak instance" )
-public class RiakHttpMapEntityStoreTest
+public class RiakProtobufMapEntityStoreTest
         extends AbstractEntityStoreTest
 {
 
@@ -40,7 +40,7 @@ public class RiakHttpMapEntityStoreTest
         ModuleAssembly config = module.layer().module( "config" );
         config.services( MemoryEntityStoreService.class );
         // START SNIPPET: assembly
-        new RiakHttpMapEntityStoreAssembler().withConfigModule( config ).assemble( module );
+        new RiakProtobufMapEntityStoreAssembler().withConfigModule( config ).assemble( module );
     }
     // END SNIPPET: assembly
 
