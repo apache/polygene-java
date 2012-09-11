@@ -153,7 +153,7 @@ $( document ).ready( function($){
         // Add Jenkins Jobs
         var ci_url = 'https://qi4j.ci.cloudbees.com/';
         var ci_images_url = ci_url + 'images/16x16/';
-        var $target = $section.find('a.ulink[href=' + ci_url + ']');
+        var $target = $section.find('a.ulink[href=' + ci_url + ']').first();
 
         $.getJSON( ci_url + 'api/json?depth=2&jsonp=?&callback=?', function( data ) {
             if ( data.jobs.length > 0 ) {

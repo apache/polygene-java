@@ -97,7 +97,7 @@ semantic differences.
 [[def-composite-type,Composite Type]]Composite Type::
 +
 --
-CompositeType is the Java interface that declares the composition, from which <<def-composite>> instances can be 
+CompositeType is the Java interface that declares the composition, from which <<def-composite>> instances can be
 created.
 
 Composite Type interfaces must be a sub-type of one of the 5 <<def-composite-metatype,Composite Meta Types>> defined in
@@ -217,7 +217,7 @@ For each method, Qi4J will create and re-use an Invocation Stack. It will be bui
 
 It is important to recognize that, for memory footprint reasons, Invocation Stacks are shared across
 <<def-composite,Composites>> of the same <<def-composite-type>>. They are however thread-safe, in that Qi4j will never
-bind the same Invocation Stack to more than one <<def-composite>> instance during a method call, but that between method 
+bind the same Invocation Stack to more than one <<def-composite>> instance during a method call, but that between method
 invocations the <<def-modifier,Modifiers>> in the Invocation Stack can not assume that it is bound to the same
 <<def-composite>> instance. Therefor, <<def-modifier,Modifiers>> are not expected to keep state between method
 invocations, and when it needs to do that, then it should reference a <<def-mixin>> via the @This annotation. Qi4j will
@@ -255,7 +255,7 @@ This term has no definition yet. Learn how to contribute in <<community-docs>>.
 [[def-mixin,Mixin]]Mixin::
 +
 --
-The Mixin is the instance providing the stateful representation of the <<def-mixin-type>>. This can either be a class 
+The Mixin is the instance providing the stateful representation of the <<def-mixin-type>>. This can either be a class
 implementing the <<def-mixin-type>> or a java.lang.reflect.InvocationHandler that is generic to handle any or a subset
 of <<def-mixin-type>>.
 --
@@ -326,9 +326,23 @@ See the <<core-api-service,Service Composite chapter>>.
 [[def-sideeffect,SideEffect]]SideEffect::
 +
 --
-TODO
+A side effect is a stateless <<def-fragment>>, shared between invocations, that acts as an interceptor of the call to
+the <<def-mixin>>. The SideEffect is a Java class, that either implements the <<def-mixin-type>> it can be used on, or
+java.lang.reflect.InvocationHandler which allows it to be used on any arbitrary <<def-mixin-type>>.
 
-This term has no definition yet. Learn how to contribute in <<community-docs>>.
+SideEffects are executed after the completion of the method invocation and therefore cannot change parameters nor
+eventually returned object.
+
+SideEffects have many purposes. Use-cases
+involves;
+
+* Sending emails.
+* Call Tracing.
+* Domain side effects modeling.
+
+SideEffects are established by the use of the @SideEffects annotation on composites.
+
+SideEffect is one of the 3 kinds of <<def-modifier,Modifiers>> defined in Qi4j.
 --
 
 

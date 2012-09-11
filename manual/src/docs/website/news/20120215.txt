@@ -1,0 +1,16 @@
+[[news-20120215,Qi4j at JFokus 2012 - ReST]]
+= @ JFokus 2012 - ReST =
+
+Implementing a REST API today is important in many cases, both as an integration point to your application and as a way
+for clients to access the application. But there are few frameworks out there that help you fulfil all the constraints
+of REST, and therefore only makes your API a REST-wannabe. The idiom that's often missing is HATEOAS. This session will
+look at how you can build a ReSTful api and applying HATEOAS. The background of this session is the <<news-20100918>>
+presentation.
+
+http://www.parleys.com/#st=5&id=3059&sl=6[Watch the video]
+
+Check the presentation slides online
+http://www.jfokus.se/jfokus12/preso/jf12_TheRoadToRest.pdf
+
+On a related note, back in december 2012, Rickard posted "The domain model as REST anti-pattern" in his
+blog: http://www.jroller.com/rickard/entry/the_domain_model_as_rest
