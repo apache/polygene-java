@@ -77,6 +77,9 @@ If needed set them using the uploadUsername and uploadPassword properties.
 
 For example here is how to deploy all artifacts as SNAPSHOTs to a given repository:
 
-    ./gradlew uploadArchives -Dversion=2.0-SNAPSHOT -PuploadReleaseSpec=false \
-        -PuploadWagon=what:ever:wagon -PuploadRepository=http://what.ever.repository/url \
-        -PuploadUsername=foo -PuploadPassword=bar
+[source,bash]
+-----------
+./gradlew uploadArchives -Dversion=2.0-SNAPSHOT -PuploadReleaseSpec=false \
+    -PuploadWagon=what:ever:wagon -PuploadRepository=http://what.ever.repository/url \
+    -PuploadUsername=foo -PuploadPassword=bar
+-----------
