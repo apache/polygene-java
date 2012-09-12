@@ -25,6 +25,7 @@ def javasqlgeneratorVersion = '0.2.2'
 def jdbmVersion = '2.0.0'
 def jclVersion = '1.1'
 def jdomVersion = '1.1'
+def jedisVersion = '2.1.0'
 ext.jettyVersion = '8.1.5.v20120716'
 def jodaTimeVersion = '1.6.2'
 def jrubyVersion = '1.5.6'
@@ -187,6 +188,7 @@ rootProject.ext {
           ehcache: "net.sf.ehcache:ehcache-core:$ehcacheVersion",
           hazelcast: "com.hazelcast:hazelcast:$hazelcastVersion",
           jdbm: "org.fusesource.jdbm:jdbm:$jdbmVersion",
+          jedis: "redis.clients:jedis:$jedisVersion",
           appengine: "com.google.appengine:appengine-api:$gaeVersion",
           mongodb: "org.mongodb:mongo-java-driver:$mongodbVersion",
           riak: "com.basho.riak:riak-client:$riakVersion",
