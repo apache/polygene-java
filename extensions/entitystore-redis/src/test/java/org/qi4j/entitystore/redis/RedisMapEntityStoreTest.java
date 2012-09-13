@@ -26,7 +26,7 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
 @Ignore( "This test is ignored because it needs a Redis instance" )
-public class RedisEntityStoreTest
+public class RedisMapEntityStoreTest
         extends AbstractEntityStoreTest
 {
 
