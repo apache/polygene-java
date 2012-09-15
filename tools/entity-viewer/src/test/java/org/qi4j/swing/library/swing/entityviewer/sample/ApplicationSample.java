@@ -21,8 +21,6 @@ import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.query.Query;
-import org.qi4j.api.query.QueryBuilder;
-import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
@@ -32,7 +30,6 @@ import org.qi4j.library.swing.entityviewer.EntityViewer;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
 
-@SuppressWarnings({"unchecked"})
 public class ApplicationSample
     extends AbstractQi4jTest
 {
@@ -65,11 +62,6 @@ public class ApplicationSample
 
             uow.complete();
         }
-        catch( ConcurrentEntityModificationException e )
-        {
-            // Can not happen.
-            e.printStackTrace();
-        }
         catch( UnitOfWorkCompletionException e )
         {
             e.printStackTrace();
@@ -79,9 +71,7 @@ public class ApplicationSample
     public void testQuery()
     {
         UnitOfWork uow = module.newUnitOfWork();
-        QueryBuilder qb = module.newQueryBuilder( CarEntity.class );
-        //Object template  = QueryExpressions.templateFor( clazz );
-        Query query = uow.newQuery( qb );
+        Query query = uow.newQuery( module.newQueryBuilder( CarEntity.class ) );
 
         for( Object qObj : query )
         {
@@ -93,7 +83,6 @@ public class ApplicationSample
     public static void main( String[] args )
         throws Exception
     {
-
         ApplicationSample sample = new ApplicationSample();
         sample.runSample();
     }
@@ -106,7 +95,7 @@ public class ApplicationSample
         createTestData();
         //testQuery();
         // START SNIPPET: entity-viewer
-        new EntityViewer().show( qi4j, applicationModel, application );
+        new EntityViewer().show( qi4j.spi(), applicationModel, application );
         // END SNIPPET: entity-viewer
     }
 

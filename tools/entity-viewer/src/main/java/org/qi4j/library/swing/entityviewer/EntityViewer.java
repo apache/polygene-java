@@ -16,23 +16,35 @@
 */
 package org.qi4j.library.swing.entityviewer;
 
+import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSplitPane;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.ApplicationDescriptor;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.bootstrap.Energy4Java;
-import org.qi4j.tools.model.descriptor.*;
-
-import javax.swing.*;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreePath;
-import java.awt.*;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import org.qi4j.spi.Qi4jSPI;
+import org.qi4j.tools.model.descriptor.ApplicationDetailDescriptor;
+import org.qi4j.tools.model.descriptor.ApplicationDetailDescriptorBuilder;
+import org.qi4j.tools.model.descriptor.EntityDetailDescriptor;
+import org.qi4j.tools.model.descriptor.LayerDetailDescriptor;
+import org.qi4j.tools.model.descriptor.ModuleDetailDescriptor;
 
 import static org.qi4j.functional.Iterables.first;
 
@@ -48,35 +60,45 @@ public class EntityViewer
     private PropertiesPanel propertiesPanel;
     private TreePanel treePanel;
 
-    private Energy4Java qi4j;
+    private Qi4jSPI qi4jspi;
     private ApplicationDescriptor model;
     private Application application;
-    //private UnitOfWorkFactory uowf;
 
-    public void show( Energy4Java qi4j, ApplicationDescriptor model, Application application )
+    private JFrame frame;
+
+    public void show( Qi4jSPI qi4jspi, ApplicationDescriptor model, Application application )
     {
-        this.qi4j = qi4j;
+        this.qi4jspi = qi4jspi;
         this.model = model;
         this.application = application;
 
         initUI();
 
-        JFrame frame = new JFrame();
+        frame = new JFrame();
         frame.setContentPane( mainPane );
-        frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+        frame.setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
         frame.setSize( 600, 600 );
         //frame.pack();
         frame.setVisible( true );
     }
 
+    public void stop()
+    {
+        if( frame != null & frame.isDisplayable() )
+        {
+            frame.dispose();
+            frame = null;
+        }
+    }
+
     private void initUI()
     {
         propertiesPanel = new PropertiesPanel();
-        propertiesPanel.initializeQi4J( qi4j );
+        propertiesPanel.initializeQi4J( qi4jspi );
         propertiesAreaPane.add( propertiesPanel, BorderLayout.CENTER );
 
         treePanel = new TreePanel();
-        treePanel.initializeQi4J( qi4j, model );
+        treePanel.initializeQi4J( qi4jspi, model );
         treePanel.reload();
         splitPane.setLeftComponent( treePanel );
 
@@ -138,7 +160,6 @@ public class EntityViewer
     {
         UnitOfWork uow = module.newUnitOfWork();
         QueryBuilder qb = module.newQueryBuilder( clazz );
-        //Object template  = QueryExpressions.templateFor( clazz );
         return uow.newQuery( qb );
     }
 
