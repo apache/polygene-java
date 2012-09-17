@@ -58,9 +58,9 @@ TODO
 TODO
 
 == Using Assemblers ==
-Many libraries and extensions provides a cookie-cutter _Assembler_, to simplify the set up of such component. Often
-these are suitable, but sometimes they won't fit the application in hand, in which case the source code at least
-provides information of what is needed for the component to be used.
+Many <<libraries,libraries>> and <<extensions,extensions>> provides a cookie-cutter _Assembler_, to simplify the set up
+of such component. Often these are suitable, but sometimes they won't fit the application in hand, in which case the
+source code at least provides information of what is needed for the component to be used.
 
 Assemblers are typically just instantiated and then call the assemble() method with the ModuleAssembly instance,
 such as;

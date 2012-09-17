@@ -22,3 +22,5 @@ tag=assembly
 
 Apache Solr Index/Query exclusively use the <<library-fileconfig>> to locate the directory where it persists its index.
 
+You must provide `solrconfig.xml` and `schema.xml` files either from the classpath or in the configuration directory of
+the <<library-fileconfig>>.

@@ -15,7 +15,6 @@
 package org.qi4j.library.scheduler.bootstrap;
 
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.type.MatchTypeSpecification;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.EntityDeclaration;
@@ -24,7 +23,6 @@ import org.qi4j.bootstrap.ServiceDeclaration;
 import org.qi4j.bootstrap.ValueDeclaration;
 import org.qi4j.library.scheduler.SchedulerConfiguration;
 import org.qi4j.library.scheduler.SchedulerService;
-import org.qi4j.library.scheduler.schedule.Schedule;
 import org.qi4j.library.scheduler.schedule.ScheduleFactory;
 import org.qi4j.library.scheduler.schedule.Schedules;
 import org.qi4j.library.scheduler.schedule.cron.CronScheduleEntity;
