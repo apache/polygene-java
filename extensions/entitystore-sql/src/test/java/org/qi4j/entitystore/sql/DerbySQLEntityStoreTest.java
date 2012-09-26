@@ -16,9 +16,8 @@ package org.qi4j.entitystore.sql;
 
 import java.sql.Connection;
 import java.sql.Statement;
-
 import javax.sql.DataSource;
-
+import org.apache.derby.iapi.services.io.FileUtil;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.usecase.UsecaseBuilder;
@@ -27,28 +26,29 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.entitystore.sql.assembly.DerbySQLEntityStoreAssembler;
 import org.qi4j.entitystore.sql.internal.SQLs;
-import org.qi4j.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.qi4j.library.sql.assembly.DataSourceAssembler;
 import org.qi4j.library.sql.common.SQLConfiguration;
 import org.qi4j.library.sql.common.SQLUtil;
 import org.qi4j.library.sql.datasource.DataSources;
+import org.qi4j.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
-
-import org.apache.derby.iapi.services.io.FileUtil;
 
 public class DerbySQLEntityStoreTest
         extends AbstractEntityStoreTest
 {
 
     @Override
+    // START SNIPPET: assembly
     public void assemble( ModuleAssembly module )
             throws AssemblyException
     {
+        // END SNIPPET: assembly
         super.assemble( module );
         ModuleAssembly config = module.layer().module( "config" );
         config.services( MemoryEntityStoreService.class );
 
-        // DataSourceService + EntityStore's DataSource
+        // START SNIPPET: assembly
+        // DataSourceService + EntityStore's DataSource using DBCP connection pool
         new DBCPDataSourceServiceAssembler( "derby-datasource-service",
                                             Visibility.module,
                                             config,
@@ -58,10 +58,11 @@ public class DerbySQLEntityStoreTest
                                                                    Visibility.module,
                                                                    DataSources.newDataSourceCircuitBreaker() );
 
-        // EntityStore
+        // SQL EntityStore
         new DerbySQLEntityStoreAssembler( dsAssembler ).assemble( module );
         config.entities( SQLConfiguration.class ).visibleIn( Visibility.layer );
     }
+    // END SNIPPET: assembly
 
     @Override
     public void tearDown()

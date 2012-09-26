@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2010, Stanislav Muhametsin. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,60 +12,44 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.index.sql.support.postgresql;
 
+import java.util.List;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.functional.Specification;
 import org.qi4j.index.sql.support.skeletons.AbstractSQLQuerying;
 import org.sql.generation.api.grammar.builders.query.QuerySpecificationBuilder;
-import org.sql.generation.api.grammar.builders.query.pgsql.PgSQLQuerySpecificationBuilder;
-import org.sql.generation.api.grammar.factories.pgsql.PgSQLQueryFactory;
 import org.sql.generation.api.grammar.query.QueryExpression;
-import org.sql.generation.api.vendor.PostgreSQLVendor;
 import org.sql.generation.api.vendor.SQLVendor;
 
-import java.util.List;
-
-/**
- * 
- * @author Stanislav Muhametsin
- */
-public class PostgreSQLQuerying extends AbstractSQLQuerying
+public class PostgreSQLQuerying
+        extends AbstractSQLQuerying
 {
 
     @Override
-    protected QueryExpression finalizeQuery( //
-        SQLVendor sqlVendor, QuerySpecificationBuilder specBuilder, //
-        Class<?> resultType, //
-        Specification<Composite> whereClause, //
-        OrderBy[] orderBySegments, //
-        Integer firstResult, //
-        Integer maxResults, //
-        List<Object> values, //
-        List<Integer> valueSQLTypes, //
-        Boolean countOnly )
+    protected QueryExpression finalizeQuery(
+            SQLVendor sqlVendor, QuerySpecificationBuilder specBuilder,
+            Class<?> resultType,
+            Specification<Composite> whereClause,
+            OrderBy[] orderBySegments,
+            Integer firstResult,
+            Integer maxResults,
+            List<Object> values,
+            List<Integer> valueSQLTypes,
+            Boolean countOnly )
     {
-        PgSQLQuerySpecificationBuilder builder = (PgSQLQuerySpecificationBuilder) specBuilder;
-        PostgreSQLVendor vendor = (PostgreSQLVendor) sqlVendor;
         Boolean needOffset = firstResult != null && firstResult > 0;
         Boolean needLimit = maxResults != null && maxResults > 0;
 
-        PgSQLQueryFactory q = vendor.getQueryFactory();
-
-        if( needOffset )
-        {
-            builder.offset( q.offset( firstResult ) );
+        if ( needOffset ) {
+            specBuilder.offset( firstResult );
         }
-        if( needLimit )
-        {
-            builder.limit( q.limit( maxResults ) );
+        if ( needLimit ) {
+            specBuilder.limit( maxResults );
         }
 
-        builder.setOrderByToFirstColumnIfOffsetOrLimit();
-
-        return q.createQuery( builder.createExpression() );
+        return sqlVendor.getQueryFactory().createQuery( specBuilder.createExpression() );
     }
 
 }

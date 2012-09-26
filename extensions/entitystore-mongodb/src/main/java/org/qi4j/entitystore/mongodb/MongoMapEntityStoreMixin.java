@@ -62,9 +62,9 @@ public abstract class MongoMapEntityStoreMixin
 
     private static final String DEFAULT_COLLECTION_NAME = "qi4j:entitystore:entities";
 
-    private static final String IDENTITY_COLUMN = "identity";
+    public static final String IDENTITY_COLUMN = "identity";
 
-    private static final String STATE_COLUMN = "state";
+    public static final String STATE_COLUMN = "state";
 
     @This
     private Configuration<MongoEntityStoreConfiguration> configuration;

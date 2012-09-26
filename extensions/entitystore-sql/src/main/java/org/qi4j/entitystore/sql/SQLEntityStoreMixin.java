@@ -139,6 +139,7 @@ public class SQLEntityStoreMixin
                 try
                 {
                     connection = database.getConnection();
+                    connection.setAutoCommit( false );
                     insertPS = database.prepareInsertEntityStatement( connection );
                     updatePS = database.prepareUpdateEntityStatement( connection );
                     removePS = database.prepareRemoveEntityStatement( connection );
@@ -167,7 +168,7 @@ public class SQLEntityStoreMixin
                             }
                             else if( EntityStatus.NEW.equals( status ) )
                             {
-                                database.populateInsertEntityStatement( insertPS, entityPK, defState.identity(),
+                                database.populateInsertEntityStatement( insertPS, defState.identity(),
                                                                         writer.toString(), unitofwork.currentTime() );
                                 insertPS.addBatch();
                             }
@@ -233,9 +234,7 @@ public class SQLEntityStoreMixin
     {
         return new DefaultSQLEntityState( new DefaultEntityState( (DefaultEntityStoreUnitOfWork) unitOfWork,
                                                                   entityRef,
-                                                                  entityDescriptor ),
-                                          database.newPKForEntity(),
-                                          null );
+                                                                  entityDescriptor ) );
     }
 
     public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, Module module, long currentTime )
@@ -327,7 +326,6 @@ public class SQLEntityStoreMixin
     {
     }
 
-    @SuppressWarnings( "ValueOfIncrementOrDecrementUsed" )
     protected String newUnitOfWorkId()
     {
         return uuid + Integer.toHexString( count.incrementAndGet() );

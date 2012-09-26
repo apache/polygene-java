@@ -18,9 +18,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import javax.sql.DataSource;
-
 import org.qi4j.functional.Visitor;
 import org.qi4j.io.Input;
 import org.qi4j.io.Output;
@@ -64,7 +62,7 @@ public class Databases
 
     /**
      * Perform SQL update statement.
-     * 
+     *
      * If the SQL string contains ? placeholders, use the StatementVisitor to
      * update the PreparedStatement with actual values.
      */
@@ -95,7 +93,7 @@ public class Databases
 
     /**
      * Perform SQL query and let visitor handle results.
-     * 
+     *
      * If the SQL string contains ? placeholders, use the StatementVisitor to
      * update the PreparedStatement with actual values.
      */
@@ -127,7 +125,7 @@ public class Databases
 
     /**
      * Perform SQL query and provide results as an Input.
-     * 
+     *
      * This makes it possible to combine SQL data with the I/O API.
      */
     public Input<ResultSet, SQLException> query( final String sql )
@@ -173,7 +171,7 @@ public class Databases
 
     /**
      * Perform SQL query and provide results as an Input.
-     * 
+     *
      * This makes it possible to combine SQL data with the I/O API. If the SQL
      * string contains ? placeholders, use the StatementVisitor to update the
      * PreparedStatement with actual values.
@@ -220,8 +218,8 @@ public class Databases
     }
 
     /**
-     * Visitor for PreparedStatements. 
-     * 
+     * Visitor for PreparedStatements.
+     *
      * These are created when the SQL statements contain ? placeholders.
      */
     public interface StatementVisitor
@@ -233,8 +231,8 @@ public class Databases
     }
 
     /**
-     * Visitor for the ResultSet. 
-     * 
+     * Visitor for the ResultSet.
+     *
      * Only access data from the given ResultSet, as the iteration will be done
      * by this API.
      */

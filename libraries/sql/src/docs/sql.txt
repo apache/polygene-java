@@ -108,7 +108,12 @@ source=libraries/sql/src/main/java/org/qi4j/library/sql/datasource/DataSourceCon
 tag=config
 ----
 
+Sample DataSource configuration defaults:
 
+[source]
+----
+include::../test/resources/testds.properties[]
+----
 
 
 

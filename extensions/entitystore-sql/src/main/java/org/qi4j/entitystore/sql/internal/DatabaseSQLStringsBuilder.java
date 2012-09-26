@@ -14,6 +14,8 @@
  */
 package org.qi4j.entitystore.sql.internal;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.qi4j.api.injection.scope.This;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,8 +23,15 @@ import org.sql.generation.api.grammar.builders.modification.DeleteBySearchBuilde
 import org.sql.generation.api.grammar.builders.modification.UpdateBySearchBuilder;
 import org.sql.generation.api.grammar.common.SQLStatement;
 import org.sql.generation.api.grammar.common.datatypes.SQLDataType;
+import org.sql.generation.api.grammar.definition.table.AutoGenerationPolicy;
 import org.sql.generation.api.grammar.definition.table.UniqueSpecification;
-import org.sql.generation.api.grammar.factories.*;
+import org.sql.generation.api.grammar.factories.BooleanFactory;
+import org.sql.generation.api.grammar.factories.ColumnsFactory;
+import org.sql.generation.api.grammar.factories.DefinitionFactory;
+import org.sql.generation.api.grammar.factories.LiteralFactory;
+import org.sql.generation.api.grammar.factories.ModificationFactory;
+import org.sql.generation.api.grammar.factories.QueryFactory;
+import org.sql.generation.api.grammar.factories.TableReferenceFactory;
 import org.sql.generation.api.vendor.SQLVendor;
 
 public interface DatabaseSQLStringsBuilder
@@ -108,16 +117,23 @@ public interface DatabaseSQLStringsBuilder
 
         protected String[] toString( SQLStatement[] stmts )
         {
-            String[] result = new String[stmts == null ? 0 : stmts.length];
+            List<String> result = new ArrayList<String>();
             if( stmts != null )
             {
-                for( Integer x = 0; x < stmts.length; ++x )
+                for( Integer idx = 0; idx < stmts.length; ++idx )
                 {
-                    result[x] = this.vendor.toString( stmts[x] );
+                    SQLStatement statement = stmts[idx];
+                    if( statement != null )
+                    {
+                        String stringStatement = this.vendor.toString( statement );
+                        if( stringStatement != null && stringStatement.length() > 0 )
+                        {
+                            result.add( this.vendor.toString( statement ) );
+                        }
+                    }
                 }
             }
-
-            return result;
+            return result.toArray( new String[ result.size() ] );
         }
 
         protected SQLVendor getVendor()
@@ -148,24 +164,19 @@ public interface DatabaseSQLStringsBuilder
             return new SQLStatement[] {};
         }
 
-        // TODO QueryEntityPK
         protected SQLStatement[] createTableStatements( SQLVendor vendor )
         {
             DefinitionFactory d = vendor.getDefinitionFactory();
             TableReferenceFactory t = vendor.getTableReferenceFactory();
 
-            // When indexing and store are synchronized and we'll be able to let the database generate the PKs
-            // something like this:
-            // "my_pk_column BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY, "
 
             // @formatter:off
-            
             return new SQLStatement[]
             {
                 d.createTableDefinitionBuilder()
                     .setTableName( t.tableName( this.getSchemaName(), SQLs.TABLE_NAME ) )
                     .setTableContentsSource( d.createTableElementListBuilder()
-                        .addTableElement( d.createColumnDefinition( SQLs.ENTITY_PK_COLUMN_NAME, this.getPKType(), false ) )
+                        .addTableElement( d.createColumnDefinition( SQLs.ENTITY_PK_COLUMN_NAME, this.getPKType(), false, AutoGenerationPolicy.BY_DEFAULT ) )
                         .addTableElement( d.createColumnDefinition( SQLs.ENTITY_OPTIMISTIC_LOCK_COLUMN_NAME, this.getOptimisticLockType(), false ) )
                         .addTableElement( d.createColumnDefinition( SQLs.ENTITY_IDENTITY_COLUMN_NAME, this.getIDType(), false ) )
                         .addTableElement( d.createColumnDefinition( SQLs.ENTITY_STATE_COLUMN_NAME, this.getStateType(), false ) )
@@ -182,7 +193,6 @@ public interface DatabaseSQLStringsBuilder
                         )
                    .createExpression()
             };
-            
             // @formatter:on
         }
 
@@ -227,14 +237,12 @@ public interface DatabaseSQLStringsBuilder
                 .setTableName( t.tableName( this.schemaName, SQLs.TABLE_NAME ) )
                 .setColumnSource( m.columnSourceByValues()
                     .addColumnNames(
-                        SQLs.ENTITY_PK_COLUMN_NAME,
                         SQLs.ENTITY_OPTIMISTIC_LOCK_COLUMN_NAME,
                         SQLs.ENTITY_IDENTITY_COLUMN_NAME,
                         SQLs.ENTITY_STATE_COLUMN_NAME,
                         SQLs.ENTITY_LAST_MODIFIED_COLUMN_NAME
                         )
                     .addValues(
-                        l.param(),
                         l.n( 0 ),
                         l.param(),
                         l.param(),
@@ -299,7 +307,7 @@ public interface DatabaseSQLStringsBuilder
 
         protected SQLDataType getIDType()
         {
-            return this.vendor.getDataTypeFactory().sqlVarChar( 256 );
+            return this.vendor.getDataTypeFactory().sqlVarChar( 64 );
         }
 
         protected SQLDataType getStateType()

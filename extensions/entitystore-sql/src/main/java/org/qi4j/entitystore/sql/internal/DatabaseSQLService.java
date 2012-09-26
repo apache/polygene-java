@@ -14,14 +14,13 @@
  */
 package org.qi4j.entitystore.sql.internal;
 
-import org.qi4j.api.entity.EntityReference;
-import org.qi4j.api.service.ServiceComposite;
-
 import java.io.Reader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.service.ServiceComposite;
 
 @SuppressWarnings( "PublicInnerClass" )
 public interface DatabaseSQLService
@@ -104,7 +103,7 @@ public interface DatabaseSQLService
     void populateGetAllEntitiesStatement( PreparedStatement ps )
         throws SQLException;
 
-    void populateInsertEntityStatement( PreparedStatement ps, Long entityPK, EntityReference ref, String entity, Long lastModified )
+    void populateInsertEntityStatement( PreparedStatement ps, EntityReference ref, String entity, Long lastModified )
         throws SQLException;
 
     void populateUpdateEntityStatement( PreparedStatement ps, Long entityPK, Long entityOptimisticLock, EntityReference ref, String entity, Long lastModified )
@@ -115,7 +114,5 @@ public interface DatabaseSQLService
 
     EntityValueResult getEntityValue( ResultSet rs )
         throws SQLException;
-
-    Long newPKForEntity();
 
 }

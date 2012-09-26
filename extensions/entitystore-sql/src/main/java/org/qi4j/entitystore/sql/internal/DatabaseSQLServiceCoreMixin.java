@@ -17,9 +17,7 @@ package org.qi4j.entitystore.sql.internal;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-
 import javax.sql.DataSource;
-
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.injection.scope.Service;
@@ -33,7 +31,6 @@ import org.qi4j.api.util.NullArgumentException;
 import org.qi4j.library.sql.common.SQLConfiguration;
 import org.qi4j.library.sql.common.SQLUtil;
 import org.qi4j.spi.entitystore.EntityStoreException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sql.generation.api.vendor.SQLVendor;
@@ -117,11 +114,6 @@ public abstract class DatabaseSQLServiceCoreMixin
 
             connection.setAutoCommit( false );
 
-            state.pkLock().set( new Object() );
-            synchronized ( state.pkLock().get() ) {
-                state.nextEntityPK().set( spi.readNextEntityPK( connection ) );
-            }
-
         }
 
         SQLUtil.closeQuietly( connection );
@@ -133,20 +125,6 @@ public abstract class DatabaseSQLServiceCoreMixin
     {
         if ( Mode.production == application.mode() ) {
             // NOOP
-        }
-    }
-
-    public Long newPKForEntity()
-    {
-        if ( state.pkLock().get() == null || state.nextEntityPK().get() == null ) {
-            throw new EntityStoreException(
-                    "New PK asked for entity, but database service has not been initialized properly." );
-        }
-        synchronized ( state.pkLock().get() ) {
-            Long result = state.nextEntityPK().get();
-            Long next = result + 1;
-            state.nextEntityPK().set( next );
-            return result;
         }
     }
 

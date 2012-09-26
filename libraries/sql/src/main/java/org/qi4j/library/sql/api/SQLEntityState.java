@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2010, Stanislav Muhametsin. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,11 +23,6 @@ import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.ManyAssociationState;
 import org.qi4j.spi.entitystore.helpers.DefaultEntityState;
 
-/**
- * If entitystore will use this class, the need to create and query the primary keys of entities will be removed from indexing, thus improving performance, possibly a lot.
- * 
- * TODO QueryEntityPK
- */
 public interface SQLEntityState
         extends EntityState
 {
@@ -48,10 +44,19 @@ public interface SQLEntityState
 
         private final Long entityOptimisticLock;
 
+        public DefaultSQLEntityState( DefaultEntityState state )
+        {
+            NullArgumentException.validateNotNull( "Entity state", state );
+            this.state = state;
+            this.entityPK = null;
+            this.entityOptimisticLock = null;
+        }
+
         public DefaultSQLEntityState( DefaultEntityState state, Long entityPK, Long entityOptimisticLock )
         {
             NullArgumentException.validateNotNull( "Entity state", state );
             NullArgumentException.validateNotNull( "Entity PK", entityPK );
+            NullArgumentException.validateNotNull( "Entity OptimisticLock", entityOptimisticLock );
             this.state = state;
             this.entityPK = entityPK;
             this.entityOptimisticLock = entityOptimisticLock;

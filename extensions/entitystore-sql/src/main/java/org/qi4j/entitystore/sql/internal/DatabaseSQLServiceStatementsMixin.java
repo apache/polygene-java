@@ -76,13 +76,12 @@ public abstract class DatabaseSQLServiceStatementsMixin
         ps.setString( 1, ref.identity() );
     }
 
-    public void populateInsertEntityStatement( PreparedStatement ps, Long entityPK, EntityReference ref, String entity, Long lastModified )
+    public void populateInsertEntityStatement( PreparedStatement ps, EntityReference ref, String entity, Long lastModified )
             throws SQLException
     {
-        ps.setLong( 1, entityPK );
-        ps.setString( 2, ref.identity() );
-        ps.setString( 3, entity );
-        ps.setLong( 4, lastModified );
+        ps.setString( 1, ref.identity() );
+        ps.setString( 2, entity );
+        ps.setLong( 3, lastModified );
     }
 
     public void populateRemoveEntityStatement( PreparedStatement ps, Long entityPK, EntityReference ref )

@@ -15,11 +15,9 @@
 package org.qi4j.entitystore.sql.assembly;
 
 import java.io.IOException;
-
 import org.qi4j.api.common.Visibility;
 import org.qi4j.entitystore.sql.internal.DerbySQLDatabaseSQLServiceMixin;
 import org.qi4j.library.sql.assembly.DataSourceAssembler;
-
 import org.sql.generation.api.vendor.DerbyVendor;
 import org.sql.generation.api.vendor.SQLVendor;
 import org.sql.generation.api.vendor.SQLVendorProvider;

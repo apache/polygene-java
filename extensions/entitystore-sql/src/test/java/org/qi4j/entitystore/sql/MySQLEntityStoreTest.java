@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2010, Stanislav Muhametsin. All Rights Reserved.
  * Copyright (c) 2010, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,11 +16,8 @@ package org.qi4j.entitystore.sql;
 
 import java.sql.Connection;
 import java.sql.Statement;
-
 import javax.sql.DataSource;
-
 import org.junit.Ignore;
-
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.AssemblyException;
@@ -27,32 +25,30 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.entitystore.sql.assembly.MySQLEntityStoreAssembler;
 import org.qi4j.entitystore.sql.internal.SQLs;
-import org.qi4j.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.qi4j.library.sql.assembly.DataSourceAssembler;
 import org.qi4j.library.sql.common.SQLConfiguration;
 import org.qi4j.library.sql.common.SQLUtil;
 import org.qi4j.library.sql.datasource.DataSources;
+import org.qi4j.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
 
-/**
- * @author Stanislav Muhametsin
- * @author Paul Merlin
- */
-@Ignore
-// DO NOT WORK AS MYSQL DON'T SUPPORT SCHEMAS ... AND WE DON'T SUPPORT SCHEMALESS JDBC ... YET
+@Ignore( "This test needs a MySQL instance running" )
 public class MySQLEntityStoreTest
         extends AbstractEntityStoreTest
 {
 
     @Override
+    // START SNIPPET: assembly
     public void assemble( ModuleAssembly module )
             throws AssemblyException
     {
+        // END SNIPPET: assembly
         super.assemble( module );
         ModuleAssembly config = module.layer().module( "config" );
         config.services( MemoryEntityStoreService.class );
 
-        // DataSourceService + EntityStore's DataSource
+        // START SNIPPET: assembly
+        // DataSourceService + EntityStore's DataSource using DBCP connection pool
         new DBCPDataSourceServiceAssembler( "mysql-datasource-service",
                                             Visibility.module,
                                             config,
@@ -62,10 +58,11 @@ public class MySQLEntityStoreTest
                                                                    Visibility.module,
                                                                    DataSources.newDataSourceCircuitBreaker() );
 
-        // EntityStore
+        // SQL EntityStore
         new MySQLEntityStoreAssembler( dsAssembler ).assemble( module );
         config.entities( SQLConfiguration.class ).visibleIn( Visibility.layer );
     }
+    // END SNIPPET: assembly
 
     @Override
     public void tearDown()
