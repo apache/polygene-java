@@ -23,7 +23,7 @@ import java.lang.reflect.Type;
  * <li>First look in the same Module as the ServiceFinder</li>
  * <li>Then look in the same Layer as the ServiceFinder. Any Services declared
  * with Visibility Layer and Application should be included</li>
- * <li>Then look in the extended Layers. Any Services declared with Visibility Application
+ * <li>Then look in the used Layers. Any Services declared with Visibility Application
  * should be included</li>
  * </ol>
  *
@@ -38,13 +38,22 @@ public interface ServiceFinder
      *
      * @return a ServiceReference if one is found
      *
-     * @throws IllegalArgumentException if no service of serviceType is found
+     * @throws NoSuchServiceException if no service of serviceType is found
      */
     <T> ServiceReference<T> findService( Class<T> serviceType )
-        throws IllegalArgumentException;
+        throws NoSuchServiceException;
 
+    /**
+     * Find a ServiceReference that implements the given type.
+     *
+     * @param serviceType the type that the Service must implement
+     *
+     * @return a ServiceReference if one is found
+     *
+     * @throws NoSuchServiceException if no service of serviceType is found
+     */
     <T> ServiceReference<T> findService( Type serviceType )
-        throws IllegalArgumentException;
+        throws NoSuchServiceException;
 
     /**
      * Find ServiceReferences that implements the given type.
@@ -58,5 +67,15 @@ public interface ServiceFinder
      */
     <T> Iterable<ServiceReference<T>> findServices( Class<T> serviceType );
 
+    /**
+     * Find ServiceReferences that implements the given type.
+     * <p/>
+     * The order of the references is such that Services more local to the querying
+     * Module is earlier in the list.
+     *
+     * @param serviceType the type that the Services must implement
+     *
+     * @return an iterable of ServiceReferences for the given type. It is empty if none exist
+     */
     <T> Iterable<ServiceReference<T>> findServices( Type serviceType );
 }
