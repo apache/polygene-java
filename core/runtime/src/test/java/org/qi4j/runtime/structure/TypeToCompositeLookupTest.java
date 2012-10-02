@@ -13,184 +13,351 @@
  */
 package org.qi4j.runtime.structure;
 
+import org.junit.Ignore;
 import org.junit.Test;
-import org.qi4j.api.composite.NoSuchTransientException;
+import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.object.NoSuchObjectException;
-import org.qi4j.api.service.NoSuchServiceException;
+import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.api.unitofwork.NoSuchEntityException;
+import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.value.NoSuchValueException;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.test.EntityTestAssembler;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 /**
  * This test assert that Type to Composite lookup succeed for Objects, Transients, Values, Entities and Services.
  */
+@Ignore( "See QI-329" )
 public class TypeToCompositeLookupTest
-        extends AbstractQi4jTest
 {
+
+    private static final String CATHEDRAL = "cathedral";
+
+    private static final String BAZAR = "bazar";
 
     public interface Foo
     {
+
+        String bar();
+
     }
 
-    public interface FooObject
-            extends Foo
+    public static class FooObject
+            implements Foo
     {
+
+        public String bar()
+        {
+            return BAZAR;
+        }
+
     }
 
     public static class SomeFooObject
-            implements FooObject
+            extends FooObject
     {
+
+        @Override
+        public String bar()
+        {
+            return CATHEDRAL;
+        }
+
     }
 
+    @Mixins( FooObject.class )
     public interface FooTransient
             extends Foo, TransientComposite
     {
     }
 
+    @Mixins( SomeFooObject.class )
     public interface SomeFooTransient
             extends FooTransient
     {
     }
 
+    @Mixins( FooObject.class )
     public interface FooValue
             extends Foo, ValueComposite
     {
     }
 
+    @Mixins( SomeFooObject.class )
     public interface SomeFooValue
             extends FooValue
     {
     }
 
+    @Mixins( FooObject.class )
     public interface FooEntity
             extends Foo, EntityComposite
     {
     }
 
+    @Mixins( SomeFooObject.class )
     public interface SomeFooEntity
             extends FooEntity
     {
     }
 
+    @Mixins( FooObject.class )
     public interface FooService
             extends Foo, ServiceComposite
     {
     }
 
+    @Mixins( SomeFooObject.class )
     public interface SomeFooService
             extends FooService
     {
     }
 
-    public void assemble( ModuleAssembly module )
-            throws AssemblyException
+    @Test
+    public void objects()
     {
-        new EntityTestAssembler().assemble( module );
+        Module module = new SingletonAssembler()
+        {
 
-        module.objects( SomeFooObject.class );
-        module.transients( SomeFooTransient.class );
-        module.values( SomeFooValue.class );
-        module.entities( SomeFooEntity.class );
-        module.services( SomeFooService.class );
+            public void assemble( ModuleAssembly module )
+                    throws AssemblyException
+            {
+                module.objects( SomeFooObject.class );
+            }
+
+        }.module();
+
+        assertEquals( CATHEDRAL, module.newObject( SomeFooObject.class ).bar() );
+        assertEquals( CATHEDRAL, module.newObject( FooObject.class ).bar() );
+        assertEquals( CATHEDRAL, module.newObject( Foo.class ).bar() );
     }
 
     @Test
-    public void objectsTypeToImplementationLookup()
+    public void objectsAmbiguousDeclaration()
     {
+        Module module = new SingletonAssembler()
+        {
+
+            public void assemble( ModuleAssembly module )
+                    throws AssemblyException
+            {
+                module.objects( SomeFooObject.class, FooObject.class );
+            }
+
+        }.module();
+
+        assertEquals( CATHEDRAL, module.newObject( SomeFooObject.class ).bar() );
+        assertEquals( BAZAR, module.newObject( FooObject.class ).bar() );
+
         try {
 
-            module.newObject( SomeFooObject.class );
-            module.newObject( FooObject.class );
             module.newObject( Foo.class );
+            fail( "Ambiguous type exception not detected for Objects" );
 
-        } catch ( NoSuchObjectException ex ) {
-
-            ex.printStackTrace();
-            fail( "Type to Composite lookup failed for Objects" );
-
+        } catch ( AmbiguousTypeException expected ) {
         }
     }
 
     @Test
-    public void transientsTypeToCompositeLookup()
+    public void transients()
     {
+        Module module = new SingletonAssembler()
+        {
+
+            public void assemble( ModuleAssembly module )
+                    throws AssemblyException
+            {
+                module.transients( SomeFooTransient.class );
+            }
+
+        }.module();
+
+        assertEquals( CATHEDRAL, module.newTransientBuilder( SomeFooTransient.class ).newInstance().bar() );
+        assertEquals( CATHEDRAL, module.newTransientBuilder( FooTransient.class ).newInstance().bar() );
+        assertEquals( CATHEDRAL, module.newTransientBuilder( Foo.class ).newInstance().bar() );
+    }
+
+    @Test
+    public void transientsAmbiguousDeclaration()
+    {
+        Module module = new SingletonAssembler()
+        {
+
+            public void assemble( ModuleAssembly module )
+                    throws AssemblyException
+            {
+                module.transients( SomeFooTransient.class, FooTransient.class );
+            }
+
+        }.module();
+
+        assertEquals( CATHEDRAL, module.newTransientBuilder( SomeFooTransient.class ).newInstance().bar() );
+        assertEquals( BAZAR, module.newTransientBuilder( FooTransient.class ).newInstance().bar() );
+
         try {
 
-            module.newTransientBuilder( SomeFooTransient.class );
-            module.newTransientBuilder( FooTransient.class );
             module.newTransientBuilder( Foo.class );
+            fail( "Ambiguous type exception not detected for Transients" );
 
-        } catch ( NoSuchTransientException ex ) {
-
-            ex.printStackTrace();
-            fail( "Type to Composite lookup failed for Transients" );
-
+        } catch ( AmbiguousTypeException expected ) {
         }
     }
 
     @Test
-    public void valuesTypeToCompositeLookup()
+    public void values()
     {
+        Module module = new SingletonAssembler()
+        {
+
+            public void assemble( ModuleAssembly module )
+                    throws AssemblyException
+            {
+                module.values( SomeFooValue.class );
+            }
+
+        }.module();
+
+        assertEquals( CATHEDRAL, module.newValueBuilder( SomeFooValue.class ).newInstance().bar() );
+        assertEquals( CATHEDRAL, module.newValueBuilder( FooValue.class ).newInstance().bar() );
+        assertEquals( CATHEDRAL, module.newValueBuilder( Foo.class ).newInstance().bar() );
+    }
+
+    @Test
+    public void valuesAmbiguousDeclaration()
+    {
+        Module module = new SingletonAssembler()
+        {
+
+            public void assemble( ModuleAssembly module )
+                    throws AssemblyException
+            {
+                module.values( SomeFooValue.class, FooValue.class );
+            }
+
+        }.module();
+
+        assertEquals( CATHEDRAL, module.newValueBuilder( SomeFooValue.class ).newInstance().bar() );
+        assertEquals( BAZAR, module.newValueBuilder( FooValue.class ).newInstance().bar() );
+
         try {
 
-            module.newValueBuilder( SomeFooValue.class );
-            module.newValueBuilder( FooValue.class );
             module.newValueBuilder( Foo.class );
+            fail( "Ambiguous type exception not detected for Values" );
 
-        } catch ( NoSuchValueException ex ) {
-
-            ex.printStackTrace();
-            fail( "Type to Composite lookup failed for Values" );
-
+        } catch ( AmbiguousTypeException expected ) {
         }
     }
 
     @Test
-    public void entitiesTypeToCompositeLookup()
+    public void entities()
     {
+        Module module = new SingletonAssembler()
+        {
+
+            public void assemble( ModuleAssembly module )
+                    throws AssemblyException
+            {
+                new EntityTestAssembler().assemble( module );
+                module.entities( SomeFooEntity.class );
+            }
+
+        }.module();
+
         UnitOfWork uow = module.newUnitOfWork();
         try {
 
-            uow.newEntityBuilder( SomeFooEntity.class );
-            uow.newEntityBuilder( FooEntity.class );
-            uow.newEntityBuilder( Foo.class );
-
-        } catch ( NoSuchEntityException ex ) {
-
-            ex.printStackTrace();
-            fail( "Type to Composite lookup failed for Entities" );
+            assertEquals( CATHEDRAL, uow.newEntityBuilder( SomeFooEntity.class ).newInstance().bar() );
+            assertEquals( CATHEDRAL, uow.newEntityBuilder( FooEntity.class ).newInstance().bar() );
+            assertEquals( CATHEDRAL, uow.newEntityBuilder( Foo.class ).newInstance().bar() );
 
         } finally {
-
             uow.discard();
-
         }
     }
 
     @Test
-    public void servicesTypeToCompositeLookup()
+    public void entitiesAmbiguousDeclaration()
     {
+        Module module = new SingletonAssembler()
+        {
+
+            public void assemble( ModuleAssembly module )
+                    throws AssemblyException
+            {
+                new EntityTestAssembler().assemble( module );
+                module.entities( SomeFooEntity.class, FooEntity.class );
+            }
+
+        }.module();
+
+        UnitOfWork uow = module.newUnitOfWork();
         try {
 
-            module.findService( SomeFooService.class );
-            module.findService( FooService.class );
+            assertEquals( CATHEDRAL, uow.newEntityBuilder( SomeFooEntity.class ).newInstance().bar() );
+            assertEquals( BAZAR, uow.newEntityBuilder( FooEntity.class ).newInstance().bar() );
+
+            try {
+
+                uow.newEntityBuilder( Foo.class );
+                fail( "Ambiguous type exception not detected for Entities" );
+
+            } catch ( AmbiguousTypeException expected ) {
+            }
+
+        } finally {
+            uow.discard();
+        }
+    }
+
+    @Test
+    public void services()
+    {
+        Module module = new SingletonAssembler()
+        {
+
+            public void assemble( ModuleAssembly module )
+                    throws AssemblyException
+            {
+                module.services( SomeFooService.class );
+            }
+
+        }.module();
+
+        assertEquals( CATHEDRAL, module.findService( SomeFooService.class ).get().bar() );
+        assertEquals( CATHEDRAL, module.findService( FooService.class ).get().bar() );
+        assertEquals( CATHEDRAL, module.findService( Foo.class ).get().bar() );
+    }
+
+    @Test
+    public void servicesAmbiguousDeclaration()
+    {
+        Module module = new SingletonAssembler()
+        {
+
+            public void assemble( ModuleAssembly module )
+                    throws AssemblyException
+            {
+                module.services( SomeFooService.class, FooService.class );
+            }
+
+        }.module();
+
+        assertEquals( CATHEDRAL, module.findService( SomeFooService.class ).get().bar() );
+        assertEquals( BAZAR, module.findService( FooService.class ).get().bar() );
+
+        try {
+
             module.findService( Foo.class );
+            fail( "Ambiguous type exception not detected for Services" );
 
-        } catch ( NoSuchServiceException ex ) {
-
-            ex.printStackTrace();
-            fail( "Type to Composite lookup failed for Services" );
-
+        } catch ( AmbiguousTypeException expected ) {
         }
     }
 
