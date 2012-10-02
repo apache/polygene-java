@@ -76,6 +76,10 @@ include::../../../../extensions/entitystore-voldemort/src/docs/es-voldemort.txt[
 
 :leveloffset: 2
 
+include::../../../../extensions/indexing-elasticsearch/src/docs/index-elasticsearch.txt[]
+
+:leveloffset: 2
+
 include::../../../../extensions/indexing-rdf/src/docs/index-rdf.txt[]
 
 :leveloffset: 2

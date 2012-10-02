@@ -12,6 +12,7 @@ def cxfVersion = '2.4.7'
 def derbyVersion = '10.8.1.2'
 def dnsJavaVersion = '2.1.1'
 def ehcacheVersion = '2.4.2'
+def elasticsearchVersion = '0.19.10'
 def freemarkerVersion = '2.3.18'
 def gaeVersion = '1.3.3.1'
 def groovyVersion = '1.7.8'
@@ -186,6 +187,10 @@ rootProject.ext {
           // Library & Extension dependencies
           jodatime: "joda-time:joda-time:$jodaTimeVersion",
           ehcache: "net.sf.ehcache:ehcache-core:$ehcacheVersion",
+          elasticsearch: [
+            "org.elasticsearch:elasticsearch:$elasticsearchVersion",
+            "org.xerial.snappy:snappy-java:1.0.4.1"
+          ],
           hazelcast: "com.hazelcast:hazelcast:$hazelcastVersion",
           jdbm: "org.fusesource.jdbm:jdbm:$jdbmVersion",
           jedis: "redis.clients:jedis:$jedisVersion",
