@@ -14,6 +14,18 @@
  */
 package org.qi4j.runtime.structure;
 
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.WildcardType;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
+import java.util.concurrent.ConcurrentHashMap;
 import org.json.JSONException;
 import org.json.JSONTokener;
 import org.qi4j.api.activation.Activation;
@@ -94,20 +106,6 @@ import org.qi4j.runtime.value.ValueStateModel;
 import org.qi4j.runtime.value.ValuesModel;
 import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.metrics.MetricsProviderAdapter;
-
-import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.lang.reflect.WildcardType;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static org.qi4j.api.util.Classes.interfacesOf;
 import static org.qi4j.functional.Iterables.*;
@@ -316,15 +314,17 @@ public class ModuleInstance
                 }
             };
 
-            LinkedHashSet<ModelModule<EntityModel>> result = new LinkedHashSet<ModelModule<EntityModel>>();
-            Iterables.addAll( result, ambiguousCheck( type, findModels( Classes.exactTypeSpecification( type ), visibleEntities( Visibility.module ), layerInstance()
-                .visibleEntities( Visibility.layer ), layerInstance().visibleEntities( Visibility.application ), layerInstance()
-                .usedLayersInstance()
-                .visibleEntities() ) ) );
-            Iterables.addAll( result, findModels( hasRole, visibleEntities( Visibility.module ), layerInstance().visibleEntities( Visibility.layer ), layerInstance()
-                .visibleEntities( Visibility.application ), layerInstance().usedLayersInstance().visibleEntities() ) );
-
-            models = result;
+            models = flatten( ambiguousCheck( type,
+                                              findModels( Classes.exactTypeSpecification( type ),
+                                                          visibleEntities( Visibility.module ),
+                                                          layerInstance().visibleEntities( Visibility.layer ),
+                                                          layerInstance().visibleEntities( Visibility.application ),
+                                                          layerInstance().usedLayersInstance().visibleEntities() ) ),
+                              findModels( hasRole,
+                                          visibleEntities( Visibility.module ),
+                                          layerInstance().visibleEntities( Visibility.layer ),
+                                          layerInstance().visibleEntities( Visibility.application ),
+                                          layerInstance().usedLayersInstance().visibleEntities() ) );
 
             entityModels.put( type, models );
         }
@@ -338,15 +338,19 @@ public class ModuleInstance
 
         if( model == null )
         {
-            Iterable<ModelModule<TransientModel>> flatten = flatten( ambiguousCheck( type, findModels(
-                Classes.exactTypeSpecification( type ), visibleTransients( Visibility.module ),
-                layerInstance().visibleTransients( Visibility.layer ),
-                layerInstance().visibleTransients( Visibility.application ),
-                layerInstance().usedLayersInstance().visibleTransients() ) ), ambiguousCheck( type, findModels(
-                Classes.assignableTypeSpecification( type ), visibleTransients( Visibility.module ),
-                layerInstance().visibleTransients( Visibility.layer ),
-                layerInstance().visibleTransients( Visibility.application ),
-                layerInstance().usedLayersInstance().visibleTransients() ) ) );
+            Iterable<ModelModule<TransientModel>> flatten = flatten(
+                    ambiguousCheck( type,
+                                    findModels( Classes.exactTypeSpecification( type ),
+                                                visibleTransients( Visibility.module ),
+                                                layerInstance().visibleTransients( Visibility.layer ),
+                                                layerInstance().visibleTransients( Visibility.application ),
+                                                layerInstance().usedLayersInstance().visibleTransients() ) ),
+                    ambiguousCheck( type,
+                                    findModels( Classes.assignableTypeSpecification( type ),
+                                                visibleTransients( Visibility.module ),
+                                                layerInstance().visibleTransients( Visibility.layer ),
+                                                layerInstance().visibleTransients( Visibility.application ),
+                                                layerInstance().usedLayersInstance().visibleTransients() ) ) );
             model = Iterables.first( flatten );
 
             if( model != null )
@@ -364,18 +368,19 @@ public class ModuleInstance
 
         if( model == null )
         {
-            Iterable<ModelModule<ObjectModel>> flatten = Iterables.flatten( ambiguousCheck( type, findModels( Classes.exactTypeSpecification( type ), visibleObjects(
-                Visibility.module ), layerInstance()
-                .visibleObjects( Visibility.layer ), layerInstance().visibleObjects( Visibility.application ), layerInstance()
-                .usedLayersInstance()
-                .visibleObjects() ) ),
-                                                                            ambiguousCheck( type, findModels( Classes.assignableTypeSpecification( type ), visibleObjects(
-                                                                                Visibility.module ), layerInstance()
-                                                                                .visibleObjects( Visibility.layer ), layerInstance()
-                                                                                .visibleObjects(
-                                                                                    Visibility.application ), layerInstance()
-                                                                                .usedLayersInstance()
-                                                                                .visibleObjects() ) ) );
+            Iterable<ModelModule<ObjectModel>> flatten = Iterables.flatten(
+                    ambiguousCheck( type,
+                                    findModels( Classes.exactTypeSpecification( type ),
+                                                visibleObjects( Visibility.module ),
+                                                layerInstance().visibleObjects( Visibility.layer ),
+                                                layerInstance().visibleObjects( Visibility.application ),
+                                                layerInstance().usedLayersInstance().visibleObjects() ) ),
+                    ambiguousCheck( type,
+                                    findModels( Classes.assignableTypeSpecification( type ),
+                                                visibleObjects( Visibility.module ),
+                                                layerInstance().visibleObjects( Visibility.layer ),
+                                                layerInstance().visibleObjects( Visibility.application ),
+                                                layerInstance().usedLayersInstance().visibleObjects() ) ) );
 
             model = Iterables.first( flatten );
 
@@ -400,15 +405,13 @@ public class ModuleInstance
                                             visibleValues( Visibility.module ),
                                             layerInstance().visibleValues( Visibility.layer ),
                                             layerInstance().visibleValues( Visibility.application ),
-                                            layerInstance().usedLayersInstance()
-                                                .visibleValues() ) ),
+                                            layerInstance().usedLayersInstance().visibleValues() ) ),
                 ambiguousCheck( type,
                                 findModels( Classes.assignableTypeSpecification( type ),
                                             visibleValues( Visibility.module ),
                                             layerInstance().visibleValues( Visibility.layer ),
                                             layerInstance().visibleValues( Visibility.application ),
-                                            layerInstance().usedLayersInstance()
-                                                .visibleValues() ) ) );
+                                            layerInstance().usedLayersInstance().visibleValues() ) ) );
 
             model = Iterables.first( flatten );
 
@@ -526,8 +529,8 @@ public class ModuleInstance
         Map<AccessibleObject, Property<?>> properties = new HashMap<AccessibleObject, Property<?>>();
         for( PropertyModel propertyModel : model.model().state().properties() )
         {
-            Property property = new PropertyInstance<Object>( propertyModel.getBuilderInfo(), propertyModel.initialValue( model
-                                                                                                                              .module() ) );
+            Property property = new PropertyInstance<Object>( propertyModel.getBuilderInfo(),
+                                                              propertyModel.initialValue( model.module() ) );
             properties.put( propertyModel.accessor(), property );
         }
 
@@ -551,7 +554,8 @@ public class ModuleInstance
         Map<AccessibleObject, Property<?>> properties = new HashMap<AccessibleObject, Property<?>>();
         for( PropertyModel propertyModel : model.model().state().properties() )
         {
-            Property property = new PropertyInstance<Object>( propertyModel, propertyModel.initialValue( model.module() ) );
+            Property property = new PropertyInstance<Object>( propertyModel,
+                                                              propertyModel.initialValue( model.module() ) );
             properties.put( propertyModel.accessor(), property );
         }
 

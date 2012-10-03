@@ -251,5 +251,11 @@ public interface UnitOfWork extends MetaInfoHolder
      */
     void addUnitOfWorkCallback( UnitOfWorkCallback callback );
 
+    /**
+     * Unregister a callback. Callbacks are invoked when the UnitOfWork
+     * is completed or discarded.
+     *
+     * @param callback a callback to be unregistered with this UnitOfWork
+     */
     void removeUnitOfWorkCallback( UnitOfWorkCallback callback );
 }
