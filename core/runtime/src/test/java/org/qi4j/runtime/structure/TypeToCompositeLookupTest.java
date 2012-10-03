@@ -13,28 +13,28 @@
  */
 package org.qi4j.runtime.structure;
 
-import org.junit.Ignore;
+import java.util.Iterator;
 import org.junit.Test;
 import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
+import org.qi4j.functional.Iterables;
 import org.qi4j.test.EntityTestAssembler;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 /**
  * This test assert that Type to Composite lookup succeed for Objects, Transients, Values, Entities and Services.
  */
-@Ignore( "See QI-329" )
 public class TypeToCompositeLookupTest
 {
 
@@ -300,16 +300,14 @@ public class TypeToCompositeLookupTest
         UnitOfWork uow = module.newUnitOfWork();
         try {
 
+            // Specific Type used
             assertEquals( CATHEDRAL, uow.newEntityBuilder( SomeFooEntity.class ).newInstance().bar() );
+
+            // Specific Type used
             assertEquals( BAZAR, uow.newEntityBuilder( FooEntity.class ).newInstance().bar() );
 
-            try {
-
-                uow.newEntityBuilder( Foo.class );
-                fail( "Ambiguous type exception not detected for Entities" );
-
-            } catch ( AmbiguousTypeException expected ) {
-            }
+            // First matching Type used
+            assertEquals( CATHEDRAL, uow.newEntityBuilder( Foo.class ).newInstance().bar() );
 
         } finally {
             uow.discard();
@@ -336,7 +334,7 @@ public class TypeToCompositeLookupTest
     }
 
     @Test
-    public void servicesAmbiguousDeclaration()
+    public void servicesPluralDeclaration()
     {
         Module module = new SingletonAssembler()
         {
@@ -349,16 +347,21 @@ public class TypeToCompositeLookupTest
 
         }.module();
 
+        assertEquals( 1, Iterables.count( module.findServices( SomeFooService.class ) ) );
+        assertEquals( 2, Iterables.count( module.findServices( FooService.class ) ) );
+        assertEquals( 2, Iterables.count( module.findServices( Foo.class ) ) );
+
         assertEquals( CATHEDRAL, module.findService( SomeFooService.class ).get().bar() );
-        assertEquals( BAZAR, module.findService( FooService.class ).get().bar() );
 
-        try {
+        // Follows assembly Type order
+        Iterator<ServiceReference<FooService>> fooServices = module.findServices( FooService.class ).iterator();
+        assertEquals( CATHEDRAL, fooServices.next().get().bar() );
+        assertEquals( BAZAR, fooServices.next().get().bar() );
 
-            module.findService( Foo.class );
-            fail( "Ambiguous type exception not detected for Services" );
-
-        } catch ( AmbiguousTypeException expected ) {
-        }
+        // Follows assembly Type order
+        Iterator<ServiceReference<Foo>> foos = module.findServices( Foo.class ).iterator();
+        assertEquals( CATHEDRAL, foos.next().get().bar() );
+        assertEquals( BAZAR, foos.next().get().bar() );
     }
 
 }
