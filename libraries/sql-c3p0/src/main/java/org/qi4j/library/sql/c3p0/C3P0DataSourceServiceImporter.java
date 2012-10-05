@@ -39,7 +39,7 @@ public interface C3P0DataSourceServiceImporter
         extends ServiceImporter<DataSource>, DataSourceServiceImporterActivation, ServiceComposite
 {
 
-    class Mixin
+    public static class Mixin
             extends AbstractDataSourceServiceImporterMixin<ComboPooledDataSource>
     {
 

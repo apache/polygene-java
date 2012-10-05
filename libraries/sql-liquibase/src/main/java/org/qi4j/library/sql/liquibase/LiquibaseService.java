@@ -47,7 +47,7 @@ public interface LiquibaseService
     void activateLiquibase()
             throws Exception;
 
-    class Activator
+    public static class Activator
             extends ActivatorAdapter<ServiceReference<LiquibaseService>>
     {
 
@@ -60,7 +60,7 @@ public interface LiquibaseService
 
     }
 
-    abstract class Mixin
+    public static abstract class Mixin
             implements LiquibaseService
     {
 

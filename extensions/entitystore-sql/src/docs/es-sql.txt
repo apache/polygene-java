@@ -19,6 +19,8 @@ The following SQL databases are supported:
 - http://www.h2database.com/[H2 Database Engine]
 - http://db.apache.org/derby/[Apache Derby] and http://www.oracle.com/technetwork/java/javadb/overview/index.htm[Oracle JavaDB]
 
+Each entity state is stored as a single row so maximum number of entities is the maximum number of rows per table
+supported by the underlying SQL database.
 
 == Configuration ==
 
@@ -30,6 +32,8 @@ the DataSource properly, see <<library-sql>> and <<howto-configure-service>>.
 
 
 == PostgreSQL ==
+
+Maximum number of entities is unlimited.
 
 Assembly is done using the provided Assembler:
 
@@ -49,6 +53,8 @@ include::../test/resources/postgresql-datasource.properties[]
 
 == MySQL and MariaDB ==
 
+Maximum number of entities depends on the choosen storage engine.
+
 Assembly is done using the provided Assembler:
 
 [snippet,java]
@@ -66,6 +72,8 @@ include::../test/resources/mysql-datasource.properties[]
 
 
 == SQLite ==
+
+Maximum number of entities is unlimited.
 
 The http://www.xerial.org/trac/Xerial/wiki/SQLiteJDBC[Xerial SQLite JDBC] driver is recommended.
 It provides native support on Linux, Windows and MaxOSX, pure Java on other OSes.
@@ -88,6 +96,8 @@ include::../test/resources/sqlite-datasource.properties[]
 
 == H2 Database Engine ==
 
+Maximum number of entities is 2^64.
+
 Assembly is done using the provided Assembler:
 
 [snippet,java]
@@ -106,6 +116,8 @@ include::../test/resources/h2-datasource.properties[]
 
 
 == Apache Derby and Oracle JavaDB ==
+
+Maximum number of entities is unlimited.
 
 Assembly is done using the provided Assembler:
 

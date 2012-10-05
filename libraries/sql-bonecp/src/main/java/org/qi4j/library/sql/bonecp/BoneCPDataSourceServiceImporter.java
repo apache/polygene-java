@@ -32,7 +32,7 @@ import org.qi4j.library.sql.datasource.DataSourceServiceImporterActivation;
 public class BoneCPDataSourceServiceImporter
 {
 
-    class Mixin
+    public static class Mixin
             extends AbstractDataSourceServiceImporterMixin<BoneCPDataSource>
     {
 

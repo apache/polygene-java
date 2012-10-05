@@ -29,7 +29,7 @@ public interface DBCPDataSourceServiceImporter
         extends ServiceImporter<DataSource>, DataSourceServiceImporterActivation, ServiceComposite
 {
 
-    class Mixin
+    public static class Mixin
             extends AbstractDataSourceServiceImporterMixin<BasicDataSource>
     {
 
