@@ -13,10 +13,11 @@
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 package org.qi4j.library.uid.sequence.assembly;
 
+import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -25,8 +26,19 @@ import org.qi4j.library.uid.sequence.TransientSequencingService;
 public class TransientSequencingAssembler
     implements Assembler
 {
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+
+    private Visibility visibility = Visibility.module;
+
+    public TransientSequencingAssembler withVisibility( Visibility visibility )
     {
-        module.services( TransientSequencingService.class );
+        this.visibility = visibility;
+        return this;
     }
+
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
+    {
+        module.services( TransientSequencingService.class ).visibleIn( visibility );
+    }
+
 }

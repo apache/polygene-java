@@ -8,6 +8,8 @@ source=libraries/fileconfig/dev-status.xml
 
 The FileConfig library provide a service for accessing application-specific directories.
 
+A lot of the Qi4j Libraries and Extensions make use of this library to locate files.
+
 [snippet,java]
 ----
 source=libraries/fileconfig/src/main/java/org/qi4j/library/fileconfig/FileConfiguration.java

@@ -13,10 +13,11 @@
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 package org.qi4j.library.uid.uuid.assembly;
 
+import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -25,9 +26,19 @@ import org.qi4j.library.uid.uuid.UuidServiceComposite;
 public class UuidServiceAssembler
     implements Assembler
 {
+
+    private Visibility visibility = Visibility.module;
+
+    public UuidServiceAssembler withVisibility( Visibility visibility )
+    {
+        this.visibility = visibility;
+        return this;
+    }
+
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.services( UuidServiceComposite.class );
+        module.services( UuidServiceComposite.class ).visibleIn( visibility );
     }
+
 }
