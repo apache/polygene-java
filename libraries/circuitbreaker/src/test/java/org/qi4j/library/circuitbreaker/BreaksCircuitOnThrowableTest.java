@@ -15,6 +15,7 @@
  */
 package org.qi4j.library.circuitbreaker;
 
+import java.beans.PropertyVetoException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.qi4j.api.mixin.Mixins;
@@ -24,96 +25,97 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.circuitbreaker.service.AbstractBreakOnThrowable;
 import org.qi4j.library.circuitbreaker.service.BreaksCircuitOnThrowable;
-import org.qi4j.library.circuitbreaker.service.ServiceCircuitBreaker;
 import org.qi4j.test.AbstractQi4jTest;
-
-import java.beans.PropertyVetoException;
 
 /**
  * Test @BreaksCircuitOnThrowable annotation
  */
 public class BreaksCircuitOnThrowableTest
-   extends AbstractQi4jTest
+        extends AbstractQi4jTest
 {
 
-   public void assemble( ModuleAssembly module ) throws AssemblyException
-   {
-      module.services( TestService.class ).setMetaInfo( new CircuitBreaker() );
-   }
+    // START SNIPPET: service
+    public void assemble( ModuleAssembly module )
+            throws AssemblyException
+    {
+        module.services( TestService.class ).setMetaInfo( new CircuitBreaker() );
+    }
+    // END SNIPPET: service
 
-   @Test
-   public void testSuccess()
-   {
-      TestService service = (TestService) module.findService( TestService.class ).get();
-      service.success();
-      service.success();
-      service.success();
-   }
+    @Test
+    public void testSuccess()
+    {
+        TestService service = ( TestService ) module.findService( TestService.class ).get();
+        service.successfulMethod();
+        service.successfulMethod();
+        service.successfulMethod();
+    }
 
-   @Test
-   public void testThrowable()
-   {
-      ServiceReference<TestService> serviceReference = module.findService( TestService.class );
-      TestService service = serviceReference.get();
-      try
-      {
-         service.throwable();
-         Assert.fail( "Service should have thrown exception" );
-      } catch (Exception e)
-      {
-         // Ok
-      }
+    @Test
+    public void testThrowable()
+    {
+        ServiceReference<TestService> serviceReference = module.findService( TestService.class );
+        TestService service = serviceReference.get();
+        try {
+            service.throwingMethod();
+            Assert.fail( "Service should have thrown exception" );
+        } catch ( Exception e ) {
+            // Ok
+        }
 
-      try
-      {
-         service.success();
-         Assert.fail( "Circuit breaker should have tripped" );
-      } catch (Exception e)
-      {
-         // Ok
-      }
+        try {
+            service.successfulMethod();
+            Assert.fail( "Circuit breaker should have tripped" );
+        } catch ( Exception e ) {
+            // Ok
+        }
 
-      try
-      {
-         serviceReference.metaInfo( CircuitBreaker.class ).turnOn();
-      } catch (PropertyVetoException e)
-      {
-         Assert.fail("Should have been possible to turn on circuit breaker");
-      }
+        try {
+            serviceReference.metaInfo( CircuitBreaker.class ).turnOn();
+        } catch ( PropertyVetoException e ) {
+            Assert.fail( "Should have been possible to turn on circuit breaker" );
+        }
 
-      try
-      {
-         service.success();
-      } catch (Exception e)
-      {
-         Assert.fail( "Circuit breaker should have been turned on" );
-      }
-   }
+        try {
+            service.successfulMethod();
+        } catch ( Exception e ) {
+            Assert.fail( "Circuit breaker should have been turned on" );
+        }
+    }
 
-   @Mixins(TestService.Mixin.class)
-   public interface TestService
-      extends ServiceCircuitBreaker, AbstractBreakOnThrowable, ServiceComposite
-   {
-      int success();
+    @Mixins( TestService.Mixin.class )
+    // START SNIPPET: service
+    public interface TestService
+            extends AbstractBreakOnThrowable, ServiceComposite
+    {
 
-      void throwable();
+        @BreaksCircuitOnThrowable
+        int successfulMethod();
 
-      abstract class Mixin
-         implements TestService
-      {
-         int count = 0;
+        @BreaksCircuitOnThrowable
+        void throwingMethod();
 
-         @BreaksCircuitOnThrowable
-         public void throwable()
-         {
-            throw new IllegalArgumentException("Failed");
-         }
+        // END SNIPPET: service
+        abstract class Mixin
+                implements TestService
+        {
 
-         @BreaksCircuitOnThrowable
-         public int success()
-         {
-            return count++;
-         }
-      }
-   }
+            int count = 0;
+
+            public void throwingMethod()
+            {
+                throw new IllegalArgumentException( "Failed" );
+            }
+
+            public int successfulMethod()
+            {
+                return count++;
+            }
+
+        }
+
+        // START SNIPPET: service
+    }
+    // END SNIPPET: service
+
 }

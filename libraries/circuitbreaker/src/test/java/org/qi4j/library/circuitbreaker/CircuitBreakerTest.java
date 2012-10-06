@@ -15,162 +15,196 @@
  */
 package org.qi4j.library.circuitbreaker;
 
-import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
 import java.beans.VetoableChangeListener;
 import java.io.IOException;
+import org.hamcrest.CoreMatchers;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertThat;
 
 /**
  * JAVADOC
  */
 public class CircuitBreakerTest
 {
-   private CircuitBreaker cb;
 
-   @Before
-   public void createCircuitBreaker()
-   {
-      cb = new CircuitBreaker(3, 250, CircuitBreakers.in( IllegalArgumentException.class ));
+    private CircuitBreaker cb;
 
-      cb.addPropertyChangeListener( new PropertyChangeListener()
-      {
+    @Before
+    public void createCircuitBreaker()
+    {
+        // START SNIPPET: direct
+        // Create a CircuitBreaker with a threshold of 3, a 250ms timeout, allowing IllegalArgumentExceptions
+        CircuitBreaker cb = new CircuitBreaker( 3, 250, CircuitBreakers.in( IllegalArgumentException.class ) );
 
-         public void propertyChange( PropertyChangeEvent evt )
-         {
-            System.out.println(evt.getSource()+":"+evt.getPropertyName()+"="+evt.getOldValue()+" -> "+evt.getNewValue());
-         }
-      });
-   }
+        // END SNIPPET: direct
 
-   @Test
-   public void GivenCBWhenTripWithExceptionsAndTurnOnThenStatusIsOn() throws PropertyVetoException
-   {
+        cb.addPropertyChangeListener( new PropertyChangeListener()
+        {
 
-      Assert.assertThat( cb.getStatus(), CoreMatchers.equalTo(CircuitBreaker.Status.on ));
+            public void propertyChange( PropertyChangeEvent evt )
+            {
+                System.out.println( evt.getSource() + ":" + evt.getPropertyName() + "=" + evt.getOldValue() + " -> " + evt.getNewValue() );
+            }
 
-      // Service levels goes down but does not cause a trip
-      cb.throwable( new IOException() );
+        } );
 
-      Assert.assertThat( cb.getStatus(), CoreMatchers.equalTo(CircuitBreaker.Status.on ));
+        this.cb = cb;
+    }
 
-      // Service level goes down and causes a trip
-      cb.throwable( new IOException() );
-      cb.throwable( new IOException() );
+    @Test
+    public void GivenCBWhenTripWithExceptionsAndTurnOnThenStatusIsOn()
+            throws PropertyVetoException
+    {
 
-      Assert.assertThat( cb.getStatus(), CoreMatchers.equalTo(CircuitBreaker.Status.off ));
+        assertThat( cb.getStatus(), CoreMatchers.equalTo( CircuitBreaker.Status.on ) );
 
-      // Turn on the CB again
-      cb.turnOn();
+        // START SNIPPET: direct
+        // Service levels goes down but does not cause a trip
+        cb.throwable( new IOException() );
 
-      Assert.assertThat( cb.getStatus(), CoreMatchers.equalTo(CircuitBreaker.Status.on ));
-   }
+        // END SNIPPET: direct
 
-   @Test
-   public void GivenCBWhenAllowedExceptionsThenServiceLevelIsNormal() throws PropertyVetoException
-   {
+        assertThat( cb.getStatus(), CoreMatchers.equalTo( CircuitBreaker.Status.on ) );
 
-      Assert.assertThat( cb.getStatus(), CoreMatchers.equalTo(CircuitBreaker.Status.on ));
+        // START SNIPPET: direct
+        // Service level goes down and causes a trip
+        cb.throwable( new IOException() );
+        cb.throwable( new IOException() );
 
-      // Service level goes down
-      cb.throwable( new IOException() );
+        // END SNIPPET: direct
 
-      // Service levels goes up
-      cb.throwable( new IllegalArgumentException() );
+        assertThat( cb.getStatus(), CoreMatchers.equalTo( CircuitBreaker.Status.off ) );
 
-      Assert.assertThat( cb.getServiceLevel(), CoreMatchers.equalTo(1.0 ));
-   }
+        // START SNIPPET: direct
+        // Turn on the CB again
+        cb.turnOn();
 
-   @Test
-   public void GivenCBWhenTripCBWithExceptionsAndTimeoutThenStatusIsOn() throws PropertyVetoException
-   {
-      Assert.assertThat( cb.getStatus(), CoreMatchers.equalTo(CircuitBreaker.Status.on ));
+        // END SNIPPET: direct
 
-      // Service levels goes down and causes a trip
-      cb.throwable( new IOException() );
-      cb.throwable( new IOException() );
-      cb.throwable( new IOException() );
+        assertThat( cb.getStatus(), CoreMatchers.equalTo( CircuitBreaker.Status.on ) );
+    }
 
-      Assert.assertThat( cb.getStatus(), CoreMatchers.equalTo( CircuitBreaker.Status.off ));
+    @Test
+    public void GivenCBWhenAllowedExceptionsThenServiceLevelIsNormal()
+            throws PropertyVetoException
+    {
 
-      // Wait until timeout
-      Assert.assertThat( cb.getStatus(), CoreMatchers.equalTo(CircuitBreaker.Status.off ));
-      try
-      {
-         System.out.println("Wait...");
-         Thread.sleep( 300 );
-      } catch (InterruptedException e)
-      {
-         // Ignore
-      }
+        assertThat( cb.getStatus(), CoreMatchers.equalTo( CircuitBreaker.Status.on ) );
 
-      Assert.assertThat( cb.getStatus(), CoreMatchers.equalTo(CircuitBreaker.Status.on ));
-   }
+        // Service level goes down
+        cb.throwable( new IOException() );
 
-   @Test
-   public void GivenCBWhenExceptionsAndSuccessesThenStatusIsOn() throws PropertyVetoException
-   {
-      Assert.assertThat( cb.getStatus(), CoreMatchers.equalTo(CircuitBreaker.Status.on ));
+        // Service levels goes up
+        cb.throwable( new IllegalArgumentException() );
 
-      // Service levels goes down and causes a trip
-      cb.throwable( new IOException() );
-      cb.throwable( new IOException() );
-      cb.success();
-      cb.success();
-      cb.throwable( new IOException() );
-      cb.throwable( new IOException() );
+        assertThat( cb.getServiceLevel(), CoreMatchers.equalTo( 1.0 ) );
+    }
 
-      Assert.assertThat( cb.getStatus(), CoreMatchers.equalTo(CircuitBreaker.Status.on ));
-   }
+    @Test
+    public void GivenCBWhenTripCBWithExceptionsAndTimeoutThenStatusIsOn()
+            throws PropertyVetoException
+    {
+        assertThat( cb.getStatus(), CoreMatchers.equalTo( CircuitBreaker.Status.on ) );
 
-   @Test
-   public void GivenCBWhenTripCBWithExceptionsAndSuccessesThenStatusIsOff() throws PropertyVetoException
-   {
-      Assert.assertThat( cb.getStatus(), CoreMatchers.equalTo(CircuitBreaker.Status.on ));
+        // START SNIPPET: direct
+        // Service levels goes down and causes a trip
+        cb.throwable( new IOException() );
+        cb.throwable( new IOException() );
+        cb.throwable( new IOException() );
 
-      // Service levels goes down and causes a trip
-      cb.throwable( new IOException() );
-      cb.throwable( new IOException() );
-      cb.throwable( new IOException() );
-      cb.success();
+        // END SNIPPET: direct
 
-      Assert.assertThat( cb.getStatus(), CoreMatchers.equalTo(CircuitBreaker.Status.off ));
-   }
+        assertThat( cb.getStatus(), CoreMatchers.equalTo( CircuitBreaker.Status.off ) );
 
-   @Test
-   public void GivenCBWhenTripCBWithExceptionsAndGetStatusWithFailureThenStatusIsOff() throws PropertyVetoException
-   {
-      Assert.assertThat( cb.getStatus(), CoreMatchers.equalTo(CircuitBreaker.Status.on ));
+        // START SNIPPET: direct
+        // Wait until timeout
 
-      cb.addVetoableChangeListener( new VetoableChangeListener()
-      {
-         public void vetoableChange( PropertyChangeEvent evt ) throws PropertyVetoException
-         {
-            if (evt.getNewValue() == CircuitBreaker.Status.on)
-               throw new PropertyVetoException("Service is down", evt);
-         }
-      });
+        // END SNIPPET: direct
+        assertThat( cb.getStatus(), CoreMatchers.equalTo( CircuitBreaker.Status.off ) );
+        try {
+            System.out.println( "Wait..." );
+            Thread.sleep( 300 );
+        } catch ( InterruptedException e ) {
+            // Ignore
+        }
 
-      // Service levels goes down and causes a trip
-      cb.throwable( new IOException() );
-      cb.throwable( new IOException() );
-      cb.throwable( new IOException() );
+        // START SNIPPET: direct
+        // CircuitBreaker is back on
+        
+        // END SNIPPET: direct
+        assertThat( cb.getStatus(), CoreMatchers.equalTo( CircuitBreaker.Status.on ) );
+    }
 
-      try
-      {
-         System.out.println("Wait...");
-         Thread.sleep( 300 );
-      } catch (InterruptedException e)
-      {
-         // Ignore
-      }
+    @Test
+    public void GivenCBWhenExceptionsAndSuccessesThenStatusIsOn()
+            throws PropertyVetoException
+    {
+        assertThat( cb.getStatus(), CoreMatchers.equalTo( CircuitBreaker.Status.on ) );
 
-      Assert.assertThat( cb.getStatus(), CoreMatchers.equalTo(CircuitBreaker.Status.off ));
-      Assert.assertThat( cb.getLastThrowable().getMessage(), CoreMatchers.equalTo("Service is down"));
-   }
+        // Service levels goes down and causes a trip
+        cb.throwable( new IOException() );
+        cb.throwable( new IOException() );
+        cb.success();
+        cb.success();
+        cb.throwable( new IOException() );
+        cb.throwable( new IOException() );
+
+        assertThat( cb.getStatus(), CoreMatchers.equalTo( CircuitBreaker.Status.on ) );
+    }
+
+    @Test
+    public void GivenCBWhenTripCBWithExceptionsAndSuccessesThenStatusIsOff()
+            throws PropertyVetoException
+    {
+        assertThat( cb.getStatus(), CoreMatchers.equalTo( CircuitBreaker.Status.on ) );
+
+        // Service levels goes down and causes a trip
+        cb.throwable( new IOException() );
+        cb.throwable( new IOException() );
+        cb.throwable( new IOException() );
+        cb.success();
+
+        assertThat( cb.getStatus(), CoreMatchers.equalTo( CircuitBreaker.Status.off ) );
+    }
+
+    @Test
+    public void GivenCBWhenTripCBWithExceptionsAndGetStatusWithFailureThenStatusIsOff()
+            throws PropertyVetoException
+    {
+        assertThat( cb.getStatus(), CoreMatchers.equalTo( CircuitBreaker.Status.on ) );
+
+        cb.addVetoableChangeListener( new VetoableChangeListener()
+        {
+
+            public void vetoableChange( PropertyChangeEvent evt )
+                    throws PropertyVetoException
+            {
+                if ( evt.getNewValue() == CircuitBreaker.Status.on ) {
+                    throw new PropertyVetoException( "Service is down", evt );
+                }
+            }
+
+        } );
+
+        // Service levels goes down and causes a trip
+        cb.throwable( new IOException() );
+        cb.throwable( new IOException() );
+        cb.throwable( new IOException() );
+
+        try {
+            System.out.println( "Wait..." );
+            Thread.sleep( 300 );
+        } catch ( InterruptedException e ) {
+            // Ignore
+        }
+
+        assertThat( cb.getStatus(), CoreMatchers.equalTo( CircuitBreaker.Status.off ) );
+        assertThat( cb.getLastThrowable().getMessage(), CoreMatchers.equalTo( "Service is down" ) );
+    }
+
 }
