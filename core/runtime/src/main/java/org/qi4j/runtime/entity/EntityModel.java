@@ -40,6 +40,8 @@ import org.qi4j.spi.entitystore.EntityAlreadyExistsException;
 import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 
+import static org.qi4j.functional.Iterables.*;
+
 /**
  * JAVADOC
  */
@@ -72,9 +74,9 @@ public final class EntityModel extends CompositeModel
     {
         super( types, visibility, info, mixinsModel, stateModel, compositeMethodsModel );
 
-        final Queryable queryable = Iterables.first( Iterables.<Queryable>cast( 
-            Iterables.filter( Annotations.isType( Queryable.class ), 
-            Iterables.flattenIterables( Iterables.map( Annotations.ANNOTATIONS_OF, types ) ) ) ) );
+        final Queryable queryable = first( Iterables.<Queryable>cast(
+                filter( Annotations.isType( Queryable.class ),
+                        flattenIterables( map( Annotations.ANNOTATIONS_OF, types ) ) ) ) );
         this.queryable = queryable == null || queryable.value();
     }
 

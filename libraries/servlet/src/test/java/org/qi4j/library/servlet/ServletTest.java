@@ -30,6 +30,7 @@ import org.qi4j.bootstrap.ApplicationAssemblyFactory;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.servlet.lifecycle.AbstractQi4jServletBootstrap;
+import org.qi4j.test.util.FreePortFinder;
 
 public class ServletTest
 {
@@ -70,6 +71,7 @@ public class ServletTest
         protected void doGet( HttpServletRequest req, HttpServletResponse resp )
                 throws ServletException, IOException
         {
+            // Output the assembled Application's name as an example
             resp.getWriter().println( application().name() );
         }
 
@@ -80,8 +82,8 @@ public class ServletTest
     public void test()
             throws Exception
     {
-
-        Server server = new Server( 9001 );
+        int port = FreePortFinder.findFreePortOnLoopback( 9001 );
+        Server server = new Server( port );
         try {
 
             ServletContextHandler context = new ServletContextHandler();
@@ -93,7 +95,7 @@ public class ServletTest
             server.start();
 
             HttpClient client = new DefaultHttpClient();
-            String result = client.execute( new HttpGet( "http://127.0.0.1:9001/" ), new BasicResponseHandler() );
+            String result = client.execute( new HttpGet( "http://127.0.0.1:" + port + "/" ), new BasicResponseHandler() );
             Assert.assertEquals( APP_NAME, result.trim() );
 
         } finally {

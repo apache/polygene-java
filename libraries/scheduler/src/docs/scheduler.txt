@@ -17,7 +17,7 @@ The SLF4J Logger used by this library is named "org.qi4j.library.scheduler".
 == Assembly ==
 
 Use SchedulerAssembler to add the Scheduler service to your Application. This
-Assembler provide a fluent api to programmatically configure configuration defaults and activate the 
+Assembler provide a fluent api to programmatically configure configuration defaults and activate the
 Timeline service assembly that allow to browse in past and future Task runs.
 
 Here is a full example:
@@ -64,7 +64,7 @@ Here is a simple example:
 interface MyTaskEntity
     extends Task, EntityComposite
 {
-    Property<String>; customState();
+    Property<String>; myTaskState();
     Association<AnotherEntity> anotherEntity();
 }
 
@@ -72,9 +72,10 @@ abstract class MyTaskMixin
     implements Runnable
 {
     @This MyTaskEntity me;
+
     public void run()
     {
-        me.customState().set( me.anotherEntity().get().doSomeStuff( me.customState().get() ) );
+        me.myTaskState().set( me.anotherEntity().get().doSomeStuff( me.myTaskState().get() ) );
     }
 }
 ----
@@ -87,7 +88,7 @@ durability.
 
 By default, a Schedule is not durable. In other words, it do not survive an Application
 restart. To make a Schedule durable, set it's durable property to true once its scheduled.
-        
+
 There are two ways to schedule a Task using the Scheduler service: once or with a cron
 expression.
 
@@ -96,14 +97,16 @@ expression.
 This is the easiest way to run a background Task once after a given initial delay in seconds.
 
 [source,java]
-----        
+----
 @Service Scheduler scheduler;
-public void function() {
+
+public void method()
+{
     MyTaskEntity myTask = ...;
     Schedule schedule = scheduler.scheduleOnce( myTask, 10 ); // myTask will be run in 10 seconds from now
 }
 ----
-        
+
 Note that there is no point in making such a Schedule durable because it won't be run repeatedly.
 
 

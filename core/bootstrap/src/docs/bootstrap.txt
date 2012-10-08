@@ -98,12 +98,55 @@ tag=UsingAssembler
 
 
 == Singleton Assembler ==
-TODO
+Every Qi4j runtime instance consist of One Application, with one or more Layers and one or more Modules in each Layer.
+So the minimal application is still one layer with one module. This is not recommended other than for testing purposes
+and really trivial applications.
+
+Let's take a closer look at how it is put together.
+
+[snippet,java]
+--------------
+source=core/bootstrap/src/test/java/org/qi4j/bootstrap/DocumentationSupport.java
+tag=singleton
+--------------
+
+Once the SingletonAssembler constructor returns, the Qi4j application is up and running.
+
+The SingletonAssembler also makes common system resources available from the bootstrap code, such as
+Module, UnitOfWorkFactory and others. This is possible since there is only one Module.
+
+
 
 == Pancake Assembly ==
-TODO
+There is one case that stands out as a common case, and forms a reasonable middle-ground. It is where each layer sits
+exactly on top of each other layer, like pancakes. Each layer will only use the layer directly below and only that
+layer. For this case we have a convenience setup. You create an Assembler[][][], where the outer-most array is each
+layer, the middle array is the modules in each layer, and the last array is a set of assemblers needed to put the
+things togather.
 
-== Application Assembler ==
-TODO
+Let's look at an example;
+
+[snippet,java]
+--------------
+source=core/bootstrap/src/test/java/org/qi4j/bootstrap/DocumentationSupport.java
+tag=pancake
+--------------
+
+
+
+== Full Assembly ==
+Full Assembly means that you have the opportunity to create any layer/module hierarchy that are within the rules of the
+Qi4j runtime. It requires more support in your code to be useful, and the example below is by no means a recommended way
+to organize large application assemblies.
+
+In principle, you first start the Qi4j runtime, call newApplication with an ApplicationAssembler instance and call
+activate() on the returned application. The ApplicationAssembler instance will be called with an
+ApplicationAssemblyFactory, which is used to create an ApplicationAssembly describing the application structure.
+
+[snippet,java]
+--------------
+source=core/bootstrap/src/test/java/org/qi4j/bootstrap/DocumentationSupport.java
+tag=full
+--------------
 
 

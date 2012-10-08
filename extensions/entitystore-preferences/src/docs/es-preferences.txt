@@ -6,8 +6,9 @@
 source=extensions/entitystore-preferences/dev-status.xml
 --------------
 
-EntityStore service backed by java.​util.​prefs.​Preferences. It can be a good
-candidate to store <<def-configurationcomposite>>s.
+EntityStore service backed by
+http://docs.oracle.com/javase/7/docs/api/java/util/prefs/Preferences.html[java.​util.​prefs.​Preferences]. It can be a good
+candidate to store <<def-configurationcomposite, Configuration Composites>>.
 
 == Assembly ==
 

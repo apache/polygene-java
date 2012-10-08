@@ -58,7 +58,7 @@ tag=direct
 == Service Circuit Breaker  ==
 
 As a facility you can make your Services extends `AbstractBreakOnThrowable`, set them a `CircuitBreaker` as
-`MetaInfo` during assembly and annotated methods with `@BreaksCircuitOnThrowable`. Doing this will :
+`MetaInfo` during assembly and annotate methods with `@BreaksCircuitOnThrowable`. Doing this will :
 
 - add a circuit breaker accessor to the Service (`CircuitBreaker getCircuitBreaker()`) ;
 - allow exposition of the circuit breaker in JMX ;
@@ -78,7 +78,7 @@ invocation success with the `@BreaksCircuitOnThrowable` annotation.
 
 === Exposing Service Circuit Breakers in JMX ===
 
-To expose their CircuitBreaker in JMX, your Services using one must implement the `ServiceCircuitBreaker` interface.
+To expose their circuit breaker in JMX, your Services using one must implement the `ServiceCircuitBreaker` interface.
 Note that if you already extends `AbstractBreakOnThrowable` you don't need to do anything else as it already extends
 `ServiceCircuitBreaker`.
 
