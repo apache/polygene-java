@@ -1,0 +1,134 @@
+[[library-shiro, Shiro Security Library]]
+= Shiro Security =
+
+[devstatus]
+--------------
+source=libraries/shiro/dev-status.xml
+--------------
+
+This library provides integration with the http://shiro.apache.org/[Apache Shiro] Java Security Framework.
+
+``Apache Shiro is a powerful and easy-to-use Java security framework that performs authentication, authorization,
+cryptography, and session management. With Shiro’s easy-to-understand API, you can quickly and easily secure any
+application – from the smallest mobile applications to the largest web and enterprise applications.'' says the Apache
+Shiro website.
+
+Altough Apache Shiro can be used as-is with Qi4j Applications, this library provides integrations that can come in
+handy. If your use case do not fit any of theses integrations, look at their respective code. You should find out
+pretty easily how to compose the provided code to write your integration. Don't hesitate to contribute interesting
+integrations to this very library.
+
+We invite you to read the comprehensive http://shiro.apache.org/documentation.html[Apache Shiro documentation], we will
+mostly discuss Qi4j related matters here.
+
+
+
+== Standalone Context ==
+
+For standalone applications, you can use plain Shiro easily. The only thing to do is to register a configured
+SecurityManager when activating your Qi4j Application. It can be done outside the application, before its activation,
+"à là" by-hand:
+
+[snippet,java]
+----
+source=libraries/shiro/src/test/java/org/qi4j/library/shiro/StandaloneShiroTest.java
+tag=before
+----
+
+However we recommend to use the provided IniSecurityManagerService that does exactly this when activated and unregister
+the SecurityManager when passivated:
+
+[snippet,java]
+----
+source=libraries/shiro/src/test/java/org/qi4j/library/shiro/StandaloneShiroTest.java
+tag=assembly
+----
+
+You can change the INI resource path through the ShiroIniConfiguration:
+
+[snippet,java]
+----
+source=libraries/shiro/src/main/java/org/qi4j/library/shiro/ini/ShiroIniConfiguration.java
+tag=config
+----
+
+Remember that this setup use a VM static SecurityManager singleton. Among other things it means that, althoug the
+IniSecurityManagerService is activated on Application activation, if you need to use Shiro in other Services that are
+activated on Application activation you should tell Qi4j about this dependency by injecting the SecurityManagerService
+in the laters.
+
+
+
+== Servlet Context ==
+
+In a servlet context, being through the <<library-servlet>>, the <<library-http>> or your custom Qi4j application
+bootstrap, plain Shiro is usable. A WebEnvironment must be globally available and ShiroFilter must be registered.
+
+If you use a custom Qi4j application boostrap or the <<library-servlet>> you can directly use Shiro's provided
+EnvironmentLoaderListener and ShiroFilter.
+
+If you use the <<library-http>> you can either directly use Shiro classes or use the assembly API as follows:
+
+[snippet,java]
+----
+source=libraries/shiro/src/test/java/org/qi4j/library/shiro/web/WebHttpShiroTest.java
+tag=assembly
+----
+
+
+
+== Security Concern ==
+
+This library provides the `SecurityConcern` that should be used alongside the provided method annotations that mimic
+Apache Shiro annotations:
+
+- The `@RequiresAuthentication` annotation requires the current Subject to have been authenticated during their current
+  session for the annotated class/instance/method to be accessed or invoked.
+- The `@RequiresGuest` annotation requires the current Subject to be a "guest", that is, they are not authenticated or
+  remembered from a previous session for the annotated class/instance/method to be accessed or invoked.
+- The `@RequiresPermissions` annotation requires the current Subject be permitted one or more permissions in order to
+  execute the annotated method.
+- The `@RequiresRoles` annotation requires the current Subject to have all of the specified roles. If they do not have
+  the role(s), the method will not be executed and an AuthorizationException is thrown.
+- The `@RequiresUser` annotation requires the current Subject to be an application user for the annotated
+  class/instance/method to be accessed or invoked. An 'application user' is defined as a Subject that has a known
+  identity, either known due to being authenticated during the current session or remembered from 'RememberMe' services
+  from a previous session.
+
+
+
+== Realms Services ==
+
+All the above is sufficient as long as you use the ini file to store user credentials and permissions or a Realm that
+has no dependency on your application code and can be specified in the ini file to be instanciated by Shiro outside the
+Qi4j scope.
+
+One usecase where it's not sufficient comes quickly as you would like to provide user credentials and permissions
+from Entities stored in an EntityStore or perform any custom logic involving your Qi4j Application.
+
+
+
+The Shiro Security Library provides skeletons to easily setup some usecases consisting of Shiro setup facilities and
+base state model for you to compose with.
+
+== Security Domain ==
+
+
+=== Secure Password Hashing ===
+
+
+=== X.509 Certificates ===
+
+
+=== OAuth Client ===
+
+
+=== OAuth Server ===
+
+
+=== Permissions & Roles ===
+
+
+== Logging ==
+
+All code from this library use the `org.qi4j.library.shiro` logger.

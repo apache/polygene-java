@@ -16,6 +16,7 @@ package org.qi4j.library.shiro.domain.securehash;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueComposite;
 
+@Deprecated
 public interface SecureHash
         extends ValueComposite
 {

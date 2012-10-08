@@ -13,6 +13,7 @@
  */
 package org.qi4j.library.shiro.domain.x509;
 
+import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -21,12 +22,21 @@ public class X509DomainAssembler
         implements Assembler
 {
 
-    @SuppressWarnings( "unchecked" )
+    private Visibility visibility = Visibility.module;
+
+    public X509DomainAssembler withVisibility( Visibility visibility )
+    {
+        this.visibility = visibility;
+        return this;
+    }
+
     public void assemble( ModuleAssembly module )
             throws AssemblyException
     {
-        module.entities( X509Light.class );
-        module.services( X509LightFactory.class );
+        module.entities( X509Light.class ).
+                visibleIn( visibility );
+        module.services( X509LightFactory.class ).
+                visibleIn( visibility );
     }
 
 }

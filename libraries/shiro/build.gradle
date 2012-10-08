@@ -1,0 +1,24 @@
+description = "Qi4j Shiro Library integrates Apache Shiro security framework into Qi4j."
+
+jar { manifest { name = "Qi4j Library - Shiro" }}
+
+dependencies {
+
+  compile( project( ":org.qi4j.core:org.qi4j.core.api" ) )
+  compile( project( ":org.qi4j.core:org.qi4j.core.bootstrap" ) )
+  compile( libraries.bouncy_castle )
+  compile( libraries.shiro )
+  compile( libraries.shiro_web )
+  compile( libraries.servlet_api )
+  compile( project( ":org.qi4j.libraries:org.qi4j.library.http" ) )
+
+  testCompile( project( ":org.qi4j.libraries:org.qi4j.library.servlet" ) )
+  testCompile( project( ":org.qi4j.extensions:org.qi4j.extension.indexing-rdf" ) )
+  testCompile( project( ":org.qi4j.core:org.qi4j.core.testsupport" ) )
+  testCompile( libraries.http_client )
+
+  testRuntime( project( ":org.qi4j.core:org.qi4j.core.spi" ) )
+  testRuntime( project( ":org.qi4j.core:org.qi4j.core.runtime" ) )
+  testRuntime( libraries.logback )
+
+}

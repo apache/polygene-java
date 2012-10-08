@@ -13,11 +13,10 @@
  */
 package org.qi4j.library.shiro.realms;
 
-import org.apache.shiro.realm.Realm;
-import org.qi4j.library.shiro.authc.SecureHashCredentialsMatcher;
-
 import java.util.Arrays;
 import java.util.Collection;
+import org.apache.shiro.realm.Realm;
+import org.qi4j.library.shiro.authc.SecureHashCredentialsMatcher;
 
 public abstract class AbstractSecureHashQi4jRealmFactory
         extends AbstractQi4jRealmFactory

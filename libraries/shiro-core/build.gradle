@@ -1,6 +1,6 @@
 description = "Qi4j Shiro Library integrates Apache Shiro security framework into Qi4j."
 
-jar { manifest { name = "Qi4j Library - Shiro" }}
+jar { manifest { name = "Qi4j Library - Shiro Core" }}
 
 dependencies {
 

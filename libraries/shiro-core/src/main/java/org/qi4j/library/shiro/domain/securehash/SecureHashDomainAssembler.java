@@ -17,6 +17,7 @@ import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 
+@Deprecated
 public final class SecureHashDomainAssembler
         implements Assembler
 {

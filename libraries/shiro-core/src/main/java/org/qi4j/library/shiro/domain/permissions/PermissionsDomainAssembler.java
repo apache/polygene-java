@@ -13,6 +13,7 @@
  */
 package org.qi4j.library.shiro.domain.permissions;
 
+import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -21,14 +22,24 @@ public class PermissionsDomainAssembler
         implements Assembler
 {
 
+    private Visibility visibility = Visibility.module;
+
+    public PermissionsDomainAssembler withVisibility( Visibility visibility )
+    {
+        this.visibility = visibility;
+        return this;
+    }
+
     public void assemble( ModuleAssembly module )
             throws AssemblyException
     {
         module.entities( Permission.class,
                          Role.class,
-                         RoleAssignment.class );
+                         RoleAssignment.class ).
+                visibleIn( visibility );
         module.services( PermissionFactory.class,
-                         RoleFactory.class );
+                         RoleFactory.class ).
+                visibleIn( visibility );
     }
 
 }

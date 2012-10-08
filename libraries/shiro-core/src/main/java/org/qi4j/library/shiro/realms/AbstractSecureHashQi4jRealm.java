@@ -58,12 +58,12 @@ public abstract class AbstractSecureHashQi4jRealm
         } catch ( UnitOfWorkCompletionException ex ) {
             LOGGER.error( "Unable to get AuthenticationInfo", ex );
             return null;
-        }  finally
-        {
+        } finally {
             // This happens for instance if a incorrect login is done as well as if there is a UoWCompletionException,
             // and "return null" is executed. On the UoWCompletionException, the UoW is still in a valid state.
-            if( uow.isOpen() )
+            if ( uow.isOpen() ) {
                 uow.discard();
+            }
         }
     }
 

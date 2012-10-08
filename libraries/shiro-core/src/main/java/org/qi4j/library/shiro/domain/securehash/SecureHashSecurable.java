@@ -15,6 +15,7 @@ package org.qi4j.library.shiro.domain.securehash;
 
 import org.qi4j.api.property.Property;
 
+@Deprecated
 public interface SecureHashSecurable
 {
 

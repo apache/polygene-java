@@ -21,6 +21,12 @@
  */
 package org.qi4j.library.shiro;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.InetAddress;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.http.HttpHost;
 import org.apache.http.cookie.Cookie;
 import org.eclipse.jetty.server.Server;
@@ -28,27 +34,28 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.junit.After;
 import org.junit.Before;
 import org.qi4j.api.structure.Module;
-import org.qi4j.bootstrap.*;
+import org.qi4j.bootstrap.ApplicationAssembly;
+import org.qi4j.bootstrap.ApplicationAssemblyFactory;
+import org.qi4j.bootstrap.Assembler;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.servlet.Qi4jServlet;
 import org.qi4j.library.servlet.lifecycle.AbstractQi4jServletBootstrap;
 import org.qi4j.library.shiro.tests.SecuredService;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.InetAddress;
-import java.net.ServerSocket;
+import org.qi4j.test.util.FreePortFinder;
 
 public abstract class AbstractServletTestSupport
         implements Assembler
 {
 
     protected static final String TEST_LAYER = "Layer 1";
+
     protected static final String TEST_MODULE = "Module 1";
+
     protected static final String SECURED_SERVLET_PATH = "/test";
+
     private Server jetty;
+
     protected HttpHost httpHost;
 
     @Before
@@ -56,11 +63,11 @@ public abstract class AbstractServletTestSupport
             throws Exception
     {
         InetAddress loopback = InetAddress.getLocalHost();
-        int port = findFreePortOnIfaceWithPreference( loopback, 8989 );
+        int port = FreePortFinder.findFreePortOnIface( loopback, 8989 );
         httpHost = new HttpHost( loopback.getHostAddress(), port );
         jetty = new Server( port );
         configureJetty( jetty );
-        ServletContextHandler sch = new ServletContextHandler( jetty, "/", ServletContextHandler.SESSIONS | ServletContextHandler.NO_SECURITY );
+        ServletContextHandler sch = new ServletContextHandler( jetty, "/", ServletContextHandler.SESSIONS );
         sch.addEventListener( new AbstractQi4jServletBootstrap()
         {
 
@@ -132,20 +139,6 @@ public abstract class AbstractServletTestSupport
                     append( " ( " ).append( eachCookie.getDomain() ).append( " - " ).append( eachCookie.getPath() ).append( " )" );
         }
         System.out.println( sb.append( "\n" ).toString() );
-    }
-
-    protected static int findFreePortOnIfaceWithPreference( final InetAddress address, final int prefered )
-            throws IOException
-    {
-        ServerSocket server;
-        if ( prefered > 0 ) {
-            server = new ServerSocket( prefered, 1, address );
-        } else {
-            server = new ServerSocket( 0, 1, address );
-        }
-        int port = server.getLocalPort();
-        server.close();
-        return port;
     }
 
 }

@@ -13,6 +13,8 @@
  */
 package org.qi4j.library.shiro.realms;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
@@ -32,15 +34,13 @@ import org.qi4j.library.shiro.domain.permissions.RoleAssignment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 public abstract class AbstractQi4jRealm
         extends AuthorizingRealm
         implements RealmActivator
 {
 
     private static final Logger LOGGER = LoggerFactory.getLogger( Shiro.LOGGER_NAME );
+
     @Structure
     protected UnitOfWorkFactory uowf;
 

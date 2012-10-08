@@ -13,6 +13,7 @@
  */
 package org.qi4j.library.shiro.web.servlet;
 
+import java.util.Iterator;
 import org.apache.shiro.config.Ini;
 import org.apache.shiro.config.Ini.Section;
 import org.apache.shiro.realm.Realm;
@@ -27,14 +28,14 @@ import org.qi4j.api.util.NullArgumentException;
 import org.qi4j.library.servlet.Qi4jServletSupport;
 import org.qi4j.library.shiro.web.filter.authc.X509AuthenticationFilter;
 
-import java.util.Iterator;
-
 public class Qi4jShiroServletFilter
         extends AbstractShiroFilter
 {
 
     public static final String REALM_LAYER_PARAM = "realm-layer";
+
     public static final String REALM_MODULE_PARAM = "realm-module";
+
     public static final String FILTER_CHAINS_PARAM = "filterChains";
 
     @Override

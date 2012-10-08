@@ -13,6 +13,11 @@
  */
 package org.qi4j.library.shiro.domain.x509;
 
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringWriter;
+import java.security.cert.X509Certificate;
+import javax.security.auth.x500.X500Principal;
 import org.apache.shiro.crypto.CryptoException;
 import org.bouncycastle.openssl.PEMReader;
 import org.bouncycastle.openssl.PEMWriter;
@@ -23,12 +28,6 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-
-import javax.security.auth.x500.X500Principal;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.security.cert.X509Certificate;
 
 @Mixins( X509Factory.Mixin.class )
 public interface X509Factory

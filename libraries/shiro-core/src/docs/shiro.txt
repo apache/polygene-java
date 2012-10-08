@@ -1,11 +1,97 @@
 [[library-shiro-core, Shiro Security Library]]
 = Shiro Security =
 
+
+
+
+// TODO Revamp the Qi4j Shiro Support <- Remove maximum amount of code -> Claim stable codebase
+// Main features will be:
+// - Use original Shiro setup mecanism to keep out of the developer's way
+// - Easy LifeCycle & Assembly
+// - @Requires* annotations support
+// - Realm for HasPassword
+//   {
+//       Property<String> password();
+//   }
+// - Realm for HasX509
+//   {
+//       // TODO Leverage shiro-ext-x509
+//   }
+// - Permission Domain Model
+// - Test and document usage with library-servlet and library-http
+
+
+
+
+
 [devstatus]
 --------------
 source=libraries/shiro-core/dev-status.xml
 --------------
 
-Shiro Security Library
+This library provide integration with the http://shiro.apache.org/[Apache Shiro] Java Security Framework.
 
-NOTE: This Library has no documentation yet. Learn how to contribute in <<community-docs>>.
+NOTE: If you are working on a HTTP based application, see the <<library-shiro-web>> that leverages this very library
+and is usable with the <<library-http>>, the <<library-servlet> or any other HTTP stack.
+
+``Apache Shiro is a powerful and easy-to-use Java security framework that performs authentication, authorization,
+cryptography, and session management. With Shiro’s easy-to-understand API, you can quickly and easily secure any
+application – from the smallest mobile applications to the largest web and enterprise applications.'' says the Apache
+Shiro website.
+
+We invite you to read the comprehensive Apache Shiro documentation, we will only discuss Qi4j related matters here.
+
+
+== Security Concern ==
+
+This library provides the `SecurityConcern` that should be used alongside the provided method annotations that mimic
+Apache Shiro annotations:
+
+- The `@RequiresAuthentication` annotation requires the current Subject to have been authenticated during their current session for the annotated class/instance/method to be accessed or invoked.
+- The `@RequiresGuest` annotation requires the current Subject to be a "guest", that is, they are not authenticated or remembered from a previous session for the annotated class/instance/method to be accessed or invoked.
+- The `@RequiresPermissions` annotation requires the current Subject be permitted one or more permissions in order to execute the annotated method.
+- The `@RequiresRoles` annotation requires the current Subject to have all of the specified roles. If they do not have the role(s), the method will not be executed and an AuthorizationException is thrown.
+- The `@RequiresUser` annotation requires the current Subject to be an application user for the annotated class/instance/method to be accessed or invoked. An 'application user' is defined as a Subject that has a known identity, either known due to being authenticated during the current session or remembered from 'RememberMe' services from a previous session.
+
+
+== Authentication ==
+
+``Authentication is the process of identity verification-- you are trying to verify a user is who they say they are. To
+do so, a user needs to provide some sort of proof of identity that your system understands and trusts.'' says the Apache
+Shiro website.
+
+Realm lifecycles should be bound to Qi4j Application lifecycle. This library provides an easy way to register your Realm
+so that its lifecycle is synced with the Qi4j Application.
+
+Moreover this library provides two Realms implementing credentials persistence as Entities in an EntityStore:
+
+- Secure Password Hashing ;
+- and X.509 Certificates.
+
+See the details below regarding which cryptographic algorithms and mecanisms are in play.
+
+== Cryptography ==
+
+``Cryptography is the practice of protecting information from undesired access by hiding it or converting it into
+nonsense so know one else can read it. Shiro focuses on two core elements of Cryptography: ciphers that encrypt data
+like email using a public or private key, and hashes (aka message digests) that irreversibly encrypt data like
+passwords.'' says the Apache Shiro website.
+
+=== Secure Password Hashing ===
+
+=== X.509 Certificates ===
+
+
+== Authorization ==
+
+``Authorization, also called access control, is the process of determining access rights to resources in an application.
+In other words, determining "who has access to what." Authorization is used to answer security questions like, "is the
+user allowed to edit accounts", "is this user allowed to view this web page", "does this user have access to this
+button?" These are all decisions determining what a user has access to and therefore all represent authorization
+checks.'' says the Apache Shiro website.
+
+
+
+== Logging ==
+
+All code from this library use the `org.qi4j.library.shiro` logger.

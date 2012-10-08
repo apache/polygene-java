@@ -13,6 +13,10 @@
  */
 package org.qi4j.library.shiro.domain.securehash;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.security.SecureRandom;
 import org.apache.shiro.codec.Base64;
 import org.apache.shiro.crypto.CryptoException;
 import org.apache.shiro.crypto.hash.Sha256Hash;
@@ -23,11 +27,7 @@ import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
 import org.qi4j.library.shiro.crypto.HashFactory;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.security.SecureRandom;
-
+@Deprecated
 @Mixins( SecureHashFactory.Mixin.class )
 public interface SecureHashFactory
         extends ServiceComposite
@@ -40,7 +40,9 @@ public interface SecureHashFactory
     {
 
         private static final String DEFAULT_ALGORITHM = Sha256Hash.ALGORITHM_NAME;
+
         private static final int DEFAULT_ITERATIONS = 1000;
+
         @Structure
         private ValueBuilderFactory vbf;
 

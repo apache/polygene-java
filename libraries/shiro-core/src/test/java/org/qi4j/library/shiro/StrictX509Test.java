@@ -43,6 +43,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.shiro.tests.x509.StrictX509TestAssembler;
 import org.qi4j.library.shiro.tests.x509.X509FixturesData;
 import org.qi4j.library.shiro.web.servlet.Qi4jShiroServletFilter;
+import org.qi4j.test.util.FreePortFinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,7 +74,7 @@ public class StrictX509Test
             throws Exception
     {
         InetAddress lo = InetAddress.getLocalHost();
-        int sslPort = findFreePortOnIfaceWithPreference( lo, 8443 );
+        int sslPort = FreePortFinder.findFreePortOnIface( lo, 8443 );
         httpHost = new HttpHost( lo.getHostAddress(), sslPort, "https" );
 
         SslSelectChannelConnector sslConnector = new SslSelectChannelConnector();
