@@ -18,16 +18,15 @@
  */
 package org.qi4j.library.http;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Map;
 import java.util.UUID;
-
 import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
 import javax.servlet.Servlet;
-
-import static org.qi4j.api.common.Visibility.layer;
+import javax.servlet.ServletContextListener;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -35,11 +34,76 @@ import org.qi4j.library.http.ConstraintInfo.Constraint;
 import org.qi4j.library.http.ConstraintInfo.HttpMethod;
 import org.qi4j.library.http.Dispatchers.Dispatcher;
 
+import static org.qi4j.api.common.Visibility.layer;
+
 public final class Servlets
 {
 
     private Servlets()
     {
+    }
+
+    public static ContextListenerDeclaration listen()
+    {
+        return new ContextListenerDeclaration();
+    }
+
+    public static ContextListenerAssembler addContextListeners( ContextListenerDeclaration... contextListenerDeclarations )
+    {
+        return new ContextListenerAssembler( contextListenerDeclarations );
+    }
+
+    public static class ContextListenerAssembler
+    {
+
+        final ContextListenerDeclaration[] contextListenerDeclarations;
+
+        ContextListenerAssembler( ContextListenerDeclaration... eventListenerDeclarations )
+        {
+            this.contextListenerDeclarations = eventListenerDeclarations;
+        }
+
+        public void to( ModuleAssembly module )
+                throws AssemblyException
+        {
+            for ( ContextListenerDeclaration contextListenerDeclaration : contextListenerDeclarations ) {
+                module.services( contextListenerDeclaration.contextListener() ).
+                        setMetaInfo( contextListenerDeclaration.contextListenerInfo() ).
+                        instantiateOnStartup().visibleIn( layer );
+            }
+        }
+
+    }
+
+    public static class ContextListenerDeclaration
+    {
+
+        Class<? extends ServiceComposite> contextListener;
+
+        Map<String, String> initParams = Collections.emptyMap();
+
+        public <T extends ServletContextListener & ServiceComposite> ContextListenerDeclaration with( Class<T> contextListener )
+        {
+            this.contextListener = contextListener;
+            return this;
+        }
+
+        public Class<? extends ServiceComposite> contextListener()
+        {
+            return contextListener;
+        }
+
+        public ContextListenerDeclaration withInitParams( Map<String, String> initParams )
+        {
+            this.initParams = initParams;
+            return this;
+        }
+
+        private ContextListenerInfo contextListenerInfo()
+        {
+            return new ContextListenerInfo( initParams );
+        }
+
     }
 
     public static ServletDeclaration serve( String path )
@@ -62,7 +126,6 @@ public final class Servlets
             this.servletDeclarations = servletDeclarations;
         }
 
-        @SuppressWarnings( "unchecked" )
         public void to( ModuleAssembly module )
                 throws AssemblyException
         {

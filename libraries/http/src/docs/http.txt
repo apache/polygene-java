@@ -6,14 +6,25 @@
 source=libraries/http/dev-status.xml
 --------------
 
-The HTTP library provides a Jetty based embedded HTTP service with support for easy servlets and filters assembly as Services.
+The HTTP library provides a Jetty based embedded HTTP service with support for easy event listeners, servlets and
+filters assembly as Services.
 
-It's an easy way to embedd a servlet container and reuse everything that can be run in it (JAX-*, Restlet, Wicket, Vaadin, GWT etc..).
-If instead you want to run a Qi4j Application in a servlet container, see <<library-servlet>>.
+It's an easy way to embedd a servlet container and reuse everything that can be run in it (JAX-*, Restlet, Wicket,
+Vaadin, GWT etc..). If instead you want to run a Qi4j Application in a servlet container, see <<library-servlet>>.
+
+== Create an EventListenerService ==
+
+EventListeners in HttpService are assembled as Services, so one have to declare a ServiceComposite like this:
+
+[snippet,java]
+----
+source=libraries/http/src/test/java/org/qi4j/library/http/FooServletContextListenerService.java
+tag=context-listener
+----
 
 == Create a ServletService ==
 
-Servlets in HttpService are assembled as Services, so only have to declare a ServiceComposite like this:
+Servlets in HttpService are assembled as Services, so one have to declare a ServiceComposite like this:
 
 [snippet,java]
 ----

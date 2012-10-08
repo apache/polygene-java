@@ -16,15 +16,7 @@ package org.qi4j.library.http;
 import javax.management.MBeanServer;
 import javax.servlet.Filter;
 import javax.servlet.Servlet;
-
-import org.qi4j.api.common.Optional;
-import org.qi4j.api.configuration.Configuration;
-import org.qi4j.api.entity.Identity;
-import org.qi4j.api.injection.scope.Service;
-import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.service.ServiceReference;
-import org.qi4j.library.http.Interface.Protocol;
-
+import javax.servlet.ServletContextListener;
 import org.eclipse.jetty.security.ConstraintMapping;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.SecurityHandler;
@@ -33,6 +25,13 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ssl.SslConnector;
 import org.eclipse.jetty.server.ssl.SslSelectChannelConnector;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
+import org.qi4j.api.common.Optional;
+import org.qi4j.api.configuration.Configuration;
+import org.qi4j.api.entity.Identity;
+import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.service.ServiceReference;
+import org.qi4j.library.http.Interface.Protocol;
 
 public class SecureJettyMixin
         extends AbstractJettyMixin
@@ -47,11 +46,12 @@ public class SecureJettyMixin
 
     public SecureJettyMixin( @This Identity meAsIdentity,
                              @Service Server jettyServer,
+                             @Service Iterable<ServiceReference<ServletContextListener>> contextListeners,
                              @Service Iterable<ServiceReference<Servlet>> servlets,
                              @Service Iterable<ServiceReference<Filter>> filters,
                              @Optional @Service MBeanServer mBeanServer )
     {
-        super( meAsIdentity.identity().get(), jettyServer, servlets, filters, mBeanServer );
+        super( meAsIdentity.identity().get(), jettyServer, contextListeners, servlets, filters, mBeanServer );
     }
 
     @Override

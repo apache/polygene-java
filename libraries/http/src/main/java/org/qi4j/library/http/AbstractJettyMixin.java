@@ -15,9 +15,11 @@ package org.qi4j.library.http;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Map;
 import javax.management.MBeanServer;
 import javax.servlet.Filter;
 import javax.servlet.Servlet;
+import javax.servlet.ServletContextListener;
 import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.security.SecurityHandler;
 import org.eclipse.jetty.server.Connector;
@@ -30,6 +32,7 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.qi4j.api.service.ServiceReference;
+import org.qi4j.functional.Iterables;
 import org.qi4j.library.http.Interface.Protocol;
 
 import static org.qi4j.library.http.JettyConfigurationHelper.*;
@@ -39,17 +42,28 @@ public abstract class AbstractJettyMixin
 {
 
     private final String identity;
+
+    private final Iterable<ServiceReference<ServletContextListener>> contextListeners;
+
     private final Iterable<ServiceReference<Servlet>> servlets;
+
     private final Iterable<ServiceReference<Filter>> filters;
+
     private final MBeanServer mBeanServer;
+
     private Server server;
 
-    public AbstractJettyMixin( String identity, Server jettyServer, Iterable<ServiceReference<Servlet>> servlets, Iterable<ServiceReference<Filter>> filters, MBeanServer mBeanServer )
+    public AbstractJettyMixin( String identity, Server jettyServer,
+                               Iterable<ServiceReference<ServletContextListener>> contextListeners,
+                               Iterable<ServiceReference<Servlet>> servlets,
+                               Iterable<ServiceReference<Filter>> filters,
+                               MBeanServer mBeanServer )
     {
         this.identity = identity;
         this.server = jettyServer;
-        this.servlets = servlets;
-        this.filters = filters;
+        this.contextListeners = Iterables.unique( contextListeners );
+        this.servlets = Iterables.unique( servlets );
+        this.filters = Iterables.unique( filters );
         this.mBeanServer = mBeanServer;
     }
 
@@ -70,8 +84,6 @@ public abstract class AbstractJettyMixin
     public final void startJetty()
             throws Exception
     {
-        // server = new Server();
-
         // Prepare ServletContext
         ServletContextHandler root = new ServletContextHandler( server,
                                                                 "/",
@@ -82,7 +94,8 @@ public abstract class AbstractJettyMixin
         root.setDisplayName( identity );
         configureContext( root, configuration() );
 
-        // Register Servlets and Filters
+        // Register ContextListeners, Servlets and Filters
+        addContextListeners( root, contextListeners );
         addServlets( root, servlets );
         addFilters( root, filters );
 
@@ -137,6 +150,19 @@ public abstract class AbstractJettyMixin
         return result;
     }
 
+    protected static void addContextListeners( ServletContextHandler root, Iterable<ServiceReference<ServletContextListener>> contextListeners )
+    {
+        // Iterate the available context listeners and add them to the server
+        for ( ServiceReference<ServletContextListener> contextListener : contextListeners ) {
+            ContextListenerInfo contextListenerInfo = contextListener.metaInfo( ContextListenerInfo.class );
+            Map<String, String> initParams = contextListenerInfo.initParams();
+            for ( String key : initParams.keySet() ) {
+                root.setInitParameter( key, initParams.get( key ) );
+            }
+            root.addEventListener( contextListener.get() );
+        }
+    }
+
     protected static void addServlets( ServletContextHandler root, Iterable<ServiceReference<Servlet>> servlets )
     {
         // Iterate the available servlets and add it to the server
@@ -152,7 +178,7 @@ public abstract class AbstractJettyMixin
 
     protected static void addFilters( ServletContextHandler root, Iterable<ServiceReference<Filter>> filters )
     {
-        // Iterate the available filters and add it to the server
+        // Iterate the available filters and add them to the server
         for ( ServiceReference<Filter> filter : filters ) {
             FilterInfo filterInfo = filter.metaInfo( FilterInfo.class );
             String filterPath = filterInfo.getPath();
