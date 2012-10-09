@@ -3,7 +3,7 @@
 
 [devstatus]
 --------------
-source=libraries/shiro/dev-status.xml
+source=libraries/shiro-core/dev-status.xml
 --------------
 
 This library provides integration with the http://shiro.apache.org/[Apache Shiro] Java Security Framework.
