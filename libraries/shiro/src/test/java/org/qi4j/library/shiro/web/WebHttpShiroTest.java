@@ -14,7 +14,6 @@
 package org.qi4j.library.shiro.web;
 
 import java.io.IOException;
-import java.util.Collections;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -25,9 +24,6 @@ import org.qi4j.library.shiro.ini.ShiroIniConfiguration;
 import org.qi4j.library.shiro.web.assembly.HttpShiroAssembler;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.util.FreePortFinder;
-
-import static javax.servlet.DispatcherType.*;
-import static org.qi4j.library.http.Servlets.*;
 
 public class WebHttpShiroTest
         extends AbstractQi4jTest
@@ -58,18 +54,6 @@ public class WebHttpShiroTest
             configModule.forMixin( ShiroIniConfiguration.class ).
                     declareDefaults().
                     iniResourcePath().set( "classpath:web-shiro.ini" );
-
-            if ( false ) {
-                addContextListeners( listen().
-                        with( EnvironmentLoaderService.class ).
-                        withInitParams( Collections.singletonMap( "shiroConfigLocations", "classpath:web-shiro.ini" ) ) ).
-                        to( module );
-
-                addFilters( filter( "/*" ).
-                        through( ShiroFilterService.class ).
-                        on( REQUEST, FORWARD, INCLUDE, ERROR ) ).
-                        to( module );
-            }
 
         } catch ( IOException ex ) {
             throw new AssemblyException( "Unable to find free port to bind to", ex );

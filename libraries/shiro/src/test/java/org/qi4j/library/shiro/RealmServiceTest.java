@@ -15,6 +15,9 @@ package org.qi4j.library.shiro;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authc.credential.DefaultPasswordService;
+import org.apache.shiro.authc.credential.PasswordMatcher;
+import org.apache.shiro.authc.credential.PasswordService;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.realm.SimpleAccountRealm;
 import org.apache.shiro.subject.Subject;
@@ -31,58 +34,70 @@ import org.qi4j.test.EntityTestAssembler;
 
 import static org.junit.Assert.assertNotNull;
 
-public class CustomRealmTest
+public class RealmServiceTest
         extends AbstractQi4jTest
 {
 
-    // START SNIPPET: custom-realm
+    // START SNIPPET: realm-service
     @Mixins( MyRealmMixin.class )
     public interface MyRealmService
             extends Realm, ServiceComposite, ServiceActivation
     {
     }
-    // END SNIPPET: custom-realm
 
-    // START SNIPPET: custom-realm
+    // END SNIPPET: realm-service
+    // START SNIPPET: realm-service
     public class MyRealmMixin
             extends SimpleAccountRealm
             implements ServiceActivation
     {
 
+        private final PasswordService passwordService;
+
         public MyRealmMixin()
         {
             super();
+            passwordService = new DefaultPasswordService();
+            PasswordMatcher matcher = new PasswordMatcher();
+            matcher.setPasswordService( passwordService );
+            setCredentialsMatcher( matcher );
         }
 
         public void activateService()
                 throws Exception
         {
-            addAccount( "foo", "bar" );
+            // Create a test account
+            addAccount( "foo", passwordService.encryptPassword( "bar" ) );
         }
 
+        // END SNIPPET: realm-service
         public void passivateService()
                 throws Exception
         {
         }
+        // START SNIPPET: realm-service
 
     }
-    // END SNIPPET: custom-realm
 
     @Override
     public void assemble( ModuleAssembly module )
             throws AssemblyException
     {
+        // END SNIPPET: realm-service
         new EntityTestAssembler().assemble( module );
         ModuleAssembly configModule = module;
+        // START SNIPPET: realm-service
         new StandaloneShiroAssembler().withConfig( configModule ).assemble( module );
+        module.services( MyRealmService.class );
+
+        // END SNIPPET: realm-service
         configModule.forMixin( ShiroIniConfiguration.class ).
                 declareDefaults().
                 iniResourcePath().set( "classpath:standalone-shiro.ini" );
-        // START SNIPPET: custom-realm
-        module.services( MyRealmService.class );
-        // END SNIPPET: custom-realm
+        // START SNIPPET: realm-service
     }
 
+    // END SNIPPET: realm-service
     @Test
     public void test()
     {

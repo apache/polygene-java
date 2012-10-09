@@ -11,56 +11,54 @@
  * limitations under the License.
  *
  */
-package org.qi4j.library.shiro.web.assembly;
+package org.qi4j.library.shiro.assembly;
 
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.library.shiro.ini.ShiroIniConfiguration;
-import org.qi4j.library.shiro.web.EnvironmentLoaderService;
-import org.qi4j.library.shiro.web.ShiroFilterService;
+import org.qi4j.library.shiro.domain.passwords.PasswordRealmConfiguration;
+import org.qi4j.library.shiro.domain.passwords.PasswordRealmService;
+import org.qi4j.library.shiro.domain.passwords.PasswordSecurable;
 
-import static javax.servlet.DispatcherType.*;
-import static org.qi4j.library.http.Servlets.*;
-
-public class HttpShiroAssembler
+public class PasswordDomainAssembler
         implements Assembler
 {
+
+    private Visibility visibility = Visibility.layer;
 
     private ModuleAssembly configModule;
 
     private Visibility configVisibility = Visibility.layer;
 
-    public HttpShiroAssembler withConfig( ModuleAssembly config )
+    public PasswordDomainAssembler withVisibility( Visibility visibility )
     {
-        this.configModule = config;
+        this.visibility = visibility;
         return this;
     }
 
-    public HttpShiroAssembler withConfigVisibility( Visibility configVisibility )
+    public PasswordDomainAssembler withConfig( ModuleAssembly configModule )
+    {
+        this.configModule = configModule;
+        return this;
+    }
+
+    public PasswordDomainAssembler withConfigVisibility( Visibility configVisibility )
     {
         this.configVisibility = configVisibility;
         return this;
     }
 
+    @Override
     public void assemble( ModuleAssembly module )
             throws AssemblyException
     {
-        addContextListeners( listen().
-                with( EnvironmentLoaderService.class ) ).
-                to( module );
-
-        addFilters( filter( "/*" ).
-                through( ShiroFilterService.class ).
-                on( REQUEST, FORWARD, INCLUDE, ERROR, ASYNC ) ).
-                to( module );
-
+        module.entities( PasswordSecurable.class ).visibleIn( visibility );
+        module.services( PasswordRealmService.class ).instantiateOnStartup().visibleIn( visibility );
         if ( configModule == null ) {
             configModule = module;
         }
-        configModule.entities( ShiroIniConfiguration.class ).
-                visibleIn( configVisibility );
+        configModule.entities( PasswordRealmConfiguration.class ).visibleIn( configVisibility );
     }
 
 }

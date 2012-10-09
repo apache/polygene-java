@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, Paul Merlin. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,15 +11,18 @@
  * limitations under the License.
  *
  */
-package org.qi4j.library.shiro.domain.permissions;
+package org.qi4j.library.shiro.domain.passwords;
 
-import org.qi4j.api.association.ManyAssociation;
-import org.qi4j.api.common.UseDefaults;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.Queryable;
+import org.qi4j.api.property.Property;
+import org.qi4j.library.shiro.domain.common.IdentifiableSubject;
 
-public interface RoleAssignee
+public interface PasswordSecurable
+        extends IdentifiableSubject, EntityComposite
 {
 
-    @UseDefaults
-    ManyAssociation<RoleAssignment> roleAssignments();
+    @Queryable( false )
+    Property<String> password();
 
 }

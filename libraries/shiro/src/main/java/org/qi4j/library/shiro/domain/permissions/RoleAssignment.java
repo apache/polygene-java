@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, Paul Merlin. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,15 @@
  */
 package org.qi4j.library.shiro.domain.permissions;
 
-import org.qi4j.api.association.ManyAssociation;
-import org.qi4j.api.common.UseDefaults;
+import org.qi4j.api.association.Association;
+import org.qi4j.api.entity.EntityComposite;
 
-public interface RoleAssignee
+public interface RoleAssignment
+        extends EntityComposite
 {
 
-    @UseDefaults
-    ManyAssociation<RoleAssignment> roleAssignments();
+    Association<Role> role();
+
+    Association<RoleAssignee> assignee();
 
 }

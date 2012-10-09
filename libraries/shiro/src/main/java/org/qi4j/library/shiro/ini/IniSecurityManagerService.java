@@ -15,7 +15,6 @@ package org.qi4j.library.shiro.ini;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.config.Ini;
 import org.apache.shiro.config.IniSecurityManagerFactory;
 import org.apache.shiro.mgt.RealmSecurityManager;
@@ -83,7 +82,7 @@ public interface IniSecurityManagerService
 
             }
 
-            SecurityUtils.setSecurityManager( securityManager );
+            ThreadContext.bind( securityManager );
         }
 
         public void passivateService()
@@ -91,7 +90,6 @@ public interface IniSecurityManagerService
         {
             ThreadContext.unbindSubject();
             ThreadContext.unbindSecurityManager();
-            SecurityUtils.setSecurityManager( null );
         }
 
         public SecurityManager getSecurityManager()

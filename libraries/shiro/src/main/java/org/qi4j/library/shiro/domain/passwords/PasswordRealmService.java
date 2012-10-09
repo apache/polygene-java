@@ -11,22 +11,18 @@
  * limitations under the License.
  *
  */
-package org.qi4j.library.shiro.full;
+package org.qi4j.library.shiro.domain.passwords;
 
-import org.apache.shiro.env.Environment;
-import org.apache.shiro.mgt.SecurityManager;
-import org.qi4j.api.injection.scope.Service;
+import org.apache.shiro.authc.credential.PasswordService;
+import org.apache.shiro.authz.Authorizer;
+import org.apache.shiro.realm.Realm;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.service.ServiceActivation;
+import org.qi4j.api.service.ServiceComposite;
 
-public class Qi4jEnvironment
-        implements Environment
+@Mixins( PasswordRealmMixin.class )
+public interface PasswordRealmService
+        extends Realm, Authorizer, PasswordService,
+                ServiceComposite, ServiceActivation
 {
-
-    @Service
-    private SecurityManager securityManager;
-
-    public SecurityManager getSecurityManager()
-    {
-        return securityManager;
-    }
-
 }

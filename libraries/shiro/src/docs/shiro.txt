@@ -8,6 +8,9 @@ source=libraries/shiro/dev-status.xml
 
 This library provides integration with the http://shiro.apache.org/[Apache Shiro] Java Security Framework.
 
+NOTE: If you are working on a HTTP based application, see the <<library-shiro-web>> that leverages this very library
+and is usable with the <<library-http>>, the <<library-servlet> or any other HTTP stack.
+
 ``Apache Shiro is a powerful and easy-to-use Java security framework that performs authentication, authorization,
 cryptography, and session management. With Shiro’s easy-to-understand API, you can quickly and easily secure any
 application – from the smallest mobile applications to the largest web and enterprise applications.'' says the Apache
@@ -106,27 +109,122 @@ Qi4j scope.
 One usecase where it's not sufficient comes quickly as you would like to provide user credentials and permissions
 from Entities stored in an EntityStore or perform any custom logic involving your Qi4j Application.
 
+Let's look at a complete example using a Realm Service that extends one of the Shiro provided Realm which use in-memory
+credientials and configuring it ;
+
+[snippet,java]
+----
+source=libraries/shiro/src/test/java/org/qi4j/library/shiro/RealmServiceTest.java
+tag=realm-service
+----
+
+We start by defining a Realm Service and its Mixin that's based on SimpleAccountRealm that we configure to handle hashed
+passwords. For the sake of the example it is shown how to hash a password using Shiro built in mecanisms. Then comes
+the Assembly where we simply reuse the Standalone Shiro Assembly and declare our Realm as a Service. It works the same
+way with the Http Shiro Assembly or using the Servlet Library.
+
+Note that under the hood, assembled Realm Services are added to the ones configured in the INI file.
 
 
-The Shiro Security Library provides skeletons to easily setup some usecases consisting of Shiro setup facilities and
-base state model for you to compose with.
 
 == Security Domain ==
 
-
-=== Secure Password Hashing ===
-
-
-=== X.509 Certificates ===
+Going further, if you want to persist credentials and permissions in an EntityStore, the Shiro Security Library
+provides skeletons to easily setup some usecases consisting of Shiro setup facilities and base state model for you to
+compose with.
 
 
-=== OAuth Client ===
+=== Passwords ===
 
+Password storage is not a simple subject. Shiro provide best practice mecanisms using salt and repeated-hashing out of
+the box. It is possible to setup your Realm so that hashed passwords are stored in a future proof manner, meaning that
+you can change the used algorithms while retaining compatibility with passwords already stored.
 
-=== OAuth Server ===
+Shiro use the
+http://shiro.apache.org/static/current/apidocs/org/apache/shiro/crypto/hash/format/Shiro1CryptFormat.html[Shiro1CryptFormat]
+which is a fully reversible http://packages.python.org/passlib/modular_crypt_format.html[Modular Crypt Format] (MCF).
+
+This library provides a `PasswordRealmService` to be used with a `PasswordSecurable`. Let's look at a complete
+example.
+
+First you need to define your User (or Account, or whatever fits your domain), for the sake of the example we define a
+UserFactory too. Note that the factory uses the PasswordService implemented by the PasswordRealm to hash the password:
+
+[snippet,java]
+----
+source=libraries/shiro/src/test/java/org/qi4j/library/shiro/PasswordDomainTest.java
+tag=domain
+----
+
+Now comes the assembly that reuse what's described above and add both the password domain assembly plus your custom User
+entity and its factory:
+
+[snippet,java]
+----
+source=libraries/shiro/src/test/java/org/qi4j/library/shiro/PasswordDomainTest.java
+tag=assembly
+----
+
+And finally here is how to create a new user and below how to perform a login:
+
+[snippet,java]
+----
+source=libraries/shiro/src/test/java/org/qi4j/library/shiro/PasswordDomainTest.java
+tag=usage
+----
+
+In this setup, password hashing use the Shiro's default (Salted SHA-256 with 500.000 iterations). If you _need_ to
+change this you can do it using PasswordRealmConfiguration properties:
+
+[snippet,java]
+----
+source=libraries/shiro/src/main/java/org/qi4j/library/shiro/domain/passwords/PasswordRealmConfiguration.java
+tag=config
+----
 
 
 === Permissions & Roles ===
+
+In the same vein, this library provide a domain state skeleton with support in `PasswordRealmService`. It allows you to
+easily store roles, permissions and assignment to your accounts.
+
+Let's look at the previous example with permissions added.
+
+First you need to add the RoleAssignee type to your account:
+
+[snippet,java]
+----
+source=libraries/shiro/src/test/java/org/qi4j/library/shiro/PermissionsDomainTest.java
+tag=domain
+----
+
+Assembly is straight forward:
+
+[snippet,java]
+----
+source=libraries/shiro/src/test/java/org/qi4j/library/shiro/PermissionsDomainTest.java
+tag=assembly
+----
+
+And here is how to use all this:
+
+[snippet,java]
+----
+source=libraries/shiro/src/test/java/org/qi4j/library/shiro/PermissionsDomainTest.java
+tag=usage
+----
+
+
+
+== Other authentication mecanisms ==
+
+For other authentication mecanisms you can leverage Shiro extensions available in the Shiro distribution or as external
+libraries. There's support for text files, simple JDBC, LDAP, CAS SSO, OAuth, OpenID, X.509 Certificates etc...
+
+Take the PasswordRealmService as a start and extend/rewrite it to suit your needs.
+
+If you happen to come with a Qi4j integration that could be valuable in this very library, don't hesitate to
+<<community-contributing, contribute>>.
 
 
 == Logging ==
