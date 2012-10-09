@@ -67,11 +67,13 @@ public class SecurityConcern
             throws Throwable
     {
         Subject subject = SecurityUtils.getSubject();
+
         handleRequiresGuest( subject );
         handleRequiresUser( subject );
         handleRequiresAuthentication( subject );
         handleRequiresRoles( subject );
         handleRequiresPermissions( subject );
+
         return next.invoke( proxy, method, args );
     }
 

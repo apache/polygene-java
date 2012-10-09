@@ -5,15 +5,19 @@ jar { manifest { name = "Qi4j Library - Shiro Web" }}
 dependencies {
   compile( project( ':org.qi4j.libraries:org.qi4j.library.shiro-core' ) )
   compile( project( ':org.qi4j.libraries:org.qi4j.library.servlet' ) )
+  compile( project( ':org.qi4j.libraries:org.qi4j.library.http' ) )
   compile( project( ":org.qi4j.core:org.qi4j.core.api" ) )
   compile( project( ":org.qi4j.core:org.qi4j.core.bootstrap" ) )
-  compile( libraries.slf4j_api )
   compile( libraries.shiro_web )
   compile( libraries.servlet_api )
-  testCompile( libraries.junit )
-  testCompile( project( ":org.qi4j.core:org.qi4j.core.testsupport" ) )
+
+  testCompile( project( ":org.qi4j.libraries:org.qi4j.library.shiro-web" ) ) 
+  testCompile( project( ":org.qi4j.libraries:org.qi4j.library.servlet" ) ) 
+  testCompile( project( ":org.qi4j.extensions:org.qi4j.extension.indexing-rdf" ) ) 
+  testCompile( project( ":org.qi4j.core:org.qi4j.core.testsupport" ) ) 
+  testCompile( libraries.jetty_webapp )
+  testCompile( libraries.http_client )
+
   testRuntime( project( ":org.qi4j.core:org.qi4j.core.runtime" ) )
-  testRuntime( libraries.asm )
-  testRuntime( libraries.asm_commons )
-  testRuntime( libraries.slf4j_simple )
+  testRuntime( libraries.logback )
 }

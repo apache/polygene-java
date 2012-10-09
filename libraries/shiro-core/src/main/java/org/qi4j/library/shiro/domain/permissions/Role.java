@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, Paul Merlin. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,16 @@
  */
 package org.qi4j.library.shiro.domain.permissions;
 
-import org.qi4j.api.association.ManyAssociation;
+import java.util.List;
+import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 
 @Mixins( Role.Mixin.class )
 public interface Role
@@ -30,28 +31,31 @@ public interface Role
 
     Property<String> name();
 
-    ManyAssociation<Permission> permissions();
+    @UseDefaults
+    Property<List<String>> permissions();
 
     RoleAssignment assignTo( RoleAssignee assignee );
 
-    abstract class Mixin
+    public abstract class Mixin
             implements Role
     {
 
+        @Structure
+        private Module module;
+
         @This
         private Role role;
-        @Structure
-        private UnitOfWorkFactory uowf;
 
         public RoleAssignment assignTo( RoleAssignee assignee )
         {
-            UnitOfWork uow = uowf.currentUnitOfWork();
-            EntityBuilder<RoleAssignment> roleAssignmentBuilder = uow.newEntityBuilder( RoleAssignment.class );
-            RoleAssignment roleAssignment = roleAssignmentBuilder.instance();
-            roleAssignment.role().set( role );
-            assignee.roleAssignments().add( roleAssignment );
-            roleAssignment.assignee().set( assignee );
-            return roleAssignmentBuilder.newInstance();
+            UnitOfWork uow = module.currentUnitOfWork();
+            EntityBuilder<RoleAssignment> builder = uow.newEntityBuilder( RoleAssignment.class );
+            RoleAssignment assignment = builder.instance();
+            assignment.assignee().set( assignee );
+            assignment.role().set( role );
+            assignment = builder.newInstance();
+            assignee.roleAssignments().add( assignment );
+            return assignment;
         }
 
     }

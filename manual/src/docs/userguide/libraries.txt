@@ -127,10 +127,6 @@ include::../../../../libraries/servlet/src/docs/servlet.txt[]
 
 :leveloffset: 2
 
-include::../../../../libraries/shiro/src/docs/shiro.txt[]
-
-:leveloffset: 2
-
 include::../../../../libraries/shiro-core/src/docs/shiro.txt[]
 
 :leveloffset: 2

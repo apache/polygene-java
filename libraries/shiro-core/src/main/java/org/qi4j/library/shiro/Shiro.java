@@ -17,5 +17,7 @@ public interface Shiro
 {
 
     String LOGGER_NAME = Shiro.class.getPackage().getName();
-    
+
+    String DEFAULT_INI_RESOURCE_PATH = "classpath:shiro.ini";
+
 }
