@@ -10,7 +10,7 @@ import org.qi4j.functional.Specification;
 public class DocumentationSupport
 {
 
-    static Specification<ObjectAssembly> hasMyTypeSpecification = new Specification<ObjectAssembly>()
+    public static Specification<ObjectAssembly> hasMyTypeSpecification = new Specification<ObjectAssembly>()
     {
 
         public boolean satisfiedBy( ObjectAssembly item )
@@ -20,11 +20,11 @@ public class DocumentationSupport
 
     };
 
-    static class objects
+    public static class objects
             implements Assembler
     {
 
-        static class MyObject {}
+        public static class MyObject {}
 
         // START SNIPPET: objects
         @Override
@@ -37,11 +37,11 @@ public class DocumentationSupport
 
     }
 
-    static class transients
+    public static class transients
             implements Assembler
     {
 
-        static interface MyTransient {}
+        public static interface MyTransient {}
 
         // START SNIPPET: transients
         @Override
@@ -54,11 +54,11 @@ public class DocumentationSupport
 
     }
 
-    static class values
+    public static class values
             implements Assembler
     {
 
-        static interface MyValue {}
+        public static interface MyValue {}
 
         // START SNIPPET: values
         @Override
@@ -71,11 +71,11 @@ public class DocumentationSupport
 
     }
 
-    static class entities
+    public static class entities
             implements Assembler
     {
 
-        static interface MyEntity {}
+        public static interface MyEntity {}
 
         // START SNIPPET: entities
         @Override
@@ -88,11 +88,11 @@ public class DocumentationSupport
 
     }
 
-    static class services
+    public static class services
             implements Assembler
     {
 
-        static interface MyService {}
+        public static interface MyService {}
 
         // START SNIPPET: services
         @Override
@@ -105,11 +105,11 @@ public class DocumentationSupport
 
     }
 
-    static class singleton
+    public static class singleton
     {
 
-        interface MyService { }
-        interface Stuff { }
+        public interface MyService { }
+        public interface Stuff { }
 
         void singleton()
         {
@@ -134,20 +134,20 @@ public class DocumentationSupport
 
     }
 
-    static class pancake
+    public static class pancake
     {
 
-        static class LoginAssembler implements Assembler { public void assemble( ModuleAssembly module ) throws AssemblyException { } }
-        static class MenuAssembler implements Assembler { public void assemble( ModuleAssembly module ) throws AssemblyException { } }
-        static class PerspectivesAssembler implements Assembler { public void assemble( ModuleAssembly module ) throws AssemblyException { } }
-        static class ViewsAssembler implements Assembler { public void assemble( ModuleAssembly module ) throws AssemblyException { } }
-        static class ReportingAssembler implements Assembler { public void assemble( ModuleAssembly module ) throws AssemblyException { } }
-        static class PdfAssembler implements Assembler { public void assemble( ModuleAssembly module ) throws AssemblyException { } }
-        static class BookkeepingAssembler implements Assembler { public void assemble( ModuleAssembly module ) throws AssemblyException { } }
-        static class CashFlowAssembler implements Assembler { public void assemble( ModuleAssembly module ) throws AssemblyException { } }
-        static class BalanceSheetAssembler implements Assembler { public void assemble( ModuleAssembly module ) throws AssemblyException { } }
-        static class PricingAssembler implements Assembler { public void assemble( ModuleAssembly module ) throws AssemblyException { } }
-        static class ProductAssembler implements Assembler { public void assemble( ModuleAssembly module ) throws AssemblyException { } }
+        public static class LoginAssembler implements Assembler { public void assemble( ModuleAssembly module ) throws AssemblyException { } }
+        public static class MenuAssembler implements Assembler { public void assemble( ModuleAssembly module ) throws AssemblyException { } }
+        public static class PerspectivesAssembler implements Assembler { public void assemble( ModuleAssembly module ) throws AssemblyException { } }
+        public static class ViewsAssembler implements Assembler { public void assemble( ModuleAssembly module ) throws AssemblyException { } }
+        public static class ReportingAssembler implements Assembler { public void assemble( ModuleAssembly module ) throws AssemblyException { } }
+        public static class PdfAssembler implements Assembler { public void assemble( ModuleAssembly module ) throws AssemblyException { } }
+        public static class BookkeepingAssembler implements Assembler { public void assemble( ModuleAssembly module ) throws AssemblyException { } }
+        public static class CashFlowAssembler implements Assembler { public void assemble( ModuleAssembly module ) throws AssemblyException { } }
+        public static class BalanceSheetAssembler implements Assembler { public void assemble( ModuleAssembly module ) throws AssemblyException { } }
+        public static class PricingAssembler implements Assembler { public void assemble( ModuleAssembly module ) throws AssemblyException { } }
+        public static class ProductAssembler implements Assembler { public void assemble( ModuleAssembly module ) throws AssemblyException { } }
 
         private static Energy4Java qi4j;
 
@@ -218,20 +218,20 @@ public class DocumentationSupport
 
     }
 
-    static class full
+    public static class full
     {
 
-        static class CustomerViewComposite{}
-        static class CustomerEditComposite{}
-        static class CustomerListViewComposite{}
-        static class CustomerSearchComposite{}
-        static class CustomerEntity{}
-        static class CountryEntity{}
-        static class AddressValue{}
-        static class LdapAuthenticationAssembler implements Assembler{ public void assemble( ModuleAssembly module ) throws AssemblyException { } }
-        static class ThrinkAuthorizationAssembler implements Assembler{ public void assemble( ModuleAssembly module ) throws AssemblyException { } }
-        static class UserTrackingAuditAssembler implements Assembler{ public void assemble( ModuleAssembly module ) throws AssemblyException { } }
-        static class NeoAssembler implements Assembler{ NeoAssembler( String path ) {} public void assemble( ModuleAssembly module ) throws AssemblyException { } }
+        public static class CustomerViewComposite{}
+        public static class CustomerEditComposite{}
+        public static class CustomerListViewComposite{}
+        public static class CustomerSearchComposite{}
+        public static class CustomerEntity{}
+        public static class CountryEntity{}
+        public static class AddressValue{}
+        public static class LdapAuthenticationAssembler implements Assembler{ public void assemble( ModuleAssembly module ) throws AssemblyException { } }
+        public static class ThrinkAuthorizationAssembler implements Assembler{ public void assemble( ModuleAssembly module ) throws AssemblyException { } }
+        public static class UserTrackingAuditAssembler implements Assembler{ public void assemble( ModuleAssembly module ) throws AssemblyException { } }
+        public static class NeoAssembler implements Assembler{ NeoAssembler( String path ) {} public void assemble( ModuleAssembly module ) throws AssemblyException { } }
 
         // START SNIPPET: full
         private static Energy4Java qi4j;
