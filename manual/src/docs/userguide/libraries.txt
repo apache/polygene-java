@@ -15,10 +15,6 @@ include::../../../../libraries/alarm/src/docs/alarm.txt[]
 
 :leveloffset: 2
 
-include::../../../../libraries/auth/src/docs/auth.txt[]
-
-:leveloffset: 2
-
 include::../../../../libraries/cache/src/docs/cache.txt[]
 
 :leveloffset: 2
