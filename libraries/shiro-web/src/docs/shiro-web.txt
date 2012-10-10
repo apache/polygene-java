@@ -7,7 +7,7 @@ source=libraries/shiro-web/dev-status.xml
 --------------
 
 
-This library provide integration with the http://shiro.apache.org/[Apache Shiro] Java Security Framework.
+This library provides integration with the http://shiro.apache.org/[Apache Shiro] Java Security Framework.
 
 NOTE: This library only contains web related information. Most of the documentation can be found in the
 <<library-shiro>> that this very library leverages.

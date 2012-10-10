@@ -6,7 +6,8 @@
 source=extensions/entitystore-mongodb/dev-status.xml
 --------------
 
-EntityStore service backed by a http://www.mongodb.org/[MongoDB] collection.
+EntityStore service backed by a http://www.mongodb.org/[MongoDB] collection in which Entity state is stored as native
+MongoDB BSON.
 
 == Assembly ==
 
