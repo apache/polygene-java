@@ -68,6 +68,14 @@ include::../tutorials/howto-create-constraint.txt[]
 
 :leveloffset: 2
 
+include::../tutorials/howto-create-concern.txt[]
+
+:leveloffset: 2
+
+include::../tutorials/howto-create-sideeffect.txt[]
+
+:leveloffset: 2
+
 include::../tutorials/howto-leverage-properties.txt[]
 
 :leveloffset: 2

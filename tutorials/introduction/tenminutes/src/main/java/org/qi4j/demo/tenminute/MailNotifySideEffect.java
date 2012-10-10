@@ -34,9 +34,6 @@ public abstract class MailNotifySideEffect extends SideEffectOf<Confirmable>
     @This
     private HasCustomer hasCustomer;
 
-    // END SNIPPET: allClass
-    // This is just added to test the Snippet's [...snip...] function.
-// START SNIPPET: allClass
     public void confirm()
     {
         StringBuilder builder = new StringBuilder();
