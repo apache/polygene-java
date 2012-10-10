@@ -19,6 +19,7 @@ package org.qi4j.index.elasticsearch;
 
 import java.io.File;
 import java.io.IOException;
+import org.junit.BeforeClass;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -30,10 +31,18 @@ import org.qi4j.spi.query.EntityFinderException;
 import org.qi4j.test.indexing.AbstractEntityFinderTest;
 
 import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeTrue;
 
 public class ElasticSearchFinderTest
         extends AbstractEntityFinderTest
 {
+
+    @BeforeClass
+    public static void beforeClass_IBMJDK()
+    {
+        // Ignore this test on IBM JDK
+        assumeTrue( !( System.getProperty( "java.vendor" ).contains( "IBM" ) ) );
+    }
 
     @Override
     public void assemble( ModuleAssembly module )

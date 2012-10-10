@@ -18,6 +18,7 @@
 package org.qi4j.index.elasticsearch;
 
 import java.io.File;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.qi4j.api.association.Association;
 import org.qi4j.api.association.ManyAssociation;
@@ -41,11 +42,19 @@ import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
 
 import static org.junit.Assert.*;
+import static org.junit.Assume.assumeTrue;
 import static org.qi4j.api.query.QueryExpressions.*;
 
 public class ElasticSearchTest
         extends AbstractQi4jTest
 {
+
+    @BeforeClass
+    public static void beforeClass_IBMJDK()
+    {
+        // Ignore this test on IBM JDK
+        assumeTrue( !( System.getProperty( "java.vendor" ).contains( "IBM" ) ) );
+    }
 
     public interface Post
             extends Identity
