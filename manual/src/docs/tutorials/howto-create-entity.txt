@@ -22,8 +22,7 @@ use Entities more frequently in Qi4j applications, so it is a very important top
 == Basics First ==
 
 All Entity operations MUST be done within a UnitOfWork. UnitOfWorks can be nested and if underlying UnitOfWorks are not
-completed (method complete()) or at least applied (method apply()), then none of the operations will be persisted
-permanently.
+completed (method complete()), then none of the operations will be persisted permanently.
 
 Entity composites are subtypes of the EntityComposite interface.
 
