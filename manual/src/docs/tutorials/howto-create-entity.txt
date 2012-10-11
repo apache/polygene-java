@@ -132,11 +132,18 @@ make it possible for the service injection later.
 
 [snippet,java]
 -----------
+source=manual/src/main/java/org/qi4j/manual/recipes/createEntity/CarEntityFactoryService.java
+tag=carFactoryService
+-----------
+
+Then we need an implementation of the mixin.
+
+[snippet,java]
+-----------
 source=manual/src/main/java/org/qi4j/manual/recipes/createEntity/CarEntityFactoryMixin.java
 tag=carFactoryMixin1
 -----------
 
-Then we need an implementation of the mixin.
 And doing that, first of all we need to request Qi4j runtime to give us the UnitOfWorkFactory associated with the Module
 that our code belongs to, and the UnitOfWork current context the execution is happening in.
 
@@ -181,7 +188,15 @@ source=manual/src/main/java/org/qi4j/manual/recipes/createEntity/ManufacturerRep
 tag=repo
 -----------
 
-And then we repeat the process for creating a Service and a Mixin that implements it...
+And then we repeat the process for creating a Service...
+
+[snippet,java]
+-----------
+source=manual/src/main/java/org/qi4j/manual/recipes/createEntity/ManufacturerRepositoryService.java
+tag=manufacturerRepositoryService
+-----------
+
+and a Mixin that implements it...
 
 [snippet,java]
 -----------
