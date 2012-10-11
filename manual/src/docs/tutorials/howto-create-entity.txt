@@ -73,9 +73,9 @@ tag=entity
 Above we define a Car domain object, which is of a particular Manufacturer (also an Entity), a model and a record of
 Accidents.
 
-We are using explicit types for properties, so that instead of saying Property<String> model(), we make it explicit that
-the Property is a ModelProperty, which is useful when passing the Model property instance around for processing and
-similar. It very effectively communicates intent in a typesafe manner.
+// We are using explicit types for properties, so that instead of saying Property<String> model(), we make it explicit that
+// the Property is a ModelProperty, which is useful when passing the Model property instance around for processing and
+// similar. It very effectively communicates intent in a typesafe manner.
 
 We will also need to define the composites for the above domain structure;
 
