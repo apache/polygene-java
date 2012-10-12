@@ -14,9 +14,10 @@
 
 package org.qi4j.runtime.bootstrap;
 
-import java.util.Arrays;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.EntityDeclaration;
+
+import static java.util.Arrays.asList;
 
 /**
  * Declaration of a Composite. Created by {@link org.qi4j.bootstrap.ModuleAssembly#transients(Class[])}.
@@ -53,7 +54,7 @@ public final class EntityDeclarationImpl
     {
         for( EntityAssemblyImpl entity : entities )
         {
-            entity.concerns.addAll( Arrays.asList( concerns ) );
+            entity.concerns.addAll( asList( concerns ) );
         }
         return this;
     }
@@ -62,7 +63,7 @@ public final class EntityDeclarationImpl
     {
         for( EntityAssemblyImpl entity : entities )
         {
-            entity.sideEffects.addAll( Arrays.asList( sideEffects ) );
+            entity.sideEffects.addAll( asList( sideEffects ) );
         }
         return this;
     }
@@ -71,7 +72,7 @@ public final class EntityDeclarationImpl
     {
         for( EntityAssemblyImpl entity : entities )
         {
-            entity.mixins.addAll( Arrays.asList( mixins ) );
+            entity.mixins.addAll( asList( mixins ) );
         }
         return this;
     }
@@ -80,7 +81,7 @@ public final class EntityDeclarationImpl
     {
         for( EntityAssemblyImpl entity : entities )
         {
-            entity.types.addAll( Arrays.asList( types ) );
+            entity.types.addAll( asList( types ) );
         }
         return this;
     }

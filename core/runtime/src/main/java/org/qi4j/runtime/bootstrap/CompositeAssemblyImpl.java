@@ -66,7 +66,6 @@ import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.property.PropertiesModel;
 import org.qi4j.runtime.property.PropertyModel;
 
-import static java.util.Arrays.asList;
 import static org.qi4j.api.util.Annotations.*;
 import static org.qi4j.api.util.Classes.*;
 import static org.qi4j.functional.Iterables.*;
@@ -174,18 +173,18 @@ public abstract class CompositeAssemblyImpl
                 {
                     MixinModel mixinModel = implementMethod( method, mixinClasses );
                     ConcernsModel concernsModel = concernsFor(
-                        method, 
-                        mixinModel.mixinClass(), 
+                        method,
+                        mixinModel.mixinClass(),
                         Iterables.<Class<?>>flatten( concernDeclarations( mixinModel.mixinClass() ), concernClasses )
                     );
                     SideEffectsModel sideEffectsModel = sideEffectsFor(
-                        method, 
-                        mixinModel.mixinClass(), 
+                        method,
+                        mixinModel.mixinClass(),
                         Iterables.<Class<?>>flatten( sideEffectDeclarations( mixinModel.mixinClass() ), sideEffectClasses )
                     );
                     method.setAccessible( true );
                     ConstraintsModel constraints = constraintsFor(
-                        method, 
+                        method,
                         Iterables.<Class<? extends Constraint<?, ?>>>flatten( constraintDeclarations( mixinModel.mixinClass() ), constraintClasses )
                     );
                     CompositeMethodModel methodComposite = new CompositeMethodModel(

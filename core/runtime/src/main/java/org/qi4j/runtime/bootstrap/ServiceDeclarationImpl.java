@@ -16,12 +16,13 @@
 package org.qi4j.runtime.bootstrap;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import org.qi4j.api.activation.Activator;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.qualifier.ServiceTags;
 import org.qi4j.bootstrap.ServiceDeclaration;
+
+import static java.util.Arrays.asList;
 
 /**
  * Declaration of a Service. Created by {@link org.qi4j.runtime.bootstrap.ModuleAssemblyImpl#services(Class[])}.
@@ -63,14 +64,8 @@ public final class ServiceDeclarationImpl
             if( previousTags != null )
             {
                 List<String> tagList = new ArrayList<String>();
-                for( String tag : previousTags.tags() )
-                {
-                    tagList.add( tag );
-                }
-                for( String tag : tags )
-                {
-                    tagList.add( tag );
-                }
+                tagList.addAll( asList( previousTags.tags() ) );
+                tagList.addAll( asList( tags ) );
                 serviceAssembly.metaInfo.set( new ServiceTags( tagList.toArray( new String[ tagList.size() ] ) ) );
             }
             else
@@ -104,7 +99,7 @@ public final class ServiceDeclarationImpl
     {
         for( ServiceAssemblyImpl serviceAssembly : serviceAssemblies )
         {
-            serviceAssembly.concerns.addAll( Arrays.asList( concerns ) );
+            serviceAssembly.concerns.addAll( asList( concerns ) );
         }
         return this;
     }
@@ -113,7 +108,7 @@ public final class ServiceDeclarationImpl
     {
         for( ServiceAssemblyImpl serviceAssembly : serviceAssemblies )
         {
-            serviceAssembly.sideEffects.addAll( Arrays.asList( sideEffects ) );
+            serviceAssembly.sideEffects.addAll( asList( sideEffects ) );
         }
         return this;
     }
@@ -122,7 +117,7 @@ public final class ServiceDeclarationImpl
     {
         for( ServiceAssemblyImpl serviceAssembly : serviceAssemblies )
         {
-            serviceAssembly.mixins.addAll( Arrays.asList( mixins ) );
+            serviceAssembly.mixins.addAll( asList( mixins ) );
         }
         return this;
     }
@@ -131,7 +126,7 @@ public final class ServiceDeclarationImpl
     {
         for( ServiceAssemblyImpl serviceAssembly : serviceAssemblies )
         {
-            serviceAssembly.types.addAll( Arrays.asList( types ) );
+            serviceAssembly.types.addAll( asList( types ) );
         }
         return this;
     }
@@ -139,9 +134,9 @@ public final class ServiceDeclarationImpl
     public ServiceDeclaration withActivators( Class<? extends Activator<?>>... activators )
     {
         for ( ServiceAssemblyImpl serviceAssembly : serviceAssemblies ) {
-            serviceAssembly.activators.addAll( Arrays.asList( activators ) );
+            serviceAssembly.activators.addAll( asList( activators ) );
         }
         return this;
     }
-    
+
 }

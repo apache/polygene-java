@@ -14,9 +14,10 @@
 
 package org.qi4j.runtime.bootstrap;
 
-import java.util.Arrays;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.ValueDeclaration;
+
+import static java.util.Arrays.asList;
 
 /**
  * Declaration of a ValueComposite.
@@ -53,7 +54,7 @@ public final class ValueDeclarationImpl
     {
         for( ValueAssemblyImpl assembly : assemblies )
         {
-            assembly.concerns.addAll( Arrays.asList( concerns ) );
+            assembly.concerns.addAll( asList( concerns ) );
         }
         return this;
     }
@@ -62,7 +63,7 @@ public final class ValueDeclarationImpl
     {
         for( ValueAssemblyImpl assembly : assemblies )
         {
-            assembly.sideEffects.addAll( Arrays.asList( sideEffects ) );
+            assembly.sideEffects.addAll( asList( sideEffects ) );
         }
         return this;
     }
@@ -71,7 +72,7 @@ public final class ValueDeclarationImpl
     {
         for( ValueAssemblyImpl assembly : assemblies )
         {
-            assembly.mixins.addAll( Arrays.asList( mixins ) );
+            assembly.mixins.addAll( asList( mixins ) );
         }
         return this;
     }
@@ -80,7 +81,7 @@ public final class ValueDeclarationImpl
     {
         for( ValueAssemblyImpl assembly : assemblies )
         {
-            assembly.types.addAll( Arrays.asList( types ) );
+            assembly.types.addAll( asList( types ) );
         }
         return this;
     }

@@ -14,9 +14,10 @@
 
 package org.qi4j.runtime.bootstrap;
 
-import java.util.Arrays;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.TransientDeclaration;
+
+import static java.util.Arrays.asList;
 
 /**
  * Declaration of a Composite. Created by {@link org.qi4j.bootstrap.ModuleAssembly#transients(Class[])}.
@@ -53,7 +54,7 @@ public final class TransientDeclarationImpl
     {
         for( TransientAssemblyImpl assembly : assemblies )
         {
-            assembly.concerns.addAll( Arrays.asList( concerns ) );
+            assembly.concerns.addAll( asList( concerns ) );
         }
         return this;
     }
@@ -62,7 +63,7 @@ public final class TransientDeclarationImpl
     {
         for( TransientAssemblyImpl assembly : assemblies )
         {
-            assembly.sideEffects.addAll( Arrays.asList( sideEffects ) );
+            assembly.sideEffects.addAll( asList( sideEffects ) );
         }
         return this;
     }
@@ -71,7 +72,7 @@ public final class TransientDeclarationImpl
     {
         for( TransientAssemblyImpl assembly : assemblies )
         {
-            assembly.mixins.addAll( Arrays.asList( mixins ) );
+            assembly.mixins.addAll( asList( mixins ) );
         }
         return this;
     }
@@ -80,7 +81,7 @@ public final class TransientDeclarationImpl
     {
         for( TransientAssemblyImpl assembly : assemblies )
         {
-            assembly.types.addAll( Arrays.asList( types ) );
+            assembly.types.addAll( asList( types ) );
         }
         return this;
     }

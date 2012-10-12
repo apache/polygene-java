@@ -23,7 +23,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.qi4j.api.activation.Activator;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
@@ -518,7 +517,7 @@ public final class LayerAssemblyImpl
                 }
                 return this;
             }
-            
+
             @Override
             public ImportedServiceDeclaration visibleIn( Visibility visibility )
             {
@@ -578,7 +577,7 @@ public final class LayerAssemblyImpl
                 }
                 return this;
             }
-            
+
         };
     }
 

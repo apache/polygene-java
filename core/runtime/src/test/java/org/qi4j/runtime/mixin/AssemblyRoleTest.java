@@ -29,7 +29,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 /**
- * Test of declaring role in assembly
+ * Test of declaring types in assembly
  */
 public class AssemblyRoleTest
     extends AbstractQi4jTest
@@ -46,14 +46,14 @@ public class AssemblyRoleTest
     }
 
     @Test
-    public void testAssemblyRolesCustomMixin()
+    public void testAssemblyTypesCustomMixin()
     {
         FooComposite2 composite2 = module.newTransient( FooComposite2.class );
         assertThat( "Custom mixin has executed", ( (Foo) composite2 ).test( "Foo", 42 ), equalTo( "Foo/42" ) );
     }
 
     @Test
-    public void testAssemblyRolesDefaultMixin()
+    public void testAssemblyTypesDefaultMixin()
     {
         FooComposite composite = module.newTransient( FooComposite.class );
         assertThat( "Default mixin has executed", ( (Foo) composite ).test( "Foo", 42 ), equalTo( "Foo 42" ) );
