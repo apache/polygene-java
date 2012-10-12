@@ -70,7 +70,7 @@ Methods of the Concern Fragment will be called before the Mixin invocation.
 
 === AppliesTo ===
 
-For generic Concerns that should only trigger on methods with specific annotations of fulfilling some expression, add
+For generic Concerns that should only trigger on methods with specific annotations or fulfilling some expression, add
 @AppliesTo annotation to the Concern class which points to either triggering annotation(s), or to AppliesToFilter
 implementation(s).
 

@@ -68,7 +68,7 @@ Methods of the SideEffect Fragment will be called before the Mixin invocation.
 
 === AppliesTo ===
 
-For generic SideEffects that should only trigger on methods with specific annotations of fulfilling some expression, add
+For generic SideEffects that should only trigger on methods with specific annotations or fulfilling some expression, add
 @AppliesTo annotation to the SideEffect class which points to either triggering annotation(s), or to AppliesToFilter
 implementation(s).
 
