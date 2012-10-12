@@ -16,14 +16,12 @@ package org.qi4j.runtime.structure;
 import java.util.Iterator;
 import org.junit.Test;
 import org.qi4j.api.composite.AmbiguousTypeException;
-import org.qi4j.api.composite.TransientComposite;
-import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.Identity;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.value.ValueComposite;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
@@ -33,7 +31,8 @@ import org.qi4j.test.EntityTestAssembler;
 import static org.junit.Assert.*;
 
 /**
- * This test assert that Type to Composite lookup succeed for Objects, Transients, Values, Entities and Services.
+ * Theses tests ensure that Type to Composite lookup is consistent
+ * over Objects, Transients, Values, Entities and Services.
  */
 public class TypeToCompositeLookupTest
 {
@@ -49,7 +48,7 @@ public class TypeToCompositeLookupTest
 
     }
 
-    public static class FooObject
+    public static class BasicFooImpl
             implements Foo
     {
 
@@ -60,8 +59,8 @@ public class TypeToCompositeLookupTest
 
     }
 
-    public static class SomeFooObject
-            extends FooObject
+    public static class SomeOtherFooImpl
+            extends BasicFooImpl
     {
 
         @Override
@@ -72,51 +71,15 @@ public class TypeToCompositeLookupTest
 
     }
 
-    @Mixins( FooObject.class )
-    public interface FooTransient
-            extends Foo, TransientComposite
+    @Mixins( BasicFooImpl.class )
+    public interface BasicFoo
+            extends Foo
     {
     }
 
-    @Mixins( SomeFooObject.class )
-    public interface SomeFooTransient
-            extends FooTransient
-    {
-    }
-
-    @Mixins( FooObject.class )
-    public interface FooValue
-            extends Foo, ValueComposite
-    {
-    }
-
-    @Mixins( SomeFooObject.class )
-    public interface SomeFooValue
-            extends FooValue
-    {
-    }
-
-    @Mixins( FooObject.class )
-    public interface FooEntity
-            extends Foo, EntityComposite
-    {
-    }
-
-    @Mixins( SomeFooObject.class )
-    public interface SomeFooEntity
-            extends FooEntity
-    {
-    }
-
-    @Mixins( FooObject.class )
-    public interface FooService
-            extends Foo, ServiceComposite
-    {
-    }
-
-    @Mixins( SomeFooObject.class )
-    public interface SomeFooService
-            extends FooService
+    @Mixins( SomeOtherFooImpl.class )
+    public interface SomeOtherFoo
+            extends BasicFoo
     {
     }
 
@@ -129,13 +92,13 @@ public class TypeToCompositeLookupTest
             public void assemble( ModuleAssembly module )
                     throws AssemblyException
             {
-                module.objects( SomeFooObject.class );
+                module.objects( SomeOtherFooImpl.class );
             }
 
         }.module();
 
-        assertEquals( CATHEDRAL, module.newObject( SomeFooObject.class ).bar() );
-        assertEquals( CATHEDRAL, module.newObject( FooObject.class ).bar() );
+        assertEquals( CATHEDRAL, module.newObject( SomeOtherFooImpl.class ).bar() );
+        assertEquals( CATHEDRAL, module.newObject( BasicFooImpl.class ).bar() );
         assertEquals( CATHEDRAL, module.newObject( Foo.class ).bar() );
     }
 
@@ -148,13 +111,13 @@ public class TypeToCompositeLookupTest
             public void assemble( ModuleAssembly module )
                     throws AssemblyException
             {
-                module.objects( SomeFooObject.class, FooObject.class );
+                module.objects( SomeOtherFooImpl.class, BasicFooImpl.class );
             }
 
         }.module();
 
-        assertEquals( CATHEDRAL, module.newObject( SomeFooObject.class ).bar() );
-        assertEquals( BAZAR, module.newObject( FooObject.class ).bar() );
+        assertEquals( CATHEDRAL, module.newObject( SomeOtherFooImpl.class ).bar() );
+        assertEquals( BAZAR, module.newObject( BasicFooImpl.class ).bar() );
 
         try {
 
@@ -174,13 +137,13 @@ public class TypeToCompositeLookupTest
             public void assemble( ModuleAssembly module )
                     throws AssemblyException
             {
-                module.transients( SomeFooTransient.class );
+                module.transients( SomeOtherFoo.class );
             }
 
         }.module();
 
-        assertEquals( CATHEDRAL, module.newTransientBuilder( SomeFooTransient.class ).newInstance().bar() );
-        assertEquals( CATHEDRAL, module.newTransientBuilder( FooTransient.class ).newInstance().bar() );
+        assertEquals( CATHEDRAL, module.newTransientBuilder( SomeOtherFoo.class ).newInstance().bar() );
+        assertEquals( CATHEDRAL, module.newTransientBuilder( BasicFoo.class ).newInstance().bar() );
         assertEquals( CATHEDRAL, module.newTransientBuilder( Foo.class ).newInstance().bar() );
     }
 
@@ -193,13 +156,13 @@ public class TypeToCompositeLookupTest
             public void assemble( ModuleAssembly module )
                     throws AssemblyException
             {
-                module.transients( SomeFooTransient.class, FooTransient.class );
+                module.transients( SomeOtherFoo.class, BasicFoo.class );
             }
 
         }.module();
 
-        assertEquals( CATHEDRAL, module.newTransientBuilder( SomeFooTransient.class ).newInstance().bar() );
-        assertEquals( BAZAR, module.newTransientBuilder( FooTransient.class ).newInstance().bar() );
+        assertEquals( CATHEDRAL, module.newTransientBuilder( SomeOtherFoo.class ).newInstance().bar() );
+        assertEquals( BAZAR, module.newTransientBuilder( BasicFoo.class ).newInstance().bar() );
 
         try {
 
@@ -219,13 +182,13 @@ public class TypeToCompositeLookupTest
             public void assemble( ModuleAssembly module )
                     throws AssemblyException
             {
-                module.values( SomeFooValue.class );
+                module.values( SomeOtherFoo.class );
             }
 
         }.module();
 
-        assertEquals( CATHEDRAL, module.newValueBuilder( SomeFooValue.class ).newInstance().bar() );
-        assertEquals( CATHEDRAL, module.newValueBuilder( FooValue.class ).newInstance().bar() );
+        assertEquals( CATHEDRAL, module.newValueBuilder( SomeOtherFoo.class ).newInstance().bar() );
+        assertEquals( CATHEDRAL, module.newValueBuilder( BasicFoo.class ).newInstance().bar() );
         assertEquals( CATHEDRAL, module.newValueBuilder( Foo.class ).newInstance().bar() );
     }
 
@@ -238,13 +201,13 @@ public class TypeToCompositeLookupTest
             public void assemble( ModuleAssembly module )
                     throws AssemblyException
             {
-                module.values( SomeFooValue.class, FooValue.class );
+                module.values( SomeOtherFoo.class, BasicFoo.class );
             }
 
         }.module();
 
-        assertEquals( CATHEDRAL, module.newValueBuilder( SomeFooValue.class ).newInstance().bar() );
-        assertEquals( BAZAR, module.newValueBuilder( FooValue.class ).newInstance().bar() );
+        assertEquals( CATHEDRAL, module.newValueBuilder( SomeOtherFoo.class ).newInstance().bar() );
+        assertEquals( BAZAR, module.newValueBuilder( BasicFoo.class ).newInstance().bar() );
 
         try {
 
@@ -257,6 +220,7 @@ public class TypeToCompositeLookupTest
 
     @Test
     public void entities()
+            throws UnitOfWorkCompletionException
     {
         Module module = new SingletonAssembler()
         {
@@ -265,25 +229,39 @@ public class TypeToCompositeLookupTest
                     throws AssemblyException
             {
                 new EntityTestAssembler().assemble( module );
-                module.entities( SomeFooEntity.class );
+                module.entities( SomeOtherFoo.class );
             }
 
         }.module();
 
         UnitOfWork uow = module.newUnitOfWork();
-        try {
 
-            assertEquals( CATHEDRAL, uow.newEntityBuilder( SomeFooEntity.class ).newInstance().bar() );
-            assertEquals( CATHEDRAL, uow.newEntityBuilder( FooEntity.class ).newInstance().bar() );
-            assertEquals( CATHEDRAL, uow.newEntityBuilder( Foo.class ).newInstance().bar() );
+        SomeOtherFoo someOtherFoo = uow.newEntityBuilder( SomeOtherFoo.class ).newInstance();
+        BasicFoo basicFoo = uow.newEntityBuilder( BasicFoo.class ).newInstance();
+        Foo foo = uow.newEntityBuilder( Foo.class ).newInstance();
 
-        } finally {
-            uow.discard();
-        }
+        assertEquals( CATHEDRAL, someOtherFoo.bar() );
+        assertEquals( CATHEDRAL, basicFoo.bar() );
+        assertEquals( CATHEDRAL, foo.bar() );
+
+        String someOtherFooIdentity = ( ( Identity ) someOtherFoo ).identity().get();
+        String basicFooIdentity = ( ( Identity ) basicFoo ).identity().get();
+        String fooIdentity = ( ( Identity ) foo ).identity().get();
+
+        uow.complete();
+
+        uow = module.newUnitOfWork();
+
+        uow.get( SomeOtherFoo.class, someOtherFooIdentity );
+        uow.get( BasicFoo.class, basicFooIdentity );
+        uow.get( Foo.class, fooIdentity );
+
+        uow.discard();
     }
 
     @Test
     public void entitiesAmbiguousDeclaration()
+            throws UnitOfWorkCompletionException
     {
         Module module = new SingletonAssembler()
         {
@@ -292,25 +270,53 @@ public class TypeToCompositeLookupTest
                     throws AssemblyException
             {
                 new EntityTestAssembler().assemble( module );
-                module.entities( SomeFooEntity.class, FooEntity.class );
+                module.entities( SomeOtherFoo.class, BasicFoo.class );
             }
 
         }.module();
 
         UnitOfWork uow = module.newUnitOfWork();
-        try {
 
-            // Specific Type used
-            assertEquals( CATHEDRAL, uow.newEntityBuilder( SomeFooEntity.class ).newInstance().bar() );
+        SomeOtherFoo someOtherFoo = uow.newEntityBuilder( SomeOtherFoo.class ).newInstance();
+        BasicFoo basicFoo = uow.newEntityBuilder( BasicFoo.class ).newInstance();
+        Foo foo = uow.newEntityBuilder( Foo.class ).newInstance();
 
-            // Specific Type used
-            assertEquals( BAZAR, uow.newEntityBuilder( FooEntity.class ).newInstance().bar() );
+        // Specific Type used
+        assertEquals( CATHEDRAL, uow.newEntityBuilder( SomeOtherFoo.class ).newInstance().bar() );
 
-            // First matching Type used
-            assertEquals( CATHEDRAL, uow.newEntityBuilder( Foo.class ).newInstance().bar() );
+        // Specific Type used
+        assertEquals( BAZAR, uow.newEntityBuilder( BasicFoo.class ).newInstance().bar() );
 
-        } finally {
-            uow.discard();
+        // First matching Type used - This is where Entity lookup behaviour differ
+        assertEquals( CATHEDRAL, uow.newEntityBuilder( Foo.class ).newInstance().bar() );
+
+        String someOtherFooIdentity = ( ( Identity ) someOtherFoo ).identity().get();
+        String basicFooIdentity = ( ( Identity ) basicFoo ).identity().get();
+        String fooIdentity = ( ( Identity ) foo ).identity().get();
+
+        uow.complete();
+
+        uow = module.newUnitOfWork();
+
+        uow.get( SomeOtherFoo.class, someOtherFooIdentity );
+        uow.get( BasicFoo.class, basicFooIdentity );
+        uow.get( Foo.class, fooIdentity );
+
+        uow.discard();
+
+        if ( false ) {
+            // Here is the test that would validate a behaviour consistent with other composite types.
+            // Disabled for now.
+            uow = module.newUnitOfWork();
+            try {
+                try {
+                    uow.newEntityBuilder( Foo.class );
+                    fail( "Ambiguous type exception not detected for Entities" );
+                } catch ( AmbiguousTypeException expected ) {
+                }
+            } finally {
+                uow.discard();
+            }
         }
     }
 
@@ -323,13 +329,13 @@ public class TypeToCompositeLookupTest
             public void assemble( ModuleAssembly module )
                     throws AssemblyException
             {
-                module.services( SomeFooService.class );
+                module.services( SomeOtherFoo.class );
             }
 
         }.module();
 
-        assertEquals( CATHEDRAL, module.findService( SomeFooService.class ).get().bar() );
-        assertEquals( CATHEDRAL, module.findService( FooService.class ).get().bar() );
+        assertEquals( CATHEDRAL, module.findService( SomeOtherFoo.class ).get().bar() );
+        assertEquals( CATHEDRAL, module.findService( BasicFoo.class ).get().bar() );
         assertEquals( CATHEDRAL, module.findService( Foo.class ).get().bar() );
     }
 
@@ -342,19 +348,19 @@ public class TypeToCompositeLookupTest
             public void assemble( ModuleAssembly module )
                     throws AssemblyException
             {
-                module.services( SomeFooService.class, FooService.class );
+                module.services( SomeOtherFoo.class, BasicFoo.class );
             }
 
         }.module();
 
-        assertEquals( 1, Iterables.count( module.findServices( SomeFooService.class ) ) );
-        assertEquals( 2, Iterables.count( module.findServices( FooService.class ) ) );
+        assertEquals( 1, Iterables.count( module.findServices( SomeOtherFoo.class ) ) );
+        assertEquals( 2, Iterables.count( module.findServices( BasicFoo.class ) ) );
         assertEquals( 2, Iterables.count( module.findServices( Foo.class ) ) );
 
-        assertEquals( CATHEDRAL, module.findService( SomeFooService.class ).get().bar() );
+        assertEquals( CATHEDRAL, module.findService( SomeOtherFoo.class ).get().bar() );
 
         // Follows assembly Type order
-        Iterator<ServiceReference<FooService>> fooServices = module.findServices( FooService.class ).iterator();
+        Iterator<ServiceReference<BasicFoo>> fooServices = module.findServices( BasicFoo.class ).iterator();
         assertEquals( CATHEDRAL, fooServices.next().get().bar() );
         assertEquals( BAZAR, fooServices.next().get().bar() );
 
