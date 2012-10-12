@@ -297,15 +297,6 @@ public class ModuleInstance
 
         if( models == null )
         {
-            Specification<EntityModel> hasRole = new Specification<EntityModel>()
-            {
-                @Override
-                public boolean satisfiedBy( EntityModel item )
-                {
-                    return item.hasRole( type );
-                }
-            };
-
             // Lazily resolve EntityModels
             models = flatten( ambiguousCheck( type,
                                               findModels( Classes.exactTypeSpecification( type ),
@@ -313,7 +304,7 @@ public class ModuleInstance
                                                           layerInstance().visibleEntities( Visibility.layer ),
                                                           layerInstance().visibleEntities( Visibility.application ),
                                                           layerInstance().usedLayersInstance().visibleEntities() ) ),
-                              findModels( hasRole,
+                              findModels( Classes.assignableTypeSpecification( type ),
                                           visibleEntities( Visibility.module ),
                                           layerInstance().visibleEntities( Visibility.layer ),
                                           layerInstance().visibleEntities( Visibility.application ),
