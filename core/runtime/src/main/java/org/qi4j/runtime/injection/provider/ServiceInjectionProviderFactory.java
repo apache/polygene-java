@@ -17,6 +17,7 @@ package org.qi4j.runtime.injection.provider;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import org.qi4j.api.service.NoSuchServiceException;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.service.qualifier.Qualifier;
 import org.qi4j.api.util.Annotations;
@@ -33,9 +34,7 @@ import org.qi4j.runtime.injection.InjectionProviderFactory;
 import org.qi4j.runtime.model.Resolution;
 
 import static org.qi4j.api.util.Annotations.hasAnnotation;
-import static org.qi4j.functional.Iterables.filter;
-import static org.qi4j.functional.Iterables.first;
-import static org.qi4j.functional.Iterables.iterable;
+import static org.qi4j.functional.Iterables.*;
 
 public final class ServiceInjectionProviderFactory
     implements InjectionProviderFactory
@@ -197,7 +196,7 @@ public final class ServiceInjectionProviderFactory
                         .findServices( serviceType ) ) );
                 }
             }
-            catch( IllegalArgumentException e )
+            catch( NoSuchServiceException e )
             {
                 return null;
             }

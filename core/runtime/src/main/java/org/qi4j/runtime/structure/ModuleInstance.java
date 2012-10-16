@@ -140,10 +140,12 @@ public class ModuleInstance
     };
 
     // Lookup caches
-    private final Map<Class, ModelModule<ObjectModel>> objectModels;
-    private final Map<Class, ModelModule<TransientModel>> transientModels;
-    private final Map<Class, Iterable<ModelModule<EntityModel>>> entityModels;
-    private final Map<Class, ModelModule<ValueModel>> valueModels;
+    private final Map<Class, ModelModule<ObjectModel>> objectModels = new ConcurrentHashMap<Class, ModelModule<ObjectModel>>();
+    private final Map<Class, ModelModule<TransientModel>> transientModels = new ConcurrentHashMap<Class, ModelModule<TransientModel>>();
+    private final Map<Class, Iterable<ModelModule<EntityModel>>> entityModels = new ConcurrentHashMap<Class, Iterable<ModelModule<EntityModel>>>();
+    private final Map<Class, ModelModule<ValueModel>> valueModels = new ConcurrentHashMap<Class, ModelModule<ValueModel>>();
+    private final Map<Type, ServiceReference> serviceReferences = new ConcurrentHashMap<Type, ServiceReference>();
+    private final Map<Type, Iterable<ServiceReference>> servicesReferences = new ConcurrentHashMap<Type, Iterable<ServiceReference>>();
 
     public ModuleInstance( ModuleModel moduleModel, LayerInstance layerInstance, TransientsModel transientsModel,
                            EntitiesModel entitiesModel, ObjectsModel objectsModel, ValuesModel valuesModel,
@@ -162,13 +164,7 @@ public class ModuleInstance
         importedServices.registerActivationEventListener( activationEventSupport );
 
         queryBuilderFactory = new QueryBuilderFactoryImpl( this );
-
-        objectModels = new ConcurrentHashMap<Class, ModelModule<ObjectModel>>();
-        transientModels = new ConcurrentHashMap<Class, ModelModule<TransientModel>>();
-        entityModels = new ConcurrentHashMap<Class, Iterable<ModelModule<EntityModel>>>();
-        valueModels = new ConcurrentHashMap<Class, ModelModule<ValueModel>>();
-
-        this.classLoader = new ModuleClassLoader( Thread.currentThread().getContextClassLoader() );
+        classLoader = new ModuleClassLoader( Thread.currentThread().getContextClassLoader() );
     }
 
     public String name()
@@ -420,22 +416,22 @@ public class ModuleInstance
         return filter( spec, flatten );
     }
 
-    public Iterable<ModelModule<ObjectModel>> visibleObjects( Visibility visibility )
+    Iterable<ModelModule<ObjectModel>> visibleObjects( Visibility visibility )
     {
-        return map( ModelModule.<ObjectModel>modelModuleFunction( this ), filter( new VisibilitySpecification( visibility ), objects
-            .models() ) );
+        return map( ModelModule.<ObjectModel>modelModuleFunction( this ),
+                    filter( new VisibilitySpecification( visibility ), objects.models() ) );
     }
 
     Iterable<ModelModule<TransientModel>> visibleTransients( Visibility visibility )
     {
-        return map( ModelModule.<TransientModel>modelModuleFunction( this ), filter( new VisibilitySpecification( visibility ), transients
-            .models() ) );
+        return map( ModelModule.<TransientModel>modelModuleFunction( this ),
+                    filter( new VisibilitySpecification( visibility ), transients.models() ) );
     }
 
-    public Iterable<ModelModule<EntityModel>> visibleEntities( Visibility visibility )
+    Iterable<ModelModule<EntityModel>> visibleEntities( Visibility visibility )
     {
-        return map( ModelModule.<EntityModel>modelModuleFunction( this ), filter( new VisibilitySpecification( visibility ), entities
-            .models() ) );
+        return map( ModelModule.<EntityModel>modelModuleFunction( this ),
+                    filter( new VisibilitySpecification( visibility ), entities.models() ) );
     }
 
     Iterable<ModelModule<ValueModel>> visibleValues( Visibility visibility )
@@ -760,28 +756,10 @@ public class ModuleInstance
     }
 
     // Implementation of ServiceFinder
-    Map<Type, ServiceReference> serviceReferences = new ConcurrentHashMap<Type, ServiceReference>();
-    Map<Type, Iterable<ServiceReference>> servicesReferences = new ConcurrentHashMap<Type, Iterable<ServiceReference>>();
-
-    public <T> ServiceReference<T> findService( final Class<T> serviceType )
+    @Override
+    public <T> ServiceReference<T> findService( Class<T> serviceType )
     {
-        ServiceReference serviceReference = serviceReferences.get( serviceType );
-        if( serviceReference == null )
-        {
-            Iterable<ServiceReference<T>> references = findServices( serviceType );
-            serviceReference = first( references );
-            if( serviceReference != null )
-            {
-                serviceReferences.put( serviceType, serviceReference );
-            }
-        }
-
-        if( serviceReference == null )
-        {
-            throw new NoSuchServiceException( serviceType.getName(), name() );
-        }
-
-        return serviceReference;
+        return findService( ( Type ) serviceType );
     }
 
     @Override
@@ -790,6 +768,7 @@ public class ModuleInstance
         ServiceReference serviceReference = serviceReferences.get( serviceType );
         if( serviceReference == null )
         {
+            // Lazily resolve ServiceReference
             serviceReference = first( findServices( serviceType ) );
             if( serviceReference != null )
             {
@@ -799,7 +778,7 @@ public class ModuleInstance
 
         if( serviceReference == null )
         {
-            throw new IllegalArgumentException( "No service of type '" + serviceType + "' found" );
+            throw new NoSuchServiceException( Classes.RAW_CLASS.map( serviceType ).getName(), name() );
         }
 
         return serviceReference;
@@ -808,36 +787,47 @@ public class ModuleInstance
     @Override
     public <T> Iterable<ServiceReference<T>> findServices( Class<T> serviceType )
     {
-        return findServices( (Type) serviceType );
+        return findServices( ( Type ) serviceType );
     }
 
+    @Override
     public <T> Iterable<ServiceReference<T>> findServices( final Type serviceType )
     {
         Iterable<ServiceReference> iterable = servicesReferences.get( serviceType );
         if( iterable == null )
         {
+            // Lazily resolve ServicesReferences
+            Function<ServiceReference, Iterable<Class<?>>> referenceTypesFunction = new Function<ServiceReference, Iterable<Class<?>>>()
+            {
+                @Override
+                public Iterable<Class<?>> map( ServiceReference serviceReference )
+                {
+                    return serviceReference.types();
+                }
+            };
+
             Specification<Iterable<Class<?>>> typeSpecification = new Specification<Iterable<Class<?>>>()
             {
                 @Override
-                public boolean satisfiedBy( Iterable<Class<?>> item )
+                public boolean satisfiedBy( Iterable<Class<?>> types )
                 {
                     if( serviceType instanceof Class )
                     {
                         // Straight class assignability check
-                        return checkClassMatch( item, (Class) serviceType );
+                        return checkClassMatch( types, (Class) serviceType );
                     }
                     else if( serviceType instanceof ParameterizedType )
                     {
                         // Foo<Bar> check
                         // First check Foo
                         ParameterizedType parameterizedType = (ParameterizedType) serviceType;
-                        if( !checkClassMatch( item, (Class) parameterizedType.getRawType() ) )
+                        if( !checkClassMatch( types, (Class) parameterizedType.getRawType() ) )
                         {
                             return false;
                         }
 
                         // Then check Bar
-                        for( Type intf : interfacesOf( item ) )
+                        for( Type intf : interfacesOf( types ) )
                         {
                             if( intf.equals( serviceType ) )
                             {
@@ -871,15 +861,7 @@ public class ModuleInstance
                 }
             };
 
-            Function<ServiceReference, Iterable<Class<?>>> function = new Function<ServiceReference, Iterable<Class<?>>>()
-            {
-                @Override
-                public Iterable<Class<?>> map( ServiceReference serviceReference )
-                {
-                    return serviceReference.types();
-                }
-            };
-            Specification<ServiceReference> referenceTypeCheck = Specifications.translate( function, typeSpecification );
+            Specification<ServiceReference> referenceTypeCheck = Specifications.translate( referenceTypesFunction, typeSpecification );
 
             Iterable<ServiceReference> matchingServices = flatten(
                 filter( referenceTypeCheck, visibleServices( Visibility.module ) ),

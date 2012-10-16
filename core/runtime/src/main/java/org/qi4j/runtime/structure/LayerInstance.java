@@ -23,13 +23,15 @@ import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Layer;
 import org.qi4j.api.structure.Module;
 import org.qi4j.functional.Function;
-import org.qi4j.functional.Iterables;
-import org.qi4j.runtime.activation.ActivationEventListenerSupport;
 import org.qi4j.runtime.activation.ActivationDelegate;
+import org.qi4j.runtime.activation.ActivationEventListenerSupport;
 import org.qi4j.runtime.composite.TransientModel;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.object.ObjectModel;
 import org.qi4j.runtime.value.ValueModel;
+
+import static org.qi4j.functional.Iterables.flattenIterables;
+import static org.qi4j.functional.Iterables.map;
 
 /**
  * Instance of a Qi4j application layer. Contains a list of modules which are managed by this layer.
@@ -97,7 +99,7 @@ public class LayerInstance
 
     Iterable<ModelModule<ObjectModel>> visibleObjects( final Visibility visibility )
     {
-        return Iterables.flattenIterables( Iterables.map( new Function<ModuleInstance, Iterable<ModelModule<ObjectModel>>>()
+        return flattenIterables( map( new Function<ModuleInstance, Iterable<ModelModule<ObjectModel>>>()
         {
             @Override
             public Iterable<ModelModule<ObjectModel>> map( ModuleInstance moduleInstance )
@@ -109,7 +111,7 @@ public class LayerInstance
 
     Iterable<ModelModule<TransientModel>> visibleTransients( final Visibility visibility )
     {
-        return Iterables.flattenIterables( Iterables.map( new Function<ModuleInstance, Iterable<ModelModule<TransientModel>>>()
+        return flattenIterables( map( new Function<ModuleInstance, Iterable<ModelModule<TransientModel>>>()
         {
             @Override
             public Iterable<ModelModule<TransientModel>> map( ModuleInstance moduleInstance )
@@ -121,7 +123,7 @@ public class LayerInstance
 
     Iterable<ModelModule<EntityModel>> visibleEntities( final Visibility visibility )
     {
-        return Iterables.flattenIterables( Iterables.map( new Function<ModuleInstance, Iterable<ModelModule<EntityModel>>>()
+        return flattenIterables( map( new Function<ModuleInstance, Iterable<ModelModule<EntityModel>>>()
         {
             @Override
             public Iterable<ModelModule<EntityModel>> map( ModuleInstance moduleInstance )
@@ -133,7 +135,7 @@ public class LayerInstance
 
     Iterable<ModelModule<ValueModel>> visibleValues( final Visibility visibility )
     {
-        return Iterables.flattenIterables( Iterables.map( new Function<ModuleInstance, Iterable<ModelModule<ValueModel>>>()
+        return flattenIterables( map( new Function<ModuleInstance, Iterable<ModelModule<ValueModel>>>()
         {
             @Override
             public Iterable<ModelModule<ValueModel>> map( ModuleInstance moduleInstance )
@@ -145,7 +147,7 @@ public class LayerInstance
 
     Iterable<ServiceReference> visibleServices( final Visibility visibility )
     {
-        return Iterables.flattenIterables( Iterables.map( new Function<ModuleInstance, Iterable<ServiceReference>>()
+        return flattenIterables( map( new Function<ModuleInstance, Iterable<ServiceReference>>()
         {
             @Override
             public Iterable<ServiceReference> map( ModuleInstance moduleInstance )
