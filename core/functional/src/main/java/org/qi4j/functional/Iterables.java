@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -643,6 +644,20 @@ public final class Iterables
 
         List<T> list = toList( iterable );
         return list.toArray( (T[]) Array.newInstance( componentType, list.size() ) );
+    }
+
+    public static <X extends Comparable> Iterable<X> sort( Iterable<X> iterable )
+    {
+        List<X> list = toList( iterable );
+        Collections.sort( list );
+        return list;
+    }
+
+    public static <X> Iterable<X> sort( Comparator<? super X> comparator, Iterable<X> iterable )
+    {
+        List<X> list = toList( iterable );
+        Collections.sort( list, comparator );
+        return list;
     }
 
     private static class MapIterable<FROM, TO>

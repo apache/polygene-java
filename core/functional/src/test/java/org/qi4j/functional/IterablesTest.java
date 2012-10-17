@@ -17,6 +17,7 @@ package org.qi4j.functional;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.List;
 import org.hamcrest.CoreMatchers;
@@ -254,4 +255,23 @@ public class IterablesTest
 
         assertThat( count[ 0 ], equalTo( 3 ) );
     }
+
+    @Test
+    public void testSort()
+    {
+        assertThat( Iterables.sort( Iterables.reverse( numberLongs ) ).toString(), equalTo( "[1, 2, 3]" ) );
+
+        Comparator<Long> inverseLongComparator = new Comparator<Long>()
+        {
+
+            @Override
+            public int compare( Long left, Long right )
+            {
+                return left.compareTo( right ) * -1;
+            }
+
+        };
+        assertThat( Iterables.sort( inverseLongComparator, numberLongs ).toString(), equalTo( "[3, 2, 1]" ) );
+    }
+
 }
