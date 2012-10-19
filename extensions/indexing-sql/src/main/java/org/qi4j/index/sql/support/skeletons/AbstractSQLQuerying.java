@@ -44,6 +44,7 @@ import org.qi4j.api.query.grammar.ComparisonSpecification;
 import org.qi4j.api.query.grammar.ContainsAllSpecification;
 import org.qi4j.api.query.grammar.ContainsSpecification;
 import org.qi4j.api.query.grammar.EqSpecification;
+import org.qi4j.api.query.grammar.ExpressionSpecification;
 import org.qi4j.api.query.grammar.GeSpecification;
 import org.qi4j.api.query.grammar.GtSpecification;
 import org.qi4j.api.query.grammar.LeSpecification;
@@ -51,6 +52,7 @@ import org.qi4j.api.query.grammar.LtSpecification;
 import org.qi4j.api.query.grammar.ManyAssociationContainsSpecification;
 import org.qi4j.api.query.grammar.ManyAssociationFunction;
 import org.qi4j.api.query.grammar.MatchesSpecification;
+import org.qi4j.api.query.grammar.NeSpecification;
 import org.qi4j.api.query.grammar.NotSpecification;
 import org.qi4j.api.query.grammar.OrSpecification;
 import org.qi4j.api.query.grammar.OrderBy;
@@ -61,7 +63,6 @@ import org.qi4j.api.query.grammar.PropertyNullSpecification;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.value.ValueComposite;
-import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specification;
 import org.qi4j.index.sql.support.api.SQLQuerying;
@@ -73,6 +74,7 @@ import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.query.EntityFinderException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sql.generation.api.grammar.booleans.BooleanExpression;
 import org.sql.generation.api.grammar.builders.booleans.BooleanBuilder;
 import org.sql.generation.api.grammar.builders.booleans.InBuilder;
 import org.sql.generation.api.grammar.builders.query.GroupByBuilder;
@@ -199,7 +201,7 @@ public abstract class AbstractSQLQuerying
 
     private static final Map<Class<? extends Specification>, JoinType> _negatedJoinStyles;
     
-//    private static final Map<Class<? extends ExpressionSpecification>, BooleanExpressionProcessor> _expressionProcessors;
+    private static final Map<Class<?>, BooleanExpressionProcessor> _expressionProcessors;
 
     private static final String TABLE_NAME_PREFIX = "t";
 
@@ -319,6 +321,198 @@ public abstract class AbstractSQLQuerying
         _negatedJoinStyles.put( MatchesSpecification.class, JoinType.LEFT_OUTER );
         _negatedJoinStyles.put( ContainsSpecification.class, JoinType.LEFT_OUTER );
         _negatedJoinStyles.put( ContainsAllSpecification.class, JoinType.LEFT_OUTER );
+        
+        _expressionProcessors = new HashMap<Class<?>, BooleanExpressionProcessor>();
+        _expressionProcessors.put( AndSpecification.class, new BooleanExpressionProcessor()
+        {
+            
+            @Override
+            public QueryBuilder processBooleanExpression( AbstractSQLQuerying thisObject,
+                    Specification<Composite> expression, Boolean negationActive, SQLVendor vendor,
+                    BooleanExpression entityTypeCondition, List<Object> values,
+                    List<Integer> valueSQLTypes )
+            {
+                QueryBuilder result = null;
+                AndSpecification conjunction = (AndSpecification) expression;
+                for( Specification<Composite> entitySpecification : conjunction.getOperands() )
+                {
+                    if (result == null)
+                    {
+                        result = thisObject.processBooleanExpression( entitySpecification, negationActive, vendor,
+                                    entityTypeCondition, values, valueSQLTypes );
+                    } else
+                    {
+                        result = result.intersect( thisObject.processBooleanExpression( entitySpecification, negationActive, vendor,
+                                    entityTypeCondition, values, valueSQLTypes ).createExpression() );
+                    }
+                }
+                return result;
+            }
+        } );
+        _expressionProcessors.put( OrSpecification.class, new BooleanExpressionProcessor()
+        {
+            
+            @Override
+            public QueryBuilder processBooleanExpression( AbstractSQLQuerying thisObject,
+                    Specification<Composite> expression, Boolean negationActive, SQLVendor vendor,
+                    BooleanExpression entityTypeCondition, List<Object> values,
+                    List<Integer> valueSQLTypes )
+            {
+                QueryBuilder result = null;
+                OrSpecification conjunction = (OrSpecification) expression;
+                for( Specification<Composite> entitySpecification : conjunction.getOperands() )
+                {
+                    if (result == null)
+                    {
+                        result = thisObject.processBooleanExpression( entitySpecification, negationActive, vendor,
+                                    entityTypeCondition, values, valueSQLTypes );
+                    } else
+                    {
+                        result = result.union( thisObject.processBooleanExpression( entitySpecification, negationActive, vendor,
+                                entityTypeCondition, values, valueSQLTypes ).createExpression() );
+                    }
+                }
+                return result;
+            }
+        } );
+        _expressionProcessors.put( NotSpecification.class, new BooleanExpressionProcessor()
+        {
+            
+            @Override
+            public QueryBuilder processBooleanExpression( AbstractSQLQuerying thisObject,
+                    Specification<Composite> expression, Boolean negationActive, SQLVendor vendor,
+                    BooleanExpression entityTypeCondition, List<Object> values,
+                    List<Integer> valueSQLTypes )
+            {
+                return thisObject.processBooleanExpression( ((NotSpecification) expression).getOperand(), !negationActive, vendor,
+                    entityTypeCondition, values, valueSQLTypes );
+            }
+        } );
+        _expressionProcessors.put( MatchesSpecification.class, new BooleanExpressionProcessor()
+        {
+            
+            @Override
+            public QueryBuilder processBooleanExpression( AbstractSQLQuerying thisObject,
+                    Specification<Composite> expression, Boolean negationActive, SQLVendor vendor,
+                    BooleanExpression entityTypeCondition, List<Object> values,
+                    List<Integer> valueSQLTypes )
+            {
+                return thisObject.processMatchesPredicate( (MatchesSpecification) expression, negationActive, vendor,
+                    entityTypeCondition, values, valueSQLTypes );
+            }
+        } );
+        _expressionProcessors.put( ManyAssociationContainsSpecification.class, new BooleanExpressionProcessor()
+        {
+            
+            @Override
+            public QueryBuilder processBooleanExpression( AbstractSQLQuerying thisObject,
+                    Specification<Composite> expression, Boolean negationActive, SQLVendor vendor,
+                    BooleanExpression entityTypeCondition, List<Object> values,
+                    List<Integer> valueSQLTypes )
+            {
+                return thisObject.processManyAssociationContainsPredicate(
+                    (ManyAssociationContainsSpecification<?>) expression, negationActive, vendor, entityTypeCondition,
+                    values, valueSQLTypes );
+            }
+        } );
+        _expressionProcessors.put( PropertyNullSpecification.class, new BooleanExpressionProcessor()
+        {
+            
+            @Override
+            public QueryBuilder processBooleanExpression( AbstractSQLQuerying thisObject,
+                    Specification<Composite> expression, Boolean negationActive, SQLVendor vendor,
+                    BooleanExpression entityTypeCondition, List<Object> values,
+                    List<Integer> valueSQLTypes )
+            {
+                return thisObject.processPropertyNullPredicate( (PropertyNullSpecification<?>) expression, negationActive,
+                    vendor, entityTypeCondition );
+            }
+        } );
+        _expressionProcessors.put( PropertyNotNullSpecification.class, new BooleanExpressionProcessor()
+        {
+            
+            @Override
+            public QueryBuilder processBooleanExpression( AbstractSQLQuerying thisObject,
+                    Specification<Composite> expression, Boolean negationActive, SQLVendor vendor,
+                    BooleanExpression entityTypeCondition, List<Object> values,
+                    List<Integer> valueSQLTypes )
+            {
+                return thisObject.processPropertyNotNullPredicate( (PropertyNotNullSpecification<?>) expression, negationActive,
+                    vendor, entityTypeCondition );
+            }
+        } );
+        _expressionProcessors.put( AssociationNullSpecification.class, new BooleanExpressionProcessor()
+        {
+            
+            @Override
+            public QueryBuilder processBooleanExpression( AbstractSQLQuerying thisObject,
+                    Specification<Composite> expression, Boolean negationActive, SQLVendor vendor,
+                    BooleanExpression entityTypeCondition, List<Object> values,
+                    List<Integer> valueSQLTypes )
+            {
+                return thisObject.processAssociationNullPredicate( (AssociationNullSpecification<?>) expression, negationActive,
+                    vendor, entityTypeCondition );
+            }
+        } );
+        _expressionProcessors.put( AssociationNotNullSpecification.class, new BooleanExpressionProcessor()
+        {
+            
+            @Override
+            public QueryBuilder processBooleanExpression( AbstractSQLQuerying thisObject,
+                    Specification<Composite> expression, Boolean negationActive, SQLVendor vendor,
+                    BooleanExpression entityTypeCondition, List<Object> values,
+                    List<Integer> valueSQLTypes )
+            {
+                return thisObject.processAssociationNotNullPredicate( (AssociationNotNullSpecification<?> ) expression, negationActive,
+                    vendor, entityTypeCondition );
+            }
+        } );
+        _expressionProcessors.put( ContainsSpecification.class, new BooleanExpressionProcessor()
+        {
+            
+            @Override
+            public QueryBuilder processBooleanExpression( AbstractSQLQuerying thisObject,
+                    Specification<Composite> expression, Boolean negationActive, SQLVendor vendor,
+                    BooleanExpression entityTypeCondition, List<Object> values,
+                    List<Integer> valueSQLTypes )
+            {
+                return thisObject.processContainsPredicate( (ContainsSpecification<?>) expression, negationActive, vendor,
+                    entityTypeCondition, values, valueSQLTypes );
+            }
+        } );
+        _expressionProcessors.put( ContainsAllSpecification.class, new BooleanExpressionProcessor()
+        {
+            
+            @Override
+            public QueryBuilder processBooleanExpression( AbstractSQLQuerying thisObject,
+                    Specification<Composite> expression, Boolean negationActive, SQLVendor vendor,
+                    BooleanExpression entityTypeCondition, List<Object> values,
+                    List<Integer> valueSQLTypes )
+            {
+                return thisObject.processContainsAllPredicate( (ContainsAllSpecification<?>) expression, negationActive,
+                    vendor, entityTypeCondition, values, valueSQLTypes );
+            }
+        } );
+        BooleanExpressionProcessor comparisonProcessor = new BooleanExpressionProcessor()
+        {
+            
+            @Override
+            public QueryBuilder processBooleanExpression( AbstractSQLQuerying thisObject,
+                    Specification<Composite> expression, Boolean negationActive, SQLVendor vendor,
+                    BooleanExpression entityTypeCondition, List<Object> values,
+                    List<Integer> valueSQLTypes )
+            {
+                return thisObject.processComparisonPredicate( (ComparisonSpecification<?>) expression, negationActive, vendor,
+                    entityTypeCondition, values, valueSQLTypes );
+            }
+        };
+        _expressionProcessors.put( EqSpecification.class, comparisonProcessor);
+        _expressionProcessors.put( NeSpecification.class, comparisonProcessor );
+        _expressionProcessors.put( GeSpecification.class, comparisonProcessor );
+        _expressionProcessors.put( GtSpecification.class, comparisonProcessor );
+        _expressionProcessors.put( LeSpecification.class, comparisonProcessor );
+        _expressionProcessors.put( LtSpecification.class, comparisonProcessor );
+        
     }
 
     private interface WhereClauseProcessor
@@ -563,100 +757,24 @@ public abstract class AbstractSQLQuerying
         List<Object> values, List<Integer> valueSQLTypes )
     {
         QueryBuilder result = null;
-        if( expression != null )
-        {
-            if( expression instanceof AndSpecification )
-            {
-                AndSpecification conjunction = (AndSpecification) expression;
-                for( Specification<Composite> entitySpecification : conjunction.getOperands() )
-                {
-                    if (result == null)
-                    {
-                        result = processBooleanExpression( entitySpecification, negationActive, vendor,
-                                    entityTypeCondition, values, valueSQLTypes );
-                    } else
-                    {
-                        result = result.intersect( processBooleanExpression( entitySpecification, negationActive, vendor,
-                                    entityTypeCondition, values, valueSQLTypes ).createExpression() );
-                    }
-                }
-            }
-            else if( expression instanceof OrSpecification )
-            {
-                OrSpecification conjunction = (OrSpecification) expression;
-                for( Specification<Composite> entitySpecification : conjunction.getOperands() )
-                {
-                    if (result == null)
-                    {
-                        result = processBooleanExpression( entitySpecification, negationActive, vendor,
-                                    entityTypeCondition, values, valueSQLTypes );
-                    } else
-                    {
-                        result = result.union( processBooleanExpression( entitySpecification, negationActive, vendor,
-                                entityTypeCondition, values, valueSQLTypes ).createExpression() );
-                    }
-                }
-            }
-            else if( expression instanceof NotSpecification )
-            {
-                result = this.processBooleanExpression( ((NotSpecification) expression).getOperand(), !negationActive, vendor,
-                        entityTypeCondition, values, valueSQLTypes );
-            }
-            else if( expression instanceof MatchesSpecification )
-            {
-                result = this.processMatchesPredicate( (MatchesSpecification) expression, negationActive, vendor,
-                        entityTypeCondition, values, valueSQLTypes );
-            }
-            else if( expression instanceof ComparisonSpecification<?> )
-            {
-                result = this.processComparisonPredicate( (ComparisonSpecification<?>) expression, negationActive, vendor,
-                        entityTypeCondition, values, valueSQLTypes );
-            }
-            else if( expression instanceof ManyAssociationContainsSpecification<?> )
-            {
-                result = this.processManyAssociationContainsPredicate(
-                    (ManyAssociationContainsSpecification<?>) expression, negationActive, vendor, entityTypeCondition,
-                    values, valueSQLTypes );
-            }
-            else if( expression instanceof PropertyNullSpecification<?> )
-            {
-                result = this.processPropertyNullPredicate( (PropertyNullSpecification<?>) expression, negationActive,
-                    vendor, entityTypeCondition );
-            } else if ( expression instanceof PropertyNotNullSpecification )
-            {
-                result = this.processPropertyNotNullPredicate( (PropertyNotNullSpecification<?>) expression, negationActive,
-                    vendor, entityTypeCondition );
-            }
-            else if( expression instanceof AssociationNullSpecification )
-            {
-                result = this.processAssociationNullPredicate( (AssociationNullSpecification<?>) expression, negationActive,
-                    vendor, entityTypeCondition );
-            } else if ( expression instanceof AssociationNotNullSpecification )
-            {
-                result = this.processAssociationNotNullPredicate( (AssociationNotNullSpecification<?> ) expression, negationActive,
-                    vendor, entityTypeCondition );
-            }
-            else if( expression instanceof ContainsSpecification<?> )
-            {
-                result = this.processContainsPredicate( (ContainsSpecification<?>) expression, negationActive, vendor,
-                    entityTypeCondition, values, valueSQLTypes );
-            }
-            else if( expression instanceof ContainsAllSpecification<?> )
-            {
-                result = this.processContainsAllPredicate( (ContainsAllSpecification<?>) expression, negationActive,
-                    vendor, entityTypeCondition, values, valueSQLTypes );
-            }
-            else
-            {
-                throw new UnsupportedOperationException( "Expression " + expression + " of type " + expression.getClass() + " is not supported" );
-            }
-        }
-        else
+        if( expression == null )
         {
             QueryFactory q = vendor.getQueryFactory();
 
             result = q.queryBuilder( this.selectAllEntitiesOfCorrectType( vendor, entityTypeCondition )
                 .createExpression() );
+        }
+        else
+        {
+            if (_expressionProcessors.containsKey( expression.getClass() ))
+            {
+                result = _expressionProcessors.get( expression.getClass() ).processBooleanExpression( this, expression,
+                    negationActive, vendor, entityTypeCondition, values, valueSQLTypes );
+            }
+            else
+            {
+                throw new UnsupportedOperationException( "Expression " + expression + " of type " + expression.getClass() + " is not supported" );
+            }            
         }
 
         return result;
