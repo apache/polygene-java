@@ -12,7 +12,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.library.sql.postgresql;
+package org.qi4j.index.sql.postgresql;
 
 import org.junit.Ignore;
 
@@ -23,7 +23,7 @@ import org.qi4j.test.indexing.AbstractComplexQueryTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Ignore
+@Ignore //(should pass with actual DB running)
 public class PostgreSQLComplexQueryTest
         extends AbstractComplexQueryTest
 {

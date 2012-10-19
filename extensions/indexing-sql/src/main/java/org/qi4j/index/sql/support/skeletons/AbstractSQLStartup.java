@@ -81,6 +81,8 @@ import static org.qi4j.functional.Iterables.first;
 import static org.qi4j.index.sql.support.common.DBNames.*;
 
 /**
+ * TODO SQL-Generator now has support for auto-generated columns. Use it in e.g. indexing ( should make some things quite faster and simpler ).
+ * 
  * @author Stanislav Muhametsin
  */
 public abstract class AbstractSQLStartup

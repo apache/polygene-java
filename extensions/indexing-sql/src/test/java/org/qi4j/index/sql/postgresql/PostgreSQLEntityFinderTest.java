@@ -13,7 +13,7 @@
  *
  */
 
-package org.qi4j.library.sql.postgresql;
+package org.qi4j.index.sql.postgresql;
 
 import org.junit.Ignore;
 
@@ -21,7 +21,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.indexing.AbstractEntityFinderTest;
 
-@Ignore // DO NOT PASS YET
+@Ignore // DO NOT PASS YET (ClassCastException in AbstractEntityFinderTest.script23, 19.10.2012)
 public class PostgreSQLEntityFinderTest extends AbstractEntityFinderTest
 {
     @Override

@@ -13,6 +13,9 @@
  */
 package org.qi4j.index.sql.support.skeletons;
 
+import static org.qi4j.functional.Iterables.first;
+
+import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Member;
 import java.sql.ResultSet;
 import java.sql.Types;
@@ -23,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
+
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.composite.Composite;
@@ -32,11 +36,32 @@ import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.query.grammar.AndSpecification;
+import org.qi4j.api.query.grammar.AssociationFunction;
+import org.qi4j.api.query.grammar.AssociationNotNullSpecification;
+import org.qi4j.api.query.grammar.AssociationNullSpecification;
+import org.qi4j.api.query.grammar.ComparisonSpecification;
+import org.qi4j.api.query.grammar.ContainsAllSpecification;
+import org.qi4j.api.query.grammar.ContainsSpecification;
+import org.qi4j.api.query.grammar.EqSpecification;
+import org.qi4j.api.query.grammar.GeSpecification;
+import org.qi4j.api.query.grammar.GtSpecification;
+import org.qi4j.api.query.grammar.LeSpecification;
+import org.qi4j.api.query.grammar.LtSpecification;
+import org.qi4j.api.query.grammar.ManyAssociationContainsSpecification;
+import org.qi4j.api.query.grammar.ManyAssociationFunction;
+import org.qi4j.api.query.grammar.MatchesSpecification;
+import org.qi4j.api.query.grammar.NotSpecification;
+import org.qi4j.api.query.grammar.OrSpecification;
+import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.api.query.grammar.OrderBy.Order;
-import org.qi4j.api.query.grammar.*;
+import org.qi4j.api.query.grammar.PropertyFunction;
+import org.qi4j.api.query.grammar.PropertyNotNullSpecification;
+import org.qi4j.api.query.grammar.PropertyNullSpecification;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.value.ValueComposite;
+import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specification;
 import org.qi4j.index.sql.support.api.SQLQuerying;
@@ -71,8 +96,6 @@ import org.sql.generation.api.grammar.query.TableReferenceByName;
 import org.sql.generation.api.grammar.query.joins.JoinType;
 import org.sql.generation.api.vendor.SQLVendor;
 
-import static org.qi4j.functional.Iterables.first;
-
 /**
  * 
  * @author Stanislav Muhametsin
@@ -92,11 +115,82 @@ public abstract class AbstractSQLQuerying
 
     @Structure
     private Qi4jSPI spi;
+    
+    private static class TraversedAssoOrManyAssoRef
+    {
+        private final AssociationFunction<?> _traversedAsso;
+        private final ManyAssociationFunction<?> _traversedManyAsso;
+        private final boolean _hasRefs;
+        
+        private TraversedAssoOrManyAssoRef(AssociationFunction<?> func)
+        {
+            this(func.getTraversedAssociation(), func.getTraversedManyAssociation());
+        }
+        
+        private TraversedAssoOrManyAssoRef(PropertyFunction<?> func)
+        {
+            this(func.getTraversedAssociation(), func.getTraversedManyAssociation());
+        }
+        
+        private TraversedAssoOrManyAssoRef(ManyAssociationFunction<?> func)
+        {
+            this(func.getTraversedAssociation(), func.getTraversedManyAssociation());
+        }
+        
+        private TraversedAssoOrManyAssoRef(AssociationNullSpecification<?> spec)
+        {
+            this(spec.getAssociation(), null);
+        }
+        
+        private TraversedAssoOrManyAssoRef(AssociationNotNullSpecification<?> spec)
+        {
+            this(spec.getAssociation(), null);
+        }
+        
+        private TraversedAssoOrManyAssoRef(ManyAssociationContainsSpecification<?> spec)
+        {
+            this(null, spec.getManyAssociationFunction());
+        }
+        
+        private TraversedAssoOrManyAssoRef(AssociationFunction<?> traversedAsso, ManyAssociationFunction<?> traversedManyAsso)
+        {
+            this._traversedAsso = traversedAsso;
+            this._traversedManyAsso = traversedManyAsso;
+            this._hasRefs = this._traversedAsso != null || this._traversedManyAsso != null;
+        }
+        
+        private TraversedAssoOrManyAssoRef getTraversedAssociation()
+        {
+            return this._traversedAsso == null ? new TraversedAssoOrManyAssoRef(this._traversedManyAsso) : new TraversedAssoOrManyAssoRef( this._traversedAsso ); 
+        }
+        
+        private AccessibleObject getAccessor()
+        {
+            return this._traversedAsso == null ? this._traversedManyAsso.getAccessor() : this._traversedAsso.getAccessor();
+        }
+        
+        @Override
+        public String toString()
+        {
+            return "[hasRefs=" + this._hasRefs + ", ref:" + (this._hasRefs ? (this._traversedAsso == null ? this._traversedManyAsso : this._traversedAsso) : null) + "]";
+        }
+    }
 
     public static interface SQLBooleanCreator
     {
         public org.sql.generation.api.grammar.booleans.BooleanExpression getExpression( BooleanFactory factory,
             NonBooleanExpression left, NonBooleanExpression right );
+    }
+    
+    private static interface BooleanExpressionProcessor
+    {
+        public QueryBuilder processBooleanExpression( //
+            AbstractSQLQuerying thisObject, //
+            Specification<Composite> expression,//
+            Boolean negationActive,//
+            SQLVendor vendor,//
+            org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition, //
+            List<Object> values, List<Integer> valueSQLTypes );
     }
 
     private static final Map<Class<? extends Specification>, SQLBooleanCreator> _sqlOperators;
@@ -104,6 +198,8 @@ public abstract class AbstractSQLQuerying
     private static final Map<Class<? extends Specification>, JoinType> _joinStyles;
 
     private static final Map<Class<? extends Specification>, JoinType> _negatedJoinStyles;
+    
+//    private static final Map<Class<? extends ExpressionSpecification>, BooleanExpressionProcessor> _expressionProcessors;
 
     private static final String TABLE_NAME_PREFIX = "t";
 
@@ -231,7 +327,82 @@ public abstract class AbstractSQLQuerying
         public void processWhereClause( QuerySpecificationBuilder builder, BooleanBuilder afterWhere,
             JoinType joinStyle, Integer firstTableIndex, Integer lastTableIndex );
     }
+    
+    private static class PropertyNullWhereClauseProcessor implements WhereClauseProcessor
+    {
 
+        private final boolean negationActive;
+        private final SQLVendor vendor;
+        private final SQLDBState state;
+        private final PropertyFunction<?> propFunction;
+        
+        private PropertyNullWhereClauseProcessor(SQLDBState pState, SQLVendor pVendor, PropertyFunction<?> pPropFunction,
+                boolean pNegationActive)
+        {
+            this.state = pState;
+            this.vendor = pVendor;
+            this.negationActive = pNegationActive;
+            this.propFunction = pPropFunction;
+        }
+        
+        @Override
+        public void processWhereClause( QuerySpecificationBuilder builder, BooleanBuilder afterWhere,
+            JoinType joinStyle, Integer firstTableIndex, Integer lastTableIndex )
+        {
+            if( !this.negationActive)
+            {
+                ColumnsFactory c = this.vendor.getColumnsFactory();
+                BooleanFactory b = this.vendor.getBooleanFactory();
+
+                QNameInfo info = this.state
+                    .qNameInfos()
+                    .get()
+                    .get(
+                        QualifiedName.fromAccessor( this.propFunction.getAccessor() ) );
+                String colName = null;
+                if( info.getCollectionDepth() > 0 )
+                {
+                    colName = DBNames.ALL_QNAMES_TABLE_PK_COLUMN_NAME;
+                }
+                else
+                {
+                    colName = DBNames.QNAME_TABLE_VALUE_COLUMN_NAME;
+                }
+                // Last table column might be null because of left joins
+                builder.getWhere().reset( b.isNull( c.colName( TABLE_NAME_PREFIX + lastTableIndex, colName ) ) );
+            }
+        }
+
+    }
+    
+    private static class AssociationNullWhereClauseProcessor implements WhereClauseProcessor
+    {
+        private final boolean negationActive;
+        private final SQLVendor vendor;
+        
+        private AssociationNullWhereClauseProcessor(SQLVendor pVendor, boolean pNegationActive)
+        {
+            this.vendor = pVendor;
+            this.negationActive = pNegationActive;
+        }
+        
+        @Override
+        public void processWhereClause( QuerySpecificationBuilder builder, BooleanBuilder afterWhere,
+                JoinType joinStyle, Integer firstTableIndex, Integer lastTableIndex )
+        {
+            if( !negationActive)
+            {
+                ColumnsFactory c = vendor.getColumnsFactory();
+                BooleanFactory b = vendor.getBooleanFactory();
+
+                // Last table column might be null because of left joins
+                builder.getWhere().reset(
+                    b.isNull( c.colName( TABLE_NAME_PREFIX + lastTableIndex,
+                    DBNames.QNAME_TABLE_VALUE_COLUMN_NAME ) ) );
+            }
+        }
+    }   
+    
     private static class ModifiableInt
     {
         private int _int;
@@ -400,11 +571,14 @@ public abstract class AbstractSQLQuerying
                 for( Specification<Composite> entitySpecification : conjunction.getOperands() )
                 {
                     if (result == null)
+                    {
                         result = processBooleanExpression( entitySpecification, negationActive, vendor,
                                     entityTypeCondition, values, valueSQLTypes );
-                    else
+                    } else
+                    {
                         result = result.intersect( processBooleanExpression( entitySpecification, negationActive, vendor,
                                     entityTypeCondition, values, valueSQLTypes ).createExpression() );
+                    }
                 }
             }
             else if( expression instanceof OrSpecification )
@@ -413,11 +587,14 @@ public abstract class AbstractSQLQuerying
                 for( Specification<Composite> entitySpecification : conjunction.getOperands() )
                 {
                     if (result == null)
+                    {
                         result = processBooleanExpression( entitySpecification, negationActive, vendor,
                                     entityTypeCondition, values, valueSQLTypes );
-                    else
+                    } else
+                    {
                         result = result.union( processBooleanExpression( entitySpecification, negationActive, vendor,
                                 entityTypeCondition, values, valueSQLTypes ).createExpression() );
+                    }
                 }
             }
             else if( expression instanceof NotSpecification )
@@ -445,10 +622,18 @@ public abstract class AbstractSQLQuerying
             {
                 result = this.processPropertyNullPredicate( (PropertyNullSpecification<?>) expression, negationActive,
                     vendor, entityTypeCondition );
+            } else if ( expression instanceof PropertyNotNullSpecification )
+            {
+                result = this.processPropertyNotNullPredicate( (PropertyNotNullSpecification<?>) expression, negationActive,
+                    vendor, entityTypeCondition );
             }
             else if( expression instanceof AssociationNullSpecification )
             {
-                result = this.processAssociationNullPredicate( (AssociationNullSpecification) expression, negationActive,
+                result = this.processAssociationNullPredicate( (AssociationNullSpecification<?>) expression, negationActive,
+                    vendor, entityTypeCondition );
+            } else if ( expression instanceof AssociationNotNullSpecification )
+            {
+                result = this.processAssociationNotNullPredicate( (AssociationNotNullSpecification<?> ) expression, negationActive,
                     vendor, entityTypeCondition );
             }
             else if( expression instanceof ContainsSpecification<?> )
@@ -574,7 +759,7 @@ public abstract class AbstractSQLQuerying
         return this.singleQuery( //
             predicate, //
             null, //
-            null, //
+            new TraversedAssoOrManyAssoRef( predicate ), // not sure about this, was 'null' before but I think this is needed.
             true, //
             negationActive, //
             vendor, //
@@ -623,71 +808,55 @@ public abstract class AbstractSQLQuerying
             negationActive, //
             vendor, //
             entityTypeCondition, //
-            new WhereClauseProcessor()
-            {
-
-                public void processWhereClause( QuerySpecificationBuilder builder, BooleanBuilder afterWhere,
-                    JoinType joinStyle, Integer firstTableIndex, Integer lastTableIndex )
-                {
-                    if( !negationActive)
-                    {
-                        ColumnsFactory c = vendor.getColumnsFactory();
-                        BooleanFactory b = vendor.getBooleanFactory();
-
-                        QNameInfo info = _state
-                            .qNameInfos()
-                            .get()
-                            .get(
-                                QualifiedName.fromAccessor( predicate.getProperty().getAccessor() ) );
-                        String colName = null;
-                        if( info.getCollectionDepth() > 0 )
-                        {
-                            colName = DBNames.ALL_QNAMES_TABLE_PK_COLUMN_NAME;
-                        }
-                        else
-                        {
-                            colName = DBNames.QNAME_TABLE_VALUE_COLUMN_NAME;
-                        }
-                        // Last table column might be null because of left joins
-                        builder.getWhere().reset( b.isNull( c.colName( TABLE_NAME_PREFIX + lastTableIndex, colName ) ) );
-                    }
-                }
-
-            } //
+            new PropertyNullWhereClauseProcessor(this._state, vendor, predicate.getProperty(), negationActive) //
+        );
+    }
+    
+    protected QueryBuilder processPropertyNotNullPredicate( PropertyNotNullSpecification<?> predicate,
+            boolean negationActive, SQLVendor vendor,
+            org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition )
+    {
+        return this.singleQuery( //
+            predicate, //
+            predicate.getProperty(), //
+            null, //
+            null, //
+            negationActive, //
+            vendor, //
+            entityTypeCondition, //
+            new PropertyNullWhereClauseProcessor(this._state, vendor, predicate.getProperty(), !negationActive) //
         );
     }
 
-    protected QueryBuilder processAssociationNullPredicate( final AssociationNullSpecification predicate,
+    protected QueryBuilder processAssociationNullPredicate( final AssociationNullSpecification<?> predicate,
         final Boolean negationActive, final SQLVendor vendor,
         org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition )
     {
         return this.singleQuery( //
             predicate, //
             null, //
-            predicate.getAssociation(), //
+            new TraversedAssoOrManyAssoRef( predicate ), //
             false, //
             negationActive, //
             vendor, //
             entityTypeCondition, //
-            new WhereClauseProcessor()
-            {
-
-                public void processWhereClause( QuerySpecificationBuilder builder, BooleanBuilder afterWhere,
-                    JoinType joinStyle, Integer firstTableIndex, Integer lastTableIndex )
-                {
-                    if( !negationActive)
-                    {
-                        ColumnsFactory c = vendor.getColumnsFactory();
-                        BooleanFactory b = vendor.getBooleanFactory();
-
-                        // Last table column might be null because of left joins
-                        builder.getWhere().reset(
-                            b.isNull( c.colName( TABLE_NAME_PREFIX + lastTableIndex,
-                                DBNames.QNAME_TABLE_VALUE_COLUMN_NAME ) ) );
-                    }
-                }
-
-            } //
+            new AssociationNullWhereClauseProcessor(vendor, negationActive)
+            );
+    }
+    
+    protected QueryBuilder processAssociationNotNullPredicate( final AssociationNotNullSpecification<?> predicate,
+            final Boolean negationActive, final SQLVendor vendor,
+            org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition )
+    {
+        return this.singleQuery( //
+            predicate, //
+            null, //
+            new TraversedAssoOrManyAssoRef( predicate ), //
+            false, //
+            negationActive, //
+            vendor, //
+            entityTypeCondition, //
+            new AssociationNullWhereClauseProcessor(vendor, !negationActive)
             );
     }
 
@@ -825,7 +994,7 @@ public abstract class AbstractSQLQuerying
     protected QueryBuilder singleQuery( //
         Specification<Composite> predicate, //
         PropertyFunction<?> propRef, //
-        AssociationFunction<?> assoRef, //
+        TraversedAssoOrManyAssoRef assoRef, //
         Boolean includeLastAssoPathTable, //
         Boolean negationActive, //
         SQLVendor vendor, //
@@ -841,7 +1010,7 @@ public abstract class AbstractSQLQuerying
     protected QuerySpecification constructQueryForPredicate( //
         Specification<Composite> predicate, //
         PropertyFunction<?> propRef, //
-        AssociationFunction<?> assoRef, //
+        TraversedAssoOrManyAssoRef assoRef, //
         Boolean includeLastAssoPathTable, //
         Boolean negationActive, //
         SQLVendor vendor, //
@@ -859,12 +1028,12 @@ public abstract class AbstractSQLQuerying
 
         Integer lastTableIndex = null;
         JoinType joinStyle = this.getTableJoinStyle( predicate, negationActive );
-        if( propRef == null )
+        if( propRef == null && assoRef != null && assoRef._hasRefs )
         {
             lastTableIndex = this.traverseAssociationPath( assoRef, startingIndex, startingIndex + 1, vendor, from,
                 joinStyle, includeLastAssoPathTable );
         }
-        else if( assoRef == null )
+        else if( assoRef == null || !assoRef._hasRefs )
         {
             lastTableIndex = this.traversePropertyPath( propRef, startingIndex, startingIndex + 1, vendor, from,
                 joinStyle );
@@ -1013,9 +1182,11 @@ public abstract class AbstractSQLQuerying
         {
             qNameStack.add( QualifiedName.fromAccessor( reference.getAccessor() ) );
             refStack.add( reference );
-            if( reference.getTraversedProperty() == null && reference.getTraversedAssociation() != null )
+            if( reference.getTraversedProperty() == null &&
+                 (reference.getTraversedAssociation() != null || reference.getTraversedManyAssociation() != null)
+              )
             {
-                Integer lastAssoTableIndex = this.traverseAssociationPath( reference.getTraversedAssociation(),
+                Integer lastAssoTableIndex = this.traverseAssociationPath( new TraversedAssoOrManyAssoRef( reference),
                     lastTableIndex, nextAvailableIndex, vendor, builder, joinStyle, true );
                 if( lastAssoTableIndex > lastTableIndex )
                 {
@@ -1100,7 +1271,7 @@ public abstract class AbstractSQLQuerying
         return lastTableIndex;
     }
 
-    protected Integer traverseAssociationPath( AssociationFunction<?> reference, Integer lastTableIndex,
+    protected Integer traverseAssociationPath( TraversedAssoOrManyAssoRef reference, Integer lastTableIndex,
         Integer nextAvailableIndex, SQLVendor vendor, TableReferenceBuilder builder, JoinType joinStyle,
         Boolean includeLastTable )
     {
@@ -1110,7 +1281,7 @@ public abstract class AbstractSQLQuerying
         ColumnsFactory c = vendor.getColumnsFactory();
         String schemaName = this._state.schemaName().get();
 
-        while( reference != null )
+        while( reference._hasRefs )
         {
             qNameStack
                 .add( QualifiedName.fromAccessor( reference.getAccessor() ) );

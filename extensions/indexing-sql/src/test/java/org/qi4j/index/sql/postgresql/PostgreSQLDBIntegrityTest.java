@@ -13,7 +13,7 @@
  *
  */
 
-package org.qi4j.library.sql.postgresql;
+package org.qi4j.index.sql.postgresql;
 
 import java.sql.Connection;
 
@@ -41,7 +41,7 @@ import org.sql.generation.api.vendor.SQLVendorProvider;
 
 import junit.framework.Assert;
 
-@Ignore
+@Ignore // (should pass with actual DB running)
 public class PostgreSQLDBIntegrityTest extends AbstractQi4jTest
 {
 

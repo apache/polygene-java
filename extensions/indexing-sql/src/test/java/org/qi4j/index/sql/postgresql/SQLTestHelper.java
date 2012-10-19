@@ -12,7 +12,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.library.sql.postgresql;
+package org.qi4j.index.sql.postgresql;
 
 import java.sql.Connection;
 import java.sql.SQLException;

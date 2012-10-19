@@ -8,3 +8,8 @@ build/
 out/
 .gradle/
 derby.log
+*.classpath
+*.project
+*.settings
+*pom.xml
+*target/

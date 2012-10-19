@@ -73,6 +73,12 @@ import org.sql.generation.api.vendor.SQLVendor;
 import static org.qi4j.functional.Iterables.first;
 import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_NAME;
 
+/**
+ * TODO SQL-Generator now has support for auto-generated columns. Use it in indexing ( should make some things quite faster and simpler ).
+ *
+ * @author Stanislav Muhametsin
+ *
+ */
 public class AbstractSQLIndexing
     implements SQLIndexing
 {
