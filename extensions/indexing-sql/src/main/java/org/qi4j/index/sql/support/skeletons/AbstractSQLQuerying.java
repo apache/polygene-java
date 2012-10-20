@@ -198,11 +198,11 @@ public abstract class AbstractSQLQuerying
             );
     }
 
-    private static final Map<Class<? extends Specification<?>>, SQLBooleanCreator> _sqlOperators;
+    private static final Map<Class<? extends Specification>, SQLBooleanCreator> _sqlOperators;
 
-    private static final Map<Class<? extends Specification<?>>, JoinType> _joinStyles;
+    private static final Map<Class<? extends Specification>, JoinType> _joinStyles;
 
-    private static final Map<Class<? extends Specification<?>>, JoinType> _negatedJoinStyles;
+    private static final Map<Class<? extends Specification>, JoinType> _negatedJoinStyles;
     
     private static final Map<Class<?>, BooleanExpressionProcessor> _expressionProcessors;
 
@@ -212,7 +212,7 @@ public abstract class AbstractSQLQuerying
 
     static
     {
-        _sqlOperators = new HashMap<Class<? extends Specification<?>>, SQLBooleanCreator>();
+        _sqlOperators = new HashMap<Class<? extends Specification>, SQLBooleanCreator>();
         _sqlOperators.put( EqSpecification.class, new SQLBooleanCreator()
         {
 
@@ -295,7 +295,7 @@ public abstract class AbstractSQLQuerying
             }
         } );
 
-        _joinStyles = new HashMap<Class<? extends Specification<?>>, JoinType>();
+        _joinStyles = new HashMap<Class<? extends Specification>, JoinType>();
         _joinStyles.put( EqSpecification.class, JoinType.INNER );
         _joinStyles.put( GeSpecification.class, JoinType.INNER );
         _joinStyles.put( GtSpecification.class, JoinType.INNER );
@@ -310,7 +310,7 @@ public abstract class AbstractSQLQuerying
         _joinStyles.put( ContainsSpecification.class, JoinType.INNER );
         _joinStyles.put( ContainsAllSpecification.class, JoinType.INNER );
 
-        _negatedJoinStyles = new HashMap<Class<? extends Specification<?>>, JoinType>();
+        _negatedJoinStyles = new HashMap<Class<? extends Specification>, JoinType>();
         _negatedJoinStyles.put( EqSpecification.class, JoinType.LEFT_OUTER );
         _negatedJoinStyles.put( GeSpecification.class, JoinType.LEFT_OUTER );
         _negatedJoinStyles.put( GtSpecification.class, JoinType.LEFT_OUTER );
@@ -1200,14 +1200,14 @@ public abstract class AbstractSQLQuerying
         return this.findFromLookupTables( _joinStyles, _negatedJoinStyles, predicate, negationActive );
     }
 
-    protected <ReturnType> ReturnType findFromLookupTables( Map<Class<? extends Specification<?>>, ReturnType> normal,
-        Map<Class<? extends Specification<?>>, ReturnType> negated, Specification<Composite> predicate, Boolean negationActive )
+    protected <ReturnType> ReturnType findFromLookupTables( Map<Class<? extends Specification>, ReturnType> normal,
+        Map<Class<? extends Specification>, ReturnType> negated, Specification<Composite> predicate, Boolean negationActive )
     {
         Class<? extends Specification> predicateClass = predicate.getClass();
         ReturnType result = null;
-        Set<Map.Entry<Class<? extends Specification<?>>, ReturnType>> entries = negationActive ? negated.entrySet() : normal
+        Set<Map.Entry<Class<? extends Specification>, ReturnType>> entries = negationActive ? negated.entrySet() : normal
             .entrySet();
-        for( Map.Entry<Class<? extends Specification<?>>, ReturnType> entry : entries )
+        for( Map.Entry<Class<? extends Specification>, ReturnType> entry : entries )
         {
             if( entry.getKey().isAssignableFrom( predicateClass ) )
             {
