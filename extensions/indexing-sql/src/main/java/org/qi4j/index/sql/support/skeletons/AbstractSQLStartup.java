@@ -154,7 +154,6 @@ public abstract class AbstractSQLStartup
         this._state.enumPKs().set( new HashMap<String, Integer>() );
 
         Connection connection = this._dataSource.getConnection();
-        Boolean wasAutoCommit = connection.getAutoCommit();
         connection.setAutoCommit( true );
         try
         {
@@ -162,7 +161,6 @@ public abstract class AbstractSQLStartup
         }
         finally
         {
-            connection.setAutoCommit( wasAutoCommit );
             SQLUtil.closeQuietly( connection );
         }
         

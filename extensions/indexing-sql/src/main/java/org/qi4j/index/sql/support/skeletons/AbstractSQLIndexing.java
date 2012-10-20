@@ -216,17 +216,22 @@ public class AbstractSQLIndexing
         }
         finally
         {
-            connection.setAutoCommit( wasAutoCommit );
-            SQLUtil.closeQuietly( insertToEntityTablePS );
-            SQLUtil.closeQuietly( updateEntityTablePS );
-            SQLUtil.closeQuietly( removeEntityPS );
-            SQLUtil.closeQuietly( insertToPropertyQNamesPS );
-            SQLUtil.closeQuietly( clearQNamesPS );
-            for( PreparedStatement ps : qNameInsertPSs.values() )
+            try
             {
-                SQLUtil.closeQuietly( ps );
+                SQLUtil.closeQuietly( insertToEntityTablePS );
+                SQLUtil.closeQuietly( updateEntityTablePS );
+                SQLUtil.closeQuietly( removeEntityPS );
+                SQLUtil.closeQuietly( insertToPropertyQNamesPS );
+                SQLUtil.closeQuietly( clearQNamesPS );
+                for( PreparedStatement ps : qNameInsertPSs.values() )
+                {
+                    SQLUtil.closeQuietly( ps );
+                }
             }
-            SQLUtil.closeQuietly( connection );
+            finally
+            {
+                SQLUtil.closeQuietly( connection );
+            }
         }
     }
 
