@@ -10,12 +10,18 @@ public class MatchesSpecification
     extends ExpressionSpecification
 {
     private PropertyFunction<String> property;
-    private String regexp;
+    private Object value;
 
     public MatchesSpecification( PropertyFunction<String> property, String regexp )
     {
         this.property = property;
-        this.regexp = regexp;
+        this.value = regexp;
+    }
+
+    public MatchesSpecification( PropertyFunction<String> property, Variable variable )
+    {
+        this.property = property;
+        this.value = variable;
     }
 
     public PropertyFunction<String> getProperty()
@@ -23,9 +29,14 @@ public class MatchesSpecification
         return property;
     }
 
+    public Object getValue()
+    {
+        return value;
+    }
+
     public String getRegexp()
     {
-        return regexp;
+        return ( String ) value;
     }
 
     @Override
@@ -45,7 +56,7 @@ public class MatchesSpecification
             return false;
         }
 
-        return val.matches( regexp );
+        return val.matches( ( String ) value );
     }
 
     @Override
@@ -56,7 +67,7 @@ public class MatchesSpecification
             .append( property )
             .append( " matches " )
             .append( "\"" )
-            .append( regexp )
+            .append( value )
             .append( "\"" )
             .append( " )" )
             .toString();
