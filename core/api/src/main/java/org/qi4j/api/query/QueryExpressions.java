@@ -2,6 +2,7 @@
  * Copyright 2007 Rickard Öberg.
  * Copyright 2007 Niclas Hedhman.
  * Copyright 2008 Alin Dreghiciu.
+ * Copyright 2012 Paul Merlin.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,7 +62,6 @@ import org.qi4j.api.query.grammar.Variable;
 import org.qi4j.api.util.NullArgumentException;
 import org.qi4j.functional.Specification;
 
-import static org.qi4j.functional.Iterables.iterable;
 import static org.qi4j.functional.Iterables.prepend;
 
 /**
@@ -70,17 +70,17 @@ import static org.qi4j.functional.Iterables.prepend;
 public final class QueryExpressions
 {
     // This is used for eq(Association,Composite)
-    private static Method idComposite;
+    private static final Method IDENTITY_METHOD;
 
     static
     {
         try
         {
-            idComposite = Identity.class.getMethod( "identity" );
+            IDENTITY_METHOD = Identity.class.getMethod( "identity" );
         }
         catch( NoSuchMethodException e )
         {
-            e.printStackTrace();
+            throw new InternalError( "Qi4j Core API codebase is corrupted. Contact Qi4j team: QueryExpressions" );
         }
     }
 
@@ -91,7 +91,9 @@ public final class QueryExpressions
 
         if( clazz.isInterface() )
         {
-            return clazz.cast( Proxy.newProxyInstance( clazz.getClassLoader(), new Class[]{ clazz }, new TemplateHandler<Object>( null, null, null ) ) );
+            return clazz.cast( Proxy.newProxyInstance( clazz.getClassLoader(),
+                                                       new Class[]{ clazz },
+                                                       new TemplateHandler<Object>( null, null, null ) ) );
         }
         else
         {
@@ -104,21 +106,24 @@ public final class QueryExpressions
                     {
                         if( field.getType().equals( Property.class ) )
                         {
-                            field.set( mixin, Proxy.newProxyInstance( field.getType().getClassLoader(),
-                                                                      new Class[]{ field.getType() },
-                                                                      new PropertyReferenceHandler( new PropertyFunction( null, null, null, field ) ) ) );
+                            field.set( mixin,
+                                       Proxy.newProxyInstance( field.getType().getClassLoader(),
+                                                               new Class[]{ field.getType() },
+                                                               new PropertyReferenceHandler( new PropertyFunction( null, null, null, field ) ) ) );
                         }
                         else if( field.getType().equals( Association.class ) )
                         {
-                            field.set( mixin, Proxy.newProxyInstance( field.getType().getClassLoader(),
-                                                                      new Class[]{ field.getType() },
-                                                                      new AssociationReferenceHandler( new AssociationFunction( null, null, field ) ) ) );
+                            field.set( mixin,
+                                       Proxy.newProxyInstance( field.getType().getClassLoader(),
+                                                               new Class[]{ field.getType() },
+                                                               new AssociationReferenceHandler( new AssociationFunction( null, null, field ) ) ) );
                         }
                         else if( field.getType().equals( Property.class ) )
                         {
-                            field.set( mixin, Proxy.newProxyInstance( field.getType().getClassLoader(),
-                                                                      new Class[]{ field.getType() },
-                                                                      new ManyAssociationReferenceHandler( new ManyAssociationFunction( null, null, field ) ) ) );
+                            field.set( mixin,
+                                       Proxy.newProxyInstance( field.getType().getClassLoader(),
+                                                               new Class[]{ field.getType() },
+                                                               new ManyAssociationReferenceHandler( new ManyAssociationFunction( null, null, field ) ) ) );
                         }
                     }
                 }
@@ -135,7 +140,11 @@ public final class QueryExpressions
     {
         NullArgumentException.validateNotNull( "Mixin class", mixinType );
         NullArgumentException.validateNotNull( "Association", association );
-        return mixinType.cast( Proxy.newProxyInstance( mixinType.getClassLoader(), new Class[]{ mixinType }, new TemplateHandler<Object>( null, association( association ), null ) ) );
+        return mixinType.cast( Proxy.newProxyInstance( mixinType.getClassLoader(),
+                                                       new Class[]{ mixinType },
+                                                       new TemplateHandler<Object>( null,
+                                                                                    association( association ),
+                                                                                    null ) ) );
     }
 
     public static <T> T oneOf( final ManyAssociation<T> association )
@@ -144,7 +153,7 @@ public final class QueryExpressions
         return association.get( 0 );
     }
 
-    public static  Variable variable( String name )
+    public static Variable variable( String name )
     {
         NullArgumentException.validateNotNull( "Variable name", name );
         return new Variable( name );
@@ -152,7 +161,8 @@ public final class QueryExpressions
 
     public static <T> PropertyFunction<T> property( Property<T> property )
     {
-        return (PropertyFunction<T>) ( (PropertyReferenceHandler<T>) Proxy.getInvocationHandler( property ) ).getProperty();
+        return ( PropertyFunction<T> ) ( ( PropertyReferenceHandler<T> )
+                Proxy.getInvocationHandler( property ) ).getProperty();
     }
 
     public static <T> Property<T> property( Class mixinClass, String fieldName )
@@ -166,7 +176,10 @@ public final class QueryExpressions
                 throw new IllegalArgumentException( "Field must be of type Property<?>" );
             }
 
-            return (Property<T>) Proxy.newProxyInstance( mixinClass.getClassLoader(), new Class[]{ field.getType() }, new PropertyReferenceHandler<T>( new PropertyFunction<T>( null, null, null, field ) ) );
+            return ( Property<T> ) Proxy.newProxyInstance(
+                    mixinClass.getClassLoader(),
+                    new Class[]{ field.getType() },
+                    new PropertyReferenceHandler<T>( new PropertyFunction<T>( null, null, null, field ) ) );
         }
         catch( NoSuchFieldException e )
         {
@@ -176,13 +189,14 @@ public final class QueryExpressions
 
     public static <T> AssociationFunction<T> association( Association<T> association )
     {
-        return (AssociationFunction<T>) ( (AssociationReferenceHandler<T>) Proxy.getInvocationHandler( association ) ).getAssociation();
+        return ( AssociationFunction<T> ) ( ( AssociationReferenceHandler<T> )
+                Proxy.getInvocationHandler( association ) ).getAssociation();
     }
 
     public static <T> ManyAssociationFunction<T> manyAssociation( ManyAssociation<T> association )
     {
-        return (ManyAssociationFunction<T>) ( (ManyAssociationReferenceHandler<T>) Proxy.getInvocationHandler( association ) )
-            .getManyAssociation();
+        return ( ManyAssociationFunction<T> ) ( ( ManyAssociationReferenceHandler<T> )
+                Proxy.getInvocationHandler( association ) ).getManyAssociation();
     }
 
     // And/Or/Not
@@ -213,10 +227,18 @@ public final class QueryExpressions
         return new EqSpecification<T>( property( property ), value );
     }
 
+    public static <T> EqSpecification<T> eq( Property<T> property, Variable variable )
+    {
+        return new EqSpecification( property( property ), variable );
+    }
+
     public static <T> EqSpecification<String> eq( Association<T> association, T value )
     {
-        return new EqSpecification<String>( new PropertyFunction<String>( null, association( association ), null, idComposite ), value
-            .toString() );
+        return new EqSpecification<String>( new PropertyFunction<String>( null,
+                                                                          association( association ),
+                                                                          null,
+                                                                          IDENTITY_METHOD ),
+                                            value.toString() );
     }
 
     public static <T> GeSpecification<T> ge( Property<T> property, T value )
@@ -224,9 +246,19 @@ public final class QueryExpressions
         return new GeSpecification<T>( property( property ), value );
     }
 
+    public static <T> GeSpecification<T> ge( Property<T> property, Variable variable )
+    {
+        return new GeSpecification( property( property ), variable );
+    }
+
     public static <T> GtSpecification<T> gt( Property<T> property, T value )
     {
         return new GtSpecification<T>( property( property ), value );
+    }
+
+    public static <T> GtSpecification<T> gt( Property<T> property, Variable variable )
+    {
+        return new GtSpecification( property( property ), variable );
     }
 
     public static <T> LeSpecification<T> le( Property<T> property, T value )
@@ -234,9 +266,19 @@ public final class QueryExpressions
         return new LeSpecification<T>( property( property ), value );
     }
 
+    public static <T> LeSpecification<T> le( Property<T> property, Variable variable )
+    {
+        return new LeSpecification( property( property ), variable );
+    }
+
     public static <T> LtSpecification<T> lt( Property<T> property, T value )
     {
         return new LtSpecification<T>( property( property ), value );
+    }
+
+    public static <T> LtSpecification<T> lt( Property<T> property, Variable variable )
+    {
+        return new LtSpecification( property( property ), variable );
     }
 
     public static <T> NeSpecification<T> ne( Property<T> property, T value )
@@ -244,9 +286,19 @@ public final class QueryExpressions
         return new NeSpecification<T>( property( property ), value );
     }
 
+    public static <T> NeSpecification<T> ne( Property<T> property, Variable variable )
+    {
+        return new NeSpecification( property( property ), variable );
+    }
+
     public static MatchesSpecification matches( Property<String> property, String regexp )
     {
         return new MatchesSpecification( property( property ), regexp );
+    }
+
+    public static MatchesSpecification matches( Property<String> property, Variable variable )
+    {
+        return new MatchesSpecification( property( property ), variable );
     }
 
     // Null checks
@@ -272,20 +324,36 @@ public final class QueryExpressions
 
     // Collections
     public static <T> ContainsAllSpecification<T> containsAll( Property<? extends Collection<T>> collectionProperty,
-                                                               Iterable<T> values
-    )
+                                                               Iterable<T> values )
     {
         NullArgumentException.validateNotNull( "Values", values );
         return new ContainsAllSpecification<T>( property( collectionProperty ), values );
     }
 
-    public static <T> ContainsSpecification<T> contains( Property<? extends Collection<T>> collectionProperty, T value )
+    public static <T> ContainsAllSpecification<T> containsAllVariables(
+            Property<? extends Collection<T>> collectionProperty,
+            Iterable<Variable> variables )
+    {
+        NullArgumentException.validateNotNull( "Variables", variables );
+        return new ContainsAllSpecification( property( collectionProperty ), variables );
+    }
+
+    public static <T> ContainsSpecification<T> contains( Property<? extends Collection<T>> collectionProperty,
+                                                         T value )
     {
         NullArgumentException.validateNotNull( "Value", value );
         return new ContainsSpecification<T>( property( collectionProperty ), value );
     }
 
-    public static <T> ManyAssociationContainsSpecification<T> contains( ManyAssociation<T> manyAssoc, T value )
+    public static <T> ContainsSpecification<T> contains( Property<? extends Collection<T>> collectionProperty,
+                                                         Variable variable )
+    {
+        NullArgumentException.validateNotNull( "Variable", variable );
+        return new ContainsSpecification( property( collectionProperty ), variable );
+    }
+
+    public static <T> ManyAssociationContainsSpecification<T> contains( ManyAssociation<T> manyAssoc,
+                                                                        T value )
     {
         return new ManyAssociationContainsSpecification<T>( manyAssociation( manyAssoc ), value );
     }
@@ -324,18 +392,31 @@ public final class QueryExpressions
         {
             if( Property.class.isAssignableFrom( method.getReturnType() ) )
             {
-                return Proxy.newProxyInstance( method.getReturnType()
-                                                   .getClassLoader(), new Class[]{ method.getReturnType() }, new PropertyReferenceHandler( new PropertyFunction( CompositeProperty, CompositeAssociation, CompositeManyAssociation, method ) ) );
+                return Proxy.newProxyInstance(
+                        method.getReturnType().getClassLoader(),
+                        new Class[]{ method.getReturnType() },
+                        new PropertyReferenceHandler( new PropertyFunction( CompositeProperty,
+                                                                            CompositeAssociation,
+                                                                            CompositeManyAssociation,
+                                                                            method ) ) );
             }
             else if( Association.class.isAssignableFrom( method.getReturnType() ) )
             {
-                return Proxy.newProxyInstance( method.getReturnType()
-                                                   .getClassLoader(), new Class[]{ method.getReturnType() }, new AssociationReferenceHandler( new AssociationFunction( CompositeAssociation, CompositeManyAssociation, method ) ) );
+                return Proxy.newProxyInstance(
+                        method.getReturnType().getClassLoader(),
+                        new Class[]{ method.getReturnType() },
+                        new AssociationReferenceHandler( new AssociationFunction( CompositeAssociation,
+                                                                                  CompositeManyAssociation,
+                                                                                  method ) ) );
             }
             else if( ManyAssociation.class.isAssignableFrom( method.getReturnType() ) )
             {
-                return Proxy.newProxyInstance( method.getReturnType()
-                                                   .getClassLoader(), new Class[]{ method.getReturnType() }, new ManyAssociationReferenceHandler( new ManyAssociationFunction( CompositeAssociation, CompositeManyAssociation, method ) ) );
+                return Proxy.newProxyInstance(
+                        method.getReturnType().getClassLoader(),
+                        new Class[]{ method.getReturnType() },
+                        new ManyAssociationReferenceHandler( new ManyAssociationFunction( CompositeAssociation,
+                                                                                          CompositeManyAssociation,
+                                                                                          method ) ) );
             }
 
             return null;

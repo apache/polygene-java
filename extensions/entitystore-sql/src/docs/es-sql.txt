@@ -22,6 +22,10 @@ The following SQL databases are supported:
 Each entity state is stored as a single row so maximum number of entities is the maximum number of rows per table
 supported by the underlying SQL database.
 
+Implementations per database Vendor share a generic codebase but can override about everything SQL. As a consequence
+they can have strong differences in terms of performance if they use vendor specific extensions.
+
+
 == Configuration ==
 
 SQL EntityStore Configuration is optional and provides only one configuration property: `schemaName` defaulted to

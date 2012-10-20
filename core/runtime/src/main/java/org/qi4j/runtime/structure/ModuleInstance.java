@@ -99,7 +99,7 @@ import org.qi4j.runtime.value.ValuesModel;
 import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.metrics.MetricsProviderAdapter;
 
-import static org.qi4j.api.util.Classes.interfacesOf;
+import static org.qi4j.api.util.Classes.*;
 import static org.qi4j.functional.Iterables.*;
 
 /**
@@ -119,13 +119,6 @@ public class ModuleInstance
     private final ServicesInstance services;
     private final ImportedServicesInstance importedServices;
 
-    //lazy assigned on accessor
-    private EntityStore store;
-    //lazy assigned on accessor
-    private IdentityGenerator generator;
-    //lazy assigned on accessor
-    private MetricsProvider metrics;
-
     private final QueryBuilderFactory queryBuilderFactory;
 
     private final ClassLoader classLoader;
@@ -135,7 +128,7 @@ public class ModuleInstance
         @Override
         public Object map( EntityReference entityReference, Type type )
         {
-            return currentUnitOfWork().get( Classes.RAW_CLASS.map( type ), entityReference.identity() );
+            return currentUnitOfWork().get( RAW_CLASS.map( type ), entityReference.identity() );
         }
     };
 
@@ -147,6 +140,12 @@ public class ModuleInstance
     private final Map<Type, ServiceReference> serviceReferences = new ConcurrentHashMap<Type, ServiceReference>();
     private final Map<Type, Iterable<ServiceReference>> servicesReferences = new ConcurrentHashMap<Type, Iterable<ServiceReference>>();
 
+    // Lazy assigned on accessors
+    private EntityStore store;
+    private IdentityGenerator generator;
+    private MetricsProvider metrics;
+
+    @SuppressWarnings( "LeakingThisInConstructor" )
     public ModuleInstance( ModuleModel moduleModel, LayerInstance layerInstance, TransientsModel transientsModel,
                            EntitiesModel entitiesModel, ObjectsModel objectsModel, ValuesModel valuesModel,
                            ServicesModel servicesModel, ImportedServicesModel importedServicesModel
@@ -295,7 +294,7 @@ public class ModuleInstance
         {
             // Lazily resolve EntityModels
             models = flatten( ambiguousCheck( type,
-                                              findModels( Classes.exactTypeSpecification( type ),
+                                              findModels( exactTypeSpecification( type ),
                                                           visibleEntities( Visibility.module ),
                                                           layerInstance().visibleEntities( Visibility.layer ),
                                                           layerInstance().visibleEntities( Visibility.application ),
@@ -321,13 +320,13 @@ public class ModuleInstance
             // Lazily resolve TransientModel
             Iterable<ModelModule<TransientModel>> flatten = flatten(
                     ambiguousCheck( type,
-                                    findModels( Classes.exactTypeSpecification( type ),
+                                    findModels( exactTypeSpecification( type ),
                                                 visibleTransients( Visibility.module ),
                                                 layerInstance().visibleTransients( Visibility.layer ),
                                                 layerInstance().visibleTransients( Visibility.application ),
                                                 layerInstance().usedLayersInstance().visibleTransients() ) ),
                     ambiguousCheck( type,
-                                    findModels( Classes.assignableTypeSpecification( type ),
+                                    findModels( assignableTypeSpecification( type ),
                                                 visibleTransients( Visibility.module ),
                                                 layerInstance().visibleTransients( Visibility.layer ),
                                                 layerInstance().visibleTransients( Visibility.application ),
@@ -352,13 +351,13 @@ public class ModuleInstance
             // Lazily resolve ObjectModel
             Iterable<ModelModule<ObjectModel>> flatten = flatten(
                     ambiguousCheck( type,
-                                    findModels( Classes.exactTypeSpecification( type ),
+                                    findModels( exactTypeSpecification( type ),
                                                 visibleObjects( Visibility.module ),
                                                 layerInstance().visibleObjects( Visibility.layer ),
                                                 layerInstance().visibleObjects( Visibility.application ),
                                                 layerInstance().usedLayersInstance().visibleObjects() ) ),
                     ambiguousCheck( type,
-                                    findModels( Classes.assignableTypeSpecification( type ),
+                                    findModels( assignableTypeSpecification( type ),
                                                 visibleObjects( Visibility.module ),
                                                 layerInstance().visibleObjects( Visibility.layer ),
                                                 layerInstance().visibleObjects( Visibility.application ),
@@ -384,13 +383,13 @@ public class ModuleInstance
             // Lazily resolve ValueModel
             Iterable<ModelModule<ValueModel>> flatten = flatten(
                 ambiguousCheck( type,
-                                findModels( Classes.exactTypeSpecification( type ),
+                                findModels( exactTypeSpecification( type ),
                                             visibleValues( Visibility.module ),
                                             layerInstance().visibleValues( Visibility.layer ),
                                             layerInstance().visibleValues( Visibility.application ),
                                             layerInstance().usedLayersInstance().visibleValues() ) ),
                 ambiguousCheck( type,
-                                findModels( Classes.assignableTypeSpecification( type ),
+                                findModels( assignableTypeSpecification( type ),
                                             visibleValues( Visibility.module ),
                                             layerInstance().visibleValues( Visibility.layer ),
                                             layerInstance().visibleValues( Visibility.application ),
@@ -778,7 +777,7 @@ public class ModuleInstance
 
         if( serviceReference == null )
         {
-            throw new NoSuchServiceException( Classes.RAW_CLASS.map( serviceType ).getName(), name() );
+            throw new NoSuchServiceException( RAW_CLASS.map( serviceType ).getName(), name() );
         }
 
         return serviceReference;
@@ -904,7 +903,7 @@ public class ModuleInstance
             Class clazz = classes.get( name );
             if( clazz == null )
             {
-                Specification<ModelDescriptor> modelTypeSpecification = Classes.modelTypeSpecification( name );
+                Specification<ModelDescriptor> modelTypeSpecification = modelTypeSpecification( name );
                 Specification<ModelModule<ModelDescriptor>> translate = Specifications.translate( ModelModule.modelFunction(), modelTypeSpecification );
 
                 // Check module

@@ -89,14 +89,6 @@ public class DerbySQLEntityStoreTest
                 SQLUtil.closeQuietly( stmt );
             }
 
-            // String str = config.connectionString().get();
-            // StringBuilder connectionString = new StringBuilder( str );
-            // if( !str.contains( ";" ) )
-            // {
-            // connectionString.append( ";" );
-            // }
-            // connectionString.append( "shutdown=true" );
-
             FileUtil.removeDirectory( "target/qi4j-data" );
 
         } finally {

@@ -13,3 +13,4 @@ derby.log
 *.settings
 *pom.xml
 *target/
+.nb-gradle-properties
