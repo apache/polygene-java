@@ -805,7 +805,7 @@ public abstract class AbstractSQLQuerying
 
     protected QueryBuilder processMatchesPredicate( final MatchesSpecification predicate, final Boolean negationActive,
         final SQLVendor vendor, org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition,
-        Map<String, Object> variables, final List<Object> values, final List<Integer> valueSQLTypes )
+        final Map<String, Object> variables, final List<Object> values, final List<Integer> valueSQLTypes )
     {
         return this.singleQuery( //
             predicate, //
@@ -829,7 +829,12 @@ public abstract class AbstractSQLQuerying
                             c.colName( TABLE_NAME_PREFIX + lastTableIndex, DBNames.QNAME_TABLE_VALUE_COLUMN_NAME ),
                             l.param() ) );
 
-                    values.add( translateJavaRegexpToPGSQLRegexp( predicate.getRegexp() ));
+                    Object value = predicate.getValue();
+                    if (value instanceof Variable)
+                    {
+                        value = variables.get( ((Variable)value ).getName());
+                    }
+                    values.add( translateJavaRegexpToPGSQLRegexp( value.toString() ));
                     valueSQLTypes.add( Types.VARCHAR );
                 }
             } //
