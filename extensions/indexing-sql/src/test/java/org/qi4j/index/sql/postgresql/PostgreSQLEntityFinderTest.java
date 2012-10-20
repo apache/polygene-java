@@ -21,7 +21,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.indexing.AbstractEntityFinderTest;
 
-@Ignore // DO NOT PASS YET (ClassCastException in AbstractEntityFinderTest.script23, 19.10.2012)
+@Ignore // (Should pass with actual DB running)
 public class PostgreSQLEntityFinderTest extends AbstractEntityFinderTest
 {
     @Override

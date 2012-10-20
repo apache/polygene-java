@@ -17,30 +17,6 @@
  */
 package org.qi4j.test.indexing;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import org.junit.Before;
-import org.junit.Test;
-import org.qi4j.api.composite.Composite;
-import org.qi4j.api.entity.EntityReference;
-import org.qi4j.api.query.QueryExpressions;
-import org.qi4j.api.query.grammar.OrderBy;
-import org.qi4j.api.service.ServiceReference;
-import org.qi4j.functional.Specification;
-import org.qi4j.spi.query.EntityFinder;
-import org.qi4j.spi.query.EntityFinderException;
-import org.qi4j.spi.query.IndexExporter;
-import org.qi4j.test.indexing.model.Domain;
-import org.qi4j.test.indexing.model.Female;
-import org.qi4j.test.indexing.model.Male;
-import org.qi4j.test.indexing.model.Nameable;
-import org.qi4j.test.indexing.model.Person;
-
 import static org.junit.Assert.assertEquals;
 import static org.qi4j.api.query.QueryExpressions.and;
 import static org.qi4j.api.query.QueryExpressions.eq;
@@ -55,6 +31,32 @@ import static org.qi4j.api.query.QueryExpressions.orderBy;
 import static org.qi4j.api.query.QueryExpressions.templateFor;
 import static org.qi4j.test.indexing.NameableAssert.assertNames;
 import static org.qi4j.test.indexing.NameableAssert.toList;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.query.QueryExpressions;
+import org.qi4j.api.query.grammar.OrderBy;
+import org.qi4j.api.service.ServiceReference;
+import org.qi4j.functional.Specification;
+import org.qi4j.spi.query.EntityFinder;
+import org.qi4j.spi.query.EntityFinderException;
+import org.qi4j.spi.query.IndexExporter;
+import org.qi4j.test.indexing.model.Domain;
+import org.qi4j.test.indexing.model.Female;
+import org.qi4j.test.indexing.model.Male;
+import org.qi4j.test.indexing.model.Nameable;
+import org.qi4j.test.indexing.model.Person;
 
 public abstract class AbstractEntityFinderTest
     extends AbstractAnyQueryTest
@@ -383,8 +385,8 @@ public abstract class AbstractEntityFinderTest
         // Try using variables
         Map<String, Object> variables = new HashMap<String, Object>();
         variables.put( "domain", "Gaming" );
-        Iterable<EntityReference> entities = entityFinder.findEntities( Domain.class, QueryExpressions.eq( nameable.name(), QueryExpressions
-            .<String>variable( "domain" ) ),
+        Iterable<EntityReference> entities = entityFinder.findEntities( Domain.class, QueryExpressions.<Object>eq( (Property)nameable.name(), QueryExpressions
+            .variable( "domain" ) ),
                                                                         NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS, variables );
         assertNames( entities, "Gaming" );
     }

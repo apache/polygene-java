@@ -144,10 +144,10 @@ public final class QueryExpressions
         return association.get( 0 );
     }
 
-    public static <T> T variable( String name )
+    public static  Variable variable( String name )
     {
         NullArgumentException.validateNotNull( "Variable name", name );
-        return (T) new Variable( name );
+        return new Variable( name );
     }
 
     public static <T> PropertyFunction<T> property( Property<T> property )

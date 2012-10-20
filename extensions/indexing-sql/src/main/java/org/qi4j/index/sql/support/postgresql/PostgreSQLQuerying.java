@@ -15,6 +15,8 @@
 package org.qi4j.index.sql.support.postgresql;
 
 import java.util.List;
+import java.util.Map;
+
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.functional.Specification;
@@ -35,6 +37,7 @@ public class PostgreSQLQuerying
             OrderBy[] orderBySegments,
             Integer firstResult,
             Integer maxResults,
+            Map<String, Object> variables,
             List<Object> values,
             List<Integer> valueSQLTypes,
             Boolean countOnly )

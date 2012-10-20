@@ -61,7 +61,7 @@ public class SQLEntityFinder
     {
         final List<Object> values = new ArrayList<Object>();
         final List<Integer> valueSQLTypes = new ArrayList<Integer>();
-        final String query = this.parser.constructQuery( resultType, whereClause, null, null, null, values,
+        final String query = this.parser.constructQuery( resultType, whereClause, null, null, null, variables, values,
             valueSQLTypes, true );
 
         return this.performQuery( new DoQuery<Long>()
@@ -99,7 +99,7 @@ public class SQLEntityFinder
             final List<Object> values = new ArrayList<Object>();
             final List<Integer> valueSQLTypes = new ArrayList<Integer>();
             final String query = this.parser.constructQuery( resultType, whereClause, orderBySegments, firstResult,
-                maxResults, values, valueSQLTypes, false );
+                maxResults, variables, values, valueSQLTypes, false );
 
             result = this.performQuery( new DoQuery<Iterable<EntityReference>>()
             {
@@ -154,7 +154,7 @@ public class SQLEntityFinder
     {
         final List<Object> values = new ArrayList<Object>();
         final List<Integer> valueSQLTypes = new ArrayList<Integer>();
-        final String query = this.parser.constructQuery( resultType, whereClause, null, null, null, values,
+        final String query = this.parser.constructQuery( resultType, whereClause, null, null, null, variables, values,
             valueSQLTypes, false );
 
         return this.performQuery( new DoQuery<EntityReference>()

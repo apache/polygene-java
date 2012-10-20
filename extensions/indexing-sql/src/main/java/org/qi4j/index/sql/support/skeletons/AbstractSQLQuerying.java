@@ -44,7 +44,6 @@ import org.qi4j.api.query.grammar.ComparisonSpecification;
 import org.qi4j.api.query.grammar.ContainsAllSpecification;
 import org.qi4j.api.query.grammar.ContainsSpecification;
 import org.qi4j.api.query.grammar.EqSpecification;
-import org.qi4j.api.query.grammar.ExpressionSpecification;
 import org.qi4j.api.query.grammar.GeSpecification;
 import org.qi4j.api.query.grammar.GtSpecification;
 import org.qi4j.api.query.grammar.LeSpecification;
@@ -60,6 +59,7 @@ import org.qi4j.api.query.grammar.OrderBy.Order;
 import org.qi4j.api.query.grammar.PropertyFunction;
 import org.qi4j.api.query.grammar.PropertyNotNullSpecification;
 import org.qi4j.api.query.grammar.PropertyNullSpecification;
+import org.qi4j.api.query.grammar.Variable;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.value.ValueComposite;
@@ -192,14 +192,17 @@ public abstract class AbstractSQLQuerying
             Boolean negationActive,//
             SQLVendor vendor,//
             org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition, //
-            List<Object> values, List<Integer> valueSQLTypes );
+            Map<String, Object> variables, //
+            List<Object> values, //
+            List<Integer> valueSQLTypes //
+            );
     }
 
-    private static final Map<Class<? extends Specification>, SQLBooleanCreator> _sqlOperators;
+    private static final Map<Class<? extends Specification<?>>, SQLBooleanCreator> _sqlOperators;
 
-    private static final Map<Class<? extends Specification>, JoinType> _joinStyles;
+    private static final Map<Class<? extends Specification<?>>, JoinType> _joinStyles;
 
-    private static final Map<Class<? extends Specification>, JoinType> _negatedJoinStyles;
+    private static final Map<Class<? extends Specification<?>>, JoinType> _negatedJoinStyles;
     
     private static final Map<Class<?>, BooleanExpressionProcessor> _expressionProcessors;
 
@@ -209,7 +212,7 @@ public abstract class AbstractSQLQuerying
 
     static
     {
-        _sqlOperators = new HashMap<Class<? extends Specification>, SQLBooleanCreator>();
+        _sqlOperators = new HashMap<Class<? extends Specification<?>>, SQLBooleanCreator>();
         _sqlOperators.put( EqSpecification.class, new SQLBooleanCreator()
         {
 
@@ -292,7 +295,7 @@ public abstract class AbstractSQLQuerying
             }
         } );
 
-        _joinStyles = new HashMap<Class<? extends Specification>, JoinType>();
+        _joinStyles = new HashMap<Class<? extends Specification<?>>, JoinType>();
         _joinStyles.put( EqSpecification.class, JoinType.INNER );
         _joinStyles.put( GeSpecification.class, JoinType.INNER );
         _joinStyles.put( GtSpecification.class, JoinType.INNER );
@@ -307,7 +310,7 @@ public abstract class AbstractSQLQuerying
         _joinStyles.put( ContainsSpecification.class, JoinType.INNER );
         _joinStyles.put( ContainsAllSpecification.class, JoinType.INNER );
 
-        _negatedJoinStyles = new HashMap<Class<? extends Specification>, JoinType>();
+        _negatedJoinStyles = new HashMap<Class<? extends Specification<?>>, JoinType>();
         _negatedJoinStyles.put( EqSpecification.class, JoinType.LEFT_OUTER );
         _negatedJoinStyles.put( GeSpecification.class, JoinType.LEFT_OUTER );
         _negatedJoinStyles.put( GtSpecification.class, JoinType.LEFT_OUTER );
@@ -329,7 +332,7 @@ public abstract class AbstractSQLQuerying
             @Override
             public QueryBuilder processBooleanExpression( AbstractSQLQuerying thisObject,
                     Specification<Composite> expression, Boolean negationActive, SQLVendor vendor,
-                    BooleanExpression entityTypeCondition, List<Object> values,
+                    BooleanExpression entityTypeCondition, Map<String, Object> variables, List<Object> values,
                     List<Integer> valueSQLTypes )
             {
                 QueryBuilder result = null;
@@ -339,11 +342,11 @@ public abstract class AbstractSQLQuerying
                     if (result == null)
                     {
                         result = thisObject.processBooleanExpression( entitySpecification, negationActive, vendor,
-                                    entityTypeCondition, values, valueSQLTypes );
+                                    entityTypeCondition, variables, values, valueSQLTypes );
                     } else
                     {
                         result = result.intersect( thisObject.processBooleanExpression( entitySpecification, negationActive, vendor,
-                                    entityTypeCondition, values, valueSQLTypes ).createExpression() );
+                                    entityTypeCondition, variables, values, valueSQLTypes ).createExpression() );
                     }
                 }
                 return result;
@@ -355,7 +358,7 @@ public abstract class AbstractSQLQuerying
             @Override
             public QueryBuilder processBooleanExpression( AbstractSQLQuerying thisObject,
                     Specification<Composite> expression, Boolean negationActive, SQLVendor vendor,
-                    BooleanExpression entityTypeCondition, List<Object> values,
+                    BooleanExpression entityTypeCondition, Map<String, Object> variables, List<Object> values,
                     List<Integer> valueSQLTypes )
             {
                 QueryBuilder result = null;
@@ -365,11 +368,11 @@ public abstract class AbstractSQLQuerying
                     if (result == null)
                     {
                         result = thisObject.processBooleanExpression( entitySpecification, negationActive, vendor,
-                                    entityTypeCondition, values, valueSQLTypes );
+                                    entityTypeCondition, variables, values, valueSQLTypes );
                     } else
                     {
                         result = result.union( thisObject.processBooleanExpression( entitySpecification, negationActive, vendor,
-                                entityTypeCondition, values, valueSQLTypes ).createExpression() );
+                                entityTypeCondition, variables, values, valueSQLTypes ).createExpression() );
                     }
                 }
                 return result;
@@ -381,11 +384,11 @@ public abstract class AbstractSQLQuerying
             @Override
             public QueryBuilder processBooleanExpression( AbstractSQLQuerying thisObject,
                     Specification<Composite> expression, Boolean negationActive, SQLVendor vendor,
-                    BooleanExpression entityTypeCondition, List<Object> values,
+                    BooleanExpression entityTypeCondition, Map<String, Object> variables, List<Object> values,
                     List<Integer> valueSQLTypes )
             {
                 return thisObject.processBooleanExpression( ((NotSpecification) expression).getOperand(), !negationActive, vendor,
-                    entityTypeCondition, values, valueSQLTypes );
+                    entityTypeCondition, variables, values, valueSQLTypes );
             }
         } );
         _expressionProcessors.put( MatchesSpecification.class, new BooleanExpressionProcessor()
@@ -394,11 +397,11 @@ public abstract class AbstractSQLQuerying
             @Override
             public QueryBuilder processBooleanExpression( AbstractSQLQuerying thisObject,
                     Specification<Composite> expression, Boolean negationActive, SQLVendor vendor,
-                    BooleanExpression entityTypeCondition, List<Object> values,
+                    BooleanExpression entityTypeCondition, Map<String, Object> variables, List<Object> values,
                     List<Integer> valueSQLTypes )
             {
                 return thisObject.processMatchesPredicate( (MatchesSpecification) expression, negationActive, vendor,
-                    entityTypeCondition, values, valueSQLTypes );
+                    entityTypeCondition, variables, values, valueSQLTypes );
             }
         } );
         _expressionProcessors.put( ManyAssociationContainsSpecification.class, new BooleanExpressionProcessor()
@@ -407,12 +410,12 @@ public abstract class AbstractSQLQuerying
             @Override
             public QueryBuilder processBooleanExpression( AbstractSQLQuerying thisObject,
                     Specification<Composite> expression, Boolean negationActive, SQLVendor vendor,
-                    BooleanExpression entityTypeCondition, List<Object> values,
+                    BooleanExpression entityTypeCondition, Map<String, Object> variables, List<Object> values,
                     List<Integer> valueSQLTypes )
             {
                 return thisObject.processManyAssociationContainsPredicate(
                     (ManyAssociationContainsSpecification<?>) expression, negationActive, vendor, entityTypeCondition,
-                    values, valueSQLTypes );
+                    variables, values, valueSQLTypes );
             }
         } );
         _expressionProcessors.put( PropertyNullSpecification.class, new BooleanExpressionProcessor()
@@ -421,7 +424,7 @@ public abstract class AbstractSQLQuerying
             @Override
             public QueryBuilder processBooleanExpression( AbstractSQLQuerying thisObject,
                     Specification<Composite> expression, Boolean negationActive, SQLVendor vendor,
-                    BooleanExpression entityTypeCondition, List<Object> values,
+                    BooleanExpression entityTypeCondition, Map<String, Object> variables, List<Object> values,
                     List<Integer> valueSQLTypes )
             {
                 return thisObject.processPropertyNullPredicate( (PropertyNullSpecification<?>) expression, negationActive,
@@ -434,7 +437,7 @@ public abstract class AbstractSQLQuerying
             @Override
             public QueryBuilder processBooleanExpression( AbstractSQLQuerying thisObject,
                     Specification<Composite> expression, Boolean negationActive, SQLVendor vendor,
-                    BooleanExpression entityTypeCondition, List<Object> values,
+                    BooleanExpression entityTypeCondition, Map<String, Object> variables, List<Object> values,
                     List<Integer> valueSQLTypes )
             {
                 return thisObject.processPropertyNotNullPredicate( (PropertyNotNullSpecification<?>) expression, negationActive,
@@ -447,7 +450,7 @@ public abstract class AbstractSQLQuerying
             @Override
             public QueryBuilder processBooleanExpression( AbstractSQLQuerying thisObject,
                     Specification<Composite> expression, Boolean negationActive, SQLVendor vendor,
-                    BooleanExpression entityTypeCondition, List<Object> values,
+                    BooleanExpression entityTypeCondition, Map<String, Object> variables, List<Object> values,
                     List<Integer> valueSQLTypes )
             {
                 return thisObject.processAssociationNullPredicate( (AssociationNullSpecification<?>) expression, negationActive,
@@ -460,7 +463,7 @@ public abstract class AbstractSQLQuerying
             @Override
             public QueryBuilder processBooleanExpression( AbstractSQLQuerying thisObject,
                     Specification<Composite> expression, Boolean negationActive, SQLVendor vendor,
-                    BooleanExpression entityTypeCondition, List<Object> values,
+                    BooleanExpression entityTypeCondition, Map<String, Object> variables, List<Object> values,
                     List<Integer> valueSQLTypes )
             {
                 return thisObject.processAssociationNotNullPredicate( (AssociationNotNullSpecification<?> ) expression, negationActive,
@@ -473,11 +476,11 @@ public abstract class AbstractSQLQuerying
             @Override
             public QueryBuilder processBooleanExpression( AbstractSQLQuerying thisObject,
                     Specification<Composite> expression, Boolean negationActive, SQLVendor vendor,
-                    BooleanExpression entityTypeCondition, List<Object> values,
+                    BooleanExpression entityTypeCondition, Map<String, Object> variables, List<Object> values,
                     List<Integer> valueSQLTypes )
             {
                 return thisObject.processContainsPredicate( (ContainsSpecification<?>) expression, negationActive, vendor,
-                    entityTypeCondition, values, valueSQLTypes );
+                    entityTypeCondition, variables, values, valueSQLTypes );
             }
         } );
         _expressionProcessors.put( ContainsAllSpecification.class, new BooleanExpressionProcessor()
@@ -486,11 +489,11 @@ public abstract class AbstractSQLQuerying
             @Override
             public QueryBuilder processBooleanExpression( AbstractSQLQuerying thisObject,
                     Specification<Composite> expression, Boolean negationActive, SQLVendor vendor,
-                    BooleanExpression entityTypeCondition, List<Object> values,
+                    BooleanExpression entityTypeCondition, Map<String, Object> variables, List<Object> values,
                     List<Integer> valueSQLTypes )
             {
                 return thisObject.processContainsAllPredicate( (ContainsAllSpecification<?>) expression, negationActive,
-                    vendor, entityTypeCondition, values, valueSQLTypes );
+                    vendor, entityTypeCondition, variables, values, valueSQLTypes );
             }
         } );
         BooleanExpressionProcessor comparisonProcessor = new BooleanExpressionProcessor()
@@ -499,11 +502,11 @@ public abstract class AbstractSQLQuerying
             @Override
             public QueryBuilder processBooleanExpression( AbstractSQLQuerying thisObject,
                     Specification<Composite> expression, Boolean negationActive, SQLVendor vendor,
-                    BooleanExpression entityTypeCondition, List<Object> values,
+                    BooleanExpression entityTypeCondition, Map<String, Object> variables, List<Object> values,
                     List<Integer> valueSQLTypes )
             {
                 return thisObject.processComparisonPredicate( (ComparisonSpecification<?>) expression, negationActive, vendor,
-                    entityTypeCondition, values, valueSQLTypes );
+                    entityTypeCondition, variables, values, valueSQLTypes );
             }
         };
         _expressionProcessors.put( EqSpecification.class, comparisonProcessor);
@@ -682,6 +685,7 @@ public abstract class AbstractSQLQuerying
         OrderBy[] orderBySegments, //
         Integer firstResult, //
         Integer maxResults, //
+        Map<String, Object> variables, //
         List<Object> values, //
         List<Integer> valueSQLTypes, //
         Boolean countOnly //
@@ -702,7 +706,7 @@ public abstract class AbstractSQLQuerying
         }
 
         QueryBuilder innerBuilder = this.processBooleanExpression( whereClause, false, vendor,
-            this.createTypeCondition( resultType, vendor ), values, valueSQLTypes );
+            this.createTypeCondition( resultType, vendor ), variables, values, valueSQLTypes );
 
         QuerySpecificationBuilder mainQuery = q.querySpecificationBuilder();
         mainQuery.getSelect().addUnnamedColumns( mainColumn );
@@ -713,7 +717,7 @@ public abstract class AbstractSQLQuerying
         this.processOrderBySegments( orderBySegments, vendor, mainQuery );
 
         QueryExpression finalMainQuery = this.finalizeQuery( vendor, mainQuery, resultType, whereClause,
-            orderBySegments, firstResult, maxResults, values, valueSQLTypes, countOnly );
+            orderBySegments, firstResult, maxResults, variables, values, valueSQLTypes, countOnly );
 
         String result = vendor.toString( finalMainQuery );
 
@@ -745,6 +749,7 @@ public abstract class AbstractSQLQuerying
         OrderBy[] orderBySegments, //
         Integer firstResult, //
         Integer maxResults, //
+        Map<String, Object> variables, //
         List<Object> values, //
         List<Integer> valueSQLTypes, //
         Boolean countOnly );
@@ -754,7 +759,10 @@ public abstract class AbstractSQLQuerying
         Boolean negationActive,//
         SQLVendor vendor,//
         org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition, //
-        List<Object> values, List<Integer> valueSQLTypes )
+        Map<String, Object> variables,
+        List<Object> values, //
+        List<Integer> valueSQLTypes //
+        )
     {
         QueryBuilder result = null;
         if( expression == null )
@@ -769,7 +777,7 @@ public abstract class AbstractSQLQuerying
             if (_expressionProcessors.containsKey( expression.getClass() ))
             {
                 result = _expressionProcessors.get( expression.getClass() ).processBooleanExpression( this, expression,
-                    negationActive, vendor, entityTypeCondition, values, valueSQLTypes );
+                    negationActive, vendor, entityTypeCondition, variables, values, valueSQLTypes );
             }
             else
             {
@@ -797,7 +805,7 @@ public abstract class AbstractSQLQuerying
 
     protected QueryBuilder processMatchesPredicate( final MatchesSpecification predicate, final Boolean negationActive,
         final SQLVendor vendor, org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition,
-        final List<Object> values, final List<Integer> valueSQLTypes )
+        Map<String, Object> variables, final List<Object> values, final List<Integer> valueSQLTypes )
     {
         return this.singleQuery( //
             predicate, //
@@ -830,8 +838,8 @@ public abstract class AbstractSQLQuerying
 
     protected QueryBuilder processComparisonPredicate( final ComparisonSpecification<?> predicate,
         final Boolean negationActive, final SQLVendor vendor,
-        org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition, final List<Object> values,
-        final List<Integer> valueSQLTypes )
+        org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition, final Map<String, Object> variables,
+        final List<Object> values, final List<Integer> valueSQLTypes )
     {
         return this.singleQuery( //
             predicate, //
@@ -862,7 +870,7 @@ public abstract class AbstractSQLQuerying
                         new ModifiableInt( lastTableIndex ), columnName,
                         DBNames.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME, vendor, builder.getWhere(), afterWhere,
                         builder.getFrom().getTableReferences().iterator().next(), builder.getGroupBy(),
-                        builder.getHaving(), new ArrayList<QNameJoin>(), values, valueSQLTypes );
+                        builder.getHaving(), new ArrayList<QNameJoin>(), variables, values, valueSQLTypes );
                 }
 
             } //
@@ -871,8 +879,8 @@ public abstract class AbstractSQLQuerying
 
     protected QueryBuilder processManyAssociationContainsPredicate(
         final ManyAssociationContainsSpecification<?> predicate, final Boolean negationActive, final SQLVendor vendor,
-        org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition, final List<Object> values,
-        final List<Integer> valueSQLTypes )
+        org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition, Map<String, Object> variables, 
+        final List<Object> values, final List<Integer> valueSQLTypes )
     {
         return this.singleQuery( //
             predicate, //
@@ -980,8 +988,8 @@ public abstract class AbstractSQLQuerying
 
     protected QueryBuilder processContainsPredicate( final ContainsSpecification<?> predicate,
         final Boolean negationActive, final SQLVendor vendor,
-        org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition, final List<Object> values,
-        final List<Integer> valueSQLTypes )
+        org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition, final Map<String, Object> variables,
+        final List<Object> values, final List<Integer> valueSQLTypes )
     {
         // Path: Top.* (star without braces), value = value
         // ASSUMING value is NOT collection (ie, find all entities, which collection property has value x as leaf item,
@@ -1019,7 +1027,7 @@ public abstract class AbstractSQLQuerying
                         false, lastTableIndex, new ModifiableInt( lastTableIndex ),
                         DBNames.QNAME_TABLE_VALUE_COLUMN_NAME, DBNames.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME,
                         vendor, condition, afterWhere, builder.getFrom().getTableReferences().iterator().next(),
-                        builder.getGroupBy(), builder.getHaving(), new ArrayList<QNameJoin>(), values, valueSQLTypes );
+                        builder.getGroupBy(), builder.getHaving(), new ArrayList<QNameJoin>(), variables, values, valueSQLTypes );
                     builder.getWhere().and( condition.createExpression() );
                 }
             } //
@@ -1051,7 +1059,7 @@ public abstract class AbstractSQLQuerying
     protected QueryBuilder processContainsAllPredicate(
         final ContainsAllSpecification<?> predicate, final Boolean negationActive,
         final SQLVendor vendor, org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition,
-        final List<Object> values, final List<Integer> valueSQLTypes )
+        final Map<String, Object> variables, final List<Object> values, final List<Integer> valueSQLTypes )
     {
         // has all leaf items in specified collection
 
@@ -1091,7 +1099,7 @@ public abstract class AbstractSQLQuerying
                             new ModifiableInt( lastTableIndex ), DBNames.QNAME_TABLE_VALUE_COLUMN_NAME,
                             DBNames.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME, vendor, conditionForItem, afterWhere,
                             builder.getFrom().getTableReferences().iterator().next(), builder.getGroupBy(), builder
-                                .getHaving(), joins, values, valueSQLTypes );
+                                .getHaving(), joins, variables, values, valueSQLTypes );
                         builder.getWhere().or( conditionForItem.createExpression() );
 
                     }
@@ -1192,14 +1200,14 @@ public abstract class AbstractSQLQuerying
         return this.findFromLookupTables( _joinStyles, _negatedJoinStyles, predicate, negationActive );
     }
 
-    protected <ReturnType> ReturnType findFromLookupTables( Map<Class<? extends Specification>, ReturnType> normal,
-        Map<Class<? extends Specification>, ReturnType> negated, Specification<Composite> predicate, Boolean negationActive )
+    protected <ReturnType> ReturnType findFromLookupTables( Map<Class<? extends Specification<?>>, ReturnType> normal,
+        Map<Class<? extends Specification<?>>, ReturnType> negated, Specification<Composite> predicate, Boolean negationActive )
     {
         Class<? extends Specification> predicateClass = predicate.getClass();
         ReturnType result = null;
-        Set<Map.Entry<Class<? extends Specification>, ReturnType>> entries = negationActive ? negated.entrySet() : normal
+        Set<Map.Entry<Class<? extends Specification<?>>, ReturnType>> entries = negationActive ? negated.entrySet() : normal
             .entrySet();
-        for( Map.Entry<Class<? extends Specification>, ReturnType> entry : entries )
+        for( Map.Entry<Class<? extends Specification<?>>, ReturnType> entry : entries )
         {
             if( entry.getKey().isAssignableFrom( predicateClass ) )
             {
@@ -1466,8 +1474,13 @@ public abstract class AbstractSQLQuerying
         final ModifiableInt maxTableIndex, final String columnName, final String collectionPath,
         final SQLVendor vendor, final BooleanBuilder whereClause, final BooleanBuilder afterWhere,
         final TableReferenceBuilder fromClause, final GroupByBuilder groupBy, final BooleanBuilder having,
-        final List<QNameJoin> qNameJoins, final List<Object> values, final List<Integer> valueSQLTypes )
+        final List<QNameJoin> qNameJoins, Map<String, Object> variables, final List<Object> values, final List<Integer> valueSQLTypes )
     {
+        if (value instanceof Variable)
+        {
+            value = variables.get( ((Variable)value ).getName() );
+        }
+        
         final String schemaName = this._state.schemaName().get();
         Integer result = 1;
 
@@ -1510,7 +1523,7 @@ public abstract class AbstractSQLQuerying
                 totalItemsProcessed = totalItemsProcessed
                     + modifyFromClauseAndWhereClauseToGetValue( qName, item, predicate, negationActive,
                         currentTableIndex, maxTableIndex, columnName, path, vendor, newWhere, afterWhere, fromClause,
-                        groupBy, having, qNameJoins, values, valueSQLTypes );
+                        groupBy, having, qNameJoins, variables, values, valueSQLTypes );
 
                 ++collectionIndex;
                 collectionCondition.or( newWhere.createExpression() );
@@ -1543,7 +1556,7 @@ public abstract class AbstractSQLQuerying
         {
             // Visit all properties with recursion and make joins as necessary
             // @formatter:off
-            for ( Property property : Qi4j.INSTANCE_FUNCTION.map( (ValueComposite) value ).state().properties())
+            for ( Property<?> property : Qi4j.INSTANCE_FUNCTION.map( (ValueComposite) value ).state().properties())
             {
                     Boolean qNameJoinDone = false;
                     Integer sourceIndex = maxTableIndex.getInt();
@@ -1590,7 +1603,7 @@ public abstract class AbstractSQLQuerying
                     }
                     modifyFromClauseAndWhereClauseToGetValue( spi.getPropertyDescriptor( property).qualifiedName(), property.get(), predicate, negationActive,
                         targetIndex, maxTableIndex, columnName, collectionPath, vendor, whereClause, afterWhere,
-                        fromClause, groupBy, having, qNameJoins, values, valueSQLTypes );
+                        fromClause, groupBy, having, qNameJoins, variables, values, valueSQLTypes );
             }
 
             // @formatter:on

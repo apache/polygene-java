@@ -22,6 +22,7 @@ import org.qi4j.spi.query.EntityFinderException;
 
 import java.sql.PreparedStatement;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This interface provides parsing support from Qi4j queries to SQL queries. The idea is that this interface produces
@@ -54,6 +55,7 @@ public interface SQLQuerying
         @Optional OrderBy[] orderBySegments, //
         @Optional Integer firstResult, //
         @Optional Integer maxResults, //
+        Map<String, Object> variables,
         List<Object> values, //
         List<Integer> valueSqlTypes, //
         Boolean countOnly //
