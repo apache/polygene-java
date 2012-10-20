@@ -70,6 +70,7 @@ public class SQLTestHelper
         // EntityStore
         mainModule.services( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class ).visibleIn( Visibility.application );
 
+        // START SNIPPET: assembly
         // DataSourceService + Index/Query's DataSource
         new DBCPDataSourceServiceAssembler( "datasource-service-postgres",
                                             Visibility.module,
@@ -83,6 +84,7 @@ public class SQLTestHelper
         // Index/Query
         new PostgreSQLAssembler( Visibility.module, dsAssembler ).assemble( mainModule );
         config.entities( SQLConfiguration.class ).visibleIn( Visibility.layer );
+        // END SNIPPET: assembly
 
         // Always re-index because of possible different app structure of multiple tests.
         mainModule.services( ReindexingStrategy.ReindexingStrategyService.class ).withMixins( ReindexingStrategy.AlwaysNeed.class ).identifiedBy( "reindexer" );

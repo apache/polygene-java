@@ -1,0 +1,30 @@
+[[extension-indexing-sql-tests,SQL Index/Query Tests]]
+= SQL Index/Query Tests =
+
+This file describes how to setup databases for unit testing.
+
+== PostgreSQL ==
+
+- Install PostgreSQL
+- Connect to PostgreSQL to the default database as a superuser
+- Create a database named 'jdbc_test_db'
+
+    CREATE DATABASE jdbc_test_db;
+
+- Create a jdbc_test_login user with 'password' as password
+
+    CREATE USER jdbc_test_login WITH PASSWORD 'password';
+
+- Give the user all privileges on the database
+
+    GRANT ALL ON DATABASE jdbc_test_db TO jdbc_test_login;
+
+- Disconnect and reconnect to the jdbc_test_db as a superuser
+- Activate ltree extension on the created database
+
+    CREATE EXTENSION ltree;
+
+
+== MySQL ==
+
+    TODO
