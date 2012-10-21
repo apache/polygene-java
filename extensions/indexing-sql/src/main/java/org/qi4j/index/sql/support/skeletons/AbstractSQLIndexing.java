@@ -122,7 +122,20 @@ public class AbstractSQLIndexing
         String schemaName = this._state.schemaName().get();
         SQLVendor vendor = this.descriptor.metaInfo( SQLVendor.class );
         
-        Connection connection = this._dataSource.getConnection();
+        Connection connection = AbstractSQLStartup.CONNECTION_FOR_REINDEXING.get();
+        boolean connectionFromStartupWasNull = connection == null;
+        boolean wasAutoCommit = false;
+        boolean wasReadOnly = false;
+        if (connectionFromStartupWasNull)
+        {
+            connection = this._dataSource.getConnection();
+        }
+        else
+        {
+            wasAutoCommit = connection.getAutoCommit();
+            wasReadOnly = connection.isReadOnly();
+        }
+        
         try
         {
             connection.setAutoCommit( false );
@@ -230,7 +243,14 @@ public class AbstractSQLIndexing
             }
             finally
             {
-                SQLUtil.closeQuietly( connection );
+                if (connectionFromStartupWasNull)
+                {
+                    SQLUtil.closeQuietly( connection );
+                } else
+                {
+                    connection.setReadOnly( wasReadOnly );
+                    connection.setAutoCommit( wasAutoCommit );
+                }
             }
         }
     }

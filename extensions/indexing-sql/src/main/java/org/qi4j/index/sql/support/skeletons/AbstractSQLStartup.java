@@ -96,6 +96,15 @@ public abstract class AbstractSQLStartup
     public static final String DEFAULT_SCHEMA_NAME = "qi4j";
 
     private static final Logger _log = LoggerFactory.getLogger( AbstractSQLStartup.class.getName() );
+    
+    static final ThreadLocal<Connection> CONNECTION_FOR_REINDEXING = new ThreadLocal<Connection>()
+    {
+        @Override
+        protected Connection initialValue()
+        {
+            return null;
+        }
+    };
 
     @This
     private SQLDBState _state;
@@ -154,9 +163,10 @@ public abstract class AbstractSQLStartup
         this._state.enumPKs().set( new HashMap<String, Integer>() );
 
         Connection connection = this._dataSource.getConnection();
-        connection.setAutoCommit( true );
         try
         {
+            connection.setAutoCommit( true );
+            connection.setReadOnly( false );
             this.syncDB( connection );
         }
         finally
@@ -650,7 +660,16 @@ public abstract class AbstractSQLStartup
         connection.prepareStatement( this._vendor.toString( clearEntityData ) ).execute();
         // @formatter:on
 
-        this._reindexer.reindex();
+        CONNECTION_FOR_REINDEXING.set( connection );
+        try
+        {
+            this._reindexer.reindex();
+        }
+        finally
+        {
+            CONNECTION_FOR_REINDEXING.set( null );
+        }
+        
         _log.info( "Reindexing complete." );
     }
 
