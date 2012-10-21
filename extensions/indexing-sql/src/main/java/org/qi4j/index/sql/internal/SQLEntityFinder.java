@@ -198,7 +198,7 @@ public class SQLEntityFinder
         Integer resultSetType, Integer resultSetHoldability )
         throws SQLException
     {
-        PreparedStatement ps = this._dataSource.getConnection()
+        PreparedStatement ps = connection
             .prepareStatement( query, resultSetType, ResultSet.CONCUR_READ_ONLY, resultSetHoldability );
         if( values.size() != valueSQLTypes.size() )
         {

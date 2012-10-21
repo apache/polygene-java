@@ -112,10 +112,6 @@ public class AbstractSQLIndexing
     public void indexEntities( Iterable<EntityState> changedStates )
         throws SQLException
     {
-        Connection connection = this._dataSource.getConnection();
-        Boolean wasAutoCommit = connection.getAutoCommit();
-        connection.setAutoCommit( false );
-        connection.setReadOnly( false );
         PreparedStatement insertToEntityTablePS = null;
         PreparedStatement updateEntityTablePS = null;
         PreparedStatement removeEntityPS = null;
@@ -125,9 +121,13 @@ public class AbstractSQLIndexing
         Map<QualifiedName, PreparedStatement> qNameInsertPSs = new HashMap<QualifiedName, PreparedStatement>();
         String schemaName = this._state.schemaName().get();
         SQLVendor vendor = this.descriptor.metaInfo( SQLVendor.class );
-
+        
+        Connection connection = this._dataSource.getConnection();
         try
         {
+            connection.setAutoCommit( false );
+            connection.setReadOnly( false );
+
             // TODO cache all queries.
             insertToEntityTablePS = connection.prepareStatement( vendor.toString( this.createInsertStatement(
                 schemaName, ENTITY_TABLE_NAME, AMOUNT_OF_COLUMNS_IN_ENTITY_TABLE, vendor ) ) );

@@ -157,7 +157,7 @@ public abstract class AbstractSQLStartup
         connection.setAutoCommit( true );
         try
         {
-            this.syncDB();
+            this.syncDB( connection );
         }
         finally
         {
@@ -299,10 +299,9 @@ public abstract class AbstractSQLStartup
 
     }
 
-    private void syncDB()
+    private void syncDB( Connection connection )
         throws SQLException
     {
-        Connection connection = this._dataSource.getConnection();
         String schemaName = this._state.schemaName().get();
         ResultSet rs = connection.getMetaData().getSchemas();
 
@@ -314,28 +313,28 @@ public abstract class AbstractSQLStartup
                 schemaFound = rs.getString( 1 ).equals( schemaName );
             }
 
-            Boolean reindexingRequired = schemaFound ? this.isReindexingNeeded() : false;
+            Boolean reindexingRequired = schemaFound ? this.isReindexingNeeded( connection ) : false;
             ApplicationInfo appInfo = this.constructApplicationInfo( false ); // !reindexingRequired );
 
             if( schemaFound && reindexingRequired )
             {
                 _log.debug( "Schema Found & Reindexing Required" );
-                this.clearSchema();
+                this.clearSchema( connection );
                 _log.debug( "Reindexing needed, Application metadata from database has been cleared." );
             }
             if( schemaFound && !reindexingRequired )
             {
                 _log.debug( "Schema Found & Reindexing NOT Required" );
-                this.testRequiredCapabilities();
+                this.testRequiredCapabilities( connection );
                 _log.debug( "Underlying database fullfill required capabilities" );
-                this.readAppMetadataFromDB( appInfo.entityDescriptors );
+                this.readAppMetadataFromDB( connection, appInfo.entityDescriptors );
                 _log.debug( "Application metadata loaded from database" );
             }
             else
             {
                 _log.debug( "Schema {}Found & Reindexing {}Required", schemaFound ? "" : "NOT ", reindexingRequired ? "" : "NOT " );
-                this.createSchema( schemaFound );
-                this.writeAppMetadataToDB( appInfo );
+                this.createSchema( connection, schemaFound );
+                this.writeAppMetadataToDB( connection, appInfo );
 
                 if( reindexingRequired )
                 {
@@ -346,14 +345,12 @@ public abstract class AbstractSQLStartup
         finally
         {
             SQLUtil.closeQuietly( rs );
-            SQLUtil.closeQuietly( connection );
         }
     }
 
-    private void createSchema( Boolean schemaFound )
+    private void createSchema( Connection connection, Boolean schemaFound )
         throws SQLException
     {
-        Connection connection = this._dataSource.getConnection();
         String schemaName = this._state.schemaName().get();
 
         SQLVendor vendor = this._vendor;
@@ -378,7 +375,7 @@ public abstract class AbstractSQLStartup
                 _log.debug( "Database schema created" );
             }
             
-            this.testRequiredCapabilities();
+            this.testRequiredCapabilities( connection );
             _log.debug( "Underlying database fullfill required capabilities" );
                         
             stmt.execute(
@@ -629,7 +626,6 @@ public abstract class AbstractSQLStartup
         finally
         {
             SQLUtil.closeQuietly( stmt );
-            SQLUtil.closeQuietly( connection );
         }
 
         // @formatter:on
@@ -658,12 +654,11 @@ public abstract class AbstractSQLStartup
         _log.info( "Reindexing complete." );
     }
 
-    private void readAppMetadataFromDB( Map<String, EntityDescriptor> entityDescriptors )
+    private void readAppMetadataFromDB( Connection connection, Map<String, EntityDescriptor> entityDescriptors )
         throws SQLException
     {
 
         String schemaName = this._state.schemaName().get();
-        Connection connection = this._dataSource.getConnection();
         Statement stmt = connection.createStatement();
 
         SQLVendor vendor = this._vendor;
@@ -753,14 +748,12 @@ public abstract class AbstractSQLStartup
         finally
         {
             SQLUtil.closeQuietly( stmt );
-            SQLUtil.closeQuietly( connection );
         }
     }
 
-    private void writeAppMetadataToDB( ApplicationInfo appInfo )
+    private void writeAppMetadataToDB( Connection connection, ApplicationInfo appInfo )
         throws SQLException
     {
-        Connection connection = this._dataSource.getConnection();
         String schemaName = this._state.schemaName().get();
 
         SQLVendor vendor = this._vendor;
@@ -768,7 +761,6 @@ public abstract class AbstractSQLStartup
         TableReferenceFactory t = vendor.getTableReferenceFactory();
         LiteralFactory l = vendor.getLiteralFactory();
         
-        try {
 
             // @formatter:off
             PreparedStatement ps = connection.prepareStatement(
@@ -985,12 +977,7 @@ public abstract class AbstractSQLStartup
                 SQLUtil.closeQuietly( stmt );
                 SQLUtil.closeQuietly( ps );
             }
-        
-        }
-        finally
-        {
-            SQLUtil.closeQuietly( connection );
-        }
+
 
         // @formatter:off
     }
@@ -1110,11 +1097,10 @@ public abstract class AbstractSQLStartup
     }
 
     // This method assume that the schema exists
-    private Boolean isReindexingNeeded()
+    private Boolean isReindexingNeeded(Connection connection)
             throws SQLException
     {
         Boolean result = true;
-        Connection connection = this._dataSource.getConnection();
         String schemaName = this._state.schemaName().get();
         Statement stmt = connection.createStatement();
         try
@@ -1151,17 +1137,15 @@ public abstract class AbstractSQLStartup
         finally
         {
             SQLUtil.closeQuietly( stmt );
-            SQLUtil.closeQuietly( connection );
         }
 
         return result;
     }
 
     // Only used by isReindexingNeeded
-    private void clearSchema()
+    private void clearSchema(Connection connection)
         throws SQLException
     {
-        Connection connection = this._dataSource.getConnection();
         String schemaName = this._state.schemaName().get();
         DatabaseMetaData metaData = connection.getMetaData();
 
@@ -1186,7 +1170,6 @@ public abstract class AbstractSQLStartup
         finally
         {
             SQLUtil.closeQuietly( stmt );
-            SQLUtil.closeQuietly( connection );
         }
     }
 
@@ -1385,7 +1368,7 @@ public abstract class AbstractSQLStartup
         }
     }
 
-    protected abstract void testRequiredCapabilities()
+    protected abstract void testRequiredCapabilities( Connection connection )
         throws SQLException;
 
     protected boolean dropTablesIfExist( DatabaseMetaData metaData,

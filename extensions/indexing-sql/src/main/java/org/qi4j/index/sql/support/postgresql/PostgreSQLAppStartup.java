@@ -54,7 +54,7 @@ public class PostgreSQLAppStartup extends AbstractSQLStartup
     }
 
     @Override
-    protected void testRequiredCapabilities()
+    protected void testRequiredCapabilities( Connection connection )
         throws SQLException
     {
         // If collection structure matching will ever be needed, using ltree as path to each leaf item in
@@ -62,7 +62,6 @@ public class PostgreSQLAppStartup extends AbstractSQLStartup
         // ltree module provides specific datatype for such path, which may be indexed in order to greatly improve
         // performance
 
-        Connection connection = this._dataSource.getConnection();
         Statement stmt = connection.createStatement();
         try
         {
@@ -83,10 +82,9 @@ public class PostgreSQLAppStartup extends AbstractSQLStartup
         catch( SQLException sqle )
         {
             throw new InternalError(
-                "It seems that your database doesn't have ltree as type. It is needed to store collections. Please refer to hopefully supplied instructions on how to add ltree type (hint: run <pg_install_dir>/share/contrib/ltree.sql script)." );
+                "It seems that your database doesn't have ltree as type. It is needed to store collections. Please refer to hopefully supplied instructions on how to add ltree type (hint: run <pg_install_dir>/share/contrib/ltree.sql script or command 'CREATE EXTENSION ltree;')." );
         } finally {
             SQLUtil.closeQuietly( stmt );
-            SQLUtil.closeQuietly( connection );
         }
     }
 
