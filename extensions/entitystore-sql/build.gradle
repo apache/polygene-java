@@ -1,22 +1,23 @@
-
 description = "Qi4j SQL EntityStore Extension"
 
 jar { manifest { name = "Qi4j Extension - EntityStore - SQL" }}
 
 dependencies {
-  compile(project(":org.qi4j.core:org.qi4j.core.api"))
-  compile(project(":org.qi4j.core:org.qi4j.core.spi"))
-  compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
-  compile(project(":org.qi4j.libraries:org.qi4j.library.sql"))
-  compile(libraries.javaSqlGenerator)
-  compile(libraries.javaSqlGeneratorImpl)
-  testCompile(libraries.derby)
-  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
-  testCompile(project(":org.qi4j.libraries:org.qi4j.library.sql-dbcp"))
-  testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
-  testRuntime(libraries.logback)
-  testRuntime(libraries.h2)
-  testRuntime(libraries.mysql_connector)
-  testRuntime(libraries.postgres)
-  testRuntime(libraries.sqlite)
+
+  compile project(":org.qi4j.core:org.qi4j.core.bootstrap")
+  compile project(":org.qi4j.libraries:org.qi4j.library.sql")
+  compile libraries.javaSqlGenerator
+  compile libraries.javaSqlGeneratorImpl
+
+  testCompile project(":org.qi4j.core:org.qi4j.core.testsupport")
+  testCompile project(":org.qi4j.libraries:org.qi4j.library.sql-dbcp")
+  testCompile libraries.derby // Needed at compile time for polite test shutdown
+
+  testRuntime project(":org.qi4j.core:org.qi4j.core.runtime")
+  testRuntime libraries.logback
+  testRuntime libraries.h2
+  testRuntime libraries.mysql_connector
+  testRuntime libraries.postgres
+  testRuntime libraries.sqlite
+
 }

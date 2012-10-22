@@ -14,22 +14,20 @@
 
 package org.qi4j.index.sql.support.postgresql.assembly;
 
+import java.io.IOException;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.index.reindexer.ReindexerService;
 import org.qi4j.index.sql.support.postgresql.PostgreSQLService;
+import org.qi4j.library.sql.assembly.DataSourceAssembler;
 import org.qi4j.library.sql.common.AbstractSQLAssembler;
 import org.sql.generation.api.vendor.PostgreSQLVendor;
 import org.sql.generation.api.vendor.SQLVendorProvider;
 
-import java.io.IOException;
-
-import org.qi4j.library.sql.assembly.DataSourceAssembler;
-
 /**
  * This is the assembler class to use when PostgreSQL is database for SQL Indexing in your application.
- * 
+ *
  * @author Stanislav Muhametsin
  */
 public class PostgreSQLAssembler extends AbstractSQLAssembler
@@ -39,10 +37,6 @@ public class PostgreSQLAssembler extends AbstractSQLAssembler
      * The default name for the service.
      */
     public static final String INDEXING_SERVICE_NAME = "indexing-sql";
-
-    public static final String DATASOURCE_SERVICE_NAME = "datasource-service-postgres";
-    
-    public static final String DATASOURCE_NAME = "datasource-postgres";
 
     /**
      * The default visibility for the service.

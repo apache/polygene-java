@@ -17,11 +17,8 @@ package org.qi4j.index.sql.postgresql;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-
 import javax.sql.DataSource;
-
 import org.junit.Assume;
-
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
@@ -33,13 +30,12 @@ import org.qi4j.index.sql.support.common.DBNames;
 import org.qi4j.index.sql.support.common.ReindexingStrategy;
 import org.qi4j.index.sql.support.postgresql.PostgreSQLAppStartup;
 import org.qi4j.index.sql.support.postgresql.assembly.PostgreSQLAssembler;
-import org.qi4j.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.qi4j.library.sql.assembly.DataSourceAssembler;
 import org.qi4j.library.sql.common.SQLConfiguration;
 import org.qi4j.library.sql.common.SQLUtil;
 import org.qi4j.library.sql.datasource.DataSources;
+import org.qi4j.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
-
 import org.slf4j.Logger;
 
 public class SQLTestHelper
@@ -72,12 +68,12 @@ public class SQLTestHelper
 
         // START SNIPPET: assembly
         // DataSourceService + Index/Query's DataSource
-        new DBCPDataSourceServiceAssembler( "datasource-service-postgres",
+        new DBCPDataSourceServiceAssembler( "postgres-datasource-service",
                                             Visibility.module,
                                             config,
                                             Visibility.layer ).assemble( mainModule );
-        DataSourceAssembler dsAssembler = new DataSourceAssembler( "datasource-service-postgres",
-                                                                   "datasource-postgres",
+        DataSourceAssembler dsAssembler = new DataSourceAssembler( "postgres-datasource-service",
+                                                                   "postgres-datasource",
                                                                    Visibility.module,
                                                                    DataSources.newDataSourceCircuitBreaker() );
 
@@ -87,7 +83,7 @@ public class SQLTestHelper
         // END SNIPPET: assembly
 
         // Always re-index because of possible different app structure of multiple tests.
-        mainModule.services( ReindexingStrategy.ReindexingStrategyService.class ).withMixins( ReindexingStrategy.AlwaysNeed.class ).identifiedBy( "reindexer" );
+        mainModule.services( ReindexingStrategy.ReindexingStrategyService.class ).withMixins( ReindexingStrategy.AlwaysNeed.class );
         config.entities( ReindexerConfiguration.class ).visibleIn( Visibility.layer );
     }
 

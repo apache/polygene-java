@@ -18,8 +18,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Map;
-import javax.sql.DataSource;
-import org.qi4j.api.injection.scope.Service;
 import org.qi4j.index.sql.support.skeletons.AbstractSQLStartup;
 import org.qi4j.library.sql.common.SQLUtil;
 import org.sql.generation.api.grammar.common.datatypes.SQLDataType;
@@ -33,9 +31,6 @@ import org.sql.generation.api.vendor.SQLVendor;
 
 public class PostgreSQLAppStartup extends AbstractSQLStartup
 {
-
-    @Service
-    private DataSource _dataSource;
 
     private PostgreSQLVendor _vendor;
 

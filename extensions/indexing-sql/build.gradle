@@ -1,25 +1,24 @@
-
 description = "Qi4j SQL Indexing Extension"
 
 jar {manifest {name = "Qi4j Extension - Indexing - SQL"}}
 
 dependencies {
-  compile(project(':org.qi4j.extensions:org.qi4j.extension.reindexer'))
-  compile(project(":org.qi4j.core:org.qi4j.core.api"))
-  compile(project(":org.qi4j.core:org.qi4j.core.spi"))
-  compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
-  compile(project(":org.qi4j.libraries:org.qi4j.library.sql"))
-  compile(libraries.javaSqlGenerator)
-  compile(libraries.javaSqlGeneratorImpl)
-  compile(libraries.slf4j_api)
-  testCompile(libraries.junit)
-  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
-  testCompile(project(":org.qi4j.libraries:org.qi4j.library.sql-dbcp"))
-  testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
-  testRuntime(libraries.asm)
-  testRuntime(libraries.asm_commons)
-  testRuntime(libraries.logback)
-  testRuntime(libraries.derby)
-  testRuntime(libraries.mysql_connector)
-  testRuntime(libraries.postgres)
+
+  compile project(":org.qi4j.core:org.qi4j.core.bootstrap")
+  compile project(":org.qi4j.libraries:org.qi4j.library.sql")
+  compile project(':org.qi4j.extensions:org.qi4j.extension.reindexer')
+  compile libraries.javaSqlGenerator
+  compile libraries.javaSqlGeneratorImpl
+
+  testCompile project(":org.qi4j.core:org.qi4j.core.testsupport")
+  testCompile project(":org.qi4j.libraries:org.qi4j.library.sql-dbcp")
+
+  testRuntime project(":org.qi4j.core:org.qi4j.core.runtime")
+  testRuntime libraries.logback
+  testRuntime libraries.derby
+  testRuntime libraries.h2
+  testRuntime libraries.mysql_connector
+  testRuntime libraries.postgres
+  testRuntime libraries.sqlite
+
 }
