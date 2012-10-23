@@ -4,23 +4,17 @@ jar { manifest { name = "Qi4j Extension - EntityStore - JClouds" }}
 
 dependencies {
 
-  compile(project(":org.qi4j.core:org.qi4j.core.api"))
-  compile(project(":org.qi4j.core:org.qi4j.core.spi"))
-  compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
-  compile(project(":org.qi4j.libraries:org.qi4j.library.locking"))
-  compile(libraries.slf4j_api)
-  compile(libraries.guava)
-  compile('org.jclouds:jclouds-blobstore:1.5.0-beta.1')
-  compile('org.jclouds:jclouds-core:1.5.0-beta.1')
+  compile project( ":org.qi4j.core:org.qi4j.core.bootstrap" )
+  compile project( ":org.qi4j.libraries:org.qi4j.library.locking" )
+  compile libraries.guava
+  compile libraries.jclouds_core
+  compile libraries.jclouds_blobstore
 
-  testCompile(libraries.junit)
-  testCompile('org.jclouds.api:filesystem:1.5.0-beta.1')
-  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
+  testCompile project( ":org.qi4j.core:org.qi4j.core.testsupport" )
+  testCompile libraries.jclouds_filesystem
 
-  testRuntime(libraries.slf4j_simple)
-  testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
-  testRuntime(libraries.asm)
-  testRuntime(libraries.asm_commons)
+  testRuntime project( ":org.qi4j.core:org.qi4j.core.runtime" )
+  testRuntime libraries.logback
 
 }
 

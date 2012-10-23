@@ -2,72 +2,73 @@
 def asmVersion = '3.3.1'
 def beanshellVersion = '2.0b4'
 def bonecpVersion = '0.7.1.RELEASE'
-def bouncyVersion = '1.45'
+def bouncyVersion = '1.46'
 def c3p0Version = '0.9.1.2'
-def commonsCodecVersion = '1.3'
-def commonsDbcpVersion = '1.2.2'
-def commonsIoVersion = '1.4'
-def commonsLangVersion = '2.4'
-def cxfVersion = '2.4.7'
-def derbyVersion = '10.8.1.2'
+def commonsCodecVersion = '1.7'
+def commonsDbcpVersion = '1.4'
+def commonsIoVersion = '2.4'
+def commonsLangVersion = '2.6'
+def cxfVersion = '2.5.6' // 2.7.0 - Unable to resolve dependencies!
+def derbyVersion = '10.9.1.0'
 def dnsJavaVersion = '2.1.1'
-def ehcacheVersion = '2.4.2'
+def ehcacheVersion = '2.5.6' // 2.6.0 - Fails to compile!
 def elasticsearchVersion = '0.19.10'
-def freemarkerVersion = '2.3.18'
+def freemarkerVersion = '2.3.19'
 def gaeVersion = '1.3.3.1'
-def groovyVersion = '1.7.8'
-def guavaVersion = '12.0'
+def groovyVersion = '1.8.8'
+def guavaVersion = '13.0.1'
 def h2Version = '1.3.168'
-def hazelcastVersion = '2.2'
-def hibernateVersion = "3.5.4-Final"
-def httpClientVersion = '4.1.2'
-def ibatisVersion = "2.3.0"
-def javascriptVersion = '1.7R2'
+def hazelcastVersion = '2.4'
+def httpClientVersion = '4.1.3' // 4.2.1 Fails to do HTTP basic auth in tests!
+def javascriptVersion = '1.7R4'
 def javasqlgeneratorVersion = '0.3.1'
-def jdbmVersion = '2.0.0'
-def jclVersion = '1.1'
-def jdomVersion = '1.1'
+def jcloudsVersion = '1.5.2'
+def jdbmVersion = '2.0.1'
+def jdomVersion = '2.0.2'
 def jedisVersion = '2.1.0'
-ext.jettyVersion = '8.1.5.v20120716'
-def jodaTimeVersion = '1.6.2'
-def jrubyVersion = '1.5.6'
+ext.jettyVersion = '8.1.7.v20120910'
+def jgoodiesLooksVersion = '2.2.2'
+def jodaTimeVersion = '2.1'
+def jrubyVersion = '1.6.8'
 def jtaVersion = '1.1'
-def liquibaseVersion = '2.0.1'
-def log4jVersion = '1.2.16'
-def logbackVersion = '1.0.3'
-def mongodbVersion = '2.7.0'
-def mysqlVersion = '5.1.20'
-def neoVersion = '1.3'
-def neoIndexVersion = '1.3-1.3.M01'
-def osgiVersion = '4.2.0'
-def postgresqlVersion = '8.4-701.jdbc4'
-def rdfVersion = '2.6.1'
-def restletVersion = '2.0.9'
-def riakVersion = '1.0.5'
+def liquibaseVersion = '2.0.5'
+def log4jVersion = '1.2.17'
+def logbackVersion = '1.0.7'
+def mongodbVersion = '2.9.1'
+def mysqlVersion = '5.1.21'
+def neoVersion = '1.3' // 1.8
+def neoIndexVersion = '1.3-1.3.M01' // Do not exist anymore!
+def osgiVersion = '4.2.0' // 4.3.0 - Fails to compile!
+def pdfboxVersion = '1.7.1'
+def postgresqlVersion = '9.1-901-1.jdbc4'
+def prefuseVersion = '0.21'
+def rdfVersion = '2.6.6' // 2.6.9 - Application assembly fails, missing method Repository.isInitalized().
+def restletVersion = '2.0.15'
+def riakVersion = '1.0.6'
 def scalaVersion = '2.9.2'
 ext.servletVersion = '3.0.1'
 def shiroVersion = '1.2.1'
 def skedVersion = '1.2'
 def sleepycatVersion = '4.0.103'
-def slf4jVersion = '1.6.1'
-def solrVersion = "1.4.1"
-def springVersion = '2.5.6'
+def slf4jVersion = '1.7.2'
+def solrVersion = "1.4.1" // 4.0.0 - Fails to compile!
+def springVersion = '3.1.2.RELEASE'
 def sqliteVersion = '3.7.2'
-def strutsVersion = '2.1.8.1'
-def velocityVersion = '1.6.2'
-def voldemortVersion = '0.81'
-def wicketVersion = '1.5.1'
+def strutsVersion = '2.3.4.1'
+def velocityVersion = '1.7'
+def voldemortVersion = '0.81' // 0.96 - Not in any repository?
+def wicketVersion = '1.5.8' // 6.2.0 - Fails to compile!
 def wicketStatelessVersion = '1.5.0'
-def woodstoxVersion = '4.1.0'
+def woodstoxVersion = '4.1.4'
 def wsdl4jVersion = '1.6.2'
-def xmlSchemaVersion = '1.4.7'
+def yammerMetricsVersion = '2.1.3'
 
-def antVersion = '1.8.1'
+def antVersion = '1.8.4'
 def junitVersion = '4.10'
-def testNgVersion = '5.8'
+def testNgVersion = '6.8'
 def jmockVersion = '2.5.1'
-def mockitoVersion = '1.8.5'
-def easyMockVersion = '3.0'
+def mockitoVersion = '1.9.5'
+def easyMockVersion = '3.1'
 def xmlunitVersion = '1.3'
 
 // build a map of the dependency artifacts to use.  Allows centralized definition of the version of artifacts to
@@ -176,7 +177,7 @@ rootProject.ext {
                   "org.beanshell:bsh-reflect:$beanshellVersion"
 
           ],
-          javascript: "rhino:js:$javascriptVersion",
+          javascript: "org.mozilla:rhino:$javascriptVersion",
 
           // Wicket
           wicket: [ "org.apache.wicket:wicket-core:$wicketVersion",
@@ -195,8 +196,12 @@ rootProject.ext {
           ],
           h2: "com.h2database:h2:$h2Version",
           hazelcast: "com.hazelcast:hazelcast:$hazelcastVersion",
+          jclouds_core: "org.jclouds:jclouds-core:$jcloudsVersion",
+          jclouds_blobstore: "org.jclouds:jclouds-blobstore:$jcloudsVersion",
+          jclouds_filesystem: "org.jclouds.api:filesystem:$jcloudsVersion",
           jdbm: "org.fusesource.jdbm:jdbm:$jdbmVersion",
           jedis: "redis.clients:jedis:$jedisVersion",
+          jgoodies_looks: "com.jgoodies:looks:$jgoodiesLooksVersion",
           appengine: "com.google.appengine:appengine-api:$gaeVersion",
           mongodb: "org.mongodb:mongo-java-driver:$mongodbVersion",
           riak: "com.basho.riak:riak-client:$riakVersion",
@@ -204,8 +209,6 @@ rootProject.ext {
                   "org.neo4j:neo4j-index:$neoIndexVersion"
           ],
           jta: "javax.transaction:jta:$jtaVersion",
-          ibatis: "org.apache.ibatis:ibatis-sqlmap:$ibatisVersion",
-          hibernate: "org.hibernate:hibernate-core:$hibernateVersion",
           javaSqlGenerator: "org.java-sql-generator:org.java-sql-generator.api:$javasqlgeneratorVersion",
           javaSqlGeneratorImpl: "org.java-sql-generator:org.java-sql-generator.implementation:$javasqlgeneratorVersion",
           voldemort: "voldemort:voldemort:$voldemortVersion",
@@ -231,7 +234,7 @@ rootProject.ext {
           http_client: "org.apache.httpcomponents:httpclient:$httpClientVersion",
           woodstox: "org.codehaus.woodstox:woodstox-core-asl:$woodstoxVersion",
           restlet_xml: "org.restlet.jee:org.restlet.ext.xml:$restletVersion",
-          bouncy_castle: "org.bouncycastle:bcprov-jdk15:$bouncyVersion",
+          bouncy_castle: "org.bouncycastle:bcprov-jdk16:$bouncyVersion",
           dnsjava: "dnsjava:dnsjava:$dnsJavaVersion",
           freemarker: "org.freemarker:freemarker:$freemarkerVersion",
           shiro: "org.apache.shiro:shiro-core:$shiroVersion",
@@ -240,6 +243,9 @@ rootProject.ext {
           c3p0: "c3p0:c3p0:$c3p0Version",
           liquibase: "org.liquibase:liquibase-core:$liquibaseVersion",
           sked: "org.codeartisans:sked:$skedVersion",
+          yammer_metrics: "com.yammer.metrics:metrics-core:$yammerMetricsVersion",
+          pdfbox: "org.apache.pdfbox:pdfbox:$pdfboxVersion",
+          prefuse: "de.sciss:prefuse-core:$prefuseVersion",
 
           // testing
           derby: "org.apache.derby:derby:$derbyVersion",
@@ -252,7 +258,7 @@ rootProject.ext {
           easymock: "org.easymock:easymock:$easyMockVersion",
           mockito: "org.mockito:mockito-core:$mockitoVersion",
           jmock: "org.jmock:jmock:$jmockVersion",
-          testng: "org.testng:testng:$testNgVersion:jdk15",
+          testng: "org.testng:testng:$testNgVersion",
           xmlunit: "xmlunit:xmlunit:$xmlunitVersion"
   ]
 }

@@ -3,12 +3,13 @@ description = "Sample of implementation of a Car Rental application."
 jar { manifest { name = "Qi4j Sample - Car Rental" }}
 
 dependencies {
-  compile(project(":org.qi4j.core:org.qi4j.core.api"))
-  compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
-  compile "javax.servlet:servlet-api:2.5"
 
-  testRuntime(libraries.slf4j_simple)
-  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
-  testRuntime(project(":org.qi4j.core:org.qi4j.core.spi"))
-  testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
+  compile project( ":org.qi4j.core:org.qi4j.core.bootstrap" )
+  compile libraries.servlet_api
+
+  testCompile project( ":org.qi4j.core:org.qi4j.core.testsupport" )
+
+  testRuntime project( ":org.qi4j.core:org.qi4j.core.runtime" )
+  testRuntime libraries.logback
+
 }
