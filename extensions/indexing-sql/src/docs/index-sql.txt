@@ -40,7 +40,7 @@ Sample DataSource configuration defaults:
 
 [source,java]
 ----
-include::../test/resources/postgresql-datasource.properties[]
+include::../test/resources/postgres-datasource.properties[]
 ----
 
 IMPORTANT: The PostgreSQL ltree extension is needed on the used database, see below how to install it on your database.
