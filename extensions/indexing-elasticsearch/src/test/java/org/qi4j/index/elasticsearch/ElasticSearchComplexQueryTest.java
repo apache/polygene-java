@@ -19,6 +19,7 @@ package org.qi4j.index.elasticsearch;
 
 import java.io.File;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -26,14 +27,13 @@ import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.index.elasticsearch.assembly.ESFilesystemIndexQueryAssembler;
 import org.qi4j.library.fileconfig.FileConfigurationOverride;
 import org.qi4j.library.fileconfig.FileConfigurationService;
-import org.qi4j.spi.query.EntityFinderException;
-import org.qi4j.test.indexing.AbstractEntityFinderTest;
+import org.qi4j.test.indexing.AbstractComplexQueryTest;
 
-import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
 
-public class ElasticSearchFinderTest
-        extends AbstractEntityFinderTest
+@Ignore( "ElasticSearch Index/Query do not support Complex Queries, ie. queries by 'example values'" )
+public class ElasticSearchComplexQueryTest
+        extends AbstractComplexQueryTest
 {
 
     @BeforeClass
@@ -69,17 +69,6 @@ public class ElasticSearchFinderTest
     public void showNetwork()
     {
         // IndexExporter not supported by ElasticSearch
-    }
-
-    @Override
-    public void script22()
-            throws EntityFinderException
-    {
-        try {
-            super.script22();
-            fail( "Regex filter not implemented yet" );
-        } catch ( UnsupportedOperationException expected ) {
-        }
     }
 
 }

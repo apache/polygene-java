@@ -43,6 +43,9 @@ import static org.qi4j.api.query.QueryExpressions.eq;
 import static org.qi4j.api.query.QueryExpressions.not;
 import static org.qi4j.api.query.QueryExpressions.templateFor;
 
+/**
+ * Test Index/Query service for complex queries, ie. queries by "example values".
+ */
 public abstract class AbstractComplexQueryTest
     extends AbstractAnyQueryTest
 {
@@ -90,15 +93,14 @@ public abstract class AbstractComplexQueryTest
     @Test
     public void script01()
     {
-        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
-        Property<Address> addressProp = templateFor( Person.class ).address();
-
         ValueBuilder<Address> addressBuilder = this.module.newValueBuilder( Address.class );
         Address address = addressBuilder.prototype();
         address.line1().set( "Qi Street 4j" );
         address.line2().set( "Off main Java Street" );
         address.zipcode().set( "12345" );
 
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
+        Property<Address> addressProp = templateFor( Person.class ).address();
         qb = qb.where( eq( addressProp, addressBuilder.newInstance() ) );
         Query<Person> query = unitOfWork.newQuery( qb );
         System.out.println( "*** script01: " + query );
@@ -109,15 +111,14 @@ public abstract class AbstractComplexQueryTest
     @Test
     public void script02()
     {
-        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
-        Property<Address> addressProp = templateFor( Person.class ).address();
-
         ValueBuilder<Address> addressBuilder = this.module.newValueBuilder( Address.class );
         Address address = addressBuilder.prototype();
         address.line1().set( "Qi Street 4j" );
         address.line2().set( "Off main Java Street" );
         address.zipcode().set( "12345" );
 
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
+        Property<Address> addressProp = templateFor( Person.class ).address();
         qb = qb.where( not( eq( addressProp, addressBuilder.newInstance() ) ) );
         Query<Person> query = unitOfWork.newQuery( qb );
         System.out.println( "*** script02: " + query );
@@ -134,7 +135,7 @@ public abstract class AbstractComplexQueryTest
         param.name().set( "user" );
         param.value().set( "jackdoe" );
         queryParams.add( queryParamBuilder.newInstance() );
-        
+
         queryParamBuilder = this.module.newValueBuilder( QueryParam.class );
         param = queryParamBuilder.prototype();
         param.name().set( "password" );
@@ -160,7 +161,7 @@ public abstract class AbstractComplexQueryTest
         param.name().set( "password" );
         param.value().set( "somepassword" );
         queryParams.add( queryParamBuilder.newInstance() );
-        
+
         queryParamBuilder = this.module.newValueBuilder( QueryParam.class );
         param = queryParamBuilder.prototype();
         param.name().set( "user" );
@@ -185,7 +186,7 @@ public abstract class AbstractComplexQueryTest
         param.name().set( "user" );
         param.value().set( "jackdoe" );
         queryParams.add( queryParamBuilder.newInstance() );
-        
+
         queryParamBuilder = this.module.newValueBuilder( QueryParam.class );
         param = queryParamBuilder.prototype();
         param.name().set( "password" );
@@ -314,7 +315,7 @@ public abstract class AbstractComplexQueryTest
         param.name().set( "user" );
         param.value().set( "jackdoe" );
         queryParams.add( queryParamBuilder.newInstance() );
-        
+
         queryParamBuilder = this.module.newValueBuilder( QueryParam.class );
         param = queryParamBuilder.prototype();
         param.name().set( "password" );
@@ -339,7 +340,7 @@ public abstract class AbstractComplexQueryTest
         param.name().set( "user" );
         param.value().set( "jackdoe" );
         queryParams.add( queryParamBuilder.newInstance() );
-        
+
         queryParamBuilder = this.module.newValueBuilder( QueryParam.class );
         param = queryParamBuilder.prototype();
         param.name().set( "password" );

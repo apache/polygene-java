@@ -28,11 +28,14 @@ import org.elasticsearch.index.query.OrFilterBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortOrder;
+import org.qi4j.api.Qi4j;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.query.grammar.*;
+import org.qi4j.api.value.ValueComposite;
+import org.qi4j.api.value.ValueDescriptor;
 import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specification;
@@ -59,7 +62,11 @@ public interface ElasticSearchFinder
         private ElasticSearchSupport support;
 
         @Override
-        public Iterable<EntityReference> findEntities( Class<?> resultType, Specification<Composite> whereClause, OrderBy[] orderBySegments, Integer firstResult, Integer maxResults, Map<String, Object> variables )
+        public Iterable<EntityReference> findEntities( Class<?> resultType,
+                                                       Specification<Composite> whereClause,
+                                                       OrderBy[] orderBySegments,
+                                                       Integer firstResult, Integer maxResults,
+                                                       Map<String, Object> variables )
                 throws EntityFinderException
         {
             // Prepare request
@@ -93,7 +100,6 @@ public interface ElasticSearchFinder
 
             return Iterables.map( new Function<SearchHit, EntityReference>()
             {
-
                 @Override
                 public EntityReference map( SearchHit from )
                 {
@@ -104,7 +110,9 @@ public interface ElasticSearchFinder
         }
 
         @Override
-        public EntityReference findEntity( Class<?> resultType, Specification<Composite> whereClause, Map<String, Object> variables )
+        public EntityReference findEntity( Class<?> resultType,
+                                           Specification<Composite> whereClause,
+                                           Map<String, Object> variables )
                 throws EntityFinderException
         {
             // Prepare request
@@ -130,7 +138,9 @@ public interface ElasticSearchFinder
         }
 
         @Override
-        public long countEntities( Class<?> resultType, Specification<Composite> whereClause, Map<String, Object> variables )
+        public long countEntities( Class<?> resultType,
+                                   Specification<Composite> whereClause,
+                                   Map<String, Object> variables )
                 throws EntityFinderException
         {
             // Prepare request
@@ -158,6 +168,7 @@ public interface ElasticSearchFinder
         private QueryBuilder processWhereSpecification( AndFilterBuilder filterBuilder,
                                                         Specification<Composite> spec,
                                                         Map<String, Object> variables )
+                throws EntityFinderException
         {
             if ( spec == null ) {
                 return matchAllQuery();
@@ -174,6 +185,7 @@ public interface ElasticSearchFinder
         private void processSpecification( FilterBuilder filterBuilder,
                                            Specification<Composite> spec,
                                            Map<String, Object> variables )
+                throws EntityFinderException
         {
             if ( spec instanceof BinarySpecification ) {
 
@@ -184,6 +196,11 @@ public interface ElasticSearchFinder
 
                 NotSpecification notSpec = ( NotSpecification ) spec;
                 processNotSpecification( filterBuilder, notSpec, variables );
+
+            } else if ( spec instanceof EqSpecification || spec instanceof NeSpecification ) {
+
+                ComparisonSpecification<?> compSpec = ( ComparisonSpecification<?> ) spec;
+                processEqualitySpecification( filterBuilder, compSpec, variables );
 
             } else if ( spec instanceof ComparisonSpecification ) {
 
@@ -268,6 +285,7 @@ public interface ElasticSearchFinder
         private void processBinarySpecification( FilterBuilder filterBuilder,
                                                  BinarySpecification spec,
                                                  Map<String, Object> variables )
+                throws EntityFinderException
         {
             LOGGER.trace( "Processing BinarySpecification {}", spec );
             Iterable<Specification<Composite>> operands = spec.getOperands();
@@ -301,11 +319,44 @@ public interface ElasticSearchFinder
         private void processNotSpecification( FilterBuilder filterBuilder,
                                               NotSpecification spec,
                                               Map<String, Object> variables )
+                throws EntityFinderException
         {
             LOGGER.trace( "Processing NotSpecification {}", spec );
             AndFilterBuilder operandFilter = new AndFilterBuilder();
             processSpecification( operandFilter, spec.getOperand(), variables );
             addFilter( notFilter( operandFilter ), filterBuilder );
+        }
+
+        private void processEqualitySpecification( FilterBuilder filterBuilder,
+                                                   ComparisonSpecification spec,
+                                                   Map<String, Object> variables )
+                throws EntityFinderException
+        {
+            LOGGER.trace( "Processing EqualitySpecification {}", spec );
+            String name = spec.getProperty().toString();
+
+            if ( spec.getValue() instanceof ValueComposite ) {
+
+                // Query by complex property "example value"
+                ValueComposite value = ( ValueComposite ) spec.getValue();
+                ValueDescriptor valueDescriptor = ( ValueDescriptor ) Qi4j.DESCRIPTOR_FUNCTION.map( value );
+
+                throw new UnsupportedOperationException( "ElasticSearch Index/Query does not support complex "
+                                                         + "queries, ie. queries by 'example value'." );
+
+            } else {
+
+                // Query by simple property value
+                String value = toString( spec.getValue(), variables );
+                if ( spec instanceof EqSpecification ) {
+
+                    addFilter( termFilter( name, value ), filterBuilder );
+
+                } else if ( spec instanceof NeSpecification ) {
+
+                    addFilter( notFilter( termFilter( name, value ) ), filterBuilder );
+                }
+            }
         }
 
         private void processComparisonSpecification( FilterBuilder filterBuilder,
@@ -316,15 +367,7 @@ public interface ElasticSearchFinder
             String name = spec.getProperty().toString();
             String value = toString( spec.getValue(), variables );
 
-            if ( spec instanceof EqSpecification ) {
-
-                addFilter( termFilter( name, value ), filterBuilder );
-
-            } else if ( spec instanceof NeSpecification ) {
-
-                addFilter( notFilter( termFilter( name, value ) ), filterBuilder );
-
-            } else if ( spec instanceof GeSpecification ) {
+            if ( spec instanceof GeSpecification ) {
 
                 addFilter( rangeFilter( name ).from( value ).includeLower( true ), filterBuilder );
 
@@ -356,7 +399,19 @@ public interface ElasticSearchFinder
             String name = spec.getCollectionProperty().toString();
             AndFilterBuilder contAllFilter = new AndFilterBuilder();
             for ( Object value : spec.getValueCollection() ) {
-                contAllFilter.add( termFilter( name, toString( value, variables ) ) );
+                if ( value instanceof ValueComposite ) {
+
+                    // Query by complex property "example value"
+                    ValueComposite valueComposite = ( ValueComposite ) value;
+                    ValueDescriptor valueDescriptor = ( ValueDescriptor ) Qi4j.DESCRIPTOR_FUNCTION.map( valueComposite );
+                    throw new UnsupportedOperationException( "ElasticSearch Index/Query does not support complex "
+                                                             + "queries, ie. queries by 'example value'." );
+
+                } else {
+
+                    contAllFilter.add( termFilter( name, toString( value, variables ) ) );
+
+                }
             }
             addFilter( contAllFilter, filterBuilder );
         }
@@ -367,8 +422,20 @@ public interface ElasticSearchFinder
         {
             LOGGER.trace( "Processing ContainsSpecification {}", spec );
             String name = spec.getCollectionProperty().toString();
-            String value = toString( spec.getValue(), variables );
-            addFilter( termFilter( name, value ), filterBuilder );
+            if ( spec.getValue() instanceof ValueComposite ) {
+
+                // Query by complex property "example value"
+                ValueComposite value = ( ValueComposite ) spec.getValue();
+                ValueDescriptor valueDescriptor = ( ValueDescriptor ) Qi4j.DESCRIPTOR_FUNCTION.map( value );
+                throw new UnsupportedOperationException( "ElasticSearch Index/Query does not support complex "
+                                                         + "queries, ie. queries by 'example value'." );
+
+            } else {
+
+                String value = toString( spec.getValue(), variables );
+                addFilter( termFilter( name, value ), filterBuilder );
+
+            }
         }
 
         private void processMatchesSpecification( FilterBuilder filterBuilder,
