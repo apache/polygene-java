@@ -16,6 +16,7 @@ package org.qi4j.library.sql.common;
 
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.configuration.ConfigurationComposite;
+import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.property.Property;
 
 /**
@@ -30,6 +31,7 @@ public interface SQLConfiguration
      * The schema name to use to create/find tables.
      */
     @Optional
+    @Queryable(false)
     Property<String> schemaName();
 
 }
