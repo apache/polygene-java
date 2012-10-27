@@ -12,7 +12,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.library.sql.api;
+package org.qi4j.entitystore.sql.internal;
 
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityDescriptor;

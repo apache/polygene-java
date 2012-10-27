@@ -48,7 +48,6 @@ import org.qi4j.index.sql.support.common.DBNames;
 import org.qi4j.index.sql.support.common.QNameInfo;
 import org.qi4j.index.sql.support.common.QNameInfo.QNameType;
 import org.qi4j.index.sql.support.postgresql.PostgreSQLTypeHelper;
-import org.qi4j.library.sql.api.SQLEntityState;
 import org.qi4j.library.sql.common.SQLUtil;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.EntityState;
@@ -109,6 +108,7 @@ public class AbstractSQLIndexing
     @Service
     private DataSource _dataSource;
 
+    @Override
     public void indexEntities( Iterable<EntityState> changedStates )
         throws SQLException
     {
@@ -121,7 +121,7 @@ public class AbstractSQLIndexing
         Map<QualifiedName, PreparedStatement> qNameInsertPSs = new HashMap<QualifiedName, PreparedStatement>();
         String schemaName = this._state.schemaName().get();
         SQLVendor vendor = this.descriptor.metaInfo( SQLVendor.class );
-        
+
         Connection connection = AbstractSQLStartup.CONNECTION_FOR_REINDEXING.get();
         boolean connectionFromStartupWasNull = connection == null;
         boolean wasAutoCommit = false;
@@ -135,7 +135,7 @@ public class AbstractSQLIndexing
             wasAutoCommit = connection.getAutoCommit();
             wasReadOnly = connection.isReadOnly();
         }
-        
+
         try
         {
             connection.setAutoCommit( false );
@@ -849,27 +849,20 @@ public class AbstractSQLIndexing
         throws SQLException
     {
         Long entityPK = null;
-        if( state instanceof SQLEntityState )
+        queryPKPS.setString( 1, state.identity().identity() );
+        ResultSet rs = null;
+        try
         {
-            entityPK = ( (SQLEntityState) state ).getEntityPK();
-        }
-        else
-        {
-            queryPKPS.setString( 1, state.identity().identity() );
-            ResultSet rs = null;
-            try
-            {
-                rs = queryPKPS.executeQuery();
+            rs = queryPKPS.executeQuery();
 
-                if( rs.next() )
-                {
-                    entityPK = rs.getLong( 1 );
-                }
-            }
-            finally
+            if( rs.next() )
             {
-                SQLUtil.closeQuietly( rs );
+                entityPK = rs.getLong( 1 );
             }
+        }
+        finally
+        {
+            SQLUtil.closeQuietly( rs );
         }
 
         if( entityPK != null )
@@ -907,15 +900,7 @@ public class AbstractSQLIndexing
     )
         throws SQLException
     {
-        Long entityPK = null;
-        if( state instanceof SQLEntityState )
-        {
-            entityPK = ( (SQLEntityState) state ).getEntityPK();
-        }
-        else
-        {
-            entityPK = this.newPK( ENTITY_TABLE_NAME );
-        }
+        Long entityPK = this.newPK( ENTITY_TABLE_NAME );
 
         ps.setLong( 1, entityPK );
         String entityType = first( state.entityDescriptor().types() ).getName();

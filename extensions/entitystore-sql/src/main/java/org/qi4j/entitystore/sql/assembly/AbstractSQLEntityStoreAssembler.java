@@ -62,6 +62,7 @@ abstract class AbstractSQLEntityStoreAssembler
     }
 
     @SuppressWarnings( "unchecked" )
+    @Override
     public final void doAssemble( ModuleAssembly module )
             throws AssemblyException
     {

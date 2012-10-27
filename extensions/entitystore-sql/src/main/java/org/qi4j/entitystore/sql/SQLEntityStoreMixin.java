@@ -54,13 +54,13 @@ import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.entitystore.sql.internal.DatabaseSQLService;
 import org.qi4j.entitystore.sql.internal.DatabaseSQLService.EntityValueResult;
+import org.qi4j.entitystore.sql.internal.SQLEntityState;
+import org.qi4j.entitystore.sql.internal.SQLEntityState.DefaultSQLEntityState;
 import org.qi4j.functional.Visitor;
 import org.qi4j.io.Input;
 import org.qi4j.io.Output;
 import org.qi4j.io.Receiver;
 import org.qi4j.io.Sender;
-import org.qi4j.library.sql.api.SQLEntityState;
-import org.qi4j.library.sql.api.SQLEntityState.DefaultSQLEntityState;
 import org.qi4j.library.sql.common.SQLUtil;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
@@ -125,11 +125,13 @@ public class SQLEntityStoreMixin
         database.stopDatabase();
     }
 
+    @Override
     public StateCommitter applyChanges( final EntityStoreUnitOfWork unitofwork, final Iterable<EntityState> states )
     {
         return new StateCommitter()
         {
 
+            @Override
             public void commit()
             {
                 Connection connection = null;
@@ -214,6 +216,7 @@ public class SQLEntityStoreMixin
                 }
             }
 
+            @Override
             public void cancel()
             {
             }
@@ -221,6 +224,7 @@ public class SQLEntityStoreMixin
         };
     }
 
+    @Override
     public EntityState getEntityState( EntityStoreUnitOfWork unitOfWork, EntityReference entityRef )
     {
         EntityValueResult valueResult = getValue( entityRef );
@@ -230,6 +234,7 @@ public class SQLEntityStoreMixin
                                           valueResult.getEntityOptimisticLock() );
     }
 
+    @Override
     public EntityState newEntityState( EntityStoreUnitOfWork unitOfWork, EntityReference entityRef, EntityDescriptor entityDescriptor )
     {
         return new DefaultSQLEntityState( new DefaultEntityState( (DefaultEntityStoreUnitOfWork) unitOfWork,
@@ -237,11 +242,13 @@ public class SQLEntityStoreMixin
                                                                   entityDescriptor ) );
     }
 
+    @Override
     public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, Module module, long currentTime )
     {
         return new DefaultEntityStoreUnitOfWork( entityStoreSPI, newUnitOfWorkId(), module, usecase, currentTime );
     }
 
+    @Override
     public Input<EntityState, EntityStoreException> entityStates( final Module module )
     {
         return new Input<EntityState, EntityStoreException>()
@@ -262,6 +269,7 @@ public class SQLEntityStoreMixin
                         queryAllEntities( module, new EntityStatesVisitor()
                         {
 
+                            @Override
                             public boolean visit( EntityState visited )
                                     throws SQLException
                             {
@@ -455,6 +463,7 @@ public class SQLEntityStoreMixin
         }
     }
 
+    @Override
     public JSONObject getState( String id )
         throws IOException
     {

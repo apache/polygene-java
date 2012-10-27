@@ -14,18 +14,16 @@
  */
 package org.qi4j.entitystore.sql.internal;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.library.sql.common.SQLUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-@SuppressWarnings("ProtectedField")
 public abstract class PostgreSQLDatabaseSQLServiceMixin
-    implements DatabaseSQLServiceSpi, DatabaseSQLStringsBuilder, DatabaseSQLService
+        implements DatabaseSQLServiceSpi, DatabaseSQLStringsBuilder, DatabaseSQLService
 {
 
     private static final Logger LOGGER = LoggerFactory.getLogger( PostgreSQLDatabaseSQLServiceMixin.class );
@@ -33,34 +31,33 @@ public abstract class PostgreSQLDatabaseSQLServiceMixin
     @This
     protected DatabaseSQLServiceSpi spi;
 
+    @Override
     public boolean tableExists( Connection connection )
-        throws SQLException
+            throws SQLException
     {
         ResultSet rs = null;
-        try
-        {
-            rs = connection.getMetaData().getTables( null, this.spi.getCurrentSchemaName(), SQLs.TABLE_NAME,
-                new String[]
-                {
-                    "TABLE"
-                } );
+        try {
+
+            rs = connection.getMetaData().getTables( null,
+                                                     this.spi.getCurrentSchemaName(),
+                                                     SQLs.TABLE_NAME,
+                                                     new String[]{ "TABLE" } );
             boolean tableExists = rs.next();
             LOGGER.trace( "Found table {}? {}", SQLs.TABLE_NAME, tableExists );
             return tableExists;
 
-        }
-        finally
-        {
+        } finally {
             SQLUtil.closeQuietly( rs );
         }
     }
 
+    @Override
     public EntityValueResult getEntityValue( ResultSet rs )
-        throws SQLException
+            throws SQLException
     {
         return new EntityValueResult( rs.getLong( SQLs.ENTITY_PK_COLUMN_NAME ),
-            rs.getLong( SQLs.ENTITY_OPTIMISTIC_LOCK_COLUMN_NAME ),
-            rs.getCharacterStream( SQLs.ENTITY_STATE_COLUMN_NAME ) );
+                                      rs.getLong( SQLs.ENTITY_OPTIMISTIC_LOCK_COLUMN_NAME ),
+                                      rs.getCharacterStream( SQLs.ENTITY_STATE_COLUMN_NAME ) );
     }
 
 }

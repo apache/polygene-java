@@ -61,15 +61,16 @@ public abstract class DatabaseSQLServiceCoreMixin
     private ServiceDescriptor descriptor;
 
     @This
-    @Optional
     private Configuration<SQLConfiguration> configuration;
 
+    @Override
     public Connection getConnection()
             throws SQLException
     {
         return dataSource.getConnection();
     }
 
+    @Override
     public void startDatabase()
             throws Exception
     {
@@ -84,6 +85,7 @@ public abstract class DatabaseSQLServiceCoreMixin
             sqlStrings.init();
 
             if ( !spi.schemaExists( connection ) ) {
+                LOGGER.debug( "Database Schema '{}' NOT found!", schema );
                 Statement stmt = null;
                 try {
                     stmt = connection.createStatement();
@@ -93,7 +95,7 @@ public abstract class DatabaseSQLServiceCoreMixin
                 } finally {
                     SQLUtil.closeQuietly( stmt );
                 }
-                LOGGER.trace( "Schema {} created", schema );
+                LOGGER.debug( "Database Schema '{}' created", schema );
             }
 
             if ( !spi.tableExists( connection ) ) {
@@ -120,6 +122,7 @@ public abstract class DatabaseSQLServiceCoreMixin
 
     }
 
+    @Override
     public void stopDatabase()
             throws Exception
     {
@@ -135,12 +138,16 @@ public abstract class DatabaseSQLServiceCoreMixin
     {
         if ( configuration == null ) {
             NullArgumentException.validateNotNull( "default schema name", defaultSchemaName );
+            LOGGER.debug( "No configuration, will use default schema name: '{}'", defaultSchemaName );
             return defaultSchemaName;
         }
-        String result = this.configuration.get().schemaName().get();
+        String result = configuration.get().schemaName().get();
         if ( result == null ) {
             NullArgumentException.validateNotNull( "default schema name", defaultSchemaName );
             result = defaultSchemaName;
+            LOGGER.debug( "No database schema name in configuration, will use default: '{}'", defaultSchemaName );
+        } else {
+            LOGGER.debug( "Will use configured database schema name: '{}'", result );
         }
         return result;
     }
