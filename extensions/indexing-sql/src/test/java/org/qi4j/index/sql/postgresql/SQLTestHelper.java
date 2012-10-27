@@ -134,6 +134,7 @@ public class SQLTestHelper
         Statement stmt = null;
         try
         {
+            connection.setReadOnly( false );
             stmt = connection.createStatement();
             stmt.execute( String.format( "DELETE FROM %s." + DBNames.ENTITY_TABLE_NAME, schemaName ) );
             connection.commit();
