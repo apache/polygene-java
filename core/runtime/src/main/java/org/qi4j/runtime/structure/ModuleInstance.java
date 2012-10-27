@@ -868,6 +868,9 @@ public class ModuleInstance
                 filter( referenceTypeCheck, layerInstance.visibleServices( Visibility.application ) ),
                 filter( referenceTypeCheck, layerInstance.usedLayersInstance().visibleServices() ) );
 
+            // Don't return the same ServiceReference multiple times
+            matchingServices = unique( matchingServices );
+
             iterable = toList( matchingServices );
             servicesReferences.put( serviceType, iterable );
         }

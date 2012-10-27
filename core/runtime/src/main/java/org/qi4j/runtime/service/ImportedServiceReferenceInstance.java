@@ -21,8 +21,8 @@ import org.qi4j.api.service.ServiceImporterException;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.service.ServiceUnavailableException;
 import org.qi4j.api.structure.Module;
-import org.qi4j.runtime.activation.ActivationEventListenerSupport;
 import org.qi4j.runtime.activation.ActivationDelegate;
+import org.qi4j.runtime.activation.ActivationEventListenerSupport;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -131,7 +131,7 @@ public final class ImportedServiceReferenceInstance<T>
     {
         return module;
     }
-    
+
     private T getInstance()
         throws ServiceImporterException
     {
@@ -186,4 +186,24 @@ public final class ImportedServiceReferenceInstance<T>
     {
         activationEventSupport.deregisterActivationEventListener( listener );
     }
+
+    @Override
+    public int hashCode()
+    {
+        return identity().hashCode();
+    }
+
+    @Override
+    public boolean equals( Object obj )
+    {
+        if ( obj == null ) {
+            return false;
+        }
+        if ( getClass() != obj.getClass() ) {
+            return false;
+        }
+        final ServiceReference other = ( ServiceReference ) obj;
+        return identity().equals( other.identity() );
+    }
+
 }
