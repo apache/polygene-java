@@ -253,6 +253,11 @@ public interface Configuration<T>
             // Check for defaults
             String s = identity + ".properties";
             Class<?> type = first( api.getServiceDescriptor( serviceComposite ).types() );
+            // Load defaults from classpath root if available
+            if ( type.getResource( s ) == null && type.getResource( "/" + s ) != null )
+            {
+                s = "/" + s;
+            }
             InputStream asStream = type.getResourceAsStream( s );
             if( asStream != null )
             {
