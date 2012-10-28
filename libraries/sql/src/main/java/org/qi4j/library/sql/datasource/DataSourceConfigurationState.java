@@ -13,6 +13,7 @@
  */
 package org.qi4j.library.sql.datasource;
 
+import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.configuration.Enabled;
 import org.qi4j.api.property.Property;
@@ -28,6 +29,11 @@ public interface DataSourceConfigurationState
     Property<String> url();
     @UseDefaults Property<String> username();
     @UseDefaults Property<String> password();
+    @Optional Property<Integer> minPoolSize();
+    @Optional Property<Integer> maxPoolSize();
+    @Optional Property<Integer> loginTimeoutSeconds();
+    @Optional Property<Integer> maxConnectionAgeSeconds();
+    @Optional Property<String> validationQuery();
     @UseDefaults Property<String> properties();
 }
 // END SNIPPET: config

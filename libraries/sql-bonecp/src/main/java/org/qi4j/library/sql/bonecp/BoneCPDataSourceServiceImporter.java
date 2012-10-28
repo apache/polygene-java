@@ -46,6 +46,27 @@ public class BoneCPDataSourceServiceImporter
             pool.setDriverClass( config.driver().get() );
             pool.setJdbcUrl( config.url().get() );
 
+            if ( !config.username().get().equals( "" ) ) {
+                pool.setUsername( config.username().get() );
+                pool.setPassword( config.password().get() );
+            }
+            
+            if ( config.minPoolSize().get() != null ) {
+                pool.setMinConnectionsPerPartition( config.minPoolSize().get() );
+            }
+            if ( config.maxPoolSize().get() != null ) {
+                pool.setMaxConnectionsPerPartition( config.maxPoolSize().get() );
+            }
+            if ( config.loginTimeoutSeconds().get() != null ) {
+                pool.setLoginTimeout( config.loginTimeoutSeconds().get() );
+            }
+            if ( config.maxConnectionAgeSeconds().get() != null ) {
+                pool.setMaxConnectionAgeInSeconds( config.maxConnectionAgeSeconds().get() );
+            }
+            if ( config.validationQuery().get() != null ) {
+                pool.setConnectionTestStatement( config.validationQuery().get() );
+            }
+
             String props = config.properties().get();
             String[] properties = props.split( "," );
             Properties poolProperties = new Properties();
@@ -56,12 +77,6 @@ public class BoneCPDataSourceServiceImporter
                 }
             }
             pool.setProperties( poolProperties );
-
-            if ( !config.username().get().equals( "" ) ) {
-                pool.setUsername( config.username().get() );
-                pool.setPassword( config.password().get() );
-            }
-            pool.setMaxConnectionAgeInSeconds( 60 * 60 ); // One hour max age
 
             return pool;
         }
