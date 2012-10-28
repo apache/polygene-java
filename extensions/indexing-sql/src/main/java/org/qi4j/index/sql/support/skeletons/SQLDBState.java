@@ -65,17 +65,6 @@ public interface SQLDBState
                                                                   // multiple types)
 
     /**
-     * Information about next primary keys for all used tables. Table name is the key. Each primary
-     * key needs to be specifically kept cached like this, because it is quite damn hard, if not
-     * impossible, to use auto-generated keys with batch-updates (and batch-updates are very
-     * efficient when committing changed entity states to DB).
-     * 
-     * @return Information about next primary keys for all used tables.
-     */
-    @Optional
-    Property<Map<String, Long>> tablePKs();
-
-    /**
      * Primary keys of all used classes (of value composites) in all entity types. Value composite
      * type name (interface name) is the key.
      * 

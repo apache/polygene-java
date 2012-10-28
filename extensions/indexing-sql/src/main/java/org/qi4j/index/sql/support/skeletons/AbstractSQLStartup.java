@@ -183,7 +183,6 @@ public abstract class AbstractSQLStartup
         _log.debug( "Will use '{}' as schema name", schemaName );
 
         this._state.schemaName().set( schemaName );
-        this._state.tablePKs().set( new HashMap<String, Long>() );
         this._state.usedClassesPKs().set( new HashMap<String, Integer>() );
         this._state.entityTypeInfos().set( new HashMap<String, EntityTypeInfo>() );
         this._state.entityUsedQNames().set( new HashMap<String, Set<QualifiedName>>() );
@@ -222,13 +221,6 @@ public abstract class AbstractSQLStartup
             report.append( "entityUsedQNames:" ).append( newline );
             for( Map.Entry<String, Set<QualifiedName>> entry : _state.entityUsedQNames().get()
                 .entrySet() )
-            {
-                report.append( tab ).append( entry.getKey() ).append( colonspace )
-                    .append( entry.getValue() ).append( newline );
-            }
-
-            report.append( "tablePKs:" ).append( newline );
-            for( Map.Entry<String, Long> entry : _state.tablePKs().get().entrySet() )
             {
                 report.append( tab ).append( entry.getKey() ).append( colonspace )
                     .append( entry.getValue() ).append( newline );
@@ -392,8 +384,9 @@ public abstract class AbstractSQLStartup
             {
                 _log.debug( "Schema {}Found & Reindexing {}Required", schemaFound ? "" : "NOT ",
                     reindexingRequired ? "" : "NOT " );
-                this.createSchema( connection, schemaFound );
-                this.writeAppMetadataToDB( connection, appInfo );
+                Map<String, Long> tablePKs = new HashMap<String, Long>();
+                this.createSchema( connection, schemaFound, tablePKs );
+                this.writeAppMetadataToDB( connection, appInfo, tablePKs );
 
                 if( reindexingRequired )
                 {
@@ -407,7 +400,8 @@ public abstract class AbstractSQLStartup
         }
     }
 
-    private void createSchema( Connection connection, Boolean schemaFound )
+    private void createSchema( Connection connection, Boolean schemaFound,
+            Map<String, Long> tablePKs )
         throws SQLException
     {
         String schemaName = this._state.schemaName().get();
@@ -464,7 +458,7 @@ public abstract class AbstractSQLStartup
                 )
             );
 
-            this._state.tablePKs().get().put( USED_CLASSES_TABLE_NAME, 0L );
+            tablePKs.put( USED_CLASSES_TABLE_NAME, 0L );
 
             stmt.execute(
                 vendor.toString(
@@ -493,7 +487,7 @@ public abstract class AbstractSQLStartup
                 )
             );
 
-            this._state.tablePKs().get().put( ENTITY_TYPES_TABLE_NAME, 0L );
+            tablePKs.put( ENTITY_TYPES_TABLE_NAME, 0L );
 
             ResultSet rs = null;
             try
@@ -550,14 +544,11 @@ public abstract class AbstractSQLStartup
                                 .createExpression()
                         )
                     );
-                    this._state.tablePKs().get().put( ENTITY_TABLE_NAME, 0L );
+                    tablePKs.put( ENTITY_TABLE_NAME, 0L );
                 }
                 else
                 {
-                    this._state
-                        .tablePKs()
-                        .get()
-                        .put(
+                    tablePKs.put(
                             ENTITY_TABLE_NAME,
                             this.getNextPK( stmt, schemaName, ENTITY_TABLE_PK_COLUMN_NAME,
                                             ENTITY_TABLE_NAME, 0L ) );
@@ -589,7 +580,7 @@ public abstract class AbstractSQLStartup
                 )
             );
 
-            this._state.tablePKs().get().put( ENUM_LOOKUP_TABLE_NAME, 0L );
+            tablePKs.put( ENUM_LOOKUP_TABLE_NAME, 0L );
 
             stmt.execute(
                 vendor.toString(
@@ -642,7 +633,7 @@ public abstract class AbstractSQLStartup
                 )
             );
 
-            this._state.tablePKs().get().put( ALL_QNAMES_TABLE_NAME, 0L );
+            tablePKs.put( ALL_QNAMES_TABLE_NAME, 0L );
 
             stmt.execute(
                 vendor.toString(
@@ -737,9 +728,6 @@ public abstract class AbstractSQLStartup
         try
         {
             // @formatter:off
-            Map<String, Long> pks = this._state.tablePKs().get();
-            pks.put( ENTITY_TABLE_NAME, this.getNextPK( stmt, schemaName,
-                                                        DBNames.ENTITY_TABLE_PK_COLUMN_NAME, DBNames.ENTITY_TABLE_NAME, 0L ) );
 
             q.simpleQueryBuilder()
                 .select( ENTITY_TYPES_TABLE_PK_COLUMN_NAME, ENTITY_TYPES_TABLE_TYPE_NAME_COLUMN_NAME )
@@ -762,13 +750,6 @@ public abstract class AbstractSQLStartup
                 String entityTypeName = rs.getString( 2 );
                 this._state.entityTypeInfos().get()
                     .put( entityTypeName, new EntityTypeInfo( entityDescriptors.get( entityTypeName ), (int) pk ) );
-
-                if( !this._state.tablePKs().get().containsKey( ENTITY_TYPES_TABLE_NAME )
-                    || this._state.tablePKs().get().get( ENTITY_TYPES_TABLE_NAME ) <= pk )
-                {
-
-                    this._state.tablePKs().get().put( ENTITY_TYPES_TABLE_NAME, pk + 1 );
-                }
             }
 
             rs = stmt.executeQuery(
@@ -784,11 +765,6 @@ public abstract class AbstractSQLStartup
             {
                 pk = rs.getInt( 1 );
                 String className = rs.getString( 2 );
-                if( !this._state.tablePKs().get().containsKey( USED_CLASSES_TABLE_NAME )
-                    || this._state.tablePKs().get().get( USED_CLASSES_TABLE_NAME ) <= pk )
-                {
-                    this._state.tablePKs().get().put( USED_CLASSES_TABLE_NAME, pk + 1 );
-                }
                 this._state.usedClassesPKs().get().put( className, (int) pk );
             }
 
@@ -805,11 +781,6 @@ public abstract class AbstractSQLStartup
             {
                 pk = rs.getInt( 1 );
                 String enumName = rs.getString( 2 );
-                if( !this._state.tablePKs().get().containsKey( ENUM_LOOKUP_TABLE_NAME )
-                    || this._state.tablePKs().get().get( ENUM_LOOKUP_TABLE_NAME ) <= pk )
-                {
-                    this._state.tablePKs().get().put( ENUM_LOOKUP_TABLE_NAME, pk + 1 );
-                }
                 this._state.enumPKs().get().put( enumName, (int) pk );
             }
             // @formatter:on
@@ -820,7 +791,8 @@ public abstract class AbstractSQLStartup
         }
     }
 
-    private void writeAppMetadataToDB( Connection connection, ApplicationInfo appInfo )
+    private void writeAppMetadataToDB( Connection connection, ApplicationInfo appInfo,
+            Map<String, Long> tablePKs )
         throws SQLException
     {
         String schemaName = this._state.schemaName().get();
@@ -848,12 +820,12 @@ public abstract class AbstractSQLStartup
                 for( EntityDescriptor descriptor : appInfo.entityDescriptors.values() )
                 {
                     String entityTypeName = first( descriptor.types() ).getName();
-                    long pk = this._state.tablePKs().get().get( ENTITY_TYPES_TABLE_NAME );
+                    long pk = tablePKs.get( ENTITY_TYPES_TABLE_NAME );
                     ps.setInt( 1, (int) pk );
                     ps.setString( 2, entityTypeName );
                     ps.executeUpdate();
                     this._state.entityTypeInfos().get().put( entityTypeName, new EntityTypeInfo( descriptor, (int) pk ) );
-                    this._state.tablePKs().get().put( ENTITY_TYPES_TABLE_NAME, pk + 1 );
+                    tablePKs.put( ENTITY_TYPES_TABLE_NAME, pk + 1 );
                 }
             }
             finally
@@ -877,12 +849,12 @@ public abstract class AbstractSQLStartup
             {
                 for( String usedClass : appInfo.usedClassNames )
                 {
-                    long pk = this._state.tablePKs().get().get( USED_CLASSES_TABLE_NAME );
+                    long pk = tablePKs.get( USED_CLASSES_TABLE_NAME );
                     ps.setInt( 1, (int) pk );
                     ps.setString( 2, usedClass );
                     ps.executeUpdate();
                     this._state.usedClassesPKs().get().put( usedClass, (int) pk );
-                    this._state.tablePKs().get().put( USED_CLASSES_TABLE_NAME, pk + 1 );
+                    tablePKs.put( USED_CLASSES_TABLE_NAME, pk + 1 );
                 }
             }
             finally
@@ -906,12 +878,12 @@ public abstract class AbstractSQLStartup
             {
                 for( String enumValue : appInfo.enumValues )
                 {
-                    long pk = this._state.tablePKs().get().get( ENUM_LOOKUP_TABLE_NAME );
+                    long pk = tablePKs.get( ENUM_LOOKUP_TABLE_NAME );
                     ps.setInt( 1, (int) pk );
                     ps.setString( 2, enumValue );
                     ps.executeUpdate();
                     this._state.enumPKs().get().put( enumValue, (int) pk );
-                    this._state.tablePKs().get().put( ENUM_LOOKUP_TABLE_NAME, pk + 1 );
+                    tablePKs.put( ENUM_LOOKUP_TABLE_NAME, pk + 1 );
                 }
             }
             finally
@@ -1011,7 +983,7 @@ public abstract class AbstractSQLStartup
                             )
                             );
 
-                        this._state.tablePKs().get().put( qNameInfo.getTableName(), 0L );
+                        tablePKs.put( qNameInfo.getTableName(), 0L );
                     }
 
                     builder
