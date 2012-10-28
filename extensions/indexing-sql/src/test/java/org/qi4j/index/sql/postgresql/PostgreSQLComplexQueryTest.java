@@ -15,15 +15,14 @@
 package org.qi4j.index.sql.postgresql;
 
 import org.junit.Ignore;
-
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.indexing.AbstractComplexQueryTest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Ignore //(should pass with actual DB running)
+//(should pass with actual DB running)
+@Ignore
 public class PostgreSQLComplexQueryTest
         extends AbstractComplexQueryTest
 {
@@ -32,7 +31,7 @@ public class PostgreSQLComplexQueryTest
 
     @Override
     public void assemble( ModuleAssembly mainModule )
-            throws AssemblyException
+        throws AssemblyException
     {
         super.assemble( mainModule );
         SQLTestHelper.assembleWithMemoryEntityStore( mainModule );
@@ -40,24 +39,29 @@ public class PostgreSQLComplexQueryTest
 
     @Override
     public void setUp()
-            throws Exception
+        throws Exception
     {
-        try {
+        try
+        {
             super.setUp();
-        } catch ( Exception e ) {
+        }
+        catch ( Exception e )
+        {
             // Let's check if exception was because database was not available
-            if ( this.module != null ) {
+            if( this.module != null )
+            {
                 SQLTestHelper.setUpTest( this.module );
             }
 
-            // If we got this far, the database must have been available, and exception must have had other reason!
+            // If we got this far, the database must have been available, and exception must have
+            // had other reason!
             throw e;
         }
     }
 
     @Override
     public void tearDown()
-            throws Exception
+        throws Exception
     {
         SQLTestHelper.tearDownTest( module, LOGGER );
         super.tearDown();

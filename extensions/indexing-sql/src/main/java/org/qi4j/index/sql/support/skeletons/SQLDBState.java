@@ -20,6 +20,8 @@ import java.util.Set;
 
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.composite.CompositeDescriptor;
+import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.property.Property;
 import org.qi4j.index.sql.support.api.SQLIndexing;
 import org.qi4j.index.sql.support.common.EntityTypeInfo;
@@ -59,19 +61,16 @@ public interface SQLDBState
      * @return Information about all used qualified names in a certain entity type.
      */
     @Optional
-    Property<Map<String, Set<QualifiedName>>> entityUsedQNames(); // TODO make key as
-                                                                  // EntityDescriptor instead.
-                                                                  // (because entity may have
-                                                                  // multiple types)
+    Property<Map<EntityDescriptor, Set<QualifiedName>>> entityUsedQNames();
 
     /**
-     * Primary keys of all used classes (of value composites) in all entity types. Value composite
-     * type name (interface name) is the key.
+     * Primary keys of all used composites in all entity types. Value composite type name (interface
+     * name) is the key.
      * 
      * @return Primary keys of all used classes (of value composites) in all entity types.
      */
     @Optional
-    Property<Map<String, Integer>> usedClassesPKs();
+    Property<Map<CompositeDescriptor, Integer>> usedClassesPKs();
 
     /**
      * Information about each used entity type. Entity type name (interface name) is the key.

@@ -19,9 +19,10 @@ import java.sql.Connection;
 
 import javax.sql.DataSource;
 
+import junit.framework.Assert;
+
 import org.junit.Ignore;
 import org.junit.Test;
-
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.property.Property;
@@ -35,18 +36,18 @@ import org.qi4j.index.sql.support.postgresql.PostgreSQLAppStartup;
 import org.qi4j.library.sql.common.SQLConfiguration;
 import org.qi4j.library.sql.common.SQLUtil;
 import org.qi4j.test.AbstractQi4jTest;
-
 import org.sql.generation.api.vendor.PostgreSQLVendor;
 import org.sql.generation.api.vendor.SQLVendorProvider;
 
-import junit.framework.Assert;
-
-@Ignore // (should pass with actual DB running)
+// (TODO refactor this test so that it deletes the schema in setup so that indexing is forced to
+// rebuilt it. Or even better, add some kind of 'RebuildStrategy' to Indexing, so that schema
+// rebuilding behaviour would be forced through it.)
+@Ignore
 public class PostgreSQLDBIntegrityTest extends AbstractQi4jTest
 {
 
     public static interface TestEntity
-        extends EntityComposite
+            extends EntityComposite
     {
         @UseDefaults
         public Property<String> testString();
@@ -91,7 +92,8 @@ public class PostgreSQLDBIntegrityTest extends AbstractQi4jTest
 
         uow = this.module.newUnitOfWork();
         entity = uow.get( entity );
-        SQLConfiguration config = uow.get( SQLConfiguration.class, SQLTestHelper.SQL_INDEXING_SERVICE_NAME );
+        SQLConfiguration config =
+            uow.get( SQLConfiguration.class, SQLTestHelper.SQL_INDEXING_SERVICE_NAME );
         String schemaName = config.schemaName().get();
         if( schemaName == null )
         {
@@ -100,23 +102,29 @@ public class PostgreSQLDBIntegrityTest extends AbstractQi4jTest
         uow.remove( entity );
         uow.complete();
 
-        Connection connection = ((DataSource) this.module.findService( DataSource.class ).get()).getConnection();
-        try {
-            GenericDatabaseExplorer.visitDatabaseTables( connection, null, schemaName, null, new DatabaseProcessorAdapter()
-            {
-
-                @Override
-                public void beginProcessRowInfo( String schemaNamee, String tableName, Object[] rowContents )
+        Connection connection =
+            ( (DataSource) this.module.findService( DataSource.class ).get() ).getConnection();
+        try
+        {
+            GenericDatabaseExplorer.visitDatabaseTables( connection, null, schemaName, null,
+                new DatabaseProcessorAdapter()
                 {
-                    if( tableName.startsWith( DBNames.QNAME_TABLE_NAME_PREFIX )
-                        || tableName.equals( DBNames.ALL_QNAMES_TABLE_NAME )
-                        || tableName.equals( DBNames.ENTITY_TABLE_NAME ) )
+
+                    @Override
+                    public void beginProcessRowInfo( String schemaNamee, String tableName,
+                            Object[] rowContents )
                     {
-                        throw new RuntimeException( "Table: " + schemaNamee + "." + tableName );
+                        if( tableName.startsWith( DBNames.QNAME_TABLE_NAME_PREFIX )
+                                || tableName.equals( DBNames.ALL_QNAMES_TABLE_NAME )
+                                || tableName.equals( DBNames.ENTITY_TABLE_NAME ) )
+                        {
+                            throw new RuntimeException( "Table: " + schemaNamee + "." + tableName );
+                        }
                     }
-                }
-            }, SQLVendorProvider.createVendor( PostgreSQLVendor.class ) );
-        } finally {
+                }, SQLVendorProvider.createVendor( PostgreSQLVendor.class ) );
+        }
+        finally
+        {
             SQLUtil.closeQuietly( connection );
         }
     }
@@ -136,7 +144,8 @@ public class PostgreSQLDBIntegrityTest extends AbstractQi4jTest
 
         uow = this.module.newUnitOfWork();
         entity = uow.get( entity );
-        Assert.assertEquals( "New value did not store in indexing.", "NewTestString", entity.testString().get() );
+        Assert.assertEquals( "New value did not store in indexing.", "NewTestString", entity
+            .testString().get() );
         uow.discard();
     }
 

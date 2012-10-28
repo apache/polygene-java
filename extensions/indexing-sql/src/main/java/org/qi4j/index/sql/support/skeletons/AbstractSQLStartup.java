@@ -54,19 +54,23 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.sql.DataSource;
 
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.composite.CompositeDescriptor;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.Identity;
@@ -77,8 +81,14 @@ import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.structure.Application;
+import org.qi4j.api.structure.ApplicationDescriptor;
+import org.qi4j.api.structure.LayerDescriptor;
+import org.qi4j.api.structure.ModuleDescriptor;
 import org.qi4j.api.value.ValueDescriptor;
+import org.qi4j.functional.Function;
 import org.qi4j.functional.HierarchicalVisitorAdapter;
+import org.qi4j.functional.Iterables;
+import org.qi4j.functional.Specification;
 import org.qi4j.index.reindexer.Reindexer;
 import org.qi4j.index.sql.support.api.SQLAppStartup;
 import org.qi4j.index.sql.support.api.SQLTypeInfo;
@@ -106,6 +116,7 @@ import org.sql.generation.api.grammar.factories.TableReferenceFactory;
 import org.sql.generation.api.grammar.manipulation.DropBehaviour;
 import org.sql.generation.api.grammar.manipulation.ObjectType;
 import org.sql.generation.api.grammar.modification.DeleteBySearch;
+import org.sql.generation.api.grammar.modification.InsertStatement;
 import org.sql.generation.api.grammar.query.QueryExpression;
 import org.sql.generation.api.vendor.SQLVendor;
 
@@ -137,9 +148,6 @@ public abstract class AbstractSQLStartup
     @This
     private SQLDBState _state;
 
-    @Uses
-    private ServiceDescriptor descriptor;
-
     @This
     private Configuration<SQLConfiguration> _configuration;
 
@@ -161,13 +169,16 @@ public abstract class AbstractSQLStartup
 
     private Map<Class<?>, SQLDataType> _primitiveTypes;
 
+    public AbstractSQLStartup( @Uses ServiceDescriptor descriptor )
+    {
+        this._vendor = descriptor.metaInfo( SQLVendor.class );
+    }
+
     public void initConnection()
         throws SQLException
     {
         this._configuration.refresh();
 
-        this._vendor = this.descriptor.metaInfo( SQLVendor.class );
-        this.setVendor( this._vendor );
         this.initTypes();
         this.modifyPrimitiveTypes( this._primitiveTypes, this._state.javaTypes2SQLTypes().get() );
 
@@ -183,9 +194,9 @@ public abstract class AbstractSQLStartup
         _log.debug( "Will use '{}' as schema name", schemaName );
 
         this._state.schemaName().set( schemaName );
-        this._state.usedClassesPKs().set( new HashMap<String, Integer>() );
+        this._state.usedClassesPKs().set( new HashMap<CompositeDescriptor, Integer>() );
         this._state.entityTypeInfos().set( new HashMap<String, EntityTypeInfo>() );
-        this._state.entityUsedQNames().set( new HashMap<String, Set<QualifiedName>>() );
+        this._state.entityUsedQNames().set( new HashMap<EntityDescriptor, Set<QualifiedName>>() );
         this._state.qNameInfos().set( new HashMap<QualifiedName, QNameInfo>() );
         this._state.enumPKs().set( new HashMap<String, Integer>() );
 
@@ -219,7 +230,8 @@ public abstract class AbstractSQLStartup
             }
 
             report.append( "entityUsedQNames:" ).append( newline );
-            for( Map.Entry<String, Set<QualifiedName>> entry : _state.entityUsedQNames().get()
+            for( Map.Entry<EntityDescriptor, Set<QualifiedName>> entry : _state.entityUsedQNames()
+                .get()
                 .entrySet() )
             {
                 report.append( tab ).append( entry.getKey() ).append( colonspace )
@@ -227,7 +239,8 @@ public abstract class AbstractSQLStartup
             }
 
             report.append( "usedClassesPKs:" ).append( newline );
-            for( Map.Entry<String, Integer> entry : _state.usedClassesPKs().get().entrySet() )
+            for( Map.Entry<CompositeDescriptor, Integer> entry : _state.usedClassesPKs().get()
+                .entrySet() )
             {
                 report.append( tab ).append( entry.getKey() ).append( colonspace )
                     .append( entry.getValue() ).append( newline );
@@ -341,10 +354,26 @@ public abstract class AbstractSQLStartup
         private Map<String, EntityDescriptor> entityDescriptors =
             new HashMap<String, EntityDescriptor>();
 
-        private Set<String> usedClassNames = new HashSet<String>();
+        private Set<CompositeDescriptorInfo> usedValueComposites =
+            new HashSet<CompositeDescriptorInfo>();
 
         private Set<String> enumValues = new HashSet<String>();
 
+    }
+
+    private static class CompositeDescriptorInfo
+    {
+        final LayerDescriptor layer;
+        final ModuleDescriptor module;
+        final CompositeDescriptor composite;
+
+        public CompositeDescriptorInfo( LayerDescriptor theLayer, ModuleDescriptor theModule,
+                CompositeDescriptor theComposite )
+        {
+            this.layer = theLayer;
+            this.module = theModule;
+            this.composite = theComposite;
+        }
     }
 
     private void syncDB( Connection connection )
@@ -363,18 +392,19 @@ public abstract class AbstractSQLStartup
 
             Boolean reindexingRequired =
                 schemaFound ? this.isReindexingNeeded( connection ) : false;
-            ApplicationInfo appInfo = this.constructApplicationInfo( false ); // !reindexingRequired
-                                                                              // );
+            ApplicationInfo appInfo = this.constructApplicationInfo( schemaFound );
 
             if( schemaFound && reindexingRequired )
             {
                 _log.debug( "Schema Found & Reindexing Required" );
-                this.clearSchema( connection );
+                clearSchema( connection, schemaName, this._vendor );
                 _log.debug( "Reindexing needed, Application metadata from database has been cleared." );
             }
-            if( schemaFound && !reindexingRequired )
+
+            if( schemaFound )
             {
-                _log.debug( "Schema Found & Reindexing NOT Required" );
+                _log.debug( "Schema {}Found & Reindexing {}Required", schemaFound ? "" : "NOT ",
+                    reindexingRequired ? "" : "NOT " );
                 this.testRequiredCapabilities( connection );
                 _log.debug( "Underlying database fullfill required capabilities" );
                 this.readAppMetadataFromDB( connection, appInfo.entityDescriptors );
@@ -387,11 +417,11 @@ public abstract class AbstractSQLStartup
                 Map<String, Long> tablePKs = new HashMap<String, Long>();
                 this.createSchema( connection, schemaFound, tablePKs );
                 this.writeAppMetadataToDB( connection, appInfo, tablePKs );
+            }
 
-                if( reindexingRequired )
-                {
-                    this.performReindex( connection );
-                }
+            if( reindexingRequired )
+            {
+                this.performReindex( connection );
             }
         }
         finally
@@ -744,14 +774,20 @@ public abstract class AbstractSQLStartup
             );
 
             long pk = 0L;
-            while( rs.next() )
+            try
             {
-                pk = rs.getInt( 1 );
-                String entityTypeName = rs.getString( 2 );
-                this._state.entityTypeInfos().get()
-                    .put( entityTypeName, new EntityTypeInfo( entityDescriptors.get( entityTypeName ), (int) pk ) );
+                while( rs.next() )
+                {
+                    pk = rs.getInt( 1 );
+                    String entityTypeName = rs.getString( 2 );
+                    this._state.entityTypeInfos().get()
+                        .put( entityTypeName, new EntityTypeInfo( entityDescriptors.get( entityTypeName ), (int) pk ) );
+                }
             }
-
+            finally
+            {
+                SQLUtil.closeQuietly( rs );
+            }
             rs = stmt.executeQuery(
                 vendor.toString(
                     q.simpleQueryBuilder()
@@ -761,11 +797,17 @@ public abstract class AbstractSQLStartup
                 )
             );
 
-            while( rs.next() )
+            try
             {
-                pk = rs.getInt( 1 );
-                String className = rs.getString( 2 );
-                this._state.usedClassesPKs().get().put( className, (int) pk );
+                while( rs.next() )
+                {
+                    pk = rs.getInt( 1 );
+                    String descriptorTextualFormat = rs.getString( 2 );
+                    this._state.usedClassesPKs().get().put( stringToCompositeDescriptor(ValueDescriptor.class, this._app.descriptor(),  descriptorTextualFormat), (int) pk );                    
+                }
+            } finally
+            {
+                SQLUtil.closeQuietly( rs );
             }
 
             rs = stmt.executeQuery(
@@ -777,12 +819,39 @@ public abstract class AbstractSQLStartup
                 )
             );
 
-            while( rs.next() )
+            try
             {
-                pk = rs.getInt( 1 );
-                String enumName = rs.getString( 2 );
-                this._state.enumPKs().get().put( enumName, (int) pk );
+                while( rs.next() )
+                {
+                    pk = rs.getInt( 1 );
+                    String enumName = rs.getString( 2 );
+                    this._state.enumPKs().get().put( enumName, (int) pk );
+                }
+            } finally
+            {
+                SQLUtil.closeQuietly( rs );
             }
+            
+            rs = stmt.executeQuery(
+                q.simpleQueryBuilder()
+                    .select( USED_QNAMES_TABLE_QNAME_COLUMN_NAME, USED_QNAMES_TABLE_TABLE_NAME_COLUMN_NAME )
+                    .from( t.tableName( schemaName, USED_QNAMES_TABLE_NAME ) )
+                    .createExpression()
+                    .toString()
+                );
+            try
+            {
+                while (rs.next())
+                {
+                    String qName = rs.getString( 1 );
+                    String tableName = rs.getString( 2 );
+                    this._state.qNameInfos().get().get( QualifiedName.fromQN( qName ) ).setTableName( tableName );
+                }
+            } finally
+            {
+                SQLUtil.closeQuietly( rs );
+            }
+            
             // @formatter:on
         }
         finally
@@ -847,13 +916,14 @@ public abstract class AbstractSQLStartup
 
             try
             {
-                for( String usedClass : appInfo.usedClassNames )
+                for( CompositeDescriptorInfo descInfo : appInfo.usedValueComposites )
                 {
+                    String vDescStr = compositeDescriptorToString(descInfo.layer, descInfo.module, descInfo.composite);
                     long pk = tablePKs.get( USED_CLASSES_TABLE_NAME );
                     ps.setInt( 1, (int) pk );
-                    ps.setString( 2, usedClass );
+                    ps.setString( 2, vDescStr );
                     ps.executeUpdate();
-                    this._state.usedClassesPKs().get().put( usedClass, (int) pk );
+                    this._state.usedClassesPKs().get().put( descInfo.composite, (int) pk );
                     tablePKs.put( USED_CLASSES_TABLE_NAME, pk + 1 );
                 }
             }
@@ -893,15 +963,7 @@ public abstract class AbstractSQLStartup
 
             Statement stmt = connection.createStatement();
             ps = connection.prepareStatement(
-                vendor.toString(
-                    m.insert()
-                        .setTableName( t.tableName( schemaName, USED_QNAMES_TABLE_NAME ) )
-                        .setColumnSource( m.columnSourceByValues()
-                                            .addValues( l.param(), l.param() )
-                                            .createExpression()
-                        )
-                        .createExpression()
-                )
+                this.createInsertStatementForQNameInfo( connection, schemaName, vendor ).toString()
             );
 
             try
@@ -1022,7 +1084,23 @@ public abstract class AbstractSQLStartup
         // @formatter:off
     }
 
-    private void appendColumnDefinitionsForProperty( TableElementListBuilder builder, QNameInfo qNameInfo )
+    private InsertStatement createInsertStatementForQNameInfo( Connection connection,
+            String schemaName, SQLVendor vendor )
+    {
+        ModificationFactory m = vendor.getModificationFactory();
+        TableReferenceFactory t = vendor.getTableReferenceFactory();
+        LiteralFactory l = vendor.getLiteralFactory();
+
+        return m.insert()
+            .setTableName( t.tableName( schemaName, USED_QNAMES_TABLE_NAME ) )
+            .setColumnSource( m.columnSourceByValues()
+                .addValues( l.param(), l.param() )
+                .createExpression()
+            ).createExpression();
+    }
+
+    private void appendColumnDefinitionsForProperty( TableElementListBuilder builder,
+            QNameInfo qNameInfo )
     {
         Type finalType = qNameInfo.getFinalType();
         if( finalType instanceof ParameterizedType )
@@ -1037,12 +1115,13 @@ public abstract class AbstractSQLStartup
         {
 
             if( this._customizableTypes.keySet().contains( finalClass )
-                && qNameInfo.getPropertyDescriptor().accessor().isAnnotationPresent( SQLTypeInfo.class ) )
+                    && qNameInfo.getPropertyDescriptor().accessor()
+                        .isAnnotationPresent( SQLTypeInfo.class ) )
             {
                 sqlType = this._customizableTypes.get( finalClass ).customizeType( finalClass,
-                                                                                   qNameInfo.getPropertyDescriptor()
-                                                                                       .accessor()
-                                                                                       .getAnnotation( SQLTypeInfo.class ) );
+                    qNameInfo.getPropertyDescriptor()
+                        .accessor()
+                        .getAnnotation( SQLTypeInfo.class ) );
             }
             else if( Enum.class.isAssignableFrom( finalClass ) )
             {
@@ -1059,7 +1138,8 @@ public abstract class AbstractSQLStartup
 
             if( sqlType == null )
             {
-                throw new InternalError( "Could not find sql type for java type [" + finalType + "]" );
+                throw new InternalError( "Could not find sql type for java type [" + finalType
+                        + "]" );
             }
         }
         else
@@ -1075,33 +1155,36 @@ public abstract class AbstractSQLStartup
         TableReferenceFactory t = vendor.getTableReferenceFactory();
 
         builder
-            .addTableElement( d.createColumnDefinition( QNAME_TABLE_VALUE_COLUMN_NAME, sqlType, qNameInfo.getCollectionDepth() > 0 ) )
+            .addTableElement(
+                d.createColumnDefinition( QNAME_TABLE_VALUE_COLUMN_NAME, sqlType,
+                    qNameInfo.getCollectionDepth() > 0 ) )
             .addTableElement( d.createTableConstraintDefinition( d.createUniqueConstraintBuilder()
-                                                                     .setUniqueness( UniqueSpecification.PRIMARY_KEY )
-                                                                     .addColumns( ALL_QNAMES_TABLE_PK_COLUMN_NAME, ENTITY_TABLE_PK_COLUMN_NAME )
-                                                                     .createExpression()
-            ) );
+                .setUniqueness( UniqueSpecification.PRIMARY_KEY )
+                .addColumns( ALL_QNAMES_TABLE_PK_COLUMN_NAME, ENTITY_TABLE_PK_COLUMN_NAME )
+                .createExpression()
+                ) );
 
         if( valueRefTableName != null && valueRefTablePKColumnName != null )
         {
             builder
-                .addTableElement( d.createTableConstraintDefinition( d.createForeignKeyConstraintBuilder()
-                                                                         .addSourceColumns( QNAME_TABLE_VALUE_COLUMN_NAME )
-                                                                         .setTargetTableName( t.tableName( this._state
-                                                                                                               .schemaName()
-                                                                                                               .get(), valueRefTableName ) )
-                                                                         .addTargetColumns( valueRefTablePKColumnName )
-                                                                         .setOnUpdate( ReferentialAction.CASCADE )
-                                                                         .setOnDelete( ReferentialAction.RESTRICT )
-                                                                         .createExpression(), ConstraintCharacteristics.NOT_DEFERRABLE
-                ) );
+                .addTableElement( d.createTableConstraintDefinition( d
+                    .createForeignKeyConstraintBuilder()
+                    .addSourceColumns( QNAME_TABLE_VALUE_COLUMN_NAME )
+                    .setTargetTableName( t.tableName( this._state
+                        .schemaName()
+                        .get(), valueRefTableName ) )
+                    .addTargetColumns( valueRefTablePKColumnName )
+                    .setOnUpdate( ReferentialAction.CASCADE )
+                    .setOnDelete( ReferentialAction.RESTRICT )
+                    .createExpression(), ConstraintCharacteristics.NOT_DEFERRABLE
+                    ) );
         }
     }
 
     protected Long getNextPK( Statement stmt, String schemaName, String columnName,
-                              String tableName, Long defaultPK
-    )
-        throws SQLException
+            String tableName, Long defaultPK
+        )
+            throws SQLException
     {
         ResultSet rs = null;
         Long result = defaultPK;
@@ -1111,14 +1194,17 @@ public abstract class AbstractSQLStartup
             QueryFactory q = vendor.getQueryFactory();
             // Let's cheat a bit on SQL functions, so we won't need to use heavy query builder.
             // Also, currently there are no arithmetic statements
-            rs = stmt.executeQuery(
-                vendor.toString(
-                    q.simpleQueryBuilder()
-                        .select( "COUNT(" + columnName + ")", "MAX(" + columnName + ") + 1" )
-                        .from( vendor.getTableReferenceFactory().tableName( schemaName, tableName ) )
-                        .createExpression()
-                )
-            );
+            rs =
+                stmt.executeQuery(
+                    vendor
+                        .toString(
+                        q.simpleQueryBuilder()
+                            .select( "COUNT(" + columnName + ")", "MAX(" + columnName + ") + 1" )
+                            .from(
+                                vendor.getTableReferenceFactory().tableName( schemaName, tableName ) )
+                            .createExpression()
+                        )
+                    );
             if( rs.next() )
             {
                 Long count = rs.getLong( 1 );
@@ -1137,24 +1223,29 @@ public abstract class AbstractSQLStartup
     }
 
     // This method assume that the schema exists
-    private Boolean isReindexingNeeded(Connection connection)
-            throws SQLException
+    private Boolean isReindexingNeeded( Connection connection )
+        throws SQLException
     {
         Boolean result = true;
         String schemaName = this._state.schemaName().get();
         Statement stmt = connection.createStatement();
         try
         {
-            QueryExpression getAppVersionQuery = this._vendor.getQueryFactory().simpleQueryBuilder()
-                .select( APP_VERSION_PK_COLUMN_NAME )
-                .from( this._vendor.getTableReferenceFactory().tableName( schemaName, APP_VERSION_TABLE_NAME ) )
-                .createExpression();
+            QueryExpression getAppVersionQuery =
+                this._vendor
+                    .getQueryFactory()
+                    .simpleQueryBuilder()
+                    .select( APP_VERSION_PK_COLUMN_NAME )
+                    .from(
+                        this._vendor.getTableReferenceFactory().tableName( schemaName,
+                            APP_VERSION_TABLE_NAME ) )
+                    .createExpression();
             ResultSet rs = null;
             try
             {
                 rs = stmt.executeQuery( this._vendor.toString( getAppVersionQuery ) );
             }
-            catch( SQLException sqle )
+            catch ( SQLException sqle )
             {
                 // Sometimes meta data claims table exists, even when it really doesn't exist
             }
@@ -1169,7 +1260,9 @@ public abstract class AbstractSQLStartup
                     String dbAppVersion = rs.getString( 1 );
                     if( this._reindexingStrategy != null )
                     {
-                        result = this._reindexingStrategy.reindexingNeeded( dbAppVersion, this._app.version() );
+                        result =
+                            this._reindexingStrategy.reindexingNeeded( dbAppVersion,
+                                this._app.version() );
                     }
                 }
             }
@@ -1181,9 +1274,30 @@ public abstract class AbstractSQLStartup
 
         return result;
     }
+    
+    private static void clearSchema(Connection connection, String schemaName, SQLVendor vendor) throws SQLException
+    {
+        ModificationFactory m = vendor.getModificationFactory();
+        Statement stmt = null;
+        try
+        {
+            connection.setReadOnly( false );
+            stmt = connection.createStatement();
+            stmt.execute( m.deleteBySearch().setTargetTable(
+                m.createTargetTable( vendor.getTableReferenceFactory().tableName( schemaName, DBNames.ENTITY_TABLE_NAME ) )
+                ).createExpression()
+                .toString()
+                );
+            connection.commit();
+        }
+        finally
+        {
+            SQLUtil.closeQuietly( stmt );
+        }
+    }
 
-    // Only used by isReindexingNeeded
-    private void clearSchema(Connection connection)
+    // In the future: this should be used when rebuilding schema
+    private void destroySchema( Connection connection )
         throws SQLException
     {
         String schemaName = this._state.schemaName().get();
@@ -1202,7 +1316,8 @@ public abstract class AbstractSQLStartup
             this.dropTablesIfExist( metaData, schemaName, USED_QNAMES_TABLE_NAME, stmt );
 
             Integer x = 0;
-            while( this.dropTablesIfExist( metaData, schemaName, DBNames.QNAME_TABLE_NAME_PREFIX + x, stmt ) )
+            while( this.dropTablesIfExist( metaData, schemaName, DBNames.QNAME_TABLE_NAME_PREFIX
+                    + x, stmt ) )
             {
                 ++x;
             }
@@ -1217,60 +1332,83 @@ public abstract class AbstractSQLStartup
         throws SQLException
     {
         final ApplicationInfo appInfo = new ApplicationInfo();
-        final List<ValueDescriptor> valueDescriptors = new ArrayList<ValueDescriptor>();
-        _app.descriptor().accept( new HierarchicalVisitorAdapter<Object, Object, RuntimeException>()
-        {
-            @Override
-            public boolean visitEnter( Object visited )
-                throws RuntimeException
+        final List<CompositeDescriptorInfo> valueDescriptors =
+            new ArrayList<CompositeDescriptorInfo>();
+        final Deque<Object> currentPath = new ArrayDeque<Object>();
+        _app.descriptor().accept(
+            new HierarchicalVisitorAdapter<Object, Object, RuntimeException>()
             {
-                if( visited instanceof EntityDescriptor || visited instanceof ValueDescriptor)
+                @Override
+                public boolean visitEnter( Object visited )
+                    throws RuntimeException
                 {
-                    if( visited instanceof EntityDescriptor )
+                    if( visited instanceof LayerDescriptor || visited instanceof ModuleDescriptor )
                     {
-                        EntityDescriptor entityDescriptor = (EntityDescriptor) visited;
-                        if( entityDescriptor.queryable() )
-                        {
-                            _log.debug( "THIS ONE WORKS: {}",entityDescriptor );
-                            appInfo.entityDescriptors.put( first( entityDescriptor.types() ).getName(), entityDescriptor );
-                        }
+                        currentPath.push( visited );
                     }
-                    else
+                    if( visited instanceof EntityDescriptor || visited instanceof ValueDescriptor )
                     {
-                        valueDescriptors.add( (ValueDescriptor) visited );
+                        // TODO filter non-visible descriptors away.
+                        if( visited instanceof EntityDescriptor )
+                        {
+                            EntityDescriptor entityDescriptor = (EntityDescriptor) visited;
+                            if( entityDescriptor.queryable() )
+                            {
+                                _log.debug( "THIS ONE WORKS: {}", entityDescriptor );
+                                appInfo.entityDescriptors.put( first( entityDescriptor.types() )
+                                    .getName(), entityDescriptor );
+                            }
+                        }
+                        else
+                        {
+                            valueDescriptors.add( new CompositeDescriptorInfo(
+                                (LayerDescriptor) Iterables
+                                    .first( Iterables.skip( 1, currentPath ) ),
+                                (ModuleDescriptor) Iterables.first( currentPath ),
+                                (CompositeDescriptor) visited ) );
+                        }
+
+                        return false;
                     }
 
-                    return false;
+                    return true;
                 }
 
-                return true;
-            }
-        } );
+                public boolean visitLeave( Object visited )
+                {
+                    if( visited instanceof LayerDescriptor || visited instanceof ModuleDescriptor )
+                    {
+                        currentPath.pop();
+                    }
+                    return true;
+                }
+            } );
 
-        Set<String> usedVCClassNames = new HashSet<String>();
         for( EntityDescriptor descriptor : appInfo.entityDescriptors.values() )
         {
             Set<QualifiedName> newQNames = new HashSet<QualifiedName>();
-            this.extractPropertyQNames( descriptor, this._state.qNameInfos().get(), newQNames, valueDescriptors,
-                                        usedVCClassNames, appInfo.enumValues, setQNameTableNameToNull );
+            this.extractPropertyQNames( descriptor, this._state.qNameInfos().get(), newQNames,
+                valueDescriptors,
+                appInfo.enumValues, setQNameTableNameToNull );
             this.extractAssociationQNames( descriptor, this._state.qNameInfos().get(), newQNames,
-                                           setQNameTableNameToNull );
-            this.extractManyAssociationQNames( descriptor, this._state.qNameInfos().get(), newQNames,
-                                               setQNameTableNameToNull );
-            this._state.entityUsedQNames().get().put( first( descriptor.types() ).getName(), newQNames );
+                setQNameTableNameToNull );
+            this.extractManyAssociationQNames( descriptor, this._state.qNameInfos().get(),
+                newQNames,
+                setQNameTableNameToNull );
+            this._state.entityUsedQNames().get().put( descriptor, newQNames );
         }
 
-        appInfo.usedClassNames.addAll( usedVCClassNames );
+        appInfo.usedValueComposites.addAll( valueDescriptors );
         return appInfo;
     }
 
-    private void processPropertyTypeForQNames( PropertyDescriptor pType, Map<QualifiedName, QNameInfo> qNameInfos,
-                                               Set<QualifiedName> newQNames,
-                                               List<ValueDescriptor> vDescriptors,
-                                               Set<String> usedVCClassNames,
-                                               Set<String> enumValues,
-                                               Boolean setQNameTableNameToNull
-    )
+    private void processPropertyTypeForQNames( PropertyDescriptor pType,
+            Map<QualifiedName, QNameInfo> qNameInfos,
+            Set<QualifiedName> newQNames,
+            List<CompositeDescriptorInfo> vDescriptors,
+            Set<String> enumValues,
+            Boolean setQNameTableNameToNull
+        )
     {
         QualifiedName qName = pType.qualifiedName();
         if( !newQNames.contains( qName ) && !qName.name().equals( Identity.class.getName() ) )
@@ -1280,11 +1418,14 @@ public abstract class AbstractSQLStartup
             QNameInfo info = qNameInfos.get( qName );
             if( info == null )
             {
-                info = QNameInfo.fromProperty( //
-                                               qName, //
-                                               setQNameTableNameToNull ? null : ( QNAME_TABLE_NAME_PREFIX + qNameInfos.size() ), //
-                                               pType//
-                );
+                info =
+                    QNameInfo.fromProperty(
+                        //
+                        qName, //
+                        setQNameTableNameToNull ? null : ( QNAME_TABLE_NAME_PREFIX + qNameInfos
+                            .size() ), //
+                        pType//
+                        );
                 qNameInfos.put( qName, info );
             }
             Type vType = info.getFinalType();
@@ -1295,26 +1436,37 @@ public abstract class AbstractSQLStartup
             }
             if( vType instanceof Class<?> ) //
             {
+                final Class<?> vTypeClass = (Class<?>) vType;
                 if( ( (Class<?>) vType ).isInterface() )
                 {
-                    for( ValueDescriptor vDesc : vDescriptors )
+                    for( CompositeDescriptorInfo descInfo : vDescriptors )
                     {
-                        String vcTypeName = first( vDesc.types() ).getName();
-                        // TODO this doesn't understand, say, Map<String, String>, or indeed, any other Serializable
-                        if( ( (Class<?>) vType ).isAssignableFrom( first( vDesc.types() ) ) )
+                        CompositeDescriptor desc = descInfo.composite;
+                        if( desc instanceof ValueDescriptor )
                         {
-                            usedVCClassNames.add( vcTypeName );
-                            for( PropertyDescriptor subPDesc : vDesc.state().properties() )
+                            ValueDescriptor vDesc = (ValueDescriptor) desc;
+                            // TODO this doesn't understand, say, Map<String, String>, or indeed,
+                            // any
+                            // other Serializable
+                            if( Iterables.matchesAny( new Specification<Class<?>>()
                             {
-                                this.processPropertyTypeForQNames( //
-                                                                   subPDesc, //
-                                                                   qNameInfos, //
-                                                                   newQNames, //
-                                                                   vDescriptors, //
-                                                                   usedVCClassNames, //
-                                                                   enumValues, //
-                                                                   setQNameTableNameToNull //
-                                );
+                                public boolean satisfiedBy( Class<?> item )
+                                {
+                                    return vTypeClass.isAssignableFrom( item );
+                                }
+                            }, vDesc.types() ) )
+                            {
+                                for( PropertyDescriptor subPDesc : vDesc.state().properties() )
+                                {
+                                    this.processPropertyTypeForQNames( //
+                                        subPDesc, //
+                                        qNameInfos, //
+                                        newQNames, //
+                                        vDescriptors, //
+                                        enumValues, //
+                                        setQNameTableNameToNull //
+                                    );
+                                }
                             }
                         }
                     }
@@ -1323,41 +1475,42 @@ public abstract class AbstractSQLStartup
                 {
                     for( Object value : ( (Class<?>) vType ).getEnumConstants() )
                     {
-                        enumValues.add( QualifiedName.fromClass( (Class<?>) vType, value.toString() ).toString() );
+                        enumValues.add( QualifiedName
+                            .fromClass( (Class<?>) vType, value.toString() ).toString() );
                     }
                 }
             }
         }
     }
 
-    private void extractPropertyQNames( EntityDescriptor entityDesc, Map<QualifiedName, QNameInfo> qNameInfos,
-                                        Set<QualifiedName> newQNames,
-                                        List<ValueDescriptor> vDescriptors,
-                                        Set<String> usedVCClassNames,
-                                        Set<String> enumValues,
-                                        Boolean setQNameTableNameToNull
-    )
+    private void extractPropertyQNames( EntityDescriptor entityDesc,
+            Map<QualifiedName, QNameInfo> qNameInfos,
+            Set<QualifiedName> newQNames,
+            List<CompositeDescriptorInfo> vDescriptors,
+            Set<String> enumValues,
+            Boolean setQNameTableNameToNull
+        )
     {
         for( PropertyDescriptor pDesc : entityDesc.state().properties() )
         {
             if( SQLSkeletonUtil.isQueryable( pDesc.accessor() ) )
             {
                 this.processPropertyTypeForQNames( //
-                                                   pDesc, //
-                                                   qNameInfos, //
-                                                   newQNames, //
-                                                   vDescriptors, //
-                                                   usedVCClassNames, //
-                                                   enumValues, //
-                                                   setQNameTableNameToNull //
+                    pDesc, //
+                    qNameInfos, //
+                    newQNames, //
+                    vDescriptors, //
+                    enumValues, //
+                    setQNameTableNameToNull //
                 );
             }
         }
     }
 
-    private void extractAssociationQNames( EntityDescriptor entityDesc, Map<QualifiedName, QNameInfo> extractedQNames,
-                                           Set<QualifiedName> newQNames, Boolean setQNameTableNameToNull
-    )
+    private void extractAssociationQNames( EntityDescriptor entityDesc,
+            Map<QualifiedName, QNameInfo> extractedQNames,
+            Set<QualifiedName> newQNames, Boolean setQNameTableNameToNull
+        )
     {
         for( AssociationDescriptor assoDesc : entityDesc.state().associations() )
         {
@@ -1367,13 +1520,14 @@ public abstract class AbstractSQLStartup
                 if( !extractedQNames.containsKey( qName ) )
                 {
                     extractedQNames.put( qName,//
-                                         QNameInfo.fromAssociation( //
-                                                                    qName, //
-                                                                    setQNameTableNameToNull ? null : ( QNAME_TABLE_NAME_PREFIX + extractedQNames
-                                                                        .size() ), //
-                                                                    assoDesc //
-                                         ) //
-                    );
+                        QNameInfo.fromAssociation( //
+                            qName, //
+                            setQNameTableNameToNull ? null
+                                    : ( QNAME_TABLE_NAME_PREFIX + extractedQNames
+                                        .size() ), //
+                            assoDesc //
+                            ) //
+                        );
                     newQNames.add( qName );
                 }
             }
@@ -1381,10 +1535,10 @@ public abstract class AbstractSQLStartup
     }
 
     private void extractManyAssociationQNames( EntityDescriptor entityDesc,
-                                               Map<QualifiedName, QNameInfo> extractedQNames,
-                                               Set<QualifiedName> newQNames,
-                                               Boolean setQNameTableNameToNull
-    )
+            Map<QualifiedName, QNameInfo> extractedQNames,
+            Set<QualifiedName> newQNames,
+            Boolean setQNameTableNameToNull
+        )
     {
         for( AssociationDescriptor mAssoDesc : entityDesc.state().manyAssociations() )
         {
@@ -1394,14 +1548,15 @@ public abstract class AbstractSQLStartup
                 if( !extractedQNames.containsKey( qName ) )
                 {
                     extractedQNames.put( //
-                                         qName, //
-                                         QNameInfo.fromManyAssociation( //
-                                                                        qName, //
-                                                                        setQNameTableNameToNull ? null : ( QNAME_TABLE_NAME_PREFIX + extractedQNames
-                                                                            .size() ), //
-                                                                        mAssoDesc //
-                                         ) //
-                    );
+                        qName, //
+                        QNameInfo.fromManyAssociation( //
+                            qName, //
+                            setQNameTableNameToNull ? null
+                                    : ( QNAME_TABLE_NAME_PREFIX + extractedQNames
+                                        .size() ), //
+                            mAssoDesc //
+                            ) //
+                        );
                     newQNames.add( qName );
                 }
             }
@@ -1412,35 +1567,129 @@ public abstract class AbstractSQLStartup
         throws SQLException;
 
     protected boolean dropTablesIfExist( DatabaseMetaData metaData,
-                                         String schemaName,
-                                         String tableName,
-                                         Statement stmt
-    )
-        throws SQLException
+            String schemaName,
+            String tableName,
+            Statement stmt
+        )
+            throws SQLException
     {
         boolean result = false;
         try
         {
             stmt.execute( this._vendor.toString( this._vendor.getManipulationFactory()
-                                                     .createDropTableOrViewStatement(
-                                                         this._vendor
-                                                             .getTableReferenceFactory()
-                                                             .tableName( schemaName, tableName ), ObjectType.TABLE, DropBehaviour.CASCADE
-                                                     ) ) );
+                .createDropTableOrViewStatement(
+                    this._vendor
+                        .getTableReferenceFactory()
+                        .tableName( schemaName, tableName ), ObjectType.TABLE,
+                    DropBehaviour.CASCADE
+                ) ) );
             result = true;
         }
-        catch( SQLException sqle )
+        catch ( SQLException sqle )
         {
             // Ignore
         }
         return result;
     }
 
+    private static final String DESCRIPTOR_COMPONENT_SEPARATOR_START = "{";
+    private static final String DESCRIPTOR_COMPONENT_SEPARATOR_END = "}";
+    private static final String DESCRIPTOR_TYPE_SEPARATOR = ",";
+    private static final Pattern DESCRIPTOR_TYPES_REGEXP = Pattern.compile( "[^"
+            + Pattern.quote( DESCRIPTOR_TYPE_SEPARATOR ) + "]+" );
+    private static final Pattern DESCRIPTOR_TEXTUAL_REGEXP = Pattern.compile( "^"
+            + Pattern.quote( DESCRIPTOR_COMPONENT_SEPARATOR_START ) + "(.*)"
+            + Pattern.quote( DESCRIPTOR_COMPONENT_SEPARATOR_END )
+            + Pattern.quote( DESCRIPTOR_COMPONENT_SEPARATOR_START ) + "(.*)"
+            + Pattern.quote( DESCRIPTOR_COMPONENT_SEPARATOR_END )
+            + Pattern.quote( DESCRIPTOR_COMPONENT_SEPARATOR_START ) + "(" + "[^"
+            + Pattern.quote( DESCRIPTOR_COMPONENT_SEPARATOR_END + DESCRIPTOR_TYPE_SEPARATOR )
+            + "]+)" + Pattern.quote( DESCRIPTOR_COMPONENT_SEPARATOR_END ) + "$" );
+
+    protected static String compositeDescriptorToString( LayerDescriptor layer,
+            ModuleDescriptor module, CompositeDescriptor descriptor )
+    {
+        return DESCRIPTOR_COMPONENT_SEPARATOR_START + layer.name()
+                + DESCRIPTOR_COMPONENT_SEPARATOR_END + DESCRIPTOR_COMPONENT_SEPARATOR_START
+                + module.name() + DESCRIPTOR_COMPONENT_SEPARATOR_END
+                + DESCRIPTOR_COMPONENT_SEPARATOR_START
+                + Iterables.toString( descriptor.types(), new Function<Class<?>, String>()
+                {
+                    @Override
+                    public String map( Class<?> item )
+                    {
+                        return item.getName();
+                    }
+                }, DESCRIPTOR_TYPE_SEPARATOR ) + DESCRIPTOR_COMPONENT_SEPARATOR_END;
+    }
+
+    protected static <TCompositeDescriptor extends CompositeDescriptor> TCompositeDescriptor
+        stringToCompositeDescriptor( final Class<TCompositeDescriptor> descriptorClass,
+                ApplicationDescriptor appDesc, String str )
+    {
+        Matcher matcher = DESCRIPTOR_TEXTUAL_REGEXP.matcher( str );
+        if( !matcher.matches() )
+        {
+            throw new IllegalArgumentException( "Descriptor textual description " + str
+                    + " was invalid." );
+        }
+
+        final String layerName = matcher.group( 1 );
+        final String moduleName = matcher.group( 2 );
+        final Set<String> classNames = new HashSet<String>();
+        Matcher typesMatcher = DESCRIPTOR_TYPES_REGEXP.matcher( matcher.group( 3 ) );
+        while( typesMatcher.find() )
+        {
+            classNames.add( typesMatcher.group( 0 ) );
+        }
+        final CompositeDescriptor[] result = new CompositeDescriptor[1];
+
+        appDesc.accept( new HierarchicalVisitorAdapter<Object, Object, RuntimeException>()
+        {
+            @Override
+            public boolean visitEnter( Object visited )
+            {
+                boolean thisResult = true;
+                if( visited instanceof LayerDescriptor )
+                {
+                    thisResult = ( (LayerDescriptor) visited ).name().equals( layerName );
+                }
+                else if( visited instanceof ModuleDescriptor )
+                {
+                    thisResult = ( (ModuleDescriptor) visited ).name().equals( moduleName );
+                }
+                else if( descriptorClass.isAssignableFrom( visited.getClass() ) )
+                {
+                    CompositeDescriptor desc = (CompositeDescriptor) visited;
+                    if( classNames.equals( new HashSet<String>( Iterables.toList( Iterables.map(
+                        new Function<Class<?>, String>()
+                        {
+                            @Override
+                            public String map( Class<?> from )
+                            {
+                                return from.getName();
+                            }
+                        }, desc.types() ) ) ) ) )
+                    {
+                        result[0] = desc;
+                        thisResult = false;
+                    }
+                }
+                return thisResult;
+            }
+
+            public boolean visitLeave( Object visited )
+            {
+                return result[0] == null;
+            }
+        } );
+
+        return (TCompositeDescriptor) result[0];
+    }
+
     protected abstract void modifyPrimitiveTypes( Map<Class<?>, SQLDataType> primitiveTypes,
-                                                  Map<Class<?>, Integer> jdbcTypes
-    );
+            Map<Class<?>, Integer> jdbcTypes
+        );
 
     protected abstract SQLDataType getCollectionPathDataType();
-
-    protected abstract void setVendor( SQLVendor vendor );
 }

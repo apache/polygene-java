@@ -611,8 +611,8 @@ public abstract class AbstractSQLIndexing
         )
             throws SQLException
     {
-        String mainTypeName = first( state.entityDescriptor().types() ).getName();
-        Set<QualifiedName> qNames = this._state.entityUsedQNames().get().get( mainTypeName );
+        Set<QualifiedName> qNames =
+            this._state.entityUsedQNames().get().get( state.entityDescriptor() );
         this.syncQNamesInsertPSs( connection, qNameInsertPSs, qNames );
         Integer propertyPK = 0;
         for( PropertyDescriptor pDesc : state.entityDescriptor().state().properties() )
@@ -990,8 +990,7 @@ public abstract class AbstractSQLIndexing
         else
         {
             ValueDescriptor vDesc = this._qi4SPI.getValueDescriptor( vc );
-            String vType = first( vDesc.types() ).getName();
-            Integer classID = this._state.usedClassesPKs().get().get( vType );
+            Integer classID = this._state.usedClassesPKs().get().get( vDesc );
             ps.setInt( nextFreeIndex, classID );
         }
     }

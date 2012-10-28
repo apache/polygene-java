@@ -16,12 +16,12 @@
 package org.qi4j.index.sql.postgresql;
 
 import org.junit.Ignore;
-
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.indexing.AbstractEntityFinderTest;
 
-@Ignore // (Should pass with actual DB running)
+//(Should pass with actual DB running)
+@Ignore
 public class PostgreSQLEntityFinderTest extends AbstractEntityFinderTest
 {
     @Override
@@ -40,7 +40,7 @@ public class PostgreSQLEntityFinderTest extends AbstractEntityFinderTest
         {
             super.setUp();
         }
-        catch( Exception e )
+        catch ( Exception e )
         {
             // Let's check if exception was because database was not available
             if( this.module != null )
@@ -48,7 +48,8 @@ public class PostgreSQLEntityFinderTest extends AbstractEntityFinderTest
                 SQLTestHelper.setUpTest( this.module );
             }
 
-            // If we got this far, the database must have been available, and exception must have had other reason!
+            // If we got this far, the database must have been available, and exception must have
+            // had other reason!
             throw e;
         }
     }

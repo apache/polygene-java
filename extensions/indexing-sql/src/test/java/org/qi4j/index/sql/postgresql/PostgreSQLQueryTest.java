@@ -17,12 +17,12 @@ package org.qi4j.index.sql.postgresql;
 
 import org.junit.Ignore;
 import org.junit.Test;
-
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.indexing.AbstractQueryTest;
 
-@Ignore // (should pass with actual DB running)
+//(should pass with actual DB running)
+@Ignore
 public class PostgreSQLQueryTest extends AbstractQueryTest
 {
     @Override
@@ -41,7 +41,7 @@ public class PostgreSQLQueryTest extends AbstractQueryTest
         {
             super.setUp();
         }
-        catch( Exception e )
+        catch ( Exception e )
         {
             // Let's check if exception was because database was not available
             if( this.module != null )
@@ -49,7 +49,8 @@ public class PostgreSQLQueryTest extends AbstractQueryTest
                 SQLTestHelper.setUpTest( this.module );
             }
 
-            // If we got this far, the database must have been available, and exception must have had other reason!
+            // If we got this far, the database must have been available, and exception must have
+            // had other reason!
             throw e;
         }
     }
